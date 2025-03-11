@@ -1,0 +1,149 @@
+// /pages/financial-literacy.tsx
+
+import React from "react";
+import Link from "next/link";
+import Image from "next/image";
+
+const FinancialLiteracy = () => {
+  return (
+    <div className="relative min-h-screen bg-black text-white overflow-hidden">
+      {/* 🔥 Background Effects */}
+      <div className="absolute inset-0 bg-cover bg-center opacity-40" style={{ backgroundImage: "url('/black-wealth-bg.jpg')" }}></div>
+      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-50"></div>
+
+      {/* 🔹 Navbar with Logo */}
+      <nav className="absolute top-4 left-6 flex items-center space-x-3 z-20">
+        <Image src="/bwe-logo.png" alt="BWE Logo" width={50} height={50} />
+        <h1 className="text-xl font-bold text-gold">Black Wealth Exchange</h1>
+      </nav>
+
+      {/* 🔥 Hero Section */}
+      <header className="text-center py-32 relative z-10">
+        <Image src="/bwe-logo.png" alt="BWE Logo" width={120} height={120} className="mx-auto mb-4 animate-fadeIn" />
+        <h1 className="text-6xl md:text-7xl font-extrabold tracking-wide text-gold neon-text animate-slideUp">
+          Financial Literacy for African Americans
+        </h1>
+        <p className="text-xl md:text-2xl mt-4 font-light text-gray-300 animate-fadeIn">
+          "Empower yourself with financial knowledge to build generational wealth."
+        </p>
+      </header>
+
+      {/* 🔥 Main Content */}
+      <div className="container mx-auto p-6 space-y-8">
+        <h2 className="text-3xl font-semibold text-gold mb-6">Mastering Financial Literacy</h2>
+
+        {/* Building Wealth Through Investments */}
+        <section className="bg-gray-800 p-6 rounded-lg shadow-lg">
+          <h3 className="text-2xl font-semibold text-gold mb-4">Building Wealth Through Investments</h3>
+          <p className="text-gray-300 mb-4">
+            Building wealth through investments is one of the most effective ways to create long-term financial stability. Investments allow your money to grow over time, providing opportunities for compounding returns and financial growth.
+          </p>
+          <p className="text-gray-300 mb-4">
+            There are several investment options available, including:
+          </p>
+          <ul className="list-disc pl-6 text-gray-300 mb-4">
+            <li><strong>Stocks:</strong> Investing in publicly traded companies allows you to own a portion of the company. Stocks offer high returns, but they also come with higher risks.</li>
+            <li><strong>Bonds:</strong> A safer investment compared to stocks, bonds are debt securities issued by corporations or governments that pay regular interest and return the principal when the bond matures.</li>
+            <li><strong>Real Estate:</strong> Investing in real estate can provide both steady income (through rental properties) and capital appreciation (through property value increase).</li>
+            <li><strong>Mutual Funds & ETFs:</strong> These investment vehicles pool money from multiple investors to invest in a diversified portfolio of stocks, bonds, or other assets, providing a balance of risk and reward.</li>
+            <li><strong>Cryptocurrency:</strong> A newer investment class, cryptocurrencies like Bitcoin or Ethereum can provide high returns but also come with high volatility.</li>
+          </ul>
+          <p className="text-gray-300 mb-4">
+            It's important to educate yourself about these options and determine what suits your financial goals and risk tolerance.
+          </p>
+        </section>
+
+        {/* Budgeting and Financial Planning */}
+        <section className="bg-gray-800 p-6 rounded-lg shadow-lg">
+          <h3 className="text-2xl font-semibold text-gold mb-4">Budgeting and Financial Planning</h3>
+          <p className="text-gray-300 mb-4">
+            Budgeting and financial planning are essential for achieving long-term financial success. They help you track your income and expenses, manage your debt, and ensure that you're saving for your future.
+          </p>
+          <p className="text-gray-300 mb-4">
+            A well-thought-out budget involves:
+          </p>
+          <ul className="list-disc pl-6 text-gray-300 mb-4">
+            <li><strong>Setting Financial Goals:</strong> Whether it's saving for a down payment on a house, building an emergency fund, or paying off debt, set clear, actionable financial goals.</li>
+            <li><strong>Tracking Your Income and Expenses:</strong> Knowing how much money you have coming in and where it's going is crucial to managing your finances effectively.</li>
+            <li><strong>Saving and Emergency Fund:</strong> Aim to save at least 20% of your income, with at least 3-6 months of expenses set aside in an emergency fund.</li>
+            <li><strong>Debt Management:</strong> Pay down high-interest debt as quickly as possible while managing other debts strategically.</li>
+          </ul>
+          <p className="text-gray-300 mb-4">
+            With a good budget and a solid financial plan, you can take control of your money, reduce stress, and build wealth over time.
+          </p>
+        </section>
+
+        {/* Understanding Credit */}
+        <section className="bg-gray-800 p-6 rounded-lg shadow-lg">
+          <h3 className="text-2xl font-semibold text-gold mb-4">Understanding Credit</h3>
+          <p className="text-gray-300 mb-4">
+            Your credit score is one of the most important factors in your financial life. It affects your ability to get loans, credit cards, and even your insurance rates. Understanding how credit works and how to manage it can help you build wealth.
+          </p>
+          <p className="text-gray-300 mb-4">
+            A good credit score is typically 700 or higher. Here are some tips for improving your credit:
+          </p>
+          <ul className="list-disc pl-6 text-gray-300 mb-4">
+            <li><strong>Pay Bills on Time:</strong> Late payments can severely damage your credit score.</li>
+            <li><strong>Reduce Debt:</strong> Keep credit card balances low and pay them off regularly.</li>
+            <li><strong>Don't Close Old Accounts:</strong> The length of your credit history contributes to your credit score. Keep old accounts open unless there's a compelling reason to close them.</li>
+            <li><strong>Check Your Credit Report:</strong> Regularly check your credit report for errors and disputes any inaccuracies.</li>
+          </ul>
+          <p className="text-gray-300 mb-4">
+            By taking steps to manage your credit, you’ll improve your financial opportunities and increase your chances of securing loans at favorable rates.
+          </p>
+        </section>
+
+        {/* Retirement Planning */}
+        <section className="bg-gray-800 p-6 rounded-lg shadow-lg">
+          <h3 className="text-2xl font-semibold text-gold mb-4">Retirement Planning</h3>
+          <p className="text-gray-300 mb-4">
+            It’s never too early to start planning for retirement. The earlier you begin saving and investing, the more time your money has to grow.
+          </p>
+          <p className="text-gray-300 mb-4">
+            Start with these retirement planning tips:
+          </p>
+          <ul className="list-disc pl-6 text-gray-300 mb-4">
+            <li><strong>Open a Retirement Account:</strong> Contribute to a 401(k), IRA, or Roth IRA to build wealth for retirement while benefiting from tax advantages.</li>
+            <li><strong>Contribute Regularly:</strong> Aim to contribute at least 10-15% of your income toward retirement savings each year.</li>
+            <li><strong>Take Advantage of Employer Match:</strong> If your employer offers a 401(k) match, contribute enough to get the full match—it’s essentially free money.</li>
+            <li><strong>Invest in Growth Assets:</strong> Invest in stocks, mutual funds, or ETFs that offer long-term growth potential to maximize returns.</li>
+          </ul>
+          <p className="text-gray-300 mb-4">
+            The earlier you start saving, the less you’ll have to save each year to reach your retirement goals.
+          </p>
+        </section>
+
+        {/* Debt Management */}
+        <section className="bg-gray-800 p-6 rounded-lg shadow-lg">
+          <h3 className="text-2xl font-semibold text-gold mb-4">Debt Management</h3>
+          <p className="text-gray-300 mb-4">
+            Debt can prevent you from building wealth, but with the right strategies, it can be managed and reduced over time. Start with understanding the types of debt you have and prioritize paying off high-interest debt first.
+          </p>
+          <p className="text-gray-300 mb-4">
+            Tips for managing debt:
+          </p>
+          <ul className="list-disc pl-6 text-gray-300 mb-4">
+            <li><strong>Pay Off High-Interest Debt First:</strong> Focus on paying down credit card debt, payday loans, and other high-interest debts.</li>
+            <li><strong>Use the Debt Snowball Method:</strong> Pay off your smallest debts first to build momentum, and then move on to larger debts.</li>
+            <li><strong>Refinance Debt:</strong> Consider refinancing high-interest debt to lower rates if possible.</li>
+            <li><strong>Seek Professional Help:</strong> If you’re overwhelmed by debt, seek professional help from a credit counselor or financial advisor.</li>
+          </ul>
+          <p className="text-gray-300 mb-4">
+            Managing your debt effectively is crucial for long-term financial health. It will free up money for savings, investments, and future financial goals.
+          </p>
+        </section>
+
+        {/* Back to Home Button */}
+        <section className="text-center mt-10">
+          <Link href="/">
+            <button className="px-6 py-3 bg-gold text-black font-semibold text-lg rounded-lg hover:bg-yellow-500 transition">
+              Back to Home
+            </button>
+          </Link>
+        </section>
+      </div>
+    </div>
+  );
+};
+
+export default FinancialLiteracy;
