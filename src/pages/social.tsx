@@ -1,17 +1,17 @@
-import type React from "react"
-import { useState } from "react"
-import Link from "next/link"
-import { motion, AnimatePresence } from "framer-motion"
-import { HomeIcon, UserIcon, BellIcon } from "@heroicons/react/24/solid"
+import type React from "react";
+import { useState } from "react";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+import { HomeIcon, UserIcon, BellIcon } from "@heroicons/react/24/solid";
 
 interface Post {
-  id: number
-  user: string
-  avatar: string
-  content: string
-  likes: number
-  comments: number
-  shares: number
+  id: number;
+  user: string;
+  avatar: string;
+  content: string;
+  likes: number;
+  comments: number;
+  shares: number;
 }
 
 const trendingTopics: string[] = [
@@ -21,14 +21,15 @@ const trendingTopics: string[] = [
   "#CryptoTalk",
   "#TechStartups",
   "#CommunityGrowth",
-]
+];
 
 const posts: Post[] = [
   {
     id: 1,
     user: "Angela Davis",
     avatar: "/avatars/angela-davis.jpg",
-    content: "Excited to join the BWES community! Let's build wealth together. 💪🏾",
+    content:
+      "Excited to join the BWES community! Let's build wealth together. 💪🏾",
     likes: 256,
     comments: 87,
     shares: 43,
@@ -37,7 +38,8 @@ const posts: Post[] = [
     id: 2,
     user: "Marcus Garvey",
     avatar: "/avatars/marcus-garvey.jpg",
-    content: "Just launched my new tech startup! Looking for beta testers. Who's in? 🚀",
+    content:
+      "Just launched my new tech startup! Looking for beta testers. Who's in? 🚀",
     likes: 189,
     comments: 56,
     shares: 28,
@@ -46,7 +48,8 @@ const posts: Post[] = [
     id: 3,
     user: "Maya Angelou",
     avatar: "/avatars/maya-angelou.jpg",
-    content: "New poetry book dropping next month. All proceeds go to Black education initiatives. 📚",
+    content:
+      "New poetry book dropping next month. All proceeds go to Black education initiatives. 📚",
     likes: 312,
     comments: 94,
     shares: 67,
@@ -55,7 +58,8 @@ const posts: Post[] = [
     id: 4,
     user: "Malcolm X",
     avatar: "/avatars/malcolm-x.jpg",
-    content: "Hosting a webinar on financial literacy this weekend. Don't miss out! 💰",
+    content:
+      "Hosting a webinar on financial literacy this weekend. Don't miss out! 💰",
     likes: 278,
     comments: 103,
     shares: 89,
@@ -64,22 +68,23 @@ const posts: Post[] = [
     id: 5,
     user: "Ida B. Wells",
     avatar: "/avatars/ida-b-wells.jpg",
-    content: "Just published an investigative report on Black-owned businesses in tech. Check it out! 🖥️",
+    content:
+      "Just published an investigative report on Black-owned businesses in tech. Check it out! 🖥️",
     likes: 201,
     comments: 72,
     shares: 55,
   },
-]
+];
 
 const Social: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<"feed" | "trending">("feed")
-  const [postContent, setPostContent] = useState<string>("")
+  const [activeTab, setActiveTab] = useState<"feed" | "trending">("feed");
+  const [postContent, setPostContent] = useState<string>("");
 
   const handlePost = () => {
     // Logic to handle new post
-    console.log("New post:", postContent)
-    setPostContent("")
-  }
+    console.log("New post:", postContent);
+    setPostContent("");
+  };
 
   return (
     <div className="bg-gray-900 text-white min-h-screen">
@@ -101,7 +106,9 @@ const Social: React.FC = () => {
 
       {/* Main Content */}
       <main className="container mx-auto pt-20 px-4">
-        <h1 className="text-4xl font-bold text-center text-yellow-400 mb-8">BWES Social</h1>
+        <h1 className="text-4xl font-bold text-center text-yellow-400 mb-8">
+          BWES Social
+        </h1>
 
         {/* Tabs */}
         <div className="mb-8">
@@ -127,7 +134,9 @@ const Social: React.FC = () => {
                 <textarea
                   placeholder="What's on your mind?"
                   value={postContent}
-                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setPostContent(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+                    setPostContent(e.target.value)
+                  }
                   className="w-full bg-gray-700 text-white rounded-lg p-2 mb-2"
                   rows={3}
                 />
@@ -187,11 +196,12 @@ const Social: React.FC = () => {
 
       {/* Footer */}
       <footer className="bg-gray-800 p-4 text-center mt-8">
-        <p className="text-gray-400">&copy; 2025 Black Wealth Exchange Social. All rights reserved.</p>
+        <p className="text-gray-400">
+          &copy; 2025 Black Wealth Exchange Social. All rights reserved.
+        </p>
       </footer>
     </div>
-  )
-}
+  );
+};
 
-export default Social
-
+export default Social;

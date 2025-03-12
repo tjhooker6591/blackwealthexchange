@@ -1,6 +1,6 @@
 // pages/api/admin/rejectBusiness/[id].ts
 
-import { ObjectId } from "mongodb";  // Import ObjectId from MongoDB
+import { ObjectId } from "mongodb"; // Import ObjectId from MongoDB
 import clientPromise from "../../../../lib/mongodb";
 
 export default async function handler(req, res) {

@@ -23,7 +23,7 @@ const Module2: React.FC = () => {
         {/* Back Button */}
         <div className="mb-4">
           <button
-            onClick={() => router.push('/course-dashboard')}
+            onClick={() => router.push("/course-dashboard")}
             className="px-4 py-2 bg-gray-600 text-white font-bold rounded hover:bg-gray-700 transition"
           >
             Back to Course Dashboard
@@ -32,48 +32,85 @@ const Module2: React.FC = () => {
 
         {/* Header */}
         <header className="mb-6">
-          <h1 className="text-3xl font-bold text-gold">Module 2: Setting Financial Goals</h1>
-          <p className="text-gray-300 mt-2">Set clear and achievable financial goals using the SMART framework.</p>
+          <h1 className="text-3xl font-bold text-gold">
+            Module 2: Setting Financial Goals
+          </h1>
+          <p className="text-gray-300 mt-2">
+            Set clear and achievable financial goals using the SMART framework.
+          </p>
         </header>
 
         {/* Overview Section */}
         <section className="mt-8">
           <h2 className="text-2xl font-semibold text-blue-500">Overview</h2>
           <p className="text-gray-300">
-            In this module, you will learn the importance of setting both short-term and long-term financial goals, and how to create SMART goals to ensure that your financial plans are clear and achievable.
+            In this module, you will learn the importance of setting both
+            short-term and long-term financial goals, and how to create SMART
+            goals to ensure that your financial plans are clear and achievable.
           </p>
         </section>
 
         {/* Real-Life Example */}
         <section className="mt-8">
-          <h2 className="text-xl font-semibold text-blue-500">Real-Life Example</h2>
+          <h2 className="text-xl font-semibold text-blue-500">
+            Real-Life Example
+          </h2>
           <p className="text-gray-300">
-            Sarah, a 30-year-old professional, sets both short-term and long-term goals. She starts with saving $1,000 for an emergency fund within 6 months (short-term), and then aims to save for a 20% down payment on a house within 5 years (long-term).
+            Sarah, a 30-year-old professional, sets both short-term and
+            long-term goals. She starts with saving $1,000 for an emergency fund
+            within 6 months (short-term), and then aims to save for a 20% down
+            payment on a house within 5 years (long-term).
           </p>
         </section>
 
         {/* Setting SMART Goals */}
         <section className="mt-8">
-          <h2 className="text-2xl font-semibold text-blue-500">Creating SMART Financial Goals</h2>
+          <h2 className="text-2xl font-semibold text-blue-500">
+            Creating SMART Financial Goals
+          </h2>
           <ul className="list-disc ml-6 mt-4 text-gray-300">
-            <li><strong>Specific:</strong> Make sure your goal is clearly defined (e.g., "Save $5,000 for an emergency fund").</li>
-            <li><strong>Measurable:</strong> Track your progress (e.g., "Save $500 each month").</li>
-            <li><strong>Achievable:</strong> Ensure your goal is realistic based on your current financial situation.</li>
-            <li><strong>Relevant:</strong> The goal should align with your overall financial and life objectives (e.g., "Save for a down payment on a house").</li>
-            <li><strong>Time-bound:</strong> Set a clear deadline for achieving your goal (e.g., "Save $5,000 in six months").</li>
+            <li>
+              <strong>Specific:</strong> Make sure your goal is clearly defined
+              (e.g., "Save $5,000 for an emergency fund").
+            </li>
+            <li>
+              <strong>Measurable:</strong> Track your progress (e.g., "Save $500
+              each month").
+            </li>
+            <li>
+              <strong>Achievable:</strong> Ensure your goal is realistic based
+              on your current financial situation.
+            </li>
+            <li>
+              <strong>Relevant:</strong> The goal should align with your overall
+              financial and life objectives (e.g., "Save for a down payment on a
+              house").
+            </li>
+            <li>
+              <strong>Time-bound:</strong> Set a clear deadline for achieving
+              your goal (e.g., "Save $5,000 in six months").
+            </li>
           </ul>
         </section>
 
         {/* Motivation and Accountability */}
         <section className="mt-8">
-          <h2 className="text-xl font-semibold text-blue-500">Motivation & Accountability</h2>
+          <h2 className="text-xl font-semibold text-blue-500">
+            Motivation & Accountability
+          </h2>
           <p className="text-gray-300">
-            Setting goals is great, but staying motivated is key to achieving them. Here are some tips to stay on track:
+            Setting goals is great, but staying motivated is key to achieving
+            them. Here are some tips to stay on track:
           </p>
           <ul className="list-disc ml-6 mt-4 text-gray-300">
             <li>Set small rewards for each milestone you hit.</li>
-            <li>Tell a friend or mentor about your goals to keep yourself accountable.</li>
-            <li>Track your progress regularly and adjust your goals as needed.</li>
+            <li>
+              Tell a friend or mentor about your goals to keep yourself
+              accountable.
+            </li>
+            <li>
+              Track your progress regularly and adjust your goals as needed.
+            </li>
           </ul>
         </section>
 
@@ -81,16 +118,24 @@ const Module2: React.FC = () => {
         <section className="mt-8">
           <h2 className="text-xl font-semibold text-blue-500">Case Study</h2>
           <p className="text-gray-300">
-            Meet James, who used SMART goals to pay off $5,000 in credit card debt within 1 year. By making his goal specific (Pay off $5,000), measurable (tracking monthly payments), achievable (budgeted 20% of income), and time-bound (12 months), he was able to reduce his debt and gain financial freedom.
+            Meet James, who used SMART goals to pay off $5,000 in credit card
+            debt within 1 year. By making his goal specific (Pay off $5,000),
+            measurable (tracking monthly payments), achievable (budgeted 20% of
+            income), and time-bound (12 months), he was able to reduce his debt
+            and gain financial freedom.
           </p>
         </section>
 
         {/* Interactive Goal-Setting Tool */}
         <section className="mt-8">
-          <h2 className="text-2xl font-semibold text-blue-500">Calculate Your Monthly Savings</h2>
+          <h2 className="text-2xl font-semibold text-blue-500">
+            Calculate Your Monthly Savings
+          </h2>
           <div className="space-y-4">
             <div className="flex flex-col">
-              <label htmlFor="goalAmount" className="text-gray-300">Goal Amount ($)</label>
+              <label htmlFor="goalAmount" className="text-gray-300">
+                Goal Amount ($)
+              </label>
               <input
                 type="number"
                 id="goalAmount"
@@ -101,7 +146,9 @@ const Module2: React.FC = () => {
               />
             </div>
             <div className="flex flex-col">
-              <label htmlFor="timeFrame" className="text-gray-300">Time Frame (Months)</label>
+              <label htmlFor="timeFrame" className="text-gray-300">
+                Time Frame (Months)
+              </label>
               <input
                 type="number"
                 id="timeFrame"
@@ -119,7 +166,8 @@ const Module2: React.FC = () => {
             </button>
             {monthlySavings > 0 && (
               <p className="text-green-500 mt-4">
-                To reach your goal, you need to save ${monthlySavings.toFixed(2)} per month.
+                To reach your goal, you need to save $
+                {monthlySavings.toFixed(2)} per month.
               </p>
             )}
           </div>
@@ -130,8 +178,14 @@ const Module2: React.FC = () => {
           <h2 className="text-xl font-semibold text-blue-500">Key Takeaways</h2>
           <ul className="list-disc ml-6 mt-4 text-gray-300">
             <li>Setting financial goals provides direction and motivation.</li>
-            <li>Use the SMART framework to ensure your goals are realistic and measurable.</li>
-            <li>Short-term goals build momentum for achieving long-term financial success.</li>
+            <li>
+              Use the SMART framework to ensure your goals are realistic and
+              measurable.
+            </li>
+            <li>
+              Short-term goals build momentum for achieving long-term financial
+              success.
+            </li>
           </ul>
         </section>
 
@@ -139,7 +193,8 @@ const Module2: React.FC = () => {
         <section className="mt-8">
           <h2 className="text-xl font-semibold text-blue-500">Next Steps</h2>
           <p className="text-gray-300">
-            Proceed to the next module, where we will dive into how to create a budget that aligns with your financial goals.
+            Proceed to the next module, where we will dive into how to create a
+            budget that aligns with your financial goals.
           </p>
           <Link href="/module/3">
             <button className="mt-4 py-2 px-4 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition">
@@ -150,9 +205,12 @@ const Module2: React.FC = () => {
 
         {/* Downloadable Resource */}
         <section className="mt-8">
-          <h2 className="text-xl font-semibold text-blue-500">Downloadable Resource</h2>
+          <h2 className="text-xl font-semibold text-blue-500">
+            Downloadable Resource
+          </h2>
           <p className="text-gray-300">
-            Download the <strong>Goal-Setting Template</strong> to set your own short-term and long-term financial goals.
+            Download the <strong>Goal-Setting Template</strong> to set your own
+            short-term and long-term financial goals.
           </p>
           <a
             href="https://open.umn.edu/opentextbooks/textbooks/31"
@@ -167,9 +225,14 @@ const Module2: React.FC = () => {
         {/* Quiz Section */}
         <section className="mt-8">
           <h2 className="text-xl font-semibold text-blue-500">Quiz</h2>
-          <p className="text-gray-300">Test your understanding of SMART goal setting:</p>
+          <p className="text-gray-300">
+            Test your understanding of SMART goal setting:
+          </p>
           <ul className="list-disc ml-6 mt-4 text-gray-300">
-            <li>Question 1: What does SMART stand for when setting financial goals?</li>
+            <li>
+              Question 1: What does SMART stand for when setting financial
+              goals?
+            </li>
             <li>A) Specific, Manageable, Actionable, Relevant, Time-bound</li>
             <li>B) Specific, Measurable, Achievable, Relevant, Time-bound</li>
             <li>C) Simple, Measurable, Achievable, Reasonable, Time-bound</li>

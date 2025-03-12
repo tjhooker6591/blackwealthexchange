@@ -33,7 +33,9 @@ const BusinessDetail = () => {
   return (
     <div className="bg-gray-900 text-white min-h-screen">
       <header className="hero bg-gray-800 p-20 text-center shadow-md">
-        <h1 className="text-4xl font-bold text-gold">{business.business_name}</h1>
+        <h1 className="text-4xl font-bold text-gold">
+          {business.business_name}
+        </h1>
         <p className="text-lg mt-2 text-gray-300">{business.categories}</p>
         <p className="text-lg mt-2 text-gray-300">{business.address}</p>
       </header>
@@ -43,10 +45,12 @@ const BusinessDetail = () => {
         <div className="mt-4">
           <h2 className="text-2xl font-semibold">Business Information</h2>
           <p className="text-sm text-gray-300 mt-1">
-            <strong>Description:</strong> {business.description || "No description available"}
+            <strong>Description:</strong>{" "}
+            {business.description || "No description available"}
           </p>
           <p className="text-sm text-gray-300 mt-1">
-            <strong>Phone:</strong> {business.phone || "No phone number available"}
+            <strong>Phone:</strong>{" "}
+            {business.phone || "No phone number available"}
           </p>
           <p className="text-sm text-gray-300 mt-1">
             <strong>Address:</strong> {business.address}
@@ -58,7 +62,9 @@ const BusinessDetail = () => {
 
         {/* Map */}
         <div className="mt-6">
-          <h3 className="text-xl font-semibold text-gold">Find Us on the Map</h3>
+          <h3 className="text-xl font-semibold text-gold">
+            Find Us on the Map
+          </h3>
           <div className="w-full h-64 bg-gray-700">
             {/* Use a map service (Google Maps, Leaflet, or Mapbox) here */}
             <div className="w-full h-full text-center text-white">
@@ -79,7 +85,7 @@ const BusinessDetail = () => {
         <div className="mt-6 text-center">
           <button
             className="px-6 py-2 bg-gold text-black font-semibold rounded-lg hover:bg-yellow-500 transition"
-            onClick={() => window.location.href = business.website || "#"}
+            onClick={() => (window.location.href = business.website || "#")}
           >
             Visit Website
           </button>

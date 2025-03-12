@@ -46,8 +46,12 @@ export default function ResetPassword() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 shadow-lg rounded-lg w-96">
-        <h2 className="text-2xl font-bold text-center text-gold">Reset Password</h2>
-        {message && <p className="text-green-500 text-center mt-2">{message}</p>}
+        <h2 className="text-2xl font-bold text-center text-gold">
+          Reset Password
+        </h2>
+        {message && (
+          <p className="text-green-500 text-center mt-2">{message}</p>
+        )}
         {error && <p className="text-red-500 text-center mt-2">{error}</p>}
         <form onSubmit={handleSubmit} className="mt-4 space-y-4">
           <input
@@ -66,7 +70,10 @@ export default function ResetPassword() {
             className="w-full p-3 border rounded"
             required
           />
-          <button type="submit" className="w-full py-3 bg-blue-500 text-white rounded hover:bg-blue-600">
+          <button
+            type="submit"
+            className="w-full py-3 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
             Reset Password
           </button>
         </form>

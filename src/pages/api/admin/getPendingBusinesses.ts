@@ -12,7 +12,9 @@ export default async function handler(req, res) {
     const db = client.db("bwes-cluster");
     const businessesCollection = db.collection("businesses");
 
-    const pendingBusinesses = await businessesCollection.find({ isVerified: false }).toArray();
+    const pendingBusinesses = await businessesCollection
+      .find({ isVerified: false })
+      .toArray();
 
     res.status(200).json(pendingBusinesses);
   } catch (error) {

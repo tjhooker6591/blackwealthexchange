@@ -8,7 +8,10 @@ const Internships = () => {
   return (
     <div className="relative min-h-screen bg-black text-white overflow-hidden">
       {/* 🔥 Background Effects */}
-      <div className="absolute inset-0 bg-cover bg-center opacity-40" style={{ backgroundImage: "url('/black-wealth-bg.jpg')" }}></div>
+      <div
+        className="absolute inset-0 bg-cover bg-center opacity-40"
+        style={{ backgroundImage: "url('/black-wealth-bg.jpg')" }}
+      ></div>
       <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-50"></div>
 
       {/* 🔹 Navbar with Logo */}
@@ -19,28 +22,42 @@ const Internships = () => {
 
       {/* 🔥 Hero Section */}
       <header className="text-center py-32 relative z-10">
-        <Image src="/bwe-logo.png" alt="BWE Logo" width={120} height={120} className="mx-auto mb-4 animate-fadeIn" />
+        <Image
+          src="/bwe-logo.png"
+          alt="BWE Logo"
+          width={120}
+          height={120}
+          className="mx-auto mb-4 animate-fadeIn"
+        />
         <h1 className="text-6xl md:text-7xl font-extrabold tracking-wide text-gold neon-text animate-slideUp">
           Internships for Black Students
         </h1>
         <p className="text-xl md:text-2xl mt-4 font-light text-gray-300 animate-fadeIn">
-          "Internships are stepping stones to career opportunities, providing valuable work experience and exposure."
+          "Internships are stepping stones to career opportunities, providing
+          valuable work experience and exposure."
         </p>
       </header>
 
       {/* Internship Programs Section */}
       <div className="container mx-auto p-6 space-y-8">
-        <h2 className="text-3xl font-semibold text-gold mb-6">Internship Programs for Black College Students</h2>
+        <h2 className="text-3xl font-semibold text-gold mb-6">
+          Internship Programs for Black College Students
+        </h2>
 
         <div className="space-y-6">
           {/* Internship 1 */}
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-            <h3 className="text-2xl font-semibold text-gold">Black Interns Program</h3>
+            <h3 className="text-2xl font-semibold text-gold">
+              Black Interns Program
+            </h3>
             <p className="mt-2">
-              The Black Interns Program offers paid internship opportunities at top companies for Black students seeking career experience.
+              The Black Interns Program offers paid internship opportunities at
+              top companies for Black students seeking career experience.
             </p>
             <p className="mt-2">
-              <strong>Eligibility:</strong> Must be enrolled in an accredited university or college, with a strong academic record and leadership potential.
+              <strong>Eligibility:</strong> Must be enrolled in an accredited
+              university or college, with a strong academic record and
+              leadership potential.
             </p>
             <p className="mt-2">
               <strong>Deadline:</strong> June 1, 2025.
@@ -58,12 +75,17 @@ const Internships = () => {
 
           {/* Internship 2 */}
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-            <h3 className="text-2xl font-semibold text-gold">Google Internship for Black Students</h3>
+            <h3 className="text-2xl font-semibold text-gold">
+              Google Internship for Black Students
+            </h3>
             <p className="mt-2">
-              The Google Internship program offers Black students opportunities in tech, engineering, and other related fields.
+              The Google Internship program offers Black students opportunities
+              in tech, engineering, and other related fields.
             </p>
             <p className="mt-2">
-              <strong>Eligibility:</strong> Must be pursuing a degree in computer science, engineering, or a related field, with a passion for technology.
+              <strong>Eligibility:</strong> Must be pursuing a degree in
+              computer science, engineering, or a related field, with a passion
+              for technology.
             </p>
             <p className="mt-2">
               <strong>Deadline:</strong> May 15, 2025.
@@ -81,12 +103,17 @@ const Internships = () => {
 
           {/* Internship 3 */}
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-            <h3 className="text-2xl font-semibold text-gold">HBCU Internship Program</h3>
+            <h3 className="text-2xl font-semibold text-gold">
+              HBCU Internship Program
+            </h3>
             <p className="mt-2">
-              This program provides paid internship opportunities for Black students attending Historically Black Colleges and Universities (HBCUs).
+              This program provides paid internship opportunities for Black
+              students attending Historically Black Colleges and Universities
+              (HBCUs).
             </p>
             <p className="mt-2">
-              <strong>Eligibility:</strong> Must be enrolled at an accredited HBCU and demonstrate leadership skills and academic excellence.
+              <strong>Eligibility:</strong> Must be enrolled at an accredited
+              HBCU and demonstrate leadership skills and academic excellence.
             </p>
             <p className="mt-2">
               <strong>Deadline:</strong> March 31, 2025.
@@ -106,14 +133,37 @@ const Internships = () => {
 
       {/* Internship Benefits Section */}
       <section className="container mx-auto p-6 mt-12">
-        <h2 className="text-3xl font-semibold text-gold mb-6">Benefits of Internships</h2>
+        <h2 className="text-3xl font-semibold text-gold mb-6">
+          Benefits of Internships
+        </h2>
         <ul className="list-disc pl-6 space-y-4">
-          <li><strong>Real-World Experience:</strong> Internships provide hands-on experience in professional settings, enhancing students' resumes.</li>
-          <li><strong>Networking Opportunities:</strong> Internships help students build relationships with professionals, peers, and future employers.</li>
-          <li><strong>Skill Development:</strong> Interns develop practical skills such as teamwork, communication, problem-solving, and technical abilities.</li>
-          <li><strong>Career Exposure:</strong> Internships allow students to explore various career fields and industries before making long-term decisions.</li>
-          <li><strong>Increased Job Prospects:</strong> Many internships lead to full-time job offers, providing a direct path from education to employment.</li>
-          <li><strong>Confidence Boost:</strong> Gaining work experience increases students' confidence in their abilities and their career potential.</li>
+          <li>
+            <strong>Real-World Experience:</strong> Internships provide hands-on
+            experience in professional settings, enhancing students' resumes.
+          </li>
+          <li>
+            <strong>Networking Opportunities:</strong> Internships help students
+            build relationships with professionals, peers, and future employers.
+          </li>
+          <li>
+            <strong>Skill Development:</strong> Interns develop practical skills
+            such as teamwork, communication, problem-solving, and technical
+            abilities.
+          </li>
+          <li>
+            <strong>Career Exposure:</strong> Internships allow students to
+            explore various career fields and industries before making long-term
+            decisions.
+          </li>
+          <li>
+            <strong>Increased Job Prospects:</strong> Many internships lead to
+            full-time job offers, providing a direct path from education to
+            employment.
+          </li>
+          <li>
+            <strong>Confidence Boost:</strong> Gaining work experience increases
+            students' confidence in their abilities and their career potential.
+          </li>
         </ul>
       </section>
 

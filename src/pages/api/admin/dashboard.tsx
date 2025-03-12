@@ -7,7 +7,8 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     // Fetch pending businesses when the component mounts
-    axios.get("/api/admin/getPendingBusinesses")
+    axios
+      .get("/api/admin/getPendingBusinesses")
       .then((response) => {
         setPendingBusinesses(response.data);
         setLoading(false);
@@ -20,11 +21,14 @@ const AdminDashboard = () => {
 
   const handleApprove = (id: string) => {
     // Call approve business API
-    axios.put(`/api/admin/approveBusiness/${id}`)
+    axios
+      .put(`/api/admin/approveBusiness/${id}`)
       .then(() => {
         alert("Business approved!");
         // Refetch businesses after approval
-        setPendingBusinesses(pendingBusinesses.filter((business) => business._id !== id));
+        setPendingBusinesses(
+          pendingBusinesses.filter((business) => business._id !== id),
+        );
       })
       .catch((error) => {
         console.error("Error approving business:", error);
@@ -33,11 +37,14 @@ const AdminDashboard = () => {
 
   const handleReject = (id: string) => {
     // Call reject business API
-    axios.delete(`/api/admin/rejectBusiness/${id}`)
+    axios
+      .delete(`/api/admin/rejectBusiness/${id}`)
       .then(() => {
         alert("Business rejected!");
         // Refetch businesses after rejection
-        setPendingBusinesses(pendingBusinesses.filter((business) => business._id !== id));
+        setPendingBusinesses(
+          pendingBusinesses.filter((business) => business._id !== id),
+        );
       })
       .catch((error) => {
         console.error("Error rejecting business:", error);
@@ -57,7 +64,10 @@ const AdminDashboard = () => {
         ) : pendingBusinesses.length > 0 ? (
           <div className="space-y-4">
             {pendingBusinesses.map((business) => (
-              <div key={business._id} className="bg-gray-800 p-4 rounded-lg shadow-md flex justify-between items-center">
+              <div
+                key={business._id}
+                className="bg-gray-800 p-4 rounded-lg shadow-md flex justify-between items-center"
+              >
                 <div>
                   <h2 className="text-xl font-bold">{business.businessName}</h2>
                   <p className="text-sm">{business.email}</p>

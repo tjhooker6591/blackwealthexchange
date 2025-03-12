@@ -11,6 +11,12 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
+  {
+    ignores: [".next/", "node_modules/"], // Exclude .next/ from linting
+    rules: {
+      "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }], // Ignore Webpack variables
+    },
+  },
 ];
 
 export default eslintConfig;

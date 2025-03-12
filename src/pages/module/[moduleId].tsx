@@ -1,5 +1,5 @@
-import { useRouter } from 'next/router';
-import React, { useState, useEffect } from 'react';
+import { useRouter } from "next/router";
+import React, { useState, useEffect } from "react";
 
 const ModulePage: React.FC = () => {
   const router = useRouter();
@@ -17,8 +17,8 @@ const ModulePage: React.FC = () => {
   // Function to get module content
   const getModuleContent = (moduleId: string) => {
     const contentMap = {
-      '1': {
-        title: 'Introduction to Personal Finance',
+      "1": {
+        title: "Introduction to Personal Finance",
         content: `
           <h3>What is Personal Finance and Why is it Important?</h3>
           <p>Personal finance is the process of managing your money, budgeting, saving, investing, and planning for future financial goals.</p>
@@ -30,20 +30,29 @@ const ModulePage: React.FC = () => {
           </ul>`,
         quiz: [
           {
-            question: 'Why is personal finance important?',
-            options: ['A) To avoid debt and ensure financial security', 'B) To manage income and spend on luxury items', 'C) To plan vacations'],
-            answer: 'A',
+            question: "Why is personal finance important?",
+            options: [
+              "A) To avoid debt and ensure financial security",
+              "B) To manage income and spend on luxury items",
+              "C) To plan vacations",
+            ],
+            answer: "A",
           },
           {
-            question: 'What is one way personal finance helps with long-term goals?',
-            options: ['A) Helps you build debt', 'B) Allows you to plan for retirement and major life events', 'C) Increases spending on non-essentials'],
-            answer: 'B',
+            question:
+              "What is one way personal finance helps with long-term goals?",
+            options: [
+              "A) Helps you build debt",
+              "B) Allows you to plan for retirement and major life events",
+              "C) Increases spending on non-essentials",
+            ],
+            answer: "B",
           },
         ],
-        downloadable: 'Personal Finance Overview PDF', // Reference to downloadable resource
+        downloadable: "Personal Finance Overview PDF", // Reference to downloadable resource
       },
-      '2': {
-        title: 'Setting Financial Goals',
+      "2": {
+        title: "Setting Financial Goals",
         content: `
           <h3>The Importance of Setting Both Short-Term and Long-Term Goals</h3>
           <p>Short-term goals (0-2 years) are achievable in a shorter period, while long-term goals (3+ years) require more time and effort.</p>
@@ -57,16 +66,20 @@ const ModulePage: React.FC = () => {
           </ul>`,
         quiz: [
           {
-            question: 'What does SMART stand for?',
-            options: ['A) Specific, Manageable, Actionable, Relevant, Time-bound', 'B) Specific, Measurable, Achievable, Relevant, Time-bound', 'C) Simple, Measurable, Achievable, Reasonable, Time-bound'],
-            answer: 'B',
+            question: "What does SMART stand for?",
+            options: [
+              "A) Specific, Manageable, Actionable, Relevant, Time-bound",
+              "B) Specific, Measurable, Achievable, Relevant, Time-bound",
+              "C) Simple, Measurable, Achievable, Reasonable, Time-bound",
+            ],
+            answer: "B",
           },
         ],
-        downloadable: 'Goal-Setting Template', // Reference to downloadable resource
+        downloadable: "Goal-Setting Template", // Reference to downloadable resource
       },
       // Define the other 6 modules in a similar way...
-      '3': {
-        title: 'Creating a Budget',
+      "3": {
+        title: "Creating a Budget",
         content: `
           <h3>Step-by-Step Guide to Creating a Monthly Budget</h3>
           <p>Track your income, identify your fixed and variable expenses, and allocate funds to each category.</p>
@@ -78,15 +91,19 @@ const ModulePage: React.FC = () => {
           </ul>`,
         quiz: [
           {
-            question: 'What is the main principle of the 50/30/20 Rule?',
-            options: ['A) Allocate 50% to savings, 30% to needs, 20% to wants', 'B) Allocate 50% to needs, 30% to wants, 20% to savings and debt repayment', 'C) Allocate 50% to debt, 30% to savings, 20% to rent'],
-            answer: 'B',
+            question: "What is the main principle of the 50/30/20 Rule?",
+            options: [
+              "A) Allocate 50% to savings, 30% to needs, 20% to wants",
+              "B) Allocate 50% to needs, 30% to wants, 20% to savings and debt repayment",
+              "C) Allocate 50% to debt, 30% to savings, 20% to rent",
+            ],
+            answer: "B",
           },
         ],
-        downloadable: 'Monthly Budget Template', // Reference to downloadable resource
+        downloadable: "Monthly Budget Template", // Reference to downloadable resource
       },
-      '4': {
-        title: 'Saving for the Future',
+      "4": {
+        title: "Saving for the Future",
         content: `
           <h3>The Importance of Building an Emergency Fund</h3>
           <p>Save 3-6 months' worth of living expenses in a high-yield savings account to cover emergencies.</p>
@@ -98,12 +115,16 @@ const ModulePage: React.FC = () => {
           </ul>`,
         quiz: [
           {
-            question: 'What is the primary purpose of an emergency fund?',
-            options: ['A) To pay for luxury items', 'B) To cover unexpected expenses without going into debt', 'C) To invest in stocks'],
-            answer: 'B',
+            question: "What is the primary purpose of an emergency fund?",
+            options: [
+              "A) To pay for luxury items",
+              "B) To cover unexpected expenses without going into debt",
+              "C) To invest in stocks",
+            ],
+            answer: "B",
           },
         ],
-        downloadable: 'Emergency Fund Savings Plan', // Reference to downloadable resource
+        downloadable: "Emergency Fund Savings Plan", // Reference to downloadable resource
       },
       // Modules 5-8 will follow a similar structure
     };
@@ -119,14 +140,17 @@ const ModulePage: React.FC = () => {
     if (nextModuleId <= 8) {
       router.push(`/module/${nextModuleId}`);
     } else {
-      router.push('/conclusion'); // Redirect to the conclusion page if it's the last module
+      router.push("/conclusion"); // Redirect to the conclusion page if it's the last module
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-8">
       <h1 className="text-3xl font-bold text-gold">{moduleContent.title}</h1>
-      <div className="mt-4" dangerouslySetInnerHTML={{ __html: moduleContent.content }}></div>
+      <div
+        className="mt-4"
+        dangerouslySetInnerHTML={{ __html: moduleContent.content }}
+      ></div>
 
       {/* Quiz Section */}
       <div className="mt-8">
@@ -138,7 +162,12 @@ const ModulePage: React.FC = () => {
               <div>
                 {q.options.map((option, i) => (
                   <label key={i} className="inline-block mr-4">
-                    <input type="radio" name={`question-${index}`} value={option} /> {option}
+                    <input
+                      type="radio"
+                      name={`question-${index}`}
+                      value={option}
+                    />{" "}
+                    {option}
                   </label>
                 ))}
               </div>
@@ -153,7 +182,10 @@ const ModulePage: React.FC = () => {
       {/* Downloadable Resource */}
       {moduleContent.downloadable && (
         <div className="mt-8">
-          <a href={`/downloads/${moduleContent.downloadable}.pdf`} className="text-blue-500 hover:underline">
+          <a
+            href={`/downloads/${moduleContent.downloadable}.pdf`}
+            className="text-blue-500 hover:underline"
+          >
             Download Resource: {moduleContent.downloadable}
           </a>
         </div>
@@ -163,9 +195,14 @@ const ModulePage: React.FC = () => {
       <div className="mt-8">
         <h3 className="text-xl text-gold">Course Progress</h3>
         <div className="bg-gray-700 rounded-full h-4">
-          <div className="bg-green-500 h-4" style={{ width: `${(parseInt(moduleId as string) / 8) * 100}%` }}></div>
+          <div
+            className="bg-green-500 h-4"
+            style={{ width: `${(parseInt(moduleId as string) / 8) * 100}%` }}
+          ></div>
         </div>
-        <p className="text-gray-300 mt-2">{(parseInt(moduleId as string) / 8) * 100}% completed</p>
+        <p className="text-gray-300 mt-2">
+          {(parseInt(moduleId as string) / 8) * 100}% completed
+        </p>
       </div>
 
       {/* Next Module Button */}
@@ -173,7 +210,9 @@ const ModulePage: React.FC = () => {
         onClick={handleNextModule}
         className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition mt-8"
       >
-        {parseInt(moduleId as string) === 8 ? 'Go to Conclusion' : 'Next Module'}
+        {parseInt(moduleId as string) === 8
+          ? "Go to Conclusion"
+          : "Next Module"}
       </button>
     </div>
   );

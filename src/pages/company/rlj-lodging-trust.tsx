@@ -1,16 +1,16 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import Link from "next/link"
-import dynamic from "next/dynamic"
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import dynamic from "next/dynamic";
 
 // Ensure necessary dependencies are installed:
 // npm install react-apexcharts apexcharts
-const Chart = dynamic(() => import("react-apexcharts"), { ssr: false })
+const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 export default function RLJLodgingTrust() {
-  const [stockData, setStockData] = useState(null)
-  const [error, setError] = useState(null)
+  const [stockData, setStockData] = useState(null);
+  const [error, setError] = useState(null);
   const timeRanges = [
     { label: "1D", value: "1d" },
     { label: "5D", value: "5d" },
@@ -20,31 +20,44 @@ export default function RLJLodgingTrust() {
     { label: "1Y", value: "1y" },
     { label: "5Y", value: "5y" },
     { label: "MAX", value: "max" },
-  ]
-  const [selectedRange, setSelectedRange] = useState("1y")
+  ];
+  const [selectedRange, setSelectedRange] = useState("1y");
 
   // Function to fetch stock data
   async function fetchStockData(range = "1y") {
     try {
-      const response = await fetch(`/api/stock-data?symbol=RLJ&range=${range}&interval=1d`)
+      const response = await fetch(
+        `/api/stock-data?symbol=RLJ&range=${range}&interval=1d`,
+      );
       if (!response.ok) {
-        console.error("API response failed:", response.status, response.statusText)
-        throw new Error("Error fetching stock data")
+        console.error(
+          "API response failed:",
+          response.status,
+          response.statusText,
+        );
+        throw new Error("Error fetching stock data");
       }
 
-      const data = await response.json()
+      const data = await response.json();
 
       if (data.error) {
-        setError(data.error)
+        setError(data.error);
       } else {
         const processedData = data.series
           .map((item) => ({
             x: new Date(item.date).getTime(),
-            y: [Number(item.open), Number(item.high), Number(item.low), Number(item.close)],
+            y: [
+              Number(item.open),
+              Number(item.high),
+              Number(item.low),
+              Number(item.close),
+            ],
           }))
-          .filter((item) => !isNaN(item.x) && item.y.every((val) => !isNaN(val)))
+          .filter(
+            (item) => !isNaN(item.x) && item.y.every((val) => !isNaN(val)),
+          );
 
-        console.log("Processed data:", processedData) // For debugging
+        console.log("Processed data:", processedData); // For debugging
 
         setStockData({
           chartOptions: {
@@ -87,21 +100,23 @@ export default function RLJLodgingTrust() {
           fiftyTwoWeekLow: data.summary.wkLow52,
           afterHoursPrice: data.summary.afterHoursPrice,
           afterHoursChange: data.summary.afterHoursChange,
-        })
+        });
       }
     } catch (err) {
-      console.error("Error loading stock data:", err.message)
-      setError("Error loading stock data. Please check the API or internet connection.")
+      console.error("Error loading stock data:", err.message);
+      setError(
+        "Error loading stock data. Please check the API or internet connection.",
+      );
     }
   }
 
   // Fetch data on mount and set interval for real-time updates
   useEffect(() => {
-    fetchStockData(selectedRange)
-    const intervalId = setInterval(() => fetchStockData(selectedRange), 60000)
+    fetchStockData(selectedRange);
+    const intervalId = setInterval(() => fetchStockData(selectedRange), 60000);
 
-    return () => clearInterval(intervalId)
-  }, [selectedRange]) // Removed fetchStockData from dependencies
+    return () => clearInterval(intervalId);
+  }, [selectedRange]); // Removed fetchStockData from dependencies
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-8">
@@ -113,25 +128,35 @@ export default function RLJLodgingTrust() {
         </Link>
 
         <header className="mb-6">
-          <h1 className="text-4xl font-bold text-gold">RLJ Lodging Trust (RLJ)</h1>
+          <h1 className="text-4xl font-bold text-gold">
+            RLJ Lodging Trust (RLJ)
+          </h1>
         </header>
 
         {/* Stock Price & Status */}
         <section className="mb-8 text-center">
-          <h2 className="text-5xl font-bold text-gold">{stockData ? `$${stockData.latestPrice}` : "Loading..."}</h2>
+          <h2 className="text-5xl font-bold text-gold">
+            {stockData ? `$${stockData.latestPrice}` : "Loading..."}
+          </h2>
           <div className="flex justify-center items-center mt-2">
             <span
               className={`text-lg ${stockData && stockData.latestPrice > 9.55 ? "text-green-400" : "text-red-400"}`}
             >
               {stockData && stockData.latestPrice > 9.55 ? "↑" : "↓"}{" "}
-              {stockData ? `+${(stockData.latestPrice - 9.55).toFixed(2)}` : "0.00"}
+              {stockData
+                ? `+${(stockData.latestPrice - 9.55).toFixed(2)}`
+                : "0.00"}
             </span>
           </div>
           <p className="text-sm mt-2 text-gray-300">
-            {stockData ? `After Hours: $${stockData.afterHoursPrice} (${stockData.afterHoursChange})` : ""}
+            {stockData
+              ? `After Hours: $${stockData.afterHoursPrice} (${stockData.afterHoursChange})`
+              : ""}
             <br />
             <span className="text-xs">
-              {stockData ? `Closed: Feb 14, 4:06 PM UTC-5 · USD · NYSE · Disclaimer` : ""}
+              {stockData
+                ? `Closed: Feb 14, 4:06 PM UTC-5 · USD · NYSE · Disclaimer`
+                : ""}
             </span>
           </p>
         </section>
@@ -143,7 +168,9 @@ export default function RLJLodgingTrust() {
               <button
                 key={range.value}
                 className={`px-4 py-2 ${
-                  selectedRange === range.value ? "bg-gold text-black" : "bg-gray-700 text-white"
+                  selectedRange === range.value
+                    ? "bg-gold text-black"
+                    : "bg-gray-700 text-white"
                 } rounded hover:bg-gray-600`}
                 onClick={() => setSelectedRange(range.value)}
               >
@@ -159,10 +186,16 @@ export default function RLJLodgingTrust() {
             <p className="text-red-500">{error}</p>
           ) : stockData ? (
             <div className="mt-4 bg-gray-700 border border-gold rounded p-4">
-              <Chart options={stockData.chartOptions} series={stockData.series} type="candlestick" height={350} />
+              <Chart
+                options={stockData.chartOptions}
+                series={stockData.series}
+                type="candlestick"
+                height={350}
+              />
               <div className="mt-4">
                 <p className="text-sm">
-                  Stock Price: ${stockData.latestPrice} | Volume: {stockData.volume}
+                  Stock Price: ${stockData.latestPrice} | Volume:{" "}
+                  {stockData.volume}
                 </p>
               </div>
               <div className="text-sm text-gray-300 mt-4">
@@ -174,7 +207,9 @@ export default function RLJLodgingTrust() {
               </div>
             </div>
           ) : (
-            <p className="text-sm text-yellow-400">Loading stock performance data...</p>
+            <p className="text-sm text-yellow-400">
+              Loading stock performance data...
+            </p>
           )}
         </section>
 
@@ -189,6 +224,5 @@ export default function RLJLodgingTrust() {
         </section>
       </div>
     </div>
-  )
+  );
 }
-

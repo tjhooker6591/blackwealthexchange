@@ -43,7 +43,9 @@ const AdminDashboard = () => {
     <div className="bg-gray-900 text-white min-h-screen">
       <header className="hero bg-gray-800 p-20 text-center shadow-md">
         <h1 className="text-4xl font-bold text-gold">Admin Dashboard</h1>
-        <p className="text-lg mt-2 text-gray-300">Manage Business Verifications</p>
+        <p className="text-lg mt-2 text-gray-300">
+          Manage Business Verifications
+        </p>
       </header>
 
       <div className="container mx-auto p-6">
@@ -56,7 +58,9 @@ const AdminDashboard = () => {
                 key={business._id}
                 className="bg-gray-700 p-4 rounded shadow-md border border-gray-600"
               >
-                <h3 className="text-lg font-semibold">{business.businessName}</h3>
+                <h3 className="text-lg font-semibold">
+                  {business.businessName}
+                </h3>
                 <p>{business.email}</p>
                 <p>{business.address}</p>
                 <div className="mt-4">

@@ -18,7 +18,9 @@ export default function AddBusiness() {
         <form id="add-business-form">
           {/* Basic Information */}
           <fieldset className="mb-4">
-            <legend className="text-xl font-bold text-gold">Basic Information</legend>
+            <legend className="text-xl font-bold text-gold">
+              Basic Information
+            </legend>
             <label className="block mt-2">
               Business Name:
               <input
@@ -57,7 +59,9 @@ export default function AddBusiness() {
 
           {/* Contact Information */}
           <fieldset className="mb-4">
-            <legend className="text-xl font-bold text-gold">Contact Information</legend>
+            <legend className="text-xl font-bold text-gold">
+              Contact Information
+            </legend>
             <label className="block mt-2">
               Phone Number:
               <input
@@ -88,7 +92,9 @@ export default function AddBusiness() {
 
           {/* Business Profile */}
           <fieldset className="mb-4">
-            <legend className="text-xl font-bold text-gold">Business Profile</legend>
+            <legend className="text-xl font-bold text-gold">
+              Business Profile
+            </legend>
             <label className="block mt-2">
               Business Description:
               <textarea
@@ -102,7 +108,9 @@ export default function AddBusiness() {
 
           {/* Visual Assets */}
           <fieldset className="mb-4">
-            <legend className="text-xl font-bold text-gold">Visual Assets</legend>
+            <legend className="text-xl font-bold text-gold">
+              Visual Assets
+            </legend>
             <label className="block mt-2">
               Business Logo:
               <input
@@ -116,7 +124,9 @@ export default function AddBusiness() {
 
           {/* Social Media */}
           <fieldset className="mb-4">
-            <legend className="text-xl font-bold text-gold">Social Media</legend>
+            <legend className="text-xl font-bold text-gold">
+              Social Media
+            </legend>
             <label className="block mt-2">
               Facebook:
               <input

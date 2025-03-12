@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 export default function Dashboard() {
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [accountType, setAccountType] = useState<string>('user'); // Default as user type
+  const [accountType, setAccountType] = useState<string>("user"); // Default as user type
   const [isPremium, setIsPremium] = useState(false);
   const router = useRouter();
 
@@ -21,7 +21,7 @@ export default function Dashboard() {
     try {
       const parsedUser = JSON.parse(storedUser);
       setUser(parsedUser);
-      setAccountType(parsedUser?.accountType || 'user'); // Get account type
+      setAccountType(parsedUser?.accountType || "user"); // Get account type
       setIsPremium(parsedUser?.isPremium || false); // Get premium status
     } catch (error) {
       console.error("Error loading user:", error);
@@ -33,9 +33,9 @@ export default function Dashboard() {
 
   // Ensure we redirect user based on account type
   useEffect(() => {
-    if (accountType === 'user') {
+    if (accountType === "user") {
       router.push("/user-dashboard"); // Redirect to user dashboard
-    } else if (accountType === 'business') {
+    } else if (accountType === "business") {
       router.push("/business-dashboard"); // Redirect to business dashboard
     }
   }, [accountType]); // Trigger redirection when accountType changes
@@ -54,17 +54,23 @@ export default function Dashboard() {
         </p>
 
         {/* Show different content based on account type */}
-        {accountType === 'user' && (
+        {accountType === "user" && (
           <div className="mt-8">
-            <h2 className="text-2xl font-bold text-gray-800">Your User Dashboard</h2>
+            <h2 className="text-2xl font-bold text-gray-800">
+              Your User Dashboard
+            </h2>
             <p className="text-gray-600 mt-4">
-              As a regular user, you can explore businesses, browse listings, and more.
+              As a regular user, you can explore businesses, browse listings,
+              and more.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
               <div className="p-6 bg-gold text-black font-semibold rounded-lg shadow-md">
                 <h3 className="text-xl">Business Directory</h3>
                 <p>Find Black-owned businesses.</p>
-                <a href="/business-directory" className="text-blue-700 mt-2 block">
+                <a
+                  href="/business-directory"
+                  className="text-blue-700 mt-2 block"
+                >
                   Explore Listings →
                 </a>
               </div>
@@ -80,17 +86,23 @@ export default function Dashboard() {
           </div>
         )}
 
-        {accountType === 'business' && (
+        {accountType === "business" && (
           <div className="mt-8">
-            <h2 className="text-2xl font-bold text-gray-800">Your Business Dashboard</h2>
+            <h2 className="text-2xl font-bold text-gray-800">
+              Your Business Dashboard
+            </h2>
             <p className="text-gray-600 mt-4">
-              As a business, you have access to exclusive tools to manage your listings and sell products.
+              As a business, you have access to exclusive tools to manage your
+              listings and sell products.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
               <div className="p-6 bg-gold text-black font-semibold rounded-lg shadow-md">
                 <h3 className="text-xl">Business Directory</h3>
                 <p>Manage your business profile.</p>
-                <a href="/business-directory" className="text-blue-700 mt-2 block">
+                <a
+                  href="/business-directory"
+                  className="text-blue-700 mt-2 block"
+                >
                   Manage Your Listings →
                 </a>
               </div>
@@ -105,21 +117,32 @@ export default function Dashboard() {
             </div>
           </div>
         )}
-        
+
         {/* Premium User Section */}
         {isPremium && (
           <div className="mt-8">
-            <h2 className="text-2xl font-bold text-gray-800">Premium Features</h2>
-            <p className="text-gray-600 mt-4">As a premium user, enjoy exclusive access to our premium features.</p>
+            <h2 className="text-2xl font-bold text-gray-800">
+              Premium Features
+            </h2>
+            <p className="text-gray-600 mt-4">
+              As a premium user, enjoy exclusive access to our premium features.
+            </p>
           </div>
         )}
 
         {/* Non-Premium Users - Call-to-Action to Upgrade */}
         {!isPremium && (
           <div className="mt-8 text-center">
-            <h2 className="text-xl font-bold text-gray-800">Upgrade to Premium Features</h2>
-            <p className="text-gray-600">Unlock full access to all premium features.</p>
-            <a href="/pricing" className="mt-4 px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition inline-block">
+            <h2 className="text-xl font-bold text-gray-800">
+              Upgrade to Premium Features
+            </h2>
+            <p className="text-gray-600">
+              Unlock full access to all premium features.
+            </p>
+            <a
+              href="/pricing"
+              className="mt-4 px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition inline-block"
+            >
               Upgrade Now →
             </a>
           </div>

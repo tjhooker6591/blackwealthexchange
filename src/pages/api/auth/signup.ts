@@ -2,13 +2,24 @@ import { NextApiRequest, NextApiResponse } from "next";
 import bcrypt from "bcryptjs";
 import clientPromise from "../../../lib/mongodb"; // Ensure this points to your MongoDB connection file
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method Not Allowed" });
   }
 
   try {
-    const { email, password, accountType, businessName, businessAddress, businessPhone, description } = req.body;
+    const {
+      email,
+      password,
+      accountType,
+      businessName,
+      businessAddress,
+      businessPhone,
+      description,
+    } = req.body;
 
     // 🔹 Validate Email Format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -18,7 +29,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // 🔹 Validate Password Strength
     if (!password || password.length < 8) {
-      return res.status(400).json({ error: "Password must be at least 8 characters long" });
+      return res
+        .status(400)
+        .json({ error: "Password must be at least 8 characters long" });
     }
 
     // 🔹 Hash the Password
@@ -45,17 +58,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       });
 
       return res.status(201).json({ message: "User created successfully!" });
-
     } else if (accountType === "business") {
       const businessesCollection = db.collection("businesses");
 
       // 🔹 Validate Business Fields
       if (!businessName || !businessAddress || !businessPhone) {
-        return res.status(400).json({ error: "Business name, address, and phone number are required" });
+        return res.status(400).json({
+          error: "Business name, address, and phone number are required",
+        });
       }
 
       // 🔹 Check if Business Already Exists
-      const existingBusiness = await businessesCollection.findOne({ businessName });
+      const existingBusiness = await businessesCollection.findOne({
+        businessName,
+      });
       if (existingBusiness) {
         return res.status(400).json({ error: "Business already exists" });
       }
@@ -72,8 +88,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         createdAt: new Date(),
       });
 
-      return res.status(201).json({ message: "Business created successfully!" });
-
+      return res
+        .status(201)
+        .json({ message: "Business created successfully!" });
     } else {
       return res.status(400).json({ error: "Invalid account type" });
     }

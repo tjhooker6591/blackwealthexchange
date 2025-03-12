@@ -14,7 +14,6 @@ export default function Pricing() {
 
         {/* 🔥 Pricing Tiers */}
         <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-6">
-
           {/* 🆓 Free Plan */}
           <div className="p-6 border border-gray-300 rounded-lg shadow-md">
             <h2 className="text-2xl font-semibold">Free Plan</h2>
@@ -44,21 +43,21 @@ export default function Pricing() {
               <li>✅ Unlimited Community Access</li>
             </ul>
             <p className="mt-4 text-xl font-bold">$9.99 / month</p>
-            <button 
+            <button
               className="mt-4 w-full px-6 py-3 bg-gold text-black font-semibold rounded-lg hover:bg-opacity-90 transition"
               onClick={() => router.push("/checkout")}
             >
               Upgrade Now
             </button>
           </div>
-
         </div>
 
         {/* 👀 Why Upgrade? */}
         <div className="mt-8 text-gray-700">
           <h2 className="text-xl font-bold">Why Go Premium?</h2>
           <p className="mt-2">
-            Gain full access to exclusive content, business resources, and premium investment tools.
+            Gain full access to exclusive content, business resources, and
+            premium investment tools.
           </p>
         </div>
       </div>

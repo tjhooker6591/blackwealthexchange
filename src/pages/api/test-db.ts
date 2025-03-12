@@ -1,7 +1,10 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "../../lib/mongodb"; // Import MongoDB connection
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   try {
     console.log("🔍 API Route Hit - Fetching MongoDB Data...");
 

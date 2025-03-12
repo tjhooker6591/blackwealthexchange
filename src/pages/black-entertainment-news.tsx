@@ -45,7 +45,8 @@ const tributesData = [
     name: "Chadwick Boseman",
     description:
       "Honoring the legacy of the late Chadwick Boseman, an icon who brought pride and dignity to Black characters in Hollywood.",
-    legacy: "Pioneered roles for Black superheroes and redefined cultural pride.",
+    legacy:
+      "Pioneered roles for Black superheroes and redefined cultural pride.",
   },
   {
     id: 2,
@@ -53,7 +54,8 @@ const tributesData = [
     name: "Maya Angelou",
     description:
       "Remembering Maya Angelou, whose words and wisdom continue to inspire generations across the world.",
-    legacy: "Her poetry and activism still resonate deeply in the fight for justice and equality.",
+    legacy:
+      "Her poetry and activism still resonate deeply in the fight for justice and equality.",
   },
   {
     id: 3,
@@ -61,7 +63,8 @@ const tributesData = [
     name: "Angie Stone",
     description:
       "Remembering Angie Stone, an unforgettable voice in the world of R&B and soul music who deeply influenced the sound of Black music.",
-    legacy: "Her soulful voice and timeless hits brought love, joy, and empowerment to the Black community.",
+    legacy:
+      "Her soulful voice and timeless hits brought love, joy, and empowerment to the Black community.",
   },
 ];
 
@@ -112,14 +115,19 @@ export default function BlackImpactNews() {
   return (
     <div className="bg-gray-900 text-white min-h-screen">
       {/* Hero Section with Banner Image and Headline */}
-      <section className="relative bg-gray-800 bg-cover bg-center p-20 text-center" style={{ backgroundImage: 'url(/images/banner-image.jpg)' }}>
-        <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50"></div> {/* Optional overlay */}
+      <section
+        className="relative bg-gray-800 bg-cover bg-center p-20 text-center"
+        style={{ backgroundImage: "url(/images/banner-image.jpg)" }}
+      >
+        <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50"></div>{" "}
+        {/* Optional overlay */}
         <div className="relative z-10">
           <h1 className="text-4xl md:text-5xl font-extrabold text-gold leading-tight">
             Empowering Black Voices, Celebrating Global Impact
           </h1>
           <p className="text-lg md:text-xl mt-4 text-gray-300">
-            Stay informed, inspired, and connected to the impactful stories and contributions of Black communities around the world.
+            Stay informed, inspired, and connected to the impactful stories and
+            contributions of Black communities around the world.
           </p>
         </div>
       </section>
@@ -127,7 +135,9 @@ export default function BlackImpactNews() {
       {/* Featured Stories Section */}
       <div className="container mx-auto p-6">
         <div className="section bg-gray-800 p-6 my-6 rounded-lg shadow-lg">
-          <h2 className="text-2xl font-bold text-gold">Featured Stories: Celebrating Our Impact</h2>
+          <h2 className="text-2xl font-bold text-gold">
+            Featured Stories: Celebrating Our Impact
+          </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
             {filteredArticles.map((article) => (
               <div
@@ -143,7 +153,9 @@ export default function BlackImpactNews() {
                     className="rounded-lg"
                   />
                 </div>
-                <h3 className="text-lg font-semibold text-gold">{article.title}</h3>
+                <h3 className="text-lg font-semibold text-gold">
+                  {article.title}
+                </h3>
                 <p className="mt-2 text-gray-300">{article.description}</p>
                 <div className="mt-4">
                   <button
@@ -160,7 +172,9 @@ export default function BlackImpactNews() {
 
         {/* Tributes Section: Honoring the Legacy */}
         <div className="section bg-gray-800 p-6 my-6 rounded-lg shadow-lg">
-          <h2 className="text-2xl font-bold text-gold">In Memory: Honoring Our Legends</h2>
+          <h2 className="text-2xl font-bold text-gold">
+            In Memory: Honoring Our Legends
+          </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
             {tributesData.map((tribute) => (
               <div
@@ -176,9 +190,13 @@ export default function BlackImpactNews() {
                     className="rounded-lg"
                   />
                 </div>
-                <h3 className="text-lg font-semibold text-gold">{tribute.name}</h3>
+                <h3 className="text-lg font-semibold text-gold">
+                  {tribute.name}
+                </h3>
                 <p className="mt-2 text-gray-300">{tribute.description}</p>
-                <p className="mt-4 text-sm text-gray-500">Legacy: {tribute.legacy}</p>
+                <p className="mt-4 text-sm text-gray-500">
+                  Legacy: {tribute.legacy}
+                </p>
               </div>
             ))}
           </div>
@@ -186,13 +204,24 @@ export default function BlackImpactNews() {
 
         {/* Other Black News Outlets Section */}
         <div className="section bg-gray-800 p-6 my-6 rounded-lg shadow-lg">
-          <h2 className="text-2xl font-bold text-gold">Other Black News Outlets</h2>
+          <h2 className="text-2xl font-bold text-gold">
+            Other Black News Outlets
+          </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
             <div className="news-outlet-card bg-gray-700 p-4 rounded-lg shadow-md">
-              <Image src="/images/good-black-news-logo.jpg" alt="Good Black News" width={100} height={100} className="rounded-lg mb-4" />
-              <h3 className="text-lg font-semibold text-gold">Good Black News</h3>
+              <Image
+                src="/images/good-black-news-logo.jpg"
+                alt="Good Black News"
+                width={100}
+                height={100}
+                className="rounded-lg mb-4"
+              />
+              <h3 className="text-lg font-semibold text-gold">
+                Good Black News
+              </h3>
               <p className="text-gray-300">
-                Stay updated with uplifting and empowering news stories that celebrate the achievements of Black communities globally.
+                Stay updated with uplifting and empowering news stories that
+                celebrate the achievements of Black communities globally.
               </p>
               <Link href="https://goodblacknews.org" passHref>
                 <button className="mt-4 p-2 bg-gold text-black font-bold rounded hover:bg-yellow-500 transition">
@@ -216,10 +245,7 @@ export default function BlackImpactNews() {
 
       {/* News Modal */}
       {modalOpen && currentArticle && (
-        <NewsModal
-          articleTitle={currentArticle.title}
-          onClose={closeModal}
-        />
+        <NewsModal articleTitle={currentArticle.title} onClose={closeModal} />
       )}
     </div>
   );

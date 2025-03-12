@@ -68,34 +68,61 @@ const CourseEnrollmentPage: React.FC = () => {
 
         {/* Header */}
         <header className="mb-6">
-          <h1 className="text-3xl font-bold text-gold">Personal Finance 101: Mastering Budgeting, Saving, and Money Management</h1>
+          <h1 className="text-3xl font-bold text-gold">
+            Personal Finance 101: Mastering Budgeting, Saving, and Money
+            Management
+          </h1>
           <p className="text-gray-300 mt-2">
-            Learn the basics of budgeting, saving, and managing money effectively.
+            Learn the basics of budgeting, saving, and managing money
+            effectively.
           </p>
         </header>
 
         {/* Course Overview */}
         <section className="mt-8">
-          <h2 className="text-2xl font-semibold text-blue-500">Course Overview</h2>
+          <h2 className="text-2xl font-semibold text-blue-500">
+            Course Overview
+          </h2>
           <p className="mt-4 text-gray-300">
-            Personal Finance 101 is designed to help you get a solid grasp on managing your money. Whether you’re new to managing your finances or just need a refresher, this course will teach you essential skills such as creating a budget, saving for the future, and managing debt. Get started today and take control of your financial future!
+            Personal Finance 101 is designed to help you get a solid grasp on
+            managing your money. Whether you&rsquo;rsquo;rsquo;rsquo;re new to
+            managing your finances or just need a refresher, this course will
+            teach you essential skills such as creating a budget, saving for the
+            future, and managing debt. Get started today and take control of
+            your financial future!
           </p>
         </section>
 
         {/* Learning Outcomes */}
         <section className="mt-8">
-          <h2 className="text-2xl font-semibold text-blue-500">Learning Outcomes</h2>
+          <h2 className="text-2xl font-semibold text-blue-500">
+            Learning Outcomes
+          </h2>
           <ul className="list-disc ml-6 mt-4 text-gray-300">
-            <li>Understand the Basics of Budgeting: Learn how to create a budget that works for you.</li>
-            <li>Develop Effective Saving Habits: Save for both short-term and long-term goals.</li>
-            <li>Manage and Reduce Debt: Gain strategies for tackling debt and improving your financial situation.</li>
-            <li>Build Healthy Financial Habits: Learn how to stay disciplined and consistent in your financial journey.</li>
+            <li>
+              Understand the Basics of Budgeting: Learn how to create a budget
+              that works for you.
+            </li>
+            <li>
+              Develop Effective Saving Habits: Save for both short-term and
+              long-term goals.
+            </li>
+            <li>
+              Manage and Reduce Debt: Gain strategies for tackling debt and
+              improving your financial situation.
+            </li>
+            <li>
+              Build Healthy Financial Habits: Learn how to stay disciplined and
+              consistent in your financial journey.
+            </li>
           </ul>
         </section>
 
         {/* Course Content Overview */}
         <section className="mt-8">
-          <h2 className="text-2xl font-semibold text-blue-500">Course Content Overview</h2>
+          <h2 className="text-2xl font-semibold text-blue-500">
+            Course Content Overview
+          </h2>
           <ul className="list-decimal ml-6 mt-4 text-gray-300">
             <li>Module 1: Introduction to Personal Finance</li>
             <li>Module 2: Setting Financial Goals</li>
@@ -113,15 +140,23 @@ const CourseEnrollmentPage: React.FC = () => {
 
         {/* Enrollment Instructions */}
         <section className="mt-8">
-          <h2 className="text-2xl font-semibold text-blue-500">How to Enroll</h2>
+          <h2 className="text-2xl font-semibold text-blue-500">
+            How to Enroll
+          </h2>
           <p className="mt-4 text-gray-300">
-            To begin the course, please sign up or log in if you already have an account. It’s free and will only take a few moments! Once you're enrolled, you’ll have access to all course materials and can start learning immediately at your own pace.
+            To begin the course, please sign up or log in if you already have an
+            account. It&rsquo;rsquo;rsquo;rsquo;s free and will only take a few
+            moments! Once you'apos;re enrolled, you&rsquo;rsquo;rsquo;rsquo;ll
+            have access to all course materials and can start learning
+            immediately at your own pace.
           </p>
         </section>
 
         {/* Sign Up / Log In Section */}
         <section className="mt-8">
-          <h2 className="text-2xl font-semibold text-blue-500">Sign Up / Log In</h2>
+          <h2 className="text-2xl font-semibold text-blue-500">
+            Sign Up / Log In
+          </h2>
           <div className="mt-4">
             {isLoggedIn ? (
               <button
@@ -155,39 +190,62 @@ const CourseEnrollmentPage: React.FC = () => {
         <section className="mt-8">
           <h2 className="text-2xl font-semibold text-blue-500">Why Enroll?</h2>
           <ul className="list-disc ml-6 mt-4 text-gray-300">
-            <li>No cost to you! This course is 100% free to help you take charge of your financial future.</li>
-            <li>Enroll once and get lifetime access to the course materials, including any future updates.</li>
+            <li>
+              No cost to you! This course is 100% free to help you take charge
+              of your financial future.
+            </li>
+            <li>
+              Enroll once and get lifetime access to the course materials,
+              including any future updates.
+            </li>
             <li>Learn at your own pace with on-demand content and quizzes.</li>
-            <li>Get access to downloadable resources like budgeting templates and debt trackers.</li>
+            <li>
+              Get access to downloadable resources like budgeting templates and
+              debt trackers.
+            </li>
           </ul>
         </section>
 
         {/* Testimonials */}
         <section className="mt-8">
-          <h2 className="text-2xl font-semibold text-blue-500">What Students Are Saying</h2>
+          <h2 className="text-2xl font-semibold text-blue-500">
+            What Students Are Saying
+          </h2>
           <blockquote className="mt-4 text-gray-300">
-            "This course helped me finally take control of my finances. I’m now confidently budgeting, saving, and planning for the future!" – Sarah M.
+            "This course helped me finally take control of my finances.
+            I&rsquo;rsquo;rsquo;rsquo;m now confidently budgeting, saving, and
+            planning for the future!" – Sarah M.
           </blockquote>
           <blockquote className="mt-4 text-gray-300">
-            "I’ve learned so much about managing debt and setting realistic financial goals. It’s practical and easy to follow!" – James T.
+            "I&rsquo;rsquo;rsquo;rsquo;ve learned so much about managing debt
+            and setting realistic financial goals. It&rsquo;rsquo;rsquo;rsquo;s
+            practical and easy to follow!" – James T.
           </blockquote>
         </section>
 
         {/* FAQ Section */}
         <section className="mt-8">
-          <h2 className="text-2xl font-semibold text-blue-500">Frequently Asked Questions</h2>
+          <h2 className="text-2xl font-semibold text-blue-500">
+            Frequently Asked Questions
+          </h2>
           <ul className="mt-4 space-y-2 text-gray-300">
             <li>
-              <strong>Q: Do I need prior experience to take this course?</strong><br />
+              <strong>
+                Q: Do I need prior experience to take this course?
+              </strong>
+              <br />
               A: No, this course is designed for beginners.
             </li>
             <li>
-              <strong>Q: How long do I have access to the course?</strong><br />
+              <strong>Q: How long do I have access to the course?</strong>
+              <br />
               A: You have lifetime access to all course materials.
             </li>
             <li>
-              <strong>Q: Can I download the course materials?</strong><br />
-              A: Yes! You'll be able to download worksheets, templates, and other resources.
+              <strong>Q: Can I download the course materials?</strong>
+              <br />
+              A: Yes! You'apos;ll be able to download worksheets, templates, and
+              other resources.
             </li>
           </ul>
         </section>
@@ -195,13 +253,32 @@ const CourseEnrollmentPage: React.FC = () => {
         {/* Footer Section */}
         <footer className="mt-12 text-center">
           <p>
-            <Link href="/investing-for-beginners" className="text-gold hover:underline">Investing for Beginners</Link> |{" "}
-            <Link href="/building-generational-wealth" className="text-gold hover:underline">Building Generational Wealth</Link>
+            <Link
+              href="/investing-for-beginners"
+              className="text-gold hover:underline"
+            >
+              Investing for Beginners
+            </Link>{" "}
+            |{" "}
+            <Link
+              href="/building-generational-wealth"
+              className="text-gold hover:underline"
+            >
+              Building Generational Wealth
+            </Link>
           </p>
           <p className="mt-4">
-            <Link href="/contact" className="text-gold hover:underline">Contact Us</Link> |{" "}
-            <Link href="/privacy-policy" className="text-gold hover:underline">Privacy Policy</Link> |{" "}
-            <Link href="/terms-of-use" className="text-gold hover:underline">Terms of Use</Link>
+            <Link href="/contact" className="text-gold hover:underline">
+              Contact Us
+            </Link>{" "}
+            |{" "}
+            <Link href="/privacy-policy" className="text-gold hover:underline">
+              Privacy Policy
+            </Link>{" "}
+            |{" "}
+            <Link href="/terms-of-use" className="text-gold hover:underline">
+              Terms of Use
+            </Link>
           </p>
         </footer>
       </div>

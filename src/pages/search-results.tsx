@@ -38,7 +38,9 @@ export default function SearchResults() {
                 key={index}
                 className="p-6 bg-gray-800 rounded-lg shadow-lg border border-gray-700"
               >
-                <h3 className="text-2xl font-semibold text-gold">{business.name}</h3>
+                <h3 className="text-2xl font-semibold text-gold">
+                  {business.name}
+                </h3>
                 <p className="text-gray-400 mt-2">{business.description}</p>
                 <p className="text-gray-300 mt-2">📍 {business.address}</p>
                 <Link

@@ -2,7 +2,10 @@ import { NextApiRequest, NextApiResponse } from "next";
 import bcrypt from "bcryptjs";
 import clientPromise from "../../../lib/mongodb"; // Make sure this points to your MongoDB connection
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method Not Allowed" });
   }
@@ -32,7 +35,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       message: "Login successful!",
       user: { email: user.email }, // Only return email for security reasons
     });
-
   } catch (error) {
     console.error("Login error:", error);
     return res.status(500).json({ error: "Internal Server Error" });

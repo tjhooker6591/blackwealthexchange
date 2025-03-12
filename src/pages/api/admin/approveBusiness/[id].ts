@@ -1,6 +1,6 @@
 // pages/api/admin/approveBusiness/[id].ts
 
-import { ObjectId } from "mongodb";  // Import ObjectId from MongoDB
+import { ObjectId } from "mongodb"; // Import ObjectId from MongoDB
 import clientPromise from "../../../../lib/mongodb";
 
 export default async function handler(req, res) {
@@ -21,7 +21,7 @@ export default async function handler(req, res) {
     // Update the business to mark it as verified
     const result = await businessesCollection.updateOne(
       { _id: objectId }, // Use ObjectId to query by the business's _id
-      { $set: { isVerified: true } }
+      { $set: { isVerified: true } },
     );
 
     if (result.modifiedCount === 1) {

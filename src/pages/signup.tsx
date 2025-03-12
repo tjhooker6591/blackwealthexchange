@@ -21,7 +21,9 @@ export default function Signup() {
 
   // Function to validate password security
   const validatePassword = (password: string) => {
-    return /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password);
+    return /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
+      password,
+    );
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,7 +50,7 @@ export default function Signup() {
 
     if (!validatePassword(formData.password)) {
       setError(
-        "Password must be at least 8 characters long, include 1 uppercase letter, 1 number, and 1 special character."
+        "Password must be at least 8 characters long, include 1 uppercase letter, 1 number, and 1 special character.",
       );
       return;
     }
@@ -63,7 +65,12 @@ export default function Signup() {
       const response = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: formData.email, password: formData.password, accountType, ...formData }),
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          accountType,
+          ...formData,
+        }),
       });
 
       if (!response.ok) {
@@ -89,16 +96,24 @@ export default function Signup() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-gray-100 p-6">
       <div className="bg-white p-8 shadow-lg rounded-lg w-full max-w-md">
-        <h2 className="text-3xl font-bold text-center text-gold">Create an Account</h2>
+        <h2 className="text-3xl font-bold text-center text-gold">
+          Create an Account
+        </h2>
         <p className="text-center text-gray-600 mt-2">Join the BWE Community</p>
 
         {error && <p className="text-red-500 text-center mt-2">{error}</p>}
-        {success && <p className="text-green-500 text-center mt-2">Signup Successful! 🎉</p>}
+        {success && (
+          <p className="text-green-500 text-center mt-2">
+            Signup Successful! 🎉
+          </p>
+        )}
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
           {/* Account Type Selection */}
           <div>
-            <label className="block text-Gray-700 font-semibold">Account Type</label>
+            <label className="block text-Gray-700 font-semibold">
+              Account Type
+            </label>
             <select
               name="accountType"
               value={accountType}
@@ -124,7 +139,9 @@ export default function Signup() {
             />
           </div>
           <div>
-            <label className="block text-gray-700 font-semibold">Password</label>
+            <label className="block text-gray-700 font-semibold">
+              Password
+            </label>
             <input
               type="password"
               name="password"
@@ -136,7 +153,9 @@ export default function Signup() {
             />
           </div>
           <div>
-            <label className="block text-gray-700 font-semibold">Confirm Password</label>
+            <label className="block text-gray-700 font-semibold">
+              Confirm Password
+            </label>
             <input
               type="password"
               name="confirmPassword"
@@ -152,7 +171,9 @@ export default function Signup() {
           {accountType === "business" && (
             <>
               <div>
-                <label className="block text-gray-700 font-semibold">Business Name</label>
+                <label className="block text-gray-700 font-semibold">
+                  Business Name
+                </label>
                 <input
                   type="text"
                   name="businessName"
@@ -162,7 +183,9 @@ export default function Signup() {
                 />
               </div>
               <div>
-                <label className="block text-gray-700 font-semibold">Business Address</label>
+                <label className="block text-gray-700 font-semibold">
+                  Business Address
+                </label>
                 <input
                   type="text"
                   name="businessAddress"
@@ -172,7 +195,9 @@ export default function Signup() {
                 />
               </div>
               <div>
-                <label className="block text-gray-700 font-semibold">Business Phone</label>
+                <label className="block text-gray-700 font-semibold">
+                  Business Phone
+                </label>
                 <input
                   type="text"
                   name="businessPhone"

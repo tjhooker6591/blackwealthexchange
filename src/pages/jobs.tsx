@@ -17,7 +17,8 @@ export default function Jobs() {
         </div>
 
         <p className="text-gray-300">
-          Connect with top Black talent, discover job opportunities, and hire skilled professionals.
+          Connect with top Black talent, discover job opportunities, and hire
+          skilled professionals.
         </p>
 
         {/* 📌 Job Search & Hiring Sections */}
@@ -26,7 +27,8 @@ export default function Jobs() {
           <div className="p-6 bg-gold text-black font-semibold rounded-lg shadow-md">
             <h3 className="text-xl font-bold">Find a Job</h3>
             <p className="mt-2 text-sm">
-              Browse open positions from Black-owned businesses and companies committed to diversity hiring.
+              Browse open positions from Black-owned businesses and companies
+              committed to diversity hiring.
             </p>
             <Link href="/job-listings">
               <button className="mt-3 px-4 py-2 bg-black text-white rounded-lg hover:bg-opacity-90 transition">
@@ -39,7 +41,8 @@ export default function Jobs() {
           <div className="p-6 bg-blue-500 text-white font-semibold rounded-lg shadow-md">
             <h3 className="text-xl font-bold">Hire Black Talent</h3>
             <p className="mt-2 text-sm">
-              Post job openings—fee based—and connect with highly skilled Black professionals.
+              Post job openings—fee based—and connect with highly skilled Black
+              professionals.
             </p>
             <Link href="/post-job">
               <button className="mt-3 px-4 py-2 bg-black text-white rounded-lg hover:bg-opacity-90 transition">
@@ -50,9 +53,12 @@ export default function Jobs() {
 
           {/* Internships & College Opportunities */}
           <div className="p-6 bg-green-500 text-white font-semibold rounded-lg shadow-md">
-            <h3 className="text-xl font-bold">Internships &amp; College Opportunities</h3>
+            <h3 className="text-xl font-bold">
+              Internships &amp; College Opportunities
+            </h3>
             <p className="mt-2 text-sm">
-              Get early career experience with internship and apprenticeship programs.
+              Get early career experience with internship and apprenticeship
+              programs.
             </p>
             <Link href="/internships">
               <button className="mt-3 px-4 py-2 bg-black text-white rounded-lg hover:bg-opacity-90 transition">
@@ -65,7 +71,8 @@ export default function Jobs() {
           <div className="p-6 bg-red-500 text-white font-semibold rounded-lg shadow-md">
             <h3 className="text-xl font-bold">Freelance &amp; Gig Work</h3>
             <p className="mt-2 text-sm">
-              Work on short-term projects or hire Black freelancers for specialized skills.
+              Work on short-term projects or hire Black freelancers for
+              specialized skills.
             </p>
             <Link href="/freelance">
               <button className="mt-3 px-4 py-2 bg-black text-white rounded-lg hover:bg-opacity-90 transition">
@@ -79,7 +86,8 @@ export default function Jobs() {
         <div className="mt-10 p-6 bg-purple-600 text-white font-semibold rounded-lg shadow-md">
           <h3 className="text-xl font-bold">Mentorship Program</h3>
           <p className="mt-2 text-sm">
-            Join our mentorship program where experienced industry leaders and entrepreneurs help guide you on your career path.
+            Join our mentorship program where experienced industry leaders and
+            entrepreneurs help guide you on your career path.
           </p>
           <Link href="/mentorship">
             <button className="mt-3 px-4 py-2 bg-black text-white rounded-lg hover:bg-opacity-90 transition">
@@ -92,7 +100,8 @@ export default function Jobs() {
         <div className="mt-10 p-6 bg-teal-500 text-white font-semibold rounded-lg shadow-md">
           <h3 className="text-xl font-bold">Professional Networking</h3>
           <p className="mt-2 text-sm">
-            Create your professional network with fellow Black professionals. Share knowledge, exchange opportunities, and grow together.
+            Create your professional network with fellow Black professionals.
+            Share knowledge, exchange opportunities, and grow together.
           </p>
           <Link href="/networking">
             <button className="mt-3 px-4 py-2 bg-black text-white rounded-lg hover:bg-opacity-90 transition">
@@ -103,9 +112,12 @@ export default function Jobs() {
 
         {/* 🚀 Create Your Profile Section */}
         <div className="mt-10 text-center">
-          <h2 className="text-xl font-bold text-gold">Join Our Professional Network</h2>
+          <h2 className="text-xl font-bold text-gold">
+            Join Our Professional Network
+          </h2>
           <p className="text-gray-300">
-            Create your profile, connect with peers, and unlock exclusive career opportunities—just like LinkedIn, and more.
+            Create your profile, connect with peers, and unlock exclusive career
+            opportunities—just like LinkedIn, and more.
           </p>
           <div className="flex justify-center mt-4 gap-4">
             <Link href="/signup">
@@ -125,7 +137,8 @@ export default function Jobs() {
         <div className="mt-10 text-center">
           <h2 className="text-xl font-bold text-gold">Level Up Your Career</h2>
           <p className="text-gray-300">
-            Get exclusive access to resume reviews, job interview training, and mentorship.
+            Get exclusive access to resume reviews, job interview training, and
+            mentorship.
           </p>
           <Link href="/pricing">
             <button className="mt-4 px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">

@@ -15,8 +15,12 @@ export default function RLJLodgingTrust() {
     try {
       const response = await fetch(`/api/stock-data?symbol=RLJ`);
       if (!response.ok) {
-        console.error("API response failed:", response.status, response.statusText);
-        throw new Error('Error fetching stock data');
+        console.error(
+          "API response failed:",
+          response.status,
+          response.statusText,
+        );
+        throw new Error("Error fetching stock data");
       }
 
       const data = await response.json();
@@ -27,30 +31,30 @@ export default function RLJLodgingTrust() {
         setStockData({
           chartOptions: {
             chart: {
-              id: 'stock-chart',
-              foreColor: '#FFFFFF',
+              id: "stock-chart",
+              foreColor: "#FFFFFF",
               zoom: { enabled: true },
               toolbar: { show: true, tools: { pan: true, reset: true } },
             },
             xaxis: {
-              categories: data.chartOptions.xaxis.categories,  // Time intervals
+              categories: data.chartOptions.xaxis.categories, // Time intervals
               labels: {
-                style: { colors: '#FFFFFF', fontSize: '12px' }
-              }
+                style: { colors: "#FFFFFF", fontSize: "12px" },
+              },
             },
             yaxis: {
               labels: {
-                style: { colors: '#FFFFFF', fontSize: '12px' }
-              }
+                style: { colors: "#FFFFFF", fontSize: "12px" },
+              },
             },
-            grid: { borderColor: '#555555' },
-            tooltip: { theme: 'dark' }
+            grid: { borderColor: "#555555" },
+            tooltip: { theme: "dark" },
           },
           series: [
             {
               name: `Price (USD) - 1D`,
-              data: data.series[0].data // Ensure this contains more data points
-            }
+              data: data.series[0].data, // Ensure this contains more data points
+            },
           ],
           latestPrice: data.latestPrice,
           volume: data.volume,
@@ -65,7 +69,9 @@ export default function RLJLodgingTrust() {
       }
     } catch (err) {
       console.error("Error loading stock data:", err.message);
-      setError('Error loading stock data. Please check the API or internet connection.');
+      setError(
+        "Error loading stock data. Please check the API or internet connection.",
+      );
     }
   }
 
@@ -87,32 +93,52 @@ export default function RLJLodgingTrust() {
         </Link>
 
         <header className="mb-6">
-          <h1 className="text-4xl font-bold text-gold">RLJ Lodging Trust (RLJ)</h1>
+          <h1 className="text-4xl font-bold text-gold">
+            RLJ Lodging Trust (RLJ)
+          </h1>
         </header>
 
         {/* Stock Price & Status */}
         <section className="mb-8 text-center">
-          <h2 className="text-5xl font-bold text-gold">{stockData ? `$${stockData.latestPrice}` : "Loading..."}</h2>
+          <h2 className="text-5xl font-bold text-gold">
+            {stockData ? `$${stockData.latestPrice}` : "Loading..."}
+          </h2>
           <div className="flex justify-center items-center mt-2">
-            <span className={`text-lg ${stockData && stockData.latestPrice > 9.55 ? "text-green-400" : "text-red-400"}`}>
-              {stockData && stockData.latestPrice > 9.55 ? "↑" : "↓"} {stockData ? `+${(stockData.latestPrice - 9.55).toFixed(2)}` : "0.00"}
+            <span
+              className={`text-lg ${stockData && stockData.latestPrice > 9.55 ? "text-green-400" : "text-red-400"}`}
+            >
+              {stockData && stockData.latestPrice > 9.55 ? "↑" : "↓"}{" "}
+              {stockData
+                ? `+${(stockData.latestPrice - 9.55).toFixed(2)}`
+                : "0.00"}
             </span>
           </div>
           <p className="text-sm mt-2 text-gray-300">
-            {stockData ? `After Hours: $${stockData.afterHoursPrice} (${stockData.afterHoursChange})` : ""}
+            {stockData
+              ? `After Hours: $${stockData.afterHoursPrice} (${stockData.afterHoursChange})`
+              : ""}
             <br />
-            <span className="text-xs">{stockData ? `Closed: Feb 14, 4:06 PM UTC-5 · USD · NYSE · Disclaimer` : ""}</span>
+            <span className="text-xs">
+              {stockData
+                ? `Closed: Feb 14, 4:06 PM UTC-5 · USD · NYSE · Disclaimer`
+                : ""}
+            </span>
           </p>
         </section>
 
         {/* Time Range Buttons */}
         <section className="mb-8 text-center">
           <div className="flex justify-center space-x-4">
-            {["1D", "5D", "1M", "6M", "YTD", "1Y", "5Y", "MAX"].map((period) => (
-              <button key={period} className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600">
-                {period}
-              </button>
-            ))}
+            {["1D", "5D", "1M", "6M", "YTD", "1Y", "5Y", "MAX"].map(
+              (period) => (
+                <button
+                  key={period}
+                  className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600"
+                >
+                  {period}
+                </button>
+              ),
+            )}
           </div>
         </section>
 
@@ -122,9 +148,17 @@ export default function RLJLodgingTrust() {
             <p className="text-red-500">{error}</p>
           ) : stockData ? (
             <div className="mt-4 bg-gray-700 border border-gold rounded p-4">
-              <Chart options={stockData.chartOptions} series={stockData.series} type="line" height={300} />
+              <Chart
+                options={stockData.chartOptions}
+                series={stockData.series}
+                type="line"
+                height={300}
+              />
               <div className="mt-4">
-                <p className="text-sm">Stock Price: ${stockData.latestPrice} | Volume: {stockData.volume}</p>
+                <p className="text-sm">
+                  Stock Price: ${stockData.latestPrice} | Volume:{" "}
+                  {stockData.volume}
+                </p>
               </div>
               <div className="text-sm text-gray-300 mt-4">
                 <p>Market Cap: {stockData.marketCap}</p>
@@ -135,7 +169,9 @@ export default function RLJLodgingTrust() {
               </div>
             </div>
           ) : (
-            <p className="text-sm text-yellow-400">Loading stock performance data...</p>
+            <p className="text-sm text-yellow-400">
+              Loading stock performance data...
+            </p>
           )}
         </section>
 

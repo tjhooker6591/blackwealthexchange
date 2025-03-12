@@ -15,7 +15,9 @@ export default function Community() {
       <div className="container mx-auto p-6">
         {/* Discussion Forum Section */}
         <div className="bg-gray-100 p-6 my-6 rounded-lg shadow-lg">
-          <h2 className="text-2xl font-bold text-gold">Join the Conversation</h2>
+          <h2 className="text-2xl font-bold text-gold">
+            Join the Conversation
+          </h2>
           <p className="text-gray-600">
             Engage in discussions about business, finance, and community growth.
           </p>
@@ -23,13 +25,15 @@ export default function Community() {
             <div className="bg-gray-200 p-4 rounded-lg shadow-md">
               <h3 className="text-lg font-bold">Entrepreneurship</h3>
               <p className="text-gray-600">
-                Tips, strategies, and success stories from Black business owners.
+                Tips, strategies, and success stories from Black business
+                owners.
               </p>
             </div>
             <div className="bg-gray-200 p-4 rounded-lg shadow-md">
               <h3 className="text-lg font-bold">Investing</h3>
               <p className="text-gray-600">
-                Discuss investment opportunities, wealth-building, and financial literacy.
+                Discuss investment opportunities, wealth-building, and financial
+                literacy.
               </p>
             </div>
             <div className="bg-gray-200 p-4 rounded-lg shadow-md">
@@ -43,9 +47,12 @@ export default function Community() {
 
         {/* Upcoming Events Section */}
         <div className="bg-gray-100 p-6 my-6 rounded-lg shadow-lg">
-          <h2 className="text-2xl font-bold text-gold">Upcoming Community Events</h2>
+          <h2 className="text-2xl font-bold text-gold">
+            Upcoming Community Events
+          </h2>
           <p className="text-gray-600">
-            Stay updated with upcoming networking events, webinars, and mentorship programs.
+            Stay updated with upcoming networking events, webinars, and
+            mentorship programs.
           </p>
           <div className="mt-4 grid gap-4 grid-cols-1 md:grid-cols-2">
             <div className="bg-gray-200 p-4 rounded-lg shadow-md">
@@ -66,7 +73,9 @@ export default function Community() {
 
       {/* Call to Action */}
       <div className="text-center p-6">
-        <h2 className="text-xl font-bold text-gray-800">Be Part of the Movement</h2>
+        <h2 className="text-xl font-bold text-gray-800">
+          Be Part of the Movement
+        </h2>
         <button className="px-6 py-3 bg-gold text-black font-semibold rounded-lg hover:bg-opacity-90 transition mt-4">
           Join Now
         </button>
