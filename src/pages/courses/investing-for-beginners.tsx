@@ -5,7 +5,7 @@ const InvestingForBeginners = () => {
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-3xl font-semibold text-center mb-6">
-        Investing for Beginners: A Beginner's Guide to Stock Market Investing,
+        Investing for Beginners: A Beginner&apos;s Guide to Stock Market Investing,
         Portfolio Management, and General Investing
       </h1>
 
@@ -41,8 +41,8 @@ const InvestingForBeginners = () => {
             grow at a pace faster than inflation.
           </li>
           <li>
-            <strong>Financial Goals:</strong> Whether it&rsquo;s buying a home,
-            starting a business, or paying for a child&rsquo;s education,
+            <strong>Financial Goals:</strong> Whether it&apos;s buying a home,
+            starting a business, or paying for a child&apos;s education,
             investing helps achieve long-term financial goals.
           </li>
         </ul>
@@ -54,12 +54,12 @@ const InvestingForBeginners = () => {
         <h3 className="text-xl font-semibold mb-2">a. Stocks</h3>
         <p className="text-lg text-gray-600 mb-4">
           <strong>What is a Stock?</strong> A stock represents ownership in a
-          company. When you buy a share of stock, you're purchasing a small part
+          company. When you buy a share of stock, you&apos;re purchasing a small part
           of that company.
         </p>
         <p className="text-lg text-gray-600 mb-4">
           <strong>How Stocks Work:</strong> The value of your shares can go up
-          (capital appreciation) or down, depending on the company&rsquo;s
+          (capital appreciation) or down, depending on the company&apos;s
           performance and broader market conditions.
         </p>
         <p className="text-lg text-gray-600 mb-4">
@@ -209,7 +209,7 @@ const InvestingForBeginners = () => {
         <p className="text-lg text-gray-600 mb-4">
           Investing in Black-owned businesses is a powerful way to build wealth,
           support community empowerment, and help close the racial wealth gap.
-          Here's how to get started:
+          Here&apos;s how to get started:
         </p>
 
         <h3 className="text-xl font-semibold mb-2">
