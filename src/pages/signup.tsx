@@ -37,29 +37,33 @@ export default function Signup() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+  
+    // Ensure required fields are filled
     if (!formData.email || !formData.password || !formData.confirmPassword) {
       setError("All fields are required.");
       return;
     }
-
+  
+    // Validate email format
     if (!validateEmail(formData.email)) {
       setError("Invalid email format.");
       return;
     }
-
+  
+    // Validate password strength
     if (!validatePassword(formData.password)) {
       setError(
         "Password must be at least 8 characters long, include 1 uppercase letter, 1 number, and 1 special character.",
       );
       return;
     }
-
+  
+    // Check if passwords match
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match.");
       return;
     }
-
+  
     setLoading(true);
     try {
       const response = await fetch("/api/auth/signup", {
@@ -67,16 +71,19 @@ export default function Signup() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: formData.email,
-          password: formData.password,
-          accountType,
-          ...formData,
+          password: formData.password, // Password field specified once
+          accountType, // Use accountType directly
+          businessName: formData.businessName,
+          businessAddress: formData.businessAddress,
+          businessPhone: formData.businessPhone,
         }),
       });
-
+  
+      // Handle response and reset form data if successful
       if (!response.ok) {
         throw new Error("Failed to create account.");
       }
-
+  
       setSuccess(true);
       setFormData({
         email: "",
@@ -86,13 +93,14 @@ export default function Signup() {
         businessAddress: "",
         businessPhone: "",
       });
-    } catch (err) {
+    } catch {
       setError("Signup failed. Please try again.");
     } finally {
       setLoading(false);
     }
   };
-
+  
+  
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-gray-100 p-6">
       <div className="bg-white p-8 shadow-lg rounded-lg w-full max-w-md">

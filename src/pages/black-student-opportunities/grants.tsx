@@ -35,8 +35,8 @@ const Grants = () => {
           Grants for Black College Students
         </h1>
         <p className="text-xl md:text-2xl mt-4 font-light text-gray-300 animate-fadeIn">
-          "Grants provide essential financial support, reducing the financial
-          burden on Black college students and empowering them to succeed."
+          &ldquo;Grants provide essential financial support, reducing the financial
+          burden on Black college students and empowering them to succeed.&rdquo;
         </p>
       </header>
 

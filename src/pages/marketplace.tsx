@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";  // Import Image from next/image
 
 export default function Marketplace() {
   return (
@@ -19,10 +20,12 @@ export default function Marketplace() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
             {/* Black-Owned Fashion */}
             <div className="category-card bg-gray-800 p-4 rounded shadow-lg text-center">
-              <img
+              <Image
                 src="/fashion-category.jpg"
                 alt="Black-Owned Fashion"
                 className="rounded mb-4"
+                width={400}  // Add width
+                height={300} // Add height
               />
               <h3 className="text-lg font-semibold">Black-Owned Fashion</h3>
               <p className="mt-2">Clothing, accessories, shoes, and jewelry.</p>
@@ -35,10 +38,12 @@ export default function Marketplace() {
 
             {/* Black-Owned Beauty & Wellness */}
             <div className="category-card bg-gray-800 p-4 rounded shadow-lg text-center">
-              <img
+              <Image
                 src="/beauty-category.jpg"
                 alt="Black-Owned Beauty"
                 className="rounded mb-4"
+                width={400}  // Add width
+                height={300} // Add height
               />
               <h3 className="text-lg font-semibold">
                 Black-Owned Beauty & Wellness
@@ -53,10 +58,12 @@ export default function Marketplace() {
 
             {/* Black Tech */}
             <div className="category-card bg-gray-800 p-4 rounded shadow-lg text-center">
-              <img
+              <Image
                 src="/tech-category.jpg"
                 alt="Black Tech"
                 className="rounded mb-4"
+                width={400}  // Add width
+                height={300} // Add height
               />
               <h3 className="text-lg font-semibold">Black Tech</h3>
               <p className="mt-2">
@@ -71,10 +78,12 @@ export default function Marketplace() {
 
             {/* Subscription Boxes */}
             <div className="category-card bg-gray-800 p-4 rounded shadow-lg text-center">
-              <img
+              <Image
                 src="/subscription-box.jpg"
                 alt="Subscription Boxes"
                 className="rounded mb-4"
+                width={400}  // Add width
+                height={300} // Add height
               />
               <h3 className="text-lg font-semibold">Subscription Boxes</h3>
               <p className="mt-2">
@@ -90,10 +99,12 @@ export default function Marketplace() {
 
             {/* Black Financial Services */}
             <div className="category-card bg-gray-800 p-4 rounded shadow-lg text-center">
-              <img
+              <Image
                 src="/financial-services.jpg"
                 alt="Black Financial Services"
                 className="rounded mb-4"
+                width={400}  // Add width
+                height={300} // Add height
               />
               <h3 className="text-lg font-semibold">
                 Black Financial Services
@@ -117,10 +128,12 @@ export default function Marketplace() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
             {/* Product 1 */}
             <div className="product-card bg-gray-800 p-4 rounded shadow-lg text-center">
-              <img
+              <Image
                 src="/product1.jpg"
                 alt="Handmade Shea Butter"
                 className="rounded mb-4"
+                width={400}  // Add width
+                height={300} // Add height
               />
               <h3 className="text-lg font-semibold">Handmade Shea Butter</h3>
               <p className="mt-2">$15.99</p>
@@ -130,10 +143,12 @@ export default function Marketplace() {
             </div>
             {/* Product 2 */}
             <div className="product-card bg-gray-800 p-4 rounded shadow-lg text-center">
-              <img
+              <Image
                 src="/product2.jpg"
                 alt="African Print Clothing"
                 className="rounded mb-4"
+                width={400}  // Add width
+                height={300} // Add height
               />
               <h3 className="text-lg font-semibold">African Print Clothing</h3>
               <p className="mt-2">$39.99</p>
@@ -143,10 +158,12 @@ export default function Marketplace() {
             </div>
             {/* Product 3 */}
             <div className="product-card bg-gray-800 p-4 rounded shadow-lg text-center">
-              <img
+              <Image
                 src="/product3.jpg"
                 alt="Organic Herbal Tea"
                 className="rounded mb-4"
+                width={400}  // Add width
+                height={300} // Add height
               />
               <h3 className="text-lg font-semibold">Organic Herbal Tea</h3>
               <p className="mt-2">$12.50</p>
@@ -197,3 +214,4 @@ export default function Marketplace() {
     </div>
   );
 }
+

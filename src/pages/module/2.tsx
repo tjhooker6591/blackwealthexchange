@@ -56,10 +56,12 @@ const Module2: React.FC = () => {
             Real-Life Example
           </h2>
           <p className="text-gray-300">
-            Sarah, a 30-year-old professional, sets both short-term and
-            long-term goals. She starts with saving $1,000 for an emergency fund
-            within 6 months (short-term), and then aims to save for a 20% down
-            payment on a house within 5 years (long-term).
+          <p className="text-gray-300">
+  Sarah, a 30-year-old professional, sets both short-term and long-term goals. She starts with saving 
+  $1,000 for an emergency fund within 6 months (short-term), and then aims to save for a 20&percnt; 
+  down payment on a house within 5 years (long-term).
+</p>
+
           </p>
         </section>
 
@@ -82,13 +84,15 @@ const Module2: React.FC = () => {
               on your current financial situation.
             </li>
             <li>
-              <strong>Relevant:</strong> The goal should align with your overall
-              financial and life objectives (e.g., "Save for a down payment on a
-              house").
+              <strong>Relevant:</strong> <p className="text-gray-300">
+  The goal should align with your overall financial and life objectives
+   (e.g., &quot;Save for a down payment on a house&quot;).
+</p>
+
             </li>
             <li>
               <strong>Time-bound:</strong> Set a clear deadline for achieving
-              your goal (e.g., "Save $5,000 in six months").
+              your goal (e.g., &quot;Save $5,000 in six months&quot;).
             </li>
           </ul>
         </section>
@@ -118,11 +122,13 @@ const Module2: React.FC = () => {
         <section className="mt-8">
           <h2 className="text-xl font-semibold text-blue-500">Case Study</h2>
           <p className="text-gray-300">
-            Meet James, who used SMART goals to pay off $5,000 in credit card
-            debt within 1 year. By making his goal specific (Pay off $5,000),
-            measurable (tracking monthly payments), achievable (budgeted 20% of
-            income), and time-bound (12 months), he was able to reduce his debt
-            and gain financial freedom.
+          <p className="text-gray-300">
+  Meet James, who used SMART goals to pay off $5,000 in credit card debt within 1 year. 
+  By making his goal specific (&quot;Pay off $5,000&quot;), measurable (&quot;tracking 
+  monthly payments&quot;), achievable (&quot;budgeted 20&percnt; of income&quot;), and 
+  time-bound (&quot;12 months&quot;), he was able to reduce his debt and gain financial freedom.
+</p>
+
           </p>
         </section>
 

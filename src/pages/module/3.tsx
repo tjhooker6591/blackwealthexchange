@@ -177,12 +177,12 @@ const Module3: React.FC = () => {
             <li>
               Question 1: What is the main principle of the 50/30/20 Rule?
             </li>
-            <li>A) Allocate 50% to savings, 30% to needs, 20% to wants</li>
+            <li>A) Allocate 50&percnt; to savings, 30&percnt; to needs, 20&percnt; to wants</li>
             <li>
-              B) Allocate 50% to needs, 30% to wants, 20% to savings and debt
+              B) Allocate 50&percnt; to needs, 30&percnt; to wants, 20&percnt; to savings and debt
               repayment
             </li>
-            <li>C) Allocate 50% to debt, 30% to savings, 20% to rent</li>
+            <li>C) Allocate 50&percnt; to debt, 30&percnt; to savings, 20&percnt; to rent</li>
             <p className="text-green-500">Answer: B</p>
           </ul>
         </section>

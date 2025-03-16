@@ -4,7 +4,13 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 const UserDashboard = () => {
-  const [user, setUser] = useState<any>(null);
+  interface User {
+    email: string;
+    // add other properties if needed
+  }
+  
+  const [user, setUser] = useState<User | null>(null); // Use User type
+  
   const router = useRouter();
 
   useEffect(() => {
@@ -18,7 +24,7 @@ const UserDashboard = () => {
 
     const parsedUser = JSON.parse(storedUser);
     setUser(parsedUser);
-  }, []);
+  }, [router]);
 
   return (
     <div className="min-h-screen bg-gray-100 p-8">

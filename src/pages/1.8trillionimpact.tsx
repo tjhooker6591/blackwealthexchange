@@ -65,9 +65,9 @@ export default function TrillionImpactPage() {
             </li>
             <li>
               <strong>Beauty & Personal Care:</strong> Companies such as
-              L&rsquo;Oréal, Procter & Gamble, Unilever, Estée Lauder, and
-              Johnson & Johnson profit from Black spending, while failing to
-              support Black beauty entrepreneurs at similar levels.
+              L'Oreal, Procter & Gamble, Unilever, Estee Lauder, and Johnson &
+              Johnson profit from Black spending, while failing to support Black
+              beauty entrepreneurs at similar levels.
             </li>
             <li>
               <strong>Technology & Entertainment:</strong> Giants like Apple,
@@ -76,7 +76,7 @@ export default function TrillionImpactPage() {
               or economic growth.
             </li>
             <li>
-              <strong>Fast Food & Dining:</strong> McDonald&rsquo;s, Starbucks,
+              <strong>Fast Food & Dining:</strong> McDonal's, Starbucks,
               Chick-fil-A, KFC, and Taco Bell benefit greatly from Black
               consumer dollars. Yet, much of the revenue circulates outside the
               community, hindering long-term growth.
@@ -167,7 +167,7 @@ export default function TrillionImpactPage() {
           <p className="text-lg max-w-2xl mx-auto text-white">
             Shifting spending habits toward Black-owned enterprises will create
             jobs, foster generational wealth, and empower the Black community.
-            African American spending power is transformative—when used
+            African American spending power is transformative when used
             strategically, it can drive self-sufficiency, prosperity, and
             long-lasting economic control.{" "}
             <strong>The time to act is now!</strong>
@@ -199,7 +199,7 @@ export default function TrillionImpactPage() {
           <p className="text-lg max-w-2xl mx-auto text-white">
             Shifting spending habits toward Black-owned enterprises will create
             jobs, foster generational wealth, and empower the Black community.
-            African American spending power is transformative—when used
+            African American spending power is transformative when used
             strategically, it can drive self-sufficiency, prosperity, and
             long-lasting economic control. **The time to act is now!**
           </p>

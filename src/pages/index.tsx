@@ -39,19 +39,20 @@ const EconomicImpactSimulator: React.FC = () => {
         return newTotal > maxSpending ? maxSpending : newTotal;
       });
 
-      setBlackOwnedSpending((prevSpending) => {
+      setBlackOwnedSpending(() => {
         return Math.min(
           (totalSpending + dailyGrowth / 24) * 0.1,
-          maxSpending * 0.1,
+          maxSpending * 0.1
         );
       });
-
-      setWebsiteImpact((prevImpact) => {
+      
+      setWebsiteImpact(() => {
         return Math.min(
           (totalSpending + dailyGrowth / 24) * 0.03,
-          maxSpending * 0.03,
+          maxSpending * 0.03
         );
       });
+      
     }, 100);
 
     return () => clearInterval(timer);
@@ -81,12 +82,13 @@ const EconomicImpactSimulator: React.FC = () => {
       </p>
       {/* Add the "See Where Your Money Goes" Link */}
       <div className="text-center">
-        <Link
-          href="/1.8trillionimpact"
-          className="text-gold font-bold hover:underline text-lg"
-        >
-          KNOWLEDGE IS POWER - Select Here to "SEE WHERE YOUR MONEY GOES"
-        </Link>
+      <Link
+  href="/1.8trillionimpact"
+  className="text-gold font-bold hover:underline text-lg"
+>
+  KNOWLEDGE IS POWER - Select Here to &quot;SEE WHERE YOUR MONEY GOES&quot;
+</Link>
+
       </div>
 
       {/* Add the "Learn Economic Freedom" Link */}
