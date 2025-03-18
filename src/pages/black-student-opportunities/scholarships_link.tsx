@@ -1,20 +1,13 @@
-import Link from "next/link";
+import Link from "next/link"
 
 const ScholarshipsPage = () => {
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-4">
-        Scholarships for Black Students
-      </h1>
+      <h1 className="text-3xl font-bold mb-4">Scholarships for Black Students</h1>
 
       <div className="mb-8">
-        <h2 className="text-2xl font-bold mb-2">
-          Jackie Robinson Foundation Scholarship
-        </h2>
-        <p>
-          The Jackie Robinson Foundation provides scholarships to outstanding
-          minority students.
-        </p>
+        <h2 className="text-2xl font-bold mb-2">Jackie Robinson Foundation Scholarship</h2>
+        <p>The Jackie Robinson Foundation provides scholarships to outstanding minority students.</p>
         <Link
           href="https://jackierobinson.org/apply/"
           target="_blank"
@@ -27,10 +20,7 @@ const ScholarshipsPage = () => {
 
       <div className="mb-8">
         <h2 className="text-2xl font-bold mb-2">Ron Brown Scholar Program</h2>
-        <p>
-          The Ron Brown Scholar Program awards scholarships to outstanding
-          African American students.
-        </p>
+        <p>The Ron Brown Scholar Program awards scholarships to outstanding African American students.</p>
         <Link
           href="https://ronbrown.org/apply/"
           target="_blank"
@@ -43,10 +33,7 @@ const ScholarshipsPage = () => {
 
       <div className="mb-8">
         <h2 className="text-2xl font-bold mb-2">UNCF Scholarships</h2>
-        <p>
-          The United Negro College Fund (UNCF) offers a variety of scholarships
-          for Black students.
-        </p>
+        <p>The United Negro College Fund (UNCF) offers a variety of scholarships for Black students.</p>
         <Link
           href="https://uncf.org/scholarships"
           target="_blank"
@@ -85,7 +72,8 @@ const ScholarshipsPage = () => {
         </span>
       </Link>
     </div>
-  );
-};
+  )
+}
 
-export default ScholarshipsPage;
+export default ScholarshipsPage
+

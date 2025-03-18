@@ -1,10 +1,21 @@
 import { useRouter } from "next/router";
 import React, { useState, useEffect } from "react";
 
+interface ModuleContent {
+  title: string;
+  content: string;
+  quiz: {
+    question: string;
+    options: string[];
+    answer: string;
+  }[];
+  downloadable?: string;
+}
+
 const ModulePage: React.FC = () => {
   const router = useRouter();
   const { moduleId } = router.query; // Get the dynamic module ID from the URL
-  const [moduleContent, setModuleContent] = useState<any>(null);
+  const [moduleContent, setModuleContent] = useState<ModuleContent | null>(null);
 
   useEffect(() => {
     if (moduleId) {
@@ -15,8 +26,8 @@ const ModulePage: React.FC = () => {
   }, [moduleId]);
 
   // Function to get module content
-  const getModuleContent = (moduleId: string) => {
-    const contentMap = {
+  const getModuleContent = (moduleId: string): ModuleContent | null => {
+    const contentMap: { [key: string]: ModuleContent } = {
       "1": {
         title: "Introduction to Personal Finance",
         content: `
@@ -39,8 +50,7 @@ const ModulePage: React.FC = () => {
             answer: "A",
           },
           {
-            question:
-              "What is one way personal finance helps with long-term goals?",
+            question: "What is one way personal finance helps with long-term goals?",
             options: [
               "A) Helps you build debt",
               "B) Allows you to plan for retirement and major life events",
@@ -49,7 +59,7 @@ const ModulePage: React.FC = () => {
             answer: "B",
           },
         ],
-        downloadable: "Personal Finance Overview PDF", // Reference to downloadable resource
+        downloadable: "Personal Finance Overview PDF",
       },
       "2": {
         title: "Setting Financial Goals",
@@ -75,9 +85,9 @@ const ModulePage: React.FC = () => {
             answer: "B",
           },
         ],
-        downloadable: "Goal-Setting Template", // Reference to downloadable resource
+        downloadable: "Goal-Setting Template",
       },
-      // Define the other 6 modules in a similar way...
+      // Additional module definitions for "3", "4", etc.
       "3": {
         title: "Creating a Budget",
         content: `
@@ -100,7 +110,7 @@ const ModulePage: React.FC = () => {
             answer: "B",
           },
         ],
-        downloadable: "Monthly Budget Template", // Reference to downloadable resource
+        downloadable: "Monthly Budget Template",
       },
       "4": {
         title: "Saving for the Future",
@@ -124,7 +134,7 @@ const ModulePage: React.FC = () => {
             answer: "B",
           },
         ],
-        downloadable: "Emergency Fund Savings Plan", // Reference to downloadable resource
+        downloadable: "Emergency Fund Savings Plan",
       },
       // Modules 5-8 will follow a similar structure
     };
@@ -132,7 +142,7 @@ const ModulePage: React.FC = () => {
   };
 
   if (!moduleContent) {
-    return <p>Loading...</p>; // Show loading state until content is fetched
+    return <p>Loading...</p>;
   }
 
   const handleNextModule = () => {
@@ -140,7 +150,7 @@ const ModulePage: React.FC = () => {
     if (nextModuleId <= 8) {
       router.push(`/module/${nextModuleId}`);
     } else {
-      router.push("/conclusion"); // Redirect to the conclusion page if it's the last module
+      router.push("/conclusion"); // Redirect if it's the last module
     }
   };
 
@@ -196,7 +206,7 @@ const ModulePage: React.FC = () => {
         <h3 className="text-xl text-gold">Course Progress</h3>
         <div className="bg-gray-700 rounded-full h-4">
           <div
-            className="bg-green-500 h-4"
+            className="bg-green-500 h-4 rounded-full"
             style={{ width: `${(parseInt(moduleId as string) / 8) * 100}%` }}
           ></div>
         </div>

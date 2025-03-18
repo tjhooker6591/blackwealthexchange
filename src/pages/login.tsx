@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
+import Link from "next/link";  
 
 export default function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState(""); // Stores error messages
   const [loading, setLoading] = useState(false); // Prevents multiple submissions
   const [showPassword, setShowPassword] = useState(false); // Toggle Password Visibility
-  const router = useRouter(); // ✅ Enables navigation
+  const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -14,10 +15,9 @@ export default function Login() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(""); // Clear previous errors
-    setLoading(true); // Disable button
+    setError("");
+    setLoading(true);
 
-    // ✅ Simple Client-side Validation
     if (!formData.email || !formData.password) {
       setError("Both email and password are required.");
       setLoading(false);
@@ -38,24 +38,27 @@ export default function Login() {
       });
 
       const data = await response.json();
-      console.log("Login API Response:", data); // 🔍 Log API response
+      console.log("Login API Response:", data);
 
       if (!response.ok) {
         throw new Error(data.error || "Login failed. Please try again.");
       }
 
-      // ✅ Save User Data to Local Storage for the Dashboard
       if (typeof window !== "undefined") {
         localStorage.setItem("user", JSON.stringify(data.user));
       } else {
         throw new Error("User data is missing from the response.");
       }
 
-      alert("Login successful!"); // Temporary alert (Replace with redirection logic)
-      router.push("/dashboard"); // ✅ Redirect user after successful login
-    } catch (error: any) {
-      console.error("Login error:", error); // 🔍 Log error in console
-      setError(error.message);
+      alert("Login successful!");
+      router.push("/dashboard");
+    } catch (error: unknown) {
+      console.error("Login error:", error);
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("An unknown error occurred.");
+      }
     } finally {
       setLoading(false);
     }
@@ -67,8 +70,7 @@ export default function Login() {
         <h2 className="text-2xl font-bold text-center text-gold">
           Welcome Back
         </h2>
-        {error && <p className="text-red-500 text-center mt-2">{error}</p>}{" "}
-        {/* Displays error messages */}
+        {error && <p className="text-red-500 text-center mt-2">{error}</p>}
         <form onSubmit={handleSubmit} className="mt-4 space-y-4">
           <input
             type="email"
@@ -87,7 +89,6 @@ export default function Login() {
               className="w-full p-3 border rounded pr-10"
               required
             />
-            {/* 👁 Password Visibility Toggle */}
             <button
               type="button"
               className="absolute inset-y-0 right-2 flex items-center text-gray-500"
@@ -96,7 +97,6 @@ export default function Login() {
               {showPassword ? "🙈" : "👁"}
             </button>
           </div>
-
           <button
             type="submit"
             className={`w-full py-3 bg-blue-500 text-white rounded ${
@@ -107,17 +107,16 @@ export default function Login() {
             {loading ? "Logging in..." : "Login"}
           </button>
         </form>
-        {/* ➡️ Forgot Password - Redirect Fixed ✅ */}
         <p className="text-center mt-4">
-          <a href="/reset-password" className="text-red-500 hover:underline">
+          <Link href="/reset-password" className="text-red-500 hover:underline">
             Forgot Password?
-          </a>
+          </Link>
         </p>
         <p className="text-center mt-4">
-          Don't have an account?{" "}
-          <a href="/signup" className="text-green-500 hover:underline">
+          Don&apos;t have an account?{" "}
+          <Link href="/signup" className="text-green-500 hover:underline">
             Sign Up
-          </a>
+          </Link>
         </p>
       </div>
     </div>

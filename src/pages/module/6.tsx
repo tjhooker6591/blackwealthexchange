@@ -34,7 +34,7 @@ const Module6: React.FC = () => {
           <h2 className="text-2xl font-semibold text-blue-500">Overview</h2>
           <p className="text-gray-300">
             This module will teach you how to manage day-to-day spending without
-            sacrificing your long-term financial goals. You'll also learn how to
+            sacrificing your long-term financial goals. You&rsquo;ll also learn how to
             avoid common financial mistakes that can hinder your financial
             progress.
           </p>

@@ -56,7 +56,7 @@ const Module8: React.FC = () => {
             <li>
               <strong>Savings Example:</strong> If you invest $1,000 at an
               annual interest rate of 5%, you will earn $50 in interest in the
-              first year. In the second year, you'll earn interest on $1,050,
+              first year. In the second year, you&rsquo;ll earn interest on $1,050,
               and so on. This process continues to accelerate the growth of your
               savings.
             </li>

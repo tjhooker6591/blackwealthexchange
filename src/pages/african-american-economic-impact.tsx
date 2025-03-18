@@ -47,7 +47,7 @@ export default function TrillionImpactPage() {
                 <strong>Retail & Fashion:</strong> Nike, Louis Vuitton, H&M
               </li>
               <li>
-                <strong>Beauty & Personal Care:</strong> L'Oréal, Procter &
+                <strong>Beauty & Personal Care:</strong> L&rsquo;Oreal, Procter &
                 Gamble, Unilever
               </li>
             </ul>
@@ -57,7 +57,7 @@ export default function TrillionImpactPage() {
                 Spotify, Samsung
               </li>
               <li>
-                <strong>Fast Food & Dining:</strong> McDonald's, Starbucks,
+                <strong>Fast Food & Dining:</strong> McDonald&rsquo;s, Starbucks,
                 Chick-fil-A
               </li>
             </ul>

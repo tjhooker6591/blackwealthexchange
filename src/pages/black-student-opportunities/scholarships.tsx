@@ -1,5 +1,5 @@
-import Image from "next/image";
-import Link from "next/link";
+import Image from "next/image"
+import Link from "next/link"
 
 const ScholarshipsPage = () => {
   return (
@@ -19,19 +19,12 @@ const ScholarshipsPage = () => {
 
       {/* Hero Section */}
       <header className="text-center py-32 relative z-10">
-        <Image
-          src="/bwe-logo.png"
-          alt="BWE Logo"
-          width={120}
-          height={120}
-          className="mx-auto mb-4 animate-fadeIn"
-        />
+        <Image src="/bwe-logo.png" alt="BWE Logo" width={120} height={120} className="mx-auto mb-4 animate-fadeIn" />
         <h1 className="text-6xl md:text-7xl font-extrabold tracking-wide text-gold neon-text animate-slideUp">
           Scholarships for Black Students
         </h1>
         <p className="text-xl md:text-2xl mt-4 font-light text-gray-300 animate-fadeIn">
-          "Scholarships provide essential financial support to Black students
-          pursuing higher education."
+          *&quot;Scholarships provide essential financial support to Black students pursuing higher education.&quot;
         </p>
       </header>
 
@@ -40,17 +33,14 @@ const ScholarshipsPage = () => {
         <div className="space-y-8">
           {/* Jackie Robinson Foundation */}
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-            <h2 className="text-2xl font-semibold text-gold">
-              Jackie Robinson Foundation Scholarship
-            </h2>
+            <h2 className="text-2xl font-semibold text-gold">Jackie Robinson Foundation Scholarship</h2>
             <p className="text-lg mt-2">
-              Provides up to $35,000 over four years to Black high school
-              seniors demonstrating leadership and community service.
+              Provides up to $35,000 over four years to Black high school seniors demonstrating leadership and community
+              service.
             </p>
             <p className="mt-2">
-              <strong>Eligibility:</strong> Must be a high school senior,
-              demonstrate leadership potential, and have a minimum SAT score of
-              1,000 or ACT score of 21.
+              <strong>Eligibility:</strong> Must be a high school senior, demonstrate leadership potential, and have a
+              minimum SAT score of 1,000 or ACT score of 21.
             </p>
             <p className="mt-2">
               <strong>Deadline:</strong> March 31, 2025.
@@ -67,17 +57,14 @@ const ScholarshipsPage = () => {
 
           {/* Ron Brown Scholar Program */}
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-            <h2 className="text-2xl font-semibold text-gold">
-              Ron Brown Scholar Program
-            </h2>
+            <h2 className="text-2xl font-semibold text-gold">Ron Brown Scholar Program</h2>
             <p className="text-lg mt-2">
-              Offers up to $40,000 over four years to Black high school seniors
-              who demonstrate academic excellence and community service.
+              Offers up to $40,000 over four years to Black high school seniors who demonstrate academic excellence and
+              community service.
             </p>
             <p className="mt-2">
-              <strong>Eligibility:</strong> Must be a Black/African American
-              high school senior, demonstrate academic excellence, and exhibit
-              leadership and community service.
+              <strong>Eligibility:</strong> Must be a Black/African American high school senior, demonstrate academic
+              excellence, and exhibit leadership and community service.
             </p>
             <p className="mt-2">
               <strong>Deadline:</strong> January 9, 2025.
@@ -94,17 +81,13 @@ const ScholarshipsPage = () => {
 
           {/* UNCF Scholarship */}
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-            <h2 className="text-2xl font-semibold text-gold">
-              UNCF General Scholarship
-            </h2>
+            <h2 className="text-2xl font-semibold text-gold">UNCF General Scholarship</h2>
             <p className="text-lg mt-2">
-              Provides financial assistance to students attending UNCF member
-              institutions.
+              Provides financial assistance to students attending UNCF member institutions.
             </p>
             <p className="mt-2">
-              <strong>Eligibility:</strong> Must be enrolled full-time at a UNCF
-              member institution, demonstrate financial need, and have a minimum
-              GPA of 2.5.
+              <strong>Eligibility:</strong> Must be enrolled full-time at a UNCF member institution, demonstrate
+              financial need, and have a minimum GPA of 2.5.
             </p>
             <p className="mt-2">
               <strong>Deadline:</strong> March 31, 2025.
@@ -122,36 +105,30 @@ const ScholarshipsPage = () => {
 
         {/* Application Tips */}
         <section className="mt-12">
-          <h2 className="text-3xl font-semibold text-gold mb-4">
-            Application Tips
-          </h2>
+          <h2 className="text-3xl font-semibold text-gold mb-4">Application Tips</h2>
           <ul className="list-disc pl-6 space-y-2">
             <li>
-              <strong>Start Early:</strong> Begin your scholarship search and
-              application process well in advance to meet deadlines.
+              <strong>Start Early:</strong> Begin your scholarship search and application process well in advance to
+              meet deadlines.
             </li>
             <li>
-              <strong>Personal Statement:</strong> Write a compelling personal
-              statement that highlights your achievements, goals, and community
-              involvement.
+              <strong>Personal Statement:</strong> Write a compelling personal statement that highlights your
+              achievements, goals, and community involvement.
             </li>
             <li>
-              <strong>Letters of Recommendation:</strong> Secure strong letters
-              from mentors, teachers, or community leaders who can speak to your
-              character and accomplishments.
+              <strong>Letters of Recommendation:</strong> Secure strong letters from mentors, teachers, or community
+              leaders who can speak to your character and accomplishments.
             </li>
             <li>
-              <strong>Proofread:</strong> Carefully review your application
-              materials for errors and clarity before submission.
+              <strong>Proofread:</strong> Carefully review your application materials for errors and clarity before
+              submission.
             </li>
           </ul>
         </section>
 
         {/* Additional Resources */}
         <section className="mt-12">
-          <h2 className="text-3xl font-semibold text-gold mb-4">
-            Additional Resources
-          </h2>
+          <h2 className="text-3xl font-semibold text-gold mb-4">Additional Resources</h2>
           <ul className="list-disc pl-6 space-y-2">
             <li>
               <Link
@@ -162,8 +139,7 @@ const ScholarshipsPage = () => {
               >
                 Scholarships.com: African American Scholarships
               </Link>{" "}
-              - A comprehensive directory of scholarships for African American
-              students.
+              - A comprehensive directory of scholarships for African American students.
             </li>
             <li>
               <Link
@@ -174,8 +150,7 @@ const ScholarshipsPage = () => {
               >
                 Bold.org: Scholarships for Black Students
               </Link>{" "}
-              - A platform offering various scholarships specifically for Black
-              students.
+              - A platform offering various scholarships specifically for Black students.
             </li>
           </ul>
         </section>
@@ -190,7 +165,8 @@ const ScholarshipsPage = () => {
         </section>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ScholarshipsPage;
+export default ScholarshipsPage
+

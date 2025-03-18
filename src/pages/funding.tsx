@@ -60,7 +60,7 @@ const StartupFundingPage = () => {
           <p className="text-gray-300 mb-4">
             There are several types of funding available for startups.
             Understanding the differences between these options can help you
-            choose the right one for your business. Here's an overview of key
+            choose the right one for your business. Here&rsquo;s an overview of key
             funding types:
           </p>
 

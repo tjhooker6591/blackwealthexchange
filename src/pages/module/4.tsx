@@ -49,7 +49,7 @@ const Module4: React.FC = () => {
               without going into debt.
             </li>
             <li>
-              Aim to save 3-6 months' worth of living expenses in a high-yield
+              Aim to save 3-6 months&apos; worth of living expenses in a high-yield
               savings account to cover emergencies like medical bills or car
               repairs.
             </li>

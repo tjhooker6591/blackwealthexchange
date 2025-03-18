@@ -28,7 +28,7 @@ export default function SearchResults() {
 
       <div className="container mx-auto p-6">
         <h2 className="text-3xl text-gold font-semibold text-center mb-6">
-          Results for "{search}"
+          Results for &quot;{search}&quot;
         </h2>
 
         {results.length > 0 ? (

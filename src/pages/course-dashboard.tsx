@@ -3,7 +3,7 @@ import { useRouter } from "next/router"; // Import useRouter hook
 import Link from "next/link";
 
 const CourseDashboard: React.FC = () => {
-  const [completedModules, setCompletedModules] = useState<any>([]);
+  const [completedModules, setCompletedModules] = useState<string[]>([]);
   const router = useRouter(); // Instantiate useRouter hook
 
   // Simulating modules' completion (can later be replaced with backend logic or localStorage)
@@ -31,7 +31,7 @@ const CourseDashboard: React.FC = () => {
             Personal Finance 101 Dashboard
           </h1>
           <p className="text-gray-300 mt-2">
-            Welcome to your course. Let's get started!
+            Welcome to your course. Let&rsquo;s get started!
           </p>
         </header>
 

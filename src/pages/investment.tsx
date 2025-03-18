@@ -171,7 +171,7 @@ export default function Investment() {
             <div className="course-card bg-gray-800 p-4 rounded shadow-lg text-center">
               <h3 className="text-lg font-semibold">Investing for Beginners</h3>
               <p className="mt-2 text-gray-400">
-                A beginner's guide to stock market investing and portfolio
+                A beginner&rsquo;s guide to stock market investing and portfolio
                 management.
               </p>
               <Link href="/courses/investing-for-beginners">
@@ -268,8 +268,8 @@ export default function Investment() {
         <div className="mt-8 bg-gray-700 p-4 rounded-lg shadow-md">
           <h2 className="text-xl font-bold text-gold mb-2">Success Stories</h2>
           <p className="text-gray-300">
-            "Thanks to these investment opportunities, our startup grew by 300%
-            in just one year!" - <span className="font-bold">Jane Doe</span>
+            &quot;Thanks to these investment opportunities, our startup grew by 300%
+            in just one year!&quot; - <span className="font-bold">Jane Doe</span>
           </p>
         </div>
       </div>

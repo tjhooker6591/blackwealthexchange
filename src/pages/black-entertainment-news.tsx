@@ -69,7 +69,7 @@ const tributesData = [
 ];
 
 // Modal for reading news (if needed)
-function NewsModal({ articleTitle, onClose }) {
+function NewsModal({ articleTitle, onClose }: { articleTitle: string; onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-gray-800 p-6 rounded-lg w-full max-w-md relative">
@@ -89,12 +89,13 @@ function NewsModal({ articleTitle, onClose }) {
 }
 
 export default function BlackImpactNews() {
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedLocation, setSelectedLocation] = useState("");
+  // Retain the state values for filtering (default to empty string) but remove the setters since they're not used
+  const [selectedCategory] = useState("");
+  const [selectedLocation] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
-  const [currentArticle, setCurrentArticle] = useState(null);
+  const [currentArticle, setCurrentArticle] = useState<any>(null);
 
-  const openModal = (article) => {
+  const openModal = (article: any) => {
     setCurrentArticle(article);
     setModalOpen(true);
   };
@@ -119,8 +120,7 @@ export default function BlackImpactNews() {
         className="relative bg-gray-800 bg-cover bg-center p-20 text-center"
         style={{ backgroundImage: "url(/images/banner-image.jpg)" }}
       >
-        <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50"></div>{" "}
-        {/* Optional overlay */}
+        <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50"></div>
         <div className="relative z-10">
           <h1 className="text-4xl md:text-5xl font-extrabold text-gold leading-tight">
             Empowering Black Voices, Celebrating Global Impact
@@ -135,9 +135,7 @@ export default function BlackImpactNews() {
       {/* Featured Stories Section */}
       <div className="container mx-auto p-6">
         <div className="section bg-gray-800 p-6 my-6 rounded-lg shadow-lg">
-          <h2 className="text-2xl font-bold text-gold">
-            Featured Stories: Celebrating Our Impact
-          </h2>
+          <h2 className="text-2xl font-bold text-gold">Featured Stories: Celebrating Our Impact</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
             {filteredArticles.map((article) => (
               <div
@@ -153,9 +151,7 @@ export default function BlackImpactNews() {
                     className="rounded-lg"
                   />
                 </div>
-                <h3 className="text-lg font-semibold text-gold">
-                  {article.title}
-                </h3>
+                <h3 className="text-lg font-semibold text-gold">{article.title}</h3>
                 <p className="mt-2 text-gray-300">{article.description}</p>
                 <div className="mt-4">
                   <button
@@ -172,9 +168,7 @@ export default function BlackImpactNews() {
 
         {/* Tributes Section: Honoring the Legacy */}
         <div className="section bg-gray-800 p-6 my-6 rounded-lg shadow-lg">
-          <h2 className="text-2xl font-bold text-gold">
-            In Memory: Honoring Our Legends
-          </h2>
+          <h2 className="text-2xl font-bold text-gold">In Memory: Honoring Our Legends</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
             {tributesData.map((tribute) => (
               <div
@@ -190,13 +184,9 @@ export default function BlackImpactNews() {
                     className="rounded-lg"
                   />
                 </div>
-                <h3 className="text-lg font-semibold text-gold">
-                  {tribute.name}
-                </h3>
+                <h3 className="text-lg font-semibold text-gold">{tribute.name}</h3>
                 <p className="mt-2 text-gray-300">{tribute.description}</p>
-                <p className="mt-4 text-sm text-gray-500">
-                  Legacy: {tribute.legacy}
-                </p>
+                <p className="mt-4 text-sm text-gray-500">Legacy: {tribute.legacy}</p>
               </div>
             ))}
           </div>
@@ -204,9 +194,7 @@ export default function BlackImpactNews() {
 
         {/* Other Black News Outlets Section */}
         <div className="section bg-gray-800 p-6 my-6 rounded-lg shadow-lg">
-          <h2 className="text-2xl font-bold text-gold">
-            Other Black News Outlets
-          </h2>
+          <h2 className="text-2xl font-bold text-gold">Other Black News Outlets</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
             <div className="news-outlet-card bg-gray-700 p-4 rounded-lg shadow-md">
               <Image
@@ -216,9 +204,7 @@ export default function BlackImpactNews() {
                 height={100}
                 className="rounded-lg mb-4"
               />
-              <h3 className="text-lg font-semibold text-gold">
-                Good Black News
-              </h3>
+              <h3 className="text-lg font-semibold text-gold">Good Black News</h3>
               <p className="text-gray-300">
                 Stay updated with uplifting and empowering news stories that
                 celebrate the achievements of Black communities globally.

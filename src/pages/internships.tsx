@@ -102,9 +102,9 @@ const InternshipsPage: React.FC = () => {
             What Others Are Saying
           </h2>
           <blockquote className="text-gray-300 mt-4">
-            "My internship gave me the real-world experience I needed to secure
+            &quot;My internship gave me the real-world experience I needed to secure
             my full-time job after graduation. I highly recommend it to anyone
-            looking to build their career!" – John S., Former Intern
+            looking to build their career!&quot; – John S., Former Intern
           </blockquote>
         </section>
 

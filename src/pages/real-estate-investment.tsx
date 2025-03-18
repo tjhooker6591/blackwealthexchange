@@ -1,9 +1,9 @@
 import React from "react";
-import { useRouter } from "next/router";
+//import { useRouter } from "next/router";
 import Link from "next/link";
 
 const RealEstateInvestment = () => {
-  const router = useRouter();
+  //const router = useRouter();
 
   return (
     <div className="bg-gray-900 text-white min-h-screen">

@@ -41,7 +41,7 @@ const EconomicFreedom = () => {
         </h3>
         <ul className="list-disc pl-8 text-lg text-gray-300 leading-relaxed">
           <li>
-            <strong className="text-white">Freedmen's Bureau:</strong>{" "}
+            <strong className="text-white">Freedmen&rsquo;s Bureau:</strong>{" "}
             Established in 1865 to help formerly enslaved Black Americans. It
             was **systematically defunded and dismantled** before it could fully
             support economic independence.
@@ -163,7 +163,7 @@ const EconomicFreedom = () => {
         </h2>
         <p className="text-lg leading-relaxed text-white font-bold text-center">
           **It&rsquo;s time to reclaim our financial power.**
-        </p>
+        </p>``
         <p className="text-lg text-gray-300 text-center font-semibold">
           Our wealth is being drained. Our culture is being stolen. Our
           communities are being left behind. But together, we have the power to

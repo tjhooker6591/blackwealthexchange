@@ -8,10 +8,7 @@ const Mentorship = () => {
   return (
     <div className="relative min-h-screen bg-black text-white overflow-hidden">
       {/* 🔥 Background Effects */}
-      <div
-        className="absolute inset-0 bg-cover bg-center opacity-40"
-        style={{ backgroundImage: "url('/black-wealth-bg.jpg')" }}
-      ></div>
+      <div className="absolute inset-0 bg-cover bg-center opacity-40" style={{ backgroundImage: "url('/black-wealth-bg.jpg')" }}></div>
       <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-50"></div>
 
       {/* 🔹 Navbar with Logo */}
@@ -22,138 +19,94 @@ const Mentorship = () => {
 
       {/* 🔥 Hero Section */}
       <header className="text-center py-32 relative z-10">
-        <Image
-          src="/bwe-logo.png"
-          alt="BWE Logo"
-          width={120}
-          height={120}
-          className="mx-auto mb-4 animate-fadeIn"
-        />
+        <Image src="/bwe-logo.png" alt="BWE Logo" width={120} height={120} className="mx-auto mb-4 animate-fadeIn" />
         <h1 className="text-6xl md:text-7xl font-extrabold tracking-wide text-gold neon-text animate-slideUp">
           Mentorship for Black Students
         </h1>
         <p className="text-xl md:text-2xl mt-4 font-light text-gray-300 animate-fadeIn">
-          "Mentorship is the key to unlocking new opportunities, building
-          networks, and preparing for future careers."
+          &quot;Mentorship is the key to unlocking new opportunities, building networks, and preparing for future careers.&quot;
         </p>
       </header>
 
       {/* Mentorship Programs Section */}
       <div className="container mx-auto p-6 space-y-8">
-        <h2 className="text-3xl font-semibold text-gold mb-6">
-          Mentorship Programs for Black College Students
-        </h2>
+        <h2 className="text-3xl font-semibold text-gold mb-6">Mentorship Programs for Black College Students</h2>
 
         <div className="space-y-6">
           {/* Ujima Mentoring Program */}
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-            <h3 className="text-2xl font-semibold text-gold">
-              Ujima Mentoring Program
-            </h3>
+            <h3 className="text-2xl font-semibold text-gold">Ujima Mentoring Program</h3>
             <p className="mt-2">
-              The Ujima Mentoring Program helps first-year African American
-              students transition to campus life and thrive in their new
-              environment.
+              The Ujima Mentoring Program helps first-year African American students transition to campus life and thrive in their new environment.
             </p>
             <p className="mt-2">
-              <strong>Benefits:</strong> Provides academic, social, and personal
-              support to students as they adapt to the college experience.
+              <strong>Benefits:</strong> Provides academic, social, and personal support to students as they adapt to the college experience.
             </p>
           </div>
 
           {/* HBCU Near-Peer Mentoring Program */}
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-            <h3 className="text-2xl font-semibold text-gold">
-              HBCU Near-Peer Mentoring Program
-            </h3>
+            <h3 className="text-2xl font-semibold text-gold">HBCU Near-Peer Mentoring Program</h3>
             <p className="mt-2">
-              This 10-week internship helps Black youth navigate the transition
-              from college to career by pairing them with near-peer mentors.
+              This 10-week internship helps Black youth navigate the transition from college to career by pairing them with near-peer mentors.
             </p>
             <p className="mt-2">
-              <strong>Benefits:</strong> Provides real-world career exposure and
-              mentorship to ease the transition from education to employment.
+              <strong>Benefits:</strong> Provides real-world career exposure and mentorship to ease the transition from education to employment.
             </p>
           </div>
 
           {/* Black Executive and Student Training (B.E.S.T.) Program */}
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-            <h3 className="text-2xl font-semibold text-gold">
-              Black Executive and Student Training (B.E.S.T.) Program
-            </h3>
+            <h3 className="text-2xl font-semibold text-gold">Black Executive and Student Training (B.E.S.T.) Program</h3>
             <p className="mt-2">
-              Pairs HBCU students with successful Black executives to offer
-              career mentorship, networking, and leadership development.
+              Pairs HBCU students with successful Black executives to offer career mentorship, networking, and leadership development.
             </p>
             <p className="mt-2">
-              <strong>Benefits:</strong> Provides students with direct guidance
-              from industry leaders, fostering leadership and professional
-              growth.
+              <strong>Benefits:</strong> Provides students with direct guidance from industry leaders, fostering leadership and professional growth.
             </p>
           </div>
 
           {/* Career Readiness and Mentoring Program */}
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-            <h3 className="text-2xl font-semibold text-gold">
-              Career Readiness and Mentoring Program
-            </h3>
+            <h3 className="text-2xl font-semibold text-gold">Career Readiness and Mentoring Program</h3>
             <p className="mt-2">
-              This program helps Black and African-American healthcare
-              professionals prepare for careers by connecting them with mentors
-              in the field.
+              This program helps Black and African-American healthcare professionals prepare for careers by connecting them with mentors in the field.
             </p>
             <p className="mt-2">
-              <strong>Benefits:</strong> Prepares students for healthcare
-              careers through mentoring, career coaching, and internship
-              opportunities.
+              <strong>Benefits:</strong> Prepares students for healthcare careers through mentoring, career coaching, and internship opportunities.
             </p>
           </div>
 
           {/* Heman Sweatt Center for Black Males Mentorship Program */}
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-            <h3 className="text-2xl font-semibold text-gold">
-              Heman Sweatt Center for Black Males Mentorship Program
-            </h3>
+            <h3 className="text-2xl font-semibold text-gold">Heman Sweatt Center for Black Males Mentorship Program</h3>
             <p className="mt-2">
-              This program helps Black male students connect with BIPOC faculty,
-              staff, and community members to enhance academic and social
-              success.
+              This program helps Black male students connect with BIPOC faculty, staff, and community members to enhance academic and social success.
             </p>
             <p className="mt-2">
-              <strong>Benefits:</strong> Supports students' personal
-              development, fosters academic success, and strengthens campus
-              involvement.
+              <strong>Benefits:</strong> Supports students personal development, fosters academic success, and strengthens campus involvement.
             </p>
           </div>
 
           {/* Great Expectations Mentorship Program */}
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-            <h3 className="text-2xl font-semibold text-gold">
-              Great Expectations Mentorship Program
-            </h3>
+            <h3 className="text-2xl font-semibold text-gold">Great Expectations Mentorship Program</h3>
             <p className="mt-2">
-              Pairs first-year or first-generation BIPOC students with
-              upper-level students who provide academic and social guidance.
+              Pairs first-year or first-generation BIPOC students with upper-level students who provide academic and social guidance.
             </p>
             <p className="mt-2">
-              <strong>Benefits:</strong> Provides essential support for
-              first-generation students and helps ease the transition to higher
-              education.
+              <strong>Benefits:</strong> Provides essential support for first-generation students and helps ease the transition to higher education.
             </p>
           </div>
 
           {/* Next Steps Mentoring */}
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-            <h3 className="text-2xl font-semibold text-gold">
-              Next Steps Mentoring
-            </h3>
+            <h3 className="text-2xl font-semibold text-gold">Next Steps Mentoring</h3>
             <p className="mt-2">
-              Enrolls Black/African-American students as early as their freshman
-              year to provide mentorship and career development resources.
+              Enrolls Black/African-American students as early as their freshman year to provide mentorship and career development resources.
             </p>
             <p className="mt-2">
-              <strong>Benefits:</strong> Offers early support, academic
-              coaching, and professional career pathways for students.
+              <strong>Benefits:</strong> Offers early support, academic coaching, and professional career pathways for students.
             </p>
           </div>
         </div>
@@ -161,37 +114,14 @@ const Mentorship = () => {
 
       {/* Mentorship Benefits Section */}
       <section className="container mx-auto p-6 mt-12">
-        <h2 className="text-3xl font-semibold text-gold mb-6">
-          Benefits of Mentorship
-        </h2>
+        <h2 className="text-3xl font-semibold text-gold mb-6">Benefits of Mentorship</h2>
         <ul className="list-disc pl-6 space-y-4">
-          <li>
-            <strong>Build Networks:</strong> Mentors introduce students to
-            professional networks, enhancing their career prospects.
-          </li>
-          <li>
-            <strong>Develop Social Connections:</strong> Mentorship fosters
-            relationships that provide emotional support and a sense of
-            belonging.
-          </li>
-          <li>
-            <strong>Get Academic Support:</strong> Mentors offer guidance on
-            study techniques, navigating academic challenges, and time
-            management.
-          </li>
-          <li>
-            <strong>Feel Heard and Supported:</strong> A mentor&rsquo;s support
-            boosts confidence and helps students feel more understood.
-          </li>
-          <li>
-            <strong>Prepare for Careers:</strong> Mentors provide valuable
-            insights into career choices, internships, and professional growth.
-          </li>
-          <li>
-            <strong>Succeed Academically and Professionally:</strong> Mentorship
-            equips students with the tools and guidance to succeed in both
-            academics and their future careers.
-          </li>
+          <li><strong>Build Networks:</strong> Mentors introduce students to professional networks, enhancing their career prospects.</li>
+          <li><strong>Develop Social Connections:</strong> Mentorship fosters relationships that provide emotional support and a sense of belonging.</li>
+          <li><strong>Get Academic Support:</strong> Mentors offer guidance on study techniques, navigating academic challenges, and time management.</li>
+          <li><strong>Feel Heard and Supported:</strong> A mentor’s support boosts confidence and helps students feel more understood.</li>
+          <li><strong>Prepare for Careers:</strong> Mentors provide valuable insights into career choices, internships, and professional growth.</li>
+          <li><strong>Succeed Academically and Professionally:</strong> Mentorship equips students with the tools and guidance to succeed in both academics and their future careers.</li>
         </ul>
       </section>
 

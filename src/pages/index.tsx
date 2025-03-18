@@ -9,54 +9,28 @@ import { BookOpen, GraduationCap, Users, Briefcase } from "lucide-react";
 
 const EconomicImpactSimulator: React.FC = () => {
   const currentYear = 2025;
-  const startDate = new Date(currentYear, 1, 18);
-  const endOfYear = new Date(currentYear, 11, 31, 23, 59, 59);
-
+  // You can still keep these constants if needed for other calculations:
   const maxSpending = 1980000000000; // $1.98 Trillion projected cap
   const initialValue = 300000000000; // $300 billion as of February 2025
   const monthlyGrowth = 150000000000; // $150 billion per month
   const dailyGrowth = monthlyGrowth / 30.44; // Average days in a month
 
-  const [currentTime, setCurrentTime] = useState(startDate);
+  // Only keeping totalSpending since it is used for display.
   const [totalSpending, setTotalSpending] = useState(initialValue);
-  const [blackOwnedSpending, setBlackOwnedSpending] = useState(
-    initialValue * 0.07,
-  );
-  const [websiteImpact, setWebsiteImpact] = useState(initialValue * 0.01);
 
   useEffect(() => {
-    if (totalSpending >= maxSpending) return; // Stop updating once the max limit is reached
+    if (totalSpending >= maxSpending) return; // Stop updating once the cap is reached
 
     const timer = setInterval(() => {
-      setCurrentTime((prevTime) => {
-        if (prevTime >= endOfYear) return prevTime;
-        return new Date(prevTime.getTime() + 1000 * 60 * 60);
-      });
-
       setTotalSpending((prevTotal) => {
         if (prevTotal >= maxSpending) return maxSpending;
         const newTotal = prevTotal + dailyGrowth / 24;
         return newTotal > maxSpending ? maxSpending : newTotal;
       });
-
-      setBlackOwnedSpending(() => {
-        return Math.min(
-          (totalSpending + dailyGrowth / 24) * 0.1,
-          maxSpending * 0.1
-        );
-      });
-      
-      setWebsiteImpact(() => {
-        return Math.min(
-          (totalSpending + dailyGrowth / 24) * 0.03,
-          maxSpending * 0.03
-        );
-      });
-      
     }, 100);
 
     return () => clearInterval(timer);
-  }, [totalSpending]); // Depend on totalSpending to stop updates
+  }, [totalSpending, dailyGrowth]);
 
   const formatNumber = (num: number) => {
     return num.toLocaleString("en-US", {
@@ -80,18 +54,15 @@ const EconomicImpactSimulator: React.FC = () => {
           ? "Estimated total reached for 2025."
           : "Growing at approximately $150 billion per month"}
       </p>
-      {/* Add the "See Where Your Money Goes" Link */}
+      {/* Navigation Links */}
       <div className="text-center">
-      <Link
-  href="/1.8trillionimpact"
-  className="text-gold font-bold hover:underline text-lg"
->
-  KNOWLEDGE IS POWER - Select Here to &quot;SEE WHERE YOUR MONEY GOES&quot;
-</Link>
-
+        <Link
+          href="/1.8trillionimpact"
+          className="text-gold font-bold hover:underline text-lg"
+        >
+          KNOWLEDGE IS POWER - Select Here to &quot;SEE WHERE YOUR MONEY GOES&quot;
+        </Link>
       </div>
-
-      {/* Add the "Learn Economic Freedom" Link */}
       <div className="text-center mt-4">
         <Link
           href="/economic-freedom"
@@ -166,7 +137,7 @@ export default function Home() {
           Black Wealth Exchange
         </h1>
         <p className="text-lg md:text-xl mt-4 font-light text-gray-300 animate-fadeIn">
-          "The Future of Black Wealth Starts Here."
+          &quot;The Future of Black Wealth Starts Here.&quot;
         </p>
 
         {/* ✅ Add the Economic Impact Counter Here, Right After the p Tag */}

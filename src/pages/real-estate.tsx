@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Home } from "lucide-react";
 
 const RealEstatePage = () => {
-  const router = useRouter();
+  //const router = useRouter();
 
   return (
     <div className="bg-gray-900 text-white min-h-screen">
@@ -71,7 +71,7 @@ const RealEstatePage = () => {
           </h2>
           <p className="text-gray-300 mb-4">
             Investing in real estate is one of the most powerful ways to build
-            long-term wealth. Here's why it's important:
+            long-term wealth. Here&rsquo;s why it&rsquo;s important:
           </p>
           <ul className="list-disc pl-6 text-gray-300">
             <li>

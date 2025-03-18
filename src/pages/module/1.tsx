@@ -50,7 +50,7 @@ const Module1: React.FC = () => {
           <p className="mt-4 text-gray-300">
             In this module, we&rsquo;ll introduce the basics of personal finance
             and explain why managing your finances is crucial for building a
-            secure and successful future. By the end of this module, you'll
+            secure and successful future. By the end of this module, you&rsquo;
             understand the fundamental concepts that will guide you through the
             rest of the course.
           </p>
@@ -183,7 +183,7 @@ const Module1: React.FC = () => {
           <section className="mt-8">
             <h2 className="text-2xl font-semibold text-blue-500">Next Steps</h2>
             <p className="mt-4 text-gray-300">
-              Great job! You've completed this module.
+              Great job! You&rsquo;ve completed this module.
             </p>
             <Link href="/module/2">
               <button className="mt-4 py-2 px-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition">

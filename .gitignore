@@ -17,6 +17,11 @@
 /.next/
 /out/
 
+# lua
+.next/
+node_modules/
+out/
+
 # production
 /build
 

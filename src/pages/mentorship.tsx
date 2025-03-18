@@ -70,9 +70,9 @@ const MentorshipProgram: React.FC = () => {
             What Mentees Are Saying
           </h2>
           <blockquote className="text-gray-300 mt-4">
-            "The mentorship program has been a game-changer for my career.
+            &quot;The mentorship program has been a game-changer for my career.
             I&rsquo;ve gained valuable insights and built connections that have
-            helped me grow both personally and professionally."
+            helped me grow both personally and professionally.&quot;
           </blockquote>
           <p className="text-gray-300 mt-4">- Sarah M., Mentee</p>
         </section>

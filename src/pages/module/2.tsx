@@ -73,11 +73,11 @@ const Module2: React.FC = () => {
           <ul className="list-disc ml-6 mt-4 text-gray-300">
             <li>
               <strong>Specific:</strong> Make sure your goal is clearly defined
-              (e.g., "Save $5,000 for an emergency fund").
+              (e.g., &quot;Save $5,000 for an emergency fund&quot;).
             </li>
             <li>
-              <strong>Measurable:</strong> Track your progress (e.g., "Save $500
-              each month").
+              <strong>Measurable:</strong> Track your progress (e.g., &quot;Save $500
+              each month&quot;).
             </li>
             <li>
               <strong>Achievable:</strong> Ensure your goal is realistic based

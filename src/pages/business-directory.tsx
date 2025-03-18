@@ -1,47 +1,50 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import Fuse from "fuse.js"; // Import Fuse.js for fuzzy searching
+import Image from "next/image";
+import Fuse from "fuse.js";
 
 export default function BusinessDirectory() {
-  const [businesses, setBusinesses] = useState([]);
-  const [searchQuery, setSearchQuery] = useState(""); // for controlling the search bar
-  const [filteredBusinesses, setFilteredBusinesses] = useState([]); // filtered businesses after Fuse.js search
+  // Removed unused "businesses" state since we only use filteredBusinesses.
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredBusinesses, setFilteredBusinesses] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const { search } = router.query; // Get the search query from the URL
+  const { search } = router.query;
 
-  // Fuse.js setup configuration
-  const fuseOptions = {
-    keys: ["business_name", "description"], // Specify fields to search in
-    includeScore: true, // Include a score for the matches (useful for ranking)
-    threshold: 0.3, // Define fuzzy matching threshold (0.0 exact match, 1.0 no match)
-  };
+  // Memoize Fuse.js options so they don't change on every render.
+  const fuseOptions = useMemo(
+    () => ({
+      keys: ["business_name", "description"],
+      includeScore: true,
+      threshold: 0.3,
+    }),
+    []
+  );
 
   useEffect(() => {
     if (search || searchQuery) {
       const query = search || searchQuery;
-      setIsLoading(true); // Set loading to true before fetching data
+      setIsLoading(true);
       fetch(`/api/searchBusinesses?search=${query}`)
         .then((res) => res.json())
         .then((data) => {
           if (Array.isArray(data)) {
-            setBusinesses(data); // Store the search results in state
-            // Initialize Fuse.js
+            // Initialize Fuse.js with the data and the memoized options.
             const fuse = new Fuse(data, fuseOptions);
             const result = fuse.search(query);
-            setFilteredBusinesses(result.map((res) => res.item)); // Set filtered businesses after Fuse.js search
+            setFilteredBusinesses(result.map((res) => res.item));
           } else {
-            setBusinesses([]); // Clear state if no valid data
+            setFilteredBusinesses([]);
           }
-          setIsLoading(false); // Set loading to false after fetching
+          setIsLoading(false);
         })
         .catch((err) => {
           console.error("Error fetching data: ", err);
-          setIsLoading(false); // Set loading to false on error
+          setIsLoading(false);
         });
     }
-  }, [search, searchQuery]); // Re-run when the search query changes
+  }, [search, searchQuery, fuseOptions]);
 
   const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -89,7 +92,7 @@ export default function BusinessDirectory() {
 
         {/* Display results */}
         {isLoading ? (
-          <p>Loading...</p> // Show loading message while fetching results
+          <p>Loading...</p>
         ) : filteredBusinesses.length > 0 ? (
           <div className="search-results mt-6">
             {filteredBusinesses.map((business) => (
@@ -97,13 +100,14 @@ export default function BusinessDirectory() {
                 key={business._id}
                 className="search-result-item flex items-start space-x-4 py-4 border-b border-gray-700"
               >
-                <img
+                <Image
                   src={business.image || "/default-image.jpg"}
                   alt={business.business_name}
-                  className="w-16 h-16 object-cover rounded-md"
+                  width={64} // Approx. equivalent to w-16
+                  height={64} // Approx. equivalent to h-16
+                  className="object-cover rounded-md"
                 />
                 <div className="flex-1">
-                  {/* Make business name clickable */}
                   <Link href={`/business-directory/${business.alias}`} passHref>
                     <span className="text-lg font-semibold text-gold hover:underline cursor-pointer">
                       {business.business_name}
@@ -123,9 +127,10 @@ export default function BusinessDirectory() {
             ))}
           </div>
         ) : (
-          <p>No businesses found for "{search || searchQuery}"</p> // Show message if no businesses are found
+          <p>No businesses found for &quot;{search || searchQuery}&quot;</p>
         )}
       </div>
     </div>
   );
 }
+

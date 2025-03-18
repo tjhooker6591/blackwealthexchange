@@ -174,7 +174,7 @@ const AdvertiseWithUs = () => {
             You Selected: {selectedOption}
           </h2>
           <p style={{ fontSize: "1.1rem", marginBottom: "1rem" }}>
-            Great choice! Now, let's proceed to the next step. Please confirm
+            Great choice! Now, let&rsquo;s proceed to the next step. Please confirm
             your details and make the payment to get started.
           </p>
           <Link

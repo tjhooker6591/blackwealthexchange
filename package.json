@@ -6,9 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint . --fix",
+    "lint": "eslint src/ --fix",
     "format": "prettier --write .",
-    "prepare": "husky"
+    "prepare": "husky install"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",

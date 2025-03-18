@@ -1,15 +1,22 @@
 import React, { useEffect, useState } from "react";
-import Link from "next/link";
+
+interface Business {
+  _id: string;
+  businessName: string;
+  email: string;
+  address: string;
+  // Add any other fields that your business objects have
+}
 
 const AdminDashboard = () => {
-  const [businesses, setBusinesses] = useState<any[]>([]); // To hold the list of businesses
+  const [businesses, setBusinesses] = useState<Business[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Fetch pending businesses
   useEffect(() => {
     const fetchBusinesses = async () => {
       const response = await fetch("/api/admin/getPendingBusinesses");
-      const data = await response.json();
+      const data: Business[] = await response.json();
       setBusinesses(data);
       setLoading(false);
     };
@@ -89,3 +96,4 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
+

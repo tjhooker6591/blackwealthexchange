@@ -64,8 +64,8 @@ export default function TrillionImpactPage() {
               consumer loyalty, yet reinvest little back into the community.
             </li>
             <li>
-              <strong>Beauty & Personal Care:</strong> Companies such as
-              L'Oreal, Procter & Gamble, Unilever, Estee Lauder, and Johnson &
+              <strong>Beauty &amp; Personal Care:</strong> Companies such as
+              l&apos;Oreal, Procter &anp; Gamble, Unilever, Estee Lauder, and Johnson &
               Johnson profit from Black spending, while failing to support Black
               beauty entrepreneurs at similar levels.
             </li>
@@ -76,7 +76,7 @@ export default function TrillionImpactPage() {
               or economic growth.
             </li>
             <li>
-              <strong>Fast Food & Dining:</strong> McDonal's, Starbucks,
+              <strong>Fast Food & Dining:</strong> McDonal&apos;s , Starbucks,
               Chick-fil-A, KFC, and Taco Bell benefit greatly from Black
               consumer dollars. Yet, much of the revenue circulates outside the
               community, hindering long-term growth.
@@ -183,7 +183,7 @@ export default function TrillionImpactPage() {
               importance of supporting Black businesses.
             </li>
             <li>
-              <strong>Important Fact:</strong> The Black community's collective
+              <strong>Important Fact:</strong> The Black community&apos;s collective
               action can increase GDP by **$2 trillion** in the next decade if
               we redirect just **10%** of consumer spending back to Black
               businesses.
