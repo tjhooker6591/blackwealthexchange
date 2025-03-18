@@ -58,7 +58,8 @@ const EconomicImpactSimulator: React.FC = () => {
           href="/1.8trillionimpact"
           className="text-gold font-bold hover:underline text-lg"
         >
-          KNOWLEDGE IS POWER - Select Here to &quot;SEE WHERE YOUR MONEY GOES&quot;
+          KNOWLEDGE IS POWER - Select Here to &quot;SEE WHERE YOUR MONEY
+          GOES&quot;
         </Link>
       </div>
       <div className="text-center mt-4">
@@ -365,7 +366,9 @@ export default function Home() {
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75 z-50">
           <div className="bg-white text-black p-6 rounded-lg shadow-lg w-96">
-            <h2 className="text-2xl font-semibold text-center">Sign Up / Login</h2>
+            <h2 className="text-2xl font-semibold text-center">
+              Sign Up / Login
+            </h2>
             <p className="mt-2 text-center">
               Join the Black Wealth Exchange community.
             </p>

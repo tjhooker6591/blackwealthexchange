@@ -15,7 +15,9 @@ interface ModuleContent {
 const ModulePage: React.FC = () => {
   const router = useRouter();
   const { moduleId } = router.query; // Get the dynamic module ID from the URL
-  const [moduleContent, setModuleContent] = useState<ModuleContent | null>(null);
+  const [moduleContent, setModuleContent] = useState<ModuleContent | null>(
+    null,
+  );
 
   useEffect(() => {
     if (moduleId) {
@@ -50,7 +52,8 @@ const ModulePage: React.FC = () => {
             answer: "A",
           },
           {
-            question: "What is one way personal finance helps with long-term goals?",
+            question:
+              "What is one way personal finance helps with long-term goals?",
             options: [
               "A) Helps you build debt",
               "B) Allows you to plan for retirement and major life events",

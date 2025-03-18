@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import Image from "next/image";  // Import Image from next/image
+import Image from "next/image"; // Import Image from next/image
 
 export default function Marketplace() {
   return (
@@ -24,7 +24,7 @@ export default function Marketplace() {
                 src="/fashion-category.jpg"
                 alt="Black-Owned Fashion"
                 className="rounded mb-4"
-                width={400}  // Add width
+                width={400} // Add width
                 height={300} // Add height
               />
               <h3 className="text-lg font-semibold">Black-Owned Fashion</h3>
@@ -42,7 +42,7 @@ export default function Marketplace() {
                 src="/beauty-category.jpg"
                 alt="Black-Owned Beauty"
                 className="rounded mb-4"
-                width={400}  // Add width
+                width={400} // Add width
                 height={300} // Add height
               />
               <h3 className="text-lg font-semibold">
@@ -62,7 +62,7 @@ export default function Marketplace() {
                 src="/tech-category.jpg"
                 alt="Black Tech"
                 className="rounded mb-4"
-                width={400}  // Add width
+                width={400} // Add width
                 height={300} // Add height
               />
               <h3 className="text-lg font-semibold">Black Tech</h3>
@@ -82,7 +82,7 @@ export default function Marketplace() {
                 src="/subscription-box.jpg"
                 alt="Subscription Boxes"
                 className="rounded mb-4"
-                width={400}  // Add width
+                width={400} // Add width
                 height={300} // Add height
               />
               <h3 className="text-lg font-semibold">Subscription Boxes</h3>
@@ -103,7 +103,7 @@ export default function Marketplace() {
                 src="/financial-services.jpg"
                 alt="Black Financial Services"
                 className="rounded mb-4"
-                width={400}  // Add width
+                width={400} // Add width
                 height={300} // Add height
               />
               <h3 className="text-lg font-semibold">
@@ -132,7 +132,7 @@ export default function Marketplace() {
                 src="/product1.jpg"
                 alt="Handmade Shea Butter"
                 className="rounded mb-4"
-                width={400}  // Add width
+                width={400} // Add width
                 height={300} // Add height
               />
               <h3 className="text-lg font-semibold">Handmade Shea Butter</h3>
@@ -147,7 +147,7 @@ export default function Marketplace() {
                 src="/product2.jpg"
                 alt="African Print Clothing"
                 className="rounded mb-4"
-                width={400}  // Add width
+                width={400} // Add width
                 height={300} // Add height
               />
               <h3 className="text-lg font-semibold">African Print Clothing</h3>
@@ -162,7 +162,7 @@ export default function Marketplace() {
                 src="/product3.jpg"
                 alt="Organic Herbal Tea"
                 className="rounded mb-4"
-                width={400}  // Add width
+                width={400} // Add width
                 height={300} // Add height
               />
               <h3 className="text-lg font-semibold">Organic Herbal Tea</h3>
@@ -214,4 +214,3 @@ export default function Marketplace() {
     </div>
   );
 }
-

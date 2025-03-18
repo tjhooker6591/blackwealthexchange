@@ -8,9 +8,9 @@ const UserDashboard = () => {
     email: string;
     // add other properties if needed
   }
-  
+
   const [user, setUser] = useState<User | null>(null); // Use User type
-  
+
   const router = useRouter();
 
   useEffect(() => {

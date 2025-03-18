@@ -85,11 +85,11 @@ const CourseEnrollmentPage: React.FC = () => {
           </h2>
           <p className="mt-4 text-gray-300">
             Personal Finance 101 is designed to help you get a solid grasp on
-            managing your money. Whether you&rsquo;re new to
-            managing your finances or just need a refresher, this course will
-            teach you essential skills such as creating a budget, saving for the
-            future, and managing debt. Get started today and take control of
-            your financial future!
+            managing your money. Whether you&rsquo;re new to managing your
+            finances or just need a refresher, this course will teach you
+            essential skills such as creating a budget, saving for the future,
+            and managing debt. Get started today and take control of your
+            financial future!
           </p>
         </section>
 
@@ -145,10 +145,9 @@ const CourseEnrollmentPage: React.FC = () => {
           </h2>
           <p className="mt-4 text-gray-300">
             To begin the course, please sign up or log in if you already have an
-            account. It&rsquo;s free and will only take a few
-            moments! Once you&apos;re enrolled, you&rsquo;ll have access to all 
-            course materials and can start learning
-            immediately at your own pace.
+            account. It&rsquo;s free and will only take a few moments! Once
+            you&apos;re enrolled, you&rsquo;ll have access to all course
+            materials and can start learning immediately at your own pace.
           </p>
         </section>
 
@@ -213,13 +212,13 @@ const CourseEnrollmentPage: React.FC = () => {
           </h2>
           <blockquote className="mt-4 text-gray-300">
             &quot;This course helped me finally take control of my finances.
-            I&rsquo;m now confidently budgeting, saving, and
-            planning for the future!&quot; – Sarah M.
+            I&rsquo;m now confidently budgeting, saving, and planning for the
+            future!&quot; – Sarah M.
           </blockquote>
           <blockquote className="mt-4 text-gray-300">
-            &quot;I&rsquo;ve learned so much about managing debt
-            and setting realistic financial goals. It&rsquo;s
-            practical and easy to follow!&quot; – James T.
+            &quot;I&rsquo;ve learned so much about managing debt and setting
+            realistic financial goals. It&rsquo;s practical and easy to
+            follow!&quot; – James T.
           </blockquote>
         </section>
 
@@ -244,8 +243,8 @@ const CourseEnrollmentPage: React.FC = () => {
             <li>
               <strong>Q: Can I download the course materials?</strong>
               <br />
-              A: Yes! You &apos;ll be able to download worksheets, templates, and
-              other resources.
+              A: Yes! You &apos;ll be able to download worksheets, templates,
+              and other resources.
             </li>
           </ul>
         </section>

@@ -163,7 +163,8 @@ const EconomicFreedom = () => {
         </h2>
         <p className="text-lg leading-relaxed text-white font-bold text-center">
           **It&rsquo;s time to reclaim our financial power.**
-        </p>``
+        </p>
+        ``
         <p className="text-lg text-gray-300 text-center font-semibold">
           Our wealth is being drained. Our culture is being stolen. Our
           communities are being left behind. But together, we have the power to

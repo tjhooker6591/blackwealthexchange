@@ -19,7 +19,7 @@ export default function BusinessDirectory() {
       includeScore: true,
       threshold: 0.3,
     }),
-    []
+    [],
   );
 
   useEffect(() => {
@@ -133,4 +133,3 @@ export default function BusinessDirectory() {
     </div>
   );
 }
-

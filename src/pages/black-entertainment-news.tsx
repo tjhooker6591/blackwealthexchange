@@ -112,7 +112,7 @@ export default function BlackImpactNews() {
   const [modalOpen, setModalOpen] = useState(false);
   // Replace any with the NewsArticle type
   const [currentArticle, setCurrentArticle] = useState<NewsArticle | null>(
-    null
+    null,
   );
 
   const openModal = (article: NewsArticle): void => {
@@ -265,10 +265,7 @@ export default function BlackImpactNews() {
 
       {/* News Modal */}
       {modalOpen && currentArticle && (
-        <NewsModal
-          articleTitle={currentArticle.title}
-          onClose={closeModal}
-        />
+        <NewsModal articleTitle={currentArticle.title} onClose={closeModal} />
       )}
     </div>
   );

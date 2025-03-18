@@ -1,4 +1,4 @@
-const fs = require('fs');
+const fs = require("fs");
 
 // Sample arrays for cycling through data
 const locations = [
@@ -11,7 +11,7 @@ const locations = [
   "Detroit, MI",
   "New Orleans, LA",
   "Nashville, TN",
-  "Miami, FL"
+  "Miami, FL",
 ];
 
 const categories = [
@@ -25,7 +25,7 @@ const categories = [
   "Finance",
   "Education",
   "Real Estate",
-  "Agriculture"
+  "Agriculture",
 ];
 
 let csvContent = "Business Name,Location,Category,Description,Email,Phone\n";
@@ -37,12 +37,12 @@ for (let i = 1; i <= 300; i++) {
   const businessName = `Black Business ${i}`;
   const description = `A leading Black-owned business in ${category}.`;
   const email = `contact${i}@blackbusiness${i}.com`;
-  const phone = `(555) 010-${String(i).padStart(4, '0')}`;
-  
+  const phone = `(555) 010-${String(i).padStart(4, "0")}`;
+
   // Wrap values in quotes in case they contain commas
   csvContent += `"${businessName}","${location}","${category}","${description}","${email}","${phone}"\n`;
 }
 
 // Write the CSV content to a file
-fs.writeFileSync('black_businesses.csv', csvContent);
-console.log('CSV file generated: black_businesses.csv');
+fs.writeFileSync("black_businesses.csv", csvContent);
+console.log("CSV file generated: black_businesses.csv");

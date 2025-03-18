@@ -3,15 +3,15 @@
 import dbConnect from "../../lib/dbConnect"; // MongoDB connection utility
 
 export default async function handler(req, res) {
-  if (req.method !=="POST") {
-    return res.status(405).json({ error:"Method Not Allowed"});
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method Not Allowed" });
   }
 
   const { businessName, email, phone, address, description } = req.body;
 
   // Validate input data
   if (!businessName || !email || !phone || !address) {
-    return res.status(400).json({ error: "All fields are required"});
+    return res.status(400).json({ error: "All fields are required" });
   }
 
   try {
@@ -24,7 +24,7 @@ export default async function handler(req, res) {
       $or: [{ email }, { businessName }],
     });
     if (existingBusiness) {
-      return res.status(400).json({ error:"Business already exists"});
+      return res.status(400).json({ error: "Business already exists" });
     }
 
     // Insert the new business into the database
@@ -38,9 +38,14 @@ export default async function handler(req, res) {
       createdAt: new Date(),
     });
 
-    res.status(201).json({ message:"Business created successfully", business: result.ops[0] });
+    res
+      .status(201)
+      .json({
+        message: "Business created successfully",
+        business: result.ops[0],
+      });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error:"Error creating business"});
+    res.status(500).json({ error: "Error creating business" });
   }
 }

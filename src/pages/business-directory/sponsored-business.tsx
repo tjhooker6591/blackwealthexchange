@@ -53,7 +53,9 @@ const SponsoredBusiness = () => {
 
       {/* Business Overview */}
       <section className="bg-gray-800 text-white p-8 rounded-lg shadow-lg">
-        <h1 className="text-4xl font-semibold text-center">{businessData.name}</h1>
+        <h1 className="text-4xl font-semibold text-center">
+          {businessData.name}
+        </h1>
         <p className="text-xl text-center mt-2">{businessData.description}</p>
       </section>
 
@@ -73,19 +75,25 @@ const SponsoredBusiness = () => {
       <section className="mt-12">
         <h2 className="text-3xl font-semibold text-gray-800">Special Offer</h2>
         <div className="bg-yellow-500 p-6 rounded-lg mt-4 text-white">
-          <h3 className="text-2xl font-bold">{businessData.specialOffer.title}</h3>
+          <h3 className="text-2xl font-bold">
+            {businessData.specialOffer.title}
+          </h3>
           <p className="text-lg mt-2">{businessData.specialOffer.details}</p>
         </div>
       </section>
 
       {/* Customer Testimonials */}
       <section className="mt-12">
-        <h2 className="text-3xl font-semibold text-gray-800">Customer Testimonials</h2>
+        <h2 className="text-3xl font-semibold text-gray-800">
+          Customer Testimonials
+        </h2>
         <div className="mt-4">
           {businessData.reviews.map((review, index) => (
             <div key={index} className="border-b py-4">
               <div className="flex items-center">
-                <div className="text-lg font-bold text-gray-800">{review.name}</div>
+                <div className="text-lg font-bold text-gray-800">
+                  {review.name}
+                </div>
                 <div className="ml-2 text-yellow-500">
                   {"★".repeat(review.rating)}
                   {"☆".repeat(5 - review.rating)}
@@ -101,7 +109,8 @@ const SponsoredBusiness = () => {
       <section className="mt-12 bg-gray-800 text-white p-8 rounded-lg">
         <h2 className="text-3xl font-semibold">Contact Us</h2>
         <p className="mt-4 text-lg">
-          Feel free to reach out to us for more information or to get started with our services.
+          Feel free to reach out to us for more information or to get started
+          with our services.
         </p>
         <div className="mt-6">
           <p>
@@ -136,4 +145,3 @@ const SponsoredBusiness = () => {
 };
 
 export default SponsoredBusiness;
-

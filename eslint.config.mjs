@@ -15,10 +15,12 @@ const eslintConfig = [
   {
     ignores: [".next/**", "node_modules/**", "out/**"],
     rules: {
-      "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        { argsIgnorePattern: "^_" },
+      ],
     },
   },
 ];
 
 export default eslintConfig;
-

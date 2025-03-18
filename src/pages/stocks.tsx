@@ -4,9 +4,19 @@ import Image from "next/image";
 import React from "react";
 import { useRouter } from "next/router";
 
-function InvestmentCard({ bgColor, title, description, link, linkLabel, iconSrc, ariaLabel }) {
+function InvestmentCard({
+  bgColor,
+  title,
+  description,
+  link,
+  linkLabel,
+  iconSrc,
+  ariaLabel,
+}) {
   return (
-    <div className={`p-4 ${bgColor} font-semibold rounded-lg shadow-md transform transition-transform hover:scale-105 hover:shadow-xl border border-gold`}>
+    <div
+      className={`p-4 ${bgColor} font-semibold rounded-lg shadow-md transform transition-transform hover:scale-105 hover:shadow-xl border border-gold`}
+    >
       {iconSrc && (
         <div className="flex justify-center mb-4">
           <Image src={iconSrc} alt={`${title} icon`} width={48} height={48} />
@@ -34,14 +44,16 @@ export default function BlackOwnedStocks() {
       <div className="max-w-5xl mx-auto bg-gray-800 p-6 rounded-lg border border-gold">
         {/* Updated Back Button to Redirect to Home Page */}
         <button
-          onClick={() => router.push('/')}
+          onClick={() => router.push("/")}
           className="mb-6 px-4 py-2 bg-gold text-black font-bold rounded hover:bg-yellow-500 transition"
         >
           ← Back to Home
         </button>
-        
+
         <header className="mb-6">
-          <h1 className="text-4xl font-bold text-gold">Explore Black-Owned Publicly Traded Companies</h1>
+          <h1 className="text-4xl font-bold text-gold">
+            Explore Black-Owned Publicly Traded Companies
+          </h1>
         </header>
 
         <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -51,7 +63,10 @@ export default function BlackOwnedStocks() {
             { title: "Carver Bancorp", slug: "carver-bancorp" },
             { title: "Broadway Financial", slug: "broadway-financial" },
             { title: "Axsome Therapeutics", slug: "axsome-therapeutics" },
-            { title: "American Shared Hospital Services", slug: "american-shared-hospital-services" }
+            {
+              title: "American Shared Hospital Services",
+              slug: "american-shared-hospital-services",
+            },
           ].map(({ title, slug }) => (
             <InvestmentCard
               key={slug}
@@ -69,4 +84,3 @@ export default function BlackOwnedStocks() {
     </div>
   );
 }
-

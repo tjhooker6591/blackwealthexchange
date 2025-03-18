@@ -38,19 +38,19 @@ export default function Signup() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  
+
     // Ensure required fields are filled
     if (!formData.email || !formData.password || !formData.confirmPassword) {
       setError("All fields are required.");
       return;
     }
-  
+
     // Validate email format
     if (!validateEmail(formData.email)) {
       setError("Invalid email format.");
       return;
     }
-  
+
     // Validate password strength
     if (!validatePassword(formData.password)) {
       setError(
@@ -58,13 +58,13 @@ export default function Signup() {
       );
       return;
     }
-  
+
     // Check if passwords match
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match.");
       return;
     }
-  
+
     setLoading(true);
     try {
       const response = await fetch("/api/auth/signup", {
@@ -79,12 +79,12 @@ export default function Signup() {
           businessPhone: formData.businessPhone,
         }),
       });
-  
+
       // Handle response and reset form data if successful
       if (!response.ok) {
         throw new Error("Failed to create account.");
       }
-  
+
       setSuccess(true);
       setFormData({
         email: "",
@@ -100,8 +100,7 @@ export default function Signup() {
       setLoading(false);
     }
   };
-  
-  
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-gray-100 p-6">
       <div className="bg-white p-8 shadow-lg rounded-lg w-full max-w-md">
@@ -229,7 +228,10 @@ export default function Signup() {
 
         <p className="text-center mt-4 text-gray-600">
           Already have an account?{" "}
-          <Link href="/login" className="text-gold font-semibold hover:underline">
+          <Link
+            href="/login"
+            className="text-gold font-semibold hover:underline"
+          >
             Login
           </Link>
         </p>

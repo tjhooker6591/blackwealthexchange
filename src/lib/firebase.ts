@@ -1,5 +1,5 @@
-import firebase from "firebase/app";
-import "firebase/auth"; // Import Firebase Authentication if you plan to use it
+import { initializeApp, getApps, getApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "YOUR_API_KEY",
@@ -12,10 +12,9 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase (only once)
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-} else {
-  firebase.app(); // Use the default app if already initialized
-}
+const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 
-export default firebase;
+// If you need authentication, you can export the auth instance as well
+export const auth = getAuth(app);
+
+export default app;

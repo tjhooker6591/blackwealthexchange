@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import Link from "next/link";  
+import Link from "next/link";
 
 export default function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });

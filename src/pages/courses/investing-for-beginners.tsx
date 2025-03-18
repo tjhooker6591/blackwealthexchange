@@ -5,8 +5,8 @@ const InvestingForBeginners = () => {
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-3xl font-semibold text-center mb-6">
-        Investing for Beginners: A Beginner&apos;s Guide to Stock Market Investing,
-        Portfolio Management, and General Investing
+        Investing for Beginners: A Beginner&apos;s Guide to Stock Market
+        Investing, Portfolio Management, and General Investing
       </h1>
 
       <section className="mb-8">
@@ -54,8 +54,8 @@ const InvestingForBeginners = () => {
         <h3 className="text-xl font-semibold mb-2">a. Stocks</h3>
         <p className="text-lg text-gray-600 mb-4">
           <strong>What is a Stock?</strong> A stock represents ownership in a
-          company. When you buy a share of stock, you&apos;re purchasing a small part
-          of that company.
+          company. When you buy a share of stock, you&apos;re purchasing a small
+          part of that company.
         </p>
         <p className="text-lg text-gray-600 mb-4">
           <strong>How Stocks Work:</strong> The value of your shares can go up

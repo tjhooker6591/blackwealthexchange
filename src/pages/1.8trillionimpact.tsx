@@ -65,9 +65,9 @@ export default function TrillionImpactPage() {
             </li>
             <li>
               <strong>Beauty &amp; Personal Care:</strong> Companies such as
-              l&apos;Oreal, Procter &anp; Gamble, Unilever, Estee Lauder, and Johnson &
-              Johnson profit from Black spending, while failing to support Black
-              beauty entrepreneurs at similar levels.
+              l&apos;Oreal, Procter &anp; Gamble, Unilever, Estee Lauder, and
+              Johnson & Johnson profit from Black spending, while failing to
+              support Black beauty entrepreneurs at similar levels.
             </li>
             <li>
               <strong>Technology & Entertainment:</strong> Giants like Apple,
@@ -183,10 +183,10 @@ export default function TrillionImpactPage() {
               importance of supporting Black businesses.
             </li>
             <li>
-              <strong>Important Fact:</strong> The Black community&apos;s collective
-              action can increase GDP by **$2 trillion** in the next decade if
-              we redirect just **10%** of consumer spending back to Black
-              businesses.
+              <strong>Important Fact:</strong> The Black community&apos;s
+              collective action can increase GDP by **$2 trillion** in the next
+              decade if we redirect just **10%** of consumer spending back to
+              Black businesses.
             </li>
           </ul>
         </div>

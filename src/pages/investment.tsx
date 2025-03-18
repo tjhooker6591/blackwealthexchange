@@ -268,8 +268,9 @@ export default function Investment() {
         <div className="mt-8 bg-gray-700 p-4 rounded-lg shadow-md">
           <h2 className="text-xl font-bold text-gold mb-2">Success Stories</h2>
           <p className="text-gray-300">
-            &quot;Thanks to these investment opportunities, our startup grew by 300%
-            in just one year!&quot; - <span className="font-bold">Jane Doe</span>
+            &quot;Thanks to these investment opportunities, our startup grew by
+            300% in just one year!&quot; -{" "}
+            <span className="font-bold">Jane Doe</span>
           </p>
         </div>
       </div>

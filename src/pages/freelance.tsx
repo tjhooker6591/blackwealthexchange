@@ -87,10 +87,10 @@ const FreelanceGigPage: React.FC = () => {
         <section className="mt-8">
           <h2 className="text-xl font-semibold text-blue-500">Explore Gigs</h2>
           <p className="text-gray-300">
-            Whether you&rsquo;re a freelancer looking for your next opportunity or a
-            client needing specific skills, explore the available gigs below.
-            Find the perfect match for your needs, and start building your
-            professional network.
+            Whether you&rsquo;re a freelancer looking for your next opportunity
+            or a client needing specific skills, explore the available gigs
+            below. Find the perfect match for your needs, and start building
+            your professional network.
           </p>
           <Link href="/explore-gigs">
             <button className="mt-4 py-2 px-4 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition">

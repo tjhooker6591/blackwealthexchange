@@ -3,7 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { HomeIcon, UserIcon, BellIcon } from "@heroicons/react/24/solid";
-import Image from 'next/image';  // Make sure to import Image
+import Image from "next/image"; // Make sure to import Image
 
 interface Post {
   id: number;
@@ -160,13 +160,13 @@ const Social: React.FC = () => {
                     className="bg-gray-800 p-4 rounded-lg mb-4 shadow-lg"
                   >
                     <div className="flex items-center mb-2">
-                   <Image
-  src={post.avatar || "/placeholder.svg"}
-  alt={post.user}
-  className="w-10 h-10 rounded-full mr-2"
-  width={40}   // Define width
-  height={40}  // Define height
-/>
+                      <Image
+                        src={post.avatar || "/placeholder.svg"}
+                        alt={post.user}
+                        className="w-10 h-10 rounded-full mr-2"
+                        width={40} // Define width
+                        height={40} // Define height
+                      />
 
                       <span className="font-semibold">{post.user}</span>
                     </div>
