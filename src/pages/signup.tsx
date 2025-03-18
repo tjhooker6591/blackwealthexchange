@@ -1,3 +1,4 @@
+import { Link } from "lucide-react";
 import { useState } from "react";
 
 export default function Signup() {
@@ -228,9 +229,9 @@ export default function Signup() {
 
         <p className="text-center mt-4 text-gray-600">
           Already have an account?{" "}
-          <a href="/login" className="text-gold font-semibold hover:underline">
+          <Link href="/login" className="text-gold font-semibold hover:underline">
             Login
-          </a>
+          </Link>
         </p>
       </div>
     </div>

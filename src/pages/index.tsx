@@ -9,17 +9,16 @@ import { BookOpen, GraduationCap, Users, Briefcase } from "lucide-react";
 
 const EconomicImpactSimulator: React.FC = () => {
   const currentYear = 2025;
-  // You can still keep these constants if needed for other calculations:
   const maxSpending = 1980000000000; // $1.98 Trillion projected cap
   const initialValue = 300000000000; // $300 billion as of February 2025
   const monthlyGrowth = 150000000000; // $150 billion per month
   const dailyGrowth = monthlyGrowth / 30.44; // Average days in a month
 
-  // Only keeping totalSpending since it is used for display.
+  // Only totalSpending is used for display
   const [totalSpending, setTotalSpending] = useState(initialValue);
 
   useEffect(() => {
-    if (totalSpending >= maxSpending) return; // Stop updating once the cap is reached
+    if (totalSpending >= maxSpending) return;
 
     const timer = setInterval(() => {
       setTotalSpending((prevTotal) => {
@@ -30,7 +29,7 @@ const EconomicImpactSimulator: React.FC = () => {
     }, 100);
 
     return () => clearInterval(timer);
-  }, [totalSpending, dailyGrowth]);
+  }, [totalSpending, dailyGrowth, maxSpending]);
 
   const formatNumber = (num: number) => {
     return num.toLocaleString("en-US", {
@@ -54,7 +53,6 @@ const EconomicImpactSimulator: React.FC = () => {
           ? "Estimated total reached for 2025."
           : "Growing at approximately $150 billion per month"}
       </p>
-      {/* Navigation Links */}
       <div className="text-center">
         <Link
           href="/1.8trillionimpact"
@@ -78,13 +76,6 @@ const EconomicImpactSimulator: React.FC = () => {
 export default function Home() {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [scrollY, setScrollY] = useState<number>(0);
-
-  useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   const studentOpportunities = [
     {
@@ -140,7 +131,7 @@ export default function Home() {
           &quot;The Future of Black Wealth Starts Here.&quot;
         </p>
 
-        {/* ✅ Add the Economic Impact Counter Here, Right After the p Tag */}
+        {/* Economic Impact Counter */}
         <section className="relative z-10 py-12">
           <div className="container mx-auto px-4">
             <EconomicImpactSimulator />
@@ -150,12 +141,11 @@ export default function Home() {
         {/* Call to Action & Search Bar */}
         <div className="mt-8 flex flex-col items-center space-y-4 w-full max-w-xl mx-auto">
           <button
-            onClick={() => (window.location.href = "/signup")} // Navigates to the signup page
+            onClick={() => (window.location.href = "/signup")}
             className="px-6 py-2 bg-gradient-to-r from-gold to-yellow-500 text-black font-semibold text-lg rounded-lg hover:shadow-xl transform hover:scale-105 transition animate-pulseGlow"
           >
             Get Started
           </button>
-
           <div className="relative w-full">
             <input
               type="text"
@@ -164,7 +154,6 @@ export default function Home() {
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
-                  // Trigger the search when 'Enter' is pressed
                   window.location.href = `/business-directory?search=${searchQuery}`;
                 }
               }}
@@ -202,7 +191,7 @@ export default function Home() {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 relative z-10">
-        {/* Real Estate & Investment Section (Compact Design) */}
+        {/* Real Estate & Investment Section */}
         <section className="bg-gray-800 rounded-lg shadow-lg p-4 mb-8 mt-12">
           <div className="flex items-center justify-between">
             <div>
@@ -229,20 +218,26 @@ export default function Home() {
           <div className="relative w-full h-32 overflow-hidden">
             <div className="absolute flex space-x-4 animate-scroll">
               {[1, 2, 3, 4, 5].map((i) => (
-                <img
-                  key={i}
-                  src={`/ads/sample-banner${i}.jpg`}
-                  alt={`Sample Banner ${i}`}
-                  className="h-24 w-auto object-cover rounded-lg"
-                />
+                <div key={i} className="relative h-24 w-40">
+                  <Image
+                    src={`/ads/sample-banner${i}.jpg`}
+                    alt={`Sample Banner ${i}`}
+                    layout="fill"
+                    objectFit="cover"
+                    className="rounded-lg"
+                  />
+                </div>
               ))}
               {[1, 2, 3, 4, 5].map((i) => (
-                <img
-                  key={`duplicate-${i}`}
-                  src={`/ads/sample-banner${i}.jpg`}
-                  alt={`Sample Banner ${i}`}
-                  className="h-24 w-auto object-cover rounded-lg"
-                />
+                <div key={`duplicate-${i}`} className="relative h-24 w-40">
+                  <Image
+                    src={`/ads/sample-banner${i}.jpg`}
+                    alt={`Sample Banner ${i}`}
+                    layout="fill"
+                    objectFit="cover"
+                    className="rounded-lg"
+                  />
+                </div>
               ))}
             </div>
           </div>
@@ -313,6 +308,7 @@ export default function Home() {
           </Link>
         </section>
       </main>
+
       {/* Explore Other Black-Owned Websites Section */}
       <section className="relative z-10 py-8 bg-gray-900">
         <div className="container mx-auto px-4 text-center">
@@ -330,6 +326,7 @@ export default function Home() {
           </Link>
         </div>
       </section>
+
       {/* Footer */}
       <footer className="text-center py-8 border-t border-gold mt-8 relative z-10">
         <Image
@@ -354,7 +351,6 @@ export default function Home() {
           &copy; {new Date().getFullYear()} Black Wealth Exchange. All Rights
           Reserved.
         </p>
-        {/* Add the link to other Black-Owned websites here */}
         <p className="mt-2 text-gray-500 text-sm">
           <Link
             href="/black-business-websites"
@@ -369,9 +365,7 @@ export default function Home() {
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75 z-50">
           <div className="bg-white text-black p-6 rounded-lg shadow-lg w-96">
-            <h2 className="text-2xl font-semibold text-center">
-              Sign Up / Login
-            </h2>
+            <h2 className="text-2xl font-semibold text-center">Sign Up / Login</h2>
             <p className="mt-2 text-center">
               Join the Black Wealth Exchange community.
             </p>

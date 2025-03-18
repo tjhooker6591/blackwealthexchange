@@ -3,8 +3,19 @@ import Link from "next/link";
 import Image from "next/image";
 import { FaFacebook, FaTwitter, FaLinkedin } from "react-icons/fa";
 
+// Define a type for a news article
+interface NewsArticle {
+  id: number;
+  imageSrc: string;
+  title: string;
+  description: string;
+  category: string;
+  location: string;
+  impact: string;
+}
+
 // Sample news data with impactful stories
-const newsData = [
+const newsData: NewsArticle[] = [
   {
     id: 1,
     imageSrc: "/images/story1.jpg",
@@ -69,7 +80,13 @@ const tributesData = [
 ];
 
 // Modal for reading news (if needed)
-function NewsModal({ articleTitle, onClose }: { articleTitle: string; onClose: () => void }) {
+function NewsModal({
+  articleTitle,
+  onClose,
+}: {
+  articleTitle: string;
+  onClose: () => void;
+}) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-gray-800 p-6 rounded-lg w-full max-w-md relative">
@@ -89,18 +106,21 @@ function NewsModal({ articleTitle, onClose }: { articleTitle: string; onClose: (
 }
 
 export default function BlackImpactNews() {
-  // Retain the state values for filtering (default to empty string) but remove the setters since they're not used
+  // Retain filtering state as before; no setters are needed since they remain unchanged
   const [selectedCategory] = useState("");
   const [selectedLocation] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
-  const [currentArticle, setCurrentArticle] = useState<any>(null);
+  // Replace any with the NewsArticle type
+  const [currentArticle, setCurrentArticle] = useState<NewsArticle | null>(
+    null
+  );
 
-  const openModal = (article: any) => {
+  const openModal = (article: NewsArticle): void => {
     setCurrentArticle(article);
     setModalOpen(true);
   };
 
-  const closeModal = () => {
+  const closeModal = (): void => {
     setModalOpen(false);
     setCurrentArticle(null);
   };
@@ -135,7 +155,9 @@ export default function BlackImpactNews() {
       {/* Featured Stories Section */}
       <div className="container mx-auto p-6">
         <div className="section bg-gray-800 p-6 my-6 rounded-lg shadow-lg">
-          <h2 className="text-2xl font-bold text-gold">Featured Stories: Celebrating Our Impact</h2>
+          <h2 className="text-2xl font-bold text-gold">
+            Featured Stories: Celebrating Our Impact
+          </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
             {filteredArticles.map((article) => (
               <div
@@ -151,7 +173,9 @@ export default function BlackImpactNews() {
                     className="rounded-lg"
                   />
                 </div>
-                <h3 className="text-lg font-semibold text-gold">{article.title}</h3>
+                <h3 className="text-lg font-semibold text-gold">
+                  {article.title}
+                </h3>
                 <p className="mt-2 text-gray-300">{article.description}</p>
                 <div className="mt-4">
                   <button
@@ -168,7 +192,9 @@ export default function BlackImpactNews() {
 
         {/* Tributes Section: Honoring the Legacy */}
         <div className="section bg-gray-800 p-6 my-6 rounded-lg shadow-lg">
-          <h2 className="text-2xl font-bold text-gold">In Memory: Honoring Our Legends</h2>
+          <h2 className="text-2xl font-bold text-gold">
+            In Memory: Honoring Our Legends
+          </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
             {tributesData.map((tribute) => (
               <div
@@ -184,9 +210,13 @@ export default function BlackImpactNews() {
                     className="rounded-lg"
                   />
                 </div>
-                <h3 className="text-lg font-semibold text-gold">{tribute.name}</h3>
+                <h3 className="text-lg font-semibold text-gold">
+                  {tribute.name}
+                </h3>
                 <p className="mt-2 text-gray-300">{tribute.description}</p>
-                <p className="mt-4 text-sm text-gray-500">Legacy: {tribute.legacy}</p>
+                <p className="mt-4 text-sm text-gray-500">
+                  Legacy: {tribute.legacy}
+                </p>
               </div>
             ))}
           </div>
@@ -194,7 +224,9 @@ export default function BlackImpactNews() {
 
         {/* Other Black News Outlets Section */}
         <div className="section bg-gray-800 p-6 my-6 rounded-lg shadow-lg">
-          <h2 className="text-2xl font-bold text-gold">Other Black News Outlets</h2>
+          <h2 className="text-2xl font-bold text-gold">
+            Other Black News Outlets
+          </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
             <div className="news-outlet-card bg-gray-700 p-4 rounded-lg shadow-md">
               <Image
@@ -204,7 +236,9 @@ export default function BlackImpactNews() {
                 height={100}
                 className="rounded-lg mb-4"
               />
-              <h3 className="text-lg font-semibold text-gold">Good Black News</h3>
+              <h3 className="text-lg font-semibold text-gold">
+                Good Black News
+              </h3>
               <p className="text-gray-300">
                 Stay updated with uplifting and empowering news stories that
                 celebrate the achievements of Black communities globally.
@@ -231,7 +265,10 @@ export default function BlackImpactNews() {
 
       {/* News Modal */}
       {modalOpen && currentArticle && (
-        <NewsModal articleTitle={currentArticle.title} onClose={closeModal} />
+        <NewsModal
+          articleTitle={currentArticle.title}
+          onClose={closeModal}
+        />
       )}
     </div>
   );

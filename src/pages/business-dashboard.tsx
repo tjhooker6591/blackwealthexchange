@@ -1,10 +1,13 @@
-// pages/business-dashboard.tsx
-
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
+interface User {
+  email: string;
+  // Add any additional properties as needed.
+}
+
 const BusinessDashboard = () => {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -16,9 +19,9 @@ const BusinessDashboard = () => {
       return;
     }
 
-    const parsedUser = JSON.parse(storedUser);
+    const parsedUser = JSON.parse(storedUser) as User;
     setUser(parsedUser);
-  }, []);
+  }, [router]); // Added router to dependency array
 
   return (
     <div className="min-h-screen bg-gray-100 p-8">
@@ -29,7 +32,7 @@ const BusinessDashboard = () => {
         <p className="text-gray-600 mt-2">
           Manage your business and explore opportunities for growth.
         </p>
-        {/* Add Business Dashboard Content */}
+        {/* Additional Business Dashboard Content */}
       </div>
     </div>
   );
