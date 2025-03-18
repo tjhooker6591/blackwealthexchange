@@ -38,12 +38,10 @@ export default async function handler(req, res) {
       createdAt: new Date(),
     });
 
-    res
-      .status(201)
-      .json({
-        message: "Business created successfully",
-        business: result.ops[0],
-      });
+    res.status(201).json({
+      message: "Business created successfully",
+      business: result.ops[0],
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Error creating business" });
