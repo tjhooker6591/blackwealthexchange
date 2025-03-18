@@ -7,7 +7,7 @@ if (!uri) {
   throw new Error("Please add your Mongo URI to .env.local");
 }
 
-let client = new MongoClient(uri, options);
+const client = new MongoClient(uri, options);
 let clientPromise: Promise<MongoClient>;
 
 // Declare a global variable so TypeScript knows about it
