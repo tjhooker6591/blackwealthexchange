@@ -3,7 +3,7 @@ import clientPromise from "../../../../lib/mongodb";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   const { id } = req.query;
 
@@ -15,10 +15,9 @@ export default async function handler(
     const client = await clientPromise;
     const db = client.db();
     // Update the business document as needed
-    const result = await db.collection("businesses").updateOne(
-      { _id: id },
-      { $set: { approved: true } }
-    );
+    const result = await db
+      .collection("businesses")
+      .updateOne({ _id: id }, { $set: { approved: true } });
 
     if (result.modifiedCount === 0) {
       return res
