@@ -11,7 +11,7 @@ interface Business {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Business[] | { error: string }>
+  res: NextApiResponse<Business[] | { error: string }>,
 ) {
   if (req.method !== "GET") {
     return res.status(405).json({ error: "Method Not Allowed" });
@@ -33,9 +33,6 @@ export default async function handler(
     } else {
       console.error("Error fetching pending businesses:", error);
     }
-    return res
-      .status(500)
-      .json({ error: "Error fetching pending businesses" });
+    return res.status(500).json({ error: "Error fetching pending businesses" });
   }
 }
-

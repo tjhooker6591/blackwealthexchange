@@ -9,7 +9,7 @@ interface ResponseData {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<ResponseData>
+  res: NextApiResponse<ResponseData>,
 ) {
   const { id } = req.query;
 
@@ -43,4 +43,3 @@ export default async function handler(
     res.status(500).json({ error: "Error rejecting business" });
   }
 }
-
