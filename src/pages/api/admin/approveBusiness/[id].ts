@@ -1,9 +1,10 @@
-// pages/api/admin/approveBusiness/[id].ts
-
-import { ObjectId } from "mongodb"; // Import ObjectId from MongoDB
+import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "../../../../lib/mongodb";
 
-export default async function handler(req, res) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   const { id } = req.query;
 
   if (req.method !== "PUT") {
@@ -12,25 +13,22 @@ export default async function handler(req, res) {
 
   try {
     const client = await clientPromise;
-    const db = client.db("bwes-cluster");
-    const businessesCollection = db.collection("businesses");
-
-    // Convert the string id to MongoDB ObjectId
-    const objectId = new ObjectId(id);
-
-    // Update the business to mark it as verified
-    const result = await businessesCollection.updateOne(
-      { _id: objectId }, // Use ObjectId to query by the business's _id
-      { $set: { isVerified: true } },
+    const db = client.db();
+    // Update the business document as needed
+    const result = await db.collection("businesses").updateOne(
+      { _id: id },
+      { $set: { approved: true } }
     );
 
-    if (result.modifiedCount === 1) {
-      res.status(200).json({ message: "Business approved" });
-    } else {
-      res.status(404).json({ error: "Business not found" });
+    if (result.modifiedCount === 0) {
+      return res
+        .status(404)
+        .json({ error: "Business not found or already approved" });
     }
+
+    res.status(200).json({ message: "Business approved successfully" });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Error approving business" });
+    console.error("Error approving business:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 }
