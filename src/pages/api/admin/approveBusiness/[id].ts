@@ -4,7 +4,7 @@ import { ObjectId } from "mongodb";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   const { id } = req.query;
 
@@ -20,7 +20,7 @@ export default async function handler(
   try {
     const client = await clientPromise;
     const db = client.db();
-    
+
     // Convert the id string to an ObjectId
     const objectId = new ObjectId(id);
 
