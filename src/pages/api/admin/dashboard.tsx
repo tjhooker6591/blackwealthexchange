@@ -22,7 +22,7 @@ interface MongoBusiness {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Business[] | { error: string }>
+  res: NextApiResponse<Business[] | { error: string }>,
 ) {
   if (req.method !== "GET") {
     return res.status(405).json({ error: "Method Not Allowed" });
@@ -33,15 +33,20 @@ export default async function handler(
     const db = client.db(); // Uses the default database specified in your connection URI
 
     // Fetch all businesses from the "businesses" collection and cast them as MongoBusiness[]
-    const businesses = (await db.collection("businesses").find({}).toArray()) as MongoBusiness[];
+    const businesses = (await db
+      .collection("businesses")
+      .find({})
+      .toArray()) as MongoBusiness[];
 
     // Map MongoDB documents to the expected Business type
-    const formattedBusinesses: Business[] = businesses.map((business: MongoBusiness) => ({
-      _id: business._id.toString(), // Convert ObjectId to string
-      businessName: business.businessName || "",
-      email: business.email || "",
-      address: business.address || "",
-    }));
+    const formattedBusinesses: Business[] = businesses.map(
+      (business: MongoBusiness) => ({
+        _id: business._id.toString(), // Convert ObjectId to string
+        businessName: business.businessName || "",
+        email: business.email || "",
+        address: business.address || "",
+      }),
+    );
 
     res.status(200).json(formattedBusinesses);
   } catch (error) {
@@ -49,4 +54,3 @@ export default async function handler(
     res.status(500).json({ error: "Error fetching businesses" });
   }
 }
-
