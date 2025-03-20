@@ -34,7 +34,11 @@ export const authOptions: NextAuthOptions = {
         // Check if user exists and the password matches
         if (user && user.password === password) {
           // Convert the MongoDB ObjectId to a string and return the user data
-          return { id: user._id.toString(), name: user.name, email: user.email };
+          return {
+            id: user._id.toString(),
+            name: user.name,
+            email: user.email,
+          };
         }
 
         // If no user is found or password doesn't match, return null
@@ -47,4 +51,3 @@ export const authOptions: NextAuthOptions = {
 };
 
 export default NextAuth(authOptions);
-
