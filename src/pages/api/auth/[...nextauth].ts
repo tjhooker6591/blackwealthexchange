@@ -9,13 +9,20 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "text", placeholder: "user@example.com" },
+        email: {
+          label: "Email",
+          type: "text",
+          placeholder: "user@example.com",
+        },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
         // Ensure credentials is defined
         if (!credentials) return null;
-        const { email, password } = credentials as { email: string; password: string };
+        const { email, password } = credentials as {
+          email: string;
+          password: string;
+        };
 
         // Connect to MongoDB and get the database
         const client = await clientPromise;
@@ -26,8 +33,8 @@ export const authOptions: NextAuthOptions = {
 
         // Check if user exists and the password matches
         if (user && user.password === password) {
-          // Return an object with the user data that NextAuth requires
-          return { id: user._id, name: user.name, email: user.email };
+          // Convert the MongoDB ObjectId to a string and return the user data
+          return { id: user._id.toString(), name: user.name, email: user.email };
         }
 
         // If no user is found or password doesn't match, return null
@@ -40,3 +47,4 @@ export const authOptions: NextAuthOptions = {
 };
 
 export default NextAuth(authOptions);
+
