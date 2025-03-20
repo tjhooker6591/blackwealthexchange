@@ -1,24 +1,23 @@
-// pages/api/sellers/register.ts
-import { NextApiRequest, NextApiResponse } from "next";
+// src/pages/api/sellers/register.ts
 
-// Simulated database import or service call
-import { saveSellerToDatabase } from "@/services/sellerService";
+import type { NextApiRequest, NextApiResponse } from "next";
+import { saveSellerToDatabase, Seller } from "@/services/sellerService";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse,
+  res: NextApiResponse
 ) {
   if (req.method === "POST") {
     try {
       const { name, email, businessName, website, phone } = req.body;
 
-      // Basic Validation
+      // Basic validation: Check if required fields are provided
       if (!name || !email || !businessName) {
         return res.status(400).json({ error: "Missing required fields" });
       }
 
-      // Save to database (mock or actual service)
-      const seller = await saveSellerToDatabase({
+      // Save the seller to the database using our service
+      const seller: Seller = await saveSellerToDatabase({
         name,
         email,
         businessName,
@@ -38,3 +37,4 @@ export default async function handler(
     return res.status(405).json({ error: "Method Not Allowed" });
   }
 }
+

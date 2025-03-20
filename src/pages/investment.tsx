@@ -1,8 +1,17 @@
-// /pages/investment.tsx
-
 import Link from "next/link";
 import Image from "next/image";
 import React from "react";
+
+// Define the props interface for the InvestmentCard component.
+interface InvestmentCardProps {
+  bgColor: string;
+  title: string;
+  description: string;
+  link: string;
+  linkLabel: string;
+  iconSrc?: string;
+  ariaLabel: string;
+}
 
 // Reusable Investment Card component
 function InvestmentCard({
@@ -13,7 +22,7 @@ function InvestmentCard({
   linkLabel,
   iconSrc,
   ariaLabel,
-}) {
+}: InvestmentCardProps) {
   return (
     <div
       className={`p-4 ${bgColor} font-semibold rounded-lg shadow-md transform transition hover:scale-105 hover:shadow-xl`}
@@ -59,8 +68,7 @@ export default function Investment() {
             Investment & Financial Growth
           </h1>
           <p className="text-gray-300 mt-2">
-            Empower Black businesses and individuals through strategic
-            investments, funding, and wealth-building resources.
+            Empower Black businesses and individuals through strategic investments, funding, and wealth-building resources.
           </p>
         </header>
 
@@ -148,17 +156,14 @@ export default function Investment() {
             Financial Literacy Courses
           </h2>
           <p className="mt-2 text-gray-300">
-            Enhance your knowledge of personal finance, investing, and
-            wealth-building strategies. Our courses are designed to empower the
-            community and provide essential tools for financial independence.
+            Enhance your knowledge of personal finance, investing, and wealth-building strategies. Our courses are designed to empower the community and provide essential tools for financial independence.
           </p>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
             {/* Course 1 */}
             <div className="course-card bg-gray-800 p-4 rounded shadow-lg text-center">
               <h3 className="text-lg font-semibold">Personal Finance 101</h3>
               <p className="mt-2 text-gray-400">
-                Learn the basics of budgeting, saving, and managing money
-                effectively.
+                Learn the basics of budgeting, saving, and managing money effectively.
               </p>
               <Link href="/course-enrollment">
                 <button className="mt-4 p-2 bg-gold text-black font-bold rounded">
@@ -171,8 +176,7 @@ export default function Investment() {
             <div className="course-card bg-gray-800 p-4 rounded shadow-lg text-center">
               <h3 className="text-lg font-semibold">Investing for Beginners</h3>
               <p className="mt-2 text-gray-400">
-                A beginner&rsquo;s guide to stock market investing and portfolio
-                management.
+                A beginner’s guide to stock market investing and portfolio management.
               </p>
               <Link href="/courses/investing-for-beginners">
                 <button className="mt-4 p-2 bg-gold text-black font-bold rounded">
@@ -187,8 +191,7 @@ export default function Investment() {
                 Building Generational Wealth
               </h3>
               <p className="mt-2 text-gray-400">
-                Learn how to build lasting wealth and create financial
-                opportunities for future generations.
+                Learn how to build lasting wealth and create financial opportunities for future generations.
               </p>
               <Link href="/courses/generational-wealth">
                 <button className="mt-4 p-2 bg-gold text-black font-bold rounded">
@@ -205,35 +208,23 @@ export default function Investment() {
             Financial Literacy for Black Investors
           </h2>
           <p className="text-gray-300 mb-4">
-            Financial literacy is key to making informed investment decisions
-            and building long-term wealth. We believe in empowering Black
-            communities with the knowledge and tools to navigate the financial
-            landscape. Below are key topics that will guide you in your
-            financial journey:
+            Financial literacy is key to making informed investment decisions and building long-term wealth. We believe in empowering Black communities with the knowledge and tools to navigate the financial landscape. Below are key topics that will guide you in your financial journey:
           </p>
           <ul className="list-disc pl-6 text-gray-300">
             <li>
-              <strong>Building Wealth Through Investments:</strong> Learn how to
-              create wealth through various investment vehicles like stocks,
-              real estate, and businesses.
+              <strong>Building Wealth Through Investments:</strong> Learn how to create wealth through various investment vehicles like stocks, real estate, and businesses.
             </li>
             <li>
-              <strong>Budgeting and Financial Planning:</strong> Learn how to
-              manage your income, reduce expenses, and save for your future.
+              <strong>Budgeting and Financial Planning:</strong> Learn how to manage your income, reduce expenses, and save for your future.
             </li>
             <li>
-              <strong>Understanding Credit:</strong> Understand how credit works
-              and how to use it responsibly to improve your financial health.
+              <strong>Understanding Credit:</strong> Understand how credit works and how to use it responsibly to improve your financial health.
             </li>
             <li>
-              <strong>Retirement Planning:</strong> Learn about the best ways to
-              save for retirement and take advantage of employer-sponsored plans
-              and individual retirement accounts (IRAs).
+              <strong>Retirement Planning:</strong> Learn about the best ways to save for retirement and take advantage of employer-sponsored plans and individual retirement accounts (IRAs).
             </li>
             <li>
-              <strong>Debt Management:</strong> Learn strategies to manage and
-              eliminate debt while increasing your savings and investment
-              capacity.
+              <strong>Debt Management:</strong> Learn strategies to manage and eliminate debt while increasing your savings and investment capacity.
             </li>
           </ul>
           <Link href="/financial-literacy">
@@ -268,9 +259,7 @@ export default function Investment() {
         <div className="mt-8 bg-gray-700 p-4 rounded-lg shadow-md">
           <h2 className="text-xl font-bold text-gold mb-2">Success Stories</h2>
           <p className="text-gray-300">
-            &quot;Thanks to these investment opportunities, our startup grew by
-            300% in just one year!&quot; -{" "}
-            <span className="font-bold">Jane Doe</span>
+            &quot;Thanks to these investment opportunities, our startup grew by 300% in just one year!&quot; - <span className="font-bold">Jane Doe</span>
           </p>
         </div>
       </div>

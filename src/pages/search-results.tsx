@@ -3,17 +3,27 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import Image from "next/image";
 
+// Define the interface for a business search result.
+interface Business {
+  name: string;
+  description: string;
+  address: string;
+  latitude: number;
+  longitude: number;
+}
+
 export default function SearchResults() {
   const router = useRouter();
   const { search, location } = router.query;
-  const [results, setResults] = useState([]);
+  // Explicitly type the state so TypeScript knows each item is a Business.
+  const [results, setResults] = useState<Business[]>([]);
 
   useEffect(() => {
     if (search) {
-      // Fetch search results from API or database
       fetch(`/api/search?query=${search}&location=${location}`)
         .then((res) => res.json())
-        .then((data) => setResults(data));
+        .then((data: Business[]) => setResults(data))
+        .catch((err) => console.error("Error fetching search results:", err));
     }
   }, [search, location]);
 

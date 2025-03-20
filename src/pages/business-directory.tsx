@@ -4,13 +4,30 @@ import Link from "next/link";
 import Image from "next/image";
 import Fuse from "fuse.js";
 
+// Define the interface for a Business
+interface Business {
+  _id: string;
+  image?: string;
+  business_name: string;
+  alias: string;
+  description?: string;
+  phone?: string;
+  address?: string;
+}
+
 export default function BusinessDirectory() {
-  // Removed unused "businesses" state since we only use filteredBusinesses.
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredBusinesses, setFilteredBusinesses] = useState([]);
+  const [filteredBusinesses, setFilteredBusinesses] = useState<Business[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { search } = router.query;
+
+  // When the URL query parameter changes, update the search input state.
+  useEffect(() => {
+    if (typeof search === "string" && search !== searchQuery) {
+      setSearchQuery(search);
+    }
+  }, [search, searchQuery]);
 
   // Memoize Fuse.js options so they don't change on every render.
   const fuseOptions = useMemo(
@@ -19,18 +36,23 @@ export default function BusinessDirectory() {
       includeScore: true,
       threshold: 0.3,
     }),
-    [],
+    []
   );
 
   useEffect(() => {
+    // Only trigger the search if there is a query either from the URL or from input.
     if (search || searchQuery) {
-      const query = search || searchQuery;
+      const query =
+        typeof search === "string"
+          ? search
+          : Array.isArray(search)
+          ? search[0]
+          : searchQuery;
       setIsLoading(true);
       fetch(`/api/searchBusinesses?search=${query}`)
         .then((res) => res.json())
-        .then((data) => {
+        .then((data: Business[]) => {
           if (Array.isArray(data)) {
-            // Initialize Fuse.js with the data and the memoized options.
             const fuse = new Fuse(data, fuseOptions);
             const result = fuse.search(query);
             setFilteredBusinesses(result.map((res) => res.item));
@@ -50,8 +72,9 @@ export default function BusinessDirectory() {
     setSearchQuery(e.target.value);
   };
 
+  // Use shallow routing to update the URL without a full page refresh.
   const handleSearchSubmit = () => {
-    router.push(`/business-directory?search=${searchQuery}`);
+    router.push(`/business-directory?search=${searchQuery}`, undefined, { shallow: true });
   };
 
   return (
@@ -80,6 +103,11 @@ export default function BusinessDirectory() {
             placeholder="Find Black-Owned Businesses..."
             value={searchQuery}
             onChange={handleSearchInputChange}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleSearchSubmit();
+              }
+            }}
             className="w-full px-4 py-2 rounded-lg bg-gray-800 text-white placeholder-gray-400 border border-gray-700 focus:ring-2 focus:ring-gold focus:outline-none transition-all"
           />
           <button
@@ -103,8 +131,8 @@ export default function BusinessDirectory() {
                 <Image
                   src={business.image || "/default-image.jpg"}
                   alt={business.business_name}
-                  width={64} // Approx. equivalent to w-16
-                  height={64} // Approx. equivalent to h-16
+                  width={64}
+                  height={64}
                   className="object-cover rounded-md"
                 />
                 <div className="flex-1">

@@ -1,9 +1,19 @@
 "use client";
+
 import React, { useState } from "react";
 import Link from "next/link";
 
+interface FormData {
+  full_name: string;
+  email: string;
+  business_name: string;
+  website: string;
+  category: string;
+  description: string;
+}
+
 export default function SellerRegister() {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     full_name: "",
     email: "",
     business_name: "",
@@ -13,27 +23,33 @@ export default function SellerRegister() {
   });
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [name]: value,
-    });
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const response = await fetch("/api/sellers/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
-    if (response.ok) {
-      alert("Registration successful!");
-    } else {
+    try {
+      const response = await fetch("/api/sellers/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        alert("Registration successful!");
+      } else {
+        alert("Failed to register. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error registering seller:", error);
       alert("Failed to register. Please try again.");
     }
   };
@@ -103,7 +119,6 @@ export default function SellerRegister() {
         </form>
       </div>
 
-      {/* Back to Homepage Button */}
       <div className="mt-6">
         <Link href="/">
           <button className="p-4 bg-white text-black font-bold rounded-lg shadow-lg hover:bg-gold hover:text-black transition duration-300">

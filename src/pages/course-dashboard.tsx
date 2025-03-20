@@ -9,7 +9,7 @@ const CourseDashboard: React.FC = () => {
   // Simulating modules' completion (can later be replaced with backend logic or localStorage)
   useEffect(() => {
     const savedModules = JSON.parse(
-      localStorage.getItem("completedModules") || "[]",
+      localStorage.getItem("completedModules") || "[]"
     );
     setCompletedModules(savedModules);
   }, []);
@@ -60,10 +60,7 @@ const CourseDashboard: React.FC = () => {
           </h2>
           <ul className="list-decimal ml-6 mt-4 text-gray-300">
             {["1", "2", "3", "4", "5", "6", "7", "8"].map((moduleId) => (
-              <li
-                key={moduleId}
-                className="flex justify-between items-center mt-4"
-              >
+              <li key={moduleId} className="flex justify-between items-center mt-4">
                 <span className="text-lg">{getModuleTitle(moduleId)}</span>
 
                 <button
@@ -110,7 +107,8 @@ const CourseDashboard: React.FC = () => {
 
 // Helper function to get the module title based on moduleId
 const getModuleTitle = (moduleId: string) => {
-  const titles = {
+  // Annotate titles as a Record with string keys and string values.
+  const titles: Record<string, string> = {
     "1": "Introduction to Personal Finance",
     "2": "Setting Financial Goals",
     "3": "Creating a Budget",
