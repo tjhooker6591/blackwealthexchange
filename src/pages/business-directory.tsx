@@ -36,7 +36,7 @@ export default function BusinessDirectory() {
       includeScore: true,
       threshold: 0.3,
     }),
-    []
+    [],
   );
 
   useEffect(() => {
@@ -46,8 +46,8 @@ export default function BusinessDirectory() {
         typeof search === "string"
           ? search
           : Array.isArray(search)
-          ? search[0]
-          : searchQuery;
+            ? search[0]
+            : searchQuery;
       setIsLoading(true);
       fetch(`/api/searchBusinesses?search=${query}`)
         .then((res) => res.json())
@@ -74,7 +74,9 @@ export default function BusinessDirectory() {
 
   // Use shallow routing to update the URL without a full page refresh.
   const handleSearchSubmit = () => {
-    router.push(`/business-directory?search=${searchQuery}`, undefined, { shallow: true });
+    router.push(`/business-directory?search=${searchQuery}`, undefined, {
+      shallow: true,
+    });
   };
 
   return (

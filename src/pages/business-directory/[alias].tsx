@@ -1,17 +1,29 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
+// Define an interface for the business object
+interface Business {
+  business_name: string;
+  categories: string;
+  address: string;
+  description?: string;
+  phone?: string;
+  latitude: number;
+  longitude: number;
+  website?: string;
+}
+
 const BusinessDetail = () => {
   const router = useRouter();
   const { alias } = router.query; // Get alias from the URL
-  const [business, setBusiness] = useState(null);
+  const [business, setBusiness] = useState<Business | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (alias) {
       fetch(`/api/getBusiness?alias=${alias}`)
         .then((res) => res.json())
-        .then((data) => {
+        .then((data: Business) => {
           setBusiness(data);
           setIsLoading(false);
         })
@@ -66,9 +78,7 @@ const BusinessDetail = () => {
             Find Us on the Map
           </h3>
           <div className="w-full h-64 bg-gray-700">
-            {/* Use a map service (Google Maps, Leaflet, or Mapbox) here */}
             <div className="w-full h-full text-center text-white">
-              {/* Example of map implementation */}
               <iframe
                 src={`https://www.google.com/maps?q=${business.latitude},${business.longitude}&hl=es;z=14&output=embed`}
                 width="100%"
@@ -106,3 +116,4 @@ const BusinessDetail = () => {
 };
 
 export default BusinessDetail;
+
