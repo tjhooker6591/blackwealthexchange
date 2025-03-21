@@ -42,14 +42,20 @@ const BroadwayFinancial: React.FC = () => {
             About Broadway Financial
           </h2>
           <p className="mb-4 text-lg text-gray-300">
-            Broadway Financial is a leading publicly traded financial services company focused on delivering innovative solutions for wealth management, 
-            investment advisory, and strategic financing. With a rich history and a forward-thinking approach, Broadway Financial has built a reputation 
-            for excellence and integrity in the financial sector.
+            Broadway Financial is a leading publicly traded financial services
+            company focused on delivering innovative solutions for wealth
+            management, investment advisory, and strategic financing. With a
+            rich history and a forward-thinking approach, Broadway Financial has
+            built a reputation for excellence and integrity in the financial
+            sector.
           </p>
           <p className="mb-4 text-lg text-gray-300">
-            Leveraging advanced technology and a team of seasoned financial experts, the company provides tailored financial products and services designed 
-            to empower both individuals and businesses. Their commitment to customer success, combined with a robust market presence, positions them as a 
-            trusted partner in achieving financial growth.
+            Leveraging advanced technology and a team of seasoned financial
+            experts, the company provides tailored financial products and
+            services designed to empower both individuals and businesses. Their
+            commitment to customer success, combined with a robust market
+            presence, positions them as a trusted partner in achieving financial
+            growth.
           </p>
           <div className="my-6">
             <Image
@@ -68,8 +74,10 @@ const BroadwayFinancial: React.FC = () => {
             Investment Opportunity
           </h2>
           <p className="mb-4 text-lg text-gray-300">
-            Investing in Broadway Financial provides you the chance to be part of a dynamic and evolving financial landscape. As a publicly traded company,
-            Broadway Financial offers transparency, consistent performance, and significant long-term potential for investors.
+            Investing in Broadway Financial provides you the chance to be part
+            of a dynamic and evolving financial landscape. As a publicly traded
+            company, Broadway Financial offers transparency, consistent
+            performance, and significant long-term potential for investors.
           </p>
           <ul className="list-disc list-inside mb-4 text-lg text-gray-300">
             <li>Publicly traded on major stock exchanges</li>
@@ -82,14 +90,23 @@ const BroadwayFinancial: React.FC = () => {
             To invest in Broadway Financial, consider the following steps:
           </p>
           <ol className="list-decimal list-inside mb-4 text-lg text-gray-300">
-            <li>Open or use an existing brokerage account with a reputable firm.</li>
+            <li>
+              Open or use an existing brokerage account with a reputable firm.
+            </li>
             <li>Research the stock ticker symbol for Broadway Financial.</li>
-            <li>Place an order to purchase shares at a price that aligns with your investment strategy.</li>
-            <li>Monitor your investment and keep updated on company news and financial reports.</li>
+            <li>
+              Place an order to purchase shares at a price that aligns with your
+              investment strategy.
+            </li>
+            <li>
+              Monitor your investment and keep updated on company news and
+              financial reports.
+            </li>
           </ol>
           <p className="mb-4 text-lg text-gray-300">
-            Remember, all investments carry risks. It is advisable to consult with a financial advisor and perform thorough research before making any 
-            investment decisions.
+            Remember, all investments carry risks. It is advisable to consult
+            with a financial advisor and perform thorough research before making
+            any investment decisions.
           </p>
         </section>
 
@@ -99,12 +116,16 @@ const BroadwayFinancial: React.FC = () => {
             Why Invest in Broadway Financial?
           </h2>
           <p className="mb-4 text-lg text-gray-300">
-            Broadway Financial stands out due to its strategic focus on innovation, customer-centric solutions, and sustainable growth. With a 
-            commitment to leveraging technology and market expertise, the company offers investors:
+            Broadway Financial stands out due to its strategic focus on
+            innovation, customer-centric solutions, and sustainable growth. With
+            a commitment to leveraging technology and market expertise, the
+            company offers investors:
           </p>
           <ul className="list-disc list-inside mb-4 text-lg text-gray-300">
             <li>Exposure to a diversified financial services market</li>
-            <li>Potential for steady dividend payouts and capital appreciation</li>
+            <li>
+              Potential for steady dividend payouts and capital appreciation
+            </li>
             <li>Access to innovative financial products and strategies</li>
             <li>Insightful leadership and robust governance</li>
             <li>A track record of stability and growth</li>

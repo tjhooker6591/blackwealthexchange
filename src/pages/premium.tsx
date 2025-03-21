@@ -12,7 +12,8 @@ const PremiumPage: React.FC = () => {
             Premium Membership
           </h1>
           <p className="text-xl text-gray-300">
-            Unlock exclusive features and benefits tailored for both businesses and individuals.
+            Unlock exclusive features and benefits tailored for both businesses
+            and individuals.
           </p>
         </header>
 
@@ -20,7 +21,8 @@ const PremiumPage: React.FC = () => {
         <section className="mb-12">
           <h2 className="text-3xl font-bold text-gold mb-4">For Businesses</h2>
           <p className="mb-4">
-            Elevate your business with premium tools and insights that drive growth, enhanced visibility, and customer engagement.
+            Elevate your business with premium tools and insights that drive
+            growth, enhanced visibility, and customer engagement.
           </p>
           <ul className="list-disc list-inside text-gray-300 mb-4">
             <li>Priority listing in our directory</li>
@@ -40,7 +42,8 @@ const PremiumPage: React.FC = () => {
         <section className="mb-12">
           <h2 className="text-3xl font-bold text-gold mb-4">For Users</h2>
           <p className="mb-4">
-            Enjoy an ad-free experience, exclusive content, and market insights curated for our premium community.
+            Enjoy an ad-free experience, exclusive content, and market insights
+            curated for our premium community.
           </p>
           <ul className="list-disc list-inside text-gray-300 mb-4">
             <li>Ad-free browsing experience</li>
@@ -58,13 +61,18 @@ const PremiumPage: React.FC = () => {
 
         {/* Pricing Plans */}
         <section className="text-center">
-          <h2 className="text-3xl font-bold text-gold mb-4">Flexible Pricing Plans</h2>
+          <h2 className="text-3xl font-bold text-gold mb-4">
+            Flexible Pricing Plans
+          </h2>
           <p className="text-gray-300 mb-8">
-            Choose a plan that fits your needs—whether you are a business owner or an individual, our premium plans offer unbeatable value.
+            Choose a plan that fits your needs—whether you are a business owner
+            or an individual, our premium plans offer unbeatable value.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="p-6 bg-gray-800 rounded-lg shadow-lg">
-              <h3 className="text-2xl font-bold text-gold mb-2">Business Premium</h3>
+              <h3 className="text-2xl font-bold text-gold mb-2">
+                Business Premium
+              </h3>
               <p className="text-xl mb-4">$99/month</p>
               <ul className="list-disc list-inside text-gray-300 mb-4">
                 <li>Priority Listing</li>
@@ -79,7 +87,9 @@ const PremiumPage: React.FC = () => {
               </Link>
             </div>
             <div className="p-6 bg-gray-800 rounded-lg shadow-lg">
-              <h3 className="text-2xl font-bold text-gold mb-2">User Premium</h3>
+              <h3 className="text-2xl font-bold text-gold mb-2">
+                User Premium
+              </h3>
               <p className="text-xl mb-4">$19/month</p>
               <ul className="list-disc list-inside text-gray-300 mb-4">
                 <li>Ad-Free Experience</li>

@@ -42,15 +42,19 @@ const AmericanSharedHospitalServices: React.FC = () => {
             About American Shared Hospital Services
           </h2>
           <p className="mb-4 text-lg text-gray-300">
-            American Shared Hospital Services (ASHS) is a leading publicly traded company that provides comprehensive
-            support services to hospitals and healthcare systems nationwide. With a focus on operational excellence
-            and innovative technology, ASHS partners with healthcare providers to optimize facility management, streamline
+            American Shared Hospital Services (ASHS) is a leading publicly
+            traded company that provides comprehensive support services to
+            hospitals and healthcare systems nationwide. With a focus on
+            operational excellence and innovative technology, ASHS partners with
+            healthcare providers to optimize facility management, streamline
             supply chains, and enhance revenue cycle management.
           </p>
           <p className="mb-4 text-lg text-gray-300">
-            ASHS is committed to elevating the quality of care while reducing costs and improving efficiency in the healthcare
-            industry. Their solutions integrate advanced analytics, state-of-the-art IT systems, and personalized support,
-            making them a trusted partner for hospitals aiming to deliver superior patient care.
+            ASHS is committed to elevating the quality of care while reducing
+            costs and improving efficiency in the healthcare industry. Their
+            solutions integrate advanced analytics, state-of-the-art IT systems,
+            and personalized support, making them a trusted partner for
+            hospitals aiming to deliver superior patient care.
           </p>
           <div className="my-6">
             <Image
@@ -69,8 +73,10 @@ const AmericanSharedHospitalServices: React.FC = () => {
             Investment Opportunity
           </h2>
           <p className="mb-4 text-lg text-gray-300">
-            Investing in ASHS allows you to participate in a transformative movement within the healthcare industry.
-            As a publicly traded company, ASHS offers transparency, stable growth, and robust financial performance.
+            Investing in ASHS allows you to participate in a transformative
+            movement within the healthcare industry. As a publicly traded
+            company, ASHS offers transparency, stable growth, and robust
+            financial performance.
           </p>
           <ul className="list-disc list-inside mb-4 text-lg text-gray-300">
             <li>Publicly traded on major stock exchanges</li>
@@ -83,13 +89,26 @@ const AmericanSharedHospitalServices: React.FC = () => {
             To invest in ASHS, consider the following steps:
           </p>
           <ol className="list-decimal list-inside mb-4 text-lg text-gray-300">
-            <li>Open a brokerage account with a trusted financial institution.</li>
-            <li>Research the stock ticker for ASHS and review its financial reports.</li>
-            <li>Place an order for shares at a price aligned with your investment strategy.</li>
-            <li>Regularly monitor your investment and stay updated on company news and market trends.</li>
+            <li>
+              Open a brokerage account with a trusted financial institution.
+            </li>
+            <li>
+              Research the stock ticker for ASHS and review its financial
+              reports.
+            </li>
+            <li>
+              Place an order for shares at a price aligned with your investment
+              strategy.
+            </li>
+            <li>
+              Regularly monitor your investment and stay updated on company news
+              and market trends.
+            </li>
           </ol>
           <p className="mb-4 text-lg text-gray-300">
-            Remember, every investment comes with risk. It is advisable to consult a financial advisor and conduct in-depth research before investing.
+            Remember, every investment comes with risk. It is advisable to
+            consult a financial advisor and conduct in-depth research before
+            investing.
           </p>
         </section>
 
@@ -99,15 +118,18 @@ const AmericanSharedHospitalServices: React.FC = () => {
             Why Invest in ASHS?
           </h2>
           <p className="mb-4 text-lg text-gray-300">
-            ASHS stands out not only for it is innovative solutions in healthcare but also for its dedication to community and social impact.
-            Investors benefit from:
+            ASHS stands out not only for it is innovative solutions in
+            healthcare but also for its dedication to community and social
+            impact. Investors benefit from:
           </p>
           <ul className="list-disc list-inside mb-4 text-lg text-gray-300">
             <li>Access to a growing healthcare support market</li>
             <li>Sustainable and cost-effective service models</li>
             <li>Commitment to improving patient outcomes</li>
             <li>Strong leadership with a proven vision for the future</li>
-            <li>Potential for attractive dividend payouts and capital appreciation</li>
+            <li>
+              Potential for attractive dividend payouts and capital appreciation
+            </li>
           </ul>
         </section>
 
@@ -122,7 +144,10 @@ const AmericanSharedHospitalServices: React.FC = () => {
 
         {/* Footer */}
         <footer className="mt-12 text-center text-gray-500 text-sm">
-          <p>&copy; {new Date().getFullYear()} American Shared Hospital Services. All rights reserved.</p>
+          <p>
+            &copy; {new Date().getFullYear()} American Shared Hospital Services.
+            All rights reserved.
+          </p>
         </footer>
       </div>
     </div>
@@ -130,4 +155,3 @@ const AmericanSharedHospitalServices: React.FC = () => {
 };
 
 export default AmericanSharedHospitalServices;
-

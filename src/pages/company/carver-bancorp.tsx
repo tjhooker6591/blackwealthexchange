@@ -42,10 +42,17 @@ const CarverBancorp: React.FC = () => {
             About Carver Bancorp
           </h2>
           <p className="mb-4 text-lg text-gray-300">
-            Carver Bancorp is a leading financial institution focused on delivering innovative banking solutions to underserved communities. With a commitment to economic empowerment and financial inclusion, Carver Bancorp provides accessible banking services, loan products, and investment opportunities designed to uplift minority communities.
+            Carver Bancorp is a leading financial institution focused on
+            delivering innovative banking solutions to underserved communities.
+            With a commitment to economic empowerment and financial inclusion,
+            Carver Bancorp provides accessible banking services, loan products,
+            and investment opportunities designed to uplift minority
+            communities.
           </p>
           <p className="mb-4 text-lg text-gray-300">
-            The company is deeply rooted in community development and has a proven track record of fostering economic growth through strategic partnerships and personalized financial services.
+            The company is deeply rooted in community development and has a
+            proven track record of fostering economic growth through strategic
+            partnerships and personalized financial services.
           </p>
           <div className="my-6">
             <Image
@@ -64,13 +71,17 @@ const CarverBancorp: React.FC = () => {
             Investment Opportunity
           </h2>
           <p className="mb-4 text-lg text-gray-300">
-            Investing in Carver Bancorp gives you the chance to support minority-focused banking initiatives while benefiting from a stable financial platform with long-term growth potential.
+            Investing in Carver Bancorp gives you the chance to support
+            minority-focused banking initiatives while benefiting from a stable
+            financial platform with long-term growth potential.
           </p>
           <ul className="list-disc list-inside mb-4 text-lg text-gray-300">
             <li>Publicly traded on major stock exchanges</li>
             <li>Innovative financial solutions for underserved markets</li>
             <li>Strong community focus and sustainable growth</li>
-            <li>Consistent dividend payouts and capital appreciation potential</li>
+            <li>
+              Consistent dividend payouts and capital appreciation potential
+            </li>
           </ul>
           <p className="mb-4 text-lg text-gray-300">
             To invest in Carver Bancorp, follow these steps:
@@ -78,11 +89,15 @@ const CarverBancorp: React.FC = () => {
           <ol className="list-decimal list-inside mb-4 text-lg text-gray-300">
             <li>Open a brokerage account with a reputable firm.</li>
             <li>Research the stock ticker symbol for Carver Bancorp.</li>
-            <li>Place an order for shares at a price that fits your investment strategy.</li>
+            <li>
+              Place an order for shares at a price that fits your investment
+              strategy.
+            </li>
             <li>Monitor your investment and stay updated on company news.</li>
           </ol>
           <p className="mb-4 text-lg text-gray-300">
-            Always conduct thorough research or consult a financial advisor before making investment decisions.
+            Always conduct thorough research or consult a financial advisor
+            before making investment decisions.
           </p>
         </section>
 
@@ -92,7 +107,11 @@ const CarverBancorp: React.FC = () => {
             Why Invest in Carver Bancorp?
           </h2>
           <p className="mb-4 text-lg text-gray-300">
-            Carver Bancorp is dedicated to bridging the gap in access to capital for minority communities. Its innovative products, customer-centric approach, and strong community ties make it a unique investment opportunity for those looking to generate returns while making a positive social impact.
+            Carver Bancorp is dedicated to bridging the gap in access to capital
+            for minority communities. Its innovative products, customer-centric
+            approach, and strong community ties make it a unique investment
+            opportunity for those looking to generate returns while making a
+            positive social impact.
           </p>
           <ul className="list-disc list-inside mb-4 text-lg text-gray-300">
             <li>Commitment to economic empowerment and financial inclusion</li>
@@ -113,7 +132,10 @@ const CarverBancorp: React.FC = () => {
 
         {/* Footer */}
         <footer className="mt-12 text-center text-gray-500 text-sm">
-          <p>&copy; {new Date().getFullYear()} Carver Bancorp. All rights reserved.</p>
+          <p>
+            &copy; {new Date().getFullYear()} Carver Bancorp. All rights
+            reserved.
+          </p>
         </footer>
       </div>
     </div>
