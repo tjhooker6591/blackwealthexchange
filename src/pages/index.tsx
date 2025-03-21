@@ -110,11 +110,18 @@ export default function Home() {
       ></div>
       <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-50"></div>
 
-      {/* Navbar with Logo */}
-      <nav className="absolute top-4 left-6 flex items-center space-x-3 z-20">
-        <Image src="/bwe-logo.png" alt="BWE Logo" width={50} height={50} />
-        <h1 className="text-xl font-bold text-gold">Black Wealth Exchange</h1>
-      </nav>
+{/* Navbar with Logo and Navigation Link */}
+<nav className="absolute top-4 left-6 flex items-center space-x-6 z-20">
+  <Image src="/bwe-logo.png" alt="BWE Logo" width={50} height={50} />
+  <h1 className="text-xl font-bold text-gold">Black Wealth Exchange</h1>
+  <Link
+    href="/library-of-black-history"
+    className="text-gold font-bold hover:underline"
+  >
+    Library of Black History (Facts. No Fiction)
+  </Link>
+</nav>
+
 
       {/* Hero Section */}
       <header className="text-center py-24 relative z-10">
