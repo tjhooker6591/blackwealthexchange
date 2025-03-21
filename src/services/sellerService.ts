@@ -13,7 +13,7 @@ export interface Seller {
 }
 
 export async function saveSellerToDatabase(
-  seller: Seller
+  seller: Seller,
 ): Promise<Seller & { _id: string }> {
   // Connect to MongoDB using our client promise
   const client: MongoClient = await clientPromise;

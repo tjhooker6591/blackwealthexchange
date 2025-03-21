@@ -5,7 +5,7 @@ import { saveSellerToDatabase, Seller } from "@/services/sellerService";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse,
+  res: NextApiResponse
 ) {
   if (req.method === "POST") {
     try {
@@ -37,3 +37,4 @@ export default async function handler(
     return res.status(405).json({ error: "Method Not Allowed" });
   }
 }
+
