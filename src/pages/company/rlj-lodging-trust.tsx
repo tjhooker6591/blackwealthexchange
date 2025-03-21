@@ -58,13 +58,13 @@ export default function RLJLodgingTrust() {
   async function fetchStockData(range = "1y") {
     try {
       const response = await fetch(
-        `/api/stock-data?symbol=RLJ&range=${range}&interval=1d`
+        `/api/stock-data?symbol=RLJ&range=${range}&interval=1d`,
       );
       if (!response.ok) {
         console.error(
           "API response failed:",
           response.status,
-          response.statusText
+          response.statusText,
         );
         throw new Error("Error fetching stock data");
       }
@@ -86,8 +86,7 @@ export default function RLJLodgingTrust() {
           }))
           .filter(
             (item: ProcessedDataItem) =>
-              !isNaN(item.x) &&
-              item.y.every((val: number) => !isNaN(val))
+              !isNaN(item.x) && item.y.every((val: number) => !isNaN(val)),
           );
 
         console.log("Processed data:", processedData); // For debugging
@@ -138,7 +137,7 @@ export default function RLJLodgingTrust() {
     } catch (err) {
       console.error("Error loading stock data:", (err as Error).message);
       setError(
-        "Error loading stock data. Please check the API or internet connection."
+        "Error loading stock data. Please check the API or internet connection.",
       );
     }
   }
@@ -160,7 +159,9 @@ export default function RLJLodgingTrust() {
         </Link>
 
         <header className="mb-6">
-          <h1 className="text-4xl font-bold text-gold">RLJ Lodging Trust (RLJ)</h1>
+          <h1 className="text-4xl font-bold text-gold">
+            RLJ Lodging Trust (RLJ)
+          </h1>
         </header>
 
         {/* Stock Price & Status */}
@@ -260,4 +261,3 @@ export default function RLJLodgingTrust() {
     </div>
   );
 }
-

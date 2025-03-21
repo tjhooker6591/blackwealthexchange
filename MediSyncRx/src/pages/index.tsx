@@ -1,6 +1,0 @@
-import React, { useState } from 'react'; import { Button, Input, Card, CardContent } from "@/components/ui"; import axios from 'axios'; import Link from 'next/link';
-export default function HomePage() { return ( Welcome to MediSyncRx Check real-time prescription availability. Check Prescription ); 
-}export function PrescriptionChecker() { const [prescription, setPrescription] = useState(""); const [availability, setAvailability] = useState(null); const [loading, setLoading] = useState(false);
-const checkAvailability = async () => { setLoading(true); try { const response = await axios.get(/api/check-prescription?name=${prescription}); setAvailability(response.data); } catch (error) { console.error("Error checking availability", error); setAvailability({ error: "Unable to check availability at this time." }); 
-} finally { setLoading(false); } };
-return ( Prescription Availability Checker <Input type="text" placeholder="Enter Prescription Name" value={prescription} onChange={(e) => setPrescription(e.target.value)} className="mt-4" /> {loading ? "Checking..." : "Check Availability"} {availability && ( {availability.error ? ( {availability.error} ) : ( Available at: {availability.pharmacy} )} )} ); }
