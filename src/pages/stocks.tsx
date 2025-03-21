@@ -1,8 +1,18 @@
-// Black-Owned Stocks Page with Back Button Redirect to Home Page
 import Link from "next/link";
 import Image from "next/image";
 import React from "react";
 import { useRouter } from "next/router";
+
+// Define a type for the InvestmentCard props.
+interface InvestmentCardProps {
+  bgColor: string;
+  title: string;
+  description: string;
+  link: string;
+  linkLabel: string;
+  iconSrc?: string;
+  ariaLabel: string;
+}
 
 function InvestmentCard({
   bgColor,
@@ -12,7 +22,7 @@ function InvestmentCard({
   linkLabel,
   iconSrc,
   ariaLabel,
-}) {
+}: InvestmentCardProps) {
   return (
     <div
       className={`p-4 ${bgColor} font-semibold rounded-lg shadow-md transform transition-transform hover:scale-105 hover:shadow-xl border border-gold`}
