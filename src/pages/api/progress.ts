@@ -68,7 +68,7 @@ const sampleProgress: ProgressData = {
 
 export default function handler(
   req: NextApiRequest,
-  res: NextApiResponse<ProgressData>
+  res: NextApiResponse<ProgressData>,
 ) {
   res.status(200).json(sampleProgress);
 }

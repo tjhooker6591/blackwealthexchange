@@ -32,8 +32,7 @@ const sampleProfile: UserProfile = {
 
 export default function handler(
   req: NextApiRequest,
-  res: NextApiResponse<UserProfile>
+  res: NextApiResponse<UserProfile>,
 ) {
   res.status(200).json(sampleProfile);
 }
-

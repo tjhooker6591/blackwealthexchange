@@ -101,7 +101,9 @@ const LibraryOfBlackHistory: React.FC = () => {
             >
               <h2 className="text-2xl font-bold mb-2">{item.title}</h2>
               <p className="mb-4 text-gray-300">{item.summary}</p>
-              <p className="mb-2 text-sm text-gray-500">Category: {item.category}</p>
+              <p className="mb-2 text-sm text-gray-500">
+                Category: {item.category}
+              </p>
               <Link
                 href={item.link}
                 target="_blank"

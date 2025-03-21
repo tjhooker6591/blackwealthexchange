@@ -42,14 +42,20 @@ const ResourcesPage: React.FC = () => {
       <div className="max-w-4xl mx-auto">
         <h1 className="text-4xl font-bold mb-6">Resources</h1>
         <p className="mb-6 text-lg">
-          Explore our curated collection of articles, links, tools, and guides to enhance your financial knowledge.
+          Explore our curated collection of articles, links, tools, and guides
+          to enhance your financial knowledge.
         </p>
         <div className="space-y-4">
           {resources.map((resource) => (
-            <div key={resource.id} className="p-4 bg-gray-800 rounded-lg shadow-md">
+            <div
+              key={resource.id}
+              className="p-4 bg-gray-800 rounded-lg shadow-md"
+            >
               <h2 className="text-2xl font-semibold">{resource.title}</h2>
               <p className="mt-2">{resource.description}</p>
-              <p className="mt-1 text-sm text-gray-400">Category: {resource.category}</p>
+              <p className="mt-1 text-sm text-gray-400">
+                Category: {resource.category}
+              </p>
               <Link href={resource.url} passHref>
                 <a
                   target="_blank"

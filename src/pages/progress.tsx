@@ -55,7 +55,9 @@ const ProgressPage: React.FC = () => {
       <div className="max-w-4xl mx-auto bg-gray-800 p-6 rounded-lg shadow-lg">
         <h1 className="text-4xl font-bold mb-4">Your Progress</h1>
         <div className="mb-6">
-          <p className="mb-2">Overall Progress: {progressData.overallProgress}%</p>
+          <p className="mb-2">
+            Overall Progress: {progressData.overallProgress}%
+          </p>
           <div className="w-full bg-gray-600 rounded-full h-4">
             <div
               className="bg-green-500 h-4 rounded-full"
