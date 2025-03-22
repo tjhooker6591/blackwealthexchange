@@ -155,4 +155,3 @@ const AffiliatePage: React.FC = () => {
 };
 
 export default AffiliatePage;
-
