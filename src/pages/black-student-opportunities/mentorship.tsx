@@ -9,10 +9,10 @@ const Mentorship = () => {
     <div className="relative min-h-screen bg-black text-white overflow-hidden">
       {/* 🔥 Background Effects */}
       <div
-        className="absolute inset-0 bg-cover bg-center opacity-40"
+        className="absolute inset-0 bg-cover bg-center opacity-40 pointer-events-none"
         style={{ backgroundImage: "url('/black-wealth-bg.jpg')" }}
       ></div>
-      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-50"></div>
+      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-50 pointer-events-none"></div>
 
       {/* 🔹 Navbar with Logo */}
       <nav className="absolute top-4 left-6 flex items-center space-x-3 z-20">
@@ -39,7 +39,7 @@ const Mentorship = () => {
       </header>
 
       {/* Mentorship Programs Section */}
-      <div className="container mx-auto p-6 space-y-8">
+      <div className="container mx-auto p-6 relative z-10">
         <h2 className="text-3xl font-semibold text-gold mb-6">
           Mentorship Programs for Black College Students
         </h2>
@@ -47,9 +47,14 @@ const Mentorship = () => {
         <div className="space-y-6">
           {/* Ujima Mentoring Program */}
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-            <h3 className="text-2xl font-semibold text-gold">
+            <a
+              href="https://prevention.ucsf.edu/education/ujima-mentoring-program"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-2xl font-semibold text-gold hover:underline cursor-pointer"
+            >
               Ujima Mentoring Program
-            </h3>
+            </a>
             <p className="mt-2">
               The Ujima Mentoring Program helps first-year African American
               students transition to campus life and thrive in their new
@@ -63,9 +68,14 @@ const Mentorship = () => {
 
           {/* HBCU Near-Peer Mentoring Program */}
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-            <h3 className="text-2xl font-semibold text-gold">
+            <a
+              href="https://example.com/hbcu-near-peer-mentoring-program" // Replace with the correct URL
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-2xl font-semibold text-gold hover:underline cursor-pointer"
+            >
               HBCU Near-Peer Mentoring Program
-            </h3>
+            </a>
             <p className="mt-2">
               This 10-week internship helps Black youth navigate the transition
               from college to career by pairing them with near-peer mentors.
@@ -78,9 +88,14 @@ const Mentorship = () => {
 
           {/* Black Executive and Student Training (B.E.S.T.) Program */}
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-            <h3 className="text-2xl font-semibold text-gold">
+            <a
+              href="https://example.com/black-executive-student-training" // Replace with the correct URL
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-2xl font-semibold text-gold hover:underline cursor-pointer"
+            >
               Black Executive and Student Training (B.E.S.T.) Program
-            </h3>
+            </a>
             <p className="mt-2">
               Pairs HBCU students with successful Black executives to offer
               career mentorship, networking, and leadership development.
@@ -94,9 +109,14 @@ const Mentorship = () => {
 
           {/* Career Readiness and Mentoring Program */}
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-            <h3 className="text-2xl font-semibold text-gold">
+            <a
+              href="https://example.com/career-readiness-mentoring-program" // Replace with the correct URL
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-2xl font-semibold text-gold hover:underline cursor-pointer"
+            >
               Career Readiness and Mentoring Program
-            </h3>
+            </a>
             <p className="mt-2">
               This program helps Black and African-American healthcare
               professionals prepare for careers by connecting them with mentors
@@ -111,9 +131,14 @@ const Mentorship = () => {
 
           {/* Heman Sweatt Center for Black Males Mentorship Program */}
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-            <h3 className="text-2xl font-semibold text-gold">
+            <a
+              href="https://example.com/heman-sweatt-center-mentorship" // Replace with the correct URL
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-2xl font-semibold text-gold hover:underline cursor-pointer"
+            >
               Heman Sweatt Center for Black Males Mentorship Program
-            </h3>
+            </a>
             <p className="mt-2">
               This program helps Black male students connect with BIPOC faculty,
               staff, and community members to enhance academic and social
@@ -127,9 +152,14 @@ const Mentorship = () => {
 
           {/* Great Expectations Mentorship Program */}
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-            <h3 className="text-2xl font-semibold text-gold">
+            <a
+              href="https://example.com/great-expectations-mentorship-program" // Replace with the correct URL
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-2xl font-semibold text-gold hover:underline cursor-pointer"
+            >
               Great Expectations Mentorship Program
-            </h3>
+            </a>
             <p className="mt-2">
               Pairs first-year or first-generation BIPOC students with
               upper-level students who provide academic and social guidance.
@@ -140,26 +170,11 @@ const Mentorship = () => {
               education.
             </p>
           </div>
-
-          {/* Next Steps Mentoring */}
-          <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-            <h3 className="text-2xl font-semibold text-gold">
-              Next Steps Mentoring
-            </h3>
-            <p className="mt-2">
-              Enrolls Black/African-American students as early as their freshman
-              year to provide mentorship and career development resources.
-            </p>
-            <p className="mt-2">
-              <strong>Benefits:</strong> Offers early support, academic
-              coaching, and professional career pathways for students.
-            </p>
-          </div>
         </div>
       </div>
 
       {/* Mentorship Benefits Section */}
-      <section className="container mx-auto p-6 mt-12">
+      <section className="container mx-auto p-6 mt-12 relative z-10">
         <h2 className="text-3xl font-semibold text-gold mb-6">
           Benefits of Mentorship
         </h2>
@@ -179,7 +194,7 @@ const Mentorship = () => {
             management.
           </li>
           <li>
-            <strong>Feel Heard and Supported:</strong> A mentor’s support boosts
+            <strong>Feel Heard and Supported:</strong> A mentor is support boosts
             confidence and helps students feel more understood.
           </li>
           <li>
@@ -195,7 +210,7 @@ const Mentorship = () => {
       </section>
 
       {/* Back to Home Button */}
-      <section className="text-center mt-10">
+      <section className="text-center mt-10 relative z-20">
         <Link href="/">
           <button className="px-6 py-3 bg-gold text-black font-semibold text-lg rounded-lg hover:bg-yellow-500 transition">
             Back to Home

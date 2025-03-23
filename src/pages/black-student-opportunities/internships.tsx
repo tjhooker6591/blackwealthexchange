@@ -7,20 +7,22 @@ import Link from "next/link";
 const Internships = () => {
   return (
     <div className="relative min-h-screen bg-black text-white overflow-hidden">
-      {/* 🔥 Background Effects */}
+      {/* Background Effects */}
       <div
-        className="absolute inset-0 bg-cover bg-center opacity-40"
+        className="absolute inset-0 bg-cover bg-center opacity-40 pointer-events-none"
         style={{ backgroundImage: "url('/black-wealth-bg.jpg')" }}
       ></div>
-      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-50"></div>
+      <div
+        className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-50 pointer-events-none"
+      ></div>
 
-      {/* 🔹 Navbar with Logo */}
+      {/* Navbar with Logo */}
       <nav className="absolute top-4 left-6 flex items-center space-x-3 z-20">
         <Image src="/bwe-logo.png" alt="BWE Logo" width={50} height={50} />
         <h1 className="text-xl font-bold text-gold">Black Wealth Exchange</h1>
       </nav>
 
-      {/* 🔥 Hero Section */}
+      {/* Hero Section */}
       <header className="text-center py-32 relative z-10">
         <Image
           src="/bwe-logo.png"
@@ -39,13 +41,13 @@ const Internships = () => {
       </header>
 
       {/* Internship Programs Section */}
-      <div className="container mx-auto p-6 space-y-8">
+      <div className="container mx-auto p-6 space-y-8 relative z-10">
         <h2 className="text-3xl font-semibold text-gold mb-6">
           Internship Programs for Black College Students
         </h2>
 
         <div className="space-y-6">
-          {/* Internship 1 */}
+          {/* Internship 1: Black Interns Program */}
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
             <h3 className="text-2xl font-semibold text-gold">
               Black Interns Program
@@ -64,7 +66,7 @@ const Internships = () => {
             </p>
             {/* Apply Now Button */}
             <a
-              href="https://www.blackinterns.org"
+              href="https://www.blackcareernetwork.com"
               target="_blank"
               rel="noopener noreferrer"
               className="mt-4 inline-block px-6 py-3 bg-gold text-black font-semibold text-lg rounded-lg hover:bg-yellow-500 transition"
@@ -73,7 +75,7 @@ const Internships = () => {
             </a>
           </div>
 
-          {/* Internship 2 */}
+          {/* Internship 2: Google Internship for Black Students */}
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
             <h3 className="text-2xl font-semibold text-gold">
               Google Internship for Black Students
@@ -92,7 +94,7 @@ const Internships = () => {
             </p>
             {/* Apply Now Button */}
             <a
-              href="https://buildyourfuture.withgoogle.com"
+              href="https://buildyourfuture.withgoogle.com/"
               target="_blank"
               rel="noopener noreferrer"
               className="mt-4 inline-block px-6 py-3 bg-gold text-black font-semibold text-lg rounded-lg hover:bg-yellow-500 transition"
@@ -101,7 +103,7 @@ const Internships = () => {
             </a>
           </div>
 
-          {/* Internship 3 */}
+          {/* Internship 3: HBCU Internship Program */}
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
             <h3 className="text-2xl font-semibold text-gold">
               HBCU Internship Program
@@ -132,7 +134,7 @@ const Internships = () => {
       </div>
 
       {/* Internship Benefits Section */}
-      <section className="container mx-auto p-6 mt-12">
+      <section className="container mx-auto p-6 mt-12 relative z-10">
         <h2 className="text-3xl font-semibold text-gold mb-6">
           Benefits of Internships
         </h2>
@@ -163,13 +165,14 @@ const Internships = () => {
           </li>
           <li>
             <strong>Confidence Boost:</strong> Gaining work experience increases
-            students confidence in their abilities and their career potential.
+            students&apos; confidence in their abilities and their career
+            potential.
           </li>
         </ul>
       </section>
 
       {/* Back to Home Button */}
-      <section className="text-center mt-10">
+      <section className="text-center mt-10 relative z-20">
         <Link href="/">
           <button className="px-6 py-3 bg-gold text-black font-semibold text-lg rounded-lg hover:bg-yellow-500 transition">
             Back to Home

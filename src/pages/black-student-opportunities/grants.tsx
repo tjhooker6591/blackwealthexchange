@@ -11,10 +11,10 @@ const Grants = () => {
     <div className="relative min-h-screen bg-black text-white overflow-hidden">
       {/* Background Effects */}
       <div
-        className="absolute inset-0 bg-cover bg-center opacity-40"
+        className="absolute inset-0 bg-cover bg-center opacity-40 pointer-events-none"
         style={{ backgroundImage: "url('/black-wealth-bg.jpg')" }}
       ></div>
-      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-50"></div>
+      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-50 pointer-events-none"></div>
 
       {/* Navbar with Logo */}
       <nav className="absolute top-4 left-6 flex items-center space-x-3 z-20">
@@ -56,7 +56,7 @@ const Grants = () => {
             <button
               onClick={() =>
                 handleExternalLink(
-                  "https://studentaid.gov/understand-aid/types/grants/pell",
+                  "https://studentaid.gov/understand-aid/types/grants/pell"
                 )
               }
               className="mt-4 inline-block px-6 py-3 bg-gold text-black font-semibold rounded-lg hover:bg-yellow-500 transition-colors cursor-pointer"
@@ -78,7 +78,7 @@ const Grants = () => {
             <button
               onClick={() =>
                 handleExternalLink(
-                  "https://studentaid.gov/understand-aid/types/grants/fseog",
+                  "https://studentaid.gov/understand-aid/types/grants/fseog"
                 )
               }
               className="mt-4 inline-block px-6 py-3 bg-gold text-black font-semibold rounded-lg hover:bg-yellow-500 transition-colors cursor-pointer"
@@ -100,7 +100,7 @@ const Grants = () => {
             <button
               onClick={() =>
                 handleExternalLink(
-                  "https://studentaid.gov/understand-aid/types/grants/teach",
+                  "https://studentaid.gov/understand-aid/types/grants/teach"
                 )
               }
               className="mt-4 inline-block px-6 py-3 bg-gold text-black font-semibold rounded-lg hover:bg-yellow-500 transition-colors cursor-pointer"
@@ -122,7 +122,7 @@ const Grants = () => {
             <button
               onClick={() =>
                 handleExternalLink(
-                  "https://uncf.org/programs/uncf-emergency-student-aid",
+                  "https://uncf.org/programs/uncf-emergency-student-aid"
                 )
               }
               className="mt-4 inline-block px-6 py-3 bg-gold text-black font-semibold rounded-lg hover:bg-yellow-500 transition-colors cursor-pointer"
@@ -134,14 +134,14 @@ const Grants = () => {
       </div>
 
       {/* Grants Benefits Section */}
-      <section className="container mx-auto p-6 mt-12">
+      <section className="container mx-auto p-6 mt-12 relative z-10">
         <h2 className="text-3xl font-semibold text-gold mb-6">
           Benefits of Grants for Black College Students
         </h2>
         <ul className="list-disc pl-6 space-y-4">
           <li>
             <strong>No Repayment Required:</strong> Unlike loans, grants are
-            gift aid that doesn&rsquo;t need to be repaid.
+            gift aid that doesn&apos;t need to be repaid.
           </li>
           <li>
             <strong>Immediate Financial Relief:</strong> Grants can help cover
@@ -156,7 +156,7 @@ const Grants = () => {
             can focus more on their studies and less on financial concerns.
           </li>
           <li>
-            <strong>Career Flexibility:</strong> Since grants don&rsquo;t need
+            <strong>Career Flexibility:</strong> Since grants don&apos;t need
             to be repaid, students have more freedom in their career choices
             after graduation.
           </li>
@@ -164,7 +164,7 @@ const Grants = () => {
       </section>
 
       {/* Additional Resources */}
-      <section className="container mx-auto p-6 mt-12">
+      <section className="container mx-auto p-6 mt-12 relative z-20">
         <h2 className="text-3xl font-semibold text-gold mb-6">
           Additional Resources
         </h2>
@@ -172,36 +172,32 @@ const Grants = () => {
           <p>
             <strong>FAFSA Application:</strong> Most grants require completion
             of the Free Application for Federal Student Aid (FAFSA).
-            <button
-              onClick={() =>
-                handleExternalLink(
-                  "https://studentaid.gov/h/apply-for-aid/fafsa",
-                )
-              }
+            <a
+              href="https://studentaid.gov/h/apply-for-aid/fafsa"
+              target="_blank"
+              rel="noopener noreferrer"
               className="ml-4 inline-block px-4 py-2 bg-gold text-black font-semibold rounded-lg hover:bg-yellow-500 transition-colors cursor-pointer text-sm"
             >
               Complete FAFSA
-            </button>
+            </a>
           </p>
           <p>
-            <strong>State Grants:</strong> Check your state&rsquo;s higher
+            <strong>State Grants:</strong> Check your state&apos;s higher
             education agency website for additional grant opportunities.
-            <button
-              onClick={() =>
-                handleExternalLink(
-                  "https://www2.ed.gov/about/contacts/state/index.html",
-                )
-              }
-              className="ml-4 px-4 py-2 bg-gold text-black font-semibold rounded-lg hover:bg-yellow-500 transition-colors cursor-pointer text-sm"
+            <a
+              href="https://www2.ed.gov/about/contacts/state/index.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="ml-4 inline-block px-4 py-2 bg-gold text-black font-semibold rounded-lg hover:bg-yellow-500 transition-colors cursor-pointer text-sm"
             >
               Find State Grants
-            </button>
+            </a>
           </p>
         </div>
       </section>
 
       {/* Back to Home Button */}
-      <section className="text-center mt-10 pb-10">
+      <section className="text-center mt-10 pb-10 relative z-20">
         <Link href="/">
           <span className="inline-block px-6 py-3 bg-gold text-black font-semibold rounded-lg hover:bg-yellow-500 transition-colors cursor-pointer">
             Back to Home
@@ -213,3 +209,4 @@ const Grants = () => {
 };
 
 export default Grants;
+

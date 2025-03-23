@@ -46,7 +46,7 @@ const EconomicImpactSimulator: React.FC = () => {
         African American Spending Power in {currentYear}
       </h2>
       <div className="text-3xl sm:text-4xl md:text-5xl font-bold text-green-500 text-center">
-      {formatNumber(Math.floor(totalSpending))}
+        {formatNumber(Math.floor(totalSpending))}
       </div>
 
       <p className="text-center text-sm text-gray-400">
