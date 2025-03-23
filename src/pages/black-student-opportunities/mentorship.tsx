@@ -194,8 +194,8 @@ const Mentorship = () => {
             management.
           </li>
           <li>
-            <strong>Feel Heard and Supported:</strong> A mentor is support boosts
-            confidence and helps students feel more understood.
+            <strong>Feel Heard and Supported:</strong> A mentor is support
+            boosts confidence and helps students feel more understood.
           </li>
           <li>
             <strong>Prepare for Careers:</strong> Mentors provide valuable

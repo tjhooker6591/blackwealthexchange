@@ -12,9 +12,7 @@ const Internships = () => {
         className="absolute inset-0 bg-cover bg-center opacity-40 pointer-events-none"
         style={{ backgroundImage: "url('/black-wealth-bg.jpg')" }}
       ></div>
-      <div
-        className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-50 pointer-events-none"
-      ></div>
+      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-50 pointer-events-none"></div>
 
       {/* Navbar with Logo */}
       <nav className="absolute top-4 left-6 flex items-center space-x-3 z-20">

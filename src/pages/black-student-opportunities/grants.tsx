@@ -56,7 +56,7 @@ const Grants = () => {
             <button
               onClick={() =>
                 handleExternalLink(
-                  "https://studentaid.gov/understand-aid/types/grants/pell"
+                  "https://studentaid.gov/understand-aid/types/grants/pell",
                 )
               }
               className="mt-4 inline-block px-6 py-3 bg-gold text-black font-semibold rounded-lg hover:bg-yellow-500 transition-colors cursor-pointer"
@@ -78,7 +78,7 @@ const Grants = () => {
             <button
               onClick={() =>
                 handleExternalLink(
-                  "https://studentaid.gov/understand-aid/types/grants/fseog"
+                  "https://studentaid.gov/understand-aid/types/grants/fseog",
                 )
               }
               className="mt-4 inline-block px-6 py-3 bg-gold text-black font-semibold rounded-lg hover:bg-yellow-500 transition-colors cursor-pointer"
@@ -100,7 +100,7 @@ const Grants = () => {
             <button
               onClick={() =>
                 handleExternalLink(
-                  "https://studentaid.gov/understand-aid/types/grants/teach"
+                  "https://studentaid.gov/understand-aid/types/grants/teach",
                 )
               }
               className="mt-4 inline-block px-6 py-3 bg-gold text-black font-semibold rounded-lg hover:bg-yellow-500 transition-colors cursor-pointer"
@@ -122,7 +122,7 @@ const Grants = () => {
             <button
               onClick={() =>
                 handleExternalLink(
-                  "https://uncf.org/programs/uncf-emergency-student-aid"
+                  "https://uncf.org/programs/uncf-emergency-student-aid",
                 )
               }
               className="mt-4 inline-block px-6 py-3 bg-gold text-black font-semibold rounded-lg hover:bg-yellow-500 transition-colors cursor-pointer"
@@ -156,9 +156,9 @@ const Grants = () => {
             can focus more on their studies and less on financial concerns.
           </li>
           <li>
-            <strong>Career Flexibility:</strong> Since grants don&apos;t need
-            to be repaid, students have more freedom in their career choices
-            after graduation.
+            <strong>Career Flexibility:</strong> Since grants don&apos;t need to
+            be repaid, students have more freedom in their career choices after
+            graduation.
           </li>
         </ul>
       </section>
@@ -209,4 +209,3 @@ const Grants = () => {
 };
 
 export default Grants;
-
