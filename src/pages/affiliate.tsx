@@ -93,7 +93,8 @@ const AffiliatePage: React.FC = () => {
             Library of Black Resources & Affiliate Partnerships
           </h1>
           <p className="text-xl text-gray-300">
-            Discover exclusive offers, directories, and platforms that empower and celebrate Black entrepreneurship.
+            Discover exclusive offers, directories, and platforms that empower
+            and celebrate Black entrepreneurship.
           </p>
           <p className="text-sm text-gray-500 mt-2">
             Disclaimer: We may earn commissions on qualifying purchases.
@@ -131,7 +132,9 @@ const AffiliatePage: React.FC = () => {
               />
               <h2 className="text-2xl font-bold mb-2">{offer.name}</h2>
               <p className="mb-4 text-gray-300">{offer.description}</p>
-              <p className="mb-4 text-sm text-gray-500">Categories: {offer.categories}</p>
+              <p className="mb-4 text-sm text-gray-500">
+                Categories: {offer.categories}
+              </p>
               <a
                 href={offer.url}
                 target="_blank"
@@ -147,7 +150,10 @@ const AffiliatePage: React.FC = () => {
 
         {/* Footer */}
         <footer className="mt-12 text-center text-gray-500 text-sm">
-          <p>&copy; {new Date().getFullYear()} Black Wealth Exchange. All rights reserved.</p>
+          <p>
+            &copy; {new Date().getFullYear()} Black Wealth Exchange. All rights
+            reserved.
+          </p>
         </footer>
       </div>
     </div>
