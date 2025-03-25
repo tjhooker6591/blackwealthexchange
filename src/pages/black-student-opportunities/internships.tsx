@@ -14,13 +14,7 @@ const Internships = () => {
       ></div>
       <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-50 pointer-events-none"></div>
 
-      {/* Navbar with Logo */}
-      <nav className="absolute top-4 left-6 flex items-center space-x-3 z-20">
-        <Image src="/bwe-logo.png" alt="BWE Logo" width={50} height={50} />
-        <h1 className="text-xl font-bold text-gold">Black Wealth Exchange</h1>
-      </nav>
-
-      {/* Hero Section */}
+     {/* Hero Section */}
       <header className="text-center py-32 relative z-10">
         <Image
           src="/bwe-logo.png"
