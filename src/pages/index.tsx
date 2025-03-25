@@ -1,4 +1,4 @@
-// This is a test comment
+// /pages/index.tsx
 
 "use client";
 
@@ -14,16 +14,15 @@ const EconomicImpactSimulator: React.FC = () => {
   const monthlyGrowth = 150000000000; // $150 billion per month
   const dailyGrowth = monthlyGrowth / 30.44; // Average days in a month
 
-  // Only totalSpending is used for display
   const [totalSpending, setTotalSpending] = useState(initialValue);
 
   useEffect(() => {
     if (totalSpending >= maxSpending) return;
 
     const timer = setInterval(() => {
-      setTotalSpending((prevTotal) => {
-        if (prevTotal >= maxSpending) return maxSpending;
-        const newTotal = prevTotal + dailyGrowth / 24;
+      setTotalSpending((prev) => {
+        if (prev >= maxSpending) return maxSpending;
+        const newTotal = prev + dailyGrowth / 24;
         return newTotal > maxSpending ? maxSpending : newTotal;
       });
     }, 100);
@@ -31,14 +30,13 @@ const EconomicImpactSimulator: React.FC = () => {
     return () => clearInterval(timer);
   }, [totalSpending, dailyGrowth, maxSpending]);
 
-  const formatNumber = (num: number) => {
-    return num.toLocaleString("en-US", {
+  const formatNumber = (num: number) =>
+    num.toLocaleString("en-US", {
       style: "currency",
       currency: "USD",
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     });
-  };
 
   return (
     <div className="space-y-6 p-6 bg-gray-900 rounded-lg shadow-lg border border-gold text-white">
@@ -59,8 +57,7 @@ const EconomicImpactSimulator: React.FC = () => {
           href="/1.8trillionimpact"
           className="text-gold font-bold hover:underline text-lg"
         >
-          KNOWLEDGE IS POWER - Select Here to &quot;SEE WHERE YOUR MONEY
-          GOES&quot;
+          KNOWLEDGE IS POWER - Select Here to &quot;SEE WHERE YOUR MONEY GOES&quot;
         </Link>
       </div>
       <div className="text-center mt-4">
@@ -76,8 +73,8 @@ const EconomicImpactSimulator: React.FC = () => {
 };
 
 export default function Home() {
-  const [showModal, setShowModal] = useState<boolean>(false);
-  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [showModal, setShowModal] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const studentOpportunities = [
     {
@@ -108,33 +105,12 @@ export default function Home() {
       <div
         className="absolute inset-0 bg-cover bg-center opacity-40"
         style={{ backgroundImage: "url('/black-wealth-bg.jpg')" }}
-      ></div>
-      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-50"></div>
-
-      {/* Navbar with Logo and Navigation Link */}
-      <nav className="absolute top-4 left-6 flex items-center space-x-6 z-20">
-        <Image src="/bwe-logo.png" alt="BWE Logo" width={50} height={50} />
-        <h1 className="text-xl font-bold text-gold">Black Wealth Exchange</h1>
-        <Link
-          href="/library-of-black-history"
-          className="text-gold font-bold hover:underline"
-        >
-          Library of Black History (Facts. No Fiction)
-        </Link>
-      </nav>
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-50" />
 
       {/* Hero Section */}
       <header className="text-center py-24 relative z-10">
-        <Image
-          src="/bwe-logo.png"
-          alt="BWE Logo"
-          width={100}
-          height={100}
-          className="mx-auto mb-4 animate-fadeIn"
-        />
-        <h1 className="text-5xl md:text-6xl font-extrabold tracking-wide text-gold neon-text animate-slideUp">
-          Black Wealth Exchange
-        </h1>
+        {/* Removed the extra BWE logo & text to avoid duplication with NavBar */}
         <p className="text-lg md:text-xl mt-4 font-light text-gray-300 animate-fadeIn">
           &quot;The Future of Black Wealth Starts Here.&quot;
         </p>
@@ -173,6 +149,15 @@ export default function Home() {
               </button>
             </Link>
           </div>
+          {/* Repositioned Library of Black History link below the hero CTA */}
+          <div className="mt-2">
+            <Link
+              href="/library-of-black-history"
+              className="text-gold font-bold hover:underline text-lg"
+            >
+              Library of Black History (Facts. No Fiction)
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -204,7 +189,7 @@ export default function Home() {
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-xl font-bold text-gold">
-                Real Estate & Investment
+                Real Estate &amp; Investment
               </h2>
               <p className="text-sm text-gray-300 mt-1">
                 Explore Black-owned real estate options and investments
@@ -338,6 +323,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="text-center py-8 border-t border-gold mt-8 relative z-10">
+        {/* Removed the second BWE logo & text, but left this for a smaller brand presence if desired */}
         <Image
           src="/bwe-logo.png"
           alt="BWE Logo"
@@ -346,7 +332,7 @@ export default function Home() {
           className="mx-auto mb-4"
         />
         <h2 className="text-lg font-bold text-gray-300">
-          Join the BWE Community & Build Wealth
+          Join the BWE Community &amp; Build Wealth
         </h2>
         <p className="mt-4">
           <Link
@@ -440,14 +426,10 @@ export default function Home() {
         @keyframes pulseGlow {
           0%,
           100% {
-            box-shadow:
-              0 0 5px #ffd700,
-              0 0 10px #ffd700;
+            box-shadow: 0 0 5px #ffd700, 0 0 10px #ffd700;
           }
           50% {
-            box-shadow:
-              0 0 20px #ffd700,
-              0 0 30px #ffd700;
+            box-shadow: 0 0 20px #ffd700, 0 0 30px #ffd700;
           }
         }
 
@@ -463,7 +445,6 @@ export default function Home() {
             opacity: 1;
           }
         }
-
         .animate-fadeIn {
           animation: fadeIn 1s ease-out;
         }
@@ -478,7 +459,6 @@ export default function Home() {
             opacity: 1;
           }
         }
-
         .animate-slideUp {
           animation: slideUp 0.5s ease-out;
         }

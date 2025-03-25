@@ -15,9 +15,9 @@
     "incremental": true,
 
     // The two important lines for path aliases:
-    "baseUrl": ".",           // <--- Required so paths are resolved from the project root
+    "baseUrl": ".", // <--- Required so paths are resolved from the project root
     "paths": {
-      "@/*": ["./src/*"]      // <--- Maps "@/..." to "src/..."
+      "@/*": ["./src/*"] // <--- Maps "@/..." to "src/..."
     },
 
     "types": ["next-auth"]

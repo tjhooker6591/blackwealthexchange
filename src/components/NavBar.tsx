@@ -31,41 +31,69 @@ export default function NavBar() {
             width={40}
             height={40}
           />
-          <span className="text-gold font-bold text-xl">Black Wealth Exchange</span>
+          <span className="text-gold font-bold text-xl">
+            Black Wealth Exchange
+          </span>
         </Link>
 
         {/* Desktop Nav (hidden on mobile) */}
         <div className="hidden md:flex items-center space-x-6">
           {/* Example: Student Resources Dropdown */}
           <div className="relative group">
-            <button className="hover:text-gold font-semibold">Student Resources</button>
+            <button className="hover:text-gold font-semibold">
+              Student Resources
+            </button>
             <div className="absolute left-0 mt-2 bg-white text-black py-2 px-4 rounded shadow-md hidden group-hover:block min-w-[180px] z-50">
-              <Link href="/black-student-opportunities/grants" className="block py-1 hover:text-gold">
+              <Link
+                href="/black-student-opportunities/grants"
+                className="block py-1 hover:text-gold"
+              >
                 Grants
               </Link>
-              <Link href="/black-student-opportunities/scholarships" className="block py-1 hover:text-gold">
+              <Link
+                href="/black-student-opportunities/scholarships"
+                className="block py-1 hover:text-gold"
+              >
                 Scholarships
               </Link>
-              <Link href="/black-student-opportunities/internships" className="block py-1 hover:text-gold">
+              <Link
+                href="/black-student-opportunities/internships"
+                className="block py-1 hover:text-gold"
+              >
                 Internships
               </Link>
-              <Link href="/black-student-opportunities/mentorship" className="block py-1 hover:text-gold">
+              <Link
+                href="/black-student-opportunities/mentorship"
+                className="block py-1 hover:text-gold"
+              >
                 Mentorship
               </Link>
             </div>
           </div>
 
           {/* Other top-level links */}
-          <Link href="/business-directory" className="hover:text-gold font-semibold">
+          <Link
+            href="/business-directory"
+            className="hover:text-gold font-semibold"
+          >
             Business Directory
           </Link>
-          <Link href="/financial-literacy" className="hover:text-gold font-semibold">
+          <Link
+            href="/financial-literacy"
+            className="hover:text-gold font-semibold"
+          >
             Financial 101
           </Link>
-          <Link href="/housing-lending" className="hover:text-gold font-semibold">
+          <Link
+            href="/housing-lending"
+            className="hover:text-gold font-semibold"
+          >
             Housing & Lending
           </Link>
-          <Link href="/black-entertainment-news" className="hover:text-gold font-semibold">
+          <Link
+            href="/black-entertainment-news"
+            className="hover:text-gold font-semibold"
+          >
             Entertainment
           </Link>
 

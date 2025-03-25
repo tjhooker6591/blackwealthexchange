@@ -35,12 +35,12 @@ export default function About() {
         </h2>
         <p className="text-lg text-gray-300 mb-8">
           We believe in harnessing our collective spending power to build
-          sustainable wealth and strengthen our communities. Our platform
-          brings together a variety of resources—from a Black-owned business
-          directory and financial literacy tools to student grants and
-          entertainment news—all under one roof. By uniting these elements,
-          we aim to celebrate Black culture, uplift entrepreneurs, and
-          nurture future generations of leaders.
+          sustainable wealth and strengthen our communities. Our platform brings
+          together a variety of resources—from a Black-owned business directory
+          and financial literacy tools to student grants and entertainment
+          news—all under one roof. By uniting these elements, we aim to
+          celebrate Black culture, uplift entrepreneurs, and nurture future
+          generations of leaders.
         </p>
 
         {/* Highlight Each Section Briefly */}
@@ -51,9 +51,8 @@ export default function About() {
             </h3>
             <p className="text-gray-400 mb-2">
               Discover and support Black-owned businesses in your area and
-              beyond. Each listing provides essential details, reviews,
-              and location info to help you shop local and empower
-              entrepreneurs.
+              beyond. Each listing provides essential details, reviews, and
+              location info to help you shop local and empower entrepreneurs.
             </p>
             <Link href="/business-directory">
               <button className="px-4 py-2 bg-gold text-black rounded hover:bg-yellow-500 transition">
@@ -67,9 +66,9 @@ export default function About() {
               Entertainment &amp; News
             </h3>
             <p className="text-gray-400 mb-2">
-              Stay informed about the latest in Black entertainment,
-              culture, and current events. We spotlight stories that
-              reflect our community&apos;s diverse experiences and talents.
+              Stay informed about the latest in Black entertainment, culture,
+              and current events. We spotlight stories that reflect our
+              community&apos;s diverse experiences and talents.
             </p>
             <Link href="/black-entertainment-news">
               <button className="px-4 py-2 bg-gold text-black rounded hover:bg-yellow-500 transition">
@@ -83,9 +82,9 @@ export default function About() {
               Financial Literacy &amp; 101 Training
             </h3>
             <p className="text-gray-400 mb-2">
-              Learn how to manage money, invest wisely, and leverage credit.
-              We offer tools and guides to help you build generational wealth
-              and close the racial wealth gap—one family at a time.
+              Learn how to manage money, invest wisely, and leverage credit. We
+              offer tools and guides to help you build generational wealth and
+              close the racial wealth gap—one family at a time.
             </p>
             <Link href="/financial-literacy">
               <button className="px-4 py-2 bg-gold text-black rounded hover:bg-yellow-500 transition">
@@ -100,9 +99,8 @@ export default function About() {
             </h3>
             <p className="text-gray-400 mb-2">
               Access grants, loans, internships, and mentorship programs
-              tailored for Black students. We believe in fostering
-              educational success and career readiness for the next
-              generation of leaders.
+              tailored for Black students. We believe in fostering educational
+              success and career readiness for the next generation of leaders.
             </p>
             <Link href="/black-student-opportunities">
               <button className="px-4 py-2 bg-gold text-black rounded hover:bg-yellow-500 transition">
@@ -116,9 +114,9 @@ export default function About() {
               Housing &amp; Lending
             </h3>
             <p className="text-gray-400 mb-2">
-              Find resources for home ownership, mortgage guidance,
-              and fair lending options. Our aim is to help more families
-              build equity through property investment and stable housing.
+              Find resources for home ownership, mortgage guidance, and fair
+              lending options. Our aim is to help more families build equity
+              through property investment and stable housing.
             </p>
             <Link href="/housing-lending">
               <button className="px-4 py-2 bg-gold text-black rounded hover:bg-yellow-500 transition">
@@ -136,8 +134,8 @@ export default function About() {
         </h2>
         <p className="text-gray-400 mb-6">
           Whether you&apos;re a consumer looking to shop, a student seeking
-          scholarships, or an entrepreneur ready to grow your business,
-          we have the tools and resources you need to succeed.
+          scholarships, or an entrepreneur ready to grow your business, we have
+          the tools and resources you need to succeed.
         </p>
         <Link href="/signup">
           <button className="px-6 py-3 bg-black text-gold border border-gold font-semibold rounded hover:bg-gray-800 transition">
@@ -149,7 +147,8 @@ export default function About() {
       {/* Footer */}
       <footer className="bg-black text-center py-6">
         <p className="text-gray-500 text-sm">
-          &copy; {new Date().getFullYear()} Black Wealth Exchange. All rights reserved.
+          &copy; {new Date().getFullYear()} Black Wealth Exchange. All rights
+          reserved.
         </p>
       </footer>
     </div>
