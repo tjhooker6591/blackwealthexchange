@@ -43,12 +43,11 @@ const EconomicImpactSimulator: React.FC = () => {
   return (
     <div className="space-y-6 p-6 bg-gray-900 rounded-lg shadow-lg border border-gold text-white">
       <h2 className="text-2xl sm:text-3xl md:text-3xl font-bold text-center text-gold">
-  African American Spending Power in {currentYear}
-</h2>
-<div className="text-2xl sm:text-3xl md:text-4xl font-bold text-green-500 text-center">
-  {formatNumber(Math.floor(totalSpending))}
-</div>
-
+        African American Spending Power in {currentYear}
+      </h2>
+      <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-green-500 text-center">
+        {formatNumber(Math.floor(totalSpending))}
+      </div>
 
       <p className="text-center text-sm text-gray-400">
         {totalSpending >= maxSpending

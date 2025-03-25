@@ -225,7 +225,10 @@ const AffiliatePartnershipPage: React.FC = () => {
               How does the Associates Program work?
             </h3>
             <p className="text-gray-300 mt-2">
-              You can share products and available programs with your audience through customized linking tools and earn money on qualifying purchases and customer actions, such as signing up for a free trial.
+              You can share products and available programs with your audience
+              through customized linking tools and earn money on qualifying
+              purchases and customer actions, such as signing up for a free
+              trial.
             </p>
           </div>
           <div>
@@ -233,7 +236,10 @@ const AffiliatePartnershipPage: React.FC = () => {
               How do I qualify for this program?
             </h3>
             <p className="text-gray-300 mt-2">
-              Bloggers, publishers, and content creators with a qualifying website or mobile app can participate. If you are an influencer with an established social media following, explore the Amazon Influencer Program.
+              Bloggers, publishers, and content creators with a qualifying
+              website or mobile app can participate. If you are an influencer
+              with an established social media following, explore the Amazon
+              Influencer Program.
             </p>
           </div>
           <div>
@@ -241,7 +247,10 @@ const AffiliatePartnershipPage: React.FC = () => {
               How do I earn in this program?
             </h3>
             <p className="text-gray-300 mt-2">
-              You earn from qualifying purchases and programs through the traffic you drive. Commission income varies by product category and is paid approximately 60 days after the end of the month in which it was earned.
+              You earn from qualifying purchases and programs through the
+              traffic you drive. Commission income varies by product category
+              and is paid approximately 60 days after the end of the month in
+              which it was earned.
             </p>
           </div>
           <div>
@@ -249,7 +258,8 @@ const AffiliatePartnershipPage: React.FC = () => {
               How do I sign up for the program?
             </h3>
             <p className="text-gray-300 mt-2">
-              Sign up by clicking the button below. We will review your application and approve it if you meet the qualifying criteria.
+              Sign up by clicking the button below. We will review your
+              application and approve it if you meet the qualifying criteria.
             </p>
             <a
               href="mailto:partners@blackwealthexchange.com"
@@ -273,7 +283,8 @@ const AffiliatePartnershipPage: React.FC = () => {
       {/* Footer */}
       <footer className="bg-gray-800 py-4">
         <div className="container mx-auto text-center text-gray-500 text-sm">
-          &copy; {new Date().getFullYear()} Black Wealth Exchange. All rights reserved.
+          &copy; {new Date().getFullYear()} Black Wealth Exchange. All rights
+          reserved.
         </div>
       </footer>
     </div>

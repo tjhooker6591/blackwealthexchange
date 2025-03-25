@@ -24,7 +24,7 @@
     "leaflet": "^1.9.4",
     "lucide-react": "^0.475.0",
     "mongodb": "^6.14.2",
-    "next": "^15.1.7",
+    "next": "^15.2.3",
     "next-auth": "^4.24.11",
     "react": "^19.0.0",
     "react-apexcharts": "^1.7.0",

@@ -13,10 +13,14 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
+
+    // The two important lines for path aliases:
+    "baseUrl": ".",           // <--- Required so paths are resolved from the project root
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"]      // <--- Maps "@/..." to "src/..."
     },
-    "types": ["next-auth"] // <-- Add this line
+
+    "types": ["next-auth"]
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]

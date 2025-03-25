@@ -74,10 +74,13 @@ const Marketplace: React.FC = () => {
     <div className="min-h-screen bg-gray-100 text-gray-800">
       {/* Marketplace Title */}
       <section className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-extrabold text-center mb-4">Marketplace</h1>
+        <h1 className="text-4xl font-extrabold text-center mb-4">
+          Marketplace
+        </h1>
         <p className="text-xl text-center mb-8">
-          Discover exclusive Black-owned products curated for quality and style. 
-          Shop the latest listings, top picks, and compare premium offerings to find your perfect match.
+          Discover exclusive Black-owned products curated for quality and style.
+          Shop the latest listings, top picks, and compare premium offerings to
+          find your perfect match.
         </p>
       </section>
 
@@ -119,10 +122,11 @@ const Marketplace: React.FC = () => {
               className="object-cover rounded mb-4"
             />
             <p className="text-gray-700 text-center">
-              Our marketplace is the gateway to supporting Black-owned businesses 
-              and circulating wealth within our communities. By leveraging our 
-              collective spending power, we can uplift entrepreneurs, create jobs, 
-              and close the racial wealth gap one purchase at a time.
+              Our marketplace is the gateway to supporting Black-owned
+              businesses and circulating wealth within our communities. By
+              leveraging our collective spending power, we can uplift
+              entrepreneurs, create jobs, and close the racial wealth gap one
+              purchase at a time.
             </p>
           </div>
         </div>
