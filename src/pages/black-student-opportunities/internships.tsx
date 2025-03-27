@@ -14,7 +14,7 @@ const Internships = () => {
       ></div>
       <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-50 pointer-events-none"></div>
 
-     {/* Hero Section */}
+      {/* Hero Section */}
       <header className="text-center py-32 relative z-10">
         <Image
           src="/bwe-logo.png"
