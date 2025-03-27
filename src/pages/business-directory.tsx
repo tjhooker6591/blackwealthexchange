@@ -70,17 +70,19 @@ export default function BusinessDirectory() {
     }
   }, [searchQuery, fuseOptions]);
 
-  const handleSearchInputChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
   };
 
   // Use shallow routing to update the URL without a full page refresh.
   const handleSearchSubmit = () => {
-    router.push(`/business-directory?search=${encodeURIComponent(searchQuery)}`, undefined, {
-      shallow: true,
-    });
+    router.push(
+      `/business-directory?search=${encodeURIComponent(searchQuery)}`,
+      undefined,
+      {
+        shallow: true,
+      },
+    );
   };
 
   return (
@@ -162,4 +164,3 @@ export default function BusinessDirectory() {
     </div>
   );
 }
-
