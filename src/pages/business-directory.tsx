@@ -1,3 +1,7 @@
+// /pages/business-directory.tsx
+
+"use client";
+
 import React, { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
@@ -21,13 +25,15 @@ export default function BusinessDirectory() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const { search } = router.query;
+  const [initialLoad, setInitialLoad] = useState(true);
 
-  // When the URL query parameter changes, update the search input state.
+  // On initial load, if the URL has a search query, set it into state.
   useEffect(() => {
-    if (typeof search === "string" && search !== searchQuery) {
+    if (initialLoad && typeof search === "string") {
       setSearchQuery(search);
+      setInitialLoad(false);
     }
-  }, [search, searchQuery]);
+  }, [search, initialLoad]);
 
   // Memoize Fuse.js options so they don't change on every render.
   const fuseOptions = useMemo(
@@ -40,21 +46,15 @@ export default function BusinessDirectory() {
   );
 
   useEffect(() => {
-    // Only trigger the search if there is a query either from the URL or from input.
-    if (search || searchQuery) {
-      const query =
-        typeof search === "string"
-          ? search
-          : Array.isArray(search)
-            ? search[0]
-            : searchQuery;
+    // Trigger search if searchQuery has a value.
+    if (searchQuery) {
       setIsLoading(true);
-      fetch(`/api/searchBusinesses?search=${query}`)
+      fetch(`/api/searchBusinesses?search=${encodeURIComponent(searchQuery)}`)
         .then((res) => res.json())
         .then((data: Business[]) => {
           if (Array.isArray(data)) {
             const fuse = new Fuse(data, fuseOptions);
-            const result = fuse.search(query);
+            const result = fuse.search(searchQuery);
             setFilteredBusinesses(result.map((res) => res.item));
           } else {
             setFilteredBusinesses([]);
@@ -65,16 +65,20 @@ export default function BusinessDirectory() {
           console.error("Error fetching data: ", err);
           setIsLoading(false);
         });
+    } else {
+      setFilteredBusinesses([]);
     }
-  }, [search, searchQuery, fuseOptions]);
+  }, [searchQuery, fuseOptions]);
 
-  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchInputChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     setSearchQuery(e.target.value);
   };
 
   // Use shallow routing to update the URL without a full page refresh.
   const handleSearchSubmit = () => {
-    router.push(`/business-directory?search=${searchQuery}`, undefined, {
+    router.push(`/business-directory?search=${encodeURIComponent(searchQuery)}`, undefined, {
       shallow: true,
     });
   };
@@ -105,11 +109,6 @@ export default function BusinessDirectory() {
             placeholder="Find Black-Owned Businesses..."
             value={searchQuery}
             onChange={handleSearchInputChange}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                handleSearchSubmit();
-              }
-            }}
             className="w-full px-4 py-2 rounded-lg bg-gray-800 text-white placeholder-gray-400 border border-gray-700 focus:ring-2 focus:ring-gold focus:outline-none transition-all"
           />
           <button
@@ -163,3 +162,4 @@ export default function BusinessDirectory() {
     </div>
   );
 }
+
