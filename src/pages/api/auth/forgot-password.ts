@@ -5,7 +5,10 @@ import clientPromise from "../../../lib/mongodb";
 import { v4 as uuidv4 } from "uuid";
 import nodemailer from "nodemailer";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Method Not Allowed" });
   }
@@ -36,7 +39,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           resetPasswordToken: token,
           resetPasswordExpires: expiresAt,
         },
-      }
+      },
     );
 
     const resetLink = `${process.env.NEXT_PUBLIC_BASE_URL}/reset-password?token=${token}`;

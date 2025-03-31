@@ -39,11 +39,19 @@ const ProductDetailPage = () => {
   }, [id]);
 
   if (loading) {
-    return <div className="min-h-screen bg-gray-100 text-center py-20">Loading...</div>;
+    return (
+      <div className="min-h-screen bg-gray-100 text-center py-20">
+        Loading...
+      </div>
+    );
   }
 
   if (!product) {
-    return <div className="min-h-screen bg-gray-100 text-center py-20">Product not found.</div>;
+    return (
+      <div className="min-h-screen bg-gray-100 text-center py-20">
+        Product not found.
+      </div>
+    );
   }
 
   return (

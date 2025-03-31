@@ -143,7 +143,10 @@ export default function BusinessDirectory() {
                     className="object-cover rounded-md"
                   />
                   <div className="flex-1">
-                    <Link href={`/business-directory/${business.alias}`} passHref>
+                    <Link
+                      href={`/business-directory/${business.alias}`}
+                      passHref
+                    >
                       <span className="text-lg font-semibold text-gold hover:underline cursor-pointer">
                         {business.business_name}
                       </span>

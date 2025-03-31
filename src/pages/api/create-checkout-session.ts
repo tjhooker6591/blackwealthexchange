@@ -5,7 +5,10 @@ import { NextApiRequest, NextApiResponse } from "next";
 //   apiVersion: "2023-10-16",
 // });
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method === "POST") {
     const { adType, email } = req.body;
 
@@ -64,4 +67,3 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(405).end("Method Not Allowed");
   }
 }
-

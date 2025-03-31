@@ -115,14 +115,21 @@ export default function AddProductPage() {
 
         <div className="mb-4">
           <label className="block text-sm mb-1">Product Image</label>
-          <input type="file" accept="image/*" onChange={handleImageChange} className="w-full" />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            className="w-full"
+          />
         </div>
 
         <button
           onClick={handleSubmit}
           disabled={!isFormValid}
           className={`w-full py-2 px-4 rounded text-black font-semibold transition ${
-            isFormValid ? "bg-gold hover:bg-yellow-500" : "bg-gray-500 cursor-not-allowed"
+            isFormValid
+              ? "bg-gold hover:bg-yellow-500"
+              : "bg-gray-500 cursor-not-allowed"
           }`}
         >
           Submit Product
@@ -131,4 +138,3 @@ export default function AddProductPage() {
     </div>
   );
 }
-

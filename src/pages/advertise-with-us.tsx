@@ -54,7 +54,9 @@ const AdvertiseWithUs = () => {
           marginBottom: "2rem",
         }}
       >
-        <h1 style={{ fontSize: "2.5rem", fontWeight: "bold", color: "#ffcc00" }}>
+        <h1
+          style={{ fontSize: "2.5rem", fontWeight: "bold", color: "#ffcc00" }}
+        >
           Want to increase visibility for your business?
         </h1>
         <p style={{ fontSize: "1.1rem", marginTop: "1rem" }}>
@@ -99,29 +101,42 @@ const AdvertiseWithUs = () => {
 
       {/* Ad Options */}
       <section style={{ marginBottom: "2rem" }}>
-        <h2 style={{ fontSize: "2rem", marginBottom: "1rem", color: "#ffcc00" }}>
+        <h2
+          style={{ fontSize: "2rem", marginBottom: "1rem", color: "#ffcc00" }}
+        >
           Advertising Options
         </h2>
         <p style={{ fontSize: "1.1rem", marginBottom: "1rem" }}>
           Please choose one of the following advertising options:
         </p>
-        <div style={{ display: "flex", justifyContent: "space-around", flexWrap: "wrap", gap: "1rem" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-around",
+            flexWrap: "wrap",
+            gap: "1rem",
+          }}
+        >
           {[
             {
               title: "Featured Sponsor",
-              description: "Highlight your brand to a dedicated, engaged audience on our homepage.",
+              description:
+                "Highlight your brand to a dedicated, engaged audience on our homepage.",
             },
             {
               title: "Business Directory",
-              description: "Get your business featured in our Black-owned business directory.",
+              description:
+                "Get your business featured in our Black-owned business directory.",
             },
             {
               title: "Banner Ads",
-              description: "Place your ads on various high-traffic pages across the platform.",
+              description:
+                "Place your ads on various high-traffic pages across the platform.",
             },
             {
               title: "Custom Solutions",
-              description: "Let’s work together to create a tailored advertising plan for your business.",
+              description:
+                "Let’s work together to create a tailored advertising plan for your business.",
             },
           ].map((option) => (
             <div
@@ -136,11 +151,19 @@ const AdvertiseWithUs = () => {
                 textAlign: "center",
                 transition: "background-color 0.3s ease",
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#ffcc00")}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#4A4A4A")}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.backgroundColor = "#ffcc00")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.backgroundColor = "#4A4A4A")
+              }
             >
-              <h3 style={{ fontSize: "1.5rem", color: "#fff" }}>{option.title}</h3>
-              <p style={{ fontSize: "1rem", color: "#ccc" }}>{option.description}</p>
+              <h3 style={{ fontSize: "1.5rem", color: "#fff" }}>
+                {option.title}
+              </h3>
+              <p style={{ fontSize: "1rem", color: "#ccc" }}>
+                {option.description}
+              </p>
             </div>
           ))}
         </div>
@@ -156,7 +179,14 @@ const AdvertiseWithUs = () => {
             borderRadius: "8px",
           }}
         >
-          <h2 style={{ fontSize: "2rem", color: "#ffcc00", textAlign: "center", marginBottom: "1rem" }}>
+          <h2
+            style={{
+              fontSize: "2rem",
+              color: "#ffcc00",
+              textAlign: "center",
+              marginBottom: "1rem",
+            }}
+          >
             Step 2: Review Your Selection & Provide Details
           </h2>
 
@@ -168,19 +198,31 @@ const AdvertiseWithUs = () => {
               marginBottom: "1.5rem",
             }}
           >
-            <p><strong>Selected Package:</strong> {selectedOption}</p>
-            <p><strong>Description:</strong> {
+            <p>
+              <strong>Selected Package:</strong> {selectedOption}
+            </p>
+            <p>
+              <strong>Description:</strong>{" "}
               {
-                "Featured Sponsor": "Highlight your brand to a dedicated, engaged audience on our homepage.",
-                "Business Directory": "Get your business featured in our Black-owned business directory.",
-                "Banner Ads": "Place your ads on various high-traffic pages across the platform.",
-                "Custom Solutions": "Let’s work together to create a tailored advertising plan for your business.",
-              }[selectedOption]
-            }</p>
+                {
+                  "Featured Sponsor":
+                    "Highlight your brand to a dedicated, engaged audience on our homepage.",
+                  "Business Directory":
+                    "Get your business featured in our Black-owned business directory.",
+                  "Banner Ads":
+                    "Place your ads on various high-traffic pages across the platform.",
+                  "Custom Solutions":
+                    "Let’s work together to create a tailored advertising plan for your business.",
+                }[selectedOption]
+              }
+            </p>
           </div>
 
           <div style={{ marginBottom: "1rem" }}>
-            <label htmlFor="banner" style={{ display: "block", marginBottom: "0.5rem" }}>
+            <label
+              htmlFor="banner"
+              style={{ display: "block", marginBottom: "0.5rem" }}
+            >
               Upload Your Banner Image:
             </label>
             <input
@@ -193,7 +235,10 @@ const AdvertiseWithUs = () => {
           </div>
 
           <div style={{ marginBottom: "1rem" }}>
-            <label htmlFor="duration" style={{ display: "block", marginBottom: "0.5rem" }}>
+            <label
+              htmlFor="duration"
+              style={{ display: "block", marginBottom: "0.5rem" }}
+            >
               Campaign Duration (in days):
             </label>
             <input
@@ -206,7 +251,14 @@ const AdvertiseWithUs = () => {
             />
           </div>
 
-          <label style={{ display: "block", marginBottom: "1rem", fontSize: "1rem", textAlign: "center" }}>
+          <label
+            style={{
+              display: "block",
+              marginBottom: "1rem",
+              fontSize: "1rem",
+              textAlign: "center",
+            }}
+          >
             <input
               type="checkbox"
               checked={confirmed}

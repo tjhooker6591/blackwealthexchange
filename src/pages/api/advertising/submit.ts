@@ -2,12 +2,16 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method Not Allowed" });
   }
 
-  const { name, email, businessName, adText, adImage, website, budget } = req.body;
+  const { name, email, businessName, adText, adImage, website, budget } =
+    req.body;
 
   if (!name || !email || !businessName || !adText || !adImage || !budget) {
     return res.status(400).json({ error: "Missing required fields" });
@@ -31,7 +35,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     };
 
     const result = await collection.insertOne(newAd);
-    return res.status(201).json({ message: "Ad submitted", adId: result.insertedId });
+    return res
+      .status(201)
+      .json({ message: "Ad submitted", adId: result.insertedId });
   } catch (error) {
     console.error("Error saving ad request:", error);
     return res.status(500).json({ error: "Internal server error" });

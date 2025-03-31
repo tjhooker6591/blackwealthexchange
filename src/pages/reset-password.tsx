@@ -33,7 +33,7 @@ export default function ResetPasswordPage() {
       const res = await fetch("/api/auth/reset-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token, newPassword: password })
+        body: JSON.stringify({ token, newPassword: password }),
       });
 
       const data = await res.json();
@@ -54,9 +54,13 @@ export default function ResetPasswordPage() {
   return (
     <div className="min-h-screen bg-black text-white p-6 flex items-center justify-center">
       <div className="max-w-md w-full bg-gray-900 p-6 rounded-lg border border-gold">
-        <h1 className="text-2xl font-bold text-gold mb-4">Reset Your Password</h1>
+        <h1 className="text-2xl font-bold text-gold mb-4">
+          Reset Your Password
+        </h1>
         {success ? (
-          <p className="text-green-500">Password reset successful. You can now log in.</p>
+          <p className="text-green-500">
+            Password reset successful. You can now log in.
+          </p>
         ) : (
           <>
             {error && <p className="text-red-500 mb-4 text-sm">{error}</p>}
@@ -84,7 +88,9 @@ export default function ResetPasswordPage() {
               onClick={handleReset}
               disabled={loading}
               className={`w-full py-2 px-4 rounded text-black font-semibold transition ${
-                loading ? "bg-gray-500 cursor-not-allowed" : "bg-gold hover:bg-yellow-500"
+                loading
+                  ? "bg-gray-500 cursor-not-allowed"
+                  : "bg-gold hover:bg-yellow-500"
               }`}
             >
               {loading ? "Resetting..." : "Reset Password"}

@@ -17,7 +17,7 @@ const AdvertiseForm = () => {
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -35,7 +35,7 @@ const AdvertiseForm = () => {
 
       if (res.ok) {
         setStatus(
-          "Thank you! Your ad request has been received. Payment is currently disabled — we will contact you to complete the process."
+          "Thank you! Your ad request has been received. Payment is currently disabled — we will contact you to complete the process.",
         );
         setFormData({ businessName: "", email: "", description: "" });
         setSelectedOption(null);
@@ -77,7 +77,9 @@ const AdvertiseForm = () => {
           boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
         }}
       >
-        <h1 style={{ fontSize: "2.5rem", fontWeight: "bold", color: "#ffcc00" }}>
+        <h1
+          style={{ fontSize: "2.5rem", fontWeight: "bold", color: "#ffcc00" }}
+        >
           Want to increase visibility for your business?
         </h1>
         <p style={{ fontSize: "1.1rem", marginTop: "1rem" }}>
@@ -90,13 +92,15 @@ const AdvertiseForm = () => {
         <div className="p-6 bg-gray-800 rounded-lg shadow">
           <h3 className="text-xl font-semibold mb-2">Wide Reach</h3>
           <p>
-            Engage thousands of monthly visitors who are actively looking to support Black-owned businesses.
+            Engage thousands of monthly visitors who are actively looking to
+            support Black-owned businesses.
           </p>
         </div>
         <div className="p-6 bg-gray-800 rounded-lg shadow">
           <h3 className="text-xl font-semibold mb-2">Flexible Ad Placements</h3>
           <p>
-            Choose from homepage banners, category highlights, or featured directory listings.
+            Choose from homepage banners, category highlights, or featured
+            directory listings.
           </p>
         </div>
         <div className="p-6 bg-gray-800 rounded-lg shadow">
@@ -118,7 +122,9 @@ const AdvertiseForm = () => {
       </section>
 
       <section style={{ marginBottom: "2rem" }}>
-        <h2 style={{ fontSize: "2rem", marginBottom: "1rem", color: "#ffcc00" }}>
+        <h2
+          style={{ fontSize: "2rem", marginBottom: "1rem", color: "#ffcc00" }}
+        >
           Advertising Options
         </h2>
         <p style={{ fontSize: "1.1rem", marginBottom: "1rem" }}>
@@ -132,7 +138,12 @@ const AdvertiseForm = () => {
             gap: "1rem",
           }}
         >
-          {["Featured Sponsor", "Business Directory", "Banner Ads", "Custom Solutions"].map((option) => (
+          {[
+            "Featured Sponsor",
+            "Business Directory",
+            "Banner Ads",
+            "Custom Solutions",
+          ].map((option) => (
             <div
               key={option}
               onClick={() => handleOptionSelect(option)}
@@ -145,8 +156,12 @@ const AdvertiseForm = () => {
                 textAlign: "center",
                 transition: "background-color 0.3s ease",
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#ffcc00")}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#4A4A4A")}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.backgroundColor = "#ffcc00")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.backgroundColor = "#4A4A4A")
+              }
             >
               <h3 style={{ fontSize: "1.5rem", color: "#fff" }}>{option}</h3>
             </div>

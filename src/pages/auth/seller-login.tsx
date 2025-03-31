@@ -43,7 +43,9 @@ export default function SellerLoginPage() {
         onSubmit={handleLogin}
         className="bg-gray-900 p-6 rounded-lg shadow-lg w-full max-w-md border border-gold"
       >
-        <h1 className="text-2xl font-bold text-gold mb-4 text-center">Seller Login</h1>
+        <h1 className="text-2xl font-bold text-gold mb-4 text-center">
+          Seller Login
+        </h1>
 
         <label className="block mb-2 text-sm">Email</label>
         <input

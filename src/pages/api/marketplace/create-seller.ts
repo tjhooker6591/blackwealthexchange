@@ -2,7 +2,10 @@ import { NextApiRequest, NextApiResponse } from "next";
 import bcrypt from "bcryptjs";
 import clientPromise from "../../../lib/mongodb";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Method Not Allowed" });
   }
@@ -17,7 +20,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       description,
     } = req.body;
 
-    if (!businessName || !email || !password || !businessAddress || !businessPhone) {
+    if (
+      !businessName ||
+      !email ||
+      !password ||
+      !businessAddress ||
+      !businessPhone
+    ) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 

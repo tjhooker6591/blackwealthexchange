@@ -43,7 +43,8 @@ export default function ForgotPassword() {
       <div className="w-full max-w-md bg-gray-900 border border-gold p-6 rounded-lg">
         <h1 className="text-2xl font-bold text-gold mb-4">Forgot Password</h1>
         <p className="text-sm text-gray-400 mb-6">
-          Enter your email address and we&apos;ll send you a link to reset your password.
+          Enter your email address and we&apos;ll send you a link to reset your
+          password.
         </p>
 
         {message && <p className="text-green-500 mb-4 text-sm">{message}</p>}
@@ -64,7 +65,9 @@ export default function ForgotPassword() {
           onClick={handleSubmit}
           disabled={!email || loading}
           className={`w-full py-2 px-4 rounded text-black font-semibold transition ${
-            email && !loading ? "bg-gold hover:bg-yellow-500" : "bg-gray-500 cursor-not-allowed"
+            email && !loading
+              ? "bg-gold hover:bg-yellow-500"
+              : "bg-gray-500 cursor-not-allowed"
           }`}
         >
           {loading ? "Sending..." : "Send Reset Link"}

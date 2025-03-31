@@ -64,7 +64,9 @@ export default function SellerDashboard() {
   };
 
   const handleDelete = async (id: string) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this product?");
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this product?",
+    );
     if (!confirmDelete) return;
 
     try {
@@ -115,7 +117,9 @@ export default function SellerDashboard() {
           </div>
           <div className="bg-gray-800 p-4 rounded text-center border border-gold">
             <h2 className="text-sm text-gray-400">Total Revenue</h2>
-            <p className="text-2xl font-bold text-white">${totalRevenue.toFixed(2)}</p>
+            <p className="text-2xl font-bold text-white">
+              ${totalRevenue.toFixed(2)}
+            </p>
           </div>
         </div>
 
@@ -128,7 +132,10 @@ export default function SellerDashboard() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-12">
             {products.map((product) => (
-              <div key={product._id} className="bg-gray-800 rounded p-4 border border-gray-700">
+              <div
+                key={product._id}
+                className="bg-gray-800 rounded p-4 border border-gray-700"
+              >
                 <div className="relative h-40 w-full mb-3">
                   <Image
                     src={product.imageUrl || "/placeholder.png"}
@@ -138,9 +145,15 @@ export default function SellerDashboard() {
                     className="rounded"
                   />
                 </div>
-                <h3 className="text-lg font-semibold text-white mb-1">{product.name}</h3>
-                <p className="text-sm text-gray-400 mb-1">Category: {product.category}</p>
-                <p className="text-sm text-gray-400 mb-3">Price: ${product.price}</p>
+                <h3 className="text-lg font-semibold text-white mb-1">
+                  {product.name}
+                </h3>
+                <p className="text-sm text-gray-400 mb-1">
+                  Category: {product.category}
+                </p>
+                <p className="text-sm text-gray-400 mb-3">
+                  Price: ${product.price}
+                </p>
                 <div className="flex justify-between">
                   <button
                     onClick={() => handleEdit(product._id)}
@@ -178,12 +191,17 @@ export default function SellerDashboard() {
               </thead>
               <tbody>
                 {orders.map((order) => (
-                  <tr key={order._id} className="border-t border-gray-800 text-white">
+                  <tr
+                    key={order._id}
+                    className="border-t border-gray-800 text-white"
+                  >
                     <td className="p-2">{order.buyerEmail}</td>
                     <td className="p-2">{order.quantity}</td>
                     <td className="p-2">${order.total.toFixed(2)}</td>
                     <td className="p-2">{order.status}</td>
-                    <td className="p-2">{new Date(order.createdAt).toLocaleDateString()}</td>
+                    <td className="p-2">
+                      {new Date(order.createdAt).toLocaleDateString()}
+                    </td>
                   </tr>
                 ))}
               </tbody>

@@ -60,7 +60,8 @@ export default function BecomeASellerPage() {
       <div className="max-w-2xl mx-auto bg-gray-900 p-6 rounded-lg border border-gold">
         <h1 className="text-2xl font-bold text-gold mb-4">Become a Seller</h1>
         <p className="text-gray-400 mb-6 text-sm">
-          Set up your seller profile so you can start adding products to the marketplace.
+          Set up your seller profile so you can start adding products to the
+          marketplace.
         </p>
 
         {error && <p className="text-red-500 mb-4 text-sm">{error}</p>}
@@ -121,7 +122,9 @@ export default function BecomeASellerPage() {
         </div>
 
         <div className="mb-4">
-          <label className="block text-sm mb-1">Website or Social Media (optional)</label>
+          <label className="block text-sm mb-1">
+            Website or Social Media (optional)
+          </label>
           <input
             type="text"
             value={website}
@@ -145,9 +148,25 @@ export default function BecomeASellerPage() {
 
         <button
           onClick={handleSubmit}
-          disabled={loading || !(businessName && email && businessPhone && businessAddress && description && agreed)}
+          disabled={
+            loading ||
+            !(
+              businessName &&
+              email &&
+              businessPhone &&
+              businessAddress &&
+              description &&
+              agreed
+            )
+          }
           className={`w-full py-2 px-4 rounded text-black font-semibold transition ${
-            businessName && email && businessPhone && businessAddress && description && agreed && !loading
+            businessName &&
+            email &&
+            businessPhone &&
+            businessAddress &&
+            description &&
+            agreed &&
+            !loading
               ? "bg-gold hover:bg-yellow-500"
               : "bg-gray-500 cursor-not-allowed"
           }`}

@@ -14,7 +14,9 @@ export default async function handler(
     const { email, password, accountType } = req.body;
 
     if (!email || !password || !accountType) {
-      return res.status(400).json({ error: "Missing credentials or account type" });
+      return res
+        .status(400)
+        .json({ error: "Missing credentials or account type" });
     }
 
     const client = await clientPromise;
@@ -53,4 +55,3 @@ export default async function handler(
     return res.status(500).json({ error: "Internal Server Error" });
   }
 }
-

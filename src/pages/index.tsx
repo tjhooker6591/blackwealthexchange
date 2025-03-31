@@ -244,86 +244,81 @@ export default function Home() {
         </section>
 
         {/* Main Sections Grid */}
-<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-  {[
-    {
-      title: "Our Marketplace",
-      href: "/marketplace",
-      description: "Buy & sell Black-owned products securely.",
-    },
-    {
-      title: "Sponsored Businesses",
-      href: "/business-directory/sponsored-business",
-      description: "Premium featured business with more visibility.",
-    },
-    {
-      title: "Affiliate & Partnership",
-      href: "/affiliate",
-      description:
-        "Explore our curated affiliate offers and partnership opportunities.",
-    },
-    {
-      title: "Entertainment&News",
-      href: "/black-entertainment-news",
-      description: "Learn about Black entertainment and news.",
-    },
-    {
-      title: "Jobs & Careers",
-      href: "/jobs",
-      description:
-        "Discover jobs, internships & networking opportunities.",
-    },
-    {
-      title: "Investment & Wealth",
-      href: "/investment",
-      description: "Invest in Black businesses & secure your future.",
-    },
-  ].map((item, index) => (
-    <div
-      key={index}
-      className={`p-4 shadow-lg hover:scale-105 transition transform rounded-lg ${
-        item.title === "Our Marketplace"
-          ? "bg-gradient-to-br from-yellow-700 to-yellow-500 text-black border-2 border-yellow-400 ring-2 ring-yellow-500"
-          : "bg-gray-800 bg-opacity-80 text-white border border-gray-700"
-      }`}
-    >
-      {item.title === "Our Marketplace" && (
-        <span className="inline-block bg-black text-yellow-400 text-xs font-bold px-2 py-1 rounded-full mb-2 animate-pulse">
-          🔥 Popular
-        </span>
-      )}
-      <Link href={item.href}>
-        <h2 className="text-xl font-semibold hover:underline cursor-pointer">
-          {item.title}
-        </h2>
-      </Link>
-      <p className="text-sm mt-2">
-        {item.description}
-      </p>
-    </div>
-  ))}
-</div>
-
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          {[
+            {
+              title: "Our Marketplace",
+              href: "/marketplace",
+              description: "Buy & sell Black-owned products securely.",
+            },
+            {
+              title: "Sponsored Businesses",
+              href: "/business-directory/sponsored-business",
+              description: "Premium featured business with more visibility.",
+            },
+            {
+              title: "Affiliate & Partnership",
+              href: "/affiliate",
+              description:
+                "Explore our curated affiliate offers and partnership opportunities.",
+            },
+            {
+              title: "Entertainment&News",
+              href: "/black-entertainment-news",
+              description: "Learn about Black entertainment and news.",
+            },
+            {
+              title: "Jobs & Careers",
+              href: "/jobs",
+              description:
+                "Discover jobs, internships & networking opportunities.",
+            },
+            {
+              title: "Investment & Wealth",
+              href: "/investment",
+              description: "Invest in Black businesses & secure your future.",
+            },
+          ].map((item, index) => (
+            <div
+              key={index}
+              className={`p-4 shadow-lg hover:scale-105 transition transform rounded-lg ${
+                item.title === "Our Marketplace"
+                  ? "bg-gradient-to-br from-yellow-700 to-yellow-500 text-black border-2 border-yellow-400 ring-2 ring-yellow-500"
+                  : "bg-gray-800 bg-opacity-80 text-white border border-gray-700"
+              }`}
+            >
+              {item.title === "Our Marketplace" && (
+                <span className="inline-block bg-black text-yellow-400 text-xs font-bold px-2 py-1 rounded-full mb-2 animate-pulse">
+                  🔥 Popular
+                </span>
+              )}
+              <Link href={item.href}>
+                <h2 className="text-xl font-semibold hover:underline cursor-pointer">
+                  {item.title}
+                </h2>
+              </Link>
+              <p className="text-sm mt-2">{item.description}</p>
+            </div>
+          ))}
+        </div>
 
         {/* Advertise with Us Section */}
-      
-      {/* Clean & Animated Advertise with Us Section */}
-<section
-  className="bg-gray-900 border border-gold rounded-lg shadow p-4 text-center my-6 animate-fadeIn"
->
-  <h2 className="text-xl font-semibold text-gold flex items-center justify-center gap-2 mb-1">
-    📢 Advertise with Us
-  </h2>
-  <p className="text-sm text-gray-400 mb-2">
-    Promote your business to thousands of engaged users across our platform.
-  </p>
-  <Link href="/advertise-with-us">
-    <button className="px-4 py-1.5 bg-gold text-black text-sm rounded hover:bg-yellow-500 transition">
-      View Ad Options
-    </button>
-  </Link>
-</section>
 
+        {/* Clean & Animated Advertise with Us Section */}
+        <section className="bg-gray-900 border border-gold rounded-lg shadow p-4 text-center my-6 animate-fadeIn">
+          <h2 className="text-xl font-semibold text-gold flex items-center justify-center gap-2 mb-1">
+            📢 Advertise with Us
+          </h2>
+          <p className="text-sm text-gray-400 mb-2">
+            Promote your business to thousands of engaged users across our
+            platform.
+          </p>
+          <Link href="/advertise-with-us">
+            <button className="px-4 py-1.5 bg-gold text-black text-sm rounded hover:bg-yellow-500 transition">
+              View Ad Options
+            </button>
+          </Link>
+        </section>
       </main>
 
       {/* Explore Other Black-Owned Websites Section */}
@@ -491,19 +486,18 @@ export default function Home() {
         }
 
         @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-.animate-fadeIn {
-  animation: fadeIn 1s ease-out both;
-}
-
+          from {
+            opacity: 0;
+            transform: translateY(10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-fadeIn {
+          animation: fadeIn 1s ease-out both;
+        }
       `}</style>
     </div>
   );

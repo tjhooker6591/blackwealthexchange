@@ -30,7 +30,7 @@ const Marketplace: React.FC = () => {
       setLoading(true);
       try {
         const res = await fetch(
-          `/api/marketplace/get-products?page=${currentPage}&limit=${itemsPerPage}&category=${selectedCategory}`
+          `/api/marketplace/get-products?page=${currentPage}&limit=${itemsPerPage}&category=${selectedCategory}`,
         );
         const data = await res.json();
         setProducts(data.products || []);
@@ -114,8 +114,13 @@ const Marketplace: React.FC = () => {
       <section className="container mx-auto px-4 pt-4 pb-6">
         <div className="bg-gold text-black p-4 rounded-lg flex flex-col md:flex-row items-center justify-between gap-4 shadow-md">
           <div>
-            <h3 className="text-xl font-bold">Are You a Black-Owned Business?</h3>
-            <p className="text-sm">Join our Marketplace and start selling to thousands of conscious buyers.</p>
+            <h3 className="text-xl font-bold">
+              Are You a Black-Owned Business?
+            </h3>
+            <p className="text-sm">
+              Join our Marketplace and start selling to thousands of conscious
+              buyers.
+            </p>
           </div>
           <button
             onClick={handleBecomeSeller}
@@ -129,7 +134,17 @@ const Marketplace: React.FC = () => {
       {/* Category Filters */}
       <div className="container mx-auto px-4 pb-4">
         <div className="flex flex-wrap gap-3 justify-center">
-          {["All", "Apparel", "Accessories", "Beauty", "Art", "Books", "Home", "Food", "Other"].map((cat) => (
+          {[
+            "All",
+            "Apparel",
+            "Accessories",
+            "Beauty",
+            "Art",
+            "Books",
+            "Home",
+            "Food",
+            "Other",
+          ].map((cat) => (
             <button
               key={cat}
               onClick={() => handleCategoryChange(cat)}
@@ -151,7 +166,9 @@ const Marketplace: React.FC = () => {
         {loading ? (
           <p className="text-center text-gray-600">Loading...</p>
         ) : products.length === 0 ? (
-          <p className="text-center text-gray-600">No products available in this category.</p>
+          <p className="text-center text-gray-600">
+            No products available in this category.
+          </p>
         ) : (
           <>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
@@ -169,9 +186,14 @@ const Marketplace: React.FC = () => {
                       style={{ objectFit: "cover", borderRadius: "0.5rem" }}
                     />
                   </div>
-                  <h4 className="font-semibold text-lg truncate">{product.name}</h4>
+                  <h4 className="font-semibold text-lg truncate">
+                    {product.name}
+                  </h4>
                   <p className="text-sm text-gray-600">
-                    ${typeof product.price === "number" ? product.price.toFixed(2) : "N/A"}
+                    $
+                    {typeof product.price === "number"
+                      ? product.price.toFixed(2)
+                      : "N/A"}
                   </p>
                 </div>
               ))}
@@ -191,8 +213,10 @@ const Marketplace: React.FC = () => {
           className="object-cover rounded mx-auto mb-4"
         />
         <p className="text-gray-700 max-w-2xl mx-auto">
-          Our marketplace is the gateway to supporting Black-owned businesses and circulating wealth within our communities.
-          By leveraging our collective spending power, we can uplift entrepreneurs, create jobs, and close the racial wealth gap one purchase at a time.
+          Our marketplace is the gateway to supporting Black-owned businesses
+          and circulating wealth within our communities. By leveraging our
+          collective spending power, we can uplift entrepreneurs, create jobs,
+          and close the racial wealth gap one purchase at a time.
         </p>
       </section>
 
