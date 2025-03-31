@@ -17,32 +17,45 @@ export default function FeaturedSponsorPage() {
 
   const handleProceed = () => {
     if (!bannerFile || !campaignDuration || !confirmed) {
-      alert("Please upload a banner, enter the campaign duration, and confirm your details before proceeding.");
+      alert(
+        "Please upload a banner, enter the campaign duration, and confirm your details before proceeding.",
+      );
       return;
     }
 
     router.push(
       `/advertising/checkout?option=featured-sponsor&duration=${encodeURIComponent(
-        campaignDuration
-      )}`
+        campaignDuration,
+      )}`,
     );
   };
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-6">
       <div className="max-w-2xl mx-auto bg-gray-800 p-6 rounded-lg border border-gold">
-        <h1 className="text-2xl font-bold text-gold mb-4">Featured Sponsor Advertising</h1>
+        <h1 className="text-2xl font-bold text-gold mb-4">
+          Featured Sponsor Advertising
+        </h1>
         <p className="text-gray-300 mb-6">
-          Boost your brand by being prominently featured on our homepage and throughout the platform. Perfect for high-visibility campaigns and brand awareness.
+          Boost your brand by being prominently featured on our homepage and
+          throughout the platform. Perfect for high-visibility campaigns and
+          brand awareness.
         </p>
 
         <div className="mb-4">
           <label className="block text-sm mb-1">Upload Your Banner</label>
-          <input type="file" accept="image/*" onChange={handleFileChange} className="w-full" />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="w-full"
+          />
         </div>
 
         <div className="mb-4">
-          <label className="block text-sm mb-1">Campaign Duration (in days)</label>
+          <label className="block text-sm mb-1">
+            Campaign Duration (in days)
+          </label>
           <input
             type="number"
             value={campaignDuration}
