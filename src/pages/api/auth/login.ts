@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import bcrypt from "bcryptjs";
-import clientPromise from "../../../lib/mongodb"; // Make sure this points to your MongoDB connection
+import clientPromise from "../../../lib/mongodb"; // Ensure this points to your MongoDB connection
 
 export default async function handler(
   req: NextApiRequest,
@@ -11,16 +11,25 @@ export default async function handler(
   }
 
   try {
-    const { email, password } = req.body;
+    const { email, password, accountType } = req.body;
 
-    if (!email || !password) {
-      return res.status(400).json({ error: "Missing email or password" });
+    if (!email || !password || !accountType) {
+      return res.status(400).json({ error: "Missing credentials or account type" });
     }
 
     const client = await clientPromise;
-    const db = client.db("bwe_users");
+    const db = client.db("bwes-cluster");
 
-    const user = await db.collection("users").findOne({ email });
+    let user = null;
+
+    if (accountType === "user") {
+      user = await db.collection("users").findOne({ email });
+    } else if (accountType === "seller") {
+      user = await db.collection("businesses").findOne({ email });
+    } else {
+      return res.status(400).json({ error: "Invalid account type" });
+    }
+
     if (!user) {
       return res.status(401).json({ error: "Invalid credentials" });
     }
@@ -30,13 +39,18 @@ export default async function handler(
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
-    // ✅ Return user data (excluding password)
+    // ✅ Return public-facing user data
     return res.status(200).json({
       message: "Login successful!",
-      user: { email: user.email }, // Only return email for security reasons
+      user: {
+        email: user.email,
+        accountType: accountType,
+        businessName: user.businessName || null,
+      },
     });
   } catch (error) {
     console.error("Login error:", error);
     return res.status(500).json({ error: "Internal Server Error" });
   }
 }
+

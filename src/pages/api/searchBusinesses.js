@@ -9,7 +9,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const client = new MongoClient(process.env.MONGO_URI);
+    const client = new MongoClient(process.env.MONGODB_URI); // ✅ updated here
     await client.connect();
     const database = client.db("bwes-cluster");
     const businessesCollection = database.collection("businesses");

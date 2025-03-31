@@ -7,6 +7,9 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import Image from "next/image";
 import Fuse from "fuse.js";
+import FeaturedSponsorAd from "@/components/FeaturedSponsorAd";
+import BannerAd from "@/components/BannerAd";
+import CustomSolutionAd from "@/components/CustomSolutionAd";
 
 // Define the interface for a Business
 interface Business {
@@ -121,45 +124,53 @@ export default function BusinessDirectory() {
           </button>
         </div>
 
-        {/* Display results */}
+        {/* Featured Sponsor Ad */}
+        <FeaturedSponsorAd />
+
+        {/* Display results with Banner Ads inserted after every 5 results */}
         {isLoading ? (
           <p>Loading...</p>
         ) : filteredBusinesses.length > 0 ? (
           <div className="search-results mt-6">
-            {filteredBusinesses.map((business) => (
-              <div
-                key={business._id}
-                className="search-result-item flex items-start space-x-4 py-4 border-b border-gray-700"
-              >
-                <Image
-                  src={business.image || "/default-image.jpg"}
-                  alt={business.business_name}
-                  width={64}
-                  height={64}
-                  className="object-cover rounded-md"
-                />
-                <div className="flex-1">
-                  <Link href={`/business-directory/${business.alias}`} passHref>
-                    <span className="text-lg font-semibold text-gold hover:underline cursor-pointer">
-                      {business.business_name}
-                    </span>
-                  </Link>
-                  <p className="text-sm text-gray-300 mt-1">
-                    {business.description || "Description not available"}
-                  </p>
-                  <p className="text-sm text-gray-300 mt-1">
-                    {business.phone || "No phone number available"}
-                  </p>
-                  <p className="text-sm text-gray-300 mt-1">
-                    {business.address || "No address available"}
-                  </p>
+            {filteredBusinesses.map((business, index) => (
+              <React.Fragment key={business._id}>
+                <div className="search-result-item flex items-start space-x-4 py-3 border-b border-gray-700">
+                  <Image
+                    src={business.image || "/default-image.jpg"}
+                    alt={business.business_name}
+                    width={64}
+                    height={64}
+                    className="object-cover rounded-md"
+                  />
+                  <div className="flex-1">
+                    <Link href={`/business-directory/${business.alias}`} passHref>
+                      <span className="text-lg font-semibold text-gold hover:underline cursor-pointer">
+                        {business.business_name}
+                      </span>
+                    </Link>
+                    <p className="text-sm text-gray-300 mt-1">
+                      {business.description || "Description not available"}
+                    </p>
+                    <p className="text-sm text-gray-300 mt-1">
+                      {business.phone || "No phone number available"}
+                    </p>
+                    <p className="text-sm text-gray-300 mt-1">
+                      {business.address || "No address available"}
+                    </p>
+                  </div>
                 </div>
-              </div>
+                {(index + 1) % 5 === 0 && <BannerAd />}
+              </React.Fragment>
             ))}
           </div>
         ) : (
           <p>No businesses found for &quot;{search || searchQuery}&quot;</p>
         )}
+      </div>
+
+      {/* Custom Solution Ad Section */}
+      <div className="container mx-auto px-4">
+        <CustomSolutionAd />
       </div>
     </div>
   );

@@ -3,186 +3,200 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/router";
 
 interface Product {
-  id: number;
-  title: string;
-  image: string;
-  price: string; // e.g., "$250"
-  category: "recent" | "top" | "compare";
+  _id: string;
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  imageUrl: string;
 }
+
+const itemsPerPage = 8;
 
 const Marketplace: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(false);
+
+  const router = useRouter();
 
   useEffect(() => {
-    // Sample data – replace with your API call or data source.
-    const sampleProducts: Product[] = [
-      {
-        id: 1,
-        title: "Vintage Leather Bag",
-        image: "/marketplace/leather-bag.jpg",
-        price: "$250",
-        category: "recent",
-      },
-      {
-        id: 2,
-        title: "Classic Watch",
-        image: "/marketplace/classic-watch.jpg",
-        price: "$350",
-        category: "recent",
-      },
-      {
-        id: 3,
-        title: "Handcrafted Jewelry",
-        image: "/marketplace/jewelry.jpg",
-        price: "$150",
-        category: "top",
-      },
-      {
-        id: 4,
-        title: "Designer Sunglasses",
-        image: "/marketplace/sunglasses.jpg",
-        price: "$300",
-        category: "top",
-      },
-      {
-        id: 5,
-        title: "Luxury Perfume",
-        image: "/marketplace/perfume.jpg",
-        price: "$180",
-        category: "compare",
-      },
-      {
-        id: 6,
-        title: "Elegant Dress",
-        image: "/marketplace/elegant-dress.jpg",
-        price: "$400",
-        category: "compare",
-      },
-      // Add more products as needed...
-    ];
-    setProducts(sampleProducts);
-  }, []);
+    const fetchProducts = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(
+          `/api/marketplace/get-products?page=${currentPage}&limit=${itemsPerPage}&category=${selectedCategory}`
+        );
+        const data = await res.json();
+        setProducts(data.products || []);
+        setTotalPages(Math.ceil(data.total / itemsPerPage));
+      } catch (error) {
+        console.error("Failed to load products:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  // Filter products by category
-  const recentlyListed = products.filter((p) => p.category === "recent");
-  const topPicks = products.filter((p) => p.category === "top");
-  const comparisonProducts = products.filter((p) => p.category === "compare");
+    fetchProducts();
+  }, [currentPage, selectedCategory]);
+
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+
+  const handleCategoryChange = (cat: string) => {
+    setSelectedCategory(cat);
+    setCurrentPage(1); // reset to page 1 when category changes
+  };
+
+  const handleViewProduct = (id: string) => {
+    router.push(`/marketplace/product/${id}`);
+  };
+
+  const handleBecomeSeller = () => {
+    router.push("/marketplace/become-a-seller");
+  };
+
+  const renderPagination = () => {
+    if (totalPages <= 1) return null;
+
+    return (
+      <div className="flex justify-center gap-2 mt-6">
+        <button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="px-3 py-1 border rounded disabled:opacity-50"
+        >
+          Prev
+        </button>
+
+        {Array.from({ length: totalPages }, (_, i) => (
+          <button
+            key={i}
+            onClick={() => handlePageChange(i + 1)}
+            className={`px-3 py-1 border rounded ${
+              currentPage === i + 1 ? "bg-black text-white" : ""
+            }`}
+          >
+            {i + 1}
+          </button>
+        ))}
+
+        <button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className="px-3 py-1 border rounded disabled:opacity-50"
+        >
+          Next
+        </button>
+      </div>
+    );
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 text-gray-800">
-      {/* Marketplace Title */}
-      <section className="container mx-auto px-4 py-8">
-        <h1 className="text-4xl font-extrabold text-center mb-4">
-          Marketplace
-        </h1>
-        <p className="text-xl text-center mb-8">
+      {/* Header */}
+      <section className="container mx-auto px-4 py-8 text-center">
+        <h1 className="text-4xl font-extrabold mb-4">Marketplace</h1>
+        <p className="text-xl mb-8">
           Discover exclusive Black-owned products curated for quality and style.
-          Shop the latest listings, top picks, and compare premium offerings to
-          find your perfect match.
         </p>
       </section>
 
-      {/* Two-Column Layout for Recently Listed & Placeholder Image/Text */}
-      <section className="container mx-auto px-4 pb-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Left Column: Recently Listed */}
+      {/* Become a Seller */}
+      <section className="container mx-auto px-4 pt-4 pb-6">
+        <div className="bg-gold text-black p-4 rounded-lg flex flex-col md:flex-row items-center justify-between gap-4 shadow-md">
           <div>
-            <h2 className="text-3xl font-bold mb-4">Recently Listed</h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-              {recentlyListed.map((product) => (
+            <h3 className="text-xl font-bold">Are You a Black-Owned Business?</h3>
+            <p className="text-sm">Join our Marketplace and start selling to thousands of conscious buyers.</p>
+          </div>
+          <button
+            onClick={handleBecomeSeller}
+            className="px-4 py-2 bg-black text-gold font-semibold rounded hover:bg-gray-800 transition text-sm"
+          >
+            Become a Seller
+          </button>
+        </div>
+      </section>
+
+      {/* Category Filters */}
+      <div className="container mx-auto px-4 pb-4">
+        <div className="flex flex-wrap gap-3 justify-center">
+          {["All", "Apparel", "Accessories", "Beauty", "Art", "Books", "Home", "Food", "Other"].map((cat) => (
+            <button
+              key={cat}
+              onClick={() => handleCategoryChange(cat)}
+              className={`px-4 py-1.5 rounded-full border text-sm font-medium transition ${
+                selectedCategory === cat
+                  ? "bg-gold text-black border-gold"
+                  : "border-gray-500 text-gray-700 hover:bg-gray-200"
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Products Section */}
+      <section className="container mx-auto px-4 py-8">
+        <h3 className="text-3xl font-bold mb-4">{selectedCategory} Products</h3>
+        {loading ? (
+          <p className="text-center text-gray-600">Loading...</p>
+        ) : products.length === 0 ? (
+          <p className="text-center text-gray-600">No products available in this category.</p>
+        ) : (
+          <>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+              {products.map((product) => (
                 <div
-                  key={product.id}
-                  className="bg-white p-4 rounded-lg shadow hover:shadow-lg transition"
+                  key={product._id}
+                  className="bg-white p-4 rounded-lg shadow hover:shadow-lg transition cursor-pointer"
+                  onClick={() => handleViewProduct(product._id)}
                 >
-                  <div className="relative h-24 w-full mb-2">
+                  <div className="w-full h-32 relative mb-2">
                     <Image
-                      src={product.image}
-                      alt={product.title}
-                      layout="fill"
-                      objectFit="cover"
-                      className="rounded"
+                      src={product.imageUrl || "/placeholder.png"}
+                      alt={product.name}
+                      fill
+                      style={{ objectFit: "cover", borderRadius: "0.5rem" }}
                     />
                   </div>
-                  <h4 className="font-semibold text-lg">{product.title}</h4>
-                  <p className="text-sm text-gray-600">{product.price}</p>
+                  <h4 className="font-semibold text-lg truncate">{product.name}</h4>
+                  <p className="text-sm text-gray-600">
+                    ${typeof product.price === "number" ? product.price.toFixed(2) : "N/A"}
+                  </p>
                 </div>
               ))}
             </div>
-          </div>
-
-          {/* Right Column: Just the Image + Text, No White Box */}
-          <div className="flex flex-col items-center justify-center p-6">
-            <Image
-              src="/marketplace/story3.jpg" // Replace with the path to your uploaded image
-              alt="Empowering the Black Community"
-              width={400}
-              height={300}
-              className="object-cover rounded mb-4"
-            />
-            <p className="text-gray-700 text-center">
-              Our marketplace is the gateway to supporting Black-owned
-              businesses and circulating wealth within our communities. By
-              leveraging our collective spending power, we can uplift
-              entrepreneurs, create jobs, and close the racial wealth gap one
-              purchase at a time.
-            </p>
-          </div>
-        </div>
+            {renderPagination()}
+          </>
+        )}
       </section>
 
-      {/* Top Picks */}
-      <section className="container mx-auto px-4 py-8">
-        <h3 className="text-3xl font-bold mb-4">Top Picks</h3>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-          {topPicks.map((product) => (
-            <div
-              key={product.id}
-              className="bg-white p-4 rounded-lg shadow hover:shadow-lg transition"
-            >
-              <div className="relative h-24 w-full mb-2">
-                <Image
-                  src={product.image}
-                  alt={product.title}
-                  layout="fill"
-                  objectFit="cover"
-                  className="rounded"
-                />
-              </div>
-              <h4 className="font-semibold text-lg">{product.title}</h4>
-              <p className="text-sm text-gray-600">{product.price}</p>
-            </div>
-          ))}
-        </div>
+      {/* Story/Message */}
+      <section className="container mx-auto px-4 pb-10 text-center">
+        <Image
+          src="/marketplace/story3.jpg"
+          alt="Empowering the Black Community"
+          width={400}
+          height={300}
+          className="object-cover rounded mx-auto mb-4"
+        />
+        <p className="text-gray-700 max-w-2xl mx-auto">
+          Our marketplace is the gateway to supporting Black-owned businesses and circulating wealth within our communities.
+          By leveraging our collective spending power, we can uplift entrepreneurs, create jobs, and close the racial wealth gap one purchase at a time.
+        </p>
       </section>
 
-      {/* Comparison Products */}
-      <section className="container mx-auto px-4 py-8 mb-12">
-        <h3 className="text-3xl font-bold mb-4">Comparison Products</h3>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-          {comparisonProducts.map((product) => (
-            <div
-              key={product.id}
-              className="bg-white p-4 rounded-lg shadow hover:shadow-lg transition"
-            >
-              <div className="relative h-24 w-full mb-2">
-                <Image
-                  src={product.image}
-                  alt={product.title}
-                  layout="fill"
-                  objectFit="cover"
-                  className="rounded"
-                />
-              </div>
-              <h4 className="font-semibold text-lg">{product.title}</h4>
-              <p className="text-sm text-gray-600">{product.price}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* Back to Home Button */}
+      {/* Back to Home */}
       <footer className="container mx-auto px-4 py-8 text-center">
         <Link href="/">
           <button className="px-6 py-3 bg-black text-gold border border-gold font-semibold rounded hover:bg-gray-800 transition">

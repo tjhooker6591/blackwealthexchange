@@ -86,6 +86,7 @@ export default async function handler(
         description: description || "", // Optional description
         isVerified: false, // Default verification status
         createdAt: new Date(),
+        accountType: "seller", // ✅ Added this without removing anything
       });
 
       return res
