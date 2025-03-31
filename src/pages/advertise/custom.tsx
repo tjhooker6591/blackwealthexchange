@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 
-export default function CustomAdPage() {
+export default function CustomAd() {
   return (
     <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center px-4 text-center">
       <h1 className="text-4xl font-bold text-gold mb-4">
