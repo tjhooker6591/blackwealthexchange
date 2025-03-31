@@ -74,7 +74,7 @@ export default function NavBar() {
             Financial 101
           </Link>
           <Link
-            href="/housing-lending"
+            href="/real-estate-investment"
             className="hover:text-gold font-semibold"
           >
             Housing &amp; Lending
@@ -151,7 +151,7 @@ export default function NavBar() {
             Financial 101
           </Link>
           <Link
-            href="/housing-lending"
+            href="/real-estate-investment"
             className="block py-2 hover:text-gold font-semibold"
             onClick={() => setMobileMenuOpen(false)}
           >

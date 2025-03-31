@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 export default function FeaturedSponsorPage() {
   const router = useRouter();
   const [bannerFile, setBannerFile] = useState<File | null>(null);
-  const [campaignDuration, setCampaignDuration] = useState<string>("");
+  const [campaignDuration, setCampaignDuration] = useState("");
   const [confirmed, setConfirmed] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -17,55 +17,127 @@ export default function FeaturedSponsorPage() {
 
   const handleProceed = () => {
     if (!bannerFile || !campaignDuration || !confirmed) {
-      alert(
-        "Please upload a banner, enter the campaign duration, and confirm your details before proceeding.",
-      );
+      alert("Please complete all fields before proceeding.");
       return;
     }
 
     router.push(
-      `/advertising/checkout?option=featured-sponsor&duration=${encodeURIComponent(
-        campaignDuration,
-      )}`,
+      `/advertising/checkout?option=featured-sponsor&duration=${campaignDuration}`
     );
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-6">
-      <div className="max-w-2xl mx-auto bg-gray-800 p-6 rounded-lg border border-gold">
-        <h1 className="text-2xl font-bold text-gold mb-4">
-          Featured Sponsor Advertising
-        </h1>
-        <p className="text-gray-300 mb-6">
-          Boost your brand by being prominently featured on our homepage and
-          throughout the platform. Perfect for high-visibility campaigns and
-          brand awareness.
-        </p>
+    <div className="min-h-screen bg-black text-white px-6 py-12">
+      <div className="max-w-4xl mx-auto space-y-10">
 
-        <div className="mb-4">
-          <label className="block text-sm mb-1">Upload Your Banner</label>
+{/* Header */}
+<section className="text-center">
+  <h1 className="text-4xl font-bold text-gold mb-4">
+    Featured Sponsor Advertising
+  </h1>
+  <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+    Want to maximize your visibility? Get your brand front and center on our homepage and key platform pages. Perfect for campaigns that need attention.
+  </p>
+</section>
+
+{/* NEW: Limited Slots Info */}
+<section className="bg-gray-800 p-6 rounded-lg shadow text-left mt-10">
+  <h2 className="text-2xl font-bold text-gold mb-4">
+    Limited Availability: Weekly Sponsor Slots
+  </h2>
+  <p className="text-gray-300 mb-4">
+    Your business will appear in the <strong>rolling Featured Sponsor section</strong> on the homepage — shown to every visitor on the site. Each campaign runs for <strong>7 days</strong> with <strong>only 8 sponsor slots</strong> available per week.
+  </p>
+  <p className="text-gray-300 mb-4">
+    With <strong>52 total weekly rotations per year</strong>, space is limited and demand is high. Once a week is full, your ad will automatically be queued for the next available slot.
+  </p>
+  <p className="text-yellow-400 font-semibold">
+    Reserve your placement early to secure visibility during your ideal timeframe.
+  </p>
+</section>
+
+
+        {/* Benefits */}
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {[
+            {
+              title: "Homepage Placement",
+              text: "Your brand will be placed at the top of the homepage as a Featured Sponsor.",
+            },
+            {
+              title: "High Visibility",
+              text: "Reach thousands of engaged users actively exploring Black-owned brands.",
+            },
+            {
+              title: "Priority Exposure",
+              text: "Featured across platform sections, including directory and marketplace banners.",
+            },
+          ].map((item) => (
+            <div key={item.title} className="bg-gray-800 p-6 rounded-lg shadow">
+              <h3 className="text-xl font-semibold text-gold mb-2">
+                {item.title}
+              </h3>
+              <p className="text-sm text-gray-300">{item.text}</p>
+            </div>
+          ))}
+        </section>
+
+        {/* Pricing Options */}
+        <section className="text-center">
+          <h2 className="text-2xl font-bold text-gold mb-4">Pricing & Duration</h2>
+          <p className="text-gray-400 mb-6">
+            Choose a duration that fits your campaign needs. All featured sponsors receive top billing across key areas.
+          </p>
+          <div className="flex justify-center gap-6 flex-wrap">
+            <div
+              onClick={() => setCampaignDuration("14")}
+              className={`cursor-pointer p-6 rounded-lg border ${
+                campaignDuration === "14"
+                  ? "border-gold bg-gray-800"
+                  : "border-gray-600"
+              }`}
+            >
+              <h4 className="text-lg font-semibold text-white">1 Weeks</h4>
+              <p className="text-gold">$25</p>
+            </div>
+            <div
+              onClick={() => setCampaignDuration("30")}
+              className={`cursor-pointer p-6 rounded-lg border ${
+                campaignDuration === "30"
+                  ? "border-gold bg-gray-800"
+                  : "border-gray-600"
+              }`}
+            >
+              <h4 className="text-lg font-semibold text-white">2 Weeks</h4>
+              <p className="text-gold">$45</p>
+            </div>
+            <div
+              onClick={() => setCampaignDuration("60")}
+              className={`cursor-pointer p-6 rounded-lg border ${
+                campaignDuration === "60"
+                  ? "border-gold bg-gray-800"
+                  : "border-gray-600"
+              }`}
+            >
+              <h4 className="text-lg font-semibold text-white">1 Months</h4>
+              <p className="text-gold">$80</p>
+            </div>
+          </div>
+        </section>
+
+        {/* Upload Section */}
+        <section className="bg-gray-800 p-6 rounded-lg">
+          <h3 className="text-xl font-semibold mb-4 text-gold">Upload Your Banner</h3>
           <input
             type="file"
             accept="image/*"
             onChange={handleFileChange}
-            className="w-full"
+            className="w-full bg-black text-white border border-gray-600 rounded p-2"
           />
-        </div>
+        </section>
 
-        <div className="mb-4">
-          <label className="block text-sm mb-1">
-            Campaign Duration (in days)
-          </label>
-          <input
-            type="number"
-            value={campaignDuration}
-            onChange={(e) => setCampaignDuration(e.target.value)}
-            className="w-full p-2 rounded bg-gray-700 border border-gray-600"
-            placeholder="e.g. 14"
-          />
-        </div>
-
-        <div className="mb-4">
+        {/* Confirmation */}
+        <section className="text-center">
           <label className="inline-flex items-center">
             <input
               type="checkbox"
@@ -73,20 +145,23 @@ export default function FeaturedSponsorPage() {
               onChange={(e) => setConfirmed(e.target.checked)}
               className="mr-2"
             />
-            I confirm that my banner and duration details are correct.
+            I confirm my banner and campaign duration are correct.
           </label>
-        </div>
+        </section>
 
-        <button
-          onClick={handleProceed}
-          className={`w-full py-2 px-4 rounded text-black font-semibold transition ${
-            confirmed && bannerFile && campaignDuration
-              ? "bg-gold hover:bg-yellow-500"
-              : "bg-gray-500 cursor-not-allowed"
-          }`}
-        >
-          Proceed to Checkout
-        </button>
+        {/* Proceed Button */}
+        <div className="text-center">
+          <button
+            onClick={handleProceed}
+            className={`mt-4 px-6 py-2 rounded font-semibold transition ${
+              confirmed && bannerFile && campaignDuration
+                ? "bg-gold text-black hover:bg-yellow-400"
+                : "bg-gray-600 text-gray-300 cursor-not-allowed"
+            }`}
+          >
+            Proceed to Checkout
+          </button>
+        </div>
       </div>
     </div>
   );
