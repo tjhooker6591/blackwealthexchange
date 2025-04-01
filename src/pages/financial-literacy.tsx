@@ -1,5 +1,3 @@
-// /pages/financial-literacy.tsx
-
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -9,16 +7,10 @@ const FinancialLiteracy = () => {
     <div className="relative min-h-screen bg-black text-white overflow-hidden">
       {/* 🔥 Background Effects */}
       <div
-        className="absolute inset-0 bg-cover bg-center opacity-40"
+        className="absolute inset-0 bg-cover bg-center opacity-40 z-0"
         style={{ backgroundImage: "url('/black-wealth-bg.jpg')" }}
       ></div>
-      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-50"></div>
-
-      {/* 🔹 Navbar with Logo */}
-      <nav className="absolute top-4 left-6 flex items-center space-x-3 z-20">
-        <Image src="/bwe-logo.png" alt="BWE Logo" width={50} height={50} />
-        <h1 className="text-xl font-bold text-gold">Black Wealth Exchange</h1>
-      </nav>
+      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-50 z-0"></div>
 
       {/* 🔥 Hero Section */}
       <header className="text-center py-32 relative z-10">
@@ -39,7 +31,7 @@ const FinancialLiteracy = () => {
       </header>
 
       {/* 🔥 Main Content */}
-      <div className="container mx-auto p-6 space-y-8">
+      <div className="container mx-auto p-6 space-y-8 relative z-10">
         <h2 className="text-3xl font-semibold text-gold mb-6">
           Mastering Financial Literacy
         </h2>
@@ -100,7 +92,7 @@ const FinancialLiteracy = () => {
               <strong>Track Spending:</strong> Know where your money is going.
             </li>
             <li>
-              <strong>Emergency Fund:</strong> Save 3-6 months of living
+              <strong>Emergency Fund:</strong> Save 3 to 6 months of living
               expenses.
             </li>
             <li>
@@ -151,7 +143,7 @@ const FinancialLiteracy = () => {
               of tax benefits.
             </li>
             <li>
-              <strong>Contribute Regularly:</strong> Aim for 10-15% of your
+              <strong>Contribute Regularly:</strong> Aim for 10 to 15% of your
               income.
             </li>
             <li>

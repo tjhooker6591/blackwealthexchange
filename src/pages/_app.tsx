@@ -1,17 +1,18 @@
 // pages/_app.tsx
 
-import "../styles/globals.css"; // Tailwind + other global CSS
+import "@/styles/globals.css";
 import type { AppProps } from "next/app";
-import NavBar from "@/components/NavBar"; // Alias import if configured in tsconfig.json
+import NavBar from "@/components/NavBar";
+import Footer from "@/components/Footer";
 
-export default function MyApp({ Component, pageProps }: AppProps) {
+export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
-      {/* Global NavBar appears on every page */}
       <NavBar />
-
-      {/* The specific page content */}
-      <Component {...pageProps} />
+      <main className="min-h-screen">
+        <Component {...pageProps} />
+      </main>
+      <Footer />
     </>
   );
 }

@@ -138,42 +138,12 @@ export default function About() {
       </section>
 
       {/* Footer */}
-      {/* Footer */}
       <footer className="bg-black text-center py-6">
-        <div className="text-gray-500 text-sm space-y-2">
-          <p>
-            &copy; {new Date().getFullYear()} Black Wealth Exchange. All rights
-            reserved.
-          </p>
-          <div className="flex justify-center space-x-4 text-xs text-gray-400 mt-2">
-            <Link
-              href="/terms-of-service"
-              className="hover:text-gold transition"
-            >
-              Terms of Service
-            </Link>
-            <Link href="/privacy-policy" className="hover:text-gold transition">
-              Privacy Policy
-            </Link>
-            <Link
-              href="/legal/community-conduct"
-              className="hover:text-gold transition"
-            >
-              Code of Conduct
-            </Link>
-            <Link
-              href="/legal/advertising-guidelines"
-              className="hover:text-gold transition"
-            >
-              Advertising Guidelines
-            </Link>
-          </div>
-        </div>
+        <div className="text-gray-500 text-sm space-y-2"></div>
       </footer>
     </div>
   );
 }
-
 const FeatureSection = ({
   title,
   description,

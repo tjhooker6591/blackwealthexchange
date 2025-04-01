@@ -19,7 +19,6 @@ const AffiliatePartnershipPage: React.FC = () => {
 
   useEffect(() => {
     async function fetchAffiliateOffers() {
-      // Sample data – replace with your actual API data if available.
       const data: AffiliateOffer[] = [
         {
           id: 1,
@@ -70,48 +69,38 @@ const AffiliatePartnershipPage: React.FC = () => {
       setAffiliateOffers(data);
       setLoading(false);
     }
+
     fetchAffiliateOffers();
   }, []);
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
         Loading...
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
-      {/* Hero / Attract Section */}
-      <section className="relative bg-gradient-to-r from-purple-800 to-indigo-700">
-        {/* Optional patterned background overlay */}
-        <div className="absolute inset-0">
-          <Image
-            src="/pattern.jpg" // Replace with your pattern image path
-            alt="Pattern Background"
-            fill
-            className="object-cover opacity-30 pointer-events-none"
-          />
-        </div>
-        <div className="relative z-10 container mx-auto px-4 py-20 text-center">
-          <h1 className="text-5xl md:text-6xl font-extrabold text-gold mb-4">
-            Empower Black Entrepreneurship
-          </h1>
-          <p className="text-xl md:text-2xl text-gray-200 mb-8">
-            Join our Affiliate & Partnership Program to access exclusive
-            opportunities and grow your business.
-          </p>
-          <a
-            href="mailto:partners@blackwealthexchange.com"
-            className="inline-block px-8 py-4 bg-gold text-black font-bold rounded hover:bg-yellow-500 transition"
-          >
-            Join Our Partnership Program
-          </a>
-        </div>
+    <div className="min-h-screen bg-black text-white">
+      {/* Intro Section */}
+      <section className="container mx-auto px-4 py-20 text-center">
+        <h1 className="text-5xl md:text-6xl font-extrabold text-gold mb-4">
+          Empower Black Entrepreneurship
+        </h1>
+        <p className="text-xl md:text-2xl text-gray-300 mb-8">
+          Join our Affiliate & Partnership Program to access exclusive
+          opportunities and grow your business.
+        </p>
+        <a
+          href="mailto:partners@blackwealthexchange.com"
+          className="inline-block px-8 py-4 bg-gold text-black font-bold rounded hover:bg-yellow-500 transition"
+        >
+          Join Our Partnership Program
+        </a>
       </section>
 
-      {/* How It Works Section */}
+      {/* How It Works */}
       <section className="container mx-auto px-4 py-12">
         <h2 className="text-4xl font-bold text-gold text-center mb-6">
           How It Works
@@ -120,58 +109,50 @@ const AffiliatePartnershipPage: React.FC = () => {
           Monetize your traffic and collaborate with us in three simple steps.
         </p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Step 1: Sign Up */}
-          <div className="bg-gray-800 p-6 rounded-lg shadow hover:shadow-xl transition text-center">
-            <div className="mb-4">
-              <span className="text-5xl text-gold">1</span>
-            </div>
-            <h3 className="text-2xl font-semibold text-gold mb-2">Sign Up</h3>
-            <p className="text-gray-300 mb-4">
-              Join our program as a content creator, publisher, or influencer.
-            </p>
-            <a
-              href="mailto:partners@blackwealthexchange.com"
-              className="inline-block px-6 py-3 bg-gold text-black font-semibold rounded hover:bg-yellow-500 transition"
+          {[
+            {
+              step: 1,
+              title: "Sign Up",
+              description:
+                "Join our program as a content creator, publisher, or influencer.",
+              label: "Sign Up Now",
+            },
+            {
+              step: 2,
+              title: "Recommend",
+              description:
+                "Share our curated affiliate links with your audience.",
+              label: "Get Your Links",
+            },
+            {
+              step: 3,
+              title: "Earn",
+              description:
+                "Earn competitive commissions from qualifying purchases.",
+              label: "Start Earning",
+            },
+          ].map(({ step, title, description, label }) => (
+            <div
+              key={step}
+              className="bg-gray-800 p-6 rounded-lg shadow hover:shadow-xl transition text-center"
             >
-              Sign Up Now
-            </a>
-          </div>
-          {/* Step 2: Recommend */}
-          <div className="bg-gray-800 p-6 rounded-lg shadow hover:shadow-xl transition text-center">
-            <div className="mb-4">
-              <span className="text-5xl text-gold">2</span>
+              <div className="mb-4">
+                <span className="text-5xl text-gold">{step}</span>
+              </div>
+              <h3 className="text-2xl font-semibold text-gold mb-2">{title}</h3>
+              <p className="text-gray-300 mb-4">{description}</p>
+              <a
+                href="mailto:partners@blackwealthexchange.com"
+                className="inline-block px-6 py-3 bg-gold text-black font-semibold rounded hover:bg-yellow-500 transition"
+              >
+                {label}
+              </a>
             </div>
-            <h3 className="text-2xl font-semibold text-gold mb-2">Recommend</h3>
-            <p className="text-gray-300 mb-4">
-              Share our curated affiliate links with your audience.
-            </p>
-            <a
-              href="mailto:partners@blackwealthexchange.com"
-              className="inline-block px-6 py-3 bg-gold text-black font-semibold rounded hover:bg-yellow-500 transition"
-            >
-              Get Your Links
-            </a>
-          </div>
-          {/* Step 3: Earn */}
-          <div className="bg-gray-800 p-6 rounded-lg shadow hover:shadow-xl transition text-center">
-            <div className="mb-4">
-              <span className="text-5xl text-gold">3</span>
-            </div>
-            <h3 className="text-2xl font-semibold text-gold mb-2">Earn</h3>
-            <p className="text-gray-300 mb-4">
-              Earn competitive commissions from qualifying purchases.
-            </p>
-            <a
-              href="mailto:partners@blackwealthexchange.com"
-              className="inline-block px-6 py-3 bg-gold text-black font-semibold rounded hover:bg-yellow-500 transition"
-            >
-              Start Earning
-            </a>
-          </div>
+          ))}
         </div>
       </section>
 
-      {/* Curated Affiliate Offers Section */}
+      {/* Affiliate Offers */}
       <section className="container mx-auto px-4 py-12">
         <h2 className="text-4xl font-bold text-gold text-center mb-6">
           Curated Affiliate Offers
@@ -179,7 +160,7 @@ const AffiliatePartnershipPage: React.FC = () => {
         <p className="text-center text-xl text-gray-300 mb-12">
           Explore our hand-picked selection of trusted resources and products.
         </p>
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
           {affiliateOffers.map((offer) => (
             <div
               key={offer.id}
@@ -214,64 +195,52 @@ const AffiliatePartnershipPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Frequently Asked Questions Section */}
+      {/* FAQ */}
       <section className="container mx-auto px-4 py-12">
         <h2 className="text-4xl font-bold text-gold text-center mb-6">
           Frequently Asked Questions
         </h2>
         <div className="space-y-8 max-w-4xl mx-auto">
-          <div>
-            <h3 className="text-2xl font-semibold text-gold">
-              How does the Associates Program work?
-            </h3>
-            <p className="text-gray-300 mt-2">
-              You can share products and available programs with your audience
-              through customized linking tools and earn money on qualifying
-              purchases and customer actions, such as signing up for a free
-              trial.
-            </p>
-          </div>
-          <div>
-            <h3 className="text-2xl font-semibold text-gold">
-              How do I qualify for this program?
-            </h3>
-            <p className="text-gray-300 mt-2">
-              Bloggers, publishers, and content creators with a qualifying
-              website or mobile app can participate. If you are an influencer
-              with an established social media following, explore the Amazon
-              Influencer Program.
-            </p>
-          </div>
-          <div>
-            <h3 className="text-2xl font-semibold text-gold">
-              How do I earn in this program?
-            </h3>
-            <p className="text-gray-300 mt-2">
-              You earn from qualifying purchases and programs through the
-              traffic you drive. Commission income varies by product category
-              and is paid approximately 60 days after the end of the month in
-              which it was earned.
-            </p>
-          </div>
-          <div>
-            <h3 className="text-2xl font-semibold text-gold">
-              How do I sign up for the program?
-            </h3>
-            <p className="text-gray-300 mt-2">
-              Sign up by clicking the button below. We will review your
-              application and approve it if you meet the qualifying criteria.
-            </p>
-            <a
-              href="mailto:partners@blackwealthexchange.com"
-              className="inline-block mt-4 px-6 py-3 bg-gold text-black font-semibold rounded hover:bg-yellow-500 transition"
-            >
-              Sign Up Now
-            </a>
-          </div>
+          {[
+            {
+              question: "How does the Associates Program work?",
+              answer:
+                "You can share products and programs with your audience through customized links and earn money on qualifying purchases and actions like free trial signups.",
+            },
+            {
+              question: "How do I qualify for this program?",
+              answer:
+                "Bloggers, publishers, and content creators with a qualifying website or mobile app are eligible. Influencers with strong followings can apply too.",
+            },
+            {
+              question: "How do I earn in this program?",
+              answer:
+                "You earn from purchases and programs through your links. Commissions vary by product and are paid ~60 days after the month they were earned.",
+            },
+            {
+              question: "How do I sign up for the program?",
+              answer:
+                "Click the button below to apply. We’ll review your application and approve you if you meet the criteria.",
+              button: true,
+            },
+          ].map(({ question, answer, button }, index) => (
+            <div key={index}>
+              <h3 className="text-2xl font-semibold text-gold">{question}</h3>
+              <p className="text-gray-300 mt-2">{answer}</p>
+              {button && (
+                <a
+                  href="mailto:partners@blackwealthexchange.com"
+                  className="inline-block mt-4 px-6 py-3 bg-gold text-black font-semibold rounded hover:bg-yellow-500 transition"
+                >
+                  Sign Up Now
+                </a>
+              )}
+            </div>
+          ))}
         </div>
       </section>
 
-      {/* Back to Home Button */}
+      {/* Back to Home */}
       <section className="text-center mt-10">
         <Link href="/">
           <button className="px-6 py-3 bg-gold text-black font-semibold text-lg rounded-lg hover:bg-yellow-500 transition">
@@ -279,14 +248,6 @@ const AffiliatePartnershipPage: React.FC = () => {
           </button>
         </Link>
       </section>
-
-      {/* Footer */}
-      <footer className="bg-gray-800 py-4">
-        <div className="container mx-auto text-center text-gray-500 text-sm">
-          &copy; {new Date().getFullYear()} Black Wealth Exchange. All rights
-          reserved.
-        </div>
-      </footer>
     </div>
   );
 };

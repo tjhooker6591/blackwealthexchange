@@ -340,6 +340,7 @@ export default function Home() {
       </section>
 
       {/* Footer */}
+      {/* Footer */}
       <footer className="text-center py-8 border-t border-gold mt-8 relative z-10">
         <Image
           src="/bwe-logo.png"
@@ -351,32 +352,6 @@ export default function Home() {
         <h2 className="text-lg font-bold text-gray-300">
           Join the BWE Community &amp; Build Wealth
         </h2>
-
-        <p className="mt-2 text-gray-500 text-sm">
-          &copy; {new Date().getFullYear()} Black Wealth Exchange. All Rights
-          Reserved.
-        </p>
-
-        <div className="mt-4 flex flex-wrap justify-center space-x-4 text-sm text-gray-400">
-          <Link href="/terms-of-service" className="hover:underline text-gold">
-            Terms of Service
-          </Link>
-          <Link href="/privacy-policy" className="hover:underline text-gold">
-            Privacy Policy
-          </Link>
-          <Link
-            href="/legal/community-conduct"
-            className="hover:underline text-gold"
-          >
-            Code of Conduct
-          </Link>
-          <Link
-            href="/legal/advertising-guidelines"
-            className="hover:underline text-gold"
-          >
-            Advertising Guidelines
-          </Link>
-        </div>
 
         <p className="mt-2 text-gray-500 text-sm">
           <Link
