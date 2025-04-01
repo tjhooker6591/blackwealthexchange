@@ -26,10 +26,7 @@ export default function NavBar() {
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-6">
           {/* Our Mission & About - Standalone */}
-          <Link
-            href="/about"
-            className="hover:text-gold font-semibold"
-          >
+          <Link href="/about" className="hover:text-gold font-semibold">
             Our Mission & About
           </Link>
 

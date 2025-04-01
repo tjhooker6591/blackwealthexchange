@@ -5,7 +5,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   if (req.method === "POST") {
     const { adType, email, businessId, duration = 7 } = req.body;
@@ -53,7 +53,9 @@ export default async function handler(
       return res.status(200).json({ url: session.url });
     } catch (err) {
       console.error("Stripe session error:", err);
-      return res.status(500).json({ error: "Something went wrong creating the checkout session." });
+      return res
+        .status(500)
+        .json({ error: "Something went wrong creating the checkout session." });
     }
   } else {
     res.setHeader("Allow", "POST");

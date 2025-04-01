@@ -19,7 +19,6 @@ export default function SponsoredBusinessPage() {
   const [businesses, setBusinesses] = useState<Business[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
 
-
   useEffect(() => {
     const fetchSponsors = async () => {
       const res = await fetch("/api/sponsored-businesses");
@@ -35,7 +34,7 @@ export default function SponsoredBusinessPage() {
   const totalPages = Math.ceil(standardSponsors.length / ITEMS_PER_PAGE);
   const currentItems = standardSponsors.slice(
     (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
+    currentPage * ITEMS_PER_PAGE,
   );
 
   return (
@@ -49,7 +48,8 @@ export default function SponsoredBusinessPage() {
         our platform. Want to get listed?{" "}
         <Link href="/advertise-with-us" className="text-gold underline">
           Sponsor your brand
-        </Link>.
+        </Link>
+        .
       </p>
 
       {/* Top Sponsors Section */}
