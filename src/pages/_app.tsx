@@ -9,7 +9,12 @@ export default function App({ Component, pageProps }: AppProps) {
     <>
       {/* Global <head> settings */}
       <Head>
-        <link rel="icon" href="/images/favicon.ico" />
+        {/* Primary Favicon */}
+        <link rel="icon" href="/favicon.png" type="image/png" />
+
+        {/* Fallback for older browsers */}
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+
         <title>Black Wealth Exchange</title>
         <meta
           name="description"
