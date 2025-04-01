@@ -13,8 +13,8 @@ export default function NavBar() {
         {/* Logo + Brand */}
         <Link href="/" className="flex items-center space-x-2 cursor-pointer">
           <Image
-            src="/bwe-logo.png" // Adjust path if needed
-            alt="BWE Logo"
+            src="/favicon.png" // Adjust path if needed
+            alt="favicon"
             width={40}
             height={40}
           />
