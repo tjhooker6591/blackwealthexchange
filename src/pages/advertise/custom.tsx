@@ -27,12 +27,16 @@ export default function CustomAd() {
           Custom Advertising Solutions
         </h1>
         <p className="text-lg text-gray-400 mb-6">
-          Want to build something unique and powerful for your brand? Let is collaborate on a custom advertising package that fits your goals and budget.
+          Want to build something unique and powerful for your brand? Let is
+          collaborate on a custom advertising package that fits your goals and
+          budget.
         </p>
 
         {/* Breakdown of what’s possible */}
         <div className="bg-gray-800 p-6 rounded-lg text-left mb-10">
-          <h2 className="text-2xl text-gold font-semibold mb-4">What is Possible?</h2>
+          <h2 className="text-2xl text-gold font-semibold mb-4">
+            What is Possible?
+          </h2>
           <ul className="list-disc list-inside space-y-3 text-gray-300">
             <li>Sponsored homepage takeovers or highlight sections</li>
             <li>Exclusive email newsletter features</li>
@@ -45,9 +49,14 @@ export default function CustomAd() {
 
         {/* Custom Request Form */}
         {!submitted ? (
-          <form onSubmit={handleSubmit} className="bg-gray-900 p-6 rounded-lg shadow-md text-left space-y-4">
-            <h3 className="text-xl text-gold font-bold mb-2 text-center">Tell Us What You Need</h3>
-            
+          <form
+            onSubmit={handleSubmit}
+            className="bg-gray-900 p-6 rounded-lg shadow-md text-left space-y-4"
+          >
+            <h3 className="text-xl text-gold font-bold mb-2 text-center">
+              Tell Us What You Need
+            </h3>
+
             <div>
               <label className="block mb-1 text-sm">Your Name</label>
               <input
@@ -82,7 +91,9 @@ export default function CustomAd() {
             </div>
 
             <div>
-              <label className="block mb-1 text-sm">Tell Us About Your Campaign</label>
+              <label className="block mb-1 text-sm">
+                Tell Us About Your Campaign
+              </label>
               <textarea
                 required
                 value={details}
@@ -101,7 +112,10 @@ export default function CustomAd() {
         ) : (
           <div className="bg-green-600 text-white p-6 rounded-lg">
             <h3 className="text-2xl font-semibold mb-2">Thank You!</h3>
-            <p>We are received your request. A member of our team will follow up shortly to discuss your custom advertising needs.</p>
+            <p>
+              We are received your request. A member of our team will follow up
+              shortly to discuss your custom advertising needs.
+            </p>
           </div>
         )}
 

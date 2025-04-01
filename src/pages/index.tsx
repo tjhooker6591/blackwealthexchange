@@ -341,38 +341,46 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="text-center py-8 border-t border-gold mt-8 relative z-10">
-        {/* Removed the second BWE logo & text, but left this for a smaller brand presence if desired */}
-        <Image
-          src="/bwe-logo.png"
-          alt="BWE Logo"
-          width={60}
-          height={60}
-          className="mx-auto mb-4"
-        />
-        <h2 className="text-lg font-bold text-gray-300">
-          Join the BWE Community &amp; Build Wealth
-        </h2>
-        <p className="mt-4">
-          <Link
-            href="/pricing"
-            className="text-gold font-semibold hover:underline"
-          >
-            View Pricing Plans
-          </Link>
-        </p>
-        <p className="mt-2 text-gray-500 text-sm">
-          &copy; {new Date().getFullYear()} Black Wealth Exchange. All Rights
-          Reserved.
-        </p>
-        <p className="mt-2 text-gray-500 text-sm">
-          <Link
-            href="/black-business-websites"
-            className="text-gold font-semibold hover:underline"
-          >
-            Other Black-Owned Websites
-          </Link>
-        </p>
-      </footer>
+  <Image
+    src="/bwe-logo.png"
+    alt="BWE Logo"
+    width={60}
+    height={60}
+    className="mx-auto mb-4"
+  />
+  <h2 className="text-lg font-bold text-gray-300">
+    Join the BWE Community &amp; Build Wealth
+  </h2>
+
+  <p className="mt-2 text-gray-500 text-sm">
+    &copy; {new Date().getFullYear()} Black Wealth Exchange. All Rights Reserved.
+  </p>
+
+  <div className="mt-4 flex flex-wrap justify-center space-x-4 text-sm text-gray-400">
+    <Link href="/terms-of-service" className="hover:underline text-gold">
+      Terms of Service
+    </Link>
+    <Link href="/privacy-policy" className="hover:underline text-gold">
+      Privacy Policy
+    </Link>
+    <Link href="/legal/community-conduct" className="hover:underline text-gold">
+      Code of Conduct
+    </Link>
+    <Link href="/legal/advertising-guidelines" className="hover:underline text-gold">
+      Advertising Guidelines
+    </Link>
+  </div>
+
+  <p className="mt-2 text-gray-500 text-sm">
+    <Link
+      href="/black-business-websites"
+      className="text-gold font-semibold hover:underline"
+    >
+      Other Black-Owned Websites
+    </Link>
+  </p>
+</footer>
+
 
       {/* Login/Signup Modal */}
       {showModal && (

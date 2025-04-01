@@ -25,6 +25,7 @@
     "jsonwebtoken": "^9.0.2",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.475.0",
+    "micro": "^10.0.1",
     "mongodb": "^6.14.2",
     "next": "^15.2.3",
     "next-auth": "^4.24.11",

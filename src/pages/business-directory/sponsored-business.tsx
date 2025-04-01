@@ -1,147 +1,149 @@
-import React from "react";
-import Head from "next/head";
+"use client";
 
-const businessData = {
-  name: "Premium Tech Solutions",
-  description:
-    "We provide top-tier tech solutions to help your business grow, from web development to cloud solutions.",
-  services: [
-    "Custom Web Development",
-    "Cloud Hosting & Solutions",
-    "E-commerce Platform Development",
-    "Mobile App Development",
-  ],
-  contact: {
-    phone: "+1 (800) 123-4567",
-    email: "contact@premiumtech.com",
-    address: "123 Tech Avenue, Silicon Valley, CA",
-  },
-  reviews: [
-    {
-      name: "John Doe",
-      rating: 5,
-      review: "Exceptional service! Helped me grow my online business.",
-    },
-    {
-      name: "Jane Smith",
-      rating: 4,
-      review: "Great technical solutions, but communication could be improved.",
-    },
-  ],
-  specialOffer: {
-    title: "Exclusive Offer: 20% Off All Services",
-    details:
-      "Sign up for any of our services today and get 20% off your first project. Limited time offer!",
-  },
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+
+const ITEMS_PER_PAGE = 9;
+
+type Business = {
+  _id: string;
+  name: string;
+  description: string;
+  slug: string;
+  logo?: string;
+  tier: string;
 };
 
-const SponsoredBusiness = () => {
+export default function SponsoredBusinessPage() {
+  const [businesses, setBusinesses] = useState<Business[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+
+
+  useEffect(() => {
+    const fetchSponsors = async () => {
+      const res = await fetch("/api/sponsored-businesses");
+      const data = await res.json();
+      setBusinesses(data);
+    };
+    fetchSponsors();
+  }, []);
+
+  const topSponsors = businesses.filter((b) => b.tier === "top");
+  const standardSponsors = businesses.filter((b) => b.tier !== "top");
+
+  const totalPages = Math.ceil(standardSponsors.length / ITEMS_PER_PAGE);
+  const currentItems = standardSponsors.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+
   return (
-    <div className="container mx-auto p-6 bg-gray-50">
-      {/* Use Next.js Head component for meta tags */}
-      <Head>
-        <title>{`${businessData.name} - Sponsored Business`}</title>
-        <meta
-          name="description"
-          content={`Learn more about ${businessData.name}, a premium tech solutions provider offering web development, cloud hosting, and more.`}
-        />
-        <meta
-          name="keywords"
-          content="tech solutions, web development, cloud hosting, mobile apps, e-commerce"
-        />
-      </Head>
+    <div className="min-h-screen bg-black text-white px-6 py-12">
+      <h1 className="text-4xl font-bold text-gold text-center mb-10">
+        Sponsored Business Directory
+      </h1>
 
-      {/* Business Overview */}
-      <section className="bg-gray-800 text-white p-8 rounded-lg shadow-lg">
-        <h1 className="text-4xl font-semibold text-center">
-          {businessData.name}
-        </h1>
-        <p className="text-xl text-center mt-2">{businessData.description}</p>
-      </section>
+      <p className="text-center text-gray-400 max-w-2xl mx-auto mb-12">
+        Discover and support Black-owned businesses that are proudly featured on
+        our platform. Want to get listed?{" "}
+        <Link href="/advertise-with-us" className="text-gold underline">
+          Sponsor your brand
+        </Link>.
+      </p>
 
-      {/* Services Offered */}
-      <section className="mt-12">
-        <h2 className="text-3xl font-semibold text-gray-800">Our Services</h2>
-        <ul className="list-disc pl-8 mt-4 text-lg text-gray-600">
-          {businessData.services.map((service, index) => (
-            <li key={index} className="text-gray-800">
-              {service}
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      {/* Special Offer */}
-      <section className="mt-12">
-        <h2 className="text-3xl font-semibold text-gray-800">Special Offer</h2>
-        <div className="bg-yellow-500 p-6 rounded-lg mt-4 text-white">
-          <h3 className="text-2xl font-bold">
-            {businessData.specialOffer.title}
-          </h3>
-          <p className="text-lg mt-2">{businessData.specialOffer.details}</p>
-        </div>
-      </section>
-
-      {/* Customer Testimonials */}
-      <section className="mt-12">
-        <h2 className="text-3xl font-semibold text-gray-800">
-          Customer Testimonials
-        </h2>
-        <div className="mt-4">
-          {businessData.reviews.map((review, index) => (
-            <div key={index} className="border-b py-4">
-              <div className="flex items-center">
-                <div className="text-lg font-bold text-gray-800">
-                  {review.name}
-                </div>
-                <div className="ml-2 text-yellow-500">
-                  {"★".repeat(review.rating)}
-                  {"☆".repeat(5 - review.rating)}
+      {/* Top Sponsors Section */}
+      {topSponsors.length > 0 && (
+        <section className="mb-16">
+          <h2 className="text-2xl font-semibold text-gold mb-6 text-center">
+            🌟 Top Sponsors
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {topSponsors.map((biz) => (
+              <div
+                key={biz._id}
+                className="bg-gradient-to-br from-yellow-500 to-gold text-black rounded-xl shadow-lg overflow-hidden"
+              >
+                <Image
+                  src={biz.logo || "/ads/default-banner.jpg"}
+                  alt={biz.name}
+                  width={500}
+                  height={250}
+                  className="w-full h-40 object-cover"
+                />
+                <div className="p-4">
+                  <h3 className="text-xl font-bold mb-1">{biz.name}</h3>
+                  <p className="text-sm mb-3">{biz.description}</p>
+                  <Link
+                    href={`/business/${biz.slug}`}
+                    className="inline-block bg-black text-gold px-4 py-2 rounded font-semibold hover:bg-gray-900 transition"
+                  >
+                    View Business
+                  </Link>
                 </div>
               </div>
-              <p className="text-gray-600 mt-2">{review.review}</p>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Standard Sponsors Grid */}
+      <section>
+        <h2 className="text-2xl font-semibold text-gold mb-6 text-center">
+          Sponsored Listings
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {currentItems.map((biz) => (
+            <div
+              key={biz._id}
+              className="bg-gray-900 border border-gray-700 rounded-xl overflow-hidden"
+            >
+              <Image
+                src={biz.logo || "/ads/default-banner.jpg"}
+                alt={biz.name}
+                width={500}
+                height={250}
+                className="w-full h-40 object-cover"
+              />
+              <div className="p-4">
+                <h3 className="text-xl font-bold text-white mb-1">
+                  {biz.name}
+                </h3>
+                <p className="text-sm text-gray-400 mb-3">{biz.description}</p>
+                <Link
+                  href={`/business/${biz.slug}`}
+                  className="inline-block bg-gold text-black px-4 py-2 rounded font-semibold hover:bg-yellow-400 transition"
+                >
+                  View Business
+                </Link>
+              </div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* Contact Information */}
-      <section className="mt-12 bg-gray-800 text-white p-8 rounded-lg">
-        <h2 className="text-3xl font-semibold">Contact Us</h2>
-        <p className="mt-4 text-lg">
-          Feel free to reach out to us for more information or to get started
-          with our services.
-        </p>
-        <div className="mt-6">
-          <p>
-            <strong>Phone:</strong> {businessData.contact.phone}
-          </p>
-          <p>
-            <strong>Email:</strong>{" "}
-            <a
-              href={`mailto:${businessData.contact.email}`}
-              className="text-yellow-300 hover:underline"
-            >
-              {businessData.contact.email}
-            </a>
-          </p>
-          <p>
-            <strong>Address:</strong> {businessData.contact.address}
-          </p>
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="mt-12 flex justify-center items-center gap-4">
+          <button
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage((p) => p - 1)}
+            className="px-4 py-2 rounded bg-gray-800 border border-gray-600 hover:bg-gray-700 disabled:opacity-50"
+          >
+            Previous
+          </button>
+          <span className="text-sm text-gray-400">
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            disabled={currentPage === totalPages}
+            onClick={() => setCurrentPage((p) => p + 1)}
+            className="px-4 py-2 rounded bg-gray-800 border border-gray-600 hover:bg-gray-700 disabled:opacity-50"
+          >
+            Next
+          </button>
         </div>
-      </section>
-
-      {/* Call to Action */}
-      <section className="mt-12 text-center">
-        <a
-          href="#contact"
-          className="text-white bg-blue-500 hover:bg-blue-700 py-2 px-6 rounded-full"
-        >
-          Get in Touch
-        </a>
-      </section>
+      )}
     </div>
   );
-};
-
-export default SponsoredBusiness;
+}

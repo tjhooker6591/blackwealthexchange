@@ -22,40 +22,47 @@ export default function FeaturedSponsorPage() {
     }
 
     router.push(
-      `/advertising/checkout?option=featured-sponsor&duration=${campaignDuration}`
+      `/advertising/checkout?option=featured-sponsor&duration=${campaignDuration}`,
     );
   };
 
   return (
     <div className="min-h-screen bg-black text-white px-6 py-12">
       <div className="max-w-4xl mx-auto space-y-10">
+        {/* Header */}
+        <section className="text-center">
+          <h1 className="text-4xl font-bold text-gold mb-4">
+            Featured Sponsor Advertising
+          </h1>
+          <p className="text-lg text-gray-400 max-w-2xl mx-auto">
+            Want to maximize your visibility? Get your brand front and center on
+            our homepage and key platform pages. Perfect for campaigns that need
+            attention.
+          </p>
+        </section>
 
-{/* Header */}
-<section className="text-center">
-  <h1 className="text-4xl font-bold text-gold mb-4">
-    Featured Sponsor Advertising
-  </h1>
-  <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-    Want to maximize your visibility? Get your brand front and center on our homepage and key platform pages. Perfect for campaigns that need attention.
-  </p>
-</section>
-
-{/* NEW: Limited Slots Info */}
-<section className="bg-gray-800 p-6 rounded-lg shadow text-left mt-10">
-  <h2 className="text-2xl font-bold text-gold mb-4">
-    Limited Availability: Weekly Sponsor Slots
-  </h2>
-  <p className="text-gray-300 mb-4">
-    Your business will appear in the <strong>rolling Featured Sponsor section</strong> on the homepage — shown to every visitor on the site. Each campaign runs for <strong>7 days</strong> with <strong>only 8 sponsor slots</strong> available per week.
-  </p>
-  <p className="text-gray-300 mb-4">
-    With <strong>52 total weekly rotations per year</strong>, space is limited and demand is high. Once a week is full, your ad will automatically be queued for the next available slot.
-  </p>
-  <p className="text-yellow-400 font-semibold">
-    Reserve your placement early to secure visibility during your ideal timeframe.
-  </p>
-</section>
-
+        {/* NEW: Limited Slots Info */}
+        <section className="bg-gray-800 p-6 rounded-lg shadow text-left mt-10">
+          <h2 className="text-2xl font-bold text-gold mb-4">
+            Limited Availability: Weekly Sponsor Slots
+          </h2>
+          <p className="text-gray-300 mb-4">
+            Your business will appear in the{" "}
+            <strong>rolling Featured Sponsor section</strong> on the homepage —
+            shown to every visitor on the site. Each campaign runs for{" "}
+            <strong>7 days</strong> with <strong>only 8 sponsor slots</strong>{" "}
+            available per week.
+          </p>
+          <p className="text-gray-300 mb-4">
+            With <strong>52 total weekly rotations per year</strong>, space is
+            limited and demand is high. Once a week is full, your ad will
+            automatically be queued for the next available slot.
+          </p>
+          <p className="text-yellow-400 font-semibold">
+            Reserve your placement early to secure visibility during your ideal
+            timeframe.
+          </p>
+        </section>
 
         {/* Benefits */}
         <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -84,9 +91,12 @@ export default function FeaturedSponsorPage() {
 
         {/* Pricing Options */}
         <section className="text-center">
-          <h2 className="text-2xl font-bold text-gold mb-4">Pricing & Duration</h2>
+          <h2 className="text-2xl font-bold text-gold mb-4">
+            Pricing & Duration
+          </h2>
           <p className="text-gray-400 mb-6">
-            Choose a duration that fits your campaign needs. All featured sponsors receive top billing across key areas.
+            Choose a duration that fits your campaign needs. All featured
+            sponsors receive top billing across key areas.
           </p>
           <div className="flex justify-center gap-6 flex-wrap">
             <div
@@ -127,7 +137,9 @@ export default function FeaturedSponsorPage() {
 
         {/* Upload Section */}
         <section className="bg-gray-800 p-6 rounded-lg">
-          <h3 className="text-xl font-semibold mb-4 text-gold">Upload Your Banner</h3>
+          <h3 className="text-xl font-semibold mb-4 text-gold">
+            Upload Your Banner
+          </h3>
           <input
             type="file"
             accept="image/*"

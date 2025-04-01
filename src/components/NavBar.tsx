@@ -1,5 +1,3 @@
-// src/components/NavBar.tsx
-
 "use client";
 
 import React, { useState } from "react";
@@ -27,6 +25,14 @@ export default function NavBar() {
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-6">
+          {/* Our Mission & About - Standalone */}
+          <Link
+            href="/about"
+            className="hover:text-gold font-semibold"
+          >
+            Our Mission & About
+          </Link>
+
           {/* Student Resources Dropdown */}
           <div className="relative group">
             <button className="hover:text-gold font-semibold">
@@ -77,7 +83,7 @@ export default function NavBar() {
             href="/real-estate-investment"
             className="hover:text-gold font-semibold"
           >
-            Housing &amp; Lending
+            Housing & Lending
           </Link>
           <Link
             href="/black-entertainment-news"
@@ -136,6 +142,16 @@ export default function NavBar() {
               </Link>
             </div>
           </details>
+
+          {/* Our Mission & About - Standalone */}
+          <Link
+            href="/about"
+            className="block py-2 hover:text-gold font-semibold"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Our Mission & About
+          </Link>
+
           <Link
             href="/business-directory"
             className="block py-2 hover:text-gold font-semibold"
@@ -155,7 +171,7 @@ export default function NavBar() {
             className="block py-2 hover:text-gold font-semibold"
             onClick={() => setMobileMenuOpen(false)}
           >
-            Housing &amp; Lending
+            Housing & Lending
           </Link>
           <Link
             href="/black-entertainment-news"

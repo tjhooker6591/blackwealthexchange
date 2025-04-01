@@ -14,10 +14,13 @@ export default function BannerAdsPage() {
 
   return (
     <div className="min-h-screen bg-black text-white px-4 py-10 flex flex-col items-center text-center">
-      <h1 className="text-4xl font-bold text-gold mb-4">Advertise with Banner Ads</h1>
+      <h1 className="text-4xl font-bold text-gold mb-4">
+        Advertise with Banner Ads
+      </h1>
       <p className="text-lg text-gray-400 max-w-2xl mb-10">
-        Promote your business with visually engaging banner ads placed across high-traffic areas of the platform.
-        Select a banner location below to begin the process.
+        Promote your business with visually engaging banner ads placed across
+        high-traffic areas of the platform. Select a banner location below to
+        begin the process.
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl">
@@ -25,7 +28,8 @@ export default function BannerAdsPage() {
         <div className="bg-white text-black rounded-2xl shadow-lg p-6 flex flex-col items-center">
           <h2 className="text-2xl font-semibold mb-2">Top of Homepage</h2>
           <p className="text-gray-600 mb-4 text-sm">
-            Get maximum visibility with a large banner at the very top of the homepage.
+            Get maximum visibility with a large banner at the very top of the
+            homepage.
           </p>
           <button
             onClick={() => handleAdSelect("homepage-top")}
@@ -53,7 +57,8 @@ export default function BannerAdsPage() {
         <div className="bg-white text-black rounded-2xl shadow-lg p-6 flex flex-col items-center">
           <h2 className="text-2xl font-semibold mb-2">Footer Banner</h2>
           <p className="text-gray-600 mb-4 text-sm">
-            Appears at the bottom of every page — great for long-term visibility.
+            Appears at the bottom of every page — great for long-term
+            visibility.
           </p>
           <button
             onClick={() => handleAdSelect("footer")}
@@ -67,7 +72,8 @@ export default function BannerAdsPage() {
         <div className="bg-white text-black rounded-2xl shadow-lg p-6 flex flex-col items-center">
           <h2 className="text-2xl font-semibold mb-2">User Dashboard</h2>
           <p className="text-gray-600 mb-4 text-sm">
-            Display your banner on the business or user dashboard for targeted exposure.
+            Display your banner on the business or user dashboard for targeted
+            exposure.
           </p>
           <button
             onClick={() => handleAdSelect("dashboard")}

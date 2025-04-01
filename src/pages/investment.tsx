@@ -94,14 +94,6 @@ export default function Investment() {
             </li>
             <li>
               <Link
-                href="/investment/category/crowdfunding"
-                className="px-3 py-1 border border-gold text-gold rounded hover:bg-gold hover:text-black transition"
-              >
-                Crowdfunding
-              </Link>
-            </li>
-            <li>
-              <Link
                 href="/investment/category/real-estate"
                 className="px-3 py-1 border border-gold text-gold rounded hover:bg-gold hover:text-black transition"
               >
