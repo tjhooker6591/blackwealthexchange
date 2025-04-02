@@ -7,14 +7,10 @@ import Footer from "@/components/footer";
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
-      {/* Global <head> settings */}
+      {/* Global head settings */}
       <Head>
-        {/* Primary Favicon */}
         <link rel="icon" href="/favicon.png" type="image/png" />
-
-        {/* Fallback for older browsers */}
-        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
-
+        <link rel="shortcut icon" href="/favicon.ico" />
         <title>Black Wealth Exchange</title>
         <meta
           name="description"
@@ -23,9 +19,11 @@ export default function App({ Component, pageProps }: AppProps) {
       </Head>
 
       <NavBar />
-      <main className="min-h-screen">
+
+      <main className="min-h-screen bg-[var(--background)] text-[var(--foreground)] transition-colors duration-300">
         <Component {...pageProps} />
       </main>
+
       <Footer />
     </>
   );
