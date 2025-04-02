@@ -7,13 +7,6 @@
   --foreground: #171717;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background-color: var(--background);
   color: var(--foreground);
@@ -23,10 +16,10 @@ body {
     color 0.3s ease;
 }
 
-/* ✅ Universal selection style for mobile + desktop */
+/* Text selection style */
 ::selection {
-  background-color: #ffd700; /* Gold background */
-  color: #000000; /* Black selected text */
+  background-color: #ffd700;
+  color: #000000;
 }
 
 ::-moz-selection {
