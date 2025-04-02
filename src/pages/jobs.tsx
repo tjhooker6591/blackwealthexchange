@@ -2,11 +2,11 @@ import Link from "next/link";
 
 export default function Jobs() {
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-8">
-      <div className="max-w-5xl mx-auto bg-gray-800 p-8 rounded-lg shadow-lg">
-        {/* Top Navigation */}
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-gold">
+    <div className="min-h-screen bg-gray-900 text-white px-6 py-10">
+      <div className="max-w-5xl mx-auto bg-gray-800 p-8 rounded-lg shadow-lg space-y-12">
+        {/* 🔝 Page Header */}
+        <div className="flex justify-between items-center">
+          <h1 className="text-3xl font-extrabold text-gold">
             Black Wealth Exchange Job Hub
           </h1>
           <Link href="/">
@@ -16,146 +16,136 @@ export default function Jobs() {
           </Link>
         </div>
 
-        <p className="text-gray-300">
-          Connect with top Black talent, discover job opportunities, and hire
-          skilled professionals.
+        <p className="text-gray-300 text-lg">
+          Explore job opportunities, internships, freelance gigs, and mentorship
+          tailored to uplift Black professionals and entrepreneurs.
         </p>
 
-        {/* 📌 Job Search & Hiring Sections */}
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* 🔍 Job Tools */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Find a Job */}
-          <div className="p-6 bg-gold text-black font-semibold rounded-lg shadow-md">
-            <h3 className="text-xl font-bold">Find a Job</h3>
-            <p className="mt-2 text-sm">
-              Browse open positions from Black-owned businesses and companies
-              committed to diversity hiring.
-            </p>
-            <Link href="/job-listings">
-              <button className="mt-3 px-4 py-2 bg-black text-white rounded-lg hover:bg-opacity-90 transition">
-                Explore Jobs
-              </button>
-            </Link>
-          </div>
+          <Card
+            title="Find a Job"
+            description="Browse open positions from Black-owned businesses and inclusive companies."
+            href="/job-listings"
+            buttonLabel="Explore Jobs"
+            bg="bg-gold text-black"
+          />
 
           {/* Hire Black Talent */}
-          <div className="p-6 bg-blue-500 text-white font-semibold rounded-lg shadow-md">
-            <h3 className="text-xl font-bold">Hire Black Talent</h3>
-            <p className="mt-2 text-sm">
-              Post job openings—fee based—and connect with highly skilled Black
-              professionals.
-            </p>
-            <Link href="/post-job">
-              <button className="mt-3 px-4 py-2 bg-black text-white rounded-lg hover:bg-opacity-90 transition">
-                Post a Job
-              </button>
-            </Link>
-          </div>
+          <Card
+            title="Hire Black Talent"
+            description="Post your job and connect with top Black professionals. (Fee-based)"
+            href="/post-job"
+            buttonLabel="Post a Job"
+            bg="bg-blue-500 text-white"
+          />
 
-          {/* Internships & College Opportunities */}
-          <div className="p-6 bg-green-500 text-white font-semibold rounded-lg shadow-md">
-            <h3 className="text-xl font-bold">
-              Internships &amp; College Opportunities
-            </h3>
-            <p className="mt-2 text-sm">
-              Get early career experience with internship and apprenticeship
-              programs.
-            </p>
-            <Link href="/internships">
-              <button className="mt-3 px-4 py-2 bg-black text-white rounded-lg hover:bg-opacity-90 transition">
-                View Internships
-              </button>
-            </Link>
-          </div>
+          {/* Internships */}
+          <Card
+            title="Internships & College Opportunities"
+            description="Gain early career experience through internships and apprenticeship programs."
+            href="/internships"
+            buttonLabel="View Internships"
+            bg="bg-green-500 text-white"
+          />
 
           {/* Freelance & Gig Work */}
-          <div className="p-6 bg-red-500 text-white font-semibold rounded-lg shadow-md">
-            <h3 className="text-xl font-bold">Freelance &amp; Gig Work</h3>
-            <p className="mt-2 text-sm">
-              Work on short-term projects or hire Black freelancers for
-              specialized skills.
-            </p>
-            <Link href="/freelance">
-              <button className="mt-3 px-4 py-2 bg-black text-white rounded-lg hover:bg-opacity-90 transition">
-                Explore Gigs
-              </button>
-            </Link>
-          </div>
+          <Card
+            title="Freelance & Gig Work"
+            description="Join or hire for flexible, short-term projects with skilled freelancers."
+            href="/freelance"
+            buttonLabel="Explore Gigs"
+            bg="bg-red-500 text-white"
+          />
         </div>
 
-        {/* 🔥 Mentorship Program */}
-        <div className="mt-10 p-6 bg-purple-600 text-white font-semibold rounded-lg shadow-md">
-          <h3 className="text-xl font-bold">Mentorship Program</h3>
-          <p className="mt-2 text-sm">
-            Join our mentorship program where experienced industry leaders and
-            entrepreneurs help guide you on your career path.
+        {/* 🌱 Mentorship */}
+        <div className="p-6 bg-purple-600 text-white rounded-lg shadow-md space-y-3">
+          <h2 className="text-xl font-bold">Mentorship Program</h2>
+          <p className="text-sm">
+            Be matched with mentors and industry leaders to guide your career
+            growth and development.
           </p>
           <Link href="/mentorship">
-            <button className="mt-3 px-4 py-2 bg-black text-white rounded-lg hover:bg-opacity-90 transition">
+            <button className="mt-2 px-4 py-2 bg-black text-white rounded hover:bg-opacity-80 transition">
               Become a Mentee
             </button>
           </Link>
         </div>
 
-        {/* 🔥 Professional Networking */}
-        <div className="mt-10 p-6 bg-teal-500 text-white font-semibold rounded-lg shadow-md">
-          <h3 className="text-xl font-bold">Professional Networking</h3>
-          <p className="mt-2 text-sm">
-            Create your professional network with fellow Black professionals.
-            Share knowledge, exchange opportunities, and grow together.
-          </p>
-          <Link href="/networking">
-            <button className="mt-3 px-4 py-2 bg-black text-white rounded-lg hover:bg-opacity-90 transition">
-              Join Networking Community
-            </button>
-          </Link>
-        </div>
-
-        {/* 🚀 Create Your Profile Section */}
-        <div className="mt-10 text-center">
+        {/* 👤 Profile Creation */}
+        <div className="text-center space-y-4">
           <h2 className="text-xl font-bold text-gold">
-            Join Our Professional Network
+            Create Your Profile & Get Started
           </h2>
           <p className="text-gray-300">
-            Create your profile, connect with peers, and unlock exclusive career
-            opportunities—just like LinkedIn, and more.
+            Build your professional presence and get discovered for
+            opportunities.
           </p>
-          <div className="flex justify-center mt-4 gap-4">
+          <div className="flex justify-center gap-4 flex-wrap">
             <Link href="/signup">
-              <button className="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">
+              <button className="px-6 py-3 bg-purple-600 text-white rounded hover:bg-purple-700 transition">
                 Create Profile
               </button>
             </Link>
             <Link href="/login">
-              <button className="px-6 py-3 bg-gold text-black rounded-lg hover:bg-yellow-500 transition">
+              <button className="px-6 py-3 bg-gold text-black rounded hover:bg-yellow-500 transition">
                 Login
               </button>
             </Link>
           </div>
         </div>
 
-        {/* 💡 Premium Career Growth Content */}
-        <div className="mt-10 text-center">
+        {/* 💼 Premium Upgrade */}
+        <div className="text-center space-y-4">
           <h2 className="text-xl font-bold text-gold">Level Up Your Career</h2>
           <p className="text-gray-300">
-            Get exclusive access to resume reviews, job interview training, and
-            mentorship.
+            Access resume reviews, coaching, and premium job leads.
           </p>
           <Link href="/pricing">
-            <button className="mt-4 px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">
+            <button className="px-6 py-3 bg-purple-600 text-white rounded hover:bg-purple-700 transition">
               Upgrade to Premium
             </button>
           </Link>
         </div>
 
-        {/* Back to Home Button at the Bottom */}
-        <div className="text-center mt-10">
+        {/* 🔙 Back to Home */}
+        <div className="text-center pt-6 border-t border-gray-700 mt-10">
           <Link href="/">
-            <button className="px-6 py-3 bg-gold text-black font-bold rounded-lg hover:bg-yellow-500 transition">
+            <button className="mt-4 px-6 py-3 bg-gold text-black font-bold rounded hover:bg-yellow-500 transition">
               Back to Home
             </button>
           </Link>
         </div>
       </div>
+    </div>
+  );
+}
+
+// 🔧 Reusable Card Component
+function Card({
+  title,
+  description,
+  href,
+  buttonLabel,
+  bg,
+}: {
+  title: string;
+  description: string;
+  href: string;
+  buttonLabel: string;
+  bg: string;
+}) {
+  return (
+    <div className={`p-6 ${bg} rounded-lg shadow-md`}>
+      <h3 className="text-xl font-bold">{title}</h3>
+      <p className="mt-2 text-sm">{description}</p>
+      <Link href={href}>
+        <button className="mt-3 px-4 py-2 bg-black text-white rounded hover:bg-opacity-90 transition">
+          {buttonLabel}
+        </button>
+      </Link>
     </div>
   );
 }

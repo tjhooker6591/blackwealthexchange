@@ -19,3 +19,14 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* ✅ Universal selection style for mobile + desktop */
+::selection {
+  background-color: #ffd700; /* Gold background */
+  color: #000000; /* Black selected text */
+}
+
+::-moz-selection {
+  background-color: #ffd700;
+  color: #000000;
+}
