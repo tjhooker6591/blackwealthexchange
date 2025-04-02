@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint src/ --fix",
     "format": "prettier --write .",
-    "prepare": "husky install"
+    "prepare": "if [ \"$VERCEL\" != \"1\" ]; then husky install; fi",
+    "vercel-build": "next build"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
