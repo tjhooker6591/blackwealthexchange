@@ -339,7 +339,7 @@ export default function Home() {
         </div>
       </section>
 
-       {/* Footer */}
+      {/* Footer */}
       <footer className="text-center py-8 border-t border-gold mt-8 relative z-10">
         <Image
           src="/favicon.png"
