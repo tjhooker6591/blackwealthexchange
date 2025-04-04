@@ -5,16 +5,23 @@ import clientPromise from "../../../lib/mongodb";
 
 const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-key";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method !== "POST") {
-    return res.status(405).json({ success: false, error: "Method Not Allowed" });
+    return res
+      .status(405)
+      .json({ success: false, error: "Method Not Allowed" });
   }
 
   try {
     const { email, password, accountType } = req.body;
 
     if (!email || !password) {
-      return res.status(400).json({ success: false, error: "Email and password are required." });
+      return res
+        .status(400)
+        .json({ success: false, error: "Email and password are required." });
     }
 
     const client = await clientPromise;
@@ -25,18 +32,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       accountType === "seller"
         ? "businesses"
         : accountType === "business"
-        ? "businesses"
-        : "users";
+          ? "businesses"
+          : "users";
 
     const user = await db.collection(collection).findOne({ email });
 
     if (!user) {
-      return res.status(401).json({ success: false, error: "Invalid credentials" });
+      return res
+        .status(401)
+        .json({ success: false, error: "Invalid credentials" });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(401).json({ success: false, error: "Invalid credentials" });
+      return res
+        .status(401)
+        .json({ success: false, error: "Invalid credentials" });
     }
 
     const token = jwt.sign(
@@ -46,12 +57,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         accountType: user.accountType || accountType, // fallback
       },
       JWT_SECRET,
-      { expiresIn: "7d" }
+      { expiresIn: "7d" },
     );
 
     res.setHeader(
       "Set-Cookie",
-      `token=${token}; HttpOnly; Path=/; Max-Age=604800; SameSite=Strict`
+      `token=${token}; HttpOnly; Path=/; Max-Age=604800; SameSite=Strict`,
     );
 
     return res.status(200).json({
@@ -66,6 +77,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
   } catch (error) {
     console.error("Login error:", error);
-    return res.status(500).json({ success: false, error: "Internal Server Error" });
+    return res
+      .status(500)
+      .json({ success: false, error: "Internal Server Error" });
   }
 }

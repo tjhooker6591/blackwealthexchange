@@ -46,9 +46,12 @@ const ProductDetailPage = () => {
       try {
         const res = await fetch("/api/marketplace/get-products");
         const all = await res.json();
-        const related = all.filter(
-          (p: Product) => p.category === product.category && p._id !== product._id
-        ).slice(0, 4);
+        const related = all
+          .filter(
+            (p: Product) =>
+              p.category === product.category && p._id !== product._id,
+          )
+          .slice(0, 4);
         setRelatedProducts(related);
       } catch (error) {
         console.error("Error fetching related products:", error);
@@ -89,8 +92,12 @@ const ProductDetailPage = () => {
           </div>
 
           <div>
-            <h1 className="text-3xl font-bold text-gold mb-2">{product.name}</h1>
-            <p className="text-sm text-gray-400 mb-2">Category: {product.category}</p>
+            <h1 className="text-3xl font-bold text-gold mb-2">
+              {product.name}
+            </h1>
+            <p className="text-sm text-gray-400 mb-2">
+              Category: {product.category}
+            </p>
             <p className="text-xl font-semibold text-gold mb-4">
               ${product.price.toFixed(2)}
             </p>
@@ -136,7 +143,9 @@ const ProductDetailPage = () => {
                   />
                 </div>
                 <div className="p-4">
-                  <h3 className="text-lg font-bold text-white mb-1">{item.name}</h3>
+                  <h3 className="text-lg font-bold text-white mb-1">
+                    {item.name}
+                  </h3>
                   <p className="text-sm text-gray-400 mb-1">{item.category}</p>
                   <p className="text-md font-semibold text-gold">
                     ${item.price.toFixed(2)}

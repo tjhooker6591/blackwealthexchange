@@ -31,7 +31,10 @@ export default function NavBar() {
           </Link>
 
           {/* The Journey - New Link */}
-          <Link href="/global-timeline" className="hover:text-gold font-semibold">
+          <Link
+            href="/global-timeline"
+            className="hover:text-gold font-semibold"
+          >
             The Journey
           </Link>
 

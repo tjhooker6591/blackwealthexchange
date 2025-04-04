@@ -93,7 +93,9 @@ export default function Login() {
           </div>
 
           <div className="relative">
-            <label className="block text-gray-700 font-semibold">Password</label>
+            <label className="block text-gray-700 font-semibold">
+              Password
+            </label>
             <input
               type={showPassword ? "text" : "password"}
               name="password"
@@ -129,7 +131,10 @@ export default function Login() {
         </p>
         <p className="text-center mt-4">
           Don&apos;t have an account?{" "}
-          <Link href="/signup" className="text-gold font-semibold hover:underline">
+          <Link
+            href="/signup"
+            className="text-gold font-semibold hover:underline"
+          >
             Sign Up
           </Link>
         </p>

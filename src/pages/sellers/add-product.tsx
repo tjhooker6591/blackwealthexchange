@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Image from 'next/image';
+import { useState } from "react";
+import Image from "next/image";
 
 export default function AddProductPage() {
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [price, setPrice] = useState('');
-  const [category, setCategory] = useState('Beauty & Grooming');
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [price, setPrice] = useState("");
+  const [category, setCategory] = useState("Beauty & Grooming");
   const [stockQuantity, setStockQuantity] = useState(0);
-  const [imageUrl, setImageUrl] = useState('');
+  const [imageUrl, setImageUrl] = useState("");
   const [uploading, setUploading] = useState(false);
   const [success, setSuccess] = useState(false);
 
@@ -20,23 +20,26 @@ export default function AddProductPage() {
     setUploading(true);
 
     const formData = new FormData();
-    formData.append('file', file);
-    formData.append('upload_preset', process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!);
-    formData.append('folder', category);
+    formData.append("file", file);
+    formData.append(
+      "upload_preset",
+      process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!,
+    );
+    formData.append("folder", category);
 
     const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME!;
     const uploadUrl = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
 
     try {
       const res = await fetch(uploadUrl, {
-        method: 'POST',
+        method: "POST",
         body: formData,
       });
 
       const data = await res.json();
       setImageUrl(data.secure_url);
     } catch (err) {
-      console.error('Upload failed:', err);
+      console.error("Upload failed:", err);
     } finally {
       setUploading(false);
     }
@@ -45,9 +48,9 @@ export default function AddProductPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const res = await fetch('/api/marketplace/create', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+    const res = await fetch("/api/marketplace/create", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         name,
         description,
@@ -55,19 +58,19 @@ export default function AddProductPage() {
         category,
         imageUrl,
         stockQuantity,
-        sellerId: 'demo_seller',
+        sellerId: "demo_seller",
       }),
     });
 
     const result = await res.json();
     if (result.success) {
       setSuccess(true);
-      setName('');
-      setDescription('');
-      setPrice('');
-      setCategory('Beauty & Grooming');
+      setName("");
+      setDescription("");
+      setPrice("");
+      setCategory("Beauty & Grooming");
       setStockQuantity(0);
-      setImageUrl('');
+      setImageUrl("");
     }
   };
 

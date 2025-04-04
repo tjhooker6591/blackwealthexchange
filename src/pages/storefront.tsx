@@ -12,7 +12,9 @@ export default function Storefront() {
           Discover Black-Owned Excellence
         </h1>
         <p className="text-lg text-gray-300 max-w-2xl mx-auto mb-10">
-          The Storefront showcases verified Black-owned brands offering products and services across fashion, wellness, art, culture, education, and more.
+          The Storefront showcases verified Black-owned brands offering products
+          and services across fashion, wellness, art, culture, education, and
+          more.
         </p>
 
         <div className="flex flex-col md:flex-row justify-center gap-6 mb-12">
@@ -29,17 +31,25 @@ export default function Storefront() {
         </div>
 
         <section className="mt-10">
-          <h2 className="text-3xl text-gold font-bold mb-6">Featured Categories</h2>
+          <h2 className="text-3xl text-gold font-bold mb-6">
+            Featured Categories
+          </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
             {[
-              { title: "Apparel & Accessories", image: "/categories/fashion.jpg" },
+              {
+                title: "Apparel & Accessories",
+                image: "/categories/fashion.jpg",
+              },
               { title: "Health & Beauty", image: "/categories/beauty.jpg" },
               { title: "Books & Education", image: "/categories/books.jpg" },
               { title: "Home & Decor", image: "/categories/home.jpg" },
               { title: "Food & Beverage", image: "/categories/food.jpg" },
-              { title: "Tech & Innovation", image: "/categories/tech.jpg" }
+              { title: "Tech & Innovation", image: "/categories/tech.jpg" },
             ].map((category, idx) => (
-              <div key={idx} className="bg-gray-900 rounded-lg shadow-md overflow-hidden hover:shadow-gold transition">
+              <div
+                key={idx}
+                className="bg-gray-900 rounded-lg shadow-md overflow-hidden hover:shadow-gold transition"
+              >
                 <Image
                   src={category.image}
                   alt={category.title}
@@ -48,8 +58,12 @@ export default function Storefront() {
                   className="w-full h-48 object-cover"
                 />
                 <div className="p-4">
-                  <h3 className="text-xl text-gold font-semibold mb-2">{category.title}</h3>
-                  <p className="text-gray-400 text-sm">Explore curated products and services from this category.</p>
+                  <h3 className="text-xl text-gold font-semibold mb-2">
+                    {category.title}
+                  </h3>
+                  <p className="text-gray-400 text-sm">
+                    Explore curated products and services from this category.
+                  </p>
                 </div>
               </div>
             ))}

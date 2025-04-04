@@ -11,8 +11,8 @@ export default function UserDashboard() {
             Welcome to Your Dashboard
           </h1>
           <p className="text-gray-300 text-lg">
-            Your central hub for discovering opportunities, managing your career,
-            and building a successful future.
+            Your central hub for discovering opportunities, managing your
+            career, and building a successful future.
           </p>
         </header>
 
@@ -73,8 +73,8 @@ export default function UserDashboard() {
             Career Growth Resources
           </h2>
           <p className="text-gray-300 mb-6">
-            Tap into educational guides, industry insights, and financial wellness
-            content made just for you.
+            Tap into educational guides, industry insights, and financial
+            wellness content made just for you.
           </p>
 
           <div className="grid md:grid-cols-3 gap-6">

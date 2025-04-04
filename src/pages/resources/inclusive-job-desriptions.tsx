@@ -18,8 +18,9 @@ export default function InclusiveJobDescriptions() {
         </h1>
 
         <p className="text-gray-300 mb-4">
-          Job descriptions are often the first interaction a candidate has with your brand.
-          Inclusive language helps attract a broader and more diverse talent pool.
+          Job descriptions are often the first interaction a candidate has with
+          your brand. Inclusive language helps attract a broader and more
+          diverse talent pool.
         </p>
 
         <h2 className="text-xl text-blue-400 font-semibold mt-6 mb-2">
@@ -27,16 +28,17 @@ export default function InclusiveJobDescriptions() {
         </h2>
         <ul className="list-disc ml-6 text-gray-400 space-y-2">
           <li>
-            Use gender-neutral titles (e.g., &quot;Sales Representative&quot; instead of &quot;Salesman&quot;).
+            Use gender-neutral titles (e.g., &quot;Sales Representative&quot;
+            instead of &quot;Salesman&quot;).
           </li>
           <li>
-            Avoid jargon or overly corporate terms that may alienate newer professionals.
+            Avoid jargon or overly corporate terms that may alienate newer
+            professionals.
           </li>
+          <li>Highlight your company&apos;s DEI commitment explicitly.</li>
           <li>
-            Highlight your company&apos;s DEI commitment explicitly.
-          </li>
-          <li>
-            Use accessible formatting: short paragraphs, bullet points, and plain language.
+            Use accessible formatting: short paragraphs, bullet points, and
+            plain language.
           </li>
         </ul>
 
@@ -45,16 +47,18 @@ export default function InclusiveJobDescriptions() {
         </h2>
         <ul className="list-disc ml-6 text-gray-400 space-y-2">
           <li>
-            ❌ &quot;Aggressive self-starter&quot; → ✅ &quot;Proactive team contributor&quot;
+            ❌ &quot;Aggressive self-starter&quot; → ✅ &quot;Proactive team
+            contributor&quot;
           </li>
           <li>
-            ❌ &quot;Rockstar/Ninja&quot; → ✅ &quot;Experienced professional with relevant skills&quot;
+            ❌ &quot;Rockstar/Ninja&quot; → ✅ &quot;Experienced professional
+            with relevant skills&quot;
           </li>
         </ul>
 
         <p className="text-gray-400 mt-8">
-          Small changes in your job post language can result in a significant difference in
-          the candidates you attract.
+          Small changes in your job post language can result in a significant
+          difference in the candidates you attract.
         </p>
       </div>
     </div>

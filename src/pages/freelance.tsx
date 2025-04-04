@@ -20,21 +20,27 @@ const FreelancePage: React.FC = () => {
 
         {/* 🚀 Intro */}
         <header className="mb-6">
-          <h1 className="text-4xl font-bold text-gold mb-2">Freelance & Gig Work</h1>
+          <h1 className="text-4xl font-bold text-gold mb-2">
+            Freelance & Gig Work
+          </h1>
           <p className="text-gray-300">
-            Work on short-term projects or hire skilled Black freelancers. Explore gigs and find opportunities that align with your talents and goals.
+            Work on short-term projects or hire skilled Black freelancers.
+            Explore gigs and find opportunities that align with your talents and
+            goals.
           </p>
         </header>
 
         {/* 🔍 Overview */}
         <Section title="Overview">
-          The freelance and gig economy empowers professionals to work on flexible short-term projects. Our platform bridges the gap between businesses 
-          and talented Black freelancers across industries.
+          The freelance and gig economy empowers professionals to work on
+          flexible short-term projects. Our platform bridges the gap between
+          businesses and talented Black freelancers across industries.
         </Section>
 
         {/* 🧠 How It Works */}
         <Section title="How It Works">
-          We operate on a subscription model. Instead of paying per gig, both freelancers and clients gain unlimited access to each other for the 
+          We operate on a subscription model. Instead of paying per gig, both
+          freelancers and clients gain unlimited access to each other for the
           duration of their membership.
         </Section>
 
@@ -51,7 +57,8 @@ const FreelancePage: React.FC = () => {
         {/* 🔎 Explore Gigs */}
         <Section title="Explore Gigs">
           <p className="text-gray-300 mb-4">
-            Whether you are a freelancer or a business seeking support, start your journey here.
+            Whether you are a freelancer or a business seeking support, start
+            your journey here.
           </p>
           <Link href="/explore-gigs">
             <button className="px-5 py-2 bg-green-600 text-white font-semibold rounded hover:bg-green-700 transition">
@@ -63,17 +70,29 @@ const FreelancePage: React.FC = () => {
         {/* 🛡️ Ensuring Quality */}
         <Section title="How We Ensure Quality">
           <ul className="list-disc ml-6 text-gray-300 space-y-2">
-            <li><strong>Freelancer Ratings:</strong> Clients provide feedback after each gig.</li>
-            <li><strong>Client Reviews:</strong> Freelancers can rate clients too.</li>
-            <li><strong>Dispute Resolution:</strong> We offer support to resolve conflicts.</li>
-            <li><strong>Verified Payments:</strong> All transactions are secured through our platform.</li>
+            <li>
+              <strong>Freelancer Ratings:</strong> Clients provide feedback
+              after each gig.
+            </li>
+            <li>
+              <strong>Client Reviews:</strong> Freelancers can rate clients too.
+            </li>
+            <li>
+              <strong>Dispute Resolution:</strong> We offer support to resolve
+              conflicts.
+            </li>
+            <li>
+              <strong>Verified Payments:</strong> All transactions are secured
+              through our platform.
+            </li>
           </ul>
         </Section>
 
         {/* 🎯 Call to Action */}
         <Section title="Get Started">
           <p className="text-gray-300 mb-4">
-            Subscribe today to gain access to an ongoing stream of talent and opportunity.
+            Subscribe today to gain access to an ongoing stream of talent and
+            opportunity.
           </p>
           <Link href="/subscribe">
             <button className="px-5 py-2 bg-gold text-black font-semibold rounded hover:bg-yellow-500 transition">
@@ -86,7 +105,13 @@ const FreelancePage: React.FC = () => {
   );
 };
 
-const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
+const Section = ({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) => (
   <section className="mt-10">
     <h2 className="text-2xl font-bold text-blue-400 mb-3">{title}</h2>
     <div className="text-gray-300">{children}</div>

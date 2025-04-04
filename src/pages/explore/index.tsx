@@ -53,9 +53,7 @@ export default function ExploreMarketplace() {
   const filteredProducts =
     selectedCategory === "All"
       ? products
-      : products.filter(
-          (product) => product.category === selectedCategory
-        );
+      : products.filter((product) => product.category === selectedCategory);
 
   return (
     <div className="min-h-screen bg-black text-white px-4 py-10">

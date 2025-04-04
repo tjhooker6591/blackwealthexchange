@@ -45,7 +45,7 @@ export default function Signup() {
 
     if (!validatePassword(formData.password)) {
       setError(
-        "Password must be at least 8 characters, include 1 uppercase letter, 1 number, and 1 special character."
+        "Password must be at least 8 characters, include 1 uppercase letter, 1 number, and 1 special character.",
       );
       return;
     }
@@ -133,7 +133,9 @@ export default function Signup() {
             />
           </div>
           <div>
-            <label className="block text-gray-700 font-semibold">Password</label>
+            <label className="block text-gray-700 font-semibold">
+              Password
+            </label>
             <input
               type="password"
               name="password"
@@ -145,7 +147,9 @@ export default function Signup() {
             />
           </div>
           <div>
-            <label className="block text-gray-700 font-semibold">Confirm Password</label>
+            <label className="block text-gray-700 font-semibold">
+              Confirm Password
+            </label>
             <input
               type="password"
               name="confirmPassword"
@@ -210,7 +214,10 @@ export default function Signup() {
 
         <p className="text-center mt-4 text-gray-600">
           Already have an account?{" "}
-          <Link href="/login" className="text-gold font-semibold hover:underline">
+          <Link
+            href="/login"
+            className="text-gold font-semibold hover:underline"
+          >
             Login
           </Link>
         </p>

@@ -11,7 +11,8 @@ export default function EmployerDashboard() {
             Welcome, Employer
           </h1>
           <p className="text-gray-300 text-lg">
-            Manage your job listings, view applicants, and connect with top Black talent.
+            Manage your job listings, view applicants, and connect with top
+            Black talent.
           </p>
         </header>
 
@@ -66,7 +67,8 @@ export default function EmployerDashboard() {
             Hiring Resources
           </h2>
           <p className="text-gray-300 mb-6">
-            Improve your recruitment process with tips, templates, and hiring guides.
+            Improve your recruitment process with tips, templates, and hiring
+            guides.
           </p>
 
           <div className="grid md:grid-cols-3 gap-6">

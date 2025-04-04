@@ -27,9 +27,12 @@ export default function ResourcesIndex() {
   return (
     <div className="min-h-screen bg-black text-white p-8">
       <div className="max-w-5xl mx-auto">
-        <h1 className="text-4xl font-bold text-gold mb-6">Employer Resources</h1>
+        <h1 className="text-4xl font-bold text-gold mb-6">
+          Employer Resources
+        </h1>
         <p className="text-gray-300 mb-8">
-          Discover tools and strategies to help you hire, support, and retain diverse talent.
+          Discover tools and strategies to help you hire, support, and retain
+          diverse talent.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -38,7 +41,9 @@ export default function ResourcesIndex() {
               key={article.slug}
               className="bg-gray-800 p-6 rounded-lg border border-gray-700"
             >
-              <h2 className="text-xl font-semibold text-gold mb-2">{article.title}</h2>
+              <h2 className="text-xl font-semibold text-gold mb-2">
+                {article.title}
+              </h2>
               <p className="text-gray-400 mb-4">{article.summary}</p>
               <Link
                 href={`/resources/${article.slug}`}

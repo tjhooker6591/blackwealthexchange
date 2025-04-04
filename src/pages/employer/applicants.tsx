@@ -63,7 +63,9 @@ export default function EmployerApplicantsPage() {
                 key={applicant.id}
                 className="bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-700"
               >
-                <h2 className="text-xl font-bold text-gold">{applicant.name}</h2>
+                <h2 className="text-xl font-bold text-gold">
+                  {applicant.name}
+                </h2>
                 <p className="text-gray-300">{applicant.email}</p>
                 <p className="text-sm text-gray-400 mb-2">
                   Applied: {applicant.appliedDate}

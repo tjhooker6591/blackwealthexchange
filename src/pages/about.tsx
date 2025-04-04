@@ -28,20 +28,35 @@ export default function About() {
             deterred.
           </p>
           <p>
-            <strong className="text-gold">We understand the weight of our words.</strong> In a nation where
-            language has been used to erase, distort, and suppress, we choose
-            our words with precision and purpose. We speak not in anger, but in
-            clarity. Not in division, but in direction. Our voice is not a
-            whisper—it is a force.
+            <strong className="text-gold">
+              We understand the weight of our words.
+            </strong>{" "}
+            In a nation where language has been used to erase, distort, and
+            suppress, we choose our words with precision and purpose. We speak
+            not in anger, but in clarity. Not in division, but in direction. Our
+            voice is not a whisper—it is a force.
           </p>
           <p>
-            This mission is not only about economic revival—it is about re-education. For too long, systemic programming, fear-based control, and media distortion have been used to fracture Black unity—dividing us by class, by language, by border, and by design. We reject those tactics. We reject the intimidation, the miseducation, and the inherited lies that were never ours to carry.
+            This mission is not only about economic revival—it is about
+            re-education. For too long, systemic programming, fear-based
+            control, and media distortion have been used to fracture Black
+            unity—dividing us by class, by language, by border, and by design.
+            We reject those tactics. We reject the intimidation, the
+            miseducation, and the inherited lies that were never ours to carry.
           </p>
           <p>
-            We have been scattered—but not broken. Disconnected—but not lost. The time has come to repair the sacred bond between Black communities—across cities, across continents, across the diaspora. Whether born in Chicago, Kingston, Lagos, or London, we are one people with a shared history, and an unshakable future.
+            We have been scattered—but not broken. Disconnected—but not lost.
+            The time has come to repair the sacred bond between Black
+            communities—across cities, across continents, across the diaspora.
+            Whether born in Chicago, Kingston, Lagos, or London, we are one
+            people with a shared history, and an unshakable future.
           </p>
           <p>
-            We are not here to mimic unity—we are here to embody it. To restore trust. To build bridges across generational wounds. To unify our voices, our dollars, our vision. Our rise does not depend on anyone’s fall. It depends on our ability to remember who we are, and to walk forward—together, sovereign and whole.
+            We are not here to mimic unity—we are here to embody it. To restore
+            trust. To build bridges across generational wounds. To unify our
+            voices, our dollars, our vision. Our rise does not depend on
+            anyone’s fall. It depends on our ability to remember who we are, and
+            to walk forward—together, sovereign and whole.
           </p>
           <p className="italic text-gold">
             We are not anti-anyone.
@@ -49,21 +64,31 @@ export default function About() {
             We are relentlessly pro-ourselves.
           </p>
           <p>
-            Just as other cultural groups have established networks to uplift and
-            support their communities, we exercise our{" "}
+            Just as other cultural groups have established networks to uplift
+            and support their communities, we exercise our{" "}
             <strong>First Amendment rights</strong> and all protections afforded
             under federal and state law to do the same. The Constitution grants
             us the freedom to assemble, to speak, to build, and to serve our
             people. We use these rights, not in opposition, but in assertion.
           </p>
           <p>
-            To promote Black-owned businesses, talent, innovation, and the circulation of capital within our own communities is not exclusion—it is creation. We are not reclaiming what was lost. We are establishing what was long denied. This begins at home.
+            To promote Black-owned businesses, talent, innovation, and the
+            circulation of capital within our own communities is not
+            exclusion—it is creation. We are not reclaiming what was lost. We
+            are establishing what was long denied. This begins at home.
           </p>
           <p>
-            The foundation of this movement is rooted in domestic unity. Before we can reach the world, we must repair what was broken here—in the neighborhoods, cities, and communities across America where division was planted and nurtured. We are building bonds where systems sowed mistrust.
+            The foundation of this movement is rooted in domestic unity. Before
+            we can reach the world, we must repair what was broken here—in the
+            neighborhoods, cities, and communities across America where division
+            was planted and nurtured. We are building bonds where systems sowed
+            mistrust.
           </p>
           <p>
-            As we unify here, the global connection follows. Our collective power—Black Americans, Caribbeans, Africans, and all members of the diaspora—strengthens as we organize at home. The movement begins domestically, but its resonance will echo worldwide.
+            As we unify here, the global connection follows. Our collective
+            power—Black Americans, Caribbeans, Africans, and all members of the
+            diaspora—strengthens as we organize at home. The movement begins
+            domestically, but its resonance will echo worldwide.
           </p>
           <p>
             For generations, this nation profited from the erasure of Black
@@ -81,8 +106,8 @@ export default function About() {
           </p>
           <p>
             We welcome allies who recognize that equity is not a threat to
-            equality—it is its proof. We are not asking for permission to thrive.
-            We are acting on the rights that have always belonged to us.
+            equality—it is its proof. We are not asking for permission to
+            thrive. We are acting on the rights that have always belonged to us.
           </p>
           <p className="text-gold font-semibold">
             This is not just a platform.
