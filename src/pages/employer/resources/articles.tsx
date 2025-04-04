@@ -1,12 +1,14 @@
-'use client';
+"use client";
 
-import React from 'react';
+import React from "react";
 
 export default function EmployerArticles() {
   return (
     <div className="min-h-screen bg-black text-white py-16 px-6">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold text-gold mb-6">Inclusive Hiring & Retention Strategies</h1>
+        <h1 className="text-3xl font-bold text-gold mb-6">
+          Inclusive Hiring & Retention Strategies
+        </h1>
 
         <ArticleSection
           title="1. Write Job Posts That Invite, Not Exclude"
@@ -37,7 +39,13 @@ export default function EmployerArticles() {
   );
 }
 
-function ArticleSection({ title, content }: { title: string; content: string }) {
+function ArticleSection({
+  title,
+  content,
+}: {
+  title: string;
+  content: string;
+}) {
   return (
     <div className="mb-8">
       <h2 className="text-xl font-semibold text-gold mb-2">{title}</h2>
