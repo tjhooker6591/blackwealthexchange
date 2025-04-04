@@ -13,61 +13,87 @@ export default function About() {
         </h1>
         <div className="space-y-6 text-lg text-gray-300 max-w-4xl">
           <p>
-            Black Wealth Exchange was born from necessity—a strategic,
-            unapologetic response to generations of systemic exclusion, economic
-            suppression, and the intentional dismantling of Black prosperity in
-            America. Our mission is not one of division but of restoration. We
-            seek to rebuild what was broken, reclaim what was withheld, and
-            reimagine what’s possible for Black communities through economic
-            empowerment, entrepreneurship, and ownership.
+            Black Wealth Exchange was not created in response—it was created in
+            resolve. A deliberate, strategic stand against the centuries-long
+            denial of Black economic self-determination. We are not here to
+            reclaim what was never rightfully given—we are here to build what we
+            were systemically denied the right to establish. This is not a
+            request. This is a declaration.
           </p>
           <p>
-            We understand the weight of our words. In a country where narratives
-            are often shaped to maintain the status quo, we know how quickly
-            purpose can be misinterpreted. Let us be clear:
+            Our mission is rooted in truth and unapologetic in vision: to ignite
+            a new era of Black prosperity through ownership, enterprise,
+            innovation, and collective power. We are not rebuilding ruins—we are
+            laying foundations never permitted to exist. And we will not be
+            deterred.
+          </p>
+          <p>
+            <strong className="text-gold">We understand the weight of our words.</strong> In a nation where
+            language has been used to erase, distort, and suppress, we choose
+            our words with precision and purpose. We speak not in anger, but in
+            clarity. Not in division, but in direction. Our voice is not a
+            whisper—it is a force.
+          </p>
+          <p>
+            This mission is not only about economic revival—it is about re-education. For too long, systemic programming, fear-based control, and media distortion have been used to fracture Black unity—dividing us by class, by language, by border, and by design. We reject those tactics. We reject the intimidation, the miseducation, and the inherited lies that were never ours to carry.
+          </p>
+          <p>
+            We have been scattered—but not broken. Disconnected—but not lost. The time has come to repair the sacred bond between Black communities—across cities, across continents, across the diaspora. Whether born in Chicago, Kingston, Lagos, or London, we are one people with a shared history, and an unshakable future.
+          </p>
+          <p>
+            We are not here to mimic unity—we are here to embody it. To restore trust. To build bridges across generational wounds. To unify our voices, our dollars, our vision. Our rise does not depend on anyone’s fall. It depends on our ability to remember who we are, and to walk forward—together, sovereign and whole.
           </p>
           <p className="italic text-gold">
             We are not anti-anyone.
             <br />
-            We are pro-ourselves.
+            We are relentlessly pro-ourselves.
           </p>
           <p>
-            Just as other cultural groups have established networks to uplift
-            and support their communities, we exercise our{" "}
+            Just as other cultural groups have established networks to uplift and
+            support their communities, we exercise our{" "}
             <strong>First Amendment rights</strong> and all protections afforded
             under federal and state law to do the same. The Constitution grants
             us the freedom to assemble, to speak, to build, and to serve our
             people. We use these rights, not in opposition, but in assertion.
           </p>
           <p>
-            To promote Black-owned businesses, talent, innovation, and capital
-            circulation is not racism—it is <strong>reclamation</strong>.
+            To promote Black-owned businesses, talent, innovation, and the circulation of capital within our own communities is not exclusion—it is creation. We are not reclaiming what was lost. We are establishing what was long denied. This begins at home.
           </p>
           <p>
-            For centuries, wealth and opportunity were extracted from Black
-            hands through redlining, labor theft, exclusionary policies, and
-            state-sanctioned discrimination. Today, those impacts are measurable
-            and ongoing. Our mission exists to{" "}
-            <strong>interrupt that legacy</strong> and offer something better.
+            The foundation of this movement is rooted in domestic unity. Before we can reach the world, we must repair what was broken here—in the neighborhoods, cities, and communities across America where division was planted and nurtured. We are building bonds where systems sowed mistrust.
+          </p>
+          <p>
+            As we unify here, the global connection follows. Our collective power—Black Americans, Caribbeans, Africans, and all members of the diaspora—strengthens as we organize at home. The movement begins domestically, but its resonance will echo worldwide.
+          </p>
+          <p>
+            For generations, this nation profited from the erasure of Black
+            wealth—through stolen labor, exclusionary laws, redlining, and
+            structural sabotage. The residue of that legacy is still visible in
+            every economic disparity we face today. We are not here to revisit
+            that pain. We are here to <strong>end it.</strong>
           </p>
           <p className="font-bold text-gold">
             We are strategic.
             <br />
             We are lawful.
             <br />
-            We are necessary.
+            We are inevitable.
           </p>
           <p>
-            We welcome allies who understand that equity is not a threat to
-            fairness—it is its fulfillment. We are not asking for permission to
-            rise; we are exercising the rights that are already ours.
+            We welcome allies who recognize that equity is not a threat to
+            equality—it is its proof. We are not asking for permission to thrive.
+            We are acting on the rights that have always belonged to us.
           </p>
           <p className="text-gold font-semibold">
-            This is more than a platform.
+            This is not just a platform.
             <br />
-            This is a movement to reclaim economic power—on our terms, with our
-            voice, and in full alignment with the laws that protect our right to
-            exist and thrive.
+            This is not just a mission.
+            <br />
+            This is an economic awakening.
+          </p>
+          <p>
+            A movement to establish enduring Black wealth—on our terms, in our
+            voice, with the full force of law, legacy, and love behind us.
           </p>
         </div>
       </section>
@@ -93,7 +119,7 @@ export default function About() {
           <FeatureSection
             title="Entertainment & News"
             description="Stay informed about the latest in Black entertainment, culture, and current events. We spotlight stories that reflect our community’s diverse experiences and talents."
-            href="/black-entertainment-news" // <- If you’re using "/news" instead, update here
+            href="/black-entertainment-news"
             buttonLabel="Read Entertainment News"
           />
 
@@ -114,7 +140,7 @@ export default function About() {
           <FeatureSection
             title="Housing & Lending"
             description="Find resources for home ownership, mortgage guidance, and fair lending options. Our aim is to help more families build equity through property investment and stable housing."
-            href="/real-estate-investment" // <- If you're using "/housing-lending", update this
+            href="/real-estate-investment"
             buttonLabel="Learn More"
           />
         </div>
@@ -144,6 +170,7 @@ export default function About() {
     </div>
   );
 }
+
 const FeatureSection = ({
   title,
   description,

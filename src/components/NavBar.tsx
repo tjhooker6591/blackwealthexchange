@@ -13,8 +13,8 @@ export default function NavBar() {
         {/* Logo + Brand */}
         <Link href="/" className="flex items-center space-x-2 cursor-pointer">
           <Image
-            src="/favicon.png" // Adjust path if needed
-            alt="favicon"
+            src="/bwe-logo.png" // Adjust path if needed
+            alt="BWE Logo"
             width={40}
             height={40}
           />
@@ -28,6 +28,11 @@ export default function NavBar() {
           {/* Our Mission & About - Standalone */}
           <Link href="/about" className="hover:text-gold font-semibold">
             Our Mission & About
+          </Link>
+
+          {/* The Journey - New Link */}
+          <Link href="/global-timeline" className="hover:text-gold font-semibold">
+            The Journey
           </Link>
 
           {/* Student Resources Dropdown */}
@@ -147,6 +152,15 @@ export default function NavBar() {
             onClick={() => setMobileMenuOpen(false)}
           >
             Our Mission & About
+          </Link>
+
+          {/* The Journey - New Link */}
+          <Link
+            href="/global-timeline"
+            className="block py-2 hover:text-gold font-semibold"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            The Journey
           </Link>
 
           <Link

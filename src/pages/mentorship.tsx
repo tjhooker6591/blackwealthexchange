@@ -6,117 +6,80 @@ const MentorshipProgram: React.FC = () => {
   const router = useRouter();
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-8">
-      <div className="max-w-4xl mx-auto bg-gray-800 p-6 rounded-lg shadow-lg">
-        {/* Back Button */}
-        <div className="mb-4">
+    <div className="min-h-screen bg-black text-white p-6">
+      <div className="max-w-5xl mx-auto bg-gray-900 p-6 rounded-lg shadow-lg">
+        {/* 🔙 Back to Jobs */}
+        <div className="mb-6">
           <button
             onClick={() => router.push("/jobs")}
-            className="px-4 py-2 bg-gray-600 text-white font-bold rounded hover:bg-gray-700 transition"
+            className="px-4 py-2 bg-gray-700 text-white font-semibold rounded hover:bg-gray-600 transition"
           >
-            Back to Jobs
+            ← Back to Jobs
           </button>
         </div>
 
-        {/* Header */}
+        {/* 🚀 Header */}
         <header className="mb-6">
-          <h1 className="text-3xl font-bold text-gold">Mentorship Program</h1>
-          <p className="text-gray-300 mt-2">
-            Join our mentorship program where experienced industry leaders and
-            entrepreneurs help guide you on your career path.
+          <h1 className="text-4xl font-bold text-gold mb-2">Mentorship Program</h1>
+          <p className="text-gray-300">
+            Join our mentorship program where experienced leaders help guide you toward your career goals.
           </p>
         </header>
 
-        {/* Program Overview Section */}
-        <section className="mt-8">
-          <h2 className="text-2xl font-semibold text-blue-500">Overview</h2>
-          <p className="text-gray-300">
-            The Mentorship Program connects you with seasoned professionals and
-            entrepreneurs who provide guidance, support, and networking
-            opportunities. Whether you are just starting your career or looking
-            to take the next step, this program offers invaluable insights and
-            advice to help you achieve your professional goals.
-          </p>
-        </section>
+        {/* 📘 Overview */}
+        <Section title="Overview">
+          The Mentorship Program connects you with professionals who offer support, career advice, and industry insight. Whether you are starting out or advancing your path, you will gain clarity, confidence, and community.
+        </Section>
 
-        {/* Why Join Section */}
-        <section className="mt-8">
-          <h2 className="text-xl font-semibold text-blue-500">
-            Why Join the Mentorship Program?
-          </h2>
-          <ul className="list-disc ml-6 mt-4 text-gray-300">
-            <li>
-              <strong>Guidance:</strong> Receive personalized advice from
-              experienced professionals in your field.
-            </li>
-            <li>
-              <strong>Networking:</strong> Expand your network by connecting
-              with industry leaders and other mentees.
-            </li>
-            <li>
-              <strong>Career Growth:</strong> Learn strategies to accelerate
-              your career and gain confidence in your decisions.
-            </li>
-            <li>
-              <strong>Support:</strong> Find a mentor who understands your goals
-              and challenges and can provide ongoing support.
-            </li>
+        {/* 💡 Why Join */}
+        <Section title="Why Join the Mentorship Program?">
+          <ul className="list-disc ml-6 space-y-2 text-gray-300">
+            <li><strong>Guidance:</strong> Personalized advice from professionals in your field.</li>
+            <li><strong>Networking:</strong> Expand your circle through intentional connections.</li>
+            <li><strong>Career Growth:</strong> Get strategies to move forward and level up.</li>
+            <li><strong>Support:</strong> Work with mentors who understand your goals and barriers.</li>
           </ul>
-        </section>
+        </Section>
 
-        {/* Testimonials Section */}
-        <section className="mt-8">
-          <h2 className="text-xl font-semibold text-blue-500">
-            What Mentees Are Saying
-          </h2>
-          <blockquote className="text-gray-300 mt-4">
-            &quot;The mentorship program has been a game-changer for my career.
-            I&rsquo;ve gained valuable insights and built connections that have
-            helped me grow both personally and professionally.&quot;
+        {/* 💬 Testimonials */}
+        <Section title="What Mentees Are Saying">
+          <blockquote className="text-gray-300 italic border-l-4 border-gold pl-4 mt-2">
+            The mentorship program has been a game-changer for my career. I have gained insights and built connections that helped me grow personally and professionally.
           </blockquote>
-          <p className="text-gray-300 mt-4">- Sarah M., Mentee</p>
-        </section>
+          <p className="text-gray-400 mt-2">– Sarah M., Mentee</p>
+        </Section>
 
-        {/* Next Steps Section */}
-        <section className="mt-8">
-          <h2 className="text-xl font-semibold text-blue-500">Next Steps</h2>
+        {/* 🚀 Take Action */}
+        <Section title="Next Steps">
           <p className="text-gray-300">
-            Ready to take your career to the next level? Become a mentee today
-            and start benefiting from the expertise of our mentors.
+            Ready to take your career to the next level? Become a mentee today and unlock the support you deserve.
           </p>
           <Link href="/become-a-mentee">
-            <button className="mt-4 py-2 px-4 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition">
+            <button className="mt-4 px-5 py-2 bg-green-600 text-white font-semibold rounded hover:bg-green-700 transition">
               Become a Mentee
             </button>
           </Link>
-        </section>
+        </Section>
 
-        {/* Program Benefits Section */}
-        <section className="mt-8">
-          <h2 className="text-xl font-semibold text-blue-500">
-            Program Benefits
-          </h2>
-          <ul className="list-disc ml-6 mt-4 text-gray-300">
-            <li>
-              Access to a diverse range of mentors with expertise in various
-              fields.
-            </li>
-            <li>
-              Opportunity for both personal and professional development through
-              tailored mentorship sessions.
-            </li>
-            <li>
-              Exclusive access to workshops, webinars, and networking events.
-            </li>
-            <li>
-              Receive actionable feedback on your career goals and growth
-              opportunities.
-            </li>
+        {/* 🎁 Program Benefits */}
+        <Section title="Program Benefits">
+          <ul className="list-disc ml-6 space-y-2 text-gray-300">
+            <li>Access to mentors across tech, business, finance, and more.</li>
+            <li>Tailored one-on-one sessions for real development.</li>
+            <li>Exclusive invites to virtual workshops and networking events.</li>
+            <li>Ongoing career feedback and professional guidance.</li>
           </ul>
-        </section>
+        </Section>
       </div>
     </div>
   );
 };
+
+const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
+  <section className="mt-10">
+    <h2 className="text-2xl font-bold text-blue-400 mb-3">{title}</h2>
+    <div className="text-gray-300">{children}</div>
+  </section>
+);
 
 export default MentorshipProgram;

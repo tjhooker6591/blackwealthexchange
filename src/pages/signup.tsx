@@ -1,65 +1,55 @@
+"use client";
+
 import { Link } from "lucide-react";
 import { useState } from "react";
 
 export default function Signup() {
-  const [accountType, setAccountType] = useState("user"); // Default to "user"
+  const [accountType, setAccountType] = useState("user");
   const [formData, setFormData] = useState({
     email: "",
     password: "",
     confirmPassword: "",
-    businessName: "", // Added for business account
-    businessAddress: "", // Added for business account
-    businessPhone: "", // Added for business account
+    businessName: "",
+    businessAddress: "",
+    businessPhone: "",
   });
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Function to validate email format
-  const validateEmail = (email: string) => {
-    return /\S+@\S+\.\S+/.test(email);
-  };
-
-  // Function to validate password security
-  const validatePassword = (password: string) => {
-    return /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
-      password,
-    );
-  };
+  const validateEmail = (email: string) => /\S+@\S+\.\S+/.test(email);
+  const validatePassword = (password: string) =>
+    /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    setError(""); // Reset errors on input change
+    setError("");
   };
 
   const handleAccountTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setAccountType(e.target.value); // Update account type when changed
+    setAccountType(e.target.value);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Ensure required fields are filled
     if (!formData.email || !formData.password || !formData.confirmPassword) {
       setError("All fields are required.");
       return;
     }
 
-    // Validate email format
     if (!validateEmail(formData.email)) {
       setError("Invalid email format.");
       return;
     }
 
-    // Validate password strength
     if (!validatePassword(formData.password)) {
       setError(
-        "Password must be at least 8 characters long, include 1 uppercase letter, 1 number, and 1 special character.",
+        "Password must be at least 8 characters, include 1 uppercase letter, 1 number, and 1 special character."
       );
       return;
     }
 
-    // Check if passwords match
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match.");
       return;
@@ -72,18 +62,15 @@ export default function Signup() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: formData.email,
-          password: formData.password, // Password field specified once
-          accountType, // Use accountType directly
+          password: formData.password,
+          accountType,
           businessName: formData.businessName,
           businessAddress: formData.businessAddress,
           businessPhone: formData.businessPhone,
         }),
       });
 
-      // Handle response and reset form data if successful
-      if (!response.ok) {
-        throw new Error("Failed to create account.");
-      }
+      if (!response.ok) throw new Error("Signup failed.");
 
       setSuccess(true);
       setFormData({
@@ -117,9 +104,8 @@ export default function Signup() {
         )}
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-          {/* Account Type Selection */}
           <div>
-            <label className="block text-Gray-700 font-semibold">
+            <label className="block text-gray-700 font-semibold">
               Account Type
             </label>
             <select
@@ -128,12 +114,12 @@ export default function Signup() {
               onChange={handleAccountTypeChange}
               className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-gold text-black bg-gray-200"
             >
-              <option value="user">User</option>
-              <option value="business">Business</option>
+              <option value="user">Job Seeker</option>
+              <option value="business">Business / Employer</option>
             </select>
           </div>
 
-          {/* Common User Fields */}
+          {/* Shared Fields */}
           <div>
             <label className="block text-gray-700 font-semibold">Email</label>
             <input
@@ -142,40 +128,36 @@ export default function Signup() {
               placeholder="Enter your email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-gold text-black bg-gray-200"
+              className="w-full p-3 border rounded-lg bg-gray-200 text-black"
               required
             />
           </div>
           <div>
-            <label className="block text-gray-700 font-semibold">
-              Password
-            </label>
+            <label className="block text-gray-700 font-semibold">Password</label>
             <input
               type="password"
               name="password"
-              placeholder="Enter a strong password"
+              placeholder="Create a strong password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-gold text-black bg-gray-200"
+              className="w-full p-3 border rounded-lg bg-gray-200 text-black"
               required
             />
           </div>
           <div>
-            <label className="block text-gray-700 font-semibold">
-              Confirm Password
-            </label>
+            <label className="block text-gray-700 font-semibold">Confirm Password</label>
             <input
               type="password"
               name="confirmPassword"
               placeholder="Re-enter your password"
               value={formData.confirmPassword}
               onChange={handleChange}
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-gold text-black bg-gray-200"
+              className="w-full p-3 border rounded-lg bg-gray-200 text-black"
               required
             />
           </div>
 
-          {/* Business Fields (Only shown for business account type) */}
+          {/* Business Fields */}
           {accountType === "business" && (
             <>
               <div>
@@ -187,7 +169,7 @@ export default function Signup() {
                   name="businessName"
                   value={formData.businessName}
                   onChange={handleChange}
-                  className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-gold text-black bg-gray-200"
+                  className="w-full p-3 border rounded-lg bg-gray-200 text-black"
                 />
               </div>
               <div>
@@ -199,7 +181,7 @@ export default function Signup() {
                   name="businessAddress"
                   value={formData.businessAddress}
                   onChange={handleChange}
-                  className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-gold text-black bg-gray-200"
+                  className="w-full p-3 border rounded-lg bg-gray-200 text-black"
                 />
               </div>
               <div>
@@ -211,7 +193,7 @@ export default function Signup() {
                   name="businessPhone"
                   value={formData.businessPhone}
                   onChange={handleChange}
-                  className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-gold text-black bg-gray-200"
+                  className="w-full p-3 border rounded-lg bg-gray-200 text-black"
                 />
               </div>
             </>
@@ -219,8 +201,8 @@ export default function Signup() {
 
           <button
             type="submit"
-            className="w-full py-3 bg-gold text-black font-semibold rounded-lg hover:bg-opacity-90 transition"
             disabled={loading}
+            className="w-full py-3 bg-gold text-black font-semibold rounded-lg hover:bg-opacity-90 transition"
           >
             {loading ? "Signing up..." : "Sign Up"}
           </button>
@@ -228,10 +210,7 @@ export default function Signup() {
 
         <p className="text-center mt-4 text-gray-600">
           Already have an account?{" "}
-          <Link
-            href="/login"
-            className="text-gold font-semibold hover:underline"
-          >
+          <Link href="/login" className="text-gold font-semibold hover:underline">
             Login
           </Link>
         </p>

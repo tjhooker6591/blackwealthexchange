@@ -2,154 +2,95 @@ import React from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
-const FreelanceGigPage: React.FC = () => {
+const FreelancePage: React.FC = () => {
   const router = useRouter();
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-8">
-      <div className="max-w-4xl mx-auto bg-gray-800 p-6 rounded-lg shadow-lg">
-        {/* Back Button */}
-        <div className="mb-4">
+    <div className="min-h-screen bg-black text-white p-6">
+      <div className="max-w-5xl mx-auto bg-gray-900 p-6 rounded-lg shadow-lg">
+        {/* 🔙 Back Button */}
+        <div className="mb-6">
           <button
             onClick={() => router.push("/marketplace")}
-            className="px-4 py-2 bg-gray-600 text-white font-bold rounded hover:bg-gray-700 transition"
+            className="px-4 py-2 bg-gray-700 text-white font-semibold rounded hover:bg-gray-600 transition"
           >
-            Back to Marketplace
+            ← Back to Marketplace
           </button>
         </div>
 
-        {/* Header */}
+        {/* 🚀 Intro */}
         <header className="mb-6">
-          <h1 className="text-3xl font-bold text-gold">Freelance & Gig Work</h1>
-          <p className="text-gray-300 mt-2">
-            Work on short-term projects or hire Black freelancers for
-            specialized skills. Explore gigs and find opportunities that match
-            your expertise.
+          <h1 className="text-4xl font-bold text-gold mb-2">Freelance & Gig Work</h1>
+          <p className="text-gray-300">
+            Work on short-term projects or hire skilled Black freelancers. Explore gigs and find opportunities that align with your talents and goals.
           </p>
         </header>
 
-        {/* Freelance Overview Section */}
-        <section className="mt-8">
-          <h2 className="text-2xl font-semibold text-blue-500">Overview</h2>
-          <p className="text-gray-300">
-            The freelance and gig economy offers flexible work opportunities
-            that allow you to take on short-term projects and get paid for your
-            specialized skills. Whether you are looking to work as a freelancer
-            or hire talented Black professionals for gigs, our platform connects
-            people with the right skills to clients who need their expertise.
-          </p>
-        </section>
+        {/* 🔍 Overview */}
+        <Section title="Overview">
+          The freelance and gig economy empowers professionals to work on flexible short-term projects. Our platform bridges the gap between businesses 
+          and talented Black freelancers across industries.
+        </Section>
 
-        {/* How it Works Section */}
-        <section className="mt-8">
-          <h2 className="text-xl font-semibold text-blue-500">How It Works</h2>
-          <p className="text-gray-300">
-            We operate on a subscription-based model, meaning that freelancers
-            and clients get access to ongoing opportunities and projects without
-            having to pay per job or project. By subscribing, clients can find
-            the right freelancers for their needs, and freelancers get the
-            opportunity to work on various projects throughout their
-            subscription period.
-          </p>
-        </section>
+        {/* 🧠 How It Works */}
+        <Section title="How It Works">
+          We operate on a subscription model. Instead of paying per gig, both freelancers and clients gain unlimited access to each other for the 
+          duration of their membership.
+        </Section>
 
-        {/* Subscription Model Explanation */}
-        <section className="mt-8">
-          <h2 className="text-xl font-semibold text-blue-500">
-            Subscription Model
-          </h2>
-          <p className="text-gray-300">
-            Our subscription service ensures that both freelancers and clients
-            get the best value for their commitment. With the subscription:
-          </p>
-          <ul className="list-disc ml-6 mt-4 text-gray-300">
-            <li>
-              Freelancers are paid regularly, ensuring a steady income stream.
-            </li>
-            <li>
-              Clients have access to a pool of skilled freelancers for their
-              projects without paying per job.
-            </li>
-            <li>
-              Both freelancers and clients are encouraged to build long-term
-              relationships and work on multiple projects during the
-              subscription period.
-            </li>
-            <li>
-              We guarantee quality through a rating and review system where
-              freelancers are rated based on their work, and clients are rated
-              based on their feedback.
-            </li>
+        {/* 💼 Subscription Benefits */}
+        <Section title="Subscription Benefits">
+          <ul className="list-disc ml-6 text-gray-300 space-y-2">
+            <li>Freelancers are paid consistently and fairly.</li>
+            <li>Clients gain flexible access to skilled talent.</li>
+            <li>Build long-term project relationships without extra fees.</li>
+            <li>Rate & review systems ensure high quality on both sides.</li>
           </ul>
-        </section>
+        </Section>
 
-        {/* Explore Gigs Section */}
-        <section className="mt-8">
-          <h2 className="text-xl font-semibold text-blue-500">Explore Gigs</h2>
-          <p className="text-gray-300">
-            Whether you&rsquo;re a freelancer looking for your next opportunity
-            or a client needing specific skills, explore the available gigs
-            below. Find the perfect match for your needs, and start building
-            your professional network.
+        {/* 🔎 Explore Gigs */}
+        <Section title="Explore Gigs">
+          <p className="text-gray-300 mb-4">
+            Whether you are a freelancer or a business seeking support, start your journey here.
           </p>
           <Link href="/explore-gigs">
-            <button className="mt-4 py-2 px-4 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition">
+            <button className="px-5 py-2 bg-green-600 text-white font-semibold rounded hover:bg-green-700 transition">
               Explore Gigs
             </button>
           </Link>
-        </section>
+        </Section>
 
-        {/* How We Ensure Quality Section */}
-        <section className="mt-8">
-          <h2 className="text-xl font-semibold text-blue-500">
-            How We Ensure Quality
-          </h2>
-          <p className="text-gray-300">
-            We prioritize a seamless experience for both freelancers and
-            clients. To ensure you get what you pay for:
-          </p>
-          <ul className="list-disc ml-6 mt-4 text-gray-300">
-            <li>
-              <strong>Freelancer Reviews:</strong> After each project, clients
-              can rate freelancers based on their work, professionalism, and
-              communication skills.
-            </li>
-            <li>
-              <strong>Client Reviews:</strong> Freelancers can also rate
-              clients, ensuring that both parties maintain a high level of
-              professionalism.
-            </li>
-            <li>
-              <strong>Dispute Resolution:</strong> In the event of an issue, we
-              offer support for conflict resolution to ensure both freelancers
-              and clients are satisfied with the outcome.
-            </li>
-            <li>
-              <strong>Verified Payments:</strong> We handle payments securely
-              through our platform, ensuring freelancers are paid promptly and
-              fairly.
-            </li>
+        {/* 🛡️ Ensuring Quality */}
+        <Section title="How We Ensure Quality">
+          <ul className="list-disc ml-6 text-gray-300 space-y-2">
+            <li><strong>Freelancer Ratings:</strong> Clients provide feedback after each gig.</li>
+            <li><strong>Client Reviews:</strong> Freelancers can rate clients too.</li>
+            <li><strong>Dispute Resolution:</strong> We offer support to resolve conflicts.</li>
+            <li><strong>Verified Payments:</strong> All transactions are secured through our platform.</li>
           </ul>
-        </section>
+        </Section>
 
-        {/* Call to Action */}
-        <section className="mt-8">
-          <h2 className="text-xl font-semibold text-blue-500">Get Started</h2>
-          <p className="text-gray-300">
-            Ready to start working on exciting projects or hire Black
-            professionals for your business needs? Subscribe today and take
-            advantage of the subscription model that gives you ongoing access to
-            talented freelancers.
+        {/* 🎯 Call to Action */}
+        <Section title="Get Started">
+          <p className="text-gray-300 mb-4">
+            Subscribe today to gain access to an ongoing stream of talent and opportunity.
           </p>
           <Link href="/subscribe">
-            <button className="mt-4 py-2 px-4 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition">
+            <button className="px-5 py-2 bg-gold text-black font-semibold rounded hover:bg-yellow-500 transition">
               Subscribe Now
             </button>
           </Link>
-        </section>
+        </Section>
       </div>
     </div>
   );
 };
 
-export default FreelanceGigPage;
+const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
+  <section className="mt-10">
+    <h2 className="text-2xl font-bold text-blue-400 mb-3">{title}</h2>
+    <div className="text-gray-300">{children}</div>
+  </section>
+);
+
+export default FreelancePage;
