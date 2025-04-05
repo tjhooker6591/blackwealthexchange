@@ -5,7 +5,10 @@ import NavBar from "@/components/NavBar";
 import Footer from "@/components/footer";
 import { SessionProvider } from "next-auth/react";
 
-export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
+export default function App({
+  Component,
+  pageProps: { session, ...pageProps },
+}: AppProps) {
   return (
     <SessionProvider session={session}>
       {/* Global head settings */}

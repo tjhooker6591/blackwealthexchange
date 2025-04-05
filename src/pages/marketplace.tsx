@@ -115,7 +115,8 @@ const Marketplace: React.FC = () => {
               Are You a Black-Owned Business?
             </h3>
             <p className="text-sm">
-              Join our Marketplace and start selling to thousands of conscious buyers.
+              Join our Marketplace and start selling to thousands of conscious
+              buyers.
             </p>
           </div>
           <button
@@ -130,7 +131,17 @@ const Marketplace: React.FC = () => {
       {/* Category Filters */}
       <div className="container mx-auto px-4 pb-4">
         <div className="flex flex-wrap gap-3 justify-center">
-          {["All", "Apparel", "Accessories", "Beauty", "Art", "Books", "Home", "Food", "Other"].map((cat) => (
+          {[
+            "All",
+            "Apparel",
+            "Accessories",
+            "Beauty",
+            "Art",
+            "Books",
+            "Home",
+            "Food",
+            "Other",
+          ].map((cat) => (
             <button
               key={cat}
               onClick={() => handleCategoryChange(cat)}
@@ -175,7 +186,10 @@ const Marketplace: React.FC = () => {
                     {product.name}
                   </h4>
                   <p className="text-sm text-gray-600">
-                    ${typeof product.price === "number" ? product.price.toFixed(2) : "N/A"}
+                    $
+                    {typeof product.price === "number"
+                      ? product.price.toFixed(2)
+                      : "N/A"}
                   </p>
                   <div className="mt-2 space-y-2">
                     <BuyNowButton
@@ -185,7 +199,9 @@ const Marketplace: React.FC = () => {
                       type="product"
                     />
                     <button
-                      onClick={() => router.push(`/marketplace/product/${product._id}`)}
+                      onClick={() =>
+                        router.push(`/marketplace/product/${product._id}`)
+                      }
                       className="w-full text-sm px-4 py-1 border border-gray-400 text-gray-700 rounded hover:bg-gray-100"
                     >
                       View Details
@@ -229,4 +245,3 @@ const Marketplace: React.FC = () => {
 };
 
 export default Marketplace;
-

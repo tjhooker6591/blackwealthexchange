@@ -48,9 +48,7 @@ export default function CustomAd() {
 
         {/* Pricing Info */}
         <div className="bg-gray-700 text-left p-6 rounded-lg mb-10">
-          <h3 className="text-xl font-bold text-gold mb-2">
-            Starting at $100
-          </h3>
+          <h3 className="text-xl font-bold text-gold mb-2">Starting at $100</h3>
           <p className="text-gray-300 text-sm">
             Custom campaigns start at $100. Pricing will vary depending on the
             scope, duration, and media involved. After submission, our team will
@@ -154,4 +152,3 @@ export default function CustomAd() {
     </div>
   );
 }
-

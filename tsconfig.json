@@ -20,7 +20,7 @@
     },
 
     "types": ["next-auth"],
-    "typeRoots": ["./types", "./node_modules/@types"]  // ✅ ADDED
+    "typeRoots": ["./types", "./node_modules/@types"] // ✅ ADDED
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]

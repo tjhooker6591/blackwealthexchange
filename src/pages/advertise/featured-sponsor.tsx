@@ -39,7 +39,7 @@ export default function FeaturedSponsorPage() {
     }
 
     router.push(
-      `/advertising/checkout?option=featured-sponsor&duration=${campaignDuration}`
+      `/advertising/checkout?option=featured-sponsor&duration=${campaignDuration}`,
     );
   };
 
@@ -64,8 +64,10 @@ export default function FeaturedSponsorPage() {
             Limited Availability: Weekly Sponsor Slots
           </h2>
           <p className="text-gray-300 mb-4">
-            Your business will appear in the <strong>rolling Featured Sponsor section</strong> on the homepage —
-            shown to every visitor on the site. Each campaign runs for <strong>7 days</strong> with <strong>only 8 sponsor slots</strong>{" "}
+            Your business will appear in the{" "}
+            <strong>rolling Featured Sponsor section</strong> on the homepage —
+            shown to every visitor on the site. Each campaign runs for{" "}
+            <strong>7 days</strong> with <strong>only 8 sponsor slots</strong>{" "}
             available per week.
           </p>
           <p className="text-gray-300 mb-4">

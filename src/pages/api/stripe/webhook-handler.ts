@@ -1,8 +1,8 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import { buffer } from 'micro';
-import Stripe from 'stripe';
-import clientPromise from '@/lib/mongodb';
-import { ObjectId } from 'mongodb';
+import { NextApiRequest, NextApiResponse } from "next";
+import { buffer } from "micro";
+import Stripe from "stripe";
+import clientPromise from "@/lib/mongodb";
+import { ObjectId } from "mongodb";
 
 export const config = {
   api: {
@@ -11,24 +11,31 @@ export const config = {
 };
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-    apiVersion: '2025-02-24.acacia',
-  });
+  apiVersion: "2025-02-24.acacia",
+});
 
-export default async function webhookHandler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'POST') return res.status(405).end('Method Not Allowed');
+export default async function webhookHandler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
+  if (req.method !== "POST") return res.status(405).end("Method Not Allowed");
 
-  const sig = req.headers['stripe-signature'] as string;
+  const sig = req.headers["stripe-signature"] as string;
   const buf = await buffer(req);
 
   let event;
   try {
-    event = stripe.webhooks.constructEvent(buf, sig, process.env.STRIPE_WEBHOOK_SECRET!);
+    event = stripe.webhooks.constructEvent(
+      buf,
+      sig,
+      process.env.STRIPE_WEBHOOK_SECRET!,
+    );
   } catch (err) {
-    console.error('Webhook signature verification failed.', err);
-    return res.status(400).send('Webhook Error');
+    console.error("Webhook signature verification failed.", err);
+    return res.status(400).send("Webhook Error");
   }
 
-  if (event.type === 'checkout.session.completed') {
+  if (event.type === "checkout.session.completed") {
     const session = event.data.object as Stripe.Checkout.Session;
     const metadata = session.metadata || {};
     const { userId, itemId, type, amount } = metadata;
@@ -37,25 +44,27 @@ export default async function webhookHandler(req: NextApiRequest, res: NextApiRe
       const client = await clientPromise;
       const db = client.db();
 
-      await db.collection('orders').insertOne({
+      await db.collection("orders").insertOne({
         userId,
         itemId,
         type,
         amount: parseFloat(amount),
         stripeSessionId: session.id,
-        status: 'paid',
+        status: "paid",
         createdAt: new Date(),
       });
 
-      if (type === 'course') {
-        await db.collection('users').updateOne(
-          { _id: new ObjectId(userId) },
-          { $set: { isPremium: true } }
-        );
+      if (type === "course") {
+        await db
+          .collection("users")
+          .updateOne(
+            { _id: new ObjectId(userId) },
+            { $set: { isPremium: true } },
+          );
       }
     } catch (err) {
-      console.error('Failed to write order to DB', err);
-      return res.status(500).send('Internal Error');
+      console.error("Failed to write order to DB", err);
+      return res.status(500).send("Internal Error");
     }
   }
 

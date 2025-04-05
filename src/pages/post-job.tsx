@@ -72,19 +72,24 @@ const PostJob = () => {
       <div className="max-w-5xl mx-auto bg-gray-800 p-6 rounded-lg shadow-lg">
         <h1 className="text-3xl font-bold text-gold mb-4">Post a Job</h1>
         <p className="text-gray-400 mb-6">
-          Add new opportunities and connect with Black professionals looking for work.
+          Add new opportunities and connect with Black professionals looking for
+          work.
         </p>
 
         {/* Monetization Options */}
         <div className="grid md:grid-cols-3 gap-4 mb-10">
           <div className="bg-gray-900 p-4 rounded shadow text-center">
             <h3 className="text-lg font-bold text-gold">Free Post</h3>
-            <p className="text-sm text-gray-400">Basic listing, 1 per account</p>
+            <p className="text-sm text-gray-400">
+              Basic listing, 1 per account
+            </p>
             <p className="font-semibold mt-2">$0</p>
           </div>
           <div className="bg-gray-900 p-4 rounded shadow text-center">
             <h3 className="text-lg font-bold text-gold">Standard Post</h3>
-            <p className="text-sm text-gray-400">30-day listing, enhanced visibility</p>
+            <p className="text-sm text-gray-400">
+              30-day listing, enhanced visibility
+            </p>
             <p className="font-semibold mt-2">$29.99</p>
             <BuyNowButton
               itemId="job-standard-post"
@@ -96,7 +101,9 @@ const PostJob = () => {
           </div>
           <div className="bg-gray-900 p-4 rounded shadow text-center">
             <h3 className="text-lg font-bold text-gold">Featured Post</h3>
-            <p className="text-sm text-gray-400">Homepage promo, pinned, bold style</p>
+            <p className="text-sm text-gray-400">
+              Homepage promo, pinned, bold style
+            </p>
             <p className="font-semibold mt-2">$79.99</p>
             <BuyNowButton
               itemId="job-featured-post"

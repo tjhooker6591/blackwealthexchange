@@ -1,25 +1,31 @@
 // components/BuyNowButton.tsx
 
-import { useState } from 'react';
+import { useState } from "react";
 
 interface BuyNowButtonProps {
   userId: string;
   itemId: string;
   amount: number;
-  type: 'product' | 'ad' | 'course' | 'job' | 'upgrade'; // ✅ extended types
+  type: "product" | "ad" | "course" | "job" | "upgrade"; // ✅ extended types
   label?: string; // Optional button label if needed
 }
 
-export default function BuyNowButton({ userId, itemId, amount, type, label = "Buy Now" }: BuyNowButtonProps) {
+export default function BuyNowButton({
+  userId,
+  itemId,
+  amount,
+  type,
+  label = "Buy Now",
+}: BuyNowButtonProps) {
   const [loading, setLoading] = useState(false);
 
   const handleBuy = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/stripe/checkout', {
-        method: 'POST',
+      const response = await fetch("/api/stripe/checkout", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           userId,
@@ -36,12 +42,12 @@ export default function BuyNowButton({ userId, itemId, amount, type, label = "Bu
       if (data.url) {
         window.location.href = data.url;
       } else {
-        console.error('Stripe error:', data);
-        alert('Something went wrong. Please try again.');
+        console.error("Stripe error:", data);
+        alert("Something went wrong. Please try again.");
       }
     } catch (err) {
-      console.error('Checkout error:', err);
-      alert('There was a problem starting checkout.');
+      console.error("Checkout error:", err);
+      alert("There was a problem starting checkout.");
     } finally {
       setLoading(false);
     }
@@ -53,7 +59,7 @@ export default function BuyNowButton({ userId, itemId, amount, type, label = "Bu
       disabled={loading}
       className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-4 py-2 rounded shadow transition"
     >
-      {loading ? 'Redirecting…' : label}
+      {loading ? "Redirecting…" : label}
     </button>
   );
 }
