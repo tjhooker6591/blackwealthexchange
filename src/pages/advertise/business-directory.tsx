@@ -3,9 +3,13 @@
 import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import BuyNowButton from "@/components/BuyNowButton";
+import { useSession } from "next-auth/react";
 
 export default function BusinessDirectoryAdPage() {
   const router = useRouter();
+  const { data: session } = useSession();
+  const userId = session?.user?.id || "guest";
 
   const handleSelectPlan = (plan: string) => {
     router.push(`/checkout?type=directory&plan=${plan}`);
@@ -57,47 +61,63 @@ export default function BusinessDirectoryAdPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Standard Listing */}
-          <div className="bg-white text-black rounded-xl p-6 shadow-lg flex flex-col justify-between">
+          <div className="bg-white text-black rounded-xl p-6 shadow-lg flex flex-col justify-between items-center text-center space-y-4">
             <div>
               <h3 className="text-2xl font-bold mb-2">Standard Listing</h3>
               <p className="text-sm mb-4">
                 Appear in the directory under your selected category. Great for
                 visibility and credibility.
               </p>
-              <ul className="text-sm list-disc list-inside mb-4">
+              <ul className="text-sm list-disc list-inside mb-4 text-left">
                 <li>Listed for 7 days</li>
                 <li>One business category</li>
                 <li>Clickable profile</li>
               </ul>
             </div>
-            <button
-              onClick={() => handleSelectPlan("standard")}
-              className="mt-auto px-4 py-2 bg-black text-gold rounded hover:bg-gray-900 transition"
-            >
-              $25 - Select Plan
-            </button>
+            <div className="space-y-2">
+              <button
+                onClick={() => handleSelectPlan("standard")}
+                className="w-full px-4 py-2 bg-black text-gold rounded hover:bg-gray-900 transition"
+              >
+                $25 - Select Plan
+              </button>
+              <BuyNowButton
+                userId={userId}
+                itemId="directory-standard"
+                type="ad"
+                amount={25}
+              />
+            </div>
           </div>
 
           {/* Featured Listing */}
-          <div className="bg-white text-black rounded-xl p-6 shadow-lg flex flex-col justify-between">
+          <div className="bg-white text-black rounded-xl p-6 shadow-lg flex flex-col justify-between items-center text-center space-y-4">
             <div>
               <h3 className="text-2xl font-bold mb-2">Featured Listing</h3>
               <p className="text-sm mb-4">
                 Stand out at the top of the directory with a highlighted badge
                 and top placement.
               </p>
-              <ul className="text-sm list-disc list-inside mb-4">
+              <ul className="text-sm list-disc list-inside mb-4 text-left">
                 <li>Featured for 14 days</li>
                 <li>Highlighted background</li>
                 <li>Priority category placement</li>
               </ul>
             </div>
-            <button
-              onClick={() => handleSelectPlan("featured")}
-              className="mt-auto px-4 py-2 bg-black text-gold rounded hover:bg-gray-900 transition"
-            >
-              $50 - Select Plan
-            </button>
+            <div className="space-y-2">
+              <button
+                onClick={() => handleSelectPlan("featured")}
+                className="w-full px-4 py-2 bg-black text-gold rounded hover:bg-gray-900 transition"
+              >
+                $50 - Select Plan
+              </button>
+              <BuyNowButton
+                userId={userId}
+                itemId="directory-featured"
+                type="ad"
+                amount={50}
+              />
+            </div>
           </div>
         </div>
       </div>

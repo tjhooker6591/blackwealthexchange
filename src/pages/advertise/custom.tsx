@@ -2,6 +2,8 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import BuyNowButton from "@/components/BuyNowButton";
+import { useSession } from "next-auth/react";
 
 export default function CustomAd() {
   const [name, setName] = useState("");
@@ -9,14 +11,12 @@ export default function CustomAd() {
   const [email, setEmail] = useState("");
   const [details, setDetails] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const { data: session } = useSession();
+  const userId = session?.user?.id || "guest";
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Ideally, you’d POST this to an API route or email service
     console.log({ name, business, email, details });
-
-    // Simulate submission
     setSubmitted(true);
   };
 
@@ -27,7 +27,7 @@ export default function CustomAd() {
           Custom Advertising Solutions
         </h1>
         <p className="text-lg text-gray-400 mb-6">
-          Want to build something unique and powerful for your brand? Let is
+          Want to build something unique and powerful for your brand? Let us
           collaborate on a custom advertising package that fits your goals and
           budget.
         </p>
@@ -43,11 +43,21 @@ export default function CustomAd() {
             <li>Custom landing pages for your campaign</li>
             <li>Event, webinar, or product launch partnerships</li>
             <li>Long-term brand partnership opportunities</li>
-            <li>Social media campaigns + audience targeting</li>
           </ul>
         </div>
 
-        {/* Custom Request Form */}
+        {/* Pricing Info */}
+        <div className="bg-gray-700 text-left p-6 rounded-lg mb-10">
+          <h3 className="text-xl font-bold text-gold mb-2">
+            Starting at $100
+          </h3>
+          <p className="text-gray-300 text-sm">
+            Custom campaigns start at $100. Pricing will vary depending on the
+            scope, duration, and media involved. After submission, our team will
+            follow up with a tailored quote.
+          </p>
+        </div>
+
         {!submitted ? (
           <form
             onSubmit={handleSubmit}
@@ -113,11 +123,24 @@ export default function CustomAd() {
           <div className="bg-green-600 text-white p-6 rounded-lg">
             <h3 className="text-2xl font-semibold mb-2">Thank You!</h3>
             <p>
-              We are received your request. A member of our team will follow up
+              We have received your request. A member of our team will follow up
               shortly to discuss your custom advertising needs.
             </p>
           </div>
         )}
+
+        {/* Buy Now Button for Reserved Custom Deposit */}
+        <div className="mt-10 text-center">
+          <h3 className="text-xl text-white font-semibold mb-2">
+            Ready to Reserve Your Custom Campaign?
+          </h3>
+          <BuyNowButton
+            userId={userId}
+            itemId="custom-ad-deposit"
+            amount={100}
+            type="ad"
+          />
+        </div>
 
         {/* Back to Ad Options */}
         <div className="mt-10">
@@ -131,3 +154,4 @@ export default function CustomAd() {
     </div>
   );
 }
+

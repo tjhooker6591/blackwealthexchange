@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import BuyNowButton from "@/components/BuyNowButton";
 
 const AdvertiseWithUs = () => {
   const router = useRouter();
@@ -37,9 +38,7 @@ const AdvertiseWithUs = () => {
           marginBottom: "2rem",
         }}
       >
-        <h1
-          style={{ fontSize: "2.5rem", fontWeight: "bold", color: "#ffcc00" }}
-        >
+        <h1 style={{ fontSize: "2.5rem", fontWeight: "bold", color: "#ffcc00" }}>
           Want to increase visibility for your business?
         </h1>
         <p style={{ fontSize: "1.1rem", marginTop: "1rem" }}>
@@ -85,9 +84,7 @@ const AdvertiseWithUs = () => {
 
       {/* Ad Options */}
       <section style={{ marginBottom: "2rem" }}>
-        <h2
-          style={{ fontSize: "2rem", marginBottom: "1rem", color: "#ffcc00" }}
-        >
+        <h2 style={{ fontSize: "2rem", marginBottom: "1rem", color: "#ffcc00" }}>
           Advertising Options
         </h2>
         <p style={{ fontSize: "1.1rem", marginBottom: "1rem" }}>
@@ -155,6 +152,17 @@ const AdvertiseWithUs = () => {
             </Link>
           ))}
         </div>
+      </section>
+
+      {/* Example Buy Button for Sponsored Listing */}
+      <section className="text-center mt-12">
+        <h3 className="text-xl font-semibold mb-4 text-white">Try an Instant Purchase</h3>
+        <BuyNowButton
+          userId="replace-with-user-id"
+          itemId="example-sponsor-package"
+          amount={75}
+          type="ad"
+        />
       </section>
     </div>
   );

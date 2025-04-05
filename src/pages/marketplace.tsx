@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import BuyNowButton from "@/components/BuyNowButton";
 
 interface Product {
   _id: string;
@@ -53,11 +54,7 @@ const Marketplace: React.FC = () => {
 
   const handleCategoryChange = (cat: string) => {
     setSelectedCategory(cat);
-    setCurrentPage(1); // reset to page 1 when category changes
-  };
-
-  const handleViewProduct = (id: string) => {
-    router.push(`/marketplace/product/${id}`);
+    setCurrentPage(1);
   };
 
   const handleBecomeSeller = () => {
@@ -118,8 +115,7 @@ const Marketplace: React.FC = () => {
               Are You a Black-Owned Business?
             </h3>
             <p className="text-sm">
-              Join our Marketplace and start selling to thousands of conscious
-              buyers.
+              Join our Marketplace and start selling to thousands of conscious buyers.
             </p>
           </div>
           <button
@@ -134,17 +130,7 @@ const Marketplace: React.FC = () => {
       {/* Category Filters */}
       <div className="container mx-auto px-4 pb-4">
         <div className="flex flex-wrap gap-3 justify-center">
-          {[
-            "All",
-            "Apparel",
-            "Accessories",
-            "Beauty",
-            "Art",
-            "Books",
-            "Home",
-            "Food",
-            "Other",
-          ].map((cat) => (
+          {["All", "Apparel", "Accessories", "Beauty", "Art", "Books", "Home", "Food", "Other"].map((cat) => (
             <button
               key={cat}
               onClick={() => handleCategoryChange(cat)}
@@ -175,8 +161,7 @@ const Marketplace: React.FC = () => {
               {products.map((product) => (
                 <div
                   key={product._id}
-                  className="bg-white p-4 rounded-lg shadow hover:shadow-lg transition cursor-pointer"
-                  onClick={() => handleViewProduct(product._id)}
+                  className="bg-white p-4 rounded-lg shadow hover:shadow-lg transition"
                 >
                   <div className="w-full h-32 relative mb-2">
                     <Image
@@ -190,11 +175,22 @@ const Marketplace: React.FC = () => {
                     {product.name}
                   </h4>
                   <p className="text-sm text-gray-600">
-                    $
-                    {typeof product.price === "number"
-                      ? product.price.toFixed(2)
-                      : "N/A"}
+                    ${typeof product.price === "number" ? product.price.toFixed(2) : "N/A"}
                   </p>
+                  <div className="mt-2 space-y-2">
+                    <BuyNowButton
+                      userId="replace-with-user-id"
+                      itemId={product._id}
+                      amount={product.price}
+                      type="product"
+                    />
+                    <button
+                      onClick={() => router.push(`/marketplace/product/${product._id}`)}
+                      className="w-full text-sm px-4 py-1 border border-gray-400 text-gray-700 rounded hover:bg-gray-100"
+                    >
+                      View Details
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -233,3 +229,4 @@ const Marketplace: React.FC = () => {
 };
 
 export default Marketplace;
+

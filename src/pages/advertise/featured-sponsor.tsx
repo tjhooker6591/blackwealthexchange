@@ -2,16 +2,33 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/router";
+import BuyNowButton from "@/components/BuyNowButton";
+import { useSession } from "next-auth/react";
 
 export default function FeaturedSponsorPage() {
   const router = useRouter();
   const [bannerFile, setBannerFile] = useState<File | null>(null);
-  const [campaignDuration, setCampaignDuration] = useState("");
+  const [campaignDuration, setCampaignDuration] = useState<string>("");
   const [confirmed, setConfirmed] = useState(false);
+  const { data: session } = useSession();
+  const userId = session?.user?.id || "guest";
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setBannerFile(e.target.files[0]);
+    }
+  };
+
+  const getAmount = () => {
+    switch (campaignDuration) {
+      case "14":
+        return 25;
+      case "30":
+        return 45;
+      case "60":
+        return 80;
+      default:
+        return 0;
     }
   };
 
@@ -22,7 +39,7 @@ export default function FeaturedSponsorPage() {
     }
 
     router.push(
-      `/advertising/checkout?option=featured-sponsor&duration=${campaignDuration}`,
+      `/advertising/checkout?option=featured-sponsor&duration=${campaignDuration}`
     );
   };
 
@@ -47,10 +64,8 @@ export default function FeaturedSponsorPage() {
             Limited Availability: Weekly Sponsor Slots
           </h2>
           <p className="text-gray-300 mb-4">
-            Your business will appear in the{" "}
-            <strong>rolling Featured Sponsor section</strong> on the homepage —
-            shown to every visitor on the site. Each campaign runs for{" "}
-            <strong>7 days</strong> with <strong>only 8 sponsor slots</strong>{" "}
+            Your business will appear in the <strong>rolling Featured Sponsor section</strong> on the homepage —
+            shown to every visitor on the site. Each campaign runs for <strong>7 days</strong> with <strong>only 8 sponsor slots</strong>{" "}
             available per week.
           </p>
           <p className="text-gray-300 mb-4">
@@ -107,7 +122,7 @@ export default function FeaturedSponsorPage() {
                   : "border-gray-600"
               }`}
             >
-              <h4 className="text-lg font-semibold text-white">1 Weeks</h4>
+              <h4 className="text-lg font-semibold text-white">1 Week</h4>
               <p className="text-gold">$25</p>
             </div>
             <div
@@ -129,7 +144,7 @@ export default function FeaturedSponsorPage() {
                   : "border-gray-600"
               }`}
             >
-              <h4 className="text-lg font-semibold text-white">1 Months</h4>
+              <h4 className="text-lg font-semibold text-white">1 Month</h4>
               <p className="text-gold">$80</p>
             </div>
           </div>
@@ -173,6 +188,19 @@ export default function FeaturedSponsorPage() {
           >
             Proceed to Checkout
           </button>
+        </div>
+
+        {/* Optional Instant BuyNow */}
+        <div className="text-center mt-10">
+          <p className="text-sm text-gray-400 mb-2">
+            Or skip the setup and go straight to checkout:
+          </p>
+          <BuyNowButton
+            userId={userId}
+            itemId="featured-sponsor-ad"
+            type="ad"
+            amount={getAmount()}
+          />
         </div>
       </div>
     </div>

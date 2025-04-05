@@ -3,10 +3,11 @@ import type { AppProps } from "next/app";
 import Head from "next/head";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/footer";
+import { SessionProvider } from "next-auth/react";
 
-export default function App({ Component, pageProps }: AppProps) {
+export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
-    <>
+    <SessionProvider session={session}>
       {/* Global head settings */}
       <Head>
         <link rel="icon" href="/favicon.png" type="image/png" />
@@ -25,6 +26,6 @@ export default function App({ Component, pageProps }: AppProps) {
       </main>
 
       <Footer />
-    </>
+    </SessionProvider>
   );
 }

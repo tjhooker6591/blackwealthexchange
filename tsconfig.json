@@ -14,13 +14,13 @@
     "jsx": "preserve",
     "incremental": true,
 
-    // The two important lines for path aliases:
-    "baseUrl": ".", // <--- Required so paths are resolved from the project root
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"] // <--- Maps "@/..." to "src/..."
+      "@/*": ["./src/*"]
     },
 
-    "types": ["next-auth"]
+    "types": ["next-auth"],
+    "typeRoots": ["./types", "./node_modules/@types"]  // ✅ ADDED
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]

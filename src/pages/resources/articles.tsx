@@ -1,17 +1,21 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Link from 'next/link';
+import React from "react";
+import Link from "next/link";
 
 export default function GeneralArticlesPage() {
   return (
     <div className="min-h-screen bg-black text-white py-16 px-6">
       <div className="max-w-5xl mx-auto">
-        <h1 className="text-4xl font-bold text-gold mb-6">Empowerment Articles & Resources</h1>
+        <h1 className="text-4xl font-bold text-gold mb-6">
+          Empowerment Articles & Resources
+        </h1>
         <p className="text-gray-300 text-lg mb-10">
-          Dive into curated articles designed to elevate your financial knowledge, community awareness, and
-          entrepreneurial mindset. Whether you are building a business, managing your personal finances, or looking
-          to grow generational wealth — these resources are here for you.
+          Dive into curated articles designed to elevate your financial
+          knowledge, community awareness, and entrepreneurial mindset. Whether
+          you are building a business, managing your personal finances, or
+          looking to grow generational wealth — these resources are here for
+          you.
         </p>
 
         <div className="grid md:grid-cols-2 gap-6">

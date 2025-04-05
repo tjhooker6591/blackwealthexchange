@@ -3,14 +3,59 @@
 import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import BuyNowButton from "@/components/BuyNowButton";
+import { useSession } from "next-auth/react";
 
 export default function BannerAdsPage() {
   const router = useRouter();
+  const { data: session } = useSession();
+  const userId = session?.user?.id || "guest";
+
+  const getAdPrice = (placement: string) => {
+    switch (placement) {
+      case "homepage-top":
+        return 100;
+      case "sidebar":
+        return 75;
+      case "footer":
+        return 50;
+      case "dashboard":
+        return 60;
+      default:
+        return 0;
+    }
+  };
 
   const handleAdSelect = (placement: string) => {
-    // Navigate to shared ad submission form with banner type and placement info
     router.push(`/advertise-form?type=banner&placement=${placement}`);
   };
+
+  const bannerOptions = [
+    {
+      title: "Top of Homepage",
+      placement: "homepage-top",
+      description:
+        "Get maximum visibility with a large banner at the very top of the homepage.",
+    },
+    {
+      title: "Sidebar Ad",
+      placement: "sidebar",
+      description:
+        "A persistent sidebar banner visible throughout user navigation.",
+    },
+    {
+      title: "Footer Banner",
+      placement: "footer",
+      description:
+        "Appears at the bottom of every page — great for long-term visibility.",
+    },
+    {
+      title: "User Dashboard",
+      placement: "dashboard",
+      description:
+        "Display your banner on the business or user dashboard for targeted exposure.",
+    },
+  ];
 
   return (
     <div className="min-h-screen bg-black text-white px-4 py-10 flex flex-col items-center text-center">
@@ -24,64 +69,27 @@ export default function BannerAdsPage() {
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl">
-        {/* Top of Homepage Banner */}
-        <div className="bg-white text-black rounded-2xl shadow-lg p-6 flex flex-col items-center">
-          <h2 className="text-2xl font-semibold mb-2">Top of Homepage</h2>
-          <p className="text-gray-600 mb-4 text-sm">
-            Get maximum visibility with a large banner at the very top of the
-            homepage.
-          </p>
-          <button
-            onClick={() => handleAdSelect("homepage-top")}
-            className="px-5 py-2 bg-black text-gold rounded hover:bg-gray-900 transition"
+        {bannerOptions.map((banner) => (
+          <div
+            key={banner.placement}
+            className="bg-white text-black rounded-2xl shadow-lg p-6 flex flex-col items-center"
           >
-            Select This Placement
-          </button>
-        </div>
-
-        {/* Sidebar Banner */}
-        <div className="bg-white text-black rounded-2xl shadow-lg p-6 flex flex-col items-center">
-          <h2 className="text-2xl font-semibold mb-2">Sidebar Ad</h2>
-          <p className="text-gray-600 mb-4 text-sm">
-            A persistent sidebar banner visible throughout user navigation.
-          </p>
-          <button
-            onClick={() => handleAdSelect("sidebar")}
-            className="px-5 py-2 bg-black text-gold rounded hover:bg-gray-900 transition"
-          >
-            Select This Placement
-          </button>
-        </div>
-
-        {/* Footer Banner */}
-        <div className="bg-white text-black rounded-2xl shadow-lg p-6 flex flex-col items-center">
-          <h2 className="text-2xl font-semibold mb-2">Footer Banner</h2>
-          <p className="text-gray-600 mb-4 text-sm">
-            Appears at the bottom of every page — great for long-term
-            visibility.
-          </p>
-          <button
-            onClick={() => handleAdSelect("footer")}
-            className="px-5 py-2 bg-black text-gold rounded hover:bg-gray-900 transition"
-          >
-            Select This Placement
-          </button>
-        </div>
-
-        {/* Dashboard Banner */}
-        <div className="bg-white text-black rounded-2xl shadow-lg p-6 flex flex-col items-center">
-          <h2 className="text-2xl font-semibold mb-2">User Dashboard</h2>
-          <p className="text-gray-600 mb-4 text-sm">
-            Display your banner on the business or user dashboard for targeted
-            exposure.
-          </p>
-          <button
-            onClick={() => handleAdSelect("dashboard")}
-            className="px-5 py-2 bg-black text-gold rounded hover:bg-gray-900 transition"
-          >
-            Select This Placement
-          </button>
-        </div>
+            <h2 className="text-2xl font-semibold mb-2">{banner.title}</h2>
+            <p className="text-gray-600 mb-4 text-sm">{banner.description}</p>
+            <button
+              onClick={() => handleAdSelect(banner.placement)}
+              className="px-5 py-2 bg-black text-gold rounded hover:bg-gray-900 transition mb-2"
+            >
+              Select This Placement
+            </button>
+            <BuyNowButton
+              userId={userId}
+              itemId={`banner-${banner.placement}`}
+              amount={getAdPrice(banner.placement)}
+              type="ad"
+            />
+          </div>
+        ))}
       </div>
 
       <div className="mt-10">
