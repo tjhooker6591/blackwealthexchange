@@ -7,7 +7,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-key";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse,
+  res: NextApiResponse
 ) {
   if (req.method !== "POST") {
     return res
@@ -19,23 +19,22 @@ export default async function handler(
     const { email, password, accountType } = req.body;
 
     if (!email || !password) {
-      return res
-        .status(400)
-        .json({ success: false, error: "Email and password are required." });
+      return res.status(400).json({
+        success: false,
+        error: "Email and password are required.",
+      });
     }
 
     const client = await clientPromise;
     const db = client.db("bwes-cluster");
 
-    // Determine which collection to check
-    const collection =
-      accountType === "seller"
-        ? "businesses"
-        : accountType === "business"
-          ? "businesses"
-          : "users";
+    // Use accountType to decide collection
+    let collectionName = "users";
+    if (accountType === "business" || accountType === "seller") {
+      collectionName = "businesses";
+    }
 
-    const user = await db.collection(collection).findOne({ email });
+    const user = await db.collection(collectionName).findOne({ email });
 
     if (!user) {
       return res
@@ -54,23 +53,24 @@ export default async function handler(
       {
         userId: user._id,
         email: user.email,
-        accountType: user.accountType || accountType, // fallback
+        accountType: user.accountType,
       },
       JWT_SECRET,
-      { expiresIn: "7d" },
+      { expiresIn: "7d" }
     );
 
     res.setHeader(
       "Set-Cookie",
-      `token=${token}; HttpOnly; Path=/; Max-Age=604800; SameSite=Strict`,
+      `token=${token}; HttpOnly; Path=/; Max-Age=604800; SameSite=Strict`
     );
 
     return res.status(200).json({
       success: true,
       message: "Login successful",
       user: {
+        userId: user._id,
         email: user.email,
-        accountType: user.accountType || accountType,
+        accountType: user.accountType,
         businessName: user.businessName || null,
         fullName: user.fullName || null,
       },

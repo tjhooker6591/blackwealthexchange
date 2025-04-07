@@ -37,9 +37,9 @@ export default async function handler(
     // 🔹 Hash the Password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // 🔹 Connect to MongoDB using clientPromise
+    // 🔹 Connect to MongoDB
     const client = await clientPromise;
-    const db = client.db("bwes-cluster"); // Ensure to replace with your database name if needed
+    const db = client.db("bwes-cluster");
 
     if (accountType === "user") {
       const usersCollection = db.collection("users");
@@ -50,15 +50,20 @@ export default async function handler(
         return res.status(400).json({ error: "Email already exists" });
       }
 
-      // 🔹 Save New User
+      // 🔹 Save New User with Account Type
       await usersCollection.insertOne({
         email,
         password: hashedPassword,
+        accountType: "user", // ✅ Added this line
         createdAt: new Date(),
       });
 
-      return res.status(201).json({ message: "User created successfully!" });
-    } else if (accountType === "business") {
+      return res
+        .status(201)
+        .json({ success: true, message: "User created successfully!" });
+    }
+
+    if (accountType === "business") {
       const businessesCollection = db.collection("businesses");
 
       // 🔹 Validate Business Fields
@@ -76,25 +81,25 @@ export default async function handler(
         return res.status(400).json({ error: "Business already exists" });
       }
 
-      // 🔹 Insert New Business
+      // 🔹 Insert New Business with Account Type
       await businessesCollection.insertOne({
         businessName,
         email,
         password: hashedPassword,
         businessAddress,
         businessPhone,
-        description: description || "", // Optional description
-        isVerified: false, // Default verification status
+        description: description || "",
+        isVerified: false,
         createdAt: new Date(),
-        accountType: "seller", // ✅ Added this without removing anything
+        accountType: "business", // ✅ Updated to match your frontend logic
       });
 
       return res
         .status(201)
-        .json({ message: "Business created successfully!" });
-    } else {
-      return res.status(400).json({ error: "Invalid account type" });
+        .json({ success: true, message: "Business created successfully!" });
     }
+
+    return res.status(400).json({ error: "Invalid account type" });
   } catch (error) {
     console.error("Signup error:", error);
     return res.status(500).json({ error: "Internal Server Error" });
