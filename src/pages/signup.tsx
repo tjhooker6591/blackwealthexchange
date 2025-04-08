@@ -1,9 +1,11 @@
 "use client";
 
-import { Link } from "lucide-react";
 import { useState } from "react";
+import { useRouter } from "next/router";
+import { Link } from "lucide-react";
 
 export default function Signup() {
+  const router = useRouter();
   const [accountType, setAccountType] = useState("user");
   const [formData, setFormData] = useState({
     email: "",
@@ -70,7 +72,11 @@ export default function Signup() {
         }),
       });
 
-      if (!response.ok) throw new Error("Signup failed.");
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Signup failed.");
+      }
 
       setSuccess(true);
       setFormData({
@@ -81,7 +87,14 @@ export default function Signup() {
         businessAddress: "",
         businessPhone: "",
       });
-    } catch {
+
+      if (data.accountType === "business") {
+        router.push("/employer/dashboard");
+      } else {
+        router.push("/dashboard");
+      }
+    } catch (err) {
+      console.error("Signup error:", err); // ✅ Used error to avoid ESLint warning
       setError("Signup failed. Please try again.");
     } finally {
       setLoading(false);
@@ -114,12 +127,12 @@ export default function Signup() {
               onChange={handleAccountTypeChange}
               className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-gold text-black bg-gray-200"
             >
-              <option value="user">Job Seeker</option>
+              <option value="user">General User</option>
+              <option value="jobSeeker">Job Seeker</option>
               <option value="business">Business / Employer</option>
             </select>
           </div>
 
-          {/* Shared Fields */}
           <div>
             <label className="block text-gray-700 font-semibold">Email</label>
             <input
@@ -133,9 +146,7 @@ export default function Signup() {
             />
           </div>
           <div>
-            <label className="block text-gray-700 font-semibold">
-              Password
-            </label>
+            <label className="block text-gray-700 font-semibold">Password</label>
             <input
               type="password"
               name="password"
@@ -147,9 +158,7 @@ export default function Signup() {
             />
           </div>
           <div>
-            <label className="block text-gray-700 font-semibold">
-              Confirm Password
-            </label>
+            <label className="block text-gray-700 font-semibold">Confirm Password</label>
             <input
               type="password"
               name="confirmPassword"
@@ -161,13 +170,10 @@ export default function Signup() {
             />
           </div>
 
-          {/* Business Fields */}
           {accountType === "business" && (
             <>
               <div>
-                <label className="block text-gray-700 font-semibold">
-                  Business Name
-                </label>
+                <label className="block text-gray-700 font-semibold">Business Name</label>
                 <input
                   type="text"
                   name="businessName"
@@ -177,9 +183,7 @@ export default function Signup() {
                 />
               </div>
               <div>
-                <label className="block text-gray-700 font-semibold">
-                  Business Address
-                </label>
+                <label className="block text-gray-700 font-semibold">Business Address</label>
                 <input
                   type="text"
                   name="businessAddress"
@@ -189,9 +193,7 @@ export default function Signup() {
                 />
               </div>
               <div>
-                <label className="block text-gray-700 font-semibold">
-                  Business Phone
-                </label>
+                <label className="block text-gray-700 font-semibold">Business Phone</label>
                 <input
                   type="text"
                   name="businessPhone"
@@ -214,10 +216,7 @@ export default function Signup() {
 
         <p className="text-center mt-4 text-gray-600">
           Already have an account?{" "}
-          <Link
-            href="/login"
-            className="text-gold font-semibold hover:underline"
-          >
+          <Link href="/login" className="text-gold font-semibold hover:underline">
             Login
           </Link>
         </p>

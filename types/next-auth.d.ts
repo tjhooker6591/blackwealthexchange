@@ -3,10 +3,12 @@ import NextAuth from "next-auth";
 declare module "next-auth" {
   interface Session {
     user: {
-      id: string; // ✅ this adds support for session.user.id
+      id: string;
       name?: string | null;
       email?: string | null;
       image?: string | null;
+      accountType?: string;
+      isPremium?: boolean;
     };
   }
 }

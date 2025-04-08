@@ -3,15 +3,11 @@ import type { AppProps } from "next/app";
 import Head from "next/head";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/footer";
-import { SessionProvider } from "next-auth/react";
 
-export default function App({
-  Component,
-  pageProps: { session, ...pageProps },
-}: AppProps) {
+export default function App({ Component, pageProps }: AppProps) {
   return (
-    <SessionProvider session={session}>
-      {/* Global head settings */}
+    <>
+      {/* Global <head> settings */}
       <Head>
         <link rel="icon" href="/favicon.png" type="image/png" />
         <link rel="shortcut icon" href="/favicon.ico" />
@@ -22,13 +18,16 @@ export default function App({
         />
       </Head>
 
+      {/* Global navigation */}
       <NavBar />
 
+      {/* Page layout wrapper */}
       <main className="min-h-screen bg-[var(--background)] text-[var(--foreground)] transition-colors duration-300">
         <Component {...pageProps} />
       </main>
 
+      {/* Global footer */}
       <Footer />
-    </SessionProvider>
+    </>
   );
 }

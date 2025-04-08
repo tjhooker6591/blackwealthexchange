@@ -24,9 +24,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   // In production, you'd send an email here or generate a token
   console.log(`Password reset requested for: ${email}`);
 
-  return res
-    .status(200)
-    .json({
-      message: "If this email exists, reset instructions will be sent.",
-    });
+  return res.status(200).json({
+    message: "If this email exists, reset instructions will be sent.",
+  });
 }

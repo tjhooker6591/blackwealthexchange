@@ -1,7 +1,10 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method Not Allowed" });
   }
@@ -15,12 +18,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       description,
       salary,
       contactEmail,
-      userId,       // (optional enhancement: send this in request later)
-      isFeatured,   // default: false
-      isPaid,       // default: false
+      userId, // (optional enhancement: send this in request later)
+      isFeatured, // default: false
+      isPaid, // default: false
     } = req.body;
 
-    if (!title || !company || !location || !type || !description || !contactEmail) {
+    if (
+      !title ||
+      !company ||
+      !location ||
+      !type ||
+      !description ||
+      !contactEmail
+    ) {
       return res.status(400).json({ error: "Missing required job fields" });
     }
 

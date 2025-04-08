@@ -23,14 +23,16 @@ export default function AddPamfaProducts() {
     },
     {
       name: "Empowerment Journal (Book)",
-      description: "A reflective guided journal promoting self-worth and daily growth.",
+      description:
+        "A reflective guided journal promoting self-worth and daily growth.",
       price: 18,
       category: "Books",
       imageUrl: "/book-Elevate_Risingabovetheeveryday-1.jpg",
     },
     {
       name: "United Voices Anthology (Book)",
-      description: "Collection of essays and poetry on Black resilience and community strength.",
+      description:
+        "Collection of essays and poetry on Black resilience and community strength.",
       price: 22,
       category: "Books",
       imageUrl: "/book-overqualified-2.jpg",
@@ -62,7 +64,8 @@ export default function AddPamfaProducts() {
           Add Pamfa Demo Products
         </h1>
         <p className="mb-6 text-gray-300">
-          Click below to seed your live Marketplace with branded Pamfa products and books.
+          Click below to seed your live Marketplace with branded Pamfa products
+          and books.
         </p>
         <button
           onClick={handleAddProducts}
@@ -72,9 +75,7 @@ export default function AddPamfaProducts() {
           {loading ? "Adding..." : "Add Products to DB"}
         </button>
         {success && (
-          <p className="mt-4 text-green-500">
-            ✅ Products added successfully!
-          </p>
+          <p className="mt-4 text-green-500">✅ Products added successfully!</p>
         )}
       </div>
     </div>

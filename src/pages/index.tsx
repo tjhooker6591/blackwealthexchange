@@ -1,5 +1,3 @@
-// /pages/index.tsx
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -9,14 +7,15 @@ import { BookOpen, GraduationCap, Users, Briefcase } from "lucide-react";
 
 const EconomicImpactSimulator: React.FC = () => {
   const currentYear = 2025;
-  const maxSpending = 1980000000000; // $1.98 Trillion projected cap
-  const initialValue = 300000000000; // $300 billion as of February 2025
-  const monthlyGrowth = 150000000000; // $150 billion per month
-  const dailyGrowth = monthlyGrowth / 30.44; // Average days in a month
+  const maxSpending = 1980000000000;
+  const initialValue = 300000000000;
+  const monthlyGrowth = 150000000000;
 
   const [totalSpending, setTotalSpending] = useState(initialValue);
 
   useEffect(() => {
+    const dailyGrowth = monthlyGrowth / 30.44;
+
     if (totalSpending >= maxSpending) return;
 
     const timer = setInterval(() => {
@@ -28,7 +27,7 @@ const EconomicImpactSimulator: React.FC = () => {
     }, 100);
 
     return () => clearInterval(timer);
-  }, [totalSpending, dailyGrowth, maxSpending]);
+  }, [totalSpending]);
 
   const formatNumber = (num: number) =>
     num.toLocaleString("en-US", {
@@ -40,13 +39,12 @@ const EconomicImpactSimulator: React.FC = () => {
 
   return (
     <div className="space-y-6 p-6 bg-gray-900 rounded-lg shadow-lg border border-gold text-white">
-      <h2 className="text-2xl sm:text-3xl md:text-3xl font-bold text-center text-gold">
+      <h2 className="text-2xl sm:text-3xl font-bold text-center text-gold">
         African American Spending Power in {currentYear}
       </h2>
-      <div className="text-2xl sm:text-3xl md:text-4xl font-bold text-green-500 text-center">
+      <div className="text-3xl md:text-4xl font-bold text-green-500 text-center">
         {formatNumber(Math.floor(totalSpending))}
       </div>
-
       <p className="text-center text-sm text-gray-400">
         {totalSpending >= maxSpending
           ? "Estimated total reached for 2025."
@@ -57,8 +55,7 @@ const EconomicImpactSimulator: React.FC = () => {
           href="/1.8trillionimpact"
           className="text-gold font-bold hover:underline text-lg"
         >
-          KNOWLEDGE IS POWER - Select Here to &quot;SEE WHERE YOUR MONEY
-          GOES&quot;
+          KNOWLEDGE IS POWER - Select Here to &quot;SEE WHERE YOUR MONEY GOES&quot;
         </Link>
       </div>
       <div className="text-center mt-4">
@@ -74,7 +71,6 @@ const EconomicImpactSimulator: React.FC = () => {
 };
 
 export default function Home() {
-  const [showModal, setShowModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
   const studentOpportunities = [
@@ -115,6 +111,20 @@ export default function Home() {
           &quot;The Future of Black Wealth Starts Here.&quot;
         </p>
 
+        {/* Login + Signup Buttons */}
+        <div className="mt-6 flex justify-center space-x-4">
+          <Link href="/login">
+            <button className="px-6 py-2 bg-gold text-black font-semibold text-lg rounded-lg hover:bg-yellow-500 transition">
+              Login
+            </button>
+          </Link>
+          <Link href="/signup">
+            <button className="px-6 py-2 bg-transparent border border-gold text-gold font-semibold text-lg rounded-lg hover:bg-gold hover:text-black transition">
+              Sign Up
+            </button>
+          </Link>
+        </div>
+
         {/* Economic Impact Counter */}
         <section className="relative z-10 py-12">
           <div className="container mx-auto px-4">
@@ -124,12 +134,6 @@ export default function Home() {
 
         {/* Call to Action & Search Bar */}
         <div className="mt-8 flex flex-col items-center space-y-4 w-full max-w-xl mx-auto">
-          <button
-            onClick={() => (window.location.href = "/signup")}
-            className="px-6 py-2 bg-gradient-to-r from-gold to-yellow-500 text-black font-semibold text-lg rounded-lg hover:shadow-xl transform hover:scale-105 transition animate-pulseGlow"
-          >
-            Get Started
-          </button>
           <div className="relative w-full">
             <input
               type="text"
@@ -150,7 +154,6 @@ export default function Home() {
             </Link>
           </div>
 
-          {/* Floating CTA Below Search Bar */}
           <Link href="/marketplace/become-a-seller">
             <div className="mt-4 bg-gold text-black text-center py-2 px-4 rounded-lg font-semibold shadow hover:bg-yellow-500 transition animate-pulseGlow">
               Start Selling on the Marketplace – Join as a Seller!
@@ -189,9 +192,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Main Content */}
+      {/* Main Sections */}
       <main className="container mx-auto px-4 relative z-10">
-        {/* Real Estate & Investment Section */}
         <section className="bg-gray-800 rounded-lg shadow-lg p-4 mb-8 mt-12">
           <div className="flex items-center justify-between">
             <div>
@@ -210,28 +212,17 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Featured Sponsors (Smooth Scrolling Banner) */}
+        {/* Featured Sponsors */}
         <section className="bg-gray-800 rounded-lg shadow-lg p-4 mb-8 overflow-hidden">
           <h3 className="text-lg font-semibold text-gold mb-2">
             Featured Sponsors
           </h3>
           <div className="relative w-full h-32 overflow-hidden">
             <div className="absolute flex space-x-4 animate-scroll">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <div key={i} className="relative h-24 w-40">
+              {[1, 2, 3, 4, 5, 1, 2, 3, 4, 5].map((i, index) => (
+                <div key={index} className="relative h-24 w-40">
                   <Image
-                    src={`/ads/sample-banner${i}.jpg`}
-                    alt={`Sample Banner ${i}`}
-                    layout="fill"
-                    objectFit="cover"
-                    className="rounded-lg"
-                  />
-                </div>
-              ))}
-              {[1, 2, 3, 4, 5].map((i) => (
-                <div key={`duplicate-${i}`} className="relative h-24 w-40">
-                  <Image
-                    src={`/ads/sample-banner${i}.jpg`}
+                    src={`/ads/sample-banner${(i % 5) + 1}.jpg`}
                     alt={`Sample Banner ${i}`}
                     layout="fill"
                     objectFit="cover"
@@ -243,7 +234,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Main Sections Grid */}
+        {/* Key Sections */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {[
             {
@@ -302,16 +293,13 @@ export default function Home() {
           ))}
         </div>
 
-        {/* Advertise with Us Section */}
-
-        {/* Clean & Animated Advertise with Us Section */}
+        {/* Advertise Section */}
         <section className="bg-gray-900 border border-gold rounded-lg shadow p-4 text-center my-6 animate-fadeIn">
           <h2 className="text-xl font-semibold text-gold flex items-center justify-center gap-2 mb-1">
             📢 Advertise with Us
           </h2>
           <p className="text-sm text-gray-400 mb-2">
-            Promote your business to thousands of engaged users across our
-            platform.
+            Promote your business to thousands of engaged users across our platform.
           </p>
           <Link href="/advertise-with-us">
             <button className="px-4 py-1.5 bg-gold text-black text-sm rounded hover:bg-yellow-500 transition">
@@ -320,24 +308,6 @@ export default function Home() {
           </Link>
         </section>
       </main>
-
-      {/* Explore Other Black-Owned Websites Section */}
-      <section className="relative z-10 py-8 bg-gray-900">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-2xl font-semibold text-gold mb-4">
-            Explore Other Black-Owned Websites
-          </h2>
-          <p className="text-sm text-gray-300 mb-4">
-            Discover and support platforms that list Black-owned businesses
-            across the nation.
-          </p>
-          <Link href="/black-business-websites">
-            <button className="px-4 py-2 bg-gold text-black font-semibold rounded-lg hover:bg-yellow-500 transition">
-              Explore Websites
-            </button>
-          </Link>
-        </div>
-      </section>
 
       {/* Footer */}
       <footer className="text-center py-8 border-t border-gold mt-8 relative z-10">
@@ -351,7 +321,6 @@ export default function Home() {
         <h2 className="text-lg font-bold text-gray-300">
           Join the BWE Community &amp; Build Wealth
         </h2>
-
         <p className="mt-2 text-gray-500 text-sm">
           <Link
             href="/black-business-websites"
@@ -361,47 +330,6 @@ export default function Home() {
           </Link>
         </p>
       </footer>
-
-      {/* Login/Signup Modal */}
-      {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-75 z-50">
-          <div className="bg-white text-black p-6 rounded-lg shadow-lg w-96">
-            <h2 className="text-2xl font-semibold text-center">
-              Sign Up / Login
-            </h2>
-            <p className="mt-2 text-center">
-              Join the Black Wealth Exchange community.
-            </p>
-
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="mt-4 w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gold"
-            />
-            <input
-              type="password"
-              placeholder="Enter your password"
-              className="mt-4 w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-gold"
-            />
-
-            <div className="mt-6 flex justify-between">
-              <button className="px-4 py-2 bg-gold text-black rounded-lg font-semibold hover:bg-yellow-500 transition">
-                Sign Up
-              </button>
-              <button className="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-600 transition">
-                Login
-              </button>
-            </div>
-
-            <button
-              onClick={() => setShowModal(false)}
-              className="mt-4 w-full py-2 bg-gray-300 text-black rounded-lg hover:bg-gray-400 transition"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* Styles */}
       <style jsx>{`
@@ -421,56 +349,22 @@ export default function Home() {
           }
         }
 
-        .neon-text {
-          text-shadow:
-            0 0 5px #ffd700,
-            0 0 10px #ffd700,
-            0 0 15px #ffd700,
-            0 0 20px #ffd700;
+        .animate-pulseGlow {
+          animation: pulseGlow 2s infinite;
         }
 
         @keyframes pulseGlow {
           0%,
           100% {
-            box-shadow:
-              0 0 5px #ffd700,
-              0 0 10px #ffd700;
+            box-shadow: 0 0 5px #ffd700, 0 0 10px #ffd700;
           }
           50% {
-            box-shadow:
-              0 0 20px #ffd700,
-              0 0 30px #ffd700;
+            box-shadow: 0 0 20px #ffd700, 0 0 30px #ffd700;
           }
         }
 
-        .animate-pulseGlow {
-          animation: pulseGlow 2s infinite;
-        }
-
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
-        }
         .animate-fadeIn {
           animation: fadeIn 1s ease-out;
-        }
-
-        @keyframes slideUp {
-          from {
-            transform: translateY(20px);
-            opacity: 0;
-          }
-          to {
-            transform: translateY(0);
-            opacity: 1;
-          }
-        }
-        .animate-slideUp {
-          animation: slideUp 0.5s ease-out;
         }
 
         @keyframes fadeIn {
@@ -482,9 +376,6 @@ export default function Home() {
             opacity: 1;
             transform: translateY(0);
           }
-        }
-        .animate-fadeIn {
-          animation: fadeIn 1s ease-out both;
         }
       `}</style>
     </div>
