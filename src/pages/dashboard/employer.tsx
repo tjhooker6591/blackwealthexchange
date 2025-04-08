@@ -22,8 +22,13 @@ type DashboardData = {
 
 export default function EmployerDashboard() {
   const router = useRouter();
-  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
-  const [user, setUser] = useState<{ email: string; accountType: string } | null>(null);
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(
+    null,
+  );
+  const [user, setUser] = useState<{
+    email: string;
+    accountType: string;
+  } | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -55,7 +60,9 @@ export default function EmployerDashboard() {
   }, [router]); // ✅ Included `router` to fix ESLint warning
 
   if (loading || !user || !dashboardData) {
-    return <div className="text-white text-center py-20">Loading dashboard...</div>;
+    return (
+      <div className="text-white text-center py-20">Loading dashboard...</div>
+    );
   }
 
   return (
@@ -67,7 +74,8 @@ export default function EmployerDashboard() {
             Welcome, {dashboardData.businessName || "Employer"}
           </h1>
           <p className="text-gray-300 text-lg">
-            Manage your job listings, view applicants, and connect with top Black talent.
+            Manage your job listings, view applicants, and connect with top
+            Black talent.
           </p>
         </header>
 
@@ -80,7 +88,9 @@ export default function EmployerDashboard() {
 
         {/* Analytics Chart */}
         <section className="bg-gray-700 p-4 rounded-lg mb-12">
-          <h2 className="text-xl font-semibold text-gold mb-4">Job Postings Overview</h2>
+          <h2 className="text-xl font-semibold text-gold mb-4">
+            Job Postings Overview
+          </h2>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={getSampleJobChartData()}>
               <XAxis dataKey="month" stroke="#fff" />
@@ -133,9 +143,12 @@ export default function EmployerDashboard() {
 
         {/* Resources Section */}
         <section className="mt-12">
-          <h2 className="text-2xl font-semibold text-gold mb-4">Hiring Resources</h2>
+          <h2 className="text-2xl font-semibold text-gold mb-4">
+            Hiring Resources
+          </h2>
           <p className="text-gray-300 mb-6">
-            Improve your recruitment process with tips, templates, and hiring guides.
+            Improve your recruitment process with tips, templates, and hiring
+            guides.
           </p>
 
           <div className="grid md:grid-cols-3 gap-6">
@@ -161,9 +174,13 @@ export default function EmployerDashboard() {
         <div className="text-center mt-12">
           <p className="text-gray-400 text-sm">
             Need help or custom hiring support?{" "}
-            <Link href="/contact" className="text-blue-400 underline hover:text-blue-300">
+            <Link
+              href="/contact"
+              className="text-blue-400 underline hover:text-blue-300"
+            >
               Contact our support team
-            </Link>.
+            </Link>
+            .
           </p>
         </div>
       </div>
@@ -193,7 +210,9 @@ function DashboardCard({
 }) {
   return (
     <Link href={href}>
-      <div className={`p-6 rounded-lg shadow-md hover:shadow-xl transition cursor-pointer ${color}`}>
+      <div
+        className={`p-6 rounded-lg shadow-md hover:shadow-xl transition cursor-pointer ${color}`}
+      >
         <h3 className="text-xl font-bold mb-2">{title}</h3>
         <p className="text-sm">{description}</p>
       </div>

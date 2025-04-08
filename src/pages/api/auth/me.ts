@@ -11,7 +11,9 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
     // ✅ Try parsing cookies only if present
     if (!rawCookie.includes("token")) {
-      return res.status(401).json({ user: null, error: "No token cookie found." });
+      return res
+        .status(401)
+        .json({ user: null, error: "No token cookie found." });
     }
 
     const parsed = cookie.parse(rawCookie);
@@ -31,6 +33,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     return res.status(200).json({ user: decoded });
   } catch (error) {
     console.error("JWT auth error:", error);
-    return res.status(401).json({ user: null, error: "Invalid or expired token." });
+    return res
+      .status(401)
+      .json({ user: null, error: "Invalid or expired token." });
   }
 }

@@ -1,13 +1,26 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
 import BuyNowButton from "@/components/BuyNowButton";
 
 const PostJob = () => {
-  const { data: session } = useSession();
-  const userId = session?.user?.id || "guest";
+  const [userId, setUserId] = useState<string>("guest");
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await fetch("/api/auth/me");
+        const data = await res.json();
+        if (data?.user?._id) {
+          setUserId(data.user._id);
+        }
+      } catch (err) {
+        console.error("Error fetching user in post-job:", err);
+      }
+    };
+    fetchUser();
+  }, []);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -26,7 +39,7 @@ const PostJob = () => {
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >,
+    >
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setError("");
@@ -43,9 +56,9 @@ const PostJob = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...formData,
-          userId, // ✅ include employer/user ID
-          isFeatured: false, // ✅ default, will upgrade later with Stripe
-          isPaid: false, // ✅ same here
+          userId,
+          isFeatured: false,
+          isPaid: false,
         }),
       });
 

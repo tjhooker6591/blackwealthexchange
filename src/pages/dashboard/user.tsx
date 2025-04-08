@@ -28,7 +28,9 @@ type DashboardData = {
 export default function UserDashboard() {
   const router = useRouter();
   const [user, setUser] = useState<UserType | null>(null);
-  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(
+    null,
+  );
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -45,7 +47,7 @@ export default function UserDashboard() {
         setUser(userData.user);
 
         const dashboardRes = await fetch(
-          `/api/user/get-dashboard?email=${userData.user.email}`
+          `/api/user/get-dashboard?email=${userData.user.email}`,
         );
         const dashboardJson = await dashboardRes.json();
         setDashboardData(dashboardJson);
@@ -60,7 +62,9 @@ export default function UserDashboard() {
   }, [router]); // ✅ include router to fix missing dependency warning
 
   if (loading || !user || !dashboardData) {
-    return <div className="text-white text-center py-20">Loading dashboard...</div>;
+    return (
+      <div className="text-white text-center py-20">Loading dashboard...</div>
+    );
   }
 
   return (
@@ -72,20 +76,26 @@ export default function UserDashboard() {
             Welcome, {dashboardData.fullName || user.email}
           </h1>
           <p className="text-gray-300 text-lg">
-            Your central hub for discovering opportunities, managing your career, and building a successful future.
+            Your central hub for discovering opportunities, managing your
+            career, and building a successful future.
           </p>
         </header>
 
         {/* Stats Summary */}
         <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-          <StatCard label="Applications" value={dashboardData.applications || 0} />
+          <StatCard
+            label="Applications"
+            value={dashboardData.applications || 0}
+          />
           <StatCard label="Saved Jobs" value={dashboardData.savedJobs || 0} />
           <StatCard label="Messages" value={dashboardData.messages || 0} />
         </section>
 
         {/* Chart Overview */}
         <section className="bg-gray-700 p-4 rounded-lg mb-12">
-          <h2 className="text-xl font-semibold text-gold mb-4">Applications Overview</h2>
+          <h2 className="text-xl font-semibold text-gold mb-4">
+            Applications Overview
+          </h2>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={getSampleAppChartData()}>
               <XAxis dataKey="month" stroke="#fff" />
@@ -138,9 +148,12 @@ export default function UserDashboard() {
 
         {/* Career Resources */}
         <section className="mt-12">
-          <h2 className="text-2xl font-semibold text-gold mb-4">Career Growth Resources</h2>
+          <h2 className="text-2xl font-semibold text-gold mb-4">
+            Career Growth Resources
+          </h2>
           <p className="text-gray-300 mb-6">
-            Tap into educational guides, industry insights, and financial wellness content made just for you.
+            Tap into educational guides, industry insights, and financial
+            wellness content made just for you.
           </p>
 
           <div className="grid md:grid-cols-3 gap-6">
@@ -166,9 +179,13 @@ export default function UserDashboard() {
         <div className="text-center mt-12">
           <p className="text-gray-400 text-sm">
             Need help or have questions?{" "}
-            <Link href="/contact" className="text-blue-400 underline hover:text-blue-300">
+            <Link
+              href="/contact"
+              className="text-blue-400 underline hover:text-blue-300"
+            >
               Contact our support team
-            </Link>.
+            </Link>
+            .
           </p>
         </div>
       </div>
@@ -198,7 +215,9 @@ function DashboardCard({
 }) {
   return (
     <Link href={href}>
-      <div className={`p-6 rounded-lg shadow-md hover:shadow-xl transition cursor-pointer ${color}`}>
+      <div
+        className={`p-6 rounded-lg shadow-md hover:shadow-xl transition cursor-pointer ${color}`}
+      >
         <h3 className="text-xl font-bold mb-2">{title}</h3>
         <p className="text-sm">{description}</p>
       </div>

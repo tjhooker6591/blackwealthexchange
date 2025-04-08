@@ -1,15 +1,30 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import BuyNowButton from "@/components/BuyNowButton";
-import { useSession } from "next-auth/react";
 
 export default function BannerAdsPage() {
   const router = useRouter();
-  const { data: session } = useSession();
-  const userId = session?.user?.id || "guest";
+  const [userId, setUserId] = useState<string>("guest");
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await fetch("/api/auth/me");
+        const data = await res.json();
+
+        if (data?.user?._id) {
+          setUserId(data.user._id);
+        }
+      } catch (err) {
+        console.error("Failed to fetch user from /api/auth/me", err);
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   const getAdPrice = (placement: string) => {
     switch (placement) {

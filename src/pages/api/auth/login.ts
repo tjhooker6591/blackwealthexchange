@@ -50,7 +50,8 @@ export default async function handler(
     }
 
     const actualAccountType =
-      user.accountType || (collectionName === "businesses" ? "business" : "user");
+      user.accountType ||
+      (collectionName === "businesses" ? "business" : "user");
 
     const token = jwt.sign(
       {

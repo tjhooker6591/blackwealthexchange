@@ -146,7 +146,9 @@ export default function Signup() {
             />
           </div>
           <div>
-            <label className="block text-gray-700 font-semibold">Password</label>
+            <label className="block text-gray-700 font-semibold">
+              Password
+            </label>
             <input
               type="password"
               name="password"
@@ -158,7 +160,9 @@ export default function Signup() {
             />
           </div>
           <div>
-            <label className="block text-gray-700 font-semibold">Confirm Password</label>
+            <label className="block text-gray-700 font-semibold">
+              Confirm Password
+            </label>
             <input
               type="password"
               name="confirmPassword"
@@ -173,7 +177,9 @@ export default function Signup() {
           {accountType === "business" && (
             <>
               <div>
-                <label className="block text-gray-700 font-semibold">Business Name</label>
+                <label className="block text-gray-700 font-semibold">
+                  Business Name
+                </label>
                 <input
                   type="text"
                   name="businessName"
@@ -183,7 +189,9 @@ export default function Signup() {
                 />
               </div>
               <div>
-                <label className="block text-gray-700 font-semibold">Business Address</label>
+                <label className="block text-gray-700 font-semibold">
+                  Business Address
+                </label>
                 <input
                   type="text"
                   name="businessAddress"
@@ -193,7 +201,9 @@ export default function Signup() {
                 />
               </div>
               <div>
-                <label className="block text-gray-700 font-semibold">Business Phone</label>
+                <label className="block text-gray-700 font-semibold">
+                  Business Phone
+                </label>
                 <input
                   type="text"
                   name="businessPhone"
@@ -216,7 +226,10 @@ export default function Signup() {
 
         <p className="text-center mt-4 text-gray-600">
           Already have an account?{" "}
-          <Link href="/login" className="text-gold font-semibold hover:underline">
+          <Link
+            href="/login"
+            className="text-gold font-semibold hover:underline"
+          >
             Login
           </Link>
         </p>
