@@ -1,18 +1,32 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import BuyNowButton from "@/components/BuyNowButton";
-import { useSession } from "next-auth/react";
 
 export default function CustomAd() {
+  const [userId, setUserId] = useState("guest");
   const [name, setName] = useState("");
   const [business, setBusiness] = useState("");
   const [email, setEmail] = useState("");
   const [details, setDetails] = useState("");
   const [submitted, setSubmitted] = useState(false);
-  const { data: session } = useSession();
-  const userId = session?.user?.id || "guest";
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await fetch("/api/auth/me");
+        const data = await res.json();
+        if (data?.user?._id) {
+          setUserId(data.user._id);
+        }
+      } catch (err) {
+        console.error("Failed to fetch user ID", err);
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

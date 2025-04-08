@@ -1,15 +1,29 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import BuyNowButton from "@/components/BuyNowButton";
-import { useSession } from "next-auth/react";
 
 export default function BusinessDirectoryAdPage() {
   const router = useRouter();
-  const { data: session } = useSession();
-  const userId = session?.user?.id || "guest";
+  const [userId, setUserId] = useState("guest");
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await fetch("/api/auth/me");
+        const data = await res.json();
+        if (data?.user?._id) {
+          setUserId(data.user._id);
+        }
+      } catch (err) {
+        console.error("Failed to fetch user info", err);
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   const handleSelectPlan = (plan: string) => {
     router.push(`/checkout?type=directory&plan=${plan}`);

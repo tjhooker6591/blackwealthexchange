@@ -1,17 +1,31 @@
 "use client";
 
-import React, { useState } from "react";
-import { useRouter } from "next/router";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import BuyNowButton from "@/components/BuyNowButton";
-import { useSession } from "next-auth/react";
 
 export default function FeaturedSponsorPage() {
   const router = useRouter();
+  const [userId, setUserId] = useState("guest");
   const [bannerFile, setBannerFile] = useState<File | null>(null);
   const [campaignDuration, setCampaignDuration] = useState<string>("");
   const [confirmed, setConfirmed] = useState(false);
-  const { data: session } = useSession();
-  const userId = session?.user?.id || "guest";
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await fetch("/api/auth/me");
+        const data = await res.json();
+        if (data?.user?._id) {
+          setUserId(data.user._id);
+        }
+      } catch (err) {
+        console.error("Failed to fetch user ID", err);
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -58,7 +72,7 @@ export default function FeaturedSponsorPage() {
           </p>
         </section>
 
-        {/* NEW: Limited Slots Info */}
+        {/* Limited Slots Info */}
         <section className="bg-gray-800 p-6 rounded-lg shadow text-left mt-10">
           <h2 className="text-2xl font-bold text-gold mb-4">
             Limited Availability: Weekly Sponsor Slots
@@ -116,39 +130,24 @@ export default function FeaturedSponsorPage() {
             sponsors receive top billing across key areas.
           </p>
           <div className="flex justify-center gap-6 flex-wrap">
-            <div
-              onClick={() => setCampaignDuration("14")}
-              className={`cursor-pointer p-6 rounded-lg border ${
-                campaignDuration === "14"
-                  ? "border-gold bg-gray-800"
-                  : "border-gray-600"
-              }`}
-            >
-              <h4 className="text-lg font-semibold text-white">1 Week</h4>
-              <p className="text-gold">$25</p>
-            </div>
-            <div
-              onClick={() => setCampaignDuration("30")}
-              className={`cursor-pointer p-6 rounded-lg border ${
-                campaignDuration === "30"
-                  ? "border-gold bg-gray-800"
-                  : "border-gray-600"
-              }`}
-            >
-              <h4 className="text-lg font-semibold text-white">2 Weeks</h4>
-              <p className="text-gold">$45</p>
-            </div>
-            <div
-              onClick={() => setCampaignDuration("60")}
-              className={`cursor-pointer p-6 rounded-lg border ${
-                campaignDuration === "60"
-                  ? "border-gold bg-gray-800"
-                  : "border-gray-600"
-              }`}
-            >
-              <h4 className="text-lg font-semibold text-white">1 Month</h4>
-              <p className="text-gold">$80</p>
-            </div>
+            {[
+              { label: "1 Week", value: "14", price: "$25" },
+              { label: "2 Weeks", value: "30", price: "$45" },
+              { label: "1 Month", value: "60", price: "$80" },
+            ].map(({ label, value, price }) => (
+              <div
+                key={value}
+                onClick={() => setCampaignDuration(value)}
+                className={`cursor-pointer p-6 rounded-lg border ${
+                  campaignDuration === value
+                    ? "border-gold bg-gray-800"
+                    : "border-gray-600"
+                }`}
+              >
+                <h4 className="text-lg font-semibold text-white">{label}</h4>
+                <p className="text-gold">{price}</p>
+              </div>
+            ))}
           </div>
         </section>
 
@@ -192,7 +191,7 @@ export default function FeaturedSponsorPage() {
           </button>
         </div>
 
-        {/* Optional Instant BuyNow */}
+        {/* Instant BuyNow Option */}
         <div className="text-center mt-10">
           <p className="text-sm text-gray-400 mb-2">
             Or skip the setup and go straight to checkout:
