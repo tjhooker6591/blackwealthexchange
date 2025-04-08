@@ -13,6 +13,12 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
+// Use the same shape returned by /api/auth/me
+type User = {
+  email: string;
+  accountType: string;
+};
+
 type DashboardData = {
   businessName?: string;
   jobCount?: number;
@@ -22,17 +28,12 @@ type DashboardData = {
 
 export default function EmployerDashboard() {
   const router = useRouter();
-  const [dashboardData, setDashboardData] = useState<DashboardData | null>(
-    null,
-  );
-  const [user, setUser] = useState<{
-    email: string;
-    accountType: string;
-  } | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchDashboard = async () => {
+    const fetchUserAndDashboard = async () => {
       try {
         const userRes = await fetch("/api/auth/me");
         const userData = await userRes.json();
@@ -50,14 +51,14 @@ export default function EmployerDashboard() {
 
         setDashboardData(res.data);
       } catch (err) {
-        console.error("Failed to load dashboard:", err);
+        console.error("Failed to load employer dashboard:", err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchDashboard();
-  }, [router]); // ✅ Included `router` to fix ESLint warning
+    fetchUserAndDashboard();
+  }, [router]);
 
   if (loading || !user || !dashboardData) {
     return (
@@ -68,29 +69,23 @@ export default function EmployerDashboard() {
   return (
     <div className="min-h-screen bg-gray-900 text-white p-8">
       <div className="max-w-6xl mx-auto bg-gray-800 p-6 rounded-lg shadow-lg">
-        {/* Dashboard Header */}
         <header className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gold mb-2">
             Welcome, {dashboardData.businessName || "Employer"}
           </h1>
           <p className="text-gray-300 text-lg">
-            Manage your job listings, view applicants, and connect with top
-            Black talent.
+            Manage your job listings, view applicants, and connect with top Black talent.
           </p>
         </header>
 
-        {/* Stats Summary */}
         <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
           <StatCard label="Total Jobs" value={dashboardData.jobCount || 0} />
           <StatCard label="Applicants" value={dashboardData.applicants || 0} />
           <StatCard label="Messages" value={dashboardData.messages || 0} />
         </section>
 
-        {/* Analytics Chart */}
         <section className="bg-gray-700 p-4 rounded-lg mb-12">
-          <h2 className="text-xl font-semibold text-gold mb-4">
-            Job Postings Overview
-          </h2>
+          <h2 className="text-xl font-semibold text-gold mb-4">Job Postings Overview</h2>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={getSampleJobChartData()}>
               <XAxis dataKey="month" stroke="#fff" />
@@ -101,7 +96,6 @@ export default function EmployerDashboard() {
           </ResponsiveContainer>
         </section>
 
-        {/* Quick Access Grid */}
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <DashboardCard
             title="Post a Job"
@@ -141,16 +135,11 @@ export default function EmployerDashboard() {
           />
         </section>
 
-        {/* Resources Section */}
         <section className="mt-12">
-          <h2 className="text-2xl font-semibold text-gold mb-4">
-            Hiring Resources
-          </h2>
+          <h2 className="text-2xl font-semibold text-gold mb-4">Hiring Resources</h2>
           <p className="text-gray-300 mb-6">
-            Improve your recruitment process with tips, templates, and hiring
-            guides.
+            Improve your recruitment process with tips, templates, and hiring guides.
           </p>
-
           <div className="grid md:grid-cols-3 gap-6">
             <ResourceCard
               title="Diversity Hiring Tips"
@@ -170,17 +159,12 @@ export default function EmployerDashboard() {
           </div>
         </section>
 
-        {/* Support CTA */}
         <div className="text-center mt-12">
           <p className="text-gray-400 text-sm">
-            Need help or custom hiring support?{" "}
-            <Link
-              href="/contact"
-              className="text-blue-400 underline hover:text-blue-300"
-            >
+            Need help or custom hiring support?{' '}
+            <Link href="/contact" className="text-blue-400 underline hover:text-blue-300">
               Contact our support team
-            </Link>
-            .
+            </Link>.
           </p>
         </div>
       </div>
@@ -210,9 +194,7 @@ function DashboardCard({
 }) {
   return (
     <Link href={href}>
-      <div
-        className={`p-6 rounded-lg shadow-md hover:shadow-xl transition cursor-pointer ${color}`}
-      >
+      <div className={`p-6 rounded-lg shadow-md hover:shadow-xl transition cursor-pointer ${color}`}>
         <h3 className="text-xl font-bold mb-2">{title}</h3>
         <p className="text-sm">{description}</p>
       </div>
