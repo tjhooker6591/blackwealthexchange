@@ -4,40 +4,39 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 
 interface Applicant {
-  id: string;
+  _id: string;
   name: string;
   email: string;
   resumeUrl: string;
   appliedDate: string;
 }
 
-const mockApplicants: Applicant[] = [
-  {
-    id: "a1",
-    name: "Jasmine Taylor",
-    email: "jasmine@example.com",
-    resumeUrl: "/resumes/jasmine-taylor.pdf",
-    appliedDate: "2025-03-30",
-  },
-  {
-    id: "a2",
-    name: "Darnell Smith",
-    email: "darnell@example.com",
-    resumeUrl: "/resumes/darnell-smith.pdf",
-    appliedDate: "2025-03-31",
-  },
-];
-
 export default function EmployerApplicantsPage() {
   const router = useRouter();
   const { jobId } = router.query;
   const [applicants, setApplicants] = useState<Applicant[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (jobId) {
-      // Fetch real data here later
-      setApplicants(mockApplicants); // Replace with API call using jobId
-    }
+    const fetchApplicants = async () => {
+      if (!jobId) return;
+
+      try {
+        const res = await fetch(`/api/applicants/by-job?jobId=${jobId}`);
+        const data = await res.json();
+        if (res.ok) {
+          setApplicants(data.applicants);
+        } else {
+          console.error("Error fetching applicants:", data);
+        }
+      } catch (error) {
+        console.error("Failed to load applicants:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchApplicants();
   }, [jobId]);
 
   return (
@@ -54,21 +53,21 @@ export default function EmployerApplicantsPage() {
           </Link>
         </div>
 
-        {applicants.length === 0 ? (
+        {loading ? (
+          <p className="text-gray-400">Loading applicants...</p>
+        ) : applicants.length === 0 ? (
           <p className="text-gray-400">No applicants found for this job yet.</p>
         ) : (
           <div className="space-y-6">
             {applicants.map((applicant) => (
               <div
-                key={applicant.id}
+                key={applicant._id}
                 className="bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-700"
               >
-                <h2 className="text-xl font-bold text-gold">
-                  {applicant.name}
-                </h2>
+                <h2 className="text-xl font-bold text-gold">{applicant.name}</h2>
                 <p className="text-gray-300">{applicant.email}</p>
                 <p className="text-sm text-gray-400 mb-2">
-                  Applied: {applicant.appliedDate}
+                  Applied: {new Date(applicant.appliedDate).toLocaleDateString()}
                 </p>
                 <a
                   href={applicant.resumeUrl}

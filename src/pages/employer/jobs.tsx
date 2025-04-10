@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 
 interface Job {
-  id: string;
+  _id: string;
   title: string;
   company: string;
   location: string;
@@ -12,34 +12,42 @@ interface Job {
   applicants: number;
 }
 
-const mockJobs: Job[] = [
-  {
-    id: "1",
-    title: "Full Stack Developer",
-    company: "BlkTech Solutions",
-    location: "Remote",
-    type: "Full-Time",
-    datePosted: "2025-04-01",
-    applicants: 12,
-  },
-  {
-    id: "2",
-    title: "Social Media Intern",
-    company: "Uplift Creators",
-    location: "Atlanta, GA",
-    type: "Internship",
-    datePosted: "2025-03-28",
-    applicants: 7,
-  },
-];
-
 export default function EmployerJobsPage() {
   const [jobs, setJobs] = useState<Job[]>([]);
 
   useEffect(() => {
-    // Replace with API call later
-    setJobs(mockJobs);
+    const fetchJobs = async () => {
+      try {
+        const res = await fetch("/api/jobs/employer");
+        const data = await res.json();
+        if (res.ok) {
+          setJobs(data.jobs || []);
+        } else {
+          console.error("Failed to load jobs:", data.error);
+        }
+      } catch (err) {
+        console.error("Fetch jobs error:", err);
+      }
+    };
+
+    fetchJobs();
   }, []);
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this job?")) return;
+    try {
+      const res = await fetch(`/api/jobs/${id}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        setJobs((prev) => prev.filter((job) => job._id !== id));
+      } else {
+        console.error("Failed to delete job");
+      }
+    } catch (err) {
+      console.error("Delete error:", err);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-black text-white p-8">
@@ -59,7 +67,7 @@ export default function EmployerJobsPage() {
           <div className="space-y-6">
             {jobs.map((job) => (
               <div
-                key={job.id}
+                key={job._id}
                 className="bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-700"
               >
                 <div className="flex justify-between items-center mb-2">
@@ -75,15 +83,20 @@ export default function EmployerJobsPage() {
                   {job.applicants} applicant{job.applicants !== 1 && "s"}
                 </p>
                 <div className="mt-4 flex gap-3">
-                  <Link href={`/employer/applicants?jobId=${job.id}`}>
+                  <Link href={`/employer/applicants?jobId=${job._id}`}>
                     <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
                       View Applicants
                     </button>
                   </Link>
-                  <button className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition">
-                    Edit
-                  </button>
-                  <button className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition">
+                  <Link href={`/employer/edit-job/${job._id}`}>
+                    <button className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition">
+                      Edit
+                    </button>
+                  </Link>
+                  <button
+                    onClick={() => handleDelete(job._id)}
+                    className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+                  >
                     Delete
                   </button>
                 </div>

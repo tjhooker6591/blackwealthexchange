@@ -5,23 +5,28 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 
 export default function Login() {
-  const [formData, setFormData] = useState({ email: "", password: "" });
+  const router = useRouter();
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    accountType: "user",
+  });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const router = useRouter();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setError("");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
 
-    if (!formData.email || !formData.password) {
-      setError("Both email and password are required.");
+    if (!formData.email || !formData.password || !formData.accountType) {
+      setError("All fields are required.");
       return;
     }
 
@@ -31,6 +36,7 @@ export default function Login() {
     }
 
     setLoading(true);
+
     try {
       const response = await fetch("/api/auth/login", {
         method: "POST",
@@ -39,29 +45,26 @@ export default function Login() {
       });
 
       const data = await response.json();
-      console.log("Login Response:", data);
 
       if (!response.ok || !data.success) {
-        throw new Error(data.message || "Login failed. Please try again.");
+        throw new Error(data.error || "Login failed.");
       }
 
-      // Store user info locally
       if (typeof window !== "undefined") {
         localStorage.setItem("user", JSON.stringify(data.user));
       }
 
-      // Redirect based on accountType
-      if (data.user.accountType === "business") {
+      // Redirect by account type
+      const { accountType } = data.user;
+      if (accountType === "business" || accountType === "seller") {
         router.push("/dashboard/employer");
       } else {
         router.push("/dashboard/user");
       }
     } catch (err: unknown) {
       if (err instanceof Error) {
-        console.error("Login error:", err);
-        setError(err.message || "An unknown error occurred.");
+        setError(err.message);
       } else {
-        console.error("Unexpected login error:", err);
         setError("An unknown error occurred.");
       }
     } finally {
@@ -72,34 +75,51 @@ export default function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-gray-100 px-4">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h2 className="text-3xl font-bold text-center text-gold">
-          Welcome Back
-        </h2>
+        <h2 className="text-3xl font-bold text-center text-gold">Welcome Back</h2>
         <p className="text-center text-gray-600 mt-2">Login to your account</p>
 
         {error && <p className="text-red-500 text-center mt-2">{error}</p>}
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+          {/* Account Type */}
+          <div>
+            <label className="block text-gray-700 font-semibold">Account Type</label>
+            <select
+              name="accountType"
+              value={formData.accountType}
+              onChange={handleChange}
+              className="w-full p-3 border rounded bg-gray-200 text-black"
+              required
+            >
+              <option value="user">General User</option>
+              <option value="jobSeeker">Job Seeker</option>
+              <option value="business">Business / Employer</option>
+              <option value="seller">Marketplace Seller</option>
+            </select>
+          </div>
+
+          {/* Email */}
           <div>
             <label className="block text-gray-700 font-semibold">Email</label>
             <input
               type="email"
               name="email"
               placeholder="Email"
+              value={formData.email}
               onChange={handleChange}
               className="w-full p-3 border rounded bg-gray-200 text-black"
               required
             />
           </div>
 
+          {/* Password */}
           <div className="relative">
-            <label className="block text-gray-700 font-semibold">
-              Password
-            </label>
+            <label className="block text-gray-700 font-semibold">Password</label>
             <input
               type={showPassword ? "text" : "password"}
               name="password"
               placeholder="Password"
+              value={formData.password}
               onChange={handleChange}
               className="w-full p-3 border rounded bg-gray-200 text-black pr-10"
               required
@@ -113,6 +133,7 @@ export default function Login() {
             </button>
           </div>
 
+          {/* Submit */}
           <button
             type="submit"
             disabled={loading}
@@ -131,10 +152,7 @@ export default function Login() {
         </p>
         <p className="text-center mt-4">
           Don&apos;t have an account?{" "}
-          <Link
-            href="/signup"
-            className="text-gold font-semibold hover:underline"
-          >
+          <Link href="/signup" className="text-gold font-semibold hover:underline">
             Sign Up
           </Link>
         </p>

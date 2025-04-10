@@ -75,37 +75,7 @@ export default function Investment() {
           </p>
         </header>
 
-        {/* Filtering Navigation */}
-        <nav className="mb-6">
-          <ul className="flex flex-wrap justify-center gap-4">
-            <li>
-              <Link
-                href="/investment/category/startup"
-                className="px-3 py-1 border border-gold text-gold rounded hover:bg-gold hover:text-black transition"
-              >
-                Startup Funding
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/investment/category/stocks"
-                className="px-3 py-1 border border-gold text-gold rounded hover:bg-gold hover:text-black transition"
-              >
-                Stocks
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="/investment/category/real-estate"
-                className="px-3 py-1 border border-gold text-gold rounded hover:bg-gold hover:text-black transition"
-              >
-                Real Estate
-              </Link>
-            </li>
-          </ul>
-        </nav>
-
-        {/* 📌 Key Investment Areas */}
+              {/* 📌 Key Investment Areas */}
         <div className="mt-6 flex flex-wrap justify-between gap-4">
           <InvestmentCard
             bgColor="bg-gold text-black"

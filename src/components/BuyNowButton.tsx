@@ -1,26 +1,29 @@
 // components/BuyNowButton.tsx
 
-import { useState } from "react";
+"use client";
+
+import React, { useState } from "react";
 
 interface BuyNowButtonProps {
   userId: string;
   itemId: string;
-  amount: number;
-  type: "product" | "ad" | "course" | "job" | "upgrade"; // ✅ extended types
-  label?: string; // Optional button label if needed
+  amount: number; // should be in cents (e.g., 2500 for $25)
+  type: "product" | "ad" | "course" | "job" | "upgrade";
+  label?: string;
 }
 
-export default function BuyNowButton({
+const BuyNowButton: React.FC<BuyNowButtonProps> = ({
   userId,
   itemId,
   amount,
   type,
   label = "Buy Now",
-}: BuyNowButtonProps) {
+}) => {
   const [loading, setLoading] = useState(false);
 
   const handleBuy = async () => {
     setLoading(true);
+
     try {
       const response = await fetch("/api/stripe/checkout", {
         method: "POST",
@@ -30,8 +33,8 @@ export default function BuyNowButton({
         body: JSON.stringify({
           userId,
           itemId,
-          type,
           amount,
+          type,
           successUrl: `${window.location.origin}/payment-success`,
           cancelUrl: `${window.location.origin}/payment-cancel`,
         }),
@@ -39,15 +42,15 @@ export default function BuyNowButton({
 
       const data = await response.json();
 
-      if (data.url) {
+      if (data?.url) {
         window.location.href = data.url;
       } else {
-        console.error("Stripe error:", data);
-        alert("Something went wrong. Please try again.");
+        console.error("Stripe checkout error:", data);
+        alert("Checkout failed. Please try again.");
       }
     } catch (err) {
-      console.error("Checkout error:", err);
-      alert("There was a problem starting checkout.");
+      console.error("Buy now error:", err);
+      alert("Something went wrong.");
     } finally {
       setLoading(false);
     }
@@ -57,9 +60,13 @@ export default function BuyNowButton({
     <button
       onClick={handleBuy}
       disabled={loading}
-      className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold px-4 py-2 rounded shadow transition"
+      className={`${
+        loading ? "opacity-50 cursor-not-allowed" : "hover:bg-yellow-600"
+      } bg-yellow-500 text-black font-semibold px-4 py-2 rounded shadow transition`}
     >
       {loading ? "Redirecting…" : label}
     </button>
   );
-}
+};
+
+export default BuyNowButton;

@@ -7,7 +7,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-key";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse,
+  res: NextApiResponse
 ) {
   if (req.method !== "POST") {
     return res
@@ -28,7 +28,7 @@ export default async function handler(
     const client = await clientPromise;
     const db = client.db("bwes-cluster");
 
-    // 🔹 Determine collection
+    // Select collection based on account type
     let collectionName = "users";
     if (accountType === "business" || accountType === "seller") {
       collectionName = "businesses";
@@ -60,12 +60,13 @@ export default async function handler(
         accountType: actualAccountType,
       },
       JWT_SECRET,
-      { expiresIn: "7d" },
+      { expiresIn: "7d" }
     );
 
+    // Set JWT as an HTTP-only cookie
     res.setHeader(
       "Set-Cookie",
-      `token=${token}; HttpOnly; Path=/; Max-Age=604800; SameSite=Strict`,
+      `token=${token}; HttpOnly; Path=/; Max-Age=604800; SameSite=Strict; Secure`
     );
 
     return res.status(200).json({

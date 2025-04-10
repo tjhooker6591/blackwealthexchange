@@ -94,7 +94,7 @@ export default function JobListingsPage() {
                   </h3>
                   <p className="text-gray-300 mt-1">{job.company}</p>
                   <p className="text-sm text-gray-400 mt-1">
-                    Type: {job.type} |{" "}
+                    Type: {job.type} | {" "}
                     {job.salary ? `💰 ${job.salary}` : "Salary not listed"}
                   </p>
                   <p className="text-gray-400 mt-2 line-clamp-3">
@@ -102,9 +102,9 @@ export default function JobListingsPage() {
                   </p>
 
                   <div className="flex gap-3 mt-4">
-                    <Link href="/login">
+                    <Link href={`/job/${job._id}`}>
                       <button className="px-4 py-2 bg-gold text-black font-semibold rounded hover:bg-yellow-500 transition">
-                        Apply Now
+                        View & Apply
                       </button>
                     </Link>
                     <button

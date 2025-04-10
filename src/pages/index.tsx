@@ -323,15 +323,7 @@ export default function Home() {
         <h2 className="text-lg font-bold text-gray-300">
           Join the BWE Community &amp; Build Wealth
         </h2>
-        <p className="mt-2 text-gray-500 text-sm">
-          <Link
-            href="/black-business-websites"
-            className="text-gold font-semibold hover:underline"
-          >
-            Other Black-Owned Websites
-          </Link>
-        </p>
-      </footer>
+              </footer>
 
       {/* Styles */}
       <style jsx>{`
