@@ -94,7 +94,7 @@ export default function JobListingsPage() {
                   </h3>
                   <p className="text-gray-300 mt-1">{job.company}</p>
                   <p className="text-sm text-gray-400 mt-1">
-                    Type: {job.type} | {" "}
+                    Type: {job.type} |{" "}
                     {job.salary ? `💰 ${job.salary}` : "Salary not listed"}
                   </p>
                   <p className="text-gray-400 mt-2 line-clamp-3">

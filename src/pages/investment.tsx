@@ -75,7 +75,7 @@ export default function Investment() {
           </p>
         </header>
 
-              {/* 📌 Key Investment Areas */}
+        {/* 📌 Key Investment Areas */}
         <div className="mt-6 flex flex-wrap justify-between gap-4">
           <InvestmentCard
             bgColor="bg-gold text-black"

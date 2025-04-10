@@ -6,11 +6,16 @@ import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-key";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   const { id } = req.query;
 
   if (!id || typeof id !== "string") {
-    return res.status(400).json({ success: false, error: "Job ID is required." });
+    return res
+      .status(400)
+      .json({ success: false, error: "Job ID is required." });
   }
 
   const client = await clientPromise;
@@ -30,7 +35,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const decoded = jwt.verify(token, JWT_SECRET) as { userId: string };
     userIdFromToken = decoded.userId;
   } catch {
-    return res.status(401).json({ success: false, error: "Invalid or expired token" });
+    return res
+      .status(401)
+      .json({ success: false, error: "Invalid or expired token" });
   }
 
   try {
@@ -42,7 +49,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     if (job.userId?.toString() !== userIdFromToken) {
-      return res.status(403).json({ success: false, error: "Unauthorized access to job" });
+      return res
+        .status(403)
+        .json({ success: false, error: "Unauthorized access to job" });
     }
 
     switch (req.method) {
@@ -51,7 +60,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       case "PUT": {
-        const { title, company, location, type, description, salary, promotionDuration } = req.body;
+        const {
+          title,
+          company,
+          location,
+          type,
+          description,
+          salary,
+          promotionDuration,
+        } = req.body;
 
         const updateFields: Partial<Record<string, unknown>> = {
           title,
@@ -75,20 +92,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         await jobs.updateOne({ _id: jobObjectId }, { $set: updateFields });
 
-        return res.status(200).json({ success: true, message: "Job updated successfully" });
+        return res
+          .status(200)
+          .json({ success: true, message: "Job updated successfully" });
       }
 
       case "DELETE": {
         await jobs.deleteOne({ _id: jobObjectId });
-        return res.status(200).json({ success: true, message: "Job deleted successfully" });
+        return res
+          .status(200)
+          .json({ success: true, message: "Job deleted successfully" });
       }
 
       default:
-        return res.status(405).json({ success: false, error: "Method not allowed" });
+        return res
+          .status(405)
+          .json({ success: false, error: "Method not allowed" });
     }
   } catch (error) {
     console.error("Job handler error:", error);
-    return res.status(500).json({ success: false, error: "Internal Server Error" });
+    return res
+      .status(500)
+      .json({ success: false, error: "Internal Server Error" });
   }
 }
-

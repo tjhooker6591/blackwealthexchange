@@ -7,7 +7,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-key";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   if (req.method !== "POST") {
     return res
@@ -60,13 +60,13 @@ export default async function handler(
         accountType: actualAccountType,
       },
       JWT_SECRET,
-      { expiresIn: "7d" }
+      { expiresIn: "7d" },
     );
 
     // Set JWT as an HTTP-only cookie
     res.setHeader(
       "Set-Cookie",
-      `token=${token}; HttpOnly; Path=/; Max-Age=604800; SameSite=Strict; Secure`
+      `token=${token}; HttpOnly; Path=/; Max-Age=604800; SameSite=Strict; Secure`,
     );
 
     return res.status(200).json({

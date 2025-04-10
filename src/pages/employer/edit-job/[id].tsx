@@ -56,7 +56,9 @@ export default function EditJobPage() {
       .finally(() => setLoading(false));
   }, [id]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
@@ -170,13 +172,21 @@ export default function EditJobPage() {
                 Update Job
               </button>
 
-              {success && <p className="text-green-500 mt-2">✅ Job updated successfully!</p>}
+              {success && (
+                <p className="text-green-500 mt-2">
+                  ✅ Job updated successfully!
+                </p>
+              )}
             </form>
 
             {/* Promote Job Section */}
             <div className="mt-10 border-t border-gray-600 pt-6">
-              <h2 className="text-xl font-bold text-gold mb-4">Promote This Job</h2>
-              <p className="text-gray-300 mb-2">Select how long you&apos;d like your job featured:</p>
+              <h2 className="text-xl font-bold text-gold mb-4">
+                Promote This Job
+              </h2>
+              <p className="text-gray-300 mb-2">
+                Select how long you&apos;d like your job featured:
+              </p>
               <div className="flex gap-4 mb-4">
                 {[
                   { label: "7 Days - $25", value: "7" },

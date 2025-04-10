@@ -7,7 +7,10 @@ import cookie from "cookie"; // ✅ FIX: Add this import
 
 const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-key";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   try {
     // ✅ Parse and verify token from cookies
     const rawCookie = req.headers.cookie || "";
@@ -15,7 +18,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const token = parsed.token;
 
     if (!token) {
-      return res.status(401).json({ success: false, error: "Not authenticated" });
+      return res
+        .status(401)
+        .json({ success: false, error: "Not authenticated" });
     }
 
     const decoded = jwt.verify(token, JWT_SECRET) as {
@@ -28,15 +33,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const db = client.db("bwes-cluster");
 
     // ✅ Fetch business/employer by email
-    const business = await db.collection("businesses").findOne({ email: decoded.email });
+    const business = await db
+      .collection("businesses")
+      .findOne({ email: decoded.email });
 
     if (!business) {
-      return res.status(404).json({ success: false, error: "Employer not found" });
+      return res
+        .status(404)
+        .json({ success: false, error: "Employer not found" });
     }
 
     // ✅ Count jobs by this employer
     const jobs = db.collection("jobs");
-    const jobCount = await jobs.countDocuments({ userId: business._id.toString() });
+    const jobCount = await jobs.countDocuments({
+      userId: business._id.toString(),
+    });
 
     // ✅ Count total applicants for those jobs
     const applicants = db.collection("applicants");
@@ -46,7 +57,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       .toArray();
 
     const jobIdList = jobIds.map((job) => job._id.toString());
-    const applicantCount = await applicants.countDocuments({ jobId: { $in: jobIdList } });
+    const applicantCount = await applicants.countDocuments({
+      jobId: { $in: jobIdList },
+    });
 
     // Optional: messages or notifications
     const messageCount = 0;

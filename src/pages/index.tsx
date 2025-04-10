@@ -323,7 +323,7 @@ export default function Home() {
         <h2 className="text-lg font-bold text-gray-300">
           Join the BWE Community &amp; Build Wealth
         </h2>
-              </footer>
+      </footer>
 
       {/* Styles */}
       <style jsx>{`

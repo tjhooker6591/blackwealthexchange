@@ -5,12 +5,17 @@ import clientPromise from "@/lib/mongodb";
 
 const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-key";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   try {
     const rawCookie = req.headers.cookie || "";
 
     if (!rawCookie.includes("token")) {
-      return res.status(401).json({ user: null, error: "No token cookie found." });
+      return res
+        .status(401)
+        .json({ user: null, error: "No token cookie found." });
     }
 
     const parsed = cookie.parse(rawCookie);
@@ -30,14 +35,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const db = client.db("bwes-cluster");
 
     let collectionName = "users";
-    if (decoded.accountType === "business" || decoded.accountType === "seller") {
+    if (
+      decoded.accountType === "business" ||
+      decoded.accountType === "seller"
+    ) {
       collectionName = "businesses";
     }
 
-    const profile = await db.collection(collectionName).findOne({ email: decoded.email });
+    const profile = await db
+      .collection(collectionName)
+      .findOne({ email: decoded.email });
 
     if (!profile) {
-      return res.status(404).json({ user: null, error: "User not found in database." });
+      return res
+        .status(404)
+        .json({ user: null, error: "User not found in database." });
     }
 
     // Exclude sensitive data
@@ -52,6 +64,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
   } catch (error) {
     console.error("JWT auth error:", error);
-    return res.status(401).json({ user: null, error: "Invalid or expired token." });
+    return res
+      .status(401)
+      .json({ user: null, error: "Invalid or expired token." });
   }
 }

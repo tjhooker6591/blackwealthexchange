@@ -16,7 +16,7 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setError("");
@@ -75,7 +75,9 @@ export default function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-gray-100 px-4">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h2 className="text-3xl font-bold text-center text-gold">Welcome Back</h2>
+        <h2 className="text-3xl font-bold text-center text-gold">
+          Welcome Back
+        </h2>
         <p className="text-center text-gray-600 mt-2">Login to your account</p>
 
         {error && <p className="text-red-500 text-center mt-2">{error}</p>}
@@ -83,7 +85,9 @@ export default function Login() {
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
           {/* Account Type */}
           <div>
-            <label className="block text-gray-700 font-semibold">Account Type</label>
+            <label className="block text-gray-700 font-semibold">
+              Account Type
+            </label>
             <select
               name="accountType"
               value={formData.accountType}
@@ -114,7 +118,9 @@ export default function Login() {
 
           {/* Password */}
           <div className="relative">
-            <label className="block text-gray-700 font-semibold">Password</label>
+            <label className="block text-gray-700 font-semibold">
+              Password
+            </label>
             <input
               type={showPassword ? "text" : "password"}
               name="password"
@@ -152,7 +158,10 @@ export default function Login() {
         </p>
         <p className="text-center mt-4">
           Don&apos;t have an account?{" "}
-          <Link href="/signup" className="text-gold font-semibold hover:underline">
+          <Link
+            href="/signup"
+            className="text-gold font-semibold hover:underline"
+          >
             Sign Up
           </Link>
         </p>
