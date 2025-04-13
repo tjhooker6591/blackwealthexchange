@@ -51,10 +51,13 @@ export default function BusinessDashboard() {
   return (
     <div className="min-h-screen bg-black text-white p-8">
       <div className="max-w-5xl mx-auto bg-gray-800 p-6 rounded-lg shadow-lg">
-        <h2 className="text-3xl font-bold text-gold mb-4">Welcome, {user?.businessName || user?.email}</h2>
+        <h2 className="text-3xl font-bold text-gold mb-4">
+          Welcome, {user?.businessName || user?.email}
+        </h2>
 
         <p className="text-gray-300 mb-6">
-          Manage your business profile, run ads, and grow your visibility across the platform.
+          Manage your business profile, run ads, and grow your visibility across
+          the platform.
         </p>
 
         <div className="grid md:grid-cols-2 gap-6">
@@ -110,4 +113,3 @@ function DashboardCard({
     </Link>
   );
 }
-

@@ -46,15 +46,20 @@ export default function DashboardWrapper() {
 
   return (
     <div className="min-h-screen bg-black text-white p-6">
-      <h1 className="text-3xl font-bold text-gold mb-4">BWE Global Dashboard</h1>
+      <h1 className="text-3xl font-bold text-gold mb-4">
+        BWE Global Dashboard
+      </h1>
       {accountType === "seller" && <SellerDashboard />}
       {accountType === "business" && <BusinessDashboard />}
       {accountType === "employer" && <EmployerDashboard />}
       {accountType === "user" && <UserDashboard />}
-      {!["seller", "business", "employer", "user"].includes(accountType || "") && (
-        <p className="text-red-400">Unknown account type: <code>{accountType}</code></p>
+      {!["seller", "business", "employer", "user"].includes(
+        accountType || "",
+      ) && (
+        <p className="text-red-400">
+          Unknown account type: <code>{accountType}</code>
+        </p>
       )}
     </div>
   );
 }
-
