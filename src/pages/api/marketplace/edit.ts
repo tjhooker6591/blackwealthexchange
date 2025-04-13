@@ -12,7 +12,10 @@ interface DecodedToken {
   accountType: string;
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method !== "PUT") {
     return res.status(405).json({ error: "Method Not Allowed" });
   }
@@ -45,7 +48,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     if (existing.userId !== decoded.userId) {
-      return res.status(403).json({ error: "Forbidden: You don't own this product" });
+      return res
+        .status(403)
+        .json({ error: "Forbidden: You don't own this product" });
     }
 
     await collection.updateOne(
@@ -59,13 +64,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           category,
           updatedAt: new Date(),
         },
-      }
+      },
     );
 
-    return res.status(200).json({ success: true, message: "Product updated successfully" });
+    return res
+      .status(200)
+      .json({ success: true, message: "Product updated successfully" });
   } catch (err: unknown) {
     console.error("Edit product error:", err);
-    const message = err instanceof Error ? err.message : "Internal Server Error";
+    const message =
+      err instanceof Error ? err.message : "Internal Server Error";
     return res.status(500).json({ error: message });
   }
 }

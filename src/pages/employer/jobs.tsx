@@ -34,7 +34,9 @@ export default function EmployerJobsPage() {
         const email = userData.user.email;
 
         // Step 2: Fetch jobs posted by this user
-        const res = await fetch(`/api/jobs/employer?email=${encodeURIComponent(email)}`);
+        const res = await fetch(
+          `/api/jobs/employer?email=${encodeURIComponent(email)}`,
+        );
         const data = await res.json();
 
         if (res.ok) {

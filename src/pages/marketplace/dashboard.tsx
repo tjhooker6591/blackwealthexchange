@@ -64,7 +64,9 @@ export default function SellerDashboard() {
   };
 
   const handleDelete = async (id: string) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this product?");
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this product?",
+    );
     if (!confirmDelete) return;
 
     try {
@@ -115,7 +117,9 @@ export default function SellerDashboard() {
           </div>
           <div className="bg-gray-800 p-4 rounded text-center border border-gold">
             <h2 className="text-sm text-gray-400">Total Revenue</h2>
-            <p className="text-2xl font-bold text-white">${totalRevenue.toFixed(2)}</p>
+            <p className="text-2xl font-bold text-white">
+              ${totalRevenue.toFixed(2)}
+            </p>
           </div>
         </div>
 

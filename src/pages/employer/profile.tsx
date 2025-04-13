@@ -63,7 +63,7 @@ export default function EmployerProfile() {
   }, [router]);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     setProfile({ ...profile, [e.target.name]: e.target.value });
   };

@@ -66,7 +66,7 @@ export default function EditProductPage() {
   }, [productId, session, status]);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -101,10 +101,14 @@ export default function EditProductPage() {
   return (
     <div className="min-h-screen bg-black text-white p-8">
       <div className="max-w-2xl mx-auto bg-gray-800 p-6 rounded shadow">
-        <h1 className="text-2xl font-bold text-yellow-500 mb-4">Edit Product</h1>
+        <h1 className="text-2xl font-bold text-yellow-500 mb-4">
+          Edit Product
+        </h1>
 
         {success && (
-          <p className="text-green-500 mb-4">✅ Product updated successfully!</p>
+          <p className="text-green-500 mb-4">
+            ✅ Product updated successfully!
+          </p>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">

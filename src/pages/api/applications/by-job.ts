@@ -13,7 +13,10 @@ interface DecodedToken {
   iat?: number;
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method !== "GET") {
     return res.status(405).json({ error: "Method not allowed" });
   }
@@ -47,7 +50,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     // 🔎 Verify the job belongs to this employer
-    const job = await db.collection("jobs").findOne({ _id: new ObjectId(jobId) });
+    const job = await db
+      .collection("jobs")
+      .findOne({ _id: new ObjectId(jobId) });
     if (!job || job.employerEmail !== employerEmail) {
       return res.status(403).json({ error: "Access denied" });
     }

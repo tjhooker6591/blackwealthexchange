@@ -11,7 +11,10 @@ function sanitize(input: string): string {
   return input.replace(/<[^>]*>?/gm, "");
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method Not Allowed" });
   }
@@ -35,7 +38,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Only allow business/employer roles
     const allowedRoles = ["business", "employer"];
     if (!allowedRoles.includes(decoded.accountType)) {
-      return res.status(403).json({ error: "Forbidden: Only employers can post jobs." });
+      return res
+        .status(403)
+        .json({ error: "Forbidden: Only employers can post jobs." });
     }
 
     // Extract and sanitize inputs
@@ -52,7 +57,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     } = req.body;
 
     // Basic required field check
-    if (!title || !company || !location || !type || !description || !contactEmail) {
+    if (
+      !title ||
+      !company ||
+      !location ||
+      !type ||
+      !description ||
+      !contactEmail
+    ) {
       return res.status(400).json({ error: "Missing required job fields" });
     }
 
@@ -88,4 +100,3 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(500).json({ error: "Internal Server Error" });
   }
 }
-

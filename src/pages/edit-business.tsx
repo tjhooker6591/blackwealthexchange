@@ -47,7 +47,9 @@ export default function EditBusinessPage() {
           return;
         }
 
-        const profileRes = await fetch(`/api/business/profile?email=${data.user.email}`);
+        const profileRes = await fetch(
+          `/api/business/profile?email=${data.user.email}`,
+        );
         const profile = await profileRes.json();
 
         setBusiness(profile.business || {});
@@ -62,7 +64,7 @@ export default function EditBusinessPage() {
   }, [router]);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     setBusiness({ ...business, [e.target.name]: e.target.value });
   };
@@ -95,7 +97,9 @@ export default function EditBusinessPage() {
 
   return (
     <div className="min-h-screen bg-black text-white p-8 max-w-2xl mx-auto">
-      <h1 className="text-3xl font-bold text-yellow-500 mb-6">Edit Business Profile</h1>
+      <h1 className="text-3xl font-bold text-yellow-500 mb-6">
+        Edit Business Profile
+      </h1>
       {message && <p className="text-green-400 mb-4">{message}</p>}
 
       <form onSubmit={handleSubmit} className="space-y-4">

@@ -77,13 +77,13 @@ This document outlines the core security practices and controls in place (or pla
 
 ## 📆 Security Maintenance Schedule
 
-| Task                             | Frequency       |
-|----------------------------------|-----------------|
-| Dependency Audit (`npm audit`)   | Weekly          |
-| Access Role Review               | Monthly         |
-| Codebase Security Scan           | Bi-monthly      |
-| Incident Response Drill          | Quarterly       |
-| Policy & Plan Review             | Quarterly       |
+| Task                           | Frequency  |
+| ------------------------------ | ---------- |
+| Dependency Audit (`npm audit`) | Weekly     |
+| Access Role Review             | Monthly    |
+| Codebase Security Scan         | Bi-monthly |
+| Incident Response Drill        | Quarterly  |
+| Policy & Plan Review           | Quarterly  |
 
 ---
 
@@ -101,4 +101,3 @@ This document outlines the core security practices and controls in place (or pla
 
 For responsible disclosure of vulnerabilities or suspicious activity:
 **Email:** security@blackwealthexchange.com (placeholder)
-

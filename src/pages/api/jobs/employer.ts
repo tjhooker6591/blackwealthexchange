@@ -23,9 +23,14 @@ interface JobDocument {
   applicants?: unknown[];
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method !== "GET") {
-    return res.status(405).json({ success: false, error: "Method Not Allowed" });
+    return res
+      .status(405)
+      .json({ success: false, error: "Method Not Allowed" });
   }
 
   try {
@@ -34,12 +39,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const token = cookies.token;
 
     if (!token) {
-      return res.status(401).json({ success: false, error: "Unauthorized. No token." });
+      return res
+        .status(401)
+        .json({ success: false, error: "Unauthorized. No token." });
     }
 
     const decoded = jwt.verify(token, JWT_SECRET) as DecodedToken;
 
-    if (decoded.accountType !== "business" && decoded.accountType !== "employer") {
+    if (
+      decoded.accountType !== "business" &&
+      decoded.accountType !== "employer"
+    ) {
       return res.status(403).json({ success: false, error: "Access denied" });
     }
 
@@ -58,13 +68,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       company: job.company || "Your Company",
       location: job.location || "Remote",
       type: job.type || "Full-Time",
-      datePosted: job.datePosted || job.createdAt?.toISOString()?.split("T")[0] || "N/A",
+      datePosted:
+        job.datePosted || job.createdAt?.toISOString()?.split("T")[0] || "N/A",
       applicants: Array.isArray(job.applicants) ? job.applicants.length : 0,
     }));
 
     return res.status(200).json({ success: true, jobs: formattedJobs });
   } catch (error) {
     console.error("Employer jobs fetch error:", error);
-    return res.status(500).json({ success: false, error: "Internal Server Error" });
+    return res
+      .status(500)
+      .json({ success: false, error: "Internal Server Error" });
   }
 }

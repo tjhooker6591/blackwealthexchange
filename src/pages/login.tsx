@@ -16,7 +16,7 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setError("");
@@ -167,7 +167,10 @@ export default function Login() {
         </p>
         <p className="text-center mt-4">
           Don&apos;t have an account?{" "}
-          <Link href="/signup" className="text-gold font-semibold hover:underline">
+          <Link
+            href="/signup"
+            className="text-gold font-semibold hover:underline"
+          >
             Sign Up
           </Link>
         </p>

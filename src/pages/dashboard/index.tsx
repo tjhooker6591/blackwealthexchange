@@ -46,10 +46,13 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-black text-white p-6">
-      <h1 className="text-3xl font-bold text-gold mb-4">BWE Global Dashboard</h1>
+      <h1 className="text-3xl font-bold text-gold mb-4">
+        BWE Global Dashboard
+      </h1>
 
       <div className="mb-6 text-sm text-gray-300">
-        This dashboard is tailored to your role: <strong className="text-white">{accountType}</strong>
+        This dashboard is tailored to your role:{" "}
+        <strong className="text-white">{accountType}</strong>
       </div>
 
       {/* Dynamic Role-Based Rendering */}

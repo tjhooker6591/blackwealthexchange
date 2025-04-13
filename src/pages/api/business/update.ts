@@ -2,16 +2,22 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method !== "PATCH") {
     return res.status(405).json({ error: "Method Not Allowed" });
   }
 
   const { email } = req.cookies;
-  const { businessName, businessAddress, businessPhone, description } = req.body;
+  const { businessName, businessAddress, businessPhone, description } =
+    req.body;
 
   if (!email) {
-    return res.status(401).json({ error: "Unauthorized: No email found in cookies" });
+    return res
+      .status(401)
+      .json({ error: "Unauthorized: No email found in cookies" });
   }
 
   try {
@@ -28,7 +34,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           description,
           updatedAt: new Date(),
         },
-      }
+      },
     );
 
     if (result.modifiedCount === 0) {

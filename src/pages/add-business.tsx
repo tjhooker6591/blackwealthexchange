@@ -40,7 +40,9 @@ export default function AddBusiness() {
       </h1>
 
       <div className="bg-gray-900 p-4 rounded-lg shadow-lg mb-6">
-        <h2 className="text-xl font-semibold text-yellow-400">Your Business Info</h2>
+        <h2 className="text-xl font-semibold text-yellow-400">
+          Your Business Info
+        </h2>
         <p className="text-gray-300 mt-2">
           <strong>Business:</strong> {business?.businessName}
         </p>

@@ -8,7 +8,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-key";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   if (req.method !== "POST") {
     return res
@@ -31,7 +31,11 @@ export default async function handler(
 
     // Determine the collection based on accountType
     let collectionName = "users";
-    if (accountType === "business" || accountType === "seller" || accountType === "employer") {
+    if (
+      accountType === "business" ||
+      accountType === "seller" ||
+      accountType === "employer"
+    ) {
       collectionName = "businesses";
     }
 
@@ -61,7 +65,7 @@ export default async function handler(
         accountType: actualAccountType,
       },
       JWT_SECRET,
-      { expiresIn: "7d" }
+      { expiresIn: "7d" },
     );
 
     // Set both token and accountType cookies

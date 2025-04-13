@@ -21,7 +21,7 @@
 
     "types": ["next-auth"],
     "typeRoots": ["./types", "./node_modules/@types"],
-    
+
     // ✅ Enforce case-sensitive imports
     "forceConsistentCasingInFileNames": true
   },
