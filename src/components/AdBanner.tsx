@@ -25,4 +25,3 @@ export default function AdBanner({ image, link, alt }: Ad) {
     </div>
   );
 }
-

@@ -145,12 +145,8 @@ export default function Home() {
 
   return (
     <div className="relative min-h-screen bg-black text-white overflow-hidden">
-    {/* Solid black background layer */}
-    <div className="absolute inset-0 bg-black opacity-100" />
-  
-    {/* Top-to-bottom black gradient overlay for visual depth */}
-    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-50" />
-  
+      <div className="absolute inset-0 bg-black opacity-100" />
+      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-50" />
 
       <header className="text-center py-24 relative z-10">
         <p className="text-lg md:text-xl mt-4 font-light text-gray-300 animate-fadeIn">
@@ -219,7 +215,6 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Student Opportunities */}
       <section className="relative z-10 py-12 bg-gray-900">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center text-gold mb-8">
@@ -240,7 +235,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Real Estate & Investment Section */}
       <main className="container mx-auto px-4 relative z-10">
         <section className="bg-gray-800 rounded-lg shadow-lg p-4 mb-8 mt-12">
           <div className="flex items-center justify-between">
@@ -260,7 +254,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Featured Sponsors */}
         <section className="bg-gray-800 rounded-lg shadow-lg p-4 mb-8 overflow-hidden">
           <h3 className="text-lg font-semibold text-gold mb-2">
             Featured Sponsors
@@ -272,9 +265,8 @@ export default function Home() {
                   <Image
                     src={`/ads/sample-banner${(i % 5) + 1}.jpg`}
                     alt={`Sample Banner ${i}`}
-                    layout="fill"
-                    objectFit="cover"
-                    className="rounded-lg"
+                    fill
+                    className="object-cover rounded-lg"
                   />
                 </div>
               ))}
@@ -282,7 +274,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Key Sections */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {keySections.map((item, index) => (
             <div
@@ -308,7 +299,6 @@ export default function Home() {
           ))}
         </div>
 
-        {/* Advertise Section */}
         <section className="bg-gray-900 border border-gold rounded-lg shadow p-4 text-center my-6 animate-fadeIn">
           <h2 className="text-xl font-semibold text-gold flex items-center justify-center gap-2 mb-1">
             📢 Advertise with Us
@@ -325,23 +315,20 @@ export default function Home() {
         </section>
       </main>
 
-      {/* Footer */}
-    
-<footer className="text-center py-8 border-t border-gold mt-8 relative z-10">
-  <div className="mx-auto mb-4 w-[60px] h-[60px] relative">
-    <Image
-      src="/bwe-logo.png"
-      alt="BWE Logo"
-      fill
-      style={{ objectFit: "contain" }}
-      priority
-    />
-  </div>
-  <h2 className="text-lg font-bold text-gray-300">
-    Join the BWE Community & Build Wealth
-  </h2>
-</footer>
-
+      <footer className="text-center py-8 border-t border-gold mt-8 relative z-10">
+        <div className="mx-auto mb-4 w-[60px] h-[60px] relative">
+          <Image
+            src="/bwe-logo.png"
+            alt="BWE Logo"
+            fill
+            className="object-contain"
+            priority
+          />
+        </div>
+        <h2 className="text-lg font-bold text-gray-300">
+          Join the BWE Community & Build Wealth
+        </h2>
+      </footer>
 
       <style jsx>{`
         .animate-scroll {
