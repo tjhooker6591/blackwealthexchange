@@ -327,8 +327,8 @@ export default function Home() {
       {/* Footer */}
       <footer className="text-center py-8 border-t border-gold mt-8 relative z-10">
         <Image
-          src="/BWE-logo.png"
-          alt="BWE-Logo"
+          src="/bwe-logo.png"
+          alt="bwe-Logo"
           width={60}
           height={60}
           className="mx-auto mb-4"
