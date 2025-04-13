@@ -1,20 +1,15 @@
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-key";
 
-interface DecodedToken {
-  userId: string;
-  email: string;
-  accountType: string;
-  iat?: number;
-  exp?: number;
-}
-
-export function verifyToken(token: string): DecodedToken | null {
+export function verifyToken(token: string): JwtPayload | null {
   try {
-    return jwt.verify(token, JWT_SECRET) as DecodedToken;
-  } catch (err) {
-    console.error("Invalid token:", err);
+    const decoded = jwt.verify(token, JWT_SECRET);
+    if (typeof decoded === "object") {
+      return decoded as JwtPayload;
+    }
+    return null;
+  } catch {
     return null;
   }
 }

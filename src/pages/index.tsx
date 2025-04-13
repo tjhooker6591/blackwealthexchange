@@ -313,7 +313,7 @@ export default function Home() {
             📢 Advertise with Us
           </h2>
           <p className="text-sm text-gray-400 mb-2">
-            Promote your business to thousands of engaged users across our
+            Promote your business today to thousands of engaged users across our
             platform.
           </p>
           <Link href="/advertise-with-us">

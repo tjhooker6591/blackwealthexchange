@@ -4,8 +4,8 @@ const nextConfig: NextConfig = {
   env: {
     MONGO_URI: process.env.MONGO_URI,
   },
-  reactStrictMode: true, // Optional but recommended for catching bugs
-  swcMinify: true,        // Optional: improves build speed and performance
+  reactStrictMode: true, // Recommended for catching bugs
+  // swcMinify: true, // ❌ Removed because it's no longer supported
 };
 
 export default nextConfig;
