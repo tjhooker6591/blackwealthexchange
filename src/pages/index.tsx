@@ -109,6 +109,7 @@ export default function Home() {
       href: "/black-student-opportunities/internships",
     },
   ];
+
   const keySections = [
     {
       title: "Our Marketplace",
@@ -266,6 +267,7 @@ export default function Home() {
                     src={`/ads/sample-banner${(i % 5) + 1}.jpg`}
                     alt={`Sample Banner ${i}`}
                     fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
                     className="object-cover rounded-lg"
                   />
                 </div>
@@ -304,7 +306,7 @@ export default function Home() {
             📢 Advertise with Us
           </h2>
           <p className="text-sm text-gray-400 mb-2">
-            Promote your business to thousands of engaged users across our
+            Promote your business today to thousands of engaged users across our
             platform.
           </p>
           <Link href="/advertise-with-us">
@@ -321,6 +323,7 @@ export default function Home() {
             src="/bwe-logo.png"
             alt="BWE Logo"
             fill
+            sizes="60px"
             className="object-contain"
             priority
           />
