@@ -326,13 +326,15 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="text-center py-8 border-t border-gold mt-8 relative z-10">
-        <Image
-          src="/bwe-logo.png"
-          alt="bwe-Logo"
-          width={60}
-          height={60}
-          className="mx-auto mb-4"
-        />
+        <div className="mx-auto mb-4 w-[60px] h-[60px] relative">
+          <Image
+            src="/bwe-logo.png"
+            alt="bwe-Logo"
+            fill
+            style={{ objectFit: "contain" }}
+            priority
+          />
+        </div>
         <h2 className="text-lg font-bold text-gray-300">
           Join the BWE Community & Build Wealth
         </h2>
