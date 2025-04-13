@@ -1,6 +1,8 @@
-// pages/employer/jobs.tsx
+"use client";
+
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 interface Job {
   _id: string;
@@ -14,12 +16,27 @@ interface Job {
 
 export default function EmployerJobsPage() {
   const [jobs, setJobs] = useState<Job[]>([]);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        const res = await fetch("/api/jobs/employer");
+        // Step 1: Get the logged-in user
+        const userRes = await fetch("/api/auth/me");
+        const userData = await userRes.json();
+
+        if (!userData.user) {
+          router.push("/login");
+          return;
+        }
+
+        const email = userData.user.email;
+
+        // Step 2: Fetch jobs posted by this user
+        const res = await fetch(`/api/jobs/employer?email=${encodeURIComponent(email)}`);
         const data = await res.json();
+
         if (res.ok) {
           setJobs(data.jobs || []);
         } else {
@@ -27,11 +44,13 @@ export default function EmployerJobsPage() {
         }
       } catch (err) {
         console.error("Fetch jobs error:", err);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchJobs();
-  }, []);
+  }, [router]);
 
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this job?")) return;
@@ -61,7 +80,9 @@ export default function EmployerJobsPage() {
           </Link>
         </div>
 
-        {jobs.length === 0 ? (
+        {loading ? (
+          <p className="text-gray-400">Loading jobs...</p>
+        ) : jobs.length === 0 ? (
           <p className="text-gray-400">You haven’t posted any jobs yet.</p>
         ) : (
           <div className="space-y-6">

@@ -20,7 +20,10 @@
     },
 
     "types": ["next-auth"],
-    "typeRoots": ["./types", "./node_modules/@types"] // ✅ ADDED
+    "typeRoots": ["./types", "./node_modules/@types"],
+    
+    // ✅ Enforce case-sensitive imports
+    "forceConsistentCasingInFileNames": true
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]

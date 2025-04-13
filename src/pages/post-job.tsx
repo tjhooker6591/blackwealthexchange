@@ -2,25 +2,20 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 import BuyNowButton from "@/components/BuyNowButton";
 
 const PostJob = () => {
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [userId, setUserId] = useState<string>("guest");
 
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await fetch("/api/auth/me");
-        const data = await res.json();
-        if (data?.user?._id) {
-          setUserId(data.user._id);
-        }
-      } catch (err) {
-        console.error("Error fetching user in post-job:", err);
-      }
-    };
-    fetchUser();
-  }, []);
+    if (status === "authenticated" && session?.user?.id) {
+      setUserId(session.user.id);
+    }
+  }, [session, status]);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -39,7 +34,7 @@ const PostJob = () => {
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >,
+    >
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setError("");
@@ -87,29 +82,48 @@ const PostJob = () => {
     }
   };
 
+  if (status === "loading") {
+    return <div className="text-white text-center mt-20">Loading...</div>;
+  }
+
+  if (!session) {
+    router.push("/login?redirect=/post-job");
+    return null;
+  }
+
+  if (session.user?.accountType !== "employer") {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center text-center px-4">
+        <div>
+          <h1 className="text-2xl font-bold mb-4 text-red-500">Access Denied</h1>
+          <p className="mb-6">
+            You must have an <strong>employer account</strong> to post jobs.
+          </p>
+          <Link href="/" className="text-gold hover:underline">
+            ← Return to Home
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-black text-white p-8">
       <div className="max-w-5xl mx-auto bg-gray-800 p-6 rounded-lg shadow-lg">
         <h1 className="text-3xl font-bold text-gold mb-4">Post a Job</h1>
         <p className="text-gray-400 mb-6">
-          Add new opportunities and connect with Black professionals looking for
-          work.
+          Add new opportunities and connect with Black professionals looking for work.
         </p>
 
-        {/* Monetization Options */}
         <div className="grid md:grid-cols-3 gap-4 mb-10">
           <div className="bg-gray-900 p-4 rounded shadow text-center">
             <h3 className="text-lg font-bold text-gold">Free Post</h3>
-            <p className="text-sm text-gray-400">
-              Basic listing, 1 per account
-            </p>
+            <p className="text-sm text-gray-400">Basic listing, 1 per account</p>
             <p className="font-semibold mt-2">$0</p>
           </div>
           <div className="bg-gray-900 p-4 rounded shadow text-center">
             <h3 className="text-lg font-bold text-gold">Standard Post</h3>
-            <p className="text-sm text-gray-400">
-              30-day listing, enhanced visibility
-            </p>
+            <p className="text-sm text-gray-400">30-day listing, enhanced visibility</p>
             <p className="font-semibold mt-2">$29.99</p>
             <BuyNowButton
               itemId="job-standard-post"
@@ -121,9 +135,7 @@ const PostJob = () => {
           </div>
           <div className="bg-gray-900 p-4 rounded shadow text-center">
             <h3 className="text-lg font-bold text-gold">Featured Post</h3>
-            <p className="text-sm text-gray-400">
-              Homepage promo, pinned, bold style
-            </p>
+            <p className="text-sm text-gray-400">Homepage promo, pinned, bold style</p>
             <p className="font-semibold mt-2">$79.99</p>
             <BuyNowButton
               itemId="job-featured-post"
@@ -135,9 +147,7 @@ const PostJob = () => {
           </div>
         </div>
 
-        {success && (
-          <p className="text-green-500 mb-4">✅ Job posted successfully!</p>
-        )}
+        {success && <p className="text-green-500 mb-4">✅ Job posted successfully!</p>}
         {error && <p className="text-red-500 mb-4">{error}</p>}
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -225,10 +235,7 @@ const PostJob = () => {
         </form>
 
         <div className="text-center mt-6">
-          <Link
-            href="/dashboard/employer"
-            className="text-blue-500 hover:underline"
-          >
+          <Link href="/dashboard/employer" className="text-blue-500 hover:underline">
             ← Back to Employer Dashboard
           </Link>
         </div>

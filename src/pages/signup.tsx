@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { Link } from "lucide-react";
+import Link from "next/link";
 
 export default function Signup() {
   const router = useRouter();
   const [accountType, setAccountType] = useState("user");
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -15,9 +16,17 @@ export default function Signup() {
     businessAddress: "",
     businessPhone: "",
   });
+
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const { type } = router.query;
+    if (type && typeof type === "string") {
+      setAccountType(type);
+    }
+  }, [router.query]);
 
   const validateEmail = (email: string) => /\S+@\S+\.\S+/.test(email);
   const validatePassword = (password: string) =>
@@ -47,7 +56,7 @@ export default function Signup() {
 
     if (!validatePassword(formData.password)) {
       setError(
-        "Password must be at least 8 characters, include 1 uppercase letter, 1 number, and 1 special character.",
+        "Password must be at least 8 characters, include 1 uppercase letter, 1 number, and 1 special character."
       );
       return;
     }
@@ -88,13 +97,24 @@ export default function Signup() {
         businessPhone: "",
       });
 
-      if (data.accountType === "business") {
-        router.push("/employer/dashboard");
-      } else {
-        router.push("/dashboard");
-      }
+      // ⏳ Delay redirect to allow cookies to register
+      setTimeout(() => {
+        switch (data.accountType) {
+          case "seller":
+            router.push("/marketplace/dashboard");
+            break;
+          case "business":
+            router.push("/add-business");
+            break;
+          case "employer":
+            router.push("/employer/jobs");
+            break;
+          default:
+            router.push("/dashboard");
+        }
+      }, 500);
     } catch (err) {
-      console.error("Signup error:", err); // ✅ Used error to avoid ESLint warning
+      console.error("Signup error:", err);
       setError("Signup failed. Please try again.");
     } finally {
       setLoading(false);
@@ -125,11 +145,12 @@ export default function Signup() {
               name="accountType"
               value={accountType}
               onChange={handleAccountTypeChange}
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-gold text-black bg-gray-200"
+              className="w-full p-3 border rounded-lg bg-gray-200 text-black"
             >
               <option value="user">General User</option>
-              <option value="jobSeeker">Job Seeker</option>
-              <option value="business">Business / Employer</option>
+              <option value="seller">Seller</option>
+              <option value="business">Business Owner</option>
+              <option value="employer">Employer</option>
             </select>
           </div>
 
@@ -145,10 +166,9 @@ export default function Signup() {
               required
             />
           </div>
+
           <div>
-            <label className="block text-gray-700 font-semibold">
-              Password
-            </label>
+            <label className="block text-gray-700 font-semibold">Password</label>
             <input
               type="password"
               name="password"
@@ -159,6 +179,7 @@ export default function Signup() {
               required
             />
           </div>
+
           <div>
             <label className="block text-gray-700 font-semibold">
               Confirm Password
@@ -226,10 +247,7 @@ export default function Signup() {
 
         <p className="text-center mt-4 text-gray-600">
           Already have an account?{" "}
-          <Link
-            href="/login"
-            className="text-gold font-semibold hover:underline"
-          >
+          <Link href="/login" className="text-gold font-semibold hover:underline">
             Login
           </Link>
         </p>

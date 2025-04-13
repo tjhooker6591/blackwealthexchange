@@ -4,20 +4,19 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { BookOpen, GraduationCap, Users, Briefcase } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 const EconomicImpactSimulator: React.FC = () => {
   const currentYear = 2025;
   const maxSpending = 1980000000000;
   const initialValue = 300000000000;
   const monthlyGrowth = 150000000000;
-
   const [totalSpending, setTotalSpending] = useState(initialValue);
 
   useEffect(() => {
     const dailyGrowth = monthlyGrowth / 30.44;
-
     if (totalSpending >= maxSpending) return;
-
     const timer = setInterval(() => {
       setTotalSpending((prev) => {
         if (prev >= maxSpending) return maxSpending;
@@ -25,7 +24,6 @@ const EconomicImpactSimulator: React.FC = () => {
         return newTotal > maxSpending ? maxSpending : newTotal;
       });
     }, 100);
-
     return () => clearInterval(timer);
   }, [totalSpending]);
 
@@ -51,19 +49,13 @@ const EconomicImpactSimulator: React.FC = () => {
           : "Growing at approximately $150 billion per month"}
       </p>
       <div className="text-center">
-        <Link
-          href="/1.8trillionimpact"
-          className="text-gold font-bold hover:underline text-lg"
-        >
-          KNOWLEDGE IS POWER - Select Here to &quot;SEE WHERE YOUR MONEY
-          GOES&quot;
-        </Link>
+      <Link href="/1.8trillionimpact" className="text-gold font-bold hover:underline text-lg">
+      KNOWLEDGE IS POWER – Select Here to &quot;SEE WHERE YOUR MONEY GOES&quot;
+      </Link>
+
       </div>
       <div className="text-center mt-4">
-        <Link
-          href="/economic-freedom"
-          className="text-gold font-bold hover:underline text-lg"
-        >
+        <Link href="/economic-freedom" className="text-gold font-bold hover:underline text-lg">
           Modern Economic Slavery - Click Here To Learn
         </Link>
       </div>
@@ -73,46 +65,74 @@ const EconomicImpactSimulator: React.FC = () => {
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
+  const { data: session } = useSession();
+  const router = useRouter();
+
+  const handleProtectedClick = (path: string, requiredRole?: string) => {
+    if (!session) {
+      router.push(`/login?redirect=${path}`);
+      return;
+    }
+    const userRole = session.user?.accountType;
+    if (requiredRole && userRole !== requiredRole) {
+      alert(`You need a ${requiredRole} account to access this feature.`);
+      return;
+    }
+    router.push(path);
+  };
 
   const studentOpportunities = [
+    { title: "Scholarships", icon: BookOpen, href: "/black-student-opportunities/scholarships" },
+    { title: "Grants", icon: GraduationCap, href: "/black-student-opportunities/grants" },
+    { title: "Mentorship", icon: Users, href: "/black-student-opportunities/mentorship" },
+    { title: "Internships", icon: Briefcase, href: "/black-student-opportunities/internships" },
+  ];
+  const keySections = [
     {
-      title: "Scholarships",
-      icon: BookOpen,
-      href: "/black-student-opportunities/scholarships",
+      title: "Our Marketplace",
+      href: "/marketplace",
+      description: "Buy & sell Black-owned products securely.",
     },
     {
-      title: "Grants",
-      icon: GraduationCap,
-      href: "/black-student-opportunities/grants",
+      title: "Sponsored Businesses",
+      href: "/business-directory/sponsored-business",
+      description: "Premium featured business with more visibility.",
     },
     {
-      title: "Mentorship",
-      icon: Users,
-      href: "/black-student-opportunities/mentorship",
+      title: "Affiliate & Partnership",
+      href: "/affiliate",
+      description: "Explore our curated affiliate offers and partnership opportunities.",
     },
     {
-      title: "Internships",
-      icon: Briefcase,
-      href: "/black-student-opportunities/internships",
+      title: "Entertainment&News",
+      href: "/black-entertainment-news",
+      description: "Learn about Black entertainment and news.",
+    },
+    {
+      title: "Jobs & Careers",
+      href: "/jobs",
+      description: "Discover jobs, internships & networking opportunities.",
+    },
+    {
+      title: "Investment & Wealth",
+      href: "/investment",
+      description: "Invest in Black businesses & secure your future.",
     },
   ];
 
   return (
     <div className="relative min-h-screen bg-black text-white overflow-hidden">
-      {/* Background Effects */}
       <div
         className="absolute inset-0 bg-cover bg-center opacity-40"
         style={{ backgroundImage: "url('/black-wealth-bg.jpg')" }}
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-50" />
 
-      {/* Hero Section */}
       <header className="text-center py-24 relative z-10">
-        <p className="text-lg md:text-xl mt-4 font-light text-gray-300 animate-fadeIn">
-          &quot;The Future of Black Wealth Starts Here.&quot;
-        </p>
+      <p className="text-lg md:text-xl mt-4 font-light text-gray-300 animate-fadeIn">
+      &quot;The Future of Black Wealth Starts Here.&quot;
+      </p>
 
-        {/* Login + Signup Buttons */}
         <div className="mt-6 flex justify-center space-x-4">
           <Link href="/login">
             <button className="px-6 py-2 bg-gold text-black font-semibold text-lg rounded-lg hover:bg-yellow-500 transition">
@@ -126,14 +146,12 @@ export default function Home() {
           </Link>
         </div>
 
-        {/* Economic Impact Counter */}
         <section className="relative z-10 py-12">
           <div className="container mx-auto px-4">
             <EconomicImpactSimulator />
           </div>
         </section>
 
-        {/* Call to Action & Search Bar */}
         <div className="mt-8 flex flex-col items-center space-y-4 w-full max-w-xl mx-auto">
           <div className="relative w-full">
             <input
@@ -143,36 +161,37 @@ export default function Home() {
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
-                  window.location.href = `/business-directory?search=${searchQuery}`;
+                  router.push(`/business-directory?search=${searchQuery}`);
                 }
               }}
               className="w-full px-4 py-2 rounded-lg bg-gray-800 text-white placeholder-gray-400 border border-gray-700 focus:ring-2 focus:ring-gold focus:outline-none transition-all"
             />
-            <Link href={`/business-directory?search=${searchQuery}`}>
-              <button className="absolute right-2 top-1 px-3 py-1 bg-gold text-black rounded-lg font-semibold hover:bg-yellow-500 transition">
-                Search
-              </button>
-            </Link>
+            <button
+              onClick={() => router.push(`/business-directory?search=${searchQuery}`)}
+              className="absolute right-2 top-1 px-3 py-1 bg-gold text-black rounded-lg font-semibold hover:bg-yellow-500 transition"
+            >
+              Search
+            </button>
           </div>
 
-          <Link href="/marketplace/become-a-seller">
-            <div className="mt-4 bg-gold text-black text-center py-2 px-4 rounded-lg font-semibold shadow hover:bg-yellow-500 transition animate-pulseGlow">
-              Start Selling on the Marketplace – Join as a Seller!
-            </div>
-          </Link>
+          <button
+            onClick={() => handleProtectedClick("/marketplace/add-products", "seller")}
+            className="mt-4 bg-gold text-black text-center py-2 px-4 rounded-lg font-semibold shadow hover:bg-yellow-500 transition animate-pulseGlow"
+          >
+            Start Selling on the Marketplace – Join as a Seller!
+          </button>
 
           <div className="mt-2">
-            <Link
-              href="/library-of-black-history"
-              className="text-gold font-bold hover:underline text-lg"
-            >
-              Library of Black History (Facts. No Fiction)
+            <Link href="/library-of-black-history">
+              <span className="text-gold font-bold hover:underline text-lg">
+                Library of Black History (Facts. No Fiction)
+              </span>
             </Link>
           </div>
         </div>
       </header>
 
-      {/* Student Opportunities Section */}
+      {/* Student Opportunities */}
       <section className="relative z-10 py-12 bg-gray-900">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center text-gold mb-8">
@@ -183,9 +202,7 @@ export default function Home() {
               <Link key={index} href={item.href}>
                 <div className="flex flex-col items-center p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition duration-300 cursor-pointer">
                   <item.icon className="w-12 h-12 text-gold mb-2" />
-                  <span className="text-lg font-semibold text-center">
-                    {item.title}
-                  </span>
+                  <span className="text-lg font-semibold text-center">{item.title}</span>
                 </div>
               </Link>
             ))}
@@ -193,13 +210,13 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Main Sections */}
+      {/* Real Estate & Investment Section */}
       <main className="container mx-auto px-4 relative z-10">
         <section className="bg-gray-800 rounded-lg shadow-lg p-4 mb-8 mt-12">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-xl font-bold text-gold">
-                Real Estate &amp; Investment
+                Real Estate & Investment
               </h2>
               <p className="text-sm text-gray-300 mt-1">
                 Explore Black-owned real estate options and investments
@@ -215,9 +232,7 @@ export default function Home() {
 
         {/* Featured Sponsors */}
         <section className="bg-gray-800 rounded-lg shadow-lg p-4 mb-8 overflow-hidden">
-          <h3 className="text-lg font-semibold text-gold mb-2">
-            Featured Sponsors
-          </h3>
+          <h3 className="text-lg font-semibold text-gold mb-2">Featured Sponsors</h3>
           <div className="relative w-full h-32 overflow-hidden">
             <div className="absolute flex space-x-4 animate-scroll">
               {[1, 2, 3, 4, 5, 1, 2, 3, 4, 5].map((i, index) => (
@@ -237,40 +252,7 @@ export default function Home() {
 
         {/* Key Sections */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          {[
-            {
-              title: "Our Marketplace",
-              href: "/marketplace",
-              description: "Buy & sell Black-owned products securely.",
-            },
-            {
-              title: "Sponsored Businesses",
-              href: "/business-directory/sponsored-business",
-              description: "Premium featured business with more visibility.",
-            },
-            {
-              title: "Affiliate & Partnership",
-              href: "/affiliate",
-              description:
-                "Explore our curated affiliate offers and partnership opportunities.",
-            },
-            {
-              title: "Entertainment&News",
-              href: "/black-entertainment-news",
-              description: "Learn about Black entertainment and news.",
-            },
-            {
-              title: "Jobs & Careers",
-              href: "/jobs",
-              description:
-                "Discover jobs, internships & networking opportunities.",
-            },
-            {
-              title: "Investment & Wealth",
-              href: "/investment",
-              description: "Invest in Black businesses & secure your future.",
-            },
-          ].map((item, index) => (
+          {keySections.map((item, index) => (
             <div
               key={index}
               className={`p-4 shadow-lg hover:scale-105 transition transform rounded-lg ${
@@ -300,8 +282,7 @@ export default function Home() {
             📢 Advertise with Us
           </h2>
           <p className="text-sm text-gray-400 mb-2">
-            Promote your business to thousands of engaged users across our
-            platform.
+            Promote your business to thousands of engaged users across our platform.
           </p>
           <Link href="/advertise-with-us">
             <button className="px-4 py-1.5 bg-gold text-black text-sm rounded hover:bg-yellow-500 transition">
@@ -314,18 +295,17 @@ export default function Home() {
       {/* Footer */}
       <footer className="text-center py-8 border-t border-gold mt-8 relative z-10">
         <Image
-          src="/favicon.png"
-          alt="BWE Logo"
+          src="/BWE-logo.png"
+          alt="BWE-Logo"
           width={60}
           height={60}
           className="mx-auto mb-4"
         />
         <h2 className="text-lg font-bold text-gray-300">
-          Join the BWE Community &amp; Build Wealth
+          Join the BWE Community & Build Wealth
         </h2>
       </footer>
 
-      {/* Styles */}
       <style jsx>{`
         .animate-scroll {
           animation: scroll 30s linear infinite;
@@ -348,16 +328,11 @@ export default function Home() {
         }
 
         @keyframes pulseGlow {
-          0%,
-          100% {
-            box-shadow:
-              0 0 5px #ffd700,
-              0 0 10px #ffd700;
+          0%, 100% {
+            box-shadow: 0 0 5px #ffd700, 0 0 10px #ffd700;
           }
           50% {
-            box-shadow:
-              0 0 20px #ffd700,
-              0 0 30px #ffd700;
+            box-shadow: 0 0 20px #ffd700, 0 0 30px #ffd700;
           }
         }
 

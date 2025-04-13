@@ -16,7 +16,7 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setError("");
@@ -54,12 +54,21 @@ export default function Login() {
         localStorage.setItem("user", JSON.stringify(data.user));
       }
 
-      // Redirect by account type
-      const { accountType } = data.user;
-      if (accountType === "business" || accountType === "seller") {
-        router.push("/dashboard/employer");
-      } else {
-        router.push("/dashboard/user");
+      // ✅ Redirect based on account type
+      switch (data.user.accountType) {
+        case "seller":
+          router.push("/marketplace/dashboard");
+          break;
+        case "business":
+          router.push("/add-business");
+          break;
+        case "employer":
+          router.push("/employer/jobs");
+          break;
+        case "user":
+        default:
+          router.push("/");
+          break;
       }
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -96,9 +105,9 @@ export default function Login() {
               required
             >
               <option value="user">General User</option>
-              <option value="jobSeeker">Job Seeker</option>
-              <option value="business">Business / Employer</option>
-              <option value="seller">Marketplace Seller</option>
+              <option value="seller">Seller</option>
+              <option value="business">Business Owner</option>
+              <option value="employer">Employer</option>
             </select>
           </div>
 
@@ -158,10 +167,7 @@ export default function Login() {
         </p>
         <p className="text-center mt-4">
           Don&apos;t have an account?{" "}
-          <Link
-            href="/signup"
-            className="text-gold font-semibold hover:underline"
-          >
+          <Link href="/signup" className="text-gold font-semibold hover:underline">
             Sign Up
           </Link>
         </p>

@@ -123,7 +123,7 @@ export default function EmployerDashboard() {
           <DashboardCard
             title="Manage Company Profile"
             description="Update your business details, logo, and contact info."
-            href="/business/profile"
+            href="/employer/profile"
             color="bg-purple-600"
           />
           <DashboardCard

@@ -1,10 +1,14 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 import clientPromise from "../../../lib/mongodb";
+import { serialize } from "cookie";
+
+const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-key";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse,
+  res: NextApiResponse
 ) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method Not Allowed" });
@@ -21,88 +25,148 @@ export default async function handler(
       description,
     } = req.body;
 
-    // 🔹 Validate Email Format
+    const allowedRoles = ["user", "seller", "business", "employer"];
+    if (!allowedRoles.includes(accountType)) {
+      return res.status(400).json({ error: "Invalid account type." });
+    }
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email || !emailRegex.test(email)) {
       return res.status(400).json({ error: "Invalid email format" });
     }
 
-    // 🔹 Validate Password Strength
     if (!password || password.length < 8) {
       return res
         .status(400)
         .json({ error: "Password must be at least 8 characters long" });
     }
 
-    // 🔹 Hash Password
     const hashedPassword = await bcrypt.hash(password, 10);
-
-    // 🔹 Connect to MongoDB
     const client = await clientPromise;
     const db = client.db("bwes-cluster");
 
-    // 🔸 General User or Job Seeker
-    if (accountType === "user" || accountType === "jobSeeker") {
-      const usersCollection = db.collection("users");
+    let newUser;
+    let collection;
 
-      // Check for duplicates
-      const existingUser = await usersCollection.findOne({ email });
-      if (existingUser) {
-        return res.status(400).json({ error: "Email already exists" });
-      }
-
-      await usersCollection.insertOne({
-        email,
-        password: hashedPassword,
-        accountType,
-        createdAt: new Date(),
-      });
-
-      return res.status(201).json({
-        success: true,
-        message: "Account created successfully!",
-        accountType,
-      });
-    }
-
-    // 🔸 Business / Employer
+    // 🔸 Business signup
     if (accountType === "business") {
-      const businessesCollection = db.collection("businesses");
-
       if (!businessName || !businessAddress || !businessPhone) {
         return res.status(400).json({
           error: "Business name, address, and phone number are required",
         });
       }
 
-      const existingBusiness = await businessesCollection.findOne({
-        businessName,
-      });
+      collection = db.collection("businesses");
+      const existingBusiness = await collection.findOne({ email });
 
       if (existingBusiness) {
         return res.status(400).json({ error: "Business already exists" });
       }
 
-      await businessesCollection.insertOne({
-        businessName,
+      newUser = {
         email,
         password: hashedPassword,
+        accountType: "business",
+        businessName,
         businessAddress,
         businessPhone,
         description: description || "",
         isVerified: false,
-        accountType: "business",
         createdAt: new Date(),
-      });
-
-      return res.status(201).json({
-        success: true,
-        message: "Business created successfully!",
-        accountType,
-      });
+      };
     }
 
-    return res.status(400).json({ error: "Invalid account type." });
+    // 🔸 Seller signup
+    else if (accountType === "seller") {
+      collection = db.collection("sellers");
+      const existingSeller = await collection.findOne({ email });
+
+      if (existingSeller) {
+        return res.status(400).json({ error: "Seller already exists" });
+      }
+
+      newUser = {
+        email,
+        password: hashedPassword,
+        accountType: "seller",
+        storeName: businessName || "",
+        createdAt: new Date(),
+      };
+    }
+
+    // 🔸 Employer signup
+    else if (accountType === "employer") {
+      collection = db.collection("employers");
+      const existingEmployer = await collection.findOne({ email });
+
+      if (existingEmployer) {
+        return res.status(400).json({ error: "Employer already exists" });
+      }
+
+      newUser = {
+        email,
+        password: hashedPassword,
+        accountType: "employer",
+        createdAt: new Date(),
+      };
+    }
+
+    // 🔸 General user signup
+    else {
+      collection = db.collection("users");
+      const existingUser = await collection.findOne({ email });
+
+      if (existingUser) {
+        return res.status(400).json({ error: "User already exists" });
+      }
+
+      newUser = {
+        email,
+        password: hashedPassword,
+        accountType: "user",
+        createdAt: new Date(),
+      };
+    }
+
+    const result = await collection.insertOne(newUser);
+    const userId = result.insertedId;
+
+    const token = jwt.sign(
+      {
+        userId,
+        email: newUser.email,
+        accountType: newUser.accountType,
+      },
+      JWT_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    res.setHeader("Set-Cookie", [
+      serialize("session_token", token, {
+        httpOnly: true,
+        path: "/",
+        maxAge: 60 * 60 * 24 * 7,
+        sameSite: "strict",
+        secure: process.env.NODE_ENV === "production",
+      }),
+      serialize("accountType", newUser.accountType, {
+        path: "/",
+        maxAge: 60 * 60 * 24 * 7,
+        sameSite: "strict",
+        secure: process.env.NODE_ENV === "production",
+      }),
+    ]);
+
+    return res.status(201).json({
+      success: true,
+      message: "Account created and logged in!",
+      accountType: newUser.accountType,
+      user: {
+        userId,
+        email: newUser.email,
+        accountType: newUser.accountType,
+      },
+    });
   } catch (error) {
     console.error("Signup error:", error);
     return res.status(500).json({ error: "Internal Server Error" });
