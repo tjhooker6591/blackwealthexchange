@@ -269,6 +269,7 @@ export default function Home() {
                     fill
                     sizes="(max-width: 768px) 100vw, 33vw"
                     className="object-cover rounded-lg"
+                    priority
                   />
                 </div>
               ))}
