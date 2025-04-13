@@ -1,5 +1,5 @@
 // components/AdBanner.tsx
-import Image from "next/image";
+import Image from "next/image"; // ✅ modern import
 import Link from "next/link";
 
 interface Ad {
@@ -18,8 +18,11 @@ export default function AdBanner({ image, link, alt }: Ad) {
           width={1200}
           height={200}
           className="w-full h-auto rounded"
+          style={{ objectFit: "cover" }} // ✅ recommended for banners
+          priority
         />
       </Link>
     </div>
   );
 }
+

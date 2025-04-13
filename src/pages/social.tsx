@@ -3,7 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { HomeIcon, UserIcon, BellIcon } from "@heroicons/react/24/solid";
-import Image from "next/image"; // Make sure to import Image
+import Image from "next/legacy/image"; // Make sure to import Image
 
 interface Post {
   id: number;

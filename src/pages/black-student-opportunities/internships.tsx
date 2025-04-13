@@ -1,7 +1,7 @@
 // /pages/black-student-opportunities/internships.tsx
 
 import React from "react";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import Link from "next/link";
 
 const Internships = () => {

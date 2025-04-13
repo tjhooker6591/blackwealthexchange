@@ -145,11 +145,12 @@ export default function Home() {
 
   return (
     <div className="relative min-h-screen bg-black text-white overflow-hidden">
-      <div
-        className="absolute inset-0 bg-cover bg-center opacity-40"
-        style={{ backgroundImage: "url('/black-wealth-bg.jpg')" }}
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-50" />
+    {/* Solid black background layer */}
+    <div className="absolute inset-0 bg-black opacity-100" />
+  
+    {/* Top-to-bottom black gradient overlay for visual depth */}
+    <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-50" />
+  
 
       <header className="text-center py-24 relative z-10">
         <p className="text-lg md:text-xl mt-4 font-light text-gray-300 animate-fadeIn">
@@ -325,20 +326,22 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="text-center py-8 border-t border-gold mt-8 relative z-10">
-        <div className="mx-auto mb-4 w-[60px] h-[60px] relative">
-          <Image
-            src="/bwe-logo.png"
-            alt="bwe-Logo"
-            fill
-            style={{ objectFit: "contain" }}
-            priority
-          />
-        </div>
-        <h2 className="text-lg font-bold text-gray-300">
-          Join the BWE Community & Build Wealth
-        </h2>
-      </footer>
+    
+<footer className="text-center py-8 border-t border-gold mt-8 relative z-10">
+  <div className="mx-auto mb-4 w-[60px] h-[60px] relative">
+    <Image
+      src="/bwe-logo.png"
+      alt="BWE Logo"
+      fill
+      style={{ objectFit: "contain" }}
+      priority
+    />
+  </div>
+  <h2 className="text-lg font-bold text-gray-300">
+    Join the BWE Community & Build Wealth
+  </h2>
+</footer>
+
 
       <style jsx>{`
         .animate-scroll {

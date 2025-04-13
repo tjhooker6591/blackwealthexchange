@@ -5,7 +5,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import Fuse from "fuse.js";
 import FeaturedSponsorAd from "@/components/FeaturedSponsorAd";
 import BannerAd from "@/components/BannerAd";

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import Image from "next/legacy/image";
 import { FaFacebook, FaTwitter, FaLinkedin } from "react-icons/fa";
 
 // Define a type for a news article
