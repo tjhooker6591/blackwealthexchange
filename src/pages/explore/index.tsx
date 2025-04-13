@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/legacy/image";
+import Image from "next/image";
 
 interface Product {
   _id: string;
@@ -98,10 +98,6 @@ export default function ExploreMarketplace() {
                     alt={product.name}
                     fill
                     className="object-cover"
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement;
-                      target.src = "/placeholder.png";
-                    }}
                   />
                 </div>
                 <div className="p-4">

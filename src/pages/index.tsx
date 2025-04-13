@@ -53,8 +53,7 @@ const EconomicImpactSimulator: React.FC = () => {
           href="/1.8trillionimpact"
           className="text-gold font-bold hover:underline text-lg"
         >
-          KNOWLEDGE IS POWER – Select Here to &quot;SEE WHERE YOUR MONEY
-          GOES&quot;
+          KNOWLEDGE IS POWER – Select Here to &quot;SEE WHERE YOUR MONEY GOES&quot;
         </Link>
       </div>
       <div className="text-center mt-4">
@@ -151,7 +150,7 @@ export default function Home() {
 
       <header className="text-center py-24 relative z-10">
         <p className="text-lg md:text-xl mt-4 font-light text-gray-300 animate-fadeIn">
-          &quot;The Future of Black Wealth Starts Here.&quot;
+          The Future of Black Wealth Starts Here.
         </p>
 
         <div className="mt-6 flex justify-center space-x-4">

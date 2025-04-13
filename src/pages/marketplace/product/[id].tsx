@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import Image from "next/legacy/image";
+import Image from "next/image";
 import Link from "next/link";
 
 interface Product {
@@ -130,28 +130,27 @@ const ProductDetailPage = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
             {relatedProducts.map((item) => (
               <Link
-                key={item._id}
-                href={`/marketplace/product/${item._id}`}
-                className="bg-gray-900 rounded-lg border border-gray-700 overflow-hidden hover:scale-105 transition-transform"
-              >
-                <div className="relative w-full h-48">
-                  <Image
-                    src={item.imageUrl || "/placeholder.png"}
-                    alt={item.name}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div className="p-4">
-                  <h3 className="text-lg font-bold text-white mb-1">
-                    {item.name}
-                  </h3>
-                  <p className="text-sm text-gray-400 mb-1">{item.category}</p>
-                  <p className="text-md font-semibold text-gold">
-                    ${item.price.toFixed(2)}
-                  </p>
-                </div>
-              </Link>
+              key={item._id}
+              href={`/marketplace/product/${item._id}`}
+              className="bg-gray-900 rounded-lg border border-gray-700 overflow-hidden hover:scale-105 transition-transform"
+            >
+              <div className="relative w-full h-48">
+                <Image
+                  src={item.imageUrl || "/placeholder.png"}
+                  alt={item.name}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              <div className="p-4">
+                <h3 className="text-lg font-bold text-white mb-1">{item.name}</h3>
+                <p className="text-sm text-gray-400 mb-1">{item.category}</p>
+                <p className="text-md font-semibold text-gold">
+                  ${item.price.toFixed(2)}
+                </p>
+              </div>
+            </Link>
+            
             ))}
           </div>
         </div>
