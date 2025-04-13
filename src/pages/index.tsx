@@ -266,8 +266,8 @@ export default function Home() {
                   <Image
                     src={`/ads/sample-banner${(i % 5) + 1}.jpg`}
                     alt={`Sample Banner ${i}`}
-                    fill
-                    sizes="(max-width: 768px) 100vw, 33vw"
+                    width={160}
+                    height={96}
                     className="object-cover rounded-lg"
                     priority
                   />
@@ -323,8 +323,8 @@ export default function Home() {
           <Image
             src="/bwe-logo.png"
             alt="BWE Logo"
-            fill
-            sizes="60px"
+            width={60}
+            height={60}
             className="object-contain"
             priority
           />
