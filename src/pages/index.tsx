@@ -53,7 +53,8 @@ const EconomicImpactSimulator: React.FC = () => {
           href="/1.8trillionimpact"
           className="text-gold font-bold hover:underline text-lg"
         >
-          KNOWLEDGE IS POWER – Select Here to &quot;SEE WHERE YOUR MONEY GOES&quot;
+          KNOWLEDGE IS POWER – Select Here to &quot;SEE WHERE YOUR MONEY
+          GOES&quot;
         </Link>
       </div>
       <div className="text-center mt-4">

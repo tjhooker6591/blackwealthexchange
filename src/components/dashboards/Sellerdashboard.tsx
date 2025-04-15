@@ -1,154 +1,177 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/legacy/image";
-
-interface Product {
-  _id: string;
-  name: string;
-  price: number;
-  category: string;
-  image: string;
-}
-
-interface Order {
-  _id: string;
-  productName: string;
-  buyerEmail: string;
-  amount: number;
-  date: string;
-}
-
+import { useEffect, useState } from "react";
+// Note: We removed useRouter redirection and now show an error message if not authorized.
 export default function SellerDashboard() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [revenue, setRevenue] = useState<number>(0);
+  const [stats, setStats] = useState({ products: 0, orders: 0, revenue: 0 });
+  const [loading, setLoading] = useState(true);
+  const [accessDenied, setAccessDenied] = useState(false);
 
   useEffect(() => {
-    // Fetch products for the seller
-    fetch("/api/marketplace/products/by-seller")
-      .then((res) => res.json())
-      .then((data) => setProducts(data.products || []));
+    const verifyAndLoadStats = async () => {
+      try {
+        const sessionRes = await fetch("/api/auth/me");
+        const sessionData = await sessionRes.json();
 
-    // Fetch orders for the seller
-    fetch("/api/marketplace/orders/by-seller")
-      .then((res) => res.json())
-      .then((data) => {
-        setOrders(data.orders || []);
-        const total = data.orders?.reduce(
-          (sum: number, order: Order) => sum + order.amount,
-          0,
-        );
-        setRevenue(total || 0);
-      });
+        // Instead of redirecting, if the user is not a seller, flag access denied.
+        if (sessionData?.user?.accountType !== "seller") {
+          setAccessDenied(true);
+          return;
+        }
+
+        // Fetch seller-specific dashboard stats
+        const statsRes = await fetch("/api/marketplace/stats");
+        const statsData = await statsRes.json();
+        setStats({
+          products: statsData.products || 0,
+          orders: statsData.orders || 0,
+          revenue: statsData.revenue || 0,
+        });
+      } catch (err) {
+        console.error("Failed to load seller stats:", err);
+        setAccessDenied(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    verifyAndLoadStats();
   }, []);
 
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-white bg-black">
+        <p>Loading Seller Dashboard...</p>
+      </div>
+    );
+  }
+
+  if (accessDenied) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-white bg-black">
+        <p>Access Denied. You do not have permission to view this dashboard.</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-black text-white p-6">
-      <h2 className="text-3xl font-bold text-yellow-500 mb-6">
-        Seller Dashboard
-      </h2>
-
-      {/* Revenue Summary */}
-      <div className="mb-8 p-4 bg-gray-800 rounded-xl shadow-lg">
-        <h3 className="text-xl font-semibold mb-2 text-yellow-400">
-          Revenue Summary
-        </h3>
-        <p className="text-2xl">${revenue.toFixed(2)}</p>
-      </div>
-
-      {/* Product List */}
-      <div className="mb-12">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-2xl font-semibold text-yellow-400">
-            Your Products
-          </h3>
-          <Link
-            href="/marketplace/add-products"
-            className="text-sm text-yellow-300 underline"
-          >
-            + Add New Product
-          </Link>
+    <div className="min-h-screen flex flex-col">
+      {/* Header */}
+      <header className="bg-gray-900 text-white p-4">
+        <div className="container mx-auto flex justify-between items-center">
+          <h1 className="text-xl font-bold">Seller Dashboard</h1>
+          <nav>
+            <Link href="/dashboard">
+              <span className="mr-4 hover:underline">Dashboard Home</span>
+            </Link>
+            <Link href="/profile">
+              <span className="hover:underline">Profile</span>
+            </Link>
+          </nav>
         </div>
-        {products.length === 0 ? (
-          <p className="text-gray-400">No products added yet.</p>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {products.map((product) => (
-              <div
-                key={product._id}
-                className="bg-gray-800 p-4 rounded-lg shadow hover:shadow-md transition"
-              >
-                <div className="relative w-full h-40 mb-2 rounded overflow-hidden">
-                  <Image
-                    src={product.image}
-                    alt={product.name}
-                    layout="fill"
-                    objectFit="cover"
-                    className="rounded"
-                  />
-                </div>
-                <h4 className="text-lg font-bold">{product.name}</h4>
-                <p className="text-sm text-gray-300">{product.category}</p>
-                <p className="text-yellow-400 font-semibold mt-2">
-                  ${product.price.toFixed(2)}
-                </p>
-                <div className="mt-3 flex gap-4">
-                  <Link
-                    href={`/marketplace/edit-products?id=${product._id}`}
-                    className="text-sm text-blue-400 underline"
-                  >
-                    Edit
-                  </Link>
-                  <button
-                    onClick={() => {
-                      fetch(
-                        `/api/marketplace/products/delete?id=${product._id}`,
-                        { method: "DELETE" },
-                      ).then(() => {
-                        setProducts((prev) =>
-                          prev.filter((p) => p._id !== product._id),
-                        );
-                      });
-                    }}
-                    className="text-sm text-red-400 underline"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+      </header>
 
-      {/* Orders */}
-      <div>
-        <h3 className="text-2xl font-semibold text-yellow-400 mb-4">
-          Recent Orders
-        </h3>
-        {orders.length === 0 ? (
-          <p className="text-gray-400">No orders yet.</p>
-        ) : (
-          <ul className="space-y-4">
-            {orders.map((order) => (
-              <li key={order._id} className="bg-gray-800 p-4 rounded-lg shadow">
-                <p className="font-semibold">{order.productName}</p>
-                <p className="text-sm text-gray-300">
-                  Buyer: {order.buyerEmail}
-                </p>
-                <p className="text-sm text-yellow-400">
-                  Amount: ${order.amount.toFixed(2)}
-                </p>
-                <p className="text-xs text-gray-400">
-                  Date: {new Date(order.date).toLocaleDateString()}
-                </p>
+      <div className="flex flex-1">
+        {/* Sidebar Navigation */}
+        <aside className="w-64 bg-gray-800 text-white p-4">
+          <nav>
+            <ul className="space-y-4">
+              <li>
+                <Link href="/dashboard/seller/overview">
+                  <a className="hover:underline">Overview</a>
+                </Link>
               </li>
-            ))}
-          </ul>
-        )}
+              <li>
+                <Link href="/dashboard/seller/orders">
+                  <a className="hover:underline">Orders</a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/dashboard/seller/products">
+                  <a className="hover:underline">Products</a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/dashboard/seller/earnings">
+                  <a className="hover:underline">Earnings</a>
+                </Link>
+              </li>
+            </ul>
+          </nav>
+        </aside>
+
+        {/* Main Content Area */}
+        <main className="flex-1 p-6 bg-black text-white">
+          <div className="mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <StatCard label="Products Listed" value={stats.products} />
+              <StatCard label="Orders Received" value={stats.orders} />
+              <StatCard label="Total Revenue" value={`$${stats.revenue.toFixed(2)}`} />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <DashboardCard
+              title="➕ Add Product"
+              description="Add new items to your shop and grow your storefront."
+              href="/marketplace/add-products"
+              color="bg-indigo-700"
+            />
+            <DashboardCard
+              title="🛒 View My Products"
+              description="Manage, edit, or remove the items you’ve listed."
+              href="/dashboard/seller/products"
+              color="bg-teal-600"
+            />
+            <DashboardCard
+              title="📦 View Orders"
+              description="Track customer orders and manage delivery progress."
+              href="/dashboard/seller/orders"
+              color="bg-amber-700"
+            />
+            <DashboardCard
+              title="📊 Analytics"
+              description="View sales performance and track your revenue."
+              href="/dashboard/seller/analytics"
+              color="bg-pink-700"
+            />
+          </div>
+        </main>
       </div>
     </div>
   );
 }
+
+// Component to show a statistic as a card.
+function StatCard({ label, value }: { label: string; value: string | number }) {
+  return (
+    <div className="bg-gray-800 rounded-lg p-4 text-center">
+      <h4 className="text-xl font-semibold text-gold">{value}</h4>
+      <p className="text-sm text-gray-300 mt-1">{label}</p>
+    </div>
+  );
+}
+
+// Component representing a clickable dashboard card
+function DashboardCard({
+  title,
+  description,
+  href,
+  color,
+}: {
+  title: string;
+  description: string;
+  href: string;
+  color: string;
+}) {
+  return (
+    <Link href={href}>
+      <div className={`p-5 rounded-lg shadow hover:shadow-xl transition cursor-pointer ${color}`}>
+        <h3 className="text-xl font-bold mb-2">{title}</h3>
+        <p className="text-sm">{description}</p>
+      </div>
+    </Link>
+  );
+}
+

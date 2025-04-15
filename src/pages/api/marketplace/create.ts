@@ -1,12 +1,18 @@
-// /pages/api/marketplace/create.ts
-import clientPromise from "@/lib/mongodb";
+// src/pages/api/marketplace/create.ts
 import type { NextApiRequest, NextApiResponse } from "next";
+import clientPromise from "@/lib/mongodb";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse,
+  res: NextApiResponse
 ) {
-  if (req.method !== "POST") return res.status(405).end("Method Not Allowed");
+  // Disable HTTP caching
+  res.setHeader("Cache-Control", "no-store, max-age=0");
+
+  // Only allow POST for creating a product
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method Not Allowed" });
+  }
 
   const {
     name,
@@ -19,6 +25,7 @@ export default async function handler(
     sellerId = "demo_user", // Replace with actual session user ID later
   } = req.body;
 
+  // Validate required fields
   if (!name || !description || !price || !category || !imageUrl) {
     return res.status(400).json({ error: "Missing required fields" });
   }
@@ -40,9 +47,12 @@ export default async function handler(
     };
 
     const result = await db.collection("products").insertOne(newProduct);
-    return res.status(200).json({ success: true, id: result.insertedId });
+
+    return res
+      .status(201)
+      .json({ success: true, productId: result.insertedId });
   } catch (error) {
     console.error("Error inserting product:", error);
-    return res.status(500).json({ error: "Server error" });
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 }

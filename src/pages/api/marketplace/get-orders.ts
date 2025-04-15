@@ -1,25 +1,22 @@
+// File: /pages/api/marketplace/get-orders.ts
 import { NextApiRequest, NextApiResponse } from "next";
-import { MongoClient } from "mongodb";
-
-const uri =
-  process.env.MONGODB_URI ||
-  "mongodb+srv://bwes_admin:M4LmIzY5EjKPODPJ@bwes-cluster.3lko7.mongodb.net/?retryWrites=true&w=majority&appName=BWES-Cluster";
-const client = new MongoClient(uri);
+import clientPromise from "../../../lib/mongodb";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse,
+  res: NextApiResponse
 ) {
   if (req.method !== "GET") {
-    return res.status(405).json({ message: "Method not allowed" });
+    return res.status(405).json({ error: "Method Not Allowed" });
   }
 
   try {
-    await client.connect();
+    // Reuse the singleton client
+    const client = await clientPromise;
     const db = client.db("bwes-cluster");
     const ordersCollection = db.collection("orders");
 
-    // TEMP: Mock sellerId (replace with auth-based filtering later)
+    // TODO: replace mockSellerId with real sellerId from your auth token
     const mockSellerId = "1234567890";
 
     const orders = await ordersCollection
@@ -27,11 +24,10 @@ export default async function handler(
       .sort({ createdAt: -1 })
       .toArray();
 
-    res.status(200).json(orders);
+    return res.status(200).json(orders);
   } catch (error) {
     console.error("Failed to fetch orders:", error);
-    res.status(500).json({ message: "Server error" });
-  } finally {
-    await client.close();
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 }
+

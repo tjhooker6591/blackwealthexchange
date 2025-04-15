@@ -1,40 +1,49 @@
+// src/pages/api/marketplace/delete-products.ts
 import { NextApiRequest, NextApiResponse } from "next";
-import { MongoClient, ObjectId } from "mongodb";
-
-const uri =
-  process.env.MONGODB_URI ||
-  "mongodb+srv://bwes_admin:M4LmIzY5EjKPODPJ@bwes-cluster.3lko7.mongodb.net/?retryWrites=true&w=majority&appName=BWES-Cluster";
-const client = new MongoClient(uri);
+import { ObjectId } from "mongodb";
+import clientPromise from "@/lib/mongodb";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse,
+  res: NextApiResponse
 ) {
+  // Disable HTTP caching
+  res.setHeader("Cache-Control", "no-store, max-age=0");
+
+  // Only allow DELETE
   if (req.method !== "DELETE") {
-    return res.status(405).json({ message: "Method not allowed" });
+    return res.status(405).json({ error: "Method Not Allowed" });
+  }
+
+  // Extract and validate the product ID from the query string
+  const { id } = req.query;
+  if (!id || Array.isArray(id)) {
+    return res.status(400).json({ error: "Missing or invalid product ID" });
+  }
+
+  let productId: ObjectId;
+  try {
+    productId = new ObjectId(id);
+  } catch {
+    return res.status(400).json({ error: "Invalid product ID format" });
   }
 
   try {
-    await client.connect();
+    const client = await clientPromise;
     const db = client.db("bwes-cluster");
-    const collection = db.collection("products");
-
-    const { id } = req.query;
-    if (!id || typeof id !== "string") {
-      return res.status(400).json({ message: "Product ID is required" });
-    }
-
-    const result = await collection.deleteOne({ _id: new ObjectId(id) });
+    const result = await db
+      .collection("products")
+      .deleteOne({ _id: productId });
 
     if (result.deletedCount === 0) {
-      return res.status(404).json({ message: "Product not found" });
+      return res.status(404).json({ error: "Product not found" });
     }
 
-    res.status(200).json({ message: "Product deleted successfully" });
+    // 204 No Content indicates successful deletion with no response body
+    return res.status(204).end();
   } catch (error) {
     console.error("Error deleting product:", error);
-    res.status(500).json({ message: "Server error" });
-  } finally {
-    await client.close();
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 }
+

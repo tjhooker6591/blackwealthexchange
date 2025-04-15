@@ -1,27 +1,42 @@
+// src/pages/api/marketplace/product.ts
 import { NextApiRequest, NextApiResponse } from "next";
-import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
+import clientPromise from "@/lib/mongodb";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse,
+  res: NextApiResponse
 ) {
+  // Disable HTTP caching
+  res.setHeader("Cache-Control", "no-store, max-age=0");
+
+  // Only allow GET
   if (req.method !== "GET") {
     return res.status(405).json({ error: "Method Not Allowed" });
   }
 
+  // Validate and parse the product ID
   const { id } = req.query;
-  if (!id || typeof id !== "string") {
-    return res.status(400).json({ error: "Missing product ID" });
+  if (!id || Array.isArray(id)) {
+    return res.status(400).json({ error: "Missing or invalid product ID" });
+  }
+
+  let productId: ObjectId;
+  try {
+    productId = new ObjectId(id);
+  } catch {
+    return res.status(400).json({ error: "Invalid product ID format" });
   }
 
   try {
+    // Reuse the shared MongoDB client
     const client = await clientPromise;
     const db = client.db("bwes-cluster");
 
+    // Fetch the product
     const product = await db
       .collection("products")
-      .findOne({ _id: new ObjectId(id) });
+      .findOne({ _id: productId });
 
     if (!product) {
       return res.status(404).json({ error: "Product not found" });

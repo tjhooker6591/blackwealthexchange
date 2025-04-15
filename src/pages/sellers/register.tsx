@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 interface FormData {
   full_name: string;
@@ -13,6 +14,8 @@ interface FormData {
 }
 
 export default function SellerRegister() {
+  const router = useRouter();
+
   const [formData, setFormData] = useState<FormData>({
     full_name: "",
     email: "",
@@ -23,7 +26,7 @@ export default function SellerRegister() {
   });
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -34,19 +37,31 @@ export default function SellerRegister() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     try {
-      const response = await fetch("/api/sellers/register", {
+      const response = await fetch("/api/marketplace/create-seller", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          businessName: formData.business_name,
+          email: formData.email,
+          password: formData.full_name,        // adjust as needed
+          businessAddress: formData.website,   // adjust as needed
+          businessPhone: formData.category,    // adjust as needed
+          description: formData.description,
+        }),
       });
 
+      const data = await response.json();
       if (response.ok) {
-        alert("Registration successful!");
+        // Registration succeeded → redirect to generic login,
+        // tagging it as a seller login
+        router.push("/login?accountType=seller");
       } else {
-        alert("Failed to register. Please try again.");
+        // Show server‑side error
+        alert(data.error || "Failed to register. Please try again.");
       }
     } catch (error) {
       console.error("Error registering seller:", error);

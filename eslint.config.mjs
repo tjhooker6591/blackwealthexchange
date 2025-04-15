@@ -15,9 +15,17 @@ const eslintConfig = [
   {
     ignores: [".next/**", "node_modules/**", "out/**"],
     rules: {
+      // allow `any` when you really need it
+      "@typescript-eslint/no-explicit-any": "off",
+
+      // treat unused vars as errors, but ignore ones prefixed with _
       "@typescript-eslint/no-unused-vars": [
         "error",
-        { argsIgnorePattern: "^_" },
+        {
+          varsIgnorePattern: "^_",
+          argsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
       ],
     },
   },

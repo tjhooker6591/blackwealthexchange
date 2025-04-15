@@ -1,8 +1,8 @@
+// src/components/dashboards/UserDashboard.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import {
   BarChart,
   Bar,
@@ -25,45 +25,75 @@ type DashboardData = {
   messages?: number;
 };
 
+type ChartData = {
+  month: string;
+  applications: number;
+}[];
+
 export default function UserDashboard() {
-  const router = useRouter();
   const [user, setUser] = useState<UserType | null>(null);
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(
-    null,
+    null
   );
+  const [chartData, setChartData] = useState<ChartData>([]);
   const [loading, setLoading] = useState(true);
+  const [authorized, setAuthorized] = useState(false);
+  const [accessDenied, setAccessDenied] = useState(false);
 
   useEffect(() => {
     const fetchUserAndDashboard = async () => {
       try {
-        const userRes = await fetch("/api/auth/me");
+        const userRes = await fetch("/api/auth/me", { cache: "no-store" });
         const userData = await userRes.json();
 
-        if (!userData.user) {
-          router.push("/login");
+        // Mark access denied if not a normal user
+        if (userData?.user?.accountType !== "user") {
+          setAccessDenied(true);
           return;
         }
 
         setUser(userData.user);
+        setAuthorized(true);
 
-        const dashboardRes = await fetch(
-          `/api/user/get-dashboard?email=${userData.user.email}`,
-        );
+        const [dashboardRes, chartRes] = await Promise.all([
+          fetch(`/api/user/get-dashboard?email=${userData.user.email}`, {
+            cache: "no-store",
+          }),
+          fetch(
+            `/api/user/applications-overview?email=${userData.user.email}`,
+            { cache: "no-store" }
+          ),
+        ]);
+
         const dashboardJson = await dashboardRes.json();
+        const chartJson = await chartRes.json();
+
         setDashboardData(dashboardJson);
+        setChartData(chartJson);
       } catch (err) {
         console.error("Error loading dashboard:", err);
+        setAccessDenied(true);
       } finally {
         setLoading(false);
       }
     };
 
     fetchUserAndDashboard();
-  }, [router]); // ✅ include router to fix missing dependency warning
+  }, []);
 
   if (loading || !user || !dashboardData) {
     return (
-      <div className="text-white text-center py-20">Loading dashboard...</div>
+      <div className="text-white text-center py-20 bg-black min-h-screen">
+        Loading dashboard...
+      </div>
+    );
+  }
+
+  if (accessDenied || !authorized) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-black text-white">
+        <p>Access Denied. You do not have permission to view this dashboard.</p>
+      </div>
     );
   }
 
@@ -76,8 +106,8 @@ export default function UserDashboard() {
             Welcome, {dashboardData.fullName || user.email}
           </h1>
           <p className="text-gray-300 text-lg">
-            Your central hub for discovering opportunities, managing your
-            career, and building a successful future.
+            Your central hub for discovering opportunities, managing your career,
+            and building a successful future.
           </p>
         </header>
 
@@ -87,7 +117,10 @@ export default function UserDashboard() {
             label="Applications"
             value={dashboardData.applications || 0}
           />
-          <StatCard label="Saved Jobs" value={dashboardData.savedJobs || 0} />
+          <StatCard
+            label="Saved Jobs"
+            value={dashboardData.savedJobs || 0}
+          />
           <StatCard label="Messages" value={dashboardData.messages || 0} />
         </section>
 
@@ -97,7 +130,7 @@ export default function UserDashboard() {
             Applications Overview
           </h2>
           <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={getSampleAppChartData()}>
+            <BarChart data={chartData}>
               <XAxis dataKey="month" stroke="#fff" />
               <YAxis stroke="#fff" />
               <Tooltip />
@@ -242,15 +275,4 @@ function ResourceCard({
       </div>
     </Link>
   );
-}
-
-function getSampleAppChartData() {
-  return [
-    { month: "Jan", applications: 1 },
-    { month: "Feb", applications: 3 },
-    { month: "Mar", applications: 2 },
-    { month: "Apr", applications: 4 },
-    { month: "May", applications: 5 },
-    { month: "Jun", applications: 3 },
-  ];
 }

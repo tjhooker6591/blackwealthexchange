@@ -14,15 +14,17 @@
     "jsx": "preserve",
     "incremental": true,
 
+    // ✅ Aliases
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     },
 
+    // ✅ Types and type roots
     "types": ["next-auth"],
     "typeRoots": ["./types", "./node_modules/@types"],
 
-    // ✅ Enforce case-sensitive imports
+    // ✅ Consistency
     "forceConsistentCasingInFileNames": true
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

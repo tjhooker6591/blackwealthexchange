@@ -1,184 +1,182 @@
+// src/components/dashboards/EmployerDashboard.tsx
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/router";
-import axios from "axios";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+import { useEffect, useState } from "react";
 
-// Use the same shape returned by /api/auth/me
-type User = {
-  email: string;
-  accountType: string;
-};
+interface Stats {
+  jobsPosted: number;
+  totalApplicants: number;
+  messages: number;
+}
 
-type DashboardData = {
-  businessName?: string;
-  jobCount?: number;
-  applicants?: number;
-  messages?: number;
-};
+interface Job {
+  _id: string;
+  title: string;
+  location: string;
+  type: string;
+  description: string;
+  // add any other fields your API returns here
+}
 
 export default function EmployerDashboard() {
-  const router = useRouter();
-  const [user, setUser] = useState<User | null>(null);
-  const [dashboardData, setDashboardData] = useState<DashboardData | null>(
-    null,
-  );
+  const [stats, setStats] = useState<Stats>({
+    jobsPosted: 0,
+    totalApplicants: 0,
+    messages: 0,
+  });
+  const [jobList, setJobList] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
+  const [accessDenied, setAccessDenied] = useState(false);
 
   useEffect(() => {
-    const fetchUserAndDashboard = async () => {
+    const verifyAndLoadData = async () => {
       try {
-        const userRes = await fetch("/api/auth/me");
-        const userData = await userRes.json();
+        // Verify the session
+        const sessionRes = await fetch("/api/auth/me", { cache: "no-store" });
+        const sessionData = await sessionRes.json();
 
-        if (!userData.user) {
-          router.push("/login");
+        if (sessionData?.user?.accountType !== "employer") {
+          setAccessDenied(true);
           return;
         }
 
-        setUser(userData.user);
-
-        const res = await axios.get("/api/dashboard/employer", {
-          params: { email: userData.user.email },
+        // Load employer stats
+        const statsRes = await fetch("/api/employer/stats", { cache: "no-store" });
+        const statsData = await statsRes.json();
+        setStats({
+          jobsPosted: statsData.jobsPosted || 0,
+          totalApplicants: statsData.totalApplicants || 0,
+          messages: statsData.messages || 0,
         });
 
-        setDashboardData(res.data);
+        // Load recent job postings for overview
+        const jobsRes = await fetch("/api/employer/jobs", { cache: "no-store" });
+        const jobsData: { jobs: Job[] } = await jobsRes.json();
+        setJobList(jobsData.jobs || []);
       } catch (err) {
-        console.error("Failed to load employer dashboard:", err);
+        console.error("Failed to load employer data:", err);
+        setAccessDenied(true);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchUserAndDashboard();
-  }, [router]);
+    verifyAndLoadData();
+  }, []);
 
-  if (loading || !user || !dashboardData) {
+  if (loading) {
     return (
-      <div className="text-white text-center py-20">Loading dashboard...</div>
+      <div className="min-h-screen flex items-center justify-center text-white bg-black">
+        <p>Loading Employer Dashboard...</p>
+      </div>
+    );
+  }
+
+  if (accessDenied) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-white bg-black">
+        <p>Access Denied. You do not have permission to view this dashboard.</p>
+      </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-8">
-      <div className="max-w-6xl mx-auto bg-gray-800 p-6 rounded-lg shadow-lg">
-        <header className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gold mb-2">
-            Welcome, {dashboardData.businessName || "Employer"}
-          </h1>
-          <p className="text-gray-300 text-lg">
-            Manage your job listings, view applicants, and connect with top
-            Black talent.
-          </p>
-        </header>
+    <div className="min-h-screen flex flex-col">
+      {/* Header */}
+      <header className="bg-gray-900 text-white p-4">
+        <div className="container mx-auto flex justify-between items-center">
+          <h1 className="text-xl font-bold">Employer Dashboard</h1>
+          <nav className="space-x-4">
+            <Link href="/dashboard">
+              <a className="hover:underline">Dashboard Home</a>
+            </Link>
+            <Link href="/profile">
+              <a className="hover:underline">Profile</a>
+            </Link>
+          </nav>
+        </div>
+      </header>
 
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-          <StatCard label="Total Jobs" value={dashboardData.jobCount || 0} />
-          <StatCard label="Applicants" value={dashboardData.applicants || 0} />
-          <StatCard label="Messages" value={dashboardData.messages || 0} />
-        </section>
+      <div className="flex flex-1">
+        {/* Sidebar Navigation */}
+        <aside className="w-64 bg-gray-800 text-white p-4">
+          <nav>
+            <ul className="space-y-4">
+              <li>
+                <Link href="/dashboard/employer/overview">
+                  <a className="hover:underline">Overview</a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/dashboard/employer/jobs">
+                  <a className="hover:underline">Job Postings</a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/dashboard/employer/applicants">
+                  <a className="hover:underline">Applicants</a>
+                </Link>
+              </li>
+              <li>
+                <Link href="/dashboard/employer/tools">
+                  <a className="hover:underline">Employer Tools</a>
+                </Link>
+              </li>
+            </ul>
+          </nav>
+        </aside>
 
-        <section className="bg-gray-700 p-4 rounded-lg mb-12">
-          <h2 className="text-xl font-semibold text-gold mb-4">
-            Job Postings Overview
-          </h2>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={getSampleJobChartData()}>
-              <XAxis dataKey="month" stroke="#fff" />
-              <YAxis stroke="#fff" />
-              <Tooltip />
-              <Bar dataKey="jobs" fill="#FFD700" />
-            </BarChart>
-          </ResponsiveContainer>
-        </section>
+        {/* Main Content Area */}
+        <main className="flex-1 p-6 bg-gray-900 text-white">
+          {/* Top Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <StatCard label="Jobs Posted" value={stats.jobsPosted} />
+            <StatCard label="Total Applicants" value={stats.totalApplicants} />
+            <StatCard label="Messages" value={stats.messages} />
+          </div>
 
-        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <DashboardCard
-            title="Post a Job"
-            description="Create a new job listing to attract qualified candidates."
-            href="/post-job"
-            color="bg-gold"
-          />
-          <DashboardCard
-            title="View Listings"
-            description="Manage and edit all the jobs you’ve posted on the platform."
-            href="/employer/jobs"
-            color="bg-blue-600"
-          />
-          <DashboardCard
-            title="Applicants"
-            description="View and organize applicants for each of your job listings."
-            href="/employer/applicants"
-            color="bg-green-600"
-          />
-          <DashboardCard
-            title="Manage Company Profile"
-            description="Update your business details, logo, and contact info."
-            href="/employer/profile"
-            color="bg-purple-600"
-          />
-          <DashboardCard
-            title="Promote a Job"
-            description="Feature your job on the homepage or newsletter for more visibility."
-            href="/advertise-with-us"
-            color="bg-red-600"
-          />
-          <DashboardCard
-            title="Upgrade to Premium"
-            description="Access hiring tools, analytics, and boosted visibility."
-            href="/pricing"
-            color="bg-yellow-500 text-black"
-          />
-        </section>
-
-        <section className="mt-12">
-          <h2 className="text-2xl font-semibold text-gold mb-4">
-            Hiring Resources
-          </h2>
-          <p className="text-gray-300 mb-6">
-            Improve your recruitment process with tips, templates, and hiring
-            guides.
-          </p>
-          <div className="grid md:grid-cols-3 gap-6">
-            <ResourceCard
-              title="Diversity Hiring Tips"
-              href="/resources/diversity-hiring"
-              description="Learn how to build a more inclusive hiring pipeline."
+          {/* Quick Action Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <DashboardCard
+              title="📄 Post a New Job"
+              description="Create a job listing and reach top talent."
+              href="/post-job"
+              color="bg-blue-700"
             />
-            <ResourceCard
-              title="Job Description Templates"
-              href="/resources/job-templates"
-              description="Use proven templates to craft clear, attractive job listings."
+            <DashboardCard
+              title="👥 View Applicants"
+              description="Review applications and contact qualified candidates."
+              href="/dashboard/employer/applicants"
+              color="bg-purple-700"
             />
-            <ResourceCard
-              title="Interview Best Practices"
-              href="/resources/interviewing"
-              description="Conduct equitable and insightful interviews."
+            <DashboardCard
+              title="💬 Employer Tools"
+              description="Access resources like resume downloads and interview templates."
+              href="/dashboard/employer/tools"
+              color="bg-yellow-600 text-black"
             />
           </div>
-        </section>
 
-        <div className="text-center mt-12">
-          <p className="text-gray-400 text-sm">
-            Need help or custom hiring support?{" "}
-            <Link
-              href="/contact"
-              className="text-blue-400 underline hover:text-blue-300"
-            >
-              Contact our support team
-            </Link>
-            .
-          </p>
-        </div>
+          {/* Integrated Job Postings Section */}
+          <section>
+            <h2 className="text-2xl font-bold mb-4">Recent Job Postings</h2>
+            {jobList.length > 0 ? (
+              <div className="space-y-4">
+                {jobList.map((job) => (
+                  <JobCard key={job._id} job={job} />
+                ))}
+              </div>
+            ) : (
+              <p>
+                No job postings found.{" "}
+                <Link href="/post-job">
+                  <a className="underline">Post a new job</a>
+                </Link>
+              </p>
+            )}
+          </section>
+        </main>
       </div>
     </div>
   );
@@ -186,7 +184,7 @@ export default function EmployerDashboard() {
 
 function StatCard({ label, value }: { label: string; value: number }) {
   return (
-    <div className="bg-gray-700 rounded-lg p-4 text-center">
+    <div className="bg-gray-800 rounded-lg p-4 text-center">
       <h4 className="text-xl font-semibold text-gold">{value}</h4>
       <p className="text-sm text-gray-300 mt-1">{label}</p>
     </div>
@@ -206,42 +204,31 @@ function DashboardCard({
 }) {
   return (
     <Link href={href}>
-      <div
-        className={`p-6 rounded-lg shadow-md hover:shadow-xl transition cursor-pointer ${color}`}
+      <a
+        className={`block p-5 rounded-lg shadow hover:shadow-xl transition ${color}`}
       >
         <h3 className="text-xl font-bold mb-2">{title}</h3>
         <p className="text-sm">{description}</p>
-      </div>
+      </a>
     </Link>
   );
 }
 
-function ResourceCard({
-  title,
-  description,
-  href,
-}: {
-  title: string;
-  description: string;
-  href: string;
-}) {
+function JobCard({ job }: { job: Job }) {
   return (
-    <Link href={href}>
-      <div className="bg-gray-700 p-4 rounded-lg hover:shadow-lg transition">
-        <h4 className="text-lg font-semibold text-gold mb-2">{title}</h4>
-        <p className="text-gray-300 text-sm">{description}</p>
-      </div>
-    </Link>
+    <div className="p-4 bg-gray-800 rounded-lg">
+      <h3 className="text-lg font-bold">{job.title}</h3>
+      <p className="text-sm text-gray-300">
+        {job.location} &bull; {job.type}
+      </p>
+      <p className="text-sm mt-2">
+        {job.description.length > 100
+          ? job.description.substring(0, 100) + "..."
+          : job.description}
+      </p>
+      <Link href={`/dashboard/employer/jobs/${job._id}`}>
+        <a className="underline mt-2 inline-block">View Details</a>
+      </Link>
+    </div>
   );
-}
-
-function getSampleJobChartData() {
-  return [
-    { month: "Jan", jobs: 2 },
-    { month: "Feb", jobs: 4 },
-    { month: "Mar", jobs: 3 },
-    { month: "Apr", jobs: 6 },
-    { month: "May", jobs: 5 },
-    { month: "Jun", jobs: 4 },
-  ];
 }

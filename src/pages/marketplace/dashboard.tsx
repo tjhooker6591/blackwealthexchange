@@ -1,136 +1,74 @@
+// src/pages/marketplace/dashboard.tsx
 "use client";
 
-import React, { useEffect, useState } from "react";
-import Image from "next/legacy/image";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import Image from "next/image";
 
-interface Product {
+type Product = {
   _id: string;
   name: string;
-  price: string;
   category: string;
-  imageUrl: string;
-}
+  price: number;
+  imageUrl?: string;
+};
 
-interface Order {
+type Order = {
   _id: string;
-  productId: string;
-  buyerEmail: string;
-  quantity: number;
-  total: number;
-  status: string;
   createdAt: string;
-}
+  totalPrice: number;
+  // add other fields as needed
+};
 
-export default function SellerDashboard() {
+export default function SellerDashboardPage() {
+  const router = useRouter();
   const [products, setProducts] = useState<Product[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
-  const [loading, setLoading] = useState(true);
-  const router = useRouter();
 
   useEffect(() => {
-    const checkAuth = async () => {
-      const res = await fetch("/api/auth/verify");
-      if (res.status !== 200) {
-        router.push("/auth/seller-login");
-      }
-    };
-    checkAuth();
-  }, [router]);
+    // Fetch products
+    fetch("/api/marketplace/get-products", { cache: "no-store" })
+      .then((res) => res.json())
+      .then((data) => {
+        // data = { products: Product[], total: number }
+        setProducts(Array.isArray(data.products) ? data.products : []);
+      })
+      .catch((err) => console.error("Error fetching products:", err));
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [productRes, orderRes] = await Promise.all([
-          fetch("/api/marketplace/get-products"),
-          fetch("/api/marketplace/get-orders"),
-        ]);
-        const productsData = await productRes.json();
-        const ordersData = await orderRes.json();
-
-        setProducts(productsData);
-        setOrders(ordersData);
-      } catch (error) {
-        console.error("Error loading data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
+    // Fetch orders
+    fetch("/api/marketplace/get-orders", { cache: "no-store" })
+      .then((res) => res.json())
+      .then((data) => {
+        // data = { orders: Order[] }
+        setOrders(Array.isArray(data.orders) ? data.orders : []);
+      })
+      .catch((err) => console.error("Error fetching orders:", err));
   }, []);
 
   const handleEdit = (id: string) => {
-    router.push(`/marketplace/edit/${id}`);
+    router.push(`/marketplace/edit-product?id=${id}`);
   };
 
   const handleDelete = async (id: string) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this product?",
-    );
-    if (!confirmDelete) return;
-
-    try {
-      const res = await fetch(`/api/marketplace/delete-product?id=${id}`, {
-        method: "DELETE",
-      });
-      if (res.ok) {
-        setProducts((prev) => prev.filter((product) => product._id !== id));
-      } else {
-        const data = await res.json();
-        alert(`Failed to delete product: ${data.message}`);
-      }
-    } catch (error) {
-      console.error("Error deleting product:", error);
-      alert("An error occurred while deleting the product.");
-    }
+    if (!confirm("Are you sure you want to delete this product?")) return;
+    await fetch(`/api/marketplace/delete-products?id=${id}`, {
+      method: "DELETE",
+      cache: "no-store",
+    });
+    setProducts((prev) => prev.filter((p) => p._id !== id));
   };
-
-  const handleLogout = async () => {
-    await fetch("/api/auth/logout", { method: "POST" });
-    router.push("/auth/seller-login");
-  };
-
-  const totalRevenue = orders.reduce((sum, order) => sum + order.total, 0);
 
   return (
-    <div className="min-h-screen bg-black text-white p-6">
-      <div className="max-w-5xl mx-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-gold">Seller Dashboard</h1>
-          <button
-            onClick={handleLogout}
-            className="text-sm px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-          >
-            Logout
-          </button>
-        </div>
+    <div className="min-h-screen p-6 bg-black text-white">
+      <h1 className="text-3xl font-bold text-gold mb-8">Seller Dashboard</h1>
 
-        {/* Sales Overview */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-          <div className="bg-gray-800 p-4 rounded text-center border border-gold">
-            <h2 className="text-sm text-gray-400">Total Products</h2>
-            <p className="text-2xl font-bold text-white">{products.length}</p>
-          </div>
-          <div className="bg-gray-800 p-4 rounded text-center border border-gold">
-            <h2 className="text-sm text-gray-400">Orders</h2>
-            <p className="text-2xl font-bold text-white">{orders.length}</p>
-          </div>
-          <div className="bg-gray-800 p-4 rounded text-center border border-gold">
-            <h2 className="text-sm text-gray-400">Total Revenue</h2>
-            <p className="text-2xl font-bold text-white">
-              ${totalRevenue.toFixed(2)}
-            </p>
-          </div>
-        </div>
-
-        {/* Product List */}
-        <h2 className="text-xl font-semibold text-gold mb-4">Your Products</h2>
-        {loading ? (
-          <p className="text-gray-400">Loading products...</p>
-        ) : products.length === 0 ? (
-          <p className="text-gray-400">You have not added any products yet.</p>
+      {/* Products Section */}
+      <section className="mb-12">
+        <h2 className="text-2xl font-semibold mb-4">My Products</h2>
+        {products.length === 0 ? (
+          <p className="text-gray-400">You have no products listed.</p>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {products.map((product) => (
               <div
                 key={product._id}
@@ -172,43 +110,33 @@ export default function SellerDashboard() {
             ))}
           </div>
         )}
+      </section>
 
-        {/* Orders Table */}
-        <h2 className="text-xl font-semibold text-gold mb-4">Recent Orders</h2>
+      {/* Orders Section */}
+      <section>
+        <h2 className="text-2xl font-semibold mb-4">Recent Orders</h2>
         {orders.length === 0 ? (
-          <p className="text-gray-400">No orders found.</p>
+          <p className="text-gray-400">No orders have been placed yet.</p>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm border border-gray-700 bg-gray-900">
-              <thead>
-                <tr className="text-gold border-b border-gray-700">
-                  <th className="p-2">Buyer</th>
-                  <th className="p-2">Quantity</th>
-                  <th className="p-2">Total</th>
-                  <th className="p-2">Status</th>
-                  <th className="p-2">Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {orders.map((order) => (
-                  <tr
-                    key={order._id}
-                    className="border-t border-gray-800 text-white"
-                  >
-                    <td className="p-2">{order.buyerEmail}</td>
-                    <td className="p-2">{order.quantity}</td>
-                    <td className="p-2">${order.total.toFixed(2)}</td>
-                    <td className="p-2">{order.status}</td>
-                    <td className="p-2">
-                      {new Date(order.createdAt).toLocaleDateString()}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="space-y-4">
+            {orders.map((order) => (
+              <div
+                key={order._id}
+                className="bg-gray-800 p-4 rounded border border-gray-700"
+              >
+                <p className="text-white mb-1">Order ID: {order._id}</p>
+                <p className="text-gray-400 mb-1">
+                  Placed: {new Date(order.createdAt).toLocaleString()}
+                </p>
+                <p className="text-gray-400">
+                  Total: ${order.totalPrice.toFixed(2)}
+                </p>
+              </div>
+            ))}
           </div>
         )}
-      </div>
+      </section>
     </div>
   );
 }
+
