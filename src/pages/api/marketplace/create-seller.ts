@@ -65,12 +65,10 @@ export default async function handler(
     // Insert and capture the insertedId
     const result = await sellers.insertOne(newSeller);
 
-    return res
-      .status(201)
-      .json({
-        message: "Seller created successfully",
-        sellerId: result.insertedId,
-      });
+    return res.status(201).json({
+      message: "Seller created successfully",
+      sellerId: result.insertedId,
+    });
   } catch (error) {
     console.error("Create Seller Error:", error);
     return res.status(500).json({ error: "Internal Server Error" });

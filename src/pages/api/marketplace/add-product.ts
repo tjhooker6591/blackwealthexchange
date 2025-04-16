@@ -78,12 +78,10 @@ export default async function handler(
 
         await collection.insertOne(newProduct);
 
-        return res
-          .status(201)
-          .json({
-            message: "Product added successfully!",
-            product: newProduct,
-          });
+        return res.status(201).json({
+          message: "Product added successfully!",
+          product: newProduct,
+        });
       } catch (dbError) {
         console.error("Database error:", dbError);
         return res.status(500).json({ error: "Failed to save product." });
