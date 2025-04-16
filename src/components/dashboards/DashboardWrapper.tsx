@@ -44,15 +44,15 @@ export default function DashboardWrapper() {
 
   return (
     <div className="min-h-screen bg-black text-white p-6">
-      <h1 className="text-3xl font-bold text-gold mb-4">BWE Global Dashboard</h1>
+      <h1 className="text-3xl font-bold text-gold mb-4">
+        BWE Global Dashboard
+      </h1>
       {accountType === "seller" && <SellerDashboard />}
       {accountType === "employer" && <EmployerDashboard />}
       {accountType === "business" && <BusinessDashboard />}
       {accountType === "user" && <UserDashboard />}
       {!["seller", "employer", "business", "user"].includes(accountType) && (
-        <p className="text-red-400">
-          Unknown account type: {accountType}
-        </p>
+        <p className="text-red-400">Unknown account type: {accountType}</p>
       )}
     </div>
   );

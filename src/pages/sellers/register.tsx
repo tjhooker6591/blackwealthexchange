@@ -26,7 +26,7 @@ export default function SellerRegister() {
   });
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -47,9 +47,9 @@ export default function SellerRegister() {
         body: JSON.stringify({
           businessName: formData.business_name,
           email: formData.email,
-          password: formData.full_name,        // adjust as needed
-          businessAddress: formData.website,   // adjust as needed
-          businessPhone: formData.category,    // adjust as needed
+          password: formData.full_name, // adjust as needed
+          businessAddress: formData.website, // adjust as needed
+          businessPhone: formData.category, // adjust as needed
           description: formData.description,
         }),
       });

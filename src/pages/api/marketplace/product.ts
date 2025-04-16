@@ -5,7 +5,7 @@ import clientPromise from "@/lib/mongodb";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   // Disable HTTP caching
   res.setHeader("Cache-Control", "no-store, max-age=0");
@@ -34,9 +34,7 @@ export default async function handler(
     const db = client.db("bwes-cluster");
 
     // Fetch the product
-    const product = await db
-      .collection("products")
-      .findOne({ _id: productId });
+    const product = await db.collection("products").findOne({ _id: productId });
 
     if (!product) {
       return res.status(404).json({ error: "Product not found" });

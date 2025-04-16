@@ -22,7 +22,7 @@ const safeField = (field: string | string[] | undefined): string =>
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   // Disable HTTP caching
   res.setHeader("Cache-Control", "no-store, max-age=0");
@@ -80,11 +80,14 @@ export default async function handler(
 
         return res
           .status(201)
-          .json({ message: "Product added successfully!", product: newProduct });
+          .json({
+            message: "Product added successfully!",
+            product: newProduct,
+          });
       } catch (dbError) {
         console.error("Database error:", dbError);
         return res.status(500).json({ error: "Failed to save product." });
       }
-    }
+    },
   );
 }

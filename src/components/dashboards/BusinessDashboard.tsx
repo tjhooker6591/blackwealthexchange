@@ -109,7 +109,8 @@ export default function BusinessDashboard() {
               Welcome, {user.businessName || user.email}
             </h2>
             <p className="text-gray-300 mb-6">
-              Manage your business profile, run ads, and grow your visibility across the platform.
+              Manage your business profile, run ads, and grow your visibility
+              across the platform.
             </p>
 
             <div className="grid md:grid-cols-2 gap-6">
@@ -167,4 +168,3 @@ function DashboardCard({
     </Link>
   );
 }
-

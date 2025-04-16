@@ -42,7 +42,9 @@ export default function EmployerDashboard() {
         }
 
         // Load employer stats
-        const statsRes = await fetch("/api/employer/stats", { cache: "no-store" });
+        const statsRes = await fetch("/api/employer/stats", {
+          cache: "no-store",
+        });
         const statsData = await statsRes.json();
         setStats({
           jobsPosted: statsData.jobsPosted || 0,
@@ -51,7 +53,9 @@ export default function EmployerDashboard() {
         });
 
         // Load recent job postings for overview
-        const jobsRes = await fetch("/api/employer/jobs", { cache: "no-store" });
+        const jobsRes = await fetch("/api/employer/jobs", {
+          cache: "no-store",
+        });
         const jobsData: { jobs: Job[] } = await jobsRes.json();
         setJobList(jobsData.jobs || []);
       } catch (err) {

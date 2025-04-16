@@ -22,7 +22,7 @@ interface UserRecord {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   // Disable HTTP caching
   res.setHeader("Cache-Control", "no-store, max-age=0");
@@ -106,7 +106,7 @@ export default async function handler(
         accountType: actualAccountType,
       },
       JWT_SECRET,
-      { expiresIn: "7d" }
+      { expiresIn: "7d" },
     );
 
     // Set cookies
@@ -145,5 +145,3 @@ export default async function handler(
       .json({ success: false, error: "Internal Server Error" });
   }
 }
-
-

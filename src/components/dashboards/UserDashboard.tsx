@@ -33,7 +33,7 @@ type ChartData = {
 export default function UserDashboard() {
   const [user, setUser] = useState<UserType | null>(null);
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(
-    null
+    null,
   );
   const [chartData, setChartData] = useState<ChartData>([]);
   const [loading, setLoading] = useState(true);
@@ -61,7 +61,7 @@ export default function UserDashboard() {
           }),
           fetch(
             `/api/user/applications-overview?email=${userData.user.email}`,
-            { cache: "no-store" }
+            { cache: "no-store" },
           ),
         ]);
 
@@ -106,8 +106,8 @@ export default function UserDashboard() {
             Welcome, {dashboardData.fullName || user.email}
           </h1>
           <p className="text-gray-300 text-lg">
-            Your central hub for discovering opportunities, managing your career,
-            and building a successful future.
+            Your central hub for discovering opportunities, managing your
+            career, and building a successful future.
           </p>
         </header>
 
@@ -117,10 +117,7 @@ export default function UserDashboard() {
             label="Applications"
             value={dashboardData.applications || 0}
           />
-          <StatCard
-            label="Saved Jobs"
-            value={dashboardData.savedJobs || 0}
-          />
+          <StatCard label="Saved Jobs" value={dashboardData.savedJobs || 0} />
           <StatCard label="Messages" value={dashboardData.messages || 0} />
         </section>
 

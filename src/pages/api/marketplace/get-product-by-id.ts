@@ -5,7 +5,7 @@ import clientPromise from "@/lib/mongodb";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   // Disable HTTP caching
   res.setHeader("Cache-Control", "no-store, max-age=0");
@@ -32,9 +32,7 @@ export default async function handler(
     // Reuse the shared MongoDB client
     const client = await clientPromise;
     const db = client.db("bwes-cluster");
-    const product = await db
-      .collection("products")
-      .findOne({ _id: productId });
+    const product = await db.collection("products").findOne({ _id: productId });
 
     if (!product) {
       return res.status(404).json({ error: "Product not found" });
@@ -46,4 +44,3 @@ export default async function handler(
     return res.status(500).json({ error: "Internal Server Error" });
   }
 }
-

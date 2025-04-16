@@ -23,7 +23,7 @@ interface UserProfile {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   // Disable HTTP caching so the client always gets fresh user data
   res.setHeader("Cache-Control", "no-store, max-age=0");
@@ -95,4 +95,3 @@ export default async function handler(
       .json({ user: null, error: "Invalid or expired token." });
   }
 }
-

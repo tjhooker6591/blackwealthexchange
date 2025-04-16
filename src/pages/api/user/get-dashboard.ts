@@ -5,7 +5,7 @@ import { ObjectId } from "mongodb";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   // Only allow GET requests.
   if (req.method !== "GET") {
@@ -41,7 +41,7 @@ export default async function handler(
       // Map savedJobs IDs to ObjectId instances (if needed).
       const ids = user.savedJobs.map((id: string) => new ObjectId(id));
       savedJobsCount = await db.collection("jobs").countDocuments({
-        _id: { $in: ids }
+        _id: { $in: ids },
       });
     }
 
@@ -52,19 +52,21 @@ export default async function handler(
       const ids = user.applications.map((id: string) => new ObjectId(id));
       // Change "applications" below to the appropriate collection name if different.
       applicationsCount = await db.collection("applications").countDocuments({
-        _id: { $in: ids }
+        _id: { $in: ids },
       });
     }
 
     // For messages, assume that the count is stored in an array in the user document.
-    const messagesCount = Array.isArray(user.messages) ? user.messages.length : 0;
+    const messagesCount = Array.isArray(user.messages)
+      ? user.messages.length
+      : 0;
 
     // Return the real data as JSON.
     return res.status(200).json({
       fullName,
       savedJobs: savedJobsCount,
       applications: applicationsCount,
-      messages: messagesCount
+      messages: messagesCount,
     });
   } catch (error) {
     console.error("Dashboard fetch error:", error);

@@ -8,7 +8,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-key";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   // 1) Disable HTTP caching so client always fetches fresh data
   res.setHeader("Cache-Control", "no-store, max-age=0");
@@ -75,4 +75,3 @@ export default async function handler(
     return res.status(500).json({ error: "Failed to fetch seller stats" });
   }
 }
-

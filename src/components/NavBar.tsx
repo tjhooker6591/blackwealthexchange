@@ -11,7 +11,10 @@ export default function NavBar() {
     <nav className="bg-black text-white relative z-50">
       <div className="container mx-auto px-4 flex items-center justify-between h-16">
         {/* Logo + Brand */}
-        <Link href="/" className="flex items-center space-x-2 cursor-pointer min-w-0">
+        <Link
+          href="/"
+          className="flex items-center space-x-2 cursor-pointer min-w-0"
+        >
           <Image
             src="/bwe-logo.png"
             alt="BWE Logo"
@@ -19,13 +22,15 @@ export default function NavBar() {
             height={40}
             priority
           />
-          <span className="
+          <span
+            className="
             text-gold font-bold
             text-sm sm:text-lg
             flex-shrink
             truncate
             max-w-full
-          ">
+          "
+          >
             Black Wealth Exchange
           </span>
         </Link>
@@ -35,7 +40,10 @@ export default function NavBar() {
           <Link href="/about" className="hover:text-gold font-semibold">
             Our Mission & About
           </Link>
-          <Link href="/global-timeline" className="hover:text-gold font-semibold">
+          <Link
+            href="/global-timeline"
+            className="hover:text-gold font-semibold"
+          >
             The Journey
           </Link>
           <div className="relative group">
@@ -43,30 +51,54 @@ export default function NavBar() {
               Student Resources
             </button>
             <div className="absolute left-0 top-full mt-0 z-50 bg-white text-black py-2 px-4 rounded shadow-md hidden group-hover:block min-w-[180px]">
-              <Link href="/black-student-opportunities/grants" className="block py-1 hover:text-gold">
+              <Link
+                href="/black-student-opportunities/grants"
+                className="block py-1 hover:text-gold"
+              >
                 Grants
               </Link>
-              <Link href="/black-student-opportunities/scholarships" className="block py-1 hover:text-gold">
+              <Link
+                href="/black-student-opportunities/scholarships"
+                className="block py-1 hover:text-gold"
+              >
                 Scholarships
               </Link>
-              <Link href="/black-student-opportunities/internships" className="block py-1 hover:text-gold">
+              <Link
+                href="/black-student-opportunities/internships"
+                className="block py-1 hover:text-gold"
+              >
                 Internships
               </Link>
-              <Link href="/black-student-opportunities/mentorship" className="block py-1 hover:text-gold">
+              <Link
+                href="/black-student-opportunities/mentorship"
+                className="block py-1 hover:text-gold"
+              >
                 Mentorship
               </Link>
             </div>
           </div>
-          <Link href="/business-directory" className="hover:text-gold font-semibold">
+          <Link
+            href="/business-directory"
+            className="hover:text-gold font-semibold"
+          >
             Business Directory
           </Link>
-          <Link href="/financial-literacy" className="hover:text-gold font-semibold">
+          <Link
+            href="/financial-literacy"
+            className="hover:text-gold font-semibold"
+          >
             Financial 101
           </Link>
-          <Link href="/real-estate-investment" className="hover:text-gold font-semibold">
+          <Link
+            href="/real-estate-investment"
+            className="hover:text-gold font-semibold"
+          >
             Housing & Lending
           </Link>
-          <Link href="/black-entertainment-news" className="hover:text-gold font-semibold">
+          <Link
+            href="/black-entertainment-news"
+            className="hover:text-gold font-semibold"
+          >
             Entertainment
           </Link>
         </div>

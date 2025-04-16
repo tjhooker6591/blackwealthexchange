@@ -15,7 +15,7 @@ interface DecodedToken {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   // Disable HTTP caching
   res.setHeader("Cache-Control", "no-store, max-age=0");
@@ -83,7 +83,7 @@ export default async function handler(
           category,
           updatedAt: new Date(),
         },
-      }
+      },
     );
 
     return res
