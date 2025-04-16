@@ -46,10 +46,10 @@ export default function NavBar() {
     ? user.accountType === "seller"
       ? "/marketplace/dashboard"
       : user.accountType === "business"
-      ? "/add-business"
-      : user.accountType === "employer"
-      ? "/employer/jobs"
-      : "/dashboard"
+        ? "/add-business"
+        : user.accountType === "employer"
+          ? "/employer/jobs"
+          : "/dashboard"
     : "/dashboard";
 
   return (
@@ -309,4 +309,3 @@ export default function NavBar() {
     </nav>
   );
 }
-
