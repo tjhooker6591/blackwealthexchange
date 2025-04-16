@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
 export default function Login() {
   const router = useRouter();
+  const { accountType: queryType } = router.query as { accountType?: string };
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -15,8 +17,50 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
+  // 1) If already logged in, send to dashboard immediately
+  useEffect(() => {
+    fetch("/api/auth/me", { cache: "no-store" })
+      .then((res) => {
+        if (res.ok) return res.json();
+        throw new Error("Not authenticated");
+      })
+      .then(({ user }) => {
+        if (user?.accountType) {
+          // route them based on role
+          switch (user.accountType) {
+            case "seller":
+              router.replace("/marketplace/dashboard");
+              break;
+            case "business":
+              router.replace("/add-business");
+              break;
+            case "employer":
+              router.replace("/employer/jobs");
+              break;
+            default:
+              router.replace("/dashboard");
+          }
+        }
+      })
+      .catch(() => {
+        // not logged in, stay on login page
+      });
+  }, [router]);
+
+  // 2) Pre‑select accountType from query string if present
+  useEffect(() => {
+    if (
+      queryType === "user" ||
+      queryType === "seller" ||
+      queryType === "business" ||
+      queryType === "employer"
+    ) {
+      setFormData((f) => ({ ...f, accountType: queryType }));
+    }
+  }, [queryType]);
+
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setError("");
@@ -24,37 +68,30 @@ export default function Login() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const { email, password, accountType } = formData;
 
-    if (!formData.email || !formData.password || !formData.accountType) {
+    if (!email || !password || !accountType) {
       setError("All fields are required.");
       return;
     }
-
-    if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
+    if (!/^\S+@\S+\.\S+$/.test(email)) {
       setError("Invalid email format.");
       return;
     }
 
     setLoading(true);
-
     try {
-      const response = await fetch("/api/auth/login", {
+      const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-
-      const data = await response.json();
-
-      if (!response.ok || !data.success) {
+      const data = await res.json();
+      if (!res.ok || !data.success) {
         throw new Error(data.error || "Login failed.");
       }
 
-      if (typeof window !== "undefined") {
-        localStorage.setItem("user", JSON.stringify(data.user));
-      }
-
-      // ✅ Redirect based on account type
+      // 3) Redirect based on role
       switch (data.user.accountType) {
         case "seller":
           router.push("/marketplace/dashboard");
@@ -65,17 +102,11 @@ export default function Login() {
         case "employer":
           router.push("/employer/jobs");
           break;
-        case "user":
         default:
-          router.push("/");
-          break;
+          router.push("/dashboard");
       }
     } catch (err: unknown) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("An unknown error occurred.");
-      }
+      setError(err instanceof Error ? err.message : "An unknown error occurred.");
     } finally {
       setLoading(false);
     }
@@ -141,7 +172,7 @@ export default function Login() {
             />
             <button
               type="button"
-              onClick={() => setShowPassword(!showPassword)}
+              onClick={() => setShowPassword((v) => !v)}
               className="absolute right-3 top-[38px] text-gray-500"
             >
               {showPassword ? "🙈" : "👁"}

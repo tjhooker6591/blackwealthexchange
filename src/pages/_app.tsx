@@ -1,3 +1,4 @@
+// src/pages/_app.tsx
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import Head from "next/head";
@@ -23,9 +24,9 @@ export default function App({
       const imgs = document.querySelectorAll("img");
       imgs.forEach((img) => img.setAttribute("draggable", "false"));
     };
-    disableImageDrag(); // Run once on load
+    disableImageDrag();
 
-    // Optional: Detect PrintScreen and blur content
+    // Blur on PrintScreen
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "PrintScreen") {
         document.body.style.filter = "blur(10px)";
@@ -36,7 +37,6 @@ export default function App({
     };
     window.addEventListener("keydown", handleKeyDown);
 
-    // Cleanup on unmount
     return () => {
       document.removeEventListener("contextmenu", disableContextMenu);
       document.body.style.userSelect = "auto";
@@ -47,21 +47,24 @@ export default function App({
   return (
     <SessionProvider session={session}>
       <Head>
-        <link rel="icon" href="/favicon.png" type="image/png" />
-        <link rel="shortcut icon" href="/favicon.ico" />
         <title>Black Wealth Exchange</title>
         <meta
           name="description"
           content="Empowering Black-owned businesses and wealth-building."
         />
+        <link rel="icon" href="/favicon.png" type="image/png" />
+        <link rel="shortcut icon" href="/favicon.ico" />
       </Head>
 
+      {/* Global Header / Navigation */}
       <NavBar />
 
+      {/* Page Content */}
       <main className="min-h-screen bg-[var(--background)] text-[var(--foreground)] transition-colors duration-300">
         <Component {...pageProps} />
       </main>
 
+      {/* Global Footer */}
       <Footer />
     </SessionProvider>
   );
