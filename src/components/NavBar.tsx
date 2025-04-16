@@ -46,10 +46,10 @@ export default function NavBar() {
     ? user.accountType === "seller"
       ? "/marketplace/dashboard"
       : user.accountType === "business"
-        ? "/add-business"
-        : user.accountType === "employer"
-          ? "/employer/jobs"
-          : "/dashboard"
+      ? "/add-business"
+      : user.accountType === "employer"
+      ? "/employer/jobs"
+      : "/dashboard"
     : "/dashboard";
 
   return (
@@ -173,6 +173,7 @@ export default function NavBar() {
           <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
             <path d="M4 6h16M4 12h16M4 18h16" />
           </svg>
+          <span className="ml-2 font-semibold">Menu</span>
         </button>
       </div>
 
@@ -308,3 +309,4 @@ export default function NavBar() {
     </nav>
   );
 }
+
