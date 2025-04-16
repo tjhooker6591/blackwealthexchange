@@ -33,10 +33,10 @@ export default function NavBar() {
     ? user.accountType === "seller"
       ? "/marketplace/dashboard"
       : user.accountType === "business"
-      ? "/add-business"
-      : user.accountType === "employer"
-      ? "/employer/jobs"
-      : "/dashboard"
+        ? "/add-business"
+        : user.accountType === "employer"
+          ? "/employer/jobs"
+          : "/dashboard"
     : "/dashboard";
 
   return (
@@ -45,7 +45,9 @@ export default function NavBar() {
         {/* Logo */}
         <Link href="/" className="flex items-center space-x-2">
           <Image src="/bwe-logo.png" alt="BWE Logo" width={40} height={40} />
-          <span className="text-gold font-bold truncate">Black Wealth Exchange</span>
+          <span className="text-gold font-bold truncate">
+            Black Wealth Exchange
+          </span>
         </Link>
 
         {/* Desktop Nav */}
@@ -53,7 +55,10 @@ export default function NavBar() {
           <Link href="/about" className="hover:text-gold font-semibold">
             About
           </Link>
-          <Link href="/global-timeline" className="hover:text-gold font-semibold">
+          <Link
+            href="/global-timeline"
+            className="hover:text-gold font-semibold"
+          >
             Journey
           </Link>
 
@@ -62,30 +67,56 @@ export default function NavBar() {
             <button className="hover:text-gold font-semibold">Menu</button>
             <div className="absolute left-0 mt-2 w-48 bg-white text-black rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none group-hover:pointer-events-auto">
               <div className="py-2">
-                <span className="block px-4 py-1 font-bold">Student Resources</span>
-                <Link href="/black-student-opportunities/grants" className="block px-4 py-1 hover:bg-gray-100">
+                <span className="block px-4 py-1 font-bold">
+                  Student Resources
+                </span>
+                <Link
+                  href="/black-student-opportunities/grants"
+                  className="block px-4 py-1 hover:bg-gray-100"
+                >
                   Grants
                 </Link>
-                <Link href="/black-student-opportunities/scholarships" className="block px-4 py-1 hover:bg-gray-100">
+                <Link
+                  href="/black-student-opportunities/scholarships"
+                  className="block px-4 py-1 hover:bg-gray-100"
+                >
                   Scholarships
                 </Link>
-                <Link href="/black-student-opportunities/internships" className="block px-4 py-1 hover:bg-gray-100">
+                <Link
+                  href="/black-student-opportunities/internships"
+                  className="block px-4 py-1 hover:bg-gray-100"
+                >
                   Internships
                 </Link>
-                <Link href="/black-student-opportunities/mentorship" className="block px-4 py-1 hover:bg-gray-100">
+                <Link
+                  href="/black-student-opportunities/mentorship"
+                  className="block px-4 py-1 hover:bg-gray-100"
+                >
                   Mentorship
                 </Link>
                 <hr className="my-1" />
-                <Link href="/business-directory" className="block px-4 py-1 hover:bg-gray-100">
+                <Link
+                  href="/business-directory"
+                  className="block px-4 py-1 hover:bg-gray-100"
+                >
                   Business Directory
                 </Link>
-                <Link href="/financial-literacy" className="block px-4 py-1 hover:bg-gray-100">
+                <Link
+                  href="/financial-literacy"
+                  className="block px-4 py-1 hover:bg-gray-100"
+                >
                   Financial 101
                 </Link>
-                <Link href="/real-estate-investment" className="block px-4 py-1 hover:bg-gray-100">
+                <Link
+                  href="/real-estate-investment"
+                  className="block px-4 py-1 hover:bg-gray-100"
+                >
                   Housing & Lending
                 </Link>
-                <Link href="/black-entertainment-news" className="block px-4 py-1 hover:bg-gray-100">
+                <Link
+                  href="/black-entertainment-news"
+                  className="block px-4 py-1 hover:bg-gray-100"
+                >
                   Entertainment
                 </Link>
               </div>
@@ -95,10 +126,16 @@ export default function NavBar() {
           {/* Auth Links */}
           {user ? (
             <>
-              <Link href={dashboardHref} className="hover:text-gold font-semibold">
+              <Link
+                href={dashboardHref}
+                className="hover:text-gold font-semibold"
+              >
                 Dashboard
               </Link>
-              <button onClick={handleLogout} className="hover:text-red-500 font-semibold">
+              <button
+                onClick={handleLogout}
+                className="hover:text-red-500 font-semibold"
+              >
                 Sign Out
               </button>
             </>
@@ -130,43 +167,85 @@ export default function NavBar() {
       {mobileMenuOpen && (
         <div className="md:hidden bg-black border-t border-gold px-4 pb-4 space-y-2">
           {/* Primary Links */}
-          <Link href="/about" className="block py-2 hover:text-gold" onClick={() => setMobileMenuOpen(false)}>
+          <Link
+            href="/about"
+            className="block py-2 hover:text-gold"
+            onClick={() => setMobileMenuOpen(false)}
+          >
             About
           </Link>
-          <Link href="/global-timeline" className="block py-2 hover:text-gold" onClick={() => setMobileMenuOpen(false)}>
+          <Link
+            href="/global-timeline"
+            className="block py-2 hover:text-gold"
+            onClick={() => setMobileMenuOpen(false)}
+          >
             Journey
           </Link>
 
           {/* Student Resources */}
           <details className="py-2">
-            <summary className="font-semibold cursor-pointer hover:text-gold">Student Resources</summary>
+            <summary className="font-semibold cursor-pointer hover:text-gold">
+              Student Resources
+            </summary>
             <div className="pl-4 mt-1 space-y-1">
-              <Link href="/black-student-opportunities/grants" className="block hover:text-gold" onClick={() => setMobileMenuOpen(false)}>
+              <Link
+                href="/black-student-opportunities/grants"
+                className="block hover:text-gold"
+                onClick={() => setMobileMenuOpen(false)}
+              >
                 Grants
               </Link>
-              <Link href="/black-student-opportunities/scholarships" className="block hover:text-gold" onClick={() => setMobileMenuOpen(false)}>
+              <Link
+                href="/black-student-opportunities/scholarships"
+                className="block hover:text-gold"
+                onClick={() => setMobileMenuOpen(false)}
+              >
                 Scholarships
               </Link>
-              <Link href="/black-student-opportunities/internships" className="block hover:text-gold" onClick={() => setMobileMenuOpen(false)}>
+              <Link
+                href="/black-student-opportunities/internships"
+                className="block hover:text-gold"
+                onClick={() => setMobileMenuOpen(false)}
+              >
                 Internships
               </Link>
-              <Link href="/black-student-opportunities/mentorship" className="block hover:text-gold" onClick={() => setMobileMenuOpen(false)}>
+              <Link
+                href="/black-student-opportunities/mentorship"
+                className="block hover:text-gold"
+                onClick={() => setMobileMenuOpen(false)}
+              >
                 Mentorship
               </Link>
             </div>
           </details>
 
           {/* Other Resources */}
-          <Link href="/business-directory" className="block py-2 hover:text-gold" onClick={() => setMobileMenuOpen(false)}>
+          <Link
+            href="/business-directory"
+            className="block py-2 hover:text-gold"
+            onClick={() => setMobileMenuOpen(false)}
+          >
             Business Directory
           </Link>
-          <Link href="/financial-literacy" className="block py-2 hover:text-gold" onClick={() => setMobileMenuOpen(false)}>
+          <Link
+            href="/financial-literacy"
+            className="block py-2 hover:text-gold"
+            onClick={() => setMobileMenuOpen(false)}
+          >
             Financial 101
           </Link>
-          <Link href="/real-estate-investment" className="block py-2 hover:text-gold" onClick={() => setMobileMenuOpen(false)}>
+          <Link
+            href="/real-estate-investment"
+            className="block py-2 hover:text-gold"
+            onClick={() => setMobileMenuOpen(false)}
+          >
             Housing & Lending
           </Link>
-          <Link href="/black-entertainment-news" className="block py-2 hover:text-gold" onClick={() => setMobileMenuOpen(false)}>
+          <Link
+            href="/black-entertainment-news"
+            className="block py-2 hover:text-gold"
+            onClick={() => setMobileMenuOpen(false)}
+          >
             Entertainment
           </Link>
 
@@ -176,7 +255,11 @@ export default function NavBar() {
           {/* Auth Links */}
           {user ? (
             <>
-              <Link href={dashboardHref} className="block py-2 hover:text-gold" onClick={() => setMobileMenuOpen(false)}>
+              <Link
+                href={dashboardHref}
+                className="block py-2 hover:text-gold"
+                onClick={() => setMobileMenuOpen(false)}
+              >
                 Dashboard
               </Link>
               <button
@@ -191,10 +274,18 @@ export default function NavBar() {
             </>
           ) : (
             <>
-              <Link href="/login" className="block py-2 hover:text-gold" onClick={() => setMobileMenuOpen(false)}>
+              <Link
+                href="/login"
+                className="block py-2 hover:text-gold"
+                onClick={() => setMobileMenuOpen(false)}
+              >
                 Log In
               </Link>
-              <Link href="/signup" className="block py-2 hover:text-gold" onClick={() => setMobileMenuOpen(false)}>
+              <Link
+                href="/signup"
+                className="block py-2 hover:text-gold"
+                onClick={() => setMobileMenuOpen(false)}
+              >
                 Sign Up
               </Link>
             </>
@@ -204,5 +295,3 @@ export default function NavBar() {
     </nav>
   );
 }
-
-

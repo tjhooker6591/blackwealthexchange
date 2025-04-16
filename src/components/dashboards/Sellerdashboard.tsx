@@ -1,27 +1,33 @@
+// src/components/dashboards/SellerDashboard.tsx
 "use client";
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-// Note: We removed useRouter redirection and now show an error message if not authorized.
+
+type Stats = {
+  products: number;
+  orders: number;
+  revenue: number;
+};
+
 export default function SellerDashboard() {
-  const [stats, setStats] = useState({ products: 0, orders: 0, revenue: 0 });
+  const [stats, setStats] = useState<Stats>({ products: 0, orders: 0, revenue: 0 });
   const [loading, setLoading] = useState(true);
   const [accessDenied, setAccessDenied] = useState(false);
 
   useEffect(() => {
     const verifyAndLoadStats = async () => {
       try {
-        const sessionRes = await fetch("/api/auth/me");
+        // Verify session & role
+        const sessionRes = await fetch("/api/auth/me", { cache: "no-store" });
         const sessionData = await sessionRes.json();
-
-        // Instead of redirecting, if the user is not a seller, flag access denied.
         if (sessionData?.user?.accountType !== "seller") {
           setAccessDenied(true);
           return;
         }
 
-        // Fetch seller-specific dashboard stats
-        const statsRes = await fetch("/api/marketplace/stats");
+        // Fetch seller stats
+        const statsRes = await fetch("/api/marketplace/stats", { cache: "no-store" });
         const statsData = await statsRes.json();
         setStats({
           products: statsData.products || 0,
@@ -42,7 +48,7 @@ export default function SellerDashboard() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center text-white bg-black">
-        <p>Loading Seller Dashboard...</p>
+        <p>Loading Seller Dashboard…</p>
       </div>
     );
   }
@@ -62,91 +68,56 @@ export default function SellerDashboard() {
         <div className="container mx-auto flex justify-between items-center">
           <h1 className="text-xl font-bold">Seller Dashboard</h1>
           <nav>
-            <Link href="/dashboard">
-              <span className="mr-4 hover:underline">Dashboard Home</span>
+            <Link href="/dashboard" className="mr-4 hover:underline">
+              Dashboard Home
             </Link>
-            <Link href="/profile">
-              <span className="hover:underline">Profile</span>
+            <Link href="/profile" className="hover:underline">
+              Profile
             </Link>
           </nav>
         </div>
       </header>
 
-      <div className="flex flex-1">
-        {/* Sidebar Navigation */}
-        <aside className="w-64 bg-gray-800 text-white p-4">
-          <nav>
-            <ul className="space-y-4">
-              <li>
-                <Link href="/dashboard/seller/overview">
-                  <a className="hover:underline">Overview</a>
-                </Link>
-              </li>
-              <li>
-                <Link href="/dashboard/seller/orders">
-                  <a className="hover:underline">Orders</a>
-                </Link>
-              </li>
-              <li>
-                <Link href="/dashboard/seller/products">
-                  <a className="hover:underline">Products</a>
-                </Link>
-              </li>
-              <li>
-                <Link href="/dashboard/seller/earnings">
-                  <a className="hover:underline">Earnings</a>
-                </Link>
-              </li>
-            </ul>
-          </nav>
-        </aside>
+      <div className="flex-1 p-6 bg-black text-white">
+        {/* Top Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <StatCard label="Products Listed" value={stats.products} />
+          <StatCard label="Orders Received" value={stats.orders} />
+          <StatCard label="Total Revenue" value={`$${stats.revenue.toFixed(2)}`} />
+        </div>
 
-        {/* Main Content Area */}
-        <main className="flex-1 p-6 bg-black text-white">
-          <div className="mb-8">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <StatCard label="Products Listed" value={stats.products} />
-              <StatCard label="Orders Received" value={stats.orders} />
-              <StatCard
-                label="Total Revenue"
-                value={`$${stats.revenue.toFixed(2)}`}
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <DashboardCard
-              title="➕ Add Product"
-              description="Add new items to your shop and grow your storefront."
-              href="/marketplace/add-products"
-              color="bg-indigo-700"
-            />
-            <DashboardCard
-              title="🛒 View My Products"
-              description="Manage, edit, or remove the items you’ve listed."
-              href="/dashboard/seller/products"
-              color="bg-teal-600"
-            />
-            <DashboardCard
-              title="📦 View Orders"
-              description="Track customer orders and manage delivery progress."
-              href="/dashboard/seller/orders"
-              color="bg-amber-700"
-            />
-            <DashboardCard
-              title="📊 Analytics"
-              description="View sales performance and track your revenue."
-              href="/dashboard/seller/analytics"
-              color="bg-pink-700"
-            />
-          </div>
-        </main>
+        {/* Quick Actions */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <DashboardCard
+            title="➕ Add Product"
+            description="Add new items to your shop and grow your storefront."
+            href="/marketplace/add-products"
+            color="bg-indigo-700"
+          />
+          <DashboardCard
+            title="🛒 View My Products"
+            description="Manage, edit, or remove the items you’ve listed."
+            href="/dashboard/seller/products"
+            color="bg-teal-600"
+          />
+          <DashboardCard
+            title="📦 View Orders"
+            description="Track customer orders and manage delivery progress."
+            href="/dashboard/seller/orders"
+            color="bg-amber-700"
+          />
+          <DashboardCard
+            title="📊 Analytics"
+            description="View sales performance and track your revenue."
+            href="/dashboard/seller/analytics"
+            color="bg-pink-700"
+          />
+        </div>
       </div>
     </div>
   );
 }
 
-// Component to show a statistic as a card.
 function StatCard({ label, value }: { label: string; value: string | number }) {
   return (
     <div className="bg-gray-800 rounded-lg p-4 text-center">
@@ -156,7 +127,6 @@ function StatCard({ label, value }: { label: string; value: string | number }) {
   );
 }
 
-// Component representing a clickable dashboard card
 function DashboardCard({
   title,
   description,
@@ -169,10 +139,8 @@ function DashboardCard({
   color: string;
 }) {
   return (
-    <Link href={href}>
-      <div
-        className={`p-5 rounded-lg shadow hover:shadow-xl transition cursor-pointer ${color}`}
-      >
+    <Link href={href} className="block">
+      <div className={`p-5 rounded-lg shadow hover:shadow-xl transition cursor-pointer ${color}`}>
         <h3 className="text-xl font-bold mb-2">{title}</h3>
         <p className="text-sm">{description}</p>
       </div>
