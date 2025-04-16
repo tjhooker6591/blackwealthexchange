@@ -15,12 +15,25 @@ export default function NavBar() {
   const [user, setUser] = useState<SessionUser | null>(null);
   const router = useRouter();
 
+  // ── NEW: Fetch session helper ─────────────────────────────────────────────
+  const fetchSession = async () => {
+    try {
+      const res = await fetch("/api/auth/me", { cache: "no-store" });
+      if (!res.ok) {
+        setUser(null);
+        return;
+      }
+      const data = await res.json();
+      setUser({ accountType: data.user.accountType });
+    } catch {
+      setUser(null);
+    }
+  };
+
+  // ── UPDATED: Run on mount AND on route change ─────────────────────────────
   useEffect(() => {
-    fetch("/api/auth/me", { cache: "no-store" })
-      .then((res) => (res.ok ? res.json() : Promise.reject()))
-      .then((data) => setUser({ accountType: data.user.accountType }))
-      .catch(() => setUser(null));
-  }, []);
+    fetchSession();
+  }, [router.pathname]);
 
   const handleLogout = async () => {
     await fetch("/api/auth/logout", { method: "POST" });
@@ -33,10 +46,10 @@ export default function NavBar() {
     ? user.accountType === "seller"
       ? "/marketplace/dashboard"
       : user.accountType === "business"
-        ? "/add-business"
-        : user.accountType === "employer"
-          ? "/employer/jobs"
-          : "/dashboard"
+      ? "/add-business"
+      : user.accountType === "employer"
+      ? "/employer/jobs"
+      : "/dashboard"
     : "/dashboard";
 
   return (

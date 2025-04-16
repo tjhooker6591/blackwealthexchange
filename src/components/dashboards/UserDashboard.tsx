@@ -33,11 +33,10 @@ type ChartData = {
 export default function UserDashboard() {
   const [user, setUser] = useState<UserType | null>(null);
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(
-    null,
+    null
   );
   const [chartData, setChartData] = useState<ChartData>([]);
   const [loading, setLoading] = useState(true);
-  const [authorized, setAuthorized] = useState(false);
   const [accessDenied, setAccessDenied] = useState(false);
 
   useEffect(() => {
@@ -46,14 +45,11 @@ export default function UserDashboard() {
         const userRes = await fetch("/api/auth/me", { cache: "no-store" });
         const userData = await userRes.json();
 
-        // Mark access denied if not a normal user
         if (userData?.user?.accountType !== "user") {
           setAccessDenied(true);
           return;
         }
-
         setUser(userData.user);
-        setAuthorized(true);
 
         const [dashboardRes, chartRes] = await Promise.all([
           fetch(`/api/user/get-dashboard?email=${userData.user.email}`, {
@@ -61,13 +57,12 @@ export default function UserDashboard() {
           }),
           fetch(
             `/api/user/applications-overview?email=${userData.user.email}`,
-            { cache: "no-store" },
+            { cache: "no-store" }
           ),
         ]);
 
         const dashboardJson = await dashboardRes.json();
         const chartJson = await chartRes.json();
-
         setDashboardData(dashboardJson);
         setChartData(chartJson);
       } catch (err) {
@@ -81,52 +76,117 @@ export default function UserDashboard() {
     fetchUserAndDashboard();
   }, []);
 
-  if (loading || !user || !dashboardData) {
+  if (loading) {
     return (
-      <div className="text-white text-center py-20 bg-black min-h-screen">
-        Loading dashboard...
+      <div className="min-h-screen flex items-center justify-center bg-black text-white">
+        Loading dashboard…
       </div>
     );
   }
-
-  if (accessDenied || !authorized) {
+  if (accessDenied || !dashboardData) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-black text-white">
-        <p>Access Denied. You do not have permission to view this dashboard.</p>
+        Access Denied. You do not have permission to view this dashboard.
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-8">
-      <div className="max-w-6xl mx-auto bg-gray-800 p-6 rounded-lg shadow-lg">
-        {/* Dashboard Header */}
-        <header className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gold mb-2">
-            Welcome, {dashboardData.fullName || user.email}
-          </h1>
-          <p className="text-gray-300 text-lg">
-            Your central hub for discovering opportunities, managing your
-            career, and building a successful future.
-          </p>
-        </header>
+    <div className="min-h-screen flex bg-gray-900 text-white">
+      {/* Sidebar */}
+      <aside className="w-64 bg-gray-800 p-6 space-y-8">
+        <h2 className="text-2xl font-bold">Dashboard</h2>
+        <nav className="space-y-4">
+          <Link
+            href="/dashboard"
+            className="flex items-center space-x-2 hover:text-gold"
+          >
+            <span>📊</span>
+            <span>Dashboard</span>
+          </Link>
+          <Link
+            href="/profile"
+            className="flex items-center space-x-2 hover:text-gold"
+          >
+            <span>👤</span>
+            <span>Profile</span>
+          </Link>
+          <Link
+            href="/settings"
+            className="flex items-center space-x-2 hover:text-gold"
+          >
+            <span>⚙️</span>
+            <span>Settings</span>
+          </Link>
+        </nav>
+      </aside>
 
-        {/* Stats Summary */}
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-          <StatCard
-            label="Applications"
-            value={dashboardData.applications || 0}
-          />
-          <StatCard label="Saved Jobs" value={dashboardData.savedJobs || 0} />
-          <StatCard label="Messages" value={dashboardData.messages || 0} />
-        </section>
+      {/* Main */}
+      <main className="flex-1 p-8 space-y-8">
+        {/* Top bar */}
+        <div className="flex justify-between items-center">
+          <h1 className="text-3xl font-bold">Dashboard</h1>
+          <Link
+            href="/pricing"
+            className="px-4 py-2 bg-gold text-black rounded hover:bg-yellow-500"
+          >
+            Upgrade to Premium
+          </Link>
+        </div>
 
-        {/* Chart Overview */}
-        <section className="bg-gray-700 p-4 rounded-lg mb-12">
-          <h2 className="text-xl font-semibold text-gold mb-4">
-            Applications Overview
+        {/* Welcome banner */}
+        <div className="bg-gray-800 p-6 rounded-lg">
+          <h2 className="text-2xl font-semibold text-gold mb-2">
+            Welcome, {dashboardData.fullName || user?.email}!
           </h2>
-          <ResponsiveContainer width="100%" height={300}>
+          <p className="text-gray-300">
+            Take the next step in your career.{" "}
+            <strong>Manage your saved jobs</strong>, track applications, and
+            access career tools to help you grow.
+          </p>
+        </div>
+
+        {/* Panels */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Saved Jobs */}
+          <div className="bg-gray-800 p-6 rounded-lg">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-semibold">Saved Jobs</h3>
+              <Link
+                href="/saved-jobs"
+                className="text-gold hover:underline"
+              >
+                View all ({dashboardData.savedJobs || 0})
+              </Link>
+            </div>
+            <p className="text-gray-400">
+              {dashboardData.savedJobs || 0} job(s) saved
+            </p>
+          </div>
+
+          {/* Applications */}
+          <div className="bg-gray-800 p-6 rounded-lg">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-semibold">Applications</h3>
+              <Link
+                href="/applications"
+                className="text-gold hover:underline"
+              >
+                View all ({dashboardData.applications || 0})
+              </Link>
+            </div>
+            <p className="text-gray-400">
+              {dashboardData.applications || 0} application(s) submitted
+            </p>
+          </div>
+        </div>
+
+        {/* Chart */}
+        <div className="bg-gray-800 p-6 rounded-lg">
+          <h3 className="text-xl font-semibold text-gold mb-4">
+            Applications Overview
+          </h3>
+          <ResponsiveContainer width="100%" height={250}>
             <BarChart data={chartData}>
               <XAxis dataKey="month" stroke="#fff" />
               <YAxis stroke="#fff" />
@@ -134,142 +194,29 @@ export default function UserDashboard() {
               <Bar dataKey="applications" fill="#FFD700" />
             </BarChart>
           </ResponsiveContainer>
-        </section>
-
-        {/* Quick Access Grid */}
-        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <DashboardCard
-            title="Find a Job"
-            description="Browse current job openings tailored for your skills and interests."
-            href="/job-listings"
-            color="bg-gold"
-          />
-          <DashboardCard
-            title="Saved Jobs"
-            description="View and manage jobs you've saved for future applications."
-            href="/saved-jobs"
-            color="bg-blue-600"
-          />
-          <DashboardCard
-            title="Application Tracker"
-            description="Keep tabs on the jobs you've applied for and their status."
-            href="/applications"
-            color="bg-green-600"
-          />
-          <DashboardCard
-            title="Resume & Profile"
-            description="Create a standout resume and build a career-ready profile."
-            href="/profile"
-            color="bg-purple-600"
-          />
-          <DashboardCard
-            title="Mentorship"
-            description="Connect with experienced professionals who can guide your journey."
-            href="/mentorship"
-            color="bg-red-600"
-          />
-          <DashboardCard
-            title="Premium Tools"
-            description="Get resume reviews, mock interviews, and exclusive listings."
-            href="/pricing"
-            color="bg-yellow-600 text-black"
-          />
-        </section>
-
-        {/* Career Resources */}
-        <section className="mt-12">
-          <h2 className="text-2xl font-semibold text-gold mb-4">
-            Career Growth Resources
-          </h2>
-          <p className="text-gray-300 mb-6">
-            Tap into educational guides, industry insights, and financial
-            wellness content made just for you.
-          </p>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            <ResourceCard
-              title="Financial Literacy"
-              href="/financial-literacy"
-              description="Learn how to budget, save, and invest for your future."
-            />
-            <ResourceCard
-              title="Internship Opportunities"
-              href="/internships"
-              description="Access early career pathways in tech, business, and more."
-            />
-            <ResourceCard
-              title="Freelance Gigs"
-              href="/freelance"
-              description="Browse flexible work and get paid for your skills."
-            />
-          </div>
-        </section>
-
-        {/* Footer CTA */}
-        <div className="text-center mt-12">
-          <p className="text-gray-400 text-sm">
-            Need help or have questions?{" "}
-            <Link
-              href="/contact"
-              className="text-blue-400 underline hover:text-blue-300"
-            >
-              Contact our support team
-            </Link>
-            .
-          </p>
         </div>
-      </div>
+
+        {/* Quick Links */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <QuickLink title="Find a Job" href="/job-listings" />
+          <QuickLink title="Saved Jobs" href="/saved-jobs" />
+          <QuickLink title="Application Tracker" href="/applications" />
+          <QuickLink title="Resume & Profile" href="/profile" />
+          <QuickLink title="Mentorship" href="/mentorship" />
+          <QuickLink title="Premium Tools" href="/pricing" />
+        </div>
+      </main>
     </div>
   );
 }
 
-function StatCard({ label, value }: { label: string; value: number }) {
+function QuickLink({ title, href }: { title: string; href: string }) {
   return (
-    <div className="bg-gray-700 rounded-lg p-4 text-center">
-      <h4 className="text-xl font-semibold text-gold">{value}</h4>
-      <p className="text-sm text-gray-300 mt-1">{label}</p>
-    </div>
-  );
-}
-
-function DashboardCard({
-  title,
-  description,
-  href,
-  color,
-}: {
-  title: string;
-  description: string;
-  href: string;
-  color: string;
-}) {
-  return (
-    <Link href={href}>
-      <div
-        className={`p-6 rounded-lg shadow-md hover:shadow-xl transition cursor-pointer ${color}`}
-      >
-        <h3 className="text-xl font-bold mb-2">{title}</h3>
-        <p className="text-sm">{description}</p>
-      </div>
-    </Link>
-  );
-}
-
-function ResourceCard({
-  title,
-  description,
-  href,
-}: {
-  title: string;
-  description: string;
-  href: string;
-}) {
-  return (
-    <Link href={href}>
-      <div className="bg-gray-700 p-4 rounded-lg hover:shadow-lg transition">
-        <h4 className="text-lg font-semibold text-gold mb-2">{title}</h4>
-        <p className="text-gray-300 text-sm">{description}</p>
-      </div>
+    <Link
+      href={href}
+      className="block bg-gray-800 p-6 rounded-lg hover:shadow-lg transition"
+    >
+      <h4 className="text-lg font-bold text-gold mb-2">{title}</h4>
     </Link>
   );
 }
