@@ -1,16 +1,24 @@
 "use client";
 
 import { useState } from "react";
-import clsx from "clsx";           // use clsx/tailwind‑merge/cn – any small helper
+import clsx from "clsx";
 import Link from "next/link";
-import { Menu } from "lucide-react"; // swap for your icon lib if different
+import { useRouter } from "next/router";
+import { Menu, LogOut } from "lucide-react";
 
-interface Props {
+export default function DashboardFrame({
+  children,
+}: {
   children: React.ReactNode;
-}
-
-export default function DashboardFrame({ children }: Props) {
+}) {
   const [open, setOpen] = useState(false);
+  const router = useRouter();
+
+  /* sign‑out click */
+  async function handleLogout() {
+    await fetch("/api/auth/logout", { method: "POST" });
+    router.push("/");
+  }
 
   return (
     <div className="min-h-screen bg-black text-white flex flex-col md:flex-row">
@@ -19,16 +27,35 @@ export default function DashboardFrame({ children }: Props) {
         className={clsx(
           "fixed inset-y-0 left-0 z-40 w-64 bg-neutral-900 transition-transform duration-200",
           open ? "translate-x-0" : "-translate-x-full md:translate-x-0",
-          "md:static md:block" // sidebar is always visible on ≥md
+          "md:static md:block"
         )}
       >
-        {/* TODO: drop your existing <nav> items here */}
+        <nav className="p-6 space-y-4">
+          <Link href="/dashboard" className="block hover:text-yellow-400">
+            Dashboard
+          </Link>
+          <Link href="/profile" className="block hover:text-yellow-400">
+            Profile
+          </Link>
+          <Link href="/settings" className="block hover:text-yellow-400">
+            Settings
+          </Link>
+
+          {/* sign‑out */}
+          <button
+            onClick={handleLogout}
+            className="mt-8 flex items-center gap-2 text-red-400 hover:text-red-300"
+          >
+            <LogOut size={18} />
+            Sign&nbsp;Out
+          </button>
+        </nav>
       </aside>
 
-      {/* ───── Main content ───── */}
-      <main className="flex-1 overflow-y-auto px-4 py-6 md:px-10">
+      {/* ───── Main ───── */}
+      <main className="flex-1 overflow-y-auto px-4 py-6 md:px-10 min-w-0">
         <header className="flex items-center justify-between mb-6">
-          {/* hamburger only on phones */}
+          {/* burger only on phones */}
           <button
             aria-label="Toggle navigation"
             onClick={() => setOpen(!open)}
