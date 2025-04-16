@@ -1,12 +1,12 @@
-// src/components/dashboard/DashboardWrapper.tsx
+// src/components/dashboards/DashboardWrapper.tsx
 "use client";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import SellerDashboard from "../dashboards/SellerDashboard";
-import EmployerDashboard from "../dashboards/EmployerDashboard";
-import BusinessDashboard from "../dashboards/BusinessDashboard";
-import UserDashboard from "../dashboards/UserDashboard";
+import SellerDashboard from "./SellerDashboard";
+import EmployerDashboard from "./EmployerDashboard";
+import BusinessDashboard from "./BusinessDashboard";
+import UserDashboard from "./UserDashboard";
 
 export default function DashboardWrapper() {
   const router = useRouter();
@@ -23,7 +23,6 @@ export default function DashboardWrapper() {
           router.push("/login?redirect=/dashboard");
           return;
         }
-        // Log the retrieved account type for debugging.
         console.log("Retrieved account type:", data.user.accountType);
         setAccountType(data.user.accountType);
       } catch (error) {
