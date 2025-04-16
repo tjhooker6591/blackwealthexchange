@@ -1,11 +1,12 @@
-// components/dashboard/DashboardWrapper.tsx
+// src/components/dashboard/DashboardWrapper.tsx
 "use client";
+
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import SellerDashboard from "./SellerDashboard";
-import EmployerDashboard from "./EmployerDashboard";
-import BusinessDashboard from "./BusinessDashboard";
-import UserDashboard from "./UserDashboard";
+import SellerDashboard from "../dashboards/SellerDashboard";
+import EmployerDashboard from "../dashboards/EmployerDashboard";
+import BusinessDashboard from "../dashboards/BusinessDashboard";
+import UserDashboard from "../dashboards/UserDashboard";
 
 export default function DashboardWrapper() {
   const router = useRouter();

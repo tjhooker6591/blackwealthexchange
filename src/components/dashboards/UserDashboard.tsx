@@ -33,7 +33,7 @@ type ChartData = {
 export default function UserDashboard() {
   const [user, setUser] = useState<UserType | null>(null);
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(
-    null
+    null,
   );
   const [chartData, setChartData] = useState<ChartData>([]);
   const [loading, setLoading] = useState(true);
@@ -57,7 +57,7 @@ export default function UserDashboard() {
           }),
           fetch(
             `/api/user/applications-overview?email=${userData.user.email}`,
-            { cache: "no-store" }
+            { cache: "no-store" },
           ),
         ]);
 
@@ -152,10 +152,7 @@ export default function UserDashboard() {
           <div className="bg-gray-800 p-6 rounded-lg">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xl font-semibold">Saved Jobs</h3>
-              <Link
-                href="/saved-jobs"
-                className="text-gold hover:underline"
-              >
+              <Link href="/saved-jobs" className="text-gold hover:underline">
                 View all ({dashboardData.savedJobs || 0})
               </Link>
             </div>
@@ -168,10 +165,7 @@ export default function UserDashboard() {
           <div className="bg-gray-800 p-6 rounded-lg">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xl font-semibold">Applications</h3>
-              <Link
-                href="/applications"
-                className="text-gold hover:underline"
-              >
+              <Link href="/applications" className="text-gold hover:underline">
                 View all ({dashboardData.applications || 0})
               </Link>
             </div>
