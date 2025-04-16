@@ -15,7 +15,7 @@ export default function NavBar() {
   const [user, setUser] = useState<SessionUser | null>(null);
   const router = useRouter();
 
-  // ── NEW: Fetch session helper ─────────────────────────────────────────────
+  /* ───────────────── fetch session helper ───────────────── */
   const fetchSession = async () => {
     try {
       const res = await fetch("/api/auth/me", { cache: "no-store" });
@@ -30,18 +30,19 @@ export default function NavBar() {
     }
   };
 
-  // ── UPDATED: Run on mount AND on route change ─────────────────────────────
+  /* run on mount AND whenever route changes inside the SPA */
   useEffect(() => {
     fetchSession();
   }, [router.pathname]);
 
+  /* ───────────────── LOGOUT (key edit) ───────────────── */
   const handleLogout = async () => {
     await fetch("/api/auth/logout", { method: "POST" });
-    setUser(null);
-    router.push("/login");
+    /* reload so NavBar re‑renders with cleared cookies */
+    router.reload();
   };
 
-  // choose dashboard path
+  /* pick correct dashboard link */
   const dashboardHref = user
     ? user.accountType === "seller"
       ? "/marketplace/dashboard"
@@ -68,10 +69,7 @@ export default function NavBar() {
           <Link href="/about" className="hover:text-gold font-semibold">
             About
           </Link>
-          <Link
-            href="/global-timeline"
-            className="hover:text-gold font-semibold"
-          >
+          <Link href="/global-timeline" className="hover:text-gold font-semibold">
             Journey
           </Link>
 
@@ -139,26 +137,23 @@ export default function NavBar() {
           {/* Auth Links */}
           {user ? (
             <>
-              <Link
-                href={dashboardHref}
-                className="hover:text-gold font-semibold"
-              >
+              <Link href={dashboardHref} className="hover:text-gold font-semibold">
                 Dashboard
               </Link>
               <button
                 onClick={handleLogout}
                 className="hover:text-red-500 font-semibold"
               >
-                Sign Out
+                Sign Out
               </button>
             </>
           ) : (
             <>
               <Link href="/login" className="hover:text-gold font-semibold">
-                Log In
+                Log In
               </Link>
               <Link href="/signup" className="hover:text-gold font-semibold">
-                Sign Up
+                Sign Up
               </Link>
             </>
           )}
@@ -263,7 +258,6 @@ export default function NavBar() {
             Entertainment
           </Link>
 
-          {/* Divider */}
           <hr className="border-gray-700 my-2" />
 
           {/* Auth Links */}
@@ -283,7 +277,7 @@ export default function NavBar() {
                 }}
                 className="w-full text-left py-2 hover:text-red-500 font-semibold"
               >
-                Sign Out
+                Sign Out
               </button>
             </>
           ) : (
@@ -293,14 +287,14 @@ export default function NavBar() {
                 className="block py-2 hover:text-gold"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Log In
+                Log In
               </Link>
               <Link
                 href="/signup"
                 className="block py-2 hover:text-gold"
                 onClick={() => setMobileMenuOpen(false)}
               >
-                Sign Up
+                Sign Up
               </Link>
             </>
           )}
@@ -309,3 +303,4 @@ export default function NavBar() {
     </nav>
   );
 }
+

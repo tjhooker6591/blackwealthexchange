@@ -1,26 +1,25 @@
-// src/pages/api/auth/logout.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 import { serialize } from "cookie";
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  /* ─ Allow POST only ─ */
+  /* allow POST only */
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
     return res.status(405).end("Method Not Allowed");
   }
 
-  /* ─ Expire both cookies ─ */
+  /* expire both cookies with the *same* attributes used at login */
   res.setHeader("Set-Cookie", [
     serialize("session_token", "", {
       path: "/",
       httpOnly: true,
       sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
-      maxAge: -1, // delete immediately
+      maxAge: -1,         // delete immediately
     }),
     serialize("accountType", "", {
       path: "/",
-      httpOnly: true,   // <‑‑ added
+      httpOnly: true,     // added for extra safety
       sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
       maxAge: -1,

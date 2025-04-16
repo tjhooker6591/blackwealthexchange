@@ -27,7 +27,7 @@ export default function DashboardFrame({
         className={clsx(
           "fixed inset-y-0 left-0 z-40 w-64 bg-neutral-900 transition-transform duration-200",
           open ? "translate-x-0" : "-translate-x-full md:translate-x-0",
-          "md:static md:block"
+          "md:static md:block",
         )}
       >
         <nav className="p-6 space-y-4">
