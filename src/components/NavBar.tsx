@@ -66,19 +66,19 @@ export default function NavBar() {
 
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center space-x-6">
-          <Link href="/about" className="hover:text-gold font-semibold">
+          <Link href="/about" className="hover:text-gold font-semibold transition-colors">
             About
           </Link>
-          <Link
-            href="/global-timeline"
-            className="hover:text-gold font-semibold"
-          >
+          <Link href="/global-timeline" className="hover:text-gold font-semibold transition-colors">
             Journey
+          </Link>
+          <Link href="/events" className="hover:text-gold font-semibold transition-colors">
+            Events
           </Link>
 
           {/* Single Menu Dropdown */}
           <div className="relative group">
-            <button className="hover:text-gold font-semibold">Menu</button>
+            <button className="hover:text-gold font-semibold transition-colors">Menu</button>
             <div className="absolute left-0 mt-2 w-48 bg-white text-black rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none group-hover:pointer-events-auto">
               <div className="py-2">
                 <span className="block px-4 py-1 font-bold">
@@ -142,23 +142,23 @@ export default function NavBar() {
             <>
               <Link
                 href={dashboardHref}
-                className="hover:text-gold font-semibold"
+                className="hover:text-gold font-semibold transition-colors"
               >
                 Dashboard
               </Link>
               <button
                 onClick={handleLogout}
-                className="hover:text-red-500 font-semibold"
+                className="hover:text-red-500 font-semibold transition-colors"
               >
                 Sign Out
               </button>
             </>
           ) : (
             <>
-              <Link href="/login" className="hover:text-gold font-semibold">
+              <Link href="/login" className="hover:text-gold font-semibold transition-colors">
                 Log In
               </Link>
-              <Link href="/signup" className="hover:text-gold font-semibold">
+              <Link href="/signup" className="hover:text-gold font-semibold transition-colors">
                 Sign Up
               </Link>
             </>
@@ -184,49 +184,56 @@ export default function NavBar() {
           {/* Primary Links */}
           <Link
             href="/about"
-            className="block py-2 hover:text-gold"
+            className="block py-2 hover:text-gold transition-colors"
             onClick={() => setMobileMenuOpen(false)}
           >
             About
           </Link>
           <Link
             href="/global-timeline"
-            className="block py-2 hover:text-gold"
+            className="block py-2 hover:text-gold transition-colors"
             onClick={() => setMobileMenuOpen(false)}
           >
             Journey
           </Link>
+          <Link
+            href="/events"
+            className="block py-2 hover:text-gold transition-colors"
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Events
+          </Link>
 
           {/* Student Resources */}
           <details className="py-2">
-            <summary className="font-semibold cursor-pointer hover:text-gold">
+            <summary className="font-semibold cursor-pointer hover:text-gold transition-colors">
               Student Resources
             </summary>
             <div className="pl-4 mt-1 space-y-1">
               <Link
                 href="/black-student-opportunities/grants"
-                className="block hover:text-gold"
+                className="block hover:text-gold transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Grants
               </Link>
               <Link
                 href="/black-student-opportunities/scholarships"
-                className="block hover:text-gold"
+                className="block hover:text-gold transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Scholarships
               </Link>
               <Link
                 href="/black-student-opportunities/internships"
-                className="block hover:text-gold"
+                className="block hover:text-gold transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Internships
               </Link>
               <Link
                 href="/black-student-opportunities/mentorship"
-                className="block hover:text-gold"
+                className="block hover:text-gold transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Mentorship
@@ -237,28 +244,28 @@ export default function NavBar() {
           {/* Other Resources */}
           <Link
             href="/business-directory"
-            className="block py-2 hover:text-gold"
+            className="block py-2 hover:text-gold transition-colors"
             onClick={() => setMobileMenuOpen(false)}
           >
             Business Directory
           </Link>
           <Link
             href="/financial-literacy"
-            className="block py-2 hover:text-gold"
+            className="block py-2 hover:text-gold transition-colors"
             onClick={() => setMobileMenuOpen(false)}
           >
             Financial 101
           </Link>
           <Link
             href="/real-estate-investment"
-            className="block py-2 hover:text-gold"
+            className="block py-2 hover:text-gold transition-colors"
             onClick={() => setMobileMenuOpen(false)}
           >
             Housing & Lending
           </Link>
           <Link
             href="/black-entertainment-news"
-            className="block py-2 hover:text-gold"
+            className="block py-2 hover:text-gold transition-colors"
             onClick={() => setMobileMenuOpen(false)}
           >
             Entertainment
@@ -271,7 +278,7 @@ export default function NavBar() {
             <>
               <Link
                 href={dashboardHref}
-                className="block py-2 hover:text-gold"
+                className="block py-2 hover:text-gold transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Dashboard
@@ -281,7 +288,7 @@ export default function NavBar() {
                   handleLogout();
                   setMobileMenuOpen(false);
                 }}
-                className="w-full text-left py-2 hover:text-red-500 font-semibold"
+                className="w-full text-left py-2 hover:text-red-500 font-semibold transition-colors"
               >
                 Sign Out
               </button>
@@ -290,14 +297,14 @@ export default function NavBar() {
             <>
               <Link
                 href="/login"
-                className="block py-2 hover:text-gold"
+                className="block py-2 hover:text-gold transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Log In
               </Link>
               <Link
                 href="/signup"
-                className="block py-2 hover:text-gold"
+                className="block py-2 hover:text-gold transition-colors"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Sign Up
