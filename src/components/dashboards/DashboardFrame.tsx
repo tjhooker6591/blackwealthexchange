@@ -5,19 +5,20 @@ import clsx from "clsx";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Menu, LogOut } from "lucide-react";
+import DashboardNav from "@/components/dashboards/DashboardNav";  // ← or delete & keep inline links
 
 export default function DashboardFrame({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false);              // closed by default
   const router = useRouter();
 
   /* sign‑out click */
   async function handleLogout() {
     await fetch("/api/auth/logout", { method: "POST" });
-    router.push("/");
+    router.reload();                                     // hard refresh clears UI
   }
 
   return (
@@ -27,33 +28,24 @@ export default function DashboardFrame({
         className={clsx(
           "fixed inset-y-0 left-0 z-40 w-64 bg-neutral-900 transition-transform duration-200",
           open ? "translate-x-0" : "-translate-x-full md:translate-x-0",
-          "md:static md:block",
+          "md:static md:block"
         )}
       >
-        <nav className="p-6 space-y-4">
-          <Link href="/dashboard" className="block hover:text-yellow-400">
-            Dashboard
-          </Link>
-          <Link href="/profile" className="block hover:text-yellow-400">
-            Profile
-          </Link>
-          <Link href="/settings" className="block hover:text-yellow-400">
-            Settings
-          </Link>
+        {/* shared nav links */}
+        <DashboardNav />
 
-          {/* sign‑out */}
-          <button
-            onClick={handleLogout}
-            className="mt-8 flex items-center gap-2 text-red-400 hover:text-red-300"
-          >
-            <LogOut size={18} />
-            Sign&nbsp;Out
-          </button>
-        </nav>
+        {/* sign‑out */}
+        <button
+          onClick={handleLogout}
+          className="mt-8 flex items-center gap-2 text-red-400 hover:text-red-300 px-6"
+        >
+          <LogOut size={18} />
+          Sign&nbsp;Out
+        </button>
       </aside>
 
       {/* ───── Main ───── */}
-      <main className="flex-1 overflow-y-auto px-4 py-6 md:px-10 min-w-0">
+      <main className="flex-1 min-w-0 overflow-y-auto px-4 py-6 md:ml-64 md:px-10">
         <header className="flex items-center justify-between mb-6">
           {/* burger only on phones */}
           <button

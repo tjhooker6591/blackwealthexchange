@@ -69,7 +69,10 @@ export default function NavBar() {
           <Link href="/about" className="hover:text-gold font-semibold">
             About
           </Link>
-          <Link href="/global-timeline" className="hover:text-gold font-semibold">
+          <Link
+            href="/global-timeline"
+            className="hover:text-gold font-semibold"
+          >
             Journey
           </Link>
 
@@ -137,7 +140,10 @@ export default function NavBar() {
           {/* Auth Links */}
           {user ? (
             <>
-              <Link href={dashboardHref} className="hover:text-gold font-semibold">
+              <Link
+                href={dashboardHref}
+                className="hover:text-gold font-semibold"
+              >
                 Dashboard
               </Link>
               <button
@@ -303,4 +309,3 @@ export default function NavBar() {
     </nav>
   );
 }
-

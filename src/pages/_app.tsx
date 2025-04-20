@@ -47,6 +47,8 @@ export default function App({
   return (
     <SessionProvider session={session}>
       <Head>
+        {/* ensure proper initial zoom + width on mobile */}
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>Black Wealth Exchange</title>
         <meta
           name="description"

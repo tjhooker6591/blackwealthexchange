@@ -1,97 +1,101 @@
 // src/pages/api/auth/me.ts
-import { NextApiRequest, NextApiResponse } from "next";
-import jwt from "jsonwebtoken";
-import cookie from "cookie";
-import clientPromise from "@/lib/mongodb";
-import { ObjectId } from "mongodb";
 
-const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-key";
+import type { NextApiRequest, NextApiResponse } from 'next';
+import jwt from 'jsonwebtoken';
+import cookie from 'cookie';
+import clientPromise from '@/lib/mongodb';
+import { ObjectId } from 'mongodb';
 
-// Define the shape of your user profiles in the database
+// Use a single SECRET for both signing and verification
+interface JwtPayload {
+  userId: string;
+  email: string;
+  accountType?: string;
+}
+// Load secret from environment
+function getSecret(): string {
+  const secret = process.env.JWT_SECRET ?? process.env.NEXTAUTH_SECRET;
+  if (!secret) {
+    throw new Error('🛑 Define JWT_SECRET or NEXTAUTH_SECRET in your environment variables');
+  }
+  return secret;
+}
+const SECRET = getSecret();
+
 interface UserProfile {
   _id: ObjectId;
   email: string;
   accountType: string;
-  password?: string;
+  fullName?: string;
   businessName?: string;
   businessAddress?: string;
   businessPhone?: string;
-  fullName?: string;
-  // any other fields you store
+  createdAt?: Date;
+  password?: string;
   [key: string]: unknown;
 }
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse,
+  res: NextApiResponse
 ) {
-  // Disable HTTP caching so the client always gets fresh user data
-  res.setHeader("Cache-Control", "no-store, max-age=0");
+  // Disable HTTP caching
+  res.setHeader('Cache-Control', 'no-store, max-age=0');
 
   try {
     // Parse cookies
-    const rawCookie = req.headers.cookie || "";
-    const parsed = cookie.parse(rawCookie);
-    // Read session_token (set by login) or fallback to legacy token
-    const token = parsed.session_token || parsed.token;
+    const raw = req.headers.cookie || '';
+    const cookies = cookie.parse(raw);
+    const token = cookies.session_token;
+    const cookieRole = cookies.accountType;
+
     if (!token) {
-      return res
-        .status(401)
-        .json({ user: null, error: "No token cookie found." });
+      return res.status(401).json({ user: null, error: 'No token cookie found.' });
     }
 
-    // Verify and decode the JWT
-    const decoded = jwt.verify(token, JWT_SECRET) as {
-      userId: string;
-      email: string;
-      accountType: string;
-    };
-
-    // Map accountType to the correct collection
-    let collectionName: string;
-    switch (decoded.accountType) {
-      case "business":
-        collectionName = "businesses";
-        break;
-      case "seller":
-        collectionName = "sellers";
-        break;
-      case "employer":
-        collectionName = "employers";
-        break;
-      case "user":
-      default:
-        collectionName = "users";
+    // Verify token
+    let payload: JwtPayload;
+    try {
+      payload = jwt.verify(token, SECRET) as JwtPayload;
+    } catch (err) {
+      console.error('JWT verify failed', err);
+      return res.status(401).json({ user: null, error: 'Invalid or expired token.' });
     }
 
-    // Fetch the profile
+    // Resolve accountType (prefer token, fallback to cookie)
+    const accountType = payload.accountType || cookieRole;
+
+    // Determine collection name
+    const collName =
+      accountType === 'seller'   ? 'sellers' :
+      accountType === 'employer' ? 'employers' :
+      accountType === 'business' ? 'businesses' :
+      'users';
+
+    // Fetch profile from MongoDB
     const client = await clientPromise;
-    const db = client.db("bwes-cluster");
+    const db = client.db('bwes-cluster');
     const profile = await db
-      .collection<UserProfile>(collectionName)
-      .findOne({ email: decoded.email });
+      .collection<UserProfile>(collName)
+      .findOne({ email: payload.email });
 
     if (!profile) {
-      return res
-        .status(404)
-        .json({ user: null, error: "User not found in database." });
+      return res.status(404).json({ user: null, error: 'User not found.' });
     }
 
-    // Exclude sensitive data
+    // Sanitize profile: strip out password
     const { password: _password, ...sanitized } = profile;
 
-    // Return the user object
+    // Return sanitized user object
     return res.status(200).json({
       user: {
         ...sanitized,
-        userId: decoded.userId,
-        accountType: decoded.accountType,
+        userId: payload.userId,
+        accountType,
       },
     });
-  } catch (error) {
-    console.error("JWT auth error:", error);
-    return res
-      .status(401)
-      .json({ user: null, error: "Invalid or expired token." });
+  } catch (err) {
+    console.error('[API /auth/me] Error:', err);
+    return res.status(500).json({ user: null, error: 'Internal server error.' });
   }
 }

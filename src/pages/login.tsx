@@ -1,3 +1,4 @@
+// src/pages/login.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -35,7 +36,7 @@ export default function Login() {
               router.replace("/add-business");
               break;
             case "employer":
-              router.replace("/employer/jobs");
+              router.replace("/employer");         // ← changed!
               break;
             default:
               router.replace("/dashboard");
@@ -100,7 +101,7 @@ export default function Login() {
           router.push("/add-business");
           break;
         case "employer":
-          router.push("/employer/jobs");
+          router.push("/employer");           // ← changed!
           break;
         default:
           router.push("/dashboard");

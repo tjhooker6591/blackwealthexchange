@@ -1,11 +1,19 @@
+// next.config.ts
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  env: {
-    MONGO_URI: process.env.MONGO_URI,
+  reactStrictMode: true,
+  
+  // These values are only available on the server (e.g. in getServerSideProps)
+  serverRuntimeConfig: {
+    mongoUri: process.env.MONGODB_URI as string,
+    jwtSecret: process.env.JWT_SECRET as string,
   },
-  reactStrictMode: true, // Recommended for catching bugs
-  // swcMinify: true, // ❌ Removed because it's no longer supported
+
+  // You can still expose safe, public vars (if you need them) here:
+  publicRuntimeConfig: {
+    baseUrl: process.env.NEXT_PUBLIC_BASE_URL,
+  },
 };
 
 export default nextConfig;
