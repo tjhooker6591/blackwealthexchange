@@ -30,7 +30,9 @@ interface AffiliateProps {
   };
 }
 
-const AffiliatePartnershipPage: NextPage<AffiliateProps> = ({ user: _user }) => {
+const AffiliatePartnershipPage: NextPage<AffiliateProps> = ({
+  user: _user,
+}) => {
   const [affiliateOffers, setAffiliateOffers] = useState<AffiliateOffer[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -40,7 +42,8 @@ const AffiliatePartnershipPage: NextPage<AffiliateProps> = ({ user: _user }) => 
         id: 1,
         name: "Official Black Wall Street",
         url: "https://officialblackwallstreet.com/",
-        description: "A platform dedicated to promoting Black-owned businesses across the country.",
+        description:
+          "A platform dedicated to promoting Black-owned businesses across the country.",
         categories: "General, Retail, Services",
         image: "/affiliate/black-wall-street.jpg",
       },
@@ -48,7 +51,8 @@ const AffiliatePartnershipPage: NextPage<AffiliateProps> = ({ user: _user }) => 
         id: 2,
         name: "Buy From A Black Woman",
         url: "https://www.buyfromablackwoman.org/",
-        description: "A nonprofit organization supporting Black women entrepreneurs.",
+        description:
+          "A nonprofit organization supporting Black women entrepreneurs.",
         categories: "Retail, Beauty, Services, Nonprofits",
         image: "/affiliate/buy-from-a-black-woman.jpg",
       },
@@ -56,7 +60,8 @@ const AffiliatePartnershipPage: NextPage<AffiliateProps> = ({ user: _user }) => 
         id: 3,
         name: "Support Black Owned",
         url: "https://supportblackowned.com/",
-        description: "A comprehensive directory for Black-owned businesses in the U.S. and internationally.",
+        description:
+          "A comprehensive directory for Black-owned businesses in the U.S. and internationally.",
         categories: "General, Retail, Food, Tech, Services, Education",
         image: "/affiliate/support-black-owned.jpg",
       },
@@ -72,7 +77,8 @@ const AffiliatePartnershipPage: NextPage<AffiliateProps> = ({ user: _user }) => 
         id: 5,
         name: "The Black-Owned Market",
         url: "https://www.theblackownedmarket.com/",
-        description: "A marketplace where consumers can discover Black-owned brands.",
+        description:
+          "A marketplace where consumers can discover Black-owned brands.",
         categories: "Retail, Fashion, Beauty, Art, Home Goods",
         image: "/affiliate/black-owned-market.jpg",
       },
@@ -90,15 +96,35 @@ const AffiliatePartnershipPage: NextPage<AffiliateProps> = ({ user: _user }) => 
   }
 
   const steps = [
-    { step: 1, title: "Sign Up", description: "Join as a content creator or influencer.", label: "Sign Up Now", path: "/affiliate/signup" },
-    { step: 2, title: "Recommend", description: "Share curated affiliate links.", label: "Get Your Links", path: "/affiliate/recommend" },
-    { step: 3, title: "Earn", description: "Earn competitive commissions.", label: "Start Earning", path: "/affiliate/earn" },
+    {
+      step: 1,
+      title: "Sign Up",
+      description: "Join as a content creator or influencer.",
+      label: "Sign Up Now",
+      path: "/affiliate/signup",
+    },
+    {
+      step: 2,
+      title: "Recommend",
+      description: "Share curated affiliate links.",
+      label: "Get Your Links",
+      path: "/affiliate/recommend",
+    },
+    {
+      step: 3,
+      title: "Earn",
+      description: "Earn competitive commissions.",
+      label: "Start Earning",
+      path: "/affiliate/earn",
+    },
   ];
 
   return (
     <>
       <Head>
-        <title>Affiliate &amp; Partnership Program | Black Wealth Exchange</title>
+        <title>
+          Affiliate &amp; Partnership Program | Black Wealth Exchange
+        </title>
       </Head>
       <div className="min-h-screen bg-black text-white">
         {/* Intro Section */}
@@ -107,7 +133,8 @@ const AffiliatePartnershipPage: NextPage<AffiliateProps> = ({ user: _user }) => 
             Empower Black Entrepreneurship
           </h1>
           <p className="text-xl md:text-2xl text-gray-300 mb-8">
-            Join our Affiliate &amp; Partnership Program to access exclusive opportunities and grow your business.
+            Join our Affiliate &amp; Partnership Program to access exclusive
+            opportunities and grow your business.
           </p>
           <a
             href="mailto:partners@blackwealthexchange.com"
@@ -119,7 +146,9 @@ const AffiliatePartnershipPage: NextPage<AffiliateProps> = ({ user: _user }) => 
 
         {/* How It Works */}
         <section className="container mx-auto px-4 py-12">
-          <h2 className="text-4xl font-bold text-gold text-center mb-6">How It Works</h2>
+          <h2 className="text-4xl font-bold text-gold text-center mb-6">
+            How It Works
+          </h2>
           <p className="text-center text-xl text-gray-300 mb-12">
             Monetize your traffic and collaborate with us in three simple steps.
           </p>
@@ -132,7 +161,9 @@ const AffiliatePartnershipPage: NextPage<AffiliateProps> = ({ user: _user }) => 
                 <div className="mb-4">
                   <span className="text-5xl text-gold">{step}</span>
                 </div>
-                <h3 className="text-2xl font-semibold text-gold mb-2">{title}</h3>
+                <h3 className="text-2xl font-semibold text-gold mb-2">
+                  {title}
+                </h3>
                 <p className="text-gray-300 mb-4">{description}</p>
                 <Link
                   href={path}
@@ -147,8 +178,12 @@ const AffiliatePartnershipPage: NextPage<AffiliateProps> = ({ user: _user }) => 
 
         {/* Affiliate Offers */}
         <section className="container mx-auto px-4 py-12">
-          <h2 className="text-4xl font-bold text-gold text-center mb-6">Curated Affiliate Offers</h2>
-          <p className="text-center text-xl text-gray-300 mb-12">Explore our hand-picked resources and products.</p>
+          <h2 className="text-4xl font-bold text-gold text-center mb-6">
+            Curated Affiliate Offers
+          </h2>
+          <p className="text-center text-xl text-gray-300 mb-12">
+            Explore our hand-picked resources and products.
+          </p>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
             {affiliateOffers.map((offer) => (
               <div
@@ -156,10 +191,19 @@ const AffiliatePartnershipPage: NextPage<AffiliateProps> = ({ user: _user }) => 
                 className="bg-gray-800 p-4 rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 flex flex-col"
               >
                 <div className="w-full h-24 relative mb-4">
-                  <Image src={offer.image} alt={offer.name} fill className="object-cover rounded-md" />
+                  <Image
+                    src={offer.image}
+                    alt={offer.name}
+                    fill
+                    className="object-cover rounded-md"
+                  />
                 </div>
-                <h3 className="text-xl font-semibold text-gold mb-2">{offer.name}</h3>
-                <p className="text-gray-300 mb-2 text-sm line-clamp-2">{offer.description}</p>
+                <h3 className="text-xl font-semibold text-gold mb-2">
+                  {offer.name}
+                </h3>
+                <p className="text-gray-300 mb-2 text-sm line-clamp-2">
+                  {offer.description}
+                </p>
                 <div className="mt-auto">
                   <a
                     href={offer.url}
@@ -179,7 +223,9 @@ const AffiliatePartnershipPage: NextPage<AffiliateProps> = ({ user: _user }) => 
   );
 };
 
-export const getServerSideProps: GetServerSideProps<AffiliateProps> = async ({ req }) => {
+export const getServerSideProps: GetServerSideProps<AffiliateProps> = async ({
+  req,
+}) => {
   const cookies = parse(req.headers.cookie || "");
   const token = cookies.session_token;
 

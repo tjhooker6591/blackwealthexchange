@@ -199,7 +199,7 @@ export default function Home() {
 
           <button
             onClick={() =>
-              handleProtectedClick("/marketplace/add-products", "seller")
+              handleProtectedClick("/marketplace/become-a-seller", "seller")
             }
             className="mt-4 bg-gold text-black text-center py-2 px-4 rounded-lg font-semibold shadow hover:bg-yellow-500 transition animate-pulseGlow"
           >

@@ -1,6 +1,6 @@
 // src/pages/events/index.tsx
-import Head from 'next/head';
-import React from 'react';
+import Head from "next/head";
+import React from "react";
 
 interface Event {
   date: string;
@@ -10,53 +10,54 @@ interface Event {
 
 const events: Event[] = [
   {
-    date: 'May 31, 2025',
-    title: 'Black Wealth Exchange Official Launch',
+    date: "May 31, 2025",
+    title: "Black Wealth Exchange Official Launch",
     description: [
-      'Live demos of our marketplace, business directory, and learning modules.',
-      'Keynote sessions from industry experts on economic empowerment.',
-      'Exclusive launch-day promotions and networking opportunities.',
+      "Live demos of our marketplace, business directory, and learning modules.",
+      "Keynote sessions from industry experts on economic empowerment.",
+      "Exclusive launch-day promotions and networking opportunities.",
     ],
   },
   {
-    date: 'June 30, 2025',
-    title: ' BWE Quarterly Webinar: Building Generational Wealth',
+    date: "June 30, 2025",
+    title: " BWE Quarterly Webinar: Building Generational Wealth",
     description: [
-      'Panel discussion with leaders from top Black-owned firms.',
-      'Interactive Q&A on long-term wealth strategies.',
+      "Panel discussion with leaders from top Black-owned firms.",
+      "Interactive Q&A on long-term wealth strategies.",
     ],
   },
   {
-    date: 'September 30, 2025',
-    title: 'Quarterly Webinar: Leveraging Technology for Growth',
+    date: "September 30, 2025",
+    title: "Quarterly Webinar: Leveraging Technology for Growth",
     description: [
-      'Showcases of Black tech innovators with live demos.',
-      'Workshops on digital tools to scale businesses.',
+      "Showcases of Black tech innovators with live demos.",
+      "Workshops on digital tools to scale businesses.",
     ],
   },
   {
-    date: 'July 4-7, 2025',
-    title: 'Essence Festival',
+    date: "July 4-7, 2025",
+    title: "Essence Festival",
     description: [
-      'Cultural celebrations, workshops, and live performances.',
-      'Networking with community leaders and changemakers.',
+      "Cultural celebrations, workshops, and live performances.",
+      "Networking with community leaders and changemakers.",
     ],
   },
   {
-    date: 'October 15-17, 2025',
-    title: 'AfroTech Conference',
+    date: "October 15-17, 2025",
+    title: "AfroTech Conference",
     description: [
-      'Conference for Black professionals in technology.',
-      'Keynotes, panels, and startup pitch competitions.',
+      "Conference for Black professionals in technology.",
+      "Keynotes, panels, and startup pitch competitions.",
     ],
   },
   {
-    date: 'September 2025 (TBD)',
-    title: '"Black Wealth Exchange Blueprint Conference”, ATL Launch - Unapologetic In Vision: Atlanta, GA',
+    date: "September 2025 (TBD)",
+    title:
+      '"Black Wealth Exchange Blueprint Conference”, ATL Launch - Unapologetic In Vision: Atlanta, GA',
     description: [
-      'One-day immersive workshops on strategy, finance, and marketing.',
-      'Networking sessions with entrepreneurs and investors.',
-      'Keynote address on Black economic development.',
+      "One-day immersive workshops on strategy, finance, and marketing.",
+      "Networking sessions with entrepreneurs and investors.",
+      "Keynote address on Black economic development.",
     ],
   },
 ];
@@ -94,7 +95,8 @@ export default function EventsPage() {
 
         <div className="mt-12 text-center">
           <p className="text-gray-400 italic">
-            Join us quarterly for impactful webinars, and stay tuned for more community spotlights and exclusive gatherings worldwide.
+            Join us quarterly for impactful webinars, and stay tuned for more
+            community spotlights and exclusive gatherings worldwide.
           </p>
         </div>
       </div>

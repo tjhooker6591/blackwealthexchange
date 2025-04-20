@@ -58,7 +58,7 @@ export default function NavBar() {
       <div className="container mx-auto px-4 flex items-center justify-between h-16">
         {/* Logo */}
         <Link href="/" className="flex items-center space-x-2">
-          <Image src="/bwe-logo.png" alt="BWE Logo" width={40} height={40} />
+          <Image src="/favicon.png" alt="BWE Logo" width={40} height={40} />
           <span className="text-gold font-bold truncate">
             Black Wealth Exchange
           </span>
@@ -66,19 +66,30 @@ export default function NavBar() {
 
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center space-x-6">
-          <Link href="/about" className="hover:text-gold font-semibold transition-colors">
+          <Link
+            href="/about"
+            className="hover:text-gold font-semibold transition-colors"
+          >
             About
           </Link>
-          <Link href="/global-timeline" className="hover:text-gold font-semibold transition-colors">
+          <Link
+            href="/global-timeline"
+            className="hover:text-gold font-semibold transition-colors"
+          >
             Journey
           </Link>
-          <Link href="/events" className="hover:text-gold font-semibold transition-colors">
+          <Link
+            href="/events"
+            className="hover:text-gold font-semibold transition-colors"
+          >
             Events
           </Link>
 
           {/* Single Menu Dropdown */}
           <div className="relative group">
-            <button className="hover:text-gold font-semibold transition-colors">Menu</button>
+            <button className="hover:text-gold font-semibold transition-colors">
+              Menu
+            </button>
             <div className="absolute left-0 mt-2 w-48 bg-white text-black rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none group-hover:pointer-events-auto">
               <div className="py-2">
                 <span className="block px-4 py-1 font-bold">
@@ -155,10 +166,16 @@ export default function NavBar() {
             </>
           ) : (
             <>
-              <Link href="/login" className="hover:text-gold font-semibold transition-colors">
+              <Link
+                href="/login"
+                className="hover:text-gold font-semibold transition-colors"
+              >
                 Log In
               </Link>
-              <Link href="/signup" className="hover:text-gold font-semibold transition-colors">
+              <Link
+                href="/signup"
+                className="hover:text-gold font-semibold transition-colors"
+              >
                 Sign Up
               </Link>
             </>
