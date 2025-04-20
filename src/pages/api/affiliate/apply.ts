@@ -2,9 +2,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
-import { nanoid } from "nanoid";          // ← NEW
+import { nanoid } from "nanoid"; // ← NEW
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method !== "POST") return res.status(405).end();
 
   const { name, email, website, audienceSize, notes } = req.body;
@@ -16,19 +19,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     /* --------------------- THE ONLY SECTION THAT CHANGED -------------------- */
     await db.collection("affiliates").insertOne({
-      _id: new ObjectId(),      // you can drop this—Mongo will add one automatically
+      _id: new ObjectId(), // you can drop this—Mongo will add one automatically
       name,
       email,
       website,
       audienceSize,
       notes,
-      status: "pending",        // pending → approved / rejected
+      status: "pending", // pending → approved / rejected
       referralCode: nanoid(6).toUpperCase(), // e.g. 4FHX9Q
       commissionTier: "standard",
       lifetimeEarnings: 0,
       clicks: 0,
       conversions: 0,
-      paidAt: [],               // payout history array
+      paidAt: [], // payout history array
       createdAt: new Date(),
     });
     /* ----------------------------------------------------------------------- */
@@ -39,4 +42,3 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(500).json({ error: "Server error" });
   }
 }
-

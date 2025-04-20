@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  
+
   // These values are only available on the server (e.g. in getServerSideProps)
   serverRuntimeConfig: {
     mongoUri: process.env.MONGODB_URI as string,

@@ -32,7 +32,9 @@ type ChartData = {
 
 export default function UserDashboard() {
   const [user, setUser] = useState<UserType | null>(null);
-  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(
+    null,
+  );
   const [chartData, setChartData] = useState<ChartData>([]);
   const [loading, setLoading] = useState(true);
   const [accessDenied, setAccessDenied] = useState(false);
@@ -54,9 +56,12 @@ export default function UserDashboard() {
           fetch(`/api/user/get-dashboard?email=${userData.user.email}`, {
             cache: "no-store",
           }),
-          fetch(`/api/user/applications-overview?email=${userData.user.email}`, {
-            cache: "no-store",
-          }),
+          fetch(
+            `/api/user/applications-overview?email=${userData.user.email}`,
+            {
+              cache: "no-store",
+            },
+          ),
         ]);
 
         setDashboardData(await dashboardRes.json());
@@ -96,8 +101,8 @@ export default function UserDashboard() {
         </h2>
         <p className="text-gray-300">
           Take the next step in your career.{" "}
-          <strong>Manage your saved jobs</strong>, track applications, and access career
-          tools to help you grow.
+          <strong>Manage your saved jobs</strong>, track applications, and
+          access career tools to help you grow.
         </p>
       </div>
 

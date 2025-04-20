@@ -8,7 +8,9 @@ import clientPromise from "@/lib/mongodb";
 function getSecret(): string {
   const secret = process.env.JWT_SECRET || process.env.NEXTAUTH_SECRET;
   if (!secret) {
-    throw new Error("🛑 Define JWT_SECRET or NEXTAUTH_SECRET in your environment variables");
+    throw new Error(
+      "🛑 Define JWT_SECRET or NEXTAUTH_SECRET in your environment variables",
+    );
   }
   return secret;
 }
@@ -16,7 +18,7 @@ const SECRET = getSecret();
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   // Disable HTTP caching so client always fetches fresh data
   res.setHeader("Cache-Control", "no-store, max-age=0");
@@ -45,7 +47,11 @@ export default async function handler(
   let decoded: { userId: string; email: string; accountType: string };
   try {
     const verified = jwt.verify(token, SECRET);
-    decoded = verified as { userId: string; email: string; accountType: string };
+    decoded = verified as {
+      userId: string;
+      email: string;
+      accountType: string;
+    };
   } catch (err) {
     console.error("Stats: JWT verify error:", err);
     return res.status(401).json({ error: "Unauthorized: Invalid token" });
@@ -62,7 +68,9 @@ export default async function handler(
     const db = client.db("bwes-cluster");
 
     // Count products belonging to this seller
-    const products = await db.collection("products").countDocuments({ sellerId });
+    const products = await db
+      .collection("products")
+      .countDocuments({ sellerId });
 
     // Aggregate orders to get count & total revenue
     const [orderStats] = await db
@@ -73,9 +81,9 @@ export default async function handler(
           $group: {
             _id: null,
             count: { $sum: 1 },
-            revenue: { $sum: "$totalPrice" }
-          }
-        }
+            revenue: { $sum: "$totalPrice" },
+          },
+        },
       ])
       .toArray();
 

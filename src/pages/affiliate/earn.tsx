@@ -7,8 +7,9 @@ export default function Earn() {
       <section className="max-w-3xl mx-auto text-center space-y-6">
         <h1 className="text-5xl font-extrabold text-gold">Earn</h1>
         <p className="text-xl text-gray-300">
-          Affiliates earn <span className="text-gold font-bold">10 – 25% CPA</span>{" "}
-          on qualifying sales with a 30‑day cookie window.
+          Affiliates earn{" "}
+          <span className="text-gold font-bold">10 – 25% CPA</span> on
+          qualifying sales with a 30‑day cookie window.
         </p>
       </section>
 

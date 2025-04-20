@@ -5,20 +5,20 @@ import clsx from "clsx";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Menu, LogOut } from "lucide-react";
-import DashboardNav from "@/components/dashboards/DashboardNav";  // ← or delete & keep inline links
+import DashboardNav from "@/components/dashboards/DashboardNav"; // ← or delete & keep inline links
 
 export default function DashboardFrame({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [open, setOpen] = useState(false);              // closed by default
+  const [open, setOpen] = useState(false); // closed by default
   const router = useRouter();
 
   /* sign‑out click */
   async function handleLogout() {
     await fetch("/api/auth/logout", { method: "POST" });
-    router.reload();                                     // hard refresh clears UI
+    router.reload(); // hard refresh clears UI
   }
 
   return (
@@ -28,7 +28,7 @@ export default function DashboardFrame({
         className={clsx(
           "fixed inset-y-0 left-0 z-40 w-64 bg-neutral-900 transition-transform duration-200",
           open ? "translate-x-0" : "-translate-x-full md:translate-x-0",
-          "md:static md:block"
+          "md:static md:block",
         )}
       >
         {/* shared nav links */}
