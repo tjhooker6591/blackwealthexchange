@@ -20,11 +20,12 @@ const events: Event[] = [
   },
   {
     date: "April 9, 2025, 1:00 PM - 2:00 PM CST",
-    title: "Sip Juice & Color History - Kids Online Black History Painting Party",
+    title:
+      "Sip Juice & Color History - Kids Online Black History Painting Party",
     description: [
       "FREE online event empowering kids through art and history.",
       "Interactive painting session with live discussion of Black history.",
-      "Hosted by Sip Juice & Color History." // ([tockify.com](https://tockify.com/afrobizusa/detail/887/1744218000000?tags=Black-History-Painting-Party&utm_source=chatgpt.com))
+      "Hosted by Sip Juice & Color History.", // ([tockify.com](https://tockify.com/afrobizusa/detail/887/1744218000000?tags=Black-History-Painting-Party&utm_source=chatgpt.com))
     ],
   },
   {
@@ -33,7 +34,7 @@ const events: Event[] = [
     description: [
       "Three-day celebration of music, dance, art, and food at Hart Plaza in Detroit.",
       "World-class musical acts and storytelling sessions.",
-      "Family activities and an African Marketplace." // ([thewright.org](https://www.thewright.org/africanworldfestival?utm_source=chatgpt.com))
+      "Family activities and an African Marketplace.", // ([thewright.org](https://www.thewright.org/africanworldfestival?utm_source=chatgpt.com))
     ],
   },
   {
@@ -70,7 +71,8 @@ const events: Event[] = [
   },
   {
     date: "September 2025 (TBD)",
-    title: "\"Black Wealth Exchange Blueprint Conference\", ATL Launch - Unapologetic In Vision: Atlanta, GA",
+    title:
+      '"Black Wealth Exchange Blueprint Conference", ATL Launch - Unapologetic In Vision: Atlanta, GA',
     description: [
       "One-day immersive workshops on strategy, finance, and marketing.",
       "Networking sessions with entrepreneurs and investors.",
