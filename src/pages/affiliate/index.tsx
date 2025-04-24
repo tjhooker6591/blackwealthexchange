@@ -15,7 +15,9 @@ interface AffiliateOffer {
 }
 
 const AffiliatePartnershipPage: NextPage = () => {
-  const [affiliateStatus, setAffiliateStatus] = useState<"loading" | "active" | "inactive">("loading");
+  const [affiliateStatus, setAffiliateStatus] = useState<
+    "loading" | "active" | "inactive"
+  >("loading");
   const [affiliateOffers, setAffiliateOffers] = useState<AffiliateOffer[]>([]);
 
   useEffect(() => {
@@ -29,7 +31,9 @@ const AffiliatePartnershipPage: NextPage = () => {
           return;
         }
 
-        const res = await fetch(`/api/affiliate/get-links?userId=${sessionData.user.id}`);
+        const res = await fetch(
+          `/api/affiliate/get-links?userId=${sessionData.user.id}`,
+        );
         if (res.ok) {
           setAffiliateStatus("active");
         } else {
@@ -48,7 +52,8 @@ const AffiliatePartnershipPage: NextPage = () => {
         id: 1,
         name: "Official Black Wall Street",
         url: "https://officialblackwallstreet.com/",
-        description: "A platform dedicated to promoting Black-owned businesses across the country.",
+        description:
+          "A platform dedicated to promoting Black-owned businesses across the country.",
         categories: "General, Retail, Services",
         image: "/affiliate/black-wall-street.jpg",
       },
@@ -56,7 +61,8 @@ const AffiliatePartnershipPage: NextPage = () => {
         id: 2,
         name: "Buy From A Black Woman",
         url: "https://www.buyfromablackwoman.org/",
-        description: "A nonprofit organization supporting Black women entrepreneurs.",
+        description:
+          "A nonprofit organization supporting Black women entrepreneurs.",
         categories: "Retail, Beauty, Services, Nonprofits",
         image: "/affiliate/buy-from-a-black-woman.jpg",
       },
@@ -64,7 +70,8 @@ const AffiliatePartnershipPage: NextPage = () => {
         id: 3,
         name: "Support Black Owned",
         url: "https://supportblackowned.com/",
-        description: "A comprehensive directory for Black-owned businesses in the U.S. and internationally.",
+        description:
+          "A comprehensive directory for Black-owned businesses in the U.S. and internationally.",
         categories: "General, Retail, Food, Tech, Services, Education",
         image: "/affiliate/support-black-owned.jpg",
       },
@@ -80,7 +87,8 @@ const AffiliatePartnershipPage: NextPage = () => {
         id: 5,
         name: "The Black-Owned Market",
         url: "https://www.theblackownedmarket.com/",
-        description: "A marketplace where consumers can discover Black-owned brands.",
+        description:
+          "A marketplace where consumers can discover Black-owned brands.",
         categories: "Retail, Fashion, Beauty, Art, Home Goods",
         image: "/affiliate/black-owned-market.jpg",
       },
@@ -115,7 +123,9 @@ const AffiliatePartnershipPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Affiliate &amp; Partnership Program | Black Wealth Exchange</title>
+        <title>
+          Affiliate &amp; Partnership Program | Black Wealth Exchange
+        </title>
       </Head>
       <div className="min-h-screen bg-black text-white">
         {/* Intro Section */}
@@ -124,7 +134,8 @@ const AffiliatePartnershipPage: NextPage = () => {
             Empower Black Entrepreneurship
           </h1>
           <p className="text-xl md:text-2xl text-gray-300 mb-8">
-            Join our Affiliate &amp; Partnership Program to access exclusive opportunities and grow your business.
+            Join our Affiliate &amp; Partnership Program to access exclusive
+            opportunities and grow your business.
           </p>
 
           {affiliateStatus === "loading" ? (

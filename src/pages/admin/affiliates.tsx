@@ -25,8 +25,11 @@ export default function AdminAffiliates() {
       const sessionRes = await fetch("/api/auth/me");
       const sessionData = await sessionRes.json();
 
-      if (!sessionData.user || sessionData.user.email !== "tjameshooker@gmail.com") {
-        router.push("/");  // Redirect non-admins
+      if (
+        !sessionData.user ||
+        sessionData.user.email !== "tjameshooker@gmail.com"
+      ) {
+        router.push("/"); // Redirect non-admins
         return;
       }
 
@@ -65,7 +68,9 @@ export default function AdminAffiliates() {
         <title>Admin | Manage Affiliates</title>
       </Head>
       <div className="min-h-screen bg-black text-white p-10">
-        <h1 className="text-4xl font-bold text-gold mb-8">Affiliate Management</h1>
+        <h1 className="text-4xl font-bold text-gold mb-8">
+          Affiliate Management
+        </h1>
 
         {loading ? (
           <p>Loading affiliates...</p>
@@ -73,14 +78,21 @@ export default function AdminAffiliates() {
           <>
             {/* Pending Applications */}
             <section className="mb-12">
-              <h2 className="text-2xl font-semibold mb-4">Pending Applications</h2>
+              <h2 className="text-2xl font-semibold mb-4">
+                Pending Applications
+              </h2>
               {pending.length === 0 ? (
                 <p>No pending applications.</p>
               ) : (
                 pending.map((a) => (
-                  <div key={a._id} className="bg-gray-800 p-4 mb-3 rounded flex justify-between items-center">
+                  <div
+                    key={a._id}
+                    className="bg-gray-800 p-4 mb-3 rounded flex justify-between items-center"
+                  >
                     <div>
-                      <p>{a.name} ({a.email})</p>
+                      <p>
+                        {a.name} ({a.email})
+                      </p>
                     </div>
                     <div className="space-x-2">
                       <button
@@ -124,7 +136,9 @@ export default function AdminAffiliates() {
                         <td className="py-2">{a.email}</td>
                         <td className="py-2">{a.clicks}</td>
                         <td className="py-2">{a.conversions}</td>
-                        <td className="py-2">${a.lifetimeEarnings.toFixed(2)}</td>
+                        <td className="py-2">
+                          ${a.lifetimeEarnings.toFixed(2)}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
@@ -134,7 +148,9 @@ export default function AdminAffiliates() {
 
             {/* Rejected Affiliates */}
             <section>
-              <h2 className="text-2xl font-semibold mb-4">Rejected Affiliates</h2>
+              <h2 className="text-2xl font-semibold mb-4">
+                Rejected Affiliates
+              </h2>
               {rejected.length === 0 ? (
                 <p>No rejected affiliates.</p>
               ) : (
@@ -152,7 +168,9 @@ export default function AdminAffiliates() {
                         <td className="py-2">{a.name}</td>
                         <td className="py-2">{a.email}</td>
                         <td className="py-2">
-                          {a.rejectedAt ? new Date(a.rejectedAt).toLocaleDateString() : "N/A"}
+                          {a.rejectedAt
+                            ? new Date(a.rejectedAt).toLocaleDateString()
+                            : "N/A"}
                         </td>
                       </tr>
                     ))}

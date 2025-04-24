@@ -53,7 +53,7 @@ export default function Earn() {
       const sessionData = await sessionRes.json();
       const userId = sessionData.user.id;
 
-      const payoutDetails = "your-paypal@example.com";  // Replace later with dynamic input
+      const payoutDetails = "your-paypal@example.com"; // Replace later with dynamic input
       const payoutMethod = "PayPal";
 
       const res = await fetch("/api/affiliate/request-payout", {
@@ -80,7 +80,8 @@ export default function Earn() {
         <section className="max-w-3xl mx-auto text-center space-y-6">
           <h1 className="text-5xl font-extrabold text-gold">Earn</h1>
           <p className="text-xl text-gray-300">
-            Affiliates earn <span className="text-gold font-bold">10 – 25% CPA</span> on
+            Affiliates earn{" "}
+            <span className="text-gold font-bold">10 – 25% CPA</span> on
             qualifying sales with a 30‑day cookie window.
           </p>
         </section>
@@ -112,24 +113,48 @@ export default function Earn() {
 
         {/* Real-Time Dashboard */}
         <section className="max-w-3xl mx-auto text-center space-y-6">
-          <h2 className="text-3xl font-bold text-gold">Your Affiliate Dashboard</h2>
+          <h2 className="text-3xl font-bold text-gold">
+            Your Affiliate Dashboard
+          </h2>
           {loading ? (
             <p>Loading earnings...</p>
           ) : earnings ? (
             <div className="bg-gray-800 p-6 rounded-lg shadow-lg space-y-4">
-              <p>Clicks: <span className="text-gold font-semibold">{earnings.clicks}</span></p>
-              <p>Conversions: <span className="text-gold font-semibold">{earnings.conversions}</span></p>
-              <p>Total Earned: <span className="text-gold font-semibold">${earnings.totalEarned.toFixed(2)}</span></p>
-              <p>Total Paid: <span className="text-gold font-semibold">${earnings.totalPaid.toFixed(2)}</span></p>
+              <p>
+                Clicks:{" "}
+                <span className="text-gold font-semibold">
+                  {earnings.clicks}
+                </span>
+              </p>
+              <p>
+                Conversions:{" "}
+                <span className="text-gold font-semibold">
+                  {earnings.conversions}
+                </span>
+              </p>
+              <p>
+                Total Earned:{" "}
+                <span className="text-gold font-semibold">
+                  ${earnings.totalEarned.toFixed(2)}
+                </span>
+              </p>
+              <p>
+                Total Paid:{" "}
+                <span className="text-gold font-semibold">
+                  ${earnings.totalPaid.toFixed(2)}
+                </span>
+              </p>
 
               <button
                 onClick={handlePayoutRequest}
                 className="mt-4 px-6 py-3 bg-gold text-black rounded hover:bg-yellow-500 transition"
-                disabled={(earnings.totalEarned - earnings.totalPaid) <= 0}
+                disabled={earnings.totalEarned - earnings.totalPaid <= 0}
               >
                 Request Payout
               </button>
-              {payoutMessage && <p className="mt-4 text-green-400">{payoutMessage}</p>}
+              {payoutMessage && (
+                <p className="mt-4 text-green-400">{payoutMessage}</p>
+              )}
             </div>
           ) : (
             <p>{payoutMessage}</p>

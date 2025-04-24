@@ -10,10 +10,15 @@ interface JwtPayload {
   accountType?: string;
 }
 
-const SECRET = process.env.JWT_SECRET || process.env.NEXTAUTH_SECRET || "default_secret";
+const SECRET =
+  process.env.JWT_SECRET || process.env.NEXTAUTH_SECRET || "default_secret";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== "POST") return res.status(405).json({ error: "Method Not Allowed" });
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
+  if (req.method !== "POST")
+    return res.status(405).json({ error: "Method Not Allowed" });
 
   const { name, website, audienceSize, notes } = req.body;
   if (!name) return res.status(400).json({ error: "Missing required fields" });
@@ -23,7 +28,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const cookies = cookie.parse(req.headers.cookie || "");
     const token = cookies.session_token;
 
-    if (!token) return res.status(401).json({ error: "Unauthorized. Please log in." });
+    if (!token)
+      return res.status(401).json({ error: "Unauthorized. Please log in." });
 
     const payload = jwt.verify(token, SECRET) as JwtPayload;
     const userId = payload.userId;
@@ -33,9 +39,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const db = client.db("bwes-cluster");
 
     // Prevent duplicate affiliate applications
-    const exists = await db.collection("affiliates").findOne({ $or: [{ userId }, { email }] });
+    const exists = await db
+      .collection("affiliates")
+      .findOne({ $or: [{ userId }, { email }] });
     if (exists) {
-      return res.status(200).json({ message: "You have already applied.", referralLink: exists.referralLink });
+      return res
+        .status(200)
+        .json({
+          message: "You have already applied.",
+          referralLink: exists.referralLink,
+        });
     }
 
     const referralCode = nanoid(6).toUpperCase();
@@ -60,7 +73,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
 
     return res.status(201).json({
-      message: "Application submitted. You will receive a response within 3 business days.",
+      message:
+        "Application submitted. You will receive a response within 3 business days.",
       referralLink,
     });
   } catch (err) {
