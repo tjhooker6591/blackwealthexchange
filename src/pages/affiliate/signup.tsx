@@ -1,23 +1,34 @@
-// src/pages/affiliate/signup.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 export default function AffiliateSignup() {
   const router = useRouter();
   const [form, setForm] = useState({
     name: "",
-    email: "",
     website: "",
     audienceSize: "",
     notes: "",
   });
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
+
+  useEffect(() => {
+    // Check if user is logged in
+    const checkSession = async () => {
+      const res = await fetch("/api/auth/me");
+      const data = await res.json();
+      if (!data.user) {
+        setIsLoggedIn(false);
+      }
+    };
+    checkSession();
+  }, []);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => setForm({ ...form, [e.target.name]: e.target.value });
 
   async function handleSubmit(e: React.FormEvent) {
@@ -30,7 +41,6 @@ export default function AffiliateSignup() {
       body: JSON.stringify(form),
     });
 
-    // Use if/else instead of ternary to avoid unused-expression error
     if (res.ok) {
       setSuccess(true);
     } else {
@@ -40,16 +50,31 @@ export default function AffiliateSignup() {
     setSubmitting(false);
   }
 
+  if (!isLoggedIn) {
+    return (
+      <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center space-y-6">
+        <h1 className="text-3xl font-bold text-gold">Please Log In</h1>
+        <p>You must be logged in to apply for the Affiliate Program.</p>
+        <button
+          onClick={() => router.push("/login")}
+          className="px-6 py-3 bg-gold text-black font-semibold rounded hover:bg-yellow-500 transition"
+        >
+          Go to Login
+        </button>
+      </div>
+    );
+  }
+
   if (success) {
     return (
       <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center space-y-6">
-        <h1 className="text-4xl font-bold text-gold">Application Received!</h1>
-        <p>We’ll review it and email you within 3 business days.</p>
+        <h1 className="text-4xl font-bold text-gold">Application Received!</h1>
+        <p>We’ll review it and email you within 3 business days.</p>
         <button
           onClick={() => router.push("/affiliate")}
           className="px-6 py-3 bg-gold text-black font-semibold rounded hover:bg-yellow-500 transition"
         >
-          Back to Affiliate Home
+          Back to Affiliate Home
         </button>
       </div>
     );
@@ -62,14 +87,14 @@ export default function AffiliateSignup() {
         className="w-full max-w-lg mx-auto p-8 bg-gray-900 rounded-xl shadow-lg space-y-6"
       >
         <h1 className="text-3xl font-extrabold text-gold text-center">
-          Affiliate Application
+          Affiliate Application
         </h1>
 
-        {["name", "email", "website", "audienceSize"].map((field) => (
+        {["name", "website", "audienceSize"].map((field) => (
           <input
             key={field}
             name={field}
-            type={field === "email" ? "email" : "text"}
+            type="text"
             placeholder={
               field === "audienceSize"
                 ? "Audience size / Reach"
@@ -96,7 +121,7 @@ export default function AffiliateSignup() {
           disabled={submitting}
           className="w-full py-3 bg-gold text-black font-semibold rounded hover:bg-yellow-500 transition disabled:opacity-50"
         >
-          {submitting ? "Submitting…" : "Apply Now"}
+          {submitting ? "Submitting…" : "Apply Now"}
         </button>
       </form>
     </div>

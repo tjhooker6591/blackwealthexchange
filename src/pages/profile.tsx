@@ -32,9 +32,15 @@ export default function ProfilePage() {
   const [resumeUrl, setResumeUrl] = useState<string | null>(null);
 
   // Status per operation
-  const [profileStatus, setProfileStatus] = useState<"idle"|"saving"|"success"|"error">("idle");
-  const [avatarStatus, setAvatarStatus] = useState<"idle"|"uploading"|"success"|"error">("idle");
-  const [resumeStatus, setResumeStatus] = useState<"idle"|"uploading"|"success"|"error">("idle");
+  const [profileStatus, setProfileStatus] = useState<
+    "idle" | "saving" | "success" | "error"
+  >("idle");
+  const [avatarStatus, setAvatarStatus] = useState<
+    "idle" | "uploading" | "success" | "error"
+  >("idle");
+  const [resumeStatus, setResumeStatus] = useState<
+    "idle" | "uploading" | "success" | "error"
+  >("idle");
 
   useEffect(() => {
     async function fetchProfile() {
@@ -56,8 +62,18 @@ export default function ProfilePage() {
     fetchProfile();
   }, []);
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">Loading...</div>;
-  if (!profile) return <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">No profile found.</div>;
+  if (loading)
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
+        Loading...
+      </div>
+    );
+  if (!profile)
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
+        No profile found.
+      </div>
+    );
 
   // handlers
   const saveProfile = async (e: React.FormEvent) => {
@@ -82,12 +98,16 @@ export default function ProfilePage() {
     e.preventDefault();
     if (!avatarFile) return;
     setAvatarStatus("uploading");
-    const form = new FormData(); form.append("avatar", avatarFile);
+    const form = new FormData();
+    form.append("avatar", avatarFile);
     try {
-      const res = await fetch("/api/profile/avatar", { method: "POST", body: form });
+      const res = await fetch("/api/profile/avatar", {
+        method: "POST",
+        body: form,
+      });
       if (!res.ok) throw new Error();
       const { avatarUrl } = await res.json();
-      setProfile(prev => prev && { ...prev, avatar: avatarUrl });
+      setProfile((prev) => prev && { ...prev, avatar: avatarUrl });
       setAvatarFile(null);
       setAvatarStatus("success");
     } catch {
@@ -99,12 +119,16 @@ export default function ProfilePage() {
     e.preventDefault();
     if (!resumeFile) return;
     setResumeStatus("uploading");
-    const form = new FormData(); form.append("resume", resumeFile);
+    const form = new FormData();
+    form.append("resume", resumeFile);
     try {
-      const res = await fetch("/api/profile/resume", { method: "POST", body: form });
+      const res = await fetch("/api/profile/resume", {
+        method: "POST",
+        body: form,
+      });
       if (!res.ok) throw new Error();
       const { resumeUrl: newUrl } = await res.json();
-      setProfile(prev => prev && { ...prev, resumeUrl: newUrl });
+      setProfile((prev) => prev && { ...prev, resumeUrl: newUrl });
       setResumeUrl(newUrl);
       setResumeFile(null);
       setResumeStatus("success");
@@ -120,12 +144,18 @@ export default function ProfilePage() {
 
         {/* Avatar Upload */}
         <div className="flex items-center space-x-4">
-          <Image src={profile.avatar} alt="Avatar" width={100} height={100} className="rounded-full" />
+          <Image
+            src={profile.avatar}
+            alt="Avatar"
+            width={100}
+            height={100}
+            className="rounded-full"
+          />
           <form onSubmit={uploadAvatar} className="flex items-center space-x-2">
             <input
               type="file"
               accept="image/*"
-              onChange={e => setAvatarFile(e.target.files?.[0] ?? null)}
+              onChange={(e) => setAvatarFile(e.target.files?.[0] ?? null)}
               className="text-black"
             />
             <button
@@ -135,8 +165,12 @@ export default function ProfilePage() {
             >
               {avatarStatus === "uploading" ? "Uploading…" : "Upload Avatar"}
             </button>
-            {avatarStatus === "success" && <span className="text-green-400">Done!</span>}
-            {avatarStatus === "error" && <span className="text-red-400">Error.</span>}
+            {avatarStatus === "success" && (
+              <span className="text-green-400">Done!</span>
+            )}
+            {avatarStatus === "error" && (
+              <span className="text-red-400">Error.</span>
+            )}
           </form>
         </div>
 
@@ -147,7 +181,7 @@ export default function ProfilePage() {
             <input
               className="w-full mt-1 p-2 text-black rounded"
               value={name}
-              onChange={e => setName(e.target.value)}
+              onChange={(e) => setName(e.target.value)}
             />
           </label>
           <label className="block">
@@ -156,7 +190,7 @@ export default function ProfilePage() {
               type="email"
               className="w-full mt-1 p-2 text-black rounded"
               value={email}
-              onChange={e => setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </label>
           <label className="block">
@@ -164,7 +198,7 @@ export default function ProfilePage() {
             <textarea
               className="w-full mt-1 p-2 text-black rounded"
               value={bio}
-              onChange={e => setBio(e.target.value)}
+              onChange={(e) => setBio(e.target.value)}
             />
           </label>
           <button
@@ -174,8 +208,12 @@ export default function ProfilePage() {
           >
             {profileStatus === "saving" ? "Saving…" : "Save Profile"}
           </button>
-          {profileStatus === "success" && <p className="text-green-400">Profile saved!</p>}
-          {profileStatus === "error" && <p className="text-red-400">Save failed.</p>}
+          {profileStatus === "success" && (
+            <p className="text-green-400">Profile saved!</p>
+          )}
+          {profileStatus === "error" && (
+            <p className="text-red-400">Save failed.</p>
+          )}
         </form>
 
         {/* Resume Upload */}
@@ -183,13 +221,21 @@ export default function ProfilePage() {
           <h2 className="text-2xl font-semibold">Resume</h2>
           {resumeUrl && (
             <p>
-              Current resume: <a href={resumeUrl} target="_blank" rel="noopener noreferrer" className="underline text-yellow-400">View</a>
+              Current resume:{" "}
+              <a
+                href={resumeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline text-yellow-400"
+              >
+                View
+              </a>
             </p>
           )}
           <input
             type="file"
             accept=".pdf,.doc,.docx"
-            onChange={e => setResumeFile(e.target.files?.[0] ?? null)}
+            onChange={(e) => setResumeFile(e.target.files?.[0] ?? null)}
             className="text-black"
           />
           <button
@@ -199,8 +245,12 @@ export default function ProfilePage() {
           >
             {resumeStatus === "uploading" ? "Uploading…" : "Upload Resume"}
           </button>
-          {resumeStatus === "success" && <p className="text-green-400">Resume uploaded!</p>}
-          {resumeStatus === "error" && <p className="text-red-400">Upload failed.</p>}
+          {resumeStatus === "success" && (
+            <p className="text-green-400">Resume uploaded!</p>
+          )}
+          {resumeStatus === "error" && (
+            <p className="text-red-400">Upload failed.</p>
+          )}
         </form>
 
         {/* Business Info */}
@@ -219,12 +269,16 @@ export default function ProfilePage() {
               )}
               <div>
                 <h3 className="text-xl">{profile.business.name}</h3>
-                {profile.business.description && <p>{profile.business.description}</p>}
+                {profile.business.description && (
+                  <p>{profile.business.description}</p>
+                )}
               </div>
             </div>
           </div>
         ) : (
-          <p className="mt-8">You have not registered a business yet. Please update your profile.</p>
+          <p className="mt-8">
+            You have not registered a business yet. Please update your profile.
+          </p>
         )}
       </div>
     </div>

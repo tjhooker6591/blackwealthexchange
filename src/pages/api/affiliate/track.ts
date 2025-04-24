@@ -1,10 +1,9 @@
-// pages/api/affiliate/track.ts
-import { NextApiRequest, NextApiResponse } from "next";
+import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== "POST") return res.status(405).end("Method not allowed");
+  if (req.method !== "POST") return res.status(405).end("Method Not Allowed");
 
   const { userId, referralCode } = req.body;
 
@@ -16,22 +15,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const client = await clientPromise;
     const db = client.db("bwes-cluster");
 
-    // Find the referrer by username or referral code
-    const referrer = await db.collection("users").findOne({ username: referralCode });
+    // 1️⃣ Find the affiliate by referralCode
+    const affiliate = await db.collection("affiliates").findOne({ referralCode });
 
-    if (!referrer) {
-      return res.status(404).json({ error: "Referrer not found" });
+    if (!affiliate) {
+      return res.status(404).json({ error: "Affiliate referrer not found" });
     }
 
-    // Link the new user to the referrer
+    // 2️⃣ Check if user already linked
+    const user = await db.collection("users").findOne({ _id: new ObjectId(userId) });
+    if (user?.referredBy) {
+      return res.status(200).json({ message: "User already referred." });
+    }
+
+    // 3️⃣ Link the new user to the affiliate
     await db.collection("users").updateOne(
       { _id: new ObjectId(userId) },
-      { $set: { referredBy: referrer._id } }
+      { $set: { referredBy: affiliate.referralCode } }
     );
 
-    res.status(200).json({ message: "Referral recorded" });
+    return res.status(200).json({ message: "Referral recorded." });
+
   } catch (err) {
     console.error("Affiliate track error", err);
-    res.status(500).json({ error: "Server error" });
+    return res.status(500).json({ error: "Server error" });
   }
 }
+
