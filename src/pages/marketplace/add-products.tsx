@@ -44,11 +44,13 @@ export default function AddProductPage() {
         body: formData,
       });
 
+      const data = await res.json();
+
       if (res.ok) {
+        alert("✅ Product added successfully!");
         router.push("/marketplace/dashboard");
       } else {
-        const data = await res.json();
-        alert(`Error: ${data.error || "Failed to add product."}`);
+        alert(`❌ Error: ${data.error || "Failed to add product."}`);
       }
     }
   };

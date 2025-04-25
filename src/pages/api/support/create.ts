@@ -20,11 +20,9 @@ export default async function handler(
     }
 
     if (description.trim().length < 10) {
-      return res
-        .status(400)
-        .json({
-          message: "Description is too short. Please provide more details.",
-        });
+      return res.status(400).json({
+        message: "Description is too short. Please provide more details.",
+      });
     }
 
     const client = await clientPromise;

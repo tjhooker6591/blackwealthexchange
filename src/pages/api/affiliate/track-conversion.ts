@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
+import { ObjectId } from "mongodb";
 
 export default async function handler(
   req: NextApiRequest,
@@ -10,19 +11,18 @@ export default async function handler(
   }
 
   try {
-    const { affiliateId, amount } = JSON.parse(req.body);
+    const { affiliateId, amount } = req.body;
 
     if (!affiliateId || !amount) {
       return res.status(400).json({ message: "Missing fields" });
     }
 
-    const commissionRate = 0.1; // You could later fetch this dynamically from affiliate profile
+    const commissionRate = 0.1;  // 10% commission
     const commission = parseFloat((amount * commissionRate).toFixed(2));
 
     const client = await clientPromise;
     const db = client.db("bwes-cluster");
 
-    // Log conversion details
     await db.collection("affiliateConversions").insertOne({
       affiliateId,
       amount,
@@ -30,9 +30,8 @@ export default async function handler(
       convertedAt: new Date(),
     });
 
-    // Update affiliate stats
     await db.collection("affiliates").updateOne(
-      { affiliateId },
+      { _id: new ObjectId(affiliateId) },
       {
         $inc: {
           conversions: 1,

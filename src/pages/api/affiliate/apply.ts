@@ -43,12 +43,10 @@ export default async function handler(
       .collection("affiliates")
       .findOne({ $or: [{ userId }, { email }] });
     if (exists) {
-      return res
-        .status(200)
-        .json({
-          message: "You have already applied.",
-          referralLink: exists.referralLink,
-        });
+      return res.status(200).json({
+        message: "You have already applied.",
+        referralLink: exists.referralLink,
+      });
     }
 
     const referralCode = nanoid(6).toUpperCase();

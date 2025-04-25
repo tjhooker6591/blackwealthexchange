@@ -27,11 +27,9 @@ export default async function handler(
       .collection("enrollments")
       .findOne({ userId, courseId });
     if (!enrollment || !enrollment.completed) {
-      return res
-        .status(400)
-        .json({
-          message: "Course not completed. Certificate cannot be generated.",
-        });
+      return res.status(400).json({
+        message: "Course not completed. Certificate cannot be generated.",
+      });
     }
 
     // Check if certificate already exists

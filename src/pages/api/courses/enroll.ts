@@ -42,12 +42,9 @@ export default async function handler(
     if (course.isPremium) {
       // Placeholder for payment validation
       // Example: Check if user has purchased access (future integration)
-      return res
-        .status(403)
-        .json({
-          message:
-            "This is a premium course. Please upgrade or purchase access.",
-        });
+      return res.status(403).json({
+        message: "This is a premium course. Please upgrade or purchase access.",
+      });
     }
 
     // Enroll user

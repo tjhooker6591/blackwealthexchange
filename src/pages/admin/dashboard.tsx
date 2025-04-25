@@ -1,98 +1,93 @@
 import React, { useEffect, useState } from "react";
-
-interface Business {
-  _id: string;
-  businessName: string;
-  email: string;
-  address: string;
-  // Add any other fields that your business objects have
-}
+import Link from "next/link";
 
 const AdminDashboard = () => {
-  const [businesses, setBusinesses] = useState<Business[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState({
+    pendingBusinesses: 0,
+    pendingPayouts: 0,
+    activeAffiliates: 0,
+    pendingJobs: 0,
+    pendingProducts: 0,
+    totalUsers: 0,
+  });
 
-  // Fetch pending businesses
+  const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState<string>("");
+
   useEffect(() => {
-    const fetchBusinesses = async () => {
-      const response = await fetch("/api/admin/getPendingBusinesses");
-      const data: Business[] = await response.json();
-      setBusinesses(data);
-      setLoading(false);
+    const fetchStats = async () => {
+      try {
+        const res = await fetch("/api/admin/dashboard-stats");
+        const data = await res.json();
+        setStats(data);
+      } catch (err) {
+        console.error("Failed to load dashboard stats", err);
+        setMessage("Error loading dashboard data.");
+      } finally {
+        setLoading(false);
+      }
     };
 
-    fetchBusinesses();
+    fetchStats();
   }, []);
 
-  // Handle approval of business
-  const handleApprove = async (id: string) => {
-    const response = await fetch(`/api/admin/approveBusiness/${id}`, {
-      method: "PUT",
-    });
-
-    if (response.ok) {
-      setBusinesses(businesses.filter((business) => business._id !== id)); // Remove the approved business from the list
-    }
-  };
-
-  // Handle rejection of business
-  const handleReject = async (id: string) => {
-    const response = await fetch(`/api/admin/rejectBusiness/${id}`, {
-      method: "DELETE",
-    });
-
-    if (response.ok) {
-      setBusinesses(businesses.filter((business) => business._id !== id)); // Remove the rejected business from the list
-    }
-  };
-
   return (
-    <div className="bg-gray-900 text-white min-h-screen">
-      <header className="hero bg-gray-800 p-20 text-center shadow-md">
-        <h1 className="text-4xl font-bold text-gold">Admin Dashboard</h1>
-        <p className="text-lg mt-2 text-gray-300">
-          Manage Business Verifications
-        </p>
+    <div className="bg-gray-900 text-white min-h-screen p-8">
+      <header className="text-center mb-10">
+        <h1 className="text-4xl font-bold text-gold">Admin Control Center</h1>
+        <p className="text-gray-400 mt-2">Manage all core operations of Black Wealth Exchange</p>
       </header>
 
-      <div className="container mx-auto p-6">
-        {loading ? (
-          <p>Loading...</p>
-        ) : businesses.length > 0 ? (
-          <div className="grid gap-6">
-            {businesses.map((business) => (
-              <div
-                key={business._id}
-                className="bg-gray-700 p-4 rounded shadow-md border border-gray-600"
-              >
-                <h3 className="text-lg font-semibold">
-                  {business.businessName}
-                </h3>
-                <p>{business.email}</p>
-                <p>{business.address}</p>
-                <div className="mt-4">
-                  <button
-                    onClick={() => handleApprove(business._id)}
-                    className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-                  >
-                    Approve
-                  </button>
-                  <button
-                    onClick={() => handleReject(business._id)}
-                    className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 ml-4"
-                  >
-                    Reject
-                  </button>
-                </div>
-              </div>
-            ))}
+      {message && (
+        <div className="mb-6 p-3 bg-red-600 rounded text-center text-sm">
+          {message}
+        </div>
+      )}
+
+      {loading ? (
+        <p className="text-center">Loading dashboard...</p>
+      ) : (
+        <>
+          {/* Stats Overview */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 text-center">
+            <StatCard title="Pending Businesses" value={stats.pendingBusinesses} />
+            <StatCard title="Pending Payouts" value={stats.pendingPayouts} />
+            <StatCard title="Active Affiliates" value={stats.activeAffiliates} />
+            <StatCard title="Pending Jobs" value={stats.pendingJobs} />
+            <StatCard title="Pending Products" value={stats.pendingProducts} />
+            <StatCard title="Total Users" value={stats.totalUsers} />
           </div>
-        ) : (
-          <p>No pending businesses.</p>
-        )}
-      </div>
+
+          {/* Quick Actions */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            <AdminLink href="/admin/business-approvals" label="Manage Business Approvals" />
+            <AdminLink href="/admin/affiliate-payouts" label="Review Affiliate Payouts" />
+            <AdminLink href="/admin/affiliates" label="Manage Affiliates" />
+            <AdminLink href="/admin/job-approvals" label="Approve Job Postings" />
+            <AdminLink href="/admin/product-approvals" label="Approve Marketplace Products" />
+            <AdminLink href="/admin/user-management" label="User & Account Management" />
+            <AdminLink href="/admin/content-moderation" label="Moderate Articles & Resources" />
+            <AdminLink href="/admin/analytics" label="View Platform Analytics" />
+          </div>
+        </>
+      )}
     </div>
   );
 };
+
+// Reusable Stat Card Component
+const StatCard = ({ title, value }: { title: string; value: number }) => (
+  <div className="bg-gray-800 p-6 rounded shadow">
+    <p className="text-gray-400">{title}</p>
+    <p className="text-3xl text-gold font-bold">{value}</p>
+  </div>
+);
+
+// Reusable Admin Link Button
+const AdminLink = ({ href, label }: { href: string; label: string }) => (
+  <Link href={href} className="block bg-gold text-black text-center py-4 rounded font-semibold hover:bg-yellow-400 transition">
+    {label}
+  </Link>
+);
 
 export default AdminDashboard;

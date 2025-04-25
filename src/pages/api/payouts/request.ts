@@ -51,12 +51,10 @@ export default async function handler(
 
     const result = await db.collection("payouts").insertOne(payoutData);
 
-    return res
-      .status(200)
-      .json({
-        message: "Payout request submitted successfully.",
-        payoutId: result.insertedId,
-      });
+    return res.status(200).json({
+      message: "Payout request submitted successfully.",
+      payoutId: result.insertedId,
+    });
   } catch (error) {
     console.error("Payout Request Error:", error);
     return res.status(500).json({ message: "Internal Server Error" });

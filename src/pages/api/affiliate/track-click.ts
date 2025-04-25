@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
+import { ObjectId } from "mongodb";
 
 export default async function handler(
   req: NextApiRequest,
@@ -10,7 +11,7 @@ export default async function handler(
   }
 
   try {
-    const { affiliateId } = JSON.parse(req.body);
+    const { affiliateId } = req.body;
 
     if (!affiliateId) {
       return res.status(400).json({ message: "Affiliate ID required" });
@@ -19,16 +20,15 @@ export default async function handler(
     const client = await clientPromise;
     const db = client.db("bwes-cluster");
 
-    // Log the click
     await db.collection("affiliateClicks").insertOne({
       affiliateId,
       clickedAt: new Date(),
     });
 
-    // Increment click count in affiliate profile
-    await db
-      .collection("affiliates")
-      .updateOne({ affiliateId }, { $inc: { clicks: 1 } });
+    await db.collection("affiliates").updateOne(
+      { _id: new ObjectId(affiliateId) },
+      { $inc: { clicks: 1 } }
+    );
 
     return res.status(200).json({ message: "Click tracked." });
   } catch (err) {
@@ -36,3 +36,4 @@ export default async function handler(
     return res.status(500).json({ message: "Internal Server Error" });
   }
 }
+
