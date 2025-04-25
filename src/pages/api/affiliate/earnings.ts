@@ -2,7 +2,10 @@ import { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   const client = await clientPromise;
   const db = client.db("bwes-cluster");
 
@@ -19,12 +22,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       // Check if userId is a valid ObjectId first
       if (ObjectId.isValid(userId)) {
-        affiliate = await db.collection("affiliates").findOne({ _id: new ObjectId(userId) });
+        affiliate = await db
+          .collection("affiliates")
+          .findOne({ _id: new ObjectId(userId) });
       }
 
       // If not found by _id, try finding by userId field
       if (!affiliate) {
-        affiliate = await db.collection("affiliates").findOne({ userId: userId });
+        affiliate = await db
+          .collection("affiliates")
+          .findOne({ userId: userId });
       }
 
       if (!affiliate) {
@@ -52,15 +59,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     try {
-      const buyer = await db.collection("users").findOne({ _id: new ObjectId(buyerId) });
+      const buyer = await db
+        .collection("users")
+        .findOne({ _id: new ObjectId(buyerId) });
 
       if (!buyer?.referredBy) {
         return res.status(200).json({ message: "No referrer, no commission" });
       }
 
-      const affiliate = await db.collection("affiliates").findOne({ referralCode: buyer.referredBy });
+      const affiliate = await db
+        .collection("affiliates")
+        .findOne({ referralCode: buyer.referredBy });
       if (!affiliate) {
-        return res.status(404).json({ message: "Referrer affiliate not found." });
+        return res
+          .status(404)
+          .json({ message: "Referrer affiliate not found." });
       }
 
       const commissionRate = affiliate.commissionRate || 0.15;
@@ -73,16 +86,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         commission,
         action,
         convertedAt: new Date(),
-        paidOut: false
+        paidOut: false,
       });
 
-      await db.collection("affiliates").updateOne(
-        { _id: affiliate._id },
-        { $inc: { lifetimeEarnings: commission, conversions: 1 } }
-      );
+      await db
+        .collection("affiliates")
+        .updateOne(
+          { _id: affiliate._id },
+          { $inc: { lifetimeEarnings: commission, conversions: 1 } },
+        );
 
-      return res.status(200).json({ message: "Commission logged successfully." });
-
+      return res
+        .status(200)
+        .json({ message: "Commission logged successfully." });
     } catch (err) {
       console.error("Earnings log error", err);
       return res.status(500).json({ error: "Server error logging commission" });

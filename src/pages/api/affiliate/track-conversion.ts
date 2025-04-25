@@ -17,7 +17,7 @@ export default async function handler(
       return res.status(400).json({ message: "Missing fields" });
     }
 
-    const commissionRate = 0.1;  // 10% commission
+    const commissionRate = 0.1; // 10% commission
     const commission = parseFloat((amount * commissionRate).toFixed(2));
 
     const client = await clientPromise;

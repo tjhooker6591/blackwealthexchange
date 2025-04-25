@@ -22,7 +22,10 @@ if (!fs.existsSync(uploadDir)) {
 const safeField = (field: string | string[] | undefined): string =>
   Array.isArray(field) ? field[0] : field || "";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   res.setHeader("Cache-Control", "no-store, max-age=0");
 
   if (req.method !== "POST") {
@@ -35,49 +38,54 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     multiples: false,
   });
 
-  form.parse(req, async (err: NodeJS.ErrnoException | null, fields: Fields, files: Files) => {
-    if (err) {
-      console.error("Form parse error:", err);
-      return res.status(500).json({ error: "Error parsing form data." });
-    }
+  form.parse(
+    req,
+    async (err: NodeJS.ErrnoException | null, fields: Fields, files: Files) => {
+      if (err) {
+        console.error("Form parse error:", err);
+        return res.status(500).json({ error: "Error parsing form data." });
+      }
 
-    const { name, description, price, category } = fields;
-    const imageFile = Array.isArray(files.image) ? files.image[0] : files.image;
+      const { name, description, price, category } = fields;
+      const imageFile = Array.isArray(files.image)
+        ? files.image[0]
+        : files.image;
 
-    if (!name || !price || !category || !imageFile) {
-      return res.status(400).json({ error: "Missing required fields." });
-    }
+      if (!name || !price || !category || !imageFile) {
+        return res.status(400).json({ error: "Missing required fields." });
+      }
 
-    try {
-      // Generate unique filename for the uploaded image
-      const filename = `${uuidv4()}-${imageFile.originalFilename}`;
-      const filepath = path.join(uploadDir, filename);
-      fs.renameSync(imageFile.filepath, filepath);
-      const imageUrl = `/uploads/${filename}`;
+      try {
+        // Generate unique filename for the uploaded image
+        const filename = `${uuidv4()}-${imageFile.originalFilename}`;
+        const filepath = path.join(uploadDir, filename);
+        fs.renameSync(imageFile.filepath, filepath);
+        const imageUrl = `/uploads/${filename}`;
 
-      // Connect to MongoDB and insert product
-      const client = await clientPromise;
-      const db = client.db("bwes-cluster");
+        // Connect to MongoDB and insert product
+        const client = await clientPromise;
+        const db = client.db("bwes-cluster");
 
-      const newProduct = {
-        name: safeField(name),
-        description: safeField(description),
-        price: parseFloat(safeField(price)),
-        category: safeField(category),
-        imageUrl,
-        status: "pending",  // If you want admin approval
-        createdAt: new Date(),
-      };
+        const newProduct = {
+          name: safeField(name),
+          description: safeField(description),
+          price: parseFloat(safeField(price)),
+          category: safeField(category),
+          imageUrl,
+          status: "pending", // If you want admin approval
+          createdAt: new Date(),
+        };
 
-      await db.collection("products").insertOne(newProduct);
+        await db.collection("products").insertOne(newProduct);
 
-      return res.status(201).json({
-        message: "Product added successfully!",
-        product: newProduct,
-      });
-    } catch (dbError) {
-      console.error("Database error:", dbError);
-      return res.status(500).json({ error: "Failed to save product." });
-    }
-  });
+        return res.status(201).json({
+          message: "Product added successfully!",
+          product: newProduct,
+        });
+      } catch (dbError) {
+        console.error("Database error:", dbError);
+        return res.status(500).json({ error: "Failed to save product." });
+      }
+    },
+  );
 }

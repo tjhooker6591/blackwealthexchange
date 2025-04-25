@@ -25,10 +25,9 @@ export default async function handler(
       clickedAt: new Date(),
     });
 
-    await db.collection("affiliates").updateOne(
-      { _id: new ObjectId(affiliateId) },
-      { $inc: { clicks: 1 } }
-    );
+    await db
+      .collection("affiliates")
+      .updateOne({ _id: new ObjectId(affiliateId) }, { $inc: { clicks: 1 } });
 
     return res.status(200).json({ message: "Click tracked." });
   } catch (err) {
@@ -36,4 +35,3 @@ export default async function handler(
     return res.status(500).json({ message: "Internal Server Error" });
   }
 }
-

@@ -35,7 +35,9 @@ const AdminDashboard = () => {
     <div className="bg-gray-900 text-white min-h-screen p-8">
       <header className="text-center mb-10">
         <h1 className="text-4xl font-bold text-gold">Admin Control Center</h1>
-        <p className="text-gray-400 mt-2">Manage all core operations of Black Wealth Exchange</p>
+        <p className="text-gray-400 mt-2">
+          Manage all core operations of Black Wealth Exchange
+        </p>
       </header>
 
       {message && (
@@ -50,9 +52,15 @@ const AdminDashboard = () => {
         <>
           {/* Stats Overview */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 text-center">
-            <StatCard title="Pending Businesses" value={stats.pendingBusinesses} />
+            <StatCard
+              title="Pending Businesses"
+              value={stats.pendingBusinesses}
+            />
             <StatCard title="Pending Payouts" value={stats.pendingPayouts} />
-            <StatCard title="Active Affiliates" value={stats.activeAffiliates} />
+            <StatCard
+              title="Active Affiliates"
+              value={stats.activeAffiliates}
+            />
             <StatCard title="Pending Jobs" value={stats.pendingJobs} />
             <StatCard title="Pending Products" value={stats.pendingProducts} />
             <StatCard title="Total Users" value={stats.totalUsers} />
@@ -60,14 +68,35 @@ const AdminDashboard = () => {
 
           {/* Quick Actions */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            <AdminLink href="/admin/business-approvals" label="Manage Business Approvals" />
-            <AdminLink href="/admin/affiliate-payouts" label="Review Affiliate Payouts" />
+            <AdminLink
+              href="/admin/business-approvals"
+              label="Manage Business Approvals"
+            />
+            <AdminLink
+              href="/admin/affiliate-payouts"
+              label="Review Affiliate Payouts"
+            />
             <AdminLink href="/admin/affiliates" label="Manage Affiliates" />
-            <AdminLink href="/admin/job-approvals" label="Approve Job Postings" />
-            <AdminLink href="/admin/product-approvals" label="Approve Marketplace Products" />
-            <AdminLink href="/admin/user-management" label="User & Account Management" />
-            <AdminLink href="/admin/content-moderation" label="Moderate Articles & Resources" />
-            <AdminLink href="/admin/analytics" label="View Platform Analytics" />
+            <AdminLink
+              href="/admin/job-approvals"
+              label="Approve Job Postings"
+            />
+            <AdminLink
+              href="/admin/product-approvals"
+              label="Approve Marketplace Products"
+            />
+            <AdminLink
+              href="/admin/user-management"
+              label="User & Account Management"
+            />
+            <AdminLink
+              href="/admin/content-moderation"
+              label="Moderate Articles & Resources"
+            />
+            <AdminLink
+              href="/admin/analytics"
+              label="View Platform Analytics"
+            />
           </div>
         </>
       )}
@@ -85,7 +114,10 @@ const StatCard = ({ title, value }: { title: string; value: number }) => (
 
 // Reusable Admin Link Button
 const AdminLink = ({ href, label }: { href: string; label: string }) => (
-  <Link href={href} className="block bg-gold text-black text-center py-4 rounded font-semibold hover:bg-yellow-400 transition">
+  <Link
+    href={href}
+    className="block bg-gold text-black text-center py-4 rounded font-semibold hover:bg-yellow-400 transition"
+  >
     {label}
   </Link>
 );

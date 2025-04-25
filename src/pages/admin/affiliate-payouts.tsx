@@ -36,12 +36,20 @@ export default function AffiliatePayouts() {
     const data = await res.json();
     alert(data.message);
     // Refresh payout list
-    setPayouts(payouts.map(p => p._id === payoutId ? { ...p, status: "completed", processedAt: new Date().toISOString() } : p));
+    setPayouts(
+      payouts.map((p) =>
+        p._id === payoutId
+          ? { ...p, status: "completed", processedAt: new Date().toISOString() }
+          : p,
+      ),
+    );
   };
 
   return (
     <div className="min-h-screen bg-black text-white p-10">
-      <h1 className="text-3xl font-bold text-gold mb-6">Affiliate Payout Requests</h1>
+      <h1 className="text-3xl font-bold text-gold mb-6">
+        Affiliate Payout Requests
+      </h1>
       {loading ? (
         <p>Loading...</p>
       ) : payouts.length === 0 ? (
@@ -62,19 +70,25 @@ export default function AffiliatePayouts() {
             </tr>
           </thead>
           <tbody>
-            {payouts.map(payout => (
+            {payouts.map((payout) => (
               <tr key={payout._id} className="border-b border-gray-800">
                 <td className="p-3">{payout.affiliateName}</td>
                 <td className="p-3">{payout.affiliateEmail}</td>
                 <td className="p-3">${payout.amount}</td>
                 <td className="p-3">{payout.payoutMethod}</td>
                 <td className="p-3">{payout.payoutDetails}</td>
-                <td className={`p-3 ${payout.status === "completed" ? "text-green-400" : "text-yellow-400"}`}>
+                <td
+                  className={`p-3 ${payout.status === "completed" ? "text-green-400" : "text-yellow-400"}`}
+                >
                   {payout.status}
                 </td>
-                <td className="p-3">{new Date(payout.requestedAt).toLocaleString()}</td>
                 <td className="p-3">
-                  {payout.processedAt ? new Date(payout.processedAt).toLocaleString() : "—"}
+                  {new Date(payout.requestedAt).toLocaleString()}
+                </td>
+                <td className="p-3">
+                  {payout.processedAt
+                    ? new Date(payout.processedAt).toLocaleString()
+                    : "—"}
                 </td>
                 <td className="p-3">
                   {payout.status === "pending" && (
