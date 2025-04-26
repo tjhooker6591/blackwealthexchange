@@ -15,7 +15,10 @@ async function getSellerId(req: NextApiRequest) {
   }
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   res.setHeader("Cache-Control", "no-store, max-age=0");
 
   if (req.method !== "DELETE") {
@@ -37,7 +40,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     const sellerId = await getSellerId(req);
     if (!sellerId) {
-      return res.status(401).json({ error: "Unauthorized: Seller access required" });
+      return res
+        .status(401)
+        .json({ error: "Unauthorized: Seller access required" });
     }
 
     const client = await clientPromise;
@@ -51,10 +56,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     if (product.sellerId !== sellerId) {
-      return res.status(403).json({ error: "Forbidden: You do not own this product" });
+      return res
+        .status(403)
+        .json({ error: "Forbidden: You do not own this product" });
     }
 
-    const result = await db.collection("products").deleteOne({ _id: productId });
+    const result = await db
+      .collection("products")
+      .deleteOne({ _id: productId });
 
     if (result.deletedCount === 0) {
       return res.status(500).json({ error: "Failed to delete product" });

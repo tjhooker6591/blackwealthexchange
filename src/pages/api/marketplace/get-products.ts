@@ -1,4 +1,3 @@
-// src/pages/api/marketplace/get-products.ts
 import { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 
@@ -9,7 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   res.setHeader("Cache-Control", "no-store, max-age=0");
 
-  const { page = "1", limit = "8", category = "All", sellerId } = req.query;
+  const { page = "1", limit = "8", category = "All", sellerView, sellerId } = req.query;
   const pageNum = parseInt(page as string, 10);
   const limitNum = parseInt(limit as string, 10);
   const skip = (pageNum - 1) * limitNum;
@@ -21,17 +20,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const filter: any = {};
 
-    // Apply category filter if needed
+    // Category filtering
     if (category && category !== "All") {
       filter.category = { $regex: new RegExp(category as string, "i") };
     }
 
-    // Apply seller filter if provided
-    if (sellerId) {
+    if (sellerView === "true") {
+      // Seller Dashboard View ➔ Show all products by this seller
+      if (!sellerId) {
+        return res.status(400).json({ error: "Seller ID required for seller view." });
+      }
       filter.sellerId = sellerId;
+
     } else {
-      // For public marketplace, show only approved products
-      filter.approved = true;
+      // Public Marketplace View ➔ Only show active & published products
+      filter.status = "active";
+      filter.isPublished = true;
     }
 
     const total = await collection.countDocuments(filter);
@@ -43,4 +47,3 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(500).json({ error: "Failed to fetch products" });
   }
 }
-

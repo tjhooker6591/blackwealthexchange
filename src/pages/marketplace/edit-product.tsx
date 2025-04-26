@@ -15,24 +15,43 @@ export default function EditProductPage() {
     imageUrl: "",
   });
 
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
   useEffect(() => {
     if (!id) return;
+
     const fetchProduct = async () => {
       try {
         const res = await fetch(`/api/marketplace/get-product?id=${id}`);
         const data = await res.json();
-        setProduct(data);
+
+        if (res.ok && data.product) {
+          setProduct({
+            name: data.product.name || "",
+            description: data.product.description || "",
+            price: data.product.price?.toString() || "",
+            category: data.product.category || "",
+            imageUrl: data.product.imageUrl || "",
+          });
+        } else {
+          setError("Product not found or failed to load.");
+        }
       } catch (err) {
         console.error("Failed to load product", err);
+        setError("An error occurred while fetching the product.");
+      } finally {
+        setLoading(false);
       }
     };
+
     fetchProduct();
   }, [id]);
 
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >,
+    >
   ) => {
     const { name, value } = e.target;
     setProduct((prev) => ({ ...prev, [name]: value }));
@@ -45,11 +64,23 @@ export default function EditProductPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id, ...product }),
       });
-      if (res.ok) router.push("/marketplace/dashboard");
+      if (res.ok) {
+        router.push("/marketplace/dashboard");
+      } else {
+        alert("Failed to update product.");
+      }
     } catch (error) {
       console.error("Error updating product:", error);
     }
   };
+
+  if (loading) {
+    return <div className="text-center text-white p-10">Loading product...</div>;
+  }
+
+  if (error) {
+    return <div className="text-center text-red-500 p-10">{error}</div>;
+  }
 
   return (
     <div className="min-h-screen bg-black text-white p-6">
@@ -119,3 +150,4 @@ export default function EditProductPage() {
     </div>
   );
 }
+

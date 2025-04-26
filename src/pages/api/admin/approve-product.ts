@@ -18,8 +18,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const db = client.db("bwes-cluster");
 
     const result = await db.collection("products").updateOne(
-      { _id: new ObjectId(productId) },
-      { $set: { approved: true } }
+      { _id: new ObjectId(productId), status: "pending" },  // Ensure only pending products get approved
+      { $set: { status: "active", isPublished: true } }
     );
 
     if (result.modifiedCount === 0) {
@@ -32,3 +32,4 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(500).json({ error: "Internal Server Error" });
   }
 }
+

@@ -5,27 +5,34 @@ import path from "path";
 import fs from "fs";
 import clientPromise from "@/lib/mongodb";
 
-// Disable Next.js default body parser to handle multipart/form-data
+// Get sellerId from session
+async function getSellerId(req: NextApiRequest) {
+  try {
+    const res = await fetch(`${process.env.NEXTAUTH_URL}/api/auth/me`, {
+      headers: { cookie: req.headers.cookie || "" },
+    });
+    const data = await res.json();
+    return data?.user?.accountType === "seller" ? data.user.id : null;
+  } catch {
+    return null;
+  }
+}
+
 export const config = {
   api: {
     bodyParser: false,
   },
 };
 
-// Ensure upload directory exists
 const uploadDir = path.join(process.cwd(), "/public/uploads");
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-// Helper to safely extract single field values
 const safeField = (field: string | string[] | undefined): string =>
   Array.isArray(field) ? field[0] : field || "";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse,
-) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   res.setHeader("Cache-Control", "no-store, max-age=0");
 
   if (req.method !== "POST") {
@@ -56,15 +63,18 @@ export default async function handler(
       }
 
       try {
-        // Generate unique filename for the uploaded image
+        const sellerId = await getSellerId(req);
+        if (!sellerId) {
+          return res.status(401).json({ error: "Unauthorized: Seller access required" });
+        }
+
         const filename = `${uuidv4()}-${imageFile.originalFilename}`;
         const filepath = path.join(uploadDir, filename);
         fs.renameSync(imageFile.filepath, filepath);
         const imageUrl = `/uploads/${filename}`;
 
-        // Connect to MongoDB and insert product
-        const client = await clientPromise;
-        const db = client.db("bwes-cluster");
+        const createdAt = new Date();
+        const expiresAt = new Date(createdAt.getTime() + 45 * 24 * 60 * 60 * 1000);  // 45 days
 
         const newProduct = {
           name: safeField(name),
@@ -72,9 +82,23 @@ export default async function handler(
           price: parseFloat(safeField(price)),
           category: safeField(category),
           imageUrl,
-          status: "pending", // If you want admin approval
-          createdAt: new Date(),
+          sellerId,             // ✅ Attach sellerId
+          status: "pending",    // Admin approval
+          isPublished: false,   // Default to unpublished until approved
+          isFeatured: false,
+          stockQuantity: 10,    // Default stock
+          salesCount: 0,
+          views: 0,
+          tags: [],
+          variants: [],
+          sku: "",
+          createdAt,
+          updatedAt: createdAt,
+          expiresAt
         };
+
+        const client = await clientPromise;
+        const db = client.db("bwes-cluster");
 
         await db.collection("products").insertOne(newProduct);
 

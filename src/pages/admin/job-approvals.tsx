@@ -24,7 +24,7 @@ const JobApprovals = () => {
   const handleApprove = async (jobId: string) => {
     try {
       await axios.put(`/api/admin/approve-job/${jobId}`);
-      setJobs(jobs.filter(j => j._id !== jobId));
+      setJobs(jobs.filter((j) => j._id !== jobId));
     } catch (err) {
       console.error("Approval failed", err);
       alert("Failed to approve job. Please try again.");
@@ -37,7 +37,9 @@ const JobApprovals = () => {
         💼 Job Post Approvals
       </h1>
       {jobs.length === 0 ? (
-        <p className="text-center text-gray-400">No job posts awaiting approval.</p>
+        <p className="text-center text-gray-400">
+          No job posts awaiting approval.
+        </p>
       ) : (
         <div className="space-y-4 max-w-3xl mx-auto">
           {jobs.map((job) => (
@@ -56,7 +58,10 @@ const JobApprovals = () => {
           ))}
         </div>
       )}
-      <Link href="/admin/dashboard" className="block text-gold text-center mt-8 hover:underline">
+      <Link
+        href="/admin/dashboard"
+        className="block text-gold text-center mt-8 hover:underline"
+      >
         ← Back to Admin Dashboard
       </Link>
     </div>

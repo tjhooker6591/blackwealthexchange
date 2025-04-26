@@ -9,15 +9,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     const client = await clientPromise;
     const db = client.db("bwes-cluster");
-    const collection = db.collection("products");
 
-    // Flexible filter: supports either approval method
-    const unapprovedProducts = await collection.find({
-      $or: [
-        { approved: false },
-        { status: "pending" }
-      ]
-    }).toArray();
+    const unapprovedProducts = await db.collection("products")
+      .find({ status: "pending" })   // ✅ Only fetch products truly pending
+      .toArray();
 
     return res.status(200).json({ products: unapprovedProducts });
   } catch (error) {

@@ -17,11 +17,13 @@ interface Product {
 const ProductDetailPage = () => {
   const router = useRouter();
   const { id } = router.query;
+
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
 
+  // Fetch Single Product
   useEffect(() => {
     if (!id) return;
 
@@ -29,7 +31,7 @@ const ProductDetailPage = () => {
       try {
         const res = await fetch(`/api/marketplace/get-product?id=${id}`);
         const data = await res.json();
-        setProduct(data);
+        setProduct(data.product);   // ✅ Corrected to use data.product
       } catch (error) {
         console.error("Error fetching product:", error);
       } finally {
@@ -40,16 +42,17 @@ const ProductDetailPage = () => {
     fetchProduct();
   }, [id]);
 
+  // Fetch Related Products
   useEffect(() => {
     const fetchRelated = async () => {
       if (!product) return;
       try {
-        const res = await fetch("/api/marketplace/get-products");
+        const res = await fetch("/api/marketplace/get-products?page=1&limit=100&category=All");
         const all = await res.json();
-        const related = all
+        const related = all.products   // ✅ Corrected to use all.products
           .filter(
             (p: Product) =>
-              p.category === product.category && p._id !== product._id,
+              p.category === product.category && p._id !== product._id
           )
           .slice(0, 4);
         setRelatedProducts(related);
@@ -157,6 +160,7 @@ const ProductDetailPage = () => {
         </div>
       )}
 
+      {/* Contact Seller Modal */}
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-80 z-50">
           <div className="bg-gray-900 border border-gold text-white rounded-xl p-6 max-w-md w-full shadow-lg">

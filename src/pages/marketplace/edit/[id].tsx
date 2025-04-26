@@ -56,7 +56,9 @@ export default function EditProductPage() {
     fetchProduct();
   }, [productId]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -69,7 +71,11 @@ export default function EditProductPage() {
       const res = await fetch("/api/marketplace/edit", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: productId, ...formData, price: parseFloat(formData.price) }),
+        body: JSON.stringify({
+          id: productId,
+          ...formData,
+          price: parseFloat(formData.price),
+        }),
       });
 
       const result = await res.json();
@@ -81,11 +87,19 @@ export default function EditProductPage() {
   };
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center text-white">Loading product...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center text-white">
+        Loading product...
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="min-h-screen flex items-center justify-center text-red-500">{error}</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center text-red-500">
+        {error}
+      </div>
+    );
   }
 
   return (
@@ -94,23 +108,69 @@ export default function EditProductPage() {
         <h1 className="text-2xl font-bold text-gold mb-4">Edit Product</h1>
 
         {success && (
-          <p className="text-green-500 mb-4">✅ Product updated successfully!</p>
+          <p className="text-green-500 mb-4">
+            ✅ Product updated successfully!
+          </p>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <input type="text" name="name" placeholder="Product Name" value={formData.name} onChange={handleChange} required className="w-full p-3 rounded bg-gray-700 border border-gray-600" />
-          <textarea name="description" placeholder="Description" value={formData.description} onChange={handleChange} rows={4} required className="w-full p-3 rounded bg-gray-700 border border-gray-600" />
-          <input type="text" name="price" placeholder="Price" value={formData.price} onChange={handleChange} required className="w-full p-3 rounded bg-gray-700 border border-gray-600" />
-          <input type="text" name="image" placeholder="Image URL" value={formData.image} onChange={handleChange} className="w-full p-3 rounded bg-gray-700 border border-gray-600" />
-          <input type="text" name="category" placeholder="Category" value={formData.category} onChange={handleChange} className="w-full p-3 rounded bg-gray-700 border border-gray-600" />
+          <input
+            type="text"
+            name="name"
+            placeholder="Product Name"
+            value={formData.name}
+            onChange={handleChange}
+            required
+            className="w-full p-3 rounded bg-gray-700 border border-gray-600"
+          />
+          <textarea
+            name="description"
+            placeholder="Description"
+            value={formData.description}
+            onChange={handleChange}
+            rows={4}
+            required
+            className="w-full p-3 rounded bg-gray-700 border border-gray-600"
+          />
+          <input
+            type="text"
+            name="price"
+            placeholder="Price"
+            value={formData.price}
+            onChange={handleChange}
+            required
+            className="w-full p-3 rounded bg-gray-700 border border-gray-600"
+          />
+          <input
+            type="text"
+            name="image"
+            placeholder="Image URL"
+            value={formData.image}
+            onChange={handleChange}
+            className="w-full p-3 rounded bg-gray-700 border border-gray-600"
+          />
+          <input
+            type="text"
+            name="category"
+            placeholder="Category"
+            value={formData.category}
+            onChange={handleChange}
+            className="w-full p-3 rounded bg-gray-700 border border-gray-600"
+          />
 
-          <button type="submit" className="w-full py-3 bg-gold text-black font-semibold rounded hover:bg-yellow-400 transition">
+          <button
+            type="submit"
+            className="w-full py-3 bg-gold text-black font-semibold rounded hover:bg-yellow-400 transition"
+          >
             Save Changes
           </button>
         </form>
 
         <div className="text-center mt-6">
-          <Link href="/marketplace/dashboard" className="text-blue-400 hover:underline">
+          <Link
+            href="/marketplace/dashboard"
+            className="text-blue-400 hover:underline"
+          >
             ← Back to Dashboard
           </Link>
         </div>
@@ -118,4 +178,3 @@ export default function EditProductPage() {
     </div>
   );
 }
-

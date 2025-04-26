@@ -17,7 +17,7 @@ const ProductApprovals = () => {
     const fetchUnapproved = async () => {
       try {
         const res = await axios.get("/api/admin/get-unapproved-products");
-        setProducts(res.data.products);  // ✅ Corrected this line
+        setProducts(res.data.products); // ✅ Corrected this line
       } catch (err) {
         console.error("Failed to fetch products:", err);
       }
@@ -29,7 +29,7 @@ const ProductApprovals = () => {
     setApprovingId(productId);
     try {
       await axios.post("/api/admin/approve-product", { productId });
-      setProducts(products.filter(p => p._id !== productId));
+      setProducts(products.filter((p) => p._id !== productId));
     } catch (err) {
       console.error("Approval failed:", err);
       alert("Failed to approve product.");
@@ -44,7 +44,9 @@ const ProductApprovals = () => {
         🛡️ Approve Marketplace Products
       </h1>
       {products.length === 0 ? (
-        <p className="text-center text-gray-400">No products awaiting approval.</p>
+        <p className="text-center text-gray-400">
+          No products awaiting approval.
+        </p>
       ) : (
         <div className="space-y-4 max-w-3xl mx-auto">
           {products.map((product) => (
