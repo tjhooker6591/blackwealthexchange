@@ -29,7 +29,9 @@ export default function ManageProducts() {
         }
 
         // Step 2: Fetch products with sellerId
-        const res = await axios.get(`/api/marketplace/get-products?sellerView=true&sellerId=${sellerId}`);
+        const res = await axios.get(
+          `/api/marketplace/get-products?sellerView=true&sellerId=${sellerId}`,
+        );
         setProducts(res.data.products);
       } catch (err) {
         console.error("Failed to load products", err);

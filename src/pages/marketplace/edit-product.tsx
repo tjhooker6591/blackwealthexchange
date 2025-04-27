@@ -51,7 +51,7 @@ export default function EditProductPage() {
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    >,
   ) => {
     const { name, value } = e.target;
     setProduct((prev) => ({ ...prev, [name]: value }));
@@ -75,7 +75,9 @@ export default function EditProductPage() {
   };
 
   if (loading) {
-    return <div className="text-center text-white p-10">Loading product...</div>;
+    return (
+      <div className="text-center text-white p-10">Loading product...</div>
+    );
   }
 
   if (error) {
@@ -150,4 +152,3 @@ export default function EditProductPage() {
     </div>
   );
 }
-

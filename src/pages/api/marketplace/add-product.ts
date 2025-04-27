@@ -32,7 +32,10 @@ if (!fs.existsSync(uploadDir)) {
 const safeField = (field: string | string[] | undefined): string =>
   Array.isArray(field) ? field[0] : field || "";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   res.setHeader("Cache-Control", "no-store, max-age=0");
 
   if (req.method !== "POST") {
@@ -65,7 +68,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       try {
         const sellerId = await getSellerId(req);
         if (!sellerId) {
-          return res.status(401).json({ error: "Unauthorized: Seller access required" });
+          return res
+            .status(401)
+            .json({ error: "Unauthorized: Seller access required" });
         }
 
         const filename = `${uuidv4()}-${imageFile.originalFilename}`;
@@ -74,7 +79,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const imageUrl = `/uploads/${filename}`;
 
         const createdAt = new Date();
-        const expiresAt = new Date(createdAt.getTime() + 45 * 24 * 60 * 60 * 1000);  // 45 days
+        const expiresAt = new Date(
+          createdAt.getTime() + 45 * 24 * 60 * 60 * 1000,
+        ); // 45 days
 
         const newProduct = {
           name: safeField(name),
@@ -82,11 +89,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           price: parseFloat(safeField(price)),
           category: safeField(category),
           imageUrl,
-          sellerId,             // ✅ Attach sellerId
-          status: "pending",    // Admin approval
-          isPublished: false,   // Default to unpublished until approved
+          sellerId, // ✅ Attach sellerId
+          status: "pending", // Admin approval
+          isPublished: false, // Default to unpublished until approved
           isFeatured: false,
-          stockQuantity: 10,    // Default stock
+          stockQuantity: 10, // Default stock
           salesCount: 0,
           views: 0,
           tags: [],
@@ -94,7 +101,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           sku: "",
           createdAt,
           updatedAt: createdAt,
-          expiresAt
+          expiresAt,
         };
 
         const client = await clientPromise;

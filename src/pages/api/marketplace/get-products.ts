@@ -1,14 +1,23 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method !== "GET") {
     return res.status(405).json({ error: "Method Not Allowed" });
   }
 
   res.setHeader("Cache-Control", "no-store, max-age=0");
 
-  const { page = "1", limit = "8", category = "All", sellerView, sellerId } = req.query;
+  const {
+    page = "1",
+    limit = "8",
+    category = "All",
+    sellerView,
+    sellerId,
+  } = req.query;
   const pageNum = parseInt(page as string, 10);
   const limitNum = parseInt(limit as string, 10);
   const skip = (pageNum - 1) * limitNum;
@@ -28,10 +37,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (sellerView === "true") {
       // Seller Dashboard View ➔ Show all products by this seller
       if (!sellerId) {
-        return res.status(400).json({ error: "Seller ID required for seller view." });
+        return res
+          .status(400)
+          .json({ error: "Seller ID required for seller view." });
       }
       filter.sellerId = sellerId;
-
     } else {
       // Public Marketplace View ➔ Only show active & published products
       filter.status = "active";
@@ -39,7 +49,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const total = await collection.countDocuments(filter);
-    const products = await collection.find(filter).skip(skip).limit(limitNum).toArray();
+    const products = await collection
+      .find(filter)
+      .skip(skip)
+      .limit(limitNum)
+      .toArray();
 
     return res.status(200).json({ products, total });
   } catch (error) {

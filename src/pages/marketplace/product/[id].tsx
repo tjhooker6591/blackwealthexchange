@@ -31,7 +31,7 @@ const ProductDetailPage = () => {
       try {
         const res = await fetch(`/api/marketplace/get-product?id=${id}`);
         const data = await res.json();
-        setProduct(data.product);   // ✅ Corrected to use data.product
+        setProduct(data.product); // ✅ Corrected to use data.product
       } catch (error) {
         console.error("Error fetching product:", error);
       } finally {
@@ -47,12 +47,14 @@ const ProductDetailPage = () => {
     const fetchRelated = async () => {
       if (!product) return;
       try {
-        const res = await fetch("/api/marketplace/get-products?page=1&limit=100&category=All");
+        const res = await fetch(
+          "/api/marketplace/get-products?page=1&limit=100&category=All",
+        );
         const all = await res.json();
-        const related = all.products   // ✅ Corrected to use all.products
+        const related = all.products // ✅ Corrected to use all.products
           .filter(
             (p: Product) =>
-              p.category === product.category && p._id !== product._id
+              p.category === product.category && p._id !== product._id,
           )
           .slice(0, 4);
         setRelatedProducts(related);
@@ -116,12 +118,13 @@ const ProductDetailPage = () => {
         </div>
 
         <div className="text-center mt-10">
-          <Link href="/explore">
-            <button className="px-6 py-2 bg-transparent text-gold border border-gold font-semibold rounded-lg hover:bg-gold hover:text-black transition">
-              Back to Marketplace
-            </button>
-          </Link>
-        </div>
+  <Link href="/explore">
+    <button className="px-6 py-2 bg-transparent text-gold border border-gold font-semibold rounded-lg hover:bg-gold hover:text-black transition">
+      🔙 Back to Explore
+    </button>
+  </Link>
+</div>
+
       </div>
 
       {/* Related Products */}

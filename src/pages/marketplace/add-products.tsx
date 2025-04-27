@@ -12,8 +12,8 @@ export default function AddProductPage() {
   const [category, setCategory] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
 
-  const [success, setSuccess] = useState(false);  // ✅ New state for success message
-  const [error, setError] = useState("");         // Optional: handle errors better
+  const [success, setSuccess] = useState(false); // ✅ New state for success message
+  const [error, setError] = useState(""); // Optional: handle errors better
 
   const isFormValid = productName && price && category && imageFile;
 
@@ -50,7 +50,7 @@ export default function AddProductPage() {
       const data = await res.json();
 
       if (res.ok) {
-        setSuccess(true);   // ✅ Trigger success message
+        setSuccess(true); // ✅ Trigger success message
       } else {
         setError(data.error || "Failed to add product.");
       }
@@ -62,10 +62,13 @@ export default function AddProductPage() {
       <div className="max-w-2xl mx-auto bg-gray-900 p-6 rounded-lg border border-gold">
         {success ? (
           <div className="text-center">
-            <h1 className="text-2xl font-bold text-gold mb-4">✅ Product Submitted!</h1>
+            <h1 className="text-2xl font-bold text-gold mb-4">
+              ✅ Product Submitted!
+            </h1>
             <p className="mb-6">
-              Your product has been submitted and is <strong>awaiting admin approval</strong>.
-              You will see it listed once approved.
+              Your product has been submitted and is{" "}
+              <strong>awaiting admin approval</strong>. You will see it listed
+              once approved.
             </p>
             <button
               onClick={() => router.push("/marketplace/dashboard")}
@@ -76,9 +79,12 @@ export default function AddProductPage() {
           </div>
         ) : (
           <>
-            <h1 className="text-2xl font-bold text-gold mb-4">Add a New Product</h1>
+            <h1 className="text-2xl font-bold text-gold mb-4">
+              Add a New Product
+            </h1>
             <p className="text-sm text-gray-400 mb-6">
-              Fill out the details below to list your product in the marketplace.
+              Fill out the details below to list your product in the
+              marketplace.
             </p>
 
             {/* Form Fields */}

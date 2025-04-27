@@ -2,7 +2,10 @@ import { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method !== "GET") {
     return res.status(405).json({ error: "Method Not Allowed" });
   }
@@ -17,7 +20,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const client = await clientPromise;
     const db = client.db("bwes-cluster");
 
-    const product = await db.collection("products").findOne({ _id: new ObjectId(id) });
+    const product = await db
+      .collection("products")
+      .findOne({ _id: new ObjectId(id) });
 
     if (!product) {
       return res.status(404).json({ error: "Product not found." });
