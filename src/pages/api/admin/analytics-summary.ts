@@ -1,7 +1,10 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method !== "GET") {
     return res.status(405).json({ error: "Method Not Allowed" });
   }
@@ -19,21 +22,40 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     ]);
 
     // Aggregate user growth by month (starting from April)
-    const userGrowthRaw = await db.collection("users").aggregate([
-      {
-        $group: {
-          _id: { month: { $month: "$createdAt" }, year: { $year: "$createdAt" } },
-          count: { $sum: 1 }
-        }
-      },
-      { $sort: { "_id.year": 1, "_id.month": 1 } }
-    ]).toArray();
+    const userGrowthRaw = await db
+      .collection("users")
+      .aggregate([
+        {
+          $group: {
+            _id: {
+              month: { $month: "$createdAt" },
+              year: { $year: "$createdAt" },
+            },
+            count: { $sum: 1 },
+          },
+        },
+        { $sort: { "_id.year": 1, "_id.month": 1 } },
+      ])
+      .toArray();
 
     // Format data for chart
-    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    const userGrowth = userGrowthRaw.map(entry => ({
+    const monthNames = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    const userGrowth = userGrowthRaw.map((entry) => ({
       month: `${monthNames[entry._id.month - 1]} ${entry._id.year}`,
-      users: entry.count
+      users: entry.count,
     }));
 
     return res.status(200).json({
@@ -42,7 +64,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       products,
       jobs,
       sellers,
-      userGrowth
+      userGrowth,
     });
   } catch (error) {
     console.error("Analytics Fetch Error:", error);

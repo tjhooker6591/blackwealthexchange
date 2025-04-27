@@ -22,7 +22,9 @@ const UserManagement = () => {
 
   return (
     <div className="min-h-screen bg-black text-white p-8">
-      <h1 className="text-3xl text-gold font-bold mb-6">User & Account Management</h1>
+      <h1 className="text-3xl text-gold font-bold mb-6">
+        User & Account Management
+      </h1>
       {loading ? (
         <p>Loading users...</p>
       ) : users.length === 0 ? (

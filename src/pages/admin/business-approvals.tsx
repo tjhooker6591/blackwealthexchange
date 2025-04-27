@@ -36,7 +36,7 @@ const BusinessApprovals = () => {
         body: JSON.stringify({ businessId: id }),
       });
       if (res.ok) {
-        setPendingBusinesses(pendingBusinesses.filter(biz => biz._id !== id));
+        setPendingBusinesses(pendingBusinesses.filter((biz) => biz._id !== id));
       } else {
         alert("Failed to approve business.");
       }

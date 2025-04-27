@@ -1,5 +1,12 @@
 import { useEffect, useState } from "react";
-import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+} from "recharts";
 
 const AnalyticsDashboard = () => {
   const [stats, setStats] = useState({
@@ -8,7 +15,7 @@ const AnalyticsDashboard = () => {
     products: 0,
     jobs: 0,
     sellers: 0,
-    userGrowth: []
+    userGrowth: [],
   });
   const [loading, setLoading] = useState(true);
 
@@ -44,7 +51,9 @@ const AnalyticsDashboard = () => {
           </div>
 
           <div className="bg-gray-900 p-6 rounded-lg">
-            <h2 className="text-xl font-bold text-gold mb-4">User Growth Over Time</h2>
+            <h2 className="text-xl font-bold text-gold mb-4">
+              User Growth Over Time
+            </h2>
             {stats.userGrowth.length === 0 ? (
               <p>No user growth data available yet.</p>
             ) : (

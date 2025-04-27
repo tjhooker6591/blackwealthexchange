@@ -118,13 +118,12 @@ const ProductDetailPage = () => {
         </div>
 
         <div className="text-center mt-10">
-  <Link href="/explore">
-    <button className="px-6 py-2 bg-transparent text-gold border border-gold font-semibold rounded-lg hover:bg-gold hover:text-black transition">
-      🔙 Back to Explore
-    </button>
-  </Link>
-</div>
-
+          <Link href="/explore">
+            <button className="px-6 py-2 bg-transparent text-gold border border-gold font-semibold rounded-lg hover:bg-gold hover:text-black transition">
+              🔙 Back to Explore
+            </button>
+          </Link>
+        </div>
       </div>
 
       {/* Related Products */}

@@ -19,8 +19,8 @@ const Grants = () => {
       {/* Hero Section */}
       <header className="text-center py-32 relative z-10">
         <Image
-          src="/bwe-logo.png"
-          alt="BWE Logo"
+          src="/favicon.png"
+          alt="Black Wealth Exchnage Logo"
           width={120}
           height={120}
           className="mx-auto mb-4 animate-fadeIn"
