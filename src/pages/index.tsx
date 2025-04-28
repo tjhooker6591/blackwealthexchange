@@ -135,9 +135,16 @@ export default function Home() {
       <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-50" />
 
       <header className="text-center py-24 relative z-10">
-        <p className="text-lg md:text-xl mt-4 font-light text-gray-300 animate-fadeIn">
-          The Future of Black Wealth Starts Here.
-        </p>
+  <p className="text-lg md:text-xl mt-4 font-light text-gray-300 animate-fadeIn flex justify-center items-center">
+    <Image 
+      src="/black-wealth-future.png" 
+      alt="Black Wealth Emoji"
+      width={28} 
+      height={28} 
+      className="inline-block mr-2"
+    />
+    The Future of Black Wealth Starts Here.
+  </p>
 
         <div className="mt-6 flex justify-center space-x-4">
           <Link href="/login">
