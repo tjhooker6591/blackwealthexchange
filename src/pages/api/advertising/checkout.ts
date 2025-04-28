@@ -3,7 +3,10 @@ import Stripe from "stripe";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method Not Allowed" });
   }
@@ -54,6 +57,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(200).json({ url: session.url });
   } catch (err: any) {
     console.error("Stripe session creation failed:", err.message);
-    return res.status(500).json({ error: "Failed to create checkout session." });
+    return res
+      .status(500)
+      .json({ error: "Failed to create checkout session." });
   }
 }

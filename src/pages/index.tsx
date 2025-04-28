@@ -52,7 +52,8 @@ const EconomicImpactSimulator: React.FC = () => {
           href="/1.8trillionimpact"
           className="text-gold font-bold hover:underline text-lg"
         >
-          KNOWLEDGE IS POWER – Select Here to &quot;SEE WHERE YOUR MONEY GOES&quot;
+          KNOWLEDGE IS POWER – Select Here to &quot;SEE WHERE YOUR MONEY
+          GOES&quot;
         </Link>
       </div>
       <div className="text-center mt-4">
@@ -108,7 +109,8 @@ export default function Home() {
     {
       title: "Affiliate & Partnership",
       href: "/affiliate",
-      description: "Explore our curated affiliate offers and partnership opportunities.",
+      description:
+        "Explore our curated affiliate offers and partnership opportunities.",
     },
     {
       title: "Entertainment&News",
@@ -291,7 +293,8 @@ export default function Home() {
             📢 Advertise with Us
           </h2>
           <p className="text-sm text-gray-400 mb-2">
-            Promote your business today to thousands of engaged users across our platform.
+            Promote your business today to thousands of engaged users across our
+            platform.
           </p>
           <Link href="/advertise-with-us">
             <button className="px-4 py-1.5 bg-gold text-black text-sm rounded hover:bg-yellow-500 transition">

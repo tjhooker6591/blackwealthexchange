@@ -66,13 +66,16 @@ export default function FeaturedSponsorPage() {
             Become a Featured Sponsor
           </h1>
           <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-            Every Black-owned business is welcome in our free directory — but if you want to 
-            <span className="text-gold font-semibold"> stand out</span>, 
-            Featured Sponsor Ads give your brand premium visibility across Black Wealth Exchange.
+            Every Black-owned business is welcome in our free directory — but if
+            you want to
+            <span className="text-gold font-semibold"> stand out</span>,
+            Featured Sponsor Ads give your brand premium visibility across Black
+            Wealth Exchange.
           </p>
           <p className="text-gray-500 mt-4">
-            Get highlighted on our homepage, business directory, and key platform pages. 
-            Drive more traffic, attract new customers, and show your support for Black economic empowerment.
+            Get highlighted on our homepage, business directory, and key
+            platform pages. Drive more traffic, attract new customers, and show
+            your support for Black economic empowerment.
           </p>
         </section>
 
@@ -161,7 +164,8 @@ export default function FeaturedSponsorPage() {
             Upload Your Sponsor Ad Graphic
           </h3>
           <p className="text-sm text-gray-400 mb-2">
-            This image will be displayed as your Featured Sponsor Ad across the platform.
+            This image will be displayed as your Featured Sponsor Ad across the
+            platform.
           </p>
           <input
             type="file"

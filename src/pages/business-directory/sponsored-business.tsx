@@ -45,9 +45,8 @@ export default function SponsoredBusinessPage() {
       </h1>
 
       <p className="text-center text-gray-400 max-w-2xl mx-auto mb-12 animate-fadeIn delay-200">
-        Discover and support Black-owned businesses proudly featured on our platform.
-        Want premium visibility?{" "}
-         
+        Discover and support Black-owned businesses proudly featured on our
+        platform. Want premium visibility?{" "}
       </p>
 
       {/* Top Sponsors */}
@@ -107,8 +106,12 @@ export default function SponsoredBusinessPage() {
                 className="w-full h-40 object-cover"
               />
               <div className="p-4">
-                <h3 className="text-xl font-bold text-white mb-1">🏢 {biz.name}</h3>
-                <p className="text-sm text-gray-400 mb-3 line-clamp-3">{biz.description}</p>
+                <h3 className="text-xl font-bold text-white mb-1">
+                  🏢 {biz.name}
+                </h3>
+                <p className="text-sm text-gray-400 mb-3 line-clamp-3">
+                  {biz.description}
+                </p>
                 <Link
                   href={`/business/${biz.slug}`}
                   className="inline-block bg-gold text-black px-4 py-2 rounded font-semibold hover:bg-yellow-400 transition"
@@ -146,10 +149,14 @@ export default function SponsoredBusinessPage() {
 
       {/* Call to Action */}
       <div className="mt-24 text-center bg-gray-800 rounded-2xl p-10 shadow-xl animate-fadeIn delay-500">
-        <h3 className="text-2xl font-bold text-gold mb-4"> Want to See Your Business Here?</h3>
+        <h3 className="text-2xl font-bold text-gold mb-4">
+          {" "}
+          Want to See Your Business Here?
+        </h3>
         <p className="text-gray-300 mb-6 max-w-xl mx-auto">
-          📈 Join hundreds of businesses gaining premium exposure on Black Wealth Exchange.
-          Get noticed, drive traffic, and grow your brand today.
+          📈 Join hundreds of businesses gaining premium exposure on Black
+          Wealth Exchange. Get noticed, drive traffic, and grow your brand
+          today.
         </p>
         <Link
           href="/advertise-with-us"
