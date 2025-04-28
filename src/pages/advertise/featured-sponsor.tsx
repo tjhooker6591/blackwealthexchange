@@ -7,7 +7,7 @@ import BuyNowButton from "@/components/BuyNowButton";
 export default function FeaturedSponsorPage() {
   const router = useRouter();
   const [userId, setUserId] = useState("guest");
-  const [bannerFile, setBannerFile] = useState<File | null>(null);
+  const [adImageFile, setAdImageFile] = useState<File | null>(null);
   const [campaignDuration, setCampaignDuration] = useState<string>("");
   const [confirmed, setConfirmed] = useState(false);
 
@@ -29,7 +29,7 @@ export default function FeaturedSponsorPage() {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setBannerFile(e.target.files[0]);
+      setAdImageFile(e.target.files[0]);
     }
   };
 
@@ -47,7 +47,7 @@ export default function FeaturedSponsorPage() {
   };
 
   const handleProceed = () => {
-    if (!bannerFile || !campaignDuration || !confirmed) {
+    if (!adImageFile || !campaignDuration || !confirmed) {
       alert("Please complete all fields before proceeding.");
       return;
     }
@@ -63,12 +63,16 @@ export default function FeaturedSponsorPage() {
         {/* Header */}
         <section className="text-center">
           <h1 className="text-4xl font-bold text-gold mb-4">
-            Featured Sponsor Advertising
+            Become a Featured Sponsor
           </h1>
           <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-            Want to maximize your visibility? Get your brand front and center on
-            our homepage and key platform pages. Perfect for campaigns that need
-            attention.
+            Every Black-owned business is welcome in our free directory — but if you want to 
+            <span className="text-gold font-semibold"> stand out</span>, 
+            Featured Sponsor Ads give your brand premium visibility across Black Wealth Exchange.
+          </p>
+          <p className="text-gray-500 mt-4">
+            Get highlighted on our homepage, business directory, and key platform pages. 
+            Drive more traffic, attract new customers, and show your support for Black economic empowerment.
           </p>
         </section>
 
@@ -151,11 +155,14 @@ export default function FeaturedSponsorPage() {
           </div>
         </section>
 
-        {/* Upload Section */}
+        {/* Upload Sponsor Graphic */}
         <section className="bg-gray-800 p-6 rounded-lg">
           <h3 className="text-xl font-semibold mb-4 text-gold">
-            Upload Your Banner
+            Upload Your Sponsor Ad Graphic
           </h3>
+          <p className="text-sm text-gray-400 mb-2">
+            This image will be displayed as your Featured Sponsor Ad across the platform.
+          </p>
           <input
             type="file"
             accept="image/*"
@@ -173,7 +180,7 @@ export default function FeaturedSponsorPage() {
               onChange={(e) => setConfirmed(e.target.checked)}
               className="mr-2"
             />
-            I confirm my banner and campaign duration are correct.
+            I confirm my Sponsor Ad Graphic and campaign duration are correct.
           </label>
         </section>
 
@@ -182,7 +189,7 @@ export default function FeaturedSponsorPage() {
           <button
             onClick={handleProceed}
             className={`mt-4 px-6 py-2 rounded font-semibold transition ${
-              confirmed && bannerFile && campaignDuration
+              confirmed && adImageFile && campaignDuration
                 ? "bg-gold text-black hover:bg-yellow-400"
                 : "bg-gray-600 text-gray-300 cursor-not-allowed"
             }`}

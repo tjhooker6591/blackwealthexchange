@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { BookOpen, GraduationCap, Users, Briefcase } from "lucide-react";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 
 const EconomicImpactSimulator: React.FC = () => {
@@ -53,8 +52,7 @@ const EconomicImpactSimulator: React.FC = () => {
           href="/1.8trillionimpact"
           className="text-gold font-bold hover:underline text-lg"
         >
-          KNOWLEDGE IS POWER – Select Here to &quot;SEE WHERE YOUR MONEY
-          GOES&quot;
+          KNOWLEDGE IS POWER – Select Here to &quot;SEE WHERE YOUR MONEY GOES&quot;
         </Link>
       </div>
       <div className="text-center mt-4">
@@ -71,21 +69,7 @@ const EconomicImpactSimulator: React.FC = () => {
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
-  const { data: session } = useSession();
   const router = useRouter();
-
-  const handleProtectedClick = (path: string, requiredRole?: string) => {
-    if (!session) {
-      router.push(`/login?redirect=${path}`);
-      return;
-    }
-    const userRole = session.user?.accountType;
-    if (requiredRole && userRole !== requiredRole) {
-      alert(`You need a ${requiredRole} account to access this feature.`);
-      return;
-    }
-    router.push(path);
-  };
 
   const studentOpportunities = [
     {
@@ -124,8 +108,7 @@ export default function Home() {
     {
       title: "Affiliate & Partnership",
       href: "/affiliate",
-      description:
-        "Explore our curated affiliate offers and partnership opportunities.",
+      description: "Explore our curated affiliate offers and partnership opportunities.",
     },
     {
       title: "Entertainment&News",
@@ -197,19 +180,16 @@ export default function Home() {
             </button>
           </div>
 
-          <button
-            onClick={() =>
-              handleProtectedClick("/marketplace/become-a-seller", "seller")
-            }
-            className="mt-4 bg-gold text-black text-center py-2 px-4 rounded-lg font-semibold shadow hover:bg-yellow-500 transition animate-pulseGlow"
-          >
-            Start Selling on the Marketplace – Join as a Seller!
-          </button>
+          <Link href="/marketplace/become-a-seller">
+            <button className="mt-4 bg-gold text-black text-center py-2 px-4 rounded-lg font-semibold shadow hover:bg-yellow-500 transition animate-pulseGlow">
+              Start Selling on the Marketplace – Join as a Seller!
+            </button>
+          </Link>
 
           <div className="mt-2">
             <Link href="/library-of-black-history">
               <span className="text-gold font-bold hover:underline text-lg">
-                Library of Black History (Facts. No Fiction)
+                📚 Explore the Library of Black History 🏛️
               </span>
             </Link>
           </div>
@@ -237,6 +217,7 @@ export default function Home() {
       </section>
 
       <main className="container mx-auto px-4 relative z-10">
+        {/* Real Estate & Investment Section */}
         <section className="bg-gray-800 rounded-lg shadow-lg p-4 mb-8 mt-12">
           <div className="flex items-center justify-between">
             <div>
@@ -255,6 +236,7 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Featured Sponsors */}
         <section className="bg-gray-800 rounded-lg shadow-lg p-4 mb-8 overflow-hidden">
           <h3 className="text-lg font-semibold text-gold mb-2">
             Featured Sponsors
@@ -277,6 +259,7 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Key Sections */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {keySections.map((item, index) => (
             <div
@@ -302,13 +285,13 @@ export default function Home() {
           ))}
         </div>
 
+        {/* Advertise Section */}
         <section className="bg-gray-900 border border-gold rounded-lg shadow p-4 text-center my-6 animate-fadeIn">
           <h2 className="text-xl font-semibold text-gold flex items-center justify-center gap-2 mb-1">
             📢 Advertise with Us
           </h2>
           <p className="text-sm text-gray-400 mb-2">
-            Promote your business today to thousands of engaged users across our
-            platform.
+            Promote your business today to thousands of engaged users across our platform.
           </p>
           <Link href="/advertise-with-us">
             <button className="px-4 py-1.5 bg-gold text-black text-sm rounded hover:bg-yellow-500 transition">
@@ -318,10 +301,11 @@ export default function Home() {
         </section>
       </main>
 
+      {/* Footer */}
       <footer className="text-center py-8 border-t border-gold mt-8 relative z-10">
         <div className="mx-auto mb-4 w-[60px] h-[60px] relative">
           <Image
-            src="/bwe-logo.png"
+            src="/favicon.png"
             alt="BWE Logo"
             width={60}
             height={60}
@@ -334,6 +318,7 @@ export default function Home() {
         </h2>
       </footer>
 
+      {/* Animations */}
       <style jsx>{`
         .animate-scroll {
           animation: scroll 30s linear infinite;

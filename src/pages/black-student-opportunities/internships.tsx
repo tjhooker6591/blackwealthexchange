@@ -17,7 +17,7 @@ const Internships = () => {
       {/* Hero Section */}
       <header className="text-center py-32 relative z-10">
         <Image
-         src="/favicon.png"
+          src="/favicon.png"
           alt="Black Wealth Exchnage Logo"
           width={120}
           height={120}
