@@ -38,11 +38,14 @@ export default function BusinessDirectory() {
   }, [search, initialLoad]);
 
   // Memoize Fuse.js options
-  const fuseOptions = useMemo(() => ({
-    keys: ["business_name", "description"],
-    includeScore: true,
-    threshold: 0.3,
-  }), []);
+  const fuseOptions = useMemo(
+    () => ({
+      keys: ["business_name", "description"],
+      includeScore: true,
+      threshold: 0.3,
+    }),
+    [],
+  );
 
   useEffect(() => {
     if (searchQuery) {
@@ -76,7 +79,7 @@ export default function BusinessDirectory() {
     router.push(
       `/business-directory?search=${encodeURIComponent(searchQuery)}`,
       undefined,
-      { shallow: true }
+      { shallow: true },
     );
   };
 
@@ -135,14 +138,23 @@ export default function BusinessDirectory() {
                     className="object-cover rounded-md"
                   />
                   <div className="flex-1">
-                    <Link href={`/business-directory/${business.alias}`} passHref>
+                    <Link
+                      href={`/business-directory/${business.alias}`}
+                      passHref
+                    >
                       <span className="text-lg font-semibold text-gold hover:underline cursor-pointer">
                         {business.business_name}
                       </span>
                     </Link>
-                    <p className="text-sm text-gray-300 mt-1">{business.description || "Description not available"}</p>
-                    <p className="text-sm text-gray-300 mt-1">{business.phone || "No phone number available"}</p>
-                    <p className="text-sm text-gray-300 mt-1">{business.address || "No address available"}</p>
+                    <p className="text-sm text-gray-300 mt-1">
+                      {business.description || "Description not available"}
+                    </p>
+                    <p className="text-sm text-gray-300 mt-1">
+                      {business.phone || "No phone number available"}
+                    </p>
+                    <p className="text-sm text-gray-300 mt-1">
+                      {business.address || "No address available"}
+                    </p>
                   </div>
                 </div>
 

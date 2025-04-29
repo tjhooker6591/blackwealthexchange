@@ -60,9 +60,12 @@ export default function ExplorePage() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-10">
-          <h1 className="text-4xl font-bold text-gold">Explore Black Wealth Exchange</h1>
+          <h1 className="text-4xl font-bold text-gold">
+            Explore Black Wealth Exchange
+          </h1>
           <p className="text-gray-400 mt-2">
-            Discover businesses, products, jobs, and opportunities built for our community.
+            Discover businesses, products, jobs, and opportunities built for our
+            community.
           </p>
         </div>
 
@@ -106,8 +109,12 @@ export default function ExplorePage() {
                 </div>
                 <div className="p-4">
                   <h2 className="text-lg font-bold mb-1">{product.name}</h2>
-                  <p className="text-sm text-gray-400 mb-1">{product.category}</p>
-                  <p className="text-md font-semibold text-gold">${product.price.toFixed(2)}</p>
+                  <p className="text-sm text-gray-400 mb-1">
+                    {product.category}
+                  </p>
+                  <p className="text-md font-semibold text-gold">
+                    ${product.price.toFixed(2)}
+                  </p>
                 </div>
               </Link>
             ))}

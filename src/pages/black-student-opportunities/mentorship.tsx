@@ -23,7 +23,7 @@ const Mentorship = () => {
           height={120}
           className="mx-auto mb-4 animate-fadeIn"
         />
-        <h1 className="text-6xl md:text-5xl font-extrabold tracking-wide text-gold neon-text animate-slideUp">
+        <h1 className="text-4xl sm:text-5xl md:text-4xl  font-extrabold tracking-wide text-gold neon-text animate-slideUp">
           Mentorship for Black Students
         </h1>
         <p className="text-xl md:text-2xl mt-4 font-light text-gray-300 animate-fadeIn">

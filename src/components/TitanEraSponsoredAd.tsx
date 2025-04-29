@@ -18,10 +18,13 @@ export default function TitanEraSponsoredAd() {
           />
         </div>
         <div className="flex-1 text-center md:text-left">
-          <h3 className="text-2xl font-bold text-gold mb-2">TitanEra Productions</h3>
+          <h3 className="text-2xl font-bold text-gold mb-2">
+            TitanEra Productions
+          </h3>
           <p className="text-gray-300 mb-4 text-sm">
-            Elevating Black storytelling through groundbreaking films and cinematic excellence. 
-            Join the movement that’s reshaping the future of media.
+            Elevating Black storytelling through groundbreaking films and
+            cinematic excellence. Join the movement that’s reshaping the future
+            of media.
           </p>
           <Link
             href="https://www.instagram.com/titaneraoffical/"

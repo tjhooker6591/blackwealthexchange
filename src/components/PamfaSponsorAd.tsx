@@ -15,9 +15,12 @@ export default function PamfaSponsorAd() {
         />
       </div>
       <div className="flex-1 text-center md:text-left">
-        <h2 className="text-2xl font-bold text-gold mb-2">Pamfa United Citizens</h2>
+        <h2 className="text-2xl font-bold text-gold mb-2">
+          Pamfa United Citizens
+        </h2>
         <p className="text-gray-300 mb-4">
-          Elevate your wardrobe with fashion that empowers. Bold. Fearless. Iconic.
+          Elevate your wardrobe with fashion that empowers. Bold. Fearless.
+          Iconic.
         </p>
         <a
           href="https://www.facebook.com/Pamfaunitedcitizens/"
@@ -32,4 +35,3 @@ export default function PamfaSponsorAd() {
     </div>
   );
 }
-
