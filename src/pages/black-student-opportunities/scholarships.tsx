@@ -20,9 +20,9 @@ const ScholarshipsPage = () => {
           height={120}
           className="mx-auto mb-4 animate-fadeIn"
         />
-        <h1 className="text-6xl md:text-7xl font-extrabold tracking-wide text-gold neon-text animate-slideUp">
+        <h2 className="text-4xl sm:text-5xl md:text-4xl font-extrabold tracking-wide text-gold neon-text animate-slideUp">
           Scholarships for Black Students
-        </h1>
+        </h2>
         <p className="text-xl md:text-2xl mt-4 font-light text-gray-300 animate-fadeIn">
           *&quot;Scholarships provide essential financial support to Black
           students pursuing higher education.&quot;

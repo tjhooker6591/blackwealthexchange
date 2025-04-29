@@ -139,11 +139,11 @@ export default function Home() {
           <Image
             src="/black-wealth-future.png"
             alt="Black Wealth Emoji"
-            width={28}
-            height={28}
+            width={58}
+            height={58}
             className="inline-block mr-2"
           />
-          The Future of Black Wealth Starts Here.
+          The Future of Black Wealth Starts Here
         </p>
 
         <div className="mt-6 flex justify-center space-x-4">
@@ -207,9 +207,9 @@ export default function Home() {
 
       <section className="relative z-10 py-12 bg-gray-900">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center text-gold mb-8">
+          <h3 className="text-3xl font-bold text-center text-gold mb-8">
             Student Opportunities - Free Resource Information
-          </h2>
+          </h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {studentOpportunities.map((item, index) => (
               <Link key={index} href={item.href}>

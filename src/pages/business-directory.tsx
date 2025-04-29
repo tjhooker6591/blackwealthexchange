@@ -1,5 +1,3 @@
-// /pages/business-directory.tsx
-
 "use client";
 
 import React, { useEffect, useState, useMemo } from "react";
@@ -7,7 +5,8 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import Image from "next/legacy/image";
 import Fuse from "fuse.js";
-import FeaturedSponsorAd from "@/components/FeaturedSponsorAd";
+import PamfaSponsorAd from "@/components/PamfaSponsorAd";
+import TitanEraSponsoredAd from "@/components/TitanEraSponsoredAd";
 import BannerAd from "@/components/BannerAd";
 import CustomSolutionAd from "@/components/CustomSolutionAd";
 
@@ -30,7 +29,7 @@ export default function BusinessDirectory() {
   const { search } = router.query;
   const [initialLoad, setInitialLoad] = useState(true);
 
-  // On initial load, if the URL has a search query, set it into state.
+  // On initial load, if the URL has a search query, set it into state
   useEffect(() => {
     if (initialLoad && typeof search === "string") {
       setSearchQuery(search);
@@ -38,18 +37,14 @@ export default function BusinessDirectory() {
     }
   }, [search, initialLoad]);
 
-  // Memoize Fuse.js options so they don't change on every render.
-  const fuseOptions = useMemo(
-    () => ({
-      keys: ["business_name", "description"],
-      includeScore: true,
-      threshold: 0.3,
-    }),
-    [],
-  );
+  // Memoize Fuse.js options
+  const fuseOptions = useMemo(() => ({
+    keys: ["business_name", "description"],
+    includeScore: true,
+    threshold: 0.3,
+  }), []);
 
   useEffect(() => {
-    // Trigger search if searchQuery has a value.
     if (searchQuery) {
       setIsLoading(true);
       fetch(`/api/searchBusinesses?search=${encodeURIComponent(searchQuery)}`)
@@ -65,7 +60,7 @@ export default function BusinessDirectory() {
           setIsLoading(false);
         })
         .catch((err) => {
-          console.error("Error fetching data: ", err);
+          console.error("Error fetching businesses:", err);
           setIsLoading(false);
         });
     } else {
@@ -77,14 +72,11 @@ export default function BusinessDirectory() {
     setSearchQuery(e.target.value);
   };
 
-  // Use shallow routing to update the URL without a full page refresh.
   const handleSearchSubmit = () => {
     router.push(
       `/business-directory?search=${encodeURIComponent(searchQuery)}`,
       undefined,
-      {
-        shallow: true,
-      },
+      { shallow: true }
     );
   };
 
@@ -125,9 +117,9 @@ export default function BusinessDirectory() {
         </div>
 
         {/* Featured Sponsor Ad */}
-        <FeaturedSponsorAd />
+        <PamfaSponsorAd />
 
-        {/* Display results with Banner Ads inserted after every 5 results */}
+        {/* Display results with Sponsored Ads inserted */}
         {isLoading ? (
           <p>Loading...</p>
         ) : filteredBusinesses.length > 0 ? (
@@ -143,26 +135,21 @@ export default function BusinessDirectory() {
                     className="object-cover rounded-md"
                   />
                   <div className="flex-1">
-                    <Link
-                      href={`/business-directory/${business.alias}`}
-                      passHref
-                    >
+                    <Link href={`/business-directory/${business.alias}`} passHref>
                       <span className="text-lg font-semibold text-gold hover:underline cursor-pointer">
                         {business.business_name}
                       </span>
                     </Link>
-                    <p className="text-sm text-gray-300 mt-1">
-                      {business.description || "Description not available"}
-                    </p>
-                    <p className="text-sm text-gray-300 mt-1">
-                      {business.phone || "No phone number available"}
-                    </p>
-                    <p className="text-sm text-gray-300 mt-1">
-                      {business.address || "No address available"}
-                    </p>
+                    <p className="text-sm text-gray-300 mt-1">{business.description || "Description not available"}</p>
+                    <p className="text-sm text-gray-300 mt-1">{business.phone || "No phone number available"}</p>
+                    <p className="text-sm text-gray-300 mt-1">{business.address || "No address available"}</p>
                   </div>
                 </div>
-                {(index + 1) % 5 === 0 && <BannerAd />}
+
+                {/* Insert Sponsored Ads */}
+                {index === 2 && <PamfaSponsorAd />}
+                {index === 5 && <TitanEraSponsoredAd />}
+                {(index + 1) % 8 === 0 && <BannerAd />}
               </React.Fragment>
             ))}
           </div>
