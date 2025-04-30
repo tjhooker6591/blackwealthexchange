@@ -8,14 +8,14 @@ declare module "next-auth" {
       name?: string | null;
       email?: string | null;
       image?: string | null;
-      accountType?: string;
+      accountType: string;
       isPremium?: boolean;
     };
   }
 
   interface User {
     id: string;
-    accountType?: string;
+    accountType: string;
     isPremium?: boolean;
   }
 }
@@ -23,7 +23,7 @@ declare module "next-auth" {
 declare module "next-auth/jwt" {
   interface JWT {
     id: string;
-    accountType?: string;
+    accountType: string;
     isPremium?: boolean;
   }
 }

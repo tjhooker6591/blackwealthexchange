@@ -44,7 +44,7 @@ export default function NavBar() {
       : user.accountType === "business"
         ? "/add-business"
         : user.accountType === "employer"
-          ? "/employer/jobs"
+          ? "/employer"
           : "/dashboard"
     : "/dashboard";
 

@@ -15,8 +15,12 @@ const JobApprovals = () => {
 
   useEffect(() => {
     const fetchUnapproved = async () => {
-      const res = await axios.get("/api/admin/get-unapproved-jobs");
-      setJobs(res.data);
+      try {
+        const res = await axios.get("/api/admin/get-unapproved-jobs");
+        setJobs(res.data.jobs); // ✅ FIXED
+      } catch (err) {
+        console.error("Failed to fetch jobs", err);
+      }
     };
     fetchUnapproved();
   }, []);

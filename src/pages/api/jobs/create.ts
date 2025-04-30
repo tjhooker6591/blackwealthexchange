@@ -20,10 +20,9 @@ export default async function handler(
   }
 
   try {
-    // Get and parse token from cookies
     const rawCookie = req.headers.cookie || "";
     const cookies = parse(rawCookie);
-    const token = cookies.token;
+    const token = cookies.session_token;
 
     if (!token) {
       return res.status(401).json({ error: "Unauthorized: No token found." });
@@ -56,7 +55,6 @@ export default async function handler(
       isPaid,
     } = req.body;
 
-    // Basic required field check
     if (
       !title ||
       !company ||
@@ -81,7 +79,7 @@ export default async function handler(
       applicants: [],
       isFeatured: !!isFeatured,
       isPaid: !!isPaid,
-      status: "active",
+      status: "pending", // <-- Updated from "active" to "pending"
       createdAt: new Date(),
     };
 
@@ -92,7 +90,7 @@ export default async function handler(
 
     return res.status(201).json({
       success: true,
-      message: "Job posted successfully",
+      message: "Job posted successfully and is pending approval",
       jobId: result.insertedId,
     });
   } catch (err) {
