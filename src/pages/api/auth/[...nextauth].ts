@@ -8,7 +8,11 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "email", placeholder: "user@example.com" },
+        email: {
+          label: "Email",
+          type: "email",
+          placeholder: "user@example.com",
+        },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
@@ -30,7 +34,8 @@ export const authOptions: NextAuthOptions = {
                 id: user._id.toString(),
                 name: user.name || user.businessName || user.fullName || email,
                 email: user.email,
-                accountType: collection === "users" ? "user" : collection.slice(0, -1), // remove trailing "s"
+                accountType:
+                  collection === "users" ? "user" : collection.slice(0, -1), // remove trailing "s"
               };
             }
           }

@@ -111,7 +111,10 @@ export default function EmployerDashboard() {
             <Link href="/profile" className="hover:underline">
               Profile
             </Link>
-            <Link href="/dashboard/employer/billing" className="hover:underline">
+            <Link
+              href="/dashboard/employer/billing"
+              className="hover:underline"
+            >
               Billing
             </Link>
           </nav>
@@ -123,27 +126,42 @@ export default function EmployerDashboard() {
           <nav>
             <ul className="space-y-4">
               <li>
-                <Link href="/dashboard/employer/overview" className="hover:underline">
+                <Link
+                  href="/dashboard/employer/overview"
+                  className="hover:underline"
+                >
                   Overview
                 </Link>
               </li>
               <li>
-                <Link href="/dashboard/employer/jobs" className="hover:underline">
+                <Link
+                  href="/dashboard/employer/jobs"
+                  className="hover:underline"
+                >
                   Job Postings
                 </Link>
               </li>
               <li>
-                <Link href="/dashboard/employer/applicants" className="hover:underline">
+                <Link
+                  href="/dashboard/employer/applicants"
+                  className="hover:underline"
+                >
                   Applicants
                 </Link>
               </li>
               <li>
-                <Link href="/dashboard/employer/tools" className="hover:underline">
+                <Link
+                  href="/dashboard/employer/tools"
+                  className="hover:underline"
+                >
                   Employer Tools
                 </Link>
               </li>
               <li>
-                <Link href="/dashboard/employer/analytics" className="hover:underline">
+                <Link
+                  href="/dashboard/employer/analytics"
+                  className="hover:underline"
+                >
                   Analytics
                 </Link>
               </li>
@@ -156,7 +174,11 @@ export default function EmployerDashboard() {
             <StatCard label="Jobs Posted" value={stats.jobsPosted} />
             <StatCard label="Total Applicants" value={stats.totalApplicants} />
             <StatCard label="Messages" value={stats.messages} />
-            <StatCard label="Profile Completion" value={stats.profileCompletion} suffix="%" />
+            <StatCard
+              label="Profile Completion"
+              value={stats.profileCompletion}
+              suffix="%"
+            />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -188,7 +210,8 @@ export default function EmployerDashboard() {
                   <div key={app._id} className="p-4 bg-gray-800 rounded-lg">
                     <h3 className="text-lg font-semibold">{app.name}</h3>
                     <p className="text-sm text-gray-300">
-                      Applied for: {app.jobTitle} on {new Date(app.appliedAt).toLocaleDateString()}
+                      Applied for: {app.jobTitle} on{" "}
+                      {new Date(app.appliedAt).toLocaleDateString()}
                     </p>
                     <Link
                       href={`/dashboard/employer/applicants/${app._id}`}
@@ -201,7 +224,13 @@ export default function EmployerDashboard() {
               </div>
             ) : (
               <p>
-                No recent applicants. <Link href="/dashboard/employer/applicants" className="underline">View all</Link>
+                No recent applicants.{" "}
+                <Link
+                  href="/dashboard/employer/applicants"
+                  className="underline"
+                >
+                  View all
+                </Link>
               </p>
             )}
           </section>
@@ -216,7 +245,10 @@ export default function EmployerDashboard() {
               </div>
             ) : (
               <p>
-                No job postings found. <Link href="/post-job" className="underline">Post a new job</Link>
+                No job postings found.{" "}
+                <Link href="/post-job" className="underline">
+                  Post a new job
+                </Link>
               </p>
             )}
           </section>
@@ -226,7 +258,15 @@ export default function EmployerDashboard() {
   );
 }
 
-function StatCard({ label, value, suffix = "" }: { label: string; value: number; suffix?: string }) {
+function StatCard({
+  label,
+  value,
+  suffix = "",
+}: {
+  label: string;
+  value: number;
+  suffix?: string;
+}) {
   return (
     <div className="bg-gray-800 rounded-lg p-4 text-center">
       <h4 className="text-2xl font-semibold text-gold">
@@ -238,9 +278,22 @@ function StatCard({ label, value, suffix = "" }: { label: string; value: number;
   );
 }
 
-function DashboardCard({ title, description, href, color }: { title: string; description: string; href: string; color: string }) {
+function DashboardCard({
+  title,
+  description,
+  href,
+  color,
+}: {
+  title: string;
+  description: string;
+  href: string;
+  color: string;
+}) {
   return (
-    <Link href={href} className={`block p-5 rounded-lg shadow hover:shadow-xl transition ${color}`}>
+    <Link
+      href={href}
+      className={`block p-5 rounded-lg shadow hover:shadow-xl transition ${color}`}
+    >
       <h3 className="text-xl font-bold mb-2">{title}</h3>
       <p className="text-sm">{description}</p>
     </Link>
@@ -255,9 +308,14 @@ function JobCard({ job }: { job: Job }) {
         {job.location} • {job.type}
       </p>
       <p className="text-sm mt-2">
-        {job.description.length > 100 ? job.description.substring(0, 100) + "..." : job.description}
+        {job.description.length > 100
+          ? job.description.substring(0, 100) + "..."
+          : job.description}
       </p>
-      <Link href={`/dashboard/employer/jobs/${job._id}`} className="underline mt-2 inline-block">
+      <Link
+        href={`/dashboard/employer/jobs/${job._id}`}
+        className="underline mt-2 inline-block"
+      >
         View Details
       </Link>
     </div>

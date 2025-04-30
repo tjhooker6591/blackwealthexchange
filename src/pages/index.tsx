@@ -113,7 +113,7 @@ export default function Home() {
         "Explore our curated affiliate offers and partnership opportunities.",
     },
     {
-      title: "Entertainment&News",
+      title: "Entertainment & News",
       href: "/black-entertainment-news",
       description: "Learn about Black entertainment and news.",
     },

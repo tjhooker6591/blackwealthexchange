@@ -23,203 +23,105 @@ const FinancialLiteracy = () => {
           className="mx-auto mb-4 animate-fadeIn"
         />
         <h1 className="text-6xl md:text-7xl font-extrabold tracking-wide text-gold neon-text animate-slideUp">
-          Financial Literacy for African Americans
+          Premium Financial Literacy Course
         </h1>
         <p className="text-xl md:text-2xl mt-4 font-light text-gray-300 animate-fadeIn">
-          Empower yourself with financial knowledge to build generational
-          wealth.
+          Lifetime access to the tools, knowledge, and confidence to build real Black wealth.
         </p>
       </header>
 
-      {/* 🔥 Main Content */}
-      <div className="container mx-auto p-6 space-y-8 relative z-10">
-        <h2 className="text-3xl font-semibold text-gold mb-6">
-          Mastering Financial Literacy
-        </h2>
-
-        {/* 💸 Upgrade Section */}
-        <section className="bg-gray-800 p-6 rounded-lg shadow-lg text-center">
-          <h3 className="text-2xl font-semibold text-gold mb-4">
-            Want full access to premium financial education?
-          </h3>
-          <p className="text-gray-300 mb-4">
-            Unlock deeper insights, guided lessons, and personal finance tools
-            for just $49.99.
-          </p>
-          <BuyNowButton
-            userId="replace-with-user-id"
-            itemId="financial-literacy-premium"
-            amount={49.99}
-            type="course"
-          />
-        </section>
-
-        {/* Building Wealth Through Investments */}
-        <section className="bg-gray-800 p-6 rounded-lg shadow-lg">
-          <h3 className="text-2xl font-semibold text-gold mb-4">
-            Building Wealth Through Investments
-          </h3>
-          <p className="text-gray-300 mb-4">
-            Building wealth through investments is one of the most effective
-            ways to create long-term financial stability. Investments allow your
-            money to grow over time, providing opportunities for compounding
-            returns and financial growth.
-          </p>
-          <p className="text-gray-300 mb-4">
-            There are several investment options available, including:
-          </p>
-          <ul className="list-disc pl-6 text-gray-300 mb-4">
-            <li>
-              <strong>Stocks:</strong> Investing in publicly traded companies
-              allows you to own a portion of the company.
-            </li>
-            <li>
-              <strong>Bonds:</strong> Debt securities issued by corporations or
-              governments that pay interest and return principal at maturity.
-            </li>
-            <li>
-              <strong>Real Estate:</strong> Rental income and property value
-              appreciation.
-            </li>
-            <li>
-              <strong>Mutual Funds & ETFs:</strong> Diversified investments
-              pooling money from many investors.
-            </li>
-            <li>
-              <strong>Cryptocurrency:</strong> Digital assets like Bitcoin and
-              Ethereum — high risk, high reward.
-            </li>
-          </ul>
-        </section>
-
-        {/* Budgeting and Financial Planning */}
-        <section className="bg-gray-800 p-6 rounded-lg shadow-lg">
-          <h3 className="text-2xl font-semibold text-gold mb-4">
-            Budgeting and Financial Planning
-          </h3>
-          <p className="text-gray-300 mb-4">
-            Budgeting helps you track income and expenses, manage debt, and save
-            for future goals.
-          </p>
-          <ul className="list-disc pl-6 text-gray-300 mb-4">
-            <li>
-              <strong>Set Goals:</strong> Like emergency savings, debt payoff,
-              or buying a home.
-            </li>
-            <li>
-              <strong>Track Spending:</strong> Know where your money is going.
-            </li>
-            <li>
-              <strong>Emergency Fund:</strong> Save 3 to 6 months of living
-              expenses.
-            </li>
-            <li>
-              <strong>Debt Management:</strong> Prioritize high-interest debt.
-            </li>
-          </ul>
-        </section>
-
-        {/* Understanding Credit */}
-        <section className="bg-gray-800 p-6 rounded-lg shadow-lg">
-          <h3 className="text-2xl font-semibold text-gold mb-4">
-            Understanding Credit
-          </h3>
-          <p className="text-gray-300 mb-4">
-            Your credit score affects loan approvals, interest rates, and more.
-          </p>
-          <ul className="list-disc pl-6 text-gray-300 mb-4">
-            <li>
-              <strong>Pay on Time:</strong> Payment history is critical.
-            </li>
-            <li>
-              <strong>Keep Balances Low:</strong> Use less than 30% of your
-              limit.
-            </li>
-            <li>
-              <strong>Do not Close Old Accounts:</strong> They help your credit
-              history length.
-            </li>
-            <li>
-              <strong>Check Reports:</strong> Dispute errors on your credit
-              report.
-            </li>
-          </ul>
-        </section>
-
-        {/* Retirement Planning */}
-        <section className="bg-gray-800 p-6 rounded-lg shadow-lg">
-          <h3 className="text-2xl font-semibold text-gold mb-4">
-            Retirement Planning
-          </h3>
-          <p className="text-gray-300 mb-4">
-            The earlier you start saving for retirement, the more your money can
-            grow.
-          </p>
-          <ul className="list-disc pl-6 text-gray-300 mb-4">
-            <li>
-              <strong>Start a 401(k), IRA, or Roth IRA:</strong> Take advantage
-              of tax benefits.
-            </li>
-            <li>
-              <strong>Contribute Regularly:</strong> Aim for 10 to 15% of your
-              income.
-            </li>
-            <li>
-              <strong>Get Employer Match:</strong> It is free money.
-            </li>
-            <li>
-              <strong>Invest for Growth:</strong> Use long-term vehicles like
-              index funds.
-            </li>
-          </ul>
-        </section>
-
-        {/* Debt Management */}
-        <section className="bg-gray-800 p-6 rounded-lg shadow-lg">
-          <h3 className="text-2xl font-semibold text-gold mb-4">
-            Debt Management
-          </h3>
-          <p className="text-gray-300 mb-4">
-            Debt can hold you back — but with a plan, you can overcome it.
-          </p>
-          <ul className="list-disc pl-6 text-gray-300 mb-4">
-            <li>
-              <strong>High-Interest First:</strong> Prioritize credit cards and
-              payday loans.
-            </li>
-            <li>
-              <strong>Snowball Method:</strong> Pay off small debts first to
-              build momentum.
-            </li>
-            <li>
-              <strong>Refinance:</strong> Lower your interest rates where
-              possible.
-            </li>
-            <li>
-              <strong>Seek Help:</strong> Consider a credit counselor if you are
-              overwhelmed.
-            </li>
-          </ul>
-        </section>
-
-        {/* 💡 Premium CTA for Advanced Investment Strategies */}
-        <section className="mt-8 text-center">
-          <h2 className="text-xl font-bold text-gold">
-            Unlock Advanced Investment Strategies
+      {/* 🔥 Premium Offer Section */}
+      <div className="container mx-auto p-6 space-y-12 relative z-10">
+        <section className="bg-gray-900 p-8 rounded-lg shadow-lg text-center">
+          <h2 className="text-3xl font-semibold text-gold mb-4">
+            Unlock the Full Premium Course – Just $49
           </h2>
-          <p className="text-gray-300 mb-4">
-            Join our premium community for exclusive insights.
+          <p className="text-gray-300 text-lg mb-6 max-w-2xl mx-auto">
+            Learn how to budget, fix credit, invest, and grow legacy wealth with step-by-step guidance. This is more than education — its transformation. Pay once. Own it forever.
           </p>
-          <BuyNowButton
-            userId="replace-with-user-id"
-            itemId="advanced-investment-premium"
-            amount={75.0}
-            type="course"
-          />
+
+          <div className="grid md:grid-cols-2 gap-8 text-left text-gray-300 max-w-4xl mx-auto">
+            <div>
+              <h3 className="text-xl text-gold font-semibold mb-2">✅ What You will Learn:</h3>
+              <ul className="list-disc pl-6">
+                <li>Budgeting and goal-setting on any income</li>
+                <li>How to build and repair your credit</li>
+                <li>Real estate, stocks, and investment basics</li>
+                <li>Debt elimination strategies that actually work</li>
+                <li>How to protect assets and build generational wealth</li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="text-xl text-gold font-semibold mb-2">✅ What is Included:</h3>
+              <ul className="list-disc pl-6">
+                <li>8 full modules + bonus content</li>
+                <li>Downloadable worksheets, templates, and credit letters</li>
+                <li>Lifetime access with free updates</li>
+                <li>Optional certificate of completion</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="mt-8">
+            <BuyNowButton
+              userId="replace-with-user-id"
+              itemId="financial-literacy-premium"
+              amount={49.0}
+              type="course"
+            />
+            <p className="text-sm text-gray-400 mt-2">One-time payment. Lifetime access.</p>
+          </div>
         </section>
 
-        {/* Back to Home */}
-        <section className="text-center mt-10">
+        {/* 🧠 Module Previews */}
+        <section className="space-y-10">
+          <h2 className="text-3xl font-bold text-gold text-center">Course Modules</h2>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            {[
+              {
+                title: "1. Breaking Financial Myths",
+                text: "Unlearn the lies we have been taught about money and power. Start with a mindset built for legacy."
+              },
+              {
+                title: "2. Budgeting for Real Life",
+                text: "Set goals, manage spending, and build your emergency fund with clear tools that work."
+              },
+              {
+                title: "3. Credit Repair & Power",
+                text: "Raise your score fast with templates, credit letters, and a system that works for us."
+              },
+              {
+                title: "4. Building Wealth with Investments",
+                text: "Learn how stocks, real estate, and passive income can work for your family — even starting small."
+              },
+              {
+                title: "5. Side Hustles & Business Basics",
+                text: "Turn skills into income, register your business, and grow it step by step."
+              },
+              {
+                title: "6. Debt Management & Elimination",
+                text: "Say goodbye to debt using proven plans like the snowball and avalanche methods."
+              },
+              {
+                title: "7. Retirement Planning",
+                text: "Start a retirement account now — even if you are late — and invest the smart way."
+              },
+              {
+                title: "8. Building Legacy & Asset Protection",
+                text: "Estate planning, wills, and how to legally pass down your wealth and protect it."
+              }
+            ].map((mod, i) => (
+              <div key={i} className="bg-gray-800 p-6 rounded-lg shadow-md">
+                <h4 className="text-xl font-semibold text-gold mb-2">{mod.title}</h4>
+                <p className="text-gray-300">{mod.text}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* 👇 Back to Home */}
+        <section className="text-center mt-12">
           <Link href="/">
             <button className="px-6 py-3 bg-gold text-black font-semibold text-lg rounded-lg hover:bg-yellow-500 transition">
               Back to Home
