@@ -250,23 +250,24 @@ export default function Home() {
           <h3 className="text-lg font-semibold text-gold mb-2">
             Featured Sponsors
           </h3>
-<div className="relative w-full h-32 overflow-hidden">
-  <div className="absolute flex space-x-4 animate-scroll">
-    {[1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8].map((i, index) => (
-      <div key={index} className="relative h-24 w-40">
-        <Image
-          src={`/ads/sample-banner${i}.jpg`}
-          alt={`Sample Banner ${i}`}
-          width={160}
-          height={96}
-          className="object-cover rounded-lg"
-          priority
-        />
-      </div>
-    ))}
-  </div>
-</div>
-
+          <div className="relative w-full h-32 overflow-hidden">
+            <div className="absolute flex space-x-4 animate-scroll">
+              {[1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8].map(
+                (i, index) => (
+                  <div key={index} className="relative h-24 w-40">
+                    <Image
+                      src={`/ads/sample-banner${i}.jpg`}
+                      alt={`Sample Banner ${i}`}
+                      width={160}
+                      height={96}
+                      className="object-cover rounded-lg"
+                      priority
+                    />
+                  </div>
+                ),
+              )}
+            </div>
+          </div>
         </section>
 
         {/* Key Sections */}
