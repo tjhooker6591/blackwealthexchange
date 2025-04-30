@@ -26,7 +26,8 @@ const FinancialLiteracy = () => {
           Premium Financial Literacy Course
         </h1>
         <p className="text-xl md:text-2xl mt-4 font-light text-gray-300 animate-fadeIn">
-          Lifetime access to the tools, knowledge, and confidence to build real Black wealth.
+          Lifetime access to the tools, knowledge, and confidence to build real
+          Black wealth.
         </p>
       </header>
 
@@ -37,12 +38,16 @@ const FinancialLiteracy = () => {
             Unlock the Full Premium Course – Just $49
           </h2>
           <p className="text-gray-300 text-lg mb-6 max-w-2xl mx-auto">
-            Learn how to budget, fix credit, invest, and grow legacy wealth with step-by-step guidance. This is more than education — its transformation. Pay once. Own it forever.
+            Learn how to budget, fix credit, invest, and grow legacy wealth with
+            step-by-step guidance. This is more than education — its
+            transformation. Pay once. Own it forever.
           </p>
 
           <div className="grid md:grid-cols-2 gap-8 text-left text-gray-300 max-w-4xl mx-auto">
             <div>
-              <h3 className="text-xl text-gold font-semibold mb-2">✅ What You will Learn:</h3>
+              <h3 className="text-xl text-gold font-semibold mb-2">
+                ✅ What You will Learn:
+              </h3>
               <ul className="list-disc pl-6">
                 <li>Budgeting and goal-setting on any income</li>
                 <li>How to build and repair your credit</li>
@@ -52,7 +57,9 @@ const FinancialLiteracy = () => {
               </ul>
             </div>
             <div>
-              <h3 className="text-xl text-gold font-semibold mb-2">✅ What is Included:</h3>
+              <h3 className="text-xl text-gold font-semibold mb-2">
+                ✅ What is Included:
+              </h3>
               <ul className="list-disc pl-6">
                 <li>8 full modules + bonus content</li>
                 <li>Downloadable worksheets, templates, and credit letters</li>
@@ -69,51 +76,57 @@ const FinancialLiteracy = () => {
               amount={49.0}
               type="course"
             />
-            <p className="text-sm text-gray-400 mt-2">One-time payment. Lifetime access.</p>
+            <p className="text-sm text-gray-400 mt-2">
+              One-time payment. Lifetime access.
+            </p>
           </div>
         </section>
 
         {/* 🧠 Module Previews */}
         <section className="space-y-10">
-          <h2 className="text-3xl font-bold text-gold text-center">Course Modules</h2>
+          <h2 className="text-3xl font-bold text-gold text-center">
+            Course Modules
+          </h2>
 
           <div className="grid md:grid-cols-2 gap-6">
             {[
               {
                 title: "1. Breaking Financial Myths",
-                text: "Unlearn the lies we have been taught about money and power. Start with a mindset built for legacy."
+                text: "Unlearn the lies we have been taught about money and power. Start with a mindset built for legacy.",
               },
               {
                 title: "2. Budgeting for Real Life",
-                text: "Set goals, manage spending, and build your emergency fund with clear tools that work."
+                text: "Set goals, manage spending, and build your emergency fund with clear tools that work.",
               },
               {
                 title: "3. Credit Repair & Power",
-                text: "Raise your score fast with templates, credit letters, and a system that works for us."
+                text: "Raise your score fast with templates, credit letters, and a system that works for us.",
               },
               {
                 title: "4. Building Wealth with Investments",
-                text: "Learn how stocks, real estate, and passive income can work for your family — even starting small."
+                text: "Learn how stocks, real estate, and passive income can work for your family — even starting small.",
               },
               {
                 title: "5. Side Hustles & Business Basics",
-                text: "Turn skills into income, register your business, and grow it step by step."
+                text: "Turn skills into income, register your business, and grow it step by step.",
               },
               {
                 title: "6. Debt Management & Elimination",
-                text: "Say goodbye to debt using proven plans like the snowball and avalanche methods."
+                text: "Say goodbye to debt using proven plans like the snowball and avalanche methods.",
               },
               {
                 title: "7. Retirement Planning",
-                text: "Start a retirement account now — even if you are late — and invest the smart way."
+                text: "Start a retirement account now — even if you are late — and invest the smart way.",
               },
               {
                 title: "8. Building Legacy & Asset Protection",
-                text: "Estate planning, wills, and how to legally pass down your wealth and protect it."
-              }
+                text: "Estate planning, wills, and how to legally pass down your wealth and protect it.",
+              },
             ].map((mod, i) => (
               <div key={i} className="bg-gray-800 p-6 rounded-lg shadow-md">
-                <h4 className="text-xl font-semibold text-gold mb-2">{mod.title}</h4>
+                <h4 className="text-xl font-semibold text-gold mb-2">
+                  {mod.title}
+                </h4>
                 <p className="text-gray-300">{mod.text}</p>
               </div>
             ))}

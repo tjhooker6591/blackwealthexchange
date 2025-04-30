@@ -11,7 +11,9 @@ const Module8 = () => {
       </h1>
 
       <p className="text-gray-300 text-lg max-w-3xl mx-auto text-center mb-10">
-        Wealth is not truly powerful unless it lasts. This final module will guide you through protecting what you have built, creating generational wealth systems, and passing down assets with intention.
+        Wealth is not truly powerful unless it lasts. This final module will
+        guide you through protecting what you have built, creating generational
+        wealth systems, and passing down assets with intention.
       </p>
 
       {/* 🎥 Video Embed */}
@@ -26,14 +28,26 @@ const Module8 = () => {
 
       {/* 🧱 Key Takeaways */}
       <section className="bg-gray-800 p-6 rounded-lg shadow-md max-w-4xl mx-auto mb-10">
-        <h2 className="text-2xl text-gold font-semibold mb-4">Key Takeaways:</h2>
+        <h2 className="text-2xl text-gold font-semibold mb-4">
+          Key Takeaways:
+        </h2>
         <ul className="list-disc text-gray-300 pl-6 space-y-2">
           <li>Why estate planning matters — even if you are not “rich.”</li>
-          <li>Create a simple will to protect your family and avoid probate.</li>
-          <li>Understand the basics of living trusts, power of attorney, and healthcare directives.</li>
+          <li>
+            Create a simple will to protect your family and avoid probate.
+          </li>
+          <li>
+            Understand the basics of living trusts, power of attorney, and
+            healthcare directives.
+          </li>
           <li>Use life insurance as a wealth transfer tool.</li>
-          <li>Start early conversations with your children about money and values.</li>
-          <li>How to make your legacy more than just money — pass down wisdom, business, and purpose.</li>
+          <li>
+            Start early conversations with your children about money and values.
+          </li>
+          <li>
+            How to make your legacy more than just money — pass down wisdom,
+            business, and purpose.
+          </li>
         </ul>
       </section>
 

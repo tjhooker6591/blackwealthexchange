@@ -11,7 +11,9 @@ const Module2 = () => {
       </h1>
 
       <p className="text-gray-300 text-lg max-w-3xl mx-auto text-center mb-10">
-        Budgeting is not about restriction — its about freedom. In this module, we walk through how to build a flexible, realistic budget that works for your life, not against it.
+        Budgeting is not about restriction — its about freedom. In this module,
+        we walk through how to build a flexible, realistic budget that works for
+        your life, not against it.
       </p>
 
       {/* 📺 Video Section */}
@@ -26,12 +28,24 @@ const Module2 = () => {
 
       {/* 💡 Key Takeaways */}
       <section className="bg-gray-800 p-6 rounded-lg shadow-md max-w-4xl mx-auto mb-10">
-        <h2 className="text-2xl text-gold font-semibold mb-4">Key Takeaways:</h2>
+        <h2 className="text-2xl text-gold font-semibold mb-4">
+          Key Takeaways:
+        </h2>
         <ul className="list-disc text-gray-300 pl-6 space-y-2">
-          <li>Create a monthly budget using fixed income and essential expenses.</li>
-          <li>Set short-term and long-term financial goals (e.g. savings, debt payoff, home ownership).</li>
-          <li>Track spending habits to identify leaks and overspending patterns.</li>
-          <li>Use the 50/30/20 rule (Needs / Wants / Savings) as a budgeting baseline.</li>
+          <li>
+            Create a monthly budget using fixed income and essential expenses.
+          </li>
+          <li>
+            Set short-term and long-term financial goals (e.g. savings, debt
+            payoff, home ownership).
+          </li>
+          <li>
+            Track spending habits to identify leaks and overspending patterns.
+          </li>
+          <li>
+            Use the 50/30/20 rule (Needs / Wants / Savings) as a budgeting
+            baseline.
+          </li>
           <li>Learn how to build and maintain an emergency fund.</li>
         </ul>
       </section>

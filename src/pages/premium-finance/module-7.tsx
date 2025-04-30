@@ -11,7 +11,10 @@ const Module7 = () => {
       </h1>
 
       <p className="text-gray-300 text-lg max-w-3xl mx-auto text-center mb-10">
-        The best time to start planning for retirement is now. Whether you are in your 20s or your 50s, this module will help you understand retirement accounts, investment strategies, and long-term planning to build peace of mind and future freedom.
+        The best time to start planning for retirement is now. Whether you are
+        in your 20s or your 50s, this module will help you understand retirement
+        accounts, investment strategies, and long-term planning to build peace
+        of mind and future freedom.
       </p>
 
       {/* 🎥 Video Embed */}
@@ -26,14 +29,32 @@ const Module7 = () => {
 
       {/* 📘 Key Takeaways */}
       <section className="bg-gray-800 p-6 rounded-lg shadow-md max-w-4xl mx-auto mb-10">
-        <h2 className="text-2xl text-gold font-semibold mb-4">Key Takeaways:</h2>
+        <h2 className="text-2xl text-gold font-semibold mb-4">
+          Key Takeaways:
+        </h2>
         <ul className="list-disc text-gray-300 pl-6 space-y-2">
-          <li>Learn about 401(k), Roth IRA, Traditional IRA, and other retirement accounts.</li>
-          <li>Understand employer matching and how to take full advantage of it.</li>
-          <li>Discover how compound interest works over time — and why starting early matters.</li>
-          <li>Even late starters can build wealth: see how to catch up with aggressive saving.</li>
-          <li>Diversify investments for long-term growth (stocks, bonds, index funds).</li>
-          <li>Create a retirement income plan and estimate how much you will need.</li>
+          <li>
+            Learn about 401(k), Roth IRA, Traditional IRA, and other retirement
+            accounts.
+          </li>
+          <li>
+            Understand employer matching and how to take full advantage of it.
+          </li>
+          <li>
+            Discover how compound interest works over time — and why starting
+            early matters.
+          </li>
+          <li>
+            Even late starters can build wealth: see how to catch up with
+            aggressive saving.
+          </li>
+          <li>
+            Diversify investments for long-term growth (stocks, bonds, index
+            funds).
+          </li>
+          <li>
+            Create a retirement income plan and estimate how much you will need.
+          </li>
         </ul>
       </section>
 

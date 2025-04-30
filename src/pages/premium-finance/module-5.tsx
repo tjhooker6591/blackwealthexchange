@@ -11,7 +11,9 @@ const Module5 = () => {
       </h1>
 
       <p className="text-gray-300 text-lg max-w-3xl mx-auto text-center mb-10">
-        A side hustle can fund your freedom. In this module, we will break down how to start earning extra income, build business credit, and eventually transition into full entrepreneurship — even with limited resources.
+        A side hustle can fund your freedom. In this module, we will break down
+        how to start earning extra income, build business credit, and eventually
+        transition into full entrepreneurship — even with limited resources.
       </p>
 
       {/* 🎥 Video Embed */}
@@ -26,14 +28,33 @@ const Module5 = () => {
 
       {/* 🧠 Key Takeaways */}
       <section className="bg-gray-800 p-6 rounded-lg shadow-md max-w-4xl mx-auto mb-10">
-        <h2 className="text-2xl text-gold font-semibold mb-4">Key Takeaways:</h2>
+        <h2 className="text-2xl text-gold font-semibold mb-4">
+          Key Takeaways:
+        </h2>
         <ul className="list-disc text-gray-300 pl-6 space-y-2">
-          <li>Identify your profitable skills or passions and turn them into services or products.</li>
-          <li>Understand the difference between a sole proprietorship, LLC, and S-Corp.</li>
-          <li>Learn how to register your business legally and get an EIN for free.</li>
-          <li>Build a professional online presence for your hustle (website, social, payment tools).</li>
-          <li>Start building business credit using vendors, net-30 accounts, and responsible lending.</li>
-          <li>Use income from your side hustle to fund investments, pay down debt, or grow operations.</li>
+          <li>
+            Identify your profitable skills or passions and turn them into
+            services or products.
+          </li>
+          <li>
+            Understand the difference between a sole proprietorship, LLC, and
+            S-Corp.
+          </li>
+          <li>
+            Learn how to register your business legally and get an EIN for free.
+          </li>
+          <li>
+            Build a professional online presence for your hustle (website,
+            social, payment tools).
+          </li>
+          <li>
+            Start building business credit using vendors, net-30 accounts, and
+            responsible lending.
+          </li>
+          <li>
+            Use income from your side hustle to fund investments, pay down debt,
+            or grow operations.
+          </li>
         </ul>
       </section>
 

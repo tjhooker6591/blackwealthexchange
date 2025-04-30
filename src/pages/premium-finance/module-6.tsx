@@ -11,7 +11,9 @@ const Module6 = () => {
       </h1>
 
       <p className="text-gray-300 text-lg max-w-3xl mx-auto text-center mb-10">
-        Debt is not a life sentence. In this module, we will help you create a real plan to pay off your debt, avoid traps, and start building financial freedom one step at a time.
+        Debt is not a life sentence. In this module, we will help you create a
+        real plan to pay off your debt, avoid traps, and start building
+        financial freedom one step at a time.
       </p>
 
       {/* 🎥 Video Embed */}
@@ -26,13 +28,26 @@ const Module6 = () => {
 
       {/* 📌 Key Takeaways */}
       <section className="bg-gray-800 p-6 rounded-lg shadow-md max-w-4xl mx-auto mb-10">
-        <h2 className="text-2xl text-gold font-semibold mb-4">Key Takeaways:</h2>
+        <h2 className="text-2xl text-gold font-semibold mb-4">
+          Key Takeaways:
+        </h2>
         <ul className="list-disc text-gray-300 pl-6 space-y-2">
-          <li>Understand the real cost of high-interest debt and how it affects your future.</li>
-          <li>Choose your strategy: the Snowball Method (smallest debt first) or Avalanche Method (highest interest first).</li>
+          <li>
+            Understand the real cost of high-interest debt and how it affects
+            your future.
+          </li>
+          <li>
+            Choose your strategy: the Snowball Method (smallest debt first) or
+            Avalanche Method (highest interest first).
+          </li>
           <li>Create a debt repayment timeline and monthly tracker.</li>
-          <li>Explore debt consolidation and refinancing options (carefully).</li>
-          <li>Negotiate with creditors and collection agencies — you have more power than you think.</li>
+          <li>
+            Explore debt consolidation and refinancing options (carefully).
+          </li>
+          <li>
+            Negotiate with creditors and collection agencies — you have more
+            power than you think.
+          </li>
           <li>Use freed-up income to shift toward savings and investments.</li>
         </ul>
       </section>

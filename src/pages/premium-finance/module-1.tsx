@@ -11,7 +11,9 @@ const Module1 = () => {
       </h1>
 
       <p className="text-gray-300 text-lg max-w-3xl mx-auto text-center mb-10">
-        Start your journey by challenging the lies, fear, and limiting beliefs we have been taught about money. This module is about mindset, self-worth, and understanding how systems were built to keep us out.
+        Start your journey by challenging the lies, fear, and limiting beliefs
+        we have been taught about money. This module is about mindset,
+        self-worth, and understanding how systems were built to keep us out.
       </p>
 
       {/* Optional Video Placeholder */}
@@ -26,11 +28,22 @@ const Module1 = () => {
 
       {/* Key Takeaways */}
       <section className="bg-gray-800 p-6 rounded-lg shadow-md max-w-4xl mx-auto mb-10">
-        <h2 className="text-2xl text-gold font-semibold mb-4">Key Takeaways:</h2>
+        <h2 className="text-2xl text-gold font-semibold mb-4">
+          Key Takeaways:
+        </h2>
         <ul className="list-disc text-gray-300 pl-6 space-y-2">
-          <li>Understand why generational wealth is often misunderstood or discouraged in our communities.</li>
-          <li>Identify and unlearn personal money myths you have absorbed over time.</li>
-          <li>Recognize the systems of exclusion — and how we can reclaim our power.</li>
+          <li>
+            Understand why generational wealth is often misunderstood or
+            discouraged in our communities.
+          </li>
+          <li>
+            Identify and unlearn personal money myths you have absorbed over
+            time.
+          </li>
+          <li>
+            Recognize the systems of exclusion — and how we can reclaim our
+            power.
+          </li>
         </ul>
       </section>
 
