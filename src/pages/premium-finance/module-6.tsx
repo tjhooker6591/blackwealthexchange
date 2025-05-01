@@ -10,50 +10,77 @@ const Module6 = () => {
         Module 6: Debt Management & Elimination
       </h1>
 
-      <p className="text-gray-300 text-lg max-w-3xl mx-auto text-center mb-10">
-        Debt is not a life sentence. In this module, we will help you create a
-        real plan to pay off your debt, avoid traps, and start building
-        financial freedom one step at a time.
+      <p className="text-gray-300 text-lg max-w-3xl mx-auto text-center mb-4">
+        Debt is not a life sentence. This module gives you proven strategies, practical tools, and emotional empowerment to eliminate debt and reclaim your peace of mind.
       </p>
 
-      {/* 🎥 Video Embed */}
-      <div className="relative pb-[56.25%] h-0 mb-8 rounded-lg overflow-hidden max-w-4xl mx-auto">
+      <p className="text-gray-400 text-sm text-center mb-8">
+        <strong>Featured Video:</strong> Anthony ONeal: If You are Living Paycheck to Paycheck...<br />
+        <strong>Why:</strong> Anthony shares no-nonsense steps to break the cycle of debt and build a real financial future.
+      </p>
+
+      {/* 🎥 Embedded Video */}
+      <div className="aspect-w-16 aspect-h-9 mb-8 max-w-4xl mx-auto">
         <iframe
-          className="absolute top-0 left-0 w-full h-full rounded-lg"
-          src="https://www.youtube.com/embed/YOUR_VIDEO_ID"
-          title="Module 6 Video"
+          className="w-full h-full rounded-lg"
+          src="https://www.youtube.com/embed/nJI_roT9Vxk"
+          title="Debt Elimination - Anthony O'Neal"
           allowFullScreen
         ></iframe>
       </div>
 
-      {/* 📌 Key Takeaways */}
-      <section className="bg-gray-800 p-6 rounded-lg shadow-md max-w-4xl mx-auto mb-10">
-        <h2 className="text-2xl text-gold font-semibold mb-4">
-          Key Takeaways:
-        </h2>
+      {/* 💡 Key Takeaways */}
+      <section className="bg-gray-800 p-6 rounded-lg shadow-md max-w-4xl mx-auto mb-6">
+        <h2 className="text-2xl text-gold font-semibold mb-4">Key Takeaways:</h2>
         <ul className="list-disc text-gray-300 pl-6 space-y-2">
-          <li>
-            Understand the real cost of high-interest debt and how it affects
-            your future.
-          </li>
-          <li>
-            Choose your strategy: the Snowball Method (smallest debt first) or
-            Avalanche Method (highest interest first).
-          </li>
-          <li>Create a debt repayment timeline and monthly tracker.</li>
-          <li>
-            Explore debt consolidation and refinancing options (carefully).
-          </li>
-          <li>
-            Negotiate with creditors and collection agencies — you have more
-            power than you think.
-          </li>
-          <li>Use freed-up income to shift toward savings and investments.</li>
+          <li>Understand the financial and emotional weight of debt — and how to break free.</li>
+          <li>Pick your method: Snowball (smallest first) or Avalanche (highest interest first).</li>
+          <li>Learn to negotiate down your debt using proven script strategies.</li>
+          <li>Recognize debt traps: payday loans, unnecessary balance transfers, and scams.</li>
+          <li>Refocus your mindset: this isn not punishment — its a freedom strategy.</li>
         </ul>
       </section>
 
+      {/* 📥 Tools & Worksheets */}
+      <section className="bg-gray-800 p-6 rounded-lg shadow-md max-w-4xl mx-auto mb-6">
+        <h2 className="text-2xl text-gold font-semibold mb-4">📥 Eliminate Debt Toolkit:</h2>
+        <ul className="list-disc text-gray-300 pl-6 space-y-3">
+          <li>
+            <a href="/downloads/debt-elimination-planner.pdf" className="text-gold underline" target="_blank">
+              Debt Elimination Planner
+            </a> – Strategy worksheets, timeline, and payoff visualizer.
+          </li>
+          <li>
+            <a href="/downloads/debt-payoff-calculator.xlsx" className="text-gold underline" target="_blank">
+              Debt Payoff Calculator
+            </a> – Simulate paydown and savings based on your plan.
+          </li>
+          <li>
+            <a href="/downloads/creditor-negotiation-scripts.pdf" className="text-gold underline" target="_blank">
+              Negotiation Scripts
+            </a> – Use these when calling collectors or lenders.
+          </li>
+          <li>
+            <a href="/downloads/debt-scam-redflags.pdf" className="text-gold underline" target="_blank">
+              Avoiding Debt Traps
+            </a> – Recognize and sidestep scams and predatory options.
+          </li>
+        </ul>
+      </section>
+
+      {/* 💬 Bonus: Mindset Shift */}
+      <section className="bg-gray-800 p-6 rounded-lg shadow-md max-w-4xl mx-auto mb-10">
+        <h2 className="text-2xl text-gold font-semibold mb-4">💬 Mindset Check:</h2>
+        <p className="text-gray-300 mb-2">
+          Debt brings stress, shame, and anxiety. But its not a personal failure — it is a solvable challenge.
+        </p>
+        <p className="text-gray-300">
+          Ask yourself: What would freedom from debt FEEL like? Visualize it, write it down, and return to it when motivation dips.
+        </p>
+      </section>
+
       {/* 🔁 Navigation */}
-      <div className="flex justify-between max-w-4xl mx-auto mt-6">
+      <div className="flex justify-between max-w-4xl mx-auto mt-10">
         <Link href="/premium-finance/module-5">
           <button className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition">
             ← Back to Module 5

@@ -22,7 +22,7 @@ const FinancialLiteracy = () => {
           height={120}
           className="mx-auto mb-4 animate-fadeIn"
         />
-        <h1 className="text-6xl md:text-7xl font-extrabold tracking-wide text-gold neon-text animate-slideUp">
+        <h1 className="text-6xl md:text-4xl font-extrabold tracking-wide text-gold neon-text animate-slideUp">
           Premium Financial Literacy Course
         </h1>
         <p className="text-xl md:text-2xl mt-4 font-light text-gray-300 animate-fadeIn">

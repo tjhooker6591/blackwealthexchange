@@ -10,52 +10,74 @@ const Module3 = () => {
         Module 3: Credit Repair & Power
       </h1>
 
-      <p className="text-gray-300 text-lg max-w-3xl mx-auto text-center mb-10">
-        Credit is not just a number — it is a tool. In this module, you will
-        learn how to take control of your credit profile, dispute inaccuracies,
-        and build a powerful credit history that opens doors.
+      <p className="text-gray-300 text-lg max-w-3xl mx-auto text-center mb-4">
+        Credit is not just a number — it is a tool. Learn how to fix errors, build your credit profile, and unlock access to better financial opportunities.
       </p>
 
-      {/* 🎥 Video Embed */}
-      <div className="relative pb-[56.25%] h-0 mb-8 rounded-lg overflow-hidden max-w-4xl mx-auto">
+      <p className="text-gray-400 text-sm text-center mb-8">
+        <strong>Featured Video:</strong> Credit Score Secrets with Dominique Brown<br />
+        <strong>Why:</strong> Dominique breaks down credit strategy in a relatable, step-by-step way. A must-watch for rebuilding and taking control.
+      </p>
+
+      {/* 🎥 Embedded Video */}
+      <div className="aspect-w-16 aspect-h-9 mb-8 max-w-4xl mx-auto">
         <iframe
-          className="absolute top-0 left-0 w-full h-full rounded-lg"
-          src="https://www.youtube.com/embed/YOUR_VIDEO_ID"
-          title="Module 3 Video"
+          className="w-full h-full rounded-lg"
+          src="https://www.youtube.com/embed/l3hAqa1OAP8"
+          title="Credit Score Secrets"
           allowFullScreen
         ></iframe>
       </div>
 
-      {/* 📌 Key Takeaways */}
-      <section className="bg-gray-800 p-6 rounded-lg shadow-md max-w-4xl mx-auto mb-10">
-        <h2 className="text-2xl text-gold font-semibold mb-4">
-          Key Takeaways:
-        </h2>
+      {/* 📘 Key Takeaways */}
+      <section className="bg-gray-800 p-6 rounded-lg shadow-md max-w-4xl mx-auto mb-6">
+        <h2 className="text-2xl text-gold font-semibold mb-4">Key Takeaways:</h2>
         <ul className="list-disc text-gray-300 pl-6 space-y-2">
+          <li>Understand the five components of your credit score and how to influence them.</li>
+          <li>Check your credit reports regularly — and how to spot and dispute errors.</li>
+          <li>Use tools like secured cards and credit-builder loans to rebuild wisely.</li>
+          <li>Keep utilization below 30%, pay early, and automate to protect your history.</li>
+          <li>Do not fear collectors — learn your rights and how to negotiate legally.</li>
+        </ul>
+      </section>
+
+      {/* 📥 Downloads */}
+      <section className="bg-gray-800 p-6 rounded-lg shadow-md max-w-4xl mx-auto mb-6">
+        <h2 className="text-2xl text-gold font-semibold mb-4">📥 Credit Repair Kit:</h2>
+        <ul className="list-disc text-gray-300 pl-6 space-y-3">
           <li>
-            Understand the 5 components of your credit score (payment history,
-            utilization, etc.).
+            <a href="/downloads/credit-dispute-letter-template.pdf" className="text-gold underline" target="_blank">
+              Dispute Letter Templates (PDF)
+            </a> – Includes late payment, collection, and inquiry dispute samples.
           </li>
-          <li>Check your credit reports for free at AnnualCreditReport.com.</li>
           <li>
-            Dispute incorrect items using sample letters (available in this
-            course).
+            <a href="/downloads/credit-score-tracker.xlsx" className="text-gold underline" target="_blank">
+              Credit Score Tracker (Excel)
+            </a> – Track your score over time with built-in goal setting.
           </li>
           <li>
-            Use secured credit cards and credit-builder loans to rebuild credit.
-          </li>
-          <li>
-            Keep utilization below 30%, pay on time, and avoid closing old
-            accounts.
-          </li>
-          <li>
-            Learn how to negotiate with collectors and protect your rights.
+            <a href="/downloads/reading-your-credit-report-guide.pdf" className="text-gold underline" target="_blank">
+              How to Read Your Credit Report
+            </a> – Walkthrough guide with red flags and sample reports.
           </li>
         </ul>
       </section>
 
-      {/* 🧭 Navigation */}
-      <div className="flex justify-between max-w-4xl mx-auto mt-6">
+      {/* 💪 Mini Challenge */}
+      <section className="bg-gray-800 p-6 rounded-lg shadow-md max-w-4xl mx-auto mb-10">
+        <h2 className="text-2xl text-gold font-semibold mb-4">🔍 Credit Health Challenge:</h2>
+        <p className="text-gray-300 mb-2">
+          Go to <a href="https://www.annualcreditreport.com" className="underline text-gold" target="_blank">AnnualCreditReport.com</a> and pull your report. Then:
+        </p>
+        <ul className="list-disc text-gray-300 pl-6 space-y-2">
+          <li>Highlight one positive and one negative item on each bureau report.</li>
+          <li>Use the “How to Read Your Report” guide to decode key items.</li>
+          <li>Complete and send one dispute letter (if needed) from the templates provided.</li>
+        </ul>
+      </section>
+
+      {/* 🔁 Navigation */}
+      <div className="flex justify-between max-w-4xl mx-auto mt-10">
         <Link href="/premium-finance/module-2">
           <button className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition">
             ← Back to Module 2
