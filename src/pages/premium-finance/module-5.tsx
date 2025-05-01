@@ -11,12 +11,17 @@ const Module5 = () => {
       </h1>
 
       <p className="text-gray-300 text-lg max-w-3xl mx-auto text-center mb-4">
-        A side hustle can fund your freedom. This module gives you the blueprint to turn your ideas into income — with steps for business setup, credit-building, and digital presence.
+        A side hustle can fund your freedom. This module gives you the blueprint
+        to turn your ideas into income — with steps for business setup,
+        credit-building, and digital presence.
       </p>
 
       <p className="text-gray-400 text-sm text-center mb-8">
-        <strong>Featured Video:</strong> The Side Hustle Revolution | Nicaila Matthews Okome<br />
-        <strong>Why:</strong> Learn how everyday skills become scalable income streams. Nicaila’s story is proof that purpose pays.
+        <strong>Featured Video:</strong> The Side Hustle Revolution | Nicaila
+        Matthews Okome
+        <br />
+        <strong>Why:</strong> Learn how everyday skills become scalable income
+        streams. Nicaila’s story is proof that purpose pays.
       </p>
 
       {/* 🎥 Video Embed */}
@@ -31,52 +36,96 @@ const Module5 = () => {
 
       {/* 🧠 Key Takeaways */}
       <section className="bg-gray-800 p-6 rounded-lg shadow-md max-w-4xl mx-auto mb-6">
-        <h2 className="text-2xl text-gold font-semibold mb-4">Key Takeaways:</h2>
+        <h2 className="text-2xl text-gold font-semibold mb-4">
+          Key Takeaways:
+        </h2>
         <ul className="list-disc text-gray-300 pl-6 space-y-2">
           <li>Start with a simple idea that solves a problem or offers joy.</li>
-          <li>Choose the right legal structure for your hustle: LLC, Sole Proprietor, etc.</li>
+          <li>
+            Choose the right legal structure for your hustle: LLC, Sole
+            Proprietor, etc.
+          </li>
           <li>Create a strong brand presence — even on a budget.</li>
-          <li>Open a business bank account and apply for your free EIN from IRS.gov.</li>
-          <li>Build business credit: Start with vendor accounts like Uline or Quill.</li>
-          <li>Use hustle income to fuel long-term wealth-building strategies.</li>
+          <li>
+            Open a business bank account and apply for your free EIN from
+            IRS.gov.
+          </li>
+          <li>
+            Build business credit: Start with vendor accounts like Uline or
+            Quill.
+          </li>
+          <li>
+            Use hustle income to fuel long-term wealth-building strategies.
+          </li>
         </ul>
       </section>
 
       {/* 📥 Downloads & Starter Tools */}
       <section className="bg-gray-800 p-6 rounded-lg shadow-md max-w-4xl mx-auto mb-6">
-        <h2 className="text-2xl text-gold font-semibold mb-4">📥 Hustle Starter Toolkit:</h2>
+        <h2 className="text-2xl text-gold font-semibold mb-4">
+          📥 Hustle Starter Toolkit:
+        </h2>
         <ul className="list-disc text-gray-300 pl-6 space-y-3">
           <li>
-            <a href="/downloads/side-hustle-business-planner.pdf" className="text-gold underline" target="_blank">
+            <a
+              href="/downloads/side-hustle-business-planner.pdf"
+              className="text-gold underline"
+              target="_blank"
+            >
               Side Hustle Business Planner
-            </a> – From idea to launch on a tight budget.
+            </a>{" "}
+            – From idea to launch on a tight budget.
           </li>
           <li>
-            <a href="/downloads/business-formation-guide.pdf" className="text-gold underline" target="_blank">
+            <a
+              href="/downloads/business-formation-guide.pdf"
+              className="text-gold underline"
+              target="_blank"
+            >
               Business Formation Step-by-Step
-            </a> – EIN, structure types, bank account setup.
+            </a>{" "}
+            – EIN, structure types, bank account setup.
           </li>
           <li>
-            <a href="/downloads/online-tools-for-entrepreneurs.pdf" className="text-gold underline" target="_blank">
+            <a
+              href="/downloads/online-tools-for-entrepreneurs.pdf"
+              className="text-gold underline"
+              target="_blank"
+            >
               Best Free & Paid Online Tools
-            </a> – Invoicing, design, domains, CRM, payments, etc.
+            </a>{" "}
+            – Invoicing, design, domains, CRM, payments, etc.
           </li>
           <li>
-            <a href="/downloads/business-credit-tracker.xlsx" className="text-gold underline" target="_blank">
+            <a
+              href="/downloads/business-credit-tracker.xlsx"
+              className="text-gold underline"
+              target="_blank"
+            >
               Business Credit Builder & Tracker
-            </a> – Track Net 30 vendors, credit limits, reporting bureaus.
+            </a>{" "}
+            – Track Net 30 vendors, credit limits, reporting bureaus.
           </li>
         </ul>
       </section>
 
       {/* 💡 Bonus Action Plan */}
       <section className="bg-gray-800 p-6 rounded-lg shadow-md max-w-4xl mx-auto mb-10">
-        <h2 className="text-2xl text-gold font-semibold mb-4">💡 Action Plan:</h2>
+        <h2 className="text-2xl text-gold font-semibold mb-4">
+          💡 Action Plan:
+        </h2>
         <ol className="list-decimal text-gray-300 pl-6 space-y-2">
           <li>Write 3 side hustle ideas that use your current skills.</li>
-          <li>Pick one and use the Business Planner to map your MVP (minimum viable product).</li>
-          <li>Register for an EIN and open a free business checking account.</li>
-          <li>Launch your hustle with just one offer or product — keep it simple!</li>
+          <li>
+            Pick one and use the Business Planner to map your MVP (minimum
+            viable product).
+          </li>
+          <li>
+            Register for an EIN and open a free business checking account.
+          </li>
+          <li>
+            Launch your hustle with just one offer or product — keep it simple!
+          </li>
           <li>Track expenses and use profits to invest, save, or expand.</li>
         </ol>
       </section>

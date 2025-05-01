@@ -11,12 +11,17 @@ const Module6 = () => {
       </h1>
 
       <p className="text-gray-300 text-lg max-w-3xl mx-auto text-center mb-4">
-        Debt is not a life sentence. This module gives you proven strategies, practical tools, and emotional empowerment to eliminate debt and reclaim your peace of mind.
+        Debt is not a life sentence. This module gives you proven strategies,
+        practical tools, and emotional empowerment to eliminate debt and reclaim
+        your peace of mind.
       </p>
 
       <p className="text-gray-400 text-sm text-center mb-8">
-        <strong>Featured Video:</strong> Anthony ONeal: If You are Living Paycheck to Paycheck...<br />
-        <strong>Why:</strong> Anthony shares no-nonsense steps to break the cycle of debt and build a real financial future.
+        <strong>Featured Video:</strong> Anthony ONeal: If You are Living
+        Paycheck to Paycheck...
+        <br />
+        <strong>Why:</strong> Anthony shares no-nonsense steps to break the
+        cycle of debt and build a real financial future.
       </p>
 
       {/* 🎥 Embedded Video */}
@@ -31,51 +36,93 @@ const Module6 = () => {
 
       {/* 💡 Key Takeaways */}
       <section className="bg-gray-800 p-6 rounded-lg shadow-md max-w-4xl mx-auto mb-6">
-        <h2 className="text-2xl text-gold font-semibold mb-4">Key Takeaways:</h2>
+        <h2 className="text-2xl text-gold font-semibold mb-4">
+          Key Takeaways:
+        </h2>
         <ul className="list-disc text-gray-300 pl-6 space-y-2">
-          <li>Understand the financial and emotional weight of debt — and how to break free.</li>
-          <li>Pick your method: Snowball (smallest first) or Avalanche (highest interest first).</li>
-          <li>Learn to negotiate down your debt using proven script strategies.</li>
-          <li>Recognize debt traps: payday loans, unnecessary balance transfers, and scams.</li>
-          <li>Refocus your mindset: this isn not punishment — its a freedom strategy.</li>
+          <li>
+            Understand the financial and emotional weight of debt — and how to
+            break free.
+          </li>
+          <li>
+            Pick your method: Snowball (smallest first) or Avalanche (highest
+            interest first).
+          </li>
+          <li>
+            Learn to negotiate down your debt using proven script strategies.
+          </li>
+          <li>
+            Recognize debt traps: payday loans, unnecessary balance transfers,
+            and scams.
+          </li>
+          <li>
+            Refocus your mindset: this isn not punishment — its a freedom
+            strategy.
+          </li>
         </ul>
       </section>
 
       {/* 📥 Tools & Worksheets */}
       <section className="bg-gray-800 p-6 rounded-lg shadow-md max-w-4xl mx-auto mb-6">
-        <h2 className="text-2xl text-gold font-semibold mb-4">📥 Eliminate Debt Toolkit:</h2>
+        <h2 className="text-2xl text-gold font-semibold mb-4">
+          📥 Eliminate Debt Toolkit:
+        </h2>
         <ul className="list-disc text-gray-300 pl-6 space-y-3">
           <li>
-            <a href="/downloads/debt-elimination-planner.pdf" className="text-gold underline" target="_blank">
+            <a
+              href="/downloads/debt-elimination-planner.pdf"
+              className="text-gold underline"
+              target="_blank"
+            >
               Debt Elimination Planner
-            </a> – Strategy worksheets, timeline, and payoff visualizer.
+            </a>{" "}
+            – Strategy worksheets, timeline, and payoff visualizer.
           </li>
           <li>
-            <a href="/downloads/debt-payoff-calculator.xlsx" className="text-gold underline" target="_blank">
+            <a
+              href="/downloads/debt-payoff-calculator.xlsx"
+              className="text-gold underline"
+              target="_blank"
+            >
               Debt Payoff Calculator
-            </a> – Simulate paydown and savings based on your plan.
+            </a>{" "}
+            – Simulate paydown and savings based on your plan.
           </li>
           <li>
-            <a href="/downloads/creditor-negotiation-scripts.pdf" className="text-gold underline" target="_blank">
+            <a
+              href="/downloads/creditor-negotiation-scripts.pdf"
+              className="text-gold underline"
+              target="_blank"
+            >
               Negotiation Scripts
-            </a> – Use these when calling collectors or lenders.
+            </a>{" "}
+            – Use these when calling collectors or lenders.
           </li>
           <li>
-            <a href="/downloads/debt-scam-redflags.pdf" className="text-gold underline" target="_blank">
+            <a
+              href="/downloads/debt-scam-redflags.pdf"
+              className="text-gold underline"
+              target="_blank"
+            >
               Avoiding Debt Traps
-            </a> – Recognize and sidestep scams and predatory options.
+            </a>{" "}
+            – Recognize and sidestep scams and predatory options.
           </li>
         </ul>
       </section>
 
       {/* 💬 Bonus: Mindset Shift */}
       <section className="bg-gray-800 p-6 rounded-lg shadow-md max-w-4xl mx-auto mb-10">
-        <h2 className="text-2xl text-gold font-semibold mb-4">💬 Mindset Check:</h2>
+        <h2 className="text-2xl text-gold font-semibold mb-4">
+          💬 Mindset Check:
+        </h2>
         <p className="text-gray-300 mb-2">
-          Debt brings stress, shame, and anxiety. But its not a personal failure — it is a solvable challenge.
+          Debt brings stress, shame, and anxiety. But its not a personal failure
+          — it is a solvable challenge.
         </p>
         <p className="text-gray-300">
-          Ask yourself: What would freedom from debt FEEL like? Visualize it, write it down, and return to it when motivation dips.
+          Ask yourself: What would freedom from debt FEEL like? Visualize it,
+          write it down, and return to it when motivation dips.
         </p>
       </section>
 
