@@ -31,7 +31,7 @@ export default function Marketplace() {
       setLoading(true);
       try {
         const res = await fetch(
-          `/api/marketplace/get-products?page=${currentPage}&limit=${itemsPerPage}&category=${selectedCategory}`
+          `/api/marketplace/get-products?page=${currentPage}&limit=${itemsPerPage}&category=${selectedCategory}`,
         );
         const data = await res.json();
         setProducts(data.products || []);
@@ -101,7 +101,9 @@ export default function Marketplace() {
     <div className="min-h-screen bg-black text-white">
       {/* Header */}
       <section className="text-center py-10 px-4">
-        <h1 className="text-4xl font-extrabold text-gold mb-4">🛍️ Marketplace</h1>
+        <h1 className="text-4xl font-extrabold text-gold mb-4">
+          🛍️ Marketplace
+        </h1>
         <p className="text-lg text-gray-300">
           Discover and support Black-owned businesses. Shop with purpose.
         </p>
@@ -112,7 +114,9 @@ export default function Marketplace() {
         <div className="bg-gold text-black p-5 rounded-lg flex flex-col md:flex-row items-center justify-between gap-4 shadow-md">
           <div>
             <h3 className="text-xl font-bold">Own a Business?</h3>
-            <p className="text-sm">Join the movement and sell your products here!</p>
+            <p className="text-sm">
+              Join the movement and sell your products here!
+            </p>
           </div>
           <button
             onClick={handleBecomeSeller}
@@ -181,7 +185,9 @@ export default function Marketplace() {
                       </div>
                     )}
                   </div>
-                  <h4 className="text-lg text-gold font-semibold truncate">{product.name}</h4>
+                  <h4 className="text-lg text-gold font-semibold truncate">
+                    {product.name}
+                  </h4>
                   <p className="text-sm text-gray-300 mb-2">
                     ${product.price.toFixed(2)}
                   </p>
@@ -209,25 +215,27 @@ export default function Marketplace() {
         )}
       </section>
 
-      {/* Marketplace Disclaimer */}
-      <section className="max-w-4xl mx-auto text-center py-12 px-4 text-sm text-gray-400">
-        <h4 className="text-lg text-gold font-semibold mb-2">Disclaimer</h4>
-        <p>
-          Black Wealth Exchange is a platform that connects buyers and independent sellers.
-          We do not own, ship, or manage the products listed. All transactions occur directly
-          between buyers and sellers. Sellers are responsible for shipping, delivery, and
-          product fulfillment. Buyers should review product and shipping details carefully
-          before purchasing.
-        </p>
-        <p className="mt-2">
-          By using the Marketplace, you acknowledge that Black Wealth Exchange is not
-          responsible for product quality, delivery issues, or disputes between parties. We
-          collect a small percentage of each sale to support the platform.
-        </p>
-        <Link href="/terms/marketplace" className="text-gold underline mt-4 inline-block">
-          View Full Marketplace Terms of Use
-        </Link>
-      </section>
+{/* Marketplace Disclaimer */}
+<section className="max-w-4xl mx-auto text-center py-12 px-4 text-sm text-gray-400">
+  <h4 className="text-lg text-gold font-semibold mb-2">Legal Disclaimer</h4>
+  <p>
+    Black Wealth Exchange is a marketplace platform. We do not own, ship, or guarantee any products sold. All sales are made directly between independent sellers and buyers.
+  </p>
+  <p className="mt-2">
+    Sellers are fully responsible for listings, pricing, shipping, and customer service. Buyers must review all details before purchasing. Black Wealth Exchange does not mediate disputes and assumes no liability for transactions.
+  </p>
+  <p className="mt-2">
+    Payments are securely processed through Stripe. A small platform fee is deducted from each sale, and remaining funds are routed directly to the seller.
+  </p>
+  <Link
+    href="/terms/marketplace"
+    className="text-gold underline mt-4 inline-block"
+  >
+    View Full Marketplace Terms of Use
+  </Link>
+</section>
+
+
 
       {/* Story / Message */}
       <section className="max-w-4xl mx-auto text-center py-12 px-4">

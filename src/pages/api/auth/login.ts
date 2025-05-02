@@ -1,4 +1,3 @@
-// src/pages/api/auth/login.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -24,59 +23,42 @@ function getSecret(): string {
   const secret = process.env.JWT_SECRET ?? process.env.NEXTAUTH_SECRET;
   if (!secret) {
     throw new Error(
-      "🛑 Define JWT_SECRET or NEXTAUTH_SECRET in your environment variables",
+      "🚩 Define JWT_SECRET or NEXTAUTH_SECRET in your environment variables",
     );
   }
   return secret;
 }
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse,
-) {
-  // Disable HTTP caching
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   res.setHeader("Cache-Control", "no-store, max-age=0");
 
-  // Load SECRET inside handler
   let SECRET: string;
   try {
     SECRET = getSecret();
   } catch (err) {
     console.error("Login handler secret load failed:", err);
-    return res
-      .status(500)
-      .json({ success: false, error: "Server configuration error." });
+    return res.status(500).json({ success: false, error: "Server configuration error." });
   }
 
-  // Wrap everything in try/catch to ensure JSON output
   try {
-    // Only allow POST requests
     if (req.method !== "POST") {
       res.setHeader("Allow", ["POST"]);
-      return res
-        .status(405)
-        .json({ success: false, error: "Method Not Allowed" });
+      return res.status(405).json({ success: false, error: "Method Not Allowed" });
     }
 
-    // Extract credentials and desired accountType from request
-    const {
-      email,
-      password,
-      accountType: bodyAccountType,
-    } = req.body as { email: string; password: string; accountType?: string };
+    const { email, password, accountType: bodyAccountType } = req.body as {
+      email: string;
+      password: string;
+      accountType?: string;
+    };
 
-    // Validate input
     if (!email || !password) {
-      return res
-        .status(400)
-        .json({ success: false, error: "Email and password are required." });
+      return res.status(400).json({ success: false, error: "Email and password are required." });
     }
 
-    // Connect to MongoDB
     const client = await clientPromise;
     const db = client.db("bwes-cluster");
 
-    // Select collection based on requested or fallback accountType
     let collName = "users";
     if (bodyAccountType === "business") collName = "businesses";
     else if (bodyAccountType === "seller") collName = "sellers";
@@ -85,7 +67,6 @@ export default async function handler(
     const collection = db.collection<UserRecord>(collName);
     let user = await collection.findOne({ email });
 
-    // Auto-create business profile if needed
     if (bodyAccountType === "business" && !user) {
       const newBiz: Omit<UserRecord, "_id"> = {
         email,
@@ -99,61 +80,53 @@ export default async function handler(
       user = { _id: result.insertedId, ...newBiz } as UserRecord;
     }
 
-    // Invalid credentials if missing user record
     if (!user) {
-      return res
-        .status(401)
-        .json({ success: false, error: "Invalid credentials." });
+      return res.status(401).json({ success: false, error: "Invalid credentials." });
     }
 
-    // Verify password if present
     if (user.password) {
       const isValid = await bcrypt.compare(password, user.password);
       if (!isValid) {
-        return res
-          .status(401)
-          .json({ success: false, error: "Invalid credentials." });
+        return res.status(401).json({ success: false, error: "Invalid credentials." });
       }
     }
 
-    // Determine final role
     const role = bodyAccountType || user.accountType;
 
-    // Sign JWT with unified secret
     const token = jwt.sign(
       {
         userId: user._id.toString(),
         email: user.email,
         accountType: role,
+        isAdmin: user.isAdmin === true,
       },
       SECRET,
-      { expiresIn: "7d" },
+      { expiresIn: "7d" }
     );
 
     console.log("🔐 [login] signed token for:", {
       email: user.email,
       accountType: role,
+      isAdmin: user.isAdmin === true,
     });
 
-    // Set cookies: session token and accountType
     res.setHeader("Set-Cookie", [
       cookie.serialize("session_token", token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
         path: "/",
-        maxAge: 60 * 60 * 24 * 7, // 7 days
+        maxAge: 60 * 60 * 24 * 7,
       }),
       cookie.serialize("accountType", role, {
         httpOnly: false,
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
         path: "/",
-        maxAge: 60 * 60 * 24 * 7, // 7 days
+        maxAge: 60 * 60 * 24 * 7,
       }),
     ]);
 
-    // Respond with sanitized user data
     return res.status(200).json({
       success: true,
       message: "Login successful",
@@ -161,12 +134,11 @@ export default async function handler(
         userId: user._id.toString(),
         email: user.email,
         accountType: role,
+        isAdmin: user.isAdmin === true,
       },
     });
   } catch (err) {
     console.error("Login handler unexpected error:", err);
-    return res
-      .status(500)
-      .json({ success: false, error: "Internal Server Error" });
+    return res.status(500).json({ success: false, error: "Internal Server Error" });
   }
 }
