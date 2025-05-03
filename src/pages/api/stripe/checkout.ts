@@ -33,7 +33,9 @@ export default async function handler(
 
     if (!seller || !seller.stripeAccountId) {
       console.warn("Stripe account not found for seller:", userId);
-      return res.status(400).json({ error: "Seller is not connected to Stripe" });
+      return res
+        .status(400)
+        .json({ error: "Seller is not connected to Stripe" });
     }
 
     const stripeAccountId = seller.stripeAccountId;
@@ -55,7 +57,7 @@ export default async function handler(
         },
       ],
       payment_intent_data: {
-        application_fee_amount: Math.round(amount * 100 * 0.10), // 10% platform fee
+        application_fee_amount: Math.round(amount * 100 * 0.1), // 10% platform fee
         transfer_data: {
           destination: stripeAccountId, // 💸 Payout to seller
         },

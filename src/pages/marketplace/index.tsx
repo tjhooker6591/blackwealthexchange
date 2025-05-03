@@ -215,27 +215,34 @@ export default function Marketplace() {
         )}
       </section>
 
-{/* Marketplace Disclaimer */}
-<section className="max-w-4xl mx-auto text-center py-12 px-4 text-sm text-gray-400">
-  <h4 className="text-lg text-gold font-semibold mb-2">Legal Disclaimer</h4>
-  <p>
-    Black Wealth Exchange is a marketplace platform. We do not own, ship, or guarantee any products sold. All sales are made directly between independent sellers and buyers.
-  </p>
-  <p className="mt-2">
-    Sellers are fully responsible for listings, pricing, shipping, and customer service. Buyers must review all details before purchasing. Black Wealth Exchange does not mediate disputes and assumes no liability for transactions.
-  </p>
-  <p className="mt-2">
-    Payments are securely processed through Stripe. A small platform fee is deducted from each sale, and remaining funds are routed directly to the seller.
-  </p>
-  <Link
-    href="/terms/marketplace"
-    className="text-gold underline mt-4 inline-block"
-  >
-    View Full Marketplace Terms of Use
-  </Link>
-</section>
-
-
+      {/* Marketplace Disclaimer */}
+      <section className="max-w-4xl mx-auto text-center py-12 px-4 text-sm text-gray-400">
+        <h4 className="text-lg text-gold font-semibold mb-2">
+          Legal Disclaimer
+        </h4>
+        <p>
+          Black Wealth Exchange is a marketplace platform. We do not own, ship,
+          or guarantee any products sold. All sales are made directly between
+          independent sellers and buyers.
+        </p>
+        <p className="mt-2">
+          Sellers are fully responsible for listings, pricing, shipping, and
+          customer service. Buyers must review all details before purchasing.
+          Black Wealth Exchange does not mediate disputes and assumes no
+          liability for transactions.
+        </p>
+        <p className="mt-2">
+          Payments are securely processed through Stripe. A small platform fee
+          is deducted from each sale, and remaining funds are routed directly to
+          the seller.
+        </p>
+        <Link
+          href="/terms/marketplace"
+          className="text-gold underline mt-4 inline-block"
+        >
+          View Full Marketplace Terms of Use
+        </Link>
+      </section>
 
       {/* Story / Message */}
       <section className="max-w-4xl mx-auto text-center py-12 px-4">

@@ -5,7 +5,7 @@ import { ObjectId } from "mongodb";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse,
+  res: NextApiResponse
 ) {
   if (req.method !== "POST") {
     return res
@@ -24,15 +24,26 @@ export default async function handler(
 
     const client = await clientPromise;
     const db = client.db("bwes-cluster");
+
     const applicants = db.collection("applicants");
 
+    // ✅ Insert the applicant into the collection
     const result = await applicants.insertOne({
       jobId: new ObjectId(jobId),
       name,
       email,
       resumeUrl,
-      appliedDate: new Date().toISOString(),
+      appliedAt: new Date(),
     });
+
+    // ✅ Safe increment of appliedCount: ensure it starts at 0 if missing
+    await db.collection("jobs").updateOne(
+      { _id: new ObjectId(jobId) },
+      {
+        $inc: { appliedCount: 1 },
+        $setOnInsert: { appliedCount: 1 }, // fallback in case the field is missing
+      }
+    );
 
     return res
       .status(201)
@@ -44,3 +55,4 @@ export default async function handler(
       .json({ success: false, error: "Internal Server Error" });
   }
 }
+

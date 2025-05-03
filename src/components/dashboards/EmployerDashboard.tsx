@@ -16,6 +16,7 @@ interface Job {
   location: string;
   type: string;
   description: string;
+  appliedCount?: number;
 }
 
 interface Applicant {
@@ -23,6 +24,7 @@ interface Applicant {
   name: string;
   jobTitle: string;
   appliedAt: string;
+  resumeUrl: string;
 }
 
 export default function EmployerDashboard() {
@@ -111,10 +113,7 @@ export default function EmployerDashboard() {
             <Link href="/profile" className="hover:underline">
               Profile
             </Link>
-            <Link
-              href="/dashboard/employer/billing"
-              className="hover:underline"
-            >
+            <Link href="/dashboard/employer/billing" className="hover:underline">
               Billing
             </Link>
           </nav>
@@ -126,42 +125,27 @@ export default function EmployerDashboard() {
           <nav>
             <ul className="space-y-4">
               <li>
-                <Link
-                  href="/dashboard/employer/overview"
-                  className="hover:underline"
-                >
+                <Link href="/dashboard/employer/overview" className="hover:underline">
                   Overview
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/dashboard/employer/jobs"
-                  className="hover:underline"
-                >
+                <Link href="/dashboard/employer/jobs" className="hover:underline">
                   Job Postings
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/dashboard/employer/applicants"
-                  className="hover:underline"
-                >
+                <Link href="/employer/applicants" className="hover:underline">
                   Applicants
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/dashboard/employer/tools"
-                  className="hover:underline"
-                >
+                <Link href="/dashboard/employer/tools" className="hover:underline">
                   Employer Tools
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/dashboard/employer/analytics"
-                  className="hover:underline"
-                >
+                <Link href="/dashboard/employer/analytics" className="hover:underline">
                   Analytics
                 </Link>
               </li>
@@ -174,28 +158,24 @@ export default function EmployerDashboard() {
             <StatCard label="Jobs Posted" value={stats.jobsPosted} />
             <StatCard label="Total Applicants" value={stats.totalApplicants} />
             <StatCard label="Messages" value={stats.messages} />
-            <StatCard
-              label="Profile Completion"
-              value={stats.profileCompletion}
-              suffix="%"
-            />
+            <StatCard label="Profile Completion" value={stats.profileCompletion} suffix="%" />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             <DashboardCard
-              title="\ud83d\udcc4 Post a New Job"
+              title="📄 Post a New Job"
               description="Create a job listing and reach top talent."
               href="/post-job"
               color="bg-blue-700"
             />
             <DashboardCard
-              title="\ud83d\udc65 View Applicants"
+              title="👥 View Applicants"
               description="Review applications and contact qualified candidates."
-              href="/dashboard/employer/applicants"
+              href="/employer/applicants"
               color="bg-purple-700"
             />
             <DashboardCard
-              title="\ud83d\udcac Messages"
+              title="💬 Messages"
               description="Check and respond to candidate messages."
               href="/dashboard/employer/messages"
               color="bg-green-600"
@@ -210,25 +190,24 @@ export default function EmployerDashboard() {
                   <div key={app._id} className="p-4 bg-gray-800 rounded-lg">
                     <h3 className="text-lg font-semibold">{app.name}</h3>
                     <p className="text-sm text-gray-300">
-                      Applied for: {app.jobTitle} on{" "}
+                      Applied for: {app.jobTitle} on {" "}
                       {new Date(app.appliedAt).toLocaleDateString()}
                     </p>
-                    <Link
-                      href={`/dashboard/employer/applicants/${app._id}`}
-                      className="underline mt-2 inline-block"
+                    <a
+                      href={app.resumeUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block mt-2 text-blue-400 hover:underline"
                     >
-                      View Application
-                    </Link>
+                      View Resume
+                    </a>
                   </div>
                 ))}
               </div>
             ) : (
               <p>
-                No recent applicants.{" "}
-                <Link
-                  href="/dashboard/employer/applicants"
-                  className="underline"
-                >
+                No recent applicants. {" "}
+                <Link href="/employer/applicants" className="underline">
                   View all
                 </Link>
               </p>
@@ -240,12 +219,33 @@ export default function EmployerDashboard() {
             {jobList.length > 0 ? (
               <div className="space-y-4">
                 {jobList.map((job) => (
-                  <JobCard key={job._id} job={job} />
+                  <div key={job._id} className="p-4 bg-gray-800 rounded-lg">
+                    <h3 className="text-lg font-bold">{job.title}</h3>
+                    <p className="text-sm text-gray-300">
+                      {job.location} • {job.type}
+                    </p>
+                    {job.appliedCount !== undefined && (
+                      <p className="text-sm text-gray-400 mt-1">
+                        {job.appliedCount} applicant{job.appliedCount !== 1 ? "s" : ""}
+                      </p>
+                    )}
+                    <p className="text-sm mt-2">
+                      {job.description.length > 100
+                        ? job.description.substring(0, 100) + "..."
+                        : job.description}
+                    </p>
+                    <Link
+                      href={`/dashboard/employer/jobs/${job._id}`}
+                      className="underline mt-2 inline-block"
+                    >
+                      View Details
+                    </Link>
+                  </div>
                 ))}
               </div>
             ) : (
               <p>
-                No job postings found.{" "}
+                No job postings found. {" "}
                 <Link href="/post-job" className="underline">
                   Post a new job
                 </Link>
@@ -297,27 +297,5 @@ function DashboardCard({
       <h3 className="text-xl font-bold mb-2">{title}</h3>
       <p className="text-sm">{description}</p>
     </Link>
-  );
-}
-
-function JobCard({ job }: { job: Job }) {
-  return (
-    <div className="p-4 bg-gray-800 rounded-lg">
-      <h3 className="text-lg font-bold">{job.title}</h3>
-      <p className="text-sm text-gray-300">
-        {job.location} • {job.type}
-      </p>
-      <p className="text-sm mt-2">
-        {job.description.length > 100
-          ? job.description.substring(0, 100) + "..."
-          : job.description}
-      </p>
-      <Link
-        href={`/dashboard/employer/jobs/${job._id}`}
-        className="underline mt-2 inline-block"
-      >
-        View Details
-      </Link>
-    </div>
   );
 }

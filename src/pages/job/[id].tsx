@@ -1,4 +1,3 @@
-// pages/job/[id].tsx
 "use client";
 
 import { useRouter } from "next/router";
@@ -12,7 +11,7 @@ interface Job {
   type: string;
   description?: string;
   salary?: string;
-  [key: string]: unknown; // ✅ Fixed ESLint error
+  [key: string]: unknown;
 }
 
 export default function JobDetailPage() {
@@ -45,14 +44,27 @@ export default function JobDetailPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // ✅ Resume URL validation
+    const resumePattern = /^https?:\/\/.+/;
+    if (!resumePattern.test(form.resumeUrl)) {
+      setError("Please enter a valid resume URL starting with http:// or https://");
+      return;
+    }
+
     try {
       const res = await fetch("/api/jobs/apply", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...form, jobId: id }),
       });
-      if (res.ok) setSubmitted(true);
-      else setError("Failed to apply.");
+      const data = await res.json();
+      if (res.ok) {
+        setSubmitted(true);
+        setError("");
+      } else {
+        setError(data?.error || "Failed to apply.");
+      }
     } catch {
       setError("Server error. Try again.");
     }
@@ -102,6 +114,7 @@ export default function JobDetailPage() {
                   value={form.resumeUrl}
                   onChange={handleChange}
                   required
+                  pattern="https?://.+"
                   className="w-full p-3 rounded bg-gray-800 border border-gray-600"
                 />
                 <button
@@ -110,6 +123,9 @@ export default function JobDetailPage() {
                 >
                   Apply Now
                 </button>
+                {error && (
+                  <p className="text-red-500 text-sm mt-2">{error}</p>
+                )}
               </form>
             )}
           </>

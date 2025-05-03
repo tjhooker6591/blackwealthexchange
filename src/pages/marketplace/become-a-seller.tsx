@@ -59,12 +59,17 @@ export default function BecomeASellerPage() {
     <div className="min-h-screen bg-black text-white p-6">
       <div className="max-w-2xl mx-auto bg-gray-900 p-6 rounded-lg border border-gold">
         <h1 className="text-2xl font-bold text-gold mb-4">Become a Seller</h1>
-        
+
         <p className="text-gray-400 mb-4 text-sm">
-          Set up your seller profile so you can start adding products to the marketplace.
+          Set up your seller profile so you can start adding products to the
+          marketplace.
         </p>
         <p className="text-gray-400 mb-6 text-sm">
-          <strong className="text-gold">Important:</strong> Black Wealth Exchange collects a 10% platform fee on each completed sale to support platform operations. All transactions are processed securely through Stripe, and sellers receive the remaining balance directly via Stripe Connect payouts.
+          <strong className="text-gold">Important:</strong> Black Wealth
+          Exchange collects a 10% platform fee on each completed sale to support
+          platform operations. All transactions are processed securely through
+          Stripe, and sellers receive the remaining balance directly via Stripe
+          Connect payouts.
         </p>
 
         {error && <p className="text-red-500 mb-4 text-sm">{error}</p>}

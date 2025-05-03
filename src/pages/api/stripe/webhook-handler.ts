@@ -41,7 +41,13 @@ export default async function webhookHandler(
     const session = event.data.object as Stripe.Checkout.Session;
     const metadata = session.metadata;
 
-    if (!metadata || !metadata.userId || !metadata.itemId || !metadata.type || !metadata.amount) {
+    if (
+      !metadata ||
+      !metadata.userId ||
+      !metadata.itemId ||
+      !metadata.type ||
+      !metadata.amount
+    ) {
       console.warn("⚠️  Missing metadata in session:", session.id);
       return res.status(400).send("Missing metadata in session");
     }
@@ -65,10 +71,12 @@ export default async function webhookHandler(
 
       // Upgrade to premium if type is course
       if (type === "course") {
-        await db.collection("users").updateOne(
-          { _id: new ObjectId(userId) },
-          { $set: { isPremium: true } }
-        );
+        await db
+          .collection("users")
+          .updateOne(
+            { _id: new ObjectId(userId) },
+            { $set: { isPremium: true } },
+          );
       }
 
       console.log(`✅ Order recorded for user ${userId}, item ${itemId}`);

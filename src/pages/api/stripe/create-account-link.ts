@@ -4,7 +4,10 @@ import clientPromise from "@/lib/mongodb";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!); // No apiVersion to avoid TS error
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method !== "POST") return res.status(405).end("Method Not Allowed");
 
   try {
@@ -27,10 +30,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
 
     // Step 2: Save Stripe account ID in the seller record
-    await db.collection("sellers").updateOne(
-      { email },
-      { $set: { stripeAccountId: account.id } }
-    );
+    await db
+      .collection("sellers")
+      .updateOne({ email }, { $set: { stripeAccountId: account.id } });
 
     // Step 3: Create onboarding link
     const accountLink = await stripe.accountLinks.create({

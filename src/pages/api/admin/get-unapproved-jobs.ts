@@ -13,7 +13,7 @@ interface DecodedToken {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   if (req.method !== "GET") {
     return res.status(405).json({ error: "Method Not Allowed" });
@@ -31,7 +31,9 @@ export default async function handler(
     const decoded = jwt.verify(token, JWT_SECRET) as DecodedToken;
 
     if (!decoded.isAdmin) {
-      return res.status(403).json({ error: "Forbidden: Admin access required" });
+      return res
+        .status(403)
+        .json({ error: "Forbidden: Admin access required" });
     }
 
     const client = await clientPromise;
@@ -49,4 +51,3 @@ export default async function handler(
     return res.status(500).json({ error: "Failed to fetch jobs" });
   }
 }
-

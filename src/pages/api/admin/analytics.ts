@@ -22,22 +22,35 @@ export default async function handler(
     ]);
 
     // 📈 User growth by month
-    const userGrowthRaw = await db.collection("users").aggregate([
-      {
-        $group: {
-          _id: {
-            month: { $month: "$createdAt" },
-            year: { $year: "$createdAt" },
+    const userGrowthRaw = await db
+      .collection("users")
+      .aggregate([
+        {
+          $group: {
+            _id: {
+              month: { $month: "$createdAt" },
+              year: { $year: "$createdAt" },
+            },
+            count: { $sum: 1 },
           },
-          count: { $sum: 1 },
         },
-      },
-      { $sort: { "_id.year": 1, "_id.month": 1 } },
-    ]).toArray();
+        { $sort: { "_id.year": 1, "_id.month": 1 } },
+      ])
+      .toArray();
 
     const monthNames = [
-      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
     ];
     const userGrowth = userGrowthRaw.map((entry) => ({
       month: `${monthNames[entry._id.month - 1]} ${entry._id.year}`,
@@ -46,74 +59,84 @@ export default async function handler(
 
     // 💰 Total sales and revenue stats
     const ordersCollection = db.collection("orders");
-    const orderStats = await ordersCollection.aggregate([
-      { $match: { status: "paid" } },
-      {
-        $group: {
-          _id: null,
-          totalGrossSales: { $sum: "$amount" },
-          totalOrders: { $sum: 1 },
+    const orderStats = await ordersCollection
+      .aggregate([
+        { $match: { status: "paid" } },
+        {
+          $group: {
+            _id: null,
+            totalGrossSales: { $sum: "$amount" },
+            totalOrders: { $sum: 1 },
+          },
         },
-      },
-    ]).toArray();
+      ])
+      .toArray();
 
     const grossSales = orderStats[0]?.totalGrossSales || 0;
     const totalOrders = orderStats[0]?.totalOrders || 0;
-    const platformRevenue = parseFloat((grossSales * 0.10).toFixed(2));
-    const totalPayouts = parseFloat((grossSales * 0.90).toFixed(2));
+    const platformRevenue = parseFloat((grossSales * 0.1).toFixed(2));
+    const totalPayouts = parseFloat((grossSales * 0.9).toFixed(2));
 
     // 📊 Revenue by month
-    const monthlyRevenue = await ordersCollection.aggregate([
-      { $match: { status: "paid" } },
-      {
-        $group: {
-          _id: {
-            month: { $month: "$createdAt" },
-            year: { $year: "$createdAt" },
+    const monthlyRevenue = await ordersCollection
+      .aggregate([
+        { $match: { status: "paid" } },
+        {
+          $group: {
+            _id: {
+              month: { $month: "$createdAt" },
+              year: { $year: "$createdAt" },
+            },
+            totalSales: { $sum: "$amount" },
+            count: { $sum: 1 },
           },
-          totalSales: { $sum: "$amount" },
-          count: { $sum: 1 },
         },
-      },
-      { $sort: { "_id.year": 1, "_id.month": 1 } },
-    ]).toArray();
+        { $sort: { "_id.year": 1, "_id.month": 1 } },
+      ])
+      .toArray();
 
     const revenueByMonth = monthlyRevenue.map((entry) => ({
       month: `${monthNames[entry._id.month - 1]} ${entry._id.year}`,
       totalSales: entry.totalSales,
-      platformRevenue: parseFloat((entry.totalSales * 0.10).toFixed(2)),
-      payouts: parseFloat((entry.totalSales * 0.90).toFixed(2)),
+      platformRevenue: parseFloat((entry.totalSales * 0.1).toFixed(2)),
+      payouts: parseFloat((entry.totalSales * 0.9).toFixed(2)),
       orders: entry.count,
     }));
 
     // 🏆 Seller leaderboard
-    const sellerLeaderboard = await ordersCollection.aggregate([
-      { $match: { status: "paid" } },
-      {
-        $group: {
-          _id: "$userId",
-          totalSales: { $sum: "$amount" },
-          orders: { $sum: 1 },
+    const sellerLeaderboard = await ordersCollection
+      .aggregate([
+        { $match: { status: "paid" } },
+        {
+          $group: {
+            _id: "$userId",
+            totalSales: { $sum: "$amount" },
+            orders: { $sum: 1 },
+          },
         },
-      },
-      { $sort: { totalSales: -1 } },
-      { $limit: 10 },
-    ]).toArray();
+        { $sort: { totalSales: -1 } },
+        { $limit: 10 },
+      ])
+      .toArray();
 
     // 👤 Buyer activity tracking
-    const buyerActivityAgg = await ordersCollection.aggregate([
-      { $match: { status: "paid" } },
-      {
-        $group: {
-          _id: "$userId",
-          orders: { $sum: 1 },
+    const buyerActivityAgg = await ordersCollection
+      .aggregate([
+        { $match: { status: "paid" } },
+        {
+          $group: {
+            _id: "$userId",
+            orders: { $sum: 1 },
+          },
         },
-      },
-    ]).toArray();
+      ])
+      .toArray();
 
     const uniqueBuyers = buyerActivityAgg.length;
-    const repeatBuyers = buyerActivityAgg.filter(b => b.orders > 1).length;
-    const mostActiveBuyer = buyerActivityAgg.sort((a, b) => b.orders - a.orders)[0];
+    const repeatBuyers = buyerActivityAgg.filter((b) => b.orders > 1).length;
+    const mostActiveBuyer = buyerActivityAgg.sort(
+      (a, b) => b.orders - a.orders,
+    )[0];
 
     return res.status(200).json({
       users,

@@ -70,14 +70,25 @@ const AnalyticsDashboard = () => {
             <StatCard label="Products" value={stats.products} />
             <StatCard label="Job Posts" value={stats.jobs} />
             <StatCard label="Sellers" value={stats.sellers} />
-            <StatCard label="Gross Sales" value={`$${stats.grossSales.toFixed(2)}`} />
-            <StatCard label="Platform Revenue" value={`$${stats.platformRevenue.toFixed(2)}`} />
-            <StatCard label="Seller Payouts" value={`$${stats.totalPayouts.toFixed(2)}`} />
+            <StatCard
+              label="Gross Sales"
+              value={`$${stats.grossSales.toFixed(2)}`}
+            />
+            <StatCard
+              label="Platform Revenue"
+              value={`$${stats.platformRevenue.toFixed(2)}`}
+            />
+            <StatCard
+              label="Seller Payouts"
+              value={`$${stats.totalPayouts.toFixed(2)}`}
+            />
             <StatCard label="Total Orders" value={stats.totalOrders} />
           </div>
 
           <div className="bg-gray-900 p-6 rounded-lg mb-10">
-            <h2 className="text-xl font-bold text-gold mb-4">Monthly Revenue</h2>
+            <h2 className="text-xl font-bold text-gold mb-4">
+              Monthly Revenue
+            </h2>
             {stats.revenueByMonth.length === 0 ? (
               <p>No revenue data yet.</p>
             ) : (
@@ -87,9 +98,24 @@ const AnalyticsDashboard = () => {
                   <XAxis dataKey="month" stroke="#fff" />
                   <YAxis stroke="#fff" />
                   <Tooltip />
-                  <Line type="monotone" dataKey="totalSales" stroke="#00c9a7" name="Total Sales" />
-                  <Line type="monotone" dataKey="platformRevenue" stroke="#FFD700" name="Platform Fee" />
-                  <Line type="monotone" dataKey="payouts" stroke="#8884d8" name="Seller Payouts" />
+                  <Line
+                    type="monotone"
+                    dataKey="totalSales"
+                    stroke="#00c9a7"
+                    name="Total Sales"
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="platformRevenue"
+                    stroke="#FFD700"
+                    name="Platform Fee"
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="payouts"
+                    stroke="#8884d8"
+                    name="Seller Payouts"
+                  />
                 </LineChart>
               </ResponsiveContainer>
             )}
@@ -109,7 +135,9 @@ const AnalyticsDashboard = () => {
                 {stats.sellerLeaderboard.map((seller, idx) => (
                   <tr key={idx} className="border-b border-gray-700">
                     <td className="px-4 py-2">{seller._id}</td>
-                    <td className="px-4 py-2">${seller.totalSales.toFixed(2)}</td>
+                    <td className="px-4 py-2">
+                      ${seller.totalSales.toFixed(2)}
+                    </td>
                     <td className="px-4 py-2">{seller.orders}</td>
                   </tr>
                 ))}
@@ -120,8 +148,14 @@ const AnalyticsDashboard = () => {
           <div className="bg-gray-900 p-6 rounded-lg">
             <h2 className="text-xl font-bold text-gold mb-4">Buyer Activity</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <StatCard label="Unique Buyers" value={stats.buyerActivity.uniqueBuyers} />
-              <StatCard label="Repeat Buyers" value={stats.buyerActivity.repeatBuyers} />
+              <StatCard
+                label="Unique Buyers"
+                value={stats.buyerActivity.uniqueBuyers}
+              />
+              <StatCard
+                label="Repeat Buyers"
+                value={stats.buyerActivity.repeatBuyers}
+              />
               <StatCard
                 label="Most Active Buyer"
                 value={
@@ -138,7 +172,13 @@ const AnalyticsDashboard = () => {
   );
 };
 
-const StatCard = ({ label, value }: { label: string; value: string | number }) => (
+const StatCard = ({
+  label,
+  value,
+}: {
+  label: string;
+  value: string | number;
+}) => (
   <div className="bg-gray-800 p-6 rounded text-center">
     <p className="text-gray-400 text-sm">{label}</p>
     <p className="text-2xl text-gold font-bold mt-2">{value}</p>

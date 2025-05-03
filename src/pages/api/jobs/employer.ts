@@ -2,7 +2,6 @@ import { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import { parse } from "cookie";
 import jwt from "jsonwebtoken";
-import { ObjectId } from "mongodb";
 
 const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-key";
 
@@ -12,20 +11,9 @@ interface DecodedToken {
   accountType: string;
 }
 
-interface JobDocument {
-  _id: ObjectId;
-  title?: string;
-  company?: string;
-  location?: string;
-  type?: string;
-  createdAt?: Date;
-  datePosted?: string;
-  applicants?: unknown[];
-}
-
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse,
+  res: NextApiResponse
 ) {
   if (req.method !== "GET") {
     return res
@@ -36,7 +24,7 @@ export default async function handler(
   try {
     const rawCookie = req.headers.cookie || "";
     const cookies = parse(rawCookie);
-    const token = cookies.token;
+    const token = cookies.session_token;
 
     if (!token) {
       return res
@@ -62,18 +50,28 @@ export default async function handler(
       .sort({ createdAt: -1 })
       .toArray();
 
-    const formattedJobs = jobs.map((job: JobDocument) => ({
-      _id: job._id.toString(),
-      title: job.title || "Untitled Job",
-      company: job.company || "Your Company",
-      location: job.location || "Remote",
-      type: job.type || "Full-Time",
-      datePosted:
-        job.datePosted || job.createdAt?.toISOString()?.split("T")[0] || "N/A",
-      applicants: Array.isArray(job.applicants) ? job.applicants.length : 0,
-    }));
+    const jobsWithCounts = await Promise.all(
+      jobs.map(async (job) => {
+        const count = await db
+          .collection("applicants")
+          .countDocuments({ jobId: job._id });
 
-    return res.status(200).json({ success: true, jobs: formattedJobs });
+        return {
+          _id: job._id.toString(),
+          title: job.title || "Untitled Job",
+          company: job.company || "Your Company",
+          location: job.location || "Remote",
+          type: job.type || "Full-Time",
+          datePosted:
+            job.datePosted ||
+            job.createdAt?.toISOString()?.split("T")[0] ||
+            "N/A",
+          applicants: count,
+        };
+      })
+    );
+
+    return res.status(200).json({ success: true, jobs: jobsWithCounts });
   } catch (error) {
     console.error("Employer jobs fetch error:", error);
     return res
