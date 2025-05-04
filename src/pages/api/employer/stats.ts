@@ -6,7 +6,7 @@ import jwt from "jsonwebtoken";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   if (req.method !== "GET") {
     res.setHeader("Allow", ["GET"]);
@@ -43,7 +43,7 @@ export default async function handler(
     const jobsPosted = jobs.length;
     const totalApplicants = jobs.reduce(
       (sum, job) => sum + (job.appliedCount || 0),
-      0
+      0,
     );
 
     return res.status(200).json({
@@ -57,4 +57,3 @@ export default async function handler(
     return res.status(500).json({ error: "Internal Server Error" });
   }
 }
-

@@ -5,7 +5,7 @@ import { ObjectId } from "mongodb";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   if (req.method !== "POST") {
     return res
@@ -42,7 +42,7 @@ export default async function handler(
       {
         $inc: { appliedCount: 1 },
         $setOnInsert: { appliedCount: 1 }, // fallback in case the field is missing
-      }
+      },
     );
 
     return res
@@ -55,4 +55,3 @@ export default async function handler(
       .json({ success: false, error: "Internal Server Error" });
   }
 }
-

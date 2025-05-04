@@ -48,7 +48,9 @@ export default function JobDetailPage() {
     // ✅ Resume URL validation
     const resumePattern = /^https?:\/\/.+/;
     if (!resumePattern.test(form.resumeUrl)) {
-      setError("Please enter a valid resume URL starting with http:// or https://");
+      setError(
+        "Please enter a valid resume URL starting with http:// or https://",
+      );
       return;
     }
 
@@ -123,9 +125,7 @@ export default function JobDetailPage() {
                 >
                   Apply Now
                 </button>
-                {error && (
-                  <p className="text-red-500 text-sm mt-2">{error}</p>
-                )}
+                {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
               </form>
             )}
           </>

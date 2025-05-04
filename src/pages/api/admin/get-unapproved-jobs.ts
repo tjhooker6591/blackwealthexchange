@@ -5,10 +5,14 @@ import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-key";
 
+// Set your admin email here too, to act as a fallback
+const ADMIN_EMAIL = "youradmin@email.com"; // 🔁 Replace with your actual admin email
+
 interface DecodedToken {
   accountType: string;
   isAdmin?: boolean;
   email: string;
+  userId: string;
 }
 
 export default async function handler(
@@ -30,7 +34,12 @@ export default async function handler(
 
     const decoded = jwt.verify(token, JWT_SECRET) as DecodedToken;
 
-    if (!decoded.isAdmin) {
+    // 🔍 Optional log for debugging — remove in production
+    console.log("🛡️ Decoded Token:", decoded);
+
+    // ✅ Final admin check
+    const isAdmin = decoded.isAdmin === true || decoded.email === ADMIN_EMAIL;
+    if (!isAdmin) {
       return res
         .status(403)
         .json({ error: "Forbidden: Admin access required" });
@@ -47,7 +56,7 @@ export default async function handler(
 
     return res.status(200).json({ jobs });
   } catch (error) {
-    console.error("Error fetching unapproved jobs:", error);
+    console.error("❌ Error fetching unapproved jobs:", error);
     return res.status(500).json({ error: "Failed to fetch jobs" });
   }
 }

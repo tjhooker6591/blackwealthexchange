@@ -66,7 +66,8 @@ export default function EmployerApplicantsPage() {
                 </h2>
                 <p className="text-gray-300">{applicant.email}</p>
                 <p className="text-sm text-gray-400">
-                  Applied: {new Date(applicant.appliedDate).toLocaleDateString()}
+                  Applied:{" "}
+                  {new Date(applicant.appliedDate).toLocaleDateString()}
                 </p>
                 {applicant.jobTitle && (
                   <p className="text-sm text-blue-300 mt-1">

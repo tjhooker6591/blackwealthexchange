@@ -113,7 +113,10 @@ export default function EmployerDashboard() {
             <Link href="/profile" className="hover:underline">
               Profile
             </Link>
-            <Link href="/dashboard/employer/billing" className="hover:underline">
+            <Link
+              href="/dashboard/employer/billing"
+              className="hover:underline"
+            >
               Billing
             </Link>
           </nav>
@@ -125,12 +128,18 @@ export default function EmployerDashboard() {
           <nav>
             <ul className="space-y-4">
               <li>
-                <Link href="/dashboard/employer/overview" className="hover:underline">
+                <Link
+                  href="/dashboard/employer/overview"
+                  className="hover:underline"
+                >
                   Overview
                 </Link>
               </li>
               <li>
-                <Link href="/dashboard/employer/jobs" className="hover:underline">
+                <Link
+                  href="/dashboard/employer/jobs"
+                  className="hover:underline"
+                >
                   Job Postings
                 </Link>
               </li>
@@ -140,12 +149,18 @@ export default function EmployerDashboard() {
                 </Link>
               </li>
               <li>
-                <Link href="/dashboard/employer/tools" className="hover:underline">
+                <Link
+                  href="/dashboard/employer/tools"
+                  className="hover:underline"
+                >
                   Employer Tools
                 </Link>
               </li>
               <li>
-                <Link href="/dashboard/employer/analytics" className="hover:underline">
+                <Link
+                  href="/dashboard/employer/analytics"
+                  className="hover:underline"
+                >
                   Analytics
                 </Link>
               </li>
@@ -158,7 +173,11 @@ export default function EmployerDashboard() {
             <StatCard label="Jobs Posted" value={stats.jobsPosted} />
             <StatCard label="Total Applicants" value={stats.totalApplicants} />
             <StatCard label="Messages" value={stats.messages} />
-            <StatCard label="Profile Completion" value={stats.profileCompletion} suffix="%" />
+            <StatCard
+              label="Profile Completion"
+              value={stats.profileCompletion}
+              suffix="%"
+            />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -190,7 +209,7 @@ export default function EmployerDashboard() {
                   <div key={app._id} className="p-4 bg-gray-800 rounded-lg">
                     <h3 className="text-lg font-semibold">{app.name}</h3>
                     <p className="text-sm text-gray-300">
-                      Applied for: {app.jobTitle} on {" "}
+                      Applied for: {app.jobTitle} on{" "}
                       {new Date(app.appliedAt).toLocaleDateString()}
                     </p>
                     <a
@@ -206,7 +225,7 @@ export default function EmployerDashboard() {
               </div>
             ) : (
               <p>
-                No recent applicants. {" "}
+                No recent applicants.{" "}
                 <Link href="/employer/applicants" className="underline">
                   View all
                 </Link>
@@ -226,7 +245,8 @@ export default function EmployerDashboard() {
                     </p>
                     {job.appliedCount !== undefined && (
                       <p className="text-sm text-gray-400 mt-1">
-                        {job.appliedCount} applicant{job.appliedCount !== 1 ? "s" : ""}
+                        {job.appliedCount} applicant
+                        {job.appliedCount !== 1 ? "s" : ""}
                       </p>
                     )}
                     <p className="text-sm mt-2">
@@ -245,7 +265,7 @@ export default function EmployerDashboard() {
               </div>
             ) : (
               <p>
-                No job postings found. {" "}
+                No job postings found.{" "}
                 <Link href="/post-job" className="underline">
                   Post a new job
                 </Link>

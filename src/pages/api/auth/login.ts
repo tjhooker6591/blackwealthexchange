@@ -15,16 +15,17 @@ interface UserRecord {
   businessPhone?: string;
   fullName?: string;
   createdAt?: Date;
+  isAdmin?: boolean;
   [key: string]: unknown;
 }
 
-// Helper to load the JWT secret
+// Your hardcoded admin email for now
+const ADMIN_EMAIL = "youradmin@email.com"; // 🔁 Replace with your real admin email
+
 function getSecret(): string {
   const secret = process.env.JWT_SECRET ?? process.env.NEXTAUTH_SECRET;
   if (!secret) {
-    throw new Error(
-      "🚩 Define JWT_SECRET or NEXTAUTH_SECRET in your environment variables",
-    );
+    throw new Error("🚩 Define JWT_SECRET or NEXTAUTH_SECRET in your environment variables");
   }
   return secret;
 }
@@ -40,33 +41,23 @@ export default async function handler(
     SECRET = getSecret();
   } catch (err) {
     console.error("Login handler secret load failed:", err);
-    return res
-      .status(500)
-      .json({ success: false, error: "Server configuration error." });
+    return res.status(500).json({ success: false, error: "Server configuration error." });
   }
 
   try {
     if (req.method !== "POST") {
       res.setHeader("Allow", ["POST"]);
-      return res
-        .status(405)
-        .json({ success: false, error: "Method Not Allowed" });
+      return res.status(405).json({ success: false, error: "Method Not Allowed" });
     }
 
-    const {
-      email,
-      password,
-      accountType: bodyAccountType,
-    } = req.body as {
+    const { email, password, accountType: bodyAccountType } = req.body as {
       email: string;
       password: string;
       accountType?: string;
     };
 
     if (!email || !password) {
-      return res
-        .status(400)
-        .json({ success: false, error: "Email and password are required." });
+      return res.status(400).json({ success: false, error: "Email and password are required." });
     }
 
     const client = await clientPromise;
@@ -94,28 +85,27 @@ export default async function handler(
     }
 
     if (!user) {
-      return res
-        .status(401)
-        .json({ success: false, error: "Invalid credentials." });
+      return res.status(401).json({ success: false, error: "Invalid credentials." });
     }
 
     if (user.password) {
       const isValid = await bcrypt.compare(password, user.password);
       if (!isValid) {
-        return res
-          .status(401)
-          .json({ success: false, error: "Invalid credentials." });
+        return res.status(401).json({ success: false, error: "Invalid credentials." });
       }
     }
 
     const role = bodyAccountType || user.accountType;
+
+    // 🔐 Determine if this is an admin login
+    const isAdmin = email === ADMIN_EMAIL || user.isAdmin === true;
 
     const token = jwt.sign(
       {
         userId: user._id.toString(),
         email: user.email,
         accountType: role,
-        isAdmin: user.isAdmin === true,
+        isAdmin,
       },
       SECRET,
       { expiresIn: "7d" },
@@ -124,7 +114,7 @@ export default async function handler(
     console.log("🔐 [login] signed token for:", {
       email: user.email,
       accountType: role,
-      isAdmin: user.isAdmin === true,
+      isAdmin,
     });
 
     res.setHeader("Set-Cookie", [
@@ -151,13 +141,11 @@ export default async function handler(
         userId: user._id.toString(),
         email: user.email,
         accountType: role,
-        isAdmin: user.isAdmin === true,
+        isAdmin,
       },
     });
   } catch (err) {
     console.error("Login handler unexpected error:", err);
-    return res
-      .status(500)
-      .json({ success: false, error: "Internal Server Error" });
+    return res.status(500).json({ success: false, error: "Internal Server Error" });
   }
 }

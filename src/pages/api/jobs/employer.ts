@@ -13,7 +13,7 @@ interface DecodedToken {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   if (req.method !== "GET") {
     return res
@@ -68,7 +68,7 @@ export default async function handler(
             "N/A",
           applicants: count,
         };
-      })
+      }),
     );
 
     return res.status(200).json({ success: true, jobs: jobsWithCounts });
