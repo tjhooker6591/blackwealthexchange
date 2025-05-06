@@ -12,9 +12,9 @@ const Module4 = () => {
       </h1>
 
       <p className="text-gray-300 text-lg max-w-3xl mx-auto text-center mb-4">
-        You don’t need to be rich to invest—just informed. This module introduces
-        smart ways to build wealth through stocks, real estate, and passive
-        income—even starting with $25 / month.
+        You don’t need to be rich to invest—just informed. This module
+        introduces smart ways to build wealth through stocks, real estate, and
+        passive income—even starting with $25 / month.
       </p>
 
       <p className="text-gray-400 text-sm text-center mb-8">
@@ -46,7 +46,9 @@ const Module4 = () => {
             matters.
           </li>
           <li>Use compound interest to make time your best financial ally.</li>
-          <li>Start with simple, low‑risk investments like index funds or ETFs.</li>
+          <li>
+            Start with simple, low‑risk investments like index funds or ETFs.
+          </li>
           <li>
             Understand how real estate can build long‑term passive income.
           </li>

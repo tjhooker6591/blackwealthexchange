@@ -138,7 +138,7 @@ export default function Earn() {
               <button
                 onClick={handlePayoutRequest}
                 className="mt-4 px-6 py-3 bg-gold text-black rounded hover:bg-yellow-500 transition"
-                disabled={(earnings.totalEarned - earnings.totalPaid) <= 0}
+                disabled={earnings.totalEarned - earnings.totalPaid <= 0}
               >
                 Request Payout
               </button>

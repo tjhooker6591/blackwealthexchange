@@ -67,7 +67,9 @@ export default function EditBusiness({ business }: Props) {
   const router = useRouter();
   const [businessName, setBusinessName] = useState(business.businessName);
   const [email, setEmail] = useState(business.email);
-  const [businessAddress, setBusinessAddress] = useState(business.businessAddress);
+  const [businessAddress, setBusinessAddress] = useState(
+    business.businessAddress,
+  );
   const [businessPhone, setBusinessPhone] = useState(business.businessPhone);
   const [description, setDescription] = useState(business.description);
   const [error, setError] = useState<string | null>(null);

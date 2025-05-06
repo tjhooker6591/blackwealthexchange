@@ -5,14 +5,46 @@ import React from "react";
 import Link from "next/link";
 
 const courseModules = [
-  { number: 1, title: "Breaking Financial Myths",           path: "/premium-finance/module-1" },
-  { number: 2, title: "Budgeting for Real Life",            path: "/premium-finance/module-2" },
-  { number: 3, title: "Credit Repair & Power",              path: "/premium-finance/module-3" },
-  { number: 4, title: "Building Wealth with Investments",   path: "/premium-finance/module-4" },
-  { number: 5, title: "Side Hustles & Business Basics",     path: "/premium-finance/module-5" },
-  { number: 6, title: "Debt Management & Elimination",      path: "/premium-finance/module-6" },
-  { number: 7, title: "Retirement Planning",                path: "/premium-finance/module-7" },
-  { number: 8, title: "Building Legacy & Asset Protection", path: "/premium-finance/module-8" },
+  {
+    number: 1,
+    title: "Breaking Financial Myths",
+    path: "/premium-finance/module-1",
+  },
+  {
+    number: 2,
+    title: "Budgeting for Real Life",
+    path: "/premium-finance/module-2",
+  },
+  {
+    number: 3,
+    title: "Credit Repair & Power",
+    path: "/premium-finance/module-3",
+  },
+  {
+    number: 4,
+    title: "Building Wealth with Investments",
+    path: "/premium-finance/module-4",
+  },
+  {
+    number: 5,
+    title: "Side Hustles & Business Basics",
+    path: "/premium-finance/module-5",
+  },
+  {
+    number: 6,
+    title: "Debt Management & Elimination",
+    path: "/premium-finance/module-6",
+  },
+  {
+    number: 7,
+    title: "Retirement Planning",
+    path: "/premium-finance/module-7",
+  },
+  {
+    number: 8,
+    title: "Building Legacy & Asset Protection",
+    path: "/premium-finance/module-8",
+  },
 ];
 
 const PremiumFinanceHome = () => (

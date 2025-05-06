@@ -1,6 +1,6 @@
 // File: lib/auth.ts
 import { NextApiRequest } from "next";
-import { verify } from "jsonwebtoken";   // or whatever you use for JWTs
+import { verify } from "jsonwebtoken"; // or whatever you use for JWTs
 
 // Make sure this matches how you sign your session token
 const JWT_SECRET = process.env.JWT_SECRET!;
@@ -14,7 +14,7 @@ export interface SessionUser {
 // Reads the HTTP‑only cookie named `session_token`, verifies it,
 // and returns the decoded user payload (or null if invalid).
 export async function getUserFromRequest(
-  req: NextApiRequest
+  req: NextApiRequest,
 ): Promise<SessionUser | null> {
   const token = req.cookies.session_token;
   if (!token) return null;

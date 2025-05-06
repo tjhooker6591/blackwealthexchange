@@ -18,8 +18,8 @@ const Module8 = () => {
       </p>
 
       <p className="text-gray-400 text-sm text-center mb-8">
-        <strong>Featured Video:</strong> Estate Planning &amp; Closing the Wealth
-        Gap (PBS)
+        <strong>Featured Video:</strong> Estate Planning &amp; Closing the
+        Wealth Gap (PBS)
         <br />
         <strong>Why:</strong> This expert panel offers a powerful breakdown of
         how estate planning can close the racial wealth gap—and what steps to
@@ -41,11 +41,23 @@ const Module8 = () => {
         <h2 className="text-2xl text-gold font-semibold mb-4">Key Takeaways</h2>
         <ul className="list-disc text-gray-300 pl-6 space-y-2">
           <li>Learn the difference between a will and a living trust.</li>
-          <li>Protect your legacy with healthcare directives and power of attorney.</li>
-          <li>Understand probate and how to avoid it through proper documentation.</li>
-          <li>Minimize estate taxes so beneficiaries receive assets without delay.</li>
-          <li>Write a legacy letter—your values matter just as much as valuables.</li>
-          <li>Prepare your family to carry the torch through education and planning.</li>
+          <li>
+            Protect your legacy with healthcare directives and power of
+            attorney.
+          </li>
+          <li>
+            Understand probate and how to avoid it through proper documentation.
+          </li>
+          <li>
+            Minimize estate taxes so beneficiaries receive assets without delay.
+          </li>
+          <li>
+            Write a legacy letter—your values matter just as much as valuables.
+          </li>
+          <li>
+            Prepare your family to carry the torch through education and
+            planning.
+          </li>
         </ul>
       </section>
 

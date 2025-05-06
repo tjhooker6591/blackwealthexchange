@@ -1,13 +1,8 @@
-import React, { useEffect, useState } from "react";
-import Image from "next/legacy/image";
+// pages/profile.tsx
+"use client";
 
-// Define types for user and business data.
-interface Business {
-  id: string;
-  name: string;
-  description?: string;
-  logo?: string;
-}
+import React, { useEffect, useState } from "react";
+import Image from "next/image";
 
 interface UserProfile {
   id: string;
@@ -16,7 +11,6 @@ interface UserProfile {
   avatar: string;
   bio?: string;
   resumeUrl?: string;
-  business?: Business;
 }
 
 export default function ProfilePage() {
@@ -29,56 +23,45 @@ export default function ProfilePage() {
   const [bio, setBio] = useState("");
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [resumeFile, setResumeFile] = useState<File | null>(null);
-  const [resumeUrl, setResumeUrl] = useState<string | null>(null);
 
-  // Status per operation
-  const [profileStatus, setProfileStatus] = useState<
-    "idle" | "saving" | "success" | "error"
-  >("idle");
-  const [avatarStatus, setAvatarStatus] = useState<
-    "idle" | "uploading" | "success" | "error"
-  >("idle");
-  const [resumeStatus, setResumeStatus] = useState<
-    "idle" | "uploading" | "success" | "error"
-  >("idle");
+  // Status flags
+  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "success" | "error">("idle");
+  const [avatarStatus, setAvatarStatus] = useState<"idle" | "uploading" | "success" | "error">("idle");
+  const [resumeStatus, setResumeStatus] = useState<"idle" | "uploading" | "success" | "error">("idle");
 
   useEffect(() => {
-    async function fetchProfile() {
-      try {
-        const res = await fetch("/api/profile");
-        if (!res.ok) throw new Error("Failed to load");
-        const data: UserProfile = await res.json();
+    fetch("/api/profile")
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to load profile");
+        return res.json();
+      })
+      .then((data: UserProfile) => {
         setProfile(data);
         setName(data.name);
         setEmail(data.email);
         setBio(data.bio || "");
-        setResumeUrl(data.resumeUrl || null);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchProfile();
+      })
+      .catch(console.error)
+      .finally(() => setLoading(false));
   }, []);
 
   if (loading)
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
-        Loading...
+        Loading…
       </div>
     );
   if (!profile)
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
-        No profile found.
+        Profile not found.
       </div>
     );
 
-  // handlers
-  const saveProfile = async (e: React.FormEvent) => {
+  // Handlers
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    setProfileStatus("saving");
+    setSaveStatus("saving");
     try {
       const res = await fetch("/api/profile", {
         method: "PATCH",
@@ -88,13 +71,13 @@ export default function ProfilePage() {
       if (!res.ok) throw new Error();
       const updated: UserProfile = await res.json();
       setProfile(updated);
-      setProfileStatus("success");
+      setSaveStatus("success");
     } catch {
-      setProfileStatus("error");
+      setSaveStatus("error");
     }
   };
 
-  const uploadAvatar = async (e: React.FormEvent) => {
+  const handleAvatarUpload = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!avatarFile) return;
     setAvatarStatus("uploading");
@@ -107,7 +90,7 @@ export default function ProfilePage() {
       });
       if (!res.ok) throw new Error();
       const { avatarUrl } = await res.json();
-      setProfile((prev) => prev && { ...prev, avatar: avatarUrl });
+      setProfile((p) => p && { ...p, avatar: avatarUrl });
       setAvatarFile(null);
       setAvatarStatus("success");
     } catch {
@@ -115,7 +98,7 @@ export default function ProfilePage() {
     }
   };
 
-  const uploadResume = async (e: React.FormEvent) => {
+  const handleResumeUpload = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!resumeFile) return;
     setResumeStatus("uploading");
@@ -127,9 +110,8 @@ export default function ProfilePage() {
         body: form,
       });
       if (!res.ok) throw new Error();
-      const { resumeUrl: newUrl } = await res.json();
-      setProfile((prev) => prev && { ...prev, resumeUrl: newUrl });
-      setResumeUrl(newUrl);
+      const { resumeUrl } = await res.json();
+      setProfile((p) => p && { ...p, resumeUrl });
       setResumeFile(null);
       setResumeStatus("success");
     } catch {
@@ -139,19 +121,19 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-8">
-      <div className="max-w-4xl mx-auto bg-gray-800 p-6 rounded-lg shadow-lg space-y-8">
-        <h1 className="text-4xl font-bold">Your Profile</h1>
+      <div className="mx-auto max-w-3xl space-y-8">
+        <h1 className="text-3xl font-bold">Your Profile</h1>
 
-        {/* Avatar Upload */}
+        {/* Avatar */}
         <div className="flex items-center space-x-4">
           <Image
             src={profile.avatar}
-            alt="Avatar"
-            width={100}
-            height={100}
+            alt="User Avatar"
+            width={80}
+            height={80}
             className="rounded-full"
           />
-          <form onSubmit={uploadAvatar} className="flex items-center space-x-2">
+          <form onSubmit={handleAvatarUpload} className="flex items-center space-x-2">
             <input
               type="file"
               accept="image/*"
@@ -160,28 +142,25 @@ export default function ProfilePage() {
             />
             <button
               type="submit"
-              className="px-3 py-1 bg-yellow-500 text-gray-900 rounded hover:bg-yellow-600"
               disabled={avatarStatus === "uploading"}
+              className="px-3 py-1 bg-yellow-500 text-gray-900 rounded hover:bg-yellow-600"
             >
-              {avatarStatus === "uploading" ? "Uploading…" : "Upload Avatar"}
+              {avatarStatus === "uploading" ? "Uploading…" : "Change Avatar"}
             </button>
-            {avatarStatus === "success" && (
-              <span className="text-green-400">Done!</span>
-            )}
-            {avatarStatus === "error" && (
-              <span className="text-red-400">Error.</span>
-            )}
+            {avatarStatus === "success" && <span className="text-green-400">✔️</span>}
+            {avatarStatus === "error" && <span className="text-red-400">❌</span>}
           </form>
         </div>
 
-        {/* Edit Profile */}
-        <form onSubmit={saveProfile} className="space-y-4">
+        {/* Profile Form */}
+        <form onSubmit={handleSave} className="space-y-4">
           <label className="block">
             Name
             <input
               className="w-full mt-1 p-2 text-black rounded"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              required
             />
           </label>
           <label className="block">
@@ -191,6 +170,7 @@ export default function ProfilePage() {
               className="w-full mt-1 p-2 text-black rounded"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              required
             />
           </label>
           <label className="block">
@@ -203,83 +183,48 @@ export default function ProfilePage() {
           </label>
           <button
             type="submit"
+            disabled={saveStatus === "saving"}
             className="px-4 py-2 bg-yellow-500 text-gray-900 rounded hover:bg-yellow-600"
-            disabled={profileStatus === "saving"}
           >
-            {profileStatus === "saving" ? "Saving…" : "Save Profile"}
+            {saveStatus === "saving" ? "Saving…" : "Save Profile"}
           </button>
-          {profileStatus === "success" && (
-            <p className="text-green-400">Profile saved!</p>
-          )}
-          {profileStatus === "error" && (
-            <p className="text-red-400">Save failed.</p>
-          )}
+          {saveStatus === "success" && <p className="text-green-400">Saved!</p>}
+          {saveStatus === "error" && <p className="text-red-400">Save failed.</p>}
         </form>
 
-        {/* Resume Upload */}
-        <form onSubmit={uploadResume} className="space-y-4">
+        {/* Resume */}
+        <div className="space-y-2">
           <h2 className="text-2xl font-semibold">Resume</h2>
-          {resumeUrl && (
+          {profile.resumeUrl && (
             <p>
-              Current resume:{" "}
               <a
-                href={resumeUrl}
+                href={profile.resumeUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="underline text-yellow-400"
               >
-                View
+                View current resume
               </a>
             </p>
           )}
-          <input
-            type="file"
-            accept=".pdf,.doc,.docx"
-            onChange={(e) => setResumeFile(e.target.files?.[0] ?? null)}
-            className="text-black"
-          />
-          <button
-            type="submit"
-            className="px-4 py-2 bg-yellow-500 text-gray-900 rounded hover:bg-yellow-600"
-            disabled={resumeStatus === "uploading"}
-          >
-            {resumeStatus === "uploading" ? "Uploading…" : "Upload Resume"}
-          </button>
-          {resumeStatus === "success" && (
-            <p className="text-green-400">Resume uploaded!</p>
-          )}
-          {resumeStatus === "error" && (
-            <p className="text-red-400">Upload failed.</p>
-          )}
-        </form>
-
-        {/* Business Info */}
-        {profile.business ? (
-          <div className="mt-12">
-            <h2 className="text-3xl font-bold mb-4">Your Business</h2>
-            <div className="flex items-center space-x-4">
-              {profile.business.logo && (
-                <Image
-                  src={profile.business.logo}
-                  alt={`${profile.business.name} Logo`}
-                  width={80}
-                  height={80}
-                  className="rounded"
-                />
-              )}
-              <div>
-                <h3 className="text-xl">{profile.business.name}</h3>
-                {profile.business.description && (
-                  <p>{profile.business.description}</p>
-                )}
-              </div>
-            </div>
-          </div>
-        ) : (
-          <p className="mt-8">
-            You have not registered a business yet. Please update your profile.
-          </p>
-        )}
+          <form onSubmit={handleResumeUpload} className="flex items-center space-x-2">
+            <input
+              type="file"
+              accept=".pdf,.doc,.docx"
+              onChange={(e) => setResumeFile(e.target.files?.[0] ?? null)}
+              className="text-black"
+            />
+            <button
+              type="submit"
+              disabled={resumeStatus === "uploading"}
+              className="px-3 py-1 bg-yellow-500 text-gray-900 rounded hover:bg-yellow-600"
+            >
+              {resumeStatus === "uploading" ? "Uploading…" : "Upload Resume"}
+            </button>
+            {resumeStatus === "success" && <span className="text-green-400">✔️</span>}
+            {resumeStatus === "error" && <span className="text-red-400">❌</span>}
+          </form>
+        </div>
       </div>
     </div>
   );

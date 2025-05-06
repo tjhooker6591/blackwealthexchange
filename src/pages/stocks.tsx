@@ -48,7 +48,6 @@ function InvestmentCard({
   );
 }
 
-
 export default function BlackOwnedStocks() {
   const router = useRouter();
 

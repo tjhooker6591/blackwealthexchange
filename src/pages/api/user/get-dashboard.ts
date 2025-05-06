@@ -6,14 +6,16 @@ import authOptions from "../auth/[...nextauth]";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   if (req.method !== "GET") {
     return res.status(405).json({ error: "Method Not Allowed" });
   }
 
   // Use NextAuth to get the session
-  const session = (await getServerSession(req, res, authOptions)) as import("next-auth").Session | null;
+  const session = (await getServerSession(req, res, authOptions)) as
+    | import("next-auth").Session
+    | null;
   if (!session || !session.user || !session.user.email) {
     return res.status(401).json({ error: "Not authenticated" });
   }

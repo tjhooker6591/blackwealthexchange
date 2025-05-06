@@ -18,8 +18,8 @@ const Module5 = () => {
       </p>
 
       <p className="text-gray-400 text-sm text-center mb-8">
-        <strong>Featured Video:</strong> The Side Hustle Revolution&nbsp;| Nicaila
-        Matthews Okome
+        <strong>Featured Video:</strong> The Side Hustle
+        Revolution&nbsp;| Nicaila Matthews Okome
         <br />
         <strong>Why:</strong> Learn how everyday skills become scalable income
         streams. Nicaila’s story is proof that purpose pays.
@@ -55,7 +55,9 @@ const Module5 = () => {
             Build business credit: Start with vendor accounts like Uline or
             Quill.
           </li>
-          <li>Use hustle income to fuel long‑term wealth‑building strategies.</li>
+          <li>
+            Use hustle income to fuel long‑term wealth‑building strategies.
+          </li>
         </ul>
       </section>
 
@@ -114,14 +116,18 @@ const Module5 = () => {
 
       {/* 💡 Action Plan */}
       <section className="bg-gray-800 p-6 rounded-lg shadow-md max-w-4xl mx-auto mb-10">
-        <h2 className="text-2xl text-gold font-semibold mb-4">💡 Action Plan:</h2>
+        <h2 className="text-2xl text-gold font-semibold mb-4">
+          💡 Action Plan:
+        </h2>
         <ol className="list-decimal text-gray-300 pl-6 space-y-2">
           <li>Write 3 side‑hustle ideas that use your current skills.</li>
           <li>
             Pick one and use the Business Planner to map your MVP (minimum
             viable product).
           </li>
-          <li>Register for an EIN and open a free business checking account.</li>
+          <li>
+            Register for an EIN and open a free business checking account.
+          </li>
           <li>
             Launch your hustle with just one offer or product—keep it simple!
           </li>

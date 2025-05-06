@@ -195,9 +195,7 @@ export default function AddBusinessForm() {
 
           {/* Visual Assets */}
           <fieldset className="mb-4">
-            <legend className="text-xl font-bold text-gold">
-              Logo Upload
-            </legend>
+            <legend className="text-xl font-bold text-gold">Logo Upload</legend>
             <input
               type="file"
               accept="image/*"

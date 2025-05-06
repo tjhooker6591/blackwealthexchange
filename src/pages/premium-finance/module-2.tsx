@@ -36,7 +36,9 @@ const Module2 = () => {
 
       {/* 💡 Key Takeaways */}
       <section className="bg-gray-800 p-6 rounded-lg shadow-md max-w-4xl mx-auto mb-8">
-        <h2 className="text-2xl text-gold font-semibold mb-4">Key Takeaways:</h2>
+        <h2 className="text-2xl text-gold font-semibold mb-4">
+          Key Takeaways:
+        </h2>
         <ul className="list-disc text-gray-300 pl-6 space-y-2">
           <li>
             Use values‑based budgeting to match your plan with your priorities.

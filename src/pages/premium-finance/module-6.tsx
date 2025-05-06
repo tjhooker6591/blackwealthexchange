@@ -18,8 +18,8 @@ const Module6 = () => {
       </p>
 
       <p className="text-gray-400 text-sm text-center mb-8">
-        <strong>Featured Video:</strong> Anthony O’Neal: <em>If You’re Living
-        Paycheck to Paycheck…</em>
+        <strong>Featured Video:</strong> Anthony O’Neal:{" "}
+        <em>If You’re Living Paycheck to Paycheck…</em>
         <br />
         <strong>Why:</strong> Anthony shares no‑nonsense steps to break the
         cycle of debt and build a real financial future.

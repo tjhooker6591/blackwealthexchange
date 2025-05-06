@@ -90,10 +90,7 @@ export default function BusinessDashboard() {
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/business-directory"
-                  className="hover:underline"
-                >
+                <Link href="/business-directory" className="hover:underline">
                   Sponsored Directory
                 </Link>
               </li>
@@ -130,7 +127,7 @@ export default function BusinessDashboard() {
               <DashboardCard
                 title="🚀 Advertise With Us"
                 description="Launch an ad campaign to boost visibility and get featured."
-                href="/advertise"
+                href="/advertise-with-us"
                 color="bg-yellow-500 text-black"
               />
               <DashboardCard

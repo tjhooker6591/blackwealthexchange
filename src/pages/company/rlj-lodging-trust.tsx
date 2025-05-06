@@ -67,22 +67,28 @@ export default function RLJLodgingTrust() {
       const processedData = (data.series as RawSeriesItem[])
         .map((item) => ({
           x: new Date(item.date).getTime(),
-          y: [
-            +item.open,
-            +item.high,
-            +item.low,
-            +item.close,
-          ],
+          y: [+item.open, +item.high, +item.low, +item.close],
         }))
-        .filter(
-          (d) => !isNaN(d.x) && d.y.every((v) => !isNaN(v)),
-        );
+        .filter((d) => !isNaN(d.x) && d.y.every((v) => !isNaN(v)));
 
       setStockData({
         chartOptions: {
-          chart: { id: "stock-chart", type: "candlestick", height: 350, foreColor: "#fff", zoom: { enabled: true }, toolbar: { show: true } },
-          xaxis: { type: "datetime", labels: { style: { colors: "#fff", fontSize: "12px" } } },
-          yaxis: { tooltip: { enabled: true }, labels: { style: { colors: "#fff", fontSize: "12px" } } },
+          chart: {
+            id: "stock-chart",
+            type: "candlestick",
+            height: 350,
+            foreColor: "#fff",
+            zoom: { enabled: true },
+            toolbar: { show: true },
+          },
+          xaxis: {
+            type: "datetime",
+            labels: { style: { colors: "#fff", fontSize: "12px" } },
+          },
+          yaxis: {
+            tooltip: { enabled: true },
+            labels: { style: { colors: "#fff", fontSize: "12px" } },
+          },
           grid: { borderColor: "#555" },
           tooltip: { theme: "dark" },
         },
@@ -99,7 +105,9 @@ export default function RLJLodgingTrust() {
       });
     } catch (err) {
       console.error("Error loading stock data:", (err as Error).message);
-      setError("Error loading stock data. Please check the API or internet connection.");
+      setError(
+        "Error loading stock data. Please check the API or internet connection.",
+      );
     }
   }
 
@@ -140,7 +148,9 @@ export default function RLJLodgingTrust() {
               }`}
             >
               {stockData && stockData.latestPrice > 9.55 ? "↑" : "↓"}{" "}
-              {stockData ? `+${(stockData.latestPrice - 9.55).toFixed(2)}` : "0.00"}
+              {stockData
+                ? `+${(stockData.latestPrice - 9.55).toFixed(2)}`
+                : "0.00"}
             </span>
           </div>
           <p className="text-sm mt-2 text-gray-300">
@@ -163,7 +173,9 @@ export default function RLJLodgingTrust() {
               <button
                 key={r.value}
                 className={`px-4 py-2 ${
-                  selectedRange === r.value ? "bg-gold text-black" : "bg-gray-700 text-white"
+                  selectedRange === r.value
+                    ? "bg-gold text-black"
+                    : "bg-gray-700 text-white"
                 } rounded hover:bg-gray-600`}
                 onClick={() => setSelectedRange(r.value)}
               >
@@ -179,9 +191,15 @@ export default function RLJLodgingTrust() {
             <p className="text-red-500">{error}</p>
           ) : stockData ? (
             <div className="mt-4 bg-gray-700 border border-gold rounded p-4">
-              <Chart options={stockData.chartOptions} series={stockData.series} type="candlestick" height={350} />
+              <Chart
+                options={stockData.chartOptions}
+                series={stockData.series}
+                type="candlestick"
+                height={350}
+              />
               <div className="mt-4 text-sm">
-                Stock Price: ${stockData.latestPrice} | Volume: {stockData.volume}
+                Stock Price: ${stockData.latestPrice} | Volume:{" "}
+                {stockData.volume}
               </div>
               <div className="text-sm text-gray-300 mt-4 space-y-1">
                 <p>Market Cap: {stockData.marketCap}</p>
@@ -192,7 +210,9 @@ export default function RLJLodgingTrust() {
               </div>
             </div>
           ) : (
-            <p className="text-sm text-yellow-400">Loading stock performance data…</p>
+            <p className="text-sm text-yellow-400">
+              Loading stock performance data…
+            </p>
           )}
         </section>
 

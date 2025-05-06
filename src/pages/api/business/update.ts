@@ -11,7 +11,7 @@ interface TokenPayload {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   /* -------------------------------------------------------------- */
   /*  1. Allow only PATCH                                           */
@@ -33,7 +33,7 @@ export default async function handler(
   try {
     payload = jwt.verify(
       raw,
-      process.env.JWT_SECRET as string                    // must match /api/auth/login
+      process.env.JWT_SECRET as string, // must match /api/auth/login
     ) as TokenPayload;
   } catch {
     return res.status(401).json({ error: "Unauthorized: bad token" });
@@ -60,7 +60,13 @@ export default async function handler(
     email?: string;
   };
 
-  if (!businessName && !businessAddress && !businessPhone && !description && !newEmail) {
+  if (
+    !businessName &&
+    !businessAddress &&
+    !businessPhone &&
+    !description &&
+    !newEmail
+  ) {
     return res.status(400).json({ error: "No fields to update" });
   }
 
@@ -71,17 +77,17 @@ export default async function handler(
     const db = (await clientPromise).db("bwes-cluster");
 
     const result = await db.collection("businesses").updateOne(
-      { email: payload.email },                    // locate by token email
+      { email: payload.email }, // locate by token email
       {
         $set: {
           ...(businessName && { businessName }),
           ...(businessAddress && { businessAddress }),
           ...(businessPhone && { businessPhone }),
           ...(description && { description }),
-          ...(newEmail && { email: newEmail }),    // allow email change
+          ...(newEmail && { email: newEmail }), // allow email change
           updatedAt: new Date(),
         },
-      }
+      },
     );
 
     if (!result.matchedCount) {

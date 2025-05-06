@@ -45,7 +45,9 @@ const Module7 = () => {
             Learn the difference between Roth IRA, Traditional IRA, and 401(k).
           </li>
           <li>Take full advantage of employer matching—it’s free money!</li>
-          <li>Use compound interest and consistency to grow wealth long‑term.</li>
+          <li>
+            Use compound interest and consistency to grow wealth long‑term.
+          </li>
           <li>
             Know how much you need—and how to calculate your retirement number.
           </li>
