@@ -1,9 +1,9 @@
+// src/pages/stocks.tsx   (excerpt)
 import Link from "next/link";
 import Image from "next/legacy/image";
 import React from "react";
 import { useRouter } from "next/router";
 
-// Define a type for the InvestmentCard props.
 interface InvestmentCardProps {
   bgColor: string;
   title: string;
@@ -32,19 +32,22 @@ function InvestmentCard({
           <Image src={iconSrc} alt={`${title} icon`} width={48} height={48} />
         </div>
       )}
+
       <h3 className="text-xl font-bold text-gold">{title}</h3>
       <p className="mt-2 text-sm text-gray-300">{description}</p>
-      <Link href={link} passHref>
-        <button
-          aria-label={ariaLabel}
-          className="mt-3 px-4 py-2 bg-gold text-black rounded-lg hover:bg-yellow-500 transition"
-        >
-          {linkLabel}
-        </button>
+
+      {/* modern Link‑as‑button (no inner <a>) */}
+      <Link
+        href={link}
+        aria-label={ariaLabel}
+        className="inline-block mt-3 px-4 py-2 bg-gold text-black rounded-lg hover:bg-yellow-500 transition"
+      >
+        {linkLabel}
       </Link>
     </div>
   );
 }
+
 
 export default function BlackOwnedStocks() {
   const router = useRouter();

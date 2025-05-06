@@ -1,3 +1,4 @@
+// src/components/dashboards/BusinessDashboard.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -17,41 +18,35 @@ export default function BusinessDashboard() {
   const [accessDenied, setAccessDenied] = useState(false);
 
   useEffect(() => {
-    const fetchUser = async () => {
+    (async () => {
       try {
         const res = await fetch("/api/auth/me");
         const data = await res.json();
 
-        // Instead of redirecting, mark access as denied if accountType isn't "business"
         if (!data?.user || data.user.accountType !== "business") {
           setAccessDenied(true);
           return;
         }
-
         setUser(data.user);
-      } catch (error) {
-        console.error("Failed to fetch user:", error);
+      } catch {
         setAccessDenied(true);
       } finally {
         setLoading(false);
       }
-    };
-
-    fetchUser();
+    })();
   }, []);
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
-        <p>Loading Business Dashboard...</p>
+      <div className="min-h-screen flex items-center justify-center bg-black text-white">
+        Loading Business Dashboard…
       </div>
     );
   }
-
   if (accessDenied || !user) {
     return (
-      <div className="min-h-screen bg-black text-white flex items-center justify-center">
-        <p>Access Denied. You do not have permission to view this dashboard.</p>
+      <div className="min-h-screen flex items-center justify-center bg-black text-white">
+        Access Denied. You do not have permission to view this dashboard.
       </div>
     );
   }
@@ -62,47 +57,59 @@ export default function BusinessDashboard() {
       <header className="bg-gray-900 text-white p-4">
         <div className="container mx-auto flex justify-between items-center">
           <h1 className="text-xl font-bold">Business Dashboard</h1>
-          <nav>
-            <Link href="/dashboard">
-              <span className="mr-4 hover:underline">Dashboard Home</span>
+          <nav className="space-x-4">
+            <Link href="/dashboard" className="hover:underline">
+              Dashboard Home
             </Link>
-            <Link href="/profile">
-              <span className="hover:underline">Profile</span>
+            <Link href="/profile" className="hover:underline">
+              Profile
             </Link>
           </nav>
         </div>
       </header>
 
       <div className="flex flex-1">
-        {/* Sidebar Navigation */}
+        {/* Sidebar */}
         <aside className="w-64 bg-gray-800 text-white p-4">
           <nav>
             <ul className="space-y-4">
               <li>
-                <Link href="/dashboard/business/overview">
-                  <a className="hover:underline">Overview</a>
+                <Link
+                  href="/dashboard/business/overview"
+                  className="hover:underline"
+                >
+                  Overview
                 </Link>
               </li>
               <li>
-                <Link href="/dashboard/business/ads">
-                  <a className="hover:underline">Manage Ads</a>
+                <Link
+                  href="/dashboard/business/ads"
+                  className="hover:underline"
+                >
+                  Manage Ads
                 </Link>
               </li>
               <li>
-                <Link href="/dashboard/business/directory">
-                  <a className="hover:underline">Sponsored Directory</a>
+                <Link
+                  href="/business-directory"
+                  className="hover:underline"
+                >
+                  Sponsored Directory
                 </Link>
               </li>
               <li>
-                <Link href="/dashboard/business/upgrade">
-                  <a className="hover:underline">Upgrade Options</a>
+                <Link
+                  href="/dashboard/business/upgrade"
+                  className="hover:underline"
+                >
+                  Upgrade Options
                 </Link>
               </li>
             </ul>
           </nav>
         </aside>
 
-        {/* Main Content Area */}
+        {/* Main */}
         <main className="flex-1 p-6 bg-black text-white">
           <div className="max-w-5xl mx-auto bg-gray-800 p-6 rounded-lg shadow-lg">
             <h2 className="text-3xl font-bold text-gold mb-4">
@@ -117,7 +124,7 @@ export default function BusinessDashboard() {
               <DashboardCard
                 title="📝 Edit Business Profile"
                 description="Update your business info, contact details, and description."
-                href="/edit-business"
+                href="/dashboard/edit-business"
                 color="bg-blue-700"
               />
               <DashboardCard
@@ -127,9 +134,9 @@ export default function BusinessDashboard() {
                 color="bg-yellow-500 text-black"
               />
               <DashboardCard
-                title="⭐ View Sponsored Directory"
-                description="See where your business appears and how others are featured."
-                href="/business-directory/sponsored-business"
+                title="⭐ View Directory Listings"
+                description="See where your business appears and search the full directory."
+                href="/business-directory"
                 color="bg-green-700"
               />
               <DashboardCard
@@ -158,13 +165,12 @@ function DashboardCard({
   color: string;
 }) {
   return (
-    <Link href={href}>
-      <div
-        className={`rounded-lg p-5 shadow-md hover:shadow-xl transition cursor-pointer ${color}`}
-      >
-        <h3 className="text-xl font-bold mb-2">{title}</h3>
-        <p className="text-sm">{description}</p>
-      </div>
+    <Link
+      href={href}
+      className={`block rounded-lg p-5 shadow-md hover:shadow-xl transition cursor-pointer ${color}`}
+    >
+      <h3 className="text-xl font-bold mb-2">{title}</h3>
+      <p className="text-sm">{description}</p>
     </Link>
   );
 }

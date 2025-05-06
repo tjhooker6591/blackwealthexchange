@@ -17,19 +17,13 @@ export default function Earn() {
   useEffect(() => {
     const fetchEarnings = async () => {
       try {
-        const sessionRes = await fetch("/api/auth/me");
-        const sessionData = await sessionRes.json();
-
-        if (!sessionRes.ok || !sessionData.user) {
-          setPayoutMessage("User not logged in");
-          setLoading(false);
-          return;
-        }
-
-        const userId = sessionData.user.id;
+        // TEMP: Hardcoded userId for testing
+        const userId = "6807fd633105a101ca1b58fe";
 
         const res = await fetch(`/api/affiliate/earnings?userId=${userId}`);
         const data = await res.json();
+
+        console.log("Earnings API Response:", data);
 
         if (res.ok) {
           setEarnings(data);
@@ -37,7 +31,7 @@ export default function Earn() {
           setPayoutMessage(data.message || "Error fetching earnings");
         }
       } catch (err) {
-        console.error(err);
+        console.error("Fetch Earnings Error:", err);
         setPayoutMessage("Server error");
       } finally {
         setLoading(false);
@@ -49,9 +43,8 @@ export default function Earn() {
 
   const handlePayoutRequest = async () => {
     try {
-      const sessionRes = await fetch("/api/auth/me");
-      const sessionData = await sessionRes.json();
-      const userId = sessionData.user.id;
+      // TEMP: Hardcoded userId for testing
+      const userId = "6807fd633105a101ca1b58fe";
 
       const payoutDetails = "your-paypal@example.com"; // Replace later with dynamic input
       const payoutMethod = "PayPal";
@@ -65,7 +58,7 @@ export default function Earn() {
       const data = await res.json();
       setPayoutMessage(data.message);
     } catch (err) {
-      console.error(err);
+      console.error("Payout Request Error:", err);
       setPayoutMessage("Payout request failed");
     }
   };
@@ -76,17 +69,15 @@ export default function Earn() {
         <title>Affiliate Earnings | Black Wealth Exchange</title>
       </Head>
       <div className="min-h-screen bg-black text-white px-4 py-20 space-y-16">
-        {/* Intro Section */}
         <section className="max-w-3xl mx-auto text-center space-y-6">
           <h1 className="text-5xl font-extrabold text-gold">Earn</h1>
           <p className="text-xl text-gray-300">
             Affiliates earn{" "}
-            <span className="text-gold font-bold">10 – 25% CPA</span> on
+            <span className="text-gold font-bold">5 – 25% CPA</span> on
             qualifying sales with a 30‑day cookie window.
           </p>
         </section>
 
-        {/* Commission Table */}
         <section className="max-w-xl mx-auto">
           <table className="w-full text-left border-collapse">
             <thead>
@@ -98,8 +89,8 @@ export default function Earn() {
             <tbody>
               {[
                 ["Digital Courses", "25%"],
-                ["Marketplace Goods", "15%"],
-                ["Job Posting Upgrades", "20%"],
+                ["Marketplace Goods", "5%"],
+                ["Job Posting Upgrades", "15%"],
                 ["Advertising Packages", "10%"],
               ].map(([type, rate]) => (
                 <tr key={type} className="border-b border-gray-800">
@@ -111,7 +102,6 @@ export default function Earn() {
           </table>
         </section>
 
-        {/* Real-Time Dashboard */}
         <section className="max-w-3xl mx-auto text-center space-y-6">
           <h2 className="text-3xl font-bold text-gold">
             Your Affiliate Dashboard
@@ -123,32 +113,32 @@ export default function Earn() {
               <p>
                 Clicks:{" "}
                 <span className="text-gold font-semibold">
-                  {earnings.clicks}
+                  {earnings.clicks ?? 0}
                 </span>
               </p>
               <p>
                 Conversions:{" "}
                 <span className="text-gold font-semibold">
-                  {earnings.conversions}
+                  {earnings.conversions ?? 0}
                 </span>
               </p>
               <p>
                 Total Earned:{" "}
                 <span className="text-gold font-semibold">
-                  ${earnings.totalEarned.toFixed(2)}
+                  ${earnings?.totalEarned?.toFixed(2) ?? "0.00"}
                 </span>
               </p>
               <p>
                 Total Paid:{" "}
                 <span className="text-gold font-semibold">
-                  ${earnings.totalPaid.toFixed(2)}
+                  ${earnings?.totalPaid?.toFixed(2) ?? "0.00"}
                 </span>
               </p>
 
               <button
                 onClick={handlePayoutRequest}
                 className="mt-4 px-6 py-3 bg-gold text-black rounded hover:bg-yellow-500 transition"
-                disabled={earnings.totalEarned - earnings.totalPaid <= 0}
+                disabled={(earnings.totalEarned - earnings.totalPaid) <= 0}
               >
                 Request Payout
               </button>
@@ -161,7 +151,6 @@ export default function Earn() {
           )}
         </section>
 
-        {/* CTA */}
         <div className="text-center">
           <Link
             href="/affiliate/signup"

@@ -42,9 +42,9 @@ export default function NavBar() {
     ? user.accountType === "seller"
       ? "/marketplace/dashboard"
       : user.accountType === "business"
-        ? "/add-business"
+        ? "/dashboard"
         : user.accountType === "employer"
-          ? "/employer"
+          ? "/dashboard"
           : "/dashboard"
     : "/dashboard";
 

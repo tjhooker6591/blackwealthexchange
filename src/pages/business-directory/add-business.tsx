@@ -1,21 +1,102 @@
-import React from "react";
-import Link from "next/link";
+// File: pages/business-directory/add-business.tsx
+"use client";
 
-export default function AddBusiness() {
+import React, { useState, FormEvent } from "react";
+import { useRouter } from "next/navigation";
+
+export default function AddBusinessForm() {
+  const router = useRouter();
+
+  // form state
+  const [businessName, setBusinessName] = useState<string>("");
+  const [category, setCategory] = useState<string>("");
+  const [location, setLocation] = useState<string>("");
+  const [phone, setPhone] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [website, setWebsite] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [facebook, setFacebook] = useState<string>("");
+  const [twitter, setTwitter] = useState<string>("");
+
+  const [submitting, setSubmitting] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<boolean>(false);
+
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setSubmitting(true);
+    setError(null);
+
+    try {
+      const formData = new FormData();
+      formData.append("businessName", businessName);
+      formData.append("category", category);
+      formData.append("location", location);
+      formData.append("phone", phone);
+      formData.append("email", email);
+      formData.append("website", website);
+      formData.append("description", description);
+      if (logoFile) {
+        formData.append("logo", logoFile);
+      }
+      formData.append("facebook", facebook);
+      formData.append("twitter", twitter);
+
+      const res = await fetch("/api/business/create", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.message || "Failed to submit business");
+      }
+
+      // show confirmation then redirect
+      setSuccess(true);
+      setTimeout(() => {
+        router.push("/business-directory");
+      }, 2000);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  // If we’ve just succeeded, show a quick message
+  if (success) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white p-8">
+        <div className="bg-gray-800 p-6 rounded-lg shadow text-center">
+          <h2 className="text-2xl font-bold text-gold mb-4">
+            🎉 Listing Submitted!
+          </h2>
+          <p className="text-gray-300 mb-6">
+            Your business has been added to the directory.
+          </p>
+          <button
+            onClick={() => router.push("/business-directory")}
+            className="px-4 py-2 bg-gold text-black font-bold rounded hover:bg-yellow-500 transition"
+          >
+            Go to Directory
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-gray-900 text-white min-h-screen p-8">
-      {/* Top Navigation */}
-      <header className="mb-6">
-        <Link href="/">
-          <button className="px-4 py-2 bg-gold text-black font-bold rounded hover:bg-yellow-500 transition">
-            Home
-          </button>
-        </Link>
-        <h1 className="text-4xl font-bold text-gold mt-4">Add Your Business</h1>
+      <header className="mb-6 flex items-center justify-between">
+        <h1 className="text-4xl font-bold text-gold">Add Your Business</h1>
       </header>
 
       <div className="max-w-4xl mx-auto bg-gray-800 p-6 rounded-lg shadow-lg">
-        <form id="add-business-form">
+        {error && <p className="mb-4 text-red-400">⚠️ {error}</p>}
+
+        <form onSubmit={handleSubmit} encType="multipart/form-data">
           {/* Basic Information */}
           <fieldset className="mb-4">
             <legend className="text-xl font-bold text-gold">
@@ -25,15 +106,17 @@ export default function AddBusiness() {
               Business Name:
               <input
                 type="text"
-                name="businessName"
+                value={businessName}
+                onChange={(e) => setBusinessName(e.target.value)}
                 required
                 className="w-full p-2 rounded bg-gray-700 text-white mt-1"
               />
             </label>
             <label className="block mt-2">
-              Business Type/Category:
+              Category:
               <select
-                name="category"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
                 required
                 className="w-full p-2 rounded bg-gray-700 text-white mt-1"
               >
@@ -42,14 +125,14 @@ export default function AddBusiness() {
                 <option value="beauty">Beauty</option>
                 <option value="food">Food</option>
                 <option value="fashion">Fashion</option>
-                {/* Add more categories as needed */}
               </select>
             </label>
             <label className="block mt-2">
               Location:
               <input
                 type="text"
-                name="location"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
                 placeholder="City, State, Country"
                 required
                 className="w-full p-2 rounded bg-gray-700 text-white mt-1"
@@ -66,7 +149,8 @@ export default function AddBusiness() {
               Phone Number:
               <input
                 type="tel"
-                name="phone"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
                 required
                 className="w-full p-2 rounded bg-gray-700 text-white mt-1"
               />
@@ -75,7 +159,8 @@ export default function AddBusiness() {
               Email Address:
               <input
                 type="email"
-                name="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
                 className="w-full p-2 rounded bg-gray-700 text-white mt-1"
               />
@@ -84,7 +169,8 @@ export default function AddBusiness() {
               Website URL:
               <input
                 type="url"
-                name="website"
+                value={website}
+                onChange={(e) => setWebsite(e.target.value)}
                 className="w-full p-2 rounded bg-gray-700 text-white mt-1"
               />
             </label>
@@ -96,30 +182,30 @@ export default function AddBusiness() {
               Business Profile
             </legend>
             <label className="block mt-2">
-              Business Description:
+              Description:
               <textarea
-                name="description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
                 rows={5}
                 required
                 className="w-full p-2 rounded bg-gray-700 text-white mt-1"
-              ></textarea>
+              />
             </label>
           </fieldset>
 
           {/* Visual Assets */}
           <fieldset className="mb-4">
             <legend className="text-xl font-bold text-gold">
-              Visual Assets
+              Logo Upload
             </legend>
-            <label className="block mt-2">
-              Business Logo:
-              <input
-                type="file"
-                name="logo"
-                accept="image/*"
-                className="w-full p-2 rounded bg-gray-700 text-white mt-1"
-              />
-            </label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) =>
+                setLogoFile(e.target.files ? e.target.files[0] : null)
+              }
+              className="w-full p-2 rounded bg-gray-700 text-white mt-1"
+            />
           </fieldset>
 
           {/* Social Media */}
@@ -131,7 +217,8 @@ export default function AddBusiness() {
               Facebook:
               <input
                 type="url"
-                name="facebook"
+                value={facebook}
+                onChange={(e) => setFacebook(e.target.value)}
                 className="w-full p-2 rounded bg-gray-700 text-white mt-1"
               />
             </label>
@@ -139,7 +226,8 @@ export default function AddBusiness() {
               Twitter:
               <input
                 type="url"
-                name="twitter"
+                value={twitter}
+                onChange={(e) => setTwitter(e.target.value)}
                 className="w-full p-2 rounded bg-gray-700 text-white mt-1"
               />
             </label>
@@ -147,9 +235,10 @@ export default function AddBusiness() {
 
           <button
             type="submit"
-            className="w-full p-4 bg-gold text-black font-bold rounded hover:bg-yellow-500 transition"
+            disabled={submitting}
+            className="w-full p-4 bg-gold text-black font-bold rounded hover:bg-yellow-500 transition disabled:opacity-50"
           >
-            Submit Business
+            {submitting ? "Submitting…" : "Submit Business"}
           </button>
         </form>
       </div>

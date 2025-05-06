@@ -1,4 +1,5 @@
 // pages/premium-finance/module-1.tsx
+"use client";
 
 import React from "react";
 import Link from "next/link";
@@ -59,7 +60,7 @@ const Module1 = () => {
       {/* 📥 Downloads */}
       <section className="bg-gray-800 p-6 rounded-lg shadow-md max-w-4xl mx-auto mb-8">
         <h2 className="text-2xl text-gold font-semibold mb-4">
-          📥 Downloads & Tools:
+          📥 Downloads &amp; Tools:
         </h2>
         <ul className="list-disc text-gray-300 pl-6 space-y-3">
           <li>
@@ -67,6 +68,7 @@ const Module1 = () => {
               href="/downloads/module1-myth-breaker-workbook.pdf"
               className="text-gold underline"
               target="_blank"
+              rel="noopener noreferrer"
             >
               Myth Breaker Worksheet (PDF)
             </a>{" "}
@@ -77,6 +79,7 @@ const Module1 = () => {
               href="/downloads/black-financial-history-timeline.pdf"
               className="text-gold underline"
               target="_blank"
+              rel="noopener noreferrer"
             >
               Black Financial History Timeline
             </a>{" "}
@@ -87,6 +90,7 @@ const Module1 = () => {
               href="/downloads/module1-reflection-journal.pdf"
               className="text-gold underline"
               target="_blank"
+              rel="noopener noreferrer"
             >
               Reflection Journal Prompts
             </a>{" "}
@@ -98,7 +102,7 @@ const Module1 = () => {
       {/* 💬 Bonus Prompt */}
       <section className="bg-gray-800 p-6 rounded-lg shadow-md max-w-4xl mx-auto mb-10">
         <h2 className="text-2xl text-gold font-semibold mb-4">
-          🧠 Reflect & Apply:
+          🧠 Reflect &amp; Apply:
         </h2>
         <p className="text-gray-300 mb-2">
           Think about your earliest money memory. What belief did it leave you
@@ -113,15 +117,18 @@ const Module1 = () => {
 
       {/* 🔁 Navigation */}
       <div className="flex justify-between max-w-4xl mx-auto mt-10">
-        <Link href="/premium-finance/index">
-          <button className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition">
-            ← Back to Modules
-          </button>
+        <Link
+          href="/premium-finance/index"
+          className="inline-block px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition"
+        >
+          ← Back to Modules
         </Link>
-        <Link href="/premium-finance/module-2">
-          <button className="px-4 py-2 bg-gold text-black rounded hover:bg-yellow-500 transition">
-            Next: Budgeting for Real Life →
-          </button>
+
+        <Link
+          href="/premium-finance/module-2"
+          className="inline-block px-4 py-2 bg-gold text-black rounded hover:bg-yellow-500 transition"
+        >
+          Next: Budgeting for Real Life →
         </Link>
       </div>
     </div>

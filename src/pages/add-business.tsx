@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 interface Business {
@@ -10,6 +11,7 @@ interface Business {
 }
 
 export default function AddBusiness() {
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [business, setBusiness] = useState<Business | null>(null);
 
@@ -53,7 +55,10 @@ export default function AddBusiness() {
           <strong>Verified:</strong>{" "}
           {business?.verified ? "✅ Yes" : "❌ Not Verified"}
         </p>
-        <button className="mt-4 bg-yellow-500 text-black px-4 py-2 rounded hover:bg-yellow-400 transition">
+        <button
+          onClick={() => router.push("/dashboard/edit-business")}
+          className="mt-4 bg-yellow-500 text-black px-4 py-2 rounded hover:bg-yellow-400 transition"
+        >
           Edit Business Info
         </button>
       </div>

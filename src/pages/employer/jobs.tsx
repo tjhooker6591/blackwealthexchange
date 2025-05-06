@@ -85,7 +85,7 @@ export default function EmployerJobsPage() {
         {loading ? (
           <p className="text-gray-400">Loading jobs...</p>
         ) : jobs.length === 0 ? (
-          <p className="text-gray-400">You haven’t posted any jobs yet.</p>
+          <p className="text-gray-400">You haven not posted any jobs yet.</p>
         ) : (
           <div className="space-y-6">
             {jobs.map((job) => (

@@ -1,3 +1,4 @@
+// src/pages/company/rlj-lodging-trust.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -5,19 +6,16 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import { ApexOptions } from "apexcharts";
 
-// Ensure necessary dependencies are installed:
 // npm install react-apexcharts apexcharts
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
-// Interface for each processed data point for the candlestick chart
+/* ───────── Types ───────── */
 interface ProcessedDataItem {
   x: number;
   y: number[];
 }
-
-// Interface for the overall stock data returned from the API
 interface StockData {
-  chartOptions: ApexOptions; // Ideally, replace 'any' with ApexCharts.ApexOptions if available
+  chartOptions: ApexOptions;
   series: { data: ProcessedDataItem[] }[];
   latestPrice: number;
   volume: number;
@@ -29,8 +27,6 @@ interface StockData {
   afterHoursPrice: number;
   afterHoursChange: number;
 }
-
-// Interface for raw series items received from the API
 interface RawSeriesItem {
   date: string;
   open: string;
@@ -39,6 +35,7 @@ interface RawSeriesItem {
   close: string;
 }
 
+/* ───────── Component ───────── */
 export default function RLJLodgingTrust() {
   const [stockData, setStockData] = useState<StockData | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -54,108 +51,73 @@ export default function RLJLodgingTrust() {
   ];
   const [selectedRange, setSelectedRange] = useState("1y");
 
-  // Function to fetch stock data
   async function fetchStockData(range = "1y") {
     try {
-      const response = await fetch(
+      const res = await fetch(
         `/api/stock-data?symbol=RLJ&range=${range}&interval=1d`,
       );
-      if (!response.ok) {
-        console.error(
-          "API response failed:",
-          response.status,
-          response.statusText,
-        );
-        throw new Error("Error fetching stock data");
-      }
-
-      const data = await response.json();
+      if (!res.ok) throw new Error("Error fetching stock data");
+      const data = await res.json();
 
       if (data.error) {
         setError(data.error);
-      } else {
-        const processedData: ProcessedDataItem[] = data.series
-          .map((item: RawSeriesItem) => ({
-            x: new Date(item.date).getTime(),
-            y: [
-              Number(item.open),
-              Number(item.high),
-              Number(item.low),
-              Number(item.close),
-            ],
-          }))
-          .filter(
-            (item: ProcessedDataItem) =>
-              !isNaN(item.x) && item.y.every((val: number) => !isNaN(val)),
-          );
-
-        console.log("Processed data:", processedData); // For debugging
-
-        setStockData({
-          chartOptions: {
-            chart: {
-              id: "stock-chart",
-              type: "candlestick",
-              height: 350,
-              foreColor: "#FFFFFF",
-              zoom: { enabled: true },
-              toolbar: { show: true },
-            },
-            xaxis: {
-              type: "datetime",
-              labels: {
-                style: { colors: "#FFFFFF", fontSize: "12px" },
-              },
-            },
-            yaxis: {
-              tooltip: {
-                enabled: true,
-              },
-              labels: {
-                style: { colors: "#FFFFFF", fontSize: "12px" },
-              },
-            },
-            grid: { borderColor: "#555555" },
-            tooltip: { theme: "dark" },
-          },
-          series: [
-            {
-              data: processedData,
-            },
-          ],
-          latestPrice: data.latestPrice,
-          volume: data.volume,
-          marketCap: data.summary.marketCap,
-          peRatio: data.summary.peRatio,
-          dividendYield: data.summary.divYield,
-          fiftyTwoWeekHigh: data.summary.wkHigh52,
-          fiftyTwoWeekLow: data.summary.wkLow52,
-          afterHoursPrice: data.summary.afterHoursPrice,
-          afterHoursChange: data.summary.afterHoursChange,
-        });
+        return;
       }
+
+      const processedData = (data.series as RawSeriesItem[])
+        .map((item) => ({
+          x: new Date(item.date).getTime(),
+          y: [
+            +item.open,
+            +item.high,
+            +item.low,
+            +item.close,
+          ],
+        }))
+        .filter(
+          (d) => !isNaN(d.x) && d.y.every((v) => !isNaN(v)),
+        );
+
+      setStockData({
+        chartOptions: {
+          chart: { id: "stock-chart", type: "candlestick", height: 350, foreColor: "#fff", zoom: { enabled: true }, toolbar: { show: true } },
+          xaxis: { type: "datetime", labels: { style: { colors: "#fff", fontSize: "12px" } } },
+          yaxis: { tooltip: { enabled: true }, labels: { style: { colors: "#fff", fontSize: "12px" } } },
+          grid: { borderColor: "#555" },
+          tooltip: { theme: "dark" },
+        },
+        series: [{ data: processedData }],
+        latestPrice: data.latestPrice,
+        volume: data.volume,
+        marketCap: data.summary.marketCap,
+        peRatio: data.summary.peRatio,
+        dividendYield: data.summary.divYield,
+        fiftyTwoWeekHigh: data.summary.wkHigh52,
+        fiftyTwoWeekLow: data.summary.wkLow52,
+        afterHoursPrice: data.summary.afterHoursPrice,
+        afterHoursChange: data.summary.afterHoursChange,
+      });
     } catch (err) {
       console.error("Error loading stock data:", (err as Error).message);
-      setError(
-        "Error loading stock data. Please check the API or internet connection.",
-      );
+      setError("Error loading stock data. Please check the API or internet connection.");
     }
   }
 
-  // Fetch data on mount and set interval for real-time updates
   useEffect(() => {
     fetchStockData(selectedRange);
-    const intervalId = setInterval(() => fetchStockData(selectedRange), 60000);
-    return () => clearInterval(intervalId);
+    const id = setInterval(() => fetchStockData(selectedRange), 60_000);
+    return () => clearInterval(id);
   }, [selectedRange]);
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-8">
       <div className="max-w-4xl mx-auto bg-gray-800 p-6 rounded-lg border border-gold">
-        <Link href="/stocks" passHref>
-          <button className="mb-6 px-4 py-2 bg-gold text-black font-bold rounded hover:bg-yellow-500 transition">
-            ← Back to Stocks
-          </button>
+        {/* Modern Link-as-button */}
+        <Link
+          href="/stocks"
+          className="inline-block mb-6 px-4 py-2 bg-gold text-black font-bold rounded hover:bg-yellow-500 transition"
+        >
+          ← Back to Stocks
         </Link>
 
         <header className="mb-6">
@@ -178,9 +140,7 @@ export default function RLJLodgingTrust() {
               }`}
             >
               {stockData && stockData.latestPrice > 9.55 ? "↑" : "↓"}{" "}
-              {stockData
-                ? `+${(stockData.latestPrice - 9.55).toFixed(2)}`
-                : "0.00"}
+              {stockData ? `+${(stockData.latestPrice - 9.55).toFixed(2)}` : "0.00"}
             </span>
           </div>
           <p className="text-sm mt-2 text-gray-300">
@@ -199,17 +159,15 @@ export default function RLJLodgingTrust() {
         {/* Time Range Buttons */}
         <section className="mb-8 text-center">
           <div className="flex justify-center space-x-4">
-            {timeRanges.map((range) => (
+            {timeRanges.map((r) => (
               <button
-                key={range.value}
+                key={r.value}
                 className={`px-4 py-2 ${
-                  selectedRange === range.value
-                    ? "bg-gold text-black"
-                    : "bg-gray-700 text-white"
+                  selectedRange === r.value ? "bg-gold text-black" : "bg-gray-700 text-white"
                 } rounded hover:bg-gray-600`}
-                onClick={() => setSelectedRange(range.value)}
+                onClick={() => setSelectedRange(r.value)}
               >
-                {range.label}
+                {r.label}
               </button>
             ))}
           </div>
@@ -221,38 +179,28 @@ export default function RLJLodgingTrust() {
             <p className="text-red-500">{error}</p>
           ) : stockData ? (
             <div className="mt-4 bg-gray-700 border border-gold rounded p-4">
-              <Chart
-                options={stockData.chartOptions}
-                series={stockData.series}
-                type="candlestick"
-                height={350}
-              />
-              <div className="mt-4">
-                <p className="text-sm">
-                  Stock Price: ${stockData.latestPrice} | Volume:{" "}
-                  {stockData.volume}
-                </p>
+              <Chart options={stockData.chartOptions} series={stockData.series} type="candlestick" height={350} />
+              <div className="mt-4 text-sm">
+                Stock Price: ${stockData.latestPrice} | Volume: {stockData.volume}
               </div>
-              <div className="text-sm text-gray-300 mt-4">
+              <div className="text-sm text-gray-300 mt-4 space-y-1">
                 <p>Market Cap: {stockData.marketCap}</p>
                 <p>P/E Ratio: {stockData.peRatio}</p>
                 <p>Dividend Yield: {stockData.dividendYield}</p>
-                <p>52-week High: ${stockData.fiftyTwoWeekHigh}</p>
-                <p>52-week Low: ${stockData.fiftyTwoWeekLow}</p>
+                <p>52‑week High: ${stockData.fiftyTwoWeekHigh}</p>
+                <p>52‑week Low: ${stockData.fiftyTwoWeekLow}</p>
               </div>
             </div>
           ) : (
-            <p className="text-sm text-yellow-400">
-              Loading stock performance data...
-            </p>
+            <p className="text-sm text-yellow-400">Loading stock performance data…</p>
           )}
         </section>
 
         {/* Impact Stories */}
         <section className="mb-8">
           <h2 className="text-2xl font-bold text-gold">Impact Stories</h2>
-          <ul className="mt-4 list-disc list-inside text-gray-300">
-            <li>Investing in local minority-owned suppliers.</li>
+          <ul className="mt-4 list-disc list-inside text-gray-300 space-y-1">
+            <li>Investing in local minority‑owned suppliers.</li>
             <li>Funding scholarships for underrepresented students.</li>
             <li>Promoting diversity within leadership roles.</li>
           </ul>

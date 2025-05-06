@@ -163,7 +163,7 @@ export default async function handler(
     Let's make history — together.
     
     — The Black Wealth Exchange Team`,
-    
+
       html: `
         <div style="font-family: Arial, sans-serif; line-height: 1.6;">
           <h2>Welcome to the movement, <strong>${newUser.email}</strong>!</h2>
@@ -190,8 +190,6 @@ export default async function handler(
         </div>
       `,
     };
-    
-    
 
     try {
       await transporter.sendMail(mailOptions);

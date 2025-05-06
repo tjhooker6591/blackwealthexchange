@@ -13,40 +13,39 @@ type SessionUser = {
 export default function Header() {
   const [user, setUser] = useState<SessionUser | null>(null);
 
+  // Fetch session once on mount
   useEffect(() => {
-    // Fetch /api/auth/me to see if someone is logged in
     fetch("/api/auth/me", { cache: "no-store" })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.user) setUser(data.user);
-      })
-      .catch(() => {
-        setUser(null);
-      });
+      .then((r) => r.json())
+      .then((d) => d.user && setUser(d.user))
+      .catch(() => setUser(null));
   }, []);
 
   return (
     <header className="bg-gray-900 text-white p-4 flex justify-between items-center">
-      <Link href="/">
-        <a className="text-xl font-bold">MyPlatform</a>
+      {/* logo / home */}
+      <Link href="/" className="text-xl font-bold">
+        MyPlatform
       </Link>
+
+      {/* nav */}
       <nav className="space-x-4">
         {user ? (
           <>
-            <Link href="/dashboard">
-              <a className="hover:underline">Dashboard</a>
+            <Link href="/dashboard" className="hover:underline">
+              Dashboard
             </Link>
-            <Link href="/profile">
-              <a className="hover:underline">Profile</a>
+            <Link href="/profile" className="hover:underline">
+              Profile
             </Link>
           </>
         ) : (
           <>
-            <Link href="/login">
-              <a className="hover:underline">Log In</a>
+            <Link href="/login" className="hover:underline">
+              Log&nbsp;In
             </Link>
-            <Link href="/signup">
-              <a className="hover:underline">Sign Up</a>
+            <Link href="/signup" className="hover:underline">
+              Sign&nbsp;Up
             </Link>
           </>
         )}
@@ -54,3 +53,4 @@ export default function Header() {
     </header>
   );
 }
+
