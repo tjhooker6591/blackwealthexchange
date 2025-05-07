@@ -25,9 +25,15 @@ export default function ProfilePage() {
   const [resumeFile, setResumeFile] = useState<File | null>(null);
 
   // Status flags
-  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "success" | "error">("idle");
-  const [avatarStatus, setAvatarStatus] = useState<"idle" | "uploading" | "success" | "error">("idle");
-  const [resumeStatus, setResumeStatus] = useState<"idle" | "uploading" | "success" | "error">("idle");
+  const [saveStatus, setSaveStatus] = useState<
+    "idle" | "saving" | "success" | "error"
+  >("idle");
+  const [avatarStatus, setAvatarStatus] = useState<
+    "idle" | "uploading" | "success" | "error"
+  >("idle");
+  const [resumeStatus, setResumeStatus] = useState<
+    "idle" | "uploading" | "success" | "error"
+  >("idle");
 
   useEffect(() => {
     fetch("/api/profile")
@@ -133,7 +139,10 @@ export default function ProfilePage() {
             height={80}
             className="rounded-full"
           />
-          <form onSubmit={handleAvatarUpload} className="flex items-center space-x-2">
+          <form
+            onSubmit={handleAvatarUpload}
+            className="flex items-center space-x-2"
+          >
             <input
               type="file"
               accept="image/*"
@@ -147,8 +156,12 @@ export default function ProfilePage() {
             >
               {avatarStatus === "uploading" ? "Uploading…" : "Change Avatar"}
             </button>
-            {avatarStatus === "success" && <span className="text-green-400">✔️</span>}
-            {avatarStatus === "error" && <span className="text-red-400">❌</span>}
+            {avatarStatus === "success" && (
+              <span className="text-green-400">✔️</span>
+            )}
+            {avatarStatus === "error" && (
+              <span className="text-red-400">❌</span>
+            )}
           </form>
         </div>
 
@@ -189,7 +202,9 @@ export default function ProfilePage() {
             {saveStatus === "saving" ? "Saving…" : "Save Profile"}
           </button>
           {saveStatus === "success" && <p className="text-green-400">Saved!</p>}
-          {saveStatus === "error" && <p className="text-red-400">Save failed.</p>}
+          {saveStatus === "error" && (
+            <p className="text-red-400">Save failed.</p>
+          )}
         </form>
 
         {/* Resume */}
@@ -207,7 +222,10 @@ export default function ProfilePage() {
               </a>
             </p>
           )}
-          <form onSubmit={handleResumeUpload} className="flex items-center space-x-2">
+          <form
+            onSubmit={handleResumeUpload}
+            className="flex items-center space-x-2"
+          >
             <input
               type="file"
               accept=".pdf,.doc,.docx"
@@ -221,8 +239,12 @@ export default function ProfilePage() {
             >
               {resumeStatus === "uploading" ? "Uploading…" : "Upload Resume"}
             </button>
-            {resumeStatus === "success" && <span className="text-green-400">✔️</span>}
-            {resumeStatus === "error" && <span className="text-red-400">❌</span>}
+            {resumeStatus === "success" && (
+              <span className="text-green-400">✔️</span>
+            )}
+            {resumeStatus === "error" && (
+              <span className="text-red-400">❌</span>
+            )}
           </form>
         </div>
       </div>

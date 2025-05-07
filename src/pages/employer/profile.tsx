@@ -1,3 +1,4 @@
+// src/pages/employer/profile.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -35,18 +36,27 @@ export default function EmployerProfile() {
   useEffect(() => {
     const fetchUserAndProfile = async () => {
       try {
-        const res = await fetch("/api/auth/me");
+        // Verify session
+        const res = await fetch("/api/auth/me", {
+          cache: "no-store",
+          credentials: "include",
+        });
+        if (!res.ok) {
+          router.push("/login?redirect=/employer/profile");
+          return;
+        }
         const data = await res.json();
 
         if (!data.user) {
-          router.push("/login");
+          router.push("/login?redirect=/employer/profile");
           return;
         }
-
         setUser(data.user);
 
+        // Fetch profile data
         const profileRes = await axios.get("/api/employer/profile", {
           params: { email: data.user.email },
+          withCredentials: true,
         });
 
         if (profileRes.data) {
@@ -63,7 +73,7 @@ export default function EmployerProfile() {
   }, [router]);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     setProfile({ ...profile, [e.target.name]: e.target.value });
   };
@@ -74,10 +84,11 @@ export default function EmployerProfile() {
 
     setSaving(true);
     try {
-      await axios.post("/api/employer/profile/update", {
-        ...profile,
-        email: user.email,
-      });
+      await axios.post(
+        "/api/employer/profile/update",
+        { ...profile, email: user.email },
+        { withCredentials: true }
+      );
       setMessage("Profile updated successfully!");
     } catch (err) {
       console.error("Failed to update profile", err);
@@ -169,13 +180,13 @@ export default function EmployerProfile() {
               rows={5}
               className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded text-white"
               placeholder="Tell us about your company..."
-            ></textarea>
+            />
           </div>
 
           <button
             type="submit"
             disabled={saving}
-            className="w-full bg-gold text-black font-semibold py-2 rounded hover:bg-yellow-400 transition"
+            className="w-full bg-gold text-black font-semibold py-2 rounded hover:bg-yellow-400 transition disabled:opacity-50"
           >
             {saving ? "Saving..." : "Save Changes"}
           </button>

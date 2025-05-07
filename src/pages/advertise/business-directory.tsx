@@ -1,3 +1,4 @@
+// src/pages/advertise/business-directory.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -12,7 +13,16 @@ export default function BusinessDirectoryAdPage() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await fetch("/api/auth/me");
+        // ← FIXED: include cache and credentials here
+        const res = await fetch("/api/auth/me", {
+          cache: "no-store",
+          credentials: "include",
+        });
+        if (!res.ok) {
+          // if unauthorized, redirect to login
+          router.replace("/login?redirect=/advertise/business-directory");
+          return;
+        }
         const data = await res.json();
         if (data?.user?._id) {
           setUserId(data.user._id);
@@ -23,7 +33,7 @@ export default function BusinessDirectoryAdPage() {
     };
 
     fetchUser();
-  }, []);
+  }, [router]);
 
   const handleSelectPlan = (plan: string) => {
     router.push(`/checkout?type=directory&plan=${plan}`);

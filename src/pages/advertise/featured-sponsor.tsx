@@ -1,3 +1,4 @@
+// src/pages/advertise/featured-sponsor.tsx
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -14,10 +15,16 @@ export default function FeaturedSponsorPage() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await fetch("/api/auth/me");
-        const data = await res.json();
-        if (data?.user?._id) {
-          setUserId(data.user._id);
+        // ← FIXED: include cache and credentials here
+        const res = await fetch("/api/auth/me", {
+          cache: "no-store",
+          credentials: "include",
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data?.user?._id) {
+            setUserId(data.user._id);
+          }
         }
       } catch (err) {
         console.error("Failed to fetch user ID", err);
@@ -53,7 +60,7 @@ export default function FeaturedSponsorPage() {
     }
 
     router.push(
-      `/advertising/checkout?option=featured-sponsor&duration=${campaignDuration}`,
+      `/advertising/checkout?option=featured-sponsor&duration=${campaignDuration}`
     );
   };
 
@@ -66,8 +73,7 @@ export default function FeaturedSponsorPage() {
             Become a Featured Sponsor
           </h1>
           <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-            Every Black-owned business is welcome in our free directory — but if
-            you want to
+            Every Black-owned business is welcome in our free directory — but if you want to
             <span className="text-gold font-semibold"> stand out</span>,
             Featured Sponsor Ads give your brand premium visibility across Black
             Wealth Exchange.
@@ -85,20 +91,16 @@ export default function FeaturedSponsorPage() {
             Limited Availability: Weekly Sponsor Slots
           </h2>
           <p className="text-gray-300 mb-4">
-            Your business will appear in the{" "}
-            <strong>rolling Featured Sponsor section</strong> on the homepage —
-            shown to every visitor on the site. Each campaign runs for{" "}
-            <strong>7 days</strong> with <strong>only 8 sponsor slots</strong>{" "}
-            available per week.
+            Your business will appear in the <strong>rolling Featured Sponsor section</strong> on the homepage —
+            shown to every visitor on the site. Each campaign runs for <strong>7 days</strong> with
+            <strong> only 8 sponsor slots</strong> available per week.
           </p>
           <p className="text-gray-300 mb-4">
-            With <strong>52 total weekly rotations per year</strong>, space is
-            limited and demand is high. Once a week is full, your ad will
-            automatically be queued for the next available slot.
+            With <strong>52 total weekly rotations per year</strong>, space is limited and demand is high.
+            Once a week is full, your ad will automatically be queued for the next available slot.
           </p>
           <p className="text-yellow-400 font-semibold">
-            Reserve your placement early to secure visibility during your ideal
-            timeframe.
+            Reserve your placement early to secure visibility during your ideal timeframe.
           </p>
         </section>
 
@@ -119,9 +121,7 @@ export default function FeaturedSponsorPage() {
             },
           ].map((item) => (
             <div key={item.title} className="bg-gray-800 p-6 rounded-lg shadow">
-              <h3 className="text-xl font-semibold text-gold mb-2">
-                {item.title}
-              </h3>
+              <h3 className="text-xl font-semibold text-gold mb-2">{item.title}</h3>
               <p className="text-sm text-gray-300">{item.text}</p>
             </div>
           ))}
@@ -129,9 +129,7 @@ export default function FeaturedSponsorPage() {
 
         {/* Pricing Options */}
         <section className="text-center">
-          <h2 className="text-2xl font-bold text-gold mb-4">
-            Pricing & Duration
-          </h2>
+          <h2 className="text-2xl font-bold text-gold mb-4">Pricing & Duration</h2>
           <p className="text-gray-400 mb-6">
             Choose a duration that fits your campaign needs. All featured
             sponsors receive top billing across key areas.
@@ -145,10 +143,9 @@ export default function FeaturedSponsorPage() {
               <div
                 key={value}
                 onClick={() => setCampaignDuration(value)}
-                className={`cursor-pointer p-6 rounded-lg border ${
-                  campaignDuration === value
-                    ? "border-gold bg-gray-800"
-                    : "border-gray-600"
+                className={`cursor-pointer p-6 rounded-lg border ${(campaignDuration === value)
+                  ? "border-gold bg-gray-800"
+                  : "border-gray-600"
                 }`}
               >
                 <h4 className="text-lg font-semibold text-white">{label}</h4>
@@ -192,10 +189,9 @@ export default function FeaturedSponsorPage() {
         <div className="text-center">
           <button
             onClick={handleProceed}
-            className={`mt-4 px-6 py-2 rounded font-semibold transition ${
-              confirmed && adImageFile && campaignDuration
-                ? "bg-gold text-black hover:bg-yellow-400"
-                : "bg-gray-600 text-gray-300 cursor-not-allowed"
+            className={`mt-4 px-6 py-2 rounded font-semibold transition ${(confirmed && adImageFile && campaignDuration)
+              ? "bg-gold text-black hover:bg-yellow-400"
+              : "bg-gray-600 text-gray-300 cursor-not-allowed"
             }`}
           >
             Proceed to Checkout

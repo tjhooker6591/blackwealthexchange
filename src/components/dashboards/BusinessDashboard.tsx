@@ -1,4 +1,3 @@
-// src/components/dashboards/BusinessDashboard.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -20,10 +19,13 @@ export default function BusinessDashboard() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch("/api/auth/me");
+        const res = await fetch("/api/auth/me", {
+          cache: "no-store",
+          credentials: "include",
+        });
         const data = await res.json();
 
-        if (!data?.user || data.user.accountType !== "business") {
+        if (!res.ok || !data?.user || data.user.accountType !== "business") {
           setAccessDenied(true);
           return;
         }
@@ -74,18 +76,12 @@ export default function BusinessDashboard() {
           <nav>
             <ul className="space-y-4">
               <li>
-                <Link
-                  href="/dashboard/business/overview"
-                  className="hover:underline"
-                >
+                <Link href="/dashboard/business/overview" className="hover:underline">
                   Overview
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/dashboard/business/ads"
-                  className="hover:underline"
-                >
+                <Link href="/dashboard/business/ads" className="hover:underline">
                   Manage Ads
                 </Link>
               </li>
@@ -95,10 +91,7 @@ export default function BusinessDashboard() {
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/dashboard/business/upgrade"
-                  className="hover:underline"
-                >
+                <Link href="/dashboard/business/upgrade" className="hover:underline">
                   Upgrade Options
                 </Link>
               </li>
@@ -162,12 +155,10 @@ function DashboardCard({
   color: string;
 }) {
   return (
-    <Link
-      href={href}
-      className={`block rounded-lg p-5 shadow-md hover:shadow-xl transition cursor-pointer ${color}`}
-    >
+    <Link href={href} className={`block rounded-lg p-5 shadow-md hover:shadow-xl transition cursor-pointer ${color}`}>
       <h3 className="text-xl font-bold mb-2">{title}</h3>
       <p className="text-sm">{description}</p>
     </Link>
   );
 }
+

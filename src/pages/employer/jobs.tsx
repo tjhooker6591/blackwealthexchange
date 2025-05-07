@@ -1,3 +1,4 @@
+// src/pages/employer/jobs.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -22,10 +23,16 @@ export default function EmployerJobsPage() {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
-        // Step 1: Get the logged-in user
-        const userRes = await fetch("/api/auth/me");
+        // Step 1: Get the logged‑in user
+        const userRes = await fetch("/api/auth/me", {
+          cache: "no-store",
+          credentials: "include",
+        });
+        if (!userRes.ok) {
+          router.push("/login");
+          return;
+        }
         const userData = await userRes.json();
-
         if (!userData.user) {
           router.push("/login");
           return;
@@ -36,6 +43,10 @@ export default function EmployerJobsPage() {
         // Step 2: Fetch jobs posted by this user
         const res = await fetch(
           `/api/jobs/employer?email=${encodeURIComponent(email)}`,
+          {
+            cache: "no-store",
+            credentials: "include",
+          }
         );
         const data = await res.json();
 
@@ -59,6 +70,7 @@ export default function EmployerJobsPage() {
     try {
       const res = await fetch(`/api/jobs/${id}`, {
         method: "DELETE",
+        credentials: "include",
       });
       if (res.ok) {
         setJobs((prev) => prev.filter((job) => job._id !== id));
@@ -85,7 +97,7 @@ export default function EmployerJobsPage() {
         {loading ? (
           <p className="text-gray-400">Loading jobs...</p>
         ) : jobs.length === 0 ? (
-          <p className="text-gray-400">You haven not posted any jobs yet.</p>
+          <p className="text-gray-400">You haven’t posted any jobs yet.</p>
         ) : (
           <div className="space-y-6">
             {jobs.map((job) => (

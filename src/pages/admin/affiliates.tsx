@@ -1,3 +1,6 @@
+// src/pages/admin/affiliates.tsx
+"use client";
+
 import React, { useEffect, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -22,40 +25,59 @@ export default function AdminAffiliates() {
 
   useEffect(() => {
     const checkAdminAndFetch = async () => {
-      const sessionRes = await fetch("/api/auth/me");
-      const sessionData = await sessionRes.json();
+      try {
+        // ← FIXED: include cache and credentials here
+        const sessionRes = await fetch("/api/auth/me", {
+          cache: "no-store",
+          credentials: "include",
+        });
+        if (!sessionRes.ok) {
+          router.push("/");
+          return;
+        }
+        const sessionData = await sessionRes.json();
 
-      if (
-        !sessionData.user ||
-        sessionData.user.email !== "tjameshooker@gmail.com"
-      ) {
-        router.push("/"); // Redirect non-admins
-        return;
+        if (
+          !sessionData.user ||
+          sessionData.user.email !== "tjameshooker@gmail.com"
+        ) {
+          router.push("/");
+          return;
+        }
+
+        const res = await fetch("/api/admin/affiliates/list", {
+          cache: "no-store",
+          credentials: "include",
+        });
+        const data = await res.json();
+
+        setPending(data.pending);
+        setActive(data.active);
+        setRejected(data.rejected);
+      } catch (err) {
+        console.error("Failed to load affiliates:", err);
+      } finally {
+        setLoading(false);
       }
-
-      const res = await fetch("/api/admin/affiliates/list");
-      const data = await res.json();
-
-      setPending(data.pending);
-      setActive(data.active);
-      setRejected(data.rejected);
-      setLoading(false);
     };
 
     checkAdminAndFetch();
   }, [router]);
-
   const handleAction = async (id: string, action: "approve" | "reject") => {
     await fetch(`/api/admin/affiliates/${action}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify({ affiliateId: id }),
     });
     refreshData();
   };
 
   const refreshData = async () => {
-    const res = await fetch("/api/admin/affiliates/list");
+    const res = await fetch("/api/admin/affiliates/list", {
+      cache: "no-store",
+      credentials: "include",
+    });
     const data = await res.json();
     setPending(data.pending);
     setActive(data.active);

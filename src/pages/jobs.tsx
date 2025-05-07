@@ -1,10 +1,63 @@
-import Link from "next/link";
+// src/pages/post-job.tsx
+"use client";
 
-export default function Jobs() {
+import Link from "next/link";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+
+export default function PostJobPage() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+  const [accessDenied, setAccessDenied] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch("/api/auth/me", {
+          cache: "no-store",
+          credentials: "include",
+        });
+        if (!res.ok) {
+          // Not logged in or invalid session
+          router.replace("/login?redirect=/post-job");
+          return;
+        }
+        const { user } = await res.json();
+        if (user.accountType !== "employer") {
+          setAccessDenied(true);
+        }
+      } catch (err) {
+        console.error("Failed to verify session:", err);
+        router.replace("/login?redirect=/post-job");
+        return;
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [router]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
+        <p>Loading...</p>
+      </div>
+    );
+  }
+
+  if (accessDenied) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
+        <p className="text-red-400">
+          Access Denied. You must be an employer to post jobs.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-900 text-white px-6 py-10">
       <div className="max-w-5xl mx-auto bg-gray-800 p-8 rounded-lg shadow-lg space-y-12">
-        {/* 🔝 Page Header */}
+        {/* Page Header */}
         <div className="flex justify-between items-center">
           <h1 className="text-3xl font-extrabold text-gold">
             Black Wealth Exchange Job Hub
@@ -21,7 +74,7 @@ export default function Jobs() {
           tailored to uplift Black professionals and entrepreneurs.
         </p>
 
-        {/* 🔍 Job Tools */}
+        {/* Job Tools */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Find a Job */}
           <Card
@@ -60,7 +113,7 @@ export default function Jobs() {
           />
         </div>
 
-        {/* 🌱 Mentorship */}
+        {/* Mentorship */}
         <div className="p-6 bg-purple-600 text-white rounded-lg shadow-md space-y-3">
           <h2 className="text-xl font-bold">Mentorship Program</h2>
           <p className="text-sm">
@@ -74,7 +127,7 @@ export default function Jobs() {
           </Link>
         </div>
 
-        {/* 👤 Profile Creation */}
+        {/* Profile Creation */}
         <div className="text-center space-y-4">
           <h2 className="text-xl font-bold text-gold">
             Create Your Profile & Get Started
@@ -97,7 +150,7 @@ export default function Jobs() {
           </div>
         </div>
 
-        {/* 💼 Premium Upgrade */}
+        {/* Premium Upgrade */}
         <div className="text-center space-y-4">
           <h2 className="text-xl font-bold text-gold">Level Up Your Career</h2>
           <p className="text-gray-300">
@@ -110,10 +163,10 @@ export default function Jobs() {
           </Link>
         </div>
 
-        {/* 🔙 Back to Home */}
+        {/* Back to Home */}
         <div className="text-center pt-6 border-t border-gray-700 mt-10">
           <Link href="/">
-            <button className="mt-4 px-6 py-3 bg-gold text-black font-bold rounded hover:bg-yellow-500 transition">
+            <button className="px-6 py-3 bg-gold text-black font-bold rounded hover:bg-yellow-500 transition">
               Back to Home
             </button>
           </Link>
@@ -123,7 +176,7 @@ export default function Jobs() {
   );
 }
 
-// 🔧 Reusable Card Component
+// Reusable Card Component
 function Card({
   title,
   description,
@@ -149,3 +202,4 @@ function Card({
     </div>
   );
 }
+

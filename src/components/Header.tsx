@@ -15,8 +15,14 @@ export default function Header() {
 
   // Fetch session once on mount
   useEffect(() => {
-    fetch("/api/auth/me", { cache: "no-store" })
-      .then((r) => r.json())
+    fetch("/api/auth/me", {
+      cache: "no-store",
+      credentials: "include",
+    })
+      .then((r) => {
+        if (!r.ok) throw new Error("Not authenticated");
+        return r.json();
+      })
       .then((d) => d.user && setUser(d.user))
       .catch(() => setUser(null));
   }, []);

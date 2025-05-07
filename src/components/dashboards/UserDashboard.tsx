@@ -33,36 +33,49 @@ type ChartData = {
 export default function UserDashboard() {
   const [user, setUser] = useState<UserType | null>(null);
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(
-    null,
+    null
   );
   const [chartData, setChartData] = useState<ChartData>([]);
   const [loading, setLoading] = useState(true);
   const [accessDenied, setAccessDenied] = useState(false);
 
-  /* ─ fetch dashboard + chart data ─ */
   useEffect(() => {
     (async () => {
       try {
-        const userRes = await fetch("/api/auth/me", { cache: "no-store" });
+        // ← single‐line change here
+        const userRes = await fetch("/api/auth/me", {
+          cache: "no-store",
+          credentials: "include",
+        });
+        if (!userRes.ok) {
+          setAccessDenied(true);
+          setLoading(false);
+          return;
+        }
+
         const userData = await userRes.json();
 
         if (userData?.user?.accountType !== "user") {
           setAccessDenied(true);
+          setLoading(false);
           return;
         }
         setUser(userData.user);
 
         const [dashboardRes, chartRes] = await Promise.all([
-          fetch(`/api/user/get-dashboard?email=${userData.user.email}`, {
+          fetch(`/api/user/get-dashboard?email=${encodeURIComponent(userData.user.email)}`, {
             cache: "no-store",
+            credentials: "include",
           }),
-          fetch(
-            `/api/user/applications-overview?email=${userData.user.email}`,
-            {
-              cache: "no-store",
-            },
-          ),
+          fetch(`/api/user/applications-overview?email=${encodeURIComponent(userData.user.email)}`, {
+            cache: "no-store",
+            credentials: "include",
+          }),
         ]);
+
+        if (!dashboardRes.ok || !chartRes.ok) {
+          throw new Error("Failed to load user data");
+        }
 
         setDashboardData(await dashboardRes.json());
         setChartData(await chartRes.json());
@@ -75,7 +88,6 @@ export default function UserDashboard() {
     })();
   }, []);
 
-  /* ─ loading & guard screens ─ */
   if (loading) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center text-white">
@@ -91,7 +103,6 @@ export default function UserDashboard() {
     );
   }
 
-  /* ───────────────────────── UI (no extra sidebar) ───────────────────────── */
   return (
     <section className="space-y-8">
       {/* Welcome banner */}

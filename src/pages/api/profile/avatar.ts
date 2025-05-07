@@ -16,7 +16,7 @@ type Data = { avatarUrl: string } | { error: string };
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Data>
+  res: NextApiResponse<Data>,
 ) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method Not Allowed" });
@@ -60,7 +60,10 @@ export default async function handler(
 
     // Derive public URL, stripping off /public
     const savedPath = file.filepath;
-    const relative = path.relative(path.join(process.cwd(), "public"), savedPath);
+    const relative = path.relative(
+      path.join(process.cwd(), "public"),
+      savedPath,
+    );
     const avatarUrl = "/" + relative.replace(/\\/g, "/");
 
     // TODO: update your user record in the database with avatarUrl
@@ -68,4 +71,3 @@ export default async function handler(
     return res.status(200).json({ avatarUrl });
   });
 }
-

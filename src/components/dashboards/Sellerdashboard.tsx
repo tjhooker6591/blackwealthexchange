@@ -1,3 +1,4 @@
+// src/components/dashboards/SellerDashboard.tsx
 "use client";
 
 import Link from "next/link";
@@ -22,19 +23,23 @@ export default function SellerDashboard() {
   useEffect(() => {
     const verifyAndLoadStats = async () => {
       try {
-        // Verify session & role
-        const sessionRes = await fetch("/api/auth/me", { cache: "no-store" });
+        // ← single-line change: include cache & credentials
+        const sessionRes = await fetch("/api/auth/me", {
+          cache: "no-store",
+          credentials: "include",
+        });
         const sessionData = await sessionRes.json();
-        if (sessionData?.user?.accountType !== "seller") {
+        if (!sessionRes.ok || sessionData.user.accountType !== "seller") {
           setAccessDenied(true);
           return;
         }
 
-        setSellerName(sessionData.user.name || "Seller");
+        setSellerName(sessionData.user.fullName || "Seller");
 
         // Fetch seller stats
         const statsRes = await fetch("/api/marketplace/stats", {
           cache: "no-store",
+          credentials: "include",
         });
         const statsData = await statsRes.json();
         setStats({
@@ -91,10 +96,7 @@ export default function SellerDashboard() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <StatCard label="Products Listed" value={stats.products} />
           <StatCard label="Orders Received" value={stats.orders} />
-          <StatCard
-            label="Total Revenue"
-            value={`$${Number(stats.revenue).toFixed(2)}`}
-          />
+          <StatCard label="Total Revenue" value={`$${stats.revenue.toFixed(2)}`} />
         </div>
 
         {/* Quick Actions */}
@@ -159,9 +161,7 @@ function DashboardCard({
 }) {
   return (
     <Link href={href} className="block">
-      <div
-        className={`p-5 rounded-lg shadow hover:shadow-xl transition cursor-pointer ${color}`}
-      >
+      <div className={`p-5 rounded-lg shadow hover:shadow-xl transition cursor-pointer ${color}`}>
         <h3 className="text-xl font-bold mb-2">{title}</h3>
         <p className="text-sm">{description}</p>
       </div>

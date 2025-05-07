@@ -1,3 +1,4 @@
+// src/components/dashboards/EmployerDashboard.tsx
 "use client";
 
 import Link from "next/link";
@@ -42,9 +43,10 @@ export default function EmployerDashboard() {
   useEffect(() => {
     const verifyAndLoadData = async () => {
       try {
+        // ← single-line change below
         const sessionRes = await fetch("/api/auth/me", {
-          credentials: "include",
           cache: "no-store",
+          credentials: "include",
         });
         const sessionData = await sessionRes.json();
 
@@ -53,8 +55,10 @@ export default function EmployerDashboard() {
           return;
         }
 
+        // Fetch stats
         const statsRes = await fetch("/api/employer/stats", {
           cache: "no-store",
+          credentials: "include",
         });
         const statsData = await statsRes.json();
         setStats({
@@ -64,14 +68,18 @@ export default function EmployerDashboard() {
           profileCompletion: statsData.profileCompletion || 0,
         });
 
+        // Fetch recent jobs
         const jobsRes = await fetch("/api/employer/jobs?limit=5", {
           cache: "no-store",
+          credentials: "include",
         });
         const jobsData: { jobs: Job[] } = await jobsRes.json();
         setJobList(jobsData.jobs || []);
 
+        // Fetch recent applicants
         const appRes = await fetch("/api/employer/applicants?limit=5", {
           cache: "no-store",
+          credentials: "include",
         });
         const appData: { applicants: Applicant[] } = await appRes.json();
         setRecentApplicants(appData.applicants || []);
@@ -113,10 +121,7 @@ export default function EmployerDashboard() {
             <Link href="/profile" className="hover:underline">
               Profile
             </Link>
-            <Link
-              href="/dashboard/employer/billing"
-              className="hover:underline"
-            >
+            <Link href="/dashboard/employer/billing" className="hover:underline">
               Billing
             </Link>
           </nav>
@@ -128,18 +133,12 @@ export default function EmployerDashboard() {
           <nav>
             <ul className="space-y-4">
               <li>
-                <Link
-                  href="/dashboard/employer/overview"
-                  className="hover:underline"
-                >
+                <Link href="/dashboard/employer/overview" className="hover:underline">
                   Overview
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/dashboard/employer/jobs"
-                  className="hover:underline"
-                >
+                <Link href="/dashboard/employer/jobs" className="hover:underline">
                   Job Postings
                 </Link>
               </li>
@@ -149,18 +148,12 @@ export default function EmployerDashboard() {
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/dashboard/employer/tools"
-                  className="hover:underline"
-                >
+                <Link href="/dashboard/employer/tools" className="hover:underline">
                   Employer Tools
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/dashboard/employer/analytics"
-                  className="hover:underline"
-                >
+                <Link href="/dashboard/employer/analytics" className="hover:underline">
                   Analytics
                 </Link>
               </li>
@@ -173,11 +166,7 @@ export default function EmployerDashboard() {
             <StatCard label="Jobs Posted" value={stats.jobsPosted} />
             <StatCard label="Total Applicants" value={stats.totalApplicants} />
             <StatCard label="Messages" value={stats.messages} />
-            <StatCard
-              label="Profile Completion"
-              value={stats.profileCompletion}
-              suffix="%"
-            />
+            <StatCard label="Profile Completion" value={stats.profileCompletion} suffix="%" />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -254,10 +243,7 @@ export default function EmployerDashboard() {
                         ? job.description.substring(0, 100) + "..."
                         : job.description}
                     </p>
-                    <Link
-                      href={`/dashboard/employer/jobs/${job._id}`}
-                      className="underline mt-2 inline-block"
-                    >
+                    <Link href={`/dashboard/employer/jobs/${job._id}`} className="underline mt-2 inline-block">
                       View Details
                     </Link>
                   </div>
@@ -310,10 +296,7 @@ function DashboardCard({
   color: string;
 }) {
   return (
-    <Link
-      href={href}
-      className={`block p-5 rounded-lg shadow hover:shadow-xl transition ${color}`}
-    >
+    <Link href={href} className={`block p-5 rounded-lg shadow hover:shadow-xl transition ${color}`}>
       <h3 className="text-xl font-bold mb-2">{title}</h3>
       <p className="text-sm">{description}</p>
     </Link>

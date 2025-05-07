@@ -1,3 +1,4 @@
+// src/pages/advertise/banner-ads.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -8,23 +9,34 @@ import BuyNowButton from "@/components/BuyNowButton";
 export default function BannerAdsPage() {
   const router = useRouter();
   const [userId, setUserId] = useState<string>("guest");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await fetch("/api/auth/me");
+        // ← FIXED: include cache and credentials here
+        const res = await fetch("/api/auth/me", {
+          cache: "no-store",
+          credentials: "include",
+        });
+        if (!res.ok) {
+          // redirect on unauthorized
+          router.replace("/login?redirect=/advertise/banner-ads");
+          return;
+        }
         const data = await res.json();
-
         if (data?.user?._id) {
           setUserId(data.user._id);
         }
       } catch (err) {
         console.error("Failed to fetch user from /api/auth/me", err);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchUser();
-  }, []);
+  }, [router]);
 
   const getAdPrice = (placement: string) => {
     switch (placement) {
@@ -45,32 +57,13 @@ export default function BannerAdsPage() {
     router.push(`/advertise-form?type=banner&placement=${placement}`);
   };
 
-  const bannerOptions = [
-    {
-      title: "Top of Homepage",
-      placement: "homepage-top",
-      description:
-        "Get maximum visibility with a large banner at the very top of the homepage.",
-    },
-    {
-      title: "Sidebar Ad",
-      placement: "sidebar",
-      description:
-        "A persistent sidebar banner visible throughout user navigation.",
-    },
-    {
-      title: "Footer Banner",
-      placement: "footer",
-      description:
-        "Appears at the bottom of every page — great for long-term visibility.",
-    },
-    {
-      title: "User Dashboard",
-      placement: "dashboard",
-      description:
-        "Display your banner on the business or user dashboard for targeted exposure.",
-    },
-  ];
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-black text-white">
+        Loading...
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-black text-white px-4 py-10 flex flex-col items-center text-center">
@@ -84,7 +77,32 @@ export default function BannerAdsPage() {
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl">
-        {bannerOptions.map((banner) => (
+        {[
+          {
+            title: "Top of Homepage",
+            placement: "homepage-top",
+            description:
+              "Get maximum visibility with a large banner at the very top of the homepage.",
+          },
+          {
+            title: "Sidebar Ad",
+            placement: "sidebar",
+            description:
+              "A persistent sidebar banner visible throughout user navigation.",
+          },
+          {
+            title: "Footer Banner",
+            placement: "footer",
+            description:
+              "Appears at the bottom of every page — great for long-term visibility.",
+          },
+          {
+            title: "User Dashboard",
+            placement: "dashboard",
+            description:
+              "Display your banner on the business or user dashboard for targeted exposure.",
+          },
+        ].map((banner) => (
           <div
             key={banner.placement}
             className="bg-white text-black rounded-2xl shadow-lg p-6 flex flex-col items-center"

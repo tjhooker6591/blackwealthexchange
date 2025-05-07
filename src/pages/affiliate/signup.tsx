@@ -1,3 +1,4 @@
+// src/pages/affiliate/signup.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -18,9 +19,20 @@ export default function AffiliateSignup() {
   useEffect(() => {
     // Check if user is logged in
     const checkSession = async () => {
-      const res = await fetch("/api/auth/me");
-      const data = await res.json();
-      if (!data.user) {
+      try {
+        const res = await fetch("/api/auth/me", {
+          cache: "no-store",
+          credentials: "include",
+        });
+        if (!res.ok) {
+          setIsLoggedIn(false);
+          return;
+        }
+        const data = await res.json();
+        if (!data.user) {
+          setIsLoggedIn(false);
+        }
+      } catch {
         setIsLoggedIn(false);
       }
     };
@@ -28,7 +40,7 @@ export default function AffiliateSignup() {
   }, []);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => setForm({ ...form, [e.target.name]: e.target.value });
 
   async function handleSubmit(e: React.FormEvent) {
@@ -38,6 +50,7 @@ export default function AffiliateSignup() {
     const res = await fetch("/api/affiliate/apply", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify(form),
     });
 
@@ -90,7 +103,7 @@ export default function AffiliateSignup() {
           Affiliate Application
         </h1>
 
-        {["name", "website", "audienceSize"].map((field) => (
+        {['name', 'website', 'audienceSize'].map((field) => (
           <input
             key={field}
             name={field}

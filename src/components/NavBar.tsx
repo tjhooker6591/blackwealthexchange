@@ -17,7 +17,10 @@ export default function NavBar() {
 
   const fetchSession = async () => {
     try {
-      const res = await fetch("/api/auth/me", { cache: "no-store" });
+      const res = await fetch("/api/auth/me", {
+        cache: "no-store",
+        credentials: "include",
+      });
       if (!res.ok) {
         setUser(null);
         return;
@@ -57,7 +60,9 @@ export default function NavBar() {
         {/* Logo */}
         <Link href="/" className="flex items-center space-x-2">
           <Image src="/favicon.png" alt="BWE Logo" width={40} height={40} />
-          <span className="text-gold font-bold truncate">Black Wealth Exchange</span>
+          <span className="text-gold font-bold truncate">
+            Black Wealth Exchange
+          </span>
         </Link>
 
         {/* Desktop Nav */}

@@ -22,7 +22,9 @@ interface Props {
   business: Biz;
 }
 
-export const getServerSideProps: GetServerSideProps<Props> = async ({ req }) => {
+export const getServerSideProps: GetServerSideProps<Props> = async ({
+  req,
+}) => {
   const token = req.cookies["session_token"];
   if (!token) return { redirect: { destination: "/login", permanent: false } };
 
@@ -38,7 +40,9 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ req }) => 
   }
 
   const db = (await clientPromise).db("bwes-cluster");
-  const doc = await db.collection("businesses").findOne({ email: payload.email });
+  const doc = await db
+    .collection("businesses")
+    .findOne({ email: payload.email });
   if (!doc) return { notFound: true };
 
   return {
@@ -58,16 +62,32 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({ req }) => 
 export default function BusinessProfile({ business }: Props) {
   return (
     <div className="min-h-screen bg-black text-white p-6">
-      <h1 className="text-3xl font-bold text-gold mb-6">
-        Business Profile
-      </h1>
+      <h1 className="text-3xl font-bold text-gold mb-6">Business Profile</h1>
       <div className="bg-gray-800 p-6 rounded-lg shadow-lg space-y-3">
-        <p><strong>Name:</strong> {business.businessName}</p>
-        <p><strong>Email:</strong> {business.email}</p>
-        {business.businessAddress && <p><strong>Address:</strong> {business.businessAddress}</p>}
-        {business.businessPhone && <p><strong>Phone:</strong> {business.businessPhone}</p>}
-        {business.description && <p><strong>Description:</strong> {business.description}</p>}
-        <p><strong>Verified:</strong> {business.verified ? "✅ Yes" : "❌ No"}</p>
+        <p>
+          <strong>Name:</strong> {business.businessName}
+        </p>
+        <p>
+          <strong>Email:</strong> {business.email}
+        </p>
+        {business.businessAddress && (
+          <p>
+            <strong>Address:</strong> {business.businessAddress}
+          </p>
+        )}
+        {business.businessPhone && (
+          <p>
+            <strong>Phone:</strong> {business.businessPhone}
+          </p>
+        )}
+        {business.description && (
+          <p>
+            <strong>Description:</strong> {business.description}
+          </p>
+        )}
+        <p>
+          <strong>Verified:</strong> {business.verified ? "✅ Yes" : "❌ No"}
+        </p>
         <button
           onClick={() => window.location.assign("/dashboard/edit-business")}
           className="mt-4 bg-yellow-500 text-black px-4 py-2 rounded hover:bg-yellow-400 transition"

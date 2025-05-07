@@ -1,4 +1,6 @@
 // src/pages/affiliate/index.tsx
+"use client";
+
 import type { NextPage } from "next";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
@@ -23,7 +25,15 @@ const AffiliatePartnershipPage: NextPage = () => {
   useEffect(() => {
     const checkAffiliate = async () => {
       try {
-        const sessionRes = await fetch("/api/auth/me");
+        // ← FIXED: include cache + credentials inside fetch
+        const sessionRes = await fetch("/api/auth/me", {
+          cache: "no-store",
+          credentials: "include",
+        });
+        if (!sessionRes.ok) {
+          setAffiliateStatus("inactive");
+          return;
+        }
         const sessionData = await sessionRes.json();
 
         if (!sessionData.user) {
@@ -31,10 +41,14 @@ const AffiliatePartnershipPage: NextPage = () => {
           return;
         }
 
-        const res = await fetch(
-          `/api/affiliate/get-links?userId=${sessionData.user.id}`,
+        const linksRes = await fetch(
+          `/api/affiliate/get-links?userId=${sessionData.user.userId}`,
+          {
+            cache: "no-store",
+            credentials: "include",
+          }
         );
-        if (res.ok) {
+        if (linksRes.ok) {
           setAffiliateStatus("active");
         } else {
           setAffiliateStatus("inactive");

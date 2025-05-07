@@ -1,3 +1,4 @@
+// src/pages/advertise/custom.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -15,10 +16,17 @@ export default function CustomAd() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await fetch("/api/auth/me");
-        const data = await res.json();
-        if (data?.user?._id) {
-          setUserId(data.user._id);
+        // ← FIXED: include cache and credentials here
+        const res = await fetch("/api/auth/me", {
+          cache: "no-store",
+          credentials: "include",
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data?.user?._id) {
+            setUserId(data.user._id);
+            setEmail(data.user.email || "");
+          }
         }
       } catch (err) {
         console.error("Failed to fetch user ID", err);
@@ -146,12 +154,12 @@ export default function CustomAd() {
           <h3 className="text-xl text-white font-semibold mb-2">
             Ready to Reserve Your Custom Campaign?
           </h3>
-          <BuyNowButton
-            userId={userId}
-            itemId="custom-ad-deposit"
-            amount={100}
-            type="ad"
-          />
+        <BuyNowButton
+          userId={userId}
+          itemId="custom-ad-deposit"
+          amount={100}
+          type="ad"
+        />
         </div>
 
         {/* Back to Ad Options */}

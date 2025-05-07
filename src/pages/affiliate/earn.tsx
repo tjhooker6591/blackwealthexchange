@@ -1,6 +1,10 @@
+// src/pages/affiliate/earn.tsx
+"use client";
+
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Head from "next/head";
+import { useRouter } from "next/navigation";
 
 interface EarningsData {
   clicks: number;
@@ -10,20 +14,34 @@ interface EarningsData {
 }
 
 export default function Earn() {
+  const router = useRouter();
   const [earnings, setEarnings] = useState<EarningsData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
   const [payoutMessage, setPayoutMessage] = useState<string>("");
+  const [userId, setUserId] = useState<string>("");
 
   useEffect(() => {
     const fetchEarnings = async () => {
       try {
-        // TEMP: Hardcoded userId for testing
-        const userId = "6807fd633105a101ca1b58fe";
+        // verify session
+        const sessionRes = await fetch("/api/auth/me", {
+          cache: "no-store",
+          credentials: "include",
+        });
+        if (!sessionRes.ok) {
+          router.replace("/login?redirect=/affiliate/earn");
+          return;
+        }
+        const sessionData = await sessionRes.json();
+        const uid = sessionData.user.userId;
+        setUserId(uid);
 
-        const res = await fetch(`/api/affiliate/earnings?userId=${userId}`);
+        // fetch earnings for this user
+        const res = await fetch(
+          `/api/affiliate/earnings?userId=${encodeURIComponent(uid)}`,
+          { cache: "no-store", credentials: "include" }
+        );
         const data = await res.json();
-
-        console.log("Earnings API Response:", data);
 
         if (res.ok) {
           setEarnings(data);
@@ -39,19 +57,18 @@ export default function Earn() {
     };
 
     fetchEarnings();
-  }, []);
+  }, [router]);
 
   const handlePayoutRequest = async () => {
+    if (!earnings || !userId) return;
     try {
-      // TEMP: Hardcoded userId for testing
-      const userId = "6807fd633105a101ca1b58fe";
-
-      const payoutDetails = "your-paypal@example.com"; // Replace later with dynamic input
       const payoutMethod = "PayPal";
+      const payoutDetails = "your-paypal@example.com"; // TODO: replace with real input
 
       const res = await fetch("/api/affiliate/request-payout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ userId, payoutMethod, payoutDetails }),
       });
 
@@ -62,6 +79,14 @@ export default function Earn() {
       setPayoutMessage("Payout request failed");
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-black text-white">
+        Loading earnings...
+      </div>
+    );
+  }
 
   return (
     <>
@@ -106,32 +131,28 @@ export default function Earn() {
           <h2 className="text-3xl font-bold text-gold">
             Your Affiliate Dashboard
           </h2>
-          {loading ? (
-            <p>Loading earnings...</p>
-          ) : earnings ? (
+          {earnings ? (
             <div className="bg-gray-800 p-6 rounded-lg shadow-lg space-y-4">
               <p>
                 Clicks:{" "}
-                <span className="text-gold font-semibold">
-                  {earnings.clicks ?? 0}
-                </span>
+                <span className="text-gold font-semibold">{earnings.clicks}</span>
               </p>
               <p>
                 Conversions:{" "}
                 <span className="text-gold font-semibold">
-                  {earnings.conversions ?? 0}
+                  {earnings.conversions}
                 </span>
               </p>
               <p>
                 Total Earned:{" "}
                 <span className="text-gold font-semibold">
-                  ${earnings?.totalEarned?.toFixed(2) ?? "0.00"}
+                  ${earnings.totalEarned.toFixed(2)}
                 </span>
               </p>
               <p>
                 Total Paid:{" "}
                 <span className="text-gold font-semibold">
-                  ${earnings?.totalPaid?.toFixed(2) ?? "0.00"}
+                  ${earnings.totalPaid.toFixed(2)}
                 </span>
               </p>
 
@@ -147,7 +168,7 @@ export default function Earn() {
               )}
             </div>
           ) : (
-            <p>{payoutMessage}</p>
+            <p className="text-center text-gray-300">{payoutMessage}</p>
           )}
         </section>
 

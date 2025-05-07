@@ -20,14 +20,16 @@ export default function Login() {
 
   // 1) If already logged in, send to dashboard immediately
   useEffect(() => {
-    fetch("/api/auth/me", { cache: "no-store" })
+    fetch("/api/auth/me", {
+      cache: "no-store",
+      credentials: "include",
+    })
       .then((res) => {
         if (res.ok) return res.json();
         throw new Error("Not authenticated");
       })
       .then(({ user }) => {
         if (user?.accountType) {
-          // route them based on role
           switch (user.accountType) {
             case "seller":
               router.replace("/marketplace/dashboard");
@@ -36,7 +38,7 @@ export default function Login() {
               router.replace("/add-business");
               break;
             case "employer":
-              router.replace("/employer"); // ← changed!
+              router.replace("/employer");
               break;
             default:
               router.replace("/dashboard");
@@ -61,7 +63,7 @@ export default function Login() {
   }, [queryType]);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setError("");
@@ -84,6 +86,7 @@ export default function Login() {
     try {
       const res = await fetch("/api/auth/login", {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
@@ -101,15 +104,13 @@ export default function Login() {
           router.push("/add-business");
           break;
         case "employer":
-          router.push("/employer"); // ← changed!
+          router.push("/employer");
           break;
         default:
           router.push("/dashboard");
       }
     } catch (err: unknown) {
-      setError(
-        err instanceof Error ? err.message : "An unknown error occurred.",
-      );
+      setError(err instanceof Error ? err.message : "An unknown error occurred.");
     } finally {
       setLoading(false);
     }

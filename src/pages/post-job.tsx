@@ -1,3 +1,4 @@
+// src/pages/post-job.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -27,7 +28,8 @@ const PostJob = () => {
     const fetchUser = async () => {
       try {
         const res = await fetch("/api/auth/me", {
-          credentials: "include", // ✅ Important fix to include session_token cookie
+          credentials: "include", // include the session cookie
+          cache: "no-store",
         });
         const data = await res.json();
         console.log("User fetched:", data);
@@ -37,7 +39,7 @@ const PostJob = () => {
           return;
         }
 
-        setUser(data.user); // ✅ user is inside .user
+        setUser(data.user);
       } catch (err) {
         console.error("Error fetching user:", err);
         router.push("/login?redirect=/post-job");
@@ -52,7 +54,7 @@ const PostJob = () => {
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >,
+    >
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setError("");
@@ -67,10 +69,10 @@ const PostJob = () => {
       const res = await fetch("/api/jobs/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include", // ✅ include cookie again just in case
+        credentials: "include",
         body: JSON.stringify({
           ...formData,
-          userId: user?.id,
+          userId: user.id,
           isFeatured: false,
           isPaid: false,
         }),
@@ -128,9 +130,7 @@ const PostJob = () => {
         <div className="grid md:grid-cols-3 gap-4 mb-10">
           <div className="bg-gray-900 p-4 rounded shadow text-center">
             <h3 className="text-lg font-bold text-gold">Free Post</h3>
-            <p className="text-sm text-gray-400">
-              Basic listing, 1 per account
-            </p>
+            <p className="text-sm text-gray-400">Basic listing, 1 per account</p>
             <p className="font-semibold mt-2">$0</p>
           </div>
           <div className="bg-gray-900 p-4 rounded shadow text-center">
@@ -144,7 +144,7 @@ const PostJob = () => {
               amount={2999}
               type="job"
               label="Buy Standard"
-              userId={user?.id}
+              userId={user.id}
             />
           </div>
           <div className="bg-gray-900 p-4 rounded shadow text-center">
@@ -158,7 +158,7 @@ const PostJob = () => {
               amount={7999}
               type="job"
               label="Buy Featured"
-              userId={user?.id}
+              userId={user.id}
             />
           </div>
         </div>
