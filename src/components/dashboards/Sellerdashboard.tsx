@@ -96,7 +96,10 @@ export default function SellerDashboard() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <StatCard label="Products Listed" value={stats.products} />
           <StatCard label="Orders Received" value={stats.orders} />
-          <StatCard label="Total Revenue" value={`$${stats.revenue.toFixed(2)}`} />
+          <StatCard
+            label="Total Revenue"
+            value={`$${stats.revenue.toFixed(2)}`}
+          />
         </div>
 
         {/* Quick Actions */}
@@ -161,7 +164,9 @@ function DashboardCard({
 }) {
   return (
     <Link href={href} className="block">
-      <div className={`p-5 rounded-lg shadow hover:shadow-xl transition cursor-pointer ${color}`}>
+      <div
+        className={`p-5 rounded-lg shadow hover:shadow-xl transition cursor-pointer ${color}`}
+      >
         <h3 className="text-xl font-bold mb-2">{title}</h3>
         <p className="text-sm">{description}</p>
       </div>

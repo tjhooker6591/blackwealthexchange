@@ -46,7 +46,7 @@ export default function EmployerJobsPage() {
           {
             cache: "no-store",
             credentials: "include",
-          }
+          },
         );
         const data = await res.json();
 

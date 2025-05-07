@@ -54,7 +54,7 @@ const PostJob = () => {
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    >,
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setError("");
@@ -130,7 +130,9 @@ const PostJob = () => {
         <div className="grid md:grid-cols-3 gap-4 mb-10">
           <div className="bg-gray-900 p-4 rounded shadow text-center">
             <h3 className="text-lg font-bold text-gold">Free Post</h3>
-            <p className="text-sm text-gray-400">Basic listing, 1 per account</p>
+            <p className="text-sm text-gray-400">
+              Basic listing, 1 per account
+            </p>
             <p className="font-semibold mt-2">$0</p>
           </div>
           <div className="bg-gray-900 p-4 rounded shadow text-center">

@@ -39,7 +39,7 @@ export default function Earn() {
         // fetch earnings for this user
         const res = await fetch(
           `/api/affiliate/earnings?userId=${encodeURIComponent(uid)}`,
-          { cache: "no-store", credentials: "include" }
+          { cache: "no-store", credentials: "include" },
         );
         const data = await res.json();
 
@@ -135,7 +135,9 @@ export default function Earn() {
             <div className="bg-gray-800 p-6 rounded-lg shadow-lg space-y-4">
               <p>
                 Clicks:{" "}
-                <span className="text-gold font-semibold">{earnings.clicks}</span>
+                <span className="text-gold font-semibold">
+                  {earnings.clicks}
+                </span>
               </p>
               <p>
                 Conversions:{" "}

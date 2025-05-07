@@ -61,7 +61,7 @@ export default function DashboardWrapper() {
       {accountType === "employer" && <EmployerDashboard />}
       {accountType === "user" && <UserDashboard />}
       {!["seller", "business", "employer", "user"].includes(
-        accountType || ""
+        accountType || "",
       ) && (
         <p className="text-red-400">
           Unknown account type: <code>{accountType}</code>
@@ -70,4 +70,3 @@ export default function DashboardWrapper() {
     </div>
   );
 }
-

@@ -21,7 +21,9 @@ export default function App({
 
     // Prevent image dragging
     const disableImageDrag = () => {
-      document.querySelectorAll("img").forEach((img) => img.setAttribute("draggable", "false"));
+      document
+        .querySelectorAll("img")
+        .forEach((img) => img.setAttribute("draggable", "false"));
     };
     disableImageDrag();
 

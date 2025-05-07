@@ -41,7 +41,7 @@ export default function EditBusinessPage() {
         // Fetch existing business profile
         const profileRes = await fetch(
           `/api/business/profile?email=${encodeURIComponent(data.user.email)}`,
-          { cache: "no-store", credentials: "include" }
+          { cache: "no-store", credentials: "include" },
         );
         if (profileRes.ok) {
           const payload = await profileRes.json();
@@ -60,7 +60,7 @@ export default function EditBusinessPage() {
   }, [router]);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     setBusiness({ ...business, [e.target.name]: e.target.value });
   };

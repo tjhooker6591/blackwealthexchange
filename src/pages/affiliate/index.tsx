@@ -46,7 +46,7 @@ const AffiliatePartnershipPage: NextPage = () => {
           {
             cache: "no-store",
             credentials: "include",
-          }
+          },
         );
         if (linksRes.ok) {
           setAffiliateStatus("active");

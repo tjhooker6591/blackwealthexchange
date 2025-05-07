@@ -16,7 +16,7 @@ type DashboardResponse = {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<DashboardResponse | { error: string }>
+  res: NextApiResponse<DashboardResponse | { error: string }>,
 ) {
   // Only GET allowed
   if (req.method !== "GET") {
@@ -82,4 +82,3 @@ export default async function handler(
     return res.status(500).json({ error: "Internal server error" });
   }
 }
-

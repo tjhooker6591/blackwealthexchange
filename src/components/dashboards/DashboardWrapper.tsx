@@ -55,12 +55,8 @@ export default function DashboardWrapper() {
       {accountType === "business" && <BusinessDashboard />}
       {accountType === "user" && <UserDashboard />}
       {accountType &&
-        !["seller", "employer", "business", "user"].includes(
-          accountType
-        ) && (
-          <p className="text-red-400">
-            Unknown account type: {accountType}
-          </p>
+        !["seller", "employer", "business", "user"].includes(accountType) && (
+          <p className="text-red-400">Unknown account type: {accountType}</p>
         )}
     </DashboardFrame>
   );

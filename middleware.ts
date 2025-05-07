@@ -32,7 +32,7 @@ export function middleware(req: NextRequest) {
     if (pathname.startsWith(routePrefix)) {
       if (!isLoggedIn || !accountType || accountType !== requiredRole) {
         console.warn(
-          `🚫 Unauthorized access attempt to ${pathname} by ${accountType || "unauthenticated user"}`
+          `🚫 Unauthorized access attempt to ${pathname} by ${accountType || "unauthenticated user"}`,
         );
         const loginUrl = req.nextUrl.clone();
         loginUrl.pathname = "/login";
@@ -54,4 +54,3 @@ export const config = {
     "/advertise",
   ],
 };
-

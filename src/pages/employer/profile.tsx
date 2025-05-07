@@ -73,7 +73,7 @@ export default function EmployerProfile() {
   }, [router]);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     setProfile({ ...profile, [e.target.name]: e.target.value });
   };
@@ -87,7 +87,7 @@ export default function EmployerProfile() {
       await axios.post(
         "/api/employer/profile/update",
         { ...profile, email: user.email },
-        { withCredentials: true }
+        { withCredentials: true },
       );
       setMessage("Profile updated successfully!");
     } catch (err) {

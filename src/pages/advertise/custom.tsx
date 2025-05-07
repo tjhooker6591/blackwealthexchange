@@ -154,12 +154,12 @@ export default function CustomAd() {
           <h3 className="text-xl text-white font-semibold mb-2">
             Ready to Reserve Your Custom Campaign?
           </h3>
-        <BuyNowButton
-          userId={userId}
-          itemId="custom-ad-deposit"
-          amount={100}
-          type="ad"
-        />
+          <BuyNowButton
+            userId={userId}
+            itemId="custom-ad-deposit"
+            amount={100}
+            type="ad"
+          />
         </div>
 
         {/* Back to Ad Options */}
