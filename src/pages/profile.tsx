@@ -1,17 +1,17 @@
-// pages/profile.tsx
+// File: pages/profile.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 
-interface UserProfile {
+type UserProfile = {
   id: string;
   name: string;
   email: string;
-  avatar: string;
+  profileImage?: string;
   bio?: string;
   resumeUrl?: string;
-}
+};
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -21,20 +21,15 @@ export default function ProfilePage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [bio, setBio] = useState("");
-  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
   const [resumeFile, setResumeFile] = useState<File | null>(null);
 
   // Status flags
-  const [saveStatus, setSaveStatus] = useState<
-    "idle" | "saving" | "success" | "error"
-  >("idle");
-  const [avatarStatus, setAvatarStatus] = useState<
-    "idle" | "uploading" | "success" | "error"
-  >("idle");
-  const [resumeStatus, setResumeStatus] = useState<
-    "idle" | "uploading" | "success" | "error"
-  >("idle");
+  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "success" | "error">("idle");
+  const [imgStatus, setImgStatus] = useState<"idle" | "uploading" | "success" | "error">("idle");
+  const [resumeStatus, setResumeStatus] = useState<"idle" | "uploading" | "success" | "error">("idle");
 
+  // Load profile
   useEffect(() => {
     fetch("/api/profile")
       .then((res) => {
@@ -51,18 +46,8 @@ export default function ProfilePage() {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading)
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
-        Loading…
-      </div>
-    );
-  if (!profile)
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
-        Profile not found.
-      </div>
-    );
+  if (loading) return <Loader />;
+  if (!profile) return <NotFound />;
 
   // Handlers
   const handleSave = async (e: React.FormEvent) => {
@@ -83,24 +68,24 @@ export default function ProfilePage() {
     }
   };
 
-  const handleAvatarUpload = async (e: React.FormEvent) => {
+  const handleImageUpload = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!avatarFile) return;
-    setAvatarStatus("uploading");
+    if (!profileImageFile) return;
+    setImgStatus("uploading");
     const form = new FormData();
-    form.append("avatar", avatarFile);
+    form.append("profileImage", profileImageFile);
     try {
-      const res = await fetch("/api/profile/avatar", {
+      const res = await fetch("/api/profile/image", {
         method: "POST",
         body: form,
       });
       if (!res.ok) throw new Error();
-      const { avatarUrl } = await res.json();
-      setProfile((p) => p && { ...p, avatar: avatarUrl });
-      setAvatarFile(null);
-      setAvatarStatus("success");
+      const { imageUrl } = await res.json();
+      setProfile((p) => p && { ...p, profileImage: imageUrl });
+      setProfileImageFile(null);
+      setImgStatus("success");
     } catch {
-      setAvatarStatus("error");
+      setImgStatus("error");
     }
   };
 
@@ -130,38 +115,34 @@ export default function ProfilePage() {
       <div className="mx-auto max-w-3xl space-y-8">
         <h1 className="text-3xl font-bold">Your Profile</h1>
 
-        {/* Avatar */}
+        {/* Profile Image */}
         <div className="flex items-center space-x-4">
-          <Image
-            src={profile.avatar}
-            alt="User Avatar"
-            width={80}
-            height={80}
-            className="rounded-full"
-          />
-          <form
-            onSubmit={handleAvatarUpload}
-            className="flex items-center space-x-2"
-          >
+          {/* The profileImage URL should point to a file in your public directory (e.g. /uploads/your-image.jpg), or an absolute URL from a configured remote domain */}
+          {profile.profileImage && (
+            <Image
+              src={profile.profileImage}
+              alt="Your Profile Image"
+              width={100}
+              height={100}
+              className="rounded-full object-cover"
+            />
+          )}
+          <form onSubmit={handleImageUpload} encType="multipart/form-data" className="flex items-center space-x-2">
             <input
               type="file"
               accept="image/*"
-              onChange={(e) => setAvatarFile(e.target.files?.[0] ?? null)}
+              onChange={(e) => setProfileImageFile(e.target.files?.[0] ?? null)}
               className="text-black"
             />
             <button
               type="submit"
-              disabled={avatarStatus === "uploading"}
+              disabled={imgStatus === "uploading"}
               className="px-3 py-1 bg-yellow-500 text-gray-900 rounded hover:bg-yellow-600"
             >
-              {avatarStatus === "uploading" ? "Uploading…" : "Change Avatar"}
+              {imgStatus === "uploading" ? "Uploading…" : "Change Image"}
             </button>
-            {avatarStatus === "success" && (
-              <span className="text-green-400">✔️</span>
-            )}
-            {avatarStatus === "error" && (
-              <span className="text-red-400">❌</span>
-            )}
+            {imgStatus === "success" && <span className="text-green-400">✔️</span>}
+            {imgStatus === "error" && <span className="text-red-400">❌</span>}
           </form>
         </div>
 
@@ -202,12 +183,10 @@ export default function ProfilePage() {
             {saveStatus === "saving" ? "Saving…" : "Save Profile"}
           </button>
           {saveStatus === "success" && <p className="text-green-400">Saved!</p>}
-          {saveStatus === "error" && (
-            <p className="text-red-400">Save failed.</p>
-          )}
+          {saveStatus === "error" && <p className="text-red-400">Save failed.</p>}
         </form>
 
-        {/* Resume */}
+        {/* Resume Section */}
         <div className="space-y-2">
           <h2 className="text-2xl font-semibold">Resume</h2>
           {profile.resumeUrl && (
@@ -222,10 +201,7 @@ export default function ProfilePage() {
               </a>
             </p>
           )}
-          <form
-            onSubmit={handleResumeUpload}
-            className="flex items-center space-x-2"
-          >
+          <form onSubmit={handleResumeUpload} encType="multipart/form-data" className="flex items-center space-x-2">
             <input
               type="file"
               accept=".pdf,.doc,.docx"
@@ -239,15 +215,19 @@ export default function ProfilePage() {
             >
               {resumeStatus === "uploading" ? "Uploading…" : "Upload Resume"}
             </button>
-            {resumeStatus === "success" && (
-              <span className="text-green-400">✔️</span>
-            )}
-            {resumeStatus === "error" && (
-              <span className="text-red-400">❌</span>
-            )}
+            {resumeStatus === "success" && <span className="text-green-400">✔️</span>}
+            {resumeStatus === "error" && <span className="text-red-400">❌</span>}
           </form>
         </div>
       </div>
     </div>
   );
+}
+
+// Helper components
+function Loader() {
+  return <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">Loading…</div>;
+}
+function NotFound() {
+  return <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">Profile not found.</div>;
 }
