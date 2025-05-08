@@ -50,7 +50,10 @@ export default function SavedJobsPage() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-gray-900 text-gray-300 p-4">
         <p className="mb-4">You haven’t saved any jobs yet.</p>
-        <Link href="/job-listings" className="px-4 py-2 bg-yellow-500 text-gray-900 rounded hover:bg-yellow-600">
+        <Link
+          href="/job-listings"
+          className="px-4 py-2 bg-yellow-500 text-gray-900 rounded hover:bg-yellow-600"
+        >
           Find a Job
         </Link>
       </div>
