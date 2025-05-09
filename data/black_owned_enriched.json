@@ -11,7 +11,7 @@
     "alias": "absolutely-everything-curly",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://absolutelyeverythingcurly.com",
     "status": "approved"
   },
@@ -27,7 +27,7 @@
     "alias": "alodia-hair-care",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://alodiahaircare.com",
     "status": "approved"
   },
@@ -43,7 +43,7 @@
     "alias": "ami-cole",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://amicole.com",
     "status": "approved"
   },
@@ -59,7 +59,7 @@
     "alias": "camille-rose",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://camillerose.com",
     "status": "approved"
   },
@@ -75,7 +75,7 @@
     "alias": "eve-milan-new-york",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://evemilanny.com",
     "status": "approved"
   },
@@ -91,7 +91,7 @@
     "alias": "flora-and-noor",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://floraandnoor.com",
     "status": "approved"
   },
@@ -107,7 +107,7 @@
     "alias": "here-we-flo",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://hereweflo.com",
     "status": "approved"
   },
@@ -123,7 +123,7 @@
     "alias": "lys-beauty",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://lysbeauty.com",
     "status": "approved"
   },
@@ -139,7 +139,7 @@
     "alias": "melanin-haircare",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://melaninhaircare.com",
     "status": "approved"
   },
@@ -155,7 +155,7 @@
     "alias": "pattern-beauty",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://patternbeauty.com",
     "status": "approved"
   },
@@ -171,7 +171,7 @@
     "alias": "reddrop",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://reddrop.com",
     "status": "approved"
   },
@@ -187,7 +187,7 @@
     "alias": "topicals",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://thetopicals.com",
     "status": "approved"
   },
@@ -203,7 +203,7 @@
     "alias": "barkal",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://barkal.com",
     "status": "approved"
   },
@@ -219,7 +219,7 @@
     "alias": "fitness-snob",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://fitnesssnob.com",
     "status": "approved"
   },
@@ -235,7 +235,7 @@
     "alias": "for-them",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://forthemofficial.com",
     "status": "approved"
   },
@@ -251,7 +251,7 @@
     "alias": "powerhandz",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://powerhandz.com",
     "status": "approved"
   },
@@ -267,7 +267,7 @@
     "alias": "saint-ola",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://saintola.com",
     "status": "approved"
   },
@@ -283,7 +283,7 @@
     "alias": "telfar",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://telfar.net",
     "status": "approved"
   },
@@ -299,7 +299,7 @@
     "alias": "third-crown",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://thirdcrown.com",
     "status": "approved"
   },
@@ -315,7 +315,7 @@
     "alias": "tree-fairfax",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://treefairfax.com",
     "status": "approved"
   },
@@ -331,7 +331,7 @@
     "alias": "vie-lorie",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://vielorie.com",
     "status": "approved"
   },
@@ -347,7 +347,7 @@
     "alias": "vontelle",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://vontelle.com",
     "status": "approved"
   },
@@ -363,7 +363,7 @@
     "alias": "we-dream-in-colour",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://wedreamincolour.com",
     "status": "approved"
   },
@@ -379,7 +379,7 @@
     "alias": "blk-and-bold",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://blkandbold.com",
     "status": "approved"
   },
@@ -395,7 +395,7 @@
     "alias": "boon-boona-coffee",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://boonboona.com",
     "status": "approved"
   },
@@ -411,7 +411,7 @@
     "alias": "luvs-brownies",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://luvsbrownies.com",
     "status": "approved"
   },
@@ -427,7 +427,7 @@
     "alias": "matriarch-coffee",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://matriarch.coffee",
     "status": "approved"
   },
@@ -443,7 +443,7 @@
     "alias": "partake-foods",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://partakefoods.com",
     "status": "approved"
   },
@@ -459,7 +459,7 @@
     "alias": "sipwell-wine-co",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://sipwellwine.co",
     "status": "approved"
   },
@@ -475,7 +475,7 @@
     "alias": "the-irie-cup",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://theiriecup.com",
     "status": "approved"
   },
@@ -491,7 +491,7 @@
     "alias": "the-mcbride-sisters-wine-company",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://mcbridesisters.com",
     "status": "approved"
   },
@@ -507,7 +507,7 @@
     "alias": "the-sip",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://thesip.co",
     "status": "approved"
   },
@@ -523,7 +523,7 @@
     "alias": "zach-and-zoe-sweet-bee-farm",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://sweetbeefarm.com",
     "status": "approved"
   },
@@ -539,7 +539,7 @@
     "alias": "54kibo",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://54kibo.com",
     "status": "approved"
   },
@@ -555,7 +555,7 @@
     "alias": "be-rooted",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://berootedprint.com",
     "status": "approved"
   },
@@ -571,7 +571,7 @@
     "alias": "bole-road",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://boleroadtextiles.com",
     "status": "approved"
   },
@@ -587,7 +587,7 @@
     "alias": "clare",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://clare.com",
     "status": "approved"
   },
@@ -603,25 +603,25 @@
     "alias": "goodee",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://goodeeworld.com",
     "status": "approved"
   },
   {
-    "business_name": "Johanna Howard Home",  
-    "categories": ["Home Decor", "Textiles"],  
-    "display_categories": "Home and Kitchen",  
-    "description": "Johanna Howard collaborates with artisans worldwide to create table linens, pillows and throws inspired by Scandinavian minimalism.",  
-    "address": "",  
-    "phone": null,  
-    "latitude": null,  
-    "longitude": null,  
-    "alias": "johanna-howard-home",  
-    "isVerified": false,  
-    "verified": false,  
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},  
-    "website": "https://johannahowardhome.com",  
-    "status": "approved"  
+    "business_name": "Johanna Howard Home",
+    "categories": ["Home Decor", "Textiles"],
+    "display_categories": "Home and Kitchen",
+    "description": "Johanna Howard collaborates with artisans worldwide to create table linens, pillows and throws inspired by Scandinavian minimalism.",
+    "address": "",
+    "phone": null,
+    "latitude": null,
+    "longitude": null,
+    "alias": "johanna-howard-home",
+    "isVerified": false,
+    "verified": false,
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
+    "website": "https://johannahowardhome.com",
+    "status": "approved"
   },
   {
     "business_name": "Jungalow",
@@ -635,7 +635,7 @@
     "alias": "jungalow",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://jungalow.com",
     "status": "approved"
   },
@@ -651,7 +651,7 @@
     "alias": "loam-candles",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://loamcandles.com",
     "status": "approved"
   },
@@ -667,7 +667,7 @@
     "alias": "the-whitney-collection",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://thewhitneycollection.com",
     "status": "approved"
   },
@@ -683,7 +683,7 @@
     "alias": "curlykids-hair-care",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://curlykids.com",
     "status": "approved"
   },
@@ -699,7 +699,7 @@
     "alias": "fourth-phase",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://thefourthphase.com",
     "status": "approved"
   },
@@ -715,7 +715,7 @@
     "alias": "harperiman",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://harperiman.com",
     "status": "approved"
   },
@@ -731,7 +731,7 @@
     "alias": "little-muffincakes",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://littlemuffincakes.com",
     "status": "approved"
   },
@@ -747,7 +747,7 @@
     "alias": "loving-me-books",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://lovingmebooks.com",
     "status": "approved"
   },
@@ -763,7 +763,7 @@
     "alias": "milky-mama",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://milkymamaproject.com",
     "status": "approved"
   },
@@ -779,7 +779,7 @@
     "alias": "puzzle-huddle",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://puzzlehuddle.com",
     "status": "approved"
   },
@@ -795,7 +795,7 @@
     "alias": "royal-nation",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://royal-nation.com",
     "status": "approved"
   },
@@ -811,7 +811,7 @@
     "alias": "the-rooted-baby-co",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://therootedbabyco.com",
     "status": "approved"
   },
@@ -827,7 +827,7 @@
     "alias": "tinkypoo",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://tinkypoo.com",
     "status": "approved"
   },
@@ -843,7 +843,7 @@
     "alias": "44th-and-3rd-bookseller",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://44thand3rdbookseller.com",
     "status": "approved"
   },
@@ -859,7 +859,7 @@
     "alias": "black-classic-press",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://blackclassicpress.com",
     "status": "approved"
   },
@@ -875,7 +875,7 @@
     "alias": "black-garnet-books",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://blackgarnetbooks.com",
     "status": "approved"
   },
@@ -891,7 +891,7 @@
     "alias": "brave-plus-kind-bookshop",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://braveandkindbookshop.com",
     "status": "approved"
   },
@@ -907,7 +907,7 @@
     "alias": "loyalty-bookstores",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://loyaltybookstores.com",
     "status": "approved"
   },
@@ -923,7 +923,7 @@
     "alias": "mahogany-books",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://mahoganybooks.com",
     "status": "approved"
   },
@@ -939,7 +939,7 @@
     "alias": "semicolon-bookstore",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://semicolonbookstore.com",
     "status": "approved"
   },
@@ -955,7 +955,7 @@
     "alias": "the-key-bookstore",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://thekeybookstore.com",
     "status": "approved"
   },
@@ -971,7 +971,7 @@
     "alias": "the-lit-bar",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://litbar.com",
     "status": "approved"
   },
@@ -987,7 +987,7 @@
     "alias": "uncle-bobbies-coffee-and-books",
     "isVerified": false,
     "verified": false,
-    "createdAt": {"$date":"2025-05-08T00:00:00Z"},
+    "createdAt": { "$date": "2025-05-08T00:00:00Z" },
     "website": "https://unclebobbies.com",
     "status": "approved"
   }

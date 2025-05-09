@@ -120,8 +120,8 @@ export default function BusinessDirectory() {
         </div>
 
         {/* Featured Sponsor Ad */}
-       <div className="text-xs uppercase text-gray-400 mb-1">Sponsored</div>
-       <PamfaSponsorAd />
+        <div className="text-xs uppercase text-gray-400 mb-1">Sponsored</div>
+        <PamfaSponsorAd />
 
         {/* Display results with Sponsored Ads inserted */}
         {isLoading ? (
