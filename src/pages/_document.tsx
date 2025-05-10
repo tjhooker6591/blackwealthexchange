@@ -8,8 +8,11 @@ export default function Document() {
         {/* Android status bar color */}
         <meta name="theme-color" content="#000000" />
 
-        {/* Favicons */}
+        {/* Primary favicon (legacy + modern) */}
+        <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="icon" href="/favicon.ico" sizes="any" />
+
+        {/* PNG favicons for different sizes */}
         <link
           rel="icon"
           type="image/png"
@@ -22,6 +25,8 @@ export default function Document() {
           href="/favicon-16x16.png"
           sizes="16x16"
         />
+
+        {/* Android home-screen icons */}
         <link
           rel="icon"
           type="image/png"
@@ -34,9 +39,12 @@ export default function Document() {
           href="/android-chrome-512x512.png"
           sizes="512x512"
         />
+
+        {/* iOS home-screen icon */}
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+        {/* PWA manifest */}
         <link rel="manifest" href="/site.webmanifest" />
-        <link rel="preload" as="image" href="/favicon.ico" />
       </Head>
       <body className="bg-black antialiased overflow-x-hidden">
         <Main />
