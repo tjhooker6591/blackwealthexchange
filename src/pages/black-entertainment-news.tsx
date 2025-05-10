@@ -1,320 +1,223 @@
-import React, { useState, useEffect } from "react";
+// src/pages/black-entertainment-news.tsx
+import React from "react";
 import Link from "next/link";
 import Image from "next/legacy/image";
-import { FaFacebook, FaTwitter, FaLinkedin } from "react-icons/fa";
 import { motion } from "framer-motion";
 
-// Type for articles
-interface NewsArticle {
-  id: number;
-  imageSrc: string;
-  title: string;
-  description: string;
-  category: string;
-  location: string;
-  impact: string;
-  quote?: string;
-  videoUrl?: string;
-}
-
-// Sample news data
-const newsData: NewsArticle[] = [
-  {
-    id: 1,
-    imageSrc: "/images/story1.jpg",
-    title: "Celebrating Black Innovators: Revolutionizing the Tech World",
-    description: "Highlighting the Black leaders shaping the future of tech.",
-    category: "Tech",
-    location: "USA",
-    impact: "Major",
-    quote: "“Innovation is the lifeblood of our communities.”",
-    videoUrl: "https://www.youtube.com/embed/_XDI0nIZA68?si=Np40jOm3201-0lI4",
-  },
-  {
-    id: 2,
-    imageSrc: "/images/story2.jpg",
-    title: "Black-Owned Businesses Changing the Face of Coffee Culture",
-    description: "From seed to cup: community-based coffee entrepreneurs.",
-    category: "Food",
-    location: "USA",
-    impact: "Major",
-  },
-  {
-    id: 3,
-    imageSrc: "/images/story3.jpg",
-    title: "The Power of Fashion: Black Creators Pushing Boundaries",
-    description: "Designers blending culture, innovation, and sustainability.",
-    category: "Fashion",
-    location: "Global",
-    impact: "Small",
-  },
-];
-
-// Type for tributes
-interface Tribute {
+// Spotlight data type
+interface Spotlight {
   id: number;
   imageSrc: string;
   name: string;
-  description: string;
-  legacy: string;
+  story: string;
+  link: string;
 }
 
-// Sample tributes data
-const tributesData: Tribute[] = [
+// Trend data type
+interface Trend {
+  id: number;
+  title: string;
+  summary: string;
+  sourceUrl: string;
+}
+
+// Sample spotlight entries
+const spotlightData: Spotlight[] = [
   {
     id: 1,
-    imageSrc: "/images/tribute1.jpg",
-    name: "Chadwick Boseman",
-    description:
-      "Honoring the legacy of the late Chadwick Boseman, an icon who brought pride and dignity to Black characters in Hollywood.",
-    legacy:
-      "Pioneered roles for Black superheroes and redefined cultural pride.",
+    imageSrc: "/images/spotlight1.jpg",
+    name: "Coffee Cultures Co.",
+    story:
+      "From seed to cup, this Black-owned coffee brand is redefining sustainable sourcing.",
+    link: "/business/coffee-cultures",
   },
   {
     id: 2,
-    imageSrc: "/images/tribute2.jpg",
-    name: "Maya Angelou",
-    description:
-      "Remembering Maya Angelou, whose words and wisdom continue to inspire generations across the world.",
-    legacy:
-      "Her poetry and activism still resonate deeply in the fight for justice and equality.",
-  },
-  {
-    id: 3,
-    imageSrc: "/images/tribute3.jpg",
-    name: "Angie Stone",
-    description:
-      "Remembering Angie Stone, an unforgettable voice in the world of R&B and soul music who deeply influenced the sound of Black music.",
-    legacy:
-      "Her soulful voice and timeless hits brought love, joy, and empowerment to the Black community.",
+    imageSrc: "/images/spotlight2.jpg",
+    name: "We are Fashion Innovator",
+    story:
+      "Innovators behind inclusive fashion that empowers and are setting trends in fashion and our communities.",
+    link: "/business/fashion",
   },
 ];
 
-export default function BlackImpactNews() {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [currentArticle, setCurrentArticle] = useState<NewsArticle | null>(
-    null,
-  );
-  const [selectedCategory, setSelectedCategory] = useState<string>("All");
+// Sample trend entries
+const trendsData: Trend[] = [
+  {
+    id: 1,
+    title: "VC Funding for Black Entrepreneurs Hits Record High",
+    summary:
+      "Latest Q1 data shows Black-led startups secured $500M in venture funding.",
+    sourceUrl: "https://example.com/article1",
+  },
+  {
+    id: 2,
+    title: "Community Banks Expand Support Programs",
+    summary:
+      "Black-owned banks launch new small-business grants across four states.",
+    sourceUrl: "https://example.com/article2",
+  },
+];
 
-  // Auto-rotate hero slides every 5s
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((si) => (si + 1) % newsData.length);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, []);
-
-  const categories = ["All", "Tech", "Food", "Fashion"];
-  const filteredArticles = newsData.filter(
-    (a) => selectedCategory === "All" || a.category === selectedCategory,
-  );
-  const top3 = [...newsData]
-    .sort((a, b) => b.impact.localeCompare(a.impact))
-    .slice(0, 3);
-
-  const openModal = (article: NewsArticle) => {
-    setCurrentArticle(article);
-    setModalOpen(true);
-  };
-  const closeModal = () => {
-    setModalOpen(false);
-    setCurrentArticle(null);
-  };
-
+export default function BlackEntertainmentNews() {
   return (
     <div className="bg-gray-900 text-white min-h-screen">
-      {/* Hero Section */}
-      <div className="relative h-96 w-full overflow-hidden">
-        {newsData.map((slide, idx) => (
-          <motion.div
-            key={slide.id}
-            initial={{ opacity: idx === currentSlide ? 1 : 0 }}
-            animate={{ opacity: idx === currentSlide ? 1 : 0 }}
-            transition={{ duration: 1 }}
-            className="absolute inset-0"
-          >
-            {/* Use Next/Image for proper sizing */}
-            <Image
-              src={slide.imageSrc}
-              alt={slide.title}
-              layout="fill"
-              objectFit="cover"
-            />
-            <div className="absolute inset-0 bg-black opacity-40" />
-            <div className="absolute bottom-8 left-8 max-w-lg">
-              <h2 className="text-3xl font-bold text-gold">{slide.title}</h2>
-              <p className="mt-2 text-gray-200">{slide.description}</p>
-            </div>
-          </motion.div>
-        ))}
-      </div>
-
-      <div className="container mx-auto p-6">
-        {/* Trending */}
+      <div className="container mx-auto p-6 space-y-16">
+        {/* Business Spotlight */}
         <motion.section
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="my-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
         >
-          <h3 className="text-xl font-semibold text-gold mb-2">
-            🔥 Trending Now
-          </h3>
-          <ul className="space-y-2">
-            {top3.map((a, i) => (
-              <li key={a.id} className="flex items-center">
-                <span className="font-bold mr-2">{i + 1}.</span>
-                <button
-                  onClick={() => openModal(a)}
-                  className="hover:underline text-gray-200"
-                >
-                  {a.title}
-                </button>
-              </li>
-            ))}
-          </ul>
-        </motion.section>
-
-        {/* Categories & Featured */}
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.4 }}
-        >
-          <div className="flex space-x-4 mb-6">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
-                className={`px-4 py-2 rounded-full ${selectedCategory === cat ? "bg-gold text-black" : "bg-gray-700 text-gray-200"}`}
-              >
-                {cat}
-              </button>
-            ))}
+          <div className="flex items-center mb-6">
+            <h2 className="text-3xl font-extrabold text-gold mr-4">
+              🔥 Business Spotlight
+            </h2>
+            <div className="flex-1 h-1 bg-gradient-to-r from-gold to-yellow-400 rounded" />
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredArticles.map((article) => (
+          <div className="grid md:grid-cols-2 gap-8">
+            {spotlightData.map((s) => (
               <motion.div
-                key={article.id}
-                whileHover={{ scale: 1.05 }}
-                className="bg-gray-800 p-4 rounded-lg shadow-md"
+                key={s.id}
+                whileHover={{
+                  scale: 1.05,
+                  boxShadow: "0 10px 20px rgba(0,0,0,0.5)",
+                }}
+                className="relative group overflow-hidden rounded-2xl"
               >
-                <div className="relative w-full h-40 mb-4">
+                <div className="absolute inset-0 transform group-hover:scale-110 transition duration-500">
                   <Image
-                    src={article.imageSrc}
-                    alt={article.title}
+                    src={s.imageSrc}
+                    alt={s.name}
                     layout="fill"
                     objectFit="cover"
-                    className="rounded-lg"
+                    className="opacity-80"
                   />
+                  <div className="absolute inset-0 bg-black bg-opacity-10 group-hover:bg-opacity-0 transition duration-500" />
                 </div>
-                <h3 className="text-lg font-semibold text-gold">
-                  {article.title}
-                </h3>
-                <p className="mt-2 text-gray-300">{article.description}</p>
-                {article.quote && (
-                  <blockquote className="mt-4 italic text-gray-400">
-                    {article.quote}
-                  </blockquote>
-                )}
-                {article.videoUrl && (
-                  <div className="mt-4">
-                    <iframe
-                      src={article.videoUrl}
-                      title="video"
-                      className="w-full h-48 rounded"
-                      allowFullScreen
-                    />
-                  </div>
-                )}
-                <button
-                  onClick={() => openModal(article)}
-                  className="mt-4 p-2 bg-gold text-black font-bold rounded hover:bg-yellow-500 transition"
-                >
-                  Read More
-                </button>
+                <div className="relative p-6 flex flex-col justify-end h-64">
+                  <span className="bg-gold text-black px-3 py-1 rounded-full text-sm font-semibold mb-2">
+                    Spotlight
+                  </span>
+                  <h3 className="text-2xl font-bold text-white mb-2">
+                    {s.name}
+                  </h3>
+                  <p className="text-gray-100 mb-4">{s.story}</p>
+                  <Link
+                    href={s.link}
+                    className="self-start px-4 py-2 bg-gradient-to-r from-gold to-yellow-400 rounded-lg font-semibold text-black hover:from-yellow-300 hover:to-yellow-500 transition"
+                  >
+                    Learn More →
+                  </Link>
+                </div>
               </motion.div>
             ))}
           </div>
-        </motion.div>
+        </motion.section>
 
-        {/* Tributes */}
+        {/* Industry News & Trends Roundup */}
         <motion.section
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.6 }}
-          className="mt-16"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
         >
-          <div className="border-t-2 border-gold mb-6 w-24" />
-          <h2 className="text-2xl font-bold text-gold mb-6">
-            In Memory: Honoring Our Legends
-          </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {tributesData.map((t) => (
+          <div className="flex items-center mb-6">
+            <h2 className="text-3xl font-extrabold text-gold mr-4">
+              📈 Industry News & Trends
+            </h2>
+            <div className="flex-1 h-1 bg-gradient-to-r from-gold to-yellow-400 rounded" />
+          </div>
+          <div className="space-y-6">
+            {trendsData.map((t) => (
               <motion.div
                 key={t.id}
-                whileHover={{ scale: 1.03 }}
-                className="bg-gray-800 p-4 rounded-lg shadow-md"
+                whileHover={{ x: 10 }}
+                className="flex items-start bg-gradient-to-r from-gray-800 to-gray-700 p-6 rounded-xl shadow-lg"
               >
-                <div className="relative w-full h-40 mb-4">
-                  <Image
-                    src={t.imageSrc}
-                    alt={t.name}
-                    layout="fill"
-                    objectFit="cover"
-                    className="rounded-lg"
-                  />
+                <div className="flex-1">
+                  <h3 className="text-xl font-semibold text-white mb-2">
+                    {t.title}
+                  </h3>
+                  <p className="text-gray-300 mb-3">{t.summary}</p>
+                  <a
+                    href={t.sourceUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block font-semibold text-gold hover:underline"
+                  >
+                    Read Full Article →
+                  </a>
                 </div>
-                <h3 className="text-lg font-semibold text-gold">{t.name}</h3>
-                <p className="mt-2 text-gray-300">{t.description}</p>
-                <p className="mt-4 text-sm text-gray-500">Legacy: {t.legacy}</p>
+                <div className="ml-6 flex-shrink-0 text-gold text-4xl">
+                  ➔
+                </div>
               </motion.div>
             ))}
           </div>
         </motion.section>
 
-        {/* Back */}
-        <div className="text-center mt-16">
-          <Link href="/">
-            {" "}
-            <button className="px-6 py-3 bg-gold text-black font-semibold rounded-lg hover:bg-yellow-500 transition">
-              Back to Home
-            </button>{" "}
-          </Link>
-        </div>
-      </div>
-
-      {/* Modal */}
-      {modalOpen && currentArticle && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <motion.div
-            initial={{ scale: 0.8 }}
-            animate={{ scale: 1 }}
-            className="bg-gray-800 p-6 rounded-lg w-full max-w-md relative"
-          >
-            <button
-              className="absolute top-2 right-2 text-white"
-              onClick={closeModal}
-            >
-              X
-            </button>
-            <h2 className="text-2xl font-bold text-gold mb-4">
-              {currentArticle.title}
+        {/* Fallen & Everyday Heroes */}
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="container mx-auto p-6"
+        >
+          <div className="flex items-center mb-6">
+            <h2 className="text-3xl font-extrabold text-gold mr-4">
+              🌟 Honoring Our Fallen & Everyday Heroes
             </h2>
-            <p className="text-gray-300 mb-4">
-              Full article content goes here...
-            </p>
-            <div className="mt-4 flex justify-center space-x-4">
-              <FaFacebook className="text-gold hover:text-yellow-500 transition" />
-              <FaTwitter className="text-gold hover:text-yellow-500 transition" />
-              <FaLinkedin className="text-gold hover:text-yellow-500 transition" />
-            </div>
-          </motion.div>
-        </div>
-      )}
+            <div className="flex-1 h-1 bg-gradient-to-r from-gold to-yellow-400 rounded" />
+          </div>
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              {
+                id: 1,
+                imageSrc: "/images/hero1.jpg",
+                name: "Angie Stone",
+                description:
+                  "Renowned soul singer and songwriter whose powerful vocals and advocacy left an enduring legacy in music and the community.",
+              },
+              {
+                id: 2,
+                imageSrc: "/images/hero2.jpg",
+                name: "Everyday Neighbor: Beatrice Bethel Johnson",
+                description:
+                  "First Black librarian in the School District of Philadelphia, retired business owner, and community advocate, has died at 96.",
+              },
+              {
+                id: 3,
+                imageSrc: "/images/hero3.jpg",
+                name: "Marcus Jones",
+                description:
+                  "Local entrepreneur whose small business supported dozens of families.",
+              },
+            ].map((h) => (
+              <motion.div
+                key={h.id}
+                whileHover={{ scale: 1.03 }}
+                className="relative overflow-hidden rounded-2xl shadow-lg"
+              >
+                <div className="relative w-full h-64">
+                  <Image
+                    src={h.imageSrc}
+                    alt={h.name}
+                    layout="fill"
+                    objectFit="cover"
+                    className="opacity-90"
+                  />
+                </div>
+                <div className="p-4 bg-gray-800">
+                  <h3 className="text-xl font-semibold text-gold mb-2">
+                    {h.name}
+                  </h3>
+                  <p className="text-gray-300">{h.description}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.section>
+      </div>
     </div>
   );
 }
