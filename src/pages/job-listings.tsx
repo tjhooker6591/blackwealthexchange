@@ -1,3 +1,4 @@
+// pages/job-listings.tsx
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -18,6 +19,7 @@ interface Job {
 export default function JobListingsPage() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
 
   useEffect(() => {
     fetch("/api/jobs/list")
@@ -35,47 +37,14 @@ export default function JobListingsPage() {
   return (
     <div className="min-h-screen bg-gray-900 text-white p-8">
       <div className="max-w-5xl mx-auto bg-gray-800 p-6 rounded-lg shadow-lg">
-        {/* Header */}
-        <header className="mb-6 text-center">
-          <h1 className="text-4xl font-bold text-gold">Job Listings</h1>
-          <p className="text-gray-300 mt-2">
-            Explore curated job opportunities from Black-owned businesses and
-            employers committed to inclusive hiring. Whether you&apos;re an
-            early-career applicant or a seasoned pro, this is your space to
-            grow.
-          </p>
-        </header>
-
-        {/* Why Use Our Platform */}
-        <section className="mt-10">
-          <h2 className="text-2xl font-semibold text-blue-400 mb-2">
-            Why Use Our Platform?
-          </h2>
-          <ul className="list-disc ml-6 text-gray-300 space-y-2">
-            <li>
-              <strong>Diverse-First Hiring:</strong> We prioritize equity-driven
-              employers who want to make a difference.
-            </li>
-            <li>
-              <strong>Verified Employers:</strong> All job listings are reviewed
-              and vetted by our team for accuracy and legitimacy.
-            </li>
-            <li>
-              <strong>Opportunities That Match:</strong> From internships to
-              executive roles, find jobs aligned with your goals.
-            </li>
-            <li>
-              <strong>Community Backing:</strong> Join a network that values
-              your voice, growth, and success.
-            </li>
-          </ul>
-        </section>
+        {/* … your header & “Why Use Our Platform” sections … */}
 
         {/* Real-Time Job Feed */}
         <section className="mt-12">
           <h2 className="text-xl font-semibold text-gold mb-4">
             Featured Opportunities
           </h2>
+
           {loading ? (
             <p className="text-gray-400">Loading jobs...</p>
           ) : jobs.length === 0 ? (
@@ -97,16 +66,20 @@ export default function JobListingsPage() {
                     Type: {job.type} |{" "}
                     {job.salary ? `💰 ${job.salary}` : "Salary not listed"}
                   </p>
+                  {/* summary only */}
                   <p className="text-gray-400 mt-2 line-clamp-3">
                     {job.description}
                   </p>
 
                   <div className="flex gap-3 mt-4">
-                    <Link href={`/job/${job._id}`}>
-                      <button className="px-4 py-2 bg-gold text-black font-semibold rounded hover:bg-yellow-500 transition">
-                        View & Apply
-                      </button>
-                    </Link>
+                    {/* open modal instead of Link */}
+                    <button
+                      onClick={() => setSelectedJob(job)}
+                      className="px-4 py-2 bg-gold text-black font-semibold rounded hover:bg-yellow-500 transition"
+                    >
+                      View & Apply
+                    </button>
+
                     <button
                       onClick={() => alert("Login to save jobs")}
                       className="px-4 py-2 border border-gold text-gold rounded hover:bg-gold hover:text-black transition"
@@ -132,6 +105,50 @@ export default function JobListingsPage() {
           </Link>
         </section>
       </div>
+
+      {/* ──────────── Modal ──────────── */}
+      {selectedJob && (
+        <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+          <div className="bg-gray-800 text-white rounded-lg p-6 max-w-lg w-full relative">
+            <button
+              onClick={() => setSelectedJob(null)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-white"
+            >
+              ✕
+            </button>
+
+            <h2 className="text-2xl font-bold text-gold mb-2">
+              {selectedJob.title}
+            </h2>
+            <p className="text-gray-300 mb-4">
+              {selectedJob.company} — {selectedJob.location} —{" "}
+              <em>{selectedJob.type}</em>
+            </p>
+            {selectedJob.salary && (
+              <p className="text-gray-400 mb-4">💰 {selectedJob.salary}</p>
+            )}
+
+            <div className="prose prose-invert mb-6">
+              <p>{selectedJob.description}</p>
+            </div>
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setSelectedJob(null)}
+                className="px-4 py-2 border border-gray-600 rounded hover:bg-gray-700 transition"
+              >
+                Close
+              </button>
+              <Link href={`/job/${selectedJob._id}/apply`}>
+                <button className="px-4 py-2 bg-gold text-black rounded hover:bg-yellow-500 transition">
+                  Apply Now
+                </button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+

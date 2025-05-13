@@ -5,8 +5,8 @@ export interface Spotlight {
   imageSrc: string;
   name: string;
   story: string;
-  link: string;    // e.g. "/business/coffee-cultures"
-  slug: string;    // e.g. "coffee-cultures"
+  link: string; // e.g. "/business/coffee-cultures"
+  slug: string; // e.g. "coffee-cultures"
   details?: string;
 }
 

@@ -5,9 +5,9 @@
 import React, { useState } from "react";
 
 interface BuyNowButtonProps {
-  userId: string;
+  userId: string;        // Buyer ID passed from parent
   itemId: string;
-  amount: number; // should be in cents (e.g., 2500 for $25)
+  amount: number;        // amount in dollars (e.g. 49.99)
   type: "product" | "ad" | "course" | "job" | "upgrade";
   label?: string;
 }
@@ -22,14 +22,17 @@ const BuyNowButton: React.FC<BuyNowButtonProps> = ({
   const [loading, setLoading] = useState(false);
 
   const handleBuy = async () => {
+    if (!userId) {
+      console.error("No user ID provided to BuyNowButton");
+      alert("Please log in to continue.");
+      return;
+    }
     setLoading(true);
 
     try {
       const response = await fetch("/api/stripe/checkout", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           userId,
           itemId,
@@ -41,16 +44,15 @@ const BuyNowButton: React.FC<BuyNowButtonProps> = ({
       });
 
       const data = await response.json();
-
       if (data?.url) {
         window.location.href = data.url;
       } else {
-        console.error("Stripe checkout error:", data);
-        alert("Checkout failed. Please try again.");
+        console.error("Stripe checkout error:", data.error || data);
+        alert(data.error || "Checkout failed. Please try again.");
       }
     } catch (err) {
       console.error("Buy now error:", err);
-      alert("Something went wrong.");
+      alert("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -70,3 +72,4 @@ const BuyNowButton: React.FC<BuyNowButtonProps> = ({
 };
 
 export default BuyNowButton;
+

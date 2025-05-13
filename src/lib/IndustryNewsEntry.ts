@@ -1,19 +1,19 @@
 export interface IndustryNews {
-    id: number;
-    slug: string;        // URL slug, e.g. "vc-funding-record-high"
-    title: string;       // headline
-    summary: string;     // one-sentence teaser
-    content: string;     // full HTML (or MDX) for the article body
-  }
-  
-  export const industryNewsData: IndustryNews[] = [
-    {
-      id: 1,
-      slug: "vc-funding-record-high",
-      title: "VC funding for Black entrepreneurs hits record high",
-      summary:
-        "Latest Q1 data shows Black-led startups secured $500 million in venture funds.",
-      content: `
+  id: number;
+  slug: string; // URL slug, e.g. "vc-funding-record-high"
+  title: string; // headline
+  summary: string; // one-sentence teaser
+  content: string; // full HTML (or MDX) for the article body
+}
+
+export const industryNewsData: IndustryNews[] = [
+  {
+    id: 1,
+    slug: "vc-funding-record-high",
+    title: "VC funding for Black entrepreneurs hits record high",
+    summary:
+      "Latest Q1 data shows Black-led startups secured $500 million in venture funds.",
+    content: `
         <p>
           A new Q1 2025 report from Crunchbase and PitchBook data reveals that
           Black-founded startups pulled in a record <strong>$500 million</strong>
@@ -39,14 +39,14 @@ export interface IndustryNews {
           captured attention across the ecosystem.
         </p>
       `,
-    },
-    {
-      id: 2,
-      slug: "community-banks-support-program",
-      title: "Community banks expand support program",
-      summary:
-        "Black-owned banks launch new small-business grants across four states.",
-      content: `
+  },
+  {
+    id: 2,
+    slug: "community-banks-support-program",
+    title: "Community banks expand support program",
+    summary:
+      "Black-owned banks launch new small-business grants across four states.",
+    content: `
         <p>
           In May 2025, four Black-owned community banks in Georgia, Texas,
           Illinois, and Michigan jointly announced a <strong>$200 000</strong>
@@ -73,7 +73,6 @@ export interface IndustryNews {
           lending challenges.
         </p>
       `,
-    },
-    // → Add more entries here over time!
-  ];
-  
+  },
+  // → Add more entries here over time!
+];

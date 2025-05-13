@@ -43,8 +43,9 @@ export default function BecomeASellerPage() {
 
       if (!res.ok) throw new Error(result.message || "Failed to create seller");
 
+      // After successful creation, redirect to add-product page
       router.push("/marketplace/add-product");
-    } catch (err) {
+    } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message);
       } else {
@@ -79,9 +80,12 @@ export default function BecomeASellerPage() {
           <input
             type="text"
             value={businessName}
-            onChange={(e) => setBusinessName(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setBusinessName(e.target.value)
+            }
             className="w-full p-2 rounded bg-gray-800 border border-gray-700"
             placeholder="e.g. Culture & Co."
+            required
           />
         </div>
 
@@ -90,9 +94,12 @@ export default function BecomeASellerPage() {
           <input
             type="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setEmail(e.target.value)
+            }
             className="w-full p-2 rounded bg-gray-800 border border-gray-700"
             placeholder="e.g. hello@yourbusiness.com"
+            required
           />
         </div>
 
@@ -101,9 +108,12 @@ export default function BecomeASellerPage() {
           <input
             type="tel"
             value={businessPhone}
-            onChange={(e) => setBusinessPhone(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setBusinessPhone(e.target.value)
+            }
             className="w-full p-2 rounded bg-gray-800 border border-gray-700"
             placeholder="e.g. (123) 456-7890"
+            required
           />
         </div>
 
@@ -112,9 +122,12 @@ export default function BecomeASellerPage() {
           <input
             type="text"
             value={businessAddress}
-            onChange={(e) => setBusinessAddress(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setBusinessAddress(e.target.value)
+            }
             className="w-full p-2 rounded bg-gray-800 border border-gray-700"
             placeholder="e.g. 123 Main St, City, State"
+            required
           />
         </div>
 
@@ -122,10 +135,13 @@ export default function BecomeASellerPage() {
           <label className="block text-sm mb-1">Business Description</label>
           <textarea
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
+              setDescription(e.target.value)
+            }
             className="w-full p-2 rounded bg-gray-800 border border-gray-700"
             rows={4}
             placeholder="Tell us about your business..."
+            required
           ></textarea>
         </div>
 
@@ -136,7 +152,9 @@ export default function BecomeASellerPage() {
           <input
             type="text"
             value={website}
-            onChange={(e) => setWebsite(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setWebsite(e.target.value)
+            }
             className="w-full p-2 rounded bg-gray-800 border border-gray-700"
             placeholder="https://yourbusiness.com"
           />
@@ -147,8 +165,11 @@ export default function BecomeASellerPage() {
             <input
               type="checkbox"
               checked={agreed}
-              onChange={(e) => setAgreed(e.target.checked)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setAgreed(e.target.checked)
+              }
               className="mr-2"
+              required
             />
             I agree to the marketplace terms and conditions.
           </label>

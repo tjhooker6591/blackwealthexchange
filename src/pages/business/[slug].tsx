@@ -73,4 +73,3 @@ export const getStaticProps: GetStaticProps<Props> = ({ params }) => {
 };
 
 export default BusinessDetail;
-

@@ -19,10 +19,7 @@ const NewsDetail: NextPage<Props> = ({ entry }) => {
       <main className="bg-gray-900 text-white min-h-screen">
         <section className="container mx-auto px-6 py-12 space-y-8">
           <nav className="text-gray-400">
-            <Link
-              href="/black-entertainment-news"
-              className="hover:underline"
-            >
+            <Link href="/black-entertainment-news" className="hover:underline">
               ← Back to Industry News
             </Link>
           </nav>

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
+import { useRouter } from "next/router";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
 import { Card, CardContent } from "../components/ui/card";
-import { useRouter } from "next/router";
 
 const BecomeSeller: React.FC = () => {
   const router = useRouter();
@@ -14,27 +14,46 @@ const BecomeSeller: React.FC = () => {
     website: "",
     description: "",
   });
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Post to backend API (replace with actual endpoint)
-    const response = await fetch("/api/sellers", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-    });
-    if (response.ok) {
-      alert("Registration successful!");
-      router.push("/seller-dashboard");
-    } else {
-      alert("Failed to register. Please try again.");
+    setLoading(true);
+
+    try {
+      // 1. Save the seller record in your database
+      const sellerRes = await fetch("/api/sellers", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+      if (!sellerRes.ok) {
+        throw new Error("Seller registration failed");
+      }
+
+      // 2. Create Stripe Express account link and redirect
+      const linkRes = await fetch("/api/stripe/create-account-link", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: formData.email }),
+      });
+      if (!linkRes.ok) {
+        throw new Error("Failed to create Stripe onboarding link");
+      }
+      const { url } = await linkRes.json();
+      // Redirect user to Stripe onboarding
+      router.replace(url);
+    } catch (err: any) {
+      console.error(err);
+      alert(err.message || "Something went wrong. Please try again.");
+      setLoading(false);
     }
   };
 
@@ -87,9 +106,9 @@ const BecomeSeller: React.FC = () => {
               onChange={handleChange}
               className="w-full p-2 border rounded-md"
               rows={4}
-            ></textarea>
-            <Button type="submit" className="w-full">
-              Submit
+            />
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? "Redirecting…" : "Submit & Onboard with Stripe"}
             </Button>
           </form>
         </CardContent>
@@ -99,3 +118,4 @@ const BecomeSeller: React.FC = () => {
 };
 
 export default BecomeSeller;
+
