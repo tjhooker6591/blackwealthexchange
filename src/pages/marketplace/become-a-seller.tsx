@@ -38,7 +38,7 @@ export default function BecomeASellerPage() {
         }
         const { user } = await meRes.json();
         setUser(user);
-        setForm(f => ({ ...f, email: user.email }));
+        setForm((f) => ({ ...f, email: user.email }));
       } catch (err) {
         console.error("Error fetching user", err);
         return;
@@ -50,7 +50,7 @@ export default function BecomeASellerPage() {
           setSeller(seller);
           if (seller.stripeAccountId) {
             const acctRes = await fetch(
-              `/api/stripe/account-status?sellerId=${seller._id}`
+              `/api/stripe/account-status?sellerId=${seller._id}`,
             );
             if (acctRes.ok) {
               const acctData = await acctRes.json();
@@ -127,7 +127,9 @@ export default function BecomeASellerPage() {
       <div className="min-h-screen bg-black text-white p-6 flex items-center justify-center">
         <Card className="max-w-lg w-full p-6">
           <CardContent>
-            <h1 className="text-2xl font-bold mb-4 text-gold">You’re All Set!</h1>
+            <h1 className="text-2xl font-bold mb-4 text-gold">
+              You’re All Set!
+            </h1>
             <p className="mb-4">Your payout account is verified.</p>
             <Button
               onClick={() => router.push("/marketplace/add-product")}
@@ -147,9 +149,12 @@ export default function BecomeASellerPage() {
       <div className="min-h-screen bg-black text-white p-6 flex items-center justify-center">
         <Card className="max-w-lg w-full p-6">
           <CardContent>
-            <h1 className="text-2xl font-bold mb-4 text-gold">Complete Payout Setup</h1>
+            <h1 className="text-2xl font-bold mb-4 text-gold">
+              Complete Payout Setup
+            </h1>
             <p className="mb-4">
-              To get paid to your bank or instant-payout card, finish Stripe onboarding.
+              To get paid to your bank or instant-payout card, finish Stripe
+              onboarding.
             </p>
             {error && <p className="text-red-500 mb-4 text-sm">{error}</p>}
             <Button
@@ -172,8 +177,9 @@ export default function BecomeASellerPage() {
         <CardContent>
           <h1 className="text-2xl font-bold text-gold mb-4">Become a Seller</h1>
           <p className="text-gray-400 mb-6 text-sm">
-            <strong className="text-gold">Important:</strong> We collect a 10% platform fee
-            on each completed sale. Sellers receive the remainder via Stripe Connect payouts.
+            <strong className="text-gold">Important:</strong> We collect a 10%
+            platform fee on each completed sale. Sellers receive the remainder
+            via Stripe Connect payouts.
           </p>
           {error && <p className="text-red-500 mb-4 text-sm">{error}</p>}
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -186,7 +192,9 @@ export default function BecomeASellerPage() {
                 type="text"
                 className="w-full p-2 rounded bg-gray-800 border border-gray-700 text-white"
                 value={form.businessName}
-                onChange={(e) => setForm({ ...form, businessName: e.target.value })}
+                onChange={(e) =>
+                  setForm({ ...form, businessName: e.target.value })
+                }
                 required
               />
             </div>
@@ -212,7 +220,9 @@ export default function BecomeASellerPage() {
                 type="tel"
                 className="w-full p-2 rounded bg-gray-800 border border-gray-700 text-white"
                 value={form.businessPhone}
-                onChange={(e) => setForm({ ...form, businessPhone: e.target.value })}
+                onChange={(e) =>
+                  setForm({ ...form, businessPhone: e.target.value })
+                }
                 required
               />
             </div>
@@ -225,7 +235,9 @@ export default function BecomeASellerPage() {
                 type="text"
                 className="w-full p-2 rounded bg-gray-800 border border-gray-700 text-white"
                 value={form.businessAddress}
-                onChange={(e) => setForm({ ...form, businessAddress: e.target.value })}
+                onChange={(e) =>
+                  setForm({ ...form, businessAddress: e.target.value })
+                }
                 required
               />
             </div>
@@ -238,7 +250,9 @@ export default function BecomeASellerPage() {
                 rows={4}
                 className="w-full p-2 rounded bg-gray-800 border border-gray-700 text-white"
                 value={form.description}
-                onChange={(e) => setForm({ ...form, description: e.target.value })}
+                onChange={(e) =>
+                  setForm({ ...form, description: e.target.value })
+                }
                 required
               />
             </div>

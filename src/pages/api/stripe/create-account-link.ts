@@ -48,25 +48,20 @@ export default async function handler(
         },
       });
       stripeAccountId = account.id;
-      await sellers.updateOne(
-        { email },
-        { $set: { stripeAccountId } }
-      );
+      await sellers.updateOne({ email }, { $set: { stripeAccountId } });
     }
 
     // 3) Decide which link type to use:
     //    - account_onboarding for first-time setup
     //    - account_update for adding/updating bank or debit card info later
     const linkType: Stripe.AccountLinkCreateParams.Type =
-      seller.stripeAccountId == null
-        ? "account_onboarding"
-        : "account_update";
+      seller.stripeAccountId == null ? "account_onboarding" : "account_update";
 
     const accountLink = await stripe.accountLinks.create({
       account: stripeAccountId,
       refresh_url: `${process.env.NEXT_PUBLIC_BASE_URL}/become-a-seller`,
-      return_url:  `${process.env.NEXT_PUBLIC_BASE_URL}/marketplace/add-product`,
-      type:       linkType,
+      return_url: `${process.env.NEXT_PUBLIC_BASE_URL}/marketplace/add-product`,
+      type: linkType,
     });
 
     return res.status(200).json({ url: accountLink.url });

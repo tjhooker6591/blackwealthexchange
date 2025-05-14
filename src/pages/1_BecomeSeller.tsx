@@ -33,22 +33,22 @@ export default function BecomeSeller() {
         router.replace("/login");
         return;
       }
-      const { user } = await meRes.json() as { user: User };
+      const { user } = (await meRes.json()) as { user: User };
       setUser(user);
 
       // b) see if they already have a seller record
       const sellerRes = await fetch("/api/sellers/me");
       if (sellerRes.ok) {
-        const { seller } = await sellerRes.json() as { seller: Seller };
+        const { seller } = (await sellerRes.json()) as { seller: Seller };
         setSeller(seller);
 
         // c) if they have a stripeAccountId, fetch its status
         if (seller.stripeAccountId) {
           const acctRes = await fetch(
-            `/api/stripe/account-status?sellerId=${seller._id}`
+            `/api/stripe/account-status?sellerId=${seller._id}`,
           );
           if (acctRes.ok) {
-            const data = await acctRes.json() as AccountStatus;
+            const data = (await acctRes.json()) as AccountStatus;
             setAcctStatus(data);
           }
         }
@@ -63,7 +63,7 @@ export default function BecomeSeller() {
     setLoading(true);
     const linkRes = await fetch("/api/stripe/create-account-link", {
       method: "POST",
-      headers: {"Content-Type":"application/json"},
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email: user!.email }),
     });
     const { url } = await linkRes.json();
@@ -76,7 +76,7 @@ export default function BecomeSeller() {
     setLoading(true);
     const res = await fetch("/api/sellers", {
       method: "POST",
-      headers: {"Content-Type":"application/json"},
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ...formData, userId: user!.id }),
     });
     if (!res.ok) {
@@ -117,8 +117,8 @@ export default function BecomeSeller() {
         <CardContent>
           <h1 className="text-2xl font-bold mb-4">Complete Payout Setup</h1>
           <p>
-            To get paid directly to your bank (or via instant‐payout card), complete
-            Stripe’s secure onboarding.
+            To get paid directly to your bank (or via instant‐payout card),
+            complete Stripe’s secure onboarding.
           </p>
           <Button
             className="mt-4 w-full"
