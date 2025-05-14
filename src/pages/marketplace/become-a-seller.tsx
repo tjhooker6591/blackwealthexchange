@@ -1,208 +1,278 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import { Button } from "../../components/ui/button";
+import { Card, CardContent } from "../../components/ui/card";
+
+// Types for user, seller, and Stripe account status
+type User = { id: string; email: string };
+type Seller = { _id: string; stripeAccountId?: string; email: string };
+type AccountStatus = { charges_enabled: boolean; payouts_enabled: boolean };
 
 export default function BecomeASellerPage() {
   const router = useRouter();
-  const [businessName, setBusinessName] = useState("");
-  const [description, setDescription] = useState("");
-  const [website, setWebsite] = useState("");
-  const [email, setEmail] = useState("");
-  const [businessPhone, setBusinessPhone] = useState("");
-  const [businessAddress, setBusinessAddress] = useState("");
-  const [agreed, setAgreed] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [seller, setSeller] = useState<Seller | null>(null);
+  const [acctStatus, setAcctStatus] = useState<AccountStatus | null>(null);
+  const [form, setForm] = useState({
+    businessName: "",
+    email: "",
+    businessPhone: "",
+    businessAddress: "",
+    description: "",
+    website: "",
+    agreed: false,
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSubmit = async () => {
+  // On mount: fetch current user, then seller record and Stripe status
+  useEffect(() => {
+    (async () => {
+      try {
+        const meRes = await fetch("/api/auth/me");
+        if (!meRes.ok) {
+          router.replace("/login");
+          return;
+        }
+        const { user } = await meRes.json();
+        setUser(user);
+        setForm(f => ({ ...f, email: user.email }));
+      } catch (err) {
+        console.error("Error fetching user", err);
+        return;
+      }
+      try {
+        const res = await fetch("/api/marketplace/get-my-seller");
+        if (res.ok) {
+          const { seller } = await res.json();
+          setSeller(seller);
+          if (seller.stripeAccountId) {
+            const acctRes = await fetch(
+              `/api/stripe/account-status?sellerId=${seller._id}`
+            );
+            if (acctRes.ok) {
+              const acctData = await acctRes.json();
+              setAcctStatus(acctData);
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Error loading seller info", err);
+      }
+    })();
+  }, [router]);
+
+  // Begin Stripe onboarding or update
+  const startOnboarding = async () => {
     setError("");
     setLoading(true);
-
     try {
-      const payload = {
-        businessName,
-        description,
-        website,
-        businessPhone,
-        email,
-        businessAddress,
-        accountType: "seller",
-        password: "temporaryPass123!",
-      };
-
-      const res = await fetch("/api/marketplace/create-seller", {
+      const payload = { email: seller?.email || form.email };
+      const res = await fetch("/api/stripe/create-account-link", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-
-      const result = await res.json();
-
-      if (!res.ok) throw new Error(result.message || "Failed to create seller");
-
-      // After successful creation, redirect to add-product page
-      router.push("/marketplace/add-product");
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("An unknown error occurred.");
-      }
-    } finally {
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Onboarding error");
+      router.replace(data.url);
+    } catch (e: any) {
+      console.error(e);
+      setError(e.message);
       setLoading(false);
     }
   };
 
-  return (
-    <div className="min-h-screen bg-black text-white p-6">
-      <div className="max-w-2xl mx-auto bg-gray-900 p-6 rounded-lg border border-gold">
-        <h1 className="text-2xl font-bold text-gold mb-4">Become a Seller</h1>
+  // Handle new seller registration
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user) {
+      setError("You must be logged in to register as a seller.");
+      return;
+    }
+    setError("");
+    setLoading(true);
+    try {
+      const payload = {
+        userId: user.id,
+        businessName: form.businessName,
+        description: form.description,
+        website: form.website,
+        businessPhone: form.businessPhone,
+        email: form.email,
+        businessAddress: form.businessAddress,
+        accountType: "seller",
+      };
+      const res = await fetch("/api/marketplace/create-seller", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Registration failed");
+      setSeller(data.seller);
+      await startOnboarding();
+    } catch (e: any) {
+      console.error(e);
+      setError(e.message);
+      setLoading(false);
+    }
+  };
 
-        <p className="text-gray-400 mb-4 text-sm">
-          Set up your seller profile so you can start adding products to the
-          marketplace.
-        </p>
-        <p className="text-gray-400 mb-6 text-sm">
-          <strong className="text-gold">Important:</strong> Black Wealth
-          Exchange collects a 10% platform fee on each completed sale to support
-          platform operations. All transactions are processed securely through
-          Stripe, and sellers receive the remaining balance directly via Stripe
-          Connect payouts.
-        </p>
-
-        {error && <p className="text-red-500 mb-4 text-sm">{error}</p>}
-
-        <div className="mb-4">
-          <label className="block text-sm mb-1">Business Name</label>
-          <input
-            type="text"
-            value={businessName}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setBusinessName(e.target.value)
-            }
-            className="w-full p-2 rounded bg-gray-800 border border-gray-700"
-            placeholder="e.g. Culture & Co."
-            required
-          />
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-sm mb-1">Business Email</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setEmail(e.target.value)
-            }
-            className="w-full p-2 rounded bg-gray-800 border border-gray-700"
-            placeholder="e.g. hello@yourbusiness.com"
-            required
-          />
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-sm mb-1">Business Phone</label>
-          <input
-            type="tel"
-            value={businessPhone}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setBusinessPhone(e.target.value)
-            }
-            className="w-full p-2 rounded bg-gray-800 border border-gray-700"
-            placeholder="e.g. (123) 456-7890"
-            required
-          />
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-sm mb-1">Business Address</label>
-          <input
-            type="text"
-            value={businessAddress}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setBusinessAddress(e.target.value)
-            }
-            className="w-full p-2 rounded bg-gray-800 border border-gray-700"
-            placeholder="e.g. 123 Main St, City, State"
-            required
-          />
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-sm mb-1">Business Description</label>
-          <textarea
-            value={description}
-            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-              setDescription(e.target.value)
-            }
-            className="w-full p-2 rounded bg-gray-800 border border-gray-700"
-            rows={4}
-            placeholder="Tell us about your business..."
-            required
-          ></textarea>
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-sm mb-1">
-            Website or Social Media (optional)
-          </label>
-          <input
-            type="text"
-            value={website}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setWebsite(e.target.value)
-            }
-            className="w-full p-2 rounded bg-gray-800 border border-gray-700"
-            placeholder="https://yourbusiness.com"
-          />
-        </div>
-
-        <div className="mb-4">
-          <label className="inline-flex items-center">
-            <input
-              type="checkbox"
-              checked={agreed}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setAgreed(e.target.checked)
-              }
-              className="mr-2"
-              required
-            />
-            I agree to the marketplace terms and conditions.
-          </label>
-        </div>
-
-        <button
-          onClick={handleSubmit}
-          disabled={
-            loading ||
-            !(
-              businessName &&
-              email &&
-              businessPhone &&
-              businessAddress &&
-              description &&
-              agreed
-            )
-          }
-          className={`w-full py-2 px-4 rounded text-black font-semibold transition ${
-            businessName &&
-            email &&
-            businessPhone &&
-            businessAddress &&
-            description &&
-            agreed &&
-            !loading
-              ? "bg-gold hover:bg-yellow-500"
-              : "bg-gray-500 cursor-not-allowed"
-          }`}
-        >
-          {loading ? "Submitting..." : "Create Seller Profile"}
-        </button>
+  // Fully onboarded UI
+  if (seller && acctStatus?.charges_enabled && acctStatus?.payouts_enabled) {
+    return (
+      <div className="min-h-screen bg-black text-white p-6 flex items-center justify-center">
+        <Card className="max-w-lg w-full p-6">
+          <CardContent>
+            <h1 className="text-2xl font-bold mb-4 text-gold">You’re All Set!</h1>
+            <p className="mb-4">Your payout account is verified.</p>
+            <Button
+              onClick={() => router.push("/marketplace/add-product")}
+              className="w-full"
+            >
+              Add Your First Product
+            </Button>
+          </CardContent>
+        </Card>
       </div>
+    );
+  }
+
+  // Registered but not onboarded
+  if (seller) {
+    return (
+      <div className="min-h-screen bg-black text-white p-6 flex items-center justify-center">
+        <Card className="max-w-lg w-full p-6">
+          <CardContent>
+            <h1 className="text-2xl font-bold mb-4 text-gold">Complete Payout Setup</h1>
+            <p className="mb-4">
+              To get paid to your bank or instant-payout card, finish Stripe onboarding.
+            </p>
+            {error && <p className="text-red-500 mb-4 text-sm">{error}</p>}
+            <Button
+              onClick={startOnboarding}
+              className="w-full"
+              disabled={loading}
+            >
+              {loading ? "Redirecting…" : "Finish Stripe Onboarding"}
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // New seller registration form
+  return (
+    <div className="min-h-screen bg-black text-white p-6 flex items-center justify-center">
+      <Card className="max-w-2xl w-full p-6">
+        <CardContent>
+          <h1 className="text-2xl font-bold text-gold mb-4">Become a Seller</h1>
+          <p className="text-gray-400 mb-6 text-sm">
+            <strong className="text-gold">Important:</strong> We collect a 10% platform fee
+            on each completed sale. Sellers receive the remainder via Stripe Connect payouts.
+          </p>
+          {error && <p className="text-red-500 mb-4 text-sm">{error}</p>}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label htmlFor="businessName" className="block text-sm mb-1">
+                Business Name
+              </label>
+              <input
+                id="businessName"
+                type="text"
+                className="w-full p-2 rounded bg-gray-800 border border-gray-700 text-white"
+                value={form.businessName}
+                onChange={(e) => setForm({ ...form, businessName: e.target.value })}
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="email" className="block text-sm mb-1">
+                Business Email
+              </label>
+              <input
+                id="email"
+                type="email"
+                className="w-full p-2 rounded bg-gray-800 border border-gray-700 text-white"
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="businessPhone" className="block text-sm mb-1">
+                Business Phone
+              </label>
+              <input
+                id="businessPhone"
+                type="tel"
+                className="w-full p-2 rounded bg-gray-800 border border-gray-700 text-white"
+                value={form.businessPhone}
+                onChange={(e) => setForm({ ...form, businessPhone: e.target.value })}
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="businessAddress" className="block text-sm mb-1">
+                Business Address
+              </label>
+              <input
+                id="businessAddress"
+                type="text"
+                className="w-full p-2 rounded bg-gray-800 border border-gray-700 text-white"
+                value={form.businessAddress}
+                onChange={(e) => setForm({ ...form, businessAddress: e.target.value })}
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="description" className="block text-sm mb-1">
+                Business Description
+              </label>
+              <textarea
+                id="description"
+                rows={4}
+                className="w-full p-2 rounded bg-gray-800 border border-gray-700 text-white"
+                value={form.description}
+                onChange={(e) => setForm({ ...form, description: e.target.value })}
+                required
+              />
+            </div>
+            <div>
+              <label htmlFor="website" className="block text-sm mb-1">
+                Website or Social Media (optional)
+              </label>
+              <input
+                id="website"
+                type="url"
+                className="w-full p-2 rounded bg-gray-800 border border-gray-700 text-white"
+                value={form.website}
+                onChange={(e) => setForm({ ...form, website: e.target.value })}
+              />
+            </div>
+            <div className="flex items-center">
+              <input
+                id="agree"
+                type="checkbox"
+                className="mr-2"
+                checked={form.agreed}
+                onChange={(e) => setForm({ ...form, agreed: e.target.checked })}
+                required
+              />
+              <label htmlFor="agree" className="text-sm">
+                I agree to the marketplace terms and conditions.
+              </label>
+            </div>
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? "Submitting..." : "Create Seller Profile"}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 }

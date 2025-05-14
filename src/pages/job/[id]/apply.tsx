@@ -41,7 +41,9 @@ export default function JobApply() {
           &times;
         </button>
 
-        <h1 className="text-2xl font-bold text-gold mb-4">Apply for this Job</h1>
+        <h1 className="text-2xl font-bold text-gold mb-4">
+          Apply for this Job
+        </h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Full Name (required) */}
           <label className="block">

@@ -143,8 +143,8 @@ export default function BlackOwnedStocks() {
             Black-Owned Publicly Traded Companies
           </h1>
           <p className="text-gray-300">
-            Discover the financial health, community impact, and step-by-step investing
-            guidance for each company.
+            Discover the financial health, community impact, and step-by-step
+            investing guidance for each company.
           </p>
         </header>
 
@@ -158,9 +158,7 @@ export default function BlackOwnedStocks() {
               <h2 className="text-2xl font-semibold text-blue-300">
                 {company.title}
               </h2>
-              <p className="mt-2 text-gray-300 flex-1">
-                {company.overview}
-              </p>
+              <p className="mt-2 text-gray-300 flex-1">{company.overview}</p>
 
               <div className="mt-4">
                 <h3 className="text-xl font-bold text-gold mb-2">

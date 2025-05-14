@@ -34,9 +34,7 @@ export default function JobDetail() {
       <p className="text-gray-300">
         {job.company} – {job.location} – {job.type}
       </p>
-      {job.salary && (
-        <p className="mt-2 text-gray-400">💰 {job.salary}</p>
-      )}
+      {job.salary && <p className="mt-2 text-gray-400">💰 {job.salary}</p>}
       <hr className="my-6 border-gray-700" />
       <div className="prose prose-invert">
         {/* Show the full description */}

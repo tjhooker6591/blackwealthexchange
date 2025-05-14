@@ -24,7 +24,7 @@ interface SessionMetadata {
 
 export default async function webhookHandler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
@@ -39,7 +39,10 @@ export default async function webhookHandler(
   try {
     event = stripe.webhooks.constructEvent(buf, sig, webhookSecret);
   } catch (err: any) {
-    console.error("⚠️ Stripe webhook signature verification failed:", err.message);
+    console.error(
+      "⚠️ Stripe webhook signature verification failed:",
+      err.message,
+    );
     return res.status(400).end("Webhook Error");
   }
 
@@ -80,7 +83,7 @@ export default async function webhookHandler(
           .collection("users")
           .updateOne(
             { _id: new ObjectId(userId) },
-            { $set: { isPremium: true } }
+            { $set: { isPremium: true } },
           );
       }
 

@@ -10,8 +10,8 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
 
 // Strongly typed request payload
 interface CheckoutPayload {
-  userId: string;      // ID of the buyer
-  itemId: string;      // MongoDB ObjectId of the product
+  userId: string; // ID of the buyer
+  itemId: string; // MongoDB ObjectId of the product
   type: string;
   amount: number;
   successUrl: string;
@@ -20,7 +20,7 @@ interface CheckoutPayload {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method Not Allowed" });
@@ -34,7 +34,14 @@ export default async function handler(
 
   // Validate required fields
   if (!userId || !itemId || !type || !amount || !successUrl || !cancelUrl) {
-    console.error("Missing required fields:", { userId, itemId, type, amount, successUrl, cancelUrl });
+    console.error("Missing required fields:", {
+      userId,
+      itemId,
+      type,
+      amount,
+      successUrl,
+      cancelUrl,
+    });
     return res.status(400).json({ error: "Missing required fields" });
   }
 
@@ -50,7 +57,9 @@ export default async function handler(
 
     if (!product?.sellerId) {
       console.error("Invalid product or missing seller:", itemId);
-      return res.status(400).json({ error: "Invalid product or missing seller" });
+      return res
+        .status(400)
+        .json({ error: "Invalid product or missing seller" });
     }
 
     // Lookup seller's Stripe account ID
@@ -60,7 +69,9 @@ export default async function handler(
 
     if (!seller?.stripeAccountId) {
       console.error("Stripe account not found for seller:", product.sellerId);
-      return res.status(400).json({ error: "Seller is not connected to Stripe" });
+      return res
+        .status(400)
+        .json({ error: "Seller is not connected to Stripe" });
     }
 
     const stripeAccountId = seller.stripeAccountId;

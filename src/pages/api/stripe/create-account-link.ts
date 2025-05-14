@@ -2,19 +2,17 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
 import clientPromise from "@/lib/mongodb";
 
-// Initialize Stripe with the matching API version
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-02-24.acacia",
 });
 
-// Define a strong type for the incoming request payload
 interface CreateAccountLinkPayload {
   email: string;
 }
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
@@ -27,35 +25,49 @@ export default async function handler(
   }
 
   try {
-    // Connect to MongoDB and retrieve seller record
     const client = await clientPromise;
     const db = client.db();
+    const sellers = db.collection("sellers");
 
-    // Step 1: Create the Stripe Express account
-    const accountParams: Stripe.AccountCreateParams = {
-      type: "express",
-      country: "US",
-      email,
-      capabilities: {
-        card_payments: { requested: true },
-        transfers: { requested: true },
-      },
-    };
-    const account = await stripe.accounts.create(accountParams);
+    // 1) Find (or create) your seller record
+    const seller = await sellers.findOne({ email });
+    if (!seller) {
+      return res.status(404).json({ error: "Seller not found" });
+    }
 
-    // Step 2: Save Stripe account ID in the seller record
-    await db
-      .collection("sellers")
-      .updateOne({ email }, { $set: { stripeAccountId: account.id } });
+    let stripeAccountId = seller.stripeAccountId;
+    // 2) If they don’t yet have a Stripe account, create one
+    if (!stripeAccountId) {
+      const account = await stripe.accounts.create({
+        type: "express",
+        country: "US",
+        email,
+        capabilities: {
+          card_payments: { requested: true },
+          transfers: { requested: true },
+        },
+      });
+      stripeAccountId = account.id;
+      await sellers.updateOne(
+        { email },
+        { $set: { stripeAccountId } }
+      );
+    }
 
-    // Step 3: Create onboarding link
-    const accountLinkParams: Stripe.AccountLinkCreateParams = {
-      account: account.id,
+    // 3) Decide which link type to use:
+    //    - account_onboarding for first-time setup
+    //    - account_update for adding/updating bank or debit card info later
+    const linkType: Stripe.AccountLinkCreateParams.Type =
+      seller.stripeAccountId == null
+        ? "account_onboarding"
+        : "account_update";
+
+    const accountLink = await stripe.accountLinks.create({
+      account: stripeAccountId,
       refresh_url: `${process.env.NEXT_PUBLIC_BASE_URL}/become-a-seller`,
-      return_url: `${process.env.NEXT_PUBLIC_BASE_URL}/marketplace/add-product`,
-      type: "account_onboarding",
-    };
-    const accountLink = await stripe.accountLinks.create(accountLinkParams);
+      return_url:  `${process.env.NEXT_PUBLIC_BASE_URL}/marketplace/add-product`,
+      type:       linkType,
+    });
 
     return res.status(200).json({ url: accountLink.url });
   } catch (err: any) {
@@ -68,4 +80,3 @@ export default async function handler(
     });
   }
 }
-

@@ -5,9 +5,9 @@
 import React, { useState } from "react";
 
 interface BuyNowButtonProps {
-  userId: string;        // Buyer ID passed from parent
+  userId: string; // Buyer ID passed from parent
   itemId: string;
-  amount: number;        // amount in dollars (e.g. 49.99)
+  amount: number; // amount in dollars (e.g. 49.99)
   type: "product" | "ad" | "course" | "job" | "upgrade";
   label?: string;
 }
@@ -72,4 +72,3 @@ const BuyNowButton: React.FC<BuyNowButtonProps> = ({
 };
 
 export default BuyNowButton;
-
