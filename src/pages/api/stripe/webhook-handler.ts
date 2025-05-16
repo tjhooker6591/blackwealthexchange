@@ -1,30 +1,33 @@
 // src/pages/api/stripe/webhook-handler.ts
+
 import type { NextApiRequest, NextApiResponse } from "next";
 import { buffer } from "micro";
 import Stripe from "stripe";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 
-export const config = {
-  api: { bodyParser: false },
-};
+export const config = { api: { bodyParser: false } };
 
-// Initialize Stripe with the matching API version
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-02-24.acacia",
 });
 
-// Strongly type the expected metadata on checkout.session.completed
+// Metadata may include any one (or more) of these properties:
 interface SessionMetadata {
-  userId: string;
-  itemId: string;
-  type: string;
-  amount: string;
+  // advertising
+  campaignId?: string;
+  // marketplace
+  orderId?: string;
+  // courses
+  courseId?: string;
+  userId?: string;
+  // affiliates
+  affiliateCode?: string;
 }
 
 export default async function webhookHandler(
   req: NextApiRequest,
-  res: NextApiResponse,
+  res: NextApiResponse
 ) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
@@ -33,64 +36,63 @@ export default async function webhookHandler(
 
   const sig = req.headers["stripe-signature"] as string;
   const buf = await buffer(req);
-  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
-
   let event: Stripe.Event;
   try {
-    event = stripe.webhooks.constructEvent(buf, sig, webhookSecret);
-  } catch (err: any) {
-    console.error(
-      "⚠️ Stripe webhook signature verification failed:",
-      err.message,
+    event = stripe.webhooks.constructEvent(
+      buf,
+      sig,
+      process.env.STRIPE_WEBHOOK_SECRET!
     );
+  } catch (err: any) {
+    console.error("⚠️ Webhook signature verification failed:", err.message);
     return res.status(400).end("Webhook Error");
   }
 
   if (event.type === "checkout.session.completed") {
     const session = event.data.object as Stripe.Checkout.Session;
+    const meta = session.metadata as unknown as SessionMetadata;
 
-    if (!session.metadata) {
-      console.warn("⚠️ Missing metadata in session:", session.id);
-      return res.status(400).end("Missing metadata in session");
+    const client = await clientPromise;
+    const db = client.db();
+
+    // 1) Advertising: campaign checkout
+    if (meta.campaignId) {
+      await db.collection("advertisingCampaigns").updateOne(
+        { _id: new ObjectId(meta.campaignId) },
+        { $set: { status: "paid", paymentIntentId: session.payment_intent } }
+      );
+      console.log(`✅ Campaign ${meta.campaignId} marked paid`);
     }
-    // Cast metadata to our interface
-    const metadata = session.metadata as unknown as SessionMetadata;
 
-    const { userId, itemId, type, amount } = metadata;
-    if (!userId || !itemId || !type || !amount) {
-      console.warn("⚠️ Incomplete metadata in session:", session.id);
-      return res.status(400).end("Missing metadata in session");
+    // 2) Marketplace order
+    if (meta.orderId) {
+      // mark order paid
+      await db.collection("orders").updateOne(
+        { _id: new ObjectId(meta.orderId) },
+        { $set: { status: "paid", paymentIntent: session.payment_intent } }
+      );
+      // optionally send a receipt email here
+      console.log(`✅ Order ${meta.orderId} fulfilled`);
     }
 
-    try {
-      const client = await clientPromise;
-      const db = client.db();
+    // 3) Course purchase
+    if (meta.courseId && meta.userId) {
+      await db.collection("users").updateOne(
+        { _id: new ObjectId(meta.userId) },
+        { $addToSet: { purchasedCourses: meta.courseId } }
+      );
+      console.log(`✅ Granted course ${meta.courseId} to user ${meta.userId}`);
+    }
 
-      // Record the order in your DB
-      await db.collection("orders").insertOne({
-        userId,
-        itemId,
-        type,
-        amount: parseFloat(amount),
-        stripeSessionId: session.id,
-        status: "paid",
-        createdAt: new Date(),
+    // 4) Affiliate referral
+    if (meta.affiliateCode) {
+      await db.collection("affiliateConversions").insertOne({
+        affiliateCode: meta.affiliateCode,
+        amount: session.amount_total,
+        sessionId: session.id,
+        date: new Date(),
       });
-
-      // Upgrade to premium if it's a course purchase
-      if (type === "course") {
-        await db
-          .collection("users")
-          .updateOne(
-            { _id: new ObjectId(userId) },
-            { $set: { isPremium: true } },
-          );
-      }
-
-      console.log(`✅ Order processed: user=${userId}, item=${itemId}`);
-    } catch (err: any) {
-      console.error("❌ Failed to process Stripe webhook:", err.message);
-      return res.status(500).end("Internal Server Error");
+      console.log(`✅ Recorded affiliate conversion for ${meta.affiliateCode}`);
     }
   } else {
     console.log(`ℹ️ Unhandled event type: ${event.type}`);

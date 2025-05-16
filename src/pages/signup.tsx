@@ -20,6 +20,15 @@ export default function Signup() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [onboardingUrl, setOnboardingUrl] = useState<string | null>(null);
+
+  // Redirect immediately when onboardingUrl is set
+  useEffect(() => {
+    if (onboardingUrl) {
+      // Optionally show a toast or loader before redirect
+      window.location.assign(onboardingUrl);
+    }
+  }, [onboardingUrl]);
 
   useEffect(() => {
     const { type } = router.query;
@@ -39,28 +48,27 @@ export default function Signup() {
 
   const handleAccountTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setAccountType(e.target.value);
+    setError("");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Basic validations
     if (!formData.email || !formData.password || !formData.confirmPassword) {
       setError("All fields are required.");
       return;
     }
-
     if (!validateEmail(formData.email)) {
       setError("Invalid email format.");
       return;
     }
-
     if (!validatePassword(formData.password)) {
       setError(
-        "Password must be at least 8 characters, include 1 uppercase letter, 1 number, and 1 special character.",
+        "Password must be at least 8 characters, include 1 uppercase letter, 1 number, and 1 special character."
       );
       return;
     }
-
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match.");
       return;
@@ -82,9 +90,18 @@ export default function Signup() {
       });
 
       const data = await response.json();
-
       if (!response.ok) {
         throw new Error(data.error || "Signup failed.");
+      }
+
+      // If seller, trigger redirect via onboardingUrl state
+      if (data.accountType === 'seller') {
+        if (data.stripeOnboardingLink) {
+          setOnboardingUrl(data.stripeOnboardingLink);
+        } else {
+          setError("Signup succeeded but Stripe onboarding link was not provided. Please try again.");
+        }
+        return;
       }
 
       setSuccess(true);
@@ -97,12 +114,9 @@ export default function Signup() {
         businessPhone: "",
       });
 
-      // ⏳ Delay redirect to allow cookies to register
+      // Delay redirect to allow cookies to register
       setTimeout(() => {
         switch (data.accountType) {
-          case "seller":
-            router.push("/marketplace/dashboard");
-            break;
           case "business":
             router.push("/add-business");
             break;
@@ -111,6 +125,7 @@ export default function Signup() {
             break;
           default:
             router.push("/dashboard");
+            break;
         }
       }, 500);
     } catch (err) {
@@ -130,13 +145,29 @@ export default function Signup() {
         <p className="text-center text-gray-600 mt-2">Join the BWE Community</p>
 
         {error && <p className="text-red-500 text-center mt-2">{error}</p>}
-        {success && (
+        {success && !onboardingUrl && (
           <p className="text-green-500 text-center mt-2">
             Signup Successful! 🎉
           </p>
         )}
+        {/* Fallback message and link if auto-redirect fails */}
+        {onboardingUrl && (
+          <p className="mt-4 text-center">
+            Redirecting you to Stripe to complete your setup.
+            If you are not redirected automatically,{' '}
+            <a
+              href={onboardingUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-ggold underline"
+            >
+              click here
+            </a>.
+          </p>
+        )}
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+          {/* Form fields unchanged */}
           <div>
             <label className="block text-gray-700 font-semibold">
               Account Type
@@ -248,7 +279,7 @@ export default function Signup() {
         </form>
 
         <p className="text-center mt-4 text-gray-600">
-          Already have an account?{" "}
+          Already have an account?{' '}
           <Link
             href="/login"
             className="text-gold font-semibold hover:underline"

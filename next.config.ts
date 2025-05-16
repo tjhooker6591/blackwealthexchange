@@ -1,4 +1,3 @@
-// next.config.ts
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
@@ -13,6 +12,19 @@ const nextConfig: NextConfig = {
   // You can still expose safe, public vars (if you need them) here:
   publicRuntimeConfig: {
     baseUrl: process.env.NEXT_PUBLIC_BASE_URL,
+  },
+
+  // Prevent bundling Node.js built-ins in client code
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        net: false,
+        tls: false,
+        dns: false,
+      };
+    }
+    return config;
   },
 };
 
