@@ -27,7 +27,7 @@ interface SessionMetadata {
 
 export default async function webhookHandler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
@@ -41,7 +41,7 @@ export default async function webhookHandler(
     event = stripe.webhooks.constructEvent(
       buf,
       sig,
-      process.env.STRIPE_WEBHOOK_SECRET!
+      process.env.STRIPE_WEBHOOK_SECRET!,
     );
   } catch (err: any) {
     console.error("⚠️ Webhook signature verification failed:", err.message);
@@ -57,30 +57,36 @@ export default async function webhookHandler(
 
     // 1) Advertising: campaign checkout
     if (meta.campaignId) {
-      await db.collection("advertisingCampaigns").updateOne(
-        { _id: new ObjectId(meta.campaignId) },
-        { $set: { status: "paid", paymentIntentId: session.payment_intent } }
-      );
+      await db
+        .collection("advertisingCampaigns")
+        .updateOne(
+          { _id: new ObjectId(meta.campaignId) },
+          { $set: { status: "paid", paymentIntentId: session.payment_intent } },
+        );
       console.log(`✅ Campaign ${meta.campaignId} marked paid`);
     }
 
     // 2) Marketplace order
     if (meta.orderId) {
       // mark order paid
-      await db.collection("orders").updateOne(
-        { _id: new ObjectId(meta.orderId) },
-        { $set: { status: "paid", paymentIntent: session.payment_intent } }
-      );
+      await db
+        .collection("orders")
+        .updateOne(
+          { _id: new ObjectId(meta.orderId) },
+          { $set: { status: "paid", paymentIntent: session.payment_intent } },
+        );
       // optionally send a receipt email here
       console.log(`✅ Order ${meta.orderId} fulfilled`);
     }
 
     // 3) Course purchase
     if (meta.courseId && meta.userId) {
-      await db.collection("users").updateOne(
-        { _id: new ObjectId(meta.userId) },
-        { $addToSet: { purchasedCourses: meta.courseId } }
-      );
+      await db
+        .collection("users")
+        .updateOne(
+          { _id: new ObjectId(meta.userId) },
+          { $addToSet: { purchasedCourses: meta.courseId } },
+        );
       console.log(`✅ Granted course ${meta.courseId} to user ${meta.userId}`);
     }
 

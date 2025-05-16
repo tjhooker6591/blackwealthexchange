@@ -65,7 +65,7 @@ export default function Signup() {
     }
     if (!validatePassword(formData.password)) {
       setError(
-        "Password must be at least 8 characters, include 1 uppercase letter, 1 number, and 1 special character."
+        "Password must be at least 8 characters, include 1 uppercase letter, 1 number, and 1 special character.",
       );
       return;
     }
@@ -95,11 +95,13 @@ export default function Signup() {
       }
 
       // If seller, trigger redirect via onboardingUrl state
-      if (data.accountType === 'seller') {
+      if (data.accountType === "seller") {
         if (data.stripeOnboardingLink) {
           setOnboardingUrl(data.stripeOnboardingLink);
         } else {
-          setError("Signup succeeded but Stripe onboarding link was not provided. Please try again.");
+          setError(
+            "Signup succeeded but Stripe onboarding link was not provided. Please try again.",
+          );
         }
         return;
       }
@@ -153,8 +155,8 @@ export default function Signup() {
         {/* Fallback message and link if auto-redirect fails */}
         {onboardingUrl && (
           <p className="mt-4 text-center">
-            Redirecting you to Stripe to complete your setup.
-            If you are not redirected automatically,{' '}
+            Redirecting you to Stripe to complete your setup. If you are not
+            redirected automatically,{" "}
             <a
               href={onboardingUrl}
               target="_blank"
@@ -162,7 +164,8 @@ export default function Signup() {
               className="text-ggold underline"
             >
               click here
-            </a>.
+            </a>
+            .
           </p>
         )}
 
@@ -279,7 +282,7 @@ export default function Signup() {
         </form>
 
         <p className="text-center mt-4 text-gray-600">
-          Already have an account?{' '}
+          Already have an account?{" "}
           <Link
             href="/login"
             className="text-gold font-semibold hover:underline"

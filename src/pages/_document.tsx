@@ -12,7 +12,7 @@ import Document, {
 export default class MyDocument extends Document {
   // Ensure Next.js collects and injects its default props (styles, etc.)
   static async getInitialProps(
-    ctx: DocumentContext
+    ctx: DocumentContext,
   ): Promise<DocumentInitialProps> {
     const initialProps = await Document.getInitialProps(ctx);
     return initialProps;
@@ -71,4 +71,3 @@ export default class MyDocument extends Document {
     );
   }
 }
-

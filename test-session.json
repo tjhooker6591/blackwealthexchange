@@ -9,11 +9,11 @@
       "payment_intent": "pi_test_intent",
       "amount_total": 2000,
       "metadata": {
-        "campaignId":    "609c5f7a2f8fb814b56fa181",
-        "orderId":        "609c5f7a2f8fb814b56fa182",
-        "courseId":       "course_123",
-        "userId":         "609c5f7a2f8fb814b56fa183",
-        "affiliateCode":  "AFF12345"
+        "campaignId": "609c5f7a2f8fb814b56fa181",
+        "orderId": "609c5f7a2f8fb814b56fa182",
+        "courseId": "course_123",
+        "userId": "609c5f7a2f8fb814b56fa183",
+        "affiliateCode": "AFF12345"
       }
     }
   }

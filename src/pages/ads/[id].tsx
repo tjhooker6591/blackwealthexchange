@@ -55,31 +55,32 @@ export default function AdDetailPage({ campaign }: AdDetailPageProps) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps<AdDetailPageProps> =
-  async (context: GetServerSidePropsContext) => {
-    const id = Array.isArray(context.params?.id)
-      ? context.params.id[0]
-      : context.params?.id;
+export const getServerSideProps: GetServerSideProps<AdDetailPageProps> = async (
+  context: GetServerSidePropsContext,
+) => {
+  const id = Array.isArray(context.params?.id)
+    ? context.params.id[0]
+    : context.params?.id;
 
-    if (!id) {
-      return { notFound: true };
-    }
+  if (!id) {
+    return { notFound: true };
+  }
 
-    const campaign = await getCampaignById(id);
-    if (!campaign) {
-      return { notFound: true };
-    }
+  const campaign = await getCampaignById(id);
+  if (!campaign) {
+    return { notFound: true };
+  }
 
-    return {
-      props: {
-        campaign: {
-          _id: campaign._id.toString(),
-          name: campaign.name,
-          price: campaign.price,
-          paid: campaign.paid ?? false,
-          paidAt: campaign.paidAt?.toISOString() ?? null,
-          paymentIntentId: campaign.paymentIntentId ?? null,
-        },
+  return {
+    props: {
+      campaign: {
+        _id: campaign._id.toString(),
+        name: campaign.name,
+        price: campaign.price,
+        paid: campaign.paid ?? false,
+        paidAt: campaign.paidAt?.toISOString() ?? null,
+        paymentIntentId: campaign.paymentIntentId ?? null,
       },
-    };
+    },
   };
+};
