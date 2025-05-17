@@ -12,6 +12,6 @@ export async function fulfillOrder(orderId: string, paymentIntentId: string) {
     .collection("orders")
     .updateOne(
       { _id: new ObjectId(orderId) },
-      { $set: { status: "paid", paymentIntent: paymentIntentId } }
+      { $set: { status: "paid", paymentIntent: paymentIntentId } },
     );
 }

@@ -11,9 +11,9 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
 });
 
 interface CheckoutPayload {
-  userId: string;   // ID of the buyer
-  itemId: string;   // MongoDB ObjectId _or_ slug of the product
-  type: string;     // e.g. "ad" or other product type
+  userId: string; // ID of the buyer
+  itemId: string; // MongoDB ObjectId _or_ slug of the product
+  type: string; // e.g. "ad" or other product type
   amount: number;
   successUrl: string;
   cancelUrl: string;
@@ -21,7 +21,7 @@ interface CheckoutPayload {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method Not Allowed" });
@@ -50,11 +50,10 @@ export default async function handler(
     // slug-fallback lookup for products
     const product = await db
       .collection("products")
-      .findOne<{ sellerId: string; slug?: string }>(
-        ObjectId.isValid(itemId)
-          ? { _id: new ObjectId(itemId) }
-          : { slug: itemId }
-      );
+      .findOne<{
+        sellerId: string;
+        slug?: string;
+      }>(ObjectId.isValid(itemId) ? { _id: new ObjectId(itemId) } : { slug: itemId });
 
     if (!product?.sellerId) {
       console.error("Invalid product or missing seller:", itemId);
@@ -116,7 +115,7 @@ export default async function handler(
 
     // Create the Checkout Session
     const session = await stripe.checkout.sessions.create(
-      sessionParams as Stripe.Checkout.SessionCreateParams
+      sessionParams as Stripe.Checkout.SessionCreateParams,
     );
     return res.status(200).json({ url: session.url });
   } catch (err: any) {
@@ -129,4 +128,3 @@ export default async function handler(
     });
   }
 }
-
