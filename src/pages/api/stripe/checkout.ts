@@ -11,9 +11,9 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
 });
 
 interface CheckoutPayload {
-  userId: string; // ID of the buyer
-  itemId: string; // MongoDB ObjectId _or_ slug of the product
-  type: string;
+  userId: string;   // ID of the buyer
+  itemId: string;   // MongoDB ObjectId _or_ slug of the product
+  type: string;     // e.g. "ad" or other product type
   amount: number;
   successUrl: string;
   cancelUrl: string;
@@ -21,7 +21,7 @@ interface CheckoutPayload {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse,
+  res: NextApiResponse
 ) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method Not Allowed" });
@@ -47,14 +47,14 @@ export default async function handler(
     const client = await clientPromise;
     const db = client.db();
 
-    // —— slug‐fallback lookup with inline generic ——
+    // slug-fallback lookup for products
     const product = await db
       .collection("products")
-      .findOne<{
-        sellerId: string;
-        slug?: string;
-      }>(ObjectId.isValid(itemId) ? { _id: new ObjectId(itemId) } : { slug: itemId });
-    // —— end lookup ——
+      .findOne<{ sellerId: string; slug?: string }>(
+        ObjectId.isValid(itemId)
+          ? { _id: new ObjectId(itemId) }
+          : { slug: itemId }
+      );
 
     if (!product?.sellerId) {
       console.error("Invalid product or missing seller:", itemId);
@@ -63,23 +63,35 @@ export default async function handler(
         .json({ error: "Invalid product or missing seller" });
     }
 
-    // —— slug‐fallback lookup ends here ——
-
-    // Lookup seller's Stripe account ID
-    const seller = await db
-      .collection("sellers")
-      .findOne({ userId: product.sellerId! });
-
-    if (!seller?.stripeAccountId) {
-      console.error("Stripe account not found for seller:", product.sellerId);
-      return res
-        .status(400)
-        .json({ error: "Seller is not connected to Stripe" });
+    // determine which Stripe account to credit
+    let stripeAccountId: string;
+    if (type === "ad") {
+      // Ad purchases go to the platform account
+      stripeAccountId = process.env.PLATFORM_STRIPE_ACCOUNT_ID!;
+      if (!stripeAccountId) {
+        console.error("Missing PLATFORM_STRIPE_ACCOUNT_ID");
+        return res
+          .status(500)
+          .json({ error: "Platform Stripe account not configured" });
+      }
+    } else {
+      // Other products go to each seller’s account
+      const seller = await db
+        .collection("sellers")
+        .findOne<{ stripeAccountId: string }>({
+          userId: product.sellerId,
+        });
+      if (!seller?.stripeAccountId) {
+        console.error("Stripe account not found for seller:", product.sellerId);
+        return res
+          .status(400)
+          .json({ error: "Seller is not connected to Stripe" });
+      }
+      stripeAccountId = seller.stripeAccountId;
     }
 
-    const stripeAccountId = seller.stripeAccountId;
-
-    const sessionParams: any = {
+    // Build the Checkout Session parameters without explicit type annotation
+    const sessionParams = {
       mode: "payment",
       payment_method_types: ["card"],
       line_items: [
@@ -102,7 +114,10 @@ export default async function handler(
       transfer_group: `ORDER_${itemId}`,
     };
 
-    const session = await stripe.checkout.sessions.create(sessionParams);
+    // Create the Checkout Session
+    const session = await stripe.checkout.sessions.create(
+      sessionParams as Stripe.Checkout.SessionCreateParams
+    );
     return res.status(200).json({ url: session.url });
   } catch (err: any) {
     console.error("❌ Stripe session creation failed:", err);
@@ -114,3 +129,4 @@ export default async function handler(
     });
   }
 }
+
