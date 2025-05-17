@@ -11,8 +11,8 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
 });
 
 interface CheckoutPayload {
-  userId: string;   // ID of the buyer
-  itemId: string;   // MongoDB ObjectId _or_ slug of the product
+  userId: string; // ID of the buyer
+  itemId: string; // MongoDB ObjectId _or_ slug of the product
   type: string;
   amount: number;
   successUrl: string;
@@ -21,7 +21,7 @@ interface CheckoutPayload {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method Not Allowed" });
@@ -47,15 +47,14 @@ export default async function handler(
     const client = await clientPromise;
     const db = client.db();
 
-    // —— slug‐fallback lookup with inline generic —— 
+    // —— slug‐fallback lookup with inline generic ——
     const product = await db
       .collection("products")
-      .findOne<{ sellerId: string; slug?: string }>(
-        ObjectId.isValid(itemId)
-          ? { _id: new ObjectId(itemId) }
-          : { slug: itemId }
-      );
-    // —— end lookup —— 
+      .findOne<{
+        sellerId: string;
+        slug?: string;
+      }>(ObjectId.isValid(itemId) ? { _id: new ObjectId(itemId) } : { slug: itemId });
+    // —— end lookup ——
 
     if (!product?.sellerId) {
       console.error("Invalid product or missing seller:", itemId);
@@ -64,7 +63,7 @@ export default async function handler(
         .json({ error: "Invalid product or missing seller" });
     }
 
-    // —— slug‐fallback lookup ends here —— 
+    // —— slug‐fallback lookup ends here ——
 
     // Lookup seller's Stripe account ID
     const seller = await db

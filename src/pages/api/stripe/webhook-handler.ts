@@ -6,9 +6,9 @@ import Stripe from "stripe";
 
 // only import the functions you actually have
 import { getCampaignById, markCampaignPaid } from "@/lib/db/ads";
-import { fulfillOrder }                   from "@/lib/db/orders";
-import { grantCourseAccess }              from "@/lib/db/courses";
-import { recordAffiliateConversion }      from "@/lib/db/affiliates";
+import { fulfillOrder } from "@/lib/db/orders";
+import { grantCourseAccess } from "@/lib/db/courses";
+import { recordAffiliateConversion } from "@/lib/db/affiliates";
 
 export const config = { api: { bodyParser: false } };
 
@@ -27,7 +27,7 @@ interface SessionMetadata {
 
 export default async function webhookHandler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
@@ -54,7 +54,10 @@ export default async function webhookHandler(
       try {
         const campaign = await getCampaignById(meta.campaignId);
         if (campaign && !campaign.paid) {
-          await markCampaignPaid(meta.campaignId, session.payment_intent as string);
+          await markCampaignPaid(
+            meta.campaignId,
+            session.payment_intent as string,
+          );
           console.log(`✅ Campaign ${meta.campaignId} marked paid`);
         } else {
           console.log(`ℹ️ Campaign ${meta.campaignId} already paid; skipping`);
@@ -78,9 +81,14 @@ export default async function webhookHandler(
     if (meta.courseId && meta.userId) {
       try {
         await grantCourseAccess(meta.userId, meta.courseId);
-        console.log(`✅ Granted course ${meta.courseId} to user ${meta.userId}`);
+        console.log(
+          `✅ Granted course ${meta.courseId} to user ${meta.userId}`,
+        );
       } catch (err) {
-        console.error(`❌ Error granting course access (or already granted):`, err);
+        console.error(
+          `❌ Error granting course access (or already granted):`,
+          err,
+        );
       }
     }
 
@@ -90,11 +98,16 @@ export default async function webhookHandler(
         await recordAffiliateConversion(
           meta.affiliateCode,
           session.amount_total || 0,
-          session.id
+          session.id,
         );
-        console.log(`✅ Recorded affiliate conversion for ${meta.affiliateCode}`);
+        console.log(
+          `✅ Recorded affiliate conversion for ${meta.affiliateCode}`,
+        );
       } catch (err) {
-        console.error(`❌ Error recording affiliate conversion (or duplicate):`, err);
+        console.error(
+          `❌ Error recording affiliate conversion (or duplicate):`,
+          err,
+        );
       }
     }
   } else {
@@ -104,4 +117,3 @@ export default async function webhookHandler(
   // Always ack so Stripe won’t keep retrying on helper errors
   res.status(200).json({ received: true });
 }
-

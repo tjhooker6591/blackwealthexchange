@@ -33,11 +33,9 @@ export default function AdDetailPage({ campaign }: AdDetailPageProps) {
     if (query.status) {
       // rename status to _status so ESLint knows it's intentionally unused
       const { status: _status, ...rest } = query;
-      replace(
-        { pathname: `/ads/${query.id}`, query: rest },
-        undefined,
-        { shallow: true }
-      );
+      replace({ pathname: `/ads/${query.id}`, query: rest }, undefined, {
+        shallow: true,
+      });
     }
   }, [query, replace]);
 
@@ -110,39 +108,40 @@ export default function AdDetailPage({ campaign }: AdDetailPageProps) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps<AdDetailPageProps> =
-  async (context: GetServerSidePropsContext) => {
-    const rawId = Array.isArray(context.params?.id)
-      ? context.params.id[0]
-      : context.params?.id;
+export const getServerSideProps: GetServerSideProps<AdDetailPageProps> = async (
+  context: GetServerSidePropsContext,
+) => {
+  const rawId = Array.isArray(context.params?.id)
+    ? context.params.id[0]
+    : context.params?.id;
 
-    // 1) must have an id
-    if (!rawId || typeof rawId !== "string") {
-      return { notFound: true };
-    }
+  // 1) must have an id
+  if (!rawId || typeof rawId !== "string") {
+    return { notFound: true };
+  }
 
-    // 2) guard against invalid ObjectId
-    if (!ObjectId.isValid(rawId)) {
-      return { notFound: true };
-    }
+  // 2) guard against invalid ObjectId
+  if (!ObjectId.isValid(rawId)) {
+    return { notFound: true };
+  }
 
-    // 3) fetch campaign
-    const campaign = await getCampaignById(rawId);
-    if (!campaign) {
-      return { notFound: true };
-    }
+  // 3) fetch campaign
+  const campaign = await getCampaignById(rawId);
+  if (!campaign) {
+    return { notFound: true };
+  }
 
-    return {
-      props: {
-        campaign: {
-          _id: campaign._id.toString(),
-          name: campaign.name,
-          price: campaign.price,
-          banner: campaign.banner ?? null,
-          paid: campaign.paid ?? false,
-          paidAt: campaign.paidAt?.toISOString() ?? null,
-          paymentIntentId: campaign.paymentIntentId ?? null,
-        },
+  return {
+    props: {
+      campaign: {
+        _id: campaign._id.toString(),
+        name: campaign.name,
+        price: campaign.price,
+        banner: campaign.banner ?? null,
+        paid: campaign.paid ?? false,
+        paidAt: campaign.paidAt?.toISOString() ?? null,
+        paymentIntentId: campaign.paymentIntentId ?? null,
       },
-    };
+    },
   };
+};

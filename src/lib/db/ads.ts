@@ -38,21 +38,19 @@ if (process.env.NODE_ENV === "development") {
 export async function getCampaignById(id: string): Promise<Campaign | null> {
   const client = await clientPromise;
   const db = client.db();
-  return db
-    .collection<Campaign>("ads")
-    .findOne(
-      { _id: new ObjectId(id) },
-      {
-        projection: {
-          name: 1,
-          price: 1,
-          paid: 1,
-          paidAt: 1,
-          paymentIntentId: 1,
-          banner: 1,
-        },
+  return db.collection<Campaign>("ads").findOne(
+    { _id: new ObjectId(id) },
+    {
+      projection: {
+        name: 1,
+        price: 1,
+        paid: 1,
+        paidAt: 1,
+        paymentIntentId: 1,
+        banner: 1,
       },
-    );
+    },
+  );
 }
 
 /**

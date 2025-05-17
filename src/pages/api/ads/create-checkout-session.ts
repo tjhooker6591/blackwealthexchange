@@ -8,7 +8,10 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-02-24.acacia",
 });
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   const { campaignId } = req.body;
   const campaign = await getCampaignById(campaignId);
   if (!campaign) return res.status(404).end();
@@ -28,10 +31,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     mode: "payment",
     metadata: { campaignId },
     success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/ads/${campaignId}?status=success`,
-    cancel_url:  `${process.env.NEXT_PUBLIC_BASE_URL}/ads/${campaignId}?status=cancelled`,
+    cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/ads/${campaignId}?status=cancelled`,
   });
 
   res.status(200).json({ url: session.url });
 }
-
-
