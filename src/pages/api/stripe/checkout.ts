@@ -48,12 +48,10 @@ export default async function handler(
     const db = client.db();
 
     // slug-fallback lookup for products
-    const product = await db
-      .collection("products")
-      .findOne<{
-        sellerId: string;
-        slug?: string;
-      }>(ObjectId.isValid(itemId) ? { _id: new ObjectId(itemId) } : { slug: itemId });
+    const product = await db.collection("products").findOne<{
+      sellerId: string;
+      slug?: string;
+    }>(ObjectId.isValid(itemId) ? { _id: new ObjectId(itemId) } : { slug: itemId });
 
     if (!product?.sellerId) {
       console.error("Invalid product or missing seller:", itemId);

@@ -295,6 +295,33 @@ export default function Home() {
             </div>
           ))}
         </div>
+{/* Recruiting & Consulting Services (Coming Soon) */}
+<section className="bg-yellow-600 rounded-lg shadow-lg px-6 py-1 mb-4">
+  <div className="flex flex-wrap items-start space-x-4">
+    {/* Text block */}
+    <div className="flex-1 min-w-0">
+      <h3 className="flex items-center text-xl font-bold">
+        BWE Recruiting & Consulting Services
+        <span className="ml-2 flex-shrink-0 whitespace-nowrap px-2 py-0.5 bg-black text-yellow-400 text-xs font-bold rounded-full">
+          Coming Soon
+        </span>
+      </h3>
+      <p className="text-sm mt-1">
+        We will soon offer a comprehensive talent consulting service that connects you with rigorously vetted Black professionals. Employers can hire top Black talent with confidence, and students, job seekers, and overlooked candidates can secure meaningful career opportunities.
+      </p>
+    </div>
+
+    {/* Notify button */}
+    <Link
+      href="/dashboard/employer/consulting-interest"
+      className="px-3 py-1 bg-black text-yellow-400 text-sm font-semibold rounded hover:bg-gray-900 transition"
+    >
+      Notify Me
+    </Link>
+  </div>
+</section>
+
+
 
         {/* Advertise Section */}
         <section className="bg-gray-900 border border-gold rounded-lg shadow p-4 text-center my-6 animate-fadeIn">
