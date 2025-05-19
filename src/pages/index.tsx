@@ -295,33 +295,34 @@ export default function Home() {
             </div>
           ))}
         </div>
-{/* Recruiting & Consulting Services (Coming Soon) */}
-<section className="bg-yellow-600 rounded-lg shadow-lg px-6 py-1 mb-4">
-  <div className="flex flex-wrap items-start space-x-4">
-    {/* Text block */}
-    <div className="flex-1 min-w-0">
-      <h3 className="flex items-center text-xl font-bold">
-        BWE Recruiting & Consulting Services
-        <span className="ml-2 flex-shrink-0 whitespace-nowrap px-2 py-0.5 bg-black text-yellow-400 text-xs font-bold rounded-full">
-          Coming Soon
-        </span>
-      </h3>
-      <p className="text-sm mt-1">
-        We will soon offer a comprehensive talent consulting service that connects you with rigorously vetted Black professionals. Employers can hire top Black talent with confidence, and students, job seekers, and overlooked candidates can secure meaningful career opportunities.
-      </p>
-    </div>
+ {/* Recruiting & Consulting Services (Coming Soon) */}
+ <section className="container mx-auto px-4 bg-yellow-600 rounded-lg shadow-lg p-4 mb-6">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start space-y-4 sm:space-y-0 sm:space-x-4">
+            {/* Text block */}
+            <div className="flex-1">
+              <div className="flex justify-between items-center mb-2">
+                <h3 className="text-xl font-bold">
+                  BWE Recruiting & Consulting Services
+                </h3>
+                <span className="inline-block bg-black text-yellow-400 text-xs px-2 py-0.5 rounded-full whitespace-nowrap">
+                  Coming Soon
+                </span>
+              </div>
+              <p className="text-sm">
+                We will soon launch a full talent-consulting service connecting you with rigorously vetted Black professionals. Employers hire top talent confidently, and students, job seekers & overlooked candidates secure meaningful opportunities.
+              </p>
+            </div>
 
-    {/* Notify button */}
-    <Link
-      href="/dashboard/employer/consulting-interest"
-      className="px-3 py-1 bg-black text-yellow-400 text-sm font-semibold rounded hover:bg-gray-900 transition"
-    >
-      Notify Me
-    </Link>
-  </div>
-</section>
-
-
+            {/* Notify button */}
+            <div className="flex-shrink-0">
+              <Link href="/dashboard/employer/consulting-interest">
+                <button className="px-4 py-2 bg-black text-yellow-400 text-sm font-semibold rounded hover:bg-gray-900 transition">
+                  Notify Me
+                </button>
+              </Link>
+            </div>
+          </div>
+        </section>
 
         {/* Advertise Section */}
         <section className="bg-gray-900 border border-gold rounded-lg shadow p-4 text-center my-6 animate-fadeIn">

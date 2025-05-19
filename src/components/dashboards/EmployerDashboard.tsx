@@ -1,3 +1,4 @@
+// src/components/dashboards/EmployerDashboard.tsx
 "use client";
 
 import Link from "next/link";
@@ -53,6 +54,7 @@ export default function EmployerDashboard() {
           return;
         }
 
+        // Fetch stats
         const statsRes = await fetch("/api/employer/stats", {
           cache: "no-store",
           credentials: "include",
@@ -65,6 +67,7 @@ export default function EmployerDashboard() {
           profileCompletion: statsData.profileCompletion || 0,
         });
 
+        // Fetch recent jobs
         const jobsRes = await fetch("/api/employer/jobs?limit=5", {
           cache: "no-store",
           credentials: "include",
@@ -72,6 +75,7 @@ export default function EmployerDashboard() {
         const jobsData: { jobs: Job[] } = await jobsRes.json();
         setJobList(jobsData.jobs || []);
 
+        // Fetch recent applicants
         const appRes = await fetch("/api/employer/applicants?limit=5", {
           cache: "no-store",
           credentials: "include",
@@ -126,8 +130,9 @@ export default function EmployerDashboard() {
         </div>
       </header>
 
-      <div className="flex flex-1">
-        <aside className="w-64 bg-gray-800 text-white p-4">
+      {/* Make sidebar stack on mobile */}
+      <div className="flex flex-col md:flex-row flex-1">
+        <aside className="w-full md:w-64 bg-gray-800 text-white p-4">
           <nav>
             <ul className="space-y-4">
               <li>
@@ -172,7 +177,8 @@ export default function EmployerDashboard() {
         </aside>
 
         <main className="flex-1 p-6 bg-gray-900 text-white">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          {/* Responsive stats grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             <StatCard label="Jobs Posted" value={stats.jobsPosted} />
             <StatCard label="Total Applicants" value={stats.totalApplicants} />
             <StatCard label="Messages" value={stats.messages} />
@@ -183,7 +189,8 @@ export default function EmployerDashboard() {
             />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          {/* Responsive action cards grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             <DashboardCard
               title="📄 Post a New Job"
               description="Create a job listing and reach top talent."
@@ -202,16 +209,23 @@ export default function EmployerDashboard() {
               href="/dashboard/employer/messages"
               color="bg-green-600"
             />
+
             {/* New Consulting Services Card */}
             <Link
               href="/dashboard/employer/consulting-interest"
-              className="relative block p-5 rounded-lg shadow hover:shadow-xl transition bg-yellow-600"
+              className="block p-4 mb-4 md:mb-0 rounded-lg shadow hover:shadow-xl transition bg-yellow-600 overflow visible"
             >
-              <div className="absolute top-2 right-2 bg-gray-700 text-xs px-2 py-1 rounded-full">
-                Coming Soon
-              </div>
-              <h3 className="text-xl font-bold mb-2">Recruiting & Consulting Services</h3>
-              <p className="text-sm">Get notified when we launch this service.</p>
+                <div className="flex justify-between items-center mb-1">
+    <h3 className="text-xl font-bold">
+      Recruiting & Consulting Services
+    </h3>
+    <span className="inline-block bg-gray-700 text-xs px-1 py-0 rounded-full whitespace-nowrap">
+      Coming Soon
+    </span>
+  </div>
+              <p className="text-sm">
+                Get notified when we launch this service.
+              </p>
             </Link>
           </div>
 
@@ -223,7 +237,8 @@ export default function EmployerDashboard() {
                   <div key={app._id} className="p-4 bg-gray-800 rounded-lg">
                     <h3 className="text-lg font-semibold">{app.name}</h3>
                     <p className="text-sm text-gray-300">
-                      Applied for: {app.jobTitle} on {new Date(app.appliedAt).toLocaleDateString()}
+                      Applied for: {app.jobTitle} on{" "}
+                      {new Date(app.appliedAt).toLocaleDateString()}
                     </p>
                     <a
                       href={app.resumeUrl}
@@ -238,7 +253,7 @@ export default function EmployerDashboard() {
               </div>
             ) : (
               <p>
-                No recent applicants.{' '}
+                No recent applicants.{" "}
                 <Link href="/employer/applicants" className="underline">
                   View all
                 </Link>
@@ -258,12 +273,13 @@ export default function EmployerDashboard() {
                     </p>
                     {job.appliedCount !== undefined && (
                       <p className="text-sm text-gray-400 mt-1">
-                        {job.appliedCount} applicant{job.appliedCount !== 1 ? 's' : ''}
+                        {job.appliedCount} applicant
+                        {job.appliedCount !== 1 ? "s" : ""}
                       </p>
                     )}
                     <p className="text-sm mt-2">
                       {job.description.length > 100
-                        ? job.description.substring(0, 100) + '...'
+                        ? job.description.substring(0, 100) + "..."
                         : job.description}
                     </p>
                     <Link
@@ -277,7 +293,7 @@ export default function EmployerDashboard() {
               </div>
             ) : (
               <p>
-                No job postings found.{' '}
+                No job postings found.{" "}
                 <Link href="/post-job" className="underline">
                   Post a new job
                 </Link>
