@@ -295,8 +295,8 @@ export default function Home() {
             </div>
           ))}
         </div>
- {/* Recruiting & Consulting Services (Coming Soon) */}
- <section className="container mx-auto px-4 bg-yellow-600 rounded-lg shadow-lg p-4 mb-6">
+        {/* Recruiting & Consulting Services (Coming Soon) */}
+        <section className="container mx-auto px-4 bg-yellow-600 rounded-lg shadow-lg p-4 mb-6">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start space-y-4 sm:space-y-0 sm:space-x-4">
             {/* Text block */}
             <div className="flex-1">
@@ -309,7 +309,10 @@ export default function Home() {
                 </span>
               </div>
               <p className="text-sm">
-                We will soon launch a full talent-consulting service connecting you with rigorously vetted Black professionals. Employers hire top talent confidently, and students, job seekers & overlooked candidates secure meaningful opportunities.
+                We will soon launch a full talent-consulting service connecting
+                you with rigorously vetted Black professionals. Employers hire
+                top talent confidently, and students, job seekers & overlooked
+                candidates secure meaningful opportunities.
               </p>
             </div>
 

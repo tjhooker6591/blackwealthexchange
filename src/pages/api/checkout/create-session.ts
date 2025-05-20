@@ -1,6 +1,7 @@
-// pages/api/checkout/create-session.ts
+// src/pages/api/checkout/create-session.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
+import { calculateShipping, CartItem } from "@/lib/shipping";
 import clientPromise from "@/lib/mongodb";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -9,7 +10,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse,
+  res: NextApiResponse
 ) {
   try {
     const { productId, sellerId } = req.body;
@@ -17,20 +18,35 @@ export default async function handler(
       return res.status(400).json({ error: "Missing productId or sellerId" });
     }
 
-    // Connect to MongoDB
+    // Fetch product & seller from the database
     const client = await clientPromise;
     const db = client.db();
     const product = await db.collection("products").findOne({ _id: productId });
     const seller = await db.collection("sellers").findOne({ _id: sellerId });
 
     if (!product || !seller?.stripeAccountId) {
-      return res.status(404).json({ error: "Product or seller not found" });
+      return res
+        .status(404)
+        .json({ error: "Product or seller not found" });
     }
 
-    // Calculate your commission (in cents)
-    const commissionRate = 0.075;
-    const applicationFee = Math.round(product.price * commissionRate * 100);
+    // Pricing & commission
     const unitAmountCents = Math.round(product.price * 100);
+    // Platform commission rate: 12%
+    const commissionRate = 0.12;
+    const applicationFee = Math.round(product.price * commissionRate * 100);
+
+    // Prepare cart items for shipping calculation
+    const cartItems: CartItem[] = [
+      {
+        id: productId,
+        name: product.title,
+        price: unitAmountCents,
+        quantity: 1,
+        weightOunces: product.weightOunces ?? 0,
+      },
+    ];
+    const shippingCost = calculateShipping(cartItems);
 
     // Create the Checkout Session
     const session = await stripe.checkout.sessions.create({
@@ -43,6 +59,15 @@ export default async function handler(
             unit_amount: unitAmountCents,
           },
           quantity: 1,
+        },
+      ],
+      shipping_options: [
+        {
+          shipping_rate_data: {
+            type: "fixed_amount",
+            fixed_amount: { amount: shippingCost, currency: "usd" },
+            display_name: "Standard Shipping",
+          },
         },
       ],
       mode: "payment",

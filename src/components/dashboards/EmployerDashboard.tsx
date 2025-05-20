@@ -215,14 +215,14 @@ export default function EmployerDashboard() {
               href="/dashboard/employer/consulting-interest"
               className="block p-4 mb-4 md:mb-0 rounded-lg shadow hover:shadow-xl transition bg-yellow-600 overflow visible"
             >
-                <div className="flex justify-between items-center mb-1">
-    <h3 className="text-xl font-bold">
-      Recruiting & Consulting Services
-    </h3>
-    <span className="inline-block bg-gray-700 text-xs px-1 py-0 rounded-full whitespace-nowrap">
-      Coming Soon
-    </span>
-  </div>
+              <div className="flex justify-between items-center mb-1">
+                <h3 className="text-xl font-bold">
+                  Recruiting & Consulting Services
+                </h3>
+                <span className="inline-block bg-gray-700 text-xs px-1 py-0 rounded-full whitespace-nowrap">
+                  Coming Soon
+                </span>
+              </div>
               <p className="text-sm">
                 Get notified when we launch this service.
               </p>

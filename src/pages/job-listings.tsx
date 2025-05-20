@@ -3,6 +3,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import axios from "axios";
 
 interface Job {
   _id: string;
@@ -34,12 +35,31 @@ export default function JobListingsPage() {
       });
   }, []);
 
+  const applyToJob = async (jobId: string) => {
+    try {
+      await axios.post("/api/applicants/create", { jobId });
+      alert("✅ Application submitted!");
+      setSelectedJob(null);
+    } catch (err) {
+      console.error("Failed to apply", err);
+      alert("❌ Failed to apply. Please try again.");
+    }
+  };
+
+  const saveJob = async (jobId: string) => {
+    try {
+      await axios.post("/api/user/save-job", { jobId });
+      alert("💾 Job saved!");
+    } catch (err) {
+      console.error("Failed to save job", err);
+      alert("❌ Failed to save job. Please try again.");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-900 text-white p-8">
       <div className="max-w-5xl mx-auto bg-gray-800 p-6 rounded-lg shadow-lg">
-        {/* … your header & “Why Use Our Platform” sections … */}
-
-        {/* Real-Time Job Feed */}
+        {/* … header & intro … */}
         <section className="mt-12">
           <h2 className="text-xl font-semibold text-gold mb-4">
             Featured Opportunities
@@ -56,32 +76,26 @@ export default function JobListingsPage() {
                   key={job._id}
                   className={`p-4 bg-gray-700 rounded shadow-md hover:shadow-xl transition ${
                     job.isFeatured ? "border-2 border-yellow-400" : ""
-                  }`}
-                >
+                  }`}>
                   <h3 className="text-xl font-semibold text-blue-300">
                     {job.title} – {job.location}
                   </h3>
                   <p className="text-gray-300 mt-1">{job.company}</p>
                   <p className="text-sm text-gray-400 mt-1">
-                    Type: {job.type} |{" "}
-                    {job.salary ? `💰 ${job.salary}` : "Salary not listed"}
+                    Type: {job.type} | {job.salary ? `💰 ${job.salary}` : "Salary not listed"}
                   </p>
-                  {/* summary only */}
                   <p className="text-gray-400 mt-2 line-clamp-3">
                     {job.description}
                   </p>
-
                   <div className="flex gap-3 mt-4">
-                    {/* open modal instead of Link */}
                     <button
                       onClick={() => setSelectedJob(job)}
                       className="px-4 py-2 bg-gold text-black font-semibold rounded hover:bg-yellow-500 transition"
                     >
                       View & Apply
                     </button>
-
                     <button
-                      onClick={() => alert("Login to save jobs")}
+                      onClick={() => saveJob(job._id)}
                       className="px-4 py-2 border border-gold text-gold rounded hover:bg-gold hover:text-black transition"
                     >
                       Save Job
@@ -93,7 +107,6 @@ export default function JobListingsPage() {
           )}
         </section>
 
-        {/* CTA */}
         <section className="mt-12 text-center">
           <p className="text-gray-300 mb-4">
             Want to save jobs and track applications?
@@ -106,7 +119,6 @@ export default function JobListingsPage() {
         </section>
       </div>
 
-      {/* ──────────── Modal ──────────── */}
       {selectedJob && (
         <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
           <div className="bg-gray-800 text-white rounded-lg p-6 max-w-lg w-full relative">
@@ -121,8 +133,7 @@ export default function JobListingsPage() {
               {selectedJob.title}
             </h2>
             <p className="text-gray-300 mb-4">
-              {selectedJob.company} — {selectedJob.location} —{" "}
-              <em>{selectedJob.type}</em>
+              {selectedJob.company} — {selectedJob.location} — <em>{selectedJob.type}</em>
             </p>
             {selectedJob.salary && (
               <p className="text-gray-400 mb-4">💰 {selectedJob.salary}</p>
@@ -139,11 +150,12 @@ export default function JobListingsPage() {
               >
                 Close
               </button>
-              <Link href={`/job/${selectedJob._id}/apply`}>
-                <button className="px-4 py-2 bg-gold text-black rounded hover:bg-yellow-500 transition">
-                  Apply Now
-                </button>
-              </Link>
+              <button
+                onClick={() => applyToJob(selectedJob._id)}
+                className="px-4 py-2 bg-gold text-black rounded hover:bg-yellow-500 transition"
+              >
+                Apply Now
+              </button>
             </div>
           </div>
         </div>

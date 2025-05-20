@@ -3,6 +3,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import jwt from "jsonwebtoken";
 import cookie from "cookie";
+import { ObjectId } from "mongodb";
 import clientPromise from "../../../lib/mongodb";
 
 const SECRET = process.env.JWT_SECRET ?? process.env.NEXTAUTH_SECRET!;
@@ -16,7 +17,7 @@ type DashboardResponse = {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<DashboardResponse | { error: string }>,
+  res: NextApiResponse<DashboardResponse | { error: string }>
 ) {
   // Only GET allowed
   if (req.method !== "GET") {
@@ -28,8 +29,8 @@ export default async function handler(
   res.setHeader("Cache-Control", "no-store, max-age=0");
 
   // 1) Parse & verify session cookie
-  const raw = req.headers.cookie ?? "";
-  const { session_token: token } = cookie.parse(raw);
+  const rawCookies = req.headers.cookie ?? "";
+  const { session_token: token } = cookie.parse(rawCookies);
   if (!token) {
     return res.status(401).json({ error: "Not authenticated" });
   }
@@ -43,36 +44,38 @@ export default async function handler(
   }
 
   // 2) Enforce only general users
-  if (payload.accountType !== "user") {
+  const { accountType, userId, email } = payload;
+  if (accountType !== "user") {
     return res.status(403).json({ error: "Forbidden" });
   }
 
   try {
-    const db = (await clientPromise).db("bwes-cluster");
-    const email = payload.email;
+    const client = await clientPromise;
+    const db = client.db("bwes-cluster");
 
-    // 3) Count applications
+    // 3) Count applications from 'applicants' collection
     const applications = await db
-      .collection("applications")
-      .countDocuments({ email });
+      .collection('applicants')
+      .countDocuments({ userId: new ObjectId(userId) });
 
-    // 4) Count saved jobs
-    const savedJobs = await db
-      .collection("savedJobs")
-      .countDocuments({ email });
+    // 4) Count saved jobs from user's savedJobs array
+    const userDoc = await db
+      .collection('users')
+      .findOne(
+        { email },
+        { projection: { savedJobs: 1, fullName: 1 } }
+      );
+    const savedJobs = Array.isArray(userDoc?.savedJobs)
+      ? userDoc!.savedJobs.length
+      : 0;
 
     // 5) Count messages addressed to this user
     const messages = await db
-      .collection("messages")
+      .collection('messages')
       .countDocuments({ recipientEmail: email });
 
-    // 6) Optionally get fullName from your users collection
-    const userDoc = await db
-      .collection("users")
-      .findOne({ email }, { projection: { fullName: 1 } });
-
     return res.status(200).json({
-      fullName: userDoc?.fullName ?? undefined,
+      fullName: userDoc?.fullName,
       applications,
       savedJobs,
       messages,
