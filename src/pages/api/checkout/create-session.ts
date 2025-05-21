@@ -10,7 +10,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse,
+  res: NextApiResponse
 ) {
   try {
     const { productId, sellerId } = req.body;
@@ -30,8 +30,7 @@ export default async function handler(
 
     // Pricing & commission
     const unitAmountCents = Math.round(product.price * 100);
-    // Platform commission rate: 12%
-    const commissionRate = 0.12;
+    const commissionRate = 0.12; // 12%
     const applicationFee = Math.round(product.price * commissionRate * 100);
 
     // Prepare cart items for shipping calculation
@@ -77,6 +76,18 @@ export default async function handler(
       },
       success_url: `${process.env.FRONTEND_URL}/orders/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.FRONTEND_URL}/orders/cancel`,
+    });
+
+    // Record the order in MongoDB for later webhook fulfillment
+    await db.collection("orders").insertOne({
+      sessionId: session.id,
+      productId,
+      sellerId,
+      amount: unitAmountCents,
+      shipping: shippingCost,
+      applicationFee,
+      paid: false,
+      createdAt: new Date(),
     });
 
     return res.status(200).json({ sessionId: session.id });
