@@ -17,7 +17,7 @@ type DashboardResponse = {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<DashboardResponse | { error: string }>
+  res: NextApiResponse<DashboardResponse | { error: string }>,
 ) {
   // Only GET allowed
   if (req.method !== "GET") {
@@ -55,23 +55,20 @@ export default async function handler(
 
     // 3) Count applications from 'applicants' collection
     const applications = await db
-      .collection('applicants')
+      .collection("applicants")
       .countDocuments({ userId: new ObjectId(userId) });
 
     // 4) Count saved jobs from user's savedJobs array
     const userDoc = await db
-      .collection('users')
-      .findOne(
-        { email },
-        { projection: { savedJobs: 1, fullName: 1 } }
-      );
+      .collection("users")
+      .findOne({ email }, { projection: { savedJobs: 1, fullName: 1 } });
     const savedJobs = Array.isArray(userDoc?.savedJobs)
       ? userDoc!.savedJobs.length
       : 0;
 
     // 5) Count messages addressed to this user
     const messages = await db
-      .collection('messages')
+      .collection("messages")
       .countDocuments({ recipientEmail: email });
 
     return res.status(200).json({

@@ -20,7 +20,7 @@ export interface SessionUser {
   email: string;
 
   /** User’s role */
-  accountType: 'user' | 'seller' | 'employer';
+  accountType: "user" | "seller" | "employer";
 
   // …any other fields you embed in the token
 }
@@ -30,7 +30,7 @@ export interface SessionUser {
  * and returns the decoded user payload (or null if invalid).
  */
 export async function getUserFromRequest(
-  req: NextApiRequest
+  req: NextApiRequest,
 ): Promise<SessionUser | null> {
   const token = req.cookies.session_token;
   if (!token) return null;
@@ -44,4 +44,3 @@ export async function getUserFromRequest(
     return null;
   }
 }
-

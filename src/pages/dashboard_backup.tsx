@@ -49,7 +49,9 @@ export default function DashboardRedirect() {
     <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white p-6">
       <div className="bg-gray-800 p-6 rounded-lg shadow-md text-center max-w-md w-full">
         <h2 className="text-2xl font-bold text-gold">Redirecting...</h2>
-        <p className="text-gray-300 mt-2">Please wait while we load your dashboard.</p>
+        <p className="text-gray-300 mt-2">
+          Please wait while we load your dashboard.
+        </p>
         <Link href="/" className="text-blue-400 underline mt-4 inline-block">
           Return to Home
         </Link>
@@ -57,4 +59,3 @@ export default function DashboardRedirect() {
     </div>
   );
 }
-

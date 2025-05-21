@@ -1,7 +1,7 @@
 // src/components/CheckoutSummary.tsx
 
-import React from 'react';
-import { calculateShipping, CartItem } from '../lib/shipping';
+import React from "react";
+import { calculateShipping, CartItem } from "../lib/shipping";
 
 interface CheckoutSummaryProps {
   items: CartItem[];
@@ -9,7 +9,10 @@ interface CheckoutSummaryProps {
 
 const CheckoutSummary: React.FC<CheckoutSummaryProps> = ({ items }) => {
   // Calculate costs in cents
-  const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const subtotal = items.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0,
+  );
   const shipping = calculateShipping(items);
   const total = subtotal + shipping;
 

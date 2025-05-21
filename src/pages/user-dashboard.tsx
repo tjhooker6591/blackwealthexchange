@@ -1,5 +1,4 @@
 // pages/user-dashboard.tsx
-
 import { GetServerSideProps } from 'next';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from './api/auth/[...nextauth]';
@@ -45,9 +44,7 @@ export default function UserDashboard({ savedJobs, userEmail }: UserDashboardPro
                   <p className="text-gray-600">
                     {job.company} — {job.location}
                   </p>
-                  {job.salary && (
-                    <p className="text-gray-600">💰 {job.salary}</p>
-                  )}
+                  {job.salary && <p className="text-gray-600">💰 {job.salary}</p>}
                   <p className="text-gray-700 mt-2 line-clamp-2">
                     {job.description}
                   </p>
@@ -62,34 +59,23 @@ export default function UserDashboard({ savedJobs, userEmail }: UserDashboardPro
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const session = await getServerSession(
-    context.req,
-    context.res,
-    authOptions
-  );
+  const session = await getServerSession(context.req, context.res, authOptions);
   if (!session?.user?.email) {
-    return {
-      redirect: { destination: '/login', permanent: false },
-    };
+    return { redirect: { destination: '/login', permanent: false } };
   }
-
-  // Only allow general 'user' role
   if (session.user.accountType !== 'user') {
-    return {
-      redirect: { destination: '/', permanent: false },
-    };
+    return { redirect: { destination: '/', permanent: false } };
   }
-
   const client = await clientPromise;
   const db = client.db('bwes-cluster');
 
-  // Fetch savedJobs entries for this user
+  // Load savedJobs documents for this user
   const savedDocs = await db
     .collection('savedJobs')
     .find({ userId: new ObjectId((session.user as any).userId) })
     .toArray();
 
-  const jobIds = savedDocs.map((doc: any) => doc.jobId);
+  const jobIds = savedDocs.map((doc) => new ObjectId(doc.jobId));
 
   // Fetch job details
   const jobs = await db
@@ -97,7 +83,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     .find({ _id: { $in: jobIds } })
     .toArray();
 
-  const savedJobs: Job[] = jobs.map((job: any) => ({
+  const savedJobs: Job[] = jobs.map((job) => ({
     _id: job._id.toHexString(),
     title: job.title,
     company: job.company,
@@ -107,10 +93,5 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     description: job.description,
   }));
 
-  return {
-    props: {
-      savedJobs,
-      userEmail: session.user.email,
-    },
-  };
+  return { props: { savedJobs, userEmail: session.user.email } };
 };

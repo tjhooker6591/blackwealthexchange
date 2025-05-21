@@ -10,7 +10,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   try {
     const { productId, sellerId } = req.body;
@@ -25,9 +25,7 @@ export default async function handler(
     const seller = await db.collection("sellers").findOne({ _id: sellerId });
 
     if (!product || !seller?.stripeAccountId) {
-      return res
-        .status(404)
-        .json({ error: "Product or seller not found" });
+      return res.status(404).json({ error: "Product or seller not found" });
     }
 
     // Pricing & commission

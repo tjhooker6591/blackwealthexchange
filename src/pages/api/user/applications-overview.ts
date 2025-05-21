@@ -14,7 +14,7 @@ type ApplicationOverview = {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<ApplicationOverview[] | { error: string }>
+  res: NextApiResponse<ApplicationOverview[] | { error: string }>,
 ) {
   if (req.method !== "GET") {
     res.setHeader("Allow", "GET");
@@ -52,22 +52,22 @@ export default async function handler(
       {
         $group: {
           _id: {
-            month: { $dateToString: { format: "%Y-%m", date: "$appliedAt" } }
+            month: { $dateToString: { format: "%Y-%m", date: "$appliedAt" } },
           },
-          count: { $sum: 1 }
-        }
+          count: { $sum: 1 },
+        },
       },
-      { $sort: { "_id.month": 1 } }
+      { $sort: { "_id.month": 1 } },
     ];
 
     const results = await db
-      .collection('applicants')
+      .collection("applicants")
       .aggregate<{ _id: { month: string }; count: number }>(pipeline)
       .toArray();
 
-    const chartData: ApplicationOverview[] = results.map(r => ({
+    const chartData: ApplicationOverview[] = results.map((r) => ({
       month: r._id.month,
-      applications: r.count
+      applications: r.count,
     }));
 
     return res.status(200).json(chartData);

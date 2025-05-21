@@ -76,13 +76,15 @@ export default function JobListingsPage() {
                   key={job._id}
                   className={`p-4 bg-gray-700 rounded shadow-md hover:shadow-xl transition ${
                     job.isFeatured ? "border-2 border-yellow-400" : ""
-                  }`}>
+                  }`}
+                >
                   <h3 className="text-xl font-semibold text-blue-300">
                     {job.title} – {job.location}
                   </h3>
                   <p className="text-gray-300 mt-1">{job.company}</p>
                   <p className="text-sm text-gray-400 mt-1">
-                    Type: {job.type} | {job.salary ? `💰 ${job.salary}` : "Salary not listed"}
+                    Type: {job.type} |{" "}
+                    {job.salary ? `💰 ${job.salary}` : "Salary not listed"}
                   </p>
                   <p className="text-gray-400 mt-2 line-clamp-3">
                     {job.description}
@@ -133,7 +135,8 @@ export default function JobListingsPage() {
               {selectedJob.title}
             </h2>
             <p className="text-gray-300 mb-4">
-              {selectedJob.company} — {selectedJob.location} — <em>{selectedJob.type}</em>
+              {selectedJob.company} — {selectedJob.location} —{" "}
+              <em>{selectedJob.type}</em>
             </p>
             {selectedJob.salary && (
               <p className="text-gray-400 mb-4">💰 {selectedJob.salary}</p>
