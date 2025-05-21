@@ -45,7 +45,7 @@ export default function DashboardFrame({
       </aside>
 
       {/* ───── Main ───── */}
-      <main className="flex-1 min-w-0 overflow-y-auto px-4 py-6 md:ml-64 md:px-10">
+      <main className="flex-1 min-w-0 overflow-y-auto px-4 py-6 md md:px-10">
         <header className="flex items-center justify-between mb-6">
           {/* burger only on phones */}
           <button

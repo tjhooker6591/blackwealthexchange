@@ -1,10 +1,10 @@
 // pages/user-dashboard.tsx
-import { GetServerSideProps } from 'next';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from './api/auth/[...nextauth]';
-import clientPromise from '../lib/mongodb';
-import { ObjectId } from 'mongodb';
-import Link from 'next/link';
+import { GetServerSideProps } from "next";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "./api/auth/[...nextauth]";
+import clientPromise from "../lib/mongodb";
+import { ObjectId } from "mongodb";
+import Link from "next/link";
 
 interface Job {
   _id: string;
@@ -21,16 +21,17 @@ interface UserDashboardProps {
   userEmail: string;
 }
 
-export default function UserDashboard({ savedJobs, userEmail }: UserDashboardProps) {
+export default function UserDashboard({
+  savedJobs,
+  userEmail,
+}: UserDashboardProps) {
   return (
     <div className="min-h-screen bg-gray-100 p-8">
       <div className="max-w-6xl mx-auto bg-white p-6 rounded-lg shadow-lg">
         <h1 className="text-4xl font-bold text-gray-800 mb-4">
           Welcome, {userEmail}
         </h1>
-        <p className="text-gray-600 mb-6">
-          Here are your saved jobs:
-        </p>
+        <p className="text-gray-600 mb-6">Here are your saved jobs:</p>
         {savedJobs.length === 0 ? (
           <p className="text-gray-500">You haven’t saved any jobs yet.</p>
         ) : (
@@ -44,7 +45,9 @@ export default function UserDashboard({ savedJobs, userEmail }: UserDashboardPro
                   <p className="text-gray-600">
                     {job.company} — {job.location}
                   </p>
-                  {job.salary && <p className="text-gray-600">💰 {job.salary}</p>}
+                  {job.salary && (
+                    <p className="text-gray-600">💰 {job.salary}</p>
+                  )}
                   <p className="text-gray-700 mt-2 line-clamp-2">
                     {job.description}
                   </p>
@@ -61,17 +64,17 @@ export default function UserDashboard({ savedJobs, userEmail }: UserDashboardPro
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getServerSession(context.req, context.res, authOptions);
   if (!session?.user?.email) {
-    return { redirect: { destination: '/login', permanent: false } };
+    return { redirect: { destination: "/login", permanent: false } };
   }
-  if (session.user.accountType !== 'user') {
-    return { redirect: { destination: '/', permanent: false } };
+  if (session.user.accountType !== "user") {
+    return { redirect: { destination: "/", permanent: false } };
   }
   const client = await clientPromise;
-  const db = client.db('bwes-cluster');
+  const db = client.db("bwes-cluster");
 
   // Load savedJobs documents for this user
   const savedDocs = await db
-    .collection('savedJobs')
+    .collection("savedJobs")
     .find({ userId: new ObjectId((session.user as any).userId) })
     .toArray();
 
@@ -79,7 +82,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   // Fetch job details
   const jobs = await db
-    .collection('jobs')
+    .collection("jobs")
     .find({ _id: { $in: jobIds } })
     .toArray();
 
