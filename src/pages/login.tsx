@@ -35,7 +35,7 @@ export default function Login() {
               router.replace("/marketplace/dashboard");
               break;
             case "business":
-              router.replace("/add-business");
+              router.replace("/dashboard");
               break;
             case "employer":
               router.replace("/employer");
@@ -101,7 +101,7 @@ export default function Login() {
           router.push("/marketplace/dashboard");
           break;
         case "business":
-          router.push("/add-business");
+          router.push("/dashboard");
           break;
         case "employer":
           router.push("/employer");
