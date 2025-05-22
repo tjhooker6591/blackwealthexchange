@@ -14,17 +14,17 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
  * Payload from client
  */
 interface CheckoutPayload {
-  userId?: string;       // Optional: only used in dev for manual testing
-  itemId: string;        // MongoDB ObjectId or slug of the product
-  type: string;          // e.g. "ad" or other product type
-  amount: number;        // Purchase amount in dollars (for ads or manual override)
+  userId?: string; // Optional: only used in dev for manual testing
+  itemId: string; // MongoDB ObjectId or slug of the product
+  type: string; // e.g. "ad" or other product type
+  amount: number; // Purchase amount in dollars (for ads or manual override)
   successUrl: string;
   cancelUrl: string;
 }
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   if (req.method !== "POST") {
     res.setHeader("Allow", ["POST"]);
@@ -68,11 +68,13 @@ export default async function handler(
     const db = client.db("bwes-cluster");
 
     // Lookup product by ObjectId or slug
-    const product = await db.collection("products").findOne(
-      ObjectId.isValid(itemId)
-        ? { _id: new ObjectId(itemId) }
-        : { slug: itemId }
-    );
+    const product = await db
+      .collection("products")
+      .findOne(
+        ObjectId.isValid(itemId)
+          ? { _id: new ObjectId(itemId) }
+          : { slug: itemId },
+      );
     if (!product?.sellerId) {
       console.error("Invalid product or missing seller:", itemId);
       return res
@@ -96,10 +98,7 @@ export default async function handler(
         .collection("sellers")
         .findOne({ userId: product.sellerId });
       if (!seller?.stripeAccountId) {
-        console.error(
-          "Stripe account not found for seller:",
-          product.sellerId
-        );
+        console.error("Stripe account not found for seller:", product.sellerId);
         return res
           .status(400)
           .json({ error: "Seller is not connected to Stripe" });
@@ -149,9 +148,7 @@ export default async function handler(
     };
 
     // Create the Stripe Checkout Session
-    const stripeSession = await stripe.checkout.sessions.create(
-      sessionParams
-    );
+    const stripeSession = await stripe.checkout.sessions.create(sessionParams);
 
     return res
       .status(200)

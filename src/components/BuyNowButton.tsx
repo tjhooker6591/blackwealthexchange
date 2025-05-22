@@ -32,6 +32,7 @@ const BuyNowButton: React.FC<BuyNowButtonProps> = ({
     try {
       const response = await fetch("/api/stripe/checkout", {
         method: "POST",
+        credentials: "include",              // ← ensure cookies (session token) are sent
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           userId,
@@ -44,7 +45,7 @@ const BuyNowButton: React.FC<BuyNowButtonProps> = ({
       });
 
       const data = await response.json();
-      if (data?.url) {
+      if (response.ok && data.url) {
         window.location.href = data.url;
       } else {
         console.error("Stripe checkout error:", data.error || data);
