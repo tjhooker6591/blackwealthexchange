@@ -31,7 +31,7 @@ interface SessionMetadata {
 
 export default async function webhookHandler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
@@ -54,14 +54,17 @@ export default async function webhookHandler(
     const session = event.data.object as Stripe.Checkout.Session;
     const meta = session.metadata as unknown as SessionMetadata;
     const client = await clientPromise;
-    const _db = client.db("bwes-cluster");  // underscore prefix silences unused-var lint rule
+    const _db = client.db("bwes-cluster"); // underscore prefix silences unused-var lint rule
 
     // 1) Advertising campaign checkout
     if (meta.campaignId) {
       try {
         const campaign = await getCampaignById(meta.campaignId);
         if (campaign && !campaign.paid) {
-          await markCampaignPaid(meta.campaignId, session.payment_intent as string);
+          await markCampaignPaid(
+            meta.campaignId,
+            session.payment_intent as string,
+          );
           console.log(`✅ Campaign ${meta.campaignId} marked paid`);
         } else {
           console.log(`ℹ️ Campaign ${meta.campaignId} already paid; skipping`);
@@ -85,9 +88,14 @@ export default async function webhookHandler(
     if (meta.courseId && meta.userId) {
       try {
         await grantCourseAccess(meta.userId, meta.courseId);
-        console.log(`✅ Granted course ${meta.courseId} to user ${meta.userId}`);
+        console.log(
+          `✅ Granted course ${meta.courseId} to user ${meta.userId}`,
+        );
       } catch (err: any) {
-        console.error(`❌ Error granting course access (or already granted):`, err);
+        console.error(
+          `❌ Error granting course access (or already granted):`,
+          err,
+        );
       }
     }
 
@@ -97,17 +105,18 @@ export default async function webhookHandler(
         await recordAffiliateConversion(
           meta.affiliateCode,
           session.amount_total || 0,
-          session.id
+          session.id,
         );
-        console.log(`✅ Recorded affiliate conversion for ${meta.affiliateCode}`);
+        console.log(
+          `✅ Recorded affiliate conversion for ${meta.affiliateCode}`,
+        );
       } catch (err: any) {
         console.error(
           `❌ Error recording affiliate conversion (or duplicate):`,
-          err
+          err,
         );
       }
     }
-
   } else {
     console.log(`ℹ️ Unhandled event type: ${event.type}`);
   }
