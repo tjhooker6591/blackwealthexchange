@@ -32,7 +32,7 @@ const BuyNowButton: React.FC<BuyNowButtonProps> = ({
     try {
       const response = await fetch("/api/stripe/checkout", {
         method: "POST",
-        credentials: "include",              // ← ensure cookies (session token) are sent
+        credentials: "include", // ← ensure cookies (session token) are sent
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           userId,

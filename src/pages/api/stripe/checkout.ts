@@ -24,8 +24,11 @@ interface CheckoutPayload {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse,
+  res: NextApiResponse
 ) {
+  // ◀️ Right here, inside the function body:
+  console.log("📦 cookies on checkout request:", req.headers.cookie);
+
   if (req.method !== "POST") {
     res.setHeader("Allow", ["POST"]);
     return res.status(405).json({ error: "Method Not Allowed" });

@@ -1,4 +1,3 @@
-// File: pages/api/auth/[...nextauth].ts
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
@@ -9,11 +8,7 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: {
-          label: "Email",
-          type: "email",
-          placeholder: "user@example.com",
-        },
+        email: { label: "Email", type: "email", placeholder: "user@example.com" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
@@ -31,8 +26,7 @@ export const authOptions: NextAuthOptions = {
                 id: user._id.toString(),
                 name: user.name || user.businessName || user.fullName || email,
                 email: user.email,
-                accountType:
-                  collection === "users" ? "user" : collection.slice(0, -1),
+                accountType: collection === "users" ? "user" : collection.slice(0, -1),
               };
             }
           }
@@ -41,10 +35,11 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
-  session: {
-    strategy: "jwt",
-  },
-  secret: process.env.SECRET || process.env.NEXTAUTH_SECRET,
+
+  session: { strategy: "jwt" },
+
+  secret: process.env.NEXTAUTH_SECRET,
+
   cookies: {
     sessionToken: {
       name:
@@ -56,9 +51,13 @@ export const authOptions: NextAuthOptions = {
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
         path: "/",
+        ...(process.env.NODE_ENV === "production"
+          ? { domain: ".blackwealthexchange.com" }
+          : {}),
       },
     },
   },
+
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
