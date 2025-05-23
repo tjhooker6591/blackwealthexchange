@@ -1,3 +1,4 @@
+// pages/api/auth/[...nextauth].ts
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
@@ -20,13 +21,13 @@ export const authOptions: NextAuthOptions = {
         for (const collection of collections) {
           const user = await db.collection(collection).findOne({ email });
           if (user && user.password) {
-            const isValid = await bcrypt.compare(password, user.password);
-            if (isValid) {
+            if (await bcrypt.compare(password, user.password)) {
               return {
                 id: user._id.toString(),
                 name: user.name || user.businessName || user.fullName || email,
                 email: user.email,
-                accountType: collection === "users" ? "user" : collection.slice(0, -1),
+                accountType:
+                  collection === "users" ? "user" : collection.slice(0, -1),
               };
             }
           }
@@ -51,9 +52,7 @@ export const authOptions: NextAuthOptions = {
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
         path: "/",
-        ...(process.env.NODE_ENV === "production"
-          ? { domain: ".blackwealthexchange.com" }
-          : {}),
+        // no `domain` override here, so it defaults to whatever host you visit
       },
     },
   },
