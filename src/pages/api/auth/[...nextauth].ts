@@ -1,10 +1,11 @@
-// pages/api/auth/[...nextauth].ts
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import clientPromise from "@/lib/mongodb";
 
+// NextAuth configuration
 export const authOptions: NextAuthOptions = {
+  // Credential-based provider configuration
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -18,16 +19,16 @@ export const authOptions: NextAuthOptions = {
         const client = await clientPromise;
         const db = client.db("bwes-cluster");
         const collections = ["users", "sellers", "businesses", "employers"];
-        for (const collection of collections) {
-          const user = await db.collection(collection).findOne({ email });
+        for (const col of collections) {
+          const user = await db.collection(col).findOne({ email });
           if (user && user.password) {
-            if (await bcrypt.compare(password, user.password)) {
+            const isValid = await bcrypt.compare(password, user.password);
+            if (isValid) {
               return {
                 id: user._id.toString(),
                 name: user.name || user.businessName || user.fullName || email,
                 email: user.email,
-                accountType:
-                  collection === "users" ? "user" : collection.slice(0, -1),
+                accountType: col === "users" ? "user" : col.slice(0, -1),
               };
             }
           }
@@ -37,10 +38,18 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
 
-  session: { strategy: "jwt" },
+  // Use JWT for sessions
+  session: {
+    strategy: "jwt",
+  },
 
+  // Required secret
   secret: process.env.NEXTAUTH_SECRET,
 
+  // Enable debug logging in non-production
+  debug: process.env.NODE_ENV !== "production",
+
+  // Explicit cookie settings
   cookies: {
     sessionToken: {
       name:
@@ -52,12 +61,16 @@ export const authOptions: NextAuthOptions = {
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
         path: "/",
-        // no `domain` override here, so it defaults to whatever host you visit
+        // scope to root domain in production for both www and apex
+        ...(process.env.NODE_ENV === "production"
+          ? { domain: ".blackwealthexchange.com" }
+          : {}),
       },
     },
   },
 
   callbacks: {
+    // Populate token on sign-in
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
@@ -65,8 +78,10 @@ export const authOptions: NextAuthOptions = {
       }
       return token;
     },
+
+    // Expose token fields in session
     async session({ session, token }) {
-      if (session.user && token) {
+      if (session.user) {
         session.user.id = token.id as string;
         session.user.accountType = token.accountType as string;
       }
