@@ -19,8 +19,7 @@ interface UserRecord {
   [key: string]: unknown;
 }
 
-// Your hardcoded admin email for now
-const ADMIN_EMAIL = "blackwealth24@gmail.com"; // 🔁 Replace with your real admin email
+const ADMIN_EMAIL = "blackwealth24@gmail.com"; // Update as needed
 
 function getSecret(): string {
   const secret = process.env.JWT_SECRET ?? process.env.NEXTAUTH_SECRET;
@@ -112,8 +111,6 @@ export default async function handler(
     }
 
     const role = bodyAccountType || user.accountType;
-
-    // 🔐 Determine if this is an admin login
     const isAdmin = email === ADMIN_EMAIL || user.isAdmin === true;
 
     const token = jwt.sign(
@@ -127,26 +124,27 @@ export default async function handler(
       { expiresIn: "7d" },
     );
 
-    console.log("🔐 [login] signed token for:", {
-      email: user.email,
-      accountType: role,
-      isAdmin,
-    });
+    // 🟢 Set correct domain for cookies in production only!
+    const isProd = process.env.NODE_ENV === "production";
+    const cookieDomain = isProd ? ".blackwealthexchange.com" : undefined;
+    console.log("🔑 Setting cookies with domain:", cookieDomain);
 
     res.setHeader("Set-Cookie", [
       cookie.serialize("session_token", token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+        secure: isProd,
         sameSite: "lax",
         path: "/",
         maxAge: 60 * 60 * 24 * 7,
+        domain: cookieDomain,
       }),
       cookie.serialize("accountType", role, {
         httpOnly: false,
-        secure: process.env.NODE_ENV === "production",
+        secure: isProd,
         sameSite: "lax",
         path: "/",
         maxAge: 60 * 60 * 24 * 7,
+        domain: cookieDomain,
       }),
     ]);
 
