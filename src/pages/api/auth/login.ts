@@ -20,7 +20,7 @@ interface UserRecord {
 }
 
 // Your hardcoded admin email for now
-const ADMIN_EMAIL = "youradmin@email.com"; // 🔁 Replace with your real admin email
+const ADMIN_EMAIL = "blackwealth24@gmail.com"; // 🔁 Replace with your real admin email
 
 function getSecret(): string {
   const secret = process.env.JWT_SECRET ?? process.env.NEXTAUTH_SECRET;
