@@ -192,12 +192,12 @@ export default function Marketplace() {
                     ${product.price.toFixed(2)}
                   </p>
                   <div className="space-y-2">
-                    <BuyNowButton
-                      userId="replace-with-user-id"
-                      itemId={product._id}
-                      amount={product.price}
-                      type="product"
-                    />
+                  <BuyNowButton
+  itemId={product._id}
+  amount={product.price}
+  type="product"
+/>
+
                     <button
                       onClick={() =>
                         router.push(`/marketplace/product/${product._id}`)

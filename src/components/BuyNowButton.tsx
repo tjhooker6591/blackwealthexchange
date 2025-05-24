@@ -65,7 +65,9 @@ const BuyNowButton: React.FC<BuyNowButtonProps> = ({
   };
 
   const disabled =
-    loading || (status === "loading" && !explicitUserId) || (!userId && status === "unauthenticated");
+    loading ||
+    (status === "loading" && !explicitUserId) ||
+    (!userId && status === "unauthenticated");
 
   return (
     <button
