@@ -193,11 +193,11 @@ export default function Marketplace() {
                   </p>
                   <div className="space-y-2">
                   <BuyNowButton
-  itemId={product._id}
-  amount={product.price}
-  type="product"
-/>
-
+                  userId="replace-with-user-id"   // ❌ remove this prop
+                  itemId={product._id}
+                  amount={product.price}
+                  type="product"
+                    />
                     <button
                       onClick={() =>
                         router.push(`/marketplace/product/${product._id}`)
