@@ -1,38 +1,43 @@
-// components/BuyNowButton.tsx
-
 "use client";
 
 import React, { useState } from "react";
+import { useSession } from "next-auth/react";
 
 interface BuyNowButtonProps {
-  userId: string; // Buyer ID passed from parent
+  /** Optional explicit userId for local/dev testing */
+  userId?: string;
   itemId: string;
-  amount: number; // amount in dollars (e.g. 49.99)
+  amount: number;
   type: "product" | "ad" | "course" | "job" | "upgrade";
   label?: string;
 }
 
 const BuyNowButton: React.FC<BuyNowButtonProps> = ({
-  userId,
+  userId: explicitUserId,
   itemId,
   amount,
   type,
   label = "Buy Now",
 }) => {
+  // Grab session (works in prod)
+  const { data: session, status } = useSession();
+  const sessionUserId = session?.user?.id;
+  // Decide which ID to use: session wins, fallback to explicit prop (useful on localhost)
+  const userId = sessionUserId || explicitUserId;
+
   const [loading, setLoading] = useState(false);
 
   const handleBuy = async () => {
     if (!userId) {
-      console.error("No user ID provided to BuyNowButton");
       alert("Please log in to continue.");
       return;
     }
-    setLoading(true);
 
+    setLoading(true);
     try {
       const response = await fetch("/api/stripe/checkout", {
         method: "POST",
-        credentials: "include", // ← ensure cookies (session token) are sent
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           userId,
@@ -59,13 +64,14 @@ const BuyNowButton: React.FC<BuyNowButtonProps> = ({
     }
   };
 
+  const disabled =
+    loading || (status === "loading" && !explicitUserId) || (!userId && status === "unauthenticated");
+
   return (
     <button
       onClick={handleBuy}
-      disabled={loading}
-      className={`${
-        loading ? "opacity-50 cursor-not-allowed" : "hover:bg-yellow-600"
-      } bg-yellow-500 text-black font-semibold px-4 py-2 rounded shadow transition`}
+      disabled={disabled}
+      className={`${disabled ? "opacity-50 cursor-not-allowed" : "hover:bg-yellow-600"} bg-yellow-500 text-black font-semibold px-4 py-2 rounded shadow transition`}
     >
       {loading ? "Redirecting…" : label}
     </button>
