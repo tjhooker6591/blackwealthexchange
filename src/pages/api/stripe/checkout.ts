@@ -1,23 +1,20 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getServerSession } from "next-auth/next";
 import Stripe from "stripe";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
-import { authOptions } from "@/pages/api/auth/[...nextauth]";
+import cookie from "cookie";
+import jwt from "jsonwebtoken";
 
 // Initialize Stripe with correct API version
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: "2025-02-24.acacia",
 });
 
-/**
- * Payload from client
- */
 interface CheckoutPayload {
-  userId?: string; // Optional: only used in dev for manual testing
-  itemId: string; // MongoDB ObjectId or slug of the product
-  type: string; // e.g. "ad" or other product type
-  amount: number; // Purchase amount in dollars (for ads or manual override)
+  userId?: string;
+  itemId: string;
+  type: string;
+  amount: number;
   successUrl: string;
   cancelUrl: string;
 }
@@ -26,7 +23,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  // ◀️ Right here, inside the function body:
   console.log("📦 cookies on checkout request:", req.headers.cookie);
 
   if (req.method !== "POST") {
@@ -38,11 +34,25 @@ export default async function handler(
   console.log("/api/stripe/checkout payload:", req.body);
   const payload = req.body as CheckoutPayload;
 
-  // Authenticate with NextAuth
-  const session = await getServerSession(req, res, authOptions);
+  // Authenticate with custom JWT session cookie (not NextAuth)
+  const cookies = cookie.parse(req.headers.cookie || "");
+  const token = cookies.session_token;
+
   let sessionUserId: string;
-  if (session?.user?.id) {
-    sessionUserId = session.user.id;
+
+  if (token) {
+    try {
+      const SECRET = process.env.JWT_SECRET || process.env.NEXTAUTH_SECRET;
+      if (!SECRET) {
+        throw new Error("JWT_SECRET is not set in environment variables");
+      }
+      const decoded = jwt.verify(token, SECRET as string);
+      sessionUserId = (decoded as any).userId;
+      console.log("Decoded JWT in stripe checkout:", decoded);
+    } catch (err) {
+      console.error("JWT decode error:", err);
+      return res.status(401).json({ error: "Unauthorized" });
+    }
   } else if (
     process.env.NODE_ENV !== "production" &&
     typeof payload.userId === "string"
