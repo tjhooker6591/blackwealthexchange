@@ -21,7 +21,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       sameSite: "lax",
       path: "/",
       maxAge: -1,
-      domain: cookieDomain, // <--- IMPORTANT LINE
+      expires: new Date(0),
+      domain: cookieDomain,
     }),
     serialize("accountType", "", {
       httpOnly: false,
@@ -29,7 +30,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       sameSite: "lax",
       path: "/",
       maxAge: -1,
-      domain: cookieDomain, // <--- IMPORTANT LINE
+      expires: new Date(0),
+      domain: cookieDomain,
     }),
     serialize("next-auth.session-token", "", {
       httpOnly: true,
@@ -37,6 +39,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       sameSite: "lax",
       path: "/",
       maxAge: -1,
+      expires: new Date(0),
       domain: cookieDomain,
     }),
     serialize("__Secure-next-auth.session-token", "", {
@@ -45,6 +48,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       sameSite: "lax",
       path: "/",
       maxAge: -1,
+      expires: new Date(0),
       domain: cookieDomain,
     }),
     serialize("next-auth.csrf-token", "", {
@@ -53,6 +57,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       sameSite: "lax",
       path: "/",
       maxAge: -1,
+      expires: new Date(0),
       domain: cookieDomain,
     }),
     serialize("next-auth.callback-url", "", {
@@ -61,6 +66,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       sameSite: "lax",
       path: "/",
       maxAge: -1,
+      expires: new Date(0),
       domain: cookieDomain,
     }),
   ];

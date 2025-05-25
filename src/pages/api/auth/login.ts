@@ -113,6 +113,7 @@ export default async function handler(
     const role = bodyAccountType || user.accountType;
     const isAdmin = email === ADMIN_EMAIL || user.isAdmin === true;
 
+    // -- 30 MINUTE SESSION! --
     const token = jwt.sign(
       {
         userId: user._id.toString(),
@@ -121,7 +122,7 @@ export default async function handler(
         isAdmin,
       },
       SECRET,
-      { expiresIn: "7d" },
+      { expiresIn: "30m" }, // <-- 30 minutes
     );
 
     // 🟢 Set correct domain for cookies in production only!
@@ -135,7 +136,7 @@ export default async function handler(
         secure: isProd,
         sameSite: "lax",
         path: "/",
-        maxAge: 60 * 60 * 24 * 7,
+        maxAge: 60 * 30, // <-- 30 minutes
         domain: cookieDomain,
       }),
       cookie.serialize("accountType", role, {
@@ -143,7 +144,7 @@ export default async function handler(
         secure: isProd,
         sameSite: "lax",
         path: "/",
-        maxAge: 60 * 60 * 24 * 7,
+        maxAge: 60 * 30, // <-- 30 minutes
         domain: cookieDomain,
       }),
     ]);
