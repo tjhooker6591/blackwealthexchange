@@ -4,6 +4,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
+// Categories and Ad Data
 const CATEGORIES = [
   "All", "Food", "Retail", "Beauty", "Professional", "Services"
 ];
@@ -25,6 +26,7 @@ const SIDEBAR_ADS = [
     cta: "Explore",
     color: "bg-gradient-to-br from-blue-500 via-blue-300 to-white",
   },
+  // Add more ads if needed
 ];
 
 // Business type
@@ -43,7 +45,7 @@ export default function BusinessDirectory() {
   const [searchQuery, setSearchQuery] = useState("");
   const [category, setCategory] = useState<string>("All");
   const [businesses, setBusinesses] = useState<Business[]>([]);
-  const [filteredBusinesses, setFilteredBusinesses] = useState<Business[]>([]);
+  const [displayedBusinesses, setDisplayedBusinesses] = useState<Business[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [suggestions, setSuggestions] = useState<Business[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -66,10 +68,16 @@ export default function BusinessDirectory() {
     fetch(`/api/searchBusinesses?search=${encodeURIComponent(searchQuery)}`)
       .then(res => res.json())
       .then((data: Business[]) => {
-        if (!ignore) setBusinesses(Array.isArray(data) ? data : []);
+        if (!ignore) {
+          setBusinesses(Array.isArray(data) ? data : []);
+          setDisplayedBusinesses(Array.isArray(data) ? data : []);
+        }
       })
       .catch(() => {
-        // Optionally handle error
+        if (!ignore) {
+          setBusinesses([]);
+          setDisplayedBusinesses([]);
+        }
       })
       .finally(() => {
         if (!ignore) setIsLoading(false);
@@ -77,13 +85,13 @@ export default function BusinessDirectory() {
     return () => { ignore = true; };
   }, [searchQuery]);
 
-  // Client-side category filtering for now
+  // Category filtering
   useEffect(() => {
-    if (category === "All") setFilteredBusinesses(businesses);
-    else setFilteredBusinesses(businesses.filter(b => b.category === category));
+    if (category === "All") setDisplayedBusinesses(businesses);
+    else setDisplayedBusinesses(businesses.filter(b => b.category === category));
   }, [category, businesses]);
 
-  // Fetch autocomplete suggestions
+  // Autocomplete suggestions
   useEffect(() => {
     if (!searchQuery.trim()) {
       setSuggestions([]);
@@ -141,10 +149,10 @@ export default function BusinessDirectory() {
   // Insert sponsored ad into results every N results
   function injectSponsoredAds(arr: Business[]) {
     const result: (Business | { isAd: boolean; adIndex: number })[] = [];
-    for (let j = 0; j < arr.length; j++) {
-      result.push(arr[j]);
-      if (j === 1 || j === 4) {
-        result.push({ isAd: true, adIndex: (j === 1 ? 0 : 1) }); // Insert first/second sidebar ad after 2nd/5th result
+    for (let i = 0; i < arr.length; i++) {
+      result.push(arr[i]);
+      if (i === 1 || i === 4) {
+        result.push({ isAd: true, adIndex: (i === 1 ? 0 : 1) }); // Insert first/second sidebar ad after 2nd/5th result
       }
     }
     return result;
@@ -193,10 +201,10 @@ export default function BusinessDirectory() {
               ref={suggestionBoxRef}
               className="absolute left-0 right-0 bg-gray-800 border border-gray-600 rounded mt-1 z-30 shadow-xl max-h-48 overflow-y-auto"
             >
-              {suggestions.map((b, idx) => (
+              {suggestions.map((b, suggestionIdx) => (
                 <li
                   key={b._id}
-                  className={`px-4 py-2 cursor-pointer ${idx === suggestionIndex ? "bg-gold text-black" : "hover:bg-gray-700"}`}
+                  className={`px-4 py-2 cursor-pointer ${suggestionIdx === suggestionIndex ? "bg-gold text-black" : "hover:bg-gray-700"}`}
                   onMouseDown={() => { setSearchQuery(b.business_name); setShowSuggestions(false); handleSearchSubmit(); }}
                 >
                   {b.business_name}
@@ -207,13 +215,13 @@ export default function BusinessDirectory() {
         </form>
         {/* Results */}
         <div>
-          {isLoading && filteredBusinesses.length === 0 ? (
+          {isLoading ? (
             <div className="py-10 text-center text-gray-400">Loading businesses...</div>
-          ) : filteredBusinesses.length > 0 ? (
+          ) : displayedBusinesses.length > 0 ? (
             <div>
-              {injectSponsoredAds(filteredBusinesses).map((item, idx) =>
+              {injectSponsoredAds(displayedBusinesses).map((item, index) =>
                 (item as any).isAd ? (
-                  <SidebarAdCard key={`ad-${(item as any).adIndex}-${idx}`} {...SIDEBAR_ADS[(item as any).adIndex % SIDEBAR_ADS.length]} isInline />
+                  <SidebarAdCard key={`ad-${(item as any).adIndex}-${index}`} {...SIDEBAR_ADS[(item as any).adIndex % SIDEBAR_ADS.length]} isInline />
                 ) : (
                   <div key={(item as Business)._id} className="flex items-center gap-3 py-2 border-b border-gray-800">
                     <img
@@ -236,9 +244,6 @@ export default function BusinessDirectory() {
                     </div>
                   </div>
                 )
-              )}
-              {isLoading && (
-                <div className="py-3 text-center text-gray-400">Loading more businesses...</div>
               )}
             </div>
           ) : (
