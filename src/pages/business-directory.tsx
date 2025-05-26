@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import Image from "next/image"; // NEXT.js optimized Image
+import Image from "next/image";
 
 const CATEGORIES = [
   "All", "Food", "Retail", "Beauty", "Professional", "Services"
@@ -26,10 +26,8 @@ const SIDEBAR_ADS = [
     cta: "Explore",
     color: "bg-gradient-to-br from-blue-500 via-blue-300 to-white",
   },
-  // Add more ads if needed
 ];
 
-// Business type
 interface Business {
   _id: string;
   image?: string;
@@ -61,28 +59,31 @@ export default function BusinessDirectory() {
     if (typeof search === "string") setSearchQuery(search);
   }, [search]);
 
-  // Fetch businesses (no category filter on backend for now)
+  // Debounced Fetch businesses
   useEffect(() => {
     setIsLoading(true);
-    fetch(`/api/searchBusinesses?search=${encodeURIComponent(searchQuery)}`)
-      .then(res => res.json())
-      .then((data: Business[]) => {
-        setBusinesses(Array.isArray(data) ? data : []);
-        setIsLoading(false);
-      })
-      .catch(() => {
-        setBusinesses([]);
-        setIsLoading(false);
-      });
+    const delay = setTimeout(() => {
+      fetch(`/api/searchBusinesses?search=${encodeURIComponent(searchQuery)}`)
+        .then(res => res.json())
+        .then((data: Business[]) => {
+          setBusinesses(Array.isArray(data) ? data : []);
+          setIsLoading(false);
+        })
+        .catch(() => {
+          setBusinesses([]);
+          setIsLoading(false);
+        });
+    }, 300); // 300ms debounce
+    return () => clearTimeout(delay);
   }, [searchQuery]);
 
-  // Client-side category filtering for now
+  // Category filtering (client-side)
   useEffect(() => {
     if (category === "All") setFilteredBusinesses(businesses);
     else setFilteredBusinesses(businesses.filter(b => b.category === category));
   }, [category, businesses]);
 
-  // Fetch autocomplete suggestions
+  // Fetch autocomplete suggestions (debounced)
   useEffect(() => {
     if (!searchQuery.trim()) {
       setSuggestions([]);
@@ -96,7 +97,7 @@ export default function BusinessDirectory() {
           setSuggestions(data.slice(0, 6));
           setShowSuggestions(true);
         });
-    }, 180); // debounce
+    }, 180);
     return () => clearTimeout(timeout);
   }, [searchQuery]);
 
@@ -123,8 +124,8 @@ export default function BusinessDirectory() {
   // Keyboard nav for suggestions
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (!showSuggestions || suggestions.length === 0) return;
-    if (e.key === "ArrowDown") setSuggestionIndex(idx => (idx + 1) % suggestions.length);
-    else if (e.key === "ArrowUp") setSuggestionIndex(idx => (idx - 1 + suggestions.length) % suggestions.length);
+    if (e.key === "ArrowDown") setSuggestionIndex(i => (i + 1) % suggestions.length);
+    else if (e.key === "ArrowUp") setSuggestionIndex(i => (i - 1 + suggestions.length) % suggestions.length);
     else if (e.key === "Enter") {
       setSearchQuery(suggestions[suggestionIndex].business_name);
       setShowSuggestions(false);
@@ -132,9 +133,9 @@ export default function BusinessDirectory() {
     }
   };
 
-  // Fallback for business images
+  // Image fallback
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    e.currentTarget.src = "/default-image.jpg";
+    (e.target as HTMLImageElement).src = "/default-image.jpg";
   };
 
   // Insert sponsored ad into results every N results
@@ -143,7 +144,7 @@ export default function BusinessDirectory() {
     for (let i = 0; i < arr.length; i++) {
       result.push(arr[i]);
       if (i === 1 || i === 4) {
-        result.push({ isAd: true, adIndex: (i === 1 ? 0 : 1) }); // Insert first/second sidebar ad after 2nd/5th result
+        result.push({ isAd: true, adIndex: (i === 1 ? 0 : 1) }); // Insert sidebar ad after 2nd/5th result
       }
     }
     return result;
@@ -204,32 +205,60 @@ export default function BusinessDirectory() {
             </ul>
           )}
         </form>
+        {/* Results header */}
+        <div className="mb-2 text-sm text-gray-400">
+          {isLoading
+            ? "Searching businesses..."
+            : filteredBusinesses.length > 0
+              ? `Showing results for "${searchQuery || "All"}"${category !== "All" ? ` in ${category}` : ""}`
+              : `No businesses found for "${searchQuery || "All"}"${category !== "All" ? ` in ${category}` : ""}`
+          }
+        </div>
         {/* Results */}
         <div>
           {isLoading ? (
-            <div className="py-10 text-center text-gray-400">Loading businesses...</div>
+            <div className="py-10 text-center text-gray-400 animate-pulse">
+              <div className="w-20 h-20 rounded-full mx-auto mb-2 bg-gray-700"></div>
+              <div className="h-4 bg-gray-700 rounded w-1/2 mx-auto mb-2"></div>
+              <div className="h-4 bg-gray-800 rounded w-2/3 mx-auto"></div>
+            </div>
           ) : filteredBusinesses.length > 0 ? (
             <div>
               {injectSponsoredAds(filteredBusinesses).map((item, idx) =>
                 (item as any).isAd ? (
                   <SidebarAdCard key={`ad-${(item as any).adIndex}-${idx}`} {...SIDEBAR_ADS[(item as any).adIndex % SIDEBAR_ADS.length]} isInline />
                 ) : (
-                  <div key={(item as Business)._id} className="flex items-center gap-3 py-2 border-b border-gray-800">
-                    <Image
-                      src={(item as Business).image || "/default-image.jpg"}
-                      alt={(item as Business).business_name}
-                      width={80}
-                      height={80}
-                      className="object-cover rounded shadow-lg border-2 border-gold bg-gray-100"
-                      onError={handleImageError}
-                    />
+                  <div
+                    key={(item as Business)._id}
+                    className="flex items-center gap-3 py-2 border-b border-gray-800"
+                  >
+                    <div className="flex-shrink-0">
+                      <Image
+                        src={(item as Business).image || "/default-image.jpg"}
+                        alt={(item as Business).business_name}
+                        width={70}
+                        height={70}
+                        className="object-cover rounded shadow border-2 border-gold bg-gray-100"
+                        onError={handleImageError}
+                        priority={idx < 3}
+                      />
+                    </div>
                     <div className="flex-1 min-w-0">
-                      <Link href={`/business-directory/${(item as Business).alias}`} className="text-gold font-semibold hover:underline truncate block">
+                      <Link
+                        href={`/business-directory/${(item as Business).alias}`}
+                        className="text-gold font-semibold hover:underline block truncate text-base md:text-lg"
+                        style={{ wordBreak: "break-word", whiteSpace: "normal" }}
+                      >
                         {(item as Business).business_name}
                       </Link>
-                      <div className="text-gray-400 text-xs truncate">{(item as Business).description || "Description not available"}</div>
+                      <div
+                        className="text-gray-300 text-xs md:text-sm block mt-0.5"
+                        style={{ wordBreak: "break-word", whiteSpace: "normal" }}
+                      >
+                        {(item as Business).description || "Description not available"}
+                      </div>
                     </div>
-                    <div className="text-xs text-gray-500 text-right min-w-[120px]">
+                    <div className="text-xs text-gray-500 text-right min-w-[100px] max-w-[120px] break-words">
                       {(item as Business).phone && <div>{(item as Business).phone}</div>}
                       {(item as Business).address && <div className="truncate">{(item as Business).address}</div>}
                     </div>
@@ -238,7 +267,7 @@ export default function BusinessDirectory() {
               )}
             </div>
           ) : (
-            <div className="py-8 text-gray-400 text-center">No businesses found for &quot;{searchQuery}&quot;.</div>
+            <div className="py-8 text-gray-400 text-center">No businesses found for &quot;{searchQuery || "All"}&quot;.</div>
           )}
         </div>
       </div>
@@ -276,10 +305,10 @@ function SidebarAdCard({
       href={url}
       target="_blank"
       rel="noopener"
-      className={`relative block rounded-lg shadow-lg hover:shadow-xl hover:-translate-y-1 transition p-3 mb-4 cursor-pointer border border-yellow-300
+      className={`relative block rounded-lg shadow-lg hover:shadow-2xl hover:-translate-y-1 transition p-3 mb-4 cursor-pointer border border-yellow-300
         ${color} ${isInline ? "my-4" : ""}`}
       style={{
-        minHeight: 110,
+        minHeight: 100,
         borderWidth: "2px",
         borderColor: "#FFD700"
       }}
@@ -288,12 +317,12 @@ function SidebarAdCard({
       <Image
         src={img}
         alt={name}
-        width={80}
-        height={80}
+        width={88}
+        height={88}
         className="object-cover rounded mb-2 border-2 border-white shadow-md"
         priority
       />
-      <div className="font-semibold text-gray-900 text-base truncate">{name}</div>
+      <div className="font-semibold text-gray-900 text-sm truncate">{name}</div>
       <div className="text-xs text-gray-700 mb-2 truncate">{tagline}</div>
       <div>
         <span className="inline-block px-2 py-1 rounded bg-yellow-400 text-black font-bold text-xs hover:bg-yellow-500 transition">{cta}</span>
