@@ -3,7 +3,10 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method !== "POST") {
     res.setHeader("Allow", ["POST"]);
     return res.status(405).json({ error: "Method Not Allowed" });
@@ -23,5 +26,4 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.error("[feature-product] Error:", err);
     res.status(500).json({ error: "Failed to update featured status." });
   }
-  
 }

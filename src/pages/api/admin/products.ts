@@ -2,7 +2,10 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   try {
     const client = await clientPromise;
     const db = client.db("bwes-cluster");
@@ -24,4 +27,4 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.error("[products] Error:", err);
     res.status(500).json({ error: "Failed to load products." });
   }
- }
+}

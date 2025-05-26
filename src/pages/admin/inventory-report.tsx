@@ -36,14 +36,15 @@ export default function InventoryReport() {
 
   // Filtered product list by name (case-insensitive)
   const filteredProducts = products.filter((p) =>
-    p.name.toLowerCase().includes(filter.toLowerCase())
+    p.name.toLowerCase().includes(filter.toLowerCase()),
   );
 
   return (
     <div className="min-h-screen bg-black text-white p-8">
       <h1 className="text-3xl font-bold text-gold mb-6">Inventory Report</h1>
       <p className="mb-8 text-gray-400">
-        Track inventory across all marketplace products. Low-stock and out-of-stock items are highlighted.
+        Track inventory across all marketplace products. Low-stock and
+        out-of-stock items are highlighted.
       </p>
       <input
         className="w-full max-w-md mb-6 px-4 py-2 rounded bg-gray-800 text-white border border-gray-700"

@@ -46,8 +46,8 @@ export default function FeaturedProducts() {
       // Update UI immediately
       setProducts((prev) =>
         prev.map((p) =>
-          p._id === productId ? { ...p, isFeatured: !current } : p
-        )
+          p._id === productId ? { ...p, isFeatured: !current } : p,
+        ),
       );
       setMessage("Featured status updated!");
     } catch (err) {
@@ -65,7 +65,9 @@ export default function FeaturedProducts() {
         Select which products are highlighted as “Featured” on the marketplace.
       </p>
       {message && (
-        <div className="mb-4 p-3 bg-yellow-700 rounded text-center">{message}</div>
+        <div className="mb-4 p-3 bg-yellow-700 rounded text-center">
+          {message}
+        </div>
       )}
       {loading ? (
         <p>Loading products...</p>
@@ -97,14 +99,18 @@ export default function FeaturedProducts() {
               )}
               <div className="w-full text-center">
                 <h2 className="text-lg font-semibold mb-1">{product.name}</h2>
-                <p className="text-gold font-bold mb-2">${product.price.toFixed(2)}</p>
+                <p className="text-gold font-bold mb-2">
+                  ${product.price.toFixed(2)}
+                </p>
                 <button
                   className={`px-4 py-2 rounded font-semibold text-sm transition ${
                     product.isFeatured
                       ? "bg-yellow-500 text-black hover:bg-yellow-600"
                       : "bg-gray-700 text-yellow-300 hover:bg-gray-600"
                   }`}
-                  onClick={() => handleToggleFeatured(product._id, !!product.isFeatured)}
+                  onClick={() =>
+                    handleToggleFeatured(product._id, !!product.isFeatured)
+                  }
                   disabled={loading}
                 >
                   {product.isFeatured ? "Unfeature" : "Make Featured"}
@@ -117,4 +123,3 @@ export default function FeaturedProducts() {
     </div>
   );
 }
-

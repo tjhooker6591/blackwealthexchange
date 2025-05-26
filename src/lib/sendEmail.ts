@@ -1,6 +1,10 @@
 import nodemailer from "nodemailer";
 
-export async function sendBusinessAlert(to: string, subject: string, html: string) {
+export async function sendBusinessAlert(
+  to: string,
+  subject: string,
+  html: string,
+) {
   const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST,
     port: parseInt(process.env.SMTP_PORT || "587"),

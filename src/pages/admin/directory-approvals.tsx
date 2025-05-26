@@ -33,7 +33,9 @@ export default function DirectoryApprovals() {
 
   return (
     <div className="bg-gray-900 min-h-screen text-white p-8">
-      <h1 className="text-2xl text-gold font-bold mb-6">Directory Listings Approvals</h1>
+      <h1 className="text-2xl text-gold font-bold mb-6">
+        Directory Listings Approvals
+      </h1>
       <table className="w-full text-sm mb-6">
         <thead>
           <tr className="text-gold border-b border-gray-700">
@@ -55,8 +57,8 @@ export default function DirectoryApprovals() {
                 {l.featuredSlot
                   ? `Slot ${l.featuredSlot}`
                   : l.queuePosition
-                  ? `Queue #${l.queuePosition}`
-                  : ""}
+                    ? `Queue #${l.queuePosition}`
+                    : ""}
               </td>
               <td>
                 {l.featuredEndDate

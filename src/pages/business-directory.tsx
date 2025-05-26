@@ -1,16 +1,35 @@
 "use client";
 
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import Image from "next/legacy/image";
-import Fuse from "fuse.js";
-import PamfaSponsorAd from "@/components/PamfaSponsorAd";
-import TitanEraSponsoredAd from "@/components/TitanEraSponsoredAd";
-import BannerAd from "@/components/BannerAd";
-import CustomSolutionAd from "@/components/CustomSolutionAd";
+import Image from "next/image"; // NEXT.js optimized Image
 
-// Define the interface for a Business
+const CATEGORIES = [
+  "All", "Food", "Retail", "Beauty", "Professional", "Services"
+];
+
+const SIDEBAR_ADS = [
+  {
+    img: "/pamfa1.jpg",
+    name: "Pamfa United Citizens",
+    tagline: "Bold. Fearless. Iconic.",
+    url: "https://pamfaunited.com",
+    cta: "Shop Now",
+    color: "bg-gradient-to-br from-yellow-400 via-yellow-200 to-yellow-100",
+  },
+  {
+    img: "/titans.jpg",
+    name: "Titan Era Apparel",
+    tagline: "Level Up Your Look.",
+    url: "https://titanshop.com",
+    cta: "Explore",
+    color: "bg-gradient-to-br from-blue-500 via-blue-300 to-white",
+  },
+  // Add more ads if needed
+];
+
+// Business type
 interface Business {
   _id: string;
   image?: string;
@@ -19,162 +38,266 @@ interface Business {
   description?: string;
   phone?: string;
   address?: string;
+  category?: string;
 }
 
 export default function BusinessDirectory() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [category, setCategory] = useState<string>("All");
+  const [businesses, setBusinesses] = useState<Business[]>([]);
   const [filteredBusinesses, setFilteredBusinesses] = useState<Business[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [suggestions, setSuggestions] = useState<Business[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [suggestionIndex, setSuggestionIndex] = useState(0);
+
   const router = useRouter();
   const { search } = router.query;
-  const [initialLoad, setInitialLoad] = useState(true);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const suggestionBoxRef = useRef<HTMLUListElement>(null);
 
-  // On initial load, if the URL has a search query, set it into state
+  // Initial load from URL
   useEffect(() => {
-    if (initialLoad && typeof search === "string") {
-      setSearchQuery(search);
-      setInitialLoad(false);
+    if (typeof search === "string") setSearchQuery(search);
+  }, [search]);
+
+  // Fetch businesses (no category filter on backend for now)
+  useEffect(() => {
+    setIsLoading(true);
+    fetch(`/api/searchBusinesses?search=${encodeURIComponent(searchQuery)}`)
+      .then(res => res.json())
+      .then((data: Business[]) => {
+        setBusinesses(Array.isArray(data) ? data : []);
+        setIsLoading(false);
+      })
+      .catch(() => {
+        setBusinesses([]);
+        setIsLoading(false);
+      });
+  }, [searchQuery]);
+
+  // Client-side category filtering for now
+  useEffect(() => {
+    if (category === "All") setFilteredBusinesses(businesses);
+    else setFilteredBusinesses(businesses.filter(b => b.category === category));
+  }, [category, businesses]);
+
+  // Fetch autocomplete suggestions
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setSuggestions([]);
+      setShowSuggestions(false);
+      return;
     }
-  }, [search, initialLoad]);
-
-  // Memoize Fuse.js options
-  const fuseOptions = useMemo(
-    () => ({
-      keys: ["business_name", "description"],
-      includeScore: true,
-      threshold: 0.3,
-    }),
-    [],
-  );
-
-  useEffect(() => {
-    if (searchQuery) {
-      setIsLoading(true);
-      fetch(`/api/searchBusinesses?search=${encodeURIComponent(searchQuery)}`)
-        .then((res) => res.json())
+    const timeout = setTimeout(() => {
+      fetch(`/api/searchBusinesses?search=${encodeURIComponent(searchQuery)}&limit=6`)
+        .then(res => res.json())
         .then((data: Business[]) => {
-          if (Array.isArray(data)) {
-            const fuse = new Fuse(data, fuseOptions);
-            const result = fuse.search(searchQuery);
-            setFilteredBusinesses(result.map((res) => res.item));
-          } else {
-            setFilteredBusinesses([]);
-          }
-          setIsLoading(false);
-        })
-        .catch((err) => {
-          console.error("Error fetching businesses:", err);
-          setIsLoading(false);
+          setSuggestions(data.slice(0, 6));
+          setShowSuggestions(true);
         });
-    } else {
-      setFilteredBusinesses([]);
+    }, 180); // debounce
+    return () => clearTimeout(timeout);
+  }, [searchQuery]);
+
+  // Dismiss suggestions on outside click
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (
+        !searchInputRef.current?.contains(e.target as Node) &&
+        !suggestionBoxRef.current?.contains(e.target as Node)
+      ) {
+        setShowSuggestions(false);
+      }
+    };
+    if (showSuggestions) document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [showSuggestions]);
+
+  const handleSearchSubmit = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    router.push(`/business-directory?search=${encodeURIComponent(searchQuery)}`, undefined, { shallow: true });
+    setShowSuggestions(false);
+  };
+
+  // Keyboard nav for suggestions
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!showSuggestions || suggestions.length === 0) return;
+    if (e.key === "ArrowDown") setSuggestionIndex(idx => (idx + 1) % suggestions.length);
+    else if (e.key === "ArrowUp") setSuggestionIndex(idx => (idx - 1 + suggestions.length) % suggestions.length);
+    else if (e.key === "Enter") {
+      setSearchQuery(suggestions[suggestionIndex].business_name);
+      setShowSuggestions(false);
+      handleSearchSubmit();
     }
-  }, [searchQuery, fuseOptions]);
-
-  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
   };
 
-  const handleSearchSubmit = () => {
-    router.push(
-      `/business-directory?search=${encodeURIComponent(searchQuery)}`,
-      undefined,
-      { shallow: true },
-    );
+  // Fallback for business images
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    e.currentTarget.src = "/default-image.jpg";
   };
+
+  // Insert sponsored ad into results every N results
+  function injectSponsoredAds(arr: Business[]) {
+    const result: (Business | { isAd: boolean; adIndex: number })[] = [];
+    for (let i = 0; i < arr.length; i++) {
+      result.push(arr[i]);
+      if (i === 1 || i === 4) {
+        result.push({ isAd: true, adIndex: (i === 1 ? 0 : 1) }); // Insert first/second sidebar ad after 2nd/5th result
+      }
+    }
+    return result;
+  }
 
   return (
-    <div className="bg-gray-900 text-white min-h-screen">
-      {/* Hero Section */}
-      <header className="hero bg-gray-800 p-20 text-center shadow-md">
-        <h1 className="text-4xl font-bold text-gold">Business Directory</h1>
-        <p className="text-lg mt-2 text-gray-300">
-          Discover and support Black-owned businesses across various industries.
-        </p>
-        {/* Back Button */}
-        <div className="mt-4">
-          <Link href="/">
-            <button className="px-6 py-2 bg-gray-700 text-white font-semibold rounded-lg hover:bg-gray-600 transition">
-              Back to Home
+    <div className="bg-gray-900 text-white min-h-screen flex flex-col md:flex-row">
+      {/* Main Column */}
+      <div className="flex-1 w-full md:w-3/4 p-2 md:p-6 mx-auto">
+        {/* Category Filter */}
+        <div className="flex flex-wrap gap-2 mb-2">
+          {CATEGORIES.map(cat => (
+            <button
+              key={cat}
+              onClick={() => setCategory(cat)}
+              className={`px-3 py-1 rounded transition font-semibold text-xs
+                ${category === cat
+                  ? "bg-gold text-black shadow"
+                  : "bg-gray-800 text-white hover:bg-gold hover:text-black border border-gray-700"
+                }`}
+            >
+              {cat}
             </button>
-          </Link>
+          ))}
         </div>
-      </header>
-
-      {/* Search Bar */}
-      <div className="container mx-auto p-6">
-        <div className="relative w-full mb-6">
+        {/* Search Bar w/ Auto-complete */}
+        <form className="relative w-full mb-4" onSubmit={handleSearchSubmit} autoComplete="off">
           <input
+            ref={searchInputRef}
             type="text"
             placeholder="Find Black-Owned Businesses..."
             value={searchQuery}
-            onChange={handleSearchInputChange}
+            onChange={e => { setSearchQuery(e.target.value); setShowSuggestions(true); setSuggestionIndex(0); }}
+            onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
+            onKeyDown={handleKeyDown}
             className="w-full px-4 py-2 rounded-lg bg-gray-800 text-white placeholder-gray-400 border border-gray-700 focus:ring-2 focus:ring-gold focus:outline-none transition-all"
+            style={{ zIndex: 20 }}
           />
           <button
-            onClick={handleSearchSubmit}
+            type="submit"
             className="absolute right-2 top-1 px-3 py-1 bg-gold text-black rounded-lg font-semibold hover:bg-yellow-500 transition"
-          >
-            Search
-          </button>
-        </div>
-
-        {/* Featured Sponsor Ad */}
-        <div className="text-xs uppercase text-gray-400 mb-1">Sponsored</div>
-        <PamfaSponsorAd />
-
-        {/* Display results with Sponsored Ads inserted */}
-        {isLoading ? (
-          <p>Loading...</p>
-        ) : filteredBusinesses.length > 0 ? (
-          <div className="search-results mt-6">
-            {filteredBusinesses.map((business, index) => (
-              <React.Fragment key={business._id}>
-                <div className="search-result-item flex items-start space-x-4 py-3 border-b border-gray-700">
-                  <Image
-                    src={business.image || "/default-image.jpg"}
-                    alt={business.business_name}
-                    width={64}
-                    height={64}
-                    className="object-cover rounded-md"
-                  />
-                  <div className="flex-1">
-                    <Link
-                      href={`/business-directory/${business.alias}`}
-                      passHref
-                    >
-                      <span className="text-lg font-semibold text-gold hover:underline cursor-pointer">
-                        {business.business_name}
-                      </span>
-                    </Link>
-                    <p className="text-sm text-gray-300 mt-1">
-                      {business.description || "Description not available"}
-                    </p>
-                    <p className="text-sm text-gray-300 mt-1">
-                      {business.phone || "No phone number available"}
-                    </p>
-                    <p className="text-sm text-gray-300 mt-1">
-                      {business.address || "No address available"}
-                    </p>
+          >Search</button>
+          {/* Autocomplete Suggestions */}
+          {showSuggestions && suggestions.length > 0 && (
+            <ul
+              ref={suggestionBoxRef}
+              className="absolute left-0 right-0 bg-gray-800 border border-gray-600 rounded mt-1 z-30 shadow-xl max-h-48 overflow-y-auto"
+            >
+              {suggestions.map((b, idx) => (
+                <li
+                  key={b._id}
+                  className={`px-4 py-2 cursor-pointer ${idx === suggestionIndex ? "bg-gold text-black" : "hover:bg-gray-700"}`}
+                  onMouseDown={() => { setSearchQuery(b.business_name); setShowSuggestions(false); handleSearchSubmit(); }}
+                >
+                  {b.business_name}
+                </li>
+              ))}
+            </ul>
+          )}
+        </form>
+        {/* Results */}
+        <div>
+          {isLoading ? (
+            <div className="py-10 text-center text-gray-400">Loading businesses...</div>
+          ) : filteredBusinesses.length > 0 ? (
+            <div>
+              {injectSponsoredAds(filteredBusinesses).map((item, idx) =>
+                (item as any).isAd ? (
+                  <SidebarAdCard key={`ad-${(item as any).adIndex}-${idx}`} {...SIDEBAR_ADS[(item as any).adIndex % SIDEBAR_ADS.length]} isInline />
+                ) : (
+                  <div key={(item as Business)._id} className="flex items-center gap-3 py-2 border-b border-gray-800">
+                    <Image
+                      src={(item as Business).image || "/default-image.jpg"}
+                      alt={(item as Business).business_name}
+                      width={80}
+                      height={80}
+                      className="object-cover rounded shadow-lg border-2 border-gold bg-gray-100"
+                      onError={handleImageError}
+                    />
+                    <div className="flex-1 min-w-0">
+                      <Link href={`/business-directory/${(item as Business).alias}`} className="text-gold font-semibold hover:underline truncate block">
+                        {(item as Business).business_name}
+                      </Link>
+                      <div className="text-gray-400 text-xs truncate">{(item as Business).description || "Description not available"}</div>
+                    </div>
+                    <div className="text-xs text-gray-500 text-right min-w-[120px]">
+                      {(item as Business).phone && <div>{(item as Business).phone}</div>}
+                      {(item as Business).address && <div className="truncate">{(item as Business).address}</div>}
+                    </div>
                   </div>
-                </div>
-
-                {/* Insert Sponsored Ads */}
-                {index === 2 && <PamfaSponsorAd />}
-                {index === 5 && <TitanEraSponsoredAd />}
-                {(index + 1) % 8 === 0 && <BannerAd />}
-              </React.Fragment>
-            ))}
-          </div>
-        ) : (
-          <p>No businesses found for &quot;{search || searchQuery}&quot;</p>
-        )}
+                )
+              )}
+            </div>
+          ) : (
+            <div className="py-8 text-gray-400 text-center">No businesses found for &quot;{searchQuery}&quot;.</div>
+          )}
+        </div>
       </div>
-
-      {/* Custom Solution Ad Section */}
-      <div className="container mx-auto px-4">
-        <CustomSolutionAd />
-      </div>
+      {/* Sidebar */}
+      <aside className="w-full md:w-80 md:border-l border-gray-800 md:pl-4 p-2 pt-6 md:pt-10 bg-gray-900">
+        <div className="text-xs uppercase text-gray-400 mb-2 ml-1">Sponsored</div>
+        {SIDEBAR_ADS.map(ad => (
+          <SidebarAdCard key={ad.url} {...ad} />
+        ))}
+      </aside>
     </div>
+  );
+}
+
+// Sidebar ad card with sponsored badge and hover
+function SidebarAdCard({
+  img,
+  name,
+  tagline,
+  url,
+  cta,
+  color = "bg-gradient-to-br from-yellow-400 via-yellow-200 to-yellow-100",
+  isInline = false,
+}: {
+  img: string;
+  name: string;
+  tagline: string;
+  url: string;
+  cta: string;
+  color?: string;
+  isInline?: boolean;
+}) {
+  return (
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener"
+      className={`relative block rounded-lg shadow-lg hover:shadow-xl hover:-translate-y-1 transition p-3 mb-4 cursor-pointer border border-yellow-300
+        ${color} ${isInline ? "my-4" : ""}`}
+      style={{
+        minHeight: 110,
+        borderWidth: "2px",
+        borderColor: "#FFD700"
+      }}
+    >
+      <span className="absolute top-2 right-3 bg-yellow-400 text-yellow-900 text-[10px] rounded px-2 font-bold z-10 shadow">Ad</span>
+      <Image
+        src={img}
+        alt={name}
+        width={80}
+        height={80}
+        className="object-cover rounded mb-2 border-2 border-white shadow-md"
+        priority
+      />
+      <div className="font-semibold text-gray-900 text-base truncate">{name}</div>
+      <div className="text-xs text-gray-700 mb-2 truncate">{tagline}</div>
+      <div>
+        <span className="inline-block px-2 py-1 rounded bg-yellow-400 text-black font-bold text-xs hover:bg-yellow-500 transition">{cta}</span>
+      </div>
+    </a>
   );
 }
