@@ -1,14 +1,10 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
-// Categories and Ad Data
-const CATEGORIES = [
-  "All", "Food", "Retail", "Beauty", "Professional", "Services"
-];
-
+// Ads for sidebar/results
 const SIDEBAR_ADS = [
   {
     img: "/pamfa1.jpg",
@@ -26,7 +22,11 @@ const SIDEBAR_ADS = [
     cta: "Explore",
     color: "bg-gradient-to-br from-blue-500 via-blue-300 to-white",
   },
-  // Add more ads if needed
+];
+
+// Categories for filter
+const CATEGORIES = [
+  "All", "Food", "Retail", "Beauty", "Professional", "Services"
 ];
 
 // Business type
@@ -45,103 +45,51 @@ export default function BusinessDirectory() {
   const [searchQuery, setSearchQuery] = useState("");
   const [category, setCategory] = useState<string>("All");
   const [businesses, setBusinesses] = useState<Business[]>([]);
-  const [displayedBusinesses, setDisplayedBusinesses] = useState<Business[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [suggestions, setSuggestions] = useState<Business[]>([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const [suggestionIndex, setSuggestionIndex] = useState(0);
 
   const router = useRouter();
   const { search } = router.query;
-  const searchInputRef = useRef<HTMLInputElement>(null);
-  const suggestionBoxRef = useRef<HTMLUListElement>(null);
 
-  // Initial load from URL
+  // On load, use search query from URL (once)
   useEffect(() => {
-    if (typeof search === "string") setSearchQuery(search);
+    if (typeof search === "string" && !searchQuery) setSearchQuery(search);
+    // eslint-disable-next-line
   }, [search]);
 
-  // Fetch businesses (no category filter on backend for now)
-  useEffect(() => {
-    let ignore = false;
+  // Fetch businesses only on submit/click
+  const fetchBusinesses = async (query: string) => {
     setIsLoading(true);
-    fetch(`/api/searchBusinesses?search=${encodeURIComponent(searchQuery)}`)
+    fetch(`/api/searchBusinesses?search=${encodeURIComponent(query)}`)
       .then(res => res.json())
       .then((data: Business[]) => {
-        if (!ignore) {
-          setBusinesses(Array.isArray(data) ? data : []);
-          setDisplayedBusinesses(Array.isArray(data) ? data : []);
-        }
+        setBusinesses(Array.isArray(data) ? data : []);
+        setIsLoading(false);
       })
       .catch(() => {
-        if (!ignore) {
-          setBusinesses([]);
-          setDisplayedBusinesses([]);
-        }
-      })
-      .finally(() => {
-        if (!ignore) setIsLoading(false);
+        setBusinesses([]);
+        setIsLoading(false);
       });
-    return () => { ignore = true; };
+  };
+
+  // On initial page load with URL query
+  useEffect(() => {
+    if (searchQuery) fetchBusinesses(searchQuery);
+    // eslint-disable-next-line
   }, [searchQuery]);
 
-  // Category filtering
-  useEffect(() => {
-    if (category === "All") setDisplayedBusinesses(businesses);
-    else setDisplayedBusinesses(businesses.filter(b => b.category === category));
-  }, [category, businesses]);
-
-  // Autocomplete suggestions
-  useEffect(() => {
-    if (!searchQuery.trim()) {
-      setSuggestions([]);
-      setShowSuggestions(false);
-      return;
-    }
-    const timeout = setTimeout(() => {
-      fetch(`/api/searchBusinesses?search=${encodeURIComponent(searchQuery)}&limit=6`)
-        .then(res => res.json())
-        .then((data: Business[]) => {
-          setSuggestions(data.slice(0, 6));
-          setShowSuggestions(true);
-        });
-    }, 180); // debounce
-    return () => clearTimeout(timeout);
-  }, [searchQuery]);
-
-  // Dismiss suggestions on outside click
-  useEffect(() => {
-    const handleClick = (e: MouseEvent) => {
-      if (
-        !searchInputRef.current?.contains(e.target as Node) &&
-        !suggestionBoxRef.current?.contains(e.target as Node)
-      ) {
-        setShowSuggestions(false);
-      }
-    };
-    if (showSuggestions) document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
-  }, [showSuggestions]);
-
+  // Handler for submitting search
   const handleSearchSubmit = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     router.push(`/business-directory?search=${encodeURIComponent(searchQuery)}`, undefined, { shallow: true });
-    setShowSuggestions(false);
+    fetchBusinesses(searchQuery);
   };
 
-  // Keyboard nav for suggestions
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (!showSuggestions || suggestions.length === 0) return;
-    if (e.key === "ArrowDown") setSuggestionIndex(i => (i + 1) % suggestions.length);
-    else if (e.key === "ArrowUp") setSuggestionIndex(i => (i - 1 + suggestions.length) % suggestions.length);
-    else if (e.key === "Enter") {
-      setSearchQuery(suggestions[suggestionIndex].business_name);
-      setShowSuggestions(false);
-      handleSearchSubmit();
-    }
-  };
+  // Filter businesses by category client-side
+  const filteredBusinesses = category === "All"
+    ? businesses
+    : businesses.filter(b => b.category === category);
 
-  // Image fallback (for businesses)
+  // Image fallback for businesses
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     e.currentTarget.src = "/default-image.jpg";
   };
@@ -178,16 +126,13 @@ export default function BusinessDirectory() {
             </button>
           ))}
         </div>
-        {/* Search Bar w/ Auto-complete */}
+        {/* Search Bar */}
         <form className="relative w-full mb-4" onSubmit={handleSearchSubmit} autoComplete="off">
           <input
-            ref={searchInputRef}
             type="text"
             placeholder="Find Black-Owned Businesses..."
             value={searchQuery}
-            onChange={e => { setSearchQuery(e.target.value); setShowSuggestions(true); setSuggestionIndex(0); }}
-            onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
-            onKeyDown={handleKeyDown}
+            onChange={e => setSearchQuery(e.target.value)}
             className="w-full px-4 py-2 rounded-lg bg-gray-800 text-white placeholder-gray-400 border border-gray-700 focus:ring-2 focus:ring-gold focus:outline-none transition-all"
             style={{ zIndex: 20 }}
           />
@@ -195,33 +140,16 @@ export default function BusinessDirectory() {
             type="submit"
             className="absolute right-2 top-1 px-3 py-1 bg-gold text-black rounded-lg font-semibold hover:bg-yellow-500 transition"
           >Search</button>
-          {/* Autocomplete Suggestions */}
-          {showSuggestions && suggestions.length > 0 && (
-            <ul
-              ref={suggestionBoxRef}
-              className="absolute left-0 right-0 bg-gray-800 border border-gray-600 rounded mt-1 z-30 shadow-xl max-h-48 overflow-y-auto"
-            >
-              {suggestions.map((b, suggestionIdx) => (
-                <li
-                  key={b._id}
-                  className={`px-4 py-2 cursor-pointer ${suggestionIdx === suggestionIndex ? "bg-gold text-black" : "hover:bg-gray-700"}`}
-                  onMouseDown={() => { setSearchQuery(b.business_name); setShowSuggestions(false); handleSearchSubmit(); }}
-                >
-                  {b.business_name}
-                </li>
-              ))}
-            </ul>
-          )}
         </form>
         {/* Results */}
         <div>
           {isLoading ? (
             <div className="py-10 text-center text-gray-400">Loading businesses...</div>
-          ) : displayedBusinesses.length > 0 ? (
+          ) : filteredBusinesses.length > 0 ? (
             <div>
-              {injectSponsoredAds(displayedBusinesses).map((item, index) =>
+              {injectSponsoredAds(filteredBusinesses).map((item, idx) =>
                 (item as any).isAd ? (
-                  <SidebarAdCard key={`ad-${(item as any).adIndex}-${index}`} {...SIDEBAR_ADS[(item as any).adIndex % SIDEBAR_ADS.length]} isInline />
+                  <SidebarAdCard key={`ad-${(item as any).adIndex}-${idx}`} {...SIDEBAR_ADS[(item as any).adIndex % SIDEBAR_ADS.length]} isInline />
                 ) : (
                   <div key={(item as Business)._id} className="flex items-center gap-3 py-2 border-b border-gray-800">
                     <img
