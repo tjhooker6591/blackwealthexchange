@@ -47,8 +47,8 @@ interface Business {
 }
 
 export default function BusinessDirectory() {
-  const [pendingQuery, setPendingQuery] = useState(""); // Input value
-  const [searchQuery, setSearchQuery] = useState(""); // Search in effect
+  const [pendingQuery, setPendingQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
   const [category, setCategory] = useState<string>("All");
   const [businesses, setBusinesses] = useState<Business[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -57,20 +57,25 @@ export default function BusinessDirectory() {
   const [suggestionIndex, setSuggestionIndex] = useState(0);
 
   const router = useRouter();
-  const { search } = router.query;
+  const didInitial = useRef(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const suggestionBoxRef = useRef<HTMLUListElement>(null);
 
-  // On mount, pre-populate from URL if present
+  // On initial mount, set search state from URL (ONE TIME ONLY)
   useEffect(() => {
-    if (typeof search === "string") {
-      setSearchQuery(search);
-      setPendingQuery(search);
+    if (!didInitial.current && typeof router.query.search === "string") {
+      setPendingQuery(router.query.search);
+      setSearchQuery(router.query.search);
+      didInitial.current = true;
     }
-  }, [search]);
+  }, [router.query.search]);
 
-  // Fetch businesses when searchQuery changes
+  // Fetch only when searchQuery changes
   useEffect(() => {
+    if (!searchQuery) {
+      setBusinesses([]);
+      return;
+    }
     setIsLoading(true);
     fetch(`/api/searchBusinesses?search=${encodeURIComponent(searchQuery)}`)
       .then((res) => res.json())
@@ -83,13 +88,13 @@ export default function BusinessDirectory() {
       .finally(() => setIsLoading(false));
   }, [searchQuery]);
 
-  // Filter businesses by category (local, instant)
+  // Category filter is instant, client-side
   const displayedBusinesses =
     category === "All"
       ? businesses
       : businesses.filter((b) => b.category === category);
 
-  // Autocomplete suggestions (debounced)
+  // Autocomplete (debounced) - only for suggestions
   useEffect(() => {
     if (!pendingQuery.trim()) {
       setSuggestions([]);
@@ -123,10 +128,10 @@ export default function BusinessDirectory() {
     return () => document.removeEventListener("mousedown", handleClick);
   }, [showSuggestions]);
 
-  // Search submit handler
+  // Only this triggers a real search
   const handleSearchSubmit = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    setSearchQuery(pendingQuery); // Only update search query
+    setSearchQuery(pendingQuery);
     router.push(
       `/business-directory?search=${encodeURIComponent(pendingQuery)}`,
       undefined,
@@ -147,7 +152,7 @@ export default function BusinessDirectory() {
     else if (e.key === "Enter") {
       setPendingQuery(suggestions[suggestionIndex].business_name);
       setShowSuggestions(false);
-      setTimeout(handleSearchSubmit, 0); // allow state update
+      setTimeout(handleSearchSubmit, 0);
     }
   };
 
