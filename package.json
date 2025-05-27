@@ -39,7 +39,7 @@
     "react-leaflet": "^5.0.0",
     "recharts": "^2.15.2",
     "stripe": "^17.7.0",
-    "swiper": "^11.2.6",
+    "swiper": "^11.2.8",
     "uuid": "^11.1.0"
   },
   "devDependencies": {
