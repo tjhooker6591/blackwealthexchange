@@ -1,23 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import { Navigation } from "swiper/modules";
 
-// Categories and Ad Data
 const CATEGORIES = [
-  "All",
-  "Food",
-  "Retail",
-  "Beauty",
-  "Professional",
-  "Services",
+  "All", "Food", "Retail", "Beauty", "Professional", "Services"
 ];
-
-// Sponsors/ads (add more as needed)
 const SIDEBAR_ADS = [
   {
     img: "/pamfa1.jpg",
@@ -33,10 +25,8 @@ const SIDEBAR_ADS = [
     url: "https://titanshop.com",
     cta: "Explore",
   },
-  // Add up to 18 real sponsors if you have them!
 ];
 
-// Business type
 interface Business {
   _id: string;
   image?: string;
@@ -48,20 +38,26 @@ interface Business {
   category?: string;
 }
 
-// Sponsor card for horizontal carousel (top of page)
-function SponsorCard({
-  img,
-  name,
-  tagline,
-  url,
-  cta,
-}: {
-  img: string;
-  name: string;
-  tagline: string;
-  url: string;
-  cta: string;
-}) {
+// Inject sponsors every N results
+function injectSponsoredEveryN(
+  businesses: Business[],
+  sponsors: typeof SIDEBAR_ADS,
+  interval = 4
+) {
+  if (sponsors.length === 0) return businesses;
+  const result: (Business | { isSponsor: true; sponsorIdx: number })[] = [];
+  let sponsorIdx = 0;
+  for (let i = 0; i < businesses.length; i++) {
+    result.push(businesses[i]);
+    if ((i + 1) % interval === 0) {
+      result.push({ isSponsor: true, sponsorIdx: sponsorIdx % sponsors.length });
+      sponsorIdx++;
+    }
+  }
+  return result;
+}
+
+function SponsorCard({ img, name, tagline, url, cta }: any) {
   return (
     <a
       href={url}
@@ -88,31 +84,13 @@ function SponsorCard({
   );
 }
 
-// Sidebar ad card for stacked right bar (original look)
-function SidebarAdCard({
-  img,
-  name,
-  tagline,
-  url,
-  cta,
-  color = "bg-gradient-to-br from-yellow-400 via-yellow-200 to-yellow-100",
-  isInline = false,
-}: {
-  img: string;
-  name: string;
-  tagline: string;
-  url: string;
-  cta: string;
-  color?: string;
-  isInline?: boolean;
-}) {
+function SidebarAdCard({ img, name, tagline, url, cta, color = "bg-gradient-to-br from-yellow-400 via-yellow-200 to-yellow-100" }: any) {
   return (
     <a
       href={url}
       target="_blank"
       rel="noopener"
-      className={`relative block rounded-lg shadow-lg hover:shadow-xl hover:-translate-y-1 transition p-3 mb-4 cursor-pointer border border-yellow-300
-        ${color} ${isInline ? "my-4" : ""}`}
+      className={`relative block rounded-lg shadow-lg hover:shadow-xl hover:-translate-y-1 transition p-3 mb-4 cursor-pointer border border-yellow-300 ${color}`}
       style={{
         minHeight: 90,
         borderWidth: "2px",
@@ -138,66 +116,46 @@ function SidebarAdCard({
   );
 }
 
-// Inject sponsors into search results at specific positions (3,7,12)
-function injectSponsoredIntoResults(
-  businesses: Business[],
-  sponsors: typeof SIDEBAR_ADS,
-  positions = [3, 7, 12]
-) {
-  const result: (Business | { isSponsor: true; sponsorIdx: number })[] = [];
-  let sponsorIdx = 0;
-  let bizIdx = 0;
-  for (let i = 0; i < businesses.length; i++) {
-    // Add business
-    result.push(businesses[i]);
-    bizIdx++;
-    // At each trigger position, inject a sponsor if available
-    if (positions.includes(bizIdx) && sponsorIdx < sponsors.length) {
-      result.push({ isSponsor: true, sponsorIdx });
-      sponsorIdx++;
-    }
-  }
-  return result;
-}
-
 export default function BusinessDirectory() {
-  const [input, setInput] = useState(""); // search bar input
+  const [input, setInput] = useState("");
   const [businesses, setBusinesses] = useState<Business[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [category, setCategory] = useState<string>("All");
-  const [searched, setSearched] = useState(false); // true after first search
+  const [hasSearched, setHasSearched] = useState(false);
 
-  // Fetch businesses for a search term (only called on submit)
-  function fetchBusinesses(query: string) {
-    setIsLoading(true);
-    fetch(`/api/searchBusinesses?search=${encodeURIComponent(query)}`)
-      .then((r) => r.json())
-      .then((data) => setBusinesses(Array.isArray(data) ? data : []))
-      .catch(() => setBusinesses([]))
-      .finally(() => setIsLoading(false));
-  }
+  // Live search: debounce fetch as you type
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      if (input.trim() !== "") {
+        setIsLoading(true);
+        fetch(`/api/searchBusinesses?search=${encodeURIComponent(input)}`)
+          .then((r) => r.json())
+          .then((data) => {
+            setBusinesses(Array.isArray(data) ? data : []);
+            setHasSearched(true);
+          })
+          .catch(() => setBusinesses([]))
+          .finally(() => setIsLoading(false));
+      } else {
+        setBusinesses([]);
+        setHasSearched(false);
+      }
+    }, 350); // Debounce time
 
-  // Only fetch on submit!
-  const handleSearchSubmit = (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    fetchBusinesses(input);
-    setSearched(true);
-  };
+    return () => clearTimeout(delay);
+  }, [input]);
 
-  // Image fallback
   const handleImageError = (
     e: React.SyntheticEvent<HTMLImageElement, Event>,
   ) => {
     e.currentTarget.src = "/default-image.jpg";
   };
 
-  // Category filtering (after a search)
   const filtered =
     category === "All"
       ? businesses
       : businesses.filter((b) => b.category === category);
 
-  // Sponsor list for carousel (pad with placeholders if fewer than 18)
   const sponsorsToShow = [
     ...SIDEBAR_ADS,
     ...Array(Math.max(0, 18 - SIDEBAR_ADS.length)).fill({
@@ -213,18 +171,13 @@ export default function BusinessDirectory() {
     <div className="bg-gray-900 text-white min-h-screen flex flex-col md:flex-row">
       {/* Main column */}
       <div className="flex-1 w-full md:w-3/4 p-2 md:p-6 mx-auto">
-        {/* Category Filter */}
         <div className="flex flex-wrap gap-2 mb-2">
           {CATEGORIES.map((cat) => (
             <button
               key={cat}
               onClick={() => setCategory(cat)}
               className={`px-3 py-1 rounded transition font-semibold text-xs
-                ${
-                  category === cat
-                    ? "bg-gold text-black shadow"
-                    : "bg-gray-800 text-white hover:bg-gold hover:text-black border border-gray-700"
-                }`}
+                ${category === cat ? "bg-gold text-black shadow" : "bg-gray-800 text-white hover:bg-gold hover:text-black border border-gray-700"}`}
             >
               {cat}
             </button>
@@ -233,23 +186,17 @@ export default function BusinessDirectory() {
         {/* Search Bar */}
         <form
           className="relative w-full mb-6"
-          onSubmit={handleSearchSubmit}
+          onSubmit={e => e.preventDefault()}
           autoComplete="off"
         >
           <input
             type="text"
             placeholder="Find Black-Owned Businesses..."
             value={input}
-            onChange={(e) => setInput(e.target.value)}
+            onChange={e => setInput(e.target.value)}
             className="w-full px-4 py-2 rounded-lg bg-gray-800 text-white placeholder-gray-400 border border-gray-700 focus:ring-2 focus:ring-gold focus:outline-none transition-all"
             style={{ zIndex: 20 }}
           />
-          <button
-            type="submit"
-            className="absolute right-2 top-1 px-3 py-1 bg-gold text-black rounded-lg font-semibold hover:bg-yellow-500 transition"
-          >
-            Search
-          </button>
         </form>
         {/* Sponsored Carousel */}
         <div className="mb-4">
@@ -285,19 +232,20 @@ export default function BusinessDirectory() {
           </Swiper>
         </div>
         {/* Results */}
-        <div>
-          {searched ? (
-            isLoading ? (
-              <div className="py-10 text-center text-gray-400">
-                Loading businesses...
-              </div>
-            ) : filtered.length > 0 ? (
+        <div className="relative">
+          {/* Loading overlay */}
+          {isLoading && (
+            <div className="absolute inset-0 z-20 flex items-center justify-center bg-gray-900/70 backdrop-blur-[2px]">
+              <div className="text-yellow-400 font-semibold text-lg animate-pulse">Loading...</div>
+            </div>
+          )}
+          {hasSearched ? (
+            filtered.length > 0 ? (
               <div>
-                {injectSponsoredIntoResults(filtered, SIDEBAR_ADS).map((item, idx) =>
+                {injectSponsoredEveryN(filtered, SIDEBAR_ADS, 4).map((item, idx) =>
                   (item as any).isSponsor ? (
-                    // Sponsor row within results, styled like a business row but marked
                     <div
-                      key={`sponsor-inline-${idx}`}
+                      key={`sponsor-inline-${(item as any).sponsorIdx}-${idx}`}
                       className="flex items-center gap-3 py-2 border-b border-gray-800 bg-gray-800/70 relative"
                     >
                       <img
@@ -327,7 +275,6 @@ export default function BusinessDirectory() {
                       </div>
                     </div>
                   ) : (
-                    // Regular business result row
                     <div
                       key={(item as Business)._id}
                       className="flex items-center gap-3 py-2 border-b border-gray-800"
