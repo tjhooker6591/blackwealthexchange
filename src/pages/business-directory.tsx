@@ -38,25 +38,6 @@ interface Business {
   category?: string;
 }
 
-// Inject sponsors every N results
-function injectSponsoredEveryN(
-  businesses: Business[],
-  sponsors: typeof SIDEBAR_ADS,
-  interval = 4
-) {
-  if (sponsors.length === 0) return businesses;
-  const result: (Business | { isSponsor: true; sponsorIdx: number })[] = [];
-  let sponsorIdx = 0;
-  for (let i = 0; i < businesses.length; i++) {
-    result.push(businesses[i]);
-    if ((i + 1) % interval === 0) {
-      result.push({ isSponsor: true, sponsorIdx: sponsorIdx % sponsors.length });
-      sponsorIdx++;
-    }
-  }
-  return result;
-}
-
 function SponsorCard({ img, name, tagline, url, cta }: any) {
   return (
     <a
@@ -140,7 +121,7 @@ export default function BusinessDirectory() {
         setBusinesses([]);
         setHasSearched(false);
       }
-    }, 350); // Debounce time
+    }, 350);
 
     return () => clearTimeout(delay);
   }, [input]);
@@ -242,71 +223,38 @@ export default function BusinessDirectory() {
           {hasSearched ? (
             filtered.length > 0 ? (
               <div>
-                {injectSponsoredEveryN(filtered, SIDEBAR_ADS, 4).map((item, idx) =>
-                  (item as any).isSponsor ? (
-                    <div
-                      key={`sponsor-inline-${(item as any).sponsorIdx}-${idx}`}
-                      className="flex items-center gap-3 py-2 border-b border-gray-800 bg-gray-800/70 relative"
-                    >
-                      <img
-                        src={SIDEBAR_ADS[(item as any).sponsorIdx].img}
-                        alt={SIDEBAR_ADS[(item as any).sponsorIdx].name}
-                        width={58}
-                        height={58}
-                        className="object-cover rounded shadow border border-gold bg-gray-100"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <a
-                          href={SIDEBAR_ADS[(item as any).sponsorIdx].url}
-                          target="_blank"
-                          rel="noopener"
-                          className="text-gold font-semibold hover:underline truncate block"
-                        >
-                          {SIDEBAR_ADS[(item as any).sponsorIdx].name}
-                        </a>
-                        <div className="text-gray-400 text-xs truncate">
-                          {SIDEBAR_ADS[(item as any).sponsorIdx].tagline}
-                        </div>
-                      </div>
-                      <div className="text-xs text-gray-500 text-right min-w-[120px]">
-                        <span className="inline-block px-2 py-1 rounded bg-yellow-400 text-black font-bold text-[11px] absolute top-2 right-3 shadow">
-                          Sponsored
-                        </span>
+                {filtered.map((item) => (
+                  <div
+                    key={item._id}
+                    className="flex items-center gap-3 py-2 border-b border-gray-800"
+                  >
+                    <img
+                      src={item.image || "/default-image.jpg"}
+                      alt={item.business_name}
+                      width={58}
+                      height={58}
+                      className="object-cover rounded shadow border border-gold bg-gray-100"
+                      onError={handleImageError}
+                    />
+                    <div className="flex-1 min-w-0">
+                      <Link
+                        href={`/business-directory/${item.alias}`}
+                        className="text-gold font-semibold hover:underline truncate block"
+                      >
+                        {item.business_name}
+                      </Link>
+                      <div className="text-gray-400 text-xs truncate">
+                        {item.description || "Description not available"}
                       </div>
                     </div>
-                  ) : (
-                    <div
-                      key={(item as Business)._id}
-                      className="flex items-center gap-3 py-2 border-b border-gray-800"
-                    >
-                      <img
-                        src={(item as Business).image || "/default-image.jpg"}
-                        alt={(item as Business).business_name}
-                        width={58}
-                        height={58}
-                        className="object-cover rounded shadow border border-gold bg-gray-100"
-                        onError={handleImageError}
-                      />
-                      <div className="flex-1 min-w-0">
-                        <Link
-                          href={`/business-directory/${(item as Business).alias}`}
-                          className="text-gold font-semibold hover:underline truncate block"
-                        >
-                          {(item as Business).business_name}
-                        </Link>
-                        <div className="text-gray-400 text-xs truncate">
-                          {(item as Business).description || "Description not available"}
-                        </div>
-                      </div>
-                      <div className="text-xs text-gray-500 text-right min-w-[120px]">
-                        {(item as Business).phone && <div>{(item as Business).phone}</div>}
-                        {(item as Business).address && (
-                          <div className="truncate">{(item as Business).address}</div>
-                        )}
-                      </div>
+                    <div className="text-xs text-gray-500 text-right min-w-[120px]">
+                      {item.phone && <div>{item.phone}</div>}
+                      {item.address && (
+                        <div className="truncate">{item.address}</div>
+                      )}
                     </div>
-                  )
-                )}
+                  </div>
+                ))}
               </div>
             ) : (
               <div className="py-8 text-gray-400 text-center">
