@@ -4,7 +4,7 @@ dotenv.config();
 
 // Helper to safely escape user input for regex
 function escapeRegex(string) {
-  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 export default async function handler(req, res) {
@@ -30,4 +30,3 @@ export default async function handler(req, res) {
     res.status(500).json({ error: "Error fetching businesses from MongoDB" });
   }
 }
-
