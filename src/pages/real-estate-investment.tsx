@@ -9,21 +9,60 @@ const RealEstateInvestment = () => {
     <div className="bg-gray-900 text-white min-h-screen">
       {/* Hero Section with Banner Image and Headline */}
       <section
-        className="relative bg-gray-800 bg-cover bg-center p-20 text-center"
-        style={{ backgroundImage: "url(/images/blackrealstate.jpg)" }}
-      >
-        <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50"></div>{" "}
-        {/* Optional overlay */}
-        <div className="relative z-10">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-gold leading-tight">
-            Explore Black-Owned Real Estate Options and Investments
-          </h1>
-          <p className="text-lg md:text-xl mt-4 text-gray-300">
-            Empowering the community to build wealth through real estate and
-            investments.
-          </p>
-        </div>
-      </section>
+  className="
+    relative
+    bg-gray-800
+    bg-cover
+    bg-center
+    text-center
+    p-6
+    sm:p-8
+    md:p-12
+    xl:p-20
+    min-h-[280px]
+    flex
+    items-center
+    justify-center
+  "
+  style={{ backgroundImage: "url(/images/blackrealstate.jpg)" }}
+>
+  {/* Overlay */}
+  <div className="absolute top-0 left-0 w-full h-full bg-black/70"></div>
+  {/* Content */}
+  <div className="relative z-10 w-full">
+    <h1
+      className="
+        text-2xl
+        sm:text-3xl
+        md:text-4xl
+        lg:text-5xl
+        font-extrabold
+        text-gold
+        leading-tight
+        drop-shadow-lg
+        max-w-3xl
+        mx-auto
+      "
+    >
+      Explore Black-Owned Real Estate Options and Investments
+    </h1>
+    <p
+      className="
+        text-base
+        sm:text-lg
+        md:text-xl
+        mt-4
+        text-gray-300
+        max-w-xl
+        mx-auto
+        drop-shadow
+      "
+    >
+      Empowering the community to build wealth through real estate and investments.
+    </p>
+  </div>
+</section>
+
 
       {/* Back Button */}
       <div className="mt-6 text-center">

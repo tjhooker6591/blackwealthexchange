@@ -25,7 +25,6 @@ const AffiliatePartnershipPage: NextPage = () => {
   useEffect(() => {
     const checkAffiliate = async () => {
       try {
-        // ← FIXED: include cache + credentials inside fetch
         const sessionRes = await fetch("/api/auth/me", {
           cache: "no-store",
           credentials: "include",
@@ -143,38 +142,39 @@ const AffiliatePartnershipPage: NextPage = () => {
       </Head>
       <div className="min-h-screen bg-black text-white">
         {/* Intro Section */}
-        <section className="container mx-auto px-4 py-20 text-center">
-          <h1 className="text-5xl md:text-6xl font-extrabold text-gold mb-4">
+        <section className="container mx-auto px-4 py-10 sm:py-12 md:py-16 text-center">
+          <h1 className="text-2xl sm:text-3xl md:text-5xl font-extrabold text-gold mb-4 leading-tight max-w-2xl mx-auto">
             Empower Black Entrepreneurship
           </h1>
-          <p className="text-xl md:text-2xl text-gray-300 mb-8">
-            Join our Affiliate &amp; Partnership Program to access exclusive
-            opportunities and grow your business.
+          <p className="text-base sm:text-lg md:text-2xl text-gray-300 mb-6 max-w-xl mx-auto">
+            Join our Affiliate &amp; Partnership Program to access exclusive opportunities and grow your business.
           </p>
+          
+          {/* Affiliate Status Button */}
+          <div className="my-4">
+            {affiliateStatus === "loading" ? (
+              <p className="text-gray-400 text-sm mt-2">Checking your affiliate status...</p>
+            ) : affiliateStatus === "active" ? (
+              <Link
+                href="/affiliate/recommendation"
+                className="inline-block px-6 py-3 bg-gold text-black font-bold rounded hover:bg-yellow-500 transition-colors duration-200 mb-2"
+              >
+                Go to Your Affiliate Dashboard
+              </Link>
+            ) : (
+              <Link
+                href="/affiliate/signup"
+                className="inline-block px-6 py-3 bg-gold text-black font-bold rounded hover:bg-yellow-500 transition-colors duration-200 mb-2"
+              >
+                Become an Affiliate
+              </Link>
+            )}
+          </div>
 
-          {affiliateStatus === "loading" ? (
-            <p>Checking your affiliate status...</p>
-          ) : affiliateStatus === "active" ? (
-            <Link
-              href="/affiliate/recommendation"
-              className="inline-block px-8 py-4 bg-gold text-black font-bold rounded hover:bg-yellow-500 transition-colors duration-200"
-            >
-              Go to Your Affiliate Dashboard
-            </Link>
-          ) : (
-            <Link
-              href="/affiliate/signup"
-              className="inline-block px-8 py-4 bg-gold text-black font-bold rounded hover:bg-yellow-500 transition-colors duration-200"
-            >
-              Become an Affiliate
-            </Link>
-          )}
-
-          {/* Partnership Email CTA */}
-          <div className="mt-6">
+          <div className="mt-3">
             <a
               href="mailto:partners@blackwealthexchange.com"
-              className="inline-block px-6 py-3 border border-gold text-gold rounded hover:bg-gold hover:text-black transition-colors duration-200"
+              className="inline-block px-4 py-2.5 sm:px-6 sm:py-3 border border-gold text-gold rounded hover:bg-gold hover:text-black transition-colors duration-200 text-sm sm:text-base"
             >
               Business Partnership Inquiry
             </a>
@@ -182,36 +182,37 @@ const AffiliatePartnershipPage: NextPage = () => {
         </section>
 
         {/* How It Works */}
-        <section className="container mx-auto px-4 py-12">
-          <h2 className="text-4xl font-bold text-gold text-center mb-6">
+        <section className="container mx-auto px-4 py-7 sm:py-10 md:py-12">
+          <h2 className="text-xl sm:text-2xl md:text-4xl font-bold text-gold text-center mb-4 leading-tight max-w-xl mx-auto">
             How It Works
           </h2>
-          <p className="text-center text-xl text-gray-300 mb-12">
+          <p className="text-center text-base sm:text-lg md:text-xl text-gray-300 mb-8 max-w-lg mx-auto">
             Monetize your traffic and collaborate with us in three simple steps.
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {steps.map(({ step, title, description, label, path }) => (
-              <div
-                key={step}
-                className="bg-gray-800 p-6 rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 text-center"
-              >
-                <div className="mb-4">
-                  <span className="text-5xl text-gold">{step}</span>
-                </div>
-                <h3 className="text-2xl font-semibold text-gold mb-2">
-                  {title}
-                </h3>
-                <p className="text-gray-300 mb-4">{description}</p>
-                <Link
-                  href={path}
-                  className="inline-block px-6 py-3 bg-gold text-black font-semibold rounded hover:bg-yellow-600 transition-colors duration-200"
-                >
-                  {label}
-                </Link>
-              </div>
-            ))}
-          </div>
         </section>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {steps.map(({ step, title, description, label, path }) => (
+            <div
+              key={step}
+              className="bg-gray-800 p-6 rounded-lg shadow-lg hover:shadow-2xl transition-shadow duration-300 text-center"
+            >
+              <div className="mb-4">
+                <span className="text-5xl text-gold">{step}</span>
+              </div>
+              <h3 className="text-2xl font-semibold text-gold mb-2">
+                {title}
+              </h3>
+              <p className="text-gray-300 mb-4">{description}</p>
+              <Link
+                href={path}
+                className="inline-block px-6 py-3 bg-gold text-black font-semibold rounded hover:bg-yellow-600 transition-colors duration-200"
+              >
+                {label}
+              </Link>
+            </div>
+          ))}
+        </div>
 
         {/* Affiliate Offers */}
         <section className="container mx-auto px-4 py-12">
@@ -261,3 +262,4 @@ const AffiliatePartnershipPage: NextPage = () => {
 };
 
 export default AffiliatePartnershipPage;
+
