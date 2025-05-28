@@ -38,7 +38,7 @@ interface Business {
   category?: string;
 }
 
-// Inject sponsors every N results
+// --- Inject sponsors every N results (UI only, does NOT cause flicker) ---
 function injectSponsoredEveryN(
   businesses: Business[],
   sponsors: typeof SIDEBAR_ADS,
@@ -57,7 +57,7 @@ function injectSponsoredEveryN(
   return result;
 }
 
-// Sponsor Card for carousel
+// --- Sponsor Card for carousel ---
 function SponsorCard({ img, name, tagline, url, cta }: any) {
   return (
     <a
@@ -85,7 +85,7 @@ function SponsorCard({ img, name, tagline, url, cta }: any) {
   );
 }
 
-// Sidebar sponsor ad card
+// --- Sidebar sponsor ad card (UI only, does NOT cause flicker) ---
 function SidebarAdCard({ img, name, tagline, url, cta, color = "bg-gradient-to-br from-yellow-400 via-yellow-200 to-yellow-100" }: any) {
   return (
     <a
@@ -137,26 +137,40 @@ export default function BusinessDirectory() {
     }
   }, [router.isReady, router.query.search]);
 
-  // Debounced search as you type or from autofill
+  // --- The Flicker-Free Fetch Logic ---
   useEffect(() => {
+    let cancelled = false;
     const delay = setTimeout(() => {
       if (input.trim() !== "") {
         setIsLoading(true);
+        // Do NOT clear businesses here! (fixes flicker)
         fetch(`/api/searchBusinesses?search=${encodeURIComponent(input)}`)
           .then((r) => r.json())
           .then((data) => {
-            setBusinesses(Array.isArray(data) ? data : []);
-            setHasSearched(true);
+            if (!cancelled) {
+              setBusinesses(Array.isArray(data) ? data : []);
+              setHasSearched(true);
+            }
           })
-          .catch(() => setBusinesses([]))
-          .finally(() => setIsLoading(false));
+          .catch(() => {
+            if (!cancelled) {
+              // Optionally set an error state if you want an error message
+              // Do NOT clear businesses on error—keep previous results
+            }
+          })
+          .finally(() => {
+            if (!cancelled) setIsLoading(false);
+          });
       } else {
         setBusinesses([]);
         setHasSearched(false);
       }
     }, 350);
 
-    return () => clearTimeout(delay);
+    return () => {
+      cancelled = true;
+      clearTimeout(delay);
+    };
   }, [input]);
 
   const handleImageError = (
@@ -165,7 +179,7 @@ export default function BusinessDirectory() {
     e.currentTarget.src = "/default-image.jpg";
   };
 
-  // Category filter is instant, local
+  // Category filter is instant, local (does NOT cause flicker)
   const filtered =
     category === "All"
       ? businesses
