@@ -72,6 +72,18 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
 
+  // ✅ SPONSORS ARRAY GOES HERE:
+  const sponsors = [
+    { img: "/ads/sample-banner1.jpg", name: "Pamfa Hoodies" },
+    { img: "/ads/sample-banner2.jpg", name: "Titan Era" },
+    { img: "/ads/sample-banner3.jpg", name: "Legacy FoodMart" },
+    { img: "/ads/sample-banner4.jpg", name: "Ujamaa Eats" },
+    { img: "/ads/sample-banner5.jpg", name: "Pamfa United Citizens" },
+    { img: "/ads/sample-banner6.jpg", name: "Harlem Apparel" },
+    { img: "/ads/sample-banner7.jpg", name: "Ebony Roots" },
+    { img: "/ads/sample-banner8.jpg", name: "Coco and Breezy Eyewear" },
+  ];
+
   const studentOpportunities = [
     {
       title: "Scholarships",
@@ -252,20 +264,22 @@ export default function Home() {
           </h3>
           <div className="relative w-full h-32 overflow-hidden">
             <div className="absolute flex space-x-4 animate-scroll">
-              {[1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8].map(
-                (i, index) => (
-                  <div key={index} className="relative h-24 w-40">
-                    <Image
-                      src={`/ads/sample-banner${i}.jpg`}
-                      alt={`Sample Banner ${i}`}
-                      width={160}
-                      height={96}
-                      className="object-cover rounded-lg"
-                      priority
-                    />
+              {[...sponsors, ...sponsors].map((sponsor, index) => (
+                <div key={index} className="relative h-24 w-40">
+                  <Image
+                    src={sponsor.img}
+                    alt={sponsor.name}
+                    width={160}
+                    height={96}
+                    className="object-cover rounded-lg"
+                    priority
+                  />
+                  {/* Sponsor Name Overlay */}
+                  <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-60 text-gold text-xs font-semibold px-2 py-1 rounded">
+                    {sponsor.name}
                   </div>
-                ),
-              )}
+                </div>
+              ))}
             </div>
           </div>
         </section>
@@ -295,6 +309,7 @@ export default function Home() {
             </div>
           ))}
         </div>
+
         {/* Recruiting & Consulting Services (Coming Soon) */}
         <section className="container mx-auto px-4 bg-yellow-600 rounded-lg shadow-lg p-4 mb-6">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start space-y-4 sm:space-y-0 sm:space-x-4">
@@ -315,7 +330,6 @@ export default function Home() {
                 candidates secure meaningful opportunities.
               </p>
             </div>
-
             {/* Notify button */}
             <div className="flex-shrink-0">
               <Link href="/dashboard/employer/consulting-interest">
@@ -415,3 +429,4 @@ export default function Home() {
     </div>
   );
 }
+

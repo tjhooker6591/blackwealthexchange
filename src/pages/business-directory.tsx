@@ -114,7 +114,9 @@ export default function BusinessDirectory() {
 
           {/* Sponsored Banner (mobile only, card style) */}
           <div className="md:hidden mb-3">
-            <div className="text-xs uppercase text-gray-400 mb-1">Sponsored</div>
+            <div className="text-xs uppercase text-gray-400 mb-1">
+              Sponsored
+            </div>
             <div className="rounded border border-yellow-700 bg-gray-800 p-2">
               <PamfaSponsorAd />
             </div>
