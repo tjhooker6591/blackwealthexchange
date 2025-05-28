@@ -1,5 +1,4 @@
 import { GetServerSideProps, GetServerSidePropsContext } from "next";
-import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { ObjectId } from "mongodb";
@@ -22,6 +21,11 @@ export default function AdDetailPage({ campaign }: AdDetailPageProps) {
   const [notice, setNotice] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [imgSrc, setImgSrc] = useState(
+    campaign.banner && typeof campaign.banner === "string" && campaign.banner.length > 0
+      ? campaign.banner
+      : "/default-image.jpg"
+  );
 
   // show payment notices
   useEffect(() => {
@@ -31,7 +35,6 @@ export default function AdDetailPage({ campaign }: AdDetailPageProps) {
       setNotice("❌ Payment was cancelled. You can try again below.");
     }
     if (query.status) {
-      // rename status to _status so ESLint knows it's intentionally unused
       const { status: _status, ...rest } = query;
       replace({ pathname: `/ads/${query.id}`, query: rest }, undefined, {
         shallow: true,
@@ -58,9 +61,7 @@ export default function AdDetailPage({ campaign }: AdDetailPageProps) {
     }
   };
 
-  // pick banner or fallback
-  const imgSrc = campaign.banner || "/default-image.jpg";
-
+  // USE A PLAIN <img> FOR FALLBACK!
   return (
     <div className="max-w-xl mx-auto p-4">
       {notice && (
@@ -71,16 +72,14 @@ export default function AdDetailPage({ campaign }: AdDetailPageProps) {
 
       <h1 className="text-2xl font-bold mb-4">{campaign.name}</h1>
 
-      <Image
+      <img
         src={imgSrc}
         alt={campaign.name}
         width={800}
         height={400}
-        onError={(e) => {
-          // swap to fallback if the banner 404s
-          e.currentTarget.src = "/default-image.jpg";
-        }}
+        onError={() => setImgSrc("/default-image.jpg")}
         className="rounded mb-6"
+        style={{ objectFit: "cover", width: "100%", height: 400 }}
       />
 
       <p className="text-lg mb-6">Price: ${campaign.price}</p>
