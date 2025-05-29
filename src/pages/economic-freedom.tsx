@@ -5,14 +5,13 @@ const EconomicFreedom = () => {
   return (
     <div className="container mx-auto p-8 bg-black text-white border border-gold shadow-lg">
       {/* Page Title */}
-      <h1 className="text-5xl font-extrabold text-center text-gold mb-8 uppercase animate-pulse">
-        Economic Freedom & Black Wealth: Breaking the Chains of Modern Economic
-        Slavery
+      <h1 className="text-2xl font-extrabold text-center text-gold mb-4 uppercase animate-pulse">
+        Breaking the Chains of Modern Economic Slavery
       </h1>
 
       {/* Introduction */}
       <section className="mb-12">
-        <h2 className="text-3xl font-bold text-yellow-500 border-b-2 border-gold pb-2">
+        <h2 className="text-2xl font-bold text-yellow-500 border-b-2 border-gold pb-2">
           Introduction
         </h2>
         <p className="text-lg mt-4 leading-relaxed">
@@ -32,7 +31,7 @@ const EconomicFreedom = () => {
 
       {/* Historical Context */}
       <section className="mb-12">
-        <h2 className="text-3xl font-bold text-yellow-500 border-b-2 border-gold pb-2">
+        <h2 className="text-2xl font-bold text-yellow-500 border-b-2 border-gold pb-2">
           1. Historical Context of Economic Oppression
         </h2>
 
@@ -82,7 +81,7 @@ const EconomicFreedom = () => {
 
       {/* Cultural Exploitation */}
       <section className="mb-12">
-        <h2 className="text-3xl font-bold text-yellow-500 border-b-2 border-gold pb-2">
+        <h2 className="text-2xl font-bold text-yellow-500 border-b-2 border-gold pb-2">
           2. Cultural Exploitation and Economic Disparities
         </h2>
         <p className="text-lg leading-relaxed text-gray-300">
@@ -106,7 +105,7 @@ const EconomicFreedom = () => {
 
       {/* Breaking the Cycle */}
       <section className="mb-12">
-        <h2 className="text-3xl font-bold text-yellow-500 border-b-2 border-gold pb-2">
+        <h2 className="text-2xl font-bold text-yellow-500 border-b-2 border-gold pb-2">
           3. Breaking the Cycle: Strategies for Economic Empowerment
         </h2>
         <ul className="list-disc pl-8 text-lg text-gray-300 leading-relaxed">
@@ -135,7 +134,7 @@ const EconomicFreedom = () => {
 
       {/* The Role of Black Wealth Exchange */}
       <section className="mb-12">
-        <h2 className="text-3xl font-bold text-yellow-500 border-b-2 border-gold pb-2">
+        <h2 className="text-2xl font-bold text-yellow-500 border-b-2 border-gold pb-2">
           4. The Role of Black Wealth Exchange
         </h2>
         <p className="text-lg leading-relaxed text-gray-300">
@@ -158,7 +157,7 @@ const EconomicFreedom = () => {
 
       {/* Conclusion */}
       <section className="mb-12">
-        <h2 className="text-3xl font-bold text-yellow-500 border-b-2 border-gold pb-2">
+        <h2 className="text-2xl font-bold text-yellow-500 border-b-2 border-gold pb-2">
           Conclusion
         </h2>
         <p className="text-lg leading-relaxed text-white font-bold text-center">

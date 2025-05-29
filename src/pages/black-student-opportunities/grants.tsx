@@ -17,48 +17,47 @@ const Grants = () => {
       <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-50 pointer-events-none"></div>
 
       {/* Hero Section */}
-      <header className="text-center py-32 relative z-10">
-        <Image
-          src="/favicon.png"
-          alt="Black Wealth Exchnage Logo"
-          width={120}
-          height={120}
-          className="mx-auto mb-4 animate-fadeIn"
-        />
-        <h1 className="text-4xl sm:text-5xl md:text-4xl  font-extrabold tracking-wide text-gold neon-text animate-slideUp">
-          Grants for Black College Students
-        </h1>
-        <p className="text-xl md:text-2xl mt-4 font-light text-gray-300 animate-fadeIn">
-          &quot;Grants provide essential financial support, reducing the
-          financial burden on Black college students and empowering them to
-          succeed.&quot;
-        </p>
-      </header>
+      <header className="text-center py-10 sm:py-14 md:py-18 relative z-10">
+  <Image
+    src="/favicon.png"
+    alt="Black Wealth Exchange Logo"
+    width={100}
+    height={100}
+    className="mx-auto mb-3 sm:mb-4 animate-fadeIn"
+    priority
+  />
+  <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-wide text-gold neon-text animate-slideUp leading-tight max-w-2xl mx-auto">
+    Grants for Black College Students
+  </h1>
+  <p className="text-base sm:text-lg md:text-xl mt-3 sm:mt-4 font-light text-gray-300 animate-fadeIn max-w-xl mx-auto">
+    &quot;Grants provide essential financial support, reducing the financial burden on Black college students and empowering them to succeed.&quot;
+  </p>
+</header>
 
-      {/* Grants Content */}
-      <div className="container mx-auto p-6 relative z-10">
-        <div className="space-y-8">
-          {/* Federal Pell Grant */}
-          <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-            <h2 className="text-2xl font-semibold text-gold">
-              Federal Pell Grant
-            </h2>
-            <p className="text-lg mt-2">
-              The Federal Pell Grant is a need-based grant for undergraduate
-              students who display exceptional financial need.
-            </p>
-            <button
-              onClick={() =>
-                handleExternalLink(
-                  "https://studentaid.gov/understand-aid/types/grants/pell",
-                )
-              }
-              className="mt-4 inline-block px-6 py-3 bg-gold text-black font-semibold rounded-lg hover:bg-yellow-500 transition-colors cursor-pointer"
-            >
-              Apply Now
-            </button>
-          </div>
-
+{/* Grants Content (remove margin-top, keep spacing tight) */}
+<div className="container mx-auto p-6 relative z-10">
+  <div className="space-y-8">
+    {/* Federal Pell Grant */}
+    <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
+      <h2 className="text-2xl font-semibold text-gold">
+        Federal Pell Grant
+      </h2>
+      <p className="text-lg mt-2">
+        The Federal Pell Grant is a need-based grant for undergraduate
+        students who display exceptional financial need.
+      </p>
+      <button
+        onClick={() =>
+          handleExternalLink(
+            "https://studentaid.gov/understand-aid/types/grants/pell",
+          )
+        }
+        className="mt-4 inline-block px-6 py-3 bg-gold text-black font-semibold rounded-lg hover:bg-yellow-500 transition-colors cursor-pointer"
+      >
+        Apply Now
+      </button>
+    </div>
+    
           {/* FSEOG Grant */}
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
             <h2 className="text-2xl font-semibold text-gold">

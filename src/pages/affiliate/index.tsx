@@ -147,13 +147,16 @@ const AffiliatePartnershipPage: NextPage = () => {
             Empower Black Entrepreneurship
           </h1>
           <p className="text-base sm:text-lg md:text-2xl text-gray-300 mb-6 max-w-xl mx-auto">
-            Join our Affiliate &amp; Partnership Program to access exclusive opportunities and grow your business.
+            Join our Affiliate &amp; Partnership Program to access exclusive
+            opportunities and grow your business.
           </p>
-          
+
           {/* Affiliate Status Button */}
           <div className="my-4">
             {affiliateStatus === "loading" ? (
-              <p className="text-gray-400 text-sm mt-2">Checking your affiliate status...</p>
+              <p className="text-gray-400 text-sm mt-2">
+                Checking your affiliate status...
+              </p>
             ) : affiliateStatus === "active" ? (
               <Link
                 href="/affiliate/recommendation"
@@ -200,9 +203,7 @@ const AffiliatePartnershipPage: NextPage = () => {
               <div className="mb-4">
                 <span className="text-5xl text-gold">{step}</span>
               </div>
-              <h3 className="text-2xl font-semibold text-gold mb-2">
-                {title}
-              </h3>
+              <h3 className="text-2xl font-semibold text-gold mb-2">{title}</h3>
               <p className="text-gray-300 mb-4">{description}</p>
               <Link
                 href={path}
@@ -262,4 +263,3 @@ const AffiliatePartnershipPage: NextPage = () => {
 };
 
 export default AffiliatePartnershipPage;
-
