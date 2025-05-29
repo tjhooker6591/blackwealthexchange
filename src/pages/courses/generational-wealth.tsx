@@ -64,7 +64,8 @@ const GenerationalWealthCourse: React.FC = () => {
             </span>
           </h1>
           <p className="text-gray-300 mt-2">
-            Unlock step-by-step strategies to build real wealth, transfer it to your family, and uplift your community.
+            Unlock step-by-step strategies to build real wealth, transfer it to
+            your family, and uplift your community.
           </p>
         </header>
 
@@ -74,7 +75,11 @@ const GenerationalWealthCourse: React.FC = () => {
             What is Generational Wealth?
           </h2>
           <p className="mt-4 text-gray-300">
-            Generational wealth means assets and knowledge passed from one generation to the next. It’s homeownership, investments, family businesses, insurance, estate plans, and—most important—**financial wisdom**. This is how you break cycles of struggle and create lasting opportunity.
+            Generational wealth means assets and knowledge passed from one
+            generation to the next. It’s homeownership, investments, family
+            businesses, insurance, estate plans, and—most important—**financial
+            wisdom**. This is how you break cycles of struggle and create
+            lasting opportunity.
           </p>
         </section>
 
@@ -86,7 +91,9 @@ const GenerationalWealthCourse: React.FC = () => {
           <ul className="list-disc ml-6 mt-4 text-gray-300 space-y-1">
             <li>Combat historic wealth gaps caused by discrimination.</li>
             <li>Protect your family from financial emergencies.</li>
-            <li>Provide children with better education, security, and freedom.</li>
+            <li>
+              Provide children with better education, security, and freedom.
+            </li>
             <li>Enable business investment and home ownership.</li>
             <li>Empower future generations to start further ahead.</li>
           </ul>
@@ -94,11 +101,11 @@ const GenerationalWealthCourse: React.FC = () => {
 
         {/* Course Overview */}
         <section className="mt-8">
-          <h2 className="text-2xl font-semibold text-gold">
-            Course Overview
-          </h2>
+          <h2 className="text-2xl font-semibold text-gold">Course Overview</h2>
           <p className="mt-4 text-gray-300">
-            This course teaches you **how to build, protect, and transfer wealth** using practical, culturally aware strategies. You’ll get tools, action steps, and resources for every stage of the journey.
+            This course teaches you **how to build, protect, and transfer
+            wealth** using practical, culturally aware strategies. You’ll get
+            tools, action steps, and resources for every stage of the journey.
           </p>
         </section>
 
@@ -108,7 +115,10 @@ const GenerationalWealthCourse: React.FC = () => {
             Learning Outcomes
           </h2>
           <ul className="list-disc ml-6 mt-4 text-gray-300 space-y-1">
-            <li>Understand key wealth-building assets: real estate, stocks, life insurance, and businesses.</li>
+            <li>
+              Understand key wealth-building assets: real estate, stocks, life
+              insurance, and businesses.
+            </li>
             <li>Develop strong saving, investing, and spending habits.</li>
             <li>Start a family legacy plan and estate documents.</li>
             <li>Protect wealth with trusts, insurance, and tax strategies.</li>
@@ -119,19 +129,44 @@ const GenerationalWealthCourse: React.FC = () => {
 
         {/* Course Content Modules */}
         <section className="mt-8">
-          <h2 className="text-2xl font-semibold text-gold">
-            Course Modules
-          </h2>
+          <h2 className="text-2xl font-semibold text-gold">Course Modules</h2>
           <ol className="list-decimal ml-6 mt-4 text-gray-300 space-y-1">
-            <li><strong>Mindset for Wealth:</strong> Building vision and goals. Understanding the impact of generational thinking.</li>
-            <li><strong>Financial Literacy Fundamentals:</strong> Budgeting, credit, banking, and debt management for generational planning.</li>
-            <li><strong>Homeownership:</strong> Building equity, buying wisely, and keeping your home in the family.</li>
-            <li><strong>Investing 101:</strong> Stocks, bonds, mutual funds, and real estate explained for beginners.</li>
-            <li><strong>Business Ownership:</strong> Starting or acquiring businesses, succession planning, and legacy entrepreneurship.</li>
-            <li><strong>Life Insurance & Protection:</strong> Types, uses, and leveraging insurance as a wealth-building and transfer tool.</li>
-            <li><strong>Estate Planning:</strong> Wills, living trusts, power of attorney, and beneficiary designations made simple.</li>
-            <li><strong>Teaching the Next Generation:</strong> Tools and conversation starters for parents and mentors.</li>
-            <li><strong>Community Wealth:</strong> Group investing, buying back the block, and supporting Black-owned ventures.</li>
+            <li>
+              <strong>Mindset for Wealth:</strong> Building vision and goals.
+              Understanding the impact of generational thinking.
+            </li>
+            <li>
+              <strong>Financial Literacy Fundamentals:</strong> Budgeting,
+              credit, banking, and debt management for generational planning.
+            </li>
+            <li>
+              <strong>Homeownership:</strong> Building equity, buying wisely,
+              and keeping your home in the family.
+            </li>
+            <li>
+              <strong>Investing 101:</strong> Stocks, bonds, mutual funds, and
+              real estate explained for beginners.
+            </li>
+            <li>
+              <strong>Business Ownership:</strong> Starting or acquiring
+              businesses, succession planning, and legacy entrepreneurship.
+            </li>
+            <li>
+              <strong>Life Insurance & Protection:</strong> Types, uses, and
+              leveraging insurance as a wealth-building and transfer tool.
+            </li>
+            <li>
+              <strong>Estate Planning:</strong> Wills, living trusts, power of
+              attorney, and beneficiary designations made simple.
+            </li>
+            <li>
+              <strong>Teaching the Next Generation:</strong> Tools and
+              conversation starters for parents and mentors.
+            </li>
+            <li>
+              <strong>Community Wealth:</strong> Group investing, buying back
+              the block, and supporting Black-owned ventures.
+            </li>
           </ol>
           <p className="mt-4 text-blue-500">
             <Link href="#details">See module details below</Link>
@@ -144,13 +179,27 @@ const GenerationalWealthCourse: React.FC = () => {
             Action Steps for Building Generational Wealth
           </h2>
           <ol className="list-decimal ml-6 mt-4 text-gray-300 space-y-1">
-            <li>**Track your net worth and set specific family wealth goals.**</li>
-            <li>**Establish an emergency fund and pay down high-interest debt.**</li>
-            <li>**Open investment accounts for yourself and your children.**</li>
+            <li>
+              **Track your net worth and set specific family wealth goals.**
+            </li>
+            <li>
+              **Establish an emergency fund and pay down high-interest debt.**
+            </li>
+            <li>
+              **Open investment accounts for yourself and your children.**
+            </li>
             <li>**Start or invest in a business with succession planning.**</li>
-            <li>**Buy life insurance to cover final expenses and transfer wealth.**</li>
-            <li>**Create a will and/or living trust with clear beneficiaries.**</li>
-            <li>**Educate your family about wealth, responsibility, and stewardship.**</li>
+            <li>
+              **Buy life insurance to cover final expenses and transfer
+              wealth.**
+            </li>
+            <li>
+              **Create a will and/or living trust with clear beneficiaries.**
+            </li>
+            <li>
+              **Educate your family about wealth, responsibility, and
+              stewardship.**
+            </li>
           </ol>
         </section>
 
@@ -161,16 +210,36 @@ const GenerationalWealthCourse: React.FC = () => {
           </h2>
           <ul className="list-disc ml-6 mt-4 text-gray-300 space-y-1">
             <li>
-              <Link href="/downloads/family-wealth-plan.pdf" className="text-blue-400 underline">Family Wealth Planning Worksheet</Link>
+              <Link
+                href="/downloads/family-wealth-plan.pdf"
+                className="text-blue-400 underline"
+              >
+                Family Wealth Planning Worksheet
+              </Link>
             </li>
             <li>
-              <Link href="/downloads/legacy-checklist.pdf" className="text-blue-400 underline">Legacy Transfer Checklist</Link>
+              <Link
+                href="/downloads/legacy-checklist.pdf"
+                className="text-blue-400 underline"
+              >
+                Legacy Transfer Checklist
+              </Link>
             </li>
             <li>
-              <Link href="/downloads/black-owned-business-directory.pdf" className="text-blue-400 underline">Black-Owned Business Directory</Link>
+              <Link
+                href="/downloads/black-owned-business-directory.pdf"
+                className="text-blue-400 underline"
+              >
+                Black-Owned Business Directory
+              </Link>
             </li>
             <li>
-              <Link href="/downloads/kids-money-guide.pdf" className="text-blue-400 underline">Kids’ Guide to Money</Link>
+              <Link
+                href="/downloads/kids-money-guide.pdf"
+                className="text-blue-400 underline"
+              >
+                Kids’ Guide to Money
+              </Link>
             </li>
           </ul>
         </section>
@@ -181,13 +250,17 @@ const GenerationalWealthCourse: React.FC = () => {
             How to Enroll
           </h2>
           <p className="mt-4 text-gray-300">
-            Enroll for free by signing up or logging in! Once enrolled, you’ll unlock full access to all modules, downloads, and community discussions.
+            Enroll for free by signing up or logging in! Once enrolled, you’ll
+            unlock full access to all modules, downloads, and community
+            discussions.
           </p>
         </section>
 
         {/* Sign Up / Log In Section */}
         <section className="mt-8">
-          <h2 className="text-2xl font-semibold text-blue-500">Sign Up / Log In</h2>
+          <h2 className="text-2xl font-semibold text-blue-500">
+            Sign Up / Log In
+          </h2>
           <div className="mt-4">
             {isLoggedIn ? (
               <button
@@ -219,9 +292,16 @@ const GenerationalWealthCourse: React.FC = () => {
         <section className="mt-8">
           <h2 className="text-2xl font-semibold text-gold">Why Enroll?</h2>
           <ul className="list-disc ml-6 mt-4 text-gray-300 space-y-1">
-            <li>100% free: open to everyone looking to break the cycle and build a legacy.</li>
-            <li>Lifetime access, updates, and new resources as they’re added.</li>
-            <li>Connect with others on the same journey in our private community.</li>
+            <li>
+              100% free: open to everyone looking to break the cycle and build a
+              legacy.
+            </li>
+            <li>
+              Lifetime access, updates, and new resources as they’re added.
+            </li>
+            <li>
+              Connect with others on the same journey in our private community.
+            </li>
             <li>Tools and downloads you can use with your whole family.</li>
           </ul>
         </section>
@@ -231,16 +311,23 @@ const GenerationalWealthCourse: React.FC = () => {
           <h2 className="text-2xl font-semibold text-blue-500">FAQ</h2>
           <ul className="mt-4 space-y-2 text-gray-300">
             <li>
-              <strong>Q: Can I take this course if I’m a complete beginner?</strong><br />
-              A: Absolutely! All concepts are explained step by step, with real examples.
+              <strong>
+                Q: Can I take this course if I’m a complete beginner?
+              </strong>
+              <br />
+              A: Absolutely! All concepts are explained step by step, with real
+              examples.
             </li>
             <li>
-              <strong>Q: Will I need to buy anything?</strong><br />
+              <strong>Q: Will I need to buy anything?</strong>
+              <br />
               A: No, all tools and resources are included for free.
             </li>
             <li>
-              <strong>Q: How do I keep my information safe?</strong><br />
-              A: The course includes guides on privacy, asset protection, and security.
+              <strong>Q: How do I keep my information safe?</strong>
+              <br />
+              A: The course includes guides on privacy, asset protection, and
+              security.
             </li>
           </ul>
         </section>

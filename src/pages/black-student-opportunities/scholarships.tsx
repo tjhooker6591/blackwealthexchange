@@ -11,52 +11,56 @@ const ScholarshipsPage = () => {
       />
       <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-50" />
 
-{/* Hero Section */}
-<header className="text-center py-10 sm:py-14 md:py-18 relative z-10">
-  <Image
-    src="/favicon.png"
-    alt="Black Wealth Exchange Logo"
-    width={100}
-    height={100}
-    className="mx-auto mb-3 sm:mb-4 animate-fadeIn"
-    priority
-  />
-  <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-wide text-gold neon-text animate-slideUp leading-tight max-w-2xl mx-auto">
-  Scholarships for Black Students
-</h2>
+      {/* Hero Section */}
+      <header className="text-center py-10 sm:py-14 md:py-18 relative z-10">
+        <Image
+          src="/favicon.png"
+          alt="Black Wealth Exchange Logo"
+          width={100}
+          height={100}
+          className="mx-auto mb-3 sm:mb-4 animate-fadeIn"
+          priority
+        />
+        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-wide text-gold neon-text animate-slideUp leading-tight max-w-2xl mx-auto">
+          Scholarships for Black Students
+        </h2>
 
-  <p className="text-base sm:text-lg md:text-xl mt-3 sm:mt-4 font-light text-gray-300 animate-fadeIn max-w-xl mx-auto">
-    &quot;Scholarships provide essential financial support to Black students pursuing higher education.&quot;
-  </p>
-</header>
+        <p className="text-base sm:text-lg md:text-xl mt-3 sm:mt-4 font-light text-gray-300 animate-fadeIn max-w-xl mx-auto">
+          &quot;Scholarships provide essential financial support to Black
+          students pursuing higher education.&quot;
+        </p>
+      </header>
 
-{/* Scholarships Content */}
-<div className="container mx-auto mt-4 sm:mt-6 md:mt-8 p-6 relative z-10">
-  <div className="space-y-8">
-    {/* Jackie Robinson Foundation */}
-    <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-      <h2 className="text-2xl font-semibold text-gold">
-        Jackie Robinson Foundation Scholarship
-      </h2>
-      <p className="text-lg mt-2">
-        Provides up to $35,000 over four years to Black high school seniors demonstrating leadership and community service.
-      </p>
-      <p className="mt-2">
-        <strong>Eligibility:</strong> Must be a high school senior, demonstrate leadership potential, and have a minimum SAT score of 1,000 or ACT score of 21.
-      </p>
-      <p className="mt-2">
-        <strong>Deadline:</strong> March 31, 2025.
-      </p>
-      <Link
-        href="https://jackierobinson.org/apply/"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="mt-4 inline-block px-6 py-3 bg-gold text-black font-semibold rounded-lg hover:bg-yellow-500 transition-colors"
-      >
-        Apply Now
-      </Link>
-    </div>
- 
+      {/* Scholarships Content */}
+      <div className="container mx-auto mt-4 sm:mt-6 md:mt-8 p-6 relative z-10">
+        <div className="space-y-8">
+          {/* Jackie Robinson Foundation */}
+          <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
+            <h2 className="text-2xl font-semibold text-gold">
+              Jackie Robinson Foundation Scholarship
+            </h2>
+            <p className="text-lg mt-2">
+              Provides up to $35,000 over four years to Black high school
+              seniors demonstrating leadership and community service.
+            </p>
+            <p className="mt-2">
+              <strong>Eligibility:</strong> Must be a high school senior,
+              demonstrate leadership potential, and have a minimum SAT score of
+              1,000 or ACT score of 21.
+            </p>
+            <p className="mt-2">
+              <strong>Deadline:</strong> March 31, 2025.
+            </p>
+            <Link
+              href="https://jackierobinson.org/apply/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 inline-block px-6 py-3 bg-gold text-black font-semibold rounded-lg hover:bg-yellow-500 transition-colors"
+            >
+              Apply Now
+            </Link>
+          </div>
+
           {/* Ron Brown Scholar Program */}
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
             <h2 className="text-2xl font-semibold text-gold">

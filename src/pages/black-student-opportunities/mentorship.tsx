@@ -15,7 +15,7 @@ const Mentorship = () => {
       <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-50 pointer-events-none"></div>
 
       {/* 🔥 Hero Section */}
-      
+
       {/* Hero/Header Section */}
       <header className="text-center py-8 sm:py-10 md:py-14 relative z-10">
         <Image
