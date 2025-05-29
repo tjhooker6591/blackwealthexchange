@@ -9,7 +9,7 @@ const RealEstateInvestment = () => {
     <div className="bg-gray-900 text-white min-h-screen">
       {/* Hero Section with Banner Image and Headline */}
       <section
-  className="
+        className="
     relative
     bg-gray-800
     bg-cover
@@ -24,14 +24,14 @@ const RealEstateInvestment = () => {
     items-center
     justify-center
   "
-  style={{ backgroundImage: "url(/images/blackrealstate.jpg)" }}
->
-  {/* Overlay */}
-  <div className="absolute top-0 left-0 w-full h-full bg-black/70"></div>
-  {/* Content */}
-  <div className="relative z-10 w-full">
-    <h1
-      className="
+        style={{ backgroundImage: "url(/images/blackrealstate.jpg)" }}
+      >
+        {/* Overlay */}
+        <div className="absolute top-0 left-0 w-full h-full bg-black/70"></div>
+        {/* Content */}
+        <div className="relative z-10 w-full">
+          <h1
+            className="
         text-2xl
         sm:text-3xl
         md:text-4xl
@@ -43,11 +43,11 @@ const RealEstateInvestment = () => {
         max-w-3xl
         mx-auto
       "
-    >
-      Explore Black-Owned Real Estate Options and Investments
-    </h1>
-    <p
-      className="
+          >
+            Explore Black-Owned Real Estate Options and Investments
+          </h1>
+          <p
+            className="
         text-base
         sm:text-lg
         md:text-xl
@@ -57,12 +57,12 @@ const RealEstateInvestment = () => {
         mx-auto
         drop-shadow
       "
-    >
-      Empowering the community to build wealth through real estate and investments.
-    </p>
-  </div>
-</section>
-
+          >
+            Empowering the community to build wealth through real estate and
+            investments.
+          </p>
+        </div>
+      </section>
 
       {/* Back Button */}
       <div className="mt-6 text-center">

@@ -15,29 +15,31 @@ const Mentorship = () => {
       <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-50 pointer-events-none"></div>
 
       {/* 🔥 Hero Section */}
-      <header className="text-center py-32 relative z-10">
+      
+      {/* Hero/Header Section */}
+      <header className="text-center py-8 sm:py-10 md:py-14 relative z-10">
         <Image
           src="/favicon.png"
-          alt="Black Wealth Exchnage Logo"
-          width={120}
-          height={120}
-          className="mx-auto mb-4 animate-fadeIn"
+          alt="Black Wealth Exchange Logo"
+          width={100}
+          height={100}
+          className="mx-auto mb-3 sm:mb-4 animate-fadeIn"
+          priority
         />
-        <h1 className="text-4xl sm:text-5xl md:text-4xl  font-extrabold tracking-wide text-gold neon-text animate-slideUp">
+        <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-wide text-gold neon-text animate-slideUp leading-tight max-w-2xl mx-auto">
           Mentorship for Black Students
         </h1>
-        <p className="text-xl md:text-2xl mt-4 font-light text-gray-300 animate-fadeIn">
+        <p className="text-base sm:text-lg md:text-xl mt-3 sm:mt-4 font-light text-gray-300 animate-fadeIn max-w-xl mx-auto">
           &quot;Mentorship is the key to unlocking new opportunities, building
           networks, and preparing for future careers.&quot;
         </p>
       </header>
 
       {/* Mentorship Programs Section */}
-      <div className="container mx-auto p-6 relative z-10">
-        <h2 className="text-3xl font-semibold text-gold mb-6">
+      <div className="container mx-auto p-6 mt-6 relative z-10">
+        <h2 className="text-lg sm:text-2xl md:text-3xl font-semibold text-gold mb-4">
           Mentorship Programs for Black College Students
         </h2>
-
         <div className="space-y-6">
           {/* Ujima Mentoring Program */}
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
@@ -45,7 +47,7 @@ const Mentorship = () => {
               href="https://prevention.ucsf.edu/education/ujima-mentoring-program"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-2xl font-semibold text-gold hover:underline cursor-pointer"
+              className="text-base sm:text-xl font-semibold text-gold hover:underline cursor-pointer"
             >
               Ujima Mentoring Program
             </a>

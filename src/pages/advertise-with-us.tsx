@@ -38,7 +38,6 @@ const AdvertiseWithUs = () => {
         <p style={{ fontSize: "1.1rem", marginTop: "1rem" }}>
           We offer a variety of advertising options to help you reach a larger,
           engaged audience. Please select an option below to proceed.
-          
         </p>
       </section>
 

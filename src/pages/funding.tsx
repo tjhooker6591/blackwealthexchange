@@ -9,10 +9,10 @@ const StartupFundingPage = () => {
       <section className="relative bg-gradient-to-r from-gold to-yellow-500 p-20 text-center">
         <div className="absolute inset-0 bg-black opacity-50"></div>
         <div className="relative z-10">
-          <h1 className="text-5xl md:text-6xl font-extrabold text-white leading-tight">
+          <h1 className="text-3xl md:text-2xl font-extrabold text-white leading-tight">
             Startup Funding for Black Entrepreneurs
           </h1>
-          <p className="text-xl md:text-2xl mt-4 text-gray-300">
+          <p className="text-xl md:text-1xl mt-4 text-gray-300">
             Unlock funding opportunities to launch and grow your Black-owned
             startup. Learn about venture capital, grants, and alternative
             financing sources.
@@ -33,7 +33,7 @@ const StartupFundingPage = () => {
       <div className="container mx-auto p-6 space-y-8">
         {/* Introduction to Startup Funding */}
         <div className="bg-gray-800 rounded-lg shadow-lg p-6 my-6">
-          <h2 className="text-3xl font-bold text-gold mb-4">
+          <h2 className="text-2xl font-bold text-gold mb-4">
             Introduction to Startup Funding for Black Entrepreneurs
           </h2>
           <p className="text-gray-300 mb-4">
@@ -54,7 +54,7 @@ const StartupFundingPage = () => {
 
         {/* Section 1: Funding Opportunities Overview */}
         <div className="bg-blue-600 rounded-lg shadow-lg p-6 my-6">
-          <h2 className="text-3xl font-bold text-white mb-4">
+          <h2 className="text-2xl font-bold text-white mb-4">
             1. Types of Funding Opportunities for Black-Owned Startups
           </h2>
           <p className="text-gray-300 mb-4">
@@ -234,7 +234,7 @@ const StartupFundingPage = () => {
 
         {/* Section 2: Navigating Venture Capital */}
         <div className="bg-gray-800 rounded-lg shadow-lg p-6 my-6">
-          <h2 className="text-3xl font-bold text-gold mb-4">
+          <h2 className="text-2xl font-bold text-gold mb-4">
             2. Navigating Venture Capital for Black Startups
           </h2>
           <p className="text-gray-300 mb-4">
@@ -279,7 +279,7 @@ const StartupFundingPage = () => {
 
         {/* Section 3: Alternative Funding Options */}
         <div className="bg-yellow-600 rounded-lg shadow-lg p-6 my-6">
-          <h2 className="text-3xl font-bold text-black mb-4">
+          <h2 className="text-2xl font-bold text-black mb-4">
             3. Alternative Funding Options for Black Entrepreneurs
           </h2>
           <p className="text-black mb-4">
@@ -311,7 +311,7 @@ const StartupFundingPage = () => {
 
         {/* Conclusion */}
         <div className="text-center py-6 bg-gray-900 rounded-lg p-6">
-          <h2 className="text-3xl font-bold mb-4 text-gold">
+          <h2 className="text-2xl font-bold mb-4 text-gold">
             Start Today – Empower Your Startup
           </h2>
           <p className="text-lg max-w-2xl mx-auto text-white">

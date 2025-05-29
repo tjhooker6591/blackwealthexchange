@@ -12,10 +12,10 @@ const RealEstatePage = () => {
       <section className="relative bg-gradient-to-r from-gold to-yellow-500 p-20 text-center">
         <div className="absolute inset-0 bg-black opacity-50"></div>
         <div className="relative z-10">
-          <h1 className="text-5xl md:text-6xl font-extrabold text-white leading-tight">
+          <h1 className="text-5xl md:text-2xl font-extrabold text-white leading-tight">
             Real Estate Investment for Building Generational Wealth
           </h1>
-          <p className="text-xl md:text-2xl mt-4 text-gray-300">
+          <p className="text-xl md:text-1xl mt-4 text-gray-300">
             Real estate offers a wealth-building strategy with long-term
             benefits. Here&rsquo;s how you can invest and secure your future.
           </p>
@@ -35,7 +35,7 @@ const RealEstatePage = () => {
       <div className="container mx-auto p-6 space-y-8">
         {/* Section 1: Understanding Real Estate Investment */}
         <div className="bg-gray-800 rounded-lg shadow-lg p-6 my-6">
-          <h2 className="text-3xl font-bold text-gold mb-4">
+          <h2 className="text-2xl font-bold text-gold mb-4">
             1. Understanding Real Estate Investment
           </h2>
           <p className="text-gray-300 mb-4">
@@ -66,7 +66,7 @@ const RealEstatePage = () => {
 
         {/* Section 2: Why Real Estate? */}
         <div className="bg-blue-600 rounded-lg shadow-lg p-6 my-6">
-          <h2 className="text-3xl font-bold text-white mb-4">
+          <h2 className="text-2xl font-bold text-white mb-4">
             2. Why Real Estate?
           </h2>
           <p className="text-gray-300 mb-4">
@@ -96,7 +96,7 @@ const RealEstatePage = () => {
 
         {/* Section 3: How to Get Started with Real Estate Investments */}
         <div className="bg-yellow-600 rounded-lg shadow-lg p-6 my-6">
-          <h2 className="text-3xl font-bold text-black mb-4">
+          <h2 className="text-2xl font-bold text-black mb-4">
             3. How to Get Started with Real Estate Investments
           </h2>
           <p className="text-black mb-4">
@@ -208,7 +208,7 @@ const RealEstatePage = () => {
 
         {/* Section 4: Building Generational Wealth */}
         <div className="bg-gray-800 rounded-lg shadow-lg p-6 my-6">
-          <h2 className="text-3xl font-bold text-gold mb-4">
+          <h2 className="text-2xl font-bold text-gold mb-4">
             4. Building Generational Wealth with Real Estate
           </h2>
           <p className="text-gray-300 mb-4">
@@ -237,7 +237,7 @@ const RealEstatePage = () => {
 
         {/* Section 5: Overcoming Challenges */}
         <div className="bg-yellow-600 rounded-lg shadow-lg p-6 my-6">
-          <h2 className="text-3xl font-bold text-black mb-4">
+          <h2 className="text-2xl font-bold text-black mb-4">
             5. Overcoming Challenges and Making It Work
           </h2>
           <p className="text-black mb-4">
@@ -260,7 +260,7 @@ const RealEstatePage = () => {
 
         {/* Conclusion */}
         <div className="text-center py-6 bg-gray-900 rounded-lg p-6">
-          <h2 className="text-3xl font-bold mb-4 text-gold">
+          <h2 className="text-2xl font-bold mb-4 text-gold">
             Start Today for a Better Future
           </h2>
           <p className="text-lg max-w-2xl mx-auto text-white">
