@@ -6,6 +6,83 @@ import Image from "next/image";
 import { BookOpen, GraduationCap, Users, Briefcase } from "lucide-react";
 import { useRouter } from "next/router";
 
+// MODAL COMPONENT
+function ConsultingInterestModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    try {
+      const res = await fetch("/api/consulting-interest", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email }),
+      });
+      if (!res.ok) throw new Error("Submission failed");
+      setSubmitted(true);
+      setTimeout(() => {
+        setSubmitted(false);
+        setName("");
+        setEmail("");
+        onClose();
+      }, 1600);
+    } catch {
+      setError("Could not submit. Please try again.");
+    }
+  };
+
+  if (!isOpen) return null;
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
+      <div className="bg-gray-900 rounded-lg shadow-lg p-8 max-w-sm w-full relative">
+        <button
+          onClick={onClose}
+          className="absolute top-2 right-3 text-gray-400 hover:text-gold text-2xl font-bold"
+          aria-label="Close"
+        >
+          ×
+        </button>
+        <h2 className="text-xl font-bold text-gold mb-3">Notify Me: Consulting Interest</h2>
+        {submitted ? (
+          <div className="text-green-400 text-center font-semibold">
+            Thank you! We’ll notify you at launch.
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <input
+              type="text"
+              placeholder="Your Name"
+              required
+              className="w-full p-2 rounded bg-gray-800 text-white border border-gray-600"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+            <input
+              type="email"
+              placeholder="Your Email"
+              required
+              className="w-full p-2 rounded bg-gray-800 text-white border border-gray-600"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            {error && <div className="text-red-400 text-center text-sm">{error}</div>}
+            <button
+              type="submit"
+              className="w-full bg-gold text-black font-semibold rounded py-2 hover:bg-yellow-500 transition"
+            >
+              Notify Me
+            </button>
+          </form>
+        )}
+      </div>
+    </div>
+  );
+}
+
 const EconomicImpactSimulator: React.FC = () => {
   const currentYear = 2025;
   const maxSpending = 1980000000000;
@@ -52,8 +129,7 @@ const EconomicImpactSimulator: React.FC = () => {
           href="/1.8trillionimpact"
           className="text-gold font-bold hover:underline text-lg"
         >
-          KNOWLEDGE IS POWER – Select Here to &quot;SEE WHERE YOUR MONEY
-          GOES&quot;
+          KNOWLEDGE IS POWER – Select Here to &quot;SEE WHERE YOUR MONEY GOES&quot;
         </Link>
       </div>
       <div className="text-center mt-4">
@@ -70,9 +146,9 @@ const EconomicImpactSimulator: React.FC = () => {
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
   const router = useRouter();
 
-  // ✅ SPONSORS ARRAY GOES HERE:
   const sponsors = [
     { img: "/ads/sample-banner1.jpg", name: "Pamfa Hoodies" },
     { img: "/ads/sample-banner2.jpg", name: "Titan Era" },
@@ -332,11 +408,12 @@ export default function Home() {
             </div>
             {/* Notify button */}
             <div className="flex-shrink-0">
-              <Link href="/dashboard/employer/consulting-interest">
-                <button className="px-4 py-2 bg-black text-yellow-400 text-sm font-semibold rounded hover:bg-gray-900 transition">
-                  Notify Me
-                </button>
-              </Link>
+              <button
+                onClick={() => setModalOpen(true)}
+                className="px-4 py-2 bg-black text-yellow-400 text-sm font-semibold rounded hover:bg-gray-900 transition"
+              >
+                Notify Me
+              </button>
             </div>
           </div>
         </section>
@@ -357,6 +434,9 @@ export default function Home() {
           </Link>
         </section>
       </main>
+
+      {/* Modal for Consulting Interest */}
+      <ConsultingInterestModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
 
       {/* Footer */}
       <footer className="text-center py-8 border-t border-gold mt-8 relative z-10">

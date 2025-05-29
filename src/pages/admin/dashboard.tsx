@@ -1,6 +1,16 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 
+// Type for Consulting Interest
+type ConsultingInterest = {
+  _id: string;
+  name: string;
+  email: string;
+  company?: string;
+  message?: string;
+  createdAt: string;
+};
+
 const AdminDashboard = () => {
   // 1. State for dashboard numbers
   const [stats, setStats] = useState({
@@ -27,6 +37,11 @@ const AdminDashboard = () => {
   const [slotLoading, setSlotLoading] = useState(true);
   const [slotMessage, setSlotMessage] = useState<string>("");
 
+  // 3. State for consulting interests
+  const [consulting, setConsulting] = useState<ConsultingInterest[]>([]);
+  const [consultingLoading, setConsultingLoading] = useState(true);
+  const [consultingErr, setConsultingErr] = useState("");
+
   // Fetch stats
   useEffect(() => {
     const fetchStats = async () => {
@@ -38,7 +53,6 @@ const AdminDashboard = () => {
       } catch (_err) {
         console.error(_err); // Linter-safe: _err
       }
-      // No loading/message state used
     };
     fetchStats();
   }, []);
@@ -58,6 +72,23 @@ const AdminDashboard = () => {
       }
     };
     fetchSlots();
+  }, []);
+
+  // Fetch consulting interests
+  useEffect(() => {
+    const fetchConsulting = async () => {
+      try {
+        const res = await fetch("/api/admin/consulting-interests");
+        if (!res.ok) throw new Error("Failed to fetch consulting interests");
+        const data = await res.json();
+        setConsulting(data);
+      } catch (_err) {
+        setConsultingErr("Error loading consulting waitlist.");
+      } finally {
+        setConsultingLoading(false);
+      }
+    };
+    fetchConsulting();
   }, []);
 
   return (
@@ -232,6 +263,47 @@ const AdminDashboard = () => {
           label="View Inventory Report"
         />
       </div>
+
+      {/* Consulting Service Waitlist */}
+      <SectionTitle>Consulting Service Waitlist</SectionTitle>
+      <div className="bg-gray-800 rounded p-4 mt-4 mb-20">
+        {consultingLoading ? (
+          <p>Loading waitlist...</p>
+        ) : consultingErr ? (
+          <div className="p-2 bg-red-600 rounded text-center text-sm">
+            {consultingErr}
+          </div>
+        ) : consulting.length === 0 ? (
+          <p className="text-gray-400 text-sm">No one has signed up for notifications yet.</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left mt-2">
+              <thead>
+                <tr>
+                  <th className="text-gold font-semibold py-2 px-3">Name</th>
+                  <th className="text-gold font-semibold py-2 px-3">Email</th>
+                  <th className="text-gold font-semibold py-2 px-3">Company</th>
+                  <th className="text-gold font-semibold py-2 px-3">Message</th>
+                  <th className="text-gold font-semibold py-2 px-3">Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {consulting.map((item) => (
+                  <tr key={item._id} className="border-b border-gray-700">
+                    <td className="py-2 px-3">{item.name}</td>
+                    <td className="py-2 px-3">{item.email}</td>
+                    <td className="py-2 px-3">{item.company || "--"}</td>
+                    <td className="py-2 px-3">{item.message || "--"}</td>
+                    <td className="py-2 px-3">
+                      {new Date(item.createdAt).toLocaleString()}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
@@ -266,3 +338,4 @@ const AdminLink = ({ href, label }: { href: string; label: string }) => (
 );
 
 export default AdminDashboard;
+
