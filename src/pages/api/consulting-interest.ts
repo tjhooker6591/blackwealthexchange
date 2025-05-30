@@ -3,7 +3,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { MongoClient } from "mongodb";
 
-const uri = process.env.MONGODB_URI || "mongodb+srv://bwes_admin:M4LmIzY5EjKPODPJ@bwes-cluster.3lko7.mongodb.net/bwes-cluster?retryWrites=true&w=majority&appName=BWES-Cluster";
+const uri =
+  process.env.MONGODB_URI ||
+  "mongodb+srv://bwes_admin:M4LmIzY5EjKPODPJ@bwes-cluster.3lko7.mongodb.net/bwes-cluster?retryWrites=true&w=majority&appName=BWES-Cluster";
 
 let cachedClient: MongoClient | null = null;
 
@@ -14,7 +16,10 @@ async function connectToDatabase() {
   return client;
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method Not Allowed" });
   }

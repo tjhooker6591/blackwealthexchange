@@ -274,7 +274,9 @@ const AdminDashboard = () => {
             {consultingErr}
           </div>
         ) : consulting.length === 0 ? (
-          <p className="text-gray-400 text-sm">No one has signed up for notifications yet.</p>
+          <p className="text-gray-400 text-sm">
+            No one has signed up for notifications yet.
+          </p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left mt-2">
@@ -338,4 +340,3 @@ const AdminLink = ({ href, label }: { href: string; label: string }) => (
 );
 
 export default AdminDashboard;
-
