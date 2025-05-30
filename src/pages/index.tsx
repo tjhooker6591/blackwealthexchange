@@ -7,7 +7,13 @@ import { BookOpen, GraduationCap, Users, Briefcase } from "lucide-react";
 import { useRouter } from "next/router";
 
 // MODAL COMPONENT
-function ConsultingInterestModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+function ConsultingInterestModal({
+  isOpen,
+  onClose,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+}) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
@@ -46,7 +52,9 @@ function ConsultingInterestModal({ isOpen, onClose }: { isOpen: boolean; onClose
         >
           ×
         </button>
-        <h2 className="text-xl font-bold text-gold mb-3">Notify Me: Consulting Interest</h2>
+        <h2 className="text-xl font-bold text-gold mb-3">
+          Notify Me: Consulting Interest
+        </h2>
         {submitted ? (
           <div className="text-green-400 text-center font-semibold">
             Thank you! We’ll notify you at launch.
@@ -69,7 +77,9 @@ function ConsultingInterestModal({ isOpen, onClose }: { isOpen: boolean; onClose
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
-            {error && <div className="text-red-400 text-center text-sm">{error}</div>}
+            {error && (
+              <div className="text-red-400 text-center text-sm">{error}</div>
+            )}
             <button
               type="submit"
               className="w-full bg-gold text-black font-semibold rounded py-2 hover:bg-yellow-500 transition"
@@ -129,7 +139,8 @@ const EconomicImpactSimulator: React.FC = () => {
           href="/1.8trillionimpact"
           className="text-gold font-bold hover:underline text-lg"
         >
-          KNOWLEDGE IS POWER – Select Here to &quot;SEE WHERE YOUR MONEY GOES&quot;
+          KNOWLEDGE IS POWER – Select Here to &quot;SEE WHERE YOUR MONEY
+          GOES&quot;
         </Link>
       </div>
       <div className="text-center mt-4">
@@ -223,7 +234,7 @@ export default function Home() {
       <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-50" />
 
       <header className="text-center py-24 relative z-10">
-        <p className="text-lg md:text-xl mt-4 font-light text-gray-300 animate-fadeIn flex justify-center items-center">
+        <p className="text-lg md:text-xl mt-0 font-light text-gray-300 animate-fadeIn flex justify-center items-center">
           <Image
             src="/black-wealth-future.png"
             alt="Black Wealth Emoji"
@@ -436,7 +447,10 @@ export default function Home() {
       </main>
 
       {/* Modal for Consulting Interest */}
-      <ConsultingInterestModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
+      <ConsultingInterestModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+      />
 
       {/* Footer */}
       <footer className="text-center py-8 border-t border-gold mt-8 relative z-10">
