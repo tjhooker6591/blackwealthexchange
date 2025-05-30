@@ -10,7 +10,11 @@ const COURSE_DATA = {
   overview: (
     <>
       <p>
-        Personal Finance 101 is designed to help you build a rock-solid foundation for financial wellness, no matter your starting point. This course provides clear, actionable steps to master your money, avoid common pitfalls, and set yourself up for long-term success. You will discover proven strategies for:
+        Personal Finance 101 is designed to help you build a rock-solid
+        foundation for financial wellness, no matter your starting point. This
+        course provides clear, actionable steps to master your money, avoid
+        common pitfalls, and set yourself up for long-term success. You will
+        discover proven strategies for:
       </p>
       <ul className="list-disc ml-6 mt-3">
         <li>Setting realistic and achievable financial goals</li>
@@ -20,7 +24,8 @@ const COURSE_DATA = {
         <li>Developing habits that support lasting financial well-being</li>
       </ul>
       <p className="mt-3">
-        Whether you are new to managing money or want a refresher, this course will empower you to take control of your financial future!
+        Whether you are new to managing money or want a refresher, this course
+        will empower you to take control of your financial future!
       </p>
     </>
   ),
@@ -58,8 +63,8 @@ const CourseEnrollmentPage: React.FC = () => {
     const sessionId = router.query.session_id as string | undefined;
     if (userLoggedIn && sessionId) {
       fetch(`/api/courses/verify-session?session_id=${sessionId}`)
-        .then(res => res.json())
-        .then(data => {
+        .then((res) => res.json())
+        .then((data) => {
           if (data.paid) {
             setHasPurchased(true);
             router.replace(router.pathname, undefined, { shallow: true });
@@ -138,13 +143,17 @@ const CourseEnrollmentPage: React.FC = () => {
 
         {/* Course Overview */}
         <section className="mt-8">
-          <h2 className="text-2xl font-semibold text-blue-500">Course Overview</h2>
+          <h2 className="text-2xl font-semibold text-blue-500">
+            Course Overview
+          </h2>
           <div className="mt-4 text-gray-300">{COURSE_DATA.overview}</div>
         </section>
 
         {/* Learning Outcomes */}
         <section className="mt-8">
-          <h2 className="text-2xl font-semibold text-blue-500">Learning Outcomes</h2>
+          <h2 className="text-2xl font-semibold text-blue-500">
+            Learning Outcomes
+          </h2>
           <ul className="list-disc ml-6 mt-4 text-gray-300">
             {COURSE_DATA.learningOutcomes.map((outcome, idx) => (
               <li key={idx}>{outcome}</li>
@@ -154,7 +163,9 @@ const CourseEnrollmentPage: React.FC = () => {
 
         {/* Course Modules */}
         <section className="mt-8">
-          <h2 className="text-2xl font-semibold text-blue-500">Course Modules</h2>
+          <h2 className="text-2xl font-semibold text-blue-500">
+            Course Modules
+          </h2>
           <ul className="list-decimal ml-6 mt-4 text-gray-300">
             {COURSE_DATA.modules.map((mod, i) => (
               <li key={i}>{mod}</li>
@@ -164,7 +175,9 @@ const CourseEnrollmentPage: React.FC = () => {
 
         {/* Payment & Enrollment */}
         <section className="mt-8">
-          <h2 className="text-2xl font-semibold text-blue-500">Course Access</h2>
+          <h2 className="text-2xl font-semibold text-blue-500">
+            Course Access
+          </h2>
           <p className="mt-4 text-gray-300">
             <span className="font-bold text-gold">
               One-time Fee: ${COURSE_DATA.price}
@@ -194,7 +207,9 @@ const CourseEnrollmentPage: React.FC = () => {
                 disabled={isProcessing}
                 className="bg-gold text-black py-2 px-6 rounded font-bold hover:bg-yellow-500 transition disabled:opacity-60"
               >
-                {isProcessing ? "Redirecting to Payment..." : `Buy & Enroll for $${COURSE_DATA.price}`}
+                {isProcessing
+                  ? "Redirecting to Payment..."
+                  : `Buy & Enroll for $${COURSE_DATA.price}`}
               </button>
             ) : (
               <button
@@ -213,7 +228,10 @@ const CourseEnrollmentPage: React.FC = () => {
           <ul className="list-disc ml-6 mt-4 text-gray-300">
             <li>Lifetime access to all course materials and updates.</li>
             <li>Self-paced: return anytime, from any device.</li>
-            <li>Access downloadable resources (budget templates, trackers, and more).</li>
+            <li>
+              Access downloadable resources (budget templates, trackers, and
+              more).
+            </li>
             <li>Exclusive Black Wealth Exchange tips and support.</li>
           </ul>
         </section>
@@ -224,21 +242,30 @@ const CourseEnrollmentPage: React.FC = () => {
             What Students Are Saying
           </h2>
           <blockquote className="mt-4 text-gray-300">
-            &quot;This course helped me finally take control of my finances. I am now confidently budgeting, saving, and planning for the future!&quot; – Sarah M.
+            &quot;This course helped me finally take control of my finances. I
+            am now confidently budgeting, saving, and planning for the
+            future!&quot; – Sarah M.
           </blockquote>
           <blockquote className="mt-4 text-gray-300">
-            &quot;I have learned so much about managing debt and setting realistic financial goals. It is practical and easy to follow!&quot; – James T.
+            &quot;I have learned so much about managing debt and setting
+            realistic financial goals. It is practical and easy to follow!&quot;
+            – James T.
           </blockquote>
         </section>
 
         {/* FAQ Section */}
         <section className="mt-8">
-          <h2 className="text-2xl font-semibold text-blue-500">Frequently Asked Questions</h2>
+          <h2 className="text-2xl font-semibold text-blue-500">
+            Frequently Asked Questions
+          </h2>
           <ul className="mt-4 space-y-2 text-gray-300">
             <li>
-              <strong>Q: Do I need prior experience to take this course?</strong>
+              <strong>
+                Q: Do I need prior experience to take this course?
+              </strong>
               <br />
-              A: No, this course is designed for beginners and everyone interested in mastering their finances.
+              A: No, this course is designed for beginners and everyone
+              interested in mastering their finances.
             </li>
             <li>
               <strong>Q: How long do I have access to the course?</strong>
@@ -248,7 +275,8 @@ const CourseEnrollmentPage: React.FC = () => {
             <li>
               <strong>Q: Can I download the course materials?</strong>
               <br />
-              A: Yes! You will be able to download worksheets, templates, and more.
+              A: Yes! You will be able to download worksheets, templates, and
+              more.
             </li>
             <li>
               <strong>Q: Do I have to pay a monthly fee?</strong>

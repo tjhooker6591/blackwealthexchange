@@ -8,17 +8,33 @@ const COURSE = {
   overview: (
     <>
       <p>
-        This in-depth course introduces you to the fundamentals of investing—from stocks and bonds to real estate and gold. Learn proven steps to start investing, manage your portfolio, avoid costly mistakes, and make your money work for you. Discover unique ways to invest that empower Black excellence and support Black-owned businesses. This is more than just stocks: you’ll learn to build a future of wealth, freedom, and community impact!
+        This in-depth course introduces you to the fundamentals of
+        investing—from stocks and bonds to real estate and gold. Learn proven
+        steps to start investing, manage your portfolio, avoid costly mistakes,
+        and make your money work for you. Discover unique ways to invest that
+        empower Black excellence and support Black-owned businesses. This is
+        more than just stocks: you’ll learn to build a future of wealth,
+        freedom, and community impact!
       </p>
       <ul className="list-disc ml-6 mt-3">
         <li>Build and diversify your portfolio with confidence</li>
-        <li>Master the basics of stocks, bonds, mutual funds, and alternative assets</li>
-        <li>Understand risk, return, and how to align your investments with your goals</li>
-        <li>Access unique Black-owned investment opportunities—including gold & silver</li>
+        <li>
+          Master the basics of stocks, bonds, mutual funds, and alternative
+          assets
+        </li>
+        <li>
+          Understand risk, return, and how to align your investments with your
+          goals
+        </li>
+        <li>
+          Access unique Black-owned investment opportunities—including gold &
+          silver
+        </li>
         <li>Learn how to avoid the most common beginner mistakes</li>
       </ul>
       <p className="mt-3">
-        Whether you’re starting with $10 or $10,000, this course makes investing accessible and impactful for you and your community!
+        Whether you’re starting with $10 or $10,000, this course makes investing
+        accessible and impactful for you and your community!
       </p>
     </>
   ),
@@ -83,13 +99,17 @@ const InvestingForBeginners: React.FC = () => {
 
         {/* Course Overview */}
         <section className="mt-8">
-          <h2 className="text-2xl font-semibold text-blue-500">Course Overview</h2>
+          <h2 className="text-2xl font-semibold text-blue-500">
+            Course Overview
+          </h2>
           <div className="mt-4 text-gray-300">{COURSE.overview}</div>
         </section>
 
         {/* Learning Outcomes */}
         <section className="mt-8">
-          <h2 className="text-2xl font-semibold text-blue-500">Learning Outcomes</h2>
+          <h2 className="text-2xl font-semibold text-blue-500">
+            Learning Outcomes
+          </h2>
           <ul className="list-disc ml-6 mt-4 text-gray-300">
             {COURSE.learningOutcomes.map((outcome, idx) => (
               <li key={idx}>{outcome}</li>
@@ -99,7 +119,9 @@ const InvestingForBeginners: React.FC = () => {
 
         {/* Course Modules */}
         <section className="mt-8">
-          <h2 className="text-2xl font-semibold text-blue-500">Course Modules</h2>
+          <h2 className="text-2xl font-semibold text-blue-500">
+            Course Modules
+          </h2>
           <ul className="list-decimal ml-6 mt-4 text-gray-300">
             {COURSE.modules.map((mod, idx) => (
               <li key={idx}>{mod}</li>
@@ -109,7 +131,9 @@ const InvestingForBeginners: React.FC = () => {
 
         {/* Enrollment Section */}
         <section className="mt-8">
-          <h2 className="text-2xl font-semibold text-blue-500">Course Access</h2>
+          <h2 className="text-2xl font-semibold text-blue-500">
+            Course Access
+          </h2>
           <p className="mt-4 text-gray-300">
             <span className="font-bold text-gold">
               One-time Fee: ${COURSE.price}
@@ -137,16 +161,21 @@ const InvestingForBeginners: React.FC = () => {
           </h2>
           <ul className="list-disc ml-6 mt-4 text-gray-300 space-y-1">
             <li>
-              <span className="text-gold">Build Wealth:</span> Grow your money and work towards financial freedom.
+              <span className="text-gold">Build Wealth:</span> Grow your money
+              and work towards financial freedom.
             </li>
             <li>
-              <span className="text-gold">Beat Inflation:</span> Invest to keep your money growing faster than inflation.
+              <span className="text-gold">Beat Inflation:</span> Invest to keep
+              your money growing faster than inflation.
             </li>
             <li>
-              <span className="text-gold">Fund Your Goals:</span> Achieve dreams like buying a home, retiring, or starting a business.
+              <span className="text-gold">Fund Your Goals:</span> Achieve dreams
+              like buying a home, retiring, or starting a business.
             </li>
             <li>
-              <span className="text-gold">Empower the Community:</span> Invest in Black-owned companies to support economic empowerment and close the wealth gap.
+              <span className="text-gold">Empower the Community:</span> Invest
+              in Black-owned companies to support economic empowerment and close
+              the wealth gap.
             </li>
           </ul>
         </section>
@@ -158,7 +187,8 @@ const InvestingForBeginners: React.FC = () => {
           </h2>
           <ul className="list-disc ml-6 mt-4 text-gray-300 space-y-2">
             <li>
-              <span className="text-gold font-semibold">Stocks:</span> Ownership in a company. Consider Black-owned/led firms like{" "}
+              <span className="text-gold font-semibold">Stocks:</span> Ownership
+              in a company. Consider Black-owned/led firms like{" "}
               <a
                 href="https://www.urban1.com/"
                 target="_blank"
@@ -169,19 +199,33 @@ const InvestingForBeginners: React.FC = () => {
               </a>
             </li>
             <li>
-              <span className="text-gold font-semibold">Bonds:</span> Loans to companies or governments—typically safer, with lower returns.
+              <span className="text-gold font-semibold">Bonds:</span> Loans to
+              companies or governments—typically safer, with lower returns.
             </li>
             <li>
-              <span className="text-gold font-semibold">Mutual Funds & ETFs:</span> Pooled funds that let you invest in many stocks or bonds at once.
+              <span className="text-gold font-semibold">
+                Mutual Funds & ETFs:
+              </span>{" "}
+              Pooled funds that let you invest in many stocks or bonds at once.
             </li>
             <li>
-              <span className="text-gold font-semibold">Real Estate & REITs:</span> Buy property, or invest in real estate through funds. Consider supporting Black-owned real estate investment groups (search locally or check Black Enterprise lists).
+              <span className="text-gold font-semibold">
+                Real Estate & REITs:
+              </span>{" "}
+              Buy property, or invest in real estate through funds. Consider
+              supporting Black-owned real estate investment groups (search
+              locally or check Black Enterprise lists).
             </li>
             <li>
-              <span className="text-gold font-semibold">Gold & Silver:</span> Protect wealth by investing in precious metals. See resources below for Black-owned firms and educators.
+              <span className="text-gold font-semibold">Gold & Silver:</span>{" "}
+              Protect wealth by investing in precious metals. See resources
+              below for Black-owned firms and educators.
             </li>
             <li>
-              <span className="text-gold font-semibold">Commodities & Alternatives:</span> Includes things like agricultural products, art, and more.
+              <span className="text-gold font-semibold">
+                Commodities & Alternatives:
+              </span>{" "}
+              Includes things like agricultural products, art, and more.
             </li>
           </ul>
         </section>
@@ -193,13 +237,19 @@ const InvestingForBeginners: React.FC = () => {
           </h2>
           <ul className="list-disc ml-6 mt-4 text-gray-300 space-y-1">
             <li>
-              <span className="text-gold">Risk:</span> Every investment comes with the possibility of loss. Stocks = higher risk, Bonds = lower risk.
+              <span className="text-gold">Risk:</span> Every investment comes
+              with the possibility of loss. Stocks = higher risk, Bonds = lower
+              risk.
             </li>
             <li>
-              <span className="text-gold">Return:</span> Your profit or loss over time. Higher risk can mean higher reward—but also bigger losses.
+              <span className="text-gold">Return:</span> Your profit or loss
+              over time. Higher risk can mean higher reward—but also bigger
+              losses.
             </li>
             <li>
-              <span className="text-gold">Know Your Risk Tolerance:</span> Younger investors can often take more risk. Assess what you’re comfortable with.
+              <span className="text-gold">Know Your Risk Tolerance:</span>{" "}
+              Younger investors can often take more risk. Assess what you’re
+              comfortable with.
             </li>
           </ul>
         </section>
@@ -211,13 +261,16 @@ const InvestingForBeginners: React.FC = () => {
           </h2>
           <ul className="list-disc ml-6 mt-4 text-gray-300 space-y-1">
             <li>
-              <span className="text-gold">Diversification:</span> Spread your money across different assets to reduce risk.
+              <span className="text-gold">Diversification:</span> Spread your
+              money across different assets to reduce risk.
             </li>
             <li>
-              <span className="text-gold">Asset Allocation:</span> Decide what % of your money goes to stocks, bonds, real estate, etc.
+              <span className="text-gold">Asset Allocation:</span> Decide what %
+              of your money goes to stocks, bonds, real estate, etc.
             </li>
             <li>
-              <span className="text-gold">Rebalancing:</span> Adjust your portfolio over time to maintain your target allocation.
+              <span className="text-gold">Rebalancing:</span> Adjust your
+              portfolio over time to maintain your target allocation.
             </li>
           </ul>
         </section>
@@ -245,14 +298,19 @@ const InvestingForBeginners: React.FC = () => {
             Investing in Black-Owned Businesses
           </h2>
           <p className="mt-4 text-gray-300">
-            <span className="text-gold font-semibold">Why?</span> Supporting Black-owned businesses helps close the racial wealth gap, creates jobs, and builds community wealth.
+            <span className="text-gold font-semibold">Why?</span> Supporting
+            Black-owned businesses helps close the racial wealth gap, creates
+            jobs, and builds community wealth.
           </p>
           <ul className="list-disc ml-6 mt-4 text-gray-300 space-y-1">
             <li>
-              <span className="text-gold">Publicly Traded:</span> Examples include Urban One, Carver Bancorp, and American Shared Hospital Services (Black-led).
+              <span className="text-gold">Publicly Traded:</span> Examples
+              include Urban One, Carver Bancorp, and American Shared Hospital
+              Services (Black-led).
             </li>
             <li>
-              <span className="text-gold">Private Investment:</span> Use platforms like{" "}
+              <span className="text-gold">Private Investment:</span> Use
+              platforms like{" "}
               <a
                 href="https://www.fundblackfounders.com/"
                 target="_blank"
@@ -282,7 +340,9 @@ const InvestingForBeginners: React.FC = () => {
               for opportunities.
             </li>
             <li>
-              <span className="text-gold">Real Estate:</span> Join Black real estate investment clubs or REITs focused on minority communities (see Black Enterprise for lists).
+              <span className="text-gold">Real Estate:</span> Join Black real
+              estate investment clubs or REITs focused on minority communities
+              (see Black Enterprise for lists).
             </li>
           </ul>
         </section>
@@ -303,7 +363,8 @@ const InvestingForBeginners: React.FC = () => {
               >
                 goldfromthesoil.com
               </a>
-              ) – Black-owned, provides education and gold investment opportunities.
+              ) – Black-owned, provides education and gold investment
+              opportunities.
             </li>
             <li>
               <span className="text-gold">The Ivy Investor</span> (
@@ -315,10 +376,13 @@ const InvestingForBeginners: React.FC = () => {
               >
                 @theivyinvestor
               </a>
-              ) – Black woman educator teaching about stocks, gold, silver, and wealth strategies.
+              ) – Black woman educator teaching about stocks, gold, silver, and
+              wealth strategies.
             </li>
             <li>
-              Ask local Black-owned jewelers and gold dealers about investment options or work with a trusted Black financial advisor specializing in alternative assets.
+              Ask local Black-owned jewelers and gold dealers about investment
+              options or work with a trusted Black financial advisor
+              specializing in alternative assets.
             </li>
           </ul>
         </section>
@@ -344,7 +408,8 @@ const InvestingForBeginners: React.FC = () => {
             <li>
               <span className="text-gold">Books by Black Authors:</span> <br />
               <strong>The Wealth Choice</strong> by Dr. Dennis Kimbro <br />
-              <strong>Get Good With Money</strong> by Tiffany “The Budgetnista” Aliche <br />
+              <strong>Get Good With Money</strong> by Tiffany “The Budgetnista”
+              Aliche <br />
               <strong>The Money Manual</strong> by Tonya Rapley
             </li>
             <li>
@@ -370,7 +435,8 @@ const InvestingForBeginners: React.FC = () => {
                   >
                     The Ivy Investor
                   </a>{" "}
-                  – Investing, gold/silver, and estate planning for Black families.
+                  – Investing, gold/silver, and estate planning for Black
+                  families.
                 </li>
                 <li>
                   <a
