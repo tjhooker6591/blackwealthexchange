@@ -14,7 +14,10 @@ const COURSE_PRICES: Record<string, { name: string; price: number }> = {
   // Add more courses as needed
 };
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method !== "POST") return res.status(405).end("Method not allowed");
 
   // Authenticate user using JWT session token from cookie
@@ -74,4 +77,3 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(500).json({ error: "Stripe session creation failed" });
   }
 }
-

@@ -8,17 +8,24 @@ const COURSE_DATA = {
   overview: (
     <>
       <p>
-        This course teaches you <b>how to build, protect, and transfer wealth</b> using practical, culturally aware strategies. You’ll get tools, action steps, and resources for every stage of the journey.
+        This course teaches you{" "}
+        <b>how to build, protect, and transfer wealth</b> using practical,
+        culturally aware strategies. You’ll get tools, action steps, and
+        resources for every stage of the journey.
       </p>
       <ul className="list-disc ml-6 mt-3">
-        <li>Understand key wealth-building assets: real estate, stocks, insurance, and businesses</li>
+        <li>
+          Understand key wealth-building assets: real estate, stocks, insurance,
+          and businesses
+        </li>
         <li>Develop strong saving, investing, and spending habits</li>
         <li>Start a family legacy plan and estate documents</li>
         <li>Protect wealth with trusts, insurance, and tax strategies</li>
         <li>Teach the next generation how to manage and grow wealth</li>
       </ul>
       <p className="mt-3">
-        Break cycles of struggle and create lasting opportunity for your family and community.
+        Break cycles of struggle and create lasting opportunity for your family
+        and community.
       </p>
     </>
   ),
@@ -28,7 +35,7 @@ const COURSE_DATA = {
     "Create a family legacy plan and simple estate documents.",
     "Protect your wealth with proper legal tools.",
     "Transfer knowledge and assets to future generations.",
-    "Join a supportive community of wealth builders."
+    "Join a supportive community of wealth builders.",
   ],
   modules: [
     "Module 1: Mindset for Wealth – Vision, goals, and generational thinking",
@@ -40,7 +47,7 @@ const COURSE_DATA = {
     "Module 7: Estate Planning – Wills, trusts, beneficiaries, and protecting assets",
     "Module 8: Teaching the Next Generation – Family education and community impact",
     "Module 9: Community Wealth – Group investing, buying back the block",
-  ]
+  ],
 };
 
 const GenerationalWealthCourse: React.FC = () => {
@@ -87,19 +94,24 @@ const GenerationalWealthCourse: React.FC = () => {
         <header className="mb-6">
           <h1 className="text-3xl font-bold text-gold">{COURSE_DATA.name}</h1>
           <p className="text-gray-300 mt-2">
-            Unlock step-by-step strategies to build real wealth, transfer it to your family, and uplift your community.
+            Unlock step-by-step strategies to build real wealth, transfer it to
+            your family, and uplift your community.
           </p>
         </header>
 
         {/* Course Overview */}
         <section className="mt-8">
-          <h2 className="text-2xl font-semibold text-blue-500">Course Overview</h2>
+          <h2 className="text-2xl font-semibold text-blue-500">
+            Course Overview
+          </h2>
           <div className="mt-4 text-gray-300">{COURSE_DATA.overview}</div>
         </section>
 
         {/* Learning Outcomes */}
         <section className="mt-8">
-          <h2 className="text-2xl font-semibold text-blue-500">Learning Outcomes</h2>
+          <h2 className="text-2xl font-semibold text-blue-500">
+            Learning Outcomes
+          </h2>
           <ul className="list-disc ml-6 mt-4 text-gray-300">
             {COURSE_DATA.learningOutcomes.map((item, idx) => (
               <li key={idx}>{item}</li>
@@ -109,7 +121,9 @@ const GenerationalWealthCourse: React.FC = () => {
 
         {/* Course Modules */}
         <section className="mt-8">
-          <h2 className="text-2xl font-semibold text-blue-500">Course Modules</h2>
+          <h2 className="text-2xl font-semibold text-blue-500">
+            Course Modules
+          </h2>
           <ul className="list-decimal ml-6 mt-4 text-gray-300">
             {COURSE_DATA.modules.map((mod, i) => (
               <li key={i}>{mod}</li>
@@ -119,7 +133,9 @@ const GenerationalWealthCourse: React.FC = () => {
 
         {/* Payment & Enrollment */}
         <section className="mt-8">
-          <h2 className="text-2xl font-semibold text-blue-500">Course Access</h2>
+          <h2 className="text-2xl font-semibold text-blue-500">
+            Course Access
+          </h2>
           <p className="mt-4 text-gray-300">
             <span className="font-bold text-gold">
               One-time Fee: ${COURSE_DATA.price}
@@ -154,31 +170,47 @@ const GenerationalWealthCourse: React.FC = () => {
             <li>Lifetime access to all course materials and updates.</li>
             <li>Learn at your own pace, from any device.</li>
             <li>Access downloadable resources and wealth planning tools.</li>
-            <li>Exclusive tips and community support from Black Wealth Exchange.</li>
+            <li>
+              Exclusive tips and community support from Black Wealth Exchange.
+            </li>
           </ul>
         </section>
 
         {/* Resource Library */}
         <section className="mt-8">
-          <h2 className="text-2xl font-semibold text-gold">Downloadable Resources</h2>
+          <h2 className="text-2xl font-semibold text-gold">
+            Downloadable Resources
+          </h2>
           <ul className="list-disc ml-6 mt-4 text-gray-300 space-y-1">
             <li>
-              <Link href="/downloads/family-wealth-plan.pdf" className="text-blue-400 underline">
+              <Link
+                href="/downloads/family-wealth-plan.pdf"
+                className="text-blue-400 underline"
+              >
                 Family Wealth Planning Worksheet
               </Link>
             </li>
             <li>
-              <Link href="/downloads/legacy-checklist.pdf" className="text-blue-400 underline">
+              <Link
+                href="/downloads/legacy-checklist.pdf"
+                className="text-blue-400 underline"
+              >
                 Legacy Transfer Checklist
               </Link>
             </li>
             <li>
-              <Link href="/downloads/black-owned-business-directory.pdf" className="text-blue-400 underline">
+              <Link
+                href="/downloads/black-owned-business-directory.pdf"
+                className="text-blue-400 underline"
+              >
                 Black-Owned Business Directory
               </Link>
             </li>
             <li>
-              <Link href="/downloads/kids-money-guide.pdf" className="text-blue-400 underline">
+              <Link
+                href="/downloads/kids-money-guide.pdf"
+                className="text-blue-400 underline"
+              >
                 Kids’ Guide to Money
               </Link>
             </li>
@@ -187,12 +219,17 @@ const GenerationalWealthCourse: React.FC = () => {
 
         {/* FAQ Section */}
         <section className="mt-8">
-          <h2 className="text-2xl font-semibold text-blue-500">Frequently Asked Questions</h2>
+          <h2 className="text-2xl font-semibold text-blue-500">
+            Frequently Asked Questions
+          </h2>
           <ul className="mt-4 space-y-2 text-gray-300">
             <li>
-              <strong>Q: Can I take this course if I’m a complete beginner?</strong>
+              <strong>
+                Q: Can I take this course if I’m a complete beginner?
+              </strong>
               <br />
-              A: Absolutely! All concepts are explained step by step, with real examples.
+              A: Absolutely! All concepts are explained step by step, with real
+              examples.
             </li>
             <li>
               <strong>Q: Will I need to buy anything else?</strong>
@@ -210,18 +247,32 @@ const GenerationalWealthCourse: React.FC = () => {
         {/* Footer */}
         <footer className="mt-12 text-center">
           <p>
-            <Link href="/courses/investing-for-beginners" className="text-gold hover:underline">
+            <Link
+              href="/courses/investing-for-beginners"
+              className="text-gold hover:underline"
+            >
               Investing for Beginners
             </Link>{" "}
             |{" "}
-            <Link href="/courses/personal-finance-101" className="text-gold hover:underline">
+            <Link
+              href="/courses/personal-finance-101"
+              className="text-gold hover:underline"
+            >
               Personal Finance 101
             </Link>
           </p>
           <p className="mt-4">
-            <Link href="/contact" className="text-gold hover:underline">Contact Us</Link>{" "}
-            | <Link href="/privacy-policy" className="text-gold hover:underline">Privacy Policy</Link>{" "}
-            | <Link href="/terms-of-use" className="text-gold hover:underline">Terms of Use</Link>
+            <Link href="/contact" className="text-gold hover:underline">
+              Contact Us
+            </Link>{" "}
+            |{" "}
+            <Link href="/privacy-policy" className="text-gold hover:underline">
+              Privacy Policy
+            </Link>{" "}
+            |{" "}
+            <Link href="/terms-of-use" className="text-gold hover:underline">
+              Terms of Use
+            </Link>
           </p>
         </footer>
       </div>
@@ -230,6 +281,3 @@ const GenerationalWealthCourse: React.FC = () => {
 };
 
 export default GenerationalWealthCourse;
-
-
-
