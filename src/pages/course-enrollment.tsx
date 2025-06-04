@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 const COURSE_DATA = {
   slug: "personal-finance-101",
   name: "Personal Finance 101: Mastering Budgeting, Saving, and Money Management",
-  price: 49,
+  price: 29,
   overview: (
     <>
       <p>
@@ -74,7 +74,8 @@ const CourseEnrollmentPage: React.FC = () => {
     } else {
       setLoading(false);
     }
-  }, [router.query.session_id]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router]); // <-- Now using [router] as dependency
 
   // Simple local login/signup mock handlers
   const handleLogin = () => {
@@ -101,10 +102,8 @@ const CourseEnrollmentPage: React.FC = () => {
       } else {
         alert(data.error || "Unable to start checkout session.");
       }
-    } catch (error) {
-      // This will NOT break the build
+    } catch (_error) {
       alert("Something went wrong with payment.");
-      console.error(error);
     } finally {
       setIsProcessing(false);
     }

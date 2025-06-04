@@ -8,9 +8,9 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
 });
 
 const COURSE_PRICES: Record<string, { name: string; price: number }> = {
-  "personal-finance-101": { name: "Personal Finance 101", price: 4900 }, // $49.00 in cents
-  "investing-for-beginners": { name: "Investing for Beginners", price: 7900 },
-  "generational-wealth": { name: "Building Generational Wealth", price: 9900 },
+  "personal-finance-101": { name: "Personal Finance 101", price: 2900 }, // $49.00 in cents
+  "investing-for-beginners": { name: "Investing for Beginners", price: 3900 },
+  "generational-wealth": { name: "Building Generational Wealth", price: 4900 },
   // Add more courses as needed
 };
 
