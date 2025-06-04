@@ -10,17 +10,33 @@ const COURSE = {
   overview: (
     <>
       <p>
-        This in-depth course introduces you to the fundamentals of investing—from stocks and bonds to real estate and gold. Learn proven steps to start investing, manage your portfolio, avoid costly mistakes, and make your money work for you. Discover unique ways to invest that empower Black excellence and support Black-owned businesses. This is more than just stocks: you will learn to build a future of wealth, freedom, and community impact!
+        This in-depth course introduces you to the fundamentals of
+        investing—from stocks and bonds to real estate and gold. Learn proven
+        steps to start investing, manage your portfolio, avoid costly mistakes,
+        and make your money work for you. Discover unique ways to invest that
+        empower Black excellence and support Black-owned businesses. This is
+        more than just stocks: you will learn to build a future of wealth,
+        freedom, and community impact!
       </p>
       <ul className="list-disc ml-6 mt-3">
         <li>Build and diversify your portfolio with confidence</li>
-        <li>Master the basics of stocks, bonds, mutual funds, and alternative assets</li>
-        <li>Understand risk, return, and how to align your investments with your goals</li>
-        <li>Access unique Black-owned investment opportunities—including gold & silver</li>
+        <li>
+          Master the basics of stocks, bonds, mutual funds, and alternative
+          assets
+        </li>
+        <li>
+          Understand risk, return, and how to align your investments with your
+          goals
+        </li>
+        <li>
+          Access unique Black-owned investment opportunities—including gold &
+          silver
+        </li>
         <li>Learn how to avoid the most common beginner mistakes</li>
       </ul>
       <p className="mt-3">
-        Whether you’re starting with $10 or $10,000, this course makes investing accessible and impactful for you and your community!
+        Whether you’re starting with $10 or $10,000, this course makes investing
+        accessible and impactful for you and your community!
       </p>
     </>
   ),
@@ -61,8 +77,8 @@ const InvestingForBeginners: React.FC = () => {
     const sessionId = router.query.session_id as string | undefined;
     if (userLoggedIn && sessionId) {
       fetch(`/api/courses/verify-session?session_id=${sessionId}`)
-        .then(res => res.json())
-        .then(data => {
+        .then((res) => res.json())
+        .then((data) => {
           if (data.paid) {
             setHasPurchased(true);
             router.replace(router.pathname, undefined, { shallow: true });
@@ -133,22 +149,32 @@ const InvestingForBeginners: React.FC = () => {
 
         {/* Header */}
         <header className="mb-6">
-          <h1 className="text-3xl md:text-4xl font-bold text-gold">{COURSE.name}</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-gold">
+            {COURSE.name}
+          </h1>
         </header>
 
         <p className="mb-4 text-lg">
-          Welcome! This course is your step-by-step guide to building wealth through investing—no prior experience required. We focus on real strategies for beginners, and on closing the wealth gap in the Black community by providing the tools, knowledge, and motivation you need to invest confidently.
+          Welcome! This course is your step-by-step guide to building wealth
+          through investing—no prior experience required. We focus on real
+          strategies for beginners, and on closing the wealth gap in the Black
+          community by providing the tools, knowledge, and motivation you need
+          to invest confidently.
         </p>
 
         {/* Course Overview */}
         <section className="mt-8">
-          <h2 className="text-2xl font-semibold text-blue-500">Course Overview</h2>
+          <h2 className="text-2xl font-semibold text-blue-500">
+            Course Overview
+          </h2>
           <div className="mt-4 text-gray-300">{COURSE.overview}</div>
         </section>
 
         {/* Learning Outcomes */}
         <section className="mt-8">
-          <h2 className="text-2xl font-semibold text-blue-500">Learning Outcomes</h2>
+          <h2 className="text-2xl font-semibold text-blue-500">
+            Learning Outcomes
+          </h2>
           <ul className="list-disc ml-6 mt-4 text-gray-300">
             {COURSE.learningOutcomes.map((outcome, idx) => (
               <li key={idx}>{outcome}</li>
@@ -158,15 +184,21 @@ const InvestingForBeginners: React.FC = () => {
 
         {/* Table of Contents - direct access to modules */}
         <section className="mt-8">
-          <h2 className="text-2xl font-semibold text-blue-500">Jump To a Module</h2>
+          <h2 className="text-2xl font-semibold text-blue-500">
+            Jump To a Module
+          </h2>
           <CourseTOC />
         </section>
 
         {/* Enrollment Section */}
         <section className="mt-8">
-          <h2 className="text-2xl font-semibold text-blue-500">Course Access</h2>
+          <h2 className="text-2xl font-semibold text-blue-500">
+            Course Access
+          </h2>
           <p className="mt-4 text-gray-300">
-            <span className="font-bold text-gold">One-time Fee: ${COURSE.price}</span>
+            <span className="font-bold text-gold">
+              One-time Fee: ${COURSE.price}
+            </span>
             <br />
             Pay once for lifetime access and future updates.
           </p>
@@ -192,7 +224,9 @@ const InvestingForBeginners: React.FC = () => {
                 disabled={isProcessing}
                 className="bg-gold text-black py-2 px-6 rounded font-bold hover:bg-yellow-500 transition disabled:opacity-60"
               >
-                {isProcessing ? "Redirecting to Payment..." : `Buy & Enroll for $${COURSE.price}`}
+                {isProcessing
+                  ? "Redirecting to Payment..."
+                  : `Buy & Enroll for $${COURSE.price}`}
               </button>
             ) : (
               <button
@@ -212,7 +246,8 @@ const InvestingForBeginners: React.FC = () => {
             <li>Lifetime access to all course materials and updates.</li>
             <li>Self-paced: return anytime, from any device.</li>
             <li>
-              Access downloadable resources (investment trackers, templates, and more).
+              Access downloadable resources (investment trackers, templates, and
+              more).
             </li>
             <li>Exclusive Black Wealth Exchange strategies and support.</li>
           </ul>
@@ -224,10 +259,13 @@ const InvestingForBeginners: React.FC = () => {
             What Students Are Saying
           </h2>
           <blockquote className="mt-4 text-gray-300">
-            &quot;I started with no investing knowledge and now I feel empowered to build my wealth. This course is clear, practical, and focused on our community!&quot; – Malik W.
+            &quot;I started with no investing knowledge and now I feel empowered
+            to build my wealth. This course is clear, practical, and focused on
+            our community!&quot; – Malik W.
           </blockquote>
           <blockquote className="mt-4 text-gray-300">
-            &quot;Great value and actionable steps. I love the emphasis on Black-owned investments and real community impact.&quot; – Alicia D.
+            &quot;Great value and actionable steps. I love the emphasis on
+            Black-owned investments and real community impact.&quot; – Alicia D.
           </blockquote>
         </section>
 
@@ -238,16 +276,18 @@ const InvestingForBeginners: React.FC = () => {
           </h2>
           <ul className="mt-4 space-y-2 text-gray-300">
             <li>
-              <strong>
-                Q: Do I need any prior investing experience?
-              </strong>
+              <strong>Q: Do I need any prior investing experience?</strong>
               <br />
-              A: No, this course is designed for total beginners and those who want a practical path to building wealth.
+              A: No, this course is designed for total beginners and those who
+              want a practical path to building wealth.
             </li>
             <li>
-              <strong>Q: Will I learn how to invest in Black-owned businesses?</strong>
+              <strong>
+                Q: Will I learn how to invest in Black-owned businesses?
+              </strong>
               <br />
-              A: Absolutely! There is a focus on Black-owned public and private investment opportunities, as well as community wealth building.
+              A: Absolutely! There is a focus on Black-owned public and private
+              investment opportunities, as well as community wealth building.
             </li>
             <li>
               <strong>Q: Do I have to pay a monthly fee?</strong>
@@ -265,13 +305,32 @@ const InvestingForBeginners: React.FC = () => {
         {/* Footer */}
         <footer className="mt-12 text-center">
           <p>
-            <Link href="/courses/personal-finance-101" className="text-gold hover:underline">Personal Finance 101</Link>{" | "}
-            <Link href="/courses/generational-wealth" className="text-gold hover:underline">Building Generational Wealth</Link>
+            <Link
+              href="/courses/personal-finance-101"
+              className="text-gold hover:underline"
+            >
+              Personal Finance 101
+            </Link>
+            {" | "}
+            <Link
+              href="/courses/generational-wealth"
+              className="text-gold hover:underline"
+            >
+              Building Generational Wealth
+            </Link>
           </p>
           <p className="mt-4">
-            <Link href="/contact" className="text-gold hover:underline">Contact Us</Link>{" | "}
-            <Link href="/privacy-policy" className="text-gold hover:underline">Privacy Policy</Link>{" | "}
-            <Link href="/terms-of-use" className="text-gold hover:underline">Terms of Use</Link>
+            <Link href="/contact" className="text-gold hover:underline">
+              Contact Us
+            </Link>
+            {" | "}
+            <Link href="/privacy-policy" className="text-gold hover:underline">
+              Privacy Policy
+            </Link>
+            {" | "}
+            <Link href="/terms-of-use" className="text-gold hover:underline">
+              Terms of Use
+            </Link>
           </p>
         </footer>
       </div>

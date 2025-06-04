@@ -74,7 +74,6 @@ const CourseEnrollmentPage: React.FC = () => {
     } else {
       setLoading(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]); // <-- Now using [router] as dependency
 
   // Simple local login/signup mock handlers
