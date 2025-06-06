@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { BookOpen, GraduationCap, Users, Briefcase } from "lucide-react";
 import { useRouter } from "next/router";
+import useAuth from "@/hooks/useAuth";
 
 // MODAL COMPONENT
 function ConsultingInterestModal({
@@ -159,6 +160,7 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const router = useRouter();
+  const { user } = useAuth();
 
   const sponsors = [
     { img: "/ads/sample-banner1.jpg", name: "Pamfa Hoodies" },
@@ -192,6 +194,15 @@ export default function Home() {
       icon: Briefcase,
       href: "/black-student-opportunities/internships",
     },
+  ];
+
+  // These are the ONLY routes that are public from the main "actions"!
+  const publicRoutes = [
+    "/about",
+    "/global-timeline",
+    "/events",
+    "/library-of-black-history",
+    "/black-entertainment-news",
   ];
 
   const keySections = [
@@ -288,11 +299,19 @@ export default function Home() {
             </button>
           </div>
 
-          <Link href="/marketplace/become-a-seller">
-            <button className="mt-4 bg-gold text-black text-center py-2 px-4 rounded-lg font-semibold shadow hover:bg-yellow-500 transition animate-pulseGlow">
-              Start Selling on the Marketplace – Join as a Seller!
-            </button>
-          </Link>
+          {/* Gated: Start Selling */}
+          <button
+            className="mt-4 bg-gold text-black text-center py-2 px-4 rounded-lg font-semibold shadow hover:bg-yellow-500 transition animate-pulseGlow"
+            onClick={() => {
+              if (!user) {
+                router.push("/login?redirect=/marketplace/become-a-seller");
+              } else {
+                router.push("/marketplace/become-a-seller");
+              }
+            }}
+          >
+            Start Selling on the Marketplace – Join as a Seller!
+          </button>
 
           <div className="mt-2">
             <Link href="/library-of-black-history">
@@ -336,11 +355,19 @@ export default function Home() {
                 Explore Black-owned real estate options and investments
               </p>
             </div>
-            <Link href="/real-estate-investment">
-              <button className="px-4 py-2 bg-gold text-black font-semibold text-sm rounded-lg hover:bg-yellow-500 transition">
-                Learn More
-              </button>
-            </Link>
+            {/* Gated: Learn More */}
+            <button
+              className="px-4 py-2 bg-gold text-black font-semibold text-sm rounded-lg hover:bg-yellow-500 transition"
+              onClick={() => {
+                if (!user) {
+                  router.push("/login?redirect=/real-estate-investment");
+                } else {
+                  router.push("/real-estate-investment");
+                }
+              }}
+            >
+              Learn More
+            </button>
           </div>
         </section>
 
@@ -371,7 +398,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Key Sections */}
+        {/* Key Sections (gated) */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {keySections.map((item, index) => (
             <div
@@ -387,11 +414,22 @@ export default function Home() {
                   🔥 Popular
                 </span>
               )}
-              <Link href={item.href}>
-                <h2 className="text-xl font-semibold hover:underline cursor-pointer">
-                  {item.title}
-                </h2>
-              </Link>
+              <h2
+                className="text-xl font-semibold hover:underline cursor-pointer"
+                onClick={() => {
+                  if (publicRoutes.includes(item.href)) {
+                    router.push(item.href);
+                    return;
+                  }
+                  if (!user) {
+                    router.push(`/login?redirect=${item.href}`);
+                  } else {
+                    router.push(item.href);
+                  }
+                }}
+              >
+                {item.title}
+              </h2>
               <p className="text-sm mt-2">{item.description}</p>
             </div>
           ))}
@@ -417,7 +455,7 @@ export default function Home() {
                 candidates secure meaningful opportunities.
               </p>
             </div>
-            {/* Notify button */}
+            {/* Notify button is public */}
             <div className="flex-shrink-0">
               <button
                 onClick={() => setModalOpen(true)}
@@ -429,7 +467,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Advertise Section */}
+        {/* Advertise Section (gated) */}
         <section className="bg-gray-900 border border-gold rounded-lg shadow p-4 text-center my-6 animate-fadeIn">
           <h2 className="text-xl font-semibold text-gold flex items-center justify-center gap-2 mb-1">
             📢 Advertise with Us
@@ -438,11 +476,18 @@ export default function Home() {
             Promote your business today to thousands of engaged users across our
             platform.
           </p>
-          <Link href="/advertise-with-us">
-            <button className="px-4 py-1.5 bg-gold text-black text-sm rounded hover:bg-yellow-500 transition">
-              View Ad Options
-            </button>
-          </Link>
+          <button
+            className="px-4 py-1.5 bg-gold text-black text-sm rounded hover:bg-yellow-500 transition"
+            onClick={() => {
+              if (!user) {
+                router.push("/login?redirect=/advertise-with-us");
+              } else {
+                router.push("/advertise-with-us");
+              }
+            }}
+          >
+            View Ad Options
+          </button>
         </section>
       </main>
 

@@ -7,14 +7,8 @@ import "swiper/css";
 import "swiper/css/navigation";
 import { Navigation } from "swiper/modules";
 
-const CATEGORIES = [
-  "All",
-  "Food",
-  "Retail",
-  "Beauty",
-  "Professional",
-  "Services",
-];
+// REMOVE THE OLD CATEGORIES ARRAY!
+
 const SIDEBAR_ADS = [
   {
     img: "/pamfa1.jpg",
@@ -43,7 +37,6 @@ interface Business {
   category?: string;
 }
 
-// Inline sponsors for result list
 function injectSponsoredEveryN(
   businesses: Business[],
   sponsors: typeof SIDEBAR_ADS,
@@ -145,8 +138,22 @@ export default function BusinessDirectory() {
   const [isLoading, setIsLoading] = useState(false);
   const [category, setCategory] = useState<string>("All");
   const [hasSearched, setHasSearched] = useState(false);
+  const [categories, setCategories] = useState<string[]>(["All"]);
   const router = useRouter();
   const didInitialSearch = useRef(false);
+
+  // NEW: Load categories dynamically
+  useEffect(() => {
+    fetch("/api/businessCategories")
+      .then((r) => r.json())
+      .then((data) => {
+        if (Array.isArray(data)) {
+          const dbCats = data.filter((cat) => cat && cat !== "All");
+          setCategories(["All", ...dbCats]);
+        }
+      })
+      .catch(() => setCategories(["All"]));
+  }, []);
 
   // Autofill from ?search= param
   useEffect(() => {
@@ -171,7 +178,6 @@ export default function BusinessDirectory() {
 
     // Debounce timer
     const timeout = setTimeout(() => {
-      // Cancel last request if any
       if (abortRef.current) {
         abortRef.current.abort();
       }
@@ -196,7 +202,6 @@ export default function BusinessDirectory() {
         });
     }, 350);
 
-    // Cleanup on effect rerun/unmount
     return () => {
       clearTimeout(timeout);
       if (abortRef.current) {
@@ -225,7 +230,7 @@ export default function BusinessDirectory() {
       url: "/advertise",
       cta: "Advertise",
     }),
-  ].slice(0, 18);
+  ].slice(0, 10); // Limit to 10 ads
 
   return (
     <div className="bg-gray-900 text-white min-h-screen flex flex-col md:flex-row">
@@ -233,7 +238,7 @@ export default function BusinessDirectory() {
       <div className="flex-1 w-full md:w-3/4 p-2 sm:p-3 md:p-6 mx-auto">
         {/* Categories */}
         <div className="flex flex-wrap gap-2 mb-2">
-          {CATEGORIES.map((cat) => (
+          {categories.map((cat) => (
             <button
               key={cat}
               onClick={() => setCategory(cat)}
@@ -272,21 +277,23 @@ export default function BusinessDirectory() {
               See All
             </a>
           </div>
-<Swiper
-  modules={[Navigation]}
-  spaceBetween={4}              // Tighter spacing
-  slidesPerView="auto"          // Each slide uses its own width (see below)
-  centeredSlides={false}        // Always left-align, never center
-  navigation
-  style={{ paddingBottom: 8 }}
->
-  {sponsorsToShow.map((ad, idx) => (
-    <SwiperSlide key={ad.url + idx} className="!w-[140px] sm: !w-[160px]">  {/* Fixed width for each slide */}
-      <SponsorCard {...ad} />
-    </SwiperSlide>
-  ))}
-</Swiper>
-
+          <Swiper
+            modules={[Navigation]}
+            spaceBetween={4}
+            slidesPerView="auto"
+            centeredSlides={false}
+            navigation
+            style={{ paddingBottom: 8 }}
+          >
+            {sponsorsToShow.map((ad, idx) => (
+              <SwiperSlide
+                key={ad.url + idx}
+                className="!w-[140px] sm:!w-[160px]"
+              >
+                <SponsorCard {...ad} />
+              </SwiperSlide>
+            ))}
+          </Swiper>
         </div>
         {/* Results */}
         <div className="relative min-h-[120px]">
@@ -396,4 +403,3 @@ export default function BusinessDirectory() {
     </div>
   );
 }
-
