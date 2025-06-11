@@ -7,8 +7,6 @@ import "swiper/css";
 import "swiper/css/navigation";
 import { Navigation } from "swiper/modules";
 
-// REMOVE THE OLD CATEGORIES ARRAY!
-
 const SIDEBAR_ADS = [
   {
     img: "/pamfa1.jpg",
@@ -19,7 +17,7 @@ const SIDEBAR_ADS = [
   },
   {
     img: "/titans.jpg",
-    name: "Titan Era Apparel",
+    name: "Titan Era Productions",
     tagline: "Level Up Your Look.",
     url: "https://titanshop.com",
     cta: "Explore",
@@ -34,8 +32,19 @@ interface Business {
   description?: string;
   phone?: string;
   address?: string;
-  category?: string;
+  category?: string;    
+  categories?: string;  
 }
+
+// --- Only these categories will show at the top! ---
+const TOP_CATEGORIES = [
+  "Food",
+  "Shopping",
+  "Beauty",
+  "Health",
+  "Clothing",
+];
+const CATEGORIES = ["All", ...TOP_CATEGORIES];
 
 function injectSponsoredEveryN(
   businesses: Business[],
@@ -138,22 +147,8 @@ export default function BusinessDirectory() {
   const [isLoading, setIsLoading] = useState(false);
   const [category, setCategory] = useState<string>("All");
   const [hasSearched, setHasSearched] = useState(false);
-  const [categories, setCategories] = useState<string[]>(["All"]);
   const router = useRouter();
   const didInitialSearch = useRef(false);
-
-  // NEW: Load categories dynamically
-  useEffect(() => {
-    fetch("/api/businessCategories")
-      .then((r) => r.json())
-      .then((data) => {
-        if (Array.isArray(data)) {
-          const dbCats = data.filter((cat) => cat && cat !== "All");
-          setCategories(["All", ...dbCats]);
-        }
-      })
-      .catch(() => setCategories(["All"]));
-  }, []);
 
   // Autofill from ?search= param
   useEffect(() => {
@@ -166,10 +161,11 @@ export default function BusinessDirectory() {
     }
   }, [router.isReady, router.query.search, input]);
 
-  // Debounced search effect with cancellation
+  // Debounced search effect with cancellation, also triggers for category
   const abortRef = useRef<AbortController | null>(null);
   useEffect(() => {
-    if (!input.trim()) {
+    // If nothing is selected, return empty
+    if (!input.trim() && (category === "All" || !category)) {
       setBusinesses([]);
       setHasSearched(false);
       return;
@@ -184,7 +180,12 @@ export default function BusinessDirectory() {
       const controller = new AbortController();
       abortRef.current = controller;
 
-      fetch(`/api/searchBusinesses?search=${encodeURIComponent(input)}`, {
+      // Search param logic: include search and category in request if present
+      const params = new URLSearchParams();
+      if (input.trim()) params.set("search", input.trim());
+      if (category && category !== "All") params.set("category", category);
+
+      fetch(`/api/searchBusinesses?${params.toString()}`, {
         signal: controller.signal,
       })
         .then((r) => r.json())
@@ -208,7 +209,7 @@ export default function BusinessDirectory() {
         abortRef.current.abort();
       }
     };
-  }, [input]);
+  }, [input, category]);
 
   const handleImageError = (
     e: React.SyntheticEvent<HTMLImageElement, Event>,
@@ -216,10 +217,17 @@ export default function BusinessDirectory() {
     e.currentTarget.src = "/default-image.jpg";
   };
 
+  // --- Client-side filter for exact category match (optional for more strictness)
+  // If you want partial match (e.g. "Food" matches "Food & Dining"), use .includes instead!
   const filtered =
     category === "All"
       ? businesses
-      : businesses.filter((b) => b.category === category);
+      : businesses.filter((b) => {
+          // Match partial word inside categories/category
+          const catStr = ((b.categories || b.category || "") + "")
+            .toLowerCase();
+          return catStr.includes(category.toLowerCase());
+        });
 
   const sponsorsToShow = [
     ...SIDEBAR_ADS,
@@ -238,7 +246,7 @@ export default function BusinessDirectory() {
       <div className="flex-1 w-full md:w-3/4 p-2 sm:p-3 md:p-6 mx-auto">
         {/* Categories */}
         <div className="flex flex-wrap gap-2 mb-2">
-          {categories.map((cat) => (
+          {CATEGORIES.map((cat) => (
             <button
               key={cat}
               onClick={() => setCategory(cat)}
@@ -386,7 +394,8 @@ export default function BusinessDirectory() {
             )
           ) : (
             <div className="py-8 text-gray-400 text-center">
-              Discover and support Black-owned businesses! Start your search above.
+              Discover and support Black-owned businesses! Start your search
+              above.
             </div>
           )}
         </div>
