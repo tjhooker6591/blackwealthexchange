@@ -16,10 +16,10 @@ export default function NavBar() {
     user?.accountType === "seller"
       ? "/marketplace/dashboard"
       : user?.accountType === "employer"
-      ? "/employer/jobs"
-      : user?.accountType === "business"
-      ? "/dashboard/business/profile"
-      : "/dashboard";
+        ? "/employer/jobs"
+        : user?.accountType === "business"
+          ? "/dashboard/business/profile"
+          : "/dashboard";
 
   const profileHref =
     user?.accountType === "business"
@@ -45,14 +45,39 @@ export default function NavBar() {
 
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center space-x-6">
-          <Link href="/about" className="hover:text-gold font-semibold transition-colors">About</Link>
-          <Link href="/global-timeline" className="hover:text-gold font-semibold transition-colors">Journey</Link>
-          <Link href="/events" className="hover:text-gold font-semibold transition-colors">Events</Link>
+          <Link
+            href="/about"
+            className="hover:text-gold font-semibold transition-colors"
+          >
+            About
+          </Link>
+          <Link
+            href="/global-timeline"
+            className="hover:text-gold font-semibold transition-colors"
+          >
+            Journey
+          </Link>
+          <Link
+            href="/events"
+            className="hover:text-gold font-semibold transition-colors"
+          >
+            Events
+          </Link>
 
           {loading ? null : user ? (
             <>
-              <Link href={dashboardHref} className="hover:text-gold font-semibold transition-colors">Dashboard</Link>
-              <Link href={profileHref} className="hover:text-gold font-semibold transition-colors">Profile</Link>
+              <Link
+                href={dashboardHref}
+                className="hover:text-gold font-semibold transition-colors"
+              >
+                Dashboard
+              </Link>
+              <Link
+                href={profileHref}
+                className="hover:text-gold font-semibold transition-colors"
+              >
+                Profile
+              </Link>
               <button
                 onClick={logout}
                 className="hover:text-red-500 font-semibold transition-colors"
@@ -62,8 +87,18 @@ export default function NavBar() {
             </>
           ) : (
             <>
-              <Link href="/login" className="hover:text-gold font-semibold transition-colors">Log In</Link>
-              <Link href="/signup" className="hover:text-gold font-semibold transition-colors">Sign Up</Link>
+              <Link
+                href="/login"
+                className="hover:text-gold font-semibold transition-colors"
+              >
+                Log In
+              </Link>
+              <Link
+                href="/signup"
+                className="hover:text-gold font-semibold transition-colors"
+              >
+                Sign Up
+              </Link>
             </>
           )}
         </div>
@@ -83,16 +118,46 @@ export default function NavBar() {
       {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="md:hidden bg-black border-t border-gold px-4 pb-4 space-y-2">
-          <Link href="/about" className="block py-2 hover:text-gold transition-colors" onClick={() => handleMobileNav()}>About</Link>
-          <Link href="/global-timeline" className="block py-2 hover:text-gold transition-colors" onClick={() => handleMobileNav()}>Journey</Link>
-          <Link href="/events" className="block py-2 hover:text-gold transition-colors" onClick={() => handleMobileNav()}>Events</Link>
+          <Link
+            href="/about"
+            className="block py-2 hover:text-gold transition-colors"
+            onClick={() => handleMobileNav()}
+          >
+            About
+          </Link>
+          <Link
+            href="/global-timeline"
+            className="block py-2 hover:text-gold transition-colors"
+            onClick={() => handleMobileNav()}
+          >
+            Journey
+          </Link>
+          <Link
+            href="/events"
+            className="block py-2 hover:text-gold transition-colors"
+            onClick={() => handleMobileNav()}
+          >
+            Events
+          </Link>
 
           {/* ...Add more links as needed... */}
           <hr className="border-gray-700 my-2" />
           {loading ? null : user ? (
             <>
-              <Link href={dashboardHref} className="block py-2 hover:text-gold transition-colors" onClick={() => handleMobileNav()}>Dashboard</Link>
-              <Link href={profileHref} className="block py-2 hover:text-gold transition-colors" onClick={() => handleMobileNav()}>Profile</Link>
+              <Link
+                href={dashboardHref}
+                className="block py-2 hover:text-gold transition-colors"
+                onClick={() => handleMobileNav()}
+              >
+                Dashboard
+              </Link>
+              <Link
+                href={profileHref}
+                className="block py-2 hover:text-gold transition-colors"
+                onClick={() => handleMobileNav()}
+              >
+                Profile
+              </Link>
               <button
                 onClick={() => {
                   logout();
@@ -105,8 +170,20 @@ export default function NavBar() {
             </>
           ) : (
             <>
-              <Link href="/login" className="block py-2 hover:text-gold transition-colors" onClick={() => handleMobileNav()}>Log In</Link>
-              <Link href="/signup" className="block py-2 hover:text-gold transition-colors" onClick={() => handleMobileNav()}>Sign Up</Link>
+              <Link
+                href="/login"
+                className="block py-2 hover:text-gold transition-colors"
+                onClick={() => handleMobileNav()}
+              >
+                Log In
+              </Link>
+              <Link
+                href="/signup"
+                className="block py-2 hover:text-gold transition-colors"
+                onClick={() => handleMobileNav()}
+              >
+                Sign Up
+              </Link>
             </>
           )}
         </div>

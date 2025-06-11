@@ -33,7 +33,14 @@ export function middleware(req: NextRequest) {
   const accountType = req.cookies.get("accountType")?.value;
   const isLoggedIn = req.cookies.get("session_token");
 
-  console.log("MIDDLEWARE HIT:", pathname, "accountType:", accountType, "isLoggedIn:", !!isLoggedIn);
+  console.log(
+    "MIDDLEWARE HIT:",
+    pathname,
+    "accountType:",
+    accountType,
+    "isLoggedIn:",
+    !!isLoggedIn,
+  );
 
   // Allow Next.js internals and static files
   if (
@@ -45,7 +52,9 @@ export function middleware(req: NextRequest) {
   }
 
   // 1. Check role-protected routes first
-  for (const [routePrefix, requiredRole] of Object.entries(roleProtectedRoutes)) {
+  for (const [routePrefix, requiredRole] of Object.entries(
+    roleProtectedRoutes,
+  )) {
     if (pathname.startsWith(routePrefix)) {
       if (
         !isLoggedIn ||
@@ -55,7 +64,7 @@ export function middleware(req: NextRequest) {
           : accountType !== requiredRole)
       ) {
         console.log(
-          `REDIRECT: ${pathname} requires role: ${requiredRole}, found: ${accountType || "none"}`
+          `REDIRECT: ${pathname} requires role: ${requiredRole}, found: ${accountType || "none"}`,
         );
         const loginUrl = req.nextUrl.clone();
         loginUrl.pathname = "/login";
@@ -76,7 +85,9 @@ export function middleware(req: NextRequest) {
       )
     ) {
       if (!isLoggedIn) {
-        console.log(`REDIRECT: ${pathname} requires login, user not logged in.`);
+        console.log(
+          `REDIRECT: ${pathname} requires login, user not logged in.`,
+        );
         const loginUrl = req.nextUrl.clone();
         loginUrl.pathname = "/login";
         loginUrl.searchParams.set("redirect", pathname);

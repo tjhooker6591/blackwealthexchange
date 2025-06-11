@@ -1,9 +1,18 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import clientPromise from "@/lib/mongodb"; // your MongoDB connection
+import type { NextApiRequest, NextApiResponse } from "next";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const client = await clientPromise;
-  const db = client.db("bwes-cluster");
-  const categories = await db.collection("businesses").distinct("category");
-  res.status(200).json(categories.filter(Boolean).sort());
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
+  const TOP_CATEGORIES = [
+    "Beauty",
+    "Food",
+    "Health & Wellness",
+    "Apparel",
+    "Professional Services"
+  ];
+
+  // Optionally, include "All" at the top
+  res.status(200).json(["All", ...TOP_CATEGORIES]);
 }
+
