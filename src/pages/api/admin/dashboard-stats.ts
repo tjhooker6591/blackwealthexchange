@@ -9,22 +9,22 @@ export default async function handler(
     const client = await clientPromise;
     const db = client.db("bwes-cluster");
 
-    // Count businesses where status is 'pending'
+    // Businesses
     const pendingBusinesses = await db
       .collection("businesses")
       .countDocuments({ status: "pending" });
 
-    // Count affiliate payouts where status is 'pending'
+    // Affiliate payouts
     const pendingPayouts = await db
       .collection("affiliatePayouts")
       .countDocuments({ status: "pending" });
 
-    // Count active affiliates
+    // Active affiliates
     const activeAffiliates = await db
       .collection("affiliates")
       .countDocuments({ status: "active" });
 
-    // Assuming you'll implement these later:
+    // Jobs & products
     const pendingJobs = await db
       .collection("jobs")
       .countDocuments({ status: "pending" });
@@ -33,8 +33,13 @@ export default async function handler(
       .collection("products")
       .countDocuments({ status: "pending" });
 
-    // Total users count
+    // Users
     const totalUsers = await db.collection("users").countDocuments();
+
+    // 👇 NEW: Intern applications
+    const internApplications = await db
+      .collection("intern_applications")
+      .countDocuments();
 
     res.status(200).json({
       pendingBusinesses,
@@ -43,6 +48,7 @@ export default async function handler(
       pendingJobs,
       pendingProducts,
       totalUsers,
+      internApplications, // 👈 returned to dashboard
     });
   } catch (err) {
     console.error("Dashboard Stats Error:", err);

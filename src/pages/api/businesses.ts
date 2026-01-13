@@ -10,12 +10,7 @@ export default async function handler(
     const db = client.db("bwes-database");
 
     if (req.method === "GET") {
-      const {
-        search = "",
-        category,
-        page = "1",
-        limit = "10"
-      } = req.query;
+      const { search = "", category, page = "1", limit = "10" } = req.query;
 
       const pageNum = parseInt(page as string, 10) || 1;
       const limitNum = parseInt(limit as string, 10) || 10;

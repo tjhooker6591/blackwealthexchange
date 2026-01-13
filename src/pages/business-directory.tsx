@@ -32,18 +32,12 @@ interface Business {
   description?: string;
   phone?: string;
   address?: string;
-  category?: string;    
-  categories?: string;  
+  category?: string;
+  categories?: string;
 }
 
 // --- Only these categories will show at the top! ---
-const TOP_CATEGORIES = [
-  "Food",
-  "Shopping",
-  "Beauty",
-  "Health",
-  "Clothing",
-];
+const TOP_CATEGORIES = ["Food", "Shopping", "Beauty", "Health", "Clothing"];
 const CATEGORIES = ["All", ...TOP_CATEGORIES];
 
 function injectSponsoredEveryN(
@@ -224,8 +218,9 @@ export default function BusinessDirectory() {
       ? businesses
       : businesses.filter((b) => {
           // Match partial word inside categories/category
-          const catStr = ((b.categories || b.category || "") + "")
-            .toLowerCase();
+          const catStr = (
+            (b.categories || b.category || "") + ""
+          ).toLowerCase();
           return catStr.includes(category.toLowerCase());
         });
 

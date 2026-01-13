@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import useAuth from "@/hooks/useAuth"; // ✅ Use the default import
+import useAuth from "@/hooks/useAuth";
 
 export default function NavBar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -51,17 +51,27 @@ export default function NavBar() {
           >
             About
           </Link>
+
           <Link
             href="/global-timeline"
             className="hover:text-gold font-semibold transition-colors"
           >
             Journey
           </Link>
+
           <Link
             href="/events"
             className="hover:text-gold font-semibold transition-colors"
           >
             Events
+          </Link>
+
+          {/* ✅ Join the Mission */}
+          <Link
+            href="/join-the-mission"
+            className="hover:text-gold font-semibold transition-colors"
+          >
+            Join the Mission
           </Link>
 
           {loading ? null : user ? (
@@ -72,12 +82,14 @@ export default function NavBar() {
               >
                 Dashboard
               </Link>
+
               <Link
                 href={profileHref}
                 className="hover:text-gold font-semibold transition-colors"
               >
                 Profile
               </Link>
+
               <button
                 onClick={logout}
                 className="hover:text-red-500 font-semibold transition-colors"
@@ -93,6 +105,7 @@ export default function NavBar() {
               >
                 Log In
               </Link>
+
               <Link
                 href="/signup"
                 className="hover:text-gold font-semibold transition-colors"
@@ -125,6 +138,7 @@ export default function NavBar() {
           >
             About
           </Link>
+
           <Link
             href="/global-timeline"
             className="block py-2 hover:text-gold transition-colors"
@@ -132,6 +146,7 @@ export default function NavBar() {
           >
             Journey
           </Link>
+
           <Link
             href="/events"
             className="block py-2 hover:text-gold transition-colors"
@@ -140,8 +155,17 @@ export default function NavBar() {
             Events
           </Link>
 
-          {/* ...Add more links as needed... */}
+          {/* ✅ Join the Mission */}
+          <Link
+            href="/join-the-mission"
+            className="block py-2 hover:text-gold transition-colors"
+            onClick={() => handleMobileNav()}
+          >
+            Join the Mission
+          </Link>
+
           <hr className="border-gray-700 my-2" />
+
           {loading ? null : user ? (
             <>
               <Link
@@ -151,6 +175,7 @@ export default function NavBar() {
               >
                 Dashboard
               </Link>
+
               <Link
                 href={profileHref}
                 className="block py-2 hover:text-gold transition-colors"
@@ -158,6 +183,7 @@ export default function NavBar() {
               >
                 Profile
               </Link>
+
               <button
                 onClick={() => {
                   logout();
@@ -177,6 +203,7 @@ export default function NavBar() {
               >
                 Log In
               </Link>
+
               <Link
                 href="/signup"
                 className="block py-2 hover:text-gold transition-colors"
