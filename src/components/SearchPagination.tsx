@@ -21,7 +21,10 @@ const SearchPagination: React.FC<Props> = ({
   if (totalPages <= 1) return null;
 
   // Pagination logic: Only show MAX_PAGES_DISPLAYED at a time, center currentPage
-  let startPage = Math.max(1, currentPage - Math.floor(MAX_PAGES_DISPLAYED / 2));
+  let startPage = Math.max(
+    1,
+    currentPage - Math.floor(MAX_PAGES_DISPLAYED / 2),
+  );
   let endPage = startPage + MAX_PAGES_DISPLAYED - 1;
   if (endPage > totalPages) {
     endPage = totalPages;

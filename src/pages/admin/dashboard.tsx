@@ -20,6 +20,7 @@ const AdminDashboard = () => {
     pendingJobs: 0,
     pendingProducts: 0,
     totalUsers: 0,
+    internApplications: 0,
     pendingListings: 0,
     totalDirectoryListings: 0,
     directoryRevenue: 0,
@@ -105,20 +106,32 @@ const AdminDashboard = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
         {/* Platform Stats */}
         <div>
-          <SectionTitle>Platform Overview</SectionTitle>
-          <div className="grid grid-cols-2 gap-4">
-            <StatCard title="Total Users" value={stats.totalUsers} />
-            <StatCard
-              title="Pending Businesses"
-              value={stats.pendingBusinesses}
-            />
-            <StatCard
-              title="Active Affiliates"
-              value={stats.activeAffiliates}
-            />
-            <StatCard title="Pending Payouts" value={stats.pendingPayouts} />
-          </div>
-        </div>
+  <SectionTitle>Platform Overview</SectionTitle>
+  <div className="grid grid-cols-2 gap-4">
+    <StatCard title="Total Users" value={stats.totalUsers} />
+
+    {/* 👇 NEW: Intern Applications */}
+    <Link href="/admin/intern-applications" className="block">
+      <div className="bg-gray-800 p-5 rounded shadow text-center hover:bg-gray-700 transition cursor-pointer">
+        <p className="text-gray-400 text-sm">Intern Applications</p>
+        <p className="text-2xl text-gold font-bold mt-1">
+          {stats.internApplications}
+        </p>
+      </div>
+    </Link>
+
+    <StatCard
+      title="Pending Businesses"
+      value={stats.pendingBusinesses}
+    />
+    <StatCard
+      title="Active Affiliates"
+      value={stats.activeAffiliates}
+    />
+    <StatCard title="Pending Payouts" value={stats.pendingPayouts} />
+  </div>
+</div>
+
 
         {/* Directory Section */}
         <div>

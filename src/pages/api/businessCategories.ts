@@ -9,10 +9,9 @@ export default async function handler(
     "Food",
     "Health & Wellness",
     "Apparel",
-    "Professional Services"
+    "Professional Services",
   ];
 
   // Optionally, include "All" at the top
   res.status(200).json(["All", ...TOP_CATEGORIES]);
 }
-

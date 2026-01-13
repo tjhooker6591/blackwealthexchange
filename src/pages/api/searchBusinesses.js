@@ -28,10 +28,10 @@ export default async function handler(req, res) {
           {
             $or: [
               { categories: { $regex: safeCategory, $options: "i" } },
-              { category: { $regex: safeCategory, $options: "i" } }
-            ]
-          }
-        ]
+              { category: { $regex: safeCategory, $options: "i" } },
+            ],
+          },
+        ],
       };
     } else if (search) {
       // Only search present
@@ -43,12 +43,15 @@ export default async function handler(req, res) {
       query = {
         $or: [
           { categories: { $regex: safeCategory, $options: "i" } },
-          { category: { $regex: safeCategory, $options: "i" } }
-        ]
+          { category: { $regex: safeCategory, $options: "i" } },
+        ],
       };
     } else {
       // No search or category: return up to 50 businesses
-      const businesses = await businessesCollection.find({}).limit(50).toArray();
+      const businesses = await businessesCollection
+        .find({})
+        .limit(50)
+        .toArray();
       await client.close();
       return res.status(200).json(businesses);
     }
