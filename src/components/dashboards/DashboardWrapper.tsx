@@ -8,7 +8,6 @@ import BusinessDashboard from "./BusinessDashboard";
 import UserDashboard from "./UserDashboard";
 import DashboardFrame from "./DashboardFrame";
 
-
 export default function DashboardWrapper() {
   const router = useRouter();
   const [accountType, setAccountType] = useState<string | null>(null);
