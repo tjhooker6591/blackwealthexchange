@@ -22,8 +22,8 @@ export default function JoinTheMissionPage() {
           </h1>
           <p className="mt-4 text-lg text-white/85 leading-relaxed max-w-3xl">
             Black Wealth Exchange is a Black-owned digital platform designed to
-            create economic power, ownership, jobs, and financial opportunity for
-            Black communities worldwide.
+            create economic power, ownership, jobs, and financial opportunity
+            for Black communities worldwide.
           </p>
 
           <div className="mt-6 flex flex-col sm:flex-row gap-3">
@@ -51,7 +51,8 @@ export default function JoinTheMissionPage() {
             <h2 className="text-2xl font-bold text-yellow-400">Our Mission</h2>
             <p className="mt-3 text-white/85 leading-relaxed">
               We are building technology that connects Black businesses, Black
-              professionals, Black students, Black consumers, and Black investors.
+              professionals, Black students, Black consumers, and Black
+              investors.
             </p>
             <p className="mt-3 text-white/85 leading-relaxed">
               We are not building a startup for sale. We are building{" "}
@@ -68,7 +69,8 @@ export default function JoinTheMissionPage() {
             </h2>
             <p className="mt-3 text-white/85 leading-relaxed">
               Mission-driven interns and contributors who want to build
-              technology, community, and opportunity for Black people everywhere.
+              technology, community, and opportunity for Black people
+              everywhere.
             </p>
             <p className="mt-3 text-white/85 leading-relaxed">
               You don not need decades of experience — you need commitment,
@@ -82,7 +84,8 @@ export default function JoinTheMissionPage() {
       <section className="max-w-6xl mx-auto px-6 pb-12">
         <h2 className="text-3xl font-extrabold text-yellow-400">Open Roles</h2>
         <p className="mt-2 text-white/80 max-w-3xl">
-          Choose a lane, contribute consistently, and build something that lasts.
+          Choose a lane, contribute consistently, and build something that
+          lasts.
         </p>
 
         <div className="mt-6 grid md:grid-cols-2 gap-6">
@@ -159,8 +162,8 @@ export default function JoinTheMissionPage() {
           </ul>
 
           <p className="mt-4 text-white/80 leading-relaxed">
-            As the platform grows, future paid roles and leadership opportunities
-            will be created from this team.
+            As the platform grows, future paid roles and leadership
+            opportunities will be created from this team.
           </p>
         </div>
       </section>
@@ -173,45 +176,46 @@ export default function JoinTheMissionPage() {
           </h2>
           <p className="mt-3 text-white/85 leading-relaxed">
             Contributors do not receive production access. Work is done through
-            controlled tasks and reviewed before merging to protect the platform.
+            controlled tasks and reviewed before merging to protect the
+            platform.
           </p>
         </div>
       </section>
 
       {/* Apply */}
-<section id="apply" className="max-w-6xl mx-auto px-6 pb-20">
-  <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
-    <h2 className="text-2xl font-bold text-yellow-400">How to Join</h2>
+      <section id="apply" className="max-w-6xl mx-auto px-6 pb-20">
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+          <h2 className="text-2xl font-bold text-yellow-400">How to Join</h2>
 
-    <p className="mt-3 text-white/85 leading-relaxed">
-      Submit your name, skills, the role you want, and why you want to help
-      build Black Wealth Exchange.
-    </p>
+          <p className="mt-3 text-white/85 leading-relaxed">
+            Submit your name, skills, the role you want, and why you want to
+            help build Black Wealth Exchange.
+          </p>
 
-    <div className="mt-5 flex flex-col sm:flex-row gap-3">
-      {/* Internal application route */}
-      <Link
-        href="/apply"
-        className="inline-flex justify-center rounded-xl bg-yellow-500 px-6 py-3 font-bold text-black hover:bg-yellow-400 transition shadow"
-      >
-        Apply Now
-      </Link>
+          <div className="mt-5 flex flex-col sm:flex-row gap-3">
+            {/* Internal application route */}
+            <Link
+              href="/apply"
+              className="inline-flex justify-center rounded-xl bg-yellow-500 px-6 py-3 font-bold text-black hover:bg-yellow-400 transition shadow"
+            >
+              Apply Now
+            </Link>
 
-      {/* Fallback email option */}
-      <a
-        href="mailto:blackwealth24@gmail.com?subject=Join%20the%20Mission%20-%20Black%20Wealth%20Exchange"
-        className="inline-flex justify-center rounded-xl border border-yellow-500 px-6 py-3 font-bold text-yellow-400 hover:bg-yellow-500/10 transition"
-      >
-        Email Us Instead
-      </a>
-    </div>
+            {/* Fallback email option */}
+            <a
+              href="mailto:blackwealth24@gmail.com?subject=Join%20the%20Mission%20-%20Black%20Wealth%20Exchange"
+              className="inline-flex justify-center rounded-xl border border-yellow-500 px-6 py-3 font-bold text-yellow-400 hover:bg-yellow-500/10 transition"
+            >
+              Email Us Instead
+            </a>
+          </div>
 
-    <p className="mt-4 text-sm text-white/60">
-      Tip: Include links to your GitHub, portfolio, LinkedIn, or sample work.
-    </p>
-  </div>
-</section>
-
+          <p className="mt-4 text-sm text-white/60">
+            Tip: Include links to your GitHub, portfolio, LinkedIn, or sample
+            work.
+          </p>
+        </div>
+      </section>
 
       {/* Footer */}
       <footer className="border-t border-white/10 py-10">

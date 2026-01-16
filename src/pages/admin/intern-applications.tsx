@@ -91,9 +91,7 @@ export default function InternApplicationsAdmin() {
 
   return (
     <div className="p-6 text-white">
-      <h1 className="text-3xl font-bold text-gold mb-6">
-        Intern Applications
-      </h1>
+      <h1 className="text-3xl font-bold text-gold mb-6">Intern Applications</h1>
 
       {pageError && (
         <div className="mb-6 rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-red-200">
@@ -174,4 +172,3 @@ export default function InternApplicationsAdmin() {
     </div>
   );
 }
-

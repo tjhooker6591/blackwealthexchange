@@ -6,6 +6,7 @@ import Image from "next/image";
 import { BookOpen, GraduationCap, Users, Briefcase } from "lucide-react";
 import { useRouter } from "next/router";
 import useAuth from "@/hooks/useAuth";
+//import AdminFilterBar, { AdminFilters } from "@/components/admin/AdminFilterBar";
 
 // MODAL COMPONENT
 function ConsultingInterestModal({
@@ -51,14 +52,14 @@ function ConsultingInterestModal({
           className="absolute top-2 right-3 text-gray-400 hover:text-gold text-2xl font-bold"
           aria-label="Close"
         >
-          ×
+      
         </button>
         <h2 className="text-xl font-bold text-gold mb-3">
           Notify Me: Consulting Interest
         </h2>
         {submitted ? (
           <div className="text-green-400 text-center font-semibold">
-            Thank you! We’ll notify you at launch.
+            Thank you! We will notify you at launch.
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -140,7 +141,7 @@ const EconomicImpactSimulator: React.FC = () => {
           href="/1.8trillionimpact"
           className="text-gold font-bold hover:underline text-lg"
         >
-          KNOWLEDGE IS POWER – Select Here to &quot;SEE WHERE YOUR MONEY
+          KNOWLEDGE IS POWER, Select Here to &quot;SEE WHERE YOUR MONEY
           GOES&quot;
         </Link>
       </div>

@@ -48,8 +48,15 @@ export default function ApplyPage() {
     setSuccess(null);
 
     // Basic front-end validation
-    if (!form.fullName.trim() || !form.email.trim() || !form.role.trim() || !form.why.trim()) {
-      setError("Please complete: Full Name, Email, Role, and Why you want to join.");
+    if (
+      !form.fullName.trim() ||
+      !form.email.trim() ||
+      !form.role.trim() ||
+      !form.why.trim()
+    ) {
+      setError(
+        "Please complete: Full Name, Email, Role, and Why you want to join.",
+      );
       return;
     }
 
@@ -71,7 +78,9 @@ export default function ApplyPage() {
         return;
       }
 
-      setSuccess("✅ Application submitted successfully. We’ll review it and follow up by email.");
+      setSuccess(
+        "✅ Application submitted successfully. We’ll review it and follow up by email.",
+      );
 
       // Clear form
       setForm({
@@ -100,7 +109,10 @@ export default function ApplyPage() {
       <main className="min-h-screen bg-black text-white px-6 py-14">
         <div className="max-w-3xl mx-auto">
           <div className="mb-6">
-            <Link href="/join-the-mission" className="text-yellow-400 hover:underline">
+            <Link
+              href="/join-the-mission"
+              className="text-yellow-400 hover:underline"
+            >
               ← Back to Join the Mission
             </Link>
           </div>
@@ -111,14 +123,16 @@ export default function ApplyPage() {
             </h1>
 
             <p className="mt-3 text-white/85 leading-relaxed">
-              Help build Black Wealth Exchange. Tell us what role you want, what you can do, and why you’re aligned with
-              the mission.
+              Help build Black Wealth Exchange. Tell us what role you want, what
+              you can do, and why you’re aligned with the mission.
             </p>
 
             <form onSubmit={onSubmit} className="mt-8 space-y-4">
               {/* Honeypot (hidden) */}
               <div className="hidden">
-                <label className="block text-sm font-semibold text-white/90">Company</label>
+                <label className="block text-sm font-semibold text-white/90">
+                  Company
+                </label>
                 <input
                   value={form.company}
                   onChange={(e) => update("company", e.target.value)}
@@ -165,7 +179,9 @@ export default function ApplyPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-white/90">Skills (comma-separated)</label>
+                <label className="block text-sm font-semibold text-white/90">
+                  Skills (comma-separated)
+                </label>
                 <input
                   value={form.skills}
                   onChange={(e) => update("skills", e.target.value)}
@@ -175,7 +191,9 @@ export default function ApplyPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-white/90">Links (GitHub/Portfolio/LinkedIn)</label>
+                <label className="block text-sm font-semibold text-white/90">
+                  Links (GitHub/Portfolio/LinkedIn)
+                </label>
                 <input
                   value={form.links}
                   onChange={(e) => update("links", e.target.value)}
@@ -186,7 +204,8 @@ export default function ApplyPage() {
 
               <div>
                 <label className="block text-sm font-semibold text-white/90">
-                  Why do you want to join? <span className="text-yellow-400">*</span>
+                  Why do you want to join?{" "}
+                  <span className="text-yellow-400">*</span>
                 </label>
                 <textarea
                   value={form.why}
@@ -228,7 +247,8 @@ export default function ApplyPage() {
               </div>
 
               <p className="text-sm text-white/60 pt-2">
-                Tip: Include links to your GitHub, portfolio, LinkedIn, or sample work.
+                Tip: Include links to your GitHub, portfolio, LinkedIn, or
+                sample work.
               </p>
             </form>
           </div>

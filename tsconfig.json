@@ -14,24 +14,25 @@
     "jsx": "preserve",
     "incremental": true,
 
-    /* ─ Aliases ─ */
+    /* ────────────── ALIASES ────────────── */
     "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"]
-    },
+   "paths": {
+  "@/*": ["./src/*"]
+},
 
-    /* ─ Types and type roots ─ */
+    /* ────────────── TYPES ────────────── */
     "types": ["react", "react-dom", "next-auth"],
     "typeRoots": ["./types", "./node_modules/@types"],
 
-    /* ─ Consistency ─ */
+    /* ────────────── SAFETY ────────────── */
     "forceConsistentCasingInFileNames": true
   },
+
   "include": [
     "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx",
-    "src/pages/api/business/signup.js"
+    "**/*.tsx"
   ],
+
   "exclude": ["node_modules"]
 }
