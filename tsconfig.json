@@ -14,33 +14,18 @@
     "jsx": "preserve",
     "incremental": true,
 
-<<<<<<< HEAD
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./*"]
-    },
-
-    "types": ["react", "react-dom", "next-auth"],
-    "typeRoots": ["./types", "./node_modules/@types"],
-
-=======
-    /* ────────────── ALIASES ────────────── */
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     },
 
-    /* ────────────── TYPES ────────────── */
     "types": ["react", "react-dom", "next-auth"],
     "typeRoots": ["./types", "./node_modules/@types"],
 
-    /* ────────────── SAFETY ────────────── */
->>>>>>> 9fa7ca8 (fix: stabilize build and intern system updates)
     "forceConsistentCasingInFileNames": true
   },
 
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
-
   "exclude": ["node_modules"]
 }
 
