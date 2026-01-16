@@ -35,7 +35,7 @@ const COURSE = {
         <li>Learn how to avoid the most common beginner mistakes</li>
       </ul>
       <p className="mt-3">
-        Whether you’re starting with $10 or $10,000, this course makes investing
+        Whether you are starting with $10 or $10,000, this course makes investing
         accessible and impactful for you and your community!
       </p>
     </>
@@ -69,26 +69,27 @@ const InvestingForBeginners: React.FC = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    const userLoggedIn = localStorage.getItem("isLoggedIn");
-    setIsLoggedIn(!!userLoggedIn);
+   
+useEffect(() => {
+  const userLoggedIn = localStorage.getItem("isLoggedIn");
+  setIsLoggedIn(!!userLoggedIn);
 
-    // If returned from Stripe checkout, check payment session
-    const sessionId = router.query.session_id as string | undefined;
-    if (userLoggedIn && sessionId) {
-      fetch(`/api/courses/verify-session?session_id=${sessionId}`)
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.paid) {
-            setHasPurchased(true);
-            router.replace(router.pathname, undefined, { shallow: true });
-          }
-        })
-        .finally(() => setLoading(false));
-    } else {
-      setLoading(false);
-    }
-  }, [router.query.session_id]);
+  const sessionId = router.query.session_id as string | undefined;
+  if (userLoggedIn && sessionId) {
+    fetch(`/api/courses/verify-session?session_id=${sessionId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.paid) {
+          setHasPurchased(true);
+          router.replace(router.pathname, undefined, { shallow: true });
+        }
+      })
+      .finally(() => setLoading(false));
+  } else {
+    setLoading(false);
+  }
+}, [router, router.query.session_id]);
+
 
   const handleLogin = () => {
     localStorage.setItem("isLoggedIn", "true");
