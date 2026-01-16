@@ -26,9 +26,9 @@
 =======
     /* ────────────── ALIASES ────────────── */
     "baseUrl": ".",
-   "paths": {
-  "@/*": ["./src/*"]
-},
+    "paths": {
+      "@/*": ["./src/*"]
+    },
 
     /* ────────────── TYPES ────────────── */
     "types": ["react", "react-dom", "next-auth"],
@@ -39,11 +39,7 @@
     "forceConsistentCasingInFileNames": true
   },
 
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx"
-  ],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
 
   "exclude": ["node_modules"]
 }

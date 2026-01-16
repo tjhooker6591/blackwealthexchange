@@ -43,4 +43,3 @@ function useAuth() {
 
 // ✅ ONLY THIS EXPORT!
 export default useAuth;
-

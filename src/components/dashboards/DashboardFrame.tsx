@@ -4,9 +4,8 @@ import { useState } from "react";
 import clsx from "clsx";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Menu, LogOut } from "lucide-react";
-import DashboardNav from "@/components/dashboards/DashboardNav"; // ← or delete & keep inline links
-
+import { Menu, LogOut } from "lucide-react"; // ← or delete & keep inline links
+//import DashboardNav from "../../../components/dashboards/DashboardNav";
 export default function DashboardFrame({
   children,
 }: {
@@ -31,8 +30,10 @@ export default function DashboardFrame({
           "md:static md:block",
         )}
       >
-        {/* shared nav links */}
-        <DashboardNav />
+        {/*
+  shared nav links
+  <DashboardNav />
+*/}
 
         {/* sign‑out */}
         <button

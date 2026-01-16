@@ -51,9 +51,7 @@ function ConsultingInterestModal({
           onClick={onClose}
           className="absolute top-2 right-3 text-gray-400 hover:text-gold text-2xl font-bold"
           aria-label="Close"
-        >
-      
-        </button>
+        ></button>
         <h2 className="text-xl font-bold text-gold mb-3">
           Notify Me: Consulting Interest
         </h2>

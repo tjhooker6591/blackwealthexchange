@@ -3,7 +3,10 @@ import clientPromise from "../../../lib/mongodb";
 
 type ConsultingStatus = "pending" | "approved" | "rejected" | "flagged";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   try {
     const client = await clientPromise;
     const db = client.db();
