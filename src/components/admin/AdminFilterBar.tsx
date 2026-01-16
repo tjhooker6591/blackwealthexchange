@@ -62,7 +62,9 @@ export default function AdminFilterBar({
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         {/* Search */}
         <div className="flex-1">
-          <label className="block text-xs text-yellow-200/80 mb-1">Search</label>
+          <label className="block text-xs text-yellow-200/80 mb-1">
+            Search
+          </label>
           <div className="relative">
             <input
               value={value.search}
@@ -88,7 +90,9 @@ export default function AdminFilterBar({
         <div className="flex flex-col gap-3 md:flex-row md:items-end">
           {showType && (
             <div className="min-w-[180px]">
-              <label className="block text-xs text-yellow-200/80 mb-1">Type</label>
+              <label className="block text-xs text-yellow-200/80 mb-1">
+                Type
+              </label>
               <select
                 value={value.type}
                 onChange={(e) => set("type", e.target.value as TypeOption)}
@@ -107,7 +111,9 @@ export default function AdminFilterBar({
 
           {showRange && (
             <div className="min-w-[160px]">
-              <label className="block text-xs text-yellow-200/80 mb-1">Date Range</label>
+              <label className="block text-xs text-yellow-200/80 mb-1">
+                Date Range
+              </label>
               <select
                 value={value.range}
                 onChange={(e) => set("range", e.target.value as RangeOption)}
@@ -123,7 +129,9 @@ export default function AdminFilterBar({
 
           {showSort && (
             <div className="min-w-[170px]">
-              <label className="block text-xs text-yellow-200/80 mb-1">Sort</label>
+              <label className="block text-xs text-yellow-200/80 mb-1">
+                Sort
+              </label>
               <select
                 value={value.sort}
                 onChange={(e) => set("sort", e.target.value as SortOption)}

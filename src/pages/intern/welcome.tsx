@@ -1,6 +1,13 @@
 import React from "react";
 import Link from "next/link";
-import { CheckCircle, CalendarDays, Shield, Laptop, Users, FileText } from "lucide-react";
+import {
+  CheckCircle,
+  CalendarDays,
+  Shield,
+  Laptop,
+  Users,
+  FileText,
+} from "lucide-react";
 
 export default function InternWelcomePage() {
   return (
@@ -14,8 +21,9 @@ export default function InternWelcomePage() {
                 Welcome to Black Wealth Exchange 🎉
               </h1>
               <p className="mt-2 text-white/70 max-w-2xl">
-                You’re officially part of the mission. This page is your home base for onboarding,
-                expectations, tools, and your first-week checklist.
+                You’re officially part of the mission. This page is your home
+                base for onboarding, expectations, tools, and your first-week
+                checklist.
               </p>
             </div>
 
@@ -37,9 +45,21 @@ export default function InternWelcomePage() {
 
           {/* Quick badges */}
           <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Badge icon={<Users className="h-5 w-5" />} title="Mission-first" desc="Build tools that create economic opportunity." />
-            <Badge icon={<Laptop className="h-5 w-5" />} title="Remote-ready" desc="Clear updates, solid documentation, strong ownership." />
-            <Badge icon={<Shield className="h-5 w-5" />} title="Security-aware" desc="Protect user data and platform integrity always." />
+            <Badge
+              icon={<Users className="h-5 w-5" />}
+              title="Mission-first"
+              desc="Build tools that create economic opportunity."
+            />
+            <Badge
+              icon={<Laptop className="h-5 w-5" />}
+              title="Remote-ready"
+              desc="Clear updates, solid documentation, strong ownership."
+            />
+            <Badge
+              icon={<Shield className="h-5 w-5" />}
+              title="Security-aware"
+              desc="Protect user data and platform integrity always."
+            />
           </div>
         </div>
 
@@ -86,11 +106,16 @@ export default function InternWelcomePage() {
               </div>
             </Card>
 
-            <Card title="Platform Overview" icon={<FileText className="h-5 w-5 text-yellow-300" />}>
+            <Card
+              title="Platform Overview"
+              icon={<FileText className="h-5 w-5 text-yellow-300" />}
+            >
               <p className="text-white/75 leading-relaxed">
-                Black Wealth Exchange is building a modern platform that connects Black-owned businesses,
-                jobs, marketplace products, education, and investment opportunities — all with a clean,
-                high-trust user experience. Your work helps increase visibility, access, and economic power.
+                Black Wealth Exchange is building a modern platform that
+                connects Black-owned businesses, jobs, marketplace products,
+                education, and investment opportunities — all with a clean,
+                high-trust user experience. Your work helps increase visibility,
+                access, and economic power.
               </p>
 
               <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -112,11 +137,16 @@ export default function InternWelcomePage() {
               </div>
             </Card>
 
-            <Card title="End-of-Day Update Template" icon={<FileText className="h-5 w-5 text-yellow-300" />}>
+            <Card
+              title="End-of-Day Update Template"
+              icon={<FileText className="h-5 w-5 text-yellow-300" />}
+            >
               <div className="rounded-xl border border-yellow-400/20 bg-black p-4 text-sm text-white/80">
-                <p className="text-yellow-200 font-semibold mb-2">Copy/paste this:</p>
+                <p className="text-yellow-200 font-semibold mb-2">
+                  Copy/paste this:
+                </p>
                 <pre className="whitespace-pre-wrap text-white/80">
-{`EOD Update — (Your Name)
+                  {`EOD Update — (Your Name)
 - What I worked on:
 - What I completed:
 - What I’m blocked on (if any):
@@ -129,16 +159,28 @@ export default function InternWelcomePage() {
 
           {/* Right: Quick links + expectations */}
           <div className="space-y-6">
-            <Card title="Quick Links" icon={<FileText className="h-5 w-5 text-yellow-300" />}>
+            <Card
+              title="Quick Links"
+              icon={<FileText className="h-5 w-5 text-yellow-300" />}
+            >
               <div className="flex flex-col gap-3">
                 <QuickLink href="/admin/dashboard" label="Admin Dashboard" />
-                <QuickLink href="/admin/intern-applications" label="Intern Applications" />
+                <QuickLink
+                  href="/admin/intern-applications"
+                  label="Intern Applications"
+                />
                 <QuickLink href="/marketplace" label="Marketplace" />
-                <QuickLink href="/business-directory" label="Business Directory" />
+                <QuickLink
+                  href="/business-directory"
+                  label="Business Directory"
+                />
               </div>
             </Card>
 
-            <Card title="Expectations" icon={<CheckCircle className="h-5 w-5 text-yellow-300" />}>
+            <Card
+              title="Expectations"
+              icon={<CheckCircle className="h-5 w-5 text-yellow-300" />}
+            >
               <ul className="space-y-2 text-white/75">
                 <li>✅ Communicate clearly and early.</li>
                 <li>✅ Keep code clean and documented.</li>
@@ -147,12 +189,27 @@ export default function InternWelcomePage() {
               </ul>
             </Card>
 
-            <Card title="Support" icon={<Users className="h-5 w-5 text-yellow-300" />}>
+            <Card
+              title="Support"
+              icon={<Users className="h-5 w-5 text-yellow-300" />}
+            >
               <p className="text-white/75">
                 If you hit a blocker, capture:
-                <span className="text-yellow-200 font-semibold"> what you tried</span>, the
-                <span className="text-yellow-200 font-semibold"> exact error</span>, and a
-                <span className="text-yellow-200 font-semibold"> screenshot/log snippet</span>.
+                <span className="text-yellow-200 font-semibold">
+                  {" "}
+                  what you tried
+                </span>
+                , the
+                <span className="text-yellow-200 font-semibold">
+                  {" "}
+                  exact error
+                </span>
+                , and a
+                <span className="text-yellow-200 font-semibold">
+                  {" "}
+                  screenshot/log snippet
+                </span>
+                .
               </p>
             </Card>
           </div>
@@ -160,7 +217,8 @@ export default function InternWelcomePage() {
 
         {/* Footer note */}
         <div className="mt-12 pb-10 text-center text-white/50 text-sm">
-          © {new Date().getFullYear()} Black Wealth Exchange — Intern Onboarding
+          © {new Date().getFullYear()} Black Wealth Exchange — Intern
+          Onboarding
         </div>
       </div>
     </div>
@@ -187,7 +245,15 @@ function Card({
   );
 }
 
-function Badge({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
+function Badge({
+  icon,
+  title,
+  desc,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  desc: string;
+}) {
   return (
     <div className="rounded-2xl border border-yellow-400/20 bg-black/60 p-4">
       <div className="flex items-center gap-2 text-yellow-200 font-semibold">
@@ -225,7 +291,13 @@ function Goal({ title, points }: { title: string; points: string[] }) {
   );
 }
 
-function MiniCard({ title, children }: { title: string; children: React.ReactNode }) {
+function MiniCard({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="rounded-2xl border border-yellow-400/15 bg-black p-4">
       <h3 className="text-yellow-200 font-semibold mb-2">{title}</h3>

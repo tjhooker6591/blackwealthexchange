@@ -96,12 +96,10 @@ export default async function handler(
     return res.status(400).json({ success: false, error: "Role is required." });
   }
   if (why.length < 20) {
-    return res
-      .status(400)
-      .json({
-        success: false,
-        error: "Please tell us why you want to join (min 20 characters).",
-      });
+    return res.status(400).json({
+      success: false,
+      error: "Please tell us why you want to join (min 20 characters).",
+    });
   }
 
   try {

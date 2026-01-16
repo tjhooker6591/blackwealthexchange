@@ -77,7 +77,10 @@ function emailForStatus(status: string, fullName?: string) {
   return null;
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   const admin = requireAdmin(req);
   if (!admin) return res.status(401).json({ error: "Admin only" });
 
@@ -92,17 +95,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (req.method === "PATCH") {
     const { id, status } = req.body as { id: string; status: string };
-    if (!id || !status) return res.status(400).json({ error: "Missing id/status" });
+    if (!id || !status)
+      return res.status(400).json({ error: "Missing id/status" });
 
     // Get the current doc so we can email the right person + avoid duplicates
     const existing = await col.findOne({ _id: new ObjectId(id) });
-    if (!existing) return res.status(404).json({ error: "Application not found" });
+    if (!existing)
+      return res.status(404).json({ error: "Application not found" });
 
     // Update status
-    await col.updateOne(
-      { _id: new ObjectId(id) },
-      { $set: { status } }
-    );
+    await col.updateOne({ _id: new ObjectId(id) }, { $set: { status } });
 
     // Only email for certain statuses
     const emailPayload = emailForStatus(status, existing.fullName);
