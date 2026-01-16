@@ -46,17 +46,24 @@ function allow(ip: string) {
   return true;
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   res.setHeader("Cache-Control", "no-store, max-age=0");
 
   if (req.method !== "POST") {
     res.setHeader("Allow", ["POST"]);
-    return res.status(405).json({ success: false, error: "Method Not Allowed" });
+    return res
+      .status(405)
+      .json({ success: false, error: "Method Not Allowed" });
   }
 
   const ip = getIP(req);
   if (!allow(ip)) {
-    return res.status(429).json({ success: false, error: "Too many requests. Try again shortly." });
+    return res
+      .status(429)
+      .json({ success: false, error: "Too many requests. Try again shortly." });
   }
 
   const body = (req.body || {}) as ApplyBody;
@@ -67,17 +74,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const fullName = String(body.fullName || "").trim();
-  const email = String(body.email || "").trim().toLowerCase();
+  const email = String(body.email || "")
+    .trim()
+    .toLowerCase();
   const role = String(body.role || "").trim();
   const skills = String(body.skills || "").trim();
   const links = String(body.links || "").trim();
   const why = String(body.why || "").trim();
 
   if (fullName.length < 2) {
-    return res.status(400).json({ success: false, error: "Full name is required." });
+    return res
+      .status(400)
+      .json({ success: false, error: "Full name is required." });
   }
   if (!isEmail(email)) {
-    return res.status(400).json({ success: false, error: "A valid email is required." });
+    return res
+      .status(400)
+      .json({ success: false, error: "A valid email is required." });
   }
   if (role.length < 2) {
     return res.status(400).json({ success: false, error: "Role is required." });
@@ -85,7 +98,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (why.length < 20) {
     return res
       .status(400)
-      .json({ success: false, error: "Please tell us why you want to join (min 20 characters)." });
+      .json({
+        success: false,
+        error: "Please tell us why you want to join (min 20 characters).",
+      });
   }
 
   try {
@@ -110,6 +126,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(201).json({ success: true });
   } catch (err) {
     console.error("[/api/interns/apply] error:", err);
-    return res.status(500).json({ success: false, error: "Internal Server Error" });
+    return res
+      .status(500)
+      .json({ success: false, error: "Internal Server Error" });
   }
 }
