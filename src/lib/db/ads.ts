@@ -12,10 +12,15 @@ export interface Campaign {
 }
 
 declare global {
+  // eslint-disable-next-line no-var
   var _mongoClientPromise: Promise<MongoClient> | undefined;
 }
 
-const uri = process.env.MONGODB_URI!;
+const uri = process.env.MONGODB_URI;
+if (!uri) {
+  throw new Error("Missing MONGODB_URI. Set it in Vercel for Preview + Production.");
+}
+
 const options: MongoClientOptions = {};
 
 let client: MongoClient;
@@ -31,9 +36,6 @@ if (process.env.NODE_ENV === "development") {
   clientPromise = client.connect();
 }
 
-/**
- * Fetch a campaign by its ID, projecting only the necessary fields.
- */
 export async function getCampaignById(id: string): Promise<Campaign | null> {
   const client = await clientPromise;
   const db = client.db();
@@ -52,9 +54,6 @@ export async function getCampaignById(id: string): Promise<Campaign | null> {
   );
 }
 
-/**
- * Mark a campaign as paid, storing the Stripe payment intent ID.
- */
 export async function markCampaignPaid(
   id: string,
   paymentIntentId: string,
