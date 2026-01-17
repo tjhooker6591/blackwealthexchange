@@ -1,6 +1,7 @@
 # Security Notes
 
 ## CVE-2026-23745 (tar)
+
 - GitHub alert observed for `tar` (node-tar): Arbitrary file overwrite / symlink poisoning via insufficient path sanitization.
 - Current dependency state: `npm audit` reports 0 vulnerabilities (as of this check).
 - `tar` is only present as a transitive dependency (build/install tooling), not used at runtime by the application.
