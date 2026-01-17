@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import SellerDashboard from "@/components/dashboards/SellerDashboard";
-import EmployerDashboard from "@/components/dashboards/EmployerDashboard";
-import BusinessDashboard from "@/components/dashboards/BusinessDashboard";
-import UserDashboard from "@/components/dashboards/UserDashboard";
-import DashboardFrame from "@/components/dashboards/DashboardFrame";
+import SellerDashboard from "./SellerDashboard";
+import EmployerDashboard from "./EmployerDashboard";
+import BusinessDashboard from "./BusinessDashboard";
+import UserDashboard from "./UserDashboard";
+import DashboardFrame from "./DashboardFrame";
 
 export default function DashboardWrapper() {
   const router = useRouter();

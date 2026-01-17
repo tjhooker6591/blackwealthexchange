@@ -5,11 +5,13 @@ import Link from "next/link";
 
 export default function ShopIndex() {
   return (
-    <main className="min-h-screen bg-black text-white py-16 px-4">
+    <main className="min-h-screen bg-black text-white py-6 px-2 sm:py-10 sm:px-4 md:py-16">
       <div className="max-w-7xl mx-auto text-center">
-        <h1 className="text-4xl md:text-5xl font-extrabold text-gold mb-4">
-          Welcome to the Black Wealth Exchange Marketplace
+        <h1 className="text-xl sm:text-2xl md:text-4xl lg:text-5xl font-extrabold text-gold mb-4">
+          Welcome to the <br />
+          Black Wealth Exchange Marketplace
         </h1>
+
         <p className="text-gray-300 max-w-2xl mx-auto mb-10 text-lg">
           Explore a powerful collection of products and services from
           Black-owned businesses. Support the movement. Circulate the dollar.

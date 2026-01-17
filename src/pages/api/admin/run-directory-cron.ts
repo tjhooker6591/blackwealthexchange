@@ -29,8 +29,12 @@ export default async function handler(
       })
       .toArray();
 
-    const changes = [];
+    const changes: any[] = [];
+
     for (const expired of expiredSlots) {
+      // IMPORTANT: store the slot BEFORE we clear it
+      const expiredSlot = expired.featuredSlot;
+
       // Remove business from slot, mark as expired
       await db.collection("directory_listings").updateOne(
         { _id: expired._id },
@@ -47,14 +51,17 @@ export default async function handler(
 
       // Send expiration email
       if (expired.businessEmail) {
-        await sendBusinessAlert(
-          expired.businessEmail,
-          "Your Featured Directory Slot Has Ended",
-          `<p>Hi ${expired.businessName || "Business Owner"},<br><br>
-          Your featured slot on Black Wealth Exchange has ended.<br>
-          Thank you for participating! To get featured again, please renew or join the waitlist.<br><br>
-          — Black Wealth Exchange Team</p>`,
-        );
+        await sendBusinessAlert({
+          to: expired.businessEmail,
+          businessName: expired.businessName || "Business Owner",
+          message: `Hi ${expired.businessName || "Business Owner"},<br><br>
+            Your featured slot on Black Wealth Exchange has ended.<br>
+            Thank you for participating! To get featured again, please renew or join the waitlist.<br><br>
+            — Black Wealth Exchange Team`,
+          // Optional CTA (safe even if you remove it)
+          ctaUrl: `${process.env.NEXT_PUBLIC_BASE_URL || ""}/advertise-with-us`,
+          ctaText: "Renew Featured Slot",
+        });
       }
 
       // Promote next in queue to open slot (if any)
@@ -72,7 +79,7 @@ export default async function handler(
           { _id: nextBusiness._id },
           {
             $set: {
-              featuredSlot: expired.featuredSlot,
+              featuredSlot: expiredSlot,
               featuredStartDate: now,
               featuredEndDate: new Date(
                 now.getTime() + SLOT_DURATION_DAYS * 24 * 60 * 60 * 1000,
@@ -84,25 +91,27 @@ export default async function handler(
 
         // Send promotion email
         if (nextBusiness.businessEmail) {
-          await sendBusinessAlert(
-            nextBusiness.businessEmail,
-            "Congratulations! Your Business is Now Featured",
-            `<p>Hi ${nextBusiness.businessName || "Business Owner"},<br><br>
-            Your business has been promoted to a featured slot in the Black Wealth Exchange directory!<br>
-            Your slot is now active for ${SLOT_DURATION_DAYS} days.<br><br>
-            Thank you for supporting our community.<br>
-            — Black Wealth Exchange Team</p>`,
-          );
+          await sendBusinessAlert({
+            to: nextBusiness.businessEmail,
+            businessName: nextBusiness.businessName || "Business Owner",
+            message: `Hi ${nextBusiness.businessName || "Business Owner"},<br><br>
+              Congratulations! Your business has been promoted to a featured slot in the Black Wealth Exchange directory.<br>
+              Your slot is now active for ${SLOT_DURATION_DAYS} days.<br><br>
+              Thank you for supporting our community.<br>
+              — Black Wealth Exchange Team`,
+            ctaUrl: `${process.env.NEXT_PUBLIC_BASE_URL || ""}/business-directory`,
+            ctaText: "View Your Listing",
+          });
         }
 
         changes.push({
-          slot: expired.featuredSlot,
+          slot: expiredSlot,
           expired: expired.businessName || expired._id,
           promoted: nextBusiness.businessName || nextBusiness._id,
         });
       } else {
         changes.push({
-          slot: expired.featuredSlot,
+          slot: expiredSlot,
           expired: expired.businessName || expired._id,
           promoted: null,
         });

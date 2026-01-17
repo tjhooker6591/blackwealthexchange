@@ -29,17 +29,9 @@ const AdvertiseWithUs = () => {
       </section>
 
       {/* Banner */}
-      <section
-        style={{
-          textAlign: "center",
-          backgroundColor: "#333",
-          padding: "3rem 1.5rem",
-          borderRadius: "8px",
-          marginBottom: "2rem",
-        }}
-      >
+      <section className="mb-8">
         <h1
-          style={{ fontSize: "2.5rem", fontWeight: "bold", color: "#ffcc00" }}
+          style={{ fontSize: "1.5rem", fontWeight: "bold", color: "#ffcc00" }}
         >
           Want to increase visibility for your business?
         </h1>

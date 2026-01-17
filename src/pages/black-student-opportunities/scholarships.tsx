@@ -12,25 +12,27 @@ const ScholarshipsPage = () => {
       <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-50" />
 
       {/* Hero Section */}
-      <header className="text-center py-32 relative z-10">
+      <header className="text-center py-10 sm:py-14 md:py-18 relative z-10">
         <Image
           src="/favicon.png"
-          alt="Black Wealth Exchnage Logo"
-          width={120}
-          height={120}
-          className="mx-auto mb-4 animate-fadeIn"
+          alt="Black Wealth Exchange Logo"
+          width={100}
+          height={100}
+          className="mx-auto mb-3 sm:mb-4 animate-fadeIn"
+          priority
         />
-        <h2 className="text-4xl sm:text-5xl md:text-4xl font-extrabold tracking-wide text-gold neon-text animate-slideUp">
+        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-wide text-gold neon-text animate-slideUp leading-tight max-w-2xl mx-auto">
           Scholarships for Black Students
         </h2>
-        <p className="text-xl md:text-2xl mt-4 font-light text-gray-300 animate-fadeIn">
-          *&quot;Scholarships provide essential financial support to Black
+
+        <p className="text-base sm:text-lg md:text-xl mt-3 sm:mt-4 font-light text-gray-300 animate-fadeIn max-w-xl mx-auto">
+          &quot;Scholarships provide essential financial support to Black
           students pursuing higher education.&quot;
         </p>
       </header>
 
       {/* Scholarships Content */}
-      <div className="container mx-auto p-6 relative z-10">
+      <div className="container mx-auto mt-4 sm:mt-6 md:mt-8 p-6 relative z-10">
         <div className="space-y-8">
           {/* Jackie Robinson Foundation */}
           <div className="bg-gray-800 p-6 rounded-lg shadow-lg">

@@ -5,6 +5,93 @@ import Link from "next/link";
 import Image from "next/image";
 import { BookOpen, GraduationCap, Users, Briefcase } from "lucide-react";
 import { useRouter } from "next/router";
+import useAuth from "@/hooks/useAuth";
+//import AdminFilterBar, { AdminFilters } from "@/components/admin/AdminFilterBar";
+
+// MODAL COMPONENT
+function ConsultingInterestModal({
+  isOpen,
+  onClose,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+}) {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    try {
+      const res = await fetch("/api/consulting-interest", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email }),
+      });
+      if (!res.ok) throw new Error("Submission failed");
+      setSubmitted(true);
+      setTimeout(() => {
+        setSubmitted(false);
+        setName("");
+        setEmail("");
+        onClose();
+      }, 1600);
+    } catch {
+      setError("Could not submit. Please try again.");
+    }
+  };
+
+  if (!isOpen) return null;
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
+      <div className="bg-gray-900 rounded-lg shadow-lg p-8 max-w-sm w-full relative">
+        <button
+          onClick={onClose}
+          className="absolute top-2 right-3 text-gray-400 hover:text-gold text-2xl font-bold"
+          aria-label="Close"
+        ></button>
+        <h2 className="text-xl font-bold text-gold mb-3">
+          Notify Me: Consulting Interest
+        </h2>
+        {submitted ? (
+          <div className="text-green-400 text-center font-semibold">
+            Thank you! We will notify you at launch.
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <input
+              type="text"
+              placeholder="Your Name"
+              required
+              className="w-full p-2 rounded bg-gray-800 text-white border border-gray-600"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+            <input
+              type="email"
+              placeholder="Your Email"
+              required
+              className="w-full p-2 rounded bg-gray-800 text-white border border-gray-600"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            {error && (
+              <div className="text-red-400 text-center text-sm">{error}</div>
+            )}
+            <button
+              type="submit"
+              className="w-full bg-gold text-black font-semibold rounded py-2 hover:bg-yellow-500 transition"
+            >
+              Notify Me
+            </button>
+          </form>
+        )}
+      </div>
+    </div>
+  );
+}
 
 const EconomicImpactSimulator: React.FC = () => {
   const currentYear = 2025;
@@ -52,7 +139,7 @@ const EconomicImpactSimulator: React.FC = () => {
           href="/1.8trillionimpact"
           className="text-gold font-bold hover:underline text-lg"
         >
-          KNOWLEDGE IS POWER – Select Here to &quot;SEE WHERE YOUR MONEY
+          KNOWLEDGE IS POWER, Select Here to &quot;SEE WHERE YOUR MONEY
           GOES&quot;
         </Link>
       </div>
@@ -70,7 +157,20 @@ const EconomicImpactSimulator: React.FC = () => {
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
   const router = useRouter();
+  const { user } = useAuth();
+
+  const sponsors = [
+    { img: "/ads/sample-banner1.jpg", name: "Pamfa Hoodies" },
+    { img: "/ads/sample-banner2.jpg", name: "Titan Era" },
+    { img: "/ads/sample-banner3.jpg", name: "Legacy FoodMart" },
+    { img: "/ads/sample-banner4.jpg", name: "Ujamaa Eats" },
+    { img: "/ads/sample-banner5.jpg", name: "Pamfa United Citizens" },
+    { img: "/ads/sample-banner6.jpg", name: "Harlem Apparel" },
+    { img: "/ads/sample-banner7.jpg", name: "Ebony Roots" },
+    { img: "/ads/sample-banner8.jpg", name: "Coco and Breezy Eyewear" },
+  ];
 
   const studentOpportunities = [
     {
@@ -93,6 +193,15 @@ export default function Home() {
       icon: Briefcase,
       href: "/black-student-opportunities/internships",
     },
+  ];
+
+  // These are the ONLY routes that are public from the main "actions"!
+  const publicRoutes = [
+    "/about",
+    "/global-timeline",
+    "/events",
+    "/library-of-black-history",
+    "/black-entertainment-news",
   ];
 
   const keySections = [
@@ -135,7 +244,7 @@ export default function Home() {
       <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-50" />
 
       <header className="text-center py-24 relative z-10">
-        <p className="text-lg md:text-xl mt-4 font-light text-gray-300 animate-fadeIn flex justify-center items-center">
+        <p className="text-lg md:text-xl mt-0 font-light text-gray-300 animate-fadeIn flex justify-center items-center">
           <Image
             src="/black-wealth-future.png"
             alt="Black Wealth Emoji"
@@ -189,11 +298,19 @@ export default function Home() {
             </button>
           </div>
 
-          <Link href="/marketplace/become-a-seller">
-            <button className="mt-4 bg-gold text-black text-center py-2 px-4 rounded-lg font-semibold shadow hover:bg-yellow-500 transition animate-pulseGlow">
-              Start Selling on the Marketplace – Join as a Seller!
-            </button>
-          </Link>
+          {/* Gated: Start Selling */}
+          <button
+            className="mt-4 bg-gold text-black text-center py-2 px-4 rounded-lg font-semibold shadow hover:bg-yellow-500 transition animate-pulseGlow"
+            onClick={() => {
+              if (!user) {
+                router.push("/login?redirect=/marketplace/become-a-seller");
+              } else {
+                router.push("/marketplace/become-a-seller");
+              }
+            }}
+          >
+            Start Selling on the Marketplace – Join as a Seller!
+          </button>
 
           <div className="mt-2">
             <Link href="/library-of-black-history">
@@ -237,11 +354,19 @@ export default function Home() {
                 Explore Black-owned real estate options and investments
               </p>
             </div>
-            <Link href="/real-estate-investment">
-              <button className="px-4 py-2 bg-gold text-black font-semibold text-sm rounded-lg hover:bg-yellow-500 transition">
-                Learn More
-              </button>
-            </Link>
+            {/* Gated: Learn More */}
+            <button
+              className="px-4 py-2 bg-gold text-black font-semibold text-sm rounded-lg hover:bg-yellow-500 transition"
+              onClick={() => {
+                if (!user) {
+                  router.push("/login?redirect=/real-estate-investment");
+                } else {
+                  router.push("/real-estate-investment");
+                }
+              }}
+            >
+              Learn More
+            </button>
           </div>
         </section>
 
@@ -252,25 +377,27 @@ export default function Home() {
           </h3>
           <div className="relative w-full h-32 overflow-hidden">
             <div className="absolute flex space-x-4 animate-scroll">
-              {[1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 8].map(
-                (i, index) => (
-                  <div key={index} className="relative h-24 w-40">
-                    <Image
-                      src={`/ads/sample-banner${i}.jpg`}
-                      alt={`Sample Banner ${i}`}
-                      width={160}
-                      height={96}
-                      className="object-cover rounded-lg"
-                      priority
-                    />
+              {[...sponsors, ...sponsors].map((sponsor, index) => (
+                <div key={index} className="relative h-24 w-40">
+                  <Image
+                    src={sponsor.img}
+                    alt={sponsor.name}
+                    width={160}
+                    height={96}
+                    className="object-cover rounded-lg"
+                    priority
+                  />
+                  {/* Sponsor Name Overlay */}
+                  <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-60 text-gold text-xs font-semibold px-2 py-1 rounded">
+                    {sponsor.name}
                   </div>
-                ),
-              )}
+                </div>
+              ))}
             </div>
           </div>
         </section>
 
-        {/* Key Sections */}
+        {/* Key Sections (gated) */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {keySections.map((item, index) => (
             <div
@@ -286,15 +413,27 @@ export default function Home() {
                   🔥 Popular
                 </span>
               )}
-              <Link href={item.href}>
-                <h2 className="text-xl font-semibold hover:underline cursor-pointer">
-                  {item.title}
-                </h2>
-              </Link>
+              <h2
+                className="text-xl font-semibold hover:underline cursor-pointer"
+                onClick={() => {
+                  if (publicRoutes.includes(item.href)) {
+                    router.push(item.href);
+                    return;
+                  }
+                  if (!user) {
+                    router.push(`/login?redirect=${item.href}`);
+                  } else {
+                    router.push(item.href);
+                  }
+                }}
+              >
+                {item.title}
+              </h2>
               <p className="text-sm mt-2">{item.description}</p>
             </div>
           ))}
         </div>
+
         {/* Recruiting & Consulting Services (Coming Soon) */}
         <section className="container mx-auto px-4 bg-yellow-600 rounded-lg shadow-lg p-4 mb-6">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start space-y-4 sm:space-y-0 sm:space-x-4">
@@ -315,19 +454,19 @@ export default function Home() {
                 candidates secure meaningful opportunities.
               </p>
             </div>
-
-            {/* Notify button */}
+            {/* Notify button is public */}
             <div className="flex-shrink-0">
-              <Link href="/dashboard/employer/consulting-interest">
-                <button className="px-4 py-2 bg-black text-yellow-400 text-sm font-semibold rounded hover:bg-gray-900 transition">
-                  Notify Me
-                </button>
-              </Link>
+              <button
+                onClick={() => setModalOpen(true)}
+                className="px-4 py-2 bg-black text-yellow-400 text-sm font-semibold rounded hover:bg-gray-900 transition"
+              >
+                Notify Me
+              </button>
             </div>
           </div>
         </section>
 
-        {/* Advertise Section */}
+        {/* Advertise Section (gated) */}
         <section className="bg-gray-900 border border-gold rounded-lg shadow p-4 text-center my-6 animate-fadeIn">
           <h2 className="text-xl font-semibold text-gold flex items-center justify-center gap-2 mb-1">
             📢 Advertise with Us
@@ -336,13 +475,26 @@ export default function Home() {
             Promote your business today to thousands of engaged users across our
             platform.
           </p>
-          <Link href="/advertise-with-us">
-            <button className="px-4 py-1.5 bg-gold text-black text-sm rounded hover:bg-yellow-500 transition">
-              View Ad Options
-            </button>
-          </Link>
+          <button
+            className="px-4 py-1.5 bg-gold text-black text-sm rounded hover:bg-yellow-500 transition"
+            onClick={() => {
+              if (!user) {
+                router.push("/login?redirect=/advertise-with-us");
+              } else {
+                router.push("/advertise-with-us");
+              }
+            }}
+          >
+            View Ad Options
+          </button>
         </section>
       </main>
+
+      {/* Modal for Consulting Interest */}
+      <ConsultingInterestModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+      />
 
       {/* Footer */}
       <footer className="text-center py-8 border-t border-gold mt-8 relative z-10">
