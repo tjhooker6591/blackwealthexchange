@@ -12,19 +12,28 @@ export interface Campaign {
 }
 
 declare global {
-  // eslint-disable-next-line no-var
   var _mongoClientPromise: Promise<MongoClient> | undefined;
 }
 
 const uri = process.env.MONGODB_URI;
 if (!uri) {
-  throw new Error("Missing MONGODB_URI. Set it in Vercel for Preview + Production.");
+  throw new Error(
+    "Missing MONGODB_URI. Set it in Vercel for Preview + Production.",
+  );
+}
+
+const dbName = process.env.MONGODB_DB;
+if (!dbName) {
+  throw new Error(
+    "Missing MONGODB_DB. Set it in Vercel for Preview + Production (bwe_staging / bwe_prod).",
+  );
 }
 
 const options: MongoClientOptions = {};
 
 let client: MongoClient;
 let clientPromise: Promise<MongoClient>;
+
 if (process.env.NODE_ENV === "development") {
   if (!global._mongoClientPromise) {
     client = new MongoClient(uri, options);
@@ -38,7 +47,8 @@ if (process.env.NODE_ENV === "development") {
 
 export async function getCampaignById(id: string): Promise<Campaign | null> {
   const client = await clientPromise;
-  const db = client.db();
+  const db = client.db(dbName);
+
   return db.collection<Campaign>("ads").findOne(
     { _id: new ObjectId(id) },
     {
@@ -59,7 +69,8 @@ export async function markCampaignPaid(
   paymentIntentId: string,
 ): Promise<void> {
   const client = await clientPromise;
-  const db = client.db();
+  const db = client.db(dbName);
+
   await db.collection<Campaign>("ads").updateOne(
     { _id: new ObjectId(id) },
     {
