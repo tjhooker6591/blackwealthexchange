@@ -2,17 +2,16 @@
   "name": "my-platform",
   "version": "0.1.0",
   "private": true,
- "scripts": {
-  "dev": "next dev",
-  "build": "next build",
-  "start": "next start",
-  "lint": "eslint src/ --fix",
-  "format": "prettier --write .",
-  "typecheck": "tsc --noEmit",
-  "prepare": "if [ \"$VERCEL\" != \"1\" ]; then husky install; fi",
-  "vercel-build": "next build"
-}
-,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint src/ --fix",
+    "format": "prettier --write .",
+    "typecheck": "tsc --noEmit",
+    "prepare": "if [ \"$VERCEL\" != \"1\" ]; then husky install; fi",
+    "vercel-build": "next build"
+  },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
     "apexcharts": "^4.5.0",
