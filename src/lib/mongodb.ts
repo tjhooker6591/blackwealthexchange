@@ -1,26 +1,42 @@
-import { MongoClient } from "mongodb";
+import { MongoClient, MongoClientOptions } from "mongodb";
 
-// Pull the MongoDB connection string from environment variables
-const uri = process.env.MONGODB_URI;
-if (!uri) {
-  throw new Error("🛑 Define MONGODB_URI in .env.local");
-}
-
-// Create a MongoClient and reuse connections in development to prevent exhaustion
-const client = new MongoClient(uri);
-let clientPromise: Promise<MongoClient>;
+const options: MongoClientOptions = {};
 
 declare global {
+  // eslint-disable-next-line no-var
   var _mongoClientPromise: Promise<MongoClient> | undefined;
 }
 
-if (process.env.NODE_ENV === "development") {
-  if (!global._mongoClientPromise) {
-    global._mongoClientPromise = client.connect();
+/**
+ * NOTE:
+ * - Do NOT throw at import-time (breaks CI/build).
+ * - Only create/connect when env exists.
+ */
+function createClientPromise(): Promise<MongoClient> | null {
+  const uri = process.env.MONGODB_URI;
+  if (!uri) return null;
+
+  const client = new MongoClient(uri, options);
+
+  // Reuse in development to avoid exhausting connections
+  if (process.env.NODE_ENV === "development") {
+    if (!global._mongoClientPromise) {
+      global._mongoClientPromise = client.connect();
+    }
+    return global._mongoClientPromise;
   }
-  clientPromise = global._mongoClientPromise;
-} else {
-  clientPromise = client.connect();
+
+  return client.connect();
 }
 
-export default clientPromise;
+/**
+ * Default export stays the same type as before:
+ * - Promise<MongoClient> when configured
+ * - (will throw ONLY when awaited) if not configured
+ */
+const clientPromise = createClientPromise();
+
+export default (clientPromise ??
+  (Promise.reject(
+    new Error("MongoDB env missing: set MONGODB_URI (and MONGODB_DB where used)"),
+  ) as Promise<MongoClient>));
