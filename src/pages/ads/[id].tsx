@@ -1,6 +1,6 @@
 import { GetServerSideProps, GetServerSidePropsContext } from "next";
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { ObjectId } from "mongodb";
 import { getCampaignById } from "@/lib/db/ads";
@@ -22,6 +22,7 @@ export default function AdDetailPage({ campaign }: AdDetailPageProps) {
   const [notice, setNotice] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [imgError, setImgError] = useState(false);
 
   // show payment notices
   useEffect(() => {
@@ -30,6 +31,7 @@ export default function AdDetailPage({ campaign }: AdDetailPageProps) {
     } else if (query.status === "cancelled") {
       setNotice("❌ Payment was cancelled. You can try again below.");
     }
+
     if (query.status) {
       // rename status to _status so ESLint knows it's intentionally unused
       const { status: _status, ...rest } = query;
@@ -48,18 +50,23 @@ export default function AdDetailPage({ campaign }: AdDetailPageProps) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ campaignId: campaign._id }),
       });
+
       if (!res.ok) throw new Error("Failed to create checkout session");
-      const { url } = await res.json();
+
+      const { url } = (await res.json()) as { url: string };
       window.location.href = url;
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
       setError("Failed to initiate payment. Please try again.");
       setLoading(false);
     }
   };
 
-  // pick banner or fallback
-  const imgSrc = campaign.banner || "/default-image.jpg";
+  // Always pass a safe string src to next/image (prevents startsWith crash)
+  const imgSrc =
+    typeof campaign?.banner === "string" && campaign.banner.trim().length > 0
+      ? campaign.banner
+      : "/default-image.jpg";
 
   return (
     <div className="max-w-xl mx-auto p-4">
@@ -72,14 +79,11 @@ export default function AdDetailPage({ campaign }: AdDetailPageProps) {
       <h1 className="text-2xl font-bold mb-4">{campaign.name}</h1>
 
       <Image
-        src={imgSrc}
+        src={imgError ? "/default-image.jpg" : imgSrc}
         alt={campaign.name}
         width={800}
         height={400}
-        onError={(e) => {
-          // swap to fallback if the banner 404s
-          e.currentTarget.src = "/default-image.jpg";
-        }}
+        onError={() => setImgError(true)}
         className="rounded mb-6"
       />
 
@@ -131,13 +135,22 @@ export const getServerSideProps: GetServerSideProps<AdDetailPageProps> = async (
     return { notFound: true };
   }
 
+  // sanitize banner to a string (prevents next/image runtime startsWith crash)
+  const banner =
+    typeof (campaign as any).banner === "string"
+      ? ((campaign as any).banner as string)
+      : (campaign as any).banner?.url &&
+          typeof (campaign as any).banner.url === "string"
+        ? ((campaign as any).banner.url as string)
+        : null;
+
   return {
     props: {
       campaign: {
         _id: campaign._id.toString(),
         name: campaign.name,
         price: campaign.price,
-        banner: campaign.banner ?? null,
+        banner,
         paid: campaign.paid ?? false,
         paidAt: campaign.paidAt?.toISOString() ?? null,
         paymentIntentId: campaign.paymentIntentId ?? null,
@@ -145,3 +158,4 @@ export const getServerSideProps: GetServerSideProps<AdDetailPageProps> = async (
     },
   };
 };
+
