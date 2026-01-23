@@ -3,7 +3,6 @@ import { MongoClient, MongoClientOptions } from "mongodb";
 const options: MongoClientOptions = {};
 
 declare global {
-  // eslint-disable-next-line no-var
   var _mongoClientPromise: Promise<MongoClient> | undefined;
 }
 
@@ -36,7 +35,9 @@ function createClientPromise(): Promise<MongoClient> | null {
  */
 const clientPromise = createClientPromise();
 
-export default (clientPromise ??
+export default clientPromise ??
   (Promise.reject(
-    new Error("MongoDB env missing: set MONGODB_URI (and MONGODB_DB where used)"),
-  ) as Promise<MongoClient>));
+    new Error(
+      "MongoDB env missing: set MONGODB_URI (and MONGODB_DB where used)",
+    ),
+  ) as Promise<MongoClient>);
