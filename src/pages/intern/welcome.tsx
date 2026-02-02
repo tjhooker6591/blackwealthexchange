@@ -7,6 +7,8 @@ import {
   Laptop,
   Users,
   FileText,
+  ListChecks,
+  LayoutDashboard,
 } from "lucide-react";
 
 export default function InternWelcomePage() {
@@ -29,16 +31,17 @@ export default function InternWelcomePage() {
 
             <div className="flex flex-wrap gap-3">
               <Link
-                href="/admin/intern-applications"
+                href="/intern/tasks"
                 className="rounded-xl border border-yellow-400/40 bg-yellow-400 text-black px-5 py-2.5 font-semibold hover:bg-yellow-300 transition"
               >
-                View Applications
+                View Intern Tasks
               </Link>
+
               <Link
-                href="/dashboard"
+                href="/intern/dashboard"
                 className="rounded-xl border border-yellow-400/30 bg-black px-5 py-2.5 font-semibold text-yellow-200 hover:bg-yellow-400/10 transition"
               >
-                Go to Dashboard
+                Intern Dashboard
               </Link>
             </div>
           </div>
@@ -91,7 +94,7 @@ export default function InternWelcomePage() {
                   title="Day 1–2"
                   points={[
                     "Environment set up (build succeeds).",
-                    "Understand the site sections + admin flow.",
+                    "Understand the site sections + intern workflow.",
                     "Pick one small starter ticket.",
                   ]}
                 />
@@ -123,7 +126,7 @@ export default function InternWelcomePage() {
                   <ul className="list-disc pl-5 text-white/70 space-y-1">
                     <li>Simple UI, fast load, no clutter.</li>
                     <li>Role-based access that feels smooth.</li>
-                    <li>Clear data + reliable admin tools.</li>
+                    <li>Clear data + reliable flows.</li>
                   </ul>
                 </MiniCard>
 
@@ -164,17 +167,23 @@ export default function InternWelcomePage() {
               icon={<FileText className="h-5 w-5 text-yellow-300" />}
             >
               <div className="flex flex-col gap-3">
-                <QuickLink href="/admin/dashboard" label="Admin Dashboard" />
                 <QuickLink
-                  href="/admin/intern-applications"
-                  label="Intern Applications"
+                  href="/intern/tasks"
+                  label="Intern Tasks"
+                  icon={<ListChecks className="h-4 w-4" />}
+                />
+                <QuickLink
+                  href="/intern/dashboard"
+                  label="Intern Dashboard"
+                  icon={<LayoutDashboard className="h-4 w-4" />}
                 />
                 <QuickLink href="/marketplace" label="Marketplace" />
-                <QuickLink
-                  href="/business-directory"
-                  label="Business Directory"
-                />
+                <QuickLink href="/business-directory" label="Business Directory" />
               </div>
+
+              <p className="mt-4 text-xs text-white/50">
+                Note: Admin tools are restricted and not part of intern access.
+              </p>
             </Card>
 
             <Card
@@ -195,21 +204,11 @@ export default function InternWelcomePage() {
             >
               <p className="text-white/75">
                 If you hit a blocker, capture:
-                <span className="text-yellow-200 font-semibold">
-                  {" "}
-                  what you tried
-                </span>
-                , the
-                <span className="text-yellow-200 font-semibold">
-                  {" "}
-                  exact error
-                </span>
-                , and a
-                <span className="text-yellow-200 font-semibold">
-                  {" "}
-                  screenshot/log snippet
-                </span>
-                .
+                <span className="text-yellow-200 font-semibold"> what you tried</span>,
+                the
+                <span className="text-yellow-200 font-semibold"> exact error</span>,
+                and a
+                <span className="text-yellow-200 font-semibold"> screenshot/log snippet</span>.
               </p>
             </Card>
           </div>
@@ -217,8 +216,7 @@ export default function InternWelcomePage() {
 
         {/* Footer note */}
         <div className="mt-12 pb-10 text-center text-white/50 text-sm">
-          © {new Date().getFullYear()} Black Wealth Exchange — Intern
-          Onboarding
+          © {new Date().getFullYear()} Black Wealth Exchange — Intern Onboarding
         </div>
       </div>
     </div>
@@ -306,13 +304,24 @@ function MiniCard({
   );
 }
 
-function QuickLink({ href, label }: { href: string; label: string }) {
+function QuickLink({
+  href,
+  label,
+  icon,
+}: {
+  href: string;
+  label: string;
+  icon?: React.ReactNode;
+}) {
   return (
     <Link
       href={href}
       className="rounded-xl border border-yellow-400/25 bg-black px-4 py-3 text-yellow-200 font-semibold hover:bg-yellow-400/10 hover:border-yellow-400/40 transition"
     >
-      {label}
+      <span className="inline-flex items-center gap-2">
+        {icon}
+        {label}
+      </span>
     </Link>
   );
 }
