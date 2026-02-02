@@ -32,15 +32,29 @@ interface Business {
   business_name: string;
   alias: string;
   description?: string;
-  phone?: string;
+  phone?: string | null;
   address?: string;
   category?: string;
-  categories?: string;
+  categories?: string | string[];
+  display_categories?: string;
 }
+
+type SearchResponse = {
+  requestId: string;
+  tookMs: number;
+  page: number;
+  limit: number;
+  total: number;
+  hasMore: boolean;
+  items: Business[];
+  dbUsed?: string;
+};
 
 // --- Only these categories will show at the top! ---
 const TOP_CATEGORIES = ["Food", "Shopping", "Beauty", "Health", "Clothing"];
 const CATEGORIES = ["All", ...TOP_CATEGORIES];
+
+const PAGE_SIZE = 20;
 
 function injectSponsoredEveryN(
   businesses: Business[],
@@ -137,12 +151,26 @@ function SidebarAdCard({
   );
 }
 
+function normalizeCategoryText(b: Business): string {
+  const cats =
+    Array.isArray(b.categories) ? b.categories.join(" ") : b.categories || "";
+  const combined = `${cats} ${b.category || ""} ${b.display_categories || ""}`;
+  return combined.toLowerCase();
+}
+
 export default function BusinessDirectory() {
   const [input, setInput] = useState("");
   const [businesses, setBusinesses] = useState<Business[]>([]);
+  const [total, setTotal] = useState<number>(0);
+  const [page, setPage] = useState<number>(1);
+  const [hasMore, setHasMore] = useState<boolean>(false);
+
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+
   const [category, setCategory] = useState<string>("All");
   const [hasSearched, setHasSearched] = useState(false);
+
   const router = useRouter();
   const didInitialSearch = useRef(false);
 
@@ -157,42 +185,56 @@ export default function BusinessDirectory() {
     }
   }, [router.isReady, router.query.search, input]);
 
-  // Debounced search effect with cancellation, also triggers for category
   const abortRef = useRef<AbortController | null>(null);
+
+  // Main debounced search (resets to page 1)
   useEffect(() => {
     // If nothing is selected, return empty
     if (!input.trim() && (category === "All" || !category)) {
       setBusinesses([]);
+      setTotal(0);
+      setPage(1);
+      setHasMore(false);
       setHasSearched(false);
       return;
     }
-    setIsLoading(true);
 
-    // Debounce timer
+    setIsLoading(true);
+    setIsLoadingMore(false);
+
     const timeout = setTimeout(() => {
-      if (abortRef.current) {
-        abortRef.current.abort();
-      }
+      if (abortRef.current) abortRef.current.abort();
       const controller = new AbortController();
       abortRef.current = controller;
 
-      // Search param logic: include search and category in request if present
       const params = new URLSearchParams();
       if (input.trim()) params.set("search", input.trim());
       if (category && category !== "All") params.set("category", category);
+      params.set("page", "1");
+      params.set("limit", String(PAGE_SIZE));
 
-      fetch(`/api/searchBusinesses?${params.toString()}`, {
+      fetch(`/api/search/businesses?${params.toString()}`, {
         signal: controller.signal,
       })
         .then((r) => r.json())
-        .then((data) => {
-          if (!controller.signal.aborted) {
-            setBusinesses(Array.isArray(data) ? data : []);
-            setHasSearched(true);
-          }
+        .then((data: SearchResponse) => {
+          if (controller.signal.aborted) return;
+
+          const items = Array.isArray(data?.items) ? data.items : [];
+          setBusinesses(items);
+          setTotal(typeof data?.total === "number" ? data.total : items.length);
+          setPage(1);
+          setHasMore(Boolean(data?.hasMore));
+          setHasSearched(true);
         })
         .catch((err) => {
-          if (err.name !== "AbortError") setBusinesses([]);
+          if (err?.name !== "AbortError") {
+            setBusinesses([]);
+            setTotal(0);
+            setPage(1);
+            setHasMore(false);
+            setHasSearched(true);
+          }
         })
         .finally(() => {
           if (!controller.signal.aborted) setIsLoading(false);
@@ -201,30 +243,62 @@ export default function BusinessDirectory() {
 
     return () => {
       clearTimeout(timeout);
-      if (abortRef.current) {
-        abortRef.current.abort();
-      }
+      if (abortRef.current) abortRef.current.abort();
     };
   }, [input, category]);
 
-  const handleImageError = (
-    e: React.SyntheticEvent<HTMLImageElement, Event>,
-  ) => {
+  async function loadMore() {
+    if (isLoadingMore || isLoading || !hasMore) return;
+
+    setIsLoadingMore(true);
+
+    // Cancel any in-flight search before loading more
+    if (abortRef.current) abortRef.current.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+
+    const nextPage = page + 1;
+
+    const params = new URLSearchParams();
+    if (input.trim()) params.set("search", input.trim());
+    if (category && category !== "All") params.set("category", category);
+    params.set("page", String(nextPage));
+    params.set("limit", String(PAGE_SIZE));
+
+    try {
+      const r = await fetch(`/api/search/businesses?${params.toString()}`, {
+        signal: controller.signal,
+      });
+      const data = (await r.json()) as SearchResponse;
+
+      if (controller.signal.aborted) return;
+
+      const items = Array.isArray(data?.items) ? data.items : [];
+      setBusinesses((prev) => [...prev, ...items]);
+      setTotal(typeof data?.total === "number" ? data.total : total);
+      setPage(nextPage);
+      setHasMore(Boolean(data?.hasMore));
+      setHasSearched(true);
+    } catch (err: any) {
+      if (err?.name !== "AbortError") {
+        // keep current results; just stop loading more
+      }
+    } finally {
+      if (!controller.signal.aborted) setIsLoadingMore(false);
+    }
+  }
+
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     e.currentTarget.src = "/default-image.jpg";
   };
 
-  // --- Client-side filter for exact category match (optional for more strictness)
-  // If you want partial match (e.g. "Food" matches "Food & Dining"), use .includes instead!
+  // Keep client-side filter as a safety net (API already filters by category)
   const filtered =
     category === "All"
       ? businesses
-      : businesses.filter((b) => {
-          // Match partial word inside categories/category
-          const catStr = (
-            (b.categories || b.category || "") + ""
-          ).toLowerCase();
-          return catStr.includes(category.toLowerCase());
-        });
+      : businesses.filter((b) =>
+          normalizeCategoryText(b).includes(category.toLowerCase()),
+        );
 
   const sponsorsToShow = [
     ...SIDEBAR_ADS,
@@ -235,7 +309,14 @@ export default function BusinessDirectory() {
       url: "/advertise",
       cta: "Advertise",
     }),
-  ].slice(0, 10); // Limit to 10 ads
+  ].slice(0, 10);
+
+  const emptyLabel =
+    input.trim()
+      ? `No businesses found for "${input}".`
+      : category !== "All"
+        ? `No businesses found in "${category}".`
+        : "No businesses found.";
 
   return (
     <div className="bg-gray-900 text-white min-h-screen flex flex-col md:flex-row">
@@ -248,15 +329,20 @@ export default function BusinessDirectory() {
               key={cat}
               onClick={() => setCategory(cat)}
               className={`px-3 py-1 rounded transition font-semibold text-xs
-                ${category === cat ? "bg-gold text-black shadow" : "bg-gray-800 text-white hover:bg-gold hover:text-black border border-gray-700"}`}
+                ${
+                  category === cat
+                    ? "bg-gold text-black shadow"
+                    : "bg-gray-800 text-white hover:bg-gold hover:text-black border border-gray-700"
+                }`}
             >
               {cat}
             </button>
           ))}
         </div>
+
         {/* Search Bar */}
         <form
-          className="relative w-full mb-4"
+          className="relative w-full mb-2"
           onSubmit={(e) => e.preventDefault()}
           autoComplete="off"
         >
@@ -269,6 +355,28 @@ export default function BusinessDirectory() {
             style={{ zIndex: 20 }}
           />
         </form>
+
+        {/* Results summary */}
+        {hasSearched && (
+          <div className="mb-3 text-xs sm:text-sm text-gray-300 flex items-center justify-between">
+            <div>
+              <span className="text-yellow-400 font-semibold">
+                {total.toLocaleString()}
+              </span>{" "}
+              results
+              {category !== "All" ? (
+                <span className="text-gray-400"> in {category}</span>
+              ) : null}
+              {input.trim() ? (
+                <span className="text-gray-400"> for “{input.trim()}”</span>
+              ) : null}
+            </div>
+            <div className="text-gray-500">
+              {isLoading ? "Searching..." : hasMore ? "More available" : "End"}
+            </div>
+          </div>
+        )}
+
         {/* Sponsored Carousel */}
         <div className="mb-4">
           <div className="flex items-center justify-between mb-1">
@@ -300,15 +408,17 @@ export default function BusinessDirectory() {
             ))}
           </Swiper>
         </div>
+
         {/* Results */}
         <div className="relative min-h-[120px]">
-          {isLoading && filtered.length > 0 && (
+          {isLoading && (
             <div className="absolute inset-0 z-20 flex items-center justify-center bg-gray-900/80 pointer-events-none">
               <div className="text-yellow-400 font-semibold text-lg animate-pulse">
                 Loading...
               </div>
             </div>
           )}
+
           {hasSearched ? (
             filtered.length > 0 ? (
               <div>
@@ -339,11 +449,9 @@ export default function BusinessDirectory() {
                             {SIDEBAR_ADS[(item as any).sponsorIdx].tagline}
                           </div>
                         </div>
-                        <div className="text-[10px] sm:text-xs text-yellow-700 min-w-[60px] sm:min-w-[90px] text-right">
-                          <span className="inline-block px-2 py-1 rounded bg-yellow-400 text-black font-bold absolute top-2 right-2 sm:right-3 shadow">
-                            Sponsored
-                          </span>
-                        </div>
+                        <span className="inline-block px-2 py-1 rounded bg-yellow-400 text-black font-bold absolute top-2 right-2 sm:right-3 shadow text-[10px] sm:text-xs">
+                          Sponsored
+                        </span>
                       </div>
                     ) : (
                       <div
@@ -383,20 +491,37 @@ export default function BusinessDirectory() {
                       </div>
                     ),
                 )}
+
+                {/* Load more */}
+                <div className="py-6 flex justify-center">
+                  {hasMore ? (
+                    <button
+                      onClick={loadMore}
+                      disabled={isLoadingMore}
+                      className={`px-5 py-2 rounded-lg font-bold transition border border-yellow-400 ${
+                        isLoadingMore
+                          ? "bg-gray-800 text-gray-400 cursor-not-allowed"
+                          : "bg-yellow-400 text-black hover:bg-yellow-500"
+                      }`}
+                    >
+                      {isLoadingMore ? "Loading..." : "Load More"}
+                    </button>
+                  ) : (
+                    <div className="text-gray-500 text-sm">You’ve reached the end.</div>
+                  )}
+                </div>
               </div>
             ) : isLoading ? null : (
-              <div className="py-8 text-gray-400 text-center">
-                No businesses found for &quot;{input}&quot;.
-              </div>
+              <div className="py-8 text-gray-400 text-center">{emptyLabel}</div>
             )
           ) : (
             <div className="py-8 text-gray-400 text-center">
-              Discover and support Black-owned businesses! Start your search
-              above.
+              Discover and support Black-owned businesses! Start your search above.
             </div>
           )}
         </div>
       </div>
+
       {/* Sidebar */}
       <aside className="hidden md:block w-full md:w-80 md:border-l border-gray-800 md:pl-4 p-2 pt-6 md:pt-10 bg-gray-900">
         <div className="text-xs uppercase text-gray-400 mb-2 ml-1">
