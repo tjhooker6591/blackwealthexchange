@@ -178,7 +178,10 @@ export default function InternWelcomePage() {
                   icon={<LayoutDashboard className="h-4 w-4" />}
                 />
                 <QuickLink href="/marketplace" label="Marketplace" />
-                <QuickLink href="/business-directory" label="Business Directory" />
+                <QuickLink
+                  href="/business-directory"
+                  label="Business Directory"
+                />
               </div>
 
               <p className="mt-4 text-xs text-white/50">
@@ -204,11 +207,21 @@ export default function InternWelcomePage() {
             >
               <p className="text-white/75">
                 If you hit a blocker, capture:
-                <span className="text-yellow-200 font-semibold"> what you tried</span>,
-                the
-                <span className="text-yellow-200 font-semibold"> exact error</span>,
-                and a
-                <span className="text-yellow-200 font-semibold"> screenshot/log snippet</span>.
+                <span className="text-yellow-200 font-semibold">
+                  {" "}
+                  what you tried
+                </span>
+                , the
+                <span className="text-yellow-200 font-semibold">
+                  {" "}
+                  exact error
+                </span>
+                , and a
+                <span className="text-yellow-200 font-semibold">
+                  {" "}
+                  screenshot/log snippet
+                </span>
+                .
               </p>
             </Card>
           </div>
@@ -216,7 +229,8 @@ export default function InternWelcomePage() {
 
         {/* Footer note */}
         <div className="mt-12 pb-10 text-center text-white/50 text-sm">
-          © {new Date().getFullYear()} Black Wealth Exchange — Intern Onboarding
+          © {new Date().getFullYear()} Black Wealth Exchange — Intern
+          Onboarding
         </div>
       </div>
     </div>

@@ -152,8 +152,9 @@ function SidebarAdCard({
 }
 
 function normalizeCategoryText(b: Business): string {
-  const cats =
-    Array.isArray(b.categories) ? b.categories.join(" ") : b.categories || "";
+  const cats = Array.isArray(b.categories)
+    ? b.categories.join(" ")
+    : b.categories || "";
   const combined = `${cats} ${b.category || ""} ${b.display_categories || ""}`;
   return combined.toLowerCase();
 }
@@ -288,7 +289,9 @@ export default function BusinessDirectory() {
     }
   }
 
-  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+  const handleImageError = (
+    e: React.SyntheticEvent<HTMLImageElement, Event>,
+  ) => {
     e.currentTarget.src = "/default-image.jpg";
   };
 
@@ -311,12 +314,11 @@ export default function BusinessDirectory() {
     }),
   ].slice(0, 10);
 
-  const emptyLabel =
-    input.trim()
-      ? `No businesses found for "${input}".`
-      : category !== "All"
-        ? `No businesses found in "${category}".`
-        : "No businesses found.";
+  const emptyLabel = input.trim()
+    ? `No businesses found for "${input}".`
+    : category !== "All"
+      ? `No businesses found in "${category}".`
+      : "No businesses found.";
 
   return (
     <div className="bg-gray-900 text-white min-h-screen flex flex-col md:flex-row">
@@ -507,7 +509,9 @@ export default function BusinessDirectory() {
                       {isLoadingMore ? "Loading..." : "Load More"}
                     </button>
                   ) : (
-                    <div className="text-gray-500 text-sm">You’ve reached the end.</div>
+                    <div className="text-gray-500 text-sm">
+                      You’ve reached the end.
+                    </div>
                   )}
                 </div>
               </div>
@@ -516,7 +520,8 @@ export default function BusinessDirectory() {
             )
           ) : (
             <div className="py-8 text-gray-400 text-center">
-              Discover and support Black-owned businesses! Start your search above.
+              Discover and support Black-owned businesses! Start your search
+              above.
             </div>
           )}
         </div>
