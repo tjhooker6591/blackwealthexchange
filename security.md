@@ -56,6 +56,37 @@ This document outlines the core security practices and controls in place (or pla
 
 ---
 
+## 🧾 Vulnerability Notes & Exceptions (Audit Triage)
+
+### Next.js advisory: GHSA-5f7q-jpqc-wp7h (PPR Resume Endpoint) — `npm audit` (moderate)
+
+**Status:** Documented exception — not applicable to current configuration
+
+**What `npm audit` reports**
+
+- `npm audit` flags GHSA-5f7q-jpqc-wp7h and recommends `npm audit fix --force`,
+  which would upgrade Next.js to `16.1.6` (breaking change).
+
+**Why we are not applying `--force` right now**
+
+- The advisory applies only when **PPR is enabled** (e.g., `experimental.ppr` / `cacheComponents`) **and**
+  the app is running in **minimal mode** (`NEXT_PRIVATE_MINIMAL_MODE=1`).
+- Current repo/config checks:
+  - `next.config.ts` does **not** enable `experimental.ppr` or `cacheComponents`.
+  - No `NEXT_PRIVATE_MINIMAL_MODE=1` environment variable is set.
+- Therefore, the vulnerable configuration described by the advisory is **not in use**.
+
+**Guardrails**
+
+- Do not enable PPR or minimal mode in this codebase unless Next.js is upgraded to a version that includes the fix.
+
+**Planned remediation**
+
+- Perform a controlled upgrade to Next.js 16+ during a planned maintenance window **after** migrating off
+  `serverRuntimeConfig` / `publicRuntimeConfig` (removed in Next.js 16), then re-run `npm audit` to confirm clean status.
+
+---
+
 ## 📦 Data & Database Security
 
 - MongoDB Atlas with IP whitelisting and encrypted storage at rest.
