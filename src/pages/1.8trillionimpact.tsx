@@ -15,7 +15,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 
-function cx(...classes: Array<string | false | null | undefined>) {
+function _cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
@@ -61,13 +61,16 @@ export default function TrillionImpactPage() {
 
               <h1 className="mt-4 text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight">
                 Where Black Dollars Go:
-                <span className="text-[#D4AF37]"> The Financial Impact</span> & the Opportunity
+                <span className="text-[#D4AF37]"> The Financial Impact</span> &
+                the Opportunity
               </h1>
 
               <p className="mt-3 max-w-3xl text-white/70 leading-relaxed">
-                Black buying power is massive — but the real power comes when spending turns into{" "}
-                <span className="text-white font-bold">ownership</span>, when dollars circulate locally,
-                and when reinvestment compounds into jobs, businesses, and long-term resilience.
+                Black buying power is massive — but the real power comes when
+                spending turns into{" "}
+                <span className="text-white font-bold">ownership</span>, when
+                dollars circulate locally, and when reinvestment compounds into
+                jobs, businesses, and long-term resilience.
               </p>
             </div>
 
@@ -76,7 +79,8 @@ export default function TrillionImpactPage() {
                 href="/business-directory"
                 className="inline-flex items-center justify-center rounded-xl bg-[#D4AF37] px-5 py-2.5 text-[13px] font-extrabold text-black transition hover:bg-yellow-500"
               >
-                Explore Black-Owned Businesses <ArrowRight className="ml-2 h-4 w-4" />
+                Explore Black-Owned Businesses{" "}
+                <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
               <Link
                 href="/"
@@ -140,23 +144,34 @@ export default function TrillionImpactPage() {
           >
             <ul className="list-disc pl-5 space-y-2 text-white/75">
               <li>
-                <strong className="text-white">Annual Economic Contribution:</strong>{" "}
+                <strong className="text-white">
+                  Annual Economic Contribution:
+                </strong>{" "}
                 African Americans contribute an estimated{" "}
-                <strong className="text-white">$2.1T</strong> annually to the U.S. economy (2026 estimate).
+                <strong className="text-white">$2.1T</strong> annually to the
+                U.S. economy (2026 estimate).
               </li>
               <li>
-                <strong className="text-white">2025 baseline:</strong> Estimated at{" "}
-                <strong className="text-white">$1.98T</strong> in 2025 (recent estimate).
+                <strong className="text-white">2025 baseline:</strong> Estimated
+                at <strong className="text-white">$1.98T</strong> in 2025
+                (recent estimate).
               </li>
               <li>
-                <strong className="text-white">Global Comparison:</strong> At this scale, Black buying power
-                is comparable to the GDP of major economies (high-level comparison, not a perfect 1:1 GDP metric).
+                <strong className="text-white">Global Comparison:</strong> At
+                this scale, Black buying power is comparable to the GDP of major
+                economies (high-level comparison, not a perfect 1:1 GDP metric).
               </li>
               <li>
-                <strong className="text-white">Retail & Consumer Influence:</strong> Black consumers strongly influence fashion, beauty, tech, and food markets.
+                <strong className="text-white">
+                  Retail & Consumer Influence:
+                </strong>{" "}
+                Black consumers strongly influence fashion, beauty, tech, and
+                food markets.
               </li>
               <li>
-                <strong className="text-white">Investment Potential:</strong> Redirecting even a small percentage into Black-owned businesses can compound into jobs, ownership, and community resilience.
+                <strong className="text-white">Investment Potential:</strong>{" "}
+                Redirecting even a small percentage into Black-owned businesses
+                can compound into jobs, ownership, and community resilience.
               </li>
             </ul>
 
@@ -185,23 +200,36 @@ export default function TrillionImpactPage() {
           >
             <ul className="list-disc pl-5 space-y-2 text-white/75">
               <li>
-                <strong className="text-white">Retail & Fashion:</strong> Brands like Nike, Louis Vuitton, H&amp;M, Gucci, and Adidas benefit heavily from Black consumer loyalty.
+                <strong className="text-white">Retail & Fashion:</strong> Brands
+                like Nike, Louis Vuitton, H&amp;M, Gucci, and Adidas benefit
+                heavily from Black consumer loyalty.
               </li>
               <li>
-                <strong className="text-white">Beauty & Personal Care:</strong> Companies such as L&apos;Oréal, Procter &amp; Gamble, Unilever, Estée Lauder, and Johnson &amp; Johnson profit from Black spending.
+                <strong className="text-white">Beauty & Personal Care:</strong>{" "}
+                Companies such as L&apos;Oréal, Procter &amp; Gamble, Unilever,
+                Estée Lauder, and Johnson &amp; Johnson profit from Black
+                spending.
               </li>
               <li>
-                <strong className="text-white">Technology & Entertainment:</strong> Giants like Apple, Netflix, Spotify, Samsung, Sony, and Amazon capture significant share of consumer dollars.
+                <strong className="text-white">
+                  Technology & Entertainment:
+                </strong>{" "}
+                Giants like Apple, Netflix, Spotify, Samsung, Sony, and Amazon
+                capture significant share of consumer dollars.
               </li>
               <li>
-                <strong className="text-white">Fast Food & Dining:</strong> McDonald&apos;s, Starbucks, Chick-fil-A, KFC, and Taco Bell benefit greatly from Black consumer dollars.
+                <strong className="text-white">Fast Food & Dining:</strong>{" "}
+                McDonald&apos;s, Starbucks, Chick-fil-A, KFC, and Taco Bell
+                benefit greatly from Black consumer dollars.
               </li>
             </ul>
 
             <div className="mt-4 rounded-2xl border border-white/10 bg-black/30 p-4 text-white/70">
-              <strong className="text-white">Power move:</strong> keep your favorites — but{" "}
-              <span className="text-white font-bold">rebalance</span>. Make Black-owned your default where you can:
-              dining, grooming, services, gifts, events, and recurring monthly purchases.
+              <strong className="text-white">Power move:</strong> keep your
+              favorites — but{" "}
+              <span className="text-white font-bold">rebalance</span>. Make
+              Black-owned your default where you can: dining, grooming,
+              services, gifts, events, and recurring monthly purchases.
             </div>
           </SectionCard>
 
@@ -214,23 +242,49 @@ export default function TrillionImpactPage() {
             {/* Keep your original statements, but strengthen + add clarity */}
             <ul className="list-disc pl-5 space-y-2 text-white/75">
               <li>
-                <strong className="text-white">Circulation Time (often-cited):</strong> You may hear comparisons like “hours vs days” across communities. These figures vary by source and methodology — but the core idea holds: faster exit = weaker compounding.
+                <strong className="text-white">
+                  Circulation Time (often-cited):
+                </strong>{" "}
+                You may hear comparisons like “hours vs days” across
+                communities. These figures vary by source and methodology — but
+                the core idea holds: faster exit = weaker compounding.
               </li>
               <li>
-                <strong className="text-white">Wealth Leakage:</strong> When businesses, suppliers, and financial institutions are external, profit is extracted rather than recirculated.
+                <strong className="text-white">Wealth Leakage:</strong> When
+                businesses, suppliers, and financial institutions are external,
+                profit is extracted rather than recirculated.
               </li>
               <li>
-                <strong className="text-white">Redistribution Potential:</strong> By reallocating just 5–10% of spending back into the community, billions can be reinvested into education, infrastructure, and entrepreneurship.
+                <strong className="text-white">
+                  Redistribution Potential:
+                </strong>{" "}
+                By reallocating just 5–10% of spending back into the community,
+                billions can be reinvested into education, infrastructure, and
+                entrepreneurship.
               </li>
               <li>
-                <strong className="text-white">Actionable Fact:</strong> Shifting just 5% creates meaningful capital flow that supports hiring, expansion, and new business formation.
+                <strong className="text-white">Actionable Fact:</strong>{" "}
+                Shifting just 5% creates meaningful capital flow that supports
+                hiring, expansion, and new business formation.
               </li>
             </ul>
 
             <div className="mt-5 grid grid-cols-1 md:grid-cols-3 gap-3">
-              <ImpactStat title="0.5% shift" value={formatMoney(shift05)} note="small habit change" />
-              <ImpactStat title="1% shift" value={formatMoney(shift1)} note="strong monthly intention" />
-              <ImpactStat title="5% shift" value={formatMoney(shift5)} note="community-wide movement" />
+              <ImpactStat
+                title="0.5% shift"
+                value={formatMoney(shift05)}
+                note="small habit change"
+              />
+              <ImpactStat
+                title="1% shift"
+                value={formatMoney(shift1)}
+                note="strong monthly intention"
+              />
+              <ImpactStat
+                title="5% shift"
+                value={formatMoney(shift5)}
+                note="community-wide movement"
+              />
             </div>
           </SectionCard>
 
@@ -242,24 +296,36 @@ export default function TrillionImpactPage() {
           >
             <ul className="list-disc pl-5 space-y-2 text-white/75">
               <li>
-                <strong className="text-white">Buy Black:</strong> Prioritize Black-owned businesses to increase local circulation and job creation.
+                <strong className="text-white">Buy Black:</strong> Prioritize
+                Black-owned businesses to increase local circulation and job
+                creation.
               </li>
               <li>
-                <strong className="text-white">Bank Black:</strong> Direct deposits and savings to Black-owned institutions where possible.
+                <strong className="text-white">Bank Black:</strong> Direct
+                deposits and savings to Black-owned institutions where possible.
               </li>
               <li>
-                <strong className="text-white">Invest Black:</strong> Support entrepreneurs, startups, and Black-owned funds and projects.
+                <strong className="text-white">Invest Black:</strong> Support
+                entrepreneurs, startups, and Black-owned funds and projects.
               </li>
               <li>
-                <strong className="text-white">Educate Black:</strong> Build financial literacy so families can convert income into assets.
+                <strong className="text-white">Educate Black:</strong> Build
+                financial literacy so families can convert income into assets.
               </li>
               <li>
-                <strong className="text-white">Ownership mindset:</strong> Every purchase is a vote. The mission is to vote for ownership more often.
+                <strong className="text-white">Ownership mindset:</strong> Every
+                purchase is a vote. The mission is to vote for ownership more
+                often.
               </li>
             </ul>
 
             <div className="mt-4 rounded-2xl border border-[#D4AF37]/25 bg-[#D4AF37]/10 p-4 text-[13px] text-white/80">
-              <strong className="text-white">Why this matters:</strong> Wealth compounds when assets grow. The Federal Reserve’s SCF data shows Black non-Hispanic families’ median net worth was about <strong className="text-white">$44,900</strong> in 2022 — reinforcing why ownership and asset-building must be the goal, not just consumption.
+              <strong className="text-white">Why this matters:</strong> Wealth
+              compounds when assets grow. The Federal Reserve’s SCF data shows
+              Black non-Hispanic families’ median net worth was about{" "}
+              <strong className="text-white">$44,900</strong> in 2022 —
+              reinforcing why ownership and asset-building must be the goal, not
+              just consumption.
             </div>
           </SectionCard>
 
@@ -270,18 +336,35 @@ export default function TrillionImpactPage() {
             subtitle="A practical plan that doesn’t require perfection — just consistency."
           >
             <p className="text-white/75 leading-relaxed">
-              Shifting spending habits toward Black-owned enterprises will create jobs, foster generational wealth, and empower the Black community.
-              Black buying power is transformative — when used strategically, it can drive self-sufficiency, prosperity, and long-lasting economic control.
+              Shifting spending habits toward Black-owned enterprises will
+              create jobs, foster generational wealth, and empower the Black
+              community. Black buying power is transformative — when used
+              strategically, it can drive self-sufficiency, prosperity, and
+              long-lasting economic control.
               <strong className="text-white"> The time to act is now.</strong>
             </p>
 
             <ul className="mt-4 list-disc pl-5 space-y-2 text-white/75">
-              <li>Choose 3 recurring categories to “Buy Black first” (food, grooming, gifts, services).</li>
-              <li>Move one recurring bill/deposit into a community-aligned institution where possible.</li>
-              <li>Set a monthly “ownership transfer” goal (0.5% is powerful when repeated).</li>
-              <li>Teach one wealth principle monthly (budgeting, investing, credit, insurance, estate basics).</li>
               <li>
-                <strong className="text-white">Important:</strong> Consistency beats intensity. A small shift, sustained, creates compounding impact.
+                Choose 3 recurring categories to “Buy Black first” (food,
+                grooming, gifts, services).
+              </li>
+              <li>
+                Move one recurring bill/deposit into a community-aligned
+                institution where possible.
+              </li>
+              <li>
+                Set a monthly “ownership transfer” goal (0.5% is powerful when
+                repeated).
+              </li>
+              <li>
+                Teach one wealth principle monthly (budgeting, investing,
+                credit, insurance, estate basics).
+              </li>
+              <li>
+                <strong className="text-white">Important:</strong> Consistency
+                beats intensity. A small shift, sustained, creates compounding
+                impact.
               </li>
             </ul>
 
@@ -306,8 +389,10 @@ export default function TrillionImpactPage() {
             subtitle="This is how we turn buying power into economic control."
           >
             <p className="text-white/75 leading-relaxed">
-              We don’t need everyone to change everything overnight. We need a movement that shifts enough spending — consistently —
-              to grow Black-owned supply chains, expand hiring, and increase ownership across neighborhoods.
+              We don’t need everyone to change everything overnight. We need a
+              movement that shifts enough spending — consistently — to grow
+              Black-owned supply chains, expand hiring, and increase ownership
+              across neighborhoods.
               <strong className="text-white"> The time to act is now.</strong>
             </p>
 
@@ -333,13 +418,18 @@ export default function TrillionImpactPage() {
             </div>
 
             <div className="mt-6 rounded-2xl border border-white/10 bg-black/30 p-4 text-[12px] text-white/60">
-              <div className="font-extrabold text-white/70 mb-2">Sources / Notes</div>
+              <div className="font-extrabold text-white/70 mb-2">
+                Sources / Notes
+              </div>
               <ul className="list-disc pl-5 space-y-1">
                 <li>
-                  Buying power estimates are commonly cited from NielsenIQ / Selig Center projections; figures vary by methodology and year.
+                  Buying power estimates are commonly cited from NielsenIQ /
+                  Selig Center projections; figures vary by methodology and
+                  year.
                 </li>
                 <li>
-                  Wealth context: Federal Reserve SCF reporting highlights persistent wealth gaps even amid improvements.
+                  Wealth context: Federal Reserve SCF reporting highlights
+                  persistent wealth gaps even amid improvements.
                 </li>
               </ul>
               <div className="mt-3 flex flex-wrap gap-3">
@@ -396,8 +486,12 @@ function SectionCard({
           {icon}
         </div>
         <div className="min-w-0 flex-1">
-          <h2 className="text-lg sm:text-xl font-extrabold text-white">{title}</h2>
-          {subtitle ? <p className="mt-1 text-white/60 text-sm">{subtitle}</p> : null}
+          <h2 className="text-lg sm:text-xl font-extrabold text-white">
+            {title}
+          </h2>
+          {subtitle ? (
+            <p className="mt-1 text-white/60 text-sm">{subtitle}</p>
+          ) : null}
         </div>
       </div>
       <div className="mt-4">{children}</div>
@@ -423,7 +517,9 @@ function StatCard({
         {label}
       </div>
       <div className="mt-2 text-2xl font-extrabold text-white">{value}</div>
-      {note ? <div className="mt-1 text-[12px] text-white/55">{note}</div> : null}
+      {note ? (
+        <div className="mt-1 text-[12px] text-white/55">{note}</div>
+      ) : null}
     </div>
   );
 }
@@ -443,7 +539,9 @@ function MiniCallout({
         {icon}
         <div className="font-extrabold text-white">{title}</div>
       </div>
-      <div className="mt-2 text-[13px] text-white/70 leading-relaxed">{desc}</div>
+      <div className="mt-2 text-[13px] text-white/70 leading-relaxed">
+        {desc}
+      </div>
     </div>
   );
 }
@@ -452,7 +550,9 @@ function ValueCard({ title, desc }: { title: string; desc: string }) {
   return (
     <div className="rounded-2xl border border-white/10 bg-black/30 p-4">
       <div className="text-[13px] font-extrabold text-[#D4AF37]">{title}</div>
-      <div className="mt-2 text-[13px] text-white/70 leading-relaxed">{desc}</div>
+      <div className="mt-2 text-[13px] text-white/70 leading-relaxed">
+        {desc}
+      </div>
     </div>
   );
 }
@@ -470,7 +570,9 @@ function ImpactStat({
     <div className="rounded-2xl border border-white/10 bg-black/30 p-4">
       <div className="text-[12px] text-white/60 font-bold">{title}</div>
       <div className="mt-2 text-xl font-extrabold text-white">{value}</div>
-      {note ? <div className="mt-1 text-[12px] text-white/55">{note}</div> : null}
+      {note ? (
+        <div className="mt-1 text-[12px] text-white/55">{note}</div>
+      ) : null}
     </div>
   );
 }
