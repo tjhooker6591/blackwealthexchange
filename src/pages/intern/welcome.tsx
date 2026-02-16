@@ -1,3 +1,6 @@
+// src/pages/intern/welcome.tsx
+"use client";
+
 import React from "react";
 import Link from "next/link";
 import {
@@ -149,7 +152,7 @@ export default function InternWelcomePage() {
                   {`EOD Update — (Your Name)
 - What I worked on:
 - What I completed:
-- What I’m blocked on (if any):
+- What I am blocked on (if any):
 - Next steps for tomorrow:
 - Links (PRs / screenshots / notes):`}
                 </pre>
@@ -174,6 +177,7 @@ export default function InternWelcomePage() {
                   href="/business-directory"
                   label="Business Directory"
                 />
+                <QuickLink href="/intern/tasks" label="Intern Tasks" />
               </div>
             </Card>
 
@@ -195,16 +199,10 @@ export default function InternWelcomePage() {
             >
               <p className="text-white/75">
                 If you hit a blocker, capture:
-                <span className="text-yellow-200 font-semibold">
-                  {" "}
-                  what you tried
-                </span>
-                , the
-                <span className="text-yellow-200 font-semibold">
-                  {" "}
-                  exact error
-                </span>
-                , and a
+                <span className="text-yellow-200 font-semibold"> what you tried</span>,
+                the
+                <span className="text-yellow-200 font-semibold"> exact error</span>,
+                and a
                 <span className="text-yellow-200 font-semibold">
                   {" "}
                   screenshot/log snippet
@@ -217,8 +215,7 @@ export default function InternWelcomePage() {
 
         {/* Footer note */}
         <div className="mt-12 pb-10 text-center text-white/50 text-sm">
-          © {new Date().getFullYear()} Black Wealth Exchange — Intern
-          Onboarding
+          © {new Date().getFullYear()} Black Wealth Exchange — Intern Onboarding
         </div>
       </div>
     </div>

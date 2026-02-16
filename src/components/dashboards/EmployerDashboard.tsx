@@ -2,13 +2,24 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/router";
+import {
+  Briefcase,
+  Users,
+  MessageSquare,
+  BarChart3,
+  ArrowRight,
+  Lock,
+  PlusCircle,
+  FileText,
+} from "lucide-react";
 
 interface Stats {
   jobsPosted: number;
   totalApplicants: number;
   messages: number;
-  profileCompletion: number;
+  profileCompletion: number; // 0-100
 }
 
 interface Job {
@@ -28,7 +39,24 @@ interface Applicant {
   resumeUrl: string;
 }
 
+function cx(...classes: Array<string | false | null | undefined>) {
+  return classes.filter(Boolean).join(" ");
+}
+
+// Adjust routes here if your project uses different paths
+const ROUTES = {
+  postJob: "/post-job",
+  jobs: "/employer/jobs",
+  applicants: "/employer/applicants",
+  messages: "/employer/messages",
+  analytics: "/employer/analytics",
+  billing: "/dashboard/employer/billing", // keep if this exists
+  consultingInterest: "/dashboard/employer/consulting-interest",
+};
+
 export default function EmployerDashboard() {
+  const router = useRouter();
+
   const [stats, setStats] = useState<Stats>({
     jobsPosted: 0,
     totalApplicants: 0,
@@ -39,27 +67,62 @@ export default function EmployerDashboard() {
   const [recentApplicants, setRecentApplicants] = useState<Applicant[]>([]);
   const [loading, setLoading] = useState(true);
   const [accessDenied, setAccessDenied] = useState(false);
+  const [error, setError] = useState<string>("");
 
   useEffect(() => {
-    const verifyAndLoadData = async () => {
+    const controller = new AbortController();
+
+    (async () => {
       try {
+        setError("");
+
+        // 1) Gate
         const sessionRes = await fetch("/api/auth/me", {
           cache: "no-store",
           credentials: "include",
+          signal: controller.signal,
         });
-        const sessionData = await sessionRes.json();
 
-        if (!sessionData.user || sessionData.user.accountType !== "employer") {
+        if (!sessionRes.ok) {
           setAccessDenied(true);
           return;
         }
 
-        // Fetch stats
-        const statsRes = await fetch("/api/employer/stats", {
-          cache: "no-store",
-          credentials: "include",
-        });
+        const sessionData = await sessionRes.json();
+        const u = sessionData?.user;
+
+        if (!u || u.accountType !== "employer") {
+          setAccessDenied(true);
+          return;
+        }
+
+        // 2) Load dashboard data in parallel
+        const [statsRes, jobsRes, appRes] = await Promise.all([
+          fetch("/api/employer/stats", {
+            cache: "no-store",
+            credentials: "include",
+            signal: controller.signal,
+          }),
+          fetch("/api/employer/jobs?limit=5", {
+            cache: "no-store",
+            credentials: "include",
+            signal: controller.signal,
+          }),
+          fetch("/api/employer/applicants?limit=5", {
+            cache: "no-store",
+            credentials: "include",
+            signal: controller.signal,
+          }),
+        ]);
+
+        if (!statsRes.ok) throw new Error("Failed to load employer stats.");
+        if (!jobsRes.ok) throw new Error("Failed to load recent job postings.");
+        if (!appRes.ok) throw new Error("Failed to load recent applicants.");
+
         const statsData = await statsRes.json();
+        const jobsData: { jobs: Job[] } = await jobsRes.json();
+        const appData: { applicants: Applicant[] } = await appRes.json();
+
         setStats({
           jobsPosted: statsData.jobsPosted || 0,
           totalApplicants: statsData.totalApplicants || 0,
@@ -67,283 +130,398 @@ export default function EmployerDashboard() {
           profileCompletion: statsData.profileCompletion || 0,
         });
 
-        // Fetch recent jobs
-        const jobsRes = await fetch("/api/employer/jobs?limit=5", {
-          cache: "no-store",
-          credentials: "include",
-        });
-        const jobsData: { jobs: Job[] } = await jobsRes.json();
-        setJobList(jobsData.jobs || []);
-
-        // Fetch recent applicants
-        const appRes = await fetch("/api/employer/applicants?limit=5", {
-          cache: "no-store",
-          credentials: "include",
-        });
-        const appData: { applicants: Applicant[] } = await appRes.json();
-        setRecentApplicants(appData.applicants || []);
-      } catch (err) {
-        console.error("Failed to load employer data:", err);
-        setAccessDenied(true);
+        setJobList(jobsData?.jobs || []);
+        setRecentApplicants(appData?.applicants || []);
+      } catch (err: any) {
+        if (err?.name !== "AbortError") {
+          console.error(err);
+          setError(err?.message || "An unexpected error occurred.");
+        }
       } finally {
         setLoading(false);
       }
-    };
-    verifyAndLoadData();
+    })();
+
+    return () => controller.abort();
   }, []);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center text-white bg-black">
-        <p>Loading Employer Dashboard...</p>
-      </div>
-    );
-  }
+  const completion = useMemo(() => {
+    const n = Number(stats.profileCompletion || 0);
+    return Math.max(0, Math.min(100, n));
+  }, [stats.profileCompletion]);
+
+  // ✅ Option A: return cards/sections only (no full-page wrappers)
+  if (loading) return <DashboardSkeleton />;
 
   if (accessDenied) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-white bg-black">
-        <p>Access Denied. You do not have permission to view this dashboard.</p>
+      <div className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow-xl">
+        <div className="flex items-start gap-3">
+          <div className="h-10 w-10 rounded-xl border border-white/10 bg-black/30 flex items-center justify-center">
+            <Lock className="h-5 w-5 text-yellow-300" />
+          </div>
+          <div className="flex-1">
+            <h2 className="text-xl font-extrabold text-gold">Access Denied</h2>
+            <p className="text-gray-300 text-sm mt-1">
+              Please log in with an employer account to view this dashboard.
+            </p>
+            <div className="mt-4 flex flex-col sm:flex-row gap-3">
+              <button
+                onClick={() => router.push("/login?redirect=/dashboard")}
+                className="px-5 py-2 rounded-xl bg-gold text-black font-semibold hover:bg-yellow-500 transition"
+              >
+                Log In
+              </button>
+              <Link
+                href={ROUTES.postJob}
+                className="px-5 py-2 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition text-center"
+              >
+                Post a Job
+              </Link>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <header className="bg-gray-900 text-white p-4">
-        <div className="container mx-auto flex justify-between items-center">
-          <h1 className="text-xl font-bold">Employer Dashboard</h1>
-          <nav className="space-x-4">
-            <Link href="/dashboard" className="hover:underline">
-              Dashboard Home
-            </Link>
-            <Link href="/profile" className="hover:underline">
-              Profile
-            </Link>
-            <Link
-              href="/dashboard/employer/billing"
-              className="hover:underline"
-            >
-              Billing
-            </Link>
-          </nav>
+    <section className="space-y-8">
+      {/* Top row: quick actions */}
+      <div className="grid gap-4 md:grid-cols-3">
+        <ActionCard
+          icon={<PlusCircle className="h-5 w-5 text-yellow-300" />}
+          title="Post a New Job"
+          description="Create a listing and reach Black talent fast."
+          href={ROUTES.postJob}
+          primary
+        />
+        <ActionCard
+          icon={<Users className="h-5 w-5 text-yellow-300" />}
+          title="View Applicants"
+          description="Review and contact qualified candidates."
+          href={ROUTES.applicants}
+        />
+        <ActionCard
+          icon={<BarChart3 className="h-5 w-5 text-yellow-300" />}
+          title="Analytics"
+          description="Track performance and engagement."
+          href={ROUTES.analytics}
+        />
+      </div>
+
+      {/* Error banner (non-blocking) */}
+      {error ? (
+        <div className="rounded-2xl border border-red-500/30 bg-red-500/10 p-5 shadow-xl">
+          <p className="text-red-200 font-semibold">Something went wrong</p>
+          <p className="text-gray-200 text-sm mt-1">{error}</p>
         </div>
-      </header>
+      ) : null}
 
-      {/* Make sidebar stack on mobile */}
-      <div className="flex flex-col md:flex-row flex-1">
-        <aside className="w-full md:w-64 bg-gray-800 text-white p-4">
-          <nav>
-            <ul className="space-y-4">
-              <li>
-                <Link
-                  href="/dashboard/employer/overview"
-                  className="hover:underline"
-                >
-                  Overview
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/dashboard/employer/jobs"
-                  className="hover:underline"
-                >
-                  Job Postings
-                </Link>
-              </li>
-              <li>
-                <Link href="/employer/applicants" className="hover:underline">
-                  Applicants
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/dashboard/employer/tools"
-                  className="hover:underline"
-                >
-                  Employer Tools
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/dashboard/employer/analytics"
-                  className="hover:underline"
-                >
-                  Analytics
-                </Link>
-              </li>
-            </ul>
-          </nav>
-        </aside>
-
-        <main className="flex-1 p-6 bg-gray-900 text-white">
-          {/* Responsive stats grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <StatCard label="Jobs Posted" value={stats.jobsPosted} />
-            <StatCard label="Total Applicants" value={stats.totalApplicants} />
-            <StatCard label="Messages" value={stats.messages} />
-            <StatCard
-              label="Profile Completion"
-              value={stats.profileCompletion}
-              suffix="%"
-            />
-          </div>
-
-          {/* Responsive action cards grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <DashboardCard
-              title="📄 Post a New Job"
-              description="Create a job listing and reach top talent."
-              href="/post-job"
-              color="bg-blue-700"
-            />
-            <DashboardCard
-              title="👥 View Applicants"
-              description="Review applications and contact qualified candidates."
-              href="/employer/applicants"
-              color="bg-purple-700"
-            />
-            <DashboardCard
-              title="💬 Messages"
-              description="Check and respond to candidate messages."
-              href="/dashboard/employer/messages"
-              color="bg-green-600"
-            />
-
-            {/* New Consulting Services Card */}
-            <Link
-              href="/dashboard/employer/consulting-interest"
-              className="block p-4 mb-4 md:mb-0 rounded-lg shadow hover:shadow-xl transition bg-yellow-600 overflow visible"
-            >
-              <div className="flex justify-between items-center mb-1">
-                <h3 className="text-xl font-bold">
-                  Recruiting & Consulting Services
-                </h3>
-                <span className="inline-block bg-gray-700 text-xs px-1 py-0 rounded-full whitespace-nowrap">
-                  Coming Soon
-                </span>
-              </div>
-              <p className="text-sm">
-                Get notified when we launch this service.
-              </p>
+      {/* Stats */}
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <StatTile
+          icon={<Briefcase className="h-5 w-5 text-yellow-300" />}
+          label="Jobs Posted"
+          value={stats.jobsPosted}
+          href={ROUTES.jobs}
+        />
+        <StatTile
+          icon={<Users className="h-5 w-5 text-yellow-300" />}
+          label="Total Applicants"
+          value={stats.totalApplicants}
+          href={ROUTES.applicants}
+        />
+        <StatTile
+          icon={<MessageSquare className="h-5 w-5 text-yellow-300" />}
+          label="Messages"
+          value={stats.messages}
+          href={ROUTES.messages}
+        />
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow-xl">
+          <div className="flex items-center justify-between">
+            <div className="text-sm text-gray-300">Profile Completion</div>
+            <Link href="/profile" className="text-sm text-gold hover:underline">
+              Improve
             </Link>
           </div>
+          <div className="mt-4 text-3xl font-extrabold text-white">
+            {completion}%
+          </div>
+          <div className="mt-3 h-2 w-full rounded-full bg-black/40 border border-white/10 overflow-hidden">
+            <div
+              className="h-full bg-yellow-400"
+              style={{ width: `${completion}%` }}
+            />
+          </div>
+          <p className="text-sm text-gray-400 mt-2">
+            A strong employer profile increases application quality.
+          </p>
+        </div>
+      </div>
 
-          <section className="mb-8">
-            <h2 className="text-2xl font-bold mb-4">Recent Applicants</h2>
-            {recentApplicants.length > 0 ? (
-              <div className="space-y-4">
-                {recentApplicants.map((app) => (
-                  <div key={app._id} className="p-4 bg-gray-800 rounded-lg">
-                    <h3 className="text-lg font-semibold">{app.name}</h3>
-                    <p className="text-sm text-gray-300">
-                      Applied for: {app.jobTitle} on{" "}
-                      {new Date(app.appliedAt).toLocaleDateString()}
-                    </p>
+      {/* Recent activity */}
+      <div className="grid gap-6 lg:grid-cols-2">
+        <ListCard
+          title="Recent Applicants"
+          subtitle="Most recent applications received."
+          viewAllHref={ROUTES.applicants}
+          emptyText="No recent applicants yet."
+        >
+          {recentApplicants.length ? (
+            <div className="space-y-3">
+              {recentApplicants.map((app) => (
+                <div
+                  key={app._id}
+                  className="rounded-xl border border-white/10 bg-black/30 p-4 hover:bg-black/40 transition"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <div className="font-semibold text-white">{app.name}</div>
+                      <div className="text-sm text-gray-400">
+                        {app.jobTitle} •{" "}
+                        {new Date(app.appliedAt).toLocaleDateString()}
+                      </div>
+                    </div>
                     <a
                       href={app.resumeUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-block mt-2 text-blue-400 hover:underline"
+                      className="inline-flex items-center gap-2 text-sm text-gold hover:underline whitespace-nowrap"
                     >
-                      View Resume
+                      <FileText className="h-4 w-4" />
+                      Resume
                     </a>
                   </div>
-                ))}
-              </div>
-            ) : (
-              <p>
-                No recent applicants.{" "}
-                <Link href="/employer/applicants" className="underline">
-                  View all
-                </Link>
-              </p>
-            )}
-          </section>
+                </div>
+              ))}
+            </div>
+          ) : null}
+        </ListCard>
 
-          <section>
-            <h2 className="text-2xl font-bold mb-4">Recent Job Postings</h2>
-            {jobList.length > 0 ? (
-              <div className="space-y-4">
-                {jobList.map((job) => (
-                  <div key={job._id} className="p-4 bg-gray-800 rounded-lg">
-                    <h3 className="text-lg font-bold">{job.title}</h3>
-                    <p className="text-sm text-gray-300">
-                      {job.location} • {job.type}
-                    </p>
-                    {job.appliedCount !== undefined && (
-                      <p className="text-sm text-gray-400 mt-1">
-                        {job.appliedCount} applicant
-                        {job.appliedCount !== 1 ? "s" : ""}
+        <ListCard
+          title="Recent Job Postings"
+          subtitle="Your latest job listings."
+          viewAllHref={ROUTES.jobs}
+          emptyText="No job postings found yet."
+        >
+          {jobList.length ? (
+            <div className="space-y-3">
+              {jobList.map((job) => (
+                <div
+                  key={job._id}
+                  className="rounded-xl border border-white/10 bg-black/30 p-4 hover:bg-black/40 transition"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <div className="font-semibold text-white truncate">
+                        {job.title}
+                      </div>
+                      <div className="text-sm text-gray-400">
+                        {job.location} • {job.type}
+                        {typeof job.appliedCount === "number"
+                          ? ` • ${job.appliedCount} applicant${job.appliedCount === 1 ? "" : "s"}`
+                          : ""}
+                      </div>
+                      <p className="text-sm text-gray-300 mt-2">
+                        {job.description?.length > 110
+                          ? job.description.slice(0, 110) + "…"
+                          : job.description}
                       </p>
-                    )}
-                    <p className="text-sm mt-2">
-                      {job.description.length > 100
-                        ? job.description.substring(0, 100) + "..."
-                        : job.description}
-                    </p>
+                    </div>
+
                     <Link
-                      href={`/dashboard/employer/jobs/${job._id}`}
-                      className="underline mt-2 inline-block"
+                      href={`${ROUTES.jobs}/${job._id}`}
+                      className="inline-flex items-center gap-2 text-sm text-gold hover:underline whitespace-nowrap"
                     >
-                      View Details
+                      Details <ArrowRight className="h-4 w-4" />
                     </Link>
                   </div>
-                ))}
-              </div>
-            ) : (
-              <p>
-                No job postings found.{" "}
-                <Link href="/post-job" className="underline">
-                  Post a new job
-                </Link>
-              </p>
-            )}
-          </section>
-        </main>
+                </div>
+              ))}
+            </div>
+          ) : null}
+        </ListCard>
       </div>
-    </div>
+
+      {/* Consulting interest (clean “coming soon”) */}
+      <div className="rounded-2xl border border-yellow-500/20 bg-yellow-500/10 p-6 shadow-xl">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <h3 className="text-xl font-extrabold text-gold">
+              Recruiting & Consulting Services
+            </h3>
+            <p className="text-sm text-gray-200 mt-1">
+              Get notified when we launch premium recruiting support for employers.
+            </p>
+          </div>
+          <Link
+            href={ROUTES.consultingInterest}
+            className="px-5 py-2 rounded-xl bg-gold text-black font-semibold hover:bg-yellow-500 transition text-center"
+          >
+            Join Waitlist
+          </Link>
+        </div>
+      </div>
+    </section>
   );
 }
 
-function StatCard({
+/* ───────────── Reusable UI Blocks ───────────── */
+
+function StatTile({
+  icon,
   label,
   value,
-  suffix = "",
+  href,
 }: {
+  icon: React.ReactNode;
   label: string;
   value: number;
-  suffix?: string;
+  href: string;
 }) {
   return (
-    <div className="bg-gray-800 rounded-lg p-4 text-center">
-      <h4 className="text-2xl font-semibold text-gold">
-        {value}
-        {suffix}
-      </h4>
-      <p className="text-sm text-gray-300 mt-1">{label}</p>
-    </div>
+    <Link href={href} className="block">
+      <div className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow-xl hover:bg-white/10 hover:shadow-2xl transition">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 text-gray-200">
+            <div className="h-10 w-10 rounded-xl border border-white/10 bg-black/30 flex items-center justify-center">
+              {icon}
+            </div>
+            <div className="text-sm text-gray-300">{label}</div>
+          </div>
+          <ArrowRight className="h-4 w-4 text-gray-400" />
+        </div>
+        <div className="mt-4 text-4xl font-extrabold text-white">{value}</div>
+      </div>
+    </Link>
   );
 }
 
-function DashboardCard({
+function ActionCard({
+  icon,
   title,
   description,
   href,
-  color,
+  primary,
 }: {
+  icon: React.ReactNode;
   title: string;
   description: string;
   href: string;
-  color: string;
+  primary?: boolean;
 }) {
   return (
-    <Link
-      href={href}
-      className={`block p-5 rounded-lg shadow hover:shadow-xl transition ${color}`}
-    >
-      <h3 className="text-xl font-bold mb-2">{title}</h3>
-      <p className="text-sm">{description}</p>
+    <Link href={href} className="block">
+      <div
+        className={cx(
+          "rounded-2xl border p-6 shadow-xl hover:shadow-2xl transition",
+          primary
+            ? "border-yellow-500/25 bg-yellow-500/10 hover:bg-yellow-500/15"
+            : "border-white/10 bg-white/5 hover:bg-white/10",
+        )}
+      >
+        <div className="flex items-start gap-3">
+          <div
+            className={cx(
+              "h-10 w-10 rounded-xl border flex items-center justify-center",
+              primary
+                ? "border-yellow-500/25 bg-black/30"
+                : "border-white/10 bg-black/30",
+            )}
+          >
+            {icon}
+          </div>
+          <div>
+            <h3 className="text-xl font-extrabold text-white">{title}</h3>
+            <p className="text-sm text-gray-300 mt-1">{description}</p>
+          </div>
+        </div>
+        <div className="mt-5 inline-flex items-center gap-2 text-gold font-semibold">
+          Open <ArrowRight className="h-4 w-4" />
+        </div>
+      </div>
     </Link>
+  );
+}
+
+function ListCard({
+  title,
+  subtitle,
+  viewAllHref,
+  emptyText,
+  children,
+}: {
+  title: string;
+  subtitle: string;
+  viewAllHref: string;
+  emptyText: string;
+  children: React.ReactNode;
+}) {
+  const hasContent = !!children && (Array.isArray(children) ? children.length > 0 : true);
+
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow-xl">
+      <div className="flex items-end justify-between gap-4 mb-4">
+        <div>
+          <h3 className="text-xl font-extrabold text-gold">{title}</h3>
+          <p className="text-sm text-gray-400 mt-1">{subtitle}</p>
+        </div>
+        <Link href={viewAllHref} className="text-sm text-gold hover:underline">
+          View all
+        </Link>
+      </div>
+
+      {hasContent ? (
+        children
+      ) : (
+        <div className="rounded-xl border border-white/10 bg-black/30 p-5 text-gray-300">
+          {emptyText}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function DashboardSkeleton() {
+  return (
+    <div className="space-y-6">
+      <div className="grid gap-4 md:grid-cols-3">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <div
+            key={i}
+            className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow-xl"
+          >
+            <div className="h-6 w-2/3 bg-white/10 rounded animate-pulse" />
+            <div className="mt-3 h-4 w-1/2 bg-white/10 rounded animate-pulse" />
+            <div className="mt-6 h-4 w-1/3 bg-white/10 rounded animate-pulse" />
+          </div>
+        ))}
+      </div>
+
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div
+            key={i}
+            className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow-xl"
+          >
+            <div className="h-5 w-1/2 bg-white/10 rounded animate-pulse" />
+            <div className="mt-4 h-10 w-1/3 bg-white/10 rounded animate-pulse" />
+          </div>
+        ))}
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        {Array.from({ length: 2 }).map((_, i) => (
+          <div
+            key={i}
+            className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow-xl"
+          >
+            <div className="h-6 w-1/2 bg-white/10 rounded animate-pulse" />
+            <div className="mt-4 h-24 bg-white/10 rounded animate-pulse" />
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }

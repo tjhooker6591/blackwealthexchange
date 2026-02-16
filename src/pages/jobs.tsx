@@ -1,149 +1,113 @@
-// src/pages/post-job.tsx
-"use client";
-
+// src/pages/jobs.tsx
 import Link from "next/link";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 
-export default function PostJobPage() {
-  const router = useRouter();
-  const [loading, setLoading] = useState(true);
-  const [accessDenied, setAccessDenied] = useState(false);
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const res = await fetch("/api/auth/me", {
-          cache: "no-store",
-          credentials: "include",
-        });
-        if (!res.ok) {
-          // Not logged in or invalid session
-          router.replace("/login?redirect=/post-job");
-          return;
-        }
-        const { user } = await res.json();
-        if (user.accountType !== "employer") {
-          setAccessDenied(true);
-        }
-      } catch (err) {
-        console.error("Failed to verify session:", err);
-        router.replace("/login?redirect=/post-job");
-        return;
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [router]);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
-        <p>Loading...</p>
-      </div>
-    );
-  }
-
-  if (accessDenied) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
-        <p className="text-red-400">
-          Access Denied. You must be an employer to post jobs.
-        </p>
-      </div>
-    );
-  }
-
+export default function JobsHubPage() {
   return (
-    <div className="min-h-screen bg-gray-900 text-white px-6 py-10">
-      <div className="max-w-5xl mx-auto bg-gray-800 p-8 rounded-lg shadow-lg space-y-12">
-        {/* Page Header */}
-        <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-extrabold text-gold">
-            Black Wealth Exchange Job Hub
-          </h1>
-          <Link href="/">
-            <button className="px-4 py-2 bg-gold text-black font-bold rounded hover:bg-yellow-500 transition">
-              Home
-            </button>
-          </Link>
+    <div className="min-h-screen bg-gray-950 text-white px-6 py-10">
+      {/* subtle glow */}
+      <div className="pointer-events-none fixed inset-0 opacity-40">
+        <div className="absolute -top-40 -left-40 h-[520px] w-[520px] rounded-full blur-3xl bg-yellow-500/20" />
+        <div className="absolute top-24 right-[-120px] h-[420px] w-[420px] rounded-full blur-3xl bg-yellow-400/10" />
+      </div>
+
+      <div className="relative max-w-5xl mx-auto bg-gray-900/70 border border-gray-800 p-8 rounded-2xl shadow-xl space-y-10 backdrop-blur">
+        {/* Header */}
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-extrabold tracking-tight">
+              Jobs & Careers <span className="text-yellow-400">Hub</span>
+            </h1>
+            <p className="text-gray-300 mt-2 max-w-2xl">
+              Explore jobs, internships, freelance gigs, and mentorship opportunities built to uplift
+              Black professionals and entrepreneurs.
+            </p>
+          </div>
+
+          <div className="flex gap-3">
+            <Link href="/">
+              <button className="px-4 py-2 rounded border border-gray-700 text-gray-200 hover:bg-gray-900 transition">
+                ← Home
+              </button>
+            </Link>
+            <Link href="/job-listings">
+              <button className="px-4 py-2 rounded bg-yellow-400 text-black font-semibold hover:bg-yellow-300 transition">
+                Browse Jobs
+              </button>
+            </Link>
+          </div>
         </div>
 
-        <p className="text-gray-300 text-lg">
-          Explore job opportunities, internships, freelance gigs, and mentorship
-          tailored to uplift Black professionals and entrepreneurs.
-        </p>
-
-        {/* Job Tools */}
+        {/* Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Find a Job */}
-          <Card
+          <HubCard
             title="Find a Job"
-            description="Browse open positions from Black-owned businesses and inclusive companies."
+            description="Browse open roles from Black-owned businesses and inclusive companies."
             href="/job-listings"
             buttonLabel="Explore Jobs"
-            bg="bg-gold text-black"
+            variant="gold"
           />
 
-          {/* Hire Black Talent */}
-          <Card
+          <HubCard
             title="Hire Black Talent"
-            description="Post your job and connect with top Black professionals. (Fee-based)"
+            description="Post a job and connect with top Black professionals. Employer access required."
             href="/post-job"
             buttonLabel="Post a Job"
-            bg="bg-blue-500 text-white"
+            variant="blue"
           />
 
-          {/* Internships */}
-          <Card
+          <HubCard
             title="Internships & College Opportunities"
-            description="Gain early career experience through internships and apprenticeship programs."
+            description="Find internships, apprenticeships, scholarships, and early-career programs."
             href="/internships"
             buttonLabel="View Internships"
-            bg="bg-green-500 text-white"
+            variant="green"
           />
 
-          {/* Freelance & Gig Work */}
-          <Card
+          <HubCard
             title="Freelance & Gig Work"
-            description="Join or hire for flexible, short-term projects with skilled freelancers."
+            description="Discover flexible projects or hire for short-term gigs with skilled talent."
             href="/freelance"
             buttonLabel="Explore Gigs"
-            bg="bg-red-500 text-white"
+            variant="red"
           />
         </div>
 
         {/* Mentorship */}
-        <div className="p-6 bg-purple-600 text-white rounded-lg shadow-md space-y-3">
-          <h2 className="text-xl font-bold">Mentorship Program</h2>
-          <p className="text-sm">
-            Be matched with mentors and industry leaders to guide your career
-            growth and development.
+        <div className="p-6 rounded-2xl border border-gray-800 bg-gradient-to-b from-purple-700/40 to-gray-950/40 shadow-lg space-y-3">
+          <h2 className="text-xl font-bold text-yellow-400">Mentorship Program</h2>
+          <p className="text-gray-200 text-sm">
+            Get matched with mentors and industry leaders to support your growth and career direction.
           </p>
-          <Link href="/mentorship">
-            <button className="mt-2 px-4 py-2 bg-black text-white rounded hover:bg-opacity-80 transition">
-              Become a Mentee
-            </button>
-          </Link>
+          <div className="flex flex-wrap gap-3">
+            <Link href="/mentorship">
+              <button className="px-5 py-2 rounded bg-yellow-400 text-black font-semibold hover:bg-yellow-300 transition">
+                Become a Mentee
+              </button>
+            </Link>
+            <Link href="/mentorship">
+              <button className="px-5 py-2 rounded border border-gray-700 text-gray-200 hover:bg-gray-900 transition">
+                Learn More
+              </button>
+            </Link>
+          </div>
         </div>
 
-        {/* Profile Creation */}
+        {/* Profile CTA */}
         <div className="text-center space-y-4">
-          <h2 className="text-xl font-bold text-gold">
-            Create Your Profile & Get Started
+          <h2 className="text-xl font-bold text-yellow-400">
+            Create Your Profile & Get Discovered
           </h2>
           <p className="text-gray-300">
-            Build your professional presence and get discovered for
-            opportunities.
+            Save jobs, track applications, and unlock more opportunities across the platform.
           </p>
           <div className="flex justify-center gap-4 flex-wrap">
             <Link href="/signup">
-              <button className="px-6 py-3 bg-purple-600 text-white rounded hover:bg-purple-700 transition">
+              <button className="px-6 py-3 rounded bg-yellow-400 text-black font-semibold hover:bg-yellow-300 transition">
                 Create Profile
               </button>
             </Link>
             <Link href="/login">
-              <button className="px-6 py-3 bg-gold text-black rounded hover:bg-yellow-500 transition">
+              <button className="px-6 py-3 rounded border border-gray-700 text-gray-200 hover:bg-gray-900 transition">
                 Login
               </button>
             </Link>
@@ -152,21 +116,21 @@ export default function PostJobPage() {
 
         {/* Premium Upgrade */}
         <div className="text-center space-y-4">
-          <h2 className="text-xl font-bold text-gold">Level Up Your Career</h2>
+          <h2 className="text-xl font-bold text-yellow-400">Level Up Your Career</h2>
           <p className="text-gray-300">
-            Access resume reviews, coaching, and premium job leads.
+            Access premium job leads, coaching, resume reviews, and more.
           </p>
           <Link href="/pricing">
-            <button className="px-6 py-3 bg-purple-600 text-white rounded hover:bg-purple-700 transition">
+            <button className="px-6 py-3 rounded bg-purple-600 text-white hover:bg-purple-700 transition">
               Upgrade to Premium
             </button>
           </Link>
         </div>
 
-        {/* Back to Home */}
-        <div className="text-center pt-6 border-t border-gray-700 mt-10">
+        {/* Footer */}
+        <div className="text-center pt-6 border-t border-gray-800">
           <Link href="/">
-            <button className="px-6 py-3 bg-gold text-black font-bold rounded hover:bg-yellow-500 transition">
+            <button className="px-6 py-3 rounded bg-yellow-400 text-black font-semibold hover:bg-yellow-300 transition">
               Back to Home
             </button>
           </Link>
@@ -176,29 +140,57 @@ export default function PostJobPage() {
   );
 }
 
-// Reusable Card Component
-function Card({
+function HubCard({
   title,
   description,
   href,
   buttonLabel,
-  bg,
+  variant,
 }: {
   title: string;
   description: string;
   href: string;
   buttonLabel: string;
-  bg: string;
+  variant: "gold" | "blue" | "green" | "red";
 }) {
+  const styles =
+    variant === "gold"
+      ? "border-yellow-400/30 hover:border-yellow-400/60"
+      : variant === "blue"
+      ? "border-blue-500/30 hover:border-blue-500/60"
+      : variant === "green"
+      ? "border-green-500/30 hover:border-green-500/60"
+      : "border-red-500/30 hover:border-red-500/60";
+
+  const badge =
+    variant === "gold"
+      ? "bg-yellow-400/15 text-yellow-300"
+      : variant === "blue"
+      ? "bg-blue-500/15 text-blue-300"
+      : variant === "green"
+      ? "bg-green-500/15 text-green-300"
+      : "bg-red-500/15 text-red-300";
+
   return (
-    <div className={`p-6 ${bg} rounded-lg shadow-md`}>
-      <h3 className="text-xl font-bold">{title}</h3>
-      <p className="mt-2 text-sm">{description}</p>
+    <div
+      className={[
+        "p-6 rounded-2xl border bg-gray-950/40 shadow-lg transition",
+        styles,
+      ].join(" ")}
+    >
+      <div className="flex items-center justify-between gap-3">
+        <h3 className="text-xl font-bold">{title}</h3>
+        <span className={["text-xs px-2 py-1 rounded", badge].join(" ")}>
+          Hub
+        </span>
+      </div>
+      <p className="mt-2 text-sm text-gray-300">{description}</p>
       <Link href={href}>
-        <button className="mt-3 px-4 py-2 bg-black text-white rounded hover:bg-opacity-90 transition">
+        <button className="mt-4 px-5 py-2 rounded bg-yellow-400 text-black font-semibold hover:bg-yellow-300 transition">
           {buttonLabel}
         </button>
       </Link>
     </div>
   );
 }
+
