@@ -199,10 +199,16 @@ export default function InternWelcomePage() {
             >
               <p className="text-white/75">
                 If you hit a blocker, capture:
-                <span className="text-yellow-200 font-semibold"> what you tried</span>,
-                the
-                <span className="text-yellow-200 font-semibold"> exact error</span>,
-                and a
+                <span className="text-yellow-200 font-semibold">
+                  {" "}
+                  what you tried
+                </span>
+                , the
+                <span className="text-yellow-200 font-semibold">
+                  {" "}
+                  exact error
+                </span>
+                , and a
                 <span className="text-yellow-200 font-semibold">
                   {" "}
                   screenshot/log snippet

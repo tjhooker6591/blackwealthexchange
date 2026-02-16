@@ -31,7 +31,13 @@ function categoriesToString(v: any): string {
 
 function normalizeScope(v: any): "businesses" | "organizations" {
   const t = safeStr(v).toLowerCase().trim();
-  if (t === "org" || t === "orgs" || t === "organisation" || t === "organization") return "organizations";
+  if (
+    t === "org" ||
+    t === "orgs" ||
+    t === "organisation" ||
+    t === "organization"
+  )
+    return "organizations";
   if (t === "organizations") return "organizations";
   return "businesses";
 }
@@ -99,11 +105,14 @@ type Organization = {
   priceRange?: string;
 };
 
-type Row = (Business & { __kind: "business" }) | (Organization & { __kind: "org" });
+type Row =
+  | (Business & { __kind: "business" })
+  | (Organization & { __kind: "org" });
 
 function injectSponsoredEveryN(rows: Row[], interval = 5) {
   if (!SIDEBAR_ADS.length) return rows;
-  const out: Array<Row | { isSponsor: true; sponsorIdx: number; key: string }> = [];
+  const out: Array<Row | { isSponsor: true; sponsorIdx: number; key: string }> =
+    [];
   let sponsorIdx = 0;
   for (let i = 0; i < rows.length; i++) {
     out.push(rows[i]);
@@ -135,8 +144,12 @@ function SponsorCard({ img, name, tagline, url, cta }: any) {
         className="h-12 w-12 object-cover rounded-xl shadow border border-white/15 mb-2"
         style={{ background: "#111" }}
       />
-      <div className="text-[#D4AF37] font-extrabold text-xs text-center truncate w-full">{name}</div>
-      <div className="text-white/65 text-[11px] text-center truncate w-full mt-1">{tagline}</div>
+      <div className="text-[#D4AF37] font-extrabold text-xs text-center truncate w-full">
+        {name}
+      </div>
+      <div className="text-white/65 text-[11px] text-center truncate w-full mt-1">
+        {tagline}
+      </div>
       <span className="mt-3 inline-flex items-center justify-center rounded-xl bg-[#D4AF37] px-3 py-1.5 text-[11px] font-extrabold text-black transition hover:bg-yellow-500">
         {cta}
       </span>
@@ -160,10 +173,16 @@ function SidebarAdCard({ img, name, tagline, url, cta }: any) {
         Ad
       </span>
       <div className="flex items-start gap-3">
-        <img src={img} className="h-12 w-12 object-cover rounded-xl border border-white/15 shadow" alt={name} />
+        <img
+          src={img}
+          className="h-12 w-12 object-cover rounded-xl border border-white/15 shadow"
+          alt={name}
+        />
         <div className="min-w-0 flex-1">
           <div className="font-extrabold text-white truncate">{name}</div>
-          <div className="mt-0.5 text-[12px] text-white/65 truncate">{tagline}</div>
+          <div className="mt-0.5 text-[12px] text-white/65 truncate">
+            {tagline}
+          </div>
           <div className="mt-3 inline-flex rounded-xl bg-[#D4AF37] px-3 py-1.5 text-[11px] font-extrabold text-black transition hover:bg-yellow-500">
             {cta}
           </div>
@@ -211,7 +230,8 @@ function Pager({
 
   const btnBase =
     "inline-flex items-center justify-center rounded-xl border px-2.5 py-2 text-[12px] font-extrabold transition";
-  const btnIdle = "border-white/10 bg-white/[0.03] text-white/70 hover:bg-white/[0.06]";
+  const btnIdle =
+    "border-white/10 bg-white/[0.03] text-white/70 hover:bg-white/[0.06]";
   const btnActive = "border-[#D4AF37]/60 bg-[#D4AF37]/15 text-[#D4AF37]";
 
   return (
@@ -220,7 +240,11 @@ function Pager({
         type="button"
         onClick={() => onPage(page - 1)}
         disabled={disabled || page <= 1}
-        className={cx(btnBase, btnIdle, (disabled || page <= 1) && "opacity-40")}
+        className={cx(
+          btnBase,
+          btnIdle,
+          (disabled || page <= 1) && "opacity-40",
+        )}
         title="Previous page"
       >
         <ChevronLeft className="h-4 w-4" />
@@ -237,7 +261,11 @@ function Pager({
             type="button"
             disabled={disabled}
             onClick={() => onPage(p)}
-            className={cx(btnBase, p === page ? btnActive : btnIdle, disabled && "opacity-60")}
+            className={cx(
+              btnBase,
+              p === page ? btnActive : btnIdle,
+              disabled && "opacity-60",
+            )}
           >
             {p}
           </button>
@@ -248,7 +276,11 @@ function Pager({
         type="button"
         onClick={() => onPage(page + 1)}
         disabled={disabled || page >= totalPages}
-        className={cx(btnBase, btnIdle, (disabled || page >= totalPages) && "opacity-40")}
+        className={cx(
+          btnBase,
+          btnIdle,
+          (disabled || page >= totalPages) && "opacity-40",
+        )}
         title="Next page"
       >
         <ChevronRight className="h-4 w-4" />
@@ -263,7 +295,9 @@ export default function BusinessDirectory() {
   // Scope is driven by query (index pushes type/scope/tab)
   const scope: DirectoryScope = useMemo(() => {
     if (!router.isReady) return "businesses";
-    return normalizeScope(router.query.type ?? router.query.scope ?? router.query.tab);
+    return normalizeScope(
+      router.query.type ?? router.query.scope ?? router.query.tab,
+    );
   }, [router.isReady, router.query.type, router.query.scope, router.query.tab]);
 
   // Categories only apply to businesses
@@ -297,7 +331,8 @@ export default function BusinessDirectory() {
       (typeof router.query.q === "string" && router.query.q) ||
       "";
 
-    const cat = typeof router.query.category === "string" ? router.query.category : "All";
+    const cat =
+      typeof router.query.category === "string" ? router.query.category : "All";
     const p = toInt(router.query.page, 1);
 
     if (q) setInput(q);
@@ -305,7 +340,14 @@ export default function BusinessDirectory() {
     setPage(Math.max(1, p));
 
     didInitFromUrl.current = true;
-  }, [router.isReady, router.query.search, router.query.q, router.query.category, router.query.page, scope]);
+  }, [
+    router.isReady,
+    router.query.search,
+    router.query.q,
+    router.query.category,
+    router.query.page,
+    scope,
+  ]);
 
   // Sync URL shallowly
   useEffect(() => {
@@ -328,21 +370,23 @@ export default function BusinessDirectory() {
     if (!nextQuery.page || nextQuery.page === "1") delete nextQuery.page;
     if (nextQuery.category === "All") delete nextQuery.category;
 
-    router.replace({ pathname: router.pathname, query: nextQuery }, undefined, { shallow: true });
+    router.replace({ pathname: router.pathname, query: nextQuery }, undefined, {
+      shallow: true,
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [input, category, page, scope]);
 
   // Reset page when query changes
   useEffect(() => {
     setPage(1);
-     
   }, [input, category, scope]);
 
   // Fetch
   useEffect(() => {
     const q = input.trim();
 
-    const hasAnyFilter = Boolean(q) || (scope === "businesses" && category !== "All");
+    const hasAnyFilter =
+      Boolean(q) || (scope === "businesses" && category !== "All");
     if (!hasAnyFilter) {
       setRows([]);
       setTotal(0);
@@ -365,13 +409,16 @@ export default function BusinessDirectory() {
       }
       params.set("type", scope);
 
-      if (scope === "businesses" && category && category !== "All") params.set("category", category);
+      if (scope === "businesses" && category && category !== "All")
+        params.set("category", category);
 
       params.set("limit", String(pageSize));
       params.set("page", String(page));
       params.set("__nocache", "1");
 
-      fetch(`/api/searchBusinesses?${params.toString()}`, { signal: controller.signal })
+      fetch(`/api/searchBusinesses?${params.toString()}`, {
+        signal: controller.signal,
+      })
         .then((r) => r.json())
         .then((data) => {
           if (controller.signal.aborted) return;
@@ -433,7 +480,9 @@ export default function BusinessDirectory() {
 
     const want = category.toLowerCase();
     return rows.filter((r: any) => {
-      const catStr = categoriesToString(r.categories || r.category || r.display_categories || "").toLowerCase();
+      const catStr = categoriesToString(
+        r.categories || r.category || r.display_categories || "",
+      ).toLowerCase();
       return catStr.includes(want);
     });
   }, [rows, scope, category]);
@@ -447,22 +496,33 @@ export default function BusinessDirectory() {
     return filteredRows.slice(start, start + pageSize);
   }, [filteredRows, serverPaged, page]);
 
-  const visibleWithSponsors = useMemo(() => injectSponsoredEveryN(pageRows, 5), [pageRows]);
+  const visibleWithSponsors = useMemo(
+    () => injectSponsoredEveryN(pageRows, 5),
+    [pageRows],
+  );
 
   const goPage = (p: number) => {
     const next = Math.min(Math.max(1, p), totalPages);
     setPage(next);
     setTimeout(() => {
-      resultsTopRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      resultsTopRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
     }, 0);
   };
 
-  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+  const handleImageError = (
+    e: React.SyntheticEvent<HTMLImageElement, Event>,
+  ) => {
     e.currentTarget.src = "/default-image.jpg";
   };
 
   // Build consistent UI fields (Google-like)
-  const getTitle = (r: Row) => (r.__kind === "org" ? safeStr((r as any).name) : safeStr((r as any).business_name));
+  const getTitle = (r: Row) =>
+    r.__kind === "org"
+      ? safeStr((r as any).name)
+      : safeStr((r as any).business_name);
   const getDesc = (r: Row) => safeStr((r as any).description);
 
   const getLocation = (r: Row) => {
@@ -483,7 +543,9 @@ export default function BusinessDirectory() {
 
     // businesses
     const display = safeStr((r as any).display_categories);
-    const cats = categoriesToString((r as any).categories || (r as any).category);
+    const cats = categoriesToString(
+      (r as any).categories || (r as any).category,
+    );
     return display || cats || "";
   };
 
@@ -494,7 +556,8 @@ export default function BusinessDirectory() {
 
     // e.g. "4.5(31) · $10–20 · Restaurant"
     const parts: string[] = [];
-    if (rating) parts.push(reviewCount ? `${rating}(${reviewCount})` : `${rating}`);
+    if (rating)
+      parts.push(reviewCount ? `${rating}(${reviewCount})` : `${rating}`);
     if (priceRange) parts.push(priceRange);
 
     const cat = getCategoryLabel(r);
@@ -512,7 +575,9 @@ export default function BusinessDirectory() {
 
   const getHref = (r: Row) => {
     const slug = encodeURIComponent(getSlug(r));
-    return r.__kind === "org" ? `/organizations/${slug}` : `/business-directory/${slug}`;
+    return r.__kind === "org"
+      ? `/organizations/${slug}`
+      : `/business-directory/${slug}`;
   };
 
   const sponsorsToShow = [
@@ -527,7 +592,8 @@ export default function BusinessDirectory() {
   ].slice(0, 10);
 
   const showingFrom = total === 0 ? 0 : (page - 1) * pageSize + 1;
-  const showingTo = total === 0 ? 0 : Math.min((page - 1) * pageSize + pageRows.length, total);
+  const showingTo =
+    total === 0 ? 0 : Math.min((page - 1) * pageSize + pageRows.length, total);
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-neutral-950 text-white">
@@ -540,12 +606,17 @@ export default function BusinessDirectory() {
         <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-              {scope === "organizations" ? "Organizations Directory" : "Business Directory"}{" "}
+              {scope === "organizations"
+                ? "Organizations Directory"
+                : "Business Directory"}{" "}
               <span className="text-[#D4AF37]">•</span>{" "}
-              <span className="text-white/65 text-base sm:text-lg font-bold">Trusted Search</span>
+              <span className="text-white/65 text-base sm:text-lg font-bold">
+                Trusted Search
+              </span>
             </h1>
             <p className="mt-1 text-sm text-white/60">
-              Results are paged so users don’t scroll forever — faster, cleaner, more “Google-like”.
+              Results are paged so users don’t scroll forever — faster, cleaner,
+              more “Google-like”.
             </p>
           </div>
         </div>
@@ -556,7 +627,14 @@ export default function BusinessDirectory() {
             {/* Categories (business only) */}
             {scope === "businesses" && (
               <div className="mb-3 flex flex-wrap gap-2">
-                {["All", "Food", "Shopping", "Beauty", "Health", "Clothing"].map((cat) => (
+                {[
+                  "All",
+                  "Food",
+                  "Shopping",
+                  "Beauty",
+                  "Health",
+                  "Clothing",
+                ].map((cat) => (
                   <button
                     key={cat}
                     onClick={() => setCategory(cat)}
@@ -580,7 +658,11 @@ export default function BusinessDirectory() {
               <div className="flex items-stretch gap-2">
                 <input
                   type="text"
-                  placeholder={scope === "organizations" ? "Search churches, nonprofits, orgs…" : "Find Black-owned businesses…"}
+                  placeholder={
+                    scope === "organizations"
+                      ? "Search churches, nonprofits, orgs…"
+                      : "Find Black-owned businesses…"
+                  }
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   className="flex-1 rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-[14px] text-white placeholder:text-white/35 outline-none transition focus:border-[#D4AF37]/40 focus:ring-2 focus:ring-[#D4AF37]/20"
@@ -604,14 +686,26 @@ export default function BusinessDirectory() {
                 <h2 className="text-[11px] uppercase tracking-widest text-[#D4AF37] font-extrabold">
                   Featured Sponsors
                 </h2>
-                <a href="/all-sponsors" className="text-[12px] text-white/70 hover:text-[#D4AF37] font-bold">
+                <a
+                  href="/all-sponsors"
+                  className="text-[12px] text-white/70 hover:text-[#D4AF37] font-bold"
+                >
                   See All
                 </a>
               </div>
 
-              <Swiper modules={[Navigation]} spaceBetween={10} slidesPerView="auto" navigation style={{ paddingBottom: 8 }}>
+              <Swiper
+                modules={[Navigation]}
+                spaceBetween={10}
+                slidesPerView="auto"
+                navigation
+                style={{ paddingBottom: 8 }}
+              >
                 {sponsorsToShow.map((ad, idx) => (
-                  <SwiperSlide key={`${ad.url}-${idx}`} className="!w-[170px] sm:!w-[190px]">
+                  <SwiperSlide
+                    key={`${ad.url}-${idx}`}
+                    className="!w-[170px] sm:!w-[190px]"
+                  >
                     <SponsorCard {...ad} />
                   </SwiperSlide>
                 ))}
@@ -619,18 +713,29 @@ export default function BusinessDirectory() {
             </div>
 
             {/* Results */}
-            <div ref={resultsTopRef} className="mt-6 rounded-2xl border border-white/10 bg-white/[0.03] p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
+            <div
+              ref={resultsTopRef}
+              className="mt-6 rounded-2xl border border-white/10 bg-white/[0.03] p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur"
+            >
               {/* Top counters like your old version */}
               <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div className="text-[12px] text-white/70 font-bold">
                   {hasSearched ? (
                     <>
                       <span className="text-white/50">Results:</span>{" "}
-                      <span className="text-white">{total.toLocaleString()}</span>{" "}
-                      <span className="text-white/40">{total > 0 ? `• Showing ${showingFrom}-${showingTo}` : ""}</span>
+                      <span className="text-white">
+                        {total.toLocaleString()}
+                      </span>{" "}
+                      <span className="text-white/40">
+                        {total > 0
+                          ? `• Showing ${showingFrom}-${showingTo}`
+                          : ""}
+                      </span>
                     </>
                   ) : (
-                    <span className="text-white/50">Start a search to see results.</span>
+                    <span className="text-white/50">
+                      Start a search to see results.
+                    </span>
                   )}
                 </div>
 
@@ -647,23 +752,30 @@ export default function BusinessDirectory() {
               <div className="relative mt-3 min-h-[160px]">
                 {isLoading && (
                   <div className="absolute inset-0 z-20 flex items-center justify-center rounded-xl bg-black/60 backdrop-blur-sm">
-                    <div className="text-[#D4AF37] font-extrabold animate-pulse">Loading…</div>
+                    <div className="text-[#D4AF37] font-extrabold animate-pulse">
+                      Loading…
+                    </div>
                   </div>
                 )}
 
                 {!hasSearched ? (
                   <div className="py-10 text-center text-white/50">
-                    Discover and support Black-owned businesses & organizations. Start your search above.
+                    Discover and support Black-owned businesses & organizations.
+                    Start your search above.
                   </div>
                 ) : total === 0 && !isLoading ? (
                   <div className="py-10 text-center text-white/50">
-                    No results found for <span className="text-white/70">“{input.trim()}”</span>.
+                    No results found for{" "}
+                    <span className="text-white/70">“{input.trim()}”</span>.
                   </div>
                 ) : (
                   <div className="divide-y divide-white/10 overflow-hidden rounded-xl border border-white/10 bg-black/20">
                     {visibleWithSponsors.map((item, idx) =>
                       (item as any).isSponsor ? (
-                        <div key={(item as any).key ?? `s-${idx}`} className="relative flex items-center gap-3 px-3 py-3">
+                        <div
+                          key={(item as any).key ?? `s-${idx}`}
+                          className="relative flex items-center gap-3 px-3 py-3"
+                        >
                           <img
                             src={SIDEBAR_ADS[(item as any).sponsorIdx].img}
                             alt={SIDEBAR_ADS[(item as any).sponsorIdx].name}
@@ -689,10 +801,17 @@ export default function BusinessDirectory() {
                           </span>
                         </div>
                       ) : (
-                        <div key={(item as any)._id ?? `r-${idx}`} className="flex items-start gap-3 px-3 py-4">
+                        <div
+                          key={(item as any)._id ?? `r-${idx}`}
+                          className="flex items-start gap-3 px-3 py-4"
+                        >
                           {/* Thumbnail (business only if available) */}
                           <img
-                            src={(item as any).__kind === "business" ? ((item as any).image || "/default-image.jpg") : "/default-image.jpg"}
+                            src={
+                              (item as any).__kind === "business"
+                                ? (item as any).image || "/default-image.jpg"
+                                : "/default-image.jpg"
+                            }
                             alt={getTitle(item as Row) || "Listing"}
                             width={48}
                             height={48}
@@ -712,12 +831,15 @@ export default function BusinessDirectory() {
 
                             {/* Details line: rating · price · category */}
                             <div className="mt-0.5 text-[12px] text-white/70">
-                              {getRatingLine(item as Row) || getCategoryLabel(item as Row) || ""}
+                              {getRatingLine(item as Row) ||
+                                getCategoryLabel(item as Row) ||
+                                ""}
                             </div>
 
                             {/* Location line ALWAYS shown (city/state preferred) */}
                             <div className="mt-0.5 text-[12px] text-white/55">
-                              {getLocation(item as Row) || "Location not available"}
+                              {getLocation(item as Row) ||
+                                "Location not available"}
                             </div>
 
                             {/* Snippet line (quote-style like your example) */}
@@ -738,7 +860,11 @@ export default function BusinessDirectory() {
 
                           {/* Right mini meta (phone) */}
                           <div className="hidden sm:block min-w-[120px] text-right text-[11px] text-white/55">
-                            {(item as any).phone ? <div className="truncate">{safeStr((item as any).phone)}</div> : null}
+                            {(item as any).phone ? (
+                              <div className="truncate">
+                                {safeStr((item as any).phone)}
+                              </div>
+                            ) : null}
                           </div>
                         </div>
                       ),
@@ -748,7 +874,12 @@ export default function BusinessDirectory() {
 
                 {/* Bottom pager */}
                 {hasSearched && total > 0 ? (
-                  <Pager page={page} totalPages={totalPages} onPage={goPage} disabled={isLoading} />
+                  <Pager
+                    page={page}
+                    totalPages={totalPages}
+                    onPage={goPage}
+                    disabled={isLoading}
+                  />
                 ) : null}
               </div>
             </div>
@@ -769,8 +900,12 @@ export default function BusinessDirectory() {
               </div>
 
               <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
-                <div className="text-[12px] font-extrabold text-[#D4AF37]">Want your business featured?</div>
-                <div className="mt-1 text-[12px] text-white/60">Get premium placement in search results.</div>
+                <div className="text-[12px] font-extrabold text-[#D4AF37]">
+                  Want your business featured?
+                </div>
+                <div className="mt-1 text-[12px] text-white/60">
+                  Get premium placement in search results.
+                </div>
                 <Link
                   href="/advertise-with-us"
                   className="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-[#D4AF37] px-4 py-2.5 text-[12px] font-extrabold text-black transition hover:bg-yellow-500"
