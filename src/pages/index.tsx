@@ -22,8 +22,6 @@ import {
   ShoppingBag,
   Newspaper,
   SlidersHorizontal,
-  MoreHorizontal,
-  X,
   ArrowRight,
   ChevronDown,
   ChevronUp,
@@ -64,10 +62,10 @@ function SearchToolsInlinePanel({
   onCategory: (v: string) => void;
 }) {
   return (
-    <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.03] p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
+    <div className="mt-3 rounded-2xl border border-white/10 bg-white/[0.03] p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
       <div className="mb-3 flex items-center justify-between">
         <div className="text-xs font-extrabold tracking-wide text-white/70">
-          Tools (Filters)
+          Filters
         </div>
         <div className="text-[11px] text-white/45">Applies to Directory</div>
       </div>
@@ -83,7 +81,7 @@ function SearchToolsInlinePanel({
               "relative h-6 w-11 rounded-full border transition",
               verifiedOnly
                 ? "border-emerald-400/40 bg-emerald-400/20"
-                : "border-white/10 bg-black/30"
+                : "border-white/10 bg-black/30",
             )}
             aria-pressed={verifiedOnly}
             title="Show verified listings only"
@@ -91,7 +89,7 @@ function SearchToolsInlinePanel({
             <span
               className={cx(
                 "absolute top-0.5 h-5 w-5 rounded-full transition",
-                verifiedOnly ? "left-5 bg-emerald-300" : "left-0.5 bg-white/60"
+                verifiedOnly ? "left-5 bg-emerald-300" : "left-0.5 bg-white/60",
               )}
             />
           </button>
@@ -107,7 +105,7 @@ function SearchToolsInlinePanel({
               "relative h-6 w-11 rounded-full border transition",
               sponsoredFirst
                 ? "border-[#D4AF37]/50 bg-[#D4AF37]/15"
-                : "border-white/10 bg-black/30"
+                : "border-white/10 bg-black/30",
             )}
             aria-pressed={sponsoredFirst}
             title="Boost sponsored listings"
@@ -115,7 +113,7 @@ function SearchToolsInlinePanel({
             <span
               className={cx(
                 "absolute top-0.5 h-5 w-5 rounded-full transition",
-                sponsoredFirst ? "left-5 bg-[#D4AF37]" : "left-0.5 bg-white/60"
+                sponsoredFirst ? "left-5 bg-[#D4AF37]" : "left-0.5 bg-white/60",
               )}
             />
           </button>
@@ -165,8 +163,7 @@ function SearchToolsInlinePanel({
       </div>
 
       <div className="mt-3 text-[11px] text-white/45">
-        Tip: Tools never hide data unless you choose a filter — “Verified only”
-        is optional.
+        Tip: Filters are optional. Use them only when you want to narrow results.
       </div>
     </div>
   );
@@ -382,27 +379,34 @@ const EconomicImpactSimulator = () => {
           </span>
         </div>
 
-        <div className="mt-4 grid w-full gap-3 sm:grid-cols-2">
+        {/* Mobile-compact CTAs */}
+        <div className="mt-4 grid w-full gap-2 sm:gap-3 sm:grid-cols-2">
           <Link
             href="/1.8trillionimpact"
-            className="group inline-flex items-center justify-center rounded-xl border border-[#D4AF37]/40 bg-[#D4AF37]/10 px-4 py-2.5 text-center font-extrabold tracking-wide text-[#D4AF37] shadow-sm transition hover:border-[#D4AF37]/70 hover:bg-[#D4AF37]/15"
+            className="group inline-flex items-center justify-center rounded-xl border border-[#D4AF37]/40 bg-[#D4AF37]/10 px-3 py-2 sm:px-4 sm:py-2.5 text-center shadow-sm transition hover:border-[#D4AF37]/70 hover:bg-[#D4AF37]/15"
           >
-            <span className="mr-2">KNOWLEDGE IS POWER</span>
-            <span className="text-white/80 group-hover:text-white">
-              • See where the money goes →
-            </span>
+            <div className="flex w-full items-center justify-between gap-3">
+              <span className="text-[12px] sm:text-sm font-extrabold tracking-wide text-[#D4AF37]">
+                Knowledge is Power
+              </span>
+              <span className="truncate text-[11px] sm:text-sm text-white/70 group-hover:text-white">
+                Where the money goes →
+              </span>
+            </div>
           </Link>
 
           <Link
             href="/economic-freedom"
-            className="group inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-center font-extrabold tracking-wide text-white transition hover:border-white/20 hover:bg-white/10"
+            className="group inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 px-3 py-2 sm:px-4 sm:py-2.5 text-center transition hover:border-white/20 hover:bg-white/10"
           >
-            <span className="text-[#D4AF37] group-hover:text-[#D4AF37]">
-              Modern Economic Slavery
-            </span>
-            <span className="ml-2 text-white/80 group-hover:text-white">
-              • Learn more →
-            </span>
+            <div className="flex w-full items-center justify-between gap-3">
+              <span className="text-[12px] sm:text-sm font-extrabold tracking-wide text-[#D4AF37]">
+                Economic Slavery
+              </span>
+              <span className="truncate text-[11px] sm:text-sm text-white/70 group-hover:text-white">
+                Learn more →
+              </span>
+            </div>
           </Link>
         </div>
       </div>
@@ -431,10 +435,10 @@ function TabButton({
       title={title}
       onClick={onClick}
       className={cx(
-        "inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-[12px] font-extrabold tracking-wide transition",
+        "shrink-0 inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-[12px] font-extrabold tracking-wide transition",
         active
           ? "border-[#D4AF37]/50 bg-[#D4AF37]/15 text-[#D4AF37]"
-          : "border-white/10 bg-white/[0.03] text-white/75 hover:bg-white/[0.06]"
+          : "border-white/10 bg-white/[0.03] text-white/75 hover:bg-white/[0.06]",
       )}
     >
       <Icon
@@ -453,14 +457,13 @@ export default function Home() {
   // Search UX
   const [aiMode, setAiMode] = useState(false);
   const [toolsOpen, setToolsOpen] = useState(false);
-  const [moreOpen, setMoreOpen] = useState(false);
 
   // Top vertical
   const [vertical, setVertical] = useState<VerticalKey>("all");
 
   // Left scope toggle inside search bar (kept)
   const [leftScope, setLeftScope] = useState<"businesses" | "organizations">(
-    "businesses"
+    "businesses",
   );
 
   // Tools (filters)
@@ -468,7 +471,7 @@ export default function Home() {
   const [sponsoredFirst, setSponsoredFirst] = useState(true);
   const [stateFilter, setStateFilter] = useState("");
   const [sort, setSort] = useState<"relevance" | "newest" | "completeness">(
-    "relevance"
+    "relevance",
   );
   const [category, setCategory] = useState("");
 
@@ -481,8 +484,8 @@ export default function Home() {
         ? "Search products…"
         : "Search news…"
       : leftScope === "organizations"
-      ? "Search churches, nonprofits, orgs…"
-      : "Search Black-owned businesses…";
+        ? "Search churches, nonprofits, orgs…"
+        : "Search Black-owned businesses…";
 
   const normalizeScope = (v: string) => {
     const t = String(v || "").toLowerCase();
@@ -500,12 +503,11 @@ export default function Home() {
   const buildDirectoryQuery = (
     q: string,
     scope: "businesses" | "organizations",
-    ai: boolean
+    ai: boolean,
   ) => {
     const query: Record<string, any> = {
       q,
       search: q,
-      // send multiple keys for backward compatibility
       type: scope,
       scope,
       tab: scope,
@@ -521,10 +523,11 @@ export default function Home() {
   };
 
   /**
-   * FIXES:
-   * - All/Shopping/News always route (even with empty query => browse mode)
-   * - AI Mode re-runs route so it visibly works
-   * - Uses overrides to avoid stale state timing issues
+   * Routing
+   * - Directory: /business-directory
+   * - Shopping: /shop
+   * - News: /news
+   * - Works in browse mode (empty query)
    */
   const runSearch = (opts?: {
     verticalOverride?: VerticalKey;
@@ -541,7 +544,9 @@ export default function Home() {
     if (v === "shopping") {
       return router.push({
         pathname: "/shop",
-        query: q ? { q, search: q, ai: ai ? "1" : "0" } : { ai: ai ? "1" : "0" },
+        query: q
+          ? { q, search: q, ai: ai ? "1" : "0" }
+          : { ai: ai ? "1" : "0" },
       });
     }
 
@@ -578,7 +583,6 @@ export default function Home() {
   const onToggleAi = () => {
     const next = !aiMode;
     setAiMode(next);
-    // ALWAYS re-run so user sees it work (even in browse mode)
     runSearch({ aiOverride: next });
   };
 
@@ -664,7 +668,7 @@ export default function Home() {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-neutral-950 text-white">
+    <div className="relative min-h-screen overflow-x-hidden bg-neutral-950 text-white">
       {/* Background layers */}
       <div className="absolute inset-0 bg-neutral-950" />
       <div className="absolute inset-0 bg-gradient-to-b from-neutral-950 via-neutral-950/70 to-black/90" />
@@ -732,233 +736,213 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* PREMIUM SEARCH CONTAINER */}
-              <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.06] to-white/[0.02] p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_30px_80px_rgba(0,0,0,0.55)] backdrop-blur-xl">
-                {/* Premium glow */}
-                <div className="pointer-events-none absolute -top-24 left-1/2 h-56 w-[42rem] -translate-x-1/2 rounded-full bg-[#D4AF37]/10 blur-3xl" />
-                <div className="pointer-events-none absolute -bottom-28 right-[-6rem] h-64 w-64 rounded-full bg-emerald-500/10 blur-3xl" />
+              {/* PREMIUM SEARCH CONTAINER (sticky on mobile) */}
+              <div className="sticky top-2 z-30 sm:static sm:top-auto sm:z-auto">
+                <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.06] to-white/[0.02] p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_30px_80px_rgba(0,0,0,0.55)] backdrop-blur-xl">
+                  {/* Premium glow */}
+                  <div className="pointer-events-none absolute -top-24 left-1/2 h-56 w-[42rem] -translate-x-1/2 rounded-full bg-[#D4AF37]/10 blur-3xl" />
+                  <div className="pointer-events-none absolute -bottom-28 right-[-6rem] h-64 w-64 rounded-full bg-emerald-500/10 blur-3xl" />
 
-                <div className="relative">
-                  {/* Top row: AI + All + Shopping + News + Tools + More (wraps) */}
-                  <div className="mb-4 flex flex-wrap items-center gap-2">
-                    {/* AI Mode */}
-                    <button
-                      type="button"
-                      onClick={onToggleAi}
-                      className={cx(
-                        "inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-[12px] font-extrabold tracking-wide transition",
-                        aiMode
-                          ? "border-[#D4AF37]/60 bg-[#D4AF37]/15 text-[#D4AF37]"
-                          : "border-white/10 bg-white/[0.03] text-white/75 hover:bg-white/[0.06]"
-                      )}
-                      title="Toggle AI Mode"
-                    >
-                      <Sparkles className="h-4 w-4" />
-                      AI Mode
-                    </button>
-
-                    <TabButton
-                      active={vertical === "all"}
-                      onClick={() => {
-                        setVertical("all");
-                        setToolsOpen(false);
-                        setMoreOpen(false);
-                        runSearch({ verticalOverride: "all" });
-                      }}
-                      icon={Search}
-                      label="All"
-                      title="Directory search"
-                    />
-
-                    <TabButton
-                      active={vertical === "shopping"}
-                      onClick={() => {
-                        setVertical("shopping");
-                        setToolsOpen(false);
-                        setMoreOpen(false);
-                        runSearch({ verticalOverride: "shopping" });
-                      }}
-                      icon={ShoppingBag}
-                      label="Shopping"
-                      title="Marketplace search"
-                    />
-
-                    <TabButton
-                      active={vertical === "news"}
-                      onClick={() => {
-                        setVertical("news");
-                        setToolsOpen(false);
-                        setMoreOpen(false);
-                        runSearch({ verticalOverride: "news" });
-                      }}
-                      icon={Newspaper}
-                      label="News"
-                      title="News search"
-                    />
-
-                    {/* Tools (directory only) */}
-                    {vertical === "all" && (
+                  <div className="relative">
+                    {/* Top row: swipeable on mobile, clean + no “More” */}
+                    <div className="mb-3 flex items-center gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                      {/* AI Mode */}
                       <button
                         type="button"
-                        onClick={() => {
-                          setToolsOpen((v) => !v);
-                          setMoreOpen(false);
-                        }}
+                        onClick={onToggleAi}
                         className={cx(
-                          "inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-[12px] font-extrabold tracking-wide transition",
-                          toolsOpen
+                          "shrink-0 inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-[12px] font-extrabold tracking-wide transition",
+                          aiMode
                             ? "border-[#D4AF37]/60 bg-[#D4AF37]/15 text-[#D4AF37]"
-                            : "border-white/10 bg-white/[0.03] text-white/75 hover:bg-white/[0.06]"
+                            : "border-white/10 bg-white/[0.03] text-white/75 hover:bg-white/[0.06]",
                         )}
-                        title="Open tools (filters)"
+                        title="Toggle AI Mode"
                       >
-                        <SlidersHorizontal className="h-4 w-4" />
-                        Tools
+                        <Sparkles className="h-4 w-4" />
+                        AI Mode
                       </button>
-                    )}
 
-                    {/* More */}
-                    <div className="relative">
-                      <button
-                        type="button"
+                      <TabButton
+                        active={vertical === "all"}
                         onClick={() => {
-                          setMoreOpen((v) => !v);
+                          setVertical("all");
                           setToolsOpen(false);
+                          runSearch({ verticalOverride: "all" });
                         }}
-                        className={cx(
-                          "inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-[12px] font-extrabold tracking-wide transition",
-                          moreOpen
-                            ? "border-white/20 bg-white/[0.06] text-white"
-                            : "border-white/10 bg-white/[0.03] text-white/75 hover:bg-white/[0.06]"
-                        )}
-                        title="More verticals (coming soon)"
-                      >
-                        <MoreHorizontal className="h-4 w-4" />
-                        More
-                      </button>
+                        icon={Search}
+                        label="Directory"
+                        title="Directory search"
+                      />
 
-                      {moreOpen && (
-                        <div className="absolute right-0 z-20 mt-2 w-56 overflow-hidden rounded-2xl border border-white/10 bg-neutral-950/95 shadow-2xl backdrop-blur">
-                          <div className="flex items-center justify-between px-3 py-2">
-                            <div className="text-[11px] font-extrabold text-white/70">
-                              Coming Soon
-                            </div>
-                            <button
-                              type="button"
-                              onClick={() => setMoreOpen(false)}
-                              className="rounded-lg p-1 text-white/60 hover:text-white"
-                              aria-label="Close"
-                            >
-                              <X className="h-4 w-4" />
-                            </button>
-                          </div>
-                          <div className="border-t border-white/10" />
-                          <div className="p-2 text-[12px] text-white/70">
-                            Images, Videos, and more verticals will plug into
-                            the same trusted flow.
-                          </div>
+                      <TabButton
+                        active={vertical === "shopping"}
+                        onClick={() => {
+                          setVertical("shopping");
+                          setToolsOpen(false);
+                          runSearch({ verticalOverride: "shopping" });
+                        }}
+                        icon={ShoppingBag}
+                        label="Shopping"
+                        title="Marketplace search"
+                      />
+
+                      <TabButton
+                        active={vertical === "news"}
+                        onClick={() => {
+                          setVertical("news");
+                          setToolsOpen(false);
+                          runSearch({ verticalOverride: "news" });
+                        }}
+                        icon={Newspaper}
+                        label="News"
+                        title="News search"
+                      />
+
+                      {/* Desktop-only Tools button (mobile moves into search bar) */}
+                      {vertical === "all" && (
+                        <button
+                          type="button"
+                          onClick={() => setToolsOpen((v) => !v)}
+                          className={cx(
+                            "hidden sm:inline-flex shrink-0 items-center gap-2 rounded-xl border px-3 py-2 text-[12px] font-extrabold tracking-wide transition",
+                            toolsOpen
+                              ? "border-[#D4AF37]/60 bg-[#D4AF37]/15 text-[#D4AF37]"
+                              : "border-white/10 bg-white/[0.03] text-white/75 hover:bg-white/[0.06]",
+                          )}
+                          title="Open filters"
+                        >
+                          <SlidersHorizontal className="h-4 w-4" />
+                          Tools
+                        </button>
+                      )}
+
+                      <div className="ml-auto hidden sm:flex items-center gap-2">
+                        <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[11px] text-white/60">
+                          Trusted Flow
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Search bar */}
+                    <div className="mt-2 flex w-full items-stretch overflow-hidden rounded-2xl border border-white/10 bg-black/30 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.04)] focus-within:border-[#D4AF37]/40 focus-within:ring-2 focus-within:ring-[#D4AF37]/20">
+                      {/* Scope toggle */}
+                      {vertical === "all" && (
+                        <div className="flex items-center gap-1 border-r border-white/10 p-1.5 sm:p-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setLeftScope("businesses");
+                              if (searchQuery.trim())
+                                runSearch({ scopeOverride: "businesses" });
+                            }}
+                            className={cx(
+                              "rounded-lg sm:rounded-xl px-2.5 sm:px-3 py-2 text-[11px] sm:text-[12px] font-extrabold transition",
+                              leftScope === "businesses"
+                                ? "bg-[#D4AF37] text-black shadow"
+                                : "bg-white/[0.03] text-white/75 hover:bg-white/[0.06]",
+                            )}
+                          >
+                            <span className="sm:hidden">Biz</span>
+                            <span className="hidden sm:inline">Businesses</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setLeftScope("organizations");
+                              if (searchQuery.trim())
+                                runSearch({ scopeOverride: "organizations" });
+                            }}
+                            className={cx(
+                              "rounded-lg sm:rounded-xl px-2.5 sm:px-3 py-2 text-[11px] sm:text-[12px] font-extrabold transition",
+                              leftScope === "organizations"
+                                ? "bg-[#D4AF37] text-black shadow"
+                                : "bg-white/[0.03] text-white/75 hover:bg-white/[0.06]",
+                            )}
+                          >
+                            <span className="sm:hidden">Orgs</span>
+                            <span className="hidden sm:inline">
+                              Organizations
+                            </span>
+                          </button>
                         </div>
                       )}
-                    </div>
 
-                    <div className="ml-auto hidden sm:flex items-center gap-2">
-                      <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[11px] text-white/60">
-                        Trusted Flow
-                      </span>
-                    </div>
-                  </div>
+                      {/* Input */}
+                      <input
+                        type="search"
+                        enterKeyHint="search"
+                        inputMode="search"
+                        placeholder={placeholder}
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") runSearch();
+                        }}
+                        className="min-w-0 flex-1 bg-transparent px-4 sm:px-5 py-3.5 sm:py-4 text-[15px] text-white placeholder:text-white/35 outline-none"
+                      />
 
-                  {/* Tools panel */}
-                  {toolsOpen && vertical === "all" && (
-                    <SearchToolsInlinePanel
-                      verifiedOnly={verifiedOnly}
-                      onVerifiedOnly={setVerifiedOnly}
-                      sponsoredFirst={sponsoredFirst}
-                      onSponsoredFirst={setSponsoredFirst}
-                      stateFilter={stateFilter}
-                      onStateFilter={setStateFilter}
-                      sort={sort}
-                      onSort={setSort}
-                      category={category}
-                      onCategory={setCategory}
-                    />
-                  )}
-
-                  {/* Search bar */}
-                  <div className="mt-3 flex w-full items-stretch overflow-hidden rounded-2xl border border-white/10 bg-black/30 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.04)] focus-within:border-[#D4AF37]/40 focus-within:ring-2 focus-within:ring-[#D4AF37]/20">
-                    {/* Scope toggle */}
-                    {vertical === "all" && (
-                      <div className="flex items-center gap-1 border-r border-white/10 p-2">
+                      {/* Mobile: Filters icon inside bar */}
+                      {vertical === "all" && (
                         <button
                           type="button"
-                          onClick={() => {
-                            setLeftScope("businesses");
-                            if (searchQuery.trim())
-                              runSearch({ scopeOverride: "businesses" });
-                          }}
+                          onClick={() => setToolsOpen((v) => !v)}
                           className={cx(
-                            "rounded-xl px-3 py-2 text-[12px] font-extrabold transition",
-                            leftScope === "businesses"
-                              ? "bg-[#D4AF37] text-black shadow"
-                              : "bg-white/[0.03] text-white/75 hover:bg-white/[0.06]"
+                            "sm:hidden shrink-0 border-l border-white/10 px-3 transition",
+                            toolsOpen ? "bg-[#D4AF37]/15" : "bg-white/[0.03]",
                           )}
+                          aria-label="Filters"
+                          title="Filters"
                         >
-                          Businesses
+                          <SlidersHorizontal
+                            className={cx(
+                              "h-4 w-4",
+                              toolsOpen ? "text-[#D4AF37]" : "text-white/75",
+                            )}
+                          />
                         </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setLeftScope("organizations");
-                            if (searchQuery.trim())
-                              runSearch({ scopeOverride: "organizations" });
-                          }}
-                          className={cx(
-                            "rounded-xl px-3 py-2 text-[12px] font-extrabold transition",
-                            leftScope === "organizations"
-                              ? "bg-[#D4AF37] text-black shadow"
-                              : "bg-white/[0.03] text-white/75 hover:bg-white/[0.06]"
-                          )}
-                        >
-                          Orgs
-                        </button>
-                      </div>
+                      )}
+
+                      {/* Search */}
+                      <button
+                        type="button"
+                        onClick={() => runSearch()}
+                        className="shrink-0 bg-[#D4AF37] px-5 sm:px-8 text-[14px] font-extrabold text-black transition hover:bg-yellow-500"
+                      >
+                        Search
+                      </button>
+                    </div>
+
+                    {/* Tools panel (now always below the bar so mobile makes sense) */}
+                    {toolsOpen && vertical === "all" && (
+                      <SearchToolsInlinePanel
+                        verifiedOnly={verifiedOnly}
+                        onVerifiedOnly={setVerifiedOnly}
+                        sponsoredFirst={sponsoredFirst}
+                        onSponsoredFirst={setSponsoredFirst}
+                        stateFilter={stateFilter}
+                        onStateFilter={setStateFilter}
+                        sort={sort}
+                        onSort={setSort}
+                        category={category}
+                        onCategory={setCategory}
+                      />
                     )}
 
-                    {/* Input */}
-                    <input
-                      type="text"
-                      placeholder={placeholder}
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") runSearch();
-                      }}
-                      className="flex-1 bg-transparent px-5 py-4 text-[15px] text-white placeholder:text-white/35 outline-none"
-                    />
-
-                    {/* Search */}
-                    <button
-                      type="button"
-                      onClick={() => runSearch()}
-                      className="bg-[#D4AF37] px-8 text-[14px] font-extrabold text-black transition hover:bg-yellow-500"
-                    >
-                      Search
-                    </button>
-                  </div>
-
-                  {/* Helper row */}
-                  <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-[12px] text-white/55">
-                    <span>
-                      Trusted ranking + clean results.
-                      <span className="text-white/40">
-                        {" "}
-                        Tools are optional filters.
+                    {/* Helper row (no “Press Enter”) */}
+                    <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-[12px] text-white/55">
+                      <span>
+                        Trusted ranking + clean results.
+                        <span className="text-white/40">
+                          {" "}
+                          Filters are optional.
+                        </span>
                       </span>
-                    </span>
-                    <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[11px]">
-                      Press{" "}
-                      <span className="font-black text-white/75">Enter</span>
-                    </span>
+
+                      <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[11px]">
+                        Tap <span className="font-black text-white/75">Search</span>
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -975,7 +959,10 @@ export default function Home() {
                     }
                   }}
                 >
-                  Start Selling on the Marketplace — Join as a Seller
+                  <span className="sm:hidden">Start Selling — Become a Seller</span>
+                  <span className="hidden sm:inline">
+                    Start Selling on the Marketplace — Join as a Seller
+                  </span>
                 </button>
 
                 <Link href="/library-of-black-history">
@@ -999,7 +986,8 @@ export default function Home() {
                   Student Opportunities
                 </h3>
                 <p className="mt-1 text-sm text-white/60">
-                  Scholarships, grants, mentorship, internships — and a launchpad to join BWE.
+                  Scholarships, grants, mentorship, internships — and a
+                  launchpad to join BWE.
                 </p>
               </div>
 
@@ -1030,13 +1018,15 @@ export default function Home() {
                   </div>
 
                   <h4 className="mt-3 text-xl sm:text-2xl font-extrabold tracking-tight text-white">
-                    Your Launchpad to Scholarships, Internships, Mentorship — and Real Access
+                    Your Launchpad to Scholarships, Internships, Mentorship —
+                    and Real Access
                     <span className="text-[#D4AF37]">.</span>
                   </h4>
 
                   <p className="mt-2 text-sm text-white/70">
-                    This is the student “power drawer” of BWE. We keep it clean, trusted, and
-                    easy to use — so students can move fast, apply faster, and connect with real opportunity.
+                    This is the student “power drawer” of BWE. We keep it clean,
+                    trusted, and easy to use — so students can move fast, apply
+                    faster, and connect with real opportunity.
                   </p>
 
                   <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -1100,7 +1090,7 @@ export default function Home() {
                   "relative mt-5 overflow-hidden rounded-2xl border border-white/10 bg-black/20 transition-all duration-300",
                   studentDrawerOpen
                     ? "max-h-[520px] opacity-100"
-                    : "max-h-0 opacity-0"
+                    : "max-h-0 opacity-0",
                 )}
               >
                 <div className="p-4 sm:p-5">
@@ -1120,7 +1110,8 @@ export default function Home() {
                         Scholarship & grant updates (expandable)
                       </div>
                       <p className="mt-1 text-xs text-white/65">
-                        Pages are structured to support feeds later (so content stays current).
+                        Pages are structured to support feeds later (so content
+                        stays current).
                       </p>
                     </div>
 
@@ -1130,7 +1121,8 @@ export default function Home() {
                         Mentorship pathways
                       </div>
                       <p className="mt-1 text-xs text-white/65">
-                        Guidance + networks + professional readiness. Simple and trusted.
+                        Guidance + networks + professional readiness. Simple and
+                        trusted.
                       </p>
                     </div>
 
@@ -1140,7 +1132,8 @@ export default function Home() {
                         Internships & career acceleration
                       </div>
                       <p className="mt-1 text-xs text-white/65">
-                        A clear pipeline from student → internship → job → career.
+                        A clear pipeline from student → internship → job →
+                        career.
                       </p>
                     </div>
 
@@ -1150,7 +1143,8 @@ export default function Home() {
                         Application playbooks (next)
                       </div>
                       <p className="mt-1 text-xs text-white/65">
-                        “Scholarship kit” templates and step-by-step checklists will live here.
+                        “Scholarship kit” templates and step-by-step checklists
+                        will live here.
                       </p>
                     </div>
                   </div>
@@ -1173,8 +1167,9 @@ export default function Home() {
                   </div>
 
                   <p className="mt-3 text-[11px] text-white/45">
-                    Student pages remain public. Creating a profile unlocks future features (saved opportunities,
-                    alerts, and student networking).
+                    Student pages remain public. Creating a profile unlocks
+                    future features (saved opportunities, alerts, and student
+                    networking).
                   </p>
                 </div>
               </div>
@@ -1215,7 +1210,8 @@ export default function Home() {
             <button
               className="rounded-xl bg-[#D4AF37] px-4 py-2.5 text-sm font-extrabold text-black shadow transition hover:bg-yellow-500"
               onClick={() => {
-                if (!user) router.push("/login?redirect=/real-estate-investment");
+                if (!user)
+                  router.push("/login?redirect=/real-estate-investment");
                 else router.push("/real-estate-investment");
               }}
             >
@@ -1273,7 +1269,7 @@ export default function Home() {
                   "group cursor-pointer rounded-2xl border p-5 shadow transition hover:-translate-y-0.5 hover:shadow-lg",
                   isMarket
                     ? "border-[#D4AF37]/40 bg-gradient-to-br from-[#D4AF37]/12 via-white/[0.03] to-white/[0.02]"
-                    : "border-white/10 bg-white/[0.03]"
+                    : "border-white/10 bg-white/[0.03]",
                 )}
                 onClick={() => gate(item.href)}
               >
@@ -1283,7 +1279,7 @@ export default function Home() {
                       "inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-bold",
                       isMarket
                         ? "border-[#D4AF37]/40 bg-black/30 text-[#D4AF37]"
-                        : "border-white/10 bg-white/5 text-white/70"
+                        : "border-white/10 bg-white/5 text-white/70",
                     )}
                   >
                     {isMarket ? "🔥 Popular" : isPublic ? "Public" : "Member"}
@@ -1430,4 +1426,3 @@ export default function Home() {
     </div>
   );
 }
-
