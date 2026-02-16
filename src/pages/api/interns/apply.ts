@@ -6,6 +6,9 @@ import clientPromise from "@/lib/mongodb";
  * Writes intern applications to MongoDB:
  * DB: bwes-cluster
  * Collection: intern_applications
+ *
+ * Prod-safe rate limiting is implemented via MongoDB (serverless-safe).
+ * Requires TTL index on: intern_rate_limits.expiresAt
  */
 
 type ApplyBody = {
@@ -22,10 +25,8 @@ function isEmail(s: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
 }
 
-// tiny in-memory rate limit (basic protection)
-const WINDOW_MS = 60_000;
+const WINDOW_MS = 60_000; // 1 minute
 const MAX_REQ = 10;
-const hits = new Map<string, { count: number; resetAt: number }>();
 
 function getIP(req: NextApiRequest) {
   const xf = req.headers["x-forwarded-for"];
@@ -33,23 +34,37 @@ function getIP(req: NextApiRequest) {
   return ip || req.socket.remoteAddress || "unknown";
 }
 
-function allow(ip: string) {
+/**
+ * Serverless-safe limiter using Mongo
+ * Collection: intern_rate_limits
+ * Document per ip per window
+ */
+async function allowRequest(db: any, ip: string) {
   const now = Date.now();
-  const current = hits.get(ip);
-  if (!current || now > current.resetAt) {
-    hits.set(ip, { count: 1, resetAt: now + WINDOW_MS });
-    return true;
-  }
-  if (current.count >= MAX_REQ) return false;
-  current.count += 1;
-  hits.set(ip, current);
-  return true;
+  const windowStart = Math.floor(now / WINDOW_MS) * WINDOW_MS;
+  const key = `${ip}:${windowStart}`;
+
+  const expiresAt = new Date(windowStart + WINDOW_MS);
+
+  const result = await db.collection("intern_rate_limits").findOneAndUpdate(
+    { _id: key },
+    {
+      $inc: { count: 1 },
+      $setOnInsert: {
+        ip,
+        windowStart: new Date(windowStart),
+        createdAt: new Date(),
+        expiresAt,
+      },
+    },
+    { upsert: true, returnDocument: "after" },
+  );
+
+  const count = result?.value?.count ?? 1;
+  return count <= MAX_REQ;
 }
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse,
-) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   res.setHeader("Cache-Control", "no-store, max-age=0");
 
   if (req.method !== "POST") {
@@ -59,28 +74,21 @@ export default async function handler(
       .json({ success: false, error: "Method Not Allowed" });
   }
 
-  const ip = getIP(req);
-  if (!allow(ip)) {
-    return res
-      .status(429)
-      .json({ success: false, error: "Too many requests. Try again shortly." });
-  }
-
   const body = (req.body || {}) as ApplyBody;
 
-  // Honeypot check (bots fill hidden fields)
+  // Honeypot check (bots fill hidden fields) — return success so bots don't learn
   if (String(body.company || "").trim().length > 0) {
     return res.status(200).json({ success: true });
   }
 
-  const fullName = String(body.fullName || "").trim();
-  const email = String(body.email || "")
-    .trim()
-    .toLowerCase();
-  const role = String(body.role || "").trim();
-  const skills = String(body.skills || "").trim();
-  const links = String(body.links || "").trim();
-  const why = String(body.why || "").trim();
+  const ip = getIP(req);
+
+  const fullName = String(body.fullName || "").trim().slice(0, 120);
+  const email = String(body.email || "").trim().toLowerCase().slice(0, 200);
+  const role = String(body.role || "").trim().slice(0, 120);
+  const skills = String(body.skills || "").trim().slice(0, 2000);
+  const links = String(body.links || "").trim().slice(0, 2000);
+  const why = String(body.why || "").trim().slice(0, 5000);
 
   if (fullName.length < 2) {
     return res
@@ -105,6 +113,26 @@ export default async function handler(
   try {
     const client = await clientPromise;
     const db = client.db("bwes-cluster");
+
+    // ✅ Serverless-safe rate limit
+    const allowed = await allowRequest(db, ip);
+    if (!allowed) {
+      return res.status(429).json({
+        success: false,
+        error: "Too many requests. Try again shortly.",
+      });
+    }
+
+    // ✅ Duplicate guard: if same email applied recently, silently accept
+    const recent = await db.collection("intern_applications").findOne({
+      email,
+      createdAt: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) }, // 24h
+    });
+
+    if (recent) {
+      // Return success so user can’t brute-force “did this email apply?”
+      return res.status(200).json({ success: true });
+    }
 
     await db.collection("intern_applications").insertOne({
       fullName,

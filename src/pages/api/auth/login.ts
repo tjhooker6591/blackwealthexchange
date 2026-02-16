@@ -10,31 +10,30 @@ interface UserRecord {
   email: string;
   password?: string;
   accountType: string;
-  businessName?: string;
-  businessAddress?: string;
-  businessPhone?: string;
-  fullName?: string;
-  createdAt?: Date;
   isAdmin?: boolean;
   [key: string]: unknown;
 }
 
-const ADMIN_EMAIL = "blackwealth24@gmail.com"; // Update as needed
+const ADMIN_EMAIL = "blackwealth24@gmail.com";
 
 function getSecret(): string {
   const secret = process.env.JWT_SECRET ?? process.env.NEXTAUTH_SECRET;
   if (!secret) {
-    throw new Error(
-      "🚩 Define JWT_SECRET or NEXTAUTH_SECRET in your environment variables",
-    );
+    throw new Error("Define JWT_SECRET or NEXTAUTH_SECRET in env vars");
   }
   return secret;
 }
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse,
-) {
+function normalizeEmail(email: string) {
+  return (email || "").trim().toLowerCase();
+}
+
+// Escape regex special chars for safe fallback match
+function escapeRegex(input: string) {
+  return input.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   res.setHeader("Cache-Control", "no-store, max-age=0");
 
   let SECRET: string;
@@ -42,93 +41,89 @@ export default async function handler(
     SECRET = getSecret();
   } catch (err) {
     console.error("Login handler secret load failed:", err);
-    return res
-      .status(500)
-      .json({ success: false, error: "Server configuration error." });
+    return res.status(500).json({ success: false, error: "Server configuration error." });
   }
 
   try {
     if (req.method !== "POST") {
       res.setHeader("Allow", ["POST"]);
-      return res
-        .status(405)
-        .json({ success: false, error: "Method Not Allowed" });
+      return res.status(405).json({ success: false, error: "Method Not Allowed" });
     }
 
-    const {
-      email,
-      password,
-      accountType: bodyAccountType,
-    } = req.body as {
+    const { email, password, accountType: bodyAccountType } = req.body as {
       email: string;
       password: string;
-      accountType?: string;
+      accountType?: "user" | "business" | "seller" | "employer";
     };
 
     if (!email || !password) {
-      return res
-        .status(400)
-        .json({ success: false, error: "Email and password are required." });
+      return res.status(400).json({ success: false, error: "Email and password are required." });
     }
+
+    const emailNorm = normalizeEmail(email);
 
     const client = await clientPromise;
     const db = client.db("bwes-cluster");
 
-    let collName = "users";
+    let collName: "users" | "businesses" | "sellers" | "employers" = "users";
     if (bodyAccountType === "business") collName = "businesses";
     else if (bodyAccountType === "seller") collName = "sellers";
     else if (bodyAccountType === "employer") collName = "employers";
 
     const collection = db.collection<UserRecord>(collName);
-    let user = await collection.findOne({ email });
 
-    if (bodyAccountType === "business" && !user) {
-      const newBiz: Omit<UserRecord, "_id"> = {
-        email,
-        accountType: "business",
-        businessName: "",
-        businessAddress: "",
-        businessPhone: "",
-        createdAt: new Date(),
-      };
-      const result = await (collection as any).insertOne(newBiz);
-      user = { _id: result.insertedId, ...newBiz } as UserRecord;
+    // Primary lookup (normalized email)
+    let user = await collection.findOne({ email: emailNorm });
+
+    // Fallback for legacy mixed-case emails (optional but helpful)
+    if (!user) {
+      user = await collection.findOne({
+        email: { $regex: `^${escapeRegex(email.trim())}$`, $options: "i" },
+      });
     }
 
     if (!user) {
-      return res
-        .status(401)
-        .json({ success: false, error: "Invalid credentials." });
+      return res.status(401).json({ success: false, error: "Invalid credentials." });
     }
 
-    if (user.password) {
-      const isValid = await bcrypt.compare(password, user.password);
-      if (!isValid) {
-        return res
-          .status(401)
-          .json({ success: false, error: "Invalid credentials." });
-      }
+    // If accountType was selected, enforce it matches the record (prevents wrong role tokens)
+    if (bodyAccountType && user.accountType && bodyAccountType !== user.accountType) {
+      return res.status(400).json({
+        success: false,
+        error: "Wrong account type selected for this account. Please choose the correct account type.",
+      });
     }
 
-    const role = bodyAccountType || user.accountType;
-    const isAdmin = email === ADMIN_EMAIL || user.isAdmin === true;
+    // Must have a password hash to login (unless you later support OAuth)
+    if (!user.password) {
+      return res.status(401).json({
+        success: false,
+        error: "This account does not have a password set. Please use Forgot Password to set one.",
+      });
+    }
 
-    // -- 30 MINUTE SESSION! --
+    const isValid = await bcrypt.compare(password, user.password);
+    if (!isValid) {
+      return res.status(401).json({ success: false, error: "Invalid credentials." });
+    }
+
+    const role = user.accountType || bodyAccountType || "user";
+    const isAdmin = emailNorm === normalizeEmail(ADMIN_EMAIL) || user.isAdmin === true;
+
+    // 30-minute JWT
     const token = jwt.sign(
       {
         userId: user._id.toString(),
-        email: user.email,
+        email: emailNorm,
         accountType: role,
         isAdmin,
       },
       SECRET,
-      { expiresIn: "30m" }, // <-- 30 minutes
+      { expiresIn: "30m" },
     );
 
-    // 🟢 Set correct domain for cookies in production only!
     const isProd = process.env.NODE_ENV === "production";
     const cookieDomain = isProd ? ".blackwealthexchange.com" : undefined;
-    console.log("🔑 Setting cookies with domain:", cookieDomain);
 
     res.setHeader("Set-Cookie", [
       cookie.serialize("session_token", token, {
@@ -136,7 +131,7 @@ export default async function handler(
         secure: isProd,
         sameSite: "lax",
         path: "/",
-        maxAge: 60 * 30, // <-- 30 minutes
+        maxAge: 60 * 30,
         domain: cookieDomain,
       }),
       cookie.serialize("accountType", role, {
@@ -144,7 +139,7 @@ export default async function handler(
         secure: isProd,
         sameSite: "lax",
         path: "/",
-        maxAge: 60 * 30, // <-- 30 minutes
+        maxAge: 60 * 30,
         domain: cookieDomain,
       }),
     ]);
@@ -153,16 +148,16 @@ export default async function handler(
       success: true,
       message: "Login successful",
       user: {
+        // return BOTH styles so your frontends don’t break
+        id: user._id.toString(),
         userId: user._id.toString(),
-        email: user.email,
+        email: emailNorm,
         accountType: role,
         isAdmin,
       },
     });
   } catch (err) {
     console.error("Login handler unexpected error:", err);
-    return res
-      .status(500)
-      .json({ success: false, error: "Internal Server Error" });
+    return res.status(500).json({ success: false, error: "Internal Server Error" });
   }
 }

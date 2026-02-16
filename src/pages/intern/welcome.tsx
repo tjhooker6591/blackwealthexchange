@@ -1,3 +1,6 @@
+// src/pages/intern/welcome.tsx
+"use client";
+
 import React from "react";
 import Link from "next/link";
 import {
@@ -7,8 +10,6 @@ import {
   Laptop,
   Users,
   FileText,
-  ListChecks,
-  LayoutDashboard,
 } from "lucide-react";
 
 export default function InternWelcomePage() {
@@ -31,17 +32,16 @@ export default function InternWelcomePage() {
 
             <div className="flex flex-wrap gap-3">
               <Link
-                href="/intern/tasks"
+                href="/admin/intern-applications"
                 className="rounded-xl border border-yellow-400/40 bg-yellow-400 text-black px-5 py-2.5 font-semibold hover:bg-yellow-300 transition"
               >
-                View Intern Tasks
+                View Applications
               </Link>
-
               <Link
-                href="/intern/dashboard"
+                href="/dashboard"
                 className="rounded-xl border border-yellow-400/30 bg-black px-5 py-2.5 font-semibold text-yellow-200 hover:bg-yellow-400/10 transition"
               >
-                Intern Dashboard
+                Go to Dashboard
               </Link>
             </div>
           </div>
@@ -94,7 +94,7 @@ export default function InternWelcomePage() {
                   title="Day 1–2"
                   points={[
                     "Environment set up (build succeeds).",
-                    "Understand the site sections + intern workflow.",
+                    "Understand the site sections + admin flow.",
                     "Pick one small starter ticket.",
                   ]}
                 />
@@ -126,7 +126,7 @@ export default function InternWelcomePage() {
                   <ul className="list-disc pl-5 text-white/70 space-y-1">
                     <li>Simple UI, fast load, no clutter.</li>
                     <li>Role-based access that feels smooth.</li>
-                    <li>Clear data + reliable flows.</li>
+                    <li>Clear data + reliable admin tools.</li>
                   </ul>
                 </MiniCard>
 
@@ -152,7 +152,7 @@ export default function InternWelcomePage() {
                   {`EOD Update — (Your Name)
 - What I worked on:
 - What I completed:
-- What I’m blocked on (if any):
+- What I am blocked on (if any):
 - Next steps for tomorrow:
 - Links (PRs / screenshots / notes):`}
                 </pre>
@@ -167,23 +167,18 @@ export default function InternWelcomePage() {
               icon={<FileText className="h-5 w-5 text-yellow-300" />}
             >
               <div className="flex flex-col gap-3">
+                <QuickLink href="/admin/dashboard" label="Admin Dashboard" />
                 <QuickLink
-                  href="/intern/tasks"
-                  label="Intern Tasks"
-                  icon={<ListChecks className="h-4 w-4" />}
-                />
-                <QuickLink
-                  href="/intern/dashboard"
-                  label="Intern Dashboard"
-                  icon={<LayoutDashboard className="h-4 w-4" />}
+                  href="/admin/intern-applications"
+                  label="Intern Applications"
                 />
                 <QuickLink href="/marketplace" label="Marketplace" />
-                <QuickLink href="/business-directory" label="Business Directory" />
+                <QuickLink
+                  href="/business-directory"
+                  label="Business Directory"
+                />
+                <QuickLink href="/intern/tasks" label="Intern Tasks" />
               </div>
-
-              <p className="mt-4 text-xs text-white/50">
-                Note: Admin tools are restricted and not part of intern access.
-              </p>
             </Card>
 
             <Card
@@ -204,11 +199,21 @@ export default function InternWelcomePage() {
             >
               <p className="text-white/75">
                 If you hit a blocker, capture:
-                <span className="text-yellow-200 font-semibold"> what you tried</span>,
-                the
-                <span className="text-yellow-200 font-semibold"> exact error</span>,
-                and a
-                <span className="text-yellow-200 font-semibold"> screenshot/log snippet</span>.
+                <span className="text-yellow-200 font-semibold">
+                  {" "}
+                  what you tried
+                </span>
+                , the
+                <span className="text-yellow-200 font-semibold">
+                  {" "}
+                  exact error
+                </span>
+                , and a
+                <span className="text-yellow-200 font-semibold">
+                  {" "}
+                  screenshot/log snippet
+                </span>
+                .
               </p>
             </Card>
           </div>
@@ -304,24 +309,13 @@ function MiniCard({
   );
 }
 
-function QuickLink({
-  href,
-  label,
-  icon,
-}: {
-  href: string;
-  label: string;
-  icon?: React.ReactNode;
-}) {
+function QuickLink({ href, label }: { href: string; label: string }) {
   return (
     <Link
       href={href}
       className="rounded-xl border border-yellow-400/25 bg-black px-4 py-3 text-yellow-200 font-semibold hover:bg-yellow-400/10 hover:border-yellow-400/40 transition"
     >
-      <span className="inline-flex items-center gap-2">
-        {icon}
-        {label}
-      </span>
+      {label}
     </Link>
   );
 }

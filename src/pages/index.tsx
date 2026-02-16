@@ -1,14 +1,180 @@
+// src/pages/index.tsx
 "use client";
 
-import { useState, useEffect } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type FormEvent,
+  type ComponentType,
+} from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { BookOpen, GraduationCap, Users, Briefcase } from "lucide-react";
+import {
+  BookOpen,
+  GraduationCap,
+  Users,
+  Briefcase,
+  Lock,
+  Sparkles,
+  Search,
+  ShoppingBag,
+  Newspaper,
+  SlidersHorizontal,
+  MoreHorizontal,
+  X,
+  ArrowRight,
+  ChevronDown,
+  ChevronUp,
+  Bell,
+  UserPlus,
+} from "lucide-react";
 import { useRouter } from "next/router";
 import useAuth from "@/hooks/useAuth";
-//import AdminFilterBar, { AdminFilters } from "@/components/admin/AdminFilterBar";
 
-// MODAL COMPONENT
+function cx(...classes: Array<string | false | null | undefined>) {
+  return classes.filter(Boolean).join(" ");
+}
+
+/** -----------------------------
+ *  TOOLS (Filters) — inline panel
+ *  ----------------------------- */
+function SearchToolsInlinePanel({
+  verifiedOnly,
+  onVerifiedOnly,
+  sponsoredFirst,
+  onSponsoredFirst,
+  stateFilter,
+  onStateFilter,
+  sort,
+  onSort,
+  category,
+  onCategory,
+}: {
+  verifiedOnly: boolean;
+  onVerifiedOnly: (v: boolean) => void;
+  sponsoredFirst: boolean;
+  onSponsoredFirst: (v: boolean) => void;
+  stateFilter: string;
+  onStateFilter: (v: string) => void;
+  sort: "relevance" | "newest" | "completeness";
+  onSort: (v: "relevance" | "newest" | "completeness") => void;
+  category: string;
+  onCategory: (v: string) => void;
+}) {
+  return (
+    <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.03] p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
+      <div className="mb-3 flex items-center justify-between">
+        <div className="text-xs font-extrabold tracking-wide text-white/70">
+          Tools (Filters)
+        </div>
+        <div className="text-[11px] text-white/45">Applies to Directory</div>
+      </div>
+
+      <div className="grid gap-3 sm:grid-cols-2">
+        {/* Verified only */}
+        <label className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm">
+          <span className="text-white/80 font-semibold">Verified only</span>
+          <button
+            type="button"
+            onClick={() => onVerifiedOnly(!verifiedOnly)}
+            className={cx(
+              "relative h-6 w-11 rounded-full border transition",
+              verifiedOnly
+                ? "border-emerald-400/40 bg-emerald-400/20"
+                : "border-white/10 bg-black/30"
+            )}
+            aria-pressed={verifiedOnly}
+            title="Show verified listings only"
+          >
+            <span
+              className={cx(
+                "absolute top-0.5 h-5 w-5 rounded-full transition",
+                verifiedOnly ? "left-5 bg-emerald-300" : "left-0.5 bg-white/60"
+              )}
+            />
+          </button>
+        </label>
+
+        {/* Sponsored first */}
+        <label className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm">
+          <span className="text-white/80 font-semibold">Sponsored first</span>
+          <button
+            type="button"
+            onClick={() => onSponsoredFirst(!sponsoredFirst)}
+            className={cx(
+              "relative h-6 w-11 rounded-full border transition",
+              sponsoredFirst
+                ? "border-[#D4AF37]/50 bg-[#D4AF37]/15"
+                : "border-white/10 bg-black/30"
+            )}
+            aria-pressed={sponsoredFirst}
+            title="Boost sponsored listings"
+          >
+            <span
+              className={cx(
+                "absolute top-0.5 h-5 w-5 rounded-full transition",
+                sponsoredFirst ? "left-5 bg-[#D4AF37]" : "left-0.5 bg-white/60"
+              )}
+            />
+          </button>
+        </label>
+
+        {/* State */}
+        <div className="rounded-xl border border-white/10 bg-white/5 px-3 py-2">
+          <div className="text-[11px] font-bold text-white/55">
+            State (optional)
+          </div>
+          <input
+            value={stateFilter}
+            onChange={(e) =>
+              onStateFilter(e.target.value.toUpperCase().slice(0, 2))
+            }
+            placeholder="CA"
+            className="mt-1 w-full bg-transparent text-sm text-white placeholder:text-white/35 outline-none"
+          />
+        </div>
+
+        {/* Sort */}
+        <div className="rounded-xl border border-white/10 bg-white/5 px-3 py-2">
+          <div className="text-[11px] font-bold text-white/55">Sort</div>
+          <select
+            value={sort}
+            onChange={(e) => onSort(e.target.value as any)}
+            className="mt-1 w-full bg-transparent text-sm text-white outline-none"
+          >
+            <option value="relevance">Relevance</option>
+            <option value="newest">Newest</option>
+            <option value="completeness">Completeness</option>
+          </select>
+        </div>
+
+        {/* Category */}
+        <div className="sm:col-span-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2">
+          <div className="text-[11px] font-bold text-white/55">
+            Category (optional)
+          </div>
+          <input
+            value={category}
+            onChange={(e) => onCategory(e.target.value)}
+            placeholder='e.g. "Barbershop", "Restaurant", "Church"'
+            className="mt-1 w-full bg-transparent text-sm text-white placeholder:text-white/35 outline-none"
+          />
+        </div>
+      </div>
+
+      <div className="mt-3 text-[11px] text-white/45">
+        Tip: Tools never hide data unless you choose a filter — “Verified only”
+        is optional.
+      </div>
+    </div>
+  );
+}
+
+/** -----------------------------
+ *  MODAL COMPONENT
+ *  ----------------------------- */
 function ConsultingInterestModal({
   isOpen,
   onClose,
@@ -21,7 +187,7 @@ function ConsultingInterestModal({
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError("");
     try {
@@ -37,83 +203,125 @@ function ConsultingInterestModal({
         setName("");
         setEmail("");
         onClose();
-      }, 1600);
+      }, 1400);
     } catch {
       setError("Could not submit. Please try again.");
     }
   };
 
   if (!isOpen) return null;
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
-      <div className="bg-gray-900 rounded-lg shadow-lg p-8 max-w-sm w-full relative">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 px-4">
+      <div className="relative w-full max-w-sm overflow-hidden rounded-2xl border border-white/10 bg-neutral-950/90 p-6 shadow-2xl backdrop-blur">
+        <div className="pointer-events-none absolute -top-20 left-1/2 h-40 w-[26rem] -translate-x-1/2 rounded-full bg-[#D4AF37]/15 blur-3xl" />
+
         <button
           onClick={onClose}
-          className="absolute top-2 right-3 text-gray-400 hover:text-gold text-2xl font-bold"
+          className="absolute right-3 top-3 rounded-lg px-2 py-1 text-xl font-bold leading-none text-white/60 transition hover:text-[#D4AF37]"
           aria-label="Close"
-        ></button>
-        <h2 className="text-xl font-bold text-gold mb-3">
-          Notify Me: Consulting Interest
+          type="button"
+        >
+          ×
+        </button>
+
+        <h2 className="text-lg font-extrabold tracking-tight text-white">
+          Notify Me <span className="text-[#D4AF37]">Consulting</span>
         </h2>
-        {submitted ? (
-          <div className="text-green-400 text-center font-semibold">
-            Thank you! We will notify you at launch.
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <input
-              type="text"
-              placeholder="Your Name"
-              required
-              className="w-full p-2 rounded bg-gray-800 text-white border border-gray-600"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-            <input
-              type="email"
-              placeholder="Your Email"
-              required
-              className="w-full p-2 rounded bg-gray-800 text-white border border-gray-600"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            {error && (
-              <div className="text-red-400 text-center text-sm">{error}</div>
-            )}
-            <button
-              type="submit"
-              className="w-full bg-gold text-black font-semibold rounded py-2 hover:bg-yellow-500 transition"
-            >
-              Notify Me
-            </button>
-          </form>
-        )}
+        <p className="mt-1 text-sm text-white/70">
+          Get notified when BWE Recruiting & Consulting launches.
+        </p>
+
+        <div className="mt-5">
+          {submitted ? (
+            <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-3 text-center text-emerald-300 font-semibold">
+              Thank you! We will notify you at launch.
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-3">
+              <input
+                type="text"
+                placeholder="Your Name"
+                required
+                className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-white placeholder:text-white/40 outline-none transition focus:border-[#D4AF37]/60 focus:ring-2 focus:ring-[#D4AF37]/25"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+              <input
+                type="email"
+                placeholder="Your Email"
+                required
+                className="w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2.5 text-white placeholder:text-white/40 outline-none transition focus:border-[#D4AF37]/60 focus:ring-2 focus:ring-[#D4AF37]/25"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              {error && (
+                <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-2 text-center text-sm text-red-300">
+                  {error}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                className="w-full rounded-xl bg-[#D4AF37] py-2.5 font-extrabold text-black shadow transition hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/40"
+              >
+                Notify Me
+              </button>
+            </form>
+          )}
+        </div>
       </div>
     </div>
   );
 }
 
-const EconomicImpactSimulator: React.FC = () => {
-  const currentYear = 2025;
-  const maxSpending = 1980000000000;
-  const initialValue = 300000000000;
-  const monthlyGrowth = 150000000000;
-  const [totalSpending, setTotalSpending] = useState(initialValue);
+/** -----------------------------
+ *  ECONOMIC IMPACT (2026 projection)
+ *  ----------------------------- */
+const EconomicImpactSimulator = () => {
+  const currentYear = 2026;
+  const projected = 2_100_000_000_000;
+  const initialValue = 300_000_000_000;
+  const impactSecondsToReach = 8 * 60;
+
+  const [total, setTotal] = useState<number>(initialValue);
+
+  const perSecond = useMemo(() => {
+    const span = Math.max(1, projected - initialValue);
+    return span / Math.max(1, impactSecondsToReach);
+  }, [projected, initialValue, impactSecondsToReach]);
+
+  const rafRef = useRef<number | null>(null);
+  const lastRef = useRef<number>(0);
+  const totalRef = useRef<number>(initialValue);
 
   useEffect(() => {
-    const dailyGrowth = monthlyGrowth / 30.44;
-    if (totalSpending >= maxSpending) return;
-    const timer = setInterval(() => {
-      setTotalSpending((prev) => {
-        if (prev >= maxSpending) return maxSpending;
-        const newTotal = prev + dailyGrowth / 24;
-        return newTotal > maxSpending ? maxSpending : newTotal;
-      });
-    }, 100);
-    return () => clearInterval(timer);
-  }, [totalSpending]);
+    totalRef.current = total;
+  }, [total]);
 
-  const formatNumber = (num: number) =>
+  useEffect(() => {
+    setTotal(initialValue);
+    totalRef.current = initialValue;
+    lastRef.current = performance.now();
+
+    const tick = (now: number) => {
+      const dt = Math.min(0.05, Math.max(0, (now - lastRef.current) / 1000));
+      lastRef.current = now;
+
+      const next = Math.min(projected, totalRef.current + perSecond * dt);
+      totalRef.current = next;
+      setTotal(next);
+
+      if (next < projected) rafRef.current = requestAnimationFrame(tick);
+    };
+
+    rafRef.current = requestAnimationFrame(tick);
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [initialValue, perSecond, projected]);
+
+  const formatCurrency = (num: number) =>
     num.toLocaleString("en-US", {
       style: "currency",
       currency: "USD",
@@ -121,45 +329,258 @@ const EconomicImpactSimulator: React.FC = () => {
       maximumFractionDigits: 0,
     });
 
+  const progressPct = Math.min(100, (total / projected) * 100);
+  const perMonth = projected / 12;
+  const perDay = perMonth / 30.44;
+
   return (
-    <div className="space-y-6 p-6 bg-gray-900 rounded-lg shadow-lg border border-gold text-white">
-      <h2 className="text-2xl sm:text-3xl font-bold text-center text-gold">
-        African American Spending Power in {currentYear}
-      </h2>
-      <div className="text-3xl md:text-4xl font-bold text-green-500 text-center">
-        {formatNumber(Math.floor(totalSpending))}
+    <section className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
+      <div className="pointer-events-none absolute -top-24 left-1/2 h-48 w-[34rem] -translate-x-1/2 rounded-full bg-[#D4AF37]/12 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-28 right-[-6rem] h-64 w-64 rounded-full bg-emerald-500/10 blur-3xl" />
+
+      <div className="relative flex flex-col items-center text-center">
+        <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-bold tracking-wide text-white/80">
+          <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
+          BUYING POWER (ANNUAL ESTIMATE)
+        </div>
+
+        <h2 className="mt-2 text-lg sm:text-xl md:text-2xl font-extrabold tracking-tight text-white">
+          African American Buying Power{" "}
+          <span className="text-[#D4AF37]">({currentYear})</span>
+        </h2>
+
+        <div className="mt-2 text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight tabular-nums">
+          <span className="bg-gradient-to-r from-emerald-200 via-emerald-400 to-emerald-200 bg-clip-text text-transparent">
+            {formatCurrency(Math.floor(total))}
+          </span>
+        </div>
+
+        <div className="mt-3 w-full max-w-4xl">
+          <div className="flex items-center justify-between text-[11px] text-white/55">
+            <span>{formatCurrency(initialValue)} baseline</span>
+            <span>{formatCurrency(projected)} estimate</span>
+          </div>
+
+          <div className="mt-2 h-2 w-full rounded-full bg-white/10">
+            <div
+              className="h-2 rounded-full bg-gradient-to-r from-[#D4AF37] via-emerald-400 to-emerald-300 shadow-[0_0_14px_rgba(16,185,129,0.18)] transition-[width] duration-200"
+              style={{ width: `${progressPct}%` }}
+            />
+          </div>
+
+          <p className="mt-2 text-center text-[11px] text-white/50">
+            A simple visual tracker to keep the impact front-and-center.
+          </p>
+        </div>
+
+        <div className="mt-2 hidden sm:flex flex-wrap items-center justify-center gap-2 text-[11px] text-white/70">
+          <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">
+            ~{formatCurrency(perMonth)} / month
+          </span>
+          <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">
+            ~{formatCurrency(perDay)} / day
+          </span>
+        </div>
+
+        <div className="mt-4 grid w-full gap-3 sm:grid-cols-2">
+          <Link
+            href="/1.8trillionimpact"
+            className="group inline-flex items-center justify-center rounded-xl border border-[#D4AF37]/40 bg-[#D4AF37]/10 px-4 py-2.5 text-center font-extrabold tracking-wide text-[#D4AF37] shadow-sm transition hover:border-[#D4AF37]/70 hover:bg-[#D4AF37]/15"
+          >
+            <span className="mr-2">KNOWLEDGE IS POWER</span>
+            <span className="text-white/80 group-hover:text-white">
+              • See where the money goes →
+            </span>
+          </Link>
+
+          <Link
+            href="/economic-freedom"
+            className="group inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-center font-extrabold tracking-wide text-white transition hover:border-white/20 hover:bg-white/10"
+          >
+            <span className="text-[#D4AF37] group-hover:text-[#D4AF37]">
+              Modern Economic Slavery
+            </span>
+            <span className="ml-2 text-white/80 group-hover:text-white">
+              • Learn more →
+            </span>
+          </Link>
+        </div>
       </div>
-      <p className="text-center text-sm text-gray-400">
-        {totalSpending >= maxSpending
-          ? "Estimated total reached for 2025."
-          : "Growing at approximately $150 billion per month"}
-      </p>
-      <div className="text-center">
-        <Link
-          href="/1.8trillionimpact"
-          className="text-gold font-bold hover:underline text-lg"
-        >
-          KNOWLEDGE IS POWER, Select Here to &quot;SEE WHERE YOUR MONEY
-          GOES&quot;
-        </Link>
-      </div>
-      <div className="text-center mt-4">
-        <Link
-          href="/economic-freedom"
-          className="text-gold font-bold hover:underline text-lg"
-        >
-          Modern Economic Slavery - Click Here To Learn
-        </Link>
-      </div>
-    </div>
+    </section>
   );
 };
+
+type VerticalKey = "all" | "shopping" | "news";
+
+function TabButton({
+  active,
+  onClick,
+  icon: Icon,
+  label,
+  title,
+}: {
+  active: boolean;
+  onClick: () => void;
+  icon: ComponentType<{ className?: string }>;
+  label: string;
+  title?: string;
+}) {
+  return (
+    <button
+      type="button"
+      title={title}
+      onClick={onClick}
+      className={cx(
+        "inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-[12px] font-extrabold tracking-wide transition",
+        active
+          ? "border-[#D4AF37]/50 bg-[#D4AF37]/15 text-[#D4AF37]"
+          : "border-white/10 bg-white/[0.03] text-white/75 hover:bg-white/[0.06]"
+      )}
+    >
+      <Icon
+        className={cx("h-4 w-4", active ? "text-[#D4AF37]" : "text-white/70")}
+      />
+      {label}
+    </button>
+  );
+}
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
+  const [studentDrawerOpen, setStudentDrawerOpen] = useState(false);
+
+  // Search UX
+  const [aiMode, setAiMode] = useState(false);
+  const [toolsOpen, setToolsOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
+
+  // Top vertical
+  const [vertical, setVertical] = useState<VerticalKey>("all");
+
+  // Left scope toggle inside search bar (kept)
+  const [leftScope, setLeftScope] = useState<"businesses" | "organizations">(
+    "businesses"
+  );
+
+  // Tools (filters)
+  const [verifiedOnly, setVerifiedOnly] = useState(false);
+  const [sponsoredFirst, setSponsoredFirst] = useState(true);
+  const [stateFilter, setStateFilter] = useState("");
+  const [sort, setSort] = useState<"relevance" | "newest" | "completeness">(
+    "relevance"
+  );
+  const [category, setCategory] = useState("");
+
   const router = useRouter();
   const { user } = useAuth();
+
+  const placeholder =
+    vertical !== "all"
+      ? vertical === "shopping"
+        ? "Search products…"
+        : "Search news…"
+      : leftScope === "organizations"
+      ? "Search churches, nonprofits, orgs…"
+      : "Search Black-owned businesses…";
+
+  const normalizeScope = (v: string) => {
+    const t = String(v || "").toLowerCase();
+    if (
+      t === "org" ||
+      t === "orgs" ||
+      t === "organisation" ||
+      t === "organization"
+    )
+      return "organizations";
+    if (t === "business" || t === "biz") return "businesses";
+    return t === "organizations" ? "organizations" : "businesses";
+  };
+
+  const buildDirectoryQuery = (
+    q: string,
+    scope: "businesses" | "organizations",
+    ai: boolean
+  ) => {
+    const query: Record<string, any> = {
+      q,
+      search: q,
+      // send multiple keys for backward compatibility
+      type: scope,
+      scope,
+      tab: scope,
+      limit: 20,
+      sort,
+      ai: ai ? "1" : "0",
+    };
+    if (verifiedOnly) query.verifiedOnly = "1";
+    if (sponsoredFirst) query.sponsoredFirst = "1";
+    if (stateFilter) query.state = stateFilter;
+    if (category) query.category = category;
+    return query;
+  };
+
+  /**
+   * FIXES:
+   * - All/Shopping/News always route (even with empty query => browse mode)
+   * - AI Mode re-runs route so it visibly works
+   * - Uses overrides to avoid stale state timing issues
+   */
+  const runSearch = (opts?: {
+    verticalOverride?: VerticalKey;
+    aiOverride?: boolean;
+    scopeOverride?: "businesses" | "organizations";
+  }) => {
+    const v = opts?.verticalOverride ?? vertical;
+    const ai = opts?.aiOverride ?? aiMode;
+    const scope = normalizeScope(opts?.scopeOverride ?? leftScope) as
+      | "businesses"
+      | "organizations";
+    const q = searchQuery.trim();
+
+    if (v === "shopping") {
+      return router.push({
+        pathname: "/shop",
+        query: q ? { q, search: q, ai: ai ? "1" : "0" } : { ai: ai ? "1" : "0" },
+      });
+    }
+
+    if (v === "news") {
+      return router.push({
+        pathname: "/news",
+        query: q ? { q, ai: ai ? "1" : "0" } : { ai: ai ? "1" : "0" },
+      });
+    }
+
+    // Directory browse/search
+    if (!q) {
+      return router.push({
+        pathname: "/business-directory",
+        query: {
+          type: scope,
+          scope,
+          tab: scope,
+          q: "",
+          search: "",
+          limit: 20,
+          sort,
+          ai: ai ? "1" : "0",
+        },
+      });
+    }
+
+    return router.push({
+      pathname: "/business-directory",
+      query: buildDirectoryQuery(q, scope, ai),
+    });
+  };
+
+  const onToggleAi = () => {
+    const next = !aiMode;
+    setAiMode(next);
+    // ALWAYS re-run so user sees it work (even in browse mode)
+    runSearch({ aiOverride: next });
+  };
 
   const sponsors = [
     { img: "/ads/sample-banner1.jpg", name: "Pamfa Hoodies" },
@@ -195,7 +616,6 @@ export default function Home() {
     },
   ];
 
-  // These are the ONLY routes that are public from the main "actions"!
   const publicRoutes = [
     "/about",
     "/global-timeline",
@@ -213,156 +633,590 @@ export default function Home() {
     {
       title: "Sponsored Businesses",
       href: "/business-directory/sponsored-business",
-      description: "Premium featured business with more visibility.",
+      description: "Premium featured businesses with more visibility.",
     },
     {
       title: "Affiliate & Partnership",
       href: "/affiliate",
-      description:
-        "Explore our curated affiliate offers and partnership opportunities.",
+      description: "Curated affiliate offers and partnership opportunities.",
     },
     {
       title: "Stay Black Informed",
       href: "/black-entertainment-news",
-      description: "Learn about Black entertainment and news.",
+      description: "Black entertainment and news — stay tapped in.",
     },
     {
       title: "Jobs & Careers",
       href: "/jobs",
-      description: "Discover jobs, internships & networking opportunities.",
+      description: "Jobs, internships & networking opportunities.",
     },
     {
       title: "Investment & Wealth",
       href: "/investment",
-      description: "Invest in Black businesses & secure your future.",
+      description: "Invest in Black businesses & build your future.",
     },
   ];
 
+  const gate = (href: string) => {
+    if (publicRoutes.includes(href)) return router.push(href);
+    if (!user) return router.push(`/login?redirect=${href}`);
+    return router.push(href);
+  };
+
   return (
-    <div className="relative min-h-screen bg-black text-white overflow-hidden">
-      <div className="absolute inset-0 bg-black opacity-100" />
-      <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-50" />
+    <div className="relative min-h-screen overflow-hidden bg-neutral-950 text-white">
+      {/* Background layers */}
+      <div className="absolute inset-0 bg-neutral-950" />
+      <div className="absolute inset-0 bg-gradient-to-b from-neutral-950 via-neutral-950/70 to-black/90" />
+      <div className="pointer-events-none absolute -top-40 left-1/2 h-[900px] w-[900px] -translate-x-1/2 rounded-full bg-[#D4AF37]/[0.06] blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-56 right-[-10rem] h-[560px] w-[560px] rounded-full bg-emerald-500/[0.05] blur-3xl" />
 
-      <header className="text-center py-24 relative z-10">
-        <p className="text-lg md:text-xl mt-0 font-light text-gray-300 animate-fadeIn flex justify-center items-center">
-          <Image
-            src="/black-wealth-future.png"
-            alt="Black Wealth Emoji"
-            width={58}
-            height={58}
-            className="inline-block mr-2"
-          />
-          The Future of Black Wealth Starts Here
-        </p>
-
-        <div className="mt-6 flex justify-center space-x-4">
-          <Link href="/login">
-            <button className="px-6 py-2 bg-gold text-black font-semibold text-lg rounded-lg hover:bg-yellow-500 transition">
-              Login
-            </button>
-          </Link>
-          <Link href="/signup">
-            <button className="px-6 py-2 bg-transparent border border-gold text-gold font-semibold text-lg rounded-lg hover:bg-gold hover:text-black transition">
-              Sign Up
-            </button>
-          </Link>
-        </div>
-
-        <section className="relative z-10 py-12">
-          <div className="container mx-auto px-4">
-            <EconomicImpactSimulator />
-          </div>
-        </section>
-
-        <div className="mt-8 flex flex-col items-center space-y-4 w-full max-w-xl mx-auto">
-          <div className="relative w-full">
-            <input
-              type="text"
-              placeholder="Find Black-Owned Businesses..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  router.push(`/business-directory?search=${searchQuery}`);
-                }
-              }}
-              className="w-full px-4 py-2 rounded-lg bg-gray-800 text-white placeholder-gray-400 border border-gray-700 focus:ring-2 focus:ring-gold focus:outline-none transition-all"
-            />
-            <button
-              onClick={() =>
-                router.push(`/business-directory?search=${searchQuery}`)
-              }
-              className="absolute right-2 top-1 px-3 py-1 bg-gold text-black rounded-lg font-semibold hover:bg-yellow-500 transition"
-            >
-              Search
-            </button>
-          </div>
-
-          {/* Gated: Start Selling */}
-          <button
-            className="mt-4 bg-gold text-black text-center py-2 px-4 rounded-lg font-semibold shadow hover:bg-yellow-500 transition animate-pulseGlow"
-            onClick={() => {
-              if (!user) {
-                router.push("/login?redirect=/marketplace/become-a-seller");
-              } else {
-                router.push("/marketplace/become-a-seller");
-              }
-            }}
-          >
-            Start Selling on the Marketplace – Join as a Seller!
-          </button>
-
-          <div className="mt-2">
-            <Link href="/library-of-black-history">
-              <span className="text-gold font-bold hover:underline text-lg">
-                📚 Explore the Library of Black History 🏛️
+      {/* HERO */}
+      <header className="relative z-10 pb-10 pt-14 sm:pt-16">
+        <div className="container mx-auto max-w-6xl px-4">
+          <div className="text-center">
+            <div className="mx-auto inline-flex items-center justify-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/80">
+              <Image
+                src="/black-wealth-future.png"
+                alt="Black Wealth"
+                width={34}
+                height={34}
+                className="inline-block"
+                priority
+              />
+              <span className="font-semibold tracking-wide">
+                The Future of Black Wealth Starts Here
               </span>
-            </Link>
+            </div>
+
+            <h1 className="mt-5 text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight">
+              Black Wealth Exchange<span className="text-[#D4AF37]">.</span>
+            </h1>
+
+            <p className="mx-auto mt-3 max-w-2xl text-sm sm:text-base text-white/70">
+              Search Black-owned businesses, discover jobs & opportunities, shop
+              the marketplace, and build economic power — with a trusted, modern
+              flow.
+            </p>
+
+            <div className="mt-6 flex justify-center gap-3">
+              <Link href="/login">
+                <button className="rounded-xl bg-[#D4AF37] px-6 py-2.5 text-base font-extrabold text-black shadow transition hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/40">
+                  Login
+                </button>
+              </Link>
+              <Link href="/signup">
+                <button className="rounded-xl border border-[#D4AF37]/60 bg-transparent px-6 py-2.5 text-base font-extrabold text-[#D4AF37] transition hover:bg-[#D4AF37]/10 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25">
+                  Sign Up
+                </button>
+              </Link>
+            </div>
           </div>
+
+          {/* Economic simulator */}
+          <section className="mt-10">
+            <EconomicImpactSimulator />
+          </section>
+
+          {/* Search Module */}
+          <section className="mt-10">
+            <div className="mx-auto max-w-3xl">
+              <div className="mb-2 flex items-center justify-between">
+                <div className="text-xs font-semibold tracking-wide text-white/70">
+                  Search the Directory
+                </div>
+                <div className="hidden sm:flex items-center gap-2 text-[11px] text-white/50">
+                  <span className="rounded-full border border-white/10 bg-white/5 px-2 py-0.5">
+                    Trusted Flow
+                  </span>
+                </div>
+              </div>
+
+              {/* PREMIUM SEARCH CONTAINER */}
+              <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.06] to-white/[0.02] p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_30px_80px_rgba(0,0,0,0.55)] backdrop-blur-xl">
+                {/* Premium glow */}
+                <div className="pointer-events-none absolute -top-24 left-1/2 h-56 w-[42rem] -translate-x-1/2 rounded-full bg-[#D4AF37]/10 blur-3xl" />
+                <div className="pointer-events-none absolute -bottom-28 right-[-6rem] h-64 w-64 rounded-full bg-emerald-500/10 blur-3xl" />
+
+                <div className="relative">
+                  {/* Top row: AI + All + Shopping + News + Tools + More (wraps) */}
+                  <div className="mb-4 flex flex-wrap items-center gap-2">
+                    {/* AI Mode */}
+                    <button
+                      type="button"
+                      onClick={onToggleAi}
+                      className={cx(
+                        "inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-[12px] font-extrabold tracking-wide transition",
+                        aiMode
+                          ? "border-[#D4AF37]/60 bg-[#D4AF37]/15 text-[#D4AF37]"
+                          : "border-white/10 bg-white/[0.03] text-white/75 hover:bg-white/[0.06]"
+                      )}
+                      title="Toggle AI Mode"
+                    >
+                      <Sparkles className="h-4 w-4" />
+                      AI Mode
+                    </button>
+
+                    <TabButton
+                      active={vertical === "all"}
+                      onClick={() => {
+                        setVertical("all");
+                        setToolsOpen(false);
+                        setMoreOpen(false);
+                        runSearch({ verticalOverride: "all" });
+                      }}
+                      icon={Search}
+                      label="All"
+                      title="Directory search"
+                    />
+
+                    <TabButton
+                      active={vertical === "shopping"}
+                      onClick={() => {
+                        setVertical("shopping");
+                        setToolsOpen(false);
+                        setMoreOpen(false);
+                        runSearch({ verticalOverride: "shopping" });
+                      }}
+                      icon={ShoppingBag}
+                      label="Shopping"
+                      title="Marketplace search"
+                    />
+
+                    <TabButton
+                      active={vertical === "news"}
+                      onClick={() => {
+                        setVertical("news");
+                        setToolsOpen(false);
+                        setMoreOpen(false);
+                        runSearch({ verticalOverride: "news" });
+                      }}
+                      icon={Newspaper}
+                      label="News"
+                      title="News search"
+                    />
+
+                    {/* Tools (directory only) */}
+                    {vertical === "all" && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setToolsOpen((v) => !v);
+                          setMoreOpen(false);
+                        }}
+                        className={cx(
+                          "inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-[12px] font-extrabold tracking-wide transition",
+                          toolsOpen
+                            ? "border-[#D4AF37]/60 bg-[#D4AF37]/15 text-[#D4AF37]"
+                            : "border-white/10 bg-white/[0.03] text-white/75 hover:bg-white/[0.06]"
+                        )}
+                        title="Open tools (filters)"
+                      >
+                        <SlidersHorizontal className="h-4 w-4" />
+                        Tools
+                      </button>
+                    )}
+
+                    {/* More */}
+                    <div className="relative">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setMoreOpen((v) => !v);
+                          setToolsOpen(false);
+                        }}
+                        className={cx(
+                          "inline-flex items-center gap-2 rounded-xl border px-3 py-2 text-[12px] font-extrabold tracking-wide transition",
+                          moreOpen
+                            ? "border-white/20 bg-white/[0.06] text-white"
+                            : "border-white/10 bg-white/[0.03] text-white/75 hover:bg-white/[0.06]"
+                        )}
+                        title="More verticals (coming soon)"
+                      >
+                        <MoreHorizontal className="h-4 w-4" />
+                        More
+                      </button>
+
+                      {moreOpen && (
+                        <div className="absolute right-0 z-20 mt-2 w-56 overflow-hidden rounded-2xl border border-white/10 bg-neutral-950/95 shadow-2xl backdrop-blur">
+                          <div className="flex items-center justify-between px-3 py-2">
+                            <div className="text-[11px] font-extrabold text-white/70">
+                              Coming Soon
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => setMoreOpen(false)}
+                              className="rounded-lg p-1 text-white/60 hover:text-white"
+                              aria-label="Close"
+                            >
+                              <X className="h-4 w-4" />
+                            </button>
+                          </div>
+                          <div className="border-t border-white/10" />
+                          <div className="p-2 text-[12px] text-white/70">
+                            Images, Videos, and more verticals will plug into
+                            the same trusted flow.
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="ml-auto hidden sm:flex items-center gap-2">
+                      <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[11px] text-white/60">
+                        Trusted Flow
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Tools panel */}
+                  {toolsOpen && vertical === "all" && (
+                    <SearchToolsInlinePanel
+                      verifiedOnly={verifiedOnly}
+                      onVerifiedOnly={setVerifiedOnly}
+                      sponsoredFirst={sponsoredFirst}
+                      onSponsoredFirst={setSponsoredFirst}
+                      stateFilter={stateFilter}
+                      onStateFilter={setStateFilter}
+                      sort={sort}
+                      onSort={setSort}
+                      category={category}
+                      onCategory={setCategory}
+                    />
+                  )}
+
+                  {/* Search bar */}
+                  <div className="mt-3 flex w-full items-stretch overflow-hidden rounded-2xl border border-white/10 bg-black/30 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.04)] focus-within:border-[#D4AF37]/40 focus-within:ring-2 focus-within:ring-[#D4AF37]/20">
+                    {/* Scope toggle */}
+                    {vertical === "all" && (
+                      <div className="flex items-center gap-1 border-r border-white/10 p-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setLeftScope("businesses");
+                            if (searchQuery.trim())
+                              runSearch({ scopeOverride: "businesses" });
+                          }}
+                          className={cx(
+                            "rounded-xl px-3 py-2 text-[12px] font-extrabold transition",
+                            leftScope === "businesses"
+                              ? "bg-[#D4AF37] text-black shadow"
+                              : "bg-white/[0.03] text-white/75 hover:bg-white/[0.06]"
+                          )}
+                        >
+                          Businesses
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setLeftScope("organizations");
+                            if (searchQuery.trim())
+                              runSearch({ scopeOverride: "organizations" });
+                          }}
+                          className={cx(
+                            "rounded-xl px-3 py-2 text-[12px] font-extrabold transition",
+                            leftScope === "organizations"
+                              ? "bg-[#D4AF37] text-black shadow"
+                              : "bg-white/[0.03] text-white/75 hover:bg-white/[0.06]"
+                          )}
+                        >
+                          Orgs
+                        </button>
+                      </div>
+                    )}
+
+                    {/* Input */}
+                    <input
+                      type="text"
+                      placeholder={placeholder}
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") runSearch();
+                      }}
+                      className="flex-1 bg-transparent px-5 py-4 text-[15px] text-white placeholder:text-white/35 outline-none"
+                    />
+
+                    {/* Search */}
+                    <button
+                      type="button"
+                      onClick={() => runSearch()}
+                      className="bg-[#D4AF37] px-8 text-[14px] font-extrabold text-black transition hover:bg-yellow-500"
+                    >
+                      Search
+                    </button>
+                  </div>
+
+                  {/* Helper row */}
+                  <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-[12px] text-white/55">
+                    <span>
+                      Trusted ranking + clean results.
+                      <span className="text-white/40">
+                        {" "}
+                        Tools are optional filters.
+                      </span>
+                    </span>
+                    <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[11px]">
+                      Press{" "}
+                      <span className="font-black text-white/75">Enter</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* CTAs under search */}
+              <div className="mt-6 flex flex-col items-center gap-3">
+                <button
+                  className="animate-pulseGlow rounded-xl bg-[#D4AF37] px-6 py-2.5 text-center text-sm sm:text-base font-extrabold text-black shadow transition hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/35"
+                  onClick={() => {
+                    if (!user) {
+                      router.push("/login?redirect=/marketplace/become-a-seller");
+                    } else {
+                      router.push("/marketplace/become-a-seller");
+                    }
+                  }}
+                >
+                  Start Selling on the Marketplace — Join as a Seller
+                </button>
+
+                <Link href="/library-of-black-history">
+                  <span className="text-base font-extrabold text-[#D4AF37] transition hover:underline">
+                    📚 Explore the Library of Black History 🏛️
+                  </span>
+                </Link>
+              </div>
+            </div>
+          </section>
         </div>
       </header>
 
-      <section className="relative z-10 py-12 bg-gray-900">
-        <div className="container mx-auto px-4">
-          <h3 className="text-3xl font-bold text-center text-gold mb-8">
-            Student Opportunities - Free Resource Information
-          </h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {studentOpportunities.map((item, index) => (
-              <Link key={index} href={item.href}>
-                <div className="flex flex-col items-center p-4 bg-gray-800 rounded-lg hover:bg-gray-700 transition duration-300 cursor-pointer">
-                  <item.icon className="w-12 h-12 text-gold mb-2" />
-                  <span className="text-lg font-semibold text-center">
-                    {item.title}
-                  </span>
+      {/* STUDENT OPPORTUNITIES (POWER DRAWER) */}
+      <section className="relative z-10 py-10">
+        <div className="container mx-auto max-w-6xl px-4">
+          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
+            <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
+              <div>
+                <h3 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#D4AF37]">
+                  Student Opportunities
+                </h3>
+                <p className="mt-1 text-sm text-white/60">
+                  Scholarships, grants, mentorship, internships — and a launchpad to join BWE.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="inline-flex rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/70">
+                  Public Access
+                </span>
+                <Link
+                  href="/black-student-opportunities"
+                  className="inline-flex items-center gap-2 rounded-xl border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-3 py-2 text-xs font-extrabold text-[#D4AF37] transition hover:border-[#D4AF37]/55 hover:bg-[#D4AF37]/15"
+                >
+                  <GraduationCap className="h-4 w-4" />
+                  Open Hub
+                </Link>
+              </div>
+            </div>
+
+            {/* POWER HUB CARD */}
+            <div className="relative overflow-hidden rounded-2xl border border-[#D4AF37]/25 bg-gradient-to-br from-[#D4AF37]/12 via-white/[0.03] to-white/[0.02] p-5">
+              <div className="pointer-events-none absolute -top-24 left-1/2 h-48 w-[34rem] -translate-x-1/2 rounded-full bg-[#D4AF37]/10 blur-3xl" />
+              <div className="pointer-events-none absolute -bottom-28 right-[-6rem] h-64 w-64 rounded-full bg-emerald-500/10 blur-3xl" />
+
+              <div className="relative flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+                <div className="max-w-2xl">
+                  <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-black tracking-wide text-white/75">
+                    <Sparkles className="h-4 w-4 text-[#D4AF37]" />
+                    STUDENT OPPORTUNITIES HUB
+                  </div>
+
+                  <h4 className="mt-3 text-xl sm:text-2xl font-extrabold tracking-tight text-white">
+                    Your Launchpad to Scholarships, Internships, Mentorship — and Real Access
+                    <span className="text-[#D4AF37]">.</span>
+                  </h4>
+
+                  <p className="mt-2 text-sm text-white/70">
+                    This is the student “power drawer” of BWE. We keep it clean, trusted, and
+                    easy to use — so students can move fast, apply faster, and connect with real opportunity.
+                  </p>
+
+                  <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
+                    <Link
+                      href="/black-student-opportunities"
+                      className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#D4AF37] px-5 py-2.5 text-sm font-extrabold text-black shadow transition hover:bg-yellow-500"
+                    >
+                      Enter Student Hub <ArrowRight className="h-4 w-4" />
+                    </Link>
+
+                    <Link
+                      href="/signup?redirect=/black-student-opportunities"
+                      className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-5 py-2.5 text-sm font-extrabold text-white/80 transition hover:border-white/20 hover:bg-white/10"
+                    >
+                      <UserPlus className="h-4 w-4 text-white/70" />
+                      Create Free Student Profile
+                    </Link>
+
+                    <button
+                      type="button"
+                      onClick={() => setStudentDrawerOpen((v) => !v)}
+                      className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-5 py-2.5 text-sm font-extrabold text-white/75 transition hover:bg-white/[0.06]"
+                      aria-expanded={studentDrawerOpen}
+                    >
+                      Power Drawer
+                      {studentDrawerOpen ? (
+                        <ChevronUp className="h-4 w-4" />
+                      ) : (
+                        <ChevronDown className="h-4 w-4" />
+                      )}
+                    </button>
+                  </div>
                 </div>
-              </Link>
-            ))}
+
+                <div className="hidden md:block">
+                  <div className="rounded-2xl border border-white/10 bg-black/30 p-4">
+                    <div className="text-xs font-extrabold text-white/70">
+                      Why students stay on BWE
+                    </div>
+                    <ul className="mt-3 space-y-2 text-sm text-white/70">
+                      <li className="flex items-start gap-2">
+                        <span className="mt-1 h-2 w-2 rounded-full bg-emerald-300" />
+                        Trusted links + clean info (no clutter)
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="mt-1 h-2 w-2 rounded-full bg-[#D4AF37]" />
+                        Everything in one place (hub style)
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="mt-1 h-2 w-2 rounded-full bg-sky-300" />
+                        Fast navigation (apply / learn more instantly)
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              {/* DRAWER CONTENT */}
+              <div
+                className={cx(
+                  "relative mt-5 overflow-hidden rounded-2xl border border-white/10 bg-black/20 transition-all duration-300",
+                  studentDrawerOpen
+                    ? "max-h-[520px] opacity-100"
+                    : "max-h-0 opacity-0"
+                )}
+              >
+                <div className="p-4 sm:p-5">
+                  <div className="mb-3 flex items-center justify-between gap-3">
+                    <div className="text-sm font-extrabold tracking-tight text-white">
+                      What’s inside the Student Hub
+                    </div>
+                    <span className="inline-flex rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[11px] font-bold text-white/60">
+                      Built for 2026+
+                    </span>
+                  </div>
+
+                  <div className="grid gap-3 md:grid-cols-2">
+                    <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+                      <div className="flex items-center gap-2 text-sm font-extrabold text-[#D4AF37]">
+                        <Bell className="h-4 w-4" />
+                        Scholarship & grant updates (expandable)
+                      </div>
+                      <p className="mt-1 text-xs text-white/65">
+                        Pages are structured to support feeds later (so content stays current).
+                      </p>
+                    </div>
+
+                    <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+                      <div className="flex items-center gap-2 text-sm font-extrabold text-[#D4AF37]">
+                        <Users className="h-4 w-4" />
+                        Mentorship pathways
+                      </div>
+                      <p className="mt-1 text-xs text-white/65">
+                        Guidance + networks + professional readiness. Simple and trusted.
+                      </p>
+                    </div>
+
+                    <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+                      <div className="flex items-center gap-2 text-sm font-extrabold text-[#D4AF37]">
+                        <Briefcase className="h-4 w-4" />
+                        Internships & career acceleration
+                      </div>
+                      <p className="mt-1 text-xs text-white/65">
+                        A clear pipeline from student → internship → job → career.
+                      </p>
+                    </div>
+
+                    <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+                      <div className="flex items-center gap-2 text-sm font-extrabold text-[#D4AF37]">
+                        <BookOpen className="h-4 w-4" />
+                        Application playbooks (next)
+                      </div>
+                      <p className="mt-1 text-xs text-white/65">
+                        “Scholarship kit” templates and step-by-step checklists will live here.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+                    <Link
+                      href="/black-student-opportunities"
+                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#D4AF37] px-5 py-2.5 text-sm font-extrabold text-black shadow transition hover:bg-yellow-500"
+                    >
+                      Go to Student Hub <ArrowRight className="h-4 w-4" />
+                    </Link>
+
+                    <Link
+                      href="/signup?redirect=/black-student-opportunities"
+                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-5 py-2.5 text-sm font-extrabold text-[#D4AF37] transition hover:border-[#D4AF37]/55 hover:bg-[#D4AF37]/15"
+                    >
+                      <UserPlus className="h-4 w-4" />
+                      Join BWE as a Student
+                    </Link>
+                  </div>
+
+                  <p className="mt-3 text-[11px] text-white/45">
+                    Student pages remain public. Creating a profile unlocks future features (saved opportunities,
+                    alerts, and student networking).
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* QUICK LINKS GRID */}
+            <div className="mt-6 grid grid-cols-2 gap-4 md:grid-cols-4">
+              {studentOpportunities.map((item, index) => (
+                <Link key={index} href={item.href}>
+                  <div className="group flex cursor-pointer flex-col items-center rounded-2xl border border-white/10 bg-white/[0.03] p-4 transition hover:bg-white/[0.06]">
+                    <item.icon className="mb-2 h-10 w-10 text-[#D4AF37]" />
+                    <span className="text-base font-semibold text-white">
+                      {item.title}
+                    </span>
+                    <span className="mt-1 text-xs text-white/55 group-hover:text-white/70">
+                      Tap to explore →
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
-      <main className="container mx-auto px-4 relative z-10">
-        {/* Real Estate & Investment Section */}
-        <section className="bg-gray-800 rounded-lg shadow-lg p-4 mb-8 mt-12">
-          <div className="flex items-center justify-between">
+      <main className="container relative z-10 mx-auto max-w-6xl px-4 pb-10">
+        {/* Real Estate & Investment */}
+        <section className="mb-6 rounded-2xl border border-white/10 bg-white/[0.03] p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
+          <div className="flex items-center justify-between gap-4">
             <div>
-              <h2 className="text-xl font-bold text-gold">
+              <h2 className="text-xl font-extrabold tracking-tight text-[#D4AF37]">
                 Real Estate & Investment
               </h2>
-              <p className="text-sm text-gray-300 mt-1">
-                Explore Black-owned real estate options and investments
+              <p className="mt-1 text-sm text-white/60">
+                Explore Black-owned real estate options and investments.
               </p>
             </div>
-            {/* Gated: Learn More */}
             <button
-              className="px-4 py-2 bg-gold text-black font-semibold text-sm rounded-lg hover:bg-yellow-500 transition"
+              className="rounded-xl bg-[#D4AF37] px-4 py-2.5 text-sm font-extrabold text-black shadow transition hover:bg-yellow-500"
               onClick={() => {
-                if (!user) {
-                  router.push("/login?redirect=/real-estate-investment");
-                } else {
-                  router.push("/real-estate-investment");
-                }
+                if (!user) router.push("/login?redirect=/real-estate-investment");
+                else router.push("/real-estate-investment");
               }}
             >
               Learn More
@@ -371,24 +1225,33 @@ export default function Home() {
         </section>
 
         {/* Featured Sponsors */}
-        <section className="bg-gray-800 rounded-lg shadow-lg p-4 mb-8 overflow-hidden">
-          <h3 className="text-lg font-semibold text-gold mb-2">
-            Featured Sponsors
-          </h3>
-          <div className="relative w-full h-32 overflow-hidden">
-            <div className="absolute flex space-x-4 animate-scroll">
+        <section className="mb-6 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
+          <div className="mb-3 flex items-center justify-between">
+            <h3 className="text-lg font-extrabold tracking-tight text-[#D4AF37]">
+              Featured Sponsors
+            </h3>
+            <span className="text-xs text-white/50">Hover to pause</span>
+          </div>
+
+          <div className="relative h-28 w-full overflow-hidden rounded-xl border border-white/10 bg-black/20">
+            <div className="pointer-events-none absolute left-0 top-0 h-full w-10 bg-gradient-to-r from-black/70 to-transparent" />
+            <div className="pointer-events-none absolute right-0 top-0 h-full w-10 bg-gradient-to-l from-black/70 to-transparent" />
+
+            <div className="absolute flex space-x-4 px-3 py-3 animate-scroll">
               {[...sponsors, ...sponsors].map((sponsor, index) => (
-                <div key={index} className="relative h-24 w-40">
+                <div
+                  key={index}
+                  className="relative h-20 w-40 overflow-hidden rounded-xl border border-white/10 shadow"
+                >
                   <Image
                     src={sponsor.img}
                     alt={sponsor.name}
                     width={160}
-                    height={96}
-                    className="object-cover rounded-lg"
-                    priority
+                    height={80}
+                    className="h-full w-full object-cover"
+                    priority={index < 4}
                   />
-                  {/* Sponsor Name Overlay */}
-                  <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-60 text-gold text-xs font-semibold px-2 py-1 rounded">
+                  <div className="absolute bottom-2 left-1/2 -translate-x-1/2 rounded bg-black/60 px-2 py-1 text-[11px] font-semibold text-[#D4AF37]">
                     {sponsor.name}
                   </div>
                 </div>
@@ -398,67 +1261,81 @@ export default function Home() {
         </section>
 
         {/* Key Sections (gated) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          {keySections.map((item, index) => (
-            <div
-              key={index}
-              className={`p-4 shadow-lg hover:scale-105 transition transform rounded-lg ${
-                item.title === "Our Marketplace"
-                  ? "bg-gradient-to-br from-yellow-700 to-yellow-500 text-black border-2 border-yellow-400 ring-2 ring-yellow-500"
-                  : "bg-gray-800 bg-opacity-80 text-white border border-gray-700"
-              }`}
-            >
-              {item.title === "Our Marketplace" && (
-                <span className="inline-block bg-black text-yellow-400 text-xs font-bold px-2 py-1 rounded-full mb-2 animate-pulse">
-                  🔥 Popular
-                </span>
-              )}
-              <h2
-                className="text-xl font-semibold hover:underline cursor-pointer"
-                onClick={() => {
-                  if (publicRoutes.includes(item.href)) {
-                    router.push(item.href);
-                    return;
-                  }
-                  if (!user) {
-                    router.push(`/login?redirect=${item.href}`);
-                  } else {
-                    router.push(item.href);
-                  }
-                }}
+        <div className="mb-7 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+          {keySections.map((item, index) => {
+            const isMarket = item.title === "Our Marketplace";
+            const isPublic = publicRoutes.includes(item.href);
+
+            return (
+              <div
+                key={index}
+                className={cx(
+                  "group cursor-pointer rounded-2xl border p-5 shadow transition hover:-translate-y-0.5 hover:shadow-lg",
+                  isMarket
+                    ? "border-[#D4AF37]/40 bg-gradient-to-br from-[#D4AF37]/12 via-white/[0.03] to-white/[0.02]"
+                    : "border-white/10 bg-white/[0.03]"
+                )}
+                onClick={() => gate(item.href)}
               >
-                {item.title}
-              </h2>
-              <p className="text-sm mt-2">{item.description}</p>
-            </div>
-          ))}
+                <div className="mb-3 flex items-center justify-between">
+                  <span
+                    className={cx(
+                      "inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-bold",
+                      isMarket
+                        ? "border-[#D4AF37]/40 bg-black/30 text-[#D4AF37]"
+                        : "border-white/10 bg-white/5 text-white/70"
+                    )}
+                  >
+                    {isMarket ? "🔥 Popular" : isPublic ? "Public" : "Member"}
+                    {!isPublic && !isMarket && (
+                      <Lock className="h-3.5 w-3.5 text-white/60" />
+                    )}
+                  </span>
+
+                  <span className="text-xs text-white/45 group-hover:text-white/70 transition">
+                    Open →
+                  </span>
+                </div>
+
+                <h2 className="text-xl font-extrabold tracking-tight text-white group-hover:underline">
+                  {item.title}
+                </h2>
+                <p className="mt-2 text-sm text-white/65">{item.description}</p>
+
+                {!isPublic && !user && (
+                  <div className="mt-4 text-xs text-white/45">
+                    Sign in required to access.
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
 
         {/* Recruiting & Consulting Services (Coming Soon) */}
-        <section className="container mx-auto px-4 bg-yellow-600 rounded-lg shadow-lg p-4 mb-6">
-          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start space-y-4 sm:space-y-0 sm:space-x-4">
-            {/* Text block */}
+        <section className="mb-6 rounded-2xl border border-[#D4AF37]/25 bg-white/[0.03] p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
             <div className="flex-1">
-              <div className="flex justify-between items-center mb-2">
-                <h3 className="text-xl font-bold">
+              <div className="mb-2 flex items-center justify-between">
+                <h3 className="text-xl font-extrabold tracking-tight text-[#D4AF37]">
                   BWE Recruiting & Consulting Services
                 </h3>
-                <span className="inline-block bg-black text-yellow-400 text-xs px-2 py-0.5 rounded-full whitespace-nowrap">
+                <span className="inline-flex whitespace-nowrap rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-xs font-semibold text-[#D4AF37]">
                   Coming Soon
                 </span>
               </div>
-              <p className="text-sm">
-                We will soon launch a full talent-consulting service connecting
-                you with rigorously vetted Black professionals. Employers hire
-                top talent confidently, and students, job seekers & overlooked
-                candidates secure meaningful opportunities.
+              <p className="text-sm text-white/70">
+                A full talent-consulting service connecting employers with
+                rigorously vetted Black professionals — and helping students,
+                job seekers, and overlooked candidates secure meaningful
+                opportunities.
               </p>
             </div>
-            {/* Notify button is public */}
+
             <div className="flex-shrink-0">
               <button
                 onClick={() => setModalOpen(true)}
-                className="px-4 py-2 bg-black text-yellow-400 text-sm font-semibold rounded hover:bg-gray-900 transition"
+                className="rounded-xl bg-[#D4AF37] px-4 py-2.5 text-sm font-extrabold text-black shadow transition hover:bg-yellow-500"
               >
                 Notify Me
               </button>
@@ -467,50 +1344,57 @@ export default function Home() {
         </section>
 
         {/* Advertise Section (gated) */}
-        <section className="bg-gray-900 border border-gold rounded-lg shadow p-4 text-center my-6 animate-fadeIn">
-          <h2 className="text-xl font-semibold text-gold flex items-center justify-center gap-2 mb-1">
+        <section className="my-6 rounded-2xl border border-white/10 bg-white/[0.03] p-6 text-center shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
+          <h2 className="mb-1 flex items-center justify-center gap-2 text-xl font-extrabold tracking-tight text-[#D4AF37]">
             📢 Advertise with Us
           </h2>
-          <p className="text-sm text-gray-400 mb-2">
-            Promote your business today to thousands of engaged users across our
-            platform.
+          <p className="mx-auto mb-4 max-w-2xl text-sm text-white/65">
+            Promote your business to engaged users across the platform with
+            clean, tasteful ad placements.
           </p>
+
           <button
-            className="px-4 py-1.5 bg-gold text-black text-sm rounded hover:bg-yellow-500 transition"
+            className="rounded-xl bg-[#D4AF37] px-5 py-2.5 text-sm font-extrabold text-black shadow transition hover:bg-yellow-500"
             onClick={() => {
-              if (!user) {
-                router.push("/login?redirect=/advertise-with-us");
-              } else {
-                router.push("/advertise-with-us");
-              }
+              if (!user) router.push("/login?redirect=/advertise-with-us");
+              else router.push("/advertise-with-us");
             }}
           >
             View Ad Options
           </button>
+
+          {!user && (
+            <div className="mt-3 text-xs text-white/45">
+              Some options require login for checkout & campaign management.
+            </div>
+          )}
         </section>
       </main>
 
-      {/* Modal for Consulting Interest */}
+      {/* Modal */}
       <ConsultingInterestModal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
       />
 
       {/* Footer */}
-      <footer className="text-center py-8 border-t border-gold mt-8 relative z-10">
-        <div className="mx-auto mb-4 w-[60px] h-[60px] relative">
+      <footer className="relative z-10 mt-8 border-t border-white/10 py-10 text-center">
+        <div className="relative mx-auto mb-3 h-[56px] w-[56px]">
           <Image
             src="/favicon.png"
             alt="BWE Logo"
-            width={60}
-            height={60}
+            width={56}
+            height={56}
             className="object-contain"
             priority
           />
         </div>
-        <h2 className="text-lg font-bold text-gray-300">
+        <h2 className="text-lg font-extrabold tracking-tight text-white">
           Join the BWE Community & Build Wealth
         </h2>
+        <p className="mt-1 text-sm text-white/55">
+          Build. Buy. Hire. Invest. Keep dollars circulating.
+        </p>
       </footer>
 
       {/* Animations */}
@@ -521,7 +1405,6 @@ export default function Home() {
         .animate-scroll:hover {
           animation-play-state: paused;
         }
-
         @keyframes scroll {
           0% {
             transform: translateX(0);
@@ -532,38 +1415,19 @@ export default function Home() {
         }
 
         .animate-pulseGlow {
-          animation: pulseGlow 2s infinite;
+          animation: pulseGlow 2.1s ease-in-out infinite;
         }
-
         @keyframes pulseGlow {
           0%,
           100% {
-            box-shadow:
-              0 0 5px #ffd700,
-              0 0 10px #ffd700;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.25);
           }
           50% {
-            box-shadow:
-              0 0 20px #ffd700,
-              0 0 30px #ffd700;
-          }
-        }
-
-        .animate-fadeIn {
-          animation: fadeIn 1s ease-out;
-        }
-
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
+            box-shadow: 0 0 24px rgba(212, 175, 55, 0.45);
           }
         }
       `}</style>
     </div>
   );
 }
+
