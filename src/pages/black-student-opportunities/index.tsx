@@ -175,7 +175,13 @@ const LEVELS: Array<Opportunity["level"] | "All"> = [
   "Any",
 ];
 
-const MODES: Array<Opportunity["mode"] | "All"> = ["All", "Remote", "In-Person", "Hybrid", "Any"];
+const MODES: Array<Opportunity["mode"] | "All"> = [
+  "All",
+  "Remote",
+  "In-Person",
+  "Hybrid",
+  "Any",
+];
 
 const FIELDS: Array<Opportunity["field"] | "All"> = [
   "All",
@@ -239,11 +245,20 @@ export default function StudentOpportunitiesHub() {
       const matchesMode = mode === "All" ? true : o.mode === mode;
       const matchesField = field === "All" ? true : o.field === field;
 
-      return matchesQuery && matchesType && matchesLevel && matchesMode && matchesField;
+      return (
+        matchesQuery &&
+        matchesType &&
+        matchesLevel &&
+        matchesMode &&
+        matchesField
+      );
     });
   }, [q, data, type, level, mode, field]);
 
-  const featured = useMemo(() => filtered.filter((x) => x.isFeatured).slice(0, 6), [filtered]);
+  const featured = useMemo(
+    () => filtered.filter((x) => x.isFeatured).slice(0, 6),
+    [filtered],
+  );
 
   return (
     <div className="relative min-h-screen bg-black text-white overflow-hidden">
@@ -281,9 +296,11 @@ export default function StudentOpportunitiesHub() {
         </h1>
 
         <p className="mt-3 text-sm sm:text-base md:text-lg text-gray-300 max-w-3xl mx-auto">
-          This hub is designed to help Black students <span className="text-white font-semibold">find opportunities</span>,
+          This hub is designed to help Black students{" "}
+          <span className="text-white font-semibold">find opportunities</span>,
           <span className="text-white font-semibold"> build leverage</span>, and
-          <span className="text-white font-semibold"> join a network</span> that grows with them.
+          <span className="text-white font-semibold"> join a network</span> that
+          grows with them.
         </p>
 
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
@@ -321,7 +338,9 @@ export default function StudentOpportunitiesHub() {
                 className="rounded-2xl bg-white/5 border border-white/10 shadow-xl p-6 hover:border-yellow-300/40 hover:bg-white/7 transition"
               >
                 <div className="flex items-start justify-between gap-3">
-                  <div className="text-gold font-extrabold text-xl">{c.title}</div>
+                  <div className="text-gold font-extrabold text-xl">
+                    {c.title}
+                  </div>
                   <span className="px-2 py-1 rounded-full text-[11px] font-bold bg-yellow-400/15 border border-yellow-300/25 text-yellow-200">
                     {c.badge}
                   </span>
@@ -340,28 +359,42 @@ export default function StudentOpportunitiesHub() {
               Why students join BWE (this is your leverage)
             </h2>
             <p className="text-sm text-gray-200 mt-2 max-w-4xl">
-              Most students are drowning in scattered links and random advice. This hub becomes their
-              <span className="text-white font-semibold"> single trusted launchpad</span>:
-              opportunities, structure, mentorship, and a community that helps them execute.
+              Most students are drowning in scattered links and random advice.
+              This hub becomes their
+              <span className="text-white font-semibold">
+                {" "}
+                single trusted launchpad
+              </span>
+              : opportunities, structure, mentorship, and a community that helps
+              them execute.
             </p>
 
             <div className="mt-5 grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="rounded-2xl bg-black/30 border border-white/10 p-5">
-                <div className="text-gold font-extrabold">1) Opportunity Radar</div>
+                <div className="text-gold font-extrabold">
+                  1) Opportunity Radar
+                </div>
                 <div className="text-sm text-gray-200 mt-2">
-                  Curated + (later) live feeds, so students stop missing deadlines and real openings.
+                  Curated + (later) live feeds, so students stop missing
+                  deadlines and real openings.
                 </div>
               </div>
               <div className="rounded-2xl bg-black/30 border border-white/10 p-5">
-                <div className="text-gold font-extrabold">2) Trusted Pathway</div>
+                <div className="text-gold font-extrabold">
+                  2) Trusted Pathway
+                </div>
                 <div className="text-sm text-gray-200 mt-2">
-                  Clear steps: build a profile → apply smart → track progress → win offers.
+                  Clear steps: build a profile → apply smart → track progress →
+                  win offers.
                 </div>
               </div>
               <div className="rounded-2xl bg-black/30 border border-white/10 p-5">
-                <div className="text-gold font-extrabold">3) Network Effects</div>
+                <div className="text-gold font-extrabold">
+                  3) Network Effects
+                </div>
                 <div className="text-sm text-gray-200 mt-2">
-                  Mentors, ambassadors, and alumni momentum turns individual effort into community power.
+                  Mentors, ambassadors, and alumni momentum turns individual
+                  effort into community power.
                 </div>
               </div>
             </div>
@@ -398,7 +431,10 @@ export default function StudentOpportunitiesHub() {
                   className="w-full px-4 py-3 rounded-xl bg-black/40 border border-white/10 focus:border-yellow-300/60 focus:ring-2 focus:ring-yellow-300/20 outline-none transition text-sm"
                 />
                 <div className="mt-3 text-xs text-gray-400">
-                  Results: <span className="text-white font-bold">{filtered.length}</span>
+                  Results:{" "}
+                  <span className="text-white font-bold">
+                    {filtered.length}
+                  </span>
                 </div>
               </div>
 
@@ -486,7 +522,7 @@ export default function StudentOpportunitiesHub() {
                 "rounded-2xl bg-white/5 border shadow-xl p-5 transition",
                 o.isFeatured
                   ? "border-yellow-300/35 hover:border-yellow-300/60 hover:bg-white/7"
-                  : "border-white/10 hover:border-yellow-300/35 hover:bg-white/7"
+                  : "border-white/10 hover:border-yellow-300/35 hover:bg-white/7",
               )}
             >
               <div className="flex items-start justify-between gap-3">
@@ -499,7 +535,9 @@ export default function StudentOpportunitiesHub() {
                   >
                     {o.title}
                   </a>
-                  <div className="text-xs text-gray-400 mt-1 truncate">{o.org}</div>
+                  <div className="text-xs text-gray-400 mt-1 truncate">
+                    {o.org}
+                  </div>
                 </div>
 
                 <a
@@ -539,14 +577,17 @@ export default function StudentOpportunitiesHub() {
               The BWE Student “Winning System” (how we help students execute)
             </h2>
             <p className="text-sm text-gray-200 mt-2 max-w-4xl">
-              This is the difference between “a list of links” and a platform students stay on.
-              You’re building a repeatable system that produces outcomes.
+              This is the difference between “a list of links” and a platform
+              students stay on. You’re building a repeatable system that
+              produces outcomes.
             </p>
 
             <div className="mt-5 grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="rounded-2xl bg-white/5 border border-white/10 p-5">
                 <div className="text-gold font-extrabold">Step 1</div>
-                <div className="text-white font-semibold mt-1">Create Profile</div>
+                <div className="text-white font-semibold mt-1">
+                  Create Profile
+                </div>
                 <div className="text-sm text-gray-300 mt-2">
                   School, major, interests, resume basics, and goals.
                 </div>
@@ -602,8 +643,10 @@ export default function StudentOpportunitiesHub() {
                   Is everything here updated for 2026?
                 </summary>
                 <div className="text-sm text-gray-300 mt-2">
-                  This hub is built for 2026+ and focuses on trusted sources. Deadlines change, so we link directly
-                  to official pages. Next upgrade: live feeds (RSS/updates) pulled into “Latest Opportunities.”
+                  This hub is built for 2026+ and focuses on trusted sources.
+                  Deadlines change, so we link directly to official pages. Next
+                  upgrade: live feeds (RSS/updates) pulled into “Latest
+                  Opportunities.”
                 </div>
               </details>
 
@@ -612,8 +655,9 @@ export default function StudentOpportunitiesHub() {
                   Can BWE send opportunity alerts?
                 </summary>
                 <div className="text-sm text-gray-300 mt-2">
-                  Yes—this is a strong “sticky” feature. Next step: student profiles + saved searches + email alerts.
-                  We can add a clean opt-in module on this hub.
+                  Yes—this is a strong “sticky” feature. Next step: student
+                  profiles + saved searches + email alerts. We can add a clean
+                  opt-in module on this hub.
                 </div>
               </details>
 
@@ -622,8 +666,10 @@ export default function StudentOpportunitiesHub() {
                   How does this help students join the platform long-term?
                 </summary>
                 <div className="text-sm text-gray-300 mt-2">
-                  The hub becomes their home base: resources → execution tools → community. Over time, you add:
-                  mentor matching, templates, verified badges, events, and internships from sponsors/employers.
+                  The hub becomes their home base: resources → execution tools →
+                  community. Over time, you add: mentor matching, templates,
+                  verified badges, events, and internships from
+                  sponsors/employers.
                 </div>
               </details>
             </div>
@@ -638,7 +684,8 @@ export default function StudentOpportunitiesHub() {
               <span className="block text-white/90">They need a system.</span>
             </h2>
             <p className="text-sm text-gray-200 mt-2 max-w-3xl mx-auto">
-              This hub is where BWE can become the trusted platform students return to every week.
+              This hub is where BWE can become the trusted platform students
+              return to every week.
             </p>
             <div className="mt-5 flex flex-wrap justify-center gap-3">
               <Link
@@ -660,4 +707,3 @@ export default function StudentOpportunitiesHub() {
     </div>
   );
 }
-

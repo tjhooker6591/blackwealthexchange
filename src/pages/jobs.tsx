@@ -18,8 +18,9 @@ export default function JobsHubPage() {
               Jobs & Careers <span className="text-yellow-400">Hub</span>
             </h1>
             <p className="text-gray-300 mt-2 max-w-2xl">
-              Explore jobs, internships, freelance gigs, and mentorship opportunities built to uplift
-              Black professionals and entrepreneurs.
+              Explore jobs, internships, freelance gigs, and mentorship
+              opportunities built to uplift Black professionals and
+              entrepreneurs.
             </p>
           </div>
 
@@ -74,9 +75,12 @@ export default function JobsHubPage() {
 
         {/* Mentorship */}
         <div className="p-6 rounded-2xl border border-gray-800 bg-gradient-to-b from-purple-700/40 to-gray-950/40 shadow-lg space-y-3">
-          <h2 className="text-xl font-bold text-yellow-400">Mentorship Program</h2>
+          <h2 className="text-xl font-bold text-yellow-400">
+            Mentorship Program
+          </h2>
           <p className="text-gray-200 text-sm">
-            Get matched with mentors and industry leaders to support your growth and career direction.
+            Get matched with mentors and industry leaders to support your growth
+            and career direction.
           </p>
           <div className="flex flex-wrap gap-3">
             <Link href="/mentorship">
@@ -98,7 +102,8 @@ export default function JobsHubPage() {
             Create Your Profile & Get Discovered
           </h2>
           <p className="text-gray-300">
-            Save jobs, track applications, and unlock more opportunities across the platform.
+            Save jobs, track applications, and unlock more opportunities across
+            the platform.
           </p>
           <div className="flex justify-center gap-4 flex-wrap">
             <Link href="/signup">
@@ -116,7 +121,9 @@ export default function JobsHubPage() {
 
         {/* Premium Upgrade */}
         <div className="text-center space-y-4">
-          <h2 className="text-xl font-bold text-yellow-400">Level Up Your Career</h2>
+          <h2 className="text-xl font-bold text-yellow-400">
+            Level Up Your Career
+          </h2>
           <p className="text-gray-300">
             Access premium job leads, coaching, resume reviews, and more.
           </p>
@@ -157,19 +164,19 @@ function HubCard({
     variant === "gold"
       ? "border-yellow-400/30 hover:border-yellow-400/60"
       : variant === "blue"
-      ? "border-blue-500/30 hover:border-blue-500/60"
-      : variant === "green"
-      ? "border-green-500/30 hover:border-green-500/60"
-      : "border-red-500/30 hover:border-red-500/60";
+        ? "border-blue-500/30 hover:border-blue-500/60"
+        : variant === "green"
+          ? "border-green-500/30 hover:border-green-500/60"
+          : "border-red-500/30 hover:border-red-500/60";
 
   const badge =
     variant === "gold"
       ? "bg-yellow-400/15 text-yellow-300"
       : variant === "blue"
-      ? "bg-blue-500/15 text-blue-300"
-      : variant === "green"
-      ? "bg-green-500/15 text-green-300"
-      : "bg-red-500/15 text-red-300";
+        ? "bg-blue-500/15 text-blue-300"
+        : variant === "green"
+          ? "bg-green-500/15 text-green-300"
+          : "bg-red-500/15 text-red-300";
 
   return (
     <div
@@ -193,4 +200,3 @@ function HubCard({
     </div>
   );
 }
-

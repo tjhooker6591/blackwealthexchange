@@ -37,7 +37,7 @@ function Pill({
     <span
       className={cx(
         "inline-flex items-center gap-2 px-3 py-1 rounded-full border text-xs sm:text-sm",
-        tones[tone]
+        tones[tone],
       )}
     >
       {children}
@@ -198,7 +198,9 @@ const RealEstatePage = () => {
     const r = rate / 100 / 12;
     const n = termYears * 12;
     const principal =
-      r > 0 ? (piBudget * (Math.pow(1 + r, n) - 1)) / (r * Math.pow(1 + r, n)) : piBudget * n;
+      r > 0
+        ? (piBudget * (Math.pow(1 + r, n) - 1)) / (r * Math.pow(1 + r, n))
+        : piBudget * n;
 
     return { piBudget, principal };
   }, [monthlyBudget, estTaxesInsHOA, rate, termYears]);
@@ -253,9 +255,10 @@ const RealEstatePage = () => {
               Real Estate Investment for Building Generational Wealth
             </h1>
             <p className="text-base sm:text-lg text-gray-200 mt-4">
-              Real estate can create stability, equity, and cashflow—if you follow
-              a clear plan. This page breaks down the basics, the strategy, and
-              the “how-to” steps in a way that’s practical and actionable.
+              Real estate can create stability, equity, and cashflow—if you
+              follow a clear plan. This page breaks down the basics, the
+              strategy, and the “how-to” steps in a way that’s practical and
+              actionable.
             </p>
 
             <div className="mt-6 flex flex-wrap items-center gap-3">
@@ -265,7 +268,10 @@ const RealEstatePage = () => {
               <GoldButton href="#calculator" variant="ghost">
                 Affordability Tool <Calculator className="h-4 w-4" />
               </GoldButton>
-              <GoldButton href="/business-directory?category=Real%20Estate" variant="ghost">
+              <GoldButton
+                href="/business-directory?category=Real%20Estate"
+                variant="ghost"
+              >
                 Find Black-Owned Pros <Users className="h-4 w-4" />
               </GoldButton>
             </div>
@@ -296,7 +302,8 @@ const RealEstatePage = () => {
                 Stability + Equity
               </div>
               <p className="text-gray-300 text-sm mt-2">
-                Buy your primary home and build equity over time while locking in housing stability.
+                Buy your primary home and build equity over time while locking
+                in housing stability.
               </p>
               <ul className="mt-3 text-sm text-gray-300 space-y-1">
                 <li>• Best for: first-time buyers</li>
@@ -311,7 +318,8 @@ const RealEstatePage = () => {
                 Cashflow + Portfolio
               </div>
               <p className="text-gray-300 text-sm mt-2">
-                Build rental income that can support your household and expand into more properties.
+                Build rental income that can support your household and expand
+                into more properties.
               </p>
               <ul className="mt-3 text-sm text-gray-300 space-y-1">
                 <li>• Best for: disciplined planners</li>
@@ -326,7 +334,8 @@ const RealEstatePage = () => {
                 Passive Exposure (REITs)
               </div>
               <p className="text-gray-300 text-sm mt-2">
-                Gain real estate exposure without owning physical property—useful while building capital and knowledge.
+                Gain real estate exposure without owning physical
+                property—useful while building capital and knowledge.
               </p>
               <ul className="mt-3 text-sm text-gray-300 space-y-1">
                 <li>• Best for: busy schedules</li>
@@ -337,9 +346,21 @@ const RealEstatePage = () => {
           </div>
 
           <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-3">
-            <Stat label="Core principle" value="Buy with a plan" note="A property is a strategy, not a vibe." />
-            <Stat label="Risk control" value="Reserves matter" note="Repairs + vacancy happen. Prepare." />
-            <Stat label="Wealth path" value="Equity → leverage → scale" note="Slow, steady, strong." />
+            <Stat
+              label="Core principle"
+              value="Buy with a plan"
+              note="A property is a strategy, not a vibe."
+            />
+            <Stat
+              label="Risk control"
+              value="Reserves matter"
+              note="Repairs + vacancy happen. Prepare."
+            />
+            <Stat
+              label="Wealth path"
+              value="Equity → leverage → scale"
+              note="Slow, steady, strong."
+            />
           </div>
         </Card>
 
@@ -352,37 +373,45 @@ const RealEstatePage = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2">
               <p className="text-gray-300">
-                Real estate investment means buying property (or exposure to property) with the goal of
-                generating income, long-term appreciation, or both. The best investors treat every purchase
-                like a business decision: estimate the costs, plan for risk, and set a clear goal.
+                Real estate investment means buying property (or exposure to
+                property) with the goal of generating income, long-term
+                appreciation, or both. The best investors treat every purchase
+                like a business decision: estimate the costs, plan for risk, and
+                set a clear goal.
               </p>
 
               <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-gray-300">
                 <div className="bg-black/40 border border-white/10 rounded-xl p-4">
                   <div className="font-bold text-gray-100">Residential</div>
                   <div className="mt-1">
-                    Single-family homes, duplexes, small multifamily, vacation rentals. Often the easiest entry point.
+                    Single-family homes, duplexes, small multifamily, vacation
+                    rentals. Often the easiest entry point.
                   </div>
                 </div>
 
                 <div className="bg-black/40 border border-white/10 rounded-xl p-4">
                   <div className="font-bold text-gray-100">Commercial</div>
                   <div className="mt-1">
-                    Offices, retail, warehouses, mixed-use. Bigger returns possible, more complexity and risk.
+                    Offices, retail, warehouses, mixed-use. Bigger returns
+                    possible, more complexity and risk.
                   </div>
                 </div>
 
                 <div className="bg-black/40 border border-white/10 rounded-xl p-4">
                   <div className="font-bold text-gray-100">REITs (Passive)</div>
                   <div className="mt-1">
-                    Invest in real estate portfolios without owning physical properties. Great for diversification.
+                    Invest in real estate portfolios without owning physical
+                    properties. Great for diversification.
                   </div>
                 </div>
 
                 <div className="bg-black/40 border border-white/10 rounded-xl p-4">
-                  <div className="font-bold text-gray-100">Crowdfunding (Varies)</div>
+                  <div className="font-bold text-gray-100">
+                    Crowdfunding (Varies)
+                  </div>
                   <div className="mt-1">
-                    Pool money into deals with others. Understand fees, liquidity, and risk before participating.
+                    Pool money into deals with others. Understand fees,
+                    liquidity, and risk before participating.
                   </div>
                 </div>
               </div>
@@ -390,7 +419,9 @@ const RealEstatePage = () => {
 
             <div className="space-y-4">
               <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
-                <div className="text-yellow-200 font-extrabold">Beginner-friendly starting moves</div>
+                <div className="text-yellow-200 font-extrabold">
+                  Beginner-friendly starting moves
+                </div>
                 <ul className="mt-3 space-y-2 text-sm text-gray-300">
                   <li>• Buy a primary home you can truly afford</li>
                   <li>• House hack (room/unit rental) if possible</li>
@@ -411,28 +442,40 @@ const RealEstatePage = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-4">
               <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
-                <h3 className="text-lg font-extrabold text-yellow-200">Three wealth engines</h3>
+                <h3 className="text-lg font-extrabold text-yellow-200">
+                  Three wealth engines
+                </h3>
                 <ul className="mt-3 space-y-3 text-sm text-gray-300">
                   <li>
-                    <span className="text-gray-100 font-bold">Equity growth:</span>{" "}
-                    Every payment can increase ownership. Over time, equity becomes leverage for the next move.
+                    <span className="text-gray-100 font-bold">
+                      Equity growth:
+                    </span>{" "}
+                    Every payment can increase ownership. Over time, equity
+                    becomes leverage for the next move.
                   </li>
                   <li>
-                    <span className="text-gray-100 font-bold">Appreciation:</span>{" "}
-                    Many markets increase in value over years. Strong markets + patience can be powerful.
+                    <span className="text-gray-100 font-bold">
+                      Appreciation:
+                    </span>{" "}
+                    Many markets increase in value over years. Strong markets +
+                    patience can be powerful.
                   </li>
                   <li>
                     <span className="text-gray-100 font-bold">Cashflow:</span>{" "}
-                    Rentals can produce monthly income that you can save, reinvest, or use to reduce job dependency.
+                    Rentals can produce monthly income that you can save,
+                    reinvest, or use to reduce job dependency.
                   </li>
                 </ul>
               </div>
 
               <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
-                <h3 className="text-lg font-extrabold text-yellow-200">The real key: control risk</h3>
+                <h3 className="text-lg font-extrabold text-yellow-200">
+                  The real key: control risk
+                </h3>
                 <p className="text-sm text-gray-300 mt-2">
-                  Real estate gets dangerous when people underestimate expenses or skip reserves.
-                  A strong plan assumes vacancy, repairs, and surprises—and still works.
+                  Real estate gets dangerous when people underestimate expenses
+                  or skip reserves. A strong plan assumes vacancy, repairs, and
+                  surprises—and still works.
                 </p>
                 <div className="mt-3 flex flex-wrap gap-2">
                   <Pill tone="muted">Vacancy</Pill>
@@ -514,7 +557,10 @@ const RealEstatePage = () => {
               </div>
 
               <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <Stat label="P&I budget (rough)" value={money(affordability.piBudget)} />
+                <Stat
+                  label="P&I budget (rough)"
+                  value={money(affordability.piBudget)}
+                />
                 <Stat
                   label="Est. loan principal supported"
                   value={money(affordability.principal)}
@@ -523,36 +569,46 @@ const RealEstatePage = () => {
               </div>
 
               <p className="text-xs text-gray-400 mt-4">
-                This is not a pre-approval. Use it as a starting point, then confirm with a lender.
+                This is not a pre-approval. Use it as a starting point, then
+                confirm with a lender.
               </p>
             </div>
 
             <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
-              <div className="text-yellow-200 font-extrabold">Trusted homebuying tools</div>
+              <div className="text-yellow-200 font-extrabold">
+                Trusted homebuying tools
+              </div>
               <p className="text-sm text-gray-300 mt-2">
-                If you want a structured step-by-step guide with official checklists and documents, these resources are solid:
+                If you want a structured step-by-step guide with official
+                checklists and documents, these resources are solid:
               </p>
 
               <ul className="mt-3 space-y-2 text-sm text-gray-300">
                 <li>
-                  • <ExternalLink href="https://www.consumerfinance.gov/owning-a-home/">
+                  •{" "}
+                  <ExternalLink href="https://www.consumerfinance.gov/owning-a-home/">
                     CFPB: Buying a house
                   </ExternalLink>
                 </li>
                 <li>
-                  • <ExternalLink href="https://www.consumerfinance.gov/owning-a-home/explore/home-loan-toolkit/">
+                  •{" "}
+                  <ExternalLink href="https://www.consumerfinance.gov/owning-a-home/explore/home-loan-toolkit/">
                     CFPB: Home Loan Toolkit
                   </ExternalLink>
                 </li>
                 <li>
-                  • <ExternalLink href="https://www.hud.gov/stat/sfh/housing-counseling">
+                  •{" "}
+                  <ExternalLink href="https://www.hud.gov/stat/sfh/housing-counseling">
                     HUD: Housing Counseling
                   </ExternalLink>
                 </li>
               </ul>
 
               <div className="mt-4 flex flex-wrap gap-2">
-                <GoldButton href="/business-directory?category=Real%20Estate" variant="ghost">
+                <GoldButton
+                  href="/business-directory?category=Real%20Estate"
+                  variant="ghost"
+                >
                   Find Black-Owned Pros <ArrowRight className="h-4 w-4" />
                 </GoldButton>
                 <GoldButton onClick={goPremium} variant="ghost">
@@ -571,83 +627,128 @@ const RealEstatePage = () => {
         >
           <div className="space-y-4">
             <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
-              <h3 className="text-lg font-extrabold text-yellow-200">Step 1: Financial preparation</h3>
+              <h3 className="text-lg font-extrabold text-yellow-200">
+                Step 1: Financial preparation
+              </h3>
               <ul className="mt-3 space-y-2 text-sm text-gray-300">
                 <li>
-                  <span className="text-gray-100 font-bold">Credit:</span> improve score, reduce utilization, clean errors early.
+                  <span className="text-gray-100 font-bold">Credit:</span>{" "}
+                  improve score, reduce utilization, clean errors early.
                 </li>
                 <li>
-                  <span className="text-gray-100 font-bold">Savings:</span> down payment + closing costs + reserves.
+                  <span className="text-gray-100 font-bold">Savings:</span> down
+                  payment + closing costs + reserves.
                 </li>
                 <li>
-                  <span className="text-gray-100 font-bold">Budget:</span> confirm the payment is sustainable—not just “approved.”
+                  <span className="text-gray-100 font-bold">Budget:</span>{" "}
+                  confirm the payment is sustainable—not just “approved.”
                 </li>
               </ul>
             </div>
 
             <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
-              <h3 className="text-lg font-extrabold text-yellow-200">Step 2: Choose your strategy</h3>
+              <h3 className="text-lg font-extrabold text-yellow-200">
+                Step 2: Choose your strategy
+              </h3>
               <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-gray-300">
                 <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-                  <div className="font-bold text-gray-100">Single-family rentals</div>
-                  <div className="mt-1">Simpler management, easier entry, strong demand in many markets.</div>
+                  <div className="font-bold text-gray-100">
+                    Single-family rentals
+                  </div>
+                  <div className="mt-1">
+                    Simpler management, easier entry, strong demand in many
+                    markets.
+                  </div>
                 </div>
                 <div className="bg-white/5 border border-white/10 rounded-xl p-4">
                   <div className="font-bold text-gray-100">Multifamily</div>
-                  <div className="mt-1">Higher income potential; requires stronger systems and management.</div>
+                  <div className="mt-1">
+                    Higher income potential; requires stronger systems and
+                    management.
+                  </div>
                 </div>
                 <div className="bg-white/5 border border-white/10 rounded-xl p-4">
                   <div className="font-bold text-gray-100">Fix & flip</div>
-                  <div className="mt-1">Fast wins are possible, but execution risk is high for beginners.</div>
+                  <div className="mt-1">
+                    Fast wins are possible, but execution risk is high for
+                    beginners.
+                  </div>
                 </div>
                 <div className="bg-white/5 border border-white/10 rounded-xl p-4">
                   <div className="font-bold text-gray-100">REITs</div>
-                  <div className="mt-1">Passive option while learning and building capital.</div>
+                  <div className="mt-1">
+                    Passive option while learning and building capital.
+                  </div>
                 </div>
               </div>
             </div>
 
             <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
-              <h3 className="text-lg font-extrabold text-yellow-200">Step 3: Financing options</h3>
+              <h3 className="text-lg font-extrabold text-yellow-200">
+                Step 3: Financing options
+              </h3>
               <ul className="mt-3 space-y-2 text-sm text-gray-300">
                 <li>
-                  <span className="text-gray-100 font-bold">Traditional mortgages:</span> best for long-term holds.
+                  <span className="text-gray-100 font-bold">
+                    Traditional mortgages:
+                  </span>{" "}
+                  best for long-term holds.
                 </li>
                 <li>
-                  <span className="text-gray-100 font-bold">Hard money:</span> short-term, higher cost—common for flips/value-add.
+                  <span className="text-gray-100 font-bold">Hard money:</span>{" "}
+                  short-term, higher cost—common for flips/value-add.
                 </li>
                 <li>
-                  <span className="text-gray-100 font-bold">Private lenders/partners:</span> flexible, but terms vary—document everything.
+                  <span className="text-gray-100 font-bold">
+                    Private lenders/partners:
+                  </span>{" "}
+                  flexible, but terms vary—document everything.
                 </li>
               </ul>
             </div>
 
             <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
-              <h3 className="text-lg font-extrabold text-yellow-200">Step 4: Find the right property</h3>
+              <h3 className="text-lg font-extrabold text-yellow-200">
+                Step 4: Find the right property
+              </h3>
               <ul className="mt-3 space-y-2 text-sm text-gray-300">
                 <li>
-                  <span className="text-gray-100 font-bold">Demand first:</span> job centers, schools, transportation, amenities.
+                  <span className="text-gray-100 font-bold">Demand first:</span>{" "}
+                  job centers, schools, transportation, amenities.
                 </li>
                 <li>
-                  <span className="text-gray-100 font-bold">Numbers first:</span> estimate repairs, vacancy, taxes, insurance.
+                  <span className="text-gray-100 font-bold">
+                    Numbers first:
+                  </span>{" "}
+                  estimate repairs, vacancy, taxes, insurance.
                 </li>
                 <li>
-                  <span className="text-gray-100 font-bold">Team first:</span> inspector + contractor estimates reduce surprises.
+                  <span className="text-gray-100 font-bold">Team first:</span>{" "}
+                  inspector + contractor estimates reduce surprises.
                 </li>
               </ul>
             </div>
 
             <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
-              <h3 className="text-lg font-extrabold text-yellow-200">Step 5: Start small and scale up</h3>
+              <h3 className="text-lg font-extrabold text-yellow-200">
+                Step 5: Start small and scale up
+              </h3>
               <ul className="mt-3 space-y-2 text-sm text-gray-300">
                 <li>
-                  <span className="text-gray-100 font-bold">Stabilize one property:</span> strong tenant, reserves funded, ops clean.
+                  <span className="text-gray-100 font-bold">
+                    Stabilize one property:
+                  </span>{" "}
+                  strong tenant, reserves funded, ops clean.
                 </li>
                 <li>
-                  <span className="text-gray-100 font-bold">Reinvest:</span> cashflow into repairs, reserves, and the next down payment.
+                  <span className="text-gray-100 font-bold">Reinvest:</span>{" "}
+                  cashflow into repairs, reserves, and the next down payment.
                 </li>
                 <li>
-                  <span className="text-gray-100 font-bold">Leverage equity carefully:</span> only if the numbers still work.
+                  <span className="text-gray-100 font-bold">
+                    Leverage equity carefully:
+                  </span>{" "}
+                  only if the numbers still work.
                 </li>
               </ul>
             </div>
@@ -663,42 +764,74 @@ const RealEstatePage = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-4">
               <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
-                <h3 className="text-lg font-extrabold text-yellow-200">What “generational wealth” looks like</h3>
+                <h3 className="text-lg font-extrabold text-yellow-200">
+                  What “generational wealth” looks like
+                </h3>
                 <ul className="mt-3 space-y-2 text-sm text-gray-300">
                   <li>
-                    <span className="text-gray-100 font-bold">A legacy asset:</span> property equity that can be passed down or refinanced to fund education/business.
+                    <span className="text-gray-100 font-bold">
+                      A legacy asset:
+                    </span>{" "}
+                    property equity that can be passed down or refinanced to
+                    fund education/business.
                   </li>
                   <li>
-                    <span className="text-gray-100 font-bold">A cashflow engine:</span> rental income that supports family stability.
+                    <span className="text-gray-100 font-bold">
+                      A cashflow engine:
+                    </span>{" "}
+                    rental income that supports family stability.
                   </li>
                   <li>
-                    <span className="text-gray-100 font-bold">A family business:</span> management, renovations, contracting skills passed down.
+                    <span className="text-gray-100 font-bold">
+                      A family business:
+                    </span>{" "}
+                    management, renovations, contracting skills passed down.
                   </li>
                 </ul>
               </div>
 
               <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
-                <h3 className="text-lg font-extrabold text-yellow-200">A simple family plan</h3>
+                <h3 className="text-lg font-extrabold text-yellow-200">
+                  A simple family plan
+                </h3>
                 <ol className="mt-3 space-y-2 text-sm text-gray-300 list-decimal pl-5">
-                  <li>Document ownership, responsibilities, and who manages what.</li>
-                  <li>Keep maintenance reserves as a standard, not optional.</li>
-                  <li>Create “rules” for refinancing, selling, and tenant standards.</li>
-                  <li>Teach the next generation budgeting, credit, and basic property math.</li>
+                  <li>
+                    Document ownership, responsibilities, and who manages what.
+                  </li>
+                  <li>
+                    Keep maintenance reserves as a standard, not optional.
+                  </li>
+                  <li>
+                    Create “rules” for refinancing, selling, and tenant
+                    standards.
+                  </li>
+                  <li>
+                    Teach the next generation budgeting, credit, and basic
+                    property math.
+                  </li>
                 </ol>
               </div>
             </div>
 
             <div className="space-y-4">
               <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
-                <div className="text-yellow-200 font-extrabold">Find Black-owned services</div>
+                <div className="text-yellow-200 font-extrabold">
+                  Find Black-owned services
+                </div>
                 <p className="text-sm text-gray-300 mt-2">
                   Build with Black-owned professionals where possible.
                 </p>
                 <div className="mt-4 space-y-2">
-                  <GoldButton href="/business-directory?category=Real%20Estate" variant="ghost">
+                  <GoldButton
+                    href="/business-directory?category=Real%20Estate"
+                    variant="ghost"
+                  >
                     Real Estate Pros <ArrowRight className="h-4 w-4" />
                   </GoldButton>
-                  <GoldButton href="/business-directory?category=Home%20Services" variant="ghost">
+                  <GoldButton
+                    href="/business-directory?category=Home%20Services"
+                    variant="ghost"
+                  >
                     Home Services <ArrowRight className="h-4 w-4" />
                   </GoldButton>
                 </div>
@@ -715,16 +848,23 @@ const RealEstatePage = () => {
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
             <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
-              <div className="text-yellow-200 font-extrabold">Challenge: Lack of capital</div>
+              <div className="text-yellow-200 font-extrabold">
+                Challenge: Lack of capital
+              </div>
               <ul className="mt-3 space-y-2">
                 <li>• Start with a primary home or house hack.</li>
                 <li>• Consider partners (document everything).</li>
-                <li>• Explore programs and counseling resources to qualify strategically.</li>
+                <li>
+                  • Explore programs and counseling resources to qualify
+                  strategically.
+                </li>
               </ul>
             </div>
 
             <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
-              <div className="text-yellow-200 font-extrabold">Challenge: Property management</div>
+              <div className="text-yellow-200 font-extrabold">
+                Challenge: Property management
+              </div>
               <ul className="mt-3 space-y-2">
                 <li>• Use screening standards and written policies.</li>
                 <li>• Hire property management when it’s worth it.</li>
@@ -740,9 +880,10 @@ const RealEstatePage = () => {
             Start Today for a Better Future
           </h2>
           <p className="text-gray-300 mt-2 max-w-2xl mx-auto">
-            Real estate is a powerful wealth-building tool. Whether you start by buying your first home,
-            investing in rentals, or gaining passive exposure through REITs, the key is to move with a plan—
-            and build the systems that protect your progress.
+            Real estate is a powerful wealth-building tool. Whether you start by
+            buying your first home, investing in rentals, or gaining passive
+            exposure through REITs, the key is to move with a plan— and build
+            the systems that protect your progress.
           </p>
 
           <div className="mt-5 flex flex-col sm:flex-row items-center justify-center gap-3">

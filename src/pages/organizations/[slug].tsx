@@ -1,5 +1,5 @@
 // pages/organizations/[slug].tsx
- 
+
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
@@ -14,9 +14,9 @@ type OrgItem = {
   name?: string;
   description?: string;
 
-  orgType?: string;     // "church"
-  entityType?: string;  // "organization"
-  status?: string;      // "approved" etc.
+  orgType?: string; // "church"
+  entityType?: string; // "organization"
+  status?: string; // "approved" etc.
   source?: string;
 
   address?: string;
@@ -45,7 +45,11 @@ function formatUpdatedAt(s?: string) {
   if (!s) return "";
   const d = new Date(s);
   if (Number.isNaN(d.getTime())) return "";
-  return d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+  return d.toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
 }
 
 export default function OrganizationDetailPage() {
@@ -70,10 +74,13 @@ export default function OrganizationDetailPage() {
       setError(null);
 
       try {
-        const res = await fetch(`/api/organizations/${encodeURIComponent(String(slug))}`, {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        });
+        const res = await fetch(
+          `/api/organizations/${encodeURIComponent(String(slug))}`,
+          {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+          },
+        );
 
         const data = await res.json().catch(() => null);
 
@@ -81,7 +88,9 @@ export default function OrganizationDetailPage() {
 
         if (!res.ok || !data?.ok) {
           setItem(null);
-          setError(data?.error || `Failed to load organization (${res.status}).`);
+          setError(
+            data?.error || `Failed to load organization (${res.status}).`,
+          );
           setLoading(false);
           return;
         }
@@ -141,7 +150,9 @@ export default function OrganizationDetailPage() {
             </div>
           ) : error ? (
             <div className="space-y-3">
-              <div className="text-lg font-semibold text-yellow-300">Not available</div>
+              <div className="text-lg font-semibold text-yellow-300">
+                Not available
+              </div>
               <div className="text-white/70">{error}</div>
               <div className="pt-2">
                 <button
@@ -214,7 +225,9 @@ export default function OrganizationDetailPage() {
               <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* About */}
                 <div className="md:col-span-2 rounded-2xl border border-white/10 bg-black/30 p-5">
-                  <div className="text-sm font-semibold text-white/90 mb-2">About</div>
+                  <div className="text-sm font-semibold text-white/90 mb-2">
+                    About
+                  </div>
                   <div className="text-white/75 leading-relaxed">
                     {item.description && item.description.trim().length > 0
                       ? item.description
@@ -224,14 +237,17 @@ export default function OrganizationDetailPage() {
 
                 {/* Contact / Location */}
                 <div className="rounded-2xl border border-white/10 bg-black/30 p-5 space-y-3">
-                  <div className="text-sm font-semibold text-white/90">Contact</div>
+                  <div className="text-sm font-semibold text-white/90">
+                    Contact
+                  </div>
 
                   <div className="text-sm text-white/75">
                     <div className="text-white/60">Address</div>
                     <div>
                       {item.address
                         ? item.address
-                        : [item.city, item.state].filter(Boolean).join(", ") || "—"}
+                        : [item.city, item.state].filter(Boolean).join(", ") ||
+                          "—"}
                     </div>
                   </div>
 

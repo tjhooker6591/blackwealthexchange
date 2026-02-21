@@ -16,29 +16,6 @@ type ConsultingInterest = {
   createdAt: string;
 };
 
-type Stats = {
-  pendingBusinesses: number;
-  pendingPayouts: number;
-  activeAffiliates: number;
-  pendingJobs: number;
-  pendingProducts: number;
-  totalUsers: number;
-  internApplications: number;
-
-  pendingListings: number;
-  totalDirectoryListings: number;
-  directoryRevenue: number;
-
-  totalProducts: number;
-  featuredProducts: number;
-  outOfStockProducts: number;
-  lowStockProducts: number;
-
-  totalOrders: number;
-  grossSales: number;
-  platformRevenue: number;
-};
-
 type SlotBiz = {
   _id: string;
   businessName: string;
@@ -56,25 +33,204 @@ type SlotData = {
   expiringSoon: SlotBiz[];
 };
 
-const DEFAULT_STATS: Stats = {
-  pendingBusinesses: 0,
-  pendingPayouts: 0,
-  activeAffiliates: 0,
-  pendingJobs: 0,
-  pendingProducts: 0,
+/** -----------------------------
+ * Stats shapes
+ * ----------------------------- */
+
+// Legacy flat stats (your current page expected this)
+type StatsLegacy = {
+  pendingBusinesses?: number;
+  pendingPayouts?: number;
+  activeAffiliates?: number;
+  pendingJobs?: number;
+  pendingProducts?: number;
+  totalUsers?: number;
+  internApplications?: number;
+
+  pendingListings?: number;
+  totalDirectoryListings?: number;
+  directoryRevenue?: number;
+
+  totalProducts?: number;
+  featuredProducts?: number;
+  outOfStockProducts?: number;
+  lowStockProducts?: number;
+
+  totalOrders?: number;
+  grossSales?: number;
+  platformRevenue?: number;
+};
+
+// New structured stats (from the updated dashboard-stats.ts I gave you)
+type StatsV2 = {
+  pendingApprovalsTotal?: number;
+
+  businesses?: {
+    pending: number;
+    approved: number;
+    rejected: number;
+    total: number;
+  };
+  organizations?: {
+    pending: number;
+    approved: number;
+    rejected: number;
+    total: number;
+  };
+
+  affiliates?: { active: number; pendingPayouts: number };
+
+  jobs?: { pending: number };
+  products?: { pending: number };
+
+  directory?: {
+    pendingApprovals: number;
+    active: number;
+    expired: number;
+    paidPurchases: number;
+    paidUnlinked: number;
+  };
+
+  totalUsers?: number;
+  internApplications?: number;
+
+  consultingLeads?: number;
+};
+
+// What we actually render (normalized view model)
+type StatsVM = {
+  // rollups
+  pendingApprovalsTotal: number;
+
+  // platform
+  totalUsers: number;
+  internApplications: number;
+
+  // approvals
+  pendingBusinesses: number;
+  pendingOrganizations: number;
+  pendingJobs: number;
+  pendingProducts: number;
+  pendingDirectory: number;
+  pendingPayouts: number;
+
+  // orgs & biz totals
+  totalBusinesses: number;
+  approvedBusinesses: number;
+  rejectedBusinesses: number;
+
+  totalOrganizations: number;
+  approvedOrganizations: number;
+  rejectedOrganizations: number;
+
+  // affiliates
+  activeAffiliates: number;
+
+  // directory health
+  directoryActive: number;
+  directoryExpired: number;
+  directoryPaidPurchases: number;
+  directoryPaidUnlinked: number;
+
+  // optional business signals
+  directoryRevenue: number; // will be 0 unless you add it to API
+  totalDirectoryListings: number; // fallback if you still track this
+};
+
+const _DEFAULT_VM: StatsVM = {
+  pendingApprovalsTotal: 0,
+
   totalUsers: 0,
   internApplications: 0,
-  pendingListings: 0,
-  totalDirectoryListings: 0,
+
+  pendingBusinesses: 0,
+  pendingOrganizations: 0,
+  pendingJobs: 0,
+  pendingProducts: 0,
+  pendingDirectory: 0,
+  pendingPayouts: 0,
+
+  totalBusinesses: 0,
+  approvedBusinesses: 0,
+  rejectedBusinesses: 0,
+
+  totalOrganizations: 0,
+  approvedOrganizations: 0,
+  rejectedOrganizations: 0,
+
+  activeAffiliates: 0,
+
+  directoryActive: 0,
+  directoryExpired: 0,
+  directoryPaidPurchases: 0,
+  directoryPaidUnlinked: 0,
+
   directoryRevenue: 0,
-  totalProducts: 0,
-  featuredProducts: 0,
-  outOfStockProducts: 0,
-  lowStockProducts: 0,
-  totalOrders: 0,
-  grossSales: 0,
-  platformRevenue: 0,
+  totalDirectoryListings: 0,
 };
+
+function toNum(v: any, fallback = 0) {
+  const n = Number(v);
+  return Number.isFinite(n) ? n : fallback;
+}
+
+function normalizeStats(data: StatsV2 & StatsLegacy): StatsVM {
+  const pendingBusinesses = toNum(
+    data.businesses?.pending ?? data.pendingBusinesses,
+  );
+  const pendingOrganizations = toNum(data.organizations?.pending ?? 0);
+  const pendingJobs = toNum(data.jobs?.pending ?? data.pendingJobs);
+  const pendingProducts = toNum(data.products?.pending ?? data.pendingProducts);
+  const pendingPayouts = toNum(
+    data.affiliates?.pendingPayouts ?? data.pendingPayouts,
+  );
+
+  const pendingDirectory = toNum(
+    data.directory?.pendingApprovals ?? data.pendingListings ?? 0,
+  );
+
+  const pendingApprovalsTotal =
+    toNum(data.pendingApprovalsTotal ?? 0) ||
+    pendingBusinesses +
+      pendingOrganizations +
+      pendingJobs +
+      pendingProducts +
+      pendingDirectory +
+      pendingPayouts;
+
+  return {
+    pendingApprovalsTotal,
+
+    totalUsers: toNum(data.totalUsers),
+    internApplications: toNum(data.internApplications),
+
+    pendingBusinesses,
+    pendingOrganizations,
+    pendingJobs,
+    pendingProducts,
+    pendingDirectory,
+    pendingPayouts,
+
+    totalBusinesses: toNum(data.businesses?.total ?? 0),
+    approvedBusinesses: toNum(data.businesses?.approved ?? 0),
+    rejectedBusinesses: toNum(data.businesses?.rejected ?? 0),
+
+    totalOrganizations: toNum(data.organizations?.total ?? 0),
+    approvedOrganizations: toNum(data.organizations?.approved ?? 0),
+    rejectedOrganizations: toNum(data.organizations?.rejected ?? 0),
+
+    activeAffiliates: toNum(data.affiliates?.active ?? data.activeAffiliates),
+
+    directoryActive: toNum(data.directory?.active ?? 0),
+    directoryExpired: toNum(data.directory?.expired ?? 0),
+    directoryPaidPurchases: toNum(data.directory?.paidPurchases ?? 0),
+    directoryPaidUnlinked: toNum(data.directory?.paidUnlinked ?? 0),
+
+    // legacy-only (if you still use these)
+    directoryRevenue: toNum(data.directoryRevenue ?? 0),
+    totalDirectoryListings: toNum(data.totalDirectoryListings ?? 0),
+  };
+}
 
 function formatMoney(n: number) {
   const num = Number(n || 0);
@@ -86,8 +242,9 @@ function cx(...classes: Array<string | false | null | undefined>) {
 }
 
 const AdminDashboard = () => {
-  // 1) Dashboard stats
-  const [stats, setStats] = useState<Stats>(DEFAULT_STATS);
+  // 1) Raw stats + view model
+  const [statsRaw, setStatsRaw] = useState<any>({});
+  const stats = useMemo(() => normalizeStats(statsRaw || {}), [statsRaw]);
   const [statsLoading, setStatsLoading] = useState(true);
   const [statsErr, setStatsErr] = useState("");
 
@@ -122,7 +279,7 @@ const AdminDashboard = () => {
         });
         if (!res.ok) throw new Error("Failed to fetch stats");
         const data = await res.json();
-        setStats((prev) => ({ ...prev, ...(data || {}) }));
+        setStatsRaw(data || {});
       } catch (e: any) {
         setStatsErr(e?.message || "Error loading dashboard stats.");
       } finally {
@@ -190,9 +347,8 @@ const AdminDashboard = () => {
     const matchesSearch = (item: ConsultingInterest) => {
       const q = filters.search.trim().toLowerCase();
       if (!q) return true;
-      const hay = `${item.name} ${item.email} ${item.company ?? ""} ${
-        item.message ?? ""
-      }`.toLowerCase();
+      const hay =
+        `${item.name} ${item.email} ${item.company ?? ""} ${item.message ?? ""}`.toLowerCase();
       return hay.includes(q);
     };
 
@@ -296,195 +452,314 @@ const AdminDashboard = () => {
               </Link>
 
               <StatCard
-                title="Pending Businesses"
-                value={stats.pendingBusinesses}
-              />
-              <StatCard
                 title="Active Affiliates"
                 value={stats.activeAffiliates}
               />
               <StatCard title="Pending Payouts" value={stats.pendingPayouts} />
+
               <StatCard title="Pending Jobs" value={stats.pendingJobs} />
+              <StatCard
+                title="Pending Products"
+                value={stats.pendingProducts}
+              />
             </div>
           )}
         </div>
 
-        {/* Directory Section */}
+        {/* Approvals Queue */}
         <div>
-          <SectionTitle>Directory Listings</SectionTitle>
+          <SectionTitle>Approvals & Queues</SectionTitle>
 
-          {slotLoading && !slotData ? (
+          {statsLoading ? (
             <div className="rounded border border-gray-700 bg-gray-800 p-4 text-sm text-gray-300">
-              Loading directory slot data…
+              Loading approvals…
             </div>
           ) : (
             <>
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <StatCard
-                  title="Total Listings"
-                  value={stats.totalDirectoryListings}
+                  title="Total Pending Approvals"
+                  value={stats.pendingApprovalsTotal}
+                  tone={stats.pendingApprovalsTotal > 0 ? "warn" : "ok"}
                 />
-                <StatCard
-                  title="Pending Listings"
-                  value={stats.pendingListings}
-                />
-                <StatCard
-                  title="Directory Revenue ($)"
-                  value={formatMoney(stats.directoryRevenue)}
-                />
+
+                <Link href="/admin/business-approvals" className="block">
+                  <StatCardLink
+                    title="Pending Businesses"
+                    value={stats.pendingBusinesses}
+                  />
+                </Link>
+
+                {/* NOTE: create this page if it doesn't exist yet */}
+                <Link href="/admin/organization-approvals" className="block">
+                  <StatCardLink
+                    title="Pending Organizations"
+                    value={stats.pendingOrganizations}
+                  />
+                </Link>
+
+                <Link href="/admin/job-approvals" className="block">
+                  <StatCardLink
+                    title="Pending Jobs"
+                    value={stats.pendingJobs}
+                  />
+                </Link>
+
+                <Link href="/admin/product-approvals" className="block">
+                  <StatCardLink
+                    title="Pending Products"
+                    value={stats.pendingProducts}
+                  />
+                </Link>
+
                 <Link href="/admin/directory-approvals" className="block">
-                  <div className="bg-gray-800 p-5 rounded shadow text-center hover:bg-gray-700 transition cursor-pointer">
-                    <p className="text-gray-400 text-sm">Open Approvals</p>
-                    <p className="text-2xl text-gold font-bold mt-1">→</p>
-                  </div>
+                  <StatCardLink
+                    title="Pending Directory"
+                    value={stats.pendingDirectory}
+                  />
+                </Link>
+
+                <Link href="/admin/affiliate-payouts" className="block">
+                  <StatCardLink
+                    title="Pending Affiliate Payouts"
+                    value={stats.pendingPayouts}
+                  />
                 </Link>
               </div>
 
-              {/* Featured Directory Slots */}
-              <div className="bg-gray-800 rounded p-4 mt-2 border border-gray-700">
-                <div className="flex items-center justify-between gap-3">
-                  <h3 className="text-lg text-gold">Featured Directory Slots</h3>
-                  <button
-                    onClick={() => {
-                      // just re-run slots fetch quickly
-                      setSlotLoading(true);
-                      setSlotMessage("");
-                      fetch("/api/admin/directory-slots", {
-                        credentials: "include",
-                      })
-                        .then(async (r) => {
-                          if (!r.ok) throw new Error("Failed to fetch slot data");
-                          const data = await r.json();
-                          setSlotData(data);
-                        })
-                        .catch(() => setSlotMessage("Error loading slot data."))
-                        .finally(() => setSlotLoading(false));
-                    }}
-                    className={cx(
-                      "rounded border px-3 py-1 text-xs transition",
-                      "border-gray-700 bg-gray-900 hover:bg-gray-700 text-gray-200"
-                    )}
-                    disabled={slotLoading}
-                  >
-                    {slotLoading ? "Refreshing…" : "Refresh"}
-                  </button>
+              {/* Organizations summary */}
+              <div className="bg-gray-800 rounded p-4 border border-gray-700">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg text-gold">Organizations Snapshot</h3>
+                  <div className="text-xs text-gray-400">
+                    Total:{" "}
+                    <span className="text-gray-200 font-semibold">
+                      {stats.totalOrganizations}
+                    </span>
+                  </div>
                 </div>
 
-                {slotLoading ? (
-                  <p className="mt-3 text-sm text-gray-300">
-                    Loading slot data…
-                  </p>
-                ) : slotData ? (
-                  <div className="mt-3 text-sm">
-                    <div className="mb-3">
-                      <span className="font-semibold">Slots Filled:</span>{" "}
-                      {slotData.slotsFilled} / {slotData.maxSlots}{" "}
-                      <span className="text-gray-400">
-                        (available: {slotData.slotsAvailable})
-                      </span>
-                    </div>
+                <div className="mt-3 grid grid-cols-3 gap-3">
+                  <MiniStat
+                    label="Approved"
+                    value={stats.approvedOrganizations}
+                  />
+                  <MiniStat
+                    label="Rejected"
+                    value={stats.rejectedOrganizations}
+                  />
+                  <MiniStat
+                    label="Pending"
+                    value={stats.pendingOrganizations}
+                    tone={stats.pendingOrganizations > 0 ? "warn" : "ok"}
+                  />
+                </div>
 
-                    <div className="mb-3">
-                      <div className="font-semibold text-gray-200 mb-1">
-                        Featured
-                      </div>
-                      {slotData.featured?.length ? (
-                        <ul className="space-y-1">
-                          {slotData.featured.map((biz) => (
-                            <li key={biz._id} className="text-gray-200">
-                              <span className="font-semibold">
-                                Slot {biz.featuredSlot}:
-                              </span>{" "}
-                              {biz.businessName}{" "}
-                              <span className="text-gray-400">
-                                (expires{" "}
-                                {new Date(biz.featuredEndDate).toLocaleDateString()}
-                                )
-                              </span>
-                            </li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <div className="text-gray-400">No featured slots.</div>
-                      )}
-                    </div>
-
-                    {slotData.slotsAvailable === 0 ? (
-                      <div className="mb-3">
-                        <div className="font-semibold text-yellow-400 mb-1">
-                          Waitlist
-                        </div>
-                        {slotData.waitlist?.length ? (
-                          <div className="flex flex-wrap gap-2">
-                            {slotData.waitlist.map((biz, idx) => (
-                              <span
-                                key={biz._id}
-                                className="rounded-full border border-yellow-500/20 bg-black/30 px-3 py-1 text-xs text-yellow-200"
-                              >
-                                #{biz.queuePosition || idx + 1}:{" "}
-                                {biz.businessName}
-                                {idx === 0 ? (
-                                  <span className="text-green-300">
-                                    {" "}
-                                    (Next up!)
-                                  </span>
-                                ) : null}
-                              </span>
-                            ))}
-                          </div>
-                        ) : (
-                          <div className="text-gray-400">
-                            No one in the waitlist.
-                          </div>
-                        )}
-                      </div>
-                    ) : null}
-
-                    {slotData.expiringSoon?.length ? (
-                      <div className="mb-1">
-                        <div className="font-semibold text-yellow-400 mb-1">
-                          Expiring Soon
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                          {slotData.expiringSoon.map((biz) => (
-                            <span
-                              key={biz._id}
-                              className="rounded-full border border-yellow-500/20 bg-black/30 px-3 py-1 text-xs text-yellow-200"
-                            >
-                              {biz.businessName} (
-                              {new Date(biz.featuredEndDate).toLocaleDateString()}
-                              )
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    ) : null}
-                  </div>
-                ) : (
-                  <p className="mt-3 text-sm text-gray-300">
-                    No directory slot data found.
-                  </p>
-                )}
+                <div className="mt-3">
+                  <Link
+                    href="/admin/organization-approvals"
+                    className="inline-flex items-center rounded border border-gray-700 bg-gray-900 px-3 py-2 text-xs hover:bg-gray-700"
+                  >
+                    Manage Organization Approvals →
+                  </Link>
+                </div>
               </div>
             </>
           )}
         </div>
       </div>
 
-      {/* Marketplace Section */}
+      {/* Directory Section */}
+      <SectionTitle>Directory Listings</SectionTitle>
+
+      {slotLoading && !slotData ? (
+        <div className="rounded border border-gray-700 bg-gray-800 p-4 text-sm text-gray-300">
+          Loading directory slot data…
+        </div>
+      ) : (
+        <>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+            <StatCard
+              title="Active Listings"
+              value={stats.directoryActive || stats.totalDirectoryListings}
+            />
+            <StatCard
+              title="Pending Approvals"
+              value={stats.pendingDirectory}
+              tone={stats.pendingDirectory > 0 ? "warn" : "ok"}
+            />
+
+            {/* Payments health — this is how we catch “paid but not in admin” */}
+            <StatCard
+              title="Paid Purchases"
+              value={stats.directoryPaidPurchases}
+            />
+            <StatCard
+              title="Paid but Unlinked"
+              value={stats.directoryPaidUnlinked}
+              tone={stats.directoryPaidUnlinked > 0 ? "danger" : "ok"}
+              hint="This indicates someone paid but the listing isn't linked (missing businessId/fulfillment)."
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+            <Link href="/admin/directory-approvals" className="block">
+              <ActionCard
+                title="Open Directory Approvals"
+                subtitle="Review pending listings & activate slots"
+              />
+            </Link>
+
+            {/* Optional: if you have a dedicated directory list page later */}
+            <Link href="/admin/directory" className="block">
+              <ActionCard
+                title="View Directory Listings"
+                subtitle="Browse active/expired listings"
+              />
+            </Link>
+
+            <div className="bg-gray-800 rounded p-4 border border-gray-700">
+              <div className="text-sm text-gray-400">Directory Revenue ($)</div>
+              <div className="text-2xl text-gold font-bold mt-1">
+                {formatMoney(stats.directoryRevenue)}
+              </div>
+              <div className="text-xs text-gray-500 mt-1">
+                (Set to 0 until you add revenue calculation in the stats API.)
+              </div>
+            </div>
+          </div>
+
+          {/* Featured Directory Slots */}
+          <div className="bg-gray-800 rounded p-4 mt-2 border border-gray-700">
+            <div className="flex items-center justify-between gap-3">
+              <h3 className="text-lg text-gold">Featured Directory Slots</h3>
+              <button
+                onClick={() => {
+                  setSlotLoading(true);
+                  setSlotMessage("");
+                  fetch("/api/admin/directory-slots", {
+                    credentials: "include",
+                  })
+                    .then(async (r) => {
+                      if (!r.ok) throw new Error("Failed to fetch slot data");
+                      const data = await r.json();
+                      setSlotData(data);
+                    })
+                    .catch(() => setSlotMessage("Error loading slot data."))
+                    .finally(() => setSlotLoading(false));
+                }}
+                className={cx(
+                  "rounded border px-3 py-1 text-xs transition",
+                  "border-gray-700 bg-gray-900 hover:bg-gray-700 text-gray-200",
+                )}
+                disabled={slotLoading}
+              >
+                {slotLoading ? "Refreshing…" : "Refresh"}
+              </button>
+            </div>
+
+            {slotLoading ? (
+              <p className="mt-3 text-sm text-gray-300">Loading slot data…</p>
+            ) : slotData ? (
+              <div className="mt-3 text-sm">
+                <div className="mb-3">
+                  <span className="font-semibold">Slots Filled:</span>{" "}
+                  {slotData.slotsFilled} / {slotData.maxSlots}{" "}
+                  <span className="text-gray-400">
+                    (available: {slotData.slotsAvailable})
+                  </span>
+                </div>
+
+                <div className="mb-3">
+                  <div className="font-semibold text-gray-200 mb-1">
+                    Featured
+                  </div>
+                  {slotData.featured?.length ? (
+                    <ul className="space-y-1">
+                      {slotData.featured.map((biz) => (
+                        <li key={biz._id} className="text-gray-200">
+                          <span className="font-semibold">
+                            Slot {biz.featuredSlot}:
+                          </span>{" "}
+                          {biz.businessName}{" "}
+                          <span className="text-gray-400">
+                            (expires{" "}
+                            {new Date(biz.featuredEndDate).toLocaleDateString()}
+                            )
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <div className="text-gray-400">No featured slots.</div>
+                  )}
+                </div>
+
+                {slotData.slotsAvailable === 0 ? (
+                  <div className="mb-3">
+                    <div className="font-semibold text-yellow-400 mb-1">
+                      Waitlist
+                    </div>
+                    {slotData.waitlist?.length ? (
+                      <div className="flex flex-wrap gap-2">
+                        {slotData.waitlist.map((biz, idx) => (
+                          <span
+                            key={biz._id}
+                            className="rounded-full border border-yellow-500/20 bg-black/30 px-3 py-1 text-xs text-yellow-200"
+                          >
+                            #{biz.queuePosition || idx + 1}: {biz.businessName}
+                            {idx === 0 ? (
+                              <span className="text-green-300">
+                                {" "}
+                                (Next up!)
+                              </span>
+                            ) : null}
+                          </span>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-gray-400">
+                        No one in the waitlist.
+                      </div>
+                    )}
+                  </div>
+                ) : null}
+
+                {slotData.expiringSoon?.length ? (
+                  <div className="mb-1">
+                    <div className="font-semibold text-yellow-400 mb-1">
+                      Expiring Soon
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {slotData.expiringSoon.map((biz) => (
+                        <span
+                          key={biz._id}
+                          className="rounded-full border border-yellow-500/20 bg-black/30 px-3 py-1 text-xs text-yellow-200"
+                        >
+                          {biz.businessName} (
+                          {new Date(biz.featuredEndDate).toLocaleDateString()})
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+            ) : (
+              <p className="mt-3 text-sm text-gray-300">
+                No directory slot data found.
+              </p>
+            )}
+          </div>
+        </>
+      )}
+
+      {/* Marketplace Section (kept; will show zeros until API returns these) */}
       <SectionTitle>Marketplace Overview</SectionTitle>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
-        <StatCard title="Total Products" value={stats.totalProducts} />
-        <StatCard title="Featured Products" value={stats.featuredProducts} />
-        <StatCard title="Out of Stock" value={stats.outOfStockProducts} />
-        <StatCard title="Low Stock" value={stats.lowStockProducts} />
-        <StatCard title="Total Orders" value={stats.totalOrders} />
-        <StatCard title="Gross Sales ($)" value={formatMoney(stats.grossSales)} />
-        <StatCard
-          title="Platform Revenue ($)"
-          value={formatMoney(stats.platformRevenue)}
-        />
         <StatCard title="Pending Products" value={stats.pendingProducts} />
+        <StatCard title="Active Affiliates" value={stats.activeAffiliates} />
+        <StatCard title="Pending Jobs" value={stats.pendingJobs} />
+        <StatCard title="Pending Businesses" value={stats.pendingBusinesses} />
       </div>
 
       {/* Quick Actions */}
@@ -493,6 +768,11 @@ const AdminDashboard = () => {
         <AdminLink
           href="/admin/business-approvals"
           label="Manage Business Approvals"
+        />
+        {/* NOTE: create this page if missing */}
+        <AdminLink
+          href="/admin/organization-approvals"
+          label="Manage Organization Approvals"
         />
         <AdminLink
           href="/admin/directory-approvals"
@@ -525,7 +805,10 @@ const AdminDashboard = () => {
           href="/admin/inventory-report"
           label="View Inventory Report"
         />
-        <AdminLink href="/admin/intern-applications" label="Intern Applications" />
+        <AdminLink
+          href="/admin/intern-applications"
+          label="Intern Applications"
+        />
       </div>
 
       {/* Consulting Service Waitlist */}
@@ -595,13 +878,96 @@ const SectionTitle = ({ children }: { children: React.ReactNode }) => (
 const StatCard = ({
   title,
   value,
+  tone,
+  hint,
+}: {
+  title: string;
+  value: number | string;
+  tone?: "ok" | "warn" | "danger";
+  hint?: string;
+}) => (
+  <div
+    className={cx(
+      "bg-gray-800 p-5 rounded shadow text-center border",
+      tone === "danger"
+        ? "border-red-500/40"
+        : tone === "warn"
+          ? "border-yellow-500/30"
+          : "border-gray-800",
+    )}
+    title={hint}
+  >
+    <p className="text-gray-400 text-sm">{title}</p>
+    <p
+      className={cx(
+        "text-2xl font-bold mt-1",
+        tone === "danger"
+          ? "text-red-300"
+          : tone === "warn"
+            ? "text-yellow-300"
+            : "text-gold",
+      )}
+    >
+      {value}
+    </p>
+    {hint ? <p className="text-xs text-gray-500 mt-1">{hint}</p> : null}
+  </div>
+);
+
+const StatCardLink = ({
+  title,
+  value,
 }: {
   title: string;
   value: number | string;
 }) => (
-  <div className="bg-gray-800 p-5 rounded shadow text-center">
+  <div className="bg-gray-800 p-5 rounded shadow text-center hover:bg-gray-700 transition cursor-pointer">
     <p className="text-gray-400 text-sm">{title}</p>
     <p className="text-2xl text-gold font-bold mt-1">{value}</p>
+  </div>
+);
+
+const MiniStat = ({
+  label,
+  value,
+  tone,
+}: {
+  label: string;
+  value: number;
+  tone?: "ok" | "warn" | "danger";
+}) => (
+  <div
+    className={cx(
+      "rounded border px-3 py-2 text-center",
+      tone === "danger"
+        ? "border-red-500/40 bg-red-500/10"
+        : tone === "warn"
+          ? "border-yellow-500/30 bg-yellow-500/10"
+          : "border-gray-700 bg-gray-900",
+    )}
+  >
+    <div className="text-xs text-gray-400">{label}</div>
+    <div
+      className={cx(
+        "text-lg font-semibold",
+        tone ? "text-gray-100" : "text-gray-200",
+      )}
+    >
+      {value}
+    </div>
+  </div>
+);
+
+const ActionCard = ({
+  title,
+  subtitle,
+}: {
+  title: string;
+  subtitle: string;
+}) => (
+  <div className="bg-gray-800 rounded p-4 border border-gray-700 hover:bg-gray-700 transition">
+    <div className="text-gold font-semibold">{title}</div>
+    <div className="text-xs text-gray-400 mt-1">{subtitle}</div>
   </div>
 );
 
@@ -615,4 +981,3 @@ const AdminLink = ({ href, label }: { href: string; label: string }) => (
 );
 
 export default AdminDashboard;
-

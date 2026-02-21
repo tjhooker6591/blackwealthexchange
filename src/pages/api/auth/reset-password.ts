@@ -5,13 +5,18 @@ import bcrypt from "bcryptjs";
 import clientPromise from "../../../lib/mongodb";
 
 const RESET_TOKEN_SECRET =
-  process.env.RESET_TOKEN_SECRET || process.env.JWT_SECRET || "dev-reset-secret";
+  process.env.RESET_TOKEN_SECRET ||
+  process.env.JWT_SECRET ||
+  "dev-reset-secret";
 
 function sha256(input: string) {
   return crypto.createHash("sha256").update(input).digest("hex");
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
     return res.status(405).json({ error: "Method Not Allowed" });
@@ -66,17 +71,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     );
 
     // Mark token used regardless (prevents replay)
-    await db.collection("password_resets").updateOne(
-      { _id: reset._id },
-      { $set: { usedAt: new Date() } },
-    );
+    await db
+      .collection("password_resets")
+      .updateOne({ _id: reset._id }, { $set: { usedAt: new Date() } });
 
     if (updateResult.matchedCount === 0) {
       // Account missing now; keep response safe
-      return res.status(200).json({ success: true, message: "Password updated." });
+      return res
+        .status(200)
+        .json({ success: true, message: "Password updated." });
     }
 
-    return res.status(200).json({ success: true, message: "Password updated." });
+    return res
+      .status(200)
+      .json({ success: true, message: "Password updated." });
   } catch (err) {
     console.error("reset-password error:", err);
     return res.status(500).json({ error: "Internal Server Error" });

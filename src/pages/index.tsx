@@ -163,7 +163,8 @@ function SearchToolsInlinePanel({
       </div>
 
       <div className="mt-3 text-[11px] text-white/45">
-        Tip: Filters are optional. Use them only when you want to narrow results.
+        Tip: Filters are optional. Use them only when you want to narrow
+        results.
       </div>
     </div>
   );
@@ -940,7 +941,8 @@ export default function Home() {
                       </span>
 
                       <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[11px]">
-                        Tap <span className="font-black text-white/75">Search</span>
+                        Tap{" "}
+                        <span className="font-black text-white/75">Search</span>
                       </span>
                     </div>
                   </div>
@@ -953,13 +955,17 @@ export default function Home() {
                   className="animate-pulseGlow rounded-xl bg-[#D4AF37] px-6 py-2.5 text-center text-sm sm:text-base font-extrabold text-black shadow transition hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/35"
                   onClick={() => {
                     if (!user) {
-                      router.push("/login?redirect=/marketplace/become-a-seller");
+                      router.push(
+                        "/login?redirect=/marketplace/become-a-seller",
+                      );
                     } else {
                       router.push("/marketplace/become-a-seller");
                     }
                   }}
                 >
-                  <span className="sm:hidden">Start Selling — Become a Seller</span>
+                  <span className="sm:hidden">
+                    Start Selling — Become a Seller
+                  </span>
                   <span className="hidden sm:inline">
                     Start Selling on the Marketplace — Join as a Seller
                   </span>

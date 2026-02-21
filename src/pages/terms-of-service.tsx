@@ -48,7 +48,10 @@ const TermsOfService = () => {
             </p>
             <p className="text-xs text-gray-400 mt-2">
               These Terms work together with our{" "}
-              <Link href="/privacy-policy" className="text-gold hover:underline">
+              <Link
+                href="/privacy-policy"
+                className="text-gold hover:underline"
+              >
                 Privacy Policy
               </Link>{" "}
               and any posted policies for Ads, Marketplace, Jobs, and Community
@@ -119,7 +122,9 @@ const TermsOfService = () => {
               <ul className="list-disc ml-6 mt-3 space-y-1 text-gray-300">
                 <li>False, misleading, or defamatory information</li>
                 <li>Impersonations of individuals or businesses</li>
-                <li>Stolen content, logos, or images you do not have rights to</li>
+                <li>
+                  Stolen content, logos, or images you do not have rights to
+                </li>
                 <li>Harmful, hateful, or illegal content</li>
               </ul>
               <p className="text-gray-300 mt-3">
@@ -242,10 +247,10 @@ const TermsOfService = () => {
             <Section title="11. User Content License">
               <p className="text-gray-300">
                 You retain ownership of the Content you submit. However, by
-                posting Content on BWE, you grant BWE a worldwide, non-exclusive,
-                royalty-free license to host, store, reproduce, display,
-                distribute, and modify (for formatting/technical purposes) such
-                Content for operating and promoting the Platform.
+                posting Content on BWE, you grant BWE a worldwide,
+                non-exclusive, royalty-free license to host, store, reproduce,
+                display, distribute, and modify (for formatting/technical
+                purposes) such Content for operating and promoting the Platform.
               </p>
               <p className="text-gray-300 mt-3">
                 You represent that you have all rights necessary to grant this
@@ -264,7 +269,9 @@ const TermsOfService = () => {
               <p className="text-gray-300 mt-3">
                 If you believe your copyrighted work is being infringed, you may
                 submit a takedown notice to:{" "}
-                <strong className="text-white">support@blackwealthexchange.com</strong>
+                <strong className="text-white">
+                  support@blackwealthexchange.com
+                </strong>
                 . Include sufficient detail to identify the work, the allegedly
                 infringing material, and your contact information.
               </p>

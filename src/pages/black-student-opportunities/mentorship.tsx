@@ -9,7 +9,9 @@ type Program = {
   summary: string;
   who: string;
   format: string;
-  tags: Array<"Career" | "STEM" | "Business" | "Leadership" | "Finance" | "Community">;
+  tags: Array<
+    "Career" | "STEM" | "Business" | "Leadership" | "Finance" | "Community"
+  >;
   href: string;
 };
 
@@ -136,8 +138,8 @@ export default function Mentorship() {
           Mentorship for Black Students (2026)
         </h1>
         <p className="text-sm sm:text-base md:text-lg mt-3 text-gray-300 max-w-2xl mx-auto">
-          Mentorship is how you compress time: better decisions, stronger networks,
-          and a clearer path from school to opportunity.
+          Mentorship is how you compress time: better decisions, stronger
+          networks, and a clearer path from school to opportunity.
         </p>
 
         {/* Quick nav */}
@@ -188,7 +190,7 @@ export default function Mentorship() {
                         "px-3 py-2 rounded-full text-xs font-semibold border transition",
                         tag === t
                           ? "bg-gold text-black border-yellow-300 shadow"
-                          : "bg-white/5 text-white border-white/10 hover:border-yellow-300/50 hover:bg-white/10"
+                          : "bg-white/5 text-white border-white/10 hover:border-yellow-300/50 hover:bg-white/10",
                       )}
                     >
                       {t}
@@ -202,7 +204,9 @@ export default function Mentorship() {
             <div className="mt-4 flex items-center justify-between text-xs text-gray-400">
               <div>
                 Showing{" "}
-                <span className="text-white font-semibold">{filtered.length}</span>{" "}
+                <span className="text-white font-semibold">
+                  {filtered.length}
+                </span>{" "}
                 program{filtered.length === 1 ? "" : "s"}
               </div>
               <div className="text-gray-500">
@@ -229,7 +233,9 @@ export default function Mentorship() {
                   >
                     {p.title}
                   </a>
-                  <div className="text-xs text-gray-400 mt-1 truncate">{p.org}</div>
+                  <div className="text-xs text-gray-400 mt-1 truncate">
+                    {p.org}
+                  </div>
                 </div>
 
                 <a
@@ -257,7 +263,9 @@ export default function Mentorship() {
                   <div className="text-gray-400 uppercase tracking-widest text-[10px]">
                     Format
                   </div>
-                  <div className="mt-1 text-white font-semibold">{p.format}</div>
+                  <div className="mt-1 text-white font-semibold">
+                    {p.format}
+                  </div>
                 </div>
               </div>
 

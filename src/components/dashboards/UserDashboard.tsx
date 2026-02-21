@@ -39,8 +39,18 @@ interface DashboardData {
   savedJobs?: number;
 
   // Optional future-friendly fields (won’t break if API doesn’t return them)
-  recentApplications?: Array<{ title: string; company?: string; date?: string; href?: string }>;
-  recentSavedJobs?: Array<{ title: string; company?: string; date?: string; href?: string }>;
+  recentApplications?: Array<{
+    title: string;
+    company?: string;
+    date?: string;
+    href?: string;
+  }>;
+  recentSavedJobs?: Array<{
+    title: string;
+    company?: string;
+    date?: string;
+    href?: string;
+  }>;
   profileCompletion?: number; // 0-100
 }
 
@@ -53,7 +63,9 @@ export default function UserDashboard() {
   const router = useRouter();
 
   const [user, setUser] = useState<UserType | null>(null);
-  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(
+    null,
+  );
   const [chartData, setChartData] = useState<ChartData[]>([]);
   const [loading, setLoading] = useState(true);
   const [accessDenied, setAccessDenied] = useState(false);
@@ -77,14 +89,21 @@ export default function UserDashboard() {
         setUser(u);
 
         const [dashRes, chartRes] = await Promise.all([
-          fetch(`/api/user/get-dashboard?email=${encodeURIComponent(u.email)}`, {
-            cache: "no-store",
-            credentials: "include",
-            signal: controller.signal,
-          }),
+          fetch(
+            `/api/user/get-dashboard?email=${encodeURIComponent(u.email)}`,
+            {
+              cache: "no-store",
+              credentials: "include",
+              signal: controller.signal,
+            },
+          ),
           fetch(
             `/api/user/applications-overview?email=${encodeURIComponent(u.email)}`,
-            { cache: "no-store", credentials: "include", signal: controller.signal },
+            {
+              cache: "no-store",
+              credentials: "include",
+              signal: controller.signal,
+            },
           ),
         ]);
 
@@ -94,7 +113,9 @@ export default function UserDashboard() {
         const chartJson = await chartRes.json();
 
         setDashboardData(dashJson || {});
-        setChartData(Array.isArray(chartJson) ? chartJson : chartJson?.data || []);
+        setChartData(
+          Array.isArray(chartJson) ? chartJson : chartJson?.data || [],
+        );
         setLastUpdated(Date.now());
       } catch (err) {
         console.error(err);
@@ -148,7 +169,10 @@ export default function UserDashboard() {
 
   const savedJobs = dashboardData.savedJobs || 0;
   const applications = dashboardData.applications || 0;
-  const completion = typeof dashboardData.profileCompletion === "number" ? dashboardData.profileCompletion : null;
+  const completion =
+    typeof dashboardData.profileCompletion === "number"
+      ? dashboardData.profileCompletion
+      : null;
 
   return (
     <div className="min-h-screen bg-black text-white relative">
@@ -162,7 +186,8 @@ export default function UserDashboard() {
               Welcome, {displayName}!
             </h1>
             <p className="text-gray-300 mt-1">
-              Track your applications, manage saved jobs, and keep your profile ready.
+              Track your applications, manage saved jobs, and keep your profile
+              ready.
             </p>
             {lastUpdated ? (
               <p className="text-xs text-gray-500 mt-2">
@@ -226,7 +251,10 @@ export default function UserDashboard() {
           <div className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow-xl">
             <div className="flex items-center justify-between">
               <div className="text-sm text-gray-300">Profile Readiness</div>
-              <Link href="/profile" className="text-sm text-gold hover:underline">
+              <Link
+                href="/profile"
+                className="text-sm text-gold hover:underline"
+              >
                 Improve
               </Link>
             </div>
@@ -246,7 +274,9 @@ export default function UserDashboard() {
               <div className="mt-4 h-2 w-full rounded-full bg-black/40 border border-white/10 overflow-hidden">
                 <div
                   className="h-full bg-yellow-400"
-                  style={{ width: `${completion === null ? 40 : Math.max(0, Math.min(100, completion))}%` }}
+                  style={{
+                    width: `${completion === null ? 40 : Math.max(0, Math.min(100, completion))}%`,
+                  }}
                 />
               </div>
             </div>
@@ -257,8 +287,12 @@ export default function UserDashboard() {
         <div className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow-xl">
           <div className="flex items-end justify-between gap-4 mb-4">
             <div>
-              <h3 className="text-xl font-bold text-gold">Applications Overview</h3>
-              <p className="text-sm text-gray-400">A quick view of your application activity.</p>
+              <h3 className="text-xl font-bold text-gold">
+                Applications Overview
+              </h3>
+              <p className="text-sm text-gray-400">
+                A quick view of your application activity.
+              </p>
             </div>
           </div>
 
@@ -269,7 +303,10 @@ export default function UserDashboard() {
                   <XAxis dataKey="month" stroke="#ffffff" />
                   <YAxis stroke="#ffffff" />
                   <Tooltip
-                    contentStyle={{ backgroundColor: "#111827", border: "1px solid rgba(255,255,255,0.08)" }}
+                    contentStyle={{
+                      backgroundColor: "#111827",
+                      border: "1px solid rgba(255,255,255,0.08)",
+                    }}
                     labelStyle={{ color: "#fff", fontSize: 12 }}
                     itemStyle={{ color: "#FFD700" }}
                     formatter={(v: number) => [`${v}`, "Applications"]}
@@ -285,9 +322,12 @@ export default function UserDashboard() {
             </div>
           ) : (
             <div className="rounded-xl border border-white/10 bg-black/30 p-6 text-center">
-              <p className="text-gray-300 font-semibold">No application data yet</p>
+              <p className="text-gray-300 font-semibold">
+                No application data yet
+              </p>
               <p className="text-gray-400 text-sm mt-1">
-                Save jobs and submit applications—your activity will show here automatically.
+                Save jobs and submit applications—your activity will show here
+                automatically.
               </p>
               <div className="mt-4">
                 <Link
@@ -371,7 +411,12 @@ function ListCard({
   viewAllHref,
 }: {
   title: string;
-  items: Array<{ title: string; company?: string; date?: string; href?: string }>;
+  items: Array<{
+    title: string;
+    company?: string;
+    date?: string;
+    href?: string;
+  }>;
   emptyText: string;
   viewAllHref: string;
 }) {
@@ -380,7 +425,9 @@ function ListCard({
       <div className="flex items-end justify-between gap-4 mb-4">
         <div>
           <h3 className="text-xl font-bold text-gold">{title}</h3>
-          <p className="text-sm text-gray-400">Quick preview of your latest activity.</p>
+          <p className="text-sm text-gray-400">
+            Quick preview of your latest activity.
+          </p>
         </div>
         <Link href={viewAllHref} className="text-sm text-gold hover:underline">
           View all
@@ -398,11 +445,15 @@ function ListCard({
                 <div>
                   <div className="font-semibold text-white">{it.title}</div>
                   <div className="text-sm text-gray-400">
-                    {it.company ? it.company : "—"} {it.date ? `• ${it.date}` : ""}
+                    {it.company ? it.company : "—"}{" "}
+                    {it.date ? `• ${it.date}` : ""}
                   </div>
                 </div>
                 {it.href ? (
-                  <Link href={it.href} className="text-sm text-gold hover:underline">
+                  <Link
+                    href={it.href}
+                    className="text-sm text-gold hover:underline"
+                  >
                     Open
                   </Link>
                 ) : null}
@@ -429,7 +480,10 @@ function DashboardSkeleton() {
 
         <div className="grid gap-6 md:grid-cols-3">
           {Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow-xl">
+            <div
+              key={i}
+              className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow-xl"
+            >
               <div className="h-6 w-1/2 bg-white/10 rounded animate-pulse" />
               <div className="mt-4 h-10 w-1/3 bg-white/10 rounded animate-pulse" />
               <div className="mt-3 h-4 w-3/4 bg-white/10 rounded animate-pulse" />

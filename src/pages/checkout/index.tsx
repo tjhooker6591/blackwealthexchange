@@ -12,8 +12,8 @@ export default function CheckoutPage() {
         <div className="max-w-2xl mx-auto">
           <h1 className="text-3xl font-bold text-yellow-400">Checkout</h1>
           <p className="mt-3 text-white/80">
-            Checkout is started from your cart. If you reached this page directly,
-            go back to the shop and proceed from there.
+            Checkout is started from your cart. If you reached this page
+            directly, go back to the shop and proceed from there.
           </p>
 
           <div className="mt-8 flex flex-wrap gap-3">

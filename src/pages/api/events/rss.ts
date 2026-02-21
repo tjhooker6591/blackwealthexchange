@@ -18,7 +18,10 @@ function hostOf(u: string) {
   }
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   // CDN cache (Vercel) – keeps your page fast
   res.setHeader("Cache-Control", "s-maxage=3600, stale-while-revalidate=86400");
 
@@ -69,11 +72,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         out.push({
           title: item.title || "Untitled",
           link: item.link || undefined,
-          isoDate: (item.isoDate as string) || (item.pubDate as string) || undefined,
+          isoDate:
+            (item.isoDate as string) || (item.pubDate as string) || undefined,
           source,
           snippet:
             (item.contentSnippet as string) ||
-            (typeof item.content === "string" ? item.content.slice(0, 240) : undefined),
+            (typeof item.content === "string"
+              ? item.content.slice(0, 240)
+              : undefined),
         });
       }
     } catch {

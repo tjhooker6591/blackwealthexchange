@@ -4,9 +4,23 @@ import React, { useEffect, useMemo, useState } from "react";
 import clsx from "clsx";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Menu, LogOut, Home, LayoutDashboard, Megaphone, Store, Briefcase } from "lucide-react";
+import {
+  Menu,
+  LogOut,
+  Home,
+  LayoutDashboard,
+  Megaphone,
+  Store,
+  Briefcase,
+} from "lucide-react";
 
-type AccountType = "user" | "business" | "seller" | "employer" | "admin" | string;
+type AccountType =
+  | "user"
+  | "business"
+  | "seller"
+  | "employer"
+  | "admin"
+  | string;
 
 type MeUser = {
   email: string;
@@ -90,7 +104,11 @@ function buildNav(accountType: AccountType): NavItem[] {
   return items.filter((i) => (i.show ? i.show(accountType) : true));
 }
 
-export default function DashboardFrame({ children }: { children: React.ReactNode }) {
+export default function DashboardFrame({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [open, setOpen] = useState(false);
   const [me, setMe] = useState<MeUser | null>(null);
   const [loadingMe, setLoadingMe] = useState(true);
@@ -176,9 +194,14 @@ export default function DashboardFrame({ children }: { children: React.ReactNode
       >
         {/* Brand / top */}
         <div className="px-6 pt-6 pb-4 border-b border-yellow-500/10">
-          <Link href="/" className="inline-flex items-center gap-2 text-yellow-300 hover:text-yellow-200">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-yellow-300 hover:text-yellow-200"
+          >
             <Home size={18} />
-            <span className="font-semibold tracking-tight">Black Wealth Exchange</span>
+            <span className="font-semibold tracking-tight">
+              Black Wealth Exchange
+            </span>
           </Link>
 
           <div className="mt-3 text-xs text-gray-400">
@@ -203,7 +226,8 @@ export default function DashboardFrame({ children }: { children: React.ReactNode
             {navItems.map((item) => {
               const active =
                 router.asPath === item.href ||
-                (item.href !== "/dashboard" && router.asPath.startsWith(item.href));
+                (item.href !== "/dashboard" &&
+                  router.asPath.startsWith(item.href));
 
               return (
                 <li key={item.href}>
@@ -260,7 +284,9 @@ export default function DashboardFrame({ children }: { children: React.ReactNode
           <div className="relative">
             {/* subtle gold hue behind title */}
             <div className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 h-24 w-72 rounded-full blur-3xl opacity-25 bg-yellow-400" />
-            <h1 className="relative text-xl font-bold md:text-3xl">{pageTitle}</h1>
+            <h1 className="relative text-xl font-bold md:text-3xl">
+              {pageTitle}
+            </h1>
           </div>
 
           {/* spacer so header stays balanced on mobile */}

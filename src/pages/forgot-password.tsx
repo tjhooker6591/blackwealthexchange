@@ -37,12 +37,23 @@ export default function ForgotPassword() {
 
       // Some APIs return empty body on success/failure
       const text = await res.text();
-      const data = text ? (() => { try { return JSON.parse(text); } catch { return null; } })() : null;
+      const data = text
+        ? (() => {
+            try {
+              return JSON.parse(text);
+            } catch {
+              return null;
+            }
+          })()
+        : null;
 
       // IMPORTANT: Do not reveal whether the email exists
       if (!res.ok) {
         // If you want to log server message, you can console.error it, but do not show it to user.
-        console.error("Forgot password error:", data?.message || text || res.status);
+        console.error(
+          "Forgot password error:",
+          data?.message || text || res.status,
+        );
       }
 
       setSuccess(true);
@@ -113,11 +124,17 @@ export default function ForgotPassword() {
           </button>
 
           <div className="flex items-center justify-between pt-2">
-            <Link href="/login" className="text-sm text-yellow-400 hover:underline">
+            <Link
+              href="/login"
+              className="text-sm text-yellow-400 hover:underline"
+            >
               ← Back to Login
             </Link>
 
-            <Link href="/signup" className="text-sm text-gray-300 hover:underline">
+            <Link
+              href="/signup"
+              className="text-sm text-gray-300 hover:underline"
+            >
               Create account
             </Link>
           </div>

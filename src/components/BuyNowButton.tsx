@@ -43,7 +43,8 @@ export default function BuyNowButton({
         }
 
         const data = await res.json();
-        const id = data?.user?._id || data?.user?.id || data?._id || data?.id || null;
+        const id =
+          data?.user?._id || data?.user?.id || data?._id || data?.id || null;
         setSessionUserId(id ? String(id) : null);
         setAuthState(id ? "authenticated" : "unauthenticated");
       } catch {
@@ -86,7 +87,11 @@ export default function BuyNowButton({
             setMsg(data.message);
             return;
           }
-          setMsg(data?.message || data?.error || "Checkout is unavailable right now.");
+          setMsg(
+            data?.message ||
+              data?.error ||
+              "Checkout is unavailable right now.",
+          );
           return;
         }
 
@@ -126,7 +131,9 @@ export default function BuyNowButton({
         return;
       }
 
-      setMsg(data?.message || data?.error || "Checkout failed. Please try again.");
+      setMsg(
+        data?.message || data?.error || "Checkout failed. Please try again.",
+      );
     } catch (err: any) {
       console.error("BuyNowButton error:", err);
       setMsg("Something went wrong. Please try again.");
@@ -140,7 +147,7 @@ export default function BuyNowButton({
   // - other types: disable until auth is known and user is logged in
   const disabled =
     loading ||
-    (type !== "product" && (authState === "loading" && !explicitUserId)) ||
+    (type !== "product" && authState === "loading" && !explicitUserId) ||
     (type !== "product" && !userId);
 
   const defaultClass =

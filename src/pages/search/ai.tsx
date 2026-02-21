@@ -18,11 +18,12 @@ export default function SearchAI() {
 
   const q = useMemo(
     () => (typeof router.query.q === "string" ? router.query.q : ""),
-    [router.query.q]
+    [router.query.q],
   );
   const type = useMemo(
-    () => (typeof router.query.type === "string" ? router.query.type : "businesses"),
-    [router.query.type]
+    () =>
+      typeof router.query.type === "string" ? router.query.type : "businesses",
+    [router.query.type],
   );
 
   const [loading, setLoading] = useState(false);
@@ -101,8 +102,9 @@ export default function SearchAI() {
             AI Summary (Trusted Flow)
           </h2>
           <p className="mt-2 text-sm text-white/65">
-            Next step: this section will generate a concise summary + show only trusted,
-            verifiable statements, then link each claim to real listings and sources.
+            Next step: this section will generate a concise summary + show only
+            trusted, verifiable statements, then link each claim to real
+            listings and sources.
           </p>
 
           <div className="mt-4 flex gap-3 flex-wrap">
@@ -192,8 +194,8 @@ export default function SearchAI() {
         </div>
 
         <div className="mt-10 text-xs text-white/45">
-          Note: AI Mode is currently a “trusted flow” shell — results are pulled from the BWE directory.
-          We’ll add summarization + citations next.
+          Note: AI Mode is currently a “trusted flow” shell — results are pulled
+          from the BWE directory. We’ll add summarization + citations next.
         </div>
       </div>
     </div>

@@ -23,10 +23,12 @@ function normalizeObjectId(value: unknown): ObjectId | null {
   if (typeof value === "object") {
     const v = value as OidLike;
     const maybe = v?.$oid || v?.oid;
-    if (typeof maybe === "string" && ObjectId.isValid(maybe)) return new ObjectId(maybe);
+    if (typeof maybe === "string" && ObjectId.isValid(maybe))
+      return new ObjectId(maybe);
   }
 
-  if (typeof value === "string" && ObjectId.isValid(value)) return new ObjectId(value);
+  if (typeof value === "string" && ObjectId.isValid(value))
+    return new ObjectId(value);
 
   return null;
 }
@@ -42,15 +44,22 @@ function isProd() {
   return process.env.NODE_ENV === "production";
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   try {
     if (req.method !== "POST") {
-      return res.status(405).json({ code: "METHOD_NOT_ALLOWED", message: "Method not allowed" });
+      return res
+        .status(405)
+        .json({ code: "METHOD_NOT_ALLOWED", message: "Method not allowed" });
     }
 
     const { productId } = req.body as { productId?: string };
     if (!productId) {
-      return res.status(400).json({ code: "MISSING_PRODUCT_ID", message: "Missing productId" });
+      return res
+        .status(400)
+        .json({ code: "MISSING_PRODUCT_ID", message: "Missing productId" });
     }
 
     const client = await clientPromise;
@@ -79,7 +88,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       product.seller ??
       null;
 
-    const sid = normalizeObjectId(rawSellerId) || normalizeObjectId(String(rawSellerId || ""));
+    const sid =
+      normalizeObjectId(rawSellerId) ||
+      normalizeObjectId(String(rawSellerId || ""));
 
     const sellersCol = db.collection<any>("sellers");
 
@@ -95,7 +106,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(404).json({
         code: "SELLER_NOT_FOUND",
         message: "This seller is currently unavailable.",
-        debug: !isProd() ? { productId: String(product._id), rawSellerId } : undefined,
+        debug: !isProd()
+          ? { productId: String(product._id), rawSellerId }
+          : undefined,
       });
     }
 
@@ -148,7 +161,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       },
     ];
 
-    const shippingCostCents = Math.max(0, Math.round(Number(calculateShipping(cartItems)) || 0));
+    const shippingCostCents = Math.max(
+      0,
+      Math.round(Number(calculateShipping(cartItems)) || 0),
+    );
 
     const frontendUrl = getFrontendUrl(req);
 
@@ -207,4 +223,3 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
   }
 }
-

@@ -9,10 +9,15 @@ function requireAdmin(req: NextApiRequest) {
   return Boolean(session) && accountType === "admin";
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   try {
-    if (!requireAdmin(req)) return res.status(401).json({ message: "Unauthorized" });
-    if (req.method !== "POST") return res.status(405).json({ message: "Method not allowed" });
+    if (!requireAdmin(req))
+      return res.status(401).json({ message: "Unauthorized" });
+    if (req.method !== "POST")
+      return res.status(405).json({ message: "Method not allowed" });
 
     const { ids } = req.body as { ids?: string[] };
     if (!ids || !Array.isArray(ids) || ids.length === 0) {
@@ -38,7 +43,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const result = await db.collection("organizations").updateMany(
       { _id: { $in: objectIds }, entityType: "organization" },
-      { $set: { status: "approved", approvedAt: new Date(), updatedAt: new Date() } }
+      {
+        $set: {
+          status: "approved",
+          approvedAt: new Date(),
+          updatedAt: new Date(),
+        },
+      },
     );
 
     return res.status(200).json({

@@ -27,7 +27,10 @@ function makeRequestId() {
  * Response:
  *  { status, requestId, tookMs, page, limit, total, hasMore, items }
  */
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   const requestId = makeRequestId();
   const t0 = Date.now();
 
@@ -43,15 +46,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Small caching is OK for search (tune as needed)
     // If you want NO cache, remove this line.
-    res.setHeader("Cache-Control", "public, s-maxage=10, stale-while-revalidate=30");
+    res.setHeader(
+      "Cache-Control",
+      "public, s-maxage=10, stale-while-revalidate=30",
+    );
 
     const dbName = process.env.MONGODB_DB || "bwes-database";
     const client = await clientPromise;
     const db = client.db(dbName);
     const col = db.collection("businesses");
 
-    const searchRaw = typeof req.query.search === "string" ? req.query.search : "";
-    const categoryRaw = typeof req.query.category === "string" ? req.query.category : "";
+    const searchRaw =
+      typeof req.query.search === "string" ? req.query.search : "";
+    const categoryRaw =
+      typeof req.query.category === "string" ? req.query.category : "";
 
     const page = clampInt(req.query.page, 1, 9999, 1);
     const limit = clampInt(req.query.limit, 1, 50, 20);
@@ -96,11 +104,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (category && category !== "All") {
       const rx = new RegExp(escapeRegex(category), "i");
       and.push({
-        $or: [
-          { categories: rx },
-          { display_categories: rx },
-          { category: rx },
-        ],
+        $or: [{ categories: rx }, { display_categories: rx }, { category: rx }],
       });
     }
 
@@ -133,7 +137,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(500).json({
       status: "error",
       requestId,
-      error: { code: "SEARCH_FAILED", message: error?.message || "Search failed" },
+      error: {
+        code: "SEARCH_FAILED",
+        message: error?.message || "Search failed",
+      },
     });
   }
 }

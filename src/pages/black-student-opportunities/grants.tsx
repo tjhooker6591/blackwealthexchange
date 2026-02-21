@@ -246,7 +246,8 @@ const Grants = () => {
 
             <p className="mx-auto mt-3 max-w-2xl text-sm sm:text-base text-white/70">
               Grants = money you typically don’t repay. Start with FAFSA, then
-              stack school, state, and foundation grants to reduce out-of-pocket costs.
+              stack school, state, and foundation grants to reduce out-of-pocket
+              costs.
             </p>
           </div>
         </header>
@@ -262,7 +263,8 @@ const Grants = () => {
                   Step 1: FAFSA first
                 </div>
                 <p className="text-sm text-white/70">
-                  FAFSA unlocks most federal and many state/campus grants. Submit early.
+                  FAFSA unlocks most federal and many state/campus grants.
+                  Submit early.
                 </p>
                 <a
                   href="https://studentaid.gov/h/apply-for-aid/fafsa"
@@ -280,7 +282,8 @@ const Grants = () => {
                   Step 2: Ask your school
                 </div>
                 <p className="text-sm text-white/70">
-                  Schools have limited, campus-administered grants. Ask about deadlines and forms.
+                  Schools have limited, campus-administered grants. Ask about
+                  deadlines and forms.
                 </p>
                 <p className="mt-3 text-xs text-white/50">
                   Tip: Use the phrase “campus-based grants / emergency funds.”
@@ -293,7 +296,8 @@ const Grants = () => {
                   Step 3: Stack state aid
                 </div>
                 <p className="text-sm text-white/70">
-                  Many states offer grants (often FAFSA-linked). Check your state’s agency.
+                  Many states offer grants (often FAFSA-linked). Check your
+                  state’s agency.
                 </p>
                 <a
                   href="https://www2.ed.gov/about/contacts/state/index.html"
@@ -319,27 +323,38 @@ const Grants = () => {
             <SectionCard title="Why Grants Matter" icon={ShieldCheck}>
               <ul className="grid gap-3 md:grid-cols-2 text-sm text-white/70">
                 <li className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
-                  <div className="font-extrabold text-white">No repayment (usually)</div>
+                  <div className="font-extrabold text-white">
+                    No repayment (usually)
+                  </div>
                   <div className="mt-1 text-white/65">
                     Grants are typically “gift aid” — unlike loans.
                   </div>
                 </li>
                 <li className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
-                  <div className="font-extrabold text-white">Less out-of-pocket stress</div>
+                  <div className="font-extrabold text-white">
+                    Less out-of-pocket stress
+                  </div>
                   <div className="mt-1 text-white/65">
-                    Use grants to cover tuition, fees, books, housing, and essentials.
+                    Use grants to cover tuition, fees, books, housing, and
+                    essentials.
                   </div>
                 </li>
                 <li className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
-                  <div className="font-extrabold text-white">More academic focus</div>
+                  <div className="font-extrabold text-white">
+                    More academic focus
+                  </div>
                   <div className="mt-1 text-white/65">
-                    Less financial pressure means more time for studying and internships.
+                    Less financial pressure means more time for studying and
+                    internships.
                   </div>
                 </li>
                 <li className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
-                  <div className="font-extrabold text-white">Better long-term outcomes</div>
+                  <div className="font-extrabold text-white">
+                    Better long-term outcomes
+                  </div>
                   <div className="mt-1 text-white/65">
-                    Lower debt helps with credit, housing, and post-grad options.
+                    Lower debt helps with credit, housing, and post-grad
+                    options.
                   </div>
                 </li>
               </ul>
@@ -350,9 +365,10 @@ const Grants = () => {
           <div className="mt-6">
             <SectionCard title="Live Updates (RSS / Feeds)" icon={BookOpen}>
               <p className="text-sm text-white/70">
-                If you want this page to stay “2026-current” automatically, we can
-                plug in RSS feeds behind an API route and render the latest items here.
-                For now, here are reliable feed sources to subscribe to:
+                If you want this page to stay “2026-current” automatically, we
+                can plug in RSS feeds behind an API route and render the latest
+                items here. For now, here are reliable feed sources to subscribe
+                to:
               </p>
 
               <div className="mt-4 grid gap-3 md:grid-cols-2">
@@ -369,7 +385,8 @@ const Grants = () => {
                     Has an RSS option on the page (good for policy/aid updates).
                   </div>
                   <div className="mt-2 text-xs font-bold text-white/70 group-hover:text-white">
-                    Open source page <ExternalLink className="ml-1 inline h-3.5 w-3.5" />
+                    Open source page{" "}
+                    <ExternalLink className="ml-1 inline h-3.5 w-3.5" />
                   </div>
                 </a>
 
@@ -383,18 +400,21 @@ const Grants = () => {
                     UNCF — Emergency Student Aid
                   </div>
                   <div className="mt-1 text-xs text-white/60">
-                    Keep this bookmarked for eligibility changes and program details.
+                    Keep this bookmarked for eligibility changes and program
+                    details.
                   </div>
                   <div className="mt-2 text-xs font-bold text-white/70 group-hover:text-white">
-                    Open program page <ExternalLink className="ml-1 inline h-3.5 w-3.5" />
+                    Open program page{" "}
+                    <ExternalLink className="ml-1 inline h-3.5 w-3.5" />
                   </div>
                 </a>
               </div>
 
               <div className="mt-4 rounded-xl border border-white/10 bg-black/30 p-4 text-xs text-white/60">
-                Recommended “leading-edge” approach for BWE: create one API endpoint that
-                fetches 2–4 trusted feeds nightly, normalizes items, caches results, then
-                this page renders “Latest updates” with zero manual edits.
+                Recommended “leading-edge” approach for BWE: create one API
+                endpoint that fetches 2–4 trusted feeds nightly, normalizes
+                items, caches results, then this page renders “Latest updates”
+                with zero manual edits.
               </div>
             </SectionCard>
           </div>
@@ -416,8 +436,8 @@ const Grants = () => {
             </Link>
 
             <p className="max-w-2xl text-[11px] text-white/45">
-              Note: Always verify deadlines and eligibility on the official source or your
-              school’s financial aid office.
+              Note: Always verify deadlines and eligibility on the official
+              source or your school’s financial aid office.
             </p>
           </div>
         </main>

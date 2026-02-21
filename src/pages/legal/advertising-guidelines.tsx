@@ -80,7 +80,8 @@ const AdvertisingGuidelines = () => {
                 brand, trust standards, or user safety.
               </p>
               <p className="text-gray-300 mt-3">
-                Ad placement does not imply endorsement by Black Wealth Exchange.
+                Ad placement does not imply endorsement by Black Wealth
+                Exchange.
               </p>
             </Section>
 
@@ -95,7 +96,9 @@ const AdvertisingGuidelines = () => {
                 <li>No false scarcity (“only 2 left” when untrue)</li>
                 <li>No misleading countdown timers or urgency tactics</li>
                 <li>No edited screenshots or fake testimonials</li>
-                <li>Disclose material terms (fees, eligibility, limitations)</li>
+                <li>
+                  Disclose material terms (fees, eligibility, limitations)
+                </li>
               </ul>
             </Section>
 
@@ -105,7 +108,9 @@ const AdvertisingGuidelines = () => {
               </p>
               <ul className="list-disc ml-6 mt-3 space-y-1 text-gray-300">
                 <li>Hate speech, discriminatory, or harassment content</li>
-                <li>Adult content, pornography, or sexually explicit imagery</li>
+                <li>
+                  Adult content, pornography, or sexually explicit imagery
+                </li>
                 <li>Illegal drugs/substances or unlawful services</li>
                 <li>Weapons and regulated weapon accessories</li>
                 <li>Counterfeit goods, stolen goods, or trademark abuse</li>
@@ -113,9 +118,15 @@ const AdvertisingGuidelines = () => {
                 <li>MLM/pyramid schemes and “get-rich-quick” offers</li>
                 <li>Unverifiable medical claims or “miracle cures”</li>
                 <li>Predatory financial products or deceptive lending</li>
-                <li>Political persuasion/propaganda or inflammatory political content</li>
+                <li>
+                  Political persuasion/propaganda or inflammatory political
+                  content
+                </li>
                 <li>Gambling, lottery, and similar high-risk promotions</li>
-                <li>Alcohol and nicotine/vape promotions (unless explicitly approved in writing)</li>
+                <li>
+                  Alcohol and nicotine/vape promotions (unless explicitly
+                  approved in writing)
+                </li>
               </ul>
 
               <div className="mt-4 rounded-xl border border-gray-800 bg-black/30 p-5">
@@ -139,10 +150,17 @@ const AdvertisingGuidelines = () => {
               </p>
               <ul className="list-disc ml-6 mt-3 space-y-1 text-gray-300">
                 <li>Destination must match the ad offer and messaging</li>
-                <li>Must not contain malware, forced downloads, or deceptive redirects</li>
+                <li>
+                  Must not contain malware, forced downloads, or deceptive
+                  redirects
+                </li>
                 <li>No pop-under spam, auto-redirect chains, or cloaking</li>
-                <li>Must be accessible on mobile and not intentionally broken</li>
-                <li>HTTPS is strongly preferred; we may reject non-HTTPS links</li>
+                <li>
+                  Must be accessible on mobile and not intentionally broken
+                </li>
+                <li>
+                  HTTPS is strongly preferred; we may reject non-HTTPS links
+                </li>
               </ul>
             </Section>
 
@@ -153,9 +171,13 @@ const AdvertisingGuidelines = () => {
                 deceptive ways.
               </p>
               <ul className="list-disc ml-6 mt-3 space-y-1 text-gray-300">
-                <li>No collecting sensitive personal data without clear consent</li>
+                <li>
+                  No collecting sensitive personal data without clear consent
+                </li>
                 <li>No deceptive “survey” funnels to capture emails/phones</li>
-                <li>No targeting or messaging based on sensitive characteristics</li>
+                <li>
+                  No targeting or messaging based on sensitive characteristics
+                </li>
                 <li>No hidden trackers that violate applicable laws</li>
               </ul>
               <p className="text-gray-300 mt-3">
@@ -166,24 +188,30 @@ const AdvertisingGuidelines = () => {
 
             <Section title="6. Creative Standards (Design + Quality)">
               <p className="text-gray-300">
-                Ads should look professional and be readable across devices.
-                We may request edits or reject low-quality creatives.
+                Ads should look professional and be readable across devices. We
+                may request edits or reject low-quality creatives.
               </p>
               <ul className="list-disc ml-6 mt-3 space-y-1 text-gray-300">
                 <li>Use high-resolution images and clean typography</li>
-                <li>No flashing effects, strobe patterns, or aggressive animation</li>
-                <li>No excessive ALL CAPS, misleading buttons, or fake UI elements</li>
-                <li>Clear brand identity: business name + offer should be obvious</li>
+                <li>
+                  No flashing effects, strobe patterns, or aggressive animation
+                </li>
+                <li>
+                  No excessive ALL CAPS, misleading buttons, or fake UI elements
+                </li>
+                <li>
+                  Clear brand identity: business name + offer should be obvious
+                </li>
                 <li>Follow size/format rules in the submission form</li>
               </ul>
             </Section>
 
             <Section title="7. Review, Approval, and “Sponsored” Labeling">
               <p className="text-gray-300">
-                Ads may be reviewed manually and/or automatically for compliance.
-                We may approve, reject, request edits, limit placement, or remove
-                ads at our discretion. Approved ads may be labeled “Sponsored,”
-                “Featured,” or “Promoted.”
+                Ads may be reviewed manually and/or automatically for
+                compliance. We may approve, reject, request edits, limit
+                placement, or remove ads at our discretion. Approved ads may be
+                labeled “Sponsored,” “Featured,” or “Promoted.”
               </p>
               <ul className="list-disc ml-6 mt-3 space-y-1 text-gray-300">
                 <li>Review timelines may vary depending on volume and risk</li>
@@ -199,7 +227,9 @@ const AdvertisingGuidelines = () => {
                 confirmation.
               </p>
               <ul className="list-disc ml-6 mt-3 space-y-1 text-gray-300">
-                <li>Requested placement is not guaranteed if inventory fills</li>
+                <li>
+                  Requested placement is not guaranteed if inventory fills
+                </li>
                 <li>We may rotate ads to maintain a clean user experience</li>
                 <li>Minor creative edits may require re-approval</li>
                 <li>Replacing creatives mid-campaign may reset review time</li>
@@ -221,11 +251,12 @@ const AdvertisingGuidelines = () => {
             <Section title="10. Refunds, Cancellations, Removals, and Violations">
               <ul className="list-disc ml-6 mt-3 space-y-2 text-gray-300">
                 <li>
-                  <strong className="text-white">No refunds</strong> for ads removed due to
-                  guideline violations, fraud, or abuse.
+                  <strong className="text-white">No refunds</strong> for ads
+                  removed due to guideline violations, fraud, or abuse.
                 </li>
                 <li>
-                  If you cancel <strong className="text-white">before publication</strong>, a
+                  If you cancel{" "}
+                  <strong className="text-white">before publication</strong>, a
                   refund may be issued at our discretion and may include a
                   processing fee (e.g., 10%) to cover transaction costs.
                 </li>
@@ -240,8 +271,9 @@ const AdvertisingGuidelines = () => {
                 </li>
               </ul>
               <p className="text-gray-400 text-sm mt-3">
-                Note: Payment providers may apply separate rules for disputes and
-                chargebacks. Chargeback abuse may result in account suspension.
+                Note: Payment providers may apply separate rules for disputes
+                and chargebacks. Chargeback abuse may result in account
+                suspension.
               </p>
             </Section>
 
@@ -251,7 +283,10 @@ const AdvertisingGuidelines = () => {
               </p>
               <ul className="list-disc ml-6 mt-3 space-y-1 text-gray-300">
                 <li>All claims, offers, and statements in their ads</li>
-                <li>Product/service delivery, customer support, and legal compliance</li>
+                <li>
+                  Product/service delivery, customer support, and legal
+                  compliance
+                </li>
                 <li>Destination content, privacy practices, and disclosures</li>
               </ul>
               <p className="text-gray-300 mt-3">
@@ -286,7 +321,8 @@ const AdvertisingGuidelines = () => {
                   </a>
                 </p>
                 <p className="text-gray-300 mt-2">
-                  <strong className="text-white">Address:</strong> 123 Prosperity Lane, Atlanta, GA 30303
+                  <strong className="text-white">Address:</strong> 123
+                  Prosperity Lane, Atlanta, GA 30303
                 </p>
                 <p className="text-xs text-gray-400 mt-2">
                   (Address is a placeholder — update as needed.)

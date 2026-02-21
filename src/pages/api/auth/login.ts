@@ -33,7 +33,10 @@ function escapeRegex(input: string) {
   return input.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   res.setHeader("Cache-Control", "no-store, max-age=0");
 
   let SECRET: string;
@@ -41,23 +44,33 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     SECRET = getSecret();
   } catch (err) {
     console.error("Login handler secret load failed:", err);
-    return res.status(500).json({ success: false, error: "Server configuration error." });
+    return res
+      .status(500)
+      .json({ success: false, error: "Server configuration error." });
   }
 
   try {
     if (req.method !== "POST") {
       res.setHeader("Allow", ["POST"]);
-      return res.status(405).json({ success: false, error: "Method Not Allowed" });
+      return res
+        .status(405)
+        .json({ success: false, error: "Method Not Allowed" });
     }
 
-    const { email, password, accountType: bodyAccountType } = req.body as {
+    const {
+      email,
+      password,
+      accountType: bodyAccountType,
+    } = req.body as {
       email: string;
       password: string;
       accountType?: "user" | "business" | "seller" | "employer";
     };
 
     if (!email || !password) {
-      return res.status(400).json({ success: false, error: "Email and password are required." });
+      return res
+        .status(400)
+        .json({ success: false, error: "Email and password are required." });
     }
 
     const emailNorm = normalizeEmail(email);
@@ -83,14 +96,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     if (!user) {
-      return res.status(401).json({ success: false, error: "Invalid credentials." });
+      return res
+        .status(401)
+        .json({ success: false, error: "Invalid credentials." });
     }
 
     // If accountType was selected, enforce it matches the record (prevents wrong role tokens)
-    if (bodyAccountType && user.accountType && bodyAccountType !== user.accountType) {
+    if (
+      bodyAccountType &&
+      user.accountType &&
+      bodyAccountType !== user.accountType
+    ) {
       return res.status(400).json({
         success: false,
-        error: "Wrong account type selected for this account. Please choose the correct account type.",
+        error:
+          "Wrong account type selected for this account. Please choose the correct account type.",
       });
     }
 
@@ -98,17 +118,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (!user.password) {
       return res.status(401).json({
         success: false,
-        error: "This account does not have a password set. Please use Forgot Password to set one.",
+        error:
+          "This account does not have a password set. Please use Forgot Password to set one.",
       });
     }
 
     const isValid = await bcrypt.compare(password, user.password);
     if (!isValid) {
-      return res.status(401).json({ success: false, error: "Invalid credentials." });
+      return res
+        .status(401)
+        .json({ success: false, error: "Invalid credentials." });
     }
 
     const role = user.accountType || bodyAccountType || "user";
-    const isAdmin = emailNorm === normalizeEmail(ADMIN_EMAIL) || user.isAdmin === true;
+    const isAdmin =
+      emailNorm === normalizeEmail(ADMIN_EMAIL) || user.isAdmin === true;
 
     // 30-minute JWT
     const token = jwt.sign(
@@ -158,6 +182,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
   } catch (err) {
     console.error("Login handler unexpected error:", err);
-    return res.status(500).json({ success: false, error: "Internal Server Error" });
+    return res
+      .status(500)
+      .json({ success: false, error: "Internal Server Error" });
   }
 }

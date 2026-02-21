@@ -42,7 +42,9 @@ export default async function handler(
 ) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
-    return res.status(405).json({ success: false, error: "Method Not Allowed" });
+    return res
+      .status(405)
+      .json({ success: false, error: "Method Not Allowed" });
   }
 
   // Supports two flows:
@@ -114,9 +116,7 @@ export default async function handler(
     })();
 
     if (!uid) {
-      return res
-        .status(400)
-        .json({ success: false, error: "Invalid userId." });
+      return res.status(400).json({ success: false, error: "Invalid userId." });
     }
 
     // Check if seller already exists for this user
@@ -125,9 +125,10 @@ export default async function handler(
       .findOne({ userId: String(userId) });
 
     if (existingSeller) {
-      return res
-        .status(409)
-        .json({ success: false, error: "Seller already exists for this user." });
+      return res.status(409).json({
+        success: false,
+        error: "Seller already exists for this user.",
+      });
     }
 
     // Pull existing user credentials (so they keep their same password hash)
@@ -159,7 +160,9 @@ export default async function handler(
 
     const sellerDoc = {
       userId: String(userId),
-      ownerName: String(existingUser.name || existingUser.fullName || "").trim(),
+      ownerName: String(
+        existingUser.name || existingUser.fullName || "",
+      ).trim(),
       email: normalized,
       password: existingUser.password, // copy hash from users collection
       accountType: "seller",
@@ -285,4 +288,3 @@ export default async function handler(
       .json({ success: false, error: err?.message || "Server error" });
   }
 }
-

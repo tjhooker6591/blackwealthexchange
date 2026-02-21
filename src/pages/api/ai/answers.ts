@@ -9,7 +9,8 @@ function extractOutputText(resp: any): string {
       // usually: { type:"message", content:[{type:"output_text", text:"..."}] }
       const content = item?.content;
       if (Array.isArray(content)) {
-        const c0 = content.find((c: any) => typeof c?.text === "string") || content[0];
+        const c0 =
+          content.find((c: any) => typeof c?.text === "string") || content[0];
         if (typeof c0?.text === "string") return c0.text;
       }
     }
@@ -17,8 +18,12 @@ function extractOutputText(resp: any): string {
   return "";
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== "POST") return res.status(405).json({ error: "POST only" });
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
+  if (req.method !== "POST")
+    return res.status(405).json({ error: "POST only" });
 
   const { query } = (req.body || {}) as { query?: string };
   const q = (query || "").trim();
@@ -27,7 +32,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
     return res.status(501).json({
-      error: "AI Mode requires OPENAI_API_KEY (server env). Add it in Vercel + local .env and retry.",
+      error:
+        "AI Mode requires OPENAI_API_KEY (server env). Add it in Vercel + local .env and retry.",
     });
   }
 
@@ -38,9 +44,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const host = req.headers.host;
   const base = `${proto}://${host}`;
 
-  let sources: Array<{ title: string; url: string; source: string; publishedAt?: string }> = [];
+  let sources: Array<{
+    title: string;
+    url: string;
+    source: string;
+    publishedAt?: string;
+  }> = [];
   try {
-    const newsRes = await fetch(`${base}/api/news/black?q=${encodeURIComponent(q)}&limit=8`);
+    const newsRes = await fetch(
+      `${base}/api/news/black?q=${encodeURIComponent(q)}&limit=8`,
+    );
     const news = await newsRes.json();
     const items = Array.isArray(news?.items) ? news.items : [];
     sources = items.slice(0, 8).map((it: any) => ({
@@ -83,7 +96,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const r = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${apiKey}`,
+        Authorization: `Bearer ${apiKey}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({

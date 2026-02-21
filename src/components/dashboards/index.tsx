@@ -6,7 +6,13 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import BusinessDashboard from "./BusinessDashboard";
 
-type AccountType = "user" | "business" | "seller" | "employer" | "admin" | string;
+type AccountType =
+  | "user"
+  | "business"
+  | "seller"
+  | "employer"
+  | "admin"
+  | string;
 
 /**
  * ✅ Local shared type (keeps this wrapper independent of other files' exports)
@@ -22,7 +28,12 @@ export type DashboardUser = {
   [key: string]: any;
 };
 
-const SHARED_DASHBOARD_TYPES: AccountType[] = ["business", "seller", "employer", "admin"];
+const SHARED_DASHBOARD_TYPES: AccountType[] = [
+  "business",
+  "seller",
+  "employer",
+  "admin",
+];
 
 /**
  * ✅ Fix: BusinessDashboard currently doesn't expose prop types (or is typed as no-props).
@@ -109,7 +120,10 @@ function UnknownRole({
   onLogin: () => void;
 }) {
   return (
-    <PageShell title="Dashboard unavailable" subtitle="Your account role is not recognized.">
+    <PageShell
+      title="Dashboard unavailable"
+      subtitle="Your account role is not recognized."
+    >
       <div className="rounded-2xl border border-red-500/30 bg-red-500/10 p-6 shadow-xl">
         <p className="text-gray-200">
           Unknown account type:{" "}
@@ -202,10 +216,13 @@ export default function DashboardWrapper() {
 
   const subtitle = useMemo(() => {
     if (!accountType) return undefined;
-    if (accountType === "seller") return "Manage products, orders, and payouts.";
+    if (accountType === "seller")
+      return "Manage products, orders, and payouts.";
     if (accountType === "employer") return "Post jobs and review applicants.";
-    if (accountType === "business") return "Manage your business profile and promotions.";
-    if (accountType === "admin") return "Manage platform operations and approvals.";
+    if (accountType === "business")
+      return "Manage your business profile and promotions.";
+    if (accountType === "admin")
+      return "Manage platform operations and approvals.";
     return undefined;
   }, [accountType]);
 

@@ -141,7 +141,9 @@ export default function JobApply() {
       const data = await res.json().catch(() => null);
 
       if (!res.ok) {
-        throw new Error(data?.error || data?.message || "Failed to submit application.");
+        throw new Error(
+          data?.error || data?.message || "Failed to submit application.",
+        );
       }
 
       setSuccessMsg("✅ Application sent successfully!");
@@ -150,7 +152,9 @@ export default function JobApply() {
         router.back();
       }, 800);
     } catch (err: unknown) {
-      setErrorMsg(err instanceof Error ? err.message : "Failed to submit application.");
+      setErrorMsg(
+        err instanceof Error ? err.message : "Failed to submit application.",
+      );
     } finally {
       setSubmitting(false);
     }
@@ -168,7 +172,9 @@ export default function JobApply() {
           &times;
         </button>
 
-        <h1 className="text-2xl font-bold text-gold mb-2">Apply for this Job</h1>
+        <h1 className="text-2xl font-bold text-gold mb-2">
+          Apply for this Job
+        </h1>
 
         {/* Job context (optional) */}
         <div className="mb-4">
@@ -184,7 +190,9 @@ export default function JobApply() {
               </p>
             </div>
           ) : (
-            <p className="text-sm text-gray-400">Complete the form below to apply.</p>
+            <p className="text-sm text-gray-400">
+              Complete the form below to apply.
+            </p>
           )}
         </div>
 

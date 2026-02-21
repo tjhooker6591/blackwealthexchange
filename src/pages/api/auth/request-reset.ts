@@ -22,7 +22,9 @@ if (!APP_URL && process.env.NODE_ENV !== "development") {
 }
 
 const RESET_TOKEN_SECRET =
-  process.env.RESET_TOKEN_SECRET || process.env.JWT_SECRET || "dev-reset-secret";
+  process.env.RESET_TOKEN_SECRET ||
+  process.env.JWT_SECRET ||
+  "dev-reset-secret";
 
 // Keep this short (security + usability)
 const RESET_TTL_MINUTES = 60;
@@ -52,7 +54,10 @@ async function findAccountByEmail(db: any, email: string) {
   return null;
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
     return res.status(405).json({ error: "Method Not Allowed" });

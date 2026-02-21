@@ -23,7 +23,11 @@ function formatDate(input?: string) {
   if (!input) return "";
   const d = new Date(input);
   if (Number.isNaN(d.getTime())) return "";
-  return d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+  return d.toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
 }
 
 export default function JobListingsPage() {
@@ -102,11 +106,13 @@ export default function JobListingsPage() {
     const arr = jobs.filter((job) => {
       if (featuredOnly && !job.isFeatured) return false;
       if (typeFilter !== "all" && job.type !== typeFilter) return false;
-      if (locationFilter !== "all" && job.location !== locationFilter) return false;
+      if (locationFilter !== "all" && job.location !== locationFilter)
+        return false;
 
       if (!query) return true;
 
-      const hay = `${job.title} ${job.company} ${job.location} ${job.type} ${job.description}`.toLowerCase();
+      const hay =
+        `${job.title} ${job.company} ${job.location} ${job.type} ${job.description}`.toLowerCase();
       return hay.includes(query);
     });
 
@@ -209,10 +215,12 @@ export default function JobListingsPage() {
         <div className="flex items-start justify-between gap-4 mb-6">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">
-              Job Listings <span className="text-yellow-400">for Our Community</span>
+              Job Listings{" "}
+              <span className="text-yellow-400">for Our Community</span>
             </h1>
             <p className="text-gray-300 mt-2 max-w-2xl">
-              Browse opportunities for free. Create an account to save jobs and submit applications.
+              Browse opportunities for free. Create an account to save jobs and
+              submit applications.
             </p>
           </div>
 
@@ -299,14 +307,18 @@ export default function JobListingsPage() {
             </label>
 
             <div className="text-sm text-gray-400">
-              Showing <span className="text-gray-200">{filteredSorted.length}</span> result(s)
+              Showing{" "}
+              <span className="text-gray-200">{filteredSorted.length}</span>{" "}
+              result(s)
             </div>
           </div>
         </div>
 
         {/* Results */}
         <section className="mt-8">
-          <h2 className="text-lg font-semibold text-yellow-400 mb-4">Opportunities</h2>
+          <h2 className="text-lg font-semibold text-yellow-400 mb-4">
+            Opportunities
+          </h2>
 
           {loading ? (
             <div className="space-y-4">
@@ -357,8 +369,12 @@ export default function JobListingsPage() {
 
                         <p className="text-sm text-gray-400 mt-1">
                           Type: {job.type}
-                          {job.salary ? ` • 💰 ${job.salary}` : " • Salary not listed"}
-                          {job.createdAt ? ` • Posted ${formatDate(job.createdAt)}` : ""}
+                          {job.salary
+                            ? ` • 💰 ${job.salary}`
+                            : " • Salary not listed"}
+                          {job.createdAt
+                            ? ` • Posted ${formatDate(job.createdAt)}`
+                            : ""}
                         </p>
                       </div>
 
@@ -376,7 +392,9 @@ export default function JobListingsPage() {
                           className={[
                             "px-4 py-2 rounded border transition",
                             "border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black",
-                            saveBusyId === job._id ? "opacity-60 cursor-not-allowed" : "",
+                            saveBusyId === job._id
+                              ? "opacity-60 cursor-not-allowed"
+                              : "",
                           ].join(" ")}
                         >
                           {saveBusyId === job._id ? "Saving…" : "Save"}
@@ -384,7 +402,9 @@ export default function JobListingsPage() {
                       </div>
                     </div>
 
-                    <p className="text-gray-300 mt-4 line-clamp-3">{job.description}</p>
+                    <p className="text-gray-300 mt-4 line-clamp-3">
+                      {job.description}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -419,8 +439,12 @@ export default function JobListingsPage() {
 
         {/* CTA */}
         <section className="mt-10 text-center bg-gray-900/70 border border-gray-800 rounded-xl p-6 shadow-lg backdrop-blur">
-          <p className="text-gray-200 mb-2 font-semibold">Want to save jobs and track applications?</p>
-          <p className="text-gray-400 mb-5">Create a free account to unlock job saves and one-click applying.</p>
+          <p className="text-gray-200 mb-2 font-semibold">
+            Want to save jobs and track applications?
+          </p>
+          <p className="text-gray-400 mb-5">
+            Create a free account to unlock job saves and one-click applying.
+          </p>
 
           <div className="flex items-center justify-center gap-3">
             <Link href="/signup">
@@ -467,8 +491,12 @@ export default function JobListingsPage() {
                   <em>{selectedJob.type}</em>
                 </p>
                 <p className="text-gray-400 mt-1">
-                  {selectedJob.salary ? `💰 ${selectedJob.salary}` : "Salary not listed"}
-                  {selectedJob.createdAt ? ` • Posted ${formatDate(selectedJob.createdAt)}` : ""}
+                  {selectedJob.salary
+                    ? `💰 ${selectedJob.salary}`
+                    : "Salary not listed"}
+                  {selectedJob.createdAt
+                    ? ` • Posted ${formatDate(selectedJob.createdAt)}`
+                    : ""}
                 </p>
               </div>
 
@@ -504,7 +532,8 @@ export default function JobListingsPage() {
             </div>
 
             <p className="text-xs text-gray-500 mt-4">
-              Note: Browsing is free. Applying and saving may require you to log in.
+              Note: Browsing is free. Applying and saving may require you to log
+              in.
             </p>
           </div>
         </div>

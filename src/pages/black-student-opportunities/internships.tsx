@@ -155,48 +155,42 @@ export default function Internships() {
     () => [
       {
         title: "USAJOBS Pathways (Federal Internships)",
-        desc:
-          "Paid internships across U.S. federal agencies. Great for students who want stable, résumé-building experience.",
+        desc: "Paid internships across U.S. federal agencies. Great for students who want stable, résumé-building experience.",
         eligibility: "Varies by listing (student status required).",
         link: "https://www.usajobs.gov/Help/working-in-government/unique-hiring-paths/students/",
         tags: ["Paid", "Federal", "Many fields"],
       },
       {
         title: "NIH Summer Internship Program (SIP)",
-        desc:
-          "Research-focused internships at NIH. Strong option for STEM, health, and biomedical students.",
+        desc: "Research-focused internships at NIH. Strong option for STEM, health, and biomedical students.",
         eligibility: "Varies by program (often undergraduate/grad).",
         link: "https://www.training.nih.gov/programs/sip/",
         tags: ["Research", "STEM", "Prestige"],
       },
       {
         title: "NSF REU (Research Experiences for Undergraduates)",
-        desc:
-          "Paid summer research at universities/labs across the U.S. Excellent for building grad-school-ready experience.",
+        desc: "Paid summer research at universities/labs across the U.S. Excellent for building grad-school-ready experience.",
         eligibility: "Undergraduates (requirements vary by site).",
         link: "https://www.nsf.gov/crssprgm/reu/",
         tags: ["Paid", "Research", "Summer"],
       },
       {
         title: "Google Careers — Student & Internship Roles",
-        desc:
-          "Search current student internships (engineering, design, business, and more).",
+        desc: "Search current student internships (engineering, design, business, and more).",
         eligibility: "Varies by role/location.",
         link: "https://careers.google.com/jobs",
         tags: ["Tech", "Students", "Global"],
       },
       {
         title: "Thurgood Marshall College Fund (TMCF) Opportunities",
-        desc:
-          "Career, internship, and leadership opportunities strongly aligned with HBCU students and Black excellence.",
+        desc: "Career, internship, and leadership opportunities strongly aligned with HBCU students and Black excellence.",
         eligibility: "Varies by opportunity.",
         link: "https://www.tmcf.org/students-alumni/",
         tags: ["HBCU", "Career", "Network"],
       },
       {
         title: "HBCUConnect Internship & Job Board",
-        desc:
-          "A consistent place to find internships plus employer outreach to HBCU talent.",
+        desc: "A consistent place to find internships plus employer outreach to HBCU talent.",
         eligibility: "Varies by listing.",
         link: "https://hbcuconnect.com/",
         tags: ["HBCU", "Board", "Recruiting"],
@@ -278,7 +272,10 @@ export default function Internships() {
           <div className="mt-10 grid gap-6 lg:grid-cols-3">
             {/* Left: Featured Programs */}
             <div className="lg:col-span-2 space-y-6">
-              <Card title="Featured Programs & Trusted Sources" icon={Briefcase}>
+              <Card
+                title="Featured Programs & Trusted Sources"
+                icon={Briefcase}
+              >
                 <p className="text-sm text-white/70">
                   Deadlines change often — these links point to official hubs or
                   stable boards where you can filter by{" "}
@@ -344,8 +341,8 @@ export default function Internships() {
                     running list of 10–20 targets.
                   </li>
                   <li>
-                    Tailor fast: keep 2–3 résumé versions (Tech, Business, Public
-                    Service) and adjust bullets per role.
+                    Tailor fast: keep 2–3 résumé versions (Tech, Business,
+                    Public Service) and adjust bullets per role.
                   </li>
                   <li>
                     Use proof: add 2–3 quantified outcomes (projects, metrics,
@@ -465,8 +462,8 @@ export default function Internships() {
 
                 <ul className="mt-4 list-disc space-y-2 pl-5 text-sm text-white/70">
                   <li>
-                    Prefer official portals (company careers pages, USAJOBS, NIH,
-                    NSF, etc.).
+                    Prefer official portals (company careers pages, USAJOBS,
+                    NIH, NSF, etc.).
                   </li>
                   <li>Confirm the role exists on the employer’s real site.</li>
                   <li>

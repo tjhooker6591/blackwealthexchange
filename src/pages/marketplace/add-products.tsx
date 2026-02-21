@@ -4,7 +4,12 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Image as ImageIcon, UploadCloud, CheckCircle2, ArrowLeft } from "lucide-react";
+import {
+  Image as ImageIcon,
+  UploadCloud,
+  CheckCircle2,
+  ArrowLeft,
+} from "lucide-react";
 
 const MAX_IMAGE_MB = 6;
 
@@ -36,7 +41,7 @@ function toTitleCategory(val: string): Category | "" {
     books: "Books",
     home: "Home",
     "home goods": "Home",
-    "homegoods": "Home",
+    homegoods: "Home",
     food: "Food",
     "food & drink": "Food",
     other: "Other",
@@ -64,7 +69,10 @@ export default function AddProductPage() {
   const [error, setError] = useState("");
   const [fieldError, setFieldError] = useState<Record<string, string>>({});
 
-  const normalizedCategory = useMemo(() => toTitleCategory(category), [category]);
+  const normalizedCategory = useMemo(
+    () => toTitleCategory(category),
+    [category],
+  );
 
   const isFormValid =
     productName.trim() &&
@@ -123,7 +131,8 @@ export default function AddProductPage() {
 
     const p = Number(price);
     if (!price.trim()) next.price = "Price is required.";
-    else if (!Number.isFinite(p) || p <= 0) next.price = "Price must be greater than 0.";
+    else if (!Number.isFinite(p) || p <= 0)
+      next.price = "Price must be greater than 0.";
 
     if (!normalizedCategory) next.category = "Please select a category.";
 
@@ -225,7 +234,8 @@ export default function AddProductPage() {
                 Add a New Product
               </h1>
               <p className="text-sm text-gray-400 mt-1">
-                Create a listing for admin approval, then it appears in the marketplace.
+                Create a listing for admin approval, then it appears in the
+                marketplace.
               </p>
             </div>
 
@@ -254,7 +264,8 @@ export default function AddProductPage() {
                   </h2>
 
                   <p className="text-gray-300 mb-6">
-                    Your product is <strong>awaiting admin approval</strong>. It will appear in the marketplace once approved.
+                    Your product is <strong>awaiting admin approval</strong>. It
+                    will appear in the marketplace once approved.
                   </p>
 
                   <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -279,7 +290,8 @@ export default function AddProductPage() {
               ) : (
                 <>
                   <p className="text-sm text-gray-400 mb-5">
-                    <span className="text-gold font-semibold">Note:</span> Keep titles clear and images high quality.
+                    <span className="text-gold font-semibold">Note:</span> Keep
+                    titles clear and images high quality.
                   </p>
 
                   {error ? (
@@ -291,7 +303,9 @@ export default function AddProductPage() {
                   <form onSubmit={handleSubmit} className="space-y-5">
                     {/* Product Name */}
                     <div>
-                      <label className="block text-sm mb-1">Product Name *</label>
+                      <label className="block text-sm mb-1">
+                        Product Name *
+                      </label>
                       <input
                         type="text"
                         value={productName}
@@ -307,7 +321,9 @@ export default function AddProductPage() {
                         placeholder="e.g. Black Heritage Hoodie"
                       />
                       {fieldError.productName ? (
-                        <p className="mt-1 text-xs text-red-200">{fieldError.productName}</p>
+                        <p className="mt-1 text-xs text-red-200">
+                          {fieldError.productName}
+                        </p>
                       ) : null}
                     </div>
 
@@ -326,7 +342,9 @@ export default function AddProductPage() {
                     {/* Price + Category */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm mb-1">Price ($) *</label>
+                        <label className="block text-sm mb-1">
+                          Price ($) *
+                        </label>
                         <input
                           type="number"
                           inputMode="decimal"
@@ -345,7 +363,9 @@ export default function AddProductPage() {
                           placeholder="e.g. 29.99"
                         />
                         {fieldError.price ? (
-                          <p className="mt-1 text-xs text-red-200">{fieldError.price}</p>
+                          <p className="mt-1 text-xs text-red-200">
+                            {fieldError.price}
+                          </p>
                         ) : null}
                       </div>
 
@@ -371,7 +391,9 @@ export default function AddProductPage() {
                           ))}
                         </select>
                         {fieldError.category ? (
-                          <p className="mt-1 text-xs text-red-200">{fieldError.category}</p>
+                          <p className="mt-1 text-xs text-red-200">
+                            {fieldError.category}
+                          </p>
                         ) : null}
                       </div>
                     </div>
@@ -379,7 +401,9 @@ export default function AddProductPage() {
                     {/* Image upload + preview */}
                     <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-start">
                       <div className="md:col-span-3">
-                        <label className="block text-sm mb-1">Product Image *</label>
+                        <label className="block text-sm mb-1">
+                          Product Image *
+                        </label>
                         <div className="rounded-2xl border border-white/10 bg-black/30 p-4">
                           <div className="flex items-center gap-2 text-sm text-gray-300 mb-3">
                             <UploadCloud className="h-4 w-4 text-yellow-300" />
@@ -392,7 +416,9 @@ export default function AddProductPage() {
                             className="w-full text-sm"
                           />
                           {fieldError.image ? (
-                            <p className="mt-2 text-xs text-red-200">{fieldError.image}</p>
+                            <p className="mt-2 text-xs text-red-200">
+                              {fieldError.image}
+                            </p>
                           ) : null}
                         </div>
                       </div>
@@ -439,7 +465,8 @@ export default function AddProductPage() {
           </div>
 
           <p className="mt-5 text-xs text-gray-500 text-center">
-            Marketplace note: Sellers handle listings, shipping, and customer service. BWE facilitates checkout and payouts.
+            Marketplace note: Sellers handle listings, shipping, and customer
+            service. BWE facilitates checkout and payouts.
           </p>
         </div>
       </div>

@@ -13,7 +13,8 @@ export default function Tools() {
           Tools <span className="text-[#D4AF37]">{q ? `(${q})` : ""}</span>
         </h1>
         <p className="mt-2 text-white/70">
-          Placeholder page. Next: calculators, exports, maps, “compare listings”, and trusted verification tools.
+          Placeholder page. Next: calculators, exports, maps, “compare
+          listings”, and trusted verification tools.
         </p>
 
         <div className="mt-6 flex gap-3 flex-wrap">

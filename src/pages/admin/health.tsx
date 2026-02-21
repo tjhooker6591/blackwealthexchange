@@ -61,7 +61,7 @@ export default function AdminHealthPage() {
       runCheck("Auth: /api/auth/me", "/api/auth/me"),
       runCheck(
         "Admin: /api/admin/dashboard-stats",
-        "/api/admin/dashboard-stats"
+        "/api/admin/dashboard-stats",
       ),
     ]);
     setChecks(results);

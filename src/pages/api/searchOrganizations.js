@@ -108,7 +108,9 @@ export default async function handler(req, res) {
       .toLowerCase();
 
     const status =
-      statusRaw === "all" || statusRaw === "any" || statusRaw === "*" ? null : statusRaw;
+      statusRaw === "all" || statusRaw === "any" || statusRaw === "*"
+        ? null
+        : statusRaw;
 
     let orgType = String(req.query.orgType ?? "").trim(); // e.g. "church"
     const source = String(req.query.source ?? "").trim(); // e.g. "church_seed_20260211_032803"
@@ -193,7 +195,8 @@ export default async function handler(req, res) {
 
     const itemsOut = items.map((d) => {
       const id = String(d._id);
-      const alias = typeof d.alias === "string" && d.alias.trim() ? d.alias.trim() : "";
+      const alias =
+        typeof d.alias === "string" && d.alias.trim() ? d.alias.trim() : "";
       const slug = alias || id;
 
       return {

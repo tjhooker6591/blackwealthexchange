@@ -103,14 +103,127 @@ function categorize(item: NewsItem): CategoryKey {
     return "Diaspora";
 
   const rules: Array<[CategoryKey, string[]]> = [
-    ["Business", ["business", "market", "stocks", "funding", "invest", "startup", "entrepreneur", "economy", "bank", "finance", "company", "deal", "grant"]],
-    ["Tech", ["tech", "ai", "software", "startup", "cyber", "security", "data", "app", "platform", "google", "apple", "microsoft"]],
-    ["Politics", ["election", "policy", "government", "congress", "senate", "president", "minister", "court", "law", "rights", "protest", "police"]],
-    ["Health", ["health", "hospital", "medicine", "mental", "wellness", "covid", "clinic", "research"]],
-    ["Education", ["education", "school", "college", "university", "hbcu", "students", "scholarship", "grant", "campus"]],
-    ["Sports", ["nba", "nfl", "mlb", "soccer", "football", "olympic", "boxing", "tennis", "championship"]],
-    ["Entertainment", ["music", "film", "movie", "tv", "album", "artist", "award", "hollywood", "celebrity", "hip-hop"]],
-    ["Culture", ["culture", "community", "heritage", "history", "art", "fashion", "food", "festival"]],
+    [
+      "Business",
+      [
+        "business",
+        "market",
+        "stocks",
+        "funding",
+        "invest",
+        "startup",
+        "entrepreneur",
+        "economy",
+        "bank",
+        "finance",
+        "company",
+        "deal",
+        "grant",
+      ],
+    ],
+    [
+      "Tech",
+      [
+        "tech",
+        "ai",
+        "software",
+        "startup",
+        "cyber",
+        "security",
+        "data",
+        "app",
+        "platform",
+        "google",
+        "apple",
+        "microsoft",
+      ],
+    ],
+    [
+      "Politics",
+      [
+        "election",
+        "policy",
+        "government",
+        "congress",
+        "senate",
+        "president",
+        "minister",
+        "court",
+        "law",
+        "rights",
+        "protest",
+        "police",
+      ],
+    ],
+    [
+      "Health",
+      [
+        "health",
+        "hospital",
+        "medicine",
+        "mental",
+        "wellness",
+        "covid",
+        "clinic",
+        "research",
+      ],
+    ],
+    [
+      "Education",
+      [
+        "education",
+        "school",
+        "college",
+        "university",
+        "hbcu",
+        "students",
+        "scholarship",
+        "grant",
+        "campus",
+      ],
+    ],
+    [
+      "Sports",
+      [
+        "nba",
+        "nfl",
+        "mlb",
+        "soccer",
+        "football",
+        "olympic",
+        "boxing",
+        "tennis",
+        "championship",
+      ],
+    ],
+    [
+      "Entertainment",
+      [
+        "music",
+        "film",
+        "movie",
+        "tv",
+        "album",
+        "artist",
+        "award",
+        "hollywood",
+        "celebrity",
+        "hip-hop",
+      ],
+    ],
+    [
+      "Culture",
+      [
+        "culture",
+        "community",
+        "heritage",
+        "history",
+        "art",
+        "fashion",
+        "food",
+        "festival",
+      ],
+    ],
   ];
 
   for (const [cat, keys] of rules) {
@@ -150,7 +263,7 @@ export default function NewsPage() {
       { key: "Africa", label: "Africa" },
       { key: "Global", label: "Global" },
     ],
-    []
+    [],
   );
 
   const load = async (opts?: { pushUrl?: boolean }) => {
@@ -165,7 +278,8 @@ export default function NewsPage() {
     try {
       const res = await fetch(`/api/news/black?${params.toString()}`);
       const data = (await res.json()) as ApiResponse;
-      if (!res.ok) throw new Error((data as any)?.error || "Failed to load news");
+      if (!res.ok)
+        throw new Error((data as any)?.error || "Failed to load news");
 
       const gotItems = Array.isArray(data?.items) ? data.items : [];
       const gotSources = Array.isArray(data?.sources) ? data.sources : [];
@@ -178,7 +292,7 @@ export default function NewsPage() {
         router.replace(
           { pathname: "/news", query: q.trim() ? { q: q.trim() } : {} },
           undefined,
-          { shallow: true }
+          { shallow: true },
         );
       }
     } catch (e: any) {
@@ -201,7 +315,10 @@ export default function NewsPage() {
     const list = items.map((it) => {
       const dt = safeDate(it.publishedAt);
       const cat = categorize(it);
-      return { ...it, _dt: dt, _cat: cat } as NewsItem & { _dt: Date | null; _cat: CategoryKey };
+      return { ...it, _dt: dt, _cat: cat } as NewsItem & {
+        _dt: Date | null;
+        _cat: CategoryKey;
+      };
     });
 
     let out = list;
@@ -301,7 +418,8 @@ export default function NewsPage() {
               </span>
             </div>
             <p className="text-sm text-gray-400 mt-2 max-w-2xl">
-              Auto-updating headlines from Black news worldwide. Curated via multiple RSS feeds, refreshed every 10 minutes.
+              Auto-updating headlines from Black news worldwide. Curated via
+              multiple RSS feeds, refreshed every 10 minutes.
             </p>
           </div>
 
@@ -318,7 +436,9 @@ export default function NewsPage() {
               title="Refresh"
             >
               <RefreshCw className="w-4 h-4 text-gold" />
-              <span className="text-sm font-semibold text-gray-200">Refresh</span>
+              <span className="text-sm font-semibold text-gray-200">
+                Refresh
+              </span>
             </button>
           </div>
         </div>
@@ -330,7 +450,9 @@ export default function NewsPage() {
               <div className="inline-flex items-center gap-2 rounded-xl border border-gray-800 bg-black/30 px-3 py-2">
                 <CheckCircle2 className="w-5 h-5 text-green-400" />
                 <div className="text-sm">
-                  <div className="font-semibold text-gray-100">Verified Sources</div>
+                  <div className="font-semibold text-gray-100">
+                    Verified Sources
+                  </div>
                   <div className="text-xs text-gray-400">
                     {verifiedCount} feeds connected
                     {failedCount ? ` • ${failedCount} failing` : ""}
@@ -342,7 +464,8 @@ export default function NewsPage() {
                 <div className="inline-flex items-center gap-2 rounded-xl border border-yellow-500/30 bg-yellow-500/10 px-3 py-2">
                   <AlertTriangle className="w-5 h-5 text-yellow-300" />
                   <div className="text-xs text-yellow-200">
-                    Some feeds failed this refresh (provider blocks or RSS format change). News still updates from remaining sources.
+                    Some feeds failed this refresh (provider blocks or RSS
+                    format change). News still updates from remaining sources.
                   </div>
                 </div>
               )}
@@ -360,7 +483,9 @@ export default function NewsPage() {
           {/* Source health (collapsible style) */}
           {failedCount > 0 && (
             <div className="mt-3 rounded-xl border border-gray-800 bg-black/25 p-3">
-              <div className="text-xs font-semibold text-gray-300 mb-2">Feed status</div>
+              <div className="text-xs font-semibold text-gray-300 mb-2">
+                Feed status
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                 {Object.entries(failures).map(([id, msg]) => (
                   <div
@@ -400,7 +525,9 @@ export default function NewsPage() {
               <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-7">
                 <div className="flex items-center justify-between gap-3">
                   <div className="text-xs text-gray-300">
-                    <span className="text-gold font-semibold">{hero.source}</span>
+                    <span className="text-gold font-semibold">
+                      {hero.source}
+                    </span>
                     <span className="text-gray-500"> • </span>
                     <span className="text-gray-400">{hero.region}</span>
                     {hero.publishedAt && (
@@ -416,7 +543,9 @@ export default function NewsPage() {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() =>
-                        setHeroIndex((i) => (i - 1 + heroItems.length) % heroItems.length)
+                        setHeroIndex(
+                          (i) => (i - 1 + heroItems.length) % heroItems.length,
+                        )
                       }
                       className="p-2 rounded-xl border border-gray-800 bg-black/40 hover:bg-black/55 transition"
                       aria-label="Previous"
@@ -425,7 +554,9 @@ export default function NewsPage() {
                       <ChevronLeft className="w-4 h-4 text-gray-200" />
                     </button>
                     <button
-                      onClick={() => setHeroIndex((i) => (i + 1) % heroItems.length)}
+                      onClick={() =>
+                        setHeroIndex((i) => (i + 1) % heroItems.length)
+                      }
                       className="p-2 rounded-xl border border-gray-800 bg-black/40 hover:bg-black/55 transition"
                       aria-label="Next"
                       type="button"
@@ -459,7 +590,9 @@ export default function NewsPage() {
                       onClick={() => setHeroIndex(idx)}
                       className={cx(
                         "h-2.5 rounded-full transition",
-                        idx === heroIndex ? "w-7 bg-gold" : "w-2.5 bg-gray-600 hover:bg-gray-500"
+                        idx === heroIndex
+                          ? "w-7 bg-gold"
+                          : "w-2.5 bg-gray-600 hover:bg-gray-500",
                       )}
                       aria-label={`Go to story ${idx + 1}`}
                     />
@@ -550,7 +683,9 @@ export default function NewsPage() {
                 title="Refresh"
               >
                 <RefreshCw className="w-4 h-4 text-gold" />
-                <span className="text-sm text-gray-200 font-semibold">Refresh</span>
+                <span className="text-sm text-gray-200 font-semibold">
+                  Refresh
+                </span>
               </button>
             </div>
           </div>
@@ -586,11 +721,16 @@ export default function NewsPage() {
                     "px-3 py-2 rounded-full border text-xs font-semibold transition",
                     active
                       ? "bg-gold text-black border-gold"
-                      : "bg-black/25 text-gray-200 border-gray-800 hover:border-gray-700 hover:bg-black/35"
+                      : "bg-black/25 text-gray-200 border-gray-800 hover:border-gray-700 hover:bg-black/35",
                   )}
                   title={`${c} (${count})`}
                 >
-                  {c} <span className={cx(active ? "text-black/70" : "text-gray-400")}>({count})</span>
+                  {c}{" "}
+                  <span
+                    className={cx(active ? "text-black/70" : "text-gray-400")}
+                  >
+                    ({count})
+                  </span>
                 </button>
               );
             })}
@@ -601,15 +741,23 @@ export default function NewsPage() {
         <section className="mt-6">
           <div className="flex items-center justify-between mb-3">
             <div className="text-sm text-gray-300">
-              Showing <span className="text-gray-100 font-semibold">{enriched.length}</span> headlines
+              Showing{" "}
+              <span className="text-gray-100 font-semibold">
+                {enriched.length}
+              </span>{" "}
+              headlines
               {category !== "All" ? (
                 <>
-                  {" "}• Category: <span className="text-gold font-semibold">{category}</span>
+                  {" "}
+                  • Category:{" "}
+                  <span className="text-gold font-semibold">{category}</span>
                 </>
               ) : null}
               {source !== "all" ? (
                 <>
-                  {" "}• Source: <span className="text-gold font-semibold">{source}</span>
+                  {" "}
+                  • Source:{" "}
+                  <span className="text-gold font-semibold">{source}</span>
                 </>
               ) : null}
             </div>
@@ -629,7 +777,8 @@ export default function NewsPage() {
 
           {!loading && !error && enriched.length === 0 && (
             <div className="rounded-2xl border border-gray-800 bg-gray-900/40 p-5 text-gray-300">
-              No headlines found. Try widening filters or switching category back to <span className="text-gold font-semibold">All</span>.
+              No headlines found. Try widening filters or switching category
+              back to <span className="text-gold font-semibold">All</span>.
             </div>
           )}
 
@@ -664,7 +813,9 @@ export default function NewsPage() {
 
                   <div className="p-4">
                     <div className="text-xs text-gray-400 flex items-center justify-between gap-3">
-                      <span className="text-gold font-semibold">{it.source}</span>
+                      <span className="text-gold font-semibold">
+                        {it.source}
+                      </span>
                       <span>
                         {it.region ? `${it.region}` : ""}
                         {dt ? ` • ${timeAgo(dt)}` : ""}
@@ -681,7 +832,9 @@ export default function NewsPage() {
                       </div>
                     )}
 
-                    <div className="mt-4 text-xs text-gray-500">Open article →</div>
+                    <div className="mt-4 text-xs text-gray-500">
+                      Open article →
+                    </div>
                   </div>
                 </a>
               );
@@ -691,12 +844,13 @@ export default function NewsPage() {
           {/* Footer helper */}
           <div className="mt-10 rounded-2xl border border-gray-800 bg-gray-900/30 p-4 text-xs text-gray-500">
             <div className="font-semibold text-gray-300 mb-1">Note</div>
-            RSS sources sometimes block automated fetches or change RSS formats. If you want 99.9% reliability,
-            the next step is adding a paid news API fallback — but this version stays fully free/open and auto-updating.
+            RSS sources sometimes block automated fetches or change RSS formats.
+            If you want 99.9% reliability, the next step is adding a paid news
+            API fallback — but this version stays fully free/open and
+            auto-updating.
           </div>
         </section>
       </div>
     </div>
   );
 }
-

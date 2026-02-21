@@ -64,7 +64,10 @@ async function allowRequest(db: any, ip: string) {
   return count <= MAX_REQ;
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   res.setHeader("Cache-Control", "no-store, max-age=0");
 
   if (req.method !== "POST") {
@@ -83,12 +86,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const ip = getIP(req);
 
-  const fullName = String(body.fullName || "").trim().slice(0, 120);
-  const email = String(body.email || "").trim().toLowerCase().slice(0, 200);
-  const role = String(body.role || "").trim().slice(0, 120);
-  const skills = String(body.skills || "").trim().slice(0, 2000);
-  const links = String(body.links || "").trim().slice(0, 2000);
-  const why = String(body.why || "").trim().slice(0, 5000);
+  const fullName = String(body.fullName || "")
+    .trim()
+    .slice(0, 120);
+  const email = String(body.email || "")
+    .trim()
+    .toLowerCase()
+    .slice(0, 200);
+  const role = String(body.role || "")
+    .trim()
+    .slice(0, 120);
+  const skills = String(body.skills || "")
+    .trim()
+    .slice(0, 2000);
+  const links = String(body.links || "")
+    .trim()
+    .slice(0, 2000);
+  const why = String(body.why || "")
+    .trim()
+    .slice(0, 5000);
 
   if (fullName.length < 2) {
     return res

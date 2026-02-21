@@ -6,7 +6,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-type AccountType = "user" | "business" | "seller" | "employer" | "admin" | string;
+type AccountType =
+  | "user"
+  | "business"
+  | "seller"
+  | "employer"
+  | "admin"
+  | string;
 
 type MeUser = {
   email: string;
@@ -52,11 +58,15 @@ export default function ProfilePage() {
   const [resumeFile, setResumeFile] = useState<File | null>(null);
 
   // Status flags
-  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "success" | "error">("idle");
-  const [imgStatus, setImgStatus] = useState<"idle" | "uploading" | "success" | "error">("idle");
-  const [resumeStatus, setResumeStatus] = useState<"idle" | "uploading" | "success" | "error">(
-    "idle",
-  );
+  const [saveStatus, setSaveStatus] = useState<
+    "idle" | "saving" | "success" | "error"
+  >("idle");
+  const [imgStatus, setImgStatus] = useState<
+    "idle" | "uploading" | "success" | "error"
+  >("idle");
+  const [resumeStatus, setResumeStatus] = useState<
+    "idle" | "uploading" | "success" | "error"
+  >("idle");
 
   // Gate + load profile
   useEffect(() => {
@@ -270,13 +280,21 @@ export default function ProfilePage() {
               </div>
 
               {/* Upload image */}
-              <form onSubmit={handleImageUpload} encType="multipart/form-data" className="space-y-2">
-                <div className="text-sm font-semibold text-gray-200">Profile Photo</div>
+              <form
+                onSubmit={handleImageUpload}
+                encType="multipart/form-data"
+                className="space-y-2"
+              >
+                <div className="text-sm font-semibold text-gray-200">
+                  Profile Photo
+                </div>
                 <div className="flex items-center gap-2">
                   <input
                     type="file"
                     accept="image/*"
-                    onChange={(e) => setProfileImageFile(e.target.files?.[0] ?? null)}
+                    onChange={(e) =>
+                      setProfileImageFile(e.target.files?.[0] ?? null)
+                    }
                     className="text-xs text-gray-200 file:mr-3 file:rounded-lg file:border-0 file:bg-white/10 file:px-3 file:py-2 file:text-gray-100 hover:file:bg-white/15"
                   />
                   <button
@@ -291,16 +309,25 @@ export default function ProfilePage() {
                   >
                     {imgStatus === "uploading" ? "Uploading…" : "Upload"}
                   </button>
-                  {imgStatus === "success" && <span className="text-green-400 text-sm">✔</span>}
-                  {imgStatus === "error" && <span className="text-red-400 text-sm">✖</span>}
+                  {imgStatus === "success" && (
+                    <span className="text-green-400 text-sm">✔</span>
+                  )}
+                  {imgStatus === "error" && (
+                    <span className="text-red-400 text-sm">✖</span>
+                  )}
                 </div>
-                <div className="text-[11px] text-gray-400">Max 5MB. JPG/PNG recommended.</div>
+                <div className="text-[11px] text-gray-400">
+                  Max 5MB. JPG/PNG recommended.
+                </div>
               </form>
             </div>
 
             {/* Basic identity */}
             <div className="flex-1 grid gap-3 md:grid-cols-3 text-sm">
-              <InfoPill label="Signed in as" value={whoLabel || profile.email} />
+              <InfoPill
+                label="Signed in as"
+                value={whoLabel || profile.email}
+              />
               <InfoPill label="Email" value={profile.email} />
               <InfoPill label="Profile ID" value={profile.id} />
             </div>
@@ -311,7 +338,8 @@ export default function ProfilePage() {
         <section className="rounded-2xl border border-yellow-500/15 bg-gray-900/60 p-6 shadow-xl">
           <h2 className="text-xl font-bold text-yellow-200">Profile Details</h2>
           <p className="text-gray-300 text-sm mt-1">
-            Keep this updated so employers, sponsors, and your own dashboard tools stay accurate.
+            Keep this updated so employers, sponsors, and your own dashboard
+            tools stay accurate.
           </p>
 
           <form onSubmit={handleSave} className="mt-6 grid gap-4">
@@ -326,7 +354,9 @@ export default function ProfilePage() {
             </label>
 
             <label className="block">
-              <div className="text-sm text-gray-200 font-semibold">Email (locked)</div>
+              <div className="text-sm text-gray-200 font-semibold">
+                Email (locked)
+              </div>
               <input
                 type="email"
                 className="w-full mt-2 rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-gray-300 outline-none"
@@ -334,8 +364,9 @@ export default function ProfilePage() {
                 readOnly
               />
               <div className="text-[11px] text-gray-400 mt-1">
-                Email changes typically require a dedicated verification flow. If you want it
-                editable, tell me and I’ll wire the full safe update process.
+                Email changes typically require a dedicated verification flow.
+                If you want it editable, tell me and I’ll wire the full safe
+                update process.
               </div>
             </label>
 
@@ -361,8 +392,12 @@ export default function ProfilePage() {
               >
                 {saveStatus === "saving" ? "Saving…" : "Save Profile"}
               </button>
-              {saveStatus === "success" && <p className="text-green-400">Saved!</p>}
-              {saveStatus === "error" && <p className="text-red-400">Save failed.</p>}
+              {saveStatus === "success" && (
+                <p className="text-green-400">Saved!</p>
+              )}
+              {saveStatus === "error" && (
+                <p className="text-red-400">Save failed.</p>
+              )}
             </div>
           </form>
         </section>
@@ -370,7 +405,9 @@ export default function ProfilePage() {
         {/* Resume */}
         <section className="rounded-2xl border border-yellow-500/15 bg-gray-900/60 p-6 shadow-xl">
           <h2 className="text-xl font-bold text-yellow-200">Resume</h2>
-          <p className="text-gray-300 text-sm mt-1">Upload a PDF/DOC/DOCX so employers can view it.</p>
+          <p className="text-gray-300 text-sm mt-1">
+            Upload a PDF/DOC/DOCX so employers can view it.
+          </p>
 
           <div className="mt-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
             <div className="text-sm">
@@ -411,8 +448,12 @@ export default function ProfilePage() {
               >
                 {resumeStatus === "uploading" ? "Uploading…" : "Upload"}
               </button>
-              {resumeStatus === "success" && <span className="text-green-400 text-sm">✔</span>}
-              {resumeStatus === "error" && <span className="text-red-400 text-sm">✖</span>}
+              {resumeStatus === "success" && (
+                <span className="text-green-400 text-sm">✔</span>
+              )}
+              {resumeStatus === "error" && (
+                <span className="text-red-400 text-sm">✖</span>
+              )}
             </form>
           </div>
 
@@ -452,7 +493,9 @@ function NotFound() {
       <GlowBackground />
       <div className="relative w-full max-w-md rounded-2xl border border-red-500/25 bg-red-500/10 p-6 shadow-xl">
         <div className="text-xl font-bold text-red-200">Profile not found.</div>
-        <p className="text-gray-200 mt-2">If you just signed up, your profile may not be created yet.</p>
+        <p className="text-gray-200 mt-2">
+          If you just signed up, your profile may not be created yet.
+        </p>
 
         {/* ✅ Fix: use Next Link for internal navigation */}
         <Link

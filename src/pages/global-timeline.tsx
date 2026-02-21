@@ -26,7 +26,8 @@ export default function GlobalTimelinePage() {
               Global Black History Timeline
             </h1>
             <p className="text-gray-300 mt-1">
-              A curated timeline to educate, connect, and strengthen our shared history.
+              A curated timeline to educate, connect, and strengthen our shared
+              history.
             </p>
           </div>
 
@@ -54,4 +55,3 @@ export default function GlobalTimelinePage() {
     </main>
   );
 }
-

@@ -111,18 +111,24 @@ export default function SellerRegister() {
       const data = await response.json().catch(() => null);
 
       if (!response.ok) {
-        throw new Error(data?.error || data?.message || "Failed to register seller.");
+        throw new Error(
+          data?.error || data?.message || "Failed to register seller.",
+        );
       }
 
       setSuccessMsg("✅ Seller account created! Redirecting to login…");
 
       // Send them to login as seller + bring them to dashboard after login
       setTimeout(() => {
-        router.push("/login?accountType=seller&redirect=/marketplace/dashboard");
+        router.push(
+          "/login?accountType=seller&redirect=/marketplace/dashboard",
+        );
       }, 900);
     } catch (error: unknown) {
       console.error("Error registering seller:", error);
-      setErrorMsg(error instanceof Error ? error.message : "Failed to register seller.");
+      setErrorMsg(
+        error instanceof Error ? error.message : "Failed to register seller.",
+      );
     } finally {
       setSubmitting(false);
     }
@@ -135,7 +141,8 @@ export default function SellerRegister() {
           <div>
             <h1 className="text-3xl font-bold text-gold">Become a Seller</h1>
             <p className="text-gray-400 mt-2">
-              Create your seller profile so you can list products and manage orders.
+              Create your seller profile so you can list products and manage
+              orders.
             </p>
           </div>
           <Link href="/marketplace">
@@ -160,7 +167,9 @@ export default function SellerRegister() {
         <form onSubmit={handleSubmit} className="mt-6 space-y-6">
           {/* Account Info */}
           <div className="rounded-lg border border-gray-800 bg-black/30 p-5">
-            <h2 className="text-gold font-semibold mb-4">Account Information</h2>
+            <h2 className="text-gold font-semibold mb-4">
+              Account Information
+            </h2>
 
             <div className="grid md:grid-cols-2 gap-4">
               <input
@@ -193,7 +202,8 @@ export default function SellerRegister() {
             </div>
 
             <p className="text-xs text-gray-400 mt-3">
-              Passwords are stored securely (hashed) — never share them with anyone.
+              Passwords are stored securely (hashed) — never share them with
+              anyone.
             </p>
           </div>
 

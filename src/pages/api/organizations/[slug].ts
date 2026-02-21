@@ -14,16 +14,21 @@ type ApiErr = { ok: false; error: string };
 type ApiResp = ApiOk | ApiErr;
 
 let cached: any = (global as any).__mongoOrgOne;
-if (!cached) cached = (global as any).__mongoOrgOne = { client: null, promise: null };
+if (!cached)
+  cached = (global as any).__mongoOrgOne = { client: null, promise: null };
 
 async function getClient() {
   if (cached.client) return cached.client;
-  if (!cached.promise) cached.promise = new MongoClient(URI!, { maxPoolSize: 10 }).connect();
+  if (!cached.promise)
+    cached.promise = new MongoClient(URI!, { maxPoolSize: 10 }).connect();
   cached.client = await cached.promise;
   return cached.client;
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<ApiResp>) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse<ApiResp>,
+) {
   if (req.method !== "GET") {
     return res.status(405).json({ ok: false, error: "Method not allowed" });
   }
@@ -39,7 +44,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   const client = await getClient();
   const col = client.db(DB_NAME).collection("organizations");
 
-  const isObjectId = ObjectId.isValid(slug) && String(new ObjectId(slug)) === slug;
+  const isObjectId =
+    ObjectId.isValid(slug) && String(new ObjectId(slug)) === slug;
 
   const doc = await col.findOne(
     isObjectId ? { _id: new ObjectId(slug) } : { alias: slug },
@@ -59,7 +65,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         alias: 1,
         entityType: 1,
       },
-    }
+    },
   );
 
   if (!doc) {

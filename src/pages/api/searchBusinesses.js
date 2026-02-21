@@ -31,7 +31,9 @@ async function getClient(uri) {
 
 function normalizeType(raw) {
   const t = String(raw || "").toLowerCase();
-  if (["org", "orgs", "organization", "organizations", "organisation"].includes(t))
+  if (
+    ["org", "orgs", "organization", "organizations", "organisation"].includes(t)
+  )
     return "organizations";
   return "businesses";
 }
@@ -83,7 +85,9 @@ export default async function handler(req, res) {
     const database = client.db("bwes-cluster");
 
     const isOrgs = type === "organizations";
-    const collection = database.collection(isOrgs ? "organizations" : "businesses");
+    const collection = database.collection(
+      isOrgs ? "organizations" : "businesses",
+    );
 
     // Fields to search (broad + safe)
     const searchFields = isOrgs
@@ -123,7 +127,9 @@ export default async function handler(req, res) {
 
     let query = {};
 
-    const tokenClause = qRaw ? buildTokenSearchClause(qRaw, searchFields) : null;
+    const tokenClause = qRaw
+      ? buildTokenSearchClause(qRaw, searchFields)
+      : null;
 
     const categoryClause = category
       ? (() => {
@@ -147,10 +153,11 @@ export default async function handler(req, res) {
         return res.status(200).json(
           docs.map((d) => ({
             ...d,
-            business_name: d.business_name || d.name || d.organization_name || "",
+            business_name:
+              d.business_name || d.name || d.organization_name || "",
             categories: d.categories || d.orgType || d.category || "",
             entityType: d.entityType || "organization",
-          }))
+          })),
         );
       }
 
@@ -167,7 +174,7 @@ export default async function handler(req, res) {
           business_name: d.business_name || d.name || d.organization_name || "",
           categories: d.categories || d.orgType || d.category || "",
           entityType: d.entityType || "organization",
-        }))
+        })),
       );
     }
 

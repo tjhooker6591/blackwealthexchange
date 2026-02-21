@@ -59,7 +59,9 @@ export default function JobDetail() {
         const data = await res.json().catch(() => null);
 
         if (!res.ok) {
-          throw new Error(data?.error || data?.message || "Failed to load job.");
+          throw new Error(
+            data?.error || data?.message || "Failed to load job.",
+          );
         }
 
         const j = data?.job || data; // supports either {job} or direct
@@ -132,7 +134,9 @@ export default function JobDetail() {
     return (
       <div className="min-h-screen bg-gray-900 text-white p-8">
         <div className="max-w-3xl mx-auto bg-gray-800 border border-gray-700 rounded-lg p-6">
-          <h1 className="text-2xl font-bold text-gold mb-2">Job Not Available</h1>
+          <h1 className="text-2xl font-bold text-gold mb-2">
+            Job Not Available
+          </h1>
           <p className="text-gray-300 mb-6">{errMsg}</p>
 
           <div className="flex flex-wrap gap-3">
@@ -208,8 +212,14 @@ export default function JobDetail() {
               </p>
 
               <div className="mt-3 flex flex-wrap gap-3 text-sm text-gray-400">
-                {job.salary ? <span>💰 {job.salary}</span> : <span>💰 Salary not listed</span>}
-                {job.createdAt ? <span>🗓 Posted {formatDate(job.createdAt)}</span> : null}
+                {job.salary ? (
+                  <span>💰 {job.salary}</span>
+                ) : (
+                  <span>💰 Salary not listed</span>
+                )}
+                {job.createdAt ? (
+                  <span>🗓 Posted {formatDate(job.createdAt)}</span>
+                ) : null}
                 {job.isFeatured ? (
                   <span className="px-2 py-1 rounded bg-yellow-500/15 border border-yellow-500/25 text-yellow-300">
                     Featured
@@ -238,7 +248,9 @@ export default function JobDetail() {
 
           {/* Description */}
           <div className="prose prose-invert max-w-none">
-            <p className="whitespace-pre-line text-gray-200">{job.description}</p>
+            <p className="whitespace-pre-line text-gray-200">
+              {job.description}
+            </p>
           </div>
 
           {/* Bottom CTA */}
@@ -265,4 +277,3 @@ export default function JobDetail() {
     </div>
   );
 }
-

@@ -31,7 +31,7 @@ function Pill({
     <span
       className={cx(
         "inline-flex items-center gap-2 px-3 py-1 rounded-full border text-xs sm:text-sm",
-        tones[tone]
+        tones[tone],
       )}
     >
       {children}
@@ -66,7 +66,7 @@ function PriceCard({
         "relative rounded-2xl border p-6 shadow-lg",
         highlight
           ? "bg-yellow-500/10 border-yellow-500/30"
-          : "bg-white/5 border-white/10"
+          : "bg-white/5 border-white/10",
       )}
     >
       {badge ? (
@@ -83,7 +83,7 @@ function PriceCard({
           <h2
             className={cx(
               "text-xl sm:text-2xl font-extrabold",
-              highlight ? "text-yellow-200" : "text-white"
+              highlight ? "text-yellow-200" : "text-white",
             )}
           >
             {title}
@@ -101,7 +101,9 @@ function PriceCard({
         <div className="text-3xl sm:text-4xl font-extrabold text-white">
           {price}
         </div>
-        <div className="text-sm text-gray-400 mt-1">Billed monthly • Cancel anytime</div>
+        <div className="text-sm text-gray-400 mt-1">
+          Billed monthly • Cancel anytime
+        </div>
       </div>
 
       <ul className="mt-5 space-y-2 text-sm">
@@ -110,12 +112,10 @@ function PriceCard({
             key={idx}
             className={cx(
               "flex items-start gap-2",
-              f.ok ? "text-gray-200" : "text-gray-500"
+              f.ok ? "text-gray-200" : "text-gray-500",
             )}
           >
-            <span className="mt-[2px]">
-              {f.ok ? "✅" : "⛔️"}
-            </span>
+            <span className="mt-[2px]">{f.ok ? "✅" : "⛔️"}</span>
             <span>{f.text}</span>
           </li>
         ))}
@@ -128,7 +128,7 @@ function PriceCard({
           "mt-6 w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-extrabold transition focus:outline-none focus:ring-2 focus:ring-yellow-500/50 active:scale-[0.99]",
           highlight
             ? "bg-yellow-500 text-black hover:bg-yellow-400"
-            : "bg-white/5 text-yellow-200 border border-yellow-500/25 hover:bg-yellow-500/10"
+            : "bg-white/5 text-yellow-200 border border-yellow-500/25 hover:bg-yellow-500/10",
         )}
       >
         {ctaText} <ArrowRight className="h-4 w-4" />
@@ -148,7 +148,9 @@ export default function Pricing() {
   const goCheckout = (plan: "premium" | "founder") => {
     // Optional gating: require login before checkout
     if (!user) {
-      router.push(`/login?next=${encodeURIComponent(`/checkout?plan=${plan}`)}`);
+      router.push(
+        `/login?next=${encodeURIComponent(`/checkout?plan=${plan}`)}`,
+      );
       return;
     }
     router.push(`/checkout?plan=${plan}`);
@@ -199,8 +201,9 @@ export default function Pricing() {
               Upgrade to Premium
             </h1>
             <p className="text-base sm:text-lg text-gray-200 mt-4">
-              Unlock the **Investment Hub**, premium learning tools, trusted search flow,
-              and deeper community features—built to help you move from browsing to building.
+              Unlock the **Investment Hub**, premium learning tools, trusted
+              search flow, and deeper community features—built to help you move
+              from browsing to building.
             </p>
 
             <div className="mt-6 flex flex-wrap items-center gap-3">
@@ -251,11 +254,17 @@ export default function Pricing() {
             badge="Most Popular"
             features={[
               { ok: true, text: "Full Business Directory access" },
-              { ok: true, text: "Investment Hub: funding, investing, wealth tools" },
+              {
+                ok: true,
+                text: "Investment Hub: funding, investing, wealth tools",
+              },
               { ok: true, text: "Premium learning modules & checklists" },
               { ok: true, text: "Monthly reports & insights" },
               { ok: true, text: "Unlimited community access" },
-              { ok: true, text: "Trusted search tools + filters (AI Mode & tabs ready)" },
+              {
+                ok: true,
+                text: "Trusted search tools + filters (AI Mode & tabs ready)",
+              },
             ]}
             ctaText="Upgrade to Premium"
             onCta={() => goCheckout("premium")}
@@ -273,7 +282,10 @@ export default function Pricing() {
               { ok: true, text: "Early access to new features (beta)" },
               { ok: true, text: "Founder badge on profile (optional)" },
               { ok: true, text: "Exclusive quarterly strategy briefings" },
-              { ok: true, text: "Tools pack: deal templates, trackers, and planning sheets" },
+              {
+                ok: true,
+                text: "Tools pack: deal templates, trackers, and planning sheets",
+              },
             ]}
             ctaText="Become a Founder"
             onCta={() => goCheckout("founder")}
@@ -287,42 +299,57 @@ export default function Pricing() {
             Why Go Premium?
           </h2>
           <p className="text-gray-300 mt-2 max-w-3xl">
-            Premium isn’t just “more pages.” It’s **tools** and **trusted workflows** that help you take action:
-            better directory discovery, wealth-building education, investment resources, and reports that keep you informed.
+            Premium isn’t just “more pages.” It’s **tools** and **trusted
+            workflows** that help you take action: better directory discovery,
+            wealth-building education, investment resources, and reports that
+            keep you informed.
           </p>
 
           <div className="mt-5 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
             <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
-              <div className="text-yellow-200 font-extrabold">Trusted Search</div>
+              <div className="text-yellow-200 font-extrabold">
+                Trusted Search
+              </div>
               <p className="text-gray-300 mt-2">
-                Cleaner discovery (AI Mode + tabs + filters) so users find the right businesses faster.
+                Cleaner discovery (AI Mode + tabs + filters) so users find the
+                right businesses faster.
               </p>
             </div>
 
             <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
-              <div className="text-yellow-200 font-extrabold">Investment Hub</div>
+              <div className="text-yellow-200 font-extrabold">
+                Investment Hub
+              </div>
               <p className="text-gray-300 mt-2">
-                Structured resources for funding, investing, and long-term wealth—built for clarity, not hype.
+                Structured resources for funding, investing, and long-term
+                wealth—built for clarity, not hype.
               </p>
             </div>
 
             <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
-              <div className="text-yellow-200 font-extrabold">Reports & Insights</div>
+              <div className="text-yellow-200 font-extrabold">
+                Reports & Insights
+              </div>
               <p className="text-gray-300 mt-2">
-                Monthly insights that keep members focused on what matters and what’s trending in the ecosystem.
+                Monthly insights that keep members focused on what matters and
+                what’s trending in the ecosystem.
               </p>
             </div>
           </div>
 
           <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
             <div className="text-xs text-gray-400">
-              Educational only. Premium tools help decision-making; always verify with qualified professionals.
+              Educational only. Premium tools help decision-making; always
+              verify with qualified professionals.
             </div>
             <div className="flex items-center gap-2">
               <GoldButton href="/checkout?plan=premium" variant="ghost">
                 Go to Checkout <ArrowRight className="h-4 w-4" />
               </GoldButton>
-              <GoldButton href="/business-directory?category=Real%20Estate" variant="ghost">
+              <GoldButton
+                href="/business-directory?category=Real%20Estate"
+                variant="ghost"
+              >
                 Explore Directory <ArrowRight className="h-4 w-4" />
               </GoldButton>
             </div>

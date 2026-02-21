@@ -71,7 +71,8 @@ export default function Marketplace() {
   const router = useRouter();
 
   const [products, setProducts] = useState<Product[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<(typeof CATEGORIES)[number]>("All");
+  const [selectedCategory, setSelectedCategory] =
+    useState<(typeof CATEGORIES)[number]>("All");
   const [sort, setSort] = useState<SortKey>("relevance");
   const [q, setQ] = useState("");
   const debouncedQ = useDebouncedValue(q, 350);
@@ -95,10 +96,12 @@ export default function Marketplace() {
     const qs = (router.query.sort as string) || "relevance";
 
     const safePage = Number.isFinite(qp) && qp >= 1 ? qp : 1;
-    const safeCategory = (CATEGORIES as readonly string[]).includes(qc) ? (qc as any) : "All";
-    const safeSort: SortKey = (["relevance", "newest", "price_asc", "price_desc"] as const).includes(
-      qs as any,
-    )
+    const safeCategory = (CATEGORIES as readonly string[]).includes(qc)
+      ? (qc as any)
+      : "All";
+    const safeSort: SortKey = (
+      ["relevance", "newest", "price_asc", "price_desc"] as const
+    ).includes(qs as any)
       ? (qs as SortKey)
       : "relevance";
 
@@ -114,15 +117,14 @@ export default function Marketplace() {
 
     const nextQuery: Record<string, string> = {};
     if (currentPage > 1) nextQuery.page = String(currentPage);
-    if (selectedCategory && selectedCategory !== "All") nextQuery.category = selectedCategory;
+    if (selectedCategory && selectedCategory !== "All")
+      nextQuery.category = selectedCategory;
     if (debouncedQ.trim()) nextQuery.q = debouncedQ.trim();
     if (sort !== "relevance") nextQuery.sort = sort;
 
-    router.replace(
-      { pathname: router.pathname, query: nextQuery },
-      undefined,
-      { shallow: true },
-    );
+    router.replace({ pathname: router.pathname, query: nextQuery }, undefined, {
+      shallow: true,
+    });
   }, [router.isReady, currentPage, selectedCategory, debouncedQ, sort]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ---- fetch products ----
@@ -146,9 +148,12 @@ export default function Marketplace() {
         if (debouncedQ.trim()) params.set("q", debouncedQ.trim());
         if (sort) params.set("sort", sort);
 
-        const res = await fetch(`/api/marketplace/get-products?${params.toString()}`, {
-          signal: controller.signal,
-        });
+        const res = await fetch(
+          `/api/marketplace/get-products?${params.toString()}`,
+          {
+            signal: controller.signal,
+          },
+        );
 
         if (!res.ok) {
           const txt = await res.text().catch(() => "");
@@ -179,7 +184,10 @@ export default function Marketplace() {
         setLoading(false);
         // gentle scroll-to-results on new loads (esp. page changes)
         requestAnimationFrame(() => {
-          topRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+          topRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
         });
       }
     };
@@ -201,7 +209,10 @@ export default function Marketplace() {
     router.push("/marketplace/become-a-seller");
   };
 
-  const pageList = useMemo(() => buildPageList(currentPage, totalPages), [currentPage, totalPages]);
+  const pageList = useMemo(
+    () => buildPageList(currentPage, totalPages),
+    [currentPage, totalPages],
+  );
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -286,10 +297,18 @@ export default function Marketplace() {
                   className="w-full bg-transparent outline-none text-white"
                   aria-label="Sort products"
                 >
-                  <option value="relevance" className="bg-black">Sort: Relevance</option>
-                  <option value="newest" className="bg-black">Newest</option>
-                  <option value="price_asc" className="bg-black">Price: Low → High</option>
-                  <option value="price_desc" className="bg-black">Price: High → Low</option>
+                  <option value="relevance" className="bg-black">
+                    Sort: Relevance
+                  </option>
+                  <option value="newest" className="bg-black">
+                    Newest
+                  </option>
+                  <option value="price_asc" className="bg-black">
+                    Price: Low → High
+                  </option>
+                  <option value="price_desc" className="bg-black">
+                    Price: High → Low
+                  </option>
                 </select>
               </div>
             </div>
@@ -302,12 +321,16 @@ export default function Marketplace() {
             ) : (
               <span>
                 Showing{" "}
-                <span className="text-gray-200 font-medium">{products.length}</span>{" "}
+                <span className="text-gray-200 font-medium">
+                  {products.length}
+                </span>{" "}
                 product{products.length === 1 ? "" : "s"}
                 {total ? (
                   <>
                     {" "}
-                    • <span className="text-gray-200 font-medium">{total}</span>{" "}
+                    • <span className="text-gray-200 font-medium">
+                      {total}
+                    </span>{" "}
                     total
                   </>
                 ) : null}
@@ -328,8 +351,8 @@ export default function Marketplace() {
               <div>
                 <h3 className="text-xl font-bold text-gold">Own a Business?</h3>
                 <p className="text-sm text-gray-200/90">
-                  Join the movement and sell your products here. Manage listings, orders,
-                  and grow your brand.
+                  Join the movement and sell your products here. Manage
+                  listings, orders, and grow your brand.
                 </p>
               </div>
             </div>
@@ -359,8 +382,9 @@ export default function Marketplace() {
             {selectedCategory} Products
           </h3>
           <div className="hidden md:block text-sm text-gray-400">
-            Page <span className="text-gray-200 font-medium">{currentPage}</span>{" "}
-            of <span className="text-gray-200 font-medium">{totalPages}</span>
+            Page{" "}
+            <span className="text-gray-200 font-medium">{currentPage}</span> of{" "}
+            <span className="text-gray-200 font-medium">{totalPages}</span>
           </div>
         </div>
 
@@ -446,7 +470,9 @@ export default function Marketplace() {
                         />
                       ) : (
                         <div className="h-full w-full flex items-center justify-center">
-                          <span className="text-gray-400 text-sm">No Image</span>
+                          <span className="text-gray-400 text-sm">
+                            No Image
+                          </span>
                         </div>
                       )}
                       <div className="pointer-events-none absolute inset-0 opacity-0 group-hover:opacity-100 transition bg-gradient-to-t from-black/60 via-transparent to-transparent" />
@@ -490,7 +516,9 @@ export default function Marketplace() {
                     />
 
                     <button
-                      onClick={() => router.push(`/marketplace/product/${product._id}`)}
+                      onClick={() =>
+                        router.push(`/marketplace/product/${product._id}`)
+                      }
                       className="w-full text-sm px-4 py-2 rounded-xl border border-white/10 text-gray-200 hover:bg-white/10 transition"
                     >
                       View Details
@@ -515,7 +543,10 @@ export default function Marketplace() {
                   <div className="flex items-center gap-1">
                     {pageList.map((p, idx) =>
                       p === "…" ? (
-                        <span key={`ellipsis-${idx}`} className="px-2 text-gray-400">
+                        <span
+                          key={`ellipsis-${idx}`}
+                          className="px-2 text-gray-400"
+                        >
                           …
                         </span>
                       ) : (
@@ -556,22 +587,30 @@ export default function Marketplace() {
 
       {/* Marketplace Disclaimer */}
       <section className="relative max-w-4xl mx-auto text-center py-12 px-4 text-sm text-gray-300">
-        <h4 className="text-lg text-gold font-semibold mb-2">Legal Disclaimer</h4>
+        <h4 className="text-lg text-gold font-semibold mb-2">
+          Legal Disclaimer
+        </h4>
         <p>
-          Black Wealth Exchange is a marketplace platform. We do not own, ship, or guarantee
-          any products sold. All sales are made directly between independent sellers and buyers.
+          Black Wealth Exchange is a marketplace platform. We do not own, ship,
+          or guarantee any products sold. All sales are made directly between
+          independent sellers and buyers.
         </p>
         <p className="mt-2">
-          Sellers are fully responsible for listings, pricing, shipping, and customer service.
-          Buyers must review all details before purchasing. Black Wealth Exchange does not mediate
-          disputes and assumes no liability for transactions.
+          Sellers are fully responsible for listings, pricing, shipping, and
+          customer service. Buyers must review all details before purchasing.
+          Black Wealth Exchange does not mediate disputes and assumes no
+          liability for transactions.
         </p>
         <p className="mt-2">
-          Payments are securely processed through Stripe. A small platform fee is deducted from each
-          sale, and remaining funds are routed directly to the seller.
+          Payments are securely processed through Stripe. A small platform fee
+          is deducted from each sale, and remaining funds are routed directly to
+          the seller.
         </p>
 
-        <Link href="/terms/marketplace" className="text-gold underline mt-4 inline-block">
+        <Link
+          href="/terms/marketplace"
+          className="text-gold underline mt-4 inline-block"
+        >
           View Full Marketplace Terms of Use
         </Link>
       </section>
@@ -586,8 +625,9 @@ export default function Marketplace() {
           className="object-cover rounded-2xl mx-auto mb-5 border border-white/10 shadow-xl"
         />
         <p className="text-gray-300">
-          Every purchase supports Black entrepreneurs and helps circulate wealth within our communities.
-          Together, we’re building a legacy of empowerment and economic strength.
+          Every purchase supports Black entrepreneurs and helps circulate wealth
+          within our communities. Together, we’re building a legacy of
+          empowerment and economic strength.
         </p>
       </section>
 

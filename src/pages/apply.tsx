@@ -51,7 +51,9 @@ export default function ApplyPage() {
 
     // Honeypot: if filled, silently pretend success (stops bots)
     if (form.company.trim()) {
-      setSuccess("✅ Application submitted successfully. We’ll review it and follow up by email.");
+      setSuccess(
+        "✅ Application submitted successfully. We’ll review it and follow up by email.",
+      );
       setForm({
         fullName: "",
         email: "",
@@ -71,7 +73,9 @@ export default function ApplyPage() {
     const why = form.why.trim();
 
     if (!fullName || !email || !role || !why) {
-      setError("Please complete: Full Name, Email, Role, and Why you want to join.");
+      setError(
+        "Please complete: Full Name, Email, Role, and Why you want to join.",
+      );
       return;
     }
 
@@ -102,7 +106,9 @@ export default function ApplyPage() {
         return;
       }
 
-      setSuccess("✅ Application submitted successfully. We’ll review it and follow up by email.");
+      setSuccess(
+        "✅ Application submitted successfully. We’ll review it and follow up by email.",
+      );
 
       // Clear form
       setForm({
@@ -133,7 +139,10 @@ export default function ApplyPage() {
 
         <div className="relative max-w-3xl mx-auto">
           <div className="mb-6">
-            <Link href="/join-the-mission" className="text-yellow-400 hover:underline">
+            <Link
+              href="/join-the-mission"
+              className="text-yellow-400 hover:underline"
+            >
               ← Back to Join the Mission
             </Link>
           </div>
@@ -151,7 +160,9 @@ export default function ApplyPage() {
             <form onSubmit={onSubmit} className="mt-8 space-y-4">
               {/* Honeypot (hidden) */}
               <div className="hidden" aria-hidden="true">
-                <label className="block text-sm font-semibold text-white/90">Company</label>
+                <label className="block text-sm font-semibold text-white/90">
+                  Company
+                </label>
                 <input
                   name="company"
                   value={form.company}
@@ -202,7 +213,15 @@ export default function ApplyPage() {
                 <select
                   name="roleSelect"
                   value={
-                    ["Frontend", "Backend", "AI & Data", "Community & Content", "Research & Partnerships", "QA / Testing", "Other"].includes(form.role)
+                    [
+                      "Frontend",
+                      "Backend",
+                      "AI & Data",
+                      "Community & Content",
+                      "Research & Partnerships",
+                      "QA / Testing",
+                      "Other",
+                    ].includes(form.role)
                       ? form.role
                       : "Other"
                   }
@@ -262,7 +281,8 @@ export default function ApplyPage() {
 
               <div>
                 <label className="block text-sm font-semibold text-white/90">
-                  Why do you want to join? <span className="text-yellow-400">*</span>
+                  Why do you want to join?{" "}
+                  <span className="text-yellow-400">*</span>
                 </label>
                 <textarea
                   name="why"
@@ -304,7 +324,8 @@ export default function ApplyPage() {
               </div>
 
               <p className="text-sm text-white/60 pt-2">
-                Tip: Include links to your GitHub, portfolio, LinkedIn, or sample work.
+                Tip: Include links to your GitHub, portfolio, LinkedIn, or
+                sample work.
               </p>
             </form>
           </div>

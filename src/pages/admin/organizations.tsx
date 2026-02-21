@@ -40,7 +40,7 @@ export default function AdminOrganizationsPage() {
   const [selected, setSelected] = useState<Record<string, boolean>>({});
   const selectedIds = useMemo(
     () => Object.keys(selected).filter((id) => selected[id]),
-    [selected]
+    [selected],
   );
 
   const queryString = useMemo(() => {
@@ -117,7 +117,9 @@ export default function AdminOrganizationsPage() {
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-between gap-4 mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-gold">Organizations Queue</h1>
+            <h1 className="text-3xl font-bold text-gold">
+              Organizations Queue
+            </h1>
             <p className="text-gray-400 text-sm mt-1">
               Review and approve organizations (church seed batch included).
             </p>
@@ -206,7 +208,7 @@ export default function AdminOrganizationsPage() {
                   "px-4 py-2 rounded font-semibold transition",
                   selectedIds.length === 0
                     ? "bg-gray-700 text-gray-400 cursor-not-allowed"
-                    : "bg-gold text-black hover:bg-yellow-400"
+                    : "bg-gold text-black hover:bg-yellow-400",
                 )}
               >
                 Approve Selected ({selectedIds.length})
@@ -244,7 +246,10 @@ export default function AdminOrganizationsPage() {
                       <input
                         type="checkbox"
                         onChange={(e) => toggleAll(e.target.checked)}
-                        checked={items.length > 0 && selectedIds.length === items.length}
+                        checked={
+                          items.length > 0 &&
+                          selectedIds.length === items.length
+                        }
                       />
                     </th>
                     <th className="py-2 px-2">Name</th>
@@ -264,7 +269,10 @@ export default function AdminOrganizationsPage() {
                           type="checkbox"
                           checked={Boolean(selected[it._id])}
                           onChange={(e) =>
-                            setSelected((p) => ({ ...p, [it._id]: e.target.checked }))
+                            setSelected((p) => ({
+                              ...p,
+                              [it._id]: e.target.checked,
+                            }))
                           }
                         />
                       </td>
@@ -275,7 +283,9 @@ export default function AdminOrganizationsPage() {
                       <td className="py-2 px-2">{it.state || "--"}</td>
                       <td className="py-2 px-2">{it.phone || "--"}</td>
                       <td className="py-2 px-2">{it.status || "--"}</td>
-                      <td className="py-2 px-2">{it.completenessScore ?? "--"}</td>
+                      <td className="py-2 px-2">
+                        {it.completenessScore ?? "--"}
+                      </td>
                       <td className="py-2 px-2">
                         {(it.missingFields || []).join(", ") || "--"}
                       </td>

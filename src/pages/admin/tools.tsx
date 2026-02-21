@@ -47,18 +47,18 @@ function Badge({
     tone === "good"
       ? "border-green-500/30 bg-green-500/10 text-green-200"
       : tone === "bad"
-      ? "border-red-500/30 bg-red-500/10 text-red-200"
-      : tone === "warn"
-      ? "border-yellow-500/30 bg-yellow-500/10 text-yellow-200"
-      : tone === "gold"
-      ? "border-yellow-500/30 bg-black/40 text-gold"
-      : "border-gray-700 bg-black/20 text-gray-200";
+        ? "border-red-500/30 bg-red-500/10 text-red-200"
+        : tone === "warn"
+          ? "border-yellow-500/30 bg-yellow-500/10 text-yellow-200"
+          : tone === "gold"
+            ? "border-yellow-500/30 bg-black/40 text-gold"
+            : "border-gray-700 bg-black/20 text-gray-200";
 
   return (
     <span
       className={cx(
         "inline-flex items-center rounded-full border px-3 py-1 text-xs",
-        cls
+        cls,
       )}
     >
       {children}
@@ -460,7 +460,7 @@ export default function AdminToolsPage() {
         sampleBody: { payoutId: "<mongo_id>" },
       },
     ],
-    []
+    [],
   );
 
   const [tab, setTab] = useState<ToolItemType | "all">("all");
@@ -494,7 +494,7 @@ export default function AdminToolsPage() {
       "Interns",
       "Other",
     ],
-    []
+    [],
   );
 
   const filtered = useMemo(() => {
@@ -550,7 +550,7 @@ export default function AdminToolsPage() {
   const pingItem = async (item: ToolItem) => {
     if (item.type === "api_post") {
       alert(
-        "This is a POST action endpoint. Use the sample curl/JSON instead of pinging it."
+        "This is a POST action endpoint. Use the sample curl/JSON instead of pinging it.",
       );
       return;
     }
@@ -592,7 +592,7 @@ export default function AdminToolsPage() {
             "mt-6 rounded-xl border p-4",
             baselineOk
               ? "border-green-500/30 bg-green-500/10"
-              : "border-yellow-500/20 bg-gray-800"
+              : "border-yellow-500/20 bg-gray-800",
           )}
         >
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
@@ -699,7 +699,7 @@ export default function AdminToolsPage() {
                   "rounded-full px-4 py-2 text-xs border transition",
                   tab === "all"
                     ? "bg-gold text-black border-gold"
-                    : "bg-gray-800 text-gray-200 border-gray-700 hover:bg-gray-700"
+                    : "bg-gray-800 text-gray-200 border-gray-700 hover:bg-gray-700",
                 )}
               >
                 All ({counts.all})
@@ -710,7 +710,7 @@ export default function AdminToolsPage() {
                   "rounded-full px-4 py-2 text-xs border transition",
                   tab === "page"
                     ? "bg-gold text-black border-gold"
-                    : "bg-gray-800 text-gray-200 border-gray-700 hover:bg-gray-700"
+                    : "bg-gray-800 text-gray-200 border-gray-700 hover:bg-gray-700",
                 )}
               >
                 Pages ({counts.page})
@@ -721,7 +721,7 @@ export default function AdminToolsPage() {
                   "rounded-full px-4 py-2 text-xs border transition",
                   tab === "api_get"
                     ? "bg-gold text-black border-gold"
-                    : "bg-gray-800 text-gray-200 border-gray-700 hover:bg-gray-700"
+                    : "bg-gray-800 text-gray-200 border-gray-700 hover:bg-gray-700",
                 )}
               >
                 APIs GET ({counts.api_get})
@@ -732,7 +732,7 @@ export default function AdminToolsPage() {
                   "rounded-full px-4 py-2 text-xs border transition",
                   tab === "api_post"
                     ? "bg-gold text-black border-gold"
-                    : "bg-gray-800 text-gray-200 border-gray-700 hover:bg-gray-700"
+                    : "bg-gray-800 text-gray-200 border-gray-700 hover:bg-gray-700",
                 )}
               >
                 Actions POST ({counts.api_post})
@@ -788,10 +788,10 @@ export default function AdminToolsPage() {
                   item.type === "api_post"
                     ? "warn"
                     : pr
-                    ? pr.ok
-                      ? "good"
-                      : "bad"
-                    : "neutral";
+                      ? pr.ok
+                        ? "good"
+                        : "bad"
+                      : "neutral";
 
                 const isPost = item.type === "api_post";
                 const internal = isInternalNextRoute(item.path);
@@ -802,7 +802,9 @@ export default function AdminToolsPage() {
                     className="border-b border-gray-700/60 align-top"
                   >
                     <td className="py-3 px-3">
-                      <div className="font-semibold text-white">{item.label}</div>
+                      <div className="font-semibold text-white">
+                        {item.label}
+                      </div>
                       {item.notes ? (
                         <div className="text-xs text-gray-400 mt-1">
                           {item.notes}
@@ -816,15 +818,15 @@ export default function AdminToolsPage() {
                           item.type === "page"
                             ? "gold"
                             : item.type === "api_get"
-                            ? "neutral"
-                            : "warn"
+                              ? "neutral"
+                              : "warn"
                         }
                       >
                         {item.type === "page"
                           ? "PAGE"
                           : item.type === "api_get"
-                          ? "API GET"
-                          : "ACTION POST"}
+                            ? "API GET"
+                            : "ACTION POST"}
                       </Badge>
                     </td>
 
@@ -848,10 +850,12 @@ export default function AdminToolsPage() {
 
                     <td className="py-3 px-3">
                       <Badge tone={statusTone as any}>
-                        {isPost ? "POST only" : pr ? pr.status ?? "ERR" : "—"}
+                        {isPost ? "POST only" : pr ? (pr.status ?? "ERR") : "—"}
                       </Badge>
                       {pr?.error ? (
-                        <div className="text-xs text-red-200 mt-1">{pr.error}</div>
+                        <div className="text-xs text-red-200 mt-1">
+                          {pr.error}
+                        </div>
                       ) : null}
                       {pr?.at ? (
                         <div className="text-[11px] text-gray-500 mt-1">
@@ -913,7 +917,7 @@ export default function AdminToolsPage() {
                               const curl = `curl -X POST "http://localhost:3000${item.path}" -H "Content-Type: application/json" -d '${JSON.stringify(
                                 item.sampleBody || {},
                                 null,
-                                0
+                                0,
                               )}'`;
                               copy(curl);
                               alert("Copied sample curl to clipboard.");
@@ -943,7 +947,8 @@ export default function AdminToolsPage() {
 
       <footer className="mt-10 text-center text-xs text-gray-500">
         Tip: Bookmark <span className="text-gold">/admin/tools</span> and start
-        every session with <span className="text-gold">Run Baseline Check</span>.
+        every session with <span className="text-gold">Run Baseline Check</span>
+        .
       </footer>
     </div>
   );

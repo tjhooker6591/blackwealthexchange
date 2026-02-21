@@ -17,7 +17,10 @@ export default function Images() {
         </p>
 
         <div className="mt-6 flex gap-3 flex-wrap">
-          <Link href="/" className="rounded-xl bg-[#D4AF37] px-4 py-2.5 font-extrabold text-black hover:bg-yellow-500 transition">
+          <Link
+            href="/"
+            className="rounded-xl bg-[#D4AF37] px-4 py-2.5 font-extrabold text-black hover:bg-yellow-500 transition"
+          >
             Back Home
           </Link>
         </div>

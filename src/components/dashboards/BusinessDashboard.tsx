@@ -4,7 +4,13 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-type AccountType = "user" | "business" | "seller" | "employer" | "admin" | string;
+type AccountType =
+  | "user"
+  | "business"
+  | "seller"
+  | "employer"
+  | "admin"
+  | string;
 
 type BusinessUser = {
   email: string;
@@ -14,7 +20,12 @@ type BusinessUser = {
   businessPhone?: string;
 };
 
-const ALLOWED_DASHBOARD_TYPES: AccountType[] = ["business", "seller", "employer", "admin"];
+const ALLOWED_DASHBOARD_TYPES: AccountType[] = [
+  "business",
+  "seller",
+  "employer",
+  "admin",
+];
 
 export default function BusinessDashboard() {
   const router = useRouter();
@@ -85,7 +96,12 @@ export default function BusinessDashboard() {
             { href: "/marketplace/dashboard", label: "Seller Dashboard" },
             { href: "/marketplace/add-products", label: "Add Products" },
           ]
-        : [{ href: "/marketplace/become-a-seller", label: "Upgrade to Seller" }];
+        : [
+            {
+              href: "/marketplace/become-a-seller",
+              label: "Upgrade to Seller",
+            },
+          ];
 
     const employerTools =
       user.accountType === "employer" || user.accountType === "admin"
@@ -95,9 +111,17 @@ export default function BusinessDashboard() {
           ]
         : [];
 
-    const upgrade = [{ href: "/dashboard/business/upgrade", label: "Upgrade Options" }];
+    const upgrade = [
+      { href: "/dashboard/business/upgrade", label: "Upgrade Options" },
+    ];
 
-    return [...common, ...businessAds, ...sellerTools, ...employerTools, ...upgrade];
+    return [
+      ...common,
+      ...businessAds,
+      ...sellerTools,
+      ...employerTools,
+      ...upgrade,
+    ];
   }, [user]);
 
   const quickActions = useMemo(() => {
@@ -111,22 +135,27 @@ export default function BusinessDashboard() {
     }> = [
       {
         title: "📝 Edit Business Profile",
-        description: "Update your business info, contact details, and description.",
+        description:
+          "Update your business info, contact details, and description.",
         href: "/dashboard/edit-business",
-        className: "bg-gray-900 border border-yellow-500/25 hover:border-yellow-400/40",
+        className:
+          "bg-gray-900 border border-yellow-500/25 hover:border-yellow-400/40",
       },
       {
         title: "⭐ View Directory Listings",
-        description: "See where your business appears and search the full directory.",
+        description:
+          "See where your business appears and search the full directory.",
         href: "/business-directory",
-        className: "bg-gray-900 border border-yellow-500/25 hover:border-yellow-400/40",
+        className:
+          "bg-gray-900 border border-yellow-500/25 hover:border-yellow-400/40",
       },
     ];
 
     if (user.accountType === "business" || user.accountType === "admin") {
       actions.unshift({
         title: "🚀 Advertise With Us",
-        description: "Launch an ad campaign to boost visibility and get featured.",
+        description:
+          "Launch an ad campaign to boost visibility and get featured.",
         href: "/advertise-with-us",
         className:
           "bg-yellow-500/90 text-black border border-yellow-300 hover:bg-yellow-400",
@@ -138,14 +167,17 @@ export default function BusinessDashboard() {
         title: "🛍️ Manage Products",
         description: "Add, edit, and manage your marketplace listings.",
         href: "/marketplace/dashboard",
-        className: "bg-gray-900 border border-yellow-500/25 hover:border-yellow-400/40",
+        className:
+          "bg-gray-900 border border-yellow-500/25 hover:border-yellow-400/40",
       });
     } else {
       actions.push({
         title: "🛍️ Upgrade to Seller",
-        description: "Start listing products in the marketplace as a verified seller.",
+        description:
+          "Start listing products in the marketplace as a verified seller.",
         href: "/marketplace/become-a-seller",
-        className: "bg-gray-900 border border-yellow-500/25 hover:border-yellow-400/40",
+        className:
+          "bg-gray-900 border border-yellow-500/25 hover:border-yellow-400/40",
       });
     }
 
@@ -154,7 +186,8 @@ export default function BusinessDashboard() {
         title: "💼 Employer Tools",
         description: "Post jobs, manage listings, and review applicants.",
         href: "/employer/jobs",
-        className: "bg-gray-900 border border-yellow-500/25 hover:border-yellow-400/40",
+        className:
+          "bg-gray-900 border border-yellow-500/25 hover:border-yellow-400/40",
       });
     }
 
@@ -183,7 +216,9 @@ export default function BusinessDashboard() {
       <header className="bg-gray-950/80 border-b border-yellow-500/15 text-white p-4">
         <div className="container mx-auto flex justify-between items-center">
           <div>
-            <h1 className="text-xl font-bold tracking-tight">Business Dashboard</h1>
+            <h1 className="text-xl font-bold tracking-tight">
+              Business Dashboard
+            </h1>
             <p className="text-xs text-gray-400">
               Signed in as <span className="text-gray-200">{user.email}</span>{" "}
               <span className="ml-2 inline-flex items-center rounded-full border border-yellow-500/25 px-2 py-0.5 text-[10px] text-yellow-200">

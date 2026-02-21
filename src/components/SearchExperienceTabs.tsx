@@ -62,7 +62,7 @@ export default function SearchExperienceTabs({
           "shadow-[0_0_0_1px_rgba(255,255,255,0.06)]",
           aiMode
             ? "border-[#D4AF37]/55 bg-[#D4AF37]/12 text-[#D4AF37]"
-            : "border-white/10 bg-white/[0.03] text-white/80 hover:bg-white/[0.05]"
+            : "border-white/10 bg-white/[0.03] text-white/80 hover:bg-white/[0.05]",
         )}
         title="Toggle AI Mode"
       >
@@ -71,10 +71,15 @@ export default function SearchExperienceTabs({
             "flex h-7 w-7 items-center justify-center rounded-xl border transition",
             aiMode
               ? "border-[#D4AF37]/50 bg-[#D4AF37]/15"
-              : "border-white/10 bg-black/20"
+              : "border-white/10 bg-black/20",
           )}
         >
-          <Sparkles className={cx("h-4 w-4", aiMode ? "text-[#D4AF37]" : "text-white/70")} />
+          <Sparkles
+            className={cx(
+              "h-4 w-4",
+              aiMode ? "text-[#D4AF37]" : "text-white/70",
+            )}
+          />
         </span>
         <span className="leading-none">
           AI <span className="text-white/70 font-black">Mode</span>
@@ -97,11 +102,16 @@ export default function SearchExperienceTabs({
                   "shadow-[0_0_0_1px_rgba(255,255,255,0.05)]",
                   active
                     ? "border-[#D4AF37]/55 bg-[#D4AF37]/10 text-white"
-                    : "border-white/10 bg-white/[0.02] text-white/75 hover:bg-white/[0.05]"
+                    : "border-white/10 bg-white/[0.02] text-white/75 hover:bg-white/[0.05]",
                 )}
                 aria-current={active ? "page" : undefined}
               >
-                <Icon className={cx("h-4 w-4", active ? "text-[#D4AF37]" : "text-white/65")} />
+                <Icon
+                  className={cx(
+                    "h-4 w-4",
+                    active ? "text-[#D4AF37]" : "text-white/65",
+                  )}
+                />
                 {t.label}
               </button>
             );
@@ -118,7 +128,7 @@ export default function SearchExperienceTabs({
           "shadow-[0_0_0_1px_rgba(255,255,255,0.06)]",
           activeTab === "tools"
             ? "border-[#D4AF37]/55 bg-[#D4AF37]/12 text-white"
-            : "border-white/10 bg-white/[0.03] text-white/80 hover:bg-white/[0.05]"
+            : "border-white/10 bg-white/[0.03] text-white/80 hover:bg-white/[0.05]",
         )}
         title="Open Tools (Filters)"
       >
@@ -128,4 +138,3 @@ export default function SearchExperienceTabs({
     </div>
   );
 }
-

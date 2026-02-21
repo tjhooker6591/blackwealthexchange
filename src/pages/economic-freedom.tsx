@@ -70,7 +70,9 @@ function Callout({
 
   return (
     <div className={cx("rounded-2xl border p-4", style)}>
-      <div className={cx("text-[12px] font-extrabold", titleColor)}>{title}</div>
+      <div className={cx("text-[12px] font-extrabold", titleColor)}>
+        {title}
+      </div>
       <div className="mt-2 text-[13px] text-white/80 leading-relaxed">
         {children}
       </div>
@@ -271,11 +273,10 @@ export default function EconomicFreedom() {
 
               <p className="mt-3 max-w-3xl text-white/70 leading-relaxed text-sm sm:text-base">
                 This is one of the most important messages on Black Wealth
-                Exchange:{" "}
-                <span className="text-white font-bold">spending</span> without{" "}
-                <span className="text-white font-bold">ownership</span> creates
-                dependency. Ownership creates power. Power creates stability.
-                Stability creates legacy.
+                Exchange: <span className="text-white font-bold">spending</span>{" "}
+                without <span className="text-white font-bold">ownership</span>{" "}
+                creates dependency. Ownership creates power. Power creates
+                stability. Stability creates legacy.
               </p>
 
               <div className="mt-4 flex flex-wrap gap-2">
@@ -364,8 +365,8 @@ export default function EconomicFreedom() {
                   <p className="mt-3 text-sm sm:text-base">
                     The issue isn’t spending. The issue is spending without a
                     plan for{" "}
-                    <span className="text-white font-bold">circulation</span> and{" "}
-                    <span className="text-white font-bold">ownership</span>.
+                    <span className="text-white font-bold">circulation</span>{" "}
+                    and <span className="text-white font-bold">ownership</span>.
                   </p>
                 </>
               }
@@ -377,7 +378,10 @@ export default function EconomicFreedom() {
                 why this feels like modern economic slavery: we work, we earn,
                 we spend — but the wealth we generate doesn’t stay long enough
                 to build power.
-                <span className="text-red-300 font-extrabold"> This stops now.</span>
+                <span className="text-red-300 font-extrabold">
+                  {" "}
+                  This stops now.
+                </span>
               </p>
 
               <Callout title="What’s really happening" tone="gold">
@@ -388,8 +392,9 @@ export default function EconomicFreedom() {
 
               <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
                 <Callout title="The simple shift" tone="emerald">
-                  Small changes repeated consistently create compounding results.
-                  We don’t need perfection — we need direction and routine.
+                  Small changes repeated consistently create compounding
+                  results. We don’t need perfection — we need direction and
+                  routine.
                 </Callout>
                 <Callout title="The goal" tone="gold">
                   Build an “ownership loop” where your regular purchases help
@@ -428,18 +433,24 @@ export default function EconomicFreedom() {
                   <List
                     items={[
                       <>
-                        <span className="text-white font-bold">Freedmen’s Bureau:</span>{" "}
+                        <span className="text-white font-bold">
+                          Freedmen’s Bureau:
+                        </span>{" "}
                         Established in 1865 to help formerly enslaved Black
                         Americans. It was systematically defunded and dismantled
                         before it could fully support economic independence.
                       </>,
                       <>
-                        <span className="text-white font-bold">Jim Crow Laws:</span>{" "}
+                        <span className="text-white font-bold">
+                          Jim Crow Laws:
+                        </span>{" "}
                         Enforced segregation, blocked access to opportunity and
                         credit, and created long-lasting disparities.
                       </>,
                       <>
-                        <span className="text-white font-bold">Capital denial:</span>{" "}
+                        <span className="text-white font-bold">
+                          Capital denial:
+                        </span>{" "}
                         Limited lending + biased underwriting made it harder to
                         start, scale, and sustain Black-owned enterprises.
                       </>,
@@ -470,7 +481,8 @@ export default function EconomicFreedom() {
                         <span className="text-red-300 font-extrabold">
                           Wilmington, North Carolina (1898)
                         </span>{" "}
-                        — a violent coup crushed Black political + economic power.
+                        — a violent coup crushed Black political + economic
+                        power.
                       </>,
                       <>
                         <span className="text-white font-bold">Result:</span>{" "}
@@ -484,10 +496,10 @@ export default function EconomicFreedom() {
 
               <div className="mt-4">
                 <Callout title="Why this matters today" tone="gold">
-                  When wealth is repeatedly disrupted, the gap isn’t just money —
-                  it’s institutions: fewer owned businesses, fewer banks, fewer
-                  properties, fewer suppliers, fewer pipelines. Economic freedom
-                  requires rebuilding systems.
+                  When wealth is repeatedly disrupted, the gap isn’t just money
+                  — it’s institutions: fewer owned businesses, fewer banks,
+                  fewer properties, fewer suppliers, fewer pipelines. Economic
+                  freedom requires rebuilding systems.
                 </Callout>
               </div>
             </ReadMore>
@@ -506,8 +518,8 @@ export default function EconomicFreedom() {
               preview={
                 <p className="text-sm sm:text-base text-white/75">
                   Culture is powerful, but without ownership it becomes
-                  extraction: influence fuels industries, while wealth accumulates
-                  elsewhere.
+                  extraction: influence fuels industries, while wealth
+                  accumulates elsewhere.
                 </p>
               }
             >
@@ -544,9 +556,9 @@ export default function EconomicFreedom() {
                   title="The solution isn’t less culture — it’s more ownership"
                   tone="emerald"
                 >
-                  Economic freedom means owning the brands, the distribution, the
-                  supply chain, the real estate, the rights, and the platforms —
-                  not just contributing the energy.
+                  Economic freedom means owning the brands, the distribution,
+                  the supply chain, the real estate, the rights, and the
+                  platforms — not just contributing the energy.
                 </Callout>
               </div>
             </ReadMore>
@@ -595,10 +607,10 @@ export default function EconomicFreedom() {
             >
               <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Callout title="The extraction loop" tone="red">
-                  We are taught to chase status through consumption, but ownership
-                  is delayed. Stress + scarcity thinking increases impulsive
-                  spending. Meanwhile, brands and systems we don’t own capture
-                  the margin — and the cycle stays in place.
+                  We are taught to chase status through consumption, but
+                  ownership is delayed. Stress + scarcity thinking increases
+                  impulsive spending. Meanwhile, brands and systems we don’t own
+                  capture the margin — and the cycle stays in place.
                 </Callout>
 
                 <Callout title="The counter-program" tone="emerald">
@@ -610,13 +622,17 @@ export default function EconomicFreedom() {
 
               {/* TRUTH MIRROR (NEW) */}
               <div className="mt-6">
-                <Callout title="Truth Mirror (no shame — just clarity)" tone="gold">
+                <Callout
+                  title="Truth Mirror (no shame — just clarity)"
+                  tone="gold"
+                >
                   <p className="text-white/85">
-                    Many of us were trained to treat certain brands and lifestyles as
-                    “normal” — and anything Black-owned as “secondary,” “risky,” or
-                    “lesser.” That isn’t a personal defect. It’s the result of
-                    decades of conditioning, repetition, and reward systems built
-                    into media, marketing, and social pressure.
+                    Many of us were trained to treat certain brands and
+                    lifestyles as “normal” — and anything Black-owned as
+                    “secondary,” “risky,” or “lesser.” That isn’t a personal
+                    defect. It’s the result of decades of conditioning,
+                    repetition, and reward systems built into media, marketing,
+                    and social pressure.
                   </p>
 
                   <p className="mt-3 text-white/85">
@@ -625,8 +641,8 @@ export default function EconomicFreedom() {
                       who gets wealthier from my routine?
                     </span>{" "}
                     Because every dollar is a vote. Every routine is a contract.
-                    Every habit is a pipeline — either feeding ownership somewhere
-                    else or building it here.
+                    Every habit is a pipeline — either feeding ownership
+                    somewhere else or building it here.
                   </p>
 
                   <div className="mt-3 rounded-xl border border-white/10 bg-black/30 p-4">
@@ -650,8 +666,9 @@ export default function EconomicFreedom() {
                   </div>
 
                   <p className="mt-3 text-white/85">
-                    This isn’t about perfection. It’s about direction. We don’t need
-                    everyone to do everything — we need millions of people to do{" "}
+                    This isn’t about perfection. It’s about direction. We don’t
+                    need everyone to do everything — we need millions of people
+                    to do{" "}
                     <span className="text-white font-extrabold">
                       something consistently
                     </span>
@@ -662,7 +679,9 @@ export default function EconomicFreedom() {
 
               <div className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="rounded-3xl border border-white/10 bg-black/30 p-5">
-                  <div className="text-white font-extrabold">What to unlearn</div>
+                  <div className="text-white font-extrabold">
+                    What to unlearn
+                  </div>
                   <List
                     items={[
                       "“Buying expensive = winning.” (Ownership is winning.)",
@@ -703,7 +722,8 @@ export default function EconomicFreedom() {
               preview={
                 <p className="text-sm sm:text-base text-white/75">
                   We don’t need motivation — we need a system. These strategies
-                  work because they turn small behavior into compounding outcomes.
+                  work because they turn small behavior into compounding
+                  outcomes.
                 </p>
               }
             >
@@ -742,31 +762,38 @@ export default function EconomicFreedom() {
 
               <div className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Callout title="The Ownership Flywheel" tone="gold">
-                  Spend → business revenue grows → business hires → community income rises → more spending
-                  stays local → business expands → more ownership opportunities → repeat.
+                  Spend → business revenue grows → business hires → community
+                  income rises → more spending stays local → business expands →
+                  more ownership opportunities → repeat.
                 </Callout>
 
                 <Callout title="Keep it measurable" tone="emerald">
-                  Track it weekly: Black-owned purchases, referrals/reviews, dollars moved into savings/investments,
-                  and how many businesses you helped gain a real customer.
+                  Track it weekly: Black-owned purchases, referrals/reviews,
+                  dollars moved into savings/investments, and how many
+                  businesses you helped gain a real customer.
                 </Callout>
               </div>
 
               <div className="mt-5 rounded-3xl border border-white/10 bg-black/30 p-5">
-                <div className="text-white font-extrabold">A practical 90-day blueprint</div>
+                <div className="text-white font-extrabold">
+                  A practical 90-day blueprint
+                </div>
                 <List
                   items={[
                     <>
                       <span className="text-white font-bold">Days 1–30:</span>{" "}
-                      Replace 2 spending categories + create an “ownership fund.”
+                      Replace 2 spending categories + create an “ownership
+                      fund.”
                     </>,
                     <>
                       <span className="text-white font-bold">Days 31–60:</span>{" "}
-                      Add 2 more categories + recruit 3 friends/family members to do the same.
+                      Add 2 more categories + recruit 3 friends/family members
+                      to do the same.
                     </>,
                     <>
                       <span className="text-white font-bold">Days 61–90:</span>{" "}
-                      Start investing consistently + support one Black-owned brand monthly.
+                      Start investing consistently + support one Black-owned
+                      brand monthly.
                     </>,
                   ]}
                 />
@@ -786,38 +813,49 @@ export default function EconomicFreedom() {
             <ReadMore
               preview={
                 <p className="text-sm sm:text-base text-white/75">
-                  Black Wealth Exchange is not just a platform — it’s a movement.
-                  The mission is to create a trusted space for wealth, knowledge,
-                  and opportunity that turns everyday actions into legacy.
+                  Black Wealth Exchange is not just a platform — it’s a
+                  movement. The mission is to create a trusted space for wealth,
+                  knowledge, and opportunity that turns everyday actions into
+                  legacy.
                 </p>
               }
             >
               <List
                 items={[
                   <>
-                    <span className="text-white font-bold">Redirect Spending</span> — prioritize Black-owned businesses.
+                    <span className="text-white font-bold">
+                      Redirect Spending
+                    </span>{" "}
+                    — prioritize Black-owned businesses.
                   </>,
                   <>
-                    <span className="text-white font-bold">Build Financial Power</span> — through investments, education, and ownership.
+                    <span className="text-white font-bold">
+                      Build Financial Power
+                    </span>{" "}
+                    — through investments, education, and ownership.
                   </>,
                   <>
-                    <span className="text-white font-bold">Create Sustainable Wealth</span> — for our children and future generations.
+                    <span className="text-white font-bold">
+                      Create Sustainable Wealth
+                    </span>{" "}
+                    — for our children and future generations.
                   </>,
                 ]}
               />
 
               <div className="mt-5 grid grid-cols-1 md:grid-cols-3 gap-4">
                 <Callout title="Discovery → Customers" tone="gold">
-                  A trusted directory + search experience helps businesses get found,
-                  which is the first step to recurring revenue and hiring.
+                  A trusted directory + search experience helps businesses get
+                  found, which is the first step to recurring revenue and
+                  hiring.
                 </Callout>
                 <Callout title="Learning → Action" tone="emerald">
-                  Financial literacy turns fear into execution: budgeting, saving,
-                  investing, ownership strategy, and long-term planning.
+                  Financial literacy turns fear into execution: budgeting,
+                  saving, investing, ownership strategy, and long-term planning.
                 </Callout>
                 <Callout title="Jobs → Mobility" tone="gold">
-                  Careers and opportunities increase income, and income fuels ownership.
-                  Opportunity is part of the wealth engine.
+                  Careers and opportunities increase income, and income fuels
+                  ownership. Opportunity is part of the wealth engine.
                 </Callout>
               </div>
 
@@ -838,7 +876,8 @@ export default function EconomicFreedom() {
                   href="/financial-literacy"
                   className="inline-flex items-center justify-center rounded-xl border border-[#D4AF37]/30 bg-[#D4AF37]/10 px-5 py-2.5 text-[13px] font-extrabold text-[#D4AF37] transition hover:bg-[#D4AF37]/15"
                 >
-                  Build Financial Literacy <ArrowRight className="ml-2 h-4 w-4" />
+                  Build Financial Literacy{" "}
+                  <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </div>
             </ReadMore>
@@ -865,11 +904,12 @@ export default function EconomicFreedom() {
             <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
               <Callout title="The question isn’t “can we?”" tone="gold">
                 The question is whether we’ll choose systems over convenience.
-                One decision repeated becomes a lifestyle. A lifestyle becomes a legacy.
+                One decision repeated becomes a lifestyle. A lifestyle becomes a
+                legacy.
               </Callout>
               <Callout title="Make it real this week" tone="emerald">
-                Choose one category. Choose one Black-owned alternative. Commit for 30 days.
-                Then expand. That’s how compounding starts.
+                Choose one category. Choose one Black-owned alternative. Commit
+                for 30 days. Then expand. That’s how compounding starts.
               </Callout>
             </div>
 

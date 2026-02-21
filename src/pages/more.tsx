@@ -17,7 +17,8 @@ export default function More() {
           More <span className="text-[#D4AF37]">BWE</span>
         </h1>
         <p className="mt-2 text-white/70">
-          A simple hub for extra pages. We can expand this into a clean menu + “More” categories.
+          A simple hub for extra pages. We can expand this into a clean menu +
+          “More” categories.
         </p>
 
         <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -33,7 +34,10 @@ export default function More() {
         </div>
 
         <div className="mt-8">
-          <Link href="/" className="rounded-xl bg-[#D4AF37] px-4 py-2.5 font-extrabold text-black hover:bg-yellow-500 transition">
+          <Link
+            href="/"
+            className="rounded-xl bg-[#D4AF37] px-4 py-2.5 font-extrabold text-black hover:bg-yellow-500 transition"
+          >
             Back Home
           </Link>
         </div>

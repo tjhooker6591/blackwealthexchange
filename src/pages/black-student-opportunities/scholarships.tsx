@@ -245,9 +245,9 @@ export default function ScholarshipsPage() {
             </div>
 
             <p className="mx-auto mt-3 max-w-2xl text-sm sm:text-base text-white/70">
-              Scholarships can cover tuition, fees, books, housing, and more. The winning
-              strategy is to apply early, apply often, and build a clean “application kit”
-              you can reuse across programs.
+              Scholarships can cover tuition, fees, books, housing, and more.
+              The winning strategy is to apply early, apply often, and build a
+              clean “application kit” you can reuse across programs.
             </p>
           </div>
         </header>
@@ -263,11 +263,13 @@ export default function ScholarshipsPage() {
                   Step 1: Build your kit
                 </div>
                 <p className="text-sm text-white/70">
-                  Create one folder with: resume, activities list, transcript PDF,
-                  2 recommendation contacts, and a reusable personal statement.
+                  Create one folder with: resume, activities list, transcript
+                  PDF, 2 recommendation contacts, and a reusable personal
+                  statement.
                 </p>
                 <p className="mt-3 text-xs text-white/50">
-                  Tip: Keep versions for “leadership,” “STEM,” and “community impact.”
+                  Tip: Keep versions for “leadership,” “STEM,” and “community
+                  impact.”
                 </p>
               </div>
 
@@ -277,8 +279,8 @@ export default function ScholarshipsPage() {
                   Step 2: Track deadlines
                 </div>
                 <p className="text-sm text-white/70">
-                  Put deadlines into a calendar and set reminders at 14, 7, and 2 days out.
-                  Many elite programs close quickly.
+                  Put deadlines into a calendar and set reminders at 14, 7, and
+                  2 days out. Many elite programs close quickly.
                 </p>
                 <p className="mt-3 text-xs text-white/50">
                   Strategy: Apply early in the cycle when competition is lower.
@@ -291,8 +293,8 @@ export default function ScholarshipsPage() {
                   Step 3: Stay current
                 </div>
                 <p className="text-sm text-white/70">
-                  Scholarship windows change. Bookmark official pages and check monthly.
-                  We can automate updates via feeds next.
+                  Scholarship windows change. Bookmark official pages and check
+                  monthly. We can automate updates via feeds next.
                 </p>
               </div>
             </div>
@@ -310,34 +312,47 @@ export default function ScholarshipsPage() {
             <SectionCard title="Application Tips That Win" icon={BookOpen}>
               <ul className="grid gap-3 md:grid-cols-2 text-sm text-white/70">
                 <li className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
-                  <div className="font-extrabold text-white">Lead with impact</div>
+                  <div className="font-extrabold text-white">
+                    Lead with impact
+                  </div>
                   <div className="mt-1 text-white/65">
-                    Replace “I volunteered” with measurable results: hours, outcomes, people served.
+                    Replace “I volunteered” with measurable results: hours,
+                    outcomes, people served.
                   </div>
                 </li>
                 <li className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
-                  <div className="font-extrabold text-white">Use a story arc</div>
+                  <div className="font-extrabold text-white">
+                    Use a story arc
+                  </div>
                   <div className="mt-1 text-white/65">
-                    Challenge → action → growth → mission. Make your “why” unforgettable.
+                    Challenge → action → growth → mission. Make your “why”
+                    unforgettable.
                   </div>
                 </li>
                 <li className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
-                  <div className="font-extrabold text-white">Ask for strong references</div>
+                  <div className="font-extrabold text-white">
+                    Ask for strong references
+                  </div>
                   <div className="mt-1 text-white/65">
-                    Share your resume + goals with recommenders so they can write with specifics.
+                    Share your resume + goals with recommenders so they can
+                    write with specifics.
                   </div>
                 </li>
                 <li className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
-                  <div className="font-extrabold text-white">Apply to 10–20</div>
+                  <div className="font-extrabold text-white">
+                    Apply to 10–20
+                  </div>
                   <div className="mt-1 text-white/65">
-                    Volume matters. Combine “big name” + “local/community” + “departmental” awards.
+                    Volume matters. Combine “big name” + “local/community” +
+                    “departmental” awards.
                   </div>
                 </li>
               </ul>
 
               <div className="mt-4 rounded-xl border border-white/10 bg-black/30 p-4 text-xs text-white/60">
-                If you want, I can generate a reusable “Scholarship Application Kit” template:
-                resume bullets + activities list + personal statement framework + recommendation request email.
+                If you want, I can generate a reusable “Scholarship Application
+                Kit” template: resume bullets + activities list + personal
+                statement framework + recommendation request email.
               </div>
             </SectionCard>
           </div>
@@ -346,8 +361,9 @@ export default function ScholarshipsPage() {
           <div className="mt-6">
             <SectionCard title="Live Updates (Feeds / Alerts)" icon={Bell}>
               <p className="text-sm text-white/70">
-                The leading-edge approach is to pull trusted sources into BWE so this page stays current
-                without manual edits. For now, these are reliable official starting points:
+                The leading-edge approach is to pull trusted sources into BWE so
+                this page stays current without manual edits. For now, these are
+                reliable official starting points:
               </p>
 
               <div className="mt-4 grid gap-3 md:grid-cols-2">
@@ -364,7 +380,8 @@ export default function ScholarshipsPage() {
                     Official cycle status + deadlines (best source of truth).
                   </div>
                   <div className="mt-2 text-xs font-bold text-white/70 group-hover:text-white">
-                    Open page <ExternalLink className="ml-1 inline h-3.5 w-3.5" />
+                    Open page{" "}
+                    <ExternalLink className="ml-1 inline h-3.5 w-3.5" />
                   </div>
                 </a>
 
@@ -381,7 +398,8 @@ export default function ScholarshipsPage() {
                     Official announcements and application windows.
                   </div>
                   <div className="mt-2 text-xs font-bold text-white/70 group-hover:text-white">
-                    Open site <ExternalLink className="ml-1 inline h-3.5 w-3.5" />
+                    Open site{" "}
+                    <ExternalLink className="ml-1 inline h-3.5 w-3.5" />
                   </div>
                 </a>
 
@@ -395,10 +413,12 @@ export default function ScholarshipsPage() {
                     UNCF — Scholarships
                   </div>
                   <div className="mt-1 text-xs text-white/60">
-                    Browse scholarships and program opportunities (deadlines vary).
+                    Browse scholarships and program opportunities (deadlines
+                    vary).
                   </div>
                   <div className="mt-2 text-xs font-bold text-white/70 group-hover:text-white">
-                    Open scholarships <ExternalLink className="ml-1 inline h-3.5 w-3.5" />
+                    Open scholarships{" "}
+                    <ExternalLink className="ml-1 inline h-3.5 w-3.5" />
                   </div>
                 </a>
 
@@ -415,14 +435,19 @@ export default function ScholarshipsPage() {
                     Many scholarships require FAFSA or consider financial need.
                   </div>
                   <div className="mt-2 text-xs font-bold text-white/70 group-hover:text-white">
-                    Open FAFSA <ExternalLink className="ml-1 inline h-3.5 w-3.5" />
+                    Open FAFSA{" "}
+                    <ExternalLink className="ml-1 inline h-3.5 w-3.5" />
                   </div>
                 </a>
               </div>
 
               <div className="mt-4 rounded-xl border border-white/10 bg-black/30 p-4 text-xs text-white/60">
-                Next step (optional): we can add an API route like <span className="text-white/70 font-bold">/api/feeds/scholarships</span>{" "}
-                that fetches 3–6 trusted sources on a schedule, caches results, and renders “Latest Scholarship Updates” right here.
+                Next step (optional): we can add an API route like{" "}
+                <span className="text-white/70 font-bold">
+                  /api/feeds/scholarships
+                </span>{" "}
+                that fetches 3–6 trusted sources on a schedule, caches results,
+                and renders “Latest Scholarship Updates” right here.
               </div>
             </SectionCard>
           </div>
@@ -444,7 +469,8 @@ export default function ScholarshipsPage() {
             </Link>
 
             <p className="max-w-2xl text-[11px] text-white/45">
-              Always verify deadlines and eligibility on the official source page before applying.
+              Always verify deadlines and eligibility on the official source
+              page before applying.
             </p>
           </div>
         </main>

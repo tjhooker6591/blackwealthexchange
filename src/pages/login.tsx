@@ -22,7 +22,8 @@ function isAllowedAccountType(v?: string): v is AccountType {
 export default function Login() {
   const router = useRouter();
 
-  const queryAccountType = (router.query.accountType as string | undefined) || undefined;
+  const queryAccountType =
+    (router.query.accountType as string | undefined) || undefined;
   const redirect =
     (router.query.redirect as string | undefined) ||
     (router.query.next as string | undefined) ||
@@ -94,7 +95,9 @@ export default function Login() {
       });
   }, [router.isReady, router, redirectTarget]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setError("");
   };
@@ -142,7 +145,9 @@ export default function Login() {
       // Fall back to role-based routes
       router.push(role ? defaultRouteForRole(role) : "/dashboard");
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "An unknown error occurred.");
+      setError(
+        err instanceof Error ? err.message : "An unknown error occurred.",
+      );
     } finally {
       setLoading(false);
     }
@@ -164,7 +169,8 @@ export default function Login() {
 
         {redirectTarget ? (
           <p className="text-xs text-gray-400 text-center mt-2">
-            You’ll be redirected to <span className="text-gray-200">{redirectTarget}</span> after login.
+            You’ll be redirected to{" "}
+            <span className="text-gray-200">{redirectTarget}</span> after login.
           </p>
         ) : null}
 
@@ -173,7 +179,9 @@ export default function Login() {
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
           {/* Account Type */}
           <div>
-            <label className="block text-sm text-gray-200 font-semibold">Account Type</label>
+            <label className="block text-sm text-gray-200 font-semibold">
+              Account Type
+            </label>
             <select
               name="accountType"
               value={formData.accountType}
@@ -190,7 +198,9 @@ export default function Login() {
 
           {/* Email */}
           <div>
-            <label className="block text-sm text-gray-200 font-semibold">Email</label>
+            <label className="block text-sm text-gray-200 font-semibold">
+              Email
+            </label>
             <input
               type="email"
               name="email"
@@ -205,7 +215,9 @@ export default function Login() {
 
           {/* Password */}
           <div className="relative">
-            <label className="block text-sm text-gray-200 font-semibold">Password</label>
+            <label className="block text-sm text-gray-200 font-semibold">
+              Password
+            </label>
             <input
               type={showPassword ? "text" : "password"}
               name="password"
@@ -242,11 +254,17 @@ export default function Login() {
         </form>
 
         <div className="mt-5 flex items-center justify-between">
-          <Link href="/forgot-password" className="text-sm text-yellow-400 hover:underline">
+          <Link
+            href="/forgot-password"
+            className="text-sm text-yellow-400 hover:underline"
+          >
             Forgot Password?
           </Link>
 
-          <Link href="/signup" className="text-sm text-gray-200 hover:underline">
+          <Link
+            href="/signup"
+            className="text-sm text-gray-200 hover:underline"
+          >
             Sign Up
           </Link>
         </div>

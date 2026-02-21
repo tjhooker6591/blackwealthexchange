@@ -38,7 +38,7 @@ function Pill({
     <span
       className={cx(
         "inline-flex items-center gap-2 px-3 py-1 rounded-full border text-xs sm:text-sm",
-        tones[tone]
+        tones[tone],
       )}
     >
       {children}
@@ -111,7 +111,9 @@ function GoldButton({
     variant === "solid"
       ? "bg-yellow-500 text-black hover:bg-yellow-400"
       : "bg-white/5 text-yellow-200 border border-yellow-500/25 hover:bg-yellow-500/10";
-  const content = <span className="inline-flex items-center gap-2">{children}</span>;
+  const content = (
+    <span className="inline-flex items-center gap-2">{children}</span>
+  );
 
   if (href) {
     return (
@@ -180,7 +182,9 @@ const RealEstateInvestment = () => {
 
   const goPremium = () => {
     if (!user) {
-      router.push(`/login?next=${encodeURIComponent("/real-estate-investment")}`);
+      router.push(
+        `/login?next=${encodeURIComponent("/real-estate-investment")}`,
+      );
       return;
     }
     router.push("/pricing");
@@ -204,7 +208,9 @@ const RealEstateInvestment = () => {
     const n = termYears * 12;
 
     const pmt =
-      r > 0 ? (principal * (r * Math.pow(1 + r, n))) / (Math.pow(1 + r, n) - 1) : principal / n;
+      r > 0
+        ? (principal * (r * Math.pow(1 + r, n))) / (Math.pow(1 + r, n) - 1)
+        : principal / n;
 
     const total = pmt + taxMonthly + insMonthly + hoaMonthly;
 
@@ -289,19 +295,24 @@ const RealEstateInvestment = () => {
         <div className="relative max-w-6xl mx-auto px-4 py-10 sm:py-14 md:py-16">
           <div className="max-w-3xl">
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-yellow-200 leading-tight drop-shadow">
-              Explore Black-Owned Real Estate Options & Wealth-Building Investments
+              Explore Black-Owned Real Estate Options & Wealth-Building
+              Investments
             </h1>
             <p className="text-base sm:text-lg text-gray-200 mt-4">
-              Real estate is one of the most powerful tools for building generational wealth—
-              when you have the right plan, the right team, and the right deal.
-              This page is a step-by-step guide to help you move with confidence.
+              Real estate is one of the most powerful tools for building
+              generational wealth— when you have the right plan, the right team,
+              and the right deal. This page is a step-by-step guide to help you
+              move with confidence.
             </p>
 
             <div className="mt-6 flex flex-wrap items-center gap-3">
               <GoldButton href="#start-here">
                 Start Here <ArrowRight className="h-4 w-4" />
               </GoldButton>
-              <GoldButton href="/business-directory?category=Real%20Estate" variant="ghost">
+              <GoldButton
+                href="/business-directory?category=Real%20Estate"
+                variant="ghost"
+              >
                 Find Black-Owned Pros <Users className="h-4 w-4" />
               </GoldButton>
               <GoldButton href="#calculators" variant="ghost">
@@ -345,7 +356,8 @@ const RealEstateInvestment = () => {
                 Homebuyer
               </div>
               <p className="text-gray-300 text-sm mt-2">
-                Buying your first home (or upgrading)? Learn the steps, the financing options, and how to avoid costly mistakes.
+                Buying your first home (or upgrading)? Learn the steps, the
+                financing options, and how to avoid costly mistakes.
               </p>
               <div className="mt-4">
                 <GoldButton href="#homebuyer" variant="ghost">
@@ -360,7 +372,8 @@ const RealEstateInvestment = () => {
                 Investor
               </div>
               <p className="text-gray-300 text-sm mt-2">
-                Want cashflow, appreciation, or both? Learn how to analyze deals, estimate returns, and build a steady portfolio.
+                Want cashflow, appreciation, or both? Learn how to analyze
+                deals, estimate returns, and build a steady portfolio.
               </p>
               <div className="mt-4">
                 <GoldButton href="#investor" variant="ghost">
@@ -375,7 +388,8 @@ const RealEstateInvestment = () => {
                 Real Estate Pro
               </div>
               <p className="text-gray-300 text-sm mt-2">
-                Agents, lenders, inspectors, contractors, and property managers: show up where the community is building wealth.
+                Agents, lenders, inspectors, contractors, and property managers:
+                show up where the community is building wealth.
               </p>
               <div className="mt-4">
                 <GoldButton href="#professionals" variant="ghost">
@@ -386,13 +400,26 @@ const RealEstateInvestment = () => {
           </div>
 
           <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-3">
-            <Stat label="Goal" value="Ownership + Cashflow" note="Stability + wealth-building." />
-            <Stat label="Rule of Thumb" value="Buy the deal, not the dream" note="Numbers first, emotions second." />
-            <Stat label="Reminder" value="Education matters" note="A plan beats hype every time." />
+            <Stat
+              label="Goal"
+              value="Ownership + Cashflow"
+              note="Stability + wealth-building."
+            />
+            <Stat
+              label="Rule of Thumb"
+              value="Buy the deal, not the dream"
+              note="Numbers first, emotions second."
+            />
+            <Stat
+              label="Reminder"
+              value="Education matters"
+              note="A plan beats hype every time."
+            />
           </div>
 
           <div className="mt-6 text-xs text-gray-400">
-            Disclaimer: Educational only. Not financial, tax, or legal advice. Always verify terms with qualified professionals.
+            Disclaimer: Educational only. Not financial, tax, or legal advice.
+            Always verify terms with qualified professionals.
           </div>
         </Card>
 
@@ -417,7 +444,9 @@ const RealEstateInvestment = () => {
                     <div>
                       <div className="font-bold">Get financially ready</div>
                       <div className="text-sm text-gray-300 mt-1">
-                        Check credit, reduce high-interest debt, build an emergency fund, and estimate a realistic monthly payment target.
+                        Check credit, reduce high-interest debt, build an
+                        emergency fund, and estimate a realistic monthly payment
+                        target.
                       </div>
                     </div>
                   </li>
@@ -427,9 +456,12 @@ const RealEstateInvestment = () => {
                       2
                     </span>
                     <div>
-                      <div className="font-bold">Get pre-approved (not just pre-qualified)</div>
+                      <div className="font-bold">
+                        Get pre-approved (not just pre-qualified)
+                      </div>
                       <div className="text-sm text-gray-300 mt-1">
-                        Pre-approval strengthens your offer and sets real buying power. Compare multiple lenders when possible.
+                        Pre-approval strengthens your offer and sets real buying
+                        power. Compare multiple lenders when possible.
                       </div>
                     </div>
                   </li>
@@ -441,7 +473,9 @@ const RealEstateInvestment = () => {
                     <div>
                       <div className="font-bold">Build your team</div>
                       <div className="text-sm text-gray-300 mt-1">
-                        A strong agent + lender + inspector can save you thousands. Prioritize trust, speed, and clear communication.
+                        A strong agent + lender + inspector can save you
+                        thousands. Prioritize trust, speed, and clear
+                        communication.
                       </div>
                     </div>
                   </li>
@@ -453,7 +487,9 @@ const RealEstateInvestment = () => {
                     <div>
                       <div className="font-bold">Shop smart + negotiate</div>
                       <div className="text-sm text-gray-300 mt-1">
-                        Use comparables, inspection contingencies, and repair requests. Don’t waive protections unless you fully understand the risk.
+                        Use comparables, inspection contingencies, and repair
+                        requests. Don’t waive protections unless you fully
+                        understand the risk.
                       </div>
                     </div>
                   </li>
@@ -465,7 +501,8 @@ const RealEstateInvestment = () => {
                     <div>
                       <div className="font-bold">Close + protect the win</div>
                       <div className="text-sm text-gray-300 mt-1">
-                        Review closing disclosure carefully, keep reserves, and plan maintenance from day one.
+                        Review closing disclosure carefully, keep reserves, and
+                        plan maintenance from day one.
                       </div>
                     </div>
                   </li>
@@ -478,27 +515,35 @@ const RealEstateInvestment = () => {
                 </h3>
                 <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-gray-200">
                   <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-                    <div className="font-bold">Conventional (3%–5% down sometimes)</div>
+                    <div className="font-bold">
+                      Conventional (3%–5% down sometimes)
+                    </div>
                     <div className="text-gray-300 mt-1">
-                      Often best long-term rates for strong borrowers. Ask about first-time homebuyer programs.
+                      Often best long-term rates for strong borrowers. Ask about
+                      first-time homebuyer programs.
                     </div>
                   </div>
                   <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-                    <div className="font-bold">FHA (lower down, flexible credit)</div>
+                    <div className="font-bold">
+                      FHA (lower down, flexible credit)
+                    </div>
                     <div className="text-gray-300 mt-1">
-                      Can be easier to qualify, but mortgage insurance costs matter—run the numbers.
+                      Can be easier to qualify, but mortgage insurance costs
+                      matter—run the numbers.
                     </div>
                   </div>
                   <div className="bg-white/5 border border-white/10 rounded-xl p-4">
                     <div className="font-bold">VA (eligible veterans)</div>
                     <div className="text-gray-300 mt-1">
-                      Powerful benefit—often 0% down. Ask lenders who regularly close VA loans.
+                      Powerful benefit—often 0% down. Ask lenders who regularly
+                      close VA loans.
                     </div>
                   </div>
                   <div className="bg-white/5 border border-white/10 rounded-xl p-4">
                     <div className="font-bold">USDA (eligible rural areas)</div>
                     <div className="text-gray-300 mt-1">
-                      0% down possible in qualifying areas. Great for buyers outside major metros.
+                      0% down possible in qualifying areas. Great for buyers
+                      outside major metros.
                     </div>
                   </div>
                 </div>
@@ -521,8 +566,10 @@ const RealEstateInvestment = () => {
                   New reality: understand representation & fees
                 </h3>
                 <p className="text-gray-300 text-sm mt-2">
-                  Before touring homes, ask your agent to clearly explain any representation agreement,
-                  what services are included, and how compensation works. If anything feels unclear, slow down and ask questions.
+                  Before touring homes, ask your agent to clearly explain any
+                  representation agreement, what services are included, and how
+                  compensation works. If anything feels unclear, slow down and
+                  ask questions.
                 </p>
                 <div className="mt-3 flex flex-wrap gap-2">
                   <Pill tone="muted">Ask for clarity in writing</Pill>
@@ -554,13 +601,20 @@ const RealEstateInvestment = () => {
                   Find Black-owned pros
                 </div>
                 <p className="text-gray-300 text-sm mt-2">
-                  Browse Black-owned agencies, lenders, inspectors, contractors, and property managers through the BWE directory.
+                  Browse Black-owned agencies, lenders, inspectors, contractors,
+                  and property managers through the BWE directory.
                 </p>
                 <div className="mt-4 space-y-2">
-                  <GoldButton href="/business-directory?category=Real%20Estate" variant="ghost">
+                  <GoldButton
+                    href="/business-directory?category=Real%20Estate"
+                    variant="ghost"
+                  >
                     Real Estate Pros <ArrowRight className="h-4 w-4" />
                   </GoldButton>
-                  <GoldButton href="/business-directory?category=Home%20Services" variant="ghost">
+                  <GoldButton
+                    href="/business-directory?category=Home%20Services"
+                    variant="ghost"
+                  >
                     Home Services <ArrowRight className="h-4 w-4" />
                   </GoldButton>
                 </div>
@@ -573,18 +627,28 @@ const RealEstateInvestment = () => {
                 </div>
                 <ul className="mt-3 space-y-2 text-sm text-gray-300">
                   <li>
-                    • <ExternalLink href="https://www.nareb.com/find-a-realtist">NAREB: Find a Realtist</ExternalLink>
+                    •{" "}
+                    <ExternalLink href="https://www.nareb.com/find-a-realtist">
+                      NAREB: Find a Realtist
+                    </ExternalLink>
                   </li>
                   <li>
-                    • <ExternalLink href="https://blackrealestateagents.com/">BlackRealEstateAgents.com</ExternalLink>
+                    •{" "}
+                    <ExternalLink href="https://blackrealestateagents.com/">
+                      BlackRealEstateAgents.com
+                    </ExternalLink>
                   </li>
                   <li>
-                    • <ExternalLink href="https://www.consumerfinance.gov/find-a-housing-counselor/">
+                    •{" "}
+                    <ExternalLink href="https://www.consumerfinance.gov/find-a-housing-counselor/">
                       CFPB: Find a Housing Counselor
                     </ExternalLink>
                   </li>
                   <li>
-                    • <ExternalLink href="https://www.naca.com/">NACA (Homebuyer advocacy)</ExternalLink>
+                    •{" "}
+                    <ExternalLink href="https://www.naca.com/">
+                      NACA (Homebuyer advocacy)
+                    </ExternalLink>
                   </li>
                 </ul>
               </div>
@@ -609,25 +673,33 @@ const RealEstateInvestment = () => {
                   <div className="bg-white/5 border border-white/10 rounded-xl p-4">
                     <div className="font-bold text-gray-100">House Hacking</div>
                     <div className="mt-1">
-                      Live in one unit/room and rent the rest. Often the easiest first investment.
+                      Live in one unit/room and rent the rest. Often the easiest
+                      first investment.
                     </div>
                   </div>
                   <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-                    <div className="font-bold text-gray-100">Buy & Hold Rentals</div>
+                    <div className="font-bold text-gray-100">
+                      Buy & Hold Rentals
+                    </div>
                     <div className="mt-1">
-                      Focus on stable cashflow, good tenants, and long-term appreciation.
+                      Focus on stable cashflow, good tenants, and long-term
+                      appreciation.
                     </div>
                   </div>
                   <div className="bg-white/5 border border-white/10 rounded-xl p-4">
                     <div className="font-bold text-gray-100">Value-Add</div>
                     <div className="mt-1">
-                      Improve property (repairs/renovations) to raise rent and value—requires tighter execution.
+                      Improve property (repairs/renovations) to raise rent and
+                      value—requires tighter execution.
                     </div>
                   </div>
                   <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-                    <div className="font-bold text-gray-100">Commercial / Mixed-use</div>
+                    <div className="font-bold text-gray-100">
+                      Commercial / Mixed-use
+                    </div>
                     <div className="mt-1">
-                      Bigger deals, more complexity. Great later once your underwriting skills are strong.
+                      Bigger deals, more complexity. Great later once your
+                      underwriting skills are strong.
                     </div>
                   </div>
                 </div>
@@ -652,9 +724,12 @@ const RealEstateInvestment = () => {
                     </div>
                   </div>
                   <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-                    <div className="font-bold text-gray-100">Operating expenses</div>
+                    <div className="font-bold text-gray-100">
+                      Operating expenses
+                    </div>
                     <div className="mt-1">
-                      Taxes, insurance, maintenance, vacancy, utilities, property management.
+                      Taxes, insurance, maintenance, vacancy, utilities,
+                      property management.
                     </div>
                   </div>
                   <div className="bg-white/5 border border-white/10 rounded-xl p-4">
@@ -666,20 +741,19 @@ const RealEstateInvestment = () => {
                   <div className="bg-white/5 border border-white/10 rounded-xl p-4">
                     <div className="font-bold text-gray-100">Risk</div>
                     <div className="mt-1">
-                      Neighborhood trends, tenant demand, repair surprises, exit options.
+                      Neighborhood trends, tenant demand, repair surprises, exit
+                      options.
                     </div>
                   </div>
                 </div>
 
                 <div className="mt-4 text-sm text-gray-300">
-                  If you want low-down-payment homebuyer programs as part of a “house hack” plan, review:
-                  {" "}
+                  If you want low-down-payment homebuyer programs as part of a
+                  “house hack” plan, review:{" "}
                   <ExternalLink href="https://singlefamily.fanniemae.com/originating-underwriting/mortgage-products/homeready-mortgage">
                     Fannie Mae HomeReady
-                  </ExternalLink>
-                  {" "}
-                  and
-                  {" "}
+                  </ExternalLink>{" "}
+                  and{" "}
                   <ExternalLink href="https://sf.freddiemac.com/working-with-us/origination-underwriting/mortgage-products/home-possible">
                     Freddie Mac Home Possible
                   </ExternalLink>
@@ -689,11 +763,14 @@ const RealEstateInvestment = () => {
 
               <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
                 <h3 className="text-lg font-extrabold text-yellow-200">
-                  Real estate crowdfunding / pooled investing (know the tradeoffs)
+                  Real estate crowdfunding / pooled investing (know the
+                  tradeoffs)
                 </h3>
                 <p className="text-sm text-gray-300 mt-2">
-                  Crowdfunding and pooled real estate investing can lower the entry barrier and diversify exposure,
-                  but you must understand liquidity limits, fees, and the specific project risks. Always read offering docs carefully.
+                  Crowdfunding and pooled real estate investing can lower the
+                  entry barrier and diversify exposure, but you must understand
+                  liquidity limits, fees, and the specific project risks. Always
+                  read offering docs carefully.
                 </p>
                 <div className="mt-3 flex flex-wrap gap-2">
                   <Pill tone="muted">Lower minimums</Pill>
@@ -726,8 +803,9 @@ const RealEstateInvestment = () => {
                   Build locally + responsibly
                 </div>
                 <p className="text-sm text-gray-300 mt-2">
-                  The strongest portfolios often start with one neighborhood you understand deeply.
-                  Invest where you can evaluate demand, tenant quality, and long-term stability.
+                  The strongest portfolios often start with one neighborhood you
+                  understand deeply. Invest where you can evaluate demand,
+                  tenant quality, and long-term stability.
                 </p>
               </div>
 
@@ -740,10 +818,16 @@ const RealEstateInvestment = () => {
                   A good team protects your cashflow.
                 </p>
                 <div className="mt-4 space-y-2">
-                  <GoldButton href="/business-directory?category=Property%20Management" variant="ghost">
+                  <GoldButton
+                    href="/business-directory?category=Property%20Management"
+                    variant="ghost"
+                  >
                     Property Management <ArrowRight className="h-4 w-4" />
                   </GoldButton>
-                  <GoldButton href="/business-directory?category=Contractors" variant="ghost">
+                  <GoldButton
+                    href="/business-directory?category=Contractors"
+                    variant="ghost"
+                  >
                     Contractors <ArrowRight className="h-4 w-4" />
                   </GoldButton>
                 </div>
@@ -842,11 +926,15 @@ const RealEstateInvestment = () => {
                 <Stat label="Down payment" value={money(loanEst.down)} />
                 <Stat label="Loan amount" value={money(loanEst.principal)} />
                 <Stat label="Principal & Interest" value={money(loanEst.pmt)} />
-                <Stat label="Estimated Total / Month" value={money(loanEst.total)} />
+                <Stat
+                  label="Estimated Total / Month"
+                  value={money(loanEst.total)}
+                />
               </div>
 
               <p className="text-xs text-gray-400 mt-4">
-                Tip: If this total stretches your budget, don’t force it. Adjust price, down payment, or shop lenders.
+                Tip: If this total stretches your budget, don’t force it. Adjust
+                price, down payment, or shop lenders.
               </p>
             </div>
 
@@ -908,22 +996,37 @@ const RealEstateInvestment = () => {
               </div>
 
               <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <Stat label="Net cashflow / month" value={money(rentalEst.netMonthly)} />
-                <Stat label="Net cashflow / year" value={money(rentalEst.netAnnual)} />
+                <Stat
+                  label="Net cashflow / month"
+                  value={money(rentalEst.netMonthly)}
+                />
+                <Stat
+                  label="Net cashflow / year"
+                  value={money(rentalEst.netAnnual)}
+                />
                 <Stat
                   label="Cap Rate (simple)"
-                  value={isFinite(rentalEst.capRate) ? `${rentalEst.capRate.toFixed(2)}%` : "—"}
+                  value={
+                    isFinite(rentalEst.capRate)
+                      ? `${rentalEst.capRate.toFixed(2)}%`
+                      : "—"
+                  }
                   note="Based on your net annual estimate."
                 />
                 <Stat
                   label="Cash-on-cash (simple)"
-                  value={isFinite(rentalEst.coc) ? `${rentalEst.coc.toFixed(2)}%` : "—"}
+                  value={
+                    isFinite(rentalEst.coc)
+                      ? `${rentalEst.coc.toFixed(2)}%`
+                      : "—"
+                  }
                   note="Based on your cash invested."
                 />
               </div>
 
               <p className="text-xs text-gray-400 mt-4">
-                Tip: If cashflow is thin, increase reserves, tighten ops assumptions, or negotiate price/terms.
+                Tip: If cashflow is thin, increase reserves, tighten ops
+                assumptions, or negotiate price/terms.
               </p>
             </div>
           </div>
@@ -943,22 +1046,30 @@ const RealEstateInvestment = () => {
                   Why your team matters
                 </h3>
                 <p className="text-sm text-gray-300 mt-2">
-                  The right team can protect you from bad deals, hidden repair costs, and weak negotiations.
-                  Start by selecting 2–3 professionals, interview them, and choose the one who communicates clearly and moves with urgency.
+                  The right team can protect you from bad deals, hidden repair
+                  costs, and weak negotiations. Start by selecting 2–3
+                  professionals, interview them, and choose the one who
+                  communicates clearly and moves with urgency.
                 </p>
 
                 <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-gray-300">
                   <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-                    <div className="font-bold text-gray-100">Questions to ask an agent</div>
+                    <div className="font-bold text-gray-100">
+                      Questions to ask an agent
+                    </div>
                     <ul className="mt-2 space-y-1">
-                      <li>• How many deals did you close in the last 12 months?</li>
+                      <li>
+                        • How many deals did you close in the last 12 months?
+                      </li>
                       <li>• What neighborhoods do you specialize in?</li>
                       <li>• How do you handle inspection issues?</li>
                       <li>• How do you communicate (text/email/calls)?</li>
                     </ul>
                   </div>
                   <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-                    <div className="font-bold text-gray-100">Questions to ask a lender</div>
+                    <div className="font-bold text-gray-100">
+                      Questions to ask a lender
+                    </div>
                     <ul className="mt-2 space-y-1">
                       <li>• What programs fit my profile?</li>
                       <li>• What are estimated fees/closing costs?</li>
@@ -975,21 +1086,34 @@ const RealEstateInvestment = () => {
                 </h3>
                 <ul className="mt-3 space-y-2 text-sm text-gray-300">
                   <li>
-                    • <ExternalLink href="https://www.nareb.com/">NAREB (National Association of Real Estate Brokers)</ExternalLink>{" "}
+                    •{" "}
+                    <ExternalLink href="https://www.nareb.com/">
+                      NAREB (National Association of Real Estate Brokers)
+                    </ExternalLink>{" "}
                     — Find a Realtist & community-focused advocacy.
                   </li>
                   <li>
-                    • <ExternalLink href="https://www.nareb.com/find-a-realtist">NAREB: Find a Realtist</ExternalLink>
+                    •{" "}
+                    <ExternalLink href="https://www.nareb.com/find-a-realtist">
+                      NAREB: Find a Realtist
+                    </ExternalLink>
                   </li>
                   <li>
-                    • <ExternalLink href="https://blackrealestateagents.com/">BlackRealEstateAgents.com</ExternalLink>{" "}
+                    •{" "}
+                    <ExternalLink href="https://blackrealestateagents.com/">
+                      BlackRealEstateAgents.com
+                    </ExternalLink>{" "}
                     — Match with vetted Black agents.
                   </li>
                 </ul>
 
                 <div className="mt-4 flex flex-wrap gap-2">
-                  <GoldButton href="/business-directory?category=Real%20Estate" variant="ghost">
-                    Browse BWE Real Estate Category <ArrowRight className="h-4 w-4" />
+                  <GoldButton
+                    href="/business-directory?category=Real%20Estate"
+                    variant="ghost"
+                  >
+                    Browse BWE Real Estate Category{" "}
+                    <ArrowRight className="h-4 w-4" />
                   </GoldButton>
                   <GoldButton href="/business-directory/submit" variant="ghost">
                     Add Your Business <ArrowRight className="h-4 w-4" />
@@ -1000,7 +1124,9 @@ const RealEstateInvestment = () => {
 
             <div className="space-y-4">
               <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
-                <div className="text-yellow-200 font-extrabold">Pro categories to build your team</div>
+                <div className="text-yellow-200 font-extrabold">
+                  Pro categories to build your team
+                </div>
                 <ul className="mt-3 space-y-2 text-sm text-gray-300">
                   <li>• Real Estate Agents & Brokers</li>
                   <li>• Mortgage Lenders & Credit Specialists</li>
@@ -1014,10 +1140,13 @@ const RealEstateInvestment = () => {
               </div>
 
               <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
-                <div className="text-yellow-200 font-extrabold">Community impact tip</div>
+                <div className="text-yellow-200 font-extrabold">
+                  Community impact tip
+                </div>
                 <p className="text-sm text-gray-300 mt-2">
-                  When possible, hire and refer Black-owned professionals. Over time, this creates local opportunity,
-                  builds capacity, and keeps value circulating in the community.
+                  When possible, hire and refer Black-owned professionals. Over
+                  time, this creates local opportunity, builds capacity, and
+                  keeps value circulating in the community.
                 </p>
               </div>
             </div>
@@ -1033,25 +1162,31 @@ const RealEstateInvestment = () => {
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
             <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
-              <div className="text-yellow-200 font-extrabold">Homebuying (Official)</div>
+              <div className="text-yellow-200 font-extrabold">
+                Homebuying (Official)
+              </div>
               <ul className="mt-3 space-y-2">
                 <li>
-                  • <ExternalLink href="https://www.consumerfinance.gov/owning-a-home/">
+                  •{" "}
+                  <ExternalLink href="https://www.consumerfinance.gov/owning-a-home/">
                     CFPB: Buying a house tools & roadmap
                   </ExternalLink>
                 </li>
                 <li>
-                  • <ExternalLink href="https://www.consumerfinance.gov/owning-a-home/explore/home-loan-toolkit/">
+                  •{" "}
+                  <ExternalLink href="https://www.consumerfinance.gov/owning-a-home/explore/home-loan-toolkit/">
                     CFPB: Your Home Loan Toolkit
                   </ExternalLink>
                 </li>
                 <li>
-                  • <ExternalLink href="https://www.hud.gov/stat/sfh/housing-counseling">
+                  •{" "}
+                  <ExternalLink href="https://www.hud.gov/stat/sfh/housing-counseling">
                     HUD: Housing Counseling
                   </ExternalLink>
                 </li>
                 <li>
-                  • <ExternalLink href="https://www.consumerfinance.gov/find-a-housing-counselor/">
+                  •{" "}
+                  <ExternalLink href="https://www.consumerfinance.gov/find-a-housing-counselor/">
                     Find a Housing Counselor (CFPB)
                   </ExternalLink>
                 </li>
@@ -1059,20 +1194,25 @@ const RealEstateInvestment = () => {
             </div>
 
             <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
-              <div className="text-yellow-200 font-extrabold">Low down payment options (Official)</div>
+              <div className="text-yellow-200 font-extrabold">
+                Low down payment options (Official)
+              </div>
               <ul className="mt-3 space-y-2">
                 <li>
-                  • <ExternalLink href="https://singlefamily.fanniemae.com/originating-underwriting/mortgage-products/homeready-mortgage">
+                  •{" "}
+                  <ExternalLink href="https://singlefamily.fanniemae.com/originating-underwriting/mortgage-products/homeready-mortgage">
                     Fannie Mae: HomeReady Mortgage
                   </ExternalLink>
                 </li>
                 <li>
-                  • <ExternalLink href="https://sf.freddiemac.com/working-with-us/origination-underwriting/mortgage-products/home-possible">
+                  •{" "}
+                  <ExternalLink href="https://sf.freddiemac.com/working-with-us/origination-underwriting/mortgage-products/home-possible">
                     Freddie Mac: Home Possible
                   </ExternalLink>
                 </li>
                 <li>
-                  • <ExternalLink href="https://www.naca.com/">
+                  •{" "}
+                  <ExternalLink href="https://www.naca.com/">
                     NACA: Homebuyer advocacy + programs
                   </ExternalLink>
                 </li>
@@ -1087,16 +1227,26 @@ const RealEstateInvestment = () => {
 
               <div className="mt-3 grid grid-cols-1 lg:grid-cols-3 gap-3 text-sm text-gray-300">
                 <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-                  <div className="font-bold text-gray-100">Pressure tactics</div>
-                  <div className="mt-1">If you’re rushed, you’re at risk. Pause and verify.</div>
+                  <div className="font-bold text-gray-100">
+                    Pressure tactics
+                  </div>
+                  <div className="mt-1">
+                    If you’re rushed, you’re at risk. Pause and verify.
+                  </div>
                 </div>
                 <div className="bg-white/5 border border-white/10 rounded-xl p-4">
                   <div className="font-bold text-gray-100">Hidden costs</div>
-                  <div className="mt-1">Always estimate repairs, vacancy, and reserves.</div>
+                  <div className="mt-1">
+                    Always estimate repairs, vacancy, and reserves.
+                  </div>
                 </div>
                 <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-                  <div className="font-bold text-gray-100">Unclear paperwork</div>
-                  <div className="mt-1">Don’t sign what you don’t understand—ask for clarity.</div>
+                  <div className="font-bold text-gray-100">
+                    Unclear paperwork
+                  </div>
+                  <div className="mt-1">
+                    Don’t sign what you don’t understand—ask for clarity.
+                  </div>
                 </div>
               </div>
             </div>
@@ -1122,7 +1272,8 @@ const RealEstateInvestment = () => {
                 Investor Deal Analyzer (Spreadsheet-style)
               </div>
               <p className="text-sm text-gray-300 mt-2">
-                Plug in price, rent, repairs, financing, and see cashflow + return ranges.
+                Plug in price, rent, repairs, financing, and see cashflow +
+                return ranges.
               </p>
             </div>
 
@@ -1132,7 +1283,8 @@ const RealEstateInvestment = () => {
                 Inspection + Repair Negotiation Checklist
               </div>
               <p className="text-sm text-gray-300 mt-2">
-                Know what to inspect, how to prioritize repairs, and how to negotiate without fear.
+                Know what to inspect, how to prioritize repairs, and how to
+                negotiate without fear.
               </p>
             </div>
 
@@ -1142,7 +1294,8 @@ const RealEstateInvestment = () => {
                 First-Time Homebuyer Document Pack
               </div>
               <p className="text-sm text-gray-300 mt-2">
-                A clean document checklist + timeline so you don’t get stuck or delayed.
+                A clean document checklist + timeline so you don’t get stuck or
+                delayed.
               </p>
             </div>
 
@@ -1152,13 +1305,15 @@ const RealEstateInvestment = () => {
                 Landlord Setup: Tenant Screening + Reserve Plan
               </div>
               <p className="text-sm text-gray-300 mt-2">
-                A simple system for screening, leasing, reserves, and protecting your cashflow.
+                A simple system for screening, leasing, reserves, and protecting
+                your cashflow.
               </p>
             </div>
           </div>
 
           <div className="mt-5 text-sm text-gray-300">
-            Not ready for Premium? No problem—everything above is designed to help you make strong moves for free.
+            Not ready for Premium? No problem—everything above is designed to
+            help you make strong moves for free.
           </div>
         </Card>
 
@@ -1175,8 +1330,10 @@ const RealEstateInvestment = () => {
                 What’s the safest “first investment” if I’m nervous?
               </summary>
               <p className="text-sm text-gray-300 mt-2">
-                House hacking can be a strong start (live in one unit/room, rent the rest), because it lowers your living cost
-                while you learn. The “safest” move is the one you can sustain with reserves and conservative numbers.
+                House hacking can be a strong start (live in one unit/room, rent
+                the rest), because it lowers your living cost while you learn.
+                The “safest” move is the one you can sustain with reserves and
+                conservative numbers.
               </p>
             </details>
 
@@ -1185,7 +1342,8 @@ const RealEstateInvestment = () => {
                 How much cash do I need besides the down payment?
               </summary>
               <p className="text-sm text-gray-300 mt-2">
-                Plan for closing costs plus a reserve fund. For investors, reserves are non-negotiable—repairs and vacancy happen.
+                Plan for closing costs plus a reserve fund. For investors,
+                reserves are non-negotiable—repairs and vacancy happen.
               </p>
             </details>
 
@@ -1194,8 +1352,9 @@ const RealEstateInvestment = () => {
                 What if I don’t know any Black-owned professionals yet?
               </summary>
               <p className="text-sm text-gray-300 mt-2">
-                Start with directories like NAREB and BWE’s business directory. Interview 2–3 people, choose the one who is clear,
-                responsive, and aligned with your goals.
+                Start with directories like NAREB and BWE’s business directory.
+                Interview 2–3 people, choose the one who is clear, responsive,
+                and aligned with your goals.
               </p>
             </details>
           </div>
@@ -1207,7 +1366,8 @@ const RealEstateInvestment = () => {
             Ready to take the next step?
           </h3>
           <p className="text-gray-300 mt-2 max-w-2xl mx-auto">
-            Explore Black-owned real estate professionals, learn the process, and move with confidence—one smart step at a time.
+            Explore Black-owned real estate professionals, learn the process,
+            and move with confidence—one smart step at a time.
           </p>
 
           <div className="mt-5 flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -1231,4 +1391,3 @@ const RealEstateInvestment = () => {
 };
 
 export default RealEstateInvestment;
-

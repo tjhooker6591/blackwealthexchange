@@ -1,8 +1,7 @@
-// src/components/dashboards/SellerDashboard.tsx
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { useRouter } from "next/router";
 import {
   PlusCircle,
@@ -21,21 +20,88 @@ type Stats = {
   revenue: number;
 };
 
-function _cx(...classes: Array<string | false | null | undefined>) {
-  return classes.filter(Boolean).join(" ");
-}
+type StripeStatus = {
+  connected: boolean;
+  stripeAccountId: string | null;
+  detailsSubmitted: boolean;
+  chargesEnabled: boolean;
+  payoutsEnabled: boolean;
+  requirements: string[];
+};
 
 export default function SellerDashboard() {
   const router = useRouter();
 
-  const [stats, setStats] = useState<Stats>({ products: 0, orders: 0, revenue: 0 });
+  const [stats, setStats] = useState<Stats>({
+    products: 0,
+    orders: 0,
+    revenue: 0,
+  });
+
   const [sellerName, setSellerName] = useState<string>("Seller");
   const [loading, setLoading] = useState(true);
   const [accessDenied, setAccessDenied] = useState(false);
 
-  // Optional future-friendly fields (won’t break if APIs don’t return them)
-  const [payoutReady, setPayoutReady] = useState<boolean | null>(null);
   const [lastUpdated, setLastUpdated] = useState<number | null>(null);
+
+  // ✅ Stripe payout status
+  const [stripeStatus, setStripeStatus] = useState<StripeStatus | null>(null);
+  const [stripeLoading, setStripeLoading] = useState(false);
+  const [stripeWorking, setStripeWorking] = useState(false);
+  const [stripeError, setStripeError] = useState<string | null>(null);
+
+  const payoutReady =
+    !!stripeStatus?.connected &&
+    !!stripeStatus?.detailsSubmitted &&
+    !!stripeStatus?.chargesEnabled &&
+    !!stripeStatus?.payoutsEnabled;
+
+  const formattedRevenue = useMemo(() => {
+    const n = Number(stats.revenue || 0);
+    return n.toLocaleString(undefined, { style: "currency", currency: "USD" });
+  }, [stats.revenue]);
+
+  async function refreshStripeStatus(signal?: AbortSignal) {
+    setStripeLoading(true);
+    setStripeError(null);
+    try {
+      const r = await fetch("/api/stripe/account-status", {
+        cache: "no-store",
+        credentials: "include",
+        signal,
+      });
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok)
+        throw new Error(data?.error || `Stripe status failed (${r.status})`);
+      setStripeStatus(data);
+    } catch (e: any) {
+      if (e?.name === "AbortError") return;
+      setStripeError(e?.message || "Failed to load Stripe payout status");
+    } finally {
+      setStripeLoading(false);
+    }
+  }
+
+  async function startStripeOnboarding() {
+    setStripeWorking(true);
+    setStripeError(null);
+    try {
+      const r = await fetch("/api/stripe/create-account-link", {
+        method: "POST",
+        credentials: "include",
+      });
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok)
+        throw new Error(
+          data?.error || `Stripe onboarding failed (${r.status})`,
+        );
+      if (!data?.url) throw new Error("Missing Stripe onboarding URL");
+      window.location.assign(data.url);
+    } catch (e: any) {
+      setStripeError(e?.message || "Unable to start Stripe onboarding");
+      setStripeWorking(false);
+    }
+  }
 
   useEffect(() => {
     const controller = new AbortController();
@@ -53,7 +119,6 @@ export default function SellerDashboard() {
         const sessionData = await sessionRes.json();
         const u = sessionData?.user;
 
-        // NOTE: if you want to allow business/employer here, adjust this gate.
         if (!u || u.accountType !== "seller") {
           setAccessDenied(true);
           return;
@@ -77,13 +142,13 @@ export default function SellerDashboard() {
           revenue: statsData.revenue || 0,
         });
 
-        // Optional: if you later return payout status from stats endpoint, this will just work
-        if (typeof statsData.payoutReady === "boolean") setPayoutReady(statsData.payoutReady);
+        // ✅ Load Stripe payout readiness (real)
+        await refreshStripeStatus(controller.signal);
 
         setLastUpdated(Date.now());
       } catch (err: any) {
         if (err?.name !== "AbortError") {
-          console.error("Failed to load seller stats:", err);
+          console.error("Failed to load seller dashboard:", err);
           setAccessDenied(true);
         }
       } finally {
@@ -94,12 +159,6 @@ export default function SellerDashboard() {
     verifyAndLoad();
     return () => controller.abort();
   }, []);
-
-  const formattedRevenue = useMemo(() => {
-    // safe formatting
-    const n = Number(stats.revenue || 0);
-    return n.toLocaleString(undefined, { style: "currency", currency: "USD" });
-  }, [stats.revenue]);
 
   if (loading) return <DashboardSkeleton />;
 
@@ -136,6 +195,26 @@ export default function SellerDashboard() {
     );
   }
 
+  const statusPill = stripeLoading
+    ? {
+        text: "Checking…",
+        cls: "border-white/10 bg-black/30 text-gray-200",
+      }
+    : payoutReady
+      ? {
+          text: "Payouts Enabled",
+          cls: "border-emerald-500/30 bg-emerald-500/10 text-emerald-200",
+        }
+      : stripeStatus?.connected
+        ? {
+            text: "Setup Required",
+            cls: "border-yellow-500/30 bg-yellow-500/10 text-yellow-200",
+          }
+        : {
+            text: "Not Connected",
+            cls: "border-yellow-500/30 bg-yellow-500/10 text-yellow-200",
+          };
+
   return (
     <div className="min-h-screen bg-black text-white relative">
       <GlowBackground />
@@ -148,7 +227,9 @@ export default function SellerDashboard() {
               Seller Dashboard
             </h1>
             <p className="text-gray-300 mt-1">
-              Welcome, <span className="text-white font-semibold">{sellerName}</span>. Manage products, orders, and payouts.
+              Welcome,{" "}
+              <span className="text-white font-semibold">{sellerName}</span>.
+              Manage products, orders, and payouts.
             </p>
             {lastUpdated ? (
               <p className="text-xs text-gray-500 mt-2">
@@ -186,42 +267,85 @@ export default function SellerDashboard() {
 
         {/* Top Stats */}
         <div className="grid gap-6 md:grid-cols-3">
-          <StatTile icon={<Package className="h-5 w-5 text-yellow-300" />} label="Products Listed" value={stats.products} />
-          <StatTile icon={<ShoppingCart className="h-5 w-5 text-yellow-300" />} label="Orders Received" value={stats.orders} />
-          <StatTile icon={<BarChart3 className="h-5 w-5 text-yellow-300" />} label="Total Revenue" value={formattedRevenue} />
+          <StatTile
+            icon={<Package className="h-5 w-5 text-yellow-300" />}
+            label="Products Listed"
+            value={stats.products}
+          />
+          <StatTile
+            icon={<ShoppingCart className="h-5 w-5 text-yellow-300" />}
+            label="Orders Received"
+            value={stats.orders}
+          />
+          <StatTile
+            icon={<BarChart3 className="h-5 w-5 text-yellow-300" />}
+            label="Total Revenue"
+            value={formattedRevenue}
+          />
         </div>
 
-        {/* Payout status (optional, but very “professional”) */}
+        {/* ✅ Payout status (REAL) */}
         <div className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow-xl">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
               <h2 className="text-xl font-bold text-gold">Payout Status</h2>
               <p className="text-sm text-gray-400 mt-1">
-                Stripe payouts must be enabled before you can receive funds to your bank.
+                Stripe payouts must be enabled before you can receive funds to
+                your bank.
               </p>
+              {stripeError ? (
+                <p className="mt-2 text-sm text-red-300">{stripeError}</p>
+              ) : null}
             </div>
 
-            <div className="flex items-center gap-2">
-              {payoutReady === true ? (
-                <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-yellow-500/30 bg-yellow-500/10 text-yellow-200 text-sm font-semibold">
-                  <BadgeCheck className="h-4 w-4" />
-                  Payouts Enabled
-                </span>
-              ) : payoutReady === false ? (
-                <Link
-                  href="/marketplace/become-a-seller"
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gold text-black font-semibold hover:bg-yellow-500 transition text-sm"
+            <div className="flex items-center gap-2 flex-wrap">
+              <span
+                className={`inline-flex items-center gap-2 px-3 py-1 rounded-full border text-sm font-semibold ${statusPill.cls}`}
+              >
+                {payoutReady ? <BadgeCheck className="h-4 w-4" /> : null}
+                {statusPill.text}
+              </span>
+
+              <button
+                onClick={() => refreshStripeStatus()}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition text-sm"
+              >
+                Refresh
+              </button>
+
+              {!payoutReady ? (
+                <button
+                  onClick={startStripeOnboarding}
+                  disabled={stripeWorking}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gold text-black font-semibold hover:bg-yellow-500 transition text-sm disabled:opacity-60"
                 >
-                  Finish Stripe Onboarding
+                  {stripeWorking
+                    ? "Opening…"
+                    : stripeStatus?.connected
+                      ? "Finish Stripe Setup"
+                      : "Connect Stripe"}
                   <ArrowRight className="h-4 w-4" />
-                </Link>
-              ) : (
-                <span className="text-sm text-gray-300 border border-white/10 bg-black/30 px-3 py-1 rounded-full">
-                  Status: unknown (connect to Stripe status endpoint)
-                </span>
-              )}
+                </button>
+              ) : null}
             </div>
           </div>
+
+          {!stripeLoading &&
+          !payoutReady &&
+          stripeStatus?.requirements?.length ? (
+            <p className="mt-4 text-xs text-gray-400">
+              Stripe still needs:{" "}
+              <span className="text-gray-300">
+                {stripeStatus.requirements.join(", ")}
+              </span>
+            </p>
+          ) : null}
+
+          {!stripeLoading && payoutReady ? (
+            <p className="mt-4 text-sm text-gray-300">
+              ✅ You’re ready — buyers can now check out your products.
+            </p>
+          ) : null}
         </div>
 
         {/* Quick Actions */}
@@ -236,19 +360,19 @@ export default function SellerDashboard() {
             icon={<Package className="h-5 w-5 text-yellow-300" />}
             title="My Products"
             description="Edit, delete, and manage your products."
-            href="/marketplace/dashboard" // ✅ use your real seller dashboard listing if you have it elsewhere
+            href="/marketplace/dashboard"
           />
           <ActionCard
             icon={<ShoppingCart className="h-5 w-5 text-yellow-300" />}
             title="Orders"
             description="Track customer orders and fulfillment status."
-            href="/marketplace/orders" // adjust if your route differs
+            href="/marketplace/orders"
           />
           <ActionCard
             icon={<BarChart3 className="h-5 w-5 text-yellow-300" />}
             title="Analytics"
             description="Understand sales performance and trends."
-            href="/marketplace/analytics" // adjust if your route differs
+            href="/marketplace/analytics"
           />
         </div>
       </div>
@@ -272,7 +396,7 @@ function StatTile({
   label,
   value,
 }: {
-  icon: React.ReactNode;
+  icon: ReactNode;
   label: string;
   value: string | number;
 }) {
@@ -295,7 +419,7 @@ function ActionCard({
   description,
   href,
 }: {
-  icon: React.ReactNode;
+  icon: ReactNode;
   title: string;
   description: string;
   href: string;
@@ -330,7 +454,10 @@ function DashboardSkeleton() {
 
         <div className="grid gap-6 md:grid-cols-3">
           {Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow-xl">
+            <div
+              key={i}
+              className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow-xl"
+            >
               <div className="h-6 w-1/2 bg-white/10 rounded animate-pulse" />
               <div className="mt-4 h-10 w-1/3 bg-white/10 rounded animate-pulse" />
             </div>

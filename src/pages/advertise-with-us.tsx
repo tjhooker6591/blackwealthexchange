@@ -42,15 +42,13 @@ const AD_OPTIONS = [
   },
   {
     title: "Banner Ads",
-    description:
-      "Place your ads on high-traffic pages across the platform.",
+    description: "Place your ads on high-traffic pages across the platform.",
     href: "/advertise/banner-ads",
     tag: "Site-wide placements",
   },
   {
     title: "Custom Solutions",
-    description:
-      "Let’s build a tailored advertising plan for your business.",
+    description: "Let’s build a tailored advertising plan for your business.",
     href: "/advertise/custom",
     tag: "Custom packages",
   },

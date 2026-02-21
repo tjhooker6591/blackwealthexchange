@@ -195,8 +195,8 @@ const FinancialLiteracy = () => {
             Premium Financial Literacy Course
           </h1>
           <p className="text-lg md:text-2xl mt-4 font-light text-gray-200 max-w-3xl mx-auto">
-            Lifetime access to the tools, knowledge, and confidence to build real Black wealth.
-            Pay once. Own it forever.
+            Lifetime access to the tools, knowledge, and confidence to build
+            real Black wealth. Pay once. Own it forever.
           </p>
 
           <div className="mt-7 flex flex-wrap items-center justify-center gap-3 text-sm text-gray-300">
@@ -227,32 +227,44 @@ const FinancialLiteracy = () => {
           {/* Left Column */}
           <div className="lg:col-span-8 space-y-10">
             {/* Offer */}
-            <section id="pricing" className="bg-gray-900/80 border border-gold/20 p-8 rounded-2xl shadow-xl">
+            <section
+              id="pricing"
+              className="bg-gray-900/80 border border-gold/20 p-8 rounded-2xl shadow-xl"
+            >
               <h2 className="text-3xl font-semibold text-gold mb-3">
                 Unlock the Full Premium Course — $49 (One Time)
               </h2>
               <p className="text-gray-200 text-lg mb-6 max-w-3xl">
-                Learn how to budget, fix credit, invest, and build legacy wealth with step-by-step guidance.
-                This is more than education — it’s transformation.
+                Learn how to budget, fix credit, invest, and build legacy wealth
+                with step-by-step guidance. This is more than education — it’s
+                transformation.
               </p>
 
               <div className="grid md:grid-cols-2 gap-8 text-left text-gray-200">
                 <div>
-                  <h3 className="text-xl text-gold font-semibold mb-2">✅ What You’ll Learn</h3>
+                  <h3 className="text-xl text-gold font-semibold mb-2">
+                    ✅ What You’ll Learn
+                  </h3>
                   <ul className="list-disc pl-6 space-y-1 text-gray-300">
                     <li>Budgeting and goal-setting on any income</li>
                     <li>How to build and repair your credit</li>
-                    <li>Investing basics: stocks, real estate, and passive income</li>
+                    <li>
+                      Investing basics: stocks, real estate, and passive income
+                    </li>
                     <li>Debt elimination strategies that actually work</li>
                     <li>How to protect assets and build generational wealth</li>
                   </ul>
                 </div>
 
                 <div>
-                  <h3 className="text-xl text-gold font-semibold mb-2">✅ What’s Included</h3>
+                  <h3 className="text-xl text-gold font-semibold mb-2">
+                    ✅ What’s Included
+                  </h3>
                   <ul className="list-disc pl-6 space-y-1 text-gray-300">
                     <li>8 full modules + bonus content</li>
-                    <li>Downloadable worksheets, templates, and credit letters</li>
+                    <li>
+                      Downloadable worksheets, templates, and credit letters
+                    </li>
                     <li>Lifetime access with free updates</li>
                     <li>Optional certificate of completion</li>
                   </ul>
@@ -261,8 +273,10 @@ const FinancialLiteracy = () => {
 
               <div className="mt-7 rounded-xl bg-black/40 border border-gray-800 p-5">
                 <p className="text-gray-300 text-sm">
-                  <span className="text-gold font-semibold">No subscription.</span> One-time payment.
-                  Your access stays active forever.
+                  <span className="text-gold font-semibold">
+                    No subscription.
+                  </span>{" "}
+                  One-time payment. Your access stays active forever.
                 </p>
               </div>
             </section>
@@ -275,8 +289,13 @@ const FinancialLiteracy = () => {
 
               <div className="grid md:grid-cols-2 gap-6">
                 {modules.map((mod, i) => (
-                  <div key={i} className="bg-gray-900/70 border border-gray-800 p-6 rounded-2xl shadow-lg">
-                    <h4 className="text-xl font-semibold text-gold mb-2">{mod.title}</h4>
+                  <div
+                    key={i}
+                    className="bg-gray-900/70 border border-gray-800 p-6 rounded-2xl shadow-lg"
+                  >
+                    <h4 className="text-xl font-semibold text-gold mb-2">
+                      {mod.title}
+                    </h4>
                     <p className="text-gray-300">{mod.text}</p>
                     <ul className="mt-3 space-y-1 text-sm text-gray-300 list-disc pl-6">
                       {mod.bullets.map((b, idx) => (
@@ -290,10 +309,15 @@ const FinancialLiteracy = () => {
 
             {/* Bonuses */}
             <section className="bg-gray-900/70 border border-gray-800 p-8 rounded-2xl shadow-lg">
-              <h2 className="text-2xl font-bold text-gold mb-4">Bonus Resources</h2>
+              <h2 className="text-2xl font-bold text-gold mb-4">
+                Bonus Resources
+              </h2>
               <div className="grid md:grid-cols-2 gap-5">
                 {bonuses.map((b, i) => (
-                  <div key={i} className="rounded-xl border border-gray-800 bg-black/30 p-5">
+                  <div
+                    key={i}
+                    className="rounded-xl border border-gray-800 bg-black/30 p-5"
+                  >
                     <h3 className="font-semibold text-gold">{b.title}</h3>
                     <p className="text-gray-300 mt-2 text-sm">{b.text}</p>
                   </div>
@@ -303,16 +327,27 @@ const FinancialLiteracy = () => {
 
             {/* Who this is for */}
             <section className="bg-gray-900/70 border border-gray-800 p-8 rounded-2xl shadow-lg">
-              <h2 className="text-2xl font-bold text-gold mb-3">Who This Is For</h2>
+              <h2 className="text-2xl font-bold text-gold mb-3">
+                Who This Is For
+              </h2>
               <div className="grid md:grid-cols-2 gap-4 text-gray-300">
-                <CardLine>People who want a clear, simple money system</CardLine>
-                <CardLine>Anyone rebuilding credit or learning investing basics</CardLine>
-                <CardLine>Families building a legacy and protecting assets</CardLine>
-                <CardLine>Entrepreneurs who need financial fundamentals</CardLine>
+                <CardLine>
+                  People who want a clear, simple money system
+                </CardLine>
+                <CardLine>
+                  Anyone rebuilding credit or learning investing basics
+                </CardLine>
+                <CardLine>
+                  Families building a legacy and protecting assets
+                </CardLine>
+                <CardLine>
+                  Entrepreneurs who need financial fundamentals
+                </CardLine>
               </div>
 
               <div className="mt-5 text-sm text-gray-400">
-                Not financial advice — educational content built to improve your decision-making and confidence.
+                Not financial advice — educational content built to improve your
+                decision-making and confidence.
               </div>
             </section>
 
@@ -321,7 +356,10 @@ const FinancialLiteracy = () => {
               <h2 className="text-2xl font-bold text-gold mb-4">FAQ</h2>
               <div className="space-y-4">
                 {faqs.map((f, i) => (
-                  <div key={i} className="rounded-xl border border-gray-800 bg-black/30 p-5">
+                  <div
+                    key={i}
+                    className="rounded-xl border border-gray-800 bg-black/30 p-5"
+                  >
                     <p className="font-semibold text-gray-200">{f.q}</p>
                     <p className="text-gray-300 mt-2 text-sm">{f.a}</p>
                   </div>
@@ -345,9 +383,13 @@ const FinancialLiteracy = () => {
               <div className="bg-gray-900/80 border border-gold/20 rounded-2xl shadow-xl p-6">
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <p className="text-sm text-gray-300">Premium Course Access</p>
+                    <p className="text-sm text-gray-300">
+                      Premium Course Access
+                    </p>
                     <h3 className="text-2xl font-bold text-gold">$49</h3>
-                    <p className="text-xs text-gray-400 mt-1">One-time payment • Lifetime access</p>
+                    <p className="text-xs text-gray-400 mt-1">
+                      One-time payment • Lifetime access
+                    </p>
                   </div>
                   <span className="text-xs px-2 py-1 rounded bg-gold/15 text-gold border border-gold/20">
                     Best Value
@@ -365,7 +407,8 @@ const FinancialLiteracy = () => {
                   {meChecked && !userId ? (
                     <div className="rounded-xl border border-gray-800 bg-black/30 p-4">
                       <p className="text-sm text-gray-300">
-                        Create a free account to link your purchase to your profile.
+                        Create a free account to link your purchase to your
+                        profile.
                       </p>
                       <div className="mt-3 flex gap-2">
                         <Link href="/signup">
@@ -398,8 +441,11 @@ const FinancialLiteracy = () => {
 
               <div className="bg-gray-900/70 border border-gray-800 rounded-2xl p-5">
                 <p className="text-sm text-gray-300">
-                  <span className="text-gold font-semibold">Built for our community.</span>{" "}
-                  Clear steps, practical tools, and a system you can repeat for life.
+                  <span className="text-gold font-semibold">
+                    Built for our community.
+                  </span>{" "}
+                  Clear steps, practical tools, and a system you can repeat for
+                  life.
                 </p>
               </div>
             </div>
@@ -411,7 +457,8 @@ const FinancialLiteracy = () => {
       <div className="fixed bottom-0 left-0 right-0 z-20 border-t border-gray-800 bg-black/70 backdrop-blur">
         <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between gap-4">
           <p className="text-sm text-gray-300">
-            Premium Financial Literacy Course — <span className="text-gold font-semibold">$49</span> one-time
+            Premium Financial Literacy Course —{" "}
+            <span className="text-gold font-semibold">$49</span> one-time
           </p>
           <a href="#pricing">
             <button className="px-5 py-2 rounded bg-gold text-black font-semibold hover:bg-yellow-500 transition">

@@ -185,8 +185,12 @@ export default function BecomeASellerPage() {
       <div className="min-h-screen bg-black text-white p-6 flex items-center justify-center">
         <Card className="max-w-lg w-full p-6">
           <CardContent>
-            <h1 className="text-2xl font-bold mb-2 text-gold">You’re All Set!</h1>
-            <p className="mb-4 text-gray-300">Your payout account is verified.</p>
+            <h1 className="text-2xl font-bold mb-2 text-gold">
+              You’re All Set!
+            </h1>
+            <p className="mb-4 text-gray-300">
+              Your payout account is verified.
+            </p>
 
             <Button
               onClick={() => router.push("/marketplace/add-products")}
@@ -213,12 +217,16 @@ export default function BecomeASellerPage() {
       <div className="min-h-screen bg-black text-white p-6 flex items-center justify-center">
         <Card className="max-w-lg w-full p-6">
           <CardContent>
-            <h1 className="text-2xl font-bold mb-2 text-gold">Complete Payout Setup</h1>
+            <h1 className="text-2xl font-bold mb-2 text-gold">
+              Complete Payout Setup
+            </h1>
             <p className="mb-4 text-gray-300">
               Finish Stripe onboarding to receive payouts.
             </p>
 
-            {error ? <p className="text-red-500 mb-4 text-sm">{error}</p> : null}
+            {error ? (
+              <p className="text-red-500 mb-4 text-sm">{error}</p>
+            ) : null}
 
             <Button
               onClick={() => startOnboarding()}
@@ -241,8 +249,9 @@ export default function BecomeASellerPage() {
           <h1 className="text-2xl font-bold text-gold mb-2">Become a Seller</h1>
 
           <p className="text-gray-400 mb-6 text-sm">
-            <strong className="text-gold">Important:</strong> We collect a 10% platform fee on each
-            completed sale. Sellers receive the remainder via Stripe Connect payouts.
+            <strong className="text-gold">Important:</strong> We collect a 10%
+            platform fee on each completed sale. Sellers receive the remainder
+            via Stripe Connect payouts.
           </p>
 
           {error ? <p className="text-red-500 mb-4 text-sm">{error}</p> : null}

@@ -5,7 +5,13 @@ import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-type AccountType = "user" | "business" | "seller" | "employer" | "admin" | string;
+type AccountType =
+  | "user"
+  | "business"
+  | "seller"
+  | "employer"
+  | "admin"
+  | string;
 
 type MeUser = {
   email: string;
@@ -33,7 +39,12 @@ function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
-const ALLOWED_ROLES: AccountType[] = ["business", "seller", "employer", "admin"];
+const ALLOWED_ROLES: AccountType[] = [
+  "business",
+  "seller",
+  "employer",
+  "admin",
+];
 
 export default function EditBusinessPage() {
   const router = useRouter();
@@ -95,9 +106,8 @@ export default function EditBusinessPage() {
         // 3) Fetch business profile
         // Best practice: API should infer identity from session (no email query param).
         // If your current API REQUIRES email, uncomment the email param line below.
-        const profileUrl =
-          "/api/business/profile";
-          // + `?email=${encodeURIComponent(user.email)}`;
+        const profileUrl = "/api/business/profile";
+        // + `?email=${encodeURIComponent(user.email)}`;
 
         const profileRes = await fetch(profileUrl, {
           cache: "no-store",
@@ -160,7 +170,10 @@ export default function EditBusinessPage() {
         return;
       }
 
-      setStatus({ type: "success", message: "Business profile updated successfully." });
+      setStatus({
+        type: "success",
+        message: "Business profile updated successfully.",
+      });
     } catch (err) {
       console.error("Update error:", err);
       setStatus({ type: "error", message: "An error occurred while saving." });
@@ -190,7 +203,8 @@ export default function EditBusinessPage() {
         <div className="relative w-full max-w-lg rounded-2xl border border-red-500/25 bg-red-500/10 p-6 shadow-xl">
           <div className="text-xl font-bold text-red-200">Access denied.</div>
           <p className="text-gray-200 mt-2">
-            Your account type does not have permission to edit a business profile.
+            Your account type does not have permission to edit a business
+            profile.
           </p>
           <Link
             href="/"
@@ -230,7 +244,8 @@ export default function EditBusinessPage() {
             Edit Business Profile
           </h1>
           <p className="text-gray-300 mt-1">
-            Keep your listing accurate—this improves trust and visibility across BWE.
+            Keep your listing accurate—this improves trust and visibility across
+            BWE.
           </p>
         </header>
 
@@ -253,7 +268,10 @@ export default function EditBusinessPage() {
         <section className="rounded-2xl border border-yellow-500/15 bg-gray-900/50 p-6 shadow-xl">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="businessName" className="block mb-1 font-semibold text-gray-200">
+              <label
+                htmlFor="businessName"
+                className="block mb-1 font-semibold text-gray-200"
+              >
                 Business Name
               </label>
               <input
@@ -267,7 +285,10 @@ export default function EditBusinessPage() {
             </div>
 
             <div>
-              <label htmlFor="businessAddress" className="block mb-1 font-semibold text-gray-200">
+              <label
+                htmlFor="businessAddress"
+                className="block mb-1 font-semibold text-gray-200"
+              >
                 Business Address
               </label>
               <input
@@ -281,7 +302,10 @@ export default function EditBusinessPage() {
             </div>
 
             <div>
-              <label htmlFor="businessPhone" className="block mb-1 font-semibold text-gray-200">
+              <label
+                htmlFor="businessPhone"
+                className="block mb-1 font-semibold text-gray-200"
+              >
                 Business Phone
               </label>
               <input
@@ -296,7 +320,10 @@ export default function EditBusinessPage() {
             </div>
 
             <div>
-              <label htmlFor="description" className="block mb-1 font-semibold text-gray-200">
+              <label
+                htmlFor="description"
+                className="block mb-1 font-semibold text-gray-200"
+              >
                 Description
               </label>
               <textarea
@@ -318,8 +345,9 @@ export default function EditBusinessPage() {
             </button>
 
             <p className="text-xs text-gray-400">
-              Note: If your API currently requires <code>?email=</code> for profile fetch, uncomment it in the code above.
-              Long-term, it’s better for the server to infer identity from the session cookie.
+              Note: If your API currently requires <code>?email=</code> for
+              profile fetch, uncomment it in the code above. Long-term, it’s
+              better for the server to infer identity from the session cookie.
             </p>
           </form>
         </section>

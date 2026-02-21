@@ -85,7 +85,10 @@ const CommunityConduct = () => {
               <div className="mt-4 grid md:grid-cols-2 gap-4">
                 <PolicyCard title="Examples of prohibited behavior">
                   <ul className="list-disc ml-6 space-y-1 text-gray-300">
-                    <li>Racist, sexist, homophobic, transphobic, ableist, or xenophobic language</li>
+                    <li>
+                      Racist, sexist, homophobic, transphobic, ableist, or
+                      xenophobic language
+                    </li>
                     <li>Slurs, dehumanizing content, or “coded” hate</li>
                     <li>Targeted harassment or dogpiling</li>
                     <li>Threats, extortion, intimidation, or coercion</li>
@@ -105,15 +108,18 @@ const CommunityConduct = () => {
 
             <Section title="3. Privacy and Safety: No Doxxing or Personal Harm">
               <p className="text-gray-300">
-                You may not share, threaten to share, or solicit private personal
-                information about anyone — including addresses, phone numbers,
-                private emails, government IDs, or workplace details — without
-                explicit permission.
+                You may not share, threaten to share, or solicit private
+                personal information about anyone — including addresses, phone
+                numbers, private emails, government IDs, or workplace details —
+                without explicit permission.
               </p>
               <ul className="list-disc ml-6 mt-3 space-y-1 text-gray-300">
                 <li>No doxxing or “exposing” posts</li>
                 <li>No incitement of harassment or brigading</li>
-                <li>No sharing private messages without consent where prohibited by law</li>
+                <li>
+                  No sharing private messages without consent where prohibited
+                  by law
+                </li>
               </ul>
             </Section>
 
@@ -123,9 +129,14 @@ const CommunityConduct = () => {
                 yourself, your business, and your offerings.
               </p>
               <ul className="list-disc ml-6 mt-3 space-y-1 text-gray-300">
-                <li>No impersonation of individuals, brands, or organizations</li>
+                <li>
+                  No impersonation of individuals, brands, or organizations
+                </li>
                 <li>No fake listings, fake reviews, or deceptive claims</li>
-                <li>No scams, pyramid schemes, phishing, or “too good to be true” offers</li>
+                <li>
+                  No scams, pyramid schemes, phishing, or “too good to be true”
+                  offers
+                </li>
               </ul>
               <p className="text-gray-300 mt-3">
                 We may require verification for certain features and may remove
@@ -183,9 +194,15 @@ const CommunityConduct = () => {
                 professionally and avoid abusive behavior.
               </p>
               <ul className="list-disc ml-6 mt-3 space-y-1 text-gray-300">
-                <li>No fake jobs, MLM recruiting disguised as hiring, or “pay-to-apply” scams</li>
+                <li>
+                  No fake jobs, MLM recruiting disguised as hiring, or
+                  “pay-to-apply” scams
+                </li>
                 <li>No discrimination or illegal hiring practices</li>
-                <li>No requests for sensitive personal data outside a legitimate hiring process</li>
+                <li>
+                  No requests for sensitive personal data outside a legitimate
+                  hiring process
+                </li>
               </ul>
             </Section>
 
@@ -198,7 +215,9 @@ const CommunityConduct = () => {
               <ul className="list-disc ml-6 mt-3 space-y-1 text-gray-300">
                 <li>No deceptive claims or bait-and-switch offers</li>
                 <li>No hateful content or targeting protected groups</li>
-                <li>No “get rich quick” schemes or predatory financial traps</li>
+                <li>
+                  No “get rich quick” schemes or predatory financial traps
+                </li>
               </ul>
             </Section>
 
@@ -209,9 +228,15 @@ const CommunityConduct = () => {
                 controls.
               </p>
               <ul className="list-disc ml-6 mt-3 space-y-1 text-gray-300">
-                <li>No automated scraping/harvesting of listings or datasets</li>
-                <li>No probing, brute-force, or credential-stuffing attempts</li>
-                <li>No attempts to bypass paywalls, gating, or account controls</li>
+                <li>
+                  No automated scraping/harvesting of listings or datasets
+                </li>
+                <li>
+                  No probing, brute-force, or credential-stuffing attempts
+                </li>
+                <li>
+                  No attempts to bypass paywalls, gating, or account controls
+                </li>
                 <li>No malicious automation or spamming APIs/forms</li>
               </ul>
             </Section>
@@ -334,4 +359,3 @@ function PolicyCard({
 }
 
 export default CommunityConduct;
-

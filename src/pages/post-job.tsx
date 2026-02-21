@@ -102,7 +102,11 @@ const PostJob = () => {
     const tierQ = String(router.query.tier || "");
 
     const paidTier: ListingTier | null =
-      tierQ === "standard" ? "standard" : tierQ === "featured" ? "featured" : null;
+      tierQ === "standard"
+        ? "standard"
+        : tierQ === "featured"
+          ? "featured"
+          : null;
 
     // Only auto-post if we have a paid return signal
     if (payment !== "success" || !paidTier) return;
@@ -110,10 +114,13 @@ const PostJob = () => {
     autoPostRanRef.current = true;
 
     try {
-      const raw = typeof window !== "undefined" ? window.sessionStorage.getItem(DRAFT_KEY) : null;
+      const raw =
+        typeof window !== "undefined"
+          ? window.sessionStorage.getItem(DRAFT_KEY)
+          : null;
       if (!raw) {
         setError(
-          "Payment completed, but we couldn't find your saved job draft. Please re-enter the details and submit."
+          "Payment completed, but we couldn't find your saved job draft. Please re-enter the details and submit.",
         );
         setTier(paidTier);
         return;
@@ -135,7 +142,7 @@ const PostJob = () => {
     } catch (e) {
       console.error(e);
       setError(
-        "Payment completed, but we couldn't restore your draft. Please re-enter the details and submit."
+        "Payment completed, but we couldn't restore your draft. Please re-enter the details and submit.",
       );
       setTier(paidTier);
     }
@@ -143,7 +150,9 @@ const PostJob = () => {
   }, [router.isReady]);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setError("");
@@ -165,7 +174,9 @@ const PostJob = () => {
     setSuccess(false);
 
     if (!isFormValid()) {
-      setError("Please complete the job form first, then save your draft before checkout.");
+      setError(
+        "Please complete the job form first, then save your draft before checkout.",
+      );
       return;
     }
 
@@ -267,11 +278,17 @@ const PostJob = () => {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center text-center px-4">
         <div>
-          <h1 className="text-2xl font-bold mb-4 text-red-500">Access Denied</h1>
+          <h1 className="text-2xl font-bold mb-4 text-red-500">
+            Access Denied
+          </h1>
           <p className="mb-6">
-            You must be logged in with an <strong>employer account</strong> to post jobs.
+            You must be logged in with an <strong>employer account</strong> to
+            post jobs.
           </p>
-          <Link href="/login?redirect=/post-job" className="text-gold underline">
+          <Link
+            href="/login?redirect=/post-job"
+            className="text-gold underline"
+          >
             Go to Login
           </Link>
         </div>
@@ -288,10 +305,12 @@ const PostJob = () => {
           <div>
             <h1 className="text-3xl font-bold text-gold mb-2">Post a Job</h1>
             <p className="text-gray-400">
-              Add new opportunities and connect with Black professionals looking for work.
+              Add new opportunities and connect with Black professionals looking
+              for work.
             </p>
             <p className="text-xs text-gray-500 mt-2">
-              Signed in as: <span className="text-gray-300">{user.email || "Employer"}</span>
+              Signed in as:{" "}
+              <span className="text-gray-300">{user.email || "Employer"}</span>
             </p>
           </div>
           <Link href="/">
@@ -333,7 +352,9 @@ const PostJob = () => {
                 {draftSaved ? "✅ Draft Saved" : "Save Draft for Checkout"}
               </button>
 
-              <div className={canCheckout ? "" : "opacity-50 pointer-events-none"}>
+              <div
+                className={canCheckout ? "" : "opacity-50 pointer-events-none"}
+              >
                 <BuyNowButton
                   itemId="job-standard-post"
                   amount={2999}
@@ -344,7 +365,8 @@ const PostJob = () => {
               </div>
 
               <p className="text-xs text-gray-400">
-                After payment, you’ll return here and we’ll post the job automatically.
+                After payment, you’ll return here and we’ll post the job
+                automatically.
               </p>
             </div>
           </TierCard>
@@ -371,7 +393,9 @@ const PostJob = () => {
                 {draftSaved ? "✅ Draft Saved" : "Save Draft for Checkout"}
               </button>
 
-              <div className={canCheckout ? "" : "opacity-50 pointer-events-none"}>
+              <div
+                className={canCheckout ? "" : "opacity-50 pointer-events-none"}
+              >
                 <BuyNowButton
                   itemId="job-featured-post"
                   amount={7999}
@@ -382,14 +406,17 @@ const PostJob = () => {
               </div>
 
               <p className="text-xs text-gray-400">
-                After payment, you’ll return here and we’ll post the job automatically.
+                After payment, you’ll return here and we’ll post the job
+                automatically.
               </p>
             </div>
           </TierCard>
         </div>
 
         {success && (
-          <p className="text-green-500 mb-4">✅ Job posted successfully! Redirecting...</p>
+          <p className="text-green-500 mb-4">
+            ✅ Job posted successfully! Redirecting...
+          </p>
         )}
         {error && <p className="text-red-500 mb-4">{error}</p>}
 
@@ -477,12 +504,16 @@ const PostJob = () => {
           </button>
 
           <p className="text-xs text-gray-400">
-            Posting Standard/Featured: fill out the form → <strong>Save Draft</strong> → checkout.
+            Posting Standard/Featured: fill out the form →{" "}
+            <strong>Save Draft</strong> → checkout.
           </p>
         </form>
 
         <div className="text-center mt-6">
-          <Link href="/dashboard/employer" className="text-blue-500 hover:underline">
+          <Link
+            href="/dashboard/employer"
+            className="text-blue-500 hover:underline"
+          >
             ← Back to Employer Dashboard
           </Link>
         </div>
@@ -510,7 +541,9 @@ function TierCard({
     <div
       className={[
         "bg-gray-900 p-4 rounded shadow text-center border transition",
-        active ? "border-yellow-400/60" : "border-gray-800 hover:border-yellow-400/30",
+        active
+          ? "border-yellow-400/60"
+          : "border-gray-800 hover:border-yellow-400/30",
       ].join(" ")}
     >
       <div className="flex items-center justify-between gap-2">

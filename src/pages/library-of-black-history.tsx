@@ -84,7 +84,7 @@ function Pill({
         "inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[12px] font-extrabold transition",
         active
           ? "border-[#D4AF37]/50 bg-[#D4AF37]/15 text-[#D4AF37]"
-          : "border-white/10 bg-white/[0.03] text-white/70 hover:bg-white/[0.06]"
+          : "border-white/10 bg-white/[0.03] text-white/70 hover:bg-white/[0.06]",
       )}
     >
       {icon}
@@ -188,7 +188,12 @@ function ExternalA({
   className?: string;
 }) {
   return (
-    <a href={href} target="_blank" rel="noopener noreferrer" className={className}>
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={className}
+    >
       {children}
     </a>
   );
@@ -302,7 +307,8 @@ const libraryItems: LibraryItem[] = [
   },
   {
     id: 6,
-    title: "The National Archives (UK) — Research guidance on African/Caribbean ancestry",
+    title:
+      "The National Archives (UK) — Research guidance on African/Caribbean ancestry",
     summary:
       "Practical guidance to navigate records shaped by empire, migration, and racialized documentation.",
     category: "Diaspora & Migration",
@@ -427,7 +433,8 @@ const libraryItems: LibraryItem[] = [
   },
   {
     id: 14,
-    title: "Pan-African & diaspora lens — diaspora definition and global influence",
+    title:
+      "Pan-African & diaspora lens — diaspora definition and global influence",
     summary:
       "Start with clear definitions: diaspora, displacement, migration, cultural retention, and global influence patterns.",
     category: "Diaspora & Migration",
@@ -442,7 +449,8 @@ const libraryItems: LibraryItem[] = [
   },
   {
     id: 15,
-    title: "Racial capitalism & extraction — frameworks to explain 'why it repeats'",
+    title:
+      "Racial capitalism & extraction — frameworks to explain 'why it repeats'",
     summary:
       "A lens for understanding how race and profit systems reinforce each other through labor, credit, housing, and media.",
     category: "Truth & Context",
@@ -472,7 +480,8 @@ const libraryItems: LibraryItem[] = [
   },
   {
     id: 17,
-    title: "Modern propaganda, media literacy, and narrative control (how minds are shaped)",
+    title:
+      "Modern propaganda, media literacy, and narrative control (how minds are shaped)",
     summary:
       "Build skill in decoding advertising, stereotypes, consumer identity targeting, and algorithmic amplification.",
     category: "Truth & Context",
@@ -528,9 +537,9 @@ const ALL_REGIONS: Region[] = [
 
 export default function LibraryOfBlackHistory() {
   const [query, setQuery] = useState("");
-  const [category, setCategory] = useState<(typeof ALL_CATEGORIES)[number] | "All">(
-    "All"
-  );
+  const [category, setCategory] = useState<
+    (typeof ALL_CATEGORIES)[number] | "All"
+  >("All");
   const [region, setRegion] = useState<Region | "All">("All");
   const [openId, setOpenId] = useState<number | null>(null);
   const [showFilters, setShowFilters] = useState(false);
@@ -546,7 +555,8 @@ export default function LibraryOfBlackHistory() {
         item.region.toLowerCase().includes(q) ||
         item.links.some(
           (l) =>
-            l.label.toLowerCase().includes(q) || l.type.toLowerCase().includes(q)
+            l.label.toLowerCase().includes(q) ||
+            l.type.toLowerCase().includes(q),
         );
 
       const matchCat = category === "All" ? true : item.category === category;
@@ -581,13 +591,13 @@ export default function LibraryOfBlackHistory() {
               </div>
 
               <h1 className="mt-4 text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight">
-                Library of{" "}
-                <span className="text-[#D4AF37]">Black History</span>
+                Library of <span className="text-[#D4AF37]">Black History</span>
               </h1>
 
               <p className="mt-3 max-w-3xl text-white/70 leading-relaxed">
                 Wikipedia is a starting point — not a finish line. This library
-                prioritizes <span className="text-white font-bold">museums</span>,{" "}
+                prioritizes{" "}
+                <span className="text-white font-bold">museums</span>,{" "}
                 <span className="text-white font-bold">archives</span>,{" "}
                 <span className="text-white font-bold">databases</span>, and{" "}
                 <span className="text-white font-bold">open education</span>{" "}
@@ -599,7 +609,9 @@ export default function LibraryOfBlackHistory() {
                 <Pill icon={<Landmark className="h-4 w-4" />}>Museums</Pill>
                 <Pill icon={<LibraryBig className="h-4 w-4" />}>Archives</Pill>
                 <Pill icon={<BookOpen className="h-4 w-4" />}>Open access</Pill>
-                <Pill icon={<Shield className="h-4 w-4" />}>Verify sources</Pill>
+                <Pill icon={<Shield className="h-4 w-4" />}>
+                  Verify sources
+                </Pill>
               </div>
             </div>
 
@@ -639,8 +651,8 @@ export default function LibraryOfBlackHistory() {
               <Callout title="A global pattern (not one country)" tone="gold">
                 The same architecture repeats in different places: extract labor
                 → restrict education/credit/land → shape narratives about worth
-                → sell identity back through culture/consumption → keep ownership
-                concentrated.
+                → sell identity back through culture/consumption → keep
+                ownership concentrated.
               </Callout>
 
               <Callout title="What changes everything" tone="emerald">
@@ -655,8 +667,8 @@ export default function LibraryOfBlackHistory() {
                 <List
                   items={[
                     <>
-                      Slavery happened, abolition happened, civil rights happened —
-                      therefore the problem is “mostly solved.”
+                      Slavery happened, abolition happened, civil rights
+                      happened — therefore the problem is “mostly solved.”
                     </>,
                     <>
                       A few heroes carried progress — therefore ordinary people
@@ -679,25 +691,33 @@ export default function LibraryOfBlackHistory() {
                 <List
                   items={[
                     <>
-                      <span className="text-white font-bold">The economics:</span>{" "}
+                      <span className="text-white font-bold">
+                        The economics:
+                      </span>{" "}
                       slavery and colonialism were not only “prejudice” — they
                       were business models that built wealth, banks, insurance,
                       shipping empires, and property systems across continents.
                     </>,
                     <>
-                      <span className="text-white font-bold">The transition:</span>{" "}
-                      after abolition, coercion often changed form (debt peonage,
-                      forced labor, exclusion from credit/land, criminalization,
-                      segregation, discriminatory policy).
+                      <span className="text-white font-bold">
+                        The transition:
+                      </span>{" "}
+                      after abolition, coercion often changed form (debt
+                      peonage, forced labor, exclusion from credit/land,
+                      criminalization, segregation, discriminatory policy).
                     </>,
                     <>
-                      <span className="text-white font-bold">The curriculum gap:</span>{" "}
+                      <span className="text-white font-bold">
+                        The curriculum gap:
+                      </span>{" "}
                       many school systems teach events, but avoid mechanisms:
                       how laws, finance, housing, media, and supply chains
                       preserve inequality.
                     </>,
                     <>
-                      <span className="text-white font-bold">The global map:</span>{" "}
+                      <span className="text-white font-bold">
+                        The global map:
+                      </span>{" "}
                       the diaspora links Africa, the Caribbean, Latin America,
                       Europe, and the U.S. through trade routes, plantations,
                       rebellions, migration, and cultural exchange.
@@ -716,34 +736,49 @@ export default function LibraryOfBlackHistory() {
                   Advertising is not neutral — it targets identity, belonging,
                   status, and fear. When a community is historically excluded
                   from ownership, the market often offers a substitute:
-                  <span className="text-white font-bold"> consumption as identity</span>.
+                  <span className="text-white font-bold">
+                    {" "}
+                    consumption as identity
+                  </span>
+                  .
                 </p>
                 <List
                   items={[
                     <>
-                      <span className="text-white font-bold">Status hacking:</span>{" "}
+                      <span className="text-white font-bold">
+                        Status hacking:
+                      </span>{" "}
                       “buy this to be respected.” If ownership feels out of
                       reach, brands sell the feeling of power.
                     </>,
                     <>
-                      <span className="text-white font-bold">Normalization:</span>{" "}
+                      <span className="text-white font-bold">
+                        Normalization:
+                      </span>{" "}
                       repeated imagery teaches people what is “premium,” who is
                       “successful,” and who deserves authority.
                     </>,
                     <>
-                      <span className="text-white font-bold">Algorithm loops:</span>{" "}
+                      <span className="text-white font-bold">
+                        Algorithm loops:
+                      </span>{" "}
                       what you watch shapes what you see next; what you see next
                       shapes desire; desire shapes spending; spending reinforces
                       the loop.
                     </>,
                     <>
-                      <span className="text-white font-bold">Scarcity mindset:</span>{" "}
+                      <span className="text-white font-bold">
+                        Scarcity mindset:
+                      </span>{" "}
                       when the future feels unstable, short-term comfort wins —
                       even if it harms long-term wealth.
                     </>,
                   ]}
                 />
-                <Callout title="How to break it (simple and real)" tone="emerald">
+                <Callout
+                  title="How to break it (simple and real)"
+                  tone="emerald"
+                >
                   Reduce the “brand diet.” Replace one habit with an ownership
                   habit: one Black-owned switch, one savings/investment rule,
                   and one community referral every week.
@@ -754,17 +789,26 @@ export default function LibraryOfBlackHistory() {
                 <List
                   items={[
                     <>
-                      Use <span className="text-white font-bold">primary sources</span>{" "}
+                      Use{" "}
+                      <span className="text-white font-bold">
+                        primary sources
+                      </span>{" "}
                       when possible (archives, recorded testimonies, government
                       records, museum collections).
                     </>,
                     <>
-                      Compare <span className="text-white font-bold">multiple regions</span>{" "}
+                      Compare{" "}
+                      <span className="text-white font-bold">
+                        multiple regions
+                      </span>{" "}
                       — the pattern is clearer when you see it in the Caribbean,
                       Latin America, Africa, Europe, and the U.S.
                     </>,
                     <>
-                      Look for <span className="text-white font-bold">data projects</span>{" "}
+                      Look for{" "}
+                      <span className="text-white font-bold">
+                        data projects
+                      </span>{" "}
                       (voyages, compensation, migration, census, labor systems)
                       that show structure, not just stories.
                     </>,
@@ -818,8 +862,7 @@ export default function LibraryOfBlackHistory() {
               </button>
 
               <div className="text-xs text-white/50 font-extrabold">
-                Showing{" "}
-                <span className="text-white/80">{filtered.length}</span>{" "}
+                Showing <span className="text-white/80">{filtered.length}</span>{" "}
                 resources
               </div>
             </div>
@@ -832,7 +875,10 @@ export default function LibraryOfBlackHistory() {
                   Category
                 </div>
                 <div className="mt-2 flex flex-wrap gap-2">
-                  <Pill active={category === "All"} onClick={() => setCategory("All")}>
+                  <Pill
+                    active={category === "All"}
+                    onClick={() => setCategory("All")}
+                  >
                     All
                   </Pill>
                   {ALL_CATEGORIES.map((c) => (
@@ -852,7 +898,10 @@ export default function LibraryOfBlackHistory() {
                   Region
                 </div>
                 <div className="mt-2 flex flex-wrap gap-2">
-                  <Pill active={region === "All"} onClick={() => setRegion("All")}>
+                  <Pill
+                    active={region === "All"}
+                    onClick={() => setRegion("All")}
+                  >
                     All
                   </Pill>
                   {ALL_REGIONS.map((r) => (
@@ -980,7 +1029,8 @@ export default function LibraryOfBlackHistory() {
         </div>
 
         <div className="mt-8 pb-6 text-center text-white/45 text-sm">
-          © {new Date().getFullYear()} Black Wealth Exchange — Library of Black History
+          © {new Date().getFullYear()} Black Wealth Exchange — Library of Black
+          History
         </div>
       </div>
     </div>

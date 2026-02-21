@@ -41,7 +41,7 @@ function normalizeCategory(input: string) {
     books: "Books",
     home: "Home",
     "home goods": "Home",
-    "homegoods": "Home",
+    homegoods: "Home",
     food: "Food",
     "food & drink": "Food",
     other: "Other",
@@ -103,7 +103,7 @@ export default function EditProductPage() {
       if (!ok) {
         // Cancel route change (Next.js Pages Router pattern)
         router.events.emit("routeChangeError");
-         
+
         throw "Route change aborted (unsaved changes).";
       }
     };
@@ -163,7 +163,10 @@ export default function EditProductPage() {
       } finally {
         setLoading(false);
         requestAnimationFrame(() => {
-          topRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+          topRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
         });
       }
     };
@@ -384,12 +387,15 @@ export default function EditProductPage() {
                   className={cx(
                     "w-full p-3 rounded-xl bg-black/40 border outline-none transition",
                     "border-white/10 focus:border-yellow-500/40 focus:ring-2 focus:ring-yellow-500/20",
-                    fieldErrors.name && "border-red-500/40 focus:border-red-500/60 focus:ring-red-500/20",
+                    fieldErrors.name &&
+                      "border-red-500/40 focus:border-red-500/60 focus:ring-red-500/20",
                   )}
                   placeholder="e.g., Pamfa United Denim Jacket"
                 />
                 {fieldErrors.name ? (
-                  <p className="mt-1 text-xs text-red-200">{fieldErrors.name}</p>
+                  <p className="mt-1 text-xs text-red-200">
+                    {fieldErrors.name}
+                  </p>
                 ) : null}
               </div>
 
@@ -428,12 +434,15 @@ export default function EditProductPage() {
                     className={cx(
                       "w-full p-3 rounded-xl bg-black/40 border outline-none transition",
                       "border-white/10 focus:border-yellow-500/40 focus:ring-2 focus:ring-yellow-500/20",
-                      fieldErrors.price && "border-red-500/40 focus:border-red-500/60 focus:ring-red-500/20",
+                      fieldErrors.price &&
+                        "border-red-500/40 focus:border-red-500/60 focus:ring-red-500/20",
                     )}
                     placeholder="e.g., 49.99"
                   />
                   {fieldErrors.price ? (
-                    <p className="mt-1 text-xs text-red-200">{fieldErrors.price}</p>
+                    <p className="mt-1 text-xs text-red-200">
+                      {fieldErrors.price}
+                    </p>
                   ) : null}
                 </div>
 
@@ -448,7 +457,8 @@ export default function EditProductPage() {
                     className={cx(
                       "w-full p-3 rounded-xl bg-black/40 border outline-none transition",
                       "border-white/10 focus:border-yellow-500/40 focus:ring-2 focus:ring-yellow-500/20",
-                      fieldErrors.category && "border-red-500/40 focus:border-red-500/60 focus:ring-red-500/20",
+                      fieldErrors.category &&
+                        "border-red-500/40 focus:border-red-500/60 focus:ring-red-500/20",
                     )}
                   >
                     <option value="">Select a category</option>
@@ -459,7 +469,9 @@ export default function EditProductPage() {
                     ))}
                   </select>
                   {fieldErrors.category ? (
-                    <p className="mt-1 text-xs text-red-200">{fieldErrors.category}</p>
+                    <p className="mt-1 text-xs text-red-200">
+                      {fieldErrors.category}
+                    </p>
                   ) : null}
                 </div>
               </div>
@@ -484,10 +496,13 @@ export default function EditProductPage() {
                     placeholder="https://... or /images/product.jpg"
                   />
                   {fieldErrors.imageUrl ? (
-                    <p className="mt-1 text-xs text-red-200">{fieldErrors.imageUrl}</p>
+                    <p className="mt-1 text-xs text-red-200">
+                      {fieldErrors.imageUrl}
+                    </p>
                   ) : (
                     <p className="mt-1 text-xs text-gray-400">
-                      Tip: Use a fast image host (or your own CDN). Clear images sell.
+                      Tip: Use a fast image host (or your own CDN). Clear images
+                      sell.
                     </p>
                   )}
                 </div>
@@ -505,7 +520,9 @@ export default function EditProductPage() {
                           alt="Product preview"
                           className="h-full w-full object-cover"
                           onError={(e) => {
-                            (e.currentTarget as HTMLImageElement).style.display = "none";
+                            (
+                              e.currentTarget as HTMLImageElement
+                            ).style.display = "none";
                           }}
                         />
                       ) : (
@@ -524,7 +541,11 @@ export default function EditProductPage() {
               <div className="text-xs text-gray-400">
                 {isDirty ? (
                   <span>
-                    You have <span className="text-gray-200 font-semibold">unsaved changes</span>.
+                    You have{" "}
+                    <span className="text-gray-200 font-semibold">
+                      unsaved changes
+                    </span>
+                    .
                   </span>
                 ) : (
                   <span>All changes saved.</span>
@@ -559,7 +580,10 @@ export default function EditProductPage() {
 
           {/* Bottom helper */}
           <div className="mt-6 text-center">
-            <Link href="/marketplace/dashboard" className="text-sm text-gray-400 hover:text-gray-200">
+            <Link
+              href="/marketplace/dashboard"
+              className="text-sm text-gray-400 hover:text-gray-200"
+            >
               Return to Seller Dashboard
             </Link>
           </div>

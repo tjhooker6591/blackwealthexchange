@@ -4,7 +4,15 @@
 import Head from "next/head";
 import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Calendar, ExternalLink, PlayCircle, Radio, RefreshCw, Globe2, MapPin } from "lucide-react";
+import {
+  Calendar,
+  ExternalLink,
+  PlayCircle,
+  Radio,
+  RefreshCw,
+  Globe2,
+  MapPin,
+} from "lucide-react";
 
 type EventBadge = "BWE LIVE" | "US" | "GLOBAL" | "PARTNER";
 type EventStatus = "CONFIRMED" | "PLANNED" | "TBD";
@@ -13,15 +21,15 @@ type EventItem = {
   id: string;
   badge: EventBadge;
   status: EventStatus;
-  dateLabel: string;      // displayed date
-  startISO?: string;      // optional for sorting
-  endISO?: string;        // optional
+  dateLabel: string; // displayed date
+  startISO?: string; // optional for sorting
+  endISO?: string; // optional
   title: string;
-  location?: string;      // city/country
+  location?: string; // city/country
   description: string[];
-  href?: string;          // official link
-  streamUrl?: string;     // livestream link (YouTube/StreamYard/Zoom)
-  rsvpUrl?: string;       // your RSVP page (future)
+  href?: string; // official link
+  streamUrl?: string; // livestream link (YouTube/StreamYard/Zoom)
+  rsvpUrl?: string; // your RSVP page (future)
   tags?: string[];
 };
 
@@ -41,7 +49,11 @@ function formatDate(iso?: string) {
   if (!iso) return "";
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return "";
-  return d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+  return d.toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
 }
 
 /** ------------------------------------------------------------
@@ -86,7 +98,10 @@ const BWE_LIVE_2026: EventItem[] = [
     startISO: "2026-03-31T17:00:00.000Z",
     title: "Quarterly Webinar: Building Generational Wealth",
     location: "Online",
-    description: ["Wealth frameworks: budgeting → investing → ownership.", "Interactive Q&A and resource drops."],
+    description: [
+      "Wealth frameworks: budgeting → investing → ownership.",
+      "Interactive Q&A and resource drops.",
+    ],
     rsvpUrl: "/events/rsvp",
     tags: ["webinar", "wealth"],
   },
@@ -98,7 +113,10 @@ const BWE_LIVE_2026: EventItem[] = [
     startISO: "2026-06-30T17:00:00.000Z",
     title: "Quarterly Webinar: Tech + Growth Systems",
     location: "Online",
-    description: ["Tools + workflows to scale Black-owned businesses.", "Automation, marketing systems, and lead capture."],
+    description: [
+      "Tools + workflows to scale Black-owned businesses.",
+      "Automation, marketing systems, and lead capture.",
+    ],
     rsvpUrl: "/events/rsvp",
     tags: ["webinar", "growth", "tech"],
   },
@@ -110,7 +128,10 @@ const BWE_LIVE_2026: EventItem[] = [
     startISO: "2026-09-30T17:00:00.000Z",
     title: "Quarterly Webinar: Funding + Scale Readiness",
     location: "Online",
-    description: ["Pitch readiness: story, numbers, offer, and proof.", "Crowdfunding + grants + investor basics."],
+    description: [
+      "Pitch readiness: story, numbers, offer, and proof.",
+      "Crowdfunding + grants + investor basics.",
+    ],
     rsvpUrl: "/events/rsvp",
     tags: ["webinar", "funding"],
   },
@@ -129,7 +150,9 @@ const MAJOR_US_2026: EventItem[] = [
     endISO: "2026-02-17T23:59:59.000Z",
     title: "Trinidad & Tobago Carnival",
     location: "Trinidad & Tobago",
-    description: ["One of the world’s most iconic Caribbean cultural celebrations."],
+    description: [
+      "One of the world’s most iconic Caribbean cultural celebrations.",
+    ],
     href: "https://visittrinidad.tt/things-to-do/carnival/",
     tags: ["culture", "caribbean"],
   },
@@ -142,7 +165,9 @@ const MAJOR_US_2026: EventItem[] = [
     endISO: "2026-03-15T23:59:59.000Z",
     title: "BLACK ENTERPRISE Women of Power Summit",
     location: "Las Vegas, NV",
-    description: ["Leadership + career + entrepreneurship summit for Black women leaders."],
+    description: [
+      "Leadership + career + entrepreneurship summit for Black women leaders.",
+    ],
     href: "https://www.blackenterprise.com/black-enterprise-women-of-power-summit-2026/",
     tags: ["business", "leadership"],
   },
@@ -155,7 +180,9 @@ const MAJOR_US_2026: EventItem[] = [
     endISO: "2026-03-22T23:59:59.000Z",
     title: "NSBE Annual Convention",
     location: "Baltimore, MD",
-    description: ["STEM + career fair + community building for Black engineers."],
+    description: [
+      "STEM + career fair + community building for Black engineers.",
+    ],
     href: "https://convention.nsbe.org/welcome/",
     tags: ["stem", "careers"],
   },
@@ -168,7 +195,9 @@ const MAJOR_US_2026: EventItem[] = [
     endISO: "2026-07-05T23:59:59.000Z",
     title: "ESSENCE Festival of Culture®",
     location: "New Orleans, LA",
-    description: ["Culture + entrepreneurship + music + community programming."],
+    description: [
+      "Culture + entrepreneurship + music + community programming.",
+    ],
     href: "https://www.essence.com/essencefestival2026/",
     tags: ["culture", "entrepreneurship"],
   },
@@ -181,7 +210,9 @@ const MAJOR_US_2026: EventItem[] = [
     endISO: "2026-07-22T23:59:59.000Z",
     title: "117th NAACP National Convention",
     location: "Chicago, IL",
-    description: ["Civil rights, community leadership, advocacy, and national programming."],
+    description: [
+      "Civil rights, community leadership, advocacy, and national programming.",
+    ],
     href: "https://naacp.org/convention",
     tags: ["civic", "leadership"],
   },
@@ -194,7 +225,9 @@ const MAJOR_US_2026: EventItem[] = [
     endISO: "2026-08-01T23:59:59.000Z",
     title: "National Urban League Conference (Nashville 2026)",
     location: "Nashville, TN",
-    description: ["Policy, business, social justice, and community impact sessions."],
+    description: [
+      "Policy, business, social justice, and community impact sessions.",
+    ],
     href: "https://conference.iamempowered.com/",
     tags: ["policy", "business"],
   },
@@ -207,7 +240,9 @@ const MAJOR_US_2026: EventItem[] = [
     endISO: "2026-09-20T23:59:59.000Z",
     title: "CBCF Annual Legislative Conference (ALC)",
     location: "Washington, DC",
-    description: ["The nation’s leading public policy convening focused on the Black community."],
+    description: [
+      "The nation’s leading public policy convening focused on the Black community.",
+    ],
     href: "https://www.cbcfinc.org/events/annual-legislative-conference/",
     tags: ["policy", "leadership"],
   },
@@ -220,7 +255,9 @@ const MAJOR_US_2026: EventItem[] = [
     endISO: "2026-09-26T23:59:59.000Z",
     title: "National Black MBA Annual Conference & Exposition",
     location: "Los Angeles, CA",
-    description: ["Career expo + executive networking + business opportunities."],
+    description: [
+      "Career expo + executive networking + business opportunities.",
+    ],
     href: "https://www.laconventioncenter.com/events/detail/national-black-mba-association-conference-exposition",
     tags: ["careers", "business"],
   },
@@ -246,7 +283,9 @@ const MAJOR_US_2026: EventItem[] = [
     endISO: "2026-10-23T23:59:59.000Z",
     title: "BLACK ENTERPRISE XCEL Summit for Men",
     location: "Orlando, FL",
-    description: ["Leadership + entrepreneurship platform for Black executives and founders."],
+    description: [
+      "Leadership + entrepreneurship platform for Black executives and founders.",
+    ],
     href: "https://www.blackenterprise.com/beevents/",
     tags: ["leadership", "business"],
   },
@@ -278,7 +317,9 @@ const MAJOR_GLOBAL_2026: EventItem[] = [
     endISO: "2026-08-03T23:59:59.000Z",
     title: "Toronto Caribbean Carnival (Caribana Weekend)",
     location: "Toronto, Canada",
-    description: ["One of North America’s largest Caribbean cultural celebrations."],
+    description: [
+      "One of North America’s largest Caribbean cultural celebrations.",
+    ],
     href: "https://www.caribanatoronto.com/",
     tags: ["culture", "caribbean"],
   },
@@ -303,7 +344,9 @@ const MAJOR_GLOBAL_2026: EventItem[] = [
     endISO: "2026-08-31T23:59:59.000Z",
     title: "Notting Hill Carnival",
     location: "London, UK",
-    description: ["One of the world’s largest celebrations of Caribbean and Black British culture."],
+    description: [
+      "One of the world’s largest celebrations of Caribbean and Black British culture.",
+    ],
     href: "https://nhcarnival.org/",
     tags: ["culture", "uk"],
   },
@@ -315,7 +358,9 @@ const MAJOR_GLOBAL_2026: EventItem[] = [
     startISO: "2026-08-29T00:00:00.000Z",
     title: "UK National Panorama (Steel Band Competition Day)",
     location: "London, UK",
-    description: ["Ticketed steel band competition (Panorama) during Carnival weekend."],
+    description: [
+      "Ticketed steel band competition (Panorama) during Carnival weekend.",
+    ],
     href: "https://nhcarnival.org/carnival-info",
     tags: ["music", "steelpan"],
   },
@@ -347,8 +392,12 @@ export default function EventsPage() {
     const merged = [...BWE_LIVE_2026, ...MAJOR_US_2026, ...MAJOR_GLOBAL_2026];
     // Sort by start date (TBD/recurring stays at top of its section in UI)
     const sortable = merged.slice().sort((a, b) => {
-      const ad = a.startISO ? new Date(a.startISO).getTime() : Number.MAX_SAFE_INTEGER;
-      const bd = b.startISO ? new Date(b.startISO).getTime() : Number.MAX_SAFE_INTEGER;
+      const ad = a.startISO
+        ? new Date(a.startISO).getTime()
+        : Number.MAX_SAFE_INTEGER;
+      const bd = b.startISO
+        ? new Date(b.startISO).getTime()
+        : Number.MAX_SAFE_INTEGER;
       return ad - bd;
     });
     return sortable;
@@ -379,7 +428,6 @@ export default function EventsPage() {
 
   useEffect(() => {
     refreshRss();
-     
   }, []);
 
   return (
@@ -403,9 +451,12 @@ export default function EventsPage() {
           <div className="max-w-6xl mx-auto">
             {/* HERO */}
             <div className="text-center mb-10">
-              <h1 className="text-5xl font-extrabold text-gold mb-3">Events (2026)</h1>
+              <h1 className="text-5xl font-extrabold text-gold mb-3">
+                Events (2026)
+              </h1>
               <p className="text-gray-300">
-                Learn BWE through live demos + workshops, then connect with major Black events across the U.S. and worldwide.
+                Learn BWE through live demos + workshops, then connect with
+                major Black events across the U.S. and worldwide.
               </p>
 
               <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
@@ -431,13 +482,15 @@ export default function EventsPage() {
 
             {/* FILTER TABS */}
             <div className="flex flex-wrap justify-center gap-2 mb-8">
-              {([
-                ["ALL", "All"],
-                ["BWE", "BWE Live"],
-                ["US", "US"],
-                ["GLOBAL", "Global"],
-                ["COMMUNITY", "Community (RSS)"],
-              ] as Array<[ViewKey, string]>).map(([k, label]) => (
+              {(
+                [
+                  ["ALL", "All"],
+                  ["BWE", "BWE Live"],
+                  ["US", "US"],
+                  ["GLOBAL", "Global"],
+                  ["COMMUNITY", "Community (RSS)"],
+                ] as Array<[ViewKey, string]>
+              ).map(([k, label]) => (
                 <button
                   key={k}
                   onClick={() => setView(k)}
@@ -463,7 +516,9 @@ export default function EventsPage() {
                   >
                     <div className="flex items-start justify-between gap-3 mb-2">
                       <div>
-                        <div className="text-gold text-sm font-semibold">{evt.dateLabel}</div>
+                        <div className="text-gold text-sm font-semibold">
+                          {evt.dateLabel}
+                        </div>
                         {evt.location ? (
                           <div className="mt-1 text-xs text-gray-400 inline-flex items-center gap-1">
                             <MapPin className="h-3.5 w-3.5" />
@@ -544,9 +599,12 @@ export default function EventsPage() {
               <div>
                 <div className="flex items-center justify-between gap-3 mb-4">
                   <div>
-                    <h2 className="text-2xl font-bold text-gold">Community Events (RSS)</h2>
+                    <h2 className="text-2xl font-bold text-gold">
+                      Community Events (RSS)
+                    </h2>
                     <p className="text-sm text-gray-400">
-                      Auto-updated feeds (you control the allowlist). This is how we “add everything” without manual work.
+                      Auto-updated feeds (you control the allowlist). This is
+                      how we “add everything” without manual work.
                     </p>
                   </div>
 
@@ -555,7 +613,9 @@ export default function EventsPage() {
                     disabled={rssLoading}
                     className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition text-sm disabled:opacity-60"
                   >
-                    <RefreshCw className={cx("h-4 w-4", rssLoading && "animate-spin")} />
+                    <RefreshCw
+                      className={cx("h-4 w-4", rssLoading && "animate-spin")}
+                    />
                     Refresh
                   </button>
                 </div>
@@ -564,8 +624,13 @@ export default function EventsPage() {
                   <div className="rounded-2xl border border-red-500/30 bg-red-500/10 p-5 text-red-200">
                     {rssError}
                     <div className="text-xs text-gray-300 mt-2">
-                      Add <code className="text-gray-100">BWE_EVENTS_RSS_URLS</code> +{" "}
-                      <code className="text-gray-100">BWE_EVENTS_RSS_ALLOWLIST</code> to enable feeds.
+                      Add{" "}
+                      <code className="text-gray-100">BWE_EVENTS_RSS_URLS</code>{" "}
+                      +{" "}
+                      <code className="text-gray-100">
+                        BWE_EVENTS_RSS_ALLOWLIST
+                      </code>{" "}
+                      to enable feeds.
                     </div>
                   </div>
                 ) : rssLoading ? (
@@ -586,7 +651,8 @@ export default function EventsPage() {
                         <div className="flex items-center justify-between gap-3 mb-2">
                           <div className="text-xs text-gray-400 inline-flex items-center gap-2">
                             <Globe2 className="h-4 w-4 text-yellow-300" />
-                            {formatDate(item.isoDate)} {item.source ? `• ${item.source}` : ""}
+                            {formatDate(item.isoDate)}{" "}
+                            {item.source ? `• ${item.source}` : ""}
                           </div>
                           <span className="text-xs px-2 py-1 rounded-full border border-white/10 bg-black/30 text-gray-200">
                             RSS
@@ -603,11 +669,15 @@ export default function EventsPage() {
                             {item.title}
                           </a>
                         ) : (
-                          <div className="text-lg font-semibold text-gold">{item.title}</div>
+                          <div className="text-lg font-semibold text-gold">
+                            {item.title}
+                          </div>
                         )}
 
                         {item.snippet ? (
-                          <p className="mt-2 text-sm text-gray-300 line-clamp-3">{item.snippet}</p>
+                          <p className="mt-2 text-sm text-gray-300 line-clamp-3">
+                            {item.snippet}
+                          </p>
                         ) : null}
                       </div>
                     ))}
@@ -619,7 +689,8 @@ export default function EventsPage() {
             {/* FOOTER NOTE */}
             <div className="mt-12 text-center">
               <p className="text-gray-400 italic">
-                BWE Live is designed to teach people how to use the platform. Community (RSS) keeps the events list growing automatically.
+                BWE Live is designed to teach people how to use the platform.
+                Community (RSS) keeps the events list growing automatically.
               </p>
               <div className="mt-6">
                 <Link href="/" className="text-gold underline">
@@ -633,4 +704,3 @@ export default function EventsPage() {
     </>
   );
 }
-

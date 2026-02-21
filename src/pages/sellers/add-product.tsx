@@ -46,9 +46,8 @@ export default function AddProductPage() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState<string>(""); // keep as string for input
-  const [category, setCategory] = useState<(typeof CATEGORIES)[number]>(
-    "Beauty & Grooming",
-  );
+  const [category, setCategory] =
+    useState<(typeof CATEGORIES)[number]>("Beauty & Grooming");
   const [stockQuantity, setStockQuantity] = useState<number>(0);
 
   const [imageUrl, setImageUrl] = useState("");
@@ -211,7 +210,9 @@ export default function AddProductPage() {
       const result = await res.json().catch(() => null);
 
       if (!res.ok || !result?.success) {
-        throw new Error(result?.error || result?.message || "Failed to save product.");
+        throw new Error(
+          result?.error || result?.message || "Failed to save product.",
+        );
       }
 
       setSuccessMsg("✅ Product saved successfully!");
@@ -240,9 +241,12 @@ export default function AddProductPage() {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center px-6 text-center">
         <div className="max-w-lg bg-gray-900 border border-red-500/30 rounded-xl p-6">
-          <h1 className="text-2xl font-bold text-red-400 mb-3">Access Denied</h1>
+          <h1 className="text-2xl font-bold text-red-400 mb-3">
+            Access Denied
+          </h1>
           <p className="text-gray-300">
-            You must be logged in with a <strong>seller account</strong> to add products.
+            You must be logged in with a <strong>seller account</strong> to add
+            products.
           </p>
           <div className="mt-5 flex gap-3 justify-center flex-wrap">
             <Link href="/login?redirect=/marketplace/add-products">
@@ -281,7 +285,8 @@ export default function AddProductPage() {
         </div>
 
         <p className="text-sm text-gray-400 mb-6">
-          Logged in as: <span className="text-gray-200">{user?.email || "Seller"}</span>
+          Logged in as:{" "}
+          <span className="text-gray-200">{user?.email || "Seller"}</span>
         </p>
 
         {/* Alerts */}
@@ -403,4 +408,3 @@ export default function AddProductPage() {
     </div>
   );
 }
-

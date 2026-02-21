@@ -50,16 +50,16 @@ export default function About() {
 
           <p>
             We have been scattered—but not broken. Disconnected—but not lost.
-            The time has come to repair the bond between Black communities—across
-            cities, across continents, across the diaspora. Whether born in
-            Chicago, Kingston, Lagos, or London, we are one people with a shared
-            history and an unshakable future.
+            The time has come to repair the bond between Black
+            communities—across cities, across continents, across the diaspora.
+            Whether born in Chicago, Kingston, Lagos, or London, we are one
+            people with a shared history and an unshakable future.
           </p>
 
           <p>
-            We are not here to perform unity—we are here to embody it. To restore
-            trust. To build bridges across generational wounds. To unify our
-            voices, our dollars, and our vision. Our rise does not depend on
+            We are not here to perform unity—we are here to embody it. To
+            restore trust. To build bridges across generational wounds. To unify
+            our voices, our dollars, and our vision. Our rise does not depend on
             anyone&apos;s fall. It depends on our ability to remember who we
             are—and move forward together, sovereign and whole.
           </p>
@@ -75,8 +75,8 @@ export default function About() {
             and support their communities, we exercise our{" "}
             <strong>First Amendment rights</strong> and all protections afforded
             under federal and state law to do the same. The Constitution grants
-            the freedom to assemble, to speak, to build, and to serve our people.
-            We use these rights not in opposition, but in assertion.
+            the freedom to assemble, to speak, to build, and to serve our
+            people. We use these rights not in opposition, but in assertion.
           </p>
 
           <p>
@@ -229,11 +229,11 @@ export default function About() {
           </p>
 
           <p>
-            Black Wealth Exchange is a vessel of strategy, not sentiment. It is a
-            declaration that time can no longer serve as justification for
+            Black Wealth Exchange is a vessel of strategy, not sentiment. It is
+            a declaration that time can no longer serve as justification for
             delay. It is an institution engineered to ensure that Black spending
-            power—vast, undeniable, and transformative—is invested in enterprises
-            built to endure.
+            power—vast, undeniable, and transformative—is invested in
+            enterprises built to endure.
           </p>
 
           <p className="text-gold font-semibold">

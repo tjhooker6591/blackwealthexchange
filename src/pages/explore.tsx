@@ -128,7 +128,9 @@ export default function ExplorePage() {
                 {/* Keep card click = go to product page */}
                 <button
                   type="button"
-                  onClick={() => router.push(`/marketplace/product/${product._id}`)}
+                  onClick={() =>
+                    router.push(`/marketplace/product/${product._id}`)
+                  }
                   className="w-full text-left hover:scale-[1.01] transition-transform duration-200"
                 >
                   <div className="relative w-full h-48 bg-gray-800">
@@ -161,7 +163,9 @@ export default function ExplorePage() {
                     }}
                     className="w-full mt-2 px-4 py-2 rounded-lg font-bold bg-gold text-black hover:bg-yellow-500 transition disabled:opacity-60 disabled:cursor-not-allowed"
                   >
-                    {buyingId === product._id ? "Starting checkout..." : "Buy Now"}
+                    {buyingId === product._id
+                      ? "Starting checkout..."
+                      : "Buy Now"}
                   </button>
 
                   <Link

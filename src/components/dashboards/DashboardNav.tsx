@@ -17,7 +17,13 @@ import {
   BadgeCheck,
 } from "lucide-react";
 
-type AccountType = "user" | "business" | "seller" | "employer" | "admin" | string;
+type AccountType =
+  | "user"
+  | "business"
+  | "seller"
+  | "employer"
+  | "admin"
+  | string;
 
 type MeUser = {
   email: string;
@@ -109,7 +115,11 @@ function buildNav(t: AccountType): NavItem[] {
   return items.filter((i) => (i.show ? i.show(t) : true));
 }
 
-export default function DashboardNav({ accountType }: { accountType?: AccountType }) {
+export default function DashboardNav({
+  accountType,
+}: {
+  accountType?: AccountType;
+}) {
   const router = useRouter();
   const [me, setMe] = useState<MeUser | null>(null);
 
