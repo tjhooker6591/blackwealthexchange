@@ -646,7 +646,7 @@ export default function Home() {
       description: "Curated affiliate offers and partnership opportunities.",
     },
     {
-      title: "Stay Black Informed",
+      title: "Black Entertainment Pulse",
       href: "/black-entertainment-news",
       description: "Black entertainment and news — stay tapped in.",
     },
