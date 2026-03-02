@@ -1,46 +1,80 @@
-// pages/api/consulting-interest.ts
+// src/pages/api/consulting-interest.ts
 
 import type { NextApiRequest, NextApiResponse } from "next";
-import { MongoClient } from "mongodb";
+import clientPromise from "@/lib/mongodb";
 
-const uri =
-  process.env.MONGODB_URI ||
-  "mongodb+srv://bwes_admin:M4LmIzY5EjKPODPJ@bwes-cluster.3lko7.mongodb.net/bwes-cluster?retryWrites=true&w=majority&appName=BWES-Cluster";
+type Data =
+  | { success: true; message: string }
+  | { success: false; error: string };
 
-let cachedClient: MongoClient | null = null;
-
-async function connectToDatabase() {
-  if (cachedClient) return cachedClient;
-  const client = await MongoClient.connect(uri);
-  cachedClient = client;
-  return client;
+function isValidEmail(email: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse,
+  res: NextApiResponse<Data>,
 ) {
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method Not Allowed" });
-  }
-
-  const { name, email } = req.body;
-  if (!name || !email) {
-    return res.status(400).json({ error: "Name and email are required." });
+    res.setHeader("Allow", ["POST"]);
+    return res
+      .status(405)
+      .json({ success: false, error: "Method Not Allowed" });
   }
 
   try {
-    const client = await connectToDatabase();
+    const rawName = typeof req.body?.name === "string" ? req.body.name : "";
+    const rawEmail = typeof req.body?.email === "string" ? req.body.email : "";
+
+    const name = rawName.trim();
+    const email = rawEmail.trim().toLowerCase();
+
+    if (!name || !email) {
+      return res.status(400).json({
+        success: false,
+        error: "Name and email are required.",
+      });
+    }
+
+    if (!isValidEmail(email)) {
+      return res.status(400).json({
+        success: false,
+        error: "Please enter a valid email address.",
+      });
+    }
+
+    const client = await clientPromise;
     const db = client.db("bwes-cluster");
+
+    // Optional duplicate protection:
+    const existing = await db
+      .collection("consulting_interest")
+      .findOne({ email });
+
+    if (existing) {
+      return res.status(200).json({
+        success: true,
+        message: "Your interest has already been recorded.",
+      });
+    }
+
     await db.collection("consulting_interest").insertOne({
       name,
       email,
       createdAt: new Date(),
+      status: "new",
+      source: "website",
     });
 
-    return res.status(200).json({ success: true });
-  } catch (e) {
-    console.error(e);
-    return res.status(500).json({ error: "Failed to save interest." });
+    return res.status(200).json({
+      success: true,
+      message: "Interest saved successfully.",
+    });
+  } catch (error) {
+    console.error("consulting-interest error:", error);
+    return res.status(500).json({
+      success: false,
+      error: "Failed to save interest.",
+    });
   }
 }

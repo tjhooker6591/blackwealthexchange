@@ -1,55 +1,18 @@
 // src/pages/advertise/featured-sponsor.tsx
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import BuyNowButton from "@/components/BuyNowButton";
+import React, { useState } from "react";
+import { useRouter } from "next/router";
 
 export default function FeaturedSponsorPage() {
   const router = useRouter();
-  const [userId, setUserId] = useState("guest");
   const [adImageFile, setAdImageFile] = useState<File | null>(null);
   const [campaignDuration, setCampaignDuration] = useState<string>("");
   const [confirmed, setConfirmed] = useState(false);
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        // ← FIXED: include cache and credentials here
-        const res = await fetch("/api/auth/me", {
-          cache: "no-store",
-          credentials: "include",
-        });
-        if (res.ok) {
-          const data = await res.json();
-          if (data?.user?._id) {
-            setUserId(data.user._id);
-          }
-        }
-      } catch (err) {
-        console.error("Failed to fetch user ID", err);
-      }
-    };
-
-    fetchUser();
-  }, []);
-
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setAdImageFile(e.target.files[0]);
-    }
-  };
-
-  const getAmount = () => {
-    switch (campaignDuration) {
-      case "14":
-        return 25;
-      case "30":
-        return 45;
-      case "60":
-        return 80;
-      default:
-        return 0;
     }
   };
 
@@ -145,9 +108,9 @@ export default function FeaturedSponsorPage() {
           </p>
           <div className="flex justify-center gap-6 flex-wrap">
             {[
-              { label: "1 Week", value: "14", price: "$25" },
-              { label: "2 Weeks", value: "30", price: "$45" },
-              { label: "1 Month", value: "60", price: "$80" },
+              { label: "1 Week", value: "7", price: "$25" },
+              { label: "2 Weeks", value: "14", price: "$45" },
+              { label: "1 Month", value: "30", price: "$80" },
             ].map(({ label, value, price }) => (
               <div
                 key={value}
@@ -209,17 +172,12 @@ export default function FeaturedSponsorPage() {
           </button>
         </div>
 
-        {/* Instant BuyNow Option */}
-        <div className="text-center mt-10">
-          <p className="text-sm text-gray-400 mb-2">
-            Or skip the setup and go straight to checkout:
+        {/* Note: BuyNow shortcut removed intentionally to prevent pricing/duration mismatches */}
+        <div className="text-center mt-8">
+          <p className="text-sm text-gray-500">
+            Checkout is started from the selected duration above so pricing
+            stays accurate.
           </p>
-          <BuyNowButton
-            userId={userId}
-            itemId="featured-sponsor-ad"
-            type="ad"
-            amount={getAmount()}
-          />
         </div>
       </div>
     </div>

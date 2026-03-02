@@ -4,51 +4,152 @@ import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 import cookie from "cookie";
 import jwt from "jsonwebtoken";
+import { createHash } from "crypto";
+import {
+  getAdItemName,
+  getAdPriceCents,
+  getAdQuote,
+} from "@/lib/advertising/pricing";
 
-// Initialize Stripe with correct API version
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-  apiVersion: "2025-02-24.acacia",
-});
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
+
+type CheckoutType = "ad" | "product" | "plan";
 
 interface CheckoutPayload {
-  userId?: string;
+  userId?: string; // dev fallback only
+  itemId: string; // product ObjectId or slug, or ad plan id
+  type: CheckoutType;
+
+  // preferred top-level fields (used now)
+  durationDays?: number | string;
+  businessId?: string;
+  campaignId?: string;
+  placement?: string;
+
+  // backward compatibility / extra metadata
+  metadata?: Record<string, unknown>;
+
+  // legacy client fields (ignored for pricing/redirect authority)
+  amount?: number;
+  successUrl?: string;
+  cancelUrl?: string;
+}
+
+function withCheckoutSessionId(url: string) {
+  const joiner = url.includes("?") ? "&" : "?";
+  return url.includes("session_id=")
+    ? url
+    : `${url}${joiner}session_id={CHECKOUT_SESSION_ID}`;
+}
+
+function getOrigin(req: NextApiRequest) {
+  // canonical production origin
+  const prod = "https://www.blackwealthexchange.com";
+  if (process.env.NODE_ENV === "production") return prod;
+
+  // dev/preview
+  const proto = (req.headers["x-forwarded-proto"] as string) || "http";
+  const host =
+    (req.headers["x-forwarded-host"] as string) ||
+    req.headers.host ||
+    "localhost:3000";
+  return `${proto}://${host}`;
+}
+
+function firstString(...values: unknown[]): string {
+  for (const v of values) {
+    if (typeof v === "string" && v.trim()) return v.trim();
+    if (typeof v === "number" && Number.isFinite(v)) return String(v);
+  }
+  return "";
+}
+
+function parseOptionalPositiveInt(...values: unknown[]): number | undefined {
+  for (const v of values) {
+    if (v === null || v === undefined || v === "") continue;
+    const n = Number(v);
+    if (Number.isFinite(n) && n > 0) return Math.round(n);
+  }
+  return undefined;
+}
+
+/**
+ * Normalize old/legacy ad item IDs so old buttons and pages still work.
+ * This keeps BuyNowButton + older ad pages from breaking pricing lookup.
+ */
+function normalizeAdItemId(raw: string) {
+  const item = raw.trim();
+
+  const aliases: Record<string, string> = {
+    "featured-sponsor-ad": "featured-sponsor",
+    "sponsor-featured": "featured-sponsor",
+
+    "banner-homepage-top": "banner-ad",
+    "banner-sidebar": "banner-ad",
+    "banner-footer": "banner-ad",
+    "banner-dashboard": "banner-ad",
+  };
+
+  return aliases[item] || item;
+}
+
+function sha256Hex(input: string) {
+  return createHash("sha256").update(input).digest("hex");
+}
+
+function buildCheckoutFingerprint(input: {
+  userId: string;
+  email: string;
+  type: CheckoutType;
   itemId: string;
-  type: string;
-  amount: number;
-  successUrl: string;
-  cancelUrl: string;
+  amountCents: number;
+  durationDays?: number;
+  businessId?: string;
+  campaignId?: string;
+  placement?: string;
+}) {
+  return [
+    input.type,
+    input.userId || "",
+    (input.email || "").toLowerCase(),
+    input.itemId || "",
+    String(input.amountCents || 0),
+    String(input.durationDays ?? ""),
+    input.businessId || "",
+    input.campaignId || "",
+    input.placement || "",
+  ].join("|");
 }
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  console.log("📦 cookies on checkout request:", req.headers.cookie);
-
   if (req.method !== "POST") {
     res.setHeader("Allow", ["POST"]);
     return res.status(405).json({ error: "Method Not Allowed" });
   }
 
-  // Log the raw payload
-  console.log("/api/stripe/checkout payload:", req.body);
   const payload = req.body as CheckoutPayload;
 
-  // Authenticate with custom JWT session cookie (not NextAuth)
+  // Auth via your custom session cookie
   const cookies = cookie.parse(req.headers.cookie || "");
   const token = cookies.session_token;
 
-  let sessionUserId: string;
+  let sessionUserId = "";
+  let sessionEmail = "";
 
   if (token) {
     try {
       const SECRET = process.env.JWT_SECRET || process.env.NEXTAUTH_SECRET;
-      if (!SECRET) {
-        throw new Error("JWT_SECRET is not set in environment variables");
+      if (!SECRET) throw new Error("JWT_SECRET is not set");
+
+      const decoded = jwt.verify(token, SECRET as string) as any;
+      sessionUserId = decoded?.userId;
+      sessionEmail = decoded?.email || "";
+      if (!sessionUserId) {
+        return res.status(401).json({ error: "Unauthorized" });
       }
-      const decoded = jwt.verify(token, SECRET as string);
-      sessionUserId = (decoded as any).userId;
-      console.log("Decoded JWT in stripe checkout:", decoded);
     } catch (err) {
       console.error("JWT decode error:", err);
       return res.status(401).json({ error: "Unauthorized" });
@@ -57,48 +158,90 @@ export default async function handler(
     process.env.NODE_ENV !== "production" &&
     typeof payload.userId === "string"
   ) {
-    // Dev fallback: use payload.userId if provided (manual testing)
     sessionUserId = payload.userId;
   } else {
     return res.status(401).json({ error: "Unauthorized" });
   }
 
-  // Destructure and validate fields
-  const { itemId, type, amount, successUrl, cancelUrl } = payload;
-  if (
-    typeof itemId !== "string" ||
-    typeof type !== "string" ||
-    typeof amount !== "number" ||
-    typeof successUrl !== "string" ||
-    typeof cancelUrl !== "string"
-  ) {
-    console.error("Invalid request payload:", payload);
+  const { itemId, type } = payload;
+
+  if (typeof itemId !== "string" || typeof type !== "string") {
     return res.status(400).json({ error: "Missing or invalid fields" });
   }
+
+  // ✅ Support both new top-level fields and older nested metadata
+  const metadataIn = payload.metadata || {};
+  const requestedDurationDays = parseOptionalPositiveInt(
+    payload.durationDays,
+    metadataIn.durationDays,
+  );
+  const requestedBusinessId = firstString(
+    payload.businessId,
+    metadataIn.businessId,
+  );
+  const requestedCampaignId = firstString(
+    payload.campaignId,
+    metadataIn.campaignId,
+  );
+  const requestedPlacement = firstString(
+    payload.placement,
+    metadataIn.placement,
+  );
 
   try {
     const client = await clientPromise;
     const db = client.db("bwes-cluster");
+    const payments = db.collection("payments");
 
-    // Lookup product by ObjectId or slug
-    const product = await db
-      .collection("products")
-      .findOne(
-        ObjectId.isValid(itemId)
-          ? { _id: new ObjectId(itemId) }
-          : { slug: itemId },
-      );
-    if (!product?.sellerId) {
-      console.error("Invalid product or missing seller:", itemId);
-      return res
-        .status(400)
-        .json({ error: "Invalid product or missing seller" });
-    }
+    const origin = getOrigin(req);
 
-    // Determine Stripe account destination
+    // ✅ Match your existing pages in the repo
+    const successUrl = withCheckoutSessionId(`${origin}/payment-success`);
+    const cancelUrl = `${origin}/payment-cancel`;
+
     const isAd = type === "ad";
-    let stripeAccountId: string;
+
+    let itemName = `${type} purchase`;
+    let stripeAccountId = "";
+    let isPlatformAccount = true;
+    let unitAmount = 0;
+
+    let normalizedDurationDays: number | undefined = requestedDurationDays;
+    const normalizedBusinessId = requestedBusinessId || "";
+    const normalizedCampaignId = requestedCampaignId || "";
+    const normalizedPlacement = requestedPlacement || "";
+
+    // ✅ Keep normalized item id for metadata/payments/webhook consistency
+    let finalItemId = itemId;
+
+    // Optional: store a normalized user ObjectId if valid (useful for queries)
+    const userObjectId = ObjectId.isValid(sessionUserId)
+      ? new ObjectId(sessionUserId)
+      : null;
+
     if (isAd) {
+      // ✅ Shared server-side pricing authority + alias normalization
+      const adItemId = normalizeAdItemId(itemId);
+      finalItemId = adItemId;
+
+      const quote = getAdQuote({
+        option: adItemId,
+        durationDays: requestedDurationDays,
+      });
+
+      if (!quote) {
+        return res.status(400).json({
+          error: "Invalid advertising option or duration",
+        });
+      }
+
+      itemName = quote.label || getAdItemName(adItemId);
+      unitAmount = getAdPriceCents({
+        option: adItemId,
+        durationDays: quote.durationDays,
+      });
+      normalizedDurationDays = quote.durationDays;
+
       stripeAccountId = process.env.PLATFORM_STRIPE_ACCOUNT_ID as string;
       if (!stripeAccountId) {
         console.error("Missing PLATFORM_STRIPE_ACCOUNT_ID");
@@ -106,73 +249,280 @@ export default async function handler(
           .status(500)
           .json({ error: "Platform Stripe account not configured" });
       }
-    } else {
-      const seller = await db
-        .collection("sellers")
-        .findOne({ userId: product.sellerId });
+
+      isPlatformAccount = true;
+    } else if (type === "product") {
+      // Product purchase: look up product & price server-side (don’t trust client amount)
+      const product = await db
+        .collection("products")
+        .findOne(
+          ObjectId.isValid(itemId)
+            ? { _id: new ObjectId(itemId) }
+            : { slug: itemId },
+        );
+
+      if (!product?.sellerId) {
+        console.error("Invalid product or missing seller:", itemId);
+        return res
+          .status(400)
+          .json({ error: "Invalid product or missing seller" });
+      }
+
+      itemName = product?.name || itemName;
+
+      // Expect product.price in dollars or cents — adjust to your schema
+      if (typeof product.price === "number") {
+        unitAmount = Math.round(product.price * 100);
+      } else if (typeof (product as any).priceCents === "number") {
+        unitAmount = (product as any).priceCents;
+      } else {
+        return res.status(400).json({ error: "Product price missing" });
+      }
+
+      const seller = await db.collection("sellers").findOne({
+        $or: [
+          { userId: product.sellerId },
+          ...(ObjectId.isValid(product.sellerId)
+            ? [{ _id: new ObjectId(product.sellerId) }]
+            : []),
+        ],
+      });
+
       if (!seller?.stripeAccountId) {
         console.error("Stripe account not found for seller:", product.sellerId);
         return res
           .status(400)
           .json({ error: "Seller is not connected to Stripe" });
       }
+
       stripeAccountId = seller.stripeAccountId;
+      isPlatformAccount =
+        stripeAccountId === (process.env.PLATFORM_STRIPE_ACCOUNT_ID as string);
+    } else if (type === "plan") {
+      // If you support plan upgrades through this endpoint, price them server-side
+      const planMap: Record<string, number> = {
+        premium: 1200, // $12.00
+        founder: 4900, // $49.00
+      };
+
+      unitAmount = planMap[itemId];
+      if (!unitAmount) return res.status(400).json({ error: "Invalid plan" });
+
+      itemName = `Plan Upgrade (${itemId})`;
+      isPlatformAccount = true;
+      stripeAccountId = process.env.PLATFORM_STRIPE_ACCOUNT_ID as string;
+    } else {
+      return res.status(400).json({ error: "Invalid type" });
     }
 
-    // Convert dollar amount to cents
-    const unitAmount = Math.round(amount * 100);
+    const metadata: Record<string, string> = {
+      userId: sessionUserId,
+      itemId: finalItemId,
+      type,
+      durationDays:
+        typeof normalizedDurationDays === "number"
+          ? String(normalizedDurationDays)
+          : "",
+      businessId: normalizedBusinessId,
+      campaignId: normalizedCampaignId,
+      placement: normalizedPlacement,
+    };
 
-    // Build common session parameters
-    const commonParams: Omit<
-      Stripe.Checkout.SessionCreateParams,
-      "payment_intent_data"
-    > = {
+    // ---------------------------------------------------------
+    // P0 DUPLICATE GUARD (server-side)
+    // ---------------------------------------------------------
+    // Only enforce this strict recent-match guard for ad checkouts right now
+    // to avoid accidental blocking of legitimate rapid product/plan purchases.
+    if (type === "ad") {
+      const createdAfter = new Date(Date.now() - 60_000);
+
+      const expectedDuration =
+        typeof normalizedDurationDays === "number"
+          ? normalizedDurationDays
+          : null;
+      const expectedBusinessId = normalizedBusinessId || null;
+      const expectedCampaignId = normalizedCampaignId || null;
+      const expectedPlacement = normalizedPlacement || null;
+
+      const existingRecent = await payments.findOne(
+        {
+          type: "ad",
+          itemId: finalItemId,
+          amountCents: unitAmount,
+          userId: sessionUserId,
+          createdAt: { $gte: createdAfter },
+          status: {
+            $in: ["pending", "paid", "processing", "duplicate_pending_refund"],
+          },
+          "metadata.durationDays": expectedDuration,
+          "metadata.businessId": expectedBusinessId,
+          "metadata.campaignId": expectedCampaignId,
+          "metadata.placement": expectedPlacement,
+        },
+        { sort: { createdAt: -1 } },
+      );
+
+      if (existingRecent?.stripeSessionId) {
+        // If already paid, block another checkout immediately.
+        if (existingRecent.status === "paid") {
+          return res.status(409).json({
+            error:
+              "A matching payment was already completed. Please refresh your dashboard.",
+            duplicateGuard: true,
+            existingStatus: existingRecent.status,
+            stripeSessionId: existingRecent.stripeSessionId,
+          });
+        }
+
+        // Try to reuse an existing open Checkout Session.
+        try {
+          const existingSession = await stripe.checkout.sessions.retrieve(
+            existingRecent.stripeSessionId,
+          );
+
+          if (existingSession?.url && existingSession.status === "open") {
+            return res.status(200).json({
+              sessionId: existingSession.id,
+              url: existingSession.url,
+              reused: true,
+            });
+          }
+        } catch (sessionErr) {
+          console.warn(
+            "Duplicate guard: unable to retrieve existing Stripe session:",
+            sessionErr,
+          );
+        }
+
+        // If session isn't reusable, block rapid duplicate creation.
+        return res.status(409).json({
+          error:
+            "A checkout attempt is already in progress. Please wait a moment and try again.",
+          duplicateGuard: true,
+          existingStatus: existingRecent.status || "pending",
+          stripeSessionId: existingRecent.stripeSessionId,
+        });
+      }
+    }
+
+    // Helpful for dedupe debugging / replay diagnostics
+    const checkoutFingerprint = buildCheckoutFingerprint({
+      userId: sessionUserId,
+      email: sessionEmail,
+      type,
+      itemId: finalItemId,
+      amountCents: unitAmount,
+      durationDays: normalizedDurationDays,
+      businessId: normalizedBusinessId,
+      campaignId: normalizedCampaignId,
+      placement: normalizedPlacement,
+    });
+
+    metadata.checkoutFingerprint = checkoutFingerprint;
+
+    // Stripe idempotency key protects against near-simultaneous duplicate requests.
+    // Minute bucket keeps it stable for rapid retries but allows legitimate future purchases.
+    const minuteBucket = Math.floor(Date.now() / 60_000);
+    const idempotencyKey = `checkout:${sha256Hex(
+      `${checkoutFingerprint}|${minuteBucket}`,
+    )}`;
+
+    const baseParams: Stripe.Checkout.SessionCreateParams = {
+      mode: "payment",
       payment_method_types: ["card"],
       line_items: [
         {
           price_data: {
             currency: "usd",
-            product_data: { name: product.name || `${type} purchase` },
+            product_data: { name: itemName },
             unit_amount: unitAmount,
           },
           quantity: 1,
         },
       ],
-      mode: "payment",
-      metadata: { userId: sessionUserId, itemId, type },
+      ...(sessionEmail ? { customer_email: sessionEmail } : {}),
+      metadata,
       success_url: successUrl,
       cancel_url: cancelUrl,
-    };
 
-    const isPlatformAccount =
-      stripeAccountId === process.env.PLATFORM_STRIPE_ACCOUNT_ID;
-
-    const sessionParams: Stripe.Checkout.SessionCreateParams = {
-      ...commonParams,
-      ...(isPlatformAccount
-        ? {}
-        : {
-            payment_intent_data: {
-              metadata: { userId: sessionUserId, itemId, type },
+      // Helpful for reconciliation
+      client_reference_id: sessionUserId,
+      payment_intent_data: {
+        metadata,
+        ...(isPlatformAccount
+          ? {}
+          : {
               application_fee_amount: Math.round(unitAmount * 0.12),
               transfer_data: { destination: stripeAccountId },
-            },
-          }),
+            }),
+      },
     };
 
-    // Create the Stripe Checkout Session
-    const stripeSession = await stripe.checkout.sessions.create(sessionParams);
+    const stripeSession = await stripe.checkout.sessions.create(baseParams, {
+      idempotencyKey,
+    });
 
-    return res
-      .status(200)
-      .json({ sessionId: stripeSession.id, url: stripeSession.url });
+    // ✅ Create a pending payment record so Admin can always reconcile
+    await payments.updateOne(
+      { stripeSessionId: stripeSession.id },
+      {
+        $setOnInsert: {
+          stripeSessionId: stripeSession.id,
+          paymentIntentId:
+            typeof stripeSession.payment_intent === "string"
+              ? stripeSession.payment_intent
+              : null,
+          userId: sessionUserId,
+          userObjectId,
+          email: sessionEmail || null,
+          type,
+          itemId: finalItemId,
+          amountCents: unitAmount,
+          status: "pending",
+          createdAt: new Date(),
+          metadata: {
+            durationDays:
+              typeof normalizedDurationDays === "number"
+                ? normalizedDurationDays
+                : null,
+            businessId: normalizedBusinessId || null,
+            campaignId: normalizedCampaignId || null,
+            placement: normalizedPlacement || null,
+            checkoutFingerprint,
+          },
+        },
+        $set: {
+          updatedAt: new Date(),
+          // Keep paymentIntentId fresh if Stripe returns it on retry/reuse
+          paymentIntentId:
+            typeof stripeSession.payment_intent === "string"
+              ? stripeSession.payment_intent
+              : null,
+        },
+      },
+      { upsert: true },
+    );
+
+    return res.status(200).json({
+      sessionId: stripeSession.id,
+      url: stripeSession.url,
+    });
   } catch (err: any) {
     console.error("❌ Stripe session creation failed:", err);
+
+    // More helpful message for the seller transfer capability issue you hit
+    if (err?.code === "insufficient_capabilities_for_transfer") {
+      return res.status(400).json({
+        error:
+          "Seller Stripe account is not yet enabled for transfers. Complete Stripe onboarding and enable payouts/transfers.",
+      });
+    }
+
     return res.status(500).json({
       error:
         process.env.NODE_ENV === "production"
           ? "Internal Server Error"
-          : err.message,
+          : err?.message || "Stripe error",
     });
   }
 }

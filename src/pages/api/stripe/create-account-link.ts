@@ -1,77 +1,88 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
 import clientPromise from "@/lib/mongodb";
+import cookie from "cookie";
+import jwt from "jsonwebtoken";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2025-02-24.acacia",
-});
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
-interface CreateAccountLinkPayload {
-  email: string;
+function getOrigin(req: NextApiRequest) {
+  const origin = req.headers.origin as string | undefined;
+  if (origin) return origin;
+  const host = req.headers.host;
+  return host ? `http://${host}` : "http://localhost:3000";
+}
+
+function getSession(req: NextApiRequest) {
+  const cookies = cookie.parse(req.headers.cookie || "");
+  const token = cookies.session_token;
+  if (!token) return null;
+
+  const SECRET = process.env.JWT_SECRET || process.env.NEXTAUTH_SECRET;
+  if (!SECRET) throw new Error("JWT_SECRET is not set");
+
+  const decoded = jwt.verify(token, SECRET) as any;
+  return { userId: decoded?.userId as string, email: decoded?.email as string };
 }
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  if (req.method !== "POST") {
-    res.setHeader("Allow", "POST");
-    return res.status(405).end("Method Not Allowed");
-  }
-
-  const { email } = req.body as CreateAccountLinkPayload;
-  if (!email) {
-    return res.status(400).json({ error: "Email is required" });
-  }
+  if (req.method !== "POST")
+    return res.status(405).json({ error: "Method not allowed" });
 
   try {
+    const session = getSession(req);
+    if (!session?.userId)
+      return res.status(401).json({ error: "Unauthorized" });
+
     const client = await clientPromise;
-    const db = client.db();
+    const db = client.db("bwes-cluster");
     const sellers = db.collection("sellers");
 
-    // 1) Find (or create) your seller record
-    const seller = await sellers.findOne({ email });
-    if (!seller) {
-      return res.status(404).json({ error: "Seller not found" });
-    }
+    const seller = await sellers.findOne({
+      $or: [
+        { userId: session.userId },
+        ...(session.email ? [{ email: session.email }] : []),
+      ],
+    });
 
-    let stripeAccountId = seller.stripeAccountId;
-    // 2) If they don’t yet have a Stripe account, create one
+    if (!seller) return res.status(400).json({ error: "Seller not found" });
+
+    let stripeAccountId = seller.stripeAccountId as string | undefined;
+
+    // Create Stripe Express account if missing
     if (!stripeAccountId) {
-      const account = await stripe.accounts.create({
+      const acct = await stripe.accounts.create({
         type: "express",
-        country: "US",
-        email,
+        email: session.email || undefined,
         capabilities: {
           card_payments: { requested: true },
           transfers: { requested: true },
         },
       });
-      stripeAccountId = account.id;
-      await sellers.updateOne({ email }, { $set: { stripeAccountId } });
+
+      stripeAccountId = acct.id;
+
+      await sellers.updateOne(
+        { _id: seller._id },
+        { $set: { stripeAccountId, stripeConnectedAt: new Date() } },
+      );
     }
 
-    // 3) Decide which link type to use:
-    //    - account_onboarding for first-time setup
-    //    - account_update for adding/updating bank or debit card info later
-    const linkType: Stripe.AccountLinkCreateParams.Type =
-      seller.stripeAccountId == null ? "account_onboarding" : "account_update";
+    const origin = getOrigin(req);
 
-    const accountLink = await stripe.accountLinks.create({
+    const link = await stripe.accountLinks.create({
       account: stripeAccountId,
-      refresh_url: `${process.env.NEXT_PUBLIC_BASE_URL}/become-a-seller`,
-      return_url: `${process.env.NEXT_PUBLIC_BASE_URL}/marketplace/add-product`,
-      type: linkType,
+      type: "account_onboarding",
+      refresh_url: `${origin}/marketplace/dashboard?stripe=refresh`,
+      return_url: `${origin}/marketplace/dashboard?stripe=return`,
     });
 
-    return res.status(200).json({ url: accountLink.url });
+    return res.status(200).json({ url: link.url, stripeAccountId });
   } catch (err: any) {
-    console.error("Stripe onboarding error:", err);
-    return res.status(500).json({
-      error:
-        process.env.NODE_ENV === "production"
-          ? "Internal Server Error"
-          : err.message,
-    });
+    console.error("create-account-link error:", err);
+    return res.status(500).json({ error: err?.message || "Server error" });
   }
 }

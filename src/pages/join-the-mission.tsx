@@ -1,11 +1,24 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
 
+function GlowBackground() {
+  return (
+    <div className="pointer-events-none fixed inset-0 opacity-60">
+      <div className="absolute -top-24 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-yellow-500/10 blur-3xl" />
+      <div className="absolute top-[38%] left-[12%] h-[320px] w-[320px] rounded-full bg-yellow-500/5 blur-3xl" />
+    </div>
+  );
+}
+
 export default function JoinTheMissionPage() {
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-black text-white relative">
+      <GlowBackground />
+
       {/* Top Nav / Back */}
-      <div className="max-w-6xl mx-auto px-6 py-6">
+      <div className="relative max-w-6xl mx-auto px-6 py-6">
         <Link
           href="/"
           className="inline-flex items-center gap-2 text-yellow-400 hover:text-yellow-300 transition"
@@ -15,7 +28,7 @@ export default function JoinTheMissionPage() {
       </div>
 
       {/* Hero */}
-      <section className="max-w-6xl mx-auto px-6 pb-10">
+      <section className="relative max-w-6xl mx-auto px-6 pb-10">
         <div className="rounded-2xl border border-yellow-500/30 bg-gradient-to-b from-yellow-500/10 to-transparent p-8 shadow-lg">
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-yellow-400">
             Build Black Wealth Exchange With Us
@@ -29,6 +42,8 @@ export default function JoinTheMissionPage() {
           <div className="mt-6 flex flex-col sm:flex-row gap-3">
             <a
               href="https://www.blackwealthexchange.com"
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex justify-center rounded-xl bg-yellow-500 px-6 py-3 font-bold text-black hover:bg-yellow-400 transition shadow"
             >
               Visit Black Wealth Exchange
@@ -45,7 +60,7 @@ export default function JoinTheMissionPage() {
       </section>
 
       {/* Mission + Who */}
-      <section className="max-w-6xl mx-auto px-6 pb-10">
+      <section className="relative max-w-6xl mx-auto px-6 pb-10">
         <div className="grid md:grid-cols-2 gap-6">
           <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
             <h2 className="text-2xl font-bold text-yellow-400">Our Mission</h2>
@@ -65,7 +80,7 @@ export default function JoinTheMissionPage() {
 
           <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
             <h2 className="text-2xl font-bold text-yellow-400">
-              Who We are Looking For
+              Who We’re Looking For
             </h2>
             <p className="mt-3 text-white/85 leading-relaxed">
               Mission-driven interns and contributors who want to build
@@ -73,7 +88,7 @@ export default function JoinTheMissionPage() {
               everywhere.
             </p>
             <p className="mt-3 text-white/85 leading-relaxed">
-              You don not need decades of experience — you need commitment,
+              You do not need decades of experience—you need commitment,
               integrity, and a desire to grow.
             </p>
           </div>
@@ -81,7 +96,7 @@ export default function JoinTheMissionPage() {
       </section>
 
       {/* Roles */}
-      <section className="max-w-6xl mx-auto px-6 pb-12">
+      <section className="relative max-w-6xl mx-auto px-6 pb-12">
         <h2 className="text-3xl font-extrabold text-yellow-400">Open Roles</h2>
         <p className="mt-2 text-white/80 max-w-3xl">
           Choose a lane, contribute consistently, and build something that
@@ -142,7 +157,7 @@ export default function JoinTheMissionPage() {
       </section>
 
       {/* What You Get */}
-      <section className="max-w-6xl mx-auto px-6 pb-12">
+      <section className="relative max-w-6xl mx-auto px-6 pb-12">
         <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
           <h2 className="text-2xl font-bold text-yellow-400">What You Get</h2>
 
@@ -169,7 +184,7 @@ export default function JoinTheMissionPage() {
       </section>
 
       {/* Trust / Control */}
-      <section className="max-w-6xl mx-auto px-6 pb-12">
+      <section className="relative max-w-6xl mx-auto px-6 pb-12">
         <div className="rounded-2xl border border-yellow-500/25 bg-yellow-500/5 p-6">
           <h2 className="text-2xl font-bold text-yellow-400">
             How We Protect the Mission
@@ -183,7 +198,7 @@ export default function JoinTheMissionPage() {
       </section>
 
       {/* Apply */}
-      <section id="apply" className="max-w-6xl mx-auto px-6 pb-20">
+      <section id="apply" className="relative max-w-6xl mx-auto px-6 pb-20">
         <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
           <h2 className="text-2xl font-bold text-yellow-400">How to Join</h2>
 
@@ -193,7 +208,6 @@ export default function JoinTheMissionPage() {
           </p>
 
           <div className="mt-5 flex flex-col sm:flex-row gap-3">
-            {/* Internal application route */}
             <Link
               href="/apply"
               className="inline-flex justify-center rounded-xl bg-yellow-500 px-6 py-3 font-bold text-black hover:bg-yellow-400 transition shadow"
@@ -201,7 +215,6 @@ export default function JoinTheMissionPage() {
               Apply Now
             </Link>
 
-            {/* Fallback email option */}
             <a
               href="mailto:blackwealth24@gmail.com?subject=Join%20the%20Mission%20-%20Black%20Wealth%20Exchange"
               className="inline-flex justify-center rounded-xl border border-yellow-500 px-6 py-3 font-bold text-yellow-400 hover:bg-yellow-500/10 transition"
@@ -218,7 +231,7 @@ export default function JoinTheMissionPage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-white/10 py-10">
+      <footer className="relative border-t border-white/10 py-10">
         <div className="max-w-6xl mx-auto px-6 text-white/60 text-sm flex flex-col md:flex-row gap-3 md:items-center md:justify-between">
           <span>© {new Date().getFullYear()} Black Wealth Exchange</span>
           <span className="text-white/60">

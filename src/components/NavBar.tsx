@@ -33,43 +33,49 @@ export default function NavBar() {
   };
 
   return (
-    <nav className="bg-black text-white relative z-50">
-      <div className="container mx-auto px-4 flex items-center justify-between h-16">
+    <nav className="relative z-50 border-b border-white/5 bg-black text-white">
+      <div className="container mx-auto flex h-16 items-center justify-between px-4">
         {/* Logo */}
-        <Link href="/" className="flex items-center space-x-2">
-          <Image src="/favicon.png" alt="BWE Logo" width={40} height={40} />
-          <span className="text-gold font-bold truncate">
+        <Link href="/" className="flex min-w-0 items-center gap-2">
+          <Image
+            src="/favicon.png"
+            alt="BWE Logo"
+            width={36}
+            height={36}
+            className="h-9 w-9 shrink-0 object-contain"
+            priority
+          />
+          <span className="truncate text-base font-extrabold text-[#D4AF37] sm:text-lg">
             Black Wealth Exchange
           </span>
         </Link>
 
         {/* Desktop Nav */}
-        <div className="hidden md:flex items-center space-x-6">
+        <div className="hidden items-center space-x-6 md:flex">
           <Link
             href="/about"
-            className="hover:text-gold font-semibold transition-colors"
+            className="font-semibold transition-colors hover:text-[#D4AF37]"
           >
             About
           </Link>
 
           <Link
             href="/global-timeline"
-            className="hover:text-gold font-semibold transition-colors"
+            className="font-semibold transition-colors hover:text-[#D4AF37]"
           >
             Journey
           </Link>
 
           <Link
             href="/events"
-            className="hover:text-gold font-semibold transition-colors"
+            className="font-semibold transition-colors hover:text-[#D4AF37]"
           >
             Events
           </Link>
 
-          {/* ✅ Join the Mission */}
           <Link
             href="/join-the-mission"
-            className="hover:text-gold font-semibold transition-colors"
+            className="font-semibold transition-colors hover:text-[#D4AF37]"
           >
             Join the Mission
           </Link>
@@ -78,21 +84,21 @@ export default function NavBar() {
             <>
               <Link
                 href={dashboardHref}
-                className="hover:text-gold font-semibold transition-colors"
+                className="font-semibold transition-colors hover:text-[#D4AF37]"
               >
                 Dashboard
               </Link>
 
               <Link
                 href={profileHref}
-                className="hover:text-gold font-semibold transition-colors"
+                className="font-semibold transition-colors hover:text-[#D4AF37]"
               >
                 Profile
               </Link>
 
               <button
                 onClick={logout}
-                className="hover:text-red-500 font-semibold transition-colors"
+                className="font-semibold transition-colors hover:text-red-500"
               >
                 Sign Out
               </button>
@@ -101,14 +107,14 @@ export default function NavBar() {
             <>
               <Link
                 href="/login"
-                className="hover:text-gold font-semibold transition-colors"
+                className="font-semibold transition-colors hover:text-[#D4AF37]"
               >
                 Log In
               </Link>
 
               <Link
                 href="/signup"
-                className="hover:text-gold font-semibold transition-colors"
+                className="font-semibold transition-colors hover:text-[#D4AF37]"
               >
                 Sign Up
               </Link>
@@ -118,101 +124,128 @@ export default function NavBar() {
 
         {/* Mobile Menu Button */}
         <button
+          type="button"
           onClick={() => setMobileMenuOpen((open) => !open)}
-          className="md:hidden flex items-center justify-center h-10 px-4 bg-gold text-black rounded-full shadow hover:bg-yellow-500 transition"
+          aria-expanded={mobileMenuOpen}
+          aria-controls="mobile-nav-menu"
+          aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+          className="inline-flex h-10 items-center justify-center gap-2 rounded-full border border-[#D4AF37]/50 bg-black px-4 text-sm font-extrabold text-[#D4AF37] shadow-[0_0_0_1px_rgba(212,175,55,0.06)] transition hover:bg-[#D4AF37]/10 md:hidden"
         >
-          <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M4 6h16M4 12h16M4 18h16" />
+          <svg
+            className="h-4 w-4 shrink-0"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            {mobileMenuOpen ? (
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 6l12 12M18 6L6 18"
+              />
+            ) : (
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M4 7h16M4 12h16M4 17h16"
+              />
+            )}
           </svg>
-          <span className="ml-2 font-semibold">Menu</span>
+          <span>Menu</span>
         </button>
       </div>
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-black border-t border-gold px-4 pb-4 space-y-2">
-          <Link
-            href="/about"
-            className="block py-2 hover:text-gold transition-colors"
-            onClick={() => handleMobileNav()}
-          >
-            About
-          </Link>
+        <div
+          id="mobile-nav-menu"
+          className="border-t border-[#D4AF37]/20 bg-black/95 px-4 pb-4 pt-3 md:hidden"
+        >
+          <div className="space-y-1 rounded-2xl border border-white/10 bg-white/[0.03] p-3 shadow-[0_0_0_1px_rgba(255,255,255,0.04)]">
+            <Link
+              href="/about"
+              className="block rounded-xl px-3 py-2.5 font-medium text-white/85 transition-colors hover:bg-white/[0.04] hover:text-[#D4AF37]"
+              onClick={() => handleMobileNav()}
+            >
+              About
+            </Link>
 
-          <Link
-            href="/global-timeline"
-            className="block py-2 hover:text-gold transition-colors"
-            onClick={() => handleMobileNav()}
-          >
-            Journey
-          </Link>
+            <Link
+              href="/global-timeline"
+              className="block rounded-xl px-3 py-2.5 font-medium text-white/85 transition-colors hover:bg-white/[0.04] hover:text-[#D4AF37]"
+              onClick={() => handleMobileNav()}
+            >
+              Journey
+            </Link>
 
-          <Link
-            href="/events"
-            className="block py-2 hover:text-gold transition-colors"
-            onClick={() => handleMobileNav()}
-          >
-            Events
-          </Link>
+            <Link
+              href="/events"
+              className="block rounded-xl px-3 py-2.5 font-medium text-white/85 transition-colors hover:bg-white/[0.04] hover:text-[#D4AF37]"
+              onClick={() => handleMobileNav()}
+            >
+              Events
+            </Link>
 
-          {/* ✅ Join the Mission */}
-          <Link
-            href="/join-the-mission"
-            className="block py-2 hover:text-gold transition-colors"
-            onClick={() => handleMobileNav()}
-          >
-            Join the Mission
-          </Link>
+            <Link
+              href="/join-the-mission"
+              className="block rounded-xl px-3 py-2.5 font-medium text-white/85 transition-colors hover:bg-white/[0.04] hover:text-[#D4AF37]"
+              onClick={() => handleMobileNav()}
+            >
+              Join the Mission
+            </Link>
 
-          <hr className="border-gray-700 my-2" />
+            <div className="my-2 h-px bg-white/10" />
 
-          {loading ? null : user ? (
-            <>
-              <Link
-                href={dashboardHref}
-                className="block py-2 hover:text-gold transition-colors"
-                onClick={() => handleMobileNav()}
-              >
-                Dashboard
-              </Link>
+            {loading ? null : user ? (
+              <>
+                <Link
+                  href={dashboardHref}
+                  className="block rounded-xl px-3 py-2.5 font-medium text-white/85 transition-colors hover:bg-white/[0.04] hover:text-[#D4AF37]"
+                  onClick={() => handleMobileNav()}
+                >
+                  Dashboard
+                </Link>
 
-              <Link
-                href={profileHref}
-                className="block py-2 hover:text-gold transition-colors"
-                onClick={() => handleMobileNav()}
-              >
-                Profile
-              </Link>
+                <Link
+                  href={profileHref}
+                  className="block rounded-xl px-3 py-2.5 font-medium text-white/85 transition-colors hover:bg-white/[0.04] hover:text-[#D4AF37]"
+                  onClick={() => handleMobileNav()}
+                >
+                  Profile
+                </Link>
 
-              <button
-                onClick={() => {
-                  logout();
-                  setMobileMenuOpen(false);
-                }}
-                className="w-full text-left py-2 hover:text-red-500 font-semibold transition-colors"
-              >
-                Sign Out
-              </button>
-            </>
-          ) : (
-            <>
-              <Link
-                href="/login"
-                className="block py-2 hover:text-gold transition-colors"
-                onClick={() => handleMobileNav()}
-              >
-                Log In
-              </Link>
+                <button
+                  onClick={() => {
+                    logout();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="block w-full rounded-xl px-3 py-2.5 text-left font-semibold text-white/85 transition-colors hover:bg-white/[0.04] hover:text-red-500"
+                >
+                  Sign Out
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className="block rounded-xl px-3 py-2.5 font-medium text-white/85 transition-colors hover:bg-white/[0.04] hover:text-[#D4AF37]"
+                  onClick={() => handleMobileNav()}
+                >
+                  Log In
+                </Link>
 
-              <Link
-                href="/signup"
-                className="block py-2 hover:text-gold transition-colors"
-                onClick={() => handleMobileNav()}
-              >
-                Sign Up
-              </Link>
-            </>
-          )}
+                <Link
+                  href="/signup"
+                  className="block rounded-xl px-3 py-2.5 font-medium text-white/85 transition-colors hover:bg-white/[0.04] hover:text-[#D4AF37]"
+                  onClick={() => handleMobileNav()}
+                >
+                  Sign Up
+                </Link>
+              </>
+            )}
+          </div>
         </div>
       )}
     </nav>

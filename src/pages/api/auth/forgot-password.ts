@@ -1,49 +1,135 @@
-// /pages/api/auth/forgot-password.ts
-
-import { NextApiRequest, NextApiResponse } from "next";
+// src/pages/api/auth/forgot-password.ts
+import type { NextApiRequest, NextApiResponse } from "next";
+import crypto from "crypto";
 import clientPromise from "../../../lib/mongodb";
-import { v4 as uuidv4 } from "uuid";
 import nodemailer from "nodemailer";
+
+/**
+ * Build APP_URL safely:
+ * - Uses NEXT_PUBLIC_APP_URL / APP_URL when provided
+ * - Falls back to localhost only in development
+ * - In production, do NOT silently fall back to localhost
+ */
+const APP_URL =
+  process.env.NEXT_PUBLIC_APP_URL ||
+  process.env.APP_URL ||
+  (process.env.NODE_ENV === "development" ? "http://localhost:3000" : "");
+
+const RESET_TOKEN_SECRET =
+  process.env.RESET_TOKEN_SECRET ||
+  process.env.JWT_SECRET ||
+  "dev-reset-secret";
+
+const RESET_TTL_MINUTES = 60;
+
+function isValidEmail(email: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function sha256(input: string) {
+  return crypto.createHash("sha256").update(input).digest("hex");
+}
+
+async function findAccountByEmail(db: any, email: string) {
+  const checks: Array<{ type: string; collection: string }> = [
+    { type: "business", collection: "businesses" },
+    { type: "seller", collection: "sellers" },
+    { type: "employer", collection: "employers" },
+    { type: "user", collection: "users" },
+  ];
+
+  for (const c of checks) {
+    const doc = await db.collection(c.collection).findOne({ email });
+    if (doc) return { accountType: c.type, collection: c.collection };
+  }
+
+  return null;
+}
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
   if (req.method !== "POST") {
-    return res.status(405).json({ message: "Method Not Allowed" });
+    res.setHeader("Allow", "POST");
+    return res.status(405).json({ error: "Method Not Allowed" });
   }
 
-  const { email } = req.body;
+  const raw = req.body?.email;
 
-  if (!email) {
-    return res.status(400).json({ message: "Email is required" });
+  if (typeof raw !== "string") {
+    return res.status(400).json({ error: "Email is required." });
+  }
+
+  const email = raw.trim().toLowerCase();
+
+  if (!email || !isValidEmail(email)) {
+    return res.status(400).json({ error: "Invalid email format." });
   }
 
   try {
     const client = await clientPromise;
     const db = client.db("bwes-cluster");
-    const users = db.collection("users");
 
-    const user = await users.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+    // Always return generic success to avoid account enumeration
+    const genericOk = () =>
+      res.status(200).json({
+        message: "If this email exists, reset instructions will be sent.",
+      });
+
+    // Prevent spam/replay: ignore repeated active requests for same email within 10 minutes
+    const recent = await db.collection("password_resets").findOne({
+      email,
+      createdAt: { $gte: new Date(Date.now() - 10 * 60 * 1000) },
+      usedAt: null,
+      expiresAt: { $gt: new Date() },
+    });
+
+    if (recent) {
+      return genericOk();
     }
 
-    const token = uuidv4();
-    const expiresAt = new Date(Date.now() + 1000 * 60 * 30); // 30 mins
+    // Find account across all supported account collections
+    const account = await findAccountByEmail(db, email);
+    if (!account) {
+      return genericOk();
+    }
 
-    await users.updateOne(
-      { email },
-      {
-        $set: {
-          resetPasswordToken: token,
-          resetPasswordExpires: expiresAt,
-        },
-      },
-    );
+    // Create token + hashed token
+    const token = crypto.randomBytes(32).toString("hex");
+    const tokenHash = sha256(`${token}.${RESET_TOKEN_SECRET}`);
+    const expiresAt = new Date(Date.now() + RESET_TTL_MINUTES * 60 * 1000);
 
-    const resetLink = `${process.env.NEXT_PUBLIC_BASE_URL}/reset-password?token=${token}`;
+    await db.collection("password_resets").insertOne({
+      email,
+      accountType: account.accountType,
+      collection: account.collection,
+      tokenHash,
+      createdAt: new Date(),
+      expiresAt,
+      usedAt: null,
+      ip:
+        (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() ||
+        req.socket.remoteAddress ||
+        null,
+      userAgent: req.headers["user-agent"] || null,
+    });
 
+    // Build reset link
+    const baseUrl =
+      APP_URL ||
+      process.env.NEXT_PUBLIC_BASE_URL ||
+      process.env.VERCEL_URL ||
+      "";
+
+    const normalizedBaseUrl =
+      baseUrl && !baseUrl.startsWith("http") ? `https://${baseUrl}` : baseUrl;
+
+    const resetLink = `${normalizedBaseUrl}/reset-password?token=${encodeURIComponent(
+      token,
+    )}`;
+
+    // Send email
     const transporter = nodemailer.createTransport({
       service: "Gmail",
       auth: {
@@ -52,18 +138,45 @@ export default async function handler(
       },
     });
 
-    const mailOptions = {
-      from: `Black Wealth Exchange <${process.env.EMAIL_USER}>`,
+    const fromEmail = process.env.EMAIL_USER || "blackwealth24@gmail.com";
+
+    await transporter.sendMail({
+      from: `"Black Wealth Exchange" <${fromEmail}>`,
       to: email,
-      subject: "Reset Your Password",
-      html: `<p>Click below to reset your password:</p><p><a href="${resetLink}">${resetLink}</a></p>`,
-    };
+      subject: "Reset your Black Wealth Exchange password",
+      text: `We received a request to reset your password.
 
-    await transporter.sendMail(mailOptions);
+Reset link (valid for ${RESET_TTL_MINUTES} minutes):
+${resetLink}
 
-    return res.status(200).json({ message: "Reset email sent" });
+If you didn’t request this, you can ignore this email.`,
+      html: `
+        <div style="font-family: Arial, sans-serif; line-height: 1.6;">
+          <h2>Reset your password</h2>
+          <p>We received a request to reset your Black Wealth Exchange password.</p>
+          <p>
+            <a
+              href="${resetLink}"
+              style="display:inline-block;padding:12px 16px;text-decoration:none;border-radius:8px;background:#d4af37;color:#000;font-weight:bold;"
+            >
+              Reset Password
+            </a>
+          </p>
+          <p style="color:#555;">
+            This link expires in <strong>${RESET_TTL_MINUTES} minutes</strong>.
+          </p>
+          <p>If you didn’t request this, you can ignore this email.</p>
+        </div>
+      `,
+    });
+
+    return genericOk();
   } catch (err) {
-    console.error("Password Reset Error:", err);
-    return res.status(500).json({ message: "Internal Server Error" });
+    console.error("forgot-password error:", err);
+
+    // Keep response generic to avoid leaking account existence or provider details
+    return res.status(200).json({
+      message: "If this email exists, reset instructions will be sent.",
+    });
   }
 }

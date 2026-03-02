@@ -1,9 +1,64 @@
 // src/pages/advertise/custom.tsx
-"use client";
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import BuyNowButton from "@/components/BuyNowButton";
+
+type SaveResponse =
+  | { success: true; requestId: string; message: string }
+  | { success: false; error: string };
+
+type CheckoutResponse = { url: string } | { success?: false; error?: string };
+
+const CUSTOM_OPTIONS = [
+  {
+    id: "homepage-feature",
+    title: "Homepage Feature",
+    description:
+      "Prominent homepage placement to spotlight your brand, campaign, or offer.",
+  },
+  {
+    id: "homepage-highlight-section",
+    title: "Sponsored Homepage Highlight Section",
+    description:
+      "A featured section on the homepage dedicated to your business or promotion.",
+  },
+  {
+    id: "newsletter-feature",
+    title: "Newsletter Feature",
+    description:
+      "Placement inside a promotional email or newsletter spotlight.",
+  },
+  {
+    id: "custom-landing-page",
+    title: "Custom Landing Page",
+    description:
+      "A dedicated campaign page built around your message, product, event, or offer.",
+  },
+  {
+    id: "event-webinar-promotion",
+    title: "Event / Webinar Promotion",
+    description:
+      "Promotion for webinars, live events, launches, community events, or speaking engagements.",
+  },
+  {
+    id: "product-launch-campaign",
+    title: "Product Launch Campaign",
+    description:
+      "A custom campaign designed to support a new product, service, or major announcement.",
+  },
+  {
+    id: "long-term-brand-partnership",
+    title: "Long-Term Brand Partnership",
+    description:
+      "Extended collaboration opportunities for businesses seeking ongoing visibility.",
+  },
+  {
+    id: "other",
+    title: "Other",
+    description:
+      "Something custom that does not fit the options above. Tell us what you need.",
+  },
+];
 
 export default function CustomAd() {
   const [userId, setUserId] = useState("guest");
@@ -11,80 +66,229 @@ export default function CustomAd() {
   const [business, setBusiness] = useState("");
   const [email, setEmail] = useState("");
   const [details, setDetails] = useState("");
+  const [budget, setBudget] = useState("");
+  const [timeline, setTimeline] = useState("");
+  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+
   const [submitted, setSubmitted] = useState(false);
+  const [requestId, setRequestId] = useState("");
+  const [error, setError] = useState("");
+
+  const [savingRequest, setSavingRequest] = useState(false);
+  const [startingCheckout, setStartingCheckout] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        // ← FIXED: include cache and credentials here
         const res = await fetch("/api/auth/me", {
           cache: "no-store",
           credentials: "include",
         });
-        if (res.ok) {
-          const data = await res.json();
-          if (data?.user?._id) {
-            setUserId(data.user._id);
-            setEmail(data.user.email || "");
-          }
+
+        if (!res.ok) return;
+
+        const data = await res.json();
+        if (data?.user?._id) {
+          setUserId(data.user._id);
+        }
+        if (data?.user?.email) {
+          setEmail(data.user.email);
         }
       } catch (err) {
-        console.error("Failed to fetch user ID", err);
+        console.error("Failed to fetch user", err);
       }
     };
 
     fetchUser();
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const toggleOption = (optionId: string) => {
+    setSelectedOptions((prev) =>
+      prev.includes(optionId)
+        ? prev.filter((item) => item !== optionId)
+        : [...prev, optionId],
+    );
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log({ name, business, email, details });
-    setSubmitted(true);
+    setError("");
+
+    if (selectedOptions.length === 0) {
+      setError("Please select at least one custom advertising option.");
+      return;
+    }
+
+    setSavingRequest(true);
+
+    try {
+      const res = await fetch("/api/advertising/custom-request", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          userId,
+          name,
+          business,
+          email,
+          details,
+          budget,
+          timeline,
+          selectedOptions,
+        }),
+      });
+
+      const data: SaveResponse = await res.json();
+
+      if (!res.ok || !data.success) {
+        throw new Error(
+          "error" in data ? data.error : "Failed to save custom request.",
+        );
+      }
+
+      setRequestId(data.requestId);
+      setSubmitted(true);
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Failed to save custom request.";
+      setError(message);
+    } finally {
+      setSavingRequest(false);
+    }
+  };
+
+  const handleReserveDeposit = async () => {
+    if (!requestId) {
+      setError("Please submit your custom request before paying the deposit.");
+      return;
+    }
+
+    setError("");
+    setStartingCheckout(true);
+
+    try {
+      const res = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          userId,
+          itemId: "custom-ad-deposit",
+          amount: 100,
+          type: "ad",
+          customRequestId: requestId,
+          adKind: "custom",
+        }),
+      });
+
+      const data: CheckoutResponse = await res.json();
+
+      if (!res.ok || !("url" in data) || !data.url) {
+        throw new Error(
+          "error" in data && data.error
+            ? data.error
+            : "Failed to start checkout.",
+        );
+      }
+
+      window.location.href = data.url;
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Failed to start checkout.";
+      setError(message);
+    } finally {
+      setStartingCheckout(false);
+    }
   };
 
   return (
     <div className="min-h-screen bg-black text-white px-6 py-12 flex flex-col items-center text-center">
-      <div className="max-w-3xl w-full">
+      <div className="max-w-4xl w-full">
         <h1 className="text-4xl font-bold text-gold mb-4">
           Custom Advertising Solutions
         </h1>
+
         <p className="text-lg text-gray-400 mb-6">
-          Want to build something unique and powerful for your brand? Let us
-          collaborate on a custom advertising package that fits your goals and
-          budget.
+          Want something more tailored than a standard ad placement? Build a
+          campaign around your goals with flexible promotional options designed
+          for your brand.
         </p>
 
-        {/* Breakdown of what’s possible */}
         <div className="bg-gray-800 p-6 rounded-lg text-left mb-10">
           <h2 className="text-2xl text-gold font-semibold mb-4">
-            What is Possible?
+            Available Custom Advertising Options
           </h2>
-          <ul className="list-disc list-inside space-y-3 text-gray-300">
-            <li>Sponsored homepage takeovers or highlight sections</li>
-            <li>Exclusive email newsletter features</li>
-            <li>Custom landing pages for your campaign</li>
-            <li>Event, webinar, or product launch partnerships</li>
-            <li>Long-term brand partnership opportunities</li>
-          </ul>
+          <p className="text-gray-300 mb-4">
+            Select one or more options below when submitting your request.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {CUSTOM_OPTIONS.map((option) => {
+              const selected = selectedOptions.includes(option.id);
+
+              return (
+                <button
+                  key={option.id}
+                  type="button"
+                  onClick={() => toggleOption(option.id)}
+                  className={`rounded-lg border p-4 text-left transition ${
+                    selected
+                      ? "border-gold bg-gold/10 shadow-md"
+                      : "border-gray-700 bg-gray-900 hover:border-gold/60"
+                  }`}
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <h3 className="text-lg font-semibold text-gold">
+                        {option.title}
+                      </h3>
+                      <p className="mt-2 text-sm text-gray-300">
+                        {option.description}
+                      </p>
+                    </div>
+                    <div
+                      className={`mt-1 h-5 w-5 rounded border flex items-center justify-center text-xs font-bold ${
+                        selected
+                          ? "border-gold bg-gold text-black"
+                          : "border-gray-500 text-transparent"
+                      }`}
+                    >
+                      ✓
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
-        {/* Pricing Info */}
         <div className="bg-gray-700 text-left p-6 rounded-lg mb-10">
           <h3 className="text-xl font-bold text-gold mb-2">Starting at $100</h3>
           <p className="text-gray-300 text-sm">
-            Custom campaigns start at $100. Pricing will vary depending on the
-            scope, duration, and media involved. After submission, our team will
-            follow up with a tailored quote.
+            Custom campaigns start at $100. Pricing varies based on scope,
+            duration, placement, creative needs, and campaign complexity. Submit
+            your request first, and if you are ready, you can reserve your
+            campaign with the $100 deposit after submission.
           </p>
         </div>
+
+        {error ? (
+          <div className="mb-6 rounded-lg border border-red-500 bg-red-950/60 p-4 text-left text-red-200">
+            {error}
+          </div>
+        ) : null}
 
         {!submitted ? (
           <form
             onSubmit={handleSubmit}
-            className="bg-gray-900 p-6 rounded-lg shadow-md text-left space-y-4"
+            className="bg-gray-900 p-6 rounded-lg shadow-md text-left space-y-5"
           >
             <h3 className="text-xl text-gold font-bold mb-2 text-center">
-              Tell Us What You Need
+              Submit Your Custom Advertising Request
             </h3>
 
             <div>
@@ -94,7 +298,7 @@ export default function CustomAd() {
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full p-2 rounded bg-gray-700 text-white"
+                className="w-full p-3 rounded bg-gray-700 text-white"
               />
             </div>
 
@@ -105,7 +309,7 @@ export default function CustomAd() {
                 required
                 value={business}
                 onChange={(e) => setBusiness(e.target.value)}
-                className="w-full p-2 rounded bg-gray-700 text-white"
+                className="w-full p-3 rounded bg-gray-700 text-white"
               />
             </div>
 
@@ -116,8 +320,69 @@ export default function CustomAd() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full p-2 rounded bg-gray-700 text-white"
+                className="w-full p-3 rounded bg-gray-700 text-white"
               />
+            </div>
+
+            <div>
+              <label className="block mb-2 text-sm">
+                Selected Advertising Options
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {selectedOptions.length > 0 ? (
+                  selectedOptions.map((optionId) => {
+                    const match = CUSTOM_OPTIONS.find((o) => o.id === optionId);
+                    if (!match) return null;
+
+                    return (
+                      <span
+                        key={optionId}
+                        className="px-3 py-1 rounded-full bg-gold text-black text-sm font-medium"
+                      >
+                        {match.title}
+                      </span>
+                    );
+                  })
+                ) : (
+                  <p className="text-sm text-gray-400">
+                    No options selected yet.
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div>
+              <label className="block mb-1 text-sm">Estimated Budget</label>
+              <select
+                value={budget}
+                onChange={(e) => setBudget(e.target.value)}
+                className="w-full p-3 rounded bg-gray-700 text-white"
+              >
+                <option value="">Select a budget range</option>
+                <option value="under-250">Under $250</option>
+                <option value="250-500">$250 - $500</option>
+                <option value="500-1000">$500 - $1,000</option>
+                <option value="1000-2500">$1,000 - $2,500</option>
+                <option value="2500-plus">$2,500+</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block mb-1 text-sm">Preferred Timeline</label>
+              <select
+                value={timeline}
+                onChange={(e) => setTimeline(e.target.value)}
+                className="w-full p-3 rounded bg-gray-700 text-white"
+              >
+                <option value="">Select a timeline</option>
+                <option value="asap">As Soon As Possible</option>
+                <option value="within-2-weeks">Within 2 Weeks</option>
+                <option value="within-30-days">Within 30 Days</option>
+                <option value="next-60-days">Within 60 Days</option>
+                <option value="planning-ahead">
+                  Planning Ahead / Future Campaign
+                </option>
+              </select>
             </div>
 
             <div>
@@ -128,41 +393,50 @@ export default function CustomAd() {
                 required
                 value={details}
                 onChange={(e) => setDetails(e.target.value)}
-                className="w-full p-2 rounded bg-gray-700 text-white min-h-[120px]"
+                className="w-full p-3 rounded bg-gray-700 text-white min-h-[160px]"
+                placeholder="Describe your campaign goals, audience, preferred placement, message, timing, and anything else you want us to know."
               />
             </div>
 
             <button
               type="submit"
-              className="w-full mt-4 py-2 px-4 bg-gold text-black font-semibold rounded hover:bg-yellow-400 transition"
+              disabled={savingRequest}
+              className="w-full mt-4 py-3 px-4 bg-gold text-black font-semibold rounded hover:bg-yellow-400 transition disabled:opacity-60"
             >
-              Submit Custom Request
+              {savingRequest ? "Submitting..." : "Submit Custom Request"}
             </button>
           </form>
         ) : (
-          <div className="bg-green-600 text-white p-6 rounded-lg">
-            <h3 className="text-2xl font-semibold mb-2">Thank You!</h3>
-            <p>
-              We have received your request. A member of our team will follow up
-              shortly to discuss your custom advertising needs.
+          <div className="bg-green-600 text-white p-6 rounded-lg text-left">
+            <h3 className="text-2xl font-semibold mb-2">Request Received</h3>
+            <p className="mb-3">
+              Your custom advertising request has been saved successfully.
             </p>
+
+            <p className="mb-3 text-green-100">
+              A member of our team will review your request and follow up with
+              next steps.
+            </p>
+
+            <p className="text-sm text-green-100 break-all">
+              Request ID: {requestId}
+            </p>
+
+            <div className="mt-6">
+              <button
+                type="button"
+                onClick={handleReserveDeposit}
+                disabled={startingCheckout}
+                className="w-full py-3 px-4 bg-gold text-black font-semibold rounded hover:bg-yellow-400 transition disabled:opacity-60"
+              >
+                {startingCheckout
+                  ? "Starting checkout..."
+                  : "Reserve With $100 Deposit"}
+              </button>
+            </div>
           </div>
         )}
 
-        {/* Buy Now Button for Reserved Custom Deposit */}
-        <div className="mt-10 text-center">
-          <h3 className="text-xl text-white font-semibold mb-2">
-            Ready to Reserve Your Custom Campaign?
-          </h3>
-          <BuyNowButton
-            userId={userId}
-            itemId="custom-ad-deposit"
-            amount={100}
-            type="ad"
-          />
-        </div>
-
-        {/* Back to Ad Options */}
         <div className="mt-10">
           <Link href="/advertise-with-us">
             <button className="px-6 py-2 bg-gold text-black font-semibold rounded hover:bg-yellow-400 transition">
