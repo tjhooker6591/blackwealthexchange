@@ -1,6 +1,5 @@
 import { MongoClient } from "mongodb";
 
-// Helper to safely escape user input for regex
 function escapeRegex(string) {
   return String(string || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
@@ -10,7 +9,6 @@ function toInt(v, def) {
   return Number.isFinite(n) ? n : def;
 }
 
-// Global cached Mongo client (prevents reconnecting every request)
 let _cached = global.__mongoSearchBusinesses;
 if (!_cached) {
   _cached = global.__mongoSearchBusinesses = { client: null, promise: null };
@@ -32,10 +30,20 @@ async function getClient(uri) {
 function normalizeType(raw) {
   const t = String(raw || "").toLowerCase();
   if (
-    ["org", "orgs", "organization", "organizations", "organisation"].includes(t)
-  )
+    ["org", "orgs", "organization", "organizations", "organisation"].includes(
+      t,
+    )
+  ) {
     return "organizations";
+  }
   return "businesses";
+}
+
+function normalizeSort(raw) {
+  const t = String(raw || "relevance").toLowerCase();
+  if (["newest", "recent"].includes(t)) return "newest";
+  if (["completeness", "complete"].includes(t)) return "completeness";
+  return "relevance";
 }
 
 function buildTokenSearchClause(q, fields) {
@@ -47,7 +55,6 @@ function buildTokenSearchClause(q, fields) {
 
   if (!tokens.length) return null;
 
-  // Require each token to match at least one field (AND across tokens)
   return {
     $and: tokens.map((tok) => {
       const rx = new RegExp(escapeRegex(tok), "i");
@@ -56,20 +63,54 @@ function buildTokenSearchClause(q, fields) {
   };
 }
 
+function normalizeOrgDoc(d) {
+  return {
+    ...d,
+    business_name: d.business_name || d.name || d.organization_name || "",
+    categories: d.categories || d.orgType || d.category || "",
+    entityType: d.entityType || "organization",
+  };
+}
+
+function completenessScore(doc) {
+  const fields = [
+    "business_name",
+    "name",
+    "organization_name",
+    "description",
+    "address",
+    "city",
+    "state",
+    "phone",
+    "website",
+    "categories",
+    "category",
+    "display_categories",
+    "image",
+  ];
+  return fields.reduce((acc, key) => {
+    const v = doc?.[key];
+    if (Array.isArray(v)) return acc + (v.length > 0 ? 1 : 0);
+    return acc + (v !== undefined && v !== null && String(v).trim() ? 1 : 0);
+  }, 0);
+}
+
 export default async function handler(req, res) {
   res.setHeader("Cache-Control", "no-store");
 
-  // ✅ Accept BOTH q and search
   const qRaw = String(req.query.q ?? req.query.search ?? "").trim();
-
   const categoryRaw = String(req.query.category ?? "").trim();
   const category = categoryRaw && categoryRaw !== "All" ? categoryRaw : "";
 
-  // ✅ type can be passed as type=organizations / type=businesses (also accepts ty=)
   const type = normalizeType(req.query.type ?? req.query.ty);
+  const sort = normalizeSort(req.query.sort);
+  const state = String(req.query.state ?? "").trim().toUpperCase().slice(0, 2);
+  const verifiedOnly = String(req.query.verifiedOnly ?? "0") === "1";
+  const sponsoredFirst = String(req.query.sponsoredFirst ?? "0") === "1";
 
-  // Optional limit (default 50)
-  const limit = Math.min(200, Math.max(1, toInt(req.query.limit, 50)));
+  const page = Math.max(1, toInt(req.query.page, 1));
+  const limit = Math.min(200, Math.max(1, toInt(req.query.limit, 20)));
+  const skip = (page - 1) * limit;
 
   const uri =
     process.env.MONGODB_URI ||
@@ -85,11 +126,8 @@ export default async function handler(req, res) {
     const database = client.db("bwes-cluster");
 
     const isOrgs = type === "organizations";
-    const collection = database.collection(
-      isOrgs ? "organizations" : "businesses",
-    );
+    const collection = database.collection(isOrgs ? "organizations" : "businesses");
 
-    // Fields to search (broad + safe)
     const searchFields = isOrgs
       ? [
           "name",
@@ -120,65 +158,66 @@ export default async function handler(req, res) {
           "source",
         ];
 
-    // Category matching fields
     const categoryFields = isOrgs
       ? ["orgType", "categories", "category", "description"]
       : ["categories", "category", "display_categories", "description"];
 
-    let query = {};
+    const clauses = [];
 
-    const tokenClause = qRaw
-      ? buildTokenSearchClause(qRaw, searchFields)
-      : null;
+    const tokenClause = qRaw ? buildTokenSearchClause(qRaw, searchFields) : null;
+    if (tokenClause) clauses.push(tokenClause);
 
-    const categoryClause = category
-      ? (() => {
-          const rx = new RegExp(escapeRegex(category), "i");
-          return { $or: categoryFields.map((f) => ({ [f]: rx })) };
-        })()
-      : null;
-
-    if (tokenClause && categoryClause) {
-      query = { $and: [tokenClause, categoryClause] };
-    } else if (tokenClause) {
-      query = tokenClause;
-    } else if (categoryClause) {
-      query = categoryClause;
-    } else {
-      // No search or category: return up to limit
-      const docs = await collection.find({}).limit(limit).toArray();
-
-      // If organizations, normalize keys so UI can render similarly
-      if (isOrgs) {
-        return res.status(200).json(
-          docs.map((d) => ({
-            ...d,
-            business_name:
-              d.business_name || d.name || d.organization_name || "",
-            categories: d.categories || d.orgType || d.category || "",
-            entityType: d.entityType || "organization",
-          })),
-        );
-      }
-
-      return res.status(200).json(docs);
+    if (category) {
+      const rx = new RegExp(escapeRegex(category), "i");
+      clauses.push({ $or: categoryFields.map((f) => ({ [f]: rx })) });
     }
 
-    const docs = await collection.find(query).limit(limit).toArray();
-
-    // If organizations, normalize keys so UI can render similarly
-    if (isOrgs) {
-      return res.status(200).json(
-        docs.map((d) => ({
-          ...d,
-          business_name: d.business_name || d.name || d.organization_name || "",
-          categories: d.categories || d.orgType || d.category || "",
-          entityType: d.entityType || "organization",
-        })),
-      );
+    if (state) {
+      clauses.push({ state: new RegExp(`^${escapeRegex(state)}$`, "i") });
     }
 
-    return res.status(200).json(docs);
+    if (verifiedOnly) {
+      clauses.push({
+        $or: [{ verified: true }, { isVerified: true }, { status: "verified" }],
+      });
+    }
+
+    const query = clauses.length ? { $and: clauses } : {};
+
+    const total = await collection.countDocuments(query);
+
+    let sortSpec = { amountPaid: -1, createdAt: -1, _id: -1 };
+    if (sort === "newest") {
+      sortSpec = { createdAt: -1, _id: -1 };
+    }
+
+    let docs = await collection.find(query).sort(sortSpec).skip(skip).limit(limit).toArray();
+
+    if (sort === "completeness") {
+      docs = docs
+        .map((d) => ({ ...d, __completeness: completenessScore(d) }))
+        .sort((a, b) => b.__completeness - a.__completeness)
+        .map(({ __completeness, ...rest }) => rest);
+    }
+
+    if (sponsoredFirst) {
+      docs = docs.sort((a, b) => {
+        const sa = Number(a?.amountPaid || 0);
+        const sb = Number(b?.amountPaid || 0);
+        return sb - sa;
+      });
+    }
+
+    const items = isOrgs ? docs.map(normalizeOrgDoc) : docs;
+
+    return res.status(200).json({
+      status: "ok",
+      page,
+      limit,
+      total,
+      hasMore: page * limit < total,
+      items,
+    });
   } catch (error) {
     console.error("searchBusinesses error:", error);
     return res.status(500).json({ error: "Error fetching from MongoDB" });

@@ -306,6 +306,10 @@ export default function BusinessDirectory() {
 
   const [input, setInput] = useState("");
   const [category, setCategory] = useState("All");
+  const [sort, setSort] = useState("relevance");
+  const [stateFilter, setStateFilter] = useState("");
+  const [verifiedOnly, setVerifiedOnly] = useState(false);
+  const [sponsoredFirst, setSponsoredFirst] = useState(false);
 
   const [rows, setRows] = useState<Row[]>([]);
   const [total, setTotal] = useState(0);
@@ -334,9 +338,19 @@ export default function BusinessDirectory() {
     const cat =
       typeof router.query.category === "string" ? router.query.category : "All";
     const p = toInt(router.query.page, 1);
+    const s =
+      typeof router.query.sort === "string" ? router.query.sort : "relevance";
+    const st =
+      typeof router.query.state === "string" ? router.query.state : "";
+    const vo = String(router.query.verifiedOnly ?? "0") === "1";
+    const sp = String(router.query.sponsoredFirst ?? "0") === "1";
 
     if (q) setInput(q);
     if (scope === "businesses") setCategory(cat || "All");
+    setSort(s || "relevance");
+    setStateFilter(st ? st.toUpperCase().slice(0, 2) : "");
+    setVerifiedOnly(vo);
+    setSponsoredFirst(sp);
     setPage(Math.max(1, p));
 
     didInitFromUrl.current = true;
@@ -346,6 +360,10 @@ export default function BusinessDirectory() {
     router.query.q,
     router.query.category,
     router.query.page,
+    router.query.sort,
+    router.query.state,
+    router.query.verifiedOnly,
+    router.query.sponsoredFirst,
     scope,
   ]);
 
@@ -360,6 +378,10 @@ export default function BusinessDirectory() {
       search: input.trim() || "",
       q: input.trim() || "",
       page: String(page),
+      sort,
+      state: stateFilter,
+      verifiedOnly: verifiedOnly ? "1" : "0",
+      sponsoredFirst: sponsoredFirst ? "1" : "0",
     };
 
     if (scope === "businesses") nextQuery.category = category || "All";
@@ -369,17 +391,30 @@ export default function BusinessDirectory() {
     if (!nextQuery.q) delete nextQuery.q;
     if (!nextQuery.page || nextQuery.page === "1") delete nextQuery.page;
     if (nextQuery.category === "All") delete nextQuery.category;
+    if (!nextQuery.state) delete nextQuery.state;
+    if (!nextQuery.sort || nextQuery.sort === "relevance") delete nextQuery.sort;
+    if (nextQuery.verifiedOnly === "0") delete nextQuery.verifiedOnly;
+    if (nextQuery.sponsoredFirst === "0") delete nextQuery.sponsoredFirst;
 
     router.replace({ pathname: router.pathname, query: nextQuery }, undefined, {
       shallow: true,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [input, category, page, scope]);
+  }, [
+    input,
+    category,
+    page,
+    scope,
+    sort,
+    stateFilter,
+    verifiedOnly,
+    sponsoredFirst,
+  ]);
 
   // Reset page when query changes
   useEffect(() => {
     setPage(1);
-  }, [input, category, scope]);
+  }, [input, category, scope, sort, stateFilter, verifiedOnly, sponsoredFirst]);
 
   // Fetch
   useEffect(() => {
@@ -414,6 +449,10 @@ export default function BusinessDirectory() {
 
       params.set("limit", String(pageSize));
       params.set("page", String(page));
+      params.set("sort", sort);
+      if (stateFilter) params.set("state", stateFilter);
+      if (verifiedOnly) params.set("verifiedOnly", "1");
+      if (sponsoredFirst) params.set("sponsoredFirst", "1");
       params.set("__nocache", "1");
 
       fetch(`/api/searchBusinesses?${params.toString()}`, {
@@ -471,7 +510,16 @@ export default function BusinessDirectory() {
       clearTimeout(timeout);
       if (abortRef.current) abortRef.current.abort();
     };
-  }, [input, category, page, scope]);
+  }, [
+    input,
+    category,
+    page,
+    scope,
+    sort,
+    stateFilter,
+    verifiedOnly,
+    sponsoredFirst,
+  ]);
 
   // Client filtering (business categories) if needed
   const filteredRows = useMemo(() => {

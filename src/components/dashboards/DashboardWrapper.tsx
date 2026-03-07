@@ -1,16 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 import SellerDashboard from "./SellerDashboard";
 import EmployerDashboard from "./EmployerDashboard";
-import BusinessDashboard from "./BusinessDashboard";
+import BusinessDashboard, { type DashboardUser } from "./BusinessDashboard";
 import UserDashboard from "./UserDashboard";
 import DashboardFrame from "./DashboardFrame";
 
 export default function DashboardWrapper() {
   const router = useRouter();
   const [accountType, setAccountType] = useState<string | null>(null);
+  const [user, setUser] = useState<DashboardUser | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -30,6 +31,7 @@ export default function DashboardWrapper() {
         if (!user?.accountType) {
           router.replace("/login?redirect=/dashboard");
         } else {
+          setUser(user);
           setAccountType(user.accountType);
         }
       } catch {
@@ -52,12 +54,14 @@ export default function DashboardWrapper() {
     <DashboardFrame>
       {accountType === "seller" && <SellerDashboard />}
       {accountType === "employer" && <EmployerDashboard />}
-      {accountType === "business" && <BusinessDashboard />}
+      {(accountType === "business" || accountType === "admin") && (
+        <BusinessDashboard user={user} />
+      )}
       {accountType === "user" && <UserDashboard />}
       {accountType &&
-        !["seller", "employer", "business", "user"].includes(accountType) && (
-          <p className="text-red-400">Unknown account type: {accountType}</p>
-        )}
+        !["seller", "employer", "business", "user", "admin"].includes(
+          accountType,
+        ) && <p className="text-red-400">Unknown account type: {accountType}</p>}
     </DashboardFrame>
   );
 }
