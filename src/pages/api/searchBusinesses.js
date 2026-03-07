@@ -30,9 +30,7 @@ async function getClient(uri) {
 function normalizeType(raw) {
   const t = String(raw || "").toLowerCase();
   if (
-    ["org", "orgs", "organization", "organizations", "organisation"].includes(
-      t,
-    )
+    ["org", "orgs", "organization", "organizations", "organisation"].includes(t)
   ) {
     return "organizations";
   }
@@ -104,7 +102,10 @@ export default async function handler(req, res) {
 
   const type = normalizeType(req.query.type ?? req.query.ty);
   const sort = normalizeSort(req.query.sort);
-  const state = String(req.query.state ?? "").trim().toUpperCase().slice(0, 2);
+  const state = String(req.query.state ?? "")
+    .trim()
+    .toUpperCase()
+    .slice(0, 2);
   const verifiedOnly = String(req.query.verifiedOnly ?? "0") === "1";
   const sponsoredFirst = String(req.query.sponsoredFirst ?? "0") === "1";
 
@@ -126,7 +127,9 @@ export default async function handler(req, res) {
     const database = client.db("bwes-cluster");
 
     const isOrgs = type === "organizations";
-    const collection = database.collection(isOrgs ? "organizations" : "businesses");
+    const collection = database.collection(
+      isOrgs ? "organizations" : "businesses",
+    );
 
     const searchFields = isOrgs
       ? [
@@ -164,7 +167,9 @@ export default async function handler(req, res) {
 
     const clauses = [];
 
-    const tokenClause = qRaw ? buildTokenSearchClause(qRaw, searchFields) : null;
+    const tokenClause = qRaw
+      ? buildTokenSearchClause(qRaw, searchFields)
+      : null;
     if (tokenClause) clauses.push(tokenClause);
 
     if (category) {
@@ -191,7 +196,12 @@ export default async function handler(req, res) {
       sortSpec = { createdAt: -1, _id: -1 };
     }
 
-    let docs = await collection.find(query).sort(sortSpec).skip(skip).limit(limit).toArray();
+    let docs = await collection
+      .find(query)
+      .sort(sortSpec)
+      .skip(skip)
+      .limit(limit)
+      .toArray();
 
     if (sort === "completeness") {
       docs = docs

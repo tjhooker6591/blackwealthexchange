@@ -340,8 +340,7 @@ export default function BusinessDirectory() {
     const p = toInt(router.query.page, 1);
     const s =
       typeof router.query.sort === "string" ? router.query.sort : "relevance";
-    const st =
-      typeof router.query.state === "string" ? router.query.state : "";
+    const st = typeof router.query.state === "string" ? router.query.state : "";
     const vo = String(router.query.verifiedOnly ?? "0") === "1";
     const sp = String(router.query.sponsoredFirst ?? "0") === "1";
 
@@ -392,7 +391,8 @@ export default function BusinessDirectory() {
     if (!nextQuery.page || nextQuery.page === "1") delete nextQuery.page;
     if (nextQuery.category === "All") delete nextQuery.category;
     if (!nextQuery.state) delete nextQuery.state;
-    if (!nextQuery.sort || nextQuery.sort === "relevance") delete nextQuery.sort;
+    if (!nextQuery.sort || nextQuery.sort === "relevance")
+      delete nextQuery.sort;
     if (nextQuery.verifiedOnly === "0") delete nextQuery.verifiedOnly;
     if (nextQuery.sponsoredFirst === "0") delete nextQuery.sponsoredFirst;
 
