@@ -9,6 +9,11 @@ import "swiper/css";
 import "swiper/css/navigation";
 import { Navigation } from "swiper/modules";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  buildDirectoryUrlQuery,
+  normalizeScope,
+  normalizeSort,
+} from "@/lib/directory/queryState";
 
 function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
@@ -29,29 +34,9 @@ function categoriesToString(v: any): string {
   return safeStr(v);
 }
 
-function normalizeScope(v: any): "businesses" | "organizations" {
-  const t = safeStr(v).toLowerCase().trim();
-  if (
-    t === "org" ||
-    t === "orgs" ||
-    t === "organisation" ||
-    t === "organization"
-  )
-    return "organizations";
-  if (t === "organizations") return "organizations";
-  return "businesses";
-}
-
 function toInt(v: any, def: number) {
   const n = parseInt(safeStr(v), 10);
   return Number.isFinite(n) ? n : def;
-}
-
-function normalizeSort(v: any): "relevance" | "newest" | "completeness" {
-  const t = safeStr(v).toLowerCase().trim();
-  if (t === "newest" || t === "recent") return "newest";
-  if (t === "completeness" || t === "complete") return "completeness";
-  return "relevance";
 }
 
 const SIDEBAR_ADS = [
@@ -379,32 +364,17 @@ export default function BusinessDirectory() {
     if (!router.isReady) return;
     if (!didInitFromUrl.current) return;
 
-    const nextQuery: Record<string, any> = {
-      ...router.query,
-      type: scope,
+    const nextQuery = buildDirectoryUrlQuery({
+      routerQuery: router.query,
       scope,
-      tab: scope,
-      search: input.trim() || "",
-      q: input.trim() || "",
-      page: String(page),
+      input,
+      page,
+      category,
       sort,
-      state: stateFilter,
-      verifiedOnly: verifiedOnly ? "1" : "0",
-      sponsoredFirst: sponsoredFirst ? "1" : "0",
-    };
-
-    if (scope === "businesses") nextQuery.category = category || "All";
-    else delete nextQuery.category;
-
-    if (!nextQuery.search) delete nextQuery.search;
-    if (!nextQuery.q) delete nextQuery.q;
-    if (!nextQuery.page || nextQuery.page === "1") delete nextQuery.page;
-    if (nextQuery.category === "All") delete nextQuery.category;
-    if (!nextQuery.state) delete nextQuery.state;
-    if (!nextQuery.sort || nextQuery.sort === "relevance")
-      delete nextQuery.sort;
-    if (nextQuery.verifiedOnly === "0") delete nextQuery.verifiedOnly;
-    if (nextQuery.sponsoredFirst === "0") delete nextQuery.sponsoredFirst;
+      stateFilter,
+      verifiedOnly,
+      sponsoredFirst,
+    });
 
     router.replace({ pathname: router.pathname, query: nextQuery }, undefined, {
       shallow: true,
@@ -751,12 +721,12 @@ export default function BusinessDirectory() {
             <div className="mt-3 rounded-2xl border border-white/10 bg-white/[0.03] p-3 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
               <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
                 <label className="rounded-xl border border-white/10 bg-black/20 px-3 py-2">
-                  <div className="text-[11px] font-bold text-white/55">Sort</div>
+                  <div className="text-[11px] font-bold text-white/55">
+                    Sort
+                  </div>
                   <select
                     value={sort}
-                    onChange={(e) =>
-                      setSort(normalizeSort(e.target.value))
-                    }
+                    onChange={(e) => setSort(normalizeSort(e.target.value))}
                     className="mt-1 w-full bg-transparent text-sm text-white outline-none"
                   >
                     <option value="relevance">Relevance (best match)</option>
@@ -766,7 +736,9 @@ export default function BusinessDirectory() {
                 </label>
 
                 <label className="rounded-xl border border-white/10 bg-black/20 px-3 py-2">
-                  <div className="text-[11px] font-bold text-white/55">State</div>
+                  <div className="text-[11px] font-bold text-white/55">
+                    State
+                  </div>
                   <input
                     value={stateFilter}
                     onChange={(e) =>
@@ -778,7 +750,9 @@ export default function BusinessDirectory() {
                 </label>
 
                 <label className="flex items-center justify-between rounded-xl border border-white/10 bg-black/20 px-3 py-2 text-sm">
-                  <span className="font-semibold text-white/80">Verified only</span>
+                  <span className="font-semibold text-white/80">
+                    Verified only
+                  </span>
                   <button
                     type="button"
                     onClick={() => setVerifiedOnly((v) => !v)}
@@ -802,7 +776,9 @@ export default function BusinessDirectory() {
                 </label>
 
                 <label className="flex items-center justify-between rounded-xl border border-white/10 bg-black/20 px-3 py-2 text-sm">
-                  <span className="font-semibold text-white/80">Sponsored first</span>
+                  <span className="font-semibold text-white/80">
+                    Sponsored first
+                  </span>
                   <button
                     type="button"
                     onClick={() => setSponsoredFirst((v) => !v)}

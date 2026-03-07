@@ -29,6 +29,10 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/router";
 import useAuth from "@/hooks/useAuth";
+import {
+  buildHomepageDirectoryQuery,
+  normalizeScope,
+} from "@/lib/directory/queryState";
 
 function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
@@ -482,41 +486,6 @@ export default function Home() {
         ? "Search churches, nonprofits, orgs…"
         : "Search Black-owned businesses…";
 
-  const normalizeScope = (v: string) => {
-    const t = String(v || "").toLowerCase();
-    if (
-      t === "org" ||
-      t === "orgs" ||
-      t === "organisation" ||
-      t === "organization"
-    ) {
-      return "organizations";
-    }
-    if (t === "business" || t === "biz") return "businesses";
-    return t === "organizations" ? "organizations" : "businesses";
-  };
-
-  const buildDirectoryQuery = (
-    q: string,
-    scope: "businesses" | "organizations",
-    ai: boolean,
-  ) => {
-    const query: Record<string, any> = {
-      q,
-      search: q,
-      type: scope,
-      scope,
-      tab: scope,
-      limit: 20,
-      sort,
-      ai: ai ? "1" : "0",
-    };
-    if (verifiedOnly) query.verifiedOnly = "1";
-    if (sponsoredFirst) query.sponsoredFirst = "1";
-    if (stateFilter) query.state = stateFilter;
-    if (category) query.category = category;
-    return query;
-  };
 
   const runSearch = (opts?: {
     verticalOverride?: VerticalKey;
@@ -564,7 +533,16 @@ export default function Home() {
 
     return router.push({
       pathname: "/business-directory",
-      query: buildDirectoryQuery(q, scope, ai),
+      query: buildHomepageDirectoryQuery({
+        q,
+        scope,
+        sort,
+        ai,
+        verifiedOnly,
+        sponsoredFirst,
+        state: stateFilter,
+        category,
+      }),
     });
   };
 

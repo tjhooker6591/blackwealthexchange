@@ -70,7 +70,47 @@ function normalizeOrgDoc(d) {
   };
 }
 
-function completenessScore(doc) {
+function tokenize(text) {
+  return String(text || "")
+    .trim()
+    .toLowerCase()
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 8);
+}
+
+function fieldAsStringExpr(fieldName) {
+  const path = `$${fieldName}`;
+  return {
+    $cond: [
+      { $isArray: path },
+      {
+        $reduce: {
+          input: path,
+          initialValue: "",
+          in: { $concat: ["$$value", " ", { $toString: "$$this" }] },
+        },
+      },
+      { $toString: { $ifNull: [path, ""] } },
+    ],
+  };
+}
+
+function nonEmptyFieldExpr(fieldName) {
+  const asString = {
+    $trim: { input: fieldAsStringExpr(fieldName) },
+  };
+
+  return {
+    $cond: [
+      { $gt: [{ $strLenCP: asString }, 0] },
+      1,
+      0,
+    ],
+  };
+}
+
+function buildCompletenessExpression() {
   const fields = [
     "business_name",
     "name",
@@ -86,46 +126,15 @@ function completenessScore(doc) {
     "display_categories",
     "image",
   ];
-  return fields.reduce((acc, key) => {
-    const v = doc?.[key];
-    if (Array.isArray(v)) return acc + (v.length > 0 ? 1 : 0);
-    return acc + (v !== undefined && v !== null && String(v).trim() ? 1 : 0);
-  }, 0);
+
+  return {
+    $add: fields.map((field) => nonEmptyFieldExpr(field)),
+  };
 }
 
-function tokenize(text) {
-  return String(text || "")
-    .trim()
-    .toLowerCase()
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 8);
-}
-
-function asSearchText(v) {
-  if (Array.isArray(v)) return v.map((x) => String(x || "")).join(" ");
-  return String(v || "");
-}
-
-function tokenMatchScore(haystack, token) {
-  const t = haystack.toLowerCase();
-  if (!t || !token) return 0;
-
-  if (t === token) return 10;
-  if (t.startsWith(token)) return 6;
-  if (new RegExp(`\\b${escapeRegex(token)}\\b`, "i").test(t)) return 4;
-  if (t.includes(token)) return 2;
-  return 0;
-}
-
-function relevanceScore(doc, query, isOrgs) {
-  const q = String(query || "")
-    .trim()
-    .toLowerCase();
-  if (!q) return 0;
-
-  const tokens = tokenize(q);
-  if (!tokens.length) return 0;
+function buildRelevanceExpression(qRaw, isOrgs) {
+  const tokens = tokenize(qRaw);
+  const phrase = String(qRaw || "").trim().toLowerCase();
 
   const weightedFields = isOrgs
     ? [
@@ -151,30 +160,67 @@ function relevanceScore(doc, query, isOrgs) {
         ["website", 1],
       ];
 
-  let score = 0;
+  const scoreTerms = [];
 
   for (const [field, weight] of weightedFields) {
-    const value = asSearchText(doc?.[field]);
-    if (!value) continue;
+    const fieldExpr = fieldAsStringExpr(field);
 
-    const valueLower = value.toLowerCase();
-    if (valueLower.includes(q)) {
-      score += weight * 8;
-      if (valueLower.startsWith(q)) score += weight * 4;
+    if (phrase) {
+      scoreTerms.push({
+        $cond: [
+          {
+            $regexMatch: {
+              input: { $toLower: fieldExpr },
+              regex: new RegExp(escapeRegex(phrase), "i"),
+            },
+          },
+          weight * 8,
+          0,
+        ],
+      });
+      scoreTerms.push({
+        $cond: [
+          {
+            $regexMatch: {
+              input: { $toLower: fieldExpr },
+              regex: new RegExp(`^${escapeRegex(phrase)}`, "i"),
+            },
+          },
+          weight * 4,
+          0,
+        ],
+      });
     }
 
     for (const token of tokens) {
-      score += tokenMatchScore(value, token) * weight;
+      scoreTerms.push({
+        $cond: [
+          {
+            $regexMatch: {
+              input: { $toLower: fieldExpr },
+              regex: new RegExp(`\\b${escapeRegex(token)}\\b`, "i"),
+            },
+          },
+          weight * 4,
+          0,
+        ],
+      });
+      scoreTerms.push({
+        $cond: [
+          {
+            $regexMatch: {
+              input: { $toLower: fieldExpr },
+              regex: new RegExp(escapeRegex(token), "i"),
+            },
+          },
+          weight * 2,
+          0,
+        ],
+      });
     }
   }
 
-  // Small recency nudge so equally relevant docs feel fresh.
-  const createdAt = new Date(doc?.createdAt || 0).getTime();
-  if (Number.isFinite(createdAt) && createdAt > 0) {
-    score += Math.max(0, Math.min(10, (createdAt / 86400000) % 10));
-  }
-
-  return score;
+  return scoreTerms.length ? { $add: scoreTerms } : 0;
 }
 
 export default async function handler(req, res) {
@@ -275,72 +321,59 @@ export default async function handler(req, res) {
 
     const total = await collection.countDocuments(query);
 
-    let docs = [];
+    const pipeline = [{ $match: query }];
+
+    if (sponsoredFirst) {
+      pipeline.push({
+        $addFields: {
+          __sponsor: { $toDouble: { $ifNull: ["$amountPaid", 0] } },
+        },
+      });
+    }
 
     if (sort === "completeness") {
-      // Completeness is derived in JS, so rank a deterministic window first,
-      // then paginate after scoring to avoid per-page reordering artifacts.
-      const windowSize = Math.min(2000, page * limit);
-      const baseDocs = await collection
-        .find(query)
-        .sort({ createdAt: -1, _id: -1 })
-        .limit(windowSize)
-        .toArray();
+      pipeline.push({
+        $addFields: {
+          __completeness: buildCompletenessExpression(),
+        },
+      });
 
-      docs = baseDocs
-        .map((d) => ({ ...d, __completeness: completenessScore(d) }))
-        .sort((a, b) => {
-          if (sponsoredFirst) {
-            const sponsorDelta =
-              Number(b?.amountPaid || 0) - Number(a?.amountPaid || 0);
-            if (sponsorDelta !== 0) return sponsorDelta;
-          }
-          const scoreDelta = b.__completeness - a.__completeness;
-          if (scoreDelta !== 0) return scoreDelta;
-          return String(b?._id || "").localeCompare(String(a?._id || ""));
-        })
-        .slice(skip, skip + limit)
-        .map(({ __completeness, ...rest }) => rest);
+      pipeline.push({
+        $sort: {
+          ...(sponsoredFirst ? { __sponsor: -1 } : {}),
+          __completeness: -1,
+          createdAt: -1,
+          _id: -1,
+        },
+      });
     } else if (sort === "relevance" && qRaw) {
-      // Relevance is also derived in JS; rank a deterministic window and paginate after scoring.
-      const windowSize = Math.min(2000, Math.max(200, page * limit * 4));
-      const baseDocs = await collection
-        .find(query)
-        .sort({ createdAt: -1, _id: -1 })
-        .limit(windowSize)
-        .toArray();
+      pipeline.push({
+        $addFields: {
+          __relevance: buildRelevanceExpression(qRaw, isOrgs),
+        },
+      });
 
-      docs = baseDocs
-        .map((d) => ({ ...d, __relevance: relevanceScore(d, qRaw, isOrgs) }))
-        .sort((a, b) => {
-          if (sponsoredFirst) {
-            const sponsorDelta =
-              Number(b?.amountPaid || 0) - Number(a?.amountPaid || 0);
-            if (sponsorDelta !== 0) return sponsorDelta;
-          }
-          const scoreDelta = b.__relevance - a.__relevance;
-          if (scoreDelta !== 0) return scoreDelta;
-          const createdDelta =
-            new Date(b?.createdAt || 0).getTime() -
-            new Date(a?.createdAt || 0).getTime();
-          if (createdDelta !== 0) return createdDelta;
-          return String(b?._id || "").localeCompare(String(a?._id || ""));
-        })
-        .slice(skip, skip + limit)
-        .map(({ __relevance, ...rest }) => rest);
+      pipeline.push({
+        $sort: {
+          ...(sponsoredFirst ? { __sponsor: -1 } : {}),
+          __relevance: -1,
+          createdAt: -1,
+          _id: -1,
+        },
+      });
     } else {
-      let sortSpec = { createdAt: -1, _id: -1 };
-      if (sponsoredFirst) {
-        sortSpec = { amountPaid: -1, ...sortSpec };
-      }
-
-      docs = await collection
-        .find(query)
-        .sort(sortSpec)
-        .skip(skip)
-        .limit(limit)
-        .toArray();
+      pipeline.push({
+        $sort: {
+          ...(sponsoredFirst ? { __sponsor: -1 } : {}),
+          createdAt: -1,
+          _id: -1,
+        },
+      });
     }
+
+    pipeline.push({ $skip: skip }, { $limit: limit });
+
+    const docs = await collection.aggregate(pipeline).toArray();
 
     const items = isOrgs ? docs.map(normalizeOrgDoc) : docs;
 
