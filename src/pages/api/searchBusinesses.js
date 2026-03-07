@@ -93,6 +93,88 @@ function completenessScore(doc) {
   }, 0);
 }
 
+function tokenize(text) {
+  return String(text || "")
+    .trim()
+    .toLowerCase()
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 8);
+}
+
+function asSearchText(v) {
+  if (Array.isArray(v)) return v.map((x) => String(x || "")).join(" ");
+  return String(v || "");
+}
+
+function tokenMatchScore(haystack, token) {
+  const t = haystack.toLowerCase();
+  if (!t || !token) return 0;
+
+  if (t === token) return 10;
+  if (t.startsWith(token)) return 6;
+  if (new RegExp(`\\b${escapeRegex(token)}\\b`, "i").test(t)) return 4;
+  if (t.includes(token)) return 2;
+  return 0;
+}
+
+function relevanceScore(doc, query, isOrgs) {
+  const q = String(query || "").trim().toLowerCase();
+  if (!q) return 0;
+
+  const tokens = tokenize(q);
+  if (!tokens.length) return 0;
+
+  const weightedFields = isOrgs
+    ? [
+        ["name", 10],
+        ["organization_name", 10],
+        ["orgType", 6],
+        ["description", 4],
+        ["city", 3],
+        ["state", 3],
+        ["address", 2],
+        ["website", 1],
+      ]
+    : [
+        ["business_name", 10],
+        ["name", 8],
+        ["categories", 6],
+        ["category", 6],
+        ["display_categories", 6],
+        ["description", 4],
+        ["city", 3],
+        ["state", 3],
+        ["address", 2],
+        ["website", 1],
+      ];
+
+  let score = 0;
+
+  for (const [field, weight] of weightedFields) {
+    const value = asSearchText(doc?.[field]);
+    if (!value) continue;
+
+    const valueLower = value.toLowerCase();
+    if (valueLower.includes(q)) {
+      score += weight * 8;
+      if (valueLower.startsWith(q)) score += weight * 4;
+    }
+
+    for (const token of tokens) {
+      score += tokenMatchScore(value, token) * weight;
+    }
+  }
+
+  // Small recency nudge so equally relevant docs feel fresh.
+  const createdAt = new Date(doc?.createdAt || 0).getTime();
+  if (Number.isFinite(createdAt) && createdAt > 0) {
+    score += Math.max(0, Math.min(10, (createdAt / 86400000) % 10));
+  }
+
+  return score;
+}
+
 export default async function handler(req, res) {
   res.setHeader("Cache-Control", "no-store");
 
@@ -207,7 +289,8 @@ export default async function handler(req, res) {
         .map((d) => ({ ...d, __completeness: completenessScore(d) }))
         .sort((a, b) => {
           if (sponsoredFirst) {
-            const sponsorDelta = Number(b?.amountPaid || 0) - Number(a?.amountPaid || 0);
+            const sponsorDelta =
+              Number(b?.amountPaid || 0) - Number(a?.amountPaid || 0);
             if (sponsorDelta !== 0) return sponsorDelta;
           }
           const scoreDelta = b.__completeness - a.__completeness;
@@ -216,6 +299,33 @@ export default async function handler(req, res) {
         })
         .slice(skip, skip + limit)
         .map(({ __completeness, ...rest }) => rest);
+    } else if (sort === "relevance" && qRaw) {
+      // Relevance is also derived in JS; rank a deterministic window and paginate after scoring.
+      const windowSize = Math.min(2000, Math.max(200, page * limit * 4));
+      const baseDocs = await collection
+        .find(query)
+        .sort({ createdAt: -1, _id: -1 })
+        .limit(windowSize)
+        .toArray();
+
+      docs = baseDocs
+        .map((d) => ({ ...d, __relevance: relevanceScore(d, qRaw, isOrgs) }))
+        .sort((a, b) => {
+          if (sponsoredFirst) {
+            const sponsorDelta =
+              Number(b?.amountPaid || 0) - Number(a?.amountPaid || 0);
+            if (sponsorDelta !== 0) return sponsorDelta;
+          }
+          const scoreDelta = b.__relevance - a.__relevance;
+          if (scoreDelta !== 0) return scoreDelta;
+          const createdDelta =
+            new Date(b?.createdAt || 0).getTime() -
+            new Date(a?.createdAt || 0).getTime();
+          if (createdDelta !== 0) return createdDelta;
+          return String(b?._id || "").localeCompare(String(a?._id || ""));
+        })
+        .slice(skip, skip + limit)
+        .map(({ __relevance, ...rest }) => rest);
     } else {
       let sortSpec = { createdAt: -1, _id: -1 };
       if (sponsoredFirst) {
