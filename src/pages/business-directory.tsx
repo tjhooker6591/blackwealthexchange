@@ -322,6 +322,7 @@ export default function BusinessDirectory() {
   const pageSize = 20;
 
   const didInitFromUrl = useRef(false);
+  const skipNextPageResetRef = useRef(false);
   const abortRef = useRef<AbortController | null>(null);
   const resultsTopRef = useRef<HTMLDivElement | null>(null);
 
@@ -350,6 +351,7 @@ export default function BusinessDirectory() {
     setStateFilter(st ? st.toUpperCase().slice(0, 2) : "");
     setVerifiedOnly(vo);
     setSponsoredFirst(sp);
+    skipNextPageResetRef.current = true;
     setPage(Math.max(1, p));
 
     didInitFromUrl.current = true;
@@ -374,6 +376,8 @@ export default function BusinessDirectory() {
     const nextQuery: Record<string, any> = {
       ...router.query,
       type: scope,
+      scope,
+      tab: scope,
       search: input.trim() || "",
       q: input.trim() || "",
       page: String(page),
@@ -413,6 +417,10 @@ export default function BusinessDirectory() {
 
   // Reset page when query changes
   useEffect(() => {
+    if (skipNextPageResetRef.current) {
+      skipNextPageResetRef.current = false;
+      return;
+    }
     setPage(1);
   }, [input, category, scope, sort, stateFilter, verifiedOnly, sponsoredFirst]);
 
@@ -421,7 +429,12 @@ export default function BusinessDirectory() {
     const q = input.trim();
 
     const hasAnyFilter =
-      Boolean(q) || (scope === "businesses" && category !== "All");
+      Boolean(q) ||
+      (scope === "businesses" && category !== "All") ||
+      Boolean(stateFilter) ||
+      verifiedOnly ||
+      sponsoredFirst ||
+      sort !== "relevance";
     if (!hasAnyFilter) {
       setRows([]);
       setTotal(0);

@@ -191,31 +191,43 @@ export default async function handler(req, res) {
 
     const total = await collection.countDocuments(query);
 
-    let sortSpec = { amountPaid: -1, createdAt: -1, _id: -1 };
-    if (sort === "newest") {
-      sortSpec = { createdAt: -1, _id: -1 };
-    }
-
-    let docs = await collection
-      .find(query)
-      .sort(sortSpec)
-      .skip(skip)
-      .limit(limit)
-      .toArray();
+    let docs = [];
 
     if (sort === "completeness") {
-      docs = docs
-        .map((d) => ({ ...d, __completeness: completenessScore(d) }))
-        .sort((a, b) => b.__completeness - a.__completeness)
-        .map(({ __completeness, ...rest }) => rest);
-    }
+      // Completeness is derived in JS, so rank a deterministic window first,
+      // then paginate after scoring to avoid per-page reordering artifacts.
+      const windowSize = Math.min(2000, page * limit);
+      const baseDocs = await collection
+        .find(query)
+        .sort({ createdAt: -1, _id: -1 })
+        .limit(windowSize)
+        .toArray();
 
-    if (sponsoredFirst) {
-      docs = docs.sort((a, b) => {
-        const sa = Number(a?.amountPaid || 0);
-        const sb = Number(b?.amountPaid || 0);
-        return sb - sa;
-      });
+      docs = baseDocs
+        .map((d) => ({ ...d, __completeness: completenessScore(d) }))
+        .sort((a, b) => {
+          if (sponsoredFirst) {
+            const sponsorDelta = Number(b?.amountPaid || 0) - Number(a?.amountPaid || 0);
+            if (sponsorDelta !== 0) return sponsorDelta;
+          }
+          const scoreDelta = b.__completeness - a.__completeness;
+          if (scoreDelta !== 0) return scoreDelta;
+          return String(b?._id || "").localeCompare(String(a?._id || ""));
+        })
+        .slice(skip, skip + limit)
+        .map(({ __completeness, ...rest }) => rest);
+    } else {
+      let sortSpec = { createdAt: -1, _id: -1 };
+      if (sponsoredFirst) {
+        sortSpec = { amountPaid: -1, ...sortSpec };
+      }
+
+      docs = await collection
+        .find(query)
+        .sort(sortSpec)
+        .skip(skip)
+        .limit(limit)
+        .toArray();
     }
 
     const items = isOrgs ? docs.map(normalizeOrgDoc) : docs;
