@@ -313,6 +313,13 @@ export default function BusinessDirectory() {
   const [page, setPage] = useState(1);
   const pageSize = 20;
 
+  const hasActiveFilters =
+    (scope === "businesses" && category !== "All") ||
+    Boolean(stateFilter) ||
+    verifiedOnly ||
+    sponsoredFirst ||
+    sort !== "relevance";
+
   const didInitFromUrl = useRef(false);
   const skipNextPageResetRef = useRef(false);
   const abortRef = useRef<AbortController | null>(null);
@@ -404,13 +411,7 @@ export default function BusinessDirectory() {
   useEffect(() => {
     const q = input.trim();
 
-    const hasAnyFilter =
-      Boolean(q) ||
-      (scope === "businesses" && category !== "All") ||
-      Boolean(stateFilter) ||
-      verifiedOnly ||
-      sponsoredFirst ||
-      sort !== "relevance";
+    const hasAnyFilter = Boolean(q) || hasActiveFilters;
     if (!hasAnyFilter) {
       setRows([]);
       setTotal(0);
@@ -508,6 +509,7 @@ export default function BusinessDirectory() {
     stateFilter,
     verifiedOnly,
     sponsoredFirst,
+    hasActiveFilters,
   ]);
 
   // Client filtering (business categories) if needed
@@ -762,6 +764,7 @@ export default function BusinessDirectory() {
                         ? "border-emerald-400/40 bg-emerald-400/20"
                         : "border-white/10 bg-black/30",
                     )}
+                    aria-label="Toggle verified-only results"
                     aria-pressed={verifiedOnly}
                   >
                     <span
@@ -788,6 +791,7 @@ export default function BusinessDirectory() {
                         ? "border-[#D4AF37]/50 bg-[#D4AF37]/15"
                         : "border-white/10 bg-black/30",
                     )}
+                    aria-label="Toggle sponsored-first ordering"
                     aria-pressed={sponsoredFirst}
                   >
                     <span
@@ -800,6 +804,53 @@ export default function BusinessDirectory() {
                     />
                   </button>
                 </label>
+              </div>
+
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                {hasActiveFilters ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCategory("All");
+                      setSort("relevance");
+                      setStateFilter("");
+                      setVerifiedOnly(false);
+                      setSponsoredFirst(false);
+                      setPage(1);
+                    }}
+                    className="rounded-lg border border-white/15 bg-black/30 px-3 py-1.5 text-xs font-bold text-white/80 transition hover:bg-black/45"
+                  >
+                    Clear filters
+                  </button>
+                ) : (
+                  <span className="text-xs text-white/45">No active filters</span>
+                )}
+
+                {scope === "businesses" && category !== "All" && (
+                  <span className="rounded-lg border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-2 py-1 text-[11px] font-bold text-[#D4AF37]">
+                    Category: {category}
+                  </span>
+                )}
+                {stateFilter && (
+                  <span className="rounded-lg border border-white/15 bg-black/30 px-2 py-1 text-[11px] font-bold text-white/80">
+                    State: {stateFilter}
+                  </span>
+                )}
+                {sort !== "relevance" && (
+                  <span className="rounded-lg border border-white/15 bg-black/30 px-2 py-1 text-[11px] font-bold text-white/80">
+                    Sort: {sort}
+                  </span>
+                )}
+                {verifiedOnly && (
+                  <span className="rounded-lg border border-emerald-400/30 bg-emerald-400/15 px-2 py-1 text-[11px] font-bold text-emerald-200">
+                    Verified only
+                  </span>
+                )}
+                {sponsoredFirst && (
+                  <span className="rounded-lg border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-2 py-1 text-[11px] font-bold text-[#D4AF37]">
+                    Sponsored first
+                  </span>
+                )}
               </div>
             </div>
 
