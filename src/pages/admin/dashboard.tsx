@@ -407,6 +407,12 @@ const AdminDashboard = () => {
               Open Tools
             </Link>
             <Link
+              href="/admin/directory-duplicates"
+              className="rounded border border-yellow-500/30 bg-yellow-500/10 px-4 py-2 text-sm text-yellow-200 hover:bg-yellow-500/20"
+            >
+              Duplicates Queue
+            </Link>
+            <Link
               href="/"
               className="rounded border border-gray-700 bg-gray-800 px-4 py-2 text-sm hover:bg-gray-700"
             >
