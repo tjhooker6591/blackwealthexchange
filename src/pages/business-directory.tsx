@@ -47,6 +47,13 @@ function toInt(v: any, def: number) {
   return Number.isFinite(n) ? n : def;
 }
 
+function normalizeSort(v: any): "relevance" | "newest" | "completeness" {
+  const t = safeStr(v).toLowerCase().trim();
+  if (t === "newest" || t === "recent") return "newest";
+  if (t === "completeness" || t === "complete") return "completeness";
+  return "relevance";
+}
+
 const SIDEBAR_ADS = [
   {
     img: "/pamfa1.jpg",
@@ -339,15 +346,14 @@ export default function BusinessDirectory() {
     const cat =
       typeof router.query.category === "string" ? router.query.category : "All";
     const p = toInt(router.query.page, 1);
-    const s =
-      typeof router.query.sort === "string" ? router.query.sort : "relevance";
+    const s = normalizeSort(router.query.sort);
     const st = typeof router.query.state === "string" ? router.query.state : "";
     const vo = String(router.query.verifiedOnly ?? "0") === "1";
     const sp = String(router.query.sponsoredFirst ?? "0") === "1";
 
     if (q) setInput(q);
     if (scope === "businesses") setCategory(cat || "All");
-    setSort(s || "relevance");
+    setSort(s);
     setStateFilter(st ? st.toUpperCase().slice(0, 2) : "");
     setVerifiedOnly(vo);
     setSponsoredFirst(sp);
@@ -738,6 +744,86 @@ export default function BusinessDirectory() {
                 >
                   Search
                 </button>
+              </div>
+            </div>
+
+            {/* Filter/sort controls */}
+            <div className="mt-3 rounded-2xl border border-white/10 bg-white/[0.03] p-3 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
+              <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+                <label className="rounded-xl border border-white/10 bg-black/20 px-3 py-2">
+                  <div className="text-[11px] font-bold text-white/55">Sort</div>
+                  <select
+                    value={sort}
+                    onChange={(e) =>
+                      setSort(normalizeSort(e.target.value))
+                    }
+                    className="mt-1 w-full bg-transparent text-sm text-white outline-none"
+                  >
+                    <option value="relevance">Relevance (best match)</option>
+                    <option value="newest">Newest</option>
+                    <option value="completeness">Completeness</option>
+                  </select>
+                </label>
+
+                <label className="rounded-xl border border-white/10 bg-black/20 px-3 py-2">
+                  <div className="text-[11px] font-bold text-white/55">State</div>
+                  <input
+                    value={stateFilter}
+                    onChange={(e) =>
+                      setStateFilter(e.target.value.toUpperCase().slice(0, 2))
+                    }
+                    placeholder="CA"
+                    className="mt-1 w-full bg-transparent text-sm text-white placeholder:text-white/35 outline-none"
+                  />
+                </label>
+
+                <label className="flex items-center justify-between rounded-xl border border-white/10 bg-black/20 px-3 py-2 text-sm">
+                  <span className="font-semibold text-white/80">Verified only</span>
+                  <button
+                    type="button"
+                    onClick={() => setVerifiedOnly((v) => !v)}
+                    className={cx(
+                      "relative h-6 w-11 rounded-full border transition",
+                      verifiedOnly
+                        ? "border-emerald-400/40 bg-emerald-400/20"
+                        : "border-white/10 bg-black/30",
+                    )}
+                    aria-pressed={verifiedOnly}
+                  >
+                    <span
+                      className={cx(
+                        "absolute top-0.5 h-5 w-5 rounded-full transition",
+                        verifiedOnly
+                          ? "left-5 bg-emerald-300"
+                          : "left-0.5 bg-white/60",
+                      )}
+                    />
+                  </button>
+                </label>
+
+                <label className="flex items-center justify-between rounded-xl border border-white/10 bg-black/20 px-3 py-2 text-sm">
+                  <span className="font-semibold text-white/80">Sponsored first</span>
+                  <button
+                    type="button"
+                    onClick={() => setSponsoredFirst((v) => !v)}
+                    className={cx(
+                      "relative h-6 w-11 rounded-full border transition",
+                      sponsoredFirst
+                        ? "border-[#D4AF37]/50 bg-[#D4AF37]/15"
+                        : "border-white/10 bg-black/30",
+                    )}
+                    aria-pressed={sponsoredFirst}
+                  >
+                    <span
+                      className={cx(
+                        "absolute top-0.5 h-5 w-5 rounded-full transition",
+                        sponsoredFirst
+                          ? "left-5 bg-[#D4AF37]"
+                          : "left-0.5 bg-white/60",
+                      )}
+                    />
+                  </button>
+                </label>
               </div>
             </div>
 

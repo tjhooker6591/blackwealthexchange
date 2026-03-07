@@ -139,7 +139,7 @@ function SearchToolsInlinePanel({
             }
             className="mt-1 w-full bg-transparent text-sm text-white outline-none"
           >
-            <option value="relevance">Relevance</option>
+            <option value="relevance">Relevance (best match)</option>
             <option value="newest">Newest</option>
             <option value="completeness">Completeness</option>
           </select>

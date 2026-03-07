@@ -119,7 +119,9 @@ function tokenMatchScore(haystack, token) {
 }
 
 function relevanceScore(doc, query, isOrgs) {
-  const q = String(query || "").trim().toLowerCase();
+  const q = String(query || "")
+    .trim()
+    .toLowerCase();
   if (!q) return 0;
 
   const tokens = tokenize(q);
