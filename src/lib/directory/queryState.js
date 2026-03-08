@@ -76,6 +76,7 @@ export function buildDirectoryUrlQuery({
   stateFilter,
   verifiedOnly,
   sponsoredFirst,
+  includeIncomplete,
 }) {
   const normalizedScope = normalizeScope(scope);
   const normalizedSort = normalizeSort(sort);
@@ -92,6 +93,7 @@ export function buildDirectoryUrlQuery({
     state: safeStr(stateFilter).toUpperCase().slice(0, 2),
     verifiedOnly: verifiedOnly ? "1" : "0",
     sponsoredFirst: sponsoredFirst ? "1" : "0",
+    includeIncomplete: includeIncomplete ? "1" : "0",
   };
 
   if (normalizedScope === "businesses") nextQuery.category = category || "All";
@@ -105,6 +107,7 @@ export function buildDirectoryUrlQuery({
   if (!nextQuery.sort || nextQuery.sort === "relevance") delete nextQuery.sort;
   if (nextQuery.verifiedOnly === "0") delete nextQuery.verifiedOnly;
   if (nextQuery.sponsoredFirst === "0") delete nextQuery.sponsoredFirst;
+  if (nextQuery.includeIncomplete === "0") delete nextQuery.includeIncomplete;
 
   return nextQuery;
 }

@@ -302,6 +302,7 @@ export default function BusinessDirectory() {
   const [stateFilter, setStateFilter] = useState("");
   const [verifiedOnly, setVerifiedOnly] = useState(false);
   const [sponsoredFirst, setSponsoredFirst] = useState(false);
+  const [includeIncomplete, setIncludeIncomplete] = useState(false);
 
   const [rows, setRows] = useState<Row[]>([]);
   const [total, setTotal] = useState(0);
@@ -318,6 +319,7 @@ export default function BusinessDirectory() {
     Boolean(stateFilter) ||
     verifiedOnly ||
     sponsoredFirst ||
+    includeIncomplete ||
     sort !== "relevance";
 
   const didInitFromUrl = useRef(false);
@@ -342,6 +344,7 @@ export default function BusinessDirectory() {
     const st = typeof router.query.state === "string" ? router.query.state : "";
     const vo = String(router.query.verifiedOnly ?? "0") === "1";
     const sp = String(router.query.sponsoredFirst ?? "0") === "1";
+    const inc = String(router.query.includeIncomplete ?? "0") === "1";
 
     if (q) setInput(q);
     if (scope === "businesses") setCategory(cat || "All");
@@ -349,6 +352,7 @@ export default function BusinessDirectory() {
     setStateFilter(st ? st.toUpperCase().slice(0, 2) : "");
     setVerifiedOnly(vo);
     setSponsoredFirst(sp);
+    setIncludeIncomplete(inc);
     skipNextPageResetRef.current = true;
     setPage(Math.max(1, p));
 
@@ -363,6 +367,7 @@ export default function BusinessDirectory() {
     router.query.state,
     router.query.verifiedOnly,
     router.query.sponsoredFirst,
+    router.query.includeIncomplete,
     scope,
   ]);
 
@@ -381,6 +386,7 @@ export default function BusinessDirectory() {
       stateFilter,
       verifiedOnly,
       sponsoredFirst,
+      includeIncomplete,
     });
 
     router.replace({ pathname: router.pathname, query: nextQuery }, undefined, {
@@ -396,6 +402,7 @@ export default function BusinessDirectory() {
     stateFilter,
     verifiedOnly,
     sponsoredFirst,
+    includeIncomplete,
   ]);
 
   // Reset page when query changes
@@ -405,7 +412,16 @@ export default function BusinessDirectory() {
       return;
     }
     setPage(1);
-  }, [input, category, scope, sort, stateFilter, verifiedOnly, sponsoredFirst]);
+  }, [
+    input,
+    category,
+    scope,
+    sort,
+    stateFilter,
+    verifiedOnly,
+    sponsoredFirst,
+    includeIncomplete,
+  ]);
 
   // Fetch
   useEffect(() => {
@@ -443,6 +459,7 @@ export default function BusinessDirectory() {
       if (stateFilter) params.set("state", stateFilter);
       if (verifiedOnly) params.set("verifiedOnly", "1");
       if (sponsoredFirst) params.set("sponsoredFirst", "1");
+      if (includeIncomplete) params.set("includeIncomplete", "1");
       params.set("__nocache", "1");
 
       fetch(`/api/searchBusinesses?${params.toString()}`, {
@@ -509,6 +526,7 @@ export default function BusinessDirectory() {
     stateFilter,
     verifiedOnly,
     sponsoredFirst,
+    includeIncomplete,
     hasActiveFilters,
   ]);
 
@@ -804,6 +822,33 @@ export default function BusinessDirectory() {
                     />
                   </button>
                 </label>
+
+                <label className="flex items-center justify-between rounded-xl border border-white/10 bg-black/20 px-3 py-2 text-sm sm:col-span-2 lg:col-span-4">
+                  <span className="font-semibold text-white/80">
+                    Show incomplete listings
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setIncludeIncomplete((v) => !v)}
+                    className={cx(
+                      "relative h-6 w-11 rounded-full border transition",
+                      includeIncomplete
+                        ? "border-sky-400/40 bg-sky-400/20"
+                        : "border-white/10 bg-black/30",
+                    )}
+                    aria-label="Toggle incomplete listing visibility"
+                    aria-pressed={includeIncomplete}
+                  >
+                    <span
+                      className={cx(
+                        "absolute top-0.5 h-5 w-5 rounded-full transition",
+                        includeIncomplete
+                          ? "left-5 bg-sky-300"
+                          : "left-0.5 bg-white/60",
+                      )}
+                    />
+                  </button>
+                </label>
               </div>
 
               <div className="mt-3 flex flex-wrap items-center gap-2">
@@ -816,6 +861,7 @@ export default function BusinessDirectory() {
                       setStateFilter("");
                       setVerifiedOnly(false);
                       setSponsoredFirst(false);
+                      setIncludeIncomplete(false);
                       setPage(1);
                     }}
                     className="rounded-lg border border-white/15 bg-black/30 px-3 py-1.5 text-xs font-bold text-white/80 transition hover:bg-black/45"
@@ -823,7 +869,9 @@ export default function BusinessDirectory() {
                     Clear filters
                   </button>
                 ) : (
-                  <span className="text-xs text-white/45">No active filters</span>
+                  <span className="text-xs text-white/45">
+                    No active filters
+                  </span>
                 )}
 
                 {scope === "businesses" && category !== "All" && (
@@ -849,6 +897,11 @@ export default function BusinessDirectory() {
                 {sponsoredFirst && (
                   <span className="rounded-lg border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-2 py-1 text-[11px] font-bold text-[#D4AF37]">
                     Sponsored first
+                  </span>
+                )}
+                {includeIncomplete && (
+                  <span className="rounded-lg border border-sky-400/30 bg-sky-400/15 px-2 py-1 text-[11px] font-bold text-sky-200">
+                    Showing incomplete listings
                   </span>
                 )}
               </div>

@@ -1,4 +1,5 @@
 import { MongoClient } from "mongodb";
+import { computeListingCompleteness } from "@/lib/directory/completeness";
 
 function escapeRegex(string) {
   return String(string || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -102,11 +103,7 @@ function nonEmptyFieldExpr(fieldName) {
   };
 
   return {
-    $cond: [
-      { $gt: [{ $strLenCP: asString }, 0] },
-      1,
-      0,
-    ],
+    $cond: [{ $gt: [{ $strLenCP: asString }, 0] }, 1, 0],
   };
 }
 
@@ -134,7 +131,9 @@ function buildCompletenessExpression() {
 
 function buildRelevanceExpression(qRaw, isOrgs) {
   const tokens = tokenize(qRaw);
-  const phrase = String(qRaw || "").trim().toLowerCase();
+  const phrase = String(qRaw || "")
+    .trim()
+    .toLowerCase();
 
   const weightedFields = isOrgs
     ? [
@@ -238,6 +237,7 @@ export default async function handler(req, res) {
     .slice(0, 2);
   const verifiedOnly = String(req.query.verifiedOnly ?? "0") === "1";
   const sponsoredFirst = String(req.query.sponsoredFirst ?? "0") === "1";
+  const includeIncomplete = String(req.query.includeIncomplete ?? "0") === "1";
 
   const page = Math.max(1, toInt(req.query.page, 1));
   const limit = Math.min(200, Math.max(1, toInt(req.query.limit, 20)));
@@ -317,6 +317,16 @@ export default async function handler(req, res) {
       });
     }
 
+    if (!includeIncomplete) {
+      clauses.push({
+        $or: [
+          { isComplete: true },
+          { completenessScore: { $gte: 70 } },
+          { $expr: { $gte: [buildCompletenessExpression(), 7] } },
+        ],
+      });
+    }
+
     const query = clauses.length ? { $and: clauses } : {};
 
     const total = await collection.countDocuments(query);
@@ -375,7 +385,26 @@ export default async function handler(req, res) {
 
     const docs = await collection.aggregate(pipeline).toArray();
 
-    const items = isOrgs ? docs.map(normalizeOrgDoc) : docs;
+    const normalizedDocs = isOrgs ? docs.map(normalizeOrgDoc) : docs;
+    const items = normalizedDocs.map((doc) => {
+      const score =
+        typeof doc?.completenessScore === "number"
+          ? doc.completenessScore
+          : undefined;
+      const missing = Array.isArray(doc?.missingFields)
+        ? doc.missingFields
+        : undefined;
+      const complete = typeof doc?.isComplete === "boolean" ? doc.isComplete : undefined;
+
+      if (score !== undefined && missing !== undefined && complete !== undefined) {
+        return doc;
+      }
+
+      return {
+        ...doc,
+        ...computeListingCompleteness(doc),
+      };
+    });
 
     return res.status(200).json({
       status: "ok",
