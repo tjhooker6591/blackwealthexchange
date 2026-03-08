@@ -10,17 +10,9 @@ interface JwtPayload {
   accountType?: string;
 }
 
-function getSecret(): string {
-  const secret = process.env.JWT_SECRET ?? process.env.NEXTAUTH_SECRET;
-  if (!secret) {
-    throw new Error(
-      "🛑 Define JWT_SECRET or NEXTAUTH_SECRET in your environment variables",
-    );
-  }
-  return secret;
+function getSecret(): string | null {
+  return process.env.JWT_SECRET ?? process.env.NEXTAUTH_SECRET ?? null;
 }
-
-const SECRET = getSecret();
 
 interface UserProfile {
   _id: ObjectId;
@@ -53,9 +45,17 @@ export default async function handler(
         .json({ user: null, error: "No token cookie found." });
     }
 
+    const secret = getSecret();
+    if (!secret) {
+      return res.status(500).json({
+        user: null,
+        error: "Missing JWT_SECRET or NEXTAUTH_SECRET environment variable.",
+      });
+    }
+
     let payload: JwtPayload;
     try {
-      payload = jwt.verify(token, SECRET) as JwtPayload;
+      payload = jwt.verify(token, secret) as JwtPayload;
     } catch (err) {
       console.error("❌ JWT verification failed:", err);
       return res

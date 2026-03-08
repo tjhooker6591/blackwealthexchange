@@ -3,41 +3,50 @@ import { MongoClient, MongoClientOptions } from "mongodb";
 const options: MongoClientOptions = {};
 
 declare global {
+   
   var _mongoClientPromise: Promise<MongoClient> | undefined;
 }
 
-/**
- * NOTE:
- * - Do NOT throw at import-time (breaks CI/build).
- * - Only create/connect when env exists.
- */
-function createClientPromise(): Promise<MongoClient> | null {
+let cachedPromise: Promise<MongoClient> | null = null;
+
+async function connectMongo(): Promise<MongoClient> {
   const uri = process.env.MONGODB_URI;
-  if (!uri) return null;
+  if (!uri) {
+    throw new Error("MongoDB env missing: set MONGODB_URI");
+  }
 
-  const client = new MongoClient(uri, options);
-
-  // Reuse in development to avoid exhausting connections
   if (process.env.NODE_ENV === "development") {
     if (!global._mongoClientPromise) {
+      const client = new MongoClient(uri, options);
       global._mongoClientPromise = client.connect();
     }
     return global._mongoClientPromise;
   }
 
-  return client.connect();
+  if (!cachedPromise) {
+    const client = new MongoClient(uri, options);
+    cachedPromise = client.connect();
+  }
+
+  return cachedPromise;
 }
 
-/**
- * Default export stays the same type as before:
- * - Promise<MongoClient> when configured
- * - (will throw ONLY when awaited) if not configured
- */
-const clientPromise = createClientPromise();
+const clientPromise = {
+  then<TResult1 = MongoClient, TResult2 = never>(
+    onfulfilled?:
+      | ((value: MongoClient) => TResult1 | PromiseLike<TResult1>)
+      | null,
+    onrejected?:
+      | ((reason: any) => TResult2 | PromiseLike<TResult2>)
+      | null,
+  ) {
+    return connectMongo().then(onfulfilled as any, onrejected as any);
+  },
+  catch<TResult = never>(
+    onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | null,
+  ) {
+    return connectMongo().catch(onrejected as any);
+  },
+} as Promise<MongoClient>;
 
-export default clientPromise ??
-  (Promise.reject(
-    new Error(
-      "MongoDB env missing: set MONGODB_URI (and MONGODB_DB where used)",
-    ),
-  ) as Promise<MongoClient>);
+export default clientPromise;
