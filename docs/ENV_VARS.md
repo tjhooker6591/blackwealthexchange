@@ -26,10 +26,12 @@ This project now uses centralized env access via `src/lib/env.ts` for auth/mongo
 ## Environment separation rules
 
 ### Local
+
 - `MONGODB_URI` can point to local Mongo.
 - Example: `mongodb://127.0.0.1:27017`
 
 ### Preview / Production
+
 - `MONGODB_URI` must **not** point to localhost.
 - Use a managed/remote Mongo endpoint.
 - Keep `JWT_SECRET` and `NEXTAUTH_SECRET` aligned if both are set.
