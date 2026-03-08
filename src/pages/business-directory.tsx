@@ -828,7 +828,9 @@ export default function BusinessDirectory() {
                 </button>
               </div>
               <div className="mt-2 flex items-center justify-between text-[11px] text-white/50">
-                <span>Use search first, then narrow with filters if needed.</span>
+                <span>
+                  Use search first, then narrow with filters if needed.
+                </span>
                 <span className="inline-flex items-center gap-1 text-white/45">
                   <SlidersHorizontal className="h-3.5 w-3.5" />
                   Filters are optional
@@ -1101,10 +1103,12 @@ export default function BusinessDirectory() {
                 ) : total === 0 && !isLoading ? (
                   <div className="py-10 text-center text-white/50">
                     <div>
-                      No results found for <span className="text-white/70">“{input.trim()}”</span>.
+                      No results found for{" "}
+                      <span className="text-white/70">“{input.trim()}”</span>.
                     </div>
                     <div className="mt-2 text-xs text-white/40">
-                      Try a broader term, clear filters, or switch between Businesses and Organizations.
+                      Try a broader term, clear filters, or switch between
+                      Businesses and Organizations.
                     </div>
                   </div>
                 ) : (

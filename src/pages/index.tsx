@@ -676,11 +676,17 @@ export default function Home() {
                     </button>
                   </Link>
                   <Link
-                    href={user?.accountType === "admin" ? "/admin/dashboard" : "/business-directory"}
+                    href={
+                      user?.accountType === "admin"
+                        ? "/admin/dashboard"
+                        : "/business-directory"
+                    }
                     className="w-full sm:w-auto"
                   >
                     <button className="w-full rounded-xl border border-[#D4AF37]/60 bg-transparent px-5 py-2.5 text-sm font-extrabold text-[#D4AF37] transition hover:bg-[#D4AF37]/10 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 sm:px-6 sm:py-3 sm:text-base">
-                      {user?.accountType === "admin" ? "Admin Dashboard" : "Explore Directory"}
+                      {user?.accountType === "admin"
+                        ? "Admin Dashboard"
+                        : "Explore Directory"}
                     </button>
                   </Link>
                 </>
@@ -912,11 +918,15 @@ export default function Home() {
                     <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-white/55 sm:text-[12px]">
                       <span>
                         Trusted ranking + clean results.
-                        <span className="text-white/40"> Filters are optional.</span>
+                        <span className="text-white/40">
+                          {" "}
+                          Filters are optional.
+                        </span>
                       </span>
 
                       <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[10px] sm:text-[11px]">
-                        Tap <span className="font-black text-white/75">Search</span>
+                        Tap{" "}
+                        <span className="font-black text-white/75">Search</span>
                       </span>
                     </div>
 

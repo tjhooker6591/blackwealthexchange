@@ -71,7 +71,8 @@ export default function DashboardWrapper() {
           accountType,
         ) && (
           <div className="mx-auto mt-6 max-w-xl rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-200">
-            Unknown account type: <span className="font-semibold">{accountType}</span>
+            Unknown account type:{" "}
+            <span className="font-semibold">{accountType}</span>
           </div>
         )}
     </DashboardFrame>
