@@ -665,8 +665,9 @@ export default function Home() {
             </h1>
 
             <p className="mx-auto mt-5 max-w-3xl text-base text-white/75 sm:text-lg md:text-xl">
-              The premium hub to discover Black-owned businesses, activate opportunities,
-              and move from discovery to real-world action faster.
+              The premium hub to discover Black-owned businesses, activate
+              opportunities, and move from discovery to real-world action
+              faster.
             </p>
 
             <div className="mx-auto mt-7 flex w-full max-w-2xl flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-center">
