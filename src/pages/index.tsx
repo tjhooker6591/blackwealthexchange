@@ -657,17 +657,18 @@ export default function Home() {
               </span>
             </div>
 
-            <h1 className="mt-4 text-2xl font-extrabold tracking-tight sm:text-4xl md:text-5xl">
-              Black Wealth Exchange<span className="text-[#D4AF37]">.</span>
+            <h1 className="mt-4 text-3xl font-black tracking-tight leading-[1.05] sm:text-5xl md:text-6xl">
+              The Black Wealth
+              <span className="block text-[#D4AF37]">Operating System</span>
             </h1>
 
-            <p className="mx-auto mt-3 max-w-2xl text-sm text-white/70 sm:text-base">
+            <p className="mx-auto mt-4 max-w-3xl text-sm text-white/70 sm:text-base md:text-lg">
               Search Black-owned businesses, discover jobs & opportunities, shop
-              the marketplace, and build economic power — with a trusted, modern
-              flow.
+              the marketplace, and move capital with a premium, trust-first
+              experience built for real economic power.
             </p>
 
-            <div className="mx-auto mt-5 flex w-full max-w-md flex-col gap-3 sm:flex-row sm:justify-center">
+            <div className="mx-auto mt-6 flex w-full max-w-md flex-col gap-3 sm:flex-row sm:justify-center">
               {user ? (
                 <>
                   <Link href="/dashboard" className="w-full sm:w-auto">
@@ -705,9 +706,35 @@ export default function Home() {
                 </>
               )}
             </div>
+
+            <div className="mx-auto mt-5 grid w-full max-w-4xl gap-2 sm:grid-cols-3 sm:gap-3">
+              {[
+                {
+                  label: "Trust-first search",
+                  value: "Verified + quality signals",
+                },
+                { label: "Built for action", value: "Find, vet, connect fast" },
+                {
+                  label: "Economic focus",
+                  value: "Ownership, access, circulation",
+                },
+              ].map((item) => (
+                <div
+                  key={item.label}
+                  className="rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-left shadow-[0_0_0_1px_rgba(255,255,255,0.05)]"
+                >
+                  <div className="text-[11px] font-extrabold uppercase tracking-[0.08em] text-white/55">
+                    {item.label}
+                  </div>
+                  <div className="mt-1 text-sm font-bold text-white/85">
+                    {item.value}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
-          <section className="mt-6 sm:mt-8">
+          <section className="mt-7 sm:mt-9">
             <EconomicImpactSimulator />
           </section>
 

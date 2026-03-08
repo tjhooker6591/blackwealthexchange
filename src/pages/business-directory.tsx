@@ -685,75 +685,94 @@ export default function BusinessDirectory() {
 
       <div className="mx-auto max-w-7xl px-3 sm:px-4 md:px-6 py-6">
         {/* Header */}
-        <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-              {scope === "organizations"
-                ? "Organizations Directory"
-                : "Business Directory"}{" "}
-              <span className="text-[#D4AF37]">•</span>{" "}
-              <span className="text-white/65 text-base sm:text-lg font-bold">
-                Trusted Search
-              </span>
-            </h1>
-            <p className="mt-1 text-sm text-white/60">
-              Results are paged so users don’t scroll forever — faster, cleaner,
-              more “Google-like”.
-            </p>
-          </div>
-        </div>
+        <div className="relative mb-5 overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-white/[0.07] via-white/[0.03] to-transparent p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_40px_90px_rgba(0,0,0,0.55)] sm:p-5">
+          <div className="pointer-events-none absolute -top-24 left-1/2 h-56 w-[40rem] -translate-x-1/2 rounded-full bg-[#D4AF37]/10 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-28 right-[-6rem] h-64 w-64 rounded-full bg-emerald-500/10 blur-3xl" />
 
-        <div className="mb-4 flex flex-wrap items-center gap-2">
-          <button
-            type="button"
-            onClick={() =>
-              router.push({
-                pathname: "/business-directory",
-                query: {
-                  ...router.query,
-                  type: "businesses",
-                  scope: "businesses",
-                  tab: "businesses",
-                  page: 1,
-                },
-              })
-            }
-            className={cx(
-              "rounded-xl border px-3 py-2 text-xs font-extrabold tracking-wide transition",
-              scope === "businesses"
-                ? "border-[#D4AF37]/60 bg-[#D4AF37]/15 text-[#D4AF37]"
-                : "border-white/10 bg-white/[0.03] text-white/75 hover:bg-white/[0.06]",
-            )}
-          >
-            Businesses
-          </button>
-          <button
-            type="button"
-            onClick={() =>
-              router.push({
-                pathname: "/business-directory",
-                query: {
-                  ...router.query,
-                  type: "organizations",
-                  scope: "organizations",
-                  tab: "organizations",
-                  page: 1,
-                },
-              })
-            }
-            className={cx(
-              "rounded-xl border px-3 py-2 text-xs font-extrabold tracking-wide transition",
-              scope === "organizations"
-                ? "border-[#D4AF37]/60 bg-[#D4AF37]/15 text-[#D4AF37]"
-                : "border-white/10 bg-white/[0.03] text-white/75 hover:bg-white/[0.06]",
-            )}
-          >
-            Organizations
-          </button>
-          <span className="inline-flex items-center gap-1 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-2.5 py-1 text-[11px] font-bold text-emerald-200">
-            <ShieldCheck className="h-3.5 w-3.5" />
-            Trusted listings
-          </span>
+          <div className="relative flex flex-col gap-4">
+            <div className="flex flex-wrap items-end justify-between gap-3">
+              <div>
+                <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-white">
+                  {scope === "organizations"
+                    ? "Organizations Directory"
+                    : "Business Directory"}
+                  <span className="ml-2 text-[#D4AF37]">• Trusted Search</span>
+                </h1>
+                <p className="mt-1 text-sm text-white/65 sm:text-base">
+                  Premium discovery flow with clean ranking, trust cues, and faster decisions.
+                </p>
+              </div>
+
+              <span className="inline-flex items-center gap-1 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-3 py-1.5 text-xs font-bold text-emerald-200">
+                <ShieldCheck className="h-3.5 w-3.5" />
+                Trusted listings
+              </span>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() =>
+                  router.push({
+                    pathname: "/business-directory",
+                    query: {
+                      ...router.query,
+                      type: "businesses",
+                      scope: "businesses",
+                      tab: "businesses",
+                      page: 1,
+                    },
+                  })
+                }
+                className={cx(
+                  "rounded-xl border px-3 py-2 text-xs font-extrabold tracking-wide transition",
+                  scope === "businesses"
+                    ? "border-[#D4AF37]/60 bg-[#D4AF37]/15 text-[#D4AF37]"
+                    : "border-white/10 bg-white/[0.03] text-white/75 hover:bg-white/[0.06]",
+                )}
+              >
+                Businesses
+              </button>
+              <button
+                type="button"
+                onClick={() =>
+                  router.push({
+                    pathname: "/business-directory",
+                    query: {
+                      ...router.query,
+                      type: "organizations",
+                      scope: "organizations",
+                      tab: "organizations",
+                      page: 1,
+                    },
+                  })
+                }
+                className={cx(
+                  "rounded-xl border px-3 py-2 text-xs font-extrabold tracking-wide transition",
+                  scope === "organizations"
+                    ? "border-[#D4AF37]/60 bg-[#D4AF37]/15 text-[#D4AF37]"
+                    : "border-white/10 bg-white/[0.03] text-white/75 hover:bg-white/[0.06]",
+                )}
+              >
+                Organizations
+              </button>
+            </div>
+
+            <div className="grid gap-2 sm:grid-cols-3">
+              <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-2">
+                <div className="text-[10px] uppercase tracking-[0.08em] text-white/50 font-bold">Ranking</div>
+                <div className="text-sm font-semibold text-white/80">Trust + relevance first</div>
+              </div>
+              <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-2">
+                <div className="text-[10px] uppercase tracking-[0.08em] text-white/50 font-bold">Control</div>
+                <div className="text-sm font-semibold text-white/80">Strong filters, zero clutter</div>
+              </div>
+              <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-2">
+                <div className="text-[10px] uppercase tracking-[0.08em] text-white/50 font-bold">Goal</div>
+                <div className="text-sm font-semibold text-white/80">Find, vet, and contact quickly</div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="grid gap-6 md:grid-cols-[1fr_320px]">
@@ -787,7 +806,7 @@ export default function BusinessDirectory() {
             )}
 
             {/* Search bar */}
-            <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-3 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
+            <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.06] to-white/[0.02] p-3 shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_24px_60px_rgba(0,0,0,0.45)] backdrop-blur">
               <div className="pointer-events-none absolute -top-16 left-1/2 h-32 w-[30rem] -translate-x-1/2 rounded-full bg-[#D4AF37]/10 blur-3xl" />
 
               <div className="flex items-stretch gap-2">
