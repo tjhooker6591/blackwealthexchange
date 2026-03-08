@@ -8,7 +8,13 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import { Navigation } from "swiper/modules";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Search,
+  ShieldCheck,
+  SlidersHorizontal,
+} from "lucide-react";
 import {
   buildDirectoryUrlQuery,
   normalizeScope,
@@ -310,6 +316,7 @@ export default function BusinessDirectory() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+  const [fetchError, setFetchError] = useState("");
 
   const [page, setPage] = useState(1);
   const pageSize = 20;
@@ -437,6 +444,7 @@ export default function BusinessDirectory() {
     }
 
     setIsLoading(true);
+    setFetchError("");
 
     const timeout = setTimeout(() => {
       if (abortRef.current) abortRef.current.abort();
@@ -506,6 +514,7 @@ export default function BusinessDirectory() {
             setTotal(0);
             setServerPaged(false);
             setHasSearched(true);
+            setFetchError("Could not load directory results. Please retry.");
           }
         })
         .finally(() => {
@@ -637,6 +646,22 @@ export default function BusinessDirectory() {
       : `/business-directory/${slug}`;
   };
 
+  const getTrustMeta = (r: Row) => {
+    const verified =
+      (r as any).verified === true ||
+      (r as any).isVerified === true ||
+      safeStr((r as any).status).toLowerCase() === "verified";
+
+    const sponsored = Number((r as any).amountPaid || 0) > 0;
+
+    const isComplete =
+      typeof (r as any).isComplete === "boolean"
+        ? (r as any).isComplete
+        : Number((r as any).completenessScore || 0) >= 70;
+
+    return { verified, sponsored, isComplete };
+  };
+
   const sponsorsToShow = [
     ...SIDEBAR_ADS,
     ...Array(Math.max(0, 10 - SIDEBAR_ADS.length)).fill({
@@ -678,6 +703,59 @@ export default function BusinessDirectory() {
           </div>
         </div>
 
+        <div className="mb-4 flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={() =>
+              router.push({
+                pathname: "/business-directory",
+                query: {
+                  ...router.query,
+                  type: "businesses",
+                  scope: "businesses",
+                  tab: "businesses",
+                  page: 1,
+                },
+              })
+            }
+            className={cx(
+              "rounded-xl border px-3 py-2 text-xs font-extrabold tracking-wide transition",
+              scope === "businesses"
+                ? "border-[#D4AF37]/60 bg-[#D4AF37]/15 text-[#D4AF37]"
+                : "border-white/10 bg-white/[0.03] text-white/75 hover:bg-white/[0.06]",
+            )}
+          >
+            Businesses
+          </button>
+          <button
+            type="button"
+            onClick={() =>
+              router.push({
+                pathname: "/business-directory",
+                query: {
+                  ...router.query,
+                  type: "organizations",
+                  scope: "organizations",
+                  tab: "organizations",
+                  page: 1,
+                },
+              })
+            }
+            className={cx(
+              "rounded-xl border px-3 py-2 text-xs font-extrabold tracking-wide transition",
+              scope === "organizations"
+                ? "border-[#D4AF37]/60 bg-[#D4AF37]/15 text-[#D4AF37]"
+                : "border-white/10 bg-white/[0.03] text-white/75 hover:bg-white/[0.06]",
+            )}
+          >
+            Organizations
+          </button>
+          <span className="inline-flex items-center gap-1 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-2.5 py-1 text-[11px] font-bold text-emerald-200">
+            <ShieldCheck className="h-3.5 w-3.5" />
+            Trusted listings
+          </span>
+        </div>
+
         <div className="grid gap-6 md:grid-cols-[1fr_320px]">
           {/* Main */}
           <div className="min-w-0">
@@ -713,17 +791,20 @@ export default function BusinessDirectory() {
               <div className="pointer-events-none absolute -top-16 left-1/2 h-32 w-[30rem] -translate-x-1/2 rounded-full bg-[#D4AF37]/10 blur-3xl" />
 
               <div className="flex items-stretch gap-2">
-                <input
-                  type="text"
-                  placeholder={
-                    scope === "organizations"
-                      ? "Search churches, nonprofits, orgs…"
-                      : "Find Black-owned businesses…"
-                  }
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  className="flex-1 rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-[14px] text-white placeholder:text-white/35 outline-none transition focus:border-[#D4AF37]/40 focus:ring-2 focus:ring-[#D4AF37]/20"
-                />
+                <div className="relative flex-1">
+                  <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/45" />
+                  <input
+                    type="text"
+                    placeholder={
+                      scope === "organizations"
+                        ? "Search churches, nonprofits, orgs…"
+                        : "Find Black-owned businesses…"
+                    }
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    className="w-full rounded-xl border border-white/10 bg-black/30 pl-9 pr-4 py-3 text-[14px] text-white placeholder:text-white/35 outline-none transition focus:border-[#D4AF37]/40 focus:ring-2 focus:ring-[#D4AF37]/20"
+                  />
+                </div>
                 <button
                   type="button"
                   onClick={() => {
@@ -734,6 +815,24 @@ export default function BusinessDirectory() {
                 >
                   Search
                 </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setInput("");
+                    setPage(1);
+                  }}
+                  className="rounded-xl border border-white/10 bg-white/[0.03] px-3 text-[12px] font-bold text-white/75 transition hover:bg-white/[0.06]"
+                  title="Clear search"
+                >
+                  Clear
+                </button>
+              </div>
+              <div className="mt-2 flex items-center justify-between text-[11px] text-white/50">
+                <span>Use search first, then narrow with filters if needed.</span>
+                <span className="inline-flex items-center gap-1 text-white/45">
+                  <SlidersHorizontal className="h-3.5 w-3.5" />
+                  Filters are optional
+                </span>
               </div>
             </div>
 
@@ -978,12 +1077,21 @@ export default function BusinessDirectory() {
 
               <div className="relative mt-3 min-h-[160px]">
                 {isLoading && (
-                  <div className="absolute inset-0 z-20 flex items-center justify-center rounded-xl bg-black/60 backdrop-blur-sm">
-                    <div className="text-[#D4AF37] font-extrabold animate-pulse">
-                      Loading…
+                  <div className="absolute inset-0 z-20 rounded-xl bg-black/70 p-4 backdrop-blur-sm">
+                    <div className="mb-3 h-4 w-40 animate-pulse rounded bg-white/10" />
+                    <div className="space-y-2">
+                      <div className="h-14 animate-pulse rounded-lg bg-white/10" />
+                      <div className="h-14 animate-pulse rounded-lg bg-white/10" />
+                      <div className="h-14 animate-pulse rounded-lg bg-white/10" />
                     </div>
                   </div>
                 )}
+
+                {fetchError ? (
+                  <div className="mb-3 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+                    {fetchError}
+                  </div>
+                ) : null}
 
                 {!hasSearched ? (
                   <div className="py-10 text-center text-white/50">
@@ -992,8 +1100,12 @@ export default function BusinessDirectory() {
                   </div>
                 ) : total === 0 && !isLoading ? (
                   <div className="py-10 text-center text-white/50">
-                    No results found for{" "}
-                    <span className="text-white/70">“{input.trim()}”</span>.
+                    <div>
+                      No results found for <span className="text-white/70">“{input.trim()}”</span>.
+                    </div>
+                    <div className="mt-2 text-xs text-white/40">
+                      Try a broader term, clear filters, or switch between Businesses and Organizations.
+                    </div>
                   </div>
                 ) : (
                   <div className="divide-y divide-white/10 overflow-hidden rounded-xl border border-white/10 bg-black/20">
@@ -1056,8 +1168,26 @@ export default function BusinessDirectory() {
                               {getTitle(item as Row) || "Untitled Listing"}
                             </Link>
 
+                            <div className="mt-1 flex flex-wrap items-center gap-1.5">
+                              {getTrustMeta(item as Row).verified && (
+                                <span className="rounded-full border border-emerald-400/30 bg-emerald-400/15 px-2 py-0.5 text-[10px] font-bold text-emerald-200">
+                                  Verified
+                                </span>
+                              )}
+                              {getTrustMeta(item as Row).sponsored && (
+                                <span className="rounded-full border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-2 py-0.5 text-[10px] font-bold text-[#D4AF37]">
+                                  Sponsored
+                                </span>
+                              )}
+                              {!getTrustMeta(item as Row).isComplete && (
+                                <span className="rounded-full border border-sky-400/30 bg-sky-400/15 px-2 py-0.5 text-[10px] font-bold text-sky-200">
+                                  Incomplete profile
+                                </span>
+                              )}
+                            </div>
+
                             {/* Details line: rating · price · category */}
-                            <div className="mt-0.5 text-[12px] text-white/70">
+                            <div className="mt-1 text-[12px] text-white/70">
                               {getRatingLine(item as Row) ||
                                 getCategoryLabel(item as Row) ||
                                 ""}

@@ -486,18 +486,18 @@ export default function Home() {
         ? "Search churches, nonprofits, orgs…"
         : "Search Black-owned businesses…";
 
-
   const runSearch = (opts?: {
     verticalOverride?: VerticalKey;
     aiOverride?: boolean;
     scopeOverride?: "businesses" | "organizations";
+    queryOverride?: string;
   }) => {
     const v = opts?.verticalOverride ?? vertical;
     const ai = opts?.aiOverride ?? aiMode;
     const scope = normalizeScope(opts?.scopeOverride ?? leftScope) as
       | "businesses"
       | "organizations";
-    const q = searchQuery.trim();
+    const q = (opts?.queryOverride ?? searchQuery).trim();
 
     if (v === "shopping") {
       return router.push({
@@ -668,16 +668,36 @@ export default function Home() {
             </p>
 
             <div className="mx-auto mt-5 flex w-full max-w-md flex-col gap-3 sm:flex-row sm:justify-center">
-              <Link href="/login" className="w-full sm:w-auto">
-                <button className="w-full rounded-xl bg-[#D4AF37] px-5 py-2.5 text-sm font-extrabold text-black shadow transition hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/40 sm:px-6 sm:py-3 sm:text-base">
-                  Login
-                </button>
-              </Link>
-              <Link href="/signup" className="w-full sm:w-auto">
-                <button className="w-full rounded-xl border border-[#D4AF37]/60 bg-transparent px-5 py-2.5 text-sm font-extrabold text-[#D4AF37] transition hover:bg-[#D4AF37]/10 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 sm:px-6 sm:py-3 sm:text-base">
-                  Sign Up
-                </button>
-              </Link>
+              {user ? (
+                <>
+                  <Link href="/dashboard" className="w-full sm:w-auto">
+                    <button className="w-full rounded-xl bg-[#D4AF37] px-5 py-2.5 text-sm font-extrabold text-black shadow transition hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/40 sm:px-6 sm:py-3 sm:text-base">
+                      Go to Dashboard
+                    </button>
+                  </Link>
+                  <Link
+                    href={user?.accountType === "admin" ? "/admin/dashboard" : "/business-directory"}
+                    className="w-full sm:w-auto"
+                  >
+                    <button className="w-full rounded-xl border border-[#D4AF37]/60 bg-transparent px-5 py-2.5 text-sm font-extrabold text-[#D4AF37] transition hover:bg-[#D4AF37]/10 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 sm:px-6 sm:py-3 sm:text-base">
+                      {user?.accountType === "admin" ? "Admin Dashboard" : "Explore Directory"}
+                    </button>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link href="/login" className="w-full sm:w-auto">
+                    <button className="w-full rounded-xl bg-[#D4AF37] px-5 py-2.5 text-sm font-extrabold text-black shadow transition hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/40 sm:px-6 sm:py-3 sm:text-base">
+                      Login
+                    </button>
+                  </Link>
+                  <Link href="/signup" className="w-full sm:w-auto">
+                    <button className="w-full rounded-xl border border-[#D4AF37]/60 bg-transparent px-5 py-2.5 text-sm font-extrabold text-[#D4AF37] transition hover:bg-[#D4AF37]/10 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 sm:px-6 sm:py-3 sm:text-base">
+                      Sign Up
+                    </button>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
 
@@ -892,17 +912,37 @@ export default function Home() {
                     <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-white/55 sm:text-[12px]">
                       <span>
                         Trusted ranking + clean results.
-                        <span className="text-white/40">
-                          {" "}
-                          Filters are optional.
-                        </span>
+                        <span className="text-white/40"> Filters are optional.</span>
                       </span>
 
                       <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[10px] sm:text-[11px]">
-                        Tap{" "}
-                        <span className="font-black text-white/75">Search</span>
+                        Tap <span className="font-black text-white/75">Search</span>
                       </span>
                     </div>
+
+                    {vertical === "all" && (
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {[
+                          "Restaurants",
+                          "Barbershop",
+                          "Beauty Supply",
+                          "Church",
+                          "Nonprofit",
+                        ].map((chip) => (
+                          <button
+                            key={chip}
+                            type="button"
+                            onClick={() => {
+                              setSearchQuery(chip);
+                              runSearch({ queryOverride: chip });
+                            }}
+                            className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-[11px] font-bold text-white/75 transition hover:border-white/20 hover:bg-white/[0.08]"
+                          >
+                            {chip}
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
