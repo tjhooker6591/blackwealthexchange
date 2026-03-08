@@ -1001,451 +1001,554 @@ export default function Home() {
         </div>
       </header>
 
-      <section className="relative z-10 pt-4 pb-6 sm:pt-5 sm:pb-8">
+      <section className="relative z-10 pb-7 pt-4 sm:pb-9 sm:pt-5">
         <div className="container mx-auto max-w-6xl px-4 space-y-4 sm:space-y-5">
-          <div className="grid gap-3 sm:grid-cols-3">
-            <Link href="/financial-literacy" className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 hover:bg-white/[0.06] transition">
-              <div className="text-xs text-[#D4AF37] font-bold uppercase tracking-wide">Quick Path</div>
-              <div className="mt-1 font-extrabold text-white">I’m here to learn</div>
-              <div className="mt-1 text-xs text-white/60">Guided education tracks and practical playbooks.</div>
+          <div className="rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.06] to-white/[0.02] p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.04)]">
+            <div className="mb-3 text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
+              Choose your path
+            </div>
+            <div className="grid gap-3 sm:grid-cols-3">
+            <Link
+              href="/financial-literacy"
+              className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 transition hover:border-[#D4AF37]/25 hover:bg-white/[0.08]"
+            >
+              <div className="text-xs text-[#D4AF37] font-bold uppercase tracking-wide">
+                Quick Path
+              </div>
+              <div className="mt-1 font-extrabold text-white">
+                I’m here to learn
+              </div>
+              <div className="mt-1 text-xs text-white/60">
+                Guided education tracks and practical playbooks.
+              </div>
             </Link>
-            <Link href="/job-listings" className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 hover:bg-white/[0.06] transition">
-              <div className="text-xs text-[#D4AF37] font-bold uppercase tracking-wide">Quick Path</div>
-              <div className="mt-1 font-extrabold text-white">I’m here to find opportunities</div>
-              <div className="mt-1 text-xs text-white/60">Jobs, internships, mentorship, and student access.</div>
+            <Link
+              href="/job-listings"
+              className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 transition hover:border-[#D4AF37]/25 hover:bg-white/[0.08]"
+            >
+              <div className="text-xs text-[#D4AF37] font-bold uppercase tracking-wide">
+                Quick Path
+              </div>
+              <div className="mt-1 font-extrabold text-white">
+                I’m here to find opportunities
+              </div>
+              <div className="mt-1 text-xs text-white/60">
+                Jobs, internships, mentorship, and student access.
+              </div>
             </Link>
-            <Link href="/marketplace/become-a-seller" className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 hover:bg-white/[0.06] transition">
-              <div className="text-xs text-[#D4AF37] font-bold uppercase tracking-wide">Quick Path</div>
-              <div className="mt-1 font-extrabold text-white">I run a business</div>
-              <div className="mt-1 text-xs text-white/60">Grow via marketplace, directory trust, and promotion.</div>
+            <Link
+              href="/marketplace/become-a-seller"
+              className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 transition hover:border-[#D4AF37]/25 hover:bg-white/[0.08]"
+            >
+              <div className="text-xs text-[#D4AF37] font-bold uppercase tracking-wide">
+                Quick Path
+              </div>
+              <div className="mt-1 font-extrabold text-white">
+                I run a business
+              </div>
+              <div className="mt-1 text-xs text-white/60">
+                Grow via marketplace, directory trust, and promotion.
+              </div>
             </Link>
+            </div>
           </div>
 
           <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
-            <div className="text-xs uppercase tracking-wide text-[#D4AF37] font-bold">Start Here Track</div>
-            <h3 className="mt-1 text-lg sm:text-xl font-extrabold text-white">Featured Learning Block</h3>
-            <p className="mt-1 text-sm text-white/65">One path to build practical confidence in money, career, and economic context.</p>
+            <div className="text-xs uppercase tracking-wide text-[#D4AF37] font-bold">
+              Start Here Track
+            </div>
+            <h3 className="mt-1 text-lg sm:text-xl font-extrabold text-white">
+              Featured Learning Block
+            </h3>
+            <p className="mt-1 text-sm text-white/65">
+              One path to build practical confidence in money, career, and
+              economic context.
+            </p>
             <div className="mt-3 flex flex-wrap gap-2 text-xs text-white/70">
-              <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1">Financial basics</span>
-              <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1">Career setup</span>
-              <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1">Black history/economic context</span>
+              <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1">
+                Financial basics
+              </span>
+              <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1">
+                Career setup
+              </span>
+              <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1">
+                Black history/economic context
+              </span>
             </div>
-            <Link href="/financial-literacy" className="mt-4 inline-flex h-10 items-center rounded-xl bg-[#D4AF37] px-5 text-sm font-extrabold text-black hover:bg-yellow-500 transition">Start the Track</Link>
+            <Link
+              href="/financial-literacy"
+              className="mt-4 inline-flex h-10 items-center rounded-xl bg-[#D4AF37] px-5 text-sm font-extrabold text-black hover:bg-yellow-500 transition"
+            >
+              Start the Track
+            </Link>
           </div>
 
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
-            <div className="flex items-center justify-between gap-3">
-              <h3 className="text-lg sm:text-xl font-extrabold text-white">Opportunities</h3>
-              <Link href="/black-student-opportunities" className="text-xs text-[#D4AF37] font-bold">Open Hub →</Link>
+          <div className="grid gap-3 md:grid-cols-2">
+            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.03)]">
+              <div className="flex items-center justify-between gap-3">
+                <h3 className="text-lg sm:text-xl font-extrabold text-white">
+                  Opportunities
+                </h3>
+                <Link
+                  href="/black-student-opportunities"
+                  className="text-xs text-[#D4AF37] font-bold"
+                >
+                  Open Hub →
+                </Link>
+              </div>
+              <div className="mt-3 grid gap-2 sm:grid-cols-3">
+                <Link
+                  href="/black-student-opportunities"
+                  className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-sm text-white/80 transition hover:border-[#D4AF37]/25 hover:bg-black/40"
+                >
+                  Students
+                </Link>
+                <Link
+                  href="/job-listings"
+                  className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-sm text-white/80 transition hover:border-[#D4AF37]/25 hover:bg-black/40"
+                >
+                  Jobs
+                </Link>
+                <Link
+                  href="/internships"
+                  className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-sm text-white/80 transition hover:border-[#D4AF37]/25 hover:bg-black/40"
+                >
+                  Internships
+                </Link>
+              </div>
             </div>
-            <div className="mt-3 grid gap-2 sm:grid-cols-3">
-              <Link href="/black-student-opportunities" className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-sm text-white/80 hover:bg-black/40">Students</Link>
-              <Link href="/job-listings" className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-sm text-white/80 hover:bg-black/40">Jobs</Link>
-              <Link href="/internships" className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-sm text-white/80 hover:bg-black/40">Internships</Link>
-            </div>
-          </div>
 
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
-            <h3 className="text-lg sm:text-xl font-extrabold text-white">Business Growth</h3>
-            <div className="mt-3 grid gap-2 sm:grid-cols-3">
-              <Link href="/marketplace" className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-sm text-white/80 hover:bg-black/40">Marketplace</Link>
-              <Link href="/business-directory" className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-sm text-white/80 hover:bg-black/40">Sponsored / Directory</Link>
-              <Link href="/advertise-with-us" className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-sm text-white/80 hover:bg-black/40">Advertising</Link>
+            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.03)]">
+              <h3 className="text-lg sm:text-xl font-extrabold text-white">
+                Business Growth
+              </h3>
+              <div className="mt-3 grid gap-2 sm:grid-cols-3">
+                <Link
+                  href="/marketplace"
+                  className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-sm text-white/80 transition hover:border-[#D4AF37]/25 hover:bg-black/40"
+                >
+                  Marketplace
+                </Link>
+                <Link
+                  href="/business-directory"
+                  className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-sm text-white/80 transition hover:border-[#D4AF37]/25 hover:bg-black/40"
+                >
+                  Sponsored / Directory
+                </Link>
+                <Link
+                  href="/advertise-with-us"
+                  className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-sm text-white/80 transition hover:border-[#D4AF37]/25 hover:bg-black/40"
+                >
+                  Advertising
+                </Link>
+              </div>
             </div>
           </div>
 
           <div className="pb-1 text-center">
-            <Link href="/more" className="text-sm font-bold text-[#D4AF37] hover:underline">Explore all resources →</Link>
+            <Link
+              href="/more"
+              className="text-sm font-bold text-[#D4AF37] hover:underline"
+            >
+              Explore all resources →
+            </Link>
           </div>
         </div>
       </section>
 
       {false && (
         <>
-      <section className="relative z-10 pt-3 pb-8 sm:pt-4 sm:pb-10">
-        <div className="container mx-auto max-w-6xl px-4">
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
-            <div className="mb-4 flex flex-wrap items-start justify-between gap-4 sm:mb-5">
-              <div>
-                <h3 className="text-xl font-extrabold tracking-tight text-[#D4AF37] sm:text-3xl">
-                  Student Opportunities
-                </h3>
-                <p className="mt-1 text-sm text-white/60">
-                  Scholarships, grants, mentorship, internships — and a
-                  launchpad to join BWE.
-                </p>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <span className="inline-flex rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/70">
-                  Public Access
-                </span>
-                <Link
-                  href="/black-student-opportunities"
-                  className="inline-flex items-center gap-2 rounded-xl border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-3 py-2 text-[11px] font-extrabold text-[#D4AF37] transition hover:border-[#D4AF37]/55 hover:bg-[#D4AF37]/15 sm:text-xs"
-                >
-                  <GraduationCap className="h-4 w-4" />
-                  Open Hub
-                </Link>
-              </div>
-            </div>
-
-            <div className="relative overflow-hidden rounded-2xl border border-[#D4AF37]/25 bg-gradient-to-br from-[#D4AF37]/12 via-white/[0.03] to-white/[0.02] p-4 sm:p-5">
-              <div className="pointer-events-none absolute -top-24 left-1/2 h-48 w-[34rem] -translate-x-1/2 rounded-full bg-[#D4AF37]/10 blur-3xl" />
-              <div className="pointer-events-none absolute -bottom-28 right-[-6rem] h-64 w-64 rounded-full bg-emerald-500/10 blur-3xl" />
-
-              <div className="relative flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-                <div className="max-w-2xl">
-                  <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-black tracking-wide text-white/75 sm:text-[11px]">
-                    <Sparkles className="h-4 w-4 text-[#D4AF37]" />
-                    STUDENT OPPORTUNITIES HUB
+          <section className="relative z-10 pt-3 pb-8 sm:pt-4 sm:pb-10">
+            <div className="container mx-auto max-w-6xl px-4">
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
+                <div className="mb-4 flex flex-wrap items-start justify-between gap-4 sm:mb-5">
+                  <div>
+                    <h3 className="text-xl font-extrabold tracking-tight text-[#D4AF37] sm:text-3xl">
+                      Student Opportunities
+                    </h3>
+                    <p className="mt-1 text-sm text-white/60">
+                      Scholarships, grants, mentorship, internships — and a
+                      launchpad to join BWE.
+                    </p>
                   </div>
 
-                  <h4 className="mt-3 text-lg font-extrabold tracking-tight text-white sm:text-2xl">
-                    Your Launchpad to Scholarships, Internships, Mentorship —
-                    and Real Access
-                    <span className="text-[#D4AF37]">.</span>
-                  </h4>
-
-                  <p className="mt-2 text-sm text-white/70">
-                    This is the student “power drawer” of BWE. We keep it clean,
-                    trusted, and easy to use — so students can move fast, apply
-                    faster, and connect with real opportunity.
-                  </p>
-
-                  <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
+                  <div className="flex items-center gap-2">
+                    <span className="inline-flex rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/70">
+                      Public Access
+                    </span>
                     <Link
                       href="/black-student-opportunities"
-                      className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#D4AF37] px-4 py-2.5 text-sm font-extrabold text-black shadow transition hover:bg-yellow-500 sm:px-5"
+                      className="inline-flex items-center gap-2 rounded-xl border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-3 py-2 text-[11px] font-extrabold text-[#D4AF37] transition hover:border-[#D4AF37]/55 hover:bg-[#D4AF37]/15 sm:text-xs"
                     >
-                      Enter Student Hub <ArrowRight className="h-4 w-4" />
+                      <GraduationCap className="h-4 w-4" />
+                      Open Hub
                     </Link>
-
-                    <Link
-                      href="/signup?redirect=/black-student-opportunities"
-                      className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-extrabold text-white/80 transition hover:border-white/20 hover:bg-white/10 sm:px-5"
-                    >
-                      <UserPlus className="h-4 w-4 text-white/70" />
-                      Create Free Student Profile
-                    </Link>
-
-                    <button
-                      type="button"
-                      onClick={() => setStudentDrawerOpen((v) => !v)}
-                      className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm font-extrabold text-white/75 transition hover:bg-white/[0.06] sm:px-5"
-                      aria-expanded={studentDrawerOpen}
-                    >
-                      Power Drawer
-                      {studentDrawerOpen ? (
-                        <ChevronUp className="h-4 w-4" />
-                      ) : (
-                        <ChevronDown className="h-4 w-4" />
-                      )}
-                    </button>
                   </div>
                 </div>
 
-                <div className="hidden md:block">
-                  <div className="rounded-2xl border border-white/10 bg-black/30 p-4">
-                    <div className="text-xs font-extrabold text-white/70">
-                      Why students stay on BWE
-                    </div>
-                    <ul className="mt-3 space-y-2 text-sm text-white/70">
-                      <li className="flex items-start gap-2">
-                        <span className="mt-1 h-2 w-2 rounded-full bg-emerald-300" />
-                        Trusted links + clean info (no clutter)
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="mt-1 h-2 w-2 rounded-full bg-[#D4AF37]" />
-                        Everything in one place (hub style)
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="mt-1 h-2 w-2 rounded-full bg-sky-300" />
-                        Fast navigation (apply / learn more instantly)
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
+                <div className="relative overflow-hidden rounded-2xl border border-[#D4AF37]/25 bg-gradient-to-br from-[#D4AF37]/12 via-white/[0.03] to-white/[0.02] p-4 sm:p-5">
+                  <div className="pointer-events-none absolute -top-24 left-1/2 h-48 w-[34rem] -translate-x-1/2 rounded-full bg-[#D4AF37]/10 blur-3xl" />
+                  <div className="pointer-events-none absolute -bottom-28 right-[-6rem] h-64 w-64 rounded-full bg-emerald-500/10 blur-3xl" />
 
-              <div
-                className={cx(
-                  "relative mt-5 overflow-hidden rounded-2xl border border-white/10 bg-black/20 transition-all duration-300",
-                  studentDrawerOpen
-                    ? "max-h-[520px] opacity-100"
-                    : "max-h-0 opacity-0",
-                )}
-              >
-                <div className="p-4 sm:p-5">
-                  <div className="mb-3 flex items-center justify-between gap-3">
-                    <div className="text-sm font-extrabold tracking-tight text-white">
-                      What’s inside the Student Hub
-                    </div>
-                    <span className="inline-flex rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[11px] font-bold text-white/60">
-                      Built for 2026+
-                    </span>
-                  </div>
-
-                  <div className="grid gap-3 md:grid-cols-2">
-                    <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
-                      <div className="flex items-center gap-2 text-sm font-extrabold text-[#D4AF37]">
-                        <Bell className="h-4 w-4" />
-                        Scholarship & grant updates (expandable)
+                  <div className="relative flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+                    <div className="max-w-2xl">
+                      <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-black tracking-wide text-white/75 sm:text-[11px]">
+                        <Sparkles className="h-4 w-4 text-[#D4AF37]" />
+                        STUDENT OPPORTUNITIES HUB
                       </div>
-                      <p className="mt-1 text-xs text-white/65">
-                        Pages are structured to support feeds later (so content
-                        stays current).
-                      </p>
-                    </div>
 
-                    <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
-                      <div className="flex items-center gap-2 text-sm font-extrabold text-[#D4AF37]">
-                        <Users className="h-4 w-4" />
-                        Mentorship pathways
+                      <h4 className="mt-3 text-lg font-extrabold tracking-tight text-white sm:text-2xl">
+                        Your Launchpad to Scholarships, Internships, Mentorship
+                        — and Real Access
+                        <span className="text-[#D4AF37]">.</span>
+                      </h4>
+
+                      <p className="mt-2 text-sm text-white/70">
+                        This is the student “power drawer” of BWE. We keep it
+                        clean, trusted, and easy to use — so students can move
+                        fast, apply faster, and connect with real opportunity.
+                      </p>
+
+                      <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
+                        <Link
+                          href="/black-student-opportunities"
+                          className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#D4AF37] px-4 py-2.5 text-sm font-extrabold text-black shadow transition hover:bg-yellow-500 sm:px-5"
+                        >
+                          Enter Student Hub <ArrowRight className="h-4 w-4" />
+                        </Link>
+
+                        <Link
+                          href="/signup?redirect=/black-student-opportunities"
+                          className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-extrabold text-white/80 transition hover:border-white/20 hover:bg-white/10 sm:px-5"
+                        >
+                          <UserPlus className="h-4 w-4 text-white/70" />
+                          Create Free Student Profile
+                        </Link>
+
+                        <button
+                          type="button"
+                          onClick={() => setStudentDrawerOpen((v) => !v)}
+                          className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm font-extrabold text-white/75 transition hover:bg-white/[0.06] sm:px-5"
+                          aria-expanded={studentDrawerOpen}
+                        >
+                          Power Drawer
+                          {studentDrawerOpen ? (
+                            <ChevronUp className="h-4 w-4" />
+                          ) : (
+                            <ChevronDown className="h-4 w-4" />
+                          )}
+                        </button>
                       </div>
-                      <p className="mt-1 text-xs text-white/65">
-                        Guidance + networks + professional readiness. Simple and
-                        trusted.
-                      </p>
                     </div>
 
-                    <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
-                      <div className="flex items-center gap-2 text-sm font-extrabold text-[#D4AF37]">
-                        <Briefcase className="h-4 w-4" />
-                        Internships & career acceleration
+                    <div className="hidden md:block">
+                      <div className="rounded-2xl border border-white/10 bg-black/30 p-4">
+                        <div className="text-xs font-extrabold text-white/70">
+                          Why students stay on BWE
+                        </div>
+                        <ul className="mt-3 space-y-2 text-sm text-white/70">
+                          <li className="flex items-start gap-2">
+                            <span className="mt-1 h-2 w-2 rounded-full bg-emerald-300" />
+                            Trusted links + clean info (no clutter)
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="mt-1 h-2 w-2 rounded-full bg-[#D4AF37]" />
+                            Everything in one place (hub style)
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="mt-1 h-2 w-2 rounded-full bg-sky-300" />
+                            Fast navigation (apply / learn more instantly)
+                          </li>
+                        </ul>
                       </div>
-                      <p className="mt-1 text-xs text-white/65">
-                        A clear pipeline from student → internship → job →
-                        career.
-                      </p>
-                    </div>
-
-                    <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
-                      <div className="flex items-center gap-2 text-sm font-extrabold text-[#D4AF37]">
-                        <BookOpen className="h-4 w-4" />
-                        Application playbooks (next)
-                      </div>
-                      <p className="mt-1 text-xs text-white/65">
-                        “Scholarship kit” templates and step-by-step checklists
-                        will live here.
-                      </p>
                     </div>
                   </div>
 
-                  <div className="mt-4 flex flex-col gap-3 sm:flex-row">
-                    <Link
-                      href="/black-student-opportunities"
-                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#D4AF37] px-4 py-2.5 text-sm font-extrabold text-black shadow transition hover:bg-yellow-500 sm:px-5"
-                    >
-                      Go to Student Hub <ArrowRight className="h-4 w-4" />
-                    </Link>
-
-                    <Link
-                      href="/signup?redirect=/black-student-opportunities"
-                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-4 py-2.5 text-sm font-extrabold text-[#D4AF37] transition hover:border-[#D4AF37]/55 hover:bg-[#D4AF37]/15 sm:px-5"
-                    >
-                      <UserPlus className="h-4 w-4" />
-                      Join BWE as a Student
-                    </Link>
-                  </div>
-
-                  <p className="mt-3 text-[11px] text-white/45">
-                    Student pages remain public. Creating a profile unlocks
-                    future features (saved opportunities, alerts, and student
-                    networking).
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-5 grid grid-cols-2 gap-3 sm:mt-6 sm:gap-4 md:grid-cols-4">
-              {studentOpportunities.map((item, index) => (
-                <Link key={index} href={item.href}>
-                  <div className="group flex cursor-pointer flex-col items-center rounded-2xl border border-white/10 bg-white/[0.03] p-3 text-center transition hover:bg-white/[0.06] sm:p-4">
-                    <item.icon className="mb-2 h-8 w-8 text-[#D4AF37] sm:h-10 sm:w-10" />
-                    <span className="text-sm font-semibold text-white sm:text-base">
-                      {item.title}
-                    </span>
-                    <span className="mt-1 text-[11px] text-white/55 group-hover:text-white/70 sm:text-xs">
-                      Tap to explore →
-                    </span>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <main className="container relative z-10 mx-auto max-w-6xl px-4 pb-0">
-        <section className="mb-5 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h2 className="text-lg font-extrabold tracking-tight text-[#D4AF37] sm:text-xl">
-                Real Estate & Investment
-              </h2>
-              <p className="mt-1 text-sm text-white/60">
-                Explore Black-owned real estate options and investments.
-              </p>
-            </div>
-            <button
-              className="rounded-xl bg-[#D4AF37] px-4 py-2.5 text-sm font-extrabold text-black shadow transition hover:bg-yellow-500"
-              onClick={() => {
-                if (!user) {
-                  router.push("/login?redirect=/real-estate-investment");
-                } else {
-                  router.push("/real-estate-investment");
-                }
-              }}
-            >
-              Learn More
-            </button>
-          </div>
-        </section>
-
-        <section className="mb-5 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
-          <div className="mb-3 flex items-center justify-between">
-            <h3 className="text-base font-extrabold tracking-tight text-[#D4AF37] sm:text-lg">
-              Featured Sponsors
-            </h3>
-            <span className="text-[11px] text-white/50">Hover to pause</span>
-          </div>
-
-          <div className="relative h-24 w-full overflow-hidden rounded-xl border border-white/10 bg-black/20 sm:h-28">
-            <div className="pointer-events-none absolute left-0 top-0 h-full w-10 bg-gradient-to-r from-black/70 to-transparent" />
-            <div className="pointer-events-none absolute right-0 top-0 h-full w-10 bg-gradient-to-l from-black/70 to-transparent" />
-
-            <div className="animate-scroll absolute flex space-x-3 px-3 py-3 sm:space-x-4">
-              {[...sponsors, ...sponsors].map((sponsor, index) => (
-                <div
-                  key={index}
-                  className="relative h-16 w-28 overflow-hidden rounded-xl border border-white/10 shadow sm:h-20 sm:w-40"
-                >
-                  <Image
-                    src={sponsor.img}
-                    alt={sponsor.name}
-                    width={160}
-                    height={80}
-                    className="h-full w-full object-cover"
-                    priority={index < 4}
-                  />
-                  <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 rounded bg-black/60 px-2 py-1 text-[10px] font-semibold text-[#D4AF37] sm:bottom-2 sm:text-[11px]">
-                    {sponsor.name}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <div className="mb-6 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 lg:gap-5">
-          {keySections.map((item, index) => {
-            const isMarket = item.title === "Our Marketplace";
-            const isPublic = publicRoutes.includes(item.href);
-
-            return (
-              <div
-                key={index}
-                className={cx(
-                  "group cursor-pointer rounded-2xl border p-4 shadow transition hover:-translate-y-0.5 hover:shadow-lg sm:p-5",
-                  isMarket
-                    ? "border-[#D4AF37]/40 bg-gradient-to-br from-[#D4AF37]/12 via-white/[0.03] to-white/[0.02]"
-                    : "border-white/10 bg-white/[0.03]",
-                )}
-                onClick={() => gate(item.href)}
-              >
-                <div className="mb-3 flex items-center justify-between gap-2">
-                  <span
+                  <div
                     className={cx(
-                      "inline-flex items-center gap-1.5 rounded-full border px-2 py-1 text-[10px] font-bold sm:px-3 sm:text-xs",
-                      isMarket
-                        ? "border-[#D4AF37]/40 bg-black/30 text-[#D4AF37]"
-                        : "border-white/10 bg-white/5 text-white/70",
+                      "relative mt-5 overflow-hidden rounded-2xl border border-white/10 bg-black/20 transition-all duration-300",
+                      studentDrawerOpen
+                        ? "max-h-[520px] opacity-100"
+                        : "max-h-0 opacity-0",
                     )}
                   >
-                    {isMarket ? "🔥 Popular" : isPublic ? "Public" : "Member"}
-                    {!isPublic && !isMarket && (
-                      <Lock className="h-3 w-3 text-white/60 sm:h-3.5 sm:w-3.5" />
-                    )}
-                  </span>
+                    <div className="p-4 sm:p-5">
+                      <div className="mb-3 flex items-center justify-between gap-3">
+                        <div className="text-sm font-extrabold tracking-tight text-white">
+                          What’s inside the Student Hub
+                        </div>
+                        <span className="inline-flex rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[11px] font-bold text-white/60">
+                          Built for 2026+
+                        </span>
+                      </div>
 
-                  <span className="text-[10px] text-white/45 transition group-hover:text-white/70 sm:text-xs">
-                    Open →
-                  </span>
+                      <div className="grid gap-3 md:grid-cols-2">
+                        <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+                          <div className="flex items-center gap-2 text-sm font-extrabold text-[#D4AF37]">
+                            <Bell className="h-4 w-4" />
+                            Scholarship & grant updates (expandable)
+                          </div>
+                          <p className="mt-1 text-xs text-white/65">
+                            Pages are structured to support feeds later (so
+                            content stays current).
+                          </p>
+                        </div>
+
+                        <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+                          <div className="flex items-center gap-2 text-sm font-extrabold text-[#D4AF37]">
+                            <Users className="h-4 w-4" />
+                            Mentorship pathways
+                          </div>
+                          <p className="mt-1 text-xs text-white/65">
+                            Guidance + networks + professional readiness. Simple
+                            and trusted.
+                          </p>
+                        </div>
+
+                        <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+                          <div className="flex items-center gap-2 text-sm font-extrabold text-[#D4AF37]">
+                            <Briefcase className="h-4 w-4" />
+                            Internships & career acceleration
+                          </div>
+                          <p className="mt-1 text-xs text-white/65">
+                            A clear pipeline from student → internship → job →
+                            career.
+                          </p>
+                        </div>
+
+                        <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+                          <div className="flex items-center gap-2 text-sm font-extrabold text-[#D4AF37]">
+                            <BookOpen className="h-4 w-4" />
+                            Application playbooks (next)
+                          </div>
+                          <p className="mt-1 text-xs text-white/65">
+                            “Scholarship kit” templates and step-by-step
+                            checklists will live here.
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+                        <Link
+                          href="/black-student-opportunities"
+                          className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#D4AF37] px-4 py-2.5 text-sm font-extrabold text-black shadow transition hover:bg-yellow-500 sm:px-5"
+                        >
+                          Go to Student Hub <ArrowRight className="h-4 w-4" />
+                        </Link>
+
+                        <Link
+                          href="/signup?redirect=/black-student-opportunities"
+                          className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-4 py-2.5 text-sm font-extrabold text-[#D4AF37] transition hover:border-[#D4AF37]/55 hover:bg-[#D4AF37]/15 sm:px-5"
+                        >
+                          <UserPlus className="h-4 w-4" />
+                          Join BWE as a Student
+                        </Link>
+                      </div>
+
+                      <p className="mt-3 text-[11px] text-white/45">
+                        Student pages remain public. Creating a profile unlocks
+                        future features (saved opportunities, alerts, and
+                        student networking).
+                      </p>
+                    </div>
+                  </div>
                 </div>
 
-                <h2 className="text-base font-extrabold tracking-tight text-white group-hover:underline sm:text-xl">
-                  {item.title}
-                </h2>
-                <p className="mt-2 text-[12px] text-white/65 sm:text-sm">
-                  {item.description}
-                </p>
-
-                {!isPublic && !user && (
-                  <div className="mt-3 text-[11px] text-white/45">
-                    Sign in required to access.
-                  </div>
-                )}
+                <div className="mt-5 grid grid-cols-2 gap-3 sm:mt-6 sm:gap-4 md:grid-cols-4">
+                  {studentOpportunities.map((item, index) => (
+                    <Link key={index} href={item.href}>
+                      <div className="group flex cursor-pointer flex-col items-center rounded-2xl border border-white/10 bg-white/[0.03] p-3 text-center transition hover:bg-white/[0.06] sm:p-4">
+                        <item.icon className="mb-2 h-8 w-8 text-[#D4AF37] sm:h-10 sm:w-10" />
+                        <span className="text-sm font-semibold text-white sm:text-base">
+                          {item.title}
+                        </span>
+                        <span className="mt-1 text-[11px] text-white/55 group-hover:text-white/70 sm:text-xs">
+                          Tap to explore →
+                        </span>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
               </div>
-            );
-          })}
-        </div>
+            </div>
+          </section>
 
-        <section className="mb-5 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.05)] backdrop-blur">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex-1">
-              <div className="mb-1 flex items-center gap-2">
-                <span className="inline-flex rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 px-2 py-0.5 text-[10px] font-bold tracking-wide text-[#EFD27A] sm:text-[11px]">
-                  COMING SOON
+          <main className="container relative z-10 mx-auto max-w-6xl px-4 pb-0">
+            <section className="mb-5 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <h2 className="text-lg font-extrabold tracking-tight text-[#D4AF37] sm:text-xl">
+                    Real Estate & Investment
+                  </h2>
+                  <p className="mt-1 text-sm text-white/60">
+                    Explore Black-owned real estate options and investments.
+                  </p>
+                </div>
+                <button
+                  className="rounded-xl bg-[#D4AF37] px-4 py-2.5 text-sm font-extrabold text-black shadow transition hover:bg-yellow-500"
+                  onClick={() => {
+                    if (!user) {
+                      router.push("/login?redirect=/real-estate-investment");
+                    } else {
+                      router.push("/real-estate-investment");
+                    }
+                  }}
+                >
+                  Learn More
+                </button>
+              </div>
+            </section>
+
+            <section className="mb-5 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
+              <div className="mb-3 flex items-center justify-between">
+                <h3 className="text-base font-extrabold tracking-tight text-[#D4AF37] sm:text-lg">
+                  Featured Sponsors
+                </h3>
+                <span className="text-[11px] text-white/50">
+                  Hover to pause
                 </span>
               </div>
 
-              <h3 className="text-base font-extrabold tracking-tight text-[#F1D57A] sm:text-lg">
-                BWE Recruiting & Consulting Services
-              </h3>
+              <div className="relative h-24 w-full overflow-hidden rounded-xl border border-white/10 bg-black/20 sm:h-28">
+                <div className="pointer-events-none absolute left-0 top-0 h-full w-10 bg-gradient-to-r from-black/70 to-transparent" />
+                <div className="pointer-events-none absolute right-0 top-0 h-full w-10 bg-gradient-to-l from-black/70 to-transparent" />
 
-              <p className="mt-1 max-w-3xl text-sm text-white/68">
-                Talent consulting that helps employers hire rigorously vetted
-                Black professionals — while opening meaningful pathways for
-                students, job seekers, and overlooked candidates.
+                <div className="animate-scroll absolute flex space-x-3 px-3 py-3 sm:space-x-4">
+                  {[...sponsors, ...sponsors].map((sponsor, index) => (
+                    <div
+                      key={index}
+                      className="relative h-16 w-28 overflow-hidden rounded-xl border border-white/10 shadow sm:h-20 sm:w-40"
+                    >
+                      <Image
+                        src={sponsor.img}
+                        alt={sponsor.name}
+                        width={160}
+                        height={80}
+                        className="h-full w-full object-cover"
+                        priority={index < 4}
+                      />
+                      <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 rounded bg-black/60 px-2 py-1 text-[10px] font-semibold text-[#D4AF37] sm:bottom-2 sm:text-[11px]">
+                        {sponsor.name}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            <div className="mb-6 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 lg:gap-5">
+              {keySections.map((item, index) => {
+                const isMarket = item.title === "Our Marketplace";
+                const isPublic = publicRoutes.includes(item.href);
+
+                return (
+                  <div
+                    key={index}
+                    className={cx(
+                      "group cursor-pointer rounded-2xl border p-4 shadow transition hover:-translate-y-0.5 hover:shadow-lg sm:p-5",
+                      isMarket
+                        ? "border-[#D4AF37]/40 bg-gradient-to-br from-[#D4AF37]/12 via-white/[0.03] to-white/[0.02]"
+                        : "border-white/10 bg-white/[0.03]",
+                    )}
+                    onClick={() => gate(item.href)}
+                  >
+                    <div className="mb-3 flex items-center justify-between gap-2">
+                      <span
+                        className={cx(
+                          "inline-flex items-center gap-1.5 rounded-full border px-2 py-1 text-[10px] font-bold sm:px-3 sm:text-xs",
+                          isMarket
+                            ? "border-[#D4AF37]/40 bg-black/30 text-[#D4AF37]"
+                            : "border-white/10 bg-white/5 text-white/70",
+                        )}
+                      >
+                        {isMarket
+                          ? "🔥 Popular"
+                          : isPublic
+                            ? "Public"
+                            : "Member"}
+                        {!isPublic && !isMarket && (
+                          <Lock className="h-3 w-3 text-white/60 sm:h-3.5 sm:w-3.5" />
+                        )}
+                      </span>
+
+                      <span className="text-[10px] text-white/45 transition group-hover:text-white/70 sm:text-xs">
+                        Open →
+                      </span>
+                    </div>
+
+                    <h2 className="text-base font-extrabold tracking-tight text-white group-hover:underline sm:text-xl">
+                      {item.title}
+                    </h2>
+                    <p className="mt-2 text-[12px] text-white/65 sm:text-sm">
+                      {item.description}
+                    </p>
+
+                    {!isPublic && !user && (
+                      <div className="mt-3 text-[11px] text-white/45">
+                        Sign in required to access.
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            <section className="mb-5 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.05)] backdrop-blur">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex-1">
+                  <div className="mb-1 flex items-center gap-2">
+                    <span className="inline-flex rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 px-2 py-0.5 text-[10px] font-bold tracking-wide text-[#EFD27A] sm:text-[11px]">
+                      COMING SOON
+                    </span>
+                  </div>
+
+                  <h3 className="text-base font-extrabold tracking-tight text-[#F1D57A] sm:text-lg">
+                    BWE Recruiting & Consulting Services
+                  </h3>
+
+                  <p className="mt-1 max-w-3xl text-sm text-white/68">
+                    Talent consulting that helps employers hire rigorously
+                    vetted Black professionals — while opening meaningful
+                    pathways for students, job seekers, and overlooked
+                    candidates.
+                  </p>
+                </div>
+
+                <button
+                  onClick={() => setModalOpen(true)}
+                  className="h-10 rounded-xl border border-[#D4AF37]/35 bg-[#D4AF37]/12 px-4 text-sm font-bold text-[#F1D57A] transition hover:bg-[#D4AF37]/18"
+                >
+                  Notify Me
+                </button>
+              </div>
+            </section>
+
+            <section className="mb-0 mt-5 rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-center shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur sm:p-6">
+              <h2 className="mb-1 flex items-center justify-center gap-2 text-lg font-extrabold tracking-tight text-[#D4AF37] sm:text-xl">
+                📢 Advertise with Us
+              </h2>
+              <p className="mx-auto mb-4 max-w-2xl text-sm text-white/65">
+                Promote your business to engaged users across the platform with
+                clean, tasteful ad placements.
               </p>
-            </div>
 
-            <button
-              onClick={() => setModalOpen(true)}
-              className="h-10 rounded-xl border border-[#D4AF37]/35 bg-[#D4AF37]/12 px-4 text-sm font-bold text-[#F1D57A] transition hover:bg-[#D4AF37]/18"
-            >
-              Notify Me
-            </button>
-          </div>
-        </section>
+              <button
+                className="rounded-xl bg-[#D4AF37] px-5 py-2.5 text-sm font-extrabold text-black shadow transition hover:bg-yellow-500"
+                onClick={() => {
+                  if (!user) router.push("/login?redirect=/advertise-with-us");
+                  else router.push("/advertise-with-us");
+                }}
+              >
+                View Ad Options
+              </button>
 
-        <section className="mb-0 mt-5 rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-center shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur sm:p-6">
-          <h2 className="mb-1 flex items-center justify-center gap-2 text-lg font-extrabold tracking-tight text-[#D4AF37] sm:text-xl">
-            📢 Advertise with Us
-          </h2>
-          <p className="mx-auto mb-4 max-w-2xl text-sm text-white/65">
-            Promote your business to engaged users across the platform with
-            clean, tasteful ad placements.
-          </p>
-
-          <button
-            className="rounded-xl bg-[#D4AF37] px-5 py-2.5 text-sm font-extrabold text-black shadow transition hover:bg-yellow-500"
-            onClick={() => {
-              if (!user) router.push("/login?redirect=/advertise-with-us");
-              else router.push("/advertise-with-us");
-            }}
-          >
-            View Ad Options
-          </button>
-
-          {!user && (
-            <div className="mt-3 text-xs text-white/45">
-              Some options require login for checkout & campaign management.
-            </div>
-          )}
-        </section>
-      </main>
+              {!user && (
+                <div className="mt-3 text-xs text-white/45">
+                  Some options require login for checkout & campaign management.
+                </div>
+              )}
+            </section>
+          </main>
         </>
       )}
 
