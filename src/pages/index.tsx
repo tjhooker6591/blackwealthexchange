@@ -819,7 +819,6 @@ export default function Home() {
                           Tools
                         </button>
                       )}
-
                     </div>
 
                     <div className="mt-2 flex w-full items-stretch overflow-hidden rounded-2xl border border-white/10 bg-black/30 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.04)] focus-within:border-[#D4AF37]/40 focus-within:ring-2 focus-within:ring-[#D4AF37]/20">
@@ -1331,33 +1330,32 @@ export default function Home() {
           })}
         </div>
 
-        <section className="mb-5 rounded-2xl border border-[#D4AF37]/25 bg-white/[0.03] p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <section className="mb-5 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.05)] backdrop-blur">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex-1">
-              <div className="mb-2 flex items-center justify-between gap-3">
-                <h3 className="text-lg font-extrabold tracking-tight text-[#D4AF37] sm:text-xl">
-                  BWE Recruiting & Consulting Services
-                </h3>
-                <span className="inline-flex whitespace-nowrap rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[11px] font-semibold text-[#D4AF37] sm:text-xs">
-                  Coming Soon
+              <div className="mb-1 flex items-center gap-2">
+                <span className="inline-flex rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 px-2 py-0.5 text-[10px] font-bold tracking-wide text-[#EFD27A] sm:text-[11px]">
+                  COMING SOON
                 </span>
               </div>
-              <p className="text-sm text-white/70">
-                A full talent-consulting service connecting employers with
-                rigorously vetted Black professionals — and helping students,
-                job seekers, and overlooked candidates secure meaningful
-                opportunities.
+
+              <h3 className="text-base font-extrabold tracking-tight text-[#F1D57A] sm:text-lg">
+                BWE Recruiting & Consulting Services
+              </h3>
+
+              <p className="mt-1 max-w-3xl text-sm text-white/68">
+                Talent consulting that helps employers hire rigorously vetted
+                Black professionals — while opening meaningful pathways for
+                students, job seekers, and overlooked candidates.
               </p>
             </div>
 
-            <div className="flex-shrink-0">
-              <button
-                onClick={() => setModalOpen(true)}
-                className="rounded-xl bg-[#D4AF37] px-4 py-2.5 text-sm font-extrabold text-black shadow transition hover:bg-yellow-500"
-              >
-                Notify Me
-              </button>
-            </div>
+            <button
+              onClick={() => setModalOpen(true)}
+              className="h-10 rounded-xl border border-[#D4AF37]/35 bg-[#D4AF37]/12 px-4 text-sm font-bold text-[#F1D57A] transition hover:bg-[#D4AF37]/18"
+            >
+              Notify Me
+            </button>
           </div>
         </section>
 
