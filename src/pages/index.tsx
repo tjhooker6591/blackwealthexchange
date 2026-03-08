@@ -1001,67 +1001,6 @@ export default function Home() {
         </div>
       </header>
 
-      <section className="relative z-10 pt-4 pb-6 sm:pt-5 sm:pb-8">
-        <div className="container mx-auto max-w-6xl px-4 space-y-4 sm:space-y-5">
-          <div className="grid gap-3 sm:grid-cols-3">
-            <Link href="/financial-literacy" className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 hover:bg-white/[0.06] transition">
-              <div className="text-xs text-[#D4AF37] font-bold uppercase tracking-wide">Quick Path</div>
-              <div className="mt-1 font-extrabold text-white">I’m here to learn</div>
-              <div className="mt-1 text-xs text-white/60">Guided education tracks and practical playbooks.</div>
-            </Link>
-            <Link href="/job-listings" className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 hover:bg-white/[0.06] transition">
-              <div className="text-xs text-[#D4AF37] font-bold uppercase tracking-wide">Quick Path</div>
-              <div className="mt-1 font-extrabold text-white">I’m here to find opportunities</div>
-              <div className="mt-1 text-xs text-white/60">Jobs, internships, mentorship, and student access.</div>
-            </Link>
-            <Link href="/marketplace/become-a-seller" className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 hover:bg-white/[0.06] transition">
-              <div className="text-xs text-[#D4AF37] font-bold uppercase tracking-wide">Quick Path</div>
-              <div className="mt-1 font-extrabold text-white">I run a business</div>
-              <div className="mt-1 text-xs text-white/60">Grow via marketplace, directory trust, and promotion.</div>
-            </Link>
-          </div>
-
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
-            <div className="text-xs uppercase tracking-wide text-[#D4AF37] font-bold">Start Here Track</div>
-            <h3 className="mt-1 text-lg sm:text-xl font-extrabold text-white">Featured Learning Block</h3>
-            <p className="mt-1 text-sm text-white/65">One path to build practical confidence in money, career, and economic context.</p>
-            <div className="mt-3 flex flex-wrap gap-2 text-xs text-white/70">
-              <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1">Financial basics</span>
-              <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1">Career setup</span>
-              <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1">Black history/economic context</span>
-            </div>
-            <Link href="/financial-literacy" className="mt-4 inline-flex h-10 items-center rounded-xl bg-[#D4AF37] px-5 text-sm font-extrabold text-black hover:bg-yellow-500 transition">Start the Track</Link>
-          </div>
-
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
-            <div className="flex items-center justify-between gap-3">
-              <h3 className="text-lg sm:text-xl font-extrabold text-white">Opportunities</h3>
-              <Link href="/black-student-opportunities" className="text-xs text-[#D4AF37] font-bold">Open Hub →</Link>
-            </div>
-            <div className="mt-3 grid gap-2 sm:grid-cols-3">
-              <Link href="/black-student-opportunities" className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-sm text-white/80 hover:bg-black/40">Students</Link>
-              <Link href="/job-listings" className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-sm text-white/80 hover:bg-black/40">Jobs</Link>
-              <Link href="/internships" className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-sm text-white/80 hover:bg-black/40">Internships</Link>
-            </div>
-          </div>
-
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
-            <h3 className="text-lg sm:text-xl font-extrabold text-white">Business Growth</h3>
-            <div className="mt-3 grid gap-2 sm:grid-cols-3">
-              <Link href="/marketplace" className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-sm text-white/80 hover:bg-black/40">Marketplace</Link>
-              <Link href="/business-directory" className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-sm text-white/80 hover:bg-black/40">Sponsored / Directory</Link>
-              <Link href="/advertise-with-us" className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-sm text-white/80 hover:bg-black/40">Advertising</Link>
-            </div>
-          </div>
-
-          <div className="pb-1 text-center">
-            <Link href="/more" className="text-sm font-bold text-[#D4AF37] hover:underline">Explore all resources →</Link>
-          </div>
-        </div>
-      </section>
-
-      {false && (
-        <>
       <section className="relative z-10 pt-3 pb-8 sm:pt-4 sm:pb-10">
         <div className="container mx-auto max-w-6xl px-4">
           <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
@@ -1446,8 +1385,6 @@ export default function Home() {
           )}
         </section>
       </main>
-        </>
-      )}
 
       <ConsultingInterestModal
         isOpen={modalOpen}
