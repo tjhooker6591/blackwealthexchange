@@ -1003,6 +1003,15 @@ export default function Home() {
 
       <section className="relative z-10 pt-3 pb-8 sm:pt-4 sm:pb-10">
         <div className="container mx-auto max-w-6xl px-4">
+          <div className="mb-4 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.05)]">
+            <div className="mb-3 text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">Quick paths</div>
+            <div className="grid gap-2 sm:grid-cols-3">
+              <Link href="/financial-literacy" className="rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm font-semibold text-white/80 transition hover:border-[#D4AF37]/30 hover:bg-black/40">I’m here to learn</Link>
+              <Link href="/job-listings" className="rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm font-semibold text-white/80 transition hover:border-[#D4AF37]/30 hover:bg-black/40">I’m here to find opportunities</Link>
+              <Link href="/marketplace/become-a-seller" className="rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm font-semibold text-white/80 transition hover:border-[#D4AF37]/30 hover:bg-black/40">I run a business</Link>
+            </div>
+          </div>
+
           <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
             <div className="mb-4 flex flex-wrap items-start justify-between gap-4 sm:mb-5">
               <div>
