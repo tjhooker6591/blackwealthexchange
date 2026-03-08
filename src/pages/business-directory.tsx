@@ -699,7 +699,8 @@ export default function BusinessDirectory() {
                   <span className="ml-2 text-[#D4AF37]">• Trusted Search</span>
                 </h1>
                 <p className="mt-1 text-sm text-white/65 sm:text-base">
-                  Premium discovery flow with clean ranking, trust cues, and faster decisions.
+                  Premium discovery flow with clean ranking, trust cues, and
+                  faster decisions.
                 </p>
               </div>
 
@@ -760,16 +761,28 @@ export default function BusinessDirectory() {
 
             <div className="grid gap-2 sm:grid-cols-3">
               <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-2">
-                <div className="text-[10px] uppercase tracking-[0.08em] text-white/50 font-bold">Ranking</div>
-                <div className="text-sm font-semibold text-white/80">Trust + relevance first</div>
+                <div className="text-[10px] uppercase tracking-[0.08em] text-white/50 font-bold">
+                  Ranking
+                </div>
+                <div className="text-sm font-semibold text-white/80">
+                  Trust + relevance first
+                </div>
               </div>
               <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-2">
-                <div className="text-[10px] uppercase tracking-[0.08em] text-white/50 font-bold">Control</div>
-                <div className="text-sm font-semibold text-white/80">Strong filters, zero clutter</div>
+                <div className="text-[10px] uppercase tracking-[0.08em] text-white/50 font-bold">
+                  Control
+                </div>
+                <div className="text-sm font-semibold text-white/80">
+                  Strong filters, zero clutter
+                </div>
               </div>
               <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-2">
-                <div className="text-[10px] uppercase tracking-[0.08em] text-white/50 font-bold">Goal</div>
-                <div className="text-sm font-semibold text-white/80">Find, vet, and contact quickly</div>
+                <div className="text-[10px] uppercase tracking-[0.08em] text-white/50 font-bold">
+                  Goal
+                </div>
+                <div className="text-sm font-semibold text-white/80">
+                  Find, vet, and contact quickly
+                </div>
               </div>
             </div>
           </div>
