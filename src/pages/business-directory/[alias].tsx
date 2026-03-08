@@ -33,7 +33,11 @@ function getTitle(b: Business) {
 }
 
 function toCategoryText(v: Business["categories"]) {
-  if (Array.isArray(v)) return v.map((x) => safeStr(x)).filter(Boolean).join(", ");
+  if (Array.isArray(v))
+    return v
+      .map((x) => safeStr(x))
+      .filter(Boolean)
+      .join(", ");
   return safeStr(v);
 }
 
@@ -65,9 +69,12 @@ export default function BusinessDetail() {
       setIsLoading(true);
       setError("");
       try {
-        const res = await fetch(`/api/getBusiness?alias=${encodeURIComponent(alias)}`, {
-          signal: ctrl.signal,
-        });
+        const res = await fetch(
+          `/api/getBusiness?alias=${encodeURIComponent(alias)}`,
+          {
+            signal: ctrl.signal,
+          },
+        );
 
         const data = await res.json().catch(() => null);
         if (!active) return;
@@ -97,7 +104,9 @@ export default function BusinessDetail() {
 
   const website = safeWebsite(business?.website);
   const categoryText = toCategoryText(business?.categories);
-  const placeLine = [safeStr(business?.city), safeStr(business?.state)].filter(Boolean).join(", ");
+  const placeLine = [safeStr(business?.city), safeStr(business?.state)]
+    .filter(Boolean)
+    .join(", ");
 
   const trust = {
     verified:
@@ -190,19 +199,24 @@ export default function BusinessDetail() {
                     About
                   </h2>
                   <p className="leading-relaxed text-white/75">
-                    {safeStr(business.description) || "No description available yet."}
+                    {safeStr(business.description) ||
+                      "No description available yet."}
                   </p>
                 </article>
 
                 <aside className="space-y-3 rounded-2xl border border-white/10 bg-black/30 p-5">
                   <div className="text-sm">
                     <div className="text-white/55">Address</div>
-                    <div className="text-white/80">{safeStr(business.address) || placeLine || "—"}</div>
+                    <div className="text-white/80">
+                      {safeStr(business.address) || placeLine || "—"}
+                    </div>
                   </div>
 
                   <div className="text-sm">
                     <div className="text-white/55">Phone</div>
-                    <div className="text-white/80">{safeStr(business.phone) || "—"}</div>
+                    <div className="text-white/80">
+                      {safeStr(business.phone) || "—"}
+                    </div>
                   </div>
 
                   <div className="text-sm">
@@ -244,24 +258,25 @@ export default function BusinessDetail() {
                 </aside>
               </div>
 
-              {typeof business.latitude === "number" && typeof business.longitude === "number" && (
-                <div className="border-t border-white/10 p-6 md:p-8">
-                  <h3 className="mb-3 text-sm font-extrabold uppercase tracking-wide text-white/80">
-                    Find on map
-                  </h3>
-                  <div className="overflow-hidden rounded-xl border border-white/10 bg-black/30">
-                    <iframe
-                      src={`https://www.google.com/maps?q=${business.latitude},${business.longitude}&hl=es;z=14&output=embed`}
-                      width="100%"
-                      height="280"
-                      frameBorder="0"
-                      style={{ border: 0 }}
-                      allowFullScreen
-                      title="Business location map"
-                    />
+              {typeof business.latitude === "number" &&
+                typeof business.longitude === "number" && (
+                  <div className="border-t border-white/10 p-6 md:p-8">
+                    <h3 className="mb-3 text-sm font-extrabold uppercase tracking-wide text-white/80">
+                      Find on map
+                    </h3>
+                    <div className="overflow-hidden rounded-xl border border-white/10 bg-black/30">
+                      <iframe
+                        src={`https://www.google.com/maps?q=${business.latitude},${business.longitude}&hl=es;z=14&output=embed`}
+                        width="100%"
+                        height="280"
+                        frameBorder="0"
+                        style={{ border: 0 }}
+                        allowFullScreen
+                        title="Business location map"
+                      />
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
             </>
           )}
         </section>
