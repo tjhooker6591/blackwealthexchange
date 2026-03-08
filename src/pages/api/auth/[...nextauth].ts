@@ -2,6 +2,7 @@ import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import clientPromise from "@/lib/mongodb";
+import { getMongoDbName } from "@/lib/env";
 
 // NextAuth configuration
 export const authOptions: NextAuthOptions = {
@@ -21,7 +22,7 @@ export const authOptions: NextAuthOptions = {
         if (!credentials) return null;
         const { email, password } = credentials;
         const client = await clientPromise;
-        const db = client.db("bwes-cluster");
+        const db = client.db(getMongoDbName());
         const collections = ["users", "sellers", "businesses", "employers"];
         for (const col of collections) {
           const user = await db.collection(col).findOne({ email });
@@ -47,8 +48,8 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
   },
 
-  // Required secret
-  secret: process.env.NEXTAUTH_SECRET,
+  // Auth secret (must be configured in runtime env)
+  secret: process.env.NEXTAUTH_SECRET ?? process.env.JWT_SECRET,
 
   // Enable debug logging in non-production
   debug: process.env.NODE_ENV !== "production",

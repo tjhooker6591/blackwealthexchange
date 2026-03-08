@@ -3,15 +3,12 @@ import jwt from "jsonwebtoken";
 import cookie from "cookie";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
+import { getJwtSecret, getMongoDbName } from "@/lib/env";
 
 interface JwtPayload {
   userId: string;
   email: string;
   accountType?: string;
-}
-
-function getSecret(): string | null {
-  return process.env.JWT_SECRET ?? process.env.NEXTAUTH_SECRET ?? null;
 }
 
 interface UserProfile {
@@ -45,11 +42,13 @@ export default async function handler(
         .json({ user: null, error: "No token cookie found." });
     }
 
-    const secret = getSecret();
-    if (!secret) {
+    let secret: string;
+    try {
+      secret = getJwtSecret();
+    } catch {
       return res.status(500).json({
         user: null,
-        error: "Missing JWT_SECRET or NEXTAUTH_SECRET environment variable.",
+        error: "Server auth configuration is missing required secrets.",
       });
     }
 
@@ -75,7 +74,7 @@ export default async function handler(
             : "users";
 
     const client = await clientPromise;
-    const db = client.db("bwes-cluster");
+    const db = client.db(getMongoDbName());
 
     const profile = await db
       .collection<UserProfile>(collectionName)

@@ -1,19 +1,16 @@
 import { MongoClient, MongoClientOptions } from "mongodb";
+import { getMongoUri } from "@/lib/env";
 
 const options: MongoClientOptions = {};
 
 declare global {
-   
   var _mongoClientPromise: Promise<MongoClient> | undefined;
 }
 
 let cachedPromise: Promise<MongoClient> | null = null;
 
 async function connectMongo(): Promise<MongoClient> {
-  const uri = process.env.MONGODB_URI;
-  if (!uri) {
-    throw new Error("MongoDB env missing: set MONGODB_URI");
-  }
+  const uri = getMongoUri();
 
   if (process.env.NODE_ENV === "development") {
     if (!global._mongoClientPromise) {
@@ -36,9 +33,7 @@ const clientPromise = {
     onfulfilled?:
       | ((value: MongoClient) => TResult1 | PromiseLike<TResult1>)
       | null,
-    onrejected?:
-      | ((reason: any) => TResult2 | PromiseLike<TResult2>)
-      | null,
+    onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | null,
   ) {
     return connectMongo().then(onfulfilled as any, onrejected as any);
   },

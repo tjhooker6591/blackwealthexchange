@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import clientPromise from "@/lib/mongodb";
 import cookie from "cookie";
 import { ObjectId } from "mongodb";
+import { getJwtSecret, getMongoDbName } from "@/lib/env";
 
 interface UserRecord {
   _id: ObjectId;
@@ -15,14 +16,6 @@ interface UserRecord {
 }
 
 const ADMIN_EMAIL = "blackwealth24@gmail.com";
-
-function getSecret(): string {
-  const secret = process.env.JWT_SECRET ?? process.env.NEXTAUTH_SECRET;
-  if (!secret) {
-    throw new Error("Define JWT_SECRET or NEXTAUTH_SECRET in env vars");
-  }
-  return secret;
-}
 
 function normalizeEmail(email: string) {
   return (email || "").trim().toLowerCase();
@@ -41,7 +34,7 @@ export default async function handler(
 
   let SECRET: string;
   try {
-    SECRET = getSecret();
+    SECRET = getJwtSecret();
   } catch (err) {
     console.error("Login handler secret load failed:", err);
     return res
@@ -76,7 +69,7 @@ export default async function handler(
     const emailNorm = normalizeEmail(email);
 
     const client = await clientPromise;
-    const db = client.db("bwes-cluster");
+    const db = client.db(getMongoDbName());
 
     let collName: "users" | "businesses" | "sellers" | "employers" = "users";
     if (bodyAccountType === "business") collName = "businesses";
