@@ -709,41 +709,35 @@ export default function Home() {
               )}
             </div>
 
-            <div className="mx-auto mt-4 flex w-full max-w-3xl flex-wrap justify-center gap-2">
-              {[
-                "Trust-first search • Verified + quality signals",
-                "Built for action • Find, vet, connect fast",
-                "Economic focus • Ownership, access, circulation",
-              ].map((item) => (
-                <span
-                  key={item}
-                  className="rounded-full border border-white/12 bg-white/[0.04] px-3 py-1.5 text-[11px] font-semibold text-white/75"
-                >
-                  {item}
-                </span>
-              ))}
-            </div>
+            <details className="mx-auto mt-3 w-full max-w-3xl rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-left">
+              <summary className="cursor-pointer list-none text-xs font-semibold text-white/70">
+                Why trust BWE search
+              </summary>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {[
+                  "Trust-first search • Verified + quality signals",
+                  "Built for action • Find, vet, connect fast",
+                  "Economic focus • Ownership, access, circulation",
+                ].map((item) => (
+                  <span
+                    key={item}
+                    className="rounded-full border border-white/12 bg-white/[0.04] px-3 py-1.5 text-[11px] font-semibold text-white/75"
+                  >
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </details>
           </div>
-
-          <section className="mt-7 sm:mt-9">
-            <EconomicImpactSimulator />
-          </section>
 
           <section className="mt-5 sm:mt-6">
             <div className="mx-auto max-w-4xl">
-              <div className="mb-2.5 flex items-center justify-between">
-                <div>
-                  <div className="text-[10px] font-bold tracking-[0.08em] text-[#D4AF37] uppercase">
-                    Discover in seconds
-                  </div>
-                  <div className="text-sm font-semibold text-white/78 sm:text-[15px]">
-                    Search the directory with premium filters
-                  </div>
+              <div className="mb-2.5">
+                <div className="text-[10px] font-bold tracking-[0.08em] text-[#D4AF37] uppercase">
+                  Discover in seconds
                 </div>
-                <div className="hidden sm:flex items-center gap-2 text-[11px] text-white/50">
-                  <span className="rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 px-2.5 py-1 text-[#F4D97B]">
-                    Trusted Flow
-                  </span>
+                <div className="text-sm font-semibold text-white/78 sm:text-[15px]">
+                  Search the directory with premium filters
                 </div>
               </div>
 
@@ -826,11 +820,6 @@ export default function Home() {
                         </button>
                       )}
 
-                      <div className="ml-auto hidden sm:flex items-center gap-2">
-                        <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[11px] text-white/60">
-                          Trusted Flow
-                        </span>
-                      </div>
                     </div>
 
                     <div className="mt-2 flex w-full items-stretch overflow-hidden rounded-2xl border border-white/10 bg-black/30 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.04)] focus-within:border-[#D4AF37]/40 focus-within:ring-2 focus-within:ring-[#D4AF37]/20">
@@ -1005,6 +994,10 @@ export default function Home() {
                 </Link>
               </div>
             </div>
+          </section>
+
+          <section className="mt-5 sm:mt-6">
+            <EconomicImpactSimulator />
           </section>
         </div>
       </header>
