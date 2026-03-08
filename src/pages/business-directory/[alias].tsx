@@ -130,8 +130,9 @@ export default function BusinessDetail() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-72 bg-gradient-to-b from-[#D4AF37]/12 via-transparent to-transparent" />
+    <div className="min-h-screen bg-neutral-950 text-white">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-80 bg-gradient-to-b from-[#D4AF37]/16 via-transparent to-transparent" />
+      <div className="pointer-events-none absolute -top-24 left-1/2 h-56 w-[40rem] -translate-x-1/2 rounded-full bg-[#D4AF37]/10 blur-3xl" />
 
       <div className="relative mx-auto max-w-5xl px-4 py-8 md:py-10">
         <div className="mb-5 flex items-center justify-between gap-3">
@@ -151,7 +152,7 @@ export default function BusinessDetail() {
           </Link>
         </div>
 
-        <section className="overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] shadow-[0_0_0_1px_rgba(255,255,255,0.04)]">
+        <section className="overflow-hidden rounded-3xl border border-white/12 bg-gradient-to-b from-white/[0.07] via-white/[0.035] to-white/[0.02] shadow-[0_0_0_1px_rgba(255,255,255,0.05),0_28px_80px_rgba(0,0,0,0.5)]">
           {isLoading ? (
             <div className="p-6 md:p-8">
               <div className="mb-4 h-8 w-2/3 animate-pulse rounded bg-white/10" />
@@ -173,7 +174,8 @@ export default function BusinessDetail() {
           ) : (
             <>
               <header className="border-b border-white/10 p-6 md:p-8">
-                <h1 className="text-2xl font-black tracking-tight text-[#D4AF37] md:text-3xl">
+                <div className="mb-2 text-[11px] font-bold uppercase tracking-[0.09em] text-[#D4AF37]/90">Business profile</div>
+                <h1 className="text-2xl font-black tracking-tight text-[#F1D57A] md:text-3xl">
                   {getTitle(business)}
                 </h1>
 
@@ -203,7 +205,7 @@ export default function BusinessDetail() {
               </header>
 
               <div className="grid gap-4 p-6 md:grid-cols-3 md:p-8">
-                <article className="md:col-span-2 rounded-2xl border border-white/10 bg-black/30 p-5">
+                <article className="md:col-span-2 rounded-2xl border border-white/12 bg-black/35 p-5 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.03)]">
                   <h2 className="mb-2 text-sm font-extrabold uppercase tracking-wide text-white/80">
                     About
                   </h2>
@@ -213,10 +215,10 @@ export default function BusinessDetail() {
                   </p>
                 </article>
 
-                <aside className="space-y-3 rounded-2xl border border-white/10 bg-black/30 p-5">
+                <aside className="space-y-3 rounded-2xl border border-white/12 bg-black/35 p-5 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.03)]">
                   <div className="text-sm">
                     <div className="text-white/55">Address</div>
-                    <div className="text-white/80">
+                    <div className="text-white/80 font-medium">
                       {safeStr(business.address) || placeLine || "—"}
                     </div>
                   </div>
