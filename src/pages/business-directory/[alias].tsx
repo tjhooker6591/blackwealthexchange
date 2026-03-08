@@ -107,6 +107,15 @@ export default function BusinessDetail() {
   const placeLine = [safeStr(business?.city), safeStr(business?.state)]
     .filter(Boolean)
     .join(", ");
+  const locationText = [safeStr(business?.address), placeLine]
+    .filter(Boolean)
+    .join(", ");
+  const hasLatLng =
+    typeof business?.latitude === "number" &&
+    typeof business?.longitude === "number";
+  const mapQuery = hasLatLng
+    ? `${business?.latitude},${business?.longitude}`
+    : locationText;
 
   const trust = {
     verified:
@@ -258,25 +267,27 @@ export default function BusinessDetail() {
                 </aside>
               </div>
 
-              {typeof business.latitude === "number" &&
-                typeof business.longitude === "number" && (
-                  <div className="border-t border-white/10 p-6 md:p-8">
-                    <h3 className="mb-3 text-sm font-extrabold uppercase tracking-wide text-white/80">
-                      Find on map
-                    </h3>
-                    <div className="overflow-hidden rounded-xl border border-white/10 bg-black/30">
-                      <iframe
-                        src={`https://www.google.com/maps?q=${business.latitude},${business.longitude}&hl=es;z=14&output=embed`}
-                        width="100%"
-                        height="280"
-                        frameBorder="0"
-                        style={{ border: 0 }}
-                        allowFullScreen
-                        title="Business location map"
-                      />
-                    </div>
+              {mapQuery && (
+                <div className="border-t border-white/10 p-6 md:p-8">
+                  <h3 className="mb-2 text-sm font-extrabold uppercase tracking-wide text-white/80">
+                    Find on map
+                  </h3>
+                  {locationText ? (
+                    <p className="mb-3 text-xs text-white/55">{locationText}</p>
+                  ) : null}
+                  <div className="overflow-hidden rounded-xl border border-white/10 bg-black/30">
+                    <iframe
+                      src={`https://www.google.com/maps?q=${encodeURIComponent(mapQuery)}&hl=es;z=14&output=embed`}
+                      width="100%"
+                      height="280"
+                      frameBorder="0"
+                      style={{ border: 0 }}
+                      allowFullScreen
+                      title="Business location map"
+                    />
                   </div>
-                )}
+                </div>
+              )}
             </>
           )}
         </section>
