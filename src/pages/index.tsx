@@ -643,7 +643,7 @@ export default function Home() {
       <header className="relative z-10 pb-6 pt-10 sm:pb-8 sm:pt-14">
         <div className="container mx-auto max-w-6xl px-4">
           <div className="text-center">
-            <div className="mx-auto inline-flex items-center justify-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2 text-xs text-white/80 sm:px-4 sm:text-sm">
+            <div className="mx-auto inline-flex items-center justify-center gap-2 rounded-full border border-[#D4AF37]/25 bg-[#D4AF37]/10 px-3 py-2 text-xs text-[#F4D97B] sm:px-4 sm:text-sm">
               <Image
                 src="/black-wealth-future.png"
                 alt="Black Wealth"
@@ -652,27 +652,28 @@ export default function Home() {
                 className="inline-block sm:h-[34px] sm:w-[34px]"
                 priority
               />
-              <span className="font-semibold tracking-wide">
-                Our Dollars. Our Businesses. Our Ecosystem.
+              <span className="font-extrabold tracking-wide">
+                BWE PLATFORM • OWNERSHIP • ACCESS • CIRCULATION
               </span>
             </div>
 
-            <h1 className="mt-4 text-3xl font-black tracking-tight leading-[1.05] sm:text-5xl md:text-6xl">
-              The Black Wealth
-              <span className="block text-[#D4AF37]">Operating System</span>
+            <h1 className="mt-5 text-4xl font-black tracking-tight leading-[0.98] sm:text-6xl md:text-7xl">
+              Build Black
+              <span className="block bg-gradient-to-r from-[#D4AF37] via-[#F2D77C] to-[#D4AF37] bg-clip-text text-transparent">
+                Economic Power
+              </span>
             </h1>
 
-            <p className="mx-auto mt-4 max-w-3xl text-sm text-white/70 sm:text-base md:text-lg">
-              Search Black-owned businesses, discover jobs & opportunities, shop
-              the marketplace, and move capital with a premium, trust-first
-              experience built for real economic power.
+            <p className="mx-auto mt-5 max-w-3xl text-base text-white/75 sm:text-lg md:text-xl">
+              The premium hub to discover Black-owned businesses, activate opportunities,
+              and move from discovery to real-world action faster.
             </p>
 
-            <div className="mx-auto mt-6 flex w-full max-w-md flex-col gap-3 sm:flex-row sm:justify-center">
+            <div className="mx-auto mt-7 flex w-full max-w-2xl flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-center">
               {user ? (
                 <>
                   <Link href="/dashboard" className="w-full sm:w-auto">
-                    <button className="w-full rounded-xl bg-[#D4AF37] px-5 py-2.5 text-sm font-extrabold text-black shadow transition hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/40 sm:px-6 sm:py-3 sm:text-base">
+                    <button className="w-full rounded-2xl bg-[#D4AF37] px-6 py-3 text-sm font-black text-black shadow-[0_10px_30px_rgba(212,175,55,0.35)] transition hover:-translate-y-0.5 hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/40 sm:px-7 sm:py-3.5 sm:text-base">
                       Go to Dashboard
                     </button>
                   </Link>
@@ -684,7 +685,7 @@ export default function Home() {
                     }
                     className="w-full sm:w-auto"
                   >
-                    <button className="w-full rounded-xl border border-[#D4AF37]/60 bg-transparent px-5 py-2.5 text-sm font-extrabold text-[#D4AF37] transition hover:bg-[#D4AF37]/10 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 sm:px-6 sm:py-3 sm:text-base">
+                    <button className="w-full rounded-2xl border border-[#D4AF37]/60 bg-[#D4AF37]/10 px-5 py-3 text-sm font-extrabold text-[#F1D57A] transition hover:-translate-y-0.5 hover:bg-[#D4AF37]/18 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 sm:px-6 sm:py-3.5 sm:text-base">
                       {user?.accountType === "admin"
                         ? "Admin Dashboard"
                         : "Explore Directory"}
@@ -694,12 +695,12 @@ export default function Home() {
               ) : (
                 <>
                   <Link href="/login" className="w-full sm:w-auto">
-                    <button className="w-full rounded-xl bg-[#D4AF37] px-5 py-2.5 text-sm font-extrabold text-black shadow transition hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/40 sm:px-6 sm:py-3 sm:text-base">
+                    <button className="w-full rounded-2xl bg-[#D4AF37] px-6 py-3 text-sm font-black text-black shadow-[0_10px_30px_rgba(212,175,55,0.35)] transition hover:-translate-y-0.5 hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/40 sm:px-7 sm:py-3.5 sm:text-base">
                       Login
                     </button>
                   </Link>
                   <Link href="/signup" className="w-full sm:w-auto">
-                    <button className="w-full rounded-xl border border-[#D4AF37]/60 bg-transparent px-5 py-2.5 text-sm font-extrabold text-[#D4AF37] transition hover:bg-[#D4AF37]/10 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 sm:px-6 sm:py-3 sm:text-base">
+                    <button className="w-full rounded-2xl border border-[#D4AF37]/60 bg-[#D4AF37]/10 px-5 py-3 text-sm font-extrabold text-[#F1D57A] transition hover:-translate-y-0.5 hover:bg-[#D4AF37]/18 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 sm:px-6 sm:py-3.5 sm:text-base">
                       Sign Up
                     </button>
                   </Link>
@@ -739,20 +740,25 @@ export default function Home() {
           </section>
 
           <section className="mt-6 sm:mt-8">
-            <div className="mx-auto max-w-3xl">
-              <div className="mb-2 flex items-center justify-between">
-                <div className="text-xs font-semibold tracking-wide text-white/70">
-                  Search the Directory
+            <div className="mx-auto max-w-5xl">
+              <div className="mb-3 flex items-center justify-between">
+                <div>
+                  <div className="text-xs font-black tracking-[0.09em] text-[#D4AF37] uppercase">
+                    Discover in seconds
+                  </div>
+                  <div className="text-sm sm:text-base font-semibold text-white/80">
+                    Search the directory with premium filters
+                  </div>
                 </div>
                 <div className="hidden sm:flex items-center gap-2 text-[11px] text-white/50">
-                  <span className="rounded-full border border-white/10 bg-white/5 px-2 py-0.5">
+                  <span className="rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 px-2.5 py-1 text-[#F4D97B]">
                     Trusted Flow
                   </span>
                 </div>
               </div>
 
               <div className="sticky top-2 z-30 sm:static sm:top-auto sm:z-auto">
-                <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.06] to-white/[0.02] p-3 sm:p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_30px_80px_rgba(0,0,0,0.55)] backdrop-blur-xl">
+                <div className="relative overflow-hidden rounded-3xl border border-[#D4AF37]/25 bg-gradient-to-b from-[#D4AF37]/12 via-white/[0.05] to-white/[0.02] p-3 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.08),0_35px_90px_rgba(0,0,0,0.58)] backdrop-blur-xl">
                   <div className="pointer-events-none absolute -top-24 left-1/2 h-56 w-[42rem] -translate-x-1/2 rounded-full bg-[#D4AF37]/10 blur-3xl" />
                   <div className="pointer-events-none absolute -bottom-28 right-[-6rem] h-64 w-64 rounded-full bg-emerald-500/10 blur-3xl" />
 
