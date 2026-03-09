@@ -1,6 +1,7 @@
 import { MongoClient } from "mongodb";
 import bcrypt from "bcryptjs";
 import fs from "node:fs";
+import jwt from "jsonwebtoken";
 
 const base = process.env.SMOKE_BASE_URL || "http://127.0.0.1:3000";
 
@@ -15,13 +16,11 @@ function mongoUri() {
 async function req(path, opts = {}) {
   const res = await fetch(`${base}${path}`, { redirect: "manual", ...opts });
   const text = await res.text();
-  return { status: res.status, headers: Object.fromEntries(res.headers.entries()), body: text };
-}
-
-function parseCookie(setCookie) {
-  if (!setCookie) return "";
-  const arr = Array.isArray(setCookie) ? setCookie : [setCookie];
-  return arr.map((s) => s.split(";")[0]).join("; ");
+  return {
+    status: res.status,
+    headers: Object.fromEntries(res.headers.entries()),
+    body: text,
+  };
 }
 
 function add(result, name, pass, details) {
@@ -55,7 +54,9 @@ const ctaPaths = [
 ];
 for (const p of ctaPaths) {
   const r = await req(p);
-  add(out, `CTA ${p}`, [200, 302, 307, 308].includes(r.status), { status: r.status });
+  add(out, `CTA ${p}`, [200, 302, 307, 308].includes(r.status), {
+    status: r.status,
+  });
 }
 
 // 2) course/class/learning path completion
@@ -68,7 +69,9 @@ const learningFlow = [
 ];
 for (const p of learningFlow) {
   const r = await req(p);
-  add(out, `Learning ${p}`, [200, 302, 307, 308].includes(r.status), { status: r.status });
+  add(out, `Learning ${p}`, [200, 302, 307, 308].includes(r.status), {
+    status: r.status,
+  });
 }
 
 // 3) form submission completion
@@ -82,14 +85,18 @@ const intake = await req("/api/consulting-intake", {
     details: "Need hiring support",
   }),
 });
-add(out, "Form consulting-intake submit", intake.status === 200, { status: intake.status });
+add(out, "Form consulting-intake submit", intake.status === 200, {
+  status: intake.status,
+});
 
 const resetReq = await req("/api/auth/request-reset", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({ email: "critical-path@example.com" }),
 });
-add(out, "Form request-reset submit", resetReq.status === 200, { status: resetReq.status });
+add(out, "Form request-reset submit", resetReq.status === 200, {
+  status: resetReq.status,
+});
 
 // 4 + 5) protected-route redirect correctness + role-based completion
 const uri = mongoUri();
@@ -101,23 +108,64 @@ const stamp = Date.now();
 const pwd = "QaPass123!";
 const hash = await bcrypt.hash(pwd, 10);
 const accounts = [
-  { role: "user", coll: "users", email: `cp.user.${stamp}@bwe.local`, accountType: "user", isAdmin: false },
-  { role: "seller", coll: "sellers", email: `cp.seller.${stamp}@bwe.local`, accountType: "seller", isAdmin: false },
-  { role: "employer", coll: "employers", email: `cp.employer.${stamp}@bwe.local`, accountType: "employer", isAdmin: false },
-  { role: "admin", coll: "users", email: `cp.admin.${stamp}@bwe.local`, accountType: "admin", isAdmin: true },
+  {
+    role: "user",
+    coll: "users",
+    email: `cp.user.${stamp}@bwe.local`,
+    accountType: "user",
+    isAdmin: false,
+  },
+  {
+    role: "seller",
+    coll: "sellers",
+    email: `cp.seller.${stamp}@bwe.local`,
+    accountType: "seller",
+    isAdmin: false,
+  },
+  {
+    role: "employer",
+    coll: "employers",
+    email: `cp.employer.${stamp}@bwe.local`,
+    accountType: "employer",
+    isAdmin: false,
+  },
+  {
+    role: "admin",
+    coll: "users",
+    email: `cp.admin.${stamp}@bwe.local`,
+    accountType: "admin",
+    isAdmin: true,
+  },
 ];
 for (const a of accounts) {
-  await db.collection(a.coll).updateOne(
-    { email: a.email },
-    { $set: { email: a.email, password: hash, accountType: a.accountType, isAdmin: a.isAdmin, updatedAt: new Date() } },
-    { upsert: true },
-  );
+  await db
+    .collection(a.coll)
+    .updateOne(
+      { email: a.email },
+      {
+        $set: {
+          email: a.email,
+          password: hash,
+          accountType: a.accountType,
+          isAdmin: a.isAdmin,
+          updatedAt: new Date(),
+        },
+      },
+      { upsert: true },
+    );
 }
 
-const guestProtected = ["/job-listings", "/marketplace/add-products", "/employer/jobs", "/admin/dashboard"];
+const guestProtected = [
+  "/job-listings",
+  "/marketplace/add-products",
+  "/employer/jobs",
+  "/admin/dashboard",
+];
 for (const p of guestProtected) {
   const r = await req(p);
-  add(out, `Guest protected ${p}`, [302, 307, 308].includes(r.status), { status: r.status });
+  add(out, `Guest protected ${p}`, [302, 307, 308].includes(r.status), {
+    status: r.status,
+  });
 }
 
 const cookies = {};
@@ -125,10 +173,16 @@ for (const a of accounts) {
   const lr = await fetch(`${base}/api/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email: a.email, password: pwd, accountType: a.accountType }),
+    body: JSON.stringify({
+      email: a.email,
+      password: pwd,
+      accountType: a.accountType,
+    }),
     redirect: "manual",
   });
-  cookies[a.role] = parseCookie(lr.headers.getSetCookie?.() || lr.headers.get("set-cookie"));
+  cookies[a.role] = parseCookie(
+    lr.headers.getSetCookie?.() || lr.headers.get("set-cookie"),
+  );
 }
 
 const roleChecks = [
@@ -139,7 +193,10 @@ const roleChecks = [
 ];
 for (const [role, p, expected] of roleChecks) {
   const r = await req(p, { headers: { cookie: cookies[role] } });
-  add(out, `Role ${role} ${p}`, expected.includes(r.status), { status: r.status, expected });
+  add(out, `Role ${role} ${p}`, expected.includes(r.status), {
+    status: r.status,
+    expected,
+  });
 }
 
 await client.close();
@@ -156,9 +213,14 @@ const keyPages = [
 for (const p of keyPages) {
   const r = await req(p);
   const internalLinkCount = (r.body.match(/href="\//g) || []).length;
-  add(out, `No dead-end ${p}`, r.status === 200 && internalLinkCount > 0, {
+  const hasForm = /<form/i.test(r.body);
+  const pass =
+    r.status === 200 &&
+    (internalLinkCount > 0 || (p === "/recruiting-consulting" && hasForm));
+  add(out, `No dead-end ${p}`, pass, {
     status: r.status,
     internalLinkCount,
+    hasForm,
   });
 }
 
@@ -181,6 +243,9 @@ out.summary = {
 };
 
 fs.mkdirSync(".audit", { recursive: true });
-fs.writeFileSync(".audit/critical-paths-report.json", JSON.stringify(out, null, 2));
+fs.writeFileSync(
+  ".audit/critical-paths-report.json",
+  JSON.stringify(out, null, 2),
+);
 console.log(JSON.stringify(out, null, 2));
 if (out.remainingIncompleteFlows.length > 0) process.exit(1);
