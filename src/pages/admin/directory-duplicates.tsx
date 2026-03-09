@@ -58,13 +58,17 @@ export default function DirectoryDuplicatesPage() {
     const params = new URLSearchParams({ limit: "200" });
     if (search.trim()) params.set("q", search.trim());
 
-    const res = await fetch(`/api/admin/directory-duplicates?${params.toString()}`, {
-      cache: "no-store",
-      credentials: "include",
-    });
+    const res = await fetch(
+      `/api/admin/directory-duplicates?${params.toString()}`,
+      {
+        cache: "no-store",
+        credentials: "include",
+      },
+    );
 
     const data = await res.json().catch(() => ({}));
-    if (!res.ok) throw new Error(data?.error || "Failed to load duplicate queue");
+    if (!res.ok)
+      throw new Error(data?.error || "Failed to load duplicate queue");
 
     setRows(Array.isArray(data?.duplicates) ? data.duplicates : []);
   }, []);
@@ -104,7 +108,10 @@ export default function DirectoryDuplicatesPage() {
     };
   }, [load, router]);
 
-  const resolve = async (businessId: string, action: "archive_duplicate" | "approve_with_unique_alias") => {
+  const resolve = async (
+    businessId: string,
+    action: "archive_duplicate" | "approve_with_unique_alias",
+  ) => {
     try {
       setBusyId(businessId);
       setError("");
@@ -117,7 +124,8 @@ export default function DirectoryDuplicatesPage() {
       });
 
       const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data?.error || "Failed to resolve duplicate");
+      if (!res.ok)
+        throw new Error(data?.error || "Failed to resolve duplicate");
 
       setRows((prev) => prev.filter((r) => r.id !== businessId));
     } catch (e: any) {
@@ -137,9 +145,12 @@ export default function DirectoryDuplicatesPage() {
         <div className="mx-auto max-w-7xl">
           <header className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gold">Directory Duplicates Queue</h1>
+              <h1 className="text-3xl font-bold text-gold">
+                Directory Duplicates Queue
+              </h1>
               <p className="mt-1 text-sm text-zinc-400">
-                Resolve duplicate_pending_review records safely without deleting data.
+                Resolve duplicate_pending_review records safely without deleting
+                data.
               </p>
             </div>
 
@@ -205,20 +216,33 @@ export default function DirectoryDuplicatesPage() {
                   {rows.map((r) => {
                     const disabled = busyId === r.id;
                     return (
-                      <tr key={r.id} className="border-b border-zinc-800 last:border-b-0">
+                      <tr
+                        key={r.id}
+                        className="border-b border-zinc-800 last:border-b-0"
+                      >
                         <td className="p-3">
-                          <div className="font-semibold text-white">{r.businessName}</div>
-                          <div className="text-xs text-zinc-400">{r.email || r.state || "—"}</div>
+                          <div className="font-semibold text-white">
+                            {r.businessName}
+                          </div>
+                          <div className="text-xs text-zinc-400">
+                            {r.email || r.state || "—"}
+                          </div>
                         </td>
                         <td className="p-3 text-zinc-200">{r.alias || "—"}</td>
                         <td className="p-3">
                           {r.keeper ? (
                             <div>
-                              <div className="font-medium text-zinc-100">{r.keeper.businessName || "Keeper"}</div>
-                              <div className="text-xs text-zinc-400">{r.keeper.alias || r.duplicateOf || "—"}</div>
+                              <div className="font-medium text-zinc-100">
+                                {r.keeper.businessName || "Keeper"}
+                              </div>
+                              <div className="text-xs text-zinc-400">
+                                {r.keeper.alias || r.duplicateOf || "—"}
+                              </div>
                             </div>
                           ) : (
-                            <span className="text-zinc-400">{r.duplicateOf || "—"}</span>
+                            <span className="text-zinc-400">
+                              {r.duplicateOf || "—"}
+                            </span>
                           )}
                         </td>
                         <td className="p-3">
@@ -226,7 +250,9 @@ export default function DirectoryDuplicatesPage() {
                             {r.status}
                           </span>
                         </td>
-                        <td className="p-3 text-zinc-400">{fmtDate(r.updatedAtIso || r.createdAtIso)}</td>
+                        <td className="p-3 text-zinc-400">
+                          {fmtDate(r.updatedAtIso || r.createdAtIso)}
+                        </td>
                         <td className="p-3">
                           <div className="flex flex-wrap gap-2">
                             <button
@@ -238,7 +264,9 @@ export default function DirectoryDuplicatesPage() {
                             </button>
                             <button
                               disabled={disabled}
-                              onClick={() => resolve(r.id, "approve_with_unique_alias")}
+                              onClick={() =>
+                                resolve(r.id, "approve_with_unique_alias")
+                              }
                               className="rounded border border-emerald-500/40 bg-emerald-500/15 px-2.5 py-1.5 text-xs font-semibold text-emerald-200 hover:bg-emerald-500/25 disabled:opacity-50"
                             >
                               Not duplicate → approve w/ unique alias

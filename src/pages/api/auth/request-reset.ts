@@ -159,7 +159,10 @@ export default async function handler(
     const resetLink = `${getAppUrl()}/reset-password?token=${encodeURIComponent(token)}`;
 
     // Debug mode for local verification: skip email dependency and return token/link.
-    if (process.env.RESET_DEBUG_MODE === "1" && process.env.NODE_ENV !== "production") {
+    if (
+      process.env.RESET_DEBUG_MODE === "1" &&
+      process.env.NODE_ENV !== "production"
+    ) {
       return res.status(200).json({
         message: "If this email exists, reset instructions will be sent.",
         _debug: { token, resetLink },

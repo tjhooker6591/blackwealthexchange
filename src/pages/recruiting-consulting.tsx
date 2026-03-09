@@ -30,7 +30,14 @@ export default function RecruitingConsultingPage() {
       const res = await fetch("/api/consulting-intake", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: mode, name, email, company, phone, details }),
+        body: JSON.stringify({
+          type: mode,
+          name,
+          email,
+          company,
+          phone,
+          details,
+        }),
       });
       const data = await res.json();
       if (!res.ok || !data?.success) {
@@ -65,8 +72,8 @@ export default function RecruitingConsultingPage() {
             Connect Employers with Vetted Black Talent
           </h1>
           <p className="mt-2 text-sm text-white/70 sm:text-base">
-            We operate as your middle-layer partner: talent sourcing, candidate qualification,
-            and guided placement support.
+            We operate as your middle-layer partner: talent sourcing, candidate
+            qualification, and guided placement support.
           </p>
 
           <div className="mt-5 grid grid-cols-2 gap-2 rounded-xl border border-white/10 bg-black/30 p-1">
@@ -74,7 +81,9 @@ export default function RecruitingConsultingPage() {
               type="button"
               onClick={() => setMode("employer")}
               className={`rounded-lg px-3 py-2 text-sm font-bold transition ${
-                mode === "employer" ? "bg-[#D4AF37] text-black" : "text-white/75 hover:bg-white/10"
+                mode === "employer"
+                  ? "bg-[#D4AF37] text-black"
+                  : "text-white/75 hover:bg-white/10"
               }`}
             >
               Employer Request
@@ -83,7 +92,9 @@ export default function RecruitingConsultingPage() {
               type="button"
               onClick={() => setMode("candidate")}
               className={`rounded-lg px-3 py-2 text-sm font-bold transition ${
-                mode === "candidate" ? "bg-[#D4AF37] text-black" : "text-white/75 hover:bg-white/10"
+                mode === "candidate"
+                  ? "bg-[#D4AF37] text-black"
+                  : "text-white/75 hover:bg-white/10"
               }`}
             >
               Talent Intake
@@ -109,7 +120,11 @@ export default function RecruitingConsultingPage() {
             <input
               value={company}
               onChange={(e) => setCompany(e.target.value)}
-              placeholder={mode === "employer" ? "Company" : "Current school/company (optional)"}
+              placeholder={
+                mode === "employer"
+                  ? "Company"
+                  : "Current school/company (optional)"
+              }
               className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm outline-none focus:border-[#D4AF37]/50"
             />
             <input
@@ -138,7 +153,11 @@ export default function RecruitingConsultingPage() {
               disabled={loading}
               className="h-11 rounded-xl bg-[#D4AF37] px-5 text-sm font-extrabold text-black transition hover:bg-yellow-500 disabled:opacity-60"
             >
-              {loading ? "Submitting..." : mode === "employer" ? "Submit Employer Request" : "Submit Talent Profile"}
+              {loading
+                ? "Submitting..."
+                : mode === "employer"
+                  ? "Submit Employer Request"
+                  : "Submit Talent Profile"}
             </button>
           </form>
         </div>

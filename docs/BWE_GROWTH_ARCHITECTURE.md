@@ -1,13 +1,16 @@
 # BWE Growth Architecture
 
 ## North Star
+
 Build BWE as a compounding Black economic network: discover, buy, hire, learn, and grow in one trusted ecosystem.
 
 ## Economic target ladder
+
 - Long-term market frame: 0.1%–0.5% share of Black buying power
 - Operating model: niche-first density -> repeat usage -> network effects -> expansion
 
 ## Five growth loops
+
 1. **User referral loop**
    - Trigger: invite/share after value event (purchase, saved business, application)
    - Mechanic: referral code + reward + social card
@@ -34,6 +37,7 @@ Build BWE as a compounding Black economic network: discover, buy, hire, learn, a
    - Output: interviews/placements -> repeat employer usage
 
 ## Stakeholder flywheels
+
 - Users: discovery -> trust -> purchase -> share
 - Businesses: listing -> trust signals -> demand -> referrals
 - Sellers: storefront -> orders -> reviews -> repeat buyers
@@ -42,7 +46,9 @@ Build BWE as a compounding Black economic network: discover, buy, hire, learn, a
 - Creators: campaigns -> conversions -> payouts -> more campaigns
 
 ## Wedge framework (decision criteria)
+
 Pick first wedge by measurable readiness:
+
 - supply density already present
 - repeat demand likelihood
 - creator access
@@ -50,13 +56,17 @@ Pick first wedge by measurable readiness:
 - conversion likelihood in 30–60 days
 
 ## Build-now vs build-later
+
 ### Build-now
+
 - referral backbone
 - creator links/codes + attribution
 - business share assets + profile trust/review prompts
 - seller activation funnel instrumentation
 - employer/talent funnel instrumentation
+
 ### Build-later
+
 - advanced social mechanics (leaderboards/badges variants)
 - deeper personalization/recommendation models
 - broader geo expansion tooling

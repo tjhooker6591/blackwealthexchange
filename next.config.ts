@@ -23,8 +23,7 @@ const securityHeaders = [
       "connect-src 'self' https: wss:",
       "frame-src 'self' https:",
       "form-action 'self'",
-      "upgrade-insecure-requests",
-    ].join('; '),
+    ].join("; "),
   },
 ];
 

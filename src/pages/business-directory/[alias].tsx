@@ -174,7 +174,9 @@ export default function BusinessDetail() {
           ) : (
             <>
               <header className="border-b border-white/10 p-6 md:p-8">
-                <div className="mb-2 text-[11px] font-bold uppercase tracking-[0.09em] text-[#D4AF37]/90">Business profile</div>
+                <div className="mb-2 text-[11px] font-bold uppercase tracking-[0.09em] text-[#D4AF37]/90">
+                  Business profile
+                </div>
                 <h1 className="text-2xl font-black tracking-tight text-[#F1D57A] md:text-3xl">
                   {getTitle(business)}
                 </h1>

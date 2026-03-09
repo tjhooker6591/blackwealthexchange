@@ -17,7 +17,8 @@ function isAdmin(decoded: Decoded) {
   if (decoded?.isAdmin) return true;
   if (decoded?.accountType === "admin") return true;
   if (decoded?.role === "admin") return true;
-  if (Array.isArray(decoded?.roles) && decoded.roles.includes("admin")) return true;
+  if (Array.isArray(decoded?.roles) && decoded.roles.includes("admin"))
+    return true;
 
   const allow = (process.env.ADMIN_EMAILS || "")
     .split(",")
@@ -31,7 +32,10 @@ function isAdmin(decoded: Decoded) {
   return false;
 }
 
-async function requireAdmin(req: NextApiRequest, res: NextApiResponse): Promise<Decoded | null> {
+async function requireAdmin(
+  req: NextApiRequest,
+  res: NextApiResponse,
+): Promise<Decoded | null> {
   const cookies = cookie.parse(req.headers.cookie || "");
   const token = cookies.session_token;
 
@@ -68,7 +72,11 @@ function slugify(input: string) {
     .slice(0, 80);
 }
 
-async function ensureUniqueApprovedAlias(col: any, desired: string, excludeId: ObjectId) {
+async function ensureUniqueApprovedAlias(
+  col: any,
+  desired: string,
+  excludeId: ObjectId,
+) {
   const base = slugify(desired) || `business-${Date.now()}`;
   for (let i = 0; i < 1000; i += 1) {
     const alias = i === 0 ? base : `${base}-${i + 1}`;
@@ -82,7 +90,10 @@ async function ensureUniqueApprovedAlias(col: any, desired: string, excludeId: O
   throw new Error("Unable to generate unique alias");
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method !== "POST") {
     res.setHeader("Allow", ["POST"]);
     return res.status(405).json({ error: "Method Not Allowed" });
@@ -91,7 +102,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const admin = await requireAdmin(req, res);
   if (!admin) return;
 
-  const body = typeof req.body === "string" ? JSON.parse(req.body || "{}") : req.body || {};
+  const body =
+    typeof req.body === "string"
+      ? JSON.parse(req.body || "{}")
+      : req.body || {};
   const businessId = String(body.businessId || "");
   const action = String(body.action || "");
   const preferredAlias = String(body.alias || "");
@@ -136,7 +150,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const fallbackName =
-      String(doc.business_name || doc.businessName || doc.name || "business").trim() || "business";
+      String(
+        doc.business_name || doc.businessName || doc.name || "business",
+      ).trim() || "business";
 
     const alias = await ensureUniqueApprovedAlias(
       businesses,

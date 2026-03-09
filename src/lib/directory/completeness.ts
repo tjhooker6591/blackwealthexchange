@@ -12,8 +12,13 @@ function hasValue(v: unknown): boolean {
 }
 
 function getAliasCategory(doc: AnyDoc): string {
-  if (hasValue(doc.display_categories)) return asTrimmed(doc.display_categories);
-  if (Array.isArray(doc.categories)) return doc.categories.map((x: any) => asTrimmed(x)).filter(Boolean).join(", ");
+  if (hasValue(doc.display_categories))
+    return asTrimmed(doc.display_categories);
+  if (Array.isArray(doc.categories))
+    return doc.categories
+      .map((x: any) => asTrimmed(x))
+      .filter(Boolean)
+      .join(", ");
   if (hasValue(doc.categories)) return asTrimmed(doc.categories);
   if (hasValue(doc.category)) return asTrimmed(doc.category);
   if (hasValue(doc.orgType)) return asTrimmed(doc.orgType);
@@ -28,7 +33,12 @@ export type CompletenessResult = {
 
 export function computeListingCompleteness(doc: AnyDoc): CompletenessResult {
   const checks: Array<[string, boolean]> = [
-    ["name", hasValue(doc.business_name) || hasValue(doc.name) || hasValue(doc.organization_name)],
+    [
+      "name",
+      hasValue(doc.business_name) ||
+        hasValue(doc.name) ||
+        hasValue(doc.organization_name),
+    ],
     ["description", hasValue(doc.description)],
     ["address", hasValue(doc.address)],
     ["city", hasValue(doc.city)],

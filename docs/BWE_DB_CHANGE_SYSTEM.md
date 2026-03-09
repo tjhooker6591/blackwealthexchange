@@ -3,6 +3,7 @@
 This is the top-level DB process index.
 
 ## Source documents
+
 - `docs/MONGODB_CHANGELOG.md`
 - `docs/DB_SCHEMA_REGISTER.md`
 - `docs/DB_MIGRATIONS.md`
@@ -10,6 +11,7 @@ This is the top-level DB process index.
 - `docs/DB_CHANGE_PROCESS.md`
 
 ## Required behavior going forward
+
 1. Any DB schema/index/env-routing change must update:
    - changelog
    - schema register

@@ -25,7 +25,9 @@ export default async function handler(req, res) {
 
     // Some listings route by _id when alias is missing in source records.
     if (!business && ObjectId.isValid(alias)) {
-      business = await businessesCollection.findOne({ _id: new ObjectId(alias) });
+      business = await businessesCollection.findOne({
+        _id: new ObjectId(alias),
+      });
     }
 
     if (!business) {

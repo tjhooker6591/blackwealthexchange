@@ -1,11 +1,16 @@
 import { MongoClient } from "mongodb";
 import { computeListingCompleteness } from "../src/lib/directory/completeness";
 
-const URI = process.env.MONGO_URI || process.env.MONGODB_URI || process.env.MONGODB_ATLAS_URI;
+const URI =
+  process.env.MONGO_URI ||
+  process.env.MONGODB_URI ||
+  process.env.MONGODB_ATLAS_URI;
 const DB_NAME = process.env.MONGO_DB_NAME || "bwes-cluster";
 
 if (!URI) {
-  console.error("Missing Mongo URI env var (MONGO_URI / MONGODB_URI / MONGODB_ATLAS_URI)");
+  console.error(
+    "Missing Mongo URI env var (MONGO_URI / MONGODB_URI / MONGODB_ATLAS_URI)",
+  );
   process.exit(1);
 }
 
@@ -25,7 +30,9 @@ async function stampCollection(db, name) {
     if (!full) continue;
 
     const next = computeListingCompleteness(full);
-    const currentMissing = Array.isArray(full.missingFields) ? full.missingFields : [];
+    const currentMissing = Array.isArray(full.missingFields)
+      ? full.missingFields
+      : [];
     const sameMissing =
       currentMissing.length === next.missingFields.length &&
       currentMissing.every((v, i) => v === next.missingFields[i]);
@@ -55,7 +62,10 @@ async function stampCollection(db, name) {
   return { name, scanned, updated };
 }
 
-const client = new MongoClient(URI, { maxPoolSize: 10, serverSelectionTimeoutMS: 15000 });
+const client = new MongoClient(URI, {
+  maxPoolSize: 10,
+  serverSelectionTimeoutMS: 15000,
+});
 
 try {
   await client.connect();

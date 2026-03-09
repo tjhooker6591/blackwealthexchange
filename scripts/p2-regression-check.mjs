@@ -112,21 +112,19 @@ const accounts = [
 ];
 
 for (const a of accounts) {
-  await db
-    .collection(a.coll)
-    .updateOne(
-      { email: a.email },
-      {
-        $set: {
-          email: a.email,
-          password: hash,
-          accountType: a.accountType,
-          isAdmin: a.isAdmin,
-          updatedAt: new Date(),
-        },
+  await db.collection(a.coll).updateOne(
+    { email: a.email },
+    {
+      $set: {
+        email: a.email,
+        password: hash,
+        accountType: a.accountType,
+        isAdmin: a.isAdmin,
+        updatedAt: new Date(),
       },
-      { upsert: true },
-    );
+    },
+    { upsert: true },
+  );
 }
 
 // Guest baseline

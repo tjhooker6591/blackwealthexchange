@@ -17,7 +17,8 @@ function isAdmin(decoded: Decoded) {
   if (decoded?.isAdmin) return true;
   if (decoded?.accountType === "admin") return true;
   if (decoded?.role === "admin") return true;
-  if (Array.isArray(decoded?.roles) && decoded.roles.includes("admin")) return true;
+  if (Array.isArray(decoded?.roles) && decoded.roles.includes("admin"))
+    return true;
 
   const allow = (process.env.ADMIN_EMAILS || "")
     .split(",")
@@ -56,7 +57,10 @@ function asId(v: any): string | null {
   return String(v);
 }
 
-async function requireAdmin(req: NextApiRequest, res: NextApiResponse): Promise<Decoded | null> {
+async function requireAdmin(
+  req: NextApiRequest,
+  res: NextApiResponse,
+): Promise<Decoded | null> {
   const cookies = cookie.parse(req.headers.cookie || "");
   const token = cookies.session_token;
 
@@ -83,7 +87,10 @@ async function requireAdmin(req: NextApiRequest, res: NextApiResponse): Promise<
   }
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method !== "GET") {
     res.setHeader("Allow", ["GET"]);
     return res.status(405).json({ error: "Method Not Allowed" });
@@ -93,7 +100,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (!admin) return;
 
   try {
-    const { page = "1", limit = "50", q = "" } = req.query as Record<string, string>;
+    const {
+      page = "1",
+      limit = "50",
+      q = "",
+    } = req.query as Record<string, string>;
     const pageNum = parseIntSafe(page, 1);
     const limitNum = Math.min(parseIntSafe(limit, 50), 250);
     const skip = (pageNum - 1) * limitNum;
@@ -103,7 +114,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const businesses = db.collection("businesses");
 
     const baseFilter: any = {
-      $or: [{ status: "duplicate_pending_review" }, { duplicateOf: { $exists: true, $ne: null } }],
+      $or: [
+        { status: "duplicate_pending_review" },
+        { duplicateOf: { $exists: true, $ne: null } },
+      ],
     };
 
     if (q && q.trim()) {
@@ -143,7 +157,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       .toArray();
 
     const keeperRefs = Array.from(
-      new Set(rows.map((r: any) => s(r.duplicateOf)).filter((x): x is string => Boolean(x))),
+      new Set(
+        rows
+          .map((r: any) => s(r.duplicateOf))
+          .filter((x): x is string => Boolean(x)),
+      ),
     );
 
     const keeperDocs =
@@ -151,7 +169,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         ? await businesses
             .find({
               $or: [
-                { _id: { $in: keeperRefs.filter((x) => ObjectId.isValid(x)).map((x) => new ObjectId(x)) } },
+                {
+                  _id: {
+                    $in: keeperRefs
+                      .filter((x) => ObjectId.isValid(x))
+                      .map((x) => new ObjectId(x)),
+                  },
+                },
                 { alias: { $in: keeperRefs } },
               ],
             })
@@ -172,7 +196,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const keeper = duplicateOf ? keeperByIdOrAlias.get(duplicateOf) : null;
       return {
         id: asId(r._id),
-        businessName: s(r.business_name) || s(r.businessName) || s(r.name) || "Unnamed",
+        businessName:
+          s(r.business_name) || s(r.businessName) || s(r.name) || "Unnamed",
         alias: s(r.alias),
         email: s(r.email),
         state: s(r.state),
@@ -183,7 +208,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               id: asId(keeper._id),
               alias: s(keeper.alias),
               businessName:
-                s(keeper.business_name) || s(keeper.businessName) || s(keeper.name) || "Unnamed",
+                s(keeper.business_name) ||
+                s(keeper.businessName) ||
+                s(keeper.name) ||
+                "Unnamed",
             }
           : null,
         createdAtIso: iso(r.createdAt),
@@ -198,7 +226,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       total,
       duplicates: normalized,
       summary: {
-        duplicatePendingReview: normalized.filter((x) => x.status === "duplicate_pending_review").length,
+        duplicatePendingReview: normalized.filter(
+          (x) => x.status === "duplicate_pending_review",
+        ).length,
         unresolved: normalized.length,
       },
     });

@@ -3,6 +3,7 @@
 Run in built runtime (`next build && next start`) before preview/prod promotion.
 
 ## Web routes
+
 - `/`
 - `/business-directory`
 - `/recruiting-consulting`
@@ -10,6 +11,7 @@ Run in built runtime (`next build && next start`) before preview/prod promotion.
 - one organization detail page
 
 ## API routes
+
 - `GET /api/auth/session`
 - `POST /api/auth/request-reset`
 - `POST /api/consulting-intake`
@@ -17,10 +19,12 @@ Run in built runtime (`next build && next start`) before preview/prod promotion.
 - `GET /api/searchOrganizations`
 
 ## Commanded checks
+
 - `npm run smoke:routes`
 - `npm run check:critical-indexes`
 
 ## Pass criteria
+
 - All routes return 2xx
 - No 500s in auth/reset path
 - No regressions in directory detail loading

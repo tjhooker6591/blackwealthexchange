@@ -394,9 +394,14 @@ export default async function handler(req, res) {
       const missing = Array.isArray(doc?.missingFields)
         ? doc.missingFields
         : undefined;
-      const complete = typeof doc?.isComplete === "boolean" ? doc.isComplete : undefined;
+      const complete =
+        typeof doc?.isComplete === "boolean" ? doc.isComplete : undefined;
 
-      if (score !== undefined && missing !== undefined && complete !== undefined) {
+      if (
+        score !== undefined &&
+        missing !== undefined &&
+        complete !== undefined
+      ) {
         return doc;
       }
 
