@@ -67,11 +67,21 @@ Owner default: `BlackForge`
 
 8. Vertical regressions (marketplace/ads/jobs/admin)
 
-- status: verify-next
+- status: in-progress
 - owner/agent: BlackForge
 - proof required: scenario matrix + screenshots/logs
 - dependencies: stable runtime + seeded data
-- last updated commit: pending
+- last updated commit: 69f9b9a
+
+## P2.5
+
+9. Referral engine v1 foundation
+
+- status: complete
+- owner/agent: BlackForge
+- proof required: auth code endpoint + track endpoint + DB docs backfill
+- dependencies: auth session + Mongo
+- last updated commit: 3a2e174
 
 ## P3
 

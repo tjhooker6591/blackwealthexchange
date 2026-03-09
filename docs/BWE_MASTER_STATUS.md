@@ -1,13 +1,14 @@
 # BWE Master Status
 
-Last updated commit: {{COMMIT}}
+Last updated commit: 3a2e174
 
 ## Overall platform status
 
-- Core web/app routes: functional with intermittent runtime instability history (Next cache/chunk corruption observed in prior sessions).
-- P1 stabilization pass: completed for this cycle (headers/CSP, smoke scripts, index checks).
+- Core web/app routes: functional; runtime health gate added to detect text-only/asset failures early.
+- P1 stabilization pass: completed (headers/CSP, smoke scripts, index checks).
 - P2 role regression: completed and accepted.
-- Growth architecture docs: created.
+- Growth architecture + persistent operating system docs: created and enforced.
+- Referral engine v1 API foundation: shipped.
 
 ## Complete
 
@@ -18,6 +19,9 @@ Last updated commit: {{COMMIT}}
 - P2 role/access regression harness and pass
 - DB control docs set
 - Growth strategy doc set
+- Persistent master operating docs + release doc enforcement
+- Runtime healthcheck gate (`check:runtime-health`)
+- Referral engine v1 APIs (`/api/referrals/code`, `/api/referrals/track`)
 
 ## Incomplete
 
@@ -34,11 +38,11 @@ Last updated commit: {{COMMIT}}
 
 ## Latest accepted commits
 
+- 3a2e174 (referral engine v1 APIs + DB/growth docs backfill)
+- bfbc576 (runtime healthcheck gate)
+- 8c4f634 (persistent BWE master operating docs)
 - 7dddecf (P2 guards + regression pass)
 - c8bac4e (DB docs/process + db-docs check)
-- c259c67 (reset hardening)
-- 9f8e5a1 (P1 stabilization)
-- 235bd22 (growth master docs set)
 
 ## Latest risks
 
@@ -48,7 +52,7 @@ Last updated commit: {{COMMIT}}
 
 ## Next execution order
 
-1. Clean release branch / isolate release candidate commits
-2. Run full built-runtime gate suite (`lint`, `build`, `smoke:routes`, `check:critical-indexes`, `check:db-docs`, `check:p2-regression`)
-3. Execute vertical regression matrix (marketplace, ads, jobs, admin)
-4. Prepare promotion package + rollback target
+1. Complete deep vertical scenario regression (marketplace/ads/jobs/admin flows beyond route smoke)
+2. Push preview candidate branch and execute full Preview validation suite
+3. Produce GO/NO-GO promotion card with env diff + rollback target
+4. Start wedge selection using live supply/search/readiness data pull
