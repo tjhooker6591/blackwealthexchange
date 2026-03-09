@@ -13,7 +13,14 @@ function extractLinks(html) {
   while ((m = re.exec(html))) {
     const href = m[1];
     if (!href) continue;
-    if (href.startsWith("http://") || href.startsWith("https://") || href.startsWith("mailto:") || href.startsWith("tel:") || href.startsWith("#")) continue;
+    if (
+      href.startsWith("http://") ||
+      href.startsWith("https://") ||
+      href.startsWith("mailto:") ||
+      href.startsWith("tel:") ||
+      href.startsWith("#")
+    )
+      continue;
     if (!href.startsWith("/")) continue;
     if (href.startsWith("/_next") || href.startsWith("/api/")) continue;
     links.add(href.split("#")[0]);

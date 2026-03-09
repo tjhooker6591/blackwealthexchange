@@ -12,13 +12,21 @@ type SessionPayload = {
 };
 
 function makeCode(seed: string) {
-  const hex = crypto.createHash("sha256").update(seed).digest("hex").slice(0, 8);
+  const hex = crypto
+    .createHash("sha256")
+    .update(seed)
+    .digest("hex")
+    .slice(0, 8);
   return `BWE-${hex.toUpperCase()}`;
 }
 
 async function ensureIndexes(db: any) {
-  await db.collection("referral_codes").createIndex({ code: 1 }, { unique: true });
-  await db.collection("referral_codes").createIndex({ ownerId: 1 }, { unique: true });
+  await db
+    .collection("referral_codes")
+    .createIndex({ code: 1 }, { unique: true });
+  await db
+    .collection("referral_codes")
+    .createIndex({ ownerId: 1 }, { unique: true });
 }
 
 function getSession(req: NextApiRequest): SessionPayload | null {
@@ -31,7 +39,10 @@ function getSession(req: NextApiRequest): SessionPayload | null {
   }
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   const session = getSession(req);
   if (!session) return res.status(401).json({ error: "Unauthorized" });
 
@@ -47,8 +58,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (req.method === "GET") {
     const existing = await db.collection("referral_codes").findOne({ ownerId });
-    if (!existing) return res.status(404).json({ error: "Referral code not found" });
-    return res.status(200).json({ code: existing.code, ownerEmail: existing.ownerEmail });
+    if (!existing)
+      return res.status(404).json({ error: "Referral code not found" });
+    return res
+      .status(200)
+      .json({ code: existing.code, ownerEmail: existing.ownerEmail });
   }
 
   if (req.method !== "POST") {
@@ -58,7 +72,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const existing = await db.collection("referral_codes").findOne({ ownerId });
   if (existing) {
-    return res.status(200).json({ code: existing.code, ownerEmail: existing.ownerEmail, reused: true });
+    return res.status(200).json({
+      code: existing.code,
+      ownerEmail: existing.ownerEmail,
+      reused: true,
+    });
   }
 
   const baseSeed = `${ownerId}:${ownerEmail}:${Date.now()}`;

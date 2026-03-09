@@ -24,11 +24,13 @@ Authoritative register of active MongoDB collections, ownership, and expected co
 - Core fields: `key`, `createdAt`, `expiresAt`
 
 ### referral_codes
+
 - Owner: Growth
 - Purpose: Canonical referral code ownership
 - Core fields: `ownerId`, `ownerEmail`, `accountType`, `code`, `createdAt`, `updatedAt`
 
 ### referral_events
+
 - Owner: Growth
 - Purpose: Referral attribution events
 - Core fields: `code`, `ownerId`, `ownerEmail`, `ownerAccountType`, `event`, `context`, `ip`, `userAgent`, `createdAt`

@@ -21,19 +21,29 @@ function getIp(req: NextApiRequest) {
 }
 
 async function ensureIndexes(db: any) {
-  await db.collection("referral_events").createIndex({ code: 1, event: 1, createdAt: -1 });
+  await db
+    .collection("referral_events")
+    .createIndex({ code: 1, event: 1, createdAt: -1 });
   await db.collection("referral_events").createIndex({ ip: 1, createdAt: -1 });
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method !== "POST") {
     res.setHeader("Allow", ["POST"]);
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const code = String(req.body?.code || "").trim().toUpperCase();
+  const code = String(req.body?.code || "")
+    .trim()
+    .toUpperCase();
   const event = String(req.body?.event || "").trim();
-  const context = req.body?.context && typeof req.body.context === "object" ? req.body.context : null;
+  const context =
+    req.body?.context && typeof req.body.context === "object"
+      ? req.body.context
+      : null;
 
   if (!code || !code.startsWith("BWE-")) {
     return res.status(400).json({ error: "Invalid referral code" });
