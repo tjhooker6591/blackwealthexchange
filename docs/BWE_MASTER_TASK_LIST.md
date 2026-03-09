@@ -107,11 +107,12 @@ Owner default: `BlackForge`
 
 13. Marketplace buy-button completion matrix + fixes
 
-- status: in-progress (blocked on reproducible visible buy CTA surface/data in current runtime)
+- status: complete
 - owner/agent: BlackForge
-- proof required: full buy-button matrix, failing paths, fixes, rerun GO/NO-GO
-- dependencies: marketplace data/state that exposes all buy CTAs in runtime
-- last updated commit: pending
+- proof required: full buy-button matrix, failing paths, runtime/env correction, checkout-session recovery, rerun GO
+- dependencies: runtime pinned to recovered app URL + Atlas Mongo + STRIPE_SECRET_KEY present
+- notes: local validation ran in live Stripe mode; inventory-policy follow-up remains because `stock=0` products still create checkout sessions
+- last updated commit: c797e3a
 
 ## P3
 

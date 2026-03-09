@@ -6,6 +6,11 @@
 - P2 role/access regression accepted
 - DB documentation/process system established
 - growth architecture docs created
+- marketplace products visible again on recovered runtime
+- checkout route recovered by runtime env correction (`STRIPE_SECRET_KEY` was missing)
+- marketplace Buy Now matrix now GO
+- local validation runtime currently in live Stripe mode
+- inventory-policy follow-up remains: `stock=0` products still create checkout sessions
 
 ## Finished in recent cycle
 
@@ -18,9 +23,11 @@
 
 ## Next
 
-1. Stabilize runtime strategy for repeatable non-500 launches
-2. Run vertical regression matrix (marketplace/ads/jobs/admin)
-3. Prepare clean release branch + promotion package
+1. Push preview candidate branch
+2. Execute full Preview validation suite
+3. Verify Preview env parity (`APP_URL/NEXTAUTH_URL`, Mongo vars, auth secrets, Stripe/webhook/email vars)
+4. Run Preview smoke/regression checks (critical paths + vertical regression + protected-role checks + key APIs)
+5. Produce final GO/NO-GO for production with rollback SHA
 
 ## Must not forget
 
