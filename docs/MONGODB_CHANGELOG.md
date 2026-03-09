@@ -71,7 +71,31 @@ Used by:
 
 ---
 
-## 3) Recruiting & Consulting v1 intake
+## 3) Referral engine v1
+
+### Collection: `referral_codes`
+Used by:
+- `src/pages/api/referrals/code.ts`
+
+Fields:
+- `ownerId`, `ownerEmail`, `accountType`, `code`, `createdAt`, `updatedAt`
+
+Indexes:
+- `{ code: 1 }` unique
+- `{ ownerId: 1 }` unique
+
+### Collection: `referral_events`
+Used by:
+- `src/pages/api/referrals/track.ts`
+
+Fields:
+- `code`, `ownerId`, `ownerEmail`, `ownerAccountType`, `event`, `context`, `ip`, `userAgent`, `createdAt`
+
+Indexes:
+- `{ code: 1, event: 1, createdAt: -1 }`
+- `{ ip: 1, createdAt: -1 }`
+
+## 4) Recruiting & Consulting v1 intake
 
 ### Collection: `consulting_intake`
 

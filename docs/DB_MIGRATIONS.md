@@ -20,6 +20,16 @@ Changes:
 - TTL index on `password_reset_rate_limits.expiresAt`.
 - Query indexes: `password_resets.tokenHash`, `password_resets.email+createdAt`, `password_reset_rate_limits.key+createdAt`.
 
+### 2026-03 Referral engine v1
+Collections:
+- `referral_codes`
+- `referral_events`
+
+Changes:
+- Added canonical referral code ownership records.
+- Added referral event tracking for invite and conversion lifecycle events.
+- Added indexes for code uniqueness and attribution query paths.
+
 ### 2026-03 Recruiting consulting v1
 
 Collection:

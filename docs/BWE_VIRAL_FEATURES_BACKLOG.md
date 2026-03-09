@@ -2,7 +2,7 @@
 
 ## Build-now (launch-critical)
 
-- referral codes + invite flow
+- referral codes + invite flow (v1 API shipped: `/api/referrals/code`, `/api/referrals/track`)
 - share cards (business/product/job/profile)
 - post-action share prompts
 - review and rating prompts
