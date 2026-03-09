@@ -73,9 +73,9 @@ const nextConfig: NextConfig = {
         permanent: false,
       },
       {
-        source: "/resources/inclusive-job-descriptions",
-        destination: "/resources/inclusive-job-desriptions",
-        permanent: false,
+        source: "/resources/inclusive-job-desriptions",
+        destination: "/resources/inclusive-job-descriptions",
+        permanent: true,
       },
       {
         source: "/resources/hiring-black-talent",
