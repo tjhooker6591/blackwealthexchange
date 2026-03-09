@@ -15,7 +15,6 @@ import {
   GraduationCap,
   Users,
   Briefcase,
-  Lock,
   Sparkles,
   Search,
   ShoppingBag,
@@ -586,53 +585,6 @@ export default function Home() {
     },
   ];
 
-  const publicRoutes = [
-    "/about",
-    "/global-timeline",
-    "/events",
-    "/library-of-black-history",
-    "/black-entertainment-news",
-  ];
-
-  const keySections = [
-    {
-      title: "Our Marketplace",
-      href: "/marketplace",
-      description: "Buy & sell Black-owned products securely.",
-    },
-    {
-      title: "Sponsored Businesses",
-      href: "/business-directory/sponsored-business",
-      description: "Premium featured businesses with more visibility.",
-    },
-    {
-      title: "Affiliate & Partnership",
-      href: "/affiliate",
-      description: "Curated affiliate offers and partnership opportunities.",
-    },
-    {
-      title: "Black Entertainment Pulse",
-      href: "/black-entertainment-news",
-      description: "Black entertainment and news — stay tapped in.",
-    },
-    {
-      title: "Jobs & Careers",
-      href: "/jobs",
-      description: "Jobs, internships & networking opportunities.",
-    },
-    {
-      title: "Investment & Wealth",
-      href: "/investment",
-      description: "Invest in Black businesses & build your future.",
-    },
-  ];
-
-  const gate = (href: string) => {
-    if (publicRoutes.includes(href)) return router.push(href);
-    if (!user) return router.push(`/login?redirect=${href}`);
-    return router.push(href);
-  };
-
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-neutral-950 text-white">
       <div className="absolute inset-0 bg-neutral-950" />
@@ -1030,42 +982,104 @@ export default function Home() {
           </div>
 
           <div className="mb-4 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.04)]">
-            <div className="text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">Start here track</div>
-            <h3 className="mt-1 text-lg font-extrabold text-white sm:text-xl">Featured Learning Block</h3>
-            <p className="mt-1 text-sm text-white/65">One focused track for financial basics, career setup, and Black history/economic context.</p>
-            <div className="mt-3 flex flex-wrap gap-2 text-xs text-white/70">
-              <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1">Financial basics</span>
-              <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1">Career setup</span>
-              <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1">Black history/economic context</span>
+            <div className="text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
+              Start here track
             </div>
-            <Link href="/financial-literacy" className="mt-4 inline-flex h-10 items-center rounded-xl bg-[#D4AF37] px-5 text-sm font-extrabold text-black transition hover:bg-yellow-500">Start the Track</Link>
+            <h3 className="mt-1 text-lg font-extrabold text-white sm:text-xl">
+              Featured Learning Block
+            </h3>
+            <p className="mt-1 text-sm text-white/65">
+              One focused track for financial basics, career setup, and Black
+              history/economic context.
+            </p>
+            <div className="mt-3 flex flex-wrap gap-2 text-xs text-white/70">
+              <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1">
+                Financial basics
+              </span>
+              <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1">
+                Career setup
+              </span>
+              <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1">
+                Black history/economic context
+              </span>
+            </div>
+            <Link
+              href="/financial-literacy"
+              className="mt-4 inline-flex h-10 items-center rounded-xl bg-[#D4AF37] px-5 text-sm font-extrabold text-black transition hover:bg-yellow-500"
+            >
+              Start the Track
+            </Link>
           </div>
 
           <div className="mb-4 grid gap-3 sm:grid-cols-2">
             <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
               <div className="flex items-center justify-between gap-2">
-                <h3 className="text-base font-extrabold text-white sm:text-lg">Opportunities</h3>
-                <Link href="/black-student-opportunities" className="text-xs font-bold text-[#D4AF37]">Open Hub →</Link>
+                <h3 className="text-base font-extrabold text-white sm:text-lg">
+                  Opportunities
+                </h3>
+                <Link
+                  href="/black-student-opportunities"
+                  className="text-xs font-bold text-[#D4AF37]"
+                >
+                  Open Hub →
+                </Link>
               </div>
               <div className="mt-3 grid gap-2 text-sm sm:grid-cols-3">
-                <Link href="/black-student-opportunities" className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40">Students</Link>
-                <Link href="/job-listings" className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40">Jobs</Link>
-                <Link href="/internships" className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40">Internships</Link>
+                <Link
+                  href="/black-student-opportunities"
+                  className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40"
+                >
+                  Students
+                </Link>
+                <Link
+                  href="/job-listings"
+                  className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40"
+                >
+                  Jobs
+                </Link>
+                <Link
+                  href="/internships"
+                  className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40"
+                >
+                  Internships
+                </Link>
               </div>
             </div>
 
             <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
-              <h3 className="text-base font-extrabold text-white sm:text-lg">Business Growth</h3>
+              <h3 className="text-base font-extrabold text-white sm:text-lg">
+                Business Growth
+              </h3>
               <div className="mt-3 grid gap-2 text-sm sm:grid-cols-3">
-                <Link href="/marketplace" className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40">Marketplace</Link>
-                <Link href="/business-directory" className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40">Sponsored / Directory</Link>
-                <Link href="/advertise-with-us" className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40">Advertising</Link>
+                <Link
+                  href="/marketplace"
+                  className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40"
+                >
+                  Marketplace
+                </Link>
+                <Link
+                  href="/business-directory"
+                  className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40"
+                >
+                  Sponsored / Directory
+                </Link>
+                <Link
+                  href="/advertise-with-us"
+                  className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40"
+                >
+                  Advertising
+                </Link>
               </div>
             </div>
           </div>
 
           <div className="mb-4 text-center">
-            <Link href="/more" className="text-sm font-bold text-[#D4AF37] transition hover:underline">Explore all resources →</Link>
+            <Link
+              href="/more"
+              className="text-sm font-bold text-[#D4AF37] transition hover:underline"
+            >
+              Explore all resources →
+            </Link>
           </div>
 
           <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
@@ -1342,58 +1356,6 @@ export default function Home() {
           </div>
         </section>
 
-        <div className="mb-6 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 lg:gap-5">
-          {keySections.map((item, index) => {
-            const isMarket = item.title === "Our Marketplace";
-            const isPublic = publicRoutes.includes(item.href);
-
-            return (
-              <div
-                key={index}
-                className={cx(
-                  "group cursor-pointer rounded-2xl border p-4 shadow transition hover:-translate-y-0.5 hover:shadow-lg sm:p-5",
-                  isMarket
-                    ? "border-[#D4AF37]/40 bg-gradient-to-br from-[#D4AF37]/12 via-white/[0.03] to-white/[0.02]"
-                    : "border-white/10 bg-white/[0.03]",
-                )}
-                onClick={() => gate(item.href)}
-              >
-                <div className="mb-3 flex items-center justify-between gap-2">
-                  <span
-                    className={cx(
-                      "inline-flex items-center gap-1.5 rounded-full border px-2 py-1 text-[10px] font-bold sm:px-3 sm:text-xs",
-                      isMarket
-                        ? "border-[#D4AF37]/40 bg-black/30 text-[#D4AF37]"
-                        : "border-white/10 bg-white/5 text-white/70",
-                    )}
-                  >
-                    {isMarket ? "🔥 Popular" : isPublic ? "Public" : "Member"}
-                    {!isPublic && !isMarket && (
-                      <Lock className="h-3 w-3 text-white/60 sm:h-3.5 sm:w-3.5" />
-                    )}
-                  </span>
-
-                  <span className="text-[10px] text-white/45 transition group-hover:text-white/70 sm:text-xs">
-                    Open →
-                  </span>
-                </div>
-
-                <h2 className="text-base font-extrabold tracking-tight text-white group-hover:underline sm:text-xl">
-                  {item.title}
-                </h2>
-                <p className="mt-2 text-[12px] text-white/65 sm:text-sm">
-                  {item.description}
-                </p>
-
-                {!isPublic && !user && (
-                  <div className="mt-3 text-[11px] text-white/45">
-                    Sign in required to access.
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
 
         <section className="mb-5 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.05)] backdrop-blur">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
