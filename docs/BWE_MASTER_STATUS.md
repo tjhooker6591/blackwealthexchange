@@ -1,6 +1,6 @@
 # BWE Master Status
 
-Last updated commit: 3a2e174
+Last updated commit: e6d3505
 
 ## Overall platform status
 
@@ -9,6 +9,7 @@ Last updated commit: 3a2e174
 - P2 role regression: completed and accepted.
 - Growth architecture + persistent operating system docs: created and enforced.
 - Referral engine v1 API foundation: shipped.
+- Link integrity gate and runtime health gate are now in release validation path.
 
 ## Complete
 
@@ -38,6 +39,7 @@ Last updated commit: 3a2e174
 
 ## Latest accepted commits
 
+- e6d3505 (finalized referral/docs/link/runtime-health updates)
 - 3a2e174 (referral engine v1 APIs + DB/growth docs backfill)
 - bfbc576 (runtime healthcheck gate)
 - 8c4f634 (persistent BWE master operating docs)

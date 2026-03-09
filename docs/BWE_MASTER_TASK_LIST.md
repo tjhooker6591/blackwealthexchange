@@ -67,11 +67,11 @@ Owner default: `BlackForge`
 
 8. Vertical regressions (marketplace/ads/jobs/admin)
 
-- status: in-progress
+- status: complete (route/regression baseline)
 - owner/agent: BlackForge
 - proof required: scenario matrix + screenshots/logs
 - dependencies: stable runtime + seeded data
-- last updated commit: 69f9b9a
+- last updated commit: 7dddecf
 
 ## P2.5
 
@@ -82,6 +82,16 @@ Owner default: `BlackForge`
 - proof required: auth code endpoint + track endpoint + DB docs backfill
 - dependencies: auth session + Mongo
 - last updated commit: 3a2e174
+
+## P2.6
+
+11. Runtime/link integrity gates
+
+- status: complete
+- owner/agent: BlackForge
+- proof required: `check:runtime-health` + `check:internal-links` pass
+- dependencies: running app instance
+- last updated commit: e6d3505
 
 ## P3
 
