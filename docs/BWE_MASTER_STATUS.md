@@ -1,6 +1,6 @@
 # BWE Master Status
 
-Last updated commit: e6d3505
+Last updated commit: 23f9a48
 
 ## Overall platform status
 
@@ -10,6 +10,7 @@ Last updated commit: e6d3505
 - Growth architecture + persistent operating system docs: created and enforced.
 - Referral engine v1 API foundation: shipped.
 - Link integrity gate and runtime health gate are now in release validation path.
+- Canonical resources route corrected (`inclusive-job-descriptions`) with backward redirect from typo slug.
 
 ## Complete
 
@@ -54,7 +55,7 @@ Last updated commit: e6d3505
 
 ## Next execution order
 
-1. Complete deep vertical scenario regression (marketplace/ads/jobs/admin flows beyond route smoke)
-2. Push preview candidate branch and execute full Preview validation suite
-3. Produce GO/NO-GO promotion card with env diff + rollback target
+1. Push preview candidate branch and execute full Preview validation suite
+2. Produce final GO/NO-GO promotion card with env diff + rollback target
+3. Run preview role/access and click-to-completion checks
 4. Start wedge selection using live supply/search/readiness data pull

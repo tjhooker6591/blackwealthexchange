@@ -65,7 +65,7 @@ const learningFlow = [
   "/library-of-black-history",
   "/resources",
   "/resources/articles",
-  "/resources/inclusive-job-desriptions",
+  "/resources/inclusive-job-descriptions",
 ];
 for (const p of learningFlow) {
   const r = await req(p);
@@ -138,21 +138,19 @@ const accounts = [
   },
 ];
 for (const a of accounts) {
-  await db
-    .collection(a.coll)
-    .updateOne(
-      { email: a.email },
-      {
-        $set: {
-          email: a.email,
-          password: hash,
-          accountType: a.accountType,
-          isAdmin: a.isAdmin,
-          updatedAt: new Date(),
-        },
+  await db.collection(a.coll).updateOne(
+    { email: a.email },
+    {
+      $set: {
+        email: a.email,
+        password: hash,
+        accountType: a.accountType,
+        isAdmin: a.isAdmin,
+        updatedAt: new Date(),
       },
-      { upsert: true },
-    );
+    },
+    { upsert: true },
+  );
 }
 
 const guestProtected = [
@@ -228,11 +226,11 @@ for (const p of keyPages) {
 const typoRoute = await req("/resources/inclusive-job-desriptions");
 const correctedRoute = await req("/resources/inclusive-job-descriptions");
 out.routeTypoCheck = {
-  desriptionsRouteStatus: typoRoute.status,
-  descriptionsRouteStatus: correctedRoute.status,
+  typoRouteStatus: typoRoute.status,
+  canonicalRouteStatus: correctedRoute.status,
   conclusion:
-    typoRoute.status === 200 && correctedRoute.status !== 200
-      ? "Current real route is /resources/inclusive-job-desriptions (typo in slug)."
+    [301, 302, 307, 308].includes(typoRoute.status) && correctedRoute.status === 200
+      ? "Canonical route is /resources/inclusive-job-descriptions with backward redirect from typo slug."
       : "Route mapping differs; review required.",
 };
 

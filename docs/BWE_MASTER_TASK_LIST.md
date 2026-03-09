@@ -93,6 +93,16 @@ Owner default: `BlackForge`
 - dependencies: running app instance
 - last updated commit: e6d3505
 
+## P2.7
+
+12. Canonical route typo cleanup (`inclusive-job-descriptions`)
+
+- status: complete
+- owner/agent: BlackForge
+- proof required: critical-path pass + typo redirect verification
+- dependencies: next.config redirect + canonical page path
+- last updated commit: 23f9a48
+
 ## P3
 
 9. Cross-site design consistency pass
