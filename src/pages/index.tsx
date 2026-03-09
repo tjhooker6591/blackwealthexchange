@@ -1004,12 +1004,68 @@ export default function Home() {
       <section className="relative z-10 pt-3 pb-8 sm:pt-4 sm:pb-10">
         <div className="container mx-auto max-w-6xl px-4">
           <div className="mb-4 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.05)]">
-            <div className="mb-3 text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">Quick paths</div>
-            <div className="grid gap-2 sm:grid-cols-3">
-              <Link href="/financial-literacy" className="rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm font-semibold text-white/80 transition hover:border-[#D4AF37]/30 hover:bg-black/40">I’m here to learn</Link>
-              <Link href="/job-listings" className="rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm font-semibold text-white/80 transition hover:border-[#D4AF37]/30 hover:bg-black/40">I’m here to find opportunities</Link>
-              <Link href="/marketplace/become-a-seller" className="rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm font-semibold text-white/80 transition hover:border-[#D4AF37]/30 hover:bg-black/40">I run a business</Link>
+            <div className="mb-3 text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
+              Quick paths
             </div>
+            <div className="grid gap-2 sm:grid-cols-3">
+              <Link
+                href="/financial-literacy"
+                className="rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm font-semibold text-white/80 transition hover:border-[#D4AF37]/30 hover:bg-black/40"
+              >
+                I’m here to learn
+              </Link>
+              <Link
+                href="/job-listings"
+                className="rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm font-semibold text-white/80 transition hover:border-[#D4AF37]/30 hover:bg-black/40"
+              >
+                I’m here to find opportunities
+              </Link>
+              <Link
+                href="/marketplace/become-a-seller"
+                className="rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm font-semibold text-white/80 transition hover:border-[#D4AF37]/30 hover:bg-black/40"
+              >
+                I run a business
+              </Link>
+            </div>
+          </div>
+
+          <div className="mb-4 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.04)]">
+            <div className="text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">Start here track</div>
+            <h3 className="mt-1 text-lg font-extrabold text-white sm:text-xl">Featured Learning Block</h3>
+            <p className="mt-1 text-sm text-white/65">One focused track for financial basics, career setup, and Black history/economic context.</p>
+            <div className="mt-3 flex flex-wrap gap-2 text-xs text-white/70">
+              <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1">Financial basics</span>
+              <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1">Career setup</span>
+              <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1">Black history/economic context</span>
+            </div>
+            <Link href="/financial-literacy" className="mt-4 inline-flex h-10 items-center rounded-xl bg-[#D4AF37] px-5 text-sm font-extrabold text-black transition hover:bg-yellow-500">Start the Track</Link>
+          </div>
+
+          <div className="mb-4 grid gap-3 sm:grid-cols-2">
+            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
+              <div className="flex items-center justify-between gap-2">
+                <h3 className="text-base font-extrabold text-white sm:text-lg">Opportunities</h3>
+                <Link href="/black-student-opportunities" className="text-xs font-bold text-[#D4AF37]">Open Hub →</Link>
+              </div>
+              <div className="mt-3 grid gap-2 text-sm sm:grid-cols-3">
+                <Link href="/black-student-opportunities" className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40">Students</Link>
+                <Link href="/job-listings" className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40">Jobs</Link>
+                <Link href="/internships" className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40">Internships</Link>
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
+              <h3 className="text-base font-extrabold text-white sm:text-lg">Business Growth</h3>
+              <div className="mt-3 grid gap-2 text-sm sm:grid-cols-3">
+                <Link href="/marketplace" className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40">Marketplace</Link>
+                <Link href="/business-directory" className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40">Sponsored / Directory</Link>
+                <Link href="/advertise-with-us" className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40">Advertising</Link>
+              </div>
+            </div>
+          </div>
+
+          <div className="mb-4 text-center">
+            <Link href="/more" className="text-sm font-bold text-[#D4AF37] transition hover:underline">Explore all resources →</Link>
           </div>
 
           <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
