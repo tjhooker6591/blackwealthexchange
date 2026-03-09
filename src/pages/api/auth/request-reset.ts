@@ -1,14 +1,12 @@
-// src/pages/api/auth/request-reset.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 import crypto from "crypto";
 import clientPromise from "../../../lib/mongodb";
 import nodemailer from "nodemailer";
 import { getAppUrl, getMongoDbName, getResetTokenSecret } from "@/lib/env";
 
-// Keep this short (security + usability)
 const RESET_TTL_MINUTES = 60;
+const REQUEST_WINDOW_MINUTES = 10;
 
-// Basic hygiene
 function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
@@ -17,7 +15,46 @@ function sha256(input: string) {
   return crypto.createHash("sha256").update(input).digest("hex");
 }
 
-// Find user across your separated collections
+function getClientIp(req: NextApiRequest) {
+  return (
+    (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() ||
+    req.socket.remoteAddress ||
+    "unknown"
+  );
+}
+
+async function ensureResetIndexes(db: any) {
+  await db
+    .collection("password_resets")
+    .createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+  await db
+    .collection("password_resets")
+    .createIndex({ tokenHash: 1 }, { unique: true });
+  await db
+    .collection("password_resets")
+    .createIndex({ email: 1, createdAt: -1 });
+
+  await db
+    .collection("password_reset_rate_limits")
+    .createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+  await db
+    .collection("password_reset_rate_limits")
+    .createIndex({ key: 1, createdAt: -1 });
+}
+
+async function hitRateLimit(db: any, key: string, limit: number, windowMinutes: number) {
+  const now = new Date();
+  const windowStart = new Date(now.getTime() - windowMinutes * 60 * 1000);
+  const expiresAt = new Date(now.getTime() + windowMinutes * 60 * 1000);
+
+  const col = db.collection("password_reset_rate_limits");
+
+  const count = await col.countDocuments({ key, createdAt: { $gte: windowStart } });
+  await col.insertOne({ key, createdAt: now, expiresAt });
+
+  return count >= limit;
+}
+
 async function findAccountByEmail(db: any, email: string) {
   const checks: Array<{ type: string; collection: string }> = [
     { type: "business", collection: "businesses" },
@@ -44,7 +81,6 @@ export default async function handler(
 
   const raw = req.body?.email;
   if (typeof raw !== "string") {
-    // Safe to 400 because it's not “does this account exist”
     return res.status(400).json({ error: "Email is required." });
   }
 
@@ -53,36 +89,46 @@ export default async function handler(
     return res.status(400).json({ error: "Invalid email format." });
   }
 
+  const genericOk = () =>
+    res.status(200).json({
+      message: "If this email exists, reset instructions will be sent.",
+    });
+
   try {
     const client = await clientPromise;
     const db = client.db(getMongoDbName());
+    const ip = getClientIp(req);
 
-    // Always return generic success (avoid leaking account existence)
-    const genericOk = () =>
-      res.status(200).json({
-        message: "If this email exists, reset instructions will be sent.",
+    await ensureResetIndexes(db);
+
+    // Abuse protection (IP + email aware)
+    if (process.env.RESET_DEBUG_MODE !== "1") {
+      const ipBlocked = await hitRateLimit(db, `request:ip:${ip}`, 12, REQUEST_WINDOW_MINUTES);
+      const emailBlocked = await hitRateLimit(
+        db,
+        `request:email:${email}`,
+        3,
+        REQUEST_WINDOW_MINUTES,
+      );
+
+      if (ipBlocked || emailBlocked) return genericOk();
+
+      const recent = await db.collection("password_resets").findOne({
+        email,
+        createdAt: { $gte: new Date(Date.now() - REQUEST_WINDOW_MINUTES * 60 * 1000) },
+        usedAt: null,
       });
 
-    // Rate-limit: block repeated requests for same email within 10 minutes
-    // (still return 200 to avoid leaking anything)
-    const recent = await db.collection("password_resets").findOne({
-      email,
-      createdAt: { $gte: new Date(Date.now() - 10 * 60 * 1000) },
-      usedAt: null,
-    });
+      if (recent) return genericOk();
+    }
 
-    if (recent) return genericOk();
-
-    // Find account (but do NOT change response if not found)
     const account = await findAccountByEmail(db, email);
     if (!account) return genericOk();
 
-    // Create token + hash
     const token = crypto.randomBytes(32).toString("hex");
     const tokenHash = sha256(`${token}.${getResetTokenSecret()}`);
     const expiresAt = new Date(Date.now() + RESET_TTL_MINUTES * 60 * 1000);
 
-    // Store reset request
     await db.collection("password_resets").insertOne({
       email,
       accountType: account.accountType,
@@ -91,14 +137,20 @@ export default async function handler(
       createdAt: new Date(),
       expiresAt,
       usedAt: null,
-      ip:
-        (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() ||
-        req.socket.remoteAddress ||
-        null,
+      ip,
       userAgent: req.headers["user-agent"] || null,
     });
 
-    // Send email
+    const resetLink = `${getAppUrl()}/reset-password?token=${encodeURIComponent(token)}`;
+
+    // Debug mode for local verification: skip email dependency and return token/link.
+    if (process.env.RESET_DEBUG_MODE === "1") {
+      return res.status(200).json({
+        message: "If this email exists, reset instructions will be sent.",
+        _debug: { token, resetLink },
+      });
+    }
+
     const transporter = nodemailer.createTransport({
       service: "Gmail",
       auth: {
@@ -106,10 +158,6 @@ export default async function handler(
         pass: process.env.EMAIL_PASS,
       },
     });
-
-    const resetLink = `${getAppUrl()}/reset-password?token=${encodeURIComponent(
-      token,
-    )}`;
 
     const fromEmail = process.env.EMAIL_USER || "blackwealth24@gmail.com";
 
@@ -136,9 +184,6 @@ export default async function handler(
     return genericOk();
   } catch (err) {
     console.error("request-reset error:", err);
-    // Still avoid leaking details; keep response generic
-    return res.status(200).json({
-      message: "If this email exists, reset instructions will be sent.",
-    });
+    return genericOk();
   }
 }

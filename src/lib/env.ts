@@ -76,12 +76,18 @@ export function getNextAuthUrl(): string | undefined {
 }
 
 export function getAppUrl(): string {
-  return (
+  const env = getAppEnv();
+  const url =
     read("APP_URL") ??
     read("NEXT_PUBLIC_APP_URL") ??
     read("NEXTAUTH_URL") ??
-    "http://localhost:3000"
-  );
+    "http://localhost:3000";
+
+  if (env !== "local" && !url.startsWith("https://")) {
+    throw new Error("APP_URL/NEXT_PUBLIC_APP_URL must use HTTPS outside local development.");
+  }
+
+  return url;
 }
 
 export function getResetTokenSecret(): string {

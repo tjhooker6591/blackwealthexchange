@@ -19,6 +19,7 @@ This project now uses centralized env access via `src/lib/env.ts` for auth/mongo
 - `APP_URL` (server absolute URL for reset links; local: `http://localhost:3000`)
 - `NEXT_PUBLIC_APP_URL` (fallback for reset-link generation if `APP_URL` is missing)
 - `RESET_TOKEN_SECRET` (optional dedicated reset secret; falls back to JWT secret)
+- `RESET_DEBUG_MODE=1` (local-only debug hook to return reset token/link in API response for e2e verification; never enable in production)
 
 ## Stripe (when using payment flows)
 
