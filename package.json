@@ -19,6 +19,7 @@
     "check:vertical-regression": "node scripts/vertical-regression-pass.mjs",
     "start:stable": "node scripts/runtime-stable-start.mjs",
     "check:runtime-health": "node scripts/runtime-healthcheck.mjs",
+    "check:internal-links": "node scripts/check-internal-links.mjs",
     "prepare": "if [ \"$VERCEL\" != \"1\" ]; then husky install; fi",
     "vercel-build": "next build"
   },

@@ -52,6 +52,41 @@ const nextConfig: NextConfig = {
         destination: "/intern/tasks",
         permanent: false,
       },
+      {
+        source: "/all-sponsors",
+        destination: "/business-directory/sponsored-business",
+        permanent: false,
+      },
+      {
+        source: "/advertise",
+        destination: "/advertise-with-us",
+        permanent: false,
+      },
+      {
+        source: "/events/rsvp",
+        destination: "/events",
+        permanent: false,
+      },
+      {
+        source: "/view-internships",
+        destination: "/internships",
+        permanent: false,
+      },
+      {
+        source: "/resources/inclusive-job-descriptions",
+        destination: "/resources/inclusive-job-desriptions",
+        permanent: false,
+      },
+      {
+        source: "/resources/hiring-black-talent",
+        destination: "/resources",
+        permanent: false,
+      },
+      {
+        source: "/resources/internship-pipeline-guide",
+        destination: "/resources",
+        permanent: false,
+      },
     ];
   },
 
