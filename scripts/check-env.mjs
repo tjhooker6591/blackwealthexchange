@@ -8,7 +8,11 @@ const argTarget =
   args.find((a) => a.startsWith("--env="))?.split("=")[1] ||
   args.find((a) => a.startsWith("--target="))?.split("=")[1];
 
-const target = (argTarget || process.env.ENV_CHECK_TARGET || "local").toLowerCase();
+const target = (
+  argTarget ||
+  process.env.ENV_CHECK_TARGET ||
+  "local"
+).toLowerCase();
 
 if (!new Set(["local", "preview", "production"]).has(target)) {
   console.error(`Invalid env target: ${target}. Use local|preview|production.`);
@@ -97,11 +101,16 @@ if (
   process.env.NEXTAUTH_SECRET &&
   process.env.JWT_SECRET !== process.env.NEXTAUTH_SECRET
 ) {
-  warnings.push("JWT_SECRET and NEXTAUTH_SECRET are both set but do not match.");
+  warnings.push(
+    "JWT_SECRET and NEXTAUTH_SECRET are both set but do not match.",
+  );
 }
 
 const mongoUri = process.env.MONGODB_URI || "";
-if (target !== "local" && /mongodb:\/\/(127\.0\.0\.1|localhost)(:\d+)?/i.test(mongoUri)) {
+if (
+  target !== "local" &&
+  /mongodb:\/\/(127\.0\.0\.1|localhost)(:\d+)?/i.test(mongoUri)
+) {
   warnings.push("MONGODB_URI points to localhost outside local target.");
 }
 

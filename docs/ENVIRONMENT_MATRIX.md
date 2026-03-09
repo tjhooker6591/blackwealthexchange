@@ -1,20 +1,20 @@
 # Environment Variable Matrix
 
-| Variable | Used by | Local | Preview | Production | Notes |
-|---|---|---:|---:|---:|---|
-| `JWT_SECRET` | `src/lib/env.ts` (`getJwtSecret`), custom auth routes | Yes | Yes | Yes | Must match `NEXTAUTH_SECRET`. |
-| `NEXTAUTH_SECRET` | NextAuth + `src/lib/env.ts` | Yes | Yes | Yes | Must match `JWT_SECRET`. |
-| `NEXTAUTH_URL` | NextAuth callbacks/session URLs | Yes | Yes | Yes | Use canonical env URL. |
-| `APP_URL` | server-side link generation (`src/lib/env.ts`) | Optional | Yes | Yes | Prefer HTTPS outside local. |
-| `NEXT_PUBLIC_APP_URL` | app URL fallback in server/client helpers | Optional | Yes | Yes | Prefer HTTPS outside local. |
-| `NEXT_PUBLIC_BASE_URL` | public runtime metadata/links | Optional | Optional | Optional | Keep aligned with deployed host. |
-| `MONGODB_URI` | `src/lib/mongodb.ts` via `getMongoUri` | Yes | Yes | Yes | Preview/prod must not be localhost Mongo. |
-| `MONGODB_DB` | DB selector across API routes | Yes | Yes | Yes | Default exists in code but treat as required for parity. |
-| `RESET_TOKEN_SECRET` | auth reset token signing | Optional | Optional | Optional | Falls back to JWT secret if omitted. |
-| `STRIPE_SECRET_KEY` | `src/pages/api/checkout/create-session.ts`, Stripe server APIs | Optional* | Yes | Yes | Required anywhere checkout is tested/enabled. |
-| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | client checkout surfaces | Optional* | Yes | Yes | Required for full payment UX. |
-| `STRIPE_WEBHOOK_SECRET` | webhook handlers | Optional* | Yes | Yes | Required when webhook flows are enabled. |
-| `PLATFORM_STRIPE_ACCOUNT_ID` | Connect/platform payout utilities | Optional | Optional | Optional | Needed for some connect payout modes. |
-| `SMTP_HOST` / `SMTP_PORT` / `SMTP_SECURE` / `SMTP_USER` / `SMTP_PASS` / `SMTP_FROM` | email workflows | Optional | Optional | Optional | Required only if email features are active in env. |
+| Variable                                                                            | Used by                                                        |      Local |  Preview | Production | Notes                                                    |
+| ----------------------------------------------------------------------------------- | -------------------------------------------------------------- | ---------: | -------: | ---------: | -------------------------------------------------------- |
+| `JWT_SECRET`                                                                        | `src/lib/env.ts` (`getJwtSecret`), custom auth routes          |        Yes |      Yes |        Yes | Must match `NEXTAUTH_SECRET`.                            |
+| `NEXTAUTH_SECRET`                                                                   | NextAuth + `src/lib/env.ts`                                    |        Yes |      Yes |        Yes | Must match `JWT_SECRET`.                                 |
+| `NEXTAUTH_URL`                                                                      | NextAuth callbacks/session URLs                                |        Yes |      Yes |        Yes | Use canonical env URL.                                   |
+| `APP_URL`                                                                           | server-side link generation (`src/lib/env.ts`)                 |   Optional |      Yes |        Yes | Prefer HTTPS outside local.                              |
+| `NEXT_PUBLIC_APP_URL`                                                               | app URL fallback in server/client helpers                      |   Optional |      Yes |        Yes | Prefer HTTPS outside local.                              |
+| `NEXT_PUBLIC_BASE_URL`                                                              | public runtime metadata/links                                  |   Optional | Optional |   Optional | Keep aligned with deployed host.                         |
+| `MONGODB_URI`                                                                       | `src/lib/mongodb.ts` via `getMongoUri`                         |        Yes |      Yes |        Yes | Preview/prod must not be localhost Mongo.                |
+| `MONGODB_DB`                                                                        | DB selector across API routes                                  |        Yes |      Yes |        Yes | Default exists in code but treat as required for parity. |
+| `RESET_TOKEN_SECRET`                                                                | auth reset token signing                                       |   Optional | Optional |   Optional | Falls back to JWT secret if omitted.                     |
+| `STRIPE_SECRET_KEY`                                                                 | `src/pages/api/checkout/create-session.ts`, Stripe server APIs | Optional\* |      Yes |        Yes | Required anywhere checkout is tested/enabled.            |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`                                                | client checkout surfaces                                       | Optional\* |      Yes |        Yes | Required for full payment UX.                            |
+| `STRIPE_WEBHOOK_SECRET`                                                             | webhook handlers                                               | Optional\* |      Yes |        Yes | Required when webhook flows are enabled.                 |
+| `PLATFORM_STRIPE_ACCOUNT_ID`                                                        | Connect/platform payout utilities                              |   Optional | Optional |   Optional | Needed for some connect payout modes.                    |
+| `SMTP_HOST` / `SMTP_PORT` / `SMTP_SECURE` / `SMTP_USER` / `SMTP_PASS` / `SMTP_FROM` | email workflows                                                |   Optional | Optional |   Optional | Required only if email features are active in env.       |
 
 \* Optional for local only when payment flows are not being exercised.
