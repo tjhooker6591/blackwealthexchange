@@ -16,6 +16,9 @@ This project now uses centralized env access via `src/lib/env.ts` for auth/mongo
 
 - `MONGODB_DB` (defaults to `bwes-cluster` if omitted)
 - `NEXT_PUBLIC_BASE_URL`
+- `APP_URL` (server absolute URL for reset links; local: `http://localhost:3000`)
+- `NEXT_PUBLIC_APP_URL` (fallback for reset-link generation if `APP_URL` is missing)
+- `RESET_TOKEN_SECRET` (optional dedicated reset secret; falls back to JWT secret)
 
 ## Stripe (when using payment flows)
 

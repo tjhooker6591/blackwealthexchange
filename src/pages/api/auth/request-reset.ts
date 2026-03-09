@@ -3,28 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import crypto from "crypto";
 import clientPromise from "../../../lib/mongodb";
 import nodemailer from "nodemailer";
-
-/**
- * Build APP_URL safely:
- * - Uses NEXT_PUBLIC_APP_URL / APP_URL when provided
- * - Only falls back to localhost in development
- * - Fails fast in production (and any non-dev) if missing
- */
-const APP_URL =
-  process.env.NEXT_PUBLIC_APP_URL ||
-  process.env.APP_URL ||
-  (process.env.NODE_ENV === "development" ? "http://localhost:3000" : "");
-
-if (!APP_URL && process.env.NODE_ENV !== "development") {
-  throw new Error(
-    "Missing NEXT_PUBLIC_APP_URL (or APP_URL). Set it to your deployed domain (e.g. https://blackwealthexchange.com).",
-  );
-}
-
-const RESET_TOKEN_SECRET =
-  process.env.RESET_TOKEN_SECRET ||
-  process.env.JWT_SECRET ||
-  "dev-reset-secret";
+import { getAppUrl, getMongoDbName, getResetTokenSecret } from "@/lib/env";
 
 // Keep this short (security + usability)
 const RESET_TTL_MINUTES = 60;
@@ -76,7 +55,7 @@ export default async function handler(
 
   try {
     const client = await clientPromise;
-    const db = client.db("bwes-cluster");
+    const db = client.db(getMongoDbName());
 
     // Always return generic success (avoid leaking account existence)
     const genericOk = () =>
@@ -100,7 +79,7 @@ export default async function handler(
 
     // Create token + hash
     const token = crypto.randomBytes(32).toString("hex");
-    const tokenHash = sha256(`${token}.${RESET_TOKEN_SECRET}`);
+    const tokenHash = sha256(`${token}.${getResetTokenSecret()}`);
     const expiresAt = new Date(Date.now() + RESET_TTL_MINUTES * 60 * 1000);
 
     // Store reset request
@@ -128,7 +107,7 @@ export default async function handler(
       },
     });
 
-    const resetLink = `${APP_URL}/reset-password?token=${encodeURIComponent(
+    const resetLink = `${getAppUrl()}/reset-password?token=${encodeURIComponent(
       token,
     )}`;
 

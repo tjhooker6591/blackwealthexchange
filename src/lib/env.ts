@@ -74,3 +74,16 @@ export function getMongoDbName(defaultName = "bwes-cluster"): string {
 export function getNextAuthUrl(): string | undefined {
   return read("NEXTAUTH_URL");
 }
+
+export function getAppUrl(): string {
+  return (
+    read("APP_URL") ??
+    read("NEXT_PUBLIC_APP_URL") ??
+    read("NEXTAUTH_URL") ??
+    "http://localhost:3000"
+  );
+}
+
+export function getResetTokenSecret(): string {
+  return read("RESET_TOKEN_SECRET") ?? getJwtSecret();
+}

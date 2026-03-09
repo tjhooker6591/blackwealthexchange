@@ -3,11 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import crypto from "crypto";
 import bcrypt from "bcryptjs";
 import clientPromise from "../../../lib/mongodb";
-
-const RESET_TOKEN_SECRET =
-  process.env.RESET_TOKEN_SECRET ||
-  process.env.JWT_SECRET ||
-  "dev-reset-secret";
+import { getMongoDbName, getResetTokenSecret } from "@/lib/env";
 
 function sha256(input: string) {
   return crypto.createHash("sha256").update(input).digest("hex");
@@ -36,9 +32,9 @@ export default async function handler(
 
   try {
     const client = await clientPromise;
-    const db = client.db("bwes-cluster");
+    const db = client.db(getMongoDbName());
 
-    const tokenHash = sha256(`${token}.${RESET_TOKEN_SECRET}`);
+    const tokenHash = sha256(`${token}.${getResetTokenSecret()}`);
 
     const reset = await db.collection("password_resets").findOne({
       tokenHash,
