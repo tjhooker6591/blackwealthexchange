@@ -25,13 +25,21 @@ async function ensureRateIndex(db: any) {
     .createIndex({ key: 1, createdAt: -1 });
 }
 
-async function hitRateLimit(db: any, key: string, limit: number, windowMinutes: number) {
+async function hitRateLimit(
+  db: any,
+  key: string,
+  limit: number,
+  windowMinutes: number,
+) {
   const now = new Date();
   const windowStart = new Date(now.getTime() - windowMinutes * 60 * 1000);
   const expiresAt = new Date(now.getTime() + windowMinutes * 60 * 1000);
 
   const col = db.collection("password_reset_rate_limits");
-  const count = await col.countDocuments({ key, createdAt: { $gte: windowStart } });
+  const count = await col.countDocuments({
+    key,
+    createdAt: { $gte: windowStart },
+  });
   await col.insertOne({ key, createdAt: now, expiresAt });
   return count >= limit;
 }
@@ -67,9 +75,16 @@ export default async function handler(
     const ip = getClientIp(req);
 
     const ipBlocked = await hitRateLimit(db, `reset:ip:${ip}`, 20, 10);
-    const tokenBlocked = await hitRateLimit(db, `reset:token:${tokenHash}`, 5, 10);
+    const tokenBlocked = await hitRateLimit(
+      db,
+      `reset:token:${tokenHash}`,
+      5,
+      10,
+    );
     if (ipBlocked || tokenBlocked) {
-      return res.status(429).json({ error: "Too many attempts. Please try again later." });
+      return res
+        .status(429)
+        .json({ error: "Too many attempts. Please try again later." });
     }
 
     const reset = await db.collection("password_resets").findOne({
@@ -83,7 +98,8 @@ export default async function handler(
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-    const collectionName = typeof reset.collection === "string" ? reset.collection : null;
+    const collectionName =
+      typeof reset.collection === "string" ? reset.collection : null;
 
     if (!collectionName) {
       return res.status(500).json({ error: "Reset record is malformed." });
@@ -99,16 +115,22 @@ export default async function handler(
       },
     );
 
-    await db.collection("password_resets").updateOne(
-      { _id: reset._id },
-      { $set: { usedAt: new Date(), consumedAt: new Date() } },
-    );
+    await db
+      .collection("password_resets")
+      .updateOne(
+        { _id: reset._id },
+        { $set: { usedAt: new Date(), consumedAt: new Date() } },
+      );
 
     if (updateResult.matchedCount === 0) {
-      return res.status(200).json({ success: true, message: "Password updated." });
+      return res
+        .status(200)
+        .json({ success: true, message: "Password updated." });
     }
 
-    return res.status(200).json({ success: true, message: "Password updated." });
+    return res
+      .status(200)
+      .json({ success: true, message: "Password updated." });
   } catch (err) {
     console.error("reset-password error:", err);
     return res.status(500).json({ error: "Internal Server Error" });

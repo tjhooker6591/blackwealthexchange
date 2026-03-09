@@ -11,6 +11,7 @@
     "typecheck": "tsc --noEmit",
     "check:directory-query": "node scripts/test-directory-query-state.mjs",
     "audit:directory-completeness": "node scripts/stamp-directory-completeness.mjs",
+    "check:release-hygiene": "node scripts/release-hygiene-check.mjs",
     "prepare": "if [ \"$VERCEL\" != \"1\" ]; then husky install; fi",
     "vercel-build": "next build"
   },
@@ -62,6 +63,7 @@
     "eslint-config-next": "15.1.6",
     "husky": "^8.0.0",
     "lint-staged": "^15.5.0",
+    "playwright": "^1.58.2",
     "postcss": "^8",
     "prettier": "^3.5.3",
     "tailwindcss": "^3.4.1",

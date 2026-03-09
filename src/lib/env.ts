@@ -84,7 +84,9 @@ export function getAppUrl(): string {
     "http://localhost:3000";
 
   if (env !== "local" && !url.startsWith("https://")) {
-    throw new Error("APP_URL/NEXT_PUBLIC_APP_URL must use HTTPS outside local development.");
+    throw new Error(
+      "APP_URL/NEXT_PUBLIC_APP_URL must use HTTPS outside local development.",
+    );
   }
 
   return url;

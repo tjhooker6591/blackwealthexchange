@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
+import { getMongoDbName } from "@/lib/env";
 
 type Ok = { success: true; message: string };
 type Err = { success: false; error: string };
@@ -18,7 +19,9 @@ export default async function handler(
 ) {
   if (req.method !== "POST") {
     res.setHeader("Allow", ["POST"]);
-    return res.status(405).json({ success: false, error: "Method Not Allowed" });
+    return res
+      .status(405)
+      .json({ success: false, error: "Method Not Allowed" });
   }
 
   try {
@@ -30,13 +33,16 @@ export default async function handler(
     const details = asText(req.body?.details);
 
     if (!["employer", "candidate"].includes(type)) {
-      return res.status(400).json({ success: false, error: "Invalid intake type." });
+      return res
+        .status(400)
+        .json({ success: false, error: "Invalid intake type." });
     }
 
     if (!name || !email || !details) {
-      return res
-        .status(400)
-        .json({ success: false, error: "Name, email, and details are required." });
+      return res.status(400).json({
+        success: false,
+        error: "Name, email, and details are required.",
+      });
     }
 
     if (!validEmail(email)) {
@@ -46,7 +52,7 @@ export default async function handler(
     }
 
     const client = await clientPromise;
-    const db = client.db("bwes-cluster");
+    const db = client.db(getMongoDbName());
 
     await db.collection("consulting_intake").insertOne({
       type,
@@ -69,6 +75,8 @@ export default async function handler(
     });
   } catch (err) {
     console.error("consulting-intake error", err);
-    return res.status(500).json({ success: false, error: "Failed to submit intake." });
+    return res
+      .status(500)
+      .json({ success: false, error: "Failed to submit intake." });
   }
 }

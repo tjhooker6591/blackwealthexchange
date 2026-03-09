@@ -42,14 +42,22 @@ async function ensureResetIndexes(db: any) {
     .createIndex({ key: 1, createdAt: -1 });
 }
 
-async function hitRateLimit(db: any, key: string, limit: number, windowMinutes: number) {
+async function hitRateLimit(
+  db: any,
+  key: string,
+  limit: number,
+  windowMinutes: number,
+) {
   const now = new Date();
   const windowStart = new Date(now.getTime() - windowMinutes * 60 * 1000);
   const expiresAt = new Date(now.getTime() + windowMinutes * 60 * 1000);
 
   const col = db.collection("password_reset_rate_limits");
 
-  const count = await col.countDocuments({ key, createdAt: { $gte: windowStart } });
+  const count = await col.countDocuments({
+    key,
+    createdAt: { $gte: windowStart },
+  });
   await col.insertOne({ key, createdAt: now, expiresAt });
 
   return count >= limit;
@@ -103,7 +111,12 @@ export default async function handler(
 
     // Abuse protection (IP + email aware)
     if (process.env.RESET_DEBUG_MODE !== "1") {
-      const ipBlocked = await hitRateLimit(db, `request:ip:${ip}`, 12, REQUEST_WINDOW_MINUTES);
+      const ipBlocked = await hitRateLimit(
+        db,
+        `request:ip:${ip}`,
+        12,
+        REQUEST_WINDOW_MINUTES,
+      );
       const emailBlocked = await hitRateLimit(
         db,
         `request:email:${email}`,
@@ -115,7 +128,9 @@ export default async function handler(
 
       const recent = await db.collection("password_resets").findOne({
         email,
-        createdAt: { $gte: new Date(Date.now() - REQUEST_WINDOW_MINUTES * 60 * 1000) },
+        createdAt: {
+          $gte: new Date(Date.now() - REQUEST_WINDOW_MINUTES * 60 * 1000),
+        },
         usedAt: null,
       });
 
@@ -144,7 +159,7 @@ export default async function handler(
     const resetLink = `${getAppUrl()}/reset-password?token=${encodeURIComponent(token)}`;
 
     // Debug mode for local verification: skip email dependency and return token/link.
-    if (process.env.RESET_DEBUG_MODE === "1") {
+    if (process.env.RESET_DEBUG_MODE === "1" && process.env.NODE_ENV !== "production") {
       return res.status(200).json({
         message: "If this email exists, reset instructions will be sent.",
         _debug: { token, resetLink },
