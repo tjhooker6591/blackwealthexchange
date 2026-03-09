@@ -1078,10 +1078,30 @@ export default function Home() {
               More key sections
             </div>
             <div className="grid gap-2 text-sm sm:grid-cols-2 lg:grid-cols-4">
-              <Link href="/affiliate" className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40">Affiliate & Partnership</Link>
-              <Link href="/black-entertainment-news" className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40">Black Entertainment Pulse</Link>
-              <Link href="/business-directory/sponsored-business" className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40">Sponsored Businesses</Link>
-              <Link href="/investment" className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40">Investment & Wealth</Link>
+              <Link
+                href="/affiliate"
+                className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40"
+              >
+                Affiliate & Partnership
+              </Link>
+              <Link
+                href="/black-entertainment-news"
+                className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40"
+              >
+                Black Entertainment Pulse
+              </Link>
+              <Link
+                href="/business-directory/sponsored-business"
+                className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40"
+              >
+                Sponsored Businesses
+              </Link>
+              <Link
+                href="/investment"
+                className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40"
+              >
+                Investment & Wealth
+              </Link>
             </div>
           </div>
 
@@ -1372,8 +1392,8 @@ export default function Home() {
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex-1">
               <div className="mb-1 flex items-center gap-2">
-                <span className="inline-flex rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 px-2 py-0.5 text-[10px] font-bold tracking-wide text-[#EFD27A] sm:text-[11px]">
-                  COMING SOON
+                <span className="inline-flex rounded-full border border-emerald-400/30 bg-emerald-400/10 px-2 py-0.5 text-[10px] font-bold tracking-wide text-emerald-200 sm:text-[11px]">
+                  NOW OPEN
                 </span>
               </div>
 
@@ -1388,12 +1408,20 @@ export default function Home() {
               </p>
             </div>
 
-            <button
-              onClick={() => setModalOpen(true)}
-              className="h-10 rounded-xl border border-[#D4AF37]/35 bg-[#D4AF37]/12 px-4 text-sm font-bold text-[#F1D57A] transition hover:bg-[#D4AF37]/18"
-            >
-              Notify Me
-            </button>
+            <div className="flex flex-wrap gap-2">
+              <Link
+                href="/recruiting-consulting?type=employer"
+                className="inline-flex h-10 items-center rounded-xl bg-[#D4AF37] px-4 text-sm font-extrabold text-black transition hover:bg-yellow-500"
+              >
+                Employer Request
+              </Link>
+              <Link
+                href="/recruiting-consulting?type=candidate"
+                className="inline-flex h-10 items-center rounded-xl border border-[#D4AF37]/35 bg-[#D4AF37]/12 px-4 text-sm font-bold text-[#F1D57A] transition hover:bg-[#D4AF37]/18"
+              >
+                Join Talent Network
+              </Link>
+            </div>
           </div>
         </section>
 
