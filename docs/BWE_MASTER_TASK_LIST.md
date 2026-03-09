@@ -103,6 +103,16 @@ Owner default: `BlackForge`
 - dependencies: next.config redirect + canonical page path
 - last updated commit: 23f9a48
 
+## P2.8
+
+13. Marketplace buy-button completion matrix + fixes
+
+- status: in-progress (blocked on reproducible visible buy CTA surface/data in current runtime)
+- owner/agent: BlackForge
+- proof required: full buy-button matrix, failing paths, fixes, rerun GO/NO-GO
+- dependencies: marketplace data/state that exposes all buy CTAs in runtime
+- last updated commit: pending
+
 ## P3
 
 9. Cross-site design consistency pass

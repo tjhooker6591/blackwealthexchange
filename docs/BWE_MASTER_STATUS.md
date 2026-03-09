@@ -1,6 +1,6 @@
 # BWE Master Status
 
-Last updated commit: 23f9a48
+Last updated commit: cf4060d
 
 ## Overall platform status
 
@@ -40,22 +40,22 @@ Last updated commit: 23f9a48
 
 ## Latest accepted commits
 
+- cf4060d (RC finalization docs + canonical route/link updates for preview handoff)
+- 23f9a48 (canonical route cleanup: inclusive-job-descriptions + backward redirect)
+- d1ec8ec (critical-path completion verifier added)
+- 4f38e6c (critical-path verifier reliability fix; 34/34 pass)
 - e6d3505 (finalized referral/docs/link/runtime-health updates)
-- 3a2e174 (referral engine v1 APIs + DB/growth docs backfill)
-- bfbc576 (runtime healthcheck gate)
-- 8c4f634 (persistent BWE master operating docs)
 - 7dddecf (P2 guards + regression pass)
-- c8bac4e (DB docs/process + db-docs check)
 
 ## Latest risks
 
 - Runtime cache/chunk instability can surface as 500/text-only render if process/start sequence is inconsistent.
-- Dirty working tree increases release regression risk.
-- Some domain workflows still need deep scenario verification.
+- Preview deployment is blocked until branch push/auth is available tomorrow.
+- Marketplace buy-flow matrix is blocked by missing reproducible visible buy CTA context/data in this runtime.
 
 ## Next execution order
 
 1. Push preview candidate branch and execute full Preview validation suite
-2. Produce final GO/NO-GO promotion card with env diff + rollback target
-3. Run preview role/access and click-to-completion checks
+2. Run marketplace buy-flow matrix on visible CTA surfaces (with reproducible URL/data) and patch failing handlers
+3. Produce final GO/NO-GO promotion card with env diff + rollback target
 4. Start wedge selection using live supply/search/readiness data pull
