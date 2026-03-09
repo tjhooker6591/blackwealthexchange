@@ -1073,6 +1073,18 @@ export default function Home() {
             </div>
           </div>
 
+          <div className="mb-4 rounded-2xl border border-white/10 bg-white/[0.02] p-4 sm:p-5">
+            <div className="mb-2 text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
+              More key sections
+            </div>
+            <div className="grid gap-2 text-sm sm:grid-cols-2 lg:grid-cols-4">
+              <Link href="/affiliate" className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40">Affiliate & Partnership</Link>
+              <Link href="/black-entertainment-news" className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40">Black Entertainment Pulse</Link>
+              <Link href="/business-directory/sponsored-business" className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40">Sponsored Businesses</Link>
+              <Link href="/investment" className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40">Investment & Wealth</Link>
+            </div>
+          </div>
+
           <div className="mb-4 text-center">
             <Link
               href="/more"
@@ -1355,7 +1367,6 @@ export default function Home() {
             </div>
           </div>
         </section>
-
 
         <section className="mb-5 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.05)] backdrop-blur">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
