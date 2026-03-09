@@ -20,6 +20,7 @@
     "start:stable": "node scripts/runtime-stable-start.mjs",
     "check:runtime-health": "node scripts/runtime-healthcheck.mjs",
     "check:internal-links": "node scripts/check-internal-links.mjs",
+    "check:critical-paths": "node scripts/check-critical-paths.mjs",
     "prepare": "if [ \"$VERCEL\" != \"1\" ]; then husky install; fi",
     "vercel-build": "next build"
   },
