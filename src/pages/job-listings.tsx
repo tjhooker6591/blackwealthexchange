@@ -4,6 +4,10 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import type { GetServerSideProps } from "next";
+import cookie from "cookie";
+import jwt from "jsonwebtoken";
+import { getJwtSecret } from "@/lib/env";
 
 interface Job {
   _id: string;
@@ -541,3 +545,29 @@ export default function JobListingsPage() {
     </div>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const cookies = cookie.parse(req.headers.cookie || "");
+  const token = cookies.session_token;
+  if (!token) {
+    return {
+      redirect: {
+        destination: "/login?redirect=/job-listings",
+        permanent: false,
+      },
+    };
+  }
+
+  try {
+    jwt.verify(token, getJwtSecret());
+  } catch {
+    return {
+      redirect: {
+        destination: "/login?redirect=/job-listings",
+        permanent: false,
+      },
+    };
+  }
+
+  return { props: {} };
+};

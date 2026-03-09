@@ -28,7 +28,11 @@ async function http(path, opts = {}) {
     ...opts,
   });
   const txt = await res.text();
-  return { status: res.status, headers: Object.fromEntries(res.headers.entries()), body: txt };
+  return {
+    status: res.status,
+    headers: Object.fromEntries(res.headers.entries()),
+    body: txt,
+  };
 }
 
 async function login(email, password, accountType) {
@@ -39,7 +43,9 @@ async function login(email, password, accountType) {
     redirect: "manual",
   });
   const body = await res.text();
-  const cookie = parseSetCookie(res.headers.getSetCookie?.() || res.headers.get("set-cookie"));
+  const cookie = parseSetCookie(
+    res.headers.getSetCookie?.() || res.headers.get("set-cookie"),
+  );
   return { status: res.status, cookie, body };
 }
 
@@ -68,35 +74,92 @@ const hash = await bcrypt.hash(pwd, 10);
 const stamp = Date.now();
 
 const accounts = [
-  { role: "user", coll: "users", email: `qa.user.${stamp}@bwe.local`, accountType: "user", isAdmin: false },
-  { role: "seller", coll: "sellers", email: `qa.seller.${stamp}@bwe.local`, accountType: "seller", isAdmin: false },
-  { role: "employer", coll: "employers", email: `qa.employer.${stamp}@bwe.local`, accountType: "employer", isAdmin: false },
-  { role: "business", coll: "businesses", email: `qa.business.${stamp}@bwe.local`, accountType: "business", isAdmin: false },
-  { role: "admin", coll: "users", email: `qa.admin.${stamp}@bwe.local`, accountType: "admin", isAdmin: true },
+  {
+    role: "user",
+    coll: "users",
+    email: `qa.user.${stamp}@bwe.local`,
+    accountType: "user",
+    isAdmin: false,
+  },
+  {
+    role: "seller",
+    coll: "sellers",
+    email: `qa.seller.${stamp}@bwe.local`,
+    accountType: "seller",
+    isAdmin: false,
+  },
+  {
+    role: "employer",
+    coll: "employers",
+    email: `qa.employer.${stamp}@bwe.local`,
+    accountType: "employer",
+    isAdmin: false,
+  },
+  {
+    role: "business",
+    coll: "businesses",
+    email: `qa.business.${stamp}@bwe.local`,
+    accountType: "business",
+    isAdmin: false,
+  },
+  {
+    role: "admin",
+    coll: "users",
+    email: `qa.admin.${stamp}@bwe.local`,
+    accountType: "admin",
+    isAdmin: true,
+  },
 ];
 
 for (const a of accounts) {
-  await db.collection(a.coll).updateOne(
-    { email: a.email },
-    { $set: { email: a.email, password: hash, accountType: a.accountType, isAdmin: a.isAdmin, updatedAt: new Date() } },
-    { upsert: true },
-  );
+  await db
+    .collection(a.coll)
+    .updateOne(
+      { email: a.email },
+      {
+        $set: {
+          email: a.email,
+          password: hash,
+          accountType: a.accountType,
+          isAdmin: a.isAdmin,
+          updatedAt: new Date(),
+        },
+      },
+      { upsert: true },
+    );
 }
 
 // Guest baseline
-for (const route of ["/job-listings", "/marketplace/add-products", "/employer/jobs", "/admin/dashboard"]) {
+for (const route of [
+  "/job-listings",
+  "/marketplace/add-products",
+  "/employer/jobs",
+  "/admin/dashboard",
+]) {
   const r = await http(route);
-  out.checks.push({ name: `guest ${route}`, status: r.status, pass: [302, 307, 308].includes(r.status) });
+  out.checks.push({
+    name: `guest ${route}`,
+    status: r.status,
+    pass: [302, 307, 308].includes(r.status),
+  });
 }
 
 const cookies = {};
 for (const a of accounts) {
   const li = await login(a.email, pwd, a.accountType);
   cookies[a.role] = li.cookie;
-  out.checks.push({ name: `${a.role} login`, status: li.status, pass: li.status === 200 });
+  out.checks.push({
+    name: `${a.role} login`,
+    status: li.status,
+    pass: li.status === 200,
+  });
 
   const me = await http("/api/auth/me", { headers: { cookie: li.cookie } });
-  out.checks.push({ name: `${a.role} /api/auth/me`, status: me.status, pass: me.status === 200 });
+  out.checks.push({
+    name: `${a.role} /api/auth/me`,
+    status: me.status,
+    pass: me.status === 200,
+  });
 }
 
 // Role route checks
@@ -110,24 +173,46 @@ const roleChecks = [
 
 for (const [role, route, expect] of roleChecks) {
   const r = await http(route, { headers: { cookie: cookies[role] } });
-  out.checks.push({ name: `${role} ${route}`, status: r.status, pass: ok(r, expect), expect });
+  out.checks.push({
+    name: `${role} ${route}`,
+    status: r.status,
+    pass: ok(r, expect),
+    expect,
+  });
 }
 
 // Directory + monetization + jobs checks
 const apiBiz = await http("/api/searchBusinesses?query=food&limit=5");
-out.checks.push({ name: "search businesses", status: apiBiz.status, pass: apiBiz.status === 200 });
+out.checks.push({
+  name: "search businesses",
+  status: apiBiz.status,
+  pass: apiBiz.status === 200,
+});
 let firstAlias = null;
 try {
   const parsed = JSON.parse(apiBiz.body);
   firstAlias = parsed?.items?.[0]?.alias || parsed?.items?.[0]?._id;
 } catch {}
 if (firstAlias) {
-  const d1 = await http(`/business-directory/${encodeURIComponent(firstAlias)}`, {
-    headers: { cookie: cookies.user },
+  const d1 = await http(
+    `/business-directory/${encodeURIComponent(firstAlias)}`,
+    {
+      headers: { cookie: cookies.user },
+    },
+  );
+  const d2 = await http(
+    `/api/getBusiness?alias=${encodeURIComponent(firstAlias)}`,
+  );
+  out.checks.push({
+    name: "directory detail route",
+    status: d1.status,
+    pass: d1.status === 200,
   });
-  const d2 = await http(`/api/getBusiness?alias=${encodeURIComponent(firstAlias)}`);
-  out.checks.push({ name: "directory detail route", status: d1.status, pass: d1.status === 200 });
-  out.checks.push({ name: "getBusiness API", status: d2.status, pass: d2.status === 200 });
+  out.checks.push({
+    name: "getBusiness API",
+    status: d2.status,
+    pass: d2.status === 200,
+  });
 }
 
 for (const route of [
@@ -137,7 +222,11 @@ for (const route of [
   "/job-listings",
 ]) {
   const r = await http(route, { headers: { cookie: cookies.user } });
-  out.checks.push({ name: `user ${route}`, status: r.status, pass: [200, 302, 307, 308].includes(r.status) });
+  out.checks.push({
+    name: `user ${route}`,
+    status: r.status,
+    pass: [200, 302, 307, 308].includes(r.status),
+  });
 }
 
 out.summary = {
@@ -147,7 +236,10 @@ out.summary = {
 };
 
 fs.mkdirSync(".audit", { recursive: true });
-fs.writeFileSync(".audit/p2-regression-report.json", JSON.stringify(out, null, 2));
+fs.writeFileSync(
+  ".audit/p2-regression-report.json",
+  JSON.stringify(out, null, 2),
+);
 console.log(JSON.stringify(out, null, 2));
 
 await client.close();
