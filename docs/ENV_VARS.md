@@ -4,13 +4,20 @@ This project now uses centralized env access via `src/lib/env.ts` for auth/mongo
 
 ## Required (all environments)
 
-- `JWT_SECRET` **or** `NEXTAUTH_SECRET` (recommended: set both to the same value)
-- `MONGODB_URI`
-
-## Required for NextAuth behavior
-
-- `NEXTAUTH_SECRET` (or matching `JWT_SECRET` fallback)
+- `JWT_SECRET` **and** `NEXTAUTH_SECRET` (must be set and match)
 - `NEXTAUTH_URL`
+- `MONGODB_URI`
+- `MONGODB_DB`
+
+## Environment contract enforcement
+
+Use preflight checks before runtime/deploy:
+
+- `npm run check:env:local`
+- `npm run check:env:preview`
+- `npm run check:env:production`
+
+`npm run dev`, `npm run build`, and `npm run start` now run env preflight automatically (`predev`, `prebuild`, `prestart`).
 
 ## Recommended
 

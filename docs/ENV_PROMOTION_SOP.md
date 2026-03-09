@@ -6,6 +6,9 @@ Prevent production breakage by promoting only validated builds with explicit env
 
 ## Preconditions (required)
 
+- `npm run check:env:local` (for local validation)
+- `npm run check:env:preview` (before preview deploy)
+- `npm run check:env:production` (before production promotion)
 - `npm run lint` passes (no new errors)
 - `npm run build` passes
 - `next build && next start` smoke tested

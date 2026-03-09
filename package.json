@@ -3,6 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "check:env": "node scripts/check-env.mjs",
+    "check:env:local": "node scripts/check-env.mjs --env=local",
+    "check:env:preview": "node scripts/check-env.mjs --env=preview",
+    "check:env:production": "node scripts/check-env.mjs --env=production",
+    "predev": "npm run check:env:local",
+    "prebuild": "node scripts/check-env.mjs --env=${ENV_CHECK_TARGET:-local}",
+    "prestart": "node scripts/check-env.mjs --env=${ENV_CHECK_TARGET:-production}",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
