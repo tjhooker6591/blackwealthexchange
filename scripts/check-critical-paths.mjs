@@ -103,7 +103,7 @@ add(out, "Form consulting-intake submit", intake.status === 200, {
 const resetReq = await req("/api/auth/request-reset", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ email: "critical-path@example.com" }),
+  body: JSON.stringify({ email: `critical-path-${Date.now()}@example.com` }),
 });
 add(out, "Form request-reset submit", resetReq.status === 200, {
   status: resetReq.status,
