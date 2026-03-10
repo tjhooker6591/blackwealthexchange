@@ -15,7 +15,12 @@ type Row = {
   scheduleWeeks: string[];
   scheduleQueueStatus: string | null;
   scheduleRolledOver: boolean;
-  campaignLifecycle: "pending" | "queued" | "scheduled" | "active" | "completed";
+  campaignLifecycle:
+    | "pending"
+    | "queued"
+    | "scheduled"
+    | "active"
+    | "completed";
   selectedOptions: string[];
   budget: string | null;
   timeline: string | null;
@@ -29,6 +34,9 @@ export default function AdvertisingRequestsAdminPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [filter, setFilter] = useState<"all" | "paid" | "unpaid">("all");
+  const [lifecycleFilter, setLifecycleFilter] = useState<
+    "all" | "pending" | "queued" | "scheduled" | "active" | "completed"
+  >("all");
 
   useEffect(() => {
     let mounted = true;
@@ -57,10 +65,14 @@ export default function AdvertisingRequestsAdminPage() {
   }, []);
 
   const filtered = useMemo(() => {
-    if (filter === "paid") return rows.filter((r) => r.depositPaid);
-    if (filter === "unpaid") return rows.filter((r) => !r.depositPaid);
-    return rows;
-  }, [rows, filter]);
+    let next = rows;
+    if (filter === "paid") next = next.filter((r) => r.depositPaid);
+    if (filter === "unpaid") next = next.filter((r) => !r.depositPaid);
+    if (lifecycleFilter !== "all") {
+      next = next.filter((r) => r.campaignLifecycle === lifecycleFilter);
+    }
+    return next;
+  }, [rows, filter, lifecycleFilter]);
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-6 md:p-10">
@@ -85,7 +97,7 @@ export default function AdvertisingRequestsAdminPage() {
           </div>
         </div>
 
-        <div className="mb-4 flex gap-2">
+        <div className="mb-3 flex flex-wrap gap-2">
           {(["all", "paid", "unpaid"] as const).map((key) => (
             <button
               key={key}
@@ -101,6 +113,31 @@ export default function AdvertisingRequestsAdminPage() {
                 : key === "paid"
                   ? "Paid Deposit"
                   : "Unpaid Deposit"}
+            </button>
+          ))}
+        </div>
+
+        <div className="mb-4 flex flex-wrap gap-2">
+          {(
+            [
+              "all",
+              "pending",
+              "queued",
+              "scheduled",
+              "active",
+              "completed",
+            ] as const
+          ).map((key) => (
+            <button
+              key={key}
+              onClick={() => setLifecycleFilter(key)}
+              className={`rounded px-3 py-1 text-xs border ${
+                lifecycleFilter === key
+                  ? "border-emerald-400 bg-emerald-500/20 text-emerald-200"
+                  : "border-gray-700 bg-gray-800 text-gray-300"
+              }`}
+            >
+              {key}
             </button>
           ))}
         </div>
@@ -139,7 +176,9 @@ export default function AdvertisingRequestsAdminPage() {
                     <td className="p-3">
                       <div className="font-semibold">{r.business || "—"}</div>
                       <div className="text-xs text-gray-400">{r.status}</div>
-                      <div className="text-[11px] text-yellow-300">{r.campaignLifecycle}</div>
+                      <div className="text-[11px] text-yellow-300">
+                        {r.campaignLifecycle}
+                      </div>
                     </td>
                     <td className="p-3">
                       <div>{r.name || "—"}</div>
