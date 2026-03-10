@@ -14,6 +14,8 @@ export default function FeaturedSponsorPage() {
   const [email, setEmail] = useState("");
   const [website, setWebsite] = useState("");
   const [notes, setNotes] = useState("");
+  const [campaignTitle, setCampaignTitle] = useState("");
+  const [requestedStartDate, setRequestedStartDate] = useState("");
   const [creativeUrl, setCreativeUrl] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -25,7 +27,8 @@ export default function FeaturedSponsorPage() {
   };
 
   const canProceed = useMemo(() => {
-    const hasCreative = Boolean(adImageFile) || /^https?:\/\//i.test(creativeUrl.trim());
+    const hasCreative =
+      Boolean(adImageFile) || /^https?:\/\//i.test(creativeUrl.trim());
     return (
       Boolean(campaignDuration) &&
       confirmed &&
@@ -34,7 +37,15 @@ export default function FeaturedSponsorPage() {
       businessName.trim().length >= 2 &&
       /^\S+@\S+\.\S+$/.test(email.trim())
     );
-  }, [campaignDuration, confirmed, adImageFile, creativeUrl, name, businessName, email]);
+  }, [
+    campaignDuration,
+    confirmed,
+    adImageFile,
+    creativeUrl,
+    name,
+    businessName,
+    email,
+  ]);
 
   const handleProceed = async () => {
     setError("");
@@ -51,6 +62,7 @@ export default function FeaturedSponsorPage() {
         name,
         email,
         businessName,
+        campaignTitle: campaignTitle || `${businessName} Featured Sponsor`,
         adText: notes || "Featured sponsor campaign request",
         adImage: adImageFile?.name || creativeUrl.trim(),
         website,
@@ -62,7 +74,8 @@ export default function FeaturedSponsorPage() {
               : "80",
         option: "featured-sponsor",
         durationDays: Number(campaignDuration),
-        placement: "homepage-feature",
+        placement: "homepage-featured-sponsor",
+        requestedStartDate: requestedStartDate || undefined,
       };
 
       const res = await fetch("/api/advertising/submit", {
@@ -80,7 +93,7 @@ export default function FeaturedSponsorPage() {
         duration: campaignDuration,
       });
       if (requestId) query.set("campaignId", requestId);
-      query.set("placement", "homepage-feature");
+      query.set("placement", "homepage-featured-sponsor");
 
       router.push(`/advertising/checkout?${query.toString()}`);
     } catch (e: any) {
@@ -240,6 +253,18 @@ export default function FeaturedSponsorPage() {
               value={website}
               onChange={(e) => setWebsite(e.target.value)}
               placeholder="Website (optional)"
+              className="w-full bg-black text-white border border-gray-600 rounded p-2"
+            />
+            <input
+              value={campaignTitle}
+              onChange={(e) => setCampaignTitle(e.target.value)}
+              placeholder="Campaign title (optional)"
+              className="w-full bg-black text-white border border-gray-600 rounded p-2"
+            />
+            <input
+              value={requestedStartDate}
+              onChange={(e) => setRequestedStartDate(e.target.value)}
+              type="date"
               className="w-full bg-black text-white border border-gray-600 rounded p-2"
             />
           </div>

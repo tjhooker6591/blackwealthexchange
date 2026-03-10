@@ -12,6 +12,9 @@ type Row = {
   option: string | null;
   durationDays: number | null;
   placement: string | null;
+  scheduleWeeks: string[];
+  scheduleQueueStatus: string | null;
+  scheduleRolledOver: boolean;
   selectedOptions: string[];
   budget: string | null;
   timeline: string | null;
@@ -144,8 +147,23 @@ export default function AdvertisingRequestsAdminPage() {
                     </td>
                     <td className="p-3 text-xs text-gray-200 space-y-1">
                       <div>Option: {r.option || "custom"}</div>
-                      <div>Duration: {r.durationDays ? `${r.durationDays} days` : "—"}</div>
+                      <div>
+                        Duration:{" "}
+                        {r.durationDays ? `${r.durationDays} days` : "—"}
+                      </div>
                       <div>Placement: {r.placement || "—"}</div>
+                      <div>
+                        Scheduled weeks:{" "}
+                        {Array.isArray(r.scheduleWeeks) && r.scheduleWeeks.length
+                          ? r.scheduleWeeks.join(", ")
+                          : "—"}
+                      </div>
+                      {r.scheduleQueueStatus ? (
+                        <div>
+                          Queue: {r.scheduleQueueStatus}
+                          {r.scheduleRolledOver ? " (rolled over)" : ""}
+                        </div>
+                      ) : null}
                       {(r.selectedOptions || []).length > 0 ? (
                         <div className="flex flex-wrap gap-1 pt-1">
                           {(r.selectedOptions || []).map((o) => (

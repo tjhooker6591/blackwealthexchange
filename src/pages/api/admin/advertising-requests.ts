@@ -19,6 +19,9 @@ type AdvertisingRequestRow = {
   option: string | null;
   durationDays: number | null;
   placement: string | null;
+  scheduleWeeks: string[];
+  scheduleQueueStatus: string | null;
+  scheduleRolledOver: boolean;
   selectedOptions: string[];
   budget: string | null;
   timeline: string | null;
@@ -97,9 +100,28 @@ export default async function handler(
       if (!paidMap.has(key)) paidMap.set(key, p);
     }
 
+    const scheduleRows = requestIds.length
+      ? await db
+          .collection("featured_sponsor_schedule")
+          .find({ campaignId: { $in: requestIds } })
+          .project({ campaignId: 1, weekStart: 1, queueStatus: 1 })
+          .sort({ weekStart: 1 })
+          .toArray()
+      : [];
+
+    const scheduleMap = new Map<string, any[]>();
+    for (const s of scheduleRows) {
+      const key = String((s as any).campaignId || "");
+      if (!key) continue;
+      const arr = scheduleMap.get(key) || [];
+      arr.push(s);
+      scheduleMap.set(key, arr);
+    }
+
     const rows: AdvertisingRequestRow[] = requests.map((r: any) => {
       const key = String(r._id);
       const paid = paidMap.get(key);
+      const schedule = scheduleMap.get(key) || [];
       const depositPaid = Boolean(r.depositPaid) || Boolean(paid);
 
       return {
@@ -116,6 +138,18 @@ export default async function handler(
             ? Number(r.durationDays)
             : null,
         placement: typeof r.placement === "string" ? r.placement : null,
+        scheduleWeeks: schedule
+          .map((x: any) =>
+            x?.weekStart ? new Date(x.weekStart).toISOString().slice(0, 10) : null,
+          )
+          .filter(Boolean),
+        scheduleQueueStatus:
+          schedule.length && typeof schedule[0]?.queueStatus === "string"
+            ? schedule[0].queueStatus
+            : null,
+        scheduleRolledOver: schedule.some(
+          (x: any) => x?.queueStatus === "rolled_over",
+        ),
         selectedOptions: Array.isArray(r.selectedOptions)
           ? r.selectedOptions
           : [],

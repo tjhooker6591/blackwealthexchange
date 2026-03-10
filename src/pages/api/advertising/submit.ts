@@ -30,6 +30,8 @@ export default async function handler(
   const option = String(body.option || "").trim();
   const durationDays = Number(body.durationDays || 0);
   const placement = String(body.placement || "").trim();
+  const requestedStartDate = String(body.requestedStartDate || "").trim();
+  const campaignTitle = String(body.campaignTitle || "").trim();
 
   if (!name || !EMAIL_REGEX.test(email) || !businessName || !adText) {
     return res.status(400).json({ error: "Missing required campaign details" });
@@ -37,7 +39,8 @@ export default async function handler(
 
   if ((option === "featured-sponsor" || option === "banner-ad") && !adImage) {
     return res.status(400).json({
-      error: "Ad creative is required for featured sponsor and banner campaigns",
+      error:
+        "Ad creative is required for featured sponsor and banner campaigns",
     });
   }
 
@@ -61,11 +64,19 @@ export default async function handler(
       adImage: adImage || null,
       website: website || null,
       option: option || null,
+      campaignTitle: campaignTitle || null,
       durationDays:
         Number.isFinite(durationDays) && durationDays > 0
           ? Math.floor(durationDays)
           : null,
       placement: placement || null,
+      requestedStartDate: requestedStartDate ? new Date(requestedStartDate) : null,
+      creativeAssets: adImage ? [adImage] : [],
+      scheduling: {
+        status: "pending_payment",
+        assignedWeeks: [],
+        rolledOver: false,
+      },
       createdAt: now,
       updatedAt: now,
     };

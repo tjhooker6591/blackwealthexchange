@@ -1,6 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
+import { getMongoDbName } from "@/lib/env";
 import { ObjectId } from "mongodb";
+import { weekStartUtc } from "@/lib/advertising/sponsorSchedule";
 
 type SponsorCard = {
   _id: string;
@@ -11,7 +13,9 @@ type SponsorCard = {
   cta: string;
   tier?: string;
   featuredSlot?: number | null;
-  source: "directory_listings" | "businesses";
+  source: "featured_sponsor_schedule" | "directory_listings" | "businesses";
+  weekStart?: string | null;
+  queueStatus?: string | null;
 };
 
 function s(v: unknown) {
@@ -41,8 +45,38 @@ export default async function handler(
 
   try {
     const client = await clientPromise;
-    const db = client.db("bwes-cluster");
+    const db = client.db(getMongoDbName());
     const now = new Date();
+    const currentWeek = weekStartUtc(now);
+
+    const scheduled = await db
+      .collection("featured_sponsor_schedule")
+      .find({
+        placement: "homepage-featured-sponsor",
+        weekStart: currentWeek,
+        status: { $in: ["scheduled", "active"] },
+      })
+      .sort({ queueStatus: 1, createdAt: 1 })
+      .limit(12)
+      .toArray();
+
+    if (scheduled.length) {
+      const cards: SponsorCard[] = scheduled.map((row: any, i: number) => ({
+        _id: String(row.campaignId || row._id),
+        name: s(row.businessName) || "Featured Sponsor",
+        tagline:
+          s(row.tagline).slice(0, 90) || "Featured on Black Wealth Exchange",
+        img: s(row.creativeUrl) || "/default-image.jpg",
+        url: normalizeBusinessUrl(s(row.website)),
+        cta: "Learn More",
+        tier: "featured-sponsor",
+        featuredSlot: i + 1,
+        source: "featured_sponsor_schedule",
+        weekStart: row.weekStart ? new Date(row.weekStart).toISOString() : null,
+        queueStatus: s(row.queueStatus) || null,
+      }));
+      return res.status(200).json({ ok: true, sponsors: cards });
+    }
 
     const listings = await db
       .collection("directory_listings")
@@ -75,9 +109,7 @@ export default async function handler(
           .toArray()
       : [];
 
-    const businessMap = new Map(
-      businesses.map((b: any) => [String(b._id), b]),
-    );
+    const businessMap = new Map(businesses.map((b: any) => [String(b._id), b]));
 
     const featuredCards: SponsorCard[] = listings
       .map((listing: any) => {
@@ -88,7 +120,9 @@ export default async function handler(
         return {
           _id: businessId,
           name: s(b?.business_name) || "Featured Sponsor",
-          tagline: s(b?.description).slice(0, 90) || "Featured on Black Wealth Exchange",
+          tagline:
+            s(b?.description).slice(0, 90) ||
+            "Featured on Black Wealth Exchange",
           img: s(b?.image) || "/default-image.jpg",
           url: normalizeBusinessUrl(s(b?.website)),
           cta: "Learn More",
@@ -104,7 +138,6 @@ export default async function handler(
       return res.status(200).json({ ok: true, sponsors: featuredCards });
     }
 
-    // Legacy fallback path
     const legacy = await db
       .collection("businesses")
       .find({ sponsored: true })

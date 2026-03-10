@@ -551,16 +551,46 @@ export default function Home() {
     runSearch({ aiOverride: next });
   };
 
-  const sponsors = [
-    { img: "/ads/sample-banner1.jpg", name: "Pamfa Hoodies" },
-    { img: "/ads/sample-banner2.jpg", name: "Titan Era" },
-    { img: "/ads/sample-banner3.jpg", name: "Legacy FoodMart" },
-    { img: "/ads/sample-banner4.jpg", name: "Ujamaa Eats" },
-    { img: "/ads/sample-banner5.jpg", name: "Pamfa United Citizens" },
-    { img: "/ads/sample-banner6.jpg", name: "Harlem Apparel" },
-    { img: "/ads/sample-banner7.jpg", name: "Ebony Roots" },
-    { img: "/ads/sample-banner8.jpg", name: "Coco and Breezy Eyewear" },
-  ];
+  const [sponsors, setSponsors] = useState<
+    Array<{ img: string; name: string; url?: string; tagline?: string }>
+  >([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/sponsored-businesses", {
+          cache: "no-store",
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || !Array.isArray(data?.sponsors)) return;
+        if (cancelled) return;
+
+        setSponsors(
+          data.sponsors.map((s: any) => ({
+            img: typeof s?.img === "string" && s.img ? s.img : "/default-image.jpg",
+            name: typeof s?.name === "string" && s.name ? s.name : "Featured Sponsor",
+            url: typeof s?.url === "string" ? s.url : undefined,
+            tagline: typeof s?.tagline === "string" ? s.tagline : undefined,
+          })),
+        );
+      } catch {
+        // keep fallback rendering
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const sponsorRail = sponsors.length
+    ? sponsors
+    : [
+        { img: "/ads/sample-banner1.jpg", name: "Featured Sponsor" },
+        { img: "/ads/sample-banner2.jpg", name: "Featured Sponsor" },
+        { img: "/ads/sample-banner3.jpg", name: "Featured Sponsor" },
+      ];
 
   const studentOpportunities = [
     {
@@ -1403,24 +1433,33 @@ export default function Home() {
             <div className="pointer-events-none absolute right-0 top-0 h-full w-10 bg-gradient-to-l from-black/70 to-transparent" />
 
             <div className="animate-scroll absolute flex space-x-3 px-3 py-3 sm:space-x-4">
-              {[...sponsors, ...sponsors].map((sponsor, index) => (
-                <div
-                  key={index}
-                  className="relative h-16 w-28 overflow-hidden rounded-xl border border-white/10 shadow sm:h-20 sm:w-40"
-                >
-                  <Image
-                    src={sponsor.img}
-                    alt={sponsor.name}
-                    width={160}
-                    height={80}
-                    className="h-full w-full object-cover"
-                    priority={index < 4}
-                  />
-                  <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 rounded bg-black/60 px-2 py-1 text-[10px] font-semibold text-[#D4AF37] sm:bottom-2 sm:text-[11px]">
-                    {sponsor.name}
+              {[...sponsorRail, ...sponsorRail].map((sponsor, index) => {
+                const card = (
+                  <div className="relative h-16 w-28 overflow-hidden rounded-xl border border-white/10 shadow sm:h-20 sm:w-40">
+                    <Image
+                      src={sponsor.img}
+                      alt={sponsor.name}
+                      width={160}
+                      height={80}
+                      className="h-full w-full object-cover"
+                      priority={index < 4}
+                    />
+                    <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 rounded bg-black/60 px-2 py-1 text-[10px] font-semibold text-[#D4AF37] sm:bottom-2 sm:text-[11px]">
+                      {sponsor.name}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+
+                if (sponsor.url) {
+                  return (
+                    <a key={index} href={sponsor.url} target="_blank" rel="noreferrer noopener">
+                      {card}
+                    </a>
+                  );
+                }
+
+                return <div key={index}>{card}</div>;
+              })}
             </div>
           </div>
         </section>

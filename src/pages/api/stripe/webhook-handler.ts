@@ -8,6 +8,8 @@ import { fulfillOrder as dbFulfillOrder } from "@/lib/db/orders";
 import { grantCourseAccess } from "@/lib/db/courses";
 import { recordAffiliateConversion } from "@/lib/db/affiliates";
 import clientPromise from "@/lib/mongodb";
+import { ObjectId } from "mongodb";
+import { reserveFeaturedSponsorWeeks, weekStartUtc } from "@/lib/advertising/sponsorSchedule";
 
 export const config = {
   api: { bodyParser: false },
@@ -201,7 +203,10 @@ export default async function webhookHandler(
     return res.status(200).json({ received: true });
   }
 
-  if (process.env.NODE_ENV === "production" && (event as any).livemode !== true) {
+  if (
+    process.env.NODE_ENV === "production" &&
+    (event as any).livemode !== true
+  ) {
     console.warn("Ignoring non-live Stripe webhook in production", {
       eventId: event.id,
       type: event.type,
@@ -545,6 +550,67 @@ export default async function webhookHandler(
       console.log(
         `✅ ad_purchases upserted item=${normalizedItemId} session=${stripeSessionId}`,
       );
+
+      if (campaignId && ObjectId.isValid(campaignId)) {
+        const adReq = await db
+          .collection("advertising_requests")
+          .findOne({ _id: new ObjectId(campaignId) })
+          .catch(() => null);
+
+        if (adReq) {
+          const setPatch: Record<string, any> = {
+            paymentStatus: "paid",
+            depositPaid: true,
+            status: adReq.status === "pending_review" ? "approved" : adReq.status,
+            updatedAt: now,
+            paidAt,
+            stripeSessionId,
+          };
+
+          if (normalizedItemId === "featured-sponsor") {
+            const assignments = await reserveFeaturedSponsorWeeks(db as any, {
+              campaignId,
+              durationDays,
+              requestedStartDate: adReq.requestedStartDate
+                ? new Date(adReq.requestedStartDate).toISOString()
+                : null,
+              businessName: adReq.business,
+              website: adReq.website,
+              creativeUrl: adReq.adImage,
+              tagline: adReq.details,
+              placement: adReq.placement || "homepage-featured-sponsor",
+              option: normalizedItemId,
+            });
+
+            const firstWeek = assignments[0]?.weekStart
+              ? weekStartUtc(new Date(assignments[0].weekStart))
+              : null;
+            const requestedWeek = adReq.requestedStartDate
+              ? weekStartUtc(new Date(adReq.requestedStartDate))
+              : null;
+
+            setPatch.scheduling = {
+              status: "scheduled",
+              assignedWeeks: assignments.map((a) =>
+                new Date(a.weekStart).toISOString().slice(0, 10),
+              ),
+              rolledOver:
+                Boolean(firstWeek && requestedWeek) &&
+                firstWeek!.getTime() > requestedWeek!.getTime(),
+              queueStatus: assignments[0]?.queueStatus || "assigned",
+              placement: adReq.placement || "homepage-featured-sponsor",
+              durationDays,
+            };
+          }
+
+          await db
+            .collection("advertising_requests")
+            .updateOne(
+              { _id: new ObjectId(campaignId) },
+              { $set: setPatch },
+            );
+        }
+      }
     }
 
     /**
