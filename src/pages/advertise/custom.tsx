@@ -395,6 +395,14 @@ export default function CustomAd() {
               Request ID: {requestId}
             </p>
 
+            <div className="mt-5 rounded-lg border border-green-400/30 bg-black/20 p-4 text-sm text-green-100">
+              <div className="font-semibold">Review Before Checkout</div>
+              <div className="mt-1">Option: Custom Solution Deposit</div>
+              <div>Duration: 30 days</div>
+              <div>Price: $100 deposit</div>
+              <div className="text-xs mt-1 opacity-90">Next step: continue to advertising checkout review, then secure payment.</div>
+            </div>
+
             <div className="mt-6">
               <button
                 type="button"
@@ -404,7 +412,7 @@ export default function CustomAd() {
               >
                 {startingCheckout
                   ? "Starting checkout..."
-                  : "Reserve With $100 Deposit"}
+                  : "Continue to Checkout Review ($100 Deposit)"}
               </button>
             </div>
           </div>

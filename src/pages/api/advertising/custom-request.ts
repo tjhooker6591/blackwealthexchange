@@ -98,6 +98,9 @@ export default async function handler(
     const result = await db.collection("advertising_requests").insertOne({
       requestType: "custom_ad",
       adType: "custom",
+      option: "custom-solution-deposit",
+      durationDays: 30,
+      placement: "custom-solution",
       status: "pending_review",
       paymentStatus: "unpaid",
       depositRequiredCents: 10000,
