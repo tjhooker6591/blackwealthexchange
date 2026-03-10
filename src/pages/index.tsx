@@ -1328,6 +1328,42 @@ export default function Home() {
       </section>
 
       <main className="container relative z-10 mx-auto max-w-6xl px-4 pb-0">
+        <section className="mb-5 rounded-2xl border border-[#D4AF37]/25 bg-gradient-to-b from-[#D4AF37]/10 to-white/[0.02] p-4 sm:p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="max-w-3xl">
+              <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
+                Major Platform Area
+              </p>
+              <h2 className="mt-1 text-xl font-extrabold tracking-tight text-white sm:text-2xl">
+                BWE Music / Creator Platform
+              </h2>
+              <p className="mt-2 text-sm text-white/70">
+                Explore artists, launch creator storefronts, and support music commerce through canonical checkout and fulfillment.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Link
+                href="/music"
+                className="rounded-xl bg-[#D4AF37] px-4 py-2.5 text-sm font-extrabold text-black hover:bg-yellow-500"
+              >
+                Explore Music
+              </Link>
+              <Link
+                href="/marketplace/become-a-seller"
+                className="rounded-xl border border-[#D4AF37]/45 bg-[#D4AF37]/10 px-4 py-2.5 text-sm font-bold text-[#F1D57A] hover:bg-[#D4AF37]/18"
+              >
+                Sell Your Music
+              </Link>
+              <Link
+                href="/music"
+                className="rounded-xl border border-white/20 bg-white/5 px-4 py-2.5 text-sm font-bold text-white/80 hover:bg-white/10"
+              >
+                Join as a Creator
+              </Link>
+            </div>
+          </div>
+        </section>
+
         <section className="mb-5 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>

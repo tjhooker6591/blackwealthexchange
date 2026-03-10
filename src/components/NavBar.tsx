@@ -74,6 +74,13 @@ export default function NavBar() {
           </Link>
 
           <Link
+            href="/music"
+            className="font-semibold transition-colors hover:text-[#D4AF37]"
+          >
+            Music
+          </Link>
+
+          <Link
             href="/join-the-mission"
             className="font-semibold transition-colors hover:text-[#D4AF37]"
           >
@@ -186,6 +193,14 @@ export default function NavBar() {
               onClick={() => handleMobileNav()}
             >
               Events
+            </Link>
+
+            <Link
+              href="/music"
+              className="block rounded-xl px-3 py-2.5 font-medium text-white/85 transition-colors hover:bg-white/[0.04] hover:text-[#D4AF37]"
+              onClick={() => handleMobileNav()}
+            >
+              Music
             </Link>
 
             <Link
