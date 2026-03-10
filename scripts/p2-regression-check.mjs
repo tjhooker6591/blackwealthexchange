@@ -59,6 +59,26 @@ const out = {
   notes: [],
 };
 
+async function ensureRuntimeHealthy() {
+  const root = await http("/");
+  const session = await http("/api/auth/session");
+  const okRoot = root.status === 200;
+  const okSession = session.status === 200;
+  if (okRoot && okSession) return;
+
+  const reason = `Runtime unhealthy before regression: / => ${root.status}, /api/auth/session => ${session.status}`;
+  out.notes.push(reason);
+  fs.mkdirSync(".audit", { recursive: true });
+  fs.writeFileSync(
+    ".audit/p2-regression-report.json",
+    JSON.stringify({ ...out, summary: { total: 0, passed: 0, failed: 0 } }, null, 2),
+  );
+  console.error(reason);
+  process.exit(2);
+}
+
+await ensureRuntimeHealthy();
+
 const uri = mongoUri();
 if (!uri) {
   console.error("Missing Mongo URI");
