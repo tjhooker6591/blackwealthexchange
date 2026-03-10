@@ -5,6 +5,11 @@ import clientPromise from "../../../lib/mongodb";
 import { serialize } from "cookie";
 import nodemailer from "nodemailer";
 import { getJwtSecret, getMongoDbName } from "@/lib/env";
+import {
+  ensureApiRateLimitIndexes,
+  getClientIp,
+  hitApiRateLimit,
+} from "@/lib/apiRateLimit";
 
 export default async function handler(
   req: NextApiRequest,
@@ -25,13 +30,15 @@ export default async function handler(
       description,
     } = req.body;
 
+    const emailNorm = String(email || "").trim().toLowerCase();
+
     const allowedRoles = ["user", "seller", "business", "employer"];
     if (!allowedRoles.includes(accountType)) {
       return res.status(400).json({ error: "Invalid account type." });
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email || !emailRegex.test(email)) {
+    if (!emailNorm || !emailRegex.test(emailNorm)) {
       return res.status(400).json({ error: "Invalid email format" });
     }
 
@@ -41,9 +48,31 @@ export default async function handler(
         .json({ error: "Password must be at least 8 characters long" });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
     const client = await clientPromise;
     const db = client.db(getMongoDbName());
+
+    await ensureApiRateLimitIndexes(db);
+    const ip = getClientIp(req);
+
+    const ipLimit = await hitApiRateLimit(db, `signup:ip:${ip}`, 20, 30);
+    const emailLimit = await hitApiRateLimit(
+      db,
+      `signup:email:${emailNorm}`,
+      5,
+      60,
+    );
+
+    if (ipLimit.blocked || emailLimit.blocked) {
+      res.setHeader(
+        "Retry-After",
+        String(Math.max(ipLimit.retryAfterSeconds, emailLimit.retryAfterSeconds)),
+      );
+      return res
+        .status(429)
+        .json({ error: "Too many signup attempts. Please try again later." });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     let newUser;
     let collection;
@@ -56,14 +85,14 @@ export default async function handler(
       }
 
       collection = db.collection("businesses");
-      const existingBusiness = await collection.findOne({ email });
+      const existingBusiness = await collection.findOne({ email: emailNorm });
 
       if (existingBusiness) {
         return res.status(400).json({ error: "Business already exists" });
       }
 
       newUser = {
-        email,
+        email: emailNorm,
         password: hashedPassword,
         accountType: "business",
         businessName,
@@ -75,14 +104,14 @@ export default async function handler(
       };
     } else if (accountType === "seller") {
       collection = db.collection("sellers");
-      const existingSeller = await collection.findOne({ email });
+      const existingSeller = await collection.findOne({ email: emailNorm });
 
       if (existingSeller) {
         return res.status(400).json({ error: "Seller already exists" });
       }
 
       newUser = {
-        email,
+        email: emailNorm,
         password: hashedPassword,
         accountType: "seller",
         storeName: businessName || "",
@@ -90,28 +119,28 @@ export default async function handler(
       };
     } else if (accountType === "employer") {
       collection = db.collection("employers");
-      const existingEmployer = await collection.findOne({ email });
+      const existingEmployer = await collection.findOne({ email: emailNorm });
 
       if (existingEmployer) {
         return res.status(400).json({ error: "Employer already exists" });
       }
 
       newUser = {
-        email,
+        email: emailNorm,
         password: hashedPassword,
         accountType: "employer",
         createdAt: new Date(),
       };
     } else {
       collection = db.collection("users");
-      const existingUser = await collection.findOne({ email });
+      const existingUser = await collection.findOne({ email: emailNorm });
 
       if (existingUser) {
         return res.status(400).json({ error: "User already exists" });
       }
 
       newUser = {
-        email,
+        email: emailNorm,
         password: hashedPassword,
         accountType: "user",
         createdAt: new Date(),

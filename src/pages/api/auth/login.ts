@@ -5,6 +5,11 @@ import clientPromise from "@/lib/mongodb";
 import cookie from "cookie";
 import { ObjectId } from "mongodb";
 import { getJwtSecret, getMongoDbName } from "@/lib/env";
+import {
+  ensureApiRateLimitIndexes,
+  getClientIp,
+  hitApiRateLimit,
+} from "@/lib/apiRateLimit";
 
 interface UserRecord {
   _id: ObjectId;
@@ -70,6 +75,25 @@ export default async function handler(
 
     const client = await clientPromise;
     const db = client.db(getMongoDbName());
+
+    await ensureApiRateLimitIndexes(db);
+    const ip = getClientIp(req);
+
+    const ipLimit = await hitApiRateLimit(db, `login:ip:${ip}`, 30, 10);
+    const emailLimit = await hitApiRateLimit(
+      db,
+      `login:email:${emailNorm}`,
+      10,
+      10,
+    );
+
+    if (ipLimit.blocked || emailLimit.blocked) {
+      res.setHeader("Retry-After", String(Math.max(ipLimit.retryAfterSeconds, emailLimit.retryAfterSeconds)));
+      return res.status(429).json({
+        success: false,
+        error: "Too many login attempts. Please try again shortly.",
+      });
+    }
 
     let collName: "users" | "businesses" | "sellers" | "employers" = "users";
     if (bodyAccountType === "business") collName = "businesses";
