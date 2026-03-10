@@ -88,7 +88,8 @@ export default async function handler(
               by: actor,
               status: nextStatus,
               stage: nextStage,
-              nextAction: typeof nextAction === "string" ? nextAction.trim() : "",
+              nextAction:
+                typeof nextAction === "string" ? nextAction.trim() : "",
             },
           },
         },
@@ -129,6 +130,7 @@ export default async function handler(
           nextAction: 1,
           owner: 1,
           followUpAt: 1,
+          lifecycleLog: 1,
           createdAt: 1,
           updatedAt: 1,
           source: 1,
@@ -150,6 +152,7 @@ export default async function handler(
           nextAction: 1,
           owner: 1,
           followUpAt: 1,
+          lifecycleLog: 1,
           createdAt: 1,
           updatedAt: 1,
           source: 1,
@@ -174,6 +177,11 @@ export default async function handler(
         nextAction: x.nextAction || "",
         owner: x.owner || "",
         followUpAt: x.followUpAt ? new Date(x.followUpAt).toISOString() : null,
+        lifecycleLogCount: Array.isArray(x.lifecycleLog) ? x.lifecycleLog.length : 0,
+        lastLifecycleEvent:
+          Array.isArray(x.lifecycleLog) && x.lifecycleLog.length
+            ? x.lifecycleLog[x.lifecycleLog.length - 1]
+            : null,
         createdAt: x.createdAt ? new Date(x.createdAt).toISOString() : null,
         updatedAt: x.updatedAt ? new Date(x.updatedAt).toISOString() : null,
       })),
@@ -193,6 +201,11 @@ export default async function handler(
         nextAction: x.nextAction || "",
         owner: x.owner || "",
         followUpAt: x.followUpAt ? new Date(x.followUpAt).toISOString() : null,
+        lifecycleLogCount: Array.isArray(x.lifecycleLog) ? x.lifecycleLog.length : 0,
+        lastLifecycleEvent:
+          Array.isArray(x.lifecycleLog) && x.lifecycleLog.length
+            ? x.lifecycleLog[x.lifecycleLog.length - 1]
+            : null,
         createdAt: x.createdAt ? new Date(x.createdAt).toISOString() : null,
         updatedAt: x.updatedAt ? new Date(x.updatedAt).toISOString() : null,
       })),
