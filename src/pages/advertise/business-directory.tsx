@@ -13,6 +13,13 @@ export default function BusinessDirectoryAdPage() {
   const [loadingUser, setLoadingUser] = useState(true);
   const [businessId, setBusinessId] = useState<string>("");
   const [userAccountType, setUserAccountType] = useState<string>("");
+  const [name, setName] = useState("");
+  const [businessName, setBusinessName] = useState("");
+  const [email, setEmail] = useState("");
+  const [website, setWebsite] = useState("");
+  const [notes, setNotes] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     let mounted = true;
@@ -53,6 +60,11 @@ export default function BusinessDirectoryAdPage() {
             : "",
         );
         setBusinessId(resolvedBusinessId || "");
+        if (typeof sessionUser?.name === "string") setName(sessionUser.name);
+        if (typeof sessionUser?.email === "string") setEmail(sessionUser.email);
+        if (typeof sessionUser?.businessName === "string") setBusinessName(sessionUser.businessName);
+        if (typeof topBusiness?.businessName === "string" && !sessionUser?.businessName) setBusinessName(topBusiness.businessName);
+        if (typeof topBusiness?.website === "string") setWebsite(topBusiness.website);
       } catch (err) {
         console.error("Failed to fetch session for directory ad checkout", err);
       } finally {
@@ -86,8 +98,52 @@ export default function BusinessDirectoryAdPage() {
     };
   }, [businessId]);
 
-  const handleSelectPlan = (plan: PlanType) => {
-    router.push(checkoutUrlForPlan(plan));
+  const handleSelectPlan = async (plan: PlanType) => {
+    setError("");
+    if (name.trim().length < 2 || businessName.trim().length < 2 || !/^\S+@\S+\.\S+$/.test(email.trim())) {
+      setError("Please complete campaign contact details before checkout.");
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const option = plan === "standard" ? "directory-standard" : "directory-featured";
+      const durationDays = 30;
+      const budget = plan === "standard" ? "49" : "99";
+
+      const submitRes = await fetch("/api/advertising/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          name,
+          email,
+          businessName,
+          adText: notes || `Directory ${plan} listing campaign`,
+          adImage: "",
+          website,
+          budget,
+          option,
+          durationDays,
+          placement: "business-directory",
+        }),
+      });
+
+      const submitData = await submitRes.json().catch(() => ({}));
+      if (!submitRes.ok) {
+        throw new Error(submitData?.error || "Failed to save directory request");
+      }
+
+      const requestId = submitData?.requestId || submitData?.adId;
+      const url = new URL(checkoutUrlForPlan(plan), "http://localhost");
+      if (requestId) url.searchParams.set("campaignId", requestId);
+
+      router.push(`${url.pathname}${url.search}`);
+    } catch (e: any) {
+      setError(e?.message || "Unable to continue to checkout");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -127,6 +183,18 @@ export default function BusinessDirectoryAdPage() {
             )}
           </div>
         )}
+      </div>
+
+      <div className="w-full max-w-4xl mb-10 rounded-xl border border-gray-700 bg-gray-900 p-5 text-left space-y-3">
+        <h3 className="text-xl font-semibold text-gold">Campaign Contact Details</h3>
+        <div className="grid md:grid-cols-2 gap-3">
+          <input value={name} onChange={(e)=>setName(e.target.value)} placeholder="Your name" className="w-full bg-black text-white border border-gray-600 rounded p-2" />
+          <input value={businessName} onChange={(e)=>setBusinessName(e.target.value)} placeholder="Business name" className="w-full bg-black text-white border border-gray-600 rounded p-2" />
+          <input value={email} onChange={(e)=>setEmail(e.target.value)} placeholder="Email" type="email" className="w-full bg-black text-white border border-gray-600 rounded p-2" />
+          <input value={website} onChange={(e)=>setWebsite(e.target.value)} placeholder="Website (optional)" className="w-full bg-black text-white border border-gray-600 rounded p-2" />
+        </div>
+        <textarea value={notes} onChange={(e)=>setNotes(e.target.value)} placeholder="Campaign notes (target category, CTA, dates)" className="w-full bg-black text-white border border-gray-600 rounded p-2 min-h-[90px]" />
+        {error ? <p className="text-sm text-red-300">{error}</p> : null}
       </div>
 
       {/* Benefits Section */}
@@ -179,9 +247,10 @@ export default function BusinessDirectoryAdPage() {
             <div className="space-y-2 w-full">
               <button
                 onClick={() => handleSelectPlan("standard")}
-                className="w-full px-4 py-2 bg-black text-gold rounded hover:bg-gray-900 transition"
+                disabled={submitting}
+                className="w-full px-4 py-2 bg-black text-gold rounded hover:bg-gray-900 transition disabled:opacity-60"
               >
-                $49 - Select Plan
+                {submitting ? "Saving Request..." : "$49 - Select Plan"}
               </button>
             </div>
           </div>
@@ -203,9 +272,10 @@ export default function BusinessDirectoryAdPage() {
             <div className="space-y-2 w-full">
               <button
                 onClick={() => handleSelectPlan("featured")}
-                className="w-full px-4 py-2 bg-black text-gold rounded hover:bg-gray-900 transition"
+                disabled={submitting}
+                className="w-full px-4 py-2 bg-black text-gold rounded hover:bg-gray-900 transition disabled:opacity-60"
               >
-                $99 - Select Plan
+                {submitting ? "Saving Request..." : "$99 - Select Plan"}
               </button>
             </div>
           </div>

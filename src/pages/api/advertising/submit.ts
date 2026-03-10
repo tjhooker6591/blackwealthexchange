@@ -13,10 +13,15 @@ export default async function handler(
     return res.status(405).json({ error: "Method Not Allowed" });
   }
 
-  const body = typeof req.body === "string" ? JSON.parse(req.body || "{}") : req.body || {};
+  const body =
+    typeof req.body === "string"
+      ? JSON.parse(req.body || "{}")
+      : req.body || {};
 
   const name = String(body.name || "").trim();
-  const email = String(body.email || "").trim().toLowerCase();
+  const email = String(body.email || "")
+    .trim()
+    .toLowerCase();
   const businessName = String(body.businessName || "").trim();
   const adText = String(body.adText || "").trim();
   const adImage = String(body.adImage || "").trim();
@@ -50,7 +55,10 @@ export default async function handler(
       adImage: adImage || null,
       website: website || null,
       option: option || null,
-      durationDays: Number.isFinite(durationDays) && durationDays > 0 ? Math.floor(durationDays) : null,
+      durationDays:
+        Number.isFinite(durationDays) && durationDays > 0
+          ? Math.floor(durationDays)
+          : null,
       placement: placement || null,
       createdAt: now,
       updatedAt: now,
