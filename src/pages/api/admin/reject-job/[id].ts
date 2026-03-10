@@ -1,4 +1,4 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
 import { requireAdminFromRequest } from "@/lib/adminAuth";
@@ -22,6 +22,8 @@ export default async function handler(
   if (!admin) return;
 
   const id = String(req.query.id || "").trim();
+  const reason = String((req.body || {})?.reason || "").trim();
+
   if (!id || !ObjectId.isValid(id)) {
     return res.status(400).json({ error: "Invalid job id" });
   }
@@ -32,7 +34,7 @@ export default async function handler(
 
     await ensureApiRateLimitIndexes(db);
     const ip = getClientIp(req);
-    const ipLimit = await hitApiRateLimit(db, `admin:approve-job:ip:${ip}`, 30, 5);
+    const ipLimit = await hitApiRateLimit(db, `admin:reject-job:ip:${ip}`, 30, 5);
     if (ipLimit.blocked) {
       res.setHeader("Retry-After", String(ipLimit.retryAfterSeconds));
       return res.status(429).json({ error: "Too many requests" });
@@ -42,9 +44,10 @@ export default async function handler(
       { _id: new ObjectId(id), status: "pending" },
       {
         $set: {
-          status: "approved",
-          approvedAt: new Date(),
-          approvedBy: admin.email || admin.userId || "admin",
+          status: "rejected",
+          rejectedAt: new Date(),
+          rejectedBy: admin.email || admin.userId || "admin",
+          rejectionReason: reason || null,
           updatedAt: new Date(),
         },
       },
@@ -54,9 +57,14 @@ export default async function handler(
       return res.status(404).json({ error: "Job not found or no longer pending" });
     }
 
-    return res.status(200).json({ message: "Job approved successfully" });
+    return res.status(200).json({
+      success: true,
+      jobId: id,
+      status: "rejected",
+      message: "Job rejected successfully",
+    });
   } catch (error) {
-    console.error("Approval error:", error);
-    return res.status(500).json({ error: "Failed to approve job" });
+    console.error("[/api/admin/reject-job/[id]] error", error);
+    return res.status(500).json({ error: "Failed to reject job" });
   }
 }
