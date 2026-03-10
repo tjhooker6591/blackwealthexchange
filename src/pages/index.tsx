@@ -1426,22 +1426,25 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="mb-5 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
-          <div className="mb-3 flex items-center justify-between">
-            <h3 className="text-base font-extrabold tracking-tight text-[#D4AF37] sm:text-lg">
-              Featured Sponsors
-            </h3>
-            <span className="text-[11px] text-white/50">Hover to pause</span>
+        <section className="mb-5 overflow-hidden rounded-2xl border border-[#D4AF37]/20 bg-gradient-to-r from-black via-[#0f0f0f] to-black p-3.5 sm:p-4 shadow-[0_0_0_1px_rgba(212,175,55,0.15)]">
+          <div className="mb-2.5 flex items-center justify-between">
+            <div>
+              <h3 className="text-sm font-extrabold tracking-tight text-[#D4AF37] sm:text-base">
+                Featured Sponsors
+              </h3>
+              <p className="text-[11px] text-white/55">Premium rotating placements</p>
+            </div>
+            <span className="text-[10px] rounded border border-white/15 px-2 py-1 text-white/55">Weekly slots</span>
           </div>
 
-          <div className="relative h-24 w-full overflow-hidden rounded-xl border border-white/10 bg-black/20 sm:h-28">
+          <div className="relative h-20 w-full overflow-hidden rounded-xl border border-white/10 bg-black/25 sm:h-24">
             <div className="pointer-events-none absolute left-0 top-0 h-full w-10 bg-gradient-to-r from-black/70 to-transparent" />
             <div className="pointer-events-none absolute right-0 top-0 h-full w-10 bg-gradient-to-l from-black/70 to-transparent" />
 
             <div className="animate-scroll absolute flex space-x-3 px-3 py-3 sm:space-x-4">
               {[...sponsorRail, ...sponsorRail].map((sponsor, index) => {
                 const card = (
-                  <div className="relative h-16 w-28 overflow-hidden rounded-xl border border-white/10 shadow sm:h-20 sm:w-40">
+                  <div className="relative h-14 w-24 overflow-hidden rounded-lg border border-white/10 shadow sm:h-16 sm:w-32">
                     <Image
                       src={sponsor.img}
                       alt={sponsor.name}
@@ -1450,7 +1453,7 @@ export default function Home() {
                       className="h-full w-full object-cover"
                       priority={index < 4}
                     />
-                    <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 rounded bg-black/60 px-2 py-1 text-[10px] font-semibold text-[#D4AF37] sm:bottom-2 sm:text-[11px]">
+                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent px-1.5 py-1 text-center text-[9px] font-semibold text-[#F1D57A] sm:text-[10px]">
                       {sponsor.name}
                     </div>
                   </div>

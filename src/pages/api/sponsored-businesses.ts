@@ -22,11 +22,48 @@ function s(v: unknown) {
   return typeof v === "string" ? v.trim() : "";
 }
 
-function normalizeBusinessUrl(raw: string) {
+function normalizeBusinessUrl(raw: string, name?: string) {
   const v = s(raw);
-  if (!v) return "#";
-  if (/^https?:\/\//i.test(v)) return v;
-  return `https://${v}`;
+  const fallback = `/business-directory?search=${encodeURIComponent(s(name) || "sponsor")}`;
+  if (!v || v === "/" || v === "#") return fallback;
+
+  if (/^https?:\/\//i.test(v)) {
+    try {
+      const u = new URL(v);
+      if (!u.hostname) return fallback;
+      return v;
+    } catch {
+      return fallback;
+    }
+  }
+
+  if (v.startsWith("/")) return v;
+
+  try {
+    const withProto = `https://${v}`;
+    const u = new URL(withProto);
+    if (!u.hostname) return fallback;
+    return withProto;
+  } catch {
+    return fallback;
+  }
+}
+
+function safeSponsorImage(raw: string) {
+  const v = s(raw);
+  if (!v) return "/house-draft.jpg";
+  if (v.startsWith("/")) return v;
+
+  try {
+    const u = new URL(v);
+    if (u.hostname === "example.com" || u.hostname.endsWith(".example.com")) {
+      return "/house-draft.jpg";
+    }
+    // Defensive default: keep homepage stable unless source is explicitly local.
+    return "/house-draft.jpg";
+  } catch {
+    return "/house-draft.jpg";
+  }
 }
 
 function asObjectId(id: string): ObjectId | null {
@@ -70,8 +107,8 @@ export default async function handler(
         name: s(row.businessName) || "Featured Sponsor",
         tagline:
           s(row.tagline).slice(0, 90) || "Featured on Black Wealth Exchange",
-        img: s(row.creativeUrl) || "/default-image.jpg",
-        url: normalizeBusinessUrl(s(row.targetUrl || row.website)),
+        img: safeSponsorImage(s(row.creativeUrl)),
+        url: normalizeBusinessUrl(s(row.targetUrl || row.website), s(row.businessName)),
         cta: "Learn More",
         tier: "featured-sponsor",
         featuredSlot: i + 1,
@@ -127,8 +164,8 @@ export default async function handler(
           tagline:
             s(b?.description).slice(0, 90) ||
             "Featured on Black Wealth Exchange",
-          img: s(b?.image) || "/default-image.jpg",
-          url: normalizeBusinessUrl(s(b?.website)),
+          img: safeSponsorImage(s(b?.image)),
+          url: normalizeBusinessUrl(s(b?.website), s(b?.business_name)),
           cta: "Learn More",
           tier: s(listing?.tier),
           featuredSlot:
@@ -155,8 +192,8 @@ export default async function handler(
       _id: String(b._id),
       name: s(b?.business_name) || "Sponsored Business",
       tagline: s(b?.description).slice(0, 90) || "Sponsored listing",
-      img: s(b?.image) || "/default-image.jpg",
-      url: normalizeBusinessUrl(s(b?.website)),
+      img: safeSponsorImage(s(b?.image)),
+      url: normalizeBusinessUrl(s(b?.website), s(b?.business_name)),
       cta: "Learn More",
       tier: s(b?.tier),
       featuredSlot: null,
