@@ -227,6 +227,14 @@ export default function AdminToolsPage() {
         method: "GET",
       },
       {
+        id: "p-consulting-leads",
+        type: "page",
+        category: "Consulting",
+        label: "Consulting Leads",
+        path: "/admin/consulting-leads",
+        method: "GET",
+      },
+      {
         id: "p-content",
         type: "page",
         category: "Content",

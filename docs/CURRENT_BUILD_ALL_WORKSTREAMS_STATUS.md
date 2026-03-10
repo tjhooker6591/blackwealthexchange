@@ -115,7 +115,7 @@ Status labels allowed:
 - **Status:** PARTIAL
 - **Entry point:** `/recruiting-consulting`, homepage consulting CTAs
 - **Expected final outcome:** lead/opportunity intake completes, records saved, admin management path operational through managed-service pipeline.
-- **Current actual outcome:** intake + admin review paths exist; admin visibility mismatch between `consulting_interest` and `consulting_intake` has been closed via unified feed. Full lead-to-managed-service closure not yet proven.
+- **Current actual outcome:** intake + admin review paths exist; admin visibility mismatch between `consulting_interest` and `consulting_intake` has been closed via unified feed, and leads are now visible on dedicated admin page (`/admin/consulting-leads`). Full lead-to-managed-service closure not yet proven.
 - **Exact blocker:** downstream service pipeline completion evidence missing.
 - **Files/routes/endpoints involved:** `src/pages/recruiting-consulting.tsx`, `src/pages/api/consulting-intake.ts`, `src/pages/api/consulting-interest.ts`, `src/pages/api/admin/consulting-interests.ts`, `src/pages/admin/dashboard.tsx`.
 - **Exact closure condition:** one full intake-to-admin-managed-service lifecycle proven end-to-end.
