@@ -584,7 +584,9 @@ export default async function webhookHandler(
               creativeUrl: adReq.adImage,
               tagline: adReq.details,
               placement:
-                adReq.placement || adReq.placementType || "homepage-featured-sponsor",
+                adReq.placement ||
+                adReq.placementType ||
+                "homepage-featured-sponsor",
               option: normalizedItemId,
               flexibleStart: Boolean(adReq.flexibleStart ?? true),
             });

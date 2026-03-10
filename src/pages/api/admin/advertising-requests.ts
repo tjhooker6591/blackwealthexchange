@@ -22,7 +22,12 @@ type AdvertisingRequestRow = {
   scheduleWeeks: string[];
   scheduleQueueStatus: string | null;
   scheduleRolledOver: boolean;
-  campaignLifecycle: "pending" | "queued" | "scheduled" | "active" | "completed";
+  campaignLifecycle:
+    | "pending"
+    | "queued"
+    | "scheduled"
+    | "active"
+    | "completed";
   selectedOptions: string[];
   budget: string | null;
   timeline: string | null;
@@ -129,7 +134,9 @@ export default async function handler(
 
       const scheduleStarts = schedule
         .map((x: any) =>
-          x?.weekStart ? new Date(x.weekStart).toISOString().slice(0, 10) : null,
+          x?.weekStart
+            ? new Date(x.weekStart).toISOString().slice(0, 10)
+            : null,
         )
         .filter(Boolean) as string[];
 
