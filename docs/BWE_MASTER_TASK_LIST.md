@@ -114,6 +114,16 @@ Owner default: `BlackForge`
 - notes: local validation ran in live Stripe mode; inventory-policy follow-up remains because `stock=0` products still create checkout sessions
 - last updated commit: c797e3a
 
+## P2.9
+
+14. Critical-path harness reliability fix
+
+- status: complete
+- owner/agent: BlackForge
+- proof required: `check:critical-paths` pass including authenticated role checks
+- dependencies: login endpoint + cookie capture
+- last updated commit: 14e83a9
+
 ## P3
 
 9. Cross-site design consistency pass

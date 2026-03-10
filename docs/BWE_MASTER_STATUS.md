@@ -1,6 +1,6 @@
 # BWE Master Status
 
-Last updated commit: c797e3a
+Last updated commit: 14e83a9
 
 ## Overall platform status
 
@@ -15,6 +15,7 @@ Last updated commit: c797e3a
 - Marketplace checkout session blocker resolved by runtime env correction (`STRIPE_SECRET_KEY` was missing).
 - Marketplace Buy Now matrix pass is now GO.
 - Local runtime validation currently uses live Stripe mode.
+- Local validation pack re-confirmed green on healthy runtime: smoke routes PASS, P2 regression PASS (26/26), critical paths PASS (35/35), runtime health PASS.
 - Stock policy follow-up noted: products with `stock=0` still create checkout sessions until inventory gate decision is implemented.
 
 ## Complete
@@ -45,13 +46,13 @@ Last updated commit: c797e3a
 
 ## Latest accepted commits
 
+- 14e83a9 (critical-path script fix: restore missing cookie parser; role/auth checks now execute end-to-end)
+- 14c7c13 (admin tools typing fix + Stripe API version alignment in marketplace readiness)
 - c797e3a (marketplace buy-flow audit matrix script; accepted purchase-flow completion cycle includes runtime/env correction + checkout unblock)
 - cf4060d (RC finalization docs + canonical route/link updates for preview handoff)
 - 23f9a48 (canonical route cleanup: inclusive-job-descriptions + backward redirect)
 - d1ec8ec (critical-path completion verifier added)
-- 4f38e6c (critical-path verifier reliability fix; 34/34 pass)
 - e6d3505 (finalized referral/docs/link/runtime-health updates)
-- 7dddecf (P2 guards + regression pass)
 
 ## Latest risks
 

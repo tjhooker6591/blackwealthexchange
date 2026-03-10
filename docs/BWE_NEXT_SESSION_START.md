@@ -10,6 +10,11 @@
 - checkout route recovered by runtime env correction (`STRIPE_SECRET_KEY` was missing)
 - marketplace Buy Now matrix now GO
 - local validation runtime currently in live Stripe mode
+- latest local validation pack is green:
+  - `smoke:routes` PASS
+  - `check:p2-regression` PASS (26/26)
+  - `check:critical-paths` PASS (35/35)
+  - `check:runtime-health` PASS
 - inventory-policy follow-up remains: `stock=0` products still create checkout sessions
 
 ## Finished in recent cycle
