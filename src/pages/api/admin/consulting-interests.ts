@@ -89,39 +89,81 @@ export default async function handler(
       process.env.MONGODB_DB || process.env.MONGODB_DB_NAME || "bwes-cluster";
     const db = client.db(dbName);
 
-    const interests = await db
-      .collection("consulting_interest")
-      .find({})
-      .sort({ createdAt: -1 })
-      .project({
-        name: 1,
-        fullName: 1,
-        businessName: 1,
-        email: 1,
-        phone: 1,
-        company: 1,
-        service: 1,
-        interestType: 1,
-        message: 1,
-        notes: 1,
-        status: 1,
-        createdAt: 1,
-        updatedAt: 1,
-      })
-      .toArray();
+    const [interestRows, intakeRows] = await Promise.all([
+      db
+        .collection("consulting_interest")
+        .find({})
+        .sort({ createdAt: -1 })
+        .project({
+          name: 1,
+          fullName: 1,
+          businessName: 1,
+          email: 1,
+          phone: 1,
+          company: 1,
+          service: 1,
+          interestType: 1,
+          message: 1,
+          notes: 1,
+          status: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          source: 1,
+        })
+        .toArray(),
+      db
+        .collection("consulting_intake")
+        .find({})
+        .sort({ createdAt: -1 })
+        .project({
+          type: 1,
+          name: 1,
+          email: 1,
+          company: 1,
+          phone: 1,
+          details: 1,
+          status: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          source: 1,
+        })
+        .toArray(),
+    ]);
 
-    const normalized = interests.map((x: any) => ({
-      _id: x._id.toString(),
-      name: x.name || x.fullName || "",
-      businessName: x.businessName || x.company || "",
-      email: x.email || "",
-      phone: x.phone || "",
-      service: x.service || x.interestType || "",
-      message: x.message || x.notes || "",
-      status: normalizeStatus(x.status),
-      createdAt: x.createdAt ? new Date(x.createdAt).toISOString() : null,
-      updatedAt: x.updatedAt ? new Date(x.updatedAt).toISOString() : null,
-    }));
+    const normalized = [
+      ...interestRows.map((x: any) => ({
+        _id: x._id.toString(),
+        name: x.name || x.fullName || "",
+        businessName: x.businessName || x.company || "",
+        email: x.email || "",
+        phone: x.phone || "",
+        service: x.service || x.interestType || "",
+        message: x.message || x.notes || "",
+        intakeType: "interest",
+        source: x.source || "website",
+        status: normalizeStatus(x.status),
+        createdAt: x.createdAt ? new Date(x.createdAt).toISOString() : null,
+        updatedAt: x.updatedAt ? new Date(x.updatedAt).toISOString() : null,
+      })),
+      ...intakeRows.map((x: any) => ({
+        _id: x._id.toString(),
+        name: x.name || "",
+        businessName: x.company || "",
+        email: x.email || "",
+        phone: x.phone || "",
+        service: x.type || "",
+        message: x.details || "",
+        intakeType: x.type || "intake",
+        source: x.source || "homepage_recruiting_section",
+        status: normalizeStatus(x.status),
+        createdAt: x.createdAt ? new Date(x.createdAt).toISOString() : null,
+        updatedAt: x.updatedAt ? new Date(x.updatedAt).toISOString() : null,
+      })),
+    ].sort((a: any, b: any) => {
+      const ta = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+      const tb = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+      return tb - ta;
+    });
 
     return res.status(200).json({
       ok: true,
