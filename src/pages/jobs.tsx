@@ -58,18 +58,22 @@ export default function JobsHubPage() {
 
           <HubCard
             title="Internships & College Opportunities"
-            description="Find internships, apprenticeships, scholarships, and early-career programs."
+            description="Internship and early-career expansion lane is scheduled right after production cutline."
             href="/internships"
             buttonLabel="View Internships"
             variant="green"
+            muted
+            mutedLabel="Coming right after launch"
           />
 
           <HubCard
             title="Freelance & Gig Work"
-            description="Discover flexible projects or hire for short-term gigs with skilled talent."
+            description="Freelance and gig marketplace lane is temporarily quieted while core hiring flow ships."
             href="/freelance"
             buttonLabel="Explore Gigs"
             variant="red"
+            muted
+            mutedLabel="Planned next"
           />
         </div>
 
@@ -79,20 +83,10 @@ export default function JobsHubPage() {
             Mentorship Program
           </h2>
           <p className="text-gray-200 text-sm">
-            Get matched with mentors and industry leaders to support your growth
-            and career direction.
+            Mentorship matching is queued for post-cutline expansion. Core launch focus is active jobs + recruiting consulting.
           </p>
-          <div className="flex flex-wrap gap-3">
-            <Link href="/mentorship">
-              <button className="px-5 py-2 rounded bg-yellow-400 text-black font-semibold hover:bg-yellow-300 transition">
-                Become a Mentee
-              </button>
-            </Link>
-            <Link href="/mentorship">
-              <button className="px-5 py-2 rounded border border-gray-700 text-gray-200 hover:bg-gray-900 transition">
-                Learn More
-              </button>
-            </Link>
+          <div className="inline-flex px-3 py-1 rounded bg-yellow-500/20 border border-yellow-500/40 text-yellow-200 text-sm">
+            Post-launch lane
           </div>
         </div>
 
@@ -153,12 +147,16 @@ function HubCard({
   href,
   buttonLabel,
   variant,
+  muted,
+  mutedLabel,
 }: {
   title: string;
   description: string;
   href: string;
   buttonLabel: string;
   variant: "gold" | "blue" | "green" | "red";
+  muted?: boolean;
+  mutedLabel?: string;
 }) {
   const styles =
     variant === "gold"
@@ -192,11 +190,17 @@ function HubCard({
         </span>
       </div>
       <p className="mt-2 text-sm text-gray-300">{description}</p>
-      <Link href={href}>
-        <button className="mt-4 px-5 py-2 rounded bg-yellow-400 text-black font-semibold hover:bg-yellow-300 transition">
-          {buttonLabel}
-        </button>
-      </Link>
+      {muted ? (
+        <div className="mt-4 inline-flex px-3 py-2 rounded border border-gray-700 text-gray-300 text-sm">
+          {mutedLabel || "Coming soon"}
+        </div>
+      ) : (
+        <Link href={href}>
+          <button className="mt-4 px-5 py-2 rounded bg-yellow-400 text-black font-semibold hover:bg-yellow-300 transition">
+            {buttonLabel}
+          </button>
+        </Link>
+      )}
     </div>
   );
 }
