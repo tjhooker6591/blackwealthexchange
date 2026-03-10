@@ -849,6 +849,10 @@ const AdminDashboard = () => {
           href="/admin/consulting-leads"
           label="Review Consulting Leads"
         />
+        <AdminLink
+          href="/admin/advertising-requests"
+          label="Review Advertising Requests"
+        />
         <AdminLink href="/admin/job-approvals" label="Approve Job Postings" />
         <AdminLink
           href="/admin/product-approvals"
