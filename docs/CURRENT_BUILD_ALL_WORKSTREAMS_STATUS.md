@@ -35,7 +35,7 @@ Status labels allowed:
 - **Status:** PARTIAL
 - **Entry point:** `/marketplace/become-a-seller`
 - **Expected final outcome:** terms step actionable, seller created, onboarding continues, connect/payout readiness reached, seller/dashboard-ready state.
-- **Current actual outcome:** terms-wall dead-end fixed and continuity proven; seller dashboard continuation CTAs now route to real pages (`/marketplace/orders`, `/marketplace/analytics`) instead of dead-end 404s. Full seller-ready/payout-ready end state is still not fully proven.
+- **Current actual outcome:** terms-wall dead-end fixed and continuity proven; seller dashboard continuation CTAs now route to real pages (`/marketplace/orders`, `/marketplace/analytics`) instead of dead-end 404s. Seller readiness API (`/api/marketplace/readiness`) now exposes seller/payout/dashboard readiness state. Full seller-ready/payout-ready end state is still not fully proven.
 - **Exact blocker:** missing end-to-end seller creation -> connect -> ready-state evidence.
 - **Files/routes/endpoints involved:** `src/pages/marketplace/become-a-seller.tsx`, `src/pages/api/marketplace/create-seller.ts`, `src/pages/api/stripe/create-account-link.ts`, `src/pages/api/stripe/account-status.ts`.
 - **Exact closure condition:** new seller completes onboarding and reaches verifiable seller-ready/connect-ready state without dead-ends.
