@@ -518,7 +518,7 @@ const AdminDashboard = () => {
                 </Link>
 
                 {/* NOTE: create this page if it doesn't exist yet */}
-                <Link href="/admin/organization-approvals" className="block">
+                <Link href="/admin/organizations" className="block">
                   <StatCardLink
                     title="Pending Organizations"
                     value={stats.pendingOrganizations}
@@ -616,7 +616,7 @@ const AdminDashboard = () => {
 
                 <div className="mt-3">
                   <Link
-                    href="/admin/organization-approvals"
+                    href="/admin/organizations"
                     className="inline-flex items-center rounded border border-gray-700 bg-gray-900 px-3 py-2 text-xs hover:bg-gray-700"
                   >
                     Manage Organization Approvals →
@@ -670,7 +670,7 @@ const AdminDashboard = () => {
             </Link>
 
             {/* Optional: if you have a dedicated directory list page later */}
-            <Link href="/admin/directory" className="block">
+            <Link href="/admin/directory-approvals" className="block">
               <ActionCard
                 title="View Directory Listings"
                 subtitle="Browse active/expired listings"
@@ -829,7 +829,7 @@ const AdminDashboard = () => {
           label="Manage Business Approvals"
         />
         <AdminLink
-          href="/admin/organization-approvals"
+          href="/admin/organizations"
           label="Manage Organization Approvals"
         />
         <AdminLink
