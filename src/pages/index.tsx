@@ -1017,34 +1017,45 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="mb-4 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.04)]">
-            <div className="text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
-              Start here track
+          <div className="relative mb-4 overflow-hidden rounded-2xl border border-white/10 bg-black p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.04)]">
+            <div
+              className="pointer-events-none absolute inset-0"
+              style={{
+                backgroundImage:
+                  "linear-gradient(110deg, rgba(0,0,0,0.9) 15%, rgba(0,0,0,0.74) 56%, rgba(0,0,0,0.88) 100%), url('/ads/sample-banner3.jpg')",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+            />
+            <div className="relative">
+              <div className="text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
+                Start here track
+              </div>
+              <h3 className="mt-1 text-lg font-extrabold text-white sm:text-xl">
+                Featured Learning Block
+              </h3>
+              <p className="mt-1 text-sm text-white/75">
+                One focused track for financial basics, career setup, and Black
+                history/economic context.
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2 text-xs text-white/80">
+                <span className="rounded-full border border-white/15 bg-black/35 px-3 py-1">
+                  Financial basics
+                </span>
+                <span className="rounded-full border border-white/15 bg-black/35 px-3 py-1">
+                  Career setup
+                </span>
+                <span className="rounded-full border border-white/15 bg-black/35 px-3 py-1">
+                  Black history/economic context
+                </span>
+              </div>
+              <Link
+                href="/financial-literacy"
+                className="mt-4 inline-flex h-10 items-center rounded-xl bg-[#D4AF37] px-5 text-sm font-extrabold text-black transition hover:bg-yellow-500"
+              >
+                Start the Track
+              </Link>
             </div>
-            <h3 className="mt-1 text-lg font-extrabold text-white sm:text-xl">
-              Featured Learning Block
-            </h3>
-            <p className="mt-1 text-sm text-white/65">
-              One focused track for financial basics, career setup, and Black
-              history/economic context.
-            </p>
-            <div className="mt-3 flex flex-wrap gap-2 text-xs text-white/70">
-              <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1">
-                Financial basics
-              </span>
-              <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1">
-                Career setup
-              </span>
-              <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1">
-                Black history/economic context
-              </span>
-            </div>
-            <Link
-              href="/financial-literacy"
-              className="mt-4 inline-flex h-10 items-center rounded-xl bg-[#D4AF37] px-5 text-sm font-extrabold text-black transition hover:bg-yellow-500"
-            >
-              Start the Track
-            </Link>
           </div>
 
           <div className="mb-4 grid gap-3 sm:grid-cols-2">
@@ -1176,7 +1187,16 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="relative overflow-hidden rounded-2xl border border-[#D4AF37]/25 bg-gradient-to-br from-[#D4AF37]/12 via-white/[0.03] to-white/[0.02] p-4 sm:p-5">
+            <div className="relative overflow-hidden rounded-2xl border border-[#D4AF37]/25 bg-black p-4 sm:p-5">
+              <div
+                className="pointer-events-none absolute inset-0"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(120deg, rgba(0,0,0,0.9) 12%, rgba(0,0,0,0.72) 54%, rgba(0,0,0,0.88) 100%), url('/ads/sample-banner7.jpg')",
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }}
+              />
               <div className="pointer-events-none absolute -top-24 left-1/2 h-48 w-[34rem] -translate-x-1/2 rounded-full bg-[#D4AF37]/10 blur-3xl" />
               <div className="pointer-events-none absolute -bottom-28 right-[-6rem] h-64 w-64 rounded-full bg-emerald-500/10 blur-3xl" />
 
@@ -1443,9 +1463,13 @@ export default function Home() {
               <h3 className="text-sm font-extrabold tracking-tight text-[#D4AF37] sm:text-base">
                 Featured Sponsors
               </h3>
-              <p className="text-[11px] text-white/55">Premium rotating placements</p>
+              <p className="text-[11px] text-white/55">
+                Premium rotating placements
+              </p>
             </div>
-            <span className="text-[10px] rounded border border-white/15 px-2 py-1 text-white/55">Weekly slots</span>
+            <span className="text-[10px] rounded border border-white/15 px-2 py-1 text-white/55">
+              Weekly slots
+            </span>
           </div>
 
           <div className="relative h-20 w-full overflow-hidden rounded-xl border border-white/10 bg-black/25 sm:h-24">
