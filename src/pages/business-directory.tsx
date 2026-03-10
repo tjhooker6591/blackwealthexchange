@@ -45,7 +45,7 @@ function toInt(v: any, def: number) {
   return Number.isFinite(n) ? n : def;
 }
 
-const SIDEBAR_ADS = [
+const DEFAULT_SPONSOR_ADS = [
   {
     img: "/pamfa1.jpg",
     name: "Pamfa United Citizens",
@@ -107,8 +107,12 @@ type Row =
   | (Business & { __kind: "business" })
   | (Organization & { __kind: "org" });
 
-function injectSponsoredEveryN(rows: Row[], interval = 5) {
-  if (!SIDEBAR_ADS.length) return rows;
+function injectSponsoredEveryN(
+  rows: Row[],
+  sponsorAds: Array<{ img: string; name: string; tagline: string; url: string; cta: string }>,
+  interval = 5,
+) {
+  if (!sponsorAds.length) return rows;
   const out: Array<Row | { isSponsor: true; sponsorIdx: number; key: string }> =
     [];
   let sponsorIdx = 0;
@@ -117,7 +121,7 @@ function injectSponsoredEveryN(rows: Row[], interval = 5) {
     if ((i + 1) % interval === 0) {
       out.push({
         isSponsor: true,
-        sponsorIdx: sponsorIdx % SIDEBAR_ADS.length,
+        sponsorIdx: sponsorIdx % sponsorAds.length,
         key: `s-${sponsorIdx}-${i}`,
       });
       sponsorIdx++;
@@ -312,6 +316,7 @@ export default function BusinessDirectory() {
 
   const [rows, setRows] = useState<Row[]>([]);
   const [total, setTotal] = useState(0);
+  const [sponsorAds, setSponsorAds] = useState(DEFAULT_SPONSOR_ADS);
   const [serverPaged, setServerPaged] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -333,6 +338,33 @@ export default function BusinessDirectory() {
   const skipNextPageResetRef = useRef(false);
   const abortRef = useRef<AbortController | null>(null);
   const resultsTopRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch('/api/sponsored-businesses', { cache: 'no-store' });
+        const data = await res.json().catch(() => null);
+        const incoming = Array.isArray(data?.sponsors) ? data.sponsors : [];
+        if (!cancelled && incoming.length) {
+          setSponsorAds(
+            incoming.map((x: any) => ({
+              img: safeStr(x?.img) || '/default-image.jpg',
+              name: safeStr(x?.name) || 'Sponsored Business',
+              tagline: safeStr(x?.tagline) || 'Featured on Black Wealth Exchange',
+              url: safeStr(x?.url) || '#',
+              cta: safeStr(x?.cta) || 'Learn More',
+            })),
+          );
+        }
+      } catch {
+        // keep defaults
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // Init from URL
   useEffect(() => {
@@ -563,8 +595,8 @@ export default function BusinessDirectory() {
   }, [filteredRows, serverPaged, page]);
 
   const visibleWithSponsors = useMemo(
-    () => injectSponsoredEveryN(pageRows, 5),
-    [pageRows],
+    () => injectSponsoredEveryN(pageRows, sponsorAds, 5),
+    [pageRows, sponsorAds],
   );
 
   const goPage = (p: number) => {
@@ -663,8 +695,8 @@ export default function BusinessDirectory() {
   };
 
   const sponsorsToShow = [
-    ...SIDEBAR_ADS,
-    ...Array(Math.max(0, 10 - SIDEBAR_ADS.length)).fill({
+    ...sponsorAds,
+    ...Array(Math.max(0, 10 - sponsorAds.length)).fill({
       img: "/placeholder.png",
       name: "Your Business Here",
       tagline: "Sponsor This Spot!",
@@ -1152,23 +1184,23 @@ export default function BusinessDirectory() {
                           className="relative flex items-center gap-3 px-3 py-3"
                         >
                           <img
-                            src={SIDEBAR_ADS[(item as any).sponsorIdx].img}
-                            alt={SIDEBAR_ADS[(item as any).sponsorIdx].name}
+                            src={sponsorAds[(item as any).sponsorIdx].img}
+                            alt={sponsorAds[(item as any).sponsorIdx].name}
                             width={48}
                             height={48}
                             className="h-12 w-12 rounded-xl object-cover border border-white/15"
                           />
                           <div className="min-w-0 flex-1">
                             <a
-                              href={SIDEBAR_ADS[(item as any).sponsorIdx].url}
+                              href={sponsorAds[(item as any).sponsorIdx].url}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="block truncate text-[#D4AF37] font-extrabold hover:underline"
                             >
-                              {SIDEBAR_ADS[(item as any).sponsorIdx].name}
+                              {sponsorAds[(item as any).sponsorIdx].name}
                             </a>
                             <div className="truncate text-[12px] text-white/55">
-                              {SIDEBAR_ADS[(item as any).sponsorIdx].tagline}
+                              {sponsorAds[(item as any).sponsorIdx].tagline}
                             </div>
                           </div>
                           <span className="rounded-full border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-2 py-0.5 text-[10px] font-extrabold text-[#D4AF37]">
@@ -1286,7 +1318,7 @@ export default function BusinessDirectory() {
                   Sponsored
                 </div>
                 <div className="space-y-3">
-                  {SIDEBAR_ADS.map((ad) => (
+                  {sponsorAds.map((ad) => (
                     <SidebarAdCard key={ad.url} {...ad} />
                   ))}
                 </div>
