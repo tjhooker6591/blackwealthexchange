@@ -1,6 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
+import {
+  ensureApiRateLimitIndexes,
+  getClientIp,
+  hitApiRateLimit,
+} from "@/lib/apiRateLimit";
 
 type Ok = { success: true; message: string };
 type Err = { success: false; error: string };
@@ -53,6 +58,27 @@ export default async function handler(
 
     const client = await clientPromise;
     const db = client.db(getMongoDbName());
+
+    await ensureApiRateLimitIndexes(db);
+    const ip = getClientIp(req);
+    const ipLimit = await hitApiRateLimit(db, `consulting:intake:ip:${ip}`, 30, 10);
+    const emailLimit = await hitApiRateLimit(
+      db,
+      `consulting:intake:email:${email}`,
+      5,
+      60,
+    );
+
+    if (ipLimit.blocked || emailLimit.blocked) {
+      res.setHeader(
+        "Retry-After",
+        String(Math.max(ipLimit.retryAfterSeconds, emailLimit.retryAfterSeconds)),
+      );
+      return res.status(429).json({
+        success: false,
+        error: "Too many submissions. Please try again later.",
+      });
+    }
 
     await db.collection("consulting_intake").insertOne({
       type,

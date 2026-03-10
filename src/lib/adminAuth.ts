@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import cookie from "cookie";
 import jwt from "jsonwebtoken";
 
-type AdminDecoded = {
+export type AdminDecoded = {
   userId?: string;
   email?: string;
   accountType?: string;
@@ -11,7 +11,7 @@ type AdminDecoded = {
   roles?: string[];
 };
 
-function isAdmin(decoded: AdminDecoded) {
+export function isAdminDecoded(decoded: AdminDecoded) {
   if (decoded?.isAdmin) return true;
   if (decoded?.accountType === "admin") return true;
   if (decoded?.role === "admin") return true;
@@ -31,24 +31,35 @@ function isAdmin(decoded: AdminDecoded) {
   return false;
 }
 
+export function getAdminDecodedFromRequest(
+  req: NextApiRequest,
+): AdminDecoded | null {
+  try {
+    const parsed = cookie.parse(req.headers.cookie || "");
+    const token = parsed.session_token || req.cookies?.session_token;
+    if (!token) return null;
+
+    const secret = process.env.JWT_SECRET || process.env.NEXTAUTH_SECRET;
+    if (!secret) return null;
+
+    return jwt.verify(token, secret) as AdminDecoded;
+  } catch {
+    return null;
+  }
+}
+
 export async function requireAdminFromRequest(
   req: NextApiRequest,
   res: NextApiResponse,
 ): Promise<AdminDecoded | null> {
-  const parsed = cookie.parse(req.headers.cookie || "");
-  const token = parsed.session_token || req.cookies?.session_token;
-
-  if (!token) {
+  const decoded = getAdminDecodedFromRequest(req);
+  if (!decoded) {
     res.status(401).json({ error: "Unauthorized" });
     return null;
   }
 
   try {
-    const secret = process.env.JWT_SECRET || process.env.NEXTAUTH_SECRET;
-    if (!secret) throw new Error("JWT secret missing");
-
-    const decoded = jwt.verify(token, secret) as AdminDecoded;
-    if (!isAdmin(decoded)) {
+    if (!isAdminDecoded(decoded)) {
       res.status(403).json({ error: "Forbidden" });
       return null;
     }
