@@ -201,6 +201,14 @@ export default async function webhookHandler(
     return res.status(200).json({ received: true });
   }
 
+  if (process.env.NODE_ENV === "production" && (event as any).livemode !== true) {
+    console.warn("Ignoring non-live Stripe webhook in production", {
+      eventId: event.id,
+      type: event.type,
+    });
+    return res.status(200).json({ received: true, skipped: "non_live_event" });
+  }
+
   const session = event.data.object as Stripe.Checkout.Session;
 
   // Only fulfill when actually paid

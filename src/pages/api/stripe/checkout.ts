@@ -10,8 +10,12 @@ import {
   getAdPriceCents,
   getAdQuote,
 } from "@/lib/advertising/pricing";
+import { getMongoDbName } from "@/lib/env";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
+const stripeSecret = process.env.STRIPE_SECRET_KEY;
+const stripe = new Stripe(stripeSecret || "sk_missing", {
+  apiVersion: "2025-02-24.acacia" as any,
+});
 
 type CheckoutType = "ad" | "product" | "plan" | "course";
 
@@ -130,6 +134,10 @@ export default async function handler(
     return res.status(405).json({ error: "Method Not Allowed" });
   }
 
+  if (!stripeSecret) {
+    return res.status(500).json({ error: "Stripe not configured" });
+  }
+
   const payload = req.body as CheckoutPayload;
 
   // Auth via your custom session cookie
@@ -190,7 +198,7 @@ export default async function handler(
 
   try {
     const client = await clientPromise;
-    const db = client.db("bwes-cluster");
+    const db = client.db(getMongoDbName());
     const payments = db.collection("payments");
 
     const origin = getOrigin(req);
@@ -266,6 +274,13 @@ export default async function handler(
         return res
           .status(400)
           .json({ error: "Invalid product or missing seller" });
+      }
+
+      const productStock = Number((product as any).stock ?? (product as any).inventory ?? 1);
+      if (Number.isFinite(productStock) && productStock <= 0) {
+        return res.status(409).json({
+          error: "This product is out of stock and cannot be purchased right now.",
+        });
       }
 
       itemName = product?.name || itemName;
@@ -344,6 +359,14 @@ export default async function handler(
       stripeAccountId = process.env.PLATFORM_STRIPE_ACCOUNT_ID as string;
     } else {
       return res.status(400).json({ error: "Invalid type" });
+    }
+
+    if (!Number.isFinite(unitAmount) || unitAmount <= 0) {
+      return res.status(400).json({ error: "Invalid checkout amount" });
+    }
+
+    if (unitAmount > 5_000_000) {
+      return res.status(400).json({ error: "Checkout amount exceeds allowed maximum" });
     }
 
     const metadata: Record<string, string> = {
