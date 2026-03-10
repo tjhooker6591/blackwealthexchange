@@ -7,7 +7,6 @@ type SaveResponse =
   | { success: true; requestId: string; message: string }
   | { success: false; error: string };
 
-
 const CUSTOM_OPTIONS = [
   {
     id: "homepage-feature",
@@ -168,7 +167,7 @@ export default function CustomAd() {
     setStartingCheckout(true);
 
     try {
-      const next = `/advertising/checkout?option=sponsored-listing&duration=30&placement=custom-solution&campaignId=${encodeURIComponent(requestId)}`;
+      const next = `/advertising/checkout?option=custom-solution-deposit&duration=30&placement=custom-solution&campaignId=${encodeURIComponent(requestId)}`;
       window.location.href = next;
     } catch (err) {
       const message =

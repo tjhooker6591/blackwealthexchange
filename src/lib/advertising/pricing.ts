@@ -6,7 +6,8 @@ export type AdOptionId =
   | "directory-featured"
   | "banner-ad"
   | "top-sponsor"
-  | "sponsored-listing";
+  | "sponsored-listing"
+  | "custom-solution-deposit";
 
 type PriceMap = Record<number, number>; // durationDays -> dollars
 
@@ -75,6 +76,14 @@ export const AD_PRICING: Record<AdOptionId, AdPricingConfig> = {
     defaultDurationDays: 30,
     prices: {
       30: 79,
+    },
+  },
+
+  "custom-solution-deposit": {
+    label: "Custom Solution Deposit",
+    defaultDurationDays: 30,
+    prices: {
+      30: 100,
     },
   },
 };
