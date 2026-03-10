@@ -437,7 +437,7 @@ export default function SellerDashboard() {
             icon={<Package className="h-5 w-5 text-yellow-300" />}
             title="My Products"
             description="Edit, delete, and manage your products."
-            href="/marketplace/dashboard"
+            href="/dashboard/seller/products"
           />
           <ActionCard
             icon={<ShoppingCart className="h-5 w-5 text-yellow-300" />}
@@ -450,6 +450,12 @@ export default function SellerDashboard() {
             title="Analytics"
             description="Understand sales performance and trends."
             href="/marketplace/analytics"
+          />
+          <ActionCard
+            icon={<BadgeCheck className="h-5 w-5 text-yellow-300" />}
+            title="Payout Setup"
+            description="Check or complete Stripe payout readiness."
+            href="/marketplace/become-a-seller?refresh=1"
           />
         </div>
       </div>
