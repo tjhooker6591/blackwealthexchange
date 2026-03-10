@@ -236,8 +236,8 @@ export default function AdvertiseWithUs() {
             ) : canBuy ? (
               <BuyNowButton
                 userId={userId}
-                itemId="example-sponsor-package"
-                amount={75}
+                itemId="sponsored-listing"
+                amount={79}
                 type="ad"
               />
             ) : (

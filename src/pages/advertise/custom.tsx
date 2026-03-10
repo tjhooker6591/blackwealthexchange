@@ -7,7 +7,6 @@ type SaveResponse =
   | { success: true; requestId: string; message: string }
   | { success: false; error: string };
 
-type CheckoutResponse = { url: string } | { success?: false; error?: string };
 
 const CUSTOM_OPTIONS = [
   {
@@ -169,33 +168,8 @@ export default function CustomAd() {
     setStartingCheckout(true);
 
     try {
-      const res = await fetch("/api/stripe/checkout", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({
-          userId,
-          itemId: "custom-ad-deposit",
-          amount: 100,
-          type: "ad",
-          customRequestId: requestId,
-          adKind: "custom",
-        }),
-      });
-
-      const data: CheckoutResponse = await res.json();
-
-      if (!res.ok || !("url" in data) || !data.url) {
-        throw new Error(
-          "error" in data && data.error
-            ? data.error
-            : "Failed to start checkout.",
-        );
-      }
-
-      window.location.href = data.url;
+      const next = `/advertising/checkout?option=sponsored-listing&duration=30&placement=custom-solution&campaignId=${encodeURIComponent(requestId)}`;
+      window.location.href = next;
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Failed to start checkout.";
