@@ -18,13 +18,50 @@ export default async function handler(
     const client = await clientPromise;
     const db = client.db("bwes-cluster");
 
+    const limitRaw = Number(req.query.limit ?? 200);
+    const limit = Number.isFinite(limitRaw)
+      ? Math.max(1, Math.min(500, Math.floor(limitRaw)))
+      : 200;
+
+    const projection = {
+      userId: 1,
+      name: 1,
+      email: 1,
+      status: 1,
+      clicks: 1,
+      conversions: 1,
+      totalEarned: 1,
+      lifetimeEarnings: 1,
+      totalPaid: 1,
+      createdAt: 1,
+      approvedAt: 1,
+      rejectedAt: 1,
+      updatedAt: 1,
+    };
+
     const [pending, active, rejected] = await Promise.all([
-      db.collection("affiliates").find({ status: "pending" }).toArray(),
-      db.collection("affiliates").find({ status: "active" }).toArray(),
-      db.collection("affiliates").find({ status: "rejected" }).toArray(),
+      db
+        .collection("affiliates")
+        .find({ status: "pending" }, { projection })
+        .sort({ updatedAt: -1, createdAt: -1 })
+        .limit(limit)
+        .toArray(),
+      db
+        .collection("affiliates")
+        .find({ status: "active" }, { projection })
+        .sort({ updatedAt: -1, createdAt: -1 })
+        .limit(limit)
+        .toArray(),
+      db
+        .collection("affiliates")
+        .find({ status: "rejected" }, { projection })
+        .sort({ updatedAt: -1, createdAt: -1 })
+        .limit(limit)
+        .toArray(),
     ]);
 
     return res.status(200).json({
+      meta: { limitPerStatus: limit },
       pending: pending.map(formatAffiliate),
       active: active.map(formatAffiliate),
       rejected: rejected.map(formatAffiliate),
