@@ -3,6 +3,12 @@ import Stripe from "stripe";
 import { ObjectId } from "mongodb";
 import clientPromise from "@/lib/mongodb";
 import { calculateShipping, type CartItem } from "@/lib/shipping";
+import { getMongoDbName } from "@/lib/env";
+import {
+  ensureApiRateLimitIndexes,
+  getClientIp,
+  hitApiRateLimit,
+} from "@/lib/apiRateLimit";
 
 type OidLike = { $oid?: string; oid?: string; _id?: unknown } | any;
 type PayoutMode = "destination_charge" | "platform_hold";
@@ -243,7 +249,18 @@ export default async function handler(
     }
 
     const client = await clientPromise;
-    const db = client.db("bwes-cluster");
+    const db = client.db(getMongoDbName());
+
+    await ensureApiRateLimitIndexes(db);
+    const ip = getClientIp(req);
+    const ipLimit = await hitApiRateLimit(db, `checkout:product:ip:${ip}`, 40, 10);
+    if (ipLimit.blocked) {
+      res.setHeader("Retry-After", String(ipLimit.retryAfterSeconds));
+      return res.status(429).json({
+        code: "RATE_LIMITED",
+        message: "Too many checkout attempts. Please try again shortly.",
+      });
+    }
 
     const productsCol = db.collection<any>("products");
     const pid = normalizeObjectId(productId);
@@ -319,6 +336,14 @@ export default async function handler(
         debug: !isProd()
           ? { sellerId: String(seller._id), stripeAccountId }
           : undefined,
+      });
+    }
+
+    const stockRaw = Number(product?.stock ?? product?.inventory ?? 1);
+    if (Number.isFinite(stockRaw) && stockRaw <= 0) {
+      return res.status(409).json({
+        code: "OUT_OF_STOCK",
+        message: "This product is currently out of stock.",
       });
     }
 
@@ -446,22 +471,30 @@ export default async function handler(
       });
     }
 
-    await db.collection("orders").insertOne({
-      sessionId: session.id,
-      productId: product._id,
-      sellerId: seller._id,
-      stripeAccountId,
-      subtotal: unitAmountCents,
-      shipping: shippingCostCents,
-      applicationFee,
-      total: unitAmountCents + shippingCostCents,
-      payoutMode,
-      needsManualSellerPayout: payoutMode === "platform_hold",
-      paid: false,
-      status: "pending_checkout",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    });
+    await db.collection("orders").updateOne(
+      { sessionId: session.id },
+      {
+        $setOnInsert: {
+          createdAt: new Date(),
+        },
+        $set: {
+          sessionId: session.id,
+          productId: product._id,
+          sellerId: seller._id,
+          stripeAccountId,
+          subtotal: unitAmountCents,
+          shipping: shippingCostCents,
+          applicationFee,
+          total: unitAmountCents + shippingCostCents,
+          payoutMode,
+          needsManualSellerPayout: payoutMode === "platform_hold",
+          paid: false,
+          status: "pending_checkout",
+          updatedAt: new Date(),
+        },
+      },
+      { upsert: true },
+    );
 
     return res.status(200).json({
       sessionId: session.id,
