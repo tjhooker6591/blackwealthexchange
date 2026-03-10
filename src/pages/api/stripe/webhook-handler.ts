@@ -9,7 +9,10 @@ import { grantCourseAccess } from "@/lib/db/courses";
 import { recordAffiliateConversion } from "@/lib/db/affiliates";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
-import { reserveFeaturedSponsorWeeks, weekStartUtc } from "@/lib/advertising/sponsorSchedule";
+import {
+  reserveFeaturedSponsorWeeks,
+  weekStartUtc,
+} from "@/lib/advertising/sponsorSchedule";
 
 export const config = {
   api: { bodyParser: false },
@@ -561,7 +564,8 @@ export default async function webhookHandler(
           const setPatch: Record<string, any> = {
             paymentStatus: "paid",
             depositPaid: true,
-            status: adReq.status === "pending_review" ? "approved" : adReq.status,
+            status:
+              adReq.status === "pending_review" ? "approved" : adReq.status,
             updatedAt: now,
             paidAt,
             stripeSessionId,
@@ -576,10 +580,13 @@ export default async function webhookHandler(
                 : null,
               businessName: adReq.business,
               website: adReq.website,
+              targetUrl: adReq.targetUrl || adReq.website,
               creativeUrl: adReq.adImage,
               tagline: adReq.details,
-              placement: adReq.placement || "homepage-featured-sponsor",
+              placement:
+                adReq.placement || adReq.placementType || "homepage-featured-sponsor",
               option: normalizedItemId,
+              flexibleStart: Boolean(adReq.flexibleStart ?? true),
             });
 
             const firstWeek = assignments[0]?.weekStart
@@ -605,10 +612,7 @@ export default async function webhookHandler(
 
           await db
             .collection("advertising_requests")
-            .updateOne(
-              { _id: new ObjectId(campaignId) },
-              { $set: setPatch },
-            );
+            .updateOne({ _id: new ObjectId(campaignId) }, { $set: setPatch });
         }
       }
     }

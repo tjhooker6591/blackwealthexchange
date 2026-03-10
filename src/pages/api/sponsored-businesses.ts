@@ -67,7 +67,7 @@ export default async function handler(
         tagline:
           s(row.tagline).slice(0, 90) || "Featured on Black Wealth Exchange",
         img: s(row.creativeUrl) || "/default-image.jpg",
-        url: normalizeBusinessUrl(s(row.website)),
+        url: normalizeBusinessUrl(s(row.targetUrl || row.website)),
         cta: "Learn More",
         tier: "featured-sponsor",
         featuredSlot: i + 1,
@@ -128,7 +128,9 @@ export default async function handler(
           cta: "Learn More",
           tier: s(listing?.tier),
           featuredSlot:
-            typeof listing?.featuredSlot === "number" ? listing.featuredSlot : null,
+            typeof listing?.featuredSlot === "number"
+              ? listing.featuredSlot
+              : null,
           source: "directory_listings",
         };
       })

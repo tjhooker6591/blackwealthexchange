@@ -568,8 +568,14 @@ export default function Home() {
 
         setSponsors(
           data.sponsors.map((s: any) => ({
-            img: typeof s?.img === "string" && s.img ? s.img : "/default-image.jpg",
-            name: typeof s?.name === "string" && s.name ? s.name : "Featured Sponsor",
+            img:
+              typeof s?.img === "string" && s.img
+                ? s.img
+                : "/default-image.jpg",
+            name:
+              typeof s?.name === "string" && s.name
+                ? s.name
+                : "Featured Sponsor",
             url: typeof s?.url === "string" ? s.url : undefined,
             tagline: typeof s?.tagline === "string" ? s.tagline : undefined,
           })),
@@ -1452,7 +1458,12 @@ export default function Home() {
 
                 if (sponsor.url) {
                   return (
-                    <a key={index} href={sponsor.url} target="_blank" rel="noreferrer noopener">
+                    <a
+                      key={index}
+                      href={sponsor.url}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                    >
                       {card}
                     </a>
                   );

@@ -22,6 +22,7 @@ type AdvertisingRequestRow = {
   scheduleWeeks: string[];
   scheduleQueueStatus: string | null;
   scheduleRolledOver: boolean;
+  campaignLifecycle: "pending" | "queued" | "scheduled" | "active" | "completed";
   selectedOptions: string[];
   budget: string | null;
   timeline: string | null;
@@ -104,7 +105,7 @@ export default async function handler(
       ? await db
           .collection("featured_sponsor_schedule")
           .find({ campaignId: { $in: requestIds } })
-          .project({ campaignId: 1, weekStart: 1, queueStatus: 1 })
+          .project({ campaignId: 1, weekStart: 1, weekEnd: 1, queueStatus: 1 })
           .sort({ weekStart: 1 })
           .toArray()
       : [];
@@ -118,11 +119,43 @@ export default async function handler(
       scheduleMap.set(key, arr);
     }
 
+    const now = new Date();
+
     const rows: AdvertisingRequestRow[] = requests.map((r: any) => {
       const key = String(r._id);
       const paid = paidMap.get(key);
       const schedule = scheduleMap.get(key) || [];
       const depositPaid = Boolean(r.depositPaid) || Boolean(paid);
+
+      const scheduleStarts = schedule
+        .map((x: any) =>
+          x?.weekStart ? new Date(x.weekStart).toISOString().slice(0, 10) : null,
+        )
+        .filter(Boolean) as string[];
+
+      const inActiveWindow = schedule.some((x: any) => {
+        const ws = x?.weekStart ? new Date(x.weekStart) : null;
+        const we = x?.weekEnd ? new Date(x.weekEnd) : null;
+        return ws && we && ws <= now && now <= we;
+      });
+
+      const hasFuture = schedule.some((x: any) => {
+        const ws = x?.weekStart ? new Date(x.weekStart) : null;
+        return ws && ws > now;
+      });
+
+      const hasAnySchedule = scheduleStarts.length > 0;
+
+      const campaignLifecycle: AdvertisingRequestRow["campaignLifecycle"] =
+        !depositPaid
+          ? "pending"
+          : inActiveWindow
+            ? "active"
+            : hasFuture
+              ? "queued"
+              : hasAnySchedule
+                ? "completed"
+                : "scheduled";
 
       return {
         _id: key,
@@ -138,11 +171,7 @@ export default async function handler(
             ? Number(r.durationDays)
             : null,
         placement: typeof r.placement === "string" ? r.placement : null,
-        scheduleWeeks: schedule
-          .map((x: any) =>
-            x?.weekStart ? new Date(x.weekStart).toISOString().slice(0, 10) : null,
-          )
-          .filter(Boolean),
+        scheduleWeeks: scheduleStarts,
         scheduleQueueStatus:
           schedule.length && typeof schedule[0]?.queueStatus === "string"
             ? schedule[0].queueStatus
@@ -150,6 +179,7 @@ export default async function handler(
         scheduleRolledOver: schedule.some(
           (x: any) => x?.queueStatus === "rolled_over",
         ),
+        campaignLifecycle,
         selectedOptions: Array.isArray(r.selectedOptions)
           ? r.selectedOptions
           : [],

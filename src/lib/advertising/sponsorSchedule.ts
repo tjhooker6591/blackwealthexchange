@@ -12,6 +12,7 @@ export type SponsorScheduleRow = {
   updatedAt: Date;
   businessName?: string;
   website?: string;
+  targetUrl?: string;
   creativeUrl?: string;
   tagline?: string;
   durationDays?: number;
@@ -19,7 +20,9 @@ export type SponsorScheduleRow = {
 };
 
 export function weekStartUtc(input: Date) {
-  const d = new Date(Date.UTC(input.getUTCFullYear(), input.getUTCMonth(), input.getUTCDate()));
+  const d = new Date(
+    Date.UTC(input.getUTCFullYear(), input.getUTCMonth(), input.getUTCDate()),
+  );
   const day = d.getUTCDay();
   const diff = (day + 6) % 7; // monday start
   d.setUTCDate(d.getUTCDate() - diff);
@@ -40,8 +43,10 @@ export async function reserveFeaturedSponsorWeeks(
     campaignId: string;
     durationDays: number;
     requestedStartDate?: string | null;
+    flexibleStart?: boolean;
     businessName?: string;
     website?: string;
+    targetUrl?: string;
     creativeUrl?: string;
     tagline?: string;
     placement?: string;
@@ -53,22 +58,37 @@ export async function reserveFeaturedSponsorWeeks(
   const requested = input.requestedStartDate
     ? new Date(input.requestedStartDate)
     : now;
-  const baseWeek = weekStartUtc(Number.isNaN(requested.getTime()) ? now : requested);
+  const requestedWeek = weekStartUtc(
+    Number.isNaN(requested.getTime()) ? now : requested,
+  );
+  const currentWeek = weekStartUtc(now);
+  const baseWeek = input.flexibleStart
+    ? currentWeek.getTime() > requestedWeek.getTime()
+      ? currentWeek
+      : requestedWeek
+    : requestedWeek;
 
-  const weeksNeeded = Math.max(1, Math.ceil((Number(input.durationDays) || 7) / 7));
+  const weeksNeeded = Math.max(
+    1,
+    Math.ceil((Number(input.durationDays) || 7) / 7),
+  );
   const assignments: SponsorScheduleRow[] = [];
 
   let cursor = new Date(baseWeek);
   for (let i = 0; i < weeksNeeded; i++) {
     // find first week with free slot
     while (true) {
-      const count = await db.collection("featured_sponsor_schedule").countDocuments({
-        placement: input.placement || "homepage-featured-sponsor",
-        weekStart: cursor,
-        status: { $in: ["scheduled", "active"] },
-      });
+      const count = await db
+        .collection("featured_sponsor_schedule")
+        .countDocuments({
+          placement: input.placement || "homepage-featured-sponsor",
+          weekStart: cursor,
+          status: { $in: ["scheduled", "active"] },
+        });
       if (count < capacity) break;
-      cursor = weekStartUtc(new Date(cursor.getTime() + 7 * 24 * 60 * 60 * 1000));
+      cursor = weekStartUtc(
+        new Date(cursor.getTime() + 7 * 24 * 60 * 60 * 1000),
+      );
     }
 
     const row: SponsorScheduleRow = {
@@ -78,9 +98,11 @@ export async function reserveFeaturedSponsorWeeks(
       weekStart: new Date(cursor),
       weekEnd: weekEndUtc(cursor),
       status: "scheduled",
-      queueStatus: cursor.getTime() === baseWeek.getTime() ? "assigned" : "rolled_over",
+      queueStatus:
+        cursor.getTime() === baseWeek.getTime() ? "assigned" : "rolled_over",
       businessName: input.businessName,
       website: input.website,
+      targetUrl: input.targetUrl,
       creativeUrl: input.creativeUrl,
       tagline: input.tagline,
       durationDays: Number(input.durationDays) || 7,
@@ -91,11 +113,13 @@ export async function reserveFeaturedSponsorWeeks(
       updatedAt: now,
     };
 
-    await db.collection("featured_sponsor_schedule").updateOne(
-      { campaignId: input.campaignId, weekStart: row.weekStart },
-      { $setOnInsert: row, $set: { updatedAt: now } },
-      { upsert: true },
-    );
+    await db
+      .collection("featured_sponsor_schedule")
+      .updateOne(
+        { campaignId: input.campaignId, weekStart: row.weekStart },
+        { $setOnInsert: row, $set: { updatedAt: now } },
+        { upsert: true },
+      );
 
     assignments.push(row);
     cursor = weekStartUtc(new Date(cursor.getTime() + 7 * 24 * 60 * 60 * 1000));

@@ -16,6 +16,8 @@ export default function FeaturedSponsorPage() {
   const [notes, setNotes] = useState("");
   const [campaignTitle, setCampaignTitle] = useState("");
   const [requestedStartDate, setRequestedStartDate] = useState("");
+  const [flexibleStart, setFlexibleStart] = useState(true);
+  const [targetUrl, setTargetUrl] = useState("");
   const [creativeUrl, setCreativeUrl] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -66,6 +68,7 @@ export default function FeaturedSponsorPage() {
         adText: notes || "Featured sponsor campaign request",
         adImage: adImageFile?.name || creativeUrl.trim(),
         website,
+        targetUrl: targetUrl || website,
         budget:
           campaignDuration === "7"
             ? "25"
@@ -76,6 +79,7 @@ export default function FeaturedSponsorPage() {
         durationDays: Number(campaignDuration),
         placement: "homepage-featured-sponsor",
         requestedStartDate: requestedStartDate || undefined,
+        flexibleStart,
       };
 
       const res = await fetch("/api/advertising/submit", {
@@ -256,6 +260,12 @@ export default function FeaturedSponsorPage() {
               className="w-full bg-black text-white border border-gray-600 rounded p-2"
             />
             <input
+              value={targetUrl}
+              onChange={(e) => setTargetUrl(e.target.value)}
+              placeholder="Target URL for sponsor click-through"
+              className="w-full bg-black text-white border border-gray-600 rounded p-2"
+            />
+            <input
               value={campaignTitle}
               onChange={(e) => setCampaignTitle(e.target.value)}
               placeholder="Campaign title (optional)"
@@ -268,6 +278,14 @@ export default function FeaturedSponsorPage() {
               className="w-full bg-black text-white border border-gray-600 rounded p-2"
             />
           </div>
+          <label className="inline-flex items-center gap-2 text-sm text-gray-300">
+            <input
+              type="checkbox"
+              checked={flexibleStart}
+              onChange={(e) => setFlexibleStart(e.target.checked)}
+            />
+            Flexible start (allow auto-rollover to next available week)
+          </label>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}

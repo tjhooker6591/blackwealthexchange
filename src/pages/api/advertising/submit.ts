@@ -30,7 +30,10 @@ export default async function handler(
   const option = String(body.option || "").trim();
   const durationDays = Number(body.durationDays || 0);
   const placement = String(body.placement || "").trim();
+  const placementType = String(body.placementType || placement || "").trim();
   const requestedStartDate = String(body.requestedStartDate || "").trim();
+  const flexibleStart = Boolean(body.flexibleStart ?? true);
+  const targetUrl = String(body.targetUrl || website || "").trim();
   const campaignTitle = String(body.campaignTitle || "").trim();
 
   if (!name || !EMAIL_REGEX.test(email) || !businessName || !adText) {
@@ -63,14 +66,19 @@ export default async function handler(
       budget: budget || null,
       adImage: adImage || null,
       website: website || null,
+      targetUrl: targetUrl || null,
       option: option || null,
+      placementType: placementType || null,
       campaignTitle: campaignTitle || null,
       durationDays:
         Number.isFinite(durationDays) && durationDays > 0
           ? Math.floor(durationDays)
           : null,
       placement: placement || null,
-      requestedStartDate: requestedStartDate ? new Date(requestedStartDate) : null,
+      requestedStartDate: requestedStartDate
+        ? new Date(requestedStartDate)
+        : null,
+      flexibleStart,
       creativeAssets: adImage ? [adImage] : [],
       scheduling: {
         status: "pending_payment",

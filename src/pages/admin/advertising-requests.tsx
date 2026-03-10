@@ -15,6 +15,7 @@ type Row = {
   scheduleWeeks: string[];
   scheduleQueueStatus: string | null;
   scheduleRolledOver: boolean;
+  campaignLifecycle: "pending" | "queued" | "scheduled" | "active" | "completed";
   selectedOptions: string[];
   budget: string | null;
   timeline: string | null;
@@ -138,6 +139,7 @@ export default function AdvertisingRequestsAdminPage() {
                     <td className="p-3">
                       <div className="font-semibold">{r.business || "—"}</div>
                       <div className="text-xs text-gray-400">{r.status}</div>
+                      <div className="text-[11px] text-yellow-300">{r.campaignLifecycle}</div>
                     </td>
                     <td className="p-3">
                       <div>{r.name || "—"}</div>
@@ -154,7 +156,8 @@ export default function AdvertisingRequestsAdminPage() {
                       <div>Placement: {r.placement || "—"}</div>
                       <div>
                         Scheduled weeks:{" "}
-                        {Array.isArray(r.scheduleWeeks) && r.scheduleWeeks.length
+                        {Array.isArray(r.scheduleWeeks) &&
+                        r.scheduleWeeks.length
                           ? r.scheduleWeeks.join(", ")
                           : "—"}
                       </div>
