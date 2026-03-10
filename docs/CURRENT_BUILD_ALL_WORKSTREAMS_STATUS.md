@@ -135,7 +135,7 @@ Status labels allowed:
 - **Status:** PARTIAL
 - **Entry point:** `/music`, `/music/join`, `/music/pricing`, homepage Music section CTAs, top nav Music link.
 - **Expected final outcome:** dedicated music area with creator onboarding, pricing/checkout activation, payment, entitlement, and creator-ready destination.
-- **Current actual outcome:** canonical music entry path is now implemented with dedicated onboarding and pricing routes; checkout session creation for music creator plans is live and returns music-specific success/cancel URLs. Post-payment entitlement + creator-ready final-state proof remains open.
+- **Current actual outcome:** canonical music entry path is now implemented with dedicated onboarding and pricing routes; checkout session creation for music creator plans is live and returns music-specific success/cancel URLs. Dedicated creator-ready destination exists at `/creator/dashboard` with readiness state surfaced from `/api/marketplace/readiness`. Post-payment entitlement + creator-ready final-state proof remains open.
 - **Exact blocker:** payment completion + webhook entitlement update + final creator-ready proof for a new canonical music plan run.
 - **Files/routes/endpoints involved:** `src/pages/music.tsx`, `src/pages/music/join.tsx`, `src/pages/music/pricing.tsx`, `src/pages/api/music/creator-onboarding.ts`, `src/pages/api/marketplace/get-my-seller.ts`, `src/pages/api/stripe/checkout.ts`, `src/pages/api/stripe/webhook-handler.ts`, homepage/nav components.
 - **Exact closure condition:** a canonical music plan purchase completes and updates creator entitlement state, then routes user to creator-ready destination with music selling capability enabled.
