@@ -28,6 +28,17 @@ function add(result, name, pass, details) {
   if (!pass) result.remainingIncompleteFlows.push({ name, ...details });
 }
 
+function parseCookie(setCookieValue) {
+  if (!setCookieValue) return "";
+  const list = Array.isArray(setCookieValue)
+    ? setCookieValue
+    : [String(setCookieValue)];
+  return list
+    .map((entry) => String(entry).split(";")[0])
+    .filter(Boolean)
+    .join("; ");
+}
+
 const out = {
   base,
   flowsValidated: [],
@@ -229,7 +240,8 @@ out.routeTypoCheck = {
   typoRouteStatus: typoRoute.status,
   canonicalRouteStatus: correctedRoute.status,
   conclusion:
-    [301, 302, 307, 308].includes(typoRoute.status) && correctedRoute.status === 200
+    [301, 302, 307, 308].includes(typoRoute.status) &&
+    correctedRoute.status === 200
       ? "Canonical route is /resources/inclusive-job-descriptions with backward redirect from typo slug."
       : "Route mapping differs; review required.",
 };
