@@ -1,67 +1,7 @@
 // src/pages/api/admin/affiliates/list.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
-import cookie from "cookie";
-import jwt from "jsonwebtoken";
-
-type Decoded = {
-  userId?: string;
-  email?: string;
-  accountType?: string;
-  role?: string;
-  isAdmin?: boolean;
-  roles?: string[];
-};
-
-function isAdmin(decoded: Decoded) {
-  if (decoded?.isAdmin) return true;
-  if (decoded?.accountType === "admin") return true;
-  if (decoded?.role === "admin") return true;
-  if (Array.isArray(decoded?.roles) && decoded.roles.includes("admin")) {
-    return true;
-  }
-
-  const allow = (process.env.ADMIN_EMAILS || "")
-    .split(",")
-    .map((s) => s.trim().toLowerCase())
-    .filter(Boolean);
-
-  if (allow.length && decoded?.email) {
-    return allow.includes(decoded.email.toLowerCase());
-  }
-
-  return false;
-}
-
-async function requireAdmin(
-  req: NextApiRequest,
-  res: NextApiResponse,
-): Promise<Decoded | null> {
-  const cookies = cookie.parse(req.headers.cookie || "");
-  const token = cookies.session_token;
-
-  if (!token) {
-    res.status(401).json({ message: "Unauthorized" });
-    return null;
-  }
-
-  try {
-    const SECRET = process.env.JWT_SECRET || process.env.NEXTAUTH_SECRET;
-    if (!SECRET) throw new Error("JWT secret missing");
-
-    const decoded = jwt.verify(token, SECRET) as Decoded;
-
-    if (process.env.NODE_ENV === "production" && !isAdmin(decoded)) {
-      res.status(403).json({ message: "Forbidden" });
-      return null;
-    }
-
-    return decoded;
-  } catch {
-    res.status(401).json({ message: "Unauthorized" });
-    return null;
-  }
-}
+import { requireAdminFromRequest } from "@/lib/adminAuth";
 
 export default async function handler(
   req: NextApiRequest,
@@ -71,7 +11,7 @@ export default async function handler(
     return res.status(405).json({ message: "Method Not Allowed" });
   }
 
-  const admin = await requireAdmin(req, res);
+  const admin = await requireAdminFromRequest(req, res);
   if (!admin) return;
 
   try {
@@ -98,7 +38,9 @@ export default async function handler(
 }
 
 function formatAffiliate(affiliate: any) {
-  const totalEarned = Number(affiliate.totalEarned || affiliate.lifetimeEarnings || 0);
+  const totalEarned = Number(
+    affiliate.totalEarned || affiliate.lifetimeEarnings || 0,
+  );
   const totalPaid = Number(affiliate.totalPaid || 0);
 
   return {
