@@ -115,7 +115,7 @@ Status labels allowed:
 - **Status:** PARTIAL
 - **Entry point:** `/recruiting-consulting`, homepage consulting CTAs
 - **Expected final outcome:** lead/opportunity intake completes, records saved, admin management path operational through managed-service pipeline.
-- **Current actual outcome:** intake + admin review paths exist; admin visibility mismatch between `consulting_interest` and `consulting_intake` has been closed via unified feed, leads are visible on dedicated admin page (`/admin/consulting-leads`), and admin dashboard quick-link + feed parsing now align with unified payload. Full lead-to-managed-service closure not yet proven.
+- **Current actual outcome:** intake + admin review paths exist; admin visibility mismatch between `consulting_interest` and `consulting_intake` has been closed via unified feed, leads are visible on dedicated admin page (`/admin/consulting-leads`), admin dashboard quick-link + feed parsing align with unified payload, and lead status triage (pending/approved/flagged/rejected) is now actionable via PATCH workflow. Full lead-to-managed-service closure not yet proven.
 - **Exact blocker:** downstream service pipeline completion evidence missing.
 - **Files/routes/endpoints involved:** `src/pages/recruiting-consulting.tsx`, `src/pages/api/consulting-intake.ts`, `src/pages/api/consulting-interest.ts`, `src/pages/api/admin/consulting-interests.ts`, `src/pages/admin/dashboard.tsx`.
 - **Exact closure condition:** one full intake-to-admin-managed-service lifecycle proven end-to-end.
@@ -125,7 +125,7 @@ Status labels allowed:
 - **Status:** PARTIAL
 - **Entry point:** `/affiliate/*` + affiliate admin tools
 - **Expected final outcome:** apply/approve, tracking, conversion attribution, payable balances, payout request + completion all function correctly.
-- **Current actual outcome:** APIs/admin surfaces exist; admin affiliate list auth/earnings visibility has been hardened (session-admin gate + normalized total/available earnings), attribution visibility endpoint added (`/api/admin/affiliate-attribution`) with admin page (`/admin/affiliate-attribution`) and admin dashboard quick-link, and payout accounting now increments on completion instead of request. Full conversion-to-payout chain proof is still not closed.
+- **Current actual outcome:** APIs/admin surfaces exist; admin affiliate list auth/earnings visibility has been hardened (session-admin gate + normalized total/available earnings), attribution visibility endpoint added (`/api/admin/affiliate-attribution`) with admin page (`/admin/affiliate-attribution`) and admin dashboard quick-link, and payout accounting now increments on completion instead of request with duplicate-request and double-complete protections. Full conversion-to-payout chain proof is still not closed.
 - **Exact blocker:** missing verified end-to-end conversion attribution through completed payout.
 - **Files/routes/endpoints involved:** `src/pages/affiliate/*.tsx`, `src/pages/api/affiliate/*`, `src/pages/api/admin/affiliates/*`, `src/pages/api/admin/get-payouts.ts`, `src/pages/api/admin/complete-payout.ts`.
 - **Exact closure condition:** one canonical affiliate journey proves attributed conversion and completed payout state.
