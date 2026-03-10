@@ -196,8 +196,8 @@ export default async function handler(
     const origin = getOrigin(req);
 
     // ✅ Match your existing pages in the repo
-    const successUrl = withCheckoutSessionId(`${origin}/payment-success`);
-    const cancelUrl = `${origin}/payment-cancel`;
+    let successUrl = withCheckoutSessionId(`${origin}/payment-success`);
+    let cancelUrl = `${origin}/payment-cancel`;
 
     const isAd = type === "ad";
 
@@ -303,6 +303,8 @@ export default async function handler(
       const planMap: Record<string, number> = {
         premium: 1200, // $12.00
         founder: 4900, // $49.00
+        "music-creator-starter": 2900, // $29.00
+        "music-creator-pro": 7900, // $79.00
       };
 
       unitAmount = planMap[itemId];
@@ -311,6 +313,11 @@ export default async function handler(
       itemName = `Plan Upgrade (${itemId})`;
       isPlatformAccount = true;
       stripeAccountId = process.env.PLATFORM_STRIPE_ACCOUNT_ID as string;
+
+      if (itemId.startsWith("music-creator-")) {
+        successUrl = withCheckoutSessionId(`${origin}/music/join?activated=1`);
+        cancelUrl = `${origin}/music/pricing?canceled=1`;
+      }
     } else if (type === "course") {
       const courseMap: Record<string, { name: string; amount: number }> = {
         "financial-literacy-premium": {

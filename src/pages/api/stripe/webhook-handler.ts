@@ -540,6 +540,61 @@ export default async function webhookHandler(
     }
 
     /**
+     * 3.5) Music creator plan entitlement (new)
+     */
+    if (metaType === "plan" && normalizedItemId.startsWith("music-creator-")) {
+      const planDurations: Record<string, number> = {
+        "music-creator-starter": 30,
+        "music-creator-pro": 30,
+      };
+      const durationDays = planDurations[normalizedItemId] || 30;
+      const planStartAt = paidAt;
+      const planExpiresAt = new Date(
+        planStartAt.getTime() + durationDays * 24 * 60 * 60 * 1000,
+      );
+
+      if (userId) {
+        await db.collection("sellers").updateMany(
+          { userId },
+          {
+            $set: {
+              creatorSubtype: "music",
+              creatorPlanId: normalizedItemId,
+              creatorPlanStatus: "active",
+              creatorPlanDurationDays: durationDays,
+              creatorPlanStartAt: planStartAt,
+              creatorPlanExpiresAt: planExpiresAt,
+              creatorReady: true,
+              updatedAt: now,
+            },
+          },
+        );
+
+        if (email) {
+          await db.collection("users").updateOne(
+            { email },
+            {
+              $set: {
+                creatorSubtype: "music",
+                creatorPlanId: normalizedItemId,
+                creatorPlanStatus: "active",
+                creatorPlanDurationDays: durationDays,
+                creatorPlanStartAt: planStartAt,
+                creatorPlanExpiresAt: planExpiresAt,
+                creatorReady: true,
+                updatedAt: now,
+              },
+            },
+          );
+        }
+
+        console.log(
+          `✅ Music creator plan activated user=${userId} plan=${normalizedItemId}`,
+        );
+      }
+    }
+
+    /**
      * 4) Marketplace order checkout (existing)
      */
     if (mergedMeta.orderId) {

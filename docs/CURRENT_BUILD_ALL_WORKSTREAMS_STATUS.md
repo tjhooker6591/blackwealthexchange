@@ -1,6 +1,7 @@
 # Current Build — Canonical All-Workstreams Status
 
 Status labels allowed:
+
 - COMPLETE
 - PARTIAL
 - BLOCKED BY ENV/CONFIG
@@ -10,6 +11,7 @@ Status labels allowed:
 ---
 
 ## 1) Auth / login / session
+
 - **Status:** PARTIAL
 - **Entry point:** `/login`
 - **Expected final outcome:** valid login establishes session; `/api/auth/session` + `/api/auth/me` behave correctly; protected routes guard/redirect correctly on both local systems.
@@ -19,6 +21,7 @@ Status labels allowed:
 - **Exact closure condition:** same commit/env contract proves successful login/session/protected-route behavior on both Mac mini + main dev with no auth/env regressions.
 
 ## 2) Marketplace buy flow
+
 - **Status:** BLOCKED BY PAYMENT COMPLETION
 - **Entry point:** `/marketplace` Buy CTA
 - **Expected final outcome:** CTA -> checkout -> payment complete -> webhook -> DB fulfillment state persisted -> user-visible purchased state correct.
@@ -28,6 +31,7 @@ Status labels allowed:
 - **Exact closure condition:** one canonical marketplace paid run shows payment complete, webhook processed, DB fulfilled state, and user-visible final state.
 
 ## 3) Seller onboarding
+
 - **Status:** PARTIAL
 - **Entry point:** `/marketplace/become-a-seller`
 - **Expected final outcome:** terms step actionable, seller created, onboarding continues, connect/payout readiness reached, seller/dashboard-ready state.
@@ -37,6 +41,7 @@ Status labels allowed:
 - **Exact closure condition:** new seller completes onboarding and reaches verifiable seller-ready/connect-ready state without dead-ends.
 
 ## 4) Pricing / upgrade
+
 - **Status:** BLOCKED BY PAYMENT COMPLETION
 - **Entry point:** `/pricing`
 - **Expected final outcome:** plan CTA -> checkout -> payment complete -> upgraded entitlement/access applied.
@@ -46,6 +51,7 @@ Status labels allowed:
 - **Exact closure condition:** canonical paid plan run proves entitlement/access update after webhook.
 
 ## 5) Financial literacy / course purchase
+
 - **Status:** BLOCKED BY PAYMENT COMPLETION
 - **Entry point:** `/financial-literacy` (Get Lifetime Access / Enroll)
 - **Expected final outcome:** paid or free path completes; user gets course access/enrollment and correct destination.
@@ -55,6 +61,7 @@ Status labels allowed:
 - **Exact closure condition:** one canonical course purchase shows webhook/DB access grant and successful access to entitled course area.
 
 ## 6) Sponsorship purchase-to-fulfillment
+
 - **Status:** BLOCKED BY PAYMENT COMPLETION
 - **Entry point:** `/advertising/checkout?option=directory-standard&duration=30&placement=directory-sidebar`
 - **Expected final outcome:** payment complete -> canonical webhook -> DB transitions -> placed/queued outcome -> visible slot render with timing.
@@ -64,6 +71,7 @@ Status labels allowed:
 - **Exact closure condition:** exact canonical session proves paid webhook processing, DB fulfilled records, placed/queued state, slot/timing fields, and visible sponsor slot render.
 
 ## 7) Advertising purchase-to-fulfillment
+
 - **Status:** PARTIAL
 - **Entry point:** `/advertising`, `/advertise/featured-sponsor`, `/advertise/banner-ads`, `/advertise/custom`
 - **Expected final outcome:** canonical SKU checkout, paid completion, webhook fulfillment, placement or queue, visible display with duration/expiration.
@@ -73,6 +81,7 @@ Status labels allowed:
 - **Exact closure condition:** at least one canonical paid run per key ad class proves placed/queued outcome with visible display.
 
 ## 8) Payout / Connect-related completion
+
 - **Status:** PARTIAL
 - **Entry point:** seller/creator connect setup surfaces
 - **Expected final outcome:** account-link/connect flow completes; charges/payouts enabled state persisted and operational.
@@ -82,6 +91,7 @@ Status labels allowed:
 - **Exact closure condition:** verified account reaches charges+payouts enabled and corresponding ready state is reflected in UI/data.
 
 ## 9) Image / asset rendering
+
 - **Status:** PARTIAL
 - **Entry point:** `/marketplace`, `/business-directory`, core site pages
 - **Expected final outcome:** images/assets/chunks render reliably with no broken UI states on both local systems.
@@ -91,6 +101,7 @@ Status labels allowed:
 - **Exact closure condition:** both machines pass UI image/render and asset/chunk integrity checks with same env contract.
 
 ## 10) Cross-machine runtime parity
+
 - **Status:** BLOCKED BY ENV/CONFIG
 - **Entry point:** local startup + auth + core flow smoke on Mac mini and main dev machine
 - **Expected final outcome:** same code behaves equivalently on both systems when env is correct.
@@ -100,6 +111,7 @@ Status labels allowed:
 - **Exact closure condition:** both machines pass same checklist with no env drift defects.
 
 ## 11) Consultant services / BWE Opportunity Network
+
 - **Status:** PARTIAL
 - **Entry point:** `/recruiting-consulting`, homepage consulting CTAs
 - **Expected final outcome:** lead/opportunity intake completes, records saved, admin management path operational through managed-service pipeline.
@@ -109,6 +121,7 @@ Status labels allowed:
 - **Exact closure condition:** one full intake-to-admin-managed-service lifecycle proven end-to-end.
 
 ## 12) Affiliate functionality
+
 - **Status:** PARTIAL
 - **Entry point:** `/affiliate/*` + affiliate admin tools
 - **Expected final outcome:** apply/approve, tracking, conversion attribution, payable balances, payout request + completion all function correctly.
@@ -118,15 +131,17 @@ Status labels allowed:
 - **Exact closure condition:** one canonical affiliate journey proves attributed conversion and completed payout state.
 
 ## 13) Music platform / music selling (major)
-- **Status:** OPEN DEFECT
-- **Entry point:** **No confirmed canonical music-commerce entry path currently verified**.
-- **Expected final outcome:** dedicated music area with browse/discover, creator participation, purchase flow, payment, and post-purchase entitlement/delivery where applicable.
-- **Current actual outcome:** music references/content exist, but no fully verified major music-commerce pipeline surfaced and proven as required.
-- **Exact blocker:** missing canonical music commerce implementation and end-to-end proof; homepage/nav prominence requirements not yet verified as satisfied.
-- **Files/routes/endpoints involved:** music mentions in content pages; no validated canonical music commerce route/checkout/fulfillment chain in current proof set.
-- **Exact closure condition:** explicit music section + nav + CTAs + canonical purchase/delivery flow proven through final state.
+
+- **Status:** PARTIAL
+- **Entry point:** `/music`, `/music/join`, `/music/pricing`, homepage Music section CTAs, top nav Music link.
+- **Expected final outcome:** dedicated music area with creator onboarding, pricing/checkout activation, payment, entitlement, and creator-ready destination.
+- **Current actual outcome:** canonical music entry path is now implemented with dedicated onboarding and pricing routes; checkout session creation for music creator plans is live and returns music-specific success/cancel URLs. Post-payment entitlement + creator-ready final-state proof remains open.
+- **Exact blocker:** payment completion + webhook entitlement update + final creator-ready proof for a new canonical music plan run.
+- **Files/routes/endpoints involved:** `src/pages/music.tsx`, `src/pages/music/join.tsx`, `src/pages/music/pricing.tsx`, `src/pages/api/music/creator-onboarding.ts`, `src/pages/api/marketplace/get-my-seller.ts`, `src/pages/api/stripe/checkout.ts`, `src/pages/api/stripe/webhook-handler.ts`, homepage/nav components.
+- **Exact closure condition:** a canonical music plan purchase completes and updates creator entitlement state, then routes user to creator-ready destination with music selling capability enabled.
 
 ## 14) Creator-selling / broader creator commerce
+
 - **Status:** PARTIAL
 - **Entry point:** creator-adjacent seller + ad/placement flows
 - **Expected final outcome:** creator onboarding, sell/payment lifecycle, fulfillment, and payout/connect readiness function end-to-end.
@@ -136,6 +151,7 @@ Status labels allowed:
 - **Exact closure condition:** one creator run proves onboarding through sale fulfillment and payout/connect-ready state.
 
 ## 15) Digital-product access / delivery after purchase
+
 - **Status:** BLOCKED BY PAYMENT COMPLETION
 - **Entry point:** course/digital purchase CTAs (`/financial-literacy`, `/course-enrollment`, `/courses/*`)
 - **Expected final outcome:** successful payment leads to actual entitlement/access/delivery (not just payment success page).
@@ -149,27 +165,33 @@ Status labels allowed:
 ## Grouped summary
 
 ### COMPLETE
-- *(none currently marked complete under strict end-state standard)*
+
+- _(none currently marked complete under strict end-state standard)_
 
 ### PARTIAL
-- 1) Auth / login / session
-- 3) Seller onboarding
-- 7) Advertising purchase-to-fulfillment
-- 8) Payout / Connect-related completion
-- 9) Image / asset rendering
-- 11) Consultant services / BWE Opportunity Network
-- 12) Affiliate functionality
-- 14) Creator-selling / broader creator commerce
+
+- 1. Auth / login / session
+- 3. Seller onboarding
+- 7. Advertising purchase-to-fulfillment
+- 8. Payout / Connect-related completion
+- 9. Image / asset rendering
+- 11. Consultant services / BWE Opportunity Network
+- 12. Affiliate functionality
+- 13. Music platform / music selling
+- 14. Creator-selling / broader creator commerce
 
 ### BLOCKED BY ENV/CONFIG
-- 10) Cross-machine runtime parity
+
+- 10. Cross-machine runtime parity
 
 ### BLOCKED BY PAYMENT COMPLETION
-- 2) Marketplace buy flow
-- 4) Pricing / upgrade
-- 5) Financial literacy / course purchase
-- 6) Sponsorship purchase-to-fulfillment
-- 15) Digital-product access / delivery after purchase
+
+- 2. Marketplace buy flow
+- 4. Pricing / upgrade
+- 5. Financial literacy / course purchase
+- 6. Sponsorship purchase-to-fulfillment
+- 15. Digital-product access / delivery after purchase
 
 ### OPEN DEFECT
-- 13) Music platform / music selling
+
+- _(none currently classified as open defect in this snapshot; unresolved items are currently PARTIAL or payment/env blocked)_

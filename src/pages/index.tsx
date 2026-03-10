@@ -1338,7 +1338,8 @@ export default function Home() {
                 BWE Music / Creator Platform
               </h2>
               <p className="mt-2 text-sm text-white/70">
-                Explore artists, launch creator storefronts, and support music commerce through canonical checkout and fulfillment.
+                Explore artists, launch creator storefronts, and support music
+                commerce through canonical checkout and fulfillment.
               </p>
             </div>
             <div className="flex flex-wrap gap-2">
@@ -1349,13 +1350,13 @@ export default function Home() {
                 Explore Music
               </Link>
               <Link
-                href="/marketplace/become-a-seller"
+                href="/music/join"
                 className="rounded-xl border border-[#D4AF37]/45 bg-[#D4AF37]/10 px-4 py-2.5 text-sm font-bold text-[#F1D57A] hover:bg-[#D4AF37]/18"
               >
                 Sell Your Music
               </Link>
               <Link
-                href="/music"
+                href="/music/join"
                 className="rounded-xl border border-white/20 bg-white/5 px-4 py-2.5 text-sm font-bold text-white/80 hover:bg-white/10"
               >
                 Join as a Creator

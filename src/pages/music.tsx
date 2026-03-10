@@ -32,9 +32,7 @@ export default function MusicLandingPage() {
             <button
               onClick={() =>
                 router.push(
-                  user
-                    ? "/marketplace/become-a-seller"
-                    : "/login?redirect=/marketplace/become-a-seller",
+                  user ? "/music/join" : "/login?redirect=/music/join",
                 )
               }
               className="rounded-xl border border-[#D4AF37]/50 bg-[#D4AF37]/10 px-5 py-2.5 font-bold text-[#D4AF37] hover:bg-[#D4AF37]/20"
@@ -43,7 +41,9 @@ export default function MusicLandingPage() {
             </button>
             <button
               onClick={() =>
-                router.push(user ? "/marketplace" : "/login?redirect=/marketplace")
+                router.push(
+                  user ? "/music/join" : "/login?redirect=/music/join",
+                )
               }
               className="rounded-xl border border-white/20 bg-white/5 px-5 py-2.5 font-bold text-white hover:bg-white/10"
             >
@@ -54,7 +54,9 @@ export default function MusicLandingPage() {
 
         <section className="mt-8 grid gap-4 md:grid-cols-3">
           <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-            <h2 className="font-extrabold text-[#D4AF37]">Creator Onboarding</h2>
+            <h2 className="font-extrabold text-[#D4AF37]">
+              Creator Onboarding
+            </h2>
             <p className="mt-2 text-sm text-white/70">
               Use seller onboarding to start listing albums, tracks, and creator
               products under one commerce system.
@@ -77,7 +79,10 @@ export default function MusicLandingPage() {
         </section>
 
         <div className="mt-8">
-          <Link href="/" className="text-sm font-bold text-[#D4AF37] hover:underline">
+          <Link
+            href="/"
+            className="text-sm font-bold text-[#D4AF37] hover:underline"
+          >
             ← Back to Home
           </Link>
         </div>
