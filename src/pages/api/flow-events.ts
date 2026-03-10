@@ -26,7 +26,9 @@ export default async function handler(
 
   try {
     const body =
-      typeof req.body === "string" ? JSON.parse(req.body || "{}") : req.body || {};
+      typeof req.body === "string"
+        ? JSON.parse(req.body || "{}")
+        : req.body || {};
 
     const eventType = String(body.eventType || "").trim();
     if (!ALLOWED.has(eventType)) {
@@ -46,7 +48,8 @@ export default async function handler(
     await db.collection("flow_events").insertOne({
       eventType,
       businessId: typeof body.businessId === "string" ? body.businessId : null,
-      businessAlias: typeof body.businessAlias === "string" ? body.businessAlias : null,
+      businessAlias:
+        typeof body.businessAlias === "string" ? body.businessAlias : null,
       source: typeof body.source === "string" ? body.source : null,
       query: typeof body.query === "string" ? body.query : null,
       category: typeof body.category === "string" ? body.category : null,
