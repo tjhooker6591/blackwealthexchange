@@ -261,7 +261,9 @@ export default function BecomeASellerPage() {
               className="w-full rounded border border-gray-700 bg-black px-3 py-2 text-white"
               placeholder="Business name"
               value={form.businessName}
-              onChange={(e) => setForm({ ...form, businessName: e.target.value })}
+              onChange={(e) =>
+                setForm({ ...form, businessName: e.target.value })
+              }
               required
             />
             <input
@@ -275,7 +277,9 @@ export default function BecomeASellerPage() {
               className="w-full rounded border border-gray-700 bg-black px-3 py-2 text-white"
               placeholder="Business phone"
               value={form.businessPhone}
-              onChange={(e) => setForm({ ...form, businessPhone: e.target.value })}
+              onChange={(e) =>
+                setForm({ ...form, businessPhone: e.target.value })
+              }
             />
             <input
               className="w-full rounded border border-gray-700 bg-black px-3 py-2 text-white"
@@ -295,7 +299,9 @@ export default function BecomeASellerPage() {
               className="w-full rounded border border-gray-700 bg-black px-3 py-2 text-white"
               placeholder="Tell buyers about your business"
               value={form.description}
-              onChange={(e) => setForm({ ...form, description: e.target.value })}
+              onChange={(e) =>
+                setForm({ ...form, description: e.target.value })
+              }
               rows={4}
             />
 

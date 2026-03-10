@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/legacy/image";
+import { useRouter } from "next/router";
 import BuyNowButton from "@/components/BuyNowButton";
 
 type MeUser = {
@@ -14,6 +15,7 @@ const PRICE_CENTS = 4900; // $49.00
 const ITEM_ID = "financial-literacy-premium";
 
 const FinancialLiteracy = () => {
+  const router = useRouter();
   const [user, setUser] = useState<MeUser | null>(null);
   const [meChecked, setMeChecked] = useState(false);
 
@@ -39,6 +41,32 @@ const FinancialLiteracy = () => {
   }, []);
 
   const userId = useMemo(() => user?._id || user?.id || "", [user]);
+  const [quickLoading, setQuickLoading] = useState(false);
+
+  const startCourseCheckout = async () => {
+    if (!userId) {
+      router.push(`/login?next=${encodeURIComponent("/financial-literacy")}`);
+      return;
+    }
+
+    setQuickLoading(true);
+    try {
+      const res = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ type: "course", itemId: ITEM_ID }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data?.url) {
+        window.location.href = data.url;
+        return;
+      }
+    } finally {
+      setQuickLoading(false);
+    }
+  };
 
   const modules = useMemo(
     () => [
@@ -207,11 +235,13 @@ const FinancialLiteracy = () => {
           </div>
 
           <div className="mt-8 flex flex-wrap justify-center gap-4">
-            <a href="#pricing">
-              <button className="px-7 py-3 bg-gold text-black font-semibold rounded-lg hover:bg-yellow-500 transition">
-                Get Lifetime Access
-              </button>
-            </a>
+            <button
+              onClick={startCourseCheckout}
+              disabled={quickLoading}
+              className="px-7 py-3 bg-gold text-black font-semibold rounded-lg hover:bg-yellow-500 transition disabled:opacity-60"
+            >
+              {quickLoading ? "Redirecting..." : "Get Lifetime Access"}
+            </button>
             <a href="#modules">
               <button className="px-7 py-3 border border-gold text-gold font-semibold rounded-lg hover:bg-gold hover:text-black transition">
                 View Modules
@@ -460,11 +490,13 @@ const FinancialLiteracy = () => {
             Premium Financial Literacy Course —{" "}
             <span className="text-gold font-semibold">$49</span> one-time
           </p>
-          <a href="#pricing">
-            <button className="px-5 py-2 rounded bg-gold text-black font-semibold hover:bg-yellow-500 transition">
-              Enroll Now
-            </button>
-          </a>
+          <button
+            onClick={startCourseCheckout}
+            disabled={quickLoading}
+            className="px-5 py-2 rounded bg-gold text-black font-semibold hover:bg-yellow-500 transition disabled:opacity-60"
+          >
+            {quickLoading ? "Redirecting..." : "Enroll Now"}
+          </button>
         </div>
       </div>
     </div>

@@ -322,7 +322,10 @@ export default async function handler(
           name: "Investing for Beginners",
           amount: 3900,
         },
-        "generational-wealth": { name: "Building Generational Wealth", amount: 4900 },
+        "generational-wealth": {
+          name: "Building Generational Wealth",
+          amount: 4900,
+        },
       };
 
       const course = courseMap[itemId];
@@ -514,11 +517,6 @@ export default async function handler(
         },
         $set: {
           updatedAt: new Date(),
-          // Keep paymentIntentId fresh if Stripe returns it on retry/reuse
-          paymentIntentId:
-            typeof stripeSession.payment_intent === "string"
-              ? stripeSession.payment_intent
-              : null,
         },
       },
       { upsert: true },
