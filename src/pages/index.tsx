@@ -1364,8 +1364,19 @@ export default function Home() {
       </section>
 
       <main className="container relative z-10 mx-auto max-w-6xl px-4 pb-0">
-        <section className="mb-5 rounded-2xl border border-[#D4AF37]/25 bg-gradient-to-b from-[#D4AF37]/10 to-white/[0.02] p-4 sm:p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <section className="relative mb-5 overflow-hidden rounded-2xl border border-[#D4AF37]/30 bg-black p-4 sm:p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.06)]">
+          <div
+            className="pointer-events-none absolute inset-0"
+            style={{
+              backgroundImage:
+                "linear-gradient(110deg, rgba(0,0,0,0.88) 14%, rgba(0,0,0,0.72) 52%, rgba(0,0,0,0.9) 100%), url('/ads/sample-banner8.jpg')",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+          />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/45 via-transparent to-black/55" />
+
+          <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="max-w-3xl">
               <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
                 Major Platform Area
@@ -1373,7 +1384,7 @@ export default function Home() {
               <h2 className="mt-1 text-xl font-extrabold tracking-tight text-white sm:text-2xl">
                 BWE Music / Creator Platform
               </h2>
-              <p className="mt-2 text-sm text-white/70">
+              <p className="mt-2 text-sm text-white/80">
                 Explore artists, launch creator storefronts, and support music
                 commerce through canonical checkout and fulfillment.
               </p>
@@ -1393,7 +1404,7 @@ export default function Home() {
               </Link>
               <Link
                 href="/music/join"
-                className="rounded-xl border border-white/20 bg-white/5 px-4 py-2.5 text-sm font-bold text-white/80 hover:bg-white/10"
+                className="rounded-xl border border-white/20 bg-white/5 px-4 py-2.5 text-sm font-bold text-white/85 hover:bg-white/10"
               >
                 Join as a Creator
               </Link>
