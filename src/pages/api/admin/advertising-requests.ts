@@ -28,7 +28,10 @@ type AdvertisingRequestRow = {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<{ ok: true; requests: AdvertisingRequestRow[] } | { ok: false; error: string }>,
+  res: NextApiResponse<
+    | { ok: true; requests: AdvertisingRequestRow[] }
+    | { ok: false; error: string }
+  >,
 ) {
   if (req.method !== "GET") {
     res.setHeader("Allow", ["GET"]);
@@ -44,18 +47,25 @@ export default async function handler(
 
     await ensureApiRateLimitIndexes(db);
     const ip = getClientIp(req);
-    const limitHit = await hitApiRateLimit(db, `admin:advertising-requests:ip:${ip}`, 60, 5);
+    const limitHit = await hitApiRateLimit(
+      db,
+      `admin:advertising-requests:ip:${ip}`,
+      60,
+      5,
+    );
     if (limitHit.blocked) {
       res.setHeader("Retry-After", String(limitHit.retryAfterSeconds));
       return res.status(429).json({ ok: false, error: "Too many requests" });
     }
 
     const limitRaw = Number(req.query.limit ?? 200);
-    const limit = Number.isFinite(limitRaw) ? Math.max(1, Math.min(500, Math.floor(limitRaw))) : 200;
+    const limit = Number.isFinite(limitRaw)
+      ? Math.max(1, Math.min(500, Math.floor(limitRaw)))
+      : 200;
 
     const requests = await db
       .collection("advertising_requests")
-      .find({ requestType: "custom_ad" })
+      .find({ requestType: { $in: ["custom_ad", "standard_ad"] } })
       .sort({ createdAt: -1 })
       .limit(limit)
       .toArray();
@@ -68,7 +78,12 @@ export default async function handler(
             campaignId: { $in: requestIds },
             status: "paid",
           })
-          .project({ campaignId: 1, paidAt: 1, stripeSessionId: 1, amountCents: 1 })
+          .project({
+            campaignId: 1,
+            paidAt: 1,
+            stripeSessionId: 1,
+            amountCents: 1,
+          })
           .toArray()
       : [];
 
@@ -92,7 +107,9 @@ export default async function handler(
         name: r.name || "",
         business: r.business || "",
         email: r.email || "",
-        selectedOptions: Array.isArray(r.selectedOptions) ? r.selectedOptions : [],
+        selectedOptions: Array.isArray(r.selectedOptions)
+          ? r.selectedOptions
+          : [],
         budget: r.budget || null,
         timeline: r.timeline || null,
         details: r.details || "",
@@ -106,6 +123,8 @@ export default async function handler(
     return res.status(200).json({ ok: true, requests: rows });
   } catch (error) {
     console.error("[/api/admin/advertising-requests] error", error);
-    return res.status(500).json({ ok: false, error: "Failed to fetch advertising requests" });
+    return res
+      .status(500)
+      .json({ ok: false, error: "Failed to fetch advertising requests" });
   }
 }
