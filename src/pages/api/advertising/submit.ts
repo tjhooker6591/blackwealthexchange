@@ -35,6 +35,12 @@ export default async function handler(
     return res.status(400).json({ error: "Missing required campaign details" });
   }
 
+  if ((option === "featured-sponsor" || option === "banner-ad") && !adImage) {
+    return res.status(400).json({
+      error: "Ad creative is required for featured sponsor and banner campaigns",
+    });
+  }
+
   try {
     const client = await clientPromise;
     const db = client.db(getMongoDbName());

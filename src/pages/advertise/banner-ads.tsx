@@ -68,6 +68,7 @@ export default function BannerAdsPage() {
   const [email, setEmail] = useState("");
   const [website, setWebsite] = useState("");
   const [notes, setNotes] = useState("");
+  const [creativeUrl, setCreativeUrl] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
@@ -87,7 +88,8 @@ export default function BannerAdsPage() {
         const data = await res.json().catch(() => ({}));
         if (data?.user?.email) setEmail(String(data.user.email));
         if (data?.user?.name) setName(String(data.user.name));
-        if (data?.user?.businessName) setBusinessName(String(data.user.businessName));
+        if (data?.user?.businessName)
+          setBusinessName(String(data.user.businessName));
       } catch (err) {
         console.error("Failed to fetch user from /api/auth/me", err);
       } finally {
@@ -114,8 +116,17 @@ export default function BannerAdsPage() {
       return;
     }
 
-    if (name.trim().length < 2 || businessName.trim().length < 2 || !/^\S+@\S+\.\S+$/.test(email.trim())) {
+    if (
+      name.trim().length < 2 ||
+      businessName.trim().length < 2 ||
+      !/^\S+@\S+\.\S+$/.test(email.trim())
+    ) {
       setError("Please add your campaign contact details before checkout.");
+      return;
+    }
+
+    if (!/^https?:\/\//i.test(creativeUrl.trim())) {
+      setError("Please provide a valid banner creative URL (https://...).");
       return;
     }
 
@@ -130,7 +141,7 @@ export default function BannerAdsPage() {
           email,
           businessName,
           adText: notes || `Banner ad campaign request (${selectedPlacement})`,
-          adImage: "",
+          adImage: creativeUrl.trim(),
           website,
           budget: duration === "14" ? "199" : "349",
           option: "banner-ad",
@@ -271,14 +282,48 @@ export default function BannerAdsPage() {
         </div>
 
         <div className="mt-6 rounded-xl border border-white/10 bg-black/30 p-4 text-left space-y-3">
-          <h3 className="text-base font-semibold text-white">Campaign Details</h3>
+          <h3 className="text-base font-semibold text-white">
+            Campaign Details
+          </h3>
           <div className="grid md:grid-cols-2 gap-3">
-            <input value={name} onChange={(e)=>setName(e.target.value)} placeholder="Your name" className="w-full bg-black text-white border border-gray-600 rounded p-2" />
-            <input value={businessName} onChange={(e)=>setBusinessName(e.target.value)} placeholder="Business name" className="w-full bg-black text-white border border-gray-600 rounded p-2" />
-            <input value={email} onChange={(e)=>setEmail(e.target.value)} placeholder="Email" type="email" className="w-full bg-black text-white border border-gray-600 rounded p-2" />
-            <input value={website} onChange={(e)=>setWebsite(e.target.value)} placeholder="Website (optional)" className="w-full bg-black text-white border border-gray-600 rounded p-2" />
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Your name"
+              className="w-full bg-black text-white border border-gray-600 rounded p-2"
+            />
+            <input
+              value={businessName}
+              onChange={(e) => setBusinessName(e.target.value)}
+              placeholder="Business name"
+              className="w-full bg-black text-white border border-gray-600 rounded p-2"
+            />
+            <input
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email"
+              type="email"
+              className="w-full bg-black text-white border border-gray-600 rounded p-2"
+            />
+            <input
+              value={website}
+              onChange={(e) => setWebsite(e.target.value)}
+              placeholder="Website (optional)"
+              className="w-full bg-black text-white border border-gray-600 rounded p-2"
+            />
           </div>
-          <textarea value={notes} onChange={(e)=>setNotes(e.target.value)} placeholder="Campaign notes (offer, CTA, dates)" className="w-full bg-black text-white border border-gray-600 rounded p-2 min-h-[90px]" />
+          <input
+            value={creativeUrl}
+            onChange={(e) => setCreativeUrl(e.target.value)}
+            placeholder="Banner creative URL (https://...)"
+            className="w-full bg-black text-white border border-gray-600 rounded p-2"
+          />
+          <textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            placeholder="Campaign notes (offer, CTA, dates)"
+            className="w-full bg-black text-white border border-gray-600 rounded p-2 min-h-[90px]"
+          />
         </div>
 
         <div className="mt-6">

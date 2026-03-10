@@ -14,6 +14,7 @@ export default function FeaturedSponsorPage() {
   const [email, setEmail] = useState("");
   const [website, setWebsite] = useState("");
   const [notes, setNotes] = useState("");
+  const [creativeUrl, setCreativeUrl] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
@@ -24,19 +25,23 @@ export default function FeaturedSponsorPage() {
   };
 
   const canProceed = useMemo(() => {
+    const hasCreative = Boolean(adImageFile) || /^https?:\/\//i.test(creativeUrl.trim());
     return (
       Boolean(campaignDuration) &&
       confirmed &&
+      hasCreative &&
       name.trim().length >= 2 &&
       businessName.trim().length >= 2 &&
       /^\S+@\S+\.\S+$/.test(email.trim())
     );
-  }, [campaignDuration, confirmed, name, businessName, email]);
+  }, [campaignDuration, confirmed, adImageFile, creativeUrl, name, businessName, email]);
 
   const handleProceed = async () => {
     setError("");
     if (!canProceed) {
-      setError("Please complete the campaign details and confirm before checkout.");
+      setError(
+        "Please complete the campaign details and confirm before checkout.",
+      );
       return;
     }
 
@@ -47,9 +52,14 @@ export default function FeaturedSponsorPage() {
         email,
         businessName,
         adText: notes || "Featured sponsor campaign request",
-        adImage: adImageFile?.name || "",
+        adImage: adImageFile?.name || creativeUrl.trim(),
         website,
-        budget: campaignDuration === "7" ? "25" : campaignDuration === "14" ? "45" : "80",
+        budget:
+          campaignDuration === "7"
+            ? "25"
+            : campaignDuration === "14"
+              ? "45"
+              : "80",
         option: "featured-sponsor",
         durationDays: Number(campaignDuration),
         placement: "homepage-feature",
@@ -188,7 +198,7 @@ export default function FeaturedSponsorPage() {
           </h3>
           <p className="text-sm text-gray-400 mb-2">
             This image will be displayed as your Featured Sponsor Ad across the
-            platform.
+            platform. Upload a file or provide a hosted creative URL below.
           </p>
           <input
             type="file"
@@ -196,18 +206,53 @@ export default function FeaturedSponsorPage() {
             onChange={handleFileChange}
             className="w-full bg-black text-white border border-gray-600 rounded p-2"
           />
+          <input
+            value={creativeUrl}
+            onChange={(e) => setCreativeUrl(e.target.value)}
+            placeholder="https://... (optional if file uploaded)"
+            className="mt-3 w-full bg-black text-white border border-gray-600 rounded p-2"
+          />
         </section>
 
         <section className="bg-gray-800 p-6 rounded-lg space-y-4 text-left">
           <h3 className="text-xl font-semibold text-gold">Campaign Details</h3>
           <div className="grid md:grid-cols-2 gap-4">
-            <input value={name} onChange={(e)=>setName(e.target.value)} placeholder="Your name" className="w-full bg-black text-white border border-gray-600 rounded p-2" />
-            <input value={businessName} onChange={(e)=>setBusinessName(e.target.value)} placeholder="Business name" className="w-full bg-black text-white border border-gray-600 rounded p-2" />
-            <input value={email} onChange={(e)=>setEmail(e.target.value)} placeholder="Email" type="email" className="w-full bg-black text-white border border-gray-600 rounded p-2" />
-            <input value={website} onChange={(e)=>setWebsite(e.target.value)} placeholder="Website (optional)" className="w-full bg-black text-white border border-gray-600 rounded p-2" />
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Your name"
+              className="w-full bg-black text-white border border-gray-600 rounded p-2"
+            />
+            <input
+              value={businessName}
+              onChange={(e) => setBusinessName(e.target.value)}
+              placeholder="Business name"
+              className="w-full bg-black text-white border border-gray-600 rounded p-2"
+            />
+            <input
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email"
+              type="email"
+              className="w-full bg-black text-white border border-gray-600 rounded p-2"
+            />
+            <input
+              value={website}
+              onChange={(e) => setWebsite(e.target.value)}
+              placeholder="Website (optional)"
+              className="w-full bg-black text-white border border-gray-600 rounded p-2"
+            />
           </div>
-          <textarea value={notes} onChange={(e)=>setNotes(e.target.value)} placeholder="Campaign notes (offer, CTA, dates, goals)" className="w-full bg-black text-white border border-gray-600 rounded p-2 min-h-[100px]" />
-          <p className="text-xs text-gray-400">After payment, your request appears in admin advertising queue for team review and activation.</p>
+          <textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            placeholder="Campaign notes (offer, CTA, dates, goals)"
+            className="w-full bg-black text-white border border-gray-600 rounded p-2 min-h-[100px]"
+          />
+          <p className="text-xs text-gray-400">
+            After payment, your request appears in admin advertising queue for
+            team review and activation.
+          </p>
         </section>
 
         {/* Confirmation */}

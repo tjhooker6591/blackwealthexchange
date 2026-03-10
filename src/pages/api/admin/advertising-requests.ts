@@ -16,6 +16,9 @@ type AdvertisingRequestRow = {
   name: string;
   business: string;
   email: string;
+  option: string | null;
+  durationDays: number | null;
+  placement: string | null;
   selectedOptions: string[];
   budget: string | null;
   timeline: string | null;
@@ -107,6 +110,12 @@ export default async function handler(
         name: r.name || "",
         business: r.business || "",
         email: r.email || "",
+        option: typeof r.option === "string" ? r.option : null,
+        durationDays:
+          Number.isFinite(Number(r.durationDays)) && Number(r.durationDays) > 0
+            ? Number(r.durationDays)
+            : null,
+        placement: typeof r.placement === "string" ? r.placement : null,
         selectedOptions: Array.isArray(r.selectedOptions)
           ? r.selectedOptions
           : [],
