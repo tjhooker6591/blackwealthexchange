@@ -22,7 +22,9 @@ export default function MusicPricingPage() {
     (async () => {
       if (loading) return;
       if (!user) {
-        router.replace(`/login?redirect=${encodeURIComponent("/music/pricing")}`);
+        router.replace(
+          `/login?redirect=${encodeURIComponent("/music/pricing")}`,
+        );
         return;
       }
 
@@ -37,6 +39,12 @@ export default function MusicPricingPage() {
 
         if (!data?.sellerExists || data?.onboardingStatus !== "onboarded") {
           router.replace("/music/join");
+          return;
+        }
+
+        if (data?.dashboardReady && data?.payoutReady) {
+          // Pricing lane is for activation. If already ready, send to creator dashboard.
+          router.replace("/creator/dashboard");
           return;
         }
       } catch {
@@ -89,12 +97,20 @@ export default function MusicPricingPage() {
           Select a plan to activate creator commerce and listing access.
         </p>
 
+        <div className="mt-4 rounded-xl border border-white/10 bg-white/5 p-3 text-sm text-white/75">
+          <p className="font-bold text-[#D4AF37]">Before you pay</p>
+          <p className="mt-1">1) Creator profile must be onboarded</p>
+          <p>2) Payout setup should be completed in Stripe</p>
+          <p>3) Plan activation unlocks creator-ready state</p>
+        </div>
+
         {error ? <p className="mt-3 text-sm text-red-400">{error}</p> : null}
 
         {readiness && !readiness.payoutReady ? (
           <div className="mt-4 rounded-xl border border-yellow-400/30 bg-yellow-500/10 p-3 text-sm text-yellow-200">
-            Payout/connect setup is not fully ready yet. You can choose a plan now,
-            then finish any remaining payout requirements in music activation.
+            Payout/connect setup is not fully ready yet. You can choose a plan
+            now, then finish any remaining payout requirements in music
+            activation.
           </div>
         ) : null}
 
