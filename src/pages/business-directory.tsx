@@ -109,7 +109,13 @@ type Row =
 
 function injectSponsoredEveryN(
   rows: Row[],
-  sponsorAds: Array<{ img: string; name: string; tagline: string; url: string; cta: string }>,
+  sponsorAds: Array<{
+    img: string;
+    name: string;
+    tagline: string;
+    url: string;
+    cta: string;
+  }>,
   interval = 5,
 ) {
   if (!sponsorAds.length) return rows;
@@ -343,17 +349,20 @@ export default function BusinessDirectory() {
     let cancelled = false;
     (async () => {
       try {
-        const res = await fetch('/api/sponsored-businesses', { cache: 'no-store' });
+        const res = await fetch("/api/sponsored-businesses", {
+          cache: "no-store",
+        });
         const data = await res.json().catch(() => null);
         const incoming = Array.isArray(data?.sponsors) ? data.sponsors : [];
         if (!cancelled && incoming.length) {
           setSponsorAds(
             incoming.map((x: any) => ({
-              img: safeStr(x?.img) || '/default-image.jpg',
-              name: safeStr(x?.name) || 'Sponsored Business',
-              tagline: safeStr(x?.tagline) || 'Featured on Black Wealth Exchange',
-              url: safeStr(x?.url) || '#',
-              cta: safeStr(x?.cta) || 'Learn More',
+              img: safeStr(x?.img) || "/default-image.jpg",
+              name: safeStr(x?.name) || "Sponsored Business",
+              tagline:
+                safeStr(x?.tagline) || "Featured on Black Wealth Exchange",
+              url: safeStr(x?.url) || "#",
+              cta: safeStr(x?.cta) || "Learn More",
             })),
           );
         }
@@ -679,11 +688,13 @@ export default function BusinessDirectory() {
   };
 
   const getTrustMeta = (r: Row) => {
+    const status = safeStr((r as any).status).toLowerCase();
     const verified =
       (r as any).verified === true ||
       (r as any).isVerified === true ||
-      safeStr((r as any).status).toLowerCase() === "verified";
+      status === "verified";
 
+    const approved = status === "approved" || status === "verified" || !status;
     const sponsored = Number((r as any).amountPaid || 0) > 0;
 
     const isComplete =
@@ -691,8 +702,12 @@ export default function BusinessDirectory() {
         ? (r as any).isComplete
         : Number((r as any).completenessScore || 0) >= 70;
 
-    return { verified, sponsored, isComplete };
+    return { verified, approved, sponsored, isComplete };
   };
+
+  const getWebsite = (r: Row) => safeStr((r as any).website);
+  const getPhone = (r: Row) => safeStr((r as any).phone);
+
 
   const sponsorsToShow = [
     ...sponsorAds,
@@ -1174,6 +1189,50 @@ export default function BusinessDirectory() {
                       Try a broader term, clear filters, or switch between
                       Businesses and Organizations.
                     </div>
+                    <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-[11px]">
+                      {scope === "businesses" && category !== "All" ? (
+                        <span className="rounded-lg border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-2 py-1 text-[#D4AF37]">
+                          Category: {category}
+                        </span>
+                      ) : null}
+                      {stateFilter ? (
+                        <span className="rounded-lg border border-white/20 bg-black/30 px-2 py-1 text-white/80">
+                          State: {stateFilter}
+                        </span>
+                      ) : null}
+                      {verifiedOnly ? (
+                        <span className="rounded-lg border border-emerald-400/40 bg-emerald-400/15 px-2 py-1 text-emerald-200">
+                          Verified only
+                        </span>
+                      ) : null}
+                    </div>
+                    <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setCategory("All");
+                          setSort("relevance");
+                          setStateFilter("");
+                          setVerifiedOnly(false);
+                          setSponsoredFirst(false);
+                          setIncludeIncomplete(false);
+                          setPage(1);
+                        }}
+                        className="rounded-lg border border-white/20 bg-black/30 px-3 py-1.5 text-xs font-bold text-white/80 hover:bg-black/45"
+                      >
+                        Clear filters
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setInput("");
+                          setPage(1);
+                        }}
+                        className="rounded-lg border border-white/20 bg-black/30 px-3 py-1.5 text-xs font-bold text-white/80 hover:bg-black/45"
+                      >
+                        Clear search
+                      </button>
+                    </div>
                   </div>
                 ) : (
                   <div className="divide-y divide-white/10 overflow-hidden rounded-xl border border-white/10 bg-black/20">
@@ -1237,11 +1296,15 @@ export default function BusinessDirectory() {
                             </Link>
 
                             <div className="mt-1 flex flex-wrap items-center gap-1.5">
-                              {getTrustMeta(item as Row).verified && (
+                              {getTrustMeta(item as Row).verified ? (
                                 <span className="rounded-full border border-emerald-400/30 bg-emerald-400/15 px-2 py-0.5 text-[10px] font-bold text-emerald-200">
                                   Verified
                                 </span>
-                              )}
+                              ) : getTrustMeta(item as Row).approved ? (
+                                <span className="rounded-full border border-white/20 bg-white/10 px-2 py-0.5 text-[10px] font-bold text-white/75">
+                                  Approved listing
+                                </span>
+                              ) : null}
                               {getTrustMeta(item as Row).sponsored && (
                                 <span className="rounded-full border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-2 py-0.5 text-[10px] font-bold text-[#D4AF37]">
                                   Sponsored
@@ -1281,15 +1344,49 @@ export default function BusinessDirectory() {
                                 ? `“${getDesc(item as Row)}”`
                                 : "“Description not available.”"}
                             </div>
+
+                            <div className="mt-2 flex flex-wrap gap-2">
+                              <Link
+                                href={getHref(item as Row)}
+                                className="rounded-lg bg-[#D4AF37] px-3 py-1.5 text-[11px] font-extrabold text-black hover:bg-yellow-500"
+                              >
+                                View details
+                              </Link>
+                              {getWebsite(item as Row) ? (
+                                <a
+                                  href={getWebsite(item as Row)}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="rounded-lg border border-white/20 bg-black/30 px-3 py-1.5 text-[11px] font-bold text-white/80 hover:bg-black/45"
+                                >
+                                  Website
+                                </a>
+                              ) : null}
+                              {getLocation(item as Row) ? (
+                                <a
+                                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(getLocation(item as Row))}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="rounded-lg border border-white/20 bg-black/30 px-3 py-1.5 text-[11px] font-bold text-white/80 hover:bg-black/45"
+                                >
+                                  Directions
+                                </a>
+                              ) : null}
+                            </div>
                           </div>
 
                           {/* Right mini meta (phone) */}
-                          <div className="hidden sm:block min-w-[120px] text-right text-[11px] text-white/55">
-                            {(item as any).phone ? (
-                              <div className="truncate">
-                                {safeStr((item as any).phone)}
-                              </div>
-                            ) : null}
+                          <div className="hidden sm:block min-w-[140px] text-right text-[11px] text-white/55">
+                            {getPhone(item as Row) ? (
+                              <a
+                                href={`tel:${getPhone(item as Row)}`}
+                                className="truncate underline hover:text-white/80"
+                              >
+                                {getPhone(item as Row)}
+                              </a>
+                            ) : (
+                              <div className="text-white/35">No phone listed</div>
+                            )}
                           </div>
                         </div>
                       ),
