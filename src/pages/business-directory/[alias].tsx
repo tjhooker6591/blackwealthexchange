@@ -48,6 +48,22 @@ function safeWebsite(url?: string) {
   return `https://${u}`;
 }
 
+function trackFlowEvent(payload: Record<string, unknown>) {
+  if (typeof window === "undefined") return;
+  const body = JSON.stringify(payload);
+  const url = "/api/flow-events";
+  if (navigator.sendBeacon) {
+    navigator.sendBeacon(url, new Blob([body], { type: "application/json" }));
+    return;
+  }
+  fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body,
+    keepalive: true,
+  }).catch(() => {});
+}
+
 export default function BusinessDetail() {
   const router = useRouter();
   const alias = useMemo(() => {
@@ -58,6 +74,11 @@ export default function BusinessDetail() {
   const [business, setBusiness] = useState<Business | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+
+  const source = useMemo(() => {
+    const raw = router.query.from;
+    return Array.isArray(raw) ? raw[0] : raw || "directory";
+  }, [router.query.from]);
 
   useEffect(() => {
     if (!router.isReady || !alias) return;
@@ -102,6 +123,15 @@ export default function BusinessDetail() {
     };
   }, [router.isReady, alias]);
 
+  useEffect(() => {
+    if (!business || !alias) return;
+    trackFlowEvent({
+      eventType: "business_detail_view",
+      businessAlias: alias,
+      source,
+    });
+  }, [business, alias, source]);
+
   const website = safeWebsite(business?.website);
   const categoryText = toCategoryText(business?.categories);
   const placeLine = [safeStr(business?.city), safeStr(business?.state)]
@@ -117,11 +147,13 @@ export default function BusinessDetail() {
     ? `${business?.latitude},${business?.longitude}`
     : locationText;
 
+  const status = safeStr(business?.status).toLowerCase();
   const trust = {
     verified:
       business?.verified === true ||
       business?.isVerified === true ||
-      safeStr(business?.status).toLowerCase() === "verified",
+      status === "verified",
+    approved: status === "approved" || status === "verified" || !status,
     sponsored: Number(business?.amountPaid || 0) > 0,
     complete:
       typeof business?.isComplete === "boolean"
@@ -144,12 +176,22 @@ export default function BusinessDetail() {
             Back
           </button>
 
-          <Link
-            href="/business-directory"
-            className="text-sm text-white/65 underline underline-offset-4 transition hover:text-white"
-          >
-            Directory
-          </Link>
+          <div className="flex items-center gap-3 text-sm">
+            {source === "search-results" && safeStr(router.query.q) ? (
+              <Link
+                href={`/search-results?search=${encodeURIComponent(safeStr(router.query.q))}`}
+                className="text-white/70 underline underline-offset-4 transition hover:text-white"
+              >
+                Back to search results
+              </Link>
+            ) : null}
+            <Link
+              href="/business-directory"
+              className="text-white/65 underline underline-offset-4 transition hover:text-white"
+            >
+              Directory
+            </Link>
+          </div>
         </div>
 
         <section className="overflow-hidden rounded-3xl border border-white/12 bg-gradient-to-b from-white/[0.07] via-white/[0.035] to-white/[0.02] shadow-[0_0_0_1px_rgba(255,255,255,0.05),0_28px_80px_rgba(0,0,0,0.5)]">
@@ -188,11 +230,15 @@ export default function BusinessDetail() {
                 </div>
 
                 <div className="mt-3 flex flex-wrap gap-2">
-                  {trust.verified && (
+                  {trust.verified ? (
                     <span className="rounded-full border border-emerald-400/35 bg-emerald-400/15 px-3 py-1 text-xs font-bold text-emerald-200">
                       Verified
                     </span>
-                  )}
+                  ) : trust.approved ? (
+                    <span className="rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-bold text-white/75">
+                      Approved listing
+                    </span>
+                  ) : null}
                   {trust.sponsored && (
                     <span className="rounded-full border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-3 py-1 text-xs font-bold text-[#D4AF37]">
                       Sponsored
@@ -254,6 +300,13 @@ export default function BusinessDetail() {
                         href={website}
                         target="_blank"
                         rel="noopener noreferrer"
+                        onClick={() =>
+                          trackFlowEvent({
+                            eventType: "outbound_website_click",
+                            businessAlias: alias,
+                            source,
+                          })
+                        }
                         className="inline-flex items-center justify-center rounded-xl bg-[#D4AF37] px-4 py-2 text-sm font-extrabold text-black transition hover:bg-yellow-500"
                       >
                         Visit website
@@ -267,6 +320,45 @@ export default function BusinessDetail() {
                         Call
                       </a>
                     )}
+                    {mapQuery ? (
+                      <a
+                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={() =>
+                          trackFlowEvent({
+                            eventType: "directions_click",
+                            businessAlias: alias,
+                            source,
+                          })
+                        }
+                        className="inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2 text-sm font-bold text-white/80 transition hover:bg-white/[0.08]"
+                      >
+                        Directions
+                      </a>
+                    ) : null}
+                  </div>
+
+                  <div className="pt-2 text-xs text-white/60 space-y-2">
+                    <div>Next actions</div>
+                    <div className="flex flex-wrap gap-2">
+                      {categoryText ? (
+                        <Link
+                          href={`/business-directory?search=${encodeURIComponent(categoryText)}`}
+                          className="rounded-lg border border-white/15 bg-white/[0.04] px-2.5 py-1 hover:bg-white/[0.08]"
+                        >
+                          Similar in {categoryText}
+                        </Link>
+                      ) : null}
+                      {safeStr(business.state) ? (
+                        <Link
+                          href={`/business-directory?state=${encodeURIComponent(safeStr(business.state))}`}
+                          className="rounded-lg border border-white/15 bg-white/[0.04] px-2.5 py-1 hover:bg-white/[0.08]"
+                        >
+                          More in {safeStr(business.state)}
+                        </Link>
+                      ) : null}
+                    </div>
                   </div>
                 </aside>
               </div>

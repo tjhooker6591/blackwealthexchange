@@ -682,9 +682,13 @@ export default function BusinessDirectory() {
 
   const getHref = (r: Row) => {
     const slug = encodeURIComponent(getSlug(r));
-    return r.__kind === "org"
-      ? `/organizations/${slug}`
-      : `/business-directory/${slug}`;
+    if (r.__kind === "org") return `/organizations/${slug}`;
+
+    const qp = new URLSearchParams();
+    qp.set("from", "directory");
+    if (input.trim()) qp.set("q", input.trim());
+
+    return `/business-directory/${slug}?${qp.toString()}`;
   };
 
   const getTrustMeta = (r: Row) => {
@@ -707,7 +711,6 @@ export default function BusinessDirectory() {
 
   const getWebsite = (r: Row) => safeStr((r as any).website);
   const getPhone = (r: Row) => safeStr((r as any).phone);
-
 
   const sponsorsToShow = [
     ...sponsorAds,
@@ -1385,7 +1388,9 @@ export default function BusinessDirectory() {
                                 {getPhone(item as Row)}
                               </a>
                             ) : (
-                              <div className="text-white/35">No phone listed</div>
+                              <div className="text-white/35">
+                                No phone listed
+                              </div>
                             )}
                           </div>
                         </div>
