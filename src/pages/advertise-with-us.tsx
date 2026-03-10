@@ -1,16 +1,8 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import BuyNowButton from "@/components/BuyNowButton";
-
-type MeUser = {
-  _id?: string;
-  id?: string;
-  email?: string;
-  accountType?: string;
-};
 
 function GlowBackground() {
   return (
@@ -71,35 +63,6 @@ const BENEFITS = [
 
 export default function AdvertiseWithUs() {
   const router = useRouter();
-  const [me, setMe] = useState<MeUser | null>(null);
-  const [meLoading, setMeLoading] = useState(true);
-
-  useEffect(() => {
-    let cancelled = false;
-
-    (async () => {
-      try {
-        const res = await fetch("/api/auth/me", {
-          cache: "no-store",
-          credentials: "include",
-        });
-        const data = await res.json().catch(() => null);
-        const user = (data?.user ?? null) as MeUser | null;
-        if (!cancelled) setMe(user);
-      } catch {
-        if (!cancelled) setMe(null);
-      } finally {
-        if (!cancelled) setMeLoading(false);
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  const userId = useMemo(() => me?._id || me?.id || "", [me]);
-  const canBuy = Boolean(userId);
 
   return (
     <div className="min-h-screen bg-black text-white relative">
@@ -221,39 +184,38 @@ export default function AdvertiseWithUs() {
           </div>
         </section>
 
-        {/* Instant purchase */}
-        <section className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow text-center">
-          <h3 className="text-xl font-semibold text-white">
-            Try an Instant Purchase
+        {/* Workflow continuity */}
+        <section className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow">
+          <h3 className="text-xl font-semibold text-white text-center">
+            Campaign Flow (What happens next)
           </h3>
-          <p className="mt-2 text-gray-300">
-            This is a test checkout button (example sponsor package).
-          </p>
-
-          <div className="mt-6 flex items-center justify-center">
-            {meLoading ? (
-              <div className="h-10 w-56 rounded-xl bg-white/10 animate-pulse" />
-            ) : canBuy ? (
-              <BuyNowButton
-                userId={userId}
-                itemId="sponsored-listing"
-                amount={79}
-                type="ad"
-              />
-            ) : (
-              <Link
-                href="/login?redirect=/advertise-with-us"
-                className="inline-flex justify-center rounded-xl bg-yellow-500 px-6 py-3 font-bold text-black hover:bg-yellow-400 transition shadow"
-              >
-                Log in to purchase
-              </Link>
-            )}
+          <div className="mt-4 grid gap-3 md:grid-cols-4 text-sm">
+            <div className="rounded-xl border border-white/10 bg-black/30 p-3">
+              <div className="text-yellow-300 font-semibold">1. Select Option</div>
+              <div className="text-gray-300 mt-1">Choose Featured, Directory, Banner, or Custom.</div>
+            </div>
+            <div className="rounded-xl border border-white/10 bg-black/30 p-3">
+              <div className="text-yellow-300 font-semibold">2. Add Details</div>
+              <div className="text-gray-300 mt-1">Submit campaign details and contact information.</div>
+            </div>
+            <div className="rounded-xl border border-white/10 bg-black/30 p-3">
+              <div className="text-yellow-300 font-semibold">3. Review Checkout</div>
+              <div className="text-gray-300 mt-1">Confirm option, duration, and pricing before payment.</div>
+            </div>
+            <div className="rounded-xl border border-white/10 bg-black/30 p-3">
+              <div className="text-yellow-300 font-semibold">4. Reserve Slot</div>
+              <div className="text-gray-300 mt-1">Checkout reserves your campaign for activation review.</div>
+            </div>
           </div>
 
-          <p className="mt-4 text-xs text-gray-400">
-            For production, replace the test package with your real ad SKUs and
-            pricing from MongoDB.
-          </p>
+          <div className="mt-5 text-center">
+            <Link
+              href="/advertising"
+              className="inline-flex justify-center rounded-xl bg-yellow-500 px-6 py-3 font-bold text-black hover:bg-yellow-400 transition shadow"
+            >
+              Open Advertising Flow
+            </Link>
+          </div>
         </section>
       </div>
     </div>

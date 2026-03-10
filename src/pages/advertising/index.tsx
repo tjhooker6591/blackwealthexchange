@@ -54,11 +54,22 @@ const AdCard = ({
   </div>
 );
 
+function optionToDetailsHref(option: string) {
+  if (option === "featured-sponsor") return "/advertise/featured-sponsor";
+  if (option === "directory-standard" || option === "directory-featured") {
+    return "/advertise/business-directory";
+  }
+  if (option === "banner-ad") return "/advertise/banner-ads";
+  if (option === "custom-solution-deposit") return "/advertise/custom";
+  return "/advertising";
+}
+
 export default function AdvertisingIndexPage() {
   const router = useRouter();
   const success = router.query.success === "1";
   const canceled = router.query.canceled === "1";
-  const option = typeof router.query.option === "string" ? router.query.option : "";
+  const option =
+    typeof router.query.option === "string" ? router.query.option : "";
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -104,10 +115,10 @@ export default function AdvertisingIndexPage() {
             {option ? (
               <div className="mt-2">
                 <Link
-                  href={`/advertising/checkout?option=${encodeURIComponent(option)}`}
+                  href={optionToDetailsHref(option)}
                   className="underline text-yellow-100"
                 >
-                  Resume checkout for {option}
+                  Resume campaign details for {option}
                 </Link>
               </div>
             ) : null}
