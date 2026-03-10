@@ -2,6 +2,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
@@ -54,6 +55,10 @@ const AdCard = ({
 );
 
 export default function AdvertisingIndexPage() {
+  const router = useRouter();
+  const success = router.query.success === "1";
+  const canceled = router.query.canceled === "1";
+
   return (
     <div className="min-h-screen bg-black text-white">
       <div className="mx-auto max-w-5xl px-5 py-10">
@@ -83,6 +88,18 @@ export default function AdvertisingIndexPage() {
             </Link>
           </div>
         </div>
+
+        {success ? (
+          <div className="mt-6 rounded-xl border border-green-500/30 bg-green-500/10 p-4 text-sm text-green-200">
+            Payment submitted successfully. Your advertising request is now in review, and our team will follow up with activation details.
+          </div>
+        ) : null}
+
+        {canceled ? (
+          <div className="mt-6 rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-4 text-sm text-yellow-200">
+            Checkout was canceled. Your campaign request is still saved — you can restart checkout anytime below.
+          </div>
+        ) : null}
 
         <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
           <AdCard

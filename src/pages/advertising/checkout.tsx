@@ -1,14 +1,11 @@
-// src/pages/advertising/checkout.tsx
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { getAdQuote } from "@/lib/advertising/pricing";
 
 const DEFAULT_DAYS = 14;
 
-// Prevent accidental duplicate checkout session creation from effect re-runs,
-// StrictMode dev remounts, rapid route churn, or double navigation.
 const CHECKOUT_LOCK_PREFIX = "bwe:ad-checkout-lock:";
 const CHECKOUT_LOCK_TTL_MS = 20_000;
 
@@ -19,6 +16,31 @@ function qStr(v: unknown) {
 function safeNum(v: unknown, fallback: number) {
   const n = Number(v);
   return Number.isFinite(n) && n > 0 ? n : fallback;
+}
+
+function normalizeAdOption(raw: string) {
+  const option = raw.trim();
+  const aliases: Record<string, string> = {
+    "featured-sponsor-ad": "featured-sponsor",
+    "sponsor-featured": "featured-sponsor",
+    "banner-homepage-top": "banner-ad",
+    "banner-sidebar": "banner-ad",
+    "banner-footer": "banner-ad",
+    "banner-dashboard": "banner-ad",
+  };
+  return aliases[option] || option;
+}
+
+function normalizeFromLegacyQuery(query: Record<string, any>) {
+  const type = qStr(query.type).toLowerCase();
+  const plan = qStr(query.plan).toLowerCase();
+
+  if (type === "directory") {
+    if (plan === "featured") return "directory-featured";
+    if (plan === "standard") return "directory-standard";
+  }
+
+  return "";
 }
 
 function buildAttemptKey(input: {
@@ -43,7 +65,6 @@ function getLockStorageKey(attemptKey: string) {
 
 function acquireCheckoutLock(attemptKey: string) {
   if (typeof window === "undefined") return true;
-
   const storageKey = getLockStorageKey(attemptKey);
   const now = Date.now();
 
@@ -51,15 +72,12 @@ function acquireCheckoutLock(attemptKey: string) {
     const raw = window.sessionStorage.getItem(storageKey);
     if (raw) {
       const ts = Number(raw);
-      if (Number.isFinite(ts) && now - ts < CHECKOUT_LOCK_TTL_MS) {
-        return false;
-      }
+      if (Number.isFinite(ts) && now - ts < CHECKOUT_LOCK_TTL_MS) return false;
     }
 
     window.sessionStorage.setItem(storageKey, String(now));
     return true;
   } catch {
-    // If storage is unavailable, fail open (server-side dedupe will still protect us)
     return true;
   }
 }
@@ -73,205 +91,201 @@ function releaseCheckoutLock(attemptKey: string) {
   }
 }
 
-/**
- * Backward-compat aliases so old links/buttons don’t break checkout.
- * (Prevents “invalid option” when legacy IDs are still used somewhere.)
- */
-function normalizeAdOption(raw: string) {
-  const option = raw.trim();
-
-  const aliases: Record<string, string> = {
-    "featured-sponsor-ad": "featured-sponsor",
-    "sponsor-featured": "featured-sponsor",
-
-    "banner-homepage-top": "banner-ad",
-    "banner-sidebar": "banner-ad",
-    "banner-footer": "banner-ad",
-    "banner-dashboard": "banner-ad",
-  };
-
-  return aliases[option] || option;
-}
-
-/**
- * Optional support for old query patterns like:
- * /checkout?type=directory&plan=standard
- */
-function normalizeFromLegacyQuery(query: Record<string, any>) {
-  const type = qStr(query.type).toLowerCase();
-  const plan = qStr(query.plan).toLowerCase();
-
-  if (type === "directory") {
-    if (plan === "featured") return "directory-featured";
-    if (plan === "standard") return "directory-standard";
-  }
-
-  return "";
-}
-
 export default function AdvertisingCheckoutPage() {
   const router = useRouter();
-  const [msg, setMsg] = useState("Preparing checkout…");
-
-  // In-mount guard (handles normal rerenders)
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
   const startedAttemptRef = useRef<string | null>(null);
 
-  useEffect(() => {
-    if (!router.isReady) return;
+  const parsed = useMemo(() => {
+    if (!router.isReady) return null;
 
-    // Support both current and legacy query styles
     const rawOption =
       qStr(router.query.option) || normalizeFromLegacyQuery(router.query);
     const option = normalizeAdOption(rawOption);
-
     const durationDays = safeNum(router.query.duration, DEFAULT_DAYS);
 
-    // Helpful for fulfillment/admin visibility
     const businessId = qStr(router.query.businessId);
     const campaignId = qStr(router.query.campaignId);
     const placement = qStr(router.query.placement);
 
-    if (!option) {
-      setMsg("Invalid advertising option. Redirecting…");
-      router.replace("/advertising");
-      return;
-    }
-
-    // ✅ Uses your actual shared pricing export
     const quote = getAdQuote({ option, durationDays });
-
     if (!quote) {
-      setMsg("Invalid advertising option or duration");
-      return;
+      return {
+        invalid: true,
+        error: "Invalid advertising option or duration.",
+      };
     }
 
-    const attemptKey = buildAttemptKey({
+    return {
+      invalid: false,
       option: quote.option,
+      label: quote.label,
       durationDays: quote.durationDays,
+      amountDollars: quote.amountDollars,
       businessId,
       campaignId,
       placement,
+    };
+  }, [router.isReady, router.query]);
+
+  const handleStartCheckout = async () => {
+    if (!parsed || parsed.invalid) return;
+
+    const attemptKey = buildAttemptKey({
+      option: parsed.option,
+      durationDays: parsed.durationDays,
+      businessId: parsed.businessId,
+      campaignId: parsed.campaignId,
+      placement: parsed.placement,
     });
 
-    // Guard 1: same mount/rerender duplicate
-    if (startedAttemptRef.current === attemptKey) {
-      return;
-    }
-
-    // Guard 2: cross-remount / StrictMode / quick duplicate navigation duplicate
+    if (startedAttemptRef.current === attemptKey) return;
     if (!acquireCheckoutLock(attemptKey)) {
-      startedAttemptRef.current = attemptKey;
-      setMsg("Checkout is already being prepared…");
+      setMessage("Checkout is already being prepared. Please wait a moment.");
       return;
     }
 
     startedAttemptRef.current = attemptKey;
-    let cancelled = false;
+    setLoading(true);
+    setMessage("Preparing secure checkout…");
 
-    const run = async () => {
-      try {
-        const origin = window.location.origin;
+    try {
+      const origin = window.location.origin;
+      const res = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          itemId: parsed.option,
+          type: "ad",
+          amount: parsed.amountDollars,
+          durationDays: parsed.durationDays,
+          businessId: parsed.businessId || undefined,
+          campaignId: parsed.campaignId || undefined,
+          placement: parsed.placement || undefined,
+          metadata: {
+            option: parsed.option,
+            durationDays: String(parsed.durationDays),
+            businessId: parsed.businessId || "",
+            campaignId: parsed.campaignId || "",
+            placement: parsed.placement || "",
+          },
+          successUrl: `${origin}/advertising?success=1&option=${encodeURIComponent(parsed.option)}`,
+          cancelUrl: `${origin}/advertising?canceled=1&option=${encodeURIComponent(parsed.option)}`,
+        }),
+      });
 
-        setMsg(
-          `Preparing checkout for ${quote.label} (${quote.durationDays} days)…`,
-        );
+      const data = await res.json().catch(() => ({}));
 
-        const res = await fetch("/api/stripe/checkout", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify({
-            itemId: quote.option,
-            type: "ad",
-
-            // Server should recompute/validate; this is for compatibility only
-            amount: quote.amountDollars,
-
-            // Preferred top-level fields
-            durationDays: quote.durationDays,
-            businessId: businessId || undefined,
-            campaignId: campaignId || undefined,
-            placement: placement || undefined,
-
-            // Backward compatibility / visibility metadata
-            metadata: {
-              option: quote.option,
-              durationDays: String(quote.durationDays),
-              businessId: businessId || "",
-              campaignId: campaignId || "",
-              placement: placement || "",
-            },
-
-            // Legacy (safe if ignored by hardened server)
-            successUrl: `${origin}/advertising?success=1&option=${encodeURIComponent(
-              quote.option,
-            )}`,
-            cancelUrl: `${origin}/advertising?canceled=1&option=${encodeURIComponent(
-              quote.option,
-            )}`,
-          }),
-        });
-
-        const data = await res.json().catch(() => ({}));
-
-        if (cancelled) return;
-
-        if (res.status === 401) {
-          // Release lock so retry after login works
-          releaseCheckoutLock(attemptKey);
-          startedAttemptRef.current = null;
-          router.replace(
-            `/login?redirect=${encodeURIComponent(router.asPath)}`,
-          );
-          return;
-        }
-
-        // If server duplicate guard returns conflict, don't re-fire immediately.
-        if (res.status === 409) {
-          setMsg(
-            data?.error ||
-              "A checkout session is already being prepared. Please wait a moment or refresh.",
-          );
-          return;
-        }
-
-        if (!res.ok) {
-          throw new Error(data?.error || "Checkout failed");
-        }
-
-        if (!data?.url) {
-          throw new Error("Stripe URL missing from response");
-        }
-
-        // Keep lock in place during redirect to prevent duplicate session creation
-        window.location.href = data.url;
-      } catch (err: any) {
-        console.error("Advertising checkout error:", err);
+      if (res.status === 401) {
         releaseCheckoutLock(attemptKey);
         startedAttemptRef.current = null;
-        if (!cancelled) {
-          setMsg(err?.message || "Checkout failed.");
-        }
+        router.replace(`/login?redirect=${encodeURIComponent(router.asPath)}`);
+        return;
       }
-    };
 
-    run();
+      if (res.status === 409) {
+        setMessage(
+          data?.error ||
+            "A checkout session is already in progress. Please wait and retry.",
+        );
+        return;
+      }
 
-    return () => {
-      cancelled = true;
-      // Intentionally do NOT release lock on cleanup here, because cleanup can run during
-      // StrictMode dev remount; releasing would allow duplicate checkout creation.
-      // The lock auto-expires via TTL, and we release on known failures above.
-    };
-  }, [router.isReady, router.asPath]);
+      if (!res.ok || !data?.url) {
+        throw new Error(data?.error || "Checkout failed");
+      }
+
+      window.location.href = data.url;
+    } catch (err: any) {
+      releaseCheckoutLock(attemptKey);
+      startedAttemptRef.current = null;
+      setMessage(err?.message || "Unable to start checkout.");
+      setLoading(false);
+    }
+  };
+
+  if (!router.isReady || !parsed) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center p-6">
+        <div className="max-w-md w-full rounded-2xl border border-yellow-500/20 bg-zinc-950 p-6 text-center">
+          <h1 className="text-xl font-bold text-yellow-300">Advertising Checkout</h1>
+          <p className="mt-3 text-sm text-zinc-300">Loading checkout details…</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (parsed.invalid) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center p-6">
+        <div className="max-w-md w-full rounded-2xl border border-red-500/30 bg-zinc-950 p-6 text-center">
+          <h1 className="text-xl font-bold text-yellow-300">Advertising Checkout</h1>
+          <p className="mt-3 text-sm text-red-200">{parsed.error}</p>
+          <button
+            onClick={() => router.replace("/advertising")}
+            className="mt-4 rounded-xl bg-yellow-500 px-4 py-2 font-semibold text-black hover:bg-yellow-400"
+          >
+            Back to Advertising Options
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-black text-white flex items-center justify-center p-6">
-      <div className="max-w-md w-full rounded-2xl border border-yellow-500/20 bg-zinc-950 p-6 text-center">
-        <h1 className="text-xl font-bold text-yellow-300">
-          Advertising Checkout
+      <div className="max-w-lg w-full rounded-2xl border border-yellow-500/20 bg-zinc-950 p-6">
+        <h1 className="text-xl font-bold text-yellow-300 text-center">
+          Review Advertising Checkout
         </h1>
-        <p className="mt-3 text-sm text-zinc-300">{msg}</p>
+
+        <div className="mt-4 rounded-xl border border-white/10 bg-black/30 p-4 text-sm space-y-2">
+          <div>
+            <span className="text-zinc-400">Option:</span>{" "}
+            <span className="text-white font-semibold">{parsed.label}</span>
+          </div>
+          <div>
+            <span className="text-zinc-400">Duration:</span>{" "}
+            <span className="text-white">{parsed.durationDays} days</span>
+          </div>
+          <div>
+            <span className="text-zinc-400">Price:</span>{" "}
+            <span className="text-yellow-300 font-semibold">${parsed.amountDollars}</span>
+          </div>
+          {parsed.placement ? (
+            <div>
+              <span className="text-zinc-400">Placement:</span>{" "}
+              <span className="text-white">{parsed.placement}</span>
+            </div>
+          ) : null}
+          {parsed.campaignId ? (
+            <div>
+              <span className="text-zinc-400">Campaign Request:</span>{" "}
+              <span className="text-white break-all">{parsed.campaignId}</span>
+            </div>
+          ) : null}
+        </div>
+
+        {message ? <p className="mt-4 text-sm text-zinc-300">{message}</p> : null}
+
+        <div className="mt-6 flex gap-3">
+          <button
+            onClick={() => router.back()}
+            className="flex-1 rounded-xl border border-white/20 px-4 py-2 text-sm hover:bg-white/10"
+            disabled={loading}
+          >
+            Back
+          </button>
+          <button
+            onClick={handleStartCheckout}
+            className="flex-1 rounded-xl bg-yellow-500 px-4 py-2 text-sm font-semibold text-black hover:bg-yellow-400 disabled:opacity-60"
+            disabled={loading}
+          >
+            {loading ? "Starting…" : "Continue to Secure Checkout"}
+          </button>
+        </div>
       </div>
     </div>
   );
