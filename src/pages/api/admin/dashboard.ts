@@ -1,17 +1,13 @@
 // src/pages/api/admin/dashboard.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
-import cookie from "cookie";
-import jwt from "jsonwebtoken";
-
-type Decoded = {
-  userId?: string;
-  email?: string;
-  accountType?: string;
-  role?: string;
-  isAdmin?: boolean;
-  roles?: string[];
-};
+import { getMongoDbName } from "@/lib/env";
+import { requireAdminFromRequest } from "@/lib/adminAuth";
+import {
+  ensureApiRateLimitIndexes,
+  getClientIp,
+  hitApiRateLimit,
+} from "@/lib/apiRateLimit";
 
 type Business = {
   _id: string;
@@ -24,54 +20,6 @@ type Business = {
   updatedAt: string | null;
 };
 
-function isAdmin(decoded: Decoded) {
-  if (decoded?.isAdmin) return true;
-  if (decoded?.accountType === "admin") return true;
-  if (decoded?.role === "admin") return true;
-  if (Array.isArray(decoded?.roles) && decoded.roles.includes("admin"))
-    return true;
-
-  const allow = (process.env.ADMIN_EMAILS || "")
-    .split(",")
-    .map((s) => s.trim().toLowerCase())
-    .filter(Boolean);
-
-  if (allow.length && decoded?.email) {
-    return allow.includes(decoded.email.toLowerCase());
-  }
-
-  return false;
-}
-
-async function requireAdmin(
-  req: NextApiRequest,
-  res: NextApiResponse,
-): Promise<Decoded | null> {
-  const cookies = cookie.parse(req.headers.cookie || "");
-  const token = cookies.session_token;
-
-  if (!token) {
-    res.status(401).json({ error: "Unauthorized" });
-    return null;
-  }
-
-  try {
-    const SECRET = process.env.JWT_SECRET || process.env.NEXTAUTH_SECRET;
-    if (!SECRET) throw new Error("JWT secret missing");
-
-    const decoded = jwt.verify(token, SECRET) as Decoded;
-
-    if (process.env.NODE_ENV === "production" && !isAdmin(decoded)) {
-      res.status(403).json({ error: "Forbidden" });
-      return null;
-    }
-
-    return decoded;
-  } catch {
-    res.status(401).json({ error: "Unauthorized" });
-    return null;
-  }
-}
 
 export default async function handler(
   req: NextApiRequest,
@@ -84,19 +32,31 @@ export default async function handler(
     return res.status(405).json({ error: "Method Not Allowed" });
   }
 
-  const admin = await requireAdmin(req, res);
+  const admin = await requireAdminFromRequest(req, res);
   if (!admin) return;
 
   try {
     const client = await clientPromise;
-    const dbName =
-      process.env.MONGODB_DB || process.env.MONGODB_DB_NAME || "bwes-cluster";
-    const db = client.db(dbName);
+    const db = client.db(getMongoDbName());
+
+    await ensureApiRateLimitIndexes(db);
+    const ip = getClientIp(req);
+    const ipLimit = await hitApiRateLimit(db, `admin:dashboard:ip:${ip}`, 60, 5);
+    if (ipLimit.blocked) {
+      res.setHeader("Retry-After", String(ipLimit.retryAfterSeconds));
+      return res.status(429).json({ error: "Too many requests" });
+    }
+
+    const limitRaw = Number(req.query.limit ?? 200);
+    const limit = Number.isFinite(limitRaw)
+      ? Math.max(1, Math.min(500, Math.floor(limitRaw)))
+      : 200;
 
     const businesses = await db
       .collection("businesses")
       .find({})
       .sort({ createdAt: -1 })
+      .limit(limit)
       .project({
         businessName: 1,
         email: 1,
@@ -125,6 +85,7 @@ export default async function handler(
 
     return res.status(200).json({
       ok: true,
+      meta: { limit },
       businesses: formattedBusinesses,
     });
   } catch (error) {

@@ -1,24 +1,14 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
-import jwt from "jsonwebtoken";
-import cookie from "cookie";
 import { sendEmail } from "@/lib/sendEmail";
-
-const SECRET = process.env.JWT_SECRET!;
-
-function requireAdmin(req: NextApiRequest) {
-  const cookies = cookie.parse(req.headers.cookie || "");
-  const token = cookies.session_token;
-  if (!token) return null;
-
-  try {
-    const payload = jwt.verify(token, SECRET) as any;
-    return payload.isAdmin ? payload : null;
-  } catch {
-    return null;
-  }
-}
+import { getMongoDbName } from "@/lib/env";
+import { requireAdminFromRequest } from "@/lib/adminAuth";
+import {
+  ensureApiRateLimitIndexes,
+  getClientIp,
+  hitApiRateLimit,
+} from "@/lib/apiRateLimit";
 
 function emailForStatus(status: string, fullName?: string) {
   const name = fullName || "there";
@@ -81,16 +71,47 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  const admin = requireAdmin(req);
-  if (!admin) return res.status(401).json({ error: "Admin only" });
+  const admin = await requireAdminFromRequest(req, res);
+  if (!admin) return;
 
   const client = await clientPromise;
-  const db = client.db("bwes-cluster");
+  const db = client.db(getMongoDbName());
+
+  await ensureApiRateLimitIndexes(db);
+  const ip = getClientIp(req);
+  const ipLimit = await hitApiRateLimit(db, `admin:intern-applications:ip:${ip}`, 60, 5);
+  if (ipLimit.blocked) {
+    res.setHeader("Retry-After", String(ipLimit.retryAfterSeconds));
+    return res.status(429).json({ error: "Too many requests" });
+  }
+
   const col = db.collection("intern_applications");
 
   if (req.method === "GET") {
-    const data = await col.find().sort({ createdAt: -1 }).toArray();
-    return res.json(data);
+    const limitRaw = Number(req.query.limit ?? 200);
+    const limit = Number.isFinite(limitRaw)
+      ? Math.max(1, Math.min(500, Math.floor(limitRaw)))
+      : 200;
+
+    const data = await col
+      .find(
+        {},
+        {
+          projection: {
+            fullName: 1,
+            email: 1,
+            phone: 1,
+            status: 1,
+            createdAt: 1,
+            updatedAt: 1,
+            roleInterest: 1,
+          },
+        },
+      )
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .toArray();
+    return res.json({ ok: true, meta: { limit }, applications: data });
   }
 
   if (req.method === "PATCH") {
@@ -129,5 +150,6 @@ export default async function handler(
     return res.json({ success: true, emailSent, emailError });
   }
 
+  res.setHeader("Allow", ["GET", "PATCH"]);
   res.status(405).end();
 }
