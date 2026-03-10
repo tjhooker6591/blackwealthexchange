@@ -90,7 +90,27 @@ export default async function handler(
     const client = await clientPromise;
     const db = client.db("bwes-cluster");
 
-    const result = await db.collection("affiliatePayouts").updateOne(
+    const payouts = db.collection("affiliatePayouts");
+    const affiliates = db.collection("affiliates");
+
+    const payout = await payouts.findOne({ _id: new ObjectId(payoutId) });
+    if (!payout) {
+      return res.status(404).json({ error: "Payout not found" });
+    }
+    if (payout.status === "completed") {
+      return res
+        .status(409)
+        .json({ error: "Payout already completed", payoutId });
+    }
+
+    const amount = Number(payout.amount || 0);
+    const affiliateId = payout.affiliateId;
+    const affiliateSelector =
+      typeof affiliateId === "string" && ObjectId.isValid(affiliateId)
+        ? { _id: new ObjectId(affiliateId) }
+        : { _id: affiliateId as any };
+
+    const result = await payouts.updateOne(
       { _id: new ObjectId(payoutId), status: { $ne: "completed" } },
       {
         $set: {
@@ -107,6 +127,13 @@ export default async function handler(
       return res
         .status(404)
         .json({ error: "Payout not found or already completed" });
+    }
+
+    if (affiliateId && amount > 0) {
+      await affiliates.updateOne(affiliateSelector, {
+        $inc: { totalPaid: amount },
+        $set: { updatedAt: new Date() },
+      });
     }
 
     return res.status(200).json({
