@@ -71,6 +71,33 @@ export default function SellerDashboard() {
     return n.toLocaleString(undefined, { style: "currency", currency: "USD" });
   }, [stats.revenue]);
 
+  const setupStage = useMemo(() => {
+    if (payoutReady && stats.products > 0) {
+      return {
+        title: "Seller setup complete",
+        body: "Payouts are enabled and you have active product setup progress.",
+        ctaHref: "/dashboard/seller/products",
+        ctaLabel: "Manage products",
+      };
+    }
+
+    if (!payoutReady) {
+      return {
+        title: "Finish payout setup",
+        body: "Complete Stripe onboarding to receive payouts, then add your first product.",
+        ctaHref: "/marketplace/become-a-seller?refresh=1",
+        ctaLabel: "Finish payout setup",
+      };
+    }
+
+    return {
+      title: "Add your first product",
+      body: "Payout setup is complete. Add your first product to start selling.",
+      ctaHref: "/marketplace/add-products",
+      ctaLabel: "Add first product",
+    };
+  }, [payoutReady, stats.products]);
+
   async function refreshStripeStatus(signal?: AbortSignal) {
     setStripeLoading(true);
     setStripeError(null);
@@ -317,6 +344,26 @@ export default function SellerDashboard() {
             >
               <Store className="h-4 w-4 text-yellow-300" />
               Marketplace
+            </Link>
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-xl sm:p-5">
+          <h2 className="text-lg font-bold text-gold">Current Seller Step</h2>
+          <p className="mt-1 text-sm text-gray-300">{setupStage.body}</p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <Link
+              href={setupStage.ctaHref}
+              className="inline-flex items-center gap-2 rounded-xl bg-gold px-4 py-2 text-sm font-semibold text-black hover:bg-yellow-500"
+            >
+              {setupStage.ctaLabel}
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
+              href="/marketplace/become-a-seller?refresh=1"
+              className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm hover:bg-white/10"
+            >
+              View setup status
             </Link>
           </div>
         </div>
