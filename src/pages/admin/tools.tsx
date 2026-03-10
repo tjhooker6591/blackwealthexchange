@@ -14,6 +14,7 @@ type ToolCategory =
   | "Jobs"
   | "Users"
   | "Affiliates"
+  | "Consulting"
   | "Content"
   | "Interns"
   | "Other";
@@ -489,6 +490,7 @@ export default function AdminToolsPage() {
       "Jobs",
       "Users",
       "Affiliates",
+      "Consulting",
       "Content",
       "Interns",
       "Other",
