@@ -4,7 +4,6 @@ import { useMemo, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { getAdQuote } from "@/lib/advertising/pricing";
 
-const DEFAULT_DAYS = 14;
 
 const CHECKOUT_LOCK_PREFIX = "bwe:ad-checkout-lock:";
 const CHECKOUT_LOCK_TTL_MS = 20_000;
@@ -13,9 +12,10 @@ function qStr(v: unknown) {
   return typeof v === "string" ? v.trim() : "";
 }
 
-function safeNum(v: unknown, fallback: number) {
+function parseOptionalPositiveInt(v: unknown): number | undefined {
+  if (v === undefined || v === null || v === "") return undefined;
   const n = Number(v);
-  return Number.isFinite(n) && n > 0 ? n : fallback;
+  return Number.isFinite(n) && n > 0 ? Math.floor(n) : undefined;
 }
 
 function normalizeAdOption(raw: string) {
@@ -103,7 +103,7 @@ export default function AdvertisingCheckoutPage() {
     const rawOption =
       qStr(router.query.option) || normalizeFromLegacyQuery(router.query);
     const option = normalizeAdOption(rawOption);
-    const durationDays = safeNum(router.query.duration, DEFAULT_DAYS);
+    const durationDays = parseOptionalPositiveInt(router.query.duration);
 
     const businessId = qStr(router.query.businessId);
     const campaignId = qStr(router.query.campaignId);
@@ -210,8 +210,12 @@ export default function AdvertisingCheckoutPage() {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center p-6">
         <div className="max-w-md w-full rounded-2xl border border-yellow-500/20 bg-zinc-950 p-6 text-center">
-          <h1 className="text-xl font-bold text-yellow-300">Advertising Checkout</h1>
-          <p className="mt-3 text-sm text-zinc-300">Loading checkout details…</p>
+          <h1 className="text-xl font-bold text-yellow-300">
+            Advertising Checkout
+          </h1>
+          <p className="mt-3 text-sm text-zinc-300">
+            Loading checkout details…
+          </p>
         </div>
       </div>
     );
@@ -221,7 +225,9 @@ export default function AdvertisingCheckoutPage() {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center p-6">
         <div className="max-w-md w-full rounded-2xl border border-red-500/30 bg-zinc-950 p-6 text-center">
-          <h1 className="text-xl font-bold text-yellow-300">Advertising Checkout</h1>
+          <h1 className="text-xl font-bold text-yellow-300">
+            Advertising Checkout
+          </h1>
           <p className="mt-3 text-sm text-red-200">{parsed.error}</p>
           <button
             onClick={() => router.replace("/advertising")}
@@ -252,7 +258,9 @@ export default function AdvertisingCheckoutPage() {
           </div>
           <div>
             <span className="text-zinc-400">Price:</span>{" "}
-            <span className="text-yellow-300 font-semibold">${parsed.amountDollars}</span>
+            <span className="text-yellow-300 font-semibold">
+              ${parsed.amountDollars}
+            </span>
           </div>
           {parsed.placement ? (
             <div>
@@ -268,7 +276,9 @@ export default function AdvertisingCheckoutPage() {
           ) : null}
         </div>
 
-        {message ? <p className="mt-4 text-sm text-zinc-300">{message}</p> : null}
+        {message ? (
+          <p className="mt-4 text-sm text-zinc-300">{message}</p>
+        ) : null}
 
         <div className="mt-6 flex gap-3">
           <button
