@@ -4,7 +4,6 @@ import { useMemo, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { getAdQuote } from "@/lib/advertising/pricing";
 
-
 const CHECKOUT_LOCK_PREFIX = "bwe:ad-checkout-lock:";
 const CHECKOUT_LOCK_TTL_MS = 20_000;
 
@@ -41,6 +40,16 @@ function normalizeFromLegacyQuery(query: Record<string, any>) {
   }
 
   return "";
+}
+
+function optionToDetailsHref(option: string) {
+  if (option === "featured-sponsor") return "/advertise/featured-sponsor";
+  if (option === "directory-standard" || option === "directory-featured") {
+    return "/advertise/business-directory";
+  }
+  if (option === "banner-ad") return "/advertise/banner-ads";
+  if (option === "custom-solution-deposit") return "/advertise/custom";
+  return "/advertising";
 }
 
 function buildAttemptKey(input: {
@@ -114,6 +123,15 @@ export default function AdvertisingCheckoutPage() {
       return {
         invalid: true,
         error: "Invalid advertising option or duration.",
+      };
+    }
+
+    if (!campaignId) {
+      return {
+        invalid: true,
+        error:
+          "Campaign details are required before checkout. Please complete the details form first.",
+        detailsHref: optionToDetailsHref(quote.option),
       };
     }
 
@@ -222,6 +240,11 @@ export default function AdvertisingCheckoutPage() {
   }
 
   if (parsed.invalid) {
+    const detailsHref =
+      "detailsHref" in parsed && typeof parsed.detailsHref === "string"
+        ? parsed.detailsHref
+        : "";
+
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center p-6">
         <div className="max-w-md w-full rounded-2xl border border-red-500/30 bg-zinc-950 p-6 text-center">
@@ -230,10 +253,12 @@ export default function AdvertisingCheckoutPage() {
           </h1>
           <p className="mt-3 text-sm text-red-200">{parsed.error}</p>
           <button
-            onClick={() => router.replace("/advertising")}
+            onClick={() => router.replace(detailsHref || "/advertising")}
             className="mt-4 rounded-xl bg-yellow-500 px-4 py-2 font-semibold text-black hover:bg-yellow-400"
           >
-            Back to Advertising Options
+            {detailsHref
+              ? "Complete Campaign Details"
+              : "Back to Advertising Options"}
           </button>
         </div>
       </div>

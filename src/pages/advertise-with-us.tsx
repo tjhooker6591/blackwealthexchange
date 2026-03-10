@@ -191,20 +191,36 @@ export default function AdvertiseWithUs() {
           </h3>
           <div className="mt-4 grid gap-3 md:grid-cols-4 text-sm">
             <div className="rounded-xl border border-white/10 bg-black/30 p-3">
-              <div className="text-yellow-300 font-semibold">1. Select Option</div>
-              <div className="text-gray-300 mt-1">Choose Featured, Directory, Banner, or Custom.</div>
+              <div className="text-yellow-300 font-semibold">
+                1. Select Option
+              </div>
+              <div className="text-gray-300 mt-1">
+                Choose Featured, Directory, Banner, or Custom.
+              </div>
             </div>
             <div className="rounded-xl border border-white/10 bg-black/30 p-3">
-              <div className="text-yellow-300 font-semibold">2. Add Details</div>
-              <div className="text-gray-300 mt-1">Submit campaign details and contact information.</div>
+              <div className="text-yellow-300 font-semibold">
+                2. Add Details
+              </div>
+              <div className="text-gray-300 mt-1">
+                Submit campaign details and contact information.
+              </div>
             </div>
             <div className="rounded-xl border border-white/10 bg-black/30 p-3">
-              <div className="text-yellow-300 font-semibold">3. Review Checkout</div>
-              <div className="text-gray-300 mt-1">Confirm option, duration, and pricing before payment.</div>
+              <div className="text-yellow-300 font-semibold">
+                3. Review Checkout
+              </div>
+              <div className="text-gray-300 mt-1">
+                Confirm option, duration, and pricing before payment.
+              </div>
             </div>
             <div className="rounded-xl border border-white/10 bg-black/30 p-3">
-              <div className="text-yellow-300 font-semibold">4. Reserve Slot</div>
-              <div className="text-gray-300 mt-1">Checkout reserves your campaign for activation review.</div>
+              <div className="text-yellow-300 font-semibold">
+                4. Reserve Slot
+              </div>
+              <div className="text-gray-300 mt-1">
+                Checkout reserves your campaign for activation review.
+              </div>
             </div>
           </div>
 
