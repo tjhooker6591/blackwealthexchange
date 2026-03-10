@@ -13,7 +13,7 @@ import {
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
-type CheckoutType = "ad" | "product" | "plan";
+type CheckoutType = "ad" | "product" | "plan" | "course";
 
 interface CheckoutPayload {
   userId?: string; // dev fallback only
@@ -309,6 +309,27 @@ export default async function handler(
       if (!unitAmount) return res.status(400).json({ error: "Invalid plan" });
 
       itemName = `Plan Upgrade (${itemId})`;
+      isPlatformAccount = true;
+      stripeAccountId = process.env.PLATFORM_STRIPE_ACCOUNT_ID as string;
+    } else if (type === "course") {
+      const courseMap: Record<string, { name: string; amount: number }> = {
+        "financial-literacy-premium": {
+          name: "Premium Financial Literacy Course",
+          amount: 4900,
+        },
+        "personal-finance-101": { name: "Personal Finance 101", amount: 2900 },
+        "investing-for-beginners": {
+          name: "Investing for Beginners",
+          amount: 3900,
+        },
+        "generational-wealth": { name: "Building Generational Wealth", amount: 4900 },
+      };
+
+      const course = courseMap[itemId];
+      if (!course) return res.status(400).json({ error: "Invalid course" });
+
+      unitAmount = course.amount;
+      itemName = course.name;
       isPlatformAccount = true;
       stripeAccountId = process.env.PLATFORM_STRIPE_ACCOUNT_ID as string;
     } else {

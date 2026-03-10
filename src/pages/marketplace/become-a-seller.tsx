@@ -257,8 +257,60 @@ export default function BecomeASellerPage() {
           {error ? <p className="text-red-500 mb-4 text-sm">{error}</p> : null}
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* same inputs you already have… */}
-            {/* button */}
+            <input
+              className="w-full rounded border border-gray-700 bg-black px-3 py-2 text-white"
+              placeholder="Business name"
+              value={form.businessName}
+              onChange={(e) => setForm({ ...form, businessName: e.target.value })}
+              required
+            />
+            <input
+              className="w-full rounded border border-gray-700 bg-black px-3 py-2 text-white"
+              placeholder="Business email"
+              value={form.email}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
+              required
+            />
+            <input
+              className="w-full rounded border border-gray-700 bg-black px-3 py-2 text-white"
+              placeholder="Business phone"
+              value={form.businessPhone}
+              onChange={(e) => setForm({ ...form, businessPhone: e.target.value })}
+            />
+            <input
+              className="w-full rounded border border-gray-700 bg-black px-3 py-2 text-white"
+              placeholder="Business address"
+              value={form.businessAddress}
+              onChange={(e) =>
+                setForm({ ...form, businessAddress: e.target.value })
+              }
+            />
+            <input
+              className="w-full rounded border border-gray-700 bg-black px-3 py-2 text-white"
+              placeholder="Website (optional)"
+              value={form.website}
+              onChange={(e) => setForm({ ...form, website: e.target.value })}
+            />
+            <textarea
+              className="w-full rounded border border-gray-700 bg-black px-3 py-2 text-white"
+              placeholder="Tell buyers about your business"
+              value={form.description}
+              onChange={(e) => setForm({ ...form, description: e.target.value })}
+              rows={4}
+            />
+
+            <label className="flex items-start gap-2 text-sm text-gray-300">
+              <input
+                type="checkbox"
+                className="mt-1"
+                checked={form.agreed}
+                onChange={(e) => setForm({ ...form, agreed: e.target.checked })}
+              />
+              <span>
+                I agree to the marketplace terms and understand platform fees.
+              </span>
+            </label>
+
             <Button type="submit" className="w-full" disabled={submitting}>
               {submitting ? "Submitting..." : "Create Seller Profile"}
             </Button>
