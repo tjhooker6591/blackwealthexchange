@@ -75,11 +75,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  if (req.method !== "GET") {
-    res.setHeader("Allow", ["GET"]);
-    return res.status(405).json({ error: "Method Not Allowed" });
-  }
-
   const admin = await requireAdmin(req, res);
   if (!admin) return;
 
@@ -88,6 +83,43 @@ export default async function handler(
     const dbName =
       process.env.MONGODB_DB || process.env.MONGODB_DB_NAME || "bwes-cluster";
     const db = client.db(dbName);
+
+    if (req.method === "PATCH") {
+      const { id, collection, status } = req.body || {};
+      const nextStatus = normalizeStatus(status);
+      if (!id || !collection) {
+        return res.status(400).json({ error: "Missing id or collection" });
+      }
+      if (!["consulting_interest", "consulting_intake"].includes(collection)) {
+        return res.status(400).json({ error: "Invalid collection" });
+      }
+
+      const { ObjectId } = await import("mongodb");
+      const _id = ObjectId.isValid(String(id)) ? new ObjectId(String(id)) : null;
+      if (!_id) return res.status(400).json({ error: "Invalid id" });
+
+      const result = await db.collection(collection).updateOne(
+        { _id },
+        {
+          $set: {
+            status: nextStatus,
+            updatedAt: new Date(),
+            reviewedBy: admin.email || admin.userId || "admin",
+          },
+        },
+      );
+
+      if (!result.matchedCount) {
+        return res.status(404).json({ error: "Lead not found" });
+      }
+
+      return res.status(200).json({ ok: true, id, collection, status: nextStatus });
+    }
+
+    if (req.method !== "GET") {
+      res.setHeader("Allow", ["GET", "PATCH"]);
+      return res.status(405).json({ error: "Method Not Allowed" });
+    }
 
     const [interestRows, intakeRows] = await Promise.all([
       db
@@ -133,6 +165,7 @@ export default async function handler(
     const normalized = [
       ...interestRows.map((x: any) => ({
         _id: x._id.toString(),
+        collection: "consulting_interest",
         name: x.name || x.fullName || "",
         businessName: x.businessName || x.company || "",
         email: x.email || "",
@@ -147,6 +180,7 @@ export default async function handler(
       })),
       ...intakeRows.map((x: any) => ({
         _id: x._id.toString(),
+        collection: "consulting_intake",
         name: x.name || "",
         businessName: x.company || "",
         email: x.email || "",
