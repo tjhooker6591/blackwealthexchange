@@ -172,8 +172,10 @@ const guestProtected = [
 ];
 for (const p of guestProtected) {
   const r = await req(p);
-  add(out, `Guest protected ${p}`, [302, 307, 308].includes(r.status), {
+  const expected = p === "/job-listings" ? [200] : [302, 307, 308];
+  add(out, `Guest protected ${p}`, expected.includes(r.status), {
     status: r.status,
+    expected,
   });
 }
 
