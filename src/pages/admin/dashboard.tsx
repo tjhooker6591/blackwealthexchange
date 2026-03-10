@@ -333,7 +333,8 @@ const AdminDashboard = () => {
         });
         if (!res.ok) throw new Error("Failed to fetch consulting interests");
         const data = await res.json();
-        setConsulting(Array.isArray(data) ? data : []);
+        const rows = Array.isArray(data) ? data : (data?.interests ?? []);
+        setConsulting(Array.isArray(rows) ? rows : []);
       } catch (_err) {
         setConsultingErr("Error loading consulting waitlist.");
       } finally {
@@ -840,6 +841,14 @@ const AdminDashboard = () => {
           label="Review Affiliate Payouts"
         />
         <AdminLink href="/admin/affiliates" label="Manage Affiliates" />
+        <AdminLink
+          href="/admin/affiliate-attribution"
+          label="Review Affiliate Attribution"
+        />
+        <AdminLink
+          href="/admin/consulting-leads"
+          label="Review Consulting Leads"
+        />
         <AdminLink href="/admin/job-approvals" label="Approve Job Postings" />
         <AdminLink
           href="/admin/product-approvals"
