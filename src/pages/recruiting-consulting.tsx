@@ -147,7 +147,14 @@ export default function RecruitingConsultingPage() {
             />
 
             {err ? <div className="text-sm text-red-300">{err}</div> : null}
-            {msg ? <div className="text-sm text-emerald-300">{msg}</div> : null}
+            {msg ? (
+              <div className="text-sm text-emerald-300 space-y-1">
+                <div>{msg}</div>
+                <div className="text-emerald-200/80 text-xs">
+                  Next step: our team triages requests within 1 business day. Approved requests move to discovery scheduling and proposal planning.
+                </div>
+              </div>
+            ) : null}
 
             <button
               disabled={loading}

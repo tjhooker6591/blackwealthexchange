@@ -3,6 +3,15 @@ import clientPromise from "../../../lib/mongodb";
 import { requireAdminFromRequest } from "@/lib/adminAuth";
 
 type ConsultingStatus = "pending" | "approved" | "rejected" | "flagged";
+type LifecycleStage =
+  | "new"
+  | "triaged"
+  | "approved"
+  | "discovery_scheduled"
+  | "proposal_sent"
+  | "in_delivery"
+  | "closed_won"
+  | "closed_lost";
 
 function normalizeStatus(value: unknown): ConsultingStatus {
   const v = String(value || "")
@@ -10,6 +19,23 @@ function normalizeStatus(value: unknown): ConsultingStatus {
     .toLowerCase();
   if (v === "approved" || v === "rejected" || v === "flagged") return v;
   return "pending";
+}
+
+function normalizeStage(value: unknown): LifecycleStage {
+  const v = String(value || "")
+    .trim()
+    .toLowerCase() as LifecycleStage;
+  const allowed: LifecycleStage[] = [
+    "new",
+    "triaged",
+    "approved",
+    "discovery_scheduled",
+    "proposal_sent",
+    "in_delivery",
+    "closed_won",
+    "closed_lost",
+  ];
+  return allowed.includes(v) ? v : "new";
 }
 
 export default async function handler(
@@ -26,8 +52,10 @@ export default async function handler(
     const db = client.db(dbName);
 
     if (req.method === "PATCH") {
-      const { id, collection, status } = req.body || {};
+      const { id, collection, status, stage, nextAction, owner, followUpAt } =
+        req.body || {};
       const nextStatus = normalizeStatus(status);
+      const nextStage = normalizeStage(stage || status || "new");
       if (!id || !collection) {
         return res.status(400).json({ error: "Missing id or collection" });
       }
@@ -41,13 +69,27 @@ export default async function handler(
         : null;
       if (!_id) return res.status(400).json({ error: "Invalid id" });
 
+      const actor = admin.email || admin.userId || "admin";
       const result = await db.collection(collection).updateOne(
         { _id },
         {
           $set: {
             status: nextStatus,
+            lifecycleStage: nextStage,
+            nextAction: typeof nextAction === "string" ? nextAction.trim() : "",
+            owner: typeof owner === "string" ? owner.trim() : "",
+            followUpAt: followUpAt ? new Date(followUpAt) : null,
             updatedAt: new Date(),
-            reviewedBy: admin.email || admin.userId || "admin",
+            reviewedBy: actor,
+          },
+          $push: {
+            lifecycleLog: {
+              at: new Date(),
+              by: actor,
+              status: nextStatus,
+              stage: nextStage,
+              nextAction: typeof nextAction === "string" ? nextAction.trim() : "",
+            },
           },
         },
       );
@@ -83,6 +125,10 @@ export default async function handler(
           message: 1,
           notes: 1,
           status: 1,
+          lifecycleStage: 1,
+          nextAction: 1,
+          owner: 1,
+          followUpAt: 1,
           createdAt: 1,
           updatedAt: 1,
           source: 1,
@@ -100,6 +146,10 @@ export default async function handler(
           phone: 1,
           details: 1,
           status: 1,
+          lifecycleStage: 1,
+          nextAction: 1,
+          owner: 1,
+          followUpAt: 1,
           createdAt: 1,
           updatedAt: 1,
           source: 1,
@@ -120,6 +170,10 @@ export default async function handler(
         intakeType: "interest",
         source: x.source || "website",
         status: normalizeStatus(x.status),
+        lifecycleStage: normalizeStage(x.lifecycleStage || x.status || "new"),
+        nextAction: x.nextAction || "",
+        owner: x.owner || "",
+        followUpAt: x.followUpAt ? new Date(x.followUpAt).toISOString() : null,
         createdAt: x.createdAt ? new Date(x.createdAt).toISOString() : null,
         updatedAt: x.updatedAt ? new Date(x.updatedAt).toISOString() : null,
       })),
@@ -135,6 +189,10 @@ export default async function handler(
         intakeType: x.type || "intake",
         source: x.source || "homepage_recruiting_section",
         status: normalizeStatus(x.status),
+        lifecycleStage: normalizeStage(x.lifecycleStage || x.status || "new"),
+        nextAction: x.nextAction || "",
+        owner: x.owner || "",
+        followUpAt: x.followUpAt ? new Date(x.followUpAt).toISOString() : null,
         createdAt: x.createdAt ? new Date(x.createdAt).toISOString() : null,
         updatedAt: x.updatedAt ? new Date(x.updatedAt).toISOString() : null,
       })),

@@ -61,7 +61,12 @@ export default async function handler(
 
     await ensureApiRateLimitIndexes(db);
     const ip = getClientIp(req);
-    const ipLimit = await hitApiRateLimit(db, `consulting:intake:ip:${ip}`, 30, 10);
+    const ipLimit = await hitApiRateLimit(
+      db,
+      `consulting:intake:ip:${ip}`,
+      30,
+      10,
+    );
     const emailLimit = await hitApiRateLimit(
       db,
       `consulting:intake:email:${email}`,
@@ -72,7 +77,9 @@ export default async function handler(
     if (ipLimit.blocked || emailLimit.blocked) {
       res.setHeader(
         "Retry-After",
-        String(Math.max(ipLimit.retryAfterSeconds, emailLimit.retryAfterSeconds)),
+        String(
+          Math.max(ipLimit.retryAfterSeconds, emailLimit.retryAfterSeconds),
+        ),
       );
       return res.status(429).json({
         success: false,
@@ -87,7 +94,9 @@ export default async function handler(
       company: company || null,
       phone: phone || null,
       details,
-      status: "new",
+      status: "pending",
+      lifecycleStage: "new",
+      nextAction: "Initial triage pending",
       createdAt: new Date(),
       source: "homepage_recruiting_section",
     });

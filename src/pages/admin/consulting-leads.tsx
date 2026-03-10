@@ -11,6 +11,19 @@ type Lead = {
   service: string;
   message: string;
   status: "pending" | "approved" | "rejected" | "flagged" | string;
+  lifecycleStage?:
+    | "new"
+    | "triaged"
+    | "approved"
+    | "discovery_scheduled"
+    | "proposal_sent"
+    | "in_delivery"
+    | "closed_won"
+    | "closed_lost"
+    | string;
+  nextAction?: string;
+  owner?: string;
+  followUpAt?: string | null;
   source?: string;
   intakeType?: string;
   createdAt?: string | null;
@@ -44,9 +57,15 @@ export default function ConsultingLeadsAdminPage() {
     })();
   }, []);
 
-  async function updateStatus(
+  async function updateLead(
     lead: Lead,
-    status: "pending" | "approved" | "rejected" | "flagged",
+    patch: {
+      status?: "pending" | "approved" | "rejected" | "flagged";
+      lifecycleStage?: string;
+      nextAction?: string;
+      owner?: string;
+      followUpAt?: string | null;
+    },
   ) {
     setSavingId(lead._id);
     try {
@@ -57,7 +76,11 @@ export default function ConsultingLeadsAdminPage() {
         body: JSON.stringify({
           id: lead._id,
           collection: lead.collection,
-          status,
+          status: patch.status ?? lead.status,
+          stage: patch.lifecycleStage ?? lead.lifecycleStage ?? lead.status,
+          nextAction: patch.nextAction ?? lead.nextAction ?? "",
+          owner: patch.owner ?? lead.owner ?? "",
+          followUpAt: patch.followUpAt ?? lead.followUpAt ?? null,
         }),
       });
       const data = await res.json().catch(() => ({}));
@@ -99,14 +122,15 @@ export default function ConsultingLeadsAdminPage() {
                   <th className="p-2">Email</th>
                   <th className="p-2">Service</th>
                   <th className="p-2">Source</th>
-                  <th className="p-2">Status</th>
+                  <th className="p-2">Status / Stage</th>
+                  <th className="p-2">Next Action</th>
                   <th className="p-2">Action</th>
                 </tr>
               </thead>
               <tbody>
                 {rows.length === 0 ? (
                   <tr>
-                    <td className="p-2 text-white/60" colSpan={8}>
+                    <td className="p-2 text-white/60" colSpan={9}>
                       No consulting leads yet.
                     </td>
                   </tr>
@@ -126,21 +150,33 @@ export default function ConsultingLeadsAdminPage() {
                       <td className="p-2">{r.email || "-"}</td>
                       <td className="p-2">{r.service || "-"}</td>
                       <td className="p-2">{r.source || r.intakeType || "-"}</td>
-                      <td className="p-2">{r.status || "new"}</td>
                       <td className="p-2">
+                        <div className="text-xs text-white/80">{r.status || "new"}</div>
+                        <div className="mt-1 text-[11px] text-white/55">
+                          stage: {r.lifecycleStage || "new"}
+                        </div>
+                      </td>
+                      <td className="p-2 text-xs text-white/70 max-w-[260px]">
+                        {r.nextAction || "No next action set"}
+                        {r.followUpAt ? (
+                          <div className="mt-1 text-[11px] text-white/50">
+                            follow-up: {new Date(r.followUpAt).toLocaleString()}
+                          </div>
+                        ) : null}
+                      </td>
+                      <td className="p-2 space-y-2">
                         <select
                           className="rounded border border-white/20 bg-black px-2 py-1 text-xs"
                           value={r.status || "pending"}
                           disabled={savingId === r._id}
                           onChange={(e) =>
-                            updateStatus(
-                              r,
-                              e.target.value as
+                            updateLead(r, {
+                              status: e.target.value as
                                 | "pending"
                                 | "approved"
                                 | "rejected"
                                 | "flagged",
-                            )
+                            })
                           }
                         >
                           <option value="pending">pending</option>
@@ -148,6 +184,49 @@ export default function ConsultingLeadsAdminPage() {
                           <option value="flagged">flagged</option>
                           <option value="rejected">rejected</option>
                         </select>
+
+                        <div className="flex flex-wrap gap-1">
+                          <button
+                            className="rounded bg-emerald-600/80 px-2 py-1 text-[11px] font-semibold"
+                            disabled={savingId === r._id}
+                            onClick={() =>
+                              updateLead(r, {
+                                status: "approved",
+                                lifecycleStage: "discovery_scheduled",
+                                nextAction: "Schedule discovery call",
+                                followUpAt: new Date(
+                                  Date.now() + 48 * 60 * 60 * 1000,
+                                ).toISOString(),
+                              })
+                            }
+                          >
+                            Approve + discovery
+                          </button>
+                          <button
+                            className="rounded bg-sky-600/80 px-2 py-1 text-[11px] font-semibold"
+                            disabled={savingId === r._id}
+                            onClick={() =>
+                              updateLead(r, {
+                                lifecycleStage: "proposal_sent",
+                                nextAction: "Send proposal + pricing",
+                              })
+                            }
+                          >
+                            Mark proposal sent
+                          </button>
+                          <button
+                            className="rounded bg-purple-600/80 px-2 py-1 text-[11px] font-semibold"
+                            disabled={savingId === r._id}
+                            onClick={() =>
+                              updateLead(r, {
+                                lifecycleStage: "in_delivery",
+                                nextAction: "Kickoff delivery plan",
+                              })
+                            }
+                          >
+                            Move to delivery
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))
