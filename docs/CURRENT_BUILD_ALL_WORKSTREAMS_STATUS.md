@@ -125,7 +125,7 @@ Status labels allowed:
 - **Status:** PARTIAL
 - **Entry point:** `/affiliate/*` + affiliate admin tools
 - **Expected final outcome:** apply/approve, tracking, conversion attribution, payable balances, payout request + completion all function correctly.
-- **Current actual outcome:** APIs/admin surfaces exist; admin affiliate list auth/earnings visibility has been hardened (session-admin gate + normalized total/available earnings), attribution visibility endpoint added (`/api/admin/affiliate-attribution`), and payout accounting now increments on completion instead of request. Full conversion-to-payout chain proof is still not closed.
+- **Current actual outcome:** APIs/admin surfaces exist; admin affiliate list auth/earnings visibility has been hardened (session-admin gate + normalized total/available earnings), attribution visibility endpoint added (`/api/admin/affiliate-attribution`) with admin page (`/admin/affiliate-attribution`), and payout accounting now increments on completion instead of request. Full conversion-to-payout chain proof is still not closed.
 - **Exact blocker:** missing verified end-to-end conversion attribution through completed payout.
 - **Files/routes/endpoints involved:** `src/pages/affiliate/*.tsx`, `src/pages/api/affiliate/*`, `src/pages/api/admin/affiliates/*`, `src/pages/api/admin/get-payouts.ts`, `src/pages/api/admin/complete-payout.ts`.
 - **Exact closure condition:** one canonical affiliate journey proves attributed conversion and completed payout state.

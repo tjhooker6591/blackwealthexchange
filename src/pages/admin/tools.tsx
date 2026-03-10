@@ -219,6 +219,14 @@ export default function AdminToolsPage() {
         method: "GET",
       },
       {
+        id: "p-affiliate-attribution",
+        type: "page",
+        category: "Affiliates",
+        label: "Affiliate Attribution",
+        path: "/admin/affiliate-attribution",
+        method: "GET",
+      },
+      {
         id: "p-content",
         type: "page",
         category: "Content",
