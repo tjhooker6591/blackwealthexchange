@@ -117,7 +117,7 @@ export async function reserveFeaturedSponsorWeeks(
       .collection("featured_sponsor_schedule")
       .updateOne(
         { campaignId: input.campaignId, weekStart: row.weekStart },
-        { $setOnInsert: row, $set: { updatedAt: now } },
+        { $setOnInsert: row },
         { upsert: true },
       );
 

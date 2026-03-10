@@ -47,7 +47,11 @@ export default async function handler(
     const client = await clientPromise;
     const db = client.db(getMongoDbName());
     const now = new Date();
-    const currentWeek = weekStartUtc(now);
+    const weekParam = s(req.query.weekStart);
+    const weekInput = weekParam ? new Date(weekParam) : now;
+    const currentWeek = weekStartUtc(
+      Number.isNaN(weekInput.getTime()) ? now : weekInput,
+    );
 
     const scheduled = await db
       .collection("featured_sponsor_schedule")
