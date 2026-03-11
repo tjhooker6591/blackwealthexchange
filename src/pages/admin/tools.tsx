@@ -14,6 +14,7 @@ type ToolCategory =
   | "Jobs"
   | "Users"
   | "Affiliates"
+  | "Consulting"
   | "Content"
   | "Interns"
   | "Other";
@@ -216,6 +217,22 @@ export default function AdminToolsPage() {
         category: "Affiliates",
         label: "Affiliate Payouts",
         path: "/admin/affiliate-payouts",
+        method: "GET",
+      },
+      {
+        id: "p-affiliate-attribution",
+        type: "page",
+        category: "Affiliates",
+        label: "Affiliate Attribution",
+        path: "/admin/affiliate-attribution",
+        method: "GET",
+      },
+      {
+        id: "p-consulting-leads",
+        type: "page",
+        category: "Consulting",
+        label: "Consulting Leads",
+        path: "/admin/consulting-leads",
         method: "GET",
       },
       {
@@ -473,6 +490,7 @@ export default function AdminToolsPage() {
       "Jobs",
       "Users",
       "Affiliates",
+      "Consulting",
       "Content",
       "Interns",
       "Other",

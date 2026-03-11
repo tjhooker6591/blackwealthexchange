@@ -2,9 +2,7 @@
 
 import type { NextApiRequest } from "next";
 import { verify } from "jsonwebtoken";
-
-// Make sure this matches how you sign your session token
-const JWT_SECRET = process.env.JWT_SECRET!;
+import { getJwtSecret } from "@/lib/env";
 
 /**
  * SessionUser represents the decoded payload of the session token.
@@ -37,7 +35,7 @@ export async function getUserFromRequest(
 
   try {
     // Now payload will include `id`, `email`, and `accountType`
-    const payload = verify(token, JWT_SECRET) as SessionUser;
+    const payload = verify(token, getJwtSecret()) as SessionUser;
     return payload;
   } catch (err) {
     console.error("Invalid session token:", err);

@@ -8,7 +8,11 @@ import { Card, CardContent } from "../../components/ui/card";
 
 type User = { id?: string; _id?: string; email: string };
 type Seller = { _id: string; stripeAccountId?: string; email: string };
-type AccountStatus = { charges_enabled: boolean; payouts_enabled: boolean };
+type AccountStatus = {
+  charges_enabled: boolean;
+  payouts_enabled: boolean;
+  details_submitted?: boolean;
+};
 
 export default function BecomeASellerPage() {
   const router = useRouter();
@@ -35,11 +39,15 @@ export default function BecomeASellerPage() {
   const [bootLoading, setBootLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [onboardingLoading, setOnboardingLoading] = useState(false);
+  const [productCount, setProductCount] = useState<number>(0);
   const [error, setError] = useState("");
 
   const loadSellerAndStatus = async () => {
     try {
-      const res = await fetch("/api/marketplace/get-my-seller");
+      const res = await fetch("/api/marketplace/get-my-seller", {
+        credentials: "include",
+        cache: "no-store",
+      });
       if (!res.ok) return;
 
       const data = await res.json();
@@ -50,11 +58,21 @@ export default function BecomeASellerPage() {
       if (data.seller.stripeAccountId) {
         const acctRes = await fetch(
           `/api/stripe/account-status?sellerId=${encodeURIComponent(data.seller._id)}`,
+          { credentials: "include", cache: "no-store" },
         );
         if (acctRes.ok) {
           const acctData = await acctRes.json();
           setAcctStatus(acctData);
         }
+      }
+
+      const statsRes = await fetch("/api/marketplace/stats", {
+        credentials: "include",
+        cache: "no-store",
+      });
+      if (statsRes.ok) {
+        const statsData = await statsRes.json();
+        setProductCount(Number(statsData?.products || 0));
       }
     } catch (err) {
       console.error("Error loading seller info", err);
@@ -105,7 +123,7 @@ export default function BecomeASellerPage() {
       const payload = {
         sellerId: s?._id,
         email: s?.email || form.email,
-        // optional: returnTo: "/marketplace/become-a-seller?refresh=1"
+        returnTo: "/marketplace/become-a-seller?refresh=1&stripe=return",
       };
 
       const res = await fetch("/api/stripe/create-account-link", {
@@ -171,6 +189,31 @@ export default function BecomeASellerPage() {
     }
   };
 
+  const profileReady = Boolean(seller);
+  const payoutReady = Boolean(
+    seller && acctStatus?.charges_enabled && acctStatus?.payouts_enabled,
+  );
+  const firstProductReady = productCount > 0;
+
+  const steps = [
+    { label: "Create seller profile", done: profileReady },
+    { label: "Enable Stripe payouts", done: payoutReady },
+    { label: "Add first product", done: firstProductReady },
+  ];
+
+  const setupProgress = (
+    <div className="mb-4 rounded border border-gray-700 bg-gray-900 p-3 text-sm">
+      <p className="text-gold font-semibold">Seller Setup Progress</p>
+      <div className="mt-2 space-y-1 text-gray-200">
+        {steps.map((s, i) => (
+          <div key={s.label}>
+            {i + 1}. {s.done ? "✅" : "⬜"} {s.label}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
   if (bootLoading) {
     return (
       <div className="min-h-screen bg-black text-white p-6 flex items-center justify-center">
@@ -185,11 +228,16 @@ export default function BecomeASellerPage() {
       <div className="min-h-screen bg-black text-white p-6 flex items-center justify-center">
         <Card className="max-w-lg w-full p-6">
           <CardContent>
+            {setupProgress}
             <h1 className="text-2xl font-bold mb-2 text-gold">
-              You’re All Set!
+              {firstProductReady
+                ? "Seller Setup Complete"
+                : "You’re Almost Done"}
             </h1>
             <p className="mb-4 text-gray-300">
-              Your payout account is verified.
+              {firstProductReady
+                ? "Your payout account is verified and you already have product listings."
+                : "Your payout account is verified. Next step: add your first product."}
             </p>
 
             <Button
@@ -217,12 +265,27 @@ export default function BecomeASellerPage() {
       <div className="min-h-screen bg-black text-white p-6 flex items-center justify-center">
         <Card className="max-w-lg w-full p-6">
           <CardContent>
+            {setupProgress}
             <h1 className="text-2xl font-bold mb-2 text-gold">
               Complete Payout Setup
             </h1>
             <p className="mb-4 text-gray-300">
-              Finish Stripe onboarding to receive payouts.
+              Finish Stripe onboarding to receive payouts, then return here to
+              continue.
             </p>
+
+            {router.query.stripe === "refresh" ? (
+              <p className="text-yellow-300 mb-3 text-sm">
+                Stripe setup wasn’t finished yet. Continue onboarding to
+                complete payout readiness.
+              </p>
+            ) : null}
+
+            {router.query.stripe === "return" ? (
+              <p className="text-green-300 mb-3 text-sm">
+                Welcome back from Stripe. We rechecked your readiness above.
+              </p>
+            ) : null}
 
             {error ? (
               <p className="text-red-500 mb-4 text-sm">{error}</p>
@@ -235,6 +298,13 @@ export default function BecomeASellerPage() {
             >
               {onboardingLoading ? "Redirecting…" : "Finish Stripe Onboarding"}
             </Button>
+
+            <Link
+              href="/marketplace/dashboard"
+              className="block text-center text-sm text-gray-400 mt-3 hover:text-gray-200"
+            >
+              Back to Seller Dashboard
+            </Link>
           </CardContent>
         </Card>
       </div>
@@ -246,7 +316,13 @@ export default function BecomeASellerPage() {
     <div className="min-h-screen bg-black text-white p-6 flex items-center justify-center">
       <Card className="max-w-2xl w-full p-6">
         <CardContent>
+          {setupProgress}
           <h1 className="text-2xl font-bold text-gold mb-2">Become a Seller</h1>
+
+          <p className="text-gray-400 mb-2 text-sm">
+            Complete this profile first. Next step after submit is Stripe payout
+            setup.
+          </p>
 
           <p className="text-gray-400 mb-6 text-sm">
             <strong className="text-gold">Important:</strong> We collect a 10%
@@ -257,8 +333,66 @@ export default function BecomeASellerPage() {
           {error ? <p className="text-red-500 mb-4 text-sm">{error}</p> : null}
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* same inputs you already have… */}
-            {/* button */}
+            <input
+              className="w-full rounded border border-gray-700 bg-black px-3 py-2 text-white"
+              placeholder="Business name"
+              value={form.businessName}
+              onChange={(e) =>
+                setForm({ ...form, businessName: e.target.value })
+              }
+              required
+            />
+            <input
+              className="w-full rounded border border-gray-700 bg-black px-3 py-2 text-white"
+              placeholder="Business email"
+              value={form.email}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
+              required
+            />
+            <input
+              className="w-full rounded border border-gray-700 bg-black px-3 py-2 text-white"
+              placeholder="Business phone"
+              value={form.businessPhone}
+              onChange={(e) =>
+                setForm({ ...form, businessPhone: e.target.value })
+              }
+            />
+            <input
+              className="w-full rounded border border-gray-700 bg-black px-3 py-2 text-white"
+              placeholder="Business address"
+              value={form.businessAddress}
+              onChange={(e) =>
+                setForm({ ...form, businessAddress: e.target.value })
+              }
+            />
+            <input
+              className="w-full rounded border border-gray-700 bg-black px-3 py-2 text-white"
+              placeholder="Website (optional)"
+              value={form.website}
+              onChange={(e) => setForm({ ...form, website: e.target.value })}
+            />
+            <textarea
+              className="w-full rounded border border-gray-700 bg-black px-3 py-2 text-white"
+              placeholder="Tell buyers about your business"
+              value={form.description}
+              onChange={(e) =>
+                setForm({ ...form, description: e.target.value })
+              }
+              rows={4}
+            />
+
+            <label className="flex items-start gap-2 text-sm text-gray-300">
+              <input
+                type="checkbox"
+                className="mt-1"
+                checked={form.agreed}
+                onChange={(e) => setForm({ ...form, agreed: e.target.checked })}
+              />
+              <span>
+                I agree to the marketplace terms and understand platform fees.
+              </span>
+            </label>
+
             <Button type="submit" className="w-full" disabled={submitting}>
               {submitting ? "Submitting..." : "Create Seller Profile"}
             </Button>

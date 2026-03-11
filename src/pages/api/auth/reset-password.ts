@@ -1,16 +1,47 @@
-// src/pages/api/auth/reset-password.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 import crypto from "crypto";
 import bcrypt from "bcryptjs";
 import clientPromise from "../../../lib/mongodb";
-
-const RESET_TOKEN_SECRET =
-  process.env.RESET_TOKEN_SECRET ||
-  process.env.JWT_SECRET ||
-  "dev-reset-secret";
+import { getMongoDbName, getResetTokenSecret } from "@/lib/env";
 
 function sha256(input: string) {
   return crypto.createHash("sha256").update(input).digest("hex");
+}
+
+function getClientIp(req: NextApiRequest) {
+  return (
+    (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() ||
+    req.socket.remoteAddress ||
+    "unknown"
+  );
+}
+
+async function ensureRateIndex(db: any) {
+  await db
+    .collection("password_reset_rate_limits")
+    .createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+  await db
+    .collection("password_reset_rate_limits")
+    .createIndex({ key: 1, createdAt: -1 });
+}
+
+async function hitRateLimit(
+  db: any,
+  key: string,
+  limit: number,
+  windowMinutes: number,
+) {
+  const now = new Date();
+  const windowStart = new Date(now.getTime() - windowMinutes * 60 * 1000);
+  const expiresAt = new Date(now.getTime() + windowMinutes * 60 * 1000);
+
+  const col = db.collection("password_reset_rate_limits");
+  const count = await col.countDocuments({
+    key,
+    createdAt: { $gte: windowStart },
+  });
+  await col.insertOne({ key, createdAt: now, expiresAt });
+  return count >= limit;
 }
 
 export default async function handler(
@@ -36,9 +67,25 @@ export default async function handler(
 
   try {
     const client = await clientPromise;
-    const db = client.db("bwes-cluster");
+    const db = client.db(getMongoDbName());
 
-    const tokenHash = sha256(`${token}.${RESET_TOKEN_SECRET}`);
+    await ensureRateIndex(db);
+
+    const tokenHash = sha256(`${token}.${getResetTokenSecret()}`);
+    const ip = getClientIp(req);
+
+    const ipBlocked = await hitRateLimit(db, `reset:ip:${ip}`, 20, 10);
+    const tokenBlocked = await hitRateLimit(
+      db,
+      `reset:token:${tokenHash}`,
+      5,
+      10,
+    );
+    if (ipBlocked || tokenBlocked) {
+      return res
+        .status(429)
+        .json({ error: "Too many attempts. Please try again later." });
+    }
 
     const reset = await db.collection("password_resets").findOne({
       tokenHash,
@@ -51,8 +98,6 @@ export default async function handler(
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-    // Update the right collection (based on what we stored at request time)
     const collectionName =
       typeof reset.collection === "string" ? reset.collection : null;
 
@@ -70,13 +115,14 @@ export default async function handler(
       },
     );
 
-    // Mark token used regardless (prevents replay)
     await db
       .collection("password_resets")
-      .updateOne({ _id: reset._id }, { $set: { usedAt: new Date() } });
+      .updateOne(
+        { _id: reset._id },
+        { $set: { usedAt: new Date(), consumedAt: new Date() } },
+      );
 
     if (updateResult.matchedCount === 0) {
-      // Account missing now; keep response safe
       return res
         .status(200)
         .json({ success: true, message: "Password updated." });

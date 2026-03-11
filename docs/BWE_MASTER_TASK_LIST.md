@@ -1,0 +1,143 @@
+# BWE Master Task List
+
+Legend: `complete` | `in-progress` | `incomplete` | `verify-next`
+Owner default: `BlackForge`
+
+## P0
+
+1. Full reset lifecycle proof + hardening
+
+- status: complete
+- owner/agent: BlackForge
+- proof required: e2e reset lifecycle, reuse fail, expiry fail, TTL, no raw token
+- dependencies: env + Mongo access
+- last updated commit: c259c67
+
+2. Env centralization on critical auth/data routes
+
+- status: complete
+- owner/agent: BlackForge
+- proof required: lint/build + route/API checks
+- dependencies: env.ts helpers
+- last updated commit: f5a8f5f
+
+3. DB documentation/process system
+
+- status: complete
+- owner/agent: BlackForge
+- proof required: check:db-docs output
+- dependencies: docs + checker script
+- last updated commit: c8bac4e
+
+## P1
+
+4. Built-runtime stabilization standard
+
+- status: complete
+- owner/agent: BlackForge
+- proof required: build + smoke
+- dependencies: startable runtime
+- last updated commit: 9f8e5a1
+
+5. Security headers + CSP
+
+- status: complete
+- owner/agent: BlackForge
+- proof required: curl header proof
+- dependencies: next.config headers
+- last updated commit: 9f8e5a1
+
+6. Critical DB index verification
+
+- status: complete
+- owner/agent: BlackForge
+- proof required: check:critical-indexes output
+- dependencies: Mongo access
+- last updated commit: 9f8e5a1
+
+## P2
+
+7. Role-by-role regression verification
+
+- status: complete
+- owner/agent: BlackForge
+- proof required: check:p2-regression pass
+- dependencies: seeded role accounts in harness
+- last updated commit: 7dddecf
+
+8. Vertical regressions (marketplace/ads/jobs/admin)
+
+- status: complete (route/regression baseline)
+- owner/agent: BlackForge
+- proof required: scenario matrix + screenshots/logs
+- dependencies: stable runtime + seeded data
+- last updated commit: 7dddecf
+
+## P2.5
+
+9. Referral engine v1 foundation
+
+- status: complete
+- owner/agent: BlackForge
+- proof required: auth code endpoint + track endpoint + DB docs backfill
+- dependencies: auth session + Mongo
+- last updated commit: 3a2e174
+
+## P2.6
+
+11. Runtime/link integrity gates
+
+- status: complete
+- owner/agent: BlackForge
+- proof required: `check:runtime-health` + `check:internal-links` pass
+- dependencies: running app instance
+- last updated commit: e6d3505
+
+## P2.7
+
+12. Canonical route typo cleanup (`inclusive-job-descriptions`)
+
+- status: complete
+- owner/agent: BlackForge
+- proof required: critical-path pass + typo redirect verification
+- dependencies: next.config redirect + canonical page path
+- last updated commit: 23f9a48
+
+## P2.8
+
+13. Marketplace buy-button completion matrix + fixes
+
+- status: complete
+- owner/agent: BlackForge
+- proof required: full buy-button matrix, failing paths, runtime/env correction, checkout-session recovery, rerun GO
+- dependencies: runtime pinned to recovered app URL + Atlas Mongo + STRIPE_SECRET_KEY present
+- notes: local validation ran in live Stripe mode; inventory-policy follow-up remains because `stock=0` products still create checkout sessions
+- last updated commit: c797e3a
+
+## P2.9
+
+14. Critical-path harness reliability fix
+
+- status: complete
+- owner/agent: BlackForge
+- proof required: `check:critical-paths` pass including authenticated role checks
+- dependencies: login endpoint + cookie capture
+- last updated commit: 14e83a9
+
+## P3
+
+9. Cross-site design consistency pass
+
+- status: incomplete
+- owner/agent: BlackForge
+- proof required: before/after visual set
+- dependencies: design freeze for launch scope
+- last updated commit: pending
+
+10. Recruiting v1.1 admin workflow
+
+- status: verify-next
+- owner/agent: BlackForge
+- proof required: intake->pipeline->status transitions
+- dependencies: admin UI/API extension
+- last updated commit: pending

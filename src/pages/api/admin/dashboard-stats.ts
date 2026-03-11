@@ -1,6 +1,7 @@
 // src/pages/api/admin/dashboard-stats.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
+import { requireAdminFromRequest } from "@/lib/adminAuth";
 
 function n(v: any) {
   return typeof v === "number" && Number.isFinite(v) ? v : 0;
@@ -15,6 +16,14 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
+  if (req.method !== "GET") {
+    res.setHeader("Allow", ["GET"]);
+    return res.status(405).json({ message: "Method not allowed" });
+  }
+
+  const adminSession = await requireAdminFromRequest(req, res);
+  if (!adminSession) return;
+
   try {
     const client = await clientPromise;
     const db = client.db("bwes-cluster");

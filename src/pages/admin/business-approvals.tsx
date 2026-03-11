@@ -138,6 +138,28 @@ export default function BusinessApprovals() {
     }
   };
 
+  const handleReject = async (id: string) => {
+    if (!window.confirm("Reject this business?")) return;
+
+    try {
+      setError("");
+
+      const res = await fetch(`/api/admin/rejectBusiness/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(data?.error || "Failed to reject business");
+      }
+
+      setPendingBusinesses((prev) => prev.filter((biz) => biz._id !== id));
+    } catch (err: any) {
+      setError(err?.message || "Rejection failed");
+    }
+  };
+
   return (
     <>
       <Head>
@@ -165,6 +187,12 @@ export default function BusinessApprovals() {
                 {refreshing ? "Refreshing..." : "Refresh"}
               </button>
 
+              <Link
+                href="/admin/directory-duplicates"
+                className="rounded-lg border border-yellow-500/30 bg-yellow-500/10 px-4 py-2 text-sm text-yellow-200 hover:bg-yellow-500/20"
+              >
+                Duplicates Queue
+              </Link>
               <Link
                 href="/admin/dashboard"
                 className="rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-2 text-sm text-zinc-200 hover:bg-zinc-800"
@@ -225,8 +253,8 @@ export default function BusinessApprovals() {
                                 Approve
                               </button>
                               <button
-                                className="rounded bg-red-600 px-3 py-1 text-black opacity-60 cursor-not-allowed"
-                                disabled
+                                onClick={() => handleReject(biz._id)}
+                                className="rounded bg-red-600 px-3 py-1 font-semibold text-black hover:bg-red-500 transition"
                               >
                                 Reject
                               </button>

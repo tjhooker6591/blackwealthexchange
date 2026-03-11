@@ -2,6 +2,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
@@ -47,13 +48,29 @@ const AdCard = ({
           "bg-yellow-500 text-black hover:bg-yellow-400",
         )}
       >
-        Proceed to Checkout →
+        Start Campaign Details →
       </Link>
     </div>
   </div>
 );
 
+function optionToDetailsHref(option: string) {
+  if (option === "featured-sponsor") return "/advertise/featured-sponsor";
+  if (option === "directory-standard" || option === "directory-featured") {
+    return "/advertise/business-directory";
+  }
+  if (option === "banner-ad") return "/advertise/banner-ads";
+  if (option === "custom-solution-deposit") return "/advertise/custom";
+  return "/advertising";
+}
+
 export default function AdvertisingIndexPage() {
+  const router = useRouter();
+  const success = router.query.success === "1";
+  const canceled = router.query.canceled === "1";
+  const option =
+    typeof router.query.option === "string" ? router.query.option : "";
+
   return (
     <div className="min-h-screen bg-black text-white">
       <div className="mx-auto max-w-5xl px-5 py-10">
@@ -84,34 +101,58 @@ export default function AdvertisingIndexPage() {
           </div>
         </div>
 
+        {success ? (
+          <div className="mt-6 rounded-xl border border-green-500/30 bg-green-500/10 p-4 text-sm text-green-200">
+            Payment submitted successfully. Your advertising request is now in
+            review, and our team will follow up with activation details.
+          </div>
+        ) : null}
+
+        {canceled ? (
+          <div className="mt-6 rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-4 text-sm text-yellow-200">
+            Checkout was canceled. Your campaign request is still saved — you
+            can restart checkout anytime below.
+            {option ? (
+              <div className="mt-2">
+                <Link
+                  href={optionToDetailsHref(option)}
+                  className="underline text-yellow-100"
+                >
+                  Resume campaign details for {option}
+                </Link>
+              </div>
+            ) : null}
+          </div>
+        ) : null}
+
         <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
           <AdCard
             title="Featured Sponsor"
             desc="Top placement for maximum visibility across the platform."
-            price="$149 / 14 days"
+            price="$25 / 7 days"
             badge="Most Popular"
-            href="/advertising/checkout?option=featured-sponsor&duration=14"
+            href="/advertise/featured-sponsor"
           />
 
           <AdCard
-            title="Directory Listing (Standard)"
-            desc="Get listed in the directory with trusted visibility."
+            title="Directory Listings"
+            desc="Choose standard or featured placement based on your growth goals."
             price="$49 / 30 days"
-            href="/advertising/checkout?option=directory-standard&duration=30"
-          />
-
-          <AdCard
-            title="Directory Listing (Featured)"
-            desc="Priority directory placement + enhanced visibility."
-            price="$99 / 30 days"
-            href="/advertising/checkout?option=directory-featured&duration=30"
+            href="/advertise/business-directory"
           />
 
           <AdCard
             title="Banner Ads"
             desc="Tasteful banner placement near high-traffic areas."
             price="$199 / 14 days"
-            href="/advertising/checkout?option=banner-ad&duration=14"
+            href="/advertise/banner-ads"
+          />
+
+          <AdCard
+            title="Custom Solutions"
+            desc="Recruiting, consulting, partnerships, sponsored content, or bundled campaigns."
+            price="$100 deposit"
+            href="/advertise/custom"
           />
         </div>
 

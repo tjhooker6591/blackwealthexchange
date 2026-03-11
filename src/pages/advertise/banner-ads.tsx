@@ -63,6 +63,14 @@ export default function BannerAdsPage() {
   const [selectedPlacement, setSelectedPlacement] =
     useState<BannerPlacement | null>(null);
   const [duration, setDuration] = useState<BannerDuration>("14");
+  const [name, setName] = useState("");
+  const [businessName, setBusinessName] = useState("");
+  const [email, setEmail] = useState("");
+  const [website, setWebsite] = useState("");
+  const [notes, setNotes] = useState("");
+  const [creativeUrl, setCreativeUrl] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -76,6 +84,12 @@ export default function BannerAdsPage() {
           router.replace("/login?redirect=/advertise/banner-ads");
           return;
         }
+
+        const data = await res.json().catch(() => ({}));
+        if (data?.user?.email) setEmail(String(data.user.email));
+        if (data?.user?.name) setName(String(data.user.name));
+        if (data?.user?.businessName)
+          setBusinessName(String(data.user.businessName));
       } catch (err) {
         console.error("Failed to fetch user from /api/auth/me", err);
       } finally {
@@ -95,19 +109,66 @@ export default function BannerAdsPage() {
     return BANNER_DURATION_OPTIONS.find((d) => d.value === duration) || null;
   }, [duration]);
 
-  const handleProceedToCheckout = () => {
+  const handleProceedToCheckout = async () => {
+    setError("");
     if (!selectedPlacement) {
-      alert("Please select a banner placement before proceeding.");
+      setError("Please select a banner placement before proceeding.");
       return;
     }
 
-    // ✅ Valid advertising route + valid option ID for your Stripe ad flow
-    // We also pass placement for fulfillment/admin context (safe even if not yet consumed downstream).
-    router.push(
-      `/advertising/checkout?option=banner-ad&duration=${encodeURIComponent(
-        duration,
-      )}&placement=${encodeURIComponent(selectedPlacement)}`,
-    );
+    if (
+      name.trim().length < 2 ||
+      businessName.trim().length < 2 ||
+      !/^\S+@\S+\.\S+$/.test(email.trim())
+    ) {
+      setError("Please add your campaign contact details before checkout.");
+      return;
+    }
+
+    if (!/^https?:\/\//i.test(creativeUrl.trim())) {
+      setError("Please provide a valid banner creative URL (https://...).");
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const submitRes = await fetch("/api/advertising/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          name,
+          email,
+          businessName,
+          adText: notes || `Banner ad campaign request (${selectedPlacement})`,
+          adImage: creativeUrl.trim(),
+          website,
+          budget: duration === "14" ? "199" : "349",
+          option: "banner-ad",
+          durationDays: Number(duration),
+          placement: selectedPlacement,
+        }),
+      });
+
+      const submitData = await submitRes.json().catch(() => ({}));
+      if (!submitRes.ok) {
+        throw new Error(submitData?.error || "Failed to save banner request");
+      }
+
+      const requestId = submitData?.requestId || submitData?.adId;
+      const query = new URLSearchParams({
+        option: "banner-ad",
+        duration: duration,
+        placement: selectedPlacement,
+      });
+      if (requestId) query.set("campaignId", requestId);
+
+      router.push(`/advertising/checkout?${query.toString()}`);
+    } catch (e: any) {
+      setError(e?.message || "Unable to proceed to checkout");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (loading) {
@@ -220,16 +281,63 @@ export default function BannerAdsPage() {
           </div>
         </div>
 
+        <div className="mt-6 rounded-xl border border-white/10 bg-black/30 p-4 text-left space-y-3">
+          <h3 className="text-base font-semibold text-white">
+            Campaign Details
+          </h3>
+          <div className="grid md:grid-cols-2 gap-3">
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Your name"
+              className="w-full bg-black text-white border border-gray-600 rounded p-2"
+            />
+            <input
+              value={businessName}
+              onChange={(e) => setBusinessName(e.target.value)}
+              placeholder="Business name"
+              className="w-full bg-black text-white border border-gray-600 rounded p-2"
+            />
+            <input
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email"
+              type="email"
+              className="w-full bg-black text-white border border-gray-600 rounded p-2"
+            />
+            <input
+              value={website}
+              onChange={(e) => setWebsite(e.target.value)}
+              placeholder="Website (optional)"
+              className="w-full bg-black text-white border border-gray-600 rounded p-2"
+            />
+          </div>
+          <input
+            value={creativeUrl}
+            onChange={(e) => setCreativeUrl(e.target.value)}
+            placeholder="Banner creative URL (https://...)"
+            className="w-full bg-black text-white border border-gray-600 rounded p-2"
+          />
+          <textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            placeholder="Campaign notes (offer, CTA, dates)"
+            className="w-full bg-black text-white border border-gray-600 rounded p-2 min-h-[90px]"
+          />
+        </div>
+
         <div className="mt-6">
+          {error ? <p className="text-sm text-red-300 mb-2">{error}</p> : null}
           <button
             onClick={handleProceedToCheckout}
+            disabled={submitting}
             className={`w-full md:w-auto px-8 py-3 rounded font-semibold transition ${
-              selectedPlacement
+              selectedPlacement && !submitting
                 ? "bg-gold text-black hover:bg-yellow-400"
                 : "bg-gray-700 text-gray-300 cursor-not-allowed"
             }`}
           >
-            Proceed to Checkout
+            {submitting ? "Saving Request..." : "Proceed to Checkout"}
           </button>
         </div>
 

@@ -1,30 +1,38 @@
-// File: /pages/api/marketplace/get-orders.ts
 import { NextApiRequest, NextApiResponse } from "next";
-import clientPromise from "../../../lib/mongodb";
+import clientPromise from "@/lib/mongodb";
+import { getMongoDbName } from "@/lib/env";
+import { resolveSellerSession } from "@/lib/marketplace/sellerSession";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
+  res.setHeader("Cache-Control", "no-store, max-age=0");
+
   if (req.method !== "GET") {
+    res.setHeader("Allow", ["GET"]);
     return res.status(405).json({ error: "Method Not Allowed" });
   }
 
   try {
-    // Reuse the singleton client
     const client = await clientPromise;
-    const db = client.db("bwes-cluster");
-    const ordersCollection = db.collection("orders");
+    const db = client.db(getMongoDbName());
 
-    // TODO: replace mockSellerId with real sellerId from your auth token
-    const mockSellerId = "1234567890";
+    const sellerSession = await resolveSellerSession(req, db);
+    if (!sellerSession.ok) {
+      return res
+        .status(sellerSession.status)
+        .json({ error: sellerSession.error });
+    }
 
-    const orders = await ordersCollection
-      .find({ sellerId: mockSellerId })
+    const orders = await db
+      .collection("orders")
+      .find({ sellerId: sellerSession.sellerId })
       .sort({ createdAt: -1 })
+      .limit(100)
       .toArray();
 
-    return res.status(200).json(orders);
+    return res.status(200).json({ orders });
   } catch (error) {
     console.error("Failed to fetch orders:", error);
     return res.status(500).json({ error: "Internal Server Error" });

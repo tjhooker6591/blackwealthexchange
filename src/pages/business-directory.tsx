@@ -8,7 +8,18 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import { Navigation } from "swiper/modules";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Search,
+  ShieldCheck,
+  SlidersHorizontal,
+} from "lucide-react";
+import {
+  buildDirectoryUrlQuery,
+  normalizeScope,
+  normalizeSort,
+} from "@/lib/directory/queryState";
 
 function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
@@ -29,17 +40,20 @@ function categoriesToString(v: any): string {
   return safeStr(v);
 }
 
-function normalizeScope(v: any): "businesses" | "organizations" {
-  const t = safeStr(v).toLowerCase().trim();
-  if (
-    t === "org" ||
-    t === "orgs" ||
-    t === "organisation" ||
-    t === "organization"
-  )
-    return "organizations";
-  if (t === "organizations") return "organizations";
-  return "businesses";
+function trackFlowEvent(payload: Record<string, unknown>) {
+  if (typeof window === "undefined") return;
+  const body = JSON.stringify(payload);
+  const url = "/api/flow-events";
+  if (navigator.sendBeacon) {
+    navigator.sendBeacon(url, new Blob([body], { type: "application/json" }));
+    return;
+  }
+  fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body,
+    keepalive: true,
+  }).catch(() => {});
 }
 
 function toInt(v: any, def: number) {
@@ -47,7 +61,7 @@ function toInt(v: any, def: number) {
   return Number.isFinite(n) ? n : def;
 }
 
-const SIDEBAR_ADS = [
+const DEFAULT_SPONSOR_ADS = [
   {
     img: "/pamfa1.jpg",
     name: "Pamfa United Citizens",
@@ -109,8 +123,18 @@ type Row =
   | (Business & { __kind: "business" })
   | (Organization & { __kind: "org" });
 
-function injectSponsoredEveryN(rows: Row[], interval = 5) {
-  if (!SIDEBAR_ADS.length) return rows;
+function injectSponsoredEveryN(
+  rows: Row[],
+  sponsorAds: Array<{
+    img: string;
+    name: string;
+    tagline: string;
+    url: string;
+    cta: string;
+  }>,
+  interval = 5,
+) {
+  if (!sponsorAds.length) return rows;
   const out: Array<Row | { isSponsor: true; sponsorIdx: number; key: string }> =
     [];
   let sponsorIdx = 0;
@@ -119,7 +143,7 @@ function injectSponsoredEveryN(rows: Row[], interval = 5) {
     if ((i + 1) % interval === 0) {
       out.push({
         isSponsor: true,
-        sponsorIdx: sponsorIdx % SIDEBAR_ADS.length,
+        sponsorIdx: sponsorIdx % sponsorAds.length,
         key: `s-${sponsorIdx}-${i}`,
       });
       sponsorIdx++;
@@ -306,20 +330,84 @@ export default function BusinessDirectory() {
 
   const [input, setInput] = useState("");
   const [category, setCategory] = useState("All");
+  const [sort, setSort] = useState("relevance");
+  const [stateFilter, setStateFilter] = useState("");
+  const [verifiedOnly, setVerifiedOnly] = useState(false);
+  const [sponsoredFirst, setSponsoredFirst] = useState(false);
+  const [includeIncomplete, setIncludeIncomplete] = useState(false);
 
   const [rows, setRows] = useState<Row[]>([]);
   const [total, setTotal] = useState(0);
+  const [sponsorAds, setSponsorAds] = useState(DEFAULT_SPONSOR_ADS);
   const [serverPaged, setServerPaged] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
+  const [fetchError, setFetchError] = useState("");
 
   const [page, setPage] = useState(1);
   const pageSize = 20;
 
+  const hasActiveFilters =
+    (scope === "businesses" && category !== "All") ||
+    Boolean(stateFilter) ||
+    verifiedOnly ||
+    sponsoredFirst ||
+    includeIncomplete ||
+    sort !== "relevance";
+
+  const rescueCategories = useMemo(() => {
+    const seed = input.trim().toLowerCase();
+    if (seed.includes("food") || seed.includes("restaurant")) {
+      return ["Food", "Shopping", "Health", "Beauty"];
+    }
+    if (seed.includes("law") || seed.includes("legal")) {
+      return ["Professional Services", "Education", "Health", "Shopping"];
+    }
+    return ["Food", "Shopping", "Beauty", "Health"];
+  }, [input]);
+
+  const rescueStates = useMemo(() => {
+    const base = ["CA", "GA", "TX", "NY", "FL"];
+    return stateFilter
+      ? [stateFilter, ...base.filter((x) => x !== stateFilter)]
+      : base;
+  }, [stateFilter]);
+
   const didInitFromUrl = useRef(false);
+  const skipNextPageResetRef = useRef(false);
   const abortRef = useRef<AbortController | null>(null);
   const resultsTopRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/sponsored-businesses", {
+          cache: "no-store",
+        });
+        const data = await res.json().catch(() => null);
+        const incoming = Array.isArray(data?.sponsors) ? data.sponsors : [];
+        if (!cancelled && incoming.length) {
+          setSponsorAds(
+            incoming.map((x: any) => ({
+              img: safeStr(x?.img) || "/default-image.jpg",
+              name: safeStr(x?.name) || "Sponsored Business",
+              tagline:
+                safeStr(x?.tagline) || "Featured on Black Wealth Exchange",
+              url: safeStr(x?.url) || "#",
+              cta: safeStr(x?.cta) || "Learn More",
+            })),
+          );
+        }
+      } catch {
+        // keep defaults
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // Init from URL
   useEffect(() => {
@@ -334,9 +422,20 @@ export default function BusinessDirectory() {
     const cat =
       typeof router.query.category === "string" ? router.query.category : "All";
     const p = toInt(router.query.page, 1);
+    const s = normalizeSort(router.query.sort);
+    const st = typeof router.query.state === "string" ? router.query.state : "";
+    const vo = String(router.query.verifiedOnly ?? "0") === "1";
+    const sp = String(router.query.sponsoredFirst ?? "0") === "1";
+    const inc = String(router.query.includeIncomplete ?? "0") === "1";
 
     if (q) setInput(q);
     if (scope === "businesses") setCategory(cat || "All");
+    setSort(s);
+    setStateFilter(st ? st.toUpperCase().slice(0, 2) : "");
+    setVerifiedOnly(vo);
+    setSponsoredFirst(sp);
+    setIncludeIncomplete(inc);
+    skipNextPageResetRef.current = true;
     setPage(Math.max(1, p));
 
     didInitFromUrl.current = true;
@@ -346,6 +445,11 @@ export default function BusinessDirectory() {
     router.query.q,
     router.query.category,
     router.query.page,
+    router.query.sort,
+    router.query.state,
+    router.query.verifiedOnly,
+    router.query.sponsoredFirst,
+    router.query.includeIncomplete,
     scope,
   ]);
 
@@ -354,39 +458,58 @@ export default function BusinessDirectory() {
     if (!router.isReady) return;
     if (!didInitFromUrl.current) return;
 
-    const nextQuery: Record<string, any> = {
-      ...router.query,
-      type: scope,
-      search: input.trim() || "",
-      q: input.trim() || "",
-      page: String(page),
-    };
-
-    if (scope === "businesses") nextQuery.category = category || "All";
-    else delete nextQuery.category;
-
-    if (!nextQuery.search) delete nextQuery.search;
-    if (!nextQuery.q) delete nextQuery.q;
-    if (!nextQuery.page || nextQuery.page === "1") delete nextQuery.page;
-    if (nextQuery.category === "All") delete nextQuery.category;
+    const nextQuery = buildDirectoryUrlQuery({
+      routerQuery: router.query,
+      scope,
+      input,
+      page,
+      category,
+      sort,
+      stateFilter,
+      verifiedOnly,
+      sponsoredFirst,
+      includeIncomplete,
+    });
 
     router.replace({ pathname: router.pathname, query: nextQuery }, undefined, {
       shallow: true,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [input, category, page, scope]);
+  }, [
+    input,
+    category,
+    page,
+    scope,
+    sort,
+    stateFilter,
+    verifiedOnly,
+    sponsoredFirst,
+    includeIncomplete,
+  ]);
 
   // Reset page when query changes
   useEffect(() => {
+    if (skipNextPageResetRef.current) {
+      skipNextPageResetRef.current = false;
+      return;
+    }
     setPage(1);
-  }, [input, category, scope]);
+  }, [
+    input,
+    category,
+    scope,
+    sort,
+    stateFilter,
+    verifiedOnly,
+    sponsoredFirst,
+    includeIncomplete,
+  ]);
 
   // Fetch
   useEffect(() => {
     const q = input.trim();
 
-    const hasAnyFilter =
-      Boolean(q) || (scope === "businesses" && category !== "All");
+    const hasAnyFilter = Boolean(q) || hasActiveFilters;
     if (!hasAnyFilter) {
       setRows([]);
       setTotal(0);
@@ -396,6 +519,7 @@ export default function BusinessDirectory() {
     }
 
     setIsLoading(true);
+    setFetchError("");
 
     const timeout = setTimeout(() => {
       if (abortRef.current) abortRef.current.abort();
@@ -414,6 +538,11 @@ export default function BusinessDirectory() {
 
       params.set("limit", String(pageSize));
       params.set("page", String(page));
+      params.set("sort", sort);
+      if (stateFilter) params.set("state", stateFilter);
+      if (verifiedOnly) params.set("verifiedOnly", "1");
+      if (sponsoredFirst) params.set("sponsoredFirst", "1");
+      if (includeIncomplete) params.set("includeIncomplete", "1");
       params.set("__nocache", "1");
 
       fetch(`/api/searchBusinesses?${params.toString()}`, {
@@ -460,6 +589,7 @@ export default function BusinessDirectory() {
             setTotal(0);
             setServerPaged(false);
             setHasSearched(true);
+            setFetchError("Could not load directory results. Please retry.");
           }
         })
         .finally(() => {
@@ -471,7 +601,18 @@ export default function BusinessDirectory() {
       clearTimeout(timeout);
       if (abortRef.current) abortRef.current.abort();
     };
-  }, [input, category, page, scope]);
+  }, [
+    input,
+    category,
+    page,
+    scope,
+    sort,
+    stateFilter,
+    verifiedOnly,
+    sponsoredFirst,
+    includeIncomplete,
+    hasActiveFilters,
+  ]);
 
   // Client filtering (business categories) if needed
   const filteredRows = useMemo(() => {
@@ -497,8 +638,8 @@ export default function BusinessDirectory() {
   }, [filteredRows, serverPaged, page]);
 
   const visibleWithSponsors = useMemo(
-    () => injectSponsoredEveryN(pageRows, 5),
-    [pageRows],
+    () => injectSponsoredEveryN(pageRows, sponsorAds, 5),
+    [pageRows, sponsorAds],
   );
 
   const goPage = (p: number) => {
@@ -575,14 +716,39 @@ export default function BusinessDirectory() {
 
   const getHref = (r: Row) => {
     const slug = encodeURIComponent(getSlug(r));
-    return r.__kind === "org"
-      ? `/organizations/${slug}`
-      : `/business-directory/${slug}`;
+    if (r.__kind === "org") return `/organizations/${slug}`;
+
+    const qp = new URLSearchParams();
+    qp.set("from", "directory");
+    if (input.trim()) qp.set("q", input.trim());
+
+    return `/business-directory/${slug}?${qp.toString()}`;
   };
 
+  const getTrustMeta = (r: Row) => {
+    const status = safeStr((r as any).status).toLowerCase();
+    const verified =
+      (r as any).verified === true ||
+      (r as any).isVerified === true ||
+      status === "verified";
+
+    const approved = status === "approved" || status === "verified" || !status;
+    const sponsored = Number((r as any).amountPaid || 0) > 0;
+
+    const isComplete =
+      typeof (r as any).isComplete === "boolean"
+        ? (r as any).isComplete
+        : Number((r as any).completenessScore || 0) >= 70;
+
+    return { verified, approved, sponsored, isComplete };
+  };
+
+  const getWebsite = (r: Row) => safeStr((r as any).website);
+  const getPhone = (r: Row) => safeStr((r as any).phone);
+
   const sponsorsToShow = [
-    ...SIDEBAR_ADS,
-    ...Array(Math.max(0, 10 - SIDEBAR_ADS.length)).fill({
+    ...sponsorAds,
+    ...Array(Math.max(0, 10 - sponsorAds.length)).fill({
       img: "/placeholder.png",
       name: "Your Business Here",
       tagline: "Sponsor This Spot!",
@@ -595,6 +761,17 @@ export default function BusinessDirectory() {
   const showingTo =
     total === 0 ? 0 : Math.min((page - 1) * pageSize + pageRows.length, total);
 
+  useEffect(() => {
+    if (!hasSearched || isLoading || total !== 0) return;
+    trackFlowEvent({
+      eventType: "no_results_shown",
+      source: "business_directory",
+      query: input.trim(),
+      category,
+      state: stateFilter,
+    });
+  }, [hasSearched, isLoading, total, input, category, stateFilter]);
+
   return (
     <div className="relative min-h-screen overflow-hidden bg-neutral-950 text-white">
       {/* subtle glows like index */}
@@ -603,21 +780,106 @@ export default function BusinessDirectory() {
 
       <div className="mx-auto max-w-7xl px-3 sm:px-4 md:px-6 py-6">
         {/* Header */}
-        <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-              {scope === "organizations"
-                ? "Organizations Directory"
-                : "Business Directory"}{" "}
-              <span className="text-[#D4AF37]">•</span>{" "}
-              <span className="text-white/65 text-base sm:text-lg font-bold">
-                Trusted Search
+        <div className="relative mb-5 overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-white/[0.07] via-white/[0.03] to-transparent p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_40px_90px_rgba(0,0,0,0.55)] sm:p-5">
+          <div className="pointer-events-none absolute -top-24 left-1/2 h-56 w-[40rem] -translate-x-1/2 rounded-full bg-[#D4AF37]/10 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-28 right-[-6rem] h-64 w-64 rounded-full bg-emerald-500/10 blur-3xl" />
+
+          <div className="relative flex flex-col gap-4">
+            <div className="flex flex-wrap items-end justify-between gap-3">
+              <div>
+                <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-white">
+                  {scope === "organizations"
+                    ? "Organizations Directory"
+                    : "Business Directory"}
+                  <span className="ml-2 text-[#D4AF37]">• Trusted Search</span>
+                </h1>
+                <p className="mt-1 text-sm text-white/65 sm:text-base">
+                  Premium discovery flow with clean ranking, trust cues, and
+                  faster decisions.
+                </p>
+              </div>
+
+              <span className="inline-flex items-center gap-1 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-3 py-1.5 text-xs font-bold text-emerald-200">
+                <ShieldCheck className="h-3.5 w-3.5" />
+                Trusted listings
               </span>
-            </h1>
-            <p className="mt-1 text-sm text-white/60">
-              Results are paged so users don’t scroll forever — faster, cleaner,
-              more “Google-like”.
-            </p>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() =>
+                  router.push({
+                    pathname: "/business-directory",
+                    query: {
+                      ...router.query,
+                      type: "businesses",
+                      scope: "businesses",
+                      tab: "businesses",
+                      page: 1,
+                    },
+                  })
+                }
+                className={cx(
+                  "rounded-xl border px-3 py-2 text-xs font-extrabold tracking-wide transition",
+                  scope === "businesses"
+                    ? "border-[#D4AF37]/60 bg-[#D4AF37]/15 text-[#D4AF37]"
+                    : "border-white/10 bg-white/[0.03] text-white/75 hover:bg-white/[0.06]",
+                )}
+              >
+                Businesses
+              </button>
+              <button
+                type="button"
+                onClick={() =>
+                  router.push({
+                    pathname: "/business-directory",
+                    query: {
+                      ...router.query,
+                      type: "organizations",
+                      scope: "organizations",
+                      tab: "organizations",
+                      page: 1,
+                    },
+                  })
+                }
+                className={cx(
+                  "rounded-xl border px-3 py-2 text-xs font-extrabold tracking-wide transition",
+                  scope === "organizations"
+                    ? "border-[#D4AF37]/60 bg-[#D4AF37]/15 text-[#D4AF37]"
+                    : "border-white/10 bg-white/[0.03] text-white/75 hover:bg-white/[0.06]",
+                )}
+              >
+                Organizations
+              </button>
+            </div>
+
+            <div className="grid gap-2 sm:grid-cols-3">
+              <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-2">
+                <div className="text-[10px] uppercase tracking-[0.08em] text-white/50 font-bold">
+                  Ranking
+                </div>
+                <div className="text-sm font-semibold text-white/80">
+                  Trust + relevance first
+                </div>
+              </div>
+              <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-2">
+                <div className="text-[10px] uppercase tracking-[0.08em] text-white/50 font-bold">
+                  Control
+                </div>
+                <div className="text-sm font-semibold text-white/80">
+                  Strong filters, zero clutter
+                </div>
+              </div>
+              <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-2">
+                <div className="text-[10px] uppercase tracking-[0.08em] text-white/50 font-bold">
+                  Goal
+                </div>
+                <div className="text-sm font-semibold text-white/80">
+                  Find, vet, and contact quickly
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -652,21 +914,24 @@ export default function BusinessDirectory() {
             )}
 
             {/* Search bar */}
-            <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-3 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
+            <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.06] to-white/[0.02] p-3 shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_24px_60px_rgba(0,0,0,0.45)] backdrop-blur">
               <div className="pointer-events-none absolute -top-16 left-1/2 h-32 w-[30rem] -translate-x-1/2 rounded-full bg-[#D4AF37]/10 blur-3xl" />
 
               <div className="flex items-stretch gap-2">
-                <input
-                  type="text"
-                  placeholder={
-                    scope === "organizations"
-                      ? "Search churches, nonprofits, orgs…"
-                      : "Find Black-owned businesses…"
-                  }
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  className="flex-1 rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-[14px] text-white placeholder:text-white/35 outline-none transition focus:border-[#D4AF37]/40 focus:ring-2 focus:ring-[#D4AF37]/20"
-                />
+                <div className="relative flex-1">
+                  <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/45" />
+                  <input
+                    type="text"
+                    placeholder={
+                      scope === "organizations"
+                        ? "Search churches, nonprofits, orgs…"
+                        : "Find Black-owned businesses…"
+                    }
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    className="w-full rounded-xl border border-white/10 bg-black/30 pl-9 pr-4 py-3 text-[14px] text-white placeholder:text-white/35 outline-none transition focus:border-[#D4AF37]/40 focus:ring-2 focus:ring-[#D4AF37]/20"
+                  />
+                </div>
                 <button
                   type="button"
                   onClick={() => {
@@ -677,6 +942,196 @@ export default function BusinessDirectory() {
                 >
                   Search
                 </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setInput("");
+                    setPage(1);
+                  }}
+                  className="rounded-xl border border-white/10 bg-white/[0.03] px-3 text-[12px] font-bold text-white/75 transition hover:bg-white/[0.06]"
+                  title="Clear search"
+                >
+                  Clear
+                </button>
+              </div>
+              <div className="mt-2 flex items-center justify-between text-[11px] text-white/50">
+                <span>
+                  Use search first, then narrow with filters if needed.
+                </span>
+                <span className="inline-flex items-center gap-1 text-white/45">
+                  <SlidersHorizontal className="h-3.5 w-3.5" />
+                  Filters are optional
+                </span>
+              </div>
+            </div>
+
+            {/* Filter/sort controls */}
+            <div className="mt-3 rounded-2xl border border-white/10 bg-white/[0.03] p-3 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
+              <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+                <label className="rounded-xl border border-white/10 bg-black/20 px-3 py-2">
+                  <div className="text-[11px] font-bold text-white/55">
+                    Sort
+                  </div>
+                  <select
+                    value={sort}
+                    onChange={(e) => setSort(normalizeSort(e.target.value))}
+                    className="mt-1 w-full bg-transparent text-sm text-white outline-none"
+                  >
+                    <option value="relevance">Relevance (best match)</option>
+                    <option value="newest">Newest</option>
+                    <option value="completeness">Completeness</option>
+                  </select>
+                </label>
+
+                <label className="rounded-xl border border-white/10 bg-black/20 px-3 py-2">
+                  <div className="text-[11px] font-bold text-white/55">
+                    State
+                  </div>
+                  <input
+                    value={stateFilter}
+                    onChange={(e) =>
+                      setStateFilter(e.target.value.toUpperCase().slice(0, 2))
+                    }
+                    placeholder="CA"
+                    className="mt-1 w-full bg-transparent text-sm text-white placeholder:text-white/35 outline-none"
+                  />
+                </label>
+
+                <label className="flex items-center justify-between rounded-xl border border-white/10 bg-black/20 px-3 py-2 text-sm">
+                  <span className="font-semibold text-white/80">
+                    Verified only
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setVerifiedOnly((v) => !v)}
+                    className={cx(
+                      "relative h-6 w-11 rounded-full border transition",
+                      verifiedOnly
+                        ? "border-emerald-400/40 bg-emerald-400/20"
+                        : "border-white/10 bg-black/30",
+                    )}
+                    aria-label="Toggle verified-only results"
+                    aria-pressed={verifiedOnly}
+                  >
+                    <span
+                      className={cx(
+                        "absolute top-0.5 h-5 w-5 rounded-full transition",
+                        verifiedOnly
+                          ? "left-5 bg-emerald-300"
+                          : "left-0.5 bg-white/60",
+                      )}
+                    />
+                  </button>
+                </label>
+
+                <label className="flex items-center justify-between rounded-xl border border-white/10 bg-black/20 px-3 py-2 text-sm">
+                  <span className="font-semibold text-white/80">
+                    Sponsored first
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setSponsoredFirst((v) => !v)}
+                    className={cx(
+                      "relative h-6 w-11 rounded-full border transition",
+                      sponsoredFirst
+                        ? "border-[#D4AF37]/50 bg-[#D4AF37]/15"
+                        : "border-white/10 bg-black/30",
+                    )}
+                    aria-label="Toggle sponsored-first ordering"
+                    aria-pressed={sponsoredFirst}
+                  >
+                    <span
+                      className={cx(
+                        "absolute top-0.5 h-5 w-5 rounded-full transition",
+                        sponsoredFirst
+                          ? "left-5 bg-[#D4AF37]"
+                          : "left-0.5 bg-white/60",
+                      )}
+                    />
+                  </button>
+                </label>
+
+                <label className="flex items-center justify-between rounded-xl border border-white/10 bg-black/20 px-3 py-2 text-sm sm:col-span-2 lg:col-span-4">
+                  <span className="font-semibold text-white/80">
+                    Show incomplete listings
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setIncludeIncomplete((v) => !v)}
+                    className={cx(
+                      "relative h-6 w-11 rounded-full border transition",
+                      includeIncomplete
+                        ? "border-sky-400/40 bg-sky-400/20"
+                        : "border-white/10 bg-black/30",
+                    )}
+                    aria-label="Toggle incomplete listing visibility"
+                    aria-pressed={includeIncomplete}
+                  >
+                    <span
+                      className={cx(
+                        "absolute top-0.5 h-5 w-5 rounded-full transition",
+                        includeIncomplete
+                          ? "left-5 bg-sky-300"
+                          : "left-0.5 bg-white/60",
+                      )}
+                    />
+                  </button>
+                </label>
+              </div>
+
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                {hasActiveFilters ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCategory("All");
+                      setSort("relevance");
+                      setStateFilter("");
+                      setVerifiedOnly(false);
+                      setSponsoredFirst(false);
+                      setIncludeIncomplete(false);
+                      setPage(1);
+                    }}
+                    className="rounded-lg border border-white/15 bg-black/30 px-3 py-1.5 text-xs font-bold text-white/80 transition hover:bg-black/45"
+                  >
+                    Clear filters
+                  </button>
+                ) : (
+                  <span className="text-xs text-white/45">
+                    No active filters
+                  </span>
+                )}
+
+                {scope === "businesses" && category !== "All" && (
+                  <span className="rounded-lg border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-2 py-1 text-[11px] font-bold text-[#D4AF37]">
+                    Category: {category}
+                  </span>
+                )}
+                {stateFilter && (
+                  <span className="rounded-lg border border-white/15 bg-black/30 px-2 py-1 text-[11px] font-bold text-white/80">
+                    State: {stateFilter}
+                  </span>
+                )}
+                {sort !== "relevance" && (
+                  <span className="rounded-lg border border-white/15 bg-black/30 px-2 py-1 text-[11px] font-bold text-white/80">
+                    Sort: {sort}
+                  </span>
+                )}
+                {verifiedOnly && (
+                  <span className="rounded-lg border border-emerald-400/30 bg-emerald-400/15 px-2 py-1 text-[11px] font-bold text-emerald-200">
+                    Verified only
+                  </span>
+                )}
+                {sponsoredFirst && (
+                  <span className="rounded-lg border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-2 py-1 text-[11px] font-bold text-[#D4AF37]">
+                    Sponsored first
+                  </span>
+                )}
+                {includeIncomplete && (
+                  <span className="rounded-lg border border-sky-400/30 bg-sky-400/15 px-2 py-1 text-[11px] font-bold text-sky-200">
+                    Showing incomplete listings
+                  </span>
+                )}
               </div>
             </div>
 
@@ -751,12 +1206,21 @@ export default function BusinessDirectory() {
 
               <div className="relative mt-3 min-h-[160px]">
                 {isLoading && (
-                  <div className="absolute inset-0 z-20 flex items-center justify-center rounded-xl bg-black/60 backdrop-blur-sm">
-                    <div className="text-[#D4AF37] font-extrabold animate-pulse">
-                      Loading…
+                  <div className="absolute inset-0 z-20 rounded-xl bg-black/70 p-4 backdrop-blur-sm">
+                    <div className="mb-3 h-4 w-40 animate-pulse rounded bg-white/10" />
+                    <div className="space-y-2">
+                      <div className="h-14 animate-pulse rounded-lg bg-white/10" />
+                      <div className="h-14 animate-pulse rounded-lg bg-white/10" />
+                      <div className="h-14 animate-pulse rounded-lg bg-white/10" />
                     </div>
                   </div>
                 )}
+
+                {fetchError ? (
+                  <div className="mb-3 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+                    {fetchError}
+                  </div>
+                ) : null}
 
                 {!hasSearched ? (
                   <div className="py-10 text-center text-white/50">
@@ -765,8 +1229,126 @@ export default function BusinessDirectory() {
                   </div>
                 ) : total === 0 && !isLoading ? (
                   <div className="py-10 text-center text-white/50">
-                    No results found for{" "}
-                    <span className="text-white/70">“{input.trim()}”</span>.
+                    <div>
+                      No results found for{" "}
+                      <span className="text-white/70">“{input.trim()}”</span>.
+                    </div>
+                    <div className="mt-2 text-xs text-white/40">
+                      Try a broader term, clear filters, or switch between
+                      Businesses and Organizations.
+                    </div>
+                    <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-[11px]">
+                      {scope === "businesses" && category !== "All" ? (
+                        <span className="rounded-lg border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-2 py-1 text-[#D4AF37]">
+                          Category: {category}
+                        </span>
+                      ) : null}
+                      {stateFilter ? (
+                        <span className="rounded-lg border border-white/20 bg-black/30 px-2 py-1 text-white/80">
+                          State: {stateFilter}
+                        </span>
+                      ) : null}
+                      {verifiedOnly ? (
+                        <span className="rounded-lg border border-emerald-400/40 bg-emerald-400/15 px-2 py-1 text-emerald-200">
+                          Verified only
+                        </span>
+                      ) : null}
+                    </div>
+                    <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setCategory("All");
+                          setSort("relevance");
+                          setStateFilter("");
+                          setVerifiedOnly(false);
+                          setSponsoredFirst(false);
+                          setIncludeIncomplete(false);
+                          setPage(1);
+                          trackFlowEvent({
+                            eventType: "filter_relaxed",
+                            source: "business_directory_no_result",
+                            query: input.trim(),
+                            category,
+                            state: stateFilter,
+                          });
+                        }}
+                        className="rounded-lg border border-white/20 bg-black/30 px-3 py-1.5 text-xs font-bold text-white/80 hover:bg-black/45"
+                      >
+                        Clear filters
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setInput("");
+                          setPage(1);
+                          trackFlowEvent({
+                            eventType: "rescue_action_clicked",
+                            source: "business_directory_no_result",
+                            query: input.trim(),
+                          });
+                        }}
+                        className="rounded-lg border border-white/20 bg-black/30 px-3 py-1.5 text-xs font-bold text-white/80 hover:bg-black/45"
+                      >
+                        Clear search
+                      </button>
+                    </div>
+
+                    <div className="mt-4 space-y-2 text-center">
+                      <p className="text-[11px] uppercase tracking-wide text-white/45">
+                        Continue your intent
+                      </p>
+                      <div className="flex flex-wrap items-center justify-center gap-2">
+                        {rescueCategories.map((cat) => (
+                          <button
+                            key={`rescue-cat-${cat}`}
+                            type="button"
+                            onClick={() => {
+                              setCategory(cat);
+                              setVerifiedOnly(false);
+                              setPage(1);
+                              trackFlowEvent({
+                                eventType: "suggested_category_clicked",
+                                source: "business_directory_no_result",
+                                query: input.trim(),
+                                category: cat,
+                              });
+                            }}
+                            className="rounded-full border border-white/20 bg-black/30 px-3 py-1 text-[11px] text-white/85"
+                          >
+                            {cat}
+                          </button>
+                        ))}
+                      </div>
+                      <div className="flex flex-wrap items-center justify-center gap-2">
+                        {rescueStates.slice(0, 3).map((st) => (
+                          <button
+                            key={`rescue-state-${st}`}
+                            type="button"
+                            onClick={() => {
+                              setStateFilter(st);
+                              setVerifiedOnly(false);
+                              setPage(1);
+                              trackFlowEvent({
+                                eventType: "rescue_action_clicked",
+                                source: "business_directory_no_result_state",
+                                query: input.trim(),
+                                state: st,
+                              });
+                            }}
+                            className="rounded-full border border-white/20 bg-black/30 px-3 py-1 text-[11px] text-white/85"
+                          >
+                            Try {st}
+                          </button>
+                        ))}
+                        <Link
+                          href="/search-results"
+                          className="rounded-full border border-[#D4AF37]/45 bg-[#D4AF37]/15 px-3 py-1 text-[11px] text-[#F1D57A]"
+                        >
+                          Open Search Results
+                        </Link>
+                      </div>
+                    </div>
                   </div>
                 ) : (
                   <div className="divide-y divide-white/10 overflow-hidden rounded-xl border border-white/10 bg-black/20">
@@ -777,23 +1359,23 @@ export default function BusinessDirectory() {
                           className="relative flex items-center gap-3 px-3 py-3"
                         >
                           <img
-                            src={SIDEBAR_ADS[(item as any).sponsorIdx].img}
-                            alt={SIDEBAR_ADS[(item as any).sponsorIdx].name}
+                            src={sponsorAds[(item as any).sponsorIdx].img}
+                            alt={sponsorAds[(item as any).sponsorIdx].name}
                             width={48}
                             height={48}
                             className="h-12 w-12 rounded-xl object-cover border border-white/15"
                           />
                           <div className="min-w-0 flex-1">
                             <a
-                              href={SIDEBAR_ADS[(item as any).sponsorIdx].url}
+                              href={sponsorAds[(item as any).sponsorIdx].url}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="block truncate text-[#D4AF37] font-extrabold hover:underline"
                             >
-                              {SIDEBAR_ADS[(item as any).sponsorIdx].name}
+                              {sponsorAds[(item as any).sponsorIdx].name}
                             </a>
                             <div className="truncate text-[12px] text-white/55">
-                              {SIDEBAR_ADS[(item as any).sponsorIdx].tagline}
+                              {sponsorAds[(item as any).sponsorIdx].tagline}
                             </div>
                           </div>
                           <span className="rounded-full border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-2 py-0.5 text-[10px] font-extrabold text-[#D4AF37]">
@@ -829,8 +1411,30 @@ export default function BusinessDirectory() {
                               {getTitle(item as Row) || "Untitled Listing"}
                             </Link>
 
+                            <div className="mt-1 flex flex-wrap items-center gap-1.5">
+                              {getTrustMeta(item as Row).verified ? (
+                                <span className="rounded-full border border-emerald-400/30 bg-emerald-400/15 px-2 py-0.5 text-[10px] font-bold text-emerald-200">
+                                  Verified
+                                </span>
+                              ) : getTrustMeta(item as Row).approved ? (
+                                <span className="rounded-full border border-white/20 bg-white/10 px-2 py-0.5 text-[10px] font-bold text-white/75">
+                                  Approved listing
+                                </span>
+                              ) : null}
+                              {getTrustMeta(item as Row).sponsored && (
+                                <span className="rounded-full border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-2 py-0.5 text-[10px] font-bold text-[#D4AF37]">
+                                  Sponsored
+                                </span>
+                              )}
+                              {!getTrustMeta(item as Row).isComplete && (
+                                <span className="rounded-full border border-sky-400/30 bg-sky-400/15 px-2 py-0.5 text-[10px] font-bold text-sky-200">
+                                  Incomplete profile
+                                </span>
+                              )}
+                            </div>
+
                             {/* Details line: rating · price · category */}
-                            <div className="mt-0.5 text-[12px] text-white/70">
+                            <div className="mt-1 text-[12px] text-white/70">
                               {getRatingLine(item as Row) ||
                                 getCategoryLabel(item as Row) ||
                                 ""}
@@ -856,15 +1460,51 @@ export default function BusinessDirectory() {
                                 ? `“${getDesc(item as Row)}”`
                                 : "“Description not available.”"}
                             </div>
+
+                            <div className="mt-2 flex flex-wrap gap-2">
+                              <Link
+                                href={getHref(item as Row)}
+                                className="rounded-lg bg-[#D4AF37] px-3 py-1.5 text-[11px] font-extrabold text-black hover:bg-yellow-500"
+                              >
+                                View details
+                              </Link>
+                              {getWebsite(item as Row) ? (
+                                <a
+                                  href={getWebsite(item as Row)}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="rounded-lg border border-white/20 bg-black/30 px-3 py-1.5 text-[11px] font-bold text-white/80 hover:bg-black/45"
+                                >
+                                  Website
+                                </a>
+                              ) : null}
+                              {getLocation(item as Row) ? (
+                                <a
+                                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(getLocation(item as Row))}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="rounded-lg border border-white/20 bg-black/30 px-3 py-1.5 text-[11px] font-bold text-white/80 hover:bg-black/45"
+                                >
+                                  Directions
+                                </a>
+                              ) : null}
+                            </div>
                           </div>
 
                           {/* Right mini meta (phone) */}
-                          <div className="hidden sm:block min-w-[120px] text-right text-[11px] text-white/55">
-                            {(item as any).phone ? (
-                              <div className="truncate">
-                                {safeStr((item as any).phone)}
+                          <div className="hidden sm:block min-w-[140px] text-right text-[11px] text-white/55">
+                            {getPhone(item as Row) ? (
+                              <a
+                                href={`tel:${getPhone(item as Row)}`}
+                                className="truncate underline hover:text-white/80"
+                              >
+                                {getPhone(item as Row)}
+                              </a>
+                            ) : (
+                              <div className="text-white/35">
+                                No phone listed
                               </div>
-                            ) : null}
+                            )}
                           </div>
                         </div>
                       ),
@@ -893,7 +1533,7 @@ export default function BusinessDirectory() {
                   Sponsored
                 </div>
                 <div className="space-y-3">
-                  {SIDEBAR_ADS.map((ad) => (
+                  {sponsorAds.map((ad) => (
                     <SidebarAdCard key={ad.url} {...ad} />
                   ))}
                 </div>

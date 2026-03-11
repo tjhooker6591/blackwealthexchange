@@ -1,7 +1,7 @@
 // src/pages/advertise/featured-sponsor.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useRouter } from "next/router";
 
 export default function FeaturedSponsorPage() {
@@ -9,6 +9,18 @@ export default function FeaturedSponsorPage() {
   const [adImageFile, setAdImageFile] = useState<File | null>(null);
   const [campaignDuration, setCampaignDuration] = useState<string>("");
   const [confirmed, setConfirmed] = useState(false);
+  const [name, setName] = useState("");
+  const [businessName, setBusinessName] = useState("");
+  const [email, setEmail] = useState("");
+  const [website, setWebsite] = useState("");
+  const [notes, setNotes] = useState("");
+  const [campaignTitle, setCampaignTitle] = useState("");
+  const [requestedStartDate, setRequestedStartDate] = useState("");
+  const [flexibleStart, setFlexibleStart] = useState(true);
+  const [targetUrl, setTargetUrl] = useState("");
+  const [creativeUrl, setCreativeUrl] = useState("");
+  const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -16,15 +28,83 @@ export default function FeaturedSponsorPage() {
     }
   };
 
-  const handleProceed = () => {
-    if (!adImageFile || !campaignDuration || !confirmed) {
-      alert("Please complete all fields before proceeding.");
+  const canProceed = useMemo(() => {
+    const hasCreative =
+      Boolean(adImageFile) || /^https?:\/\//i.test(creativeUrl.trim());
+    return (
+      Boolean(campaignDuration) &&
+      confirmed &&
+      hasCreative &&
+      name.trim().length >= 2 &&
+      businessName.trim().length >= 2 &&
+      /^\S+@\S+\.\S+$/.test(email.trim())
+    );
+  }, [
+    campaignDuration,
+    confirmed,
+    adImageFile,
+    creativeUrl,
+    name,
+    businessName,
+    email,
+  ]);
+
+  const handleProceed = async () => {
+    setError("");
+    if (!canProceed) {
+      setError(
+        "Please complete the campaign details and confirm before checkout.",
+      );
       return;
     }
 
-    router.push(
-      `/advertising/checkout?option=featured-sponsor&duration=${campaignDuration}`,
-    );
+    setSubmitting(true);
+    try {
+      const payload = {
+        name,
+        email,
+        businessName,
+        campaignTitle: campaignTitle || `${businessName} Featured Sponsor`,
+        adText: notes || "Featured sponsor campaign request",
+        adImage: adImageFile?.name || creativeUrl.trim(),
+        website,
+        targetUrl: targetUrl || website,
+        budget:
+          campaignDuration === "7"
+            ? "25"
+            : campaignDuration === "14"
+              ? "45"
+              : "80",
+        option: "featured-sponsor",
+        durationDays: Number(campaignDuration),
+        placement: "homepage-featured-sponsor",
+        requestedStartDate: requestedStartDate || undefined,
+        flexibleStart,
+      };
+
+      const res = await fetch("/api/advertising/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.error || "Failed to save ad request");
+
+      const requestId = data?.requestId || data?.adId;
+      const query = new URLSearchParams({
+        option: "featured-sponsor",
+        duration: campaignDuration,
+      });
+      if (requestId) query.set("campaignId", requestId);
+      query.set("placement", "homepage-featured-sponsor");
+
+      router.push(`/advertising/checkout?${query.toString()}`);
+    } catch (e: any) {
+      setError(e?.message || "Unable to continue to checkout");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -135,7 +215,7 @@ export default function FeaturedSponsorPage() {
           </h3>
           <p className="text-sm text-gray-400 mb-2">
             This image will be displayed as your Featured Sponsor Ad across the
-            platform.
+            platform. Upload a file or provide a hosted creative URL below.
           </p>
           <input
             type="file"
@@ -143,6 +223,79 @@ export default function FeaturedSponsorPage() {
             onChange={handleFileChange}
             className="w-full bg-black text-white border border-gray-600 rounded p-2"
           />
+          <input
+            value={creativeUrl}
+            onChange={(e) => setCreativeUrl(e.target.value)}
+            placeholder="https://... (optional if file uploaded)"
+            className="mt-3 w-full bg-black text-white border border-gray-600 rounded p-2"
+          />
+        </section>
+
+        <section className="bg-gray-800 p-6 rounded-lg space-y-4 text-left">
+          <h3 className="text-xl font-semibold text-gold">Campaign Details</h3>
+          <div className="grid md:grid-cols-2 gap-4">
+            <input
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Your name"
+              className="w-full bg-black text-white border border-gray-600 rounded p-2"
+            />
+            <input
+              value={businessName}
+              onChange={(e) => setBusinessName(e.target.value)}
+              placeholder="Business name"
+              className="w-full bg-black text-white border border-gray-600 rounded p-2"
+            />
+            <input
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email"
+              type="email"
+              className="w-full bg-black text-white border border-gray-600 rounded p-2"
+            />
+            <input
+              value={website}
+              onChange={(e) => setWebsite(e.target.value)}
+              placeholder="Website (optional)"
+              className="w-full bg-black text-white border border-gray-600 rounded p-2"
+            />
+            <input
+              value={targetUrl}
+              onChange={(e) => setTargetUrl(e.target.value)}
+              placeholder="Target URL for sponsor click-through"
+              className="w-full bg-black text-white border border-gray-600 rounded p-2"
+            />
+            <input
+              value={campaignTitle}
+              onChange={(e) => setCampaignTitle(e.target.value)}
+              placeholder="Campaign title (optional)"
+              className="w-full bg-black text-white border border-gray-600 rounded p-2"
+            />
+            <input
+              value={requestedStartDate}
+              onChange={(e) => setRequestedStartDate(e.target.value)}
+              type="date"
+              className="w-full bg-black text-white border border-gray-600 rounded p-2"
+            />
+          </div>
+          <label className="inline-flex items-center gap-2 text-sm text-gray-300">
+            <input
+              type="checkbox"
+              checked={flexibleStart}
+              onChange={(e) => setFlexibleStart(e.target.checked)}
+            />
+            Flexible start (allow auto-rollover to next available week)
+          </label>
+          <textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            placeholder="Campaign notes (offer, CTA, dates, goals)"
+            className="w-full bg-black text-white border border-gray-600 rounded p-2 min-h-[100px]"
+          />
+          <p className="text-xs text-gray-400">
+            After payment, your request appears in admin advertising queue for
+            team review and activation.
+          </p>
         </section>
 
         {/* Confirmation */}
@@ -160,15 +313,17 @@ export default function FeaturedSponsorPage() {
 
         {/* Proceed Button */}
         <div className="text-center">
+          {error ? <p className="text-sm text-red-300 mb-2">{error}</p> : null}
           <button
             onClick={handleProceed}
+            disabled={!canProceed || submitting}
             className={`mt-4 px-6 py-2 rounded font-semibold transition ${
-              confirmed && adImageFile && campaignDuration
+              canProceed && !submitting
                 ? "bg-gold text-black hover:bg-yellow-400"
                 : "bg-gray-600 text-gray-300 cursor-not-allowed"
             }`}
           >
-            Proceed to Checkout
+            {submitting ? "Saving Request..." : "Proceed to Checkout"}
           </button>
         </div>
 

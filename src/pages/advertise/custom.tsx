@@ -7,8 +7,6 @@ type SaveResponse =
   | { success: true; requestId: string; message: string }
   | { success: false; error: string };
 
-type CheckoutResponse = { url: string } | { success?: false; error?: string };
-
 const CUSTOM_OPTIONS = [
   {
     id: "homepage-feature",
@@ -169,33 +167,8 @@ export default function CustomAd() {
     setStartingCheckout(true);
 
     try {
-      const res = await fetch("/api/stripe/checkout", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({
-          userId,
-          itemId: "custom-ad-deposit",
-          amount: 100,
-          type: "ad",
-          customRequestId: requestId,
-          adKind: "custom",
-        }),
-      });
-
-      const data: CheckoutResponse = await res.json();
-
-      if (!res.ok || !("url" in data) || !data.url) {
-        throw new Error(
-          "error" in data && data.error
-            ? data.error
-            : "Failed to start checkout.",
-        );
-      }
-
-      window.location.href = data.url;
+      const next = `/advertising/checkout?option=custom-solution-deposit&duration=30&placement=custom-solution&campaignId=${encodeURIComponent(requestId)}`;
+      window.location.href = next;
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Failed to start checkout.";
@@ -422,6 +395,17 @@ export default function CustomAd() {
               Request ID: {requestId}
             </p>
 
+            <div className="mt-5 rounded-lg border border-green-400/30 bg-black/20 p-4 text-sm text-green-100">
+              <div className="font-semibold">Review Before Checkout</div>
+              <div className="mt-1">Option: Custom Solution Deposit</div>
+              <div>Duration: 30 days</div>
+              <div>Price: $100 deposit</div>
+              <div className="text-xs mt-1 opacity-90">
+                Next step: continue to advertising checkout review, then secure
+                payment.
+              </div>
+            </div>
+
             <div className="mt-6">
               <button
                 type="button"
@@ -431,7 +415,7 @@ export default function CustomAd() {
               >
                 {startingCheckout
                   ? "Starting checkout..."
-                  : "Reserve With $100 Deposit"}
+                  : "Continue to Checkout Review ($100 Deposit)"}
               </button>
             </div>
           </div>

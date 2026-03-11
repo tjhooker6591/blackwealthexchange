@@ -2,20 +2,16 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { ObjectId } from "mongodb";
 import clientPromise from "@/lib/mongodb";
-
-function requireAdmin(req: NextApiRequest) {
-  const session = req.cookies.session_token;
-  const accountType = req.cookies.accountType;
-  return Boolean(session) && accountType === "admin";
-}
+import { requireAdminFromRequest } from "@/lib/adminAuth";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
   try {
-    if (!requireAdmin(req))
-      return res.status(401).json({ message: "Unauthorized" });
+    const admin = await requireAdminFromRequest(req, res);
+    if (!admin) return;
+
     if (req.method !== "POST")
       return res.status(405).json({ message: "Method not allowed" });
 

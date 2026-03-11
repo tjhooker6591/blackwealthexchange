@@ -1,6 +1,9 @@
 // src/pages/api/advertising/submit.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
+import { getMongoDbName } from "@/lib/env";
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default async function handler(
   req: NextApiRequest,
@@ -10,34 +13,89 @@ export default async function handler(
     return res.status(405).json({ error: "Method Not Allowed" });
   }
 
-  const { name, email, businessName, adText, adImage, website, budget } =
-    req.body;
+  const body =
+    typeof req.body === "string"
+      ? JSON.parse(req.body || "{}")
+      : req.body || {};
 
-  if (!name || !email || !businessName || !adText || !adImage || !budget) {
-    return res.status(400).json({ error: "Missing required fields" });
+  const name = String(body.name || "").trim();
+  const email = String(body.email || "")
+    .trim()
+    .toLowerCase();
+  const businessName = String(body.businessName || "").trim();
+  const adText = String(body.adText || "").trim();
+  const adImage = String(body.adImage || "").trim();
+  const website = String(body.website || "").trim();
+  const budget = String(body.budget || "").trim();
+  const option = String(body.option || "").trim();
+  const durationDays = Number(body.durationDays || 0);
+  const placement = String(body.placement || "").trim();
+  const placementType = String(body.placementType || placement || "").trim();
+  const requestedStartDate = String(body.requestedStartDate || "").trim();
+  const flexibleStart = Boolean(body.flexibleStart ?? true);
+  const targetUrl = String(body.targetUrl || website || "").trim();
+  const campaignTitle = String(body.campaignTitle || "").trim();
+
+  if (!name || !EMAIL_REGEX.test(email) || !businessName || !adText) {
+    return res.status(400).json({ error: "Missing required campaign details" });
+  }
+
+  if ((option === "featured-sponsor" || option === "banner-ad") && !adImage) {
+    return res.status(400).json({
+      error:
+        "Ad creative is required for featured sponsor and banner campaigns",
+    });
   }
 
   try {
     const client = await clientPromise;
-    const db = client.db("bwes"); // Use your actual DB name
-    const collection = db.collection("advertisingRequests");
+    const db = client.db(getMongoDbName());
+    const collection = db.collection("advertising_requests");
 
+    const now = new Date();
     const newAd = {
+      requestType: "standard_ad",
+      status: "pending_review",
+      paymentStatus: "unpaid",
+      depositPaid: false,
       name,
       email,
-      businessName,
-      adText,
-      adImage,
-      website,
-      budget,
-      status: "pending", // can be approved/rejected later
-      submittedAt: new Date(),
+      business: businessName,
+      details: adText,
+      selectedOptions: option ? [option] : [],
+      budget: budget || null,
+      adImage: adImage || null,
+      website: website || null,
+      targetUrl: targetUrl || null,
+      option: option || null,
+      placementType: placementType || null,
+      campaignTitle: campaignTitle || null,
+      durationDays:
+        Number.isFinite(durationDays) && durationDays > 0
+          ? Math.floor(durationDays)
+          : null,
+      placement: placement || null,
+      requestedStartDate: requestedStartDate
+        ? new Date(requestedStartDate)
+        : null,
+      flexibleStart,
+      creativeAssets: adImage ? [adImage] : [],
+      scheduling: {
+        status: "pending_payment",
+        assignedWeeks: [],
+        rolledOver: false,
+      },
+      createdAt: now,
+      updatedAt: now,
     };
 
     const result = await collection.insertOne(newAd);
-    return res
-      .status(201)
-      .json({ message: "Ad submitted", adId: result.insertedId });
+    return res.status(201).json({
+      success: true,
+      message: "Ad request submitted",
+      adId: result.insertedId.toString(),
+      requestId: result.insertedId.toString(),
+    });
   } catch (error) {
     console.error("Error saving ad request:", error);
     return res.status(500).json({ error: "Internal server error" });

@@ -187,6 +187,9 @@ const AD_PRICES_CENTS: Record<string, Record<number, number>> = {
     60: 14900,
     90: 21900,
   },
+  "custom-solution-deposit": {
+    30: 10000,
+  },
   "directory-standard": {
     7: 2500,
     14: 4500,

@@ -3,7 +3,11 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import type { GetServerSideProps } from "next";
+import cookie from "cookie";
+import jwt from "jsonwebtoken";
 import AdminFilterBar from "@/components/admin/AdminFilterBar";
+import { getJwtSecret } from "@/lib/env";
 import type { AdminFilters } from "@/components/admin/AdminFilterBar";
 
 // Type for Consulting Interest
@@ -329,7 +333,8 @@ const AdminDashboard = () => {
         });
         if (!res.ok) throw new Error("Failed to fetch consulting interests");
         const data = await res.json();
-        setConsulting(Array.isArray(data) ? data : []);
+        const rows = Array.isArray(data) ? data : (data?.interests ?? []);
+        setConsulting(Array.isArray(rows) ? rows : []);
       } catch (_err) {
         setConsultingErr("Error loading consulting waitlist.");
       } finally {
@@ -405,6 +410,12 @@ const AdminDashboard = () => {
               className="rounded border border-gray-700 bg-gray-800 px-4 py-2 text-sm hover:bg-gray-700"
             >
               Open Tools
+            </Link>
+            <Link
+              href="/admin/directory-duplicates"
+              className="rounded border border-yellow-500/30 bg-yellow-500/10 px-4 py-2 text-sm text-yellow-200 hover:bg-yellow-500/20"
+            >
+              Duplicates Queue
             </Link>
             <Link
               href="/"
@@ -507,7 +518,7 @@ const AdminDashboard = () => {
                 </Link>
 
                 {/* NOTE: create this page if it doesn't exist yet */}
-                <Link href="/admin/organization-approvals" className="block">
+                <Link href="/admin/organizations" className="block">
                   <StatCardLink
                     title="Pending Organizations"
                     value={stats.pendingOrganizations}
@@ -605,7 +616,7 @@ const AdminDashboard = () => {
 
                 <div className="mt-3">
                   <Link
-                    href="/admin/organization-approvals"
+                    href="/admin/organizations"
                     className="inline-flex items-center rounded border border-gray-700 bg-gray-900 px-3 py-2 text-xs hover:bg-gray-700"
                   >
                     Manage Organization Approvals →
@@ -659,7 +670,7 @@ const AdminDashboard = () => {
             </Link>
 
             {/* Optional: if you have a dedicated directory list page later */}
-            <Link href="/admin/directory" className="block">
+            <Link href="/admin/directory-approvals" className="block">
               <ActionCard
                 title="View Directory Listings"
                 subtitle="Browse active/expired listings"
@@ -818,7 +829,7 @@ const AdminDashboard = () => {
           label="Manage Business Approvals"
         />
         <AdminLink
-          href="/admin/organization-approvals"
+          href="/admin/organizations"
           label="Manage Organization Approvals"
         />
         <AdminLink
@@ -830,6 +841,18 @@ const AdminDashboard = () => {
           label="Review Affiliate Payouts"
         />
         <AdminLink href="/admin/affiliates" label="Manage Affiliates" />
+        <AdminLink
+          href="/admin/affiliate-attribution"
+          label="Review Affiliate Attribution"
+        />
+        <AdminLink
+          href="/admin/consulting-leads"
+          label="Review Consulting Leads"
+        />
+        <AdminLink
+          href="/admin/advertising-requests"
+          label="Review Advertising Requests"
+        />
         <AdminLink href="/admin/job-approvals" label="Approve Job Postings" />
         <AdminLink
           href="/admin/product-approvals"
@@ -1028,3 +1051,40 @@ const AdminLink = ({ href, label }: { href: string; label: string }) => (
 );
 
 export default AdminDashboard;
+
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const cookies = cookie.parse(req.headers.cookie || "");
+  const token = cookies.session_token;
+  if (!token) {
+    return {
+      redirect: {
+        destination: "/login?redirect=/admin/dashboard",
+        permanent: false,
+      },
+    };
+  }
+
+  try {
+    const payload = jwt.verify(token, getJwtSecret()) as {
+      accountType?: string;
+      isAdmin?: boolean;
+    };
+    if (!(payload.isAdmin === true || payload.accountType === "admin")) {
+      return {
+        redirect: {
+          destination: "/login?redirect=/admin/dashboard",
+          permanent: false,
+        },
+      };
+    }
+  } catch {
+    return {
+      redirect: {
+        destination: "/login?redirect=/admin/dashboard",
+        permanent: false,
+      },
+    };
+  }
+
+  return { props: {} };
+};

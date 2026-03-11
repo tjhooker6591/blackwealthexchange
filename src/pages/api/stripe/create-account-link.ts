@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
 import clientPromise from "@/lib/mongodb";
+import { getMongoDbName } from "@/lib/env";
 import cookie from "cookie";
 import jwt from "jsonwebtoken";
 
@@ -38,7 +39,7 @@ export default async function handler(
       return res.status(401).json({ error: "Unauthorized" });
 
     const client = await clientPromise;
-    const db = client.db("bwes-cluster");
+    const db = client.db(getMongoDbName());
     const sellers = db.collection("sellers");
 
     const seller = await sellers.findOne({
@@ -72,12 +73,18 @@ export default async function handler(
     }
 
     const origin = getOrigin(req);
+    const requestedReturnTo =
+      typeof req.body?.returnTo === "string" ? req.body.returnTo.trim() : "";
+    const safeReturnTo =
+      requestedReturnTo.startsWith("/") && !requestedReturnTo.startsWith("//")
+        ? requestedReturnTo
+        : "/marketplace/become-a-seller?refresh=1&stripe=return";
 
     const link = await stripe.accountLinks.create({
       account: stripeAccountId,
       type: "account_onboarding",
-      refresh_url: `${origin}/marketplace/dashboard?stripe=refresh`,
-      return_url: `${origin}/marketplace/dashboard?stripe=return`,
+      refresh_url: `${origin}/marketplace/become-a-seller?refresh=1&stripe=refresh`,
+      return_url: `${origin}${safeReturnTo}`,
     });
 
     return res.status(200).json({ url: link.url, stripeAccountId });

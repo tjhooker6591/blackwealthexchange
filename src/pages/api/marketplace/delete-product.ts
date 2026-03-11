@@ -1,19 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { ObjectId } from "mongodb";
 import clientPromise from "@/lib/mongodb";
-
-// Mock function to get seller ID from session
-async function getSellerId(req: NextApiRequest) {
-  try {
-    const res = await fetch(`${process.env.NEXTAUTH_URL}/api/auth/me`, {
-      headers: { cookie: req.headers.cookie || "" },
-    });
-    const data = await res.json();
-    return data?.user?.accountType === "seller" ? data.user.id : null;
-  } catch {
-    return null;
-  }
-}
+import { getMongoDbName } from "@/lib/env";
+import { resolveSellerSession } from "@/lib/marketplace/sellerSession";
 
 export default async function handler(
   req: NextApiRequest,
@@ -38,24 +27,22 @@ export default async function handler(
   }
 
   try {
-    const sellerId = await getSellerId(req);
-    if (!sellerId) {
+    const client = await clientPromise;
+    const db = client.db(getMongoDbName());
+
+    const sellerSession = await resolveSellerSession(req, db);
+    if (!sellerSession.ok) {
       return res
-        .status(401)
-        .json({ error: "Unauthorized: Seller access required" });
+        .status(sellerSession.status)
+        .json({ error: sellerSession.error });
     }
 
-    const client = await clientPromise;
-    const db = client.db("bwes-cluster");
-
-    // Check if product belongs to this seller
     const product = await db.collection("products").findOne({ _id: productId });
-
     if (!product) {
       return res.status(404).json({ error: "Product not found" });
     }
 
-    if (product.sellerId !== sellerId) {
+    if (String(product.sellerId) !== sellerSession.sellerId) {
       return res
         .status(403)
         .json({ error: "Forbidden: You do not own this product" });
@@ -64,7 +51,6 @@ export default async function handler(
     const result = await db
       .collection("products")
       .deleteOne({ _id: productId });
-
     if (result.deletedCount === 0) {
       return res.status(500).json({ error: "Failed to delete product" });
     }

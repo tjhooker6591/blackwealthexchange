@@ -1,5 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "../../../lib/mongodb";
+import { getMongoDbName } from "@/lib/env";
+import {
+  ensureApiRateLimitIndexes,
+  getClientIp,
+  hitApiRateLimit,
+} from "@/lib/apiRateLimit";
 
 export default async function handler(
   req: NextApiRequest,
@@ -10,7 +16,11 @@ export default async function handler(
   }
 
   try {
-    const { userId, subject, description } = JSON.parse(req.body);
+    const body =
+      typeof req.body === "string"
+        ? JSON.parse(req.body || "{}")
+        : req.body || {};
+    const { userId, subject, description } = body;
 
     // Basic validation
     if (!userId || !subject || !description) {
@@ -26,7 +36,32 @@ export default async function handler(
     }
 
     const client = await clientPromise;
-    const db = client.db("bwes-cluster");
+    const db = client.db(getMongoDbName());
+
+    await ensureApiRateLimitIndexes(db);
+    const ip = getClientIp(req);
+    const userKey = typeof userId === "string" ? userId : "anon";
+    const ipLimit = await hitApiRateLimit(
+      db,
+      `support:create:ip:${ip}`,
+      20,
+      30,
+    );
+    const userLimit = await hitApiRateLimit(
+      db,
+      `support:create:user:${userKey}`,
+      8,
+      30,
+    );
+    if (ipLimit.blocked || userLimit.blocked) {
+      res.setHeader(
+        "Retry-After",
+        String(
+          Math.max(ipLimit.retryAfterSeconds, userLimit.retryAfterSeconds),
+        ),
+      );
+      return res.status(429).json({ message: "Too many support submissions" });
+    }
 
     // Create support ticket
     const ticket = {

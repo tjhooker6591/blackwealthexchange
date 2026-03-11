@@ -435,7 +435,7 @@ export default function Marketplace() {
                           alt={product.name}
                           fill
                           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, (max-width: 1536px) 25vw, 20vw"
-                          className="object-cover transition duration-500 group-hover:scale-[1.03]"
+                          className="object-cover transition duration-500 group-hover:scale-[1.03] object-center w-full h-56 sm:h-64"
                         />
                       ) : (
                         <div className="flex h-full w-full items-center justify-center">
@@ -623,7 +623,7 @@ export default function Marketplace() {
             alt="Empowering the Community"
             width={520}
             height={360}
-            className="mx-auto mb-5 rounded-2xl border border-white/10 object-cover shadow-xl"
+            className="mx-auto mb-5 rounded-2xl border border-white/10 object-cover shadow-xl object-center w-full h-56 sm:h-64"
           />
         </div>
         <p className="text-sm text-gray-300 sm:text-base">

@@ -10,7 +10,6 @@ const loginRequiredRoutes = [
   "/investment",
   "/student-opportunities",
   "/courses",
-  "/business-directory/", // details, NOT list/search
 ];
 
 // Define routes requiring *specific roles*
@@ -74,16 +73,17 @@ export function middleware(req: NextRequest) {
     }
   }
 
-  // 2. Check login-required (general, any account type)
+  // 2. Business directory details require login, but list/search stays public.
+  if (pathname.startsWith("/business-directory/") && !isLoggedIn) {
+    const loginUrl = req.nextUrl.clone();
+    loginUrl.pathname = "/login";
+    loginUrl.searchParams.set("redirect", pathname);
+    return NextResponse.redirect(loginUrl);
+  }
+
+  // 3. Check login-required (general, any account type)
   for (const loginRoute of loginRequiredRoutes) {
-    // Allow /business-directory?search=... to remain public
-    if (
-      pathname.startsWith(loginRoute) &&
-      !(
-        pathname === "/business-directory" &&
-        req.nextUrl.searchParams.has("search")
-      )
-    ) {
+    if (pathname.startsWith(loginRoute)) {
       if (!isLoggedIn) {
         console.log(
           `REDIRECT: ${pathname} requires login, user not logged in.`,

@@ -1,5 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
+import {
+  ensureApiRateLimitIndexes,
+  getClientIp,
+  hitApiRateLimit,
+} from "@/lib/apiRateLimit";
+import { getAdminDecodedFromRequest, isAdminDecoded } from "@/lib/adminAuth";
 
 function escapeRegex(input: string) {
   return input.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -54,6 +60,24 @@ export default async function handler(
     const dbName = process.env.MONGODB_DB || "bwes-database";
     const client = await clientPromise;
     const db = client.db(dbName);
+
+    await ensureApiRateLimitIndexes(db);
+    const ip = getClientIp(req);
+    const ipLimit = await hitApiRateLimit(
+      db,
+      `search:businesses:ip:${ip}`,
+      120,
+      5,
+    );
+    if (ipLimit.blocked) {
+      res.setHeader("Retry-After", String(ipLimit.retryAfterSeconds));
+      return res.status(429).json({
+        status: "error",
+        requestId,
+        error: { code: "RATE_LIMITED", message: "Too many search requests" },
+      });
+    }
+
     const col = db.collection("businesses");
 
     const searchRaw =
@@ -68,7 +92,22 @@ export default async function handler(
     const search = searchRaw.trim().slice(0, 120);
     const category = categoryRaw.trim().slice(0, 60);
 
-    const includeAllStatuses = req.query.includeAllStatuses === "1";
+    const includeAllStatusesRequested = req.query.includeAllStatuses === "1";
+    let includeAllStatuses = false;
+    if (includeAllStatusesRequested) {
+      const decoded = getAdminDecodedFromRequest(req);
+      if (!decoded || !isAdminDecoded(decoded)) {
+        return res.status(403).json({
+          status: "error",
+          requestId,
+          error: {
+            code: "FORBIDDEN",
+            message: "includeAllStatuses is restricted to admin sessions",
+          },
+        });
+      }
+      includeAllStatuses = true;
+    }
 
     const and: any[] = [];
 

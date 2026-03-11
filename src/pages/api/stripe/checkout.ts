@@ -10,10 +10,14 @@ import {
   getAdPriceCents,
   getAdQuote,
 } from "@/lib/advertising/pricing";
+import { getMongoDbName } from "@/lib/env";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
+const stripeSecret = process.env.STRIPE_SECRET_KEY;
+const stripe = new Stripe(stripeSecret || "sk_missing", {
+  apiVersion: "2025-02-24.acacia" as any,
+});
 
-type CheckoutType = "ad" | "product" | "plan";
+type CheckoutType = "ad" | "product" | "plan" | "course";
 
 interface CheckoutPayload {
   userId?: string; // dev fallback only
@@ -130,6 +134,10 @@ export default async function handler(
     return res.status(405).json({ error: "Method Not Allowed" });
   }
 
+  if (!stripeSecret) {
+    return res.status(500).json({ error: "Stripe not configured" });
+  }
+
   const payload = req.body as CheckoutPayload;
 
   // Auth via your custom session cookie
@@ -190,14 +198,14 @@ export default async function handler(
 
   try {
     const client = await clientPromise;
-    const db = client.db("bwes-cluster");
+    const db = client.db(getMongoDbName());
     const payments = db.collection("payments");
 
     const origin = getOrigin(req);
 
     // ✅ Match your existing pages in the repo
-    const successUrl = withCheckoutSessionId(`${origin}/payment-success`);
-    const cancelUrl = `${origin}/payment-cancel`;
+    let successUrl = withCheckoutSessionId(`${origin}/payment-success`);
+    let cancelUrl = `${origin}/payment-cancel`;
 
     const isAd = type === "ad";
 
@@ -268,6 +276,16 @@ export default async function handler(
           .json({ error: "Invalid product or missing seller" });
       }
 
+      const productStock = Number(
+        (product as any).stock ?? (product as any).inventory ?? 1,
+      );
+      if (Number.isFinite(productStock) && productStock <= 0) {
+        return res.status(409).json({
+          error:
+            "This product is out of stock and cannot be purchased right now.",
+        });
+      }
+
       itemName = product?.name || itemName;
 
       // Expect product.price in dollars or cents — adjust to your schema
@@ -303,6 +321,8 @@ export default async function handler(
       const planMap: Record<string, number> = {
         premium: 1200, // $12.00
         founder: 4900, // $49.00
+        "music-creator-starter": 2900, // $29.00
+        "music-creator-pro": 7900, // $79.00
       };
 
       unitAmount = planMap[itemId];
@@ -311,8 +331,47 @@ export default async function handler(
       itemName = `Plan Upgrade (${itemId})`;
       isPlatformAccount = true;
       stripeAccountId = process.env.PLATFORM_STRIPE_ACCOUNT_ID as string;
+
+      if (itemId.startsWith("music-creator-")) {
+        successUrl = withCheckoutSessionId(`${origin}/music/join?activated=1`);
+        cancelUrl = `${origin}/music/pricing?canceled=1`;
+      }
+    } else if (type === "course") {
+      const courseMap: Record<string, { name: string; amount: number }> = {
+        "financial-literacy-premium": {
+          name: "Premium Financial Literacy Course",
+          amount: 4900,
+        },
+        "personal-finance-101": { name: "Personal Finance 101", amount: 2900 },
+        "investing-for-beginners": {
+          name: "Investing for Beginners",
+          amount: 3900,
+        },
+        "generational-wealth": {
+          name: "Building Generational Wealth",
+          amount: 4900,
+        },
+      };
+
+      const course = courseMap[itemId];
+      if (!course) return res.status(400).json({ error: "Invalid course" });
+
+      unitAmount = course.amount;
+      itemName = course.name;
+      isPlatformAccount = true;
+      stripeAccountId = process.env.PLATFORM_STRIPE_ACCOUNT_ID as string;
     } else {
       return res.status(400).json({ error: "Invalid type" });
+    }
+
+    if (!Number.isFinite(unitAmount) || unitAmount <= 0) {
+      return res.status(400).json({ error: "Invalid checkout amount" });
+    }
+
+    if (unitAmount > 5_000_000) {
+      return res
+        .status(400)
+        .json({ error: "Checkout amount exceeds allowed maximum" });
     }
 
     const metadata: Record<string, string> = {
@@ -493,11 +552,6 @@ export default async function handler(
         },
         $set: {
           updatedAt: new Date(),
-          // Keep paymentIntentId fresh if Stripe returns it on retry/reuse
-          paymentIntentId:
-            typeof stripeSession.payment_intent === "string"
-              ? stripeSession.payment_intent
-              : null,
         },
       },
       { upsert: true },

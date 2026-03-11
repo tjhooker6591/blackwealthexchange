@@ -140,7 +140,7 @@ export default function OrganizationDetailPage() {
         </div>
 
         {/* Main Card */}
-        <div className="rounded-2xl border border-white/10 bg-white/5 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] p-6">
+        <div className="overflow-hidden rounded-2xl border border-white/10 bg-white/5 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] p-6">
           {loading ? (
             <div className="animate-pulse">
               <div className="h-8 w-2/3 bg-white/10 rounded mb-4" />
@@ -185,7 +185,14 @@ export default function OrganizationDetailPage() {
                       </span>
                     ) : null}
                     {item.status ? (
-                      <span className="text-xs rounded-full border border-white/10 bg-white/5 px-3 py-1 text-white/80">
+                      <span
+                        className={_cx(
+                          "text-xs rounded-full border px-3 py-1",
+                          String(item.status).toLowerCase() === "approved"
+                            ? "border-emerald-400/30 bg-emerald-500/10 text-emerald-200"
+                            : "border-white/10 bg-white/5 text-white/80",
+                        )}
+                      >
                         {item.status}
                       </span>
                     ) : null}

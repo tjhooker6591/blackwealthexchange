@@ -15,7 +15,6 @@ import {
   GraduationCap,
   Users,
   Briefcase,
-  Lock,
   Sparkles,
   Search,
   ShoppingBag,
@@ -29,6 +28,10 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/router";
 import useAuth from "@/hooks/useAuth";
+import {
+  buildHomepageDirectoryQuery,
+  normalizeScope,
+} from "@/lib/directory/queryState";
 
 function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
@@ -139,7 +142,7 @@ function SearchToolsInlinePanel({
             }
             className="mt-1 w-full bg-transparent text-sm text-white outline-none"
           >
-            <option value="relevance">Relevance</option>
+            <option value="relevance">Relevance (best match)</option>
             <option value="newest">Newest</option>
             <option value="completeness">Completeness</option>
           </select>
@@ -482,53 +485,18 @@ export default function Home() {
         ? "Search churches, nonprofits, orgs…"
         : "Search Black-owned businesses…";
 
-  const normalizeScope = (v: string) => {
-    const t = String(v || "").toLowerCase();
-    if (
-      t === "org" ||
-      t === "orgs" ||
-      t === "organisation" ||
-      t === "organization"
-    ) {
-      return "organizations";
-    }
-    if (t === "business" || t === "biz") return "businesses";
-    return t === "organizations" ? "organizations" : "businesses";
-  };
-
-  const buildDirectoryQuery = (
-    q: string,
-    scope: "businesses" | "organizations",
-    ai: boolean,
-  ) => {
-    const query: Record<string, any> = {
-      q,
-      search: q,
-      type: scope,
-      scope,
-      tab: scope,
-      limit: 20,
-      sort,
-      ai: ai ? "1" : "0",
-    };
-    if (verifiedOnly) query.verifiedOnly = "1";
-    if (sponsoredFirst) query.sponsoredFirst = "1";
-    if (stateFilter) query.state = stateFilter;
-    if (category) query.category = category;
-    return query;
-  };
-
   const runSearch = (opts?: {
     verticalOverride?: VerticalKey;
     aiOverride?: boolean;
     scopeOverride?: "businesses" | "organizations";
+    queryOverride?: string;
   }) => {
     const v = opts?.verticalOverride ?? vertical;
     const ai = opts?.aiOverride ?? aiMode;
     const scope = normalizeScope(opts?.scopeOverride ?? leftScope) as
       | "businesses"
       | "organizations";
-    const q = searchQuery.trim();
+    const q = (opts?.queryOverride ?? searchQuery).trim();
 
     if (v === "shopping") {
       return router.push({
@@ -564,7 +532,16 @@ export default function Home() {
 
     return router.push({
       pathname: "/business-directory",
-      query: buildDirectoryQuery(q, scope, ai),
+      query: buildHomepageDirectoryQuery({
+        q,
+        scope,
+        sort,
+        ai,
+        verifiedOnly,
+        sponsoredFirst,
+        state: stateFilter,
+        category,
+      }),
     });
   };
 
@@ -574,16 +551,52 @@ export default function Home() {
     runSearch({ aiOverride: next });
   };
 
-  const sponsors = [
-    { img: "/ads/sample-banner1.jpg", name: "Pamfa Hoodies" },
-    { img: "/ads/sample-banner2.jpg", name: "Titan Era" },
-    { img: "/ads/sample-banner3.jpg", name: "Legacy FoodMart" },
-    { img: "/ads/sample-banner4.jpg", name: "Ujamaa Eats" },
-    { img: "/ads/sample-banner5.jpg", name: "Pamfa United Citizens" },
-    { img: "/ads/sample-banner6.jpg", name: "Harlem Apparel" },
-    { img: "/ads/sample-banner7.jpg", name: "Ebony Roots" },
-    { img: "/ads/sample-banner8.jpg", name: "Coco and Breezy Eyewear" },
-  ];
+  const [sponsors, setSponsors] = useState<
+    Array<{ img: string; name: string; url?: string; tagline?: string }>
+  >([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/sponsored-businesses", {
+          cache: "no-store",
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || !Array.isArray(data?.sponsors)) return;
+        if (cancelled) return;
+
+        setSponsors(
+          data.sponsors.map((s: any) => ({
+            img:
+              typeof s?.img === "string" && s.img
+                ? s.img
+                : "/default-image.jpg",
+            name:
+              typeof s?.name === "string" && s.name
+                ? s.name
+                : "Featured Sponsor",
+            url: typeof s?.url === "string" ? s.url : undefined,
+            tagline: typeof s?.tagline === "string" ? s.tagline : undefined,
+          })),
+        );
+      } catch {
+        // keep fallback rendering
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const sponsorRail = sponsors.length
+    ? sponsors
+    : [
+        { img: "/ads/sample-banner1.jpg", name: "Featured Sponsor" },
+        { img: "/ads/sample-banner2.jpg", name: "Featured Sponsor" },
+        { img: "/ads/sample-banner3.jpg", name: "Featured Sponsor" },
+      ];
 
   const studentOpportunities = [
     {
@@ -608,53 +621,6 @@ export default function Home() {
     },
   ];
 
-  const publicRoutes = [
-    "/about",
-    "/global-timeline",
-    "/events",
-    "/library-of-black-history",
-    "/black-entertainment-news",
-  ];
-
-  const keySections = [
-    {
-      title: "Our Marketplace",
-      href: "/marketplace",
-      description: "Buy & sell Black-owned products securely.",
-    },
-    {
-      title: "Sponsored Businesses",
-      href: "/business-directory/sponsored-business",
-      description: "Premium featured businesses with more visibility.",
-    },
-    {
-      title: "Affiliate & Partnership",
-      href: "/affiliate",
-      description: "Curated affiliate offers and partnership opportunities.",
-    },
-    {
-      title: "Black Entertainment Pulse",
-      href: "/black-entertainment-news",
-      description: "Black entertainment and news — stay tapped in.",
-    },
-    {
-      title: "Jobs & Careers",
-      href: "/jobs",
-      description: "Jobs, internships & networking opportunities.",
-    },
-    {
-      title: "Investment & Wealth",
-      href: "/investment",
-      description: "Invest in Black businesses & build your future.",
-    },
-  ];
-
-  const gate = (href: string) => {
-    if (publicRoutes.includes(href)) return router.push(href);
-    if (!user) return router.push(`/login?redirect=${href}`);
-    return router.push(href);
-  };
-
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-neutral-950 text-white">
       <div className="absolute inset-0 bg-neutral-950" />
@@ -662,10 +628,10 @@ export default function Home() {
       <div className="pointer-events-none absolute -top-40 left-1/2 h-[900px] w-[900px] -translate-x-1/2 rounded-full bg-[#D4AF37]/[0.06] blur-3xl" />
       <div className="pointer-events-none absolute -bottom-56 right-[-10rem] h-[560px] w-[560px] rounded-full bg-emerald-500/[0.05] blur-3xl" />
 
-      <header className="relative z-10 pb-6 pt-10 sm:pb-8 sm:pt-14">
+      <header className="relative z-10 pb-5 pt-8 sm:pb-7 sm:pt-11">
         <div className="container mx-auto max-w-6xl px-4">
           <div className="text-center">
-            <div className="mx-auto inline-flex items-center justify-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-2 text-xs text-white/80 sm:px-4 sm:text-sm">
+            <div className="mx-auto inline-flex items-center justify-center gap-2 rounded-full border border-[#D4AF37]/20 bg-[#D4AF37]/8 px-3 py-1.5 text-[11px] text-[#EFD27A] sm:px-3.5 sm:text-xs">
               <Image
                 src="/black-wealth-future.png"
                 alt="Black Wealth"
@@ -674,56 +640,98 @@ export default function Home() {
                 className="inline-block sm:h-[34px] sm:w-[34px]"
                 priority
               />
-              <span className="font-semibold tracking-wide">
-                Our Dollars. Our Businesses. Our Ecosystem.
+              <span className="font-extrabold tracking-wide">
+                BWE PLATFORM • OWNERSHIP • ACCESS • CIRCULATION
               </span>
             </div>
 
-            <h1 className="mt-4 text-2xl font-extrabold tracking-tight sm:text-4xl md:text-5xl">
-              Black Wealth Exchange<span className="text-[#D4AF37]">.</span>
+            <h1 className="mt-4 text-3xl font-black tracking-tight leading-[1.02] sm:text-4xl md:text-5xl lg:text-6xl">
+              Build Black
+              <span className="block bg-gradient-to-r from-[#D4AF37] via-[#F2D77C] to-[#D4AF37] bg-clip-text text-transparent">
+                Economic Power
+              </span>
             </h1>
 
-            <p className="mx-auto mt-3 max-w-2xl text-sm text-white/70 sm:text-base">
-              Search Black-owned businesses, discover jobs & opportunities, shop
-              the marketplace, and build economic power — with a trusted, modern
-              flow.
+            <p className="mx-auto mt-3 max-w-2xl text-sm text-white/72 sm:text-base md:text-lg">
+              The premium hub to discover Black-owned businesses, activate
+              opportunities, and move from discovery to real-world action
+              faster.
             </p>
 
-            <div className="mx-auto mt-5 flex w-full max-w-md flex-col gap-3 sm:flex-row sm:justify-center">
-              <Link href="/login" className="w-full sm:w-auto">
-                <button className="w-full rounded-xl bg-[#D4AF37] px-5 py-2.5 text-sm font-extrabold text-black shadow transition hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/40 sm:px-6 sm:py-3 sm:text-base">
-                  Login
-                </button>
-              </Link>
-              <Link href="/signup" className="w-full sm:w-auto">
-                <button className="w-full rounded-xl border border-[#D4AF37]/60 bg-transparent px-5 py-2.5 text-sm font-extrabold text-[#D4AF37] transition hover:bg-[#D4AF37]/10 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 sm:px-6 sm:py-3 sm:text-base">
-                  Sign Up
-                </button>
-              </Link>
+            <div className="mx-auto mt-5 flex w-full max-w-xl flex-col gap-2.5 sm:flex-row sm:justify-center">
+              {user ? (
+                <>
+                  <Link href="/dashboard" className="w-full sm:w-auto">
+                    <button className="h-11 w-full rounded-xl bg-[#D4AF37] px-5 text-sm font-extrabold text-black shadow-[0_8px_20px_rgba(212,175,55,0.25)] transition hover:-translate-y-0.5 hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/35 sm:h-11 sm:w-auto sm:px-6">
+                      Go to Dashboard
+                    </button>
+                  </Link>
+                  <Link
+                    href={
+                      user?.accountType === "admin"
+                        ? "/admin/dashboard"
+                        : "/business-directory"
+                    }
+                    className="w-full sm:w-auto"
+                  >
+                    <button className="h-11 w-full rounded-xl border border-[#D4AF37]/45 bg-[#D4AF37]/8 px-5 text-sm font-bold text-[#F1D57A] transition hover:-translate-y-0.5 hover:bg-[#D4AF37]/16 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 sm:h-11 sm:w-auto sm:px-6">
+                      {user?.accountType === "admin"
+                        ? "Admin Dashboard"
+                        : "Explore Directory"}
+                    </button>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link href="/login" className="w-full sm:w-auto">
+                    <button className="h-11 w-full rounded-xl bg-[#D4AF37] px-5 text-sm font-extrabold text-black shadow-[0_8px_20px_rgba(212,175,55,0.25)] transition hover:-translate-y-0.5 hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/35 sm:h-11 sm:w-auto sm:px-6">
+                      Login
+                    </button>
+                  </Link>
+                  <Link href="/signup" className="w-full sm:w-auto">
+                    <button className="h-11 w-full rounded-xl border border-[#D4AF37]/45 bg-[#D4AF37]/8 px-5 text-sm font-bold text-[#F1D57A] transition hover:-translate-y-0.5 hover:bg-[#D4AF37]/16 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 sm:h-11 sm:w-auto sm:px-6">
+                      Sign Up
+                    </button>
+                  </Link>
+                </>
+              )}
             </div>
+
+            <details className="mx-auto mt-3 w-full max-w-3xl rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-left">
+              <summary className="cursor-pointer list-none text-xs font-semibold text-white/70">
+                Why trust BWE search
+              </summary>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {[
+                  "Trust-first search • Verified + quality signals",
+                  "Built for action • Find, vet, connect fast",
+                  "Economic focus • Ownership, access, circulation",
+                ].map((item) => (
+                  <span
+                    key={item}
+                    className="rounded-full border border-white/12 bg-white/[0.04] px-3 py-1.5 text-[11px] font-semibold text-white/75"
+                  >
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </details>
           </div>
 
-          <section className="mt-6 sm:mt-8">
-            <EconomicImpactSimulator />
-          </section>
-
-          <section className="mt-6 sm:mt-8">
-            <div className="mx-auto max-w-3xl">
-              <div className="mb-2 flex items-center justify-between">
-                <div className="text-xs font-semibold tracking-wide text-white/70">
-                  Search the Directory
+          <section className="mt-5 sm:mt-6">
+            <div className="mx-auto max-w-4xl">
+              <div className="mb-2.5">
+                <div className="text-[10px] font-bold tracking-[0.08em] text-[#D4AF37] uppercase">
+                  Discover in seconds
                 </div>
-                <div className="hidden sm:flex items-center gap-2 text-[11px] text-white/50">
-                  <span className="rounded-full border border-white/10 bg-white/5 px-2 py-0.5">
-                    Trusted Flow
-                  </span>
+                <div className="text-sm font-semibold text-white/78 sm:text-[15px]">
+                  Search the directory with premium filters
                 </div>
               </div>
 
-              <div className="sticky top-2 z-30 sm:static sm:top-auto sm:z-auto">
-                <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-b from-white/[0.06] to-white/[0.02] p-3 sm:p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_30px_80px_rgba(0,0,0,0.55)] backdrop-blur-xl">
-                  <div className="pointer-events-none absolute -top-24 left-1/2 h-56 w-[42rem] -translate-x-1/2 rounded-full bg-[#D4AF37]/10 blur-3xl" />
-                  <div className="pointer-events-none absolute -bottom-28 right-[-6rem] h-64 w-64 rounded-full bg-emerald-500/10 blur-3xl" />
+              <div>
+                <div className="relative overflow-hidden rounded-2xl border border-white/12 bg-gradient-to-b from-white/[0.06] to-white/[0.02] p-2.5 sm:p-3.5 shadow-[0_0_0_1px_rgba(255,255,255,0.05),0_18px_48px_rgba(0,0,0,0.42)] backdrop-blur-xl">
+                  <div className="pointer-events-none absolute -top-20 left-1/2 h-40 w-[30rem] -translate-x-1/2 rounded-full bg-[#D4AF37]/6 blur-3xl" />
 
                   <div className="relative">
                     <div className="mb-3 grid grid-cols-4 gap-1.5 sm:flex sm:items-center sm:gap-2">
@@ -799,12 +807,6 @@ export default function Home() {
                           Tools
                         </button>
                       )}
-
-                      <div className="ml-auto hidden sm:flex items-center gap-2">
-                        <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[11px] text-white/60">
-                          Trusted Flow
-                        </span>
-                      </div>
                     </div>
 
                     <div className="mt-2 flex w-full items-stretch overflow-hidden rounded-2xl border border-white/10 bg-black/30 shadow-[inset_0_0_0_1px_rgba(255,255,255,0.04)] focus-within:border-[#D4AF37]/40 focus-within:ring-2 focus-within:ring-[#D4AF37]/20">
@@ -925,6 +927,30 @@ export default function Home() {
                         <span className="font-black text-white/75">Search</span>
                       </span>
                     </div>
+
+                    {vertical === "all" && (
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {[
+                          "Restaurants",
+                          "Barbershop",
+                          "Beauty Supply",
+                          "Church",
+                          "Nonprofit",
+                        ].map((chip) => (
+                          <button
+                            key={chip}
+                            type="button"
+                            onClick={() => {
+                              setSearchQuery(chip);
+                              runSearch({ queryOverride: chip });
+                            }}
+                            className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-[11px] font-bold text-white/75 transition hover:border-white/20 hover:bg-white/[0.08]"
+                          >
+                            {chip}
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -956,11 +982,185 @@ export default function Home() {
               </div>
             </div>
           </section>
+
+          <section className="mt-5 sm:mt-6">
+            <EconomicImpactSimulator />
+          </section>
         </div>
       </header>
 
       <section className="relative z-10 pt-3 pb-8 sm:pt-4 sm:pb-10">
         <div className="container mx-auto max-w-6xl px-4">
+          <div className="mb-4 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.05)]">
+            <div className="mb-3 text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
+              Quick paths
+            </div>
+            <div className="grid gap-2 sm:grid-cols-3">
+              <Link
+                href="/financial-literacy"
+                className="rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm font-semibold text-white/80 transition hover:border-[#D4AF37]/30 hover:bg-black/40"
+              >
+                I’m here to learn
+              </Link>
+              <Link
+                href="/job-listings"
+                className="rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm font-semibold text-white/80 transition hover:border-[#D4AF37]/30 hover:bg-black/40"
+              >
+                I’m here to find opportunities
+              </Link>
+              <Link
+                href="/marketplace/become-a-seller"
+                className="rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm font-semibold text-white/80 transition hover:border-[#D4AF37]/30 hover:bg-black/40"
+              >
+                I run a business
+              </Link>
+            </div>
+          </div>
+
+          <div className="relative mb-4 overflow-hidden rounded-2xl border border-white/10 bg-black p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.04)]">
+            <div
+              className="pointer-events-none absolute inset-0"
+              style={{
+                backgroundImage:
+                  "linear-gradient(110deg, rgba(0,0,0,0.9) 15%, rgba(0,0,0,0.74) 56%, rgba(0,0,0,0.88) 100%), url('/ads/sample-banner3.jpg')",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+            />
+            <div className="relative">
+              <div className="text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
+                Start here track
+              </div>
+              <h3 className="mt-1 text-lg font-extrabold text-white sm:text-xl">
+                Featured Learning Block
+              </h3>
+              <p className="mt-1 text-sm text-white/75">
+                One focused track for financial basics, career setup, and Black
+                history/economic context.
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2 text-xs text-white/80">
+                <span className="rounded-full border border-white/15 bg-black/35 px-3 py-1">
+                  Financial basics
+                </span>
+                <span className="rounded-full border border-white/15 bg-black/35 px-3 py-1">
+                  Career setup
+                </span>
+                <span className="rounded-full border border-white/15 bg-black/35 px-3 py-1">
+                  Black history/economic context
+                </span>
+              </div>
+              <Link
+                href="/financial-literacy"
+                className="mt-4 inline-flex h-10 items-center rounded-xl bg-[#D4AF37] px-5 text-sm font-extrabold text-black transition hover:bg-yellow-500"
+              >
+                Start the Track
+              </Link>
+            </div>
+          </div>
+
+          <div className="mb-4 grid gap-3 sm:grid-cols-2">
+            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
+              <div className="flex items-center justify-between gap-2">
+                <h3 className="text-base font-extrabold text-white sm:text-lg">
+                  Opportunities
+                </h3>
+                <Link
+                  href="/black-student-opportunities"
+                  className="text-xs font-bold text-[#D4AF37]"
+                >
+                  Open Hub →
+                </Link>
+              </div>
+              <div className="mt-3 grid gap-2 text-sm sm:grid-cols-3">
+                <Link
+                  href="/black-student-opportunities"
+                  className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40"
+                >
+                  Students
+                </Link>
+                <Link
+                  href="/job-listings"
+                  className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40"
+                >
+                  Jobs
+                </Link>
+                <Link
+                  href="/internships"
+                  className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40"
+                >
+                  Internships
+                </Link>
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
+              <h3 className="text-base font-extrabold text-white sm:text-lg">
+                Business Growth
+              </h3>
+              <div className="mt-3 grid gap-2 text-sm sm:grid-cols-3">
+                <Link
+                  href="/marketplace"
+                  className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40"
+                >
+                  Marketplace
+                </Link>
+                <Link
+                  href="/business-directory"
+                  className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40"
+                >
+                  Sponsored / Directory
+                </Link>
+                <Link
+                  href="/advertise-with-us"
+                  className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40"
+                >
+                  Advertising
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          <div className="mb-4 rounded-2xl border border-white/10 bg-white/[0.02] p-4 sm:p-5">
+            <div className="mb-2 text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
+              More key sections
+            </div>
+            <div className="grid gap-2 text-sm sm:grid-cols-2 lg:grid-cols-4">
+              <Link
+                href="/affiliate"
+                className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40"
+              >
+                Affiliate & Partnership
+              </Link>
+              <Link
+                href="/black-entertainment-news"
+                className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40"
+              >
+                Black Entertainment Pulse
+              </Link>
+              <Link
+                href="/business-directory/sponsored-business"
+                className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40"
+              >
+                Sponsored Businesses
+              </Link>
+              <Link
+                href="/investment"
+                className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40"
+              >
+                Investment & Wealth
+              </Link>
+            </div>
+          </div>
+
+          <div className="mb-4 text-center">
+            <Link
+              href="/more"
+              className="text-sm font-bold text-[#D4AF37] transition hover:underline"
+            >
+              Explore all resources →
+            </Link>
+          </div>
+
           <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
             <div className="mb-4 flex flex-wrap items-start justify-between gap-4 sm:mb-5">
               <div>
@@ -987,7 +1187,16 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="relative overflow-hidden rounded-2xl border border-[#D4AF37]/25 bg-gradient-to-br from-[#D4AF37]/12 via-white/[0.03] to-white/[0.02] p-4 sm:p-5">
+            <div className="relative overflow-hidden rounded-2xl border border-[#D4AF37]/25 bg-black p-4 sm:p-5">
+              <div
+                className="pointer-events-none absolute inset-0"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(120deg, rgba(0,0,0,0.9) 12%, rgba(0,0,0,0.72) 54%, rgba(0,0,0,0.88) 100%), url('/ads/sample-banner7.jpg')",
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }}
+              />
               <div className="pointer-events-none absolute -top-24 left-1/2 h-48 w-[34rem] -translate-x-1/2 rounded-full bg-[#D4AF37]/10 blur-3xl" />
               <div className="pointer-events-none absolute -bottom-28 right-[-6rem] h-64 w-64 rounded-full bg-emerald-500/10 blur-3xl" />
 
@@ -1175,6 +1384,54 @@ export default function Home() {
       </section>
 
       <main className="container relative z-10 mx-auto max-w-6xl px-4 pb-0">
+        <section className="relative mb-5 overflow-hidden rounded-2xl border border-[#D4AF37]/30 bg-black p-4 sm:p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.06)]">
+          <div
+            className="pointer-events-none absolute inset-0"
+            style={{
+              backgroundImage:
+                "linear-gradient(110deg, rgba(0,0,0,0.88) 14%, rgba(0,0,0,0.72) 52%, rgba(0,0,0,0.9) 100%), url('/ads/sample-banner8.jpg')",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+          />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/45 via-transparent to-black/55" />
+
+          <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="max-w-3xl">
+              <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
+                Major Platform Area
+              </p>
+              <h2 className="mt-1 text-xl font-extrabold tracking-tight text-white sm:text-2xl">
+                BWE Music / Creator Platform
+              </h2>
+              <p className="mt-2 text-sm text-white/80">
+                Explore artists, launch creator storefronts, and support music
+                commerce through canonical checkout and fulfillment.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Link
+                href="/music"
+                className="rounded-xl bg-[#D4AF37] px-4 py-2.5 text-sm font-extrabold text-black hover:bg-yellow-500"
+              >
+                Explore Music
+              </Link>
+              <Link
+                href="/music/join"
+                className="rounded-xl border border-[#D4AF37]/45 bg-[#D4AF37]/10 px-4 py-2.5 text-sm font-bold text-[#F1D57A] hover:bg-[#D4AF37]/18"
+              >
+                Sell Your Music
+              </Link>
+              <Link
+                href="/music/join"
+                className="rounded-xl border border-white/20 bg-white/5 px-4 py-2.5 text-sm font-bold text-white/85 hover:bg-white/10"
+              >
+                Join as a Creator
+              </Link>
+            </div>
+          </div>
+        </section>
+
         <section className="mb-5 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
@@ -1200,120 +1457,95 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="mb-5 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
-          <div className="mb-3 flex items-center justify-between">
-            <h3 className="text-base font-extrabold tracking-tight text-[#D4AF37] sm:text-lg">
-              Featured Sponsors
-            </h3>
-            <span className="text-[11px] text-white/50">Hover to pause</span>
+        <section className="mb-5 overflow-hidden rounded-2xl border border-[#D4AF37]/20 bg-gradient-to-r from-black via-[#0f0f0f] to-black p-3.5 sm:p-4 shadow-[0_0_0_1px_rgba(212,175,55,0.15)]">
+          <div className="mb-2.5 flex items-center justify-between">
+            <div>
+              <h3 className="text-sm font-extrabold tracking-tight text-[#D4AF37] sm:text-base">
+                Featured Sponsors
+              </h3>
+              <p className="text-[11px] text-white/55">
+                Premium rotating placements
+              </p>
+            </div>
+            <span className="text-[10px] rounded border border-white/15 px-2 py-1 text-white/55">
+              Weekly slots
+            </span>
           </div>
 
-          <div className="relative h-24 w-full overflow-hidden rounded-xl border border-white/10 bg-black/20 sm:h-28">
+          <div className="relative h-20 w-full overflow-hidden rounded-xl border border-white/10 bg-black/25 sm:h-24">
             <div className="pointer-events-none absolute left-0 top-0 h-full w-10 bg-gradient-to-r from-black/70 to-transparent" />
             <div className="pointer-events-none absolute right-0 top-0 h-full w-10 bg-gradient-to-l from-black/70 to-transparent" />
 
             <div className="animate-scroll absolute flex space-x-3 px-3 py-3 sm:space-x-4">
-              {[...sponsors, ...sponsors].map((sponsor, index) => (
-                <div
-                  key={index}
-                  className="relative h-16 w-28 overflow-hidden rounded-xl border border-white/10 shadow sm:h-20 sm:w-40"
-                >
-                  <Image
-                    src={sponsor.img}
-                    alt={sponsor.name}
-                    width={160}
-                    height={80}
-                    className="h-full w-full object-cover"
-                    priority={index < 4}
-                  />
-                  <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 rounded bg-black/60 px-2 py-1 text-[10px] font-semibold text-[#D4AF37] sm:bottom-2 sm:text-[11px]">
-                    {sponsor.name}
+              {[...sponsorRail, ...sponsorRail].map((sponsor, index) => {
+                const card = (
+                  <div className="relative h-14 w-24 overflow-hidden rounded-lg border border-white/10 shadow sm:h-16 sm:w-32">
+                    <Image
+                      src={sponsor.img}
+                      alt={sponsor.name}
+                      width={160}
+                      height={80}
+                      className="h-full w-full object-cover"
+                      priority={index < 4}
+                    />
+                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent px-1.5 py-1 text-center text-[9px] font-semibold text-[#F1D57A] sm:text-[10px]">
+                      {sponsor.name}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+
+                if (sponsor.url) {
+                  return (
+                    <a
+                      key={index}
+                      href={sponsor.url}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                    >
+                      {card}
+                    </a>
+                  );
+                }
+
+                return <div key={index}>{card}</div>;
+              })}
             </div>
           </div>
         </section>
 
-        <div className="mb-6 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 lg:gap-5">
-          {keySections.map((item, index) => {
-            const isMarket = item.title === "Our Marketplace";
-            const isPublic = publicRoutes.includes(item.href);
-
-            return (
-              <div
-                key={index}
-                className={cx(
-                  "group cursor-pointer rounded-2xl border p-4 shadow transition hover:-translate-y-0.5 hover:shadow-lg sm:p-5",
-                  isMarket
-                    ? "border-[#D4AF37]/40 bg-gradient-to-br from-[#D4AF37]/12 via-white/[0.03] to-white/[0.02]"
-                    : "border-white/10 bg-white/[0.03]",
-                )}
-                onClick={() => gate(item.href)}
-              >
-                <div className="mb-3 flex items-center justify-between gap-2">
-                  <span
-                    className={cx(
-                      "inline-flex items-center gap-1.5 rounded-full border px-2 py-1 text-[10px] font-bold sm:px-3 sm:text-xs",
-                      isMarket
-                        ? "border-[#D4AF37]/40 bg-black/30 text-[#D4AF37]"
-                        : "border-white/10 bg-white/5 text-white/70",
-                    )}
-                  >
-                    {isMarket ? "🔥 Popular" : isPublic ? "Public" : "Member"}
-                    {!isPublic && !isMarket && (
-                      <Lock className="h-3 w-3 text-white/60 sm:h-3.5 sm:w-3.5" />
-                    )}
-                  </span>
-
-                  <span className="text-[10px] text-white/45 transition group-hover:text-white/70 sm:text-xs">
-                    Open →
-                  </span>
-                </div>
-
-                <h2 className="text-base font-extrabold tracking-tight text-white group-hover:underline sm:text-xl">
-                  {item.title}
-                </h2>
-                <p className="mt-2 text-[12px] text-white/65 sm:text-sm">
-                  {item.description}
-                </p>
-
-                {!isPublic && !user && (
-                  <div className="mt-3 text-[11px] text-white/45">
-                    Sign in required to access.
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-
-        <section className="mb-5 rounded-2xl border border-[#D4AF37]/25 bg-white/[0.03] p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <section className="mb-5 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.05)] backdrop-blur">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex-1">
-              <div className="mb-2 flex items-center justify-between gap-3">
-                <h3 className="text-lg font-extrabold tracking-tight text-[#D4AF37] sm:text-xl">
-                  BWE Recruiting & Consulting Services
-                </h3>
-                <span className="inline-flex whitespace-nowrap rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[11px] font-semibold text-[#D4AF37] sm:text-xs">
-                  Coming Soon
+              <div className="mb-1 flex items-center gap-2">
+                <span className="inline-flex rounded-full border border-emerald-400/30 bg-emerald-400/10 px-2 py-0.5 text-[10px] font-bold tracking-wide text-emerald-200 sm:text-[11px]">
+                  NOW OPEN
                 </span>
               </div>
-              <p className="text-sm text-white/70">
-                A full talent-consulting service connecting employers with
-                rigorously vetted Black professionals — and helping students,
-                job seekers, and overlooked candidates secure meaningful
-                opportunities.
+
+              <h3 className="text-base font-extrabold tracking-tight text-[#F1D57A] sm:text-lg">
+                BWE Recruiting & Consulting Services
+              </h3>
+
+              <p className="mt-1 max-w-3xl text-sm text-white/68">
+                Talent consulting that helps employers hire rigorously vetted
+                Black professionals — while opening meaningful pathways for
+                students, job seekers, and overlooked candidates.
               </p>
             </div>
 
-            <div className="flex-shrink-0">
-              <button
-                onClick={() => setModalOpen(true)}
-                className="rounded-xl bg-[#D4AF37] px-4 py-2.5 text-sm font-extrabold text-black shadow transition hover:bg-yellow-500"
+            <div className="flex flex-wrap gap-2">
+              <Link
+                href="/recruiting-consulting?type=employer"
+                className="inline-flex h-10 items-center rounded-xl bg-[#D4AF37] px-4 text-sm font-extrabold text-black transition hover:bg-yellow-500"
               >
-                Notify Me
-              </button>
+                Employer Request
+              </Link>
+              <Link
+                href="/recruiting-consulting?type=candidate"
+                className="inline-flex h-10 items-center rounded-xl border border-[#D4AF37]/35 bg-[#D4AF37]/12 px-4 text-sm font-bold text-[#F1D57A] transition hover:bg-[#D4AF37]/18"
+              >
+                Join Talent Network
+              </Link>
             </div>
           </div>
         </section>

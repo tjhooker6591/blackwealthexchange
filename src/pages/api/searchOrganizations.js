@@ -1,5 +1,10 @@
 // pages/api/searchorganization.js
 import { MongoClient } from "mongodb";
+import {
+  ensureApiRateLimitIndexes,
+  getClientIp,
+  hitApiRateLimit,
+} from "@/lib/apiRateLimit";
 
 const URI =
   process.env.MONGO_URI ||
@@ -130,6 +135,24 @@ export default async function handler(req, res) {
 
     const client = await getClient();
     const db = client.db(DB_NAME);
+
+    await ensureApiRateLimitIndexes(db);
+    const ip = getClientIp(req);
+    const ipLimit = await hitApiRateLimit(
+      db,
+      `search:organizations:ip:${ip}`,
+      120,
+      5,
+    );
+    if (ipLimit.blocked) {
+      res.setHeader("Retry-After", String(ipLimit.retryAfterSeconds));
+      return res.status(429).json({
+        ok: false,
+        requestId,
+        error: "Too many search requests",
+      });
+    }
+
     const col = db.collection("organizations");
 
     const projection = {

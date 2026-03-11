@@ -10,6 +10,10 @@ import {
   CheckCircle2,
   ArrowLeft,
 } from "lucide-react";
+import type { GetServerSideProps } from "next";
+import cookie from "cookie";
+import jwt from "jsonwebtoken";
+import { getJwtSecret } from "@/lib/env";
 
 const MAX_IMAGE_MB = 6;
 
@@ -434,7 +438,7 @@ export default function AddProductPage() {
                               <img
                                 src={previewUrl}
                                 alt="Product preview"
-                                className="h-full w-full object-cover"
+                                className="h-full w-full object-cover object-center"
                               />
                             ) : (
                               <div className="h-full w-full flex items-center justify-center text-sm text-gray-500">
@@ -473,3 +477,41 @@ export default function AddProductPage() {
     </div>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const cookies = cookie.parse(req.headers.cookie || "");
+  const token = cookies.session_token;
+
+  if (!token) {
+    return {
+      redirect: {
+        destination: "/login?redirect=/marketplace/add-products",
+        permanent: false,
+      },
+    };
+  }
+
+  try {
+    const payload = jwt.verify(token, getJwtSecret()) as {
+      accountType?: string;
+    };
+
+    if (payload.accountType !== "seller") {
+      return {
+        redirect: {
+          destination: "/login?redirect=/marketplace/add-products",
+          permanent: false,
+        },
+      };
+    }
+  } catch {
+    return {
+      redirect: {
+        destination: "/login?redirect=/marketplace/add-products",
+        permanent: false,
+      },
+    };
+  }
+
+  return { props: {} };
+};
