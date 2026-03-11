@@ -56,6 +56,21 @@ export default function SearchResults() {
   const [page, setPage] = useState(1);
   const [limit] = useState(12);
 
+  const suggestedCategories = useMemo(() => {
+    const q = search.toLowerCase();
+    const map: Array<{ key: string; terms: string[] }> = [
+      { key: "Restaurants", terms: ["food", "eat", "restaurant", "cafe"] },
+      { key: "Wellness", terms: ["health", "wellness", "fitness", "therapy"] },
+      { key: "Legal Services", terms: ["law", "legal", "attorney"] },
+      { key: "Real Estate", terms: ["home", "real estate", "property"] },
+      { key: "Financial Services", terms: ["bank", "finance", "tax", "credit"] },
+    ];
+
+    const hit = map.find((x) => x.terms.some((t) => q.includes(t)));
+    if (hit) return [hit.key, "Professional Services", "Retail", "Education"];
+    return ["Professional Services", "Restaurants", "Retail", "Wellness"];
+  }, [search]);
+
   useEffect(() => {
     if (!router.isReady || !search) return;
     let cancelled = false;
@@ -111,6 +126,16 @@ export default function SearchResults() {
     [total, limit],
   );
 
+  useEffect(() => {
+    if (!search || loading || error) return;
+    if (results.length !== 0) return;
+    trackFlowEvent({
+      eventType: "no_results_shown",
+      source: "search_results",
+      query: search,
+    });
+  }, [search, loading, error, results.length]);
+
   return (
     <div className="min-h-screen bg-black text-white p-6">
       <div className="mx-auto max-w-6xl">
@@ -151,12 +176,60 @@ export default function SearchResults() {
             <p className="text-sm text-gray-400 mt-1">
               Try a broader term or continue in the full directory with filters.
             </p>
-            <Link
-              href="/business-directory"
-              className="inline-block mt-3 px-4 py-2 bg-gold text-black rounded font-semibold"
-            >
-              Browse Directory Filters
-            </Link>
+
+            <div className="mt-3 flex flex-wrap gap-2">
+              <Link
+                href="/business-directory"
+                onClick={() =>
+                  trackFlowEvent({
+                    eventType: "rescue_action_clicked",
+                    source: "search_results_no_result",
+                    query: search,
+                  })
+                }
+                className="px-4 py-2 bg-gold text-black rounded font-semibold"
+              >
+                Browse Full Directory
+              </Link>
+              <Link
+                href={`/business-directory?search=${encodeURIComponent(search)}`}
+                onClick={() =>
+                  trackFlowEvent({
+                    eventType: "filter_relaxed",
+                    source: "search_results_no_result",
+                    query: search,
+                  })
+                }
+                className="px-4 py-2 rounded border border-gray-600 text-gray-200"
+              >
+                Try in Directory Search
+              </Link>
+            </div>
+
+            <div className="mt-4">
+              <p className="text-xs uppercase tracking-wide text-gray-500">
+                Suggested categories
+              </p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {suggestedCategories.map((cat) => (
+                  <Link
+                    key={cat}
+                    href={`/business-directory?category=${encodeURIComponent(cat)}`}
+                    onClick={() =>
+                      trackFlowEvent({
+                        eventType: "suggested_category_clicked",
+                        source: "search_results_no_result",
+                        query: search,
+                        category: cat,
+                      })
+                    }
+                    className="rounded-full border border-gray-600 bg-black/30 px-3 py-1 text-xs text-gray-200"
+                  >
+                    {cat}
+                  </Link>
+                ))}
+              </div>
+            </div>
           </div>
         ) : null}
 

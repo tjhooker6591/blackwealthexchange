@@ -212,7 +212,28 @@ export default function BusinessDetail() {
               </div>
             </div>
           ) : !business ? (
-            <div className="p-6 md:p-8 text-white/70">Business not found.</div>
+            <div className="p-6 md:p-8 text-white/70">
+              <div className="text-white/80 font-semibold">Business not found.</div>
+              <p className="mt-1 text-sm text-white/55">
+                This listing may have moved or the search query was too narrow.
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {safeStr(router.query.q) ? (
+                  <Link
+                    href={`/search-results?search=${encodeURIComponent(safeStr(router.query.q))}`}
+                    className="rounded-lg bg-[#D4AF37] px-3 py-1.5 text-xs font-extrabold text-black"
+                  >
+                    Back to Search Results
+                  </Link>
+                ) : null}
+                <Link
+                  href="/business-directory"
+                  className="rounded-lg border border-white/20 bg-white/5 px-3 py-1.5 text-xs font-bold text-white/80"
+                >
+                  Browse Full Directory
+                </Link>
+              </div>
+            </div>
           ) : (
             <>
               <header className="border-b border-white/10 p-6 md:p-8">

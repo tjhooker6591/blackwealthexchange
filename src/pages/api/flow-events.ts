@@ -13,6 +13,10 @@ const ALLOWED = new Set([
   "business_detail_view",
   "outbound_website_click",
   "directions_click",
+  "no_results_shown",
+  "rescue_action_clicked",
+  "filter_relaxed",
+  "suggested_category_clicked",
 ]);
 
 export default async function handler(

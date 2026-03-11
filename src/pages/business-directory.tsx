@@ -40,6 +40,22 @@ function categoriesToString(v: any): string {
   return safeStr(v);
 }
 
+function trackFlowEvent(payload: Record<string, unknown>) {
+  if (typeof window === "undefined") return;
+  const body = JSON.stringify(payload);
+  const url = "/api/flow-events";
+  if (navigator.sendBeacon) {
+    navigator.sendBeacon(url, new Blob([body], { type: "application/json" }));
+    return;
+  }
+  fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body,
+    keepalive: true,
+  }).catch(() => {});
+}
+
 function toInt(v: any, def: number) {
   const n = parseInt(safeStr(v), 10);
   return Number.isFinite(n) ? n : def;
@@ -339,6 +355,22 @@ export default function BusinessDirectory() {
     sponsoredFirst ||
     includeIncomplete ||
     sort !== "relevance";
+
+  const rescueCategories = useMemo(() => {
+    const seed = input.trim().toLowerCase();
+    if (seed.includes("food") || seed.includes("restaurant")) {
+      return ["Food", "Shopping", "Health", "Beauty"];
+    }
+    if (seed.includes("law") || seed.includes("legal")) {
+      return ["Professional Services", "Education", "Health", "Shopping"];
+    }
+    return ["Food", "Shopping", "Beauty", "Health"];
+  }, [input]);
+
+  const rescueStates = useMemo(() => {
+    const base = ["CA", "GA", "TX", "NY", "FL"];
+    return stateFilter ? [stateFilter, ...base.filter((x) => x !== stateFilter)] : base;
+  }, [stateFilter]);
 
   const didInitFromUrl = useRef(false);
   const skipNextPageResetRef = useRef(false);
@@ -726,6 +758,17 @@ export default function BusinessDirectory() {
   const showingFrom = total === 0 ? 0 : (page - 1) * pageSize + 1;
   const showingTo =
     total === 0 ? 0 : Math.min((page - 1) * pageSize + pageRows.length, total);
+
+  useEffect(() => {
+    if (!hasSearched || isLoading || total !== 0) return;
+    trackFlowEvent({
+      eventType: "no_results_shown",
+      source: "business_directory",
+      query: input.trim(),
+      category,
+      state: stateFilter,
+    });
+  }, [hasSearched, isLoading, total, input, category, stateFilter]);
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-neutral-950 text-white">
@@ -1220,6 +1263,13 @@ export default function BusinessDirectory() {
                           setSponsoredFirst(false);
                           setIncludeIncomplete(false);
                           setPage(1);
+                          trackFlowEvent({
+                            eventType: "filter_relaxed",
+                            source: "business_directory_no_result",
+                            query: input.trim(),
+                            category,
+                            state: stateFilter,
+                          });
                         }}
                         className="rounded-lg border border-white/20 bg-black/30 px-3 py-1.5 text-xs font-bold text-white/80 hover:bg-black/45"
                       >
@@ -1230,11 +1280,72 @@ export default function BusinessDirectory() {
                         onClick={() => {
                           setInput("");
                           setPage(1);
+                          trackFlowEvent({
+                            eventType: "rescue_action_clicked",
+                            source: "business_directory_no_result",
+                            query: input.trim(),
+                          });
                         }}
                         className="rounded-lg border border-white/20 bg-black/30 px-3 py-1.5 text-xs font-bold text-white/80 hover:bg-black/45"
                       >
                         Clear search
                       </button>
+                    </div>
+
+                    <div className="mt-4 space-y-2 text-center">
+                      <p className="text-[11px] uppercase tracking-wide text-white/45">
+                        Continue your intent
+                      </p>
+                      <div className="flex flex-wrap items-center justify-center gap-2">
+                        {rescueCategories.map((cat) => (
+                          <button
+                            key={`rescue-cat-${cat}`}
+                            type="button"
+                            onClick={() => {
+                              setCategory(cat);
+                              setVerifiedOnly(false);
+                              setPage(1);
+                              trackFlowEvent({
+                                eventType: "suggested_category_clicked",
+                                source: "business_directory_no_result",
+                                query: input.trim(),
+                                category: cat,
+                              });
+                            }}
+                            className="rounded-full border border-white/20 bg-black/30 px-3 py-1 text-[11px] text-white/85"
+                          >
+                            {cat}
+                          </button>
+                        ))}
+                      </div>
+                      <div className="flex flex-wrap items-center justify-center gap-2">
+                        {rescueStates.slice(0, 3).map((st) => (
+                          <button
+                            key={`rescue-state-${st}`}
+                            type="button"
+                            onClick={() => {
+                              setStateFilter(st);
+                              setVerifiedOnly(false);
+                              setPage(1);
+                              trackFlowEvent({
+                                eventType: "rescue_action_clicked",
+                                source: "business_directory_no_result_state",
+                                query: input.trim(),
+                                state: st,
+                              });
+                            }}
+                            className="rounded-full border border-white/20 bg-black/30 px-3 py-1 text-[11px] text-white/85"
+                          >
+                            Try {st}
+                          </button>
+                        ))}
+                        <Link
+                          href="/search-results"
+                          className="rounded-full border border-[#D4AF37]/45 bg-[#D4AF37]/15 px-3 py-1 text-[11px] text-[#F1D57A]"
+                        >
+                          Open Search Results
+                        </Link>
+                      </div>
                     </div>
                   </div>
                 ) : (
