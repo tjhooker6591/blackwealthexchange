@@ -42,7 +42,12 @@ export default async function handler(req, res) {
 
     await ensureApiRateLimitIndexes(database);
     const ip = getClientIp(req);
-    const ipLimit = await hitApiRateLimit(database, `business:detail:ip:${ip}`, 120, 5);
+    const ipLimit = await hitApiRateLimit(
+      database,
+      `business:detail:ip:${ip}`,
+      120,
+      5,
+    );
     if (ipLimit.blocked) {
       res.setHeader("Retry-After", String(ipLimit.retryAfterSeconds));
       return res.status(429).json({ error: "Too many requests" });
@@ -73,7 +78,10 @@ export default async function handler(req, res) {
       updatedAt: 1,
     };
 
-    let business = await businessesCollection.findOne({ alias }, { projection });
+    let business = await businessesCollection.findOne(
+      { alias },
+      { projection },
+    );
 
     if (!business && ObjectId.isValid(alias)) {
       business = await businessesCollection.findOne(
@@ -103,7 +111,9 @@ export default async function handler(req, res) {
       isVerified: business.isVerified === true,
       amountPaid: Number(business.amountPaid || 0),
       isComplete:
-        typeof business.isComplete === "boolean" ? business.isComplete : undefined,
+        typeof business.isComplete === "boolean"
+          ? business.isComplete
+          : undefined,
       completenessScore: Number(business.completenessScore || 0),
       latitude:
         typeof business.latitude === "number" ? business.latitude : undefined,

@@ -1,6 +1,7 @@
 # Release Readout — Production Cutline (2026-03-10)
 
 ## 1) Release-cutline status summary
+
 **Local cutline status: READY (controlled release candidate).**
 
 Local runtime, smoke, critical-path, seller continuity, advertising continuity, and launch-scope gating decisions are in place and validated.
@@ -8,6 +9,7 @@ Local runtime, smoke, critical-path, seller continuity, advertising continuity, 
 ---
 
 ## 2) Green locally
+
 - Runtime health checks pass.
 - Smoke routes pass (including consulting intake + reset flow noise fix).
 - Critical-path matrix passes **35/35**.
@@ -25,7 +27,9 @@ Local runtime, smoke, critical-path, seller continuity, advertising continuity, 
 ---
 
 ## 3) Intentionally scoped for launch today
+
 Launch-active lanes:
+
 - `/recruiting-consulting`
 - `/job-listings` (public browse; in-flow auth for save/apply)
 - `/post-job`
@@ -35,7 +39,9 @@ Launch-active lanes:
 ---
 
 ## 4) Intentionally quieted/gated for post-cutline follow-up
+
 Quieted emphasis (not removed):
+
 - internships growth lane prominence in jobs hub
 - freelance/gig lane prominence in jobs hub
 - mentorship matching promotion in jobs hub
@@ -45,7 +51,9 @@ Rationale: keep production cutline focused on mature, coherent core flows and av
 ---
 
 ## 5) Key commit chain (final readiness state)
+
 Most recent readiness-relevant chain:
+
 - `8ec214c` docs: package release cutline proof + align critical-path guest expectations
 - `8d6ade2` feat: set launch-scope opportunity focus and quiet partial jobs lanes
 - `d20539c` fix: remove consulting/reset test-noise via randomized smoke identities
@@ -57,6 +65,7 @@ Most recent readiness-relevant chain:
 ---
 
 ## 6) Known limitations (non-blocking for controlled production)
+
 - Existing lint warnings remain (no blocking lint errors).
 - Local proof is authoritative for localhost behavior only; external integrations still require dev-main/live confirmation.
 - Seller/order/stat API protected-route checks in local smoke are validated primarily via expected unauth behavior and role checks in critical-path script.
@@ -64,12 +73,15 @@ Most recent readiness-relevant chain:
 ---
 
 ## 7) Explicitly deferred until after production or dev-main proof
+
 **Needs dev-main/live confirmation**
+
 - preview deployment parity and environment promotion confirmation
 - live Stripe/webhook end-to-end confirmation in target environment
 - authenticated operational proof from production-like credentials/session context
 
 **Deferred post-launch follow-up**
+
 - broader search/business-directory usefulness improvements
 - deeper consulting workflow maturity
 - broader creator/music completion (properly gated)
@@ -78,6 +90,7 @@ Most recent readiness-relevant chain:
 ---
 
 ## Decision framing
+
 - **Ready locally:** yes (controlled release candidate)
 - **Needs dev-main/live confirmation before full production sign-off:** yes
 - **Deferred non-cutline improvements:** documented and intentionally out of today’s release path

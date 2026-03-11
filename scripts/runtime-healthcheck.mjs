@@ -20,7 +20,9 @@ const html = await fetch(`${base}/`).then((r) => r.text());
 
 const css = html.match(/\/_next\/static\/css\/[^"']+\.css/)?.[0];
 if (!css) {
-  console.log("WARN css asset not found in homepage HTML (expected in some dev renders)");
+  console.log(
+    "WARN css asset not found in homepage HTML (expected in some dev renders)",
+  );
 } else {
   const cssRes = await fetch(`${base}${css}`);
   const ok = cssRes.status >= 200 && cssRes.status < 300;
@@ -28,7 +30,9 @@ if (!css) {
   if (!ok) failed = true;
 }
 
-const jsAssets = [...html.matchAll(/src="(\/_next\/static\/chunks\/[^"']+\.js)"/g)].map((m) => m[1]);
+const jsAssets = [
+  ...html.matchAll(/src="(\/_next\/static\/chunks\/[^"']+\.js)"/g),
+].map((m) => m[1]);
 if (!jsAssets.length) {
   console.log("FAIL no JS chunk assets found in homepage HTML");
   failed = true;

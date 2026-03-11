@@ -30,7 +30,9 @@ export default async function handler(
       description,
     } = req.body;
 
-    const emailNorm = String(email || "").trim().toLowerCase();
+    const emailNorm = String(email || "")
+      .trim()
+      .toLowerCase();
 
     const allowedRoles = ["user", "seller", "business", "employer"];
     if (!allowedRoles.includes(accountType)) {
@@ -65,7 +67,9 @@ export default async function handler(
     if (ipLimit.blocked || emailLimit.blocked) {
       res.setHeader(
         "Retry-After",
-        String(Math.max(ipLimit.retryAfterSeconds, emailLimit.retryAfterSeconds)),
+        String(
+          Math.max(ipLimit.retryAfterSeconds, emailLimit.retryAfterSeconds),
+        ),
       );
       return res
         .status(429)

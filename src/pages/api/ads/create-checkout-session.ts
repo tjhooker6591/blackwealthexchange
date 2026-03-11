@@ -32,7 +32,12 @@ export default async function handler(
   const db = client.db(getMongoDbName());
   await ensureApiRateLimitIndexes(db);
   const ip = getClientIp(req);
-  const ipLimit = await hitApiRateLimit(db, `checkout:campaign:ip:${ip}`, 25, 10);
+  const ipLimit = await hitApiRateLimit(
+    db,
+    `checkout:campaign:ip:${ip}`,
+    25,
+    10,
+  );
   if (ipLimit.blocked) {
     res.setHeader("Retry-After", String(ipLimit.retryAfterSeconds));
     return res.status(429).json({ error: "Too many checkout attempts" });
@@ -40,8 +45,11 @@ export default async function handler(
 
   try {
     const campaignId =
-      typeof req.body?.campaignId === "string" ? req.body.campaignId.trim() : "";
-    if (!campaignId) return res.status(400).json({ error: "Missing campaignId" });
+      typeof req.body?.campaignId === "string"
+        ? req.body.campaignId.trim()
+        : "";
+    if (!campaignId)
+      return res.status(400).json({ error: "Missing campaignId" });
 
     const campaign = await getCampaignById(campaignId);
     if (!campaign) return res.status(404).json({ error: "Campaign not found" });

@@ -213,7 +213,9 @@ export default function BusinessDetail() {
             </div>
           ) : !business ? (
             <div className="p-6 md:p-8 text-white/70">
-              <div className="text-white/80 font-semibold">Business not found.</div>
+              <div className="text-white/80 font-semibold">
+                Business not found.
+              </div>
               <p className="mt-1 text-sm text-white/55">
                 This listing may have moved or the search query was too narrow.
               </p>

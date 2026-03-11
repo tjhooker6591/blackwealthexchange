@@ -230,7 +230,9 @@ export default function BecomeASellerPage() {
           <CardContent>
             {setupProgress}
             <h1 className="text-2xl font-bold mb-2 text-gold">
-              {firstProductReady ? "Seller Setup Complete" : "You’re Almost Done"}
+              {firstProductReady
+                ? "Seller Setup Complete"
+                : "You’re Almost Done"}
             </h1>
             <p className="mb-4 text-gray-300">
               {firstProductReady
@@ -268,12 +270,14 @@ export default function BecomeASellerPage() {
               Complete Payout Setup
             </h1>
             <p className="mb-4 text-gray-300">
-              Finish Stripe onboarding to receive payouts, then return here to continue.
+              Finish Stripe onboarding to receive payouts, then return here to
+              continue.
             </p>
 
             {router.query.stripe === "refresh" ? (
               <p className="text-yellow-300 mb-3 text-sm">
-                Stripe setup wasn’t finished yet. Continue onboarding to complete payout readiness.
+                Stripe setup wasn’t finished yet. Continue onboarding to
+                complete payout readiness.
               </p>
             ) : null}
 
@@ -316,7 +320,8 @@ export default function BecomeASellerPage() {
           <h1 className="text-2xl font-bold text-gold mb-2">Become a Seller</h1>
 
           <p className="text-gray-400 mb-2 text-sm">
-            Complete this profile first. Next step after submit is Stripe payout setup.
+            Complete this profile first. Next step after submit is Stripe payout
+            setup.
           </p>
 
           <p className="text-gray-400 mb-6 text-sm">

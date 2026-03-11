@@ -40,17 +40,20 @@ export default async function handler(
 
     const products = await db
       .collection("products")
-      .find({}, {
-        projection: {
-          name: 1,
-          price: 1,
-          imageUrl: 1,
-          isFeatured: 1,
-          stock: 1,
-          createdAt: 1,
-          updatedAt: 1,
+      .find(
+        {},
+        {
+          projection: {
+            name: 1,
+            price: 1,
+            imageUrl: 1,
+            isFeatured: 1,
+            stock: 1,
+            createdAt: 1,
+            updatedAt: 1,
+          },
         },
-      })
+      )
       .sort({ isFeatured: -1, createdAt: -1 })
       .limit(limit)
       .toArray();

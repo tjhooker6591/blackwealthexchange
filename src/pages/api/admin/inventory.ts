@@ -27,7 +27,12 @@ export default async function handler(
 
     await ensureApiRateLimitIndexes(db);
     const ip = getClientIp(req);
-    const ipLimit = await hitApiRateLimit(db, `admin:inventory:ip:${ip}`, 60, 5);
+    const ipLimit = await hitApiRateLimit(
+      db,
+      `admin:inventory:ip:${ip}`,
+      60,
+      5,
+    );
     if (ipLimit.blocked) {
       res.setHeader("Retry-After", String(ipLimit.retryAfterSeconds));
       return res.status(429).json({ error: "Too many requests" });
@@ -40,17 +45,20 @@ export default async function handler(
 
     const products = await db
       .collection("products")
-      .find({}, {
-        projection: {
-          name: 1,
-          price: 1,
-          stock: 1,
-          imageUrl: 1,
-          isFeatured: 1,
-          createdAt: 1,
-          updatedAt: 1,
+      .find(
+        {},
+        {
+          projection: {
+            name: 1,
+            price: 1,
+            stock: 1,
+            imageUrl: 1,
+            isFeatured: 1,
+            createdAt: 1,
+            updatedAt: 1,
+          },
         },
-      })
+      )
       .sort({ stock: 1, name: 1 }) // low-stock first
       .limit(limit)
       .toArray();

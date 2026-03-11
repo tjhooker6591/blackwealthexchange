@@ -38,7 +38,10 @@ export default function MarketplaceOrdersPage() {
       <div className="mx-auto max-w-4xl">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-black text-[#D4AF37]">Seller Orders</h1>
-          <Link href="/marketplace/dashboard" className="text-sm text-[#D4AF37] hover:underline">
+          <Link
+            href="/marketplace/dashboard"
+            className="text-sm text-[#D4AF37] hover:underline"
+          >
             Back to Dashboard
           </Link>
         </div>
@@ -68,11 +71,17 @@ export default function MarketplaceOrdersPage() {
                 ) : (
                   orders.map((o) => (
                     <tr key={o._id} className="border-t border-white/10">
-                      <td className="p-3">{o.createdAt ? new Date(o.createdAt).toLocaleString() : "-"}</td>
+                      <td className="p-3">
+                        {o.createdAt
+                          ? new Date(o.createdAt).toLocaleString()
+                          : "-"}
+                      </td>
                       <td className="p-3">{o.productName || "-"}</td>
                       <td className="p-3">{o.buyerEmail || "-"}</td>
                       <td className="p-3">{o.status || "pending"}</td>
-                      <td className="p-3">${Number(o.totalPrice || 0).toFixed(2)}</td>
+                      <td className="p-3">
+                        ${Number(o.totalPrice || 0).toFixed(2)}
+                      </td>
                     </tr>
                   ))
                 )}

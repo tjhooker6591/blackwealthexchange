@@ -78,7 +78,9 @@ export default function ManageProducts() {
     <div className="p-8 bg-black text-white min-h-screen">
       <div className="mx-auto max-w-5xl">
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between mb-6">
-          <h1 className="text-3xl font-bold text-gold">🛒 Manage My Products</h1>
+          <h1 className="text-3xl font-bold text-gold">
+            🛒 Manage My Products
+          </h1>
           <div className="flex gap-2">
             <Link
               href="/marketplace/dashboard"
@@ -97,8 +99,12 @@ export default function ManageProducts() {
 
         {sellerReady === false ? (
           <div className="mb-5 rounded border border-yellow-500/40 bg-yellow-900/20 p-3 text-sm text-yellow-100">
-            Payout setup is not complete yet. You can still draft products, but complete payout setup before selling.
-            <Link href="/marketplace/become-a-seller?refresh=1" className="ml-2 underline">
+            Payout setup is not complete yet. You can still draft products, but
+            complete payout setup before selling.
+            <Link
+              href="/marketplace/become-a-seller?refresh=1"
+              className="ml-2 underline"
+            >
               Finish payout setup
             </Link>
           </div>
@@ -119,7 +125,8 @@ export default function ManageProducts() {
           <div className="rounded border border-gray-700 bg-gray-900 p-4">
             <p>You haven’t listed any products yet.</p>
             <p className="text-sm text-gray-400 mt-1">
-              Next step: add your first product, then it will appear here with pending/active status.
+              Next step: add your first product, then it will appear here with
+              pending/active status.
             </p>
             <Link
               href="/marketplace/add-products"
@@ -138,7 +145,9 @@ export default function ManageProducts() {
                 <div>
                   <h2 className="text-lg text-gold">{product.name}</h2>
                   <p>${Number(product.price || 0).toFixed(2)}</p>
-                  <p className="text-sm text-gray-400">Status: {product.status}</p>
+                  <p className="text-sm text-gray-400">
+                    Status: {product.status}
+                  </p>
                 </div>
                 <div className="space-x-3">
                   <Link

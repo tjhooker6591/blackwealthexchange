@@ -32,7 +32,9 @@ export default async function handler(
 
     const sellerSession = await resolveSellerSession(req, db);
     if (!sellerSession.ok) {
-      return res.status(sellerSession.status).json({ error: sellerSession.error });
+      return res
+        .status(sellerSession.status)
+        .json({ error: sellerSession.error });
     }
 
     const product = await db.collection("products").findOne({ _id: productId });
@@ -41,10 +43,14 @@ export default async function handler(
     }
 
     if (String(product.sellerId) !== sellerSession.sellerId) {
-      return res.status(403).json({ error: "Forbidden: You do not own this product" });
+      return res
+        .status(403)
+        .json({ error: "Forbidden: You do not own this product" });
     }
 
-    const result = await db.collection("products").deleteOne({ _id: productId });
+    const result = await db
+      .collection("products")
+      .deleteOne({ _id: productId });
     if (result.deletedCount === 0) {
       return res.status(500).json({ error: "Failed to delete product" });
     }

@@ -39,7 +39,12 @@ export default async function handler(
 
     await ensureApiRateLimitIndexes(db);
     const ip = getClientIp(req);
-    const ipLimit = await hitApiRateLimit(db, `admin:approve-product:ip:${ip}`, 30, 5);
+    const ipLimit = await hitApiRateLimit(
+      db,
+      `admin:approve-product:ip:${ip}`,
+      30,
+      5,
+    );
     if (ipLimit.blocked) {
       res.setHeader("Retry-After", String(ipLimit.retryAfterSeconds));
       return res.status(429).json({ error: "Too many requests" });

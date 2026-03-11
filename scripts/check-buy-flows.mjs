@@ -24,7 +24,9 @@ const isBuyLabel = (label = "") => {
 
 (async () => {
   const browser = await chromium.launch({ headless: true });
-  const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
+  const context = await browser.newContext({
+    viewport: { width: 1440, height: 1000 },
+  });
   const page = await context.newPage();
 
   const networkErrors = [];
@@ -75,7 +77,9 @@ const isBuyLabel = (label = "") => {
 
     let status = 0;
     try {
-      const resp = await page.goto(`${base}${path}`, { waitUntil: "domcontentloaded" });
+      const resp = await page.goto(`${base}${path}`, {
+        waitUntil: "domcontentloaded",
+      });
       status = resp?.status() || 0;
     } catch {
       result.failures.push({ url: path, reason: "navigation failed" });
@@ -83,14 +87,21 @@ const isBuyLabel = (label = "") => {
     }
 
     if (![200, 301, 302, 307, 308].includes(status)) {
-      result.failures.push({ url: path, reason: `unexpected status ${status}` });
+      result.failures.push({
+        url: path,
+        reason: `unexpected status ${status}`,
+      });
       continue;
     }
 
     await page.waitForTimeout(500);
 
     const controls = await page.evaluate(() => {
-      const nodes = Array.from(document.querySelectorAll("a,button,input[type='button'],input[type='submit']"));
+      const nodes = Array.from(
+        document.querySelectorAll(
+          "a,button,input[type='button'],input[type='submit']",
+        ),
+      );
       return nodes.map((el) => {
         const label = (el.textContent || el.getAttribute("value") || "").trim();
         const href = el.getAttribute("href") || el.href || "";
@@ -100,7 +111,11 @@ const isBuyLabel = (label = "") => {
 
     for (const c of controls) {
       if (!c.label || !isBuyLabel(c.label)) continue;
-      result.discovered.push({ page: path, label: c.label, href: c.href || null });
+      result.discovered.push({
+        page: path,
+        label: c.label,
+        href: c.href || null,
+      });
     }
   }
 
@@ -150,7 +165,14 @@ const isBuyLabel = (label = "") => {
       label: item.label,
       target: item.href,
       expected: "CTA click should proceed without 404/500 or JS errors",
-      actual: { before, after, clicked, clickError, networkErrors: netAfter, jsErrors: jsAfter },
+      actual: {
+        before,
+        after,
+        clicked,
+        clickError,
+        networkErrors: netAfter,
+        jsErrors: jsAfter,
+      },
       pass,
     };
 
@@ -161,7 +183,10 @@ const isBuyLabel = (label = "") => {
   await browser.close();
 
   fs.mkdirSync(".audit", { recursive: true });
-  fs.writeFileSync(".audit/buy-button-matrix.json", JSON.stringify(result, null, 2));
+  fs.writeFileSync(
+    ".audit/buy-button-matrix.json",
+    JSON.stringify(result, null, 2),
+  );
   console.log(JSON.stringify(result, null, 2));
 
   if (result.failures.length) process.exit(1);

@@ -88,7 +88,12 @@ export default async function handler(
     );
 
     if (ipLimit.blocked || emailLimit.blocked) {
-      res.setHeader("Retry-After", String(Math.max(ipLimit.retryAfterSeconds, emailLimit.retryAfterSeconds)));
+      res.setHeader(
+        "Retry-After",
+        String(
+          Math.max(ipLimit.retryAfterSeconds, emailLimit.retryAfterSeconds),
+        ),
+      );
       return res.status(429).json({
         success: false,
         error: "Too many login attempts. Please try again shortly.",

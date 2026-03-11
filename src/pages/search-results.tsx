@@ -63,7 +63,10 @@ export default function SearchResults() {
       { key: "Wellness", terms: ["health", "wellness", "fitness", "therapy"] },
       { key: "Legal Services", terms: ["law", "legal", "attorney"] },
       { key: "Real Estate", terms: ["home", "real estate", "property"] },
-      { key: "Financial Services", terms: ["bank", "finance", "tax", "credit"] },
+      {
+        key: "Financial Services",
+        terms: ["bank", "finance", "tax", "credit"],
+      },
     ];
 
     const hit = map.find((x) => x.terms.some((t) => q.includes(t)));

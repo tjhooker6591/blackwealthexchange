@@ -83,7 +83,8 @@ export default function JobsHubPage() {
             Mentorship Program
           </h2>
           <p className="text-gray-200 text-sm">
-            Mentorship matching is queued for post-cutline expansion. Core launch focus is active jobs + recruiting consulting.
+            Mentorship matching is queued for post-cutline expansion. Core
+            launch focus is active jobs + recruiting consulting.
           </p>
           <div className="inline-flex px-3 py-1 rounded bg-yellow-500/20 border border-yellow-500/40 text-yellow-200 text-sm">
             Post-launch lane

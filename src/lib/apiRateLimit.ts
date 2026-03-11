@@ -26,7 +26,10 @@ export async function hitApiRateLimit(
   const expiresAt = new Date(now.getTime() + windowMinutes * 60 * 1000);
 
   const col = db.collection("api_rate_limits");
-  const count = await col.countDocuments({ key, createdAt: { $gte: windowStart } });
+  const count = await col.countDocuments({
+    key,
+    createdAt: { $gte: windowStart },
+  });
   await col.insertOne({ key, createdAt: now, expiresAt });
 
   return {

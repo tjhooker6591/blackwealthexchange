@@ -400,7 +400,10 @@ export default function CustomAd() {
               <div className="mt-1">Option: Custom Solution Deposit</div>
               <div>Duration: 30 days</div>
               <div>Price: $100 deposit</div>
-              <div className="text-xs mt-1 opacity-90">Next step: continue to advertising checkout review, then secure payment.</div>
+              <div className="text-xs mt-1 opacity-90">
+                Next step: continue to advertising checkout review, then secure
+                payment.
+              </div>
             </div>
 
             <div className="mt-6">

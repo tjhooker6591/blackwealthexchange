@@ -89,7 +89,9 @@ export default async function handler(
         isPremium: false,
         isVerified: false,
       });
-      seller = await db.collection("sellers").findOne({ _id: insert.insertedId });
+      seller = await db
+        .collection("sellers")
+        .findOne({ _id: insert.insertedId });
     }
 
     await db.collection("sellers").updateOne(

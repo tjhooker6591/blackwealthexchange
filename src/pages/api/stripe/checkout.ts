@@ -276,10 +276,13 @@ export default async function handler(
           .json({ error: "Invalid product or missing seller" });
       }
 
-      const productStock = Number((product as any).stock ?? (product as any).inventory ?? 1);
+      const productStock = Number(
+        (product as any).stock ?? (product as any).inventory ?? 1,
+      );
       if (Number.isFinite(productStock) && productStock <= 0) {
         return res.status(409).json({
-          error: "This product is out of stock and cannot be purchased right now.",
+          error:
+            "This product is out of stock and cannot be purchased right now.",
         });
       }
 
@@ -366,7 +369,9 @@ export default async function handler(
     }
 
     if (unitAmount > 5_000_000) {
-      return res.status(400).json({ error: "Checkout amount exceeds allowed maximum" });
+      return res
+        .status(400)
+        .json({ error: "Checkout amount exceeds allowed maximum" });
     }
 
     const metadata: Record<string, string> = {

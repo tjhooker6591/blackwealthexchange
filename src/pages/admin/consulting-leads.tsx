@@ -151,7 +151,9 @@ export default function ConsultingLeadsAdminPage() {
                       <td className="p-2">{r.service || "-"}</td>
                       <td className="p-2">{r.source || r.intakeType || "-"}</td>
                       <td className="p-2">
-                        <div className="text-xs text-white/80">{r.status || "new"}</div>
+                        <div className="text-xs text-white/80">
+                          {r.status || "new"}
+                        </div>
                         <div className="mt-1 text-[11px] text-white/55">
                           stage: {r.lifecycleStage || "new"}
                         </div>

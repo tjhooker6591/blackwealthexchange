@@ -7,6 +7,25 @@ import { getAdQuote } from "@/lib/advertising/pricing";
 const CHECKOUT_LOCK_PREFIX = "bwe:ad-checkout-lock:";
 const CHECKOUT_LOCK_TTL_MS = 20_000;
 
+type InvalidParsed = {
+  invalid: true;
+  error: string;
+  detailsHref?: string;
+};
+
+type ValidParsed = {
+  invalid: false;
+  option: string;
+  label: string;
+  durationDays: number;
+  amountDollars: number;
+  businessId: string;
+  campaignId: string;
+  placement: string;
+};
+
+type ParsedCheckout = InvalidParsed | ValidParsed;
+
 function qStr(v: unknown) {
   return typeof v === "string" ? v.trim() : "";
 }
@@ -106,7 +125,7 @@ export default function AdvertisingCheckoutPage() {
   const [loading, setLoading] = useState(false);
   const startedAttemptRef = useRef<string | null>(null);
 
-  const parsed = useMemo(() => {
+  const parsed = useMemo<ParsedCheckout | null>(() => {
     if (!router.isReady) return null;
 
     const rawOption =
@@ -208,6 +227,7 @@ export default function AdvertisingCheckoutPage() {
           data?.error ||
             "A checkout session is already in progress. Please wait and retry.",
         );
+        setLoading(false);
         return;
       }
 
@@ -240,10 +260,7 @@ export default function AdvertisingCheckoutPage() {
   }
 
   if (parsed.invalid) {
-    const detailsHref =
-      "detailsHref" in parsed && typeof parsed.detailsHref === "string"
-        ? parsed.detailsHref
-        : "";
+    const detailsHref = parsed.detailsHref || "";
 
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center p-6">

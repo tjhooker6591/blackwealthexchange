@@ -35,13 +35,12 @@ export async function resolveSellerSession(
   }
 
   const userId = String(decoded.userId || "").trim();
-  const email = String(decoded.email || "").trim().toLowerCase();
+  const email = String(decoded.email || "")
+    .trim()
+    .toLowerCase();
 
   const seller = await db.collection("sellers").findOne({
-    $or: [
-      ...(userId ? [{ userId }] : []),
-      ...(email ? [{ email }] : []),
-    ],
+    $or: [...(userId ? [{ userId }] : []), ...(email ? [{ email }] : [])],
   });
 
   if (!seller?._id) {

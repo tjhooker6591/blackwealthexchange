@@ -44,7 +44,8 @@ export default function CreatorDashboardPage() {
           Your music creator readiness and next operational actions.
         </p>
         <p className="mt-1 text-xs text-white/50">
-          Launch scope: readiness + product management continuity. Advanced creator fan/analytics modules are post-launch.
+          Launch scope: readiness + product management continuity. Advanced
+          creator fan/analytics modules are post-launch.
         </p>
 
         {loading ? <p className="mt-4 text-white/70">Loading…</p> : null}
@@ -107,7 +108,8 @@ export default function CreatorDashboardPage() {
               Creator account not fully ready yet
             </h2>
             <p className="mt-1 text-sm text-white/80">
-              Complete onboarding, payout readiness, and plan activation in the music activation flow before managing live creator inventory.
+              Complete onboarding, payout readiness, and plan activation in the
+              music activation flow before managing live creator inventory.
             </p>
           </div>
         ) : null}

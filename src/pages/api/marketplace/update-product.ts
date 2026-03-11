@@ -34,7 +34,9 @@ export default async function handler(
 
     const sellerSession = await resolveSellerSession(req, db);
     if (!sellerSession.ok) {
-      return res.status(sellerSession.status).json({ error: sellerSession.error });
+      return res
+        .status(sellerSession.status)
+        .json({ error: sellerSession.error });
     }
 
     const existing = await products.findOne({ _id: productId });
@@ -43,7 +45,9 @@ export default async function handler(
     }
 
     if (String(existing.sellerId) !== sellerSession.sellerId) {
-      return res.status(403).json({ error: "Forbidden: You don't own this product" });
+      return res
+        .status(403)
+        .json({ error: "Forbidden: You don't own this product" });
     }
 
     await products.updateOne(
@@ -60,7 +64,9 @@ export default async function handler(
       },
     );
 
-    return res.status(200).json({ success: true, message: "Product updated successfully" });
+    return res
+      .status(200)
+      .json({ success: true, message: "Product updated successfully" });
   } catch (err) {
     console.error("Edit product error:", err);
     return res.status(500).json({ error: "Internal Server Error" });

@@ -108,7 +108,10 @@ export default async function handler(
         tagline:
           s(row.tagline).slice(0, 90) || "Featured on Black Wealth Exchange",
         img: safeSponsorImage(s(row.creativeUrl)),
-        url: normalizeBusinessUrl(s(row.targetUrl || row.website), s(row.businessName)),
+        url: normalizeBusinessUrl(
+          s(row.targetUrl || row.website),
+          s(row.businessName),
+        ),
         cta: "Learn More",
         tier: "featured-sponsor",
         featuredSlot: i + 1,

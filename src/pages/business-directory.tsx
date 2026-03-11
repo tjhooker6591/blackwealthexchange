@@ -369,7 +369,9 @@ export default function BusinessDirectory() {
 
   const rescueStates = useMemo(() => {
     const base = ["CA", "GA", "TX", "NY", "FL"];
-    return stateFilter ? [stateFilter, ...base.filter((x) => x !== stateFilter)] : base;
+    return stateFilter
+      ? [stateFilter, ...base.filter((x) => x !== stateFilter)]
+      : base;
   }, [stateFilter]);
 
   const didInitFromUrl = useRef(false);

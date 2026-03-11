@@ -20,11 +20,15 @@ export default async function handler(
 
     const sellerSession = await resolveSellerSession(req, db);
     if (!sellerSession.ok) {
-      return res.status(sellerSession.status).json({ error: sellerSession.error });
+      return res
+        .status(sellerSession.status)
+        .json({ error: sellerSession.error });
     }
     const sellerId = sellerSession.sellerId;
 
-    const products = await db.collection("products").countDocuments({ sellerId });
+    const products = await db
+      .collection("products")
+      .countDocuments({ sellerId });
 
     const [orderStats] = await db
       .collection("orders")

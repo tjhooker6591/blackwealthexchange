@@ -20,7 +20,9 @@ export default async function handler(
 
     const sellerSession = await resolveSellerSession(req, db);
     if (!sellerSession.ok) {
-      return res.status(sellerSession.status).json({ error: sellerSession.error });
+      return res
+        .status(sellerSession.status)
+        .json({ error: sellerSession.error });
     }
 
     const orders = await db

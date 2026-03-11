@@ -71,7 +71,11 @@ async function ensureRuntimeHealthy() {
   fs.mkdirSync(".audit", { recursive: true });
   fs.writeFileSync(
     ".audit/p2-regression-report.json",
-    JSON.stringify({ ...out, summary: { total: 0, passed: 0, failed: 0 } }, null, 2),
+    JSON.stringify(
+      { ...out, summary: { total: 0, passed: 0, failed: 0 } },
+      null,
+      2,
+    ),
   );
   console.error(reason);
   process.exit(2);

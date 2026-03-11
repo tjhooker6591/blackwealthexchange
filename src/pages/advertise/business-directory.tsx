@@ -62,9 +62,15 @@ export default function BusinessDirectoryAdPage() {
         setBusinessId(resolvedBusinessId || "");
         if (typeof sessionUser?.name === "string") setName(sessionUser.name);
         if (typeof sessionUser?.email === "string") setEmail(sessionUser.email);
-        if (typeof sessionUser?.businessName === "string") setBusinessName(sessionUser.businessName);
-        if (typeof topBusiness?.businessName === "string" && !sessionUser?.businessName) setBusinessName(topBusiness.businessName);
-        if (typeof topBusiness?.website === "string") setWebsite(topBusiness.website);
+        if (typeof sessionUser?.businessName === "string")
+          setBusinessName(sessionUser.businessName);
+        if (
+          typeof topBusiness?.businessName === "string" &&
+          !sessionUser?.businessName
+        )
+          setBusinessName(topBusiness.businessName);
+        if (typeof topBusiness?.website === "string")
+          setWebsite(topBusiness.website);
       } catch (err) {
         console.error("Failed to fetch session for directory ad checkout", err);
       } finally {
@@ -100,14 +106,19 @@ export default function BusinessDirectoryAdPage() {
 
   const handleSelectPlan = async (plan: PlanType) => {
     setError("");
-    if (name.trim().length < 2 || businessName.trim().length < 2 || !/^\S+@\S+\.\S+$/.test(email.trim())) {
+    if (
+      name.trim().length < 2 ||
+      businessName.trim().length < 2 ||
+      !/^\S+@\S+\.\S+$/.test(email.trim())
+    ) {
       setError("Please complete campaign contact details before checkout.");
       return;
     }
 
     setSubmitting(true);
     try {
-      const option = plan === "standard" ? "directory-standard" : "directory-featured";
+      const option =
+        plan === "standard" ? "directory-standard" : "directory-featured";
       const durationDays = 30;
       const budget = plan === "standard" ? "49" : "99";
 
@@ -131,7 +142,9 @@ export default function BusinessDirectoryAdPage() {
 
       const submitData = await submitRes.json().catch(() => ({}));
       if (!submitRes.ok) {
-        throw new Error(submitData?.error || "Failed to save directory request");
+        throw new Error(
+          submitData?.error || "Failed to save directory request",
+        );
       }
 
       const requestId = submitData?.requestId || submitData?.adId;
@@ -186,14 +199,42 @@ export default function BusinessDirectoryAdPage() {
       </div>
 
       <div className="w-full max-w-4xl mb-10 rounded-xl border border-gray-700 bg-gray-900 p-5 text-left space-y-3">
-        <h3 className="text-xl font-semibold text-gold">Campaign Contact Details</h3>
+        <h3 className="text-xl font-semibold text-gold">
+          Campaign Contact Details
+        </h3>
         <div className="grid md:grid-cols-2 gap-3">
-          <input value={name} onChange={(e)=>setName(e.target.value)} placeholder="Your name" className="w-full bg-black text-white border border-gray-600 rounded p-2" />
-          <input value={businessName} onChange={(e)=>setBusinessName(e.target.value)} placeholder="Business name" className="w-full bg-black text-white border border-gray-600 rounded p-2" />
-          <input value={email} onChange={(e)=>setEmail(e.target.value)} placeholder="Email" type="email" className="w-full bg-black text-white border border-gray-600 rounded p-2" />
-          <input value={website} onChange={(e)=>setWebsite(e.target.value)} placeholder="Website (optional)" className="w-full bg-black text-white border border-gray-600 rounded p-2" />
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Your name"
+            className="w-full bg-black text-white border border-gray-600 rounded p-2"
+          />
+          <input
+            value={businessName}
+            onChange={(e) => setBusinessName(e.target.value)}
+            placeholder="Business name"
+            className="w-full bg-black text-white border border-gray-600 rounded p-2"
+          />
+          <input
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email"
+            type="email"
+            className="w-full bg-black text-white border border-gray-600 rounded p-2"
+          />
+          <input
+            value={website}
+            onChange={(e) => setWebsite(e.target.value)}
+            placeholder="Website (optional)"
+            className="w-full bg-black text-white border border-gray-600 rounded p-2"
+          />
         </div>
-        <textarea value={notes} onChange={(e)=>setNotes(e.target.value)} placeholder="Campaign notes (target category, CTA, dates)" className="w-full bg-black text-white border border-gray-600 rounded p-2 min-h-[90px]" />
+        <textarea
+          value={notes}
+          onChange={(e) => setNotes(e.target.value)}
+          placeholder="Campaign notes (target category, CTA, dates)"
+          className="w-full bg-black text-white border border-gray-600 rounded p-2 min-h-[90px]"
+        />
         {error ? <p className="text-sm text-red-300">{error}</p> : null}
       </div>
 

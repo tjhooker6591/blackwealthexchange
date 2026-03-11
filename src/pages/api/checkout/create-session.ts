@@ -253,7 +253,12 @@ export default async function handler(
 
     await ensureApiRateLimitIndexes(db);
     const ip = getClientIp(req);
-    const ipLimit = await hitApiRateLimit(db, `checkout:product:ip:${ip}`, 40, 10);
+    const ipLimit = await hitApiRateLimit(
+      db,
+      `checkout:product:ip:${ip}`,
+      40,
+      10,
+    );
     if (ipLimit.blocked) {
       res.setHeader("Retry-After", String(ipLimit.retryAfterSeconds));
       return res.status(429).json({

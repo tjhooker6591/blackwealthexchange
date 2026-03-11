@@ -10,7 +10,6 @@ import {
 } from "@/lib/apiRateLimit";
 import { ObjectId } from "mongodb";
 
-
 function parseIntSafe(v: unknown, def: number) {
   const n = Number(v);
   return Number.isFinite(n) && n > 0 ? Math.floor(n) : def;
@@ -88,7 +87,12 @@ export default async function handler(
 
     await ensureApiRateLimitIndexes(db);
     const ip = getClientIp(req);
-    const ipLimit = await hitApiRateLimit(db, `admin:get-payouts:ip:${ip}`, 60, 5);
+    const ipLimit = await hitApiRateLimit(
+      db,
+      `admin:get-payouts:ip:${ip}`,
+      60,
+      5,
+    );
     if (ipLimit.blocked) {
       res.setHeader("Retry-After", String(ipLimit.retryAfterSeconds));
       return res.status(429).json({ message: "Too many requests" });

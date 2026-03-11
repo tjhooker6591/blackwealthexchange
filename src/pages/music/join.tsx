@@ -113,11 +113,12 @@ export default function MusicCreatorJoinPage() {
         <div className="mx-auto max-w-2xl rounded-2xl border border-[#D4AF37]/30 bg-[#D4AF37]/10 p-6">
           <h1 className="text-3xl font-black text-[#D4AF37]">Creator Ready</h1>
           <p className="mt-2 text-white/75">
-            Your music creator account is active. You can now add music
-            products and manage launch-stage creator operations.
+            Your music creator account is active. You can now add music products
+            and manage launch-stage creator operations.
           </p>
           <p className="mt-1 text-xs text-white/50">
-            Note: advanced creator analytics and fan tooling remain post-launch expansion.
+            Note: advanced creator analytics and fan tooling remain post-launch
+            expansion.
           </p>
           <div className="mt-4 flex gap-3">
             <Link
@@ -150,7 +151,9 @@ export default function MusicCreatorJoinPage() {
         </p>
 
         <div className="mt-4 rounded-xl border border-white/10 bg-black/30 p-3 text-sm">
-          <p className="font-bold text-[#D4AF37]">Creator Activation Progress</p>
+          <p className="font-bold text-[#D4AF37]">
+            Creator Activation Progress
+          </p>
           <div className="mt-2 space-y-1 text-white/80">
             {steps.map((s, i) => (
               <div key={s.label}>
@@ -162,7 +165,8 @@ export default function MusicCreatorJoinPage() {
 
         {activated ? (
           <div className="mt-4 rounded-xl border border-emerald-400/30 bg-emerald-500/10 p-3 text-sm text-emerald-300">
-            Payment return detected. We refreshed creator entitlement state and updated progress above.
+            Payment return detected. We refreshed creator entitlement state and
+            updated progress above.
           </div>
         ) : null}
 

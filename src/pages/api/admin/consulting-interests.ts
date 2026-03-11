@@ -56,9 +56,11 @@ export default async function handler(
         req.body || {};
       const nextStatus = normalizeStatus(status);
       const nextStage = normalizeStage(stage || status || "new");
+
       if (!id || !collection) {
         return res.status(400).json({ error: "Missing id or collection" });
       }
+
       if (!["consulting_interest", "consulting_intake"].includes(collection)) {
         return res.status(400).json({ error: "Invalid collection" });
       }
@@ -67,33 +69,37 @@ export default async function handler(
       const _id = ObjectId.isValid(String(id))
         ? new ObjectId(String(id))
         : null;
+
       if (!_id) return res.status(400).json({ error: "Invalid id" });
 
       const actor = admin.email || admin.userId || "admin";
-      const result = await db.collection(collection).updateOne(
-        { _id },
-        {
-          $set: {
+      const trimmedNextAction =
+        typeof nextAction === "string" ? nextAction.trim() : "";
+
+      const updateDoc = {
+        $set: {
+          status: nextStatus,
+          lifecycleStage: nextStage,
+          nextAction: trimmedNextAction,
+          owner: typeof owner === "string" ? owner.trim() : "",
+          followUpAt: followUpAt ? new Date(followUpAt) : null,
+          updatedAt: new Date(),
+          reviewedBy: actor,
+        },
+        $push: {
+          lifecycleLog: {
+            at: new Date(),
+            by: actor,
             status: nextStatus,
-            lifecycleStage: nextStage,
-            nextAction: typeof nextAction === "string" ? nextAction.trim() : "",
-            owner: typeof owner === "string" ? owner.trim() : "",
-            followUpAt: followUpAt ? new Date(followUpAt) : null,
-            updatedAt: new Date(),
-            reviewedBy: actor,
-          },
-          $push: {
-            lifecycleLog: {
-              at: new Date(),
-              by: actor,
-              status: nextStatus,
-              stage: nextStage,
-              nextAction:
-                typeof nextAction === "string" ? nextAction.trim() : "",
-            },
+            stage: nextStage,
+            nextAction: trimmedNextAction,
           },
         },
-      );
+      } as any;
+
+      const result = await db
+        .collection(collection)
+        .updateOne({ _id }, updateDoc);
 
       if (!result.matchedCount) {
         return res.status(404).json({ error: "Lead not found" });
@@ -177,7 +183,9 @@ export default async function handler(
         nextAction: x.nextAction || "",
         owner: x.owner || "",
         followUpAt: x.followUpAt ? new Date(x.followUpAt).toISOString() : null,
-        lifecycleLogCount: Array.isArray(x.lifecycleLog) ? x.lifecycleLog.length : 0,
+        lifecycleLogCount: Array.isArray(x.lifecycleLog)
+          ? x.lifecycleLog.length
+          : 0,
         lastLifecycleEvent:
           Array.isArray(x.lifecycleLog) && x.lifecycleLog.length
             ? x.lifecycleLog[x.lifecycleLog.length - 1]
@@ -201,7 +209,9 @@ export default async function handler(
         nextAction: x.nextAction || "",
         owner: x.owner || "",
         followUpAt: x.followUpAt ? new Date(x.followUpAt).toISOString() : null,
-        lifecycleLogCount: Array.isArray(x.lifecycleLog) ? x.lifecycleLog.length : 0,
+        lifecycleLogCount: Array.isArray(x.lifecycleLog)
+          ? x.lifecycleLog.length
+          : 0,
         lastLifecycleEvent:
           Array.isArray(x.lifecycleLog) && x.lifecycleLog.length
             ? x.lifecycleLog[x.lifecycleLog.length - 1]

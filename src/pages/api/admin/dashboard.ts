@@ -20,12 +20,19 @@ type Business = {
   updatedAt: string | null;
 };
 
+type DashboardResponse =
+  | {
+      ok: true;
+      meta: { limit: number };
+      businesses: Business[];
+    }
+  | {
+      error: string;
+    };
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<
-    { ok: true; businesses: Business[] } | { error: string }
-  >,
+  res: NextApiResponse<DashboardResponse>,
 ) {
   if (req.method !== "GET") {
     res.setHeader("Allow", ["GET"]);
@@ -41,7 +48,13 @@ export default async function handler(
 
     await ensureApiRateLimitIndexes(db);
     const ip = getClientIp(req);
-    const ipLimit = await hitApiRateLimit(db, `admin:dashboard:ip:${ip}`, 60, 5);
+    const ipLimit = await hitApiRateLimit(
+      db,
+      `admin:dashboard:ip:${ip}`,
+      60,
+      5,
+    );
+
     if (ipLimit.blocked) {
       res.setHeader("Retry-After", String(ipLimit.retryAfterSeconds));
       return res.status(429).json({ error: "Too many requests" });
