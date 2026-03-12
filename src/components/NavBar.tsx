@@ -51,40 +51,21 @@ export default function NavBar() {
         </Link>
 
         {/* Desktop Nav */}
-        <div className="hidden items-center space-x-6 md:flex">
-          <Link
-            href="/about"
-            className="font-semibold transition-colors hover:text-[#D4AF37]"
-          >
-            About
+        <div className="hidden items-center space-x-5 md:flex">
+          <Link href="/business-directory" className="font-semibold transition-colors hover:text-[#D4AF37]">
+            Directory
           </Link>
-
-          <Link
-            href="/global-timeline"
-            className="font-semibold transition-colors hover:text-[#D4AF37]"
-          >
-            Journey
+          <Link href="/marketplace" className="font-semibold transition-colors hover:text-[#D4AF37]">
+            Marketplace
           </Link>
-
-          <Link
-            href="/events"
-            className="font-semibold transition-colors hover:text-[#D4AF37]"
-          >
-            Events
+          <Link href="/job-listings" className="font-semibold transition-colors hover:text-[#D4AF37]">
+            Jobs
           </Link>
-
-          <Link
-            href="/music"
-            className="font-semibold transition-colors hover:text-[#D4AF37]"
-          >
-            Music
+          <Link href="/resources" className="font-semibold transition-colors hover:text-[#D4AF37]">
+            Resources
           </Link>
-
-          <Link
-            href="/join-the-mission"
-            className="font-semibold transition-colors hover:text-[#D4AF37]"
-          >
-            Join the Mission
+          <Link href="/trust" className="font-semibold transition-colors hover:text-[#D4AF37]">
+            Trust
           </Link>
 
           {loading ? null : user ? (
@@ -171,44 +152,27 @@ export default function NavBar() {
           className="border-t border-[#D4AF37]/20 bg-black/95 px-4 pb-4 pt-3 md:hidden"
         >
           <div className="space-y-1 rounded-2xl border border-white/10 bg-white/[0.03] p-3 shadow-[0_0_0_1px_rgba(255,255,255,0.04)]">
-            <Link
-              href="/about"
-              className="block rounded-xl px-3 py-2.5 font-medium text-white/85 transition-colors hover:bg-white/[0.04] hover:text-[#D4AF37]"
-              onClick={() => handleMobileNav()}
-            >
-              About
+            <Link href="/business-directory" className="block rounded-xl px-3 py-2.5 font-medium text-white/85 transition-colors hover:bg-white/[0.04] hover:text-[#D4AF37]" onClick={() => handleMobileNav()}>
+              Find Black-owned businesses
             </Link>
-
-            <Link
-              href="/global-timeline"
-              className="block rounded-xl px-3 py-2.5 font-medium text-white/85 transition-colors hover:bg-white/[0.04] hover:text-[#D4AF37]"
-              onClick={() => handleMobileNav()}
-            >
-              Journey
+            <Link href="/marketplace" className="block rounded-xl px-3 py-2.5 font-medium text-white/85 transition-colors hover:bg-white/[0.04] hover:text-[#D4AF37]" onClick={() => handleMobileNav()}>
+              Shop Black-owned products
             </Link>
-
-            <Link
-              href="/events"
-              className="block rounded-xl px-3 py-2.5 font-medium text-white/85 transition-colors hover:bg-white/[0.04] hover:text-[#D4AF37]"
-              onClick={() => handleMobileNav()}
-            >
-              Events
+            <Link href="/job-listings" className="block rounded-xl px-3 py-2.5 font-medium text-white/85 transition-colors hover:bg-white/[0.04] hover:text-[#D4AF37]" onClick={() => handleMobileNav()}>
+              Browse jobs
             </Link>
-
-            <Link
-              href="/music"
-              className="block rounded-xl px-3 py-2.5 font-medium text-white/85 transition-colors hover:bg-white/[0.04] hover:text-[#D4AF37]"
-              onClick={() => handleMobileNav()}
-            >
-              Music
+            <Link href="/resources" className="block rounded-xl px-3 py-2.5 font-medium text-white/85 transition-colors hover:bg-white/[0.04] hover:text-[#D4AF37]" onClick={() => handleMobileNav()}>
+              Financial resources
             </Link>
-
-            <Link
-              href="/join-the-mission"
-              className="block rounded-xl px-3 py-2.5 font-medium text-white/85 transition-colors hover:bg-white/[0.04] hover:text-[#D4AF37]"
-              onClick={() => handleMobileNav()}
-            >
-              Join the Mission
+            <Link href="/trust" className="block rounded-xl px-3 py-2.5 font-medium text-white/85 transition-colors hover:bg-white/[0.04] hover:text-[#D4AF37]" onClick={() => handleMobileNav()}>
+              Trust center
+            </Link>
+            <div className="my-2 h-px bg-white/10" />
+            <Link href="/business-directory/add-business" className="block rounded-xl border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-3 py-2.5 font-semibold text-[#D4AF37]" onClick={() => handleMobileNav()}>
+              Get your business listed
+            </Link>
+            <Link href="/marketplace/become-a-seller" className="block rounded-xl border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-3 py-2.5 font-semibold text-[#D4AF37]" onClick={() => handleMobileNav()}>
+              Start selling on BWE
             </Link>
 
             <div className="my-2 h-px bg-white/10" />

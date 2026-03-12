@@ -69,6 +69,12 @@ export default function CheckoutPage() {
               : "Select a plan to continue to secure checkout."}
           </p>
 
+          <div className="mt-4 grid gap-2 sm:grid-cols-3 text-xs">
+            <div className="rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-white/80">Secure payments powered by Stripe</div>
+            <div className="rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-white/80">No account required to complete purchase</div>
+            <div className="rounded-lg border border-white/15 bg-white/5 px-3 py-2 text-white/80">Support available through Trust Center</div>
+          </div>
+
           <div className="mt-8 flex flex-wrap gap-3">
             <button
               onClick={startCheckout}
@@ -89,6 +95,14 @@ export default function CheckoutPage() {
           {message ? (
             <p className="mt-4 text-sm text-red-400">{message}</p>
           ) : null}
+
+          <p className="mt-4 text-xs text-white/60">
+            Need policy or security details? Visit the{" "}
+            <Link href="/trust" className="text-[#D4AF37] underline">
+              BWE Trust Center
+            </Link>
+            .
+          </p>
         </div>
       </main>
     </>
