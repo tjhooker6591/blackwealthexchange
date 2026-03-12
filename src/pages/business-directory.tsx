@@ -371,7 +371,7 @@ export default function BusinessDirectory() {
   const pageSize = 20;
 
   useEffect(() => {
-    setRecent(getRecentBusinesses());
+    setRecent(getRecentBiz());
   }, [router.asPath]);
 
   useEffect(() => {
