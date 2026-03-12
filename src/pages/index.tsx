@@ -751,6 +751,26 @@ export default function Home() {
               )}
             </div>
 
+            <div className="mx-auto mt-4 w-full max-w-4xl rounded-2xl border border-white/10 bg-white/[0.03] p-3 text-left">
+              <div className="text-[11px] font-extrabold uppercase tracking-wide text-white/60">
+                Popular discovery paths
+              </div>
+              <div className="mt-2 flex flex-wrap gap-2 text-xs">
+                <Link href="/business-directory" className="rounded-full border border-white/15 px-3 py-1 text-white/85 hover:bg-white/10">
+                  Find Black-owned businesses near me
+                </Link>
+                <Link href="/marketplace" className="rounded-full border border-white/15 px-3 py-1 text-white/85 hover:bg-white/10">
+                  Shop Black-owned brands and products
+                </Link>
+                <Link href="/job-listings" className="rounded-full border border-white/15 px-3 py-1 text-white/85 hover:bg-white/10">
+                  Browse Black career opportunities
+                </Link>
+                <Link href="/financial-literacy" className="rounded-full border border-white/15 px-3 py-1 text-white/85 hover:bg-white/10">
+                  Financial literacy and wealth-building resources
+                </Link>
+              </div>
+            </div>
+
             <details className="mx-auto mt-3 w-full max-w-3xl rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-left">
               <summary className="cursor-pointer list-none text-xs font-semibold text-white/70">
                 Why trust BWE search

@@ -4,6 +4,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import Head from "next/head";
+import { canonicalUrl } from "@/lib/seo";
 
 type AccountType = "user" | "seller" | "business" | "employer";
 
@@ -153,8 +155,15 @@ export default function Login() {
     }
   };
 
+  const canonical = canonicalUrl("/login");
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-black px-4 py-10 text-white">
+      <Head>
+        <title>Login | Black Wealth Exchange</title>
+        <meta name="robots" content="noindex,nofollow" />
+        <link rel="canonical" href={canonical} />
+      </Head>
       {/* subtle glow */}
       <div className="pointer-events-none fixed inset-0 opacity-40">
         <div className="absolute -top-40 -left-40 h-[520px] w-[520px] rounded-full blur-3xl bg-yellow-500/20" />

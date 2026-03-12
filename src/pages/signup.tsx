@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import Head from "next/head";
+import { canonicalUrl } from "@/lib/seo";
 
 export default function Signup() {
   const router = useRouter();
@@ -145,8 +147,15 @@ export default function Signup() {
     }
   };
 
+  const canonical = canonicalUrl("/signup");
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-gray-100 p-6">
+      <Head>
+        <title>Sign Up | Black Wealth Exchange</title>
+        <meta name="robots" content="noindex,nofollow" />
+        <link rel="canonical" href={canonical} />
+      </Head>
       <div className="bg-white p-8 shadow-lg rounded-lg w-full max-w-md">
         <h2 className="text-3xl font-bold text-center text-gold">
           Create an Account
