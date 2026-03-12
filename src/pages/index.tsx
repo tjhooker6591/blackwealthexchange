@@ -723,7 +723,7 @@ export default function Home() {
               <div
                 className="pointer-events-none absolute inset-0 -z-10 opacity-[0.16]"
                 style={{
-                  backgroundImage: "url('/images/hero1.jpg')",
+                  backgroundImage: "url('/images/story3.jpg')",
                   backgroundSize: "cover",
                   backgroundPosition: "center",
                 }}
