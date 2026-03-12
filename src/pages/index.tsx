@@ -1416,11 +1416,11 @@ export default function Home() {
                 </div>
 
                 <div className="mt-4 md:mt-0">
-                  <div className="rounded-2xl border border-white/10 bg-black/30 p-4">
-                    <div className="text-xs font-extrabold text-white/70">
+                  <div className="rounded-2xl border border-white/10 bg-black/30 p-3.5 sm:p-4">
+                    <div className="text-[11px] font-extrabold uppercase tracking-wide text-white/70 sm:text-xs">
                       Why students stay on BWE
                     </div>
-                    <ul className="mt-3 space-y-2 text-sm text-white/70">
+                    <ul className="mt-2.5 space-y-1.5 text-[13px] leading-relaxed text-white/75 sm:mt-3 sm:space-y-2 sm:text-sm">
                       <li className="flex items-start gap-2">
                         <span className="mt-1 h-2 w-2 rounded-full bg-emerald-300" />
                         Trusted links + clean info (no clutter)
