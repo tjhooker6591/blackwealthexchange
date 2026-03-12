@@ -24,6 +24,11 @@ type Product = {
   price: number;
   category: string;
   imageUrl?: string;
+  sellerTrust?: {
+    sellerExists?: boolean;
+    payoutReady?: boolean;
+    hasBusinessName?: boolean;
+  };
 };
 
 const itemsPerPage = 12;
@@ -504,6 +509,11 @@ export default function Marketplace() {
                       <span className="rounded-full border border-white/20 bg-white/10 px-2 py-0.5 text-[10px] font-bold text-white/75">
                         Seller managed shipping
                       </span>
+                      {product.sellerTrust?.sellerExists ? (
+                        <span className="rounded-full border border-sky-400/30 bg-sky-400/15 px-2 py-0.5 text-[10px] font-bold text-sky-200">
+                          Seller profile
+                        </span>
+                      ) : null}
                     </div>
 
                     <p className="mt-1 text-[11px] text-white/45 sm:hidden">

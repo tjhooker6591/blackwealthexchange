@@ -1,11 +1,20 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
+import { ObjectId } from "mongodb";
 
 type SortKey = "relevance" | "newest" | "price_asc" | "price_desc";
 
 function escRegex(input: string) {
   return input.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function asObjectId(input: string) {
+  try {
+    return ObjectId.isValid(input) ? new ObjectId(input) : null;
+  } catch {
+    return null;
+  }
 }
 
 export default async function handler(
@@ -39,7 +48,6 @@ export default async function handler(
 
     const filter: any = {};
 
-    // Category filtering
     if (category && category !== "All") {
       filter.category = { $regex: new RegExp(escRegex(String(category)), "i") };
     }
@@ -51,7 +59,6 @@ export default async function handler(
     }
 
     if (sellerView === "true") {
-      // Seller Dashboard View ➔ Show all products by this seller
       if (!sellerId) {
         return res
           .status(400)
@@ -59,7 +66,6 @@ export default async function handler(
       }
       filter.sellerId = sellerId;
     } else {
-      // Public Marketplace View ➔ Only show active & published products
       filter.status = "active";
       filter.isPublished = true;
     }
@@ -82,7 +88,39 @@ export default async function handler(
       .limit(limitNum)
       .toArray();
 
-    return res.status(200).json({ products, total });
+    const sellerIds = Array.from(
+      new Set(products.map((p: any) => String(p.sellerId || "")).filter(Boolean)),
+    );
+
+    const sellerDocs = await db
+      .collection("sellers")
+      .find(
+        {
+          _id: {
+            $in: sellerIds.map((id) => asObjectId(id)).filter(Boolean),
+          },
+        },
+        { projection: { _id: 1, stripeAccountId: 1, businessName: 1 } },
+      )
+      .toArray();
+
+    const sellerById = new Map(
+      sellerDocs.map((s: any) => [String(s._id), s]),
+    );
+
+    const withTrust = products.map((p: any) => {
+      const seller = sellerById.get(String(p.sellerId || ""));
+      return {
+        ...p,
+        sellerTrust: {
+          sellerExists: !!seller,
+          payoutReady: !!(seller?.stripeAccountId && String(seller.stripeAccountId).startsWith("acct_")),
+          hasBusinessName: !!seller?.businessName,
+        },
+      };
+    });
+
+    return res.status(200).json({ products: withTrust, total });
   } catch (error) {
     console.error("Error fetching products:", error);
     return res.status(500).json({ error: "Failed to fetch products" });

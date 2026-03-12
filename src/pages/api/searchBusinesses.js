@@ -1,5 +1,6 @@
 import { MongoClient } from "mongodb";
 import { computeListingCompleteness } from "@/lib/directory/completeness";
+import { getMongoDbName } from "@/lib/env";
 
 function escapeRegex(string) {
   return String(string || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -254,7 +255,7 @@ export default async function handler(req, res) {
 
   try {
     const client = await getClient(uri);
-    const database = client.db("bwes-cluster");
+    const database = client.db(getMongoDbName());
 
     const isOrgs = type === "organizations";
     const collection = database.collection(
@@ -333,13 +334,29 @@ export default async function handler(req, res) {
 
     const pipeline = [{ $match: query }];
 
-    if (sponsoredFirst) {
-      pipeline.push({
-        $addFields: {
-          __sponsor: { $toDouble: { $ifNull: ["$amountPaid", 0] } },
+    pipeline.push({
+      $addFields: {
+        __sponsor: sponsoredFirst
+          ? { $toDouble: { $ifNull: ["$amountPaid", 0] } }
+          : 0,
+        __verified: {
+          $cond: [
+            {
+              $or: [
+                { $eq: ["$verified", true] },
+                { $eq: ["$isVerified", true] },
+                { $eq: [{ $toLower: { $ifNull: ["$status", ""] } }, "verified"] },
+              ],
+            },
+            1,
+            0,
+          ],
         },
-      });
-    }
+        __quality: {
+          $ifNull: ["$completenessScore", buildCompletenessExpression()],
+        },
+      },
+    });
 
     if (sort === "completeness") {
       pipeline.push({
@@ -350,8 +367,10 @@ export default async function handler(req, res) {
 
       pipeline.push({
         $sort: {
-          ...(sponsoredFirst ? { __sponsor: -1 } : {}),
+          __sponsor: -1,
+          __verified: -1,
           __completeness: -1,
+          __quality: -1,
           createdAt: -1,
           _id: -1,
         },
@@ -365,8 +384,10 @@ export default async function handler(req, res) {
 
       pipeline.push({
         $sort: {
-          ...(sponsoredFirst ? { __sponsor: -1 } : {}),
+          __sponsor: -1,
+          __verified: -1,
           __relevance: -1,
+          __quality: -1,
           createdAt: -1,
           _id: -1,
         },
@@ -374,7 +395,9 @@ export default async function handler(req, res) {
     } else {
       pipeline.push({
         $sort: {
-          ...(sponsoredFirst ? { __sponsor: -1 } : {}),
+          __sponsor: -1,
+          __verified: -1,
+          __quality: -1,
           createdAt: -1,
           _id: -1,
         },

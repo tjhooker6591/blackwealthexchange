@@ -17,6 +17,11 @@ interface Product {
   price: number;
   category: string;
   imageUrl?: string;
+  sellerTrust?: {
+    sellerExists?: boolean;
+    payoutReady?: boolean;
+    hasBusinessName?: boolean;
+  };
 }
 
 type Props = {
@@ -287,6 +292,10 @@ export default function ProductDetailPage({ initialProduct }: Props) {
               <ul className="mt-2 space-y-1 list-disc ml-4">
                 <li>Payments are processed through secure checkout infrastructure.</li>
                 <li>Shipping and returns are managed by the independent seller.</li>
+                <li>
+                  Seller verification: {product.sellerTrust?.sellerExists ? "Seller profile found" : "Seller profile unavailable"}
+                  {product.sellerTrust?.payoutReady ? " • payout-ready" : ""}
+                </li>
                 <li>Need policy details? Visit the <Link href="/trust" className="text-[#D4AF37] underline">BWE Trust Center</Link>.</li>
               </ul>
             </div>
