@@ -1383,17 +1383,17 @@ export default function Home() {
                     faster, and connect with real opportunity.
                   </p>
 
-                  <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
+                  <div className="mt-4 flex flex-col gap-2.5 sm:flex-row sm:items-center sm:gap-3">
                     <Link
                       href="/black-student-opportunities"
-                      className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#D4AF37] px-4 py-2.5 text-sm font-extrabold text-black shadow transition hover:bg-yellow-500 sm:px-5"
+                      className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#D4AF37] px-4 py-2.5 text-sm font-extrabold text-black shadow transition hover:bg-yellow-500 sm:w-auto sm:px-5"
                     >
                       Enter Student Hub <ArrowRight className="h-4 w-4" />
                     </Link>
 
                     <Link
                       href="/signup?redirect=/black-student-opportunities"
-                      className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-extrabold text-white/80 transition hover:border-white/20 hover:bg-white/10 sm:px-5"
+                      className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-extrabold text-white/80 transition hover:border-white/20 hover:bg-white/10 sm:w-auto sm:px-5"
                     >
                       <UserPlus className="h-4 w-4 text-white/70" />
                       Create Free Student Profile
@@ -1402,7 +1402,7 @@ export default function Home() {
                     <button
                       type="button"
                       onClick={() => setStudentDrawerOpen((v) => !v)}
-                      className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm font-extrabold text-white/75 transition hover:bg-white/[0.06] sm:px-5"
+                      className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm font-extrabold text-white/75 transition hover:bg-white/[0.06] sm:w-auto sm:px-5"
                       aria-expanded={studentDrawerOpen}
                     >
                       Power Drawer
