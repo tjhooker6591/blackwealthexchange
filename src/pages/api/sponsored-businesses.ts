@@ -22,31 +22,39 @@ function s(v: unknown) {
   return typeof v === "string" ? v.trim() : "";
 }
 
-function normalizeBusinessUrl(raw: string, name?: string) {
+function normalizeBusinessUrl(raw: string) {
   const v = s(raw);
-  const fallback = `/business-directory?search=${encodeURIComponent(s(name) || "sponsor")}`;
-  if (!v || v === "/" || v === "#") return fallback;
+  if (!v || v === "/" || v === "#") return "";
 
   if (/^https?:\/\//i.test(v)) {
     try {
       const u = new URL(v);
-      if (!u.hostname) return fallback;
+      if (!u.hostname) return "";
       return v;
     } catch {
-      return fallback;
+      return "";
     }
   }
 
-  if (v.startsWith("/")) return v;
+  if (v.startsWith("/")) return "";
 
   try {
     const withProto = `https://${v}`;
     const u = new URL(withProto);
-    if (!u.hostname) return fallback;
+    if (!u.hostname) return "";
     return withProto;
   } catch {
-    return fallback;
+    return "";
   }
+}
+
+function featuredProfileUrl(name: string, tagline: string, img: string, target: string) {
+  const qs = new URLSearchParams();
+  if (name) qs.set("name", name);
+  if (tagline) qs.set("tagline", tagline);
+  if (img) qs.set("img", img);
+  if (target) qs.set("target", target);
+  return `/featured?${qs.toString()}`;
 }
 
 function safeSponsorImage(raw: string) {
@@ -102,20 +110,24 @@ export default async function handler(
       .toArray();
 
     if (scheduled.length) {
-      const cards: SponsorCard[] = scheduled.map((row: any, i: number) => ({
+      const cards: SponsorCard[] = scheduled.map((row: any, i: number) => {
+        const name = s(row.businessName) || "Featured Sponsor";
+        const tagline = s(row.tagline).slice(0, 90) || "Featured on Black Wealth Exchange";
+        const img = safeSponsorImage(s(row.creativeUrl));
+        const target = normalizeBusinessUrl(s(row.targetUrl || row.website));
+        return {
         _id: String(row.campaignId || row._id),
-        name: s(row.businessName) || "Featured Sponsor",
-        tagline:
-          s(row.tagline).slice(0, 90) || "Featured on Black Wealth Exchange",
-        img: safeSponsorImage(s(row.creativeUrl)),
-        url: normalizeBusinessUrl(s(row.targetUrl || row.website), s(row.businessName)),
+        name,
+        tagline,
+        img,
+        url: featuredProfileUrl(name, tagline, img, target),
         cta: "Learn More",
         tier: "featured-sponsor",
         featuredSlot: i + 1,
         source: "featured_sponsor_schedule",
         weekStart: row.weekStart ? new Date(row.weekStart).toISOString() : null,
         queueStatus: s(row.queueStatus) || null,
-      }));
+      }});
       return res.status(200).json({ ok: true, sponsors: cards });
     }
 
@@ -158,14 +170,19 @@ export default async function handler(
         const b = businessMap.get(businessId);
         if (!b) return null;
 
+        const name = s(b?.business_name) || "Featured Sponsor";
+        const tagline =
+          s(b?.description).slice(0, 90) ||
+          "Featured on Black Wealth Exchange";
+        const img = safeSponsorImage(s(b?.image));
+        const target = normalizeBusinessUrl(s(b?.website));
+
         return {
           _id: businessId,
-          name: s(b?.business_name) || "Featured Sponsor",
-          tagline:
-            s(b?.description).slice(0, 90) ||
-            "Featured on Black Wealth Exchange",
-          img: safeSponsorImage(s(b?.image)),
-          url: normalizeBusinessUrl(s(b?.website), s(b?.business_name)),
+          name,
+          tagline,
+          img,
+          url: featuredProfileUrl(name, tagline, img, target),
           cta: "Learn More",
           tier: s(listing?.tier),
           featuredSlot:
@@ -188,17 +205,22 @@ export default async function handler(
       .limit(20)
       .toArray();
 
-    const legacyCards: SponsorCard[] = legacy.map((b: any) => ({
+    const legacyCards: SponsorCard[] = legacy.map((b: any) => {
+      const name = s(b?.business_name) || "Sponsored Business";
+      const tagline = s(b?.description).slice(0, 90) || "Sponsored listing";
+      const img = safeSponsorImage(s(b?.image));
+      const target = normalizeBusinessUrl(s(b?.website));
+      return {
       _id: String(b._id),
-      name: s(b?.business_name) || "Sponsored Business",
-      tagline: s(b?.description).slice(0, 90) || "Sponsored listing",
-      img: safeSponsorImage(s(b?.image)),
-      url: normalizeBusinessUrl(s(b?.website), s(b?.business_name)),
+      name,
+      tagline,
+      img,
+      url: featuredProfileUrl(name, tagline, img, target),
       cta: "Learn More",
       tier: s(b?.tier),
       featuredSlot: null,
       source: "businesses",
-    }));
+    }});
 
     return res.status(200).json({ ok: true, sponsors: legacyCards });
   } catch (error) {
