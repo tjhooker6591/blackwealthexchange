@@ -1521,7 +1521,7 @@ export default function BusinessDirectory() {
                               </Link>
                               {getWebsite(item as Row) ? (
                                 <Link
-                                  href={`/leaving?to=${encodeURIComponent(getWebsite(item as Row))}`}
+                                  href={{ pathname: "/leaving", query: { to: getWebsite(item as Row) } }}
                                   className="rounded-lg border border-white/20 bg-black/30 px-3 py-1.5 text-[11px] font-bold text-white/80 hover:bg-black/45"
                                 >
                                   Website
@@ -1529,7 +1529,12 @@ export default function BusinessDirectory() {
                               ) : null}
                               {getLocation(item as Row) ? (
                                 <Link
-                                  href={`/leaving?to=${encodeURIComponent(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(getLocation(item as Row))}`)}`}
+                                  href={{
+                                    pathname: "/leaving",
+                                    query: {
+                                      to: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(getLocation(item as Row))}`,
+                                    },
+                                  }}
                                   className="rounded-lg border border-white/20 bg-black/30 px-3 py-1.5 text-[11px] font-bold text-white/80 hover:bg-black/45"
                                 >
                                   Directions

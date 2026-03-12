@@ -427,7 +427,7 @@ export default function BusinessDetail() {
                     <div className="text-white/55">Website</div>
                     {website ? (
                       <Link
-                        href={`/leaving?to=${encodeURIComponent(website)}`}
+                        href={{ pathname: "/leaving", query: { to: website } }}
                         className="break-all text-[#D4AF37] underline underline-offset-4 hover:text-yellow-300"
                       >
                         {website}
@@ -440,7 +440,7 @@ export default function BusinessDetail() {
                   <div className="pt-2 flex flex-wrap gap-2">
                     {website && (
                       <Link
-                        href={`/leaving?to=${encodeURIComponent(website)}`}
+                        href={{ pathname: "/leaving", query: { to: website } }}
                         onClick={() =>
                           trackFlowEvent({
                             eventType: "outbound_website_click",
@@ -463,7 +463,12 @@ export default function BusinessDetail() {
                     )}
                     {mapQuery ? (
                       <Link
-                        href={`/leaving?to=${encodeURIComponent(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`)}`}
+                        href={{
+                          pathname: "/leaving",
+                          query: {
+                            to: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`,
+                          },
+                        }}
                         onClick={() =>
                           trackFlowEvent({
                             eventType: "directions_click",

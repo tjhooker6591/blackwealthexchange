@@ -37,14 +37,24 @@ export default function LeavingPage() {
             <div className="rounded-lg border border-white/10 bg-black/30 p-3 text-xs break-all text-white/70">
               {to}
             </div>
-            <a
-              href={to}
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              type="button"
+              onClick={() => window.open(to, "_blank", "noopener,noreferrer")}
               className="inline-flex rounded-lg bg-[#D4AF37] px-4 py-2 text-sm font-bold text-black hover:bg-yellow-400"
             >
               Open external site
-            </a>
+            </button>
+            <button
+              type="button"
+              onClick={async () => {
+                try {
+                  await navigator.clipboard.writeText(to);
+                } catch {}
+              }}
+              className="ml-2 inline-flex rounded-lg border border-white/20 px-4 py-2 text-sm font-semibold text-white/85 hover:bg-white/10"
+            >
+              Copy link
+            </button>
           </div>
         ) : (
           <p className="mt-4 text-sm text-red-300">Invalid destination URL.</p>
