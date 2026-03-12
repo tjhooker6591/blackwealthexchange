@@ -494,13 +494,6 @@ export default function Home() {
   const router = useRouter();
   const { user } = useAuth();
 
-  const [recentProducts, setRecentProducts] = useState<
-    Array<{ _id: string; name: string; ts?: number }>
-  >([]);
-  const [recentBusinesses, setRecentBusinesses] = useState<
-    Array<{ alias: string; name: string; ts?: number }>
-  >([]);
-
   const placeholder =
     vertical !== "all"
       ? vertical === "shopping"
@@ -614,61 +607,6 @@ export default function Home() {
       cancelled = true;
     };
   }, []);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    try {
-      const rpRaw = window.localStorage.getItem("bwe:recent-products");
-      const rbRaw = window.localStorage.getItem("bwe:recent-businesses");
-      const rp = rpRaw ? JSON.parse(rpRaw) : [];
-      const rb = rbRaw ? JSON.parse(rbRaw) : [];
-      setRecentProducts(
-        Array.isArray(rp)
-          ? rp
-              .filter((x: any) => x?._id && x?.name)
-              .slice(0, 3)
-              .map((x: any) => ({
-                _id: String(x._id),
-                name: String(x.name),
-                ts: Number(x.ts || 0),
-              }))
-          : [],
-      );
-      setRecentBusinesses(
-        Array.isArray(rb)
-          ? rb
-              .filter((x: any) => x?.alias && x?.name)
-              .slice(0, 5)
-              .map((x: any) => ({
-                alias: String(x.alias),
-                name: String(x.name),
-                ts: Number(x.ts || 0),
-              }))
-          : [],
-      );
-    } catch {
-      setRecentProducts([]);
-      setRecentBusinesses([]);
-    }
-  }, [router.asPath]);
-
-  const resumeItems = useMemo(() => {
-    const productItems = recentProducts.map((p) => ({
-      key: `p:${p._id}`,
-      name: p.name,
-      href: `/marketplace/product/${p._id}`,
-      ts: Number(p.ts || 0),
-    }));
-    const businessItems = recentBusinesses.map((b) => ({
-      key: `b:${b.alias}`,
-      name: b.name,
-      href: `/business-directory/${encodeURIComponent(b.alias)}`,
-      ts: Number(b.ts || 0),
-    }));
-    return [...productItems, ...businessItems]
-      .sort((a, b) => b.ts - a.ts)
-      .slice(0, 2);
-  }, [recentProducts, recentBusinesses]);
 
   const sponsorRail = sponsors.length
     ? sponsors
@@ -867,22 +805,7 @@ export default function Home() {
               </Link>
             </div>
 
-            {resumeItems.length > 0 && (
-              <div className="mx-auto mt-3 w-full max-w-4xl rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-left">
-                <div className="flex flex-wrap items-center gap-2 text-xs text-white/75">
-                  <span className="font-bold text-white/65">Resume:</span>
-                  {resumeItems.map((item) => (
-                    <Link
-                      key={item.key}
-                      href={item.href}
-                      className="rounded-full border border-white/15 px-2.5 py-1 text-white/85 hover:bg-white/10"
-                    >
-                      {item.name}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )}
+
 
             <details className="mx-auto mt-3 w-full max-w-4xl rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-left">
               <summary className="cursor-pointer list-none text-xs font-semibold text-white/75">
