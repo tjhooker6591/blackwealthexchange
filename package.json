@@ -30,7 +30,10 @@
     "check:critical-paths": "node scripts/check-critical-paths.mjs",
     "check:buy-flows": "node scripts/check-buy-flows.mjs",
     "prepare": "if [ \"$VERCEL\" != \"1\" ]; then husky install; fi",
-    "vercel-build": "next build"
+    "vercel-build": "next build",
+    "preflight:local": "node scripts/preflight-local.mjs",
+    "smoke:local": "node scripts/smoke-local.mjs",
+    "check:release-readiness": "node scripts/check-release-readiness.mjs"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
@@ -88,5 +91,8 @@
   },
   "overrides": {
     "@isaacs/brace-expansion": "5.0.1"
+  },
+  "engines": {
+    "node": ">=22 <23"
   }
 }
