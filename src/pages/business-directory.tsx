@@ -685,6 +685,8 @@ export default function BusinessDirectory() {
 
   const applyCategory = (cat: string) => {
     setCategory(cat);
+    // Category chips should run cleanly without stale text search carrying over.
+    setInput("");
     setPage(1);
     setHasSearched(true);
     setTimeout(() => {
