@@ -179,8 +179,9 @@ export default function NavBar() {
           className="border-t border-[#D4AF37]/20 bg-black/95 px-3 pb-4 pt-3 md:hidden"
         >
           <div className="mx-auto max-w-md space-y-1 rounded-2xl border border-white/10 bg-white/[0.03] p-3 shadow-[0_0_0_1px_rgba(255,255,255,0.04)]">
-            <div className="px-1 pb-1 text-[10px] font-extrabold uppercase tracking-[0.14em] text-white/45">
-              Explore
+            <div className="flex items-center gap-1.5 px-1 pb-1 text-[10px] font-extrabold uppercase tracking-[0.14em] text-white/45">
+              <span aria-hidden="true">🔎</span>
+              <span>Explore</span>
             </div>
             <Link
               href="/start-here"
@@ -225,8 +226,9 @@ export default function NavBar() {
               Trust center
             </Link>
             <div className="my-2 h-px bg-white/10" />
-            <div className="px-1 pb-1 pt-0.5 text-[10px] font-extrabold uppercase tracking-[0.14em] text-white/45">
-              Build on BWE
+            <div className="flex items-center gap-1.5 px-1 pb-1 pt-0.5 text-[10px] font-extrabold uppercase tracking-[0.14em] text-white/45">
+              <span aria-hidden="true">🚀</span>
+              <span>Build on BWE</span>
             </div>
             <Link
               href="/business-directory/add-business"
@@ -244,8 +246,9 @@ export default function NavBar() {
             </Link>
 
             <div className="my-2 h-px bg-white/10" />
-            <div className="px-1 pb-1 pt-0.5 text-[10px] font-extrabold uppercase tracking-[0.14em] text-white/45">
-              Account
+            <div className="flex items-center gap-1.5 px-1 pb-1 pt-0.5 text-[10px] font-extrabold uppercase tracking-[0.14em] text-white/45">
+              <span aria-hidden="true">👤</span>
+              <span>Account</span>
             </div>
 
             {loading ? null : user ? (
