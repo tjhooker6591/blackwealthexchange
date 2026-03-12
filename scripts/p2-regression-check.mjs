@@ -71,7 +71,11 @@ async function ensureRuntimeHealthy() {
   fs.mkdirSync(".audit", { recursive: true });
   fs.writeFileSync(
     ".audit/p2-regression-report.json",
-    JSON.stringify({ ...out, summary: { total: 0, passed: 0, failed: 0 } }, null, 2),
+    JSON.stringify(
+      { ...out, summary: { total: 0, passed: 0, failed: 0 } },
+      null,
+      2,
+    ),
   );
   console.error(reason);
   process.exit(2);
@@ -148,17 +152,20 @@ for (const a of accounts) {
 }
 
 // Guest baseline
-for (const route of [
-  "/job-listings",
-  "/marketplace/add-products",
-  "/employer/jobs",
-  "/admin/dashboard",
-]) {
+const guestRouteExpectations = [
+  ["/job-listings", [200]],
+  ["/marketplace/add-products", [302, 307, 308]],
+  ["/employer/jobs", [302, 307, 308]],
+  ["/admin/dashboard", [302, 307, 308]],
+];
+
+for (const [route, expect] of guestRouteExpectations) {
   const r = await http(route);
   out.checks.push({
     name: `guest ${route}`,
     status: r.status,
-    pass: [302, 307, 308].includes(r.status),
+    pass: ok(r, expect),
+    expect,
   });
 }
 
