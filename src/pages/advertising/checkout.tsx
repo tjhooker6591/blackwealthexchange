@@ -100,13 +100,30 @@ function releaseCheckoutLock(attemptKey: string) {
   }
 }
 
+type ParsedCheckoutState =
+  | {
+      invalid: true;
+      error: string;
+      detailsHref?: string;
+    }
+  | {
+      invalid: false;
+      option: string;
+      label: string;
+      durationDays: number;
+      amountDollars: number;
+      businessId: string;
+      campaignId: string;
+      placement: string;
+    };
+
 export default function AdvertisingCheckoutPage() {
   const router = useRouter();
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const startedAttemptRef = useRef<string | null>(null);
 
-  const parsed = useMemo(() => {
+  const parsed = useMemo<ParsedCheckoutState | null>(() => {
     if (!router.isReady) return null;
 
     const rawOption =

@@ -71,7 +71,7 @@ export default async function handler(
     }
 
     const sortKey = String(sort) as SortKey;
-    const sortBy =
+    const sortBy: Record<string, 1 | -1> =
       sortKey === "newest"
         ? { createdAt: -1, _id: -1 }
         : sortKey === "price_asc"
@@ -89,24 +89,28 @@ export default async function handler(
       .toArray();
 
     const sellerIds = Array.from(
-      new Set(products.map((p: any) => String(p.sellerId || "")).filter(Boolean)),
+      new Set(
+        products.map((p: any) => String(p.sellerId || "")).filter(Boolean),
+      ),
     );
+
+    const sellerObjectIds = sellerIds
+      .map((id) => asObjectId(id))
+      .filter((id): id is ObjectId => !!id);
 
     const sellerDocs = await db
       .collection("sellers")
       .find(
         {
           _id: {
-            $in: sellerIds.map((id) => asObjectId(id)).filter(Boolean),
+            $in: sellerObjectIds,
           },
         },
         { projection: { _id: 1, stripeAccountId: 1, businessName: 1 } },
       )
       .toArray();
 
-    const sellerById = new Map(
-      sellerDocs.map((s: any) => [String(s._id), s]),
-    );
+    const sellerById = new Map(sellerDocs.map((s: any) => [String(s._id), s]));
 
     const withTrust = products.map((p: any) => {
       const seller = sellerById.get(String(p.sellerId || ""));
@@ -114,7 +118,10 @@ export default async function handler(
         ...p,
         sellerTrust: {
           sellerExists: !!seller,
-          payoutReady: !!(seller?.stripeAccountId && String(seller.stripeAccountId).startsWith("acct_")),
+          payoutReady: !!(
+            seller?.stripeAccountId &&
+            String(seller.stripeAccountId).startsWith("acct_")
+          ),
           hasBusinessName: !!seller?.businessName,
         },
       };

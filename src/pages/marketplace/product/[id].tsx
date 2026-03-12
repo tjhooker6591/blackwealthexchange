@@ -29,7 +29,9 @@ type Props = {
 };
 
 export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
-  const rawId = Array.isArray(ctx.params?.id) ? ctx.params?.id[0] : ctx.params?.id;
+  const rawId = Array.isArray(ctx.params?.id)
+    ? ctx.params?.id[0]
+    : ctx.params?.id;
   const id = typeof rawId === "string" ? rawId : "";
 
   if (!id) return { props: { initialProduct: null } };
@@ -37,9 +39,11 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
   try {
     const client = await clientPromise;
     const db = client.db(getMongoDbName());
-    const products = db.collection("products");
+    const products = db.collection<any>("products");
 
-    const query = ObjectId.isValid(id) ? { _id: new ObjectId(id) } : { _id: id };
+    const query: any = ObjectId.isValid(id)
+      ? { _id: new ObjectId(id) }
+      : { _id: id };
     const doc: any = await products.findOne(query);
 
     if (!doc) return { props: { initialProduct: null } };
@@ -105,7 +109,9 @@ export default function ProductDetailPage({ initialProduct }: Props) {
           category: product.category || "Other",
           ts: Date.now(),
         },
-        ...(Array.isArray(prev) ? prev : []).filter((x: any) => x?._id !== product._id),
+        ...(Array.isArray(prev) ? prev : []).filter(
+          (x: any) => x?._id !== product._id,
+        ),
       ].slice(0, 8);
       window.localStorage.setItem("bwe:recent-products", JSON.stringify(next));
     } catch {}
@@ -124,7 +130,8 @@ export default function ProductDetailPage({ initialProduct }: Props) {
         const all = await res.json();
         const related = ((all?.products || []) as Product[])
           .filter(
-            (p: Product) => p.category === product.category && p._id !== product._id,
+            (p: Product) =>
+              p.category === product.category && p._id !== product._id,
           )
           .slice(0, 4);
 
@@ -137,7 +144,9 @@ export default function ProductDetailPage({ initialProduct }: Props) {
     fetchRelated();
   }, [product]);
 
-  const canonical = canonicalUrl(`/marketplace/product/${encodeURIComponent(String(id || initialProduct?._id || ""))}`);
+  const canonical = canonicalUrl(
+    `/marketplace/product/${encodeURIComponent(String(id || initialProduct?._id || ""))}`,
+  );
   const title = product
     ? `${product.name} | Black-Owned Product Marketplace | Black Wealth Exchange`
     : "Product | Black Wealth Exchange Marketplace";
@@ -177,14 +186,24 @@ export default function ProductDetailPage({ initialProduct }: Props) {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: canonicalUrl("/") },
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: canonicalUrl("/"),
+      },
       {
         "@type": "ListItem",
         position: 2,
         name: "Marketplace",
         item: canonicalUrl("/marketplace"),
       },
-      { "@type": "ListItem", position: 3, name: product?.name || "Product", item: canonical },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: product?.name || "Product",
+        item: canonical,
+      },
     ],
   };
 
@@ -255,7 +274,9 @@ export default function ProductDetailPage({ initialProduct }: Props) {
           </div>
 
           <div>
-            <h1 className="text-3xl font-bold text-gold mb-2">{product.name}</h1>
+            <h1 className="text-3xl font-bold text-gold mb-2">
+              {product.name}
+            </h1>
 
             <p className="text-sm text-gray-400 mb-2">
               Category: {product.category || "Other"}
@@ -270,7 +291,11 @@ export default function ProductDetailPage({ initialProduct }: Props) {
             </p>
 
             <div className="space-y-3">
-              <BuyNowButton itemId={product._id} amount={product.price} type="product" />
+              <BuyNowButton
+                itemId={product._id}
+                amount={product.price}
+                type="product"
+              />
 
               <button
                 onClick={() => setShowModal(true)}
@@ -282,21 +307,37 @@ export default function ProductDetailPage({ initialProduct }: Props) {
 
             <div className="mt-6 rounded-lg border border-white/10 bg-white/5 p-4 text-sm text-gray-300">
               <p>
-                You do not need an account to purchase. If checkout is temporarily unavailable for this
-                product, please try again shortly or use Contact Seller for more information.
+                You do not need an account to purchase. If checkout is
+                temporarily unavailable for this product, please try again
+                shortly or use Contact Seller for more information.
               </p>
             </div>
 
             <div className="mt-3 rounded-lg border border-white/10 bg-white/5 p-4 text-xs text-white/75">
-              <div className="font-semibold text-white">Trust & fulfillment</div>
+              <div className="font-semibold text-white">
+                Trust & fulfillment
+              </div>
               <ul className="mt-2 space-y-1 list-disc ml-4">
-                <li>Payments are processed through secure checkout infrastructure.</li>
-                <li>Shipping and returns are managed by the independent seller.</li>
                 <li>
-                  Seller verification: {product.sellerTrust?.sellerExists ? "Seller profile found" : "Seller profile unavailable"}
+                  Payments are processed through secure checkout infrastructure.
+                </li>
+                <li>
+                  Shipping and returns are managed by the independent seller.
+                </li>
+                <li>
+                  Seller verification:{" "}
+                  {product.sellerTrust?.sellerExists
+                    ? "Seller profile found"
+                    : "Seller profile unavailable"}
                   {product.sellerTrust?.payoutReady ? " • payout-ready" : ""}
                 </li>
-                <li>Need policy details? Visit the <Link href="/trust" className="text-[#D4AF37] underline">BWE Trust Center</Link>.</li>
+                <li>
+                  Need policy details? Visit the{" "}
+                  <Link href="/trust" className="text-[#D4AF37] underline">
+                    BWE Trust Center
+                  </Link>
+                  .
+                </li>
               </ul>
             </div>
           </div>
@@ -313,7 +354,9 @@ export default function ProductDetailPage({ initialProduct }: Props) {
 
       {relatedProducts.length > 0 && (
         <div className="max-w-6xl mx-auto mt-16">
-          <h2 className="text-2xl font-bold text-gold mb-6 text-center">You May Also Like</h2>
+          <h2 className="text-2xl font-bold text-gold mb-6 text-center">
+            You May Also Like
+          </h2>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
             {relatedProducts.map((item) => (
@@ -336,8 +379,12 @@ export default function ProductDetailPage({ initialProduct }: Props) {
                   <h3 className="text-sm md:text-lg font-bold text-white mb-1 line-clamp-2">
                     {item.name}
                   </h3>
-                  <p className="text-xs md:text-sm text-gray-400 mb-1 truncate">{item.category}</p>
-                  <p className="text-sm md:text-md font-semibold text-gold">${item.price.toFixed(2)}</p>
+                  <p className="text-xs md:text-sm text-gray-400 mb-1 truncate">
+                    {item.category}
+                  </p>
+                  <p className="text-sm md:text-md font-semibold text-gold">
+                    ${item.price.toFixed(2)}
+                  </p>
                 </div>
               </Link>
             ))}
@@ -348,11 +395,13 @@ export default function ProductDetailPage({ initialProduct }: Props) {
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/80 z-50 px-4">
           <div className="bg-gray-900 border border-gold text-white rounded-xl p-6 max-w-md w-full shadow-lg">
-            <h2 className="text-xl font-bold text-gold mb-4 text-center">Contact the Seller</h2>
+            <h2 className="text-xl font-bold text-gold mb-4 text-center">
+              Contact the Seller
+            </h2>
 
             <p className="text-gray-300 mb-4 text-sm text-center">
-              This is a placeholder message. In the future, this can show the seller’s contact email,
-              messaging link, or seller profile.
+              This is a placeholder message. In the future, this can show the
+              seller’s contact email, messaging link, or seller profile.
             </p>
 
             <button

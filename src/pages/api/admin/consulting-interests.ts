@@ -70,30 +70,29 @@ export default async function handler(
       if (!_id) return res.status(400).json({ error: "Invalid id" });
 
       const actor = admin.email || admin.userId || "admin";
-      const result = await db.collection(collection).updateOne(
-        { _id },
-        {
-          $set: {
+      const leads = db.collection<any>(collection);
+      const update: any = {
+        $set: {
+          status: nextStatus,
+          lifecycleStage: nextStage,
+          nextAction: typeof nextAction === "string" ? nextAction.trim() : "",
+          owner: typeof owner === "string" ? owner.trim() : "",
+          followUpAt: followUpAt ? new Date(followUpAt) : null,
+          updatedAt: new Date(),
+          reviewedBy: actor,
+        },
+        $push: {
+          lifecycleLog: {
+            at: new Date(),
+            by: actor,
             status: nextStatus,
-            lifecycleStage: nextStage,
+            stage: nextStage,
             nextAction: typeof nextAction === "string" ? nextAction.trim() : "",
-            owner: typeof owner === "string" ? owner.trim() : "",
-            followUpAt: followUpAt ? new Date(followUpAt) : null,
-            updatedAt: new Date(),
-            reviewedBy: actor,
-          },
-          $push: {
-            lifecycleLog: {
-              at: new Date(),
-              by: actor,
-              status: nextStatus,
-              stage: nextStage,
-              nextAction:
-                typeof nextAction === "string" ? nextAction.trim() : "",
-            },
           },
         },
-      );
+      };
+
+      const result = await leads.updateOne({ _id }, update);
 
       if (!result.matchedCount) {
         return res.status(404).json({ error: "Lead not found" });
@@ -177,7 +176,9 @@ export default async function handler(
         nextAction: x.nextAction || "",
         owner: x.owner || "",
         followUpAt: x.followUpAt ? new Date(x.followUpAt).toISOString() : null,
-        lifecycleLogCount: Array.isArray(x.lifecycleLog) ? x.lifecycleLog.length : 0,
+        lifecycleLogCount: Array.isArray(x.lifecycleLog)
+          ? x.lifecycleLog.length
+          : 0,
         lastLifecycleEvent:
           Array.isArray(x.lifecycleLog) && x.lifecycleLog.length
             ? x.lifecycleLog[x.lifecycleLog.length - 1]
@@ -201,7 +202,9 @@ export default async function handler(
         nextAction: x.nextAction || "",
         owner: x.owner || "",
         followUpAt: x.followUpAt ? new Date(x.followUpAt).toISOString() : null,
-        lifecycleLogCount: Array.isArray(x.lifecycleLog) ? x.lifecycleLog.length : 0,
+        lifecycleLogCount: Array.isArray(x.lifecycleLog)
+          ? x.lifecycleLog.length
+          : 0,
         lastLifecycleEvent:
           Array.isArray(x.lifecycleLog) && x.lifecycleLog.length
             ? x.lifecycleLog[x.lifecycleLog.length - 1]
