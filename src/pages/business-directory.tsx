@@ -58,24 +58,6 @@ function trackFlowEvent(payload: Record<string, unknown>) {
   }).catch(() => {});
 }
 
-type RecentBiz = {
-  alias: string;
-  name: string;
-  ts: number;
-};
-
-function getRecentBiz(): RecentBiz[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const raw = window.localStorage.getItem("bwe:recent-businesses");
-    if (!raw) return [];
-    const arr = JSON.parse(raw);
-    return Array.isArray(arr) ? arr.filter(Boolean).slice(0, 6) : [];
-  } catch {
-    return [];
-  }
-}
-
 function toInt(v: any, def: number) {
   const n = parseInt(safeStr(v), 10);
   return Number.isFinite(n) ? n : def;
@@ -353,8 +335,6 @@ export default function BusinessDirectory() {
   const [includeIncomplete, setIncludeIncomplete] = useState(false);
 
   const [rows, setRows] = useState<Row[]>([]);
-  const [recentBiz, setRecentBiz] = useState<RecentBiz[]>([]);
-  const [recent, setRecent] = useState<RecentBusiness[]>([]);
   const [total, setTotal] = useState(0);
   const [sponsorAds, setSponsorAds] = useState(DEFAULT_SPONSOR_ADS);
   const [serverPaged, setServerPaged] = useState(false);
@@ -365,14 +345,6 @@ export default function BusinessDirectory() {
 
   const [page, setPage] = useState(1);
   const pageSize = 20;
-
-  useEffect(() => {
-    setRecent(getRecentBiz());
-  }, [router.asPath]);
-
-  useEffect(() => {
-    setRecentBiz(getRecentBiz());
-  }, [router.asPath]);
 
   const hasActiveFilters =
     (scope === "businesses" && category !== "All") ||
