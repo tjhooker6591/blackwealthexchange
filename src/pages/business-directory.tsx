@@ -1526,24 +1526,20 @@ export default function BusinessDirectory() {
                                 View details
                               </Link>
                               {getWebsite(item as Row) ? (
-                                <a
-                                  href={getWebsite(item as Row)}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
+                                <Link
+                                  href={`/leaving?to=${encodeURIComponent(getWebsite(item as Row))}`}
                                   className="rounded-lg border border-white/20 bg-black/30 px-3 py-1.5 text-[11px] font-bold text-white/80 hover:bg-black/45"
                                 >
                                   Website
-                                </a>
+                                </Link>
                               ) : null}
                               {getLocation(item as Row) ? (
-                                <a
-                                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(getLocation(item as Row))}`}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
+                                <Link
+                                  href={`/leaving?to=${encodeURIComponent(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(getLocation(item as Row))}`)}`}
                                   className="rounded-lg border border-white/20 bg-black/30 px-3 py-1.5 text-[11px] font-bold text-white/80 hover:bg-black/45"
                                 >
                                   Directions
-                                </a>
+                                </Link>
                               ) : null}
                             </div>
                           </div>

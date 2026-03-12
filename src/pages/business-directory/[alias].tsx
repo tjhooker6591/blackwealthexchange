@@ -426,14 +426,12 @@ export default function BusinessDetail() {
                   <div className="text-sm">
                     <div className="text-white/55">Website</div>
                     {website ? (
-                      <a
-                        href={website}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <Link
+                        href={`/leaving?to=${encodeURIComponent(website)}`}
                         className="break-all text-[#D4AF37] underline underline-offset-4 hover:text-yellow-300"
                       >
                         {website}
-                      </a>
+                      </Link>
                     ) : (
                       <div className="text-white/80">—</div>
                     )}
@@ -441,10 +439,8 @@ export default function BusinessDetail() {
 
                   <div className="pt-2 flex flex-wrap gap-2">
                     {website && (
-                      <a
-                        href={website}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <Link
+                        href={`/leaving?to=${encodeURIComponent(website)}`}
                         onClick={() =>
                           trackFlowEvent({
                             eventType: "outbound_website_click",
@@ -455,7 +451,7 @@ export default function BusinessDetail() {
                         className="inline-flex items-center justify-center rounded-xl bg-[#D4AF37] px-4 py-2 text-sm font-extrabold text-black transition hover:bg-yellow-500"
                       >
                         Visit website
-                      </a>
+                      </Link>
                     )}
                     {safeStr(business.phone) && (
                       <a
@@ -466,10 +462,8 @@ export default function BusinessDetail() {
                       </a>
                     )}
                     {mapQuery ? (
-                      <a
-                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <Link
+                        href={`/leaving?to=${encodeURIComponent(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(mapQuery)}`)}`}
                         onClick={() =>
                           trackFlowEvent({
                             eventType: "directions_click",
@@ -480,7 +474,7 @@ export default function BusinessDetail() {
                         className="inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2 text-sm font-bold text-white/80 transition hover:bg-white/[0.08]"
                       >
                         Directions
-                      </a>
+                      </Link>
                     ) : null}
                   </div>
 
