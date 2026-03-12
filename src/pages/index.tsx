@@ -698,20 +698,21 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
       />
       <div className="absolute inset-0 bg-neutral-950" />
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.12]"
-        style={{
-          backgroundImage: "url('/images/hero1.jpg')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      />
-      <div className="absolute inset-0 bg-gradient-to-b from-neutral-950/95 via-neutral-950/78 to-black/92" />
+      <div className="absolute inset-0 bg-gradient-to-b from-neutral-950 via-neutral-950/70 to-black/90" />
       <div className="pointer-events-none absolute -top-40 left-1/2 h-[900px] w-[900px] -translate-x-1/2 rounded-full bg-[#D4AF37]/[0.06] blur-3xl" />
       <div className="pointer-events-none absolute -bottom-56 right-[-10rem] h-[560px] w-[560px] rounded-full bg-emerald-500/[0.05] blur-3xl" />
 
-      <header className="relative z-10 pb-5 pt-8 sm:pb-7 sm:pt-11">
-        <div className="container mx-auto max-w-6xl px-4">
+      <header className="relative isolate overflow-hidden z-10 pb-5 pt-8 sm:pb-7 sm:pt-11">
+        <div
+          className="pointer-events-none absolute inset-0 -z-10 opacity-[0.15]"
+          style={{
+            backgroundImage: "url('/images/hero1.jpg')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        />
+        <div className="pointer-events-none absolute inset-0 -z-10 bg-black/82" />
+        <div className="container relative z-10 mx-auto max-w-6xl px-4">
           <div className="text-center">
             <div className="mx-auto inline-flex items-center justify-center gap-2 rounded-full border border-[#D4AF37]/20 bg-[#D4AF37]/8 px-3 py-1.5 text-[11px] text-[#EFD27A] sm:px-3.5 sm:text-xs">
               <Image
