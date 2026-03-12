@@ -52,22 +52,40 @@ export default function NavBar() {
 
         {/* Desktop Nav */}
         <div className="hidden items-center space-x-5 md:flex">
-          <Link href="/start-here" className="font-semibold text-[#D4AF37] transition-colors hover:text-yellow-300">
+          <Link
+            href="/start-here"
+            className="font-semibold text-[#D4AF37] transition-colors hover:text-yellow-300"
+          >
             Start Here
           </Link>
-          <Link href="/business-directory" className="font-semibold transition-colors hover:text-[#D4AF37]">
+          <Link
+            href="/business-directory"
+            className="font-semibold transition-colors hover:text-[#D4AF37]"
+          >
             Directory
           </Link>
-          <Link href="/marketplace" className="font-semibold transition-colors hover:text-[#D4AF37]">
+          <Link
+            href="/marketplace"
+            className="font-semibold transition-colors hover:text-[#D4AF37]"
+          >
             Marketplace
           </Link>
-          <Link href="/job-listings" className="font-semibold transition-colors hover:text-[#D4AF37]">
+          <Link
+            href="/job-listings"
+            className="font-semibold transition-colors hover:text-[#D4AF37]"
+          >
             Jobs
           </Link>
-          <Link href="/resources" className="font-semibold transition-colors hover:text-[#D4AF37]">
+          <Link
+            href="/resources"
+            className="font-semibold transition-colors hover:text-[#D4AF37]"
+          >
             Resources
           </Link>
-          <Link href="/trust" className="font-semibold transition-colors hover:text-[#D4AF37]">
+          <Link
+            href="/trust"
+            className="font-semibold transition-colors hover:text-[#D4AF37]"
+          >
             Trust
           </Link>
 
@@ -120,31 +138,33 @@ export default function NavBar() {
           aria-expanded={mobileMenuOpen}
           aria-controls="mobile-nav-menu"
           aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
-          className="inline-flex h-10 items-center justify-center gap-2 rounded-full border border-[#D4AF37]/50 bg-black px-4 text-sm font-extrabold text-[#D4AF37] shadow-[0_0_0_1px_rgba(212,175,55,0.06)] transition hover:bg-[#D4AF37]/10 md:hidden"
+          className="inline-flex h-9 items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/[0.04] px-3 text-[13px] font-bold text-white/90 shadow-[0_4px_16px_rgba(0,0,0,0.25)] backdrop-blur-sm transition hover:border-[#D4AF37]/45 hover:text-[#D4AF37] md:hidden"
         >
-          <svg
-            className="h-4 w-4 shrink-0"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
-            {mobileMenuOpen ? (
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6 6l12 12M18 6L6 18"
-              />
-            ) : (
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M4 7h16M4 12h16M4 17h16"
-              />
-            )}
-          </svg>
-          <span>Menu</span>
+          <span className="inline-flex h-5 w-5 items-center justify-center rounded-md bg-white/10">
+            <svg
+              className="h-3.5 w-3.5 shrink-0"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              {mobileMenuOpen ? (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M6 6l12 12M18 6L6 18"
+                />
+              ) : (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M4 7h16M4 12h16M4 17h16"
+                />
+              )}
+            </svg>
+          </span>
+          <span className="leading-none">Menu</span>
         </button>
       </div>
 
@@ -155,29 +175,61 @@ export default function NavBar() {
           className="border-t border-[#D4AF37]/20 bg-black/95 px-4 pb-4 pt-3 md:hidden"
         >
           <div className="space-y-1 rounded-2xl border border-white/10 bg-white/[0.03] p-3 shadow-[0_0_0_1px_rgba(255,255,255,0.04)]">
-            <Link href="/start-here" className="block rounded-xl border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-3 py-2.5 font-semibold text-[#D4AF37]" onClick={() => handleMobileNav()}>
+            <Link
+              href="/start-here"
+              className="block rounded-xl border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-3 py-2.5 font-semibold text-[#D4AF37]"
+              onClick={() => handleMobileNav()}
+            >
               Start here
             </Link>
-            <Link href="/business-directory" className="block rounded-xl px-3 py-2.5 font-medium text-white/85 transition-colors hover:bg-white/[0.04] hover:text-[#D4AF37]" onClick={() => handleMobileNav()}>
+            <Link
+              href="/business-directory"
+              className="block rounded-xl px-3 py-2.5 font-medium text-white/85 transition-colors hover:bg-white/[0.04] hover:text-[#D4AF37]"
+              onClick={() => handleMobileNav()}
+            >
               Find Black-owned businesses
             </Link>
-            <Link href="/marketplace" className="block rounded-xl px-3 py-2.5 font-medium text-white/85 transition-colors hover:bg-white/[0.04] hover:text-[#D4AF37]" onClick={() => handleMobileNav()}>
+            <Link
+              href="/marketplace"
+              className="block rounded-xl px-3 py-2.5 font-medium text-white/85 transition-colors hover:bg-white/[0.04] hover:text-[#D4AF37]"
+              onClick={() => handleMobileNav()}
+            >
               Shop Black-owned products
             </Link>
-            <Link href="/job-listings" className="block rounded-xl px-3 py-2.5 font-medium text-white/85 transition-colors hover:bg-white/[0.04] hover:text-[#D4AF37]" onClick={() => handleMobileNav()}>
+            <Link
+              href="/job-listings"
+              className="block rounded-xl px-3 py-2.5 font-medium text-white/85 transition-colors hover:bg-white/[0.04] hover:text-[#D4AF37]"
+              onClick={() => handleMobileNav()}
+            >
               Browse jobs
             </Link>
-            <Link href="/resources" className="block rounded-xl px-3 py-2.5 font-medium text-white/85 transition-colors hover:bg-white/[0.04] hover:text-[#D4AF37]" onClick={() => handleMobileNav()}>
+            <Link
+              href="/resources"
+              className="block rounded-xl px-3 py-2.5 font-medium text-white/85 transition-colors hover:bg-white/[0.04] hover:text-[#D4AF37]"
+              onClick={() => handleMobileNav()}
+            >
               Financial resources
             </Link>
-            <Link href="/trust" className="block rounded-xl px-3 py-2.5 font-medium text-white/85 transition-colors hover:bg-white/[0.04] hover:text-[#D4AF37]" onClick={() => handleMobileNav()}>
+            <Link
+              href="/trust"
+              className="block rounded-xl px-3 py-2.5 font-medium text-white/85 transition-colors hover:bg-white/[0.04] hover:text-[#D4AF37]"
+              onClick={() => handleMobileNav()}
+            >
               Trust center
             </Link>
             <div className="my-2 h-px bg-white/10" />
-            <Link href="/business-directory/add-business" className="block rounded-xl border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-3 py-2.5 font-semibold text-[#D4AF37]" onClick={() => handleMobileNav()}>
+            <Link
+              href="/business-directory/add-business"
+              className="block rounded-xl border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-3 py-2.5 font-semibold text-[#D4AF37]"
+              onClick={() => handleMobileNav()}
+            >
               Get your business listed
             </Link>
-            <Link href="/marketplace/become-a-seller" className="block rounded-xl border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-3 py-2.5 font-semibold text-[#D4AF37]" onClick={() => handleMobileNav()}>
+            <Link
+              href="/marketplace/become-a-seller"
+              className="block rounded-xl border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-3 py-2.5 font-semibold text-[#D4AF37]"
+              onClick={() => handleMobileNav()}
+            >
               Start selling on BWE
             </Link>
 
