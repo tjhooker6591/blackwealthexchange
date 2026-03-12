@@ -86,6 +86,27 @@ export default function ProductDetailPage({ initialProduct }: Props) {
   }, [id, initialProduct]);
 
   useEffect(() => {
+    if (!product) return;
+    if (typeof window === "undefined") return;
+    try {
+      const raw = window.localStorage.getItem("bwe:recent-products");
+      const prev = raw ? JSON.parse(raw) : [];
+      const next = [
+        {
+          _id: product._id,
+          name: product.name,
+          price: product.price,
+          imageUrl: product.imageUrl || "",
+          category: product.category || "Other",
+          ts: Date.now(),
+        },
+        ...(Array.isArray(prev) ? prev : []).filter((x: any) => x?._id !== product._id),
+      ].slice(0, 8);
+      window.localStorage.setItem("bwe:recent-products", JSON.stringify(next));
+    } catch {}
+  }, [product]);
+
+  useEffect(() => {
     const fetchRelated = async () => {
       if (!product) return;
 

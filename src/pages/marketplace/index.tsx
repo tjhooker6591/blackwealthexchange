@@ -92,6 +92,7 @@ export default function Marketplace() {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [legalOpen, setLegalOpen] = useState(false);
+  const [recentProducts, setRecentProducts] = useState<Product[]>([]);
 
   const topRef = useRef<HTMLDivElement | null>(null);
 
@@ -134,6 +135,17 @@ export default function Marketplace() {
       shallow: true,
     });
   }, [router.isReady, currentPage, selectedCategory, debouncedQ, sort]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const raw = window.localStorage.getItem("bwe:recent-products");
+      const arr = raw ? JSON.parse(raw) : [];
+      setRecentProducts(Array.isArray(arr) ? arr.slice(0, 6) : []);
+    } catch {
+      setRecentProducts([]);
+    }
+  }, [router.asPath]);
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -430,6 +442,19 @@ export default function Marketplace() {
           </div>
         ) : (
           <>
+            {recentProducts.length > 0 ? (
+              <div className="mb-4 rounded-2xl border border-white/10 bg-white/5 p-3">
+                <div className="mb-2 text-xs font-extrabold tracking-wide text-white/70">Continue shopping</div>
+                <div className="flex flex-wrap gap-2">
+                  {recentProducts.map((p: any) => (
+                    <Link key={p._id} href={`/marketplace/product/${p._id}`} className="rounded-full border border-white/20 px-3 py-1 text-xs text-white/85 hover:bg-white/10">
+                      {p.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4 xl:grid-cols-5 lg:gap-6">
               {products.map((product) => (
                 <div
