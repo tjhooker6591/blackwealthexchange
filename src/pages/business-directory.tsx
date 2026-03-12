@@ -683,6 +683,15 @@ export default function BusinessDirectory() {
     }, 0);
   };
 
+  const applyCategory = (cat: string) => {
+    setCategory(cat);
+    setPage(1);
+    setHasSearched(true);
+    setTimeout(() => {
+      resultsTopRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 0);
+  };
+
   const handleImageError = (
     e: React.SyntheticEvent<HTMLImageElement, Event>,
   ) => {
@@ -941,7 +950,8 @@ export default function BusinessDirectory() {
                 ].map((cat) => (
                   <button
                     key={cat}
-                    onClick={() => setCategory(cat)}
+                    onClick={() => applyCategory(cat)}
+                    aria-pressed={category === cat}
                     className={cx(
                       "rounded-xl border px-3 py-2 text-[12px] font-extrabold tracking-wide transition",
                       category === cat
