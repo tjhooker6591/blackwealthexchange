@@ -1,5 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import useAuth from "@/hooks/useAuth";
 import { canonicalUrl, truncateMeta } from "@/lib/seo";
 
 const ROLES = [
@@ -36,11 +38,55 @@ const ROLES = [
 ];
 
 export default function StartHerePage() {
+  const { user } = useAuth();
+  const [recentProducts, setRecentProducts] = useState<Array<{ _id: string; name: string }>>([]);
+  const [recentBusinesses, setRecentBusinesses] = useState<Array<{ alias: string; name: string }>>([]);
+
   const title = "Start Here | Black Wealth Exchange";
   const description = truncateMeta(
     "Choose your path on Black Wealth Exchange: shop, get listed, sell products, post jobs, or find career opportunities.",
   );
   const canonical = canonicalUrl("/start-here");
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const rpRaw = window.localStorage.getItem("bwe:recent-products");
+      const rbRaw = window.localStorage.getItem("bwe:recent-businesses");
+      const rp = rpRaw ? JSON.parse(rpRaw) : [];
+      const rb = rbRaw ? JSON.parse(rbRaw) : [];
+      setRecentProducts(
+        Array.isArray(rp)
+          ? rp
+              .filter((x: any) => x?._id && x?.name)
+              .slice(0, 3)
+              .map((x: any) => ({ _id: String(x._id), name: String(x.name) }))
+          : [],
+      );
+      setRecentBusinesses(
+        Array.isArray(rb)
+          ? rb
+              .filter((x: any) => x?.alias && x?.name)
+              .slice(0, 3)
+              .map((x: any) => ({ alias: String(x.alias), name: String(x.name) }))
+          : [],
+      );
+    } catch {
+      setRecentProducts([]);
+      setRecentBusinesses([]);
+    }
+  }, []);
+
+  const roleResume =
+    user?.accountType === "seller"
+      ? { href: "/marketplace/dashboard", label: "Continue seller dashboard" }
+      : user?.accountType === "business"
+        ? { href: "/business-directory/add-business", label: "Continue business listing setup" }
+        : user?.accountType === "employer"
+          ? { href: "/employer/jobs", label: "Continue employer hiring flow" }
+          : user?.accountType === "admin"
+            ? { href: "/admin/dashboard", label: "Continue admin dashboard" }
+            : { href: "/job-listings", label: "Continue exploring opportunities" };
 
   return (
     <main className="min-h-screen bg-black px-4 py-8 text-white">
@@ -57,7 +103,33 @@ export default function StartHerePage() {
             Choose the path that matches your goal. Each flow is designed to get
             you to value quickly with clear next steps.
           </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <Link href={roleResume.href} className="rounded-lg bg-[#D4AF37] px-3 py-2 text-xs font-extrabold text-black hover:bg-yellow-400">
+              {roleResume.label}
+            </Link>
+            <Link href="/trust" className="rounded-lg border border-white/20 px-3 py-2 text-xs font-semibold text-white hover:bg-white/10">
+              Review trust standards
+            </Link>
+          </div>
         </header>
+
+        {(recentProducts.length > 0 || recentBusinesses.length > 0) && (
+          <section className="rounded-2xl border border-white/10 bg-white/5 p-5">
+            <div className="text-xs font-extrabold uppercase tracking-wide text-white/60">Continue where you left off</div>
+            <div className="mt-2 flex flex-wrap gap-2 text-xs">
+              {recentProducts.map((p) => (
+                <Link key={p._id} href={`/marketplace/product/${p._id}`} className="rounded-full border border-white/20 px-3 py-1 hover:bg-white/10">
+                  {p.name}
+                </Link>
+              ))}
+              {recentBusinesses.map((b) => (
+                <Link key={b.alias} href={`/business-directory/${encodeURIComponent(b.alias)}`} className="rounded-full border border-white/20 px-3 py-1 hover:bg-white/10">
+                  {b.name}
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
 
         <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {ROLES.map((role) => (
