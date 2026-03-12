@@ -277,11 +277,16 @@ export default function Marketplace() {
             Discover and support Black-owned businesses with a cleaner, faster
             shopping experience.
           </p>
-          <div className="mx-auto mt-3 flex max-w-3xl flex-wrap justify-center gap-2 text-xs">
-            <Link href="/shop-black-owned-products" className="rounded-full border border-white/20 px-3 py-1 hover:bg-white/10">Shop Black-owned products</Link>
-            <Link href="/black-owned-businesses" className="rounded-full border border-white/20 px-3 py-1 hover:bg-white/10">Find Black-owned businesses near me</Link>
-            <Link href="/wealth-building-resources" className="rounded-full border border-white/20 px-3 py-1 hover:bg-white/10">Wealth-building resources</Link>
-          </div>
+          <details className="mx-auto mt-3 max-w-3xl rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-left text-xs">
+            <summary className="cursor-pointer list-none font-semibold text-white/75">
+              Quick paths
+            </summary>
+            <div className="mt-2 flex flex-wrap gap-2">
+              <Link href="/shop-black-owned-products" className="rounded-full border border-white/20 px-3 py-1 hover:bg-white/10">Shop Black-owned products</Link>
+              <Link href="/black-owned-businesses" className="rounded-full border border-white/20 px-3 py-1 hover:bg-white/10">Find Black-owned businesses near me</Link>
+              <Link href="/wealth-building-resources" className="rounded-full border border-white/20 px-3 py-1 hover:bg-white/10">Wealth-building resources</Link>
+            </div>
+          </details>
 
           {/* Search + Sort */}
           <div className="mt-6 flex flex-col items-stretch gap-3 md:mt-7 md:flex-row md:justify-center">

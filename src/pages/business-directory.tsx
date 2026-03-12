@@ -852,11 +852,16 @@ export default function BusinessDirectory() {
                   Premium discovery flow with clean ranking, trust cues, and
                   faster decisions.
                 </p>
-                <div className="mt-2 flex flex-wrap gap-2 text-xs">
-                  <Link href="/black-owned-businesses" className="rounded-full border border-white/20 px-3 py-1 hover:bg-white/10">Find Black-owned businesses by city</Link>
-                  <Link href="/shop-black-owned-products" className="rounded-full border border-white/20 px-3 py-1 hover:bg-white/10">Shop Black-owned products</Link>
-                  <Link href="/black-jobs" className="rounded-full border border-white/20 px-3 py-1 hover:bg-white/10">Explore Black jobs</Link>
-                </div>
+                <details className="mt-2 max-w-2xl rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-xs">
+                  <summary className="cursor-pointer list-none font-semibold text-white/75">
+                    Quick paths
+                  </summary>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    <Link href="/black-owned-businesses" className="rounded-full border border-white/20 px-3 py-1 hover:bg-white/10">Find Black-owned businesses by city</Link>
+                    <Link href="/shop-black-owned-products" className="rounded-full border border-white/20 px-3 py-1 hover:bg-white/10">Shop Black-owned products</Link>
+                    <Link href="/black-jobs" className="rounded-full border border-white/20 px-3 py-1 hover:bg-white/10">Explore Black jobs</Link>
+                  </div>
+                </details>
               </div>
 
               <span className="inline-flex items-center gap-1 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-3 py-1.5 text-xs font-bold text-emerald-200">
@@ -914,34 +919,8 @@ export default function BusinessDirectory() {
               </button>
             </div>
 
-            <div className="grid gap-2 sm:grid-cols-3">
-              <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-2">
-                <div className="text-[10px] uppercase tracking-[0.08em] text-white/50 font-bold">
-                  Ranking
-                </div>
-                <div className="text-sm font-semibold text-white/80">
-                  Trust + relevance first
-                </div>
-                <div className="text-[11px] text-white/55">
-                  Verified and higher-quality profiles are prioritized by default.
-                </div>
-              </div>
-              <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-2">
-                <div className="text-[10px] uppercase tracking-[0.08em] text-white/50 font-bold">
-                  Control
-                </div>
-                <div className="text-sm font-semibold text-white/80">
-                  Strong filters, zero clutter
-                </div>
-              </div>
-              <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-2">
-                <div className="text-[10px] uppercase tracking-[0.08em] text-white/50 font-bold">
-                  Goal
-                </div>
-                <div className="text-sm font-semibold text-white/80">
-                  Find, vet, and contact quickly
-                </div>
-              </div>
+            <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-sm text-white/75">
+              <span className="font-semibold text-white/85">Ranking:</span> Trust + relevance first. Verified and higher-quality profiles are prioritized.
             </div>
           </div>
         </div>
