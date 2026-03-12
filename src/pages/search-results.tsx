@@ -1,6 +1,26 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
+type RecentBusiness = {
+  alias: string;
+  name: string;
+  category?: string;
+  city?: string;
+  state?: string;
+  ts: number;
+};
+
+function getRecentBusinesses(): RecentBusiness[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem("bwe:recent-businesses");
+    if (!raw) return [];
+    const arr = JSON.parse(raw);
+    return Array.isArray(arr) ? arr.filter(Boolean).slice(0, 8) : [];
+  } catch {
+    return [];
+  }
+}
 
 type Result = {
   _id: string;
@@ -45,6 +65,33 @@ function trackFlowEvent(payload: Record<string, unknown>) {
   }).catch(() => {});
 }
 
+const RECENT_QUERY_KEY = "bwe:recent-search-queries";
+
+function getRecentQueries(): string[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(RECENT_QUERY_KEY);
+    if (!raw) return [];
+    const arr = JSON.parse(raw);
+    if (!Array.isArray(arr)) return [];
+    return arr
+      .map((x) => (typeof x === "string" ? x.trim() : ""))
+      .filter(Boolean)
+      .slice(0, 8);
+  } catch {
+    return [];
+  }
+}
+
+function pushRecentQuery(query: string) {
+  const q = query.trim();
+  if (!q || typeof window === "undefined") return;
+  const next = [q, ...getRecentQueries().filter((x) => x.toLowerCase() !== q.toLowerCase())].slice(0, 6);
+  try {
+    window.localStorage.setItem(RECENT_QUERY_KEY, JSON.stringify(next));
+  } catch {}
+}
+
 export default function SearchResults() {
   const router = useRouter();
   const search = safe(router.query.search || router.query.q).trim();
@@ -55,6 +102,8 @@ export default function SearchResults() {
   const [error, setError] = useState("");
   const [page, setPage] = useState(1);
   const [limit] = useState(12);
+  const [recentQueries, setRecentQueries] = useState<string[]>([]);
+  const [recent, setRecent] = useState<RecentBusiness[]>([]);
 
   const suggestedCategories = useMemo(() => {
     const q = search.toLowerCase();
@@ -63,7 +112,10 @@ export default function SearchResults() {
       { key: "Wellness", terms: ["health", "wellness", "fitness", "therapy"] },
       { key: "Legal Services", terms: ["law", "legal", "attorney"] },
       { key: "Real Estate", terms: ["home", "real estate", "property"] },
-      { key: "Financial Services", terms: ["bank", "finance", "tax", "credit"] },
+      {
+        key: "Financial Services",
+        terms: ["bank", "finance", "tax", "credit"],
+      },
     ];
 
     const hit = map.find((x) => x.terms.some((t) => q.includes(t)));
@@ -100,6 +152,8 @@ export default function SearchResults() {
             source: "search_results",
             path: window.location.pathname,
           });
+          pushRecentQuery(search);
+          setRecentQueries(getRecentQueries());
         }
       } catch (e: any) {
         if (!cancelled) {
@@ -120,6 +174,14 @@ export default function SearchResults() {
   useEffect(() => {
     setPage(1);
   }, [search]);
+
+  useEffect(() => {
+    setRecentQueries(getRecentQueries());
+  }, []);
+
+  useEffect(() => {
+    setRecent(getRecentBusinesses());
+  }, [router.asPath]);
 
   const totalPages = useMemo(
     () => Math.max(1, Math.ceil(total / limit)),
@@ -148,6 +210,47 @@ export default function SearchResults() {
             Open Full Directory
           </Link>
         </div>
+
+        {recent.length > 0 ? (
+          <div className="mb-4 rounded border border-gray-700 bg-gray-900 p-3">
+            <p className="text-xs uppercase tracking-wide text-gray-500">Continue where you left off</p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {recent.slice(0, 4).map((r) => (
+                <Link
+                  key={r.alias}
+                  href={`/business-directory/${encodeURIComponent(r.alias)}?from=recent`}
+                  className="rounded-full border border-gray-600 bg-black/40 px-3 py-1 text-xs text-gray-200"
+                >
+                  {r.name}
+                </Link>
+              ))}
+            </div>
+          </div>
+        ) : null}
+
+        {recentQueries.length > 0 ? (
+          <div className="mb-4 rounded border border-gray-700 bg-gray-900 p-3">
+            <p className="text-xs uppercase tracking-wide text-gray-500">Recent searches</p>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {recentQueries.map((q) => (
+                <Link
+                  key={q}
+                  href={`/search-results?search=${encodeURIComponent(q)}`}
+                  onClick={() =>
+                    trackFlowEvent({
+                      eventType: "rescue_action_clicked",
+                      source: "recent_search_chip",
+                      query: q,
+                    })
+                  }
+                  className="rounded-full border border-gray-600 bg-black/40 px-3 py-1 text-xs text-gray-200"
+                >
+                  {q}
+                </Link>
+              ))}
+            </div>
+          </div>
+        ) : null}
 
         <div className="mb-4 text-gray-300">
           {search ? (

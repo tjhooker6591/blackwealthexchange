@@ -337,6 +337,7 @@ export default function BusinessDirectory() {
   const [includeIncomplete, setIncludeIncomplete] = useState(false);
 
   const [rows, setRows] = useState<Row[]>([]);
+  const [recent, setRecent] = useState<RecentBusiness[]>([]);
   const [total, setTotal] = useState(0);
   const [sponsorAds, setSponsorAds] = useState(DEFAULT_SPONSOR_ADS);
   const [serverPaged, setServerPaged] = useState(false);
@@ -347,6 +348,10 @@ export default function BusinessDirectory() {
 
   const [page, setPage] = useState(1);
   const pageSize = 20;
+
+  useEffect(() => {
+    setRecent(getRecentBusinesses());
+  }, [router.asPath]);
 
   const hasActiveFilters =
     (scope === "businesses" && category !== "All") ||
@@ -369,7 +374,9 @@ export default function BusinessDirectory() {
 
   const rescueStates = useMemo(() => {
     const base = ["CA", "GA", "TX", "NY", "FL"];
-    return stateFilter ? [stateFilter, ...base.filter((x) => x !== stateFilter)] : base;
+    return stateFilter
+      ? [stateFilter, ...base.filter((x) => x !== stateFilter)]
+      : base;
   }, [stateFilter]);
 
   const didInitFromUrl = useRef(false);

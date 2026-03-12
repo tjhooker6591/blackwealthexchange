@@ -1,24 +1,8 @@
-// src/pages/api/auth/forgot-password.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 import crypto from "crypto";
 import clientPromise from "../../../lib/mongodb";
 import nodemailer from "nodemailer";
-
-/**
- * Build APP_URL safely:
- * - Uses NEXT_PUBLIC_APP_URL / APP_URL when provided
- * - Falls back to localhost only in development
- * - In production, do NOT silently fall back to localhost
- */
-const APP_URL =
-  process.env.NEXT_PUBLIC_APP_URL ||
-  process.env.APP_URL ||
-  (process.env.NODE_ENV === "development" ? "http://localhost:3000" : "");
-
-const RESET_TOKEN_SECRET =
-  process.env.RESET_TOKEN_SECRET ||
-  process.env.JWT_SECRET ||
-  "dev-reset-secret";
+import { getAppUrl, getMongoDbName, getResetTokenSecret } from "@/lib/env";
 
 const RESET_TTL_MINUTES = 60;
 
@@ -28,6 +12,42 @@ function isValidEmail(email: string) {
 
 function sha256(input: string) {
   return crypto.createHash("sha256").update(input).digest("hex");
+}
+
+function getBaseUrl() {
+  try {
+    return getAppUrl();
+  } catch {
+    return process.env.NODE_ENV === "development"
+      ? "http://localhost:3000"
+      : "";
+  }
+}
+
+function buildMailer() {
+  const user = process.env.EMAIL_USER;
+  const pass = process.env.EMAIL_PASS;
+
+  if (user && pass) {
+    return {
+      mode: "smtp" as const,
+      fromEmail: user,
+      transporter: nodemailer.createTransport({
+        service: "Gmail",
+        auth: { user, pass },
+      }),
+    };
+  }
+
+  if (process.env.NODE_ENV !== "production") {
+    return {
+      mode: "json" as const,
+      fromEmail: "blackwealth24@gmail.com",
+      transporter: nodemailer.createTransport({ jsonTransport: true }),
+    };
+  }
+
+  return null;
 }
 
 async function findAccountByEmail(db: any, email: string) {
@@ -67,15 +87,14 @@ export default async function handler(
     return res.status(400).json({ error: "Invalid email format." });
   }
 
+  const genericOk = () =>
+    res.status(200).json({
+      message: "If this email exists, reset instructions will be sent.",
+    });
+
   try {
     const client = await clientPromise;
-    const db = client.db("bwes-cluster");
-
-    // Always return generic success to avoid account enumeration
-    const genericOk = () =>
-      res.status(200).json({
-        message: "If this email exists, reset instructions will be sent.",
-      });
+    const db = client.db(getMongoDbName());
 
     // Prevent spam/replay: ignore repeated active requests for same email within 10 minutes
     const recent = await db.collection("password_resets").findOne({
@@ -89,15 +108,13 @@ export default async function handler(
       return genericOk();
     }
 
-    // Find account across all supported account collections
     const account = await findAccountByEmail(db, email);
     if (!account) {
       return genericOk();
     }
 
-    // Create token + hashed token
     const token = crypto.randomBytes(32).toString("hex");
-    const tokenHash = sha256(`${token}.${RESET_TOKEN_SECRET}`);
+    const tokenHash = sha256(`${token}.${getResetTokenSecret()}`);
     const expiresAt = new Date(Date.now() + RESET_TTL_MINUTES * 60 * 1000);
 
     await db.collection("password_resets").insertOne({
@@ -115,41 +132,19 @@ export default async function handler(
       userAgent: req.headers["user-agent"] || null,
     });
 
-    // Build reset link
-    const baseUrl =
-      APP_URL ||
-      process.env.NEXT_PUBLIC_BASE_URL ||
-      process.env.VERCEL_URL ||
-      "";
+    const resetLink = `${getBaseUrl()}/reset-password?token=${encodeURIComponent(token)}`;
+    const mailer = buildMailer();
 
-    const normalizedBaseUrl =
-      baseUrl && !baseUrl.startsWith("http") ? `https://${baseUrl}` : baseUrl;
+    if (!mailer) {
+      console.warn("forgot-password: EMAIL_USER/EMAIL_PASS missing in production; skipping send");
+      return genericOk();
+    }
 
-    const resetLink = `${normalizedBaseUrl}/reset-password?token=${encodeURIComponent(
-      token,
-    )}`;
-
-    // Send email
-    const transporter = nodemailer.createTransport({
-      service: "Gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-
-    const fromEmail = process.env.EMAIL_USER || "blackwealth24@gmail.com";
-
-    await transporter.sendMail({
-      from: `"Black Wealth Exchange" <${fromEmail}>`,
+    const info = await mailer.transporter.sendMail({
+      from: `"Black Wealth Exchange" <${mailer.fromEmail}>`,
       to: email,
       subject: "Reset your Black Wealth Exchange password",
-      text: `We received a request to reset your password.
-
-Reset link (valid for ${RESET_TTL_MINUTES} minutes):
-${resetLink}
-
-If you didn’t request this, you can ignore this email.`,
+      text: `We received a request to reset your password.\n\nReset link (valid for ${RESET_TTL_MINUTES} minutes):\n${resetLink}\n\nIf you didn’t request this, you can ignore this email.`,
       html: `
         <div style="font-family: Arial, sans-serif; line-height: 1.6;">
           <h2>Reset your password</h2>
@@ -170,13 +165,17 @@ If you didn’t request this, you can ignore this email.`,
       `,
     });
 
+    if (mailer.mode === "json") {
+      console.info("forgot-password jsonTransport preview", {
+        email,
+        resetLink,
+        messageId: info.messageId,
+      });
+    }
+
     return genericOk();
   } catch (err) {
     console.error("forgot-password error:", err);
-
-    // Keep response generic to avoid leaking account existence or provider details
-    return res.status(200).json({
-      message: "If this email exists, reset instructions will be sent.",
-    });
+    return genericOk();
   }
 }

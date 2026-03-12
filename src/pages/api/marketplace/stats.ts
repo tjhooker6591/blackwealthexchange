@@ -22,6 +22,7 @@ export default async function handler(
     if (!sellerSession.ok) {
       return res.status(sellerSession.status).json({ error: sellerSession.error });
     }
+
     const sellerId = sellerSession.sellerId;
 
     const products = await db.collection("products").countDocuments({ sellerId });

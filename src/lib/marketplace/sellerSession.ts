@@ -6,8 +6,10 @@ import { getJwtSecret } from "@/lib/env";
 
 type SellerToken = {
   userId?: string;
+  id?: string;
   email?: string;
   accountType?: string;
+  role?: string;
 };
 
 export async function resolveSellerSession(
@@ -30,19 +32,24 @@ export async function resolveSellerSession(
     return { ok: false, status: 401, error: "Unauthorized: Invalid token" };
   }
 
-  if (decoded.accountType !== "seller") {
-    return { ok: false, status: 403, error: "Forbidden: Not a seller" };
-  }
-
-  const userId = String(decoded.userId || "").trim();
+  const userId = String(decoded.userId || decoded.id || "").trim();
   const email = String(decoded.email || "").trim().toLowerCase();
 
-  const seller = await db.collection("sellers").findOne({
-    $or: [
-      ...(userId ? [{ userId }] : []),
-      ...(email ? [{ email }] : []),
-    ],
-  });
+  if (!userId && !email) {
+    return { ok: false, status: 401, error: "Unauthorized: Missing identity" };
+  }
+
+  const seller = await db.collection("sellers").findOne(
+    {
+      $or: [
+        ...(userId ? [{ userId }] : []),
+        ...(email ? [{ email }, { email: email.toLowerCase() }] : []),
+      ],
+    },
+    {
+      projection: { _id: 1, userId: 1, email: 1 },
+    },
+  );
 
   if (!seller?._id) {
     return {
