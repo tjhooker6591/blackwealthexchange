@@ -52,6 +52,9 @@ export default function NavBar() {
 
         {/* Desktop Nav */}
         <div className="hidden items-center space-x-5 md:flex">
+          <Link href="/start-here" className="font-semibold text-[#D4AF37] transition-colors hover:text-yellow-300">
+            Start Here
+          </Link>
           <Link href="/business-directory" className="font-semibold transition-colors hover:text-[#D4AF37]">
             Directory
           </Link>
@@ -152,6 +155,9 @@ export default function NavBar() {
           className="border-t border-[#D4AF37]/20 bg-black/95 px-4 pb-4 pt-3 md:hidden"
         >
           <div className="space-y-1 rounded-2xl border border-white/10 bg-white/[0.03] p-3 shadow-[0_0_0_1px_rgba(255,255,255,0.04)]">
+            <Link href="/start-here" className="block rounded-xl border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-3 py-2.5 font-semibold text-[#D4AF37]" onClick={() => handleMobileNav()}>
+              Start here
+            </Link>
             <Link href="/business-directory" className="block rounded-xl px-3 py-2.5 font-medium text-white/85 transition-colors hover:bg-white/[0.04] hover:text-[#D4AF37]" onClick={() => handleMobileNav()}>
               Find Black-owned businesses
             </Link>

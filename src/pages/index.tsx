@@ -751,6 +751,12 @@ export default function Home() {
               )}
             </div>
 
+            <div className="mt-2">
+              <Link href="/start-here" className="inline-flex rounded-full border border-[#D4AF37]/45 bg-[#D4AF37]/10 px-4 py-2 text-xs font-extrabold text-[#F1D57A] hover:bg-[#D4AF37]/20">
+                New here? Start with the guided path
+              </Link>
+            </div>
+
             <div className="mx-auto mt-4 w-full max-w-4xl rounded-2xl border border-white/10 bg-white/[0.03] p-3 text-left">
               <div className="text-[11px] font-extrabold uppercase tracking-wide text-white/60">
                 Popular discovery paths

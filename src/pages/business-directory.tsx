@@ -765,12 +765,23 @@ export default function BusinessDirectory() {
     const approved = status === "approved" || status === "verified" || !status;
     const sponsored = Number((r as any).amountPaid || 0) > 0;
 
+    const completenessScore = Math.max(
+      0,
+      Math.min(100, Number((r as any).completenessScore || 0)),
+    );
+
     const isComplete =
       typeof (r as any).isComplete === "boolean"
         ? (r as any).isComplete
-        : Number((r as any).completenessScore || 0) >= 70;
+        : completenessScore >= 70;
 
-    return { verified, approved, sponsored, isComplete };
+    const qualityTier = verified
+      ? "high"
+      : isComplete
+        ? "medium"
+        : "basic";
+
+    return { verified, approved, sponsored, isComplete, completenessScore, qualityTier };
   };
 
   const getWebsite = (r: Row) => safeStr((r as any).website);
@@ -910,6 +921,9 @@ export default function BusinessDirectory() {
                 </div>
                 <div className="text-sm font-semibold text-white/80">
                   Trust + relevance first
+                </div>
+                <div className="text-[11px] text-white/55">
+                  Verified and higher-quality profiles are prioritized by default.
                 </div>
               </div>
               <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-2">
@@ -1480,6 +1494,9 @@ export default function BusinessDirectory() {
                                   Incomplete profile
                                 </span>
                               )}
+                              <span className="rounded-full border border-white/20 bg-white/10 px-2 py-0.5 text-[10px] font-bold text-white/75">
+                                Quality score {Math.round(getTrustMeta(item as Row).completenessScore)}
+                              </span>
                             </div>
 
                             {/* Details line: rating · price · category */}

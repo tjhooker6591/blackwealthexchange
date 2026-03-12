@@ -472,6 +472,15 @@ export default function Marketplace() {
                       {product.category || "Other"}
                     </p>
 
+                    <div className="mt-2 flex flex-wrap gap-1">
+                      <span className="rounded-full border border-emerald-400/30 bg-emerald-400/15 px-2 py-0.5 text-[10px] font-bold text-emerald-200">
+                        Secure checkout
+                      </span>
+                      <span className="rounded-full border border-white/20 bg-white/10 px-2 py-0.5 text-[10px] font-bold text-white/75">
+                        Seller managed shipping
+                      </span>
+                    </div>
+
                     <p className="mt-1 text-[11px] text-white/45 sm:hidden">
                       Tap for details
                     </p>

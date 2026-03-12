@@ -260,6 +260,15 @@ export default function ProductDetailPage({ initialProduct }: Props) {
                 product, please try again shortly or use Contact Seller for more information.
               </p>
             </div>
+
+            <div className="mt-3 rounded-lg border border-white/10 bg-white/5 p-4 text-xs text-white/75">
+              <div className="font-semibold text-white">Trust & fulfillment</div>
+              <ul className="mt-2 space-y-1 list-disc ml-4">
+                <li>Payments are processed through secure checkout infrastructure.</li>
+                <li>Shipping and returns are managed by the independent seller.</li>
+                <li>Need policy details? Visit the <Link href="/trust" className="text-[#D4AF37] underline">BWE Trust Center</Link>.</li>
+              </ul>
+            </div>
           </div>
         </div>
 

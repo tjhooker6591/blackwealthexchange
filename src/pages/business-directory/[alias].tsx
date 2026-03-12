@@ -192,6 +192,11 @@ export default function BusinessDetail() {
     : locationText;
 
   const status = safeStr(business?.status).toLowerCase();
+  const completenessScore = Math.max(
+    0,
+    Math.min(100, Number(business?.completenessScore || 0)),
+  );
+
   const trust = {
     verified:
       business?.verified === true ||
@@ -202,7 +207,7 @@ export default function BusinessDetail() {
     complete:
       typeof business?.isComplete === "boolean"
         ? business.isComplete
-        : Number(business?.completenessScore || 0) >= 70,
+        : completenessScore >= 70,
   };
 
   const pageTitle = `${getTitle(business || {})} | Black-Owned Business Directory | Black Wealth Exchange`;
@@ -386,6 +391,9 @@ export default function BusinessDetail() {
                       Incomplete profile
                     </span>
                   )}
+                  <span className="rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-bold text-white/75">
+                    Quality score {Math.round(completenessScore)}
+                  </span>
                 </div>
               </header>
 
