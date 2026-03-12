@@ -17,6 +17,17 @@ const ALLOWED = new Set([
   "rescue_action_clicked",
   "filter_relaxed",
   "suggested_category_clicked",
+  // growth / acquisition instrumentation
+  "homepage_cta_click",
+  "start_here_role_selected",
+  "listing_cta_click",
+  "seller_cta_click",
+  "employer_cta_click",
+  "share_action",
+  "signup_start",
+  "signup_complete",
+  "checkout_start",
+  "checkout_complete",
 ]);
 
 export default async function handler(

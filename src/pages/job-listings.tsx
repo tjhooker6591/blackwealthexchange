@@ -19,6 +19,22 @@ interface Job {
 
 type SortKey = "newest" | "oldest" | "featured";
 
+function trackFlowEvent(payload: Record<string, unknown>) {
+  if (typeof window === "undefined") return;
+  const body = JSON.stringify(payload);
+  const url = "/api/flow-events";
+  if (navigator.sendBeacon) {
+    navigator.sendBeacon(url, new Blob([body], { type: "application/json" }));
+    return;
+  }
+  fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body,
+    keepalive: true,
+  }).catch(() => {});
+}
+
 function formatDate(input?: string) {
   if (!input) return "";
   const d = new Date(input);
@@ -36,6 +52,7 @@ export default function JobListingsPage() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [shareMessage, setShareMessage] = useState<string | null>(null);
 
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [applyBusy, setApplyBusy] = useState(false);
@@ -200,6 +217,28 @@ export default function JobListingsPage() {
     }
   };
 
+  const shareOpportunity = async (job: Job) => {
+    const url = `${window.location.origin}/job/${encodeURIComponent(job._id)}`;
+    const text = `${job.title} at ${job.company} on Black Wealth Exchange`;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: job.title, text, url });
+      } else if (navigator.clipboard) {
+        await navigator.clipboard.writeText(url);
+        setShareMessage("Opportunity link copied.");
+        setTimeout(() => setShareMessage(null), 1600);
+      }
+      trackFlowEvent({
+        eventType: "share_action",
+        source: "job-listings",
+        businessId: job._id,
+        query: job.type,
+      });
+    } catch {
+      // user cancelled share
+    }
+  };
+
   const overlayRef = useRef<HTMLDivElement | null>(null);
 
   return (
@@ -230,13 +269,26 @@ export default function JobListingsPage() {
                 ← Back
               </button>
             </Link>
-            <Link href="/post-job">
+            <Link
+              href="/post-job?intent=hire-black-talent"
+              onClick={() =>
+                trackFlowEvent({
+                  eventType: "employer_cta_click",
+                  source: "job-listings-header",
+                  path: "/post-job",
+                })
+              }
+            >
               <button className="px-4 py-2 rounded bg-yellow-400 text-black font-semibold hover:bg-yellow-300 transition">
                 Post a Job
               </button>
             </Link>
           </div>
         </div>
+
+        {shareMessage ? (
+          <div className="mb-4 text-xs text-emerald-300">{shareMessage}</div>
+        ) : null}
 
         {/* Tools */}
         <div className="bg-gray-900/70 border border-gray-800 rounded-xl p-4 shadow-lg backdrop-blur">
@@ -387,6 +439,14 @@ export default function JobListingsPage() {
                         </button>
 
                         <button
+                          type="button"
+                          onClick={() => shareOpportunity(job)}
+                          className="px-4 py-2 rounded border border-gray-700 text-gray-200 hover:bg-gray-900 transition"
+                        >
+                          Share
+                        </button>
+
+                        <button
                           onClick={() => saveJob(job._id)}
                           disabled={saveBusyId === job._id}
                           className={[
@@ -446,8 +506,17 @@ export default function JobListingsPage() {
             Create a free account to unlock job saves and one-click applying.
           </p>
 
-          <div className="flex items-center justify-center gap-3">
-            <Link href="/signup">
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <Link
+              href="/signup?accountType=user&intent=find-jobs"
+              onClick={() =>
+                trackFlowEvent({
+                  eventType: "signup_start",
+                  source: "job-listings-footer",
+                  category: "job-seeker",
+                })
+              }
+            >
               <button className="px-6 py-3 rounded bg-yellow-400 text-black font-semibold hover:bg-yellow-300 transition">
                 Create a Free Account
               </button>
@@ -455,6 +524,20 @@ export default function JobListingsPage() {
             <Link href="/login">
               <button className="px-6 py-3 rounded border border-gray-700 text-gray-200 hover:bg-gray-900 transition">
                 Log In
+              </button>
+            </Link>
+            <Link
+              href="/post-job?intent=invite-employer"
+              onClick={() =>
+                trackFlowEvent({
+                  eventType: "employer_cta_click",
+                  source: "job-listings-footer",
+                  category: "invite-employer",
+                })
+              }
+            >
+              <button className="px-6 py-3 rounded border border-[#D4AF37]/40 text-[#D4AF37] hover:bg-[#D4AF37]/10 transition">
+                Invite an employer to post jobs
               </button>
             </Link>
           </div>

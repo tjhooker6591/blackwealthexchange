@@ -10,6 +10,22 @@ import { getMongoDbName } from "@/lib/env";
 import { ObjectId } from "mongodb";
 import { canonicalUrl, getBaseUrl, truncateMeta } from "@/lib/seo";
 
+function trackFlowEvent(payload: Record<string, unknown>) {
+  if (typeof window === "undefined") return;
+  const body = JSON.stringify(payload);
+  const url = "/api/flow-events";
+  if (navigator.sendBeacon) {
+    navigator.sendBeacon(url, new Blob([body], { type: "application/json" }));
+    return;
+  }
+  fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body,
+    keepalive: true,
+  }).catch(() => {});
+}
+
 interface Product {
   _id: string;
   name: string;
@@ -71,6 +87,7 @@ export default function ProductDetailPage({ initialProduct }: Props) {
   const [loading, setLoading] = useState(!initialProduct);
   const [showModal, setShowModal] = useState(false);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
+  const [shareMessage, setShareMessage] = useState("");
 
   useEffect(() => {
     if (initialProduct) return;
@@ -207,6 +224,31 @@ export default function ProductDetailPage({ initialProduct }: Props) {
     ],
   };
 
+  const shareProduct = async () => {
+    if (!product) return;
+    try {
+      if (typeof navigator !== "undefined" && navigator.share) {
+        await navigator.share({
+          title: product.name,
+          text: `Check out ${product.name} on Black Wealth Exchange`,
+          url: canonical,
+        });
+      } else if (typeof navigator !== "undefined" && navigator.clipboard) {
+        await navigator.clipboard.writeText(canonical);
+        setShareMessage("Link copied.");
+        setTimeout(() => setShareMessage(""), 1600);
+      }
+      trackFlowEvent({
+        eventType: "share_action",
+        source: "product-detail",
+        businessId: product._id,
+        path: canonical,
+      });
+    } catch {
+      // user cancelled share
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-black text-white text-center py-20">
@@ -298,12 +340,38 @@ export default function ProductDetailPage({ initialProduct }: Props) {
               />
 
               <button
+                type="button"
+                onClick={shareProduct}
+                className="w-full py-2.5 px-4 border border-white/20 text-white font-semibold rounded-lg hover:bg-white/10 transition"
+              >
+                Share this product
+              </button>
+
+              <Link
+                href="/marketplace/become-a-seller?intent=invite-seller"
+                onClick={() =>
+                  trackFlowEvent({
+                    eventType: "seller_cta_click",
+                    source: "product-detail",
+                    businessId: product._id,
+                  })
+                }
+                className="block w-full py-2.5 px-4 border border-[#D4AF37]/35 text-[#D4AF37] text-center font-semibold rounded-lg hover:bg-[#D4AF37]/15 transition"
+              >
+                Invite a seller to join BWE
+              </Link>
+
+              <button
                 onClick={() => setShowModal(true)}
                 className="w-full py-2.5 px-4 border border-gold text-gold font-semibold rounded-lg hover:bg-gold hover:text-black transition"
               >
                 Contact Seller
               </button>
             </div>
+
+            {shareMessage ? (
+              <div className="text-xs text-emerald-300">{shareMessage}</div>
+            ) : null}
 
             <div className="mt-6 rounded-lg border border-white/10 bg-white/5 p-4 text-sm text-gray-300">
               <p>

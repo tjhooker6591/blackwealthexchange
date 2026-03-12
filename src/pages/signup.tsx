@@ -6,9 +6,26 @@ import Link from "next/link";
 import Head from "next/head";
 import { canonicalUrl } from "@/lib/seo";
 
+function trackFlowEvent(payload: Record<string, unknown>) {
+  if (typeof window === "undefined") return;
+  const body = JSON.stringify(payload);
+  const url = "/api/flow-events";
+  if (navigator.sendBeacon) {
+    navigator.sendBeacon(url, new Blob([body], { type: "application/json" }));
+    return;
+  }
+  fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body,
+    keepalive: true,
+  }).catch(() => {});
+}
+
 export default function Signup() {
   const router = useRouter();
   const [accountType, setAccountType] = useState("user");
+  const [signupIntent, setSignupIntent] = useState("join-bwe");
 
   const [formData, setFormData] = useState({
     email: "",
@@ -40,11 +57,21 @@ export default function Signup() {
           ? router.query.type
           : null;
 
-    if (!qType) return;
-    if (["user", "seller", "business", "employer"].includes(qType)) {
+    if (qType && ["user", "seller", "business", "employer"].includes(qType)) {
       setAccountType(qType);
     }
-  }, [router.query]);
+
+    const qIntent = typeof router.query.intent === "string" ? router.query.intent : "join-bwe";
+    setSignupIntent(qIntent || "join-bwe");
+
+    trackFlowEvent({
+      eventType: "signup_start",
+      source: "signup-page",
+      category: qType || "user",
+      path: router.asPath,
+      query: qIntent || "join-bwe",
+    });
+  }, [router.query, router.asPath]);
 
   const validateEmail = (email: string) => /\S+@\S+\.\S+/.test(email);
   const validatePassword = (password: string) =>
@@ -102,6 +129,13 @@ export default function Signup() {
       if (!response.ok) {
         throw new Error(data.error || "Signup failed.");
       }
+
+      trackFlowEvent({
+        eventType: "signup_complete",
+        source: "signup-submit",
+        category: data.accountType || accountType,
+        query: signupIntent,
+      });
 
       // If seller, trigger redirect via onboardingUrl state
       if (data.accountType === "seller") {
@@ -161,6 +195,9 @@ export default function Signup() {
           Create an Account
         </h2>
         <p className="text-center text-gray-600 mt-2">Join the BWE Community</p>
+        <p className="text-center text-xs text-gray-500 mt-1">
+          Intent: {signupIntent.replace(/-/g, " ")}
+        </p>
 
         {error && <p className="text-red-500 text-center mt-2">{error}</p>}
         {success && !onboardingUrl && (

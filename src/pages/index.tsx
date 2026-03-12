@@ -39,6 +39,22 @@ function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
+function trackFlowEvent(payload: Record<string, unknown>) {
+  if (typeof window === "undefined") return;
+  const body = JSON.stringify(payload);
+  const url = "/api/flow-events";
+  if (navigator.sendBeacon) {
+    navigator.sendBeacon(url, new Blob([body], { type: "application/json" }));
+    return;
+  }
+  fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body,
+    keepalive: true,
+  }).catch(() => {});
+}
+
 /** -----------------------------
  *  TOOLS (Filters) — inline panel
  *  ----------------------------- */
@@ -479,10 +495,10 @@ export default function Home() {
   const { user } = useAuth();
 
   const [recentProducts, setRecentProducts] = useState<
-    Array<{ _id: string; name: string }>
+    Array<{ _id: string; name: string; ts?: number }>
   >([]);
   const [recentBusinesses, setRecentBusinesses] = useState<
-    Array<{ alias: string; name: string }>
+    Array<{ alias: string; name: string; ts?: number }>
   >([]);
 
   const placeholder =
@@ -611,17 +627,22 @@ export default function Home() {
           ? rp
               .filter((x: any) => x?._id && x?.name)
               .slice(0, 3)
-              .map((x: any) => ({ _id: String(x._id), name: String(x.name) }))
+              .map((x: any) => ({
+                _id: String(x._id),
+                name: String(x.name),
+                ts: Number(x.ts || 0),
+              }))
           : [],
       );
       setRecentBusinesses(
         Array.isArray(rb)
           ? rb
               .filter((x: any) => x?.alias && x?.name)
-              .slice(0, 3)
+              .slice(0, 5)
               .map((x: any) => ({
                 alias: String(x.alias),
                 name: String(x.name),
+                ts: Number(x.ts || 0),
               }))
           : [],
       );
@@ -630,6 +651,24 @@ export default function Home() {
       setRecentBusinesses([]);
     }
   }, [router.asPath]);
+
+  const resumeItems = useMemo(() => {
+    const productItems = recentProducts.map((p) => ({
+      key: `p:${p._id}`,
+      name: p.name,
+      href: `/marketplace/product/${p._id}`,
+      ts: Number(p.ts || 0),
+    }));
+    const businessItems = recentBusinesses.map((b) => ({
+      key: `b:${b.alias}`,
+      name: b.name,
+      href: `/business-directory/${encodeURIComponent(b.alias)}`,
+      ts: Number(b.ts || 0),
+    }));
+    return [...productItems, ...businessItems]
+      .sort((a, b) => b.ts - a.ts)
+      .slice(0, 2);
+  }, [recentProducts, recentBusinesses]);
 
   const sponsorRail = sponsors.length
     ? sponsors
@@ -721,7 +760,15 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
       />
       <div className="absolute inset-0 bg-neutral-950" />
-      <div className="absolute inset-0 bg-gradient-to-b from-neutral-950 via-neutral-950/70 to-black/90" />
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.12]"
+        style={{
+          backgroundImage: "url('/images/hero1.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-b from-neutral-950/95 via-neutral-950/78 to-black/92" />
       <div className="pointer-events-none absolute -top-40 left-1/2 h-[900px] w-[900px] -translate-x-1/2 rounded-full bg-[#D4AF37]/[0.06] blur-3xl" />
       <div className="pointer-events-none absolute -bottom-56 right-[-10rem] h-[560px] w-[560px] rounded-full bg-emerald-500/[0.05] blur-3xl" />
 
@@ -785,7 +832,17 @@ export default function Home() {
                       Login
                     </button>
                   </Link>
-                  <Link href="/signup" className="w-full sm:w-auto">
+                  <Link
+                    href="/signup?intent=join-bwe"
+                    onClick={() =>
+                      trackFlowEvent({
+                        eventType: "homepage_cta_click",
+                        source: "home-hero",
+                        category: "signup",
+                      })
+                    }
+                    className="w-full sm:w-auto"
+                  >
                     <button className="h-11 w-full rounded-xl border border-[#D4AF37]/45 bg-[#D4AF37]/8 px-5 text-sm font-bold text-[#F1D57A] transition hover:-translate-y-0.5 hover:bg-[#D4AF37]/16 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 sm:h-11 sm:w-auto sm:px-6">
                       Sign Up
                     </button>
@@ -797,32 +854,30 @@ export default function Home() {
             <div className="mt-2">
               <Link
                 href="/start-here"
+                onClick={() =>
+                  trackFlowEvent({
+                    eventType: "homepage_cta_click",
+                    source: "home-hero",
+                    category: "start-here",
+                  })
+                }
                 className="inline-flex rounded-full border border-[#D4AF37]/45 bg-[#D4AF37]/10 px-4 py-2 text-xs font-extrabold text-[#F1D57A] hover:bg-[#D4AF37]/20"
               >
                 New here? Start with the guided path
               </Link>
             </div>
 
-            {(recentProducts.length > 0 || recentBusinesses.length > 0) && (
+            {resumeItems.length > 0 && (
               <div className="mx-auto mt-3 w-full max-w-4xl rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-left">
                 <div className="flex flex-wrap items-center gap-2 text-xs text-white/75">
                   <span className="font-bold text-white/65">Resume:</span>
-                  {recentProducts.slice(0, 2).map((p) => (
+                  {resumeItems.map((item) => (
                     <Link
-                      key={p._id}
-                      href={`/marketplace/product/${p._id}`}
+                      key={item.key}
+                      href={item.href}
                       className="rounded-full border border-white/15 px-2.5 py-1 text-white/85 hover:bg-white/10"
                     >
-                      {p.name}
-                    </Link>
-                  ))}
-                  {recentBusinesses.slice(0, 2).map((b) => (
-                    <Link
-                      key={b.alias}
-                      href={`/business-directory/${encodeURIComponent(b.alias)}`}
-                      className="rounded-full border border-white/15 px-2.5 py-1 text-white/85 hover:bg-white/10"
-                    >
-                      {b.name}
+                      {item.name}
                     </Link>
                   ))}
                 </div>
@@ -1123,6 +1178,11 @@ export default function Home() {
                 <button
                   className="animate-pulseGlow rounded-xl bg-[#D4AF37] px-5 py-2.5 text-center text-sm font-extrabold text-black shadow transition hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/35 sm:px-6 sm:text-base"
                   onClick={() => {
+                    trackFlowEvent({
+                      eventType: "seller_cta_click",
+                      source: "home-hero",
+                      path: "/marketplace/become-a-seller",
+                    });
                     if (!user) {
                       router.push(
                         "/login?redirect=/marketplace/become-a-seller",

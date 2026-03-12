@@ -108,6 +108,7 @@ export default function BusinessDetail() {
   const [business, setBusiness] = useState<Business | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [shareMessage, setShareMessage] = useState("");
 
   const source = useMemo(() => {
     const raw = router.query.from;
@@ -216,6 +217,28 @@ export default function BusinessDetail() {
       `${getTitle(business || {})} in ${placeLine || "your area"}. Discover verified Black-owned businesses on Black Wealth Exchange.`,
   );
   const canonical = canonicalUrl(`/business-directory/${encodeURIComponent(alias || "")}`);
+
+  const shareBusiness = async () => {
+    const title = getTitle(business || {});
+    const text = `Support ${title} on Black Wealth Exchange`;
+    try {
+      if (typeof navigator !== "undefined" && navigator.share) {
+        await navigator.share({ title, text, url: canonical });
+      } else if (typeof navigator !== "undefined" && navigator.clipboard) {
+        await navigator.clipboard.writeText(canonical);
+        setShareMessage("Link copied.");
+        setTimeout(() => setShareMessage(""), 1600);
+      }
+      trackFlowEvent({
+        eventType: "share_action",
+        source: "business-detail",
+        businessAlias: alias,
+        path: canonical,
+      });
+    } catch {
+      // user cancelled share
+    }
+  };
 
   const localBusinessSchema = business
     ? {
@@ -481,7 +504,31 @@ export default function BusinessDetail() {
                         Directions
                       </Link>
                     ) : null}
+                    <button
+                      type="button"
+                      onClick={shareBusiness}
+                      className="inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2 text-sm font-bold text-white/80 transition hover:bg-white/[0.08]"
+                    >
+                      Share this business
+                    </button>
+                    <Link
+                      href="/business-directory/add-business?intent=invite-business"
+                      onClick={() =>
+                        trackFlowEvent({
+                          eventType: "listing_cta_click",
+                          source: "business-detail",
+                          businessAlias: alias,
+                        })
+                      }
+                      className="inline-flex items-center justify-center rounded-xl border border-[#D4AF37]/30 bg-[#D4AF37]/10 px-4 py-2 text-sm font-bold text-[#D4AF37] transition hover:bg-[#D4AF37]/20"
+                    >
+                      Invite a business to get listed
+                    </Link>
                   </div>
+
+                  {shareMessage ? (
+                    <div className="text-xs text-emerald-300">{shareMessage}</div>
+                  ) : null}
 
                   <div className="pt-2 text-xs text-white/60 space-y-2">
                     <div>Next actions</div>
