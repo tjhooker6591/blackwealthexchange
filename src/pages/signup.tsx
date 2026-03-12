@@ -31,9 +31,16 @@ export default function Signup() {
   }, [onboardingUrl]);
 
   useEffect(() => {
-    const { type } = router.query;
-    if (type && typeof type === "string") {
-      setAccountType(type);
+    const qType =
+      typeof router.query.accountType === "string"
+        ? router.query.accountType
+        : typeof router.query.type === "string"
+          ? router.query.type
+          : null;
+
+    if (!qType) return;
+    if (["user", "seller", "business", "employer"].includes(qType)) {
+      setAccountType(qType);
     }
   }, [router.query]);
 
@@ -80,7 +87,7 @@ export default function Signup() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          email: formData.email,
+          email: formData.email.trim().toLowerCase(),
           password: formData.password,
           accountType,
           businessName: formData.businessName,

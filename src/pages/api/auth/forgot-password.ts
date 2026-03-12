@@ -3,6 +3,11 @@ import crypto from "crypto";
 import clientPromise from "../../../lib/mongodb";
 import nodemailer from "nodemailer";
 import { getAppUrl, getMongoDbName, getResetTokenSecret } from "@/lib/env";
+import {
+  ensureApiRateLimitIndexes,
+  getClientIp,
+  hitApiRateLimit,
+} from "@/lib/apiRateLimit";
 
 const RESET_TTL_MINUTES = 60;
 
@@ -95,6 +100,16 @@ export default async function handler(
   try {
     const client = await clientPromise;
     const db = client.db(getMongoDbName());
+
+    await ensureApiRateLimitIndexes(db);
+    const ip = getClientIp(req);
+
+    const ipLimit = await hitApiRateLimit(db, `forgot:ip:${ip}`, 25, 10);
+    const emailLimit = await hitApiRateLimit(db, `forgot:email:${email}`, 5, 10);
+
+    if (ipLimit.blocked || emailLimit.blocked) {
+      return genericOk();
+    }
 
     // Prevent spam/replay: ignore repeated active requests for same email within 10 minutes
     const recent = await db.collection("password_resets").findOne({

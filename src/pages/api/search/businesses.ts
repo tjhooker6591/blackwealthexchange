@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
+import { getMongoDbName } from "@/lib/env";
 import {
   ensureApiRateLimitIndexes,
   getClientIp,
@@ -57,13 +58,17 @@ export default async function handler(
       "public, s-maxage=10, stale-while-revalidate=30",
     );
 
-    const dbName = process.env.MONGODB_DB || "bwes-database";
     const client = await clientPromise;
-    const db = client.db(dbName);
+    const db = client.db(getMongoDbName());
 
     await ensureApiRateLimitIndexes(db);
     const ip = getClientIp(req);
-    const ipLimit = await hitApiRateLimit(db, `search:businesses:ip:${ip}`, 120, 5);
+    const ipLimit = await hitApiRateLimit(
+      db,
+      `search:businesses:ip:${ip}`,
+      120,
+      5,
+    );
     if (ipLimit.blocked) {
       res.setHeader("Retry-After", String(ipLimit.retryAfterSeconds));
       return res.status(429).json({
