@@ -270,12 +270,25 @@ export default function NewsPage() {
     setLoading(true);
     setError("");
 
-    const params = new URLSearchParams();
-    if (q.trim()) params.set("q", q.trim());
-    if (region !== "all") params.set("region", region);
-    params.set("limit", "120"); // pull more so categories feel rich
+    const normalizedQ = (() => {
+      const base = String(q || "").trim();
+      // Guard against malformed unicode that can throw in URL builders on some browsers.
+      return typeof (base as any).toWellFormed === "function"
+        ? (base as any).toWellFormed()
+        : base;
+    })();
 
-    const requestUrl = `/api/news/black?${params.toString()}`;
+    let requestUrl = "/api/news/black?limit=120";
+    try {
+      const params = new URLSearchParams();
+      if (normalizedQ) params.set("q", normalizedQ);
+      if (region !== "all") params.set("region", region);
+      params.set("limit", "120"); // pull more so categories feel rich
+      requestUrl = `/api/news/black?${params.toString()}`;
+    } catch {
+      // fall back to a safe baseline endpoint
+      requestUrl = "/api/news/black?limit=120";
+    }
 
     try {
       const res = await fetch(requestUrl);
@@ -292,7 +305,7 @@ export default function NewsPage() {
 
       if (opts?.pushUrl) {
         router.replace(
-          { pathname: "/news", query: q.trim() ? { q: q.trim() } : {} },
+          { pathname: "/news", query: normalizedQ ? { q: normalizedQ } : {} },
           undefined,
           { shallow: true },
         );
