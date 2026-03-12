@@ -23,6 +23,42 @@ function getClientIp(req: NextApiRequest) {
   );
 }
 
+function getBaseUrl() {
+  try {
+    return getAppUrl();
+  } catch {
+    return process.env.NODE_ENV === "development"
+      ? "http://localhost:3000"
+      : "";
+  }
+}
+
+function buildMailer() {
+  const user = process.env.EMAIL_USER;
+  const pass = process.env.EMAIL_PASS;
+
+  if (user && pass) {
+    return {
+      mode: "smtp" as const,
+      fromEmail: user,
+      transporter: nodemailer.createTransport({
+        service: "Gmail",
+        auth: { user, pass },
+      }),
+    };
+  }
+
+  if (process.env.NODE_ENV !== "production") {
+    return {
+      mode: "json" as const,
+      fromEmail: "blackwealth24@gmail.com",
+      transporter: nodemailer.createTransport({ jsonTransport: true }),
+    };
+  }
+
+  return null;
+}
+
 async function ensureResetIndexes(db: any) {
   await db
     .collection("password_resets")
@@ -156,7 +192,7 @@ export default async function handler(
       userAgent: req.headers["user-agent"] || null,
     });
 
-    const resetLink = `${getAppUrl()}/reset-password?token=${encodeURIComponent(token)}`;
+    const resetLink = `${getBaseUrl()}/reset-password?token=${encodeURIComponent(token)}`;
 
     // Debug mode for local verification: skip email dependency and return token/link.
     if (
@@ -169,18 +205,16 @@ export default async function handler(
       });
     }
 
-    const transporter = nodemailer.createTransport({
-      service: "Gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
+    const mailer = buildMailer();
+    if (!mailer) {
+      console.warn(
+        "request-reset: EMAIL_USER/EMAIL_PASS missing in production; skipping send",
+      );
+      return genericOk();
+    }
 
-    const fromEmail = process.env.EMAIL_USER || "blackwealth24@gmail.com";
-
-    await transporter.sendMail({
-      from: `"Black Wealth Exchange" <${fromEmail}>`,
+    const info = await mailer.transporter.sendMail({
+      from: `"Black Wealth Exchange" <${mailer.fromEmail}>`,
       to: email,
       subject: "Reset your Black Wealth Exchange password",
       text: `We received a request to reset your password.\n\nReset link (valid for ${RESET_TTL_MINUTES} minutes):\n${resetLink}\n\nIf you didn’t request this, you can ignore this email.`,
@@ -198,6 +232,14 @@ export default async function handler(
         </div>
       `,
     });
+
+    if (mailer.mode === "json") {
+      console.info("request-reset jsonTransport preview", {
+        email,
+        resetLink,
+        messageId: info.messageId,
+      });
+    }
 
     return genericOk();
   } catch (err) {
