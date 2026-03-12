@@ -38,6 +38,11 @@ export default function JobsHubPage() {
               opportunities built to uplift Black professionals and
               entrepreneurs.
             </p>
+            <div className="mt-3 flex flex-wrap gap-2 text-xs">
+              <Link href="/black-jobs" className="rounded-full border border-gray-700 px-3 py-1 hover:bg-gray-900">Black jobs by niche</Link>
+              <Link href="/financial-literacy-for-black-communities" className="rounded-full border border-gray-700 px-3 py-1 hover:bg-gray-900">Financial literacy resources</Link>
+              <Link href="/privacy-policy" className="rounded-full border border-gray-700 px-3 py-1 hover:bg-gray-900">Trust & privacy policy</Link>
+            </div>
           </div>
 
           <div className="flex gap-3">

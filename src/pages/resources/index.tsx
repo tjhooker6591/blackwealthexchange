@@ -50,6 +50,11 @@ export default function ResourcesIndex() {
           Discover tools and strategies to help you hire, support, and retain
           diverse talent.
         </p>
+        <div className="mb-6 flex flex-wrap gap-2 text-xs">
+          <Link href="/wealth-building-resources" className="rounded-full border border-white/20 px-3 py-1 hover:bg-white/10">Wealth-building resources</Link>
+          <Link href="/financial-literacy-for-black-communities" className="rounded-full border border-white/20 px-3 py-1 hover:bg-white/10">Financial literacy for Black communities</Link>
+          <Link href="/terms/marketplace" className="rounded-full border border-white/20 px-3 py-1 hover:bg-white/10">Marketplace trust terms</Link>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {articles.map((article) => (

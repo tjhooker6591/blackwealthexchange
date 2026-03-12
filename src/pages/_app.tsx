@@ -18,37 +18,7 @@ export default function App({
   const canonical = canonicalUrl(currentPath);
   const site = getBaseUrl();
   useEffect(() => {
-    // Prevent right-click context menu
-    const disableContextMenu = (e: MouseEvent) => e.preventDefault();
-    document.addEventListener("contextmenu", disableContextMenu);
-
-    // Disable text selection
-    document.body.style.userSelect = "none";
-
-    // Prevent image dragging
-    const disableImageDrag = () => {
-      document
-        .querySelectorAll("img")
-        .forEach((img) => img.setAttribute("draggable", "false"));
-    };
-    disableImageDrag();
-
-    // Blur on PrintScreen
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "PrintScreen") {
-        document.body.style.filter = "blur(10px)";
-        setTimeout(() => {
-          document.body.style.filter = "none";
-        }, 1500);
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      document.removeEventListener("contextmenu", disableContextMenu);
-      document.body.style.userSelect = "auto";
-      window.removeEventListener("keydown", handleKeyDown);
-    };
+    // Keep app-level side effects intentionally minimal for performance and usability.
   }, []);
 
   return (

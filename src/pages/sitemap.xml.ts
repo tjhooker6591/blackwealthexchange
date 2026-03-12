@@ -2,6 +2,7 @@ import type { GetServerSideProps } from "next";
 import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
 import { getBaseUrl } from "@/lib/seo";
+import { JOB_NICHES, TOP_CITIES, TOP_STATES, toSlug } from "@/lib/seoLanding";
 
 type UrlRow = {
   loc: string;
@@ -24,12 +25,41 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
   const rows: UrlRow[] = [
     { loc: `${base}/`, changefreq: "daily", priority: "1.0" },
     { loc: `${base}/business-directory`, changefreq: "daily", priority: "0.95" },
+    { loc: `${base}/black-owned-businesses`, changefreq: "daily", priority: "0.95" },
     { loc: `${base}/marketplace`, changefreq: "daily", priority: "0.95" },
+    { loc: `${base}/shop-black-owned-products`, changefreq: "daily", priority: "0.9" },
     { loc: `${base}/job-listings`, changefreq: "daily", priority: "0.9" },
+    { loc: `${base}/black-jobs`, changefreq: "daily", priority: "0.9" },
     { loc: `${base}/jobs`, changefreq: "weekly", priority: "0.85" },
     { loc: `${base}/financial-literacy`, changefreq: "weekly", priority: "0.85" },
+    { loc: `${base}/financial-literacy-for-black-communities`, changefreq: "weekly", priority: "0.85" },
+    { loc: `${base}/wealth-building-resources`, changefreq: "weekly", priority: "0.85" },
     { loc: `${base}/resources`, changefreq: "weekly", priority: "0.8" },
   ];
+
+  for (const city of TOP_CITIES) {
+    rows.push({
+      loc: `${base}/black-owned-businesses/${toSlug(city)}`,
+      changefreq: "weekly",
+      priority: "0.8",
+    });
+  }
+
+  for (const state of TOP_STATES) {
+    rows.push({
+      loc: `${base}/black-owned-business-directory/${state.toLowerCase()}`,
+      changefreq: "weekly",
+      priority: "0.75",
+    });
+  }
+
+  for (const niche of JOB_NICHES) {
+    rows.push({
+      loc: `${base}/black-jobs/${niche}`,
+      changefreq: "weekly",
+      priority: "0.75",
+    });
+  }
 
   try {
     const client = await clientPromise;

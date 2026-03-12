@@ -841,6 +841,11 @@ export default function BusinessDirectory() {
                   Premium discovery flow with clean ranking, trust cues, and
                   faster decisions.
                 </p>
+                <div className="mt-2 flex flex-wrap gap-2 text-xs">
+                  <Link href="/black-owned-businesses" className="rounded-full border border-white/20 px-3 py-1 hover:bg-white/10">Find Black-owned businesses by city</Link>
+                  <Link href="/shop-black-owned-products" className="rounded-full border border-white/20 px-3 py-1 hover:bg-white/10">Shop Black-owned products</Link>
+                  <Link href="/black-jobs" className="rounded-full border border-white/20 px-3 py-1 hover:bg-white/10">Explore Black jobs</Link>
+                </div>
               </div>
 
               <span className="inline-flex items-center gap-1 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-3 py-1.5 text-xs font-bold text-emerald-200">
