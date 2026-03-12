@@ -33,6 +33,8 @@ export default function App({
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:site" content="@BlackWealthX" />
         <link rel="canonical" href={canonical} />
+        <link rel="preconnect" href="https://checkout.stripe.com" />
+        <link rel="dns-prefetch" href="https://checkout.stripe.com" />
         <link rel="icon" href="/favicon.png" type="image/png" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="sitemap" type="application/xml" title="Sitemap" href={`${site}/sitemap.xml`} />

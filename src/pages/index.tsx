@@ -478,6 +478,9 @@ export default function Home() {
   const router = useRouter();
   const { user } = useAuth();
 
+  const [recentProducts, setRecentProducts] = useState<Array<{ _id: string; name: string }>>([]);
+  const [recentBusinesses, setRecentBusinesses] = useState<Array<{ alias: string; name: string }>>([]);
+
   const placeholder =
     vertical !== "all"
       ? vertical === "shopping"
@@ -591,6 +594,35 @@ export default function Home() {
       cancelled = true;
     };
   }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const rpRaw = window.localStorage.getItem("bwe:recent-products");
+      const rbRaw = window.localStorage.getItem("bwe:recent-businesses");
+      const rp = rpRaw ? JSON.parse(rpRaw) : [];
+      const rb = rbRaw ? JSON.parse(rbRaw) : [];
+      setRecentProducts(
+        Array.isArray(rp)
+          ? rp
+              .filter((x: any) => x?._id && x?.name)
+              .slice(0, 3)
+              .map((x: any) => ({ _id: String(x._id), name: String(x.name) }))
+          : [],
+      );
+      setRecentBusinesses(
+        Array.isArray(rb)
+          ? rb
+              .filter((x: any) => x?.alias && x?.name)
+              .slice(0, 3)
+              .map((x: any) => ({ alias: String(x.alias), name: String(x.name) }))
+          : [],
+      );
+    } catch {
+      setRecentProducts([]);
+      setRecentBusinesses([]);
+    }
+  }, [router.asPath]);
 
   const sponsorRail = sponsors.length
     ? sponsors
@@ -756,6 +788,26 @@ export default function Home() {
                 New here? Start with the guided path
               </Link>
             </div>
+
+            {(recentProducts.length > 0 || recentBusinesses.length > 0) && (
+              <div className="mx-auto mt-3 w-full max-w-4xl rounded-2xl border border-white/10 bg-white/[0.03] p-3 text-left">
+                <div className="text-[11px] font-extrabold uppercase tracking-wide text-white/60">
+                  Continue where you left off
+                </div>
+                <div className="mt-2 flex flex-wrap gap-2 text-xs">
+                  {recentProducts.map((p) => (
+                    <Link key={p._id} href={`/marketplace/product/${p._id}`} className="rounded-full border border-white/15 px-3 py-1 text-white/85 hover:bg-white/10">
+                      Continue shopping: {p.name}
+                    </Link>
+                  ))}
+                  {recentBusinesses.map((b) => (
+                    <Link key={b.alias} href={`/business-directory/${encodeURIComponent(b.alias)}`} className="rounded-full border border-white/15 px-3 py-1 text-white/85 hover:bg-white/10">
+                      Revisit listing: {b.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
 
             <div className="mx-auto mt-4 w-full max-w-4xl rounded-2xl border border-white/10 bg-white/[0.03] p-3 text-left">
               <div className="text-[11px] font-extrabold uppercase tracking-wide text-white/60">
