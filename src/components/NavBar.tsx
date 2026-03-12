@@ -138,7 +138,11 @@ export default function NavBar() {
           aria-expanded={mobileMenuOpen}
           aria-controls="mobile-nav-menu"
           aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
-          className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/15 bg-white/[0.04] text-white/90 shadow-[0_4px_16px_rgba(0,0,0,0.25)] backdrop-blur-sm transition hover:border-[#D4AF37]/45 hover:text-[#D4AF37] md:hidden"
+          className={`inline-flex h-10 w-10 items-center justify-center rounded-xl border bg-white/[0.04] text-white/90 shadow-[0_4px_16px_rgba(0,0,0,0.25)] backdrop-blur-sm transition md:hidden ${
+            mobileMenuOpen
+              ? "border-[#D4AF37]/55 text-[#D4AF37] ring-1 ring-[#D4AF37]/30"
+              : "border-white/15 hover:border-[#D4AF37]/45 hover:text-[#D4AF37]"
+          }`}
         >
           <svg
             className="h-4 w-4 shrink-0"
@@ -172,9 +176,9 @@ export default function NavBar() {
       {mobileMenuOpen && (
         <div
           id="mobile-nav-menu"
-          className="border-t border-[#D4AF37]/20 bg-black/95 px-4 pb-4 pt-3 md:hidden"
+          className="border-t border-[#D4AF37]/20 bg-black/95 px-3 pb-4 pt-3 md:hidden"
         >
-          <div className="space-y-1 rounded-2xl border border-white/10 bg-white/[0.03] p-3 shadow-[0_0_0_1px_rgba(255,255,255,0.04)]">
+          <div className="mx-auto max-w-md space-y-1 rounded-2xl border border-white/10 bg-white/[0.03] p-3 shadow-[0_0_0_1px_rgba(255,255,255,0.04)]">
             <Link
               href="/start-here"
               className="block rounded-xl border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-3 py-2.5 font-semibold text-[#D4AF37]"
