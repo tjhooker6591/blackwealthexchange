@@ -478,8 +478,12 @@ export default function Home() {
   const router = useRouter();
   const { user } = useAuth();
 
-  const [recentProducts, setRecentProducts] = useState<Array<{ _id: string; name: string }>>([]);
-  const [recentBusinesses, setRecentBusinesses] = useState<Array<{ alias: string; name: string }>>([]);
+  const [recentProducts, setRecentProducts] = useState<
+    Array<{ _id: string; name: string }>
+  >([]);
+  const [recentBusinesses, setRecentBusinesses] = useState<
+    Array<{ alias: string; name: string }>
+  >([]);
 
   const placeholder =
     vertical !== "all"
@@ -615,7 +619,10 @@ export default function Home() {
           ? rb
               .filter((x: any) => x?.alias && x?.name)
               .slice(0, 3)
-              .map((x: any) => ({ alias: String(x.alias), name: String(x.name) }))
+              .map((x: any) => ({
+                alias: String(x.alias),
+                name: String(x.name),
+              }))
           : [],
       );
     } catch {
@@ -634,7 +641,8 @@ export default function Home() {
 
   const base = getBaseUrl();
   const canonical = canonicalUrl("/");
-  const title = "Black Wealth Exchange | Black-Owned Businesses, Jobs, Marketplace & Financial Literacy";
+  const title =
+    "Black Wealth Exchange | Black-Owned Businesses, Jobs, Marketplace & Financial Literacy";
   const description = truncateMeta(
     "Discover Black-owned businesses, shop Black-owned brands, explore jobs and career opportunities, and access financial literacy resources built to strengthen Black economic power.",
   );
@@ -696,7 +704,10 @@ export default function Home() {
         <meta property="og:description" content={description} />
         <meta property="og:url" content={canonical} />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content={`${base.replace(/\/$/, "")}/images/hero1.jpg`} />
+        <meta
+          property="og:image"
+          content={`${base.replace(/\/$/, "")}/images/hero1.jpg`}
+        />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
       </Head>
@@ -784,7 +795,10 @@ export default function Home() {
             </div>
 
             <div className="mt-2">
-              <Link href="/start-here" className="inline-flex rounded-full border border-[#D4AF37]/45 bg-[#D4AF37]/10 px-4 py-2 text-xs font-extrabold text-[#F1D57A] hover:bg-[#D4AF37]/20">
+              <Link
+                href="/start-here"
+                className="inline-flex rounded-full border border-[#D4AF37]/45 bg-[#D4AF37]/10 px-4 py-2 text-xs font-extrabold text-[#F1D57A] hover:bg-[#D4AF37]/20"
+              >
                 New here? Start with the guided path
               </Link>
             </div>
@@ -794,12 +808,20 @@ export default function Home() {
                 <div className="flex flex-wrap items-center gap-2 text-xs text-white/75">
                   <span className="font-bold text-white/65">Resume:</span>
                   {recentProducts.slice(0, 2).map((p) => (
-                    <Link key={p._id} href={`/marketplace/product/${p._id}`} className="rounded-full border border-white/15 px-2.5 py-1 text-white/85 hover:bg-white/10">
+                    <Link
+                      key={p._id}
+                      href={`/marketplace/product/${p._id}`}
+                      className="rounded-full border border-white/15 px-2.5 py-1 text-white/85 hover:bg-white/10"
+                    >
                       {p.name}
                     </Link>
                   ))}
                   {recentBusinesses.slice(0, 2).map((b) => (
-                    <Link key={b.alias} href={`/business-directory/${encodeURIComponent(b.alias)}`} className="rounded-full border border-white/15 px-2.5 py-1 text-white/85 hover:bg-white/10">
+                    <Link
+                      key={b.alias}
+                      href={`/business-directory/${encodeURIComponent(b.alias)}`}
+                      className="rounded-full border border-white/15 px-2.5 py-1 text-white/85 hover:bg-white/10"
+                    >
                       {b.name}
                     </Link>
                   ))}
@@ -812,16 +834,28 @@ export default function Home() {
                 Quick paths
               </summary>
               <div className="mt-2 flex flex-wrap gap-2 text-xs">
-                <Link href="/business-directory" className="rounded-full border border-white/15 px-3 py-1 text-white/85 hover:bg-white/10">
+                <Link
+                  href="/business-directory"
+                  className="rounded-full border border-white/15 px-3 py-1 text-white/85 hover:bg-white/10"
+                >
                   Find Black-owned businesses near me
                 </Link>
-                <Link href="/marketplace" className="rounded-full border border-white/15 px-3 py-1 text-white/85 hover:bg-white/10">
+                <Link
+                  href="/marketplace"
+                  className="rounded-full border border-white/15 px-3 py-1 text-white/85 hover:bg-white/10"
+                >
                   Shop Black-owned brands and products
                 </Link>
-                <Link href="/job-listings" className="rounded-full border border-white/15 px-3 py-1 text-white/85 hover:bg-white/10">
+                <Link
+                  href="/job-listings"
+                  className="rounded-full border border-white/15 px-3 py-1 text-white/85 hover:bg-white/10"
+                >
                   Browse Black career opportunities
                 </Link>
-                <Link href="/financial-literacy" className="rounded-full border border-white/15 px-3 py-1 text-white/85 hover:bg-white/10">
+                <Link
+                  href="/financial-literacy"
+                  className="rounded-full border border-white/15 px-3 py-1 text-white/85 hover:bg-white/10"
+                >
                   Financial literacy and wealth-building resources
                 </Link>
               </div>
@@ -1381,7 +1415,7 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div className="hidden md:block">
+                <div className="mt-4 md:mt-0">
                   <div className="rounded-2xl border border-white/10 bg-black/30 p-4">
                     <div className="text-xs font-extrabold text-white/70">
                       Why students stay on BWE
