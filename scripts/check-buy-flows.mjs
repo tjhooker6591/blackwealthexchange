@@ -137,7 +137,7 @@ async function gotoWithRetry(page, url, opts = {}, retries = 2) {
   const dedup = [];
   const seen = new Set();
   for (const d of result.discovered) {
-    const k = `${d.page}::${d.label}`;
+    const k = `${d.page}::${d.label}::${d.href || ""}`;
     if (!seen.has(k)) {
       seen.add(k);
       dedup.push(d);
