@@ -81,6 +81,13 @@ function timeAgo(date?: Date | null) {
   return `${d}d ago`;
 }
 
+function normalizeQueryText(input: string) {
+  const base = String(input || "").trim();
+  return typeof (base as any).toWellFormed === "function"
+    ? (base as any).toWellFormed()
+    : base;
+}
+
 // Lightweight categorizer (client-side, no extra API work)
 function categorize(item: NewsItem): CategoryKey {
   const t = `${item.title} ${item.snippet || ""} ${item.source}`.toLowerCase();
@@ -251,6 +258,7 @@ export default function NewsPage() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const queryTerm = useMemo(() => normalizeQueryText(q), [q]);
 
   // Carousel
   const [heroIndex, setHeroIndex] = useState(0);
@@ -270,25 +278,9 @@ export default function NewsPage() {
     setLoading(true);
     setError("");
 
-    const normalizedQ = (() => {
-      const base = String(q || "").trim();
-      // Guard against malformed unicode that can throw in URL builders on some browsers.
-      return typeof (base as any).toWellFormed === "function"
-        ? (base as any).toWellFormed()
-        : base;
-    })();
-
-    let requestUrl = "/api/news/black?limit=120";
-    try {
-      const params = new URLSearchParams();
-      if (normalizedQ) params.set("q", normalizedQ);
-      if (region !== "all") params.set("region", region);
-      params.set("limit", "120"); // pull more so categories feel rich
-      requestUrl = `/api/news/black?${params.toString()}`;
-    } catch {
-      // fall back to a safe baseline endpoint
-      requestUrl = "/api/news/black?limit=120";
-    }
+    // Always load a stable baseline payload, then apply all filters client-side.
+    // This avoids browser URL/parser edge-cases causing empty dashboards.
+    const requestUrl = "/api/news/black?limit=120";
 
     try {
       const res = await fetch(requestUrl);
@@ -305,7 +297,7 @@ export default function NewsPage() {
 
       if (opts?.pushUrl) {
         router.replace(
-          { pathname: "/news", query: normalizedQ ? { q: normalizedQ } : {} },
+          { pathname: "/news", query: queryTerm ? { q: queryTerm } : {} },
           undefined,
           { shallow: true },
         );
@@ -352,7 +344,7 @@ export default function NewsPage() {
     const t = setInterval(() => load(), 10 * 60 * 1000);
     return () => clearInterval(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [region]);
+  }, []);
 
   // Derived + filtered items
   const enriched = useMemo(() => {
@@ -367,6 +359,15 @@ export default function NewsPage() {
 
     let out = list;
 
+    if (region !== "all") {
+      out = out.filter((x) => x.region === region);
+    }
+    if (queryTerm) {
+      const qq = queryTerm.toLowerCase();
+      out = out.filter((x) =>
+        `${x.title} ${x.snippet || ""} ${x.source}`.toLowerCase().includes(qq),
+      );
+    }
     if (category !== "All") {
       out = out.filter((x) => x._cat === category);
     }
@@ -381,7 +382,7 @@ export default function NewsPage() {
     });
 
     return out;
-  }, [items, category, source, sort]);
+  }, [items, region, queryTerm, category, source, sort]);
 
   // Category chips counts (based on loaded items)
   const categoryCounts = useMemo(() => {
@@ -399,12 +400,22 @@ export default function NewsPage() {
       Entertainment: 0,
     };
 
-    for (const it of items) {
+    const scoped = items.filter((it) => {
+      if (region !== "all" && it.region !== region) return false;
+      if (queryTerm) {
+        const hay = `${it.title} ${it.snippet || ""} ${it.source}`.toLowerCase();
+        if (!hay.includes(queryTerm.toLowerCase())) return false;
+      }
+      return true;
+    });
+
+    counts.All = scoped.length;
+    for (const it of scoped) {
       const c = categorize(it);
       counts[c] += 1;
     }
     return counts;
-  }, [items]);
+  }, [items, region, queryTerm]);
 
   // Hero stories: best 6 from current filters (fallback to all)
   const heroItems = useMemo(() => {
