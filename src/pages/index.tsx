@@ -727,9 +727,9 @@ export default function Home() {
               </span>
             </div>
 
-            <h1 className="mt-4 text-3xl font-black tracking-tight leading-[1.02] sm:text-4xl md:text-5xl lg:text-6xl">
-              Build Black
-              <span className="block bg-gradient-to-r from-[#D4AF37] via-[#F2D77C] to-[#D4AF37] bg-clip-text text-transparent">
+            <h1 className="mt-4 text-3xl font-black tracking-tight leading-[1.05] sm:text-4xl md:text-5xl lg:text-6xl">
+              <span className="text-white">Build Black </span>
+              <span className="bg-gradient-to-r from-[#D4AF37] via-[#F2D77C] to-[#D4AF37] bg-clip-text text-transparent">
                 Economic Power
               </span>
             </h1>
@@ -804,8 +804,6 @@ export default function Home() {
                 New here? Start with the guided path
               </Link>
             </div>
-
-
 
             <details className="mx-auto mt-3 w-full max-w-4xl rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-left">
               <summary className="cursor-pointer list-none text-xs font-semibold text-white/75">
