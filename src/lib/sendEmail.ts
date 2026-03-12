@@ -1,30 +1,66 @@
 import nodemailer from "nodemailer";
 
-export async function sendEmail({
-  to,
-  subject,
-  html,
-}: {
+type SendEmailArgs = {
   to: string;
   subject: string;
   html: string;
-}) {
+  text?: string;
+};
+
+function getSmtpConfig() {
+  const host = process.env.SMTP_HOST;
+  const port = Number(process.env.SMTP_PORT || 587);
+  const user = process.env.SMTP_USER;
+  const pass = process.env.SMTP_PASS;
+  const from = process.env.SMTP_FROM;
+
+  if (!host) throw new Error("Missing SMTP_HOST");
+  if (!port || Number.isNaN(port)) throw new Error("Invalid SMTP_PORT");
+  if (!user) throw new Error("Missing SMTP_USER");
+  if (!pass) throw new Error("Missing SMTP_PASS");
+  if (!from) throw new Error("Missing SMTP_FROM");
+
+  return {
+    host,
+    port,
+    secure: port === 465,
+    user,
+    pass,
+    from,
+  };
+}
+
+export async function sendEmail({ to, subject, html, text }: SendEmailArgs) {
+  const smtp = getSmtpConfig();
+
   const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST!,
-    port: Number(process.env.SMTP_PORT!),
-    secure: false,
+    host: smtp.host,
+    port: smtp.port,
+    secure: smtp.secure,
     auth: {
-      user: process.env.SMTP_USER!,
-      pass: process.env.SMTP_PASS!,
+      user: smtp.user,
+      pass: smtp.pass,
     },
   });
 
-  await transporter.sendMail({
-    from: `"Black Wealth Exchange" <${process.env.SMTP_FROM!}>`,
+  await transporter.verify();
+
+  const info = await transporter.sendMail({
+    from: `"Black Wealth Exchange" <${smtp.from}>`,
     to,
     subject,
+    text,
     html,
   });
+
+  console.log("[email] sent", {
+    to,
+    subject,
+    messageId: info.messageId,
+    response: info.response,
+  });
+
+  return info;
 }
 
 export async function sendBusinessAlert({
@@ -42,6 +78,14 @@ export async function sendBusinessAlert({
 }) {
   const safeBusinessName = businessName || "Your Business";
   const safeMessage = message || "";
+
+  const textParts = [
+    "Black Wealth Exchange Business Alert",
+    `Business: ${safeBusinessName}`,
+    safeMessage,
+    ctaUrl ? `${ctaText || "View Details"}: ${ctaUrl}` : "",
+    "You’re receiving this email because your business is listed on Black Wealth Exchange.",
+  ].filter(Boolean);
 
   const html = `
     <div style="font-family: Arial, sans-serif; line-height: 1.5; color: #111;">
@@ -74,6 +118,7 @@ export async function sendBusinessAlert({
   return sendEmail({
     to,
     subject: `Black Wealth Exchange Alert – ${safeBusinessName}`,
+    text: textParts.join("\n\n"),
     html,
   });
 }
