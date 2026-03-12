@@ -275,8 +275,10 @@ export default function NewsPage() {
     if (region !== "all") params.set("region", region);
     params.set("limit", "120"); // pull more so categories feel rich
 
+    const requestUrl = `/api/news/black?${params.toString()}`;
+
     try {
-      const res = await fetch(`/api/news/black?${params.toString()}`);
+      const res = await fetch(requestUrl);
       const data = (await res.json()) as ApiResponse;
       if (!res.ok)
         throw new Error((data as any)?.error || "Failed to load news");
@@ -296,7 +298,36 @@ export default function NewsPage() {
         );
       }
     } catch (e: any) {
-      setError(e?.message || "Failed to load news");
+      const msg = String(e?.message || "");
+
+      // Some browser/network stacks can throw this opaque URL-pattern error on
+      // relative fetches; retry once against a clean endpoint and show a
+      // friendlier fallback if needed.
+      if (msg.includes("did not match the expected pattern")) {
+        try {
+          const fallbackRes = await fetch("/api/news/black?limit=120");
+          const fallbackData = (await fallbackRes.json()) as ApiResponse;
+          if (fallbackRes.ok) {
+            const gotItems = Array.isArray(fallbackData?.items)
+              ? fallbackData.items
+              : [];
+            const gotSources = Array.isArray(fallbackData?.sources)
+              ? fallbackData.sources
+              : [];
+            setItems(gotItems);
+            setSources(gotSources);
+            setFailures(fallbackData?.failures || {});
+            setUpdatedAt(fallbackData?.updatedAt || "");
+            return;
+          }
+        } catch {
+          // fall through to user-facing error
+        }
+
+        setError("Couldn’t load headlines right now. Please refresh once.");
+      } else {
+        setError(msg || "Failed to load news");
+      }
     } finally {
       setLoading(false);
     }
