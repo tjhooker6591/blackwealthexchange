@@ -702,16 +702,7 @@ export default function Home() {
       <div className="pointer-events-none absolute -top-40 left-1/2 h-[900px] w-[900px] -translate-x-1/2 rounded-full bg-[#D4AF37]/[0.06] blur-3xl" />
       <div className="pointer-events-none absolute -bottom-56 right-[-10rem] h-[560px] w-[560px] rounded-full bg-emerald-500/[0.05] blur-3xl" />
 
-      <header className="relative isolate overflow-hidden z-10 pb-5 pt-8 sm:pb-7 sm:pt-11">
-        <div
-          className="pointer-events-none absolute inset-0 -z-10 opacity-[0.15]"
-          style={{
-            backgroundImage: "url('/images/hero1.jpg')",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-          }}
-        />
-        <div className="pointer-events-none absolute inset-0 -z-10 bg-black/82" />
+      <header className="relative z-10 pb-5 pt-8 sm:pb-7 sm:pt-11">
         <div className="container relative z-10 mx-auto max-w-6xl px-4">
           <div className="text-center">
             <div className="mx-auto inline-flex items-center justify-center gap-2 rounded-full border border-[#D4AF37]/20 bg-[#D4AF37]/8 px-3 py-1.5 text-[11px] text-[#EFD27A] sm:px-3.5 sm:text-xs">
@@ -728,18 +719,30 @@ export default function Home() {
               </span>
             </div>
 
-            <h1 className="mt-4 text-3xl font-black tracking-tight leading-[1.05] sm:text-4xl md:text-5xl lg:text-6xl">
-              <span className="text-white">Build Black </span>
-              <span className="bg-gradient-to-r from-[#D4AF37] via-[#F2D77C] to-[#D4AF37] bg-clip-text text-transparent">
-                Economic Power
-              </span>
-            </h1>
+            <div className="relative isolate overflow-hidden mx-auto mt-4 max-w-3xl rounded-2xl px-3 py-3 sm:px-4 sm:py-4">
+              <div
+                className="pointer-events-none absolute inset-0 -z-10 opacity-[0.16]"
+                style={{
+                  backgroundImage: "url('/images/hero1.jpg')",
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }}
+              />
+              <div className="pointer-events-none absolute inset-0 -z-10 bg-black/82" />
 
-            <p className="mx-auto mt-3 max-w-2xl text-sm text-white/72 sm:text-base md:text-lg">
-              The premium hub to discover Black-owned businesses, activate
-              opportunities, and move from discovery to real-world action
-              faster.
-            </p>
+              <h1 className="text-3xl font-black tracking-tight leading-[1.05] sm:text-4xl md:text-5xl lg:text-6xl">
+                <span className="text-white">Build Black </span>
+                <span className="bg-gradient-to-r from-[#D4AF37] via-[#F2D77C] to-[#D4AF37] bg-clip-text text-transparent">
+                  Economic Power
+                </span>
+              </h1>
+
+              <p className="mx-auto mt-3 max-w-2xl text-sm text-white/72 sm:text-base md:text-lg">
+                The premium hub to discover Black-owned businesses, activate
+                opportunities, and move from discovery to real-world action
+                faster.
+              </p>
+            </div>
 
             <div className="mx-auto mt-5 flex w-full max-w-xl flex-col gap-2.5 sm:flex-row sm:justify-center">
               {user ? (
