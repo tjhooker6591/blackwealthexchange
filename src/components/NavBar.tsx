@@ -138,33 +138,31 @@ export default function NavBar() {
           aria-expanded={mobileMenuOpen}
           aria-controls="mobile-nav-menu"
           aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
-          className="inline-flex h-9 items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/[0.04] px-3 text-[13px] font-bold text-white/90 shadow-[0_4px_16px_rgba(0,0,0,0.25)] backdrop-blur-sm transition hover:border-[#D4AF37]/45 hover:text-[#D4AF37] md:hidden"
+          className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-white/15 bg-white/[0.04] text-white/90 shadow-[0_4px_16px_rgba(0,0,0,0.25)] backdrop-blur-sm transition hover:border-[#D4AF37]/45 hover:text-[#D4AF37] md:hidden"
         >
-          <span className="inline-flex h-5 w-5 items-center justify-center rounded-md bg-white/10">
-            <svg
-              className="h-3.5 w-3.5 shrink-0"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
-              {mobileMenuOpen ? (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M6 6l12 12M18 6L6 18"
-                />
-              ) : (
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M4 7h16M4 12h16M4 17h16"
-                />
-              )}
-            </svg>
-          </span>
-          <span className="leading-none">Menu</span>
+          <svg
+            className="h-4 w-4 shrink-0"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            {mobileMenuOpen ? (
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 6l12 12M18 6L6 18"
+              />
+            ) : (
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M4 7h16M4 12h16M4 17h16"
+              />
+            )}
+          </svg>
+          <span className="sr-only">{mobileMenuOpen ? "Close menu" : "Open menu"}</span>
         </button>
       </div>
 
