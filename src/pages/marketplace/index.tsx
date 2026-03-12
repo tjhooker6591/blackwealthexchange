@@ -3,6 +3,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
+import { canonicalUrl, truncateMeta } from "@/lib/seo";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import {
@@ -220,14 +221,21 @@ export default function Marketplace() {
         total ? ` • ${total} total` : ""
       }`;
 
+  const canonical = canonicalUrl("/marketplace");
+  const title = "Black-Owned Product Marketplace | Black Wealth Exchange";
+  const description = truncateMeta(
+    "Shop Black-owned brands and products in a trusted marketplace. Discover apparel, beauty, books, home goods, and more.",
+  );
+
   return (
     <div className="min-h-screen bg-black text-white">
       <Head>
-        <title>Marketplace | Black Wealth Exchange</title>
-        <meta
-          name="description"
-          content="Discover and support Black-owned businesses. Shop with purpose on Black Wealth Exchange."
-        />
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonical} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:url" content={canonical} />
       </Head>
 
       <div className="pointer-events-none fixed inset-0 opacity-60">
@@ -435,7 +443,7 @@ export default function Marketplace() {
                           alt={product.name}
                           fill
                           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, (max-width: 1536px) 25vw, 20vw"
-                          className="object-cover transition duration-500 group-hover:scale-[1.03]"
+                          className="object-cover transition duration-500 group-hover:scale-[1.03] object-center w-full h-56 sm:h-64"
                         />
                       ) : (
                         <div className="flex h-full w-full items-center justify-center">
@@ -623,7 +631,7 @@ export default function Marketplace() {
             alt="Empowering the Community"
             width={520}
             height={360}
-            className="mx-auto mb-5 rounded-2xl border border-white/10 object-cover shadow-xl"
+            className="mx-auto mb-5 rounded-2xl border border-white/10 object-cover shadow-xl object-center w-full h-56 sm:h-64"
           />
         </div>
         <p className="text-sm text-gray-300 sm:text-base">

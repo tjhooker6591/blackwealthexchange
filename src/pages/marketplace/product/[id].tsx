@@ -1,10 +1,14 @@
-"use client";
-
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import type { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import Link from "next/link";
+import Head from "next/head";
 import BuyNowButton from "@/components/BuyNowButton";
+import clientPromise from "@/lib/mongodb";
+import { getMongoDbName } from "@/lib/env";
+import { ObjectId } from "mongodb";
+import { canonicalUrl, getBaseUrl, truncateMeta } from "@/lib/seo";
 
 interface Product {
   _id: string;
@@ -15,17 +19,52 @@ interface Product {
   imageUrl?: string;
 }
 
-const ProductDetailPage = () => {
+type Props = {
+  initialProduct: Product | null;
+};
+
+export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
+  const rawId = Array.isArray(ctx.params?.id) ? ctx.params?.id[0] : ctx.params?.id;
+  const id = typeof rawId === "string" ? rawId : "";
+
+  if (!id) return { props: { initialProduct: null } };
+
+  try {
+    const client = await clientPromise;
+    const db = client.db(getMongoDbName());
+    const products = db.collection("products");
+
+    const query = ObjectId.isValid(id) ? { _id: new ObjectId(id) } : { _id: id };
+    const doc: any = await products.findOne(query);
+
+    if (!doc) return { props: { initialProduct: null } };
+
+    const initialProduct: Product = {
+      _id: String(doc._id),
+      name: String(doc.name || "Product"),
+      description: typeof doc.description === "string" ? doc.description : "",
+      price: Number(doc.price || 0),
+      category: String(doc.category || "Other"),
+      imageUrl: typeof doc.imageUrl === "string" ? doc.imageUrl : "",
+    };
+
+    return { props: { initialProduct } };
+  } catch {
+    return { props: { initialProduct: null } };
+  }
+};
+
+export default function ProductDetailPage({ initialProduct }: Props) {
   const router = useRouter();
   const { id } = router.query;
 
-  const [product, setProduct] = useState<Product | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [product, setProduct] = useState<Product | null>(initialProduct);
+  const [loading, setLoading] = useState(!initialProduct);
   const [showModal, setShowModal] = useState(false);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
 
-  // Fetch single product
   useEffect(() => {
+    if (initialProduct) return;
     if (!id) return;
 
     const fetchProduct = async () => {
@@ -36,8 +75,7 @@ const ProductDetailPage = () => {
 
         const data = await res.json();
         setProduct(data?.product || null);
-      } catch (error) {
-        console.error("Error fetching product:", error);
+      } catch {
         setProduct(null);
       } finally {
         setLoading(false);
@@ -45,9 +83,8 @@ const ProductDetailPage = () => {
     };
 
     fetchProduct();
-  }, [id]);
+  }, [id, initialProduct]);
 
-  // Fetch related products
   useEffect(() => {
     const fetchRelated = async () => {
       if (!product) return;
@@ -61,14 +98,12 @@ const ProductDetailPage = () => {
         const all = await res.json();
         const related = ((all?.products || []) as Product[])
           .filter(
-            (p: Product) =>
-              p.category === product.category && p._id !== product._id,
+            (p: Product) => p.category === product.category && p._id !== product._id,
           )
           .slice(0, 4);
 
         setRelatedProducts(related);
-      } catch (error) {
-        console.error("Error fetching related products:", error);
+      } catch {
         setRelatedProducts([]);
       }
     };
@@ -76,9 +111,67 @@ const ProductDetailPage = () => {
     fetchRelated();
   }, [product]);
 
+  const canonical = canonicalUrl(`/marketplace/product/${encodeURIComponent(String(id || initialProduct?._id || ""))}`);
+  const title = product
+    ? `${product.name} | Black-Owned Product Marketplace | Black Wealth Exchange`
+    : "Product | Black Wealth Exchange Marketplace";
+  const description = truncateMeta(
+    product?.description ||
+      `Shop ${product?.name || "Black-owned products"} on Black Wealth Exchange Marketplace.`,
+  );
+  const image = product?.imageUrl || "/placeholder.png";
+  const base = getBaseUrl().replace(/\/$/, "");
+  const absoluteImage = image.startsWith("http")
+    ? image
+    : `${base}${image.startsWith("/") ? image : `/${image}`}`;
+
+  const productSchema = useMemo(
+    () =>
+      product
+        ? {
+            "@context": "https://schema.org",
+            "@type": "Product",
+            name: product.name,
+            description: product.description || "",
+            image: [absoluteImage],
+            category: product.category || "Other",
+            offers: {
+              "@type": "Offer",
+              priceCurrency: "USD",
+              price: Number(product.price || 0).toFixed(2),
+              availability: "https://schema.org/InStock",
+              url: canonical,
+            },
+          }
+        : null,
+    [product, absoluteImage, canonical],
+  );
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: canonicalUrl("/") },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Marketplace",
+        item: canonicalUrl("/marketplace"),
+      },
+      { "@type": "ListItem", position: 3, name: product?.name || "Product", item: canonical },
+    ],
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-black text-white text-center py-20">
+        <Head>
+          <title>{title}</title>
+          <meta name="description" content={description} />
+          <link rel="canonical" href={canonical} />
+          <meta property="og:title" content={title} />
+          <meta property="og:description" content={description} />
+        </Head>
         Loading...
       </div>
     );
@@ -87,6 +180,13 @@ const ProductDetailPage = () => {
   if (!product) {
     return (
       <div className="min-h-screen bg-black text-white text-center py-20">
+        <Head>
+          <title>{title}</title>
+          <meta name="description" content={description} />
+          <link rel="canonical" href={canonical} />
+          <meta property="og:title" content={title} />
+          <meta property="og:description" content={description} />
+        </Head>
         Product not found.
       </div>
     );
@@ -94,6 +194,27 @@ const ProductDetailPage = () => {
 
   return (
     <div className="min-h-screen bg-black text-white px-4 py-10">
+      <Head>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonical} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:type" content="product" />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:image" content={absoluteImage} />
+      </Head>
+      {productSchema ? (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+        />
+      ) : null}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+
       <div className="max-w-5xl mx-auto bg-gray-900 border border-gold rounded-xl p-6 shadow-xl">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="relative w-full h-72 md:h-[500px] overflow-hidden rounded-lg border border-white/10 bg-black/30">
@@ -108,9 +229,7 @@ const ProductDetailPage = () => {
           </div>
 
           <div>
-            <h1 className="text-3xl font-bold text-gold mb-2">
-              {product.name}
-            </h1>
+            <h1 className="text-3xl font-bold text-gold mb-2">{product.name}</h1>
 
             <p className="text-sm text-gray-400 mb-2">
               Category: {product.category || "Other"}
@@ -125,11 +244,7 @@ const ProductDetailPage = () => {
             </p>
 
             <div className="space-y-3">
-              <BuyNowButton
-                itemId={product._id}
-                amount={product.price}
-                type="product"
-              />
+              <BuyNowButton itemId={product._id} amount={product.price} type="product" />
 
               <button
                 onClick={() => setShowModal(true)}
@@ -141,9 +256,8 @@ const ProductDetailPage = () => {
 
             <div className="mt-6 rounded-lg border border-white/10 bg-white/5 p-4 text-sm text-gray-300">
               <p>
-                You do not need an account to purchase. If checkout is
-                temporarily unavailable for this product, please try again
-                shortly or use Contact Seller for more information.
+                You do not need an account to purchase. If checkout is temporarily unavailable for this
+                product, please try again shortly or use Contact Seller for more information.
               </p>
             </div>
           </div>
@@ -160,9 +274,7 @@ const ProductDetailPage = () => {
 
       {relatedProducts.length > 0 && (
         <div className="max-w-6xl mx-auto mt-16">
-          <h2 className="text-2xl font-bold text-gold mb-6 text-center">
-            You May Also Like
-          </h2>
+          <h2 className="text-2xl font-bold text-gold mb-6 text-center">You May Also Like</h2>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
             {relatedProducts.map((item) => (
@@ -185,12 +297,8 @@ const ProductDetailPage = () => {
                   <h3 className="text-sm md:text-lg font-bold text-white mb-1 line-clamp-2">
                     {item.name}
                   </h3>
-                  <p className="text-xs md:text-sm text-gray-400 mb-1 truncate">
-                    {item.category}
-                  </p>
-                  <p className="text-sm md:text-md font-semibold text-gold">
-                    ${item.price.toFixed(2)}
-                  </p>
+                  <p className="text-xs md:text-sm text-gray-400 mb-1 truncate">{item.category}</p>
+                  <p className="text-sm md:text-md font-semibold text-gold">${item.price.toFixed(2)}</p>
                 </div>
               </Link>
             ))}
@@ -201,13 +309,11 @@ const ProductDetailPage = () => {
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/80 z-50 px-4">
           <div className="bg-gray-900 border border-gold text-white rounded-xl p-6 max-w-md w-full shadow-lg">
-            <h2 className="text-xl font-bold text-gold mb-4 text-center">
-              Contact the Seller
-            </h2>
+            <h2 className="text-xl font-bold text-gold mb-4 text-center">Contact the Seller</h2>
 
             <p className="text-gray-300 mb-4 text-sm text-center">
-              This is a placeholder message. In the future, this can show the
-              seller’s contact email, messaging link, or seller profile.
+              This is a placeholder message. In the future, this can show the seller’s contact email,
+              messaging link, or seller profile.
             </p>
 
             <button
@@ -221,6 +327,4 @@ const ProductDetailPage = () => {
       )}
     </div>
   );
-};
-
-export default ProductDetailPage;
+}

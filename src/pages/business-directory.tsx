@@ -3,6 +3,8 @@
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import Head from "next/head";
+import { canonicalUrl, truncateMeta } from "@/lib/seo";
 import { useRouter } from "next/router";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -54,6 +56,24 @@ function trackFlowEvent(payload: Record<string, unknown>) {
     body,
     keepalive: true,
   }).catch(() => {});
+}
+
+type RecentBiz = {
+  alias: string;
+  name: string;
+  ts: number;
+};
+
+function getRecentBiz(): RecentBiz[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem("bwe:recent-businesses");
+    if (!raw) return [];
+    const arr = JSON.parse(raw);
+    return Array.isArray(arr) ? arr.filter(Boolean).slice(0, 6) : [];
+  } catch {
+    return [];
+  }
 }
 
 function toInt(v: any, def: number) {
@@ -337,6 +357,7 @@ export default function BusinessDirectory() {
   const [includeIncomplete, setIncludeIncomplete] = useState(false);
 
   const [rows, setRows] = useState<Row[]>([]);
+  const [recentBiz, setRecentBiz] = useState<RecentBiz[]>([]);
   const [recent, setRecent] = useState<RecentBusiness[]>([]);
   const [total, setTotal] = useState(0);
   const [sponsorAds, setSponsorAds] = useState(DEFAULT_SPONSOR_ADS);
@@ -351,6 +372,10 @@ export default function BusinessDirectory() {
 
   useEffect(() => {
     setRecent(getRecentBusinesses());
+  }, [router.asPath]);
+
+  useEffect(() => {
+    setRecentBiz(getRecentBiz());
   }, [router.asPath]);
 
   const hasActiveFilters =
@@ -777,8 +802,22 @@ export default function BusinessDirectory() {
     });
   }, [hasSearched, isLoading, total, input, category, stateFilter]);
 
+  const canonical = canonicalUrl("/business-directory");
+  const title = "Black-Owned Business Directory | Find Verified Black Businesses Near You";
+  const description = truncateMeta(
+    "Search Black-owned businesses by category and location. Discover verified listings, trusted profiles, and local services on Black Wealth Exchange.",
+  );
+
   return (
     <div className="relative min-h-screen overflow-hidden bg-neutral-950 text-white">
+      <Head>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonical} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:url" content={canonical} />
+      </Head>
       {/* subtle glows like index */}
       <div className="pointer-events-none absolute -top-40 left-1/2 h-[800px] w-[800px] -translate-x-1/2 rounded-full bg-[#D4AF37]/[0.06] blur-3xl" />
       <div className="pointer-events-none absolute -bottom-56 right-[-10rem] h-[520px] w-[520px] rounded-full bg-emerald-500/[0.05] blur-3xl" />

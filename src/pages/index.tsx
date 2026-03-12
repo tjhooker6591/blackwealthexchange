@@ -10,6 +10,8 @@ import {
 } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import Head from "next/head";
+import { canonicalUrl, getBaseUrl, truncateMeta } from "@/lib/seo";
 import {
   BookOpen,
   GraduationCap,
@@ -598,6 +600,37 @@ export default function Home() {
         { img: "/ads/sample-banner3.jpg", name: "Featured Sponsor" },
       ];
 
+  const base = getBaseUrl();
+  const canonical = canonicalUrl("/");
+  const title = "Black Wealth Exchange | Black-Owned Businesses, Jobs, Marketplace & Financial Literacy";
+  const description = truncateMeta(
+    "Discover Black-owned businesses, shop Black-owned brands, explore jobs and career opportunities, and access financial literacy resources built to strengthen Black economic power.",
+  );
+
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "Black Wealth Exchange",
+    url: canonical,
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${base.replace(/\/$/, "")}/business-directory?search={search_term_string}`,
+      "query-input": "required name=search_term_string",
+    },
+  };
+
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "Black Wealth Exchange",
+    url: canonical,
+    logo: `${base.replace(/\/$/, "")}/favicon.png`,
+    sameAs: [
+      "https://www.instagram.com/blackwealthexchange/",
+      "https://www.linkedin.com/company/black-wealth-exchange/",
+    ],
+  };
+
   const studentOpportunities = [
     {
       title: "Scholarships",
@@ -623,6 +656,27 @@ export default function Home() {
 
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-neutral-950 text-white">
+      <Head>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonical} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content={`${base.replace(/\/$/, "")}/images/hero1.jpg`} />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+      </Head>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+      />
       <div className="absolute inset-0 bg-neutral-950" />
       <div className="absolute inset-0 bg-gradient-to-b from-neutral-950 via-neutral-950/70 to-black/90" />
       <div className="pointer-events-none absolute -top-40 left-1/2 h-[900px] w-[900px] -translate-x-1/2 rounded-full bg-[#D4AF37]/[0.06] blur-3xl" />

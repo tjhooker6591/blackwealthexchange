@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import Head from "next/head";
 import { useRouter } from "next/router";
+import { canonicalUrl, truncateMeta } from "@/lib/seo";
 
 type Business = {
   business_name?: string;
@@ -64,6 +66,38 @@ function trackFlowEvent(payload: Record<string, unknown>) {
   }).catch(() => {});
 }
 
+const RECENT_BIZ_KEY = "bwe:recent-businesses";
+
+type RecentBiz = {
+  alias: string;
+  name: string;
+  category?: string;
+  city?: string;
+  state?: string;
+  ts: number;
+};
+
+function getRecentBiz(): RecentBiz[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(RECENT_BIZ_KEY);
+    if (!raw) return [];
+    const arr = JSON.parse(raw);
+    if (!Array.isArray(arr)) return [];
+    return arr.filter(Boolean).slice(0, 8);
+  } catch {
+    return [];
+  }
+}
+
+function pushRecentBiz(item: RecentBiz) {
+  if (typeof window === "undefined") return;
+  const next = [item, ...getRecentBiz().filter((x) => x.alias !== item.alias)].slice(0, 6);
+  try {
+    window.localStorage.setItem(RECENT_BIZ_KEY, JSON.stringify(next));
+  } catch {}
+}
+
 export default function BusinessDetail() {
   const router = useRouter();
   const alias = useMemo(() => {
@@ -123,6 +157,8 @@ export default function BusinessDetail() {
     };
   }, [router.isReady, alias]);
 
+  const categoryText = toCategoryText(business?.categories);
+
   useEffect(() => {
     if (!business || !alias) return;
     trackFlowEvent({
@@ -130,10 +166,18 @@ export default function BusinessDetail() {
       businessAlias: alias,
       source,
     });
-  }, [business, alias, source]);
+
+    pushRecentBiz({
+      alias,
+      name: safeStr(business.business_name) || alias,
+      category: categoryText,
+      city: safeStr(business.city),
+      state: safeStr(business.state),
+      ts: Date.now(),
+    });
+  }, [business, alias, source, categoryText]);
 
   const website = safeWebsite(business?.website);
-  const categoryText = toCategoryText(business?.categories);
   const placeLine = [safeStr(business?.city), safeStr(business?.state)]
     .filter(Boolean)
     .join(", ");
@@ -161,8 +205,78 @@ export default function BusinessDetail() {
         : Number(business?.completenessScore || 0) >= 70,
   };
 
+  const pageTitle = `${getTitle(business || {})} | Black-Owned Business Directory | Black Wealth Exchange`;
+  const pageDescription = truncateMeta(
+    safeStr(business?.description) ||
+      `${getTitle(business || {})} in ${placeLine || "your area"}. Discover verified Black-owned businesses on Black Wealth Exchange.`,
+  );
+  const canonical = canonicalUrl(`/business-directory/${encodeURIComponent(alias || "")}`);
+
+  const localBusinessSchema = business
+    ? {
+        "@context": "https://schema.org",
+        "@type": "LocalBusiness",
+        name: getTitle(business),
+        description: safeStr(business.description),
+        url: website || canonical,
+        telephone: safeStr(business.phone) || undefined,
+        address: locationText
+          ? {
+              "@type": "PostalAddress",
+              streetAddress: safeStr(business.address),
+              addressLocality: safeStr(business.city),
+              addressRegion: safeStr(business.state),
+            }
+          : undefined,
+      }
+    : null;
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: canonicalUrl("/"),
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Business Directory",
+        item: canonicalUrl("/business-directory"),
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: getTitle(business || {}),
+        item: canonical,
+      },
+    ],
+  };
+
   return (
     <div className="min-h-screen bg-neutral-950 text-white">
+      <Head>
+        <title>{pageTitle}</title>
+        <meta name="description" content={pageDescription} />
+        <link rel="canonical" href={canonical} />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={pageDescription} />
+        <meta property="og:type" content="business.business" />
+        <meta property="og:url" content={canonical} />
+      </Head>
+      {localBusinessSchema ? (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }}
+        />
+      ) : null}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       <div className="pointer-events-none absolute inset-x-0 top-0 h-80 bg-gradient-to-b from-[#D4AF37]/16 via-transparent to-transparent" />
       <div className="pointer-events-none absolute -top-24 left-1/2 h-56 w-[40rem] -translate-x-1/2 rounded-full bg-[#D4AF37]/10 blur-3xl" />
 
@@ -213,7 +327,9 @@ export default function BusinessDetail() {
             </div>
           ) : !business ? (
             <div className="p-6 md:p-8 text-white/70">
-              <div className="text-white/80 font-semibold">Business not found.</div>
+              <div className="text-white/80 font-semibold">
+                Business not found.
+              </div>
               <p className="mt-1 text-sm text-white/55">
                 This listing may have moved or the search query was too narrow.
               </p>

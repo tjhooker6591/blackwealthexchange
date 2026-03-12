@@ -3,6 +3,8 @@ import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import { useEffect } from "react";
+import { useRouter } from "next/router";
+import { canonicalUrl, getBaseUrl } from "@/lib/seo";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/footer";
 import { SessionProvider } from "next-auth/react";
@@ -11,6 +13,10 @@ export default function App({
   Component,
   pageProps: { session, ...pageProps },
 }: AppProps) {
+  const router = useRouter();
+  const currentPath = router.asPath?.split("?")[0] || "/";
+  const canonical = canonicalUrl(currentPath);
+  const site = getBaseUrl();
   useEffect(() => {
     // Prevent right-click context menu
     const disableContextMenu = (e: MouseEvent) => e.preventDefault();
@@ -48,15 +54,18 @@ export default function App({
   return (
     <SessionProvider session={session}>
       <Head>
-        {/* ensure proper initial zoom + width on mobile */}
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>Black Wealth Exchange</title>
-        <meta
-          name="description"
-          content="Empowering Black-owned businesses and wealth-building."
-        />
+        <meta name="robots" content="index,follow,max-image-preview:large" />
+        <meta property="og:site_name" content="Black Wealth Exchange" />
+        <meta property="og:type" content="website" />
+        <meta property="og:locale" content="en_US" />
+        <meta property="og:url" content={canonical} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@BlackWealthX" />
+        <link rel="canonical" href={canonical} />
         <link rel="icon" href="/favicon.png" type="image/png" />
         <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="sitemap" type="application/xml" title="Sitemap" href={`${site}/sitemap.xml`} />
       </Head>
 
       {/* Global Header / Navigation */}

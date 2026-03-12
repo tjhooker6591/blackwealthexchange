@@ -1,6 +1,8 @@
 // pages/resources/index.tsx
 import Link from "next/link";
+import Head from "next/head";
 import React from "react";
+import { canonicalUrl, truncateMeta } from "@/lib/seo";
 
 const articles = [
   {
@@ -24,8 +26,22 @@ const articles = [
 ];
 
 export default function ResourcesIndex() {
+  const canonical = canonicalUrl("/resources");
+  const title = "Financial Literacy & Wealth-Building Resources | Black Wealth Exchange";
+  const description = truncateMeta(
+    "Access practical wealth-building and financial literacy resources designed to support Black professionals, founders, and families.",
+  );
+
   return (
     <div className="min-h-screen bg-black text-white p-8">
+      <Head>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonical} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:url" content={canonical} />
+      </Head>
       <div className="max-w-5xl mx-auto">
         <h1 className="text-4xl font-bold text-gold mb-6">
           Employer Resources
