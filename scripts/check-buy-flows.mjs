@@ -183,7 +183,15 @@ async function gotoWithRetry(page, url, opts = {}, retries = 2) {
     let clickError = null;
 
     try {
-      const locator = page.locator(`text=${item.label}`).first();
+      let locator = null;
+      if (item.href && item.href.startsWith("/")) {
+        locator = page.locator(`a[href=\"${item.href}\"]`).first();
+      }
+
+      if (!locator || !(await locator.count())) {
+        locator = page.locator(`text=${item.label}`).first();
+      }
+
       if (await locator.count()) {
         await locator.click({ timeout: 4000 });
         clicked = true;
