@@ -2,6 +2,7 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
+import Image from "next/image";
 import type { PulseMoment, PulseVibe } from "@/lib/pulse";
 
 function cn(...c: Array<string | false | null | undefined>) {
@@ -129,11 +130,13 @@ export default function MomentArcCard({ moment }: { moment: PulseMoment }) {
       {/* Cinematic image */}
       <div className="relative h-40 w-full">
         {hero ? (
-          <img
+          <Image
             src={hero}
             alt=""
-            className="h-full w-full object-cover opacity-85"
-            loading="lazy"
+            fill
+            className="object-cover opacity-85"
+            sizes="(max-width: 768px) 100vw, 50vw"
+            unoptimized
           />
         ) : (
           <div className="h-full w-full bg-gradient-to-br from-gray-900 to-black" />

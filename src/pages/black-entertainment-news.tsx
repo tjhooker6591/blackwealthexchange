@@ -10,6 +10,7 @@ import React, {
 } from "react";
 import Head from "next/head";
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 
 // Uses your existing pulse builder
@@ -579,13 +580,15 @@ function PosterImage({
 
       {/* Real image on top if it loads */}
       {s && !bad ? (
-        <img
+        <Image
           src={s}
           alt=""
-          className="absolute inset-0 h-full w-full object-cover opacity-80"
-          loading="lazy"
+          fill
+          className="object-cover opacity-80"
+          sizes="(max-width: 768px) 100vw, 50vw"
           referrerPolicy="no-referrer"
           onError={() => setBad(true)}
+          unoptimized
         />
       ) : null}
 
