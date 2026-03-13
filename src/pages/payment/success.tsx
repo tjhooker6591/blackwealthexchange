@@ -18,7 +18,7 @@ export default function PaymentSuccessCompat() {
       : `/payment-success`;
 
     router.replace(dest);
-  }, [router.isReady, router.query.session_id]);
+  }, [router]);
 
   return (
     <>

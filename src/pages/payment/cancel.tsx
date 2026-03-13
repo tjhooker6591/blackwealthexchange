@@ -8,7 +8,7 @@ export default function PaymentCancelCompat() {
   useEffect(() => {
     if (!router.isReady) return;
     router.replace("/payment-cancel");
-  }, [router.isReady]);
+  }, [router]);
 
   return (
     <>
