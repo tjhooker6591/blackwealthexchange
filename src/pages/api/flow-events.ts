@@ -7,17 +7,21 @@ import {
   hitApiRateLimit,
 } from "@/lib/apiRateLimit";
 
-const ALLOWED = new Set([
-  "search_performed",
-  "result_click",
-  "business_detail_view",
-  "outbound_website_click",
-  "directions_click",
-  "no_results_shown",
-  "rescue_action_clicked",
-  "filter_relaxed",
-  "suggested_category_clicked",
-]);
+function s(v: unknown) {
+  return typeof v === "string" ? v.trim() : "";
+}
+
+function normalizeEventType(body: Record<string, unknown>) {
+  const raw =
+    s(body.eventType) ||
+    s(body.event) ||
+    s(body.action) ||
+    s(body.name);
+
+  if (!raw) return "";
+
+  return raw.slice(0, 100);
+}
 
 export default async function handler(
   req: NextApiRequest,
@@ -34,8 +38,10 @@ export default async function handler(
         ? JSON.parse(req.body || "{}")
         : req.body || {};
 
-    const eventType = String(body.eventType || "").trim();
-    if (!ALLOWED.has(eventType)) {
+    const eventType = normalizeEventType(body);
+
+    // Keep validation, but do not restrict to the old search-only allowlist.
+    if (!eventType || !/^[a-zA-Z0-9._:-\s]{2,100}$/.test(eventType)) {
       return res.status(400).json({ error: "Invalid eventType" });
     }
 
@@ -43,6 +49,7 @@ export default async function handler(
     const db = client.db(getMongoDbName());
 
     await ensureApiRateLimitIndexes(db);
+
     const ip = getClientIp(req);
     const ipLimit = await hitApiRateLimit(db, `flow-event:ip:${ip}`, 300, 5);
     if (ipLimit.blocked) {
@@ -51,14 +58,23 @@ export default async function handler(
 
     await db.collection("flow_events").insertOne({
       eventType,
-      businessId: typeof body.businessId === "string" ? body.businessId : null,
-      businessAlias:
-        typeof body.businessAlias === "string" ? body.businessAlias : null,
-      source: typeof body.source === "string" ? body.source : null,
-      query: typeof body.query === "string" ? body.query : null,
-      category: typeof body.category === "string" ? body.category : null,
-      state: typeof body.state === "string" ? body.state : null,
-      path: typeof body.path === "string" ? body.path : req.url || null,
+
+      businessId: s(body.businessId) || null,
+      businessAlias: s(body.businessAlias) || null,
+      source: s(body.source) || null,
+      query: s(body.query) || null,
+      category: s(body.category) || null,
+      state: s(body.state) || null,
+      path: s(body.path) || req.url || null,
+
+      // homepage / guided-flow useful context
+      surface: s(body.surface) || null,
+      location: s(body.location) || null,
+      cta: s(body.cta) || null,
+      label: s(body.label) || null,
+      target: s(body.target) || null,
+      href: s(body.href) || null,
+
       createdAt: new Date(),
     });
 
