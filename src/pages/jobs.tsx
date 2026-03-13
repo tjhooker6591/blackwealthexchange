@@ -1,9 +1,25 @@
 // src/pages/jobs.tsx
 import Link from "next/link";
+import Head from "next/head";
+import { canonicalUrl, truncateMeta } from "@/lib/seo";
 
 export default function JobsHubPage() {
+  const canonical = canonicalUrl("/jobs");
+  const title = "Black Jobs & Career Opportunities | Black Wealth Exchange";
+  const description = truncateMeta(
+    "Explore Black career opportunities, job listings, and hiring pathways built to increase access, representation, and economic mobility.",
+  );
+
   return (
     <div className="min-h-screen bg-gray-950 text-white px-6 py-10">
+      <Head>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonical} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:url" content={canonical} />
+      </Head>
       {/* subtle glow */}
       <div className="pointer-events-none fixed inset-0 opacity-40">
         <div className="absolute -top-40 -left-40 h-[520px] w-[520px] rounded-full blur-3xl bg-yellow-500/20" />
@@ -22,6 +38,26 @@ export default function JobsHubPage() {
               opportunities built to uplift Black professionals and
               entrepreneurs.
             </p>
+            <div className="mt-3 flex flex-wrap gap-2 text-xs">
+              <Link
+                href="/black-jobs"
+                className="rounded-full border border-gray-700 px-3 py-1 hover:bg-gray-900"
+              >
+                Black jobs by niche
+              </Link>
+              <Link
+                href="/financial-literacy-for-black-communities"
+                className="rounded-full border border-gray-700 px-3 py-1 hover:bg-gray-900"
+              >
+                Financial literacy resources
+              </Link>
+              <Link
+                href="/privacy-policy"
+                className="rounded-full border border-gray-700 px-3 py-1 hover:bg-gray-900"
+              >
+                Trust & privacy policy
+              </Link>
+            </div>
           </div>
 
           <div className="flex gap-3">

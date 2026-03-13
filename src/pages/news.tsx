@@ -81,6 +81,13 @@ function timeAgo(date?: Date | null) {
   return `${d}d ago`;
 }
 
+function normalizeQueryText(input: string) {
+  const base = String(input || "").trim();
+  return typeof (base as any).toWellFormed === "function"
+    ? (base as any).toWellFormed()
+    : base;
+}
+
 // Lightweight categorizer (client-side, no extra API work)
 function categorize(item: NewsItem): CategoryKey {
   const t = `${item.title} ${item.snippet || ""} ${item.source}`.toLowerCase();
@@ -251,6 +258,7 @@ export default function NewsPage() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const queryTerm = useMemo(() => normalizeQueryText(q), [q]);
 
   // Carousel
   const [heroIndex, setHeroIndex] = useState(0);
@@ -270,13 +278,12 @@ export default function NewsPage() {
     setLoading(true);
     setError("");
 
-    const params = new URLSearchParams();
-    if (q.trim()) params.set("q", q.trim());
-    if (region !== "all") params.set("region", region);
-    params.set("limit", "120"); // pull more so categories feel rich
+    // Always load a stable baseline payload, then apply all filters client-side.
+    // This avoids browser URL/parser edge-cases causing empty dashboards.
+    const requestUrl = "/api/news/black?limit=120";
 
     try {
-      const res = await fetch(`/api/news/black?${params.toString()}`);
+      const res = await fetch(requestUrl);
       const data = (await res.json()) as ApiResponse;
       if (!res.ok)
         throw new Error((data as any)?.error || "Failed to load news");
@@ -290,13 +297,42 @@ export default function NewsPage() {
 
       if (opts?.pushUrl) {
         router.replace(
-          { pathname: "/news", query: q.trim() ? { q: q.trim() } : {} },
+          { pathname: "/news", query: queryTerm ? { q: queryTerm } : {} },
           undefined,
           { shallow: true },
         );
       }
     } catch (e: any) {
-      setError(e?.message || "Failed to load news");
+      const msg = String(e?.message || "");
+
+      // Some browser/network stacks can throw this opaque URL-pattern error on
+      // relative fetches; retry once against a clean endpoint and show a
+      // friendlier fallback if needed.
+      if (msg.includes("did not match the expected pattern")) {
+        try {
+          const fallbackRes = await fetch("/api/news/black?limit=120");
+          const fallbackData = (await fallbackRes.json()) as ApiResponse;
+          if (fallbackRes.ok) {
+            const gotItems = Array.isArray(fallbackData?.items)
+              ? fallbackData.items
+              : [];
+            const gotSources = Array.isArray(fallbackData?.sources)
+              ? fallbackData.sources
+              : [];
+            setItems(gotItems);
+            setSources(gotSources);
+            setFailures(fallbackData?.failures || {});
+            setUpdatedAt(fallbackData?.updatedAt || "");
+            return;
+          }
+        } catch {
+          // fall through to user-facing error
+        }
+
+        setError("Couldn’t load headlines right now. Please refresh once.");
+      } else {
+        setError(msg || "Failed to load news");
+      }
     } finally {
       setLoading(false);
     }
@@ -308,7 +344,7 @@ export default function NewsPage() {
     const t = setInterval(() => load(), 10 * 60 * 1000);
     return () => clearInterval(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [region]);
+  }, []);
 
   // Derived + filtered items
   const enriched = useMemo(() => {
@@ -323,6 +359,15 @@ export default function NewsPage() {
 
     let out = list;
 
+    if (region !== "all") {
+      out = out.filter((x) => x.region === region);
+    }
+    if (queryTerm) {
+      const qq = queryTerm.toLowerCase();
+      out = out.filter((x) =>
+        `${x.title} ${x.snippet || ""} ${x.source}`.toLowerCase().includes(qq),
+      );
+    }
     if (category !== "All") {
       out = out.filter((x) => x._cat === category);
     }
@@ -337,7 +382,7 @@ export default function NewsPage() {
     });
 
     return out;
-  }, [items, category, source, sort]);
+  }, [items, region, queryTerm, category, source, sort]);
 
   // Category chips counts (based on loaded items)
   const categoryCounts = useMemo(() => {
@@ -355,12 +400,23 @@ export default function NewsPage() {
       Entertainment: 0,
     };
 
-    for (const it of items) {
+    const scoped = items.filter((it) => {
+      if (region !== "all" && it.region !== region) return false;
+      if (queryTerm) {
+        const hay =
+          `${it.title} ${it.snippet || ""} ${it.source}`.toLowerCase();
+        if (!hay.includes(queryTerm.toLowerCase())) return false;
+      }
+      return true;
+    });
+
+    counts.All = scoped.length;
+    for (const it of scoped) {
       const c = categorize(it);
       counts[c] += 1;
     }
     return counts;
-  }, [items]);
+  }, [items, region, queryTerm]);
 
   // Hero stories: best 6 from current filters (fallback to all)
   const heroItems = useMemo(() => {

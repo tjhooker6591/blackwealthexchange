@@ -3,6 +3,8 @@
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import Head from "next/head";
+import { canonicalUrl, truncateMeta } from "@/lib/seo";
 import { useRouter } from "next/router";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -154,10 +156,8 @@ function injectSponsoredEveryN(
 
 function SponsorCard({ img, name, tagline, url, cta }: any) {
   return (
-    <a
+    <Link
       href={url}
-      target="_blank"
-      rel="noopener noreferrer"
       className="relative flex flex-col items-center justify-between rounded-2xl border border-white/10 bg-white/[0.04] p-3 shadow-[0_0_0_1px_rgba(255,255,255,0.05)] transition hover:-translate-y-0.5 hover:bg-white/[0.06]"
       style={{ minHeight: 160 }}
     >
@@ -180,16 +180,14 @@ function SponsorCard({ img, name, tagline, url, cta }: any) {
       <span className="absolute top-2 right-2 rounded-full border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-2 py-0.5 text-[10px] font-extrabold text-[#D4AF37]">
         Sponsored
       </span>
-    </a>
+    </Link>
   );
 }
 
 function SidebarAdCard({ img, name, tagline, url, cta }: any) {
   return (
-    <a
+    <Link
       href={url}
-      target="_blank"
-      rel="noopener noreferrer"
       className="relative block overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.05)] transition hover:-translate-y-0.5 hover:bg-white/[0.06]"
     >
       <div className="pointer-events-none absolute -top-14 left-1/2 h-28 w-72 -translate-x-1/2 rounded-full bg-[#D4AF37]/10 blur-3xl" />
@@ -212,7 +210,7 @@ function SidebarAdCard({ img, name, tagline, url, cta }: any) {
           </div>
         </div>
       </div>
-    </a>
+    </Link>
   );
 }
 
@@ -653,6 +651,20 @@ export default function BusinessDirectory() {
     }, 0);
   };
 
+  const applyCategory = (cat: string) => {
+    setCategory(cat);
+    // Category chips should run cleanly without stale text search carrying over.
+    setInput("");
+    setPage(1);
+    setHasSearched(true);
+    setTimeout(() => {
+      resultsTopRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }, 0);
+  };
+
   const handleImageError = (
     e: React.SyntheticEvent<HTMLImageElement, Event>,
   ) => {
@@ -735,12 +747,26 @@ export default function BusinessDirectory() {
     const approved = status === "approved" || status === "verified" || !status;
     const sponsored = Number((r as any).amountPaid || 0) > 0;
 
+    const completenessScore = Math.max(
+      0,
+      Math.min(100, Number((r as any).completenessScore || 0)),
+    );
+
     const isComplete =
       typeof (r as any).isComplete === "boolean"
         ? (r as any).isComplete
-        : Number((r as any).completenessScore || 0) >= 70;
+        : completenessScore >= 70;
 
-    return { verified, approved, sponsored, isComplete };
+    const qualityTier = verified ? "high" : isComplete ? "medium" : "basic";
+
+    return {
+      verified,
+      approved,
+      sponsored,
+      isComplete,
+      completenessScore,
+      qualityTier,
+    };
   };
 
   const getWebsite = (r: Row) => safeStr((r as any).website);
@@ -772,8 +798,23 @@ export default function BusinessDirectory() {
     });
   }, [hasSearched, isLoading, total, input, category, stateFilter]);
 
+  const canonical = canonicalUrl("/business-directory");
+  const title =
+    "Black-Owned Business Directory | Find Verified Black Businesses Near You";
+  const description = truncateMeta(
+    "Search Black-owned businesses by category and location. Discover verified listings, trusted profiles, and local services on Black Wealth Exchange.",
+  );
+
   return (
     <div className="relative min-h-screen overflow-hidden bg-neutral-950 text-white">
+      <Head>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonical} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:url" content={canonical} />
+      </Head>
       {/* subtle glows like index */}
       <div className="pointer-events-none absolute -top-40 left-1/2 h-[800px] w-[800px] -translate-x-1/2 rounded-full bg-[#D4AF37]/[0.06] blur-3xl" />
       <div className="pointer-events-none absolute -bottom-56 right-[-10rem] h-[520px] w-[520px] rounded-full bg-emerald-500/[0.05] blur-3xl" />
@@ -797,6 +838,31 @@ export default function BusinessDirectory() {
                   Premium discovery flow with clean ranking, trust cues, and
                   faster decisions.
                 </p>
+                <details className="mt-2 max-w-2xl rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-xs">
+                  <summary className="cursor-pointer list-none font-semibold text-white/75">
+                    Quick paths
+                  </summary>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    <Link
+                      href="/black-owned-businesses"
+                      className="rounded-full border border-white/20 px-3 py-1 hover:bg-white/10"
+                    >
+                      Find Black-owned businesses by city
+                    </Link>
+                    <Link
+                      href="/shop-black-owned-products"
+                      className="rounded-full border border-white/20 px-3 py-1 hover:bg-white/10"
+                    >
+                      Shop Black-owned products
+                    </Link>
+                    <Link
+                      href="/black-jobs"
+                      className="rounded-full border border-white/20 px-3 py-1 hover:bg-white/10"
+                    >
+                      Explore Black jobs
+                    </Link>
+                  </div>
+                </details>
               </div>
 
               <span className="inline-flex items-center gap-1 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-3 py-1.5 text-xs font-bold text-emerald-200">
@@ -854,31 +920,10 @@ export default function BusinessDirectory() {
               </button>
             </div>
 
-            <div className="grid gap-2 sm:grid-cols-3">
-              <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-2">
-                <div className="text-[10px] uppercase tracking-[0.08em] text-white/50 font-bold">
-                  Ranking
-                </div>
-                <div className="text-sm font-semibold text-white/80">
-                  Trust + relevance first
-                </div>
-              </div>
-              <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-2">
-                <div className="text-[10px] uppercase tracking-[0.08em] text-white/50 font-bold">
-                  Control
-                </div>
-                <div className="text-sm font-semibold text-white/80">
-                  Strong filters, zero clutter
-                </div>
-              </div>
-              <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-2">
-                <div className="text-[10px] uppercase tracking-[0.08em] text-white/50 font-bold">
-                  Goal
-                </div>
-                <div className="text-sm font-semibold text-white/80">
-                  Find, vet, and contact quickly
-                </div>
-              </div>
+            <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-sm text-white/75">
+              <span className="font-semibold text-white/85">Ranking:</span>{" "}
+              Trust + relevance first. Verified and higher-quality profiles are
+              prioritized.
             </div>
           </div>
         </div>
@@ -899,7 +944,8 @@ export default function BusinessDirectory() {
                 ].map((cat) => (
                   <button
                     key={cat}
-                    onClick={() => setCategory(cat)}
+                    onClick={() => applyCategory(cat)}
+                    aria-pressed={category === cat}
                     className={cx(
                       "rounded-xl border px-3 py-2 text-[12px] font-extrabold tracking-wide transition",
                       category === cat
@@ -1366,14 +1412,12 @@ export default function BusinessDirectory() {
                             className="h-12 w-12 rounded-xl object-cover border border-white/15"
                           />
                           <div className="min-w-0 flex-1">
-                            <a
+                            <Link
                               href={sponsorAds[(item as any).sponsorIdx].url}
-                              target="_blank"
-                              rel="noopener noreferrer"
                               className="block truncate text-[#D4AF37] font-extrabold hover:underline"
                             >
                               {sponsorAds[(item as any).sponsorIdx].name}
-                            </a>
+                            </Link>
                             <div className="truncate text-[12px] text-white/55">
                               {sponsorAds[(item as any).sponsorIdx].tagline}
                             </div>
@@ -1431,6 +1475,12 @@ export default function BusinessDirectory() {
                                   Incomplete profile
                                 </span>
                               )}
+                              <span className="rounded-full border border-white/20 bg-white/10 px-2 py-0.5 text-[10px] font-bold text-white/75">
+                                Quality score{" "}
+                                {Math.round(
+                                  getTrustMeta(item as Row).completenessScore,
+                                )}
+                              </span>
                             </div>
 
                             {/* Details line: rating · price · category */}
@@ -1469,24 +1519,28 @@ export default function BusinessDirectory() {
                                 View details
                               </Link>
                               {getWebsite(item as Row) ? (
-                                <a
-                                  href={getWebsite(item as Row)}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
+                                <Link
+                                  href={{
+                                    pathname: "/leaving",
+                                    query: { to: getWebsite(item as Row) },
+                                  }}
                                   className="rounded-lg border border-white/20 bg-black/30 px-3 py-1.5 text-[11px] font-bold text-white/80 hover:bg-black/45"
                                 >
                                   Website
-                                </a>
+                                </Link>
                               ) : null}
                               {getLocation(item as Row) ? (
-                                <a
-                                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(getLocation(item as Row))}`}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
+                                <Link
+                                  href={{
+                                    pathname: "/leaving",
+                                    query: {
+                                      to: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(getLocation(item as Row))}`,
+                                    },
+                                  }}
                                   className="rounded-lg border border-white/20 bg-black/30 px-3 py-1.5 text-[11px] font-bold text-white/80 hover:bg-black/45"
                                 >
                                   Directions
-                                </a>
+                                </Link>
                               ) : null}
                             </div>
                           </div>

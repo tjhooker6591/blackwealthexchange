@@ -3,10 +3,29 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import Head from "next/head";
+import { canonicalUrl } from "@/lib/seo";
+
+function trackFlowEvent(payload: Record<string, unknown>) {
+  if (typeof window === "undefined") return;
+  const body = JSON.stringify(payload);
+  const url = "/api/flow-events";
+  if (navigator.sendBeacon) {
+    navigator.sendBeacon(url, new Blob([body], { type: "application/json" }));
+    return;
+  }
+  fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body,
+    keepalive: true,
+  }).catch(() => {});
+}
 
 export default function Signup() {
   const router = useRouter();
   const [accountType, setAccountType] = useState("user");
+  const [signupIntent, setSignupIntent] = useState("join-bwe");
 
   const [formData, setFormData] = useState({
     email: "",
@@ -31,11 +50,31 @@ export default function Signup() {
   }, [onboardingUrl]);
 
   useEffect(() => {
-    const { type } = router.query;
-    if (type && typeof type === "string") {
-      setAccountType(type);
+    const qType =
+      typeof router.query.accountType === "string"
+        ? router.query.accountType
+        : typeof router.query.type === "string"
+          ? router.query.type
+          : null;
+
+    if (qType && ["user", "seller", "business", "employer"].includes(qType)) {
+      setAccountType(qType);
     }
-  }, [router.query]);
+
+    const qIntent =
+      typeof router.query.intent === "string"
+        ? router.query.intent
+        : "join-bwe";
+    setSignupIntent(qIntent || "join-bwe");
+
+    trackFlowEvent({
+      eventType: "signup_start",
+      source: "signup-page",
+      category: qType || "user",
+      path: router.asPath,
+      query: qIntent || "join-bwe",
+    });
+  }, [router.query, router.asPath]);
 
   const validateEmail = (email: string) => /\S+@\S+\.\S+/.test(email);
   const validatePassword = (password: string) =>
@@ -80,7 +119,7 @@ export default function Signup() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          email: formData.email,
+          email: formData.email.trim().toLowerCase(),
           password: formData.password,
           accountType,
           businessName: formData.businessName,
@@ -93,6 +132,13 @@ export default function Signup() {
       if (!response.ok) {
         throw new Error(data.error || "Signup failed.");
       }
+
+      trackFlowEvent({
+        eventType: "signup_complete",
+        source: "signup-submit",
+        category: data.accountType || accountType,
+        query: signupIntent,
+      });
 
       // If seller, trigger redirect via onboardingUrl state
       if (data.accountType === "seller") {
@@ -138,13 +184,23 @@ export default function Signup() {
     }
   };
 
+  const canonical = canonicalUrl("/signup");
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-gray-100 p-6">
+      <Head>
+        <title>Sign Up | Black Wealth Exchange</title>
+        <meta name="robots" content="noindex,nofollow" />
+        <link rel="canonical" href={canonical} />
+      </Head>
       <div className="bg-white p-8 shadow-lg rounded-lg w-full max-w-md">
         <h2 className="text-3xl font-bold text-center text-gold">
           Create an Account
         </h2>
         <p className="text-center text-gray-600 mt-2">Join the BWE Community</p>
+        <p className="text-center text-xs text-gray-500 mt-1">
+          Intent: {signupIntent.replace(/-/g, " ")}
+        </p>
 
         {error && <p className="text-red-500 text-center mt-2">{error}</p>}
         {success && !onboardingUrl && (
