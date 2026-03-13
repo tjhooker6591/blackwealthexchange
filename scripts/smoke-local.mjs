@@ -6,6 +6,8 @@ const base = process.env.SMOKE_BASE_URL || "http://127.0.0.1:3000";
 const checks = [
   ["GET /", "/", [200]],
   ["GET /start-here", "/start-here", [200]],
+  ["GET /business-directory", "/business-directory", [200]],
+  ["GET /recruiting-consulting", "/recruiting-consulting", [200]],
   ["GET /marketplace", "/marketplace", [200]],
   ["GET /marketplace/become-a-seller", "/marketplace/become-a-seller", [200]],
   ["GET /api/auth/session", "/api/auth/session", [200]],
