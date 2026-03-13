@@ -22,6 +22,27 @@ function s(v: unknown) {
   return typeof v === "string" ? v.trim() : "";
 }
 
+const HOUSE_SPONSOR_FALLBACK = "/images/sponsors/house-draft.jpg";
+
+const HOUSE_SPONSOR_IMAGE_MAP: Record<string, string> = {
+  TitanEra: "/images/sponsors/titanear.jpg",
+  "Thomas Hooker Author": "/images/sponsors/thomashookerauthor.png",
+  "Thomas Hooker Publisher": HOUSE_SPONSOR_FALLBACK,
+  Millianious: "/images/sponsors/millianious.jpg",
+  "Tiana Song Sprouts": "/images/sponsors/tiana-song-sprouts.jpg",
+  "The Last Nephilim": "/images/sponsors/thelastnephilim.jpg",
+  "Pamfa United Citizen": "/images/sponsors/pamfaunitedcitizens.jpg",
+  "Guardians of the Forgotten Realm":
+    "/images/sponsors/Guardiansoftheforgottenreleam.jpg",
+};
+
+function resolveSponsorImage(name: string, raw: string) {
+  const normalizedName = s(name);
+  const mapped = HOUSE_SPONSOR_IMAGE_MAP[normalizedName];
+  if (mapped) return mapped;
+  return safeSponsorImage(raw);
+}
+
 function normalizeBusinessUrl(raw: string) {
   const v = s(raw);
   if (!v || v === "/" || v === "#") return "";
@@ -48,7 +69,12 @@ function normalizeBusinessUrl(raw: string) {
   }
 }
 
-function featuredProfileUrl(name: string, tagline: string, img: string, target: string) {
+function featuredProfileUrl(
+  name: string,
+  tagline: string,
+  img: string,
+  target: string,
+) {
   const qs = new URLSearchParams();
   if (name) qs.set("name", name);
   if (tagline) qs.set("tagline", tagline);
@@ -59,18 +85,18 @@ function featuredProfileUrl(name: string, tagline: string, img: string, target: 
 
 function safeSponsorImage(raw: string) {
   const v = s(raw);
-  if (!v) return "/house-draft.jpg";
+  if (!v) return HOUSE_SPONSOR_FALLBACK;
   if (v.startsWith("/")) return v;
 
   try {
     const u = new URL(v);
     if (u.hostname === "example.com" || u.hostname.endsWith(".example.com")) {
-      return "/house-draft.jpg";
+      return HOUSE_SPONSOR_FALLBACK;
     }
-    // Defensive default: keep homepage stable unless source is explicitly local.
-    return "/house-draft.jpg";
+    // Keep homepage stable unless source is explicitly local.
+    return HOUSE_SPONSOR_FALLBACK;
   } catch {
-    return "/house-draft.jpg";
+    return HOUSE_SPONSOR_FALLBACK;
   }
 }
 
@@ -112,22 +138,28 @@ export default async function handler(
     if (scheduled.length) {
       const cards: SponsorCard[] = scheduled.map((row: any, i: number) => {
         const name = s(row.businessName) || "Featured Sponsor";
-        const tagline = s(row.tagline).slice(0, 90) || "Featured on Black Wealth Exchange";
-        const img = safeSponsorImage(s(row.creativeUrl));
+        const tagline =
+          s(row.tagline).slice(0, 90) || "Featured on Black Wealth Exchange";
+        const img = resolveSponsorImage(name, s(row.creativeUrl));
         const target = normalizeBusinessUrl(s(row.targetUrl || row.website));
+
         return {
-        _id: String(row.campaignId || row._id),
-        name,
-        tagline,
-        img,
-        url: featuredProfileUrl(name, tagline, img, target),
-        cta: "Learn More",
-        tier: "featured-sponsor",
-        featuredSlot: i + 1,
-        source: "featured_sponsor_schedule",
-        weekStart: row.weekStart ? new Date(row.weekStart).toISOString() : null,
-        queueStatus: s(row.queueStatus) || null,
-      }});
+          _id: String(row.campaignId || row._id),
+          name,
+          tagline,
+          img,
+          url: featuredProfileUrl(name, tagline, img, target),
+          cta: "Learn More",
+          tier: "featured-sponsor",
+          featuredSlot: i + 1,
+          source: "featured_sponsor_schedule",
+          weekStart: row.weekStart
+            ? new Date(row.weekStart).toISOString()
+            : null,
+          queueStatus: s(row.queueStatus) || null,
+        };
+      });
+
       return res.status(200).json({ ok: true, sponsors: cards });
     }
 
@@ -172,9 +204,8 @@ export default async function handler(
 
         const name = s(b?.business_name) || "Featured Sponsor";
         const tagline =
-          s(b?.description).slice(0, 90) ||
-          "Featured on Black Wealth Exchange";
-        const img = safeSponsorImage(s(b?.image));
+          s(b?.description).slice(0, 90) || "Featured on Black Wealth Exchange";
+        const img = resolveSponsorImage(name, s(b?.image));
         const target = normalizeBusinessUrl(s(b?.website));
 
         return {
@@ -208,19 +239,21 @@ export default async function handler(
     const legacyCards: SponsorCard[] = legacy.map((b: any) => {
       const name = s(b?.business_name) || "Sponsored Business";
       const tagline = s(b?.description).slice(0, 90) || "Sponsored listing";
-      const img = safeSponsorImage(s(b?.image));
+      const img = resolveSponsorImage(name, s(b?.image));
       const target = normalizeBusinessUrl(s(b?.website));
+
       return {
-      _id: String(b._id),
-      name,
-      tagline,
-      img,
-      url: featuredProfileUrl(name, tagline, img, target),
-      cta: "Learn More",
-      tier: s(b?.tier),
-      featuredSlot: null,
-      source: "businesses",
-    }});
+        _id: String(b._id),
+        name,
+        tagline,
+        img,
+        url: featuredProfileUrl(name, tagline, img, target),
+        cta: "Learn More",
+        tier: s(b?.tier),
+        featuredSlot: null,
+        source: "businesses",
+      };
+    });
 
     return res.status(200).json({ ok: true, sponsors: legacyCards });
   } catch (error) {
