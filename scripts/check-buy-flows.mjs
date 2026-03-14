@@ -12,6 +12,18 @@ const result = {
 
 const seeds = ["/marketplace", "/marketplace/become-a-seller"];
 
+async function safeGoto(page, url) {
+  try {
+    return await page.goto(url, { waitUntil: "domcontentloaded" });
+  } catch (e) {
+    const msg = String(e || "");
+    if (msg.includes("ERR_ABORTED")) {
+      return await page.goto(url, { waitUntil: "load" });
+    }
+    throw e;
+  }
+}
+
 const isBuyLabel = (label = "") => {
   const t = label.toLowerCase();
   return (
@@ -77,9 +89,7 @@ const isBuyLabel = (label = "") => {
 
     let status = 0;
     try {
-      const resp = await page.goto(`${base}${path}`, {
-        waitUntil: "domcontentloaded",
-      });
+      const resp = await safeGoto(page, `${base}${path}`);
       status = resp?.status() || 0;
     } catch {
       result.failures.push({ url: path, reason: "navigation failed" });
@@ -122,7 +132,7 @@ const isBuyLabel = (label = "") => {
   const dedup = [];
   const seen = new Set();
   for (const d of result.discovered) {
-    const k = `${d.page}::${d.label}`;
+    const k = `${d.page}::${d.label}::${d.href || ""}`;
     if (!seen.has(k)) {
       seen.add(k);
       dedup.push(d);
@@ -130,7 +140,7 @@ const isBuyLabel = (label = "") => {
   }
 
   for (const item of dedup) {
-    await page.goto(`${base}${item.page}`, { waitUntil: "domcontentloaded" });
+    await safeGoto(page, `${base}${item.page}`);
     await page.waitForTimeout(400);
 
     const before = page.url();
@@ -141,14 +151,48 @@ const isBuyLabel = (label = "") => {
     let clickError = null;
 
     try {
-      const locator = page.locator(`text=${item.label}`).first();
-      if (await locator.count()) {
-        await locator.click({ timeout: 4000 });
+      const candidates = [];
+
+      if (item.target && String(item.target).startsWith("/")) {
+        candidates.push(page.locator(`a[href='${item.target}']`).first());
+      }
+
+      if (item.label) {
+        candidates.push(page.getByRole("button", { name: /buy now/i }).first());
+        candidates.push(page.getByRole("link", { name: /buy now/i }).first());
+        candidates.push(page.locator(`text=${item.label}`).first());
+      }
+
+      let active = null;
+      for (const c of candidates) {
+        if (await c.count()) {
+          active = c;
+          break;
+        }
+      }
+
+      if (active) {
+        await active.scrollIntoViewIfNeeded();
+        await active.click({ timeout: 4000, force: true });
         clicked = true;
         await page.waitForTimeout(800);
       }
     } catch (e) {
       clickError = String(e);
+    }
+
+    if (!clicked && !clickError) {
+      try {
+        const retry = page.getByRole("button", { name: /buy now/i }).first();
+        if (await retry.count()) {
+          await retry.scrollIntoViewIfNeeded();
+          await retry.click({ timeout: 4000, force: true });
+          clicked = true;
+          await page.waitForTimeout(800);
+        }
+      } catch (e) {
+        clickError = String(e);
+      }
     }
 
     const after = page.url();

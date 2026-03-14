@@ -20,6 +20,7 @@
     "audit:directory-completeness": "node scripts/stamp-directory-completeness.mjs",
     "check:release-hygiene": "node scripts/release-hygiene-check.mjs",
     "smoke:routes": "node scripts/smoke-routes.mjs",
+    "smoke:local": "node scripts/smoke-routes.mjs",
     "check:critical-indexes": "node scripts/check-critical-indexes.mjs",
     "check:p2-regression": "node scripts/p2-regression-check.mjs",
     "check:db-docs": "node scripts/check-db-docs.mjs",

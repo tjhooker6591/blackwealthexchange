@@ -42,7 +42,10 @@ const ROLES = [
       href: "/business-directory/add-business",
       label: "Get listed in directory",
     },
-    secondary: { href: "/trust", label: "Review trust & policy standards" },
+    secondary: {
+      href: "/terms-of-service",
+      label: "Review trust & policy standards",
+    },
   },
   {
     key: "seller",
@@ -63,7 +66,7 @@ const ROLES = [
     summary:
       "Post jobs and connect with talent aligned with your company and mission.",
     primary: { href: "/post-job", label: "Post a job" },
-    secondary: { href: "/black-jobs", label: "View jobs discovery hub" },
+    secondary: { href: "/jobs", label: "View jobs discovery hub" },
   },
   {
     key: "user",
@@ -72,7 +75,7 @@ const ROLES = [
     summary:
       "Explore roles, filter by niche, and continue your job search journey in one place.",
     primary: { href: "/job-listings", label: "Browse live jobs" },
-    secondary: { href: "/black-jobs", label: "Explore job niches" },
+    secondary: { href: "/jobs", label: "Explore job niches" },
   },
 ];
 
@@ -131,7 +134,7 @@ export default function StartHerePage() {
               {roleResume.label}
             </Link>
             <Link
-              href="/trust"
+              href="/terms-of-service"
               className="rounded-lg border border-white/20 px-3 py-2 text-xs font-semibold text-white hover:bg-white/10"
             >
               Review trust standards
