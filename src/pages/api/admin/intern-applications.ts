@@ -120,7 +120,11 @@ export default async function handler(
   }
 
   if (req.method === "PATCH") {
-    const { id, status } = req.body as { id: string; status: string };
+    const { id, status, adminNote } = req.body as {
+      id: string;
+      status: string;
+      adminNote?: string;
+    };
     if (!id || !status)
       return res.status(400).json({ error: "Missing id/status" });
 
@@ -130,7 +134,20 @@ export default async function handler(
       return res.status(404).json({ error: "Application not found" });
 
     // Update status
-    await col.updateOne({ _id: new ObjectId(id) }, { $set: { status } });
+    await col.updateOne(
+      { _id: new ObjectId(id) },
+      {
+        $set: {
+          status,
+          adminNote:
+            typeof adminNote === "string"
+              ? adminNote.trim().slice(0, 1200)
+              : "",
+          reviewedBy: admin.email || admin.userId || "admin",
+          updatedAt: new Date(),
+        },
+      },
+    );
 
     // Only email for certain statuses
     const emailPayload = emailForStatus(status, existing.fullName);
@@ -155,6 +172,29 @@ export default async function handler(
     return res.json({ success: true, emailSent, emailError });
   }
 
-  res.setHeader("Allow", ["GET", "PATCH"]);
+  if (req.method === "DELETE") {
+    const { id, reason } = req.body as { id?: string; reason?: string };
+    if (!id) return res.status(400).json({ error: "Missing id" });
+    const result = await col.updateOne(
+      { _id: new ObjectId(id) },
+      {
+        $set: {
+          status: "deleted",
+          deletedAt: new Date(),
+          updatedAt: new Date(),
+          reviewedBy: admin.email || admin.userId || "admin",
+          adminNote:
+            typeof reason === "string" && reason.trim()
+              ? reason.trim().slice(0, 1200)
+              : "Deleted by admin",
+        },
+      },
+    );
+    if (!result.matchedCount)
+      return res.status(404).json({ error: "Application not found" });
+    return res.json({ ok: true, id, status: "deleted" });
+  }
+
+  res.setHeader("Allow", ["GET", "PATCH", "DELETE"]);
   res.status(405).end();
 }

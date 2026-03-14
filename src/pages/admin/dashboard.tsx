@@ -74,6 +74,20 @@ type EntityCountsObject = {
   total?: number;
 };
 
+type RecentJoinRow = {
+  _id: string;
+  name: string;
+  email: string;
+  accountType: string;
+  sourceCollection: string;
+  createdAt: string | null;
+  status: string;
+  isVerified: boolean;
+  isAdmin: boolean;
+  isTest: boolean;
+  isActive: boolean;
+};
+
 type StatsV2 = {
   pendingApprovalsTotal?: number;
 
@@ -102,6 +116,19 @@ type StatsV2 = {
   // optional direct totals from some APIs
   businessesCount?: number;
   organizationsCount?: number;
+
+  recentJoins?: {
+    summary?: {
+      today?: number;
+      last7Days?: number;
+      last30Days?: number;
+      byAccountType?: Record<
+        string,
+        { today: number; last7Days: number; last30Days: number }
+      >;
+    };
+    rows?: RecentJoinRow[];
+  };
 };
 
 // What we actually render (normalized view model)
@@ -345,6 +372,27 @@ const AdminDashboard = () => {
   }, []);
 
   // Apply filters to consulting waitlist
+  const recentJoinsSummary = useMemo(() => {
+    const summary = statsRaw?.recentJoins?.summary || {};
+    return {
+      today: Number(summary?.today || 0),
+      last7Days: Number(summary?.last7Days || 0),
+      last30Days: Number(summary?.last30Days || 0),
+      byAccountType: summary?.byAccountType || {},
+    };
+  }, [statsRaw]);
+
+  const recentJoinsRows = useMemo<RecentJoinRow[]>(() => {
+    const rows = Array.isArray(statsRaw?.recentJoins?.rows)
+      ? (statsRaw.recentJoins.rows as RecentJoinRow[])
+      : [];
+    return [...rows].sort((a, b) => {
+      const ta = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+      const tb = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+      return tb - ta;
+    });
+  }, [statsRaw]);
+
   const filteredConsulting = useMemo(() => {
     const now = Date.now();
 
@@ -626,6 +674,77 @@ const AdminDashboard = () => {
             </>
           )}
         </div>
+      </div>
+
+      {/* New Signups / Recent Joins */}
+      <SectionTitle>New Signups / Recent Joins</SectionTitle>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+        <StatCard title="Joined Today" value={recentJoinsSummary.today} />
+        <StatCard title="Joined Last 7 Days" value={recentJoinsSummary.last7Days} />
+        <StatCard title="Joined Last 30 Days" value={recentJoinsSummary.last30Days} />
+      </div>
+
+      <div className="bg-gray-800 rounded p-4 border border-gray-700 mb-4">
+        <h3 className="text-lg text-gold mb-2">By Account Type</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3 text-sm">
+          {Object.entries(recentJoinsSummary.byAccountType || {}).map(
+            ([type, counts]: any) => (
+              <div key={type} className="rounded border border-gray-700 bg-gray-900 px-3 py-2">
+                <div className="font-semibold text-gray-100 capitalize">{type}</div>
+                <div className="text-xs text-gray-400 mt-1">Today: {counts?.today ?? 0}</div>
+                <div className="text-xs text-gray-400">7d: {counts?.last7Days ?? 0}</div>
+                <div className="text-xs text-gray-400">30d: {counts?.last30Days ?? 0}</div>
+              </div>
+            ),
+          )}
+          {Object.keys(recentJoinsSummary.byAccountType || {}).length === 0 ? (
+            <div className="text-sm text-gray-400">No join data yet.</div>
+          ) : null}
+        </div>
+      </div>
+
+      <div className="bg-gray-800 rounded p-4 border border-gray-700 mb-10 overflow-x-auto">
+        <h3 className="text-lg text-gold mb-2">Recent Join Activity</h3>
+        <table className="w-full text-left text-sm">
+          <thead>
+            <tr className="border-b border-gray-700 text-gold">
+              <th className="py-2 pr-3">Name</th>
+              <th className="py-2 pr-3">Email</th>
+              <th className="py-2 pr-3">Account Type</th>
+              <th className="py-2 pr-3">Source</th>
+              <th className="py-2 pr-3">Created</th>
+              <th className="py-2 pr-3">Status</th>
+              <th className="py-2 pr-3">Signals</th>
+            </tr>
+          </thead>
+          <tbody>
+            {recentJoinsRows.slice(0, 80).map((row) => (
+              <tr key={`${row.sourceCollection}-${row._id}`} className="border-b border-gray-700/60">
+                <td className="py-2 pr-3">{row.name || "—"}</td>
+                <td className="py-2 pr-3">{row.email || "—"}</td>
+                <td className="py-2 pr-3 capitalize">{row.accountType}</td>
+                <td className="py-2 pr-3 text-gray-400">{row.sourceCollection}</td>
+                <td className="py-2 pr-3">{row.createdAt ? new Date(row.createdAt).toLocaleString() : "—"}</td>
+                <td className="py-2 pr-3">{row.status || (row.isActive ? "active" : "inactive")}</td>
+                <td className="py-2 pr-3">
+                  <div className="flex flex-wrap gap-1 text-[11px]">
+                    {row.isVerified ? <span className="rounded bg-emerald-600/30 border border-emerald-400/50 px-2 py-0.5">verified</span> : <span className="rounded bg-gray-700 px-2 py-0.5">unverified</span>}
+                    {row.isAdmin ? <span className="rounded bg-purple-600/30 border border-purple-400/50 px-2 py-0.5">admin</span> : null}
+                    {row.isTest ? <span className="rounded bg-yellow-600/30 border border-yellow-400/50 px-2 py-0.5">test</span> : null}
+                    {!row.isActive ? <span className="rounded bg-red-600/30 border border-red-400/50 px-2 py-0.5">inactive</span> : null}
+                  </div>
+                </td>
+              </tr>
+            ))}
+            {recentJoinsRows.length === 0 ? (
+              <tr>
+                <td className="py-3 text-gray-400" colSpan={7}>
+                  No recent joins found.
+                </td>
+              </tr>
+            ) : null}
+          </tbody>
+        </table>
       </div>
 
       {/* Directory Section */}
