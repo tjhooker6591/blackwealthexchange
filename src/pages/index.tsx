@@ -34,25 +34,10 @@ import {
   buildHomepageDirectoryQuery,
   normalizeScope,
 } from "@/lib/directory/queryState";
+import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 
 function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
-}
-
-function trackFlowEvent(payload: Record<string, unknown>) {
-  if (typeof window === "undefined") return;
-  const body = JSON.stringify(payload);
-  const url = "/api/flow-events";
-  if (navigator.sendBeacon) {
-    navigator.sendBeacon(url, new Blob([body], { type: "application/json" }));
-    return;
-  }
-  fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body,
-    keepalive: true,
-  }).catch(() => {});
 }
 
 /** -----------------------------
@@ -494,6 +479,21 @@ export default function Home() {
   const router = useRouter();
   const { user } = useAuth();
 
+  const trackHomepageEvent = (
+    eventType: string,
+    extras: Record<string, unknown> = {},
+  ) => {
+    emitFlowEvent({
+      eventType,
+      pageRoute: "/",
+      section: "homepage",
+      isAuthenticated: Boolean(user),
+      accountType: user?.accountType || "anonymous",
+      environment: process.env.NODE_ENV || "unknown",
+      ...extras,
+    });
+  };
+
   const placeholder =
     vertical !== "all"
       ? vertical === "shopping"
@@ -561,6 +561,29 @@ export default function Home() {
         category,
       }),
     });
+  };
+
+  const submitHomepageSearch = (trigger: string, queryOverride?: string) => {
+    const q = (queryOverride ?? searchQuery).trim();
+
+    trackHomepageEvent("homepage_search_submitted", {
+      section: "hero_search",
+      source: "homepage_search_box",
+      query: q,
+      ctaId: "homepage_search_submit",
+      ctaLabel: trigger,
+      destination:
+        vertical === "shopping"
+          ? "/shop"
+          : vertical === "news"
+            ? "/news"
+            : "/business-directory",
+      vertical,
+      aiMode,
+      scope: leftScope,
+    });
+
+    runSearch({ queryOverride: queryOverride ?? searchQuery });
   };
 
   const onToggleAi = () => {
@@ -747,7 +770,18 @@ export default function Home() {
             <div className="mx-auto mt-5 flex w-full max-w-xl flex-col gap-2.5 sm:flex-row sm:justify-center">
               {user ? (
                 <>
-                  <Link href="/dashboard" className="w-full sm:w-auto">
+                  <Link
+                    href="/dashboard"
+                    className="w-full sm:w-auto"
+                    onClick={() =>
+                      trackHomepageEvent("homepage_cta_clicked", {
+                        section: "hero",
+                        ctaId: "hero_go_to_dashboard",
+                        ctaLabel: "Go to Dashboard",
+                        destination: "/dashboard",
+                      })
+                    }
+                  >
                     <button className="h-11 w-full rounded-xl bg-[#D4AF37] px-5 text-sm font-extrabold text-black shadow-[0_8px_20px_rgba(212,175,55,0.25)] transition hover:-translate-y-0.5 hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/35 sm:h-11 sm:w-auto sm:px-6">
                       Go to Dashboard
                     </button>
@@ -759,6 +793,23 @@ export default function Home() {
                         : "/business-directory"
                     }
                     className="w-full sm:w-auto"
+                    onClick={() =>
+                      trackHomepageEvent("homepage_cta_clicked", {
+                        section: "hero",
+                        ctaId:
+                          user?.accountType === "admin"
+                            ? "hero_admin_dashboard"
+                            : "hero_explore_directory",
+                        ctaLabel:
+                          user?.accountType === "admin"
+                            ? "Admin Dashboard"
+                            : "Explore Directory",
+                        destination:
+                          user?.accountType === "admin"
+                            ? "/admin/dashboard"
+                            : "/business-directory",
+                      })
+                    }
                   >
                     <button className="h-11 w-full rounded-xl border border-[#D4AF37]/45 bg-[#D4AF37]/8 px-5 text-sm font-bold text-[#F1D57A] transition hover:-translate-y-0.5 hover:bg-[#D4AF37]/16 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 sm:h-11 sm:w-auto sm:px-6">
                       {user?.accountType === "admin"
@@ -769,7 +820,18 @@ export default function Home() {
                 </>
               ) : (
                 <>
-                  <Link href="/login" className="w-full sm:w-auto">
+                  <Link
+                    href="/login"
+                    className="w-full sm:w-auto"
+                    onClick={() =>
+                      trackHomepageEvent("homepage_cta_clicked", {
+                        section: "hero",
+                        ctaId: "hero_login",
+                        ctaLabel: "Login",
+                        destination: "/login",
+                      })
+                    }
+                  >
                     <button className="h-11 w-full rounded-xl bg-[#D4AF37] px-5 text-sm font-extrabold text-black shadow-[0_8px_20px_rgba(212,175,55,0.25)] transition hover:-translate-y-0.5 hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/35 sm:h-11 sm:w-auto sm:px-6">
                       Login
                     </button>
@@ -777,9 +839,11 @@ export default function Home() {
                   <Link
                     href="/signup?intent=join-bwe"
                     onClick={() =>
-                      trackFlowEvent({
-                        eventType: "homepage_cta_click",
-                        source: "home-hero",
+                      trackHomepageEvent("homepage_cta_clicked", {
+                        section: "hero",
+                        ctaId: "hero_signup",
+                        ctaLabel: "Sign Up",
+                        destination: "/signup?intent=join-bwe",
                         category: "signup",
                       })
                     }
@@ -797,9 +861,11 @@ export default function Home() {
               <Link
                 href="/start-here"
                 onClick={() =>
-                  trackFlowEvent({
-                    eventType: "homepage_cta_click",
-                    source: "home-hero",
+                  trackHomepageEvent("homepage_cta_clicked", {
+                    section: "hero",
+                    ctaId: "hero_start_here",
+                    ctaLabel: "Start Here",
+                    destination: "/start-here",
                     category: "start-here",
                   })
                 }
@@ -1004,9 +1070,18 @@ export default function Home() {
                         inputMode="search"
                         placeholder={placeholder}
                         value={searchQuery}
+                        onFocus={() =>
+                          trackHomepageEvent("homepage_search_focused", {
+                            section: "hero_search",
+                            source: "homepage_search_box",
+                            vertical,
+                            scope: leftScope,
+                          })
+                        }
                         onChange={(e) => setSearchQuery(e.target.value)}
                         onKeyDown={(e) => {
-                          if (e.key === "Enter") runSearch();
+                          if (e.key === "Enter")
+                            submitHomepageSearch("search_input_enter");
                         }}
                         className="min-w-0 flex-1 bg-transparent px-3 py-3 text-[13px] text-white placeholder:text-white/35 outline-none sm:px-5 sm:py-4 sm:text-[15px]"
                       />
@@ -1033,7 +1108,7 @@ export default function Home() {
 
                       <button
                         type="button"
-                        onClick={() => runSearch()}
+                        onClick={() => submitHomepageSearch("search_button_click")}
                         aria-label="Search"
                         className="shrink-0 bg-[#D4AF37] px-3 text-[13px] font-extrabold text-black transition hover:bg-yellow-500 sm:px-8 sm:text-[14px]"
                       >
@@ -1086,7 +1161,7 @@ export default function Home() {
                             type="button"
                             onClick={() => {
                               setSearchQuery(chip);
-                              runSearch({ queryOverride: chip });
+                              submitHomepageSearch("search_chip_click", chip);
                             }}
                             className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-[11px] font-bold text-white/75 transition hover:border-white/20 hover:bg-white/[0.08]"
                           >
@@ -1103,10 +1178,12 @@ export default function Home() {
                 <button
                   className="animate-pulseGlow rounded-xl bg-[#D4AF37] px-5 py-2.5 text-center text-sm font-extrabold text-black shadow transition hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/35 sm:px-6 sm:text-base"
                   onClick={() => {
-                    trackFlowEvent({
-                      eventType: "seller_cta_click",
-                      source: "home-hero",
-                      path: "/marketplace/become-a-seller",
+                    trackHomepageEvent("homepage_cta_clicked", {
+                      section: "hero",
+                      ctaId: "hero_start_selling",
+                      ctaLabel: "Start Selling",
+                      destination: "/marketplace/become-a-seller",
+                      category: "seller",
                     });
                     if (!user) {
                       router.push(
@@ -1216,6 +1293,14 @@ export default function Home() {
                 <Link
                   href="/black-student-opportunities"
                   className="text-xs font-bold text-[#D4AF37]"
+                  onClick={() =>
+                    trackHomepageEvent("student_portal_entry_clicked", {
+                      section: "opportunities_card",
+                      ctaId: "open_hub_header",
+                      ctaLabel: "Open Hub",
+                      destination: "/black-student-opportunities",
+                    })
+                  }
                 >
                   Open Hub →
                 </Link>
@@ -1224,6 +1309,14 @@ export default function Home() {
                 <Link
                   href="/black-student-opportunities"
                   className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40"
+                  onClick={() =>
+                    trackHomepageEvent("student_portal_entry_clicked", {
+                      section: "opportunities_card",
+                      ctaId: "opportunities_students_tile",
+                      ctaLabel: "Students",
+                      destination: "/black-student-opportunities",
+                    })
+                  }
                 >
                   Students
                 </Link>
@@ -1329,6 +1422,14 @@ export default function Home() {
                 <Link
                   href="/black-student-opportunities"
                   className="inline-flex items-center gap-2 rounded-xl border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-3 py-2 text-[11px] font-extrabold text-[#D4AF37] transition hover:border-[#D4AF37]/55 hover:bg-[#D4AF37]/15 sm:text-xs"
+                  onClick={() =>
+                    trackHomepageEvent("student_portal_entry_clicked", {
+                      section: "student_hub_banner",
+                      ctaId: "student_hub_open_hub",
+                      ctaLabel: "Open Hub",
+                      destination: "/black-student-opportunities",
+                    })
+                  }
                 >
                   <GraduationCap className="h-4 w-4" />
                   Open Hub
@@ -1372,6 +1473,14 @@ export default function Home() {
                     <Link
                       href="/black-student-opportunities"
                       className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#D4AF37] px-4 py-2.5 text-sm font-extrabold leading-tight text-black shadow transition hover:bg-yellow-500 sm:w-auto sm:px-5"
+                      onClick={() =>
+                        trackHomepageEvent("student_portal_entry_clicked", {
+                          section: "student_hub_banner",
+                          ctaId: "student_hub_enter",
+                          ctaLabel: "Enter Student Hub",
+                          destination: "/black-student-opportunities",
+                        })
+                      }
                     >
                       <span className="whitespace-nowrap">
                         Enter Student Hub
@@ -1496,6 +1605,14 @@ export default function Home() {
                     <Link
                       href="/black-student-opportunities"
                       className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#D4AF37] px-4 py-2.5 text-sm font-extrabold text-black shadow transition hover:bg-yellow-500 sm:px-5"
+                      onClick={() =>
+                        trackHomepageEvent("student_portal_entry_clicked", {
+                          section: "student_hub_drawer",
+                          ctaId: "student_hub_go_to_hub",
+                          ctaLabel: "Go to Student Hub",
+                          destination: "/black-student-opportunities",
+                        })
+                      }
                     >
                       Go to Student Hub <ArrowRight className="h-4 w-4" />
                     </Link>
