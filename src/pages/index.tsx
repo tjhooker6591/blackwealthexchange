@@ -845,8 +845,6 @@ export default function Home() {
                 </>
               )}
             </div>
-
-
           </div>
 
           <section id="search-dominant" className="mt-5 sm:mt-6 scroll-mt-24">
@@ -1055,7 +1053,19 @@ export default function Home() {
                       />
                     )}
 
+                    <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-white/55 sm:text-[12px]">
+                      <span>
+                        Trusted ranking + clean results.
+                        <span className="text-white/40">
+                          {" "}
+                          Filters are optional.
+                        </span>
+                      </span>
 
+                      <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[10px] sm:text-[11px]">
+                        Tap <span className="font-black text-white/75">Search</span>
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
