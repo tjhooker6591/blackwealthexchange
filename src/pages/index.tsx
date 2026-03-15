@@ -1176,6 +1176,12 @@ export default function Home() {
                       destination: "/marketplace/become-a-seller",
                       category: "seller",
                     });
+                    trackHomepageEvent("seller_entry_clicked", {
+                      section: "hero",
+                      ctaId: "hero_start_selling",
+                      ctaLabel: "Start Selling",
+                      destination: "/marketplace/become-a-seller",
+                    });
                     if (!user) {
                       router.push(
                         "/login?redirect=/marketplace/become-a-seller",
@@ -1246,6 +1252,14 @@ export default function Home() {
               <Link
                 href="/marketplace/become-a-seller"
                 className="rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm font-semibold text-white/80 transition hover:border-[#D4AF37]/30 hover:bg-black/40"
+                onClick={() =>
+                  trackHomepageEvent("seller_entry_clicked", {
+                    section: "quick_paths",
+                    ctaId: "quick_path_i_run_a_business",
+                    ctaLabel: "I run a business",
+                    destination: "/marketplace/become-a-seller",
+                  })
+                }
               >
                 I run a business
               </Link>

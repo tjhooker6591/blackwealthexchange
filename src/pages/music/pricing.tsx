@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import useAuth from "@/hooks/useAuth";
+import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 
 type Readiness = {
   sellerExists: boolean;
@@ -13,12 +14,30 @@ type Readiness = {
 export default function MusicPricingPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
+
+  const trackMusicPricingEvent = (
+    eventType: string,
+    extras: Record<string, unknown> = {},
+  ) => {
+    emitFlowEvent({
+      eventType,
+      pageRoute: "/music/pricing",
+      section: "music_pricing",
+      isAuthenticated: Boolean(user),
+      accountType: user?.accountType || "anonymous",
+      ...extras,
+    });
+  };
   const [busy, setBusy] = useState<string>("");
   const [error, setError] = useState("");
   const [gateLoading, setGateLoading] = useState(true);
   const [readiness, setReadiness] = useState<Readiness | null>(null);
 
   useEffect(() => {
+    if (!loading) {
+      trackMusicPricingEvent("music_pricing_viewed");
+    }
+
     (async () => {
       if (loading) return;
       if (!user) {
@@ -64,6 +83,15 @@ export default function MusicPricingPage() {
 
     setBusy(planId);
     setError("");
+
+    trackMusicPricingEvent("music_plan_selected", {
+      plan_tier: planId,
+      billing_cycle: "monthly",
+      destination: "/api/stripe/checkout",
+      ctaId: `music_plan_${planId}`,
+      ctaLabel: planId === "music-creator-pro" ? "Choose Pro" : "Choose Starter",
+    });
+
     try {
       const res = await fetch("/api/stripe/checkout", {
         method: "POST",

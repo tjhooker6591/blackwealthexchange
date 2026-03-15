@@ -74,6 +74,19 @@ export default async function handler(
       isAuthenticated:
         typeof body.isAuthenticated === "boolean" ? body.isAuthenticated : null,
       environment: s(body.environment) || process.env.NODE_ENV || null,
+      sourceVariant: s(body.source_variant) || s(body.sourceVariant) || null,
+
+      planTier: s(body.plan_tier) || s(body.planTier) || null,
+      billingCycle: s(body.billing_cycle) || s(body.billingCycle) || null,
+
+      adType: s(body.ad_type) || s(body.adType) || null,
+      packageType: s(body.package_type) || s(body.packageType) || null,
+      checkoutVariant:
+        s(body.checkout_variant) || s(body.checkoutVariant) || null,
+
+      sellerState: s(body.seller_state) || s(body.sellerState) || null,
+      onboardingVariant:
+        s(body.onboarding_variant) || s(body.onboardingVariant) || null,
 
       // search/discovery structured fields
       entityId: s(body.entity_id) || s(body.entityId) || null,

@@ -1,8 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 
 function GlowBackground() {
   return (
@@ -63,6 +64,22 @@ const BENEFITS = [
 
 export default function AdvertiseWithUs() {
   const router = useRouter();
+
+  const trackAdEvent = (
+    eventType: string,
+    extras: Record<string, unknown> = {},
+  ) => {
+    emitFlowEvent({
+      eventType,
+      pageRoute: "/advertise-with-us",
+      section: "advertise_with_us",
+      ...extras,
+    });
+  };
+
+  useEffect(() => {
+    trackAdEvent("advertising_landing_viewed");
+  }, []);
 
   return (
     <div className="min-h-screen bg-black text-white relative">
@@ -163,6 +180,16 @@ export default function AdvertiseWithUs() {
               <Link
                 key={option.title}
                 href={option.href}
+                onClick={() =>
+                  trackAdEvent("advertising_option_selected", {
+                    ctaId: `advertise_with_us_${option.title.toLowerCase().replace(/\s+/g, "_")}`,
+                    ctaLabel: option.title,
+                    destination: option.href,
+                    ad_option: option.title.toLowerCase().replace(/\s+/g, "-"),
+                    ad_type: option.title.toLowerCase().replace(/\s+/g, "-"),
+                    source_variant: "advertise_with_us",
+                  })
+                }
                 className="group rounded-2xl border border-yellow-500/20 bg-gray-900/40 p-6 shadow hover:shadow-2xl hover:border-yellow-400/35 transition"
               >
                 <div className="flex items-start justify-between gap-3">

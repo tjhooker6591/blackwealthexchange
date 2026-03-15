@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 
 type SaveResponse =
   | { success: true; requestId: string; message: string }
@@ -60,6 +61,18 @@ const CUSTOM_OPTIONS = [
 
 export default function CustomAd() {
   const [userId, setUserId] = useState("guest");
+
+  const trackAdEvent = (
+    eventType: string,
+    extras: Record<string, unknown> = {},
+  ) => {
+    emitFlowEvent({
+      eventType,
+      pageRoute: "/advertise/custom",
+      section: "advertise_custom",
+      ...extras,
+    });
+  };
   const [name, setName] = useState("");
   const [business, setBusiness] = useState("");
   const [email, setEmail] = useState("");
@@ -76,6 +89,8 @@ export default function CustomAd() {
   const [startingCheckout, setStartingCheckout] = useState(false);
 
   useEffect(() => {
+    trackAdEvent("advertising_landing_viewed");
+
     const fetchUser = async () => {
       try {
         const res = await fetch("/api/auth/me", {
@@ -106,6 +121,13 @@ export default function CustomAd() {
         ? prev.filter((item) => item !== optionId)
         : [...prev, optionId],
     );
+
+    trackAdEvent("advertising_option_selected", {
+      ctaId: `custom_option_${optionId}`,
+      ctaLabel: optionId,
+      ad_option: "custom-solution",
+      selected_option: optionId,
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -118,6 +140,15 @@ export default function CustomAd() {
     }
 
     setSavingRequest(true);
+
+    trackAdEvent("advertising_submission_started", {
+      ctaId: "custom_submit_request",
+      ad_option: "custom-solution",
+      ad_type: "custom-solution",
+      package_type: "custom",
+      source_variant: "custom_ad_page",
+      selected_count: selectedOptions.length,
+    });
 
     try {
       const res = await fetch("/api/advertising/custom-request", {
@@ -148,6 +179,8 @@ export default function CustomAd() {
 
       setRequestId(data.requestId);
       setSubmitted(true);
+
+
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Failed to save custom request.";
@@ -168,6 +201,17 @@ export default function CustomAd() {
 
     try {
       const next = `/advertising/checkout?option=custom-solution-deposit&duration=30&placement=custom-solution&campaignId=${encodeURIComponent(requestId)}`;
+
+      trackAdEvent("advertising_checkout_started", {
+        ad_option: "custom-solution",
+        ad_type: "custom-solution",
+        package_type: "custom",
+        checkout_variant: "unified_advertising_checkout",
+        source_variant: "custom_ad_page",
+        campaignId: requestId,
+        destination: "/advertising/checkout",
+      });
+
       window.location.href = next;
     } catch (err) {
       const message =

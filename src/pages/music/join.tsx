@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import useAuth from "@/hooks/useAuth";
+import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 
 type Seller = {
   _id: string;
@@ -16,6 +17,20 @@ type AccountStatus = { charges_enabled: boolean; payouts_enabled: boolean };
 export default function MusicCreatorJoinPage() {
   const router = useRouter();
   const { user, loading } = useAuth();
+
+  const trackMusicJoinEvent = (
+    eventType: string,
+    extras: Record<string, unknown> = {},
+  ) => {
+    emitFlowEvent({
+      eventType,
+      pageRoute: "/music/join",
+      section: "music_join",
+      isAuthenticated: Boolean(user),
+      accountType: user?.accountType || "anonymous",
+      ...extras,
+    });
+  };
   const [seller, setSeller] = useState<Seller | null>(null);
   const [acctStatus, setAcctStatus] = useState<AccountStatus | null>(null);
   const [busy, setBusy] = useState(false);
@@ -54,6 +69,13 @@ export default function MusicCreatorJoinPage() {
   }
 
   useEffect(() => {
+    if (!loading && user) {
+      trackMusicJoinEvent("music_onboarding_started", {
+        ctaId: "music_join_page_view",
+        ctaLabel: "Music Join Page Viewed",
+      });
+    }
+
     if (loading) return;
     if (!user) {
       router.replace(`/login?redirect=${encodeURIComponent("/music/join")}`);
@@ -76,6 +98,7 @@ export default function MusicCreatorJoinPage() {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data?.error || "Onboarding failed");
+
       await refreshState();
     } catch (e: any) {
       setError(e?.message || "Onboarding failed");
