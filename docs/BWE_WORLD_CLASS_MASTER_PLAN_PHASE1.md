@@ -13,7 +13,8 @@ For BWE, world-class is **not** “beautiful pages.” It is a platform where pe
 1. **Discover** trusted Black businesses, jobs, creators, services, and financial opportunities fast.
 2. **Decide** with confidence using transparent trust signals and quality controls.
 3. **Transact** with low friction across commerce, ads, hiring, consulting, and subscriptions.
-4. **Return** because outcomes are consistently better than alternatives.
+4. **Learn** practical economic skills and historical context that drive better decisions.
+5. **Return** because outcomes are consistently better than alternatives.
 
 ### World-class definition for BWE
 
@@ -45,6 +46,9 @@ BWE becomes a **unified economic graph**:
   - marketplace products
   - jobs and opportunities
   - creator/music pages
+  - free student portal pathways (scholarships, internships, mentorship, career guidance)
+  - free education pathways (finance, ownership, entrepreneurship, wealth habits)
+  - history/economic truth pathways tied to present-day economic action
   - learning/wealth pathways
 - Trust signals and moderation state govern what is promoted, approved, or suppressed.
 - Monetization engines layer on top of trusted supply:
@@ -56,10 +60,24 @@ BWE becomes a **unified economic graph**:
   - creator/music plans
   - premium education/wealth tools
 
+### Mission-critical non-monetized core
+
+The free student portal, free education layer, and history/economic truth layer are **core platform infrastructure** (not side content). They are mandatory trust-and-activation engines that feed long-term business, workforce, creator, and wealth participation.
+
 ### Platform rule
 
 Every major flow should connect to at least one other flow. Example:  
 Music creator -> audience -> profile/product/job/learning CTA -> measurable conversion.
+
+### Education-to-action rule (mission-critical)
+
+BWE learning surfaces must not end at content consumption. Every student/education/history surface must provide clear next actions into the economic ecosystem:
+
+- Learn -> support Black-owned businesses
+- Learn -> become a seller/creator/employer participant
+- Learn -> apply to internships/jobs/opportunities
+- Learn -> use wealth-building tools and pathways
+- History context -> present-day ownership/circulation action
 
 ---
 
@@ -68,54 +86,77 @@ Music creator -> audience -> profile/product/job/learning CTA -> measurable conv
 For each pillar: **what / why / great / failure**
 
 ### 1. Homepage clarity + conversion
+
 - **What:** Clear value proposition + obvious top tasks + trust framing.
 - **Why:** First 10 seconds determine bounce vs activation.
 - **Great:** Users can instantly choose path (Find, Buy, Hire, Promote, Learn, Create).
 - **Failure:** Beautiful but confusing hero; weak CTA hierarchy; low first-action rate.
 
 ### 2. Search + navigation dominance
+
 - **What:** Search-first UX with elite filters/relevance/tabs and route clarity.
 - **Why:** This is the platform’s speed layer.
 - **Great:** Best-in-class findability across business/product/job/music/opportunity.
 - **Failure:** Content exists but is hard to find; users rely on back button/guessing.
 
 ### 3. Trust system
+
 - **What:** Verification/completeness/moderation/anti-spam/auth posture.
 - **Why:** Trust is the conversion multiplier.
 - **Great:** Clear trust badges, visible review states, fail-closed suspicious handling.
 - **Failure:** Spam/test noise in production queues; unclear account/listing quality.
 
 ### 4. Marketplace + commerce engine
+
 - **What:** Seller onboarding, product quality, checkout confidence, post-purchase clarity.
 - **Why:** Core compounding revenue + repeat behavior.
 - **Great:** Low-friction buy flow + clear shipping/payment + seller success tooling.
 - **Failure:** Inventory ambiguity, weak product trust, conversion leakage.
 
 ### 5. Jobs + opportunity engine
+
 - **What:** Employer posting + candidate discovery + clean application pipelines.
 - **Why:** Opportunity marketplace deepens platform necessity.
 - **Great:** Trusted hiring funnel with measurable time-to-fill improvements.
 - **Failure:** Noisy listings, poor candidate quality signal, weak employer ROI.
 
 ### 6. Music + creator economy
+
 - **What:** Discovery, creator onboarding, monetization pathways, audience loops.
 - **Why:** Engagement + culture + distribution + monetization flywheel.
 - **Great:** Music drives frequent return visits and creator-attributed conversions.
 - **Failure:** Music siloed as a side page with no business/economic integration.
 
-### 7. Learning + wealth ecosystem
-- **What:** Guided pathways from content to action (invest, plan, buy, build).
-- **Why:** Wealth outcomes increase lifetime value and trust.
-- **Great:** Clear progression maps and premium education utility.
-- **Failure:** Static content with low completion and weak action conversion.
+### 7. Free student portal (mission growth engine)
 
-### 8. Admin + ops excellence
+- **What:** Public-access student opportunity hub: scholarships, internships, mentorship, career guidance, entrepreneurship exposure, and student-to-opportunity pathways.
+- **Why:** Expands mission reach, early lifetime trust, and long-term ecosystem participation.
+- **Great:** Students can quickly find opportunities, understand next steps, and convert to real applications/actions.
+- **Failure:** Static list pages with weak filtering, low trust, and no progression path.
+
+### 8. Free education + wealth ecosystem
+
+- **What:** Practical, action-oriented education layer: personal finance, budgeting, saving, debt awareness, investing, entrepreneurship, ownership mindset, family/generational wealth principles.
+- **Why:** Education is a core product surface that drives better economic decisions and deeper retention.
+- **Great:** Learning modules map directly to platform actions (buy, build, apply, launch, invest, participate).
+- **Failure:** Content library disconnected from action and measurable outcomes.
+
+### 9. History + economic truth layer
+
+- **What:** Structured Black economic history and disrupted-wealth context tied to present-day strategy and action.
+- **Why:** Mission integrity and behavior change require context, not just tools.
+- **Great:** History content clearly explains why ownership/circulation matters and links to concrete actions on-platform.
+- **Failure:** History treated as isolated editorial content with no ecosystem connection.
+
+### 10. Admin + ops excellence
+
 - **What:** Queue controls, moderation parity, recent joins, trust metadata.
 - **Why:** Operational quality protects every user-facing surface.
 - **Great:** Fast, auditable, scalable admin controls with low noise.
 - **Failure:** Backlogs, ambiguous statuses, unresolved spam/test clutter.
 
-### 9. Performance + technical excellence
+### 11. Performance + technical excellence
+
 - **What:** Mobile speed, CWV quality, stable release discipline.
 - **Why:** Speed directly impacts trust and conversion.
 - **Great:** Fast pages, predictable deployments, bounded data loading patterns.
@@ -188,31 +229,37 @@ Keep black/gold premium direction. Evolve to:
 ## H) North-star metrics + weekly scoreboard
 
 ### North-star
+
 - **Trusted Economic Activity Index (TEAI)**
   - weighted combination of trusted transactions, trusted leads, trusted hires, and trusted creator conversions.
 
 ### Weekly scoreboard (minimum)
 
 #### Growth
+
 - new accounts by type (user/business/seller/employer/creator)
 - activation rate by type
 
 #### Trust
+
 - % verified/completeness-qualified entities
 - moderation SLA (time to first disposition)
 - spam/test detection rate and false-positive rate
 
 #### Engagement
+
 - WAU/MAU by core audience segment
 - search sessions per active user
 - music/creator engagement depth
 
 #### Conversion
+
 - homepage CTA -> first action
 - search -> result click -> conversion
 - directory profile view -> action
 
 #### Revenue
+
 - ad/sponsor revenue
 - marketplace GMV + take rate
 - premium visibility revenue
@@ -222,14 +269,17 @@ Keep black/gold premium direction. Evolve to:
 - education revenue
 
 #### Retention
+
 - D7/D30 return by segment
 - repeat purchase/repeat posting/repeat sponsor rates
 
 #### Performance
+
 - CWV on top revenue/entry pages
 - p75 load/interaction by mobile and desktop
 
 #### Admin health
+
 - queue backlog by type
 - rejected/spam/deleted ratios
 - unresolved suspicious submissions age
@@ -239,6 +289,7 @@ Keep black/gold premium direction. Evolve to:
 ## I) Top 30-day priorities (ranked, execution order)
 
 ## 1) Homepage conversion rewrite (not visual rewrite)
+
 - **Goal:** clarify value prop + top intents + trust cues.
 - **User/business impact:** faster orientation and confidence.
 - **Revenue impact:** better first-action and funnel entry.
@@ -247,6 +298,7 @@ Keep black/gold premium direction. Evolve to:
 - **Success criteria:** +25% first-action rate from homepage sessions.
 
 ## 2) Search/navigation dominance pass
+
 - **Goal:** fastest route to businesses/products/jobs/creators/opportunities.
 - **Impact:** lower friction across all core loops.
 - **Revenue:** higher discovery-to-conversion rates.
@@ -255,6 +307,7 @@ Keep black/gold premium direction. Evolve to:
 - **Success:** +20% search result click-through, +15% search-assisted conversion.
 
 ## 3) Trust signal unification layer
+
 - **Goal:** consistent verification/completeness/moderation markers across surfaces.
 - **Impact:** confidence at decision points.
 - **Revenue:** better conversion on listings/profile/detail pages.
@@ -263,6 +316,7 @@ Keep black/gold premium direction. Evolve to:
 - **Success:** trust marker coverage >80% on monetized entities.
 
 ## 4) Revenue-path optimization sprint
+
 - **Goal:** tighten top 3 revenue funnels (ads, marketplace, directory premium).
 - **Impact:** immediate monetization lift.
 - **Security/trust:** clearer quality gates for paid placement.
@@ -270,23 +324,43 @@ Keep black/gold premium direction. Evolve to:
 - **Success:** measurable conversion gains in each funnel.
 
 ## 5) Consulting + moderation parity closure
+
 - **Goal:** full action parity + noise suppression across waitlist/lead queues.
 - **Impact:** operational scalability.
 - **Revenue:** cleaner, higher-quality lead handling.
 - **Success:** disposition coverage >95%, backlog age reduced.
 
 ## 6) Music platform promotion in primary ecosystem
+
 - **Goal:** integrate music in homepage/search/navigation/recommendation paths.
 - **Impact:** engagement frequency and creator utility.
 - **Revenue:** creator plan/promo/subscription path activation.
 - **Success:** creator/music funnel events established and growing.
 
-## 7) Performance hardening on top 10 routes
+## 7) Student portal elevation + opportunity conversion pass
+
+- **Goal:** make scholarships/internships/mentorship/career guidance first-class and action-oriented.
+- **Impact:** mission reach, early-lifecycle user growth, and long-term retention.
+- **Revenue/trust:** improves trust and top-of-funnel growth quality for future monetization.
+- **Dependencies:** search/navigation instrumentation + trust marker consistency.
+- **Success:** measurable uplift in student-opportunity discovery and application starts.
+
+## 8) Free education + history-to-action integration
+
+- **Goal:** connect finance/ownership/history learning directly to platform actions.
+- **Impact:** stronger behavior change and ecosystem activation.
+- **Revenue/trust:** deeper retention and higher-quality user journeys into economic actions.
+- **Dependencies:** homepage/info architecture + event tracking.
+- **Success:** education/history CTA-to-action conversion measurable and improving.
+
+## 9) Performance hardening on top 10 routes
+
 - **Goal:** improve p75 mobile speed/CWV for revenue and entry routes.
 - **Impact:** trust + conversion gains.
 - **Success:** CWV pass-rate target achieved on top routes.
 
-## 8) Weekly operating dashboard live
+## 10) Weekly operating dashboard live
+
 - **Goal:** no-guessing operations with clear scoreboard.
 - **Impact:** faster iteration quality.
 - **Success:** weekly review cadence with owner accountability.
@@ -299,11 +373,13 @@ Keep black/gold premium direction. Evolve to:
 2. Homepage clarity + top-path redesign
 3. Search/nav improvements + relevance tuning
 4. Trust signal layer rollout (profile/listing/search cards)
-5. Monetization funnel optimization (ads/marketplace/premium visibility)
-6. Consulting/admin moderation parity hardening completion
-7. Music workstream integration into primary flows
-8. Performance optimization pass on top routes
-9. Weekly scoreboard + operating cadence lock-in
+5. Student portal elevation (scholarships/internships/mentorship/career guidance discovery + action)
+6. Free education + history-to-action system integration
+7. Monetization funnel optimization (ads/marketplace/premium visibility)
+8. Consulting/admin moderation parity hardening completion
+9. Music workstream integration into primary flows
+10. Performance optimization pass on top routes
+11. Weekly scoreboard + operating cadence lock-in
 
 ---
 
@@ -313,12 +389,15 @@ Keep black/gold premium direction. Evolve to:
 **Duration:** 10 business days
 
 ### Sprint goals
+
 1. Ship homepage clarity improvements on primary CTA pathways.
 2. Ship search/navigation improvements for top intents.
 3. Ship trust markers and moderation-state visibility on high-impact surfaces.
 4. Instrument key funnels so every critical action is measurable.
 5. Improve performance on homepage + search + top revenue landing routes.
 6. Place music/creator pathway as first-class entry point in primary nav/landing flow.
+7. Elevate student portal opportunities in primary discovery and navigation paths.
+8. Connect education/history content to concrete economic actions across BWE.
 
 ### Sprint backlog (buildable now)
 
@@ -338,14 +417,23 @@ Keep black/gold premium direction. Evolve to:
 - **Music block**
   - add music/creator discovery CTA on homepage and search context
   - creator onboarding + monetization path visibility
+- **Student portal block**
+  - elevate scholarships/internships/mentorship/career guidance in homepage + nav + search contexts
+  - add clear progression CTAs from student opportunities to platform actions
+- **Education + history block**
+  - surface practical finance/ownership pathways with explicit next actions
+  - connect history/economic-truth content to present-day actions (support, build, apply, invest)
 
 ### Sprint success criteria
+
 - event instrumentation completeness for top funnels >= 90%
 - homepage first-action rate uplift (baseline + measurable delta)
 - search-assisted conversion uplift
 - moderation/trust signal visibility on prioritized surfaces
 - measurable mobile performance improvements on top routes
 - music funnel events live and recorded
+- student portal opportunity funnel events live and recorded
+- education/history-to-action funnel events live and recorded
 
 ---
 
