@@ -1108,7 +1108,9 @@ export default function Home() {
 
                       <button
                         type="button"
-                        onClick={() => submitHomepageSearch("search_button_click")}
+                        onClick={() =>
+                          submitHomepageSearch("search_button_click")
+                        }
                         aria-label="Search"
                         className="shrink-0 bg-[#D4AF37] px-3 text-[13px] font-extrabold text-black transition hover:bg-yellow-500 sm:px-8 sm:text-[14px]"
                       >
