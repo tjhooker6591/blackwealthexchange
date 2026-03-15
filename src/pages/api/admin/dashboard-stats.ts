@@ -430,7 +430,41 @@ export default async function handler(
         const tb = b.createdAt ? new Date(b.createdAt).getTime() : 0;
         return tb - ta;
       })
-      .slice(0, 250);
+      .slice(0, 2500);
+
+    const joinsByDayMap = new Map<string, any[]>();
+    for (const row of recentJoins) {
+      const dayKey = row.createdAt
+        ? new Date(row.createdAt).toISOString().slice(0, 10)
+        : "unknown";
+      const arr = joinsByDayMap.get(dayKey) || [];
+      arr.push(row);
+      joinsByDayMap.set(dayKey, arr);
+    }
+
+    const dailyBuckets = Array.from(joinsByDayMap.entries())
+      .sort((a, b) => {
+        if (a[0] === "unknown") return 1;
+        if (b[0] === "unknown") return -1;
+        return b[0].localeCompare(a[0]);
+      })
+      .map(([day, rows]) => {
+        const byAccountType = rows.reduce(
+          (acc: Record<string, number>, row: any) => {
+            const k = String(row.accountType || "unknown");
+            acc[k] = (acc[k] || 0) + 1;
+            return acc;
+          },
+          {},
+        );
+
+        return {
+          day,
+          total: rows.length,
+          byAccountType,
+          rows,
+        };
+      });
 
     const recentJoinSummary = joinRowsBySource.reduce(
       (acc: any, source) => {
@@ -516,12 +550,14 @@ export default async function handler(
       },
 
       recentJoins: {
+        windowDays: 30,
         summary: recentJoinSummary,
         bySource: joinRowsBySource.map((s) => ({
           sourceCollection: s.sourceCollection,
           accountType: s.accountType,
           counts: s.counts,
         })),
+        dailyBuckets,
         rows: recentJoins,
       },
     });

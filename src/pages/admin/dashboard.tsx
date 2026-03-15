@@ -118,6 +118,7 @@ type StatsV2 = {
   organizationsCount?: number;
 
   recentJoins?: {
+    windowDays?: number;
     summary?: {
       today?: number;
       last7Days?: number;
@@ -127,6 +128,12 @@ type StatsV2 = {
         { today: number; last7Days: number; last30Days: number }
       >;
     };
+    dailyBuckets?: Array<{
+      day: string;
+      total: number;
+      byAccountType: Record<string, number>;
+      rows: RecentJoinRow[];
+    }>;
     rows?: RecentJoinRow[];
   };
 };
@@ -393,7 +400,21 @@ const AdminDashboard = () => {
     });
   }, [statsRaw]);
 
+  const recentJoinWindowDays = Number(statsRaw?.recentJoins?.windowDays || 30);
+
   const recentJoinsByDay = useMemo(() => {
+    const apiBuckets = Array.isArray(statsRaw?.recentJoins?.dailyBuckets)
+      ? statsRaw.recentJoins.dailyBuckets
+      : null;
+
+    if (apiBuckets && apiBuckets.length) {
+      return [...apiBuckets].sort((a: any, b: any) => {
+        if (a.day === "unknown") return 1;
+        if (b.day === "unknown") return -1;
+        return String(b.day).localeCompare(String(a.day));
+      });
+    }
+
     const map = new Map<string, RecentJoinRow[]>();
     for (const row of recentJoinsRows) {
       const key = row.createdAt
@@ -410,10 +431,51 @@ const AdminDashboard = () => {
         if (b[0] === "unknown") return -1;
         return b[0].localeCompare(a[0]);
       })
-      .map(([day, rows]) => ({ day, rows }));
-  }, [recentJoinsRows]);
+      .map(([day, rows]) => ({
+        day,
+        total: rows.length,
+        byAccountType: rows.reduce((acc: Record<string, number>, row) => {
+          acc[row.accountType] = (acc[row.accountType] || 0) + 1;
+          return acc;
+        }, {}),
+        rows,
+      }));
+  }, [recentJoinsRows, statsRaw]);
 
-  const [expandedJoinDays, setExpandedJoinDays] = useState<Record<string, boolean>>({});
+  const [expandedJoinDays, setExpandedJoinDays] = useState<
+    Record<string, boolean>
+  >({});
+  const [joinRowsVisibleByDay, setJoinRowsVisibleByDay] = useState<
+    Record<string, number>
+  >({});
+  const [joinAccountTypeFilter, setJoinAccountTypeFilter] =
+    useState<string>("all");
+  const [hideTestJoinAccounts, setHideTestJoinAccounts] = useState<boolean>(true);
+
+  useEffect(() => {
+    const todayKey = new Date().toISOString().slice(0, 10);
+    const nextExpanded: Record<string, boolean> = {};
+    const nextVisible: Record<string, number> = {};
+
+    for (const bucket of recentJoinsByDay) {
+      const k = String(bucket.day || "unknown");
+      nextExpanded[k] = k === todayKey;
+      nextVisible[k] = 50;
+    }
+
+    setExpandedJoinDays(nextExpanded);
+    setJoinRowsVisibleByDay(nextVisible);
+  }, [recentJoinsByDay]);
+
+  const joinAccountTypeOptions = useMemo(() => {
+    const set = new Set<string>();
+    for (const bucket of recentJoinsByDay) {
+      for (const row of bucket.rows || []) {
+        if (row.accountType) set.add(row.accountType);
+      }
+    }
+    return Array.from(set).sort();
+  }, [recentJoinsByDay]);
 
   const filteredConsulting = useMemo(() => {
     const now = Date.now();
@@ -743,33 +805,97 @@ const AdminDashboard = () => {
       </div>
 
       <div className="bg-gray-800 rounded p-4 border border-gray-700 mb-10">
-        <div className="flex items-center justify-between gap-3 mb-2">
-          <h3 className="text-lg text-gold">Recent Join Activity (30-day window)</h3>
-          <div className="text-xs text-gray-400">Collapsed by day to keep this scalable</div>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-2">
+          <h3 className="text-lg text-gold">
+            Recent Join Activity ({recentJoinWindowDays}-day window)
+          </h3>
+          <div className="text-xs text-gray-400">
+            Grouped by day • Today expanded by default
+          </div>
+        </div>
+
+        <div className="mb-3 flex flex-wrap items-center gap-2 text-xs">
+          <label className="text-gray-300">Account type:</label>
+          <select
+            className="rounded border border-gray-700 bg-gray-900 px-2 py-1"
+            value={joinAccountTypeFilter}
+            onChange={(e) => setJoinAccountTypeFilter(e.target.value)}
+          >
+            <option value="all">all</option>
+            {joinAccountTypeOptions.map((t) => (
+              <option key={t} value={t}>
+                {t}
+              </option>
+            ))}
+          </select>
+
+          <label className="ml-2 inline-flex items-center gap-1 text-gray-300">
+            <input
+              type="checkbox"
+              checked={hideTestJoinAccounts}
+              onChange={(e) => setHideTestJoinAccounts(e.target.checked)}
+            />
+            Hide test accounts
+          </label>
         </div>
 
         {recentJoinsByDay.length === 0 ? (
-          <div className="py-3 text-gray-400 text-sm">No recent joins found in the last 30 days.</div>
+          <div className="py-3 text-gray-400 text-sm">
+            No recent joins found in the last {recentJoinWindowDays} days.
+          </div>
         ) : (
           <div className="space-y-3">
-            {recentJoinsByDay.map(({ day, rows }) => {
+            {recentJoinsByDay.map(({ day, rows, total, byAccountType }: any) => {
+              const filteredRows = (rows as RecentJoinRow[]).filter((row) => {
+                if (hideTestJoinAccounts && row.isTest) return false;
+                if (
+                  joinAccountTypeFilter !== "all" &&
+                  row.accountType !== joinAccountTypeFilter
+                ) {
+                  return false;
+                }
+                return true;
+              });
+
+              if (filteredRows.length === 0) return null;
+
               const expanded = Boolean(expandedJoinDays[day]);
-              const visibleRows = expanded ? rows.slice(0, 200) : [];
+              const visibleLimit = joinRowsVisibleByDay[day] || 50;
+              const visibleRows = expanded ? filteredRows.slice(0, visibleLimit) : [];
+              const hiddenCount = Math.max(0, filteredRows.length - visibleRows.length);
+
               return (
-                <div key={day} className="rounded border border-gray-700 bg-gray-900">
+                <div
+                  key={day}
+                  className="rounded border border-gray-700 bg-gray-900"
+                >
                   <button
                     className="w-full text-left px-3 py-2 flex items-center justify-between hover:bg-gray-800"
                     onClick={() =>
-                      setExpandedJoinDays((prev) => ({ ...prev, [day]: !expanded }))
+                      setExpandedJoinDays((prev) => ({
+                        ...prev,
+                        [day]: !expanded,
+                      }))
                     }
                   >
                     <div>
                       <span className="font-semibold text-gray-100">
-                        {day === "unknown" ? "Unknown date" : new Date(`${day}T00:00:00Z`).toLocaleDateString()}
+                        {day === "unknown"
+                          ? "Unknown date"
+                          : new Date(`${day}T00:00:00Z`).toLocaleDateString()}
                       </span>
-                      <span className="ml-2 text-xs text-gray-400">{rows.length} joins</span>
+                      <span className="ml-2 text-xs text-gray-400">
+                        {filteredRows.length} shown / {total ?? rows.length} total
+                      </span>
+                      <span className="ml-2 text-[11px] text-gray-500">
+                        {Object.entries(byAccountType || {})
+                          .map(([k, v]) => `${k}:${v}`)
+                          .join(" • ")}
+                      </span>
                     </div>
-                    <span className="text-xs text-gray-400">{expanded ? "Hide" : "Show"}</span>
+                    <span className="text-xs text-gray-400">
+                      {expanded ? "Hide" : "Show"}
+                    </span>
                   </button>
 
                   {expanded ? (
@@ -788,28 +914,70 @@ const AdminDashboard = () => {
                         </thead>
                         <tbody>
                           {visibleRows.map((row) => (
-                            <tr key={`${row.sourceCollection}-${row._id}`} className="border-b border-gray-700/50">
+                            <tr
+                              key={`${row.sourceCollection}-${row._id}`}
+                              className="border-b border-gray-700/50"
+                            >
                               <td className="py-2 px-3">{row.name || "—"}</td>
                               <td className="py-2 px-3">{row.email || "—"}</td>
                               <td className="py-2 px-3 capitalize">{row.accountType}</td>
                               <td className="py-2 px-3 text-gray-400">{row.sourceCollection}</td>
-                              <td className="py-2 px-3">{row.createdAt ? new Date(row.createdAt).toLocaleString() : "—"}</td>
-                              <td className="py-2 px-3">{row.status || (row.isActive ? "active" : "inactive")}</td>
+                              <td className="py-2 px-3">
+                                {row.createdAt
+                                  ? new Date(row.createdAt).toLocaleString()
+                                  : "—"}
+                              </td>
+                              <td className="py-2 px-3">
+                                {row.status ||
+                                  (row.isActive ? "active" : "inactive")}
+                              </td>
                               <td className="py-2 px-3">
                                 <div className="flex flex-wrap gap-1 text-[11px]">
-                                  {row.isVerified ? <span className="rounded bg-emerald-600/30 border border-emerald-400/50 px-2 py-0.5">verified</span> : <span className="rounded bg-gray-700 px-2 py-0.5">unverified</span>}
-                                  {row.isAdmin ? <span className="rounded bg-purple-600/30 border border-purple-400/50 px-2 py-0.5">admin</span> : null}
-                                  {row.isTest ? <span className="rounded bg-yellow-600/30 border border-yellow-400/50 px-2 py-0.5">test</span> : null}
-                                  {!row.isActive ? <span className="rounded bg-red-600/30 border border-red-400/50 px-2 py-0.5">inactive</span> : null}
+                                  {row.isVerified ? (
+                                    <span className="rounded bg-emerald-600/30 border border-emerald-400/50 px-2 py-0.5">
+                                      verified
+                                    </span>
+                                  ) : (
+                                    <span className="rounded bg-gray-700 px-2 py-0.5">
+                                      unverified
+                                    </span>
+                                  )}
+                                  {row.isAdmin ? (
+                                    <span className="rounded bg-purple-600/30 border border-purple-400/50 px-2 py-0.5">
+                                      admin
+                                    </span>
+                                  ) : null}
+                                  {row.isTest ? (
+                                    <span className="rounded bg-yellow-600/30 border border-yellow-400/50 px-2 py-0.5">
+                                      test
+                                    </span>
+                                  ) : null}
+                                  {!row.isActive ? (
+                                    <span className="rounded bg-red-600/30 border border-red-400/50 px-2 py-0.5">
+                                      inactive
+                                    </span>
+                                  ) : null}
                                 </div>
                               </td>
                             </tr>
                           ))}
                         </tbody>
                       </table>
-                      {rows.length > 200 ? (
-                        <div className="px-3 py-2 text-xs text-gray-400">
-                          Showing first 200 rows for this day ({rows.length - 200} more hidden).
+
+                      {hiddenCount > 0 ? (
+                        <div className="px-3 py-2 text-xs text-gray-400 flex items-center gap-2">
+                          <span>{hiddenCount} more hidden for this day.</span>
+                          <button
+                            className="rounded border border-gray-700 bg-gray-800 px-2 py-1 hover:bg-gray-700"
+                            onClick={() =>
+                              setJoinRowsVisibleByDay((prev) => ({
+                                ...prev,
+                                [day]: (prev[day] || 50) + 50,
+                              }))
+                            }
+                          >
+                            Show more
+                          </button>
                         </div>
                       ) : null}
                     </div>
