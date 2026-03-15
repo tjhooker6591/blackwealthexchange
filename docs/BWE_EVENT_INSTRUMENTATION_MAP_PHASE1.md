@@ -8,16 +8,16 @@
 
 ## 1) Homepage / landing
 
-| Route/Page | Component/Section        | User Action         | Event Name                  | Required Properties                                         | Optional Properties                 | Why It Matters                              | Funnel Owner   |
-| ---------- | ------------------------ | ------------------- | --------------------------- | ----------------------------------------------------------- | ----------------------------------- | ------------------------------------------- | -------------- |
-| `/`        | Hero primary CTA buttons | Click primary CTA   | `homepage_cta_clicked`      | `cta_id`, `source_slot`, `page_route`                       | `cta_target_route`, `campaign_code` | Measures top-intent selection quality       | Growth/Product |
-| `/`        | Hero secondary CTA       | Click secondary CTA | `homepage_cta_clicked`      | `cta_id`, `source_slot`                                     | `cta_target_route`                  | Tracks fallback intent                      | Growth/Product |
-| `/`        | Homepage search box      | Focus               | `homepage_search_focused`   | `source_component`, `page_route`                            | `source_slot`                       | Indicates discovery intent initiation       | Growth/Product |
-| `/`        | Homepage search box      | Submit query        | `homepage_search_submitted` | `query_text_normalized` or `query_hash`, `source_component` | `active_filters`                    | Entry point to discovery funnel             | Growth/Product |
-| `/`        | Key promo sections       | Click section CTA   | `homepage_section_engaged`  | `section_id`, `cta_id`                                      | `target_route`                      | Identifies high-performing homepage modules | Growth/Product |
-| `/`        | Student portal promo lane | Click student portal entry | `student_opportunity_category_clicked` | `opportunity_type`, `source_slot=homepage_student_lane` | `target_route` | Measures homepage student activation | Student Growth |
-| `/`        | Education promo lane | Click education entry | `education_topic_entry_clicked` | `content_type=education`, `topic_key`, `source_slot=homepage_education_lane` | `target_route` | Measures practical education entry from homepage | Education |
-| `/`        | History/economic truth promo lane | Click history entry | `history_topic_entry_clicked` | `content_type=history`, `topic_key`, `source_slot=homepage_history_lane` | `target_route` | Measures mission-context engagement from homepage | Education/Mission |
+| Route/Page | Component/Section                 | User Action                | Event Name                             | Required Properties                                                          | Optional Properties                 | Why It Matters                                    | Funnel Owner      |
+| ---------- | --------------------------------- | -------------------------- | -------------------------------------- | ---------------------------------------------------------------------------- | ----------------------------------- | ------------------------------------------------- | ----------------- |
+| `/`        | Hero primary CTA buttons          | Click primary CTA          | `homepage_cta_clicked`                 | `cta_id`, `source_slot`, `page_route`                                        | `cta_target_route`, `campaign_code` | Measures top-intent selection quality             | Growth/Product    |
+| `/`        | Hero secondary CTA                | Click secondary CTA        | `homepage_cta_clicked`                 | `cta_id`, `source_slot`                                                      | `cta_target_route`                  | Tracks fallback intent                            | Growth/Product    |
+| `/`        | Homepage search box               | Focus                      | `homepage_search_focused`              | `source_component`, `page_route`                                             | `source_slot`                       | Indicates discovery intent initiation             | Growth/Product    |
+| `/`        | Homepage search box               | Submit query               | `homepage_search_submitted`            | `query_text_normalized` or `query_hash`, `source_component`                  | `active_filters`                    | Entry point to discovery funnel                   | Growth/Product    |
+| `/`        | Key promo sections                | Click section CTA          | `homepage_section_engaged`             | `section_id`, `cta_id`                                                       | `target_route`                      | Identifies high-performing homepage modules       | Growth/Product    |
+| `/`        | Student portal promo lane         | Click student portal entry | `student_opportunity_category_clicked` | `opportunity_type`, `source_slot=homepage_student_lane`                      | `target_route`                      | Measures homepage student activation              | Student Growth    |
+| `/`        | Education promo lane              | Click education entry      | `education_topic_entry_clicked`        | `content_type=education`, `topic_key`, `source_slot=homepage_education_lane` | `target_route`                      | Measures practical education entry from homepage  | Education         |
+| `/`        | History/economic truth promo lane | Click history entry        | `history_topic_entry_clicked`          | `content_type=history`, `topic_key`, `source_slot=homepage_history_lane`     | `target_route`                      | Measures mission-context engagement from homepage | Education/Mission |
 
 ---
 
@@ -141,27 +141,27 @@
 
 ## 11) Student portal / opportunities
 
-| Route/Page | Component/Section | User Action | Event Name | Required Properties | Optional Properties | Why It Matters | Funnel Owner |
-|---|---|---|---|---|---|---|---|
-| `/BlackStudentOpportunities` or `/black-student-opportunities` | Student portal landing | View landing | `student_portal_landing_viewed` | `page_route` | `source_surface` | Measures top-of-funnel student reach | Student Growth |
-| `/black-student-opportunities` | Category cards | Click category card | `student_opportunity_category_clicked` | `opportunity_type`, `source_slot` | `target_route` | Tracks student intent by opportunity type | Student Growth |
-| `/black-student-opportunities/scholarships` | Opportunity list/cards | Click scholarship entry | `student_scholarship_entry_clicked` | `opportunity_type=scholarship`, `entity_id` | `opportunity_source`, `deadline_bucket` | Scholarship demand + quality signal | Student Growth |
-| `/black-student-opportunities/internships` | Opportunity list/cards | Click internship entry | `student_internship_entry_clicked` | `opportunity_type=internship`, `entity_id` | `opportunity_source` | Internship pipeline engagement | Student Growth |
-| `/black-student-opportunities/mentorship` | Opportunity list/cards | Click mentorship entry | `student_mentorship_entry_clicked` | `opportunity_type=mentorship`, `entity_id` | `opportunity_source` | Mentorship activation | Student Growth |
-| student opportunity pages | Action CTA block | Start action (apply/save/visit) | `student_opportunity_action_started` | `opportunity_type`, `action_type` | `destination_route`, `entity_id` | Converts browsing into concrete action | Student Growth |
+| Route/Page                                                     | Component/Section      | User Action                     | Event Name                             | Required Properties                         | Optional Properties                     | Why It Matters                            | Funnel Owner   |
+| -------------------------------------------------------------- | ---------------------- | ------------------------------- | -------------------------------------- | ------------------------------------------- | --------------------------------------- | ----------------------------------------- | -------------- |
+| `/BlackStudentOpportunities` or `/black-student-opportunities` | Student portal landing | View landing                    | `student_portal_landing_viewed`        | `page_route`                                | `source_surface`                        | Measures top-of-funnel student reach      | Student Growth |
+| `/black-student-opportunities`                                 | Category cards         | Click category card             | `student_opportunity_category_clicked` | `opportunity_type`, `source_slot`           | `target_route`                          | Tracks student intent by opportunity type | Student Growth |
+| `/black-student-opportunities/scholarships`                    | Opportunity list/cards | Click scholarship entry         | `student_scholarship_entry_clicked`    | `opportunity_type=scholarship`, `entity_id` | `opportunity_source`, `deadline_bucket` | Scholarship demand + quality signal       | Student Growth |
+| `/black-student-opportunities/internships`                     | Opportunity list/cards | Click internship entry          | `student_internship_entry_clicked`     | `opportunity_type=internship`, `entity_id`  | `opportunity_source`                    | Internship pipeline engagement            | Student Growth |
+| `/black-student-opportunities/mentorship`                      | Opportunity list/cards | Click mentorship entry          | `student_mentorship_entry_clicked`     | `opportunity_type=mentorship`, `entity_id`  | `opportunity_source`                    | Mentorship activation                     | Student Growth |
+| student opportunity pages                                      | Action CTA block       | Start action (apply/save/visit) | `student_opportunity_action_started`   | `opportunity_type`, `action_type`           | `destination_route`, `entity_id`        | Converts browsing into concrete action    | Student Growth |
 
 ---
 
 ## 12) Education / history / truth-to-action
 
-| Route/Page | Component/Section | User Action | Event Name | Required Properties | Optional Properties | Why It Matters | Funnel Owner |
-|---|---|---|---|---|---|---|---|
-| `/financial-literacy`, `/investment`, `/economic-freedom` | Education landing/topic | View content page | `education_landing_viewed` | `content_type=education`, `topic_key`, `page_route` | `source_surface` | Top education engagement metric | Education |
-| same education routes + `/courses/*` | Topic/module entry card | Click topic/module entry | `education_topic_entry_clicked` | `content_type=education`, `topic_key` | `module_id`, `lesson_id` | Tracks practical learning intent | Education |
-| `/library-of-black-history`, `/african-american-economic-impact` | History/economic truth landing | View history page | `history_landing_viewed` | `content_type=history`, `topic_key`, `page_route` | `source_surface` | Mission truth engagement baseline | Education/Mission |
-| same history routes | Section/topic card/link | Click history topic | `history_topic_entry_clicked` | `content_type=history`, `topic_key` | `entity_id` | Measures what historical context resonates | Education/Mission |
-| education/history pages | “Take action” CTA (to directory/marketplace/jobs/seller/music) | Click action transition | `education_to_action_cta_clicked` | `content_type`, `topic_key`, `cta_target_flow` | `destination_route`, `source_slot` | Core learn->action conversion metric | Education/Growth |
-| history/economic truth pages | “Why this matters now” CTA | Click truth-to-action CTA | `history_truth_to_action_cta_clicked` | `content_type=economic_truth`, `topic_key`, `cta_target_flow` | `destination_route`, `source_slot` | Connects context to present-day economic participation | Education/Mission |
+| Route/Page                                                       | Component/Section                                              | User Action               | Event Name                            | Required Properties                                           | Optional Properties                | Why It Matters                                         | Funnel Owner      |
+| ---------------------------------------------------------------- | -------------------------------------------------------------- | ------------------------- | ------------------------------------- | ------------------------------------------------------------- | ---------------------------------- | ------------------------------------------------------ | ----------------- |
+| `/financial-literacy`, `/investment`, `/economic-freedom`        | Education landing/topic                                        | View content page         | `education_landing_viewed`            | `content_type=education`, `topic_key`, `page_route`           | `source_surface`                   | Top education engagement metric                        | Education         |
+| same education routes + `/courses/*`                             | Topic/module entry card                                        | Click topic/module entry  | `education_topic_entry_clicked`       | `content_type=education`, `topic_key`                         | `module_id`, `lesson_id`           | Tracks practical learning intent                       | Education         |
+| `/library-of-black-history`, `/african-american-economic-impact` | History/economic truth landing                                 | View history page         | `history_landing_viewed`              | `content_type=history`, `topic_key`, `page_route`             | `source_surface`                   | Mission truth engagement baseline                      | Education/Mission |
+| same history routes                                              | Section/topic card/link                                        | Click history topic       | `history_topic_entry_clicked`         | `content_type=history`, `topic_key`                           | `entity_id`                        | Measures what historical context resonates             | Education/Mission |
+| education/history pages                                          | “Take action” CTA (to directory/marketplace/jobs/seller/music) | Click action transition   | `education_to_action_cta_clicked`     | `content_type`, `topic_key`, `cta_target_flow`                | `destination_route`, `source_slot` | Core learn->action conversion metric                   | Education/Growth  |
+| history/economic truth pages                                     | “Why this matters now” CTA                                     | Click truth-to-action CTA | `history_truth_to_action_cta_clicked` | `content_type=economic_truth`, `topic_key`, `cta_target_flow` | `destination_route`, `source_slot` | Connects context to present-day economic participation | Education/Mission |
 
 ---
 
@@ -178,22 +178,47 @@
 
 ---
 
-## 12) Route gaps / ambiguous flows requiring clarification
+## 12) Canonical route decisions (LOCKED for S1-T02 implementation)
 
-1. **Marketplace checkout canonical route**
-   - Multiple checkout-related APIs/routes exist; confirm single source of truth for success/failure instrumentation.
-2. **Search route hierarchy**
-   - Clarify whether `/search-results` or `/business-directory` is canonical first-search destination from homepage.
-3. **Auth reset API path normalization**
-   - Both `forgot-password` and `request-reset` exist; should share one analytics contract.
-4. **Music pricing -> onboarding linkage**
-   - Confirm exact transition route and plan parameter propagation.
-5. **Admin queue event scope**
-   - Decide whether queue-view and row-expand events are required in Phase 1 or Phase 2.
-6. **Student portal route canonicalization**
-   - Confirm canonical student landing path (`/BlackStudentOpportunities` vs `/black-student-opportunities`).
-7. **Education/history action CTA standardization**
-   - Confirm one shared CTA pattern and destination enum across `/financial-literacy`, `/investment`, `/economic-freedom`, `/library-of-black-history`, `/african-american-economic-impact`.
+1. **Student portal canonical landing route**
+   - **Canonical:** `/black-student-opportunities`
+   - **Alternate handling:** `/BlackStudentOpportunities` treated as legacy alias; maintain compatibility but instrument as canonical funnel route via `page_route_normalized`.
+   - **Recommendation:** add redirect to canonical lowercase route in later cleanup pass (not in S1-T02 docs-only scope).
+
+2. **Canonical search entry destination**
+   - **Canonical search submission destination:** `/search-results`
+   - **Supporting discovery routes:** `/business-directory` (directory-scoped search), `/search/ai` (AI-assisted exploration).
+   - **Instrumentation rule:** homepage search submit emits `homepage_search_submitted` then normalized search funnel tracks `search_query_submitted` with `search_scope`.
+
+3. **Canonical marketplace checkout source of truth**
+   - **Primary UI route:** product detail route initiators (`/marketplace/product/[id]`) and checkout entry points under marketplace flow.
+   - **Primary API route for checkout session:** `/api/checkout/create-session`
+   - **Legacy/alternate paths:** `/api/stripe/checkout` and other checkout-adjacent routes remain instrumented as `source_variant` until consolidated.
+
+4. **Auth reset funnel normalization**
+   - **Canonical reset request path:** `/api/auth/forgot-password`
+   - **Alternate path:** `/api/auth/request-reset` treated as legacy alias; emit same canonical funnel event family.
+   - **Recommendation:** keep alias live for compatibility, plan eventual internal redirect/merge.
+
+5. **Education/history CTA standardization**
+   - **Canonical CTA event pair:**
+     - `education_to_action_cta_clicked`
+     - `history_truth_to_action_cta_clicked`
+   - **Canonical CTA target enum (`cta_target_flow`):**
+     - `directory`
+     - `marketplace`
+     - `jobs`
+     - `seller_signup`
+     - `music_creator`
+     - `wealth_tool`
+   - **Standardized source routes:** `/financial-literacy`, `/investment`, `/economic-freedom`, `/library-of-black-history`, `/african-american-economic-impact`.
+
+## Remaining clarifications (non-blocking for S1-T02 docs)
+
+1. **Music pricing -> onboarding linkage detail**
+   - Confirm final parameter pass-through contract (`plan_tier`, `billing_cycle`) from `/music/pricing` to `/music/join`.
+2. **Admin queue event depth**
+   - Confirm whether `queue_view` and `row_expand` events are required in Phase 1 or deferred.
 
 ---
 
