@@ -450,18 +450,22 @@ const AdminDashboard = () => {
   >({});
   const [joinAccountTypeFilter, setJoinAccountTypeFilter] =
     useState<string>("all");
-  const [hideTestJoinAccounts, setHideTestJoinAccounts] = useState<boolean>(true);
+  const [hideTestJoinAccounts, setHideTestJoinAccounts] =
+    useState<boolean>(true);
 
   useEffect(() => {
     const todayKey = new Date().toISOString().slice(0, 10);
     const nextExpanded: Record<string, boolean> = {};
     const nextVisible: Record<string, number> = {};
+    const hasTodayBucket = recentJoinsByDay.some(
+      (b: any) => String(b.day || "") === todayKey,
+    );
 
-    for (const bucket of recentJoinsByDay) {
+    recentJoinsByDay.forEach((bucket: any, idx: number) => {
       const k = String(bucket.day || "unknown");
-      nextExpanded[k] = k === todayKey;
+      nextExpanded[k] = hasTodayBucket ? k === todayKey : idx === 0;
       nextVisible[k] = 50;
-    }
+    });
 
     setExpandedJoinDays(nextExpanded);
     setJoinRowsVisibleByDay(nextVisible);
@@ -845,146 +849,160 @@ const AdminDashboard = () => {
           </div>
         ) : (
           <div className="space-y-3">
-            {recentJoinsByDay.map(({ day, rows, total, byAccountType }: any) => {
-              const filteredRows = (rows as RecentJoinRow[]).filter((row) => {
-                if (hideTestJoinAccounts && row.isTest) return false;
-                if (
-                  joinAccountTypeFilter !== "all" &&
-                  row.accountType !== joinAccountTypeFilter
-                ) {
-                  return false;
-                }
-                return true;
-              });
+            {recentJoinsByDay.map(
+              ({ day, rows, total, byAccountType }: any) => {
+                const filteredRows = (rows as RecentJoinRow[]).filter((row) => {
+                  if (hideTestJoinAccounts && row.isTest) return false;
+                  if (
+                    joinAccountTypeFilter !== "all" &&
+                    row.accountType !== joinAccountTypeFilter
+                  ) {
+                    return false;
+                  }
+                  return true;
+                });
 
-              if (filteredRows.length === 0) return null;
+                if (filteredRows.length === 0) return null;
 
-              const expanded = Boolean(expandedJoinDays[day]);
-              const visibleLimit = joinRowsVisibleByDay[day] || 50;
-              const visibleRows = expanded ? filteredRows.slice(0, visibleLimit) : [];
-              const hiddenCount = Math.max(0, filteredRows.length - visibleRows.length);
+                const expanded = Boolean(expandedJoinDays[day]);
+                const visibleLimit = joinRowsVisibleByDay[day] || 50;
+                const visibleRows = expanded
+                  ? filteredRows.slice(0, visibleLimit)
+                  : [];
+                const hiddenCount = Math.max(
+                  0,
+                  filteredRows.length - visibleRows.length,
+                );
 
-              return (
-                <div
-                  key={day}
-                  className="rounded border border-gray-700 bg-gray-900"
-                >
-                  <button
-                    className="w-full text-left px-3 py-2 flex items-center justify-between hover:bg-gray-800"
-                    onClick={() =>
-                      setExpandedJoinDays((prev) => ({
-                        ...prev,
-                        [day]: !expanded,
-                      }))
-                    }
+                return (
+                  <div
+                    key={day}
+                    className="rounded border border-gray-700 bg-gray-900"
                   >
-                    <div>
-                      <span className="font-semibold text-gray-100">
-                        {day === "unknown"
-                          ? "Unknown date"
-                          : new Date(`${day}T00:00:00Z`).toLocaleDateString()}
+                    <button
+                      className="w-full text-left px-3 py-2 flex items-center justify-between hover:bg-gray-800"
+                      onClick={() =>
+                        setExpandedJoinDays((prev) => ({
+                          ...prev,
+                          [day]: !expanded,
+                        }))
+                      }
+                    >
+                      <div>
+                        <span className="font-semibold text-gray-100">
+                          {day === "unknown"
+                            ? "Unknown date"
+                            : new Date(`${day}T00:00:00Z`).toLocaleDateString()}
+                        </span>
+                        <span className="ml-2 text-xs text-gray-400">
+                          {filteredRows.length} shown / {total ?? rows.length}{" "}
+                          total
+                        </span>
+                        <span className="ml-2 text-[11px] text-gray-500">
+                          {Object.entries(byAccountType || {})
+                            .map(([k, v]) => `${k}:${v}`)
+                            .join(" • ")}
+                        </span>
+                      </div>
+                      <span className="text-xs text-gray-400">
+                        {expanded ? "Hide" : "Show"}
                       </span>
-                      <span className="ml-2 text-xs text-gray-400">
-                        {filteredRows.length} shown / {total ?? rows.length} total
-                      </span>
-                      <span className="ml-2 text-[11px] text-gray-500">
-                        {Object.entries(byAccountType || {})
-                          .map(([k, v]) => `${k}:${v}`)
-                          .join(" • ")}
-                      </span>
-                    </div>
-                    <span className="text-xs text-gray-400">
-                      {expanded ? "Hide" : "Show"}
-                    </span>
-                  </button>
+                    </button>
 
-                  {expanded ? (
-                    <div className="overflow-x-auto border-t border-gray-700">
-                      <table className="w-full text-left text-sm">
-                        <thead>
-                          <tr className="border-b border-gray-700 text-gold">
-                            <th className="py-2 px-3">Name</th>
-                            <th className="py-2 px-3">Email</th>
-                            <th className="py-2 px-3">Account Type</th>
-                            <th className="py-2 px-3">Source</th>
-                            <th className="py-2 px-3">Created</th>
-                            <th className="py-2 px-3">Status</th>
-                            <th className="py-2 px-3">Signals</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {visibleRows.map((row) => (
-                            <tr
-                              key={`${row.sourceCollection}-${row._id}`}
-                              className="border-b border-gray-700/50"
-                            >
-                              <td className="py-2 px-3">{row.name || "—"}</td>
-                              <td className="py-2 px-3">{row.email || "—"}</td>
-                              <td className="py-2 px-3 capitalize">{row.accountType}</td>
-                              <td className="py-2 px-3 text-gray-400">{row.sourceCollection}</td>
-                              <td className="py-2 px-3">
-                                {row.createdAt
-                                  ? new Date(row.createdAt).toLocaleString()
-                                  : "—"}
-                              </td>
-                              <td className="py-2 px-3">
-                                {row.status ||
-                                  (row.isActive ? "active" : "inactive")}
-                              </td>
-                              <td className="py-2 px-3">
-                                <div className="flex flex-wrap gap-1 text-[11px]">
-                                  {row.isVerified ? (
-                                    <span className="rounded bg-emerald-600/30 border border-emerald-400/50 px-2 py-0.5">
-                                      verified
-                                    </span>
-                                  ) : (
-                                    <span className="rounded bg-gray-700 px-2 py-0.5">
-                                      unverified
-                                    </span>
-                                  )}
-                                  {row.isAdmin ? (
-                                    <span className="rounded bg-purple-600/30 border border-purple-400/50 px-2 py-0.5">
-                                      admin
-                                    </span>
-                                  ) : null}
-                                  {row.isTest ? (
-                                    <span className="rounded bg-yellow-600/30 border border-yellow-400/50 px-2 py-0.5">
-                                      test
-                                    </span>
-                                  ) : null}
-                                  {!row.isActive ? (
-                                    <span className="rounded bg-red-600/30 border border-red-400/50 px-2 py-0.5">
-                                      inactive
-                                    </span>
-                                  ) : null}
-                                </div>
-                              </td>
+                    {expanded ? (
+                      <div className="overflow-x-auto border-t border-gray-700">
+                        <table className="w-full text-left text-sm">
+                          <thead>
+                            <tr className="border-b border-gray-700 text-gold">
+                              <th className="py-2 px-3">Name</th>
+                              <th className="py-2 px-3">Email</th>
+                              <th className="py-2 px-3">Account Type</th>
+                              <th className="py-2 px-3">Source</th>
+                              <th className="py-2 px-3">Created</th>
+                              <th className="py-2 px-3">Status</th>
+                              <th className="py-2 px-3">Signals</th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                          </thead>
+                          <tbody>
+                            {visibleRows.map((row) => (
+                              <tr
+                                key={`${row.sourceCollection}-${row._id}`}
+                                className="border-b border-gray-700/50"
+                              >
+                                <td className="py-2 px-3">{row.name || "—"}</td>
+                                <td className="py-2 px-3">
+                                  {row.email || "—"}
+                                </td>
+                                <td className="py-2 px-3 capitalize">
+                                  {row.accountType}
+                                </td>
+                                <td className="py-2 px-3 text-gray-400">
+                                  {row.sourceCollection}
+                                </td>
+                                <td className="py-2 px-3">
+                                  {row.createdAt
+                                    ? new Date(row.createdAt).toLocaleString()
+                                    : "—"}
+                                </td>
+                                <td className="py-2 px-3">
+                                  {row.status ||
+                                    (row.isActive ? "active" : "inactive")}
+                                </td>
+                                <td className="py-2 px-3">
+                                  <div className="flex flex-wrap gap-1 text-[11px]">
+                                    {row.isVerified ? (
+                                      <span className="rounded bg-emerald-600/30 border border-emerald-400/50 px-2 py-0.5">
+                                        verified
+                                      </span>
+                                    ) : (
+                                      <span className="rounded bg-gray-700 px-2 py-0.5">
+                                        unverified
+                                      </span>
+                                    )}
+                                    {row.isAdmin ? (
+                                      <span className="rounded bg-purple-600/30 border border-purple-400/50 px-2 py-0.5">
+                                        admin
+                                      </span>
+                                    ) : null}
+                                    {row.isTest ? (
+                                      <span className="rounded bg-yellow-600/30 border border-yellow-400/50 px-2 py-0.5">
+                                        test
+                                      </span>
+                                    ) : null}
+                                    {!row.isActive ? (
+                                      <span className="rounded bg-red-600/30 border border-red-400/50 px-2 py-0.5">
+                                        inactive
+                                      </span>
+                                    ) : null}
+                                  </div>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
 
-                      {hiddenCount > 0 ? (
-                        <div className="px-3 py-2 text-xs text-gray-400 flex items-center gap-2">
-                          <span>{hiddenCount} more hidden for this day.</span>
-                          <button
-                            className="rounded border border-gray-700 bg-gray-800 px-2 py-1 hover:bg-gray-700"
-                            onClick={() =>
-                              setJoinRowsVisibleByDay((prev) => ({
-                                ...prev,
-                                [day]: (prev[day] || 50) + 50,
-                              }))
-                            }
-                          >
-                            Show more
-                          </button>
-                        </div>
-                      ) : null}
-                    </div>
-                  ) : null}
-                </div>
-              );
-            })}
+                        {hiddenCount > 0 ? (
+                          <div className="px-3 py-2 text-xs text-gray-400 flex items-center gap-2">
+                            <span>{hiddenCount} more hidden for this day.</span>
+                            <button
+                              className="rounded border border-gray-700 bg-gray-800 px-2 py-1 hover:bg-gray-700"
+                              onClick={() =>
+                                setJoinRowsVisibleByDay((prev) => ({
+                                  ...prev,
+                                  [day]: (prev[day] || 50) + 50,
+                                }))
+                              }
+                            >
+                              Show more
+                            </button>
+                          </div>
+                        ) : null}
+                      </div>
+                    ) : null}
+                  </div>
+                );
+              },
+            )}
           </div>
         )}
       </div>
