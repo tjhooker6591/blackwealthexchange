@@ -4,6 +4,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import type { GetServerSideProps } from "next";
+import { useRouter } from "next/router";
 import cookie from "cookie";
 import jwt from "jsonwebtoken";
 import AdminFilterBar from "@/components/admin/AdminFilterBar";
@@ -287,7 +288,15 @@ function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
-const AdminDashboard = () => {
+type AdminDashboardProps = {
+  initialRecentJoinAccountType: string;
+  initialRecentJoinHideTests: boolean;
+};
+
+const AdminDashboard = ({
+  initialRecentJoinAccountType,
+  initialRecentJoinHideTests,
+}: AdminDashboardProps) => {
   // 1) Raw stats + view model
   const [statsRaw, setStatsRaw] = useState<any>({});
   const stats = useMemo(() => normalizeStats(statsRaw || {}), [statsRaw]);
@@ -442,16 +451,20 @@ const AdminDashboard = () => {
       }));
   }, [recentJoinsRows, statsRaw]);
 
+  const router = useRouter();
+
   const [expandedJoinDays, setExpandedJoinDays] = useState<
     Record<string, boolean>
   >({});
   const [joinRowsVisibleByDay, setJoinRowsVisibleByDay] = useState<
     Record<string, number>
   >({});
-  const [joinAccountTypeFilter, setJoinAccountTypeFilter] =
-    useState<string>("all");
-  const [hideTestJoinAccounts, setHideTestJoinAccounts] =
-    useState<boolean>(true);
+  const [joinAccountTypeFilter, setJoinAccountTypeFilter] = useState<string>(
+    initialRecentJoinAccountType || "all",
+  );
+  const [hideTestJoinAccounts, setHideTestJoinAccounts] = useState<boolean>(
+    initialRecentJoinHideTests,
+  );
 
   useEffect(() => {
     const todayKey = new Date().toISOString().slice(0, 10);
@@ -480,6 +493,43 @@ const AdminDashboard = () => {
     }
     return Array.from(set).sort();
   }, [recentJoinsByDay]);
+
+  useEffect(() => {
+    if (!router.isReady) return;
+
+    const nextQuery: Record<string, string> = {};
+    Object.entries(router.query || {}).forEach(([k, v]) => {
+      if (k === "joinType" || k === "hideTests") return;
+      if (typeof v === "string") nextQuery[k] = v;
+    });
+
+    if (joinAccountTypeFilter !== "all") {
+      nextQuery.joinType = joinAccountTypeFilter;
+    }
+
+    nextQuery.hideTests = hideTestJoinAccounts ? "1" : "0";
+
+    const currentJoinType =
+      typeof router.query.joinType === "string" ? router.query.joinType : "";
+    const currentHideTests =
+      typeof router.query.hideTests === "string" ? router.query.hideTests : "";
+
+    if (
+      currentJoinType === (nextQuery.joinType || "") &&
+      currentHideTests === nextQuery.hideTests
+    ) {
+      return;
+    }
+
+    router.replace(
+      {
+        pathname: router.pathname,
+        query: nextQuery,
+      },
+      undefined,
+      { shallow: true },
+    );
+  }, [hideTestJoinAccounts, joinAccountTypeFilter, router]);
 
   const filteredConsulting = useMemo(() => {
     const now = Date.now();
@@ -1431,7 +1481,7 @@ const AdminLink = ({ href, label }: { href: string; label: string }) => (
 
 export default AdminDashboard;
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+export const getServerSideProps: GetServerSideProps = async ({ req, query }) => {
   const cookies = cookie.parse(req.headers.cookie || "");
   const token = cookies.session_token;
   if (!token) {
@@ -1465,5 +1515,17 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     };
   }
 
-  return { props: {} };
+  const initialRecentJoinAccountType =
+    typeof query.joinType === "string" && query.joinType.trim()
+      ? query.joinType.trim().toLowerCase()
+      : "all";
+  const initialRecentJoinHideTests =
+    String(query.hideTests ?? "1").toLowerCase() !== "0";
+
+  return {
+    props: {
+      initialRecentJoinAccountType,
+      initialRecentJoinHideTests,
+    },
+  };
 };
