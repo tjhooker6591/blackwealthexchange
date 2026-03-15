@@ -20,7 +20,14 @@ type ConsultingInterest = {
   company?: string;
   businessName?: string;
   message?: string;
-  status?: "pending" | "approved" | "rejected" | "flagged" | "spam" | "deleted" | string;
+  status?:
+    | "pending"
+    | "approved"
+    | "rejected"
+    | "flagged"
+    | "spam"
+    | "deleted"
+    | string;
   lifecycleStage?: string;
   adminNote?: string;
   source?: string;
@@ -321,7 +328,9 @@ const AdminDashboard = ({
   const [consultingLoading, setConsultingLoading] = useState(true);
   const [consultingErr, setConsultingErr] = useState("");
   const [consultingSavingId, setConsultingSavingId] = useState<string>("");
-  const [consultingNotes, setConsultingNotes] = useState<Record<string, string>>({});
+  const [consultingNotes, setConsultingNotes] = useState<
+    Record<string, string>
+  >({});
 
   // 4) Admin filter state (applies to consulting table below)
   const DEFAULT_FILTERS: AdminFilters = {
@@ -567,7 +576,9 @@ const AdminDashboard = ({
       .filter((item) => matchesSearch(item));
 
     if (filters.status && filters.status !== "all") {
-      out = out.filter((item) => String(item.status || "pending") === filters.status);
+      out = out.filter(
+        (item) => String(item.status || "pending") === filters.status,
+      );
     }
 
     out = [...out].sort((a, b) => {
@@ -590,10 +601,11 @@ const AdminDashboard = ({
     });
 
     return out;
-  }, [consulting, filters.range, filters.search, filters.sort]);
+  }, [consulting, filters.range, filters.search, filters.sort, filters.status]);
 
   const isObviousQaRecord = (item: ConsultingInterest) => {
-    const hay = `${item.name || ""} ${item.email || ""} ${item.message || ""} ${item.company || ""}`.toLowerCase();
+    const hay =
+      `${item.name || ""} ${item.email || ""} ${item.message || ""} ${item.company || ""}`.toLowerCase();
     const qaTerms = [
       "smoke qa",
       "critical path qa",
@@ -612,7 +624,13 @@ const AdminDashboard = ({
 
   async function updateConsultingItem(
     item: ConsultingInterest,
-    status: "approved" | "rejected" | "flagged" | "spam" | "pending" | "deleted",
+    status:
+      | "approved"
+      | "rejected"
+      | "flagged"
+      | "spam"
+      | "pending"
+      | "deleted",
   ) {
     if (!item._id || !item.collection) {
       setConsultingErr("Missing consulting row id/collection.");
@@ -632,7 +650,9 @@ const AdminDashboard = ({
           stage:
             status === "approved"
               ? "approved"
-              : status === "rejected" || status === "spam" || status === "deleted"
+              : status === "rejected" ||
+                  status === "spam" ||
+                  status === "deleted"
                 ? "closed_lost"
                 : "triaged",
           nextAction: "",
@@ -640,7 +660,8 @@ const AdminDashboard = ({
         }),
       });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data?.error || "Failed to update waitlist record");
+      if (!res.ok)
+        throw new Error(data?.error || "Failed to update waitlist record");
       await fetchConsulting();
     } catch (err: any) {
       setConsultingErr(err?.message || "Failed to update waitlist record.");
@@ -665,11 +686,13 @@ const AdminDashboard = ({
         body: JSON.stringify({
           id: item._id,
           collection: item.collection,
-          reason: consultingNotes[item._id] || "Removed from consulting waitlist",
+          reason:
+            consultingNotes[item._id] || "Removed from consulting waitlist",
         }),
       });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data?.error || "Failed to delete waitlist record");
+      if (!res.ok)
+        throw new Error(data?.error || "Failed to delete waitlist record");
       await fetchConsulting();
     } catch (err: any) {
       setConsultingErr(err?.message || "Failed to delete waitlist record.");
@@ -1453,7 +1476,8 @@ const AdminDashboard = ({
               <tbody>
                 {filteredConsulting.map((item) => {
                   const qa = isObviousQaRecord(item);
-                  const noteVal = consultingNotes[item._id] ?? item.adminNote ?? "";
+                  const noteVal =
+                    consultingNotes[item._id] ?? item.adminNote ?? "";
                   return (
                     <tr
                       key={item._id}
@@ -1462,12 +1486,19 @@ const AdminDashboard = ({
                       <td className="py-2 px-3">
                         <div>{item.name}</div>
                         {qa ? (
-                          <div className="text-[11px] text-yellow-300">QA/test-like submission</div>
+                          <div className="text-[11px] text-yellow-300">
+                            QA/test-like submission
+                          </div>
                         ) : null}
                       </td>
                       <td className="py-2 px-3">{item.email}</td>
-                      <td className="py-2 px-3">{item.company || item.businessName || "--"}</td>
-                      <td className="py-2 px-3 max-w-[280px] truncate" title={item.message || ""}>
+                      <td className="py-2 px-3">
+                        {item.company || item.businessName || "--"}
+                      </td>
+                      <td
+                        className="py-2 px-3 max-w-[280px] truncate"
+                        title={item.message || ""}
+                      >
                         {item.message || "--"}
                       </td>
                       <td className="py-2 px-3 text-xs text-gray-300">
@@ -1476,14 +1507,19 @@ const AdminDashboard = ({
                         <div>IP: {item.ip || "--"}</div>
                       </td>
                       <td className="py-2 px-3">
-                        <div className="capitalize">{item.status || "pending"}</div>
+                        <div className="capitalize">
+                          {item.status || "pending"}
+                        </div>
                         <textarea
                           className="mt-1 w-full rounded border border-gray-700 bg-gray-900 p-1 text-[11px]"
                           rows={2}
                           placeholder="Admin note"
                           value={noteVal}
                           onChange={(e) =>
-                            setConsultingNotes((prev) => ({ ...prev, [item._id]: e.target.value }))
+                            setConsultingNotes((prev) => ({
+                              ...prev,
+                              [item._id]: e.target.value,
+                            }))
                           }
                         />
                       </td>
@@ -1492,14 +1528,18 @@ const AdminDashboard = ({
                           <button
                             className="rounded bg-emerald-600/80 px-2 py-1 font-semibold"
                             disabled={consultingSavingId === item._id}
-                            onClick={() => updateConsultingItem(item, "approved")}
+                            onClick={() =>
+                              updateConsultingItem(item, "approved")
+                            }
                           >
                             Approve
                           </button>
                           <button
                             className="rounded bg-orange-600/80 px-2 py-1 font-semibold"
                             disabled={consultingSavingId === item._id}
-                            onClick={() => updateConsultingItem(item, "rejected")}
+                            onClick={() =>
+                              updateConsultingItem(item, "rejected")
+                            }
                           >
                             Reject
                           </button>
