@@ -37,7 +37,10 @@ const GROUPS: GroupDef[] = [
     title: "Discovery / Top of Funnel",
     metrics: [
       { eventType: "homepage_cta_clicked", label: "Homepage CTA clicked" },
-      { eventType: "homepage_search_focused", label: "Homepage search focused" },
+      {
+        eventType: "homepage_search_focused",
+        label: "Homepage search focused",
+      },
       {
         eventType: "homepage_search_submitted",
         label: "Homepage search submitted",
@@ -216,7 +219,10 @@ const GROUPS: GroupDef[] = [
         label: "Marketplace landing viewed",
       },
       { eventType: "product_detail_viewed", label: "Product detail viewed" },
-      { eventType: "marketplace_buy_started", label: "Marketplace buy started" },
+      {
+        eventType: "marketplace_buy_started",
+        label: "Marketplace buy started",
+      },
       {
         eventType: "marketplace_checkout_started",
         label: "Marketplace checkout started",
@@ -320,15 +326,12 @@ export default async function handler(
         counts: countMap.get(m.eventType) || emptyCounts(),
       }));
 
-      const totals = metrics.reduce(
-        (acc, m) => {
-          acc.today += m.counts.today;
-          acc.last7d += m.counts.last7d;
-          acc.last30d += m.counts.last30d;
-          return acc;
-        },
-        emptyCounts(),
-      );
+      const totals = metrics.reduce((acc, m) => {
+        acc.today += m.counts.today;
+        acc.last7d += m.counts.last7d;
+        acc.last30d += m.counts.last30d;
+        return acc;
+      }, emptyCounts());
 
       return {
         key: group.key,
@@ -353,9 +356,18 @@ export default async function handler(
 
     const conversions = {
       searchSubmittedToResultClicked: {
-        today: ratio(get("search_result_clicked").today, get("homepage_search_submitted").today),
-        last7d: ratio(get("search_result_clicked").last7d, get("homepage_search_submitted").last7d),
-        last30d: ratio(get("search_result_clicked").last30d, get("homepage_search_submitted").last30d),
+        today: ratio(
+          get("search_result_clicked").today,
+          get("homepage_search_submitted").today,
+        ),
+        last7d: ratio(
+          get("search_result_clicked").last7d,
+          get("homepage_search_submitted").last7d,
+        ),
+        last30d: ratio(
+          get("search_result_clicked").last30d,
+          get("homepage_search_submitted").last30d,
+        ),
       },
       advertisingOptionToCompleted: {
         today: ratio(

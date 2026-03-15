@@ -50,7 +50,10 @@ const KPI_META: Array<{ key: string; label: string }> = [
 ];
 
 const CONVERSION_META: Array<{ key: string; label: string }> = [
-  { key: "searchSubmittedToResultClicked", label: "Search Submitted → Result Clicked" },
+  {
+    key: "searchSubmittedToResultClicked",
+    label: "Search Submitted → Result Clicked",
+  },
   {
     key: "advertisingOptionToCompleted",
     label: "Advertising Option Selected → Submission Completed",
@@ -105,9 +108,12 @@ export default function Phase1ScoreboardPage() {
       <div className="mx-auto max-w-7xl">
         <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gold">Phase 1 Operating Scoreboard</h1>
+            <h1 className="text-3xl font-bold text-gold">
+              Phase 1 Operating Scoreboard
+            </h1>
             <p className="mt-1 text-sm text-gray-400">
-              Flow-event scoreboard for growth, trust, conversion, and revenue pathways.
+              Flow-event scoreboard for growth, trust, conversion, and revenue
+              pathways.
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -137,14 +143,22 @@ export default function Phase1ScoreboardPage() {
 
             <section className="mb-8 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {KPI_META.map((k) => {
-                const c = data.kpis[k.key] || { today: 0, last7d: 0, last30d: 0 };
+                const c = data.kpis[k.key] || {
+                  today: 0,
+                  last7d: 0,
+                  last30d: 0,
+                };
                 return (
                   <div
                     key={k.key}
                     className="rounded-xl border border-gray-800 bg-gray-900 p-4"
                   >
-                    <div className="text-xs uppercase tracking-wide text-gray-400">{k.label}</div>
-                    <div className="mt-2 text-xl font-bold text-gold">{n(c.last30d)}</div>
+                    <div className="text-xs uppercase tracking-wide text-gray-400">
+                      {k.label}
+                    </div>
+                    <div className="mt-2 text-xl font-bold text-gold">
+                      {n(c.last30d)}
+                    </div>
                     <div className="mt-1 text-xs text-gray-400">
                       Today {n(c.today)} • 7d {n(c.last7d)} • 30d {n(c.last30d)}
                     </div>
@@ -154,7 +168,9 @@ export default function Phase1ScoreboardPage() {
             </section>
 
             <section className="mb-8 rounded-xl border border-gray-800 bg-gray-900 p-4">
-              <h2 className="mb-3 text-lg font-semibold text-gold">Conversion Ratios</h2>
+              <h2 className="mb-3 text-lg font-semibold text-gold">
+                Conversion Ratios
+              </h2>
               <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                 {CONVERSION_META.map((m) => {
                   const c = data.conversions[m.key] || {
@@ -163,10 +179,14 @@ export default function Phase1ScoreboardPage() {
                     last30d: null,
                   };
                   return (
-                    <div key={m.key} className="rounded-lg border border-gray-800 bg-black/40 p-3">
+                    <div
+                      key={m.key}
+                      className="rounded-lg border border-gray-800 bg-black/40 p-3"
+                    >
                       <div className="text-sm text-gray-200">{m.label}</div>
                       <div className="mt-1 text-xs text-gray-400">
-                        Today {pct(c.today)} • 7d {pct(c.last7d)} • 30d {pct(c.last30d)}
+                        Today {pct(c.today)} • 7d {pct(c.last7d)} • 30d{" "}
+                        {pct(c.last30d)}
                       </div>
                     </div>
                   );
@@ -181,9 +201,12 @@ export default function Phase1ScoreboardPage() {
                   className="rounded-xl border border-gray-800 bg-gray-900 p-4"
                 >
                   <div className="mb-3 flex items-center justify-between">
-                    <h3 className="text-lg font-semibold text-gold">{group.title}</h3>
+                    <h3 className="text-lg font-semibold text-gold">
+                      {group.title}
+                    </h3>
                     <div className="text-xs text-gray-400">
-                      Total — Today {n(group.totals.today)} • 7d {n(group.totals.last7d)} • 30d {n(group.totals.last30d)}
+                      Total — Today {n(group.totals.today)} • 7d{" "}
+                      {n(group.totals.last7d)} • 30d {n(group.totals.last30d)}
                     </div>
                   </div>
 
@@ -199,10 +222,17 @@ export default function Phase1ScoreboardPage() {
                       </thead>
                       <tbody>
                         {group.metrics.map((m) => (
-                          <tr key={m.eventType} className="border-b border-gray-800/70">
+                          <tr
+                            key={m.eventType}
+                            className="border-b border-gray-800/70"
+                          >
                             <td className="px-2 py-2">
-                              <div className="font-medium text-gray-100">{m.label}</div>
-                              <div className="text-[11px] text-gray-500">{m.eventType}</div>
+                              <div className="font-medium text-gray-100">
+                                {m.label}
+                              </div>
+                              <div className="text-[11px] text-gray-500">
+                                {m.eventType}
+                              </div>
                             </td>
                             <td className="px-2 py-2">{n(m.counts.today)}</td>
                             <td className="px-2 py-2">{n(m.counts.last7d)}</td>
@@ -217,13 +247,17 @@ export default function Phase1ScoreboardPage() {
             </section>
 
             <section className="mt-8 rounded-xl border border-gray-800 bg-gray-900 p-4">
-              <h3 className="text-base font-semibold text-gold">Low-signal event types</h3>
+              <h3 className="text-base font-semibold text-gold">
+                Low-signal event types
+              </h3>
               {lowSignalEvents.length ? (
                 <p className="mt-2 text-sm text-gray-300">
                   No 30-day volume yet: {lowSignalEvents.join(", ")}
                 </p>
               ) : (
-                <p className="mt-2 text-sm text-gray-300">All configured events have 30-day volume.</p>
+                <p className="mt-2 text-sm text-gray-300">
+                  All configured events have 30-day volume.
+                </p>
               )}
             </section>
           </>
