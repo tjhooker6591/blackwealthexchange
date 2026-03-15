@@ -393,6 +393,28 @@ const AdminDashboard = () => {
     });
   }, [statsRaw]);
 
+  const recentJoinsByDay = useMemo(() => {
+    const map = new Map<string, RecentJoinRow[]>();
+    for (const row of recentJoinsRows) {
+      const key = row.createdAt
+        ? new Date(row.createdAt).toISOString().slice(0, 10)
+        : "unknown";
+      const arr = map.get(key) || [];
+      arr.push(row);
+      map.set(key, arr);
+    }
+
+    return Array.from(map.entries())
+      .sort((a, b) => {
+        if (a[0] === "unknown") return 1;
+        if (b[0] === "unknown") return -1;
+        return b[0].localeCompare(a[0]);
+      })
+      .map(([day, rows]) => ({ day, rows }));
+  }, [recentJoinsRows]);
+
+  const [expandedJoinDays, setExpandedJoinDays] = useState<Record<string, boolean>>({});
+
   const filteredConsulting = useMemo(() => {
     const now = Date.now();
 
@@ -720,79 +742,83 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      <div className="bg-gray-800 rounded p-4 border border-gray-700 mb-10 overflow-x-auto">
-        <h3 className="text-lg text-gold mb-2">Recent Join Activity</h3>
-        <table className="w-full text-left text-sm">
-          <thead>
-            <tr className="border-b border-gray-700 text-gold">
-              <th className="py-2 pr-3">Name</th>
-              <th className="py-2 pr-3">Email</th>
-              <th className="py-2 pr-3">Account Type</th>
-              <th className="py-2 pr-3">Source</th>
-              <th className="py-2 pr-3">Created</th>
-              <th className="py-2 pr-3">Status</th>
-              <th className="py-2 pr-3">Signals</th>
-            </tr>
-          </thead>
-          <tbody>
-            {recentJoinsRows.slice(0, 80).map((row) => (
-              <tr
-                key={`${row.sourceCollection}-${row._id}`}
-                className="border-b border-gray-700/60"
-              >
-                <td className="py-2 pr-3">{row.name || "—"}</td>
-                <td className="py-2 pr-3">{row.email || "—"}</td>
-                <td className="py-2 pr-3 capitalize">{row.accountType}</td>
-                <td className="py-2 pr-3 text-gray-400">
-                  {row.sourceCollection}
-                </td>
-                <td className="py-2 pr-3">
-                  {row.createdAt
-                    ? new Date(row.createdAt).toLocaleString()
-                    : "—"}
-                </td>
-                <td className="py-2 pr-3">
-                  {row.status || (row.isActive ? "active" : "inactive")}
-                </td>
-                <td className="py-2 pr-3">
-                  <div className="flex flex-wrap gap-1 text-[11px]">
-                    {row.isVerified ? (
-                      <span className="rounded bg-emerald-600/30 border border-emerald-400/50 px-2 py-0.5">
-                        verified
+      <div className="bg-gray-800 rounded p-4 border border-gray-700 mb-10">
+        <div className="flex items-center justify-between gap-3 mb-2">
+          <h3 className="text-lg text-gold">Recent Join Activity (30-day window)</h3>
+          <div className="text-xs text-gray-400">Collapsed by day to keep this scalable</div>
+        </div>
+
+        {recentJoinsByDay.length === 0 ? (
+          <div className="py-3 text-gray-400 text-sm">No recent joins found in the last 30 days.</div>
+        ) : (
+          <div className="space-y-3">
+            {recentJoinsByDay.map(({ day, rows }) => {
+              const expanded = Boolean(expandedJoinDays[day]);
+              const visibleRows = expanded ? rows.slice(0, 200) : [];
+              return (
+                <div key={day} className="rounded border border-gray-700 bg-gray-900">
+                  <button
+                    className="w-full text-left px-3 py-2 flex items-center justify-between hover:bg-gray-800"
+                    onClick={() =>
+                      setExpandedJoinDays((prev) => ({ ...prev, [day]: !expanded }))
+                    }
+                  >
+                    <div>
+                      <span className="font-semibold text-gray-100">
+                        {day === "unknown" ? "Unknown date" : new Date(`${day}T00:00:00Z`).toLocaleDateString()}
                       </span>
-                    ) : (
-                      <span className="rounded bg-gray-700 px-2 py-0.5">
-                        unverified
-                      </span>
-                    )}
-                    {row.isAdmin ? (
-                      <span className="rounded bg-purple-600/30 border border-purple-400/50 px-2 py-0.5">
-                        admin
-                      </span>
-                    ) : null}
-                    {row.isTest ? (
-                      <span className="rounded bg-yellow-600/30 border border-yellow-400/50 px-2 py-0.5">
-                        test
-                      </span>
-                    ) : null}
-                    {!row.isActive ? (
-                      <span className="rounded bg-red-600/30 border border-red-400/50 px-2 py-0.5">
-                        inactive
-                      </span>
-                    ) : null}
-                  </div>
-                </td>
-              </tr>
-            ))}
-            {recentJoinsRows.length === 0 ? (
-              <tr>
-                <td className="py-3 text-gray-400" colSpan={7}>
-                  No recent joins found.
-                </td>
-              </tr>
-            ) : null}
-          </tbody>
-        </table>
+                      <span className="ml-2 text-xs text-gray-400">{rows.length} joins</span>
+                    </div>
+                    <span className="text-xs text-gray-400">{expanded ? "Hide" : "Show"}</span>
+                  </button>
+
+                  {expanded ? (
+                    <div className="overflow-x-auto border-t border-gray-700">
+                      <table className="w-full text-left text-sm">
+                        <thead>
+                          <tr className="border-b border-gray-700 text-gold">
+                            <th className="py-2 px-3">Name</th>
+                            <th className="py-2 px-3">Email</th>
+                            <th className="py-2 px-3">Account Type</th>
+                            <th className="py-2 px-3">Source</th>
+                            <th className="py-2 px-3">Created</th>
+                            <th className="py-2 px-3">Status</th>
+                            <th className="py-2 px-3">Signals</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {visibleRows.map((row) => (
+                            <tr key={`${row.sourceCollection}-${row._id}`} className="border-b border-gray-700/50">
+                              <td className="py-2 px-3">{row.name || "—"}</td>
+                              <td className="py-2 px-3">{row.email || "—"}</td>
+                              <td className="py-2 px-3 capitalize">{row.accountType}</td>
+                              <td className="py-2 px-3 text-gray-400">{row.sourceCollection}</td>
+                              <td className="py-2 px-3">{row.createdAt ? new Date(row.createdAt).toLocaleString() : "—"}</td>
+                              <td className="py-2 px-3">{row.status || (row.isActive ? "active" : "inactive")}</td>
+                              <td className="py-2 px-3">
+                                <div className="flex flex-wrap gap-1 text-[11px]">
+                                  {row.isVerified ? <span className="rounded bg-emerald-600/30 border border-emerald-400/50 px-2 py-0.5">verified</span> : <span className="rounded bg-gray-700 px-2 py-0.5">unverified</span>}
+                                  {row.isAdmin ? <span className="rounded bg-purple-600/30 border border-purple-400/50 px-2 py-0.5">admin</span> : null}
+                                  {row.isTest ? <span className="rounded bg-yellow-600/30 border border-yellow-400/50 px-2 py-0.5">test</span> : null}
+                                  {!row.isActive ? <span className="rounded bg-red-600/30 border border-red-400/50 px-2 py-0.5">inactive</span> : null}
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                      {rows.length > 200 ? (
+                        <div className="px-3 py-2 text-xs text-gray-400">
+                          Showing first 200 rows for this day ({rows.length - 200} more hidden).
+                        </div>
+                      ) : null}
+                    </div>
+                  ) : null}
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* Directory Section */}

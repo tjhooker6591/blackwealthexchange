@@ -307,9 +307,15 @@ export default async function handler(
       joinSources.map(async ({ collection, accountType }) => {
         const docs = await db
           .collection(collection)
-          .find({})
+          .find({
+            $or: [
+              { createdAt: { $gte: days30Start } },
+              { joinedAt: { $gte: days30Start } },
+              { dateCreated: { $gte: days30Start } },
+            ],
+          })
           .sort({ createdAt: -1 })
-          .limit(120)
+          .limit(1000)
           .project({
             name: 1,
             fullName: 1,
@@ -399,7 +405,10 @@ export default async function handler(
                       status !== "deleted",
             };
           })
-          .filter((row) => row.createdAt);
+          .filter((row) => {
+            if (!row.createdAt) return false;
+            return new Date(row.createdAt).getTime() >= days30Start.getTime();
+          });
 
         return {
           sourceCollection: collection,
