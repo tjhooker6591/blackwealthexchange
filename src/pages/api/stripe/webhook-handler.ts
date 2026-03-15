@@ -93,6 +93,17 @@ function unixToDate(v: unknown, fallback: Date) {
   return new Date(n * 1000);
 }
 
+function idToString(v: unknown) {
+  if (!v) return "";
+  if (typeof v === "string") return v;
+  if (v instanceof ObjectId) return v.toString();
+  if (typeof v === "object" && (v as any)?.toString) {
+    const s = (v as any).toString();
+    return typeof s === "string" ? s : "";
+  }
+  return "";
+}
+
 /**
  * Normalize old/legacy ad IDs so webhook tracking/fulfillment still works
  */
@@ -375,6 +386,83 @@ export default async function webhookHandler(
       },
       { upsert: true },
     );
+
+    const orderRecord = await db.collection("orders").findOne(
+      { sessionId: stripeSessionId },
+      {
+        projection: {
+          _id: 1,
+          sessionId: 1,
+          productId: 1,
+          sellerId: 1,
+          total: 1,
+          subtotal: 1,
+          currency: 1,
+          userId: 1,
+        },
+      },
+    );
+
+    if (metaType === "product") {
+      const orderId = idToString(orderRecord?._id);
+      const productId =
+        idToString(orderRecord?.productId) ||
+        asString(mergedMeta.itemId || existingPayment?.itemId);
+      const sellerId =
+        idToString(orderRecord?.sellerId) || asString((mergedMeta as any).sellerId);
+      const buyerId =
+        asString(orderRecord?.userId) || userId || asString(existingPayment?.userId);
+
+      const isCanonicalCheckout = Boolean(orderRecord?.sessionId);
+      const checkoutVariant = isCanonicalCheckout
+        ? "canonical_checkout_session"
+        : "legacy_stripe_checkout";
+      const sourceVariant = isCanonicalCheckout
+        ? "api_checkout_create_session"
+        : "api_stripe_checkout";
+
+      await db.collection("flow_events").updateOne(
+        {
+          eventType: "marketplace_purchase_completed",
+          stripeSessionId,
+        },
+        {
+          $setOnInsert: {
+            eventType: "marketplace_purchase_completed",
+            pageRoute: "/api/stripe/webhook-handler",
+            serverSource: "stripe_webhook_handler",
+            source: "stripe_webhook_handler",
+            sourceVariant,
+            source_variant: sourceVariant,
+            checkoutVariant,
+            checkout_variant: checkoutVariant,
+            productId: productId || null,
+            sellerId: sellerId || null,
+            buyerId: buyerId || null,
+            entityId: productId || null,
+            entityType: "product",
+            sessionId: stripeSessionId,
+            stripeSessionId,
+            paymentIntentId:
+              paymentIntentId || existingPayment?.paymentIntentId || null,
+            orderId: orderId || asString(mergedMeta.orderId) || null,
+            amountTotal:
+              typeof session.amount_total === "number"
+                ? session.amount_total
+                : (existingPayment?.amountCents ?? null),
+            amount_total:
+              typeof session.amount_total === "number"
+                ? session.amount_total
+                : (existingPayment?.amountCents ?? null),
+            currency: session.currency || "usd",
+            accountType: buyerId ? "buyer_authenticated" : "buyer_guest",
+            environment: process.env.NODE_ENV || null,
+            createdAt: paidAt,
+          },
+        },
+        { upsert: true },
+      );
+    }
 
     /**
      * 1) Existing campaign flow (campaign-based)
