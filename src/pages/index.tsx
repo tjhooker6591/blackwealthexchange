@@ -756,24 +756,7 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="mx-auto mt-5 flex w-full max-w-2xl flex-col gap-2.5 sm:flex-row sm:flex-wrap sm:justify-center">
-              <Link
-                href="#search-dominant"
-                className="w-full sm:w-auto"
-                onClick={() =>
-                  trackHomepageEvent("homepage_cta_clicked", {
-                    section: "hero",
-                    ctaId: "hero_primary_search",
-                    ctaLabel: "Search Black-owned Directory",
-                    destination: "#search-dominant",
-                  })
-                }
-              >
-                <button className="h-11 w-full rounded-xl bg-[#D4AF37] px-5 text-sm font-extrabold text-black shadow-[0_8px_20px_rgba(212,175,55,0.25)] transition hover:-translate-y-0.5 hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/35 sm:h-11 sm:w-auto sm:px-6">
-                  Search Black-owned Directory
-                </button>
-              </Link>
-
+            <div className="mx-auto mt-4 flex w-full max-w-xl flex-col gap-2 sm:flex-row sm:justify-center">
               {user ? (
                 <>
                   <Link
@@ -863,87 +846,9 @@ export default function Home() {
               )}
             </div>
 
-            <div className="mt-2">
-              <Link
-                href="/start-here"
-                onClick={() =>
-                  trackHomepageEvent("homepage_cta_clicked", {
-                    section: "hero",
-                    ctaId: "hero_start_here",
-                    ctaLabel: "Start Here",
-                    destination: "/start-here",
-                    category: "start-here",
-                  })
-                }
-                className="inline-flex rounded-full border border-[#D4AF37]/45 bg-[#D4AF37]/10 px-4 py-2 text-xs font-extrabold text-[#F1D57A] hover:bg-[#D4AF37]/20"
-              >
-                New here? Start with the guided path
-              </Link>
+            <div className="mt-2 hidden sm:block text-xs text-white/55">
+              Verified listings • Secure checkout • Curated opportunities
             </div>
-
-            <div className="mx-auto mt-3 flex w-full max-w-4xl flex-wrap items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-[11px] text-white/75">
-              <span className="rounded-full border border-emerald-400/30 bg-emerald-400/10 px-2.5 py-1 font-bold text-emerald-200">
-                Verified listings
-              </span>
-              <span className="rounded-full border border-sky-400/30 bg-sky-400/10 px-2.5 py-1 font-bold text-sky-200">
-                Curated opportunities
-              </span>
-              <span className="rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 px-2.5 py-1 font-bold text-[#EFD27A]">
-                Secure checkout pathways
-              </span>
-            </div>
-
-            <details className="mx-auto mt-3 w-full max-w-4xl rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-left">
-              <summary className="cursor-pointer list-none text-xs font-semibold text-white/75">
-                Quick paths
-              </summary>
-              <div className="mt-2 flex flex-wrap gap-2 text-xs">
-                <Link
-                  href="/business-directory"
-                  className="rounded-full border border-white/15 px-3 py-1 text-white/85 hover:bg-white/10"
-                >
-                  Find Black-owned businesses near me
-                </Link>
-                <Link
-                  href="/marketplace"
-                  className="rounded-full border border-white/15 px-3 py-1 text-white/85 hover:bg-white/10"
-                >
-                  Shop Black-owned brands and products
-                </Link>
-                <Link
-                  href="/job-listings"
-                  className="rounded-full border border-white/15 px-3 py-1 text-white/85 hover:bg-white/10"
-                >
-                  Browse Black career opportunities
-                </Link>
-                <Link
-                  href="/financial-literacy"
-                  className="rounded-full border border-white/15 px-3 py-1 text-white/85 hover:bg-white/10"
-                >
-                  Financial literacy and wealth-building resources
-                </Link>
-              </div>
-            </details>
-
-            <details className="mx-auto mt-3 w-full max-w-3xl rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-left">
-              <summary className="cursor-pointer list-none text-xs font-semibold text-white/70">
-                Why trust BWE search
-              </summary>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {[
-                  "Trust-first search • Verified + quality signals",
-                  "Built for action • Find, vet, connect fast",
-                  "Economic focus • Ownership, access, circulation",
-                ].map((item) => (
-                  <span
-                    key={item}
-                    className="rounded-full border border-white/12 bg-white/[0.04] px-3 py-1.5 text-[11px] font-semibold text-white/75"
-                  >
-                    {item}
-                  </span>
-                ))}
-              </div>
-            </details>
           </div>
 
           <section id="search-dominant" className="mt-5 sm:mt-6 scroll-mt-24">
@@ -1226,13 +1131,13 @@ export default function Home() {
                       </Link>
                       <Link
                         href="/music"
-                        className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-[11px] font-semibold text-white/80 transition hover:bg-white/[0.08]"
+                        className="hidden rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-[11px] font-semibold text-white/80 transition hover:bg-white/[0.08] sm:inline-flex"
                       >
                         Music
                       </Link>
                       <Link
                         href="/marketplace/become-a-seller"
-                        className="rounded-full border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-3 py-1.5 text-[11px] font-extrabold text-[#EFD27A] transition hover:bg-[#D4AF37]/15"
+                        className="hidden rounded-full border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-3 py-1.5 text-[11px] font-extrabold text-[#EFD27A] transition hover:bg-[#D4AF37]/15 sm:inline-flex"
                         onClick={() =>
                           trackHomepageEvent("seller_entry_clicked", {
                             section: "hero_search_quick_row",
@@ -1245,42 +1150,32 @@ export default function Home() {
                         Become a Seller
                       </Link>
                     </div>
+
+                    <div className="mt-2 flex items-center gap-3 text-[11px] text-white/55 sm:hidden">
+                      <Link href="/music" className="hover:text-white/80">
+                        Music
+                      </Link>
+                      <span>•</span>
+                      <Link
+                        href="/marketplace/become-a-seller"
+                        className="hover:text-[#EFD27A]"
+                        onClick={() =>
+                          trackHomepageEvent("seller_entry_clicked", {
+                            section: "hero_search_quick_row_mobile_secondary",
+                            ctaId: "quick_row_mobile_become_seller",
+                            ctaLabel: "Become a Seller",
+                            destination: "/marketplace/become-a-seller",
+                          })
+                        }
+                      >
+                        Become a Seller
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <div className="mt-4 flex flex-col items-center gap-2 sm:mt-4">
-                <button
-                  className="animate-pulseGlow rounded-xl bg-[#D4AF37] px-5 py-2.5 text-center text-sm font-extrabold text-black shadow transition hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/35 sm:px-6 sm:text-base"
-                  onClick={() => {
-                    trackHomepageEvent("homepage_cta_clicked", {
-                      section: "hero",
-                      ctaId: "hero_start_selling",
-                      ctaLabel: "Start Selling",
-                      destination: "/marketplace/become-a-seller",
-                      category: "seller",
-                    });
-                    trackHomepageEvent("seller_entry_clicked", {
-                      section: "hero",
-                      ctaId: "hero_start_selling",
-                      ctaLabel: "Start Selling",
-                      destination: "/marketplace/become-a-seller",
-                    });
-                    if (!user) {
-                      router.push(
-                        "/login?redirect=/marketplace/become-a-seller",
-                      );
-                    } else {
-                      router.push("/marketplace/become-a-seller");
-                    }
-                  }}
-                >
-                  <span className="sm:hidden">Start Selling</span>
-                  <span className="hidden sm:inline">
-                    Start Selling on the Marketplace — Join as a Seller
-                  </span>
-                </button>
-              </div>
+
             </div>
           </section>
 
@@ -1292,63 +1187,6 @@ export default function Home() {
 
       <section className="relative z-10 pt-3 pb-8 sm:pt-4 sm:pb-10">
         <div className="container mx-auto max-w-6xl px-4">
-          <div className="mb-4 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.05)]">
-            <div className="mb-1 text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
-              Quick paths
-            </div>
-            <p className="mb-3 text-xs text-white/60">
-              Clear entry points for learning, opportunities, and business
-              growth.
-            </p>
-            <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
-              <Link
-                href="/business-directory"
-                className="rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm font-semibold text-white/80 transition hover:border-[#D4AF37]/30 hover:bg-black/40"
-              >
-                I’m here to find businesses
-              </Link>
-              <Link
-                href="/job-listings"
-                className="rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm font-semibold text-white/80 transition hover:border-[#D4AF37]/30 hover:bg-black/40"
-              >
-                I’m here to find opportunities
-              </Link>
-              <Link
-                href="/black-student-opportunities"
-                className="rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm font-semibold text-white/80 transition hover:border-[#D4AF37]/30 hover:bg-black/40"
-                onClick={() =>
-                  trackHomepageEvent("student_portal_entry_clicked", {
-                    section: "quick_paths",
-                    ctaId: "quick_path_students",
-                    ctaLabel: "I’m a student",
-                    destination: "/black-student-opportunities",
-                  })
-                }
-              >
-                I’m a student
-              </Link>
-              <Link
-                href="/marketplace"
-                className="rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm font-semibold text-white/80 transition hover:border-[#D4AF37]/30 hover:bg-black/40"
-              >
-                I want to shop
-              </Link>
-              <Link
-                href="/marketplace/become-a-seller"
-                className="rounded-xl border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-3 py-2.5 text-sm font-semibold text-[#EFD27A] transition hover:border-[#D4AF37]/50 hover:bg-[#D4AF37]/15"
-                onClick={() =>
-                  trackHomepageEvent("seller_entry_clicked", {
-                    section: "quick_paths",
-                    ctaId: "quick_path_i_run_a_business",
-                    ctaLabel: "I run a business",
-                    destination: "/marketplace/become-a-seller",
-                  })
-                }
-              >
-                I run a business
-              </Link>
-            </div>
-          </div>
 
           <div className="relative mb-4 overflow-hidden rounded-2xl border border-white/10 bg-black p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.04)]">
             <div
