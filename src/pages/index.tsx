@@ -1063,7 +1063,8 @@ export default function Home() {
                       </span>
 
                       <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[10px] sm:text-[11px]">
-                        Tap <span className="font-black text-white/75">Search</span>
+                        Tap{" "}
+                        <span className="font-black text-white/75">Search</span>
                       </span>
                     </div>
                   </div>
@@ -1080,6 +1081,104 @@ export default function Home() {
 
       <section className="relative z-10 pt-3 pb-8 sm:pt-4 sm:pb-10">
         <div className="container mx-auto max-w-6xl px-4">
+          <div className="mb-4 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
+            <div className="mb-1 text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
+              Quick paths
+            </div>
+            <div className="grid gap-2 sm:grid-cols-3">
+              <div className="rounded-xl border border-white/10 bg-black/30 p-3">
+                <div className="text-sm font-bold text-white">I’m here to learn</div>
+                <div className="mt-2 flex flex-wrap gap-2 text-xs">
+                  <Link
+                    href="/financial-literacy"
+                    className="rounded-full border border-white/15 px-2.5 py-1 text-white/80 hover:bg-white/10"
+                    onClick={() =>
+                      trackHomepageEvent("homepage_education_entry_clicked", {
+                        section: "quick_paths",
+                        ctaId: "quick_path_learn_financial_literacy",
+                        ctaLabel: "Financial Literacy",
+                        destination: "/financial-literacy",
+                      })
+                    }
+                  >
+                    Financial Literacy
+                  </Link>
+                  <Link
+                    href="/library-of-black-history"
+                    className="rounded-full border border-white/15 px-2.5 py-1 text-white/80 hover:bg-white/10"
+                    onClick={() =>
+                      trackHomepageEvent("homepage_history_truth_entry_clicked", {
+                        section: "quick_paths",
+                        ctaId: "quick_path_learn_black_history",
+                        ctaLabel: "Library of Black History",
+                        destination: "/library-of-black-history",
+                      })
+                    }
+                  >
+                    Black History
+                  </Link>
+                </div>
+              </div>
+
+              <div className="rounded-xl border border-white/10 bg-black/30 p-3">
+                <div className="text-sm font-bold text-white">
+                  I’m here to find opportunities
+                </div>
+                <div className="mt-2 flex flex-wrap gap-2 text-xs">
+                  <Link href="/job-listings" className="rounded-full border border-white/15 px-2.5 py-1 text-white/80 hover:bg-white/10">
+                    Jobs
+                  </Link>
+                  <Link
+                    href="/black-student-opportunities"
+                    className="rounded-full border border-white/15 px-2.5 py-1 text-white/80 hover:bg-white/10"
+                    onClick={() =>
+                      trackHomepageEvent("student_portal_entry_clicked", {
+                        section: "quick_paths",
+                        ctaId: "quick_path_find_opportunities_students",
+                        ctaLabel: "Student Opportunities",
+                        destination: "/black-student-opportunities",
+                      })
+                    }
+                  >
+                    Student Opportunities
+                  </Link>
+                  <Link href="/business-directory" className="rounded-full border border-white/15 px-2.5 py-1 text-white/80 hover:bg-white/10">
+                    Business Directory
+                  </Link>
+                  <Link href="/marketplace" className="rounded-full border border-white/15 px-2.5 py-1 text-white/80 hover:bg-white/10">
+                    Marketplace
+                  </Link>
+                </div>
+              </div>
+
+              <div className="rounded-xl border border-white/10 bg-black/30 p-3">
+                <div className="text-sm font-bold text-white">I run a business</div>
+                <div className="mt-2 flex flex-wrap gap-2 text-xs">
+                  <Link
+                    href="/marketplace/become-a-seller"
+                    className="rounded-full border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-2.5 py-1 font-semibold text-[#EFD27A] hover:bg-[#D4AF37]/15"
+                    onClick={() =>
+                      trackHomepageEvent("seller_entry_clicked", {
+                        section: "quick_paths",
+                        ctaId: "quick_path_business_become_seller",
+                        ctaLabel: "Become a Seller",
+                        destination: "/marketplace/become-a-seller",
+                      })
+                    }
+                  >
+                    Become a Seller
+                  </Link>
+                  <Link href="/advertise-with-us" className="rounded-full border border-white/15 px-2.5 py-1 text-white/80 hover:bg-white/10">
+                    Advertising
+                  </Link>
+                  <Link href="/business-directory/add-business" className="rounded-full border border-white/15 px-2.5 py-1 text-white/80 hover:bg-white/10">
+                    Growth Visibility
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div className="relative mb-4 overflow-hidden rounded-2xl border border-white/10 bg-black p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.04)]">
             <div
               className="pointer-events-none absolute inset-0"
