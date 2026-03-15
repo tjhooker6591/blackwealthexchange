@@ -331,6 +331,8 @@ const AdminDashboard = ({
   const [consultingNotes, setConsultingNotes] = useState<
     Record<string, string>
   >({});
+  const [hideQaTestLikeConsulting, setHideQaTestLikeConsulting] =
+    useState<boolean>(false);
 
   // 4) Admin filter state (applies to consulting table below)
   const DEFAULT_FILTERS: AdminFilters = {
@@ -621,6 +623,11 @@ const AdminDashboard = ({
     ];
     return qaTerms.some((t) => hay.includes(t));
   };
+
+  const visibleConsultingRows = useMemo(() => {
+    if (!hideQaTestLikeConsulting) return filteredConsulting;
+    return filteredConsulting.filter((item) => !isObviousQaRecord(item));
+  }, [filteredConsulting, hideQaTestLikeConsulting]);
 
   async function updateConsultingItem(
     item: ConsultingInterest,
@@ -1421,6 +1428,10 @@ const AdminDashboard = ({
         />
         <AdminLink href="/admin/analytics" label="View Platform Analytics" />
         <AdminLink
+          href="/admin/phase1-scoreboard"
+          label="Phase 1 Operating Scoreboard"
+        />
+        <AdminLink
           href="/admin/featured-products"
           label="Manage Featured Products"
         />
@@ -1445,6 +1456,20 @@ const AdminDashboard = ({
           showRange={true}
           showSort={true}
         />
+        <div className="mt-2 flex items-center gap-2 text-sm text-gray-300">
+          <button
+            className={`rounded border px-3 py-1 ${
+              hideQaTestLikeConsulting
+                ? "border-yellow-400 bg-yellow-500/20 text-yellow-200"
+                : "border-gray-700 bg-gray-900"
+            }`}
+            onClick={() => setHideQaTestLikeConsulting((v) => !v)}
+          >
+            {hideQaTestLikeConsulting
+              ? "Showing only likely real/manual"
+              : "Hide QA/test-like"}
+          </button>
+        </div>
       </div>
 
       <div className="bg-gray-800 rounded p-4 mt-4 mb-20 border border-gray-700">
@@ -1454,7 +1479,7 @@ const AdminDashboard = ({
           <div className="p-2 bg-red-600 rounded text-center text-sm">
             {consultingErr}
           </div>
-        ) : filteredConsulting.length === 0 ? (
+        ) : visibleConsultingRows.length === 0 ? (
           <p className="text-gray-400 text-sm">
             No one has signed up for notifications yet.
           </p>
@@ -1474,7 +1499,7 @@ const AdminDashboard = ({
                 </tr>
               </thead>
               <tbody>
-                {filteredConsulting.map((item) => {
+                {visibleConsultingRows.map((item) => {
                   const qa = isObviousQaRecord(item);
                   const noteVal =
                     consultingNotes[item._id] ?? item.adminNote ?? "";
