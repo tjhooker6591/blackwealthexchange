@@ -268,11 +268,16 @@ export default function AdvertisingRequestsAdminPage() {
               </thead>
               <tbody>
                 {filtered.map((r) => (
-                  <tr key={r._id} className="border-b border-gray-700/60 align-top">
+                  <tr
+                    key={r._id}
+                    className="border-b border-gray-700/60 align-top"
+                  >
                     <td className="p-3">
                       <div className="font-semibold">{r.business || "—"}</div>
                       <div>{r.name || "—"}</div>
-                      <div className="text-xs text-gray-400">{r.email || "—"}</div>
+                      <div className="text-xs text-gray-400">
+                        {r.email || "—"}
+                      </div>
                       <div className="text-[11px] text-yellow-300 mt-1">
                         lifecycle: {r.campaignLifecycle}
                       </div>
@@ -285,18 +290,29 @@ export default function AdvertisingRequestsAdminPage() {
                       <div>Timeline: {r.timeline || "—"}</div>
                       <div>
                         Deposit:{" "}
-                        <span className={r.depositPaid ? "text-green-300" : "text-yellow-300"}>
+                        <span
+                          className={
+                            r.depositPaid ? "text-green-300" : "text-yellow-300"
+                          }
+                        >
                           {r.depositPaid ? "Paid" : "Unpaid"}
                         </span>
                       </div>
                     </td>
                     <td className="p-3 text-xs text-gray-300">
                       <div>IP: {r.trustSignals?.ip || "—"}</div>
-                      <div className="truncate max-w-[220px]" title={r.trustSignals?.userAgent || ""}>
+                      <div
+                        className="truncate max-w-[220px]"
+                        title={r.trustSignals?.userAgent || ""}
+                      >
                         UA: {r.trustSignals?.userAgent || "—"}
                       </div>
-                      <div>Email dupes: {r.trustSignals?.duplicateEmailCount ?? 0}</div>
-                      <div>IP dupes: {r.trustSignals?.duplicateIpCount ?? 0}</div>
+                      <div>
+                        Email dupes: {r.trustSignals?.duplicateEmailCount ?? 0}
+                      </div>
+                      <div>
+                        IP dupes: {r.trustSignals?.duplicateIpCount ?? 0}
+                      </div>
                       {(r.trustSignals?.flags || []).length ? (
                         <div className="mt-1 flex flex-wrap gap-1">
                           {(r.trustSignals?.flags || []).map((f) => (
@@ -311,7 +327,9 @@ export default function AdvertisingRequestsAdminPage() {
                       ) : null}
                     </td>
                     <td className="p-3 text-xs text-gray-200">
-                      <div className="font-semibold capitalize">{r.reviewStatus || "pending"}</div>
+                      <div className="font-semibold capitalize">
+                        {r.reviewStatus || "pending"}
+                      </div>
                       {r.reviewedAt ? (
                         <div className="text-gray-400 mt-1">
                           {new Date(r.reviewedAt).toLocaleString()}
@@ -326,7 +344,10 @@ export default function AdvertisingRequestsAdminPage() {
                         placeholder="Internal admin note / reason"
                         value={noteDrafts[r._id] ?? r.adminNote ?? ""}
                         onChange={(e) =>
-                          setNoteDrafts((prev) => ({ ...prev, [r._id]: e.target.value }))
+                          setNoteDrafts((prev) => ({
+                            ...prev,
+                            [r._id]: e.target.value,
+                          }))
                         }
                       />
                     </td>
@@ -363,7 +384,9 @@ export default function AdvertisingRequestsAdminPage() {
                       </div>
                     </td>
                     <td className="p-3 text-xs text-gray-300">
-                      {r.createdAt ? new Date(r.createdAt).toLocaleString() : "—"}
+                      {r.createdAt
+                        ? new Date(r.createdAt).toLocaleString()
+                        : "—"}
                     </td>
                   </tr>
                 ))}

@@ -54,7 +54,9 @@ type AdvertisingRequestRow = {
 };
 
 function normalizeReviewStatus(input: unknown): ReviewStatus {
-  const v = String(input || "").trim().toLowerCase();
+  const v = String(input || "")
+    .trim()
+    .toLowerCase();
   if (["approved", "rejected", "spam", "deleted"].includes(v)) {
     return v as ReviewStatus;
   }
@@ -116,41 +118,40 @@ export default async function handler(
       const actor = admin.email || admin.userId || "admin";
       const now = new Date();
 
-      const result = await collection.updateOne(
-        { _id: new ObjectId(id) },
-        {
-          $set: {
-            status:
-              reviewStatus === "approved"
-                ? "approved"
-                : reviewStatus === "pending"
-                  ? "pending_review"
-                  : reviewStatus,
+      const result = await collection.updateOne({ _id: new ObjectId(id) }, {
+        $set: {
+          status:
+            reviewStatus === "approved"
+              ? "approved"
+              : reviewStatus === "pending"
+                ? "pending_review"
+                : reviewStatus,
+          reviewStatus,
+          adminNote: adminNote || null,
+          reviewedAt: now,
+          reviewedBy: actor,
+          updatedAt: now,
+          ...(reviewStatus === "deleted"
+            ? { deletedAt: now, isDeleted: true }
+            : {}),
+        },
+        $push: {
+          moderationLog: {
+            at: now,
+            by: actor,
             reviewStatus,
             adminNote: adminNote || null,
-            reviewedAt: now,
-            reviewedBy: actor,
-            updatedAt: now,
-            ...(reviewStatus === "deleted"
-              ? { deletedAt: now, isDeleted: true }
-              : {}),
           },
-          $push: {
-            moderationLog: {
-              at: now,
-              by: actor,
-              reviewStatus,
-              adminNote: adminNote || null,
-            },
-          },
-        } as any,
-      );
+        },
+      } as any);
 
       if (!result.matchedCount) {
         return res.status(404).json({ ok: false, error: "Request not found" });
       }
 
-      return res.status(200).json({ ok: true, updated: true, id, reviewStatus });
+      return res
+        .status(200)
+        .json({ ok: true, updated: true, id, reviewStatus });
     }
 
     if (req.method === "DELETE") {
@@ -161,28 +162,25 @@ export default async function handler(
 
       const actor = admin.email || admin.userId || "admin";
       const now = new Date();
-      const result = await collection.updateOne(
-        { _id: new ObjectId(id) },
-        {
-          $set: {
-            isDeleted: true,
-            deletedAt: now,
+      const result = await collection.updateOne({ _id: new ObjectId(id) }, {
+        $set: {
+          isDeleted: true,
+          deletedAt: now,
+          reviewStatus: "deleted",
+          status: "deleted",
+          reviewedAt: now,
+          reviewedBy: actor,
+          updatedAt: now,
+        },
+        $push: {
+          moderationLog: {
+            at: now,
+            by: actor,
             reviewStatus: "deleted",
-            status: "deleted",
-            reviewedAt: now,
-            reviewedBy: actor,
-            updatedAt: now,
+            adminNote: "Deleted by admin",
           },
-          $push: {
-            moderationLog: {
-              at: now,
-              by: actor,
-              reviewStatus: "deleted",
-              adminNote: "Deleted by admin",
-            },
-          },
-        } as any,
-      );
+        },
+      } as any);
 
       if (!result.matchedCount) {
         return res.status(404).json({ ok: false, error: "Request not found" });
@@ -288,7 +286,9 @@ export default async function handler(
 
       const scheduleStarts = schedule
         .map((x: any) =>
-          x?.weekStart ? new Date(x.weekStart).toISOString().slice(0, 10) : null,
+          x?.weekStart
+            ? new Date(x.weekStart).toISOString().slice(0, 10)
+            : null,
         )
         .filter(Boolean) as string[];
 
@@ -316,22 +316,31 @@ export default async function handler(
                 ? "completed"
                 : "scheduled";
 
-      const email = String(r.email || "").trim().toLowerCase();
-      const ipAddr = String(r.ip || r.requestIp || r.submitterIp || "").trim() || null;
-      const ua = String(r.userAgent || r.submitterUserAgent || "").trim() || null;
-      const duplicateEmailCount = email ? Number(emailCounts.get(email) || 0) : 0;
+      const email = String(r.email || "")
+        .trim()
+        .toLowerCase();
+      const ipAddr =
+        String(r.ip || r.requestIp || r.submitterIp || "").trim() || null;
+      const ua =
+        String(r.userAgent || r.submitterUserAgent || "").trim() || null;
+      const duplicateEmailCount = email
+        ? Number(emailCounts.get(email) || 0)
+        : 0;
       const duplicateIpCount = ipAddr ? Number(ipCounts.get(ipAddr) || 0) : 0;
 
       const flags: string[] = [];
       if (isLikelyTestEmail(email)) flags.push("test_email_marker");
       if (duplicateEmailCount >= 3) flags.push("duplicate_email");
       if (duplicateIpCount >= 3) flags.push("duplicate_ip");
-      if (!r.details || String(r.details).trim().length < 20) flags.push("low_detail_submission");
+      if (!r.details || String(r.details).trim().length < 20)
+        flags.push("low_detail_submission");
 
       return {
         _id: key,
         status: r.status || "pending_review",
-        reviewStatus: normalizeReviewStatus(r.reviewStatus || r.status || "pending"),
+        reviewStatus: normalizeReviewStatus(
+          r.reviewStatus || r.status || "pending",
+        ),
         adminNote: typeof r.adminNote === "string" ? r.adminNote : null,
         reviewedAt: r.reviewedAt ? new Date(r.reviewedAt).toISOString() : null,
         reviewedBy: r.reviewedBy || null,
@@ -356,7 +365,9 @@ export default async function handler(
           (x: any) => x?.queueStatus === "rolled_over",
         ),
         campaignLifecycle,
-        selectedOptions: Array.isArray(r.selectedOptions) ? r.selectedOptions : [],
+        selectedOptions: Array.isArray(r.selectedOptions)
+          ? r.selectedOptions
+          : [],
         budget: r.budget || null,
         timeline: r.timeline || null,
         details: r.details || "",

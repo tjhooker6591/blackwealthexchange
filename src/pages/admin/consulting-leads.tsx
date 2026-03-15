@@ -70,7 +70,13 @@ export default function ConsultingLeadsAdminPage() {
   async function updateLead(
     lead: Lead,
     patch: {
-      status?: "pending" | "approved" | "rejected" | "flagged" | "spam" | "deleted";
+      status?:
+        | "pending"
+        | "approved"
+        | "rejected"
+        | "flagged"
+        | "spam"
+        | "deleted";
       lifecycleStage?: string;
       nextAction?: string;
       owner?: string;
@@ -187,7 +193,10 @@ export default function ConsultingLeadsAdminPage() {
                       <td className="p-2 text-xs">
                         <div>{r.source || r.intakeType || "-"}</div>
                         <div className="text-white/50">IP: {r.ip || "-"}</div>
-                        <div className="text-white/50 max-w-[220px] truncate" title={r.userAgent || ""}>
+                        <div
+                          className="text-white/50 max-w-[220px] truncate"
+                          title={r.userAgent || ""}
+                        >
                           UA: {r.userAgent || "-"}
                         </div>
                       </td>

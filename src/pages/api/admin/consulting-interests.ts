@@ -151,29 +151,26 @@ export default async function handler(
         typeof reason === "string" && reason.trim()
           ? reason.trim().slice(0, 1200)
           : "Deleted by admin";
-      const result = await db.collection(collection).updateOne(
-        { _id },
-        {
-          $set: {
+      const result = await db.collection(collection).updateOne({ _id }, {
+        $set: {
+          status: "deleted",
+          lifecycleStage: "closed_lost",
+          deletedAt: now,
+          updatedAt: now,
+          reviewedBy: actor,
+          adminNote: note,
+        },
+        $push: {
+          lifecycleLog: {
+            at: now,
+            by: actor,
             status: "deleted",
-            lifecycleStage: "closed_lost",
-            deletedAt: now,
-            updatedAt: now,
-            reviewedBy: actor,
+            stage: "closed_lost",
+            nextAction: "",
             adminNote: note,
           },
-          $push: {
-            lifecycleLog: {
-              at: now,
-              by: actor,
-              status: "deleted",
-              stage: "closed_lost",
-              nextAction: "",
-              adminNote: note,
-            },
-          },
-        } as any,
-      );
+        },
+      } as any);
 
       if (!result.matchedCount) {
         return res.status(404).json({ error: "Lead not found" });

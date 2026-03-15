@@ -21,11 +21,11 @@ function isLikelyTestAccount(doc: any, email: string) {
   const lower = String(email || "").toLowerCase();
   return Boolean(
     doc?.isTest ||
-      doc?.testAccount ||
-      doc?.isInternal ||
-      lower.endsWith("@bwe.local") ||
-      lower.includes("+test") ||
-      lower.includes("test@"),
+    doc?.testAccount ||
+    doc?.isInternal ||
+    lower.endsWith("@bwe.local") ||
+    lower.includes("+test") ||
+    lower.includes("test@"),
   );
 }
 
@@ -337,16 +337,25 @@ export default async function handler(
           })
           .toArray();
 
-        const [todayCount, last7DaysCount, last30DaysCount] =
-          await Promise.all([
-            db.collection(collection).countDocuments({ createdAt: { $gte: todayStart } }),
-            db.collection(collection).countDocuments({ createdAt: { $gte: days7Start } }),
-            db.collection(collection).countDocuments({ createdAt: { $gte: days30Start } }),
-          ]);
+        const [todayCount, last7DaysCount, last30DaysCount] = await Promise.all(
+          [
+            db
+              .collection(collection)
+              .countDocuments({ createdAt: { $gte: todayStart } }),
+            db
+              .collection(collection)
+              .countDocuments({ createdAt: { $gte: days7Start } }),
+            db
+              .collection(collection)
+              .countDocuments({ createdAt: { $gte: days30Start } }),
+          ],
+        );
 
         const rows = docs
           .map((doc: any) => {
-            const email = String(doc?.email || "").trim().toLowerCase();
+            const email = String(doc?.email || "")
+              .trim()
+              .toLowerCase();
             const createdAt = getCreatedAt(doc);
             const fullName =
               doc?.businessName ||
@@ -374,14 +383,20 @@ export default async function handler(
               createdAt,
               status,
               isVerified: Boolean(verified),
-              isAdmin: Boolean(doc?.isAdmin || doc?.role === "admin" || doc?.accountType === "admin"),
+              isAdmin: Boolean(
+                doc?.isAdmin ||
+                doc?.role === "admin" ||
+                doc?.accountType === "admin",
+              ),
               isTest: isLikelyTestAccount(doc, email),
               isActive:
                 typeof doc?.isActive === "boolean"
                   ? doc.isActive
                   : typeof doc?.active === "boolean"
                     ? doc.active
-                    : status !== "inactive" && status !== "rejected" && status !== "deleted",
+                    : status !== "inactive" &&
+                      status !== "rejected" &&
+                      status !== "deleted",
             };
           })
           .filter((row) => row.createdAt);
@@ -420,7 +435,10 @@ export default async function handler(
         today: 0,
         last7Days: 0,
         last30Days: 0,
-        byAccountType: {} as Record<string, { today: number; last7Days: number; last30Days: number }>,
+        byAccountType: {} as Record<
+          string,
+          { today: number; last7Days: number; last30Days: number }
+        >,
       },
     );
 
