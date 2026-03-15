@@ -14,10 +14,18 @@ import type { AdminFilters } from "@/components/admin/AdminFilterBar";
 // Type for Consulting Interest
 type ConsultingInterest = {
   _id: string;
+  collection?: "consulting_interest" | "consulting_intake";
   name: string;
   email: string;
   company?: string;
+  businessName?: string;
   message?: string;
+  status?: "pending" | "approved" | "rejected" | "flagged" | "spam" | "deleted" | string;
+  lifecycleStage?: string;
+  adminNote?: string;
+  source?: string;
+  ip?: string | null;
+  userAgent?: string | null;
   createdAt: string;
 };
 
@@ -312,6 +320,8 @@ const AdminDashboard = ({
   const [consulting, setConsulting] = useState<ConsultingInterest[]>([]);
   const [consultingLoading, setConsultingLoading] = useState(true);
   const [consultingErr, setConsultingErr] = useState("");
+  const [consultingSavingId, setConsultingSavingId] = useState<string>("");
+  const [consultingNotes, setConsultingNotes] = useState<Record<string, string>>({});
 
   // 4) Admin filter state (applies to consulting table below)
   const DEFAULT_FILTERS: AdminFilters = {
@@ -365,25 +375,26 @@ const AdminDashboard = ({
     fetchSlots();
   }, []);
 
+  const fetchConsulting = async () => {
+    setConsultingLoading(true);
+    setConsultingErr("");
+    try {
+      const res = await fetch("/api/admin/consulting-interests", {
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error("Failed to fetch consulting interests");
+      const data = await res.json();
+      const rows = Array.isArray(data) ? data : (data?.interests ?? []);
+      setConsulting(Array.isArray(rows) ? rows : []);
+    } catch (_err) {
+      setConsultingErr("Error loading consulting waitlist.");
+    } finally {
+      setConsultingLoading(false);
+    }
+  };
+
   // Fetch consulting interests
   useEffect(() => {
-    const fetchConsulting = async () => {
-      setConsultingLoading(true);
-      setConsultingErr("");
-      try {
-        const res = await fetch("/api/admin/consulting-interests", {
-          credentials: "include",
-        });
-        if (!res.ok) throw new Error("Failed to fetch consulting interests");
-        const data = await res.json();
-        const rows = Array.isArray(data) ? data : (data?.interests ?? []);
-        setConsulting(Array.isArray(rows) ? rows : []);
-      } catch (_err) {
-        setConsultingErr("Error loading consulting waitlist.");
-      } finally {
-        setConsultingLoading(false);
-      }
-    };
     fetchConsulting();
   }, []);
 
@@ -555,6 +566,10 @@ const AdminDashboard = ({
       .filter((item) => withinRange(item.createdAt))
       .filter((item) => matchesSearch(item));
 
+    if (filters.status && filters.status !== "all") {
+      out = out.filter((item) => String(item.status || "pending") === filters.status);
+    }
+
     out = [...out].sort((a, b) => {
       const aTime = new Date(a.createdAt).getTime();
       const bTime = new Date(b.createdAt).getTime();
@@ -576,6 +591,92 @@ const AdminDashboard = ({
 
     return out;
   }, [consulting, filters.range, filters.search, filters.sort]);
+
+  const isObviousQaRecord = (item: ConsultingInterest) => {
+    const hay = `${item.name || ""} ${item.email || ""} ${item.message || ""} ${item.company || ""}`.toLowerCase();
+    const qaTerms = [
+      "smoke qa",
+      "critical path qa",
+      "consult proof",
+      "ops flow",
+      "launch scope qa",
+      "flow check",
+      "queue test",
+      "qa candidate",
+      "qa",
+      "test",
+      "example.com",
+    ];
+    return qaTerms.some((t) => hay.includes(t));
+  };
+
+  async function updateConsultingItem(
+    item: ConsultingInterest,
+    status: "approved" | "rejected" | "flagged" | "spam" | "pending" | "deleted",
+  ) {
+    if (!item._id || !item.collection) {
+      setConsultingErr("Missing consulting row id/collection.");
+      return;
+    }
+    setConsultingSavingId(item._id);
+    setConsultingErr("");
+    try {
+      const res = await fetch("/api/admin/consulting-interests", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          id: item._id,
+          collection: item.collection,
+          status,
+          stage:
+            status === "approved"
+              ? "approved"
+              : status === "rejected" || status === "spam" || status === "deleted"
+                ? "closed_lost"
+                : "triaged",
+          nextAction: "",
+          adminNote: consultingNotes[item._id] ?? item.adminNote ?? "",
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.error || "Failed to update waitlist record");
+      await fetchConsulting();
+    } catch (err: any) {
+      setConsultingErr(err?.message || "Failed to update waitlist record.");
+    } finally {
+      setConsultingSavingId("");
+    }
+  }
+
+  async function deleteConsultingItem(item: ConsultingInterest) {
+    if (!item._id || !item.collection) {
+      setConsultingErr("Missing consulting row id/collection.");
+      return;
+    }
+    if (!confirm("Delete/remove this consulting waitlist submission?")) return;
+    setConsultingSavingId(item._id);
+    setConsultingErr("");
+    try {
+      const res = await fetch("/api/admin/consulting-interests", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          id: item._id,
+          collection: item.collection,
+          reason: consultingNotes[item._id] || "Removed from consulting waitlist",
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.error || "Failed to delete waitlist record");
+      await fetchConsulting();
+    } catch (err: any) {
+      setConsultingErr(err?.message || "Failed to delete waitlist record.");
+    } finally {
+      setConsultingSavingId("");
+    }
+  }
 
   return (
     <div className="bg-gray-900 text-white min-h-screen p-6 md:p-10">
@@ -1336,28 +1437,94 @@ const AdminDashboard = ({
           </p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left mt-2">
+            <table className="w-full text-left mt-2 text-sm">
               <thead>
                 <tr className="border-b border-gray-700">
                   <th className="text-gold font-semibold py-2 px-3">Name</th>
                   <th className="text-gold font-semibold py-2 px-3">Email</th>
                   <th className="text-gold font-semibold py-2 px-3">Company</th>
                   <th className="text-gold font-semibold py-2 px-3">Message</th>
+                  <th className="text-gold font-semibold py-2 px-3">Meta</th>
+                  <th className="text-gold font-semibold py-2 px-3">Status</th>
+                  <th className="text-gold font-semibold py-2 px-3">Actions</th>
                   <th className="text-gold font-semibold py-2 px-3">Date</th>
                 </tr>
               </thead>
               <tbody>
-                {filteredConsulting.map((item) => (
-                  <tr key={item._id} className="border-b border-gray-700">
-                    <td className="py-2 px-3">{item.name}</td>
-                    <td className="py-2 px-3">{item.email}</td>
-                    <td className="py-2 px-3">{item.company || "--"}</td>
-                    <td className="py-2 px-3">{item.message || "--"}</td>
-                    <td className="py-2 px-3">
-                      {new Date(item.createdAt).toLocaleString()}
-                    </td>
-                  </tr>
-                ))}
+                {filteredConsulting.map((item) => {
+                  const qa = isObviousQaRecord(item);
+                  const noteVal = consultingNotes[item._id] ?? item.adminNote ?? "";
+                  return (
+                    <tr
+                      key={item._id}
+                      className={`border-b border-gray-700 ${qa ? "bg-yellow-500/10" : ""}`}
+                    >
+                      <td className="py-2 px-3">
+                        <div>{item.name}</div>
+                        {qa ? (
+                          <div className="text-[11px] text-yellow-300">QA/test-like submission</div>
+                        ) : null}
+                      </td>
+                      <td className="py-2 px-3">{item.email}</td>
+                      <td className="py-2 px-3">{item.company || item.businessName || "--"}</td>
+                      <td className="py-2 px-3 max-w-[280px] truncate" title={item.message || ""}>
+                        {item.message || "--"}
+                      </td>
+                      <td className="py-2 px-3 text-xs text-gray-300">
+                        <div>collection: {item.collection || "--"}</div>
+                        <div>source: {item.source || "--"}</div>
+                        <div>IP: {item.ip || "--"}</div>
+                      </td>
+                      <td className="py-2 px-3">
+                        <div className="capitalize">{item.status || "pending"}</div>
+                        <textarea
+                          className="mt-1 w-full rounded border border-gray-700 bg-gray-900 p-1 text-[11px]"
+                          rows={2}
+                          placeholder="Admin note"
+                          value={noteVal}
+                          onChange={(e) =>
+                            setConsultingNotes((prev) => ({ ...prev, [item._id]: e.target.value }))
+                          }
+                        />
+                      </td>
+                      <td className="py-2 px-3">
+                        <div className="flex flex-wrap gap-1 text-[11px]">
+                          <button
+                            className="rounded bg-emerald-600/80 px-2 py-1 font-semibold"
+                            disabled={consultingSavingId === item._id}
+                            onClick={() => updateConsultingItem(item, "approved")}
+                          >
+                            Approve
+                          </button>
+                          <button
+                            className="rounded bg-orange-600/80 px-2 py-1 font-semibold"
+                            disabled={consultingSavingId === item._id}
+                            onClick={() => updateConsultingItem(item, "rejected")}
+                          >
+                            Reject
+                          </button>
+                          <button
+                            className="rounded bg-rose-700/80 px-2 py-1 font-semibold"
+                            disabled={consultingSavingId === item._id}
+                            onClick={() => updateConsultingItem(item, "spam")}
+                          >
+                            Spam/Flag
+                          </button>
+                          <button
+                            className="rounded bg-red-700/80 px-2 py-1 font-semibold"
+                            disabled={consultingSavingId === item._id}
+                            onClick={() => deleteConsultingItem(item)}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                      <td className="py-2 px-3">
+                        {new Date(item.createdAt).toLocaleString()}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -1481,7 +1648,10 @@ const AdminLink = ({ href, label }: { href: string; label: string }) => (
 
 export default AdminDashboard;
 
-export const getServerSideProps: GetServerSideProps = async ({ req, query }) => {
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  query,
+}) => {
   const cookies = cookie.parse(req.headers.cookie || "");
   const token = cookies.session_token;
   if (!token) {
