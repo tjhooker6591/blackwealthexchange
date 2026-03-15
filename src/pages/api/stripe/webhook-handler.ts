@@ -409,9 +409,12 @@ export default async function webhookHandler(
         idToString(orderRecord?.productId) ||
         asString(mergedMeta.itemId || existingPayment?.itemId);
       const sellerId =
-        idToString(orderRecord?.sellerId) || asString((mergedMeta as any).sellerId);
+        idToString(orderRecord?.sellerId) ||
+        asString((mergedMeta as any).sellerId);
       const buyerId =
-        asString(orderRecord?.userId) || userId || asString(existingPayment?.userId);
+        asString(orderRecord?.userId) ||
+        userId ||
+        asString(existingPayment?.userId);
 
       const isCanonicalCheckout = Boolean(orderRecord?.sessionId);
       const checkoutVariant = isCanonicalCheckout
