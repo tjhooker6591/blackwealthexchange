@@ -249,7 +249,8 @@ export default function SearchResults() {
                       trackSearchEvent("search_result_clicked", {
                         entity_id: r._id,
                         entity_type: "business",
-                        result_rank: results.findIndex((x) => x._id === r._id) + 1,
+                        result_rank:
+                          results.findIndex((x) => x._id === r._id) + 1,
                         businessAlias: safe(r.alias) || null,
                       })
                     }
@@ -280,7 +281,8 @@ export default function SearchResults() {
                       trackSearchEvent("search_result_clicked", {
                         entity_id: r._id,
                         entity_type: "business",
-                        result_rank: results.findIndex((x) => x._id === r._id) + 1,
+                        result_rank:
+                          results.findIndex((x) => x._id === r._id) + 1,
                         source: "search_results_card_cta",
                         businessAlias: safe(r.alias) || null,
                       })
