@@ -1191,104 +1191,65 @@ export default function Home() {
                       </div>
                     )}
 
-                    <div className="mt-4 rounded-xl border border-white/10 bg-black/30 p-3">
-                      <div className="mb-2 text-[10px] font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
-                        High-value pathways
-                      </div>
-                      <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-4">
-                        <Link
-                          href="/marketplace"
-                          className="rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-xs font-semibold text-white/80 transition hover:bg-white/[0.08]"
-                        >
-                          Marketplace
-                        </Link>
-                        <Link
-                          href="/job-listings"
-                          className="rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-xs font-semibold text-white/80 transition hover:bg-white/[0.08]"
-                        >
-                          Jobs
-                        </Link>
-                        <Link
-                          href="/music"
-                          className="rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-xs font-semibold text-white/80 transition hover:bg-white/[0.08]"
-                        >
-                          Music
-                        </Link>
-                        <Link
-                          href="/marketplace/become-a-seller"
-                          className="rounded-lg border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-3 py-2 text-xs font-extrabold text-[#EFD27A] transition hover:bg-[#D4AF37]/15"
-                          onClick={() =>
-                            trackHomepageEvent("seller_entry_clicked", {
-                              section: "hero_search_pathways",
-                              ctaId: "pathway_become_seller",
-                              ctaLabel: "Become a Seller",
-                              destination: "/marketplace/become-a-seller",
-                            })
-                          }
-                        >
-                          Become a Seller
-                        </Link>
-                        <Link
-                          href="/black-student-opportunities"
-                          className="rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-xs font-semibold text-white/80 transition hover:bg-white/[0.08]"
-                          onClick={() =>
-                            trackHomepageEvent("student_portal_entry_clicked", {
-                              section: "hero_search_pathways",
-                              ctaId: "pathway_student_opportunities",
-                              ctaLabel: "Student Opportunities",
-                              destination: "/black-student-opportunities",
-                            })
-                          }
-                        >
-                          Student Opportunities
-                        </Link>
-                        <Link
-                          href="/financial-literacy"
-                          className="rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-xs font-semibold text-white/80 transition hover:bg-white/[0.08]"
-                          onClick={() =>
-                            trackHomepageEvent(
-                              "homepage_education_entry_clicked",
-                              {
-                                section: "hero_search_pathways",
-                                ctaId: "pathway_financial_literacy",
-                                ctaLabel: "Financial Literacy",
-                                destination: "/financial-literacy",
-                              },
-                            )
-                          }
-                        >
-                          Financial Literacy
-                        </Link>
-                        <Link
-                          href="/library-of-black-history"
-                          className="rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-xs font-semibold text-white/80 transition hover:bg-white/[0.08]"
-                          onClick={() =>
-                            trackHomepageEvent(
-                              "homepage_history_truth_entry_clicked",
-                              {
-                                section: "hero_search_pathways",
-                                ctaId: "pathway_library_of_black_history",
-                                ctaLabel: "Library of Black History",
-                                destination: "/library-of-black-history",
-                              },
-                            )
-                          }
-                        >
-                          Library of Black History
-                        </Link>
-                        <Link
-                          href="/business-directory"
-                          className="rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-xs font-semibold text-white/80 transition hover:bg-white/[0.08]"
-                        >
-                          Business Directory
-                        </Link>
-                      </div>
+                    <div className="mt-3 flex flex-wrap items-center gap-2">
+                      <Link
+                        href="/business-directory"
+                        className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-[11px] font-semibold text-white/80 transition hover:bg-white/[0.08]"
+                      >
+                        Business Directory
+                      </Link>
+                      <Link
+                        href="/marketplace"
+                        className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-[11px] font-semibold text-white/80 transition hover:bg-white/[0.08]"
+                      >
+                        Marketplace
+                      </Link>
+                      <Link
+                        href="/job-listings"
+                        className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-[11px] font-semibold text-white/80 transition hover:bg-white/[0.08]"
+                      >
+                        Jobs
+                      </Link>
+                      <Link
+                        href="/black-student-opportunities"
+                        className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-[11px] font-semibold text-white/80 transition hover:bg-white/[0.08]"
+                        onClick={() =>
+                          trackHomepageEvent("student_portal_entry_clicked", {
+                            section: "hero_search_quick_row",
+                            ctaId: "quick_row_student_opportunities",
+                            ctaLabel: "Student Opportunities",
+                            destination: "/black-student-opportunities",
+                          })
+                        }
+                      >
+                        Student Opportunities
+                      </Link>
+                      <Link
+                        href="/music"
+                        className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-[11px] font-semibold text-white/80 transition hover:bg-white/[0.08]"
+                      >
+                        Music
+                      </Link>
+                      <Link
+                        href="/marketplace/become-a-seller"
+                        className="rounded-full border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-3 py-1.5 text-[11px] font-extrabold text-[#EFD27A] transition hover:bg-[#D4AF37]/15"
+                        onClick={() =>
+                          trackHomepageEvent("seller_entry_clicked", {
+                            section: "hero_search_quick_row",
+                            ctaId: "quick_row_become_seller",
+                            ctaLabel: "Become a Seller",
+                            destination: "/marketplace/become-a-seller",
+                          })
+                        }
+                      >
+                        Become a Seller
+                      </Link>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="mt-4 flex flex-col items-center gap-3 sm:mt-5">
+              <div className="mt-4 flex flex-col items-center gap-2 sm:mt-4">
                 <button
                   className="animate-pulseGlow rounded-xl bg-[#D4AF37] px-5 py-2.5 text-center text-sm font-extrabold text-black shadow transition hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/35 sm:px-6 sm:text-base"
                   onClick={() => {
@@ -1319,22 +1280,6 @@ export default function Home() {
                     Start Selling on the Marketplace — Join as a Seller
                   </span>
                 </button>
-
-                <Link
-                  href="/library-of-black-history"
-                  onClick={() =>
-                    trackHomepageEvent("homepage_history_truth_entry_clicked", {
-                      section: "hero",
-                      ctaId: "hero_library_of_black_history",
-                      ctaLabel: "Explore the Library of Black History",
-                      destination: "/library-of-black-history",
-                    })
-                  }
-                >
-                  <span className="text-sm font-extrabold text-[#D4AF37] transition hover:underline sm:text-base">
-                    📚 Explore the Library of Black History 🏛️
-                  </span>
-                </Link>
               </div>
             </div>
           </section>
@@ -1357,18 +1302,10 @@ export default function Home() {
             </p>
             <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
               <Link
-                href="/financial-literacy"
+                href="/business-directory"
                 className="rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm font-semibold text-white/80 transition hover:border-[#D4AF37]/30 hover:bg-black/40"
-                onClick={() =>
-                  trackHomepageEvent("homepage_education_entry_clicked", {
-                    section: "quick_paths",
-                    ctaId: "quick_path_learn",
-                    ctaLabel: "I'm here to learn",
-                    destination: "/financial-literacy",
-                  })
-                }
               >
-                I’m here to learn
+                I’m here to find businesses
               </Link>
               <Link
                 href="/job-listings"
@@ -1391,18 +1328,10 @@ export default function Home() {
                 I’m a student
               </Link>
               <Link
-                href="/library-of-black-history"
+                href="/marketplace"
                 className="rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm font-semibold text-white/80 transition hover:border-[#D4AF37]/30 hover:bg-black/40"
-                onClick={() =>
-                  trackHomepageEvent("homepage_history_truth_entry_clicked", {
-                    section: "quick_paths",
-                    ctaId: "quick_path_history",
-                    ctaLabel: "I want history & context",
-                    destination: "/library-of-black-history",
-                  })
-                }
               >
-                I want history & context
+                I want to shop
               </Link>
               <Link
                 href="/marketplace/become-a-seller"
@@ -1433,7 +1362,7 @@ export default function Home() {
             />
             <div className="relative">
               <div className="text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
-                Start here track
+                Learn
               </div>
               <h3 className="mt-1 text-lg font-extrabold text-white sm:text-xl">
                 Featured Learning Block
@@ -1453,20 +1382,36 @@ export default function Home() {
                   Black history/economic context
                 </span>
               </div>
-              <Link
-                href="/financial-literacy"
-                className="mt-4 inline-flex h-10 items-center rounded-xl bg-[#D4AF37] px-5 text-sm font-extrabold text-black transition hover:bg-yellow-500"
-                onClick={() =>
-                  trackHomepageEvent("homepage_education_entry_clicked", {
-                    section: "featured_learning_block",
-                    ctaId: "featured_learning_start_track",
-                    ctaLabel: "Start the Track",
-                    destination: "/financial-literacy",
-                  })
-                }
-              >
-                Start the Track
-              </Link>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <Link
+                  href="/financial-literacy"
+                  className="inline-flex h-10 items-center rounded-xl bg-[#D4AF37] px-5 text-sm font-extrabold text-black transition hover:bg-yellow-500"
+                  onClick={() =>
+                    trackHomepageEvent("homepage_education_entry_clicked", {
+                      section: "featured_learning_block",
+                      ctaId: "featured_learning_start_track",
+                      ctaLabel: "Start the Track",
+                      destination: "/financial-literacy",
+                    })
+                  }
+                >
+                  Financial Literacy
+                </Link>
+                <Link
+                  href="/library-of-black-history"
+                  className="inline-flex h-10 items-center rounded-xl border border-[#D4AF37]/40 bg-[#D4AF37]/10 px-5 text-sm font-bold text-[#F1D57A] transition hover:bg-[#D4AF37]/16"
+                  onClick={() =>
+                    trackHomepageEvent("homepage_history_truth_entry_clicked", {
+                      section: "featured_learning_block",
+                      ctaId: "featured_learning_history_library",
+                      ctaLabel: "Library of Black History",
+                      destination: "/library-of-black-history",
+                    })
+                  }
+                >
+                  Library of Black History
+                </Link>
+              </div>
             </div>
           </div>
 
