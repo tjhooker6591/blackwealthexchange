@@ -52,7 +52,9 @@ export default function RecruitingConsultingPage() {
     trackConsultingEvent("consulting_submission_started", {
       ctaId: "consulting_submit",
       ctaLabel:
-        mode === "employer" ? "Submit Employer Request" : "Submit Talent Profile",
+        mode === "employer"
+          ? "Submit Employer Request"
+          : "Submit Talent Profile",
       destination: "/api/consulting-intake",
     });
     try {

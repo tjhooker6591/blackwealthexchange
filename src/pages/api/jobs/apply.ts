@@ -23,9 +23,7 @@ export default async function handler(
     }
 
     if (!ObjectId.isValid(jobId)) {
-      return res
-        .status(400)
-        .json({ success: false, error: "Invalid jobId." });
+      return res.status(400).json({ success: false, error: "Invalid jobId." });
     }
 
     const jobObjectId = new ObjectId(jobId);

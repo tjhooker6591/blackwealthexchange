@@ -12,7 +12,11 @@ export default function JobsHubPage() {
     });
   }, []);
 
-  const trackJobEntry = (ctaId: string, ctaLabel: string, destination: string) => {
+  const trackJobEntry = (
+    ctaId: string,
+    ctaLabel: string,
+    destination: string,
+  ) => {
     emitFlowEvent({
       eventType: "employer_post_job_started",
       pageRoute: "/jobs",
