@@ -1246,12 +1246,15 @@ export default function Home() {
                           href="/financial-literacy"
                           className="rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-xs font-semibold text-white/80 transition hover:bg-white/[0.08]"
                           onClick={() =>
-                            trackHomepageEvent("homepage_education_entry_clicked", {
-                              section: "hero_search_pathways",
-                              ctaId: "pathway_financial_literacy",
-                              ctaLabel: "Financial Literacy",
-                              destination: "/financial-literacy",
-                            })
+                            trackHomepageEvent(
+                              "homepage_education_entry_clicked",
+                              {
+                                section: "hero_search_pathways",
+                                ctaId: "pathway_financial_literacy",
+                                ctaLabel: "Financial Literacy",
+                                destination: "/financial-literacy",
+                              },
+                            )
                           }
                         >
                           Financial Literacy
@@ -1349,7 +1352,8 @@ export default function Home() {
               Quick paths
             </div>
             <p className="mb-3 text-xs text-white/60">
-              Clear entry points for learning, opportunities, and business growth.
+              Clear entry points for learning, opportunities, and business
+              growth.
             </p>
             <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
               <Link
