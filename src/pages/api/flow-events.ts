@@ -91,6 +91,8 @@ export default async function handler(
       // search/discovery structured fields
       entityId: s(body.entity_id) || s(body.entityId) || null,
       entityType: s(body.entity_type) || s(body.entityType) || null,
+      jobId: s(body.job_id) || s(body.jobId) || null,
+      productId: s(body.product_id) || s(body.productId) || null,
       resultCount:
         typeof body.result_count === "number"
           ? body.result_count

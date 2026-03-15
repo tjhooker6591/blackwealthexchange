@@ -2,6 +2,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
+import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 
 interface BuyNowButtonProps {
   userId?: string; // optional explicit id for dev/testing
@@ -72,6 +73,40 @@ export default function BuyNowButton({
     try {
       // ✅ Product checkout: do NOT require login (per your marketplace rule)
       if (type === "product") {
+        const currentPath =
+          typeof window !== "undefined" ? window.location.pathname : "";
+        const pageRoute = currentPath || "/marketplace";
+        const section = currentPath.includes("/marketplace/product/")
+          ? "marketplace_product_detail"
+          : "marketplace_landing";
+
+        emitFlowEvent({
+          eventType: "marketplace_buy_started",
+          pageRoute,
+          section,
+          ctaId: `buy_now_${itemId}`,
+          ctaLabel: label,
+          productId: itemId,
+          entityId: itemId,
+          entityType: "product",
+          destination: "/api/checkout/create-session",
+          checkout_variant: "canonical_checkout_session",
+        });
+
+        emitFlowEvent({
+          eventType: "marketplace_checkout_started",
+          pageRoute,
+          section,
+          ctaId: `checkout_start_${itemId}`,
+          ctaLabel: label,
+          productId: itemId,
+          entityId: itemId,
+          entityType: "product",
+          destination: "/api/checkout/create-session",
+          checkout_variant: "canonical_checkout_session",
+          source_variant: "buy_now_button",
+        });
+
         const res = await fetch("/api/checkout/create-session", {
           method: "POST",
           headers: { "Content-Type": "application/json" },

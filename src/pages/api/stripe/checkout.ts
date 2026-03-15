@@ -557,6 +557,25 @@ export default async function handler(
       { upsert: true },
     );
 
+    if (type === "product") {
+      await db.collection("flow_events").insertOne({
+        eventType: "marketplace_checkout_created",
+        pageRoute: "/api/stripe/checkout",
+        section: "marketplace_checkout_api",
+        source: "stripe_checkout_api",
+        source_variant: "legacy_stripe_checkout",
+        path: req.url || "/api/stripe/checkout",
+        checkout_variant: "legacy_stripe_checkout",
+        productId: finalItemId,
+        entityId: finalItemId,
+        entityType: "product",
+        stripeSessionId: stripeSession.id,
+        accountType: "authenticated",
+        isAuthenticated: true,
+        createdAt: new Date(),
+      });
+    }
+
     return res.status(200).json({
       sessionId: stripeSession.id,
       url: stripeSession.url,

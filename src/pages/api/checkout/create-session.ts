@@ -501,6 +501,23 @@ export default async function handler(
       { upsert: true },
     );
 
+    await db.collection("flow_events").insertOne({
+      eventType: "marketplace_checkout_created",
+      pageRoute: "/api/checkout/create-session",
+      section: "marketplace_checkout_api",
+      source: "marketplace_checkout_api",
+      source_variant: "canonical_checkout_session",
+      path: req.url || "/api/checkout/create-session",
+      checkout_variant: "canonical_checkout_session",
+      productId: String(product._id),
+      entityId: String(product._id),
+      entityType: "product",
+      sellerId: String(seller._id),
+      stripeSessionId: session.id,
+      payoutMode,
+      createdAt: new Date(),
+    });
+
     return res.status(200).json({
       sessionId: session.id,
       url: session.url,

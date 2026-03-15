@@ -88,6 +88,21 @@ export default async function handler(
 
     const result = await db.collection("jobs").insertOne(job);
 
+    await db.collection("flow_events").insertOne({
+      eventType: "job_post_submitted",
+      pageRoute: "/api/jobs/create",
+      section: "jobs_create_api",
+      source: "jobs_create_api",
+      source_variant: "canonical_jobs_create",
+      path: req.url || "/api/jobs/create",
+      jobId: result.insertedId.toString(),
+      entityId: result.insertedId.toString(),
+      entityType: "job",
+      accountType: decoded.accountType || "employer",
+      isAuthenticated: true,
+      createdAt: new Date(),
+    });
+
     return res.status(201).json({
       success: true,
       message: "Job posted successfully and is pending approval",
