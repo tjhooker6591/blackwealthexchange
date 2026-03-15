@@ -75,6 +75,24 @@ export default async function handler(
         typeof body.isAuthenticated === "boolean" ? body.isAuthenticated : null,
       environment: s(body.environment) || process.env.NODE_ENV || null,
 
+      // search/discovery structured fields
+      entityId: s(body.entity_id) || s(body.entityId) || null,
+      entityType: s(body.entity_type) || s(body.entityType) || null,
+      resultCount:
+        typeof body.result_count === "number"
+          ? body.result_count
+          : typeof body.resultCount === "number"
+            ? body.resultCount
+            : null,
+      resultRank:
+        typeof body.result_rank === "number"
+          ? body.result_rank
+          : typeof body.resultRank === "number"
+            ? body.resultRank
+            : null,
+      filterKey: s(body.filter_key) || s(body.filterKey) || null,
+      filterValue: s(body.filter_value) || s(body.filterValue) || null,
+
       // homepage / guided-flow legacy context
       surface: s(body.surface) || null,
       location: s(body.location) || null,

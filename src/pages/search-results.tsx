@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 
 type Result = {
   _id: string;
@@ -28,26 +29,23 @@ function categoriesLabel(r: Result) {
   return safe(r.categories) || safe(r.category);
 }
 
-function trackFlowEvent(payload: Record<string, unknown>) {
-  if (typeof window === "undefined") return;
-  const body = JSON.stringify(payload);
-  const url = "/api/flow-events";
-  if (navigator.sendBeacon) {
-    const blob = new Blob([body], { type: "application/json" });
-    navigator.sendBeacon(url, blob);
-    return;
-  }
-  fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body,
-    keepalive: true,
-  }).catch(() => {});
-}
-
 export default function SearchResults() {
   const router = useRouter();
   const search = safe(router.query.search || router.query.q).trim();
+
+  const trackSearchEvent = (
+    eventType: string,
+    extras: Record<string, unknown> = {},
+  ) => {
+    emitFlowEvent({
+      eventType,
+      pageRoute: "/search-results",
+      section: "search_results",
+      source: "search_results_page",
+      query: search,
+      ...extras,
+    });
+  };
 
   const [results, setResults] = useState<Result[]>([]);
   const [total, setTotal] = useState(0);
@@ -97,11 +95,8 @@ export default function SearchResults() {
           const totalCount = Number(data?.total || items.length);
           setResults(items);
           setTotal(totalCount);
-          trackFlowEvent({
-            eventType: "search_performed",
-            query: search,
-            source: "search_results",
-            path: window.location.pathname,
+          trackSearchEvent("search_results_viewed", {
+            result_count: totalCount,
           });
         }
       } catch (e: any) {
@@ -132,10 +127,8 @@ export default function SearchResults() {
   useEffect(() => {
     if (!search || loading || error) return;
     if (results.length !== 0) return;
-    trackFlowEvent({
-      eventType: "no_results_shown",
-      source: "search_results",
-      query: search,
+    trackSearchEvent("search_no_results_viewed", {
+      result_count: 0,
     });
   }, [search, loading, error, results.length]);
 
@@ -184,10 +177,9 @@ export default function SearchResults() {
               <Link
                 href="/business-directory"
                 onClick={() =>
-                  trackFlowEvent({
-                    eventType: "rescue_action_clicked",
-                    source: "search_results_no_result",
-                    query: search,
+                  trackSearchEvent("search_filter_applied", {
+                    filter_key: "rescue_action",
+                    filter_value: "browse_full_directory",
                   })
                 }
                 className="px-4 py-2 bg-gold text-black rounded font-semibold"
@@ -197,10 +189,9 @@ export default function SearchResults() {
               <Link
                 href={`/business-directory?search=${encodeURIComponent(search)}`}
                 onClick={() =>
-                  trackFlowEvent({
-                    eventType: "filter_relaxed",
-                    source: "search_results_no_result",
-                    query: search,
+                  trackSearchEvent("search_filter_applied", {
+                    filter_key: "rescue_action",
+                    filter_value: "try_in_directory_search",
                   })
                 }
                 className="px-4 py-2 rounded border border-gray-600 text-gray-200"
@@ -219,11 +210,9 @@ export default function SearchResults() {
                     key={cat}
                     href={`/business-directory?category=${encodeURIComponent(cat)}`}
                     onClick={() =>
-                      trackFlowEvent({
-                        eventType: "suggested_category_clicked",
-                        source: "search_results_no_result",
-                        query: search,
-                        category: cat,
+                      trackSearchEvent("search_filter_applied", {
+                        filter_key: "suggested_category",
+                        filter_value: cat,
                       })
                     }
                     className="rounded-full border border-gray-600 bg-black/30 px-3 py-1 text-xs text-gray-200"
@@ -257,12 +246,11 @@ export default function SearchResults() {
                   <Link
                     href={href}
                     onClick={() =>
-                      trackFlowEvent({
-                        eventType: "result_click",
-                        businessId: r._id,
+                      trackSearchEvent("search_result_clicked", {
+                        entity_id: r._id,
+                        entity_type: "business",
+                        result_rank: results.findIndex((x) => x._id === r._id) + 1,
                         businessAlias: safe(r.alias) || null,
-                        source: "search_results",
-                        query: search,
                       })
                     }
                     className="text-lg font-semibold text-gold hover:underline"
@@ -289,12 +277,12 @@ export default function SearchResults() {
                   <Link
                     href={href}
                     onClick={() =>
-                      trackFlowEvent({
-                        eventType: "result_click",
-                        businessId: r._id,
-                        businessAlias: safe(r.alias) || null,
+                      trackSearchEvent("search_result_clicked", {
+                        entity_id: r._id,
+                        entity_type: "business",
+                        result_rank: results.findIndex((x) => x._id === r._id) + 1,
                         source: "search_results_card_cta",
-                        query: search,
+                        businessAlias: safe(r.alias) || null,
                       })
                     }
                     className="px-3 py-1.5 rounded bg-gold text-black text-sm font-semibold"

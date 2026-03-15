@@ -30,10 +30,7 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/router";
 import useAuth from "@/hooks/useAuth";
-import {
-  buildHomepageDirectoryQuery,
-  normalizeScope,
-} from "@/lib/directory/queryState";
+import { normalizeScope } from "@/lib/directory/queryState";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 
 function cx(...classes: Array<string | false | null | undefined>) {
@@ -534,32 +531,24 @@ export default function Home() {
 
     if (!q) {
       return router.push({
-        pathname: "/business-directory",
+        pathname: "/search-results",
         query: {
-          type: scope,
-          scope,
-          tab: scope,
           q: "",
           search: "",
-          limit: 20,
-          sort,
+          scope,
           ai: ai ? "1" : "0",
         },
       });
     }
 
     return router.push({
-      pathname: "/business-directory",
-      query: buildHomepageDirectoryQuery({
+      pathname: "/search-results",
+      query: {
         q,
+        search: q,
         scope,
-        sort,
-        ai,
-        verifiedOnly,
-        sponsoredFirst,
-        state: stateFilter,
-        category,
-      }),
+        ai: ai ? "1" : "0",
+      },
     });
   };
 
@@ -577,7 +566,7 @@ export default function Home() {
           ? "/shop"
           : vertical === "news"
             ? "/news"
-            : "/business-directory",
+            : "/search-results",
       vertical,
       aiMode,
       scope: leftScope,
@@ -1202,7 +1191,17 @@ export default function Home() {
                   </span>
                 </button>
 
-                <Link href="/library-of-black-history">
+                <Link
+                  href="/library-of-black-history"
+                  onClick={() =>
+                    trackHomepageEvent("homepage_history_truth_entry_clicked", {
+                      section: "hero",
+                      ctaId: "hero_library_of_black_history",
+                      ctaLabel: "Explore the Library of Black History",
+                      destination: "/library-of-black-history",
+                    })
+                  }
+                >
                   <span className="text-sm font-extrabold text-[#D4AF37] transition hover:underline sm:text-base">
                     📚 Explore the Library of Black History 🏛️
                   </span>
@@ -1227,6 +1226,14 @@ export default function Home() {
               <Link
                 href="/financial-literacy"
                 className="rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm font-semibold text-white/80 transition hover:border-[#D4AF37]/30 hover:bg-black/40"
+                onClick={() =>
+                  trackHomepageEvent("homepage_education_entry_clicked", {
+                    section: "quick_paths",
+                    ctaId: "quick_path_learn",
+                    ctaLabel: "I'm here to learn",
+                    destination: "/financial-literacy",
+                  })
+                }
               >
                 I’m here to learn
               </Link>
@@ -1280,6 +1287,14 @@ export default function Home() {
               <Link
                 href="/financial-literacy"
                 className="mt-4 inline-flex h-10 items-center rounded-xl bg-[#D4AF37] px-5 text-sm font-extrabold text-black transition hover:bg-yellow-500"
+                onClick={() =>
+                  trackHomepageEvent("homepage_education_entry_clicked", {
+                    section: "featured_learning_block",
+                    ctaId: "featured_learning_start_track",
+                    ctaLabel: "Start the Track",
+                    destination: "/financial-literacy",
+                  })
+                }
               >
                 Start the Track
               </Link>
@@ -1390,6 +1405,14 @@ export default function Home() {
               <Link
                 href="/investment"
                 className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40"
+                onClick={() =>
+                  trackHomepageEvent("homepage_education_entry_clicked", {
+                    section: "more_key_sections",
+                    ctaId: "more_key_investment_wealth",
+                    ctaLabel: "Investment & Wealth",
+                    destination: "/investment",
+                  })
+                }
               >
                 Investment & Wealth
               </Link>
