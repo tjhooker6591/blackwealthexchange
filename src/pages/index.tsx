@@ -846,9 +846,7 @@ export default function Home() {
               )}
             </div>
 
-            <div className="mt-2 hidden sm:block text-xs text-white/55">
-              Verified listings • Secure checkout • Curated opportunities
-            </div>
+
           </div>
 
           <section id="search-dominant" className="mt-5 sm:mt-6 scroll-mt-24">
@@ -1057,125 +1055,10 @@ export default function Home() {
                       />
                     )}
 
-                    <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-white/55 sm:text-[12px]">
-                      <span>
-                        Trusted ranking + clean results.
-                        <span className="text-white/40">
-                          {" "}
-                          Filters are optional.
-                        </span>
-                      </span>
 
-                      <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[10px] sm:text-[11px]">
-                        Tap{" "}
-                        <span className="font-black text-white/75">Search</span>
-                      </span>
-                    </div>
-
-                    {vertical === "all" && (
-                      <div className="mt-3 flex flex-wrap gap-2">
-                        {[
-                          "Restaurants",
-                          "Barbershop",
-                          "Beauty Supply",
-                          "Church",
-                          "Nonprofit",
-                        ].map((chip) => (
-                          <button
-                            key={chip}
-                            type="button"
-                            onClick={() => {
-                              setSearchQuery(chip);
-                              submitHomepageSearch("search_chip_click", chip);
-                            }}
-                            className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-[11px] font-bold text-white/75 transition hover:border-white/20 hover:bg-white/[0.08]"
-                          >
-                            {chip}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-
-                    <div className="mt-3 flex flex-wrap items-center gap-2">
-                      <Link
-                        href="/business-directory"
-                        className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-[11px] font-semibold text-white/80 transition hover:bg-white/[0.08]"
-                      >
-                        Business Directory
-                      </Link>
-                      <Link
-                        href="/marketplace"
-                        className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-[11px] font-semibold text-white/80 transition hover:bg-white/[0.08]"
-                      >
-                        Marketplace
-                      </Link>
-                      <Link
-                        href="/job-listings"
-                        className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-[11px] font-semibold text-white/80 transition hover:bg-white/[0.08]"
-                      >
-                        Jobs
-                      </Link>
-                      <Link
-                        href="/black-student-opportunities"
-                        className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-[11px] font-semibold text-white/80 transition hover:bg-white/[0.08]"
-                        onClick={() =>
-                          trackHomepageEvent("student_portal_entry_clicked", {
-                            section: "hero_search_quick_row",
-                            ctaId: "quick_row_student_opportunities",
-                            ctaLabel: "Student Opportunities",
-                            destination: "/black-student-opportunities",
-                          })
-                        }
-                      >
-                        Student Opportunities
-                      </Link>
-                      <Link
-                        href="/music"
-                        className="hidden rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-[11px] font-semibold text-white/80 transition hover:bg-white/[0.08] sm:inline-flex"
-                      >
-                        Music
-                      </Link>
-                      <Link
-                        href="/marketplace/become-a-seller"
-                        className="hidden rounded-full border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-3 py-1.5 text-[11px] font-extrabold text-[#EFD27A] transition hover:bg-[#D4AF37]/15 sm:inline-flex"
-                        onClick={() =>
-                          trackHomepageEvent("seller_entry_clicked", {
-                            section: "hero_search_quick_row",
-                            ctaId: "quick_row_become_seller",
-                            ctaLabel: "Become a Seller",
-                            destination: "/marketplace/become-a-seller",
-                          })
-                        }
-                      >
-                        Become a Seller
-                      </Link>
-                    </div>
-
-                    <div className="mt-2 flex items-center gap-3 text-[11px] text-white/55 sm:hidden">
-                      <Link href="/music" className="hover:text-white/80">
-                        Music
-                      </Link>
-                      <span>•</span>
-                      <Link
-                        href="/marketplace/become-a-seller"
-                        className="hover:text-[#EFD27A]"
-                        onClick={() =>
-                          trackHomepageEvent("seller_entry_clicked", {
-                            section: "hero_search_quick_row_mobile_secondary",
-                            ctaId: "quick_row_mobile_become_seller",
-                            ctaLabel: "Become a Seller",
-                            destination: "/marketplace/become-a-seller",
-                          })
-                        }
-                      >
-                        Become a Seller
-                      </Link>
-                    </div>
                   </div>
                 </div>
               </div>
-
-
             </div>
           </section>
 
@@ -1187,7 +1070,6 @@ export default function Home() {
 
       <section className="relative z-10 pt-3 pb-8 sm:pt-4 sm:pb-10">
         <div className="container mx-auto max-w-6xl px-4">
-
           <div className="relative mb-4 overflow-hidden rounded-2xl border border-white/10 bg-black p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.04)]">
             <div
               className="pointer-events-none absolute inset-0"
