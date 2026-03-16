@@ -71,6 +71,124 @@ function normalizeOrgDoc(d) {
   };
 }
 
+function asBool(v) {
+  if (typeof v === "boolean") return v;
+  if (typeof v === "number") return v === 1;
+  if (typeof v === "string") {
+    const s = v.trim().toLowerCase();
+    return ["1", "true", "yes", "verified"].includes(s);
+  }
+  return false;
+}
+
+function asNum(v, fallback = 0) {
+  const n = Number(v);
+  return Number.isFinite(n) ? n : fallback;
+}
+
+function normalizeStatus(v) {
+  return String(v || "").trim().toLowerCase();
+}
+
+function normalizeEntityType(doc, scope) {
+  const raw = String(doc?.entityType || doc?.type || "")
+    .trim()
+    .toLowerCase();
+
+  if (raw.includes("org")) return "organization";
+  if (raw.includes("nonprofit")) return "organization";
+  if (raw.includes("church")) return "organization";
+  if (scope === "organizations") return "organization";
+  return "business";
+}
+
+function normalizePrimaryCategory(doc, scope) {
+  const asArray = Array.isArray(doc?.categories)
+    ? doc.categories.filter(Boolean)
+    : [];
+
+  const candidates = [
+    asArray[0],
+    doc?.category,
+    doc?.display_categories,
+    scope === "organizations" ? doc?.orgType : null,
+  ];
+
+  for (const c of candidates) {
+    const v = String(c || "").trim();
+    if (v) return v;
+  }
+
+  return scope === "organizations" ? "Organization" : "Business";
+}
+
+function normalizeLocation(doc) {
+  const city = String(doc?.city || "").trim();
+  const state = String(doc?.state || "").trim();
+  const address = String(doc?.address || "").trim();
+  return [city, state].filter(Boolean).join(", ") || address || "";
+}
+
+function normalizeTrustFlags(doc) {
+  const status = normalizeStatus(doc?.status || doc?.listingStatus);
+  const verified =
+    asBool(doc?.verified) ||
+    asBool(doc?.isVerified) ||
+    status === "verified" ||
+    status === "trusted";
+
+  const sponsored =
+    asBool(doc?.isSponsored) ||
+    asNum(doc?.amountPaid, 0) > 0 ||
+    ["featured", "gold", "sponsored", "premium"].includes(
+      String(doc?.tier || "").trim().toLowerCase(),
+    );
+
+  const approved =
+    status === "approved" || status === "verified" || status === "active";
+
+  return {
+    status,
+    verified,
+    sponsored,
+    approved,
+  };
+}
+
+function withTrustNormalization(doc, scope) {
+  const completeness = computeListingCompleteness(doc);
+  const trust = normalizeTrustFlags(doc);
+  const entityType = normalizeEntityType(doc, scope);
+  const primaryCategory = normalizePrimaryCategory(doc, scope);
+  const locationDisplay = normalizeLocation(doc);
+
+  return {
+    ...doc,
+    ...completeness,
+    entityType,
+    type: entityType,
+    primaryCategory,
+    locationDisplay,
+    verified: trust.verified,
+    isVerified: trust.verified,
+    isSponsored: trust.sponsored,
+    isApproved: trust.approved,
+    trustStatus: trust.status || (trust.verified ? "verified" : "unverified"),
+    qualityScore:
+      typeof completeness.completenessScore === "number"
+        ? completeness.completenessScore
+        : 0,
+    qualityTier:
+      typeof completeness.completenessScore === "number"
+        ? completeness.completenessScore >= 85
+          ? "high"
+          : completeness.completenessScore >= 70
+            ? "medium"
+            : "low"
+        : "low",
+  };
+}
+
 function tokenize(text) {
   return String(text || "")
     .trim()
@@ -313,7 +431,13 @@ export default async function handler(req, res) {
 
     if (verifiedOnly) {
       clauses.push({
-        $or: [{ verified: true }, { isVerified: true }, { status: "verified" }],
+        $or: [
+          { verified: true },
+          { isVerified: true },
+          { status: { $regex: /^verified$/i } },
+          { status: { $regex: /^trusted$/i } },
+          { listingStatus: { $regex: /^verified$/i } },
+        ],
       });
     }
 
@@ -336,7 +460,27 @@ export default async function handler(req, res) {
     if (sponsoredFirst) {
       pipeline.push({
         $addFields: {
-          __sponsor: { $toDouble: { $ifNull: ["$amountPaid", 0] } },
+          __sponsorPaid: { $toDouble: { $ifNull: ["$amountPaid", 0] } },
+          __sponsorTier: {
+            $in: [
+              { $toLower: { $ifNull: ["$tier", ""] } },
+              ["featured", "gold", "sponsored", "premium"],
+            ],
+          },
+          __sponsorFlag: {
+            $in: [{ $ifNull: ["$isSponsored", false] }, [true, 1, "true"]],
+          },
+        },
+      });
+      pipeline.push({
+        $addFields: {
+          __sponsor: {
+            $add: [
+              "$__sponsorPaid",
+              { $cond: ["$__sponsorTier", 1, 0] },
+              { $cond: ["$__sponsorFlag", 1, 0] },
+            ],
+          },
         },
       });
     }
@@ -386,30 +530,10 @@ export default async function handler(req, res) {
     const docs = await collection.aggregate(pipeline).toArray();
 
     const normalizedDocs = isOrgs ? docs.map(normalizeOrgDoc) : docs;
-    const items = normalizedDocs.map((doc) => {
-      const score =
-        typeof doc?.completenessScore === "number"
-          ? doc.completenessScore
-          : undefined;
-      const missing = Array.isArray(doc?.missingFields)
-        ? doc.missingFields
-        : undefined;
-      const complete =
-        typeof doc?.isComplete === "boolean" ? doc.isComplete : undefined;
-
-      if (
-        score !== undefined &&
-        missing !== undefined &&
-        complete !== undefined
-      ) {
-        return doc;
-      }
-
-      return {
-        ...doc,
-        ...computeListingCompleteness(doc),
-      };
-    });
+    const scopeKey = isOrgs ? "organizations" : "businesses";
+    const items = normalizedDocs.map((doc) =>
+      withTrustNormalization(doc, scopeKey),
+    );
 
     return res.status(200).json({
       status: "ok",

@@ -179,7 +179,9 @@ export default function SearchResults() {
 
         {!loading && !error && search && results.length === 0 ? (
           <div className="rounded border border-gray-700 bg-gray-900 p-4">
-            <p className="text-gray-200">No strong matches yet for this query.</p>
+            <p className="text-gray-200">
+              No strong matches yet for this query.
+            </p>
             <p className="text-sm text-gray-400 mt-1">
               Try a broader term or jump into the full directory.
             </p>
@@ -241,19 +243,25 @@ export default function SearchResults() {
             const slug = encodeURIComponent(safe(r.alias).trim() || r._id);
             const href = `/business-directory/${slug}?from=search-results&q=${encodeURIComponent(search)}`;
             const location =
+              safe((r as any).locationDisplay) ||
               [safe(r.city), safe(r.state)].filter(Boolean).join(", ") ||
               safe(r.address);
             const verified =
-              r.verified === true ||
               r.isVerified === true ||
-              safe(r.status).toLowerCase() === "verified";
+              r.verified === true ||
+              safe((r as any).trustStatus).toLowerCase() === "verified";
             const sponsored =
+              (r as any).isSponsored === true ||
               Number(r.amountPaid || 0) > 0 ||
-              ["featured", "gold", "sponsored"].includes(
+              ["featured", "gold", "sponsored", "premium"].includes(
                 safe(r.tier).toLowerCase(),
               );
-            const category = categoriesLabel(r) || "Category not set";
-            const entityType = safe(r.type) || "business";
+            const category =
+              safe((r as any).primaryCategory) ||
+              categoriesLabel(r) ||
+              "Category not set";
+            const entityType =
+              safe((r as any).entityType) || safe(r.type) || "business";
 
             return (
               <article
@@ -293,7 +301,9 @@ export default function SearchResults() {
                 </Link>
 
                 <p className="mt-1 text-sm text-gray-400">{category}</p>
-                <p className="mt-2 text-sm text-gray-300">{shortDescription(r)}</p>
+                <p className="mt-2 text-sm text-gray-300">
+                  {shortDescription(r)}
+                </p>
                 <p className="mt-2 text-xs text-gray-500">
                   {location || "Location unavailable"}
                 </p>

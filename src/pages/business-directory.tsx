@@ -667,6 +667,9 @@ export default function BusinessDirectory() {
   const getDesc = (r: Row) => safeStr((r as any).description);
 
   const getLocation = (r: Row) => {
+    const normalized = safeStr((r as any).locationDisplay);
+    if (normalized) return normalized;
+
     const city = safeStr((r as any).city);
     const state = safeStr((r as any).state);
     const addr = safeStr((r as any).address);
@@ -676,6 +679,9 @@ export default function BusinessDirectory() {
   };
 
   const getCategoryLabel = (r: Row) => {
+    const primaryCategory = safeStr((r as any).primaryCategory);
+    if (primaryCategory) return primaryCategory;
+
     if (r.__kind === "org") {
       const orgType = safeStr((r as any).orgType);
       const denom = safeStr((r as any).denomination);
@@ -726,19 +732,26 @@ export default function BusinessDirectory() {
   };
 
   const getTrustMeta = (r: Row) => {
-    const status = safeStr((r as any).status).toLowerCase();
+    const status = safeStr((r as any).trustStatus || (r as any).status).toLowerCase();
     const verified =
-      (r as any).verified === true ||
       (r as any).isVerified === true ||
+      (r as any).verified === true ||
       status === "verified";
 
-    const approved = status === "approved" || status === "verified" || !status;
-    const sponsored = Number((r as any).amountPaid || 0) > 0;
+    const approved =
+      (r as any).isApproved === true ||
+      status === "approved" ||
+      status === "verified" ||
+      status === "active";
+
+    const sponsored =
+      (r as any).isSponsored === true || Number((r as any).amountPaid || 0) > 0;
 
     const isComplete =
       typeof (r as any).isComplete === "boolean"
         ? (r as any).isComplete
-        : Number((r as any).completenessScore || 0) >= 70;
+        : Number((r as any).qualityScore || (r as any).completenessScore || 0) >=
+          70;
 
     return { verified, approved, sponsored, isComplete };
   };
