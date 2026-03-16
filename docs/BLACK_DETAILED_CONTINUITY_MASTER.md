@@ -2,6 +2,8 @@
 
 _Last updated: 2026-03-16 America/Los_Angeles_
 
+- **Audit pack baseline commit:** `b0646a9` (`docs(audit): add read-only continuity and system audit pack`)
+
 ## 1) Canonical locations
 
 - **Canonical repo path:** `/Users/blackforge/workspace/bwe/repos/repo_clean`
@@ -24,6 +26,7 @@ _Last updated: 2026-03-16 America/Los_Angeles_
 ## 3) Preserved continuity summary (remembered/docs)
 
 ### From workspace continuity + memory files
+
 - User identity: **Thomas**.
 - User preference: maintain persistent notes/progress continuity.
 - Prior sessions indicate substantial work on:
@@ -33,7 +36,9 @@ _Last updated: 2026-03-16 America/Los_Angeles_
   - homepage/UX polish
 
 ### From canonical status artifact
+
 Source: `docs/CURRENT_BUILD_ALL_WORKSTREAMS_STATUS.md`
+
 - Major workstreams are mostly labeled **PARTIAL** or **BLOCKED BY PAYMENT COMPLETION**.
 - Explicitly blocked areas include end-to-end paid proof for marketplace, pricing, courses, sponsorship/ads, and digital entitlement.
 - Cross-machine parity still listed as **BLOCKED BY ENV/CONFIG**.
@@ -41,6 +46,7 @@ Source: `docs/CURRENT_BUILD_ALL_WORKSTREAMS_STATUS.md`
 ## 4) Exact current platform state (verified from code + status doc)
 
 ### Verified from code
+
 - Next.js Pages Router app (not App Router primary).
 - Multi-domain platform in one codebase: auth, directory/search, marketplace, jobs, consulting, advertising, affiliate, music, admin.
 - Stripe has **multiple checkout entry points** and a canonical webhook shim (`/api/stripe-webhook` -> `/api/stripe/webhook-handler`).
@@ -48,6 +54,7 @@ Source: `docs/CURRENT_BUILD_ALL_WORKSTREAMS_STATUS.md`
 - Admin moderation exists for consulting + advertising requests with explicit PATCH/DELETE moderation semantics.
 
 ### Remembered from continuity docs
+
 - Release trajectory aimed at “world-class” confidence but still proof-gap constrained.
 - Significant prior hardening done; final closure depends on explicit runtime and payment-completion evidence.
 

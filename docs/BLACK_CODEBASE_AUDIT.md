@@ -5,6 +5,7 @@ _Last updated: 2026-03-16 America/Los_Angeles_
 ## A) Project structure
 
 ## Verified from code
+
 - Framework: **Next.js Pages Router** (large `src/pages` surface).
 - Approximate page/API footprint discovered:
   - Public pages: ~199
@@ -17,12 +18,14 @@ _Last updated: 2026-03-16 America/Los_Angeles_
   - `docs/` operational/release documentation
 
 ### Config files
+
 - `package.json`: scripts and runtime dependencies for Next.js + Stripe + Mongo + auth ecosystem.
 - `tsconfig.json`: TS project config.
 - `next.config.ts`: Next behavior and build-time config.
 - `middleware.ts`: request-level route controls.
 
 ### Env/dependency points
+
 - Environment access patterns are mixed:
   - `getMongoDbName()` helper (preferred in many routes)
   - direct hardcoded db string (`bwes-cluster`) in some endpoints
@@ -34,16 +37,19 @@ _Last updated: 2026-03-16 America/Los_Angeles_
 ## B) Runtime and architecture by system
 
 ### Auth/session architecture
+
 - Primary session cookie: `session_token` JWT used across many APIs (`/api/auth/me`, marketplace readiness, stripe connect status routes, admin helpers).
 - NextAuth exists (`/api/auth/[...nextauth].ts`) with Credentials provider and own session cookie.
 - **Risk:** dual session systems may diverge unless carefully constrained.
 
 ### Role/account flow
+
 - Account discovery spans collections: `users`, `sellers`, `businesses`, `employers`.
 - Signup/login logic checks multiple collections.
 - Seller upgrades can clone password hash from users collection into sellers record.
 
 ### MongoDB usage and collections
+
 - Heavy direct collection access in route handlers.
 - Key collections repeatedly observed:
   - identity/auth: `users`, `sellers`, `businesses`, `employers`, `password_resets`
@@ -55,6 +61,7 @@ _Last updated: 2026-03-16 America/Los_Angeles_
   - analytics: `flow_events`
 
 ### Stripe checkout/webhook/payment fulfillment
+
 - Checkout creation endpoints include:
   - `/api/checkout/create-session` (canonical product checkout with orders upsert + flow event)
   - `/api/stripe/checkout` (legacy/general checkout path)
@@ -70,6 +77,7 @@ _Last updated: 2026-03-16 America/Los_Angeles_
   - affiliate conversion logging hooks
 
 ### Marketplace / seller flow
+
 - Seller onboarding: `/marketplace/become-a-seller` + APIs:
   - `/api/marketplace/create-seller`
   - `/api/marketplace/readiness`
@@ -81,15 +89,18 @@ _Last updated: 2026-03-16 America/Los_Angeles_
   - `/api/checkout/create-session`
 
 ### Advertising / sponsorship flow
+
 - User/admin entry routes for ad purchase.
 - Request moderation + trust metadata under `/api/admin/advertising-requests`.
 - Featured sponsor scheduling persisted in `featured_sponsor_schedule`.
 
 ### Jobs / employer flow
+
 - Job CRUD/list/apply endpoints (`/api/jobs/*`, `/api/employer/*`, `/api/applications/*`).
 - Applicants linked to jobs and employer dashboards.
 
 ### Admin/moderation flow
+
 - Admin auth via `requireAdminFromRequest` in sensitive routes.
 - Key admin domains:
   - dashboard and stats
@@ -100,6 +111,7 @@ _Last updated: 2026-03-16 America/Los_Angeles_
   - affiliate payout controls
 
 ### Consulting / Opportunity Network
+
 - Public intake routes:
   - `/api/consulting-intake`
   - `/api/consulting-interest`
@@ -107,21 +119,25 @@ _Last updated: 2026-03-16 America/Los_Angeles_
   - `/api/admin/consulting-interests` (GET/PATCH/DELETE)
 
 ### Search / directory flow
+
 - Newer endpoint: `/api/search/businesses`
 - Legacy endpoint still present: `/api/searchBusinesses.js`
 - Directory ranking includes sponsor/completeness/trust shaping.
 
 ### Music flow
+
 - Music onboarding route + API:
   - `/music/join`, `/api/music/creator-onboarding`
 - Pricing + checkout integration and entitlement activation via webhook metadata for `music-creator-*` plan IDs.
 
 ### Analytics/instrumentation flow
+
 - Generic event ingestion endpoint:
   - `/api/flow-events`
 - Many feature routes emit `flow_events` for funnel observability.
 
 ### Route protection / middleware
+
 - Route-level API auth mostly manual in handlers.
 - Admin routes use helper-based checks.
 - `middleware.ts` exists; primary enforcement still appears endpoint-level.
@@ -129,6 +145,7 @@ _Last updated: 2026-03-16 America/Los_Angeles_
 ## C) Route/API inventory summary
 
 ## Public pages (high-impact examples)
+
 - `/` homepage with multi-funnel entry
 - `/login`, `/signup`, `/forgot-password`
 - `/marketplace`, `/marketplace/become-a-seller`
@@ -140,10 +157,12 @@ _Last updated: 2026-03-16 America/Los_Angeles_
 - `/affiliate/*`
 
 ## Gated/admin pages
+
 - `/admin/dashboard` and multiple admin modules (`/admin/*`).
 - Seller and role-specific dashboards (`/marketplace/dashboard`, `/dashboard/*`, `/employer/*`).
 
 ## Critical API routes
+
 - Auth: `/api/auth/login`, `/api/auth/me`, `/api/auth/signup`, reset flows
 - Commerce: `/api/checkout/create-session`, `/api/stripe/checkout`, `/api/stripe/webhook-handler`
 - Seller readiness/connect: `/api/marketplace/readiness`, `/api/stripe/create-account-link`, `/api/stripe/account-status`
@@ -163,21 +182,25 @@ _Last updated: 2026-03-16 America/Los_Angeles_
 ## E) Release and risk understanding
 
 ## Appears strong / near-complete
+
 - Webhook handler breadth and reconciliation intent.
 - Admin moderation capabilities for consulting and advertising.
 - Event instrumentation coverage across major funnels.
 
 ## Partial / proof-limited
+
 - End-to-end paid run evidence for every major revenue funnel.
 - Cross-machine parity evidence.
 - Fully unified auth model (JWT cookie vs NextAuth split).
 
 ## Fragile points
+
 - Multiple overlapping legacy/canonical routes.
 - Mixed DB-name resolution and hardcoded db usage.
 - Dirty working tree at audit start.
 
 ## Unknowns requiring proof
+
 - Which checkout endpoints are truly canonical in production traffic mix.
 - Whether all metadata contracts are consistently present in live checkouts.
 - Whether moderation states are consistently reflected across admin pages and user-facing outcomes.

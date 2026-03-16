@@ -7,6 +7,7 @@ _Last updated: 2026-03-16 America/Los_Angeles_
 ## 1) Verified open defects / risks (code-audit backed)
 
 ## D1 — Mixed auth/session architecture can drift
+
 - **Severity:** High
 - **Proof status:** Verified architectural risk (not yet proven user-facing defect in this audit)
 - **Evidence:** `session_token` JWT widely used + NextAuth route present.
@@ -22,6 +23,7 @@ _Last updated: 2026-03-16 America/Los_Angeles_
   4. verify no split-session paradox
 
 ## D2 — Mixed Mongo DB name resolution
+
 - **Severity:** High
 - **Proof status:** Verified from code
 - **Evidence:** mixture of `getMongoDbName()`, hardcoded `bwes-cluster`, and fallback env patterns.
@@ -34,6 +36,7 @@ _Last updated: 2026-03-16 America/Los_Angeles_
   2. confirm all critical flows read/write expected DB in each environment
 
 ## D3 — Overlapping canonical/legacy route surfaces
+
 - **Severity:** Medium-High
 - **Proof status:** Verified from route inventory
 - **Evidence:** dual search endpoints and multiple checkout/session creators.
@@ -46,6 +49,7 @@ _Last updated: 2026-03-16 America/Los_Angeles_
   3. deprecate/guard legacy paths
 
 ## D4 — Dirty working tree before closure run
+
 - **Severity:** Medium (release confidence)
 - **Proof status:** Verified from git status
 - **Impacted files:** pre-existing modified set on branch
@@ -54,6 +58,7 @@ _Last updated: 2026-03-16 America/Los_Angeles_
 ## 2) Continuity-remembered unresolved items (status doc backed)
 
 Source: `docs/CURRENT_BUILD_ALL_WORKSTREAMS_STATUS.md`
+
 - Marketplace paid completion proof missing.
 - Pricing upgrade paid entitlement proof missing.
 - Course/digital entitlement paid proof missing.
