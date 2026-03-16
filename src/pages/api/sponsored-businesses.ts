@@ -36,6 +36,15 @@ const HOUSE_SPONSOR_IMAGE_MAP: Record<string, string> = {
     "/images/sponsors/guardiansoftheforgottenreleam.jpg",
 };
 
+const HOUSE_SPONSOR_ROTATION: Array<{ name: string; url: string }> = [
+  { name: "TitanEra", url: "/" },
+  { name: "Thomas Hooker Author", url: "/" },
+  { name: "Pamfa United Citizen", url: "/" },
+  { name: "The Last Nephilim", url: "/" },
+  { name: "Guardians of the Forgotten Realm", url: "/" },
+  { name: "Tiana Song Sprouts", url: "/" },
+];
+
 function resolveSponsorImage(name: string, raw: string) {
   const normalizedName = s(name);
   const mapped = HOUSE_SPONSOR_IMAGE_MAP[normalizedName];
@@ -93,6 +102,9 @@ function safeSponsorImage(raw: string) {
     if (u.hostname === "example.com" || u.hostname.endsWith(".example.com")) {
       return HOUSE_SPONSOR_FALLBACK;
     }
+    if (u.protocol === "http:" || u.protocol === "https:") {
+      return v;
+    }
     return HOUSE_SPONSOR_FALLBACK;
   } catch {
     return HOUSE_SPONSOR_FALLBACK;
@@ -127,10 +139,17 @@ export default async function handler(
       .collection("featured_sponsor_schedule")
       .find({
         placement: "homepage-featured-sponsor",
-        weekStart: currentWeek,
         status: { $in: ["scheduled", "active"] },
+        $or: [
+          { weekStart: currentWeek },
+          {
+            status: "active",
+            weekStart: { $lte: now },
+            $or: [{ weekEnd: { $exists: false } }, { weekEnd: { $gte: now } }],
+          },
+        ],
       })
-      .sort({ queueStatus: 1, createdAt: 1 })
+      .sort({ status: 1, queueStatus: 1, createdAt: 1 })
       .limit(12)
       .toArray();
 
@@ -254,7 +273,29 @@ export default async function handler(
       };
     });
 
-    return res.status(200).json({ ok: true, sponsors: legacyCards });
+    if (legacyCards.length) {
+      return res.status(200).json({ ok: true, sponsors: legacyCards });
+    }
+
+    const houseCards: SponsorCard[] = HOUSE_SPONSOR_ROTATION.map((sponsor, i) => {
+      const img = resolveSponsorImage(sponsor.name, "");
+      const tagline = "Featured on Black Wealth Exchange";
+      return {
+        _id: `house-${i + 1}`,
+        name: sponsor.name,
+        tagline,
+        img,
+        url: featuredProfileUrl(sponsor.name, tagline, img, sponsor.url),
+        cta: "Learn More",
+        tier: "featured-sponsor",
+        featuredSlot: i + 1,
+        source: "featured_sponsor_schedule",
+        weekStart: currentWeek.toISOString(),
+        queueStatus: "assigned",
+      };
+    });
+
+    return res.status(200).json({ ok: true, sponsors: houseCards });
   } catch (error) {
     console.error("Failed to fetch sponsored businesses:", error);
     return res.status(500).json({ ok: false, error: "Internal server error" });

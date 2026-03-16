@@ -623,9 +623,21 @@ export default function Home() {
   const sponsorRail = sponsors.length
     ? sponsors
     : [
-        { img: "/ads/sample-banner1.jpg", name: "Featured Sponsor" },
-        { img: "/ads/sample-banner2.jpg", name: "Featured Sponsor" },
-        { img: "/ads/sample-banner3.jpg", name: "Featured Sponsor" },
+        {
+          img: "/images/sponsors/titanera.jpg",
+          name: "TitanEra",
+          url: "/",
+        },
+        {
+          img: "/images/sponsors/thomashookerauthor.png",
+          name: "Thomas Hooker Author",
+          url: "/",
+        },
+        {
+          img: "/images/sponsors/pamfaunitedcitizens.jpg",
+          name: "Pamfa United Citizen",
+          url: "/",
+        },
       ];
 
   const base = getBaseUrl();
