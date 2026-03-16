@@ -17,6 +17,10 @@ type Result = {
   status?: string;
   isVerified?: boolean;
   verified?: boolean;
+  amountPaid?: number;
+  tier?: string;
+  listingStatus?: string;
+  type?: string;
 };
 
 function safe(v: unknown) {
@@ -27,6 +31,13 @@ function categoriesLabel(r: Result) {
   if (Array.isArray(r.categories))
     return r.categories.filter(Boolean).join(", ");
   return safe(r.categories) || safe(r.category);
+}
+
+function shortDescription(r: Result) {
+  const raw = safe(r.description).trim();
+  if (!raw) return "No description provided.";
+  if (raw.length <= 140) return raw;
+  return `${raw.slice(0, 137)}...`;
 }
 
 export default function SearchResults() {
@@ -168,9 +179,9 @@ export default function SearchResults() {
 
         {!loading && !error && search && results.length === 0 ? (
           <div className="rounded border border-gray-700 bg-gray-900 p-4">
-            <p className="text-gray-200">No matching businesses found.</p>
+            <p className="text-gray-200">No strong matches yet for this query.</p>
             <p className="text-sm text-gray-400 mt-1">
-              Try a broader term or continue in the full directory with filters.
+              Try a broader term or jump into the full directory.
             </p>
 
             <div className="mt-3 flex flex-wrap gap-2">
@@ -225,8 +236,8 @@ export default function SearchResults() {
           </div>
         ) : null}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {results.map((r) => {
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          {results.map((r, idx) => {
             const slug = encodeURIComponent(safe(r.alias).trim() || r._id);
             const href = `/business-directory/${slug}?from=search-results&q=${encodeURIComponent(search)}`;
             const location =
@@ -236,41 +247,54 @@ export default function SearchResults() {
               r.verified === true ||
               r.isVerified === true ||
               safe(r.status).toLowerCase() === "verified";
+            const sponsored =
+              Number(r.amountPaid || 0) > 0 ||
+              ["featured", "gold", "sponsored"].includes(
+                safe(r.tier).toLowerCase(),
+              );
+            const category = categoriesLabel(r) || "Category not set";
+            const entityType = safe(r.type) || "business";
 
             return (
-              <div
+              <article
                 key={r._id}
-                className="rounded border border-gray-700 bg-gray-900 p-4"
+                className="rounded border border-gray-700 bg-gray-900 p-4 transition hover:border-gray-600"
               >
-                <div className="flex items-start justify-between gap-2">
-                  <Link
-                    href={href}
-                    onClick={() =>
-                      trackSearchEvent("search_result_clicked", {
-                        entity_id: r._id,
-                        entity_type: "business",
-                        result_rank:
-                          results.findIndex((x) => x._id === r._id) + 1,
-                        businessAlias: safe(r.alias) || null,
-                      })
-                    }
-                    className="text-lg font-semibold text-gold hover:underline"
-                  >
-                    {safe(r.business_name) || "Untitled Business"}
-                  </Link>
+                <div className="mb-2 flex items-center gap-2">
                   {verified ? (
-                    <span className="text-xs rounded bg-emerald-700/40 border border-emerald-500/40 px-2 py-1 text-emerald-200">
+                    <span className="rounded border border-emerald-500/40 bg-emerald-700/30 px-2 py-0.5 text-[11px] font-semibold text-emerald-200">
                       Verified
                     </span>
                   ) : null}
+                  {sponsored ? (
+                    <span className="rounded border border-[#D4AF37]/40 bg-[#D4AF37]/12 px-2 py-0.5 text-[11px] font-semibold text-[#EFD27A]">
+                      Sponsored
+                    </span>
+                  ) : null}
+                  <span className="rounded border border-white/10 bg-black/30 px-2 py-0.5 text-[11px] text-gray-300">
+                    {entityType}
+                  </span>
                 </div>
-                <p className="text-sm text-gray-400 mt-1">
-                  {categoriesLabel(r) || "Category not set"}
-                </p>
-                <p className="text-sm text-gray-300 mt-2 line-clamp-2">
-                  {safe(r.description) || "No description provided."}
-                </p>
-                <p className="text-xs text-gray-500 mt-2">
+
+                <Link
+                  href={href}
+                  onClick={() =>
+                    trackSearchEvent("search_result_clicked", {
+                      entity_id: r._id,
+                      entity_type: "business",
+                      result_rank: idx + 1,
+                      source: "search_results_card_title",
+                      businessAlias: safe(r.alias) || null,
+                    })
+                  }
+                  className="text-lg font-semibold text-gold hover:underline"
+                >
+                  {safe(r.business_name) || "Untitled Business"}
+                </Link>
+
+                <p className="mt-1 text-sm text-gray-400">{category}</p>
+                <p className="mt-2 text-sm text-gray-300">{shortDescription(r)}</p>
+                <p className="mt-2 text-xs text-gray-500">
                   {location || "Location unavailable"}
                 </p>
 
@@ -281,28 +305,27 @@ export default function SearchResults() {
                       trackSearchEvent("search_result_clicked", {
                         entity_id: r._id,
                         entity_type: "business",
-                        result_rank:
-                          results.findIndex((x) => x._id === r._id) + 1,
-                        source: "search_results_card_cta",
+                        result_rank: idx + 1,
+                        source: "search_results_card_primary_cta",
                         businessAlias: safe(r.alias) || null,
                       })
                     }
-                    className="px-3 py-1.5 rounded bg-gold text-black text-sm font-semibold"
+                    className="rounded bg-gold px-3 py-1.5 text-sm font-semibold text-black"
                   >
-                    View Business
+                    View Profile
                   </Link>
                   {location ? (
                     <a
                       href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`}
                       target="_blank"
                       rel="noreferrer"
-                      className="px-3 py-1.5 rounded border border-gray-600 text-sm"
+                      className="rounded border border-gray-600 px-3 py-1.5 text-sm text-gray-200"
                     >
                       Directions
                     </a>
                   ) : null}
                 </div>
-              </div>
+              </article>
             );
           })}
         </div>
