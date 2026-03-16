@@ -1584,7 +1584,7 @@ export default function Home() {
           <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="max-w-3xl">
               <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
-                Major Platform Area
+                Creator Economy
               </p>
               <h2 className="mt-1 text-xl font-extrabold tracking-tight text-white sm:text-2xl">
                 BWE Music / Creator Platform
