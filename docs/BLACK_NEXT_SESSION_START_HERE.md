@@ -24,6 +24,7 @@
 - End-to-end paid fulfillment proofs across core funnels.
 - Cross-machine runtime parity evidence.
 - Auth/session + env consistency proof under real run conditions.
+- Directory search/filter scenario-matrix triage is still open (031626 reviewer issue).
 
 ## First 3 actions to resume immediately
 

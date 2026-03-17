@@ -12,7 +12,7 @@ export const config = {
   },
 };
 
-type Data = { avatarUrl: string } | { error: string };
+type Data = { imageUrl: string; avatarUrl: string } | { error: string };
 
 export default async function handler(
   req: NextApiRequest,
@@ -45,8 +45,8 @@ export default async function handler(
       return res.status(500).json({ error: "Upload failed" });
     }
 
-    // files.avatar can be File | File[] | undefined
-    const raw = files.avatar;
+    // accept either avatar or profileImage field names
+    const raw = files.avatar || files.profileImage;
     let file: File | undefined;
     if (Array.isArray(raw)) {
       file = raw[0];
@@ -66,8 +66,6 @@ export default async function handler(
     );
     const avatarUrl = "/" + relative.replace(/\\/g, "/");
 
-    // TODO: update your user record in the database with avatarUrl
-
-    return res.status(200).json({ avatarUrl });
+    return res.status(200).json({ imageUrl: avatarUrl, avatarUrl });
   });
 }

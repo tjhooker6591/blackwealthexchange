@@ -23,6 +23,15 @@ type Result = {
   type?: string;
 };
 
+type SponsorCard = {
+  _id: string;
+  name: string;
+  tagline: string;
+  img: string;
+  url: string;
+  cta?: string;
+};
+
 function safe(v: unknown) {
   return typeof v === "string" ? v : "";
 }
@@ -59,6 +68,7 @@ export default function SearchResults() {
   };
 
   const [results, setResults] = useState<Result[]>([]);
+  const [sponsors, setSponsors] = useState<SponsorCard[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -82,6 +92,28 @@ export default function SearchResults() {
     if (hit) return [hit.key, "Professional Services", "Retail", "Education"];
     return ["Professional Services", "Restaurants", "Retail", "Wellness"];
   }, [search]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const res = await fetch("/api/sponsored-businesses", {
+          cache: "no-store",
+        });
+        const data = await res.json().catch(() => null);
+        if (!cancelled && Array.isArray(data?.sponsors)) {
+          setSponsors(data.sponsors.slice(0, 3));
+        }
+      } catch {
+        // leave sponsors empty on fetch failure
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     if (!router.isReady || !search) return;
@@ -236,6 +268,45 @@ export default function SearchResults() {
               </div>
             </div>
           </div>
+        ) : null}
+
+        {sponsors.length ? (
+          <section className="mb-5 rounded-xl border border-[#D4AF37]/30 bg-[#D4AF37]/[0.08] p-3">
+            <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-[#EFD27A]">
+              Sponsored Partners
+            </div>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {sponsors.map((s) => (
+                <a
+                  key={s._id}
+                  href={s.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-3 rounded-lg border border-white/10 bg-black/35 p-3 hover:bg-black/45"
+                >
+                  <img
+                    src={s.img}
+                    alt={s.name}
+                    className="h-12 w-12 rounded-lg border border-white/20 object-cover"
+                  />
+                  <div className="min-w-0 flex-1">
+                    <div className="truncate text-sm font-semibold text-[#EFD27A]">
+                      {s.name}
+                    </div>
+                    <div className="truncate text-xs text-gray-300">
+                      {s.tagline}
+                    </div>
+                    <div className="mt-1 inline-flex rounded border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-2 py-0.5 text-[10px] font-semibold text-[#EFD27A]">
+                      Sponsored
+                    </div>
+                  </div>
+                  <span className="rounded bg-[#D4AF37] px-2 py-1 text-xs font-semibold text-black">
+                    {s.cta || "Learn More"}
+                  </span>
+                </a>
+              ))}
+            </div>
+          </section>
         ) : null}
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">

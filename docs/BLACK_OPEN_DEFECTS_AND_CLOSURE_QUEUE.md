@@ -105,3 +105,28 @@ Source: `docs/CURRENT_BUILD_ALL_WORKSTREAMS_STATUS.md`
 - DB collections + record IDs changed
 - UI final state screenshot/path
 - pass/fail + timestamp
+
+## 5) 2026-03-16 issue-pass status (031626 release issues)
+
+### Verified fixed in code + focused proof
+- Compact search sponsored visibility restored on `/search-results`.
+  - Proof: `Sponsored Partners` + sponsored badges visible at 320/360/390/1280.
+  - Screenshots: `/tmp/bwe-proof/search-results-320.png`, `...360.png`, `...390.png`, `...1280.png`.
+- Mobile job listing card overlap/wrapping fixed on `/job-listings`.
+  - Proof: no button overlap and no horizontal overflow at 320/360/390.
+  - Screenshots: `/tmp/bwe-proof/job-listings-320-v2.png`, `...360-v2.png`, `...390-v2.png`.
+- Mentorship broken links corrected to working targets.
+  - SEO Career -> `https://www.seo-usa.org/career/` (200 after redirect).
+  - Posse Program -> `https://www.possefoundation.org/` (200).
+- Search Opportunities All/Any filtering logic corrected for level/mode/field wildcards.
+- Profile persistence fixed (`/api/profile` now JWT-auth + Mongo read/write).
+  - Proof run with disposable test account shows PATCH name persists across follow-up GET.
+- Profile picture upload fixed (`/api/profile/image` now present via avatar alias and compatible response shape).
+- Resume upload fixed (`/api/profile/resume` implemented).
+- Financial literacy post-purchase path clarified (`/payment-success` now links to financial literacy and course dashboard).
+
+### Still open / triage
+- "Business Directory search/filtering not working properly" remains in triage pending a full scenario matrix with expected-vs-actual assertions per filter combination.
+
+### Release gate note
+- Release readiness remains blocked until remaining open triage and core conversion/admin verification are completed and documented with direct proof.

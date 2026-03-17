@@ -65,6 +65,20 @@ export default function PaymentSuccessPage() {
               </Link>
 
               <Link
+                href="/financial-literacy"
+                className="inline-flex items-center rounded-md border border-yellow-500/40 px-4 py-2 font-semibold text-yellow-300 hover:border-yellow-400/70 transition"
+              >
+                Go to Financial Literacy
+              </Link>
+
+              <Link
+                href="/course-dashboard"
+                className="inline-flex items-center rounded-md border border-white/15 px-4 py-2 font-semibold text-white/80 hover:bg-white/10 transition"
+              >
+                Open Course Dashboard
+              </Link>
+
+              <Link
                 href="/"
                 className="inline-flex items-center rounded-md border border-white/15 px-4 py-2 font-semibold text-white/80 hover:bg-white/10 transition"
               >

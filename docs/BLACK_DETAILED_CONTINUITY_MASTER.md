@@ -93,8 +93,7 @@ Source: `docs/CURRENT_BUILD_ALL_WORKSTREAMS_STATUS.md`
 
 ## 8) Recommended immediate next action
 
-**Do not implement code changes yet.**
-First action: run a formal proof sweep on current HEAD with explicit evidence logging (routes hit, session IDs, webhook event IDs, collection records, UI final states), then decide any minimal implementation deltas.
+Run closure verification on the current 031626 issue-fix set (especially remaining directory search/filter matrix), then continue canonical paid/webhook proof sweep with explicit evidence logging (routes hit, session IDs, webhook event IDs, collection records, UI final states).
 
 ## 9) Source set used for this continuity capture
 

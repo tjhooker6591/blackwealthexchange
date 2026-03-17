@@ -241,9 +241,12 @@ export default function StudentOpportunitiesHub() {
           .includes(query);
 
       const matchesType = type === "All" ? true : o.type === type;
-      const matchesLevel = level === "All" ? true : o.level === level;
-      const matchesMode = mode === "All" ? true : o.mode === mode;
-      const matchesField = field === "All" ? true : o.field === field;
+      const matchesLevel =
+        level === "All" ? true : o.level === level || o.level === "Any";
+      const matchesMode =
+        mode === "All" ? true : o.mode === mode || o.mode === "Any";
+      const matchesField =
+        field === "All" ? true : o.field === field || o.field === "Any";
 
       return (
         matchesQuery &&
