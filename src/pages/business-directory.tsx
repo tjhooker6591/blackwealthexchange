@@ -616,6 +616,9 @@ export default function BusinessDirectory() {
 
   // Client filtering (business categories) if needed
   const filteredRows = useMemo(() => {
+    // Server-side filtering is canonical for paged results; avoid double-filter mismatch.
+    if (serverPaged) return rows;
+
     if (scope !== "businesses") return rows;
     if (!category || category === "All") return rows;
 
@@ -626,7 +629,7 @@ export default function BusinessDirectory() {
       ).toLowerCase();
       return catStr.includes(want);
     });
-  }, [rows, scope, category]);
+  }, [rows, scope, category, serverPaged]);
 
   // Pagination fallback
   const totalPages = Math.max(1, Math.ceil((total || 0) / pageSize));
@@ -732,7 +735,9 @@ export default function BusinessDirectory() {
   };
 
   const getTrustMeta = (r: Row) => {
-    const status = safeStr((r as any).trustStatus || (r as any).status).toLowerCase();
+    const status = safeStr(
+      (r as any).trustStatus || (r as any).status,
+    ).toLowerCase();
     const verified =
       (r as any).isVerified === true ||
       (r as any).verified === true ||
@@ -750,8 +755,9 @@ export default function BusinessDirectory() {
     const isComplete =
       typeof (r as any).isComplete === "boolean"
         ? (r as any).isComplete
-        : Number((r as any).qualityScore || (r as any).completenessScore || 0) >=
-          70;
+        : Number(
+            (r as any).qualityScore || (r as any).completenessScore || 0,
+          ) >= 70;
 
     return { verified, approved, sponsored, isComplete };
   };
