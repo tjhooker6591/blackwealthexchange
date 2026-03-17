@@ -93,7 +93,15 @@ Source: `docs/CURRENT_BUILD_ALL_WORKSTREAMS_STATUS.md`
 
 ## 8) Recommended immediate next action
 
-Run closure verification on the current 031626 issue-fix set (especially remaining directory search/filter matrix), then continue canonical paid/webhook proof sweep with explicit evidence logging (routes hit, session IDs, webhook event IDs, collection records, UI final states).
+Proceed to the highest-value global release gate: canonical paid checkout/webhook fulfillment proof for marketplace (`/api/checkout/create-session` -> `/api/stripe/webhook-handler` -> persisted order/payment final state + UI confirmation), with explicit evidence logging (routes hit, session IDs, webhook event IDs, collection records, UI final states).
+
+## 10) Recent closure updates (031626)
+
+- Profile persistence + profile asset upload/display/manage issues are closed.
+  - Anchor commit: `676aae2`.
+- Business Directory search/filtering matrix issue is closed.
+  - Anchor commit: `8e0be1b`.
+- Global release readiness remains blocked by broader proof gates outside those closed slices.
 
 ## 9) Source set used for this continuity capture
 

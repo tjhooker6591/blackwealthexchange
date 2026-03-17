@@ -24,7 +24,11 @@
 - End-to-end paid fulfillment proofs across core funnels.
 - Cross-machine runtime parity evidence.
 - Auth/session + env consistency proof under real run conditions.
-- Directory search/filter scenario-matrix triage is still open (031626 reviewer issue).
+
+## Recently closed (031626)
+
+- Profile persistence + avatar/resume upload-display-manage slice (commit `676aae2`).
+- Business Directory search/filtering scenario matrix and confirmed UI mismatch defect (commit `8e0be1b`).
 
 ## First 3 actions to resume immediately
 

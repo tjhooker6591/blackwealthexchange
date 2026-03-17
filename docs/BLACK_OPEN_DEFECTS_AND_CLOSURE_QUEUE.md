@@ -109,6 +109,16 @@ Source: `docs/CURRENT_BUILD_ALL_WORKSTREAMS_STATUS.md`
 ## 5) 2026-03-16 issue-pass status (031626 release issues)
 
 ### Verified fixed in code + focused proof
+
+- Profile asset visibility/management completion closed.
+  - Scope closed: profile persistence + avatar upload/display/manage + resume upload/display/manage.
+  - Proof: backend upload/replace/remove + persisted GET checks; frontend `/profile` display/manage + refresh persistence checks.
+  - Commit: `676aae2`.
+- Business Directory search/filtering matrix issue closed.
+  - Scope closed: keyword/category/state/filter combinations, no-result behavior, mobile/desktop sanity, sponsored visibility confirmation.
+  - Confirmed defect fixed: server-paged double-filter mismatch causing zero visible cards despite non-zero totals in category-only and category+state scenarios.
+  - Commit: `8e0be1b`.
+
 - Compact search sponsored visibility restored on `/search-results`.
   - Proof: `Sponsored Partners` + sponsored badges visible at 320/360/390/1280.
   - Screenshots: `/tmp/bwe-proof/search-results-320.png`, `...360.png`, `...390.png`, `...1280.png`.
@@ -126,7 +136,9 @@ Source: `docs/CURRENT_BUILD_ALL_WORKSTREAMS_STATUS.md`
 - Financial literacy post-purchase path clarified (`/payment-success` now links to financial literacy and course dashboard).
 
 ### Still open / triage
-- "Business Directory search/filtering not working properly" remains in triage pending a full scenario matrix with expected-vs-actual assertions per filter combination.
+
+- No open blocker remains for the Business Directory matrix issue from 031626.
 
 ### Release gate note
-- Release readiness remains blocked until remaining open triage and core conversion/admin verification are completed and documented with direct proof.
+
+- Release readiness remains blocked on broader global gates (conversion/admin/payment/parity proof), not on the now-closed profile-assets or directory-matrix issues.
