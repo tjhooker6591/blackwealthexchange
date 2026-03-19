@@ -17,7 +17,7 @@ const stripe = new Stripe(stripeSecret || "sk_missing", {
   apiVersion: "2025-02-24.acacia" as any,
 });
 
-type CheckoutType = "ad" | "product" | "plan" | "course";
+type CheckoutType = "ad" | "product" | "plan" | "course" | "job";
 
 interface CheckoutPayload {
   userId?: string; // dev fallback only
@@ -29,6 +29,7 @@ interface CheckoutPayload {
   businessId?: string;
   campaignId?: string;
   placement?: string;
+  jobId?: string;
 
   // backward compatibility / extra metadata
   metadata?: Record<string, unknown>;
@@ -195,6 +196,7 @@ export default async function handler(
     payload.placement,
     metadataIn.placement,
   );
+  const requestedJobId = firstString(payload.jobId, metadataIn.jobId);
 
   try {
     const client = await clientPromise;
@@ -218,6 +220,7 @@ export default async function handler(
     const normalizedBusinessId = requestedBusinessId || "";
     const normalizedCampaignId = requestedCampaignId || "";
     const normalizedPlacement = requestedPlacement || "";
+    const normalizedJobId = requestedJobId || "";
 
     // ✅ Keep normalized item id for metadata/payments/webhook consistency
     let finalItemId = itemId;
@@ -360,6 +363,21 @@ export default async function handler(
       itemName = course.name;
       isPlatformAccount = true;
       stripeAccountId = process.env.PLATFORM_STRIPE_ACCOUNT_ID as string;
+    } else if (type === "job") {
+      const jobMap: Record<string, { name: string; amount: number }> = {
+        "job-posting-standard": {
+          name: "Job Posting (Standard)",
+          amount: 19900,
+        },
+      };
+
+      const job = jobMap[itemId];
+      if (!job) return res.status(400).json({ error: "Invalid job posting type" });
+
+      unitAmount = job.amount;
+      itemName = job.name;
+      isPlatformAccount = true;
+      stripeAccountId = process.env.PLATFORM_STRIPE_ACCOUNT_ID as string;
     } else {
       return res.status(400).json({ error: "Invalid type" });
     }
@@ -385,7 +403,12 @@ export default async function handler(
       businessId: normalizedBusinessId,
       campaignId: normalizedCampaignId,
       placement: normalizedPlacement,
+      jobId: normalizedJobId,
     };
+
+    if (type === "course") {
+      metadata.courseId = finalItemId;
+    }
 
     // ---------------------------------------------------------
     // P0 DUPLICATE GUARD (server-side)
@@ -547,6 +570,7 @@ export default async function handler(
             businessId: normalizedBusinessId || null,
             campaignId: normalizedCampaignId || null,
             placement: normalizedPlacement || null,
+            jobId: normalizedJobId || null,
             checkoutFingerprint,
           },
         },

@@ -41,6 +41,7 @@ interface SessionMetadata {
   businessId?: string | null;
   placement?: string;
   campaignIdFallback?: string;
+  jobId?: string;
 
   // optional debug fields
   checkoutFingerprint?: string;
@@ -318,6 +319,7 @@ export default async function webhookHandler(
     const campaignId = asString(
       mergedMeta.campaignId || mergedMeta.campaignIdFallback,
     );
+    const jobId = asString(mergedMeta.jobId);
 
     console.log(
       `🔔 Paid webhook received type=${event.type} session=${stripeSessionId} item=${normalizedItemId || "n/a"} amount=${session.amount_total ?? "n/a"}`,
@@ -776,13 +778,58 @@ export default async function webhookHandler(
     /**
      * 5) Course purchase (existing)
      */
-    if (mergedMeta.courseId && userId) {
-      await grantCourseAccess(userId, asString(mergedMeta.courseId));
-      console.log(`✅ Granted course ${mergedMeta.courseId} to user ${userId}`);
+    const resolvedCourseId = asString(mergedMeta.courseId || "") ||
+      (metaType === "course" ? normalizedItemId : "");
+
+    if (resolvedCourseId && userId) {
+      await grantCourseAccess(userId, resolvedCourseId);
+      console.log(`✅ Granted course ${resolvedCourseId} to user ${userId}`);
     }
 
     /**
-     * 6) Affiliate referral conversion (existing)
+     * 6) Paid job posting completion (new canonical job checkout)
+     */
+    if (metaType === "job") {
+      if (jobId && ObjectId.isValid(jobId)) {
+        await db.collection("jobs").updateOne(
+          { _id: new ObjectId(jobId) },
+          {
+            $set: {
+              isPaid: true,
+              paymentStatus: "paid",
+              status: "pending_approval",
+              stripeSessionId,
+              paymentIntentId: paymentIntentId || null,
+              paidAt,
+              updatedAt: now,
+            },
+          },
+        );
+        console.log(`✅ Paid job posting marked paid jobId=${jobId}`);
+      } else {
+        await db.collection("job_posting_payments").updateOne(
+          { stripeSessionId },
+          {
+            $setOnInsert: { createdAt: now },
+            $set: {
+              status: "paid",
+              userId,
+              email,
+              itemId: normalizedItemId || "job-posting-standard",
+              stripeSessionId,
+              paymentIntentId: paymentIntentId || null,
+              paidAt,
+              updatedAt: now,
+            },
+          },
+          { upsert: true },
+        );
+        console.log(`✅ Paid job posting payment recorded session=${stripeSessionId}`);
+      }
+    }
+
+    /**
+     * 7) Affiliate referral conversion (existing)
      */
     if (mergedMeta.affiliateCode) {
       await recordAffiliateConversion(

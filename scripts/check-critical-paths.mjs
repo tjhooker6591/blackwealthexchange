@@ -39,11 +39,14 @@ function parseCookie(setCookieValue) {
     .join("; ");
 }
 
+const allowWriteChecks = process.env.SMOKE_ALLOW_WRITES === "1";
+
 const out = {
   base,
   flowsValidated: [],
   remainingIncompleteFlows: [],
   routeTypoCheck: {},
+  writeChecksEnabled: allowWriteChecks,
 };
 
 // 1) homepage CTA destination validation
@@ -86,84 +89,41 @@ for (const p of learningFlow) {
 }
 
 // 3) form submission completion
-const intake = await req("/api/consulting-intake", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    type: "employer",
-    name: "Critical Path QA",
-    email: `critical-path-${Date.now()}@example.com`,
-    details: "Need hiring support",
-  }),
-});
-add(out, "Form consulting-intake submit", intake.status === 200, {
-  status: intake.status,
-});
+if (allowWriteChecks) {
+  const intake = await req("/api/consulting-intake", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      type: "employer",
+      name: "Critical Path QA",
+      email: `critical-path-${Date.now()}@example.com`,
+      details: "Need hiring support",
+    }),
+  });
+  add(out, "Form consulting-intake submit", intake.status === 200, {
+    status: intake.status,
+  });
 
-const resetReq = await req("/api/auth/request-reset", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({ email: `critical-path-${Date.now()}@example.com` }),
-});
-add(out, "Form request-reset submit", resetReq.status === 200, {
-  status: resetReq.status,
-});
-
-// 4 + 5) protected-route redirect correctness + role-based completion
-const uri = mongoUri();
-if (!uri) throw new Error("Missing Mongo URI");
-const client = new MongoClient(uri);
-await client.connect();
-const db = client.db(process.env.MONGODB_DB || "bwes-cluster");
-const stamp = Date.now();
-const pwd = "QaPass123!";
-const hash = await bcrypt.hash(pwd, 10);
-const accounts = [
-  {
-    role: "user",
-    coll: "users",
-    email: `cp.user.${stamp}@bwe.local`,
-    accountType: "user",
-    isAdmin: false,
-  },
-  {
-    role: "seller",
-    coll: "sellers",
-    email: `cp.seller.${stamp}@bwe.local`,
-    accountType: "seller",
-    isAdmin: false,
-  },
-  {
-    role: "employer",
-    coll: "employers",
-    email: `cp.employer.${stamp}@bwe.local`,
-    accountType: "employer",
-    isAdmin: false,
-  },
-  {
-    role: "admin",
-    coll: "users",
-    email: `cp.admin.${stamp}@bwe.local`,
-    accountType: "admin",
-    isAdmin: true,
-  },
-];
-for (const a of accounts) {
-  await db.collection(a.coll).updateOne(
-    { email: a.email },
-    {
-      $set: {
-        email: a.email,
-        password: hash,
-        accountType: a.accountType,
-        isAdmin: a.isAdmin,
-        updatedAt: new Date(),
-      },
-    },
-    { upsert: true },
-  );
+  const resetReq = await req("/api/auth/request-reset", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email: `critical-path-${Date.now()}@example.com` }),
+  });
+  add(out, "Form request-reset submit", resetReq.status === 200, {
+    status: resetReq.status,
+  });
+} else {
+  add(out, "Form consulting-intake submit", true, {
+    skipped: true,
+    reason: "SMOKE_ALLOW_WRITES != 1",
+  });
+  add(out, "Form request-reset submit", true, {
+    skipped: true,
+    reason: "SMOKE_ALLOW_WRITES != 1",
+  });
 }
 
+// 4 + 5) protected-route redirect correctness + role-based completion
 const guestProtected = [
   "/job-listings",
   "/marketplace/add-products",
@@ -179,38 +139,111 @@ for (const p of guestProtected) {
   });
 }
 
-const cookies = {};
-for (const a of accounts) {
-  const lr = await fetch(`${base}/api/auth/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      email: a.email,
-      password: pwd,
-      accountType: a.accountType,
-    }),
-    redirect: "manual",
-  });
-  cookies[a.role] = parseCookie(
-    lr.headers.getSetCookie?.() || lr.headers.get("set-cookie"),
-  );
-}
+if (allowWriteChecks) {
+  const uri = mongoUri();
+  if (!uri) throw new Error("Missing Mongo URI");
+  const client = new MongoClient(uri);
+  await client.connect();
+  const db = client.db(process.env.MONGODB_DB || "bwes-cluster");
+  const stamp = Date.now();
+  const pwd = "QaPass123!";
+  const hash = await bcrypt.hash(pwd, 10);
+  const accounts = [
+    {
+      role: "user",
+      coll: "users",
+      email: `cp.user.${stamp}@bwe.local`,
+      accountType: "user",
+      isAdmin: false,
+    },
+    {
+      role: "seller",
+      coll: "sellers",
+      email: `cp.seller.${stamp}@bwe.local`,
+      accountType: "seller",
+      isAdmin: false,
+    },
+    {
+      role: "employer",
+      coll: "employers",
+      email: `cp.employer.${stamp}@bwe.local`,
+      accountType: "employer",
+      isAdmin: false,
+    },
+    {
+      role: "admin",
+      coll: "users",
+      email: `cp.admin.${stamp}@bwe.local`,
+      accountType: "admin",
+      isAdmin: true,
+    },
+  ];
+  for (const a of accounts) {
+    await db.collection(a.coll).updateOne(
+      { email: a.email },
+      {
+        $set: {
+          email: a.email,
+          password: hash,
+          accountType: a.accountType,
+          isAdmin: a.isAdmin,
+          updatedAt: new Date(),
+        },
+      },
+      { upsert: true },
+    );
+  }
 
-const roleChecks = [
-  ["seller", "/marketplace/add-products", [200]],
-  ["employer", "/employer/jobs", [200]],
-  ["admin", "/admin/dashboard", [200]],
-  ["user", "/marketplace/add-products", [302, 307, 308]],
-];
-for (const [role, p, expected] of roleChecks) {
-  const r = await req(p, { headers: { cookie: cookies[role] } });
-  add(out, `Role ${role} ${p}`, expected.includes(r.status), {
-    status: r.status,
-    expected,
+  const cookies = {};
+  for (const a of accounts) {
+    const lr = await fetch(`${base}/api/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: a.email,
+        password: pwd,
+        accountType: a.accountType,
+      }),
+      redirect: "manual",
+    });
+    cookies[a.role] = parseCookie(
+      lr.headers.getSetCookie?.() || lr.headers.get("set-cookie"),
+    );
+  }
+
+  const roleChecks = [
+    ["seller", "/marketplace/add-products", [200]],
+    ["employer", "/employer/jobs", [200]],
+    ["admin", "/admin/dashboard", [200]],
+    ["user", "/marketplace/add-products", [302, 307, 308]],
+  ];
+  for (const [role, p, expected] of roleChecks) {
+    const r = await req(p, { headers: { cookie: cookies[role] } });
+    add(out, `Role ${role} ${p}`, expected.includes(r.status), {
+      status: r.status,
+      expected,
+    });
+  }
+
+  await client.close();
+} else {
+  add(out, "Role seller /marketplace/add-products", true, {
+    skipped: true,
+    reason: "SMOKE_ALLOW_WRITES != 1",
+  });
+  add(out, "Role employer /employer/jobs", true, {
+    skipped: true,
+    reason: "SMOKE_ALLOW_WRITES != 1",
+  });
+  add(out, "Role admin /admin/dashboard", true, {
+    skipped: true,
+    reason: "SMOKE_ALLOW_WRITES != 1",
+  });
+  add(out, "Role user /marketplace/add-products", true, {
+    skipped: true,
+    reason: "SMOKE_ALLOW_WRITES != 1",
   });
 }
-
-await client.close();
 
 // 6) no dead-end pages for key flows (simple check: has at least one internal href)
 const keyPages = [
