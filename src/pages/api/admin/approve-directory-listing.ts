@@ -4,6 +4,8 @@ import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 import cookie from "cookie";
 import jwt from "jsonwebtoken";
+import { getMongoDbName } from "@/lib/env";
+import { canApproveDirectoryListing } from "@/lib/stateTransitions";
 
 type Decoded = {
   userId?: string;
@@ -174,7 +176,7 @@ export default async function handler(
     }
 
     const client = await clientPromise;
-    const db = client.db("bwes-cluster");
+    const db = client.db(getMongoDbName());
     const directoryCol = db.collection("directory_listings");
     const paymentsCol = db.collection("payments");
 
@@ -231,10 +233,15 @@ export default async function handler(
       }
 
       const paymentStatus = s(payment?.status) || "unknown";
-      if (paymentStatus !== "paid" && !forceApproveUnpaid) {
+      const approvalGate = canApproveDirectoryListing({
+        paymentStatus,
+        forceApproveUnpaid,
+      });
+      if (!approvalGate.ok) {
         return res.status(409).json({
           error: "Cannot approve an unpaid listing",
           details: `Payment status is "${paymentStatus}". Complete payment/webhook first, or use forceApproveUnpaid for testing.`,
+          reason: approvalGate.reason,
         });
       }
 
@@ -344,10 +351,16 @@ export default async function handler(
       Boolean(listing?.paidAt) ||
       s(listing?.paymentStatus) === "paid";
 
-    if (!alreadyPaid && !forceApproveUnpaid) {
+    const listingApprovalGate = canApproveDirectoryListing({
+      paymentStatus: alreadyPaid ? "paid" : s(listing?.paymentStatus) || "unknown",
+      forceApproveUnpaid,
+    });
+
+    if (!listingApprovalGate.ok) {
       return res.status(409).json({
         error: "Listing is not paid",
         details: "This listing cannot be approved until payment is completed.",
+        reason: listingApprovalGate.reason,
       });
     }
 

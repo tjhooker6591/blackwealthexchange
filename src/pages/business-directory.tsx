@@ -545,7 +545,7 @@ export default function BusinessDirectory() {
       if (includeIncomplete) params.set("includeIncomplete", "1");
       params.set("__nocache", "1");
 
-      fetch(`/api/searchBusinesses?${params.toString()}`, {
+      fetch(`/api/search/businesses?${params.toString()}`, {
         signal: controller.signal,
       })
         .then((r) => r.json())

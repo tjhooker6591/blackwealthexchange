@@ -761,6 +761,38 @@ export default async function webhookHandler(
           );
         }
 
+        const creatorInvariant = await db.collection("sellers").findOne(
+          { userId },
+          {
+            projection: {
+              _id: 1,
+              creatorPlanId: 1,
+              creatorPlanStatus: 1,
+              creatorReady: 1,
+            },
+          },
+        );
+
+        if (
+          !creatorInvariant ||
+          creatorInvariant.creatorPlanId !== normalizedItemId ||
+          creatorInvariant.creatorPlanStatus !== "active" ||
+          creatorInvariant.creatorReady !== true
+        ) {
+          await db.collection("flow_events").insertOne({
+            eventType: "music_creator_entitlement_invariant_failed",
+            pageRoute: "/api/stripe/webhook-handler",
+            section: "music_creator_entitlement_invariant",
+            source: "stripe_webhook",
+            source_variant: "invariant_failed",
+            stripeSessionId,
+            paymentIntentId: paymentIntentId || null,
+            userId,
+            itemId: normalizedItemId,
+            createdAt: now,
+          });
+        }
+
         console.log(
           `✅ Music creator plan activated user=${userId} plan=${normalizedItemId}`,
         );
@@ -809,42 +841,65 @@ export default async function webhookHandler(
         );
       }
 
+      const membershipInvariant = await db.collection("users").findOne(
+        userId && ObjectId.isValid(userId)
+          ? { _id: new ObjectId(userId) }
+          : { email },
+        {
+          projection: {
+            _id: 1,
+            membershipPlanId: 1,
+            membershipPlanStatus: 1,
+            membershipPlanExpiresAt: 1,
+          },
+        },
+      );
+
+      if (
+        !membershipInvariant ||
+        membershipInvariant.membershipPlanId !== "premium" ||
+        membershipInvariant.membershipPlanStatus !== "active"
+      ) {
+        await db.collection("flow_events").insertOne({
+          eventType: "premium_membership_entitlement_invariant_failed",
+          pageRoute: "/api/stripe/webhook-handler",
+          section: "premium_membership_entitlement_invariant",
+          source: "stripe_webhook",
+          source_variant: "invariant_failed",
+          stripeSessionId,
+          paymentIntentId: paymentIntentId || null,
+          userId: userId || null,
+          email: email || null,
+          itemId: normalizedItemId,
+          createdAt: now,
+        });
+      }
+
       console.log(`✅ Premium membership activated user=${userId}`);
     }
 
     /**
-     * 4) Marketplace order checkout (existing + canonical session fallback)
+     * 4) Marketplace order checkout (strict canonical orderId metadata)
      */
     if (mergedMeta.orderId) {
       await dbFulfillOrder(asString(mergedMeta.orderId), paymentIntentId);
       console.log(`✅ Order ${mergedMeta.orderId} fulfilled`);
     } else if (metaType === "product") {
-      const orderBySession = await db.collection("orders").findOne(
-        {
-          $or: [
-            { sessionId: stripeSessionId },
-            { stripeSessionId },
-            { paymentSessionId: stripeSessionId },
-          ],
-        },
-        { sort: { updatedAt: -1, createdAt: -1 } },
-      );
+      await db.collection("flow_events").insertOne({
+        eventType: "marketplace_order_id_missing_on_paid_webhook",
+        pageRoute: "/api/stripe/webhook-handler",
+        section: "marketplace_webhook_invariant",
+        source: "stripe_webhook",
+        source_variant: "missing_order_id",
+        checkout_variant: "canonical_checkout_session",
+        stripeSessionId,
+        paymentIntentId: paymentIntentId || null,
+        createdAt: now,
+      });
 
-      if (orderBySession?._id) {
-        const fallbackOrderId = String(orderBySession._id);
-        await dbFulfillOrder(fallbackOrderId, paymentIntentId);
-        await db.collection("payments").updateOne(
-          { stripeSessionId },
-          {
-            $set: {
-              "metadata.orderId": fallbackOrderId,
-              "metadata.orderMatchedBy": "session_fallback",
-              updatedAt: now,
-            },
-          },
-        );
-        console.log(`✅ Order ${fallbackOrderId} fulfilled via session fallback`);
-      }
+      console.warn(
+        `⚠️ Product paid webhook missing orderId metadata session=${stripeSessionId}`,
+      );
     }
 
     /**
@@ -880,25 +935,18 @@ export default async function webhookHandler(
         );
         console.log(`✅ Paid job posting marked paid jobId=${jobId}`);
       } else {
-        await db.collection("job_posting_payments").updateOne(
-          { stripeSessionId },
-          {
-            $setOnInsert: { createdAt: now },
-            $set: {
-              status: "paid",
-              userId,
-              email,
-              itemId: normalizedItemId || "job-posting-standard",
-              stripeSessionId,
-              paymentIntentId: paymentIntentId || null,
-              paidAt,
-              updatedAt: now,
-            },
-          },
-          { upsert: true },
-        );
-        console.log(
-          `✅ Paid job posting payment recorded session=${stripeSessionId}`,
+        await db.collection("flow_events").insertOne({
+          eventType: "job_paid_webhook_missing_job_id",
+          pageRoute: "/api/stripe/webhook-handler",
+          section: "job_webhook_invariant",
+          source: "stripe_webhook",
+          source_variant: "missing_job_id",
+          stripeSessionId,
+          paymentIntentId: paymentIntentId || null,
+          createdAt: now,
+        });
+        console.warn(
+          `⚠️ Job paid webhook missing jobId metadata session=${stripeSessionId}`,
         );
       }
     }

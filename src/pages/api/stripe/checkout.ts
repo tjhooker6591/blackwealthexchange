@@ -220,7 +220,7 @@ export default async function handler(
     const normalizedBusinessId = requestedBusinessId || "";
     const normalizedCampaignId = requestedCampaignId || "";
     const normalizedPlacement = requestedPlacement || "";
-    const normalizedJobId = requestedJobId || "";
+    let normalizedJobId = requestedJobId || "";
 
     // ✅ Keep normalized item id for metadata/payments/webhook consistency
     let finalItemId = itemId;
@@ -391,6 +391,30 @@ export default async function handler(
       itemName = job.name;
       isPlatformAccount = true;
       stripeAccountId = process.env.PLATFORM_STRIPE_ACCOUNT_ID as string;
+
+      if (!normalizedJobId) {
+        const draft = await db.collection("jobs").insertOne({
+          title: `${job.name} (Payment Draft)`,
+          company: "Pending",
+          location: "TBD",
+          description: "Auto-created paid job draft before checkout.",
+          requirements: "",
+          accountType: "employer",
+          email: sessionEmail || null,
+          employerId: userObjectId || sessionUserId,
+          userId: sessionUserId,
+          status: "pending_payment",
+          isPaid: false,
+          paymentStatus: "pending",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          metadata: {
+            source: "stripe_checkout_job_draft",
+            itemId,
+          },
+        });
+        normalizedJobId = String(draft.insertedId);
+      }
     } else {
       return res.status(400).json({ error: "Invalid type" });
     }

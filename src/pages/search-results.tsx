@@ -129,7 +129,7 @@ export default function SearchResults() {
           limit: String(limit),
           sort: "relevance",
         });
-        const res = await fetch(`/api/searchBusinesses?${params.toString()}`);
+        const res = await fetch(`/api/search/businesses?${params.toString()}`);
         const data = await res.json().catch(() => ({}));
         if (!res.ok) throw new Error(data?.error || "Failed to load results");
 
