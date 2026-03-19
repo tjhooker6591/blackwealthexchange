@@ -768,6 +768,51 @@ export default async function webhookHandler(
     }
 
     /**
+     * 3.6) Premium membership plan entitlement
+     */
+    if (metaType === "plan" && normalizedItemId === "premium") {
+      const durationDays = parseDurationDays(mergedMeta.durationDays) || 30;
+      const planStartAt = paidAt;
+      const planExpiresAt = new Date(
+        planStartAt.getTime() + durationDays * 24 * 60 * 60 * 1000,
+      );
+
+      if (userId && ObjectId.isValid(userId)) {
+        await db.collection("users").updateOne(
+          { _id: new ObjectId(userId) },
+          {
+            $set: {
+              membershipPlanId: "premium",
+              membershipPlanStatus: "active",
+              membershipPlanDurationDays: durationDays,
+              membershipPlanStartAt: planStartAt,
+              membershipPlanExpiresAt: planExpiresAt,
+              updatedAt: now,
+            },
+          },
+        );
+      }
+
+      if (email) {
+        await db.collection("users").updateOne(
+          { email },
+          {
+            $set: {
+              membershipPlanId: "premium",
+              membershipPlanStatus: "active",
+              membershipPlanDurationDays: durationDays,
+              membershipPlanStartAt: planStartAt,
+              membershipPlanExpiresAt: planExpiresAt,
+              updatedAt: now,
+            },
+          },
+        );
+      }
+
+      console.log(`✅ Premium membership activated user=${userId}`);
+    }
+
+    /**
      * 4) Marketplace order checkout (existing)
      */
     if (mergedMeta.orderId) {
@@ -778,7 +823,8 @@ export default async function webhookHandler(
     /**
      * 5) Course purchase (existing)
      */
-    const resolvedCourseId = asString(mergedMeta.courseId || "") ||
+    const resolvedCourseId =
+      asString(mergedMeta.courseId || "") ||
       (metaType === "course" ? normalizedItemId : "");
 
     if (resolvedCourseId && userId) {
@@ -824,7 +870,9 @@ export default async function webhookHandler(
           },
           { upsert: true },
         );
-        console.log(`✅ Paid job posting payment recorded session=${stripeSessionId}`);
+        console.log(
+          `✅ Paid job posting payment recorded session=${stripeSessionId}`,
+        );
       }
     }
 

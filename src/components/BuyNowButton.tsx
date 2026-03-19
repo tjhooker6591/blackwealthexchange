@@ -145,6 +145,11 @@ export default function BuyNowButton({
         return;
       }
 
+      const checkoutType = type === "upgrade" ? "plan" : type;
+      const isJobStandard = itemId === "job-standard-post";
+      const isJobFeatured = itemId === "job-featured-post";
+      const jobTier = isJobFeatured ? "featured" : isJobStandard ? "standard" : "";
+
       const response = await fetch("/api/stripe/checkout", {
         method: "POST",
         credentials: "include",
@@ -153,9 +158,15 @@ export default function BuyNowButton({
           userId,
           itemId,
           amount,
-          type,
-          successUrl: `${window.location.origin}/payment-success`,
-          cancelUrl: `${window.location.origin}/payment-cancel`,
+          type: checkoutType,
+          successUrl:
+            type === "job" && jobTier
+              ? `${window.location.origin}/post-job?payment=success&tier=${encodeURIComponent(jobTier)}`
+              : `${window.location.origin}/payment-success`,
+          cancelUrl:
+            type === "job"
+              ? `${window.location.origin}/post-job?payment=canceled`
+              : `${window.location.origin}/payment-cancel`,
         }),
       });
 

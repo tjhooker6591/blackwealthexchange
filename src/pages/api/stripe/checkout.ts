@@ -369,10 +369,23 @@ export default async function handler(
           name: "Job Posting (Standard)",
           amount: 19900,
         },
+        "job-posting-featured": {
+          name: "Job Posting (Featured)",
+          amount: 79900,
+        },
+        "job-standard-post": {
+          name: "Job Posting (Standard)",
+          amount: 2999,
+        },
+        "job-featured-post": {
+          name: "Job Posting (Featured)",
+          amount: 7999,
+        },
       };
 
       const job = jobMap[itemId];
-      if (!job) return res.status(400).json({ error: "Invalid job posting type" });
+      if (!job)
+        return res.status(400).json({ error: "Invalid job posting type" });
 
       unitAmount = job.amount;
       itemName = job.name;
