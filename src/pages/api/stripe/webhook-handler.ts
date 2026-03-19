@@ -813,11 +813,38 @@ export default async function webhookHandler(
     }
 
     /**
-     * 4) Marketplace order checkout (existing)
+     * 4) Marketplace order checkout (existing + canonical session fallback)
      */
     if (mergedMeta.orderId) {
       await dbFulfillOrder(asString(mergedMeta.orderId), paymentIntentId);
       console.log(`✅ Order ${mergedMeta.orderId} fulfilled`);
+    } else if (metaType === "product") {
+      const orderBySession = await db.collection("orders").findOne(
+        {
+          $or: [
+            { sessionId: stripeSessionId },
+            { stripeSessionId },
+            { paymentSessionId: stripeSessionId },
+          ],
+        },
+        { sort: { updatedAt: -1, createdAt: -1 } },
+      );
+
+      if (orderBySession?._id) {
+        const fallbackOrderId = String(orderBySession._id);
+        await dbFulfillOrder(fallbackOrderId, paymentIntentId);
+        await db.collection("payments").updateOne(
+          { stripeSessionId },
+          {
+            $set: {
+              "metadata.orderId": fallbackOrderId,
+              "metadata.orderMatchedBy": "session_fallback",
+              updatedAt: now,
+            },
+          },
+        );
+        console.log(`✅ Order ${fallbackOrderId} fulfilled via session fallback`);
+      }
     }
 
     /**

@@ -123,18 +123,8 @@ export default async function handler(
         .json({ success: false, error: "Invalid credentials." });
     }
 
-    // If accountType was selected, enforce it matches the record (prevents wrong role tokens)
-    if (
-      bodyAccountType &&
-      user.accountType &&
-      bodyAccountType !== user.accountType
-    ) {
-      return res.status(400).json({
-        success: false,
-        error:
-          "Wrong account type selected for this account. Please choose the correct account type.",
-      });
-    }
+    // Do not hard-fail on drifted accountType field inside role collections.
+    // The selected route collection is the source of truth for this login context.
 
     // Must have a password hash to login (unless you later support OAuth)
     if (!user.password) {
@@ -152,9 +142,18 @@ export default async function handler(
         .json({ success: false, error: "Invalid credentials." });
     }
 
-    const role = user.accountType || bodyAccountType || "user";
+    const role = bodyAccountType || user.accountType || "user";
+
+    // Canonical admin permission comes from the users identity record,
+    // not from role-specific collection accountType values.
+    const canonicalUser = await db
+      .collection<UserRecord>("users")
+      .findOne({ email: emailNorm }, { projection: { isAdmin: 1 } });
+
     const isAdmin =
-      emailNorm === normalizeEmail(ADMIN_EMAIL) || user.isAdmin === true;
+      emailNorm === normalizeEmail(ADMIN_EMAIL) ||
+      canonicalUser?.isAdmin === true ||
+      user.isAdmin === true;
 
     // 30-minute JWT
     const token = jwt.sign(
