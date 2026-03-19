@@ -172,7 +172,19 @@ export default async function handler(
       userAgent: req.headers["user-agent"] || null,
     });
 
-    const resetLink = `${getAppUrl()}/reset-password?token=${encodeURIComponent(token)}`;
+    const fallbackOrigin =
+      process.env.NODE_ENV === "production"
+        ? `https://${req.headers.host || "www.blackwealthexchange.com"}`
+        : `http://${req.headers.host || "localhost:3000"}`;
+
+    let appUrl: string;
+    try {
+      appUrl = getAppUrl();
+    } catch {
+      appUrl = fallbackOrigin;
+    }
+
+    const resetLink = `${appUrl}/reset-password?token=${encodeURIComponent(token)}`;
 
     if (
       process.env.RESET_DEBUG_MODE === "1" &&
@@ -212,20 +224,49 @@ export default async function handler(
       accountType: account.accountType,
     });
 
-    const info = await sendEmail({
-      to: email,
-      subject: "Reset your Black Wealth Exchange password",
-      text,
-      html,
-    });
+    try {
+      const info = await sendEmail({
+        to: email,
+        subject: "Reset your Black Wealth Exchange password",
+        text,
+        html,
+      });
 
-    console.log("[reset] email sent", {
-      email,
-      messageId: info?.messageId,
-      response: info?.response,
-    });
+      console.log("[reset] email sent", {
+        email,
+        messageId: info?.messageId,
+        response: info?.response,
+      });
 
-    return genericOk();
+      return genericOk();
+    } catch (mailErr: any) {
+      console.error("[reset] email send failed:", mailErr);
+
+      await db.collection("password_reset_delivery_failures").insertOne({
+        email,
+        accountType: account.accountType,
+        collection: account.collection,
+        reason: mailErr?.message || String(mailErr),
+        createdAt: new Date(),
+      });
+
+      // Fallback behavior in production: do not fail reset token creation when mail provider is down.
+      if (process.env.NODE_ENV === "production") {
+        return genericOk();
+      }
+
+      if (process.env.RESET_DEBUG_MODE === "1") {
+        return res.status(200).json({
+          message: "If this email exists, reset instructions will be sent.",
+          _debug: { token, resetLink, mailError: mailErr?.message || String(mailErr) },
+        });
+      }
+
+      return res.status(500).json({
+        error: "Password reset email failed to send.",
+        details: mailErr?.message || String(mailErr),
+      });
+    }
   } catch (err: any) {
     console.error("[reset] request-reset error:", err);
 
@@ -234,13 +275,11 @@ export default async function handler(
       process.env.RESET_DEBUG_MODE === "1"
     ) {
       return res.status(500).json({
-        error: "Password reset email failed to send.",
+        error: "Password reset request failed.",
         details: err?.message || String(err),
       });
     }
 
-    return res.status(500).json({
-      error: "Unable to process password reset request right now.",
-    });
+    return genericOk();
   }
 }
