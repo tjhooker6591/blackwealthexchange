@@ -1677,13 +1677,13 @@ export default function Home() {
               {[...sponsorRail, ...sponsorRail].map((sponsor, index) => {
                 const card = (
                   <div className="relative h-14 w-24 overflow-hidden rounded-lg border border-white/10 shadow sm:h-16 sm:w-32">
-                    <Image
+                    <img
                       src={sponsor.img}
                       alt={sponsor.name}
-                      width={160}
-                      height={80}
                       className="h-full w-full object-cover"
-                      priority={index < 4}
+                      loading={index < 4 ? "eager" : "lazy"}
+                      decoding="async"
+                      referrerPolicy="no-referrer"
                     />
                     <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent px-1.5 py-1 text-center text-[9px] font-semibold text-[#F1D57A] sm:text-[10px]">
                       {sponsor.name}
