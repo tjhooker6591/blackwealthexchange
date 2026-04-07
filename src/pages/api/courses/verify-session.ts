@@ -75,15 +75,13 @@ export default async function handler(
     let enrollmentCreated = false;
 
     if (ObjectId.isValid(userId)) {
-      await db
-        .collection("users")
-        .updateOne(
-          { _id: new ObjectId(userId) },
-          {
-            $addToSet: { purchasedCourses: courseId },
-            $set: { updatedAt: new Date() },
-          },
-        );
+      await db.collection("users").updateOne(
+        { _id: new ObjectId(userId) },
+        {
+          $addToSet: { purchasedCourses: courseId },
+          $set: { updatedAt: new Date() },
+        },
+      );
     }
 
     const enrollmentResult = await db.collection("enrollments").updateOne(
