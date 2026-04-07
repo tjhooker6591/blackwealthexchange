@@ -21,7 +21,7 @@ type EntitlementResponse = {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<EntitlementResponse>
+  res: NextApiResponse<EntitlementResponse>,
 ) {
   if (req.method !== "GET") {
     res.setHeader("Allow", ["GET"]);

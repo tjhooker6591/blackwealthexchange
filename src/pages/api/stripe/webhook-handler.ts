@@ -186,7 +186,10 @@ function unlinkedBusinessIdPlaceholder(stripeSessionId: string) {
   return `UNLINKED:${stripeSessionId}`;
 }
 
-function isWealthBuilderPremiumPurchase(meta: SessionMetadata, normalizedItemId: string) {
+function isWealthBuilderPremiumPurchase(
+  meta: SessionMetadata,
+  normalizedItemId: string,
+) {
   const productKey = asString(meta.productKey).trim().toLowerCase();
   const itemId = normalizedItemId.trim().toLowerCase();
 
@@ -227,19 +230,14 @@ function wealthBuilderPeriodEndFromInterval(
   return end;
 }
 
-async function resolveEntitlementUserId(
-  db: Db,
-  userId: string,
-  email: string,
-) {
+async function resolveEntitlementUserId(db: Db, userId: string, email: string) {
   if (userId) return userId;
 
   if (!email) return "";
 
-  const userDoc = await db.collection("users").findOne(
-    { email },
-    { projection: { _id: 1 } },
-  );
+  const userDoc = await db
+    .collection("users")
+    .findOne({ email }, { projection: { _id: 1 } });
 
   return idToString(userDoc?._id);
 }
@@ -913,8 +911,15 @@ export default async function webhookHandler(
     /**
      * 3.55) Wealth Builder Premium entitlement (new)
      */
-    if (metaType === "plan" && isWealthBuilderPremiumPurchase(mergedMeta, normalizedItemId)) {
-      const entitlementUserId = await resolveEntitlementUserId(db, userId, email);
+    if (
+      metaType === "plan" &&
+      isWealthBuilderPremiumPurchase(mergedMeta, normalizedItemId)
+    ) {
+      const entitlementUserId = await resolveEntitlementUserId(
+        db,
+        userId,
+        email,
+      );
 
       if (!entitlementUserId) {
         await db.collection("flow_events").insertOne({
@@ -955,23 +960,25 @@ export default async function webhookHandler(
           updatedAt: now,
         });
 
-        const entitlementInvariant = await db.collection("user_entitlements").findOne(
-          {
-            userId: entitlementUserId,
-            accountType: "user",
-            productKey: "wealth_builder_premium",
-          },
-          {
-            projection: {
-              _id: 1,
-              tier: 1,
-              status: 1,
-              billingInterval: 1,
-              currentPeriodStart: 1,
-              currentPeriodEnd: 1,
+        const entitlementInvariant = await db
+          .collection("user_entitlements")
+          .findOne(
+            {
+              userId: entitlementUserId,
+              accountType: "user",
+              productKey: "wealth_builder_premium",
             },
-          },
-        );
+            {
+              projection: {
+                _id: 1,
+                tier: 1,
+                status: 1,
+                billingInterval: 1,
+                currentPeriodStart: 1,
+                currentPeriodEnd: 1,
+              },
+            },
+          );
 
         if (
           !entitlementInvariant ||
@@ -1003,7 +1010,8 @@ export default async function webhookHandler(
      * 3.6) Premium membership plan entitlement (existing)
      */
     if (metaType === "plan" && normalizedItemId === "premium") {
-      const membershipDurationDays = parseDurationDays(mergedMeta.durationDays) || 30;
+      const membershipDurationDays =
+        parseDurationDays(mergedMeta.durationDays) || 30;
       const planStartAt = paidAt;
       const planExpiresAt = new Date(
         planStartAt.getTime() + membershipDurationDays * 24 * 60 * 60 * 1000,
@@ -1046,24 +1054,26 @@ export default async function webhookHandler(
         );
       }
 
-      const membershipInvariant = await db.collection("users").findOne(
-        userId && ObjectId.isValid(userId)
-          ? { _id: new ObjectId(userId) }
-          : { email },
-        {
-          projection: {
-            _id: 1,
-            isPremium: 1,
-            currentPlan: 1,
-            premiumStatus: 1,
-            premiumActivatedAt: 1,
-            premiumStripeSessionId: 1,
-            membershipPlanId: 1,
-            membershipPlanStatus: 1,
-            membershipPlanExpiresAt: 1,
+      const membershipInvariant = await db
+        .collection("users")
+        .findOne(
+          userId && ObjectId.isValid(userId)
+            ? { _id: new ObjectId(userId) }
+            : { email },
+          {
+            projection: {
+              _id: 1,
+              isPremium: 1,
+              currentPlan: 1,
+              premiumStatus: 1,
+              premiumActivatedAt: 1,
+              premiumStripeSessionId: 1,
+              membershipPlanId: 1,
+              membershipPlanStatus: 1,
+              membershipPlanExpiresAt: 1,
+            },
           },
-        },
-      );
+        );
 
       if (
         !membershipInvariant ||

@@ -22,11 +22,14 @@ export default function WealthBuilderIndexPage() {
               Wealth Builder
             </p>
             <h1 className="max-w-3xl text-4xl font-bold leading-tight md:text-5xl">
-              Build financial clarity with a focused tool for debt, budgeting, and savings.
+              Build financial clarity with a focused tool for debt, budgeting,
+              and savings.
             </h1>
             <p className="mt-5 max-w-3xl text-base text-zinc-300 md:text-lg">
-              This is the starting foundation for the Wealth Builder experience inside Black Wealth Exchange.
-              It is designed to help users organize debt, track money, and move toward stronger savings habits.
+              This is the starting foundation for the Wealth Builder experience
+              inside Black Wealth Exchange. It is designed to help users
+              organize debt, track money, and move toward stronger savings
+              habits.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-4">
@@ -64,17 +67,24 @@ export default function WealthBuilderIndexPage() {
                 key={item.title}
                 className="rounded-2xl border border-white/10 bg-zinc-950/80 p-6"
               >
-                <h2 className="text-xl font-semibold text-yellow-300">{item.title}</h2>
-                <p className="mt-3 text-sm leading-6 text-zinc-300">{item.text}</p>
+                <h2 className="text-xl font-semibold text-yellow-300">
+                  {item.title}
+                </h2>
+                <p className="mt-3 text-sm leading-6 text-zinc-300">
+                  {item.text}
+                </p>
               </div>
             ))}
           </section>
 
           <section className="mt-10 rounded-2xl border border-dashed border-yellow-700/40 bg-zinc-950/60 p-6">
-            <h2 className="text-xl font-semibold text-white">Current Build Status</h2>
+            <h2 className="text-xl font-semibold text-white">
+              Current Build Status
+            </h2>
             <p className="mt-3 text-sm text-zinc-300">
-              Placeholder shell is in place so the app can build cleanly while the real data flow,
-              dashboard calculations, and CRUD behavior are implemented next.
+              Placeholder shell is in place so the app can build cleanly while
+              the real data flow, dashboard calculations, and CRUD behavior are
+              implemented next.
             </p>
           </section>
         </div>

@@ -16,9 +16,16 @@ const ALLOWED_PAY_FREQUENCIES = [
   "other",
 ] as const;
 
-const ALLOWED_EXPERIENCE_LEVELS = ["beginner", "intermediate", "advanced"] as const;
+const ALLOWED_EXPERIENCE_LEVELS = [
+  "beginner",
+  "intermediate",
+  "advanced",
+] as const;
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   const auth = await requireWealthUser(req, res);
   if (!auth) return;
 
@@ -26,7 +33,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const collection = db.collection("financial_profiles");
 
   if (req.method === "GET") {
-    const profile = await collection.findOne({ userId: auth.userId, accountType: "user" });
+    const profile = await collection.findOne({
+      userId: auth.userId,
+      accountType: "user",
+    });
     return res.status(200).json({
       ok: true,
       profile: serializeDoc(profile),
@@ -40,7 +50,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       ? body.payFrequency
       : "monthly";
 
-    const experienceLevel = ALLOWED_EXPERIENCE_LEVELS.includes(body.experienceLevel)
+    const experienceLevel = ALLOWED_EXPERIENCE_LEVELS.includes(
+      body.experienceLevel,
+    )
       ? body.experienceLevel
       : "beginner";
 
@@ -55,7 +67,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           monthlyIncome: toNonNegativeNumber(body.monthlyIncome, 0),
           payFrequency,
           householdSize: toIntegerInRange(body.householdSize, 1, 25, 1),
-          primaryGoal: typeof body.primaryGoal === "string" ? body.primaryGoal.trim() : "",
+          primaryGoal:
+            typeof body.primaryGoal === "string" ? body.primaryGoal.trim() : "",
           experienceLevel,
           updatedAt: now,
         },
@@ -63,10 +76,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           createdAt: now,
         },
       },
-      { upsert: true }
+      { upsert: true },
     );
 
-    const updated = await collection.findOne({ userId: auth.userId, accountType: "user" });
+    const updated = await collection.findOne({
+      userId: auth.userId,
+      accountType: "user",
+    });
 
     return res.status(200).json({
       ok: true,
@@ -75,5 +91,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   res.setHeader("Allow", ["GET", "PUT", "PATCH"]);
-  return res.status(405).json({ ok: false, message: `Method ${req.method} not allowed.` });
+  return res
+    .status(405)
+    .json({ ok: false, message: `Method ${req.method} not allowed.` });
 }

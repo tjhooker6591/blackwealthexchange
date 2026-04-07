@@ -24,8 +24,9 @@ export default function WealthBuilderDashboardPage() {
             </p>
             <h1 className="mt-3 text-4xl font-bold">Your financial snapshot</h1>
             <p className="mt-4 max-w-3xl text-zinc-300">
-              This dashboard is a production-safe shell with placeholder values. It gives us a clean structure
-              for wiring real financial profile, debt, budget, savings, and goal data next.
+              This dashboard is a production-safe shell with placeholder values.
+              It gives us a clean structure for wiring real financial profile,
+              debt, budget, savings, and goal data next.
             </p>
 
             <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-5">

@@ -100,14 +100,17 @@ function parseAddressString(address: string) {
 
 function buildAddressParts(doc: any) {
   const addressObject =
-    doc?.address && typeof doc.address === "object" && !Array.isArray(doc.address)
+    doc?.address &&
+    typeof doc.address === "object" &&
+    !Array.isArray(doc.address)
       ? doc.address
       : null;
 
   const rawAddressString =
     typeof doc?.address === "string"
       ? cleanString(doc.address)
-      : cleanString(addressObject?.formatted) || cleanString(addressObject?.street);
+      : cleanString(addressObject?.formatted) ||
+        cleanString(addressObject?.street);
 
   const parsedFromString = rawAddressString
     ? parseAddressString(rawAddressString)
@@ -115,7 +118,9 @@ function buildAddressParts(doc: any) {
 
   const street =
     cleanString(addressObject?.street) ||
-    (rawAddressString && rawAddressString.includes(",") ? parsedFromString.street : rawAddressString);
+    (rawAddressString && rawAddressString.includes(",")
+      ? parsedFromString.street
+      : rawAddressString);
 
   const city =
     cleanString(doc?.city) ||
@@ -136,7 +141,9 @@ function buildAddressParts(doc: any) {
     cleanString(addressObject?.formatted) ||
     (rawAddressString && rawAddressString.includes(",")
       ? rawAddressString
-      : [street, city, [state, zip].filter(Boolean).join(" ")].filter(Boolean).join(", "));
+      : [street, city, [state, zip].filter(Boolean).join(" ")]
+          .filter(Boolean)
+          .join(", "));
 
   return {
     street,

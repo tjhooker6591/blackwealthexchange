@@ -134,8 +134,7 @@ function mapScheduleRows(rows: any[]): SponsorCard[] {
       url: featuredProfileUrl(name, tagline, img, target),
       cta: "Learn More",
       tier: "featured-sponsor",
-      featuredSlot:
-        typeof row.sortOrder === "number" ? row.sortOrder : i + 1,
+      featuredSlot: typeof row.sortOrder === "number" ? row.sortOrder : i + 1,
       source: "featured_sponsor_schedule",
       weekStart: row.weekStart ? new Date(row.weekStart).toISOString() : null,
       queueStatus: s(row.queueStatus) || null,
@@ -182,7 +181,9 @@ export default async function handler(
       .toArray();
 
     if (scheduled.length) {
-      return res.status(200).json({ ok: true, sponsors: mapScheduleRows(scheduled) });
+      return res
+        .status(200)
+        .json({ ok: true, sponsors: mapScheduleRows(scheduled) });
     }
 
     // Exact regression fix:
@@ -223,24 +224,26 @@ export default async function handler(
       }
     }
 
-    const houseCards: SponsorCard[] = HOUSE_SPONSOR_ROTATION.map((sponsor, i) => {
-      const img = resolveSponsorImage(sponsor.name, "");
-      const tagline = "Featured on Black Wealth Exchange";
+    const houseCards: SponsorCard[] = HOUSE_SPONSOR_ROTATION.map(
+      (sponsor, i) => {
+        const img = resolveSponsorImage(sponsor.name, "");
+        const tagline = "Featured on Black Wealth Exchange";
 
-      return {
-        _id: `house-${i + 1}`,
-        name: sponsor.name,
-        tagline,
-        img,
-        url: featuredProfileUrl(sponsor.name, tagline, img, sponsor.url),
-        cta: "Learn More",
-        tier: "featured-sponsor",
-        featuredSlot: i + 1,
-        source: "featured_sponsor_schedule",
-        weekStart: currentWeek.toISOString(),
-        queueStatus: "assigned",
-      };
-    });
+        return {
+          _id: `house-${i + 1}`,
+          name: sponsor.name,
+          tagline,
+          img,
+          url: featuredProfileUrl(sponsor.name, tagline, img, sponsor.url),
+          cta: "Learn More",
+          tier: "featured-sponsor",
+          featuredSlot: i + 1,
+          source: "featured_sponsor_schedule",
+          weekStart: currentWeek.toISOString(),
+          queueStatus: "assigned",
+        };
+      },
+    );
 
     return res.status(200).json({ ok: true, sponsors: houseCards });
   } catch (error) {

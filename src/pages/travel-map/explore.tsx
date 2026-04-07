@@ -33,8 +33,7 @@ function buildQuery(filters: TravelMapFilterValues) {
 }
 
 export default function TravelMapExplorePage() {
-  const [filters, setFilters] =
-    useState<TravelMapFilterValues>(initialFilters);
+  const [filters, setFilters] = useState<TravelMapFilterValues>(initialFilters);
   const [results, setResults] = useState<TravelMapBusiness[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -52,13 +51,14 @@ export default function TravelMapExplorePage() {
 
       try {
         const res = await fetch(`/api/travel-map/search?${queryString}`);
-        const data =
-          (await res.json()) as
-            | TravelMapSearchResponse
-            | { ok: false; error: string };
+        const data = (await res.json()) as
+          | TravelMapSearchResponse
+          | { ok: false; error: string };
 
         if (!res.ok || !data.ok) {
-          throw new Error("error" in data ? data.error : "Failed to load map results");
+          throw new Error(
+            "error" in data ? data.error : "Failed to load map results",
+          );
         }
 
         if (!cancelled) {
@@ -143,9 +143,7 @@ export default function TravelMapExplorePage() {
 
           <div
             className={`mt-6 grid gap-6 ${
-              view === "split"
-                ? "xl:grid-cols-[1.05fr_0.95fr]"
-                : "grid-cols-1"
+              view === "split" ? "xl:grid-cols-[1.05fr_0.95fr]" : "grid-cols-1"
             }`}
           >
             <div className="space-y-4">

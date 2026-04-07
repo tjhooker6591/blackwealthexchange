@@ -223,9 +223,9 @@ export default function Pricing() {
               Upgrade to Premium
             </h1>
             <p className="text-base sm:text-lg text-gray-200 mt-4">
-              Unlock the Investment Hub, premium learning tools, trusted
-              search flow, and deeper community features—built to help you move
-              from browsing to building.
+              Unlock the Investment Hub, premium learning tools, trusted search
+              flow, and deeper community features—built to help you move from
+              browsing to building.
             </p>
 
             <div className="mt-6 flex flex-wrap items-center gap-3">
@@ -274,7 +274,11 @@ export default function Pricing() {
               { ok: false, text: "Premium reports & insights" },
               { ok: false, text: "Advanced trusted search tools" },
             ]}
-            ctaText={!authUser || !isPremiumActive ? "Current Plan" : "Included in Premium"}
+            ctaText={
+              !authUser || !isPremiumActive
+                ? "Current Plan"
+                : "Included in Premium"
+            }
             onCta={() => router.push("/")}
             finePrint="You can upgrade anytime."
           />
@@ -335,8 +339,8 @@ export default function Pricing() {
             Why Go Premium?
           </h2>
           <p className="text-gray-300 mt-2 max-w-3xl">
-            Premium isn’t just “more pages.” It’s tools and trusted
-            workflows that help you take action: better directory discovery,
+            Premium isn’t just “more pages.” It’s tools and trusted workflows
+            that help you take action: better directory discovery,
             wealth-building education, investment resources, and reports that
             keep you informed.
           </p>

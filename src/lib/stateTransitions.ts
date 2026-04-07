@@ -6,10 +6,13 @@ export type TransitionResult = {
 export function canApproveDirectoryListing(args: {
   paymentStatus?: string | null;
   forceApproveUnpaid?: boolean;
-}) : TransitionResult {
-  const status = String(args.paymentStatus || "").trim().toLowerCase();
+}): TransitionResult {
+  const status = String(args.paymentStatus || "")
+    .trim()
+    .toLowerCase();
   if (status === "paid") return { ok: true };
-  if (args.forceApproveUnpaid) return { ok: true, reason: "forced_unpaid_override" };
+  if (args.forceApproveUnpaid)
+    return { ok: true, reason: "forced_unpaid_override" };
   return {
     ok: false,
     reason: `payment_not_paid:${status || "unknown"}`,
@@ -19,7 +22,9 @@ export function canApproveDirectoryListing(args: {
 export function canCompleteAffiliatePayout(args: {
   payoutStatus?: string | null;
 }): TransitionResult {
-  const status = String(args.payoutStatus || "").trim().toLowerCase();
+  const status = String(args.payoutStatus || "")
+    .trim()
+    .toLowerCase();
   if (!status) return { ok: false, reason: "missing_payout_status" };
   if (status === "completed") {
     return { ok: false, reason: "already_completed" };

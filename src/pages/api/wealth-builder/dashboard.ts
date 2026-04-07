@@ -3,7 +3,10 @@ import { requireWealthUser } from "@/lib/wealth-builder/auth";
 import { getWealthDb } from "@/lib/wealth-builder/mongo";
 import { getMonthRange, serializeDoc } from "@/lib/wealth-builder/helpers";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   const auth = await requireWealthUser(req, res);
   if (!auth) return;
 
@@ -20,49 +23,76 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const year = now.getFullYear();
   const { start, end } = getMonthRange(year, month);
 
-  const [profile, debtItems, goalItems, budgetPlan, transactionItems] = await Promise.all([
-    profiles.findOne({ userId: auth.userId, accountType: "user" }),
-    debts.find({ userId: auth.userId, accountType: "user" }).toArray(),
-    goals.find({ userId: auth.userId, accountType: "user" }).toArray(),
-    budgets.findOne({ userId: auth.userId, accountType: "user", month, year }),
-    transactions
-      .find({
+  const [profile, debtItems, goalItems, budgetPlan, transactionItems] =
+    await Promise.all([
+      profiles.findOne({ userId: auth.userId, accountType: "user" }),
+      debts.find({ userId: auth.userId, accountType: "user" }).toArray(),
+      goals.find({ userId: auth.userId, accountType: "user" }).toArray(),
+      budgets.findOne({
         userId: auth.userId,
         accountType: "user",
-        date: { $gte: start, $lt: end },
-      })
-      .toArray(),
-  ]);
+        month,
+        year,
+      }),
+      transactions
+        .find({
+          userId: auth.userId,
+          accountType: "user",
+          date: { $gte: start, $lt: end },
+        })
+        .toArray(),
+    ]);
 
   const totalDebt = debtItems
     .filter((item) => item.status !== "paid" && item.status !== "closed")
-    .reduce((sum, item) => sum + (typeof item.balance === "number" ? item.balance : 0), 0);
+    .reduce(
+      (sum, item) =>
+        sum + (typeof item.balance === "number" ? item.balance : 0),
+      0,
+    );
 
   const totalMinimumPayments = debtItems
     .filter((item) => item.status !== "paid" && item.status !== "closed")
-    .reduce((sum, item) => sum + (typeof item.minimumPayment === "number" ? item.minimumPayment : 0), 0);
+    .reduce(
+      (sum, item) =>
+        sum +
+        (typeof item.minimumPayment === "number" ? item.minimumPayment : 0),
+      0,
+    );
 
   const totalSavings = goalItems.reduce(
-    (sum, item) => sum + (typeof item.currentAmount === "number" ? item.currentAmount : 0),
-    0
+    (sum, item) =>
+      sum + (typeof item.currentAmount === "number" ? item.currentAmount : 0),
+    0,
   );
 
-  const activeGoals = goalItems.filter((item) => item.status === "active").length;
+  const activeGoals = goalItems.filter(
+    (item) => item.status === "active",
+  ).length;
 
   const monthIncome = transactionItems
     .filter((item) => item.type === "income")
-    .reduce((sum, item) => sum + (typeof item.amount === "number" ? item.amount : 0), 0);
+    .reduce(
+      (sum, item) => sum + (typeof item.amount === "number" ? item.amount : 0),
+      0,
+    );
 
   const monthExpenses = transactionItems
     .filter((item) => item.type === "expense")
-    .reduce((sum, item) => sum + (typeof item.amount === "number" ? item.amount : 0), 0);
+    .reduce(
+      (sum, item) => sum + (typeof item.amount === "number" ? item.amount : 0),
+      0,
+    );
 
   return res.status(200).json({
     ok: true,
     dashboard: {
       profile: serializeDoc(profile),
       summary: {
-        monthlyIncome: typeof profile?.monthlyIncome === "number" ? profile.monthlyIncome : 0,
+        monthlyIncome:
+          typeof profile?.monthlyIncome === "number"
+            ? profile.monthlyIncome
+            : 0,
         totalDebt,
         totalMinimumPayments,
         totalSavings,

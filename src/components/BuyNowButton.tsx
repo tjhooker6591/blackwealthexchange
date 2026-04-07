@@ -148,7 +148,11 @@ export default function BuyNowButton({
       const checkoutType = type === "upgrade" ? "plan" : type;
       const isJobStandard = itemId === "job-standard-post";
       const isJobFeatured = itemId === "job-featured-post";
-      const jobTier = isJobFeatured ? "featured" : isJobStandard ? "standard" : "";
+      const jobTier = isJobFeatured
+        ? "featured"
+        : isJobStandard
+          ? "standard"
+          : "";
 
       const response = await fetch("/api/stripe/checkout", {
         method: "POST",

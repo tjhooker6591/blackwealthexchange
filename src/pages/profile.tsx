@@ -98,40 +98,43 @@ export default function ProfilePage() {
   const [removeAvatarBusy, setRemoveAvatarBusy] = useState(false);
   const [removeResumeBusy, setRemoveResumeBusy] = useState(false);
 
-  const fetchProfile = useCallback(async (signal?: AbortSignal) => {
-    const meRes = await fetch("/api/auth/me", {
-      cache: "no-store",
-      credentials: "include",
-      signal,
-    });
+  const fetchProfile = useCallback(
+    async (signal?: AbortSignal) => {
+      const meRes = await fetch("/api/auth/me", {
+        cache: "no-store",
+        credentials: "include",
+        signal,
+      });
 
-    if (!meRes.ok) {
-      router.replace("/login?redirect=/profile");
-      return;
-    }
+      if (!meRes.ok) {
+        router.replace("/login?redirect=/profile");
+        return;
+      }
 
-    const meData = await meRes.json().catch(() => null);
-    const meUser = (meData?.user ?? null) as MeUser | null;
-    if (!meUser?.accountType) {
-      router.replace("/login?redirect=/profile");
-      return;
-    }
+      const meData = await meRes.json().catch(() => null);
+      const meUser = (meData?.user ?? null) as MeUser | null;
+      if (!meUser?.accountType) {
+        router.replace("/login?redirect=/profile");
+        return;
+      }
 
-    setMe(meUser);
+      setMe(meUser);
 
-    const res = await fetch("/api/profile", {
-      cache: "no-store",
-      credentials: "include",
-      signal,
-    });
-    if (!res.ok) throw new Error("Failed to load profile");
+      const res = await fetch("/api/profile", {
+        cache: "no-store",
+        credentials: "include",
+        signal,
+      });
+      if (!res.ok) throw new Error("Failed to load profile");
 
-    const data: UserProfile = await res.json();
-    setProfile(data);
-    setName(data.name || "");
-    setEmail(data.email || meUser.email || "");
-    setBio(data.bio || "");
-  }, [router]);
+      const data: UserProfile = await res.json();
+      setProfile(data);
+      setName(data.name || "");
+      setEmail(data.email || meUser.email || "");
+      setBio(data.bio || "");
+    },
+    [router],
+  );
 
   useEffect(() => {
     const controller = new AbortController();
@@ -358,7 +361,9 @@ export default function ProfilePage() {
 
           <div className="mt-4 grid gap-3 text-sm text-gray-300">
             <div>
-              Current: {profile.avatar?.filename || (avatarUrl ? "Uploaded avatar" : "No avatar uploaded")}
+              Current:{" "}
+              {profile.avatar?.filename ||
+                (avatarUrl ? "Uploaded avatar" : "No avatar uploaded")}
             </div>
             {profile.avatar?.uploadedAt ? (
               <div>Uploaded: {formatDate(profile.avatar.uploadedAt)}</div>
@@ -395,17 +400,24 @@ export default function ProfilePage() {
               disabled={removeAvatarBusy || !avatarUrl}
               className={cx(
                 "px-4 py-2 rounded-xl border border-red-400/50 text-red-300 hover:bg-red-500/10 transition text-sm",
-                (removeAvatarBusy || !avatarUrl) && "opacity-50 cursor-not-allowed",
+                (removeAvatarBusy || !avatarUrl) &&
+                  "opacity-50 cursor-not-allowed",
               )}
             >
               {removeAvatarBusy ? "Removing…" : "Remove Avatar"}
             </button>
 
-            {imgStatus === "success" && <span className="text-green-400 text-sm">Updated</span>}
-            {imgStatus === "error" && <span className="text-red-400 text-sm">Upload failed</span>}
+            {imgStatus === "success" && (
+              <span className="text-green-400 text-sm">Updated</span>
+            )}
+            {imgStatus === "error" && (
+              <span className="text-red-400 text-sm">Upload failed</span>
+            )}
           </form>
 
-          <div className="mt-2 text-[11px] text-gray-400">Max 5MB. JPG/PNG recommended.</div>
+          <div className="mt-2 text-[11px] text-gray-400">
+            Max 5MB. JPG/PNG recommended.
+          </div>
         </section>
 
         {/* Profile details */}
@@ -424,7 +436,9 @@ export default function ProfilePage() {
             </label>
 
             <label className="block">
-              <div className="text-sm text-gray-200 font-semibold">Email (locked)</div>
+              <div className="text-sm text-gray-200 font-semibold">
+                Email (locked)
+              </div>
               <input
                 type="email"
                 className="w-full mt-2 rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-gray-300 outline-none"
@@ -455,8 +469,12 @@ export default function ProfilePage() {
               >
                 {saveStatus === "saving" ? "Saving…" : "Save Profile"}
               </button>
-              {saveStatus === "success" && <p className="text-green-400">Saved</p>}
-              {saveStatus === "error" && <p className="text-red-400">Save failed</p>}
+              {saveStatus === "success" && (
+                <p className="text-green-400">Saved</p>
+              )}
+              {saveStatus === "error" && (
+                <p className="text-red-400">Save failed</p>
+              )}
             </div>
           </form>
         </section>
@@ -465,7 +483,8 @@ export default function ProfilePage() {
         <section className="rounded-2xl border border-yellow-500/15 bg-gray-900/60 p-6 shadow-xl">
           <h2 className="text-xl font-bold text-yellow-200">Current Resume</h2>
           <p className="text-gray-300 text-sm mt-1">
-            Upload, view, download, replace, or remove your currently saved resume.
+            Upload, view, download, replace, or remove your currently saved
+            resume.
           </p>
 
           {profile.resume?.url ? (
@@ -480,12 +499,14 @@ export default function ProfilePage() {
               </div>
               {profile.resume.contentType ? (
                 <div>
-                  <span className="text-gray-400">Type:</span> {profile.resume.contentType}
+                  <span className="text-gray-400">Type:</span>{" "}
+                  {profile.resume.contentType}
                 </div>
               ) : null}
               {profile.resume.size ? (
                 <div>
-                  <span className="text-gray-400">Size:</span> {formatBytes(profile.resume.size)}
+                  <span className="text-gray-400">Size:</span>{" "}
+                  {formatBytes(profile.resume.size)}
                 </div>
               ) : null}
 
@@ -548,11 +569,17 @@ export default function ProfilePage() {
               {resumeStatus === "uploading" ? "Uploading…" : "Replace Resume"}
             </button>
 
-            {resumeStatus === "success" && <span className="text-green-400 text-sm">Updated</span>}
-            {resumeStatus === "error" && <span className="text-red-400 text-sm">Upload failed</span>}
+            {resumeStatus === "success" && (
+              <span className="text-green-400 text-sm">Updated</span>
+            )}
+            {resumeStatus === "error" && (
+              <span className="text-red-400 text-sm">Upload failed</span>
+            )}
           </form>
 
-          <div className="mt-2 text-[11px] text-gray-400">Max 10MB. PDF/DOC/DOCX.</div>
+          <div className="mt-2 text-[11px] text-gray-400">
+            Max 10MB. PDF/DOC/DOCX.
+          </div>
         </section>
       </div>
     </div>
@@ -578,7 +605,9 @@ function NotFound() {
       <GlowBackground />
       <div className="relative w-full max-w-md rounded-2xl border border-red-500/25 bg-red-500/10 p-6 shadow-xl">
         <div className="text-xl font-bold text-red-200">Profile not found.</div>
-        <p className="text-gray-200 mt-2">If you just signed up, your profile may not be created yet.</p>
+        <p className="text-gray-200 mt-2">
+          If you just signed up, your profile may not be created yet.
+        </p>
         <Link
           href="/"
           className="inline-block mt-4 px-4 py-2 rounded-xl bg-yellow-400 text-black font-semibold hover:bg-yellow-300 transition"

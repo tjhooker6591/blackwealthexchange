@@ -39,7 +39,8 @@ export default async function handler(
 
   try {
     const session = await stripe.checkout.sessions.retrieve(sessionId);
-    const paid = String((session as any).payment_status || "").toLowerCase() === "paid";
+    const paid =
+      String((session as any).payment_status || "").toLowerCase() === "paid";
 
     const metadata = (session.metadata || {}) as Record<string, string>;
     const metaType = String(metadata.type || "").toLowerCase();
@@ -47,7 +48,9 @@ export default async function handler(
     const courseId = String(metadata.courseId || metadata.itemId || "").trim();
 
     if (!paid) {
-      return res.status(200).json({ ok: true, paid: false, reason: "not_paid" });
+      return res
+        .status(200)
+        .json({ ok: true, paid: false, reason: "not_paid" });
     }
 
     if (metaType !== "course") {
@@ -72,10 +75,15 @@ export default async function handler(
     let enrollmentCreated = false;
 
     if (ObjectId.isValid(userId)) {
-      await db.collection("users").updateOne(
-        { _id: new ObjectId(userId) },
-        { $addToSet: { purchasedCourses: courseId }, $set: { updatedAt: new Date() } },
-      );
+      await db
+        .collection("users")
+        .updateOne(
+          { _id: new ObjectId(userId) },
+          {
+            $addToSet: { purchasedCourses: courseId },
+            $set: { updatedAt: new Date() },
+          },
+        );
     }
 
     const enrollmentResult = await db.collection("enrollments").updateOne(

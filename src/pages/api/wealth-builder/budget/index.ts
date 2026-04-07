@@ -16,7 +16,7 @@ type BudgetCategory = {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   const auth = await requireWealthUser(req, res);
   if (!auth) return;
@@ -30,13 +30,13 @@ export default async function handler(
       firstQueryValue(req.query.month),
       1,
       12,
-      now.getMonth() + 1
+      now.getMonth() + 1,
     );
     const year = toIntegerInRange(
       firstQueryValue(req.query.year),
       2000,
       2100,
-      now.getFullYear()
+      now.getFullYear(),
     );
 
     const plan = await collection.findOne({
@@ -85,7 +85,7 @@ export default async function handler(
 
     const totalBudgeted = categories.reduce(
       (sum, item) => sum + item.plannedAmount,
-      0
+      0,
     );
 
     await collection.updateOne(
@@ -104,7 +104,7 @@ export default async function handler(
           createdAt: now,
         },
       },
-      { upsert: true }
+      { upsert: true },
     );
 
     const saved = await collection.findOne({

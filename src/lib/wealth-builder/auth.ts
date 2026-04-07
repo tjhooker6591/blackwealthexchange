@@ -18,7 +18,10 @@ function getSecret(): string {
   return secret;
 }
 
-function getStringClaim(payload: JwtPayload, keys: string[]): string | undefined {
+function getStringClaim(
+  payload: JwtPayload,
+  keys: string[],
+): string | undefined {
   for (const key of keys) {
     const value = payload[key];
     if (typeof value === "string" && value.trim()) {
@@ -30,7 +33,7 @@ function getStringClaim(payload: JwtPayload, keys: string[]): string | undefined
 
 export async function requireWealthUser(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ): Promise<WealthAuthResult | null> {
   try {
     const token = req.cookies?.session_token;
@@ -48,7 +51,9 @@ export async function requireWealthUser(
 
     const payload = decoded as JwtPayload;
     const payloadAccountType =
-      getStringClaim(payload, ["accountType", "role"]) || req.cookies?.accountType || "user";
+      getStringClaim(payload, ["accountType", "role"]) ||
+      req.cookies?.accountType ||
+      "user";
 
     if (payloadAccountType !== "user") {
       res.status(403).json({
@@ -60,7 +65,9 @@ export async function requireWealthUser(
 
     const rawUserId = getStringClaim(payload, ["userId", "id", "sub"]);
     if (!rawUserId) {
-      res.status(401).json({ ok: false, message: "Unable to resolve user from session." });
+      res
+        .status(401)
+        .json({ ok: false, message: "Unable to resolve user from session." });
       return null;
     }
 
@@ -68,15 +75,20 @@ export async function requireWealthUser(
     const users = db.collection("users");
 
     let user =
-      (toObjectId(rawUserId) && (await users.findOne({ _id: toObjectId(rawUserId)! }))) ||
+      (toObjectId(rawUserId) &&
+        (await users.findOne({ _id: toObjectId(rawUserId)! }))) ||
       (await users.findOne({ _id: rawUserId as any }));
 
     if (!user) {
-      user = await users.findOne({ email: getStringClaim(payload, ["email"]) || null });
+      user = await users.findOne({
+        email: getStringClaim(payload, ["email"]) || null,
+      });
     }
 
     if (!user) {
-      res.status(401).json({ ok: false, message: "Authenticated user record not found." });
+      res
+        .status(401)
+        .json({ ok: false, message: "Authenticated user record not found." });
       return null;
     }
 

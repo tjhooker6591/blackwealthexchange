@@ -7,6 +7,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     ok: true,
     placeholder: true,
     id,
-    message: "Travel Map business detail route scaffold is active. Business lookup logic not connected yet.",
+    message:
+      "Travel Map business detail route scaffold is active. Business lookup logic not connected yet.",
   });
 }

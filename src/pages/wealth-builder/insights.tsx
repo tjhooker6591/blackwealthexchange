@@ -29,8 +29,11 @@ type InsightsResponse = {
 export default function WealthBuilderInsightsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [entitlement, setEntitlement] = useState<EntitlementResponse["entitlement"]>();
-  const [insights, setInsights] = useState<Array<{ type: string; title: string; message: string }>>([]);
+  const [entitlement, setEntitlement] =
+    useState<EntitlementResponse["entitlement"]>();
+  const [insights, setInsights] = useState<
+    Array<{ type: string; title: string; message: string }>
+  >([]);
 
   async function loadData() {
     setLoading(true);
@@ -41,7 +44,9 @@ export default function WealthBuilderInsightsPage() {
       const entitlementData: EntitlementResponse = await entitlementRes.json();
 
       if (!entitlementRes.ok || !entitlementData.ok) {
-        throw new Error(entitlementData.message || "Failed to load entitlement.");
+        throw new Error(
+          entitlementData.message || "Failed to load entitlement.",
+        );
       }
 
       setEntitlement(entitlementData.entitlement);
@@ -58,9 +63,12 @@ export default function WealthBuilderInsightsPage() {
         throw new Error(insightsData.message || "Failed to load insights.");
       }
 
-      setInsights(Array.isArray(insightsData.insights) ? insightsData.insights : []);
+      setInsights(
+        Array.isArray(insightsData.insights) ? insightsData.insights : [],
+      );
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Failed to load insights.";
+      const message =
+        err instanceof Error ? err.message : "Failed to load insights.";
       setError(message);
     } finally {
       setLoading(false);
@@ -91,9 +99,12 @@ export default function WealthBuilderInsightsPage() {
                 <p className="text-sm font-semibold uppercase tracking-[0.2em] text-yellow-400">
                   Insights
                 </p>
-                <h1 className="mt-3 text-4xl font-bold">Wealth Builder insights</h1>
+                <h1 className="mt-3 text-4xl font-bold">
+                  Wealth Builder insights
+                </h1>
                 <p className="mt-4 max-w-3xl text-zinc-300">
-                  Insights help turn tracked personal finance data into next-step guidance.
+                  Insights help turn tracked personal finance data into
+                  next-step guidance.
                 </p>
               </div>
 
@@ -118,7 +129,8 @@ export default function WealthBuilderInsightsPage() {
             ) : entitlement?.isPremium ? (
               insights.length === 0 ? (
                 <div className="mt-8 rounded-2xl border border-dashed border-yellow-700/40 bg-black/30 p-6 text-sm text-zinc-300">
-                  No insights available yet. Add more financial data to generate richer results.
+                  No insights available yet. Add more financial data to generate
+                  richer results.
                 </div>
               ) : (
                 <div className="mt-8 grid gap-4 md:grid-cols-2">
@@ -146,8 +158,9 @@ export default function WealthBuilderInsightsPage() {
                   Premium feature
                 </h2>
                 <p className="mt-3 max-w-2xl text-sm leading-6 text-zinc-200">
-                  Wealth Builder Insights are available on Premium and are designed to surface spending,
-                  debt, savings, and cash-flow guidance from your tracked data.
+                  Wealth Builder Insights are available on Premium and are
+                  designed to surface spending, debt, savings, and cash-flow
+                  guidance from your tracked data.
                 </p>
                 <div className="mt-6">
                   <Link

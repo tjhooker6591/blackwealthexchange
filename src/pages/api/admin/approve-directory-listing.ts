@@ -352,7 +352,9 @@ export default async function handler(
       s(listing?.paymentStatus) === "paid";
 
     const listingApprovalGate = canApproveDirectoryListing({
-      paymentStatus: alreadyPaid ? "paid" : s(listing?.paymentStatus) || "unknown",
+      paymentStatus: alreadyPaid
+        ? "paid"
+        : s(listing?.paymentStatus) || "unknown",
       forceApproveUnpaid,
     });
 

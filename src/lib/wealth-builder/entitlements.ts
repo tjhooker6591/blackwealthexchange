@@ -38,7 +38,9 @@ function getFreeEntitlement(): WealthBuilderEntitlement {
   };
 }
 
-function getPremiumEntitlement(raw: Record<string, any>): WealthBuilderEntitlement {
+function getPremiumEntitlement(
+  raw: Record<string, any>,
+): WealthBuilderEntitlement {
   return {
     productKey: "wealth_builder_premium",
     tier: "premium",
@@ -58,7 +60,7 @@ function getPremiumEntitlement(raw: Record<string, any>): WealthBuilderEntitleme
 }
 
 export async function getWealthBuilderEntitlementForUser(
-  userId: string
+  userId: string,
 ): Promise<WealthBuilderEntitlement> {
   const db = await getWealthDb();
   const collection = db.collection("user_entitlements");

@@ -89,7 +89,8 @@ export default function MusicPricingPage() {
       billing_cycle: "monthly",
       destination: "/api/stripe/checkout",
       ctaId: `music_plan_${planId}`,
-      ctaLabel: planId === "music-creator-pro" ? "Choose Pro" : "Choose Starter",
+      ctaLabel:
+        planId === "music-creator-pro" ? "Choose Pro" : "Choose Starter",
     });
 
     try {

@@ -9,10 +9,19 @@ import {
   toNonNegativeNumber,
 } from "@/lib/wealth-builder/helpers";
 
-const ALLOWED_TYPES = ["income", "expense", "transfer", "debt-payment", "savings"] as const;
+const ALLOWED_TYPES = [
+  "income",
+  "expense",
+  "transfer",
+  "debt-payment",
+  "savings",
+] as const;
 const ALLOWED_SOURCES = ["manual", "import", "sync", "adjustment"] as const;
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   const auth = await requireWealthUser(req, res);
   if (!auth) return;
 
@@ -29,7 +38,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const category = firstQueryValue(req.query.category);
     const from = toDateOrNull(firstQueryValue(req.query.from));
     const to = toDateOrNull(firstQueryValue(req.query.to));
-    const limit = toIntegerInRange(firstQueryValue(req.query.limit), 1, 500, 100);
+    const limit = toIntegerInRange(
+      firstQueryValue(req.query.limit),
+      1,
+      500,
+      100,
+    );
 
     if (type && ALLOWED_TYPES.includes(type as any)) filter.type = type;
     if (category) filter.category = category;
@@ -40,7 +54,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (to) (filter.date as Record<string, unknown>).$lte = to;
     }
 
-    const items = await collection.find(filter).sort({ date: -1, createdAt: -1 }).limit(limit).toArray();
+    const items = await collection
+      .find(filter)
+      .sort({ date: -1, createdAt: -1 })
+      .limit(limit)
+      .toArray();
 
     return res.status(200).json({
       ok: true,
@@ -51,13 +69,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method === "POST") {
     const body = typeof req.body === "object" && req.body ? req.body : {};
 
-    const category = typeof body.category === "string" ? body.category.trim() : "";
+    const category =
+      typeof body.category === "string" ? body.category.trim() : "";
     if (!category) {
-      return res.status(400).json({ ok: false, message: "Transaction category is required." });
+      return res
+        .status(400)
+        .json({ ok: false, message: "Transaction category is required." });
     }
 
     const type = ALLOWED_TYPES.includes(body.type) ? body.type : "expense";
-    const source = ALLOWED_SOURCES.includes(body.source) ? body.source : "manual";
+    const source = ALLOWED_SOURCES.includes(body.source)
+      ? body.source
+      : "manual";
     const date = toDateOrNull(body.date) || new Date();
     const now = new Date();
 
@@ -85,5 +108,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   res.setHeader("Allow", ["GET", "POST"]);
-  return res.status(405).json({ ok: false, message: `Method ${req.method} not allowed.` });
+  return res
+    .status(405)
+    .json({ ok: false, message: `Method ${req.method} not allowed.` });
 }

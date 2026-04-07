@@ -30,8 +30,9 @@ export default function TravelMapCard({
             {business.business_name}
           </h3>
           <p className="mt-1 text-sm text-yellow-200/90">
-            {[business.category, business.subcategory].filter(Boolean).join(" • ") ||
-              "Black-owned business"}
+            {[business.category, business.subcategory]
+              .filter(Boolean)
+              .join(" • ") || "Black-owned business"}
           </p>
         </div>
 

@@ -58,8 +58,8 @@ function formatGoalDoc(doc: any): SavingsGoalItem {
       doc.targetDate instanceof Date
         ? doc.targetDate
         : doc.targetDate
-        ? new Date(doc.targetDate)
-        : null,
+          ? new Date(doc.targetDate)
+          : null,
     monthlyContributionTarget: Number(doc.monthlyContributionTarget) || 0,
     status: getGoalStatus(doc.status),
     createdAt:
@@ -71,7 +71,7 @@ function formatGoalDoc(doc: any): SavingsGoalItem {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<GoalsResponse>
+  res: NextApiResponse<GoalsResponse>,
 ) {
   const auth = await requireWealthUser(req, res);
   if (!auth) return;
@@ -117,7 +117,8 @@ export default async function handler(
       }
 
       const body = typeof req.body === "object" && req.body ? req.body : {};
-      const goalName = typeof body.goalName === "string" ? body.goalName.trim() : "";
+      const goalName =
+        typeof body.goalName === "string" ? body.goalName.trim() : "";
 
       if (!goalName) {
         return res.status(400).json({
@@ -138,7 +139,7 @@ export default async function handler(
         targetDate: toDateOrNull(body.targetDate),
         monthlyContributionTarget: toNonNegativeNumber(
           body.monthlyContributionTarget,
-          0
+          0,
         ),
         status,
         createdAt: now,

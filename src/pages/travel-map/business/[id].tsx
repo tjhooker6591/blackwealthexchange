@@ -18,7 +18,9 @@ export default function TravelMapBusinessDetailPage() {
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-yellow-400">
               Business Detail
             </p>
-            <h1 className="mt-3 text-4xl font-bold">Travel Map business view</h1>
+            <h1 className="mt-3 text-4xl font-bold">
+              Travel Map business view
+            </h1>
             <p className="mt-4 max-w-3xl text-zinc-300">
               Placeholder business detail page for id: {String(id || "")}
             </p>

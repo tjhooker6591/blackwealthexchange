@@ -7,9 +7,19 @@ import {
   toNonNegativeNumber,
 } from "@/lib/wealth-builder/helpers";
 
-const ALLOWED_STATUSES = ["active", "paid", "paused", "delinquent", "collections", "closed"] as const;
+const ALLOWED_STATUSES = [
+  "active",
+  "paid",
+  "paused",
+  "delinquent",
+  "collections",
+  "closed",
+] as const;
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   const auth = await requireWealthUser(req, res);
   if (!auth) return;
 
@@ -33,10 +43,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const name = typeof body.name === "string" ? body.name.trim() : "";
     if (!name) {
-      return res.status(400).json({ ok: false, message: "Debt name is required." });
+      return res
+        .status(400)
+        .json({ ok: false, message: "Debt name is required." });
     }
 
-    const status = ALLOWED_STATUSES.includes(body.status) ? body.status : "active";
+    const status = ALLOWED_STATUSES.includes(body.status)
+      ? body.status
+      : "active";
     const now = new Date();
 
     const doc = {
@@ -65,5 +79,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   res.setHeader("Allow", ["GET", "POST"]);
-  return res.status(405).json({ ok: false, message: `Method ${req.method} not allowed.` });
+  return res
+    .status(405)
+    .json({ ok: false, message: `Method ${req.method} not allowed.` });
 }

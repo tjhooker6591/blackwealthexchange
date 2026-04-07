@@ -179,8 +179,6 @@ export default function CustomAd() {
 
       setRequestId(data.requestId);
       setSubmitted(true);
-
-
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Failed to save custom request.";

@@ -141,7 +141,9 @@ function isPremiumActiveFromDoc(doc: any) {
     typeof doc.currentPlan === "string" ? doc.currentPlan.toLowerCase() : "";
 
   const premiumStatus =
-    typeof doc.premiumStatus === "string" ? doc.premiumStatus.toLowerCase() : "";
+    typeof doc.premiumStatus === "string"
+      ? doc.premiumStatus.toLowerCase()
+      : "";
 
   return (
     doc.isPremium === true ||
@@ -196,8 +198,7 @@ export default async function handler(
       const decoded = jwt.verify(token, SECRET as string) as any;
       sessionUserId = decoded?.userId;
       sessionEmail = decoded?.email || "";
-      sessionAccountType =
-        decoded?.accountType || cookieAccountType || "user";
+      sessionAccountType = decoded?.accountType || cookieAccountType || "user";
 
       if (!sessionUserId) {
         return res.status(401).json({ error: "Unauthorized" });
@@ -535,10 +536,8 @@ export default async function handler(
 
     if (
       type === "plan" &&
-      (
-        finalItemId === "wealth-builder-premium-monthly" ||
-        finalItemId === "wealth-builder-premium-annual"
-      )
+      (finalItemId === "wealth-builder-premium-monthly" ||
+        finalItemId === "wealth-builder-premium-annual")
     ) {
       metadata.productKey = "wealth_builder_premium";
       metadata.tier = "premium";
@@ -551,13 +550,12 @@ export default async function handler(
     // ---------------------------------------------------------
     if (
       type === "plan" &&
-      (
-        finalItemId === "premium" ||
+      (finalItemId === "premium" ||
         finalItemId === "wealth-builder-premium-monthly" ||
-        finalItemId === "wealth-builder-premium-annual"
-      )
+        finalItemId === "wealth-builder-premium-annual")
     ) {
-      const accountCollectionName = getAccountCollectionName(sessionAccountType);
+      const accountCollectionName =
+        getAccountCollectionName(sessionAccountType);
 
       const accountQuery = {
         $or: [
@@ -585,11 +583,13 @@ export default async function handler(
         finalItemId === "wealth-builder-premium-monthly" ||
         finalItemId === "wealth-builder-premium-annual"
       ) {
-        const existingEntitlement = await db.collection("user_entitlements").findOne({
-          userId: sessionUserId,
-          accountType: "user",
-          productKey: "wealth_builder_premium",
-        });
+        const existingEntitlement = await db
+          .collection("user_entitlements")
+          .findOne({
+            userId: sessionUserId,
+            accountType: "user",
+            productKey: "wealth_builder_premium",
+          });
 
         if (isWealthBuilderPremiumEntitlementActive(existingEntitlement)) {
           return res.status(409).json({
@@ -753,24 +753,21 @@ export default async function handler(
             checkoutFingerprint,
             productKey:
               type === "plan" &&
-              (
-                finalItemId === "wealth-builder-premium-monthly" ||
-                finalItemId === "wealth-builder-premium-annual"
-              )
+              (finalItemId === "wealth-builder-premium-monthly" ||
+                finalItemId === "wealth-builder-premium-annual")
                 ? "wealth_builder_premium"
                 : null,
             tier:
               type === "plan" &&
-              (
-                finalItemId === "wealth-builder-premium-monthly" ||
-                finalItemId === "wealth-builder-premium-annual"
-              )
+              (finalItemId === "wealth-builder-premium-monthly" ||
+                finalItemId === "wealth-builder-premium-annual")
                 ? "premium"
                 : null,
             billingInterval:
               type === "plan" && finalItemId === "wealth-builder-premium-annual"
                 ? "annual"
-                : type === "plan" && finalItemId === "wealth-builder-premium-monthly"
+                : type === "plan" &&
+                    finalItemId === "wealth-builder-premium-monthly"
                   ? "monthly"
                   : null,
           },

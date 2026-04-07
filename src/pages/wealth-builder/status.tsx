@@ -72,13 +72,17 @@ export default function WealthBuilderStatusPage() {
       const payload: StatusResponse = await response.json();
 
       if (!response.ok || !payload.ok || !payload.status) {
-        throw new Error(payload.message || "Failed to load Wealth Builder status.");
+        throw new Error(
+          payload.message || "Failed to load Wealth Builder status.",
+        );
       }
 
       setData(payload.status);
     } catch (err) {
       const message =
-        err instanceof Error ? err.message : "Failed to load Wealth Builder status.";
+        err instanceof Error
+          ? err.message
+          : "Failed to load Wealth Builder status.";
       setError(message);
     } finally {
       setLoading(false);
@@ -109,10 +113,12 @@ export default function WealthBuilderStatusPage() {
                 <p className="text-sm font-semibold uppercase tracking-[0.2em] text-yellow-400">
                   Verification
                 </p>
-                <h1 className="mt-3 text-4xl font-bold">Wealth Builder status</h1>
+                <h1 className="mt-3 text-4xl font-bold">
+                  Wealth Builder status
+                </h1>
                 <p className="mt-4 max-w-3xl text-zinc-300">
-                  Use this page to verify the logged-in user entitlement, recent Wealth Builder
-                  payments, and core finance-module counts.
+                  Use this page to verify the logged-in user entitlement, recent
+                  Wealth Builder payments, and core finance-module counts.
                 </p>
               </div>
 
@@ -139,7 +145,9 @@ export default function WealthBuilderStatusPage() {
               <>
                 <div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
                   <div className="rounded-2xl border border-white/10 bg-black/30 p-5">
-                    <p className="text-sm uppercase tracking-wide text-zinc-400">Plan</p>
+                    <p className="text-sm uppercase tracking-wide text-zinc-400">
+                      Plan
+                    </p>
                     <p className="mt-3 text-2xl font-bold text-yellow-300">
                       {data.entitlement.isPremium ? "Premium" : "Free"}
                     </p>
@@ -149,7 +157,9 @@ export default function WealthBuilderStatusPage() {
                   </div>
 
                   <div className="rounded-2xl border border-white/10 bg-black/30 p-5">
-                    <p className="text-sm uppercase tracking-wide text-zinc-400">Savings Goals</p>
+                    <p className="text-sm uppercase tracking-wide text-zinc-400">
+                      Savings Goals
+                    </p>
                     <p className="mt-3 text-2xl font-bold text-yellow-300">
                       {data.summary.goalCount}
                     </p>
@@ -159,7 +169,9 @@ export default function WealthBuilderStatusPage() {
                   </div>
 
                   <div className="rounded-2xl border border-white/10 bg-black/30 p-5">
-                    <p className="text-sm uppercase tracking-wide text-zinc-400">Debt Records</p>
+                    <p className="text-sm uppercase tracking-wide text-zinc-400">
+                      Debt Records
+                    </p>
                     <p className="mt-3 text-2xl font-bold text-yellow-300">
                       {data.summary.debtCount}
                     </p>
@@ -169,7 +181,9 @@ export default function WealthBuilderStatusPage() {
                   </div>
 
                   <div className="rounded-2xl border border-white/10 bg-black/30 p-5">
-                    <p className="text-sm uppercase tracking-wide text-zinc-400">Transactions</p>
+                    <p className="text-sm uppercase tracking-wide text-zinc-400">
+                      Transactions
+                    </p>
                     <p className="mt-3 text-2xl font-bold text-yellow-300">
                       {data.summary.transactionCount}
                     </p>
@@ -181,43 +195,84 @@ export default function WealthBuilderStatusPage() {
 
                 <div className="mt-8 grid gap-6 lg:grid-cols-2)">
                   <div className="rounded-2xl border border-white/10 bg-black/30 p-6">
-                    <h2 className="text-xl font-semibold text-white">Entitlement details</h2>
+                    <h2 className="text-xl font-semibold text-white">
+                      Entitlement details
+                    </h2>
                     <div className="mt-4 space-y-3 text-sm text-zinc-300">
-                      <p><span className="font-semibold text-white">User ID:</span> {data.userId}</p>
-                      <p><span className="font-semibold text-white">Email:</span> {data.email || "—"}</p>
-                      <p><span className="font-semibold text-white">Product Key:</span> {data.entitlement.productKey}</p>
-                      <p><span className="font-semibold text-white">Tier:</span> {data.entitlement.tier}</p>
-                      <p><span className="font-semibold text-white">Status:</span> {data.entitlement.status}</p>
                       <p>
-                        <span className="font-semibold text-white">Savings Goal Limit:</span>{" "}
+                        <span className="font-semibold text-white">
+                          User ID:
+                        </span>{" "}
+                        {data.userId}
+                      </p>
+                      <p>
+                        <span className="font-semibold text-white">Email:</span>{" "}
+                        {data.email || "—"}
+                      </p>
+                      <p>
+                        <span className="font-semibold text-white">
+                          Product Key:
+                        </span>{" "}
+                        {data.entitlement.productKey}
+                      </p>
+                      <p>
+                        <span className="font-semibold text-white">Tier:</span>{" "}
+                        {data.entitlement.tier}
+                      </p>
+                      <p>
+                        <span className="font-semibold text-white">
+                          Status:
+                        </span>{" "}
+                        {data.entitlement.status}
+                      </p>
+                      <p>
+                        <span className="font-semibold text-white">
+                          Savings Goal Limit:
+                        </span>{" "}
                         {data.entitlement.limits.maxSavingsGoals === null
                           ? "Unlimited"
                           : data.entitlement.limits.maxSavingsGoals}
                       </p>
                       <p>
-                        <span className="font-semibold text-white">Current Month Budget Only:</span>{" "}
-                        {data.entitlement.limits.currentMonthBudgetOnly ? "Yes" : "No"}
+                        <span className="font-semibold text-white">
+                          Current Month Budget Only:
+                        </span>{" "}
+                        {data.entitlement.limits.currentMonthBudgetOnly
+                          ? "Yes"
+                          : "No"}
                       </p>
                       <p>
-                        <span className="font-semibold text-white">Insights Enabled:</span>{" "}
+                        <span className="font-semibold text-white">
+                          Insights Enabled:
+                        </span>{" "}
                         {data.entitlement.limits.insightsEnabled ? "Yes" : "No"}
                       </p>
                       <p>
-                        <span className="font-semibold text-white">Budget History Enabled:</span>{" "}
-                        {data.entitlement.limits.budgetHistoryEnabled ? "Yes" : "No"}
+                        <span className="font-semibold text-white">
+                          Budget History Enabled:
+                        </span>{" "}
+                        {data.entitlement.limits.budgetHistoryEnabled
+                          ? "Yes"
+                          : "No"}
                       </p>
                     </div>
                   </div>
 
                   <div className="rounded-2xl border border-white/10 bg-black/30 p-6">
-                    <h2 className="text-xl font-semibold text-white">Latest payment signal</h2>
+                    <h2 className="text-xl font-semibold text-white">
+                      Latest payment signal
+                    </h2>
                     <div className="mt-4 space-y-3 text-sm text-zinc-300">
                       <p>
-                        <span className="font-semibold text-white">Last payment status:</span>{" "}
+                        <span className="font-semibold text-white">
+                          Last payment status:
+                        </span>{" "}
                         {data.summary.lastWealthBuilderPaymentStatus || "—"}
                       </p>
                       <p>
-                        <span className="font-semibold text-white">Last payment time:</span>{" "}
+                        <span className="font-semibold text-white">
+                          Last payment time:
+                        </span>{" "}
                         {formatDate(data.summary.lastWealthBuilderPaymentAt)}
                       </p>
                     </div>
@@ -225,7 +280,9 @@ export default function WealthBuilderStatusPage() {
                 </div>
 
                 <div className="mt-8 rounded-2xl border border-white/10 bg-black/30 p-6">
-                  <h2 className="text-xl font-semibold text-white">Recent Wealth Builder payments</h2>
+                  <h2 className="text-xl font-semibold text-white">
+                    Recent Wealth Builder payments
+                  </h2>
 
                   {data.recentWealthBuilderPayments.length === 0 ? (
                     <div className="mt-4 rounded-2xl border border-dashed border-yellow-700/40 bg-black/20 p-5 text-sm text-zinc-300">
@@ -233,23 +290,65 @@ export default function WealthBuilderStatusPage() {
                     </div>
                   ) : (
                     <div className="mt-4 space-y-4">
-                      {data.recentWealthBuilderPayments.map((payment, index) => (
-                        <div
-                          key={`${payment.stripeSessionId || "payment"}-${index}`}
-                          className="rounded-2xl border border-white/10 bg-zinc-950/70 p-5"
-                        >
-                          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4 text-sm text-zinc-300">
-                            <p><span className="font-semibold text-white">Item:</span> {payment.itemId || "—"}</p>
-                            <p><span className="font-semibold text-white">Product:</span> {payment.productKey || "—"}</p>
-                            <p><span className="font-semibold text-white">Interval:</span> {payment.billingInterval || "—"}</p>
-                            <p><span className="font-semibold text-white">Status:</span> {payment.status || "—"}</p>
-                            <p><span className="font-semibold text-white">Amount:</span> {formatCurrency(payment.amountCents)}</p>
-                            <p><span className="font-semibold text-white">Created:</span> {formatDate(payment.createdAt)}</p>
-                            <p><span className="font-semibold text-white">Paid:</span> {formatDate(payment.paidAt)}</p>
-                            <p className="break-all"><span className="font-semibold text-white">Session:</span> {payment.stripeSessionId || "—"}</p>
+                      {data.recentWealthBuilderPayments.map(
+                        (payment, index) => (
+                          <div
+                            key={`${payment.stripeSessionId || "payment"}-${index}`}
+                            className="rounded-2xl border border-white/10 bg-zinc-950/70 p-5"
+                          >
+                            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4 text-sm text-zinc-300">
+                              <p>
+                                <span className="font-semibold text-white">
+                                  Item:
+                                </span>{" "}
+                                {payment.itemId || "—"}
+                              </p>
+                              <p>
+                                <span className="font-semibold text-white">
+                                  Product:
+                                </span>{" "}
+                                {payment.productKey || "—"}
+                              </p>
+                              <p>
+                                <span className="font-semibold text-white">
+                                  Interval:
+                                </span>{" "}
+                                {payment.billingInterval || "—"}
+                              </p>
+                              <p>
+                                <span className="font-semibold text-white">
+                                  Status:
+                                </span>{" "}
+                                {payment.status || "—"}
+                              </p>
+                              <p>
+                                <span className="font-semibold text-white">
+                                  Amount:
+                                </span>{" "}
+                                {formatCurrency(payment.amountCents)}
+                              </p>
+                              <p>
+                                <span className="font-semibold text-white">
+                                  Created:
+                                </span>{" "}
+                                {formatDate(payment.createdAt)}
+                              </p>
+                              <p>
+                                <span className="font-semibold text-white">
+                                  Paid:
+                                </span>{" "}
+                                {formatDate(payment.paidAt)}
+                              </p>
+                              <p className="break-all">
+                                <span className="font-semibold text-white">
+                                  Session:
+                                </span>{" "}
+                                {payment.stripeSessionId || "—"}
+                              </p>
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        ),
+                      )}
                     </div>
                   )}
                 </div>

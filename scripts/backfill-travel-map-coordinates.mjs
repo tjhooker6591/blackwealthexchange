@@ -75,20 +75,16 @@ function buildAddress(doc) {
 
   const street =
     cleanString(addressObject?.street) ||
-    (!addressString.includes(",") ? addressString : addressString.split(",")[0]?.trim()) ||
+    (!addressString.includes(",")
+      ? addressString
+      : addressString.split(",")[0]?.trim()) ||
     cleanString(doc.street);
 
-  const city =
-    cleanString(doc.city) ||
-    cleanString(addressObject?.city);
+  const city = cleanString(doc.city) || cleanString(addressObject?.city);
 
-  const state =
-    cleanString(doc.state) ||
-    cleanString(addressObject?.state);
+  const state = cleanString(doc.state) || cleanString(addressObject?.state);
 
-  const zip =
-    cleanString(doc.zip) ||
-    cleanString(addressObject?.zip);
+  const zip = cleanString(doc.zip) || cleanString(addressObject?.zip);
 
   const formatted =
     addressString ||
@@ -392,8 +388,7 @@ async function main() {
         updated += 1;
       } catch (error) {
         failed += 1;
-        const message =
-          error instanceof Error ? error.message : String(error);
+        const message = error instanceof Error ? error.message : String(error);
         console.error(`[error] ${doc.business_name}: ${message}`);
       }
     }

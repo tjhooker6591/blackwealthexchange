@@ -101,24 +101,32 @@ export default function WealthBuilderDebtPage() {
   const [success, setSuccess] = useState<string>("");
 
   const activeDebts = useMemo(
-    () => debts.filter((item) => item.status !== "paid" && item.status !== "closed"),
-    [debts]
+    () =>
+      debts.filter(
+        (item) => item.status !== "paid" && item.status !== "closed",
+      ),
+    [debts],
   );
 
   const totalDebt = useMemo(
-    () => activeDebts.reduce((sum, item) => sum + (Number(item.balance) || 0), 0),
-    [activeDebts]
+    () =>
+      activeDebts.reduce((sum, item) => sum + (Number(item.balance) || 0), 0),
+    [activeDebts],
   );
 
   const monthlyMinimums = useMemo(
-    () => activeDebts.reduce((sum, item) => sum + (Number(item.minimumPayment) || 0), 0),
-    [activeDebts]
+    () =>
+      activeDebts.reduce(
+        (sum, item) => sum + (Number(item.minimumPayment) || 0),
+        0,
+      ),
+    [activeDebts],
   );
 
   const highestInterestDebt = useMemo(() => {
     if (!activeDebts.length) return null;
     return [...activeDebts].sort(
-      (a, b) => (Number(b.interestRate) || 0) - (Number(a.interestRate) || 0)
+      (a, b) => (Number(b.interestRate) || 0) - (Number(a.interestRate) || 0),
     )[0];
   }, [activeDebts]);
 
@@ -169,7 +177,10 @@ export default function WealthBuilderDebtPage() {
     setSuccess("");
   }
 
-  function updateForm<K extends keyof DebtFormState>(field: K, value: DebtFormState[K]) {
+  function updateForm<K extends keyof DebtFormState>(
+    field: K,
+    value: DebtFormState[K],
+  ) {
     setForm((current) => ({
       ...current,
       [field]: value,
@@ -284,14 +295,18 @@ export default function WealthBuilderDebtPage() {
             </p>
             <h1 className="mt-3 text-4xl font-bold">Debt organizer</h1>
             <p className="mt-4 max-w-3xl text-zinc-300">
-              Add debt accounts, track balances and interest rates, and keep your
-              monthly minimum obligations visible in one place.
+              Add debt accounts, track balances and interest rates, and keep
+              your monthly minimum obligations visible in one place.
             </p>
 
             <div className="mt-8 grid gap-4 md:grid-cols-3">
               <div className="rounded-2xl border border-white/10 bg-black/40 p-5">
-                <h2 className="text-lg font-semibold text-yellow-300">Total Debt</h2>
-                <p className="mt-3 text-2xl font-bold">{formatCurrency(totalDebt)}</p>
+                <h2 className="text-lg font-semibold text-yellow-300">
+                  Total Debt
+                </h2>
+                <p className="mt-3 text-2xl font-bold">
+                  {formatCurrency(totalDebt)}
+                </p>
                 <p className="mt-2 text-sm text-zinc-400">
                   Sum of active debt balances.
                 </p>
@@ -344,7 +359,8 @@ export default function WealthBuilderDebtPage() {
                       {editingId ? "Edit Debt Record" : "Add Debt Record"}
                     </h2>
                     <p className="mt-2 text-sm text-zinc-400">
-                      Capture the debt name, lender, balance, rate, and payment details.
+                      Capture the debt name, lender, balance, rate, and payment
+                      details.
                     </p>
                   </div>
 
@@ -410,7 +426,9 @@ export default function WealthBuilderDebtPage() {
                         min="0"
                         step="0.01"
                         value={form.interestRate}
-                        onChange={(e) => updateForm("interestRate", e.target.value)}
+                        onChange={(e) =>
+                          updateForm("interestRate", e.target.value)
+                        }
                         className="w-full rounded-xl border border-white/10 bg-zinc-950 px-4 py-3 text-white outline-none"
                       />
                     </label>
@@ -426,7 +444,9 @@ export default function WealthBuilderDebtPage() {
                         min="0"
                         step="0.01"
                         value={form.minimumPayment}
-                        onChange={(e) => updateForm("minimumPayment", e.target.value)}
+                        onChange={(e) =>
+                          updateForm("minimumPayment", e.target.value)
+                        }
                         className="w-full rounded-xl border border-white/10 bg-zinc-950 px-4 py-3 text-white outline-none"
                       />
                     </label>
@@ -503,8 +523,8 @@ export default function WealthBuilderDebtPage() {
                           ? "Updating..."
                           : "Saving..."
                         : editingId
-                        ? "Update Debt"
-                        : "Add Debt"}
+                          ? "Update Debt"
+                          : "Add Debt"}
                     </button>
 
                     <button
@@ -522,9 +542,12 @@ export default function WealthBuilderDebtPage() {
               <section className="rounded-2xl border border-white/10 bg-zinc-900/60 p-6">
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <h2 className="text-xl font-semibold text-white">Debt Records</h2>
+                    <h2 className="text-xl font-semibold text-white">
+                      Debt Records
+                    </h2>
                     <p className="mt-2 text-sm text-zinc-400">
-                      View and manage all debt accounts tied to this user profile.
+                      View and manage all debt accounts tied to this user
+                      profile.
                     </p>
                   </div>
                   <div className="rounded-full border border-white/10 bg-black/30 px-4 py-2 text-sm text-zinc-300">
@@ -538,10 +561,12 @@ export default function WealthBuilderDebtPage() {
                   </div>
                 ) : debts.length === 0 ? (
                   <div className="mt-6 rounded-2xl border border-dashed border-yellow-700/40 bg-black/30 p-6">
-                    <h3 className="text-lg font-semibold text-white">No debt records yet</h3>
+                    <h3 className="text-lg font-semibold text-white">
+                      No debt records yet
+                    </h3>
                     <p className="mt-3 text-sm text-zinc-300">
-                      Add your first debt record to start tracking balances, interest rates,
-                      and minimum payments.
+                      Add your first debt record to start tracking balances,
+                      interest rates, and minimum payments.
                     </p>
                   </div>
                 ) : (
@@ -557,8 +582,8 @@ export default function WealthBuilderDebtPage() {
                               {item.name}
                             </h3>
                             <p className="mt-2 text-sm text-zinc-400">
-                              {item.lender || "No lender"} • {item.category || "No category"} •{" "}
-                              {item.status}
+                              {item.lender || "No lender"} •{" "}
+                              {item.category || "No category"} • {item.status}
                             </p>
                           </div>
 
@@ -577,7 +602,9 @@ export default function WealthBuilderDebtPage() {
                               disabled={deletingId === item.id}
                               className="rounded-full border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm font-semibold text-red-200 transition hover:bg-red-500/20 disabled:cursor-not-allowed disabled:opacity-60"
                             >
-                              {deletingId === item.id ? "Deleting..." : "Delete"}
+                              {deletingId === item.id
+                                ? "Deleting..."
+                                : "Delete"}
                             </button>
                           </div>
                         </div>
@@ -616,7 +643,9 @@ export default function WealthBuilderDebtPage() {
                             </p>
                             <p className="mt-2 text-lg font-bold text-white">
                               {item.dueDate
-                                ? new Date(item.dueDate).toLocaleDateString("en-US")
+                                ? new Date(item.dueDate).toLocaleDateString(
+                                    "en-US",
+                                  )
                                 : "—"}
                             </p>
                           </div>

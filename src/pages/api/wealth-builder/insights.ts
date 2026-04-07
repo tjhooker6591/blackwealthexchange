@@ -3,7 +3,10 @@ import { requireWealthUser } from "@/lib/wealth-builder/auth";
 import { getWealthDb } from "@/lib/wealth-builder/mongo";
 import { getMonthRange } from "@/lib/wealth-builder/helpers";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   const auth = await requireWealthUser(req, res);
   if (!auth) return;
 
@@ -19,19 +22,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const year = now.getFullYear();
   const { start, end } = getMonthRange(year, month);
 
-  const [profile, debtItems, goalItems, budgetPlan, transactionItems] = await Promise.all([
-    profiles.findOne({ userId: auth.userId, accountType: "user" }),
-    debts.find({ userId: auth.userId, accountType: "user" }).toArray(),
-    goals.find({ userId: auth.userId, accountType: "user" }).toArray(),
-    budgets.findOne({ userId: auth.userId, accountType: "user", month, year }),
-    transactions
-      .find({
+  const [profile, debtItems, goalItems, budgetPlan, transactionItems] =
+    await Promise.all([
+      profiles.findOne({ userId: auth.userId, accountType: "user" }),
+      debts.find({ userId: auth.userId, accountType: "user" }).toArray(),
+      goals.find({ userId: auth.userId, accountType: "user" }).toArray(),
+      budgets.findOne({
         userId: auth.userId,
         accountType: "user",
-        date: { $gte: start, $lt: end },
-      })
-      .toArray(),
-  ]);
+        month,
+        year,
+      }),
+      transactions
+        .find({
+          userId: auth.userId,
+          accountType: "user",
+          date: { $gte: start, $lt: end },
+        })
+        .toArray(),
+    ]);
 
   const insights: Array<{ type: string; title: string; message: string }> = [];
 
@@ -49,15 +58,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   }
 
-  const expenseTransactions = transactionItems.filter((item) => item.type === "expense");
+  const expenseTransactions = transactionItems.filter(
+    (item) => item.type === "expense",
+  );
   if (expenseTransactions.length > 0) {
-    const totalsByCategory = expenseTransactions.reduce<Record<string, number>>((acc, item) => {
-      const key = typeof item.category === "string" && item.category ? item.category : "Other";
-      acc[key] = (acc[key] || 0) + (typeof item.amount === "number" ? item.amount : 0);
-      return acc;
-    }, {});
+    const totalsByCategory = expenseTransactions.reduce<Record<string, number>>(
+      (acc, item) => {
+        const key =
+          typeof item.category === "string" && item.category
+            ? item.category
+            : "Other";
+        acc[key] =
+          (acc[key] || 0) + (typeof item.amount === "number" ? item.amount : 0);
+        return acc;
+      },
+      {},
+    );
 
-    const topCategory = Object.entries(totalsByCategory).sort((a, b) => b[1] - a[1])[0];
+    const topCategory = Object.entries(totalsByCategory).sort(
+      (a, b) => b[1] - a[1],
+    )[0];
     if (topCategory) {
       insights.push({
         type: "spending",
@@ -69,8 +89,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (goalItems.length > 0) {
     const activeGoal = goalItems.find((item) => item.status === "active");
-    if (activeGoal && typeof activeGoal.targetAmount === "number" && typeof activeGoal.currentAmount === "number") {
-      const remaining = Math.max(activeGoal.targetAmount - activeGoal.currentAmount, 0);
+    if (
+      activeGoal &&
+      typeof activeGoal.targetAmount === "number" &&
+      typeof activeGoal.currentAmount === "number"
+    ) {
+      const remaining = Math.max(
+        activeGoal.targetAmount - activeGoal.currentAmount,
+        0,
+      );
       insights.push({
         type: "savings",
         title: "Savings progress",
@@ -81,12 +108,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (budgetPlan && Array.isArray(budgetPlan.categories)) {
     const totalPlanned = budgetPlan.categories.reduce(
-      (sum: number, item: any) => sum + (typeof item.plannedAmount === "number" ? item.plannedAmount : 0),
-      0
+      (sum: number, item: any) =>
+        sum + (typeof item.plannedAmount === "number" ? item.plannedAmount : 0),
+      0,
     );
     const totalActual = budgetPlan.categories.reduce(
-      (sum: number, item: any) => sum + (typeof item.actualAmount === "number" ? item.actualAmount : 0),
-      0
+      (sum: number, item: any) =>
+        sum + (typeof item.actualAmount === "number" ? item.actualAmount : 0),
+      0,
     );
 
     insights.push({
@@ -102,7 +131,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (profile && typeof profile.monthlyIncome === "number") {
     const monthlyExpenses = expenseTransactions.reduce(
       (sum, item) => sum + (typeof item.amount === "number" ? item.amount : 0),
-      0
+      0,
     );
     insights.push({
       type: "cashflow",

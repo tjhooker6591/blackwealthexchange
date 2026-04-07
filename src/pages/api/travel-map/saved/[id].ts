@@ -13,5 +13,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   }
 
   res.setHeader("Allow", ["DELETE"]);
-  return res.status(405).json({ ok: false, message: `Method ${req.method} not allowed.` });
+  return res
+    .status(405)
+    .json({ ok: false, message: `Method ${req.method} not allowed.` });
 }

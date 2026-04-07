@@ -2,12 +2,7 @@ import Head from "next/head";
 import { useEffect, useMemo, useState } from "react";
 import WealthBuilderNav from "@/components/wealth-builder/WealthBuilderNav";
 
-type GoalStatus =
-  | "active"
-  | "completed"
-  | "paused"
-  | "cancelled"
-  | "archived";
+type GoalStatus = "active" | "completed" | "paused" | "cancelled" | "archived";
 
 type SavingsGoal = {
   id: string;
@@ -96,22 +91,24 @@ export default function WealthBuilderSavingsPage() {
 
   const activeGoals = useMemo(
     () => goals.filter((item) => item.status === "active"),
-    [goals]
+    [goals],
   );
 
   const totalTarget = useMemo(
-    () => goals.reduce((sum, item) => sum + (Number(item.targetAmount) || 0), 0),
-    [goals]
+    () =>
+      goals.reduce((sum, item) => sum + (Number(item.targetAmount) || 0), 0),
+    [goals],
   );
 
   const totalSaved = useMemo(
-    () => goals.reduce((sum, item) => sum + (Number(item.currentAmount) || 0), 0),
-    [goals]
+    () =>
+      goals.reduce((sum, item) => sum + (Number(item.currentAmount) || 0), 0),
+    [goals],
   );
 
   const totalRemaining = useMemo(
     () => Math.max(totalTarget - totalSaved, 0),
-    [totalTarget, totalSaved]
+    [totalTarget, totalSaved],
   );
 
   async function loadGoals() {
@@ -160,7 +157,7 @@ export default function WealthBuilderSavingsPage() {
 
   function updateForm<K extends keyof GoalFormState>(
     field: K,
-    value: GoalFormState[K]
+    value: GoalFormState[K],
   ) {
     setForm((current) => ({
       ...current,
@@ -183,7 +180,9 @@ export default function WealthBuilderSavingsPage() {
         targetAmount: getNumericValue(form.targetAmount),
         currentAmount: getNumericValue(form.currentAmount),
         targetDate: form.targetDate ? form.targetDate : null,
-        monthlyContributionTarget: getNumericValue(form.monthlyContributionTarget),
+        monthlyContributionTarget: getNumericValue(
+          form.monthlyContributionTarget,
+        ),
         status: form.status,
       };
 
@@ -273,13 +272,15 @@ export default function WealthBuilderSavingsPage() {
             </p>
             <h1 className="mt-3 text-4xl font-bold">Savings goals</h1>
             <p className="mt-4 max-w-3xl text-zinc-300">
-              Create savings goals, track progress, and keep clear visibility into
-              what you are building toward.
+              Create savings goals, track progress, and keep clear visibility
+              into what you are building toward.
             </p>
 
             <div className="mt-8 grid gap-4 md:grid-cols-3">
               <div className="rounded-2xl border border-white/10 bg-black/40 p-5">
-                <h2 className="text-lg font-semibold text-yellow-300">Total Saved</h2>
+                <h2 className="text-lg font-semibold text-yellow-300">
+                  Total Saved
+                </h2>
                 <p className="mt-3 text-2xl font-bold">
                   {formatCurrency(totalSaved)}
                 </p>
@@ -289,7 +290,9 @@ export default function WealthBuilderSavingsPage() {
               </div>
 
               <div className="rounded-2xl border border-white/10 bg-black/40 p-5">
-                <h2 className="text-lg font-semibold text-yellow-300">Total Target</h2>
+                <h2 className="text-lg font-semibold text-yellow-300">
+                  Total Target
+                </h2>
                 <p className="mt-3 text-2xl font-bold">
                   {formatCurrency(totalTarget)}
                 </p>
@@ -299,7 +302,9 @@ export default function WealthBuilderSavingsPage() {
               </div>
 
               <div className="rounded-2xl border border-white/10 bg-black/40 p-5">
-                <h2 className="text-lg font-semibold text-yellow-300">Active Goals</h2>
+                <h2 className="text-lg font-semibold text-yellow-300">
+                  Active Goals
+                </h2>
                 <p className="mt-3 text-2xl font-bold">{activeGoals.length}</p>
                 <p className="mt-2 text-sm text-zinc-400">
                   Still in progress and actively being worked.
@@ -416,7 +421,10 @@ export default function WealthBuilderSavingsPage() {
                         step="0.01"
                         value={form.monthlyContributionTarget}
                         onChange={(e) =>
-                          updateForm("monthlyContributionTarget", e.target.value)
+                          updateForm(
+                            "monthlyContributionTarget",
+                            e.target.value,
+                          )
                         }
                         className="w-full rounded-xl border border-white/10 bg-zinc-950 px-4 py-3 text-white outline-none"
                       />
@@ -454,8 +462,8 @@ export default function WealthBuilderSavingsPage() {
                           ? "Updating..."
                           : "Saving..."
                         : editingId
-                        ? "Update Goal"
-                        : "Add Goal"}
+                          ? "Update Goal"
+                          : "Add Goal"}
                     </button>
 
                     <button
@@ -473,9 +481,12 @@ export default function WealthBuilderSavingsPage() {
               <section className="rounded-2xl border border-white/10 bg-zinc-900/60 p-6">
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <h2 className="text-xl font-semibold text-white">Savings Goals</h2>
+                    <h2 className="text-xl font-semibold text-white">
+                      Savings Goals
+                    </h2>
                     <p className="mt-2 text-sm text-zinc-400">
-                      Track progress across all savings goals tied to this user profile.
+                      Track progress across all savings goals tied to this user
+                      profile.
                     </p>
                   </div>
                   <div className="rounded-full border border-white/10 bg-black/30 px-4 py-2 text-sm text-zinc-300">
@@ -493,7 +504,8 @@ export default function WealthBuilderSavingsPage() {
                       No savings goals yet
                     </h3>
                     <p className="mt-3 text-sm text-zinc-300">
-                      Add your first goal to start tracking progress toward savings milestones.
+                      Add your first goal to start tracking progress toward
+                      savings milestones.
                     </p>
                   </div>
                 ) : (
@@ -501,7 +513,7 @@ export default function WealthBuilderSavingsPage() {
                     {goals.map((item) => {
                       const progressPercent = getProgressPercent(
                         Number(item.currentAmount) || 0,
-                        Number(item.targetAmount) || 0
+                        Number(item.targetAmount) || 0,
                       );
 
                       return (
@@ -537,7 +549,9 @@ export default function WealthBuilderSavingsPage() {
                                 disabled={deletingId === item.id}
                                 className="rounded-full border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm font-semibold text-red-200 transition hover:bg-red-500/20 disabled:cursor-not-allowed disabled:opacity-60"
                               >
-                                {deletingId === item.id ? "Deleting..." : "Delete"}
+                                {deletingId === item.id
+                                  ? "Deleting..."
+                                  : "Delete"}
                               </button>
                             </div>
                           </div>
@@ -548,7 +562,9 @@ export default function WealthBuilderSavingsPage() {
                                 Current Amount
                               </p>
                               <p className="mt-2 text-lg font-bold text-white">
-                                {formatCurrency(Number(item.currentAmount) || 0)}
+                                {formatCurrency(
+                                  Number(item.currentAmount) || 0,
+                                )}
                               </p>
                             </div>
 
@@ -567,7 +583,7 @@ export default function WealthBuilderSavingsPage() {
                               </p>
                               <p className="mt-2 text-lg font-bold text-white">
                                 {formatCurrency(
-                                  Number(item.monthlyContributionTarget) || 0
+                                  Number(item.monthlyContributionTarget) || 0,
                                 )}
                               </p>
                             </div>
@@ -581,8 +597,8 @@ export default function WealthBuilderSavingsPage() {
                                   Math.max(
                                     (Number(item.targetAmount) || 0) -
                                       (Number(item.currentAmount) || 0),
-                                    0
-                                  )
+                                    0,
+                                  ),
                                 )}
                               </p>
                             </div>
@@ -612,7 +628,8 @@ export default function WealthBuilderSavingsPage() {
                       Savings Snapshot
                     </h3>
                     <p className="mt-2 text-sm text-zinc-300">
-                      {formatCurrency(totalRemaining)} remains across all current savings targets.
+                      {formatCurrency(totalRemaining)} remains across all
+                      current savings targets.
                     </p>
                   </div>
                 ) : null}

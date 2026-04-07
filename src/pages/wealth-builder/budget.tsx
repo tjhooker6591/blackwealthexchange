@@ -62,14 +62,23 @@ export default function WealthBuilderBudgetPage() {
   const [success, setSuccess] = useState<string>("");
 
   const totalPlanned = useMemo(() => {
-    return categories.reduce((sum, item) => sum + (Number(item.plannedAmount) || 0), 0);
+    return categories.reduce(
+      (sum, item) => sum + (Number(item.plannedAmount) || 0),
+      0,
+    );
   }, [categories]);
 
   const totalActual = useMemo(() => {
-    return categories.reduce((sum, item) => sum + (Number(item.actualAmount) || 0), 0);
+    return categories.reduce(
+      (sum, item) => sum + (Number(item.actualAmount) || 0),
+      0,
+    );
   }, [categories]);
 
-  const remaining = useMemo(() => totalPlanned - totalActual, [totalPlanned, totalActual]);
+  const remaining = useMemo(
+    () => totalPlanned - totalActual,
+    [totalPlanned, totalActual],
+  );
 
   async function loadBudget(selectedMonth: number, selectedYear: number) {
     setLoading(true);
@@ -78,7 +87,7 @@ export default function WealthBuilderBudgetPage() {
 
     try {
       const response = await fetch(
-        `/api/wealth-builder/budget?month=${selectedMonth}&year=${selectedYear}`
+        `/api/wealth-builder/budget?month=${selectedMonth}&year=${selectedYear}`,
       );
       const data: BudgetApiResponse = await response.json();
 
@@ -95,14 +104,15 @@ export default function WealthBuilderBudgetPage() {
                 plannedAmount: Number(item.plannedAmount) || 0,
                 actualAmount: Number(item.actualAmount) || 0,
               }))
-            : [emptyCategory()]
+            : [emptyCategory()],
         );
       } else {
         setPlanId(null);
         setCategories([emptyCategory(), emptyCategory(), emptyCategory()]);
       }
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Failed to load budget.";
+      const message =
+        err instanceof Error ? err.message : "Failed to load budget.";
       setError(message);
       setPlanId(null);
       setCategories([emptyCategory(), emptyCategory(), emptyCategory()]);
@@ -115,7 +125,11 @@ export default function WealthBuilderBudgetPage() {
     void loadBudget(month, year);
   }, [month, year]);
 
-  function updateCategory(index: number, field: keyof BudgetCategory, value: string) {
+  function updateCategory(
+    index: number,
+    field: keyof BudgetCategory,
+    value: string,
+  ) {
     setCategories((current) =>
       current.map((item, i) => {
         if (i !== index) return item;
@@ -129,7 +143,7 @@ export default function WealthBuilderBudgetPage() {
           ...item,
           [field]: Number.isFinite(parsed) && parsed >= 0 ? parsed : 0,
         };
-      })
+      }),
     );
   }
 
@@ -168,7 +182,7 @@ export default function WealthBuilderBudgetPage() {
           year,
           totalBudgeted: cleanedCategories.reduce(
             (sum, item) => sum + item.plannedAmount,
-            0
+            0,
           ),
           categories: cleanedCategories,
         }),
@@ -187,7 +201,8 @@ export default function WealthBuilderBudgetPage() {
 
       await loadBudget(month, year);
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Failed to save budget.";
+      const message =
+        err instanceof Error ? err.message : "Failed to save budget.";
       setError(message);
     } finally {
       setSaving(false);
@@ -198,7 +213,7 @@ export default function WealthBuilderBudgetPage() {
     if (!planId) return;
 
     const confirmed = window.confirm(
-      `Delete the budget for ${monthLabel(month)} ${year}?`
+      `Delete the budget for ${monthLabel(month)} ${year}?`,
     );
     if (!confirmed) return;
 
@@ -221,7 +236,8 @@ export default function WealthBuilderBudgetPage() {
       setCategories([emptyCategory(), emptyCategory(), emptyCategory()]);
       setSuccess(`Budget deleted for ${monthLabel(month)} ${year}.`);
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Failed to delete budget.";
+      const message =
+        err instanceof Error ? err.message : "Failed to delete budget.";
       setError(message);
     } finally {
       setDeleting(false);
@@ -248,13 +264,16 @@ export default function WealthBuilderBudgetPage() {
             </p>
             <h1 className="mt-3 text-4xl font-bold">Monthly budget planner</h1>
             <p className="mt-4 max-w-3xl text-zinc-300">
-              Build a monthly budget, track category targets, and compare planned spending
-              against actual amounts as you build out your personal finance view.
+              Build a monthly budget, track category targets, and compare
+              planned spending against actual amounts as you build out your
+              personal finance view.
             </p>
 
             <div className="mt-8 grid gap-4 md:grid-cols-3">
               <div className="rounded-2xl border border-white/10 bg-black/40 p-5">
-                <p className="text-sm uppercase tracking-wide text-zinc-400">Total Planned</p>
+                <p className="text-sm uppercase tracking-wide text-zinc-400">
+                  Total Planned
+                </p>
                 <p className="mt-3 text-3xl font-bold text-yellow-300">
                   ${totalPlanned.toFixed(2)}
                 </p>
@@ -264,7 +283,9 @@ export default function WealthBuilderBudgetPage() {
               </div>
 
               <div className="rounded-2xl border border-white/10 bg-black/40 p-5">
-                <p className="text-sm uppercase tracking-wide text-zinc-400">Total Actual</p>
+                <p className="text-sm uppercase tracking-wide text-zinc-400">
+                  Total Actual
+                </p>
                 <p className="mt-3 text-3xl font-bold text-yellow-300">
                   ${totalActual.toFixed(2)}
                 </p>
@@ -274,9 +295,13 @@ export default function WealthBuilderBudgetPage() {
               </div>
 
               <div className="rounded-2xl border border-white/10 bg-black/40 p-5">
-                <p className="text-sm uppercase tracking-wide text-zinc-400">Budget Status</p>
+                <p className="text-sm uppercase tracking-wide text-zinc-400">
+                  Budget Status
+                </p>
                 <p className="mt-3 text-3xl font-bold text-yellow-300">
-                  {remaining >= 0 ? `$${remaining.toFixed(2)} left` : `$${Math.abs(remaining).toFixed(2)} over`}
+                  {remaining >= 0
+                    ? `$${remaining.toFixed(2)} left`
+                    : `$${Math.abs(remaining).toFixed(2)} over`}
                 </p>
                 <p className="mt-2 text-sm text-zinc-400">
                   Difference between planned and actual totals.
@@ -286,7 +311,9 @@ export default function WealthBuilderBudgetPage() {
 
             <div className="mt-8 grid gap-4 md:grid-cols-3">
               <label className="block">
-                <span className="mb-2 block text-sm font-medium text-zinc-300">Month</span>
+                <span className="mb-2 block text-sm font-medium text-zinc-300">
+                  Month
+                </span>
                 <select
                   value={month}
                   onChange={(e) => setMonth(Number(e.target.value))}
@@ -301,13 +328,17 @@ export default function WealthBuilderBudgetPage() {
               </label>
 
               <label className="block">
-                <span className="mb-2 block text-sm font-medium text-zinc-300">Year</span>
+                <span className="mb-2 block text-sm font-medium text-zinc-300">
+                  Year
+                </span>
                 <input
                   type="number"
                   min={2000}
                   max={2100}
                   value={year}
-                  onChange={(e) => setYear(Number(e.target.value) || getCurrentYear())}
+                  onChange={(e) =>
+                    setYear(Number(e.target.value) || getCurrentYear())
+                  }
                   className="w-full rounded-xl border border-white/10 bg-zinc-900 px-4 py-3 text-white outline-none"
                 />
               </label>
@@ -342,7 +373,8 @@ export default function WealthBuilderBudgetPage() {
                     {monthLabel(month)} {year} Budget
                   </h2>
                   <p className="mt-2 text-sm text-zinc-400">
-                    Add categories, set planned amounts, and optionally track actual spend.
+                    Add categories, set planned amounts, and optionally track
+                    actual spend.
                   </p>
                 </div>
 
@@ -373,7 +405,9 @@ export default function WealthBuilderBudgetPage() {
                         <input
                           type="text"
                           value={item.name}
-                          onChange={(e) => updateCategory(index, "name", e.target.value)}
+                          onChange={(e) =>
+                            updateCategory(index, "name", e.target.value)
+                          }
                           placeholder="Housing, Food, Transportation..."
                           className="w-full rounded-xl border border-white/10 bg-zinc-900 px-4 py-3 text-white outline-none placeholder:text-zinc-500"
                         />
@@ -389,7 +423,11 @@ export default function WealthBuilderBudgetPage() {
                           step="0.01"
                           value={item.plannedAmount}
                           onChange={(e) =>
-                            updateCategory(index, "plannedAmount", e.target.value)
+                            updateCategory(
+                              index,
+                              "plannedAmount",
+                              e.target.value,
+                            )
                           }
                           className="w-full rounded-xl border border-white/10 bg-zinc-900 px-4 py-3 text-white outline-none"
                         />
@@ -405,7 +443,11 @@ export default function WealthBuilderBudgetPage() {
                           step="0.01"
                           value={item.actualAmount}
                           onChange={(e) =>
-                            updateCategory(index, "actualAmount", e.target.value)
+                            updateCategory(
+                              index,
+                              "actualAmount",
+                              e.target.value,
+                            )
                           }
                           className="w-full rounded-xl border border-white/10 bg-zinc-900 px-4 py-3 text-white outline-none"
                         />
@@ -432,7 +474,11 @@ export default function WealthBuilderBudgetPage() {
                   disabled={saving}
                   className="rounded-full border border-yellow-400 bg-yellow-500/15 px-5 py-3 font-semibold text-yellow-300 transition hover:bg-yellow-500/25 disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  {saving ? "Saving..." : planId ? "Update Budget" : "Save Budget"}
+                  {saving
+                    ? "Saving..."
+                    : planId
+                      ? "Update Budget"
+                      : "Save Budget"}
                 </button>
 
                 {planId ? (

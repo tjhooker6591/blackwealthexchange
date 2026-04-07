@@ -1,7 +1,6 @@
 import { Db, MongoClient } from "mongodb";
 
 declare global {
-  // eslint-disable-next-line no-var
   var __wealthMongoClientPromise__: Promise<MongoClient> | undefined;
 }
 
@@ -19,7 +18,9 @@ function getDbName(): string {
 
 async function getClient(): Promise<MongoClient> {
   if (!global.__wealthMongoClientPromise__) {
-    global.__wealthMongoClientPromise__ = new MongoClient(getMongoUri()).connect();
+    global.__wealthMongoClientPromise__ = new MongoClient(
+      getMongoUri(),
+    ).connect();
   }
   return global.__wealthMongoClientPromise__;
 }

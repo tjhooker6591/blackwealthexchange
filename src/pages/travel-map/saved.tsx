@@ -14,9 +14,12 @@ export default function TravelMapSavedPage() {
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-yellow-400">
               Saved Places
             </p>
-            <h1 className="mt-3 text-4xl font-bold">Saved Black-owned businesses</h1>
+            <h1 className="mt-3 text-4xl font-bold">
+              Saved Black-owned businesses
+            </h1>
             <p className="mt-4 max-w-3xl text-zinc-300">
-              Placeholder page for saved places. Auth-backed save/remove behavior will be connected later.
+              Placeholder page for saved places. Auth-backed save/remove
+              behavior will be connected later.
             </p>
           </section>
         </div>

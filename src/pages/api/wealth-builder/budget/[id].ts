@@ -16,7 +16,7 @@ type BudgetCategory = {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse,
 ) {
   const auth = await requireWealthUser(req, res);
   if (!auth) return;
@@ -71,7 +71,7 @@ export default async function handler(
       update.categories = categories;
       update.totalBudgeted = categories.reduce(
         (sum, item) => sum + item.plannedAmount,
-        0
+        0,
       );
     }
 

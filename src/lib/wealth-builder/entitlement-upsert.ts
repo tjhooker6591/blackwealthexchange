@@ -22,7 +22,7 @@ type UpsertPremiumEntitlementInput = {
 };
 
 export async function upsertWealthBuilderPremiumEntitlement(
-  input: UpsertPremiumEntitlementInput
+  input: UpsertPremiumEntitlementInput,
 ) {
   const db = await getWealthDb();
   const collection = db.collection("user_entitlements");
@@ -57,6 +57,6 @@ export async function upsertWealthBuilderPremiumEntitlement(
         createdAt: now,
       },
     },
-    { upsert: true }
+    { upsert: true },
   );
 }

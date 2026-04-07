@@ -46,7 +46,7 @@ type StatusResponse = {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<StatusResponse>
+  res: NextApiResponse<StatusResponse>,
 ) {
   if (req.method !== "GET") {
     res.setHeader("Allow", ["GET"]);
@@ -113,7 +113,7 @@ export default async function handler(
               paidAt: 1,
               metadata: 1,
             },
-          }
+          },
         )
         .sort({ createdAt: -1 })
         .limit(10)

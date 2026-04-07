@@ -1,6 +1,8 @@
 import { ObjectId } from "mongodb";
 
-export function firstQueryValue(value: string | string[] | undefined): string | undefined {
+export function firstQueryValue(
+  value: string | string[] | undefined,
+): string | undefined {
   return Array.isArray(value) ? value[0] : value;
 }
 
@@ -13,8 +15,8 @@ export function toNonNegativeNumber(value: unknown, fallback = 0): number {
     typeof value === "number"
       ? value
       : typeof value === "string"
-      ? Number(value)
-      : NaN;
+        ? Number(value)
+        : NaN;
 
   if (!Number.isFinite(parsed) || parsed < 0) {
     return fallback;
@@ -26,14 +28,14 @@ export function toIntegerInRange(
   value: unknown,
   min: number,
   max: number,
-  fallback: number
+  fallback: number,
 ): number {
   const parsed =
     typeof value === "number"
       ? value
       : typeof value === "string"
-      ? Number(value)
-      : NaN;
+        ? Number(value)
+        : NaN;
 
   if (!Number.isInteger(parsed) || parsed < min || parsed > max) {
     return fallback;

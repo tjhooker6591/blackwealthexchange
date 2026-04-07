@@ -64,8 +64,8 @@ function formatDebtDoc(doc: any): DebtApiItem {
       doc.dueDate instanceof Date
         ? doc.dueDate
         : doc.dueDate
-        ? new Date(doc.dueDate)
-        : null,
+          ? new Date(doc.dueDate)
+          : null,
     category: typeof doc.category === "string" ? doc.category : "",
     status: getDebtStatus(doc.status),
     notes: typeof doc.notes === "string" ? doc.notes : "",
@@ -78,7 +78,7 @@ function formatDebtDoc(doc: any): DebtApiItem {
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<DebtDetailResponse>
+  res: NextApiResponse<DebtDetailResponse>,
 ) {
   const auth = await requireWealthUser(req, res);
   if (!auth) return;

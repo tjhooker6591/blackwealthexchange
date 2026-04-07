@@ -36,7 +36,8 @@ export default function WealthBuilderUpgradePage() {
   const [loadingEntitlement, setLoadingEntitlement] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(true);
   const [isPremium, setIsPremium] = useState(false);
-  const [entitlementStatus, setEntitlementStatus] = useState<string>("inactive");
+  const [entitlementStatus, setEntitlementStatus] =
+    useState<string>("inactive");
   const [error, setError] = useState("");
   const [infoMessage, setInfoMessage] = useState("");
 
@@ -54,7 +55,10 @@ export default function WealthBuilderUpgradePage() {
         const res = await fetch("/api/wealth-builder/entitlement");
         const data: EntitlementResponse = await res.json();
 
-        if (res.status === 401 || data?.message === "Authentication required.") {
+        if (
+          res.status === 401 ||
+          data?.message === "Authentication required."
+        ) {
           setIsAuthenticated(false);
           setIsPremium(false);
           setEntitlementStatus("inactive");
@@ -134,10 +138,7 @@ export default function WealthBuilderUpgradePage() {
     <>
       <Head>
         <title>Upgrade | Wealth Builder</title>
-        <meta
-          name="description"
-          content="Upgrade to Wealth Builder Premium."
-        />
+        <meta name="description" content="Upgrade to Wealth Builder Premium." />
       </Head>
 
       <main className="min-h-screen bg-black px-6 py-10 text-white">
@@ -154,8 +155,8 @@ export default function WealthBuilderUpgradePage() {
                   Unlock Wealth Builder Premium
                 </h1>
                 <p className="mt-4 max-w-3xl text-zinc-300">
-                  Upgrade to expand savings goals, unlock insights, and use richer
-                  planning tools over time.
+                  Upgrade to expand savings goals, unlock insights, and use
+                  richer planning tools over time.
                 </p>
               </div>
 
@@ -270,8 +271,8 @@ export default function WealthBuilderUpgradePage() {
                 </div>
 
                 <div className="mt-6 rounded-2xl border border-white/10 bg-black/30 p-4 text-sm text-zinc-300">
-                  Premium purchases use your existing Black Wealth Exchange checkout
-                  flow and stay tied to the logged-in user account.
+                  Premium purchases use your existing Black Wealth Exchange
+                  checkout flow and stay tied to the logged-in user account.
                 </div>
               </div>
             </div>
