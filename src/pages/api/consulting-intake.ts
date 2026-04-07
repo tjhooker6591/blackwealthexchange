@@ -87,6 +87,8 @@ export default async function handler(
       });
     }
 
+    const createdAt = new Date();
+
     await db.collection("consulting_intake").insertOne({
       type,
       name,
@@ -97,8 +99,20 @@ export default async function handler(
       status: "pending",
       lifecycleStage: "new",
       nextAction: "Initial triage pending",
-      createdAt: new Date(),
+      createdAt,
       source: "homepage_recruiting_section",
+    });
+
+    await db.collection("flow_events").insertOne({
+      eventType: "consulting_submission_completed",
+      pageRoute: "/api/consulting-intake",
+      section: "consulting_intake_api",
+      source: "consulting_intake_api",
+      source_variant: type,
+      path: req.url || "/api/consulting-intake",
+      accountType: type === "employer" ? "employer" : "candidate",
+      isAuthenticated: null,
+      createdAt,
     });
 
     return res.status(200).json({

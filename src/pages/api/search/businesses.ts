@@ -6,6 +6,7 @@ import {
   hitApiRateLimit,
 } from "@/lib/apiRateLimit";
 import { getAdminDecodedFromRequest, isAdminDecoded } from "@/lib/adminAuth";
+import { getMongoDbName } from "@/lib/env";
 
 function escapeRegex(input: string) {
   return input.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -57,9 +58,8 @@ export default async function handler(
       "public, s-maxage=10, stale-while-revalidate=30",
     );
 
-    const dbName = process.env.MONGODB_DB || "bwes-database";
     const client = await clientPromise;
-    const db = client.db(dbName);
+    const db = client.db(getMongoDbName());
 
     await ensureApiRateLimitIndexes(db);
     const ip = getClientIp(req);

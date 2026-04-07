@@ -49,6 +49,7 @@ function PriceCard({
   ctaText,
   onCta,
   finePrint,
+  disabled = false,
 }: {
   title: string;
   price: string;
@@ -59,6 +60,7 @@ function PriceCard({
   ctaText: string;
   onCta: () => void;
   finePrint?: string;
+  disabled?: boolean;
 }) {
   return (
     <div
@@ -124,11 +126,14 @@ function PriceCard({
       <button
         type="button"
         onClick={onCta}
+        disabled={disabled}
         className={cx(
           "mt-6 w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-extrabold transition focus:outline-none focus:ring-2 focus:ring-yellow-500/50 active:scale-[0.99]",
-          highlight
-            ? "bg-yellow-500 text-black hover:bg-yellow-400"
-            : "bg-white/5 text-yellow-200 border border-yellow-500/25 hover:bg-yellow-500/10",
+          disabled
+            ? "cursor-not-allowed bg-white/10 text-gray-300 border border-white/10"
+            : highlight
+              ? "bg-yellow-500 text-black hover:bg-yellow-400"
+              : "bg-white/5 text-yellow-200 border border-yellow-500/25 hover:bg-yellow-500/10",
         )}
       >
         {ctaText} <ArrowRight className="h-4 w-4" />
@@ -145,27 +150,45 @@ export default function Pricing() {
   const router = useRouter();
   const { user } = useAuth();
 
+  const authUser = (user ?? null) as Record<string, unknown> | null;
+
+  const isPremiumActive =
+    authUser?.isPremium === true ||
+    authUser?.currentPlan === "premium" ||
+    authUser?.premiumStatus === "active";
+
+  const premiumActivatedAt =
+    typeof authUser?.premiumActivatedAt === "string"
+      ? authUser.premiumActivatedAt
+      : null;
+
+  const premiumActivatedLabel = premiumActivatedAt
+    ? new Date(premiumActivatedAt).toLocaleDateString()
+    : null;
+
   const goCheckout = (plan: "premium" | "founder") => {
-    // Optional gating: require login before checkout
-    if (!user) {
+    if (!authUser) {
       router.push(
         `/login?next=${encodeURIComponent(`/checkout?plan=${plan}`)}`,
       );
       return;
     }
+
+    if (plan === "premium" && isPremiumActive) {
+      return;
+    }
+
     router.push(`/checkout?plan=${plan}`);
   };
 
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* Background glow like index */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
         <div className="absolute -top-24 -right-24 h-96 w-96 rounded-full bg-yellow-500/10 blur-3xl" />
         <div className="absolute top-1/3 -left-24 h-[28rem] w-[28rem] rounded-full bg-yellow-500/8 blur-3xl" />
         <div className="absolute -bottom-24 right-1/4 h-[30rem] w-[30rem] rounded-full bg-white/5 blur-3xl" />
       </div>
 
-      {/* Top bar */}
       <div className="sticky top-0 z-30 bg-black/70 backdrop-blur border-b border-white/10">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
           <Link
@@ -191,7 +214,6 @@ export default function Pricing() {
         </div>
       </div>
 
-      {/* Hero */}
       <section className="relative">
         <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/20 via-yellow-500/10 to-transparent" />
         <div className="absolute inset-0 bg-black/75" />
@@ -201,7 +223,7 @@ export default function Pricing() {
               Upgrade to Premium
             </h1>
             <p className="text-base sm:text-lg text-gray-200 mt-4">
-              Unlock the **Investment Hub**, premium learning tools, trusted
+              Unlock the Investment Hub, premium learning tools, trusted
               search flow, and deeper community features—built to help you move
               from browsing to building.
             </p>
@@ -220,14 +242,26 @@ export default function Pricing() {
                 Premium tools + reports
               </Pill>
             </div>
+
+            {isPremiumActive ? (
+              <div className="mt-6 rounded-2xl border border-yellow-500/30 bg-yellow-500/10 p-4">
+                <div className="text-lg font-extrabold text-yellow-200">
+                  Premium Active
+                </div>
+                <div className="mt-1 text-sm text-gray-200">
+                  Your Premium account is already active.
+                  {premiumActivatedLabel
+                    ? ` Active since ${premiumActivatedLabel}.`
+                    : ""}
+                </div>
+              </div>
+            ) : null}
           </div>
         </div>
       </section>
 
-      {/* Plans */}
       <main className="relative max-w-6xl mx-auto px-4 pb-14">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-          {/* Free */}
           <PriceCard
             title="Free"
             price="$0"
@@ -240,12 +274,11 @@ export default function Pricing() {
               { ok: false, text: "Premium reports & insights" },
               { ok: false, text: "Advanced trusted search tools" },
             ]}
-            ctaText="Current Plan"
+            ctaText={!authUser || !isPremiumActive ? "Current Plan" : "Included in Premium"}
             onCta={() => router.push("/")}
             finePrint="You can upgrade anytime."
           />
 
-          {/* Premium (Most Popular) */}
           <PriceCard
             title="Premium"
             price="$9.99"
@@ -266,12 +299,16 @@ export default function Pricing() {
                 text: "Trusted search tools + filters (AI Mode & tabs ready)",
               },
             ]}
-            ctaText="Upgrade to Premium"
+            ctaText={isPremiumActive ? "Premium Active" : "Upgrade to Premium"}
             onCta={() => goCheckout("premium")}
-            finePrint="Cancel anytime. Your access stays active through the billing period."
+            disabled={isPremiumActive}
+            finePrint={
+              isPremiumActive
+                ? "Your Premium membership is already active."
+                : "Cancel anytime. Your access stays active through the billing period."
+            }
           />
 
-          {/* Founding Member */}
           <PriceCard
             title="Founding Member"
             price="$19.99"
@@ -293,14 +330,13 @@ export default function Pricing() {
           />
         </div>
 
-        {/* Comparison / “Why upgrade” */}
         <div className="mt-8 bg-white/5 border border-white/10 rounded-2xl p-6 sm:p-8">
           <h2 className="text-xl sm:text-2xl font-extrabold text-yellow-200">
             Why Go Premium?
           </h2>
           <p className="text-gray-300 mt-2 max-w-3xl">
-            Premium isn’t just “more pages.” It’s **tools** and **trusted
-            workflows** that help you take action: better directory discovery,
+            Premium isn’t just “more pages.” It’s tools and trusted
+            workflows that help you take action: better directory discovery,
             wealth-building education, investment resources, and reports that
             keep you informed.
           </p>
@@ -343,9 +379,16 @@ export default function Pricing() {
               verify with qualified professionals.
             </div>
             <div className="flex items-center gap-2">
-              <GoldButton href="/checkout?plan=premium" variant="ghost">
-                Go to Checkout <ArrowRight className="h-4 w-4" />
-              </GoldButton>
+              {isPremiumActive ? (
+                <div className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-semibold bg-white/10 text-gray-300 border border-white/10">
+                  Premium Active
+                </div>
+              ) : (
+                <GoldButton href="/checkout?plan=premium" variant="ghost">
+                  Go to Checkout <ArrowRight className="h-4 w-4" />
+                </GoldButton>
+              )}
+
               <GoldButton
                 href="/business-directory?category=Real%20Estate"
                 variant="ghost"
@@ -362,7 +405,6 @@ export default function Pricing() {
   );
 }
 
-/** Small helper so we can reuse the same button style above without rewriting */
 function GoldButton({
   children,
   href,

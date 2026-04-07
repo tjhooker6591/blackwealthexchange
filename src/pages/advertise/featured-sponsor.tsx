@@ -1,11 +1,24 @@
 // src/pages/advertise/featured-sponsor.tsx
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
+import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 
 export default function FeaturedSponsorPage() {
   const router = useRouter();
+
+  const trackAdEvent = (
+    eventType: string,
+    extras: Record<string, unknown> = {},
+  ) => {
+    emitFlowEvent({
+      eventType,
+      pageRoute: "/advertise/featured-sponsor",
+      section: "advertise_featured_sponsor",
+      ...extras,
+    });
+  };
   const [adImageFile, setAdImageFile] = useState<File | null>(null);
   const [campaignDuration, setCampaignDuration] = useState<string>("");
   const [confirmed, setConfirmed] = useState(false);
@@ -27,6 +40,10 @@ export default function FeaturedSponsorPage() {
       setAdImageFile(e.target.files[0]);
     }
   };
+
+  useEffect(() => {
+    trackAdEvent("advertising_landing_viewed");
+  }, []);
 
   const canProceed = useMemo(() => {
     const hasCreative =
@@ -59,6 +76,15 @@ export default function FeaturedSponsorPage() {
     }
 
     setSubmitting(true);
+    trackAdEvent("advertising_submission_started", {
+      ctaId: "featured_proceed_to_checkout",
+      ad_option: "featured-sponsor",
+      ad_type: "featured-sponsor",
+      package_type: "featured",
+      source_variant: "featured_sponsor_page",
+      duration_days: Number(campaignDuration),
+      placement: "homepage-featured-sponsor",
+    });
     try {
       const payload = {
         name,
@@ -92,6 +118,19 @@ export default function FeaturedSponsorPage() {
       if (!res.ok) throw new Error(data?.error || "Failed to save ad request");
 
       const requestId = data?.requestId || data?.adId;
+
+      trackAdEvent("advertising_checkout_started", {
+        ad_option: "featured-sponsor",
+        ad_type: "featured-sponsor",
+        package_type: "featured",
+        checkout_variant: "unified_advertising_checkout",
+        source_variant: "featured_sponsor_page",
+        duration_days: Number(campaignDuration),
+        placement: "homepage-featured-sponsor",
+        campaignId: requestId || null,
+        destination: "/advertising/checkout",
+      });
+
       const query = new URLSearchParams({
         option: "featured-sponsor",
         duration: campaignDuration,
@@ -194,7 +233,15 @@ export default function FeaturedSponsorPage() {
             ].map(({ label, value, price }) => (
               <div
                 key={value}
-                onClick={() => setCampaignDuration(value)}
+                onClick={() => {
+                  setCampaignDuration(value);
+                  trackAdEvent("advertising_option_selected", {
+                    ctaId: `featured_duration_${value}`,
+                    ctaLabel: `${label} ${price}`,
+                    ad_option: "featured-sponsor",
+                    duration_days: Number(value),
+                  });
+                }}
                 className={`cursor-pointer p-6 rounded-lg border ${
                   campaignDuration === value
                     ? "border-gold bg-gray-800"

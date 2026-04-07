@@ -4,6 +4,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 
 type BannerPlacement = "homepage-top" | "sidebar" | "footer" | "dashboard";
 type BannerDuration = "14" | "30";
@@ -59,6 +60,18 @@ const PLACEMENTS: Array<{
 export default function BannerAdsPage() {
   const router = useRouter();
 
+  const trackAdEvent = (
+    eventType: string,
+    extras: Record<string, unknown> = {},
+  ) => {
+    emitFlowEvent({
+      eventType,
+      pageRoute: "/advertise/banner-ads",
+      section: "advertise_banner_ads",
+      ...extras,
+    });
+  };
+
   const [loading, setLoading] = useState(true);
   const [selectedPlacement, setSelectedPlacement] =
     useState<BannerPlacement | null>(null);
@@ -73,6 +86,8 @@ export default function BannerAdsPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
+    trackAdEvent("advertising_landing_viewed");
+
     const fetchUser = async () => {
       try {
         const res = await fetch("/api/auth/me", {
@@ -131,6 +146,15 @@ export default function BannerAdsPage() {
     }
 
     setSubmitting(true);
+    trackAdEvent("advertising_submission_started", {
+      ctaId: "banner_proceed_to_checkout",
+      ad_option: "banner-ad",
+      ad_type: "banner-ad",
+      package_type: "banner",
+      source_variant: "banner_ads",
+      placement: selectedPlacement,
+      duration_days: Number(duration),
+    });
     try {
       const submitRes = await fetch("/api/advertising/submit", {
         method: "POST",
@@ -156,6 +180,19 @@ export default function BannerAdsPage() {
       }
 
       const requestId = submitData?.requestId || submitData?.adId;
+
+      trackAdEvent("advertising_checkout_started", {
+        ad_option: "banner-ad",
+        ad_type: "banner-ad",
+        package_type: "banner",
+        checkout_variant: "unified_advertising_checkout",
+        source_variant: "banner_ads",
+        placement: selectedPlacement,
+        duration_days: Number(duration),
+        campaignId: requestId || null,
+        destination: "/advertising/checkout",
+      });
+
       const query = new URLSearchParams({
         option: "banner-ad",
         duration: duration,
@@ -209,7 +246,15 @@ export default function BannerAdsPage() {
               <p className="text-gray-600 mb-4 text-sm">{banner.description}</p>
 
               <button
-                onClick={() => setSelectedPlacement(banner.placement)}
+                onClick={() => {
+                  setSelectedPlacement(banner.placement);
+                  trackAdEvent("advertising_option_selected", {
+                    ctaId: `banner_placement_${banner.placement}`,
+                    ctaLabel: banner.title,
+                    ad_option: "banner-ad",
+                    placement: banner.placement,
+                  });
+                }}
                 className={`px-5 py-2 rounded transition mb-2 ${
                   active
                     ? "bg-gold text-black font-semibold"

@@ -8,7 +8,7 @@ import { fulfillOrder as dbFulfillOrder } from "@/lib/db/orders";
 import { grantCourseAccess } from "@/lib/db/courses";
 import { recordAffiliateConversion } from "@/lib/db/affiliates";
 import clientPromise from "@/lib/mongodb";
-import { ObjectId } from "mongodb";
+import { Db, ObjectId } from "mongodb";
 import {
   reserveFeaturedSponsorWeeks,
   weekStartUtc,
@@ -41,6 +41,12 @@ interface SessionMetadata {
   businessId?: string | null;
   placement?: string;
   campaignIdFallback?: string;
+  jobId?: string;
+
+  // Wealth Builder Premium / newer plan metadata
+  productKey?: string;
+  tier?: string;
+  billingInterval?: string;
 
   // optional debug fields
   checkoutFingerprint?: string;
@@ -91,6 +97,17 @@ function unixToDate(v: unknown, fallback: Date) {
   if (!Number.isFinite(n) || n <= 0) return fallback;
   // Stripe gives unix seconds for created fields
   return new Date(n * 1000);
+}
+
+function idToString(v: unknown) {
+  if (!v) return "";
+  if (typeof v === "string") return v;
+  if (v instanceof ObjectId) return v.toString();
+  if (typeof v === "object" && (v as any)?.toString) {
+    const s = (v as any).toString();
+    return typeof s === "string" ? s : "";
+  }
+  return "";
 }
 
 /**
@@ -167,6 +184,115 @@ function resolveCanonicalAdItemId(meta: SessionMetadata) {
 // Used only when businessId is missing; prevents collisions if you have unique constraints later.
 function unlinkedBusinessIdPlaceholder(stripeSessionId: string) {
   return `UNLINKED:${stripeSessionId}`;
+}
+
+function isWealthBuilderPremiumPurchase(meta: SessionMetadata, normalizedItemId: string) {
+  const productKey = asString(meta.productKey).trim().toLowerCase();
+  const itemId = normalizedItemId.trim().toLowerCase();
+
+  return (
+    productKey === "wealth_builder_premium" ||
+    itemId === "wealth-builder-premium-monthly" ||
+    itemId === "wealth-builder-premium-annual"
+  );
+}
+
+function billingIntervalFromWealthBuilderMeta(
+  meta: SessionMetadata,
+  normalizedItemId: string,
+): "monthly" | "annual" | null {
+  const fromMeta = asString(meta.billingInterval).trim().toLowerCase();
+  if (fromMeta === "monthly") return "monthly";
+  if (fromMeta === "annual") return "annual";
+
+  const itemId = normalizedItemId.trim().toLowerCase();
+  if (itemId === "wealth-builder-premium-monthly") return "monthly";
+  if (itemId === "wealth-builder-premium-annual") return "annual";
+
+  return null;
+}
+
+function wealthBuilderPeriodEndFromInterval(
+  startAt: Date,
+  billingInterval: "monthly" | "annual" | null,
+) {
+  const end = new Date(startAt);
+  if (billingInterval === "annual") {
+    end.setFullYear(end.getFullYear() + 1);
+    return end;
+  }
+
+  // default monthly
+  end.setMonth(end.getMonth() + 1);
+  return end;
+}
+
+async function resolveEntitlementUserId(
+  db: Db,
+  userId: string,
+  email: string,
+) {
+  if (userId) return userId;
+
+  if (!email) return "";
+
+  const userDoc = await db.collection("users").findOne(
+    { email },
+    { projection: { _id: 1 } },
+  );
+
+  return idToString(userDoc?._id);
+}
+
+async function upsertWealthBuilderPremiumEntitlement(
+  db: Db,
+  input: {
+    userId: string;
+    email?: string | null;
+    stripeSessionId: string;
+    stripeCustomerId?: string | null;
+    stripeSubscriptionId?: string | null;
+    billingInterval: "monthly" | "annual" | null;
+    paidAt: Date;
+    updatedAt: Date;
+  },
+) {
+  const currentPeriodStart = input.paidAt;
+  const currentPeriodEnd = wealthBuilderPeriodEndFromInterval(
+    currentPeriodStart,
+    input.billingInterval,
+  );
+
+  await db.collection("user_entitlements").updateOne(
+    {
+      userId: input.userId,
+      accountType: "user",
+      productKey: "wealth_builder_premium",
+    },
+    {
+      $set: {
+        userId: input.userId,
+        accountType: "user",
+        productKey: "wealth_builder_premium",
+        tier: "premium",
+        status: "active",
+        billingInterval: input.billingInterval,
+        stripeCustomerId: input.stripeCustomerId ?? null,
+        stripeSubscriptionId: input.stripeSubscriptionId ?? null,
+        trialEndsAt: null,
+        currentPeriodStart,
+        currentPeriodEnd,
+        cancelAtPeriodEnd: false,
+        premiumStripeSessionId: input.stripeSessionId,
+        email: input.email || null,
+        updatedAt: input.updatedAt,
+      },
+      $setOnInsert: {
+        createdAt: input.updatedAt,
+      },
+    },
+    { upsert: true },
+  );
 }
 
 export default async function webhookHandler(
@@ -307,6 +433,7 @@ export default async function webhookHandler(
     const campaignId = asString(
       mergedMeta.campaignId || mergedMeta.campaignIdFallback,
     );
+    const jobId = asString(mergedMeta.jobId);
 
     console.log(
       `🔔 Paid webhook received type=${event.type} session=${stripeSessionId} item=${normalizedItemId || "n/a"} amount=${session.amount_total ?? "n/a"}`,
@@ -367,6 +494,11 @@ export default async function webhookHandler(
             userId: userId || null,
             campaignId: campaignId || null,
 
+            // preserve Wealth Builder plan metadata if present
+            productKey: asString(mergedMeta.productKey) || null,
+            tier: asString(mergedMeta.tier) || null,
+            billingInterval: asString(mergedMeta.billingInterval) || null,
+
             webhookPaymentStatus: paymentStatus || "paid",
             webhookEventType: event.type,
             webhookEventId: event.id,
@@ -375,6 +507,86 @@ export default async function webhookHandler(
       },
       { upsert: true },
     );
+
+    const orderRecord = await db.collection("orders").findOne(
+      { sessionId: stripeSessionId },
+      {
+        projection: {
+          _id: 1,
+          sessionId: 1,
+          productId: 1,
+          sellerId: 1,
+          total: 1,
+          subtotal: 1,
+          currency: 1,
+          userId: 1,
+        },
+      },
+    );
+
+    if (metaType === "product") {
+      const orderId = idToString(orderRecord?._id);
+      const productId =
+        idToString(orderRecord?.productId) ||
+        asString(mergedMeta.itemId || existingPayment?.itemId);
+      const sellerId =
+        idToString(orderRecord?.sellerId) ||
+        asString((mergedMeta as any).sellerId);
+      const buyerId =
+        asString(orderRecord?.userId) ||
+        userId ||
+        asString(existingPayment?.userId);
+
+      const isCanonicalCheckout = Boolean(orderRecord?.sessionId);
+      const checkoutVariant = isCanonicalCheckout
+        ? "canonical_checkout_session"
+        : "legacy_stripe_checkout";
+      const sourceVariant = isCanonicalCheckout
+        ? "api_checkout_create_session"
+        : "api_stripe_checkout";
+
+      await db.collection("flow_events").updateOne(
+        {
+          eventType: "marketplace_purchase_completed",
+          stripeSessionId,
+        },
+        {
+          $setOnInsert: {
+            eventType: "marketplace_purchase_completed",
+            pageRoute: "/api/stripe/webhook-handler",
+            serverSource: "stripe_webhook_handler",
+            source: "stripe_webhook_handler",
+            sourceVariant,
+            source_variant: sourceVariant,
+            checkoutVariant,
+            checkout_variant: checkoutVariant,
+            productId: productId || null,
+            sellerId: sellerId || null,
+            buyerId: buyerId || null,
+            entityId: productId || null,
+            entityType: "product",
+            sessionId: stripeSessionId,
+            stripeSessionId,
+            paymentIntentId:
+              paymentIntentId || existingPayment?.paymentIntentId || null,
+            orderId: orderId || asString(mergedMeta.orderId) || null,
+            amountTotal:
+              typeof session.amount_total === "number"
+                ? session.amount_total
+                : (existingPayment?.amountCents ?? null),
+            amount_total:
+              typeof session.amount_total === "number"
+                ? session.amount_total
+                : (existingPayment?.amountCents ?? null),
+            currency: session.currency || "usd",
+            accountType: buyerId ? "buyer_authenticated" : "buyer_guest",
+            environment: process.env.NODE_ENV || null,
+            createdAt: paidAt,
+          },
+        },
+        { upsert: true },
+      );
+    }
 
     /**
      * 1) Existing campaign flow (campaign-based)
@@ -406,10 +618,8 @@ export default async function webhookHandler(
         businessIdReal || unlinkedBusinessIdPlaceholder(stripeSessionId);
       const needsAttention = !businessIdReal;
 
-      // Trustworthy: do NOT mark active unless linked; keep it pending approval when linked
       const listingStatus = needsAttention ? "unlinked" : "pending_approval";
 
-      // If businessId is present, key by businessId (supports renewals/upgrades cleanly)
       const selector = businessIdReal
         ? { businessId: businessIdReal }
         : { stripeSessionId };
@@ -429,8 +639,7 @@ export default async function webhookHandler(
             paidAt,
             paymentIntentId: paymentIntentId || null,
 
-            // IMPORTANT: status should not be "active" if not linked/approved
-            status: listingStatus, // compatibility field
+            status: listingStatus,
             paymentStatus: "paid",
             listingStatus,
 
@@ -442,7 +651,6 @@ export default async function webhookHandler(
             userId: userId || null,
             email: email || null,
 
-            // store both placeholder and real
             businessId: businessIdStored,
             businessIdReal,
             businessIdIsPlaceholder: needsAttention,
@@ -620,17 +828,13 @@ export default async function webhookHandler(
     }
 
     /**
-     * 3.5) Music creator plan entitlement (new)
+     * 3.5) Music creator plan entitlement (existing)
      */
     if (metaType === "plan" && normalizedItemId.startsWith("music-creator-")) {
-      const planDurations: Record<string, number> = {
-        "music-creator-starter": 30,
-        "music-creator-pro": 30,
-      };
-      const durationDays = planDurations[normalizedItemId] || 30;
+      const creatorDurationDays = 30;
       const planStartAt = paidAt;
       const planExpiresAt = new Date(
-        planStartAt.getTime() + durationDays * 24 * 60 * 60 * 1000,
+        planStartAt.getTime() + creatorDurationDays * 24 * 60 * 60 * 1000,
       );
 
       if (userId) {
@@ -641,7 +845,7 @@ export default async function webhookHandler(
               creatorSubtype: "music",
               creatorPlanId: normalizedItemId,
               creatorPlanStatus: "active",
-              creatorPlanDurationDays: durationDays,
+              creatorPlanDurationDays: creatorDurationDays,
               creatorPlanStartAt: planStartAt,
               creatorPlanExpiresAt: planExpiresAt,
               creatorReady: true,
@@ -658,7 +862,7 @@ export default async function webhookHandler(
                 creatorSubtype: "music",
                 creatorPlanId: normalizedItemId,
                 creatorPlanStatus: "active",
-                creatorPlanDurationDays: durationDays,
+                creatorPlanDurationDays: creatorDurationDays,
                 creatorPlanStartAt: planStartAt,
                 creatorPlanExpiresAt: planExpiresAt,
                 creatorReady: true,
@@ -668,6 +872,38 @@ export default async function webhookHandler(
           );
         }
 
+        const creatorInvariant = await db.collection("sellers").findOne(
+          { userId },
+          {
+            projection: {
+              _id: 1,
+              creatorPlanId: 1,
+              creatorPlanStatus: 1,
+              creatorReady: 1,
+            },
+          },
+        );
+
+        if (
+          !creatorInvariant ||
+          creatorInvariant.creatorPlanId !== normalizedItemId ||
+          creatorInvariant.creatorPlanStatus !== "active" ||
+          creatorInvariant.creatorReady !== true
+        ) {
+          await db.collection("flow_events").insertOne({
+            eventType: "music_creator_entitlement_invariant_failed",
+            pageRoute: "/api/stripe/webhook-handler",
+            section: "music_creator_entitlement_invariant",
+            source: "stripe_webhook",
+            source_variant: "invariant_failed",
+            stripeSessionId,
+            paymentIntentId: paymentIntentId || null,
+            userId,
+            itemId: normalizedItemId,
+            createdAt: now,
+          });
+        }
+
         console.log(
           `✅ Music creator plan activated user=${userId} plan=${normalizedItemId}`,
         );
@@ -675,23 +911,261 @@ export default async function webhookHandler(
     }
 
     /**
-     * 4) Marketplace order checkout (existing)
+     * 3.55) Wealth Builder Premium entitlement (new)
+     */
+    if (metaType === "plan" && isWealthBuilderPremiumPurchase(mergedMeta, normalizedItemId)) {
+      const entitlementUserId = await resolveEntitlementUserId(db, userId, email);
+
+      if (!entitlementUserId) {
+        await db.collection("flow_events").insertOne({
+          eventType: "wealth_builder_entitlement_missing_user",
+          pageRoute: "/api/stripe/webhook-handler",
+          section: "wealth_builder_entitlement_invariant",
+          source: "stripe_webhook",
+          source_variant: "missing_user_id",
+          stripeSessionId,
+          paymentIntentId: paymentIntentId || null,
+          email: email || null,
+          itemId: normalizedItemId,
+          metadata: mergedMeta,
+          createdAt: now,
+        });
+
+        console.warn(
+          `⚠️ Wealth Builder Premium paid webhook missing resolvable user session=${stripeSessionId}`,
+        );
+      } else {
+        const billingInterval = billingIntervalFromWealthBuilderMeta(
+          mergedMeta,
+          normalizedItemId,
+        );
+
+        await upsertWealthBuilderPremiumEntitlement(db, {
+          userId: entitlementUserId,
+          email: email || null,
+          stripeSessionId,
+          stripeCustomerId:
+            typeof session.customer === "string" ? session.customer : null,
+          stripeSubscriptionId:
+            typeof (session as any).subscription === "string"
+              ? (session as any).subscription
+              : null,
+          billingInterval,
+          paidAt,
+          updatedAt: now,
+        });
+
+        const entitlementInvariant = await db.collection("user_entitlements").findOne(
+          {
+            userId: entitlementUserId,
+            accountType: "user",
+            productKey: "wealth_builder_premium",
+          },
+          {
+            projection: {
+              _id: 1,
+              tier: 1,
+              status: 1,
+              billingInterval: 1,
+              currentPeriodStart: 1,
+              currentPeriodEnd: 1,
+            },
+          },
+        );
+
+        if (
+          !entitlementInvariant ||
+          entitlementInvariant.tier !== "premium" ||
+          entitlementInvariant.status !== "active"
+        ) {
+          await db.collection("flow_events").insertOne({
+            eventType: "wealth_builder_entitlement_invariant_failed",
+            pageRoute: "/api/stripe/webhook-handler",
+            section: "wealth_builder_entitlement_invariant",
+            source: "stripe_webhook",
+            source_variant: "invariant_failed",
+            stripeSessionId,
+            paymentIntentId: paymentIntentId || null,
+            userId: entitlementUserId,
+            email: email || null,
+            itemId: normalizedItemId,
+            createdAt: now,
+          });
+        }
+
+        console.log(
+          `✅ Wealth Builder Premium activated user=${entitlementUserId} item=${normalizedItemId}`,
+        );
+      }
+    }
+
+    /**
+     * 3.6) Premium membership plan entitlement (existing)
+     */
+    if (metaType === "plan" && normalizedItemId === "premium") {
+      const membershipDurationDays = parseDurationDays(mergedMeta.durationDays) || 30;
+      const planStartAt = paidAt;
+      const planExpiresAt = new Date(
+        planStartAt.getTime() + membershipDurationDays * 24 * 60 * 60 * 1000,
+      );
+
+      const premiumEntitlementPatch = {
+        // canonical app fields
+        isPremium: true,
+        currentPlan: "premium",
+        premiumStatus: "active",
+        premiumActivatedAt: planStartAt,
+        premiumStripeSessionId: stripeSessionId,
+        premiumPaymentIntentId: paymentIntentId || null,
+
+        // existing legacy membership fields
+        membershipPlanId: "premium",
+        membershipPlanStatus: "active",
+        membershipPlanDurationDays: membershipDurationDays,
+        membershipPlanStartAt: planStartAt,
+        membershipPlanExpiresAt: planExpiresAt,
+
+        updatedAt: now,
+      };
+
+      if (userId && ObjectId.isValid(userId)) {
+        await db.collection("users").updateOne(
+          { _id: new ObjectId(userId) },
+          {
+            $set: premiumEntitlementPatch,
+          },
+        );
+      }
+
+      if (email) {
+        await db.collection("users").updateOne(
+          { email },
+          {
+            $set: premiumEntitlementPatch,
+          },
+        );
+      }
+
+      const membershipInvariant = await db.collection("users").findOne(
+        userId && ObjectId.isValid(userId)
+          ? { _id: new ObjectId(userId) }
+          : { email },
+        {
+          projection: {
+            _id: 1,
+            isPremium: 1,
+            currentPlan: 1,
+            premiumStatus: 1,
+            premiumActivatedAt: 1,
+            premiumStripeSessionId: 1,
+            membershipPlanId: 1,
+            membershipPlanStatus: 1,
+            membershipPlanExpiresAt: 1,
+          },
+        },
+      );
+
+      if (
+        !membershipInvariant ||
+        membershipInvariant.isPremium !== true ||
+        membershipInvariant.currentPlan !== "premium" ||
+        membershipInvariant.premiumStatus !== "active" ||
+        membershipInvariant.membershipPlanId !== "premium" ||
+        membershipInvariant.membershipPlanStatus !== "active"
+      ) {
+        await db.collection("flow_events").insertOne({
+          eventType: "premium_membership_entitlement_invariant_failed",
+          pageRoute: "/api/stripe/webhook-handler",
+          section: "premium_membership_entitlement_invariant",
+          source: "stripe_webhook",
+          source_variant: "invariant_failed",
+          stripeSessionId,
+          paymentIntentId: paymentIntentId || null,
+          userId: userId || null,
+          email: email || null,
+          itemId: normalizedItemId,
+          createdAt: now,
+        });
+      }
+
+      console.log(`✅ Premium membership activated user=${userId || email}`);
+    }
+
+    /**
+     * 4) Marketplace order checkout (strict canonical orderId metadata)
      */
     if (mergedMeta.orderId) {
       await dbFulfillOrder(asString(mergedMeta.orderId), paymentIntentId);
       console.log(`✅ Order ${mergedMeta.orderId} fulfilled`);
+    } else if (metaType === "product") {
+      await db.collection("flow_events").insertOne({
+        eventType: "marketplace_order_id_missing_on_paid_webhook",
+        pageRoute: "/api/stripe/webhook-handler",
+        section: "marketplace_webhook_invariant",
+        source: "stripe_webhook",
+        source_variant: "missing_order_id",
+        checkout_variant: "canonical_checkout_session",
+        stripeSessionId,
+        paymentIntentId: paymentIntentId || null,
+        createdAt: now,
+      });
+
+      console.warn(
+        `⚠️ Product paid webhook missing orderId metadata session=${stripeSessionId}`,
+      );
     }
 
     /**
      * 5) Course purchase (existing)
      */
-    if (mergedMeta.courseId && userId) {
-      await grantCourseAccess(userId, asString(mergedMeta.courseId));
-      console.log(`✅ Granted course ${mergedMeta.courseId} to user ${userId}`);
+    const resolvedCourseId =
+      asString(mergedMeta.courseId || "") ||
+      (metaType === "course" ? normalizedItemId : "");
+
+    if (resolvedCourseId && userId) {
+      await grantCourseAccess(userId, resolvedCourseId);
+      console.log(`✅ Granted course ${resolvedCourseId} to user ${userId}`);
     }
 
     /**
-     * 6) Affiliate referral conversion (existing)
+     * 6) Paid job posting completion (existing canonical job checkout)
+     */
+    if (metaType === "job") {
+      if (jobId && ObjectId.isValid(jobId)) {
+        await db.collection("jobs").updateOne(
+          { _id: new ObjectId(jobId) },
+          {
+            $set: {
+              isPaid: true,
+              paymentStatus: "paid",
+              status: "pending_approval",
+              stripeSessionId,
+              paymentIntentId: paymentIntentId || null,
+              paidAt,
+              updatedAt: now,
+            },
+          },
+        );
+        console.log(`✅ Paid job posting marked paid jobId=${jobId}`);
+      } else {
+        await db.collection("flow_events").insertOne({
+          eventType: "job_paid_webhook_missing_job_id",
+          pageRoute: "/api/stripe/webhook-handler",
+          section: "job_webhook_invariant",
+          source: "stripe_webhook",
+          source_variant: "missing_job_id",
+          stripeSessionId,
+          paymentIntentId: paymentIntentId || null,
+          createdAt: now,
+        });
+        console.warn(
+          `⚠️ Job paid webhook missing jobId metadata session=${stripeSessionId}`,
+        );
+      }
+    }
+
+    /**
+     * 7) Affiliate referral conversion (existing)
      */
     if (mergedMeta.affiliateCode) {
       await recordAffiliateConversion(

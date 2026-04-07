@@ -3,6 +3,7 @@ import process from "node:process";
 const base = process.env.SMOKE_BASE_URL || "http://127.0.0.1:3000";
 
 const stamp = Date.now();
+const allowWriteChecks = process.env.SMOKE_ALLOW_WRITES === "1";
 
 const checks = [
   ["GET", "/"],
@@ -11,21 +12,25 @@ const checks = [
   ["GET", "/api/auth/session"],
   ["GET", "/api/searchBusinesses?query=food&limit=3"],
   ["GET", "/api/searchOrganizations?query=church&limit=3"],
-  [
-    "POST",
-    "/api/auth/request-reset",
-    { email: `smoke-reset-${stamp}@example.com` },
-  ],
-  [
-    "POST",
-    "/api/consulting-intake",
-    {
-      type: "employer",
-      name: "Smoke QA",
-      email: `smoke-qa-${stamp}@example.com`,
-      details: "smoke test",
-    },
-  ],
+  ...(allowWriteChecks
+    ? [
+        [
+          "POST",
+          "/api/auth/request-reset",
+          { email: `smoke-reset-${stamp}@example.com` },
+        ],
+        [
+          "POST",
+          "/api/consulting-intake",
+          {
+            type: "employer",
+            name: "Smoke QA",
+            email: `smoke-qa-${stamp}@example.com`,
+            details: "smoke test",
+          },
+        ],
+      ]
+    : []),
 ];
 
 let failed = false;

@@ -12,6 +12,7 @@ import {
   Megaphone,
   Store,
   Briefcase,
+  BadgeCheck,
 } from "lucide-react";
 
 type AccountType =
@@ -26,6 +27,10 @@ type MeUser = {
   email: string;
   accountType: AccountType;
   businessName?: string;
+  isPremium?: boolean;
+  currentPlan?: string;
+  premiumStatus?: string;
+  premiumActivatedAt?: string | null;
 };
 
 type NavItem = {
@@ -50,7 +55,6 @@ function buildNav(accountType: AccountType): NavItem[] {
       show: (t) => t !== "user",
     },
 
-    // Business / Admin
     {
       label: "Manage Ads",
       href: "/dashboard/business/ads",
@@ -58,7 +62,6 @@ function buildNav(accountType: AccountType): NavItem[] {
       show: (t) => t === "business" || t === "admin",
     },
 
-    // Seller / Admin
     {
       label: "Seller Dashboard",
       href: "/marketplace/dashboard",
@@ -78,7 +81,6 @@ function buildNav(accountType: AccountType): NavItem[] {
       show: (t) => t === "business" || t === "employer",
     },
 
-    // Employer / Admin
     {
       label: "Manage Jobs",
       href: "/employer/jobs",
@@ -92,7 +94,6 @@ function buildNav(accountType: AccountType): NavItem[] {
       show: (t) => t === "employer" || t === "admin",
     },
 
-    // Admin (optional links you can expand)
     {
       label: "Admin Tools",
       href: "/admin/tools",
@@ -115,7 +116,6 @@ export default function DashboardFrame({
 
   const router = useRouter();
 
-  // Fetch who is logged in (so nav can adapt)
   useEffect(() => {
     let cancelled = false;
 
@@ -129,11 +129,17 @@ export default function DashboardFrame({
         const data = await res.json().catch(() => null);
         const user = data?.user as MeUser | undefined;
 
-        if (!cancelled) setMe(user ?? null);
+        if (!cancelled) {
+          setMe(user ?? null);
+        }
       } catch {
-        if (!cancelled) setMe(null);
+        if (!cancelled) {
+          setMe(null);
+        }
       } finally {
-        if (!cancelled) setLoadingMe(false);
+        if (!cancelled) {
+          setLoadingMe(false);
+        }
       }
     })();
 
@@ -142,11 +148,11 @@ export default function DashboardFrame({
     };
   }, []);
 
-  // Close drawer whenever route changes (mobile UX)
   useEffect(() => {
     const onRoute = () => setOpen(false);
     router.events.on("routeChangeComplete", onRoute);
     router.events.on("routeChangeError", onRoute);
+
     return () => {
       router.events.off("routeChangeComplete", onRoute);
       router.events.off("routeChangeError", onRoute);
@@ -154,8 +160,17 @@ export default function DashboardFrame({
   }, [router.events]);
 
   const accountType = me?.accountType ?? "user";
-
   const navItems = useMemo(() => buildNav(accountType), [accountType]);
+
+  const isPremiumActive =
+    me?.isPremium === true ||
+    me?.currentPlan === "premium" ||
+    me?.premiumStatus === "active";
+
+  const currentPlanLabel =
+    typeof me?.currentPlan === "string" && me.currentPlan.trim()
+      ? me.currentPlan.toUpperCase()
+      : "FREE";
 
   async function handleLogout() {
     try {
@@ -164,7 +179,6 @@ export default function DashboardFrame({
         credentials: "include",
       });
     } finally {
-      // Send them somewhere clean after logout
       router.replace("/login");
     }
   }
@@ -174,7 +188,6 @@ export default function DashboardFrame({
 
   return (
     <div className="min-h-screen bg-black text-white flex flex-col md:flex-row">
-      {/* Mobile overlay */}
       <div
         className={clsx(
           "fixed inset-0 z-30 bg-black/60 backdrop-blur-sm transition-opacity md:hidden",
@@ -184,7 +197,6 @@ export default function DashboardFrame({
         aria-hidden="true"
       />
 
-      {/* Sidebar / Drawer */}
       <aside
         className={clsx(
           "fixed inset-y-0 left-0 z-40 w-72 bg-neutral-950 border-r border-yellow-500/10 transition-transform duration-200",
@@ -192,7 +204,6 @@ export default function DashboardFrame({
           "md:static md:block",
         )}
       >
-        {/* Brand / top */}
         <div className="px-6 pt-6 pb-4 border-b border-yellow-500/10">
           <Link
             href="/"
@@ -208,19 +219,34 @@ export default function DashboardFrame({
             {loadingMe ? (
               <span>Loading account…</span>
             ) : whoLabel ? (
-              <span>
-                Signed in as <span className="text-gray-200">{whoLabel}</span>{" "}
-                <span className="ml-2 inline-flex items-center rounded-full border border-yellow-500/25 px-2 py-0.5 text-[10px] text-yellow-200">
-                  {String(accountType).toUpperCase()}
-                </span>
-              </span>
+              <div className="space-y-2">
+                <div>
+                  Signed in as <span className="text-gray-200">{whoLabel}</span>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="inline-flex items-center rounded-full border border-yellow-500/25 px-2 py-0.5 text-[10px] text-yellow-200">
+                    {String(accountType).toUpperCase()}
+                  </span>
+
+                  <span
+                    className={clsx(
+                      "inline-flex items-center rounded-full border px-2 py-0.5 text-[10px]",
+                      isPremiumActive
+                        ? "border-yellow-500/30 bg-yellow-500/10 text-yellow-200"
+                        : "border-white/10 bg-white/5 text-gray-300",
+                    )}
+                  >
+                    {currentPlanLabel}
+                  </span>
+                </div>
+              </div>
             ) : (
               <span>Not signed in</span>
             )}
           </div>
         </div>
 
-        {/* Nav */}
         <nav className="px-3 py-4">
           <ul className="space-y-1">
             {navItems.map((item) => {
@@ -248,17 +274,33 @@ export default function DashboardFrame({
             })}
           </ul>
 
-          {/* Upgrade CTA (hide for admin if you want) */}
           <div className="mt-5 px-3">
-            <Link
-              href="/pricing"
-              className="block rounded-full bg-yellow-400 px-4 py-2 text-center font-semibold text-black hover:bg-yellow-300 transition"
-            >
-              Upgrade to Premium
-            </Link>
+            {isPremiumActive ? (
+              <div className="rounded-2xl border border-yellow-500/25 bg-yellow-500/10 px-4 py-3">
+                <div className="flex items-center justify-center gap-2 text-sm font-semibold text-yellow-200">
+                  <BadgeCheck size={16} />
+                  Premium Active
+                </div>
+                <p className="mt-1 text-center text-[11px] text-gray-300">
+                  Your Premium membership is active.
+                </p>
+                <Link
+                  href="/pricing"
+                  className="mt-3 block rounded-full border border-yellow-500/20 bg-black/30 px-4 py-2 text-center text-sm font-semibold text-yellow-200 hover:bg-yellow-500/10 transition"
+                >
+                  View Plan
+                </Link>
+              </div>
+            ) : (
+              <Link
+                href="/pricing"
+                className="block rounded-full bg-yellow-400 px-4 py-2 text-center font-semibold text-black hover:bg-yellow-300 transition"
+              >
+                Upgrade to Premium
+              </Link>
+            )}
           </div>
 
-          {/* Sign out */}
           <button
             onClick={handleLogout}
             className="mt-5 flex w-full items-center justify-center gap-2 rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-2 text-sm text-red-300 hover:bg-red-500/15 hover:text-red-200 transition"
@@ -269,10 +311,8 @@ export default function DashboardFrame({
         </nav>
       </aside>
 
-      {/* Main */}
       <main className="flex-1 min-w-0 overflow-y-auto px-4 py-6 md:px-10">
         <header className="flex items-center justify-between mb-6">
-          {/* burger only on phones */}
           <button
             aria-label="Toggle navigation"
             onClick={() => setOpen((v) => !v)}
@@ -282,14 +322,12 @@ export default function DashboardFrame({
           </button>
 
           <div className="relative">
-            {/* subtle gold hue behind title */}
             <div className="pointer-events-none absolute -top-8 left-1/2 -translate-x-1/2 h-24 w-72 rounded-full blur-3xl opacity-25 bg-yellow-400" />
             <h1 className="relative text-xl font-bold md:text-3xl">
               {pageTitle}
             </h1>
           </div>
 
-          {/* spacer so header stays balanced on mobile */}
           <div className="w-10 md:hidden" />
         </header>
 

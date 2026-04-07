@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 
 type Mode = "employer" | "candidate";
 
@@ -16,6 +17,27 @@ export default function RecruitingConsultingPage() {
   const [msg, setMsg] = useState("");
   const [err, setErr] = useState("");
 
+  const trackConsultingEvent = (
+    eventType: string,
+    extras: Record<string, unknown> = {},
+  ) => {
+    emitFlowEvent({
+      eventType,
+      pageRoute: "/recruiting-consulting",
+      section: "consulting_funnel",
+      source_variant: mode,
+      ...extras,
+    });
+  };
+
+  useEffect(() => {
+    trackConsultingEvent("consulting_landing_viewed", {
+      ctaId: "consulting_page_view",
+      ctaLabel: "Recruiting & Consulting Viewed",
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useEffect(() => {
     const t = router.query.type;
     if (t === "candidate" || t === "employer") setMode(t);
@@ -26,6 +48,15 @@ export default function RecruitingConsultingPage() {
     setMsg("");
     setErr("");
     setLoading(true);
+
+    trackConsultingEvent("consulting_submission_started", {
+      ctaId: "consulting_submit",
+      ctaLabel:
+        mode === "employer"
+          ? "Submit Employer Request"
+          : "Submit Talent Profile",
+      destination: "/api/consulting-intake",
+    });
     try {
       const res = await fetch("/api/consulting-intake", {
         method: "POST",
@@ -79,7 +110,15 @@ export default function RecruitingConsultingPage() {
           <div className="mt-5 grid grid-cols-2 gap-2 rounded-xl border border-white/10 bg-black/30 p-1">
             <button
               type="button"
-              onClick={() => setMode("employer")}
+              onClick={() => {
+                setMode("employer");
+                trackConsultingEvent("consulting_entry_clicked", {
+                  ctaId: "consulting_mode_employer",
+                  ctaLabel: "Employer Request",
+                  destination: "/recruiting-consulting?type=employer",
+                  source_variant: "employer",
+                });
+              }}
               className={`rounded-lg px-3 py-2 text-sm font-bold transition ${
                 mode === "employer"
                   ? "bg-[#D4AF37] text-black"
@@ -90,7 +129,15 @@ export default function RecruitingConsultingPage() {
             </button>
             <button
               type="button"
-              onClick={() => setMode("candidate")}
+              onClick={() => {
+                setMode("candidate");
+                trackConsultingEvent("consulting_entry_clicked", {
+                  ctaId: "consulting_mode_candidate",
+                  ctaLabel: "Talent Intake",
+                  destination: "/recruiting-consulting?type=candidate",
+                  source_variant: "candidate",
+                });
+              }}
               className={`rounded-lg px-3 py-2 text-sm font-bold transition ${
                 mode === "candidate"
                   ? "bg-[#D4AF37] text-black"

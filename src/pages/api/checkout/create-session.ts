@@ -157,6 +157,7 @@ function buildSessionParams(args: {
   sellerId: string;
   stripeAccountId: string;
   payoutMode: PayoutMode;
+  orderId: string;
 }) {
   const {
     title,
@@ -169,10 +170,12 @@ function buildSessionParams(args: {
     sellerId,
     stripeAccountId,
     payoutMode,
+    orderId,
   } = args;
 
   const metadata = {
     type: "product",
+    orderId,
     productId,
     sellerId,
     stripeAccountId,
@@ -401,6 +404,35 @@ export default async function handler(
     let payoutMode: PayoutMode = "destination_charge";
     let session: Stripe.Checkout.Session;
 
+    const orderObjectId = new ObjectId();
+    const orderId = orderObjectId.toString();
+
+    await db.collection("orders").updateOne(
+      { _id: orderObjectId },
+      {
+        $setOnInsert: {
+          _id: orderObjectId,
+          createdAt: new Date(),
+          status: "pending_checkout",
+          paymentStatus: "pending",
+          paid: false,
+        },
+        $set: {
+          productId: product._id,
+          sellerId: seller._id,
+          stripeAccountId,
+          subtotal: unitAmountCents,
+          shipping: shippingCostCents,
+          applicationFee,
+          total: unitAmountCents + shippingCostCents,
+          payoutMode,
+          needsManualSellerPayout: false,
+          updatedAt: new Date(),
+        },
+      },
+      { upsert: true },
+    );
+
     const baseParams = buildSessionParams({
       title,
       description,
@@ -412,6 +444,7 @@ export default async function handler(
       sellerId: String(seller._id),
       stripeAccountId,
       payoutMode: "destination_charge",
+      orderId,
     });
 
     try {
@@ -424,6 +457,7 @@ export default async function handler(
           },
           metadata: {
             type: "product",
+            orderId,
             productId: String(product._id),
             sellerId: String(seller._id),
             stripeAccountId,
@@ -459,6 +493,7 @@ export default async function handler(
         sellerId: String(seller._id),
         stripeAccountId,
         payoutMode: "platform_hold",
+        orderId,
       });
 
       session = await stripe.checkout.sessions.create({
@@ -466,6 +501,7 @@ export default async function handler(
         payment_intent_data: {
           metadata: {
             type: "product",
+            orderId,
             productId: String(product._id),
             sellerId: String(seller._id),
             stripeAccountId,
@@ -477,13 +513,12 @@ export default async function handler(
     }
 
     await db.collection("orders").updateOne(
-      { sessionId: session.id },
+      { _id: orderObjectId },
       {
-        $setOnInsert: {
-          createdAt: new Date(),
-        },
         $set: {
           sessionId: session.id,
+          stripeSessionId: session.id,
+          paymentSessionId: session.id,
           productId: product._id,
           sellerId: seller._id,
           stripeAccountId,
@@ -495,11 +530,29 @@ export default async function handler(
           needsManualSellerPayout: payoutMode === "platform_hold",
           paid: false,
           status: "pending_checkout",
+          paymentStatus: "pending",
           updatedAt: new Date(),
         },
       },
       { upsert: true },
     );
+
+    await db.collection("flow_events").insertOne({
+      eventType: "marketplace_checkout_created",
+      pageRoute: "/api/checkout/create-session",
+      section: "marketplace_checkout_api",
+      source: "marketplace_checkout_api",
+      source_variant: "canonical_checkout_session",
+      path: req.url || "/api/checkout/create-session",
+      checkout_variant: "canonical_checkout_session",
+      productId: String(product._id),
+      entityId: String(product._id),
+      entityType: "product",
+      sellerId: String(seller._id),
+      stripeSessionId: session.id,
+      payoutMode,
+      createdAt: new Date(),
+    });
 
     return res.status(200).json({
       sessionId: session.id,

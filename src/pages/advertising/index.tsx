@@ -3,6 +3,8 @@
 
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
+import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 
 function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
@@ -14,12 +16,14 @@ const AdCard = ({
   price,
   href,
   badge,
+  onStart,
 }: {
   title: string;
   desc: string;
   price: string;
   href: string;
   badge?: string;
+  onStart?: () => void;
 }) => (
   <div className="rounded-2xl border border-yellow-500/15 bg-zinc-950 p-5 shadow-sm">
     <div className="flex items-start justify-between gap-3">
@@ -43,6 +47,7 @@ const AdCard = ({
 
       <Link
         href={href}
+        onClick={onStart}
         className={cx(
           "rounded-xl px-4 py-2 text-sm font-semibold transition",
           "bg-yellow-500 text-black hover:bg-yellow-400",
@@ -67,6 +72,22 @@ function optionToDetailsHref(option: string) {
 export default function AdvertisingIndexPage() {
   const router = useRouter();
   const success = router.query.success === "1";
+
+  const trackAdvertisingEvent = (
+    eventType: string,
+    extras: Record<string, unknown> = {},
+  ) => {
+    emitFlowEvent({
+      eventType,
+      pageRoute: "/advertising",
+      section: "advertising_landing",
+      ...extras,
+    });
+  };
+
+  useEffect(() => {
+    trackAdvertisingEvent("advertising_landing_viewed");
+  }, []);
   const canceled = router.query.canceled === "1";
   const option =
     typeof router.query.option === "string" ? router.query.option : "";
@@ -132,6 +153,17 @@ export default function AdvertisingIndexPage() {
             price="$25 / 7 days"
             badge="Most Popular"
             href="/advertise/featured-sponsor"
+            onStart={() =>
+              trackAdvertisingEvent("advertising_option_selected", {
+                ctaId: "ad_option_featured_sponsor",
+                ctaLabel: "Featured Sponsor",
+                destination: "/advertise/featured-sponsor",
+                ad_option: "featured-sponsor",
+                ad_type: "featured-sponsor",
+                package_type: "featured",
+                source_variant: "advertising_index",
+              })
+            }
           />
 
           <AdCard
@@ -139,6 +171,17 @@ export default function AdvertisingIndexPage() {
             desc="Choose standard or featured placement based on your growth goals."
             price="$49 / 30 days"
             href="/advertise/business-directory"
+            onStart={() =>
+              trackAdvertisingEvent("advertising_option_selected", {
+                ctaId: "ad_option_directory",
+                ctaLabel: "Directory Listings",
+                destination: "/advertise/business-directory",
+                ad_option: "directory",
+                ad_type: "directory",
+                package_type: "directory",
+                source_variant: "advertising_index",
+              })
+            }
           />
 
           <AdCard
@@ -146,6 +189,17 @@ export default function AdvertisingIndexPage() {
             desc="Tasteful banner placement near high-traffic areas."
             price="$199 / 14 days"
             href="/advertise/banner-ads"
+            onStart={() =>
+              trackAdvertisingEvent("advertising_option_selected", {
+                ctaId: "ad_option_banner",
+                ctaLabel: "Banner Ads",
+                destination: "/advertise/banner-ads",
+                ad_option: "banner-ad",
+                ad_type: "banner-ad",
+                package_type: "banner",
+                source_variant: "advertising_index",
+              })
+            }
           />
 
           <AdCard
@@ -153,6 +207,17 @@ export default function AdvertisingIndexPage() {
             desc="Recruiting, consulting, partnerships, sponsored content, or bundled campaigns."
             price="$100 deposit"
             href="/advertise/custom"
+            onStart={() =>
+              trackAdvertisingEvent("advertising_option_selected", {
+                ctaId: "ad_option_custom",
+                ctaLabel: "Custom Solutions",
+                destination: "/advertise/custom",
+                ad_option: "custom-solution",
+                ad_type: "custom-solution",
+                package_type: "custom",
+                source_variant: "advertising_index",
+              })
+            }
           />
         </div>
 
@@ -170,6 +235,17 @@ export default function AdvertisingIndexPage() {
 
             <Link
               href="/advertise/custom"
+              onClick={() =>
+                trackAdvertisingEvent("advertising_option_selected", {
+                  ctaId: "ad_option_custom_request_plan",
+                  ctaLabel: "Request a Custom Plan",
+                  destination: "/advertise/custom",
+                  ad_option: "custom-solution",
+                  ad_type: "custom-solution",
+                  package_type: "custom",
+                  source_variant: "advertising_index",
+                })
+              }
               className="rounded-xl border border-yellow-500/20 bg-yellow-500/10 px-4 py-2 text-sm font-semibold text-yellow-200 hover:bg-yellow-500/15"
             >
               Request a Custom Plan →

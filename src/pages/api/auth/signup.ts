@@ -11,6 +11,17 @@ import {
   hitApiRateLimit,
 } from "@/lib/apiRateLimit";
 
+type AccountType = "user" | "seller" | "business" | "employer";
+
+function buildMembershipDefaults() {
+  return {
+    isPremium: false,
+    currentPlan: "free",
+    premiumStatus: "inactive",
+    premiumActivatedAt: null,
+  };
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
@@ -34,7 +45,13 @@ export default async function handler(
       .trim()
       .toLowerCase();
 
-    const allowedRoles = ["user", "seller", "business", "employer"];
+    const allowedRoles: AccountType[] = [
+      "user",
+      "seller",
+      "business",
+      "employer",
+    ];
+
     if (!allowedRoles.includes(accountType)) {
       return res.status(400).json({ error: "Invalid account type." });
     }
@@ -77,8 +94,9 @@ export default async function handler(
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+    const now = new Date();
 
-    let newUser;
+    let newUser: Record<string, unknown>;
     let collection;
 
     if (accountType === "business") {
@@ -104,7 +122,9 @@ export default async function handler(
         businessPhone,
         description: description || "",
         isVerified: false,
-        createdAt: new Date(),
+        ...buildMembershipDefaults(),
+        createdAt: now,
+        updatedAt: now,
       };
     } else if (accountType === "seller") {
       collection = db.collection("sellers");
@@ -119,7 +139,9 @@ export default async function handler(
         password: hashedPassword,
         accountType: "seller",
         storeName: businessName || "",
-        createdAt: new Date(),
+        ...buildMembershipDefaults(),
+        createdAt: now,
+        updatedAt: now,
       };
     } else if (accountType === "employer") {
       collection = db.collection("employers");
@@ -133,7 +155,9 @@ export default async function handler(
         email: emailNorm,
         password: hashedPassword,
         accountType: "employer",
-        createdAt: new Date(),
+        ...buildMembershipDefaults(),
+        createdAt: now,
+        updatedAt: now,
       };
     } else {
       collection = db.collection("users");
@@ -147,7 +171,9 @@ export default async function handler(
         email: emailNorm,
         password: hashedPassword,
         accountType: "user",
-        createdAt: new Date(),
+        ...buildMembershipDefaults(),
+        createdAt: now,
+        updatedAt: now,
       };
     }
 
@@ -157,16 +183,15 @@ export default async function handler(
     const token = jwt.sign(
       {
         userId,
-        email: newUser.email,
-        accountType: newUser.accountType,
+        email: String(newUser.email),
+        accountType: String(newUser.accountType),
       },
       getJwtSecret(),
       { expiresIn: "7d" },
     );
 
-    // ✉️ Send welcome email (Nodemailer)
     const transporter = nodemailer.createTransport({
-      service: "Gmail", // Or another provider like Mailgun/SendGrid
+      service: "Gmail",
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
@@ -175,30 +200,29 @@ export default async function handler(
 
     const mailOptions = {
       from: `"Black Wealth Exchange" <blackwealth24@gmail.com>`,
-      to: newUser.email,
+      to: String(newUser.email),
       subject: "Welcome to Black Wealth Exchange!",
-      text: `Welcome to the movement, ${newUser.email}!
+      text: `Welcome to the movement, ${String(newUser.email)}!
     
-    You did not just create an account — you joined a revolution.
+You did not just create an account — you joined a revolution.
     
-    Black Wealth Exchange was born from a vision: to reclaim our economic power, circulate our dollars with intention, and build a future rooted in ownership, equity, and legacy. You are now part of a growing collective committed to reshaping what prosperity looks like for our people.
+Black Wealth Exchange was born from a vision: to reclaim our economic power, circulate our dollars with intention, and build a future rooted in ownership, equity, and legacy. You are now part of a growing collective committed to reshaping what prosperity looks like for our people.
     
-    As a member, you can now:
-    - Discover or post job opportunities that uplift our communities
-    - Explore a powerful marketplace filled with Black-owned products
-    - Showcase your business and gain visibility
-    - Invest in the future of Black wealth and innovation
+As a member, you can now:
+- Discover or post job opportunities that uplift our communities
+- Explore a powerful marketplace filled with Black-owned products
+- Showcase your business and gain visibility
+- Invest in the future of Black wealth and innovation
     
-    This is more than a platform. It is a movement.
-    And we are honored to build it with you.
+This is more than a platform. It is a movement.
+And we are honored to build it with you.
     
-    Let's make history — together.
+Let's make history — together.
     
-    — The Black Wealth Exchange Team`,
-
+— The Black Wealth Exchange Team`,
       html: `
         <div style="font-family: Arial, sans-serif; line-height: 1.6;">
-          <h2>Welcome to the movement, <strong>${newUser.email}</strong>!</h2>
+          <h2>Welcome to the movement, <strong>${String(newUser.email)}</strong>!</h2>
           <p>You did not just create an account — you joined a <strong>revolution</strong>.</p>
     
           <p>Black Wealth Exchange was born from a vision: to reclaim our economic power, circulate our dollars with intention, and build a future rooted in ownership, equity, and legacy.</p>
@@ -225,7 +249,7 @@ export default async function handler(
 
     try {
       await transporter.sendMail(mailOptions);
-      console.log(`✅ Welcome email sent to ${newUser.email}`);
+      console.log(`✅ Welcome email sent to ${String(newUser.email)}`);
     } catch (emailErr) {
       console.error("❌ Failed to send welcome email:", emailErr);
     }
@@ -238,7 +262,7 @@ export default async function handler(
         sameSite: "strict",
         secure: process.env.NODE_ENV === "production",
       }),
-      serialize("accountType", newUser.accountType, {
+      serialize("accountType", String(newUser.accountType), {
         path: "/",
         maxAge: 60 * 60 * 24 * 7,
         sameSite: "strict",
@@ -249,11 +273,15 @@ export default async function handler(
     return res.status(201).json({
       success: true,
       message: "Account created and logged in!",
-      accountType: newUser.accountType,
+      accountType: String(newUser.accountType),
       user: {
         userId,
-        email: newUser.email,
-        accountType: newUser.accountType,
+        email: String(newUser.email),
+        accountType: String(newUser.accountType),
+        isPremium: false,
+        currentPlan: "free",
+        premiumStatus: "inactive",
+        premiumActivatedAt: null,
       },
     });
   } catch (error) {

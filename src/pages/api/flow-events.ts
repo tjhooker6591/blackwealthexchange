@@ -13,10 +13,7 @@ function s(v: unknown) {
 
 function normalizeEventType(body: Record<string, unknown>) {
   const raw =
-    s(body.eventType) ||
-    s(body.event) ||
-    s(body.action) ||
-    s(body.name);
+    s(body.eventType) || s(body.event) || s(body.action) || s(body.name);
 
   if (!raw) return "";
 
@@ -67,7 +64,51 @@ export default async function handler(
       state: s(body.state) || null,
       path: s(body.path) || req.url || null,
 
-      // homepage / guided-flow useful context
+      // Phase 1 canonical analytics context
+      pageRoute: s(body.pageRoute) || null,
+      section: s(body.section) || null,
+      ctaId: s(body.ctaId) || null,
+      ctaLabel: s(body.ctaLabel) || null,
+      destination: s(body.destination) || null,
+      accountType: s(body.accountType) || null,
+      isAuthenticated:
+        typeof body.isAuthenticated === "boolean" ? body.isAuthenticated : null,
+      environment: s(body.environment) || process.env.NODE_ENV || null,
+      sourceVariant: s(body.source_variant) || s(body.sourceVariant) || null,
+
+      planTier: s(body.plan_tier) || s(body.planTier) || null,
+      billingCycle: s(body.billing_cycle) || s(body.billingCycle) || null,
+
+      adType: s(body.ad_type) || s(body.adType) || null,
+      packageType: s(body.package_type) || s(body.packageType) || null,
+      checkoutVariant:
+        s(body.checkout_variant) || s(body.checkoutVariant) || null,
+
+      sellerState: s(body.seller_state) || s(body.sellerState) || null,
+      onboardingVariant:
+        s(body.onboarding_variant) || s(body.onboardingVariant) || null,
+
+      // search/discovery structured fields
+      entityId: s(body.entity_id) || s(body.entityId) || null,
+      entityType: s(body.entity_type) || s(body.entityType) || null,
+      jobId: s(body.job_id) || s(body.jobId) || null,
+      productId: s(body.product_id) || s(body.productId) || null,
+      resultCount:
+        typeof body.result_count === "number"
+          ? body.result_count
+          : typeof body.resultCount === "number"
+            ? body.resultCount
+            : null,
+      resultRank:
+        typeof body.result_rank === "number"
+          ? body.result_rank
+          : typeof body.resultRank === "number"
+            ? body.resultRank
+            : null,
+      filterKey: s(body.filter_key) || s(body.filterKey) || null,
+      filterValue: s(body.filter_value) || s(body.filterValue) || null,
+
+      // homepage / guided-flow legacy context
       surface: s(body.surface) || null,
       location: s(body.location) || null,
       cta: s(body.cta) || null,

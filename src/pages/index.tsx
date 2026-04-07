@@ -30,29 +30,11 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/router";
 import useAuth from "@/hooks/useAuth";
-import {
-  buildHomepageDirectoryQuery,
-  normalizeScope,
-} from "@/lib/directory/queryState";
+import { normalizeScope } from "@/lib/directory/queryState";
+import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 
 function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
-}
-
-function trackFlowEvent(payload: Record<string, unknown>) {
-  if (typeof window === "undefined") return;
-  const body = JSON.stringify(payload);
-  const url = "/api/flow-events";
-  if (navigator.sendBeacon) {
-    navigator.sendBeacon(url, new Blob([body], { type: "application/json" }));
-    return;
-  }
-  fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body,
-    keepalive: true,
-  }).catch(() => {});
 }
 
 /** -----------------------------
@@ -494,6 +476,21 @@ export default function Home() {
   const router = useRouter();
   const { user } = useAuth();
 
+  const trackHomepageEvent = (
+    eventType: string,
+    extras: Record<string, unknown> = {},
+  ) => {
+    emitFlowEvent({
+      eventType,
+      pageRoute: "/",
+      section: "homepage",
+      isAuthenticated: Boolean(user),
+      accountType: user?.accountType || "anonymous",
+      environment: process.env.NODE_ENV || "unknown",
+      ...extras,
+    });
+  };
+
   const placeholder =
     vertical !== "all"
       ? vertical === "shopping"
@@ -534,33 +531,48 @@ export default function Home() {
 
     if (!q) {
       return router.push({
-        pathname: "/business-directory",
+        pathname: "/search-results",
         query: {
-          type: scope,
-          scope,
-          tab: scope,
           q: "",
           search: "",
-          limit: 20,
-          sort,
+          scope,
           ai: ai ? "1" : "0",
         },
       });
     }
 
     return router.push({
-      pathname: "/business-directory",
-      query: buildHomepageDirectoryQuery({
+      pathname: "/search-results",
+      query: {
         q,
+        search: q,
         scope,
-        sort,
-        ai,
-        verifiedOnly,
-        sponsoredFirst,
-        state: stateFilter,
-        category,
-      }),
+        ai: ai ? "1" : "0",
+      },
     });
+  };
+
+  const submitHomepageSearch = (trigger: string, queryOverride?: string) => {
+    const q = (queryOverride ?? searchQuery).trim();
+
+    trackHomepageEvent("homepage_search_submitted", {
+      section: "hero_search",
+      source: "homepage_search_box",
+      query: q,
+      ctaId: "homepage_search_submit",
+      ctaLabel: trigger,
+      destination:
+        vertical === "shopping"
+          ? "/shop"
+          : vertical === "news"
+            ? "/news"
+            : "/search-results",
+      vertical,
+      aiMode,
+      scope: leftScope,
+    });
+
+    runSearch({ queryOverride: queryOverride ?? searchQuery });
   };
 
   const onToggleAi = () => {
@@ -611,9 +623,21 @@ export default function Home() {
   const sponsorRail = sponsors.length
     ? sponsors
     : [
-        { img: "/ads/sample-banner1.jpg", name: "Featured Sponsor" },
-        { img: "/ads/sample-banner2.jpg", name: "Featured Sponsor" },
-        { img: "/ads/sample-banner3.jpg", name: "Featured Sponsor" },
+        {
+          img: "/images/sponsors/titanera.jpg",
+          name: "TitanEra",
+          url: "/",
+        },
+        {
+          img: "/images/sponsors/thomashookerauthor.png",
+          name: "Thomas Hooker Author",
+          url: "/",
+        },
+        {
+          img: "/images/sponsors/pamfaunitedcitizens.jpg",
+          name: "Pamfa United Citizen",
+          url: "/",
+        },
       ];
 
   const base = getBaseUrl();
@@ -738,17 +762,28 @@ export default function Home() {
               </h1>
 
               <p className="mx-auto mt-3 max-w-2xl text-sm text-white/72 sm:text-base md:text-lg">
-                The premium hub to discover Black-owned businesses, activate
-                opportunities, and move from discovery to real-world action
-                faster.
+                Discover trusted Black-owned businesses, move into high-value
+                opportunities, and take real economic action from one premium
+                platform.
               </p>
             </div>
 
-            <div className="mx-auto mt-5 flex w-full max-w-xl flex-col gap-2.5 sm:flex-row sm:justify-center">
+            <div className="mx-auto mt-4 flex w-full max-w-xl flex-col gap-2 sm:flex-row sm:justify-center">
               {user ? (
                 <>
-                  <Link href="/dashboard" className="w-full sm:w-auto">
-                    <button className="h-11 w-full rounded-xl bg-[#D4AF37] px-5 text-sm font-extrabold text-black shadow-[0_8px_20px_rgba(212,175,55,0.25)] transition hover:-translate-y-0.5 hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/35 sm:h-11 sm:w-auto sm:px-6">
+                  <Link
+                    href="/dashboard"
+                    className="w-full sm:w-auto"
+                    onClick={() =>
+                      trackHomepageEvent("homepage_cta_clicked", {
+                        section: "hero",
+                        ctaId: "hero_go_to_dashboard",
+                        ctaLabel: "Go to Dashboard",
+                        destination: "/dashboard",
+                      })
+                    }
+                  >
+                    <button className="h-11 w-full rounded-xl border border-[#D4AF37]/45 bg-[#D4AF37]/8 px-5 text-sm font-bold text-[#F1D57A] transition hover:-translate-y-0.5 hover:bg-[#D4AF37]/16 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 sm:h-11 sm:w-auto sm:px-6">
                       Go to Dashboard
                     </button>
                   </Link>
@@ -759,6 +794,23 @@ export default function Home() {
                         : "/business-directory"
                     }
                     className="w-full sm:w-auto"
+                    onClick={() =>
+                      trackHomepageEvent("homepage_cta_clicked", {
+                        section: "hero",
+                        ctaId:
+                          user?.accountType === "admin"
+                            ? "hero_admin_dashboard"
+                            : "hero_explore_directory",
+                        ctaLabel:
+                          user?.accountType === "admin"
+                            ? "Admin Dashboard"
+                            : "Explore Directory",
+                        destination:
+                          user?.accountType === "admin"
+                            ? "/admin/dashboard"
+                            : "/business-directory",
+                      })
+                    }
                   >
                     <button className="h-11 w-full rounded-xl border border-[#D4AF37]/45 bg-[#D4AF37]/8 px-5 text-sm font-bold text-[#F1D57A] transition hover:-translate-y-0.5 hover:bg-[#D4AF37]/16 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 sm:h-11 sm:w-auto sm:px-6">
                       {user?.accountType === "admin"
@@ -769,17 +821,30 @@ export default function Home() {
                 </>
               ) : (
                 <>
-                  <Link href="/login" className="w-full sm:w-auto">
-                    <button className="h-11 w-full rounded-xl bg-[#D4AF37] px-5 text-sm font-extrabold text-black shadow-[0_8px_20px_rgba(212,175,55,0.25)] transition hover:-translate-y-0.5 hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/35 sm:h-11 sm:w-auto sm:px-6">
+                  <Link
+                    href="/login"
+                    className="w-full sm:w-auto"
+                    onClick={() =>
+                      trackHomepageEvent("homepage_cta_clicked", {
+                        section: "hero",
+                        ctaId: "hero_login",
+                        ctaLabel: "Login",
+                        destination: "/login",
+                      })
+                    }
+                  >
+                    <button className="h-11 w-full rounded-xl border border-[#D4AF37]/45 bg-[#D4AF37]/8 px-5 text-sm font-bold text-[#F1D57A] transition hover:-translate-y-0.5 hover:bg-[#D4AF37]/16 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 sm:h-11 sm:w-auto sm:px-6">
                       Login
                     </button>
                   </Link>
                   <Link
                     href="/signup?intent=join-bwe"
                     onClick={() =>
-                      trackFlowEvent({
-                        eventType: "homepage_cta_click",
-                        source: "home-hero",
+                      trackHomepageEvent("homepage_cta_clicked", {
+                        section: "hero",
+                        ctaId: "hero_signup",
+                        ctaLabel: "Sign Up",
+                        destination: "/signup?intent=join-bwe",
                         category: "signup",
                       })
                     }
@@ -792,84 +857,16 @@ export default function Home() {
                 </>
               )}
             </div>
-
-            <div className="mt-2">
-              <Link
-                href="/start-here"
-                onClick={() =>
-                  trackFlowEvent({
-                    eventType: "homepage_cta_click",
-                    source: "home-hero",
-                    category: "start-here",
-                  })
-                }
-                className="inline-flex rounded-full border border-[#D4AF37]/45 bg-[#D4AF37]/10 px-4 py-2 text-xs font-extrabold text-[#F1D57A] hover:bg-[#D4AF37]/20"
-              >
-                New here? Start with the guided path
-              </Link>
-            </div>
-
-            <details className="mx-auto mt-3 w-full max-w-4xl rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-left">
-              <summary className="cursor-pointer list-none text-xs font-semibold text-white/75">
-                Quick paths
-              </summary>
-              <div className="mt-2 flex flex-wrap gap-2 text-xs">
-                <Link
-                  href="/business-directory"
-                  className="rounded-full border border-white/15 px-3 py-1 text-white/85 hover:bg-white/10"
-                >
-                  Find Black-owned businesses near me
-                </Link>
-                <Link
-                  href="/marketplace"
-                  className="rounded-full border border-white/15 px-3 py-1 text-white/85 hover:bg-white/10"
-                >
-                  Shop Black-owned brands and products
-                </Link>
-                <Link
-                  href="/job-listings"
-                  className="rounded-full border border-white/15 px-3 py-1 text-white/85 hover:bg-white/10"
-                >
-                  Browse Black career opportunities
-                </Link>
-                <Link
-                  href="/financial-literacy"
-                  className="rounded-full border border-white/15 px-3 py-1 text-white/85 hover:bg-white/10"
-                >
-                  Financial literacy and wealth-building resources
-                </Link>
-              </div>
-            </details>
-
-            <details className="mx-auto mt-3 w-full max-w-3xl rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-left">
-              <summary className="cursor-pointer list-none text-xs font-semibold text-white/70">
-                Why trust BWE search
-              </summary>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {[
-                  "Trust-first search • Verified + quality signals",
-                  "Built for action • Find, vet, connect fast",
-                  "Economic focus • Ownership, access, circulation",
-                ].map((item) => (
-                  <span
-                    key={item}
-                    className="rounded-full border border-white/12 bg-white/[0.04] px-3 py-1.5 text-[11px] font-semibold text-white/75"
-                  >
-                    {item}
-                  </span>
-                ))}
-              </div>
-            </details>
           </div>
 
-          <section className="mt-5 sm:mt-6">
+          <section id="search-dominant" className="mt-5 sm:mt-6 scroll-mt-24">
             <div className="mx-auto max-w-4xl">
               <div className="mb-2.5">
                 <div className="text-[10px] font-bold tracking-[0.08em] text-[#D4AF37] uppercase">
-                  Discover in seconds
+                  Primary action
                 </div>
-                <div className="text-sm font-semibold text-white/78 sm:text-[15px]">
-                  Search the directory with premium filters
+                <div className="text-sm font-semibold text-white/88 sm:text-[15px]">
+                  Search the BWE ecosystem first
                 </div>
               </div>
 
@@ -1004,9 +1001,18 @@ export default function Home() {
                         inputMode="search"
                         placeholder={placeholder}
                         value={searchQuery}
+                        onFocus={() =>
+                          trackHomepageEvent("homepage_search_focused", {
+                            section: "hero_search",
+                            source: "homepage_search_box",
+                            vertical,
+                            scope: leftScope,
+                          })
+                        }
                         onChange={(e) => setSearchQuery(e.target.value)}
                         onKeyDown={(e) => {
-                          if (e.key === "Enter") runSearch();
+                          if (e.key === "Enter")
+                            submitHomepageSearch("search_input_enter");
                         }}
                         className="min-w-0 flex-1 bg-transparent px-3 py-3 text-[13px] text-white placeholder:text-white/35 outline-none sm:px-5 sm:py-4 sm:text-[15px]"
                       />
@@ -1033,7 +1039,9 @@ export default function Home() {
 
                       <button
                         type="button"
-                        onClick={() => runSearch()}
+                        onClick={() =>
+                          submitHomepageSearch("search_button_click")
+                        }
                         aria-label="Search"
                         className="shrink-0 bg-[#D4AF37] px-3 text-[13px] font-extrabold text-black transition hover:bg-yellow-500 sm:px-8 sm:text-[14px]"
                       >
@@ -1071,63 +1079,8 @@ export default function Home() {
                         <span className="font-black text-white/75">Search</span>
                       </span>
                     </div>
-
-                    {vertical === "all" && (
-                      <div className="mt-3 flex flex-wrap gap-2">
-                        {[
-                          "Restaurants",
-                          "Barbershop",
-                          "Beauty Supply",
-                          "Church",
-                          "Nonprofit",
-                        ].map((chip) => (
-                          <button
-                            key={chip}
-                            type="button"
-                            onClick={() => {
-                              setSearchQuery(chip);
-                              runSearch({ queryOverride: chip });
-                            }}
-                            className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-[11px] font-bold text-white/75 transition hover:border-white/20 hover:bg-white/[0.08]"
-                          >
-                            {chip}
-                          </button>
-                        ))}
-                      </div>
-                    )}
                   </div>
                 </div>
-              </div>
-
-              <div className="mt-4 flex flex-col items-center gap-3 sm:mt-5">
-                <button
-                  className="animate-pulseGlow rounded-xl bg-[#D4AF37] px-5 py-2.5 text-center text-sm font-extrabold text-black shadow transition hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/35 sm:px-6 sm:text-base"
-                  onClick={() => {
-                    trackFlowEvent({
-                      eventType: "seller_cta_click",
-                      source: "home-hero",
-                      path: "/marketplace/become-a-seller",
-                    });
-                    if (!user) {
-                      router.push(
-                        "/login?redirect=/marketplace/become-a-seller",
-                      );
-                    } else {
-                      router.push("/marketplace/become-a-seller");
-                    }
-                  }}
-                >
-                  <span className="sm:hidden">Start Selling</span>
-                  <span className="hidden sm:inline">
-                    Start Selling on the Marketplace — Join as a Seller
-                  </span>
-                </button>
-
-                <Link href="/library-of-black-history">
-                  <span className="text-sm font-extrabold text-[#D4AF37] transition hover:underline sm:text-base">
-                    📚 Explore the Library of Black History 🏛️
-                  </span>
-                </Link>
               </div>
             </div>
           </section>
@@ -1140,26 +1093,44 @@ export default function Home() {
 
       <section className="relative z-10 pt-3 pb-8 sm:pt-4 sm:pb-10">
         <div className="container mx-auto max-w-6xl px-4">
-          <div className="mb-4 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.05)]">
-            <div className="mb-3 text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
+          <div className="mb-4 rounded-2xl border border-white/10 bg-white/[0.03] p-3 sm:p-4">
+            <div className="mb-2 text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
               Quick paths
             </div>
             <div className="grid gap-2 sm:grid-cols-3">
               <Link
                 href="/financial-literacy"
-                className="rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm font-semibold text-white/80 transition hover:border-[#D4AF37]/30 hover:bg-black/40"
+                className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-sm font-semibold text-white/85 transition hover:border-[#D4AF37]/30 hover:bg-black/40"
+                onClick={() =>
+                  trackHomepageEvent("homepage_education_entry_clicked", {
+                    section: "quick_paths",
+                    ctaId: "quick_path_learn",
+                    ctaLabel: "I’m here to learn",
+                    destination: "/financial-literacy",
+                  })
+                }
               >
                 I’m here to learn
               </Link>
+
               <Link
                 href="/job-listings"
-                className="rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm font-semibold text-white/80 transition hover:border-[#D4AF37]/30 hover:bg-black/40"
+                className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-sm font-semibold text-white/85 transition hover:border-[#D4AF37]/30 hover:bg-black/40"
               >
                 I’m here to find opportunities
               </Link>
+
               <Link
                 href="/marketplace/become-a-seller"
-                className="rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm font-semibold text-white/80 transition hover:border-[#D4AF37]/30 hover:bg-black/40"
+                className="rounded-xl border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-3 py-2 text-sm font-semibold text-[#EFD27A] transition hover:border-[#D4AF37]/50 hover:bg-[#D4AF37]/15"
+                onClick={() =>
+                  trackHomepageEvent("seller_entry_clicked", {
+                    section: "quick_paths",
+                    ctaId: "quick_path_i_run_a_business",
+                    ctaLabel: "I run a business",
+                    destination: "/marketplace/become-a-seller",
+                  })
+                }
               >
                 I run a business
               </Link>
@@ -1178,7 +1149,7 @@ export default function Home() {
             />
             <div className="relative">
               <div className="text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
-                Start here track
+                Learn
               </div>
               <h3 className="mt-1 text-lg font-extrabold text-white sm:text-xl">
                 Featured Learning Block
@@ -1198,12 +1169,36 @@ export default function Home() {
                   Black history/economic context
                 </span>
               </div>
-              <Link
-                href="/financial-literacy"
-                className="mt-4 inline-flex h-10 items-center rounded-xl bg-[#D4AF37] px-5 text-sm font-extrabold text-black transition hover:bg-yellow-500"
-              >
-                Start the Track
-              </Link>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <Link
+                  href="/financial-literacy"
+                  className="inline-flex h-10 items-center rounded-xl bg-[#D4AF37] px-5 text-sm font-extrabold text-black transition hover:bg-yellow-500"
+                  onClick={() =>
+                    trackHomepageEvent("homepage_education_entry_clicked", {
+                      section: "featured_learning_block",
+                      ctaId: "featured_learning_start_track",
+                      ctaLabel: "Start the Track",
+                      destination: "/financial-literacy",
+                    })
+                  }
+                >
+                  Financial Literacy
+                </Link>
+                <Link
+                  href="/library-of-black-history"
+                  className="inline-flex h-10 items-center rounded-xl border border-[#D4AF37]/40 bg-[#D4AF37]/10 px-5 text-sm font-bold text-[#F1D57A] transition hover:bg-[#D4AF37]/16"
+                  onClick={() =>
+                    trackHomepageEvent("homepage_history_truth_entry_clicked", {
+                      section: "featured_learning_block",
+                      ctaId: "featured_learning_history_library",
+                      ctaLabel: "Library of Black History",
+                      destination: "/library-of-black-history",
+                    })
+                  }
+                >
+                  Library of Black History
+                </Link>
+              </div>
             </div>
           </div>
 
@@ -1216,6 +1211,14 @@ export default function Home() {
                 <Link
                   href="/black-student-opportunities"
                   className="text-xs font-bold text-[#D4AF37]"
+                  onClick={() =>
+                    trackHomepageEvent("student_portal_entry_clicked", {
+                      section: "opportunities_card",
+                      ctaId: "open_hub_header",
+                      ctaLabel: "Open Hub",
+                      destination: "/black-student-opportunities",
+                    })
+                  }
                 >
                   Open Hub →
                 </Link>
@@ -1224,6 +1227,14 @@ export default function Home() {
                 <Link
                   href="/black-student-opportunities"
                   className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40"
+                  onClick={() =>
+                    trackHomepageEvent("student_portal_entry_clicked", {
+                      section: "opportunities_card",
+                      ctaId: "opportunities_students_tile",
+                      ctaLabel: "Students",
+                      destination: "/black-student-opportunities",
+                    })
+                  }
                 >
                   Students
                 </Link>
@@ -1295,6 +1306,14 @@ export default function Home() {
               <Link
                 href="/investment"
                 className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40"
+                onClick={() =>
+                  trackHomepageEvent("homepage_education_entry_clicked", {
+                    section: "more_key_sections",
+                    ctaId: "more_key_investment_wealth",
+                    ctaLabel: "Investment & Wealth",
+                    destination: "/investment",
+                  })
+                }
               >
                 Investment & Wealth
               </Link>
@@ -1329,6 +1348,14 @@ export default function Home() {
                 <Link
                   href="/black-student-opportunities"
                   className="inline-flex items-center gap-2 rounded-xl border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-3 py-2 text-[11px] font-extrabold text-[#D4AF37] transition hover:border-[#D4AF37]/55 hover:bg-[#D4AF37]/15 sm:text-xs"
+                  onClick={() =>
+                    trackHomepageEvent("student_portal_entry_clicked", {
+                      section: "student_hub_banner",
+                      ctaId: "student_hub_open_hub",
+                      ctaLabel: "Open Hub",
+                      destination: "/black-student-opportunities",
+                    })
+                  }
                 >
                   <GraduationCap className="h-4 w-4" />
                   Open Hub
@@ -1372,6 +1399,14 @@ export default function Home() {
                     <Link
                       href="/black-student-opportunities"
                       className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#D4AF37] px-4 py-2.5 text-sm font-extrabold leading-tight text-black shadow transition hover:bg-yellow-500 sm:w-auto sm:px-5"
+                      onClick={() =>
+                        trackHomepageEvent("student_portal_entry_clicked", {
+                          section: "student_hub_banner",
+                          ctaId: "student_hub_enter",
+                          ctaLabel: "Enter Student Hub",
+                          destination: "/black-student-opportunities",
+                        })
+                      }
                     >
                       <span className="whitespace-nowrap">
                         Enter Student Hub
@@ -1496,6 +1531,14 @@ export default function Home() {
                     <Link
                       href="/black-student-opportunities"
                       className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#D4AF37] px-4 py-2.5 text-sm font-extrabold text-black shadow transition hover:bg-yellow-500 sm:px-5"
+                      onClick={() =>
+                        trackHomepageEvent("student_portal_entry_clicked", {
+                          section: "student_hub_drawer",
+                          ctaId: "student_hub_go_to_hub",
+                          ctaLabel: "Go to Student Hub",
+                          destination: "/black-student-opportunities",
+                        })
+                      }
                     >
                       Go to Student Hub <ArrowRight className="h-4 w-4" />
                     </Link>
@@ -1553,7 +1596,7 @@ export default function Home() {
           <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="max-w-3xl">
               <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
-                Major Platform Area
+                Creator Economy
               </p>
               <h2 className="mt-1 text-xl font-extrabold tracking-tight text-white sm:text-2xl">
                 BWE Music / Creator Platform

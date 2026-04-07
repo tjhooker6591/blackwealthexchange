@@ -46,7 +46,7 @@ const PROGRAMS: Program[] = [
     who: "High-achieving undergraduates",
     format: "Mentors + professional development",
     tags: ["Career", "Leadership", "Finance"],
-    href: "https://careers.seo-usa.org/mentor",
+    href: "https://www.seo-usa.org/career/",
   },
   {
     title: "NSBE Professional Development Program",
@@ -76,7 +76,7 @@ const PROGRAMS: Program[] = [
     who: "Students selected through Posse cohorts",
     format: "Cohort model + leadership + support network",
     tags: ["Leadership", "Community", "Career"],
-    href: "https://www.possefoundation.org/shaping-the-future/the-posse-program",
+    href: "https://www.possefoundation.org/", 
   },
 ];
 

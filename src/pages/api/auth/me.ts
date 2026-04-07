@@ -14,13 +14,18 @@ interface JwtPayload {
 interface UserProfile {
   _id: ObjectId;
   email: string;
-  accountType: string;
+  accountType?: string;
   fullName?: string;
   businessName?: string;
   businessAddress?: string;
   businessPhone?: string;
   createdAt?: Date;
+  updatedAt?: Date;
   password?: string;
+  isPremium?: boolean;
+  currentPlan?: string;
+  premiumStatus?: string;
+  premiumActivatedAt?: Date | null;
   [key: string]: unknown;
 }
 
@@ -56,20 +61,20 @@ export default async function handler(
     try {
       payload = jwt.verify(token, secret) as JwtPayload;
     } catch (err) {
-      console.error("❌ JWT verification failed:", err);
+      console.error("[/api/auth/me] JWT verification failed:", err);
       return res
         .status(401)
         .json({ user: null, error: "Invalid or expired token." });
     }
 
-    const accountType = payload.accountType || cookieRole;
+    const role = payload.accountType || cookieRole || "user";
 
     const collectionName =
-      accountType === "seller"
+      role === "seller"
         ? "sellers"
-        : accountType === "employer"
+        : role === "employer"
           ? "employers"
-          : accountType === "business"
+          : role === "business"
             ? "businesses"
             : "users";
 
@@ -84,15 +89,42 @@ export default async function handler(
       return res.status(404).json({ user: null, error: "User not found." });
     }
 
-    // Exclude sensitive fields
     const { password: _password, ...sanitized } = profile;
+
+    const normalizedAccountType =
+      typeof profile.accountType === "string" && profile.accountType.trim()
+        ? profile.accountType
+        : role;
+
+    const normalizedCurrentPlan =
+      typeof profile.currentPlan === "string" && profile.currentPlan.trim()
+        ? profile.currentPlan.toLowerCase()
+        : profile.isPremium === true
+          ? "premium"
+          : "free";
+
+    const normalizedPremiumStatus =
+      typeof profile.premiumStatus === "string" && profile.premiumStatus.trim()
+        ? profile.premiumStatus.toLowerCase()
+        : normalizedCurrentPlan === "premium" || profile.isPremium === true
+          ? "active"
+          : "inactive";
+
+    const normalizedIsPremium =
+      profile.isPremium === true ||
+      normalizedCurrentPlan === "premium" ||
+      normalizedPremiumStatus === "active";
 
     return res.status(200).json({
       user: {
         ...sanitized,
         id: payload.userId,
         email: payload.email,
-        accountType,
+        accountType: normalizedAccountType,
+        isPremium: normalizedIsPremium,
+        currentPlan: normalizedCurrentPlan,
+        premiumStatus: normalizedPremiumStatus,
+        premiumActivatedAt: profile.premiumActivatedAt ?? null,
       },
     });
   } catch (err) {

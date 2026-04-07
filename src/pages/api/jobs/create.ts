@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import { parse } from "cookie";
 import jwt from "jsonwebtoken";
+import { getMongoDbName } from "@/lib/env";
 
 // Fallback secret for local dev
 const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-key";
@@ -84,9 +85,24 @@ export default async function handler(
     };
 
     const client = await clientPromise;
-    const db = client.db("bwes-cluster");
+    const db = client.db(getMongoDbName());
 
     const result = await db.collection("jobs").insertOne(job);
+
+    await db.collection("flow_events").insertOne({
+      eventType: "job_post_submitted",
+      pageRoute: "/api/jobs/create",
+      section: "jobs_create_api",
+      source: "jobs_create_api",
+      source_variant: "canonical_jobs_create",
+      path: req.url || "/api/jobs/create",
+      jobId: result.insertedId.toString(),
+      entityId: result.insertedId.toString(),
+      entityType: "job",
+      accountType: decoded.accountType || "employer",
+      isAuthenticated: true,
+      createdAt: new Date(),
+    });
 
     return res.status(201).json({
       success: true,

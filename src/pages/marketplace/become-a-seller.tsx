@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import { Button } from "../../components/ui/button";
 import { Card, CardContent } from "../../components/ui/card";
+import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 
 type User = { id?: string; _id?: string; email: string };
 type Seller = { _id: string; stripeAccountId?: string; email: string };
@@ -16,6 +17,18 @@ type AccountStatus = {
 
 export default function BecomeASellerPage() {
   const router = useRouter();
+
+  const trackSellerEvent = (
+    eventType: string,
+    extras: Record<string, unknown> = {},
+  ) => {
+    emitFlowEvent({
+      eventType,
+      pageRoute: "/marketplace/become-a-seller",
+      section: "seller_onboarding",
+      ...extras,
+    });
+  };
 
   const refreshFlag = useMemo(() => {
     const q = router.query.refresh;
@@ -81,6 +94,11 @@ export default function BecomeASellerPage() {
 
   useEffect(() => {
     if (!router.isReady) return;
+
+    trackSellerEvent("seller_onboarding_started", {
+      ctaId: "seller_onboarding_page_view",
+      ctaLabel: "Become a Seller Page Viewed",
+    });
 
     (async () => {
       setBootLoading(true);
@@ -249,6 +267,13 @@ export default function BecomeASellerPage() {
 
             <Link
               href="/marketplace/dashboard"
+              onClick={() =>
+                trackSellerEvent("seller_dashboard_entry_clicked", {
+                  ctaId: "seller_dashboard_entry_complete",
+                  ctaLabel: "Go to Seller Dashboard",
+                  destination: "/marketplace/dashboard",
+                })
+              }
               className="block text-center text-sm text-gray-400 mt-3 hover:text-gray-200"
             >
               Go to Seller Dashboard
@@ -301,6 +326,13 @@ export default function BecomeASellerPage() {
 
             <Link
               href="/marketplace/dashboard"
+              onClick={() =>
+                trackSellerEvent("seller_dashboard_entry_clicked", {
+                  ctaId: "seller_dashboard_entry_back",
+                  ctaLabel: "Back to Seller Dashboard",
+                  destination: "/marketplace/dashboard",
+                })
+              }
               className="block text-center text-sm text-gray-400 mt-3 hover:text-gray-200"
             >
               Back to Seller Dashboard

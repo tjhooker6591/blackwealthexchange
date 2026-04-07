@@ -17,7 +17,7 @@ const stripe = new Stripe(stripeSecret || "sk_missing", {
   apiVersion: "2025-02-24.acacia" as any,
 });
 
-type CheckoutType = "ad" | "product" | "plan" | "course";
+type CheckoutType = "ad" | "product" | "plan" | "course" | "job";
 
 interface CheckoutPayload {
   userId?: string; // dev fallback only
@@ -29,6 +29,7 @@ interface CheckoutPayload {
   businessId?: string;
   campaignId?: string;
   placement?: string;
+  jobId?: string;
 
   // backward compatibility / extra metadata
   metadata?: Record<string, unknown>;
@@ -47,11 +48,9 @@ function withCheckoutSessionId(url: string) {
 }
 
 function getOrigin(req: NextApiRequest) {
-  // canonical production origin
   const prod = "https://www.blackwealthexchange.com";
   if (process.env.NODE_ENV === "production") return prod;
 
-  // dev/preview
   const proto = (req.headers["x-forwarded-proto"] as string) || "http";
   const host =
     (req.headers["x-forwarded-host"] as string) ||
@@ -125,6 +124,47 @@ function buildCheckoutFingerprint(input: {
   ].join("|");
 }
 
+function getAccountCollectionName(accountType?: string) {
+  return accountType === "seller"
+    ? "sellers"
+    : accountType === "employer"
+      ? "employers"
+      : accountType === "business"
+        ? "businesses"
+        : "users";
+}
+
+function isPremiumActiveFromDoc(doc: any) {
+  if (!doc || typeof doc !== "object") return false;
+
+  const currentPlan =
+    typeof doc.currentPlan === "string" ? doc.currentPlan.toLowerCase() : "";
+
+  const premiumStatus =
+    typeof doc.premiumStatus === "string" ? doc.premiumStatus.toLowerCase() : "";
+
+  return (
+    doc.isPremium === true ||
+    currentPlan === "premium" ||
+    premiumStatus === "active"
+  );
+}
+
+function isWealthBuilderPremiumEntitlementActive(doc: any) {
+  if (!doc || typeof doc !== "object") return false;
+
+  const productKey =
+    typeof doc.productKey === "string" ? doc.productKey.toLowerCase() : "";
+  const tier = typeof doc.tier === "string" ? doc.tier.toLowerCase() : "";
+  const status = typeof doc.status === "string" ? doc.status.toLowerCase() : "";
+
+  return (
+    productKey === "wealth_builder_premium" &&
+    tier === "premium" &&
+    (status === "active" || status === "trialing")
+  );
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
@@ -140,12 +180,13 @@ export default async function handler(
 
   const payload = req.body as CheckoutPayload;
 
-  // Auth via your custom session cookie
   const cookies = cookie.parse(req.headers.cookie || "");
   const token = cookies.session_token;
+  const cookieAccountType = cookies.accountType || "user";
 
   let sessionUserId = "";
   let sessionEmail = "";
+  let sessionAccountType = cookieAccountType;
 
   if (token) {
     try {
@@ -155,6 +196,9 @@ export default async function handler(
       const decoded = jwt.verify(token, SECRET as string) as any;
       sessionUserId = decoded?.userId;
       sessionEmail = decoded?.email || "";
+      sessionAccountType =
+        decoded?.accountType || cookieAccountType || "user";
+
       if (!sessionUserId) {
         return res.status(401).json({ error: "Unauthorized" });
       }
@@ -167,6 +211,7 @@ export default async function handler(
     typeof payload.userId === "string"
   ) {
     sessionUserId = payload.userId;
+    sessionAccountType = cookieAccountType || "user";
   } else {
     return res.status(401).json({ error: "Unauthorized" });
   }
@@ -177,7 +222,6 @@ export default async function handler(
     return res.status(400).json({ error: "Missing or invalid fields" });
   }
 
-  // ✅ Support both new top-level fields and older nested metadata
   const metadataIn = payload.metadata || {};
   const requestedDurationDays = parseOptionalPositiveInt(
     payload.durationDays,
@@ -195,6 +239,7 @@ export default async function handler(
     payload.placement,
     metadataIn.placement,
   );
+  const requestedJobId = firstString(payload.jobId, metadataIn.jobId);
 
   try {
     const client = await clientPromise;
@@ -203,7 +248,6 @@ export default async function handler(
 
     const origin = getOrigin(req);
 
-    // ✅ Match your existing pages in the repo
     let successUrl = withCheckoutSessionId(`${origin}/payment-success`);
     let cancelUrl = `${origin}/payment-cancel`;
 
@@ -218,17 +262,15 @@ export default async function handler(
     const normalizedBusinessId = requestedBusinessId || "";
     const normalizedCampaignId = requestedCampaignId || "";
     const normalizedPlacement = requestedPlacement || "";
+    let normalizedJobId = requestedJobId || "";
 
-    // ✅ Keep normalized item id for metadata/payments/webhook consistency
     let finalItemId = itemId;
 
-    // Optional: store a normalized user ObjectId if valid (useful for queries)
     const userObjectId = ObjectId.isValid(sessionUserId)
       ? new ObjectId(sessionUserId)
       : null;
 
     if (isAd) {
-      // ✅ Shared server-side pricing authority + alias normalization
       const adItemId = normalizeAdItemId(itemId);
       finalItemId = adItemId;
 
@@ -260,7 +302,6 @@ export default async function handler(
 
       isPlatformAccount = true;
     } else if (type === "product") {
-      // Product purchase: look up product & price server-side (don’t trust client amount)
       const product = await db
         .collection("products")
         .findOne(
@@ -288,7 +329,6 @@ export default async function handler(
 
       itemName = product?.name || itemName;
 
-      // Expect product.price in dollars or cents — adjust to your schema
       if (typeof product.price === "number") {
         unitAmount = Math.round(product.price * 100);
       } else if (typeof (product as any).priceCents === "number") {
@@ -317,24 +357,71 @@ export default async function handler(
       isPlatformAccount =
         stripeAccountId === (process.env.PLATFORM_STRIPE_ACCOUNT_ID as string);
     } else if (type === "plan") {
-      // If you support plan upgrades through this endpoint, price them server-side
-      const planMap: Record<string, number> = {
-        premium: 1200, // $12.00
-        founder: 4900, // $49.00
-        "music-creator-starter": 2900, // $29.00
-        "music-creator-pro": 7900, // $79.00
+      const planMap: Record<
+        string,
+        {
+          amount: number;
+          name: string;
+          billingInterval?: "monthly" | "annual" | null;
+        }
+      > = {
+        premium: {
+          amount: 1200,
+          name: "Plan Upgrade (premium)",
+          billingInterval: null,
+        },
+        founder: {
+          amount: 4900,
+          name: "Plan Upgrade (founder)",
+          billingInterval: null,
+        },
+        "music-creator-starter": {
+          amount: 2900,
+          name: "Plan Upgrade (music-creator-starter)",
+          billingInterval: null,
+        },
+        "music-creator-pro": {
+          amount: 7900,
+          name: "Plan Upgrade (music-creator-pro)",
+          billingInterval: null,
+        },
+
+        // Wealth Builder Premium
+        "wealth-builder-premium-monthly": {
+          amount: 899,
+          name: "Wealth Builder Premium (Monthly)",
+          billingInterval: "monthly",
+        },
+        "wealth-builder-premium-annual": {
+          amount: 7900,
+          name: "Wealth Builder Premium (Annual)",
+          billingInterval: "annual",
+        },
       };
 
-      unitAmount = planMap[itemId];
-      if (!unitAmount) return res.status(400).json({ error: "Invalid plan" });
+      const plan = planMap[itemId];
+      if (!plan) {
+        return res.status(400).json({ error: "Invalid plan" });
+      }
 
-      itemName = `Plan Upgrade (${itemId})`;
+      unitAmount = plan.amount;
+      itemName = plan.name;
       isPlatformAccount = true;
       stripeAccountId = process.env.PLATFORM_STRIPE_ACCOUNT_ID as string;
 
       if (itemId.startsWith("music-creator-")) {
         successUrl = withCheckoutSessionId(`${origin}/music/join?activated=1`);
         cancelUrl = `${origin}/music/pricing?canceled=1`;
+      }
+
+      if (
+        itemId === "wealth-builder-premium-monthly" ||
+        itemId === "wealth-builder-premium-annual"
+      ) {
+        successUrl = withCheckoutSessionId(
+          `${origin}/wealth-builder/upgrade?checkout=success`,
+        );
+        cancelUrl = `${origin}/wealth-builder/upgrade?checkout=cancel`;
       }
     } else if (type === "course") {
       const courseMap: Record<string, { name: string; amount: number }> = {
@@ -360,6 +447,59 @@ export default async function handler(
       itemName = course.name;
       isPlatformAccount = true;
       stripeAccountId = process.env.PLATFORM_STRIPE_ACCOUNT_ID as string;
+    } else if (type === "job") {
+      const jobMap: Record<string, { name: string; amount: number }> = {
+        "job-posting-standard": {
+          name: "Job Posting (Standard)",
+          amount: 19900,
+        },
+        "job-posting-featured": {
+          name: "Job Posting (Featured)",
+          amount: 79900,
+        },
+        "job-standard-post": {
+          name: "Job Posting (Standard)",
+          amount: 2999,
+        },
+        "job-featured-post": {
+          name: "Job Posting (Featured)",
+          amount: 7999,
+        },
+      };
+
+      const job = jobMap[itemId];
+      if (!job) {
+        return res.status(400).json({ error: "Invalid job posting type" });
+      }
+
+      unitAmount = job.amount;
+      itemName = job.name;
+      isPlatformAccount = true;
+      stripeAccountId = process.env.PLATFORM_STRIPE_ACCOUNT_ID as string;
+
+      if (!normalizedJobId) {
+        const draft = await db.collection("jobs").insertOne({
+          title: `${job.name} (Payment Draft)`,
+          company: "Pending",
+          location: "TBD",
+          description: "Auto-created paid job draft before checkout.",
+          requirements: "",
+          accountType: "employer",
+          email: sessionEmail || null,
+          employerId: userObjectId || sessionUserId,
+          userId: sessionUserId,
+          status: "pending_payment",
+          isPaid: false,
+          paymentStatus: "pending",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          metadata: {
+            source: "stripe_checkout_job_draft",
+            itemId,
+          },
+        });
+        normalizedJobId = String(draft.insertedId);
+      }
     } else {
       return res.status(400).json({ error: "Invalid type" });
     }
@@ -378,6 +518,7 @@ export default async function handler(
       userId: sessionUserId,
       itemId: finalItemId,
       type,
+      accountType: sessionAccountType,
       durationDays:
         typeof normalizedDurationDays === "number"
           ? String(normalizedDurationDays)
@@ -385,13 +526,83 @@ export default async function handler(
       businessId: normalizedBusinessId,
       campaignId: normalizedCampaignId,
       placement: normalizedPlacement,
+      jobId: normalizedJobId,
     };
+
+    if (type === "course") {
+      metadata.courseId = finalItemId;
+    }
+
+    if (
+      type === "plan" &&
+      (
+        finalItemId === "wealth-builder-premium-monthly" ||
+        finalItemId === "wealth-builder-premium-annual"
+      )
+    ) {
+      metadata.productKey = "wealth_builder_premium";
+      metadata.tier = "premium";
+      metadata.billingInterval =
+        finalItemId === "wealth-builder-premium-annual" ? "annual" : "monthly";
+    }
+
+    // ---------------------------------------------------------
+    // PLAN GUARD (server-side)
+    // ---------------------------------------------------------
+    if (
+      type === "plan" &&
+      (
+        finalItemId === "premium" ||
+        finalItemId === "wealth-builder-premium-monthly" ||
+        finalItemId === "wealth-builder-premium-annual"
+      )
+    ) {
+      const accountCollectionName = getAccountCollectionName(sessionAccountType);
+
+      const accountQuery = {
+        $or: [
+          ...(userObjectId ? [{ _id: userObjectId }] : []),
+          ...(sessionEmail ? [{ email: sessionEmail }] : []),
+        ],
+      };
+
+      let accountDoc = await db
+        .collection(accountCollectionName)
+        .findOne(accountQuery);
+
+      if (!accountDoc && accountCollectionName !== "users") {
+        accountDoc = await db.collection("users").findOne(accountQuery);
+      }
+
+      if (finalItemId === "premium" && isPremiumActiveFromDoc(accountDoc)) {
+        return res.status(409).json({
+          error: "Premium account already active",
+          code: "PREMIUM_ALREADY_ACTIVE",
+        });
+      }
+
+      if (
+        finalItemId === "wealth-builder-premium-monthly" ||
+        finalItemId === "wealth-builder-premium-annual"
+      ) {
+        const existingEntitlement = await db.collection("user_entitlements").findOne({
+          userId: sessionUserId,
+          accountType: "user",
+          productKey: "wealth_builder_premium",
+        });
+
+        if (isWealthBuilderPremiumEntitlementActive(existingEntitlement)) {
+          return res.status(409).json({
+            error: "Wealth Builder Premium is already active",
+            code: "WEALTH_BUILDER_PREMIUM_ALREADY_ACTIVE",
+          });
+        }
+      }
+    }
 
     // ---------------------------------------------------------
     // P0 DUPLICATE GUARD (server-side)
     // ---------------------------------------------------------
-    // Only enforce this strict recent-match guard for ad checkouts right now
-    // to avoid accidental blocking of legitimate rapid product/plan purchases.
     if (type === "ad") {
       const createdAfter = new Date(Date.now() - 60_000);
 
@@ -422,7 +633,6 @@ export default async function handler(
       );
 
       if (existingRecent?.stripeSessionId) {
-        // If already paid, block another checkout immediately.
         if (existingRecent.status === "paid") {
           return res.status(409).json({
             error:
@@ -433,7 +643,6 @@ export default async function handler(
           });
         }
 
-        // Try to reuse an existing open Checkout Session.
         try {
           const existingSession = await stripe.checkout.sessions.retrieve(
             existingRecent.stripeSessionId,
@@ -453,7 +662,6 @@ export default async function handler(
           );
         }
 
-        // If session isn't reusable, block rapid duplicate creation.
         return res.status(409).json({
           error:
             "A checkout attempt is already in progress. Please wait a moment and try again.",
@@ -464,7 +672,6 @@ export default async function handler(
       }
     }
 
-    // Helpful for dedupe debugging / replay diagnostics
     const checkoutFingerprint = buildCheckoutFingerprint({
       userId: sessionUserId,
       email: sessionEmail,
@@ -479,8 +686,6 @@ export default async function handler(
 
     metadata.checkoutFingerprint = checkoutFingerprint;
 
-    // Stripe idempotency key protects against near-simultaneous duplicate requests.
-    // Minute bucket keeps it stable for rapid retries but allows legitimate future purchases.
     const minuteBucket = Math.floor(Date.now() / 60_000);
     const idempotencyKey = `checkout:${sha256Hex(
       `${checkoutFingerprint}|${minuteBucket}`,
@@ -503,8 +708,6 @@ export default async function handler(
       metadata,
       success_url: successUrl,
       cancel_url: cancelUrl,
-
-      // Helpful for reconciliation
       client_reference_id: sessionUserId,
       payment_intent_data: {
         metadata,
@@ -521,7 +724,6 @@ export default async function handler(
       idempotencyKey,
     });
 
-    // ✅ Create a pending payment record so Admin can always reconcile
     await payments.updateOne(
       { stripeSessionId: stripeSession.id },
       {
@@ -547,7 +749,30 @@ export default async function handler(
             businessId: normalizedBusinessId || null,
             campaignId: normalizedCampaignId || null,
             placement: normalizedPlacement || null,
+            jobId: normalizedJobId || null,
             checkoutFingerprint,
+            productKey:
+              type === "plan" &&
+              (
+                finalItemId === "wealth-builder-premium-monthly" ||
+                finalItemId === "wealth-builder-premium-annual"
+              )
+                ? "wealth_builder_premium"
+                : null,
+            tier:
+              type === "plan" &&
+              (
+                finalItemId === "wealth-builder-premium-monthly" ||
+                finalItemId === "wealth-builder-premium-annual"
+              )
+                ? "premium"
+                : null,
+            billingInterval:
+              type === "plan" && finalItemId === "wealth-builder-premium-annual"
+                ? "annual"
+                : type === "plan" && finalItemId === "wealth-builder-premium-monthly"
+                  ? "monthly"
+                  : null,
           },
         },
         $set: {
@@ -557,6 +782,25 @@ export default async function handler(
       { upsert: true },
     );
 
+    if (type === "product") {
+      await db.collection("flow_events").insertOne({
+        eventType: "marketplace_checkout_created",
+        pageRoute: "/api/stripe/checkout",
+        section: "marketplace_checkout_api",
+        source: "stripe_checkout_api",
+        source_variant: "legacy_stripe_checkout",
+        path: req.url || "/api/stripe/checkout",
+        checkout_variant: "legacy_stripe_checkout",
+        productId: finalItemId,
+        entityId: finalItemId,
+        entityType: "product",
+        stripeSessionId: stripeSession.id,
+        accountType: "authenticated",
+        isAuthenticated: true,
+        createdAt: new Date(),
+      });
+    }
+
     return res.status(200).json({
       sessionId: stripeSession.id,
       url: stripeSession.url,
@@ -564,7 +808,6 @@ export default async function handler(
   } catch (err: any) {
     console.error("❌ Stripe session creation failed:", err);
 
-    // More helpful message for the seller transfer capability issue you hit
     if (err?.code === "insufficient_capabilities_for_transfer") {
       return res.status(400).json({
         error:

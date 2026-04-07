@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import type { GetServerSideProps } from "next";
+import cookie from "cookie";
+import jwt from "jsonwebtoken";
+import { getJwtSecret } from "@/lib/env";
 
 type Lead = {
   _id: string;
@@ -10,7 +14,14 @@ type Lead = {
   phone: string;
   service: string;
   message: string;
-  status: "pending" | "approved" | "rejected" | "flagged" | string;
+  status:
+    | "pending"
+    | "approved"
+    | "rejected"
+    | "flagged"
+    | "spam"
+    | "deleted"
+    | string;
   lifecycleStage?:
     | "new"
     | "triaged"
@@ -27,6 +38,9 @@ type Lead = {
   source?: string;
   intakeType?: string;
   createdAt?: string | null;
+  adminNote?: string;
+  ip?: string | null;
+  userAgent?: string | null;
 };
 
 export default function ConsultingLeadsAdminPage() {
@@ -60,7 +74,13 @@ export default function ConsultingLeadsAdminPage() {
   async function updateLead(
     lead: Lead,
     patch: {
-      status?: "pending" | "approved" | "rejected" | "flagged";
+      status?:
+        | "pending"
+        | "approved"
+        | "rejected"
+        | "flagged"
+        | "spam"
+        | "deleted";
       lifecycleStage?: string;
       nextAction?: string;
       owner?: string;
@@ -81,6 +101,7 @@ export default function ConsultingLeadsAdminPage() {
           nextAction: patch.nextAction ?? lead.nextAction ?? "",
           owner: patch.owner ?? lead.owner ?? "",
           followUpAt: patch.followUpAt ?? lead.followUpAt ?? null,
+          adminNote: lead.adminNote || "",
         }),
       });
       const data = await res.json().catch(() => ({}));
@@ -88,6 +109,30 @@ export default function ConsultingLeadsAdminPage() {
       await loadRows();
     } catch (e: any) {
       setError(e?.message || "Failed to update status");
+    } finally {
+      setSavingId("");
+    }
+  }
+
+  async function deleteLead(lead: Lead) {
+    if (!confirm("Delete this lead from active review?")) return;
+    setSavingId(lead._id);
+    try {
+      const res = await fetch("/api/admin/consulting-interests", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          id: lead._id,
+          collection: lead.collection,
+          reason: "Removed by admin moderation",
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.error || "Failed to delete lead");
+      await loadRows();
+    } catch (e: any) {
+      setError(e?.message || "Failed to delete lead");
     } finally {
       setSavingId("");
     }
@@ -149,7 +194,16 @@ export default function ConsultingLeadsAdminPage() {
                       <td className="p-2">{r.businessName || "-"}</td>
                       <td className="p-2">{r.email || "-"}</td>
                       <td className="p-2">{r.service || "-"}</td>
-                      <td className="p-2">{r.source || r.intakeType || "-"}</td>
+                      <td className="p-2 text-xs">
+                        <div>{r.source || r.intakeType || "-"}</div>
+                        <div className="text-white/50">IP: {r.ip || "-"}</div>
+                        <div
+                          className="text-white/50 max-w-[220px] truncate"
+                          title={r.userAgent || ""}
+                        >
+                          UA: {r.userAgent || "-"}
+                        </div>
+                      </td>
                       <td className="p-2">
                         <div className="text-xs text-white/80">
                           {r.status || "new"}
@@ -184,7 +238,9 @@ export default function ConsultingLeadsAdminPage() {
                           <option value="pending">pending</option>
                           <option value="approved">approved</option>
                           <option value="flagged">flagged</option>
+                          <option value="spam">spam</option>
                           <option value="rejected">rejected</option>
+                          <option value="deleted">deleted</option>
                         </select>
 
                         <div className="flex flex-wrap gap-1">
@@ -228,6 +284,13 @@ export default function ConsultingLeadsAdminPage() {
                           >
                             Move to delivery
                           </button>
+                          <button
+                            className="rounded bg-red-700/80 px-2 py-1 text-[11px] font-semibold"
+                            disabled={savingId === r._id}
+                            onClick={() => deleteLead(r)}
+                          >
+                            Delete
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -241,3 +304,42 @@ export default function ConsultingLeadsAdminPage() {
     </main>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const cookies = cookie.parse(req.headers.cookie || "");
+  const token = cookies.session_token;
+
+  if (!token) {
+    return {
+      redirect: {
+        destination: "/login?redirect=/admin/consulting-leads",
+        permanent: false,
+      },
+    };
+  }
+
+  try {
+    const payload = jwt.verify(token, getJwtSecret()) as {
+      accountType?: string;
+      isAdmin?: boolean;
+    };
+
+    if (!(payload.isAdmin === true || payload.accountType === "admin")) {
+      return {
+        redirect: {
+          destination: "/login?redirect=/admin/consulting-leads",
+          permanent: false,
+        },
+      };
+    }
+  } catch {
+    return {
+      redirect: {
+        destination: "/login?redirect=/admin/consulting-leads",
+        permanent: false,
+      },
+    };
+  }
+
+  return { props: {} };
+};

@@ -5,6 +5,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import BuyNowButton from "@/components/BuyNowButton";
+import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 
 type ListingTier = "free" | "standard" | "featured";
 
@@ -59,6 +60,19 @@ const PostJob = () => {
 
   const userId = user?._id || user?.id || "";
 
+  const trackEmployerEvent = (
+    eventType: string,
+    extras: Record<string, unknown> = {},
+  ) => {
+    emitFlowEvent({
+      eventType,
+      pageRoute: "/post-job",
+      section: "employer_post_job",
+      accountType: user?.accountType || "anonymous",
+      ...extras,
+    });
+  };
+
   // -------- Auth gate (employer only) ----------
   useEffect(() => {
     const fetchUser = async () => {
@@ -94,6 +108,17 @@ const PostJob = () => {
   }, [router]);
 
   // -------- Auto-post after payment success ----------
+  useEffect(() => {
+    if (!loading && user?.accountType === "employer") {
+      trackEmployerEvent("employer_post_job_started", {
+        ctaId: "post_job_page_view",
+        ctaLabel: "Post Job Page Viewed",
+        destination: "/api/jobs/create",
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading, user?.accountType]);
+
   useEffect(() => {
     if (!router.isReady) return;
     if (autoPostRanRef.current) return;

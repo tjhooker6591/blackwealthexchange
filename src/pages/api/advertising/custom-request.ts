@@ -120,6 +120,24 @@ export default async function handler(
       updatedAt: now,
     });
 
+    await db.collection("flow_events").insertOne({
+      eventType: "advertising_submission_completed",
+      pageRoute: "/api/advertising/custom-request",
+      section: "advertising_custom_request_api",
+      source: "advertising_custom_request_api",
+      source_variant: "custom_request",
+      path: req.url || "/api/advertising/custom-request",
+      adOption: "custom-solution",
+      ad_type: "custom-solution",
+      package_type: "custom",
+      checkout_variant: "unified_advertising_checkout",
+      campaignId: result.insertedId.toString(),
+      selectedOptions: validOptions,
+      accountType: "advertiser",
+      isAuthenticated: userIdRaw && userIdRaw !== "guest",
+      createdAt: new Date(),
+    });
+
     return res.status(201).json({
       success: true,
       requestId: result.insertedId.toString(),

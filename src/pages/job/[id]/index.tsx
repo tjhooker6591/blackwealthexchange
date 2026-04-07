@@ -4,6 +4,7 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
 import React, { useEffect, useMemo, useState } from "react";
+import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 
 interface Job {
   _id: string;
@@ -40,6 +41,22 @@ export default function JobDetail() {
   const [loading, setLoading] = useState(true);
   const [errMsg, setErrMsg] = useState("");
 
+  const trackJobEvent = (
+    eventType: string,
+    extras: Record<string, unknown> = {},
+  ) => {
+    emitFlowEvent({
+      eventType,
+      pageRoute: "/job/[id]",
+      section: "job_detail",
+      jobId: jobId || null,
+      entityId: jobId || null,
+      entityType: "job",
+      destination: jobId ? `/job/${jobId}/apply` : "/job/[id]/apply",
+      ...extras,
+    });
+  };
+
   // Fetch job
   useEffect(() => {
     if (!router.isReady || !jobId) return;
@@ -65,7 +82,13 @@ export default function JobDetail() {
         }
 
         const j = data?.job || data; // supports either {job} or direct
-        if (!cancelled) setJob(j || null);
+        if (!cancelled) {
+          setJob(j || null);
+          trackJobEvent("job_detail_viewed", {
+            ctaId: "job_detail_view",
+            ctaLabel: "Job Detail Viewed",
+          });
+        }
       } catch (e: unknown) {
         if (!cancelled) {
           setJob(null);
@@ -229,7 +252,15 @@ export default function JobDetail() {
             </div>
 
             <div className="flex flex-col gap-2 min-w-[180px]">
-              <Link href={`/job/${job._id}/apply`}>
+              <Link
+                href={`/job/${job._id}/apply`}
+                onClick={() =>
+                  trackJobEvent("job_apply_started", {
+                    ctaId: "job_detail_apply_primary",
+                    ctaLabel: "Apply Now",
+                  })
+                }
+              >
                 <button className="w-full px-5 py-3 bg-gold text-black font-semibold rounded hover:bg-yellow-500 transition">
                   Apply Now
                 </button>
@@ -255,7 +286,15 @@ export default function JobDetail() {
 
           {/* Bottom CTA */}
           <div className="mt-8 flex flex-wrap gap-3">
-            <Link href={`/job/${job._id}/apply`}>
+            <Link
+              href={`/job/${job._id}/apply`}
+              onClick={() =>
+                trackJobEvent("job_apply_started", {
+                  ctaId: "job_detail_apply_bottom",
+                  ctaLabel: "Apply Now",
+                })
+              }
+            >
               <button className="px-6 py-3 bg-gold text-black font-semibold rounded hover:bg-yellow-500 transition">
                 Apply Now
               </button>

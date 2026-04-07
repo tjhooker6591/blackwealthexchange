@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import Link from "next/link";
 import BuyNowButton from "@/components/BuyNowButton";
+import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 
 interface Product {
   _id: string;
@@ -24,6 +25,21 @@ const ProductDetailPage = () => {
   const [showModal, setShowModal] = useState(false);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
 
+  const trackMarketplaceProductEvent = (
+    eventType: string,
+    extras: Record<string, unknown> = {},
+  ) => {
+    emitFlowEvent({
+      eventType,
+      pageRoute: "/marketplace/product/[id]",
+      section: "marketplace_product_detail",
+      productId: typeof id === "string" ? id : null,
+      entityId: typeof id === "string" ? id : null,
+      entityType: "product",
+      ...extras,
+    });
+  };
+
   // Fetch single product
   useEffect(() => {
     if (!id) return;
@@ -35,7 +51,14 @@ const ProductDetailPage = () => {
         if (!res.ok) throw new Error("Failed to fetch product");
 
         const data = await res.json();
-        setProduct(data?.product || null);
+        const loadedProduct = data?.product || null;
+        setProduct(loadedProduct);
+        if (loadedProduct?._id) {
+          trackMarketplaceProductEvent("product_detail_viewed", {
+            ctaId: "product_detail_view",
+            ctaLabel: "Product Detail Viewed",
+          });
+        }
       } catch (error) {
         console.error("Error fetching product:", error);
         setProduct(null);
@@ -129,6 +152,7 @@ const ProductDetailPage = () => {
                 itemId={product._id}
                 amount={product.price}
                 type="product"
+                label="Buy Now"
               />
 
               <button

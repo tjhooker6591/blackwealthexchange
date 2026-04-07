@@ -15,6 +15,7 @@ import {
   ChevronUp,
 } from "lucide-react";
 import BuyNowButton from "@/components/BuyNowButton";
+import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 
 type Product = {
   _id: string;
@@ -77,6 +78,19 @@ function buildPageList(current: number, total: number) {
 export default function Marketplace() {
   const router = useRouter();
 
+  const trackMarketplaceEvent = (
+    eventType: string,
+    extras: Record<string, unknown> = {},
+  ) => {
+    emitFlowEvent({
+      eventType,
+      pageRoute: "/marketplace",
+      section: "marketplace_landing",
+      entityType: "product",
+      ...extras,
+    });
+  };
+
   const [products, setProducts] = useState<Product[]>([]);
   const [selectedCategory, setSelectedCategory] =
     useState<(typeof CATEGORIES)[number]>("All");
@@ -93,6 +107,13 @@ export default function Marketplace() {
   const [legalOpen, setLegalOpen] = useState(false);
 
   const topRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    trackMarketplaceEvent("marketplace_landing_viewed", {
+      ctaId: "marketplace_page_view",
+      ctaLabel: "Marketplace Viewed",
+    });
+  }, []);
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -483,6 +504,7 @@ export default function Marketplace() {
                         itemId={product._id}
                         amount={product.price}
                         type="product"
+                        label="Buy Now"
                       />
                     </div>
 

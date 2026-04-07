@@ -1,8 +1,9 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { getAdQuote } from "@/lib/advertising/pricing";
+import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 
 const CHECKOUT_LOCK_PREFIX = "bwe:ad-checkout-lock:";
 const CHECKOUT_LOCK_TTL_MS = 20_000;
@@ -122,6 +123,18 @@ function releaseCheckoutLock(attemptKey: string) {
 export default function AdvertisingCheckoutPage() {
   const router = useRouter();
   const [message, setMessage] = useState("");
+
+  const trackAdCheckoutEvent = (
+    eventType: string,
+    extras: Record<string, unknown> = {},
+  ) => {
+    emitFlowEvent({
+      eventType,
+      pageRoute: "/advertising/checkout",
+      section: "advertising_checkout",
+      ...extras,
+    });
+  };
   const [loading, setLoading] = useState(false);
   const startedAttemptRef = useRef<string | null>(null);
 
@@ -166,6 +179,20 @@ export default function AdvertisingCheckoutPage() {
     };
   }, [router.isReady, router.query]);
 
+  useEffect(() => {
+    if (!parsed || parsed.invalid) return;
+    trackAdCheckoutEvent("advertising_landing_viewed", {
+      ad_option: parsed.option,
+      ad_type: parsed.option,
+      package_type: parsed.option,
+      checkout_variant: "unified_advertising_checkout",
+      source_variant: "advertising_checkout",
+      duration_days: parsed.durationDays,
+      placement: parsed.placement || null,
+      campaignId: parsed.campaignId || null,
+    });
+  }, [parsed]);
+
   const handleStartCheckout = async () => {
     if (!parsed || parsed.invalid) return;
 
@@ -186,6 +213,18 @@ export default function AdvertisingCheckoutPage() {
     startedAttemptRef.current = attemptKey;
     setLoading(true);
     setMessage("Preparing secure checkout…");
+
+    trackAdCheckoutEvent("advertising_checkout_started", {
+      ad_option: parsed.option,
+      ad_type: parsed.option,
+      package_type: parsed.option,
+      checkout_variant: "unified_advertising_checkout",
+      source_variant: "advertising_checkout",
+      duration_days: parsed.durationDays,
+      placement: parsed.placement || null,
+      campaignId: parsed.campaignId || null,
+      destination: "/api/stripe/checkout",
+    });
 
     try {
       const origin = window.location.origin;

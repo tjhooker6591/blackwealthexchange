@@ -9,6 +9,7 @@ import {
   hitApiRateLimit,
 } from "@/lib/apiRateLimit";
 import { ObjectId } from "mongodb";
+import { canCompleteAffiliatePayout } from "@/lib/stateTransitions";
 
 export default async function handler(
   req: NextApiRequest,
@@ -57,10 +58,17 @@ export default async function handler(
     if (!payout) {
       return res.status(404).json({ error: "Payout not found" });
     }
-    if (payout.status === "completed") {
-      return res
-        .status(409)
-        .json({ error: "Payout already completed", payoutId });
+
+    const payoutGate = canCompleteAffiliatePayout({
+      payoutStatus: payout.status,
+    });
+
+    if (!payoutGate.ok) {
+      return res.status(409).json({
+        error: "Payout cannot be completed",
+        payoutId,
+        reason: payoutGate.reason,
+      });
     }
 
     const amount = Number(payout.amount || 0);

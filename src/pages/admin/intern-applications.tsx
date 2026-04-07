@@ -1,4 +1,8 @@
 import { useEffect, useState } from "react";
+import type { GetServerSideProps } from "next";
+import cookie from "cookie";
+import jwt from "jsonwebtoken";
+import { getJwtSecret } from "@/lib/env";
 
 type InternApplication = {
   _id?: string;
@@ -39,13 +43,19 @@ export default function InternApplicationsAdmin() {
         return;
       }
 
-      if (!Array.isArray(data)) {
+      const rows = Array.isArray(data)
+        ? data
+        : Array.isArray(data?.applications)
+          ? data.applications
+          : [];
+
+      if (!Array.isArray(rows)) {
         setApps([]);
         setPageError("Unexpected API response. Not an array.");
         return;
       }
 
-      setApps(data);
+      setApps(rows);
     } catch (err) {
       console.error(err);
       setApps([]);
@@ -84,6 +94,28 @@ export default function InternApplicationsAdmin() {
     } catch (err) {
       console.error(err);
       alert("Network error updating status.");
+    }
+  };
+
+  const deleteApplication = async (id: string) => {
+    if (!id) return;
+    if (!confirm("Delete this application from active review?")) return;
+    try {
+      const res = await fetch("/api/admin/intern-applications", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ id, reason: "Removed by admin" }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        alert(data?.error || "Failed to delete application.");
+        return;
+      }
+      load();
+    } catch (err) {
+      console.error(err);
+      alert("Network error deleting application.");
     }
   };
 
@@ -151,7 +183,15 @@ export default function InternApplicationsAdmin() {
                     <option value="contacted">Contacted</option>
                     <option value="accepted">Accepted</option>
                     <option value="rejected">Rejected</option>
+                    <option value="deleted">Deleted</option>
                   </select>
+
+                  <button
+                    onClick={() => deleteApplication(appId)}
+                    className="w-full md:w-auto rounded bg-red-700/80 px-3 py-2 text-xs font-semibold"
+                  >
+                    Delete
+                  </button>
 
                   {app.links && (
                     <a
@@ -172,3 +212,42 @@ export default function InternApplicationsAdmin() {
     </div>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const cookies = cookie.parse(req.headers.cookie || "");
+  const token = cookies.session_token;
+
+  if (!token) {
+    return {
+      redirect: {
+        destination: "/login?redirect=/admin/intern-applications",
+        permanent: false,
+      },
+    };
+  }
+
+  try {
+    const payload = jwt.verify(token, getJwtSecret()) as {
+      accountType?: string;
+      isAdmin?: boolean;
+    };
+
+    if (!(payload.isAdmin === true || payload.accountType === "admin")) {
+      return {
+        redirect: {
+          destination: "/login?redirect=/admin/intern-applications",
+          permanent: false,
+        },
+      };
+    }
+  } catch {
+    return {
+      redirect: {
+        destination: "/login?redirect=/admin/intern-applications",
+        permanent: false,
+      },
+    };
+  }
+
+  return { props: {} };
+};

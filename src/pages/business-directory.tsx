@@ -545,7 +545,7 @@ export default function BusinessDirectory() {
       if (includeIncomplete) params.set("includeIncomplete", "1");
       params.set("__nocache", "1");
 
-      fetch(`/api/searchBusinesses?${params.toString()}`, {
+      fetch(`/api/search/businesses?${params.toString()}`, {
         signal: controller.signal,
       })
         .then((r) => r.json())
@@ -616,6 +616,9 @@ export default function BusinessDirectory() {
 
   // Client filtering (business categories) if needed
   const filteredRows = useMemo(() => {
+    // Server-side filtering is canonical for paged results; avoid double-filter mismatch.
+    if (serverPaged) return rows;
+
     if (scope !== "businesses") return rows;
     if (!category || category === "All") return rows;
 
@@ -626,7 +629,7 @@ export default function BusinessDirectory() {
       ).toLowerCase();
       return catStr.includes(want);
     });
-  }, [rows, scope, category]);
+  }, [rows, scope, category, serverPaged]);
 
   // Pagination fallback
   const totalPages = Math.max(1, Math.ceil((total || 0) / pageSize));
@@ -667,6 +670,9 @@ export default function BusinessDirectory() {
   const getDesc = (r: Row) => safeStr((r as any).description);
 
   const getLocation = (r: Row) => {
+    const normalized = safeStr((r as any).locationDisplay);
+    if (normalized) return normalized;
+
     const city = safeStr((r as any).city);
     const state = safeStr((r as any).state);
     const addr = safeStr((r as any).address);
@@ -676,6 +682,9 @@ export default function BusinessDirectory() {
   };
 
   const getCategoryLabel = (r: Row) => {
+    const primaryCategory = safeStr((r as any).primaryCategory);
+    if (primaryCategory) return primaryCategory;
+
     if (r.__kind === "org") {
       const orgType = safeStr((r as any).orgType);
       const denom = safeStr((r as any).denomination);
@@ -726,19 +735,29 @@ export default function BusinessDirectory() {
   };
 
   const getTrustMeta = (r: Row) => {
-    const status = safeStr((r as any).status).toLowerCase();
+    const status = safeStr(
+      (r as any).trustStatus || (r as any).status,
+    ).toLowerCase();
     const verified =
-      (r as any).verified === true ||
       (r as any).isVerified === true ||
+      (r as any).verified === true ||
       status === "verified";
 
-    const approved = status === "approved" || status === "verified" || !status;
-    const sponsored = Number((r as any).amountPaid || 0) > 0;
+    const approved =
+      (r as any).isApproved === true ||
+      status === "approved" ||
+      status === "verified" ||
+      status === "active";
+
+    const sponsored =
+      (r as any).isSponsored === true || Number((r as any).amountPaid || 0) > 0;
 
     const isComplete =
       typeof (r as any).isComplete === "boolean"
         ? (r as any).isComplete
-        : Number((r as any).completenessScore || 0) >= 70;
+        : Number(
+            (r as any).qualityScore || (r as any).completenessScore || 0,
+          ) >= 70;
 
     return { verified, approved, sponsored, isComplete };
   };

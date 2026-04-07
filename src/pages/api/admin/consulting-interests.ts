@@ -2,7 +2,13 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "../../../lib/mongodb";
 import { requireAdminFromRequest } from "@/lib/adminAuth";
 
-type ConsultingStatus = "pending" | "approved" | "rejected" | "flagged";
+type ConsultingStatus =
+  | "pending"
+  | "approved"
+  | "rejected"
+  | "flagged"
+  | "spam"
+  | "deleted";
 type LifecycleStage =
   | "new"
   | "triaged"
@@ -17,7 +23,9 @@ function normalizeStatus(value: unknown): ConsultingStatus {
   const v = String(value || "")
     .trim()
     .toLowerCase();
-  if (v === "approved" || v === "rejected" || v === "flagged") return v;
+  if (["approved", "rejected", "flagged", "spam", "deleted"].includes(v)) {
+    return v as ConsultingStatus;
+  }
   return "pending";
 }
 
@@ -52,8 +60,16 @@ export default async function handler(
     const db = client.db(dbName);
 
     if (req.method === "PATCH") {
-      const { id, collection, status, stage, nextAction, owner, followUpAt } =
-        req.body || {};
+      const {
+        id,
+        collection,
+        status,
+        stage,
+        nextAction,
+        owner,
+        followUpAt,
+        adminNote,
+      } = req.body || {};
       const nextStatus = normalizeStatus(status);
       const nextStage = normalizeStage(stage || status || "new");
 
@@ -75,6 +91,8 @@ export default async function handler(
       const actor = admin.email || admin.userId || "admin";
       const trimmedNextAction =
         typeof nextAction === "string" ? nextAction.trim() : "";
+      const trimmedAdminNote =
+        typeof adminNote === "string" ? adminNote.trim().slice(0, 1200) : "";
 
       const updateDoc = {
         $set: {
@@ -83,6 +101,7 @@ export default async function handler(
           nextAction: trimmedNextAction,
           owner: typeof owner === "string" ? owner.trim() : "",
           followUpAt: followUpAt ? new Date(followUpAt) : null,
+          adminNote: trimmedAdminNote,
           updatedAt: new Date(),
           reviewedBy: actor,
         },
@@ -93,6 +112,7 @@ export default async function handler(
             status: nextStatus,
             stage: nextStage,
             nextAction: trimmedNextAction,
+            adminNote: trimmedAdminNote,
           },
         },
       } as any;
@@ -110,8 +130,59 @@ export default async function handler(
         .json({ ok: true, id, collection, status: nextStatus });
     }
 
+    if (req.method === "DELETE") {
+      const { id, collection, reason } = (req.body || {}) as any;
+      if (!id || !collection) {
+        return res.status(400).json({ error: "Missing id or collection" });
+      }
+      if (!["consulting_interest", "consulting_intake"].includes(collection)) {
+        return res.status(400).json({ error: "Invalid collection" });
+      }
+
+      const { ObjectId } = await import("mongodb");
+      const _id = ObjectId.isValid(String(id))
+        ? new ObjectId(String(id))
+        : null;
+      if (!_id) return res.status(400).json({ error: "Invalid id" });
+
+      const actor = admin.email || admin.userId || "admin";
+      const now = new Date();
+      const note =
+        typeof reason === "string" && reason.trim()
+          ? reason.trim().slice(0, 1200)
+          : "Deleted by admin";
+      const result = await db.collection(collection).updateOne({ _id }, {
+        $set: {
+          status: "deleted",
+          lifecycleStage: "closed_lost",
+          deletedAt: now,
+          updatedAt: now,
+          reviewedBy: actor,
+          adminNote: note,
+        },
+        $push: {
+          lifecycleLog: {
+            at: now,
+            by: actor,
+            status: "deleted",
+            stage: "closed_lost",
+            nextAction: "",
+            adminNote: note,
+          },
+        },
+      } as any);
+
+      if (!result.matchedCount) {
+        return res.status(404).json({ error: "Lead not found" });
+      }
+
+      return res
+        .status(200)
+        .json({ ok: true, id, collection, status: "deleted" });
+    }
+
     if (req.method !== "GET") {
-      res.setHeader("Allow", ["GET", "PATCH"]);
+      res.setHeader("Allow", ["GET", "PATCH", "DELETE"]);
       return res.status(405).json({ error: "Method Not Allowed" });
     }
 
@@ -140,6 +211,10 @@ export default async function handler(
           createdAt: 1,
           updatedAt: 1,
           source: 1,
+          adminNote: 1,
+          ip: 1,
+          requestIp: 1,
+          userAgent: 1,
         })
         .toArray(),
       db
@@ -162,6 +237,10 @@ export default async function handler(
           createdAt: 1,
           updatedAt: 1,
           source: 1,
+          adminNote: 1,
+          ip: 1,
+          requestIp: 1,
+          userAgent: 1,
         })
         .toArray(),
     ]);
@@ -183,6 +262,9 @@ export default async function handler(
         nextAction: x.nextAction || "",
         owner: x.owner || "",
         followUpAt: x.followUpAt ? new Date(x.followUpAt).toISOString() : null,
+        adminNote: x.adminNote || "",
+        ip: x.ip || x.requestIp || null,
+        userAgent: x.userAgent || null,
         lifecycleLogCount: Array.isArray(x.lifecycleLog)
           ? x.lifecycleLog.length
           : 0,
@@ -209,6 +291,9 @@ export default async function handler(
         nextAction: x.nextAction || "",
         owner: x.owner || "",
         followUpAt: x.followUpAt ? new Date(x.followUpAt).toISOString() : null,
+        adminNote: x.adminNote || "",
+        ip: x.ip || x.requestIp || null,
+        userAgent: x.userAgent || null,
         lifecycleLogCount: Array.isArray(x.lifecycleLog)
           ? x.lifecycleLog.length
           : 0,

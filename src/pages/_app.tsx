@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/footer";
 import { SessionProvider } from "next-auth/react";
+import "leaflet/dist/leaflet.css";
 
 export default function App({
   Component,

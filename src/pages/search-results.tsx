@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 
 type Result = {
   _id: string;
@@ -16,6 +17,19 @@ type Result = {
   status?: string;
   isVerified?: boolean;
   verified?: boolean;
+  amountPaid?: number;
+  tier?: string;
+  listingStatus?: string;
+  type?: string;
+};
+
+type SponsorCard = {
+  _id: string;
+  name: string;
+  tagline: string;
+  img: string;
+  url: string;
+  cta?: string;
 };
 
 function safe(v: unknown) {
@@ -28,28 +42,33 @@ function categoriesLabel(r: Result) {
   return safe(r.categories) || safe(r.category);
 }
 
-function trackFlowEvent(payload: Record<string, unknown>) {
-  if (typeof window === "undefined") return;
-  const body = JSON.stringify(payload);
-  const url = "/api/flow-events";
-  if (navigator.sendBeacon) {
-    const blob = new Blob([body], { type: "application/json" });
-    navigator.sendBeacon(url, blob);
-    return;
-  }
-  fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body,
-    keepalive: true,
-  }).catch(() => {});
+function shortDescription(r: Result) {
+  const raw = safe(r.description).trim();
+  if (!raw) return "No description provided.";
+  if (raw.length <= 140) return raw;
+  return `${raw.slice(0, 137)}...`;
 }
 
 export default function SearchResults() {
   const router = useRouter();
   const search = safe(router.query.search || router.query.q).trim();
 
+  const trackSearchEvent = (
+    eventType: string,
+    extras: Record<string, unknown> = {},
+  ) => {
+    emitFlowEvent({
+      eventType,
+      pageRoute: "/search-results",
+      section: "search_results",
+      source: "search_results_page",
+      query: search,
+      ...extras,
+    });
+  };
+
   const [results, setResults] = useState<Result[]>([]);
+  const [sponsors, setSponsors] = useState<SponsorCard[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -75,6 +94,28 @@ export default function SearchResults() {
   }, [search]);
 
   useEffect(() => {
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const res = await fetch("/api/sponsored-businesses", {
+          cache: "no-store",
+        });
+        const data = await res.json().catch(() => null);
+        if (!cancelled && Array.isArray(data?.sponsors)) {
+          setSponsors(data.sponsors.slice(0, 3));
+        }
+      } catch {
+        // leave sponsors empty on fetch failure
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
     if (!router.isReady || !search) return;
     let cancelled = false;
 
@@ -88,7 +129,7 @@ export default function SearchResults() {
           limit: String(limit),
           sort: "relevance",
         });
-        const res = await fetch(`/api/searchBusinesses?${params.toString()}`);
+        const res = await fetch(`/api/search/businesses?${params.toString()}`);
         const data = await res.json().catch(() => ({}));
         if (!res.ok) throw new Error(data?.error || "Failed to load results");
 
@@ -97,11 +138,8 @@ export default function SearchResults() {
           const totalCount = Number(data?.total || items.length);
           setResults(items);
           setTotal(totalCount);
-          trackFlowEvent({
-            eventType: "search_performed",
-            query: search,
-            source: "search_results",
-            path: window.location.pathname,
+          trackSearchEvent("search_results_viewed", {
+            result_count: totalCount,
           });
         }
       } catch (e: any) {
@@ -132,10 +170,8 @@ export default function SearchResults() {
   useEffect(() => {
     if (!search || loading || error) return;
     if (results.length !== 0) return;
-    trackFlowEvent({
-      eventType: "no_results_shown",
-      source: "search_results",
-      query: search,
+    trackSearchEvent("search_no_results_viewed", {
+      result_count: 0,
     });
   }, [search, loading, error, results.length]);
 
@@ -175,19 +211,20 @@ export default function SearchResults() {
 
         {!loading && !error && search && results.length === 0 ? (
           <div className="rounded border border-gray-700 bg-gray-900 p-4">
-            <p className="text-gray-200">No matching businesses found.</p>
+            <p className="text-gray-200">
+              No strong matches yet for this query.
+            </p>
             <p className="text-sm text-gray-400 mt-1">
-              Try a broader term or continue in the full directory with filters.
+              Try a broader term or jump into the full directory.
             </p>
 
             <div className="mt-3 flex flex-wrap gap-2">
               <Link
                 href="/business-directory"
                 onClick={() =>
-                  trackFlowEvent({
-                    eventType: "rescue_action_clicked",
-                    source: "search_results_no_result",
-                    query: search,
+                  trackSearchEvent("search_filter_applied", {
+                    filter_key: "rescue_action",
+                    filter_value: "browse_full_directory",
                   })
                 }
                 className="px-4 py-2 bg-gold text-black rounded font-semibold"
@@ -197,10 +234,9 @@ export default function SearchResults() {
               <Link
                 href={`/business-directory?search=${encodeURIComponent(search)}`}
                 onClick={() =>
-                  trackFlowEvent({
-                    eventType: "filter_relaxed",
-                    source: "search_results_no_result",
-                    query: search,
+                  trackSearchEvent("search_filter_applied", {
+                    filter_key: "rescue_action",
+                    filter_value: "try_in_directory_search",
                   })
                 }
                 className="px-4 py-2 rounded border border-gray-600 text-gray-200"
@@ -219,11 +255,9 @@ export default function SearchResults() {
                     key={cat}
                     href={`/business-directory?category=${encodeURIComponent(cat)}`}
                     onClick={() =>
-                      trackFlowEvent({
-                        eventType: "suggested_category_clicked",
-                        source: "search_results_no_result",
-                        query: search,
-                        category: cat,
+                      trackSearchEvent("search_filter_applied", {
+                        filter_key: "suggested_category",
+                        filter_value: cat,
                       })
                     }
                     className="rounded-full border border-gray-600 bg-black/30 px-3 py-1 text-xs text-gray-200"
@@ -236,52 +270,112 @@ export default function SearchResults() {
           </div>
         ) : null}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {results.map((r) => {
+        {sponsors.length ? (
+          <section className="mb-5 rounded-xl border border-[#D4AF37]/30 bg-[#D4AF37]/[0.08] p-3">
+            <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-[#EFD27A]">
+              Sponsored Partners
+            </div>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {sponsors.map((s) => (
+                <a
+                  key={s._id}
+                  href={s.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-3 rounded-lg border border-white/10 bg-black/35 p-3 hover:bg-black/45"
+                >
+                  <img
+                    src={s.img}
+                    alt={s.name}
+                    className="h-12 w-12 rounded-lg border border-white/20 object-cover"
+                  />
+                  <div className="min-w-0 flex-1">
+                    <div className="truncate text-sm font-semibold text-[#EFD27A]">
+                      {s.name}
+                    </div>
+                    <div className="truncate text-xs text-gray-300">
+                      {s.tagline}
+                    </div>
+                    <div className="mt-1 inline-flex rounded border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-2 py-0.5 text-[10px] font-semibold text-[#EFD27A]">
+                      Sponsored
+                    </div>
+                  </div>
+                  <span className="rounded bg-[#D4AF37] px-2 py-1 text-xs font-semibold text-black">
+                    {s.cta || "Learn More"}
+                  </span>
+                </a>
+              ))}
+            </div>
+          </section>
+        ) : null}
+
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          {results.map((r, idx) => {
             const slug = encodeURIComponent(safe(r.alias).trim() || r._id);
             const href = `/business-directory/${slug}?from=search-results&q=${encodeURIComponent(search)}`;
             const location =
+              safe((r as any).locationDisplay) ||
               [safe(r.city), safe(r.state)].filter(Boolean).join(", ") ||
               safe(r.address);
             const verified =
-              r.verified === true ||
               r.isVerified === true ||
-              safe(r.status).toLowerCase() === "verified";
+              r.verified === true ||
+              safe((r as any).trustStatus).toLowerCase() === "verified";
+            const sponsored =
+              (r as any).isSponsored === true ||
+              Number(r.amountPaid || 0) > 0 ||
+              ["featured", "gold", "sponsored", "premium"].includes(
+                safe(r.tier).toLowerCase(),
+              );
+            const category =
+              safe((r as any).primaryCategory) ||
+              categoriesLabel(r) ||
+              "Category not set";
+            const entityType =
+              safe((r as any).entityType) || safe(r.type) || "business";
 
             return (
-              <div
+              <article
                 key={r._id}
-                className="rounded border border-gray-700 bg-gray-900 p-4"
+                className="rounded border border-gray-700 bg-gray-900 p-4 transition hover:border-gray-600"
               >
-                <div className="flex items-start justify-between gap-2">
-                  <Link
-                    href={href}
-                    onClick={() =>
-                      trackFlowEvent({
-                        eventType: "result_click",
-                        businessId: r._id,
-                        businessAlias: safe(r.alias) || null,
-                        source: "search_results",
-                        query: search,
-                      })
-                    }
-                    className="text-lg font-semibold text-gold hover:underline"
-                  >
-                    {safe(r.business_name) || "Untitled Business"}
-                  </Link>
+                <div className="mb-2 flex items-center gap-2">
                   {verified ? (
-                    <span className="text-xs rounded bg-emerald-700/40 border border-emerald-500/40 px-2 py-1 text-emerald-200">
+                    <span className="rounded border border-emerald-500/40 bg-emerald-700/30 px-2 py-0.5 text-[11px] font-semibold text-emerald-200">
                       Verified
                     </span>
                   ) : null}
+                  {sponsored ? (
+                    <span className="rounded border border-[#D4AF37]/40 bg-[#D4AF37]/12 px-2 py-0.5 text-[11px] font-semibold text-[#EFD27A]">
+                      Sponsored
+                    </span>
+                  ) : null}
+                  <span className="rounded border border-white/10 bg-black/30 px-2 py-0.5 text-[11px] text-gray-300">
+                    {entityType}
+                  </span>
                 </div>
-                <p className="text-sm text-gray-400 mt-1">
-                  {categoriesLabel(r) || "Category not set"}
+
+                <Link
+                  href={href}
+                  onClick={() =>
+                    trackSearchEvent("search_result_clicked", {
+                      entity_id: r._id,
+                      entity_type: "business",
+                      result_rank: idx + 1,
+                      source: "search_results_card_title",
+                      businessAlias: safe(r.alias) || null,
+                    })
+                  }
+                  className="text-lg font-semibold text-gold hover:underline"
+                >
+                  {safe(r.business_name) || "Untitled Business"}
+                </Link>
+
+                <p className="mt-1 text-sm text-gray-400">{category}</p>
+                <p className="mt-2 text-sm text-gray-300">
+                  {shortDescription(r)}
                 </p>
-                <p className="text-sm text-gray-300 mt-2 line-clamp-2">
-                  {safe(r.description) || "No description provided."}
-                </p>
-                <p className="text-xs text-gray-500 mt-2">
+                <p className="mt-2 text-xs text-gray-500">
                   {location || "Location unavailable"}
                 </p>
 
@@ -289,30 +383,30 @@ export default function SearchResults() {
                   <Link
                     href={href}
                     onClick={() =>
-                      trackFlowEvent({
-                        eventType: "result_click",
-                        businessId: r._id,
+                      trackSearchEvent("search_result_clicked", {
+                        entity_id: r._id,
+                        entity_type: "business",
+                        result_rank: idx + 1,
+                        source: "search_results_card_primary_cta",
                         businessAlias: safe(r.alias) || null,
-                        source: "search_results_card_cta",
-                        query: search,
                       })
                     }
-                    className="px-3 py-1.5 rounded bg-gold text-black text-sm font-semibold"
+                    className="rounded bg-gold px-3 py-1.5 text-sm font-semibold text-black"
                   >
-                    View Business
+                    View Profile
                   </Link>
                   {location ? (
                     <a
                       href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`}
                       target="_blank"
                       rel="noreferrer"
-                      className="px-3 py-1.5 rounded border border-gray-600 text-sm"
+                      className="rounded border border-gray-600 px-3 py-1.5 text-sm text-gray-200"
                     >
                       Directions
                     </a>
                   ) : null}
                 </div>
-              </div>
+              </article>
             );
           })}
         </div>

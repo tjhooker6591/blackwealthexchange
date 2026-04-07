@@ -191,6 +191,23 @@ export default async function handler(
     };
 
     const result = await db.collection("sellers").insertOne(sellerDoc);
+
+    await db.collection("flow_events").insertOne({
+      eventType: "seller_onboarding_submitted",
+      pageRoute: "/api/marketplace/create-seller",
+      section: "seller_create_api",
+      source: "seller_create_api",
+      path: req.url || "/api/marketplace/create-seller",
+      accountType: "seller",
+      isAuthenticated: true,
+      seller_state: "profile_created",
+      onboarding_variant: "existing_user_upgrade",
+      sellerId: result.insertedId.toString(),
+      userId: String(userId),
+      email: normalized,
+      createdAt: new Date(),
+    });
+
     // never return password
     const { password: _pw, ...safeSeller } = sellerDoc;
 
@@ -275,6 +292,23 @@ export default async function handler(
 
   try {
     const result = await db.collection("sellers").insertOne(sellerDoc);
+
+    await db.collection("flow_events").insertOne({
+      eventType: "seller_onboarding_submitted",
+      pageRoute: "/api/marketplace/create-seller",
+      section: "seller_create_api",
+      source: "seller_create_api",
+      path: req.url || "/api/marketplace/create-seller",
+      accountType: "seller",
+      isAuthenticated: false,
+      seller_state: "profile_created",
+      onboarding_variant: "new_seller_signup",
+      sellerId: result.insertedId.toString(),
+      userId: null,
+      email: normalizedEmail,
+      createdAt: new Date(),
+    });
+
     const { password: _pw, ...safeSeller } = sellerDoc;
 
     return res.status(201).json({

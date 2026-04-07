@@ -22,26 +22,48 @@ export default async function handler(
         .json({ success: false, error: "All fields are required." });
     }
 
+    if (!ObjectId.isValid(jobId)) {
+      return res.status(400).json({ success: false, error: "Invalid jobId." });
+    }
+
+    const jobObjectId = new ObjectId(jobId);
+
     const client = await clientPromise;
     const db = client.db("bwes-cluster");
 
     const applicants = db.collection("applicants");
 
     // ✅ Insert the applicant into the collection
+    const insertedAt = new Date();
+
     const result = await applicants.insertOne({
-      jobId: new ObjectId(jobId),
+      jobId: jobObjectId,
       name,
       email,
       resumeUrl,
-      appliedAt: new Date(),
+      appliedAt: insertedAt,
+    });
+
+    await db.collection("flow_events").insertOne({
+      eventType: "job_application_submitted",
+      pageRoute: "/api/jobs/apply",
+      section: "jobs_apply_api",
+      source: "jobs_apply_api",
+      source_variant: "canonical_jobs_apply",
+      path: req.url || "/api/jobs/apply",
+      jobId,
+      entityId: jobId,
+      entityType: "job",
+      accountType: "candidate",
+      applicantId: result.insertedId.toString(),
+      createdAt: insertedAt,
     });
 
     // ✅ Safe increment of appliedCount: ensure it starts at 0 if missing
     await db.collection("jobs").updateOne(
-      { _id: new ObjectId(jobId) },
+      { _id: jobObjectId },
       {
         $inc: { appliedCount: 1 },
-        $setOnInsert: { appliedCount: 1 }, // fallback in case the field is missing
       },
     );
 

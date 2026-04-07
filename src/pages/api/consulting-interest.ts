@@ -59,12 +59,26 @@ export default async function handler(
       });
     }
 
+    const createdAt = new Date();
+
     await db.collection("consulting_interest").insertOne({
       name,
       email,
-      createdAt: new Date(),
+      createdAt,
       status: "new",
       source: "website",
+    });
+
+    await db.collection("flow_events").insertOne({
+      eventType: "consulting_submission_completed",
+      pageRoute: "/api/consulting-interest",
+      section: "consulting_interest_api",
+      source: "consulting_interest_api",
+      source_variant: "interest_capture",
+      path: req.url || "/api/consulting-interest",
+      accountType: "lead",
+      isAuthenticated: null,
+      createdAt,
     });
 
     return res.status(200).json({

@@ -3,6 +3,7 @@
 
 import { useRouter } from "next/router";
 import React, { useEffect, useMemo, useState } from "react";
+import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 
 interface Form {
   name: string;
@@ -42,6 +43,21 @@ export default function JobApply() {
   const [successMsg, setSuccessMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
 
+  const trackApplyEvent = (
+    eventType: string,
+    extras: Record<string, unknown> = {},
+  ) => {
+    emitFlowEvent({
+      eventType,
+      pageRoute: "/job/[id]/apply",
+      section: "job_apply",
+      jobId: jobId || null,
+      entityId: jobId || null,
+      entityType: "job",
+      ...extras,
+    });
+  };
+
   // Prefill user info if logged in
   useEffect(() => {
     (async () => {
@@ -66,6 +82,16 @@ export default function JobApply() {
       }
     })();
   }, []);
+
+  useEffect(() => {
+    if (!isReady || !jobId) return;
+
+    trackApplyEvent("job_apply_started", {
+      ctaId: "job_apply_modal_view",
+      ctaLabel: "Job Apply Modal Viewed",
+      destination: "/api/jobs/apply",
+    });
+  }, [isReady, jobId]);
 
   // OPTIONAL: Fetch job details for context (only if you have an endpoint)
   useEffect(() => {
@@ -124,16 +150,23 @@ export default function JobApply() {
       return;
     }
 
+    trackApplyEvent("job_apply_started", {
+      ctaId: "job_apply_submit",
+      ctaLabel: "Send Application",
+      destination: "/api/jobs/apply",
+    });
+
     setSubmitting(true);
     try {
-      const res = await fetch(`/api/jobs/${jobId}/apply`, {
+      const res = await fetch(`/api/jobs/apply`, {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          jobId,
           name: form.name.trim(),
           email: form.email.trim(),
-          resume: form.resume.trim(),
+          resumeUrl: form.resume.trim() || "n/a",
           coverLetter: (form.coverLetter || "").trim(),
         }),
       });

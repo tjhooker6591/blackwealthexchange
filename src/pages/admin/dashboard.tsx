@@ -4,6 +4,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import type { GetServerSideProps } from "next";
+import { useRouter } from "next/router";
 import cookie from "cookie";
 import jwt from "jsonwebtoken";
 import AdminFilterBar from "@/components/admin/AdminFilterBar";
@@ -13,10 +14,25 @@ import type { AdminFilters } from "@/components/admin/AdminFilterBar";
 // Type for Consulting Interest
 type ConsultingInterest = {
   _id: string;
+  collection?: "consulting_interest" | "consulting_intake";
   name: string;
   email: string;
   company?: string;
+  businessName?: string;
   message?: string;
+  status?:
+    | "pending"
+    | "approved"
+    | "rejected"
+    | "flagged"
+    | "spam"
+    | "deleted"
+    | string;
+  lifecycleStage?: string;
+  adminNote?: string;
+  source?: string;
+  ip?: string | null;
+  userAgent?: string | null;
   createdAt: string;
 };
 
@@ -74,6 +90,20 @@ type EntityCountsObject = {
   total?: number;
 };
 
+type RecentJoinRow = {
+  _id: string;
+  name: string;
+  email: string;
+  accountType: string;
+  sourceCollection: string;
+  createdAt: string | null;
+  status: string;
+  isVerified: boolean;
+  isAdmin: boolean;
+  isTest: boolean;
+  isActive: boolean;
+};
+
 type StatsV2 = {
   pendingApprovalsTotal?: number;
 
@@ -102,6 +132,26 @@ type StatsV2 = {
   // optional direct totals from some APIs
   businessesCount?: number;
   organizationsCount?: number;
+
+  recentJoins?: {
+    windowDays?: number;
+    summary?: {
+      today?: number;
+      last7Days?: number;
+      last30Days?: number;
+      byAccountType?: Record<
+        string,
+        { today: number; last7Days: number; last30Days: number }
+      >;
+    };
+    dailyBuckets?: Array<{
+      day: string;
+      total: number;
+      byAccountType: Record<string, number>;
+      rows: RecentJoinRow[];
+    }>;
+    rows?: RecentJoinRow[];
+  };
 };
 
 // What we actually render (normalized view model)
@@ -253,7 +303,15 @@ function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
-const AdminDashboard = () => {
+type AdminDashboardProps = {
+  initialRecentJoinAccountType: string;
+  initialRecentJoinHideTests: boolean;
+};
+
+const AdminDashboard = ({
+  initialRecentJoinAccountType,
+  initialRecentJoinHideTests,
+}: AdminDashboardProps) => {
   // 1) Raw stats + view model
   const [statsRaw, setStatsRaw] = useState<any>({});
   const stats = useMemo(() => normalizeStats(statsRaw || {}), [statsRaw]);
@@ -269,6 +327,12 @@ const AdminDashboard = () => {
   const [consulting, setConsulting] = useState<ConsultingInterest[]>([]);
   const [consultingLoading, setConsultingLoading] = useState(true);
   const [consultingErr, setConsultingErr] = useState("");
+  const [consultingSavingId, setConsultingSavingId] = useState<string>("");
+  const [consultingNotes, setConsultingNotes] = useState<
+    Record<string, string>
+  >({});
+  const [hideQaTestLikeConsulting, setHideQaTestLikeConsulting] =
+    useState<boolean>(false);
 
   // 4) Admin filter state (applies to consulting table below)
   const DEFAULT_FILTERS: AdminFilters = {
@@ -322,29 +386,173 @@ const AdminDashboard = () => {
     fetchSlots();
   }, []);
 
+  const fetchConsulting = async () => {
+    setConsultingLoading(true);
+    setConsultingErr("");
+    try {
+      const res = await fetch("/api/admin/consulting-interests", {
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error("Failed to fetch consulting interests");
+      const data = await res.json();
+      const rows = Array.isArray(data) ? data : (data?.interests ?? []);
+      setConsulting(Array.isArray(rows) ? rows : []);
+    } catch (_err) {
+      setConsultingErr("Error loading consulting waitlist.");
+    } finally {
+      setConsultingLoading(false);
+    }
+  };
+
   // Fetch consulting interests
   useEffect(() => {
-    const fetchConsulting = async () => {
-      setConsultingLoading(true);
-      setConsultingErr("");
-      try {
-        const res = await fetch("/api/admin/consulting-interests", {
-          credentials: "include",
-        });
-        if (!res.ok) throw new Error("Failed to fetch consulting interests");
-        const data = await res.json();
-        const rows = Array.isArray(data) ? data : (data?.interests ?? []);
-        setConsulting(Array.isArray(rows) ? rows : []);
-      } catch (_err) {
-        setConsultingErr("Error loading consulting waitlist.");
-      } finally {
-        setConsultingLoading(false);
-      }
-    };
     fetchConsulting();
   }, []);
 
   // Apply filters to consulting waitlist
+  const recentJoinsSummary = useMemo(() => {
+    const summary = statsRaw?.recentJoins?.summary || {};
+    return {
+      today: Number(summary?.today || 0),
+      last7Days: Number(summary?.last7Days || 0),
+      last30Days: Number(summary?.last30Days || 0),
+      byAccountType: summary?.byAccountType || {},
+    };
+  }, [statsRaw]);
+
+  const recentJoinsRows = useMemo<RecentJoinRow[]>(() => {
+    const rows = Array.isArray(statsRaw?.recentJoins?.rows)
+      ? (statsRaw.recentJoins.rows as RecentJoinRow[])
+      : [];
+    return [...rows].sort((a, b) => {
+      const ta = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+      const tb = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+      return tb - ta;
+    });
+  }, [statsRaw]);
+
+  const recentJoinWindowDays = Number(statsRaw?.recentJoins?.windowDays || 30);
+
+  const recentJoinsByDay = useMemo(() => {
+    const apiBuckets = Array.isArray(statsRaw?.recentJoins?.dailyBuckets)
+      ? statsRaw.recentJoins.dailyBuckets
+      : null;
+
+    if (apiBuckets && apiBuckets.length) {
+      return [...apiBuckets].sort((a: any, b: any) => {
+        if (a.day === "unknown") return 1;
+        if (b.day === "unknown") return -1;
+        return String(b.day).localeCompare(String(a.day));
+      });
+    }
+
+    const map = new Map<string, RecentJoinRow[]>();
+    for (const row of recentJoinsRows) {
+      const key = row.createdAt
+        ? new Date(row.createdAt).toISOString().slice(0, 10)
+        : "unknown";
+      const arr = map.get(key) || [];
+      arr.push(row);
+      map.set(key, arr);
+    }
+
+    return Array.from(map.entries())
+      .sort((a, b) => {
+        if (a[0] === "unknown") return 1;
+        if (b[0] === "unknown") return -1;
+        return b[0].localeCompare(a[0]);
+      })
+      .map(([day, rows]) => ({
+        day,
+        total: rows.length,
+        byAccountType: rows.reduce((acc: Record<string, number>, row) => {
+          acc[row.accountType] = (acc[row.accountType] || 0) + 1;
+          return acc;
+        }, {}),
+        rows,
+      }));
+  }, [recentJoinsRows, statsRaw]);
+
+  const router = useRouter();
+
+  const [expandedJoinDays, setExpandedJoinDays] = useState<
+    Record<string, boolean>
+  >({});
+  const [joinRowsVisibleByDay, setJoinRowsVisibleByDay] = useState<
+    Record<string, number>
+  >({});
+  const [joinAccountTypeFilter, setJoinAccountTypeFilter] = useState<string>(
+    initialRecentJoinAccountType || "all",
+  );
+  const [hideTestJoinAccounts, setHideTestJoinAccounts] = useState<boolean>(
+    initialRecentJoinHideTests,
+  );
+
+  useEffect(() => {
+    const todayKey = new Date().toISOString().slice(0, 10);
+    const nextExpanded: Record<string, boolean> = {};
+    const nextVisible: Record<string, number> = {};
+    const hasTodayBucket = recentJoinsByDay.some(
+      (b: any) => String(b.day || "") === todayKey,
+    );
+
+    recentJoinsByDay.forEach((bucket: any, idx: number) => {
+      const k = String(bucket.day || "unknown");
+      nextExpanded[k] = hasTodayBucket ? k === todayKey : idx === 0;
+      nextVisible[k] = 50;
+    });
+
+    setExpandedJoinDays(nextExpanded);
+    setJoinRowsVisibleByDay(nextVisible);
+  }, [recentJoinsByDay]);
+
+  const joinAccountTypeOptions = useMemo(() => {
+    const set = new Set<string>();
+    for (const bucket of recentJoinsByDay) {
+      for (const row of bucket.rows || []) {
+        if (row.accountType) set.add(row.accountType);
+      }
+    }
+    return Array.from(set).sort();
+  }, [recentJoinsByDay]);
+
+  useEffect(() => {
+    if (!router.isReady) return;
+
+    const nextQuery: Record<string, string> = {};
+    Object.entries(router.query || {}).forEach(([k, v]) => {
+      if (k === "joinType" || k === "hideTests") return;
+      if (typeof v === "string") nextQuery[k] = v;
+    });
+
+    if (joinAccountTypeFilter !== "all") {
+      nextQuery.joinType = joinAccountTypeFilter;
+    }
+
+    nextQuery.hideTests = hideTestJoinAccounts ? "1" : "0";
+
+    const currentJoinType =
+      typeof router.query.joinType === "string" ? router.query.joinType : "";
+    const currentHideTests =
+      typeof router.query.hideTests === "string" ? router.query.hideTests : "";
+
+    if (
+      currentJoinType === (nextQuery.joinType || "") &&
+      currentHideTests === nextQuery.hideTests
+    ) {
+      return;
+    }
+
+    router.replace(
+      {
+        pathname: router.pathname,
+        query: nextQuery,
+      },
+      undefined,
+      { shallow: true },
+    );
+  }, [hideTestJoinAccounts, joinAccountTypeFilter, router]);
+
   const filteredConsulting = useMemo(() => {
     const now = Date.now();
 
@@ -369,6 +577,12 @@ const AdminDashboard = () => {
       .filter((item) => withinRange(item.createdAt))
       .filter((item) => matchesSearch(item));
 
+    if (filters.status && filters.status !== "all") {
+      out = out.filter(
+        (item) => String(item.status || "pending") === filters.status,
+      );
+    }
+
     out = [...out].sort((a, b) => {
       const aTime = new Date(a.createdAt).getTime();
       const bTime = new Date(b.createdAt).getTime();
@@ -389,7 +603,110 @@ const AdminDashboard = () => {
     });
 
     return out;
-  }, [consulting, filters.range, filters.search, filters.sort]);
+  }, [consulting, filters.range, filters.search, filters.sort, filters.status]);
+
+  const isObviousQaRecord = (item: ConsultingInterest) => {
+    const hay =
+      `${item.name || ""} ${item.email || ""} ${item.message || ""} ${item.company || ""}`.toLowerCase();
+    const qaTerms = [
+      "smoke qa",
+      "critical path qa",
+      "consult proof",
+      "ops flow",
+      "launch scope qa",
+      "flow check",
+      "queue test",
+      "qa candidate",
+      "qa",
+      "test",
+      "example.com",
+    ];
+    return qaTerms.some((t) => hay.includes(t));
+  };
+
+  const visibleConsultingRows = useMemo(() => {
+    if (!hideQaTestLikeConsulting) return filteredConsulting;
+    return filteredConsulting.filter((item) => !isObviousQaRecord(item));
+  }, [filteredConsulting, hideQaTestLikeConsulting]);
+
+  async function updateConsultingItem(
+    item: ConsultingInterest,
+    status:
+      | "approved"
+      | "rejected"
+      | "flagged"
+      | "spam"
+      | "pending"
+      | "deleted",
+  ) {
+    if (!item._id || !item.collection) {
+      setConsultingErr("Missing consulting row id/collection.");
+      return;
+    }
+    setConsultingSavingId(item._id);
+    setConsultingErr("");
+    try {
+      const res = await fetch("/api/admin/consulting-interests", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          id: item._id,
+          collection: item.collection,
+          status,
+          stage:
+            status === "approved"
+              ? "approved"
+              : status === "rejected" ||
+                  status === "spam" ||
+                  status === "deleted"
+                ? "closed_lost"
+                : "triaged",
+          nextAction: "",
+          adminNote: consultingNotes[item._id] ?? item.adminNote ?? "",
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok)
+        throw new Error(data?.error || "Failed to update waitlist record");
+      await fetchConsulting();
+    } catch (err: any) {
+      setConsultingErr(err?.message || "Failed to update waitlist record.");
+    } finally {
+      setConsultingSavingId("");
+    }
+  }
+
+  async function deleteConsultingItem(item: ConsultingInterest) {
+    if (!item._id || !item.collection) {
+      setConsultingErr("Missing consulting row id/collection.");
+      return;
+    }
+    if (!confirm("Delete/remove this consulting waitlist submission?")) return;
+    setConsultingSavingId(item._id);
+    setConsultingErr("");
+    try {
+      const res = await fetch("/api/admin/consulting-interests", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          id: item._id,
+          collection: item.collection,
+          reason:
+            consultingNotes[item._id] || "Removed from consulting waitlist",
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok)
+        throw new Error(data?.error || "Failed to delete waitlist record");
+      await fetchConsulting();
+    } catch (err: any) {
+      setConsultingErr(err?.message || "Failed to delete waitlist record.");
+    } finally {
+      setConsultingSavingId("");
+    }
+  }
 
   return (
     <div className="bg-gray-900 text-white min-h-screen p-6 md:p-10">
@@ -626,6 +943,249 @@ const AdminDashboard = () => {
             </>
           )}
         </div>
+      </div>
+
+      {/* New Signups / Recent Joins */}
+      <SectionTitle>New Signups / Recent Joins</SectionTitle>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+        <StatCard title="Joined Today" value={recentJoinsSummary.today} />
+        <StatCard
+          title="Joined Last 7 Days"
+          value={recentJoinsSummary.last7Days}
+        />
+        <StatCard
+          title="Joined Last 30 Days"
+          value={recentJoinsSummary.last30Days}
+        />
+      </div>
+
+      <div className="bg-gray-800 rounded p-4 border border-gray-700 mb-4">
+        <h3 className="text-lg text-gold mb-2">By Account Type</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3 text-sm">
+          {Object.entries(recentJoinsSummary.byAccountType || {}).map(
+            ([type, counts]: any) => (
+              <div
+                key={type}
+                className="rounded border border-gray-700 bg-gray-900 px-3 py-2"
+              >
+                <div className="font-semibold text-gray-100 capitalize">
+                  {type}
+                </div>
+                <div className="text-xs text-gray-400 mt-1">
+                  Today: {counts?.today ?? 0}
+                </div>
+                <div className="text-xs text-gray-400">
+                  7d: {counts?.last7Days ?? 0}
+                </div>
+                <div className="text-xs text-gray-400">
+                  30d: {counts?.last30Days ?? 0}
+                </div>
+              </div>
+            ),
+          )}
+          {Object.keys(recentJoinsSummary.byAccountType || {}).length === 0 ? (
+            <div className="text-sm text-gray-400">No join data yet.</div>
+          ) : null}
+        </div>
+      </div>
+
+      <div className="bg-gray-800 rounded p-4 border border-gray-700 mb-10">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-2">
+          <h3 className="text-lg text-gold">
+            Recent Join Activity ({recentJoinWindowDays}-day window)
+          </h3>
+          <div className="text-xs text-gray-400">
+            Grouped by day • Today expanded by default
+          </div>
+        </div>
+
+        <div className="mb-3 flex flex-wrap items-center gap-2 text-xs">
+          <label className="text-gray-300">Account type:</label>
+          <select
+            className="rounded border border-gray-700 bg-gray-900 px-2 py-1"
+            value={joinAccountTypeFilter}
+            onChange={(e) => setJoinAccountTypeFilter(e.target.value)}
+          >
+            <option value="all">all</option>
+            {joinAccountTypeOptions.map((t) => (
+              <option key={t} value={t}>
+                {t}
+              </option>
+            ))}
+          </select>
+
+          <label className="ml-2 inline-flex items-center gap-1 text-gray-300">
+            <input
+              type="checkbox"
+              checked={hideTestJoinAccounts}
+              onChange={(e) => setHideTestJoinAccounts(e.target.checked)}
+            />
+            Hide test accounts
+          </label>
+        </div>
+
+        {recentJoinsByDay.length === 0 ? (
+          <div className="py-3 text-gray-400 text-sm">
+            No recent joins found in the last {recentJoinWindowDays} days.
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {recentJoinsByDay.map(
+              ({ day, rows, total, byAccountType }: any) => {
+                const filteredRows = (rows as RecentJoinRow[]).filter((row) => {
+                  if (hideTestJoinAccounts && row.isTest) return false;
+                  if (
+                    joinAccountTypeFilter !== "all" &&
+                    row.accountType !== joinAccountTypeFilter
+                  ) {
+                    return false;
+                  }
+                  return true;
+                });
+
+                if (filteredRows.length === 0) return null;
+
+                const expanded = Boolean(expandedJoinDays[day]);
+                const visibleLimit = joinRowsVisibleByDay[day] || 50;
+                const visibleRows = expanded
+                  ? filteredRows.slice(0, visibleLimit)
+                  : [];
+                const hiddenCount = Math.max(
+                  0,
+                  filteredRows.length - visibleRows.length,
+                );
+
+                return (
+                  <div
+                    key={day}
+                    className="rounded border border-gray-700 bg-gray-900"
+                  >
+                    <button
+                      className="w-full text-left px-3 py-2 flex items-center justify-between hover:bg-gray-800"
+                      onClick={() =>
+                        setExpandedJoinDays((prev) => ({
+                          ...prev,
+                          [day]: !expanded,
+                        }))
+                      }
+                    >
+                      <div>
+                        <span className="font-semibold text-gray-100">
+                          {day === "unknown"
+                            ? "Unknown date"
+                            : new Date(`${day}T00:00:00Z`).toLocaleDateString()}
+                        </span>
+                        <span className="ml-2 text-xs text-gray-400">
+                          {filteredRows.length} shown / {total ?? rows.length}{" "}
+                          total
+                        </span>
+                        <span className="ml-2 text-[11px] text-gray-500">
+                          {Object.entries(byAccountType || {})
+                            .map(([k, v]) => `${k}:${v}`)
+                            .join(" • ")}
+                        </span>
+                      </div>
+                      <span className="text-xs text-gray-400">
+                        {expanded ? "Hide" : "Show"}
+                      </span>
+                    </button>
+
+                    {expanded ? (
+                      <div className="overflow-x-auto border-t border-gray-700">
+                        <table className="w-full text-left text-sm">
+                          <thead>
+                            <tr className="border-b border-gray-700 text-gold">
+                              <th className="py-2 px-3">Name</th>
+                              <th className="py-2 px-3">Email</th>
+                              <th className="py-2 px-3">Account Type</th>
+                              <th className="py-2 px-3">Source</th>
+                              <th className="py-2 px-3">Created</th>
+                              <th className="py-2 px-3">Status</th>
+                              <th className="py-2 px-3">Signals</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {visibleRows.map((row) => (
+                              <tr
+                                key={`${row.sourceCollection}-${row._id}`}
+                                className="border-b border-gray-700/50"
+                              >
+                                <td className="py-2 px-3">{row.name || "—"}</td>
+                                <td className="py-2 px-3">
+                                  {row.email || "—"}
+                                </td>
+                                <td className="py-2 px-3 capitalize">
+                                  {row.accountType}
+                                </td>
+                                <td className="py-2 px-3 text-gray-400">
+                                  {row.sourceCollection}
+                                </td>
+                                <td className="py-2 px-3">
+                                  {row.createdAt
+                                    ? new Date(row.createdAt).toLocaleString()
+                                    : "—"}
+                                </td>
+                                <td className="py-2 px-3">
+                                  {row.status ||
+                                    (row.isActive ? "active" : "inactive")}
+                                </td>
+                                <td className="py-2 px-3">
+                                  <div className="flex flex-wrap gap-1 text-[11px]">
+                                    {row.isVerified ? (
+                                      <span className="rounded bg-emerald-600/30 border border-emerald-400/50 px-2 py-0.5">
+                                        verified
+                                      </span>
+                                    ) : (
+                                      <span className="rounded bg-gray-700 px-2 py-0.5">
+                                        unverified
+                                      </span>
+                                    )}
+                                    {row.isAdmin ? (
+                                      <span className="rounded bg-purple-600/30 border border-purple-400/50 px-2 py-0.5">
+                                        admin
+                                      </span>
+                                    ) : null}
+                                    {row.isTest ? (
+                                      <span className="rounded bg-yellow-600/30 border border-yellow-400/50 px-2 py-0.5">
+                                        test
+                                      </span>
+                                    ) : null}
+                                    {!row.isActive ? (
+                                      <span className="rounded bg-red-600/30 border border-red-400/50 px-2 py-0.5">
+                                        inactive
+                                      </span>
+                                    ) : null}
+                                  </div>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+
+                        {hiddenCount > 0 ? (
+                          <div className="px-3 py-2 text-xs text-gray-400 flex items-center gap-2">
+                            <span>{hiddenCount} more hidden for this day.</span>
+                            <button
+                              className="rounded border border-gray-700 bg-gray-800 px-2 py-1 hover:bg-gray-700"
+                              onClick={() =>
+                                setJoinRowsVisibleByDay((prev) => ({
+                                  ...prev,
+                                  [day]: (prev[day] || 50) + 50,
+                                }))
+                              }
+                            >
+                              Show more
+                            </button>
+                          </div>
+                        ) : null}
+                      </div>
+                    ) : null}
+                  </div>
+                );
+              },
+            )}
+          </div>
+        )}
       </div>
 
       {/* Directory Section */}
@@ -868,6 +1428,10 @@ const AdminDashboard = () => {
         />
         <AdminLink href="/admin/analytics" label="View Platform Analytics" />
         <AdminLink
+          href="/admin/phase1-scoreboard"
+          label="Phase 1 Operating Scoreboard"
+        />
+        <AdminLink
           href="/admin/featured-products"
           label="Manage Featured Products"
         />
@@ -892,6 +1456,20 @@ const AdminDashboard = () => {
           showRange={true}
           showSort={true}
         />
+        <div className="mt-2 flex items-center gap-2 text-sm text-gray-300">
+          <button
+            className={`rounded border px-3 py-1 ${
+              hideQaTestLikeConsulting
+                ? "border-yellow-400 bg-yellow-500/20 text-yellow-200"
+                : "border-gray-700 bg-gray-900"
+            }`}
+            onClick={() => setHideQaTestLikeConsulting((v) => !v)}
+          >
+            {hideQaTestLikeConsulting
+              ? "Showing only likely real/manual"
+              : "Hide QA/test-like"}
+          </button>
+        </div>
       </div>
 
       <div className="bg-gray-800 rounded p-4 mt-4 mb-20 border border-gray-700">
@@ -901,34 +1479,117 @@ const AdminDashboard = () => {
           <div className="p-2 bg-red-600 rounded text-center text-sm">
             {consultingErr}
           </div>
-        ) : filteredConsulting.length === 0 ? (
+        ) : visibleConsultingRows.length === 0 ? (
           <p className="text-gray-400 text-sm">
             No one has signed up for notifications yet.
           </p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left mt-2">
+            <table className="w-full text-left mt-2 text-sm">
               <thead>
                 <tr className="border-b border-gray-700">
                   <th className="text-gold font-semibold py-2 px-3">Name</th>
                   <th className="text-gold font-semibold py-2 px-3">Email</th>
                   <th className="text-gold font-semibold py-2 px-3">Company</th>
                   <th className="text-gold font-semibold py-2 px-3">Message</th>
+                  <th className="text-gold font-semibold py-2 px-3">Meta</th>
+                  <th className="text-gold font-semibold py-2 px-3">Status</th>
+                  <th className="text-gold font-semibold py-2 px-3">Actions</th>
                   <th className="text-gold font-semibold py-2 px-3">Date</th>
                 </tr>
               </thead>
               <tbody>
-                {filteredConsulting.map((item) => (
-                  <tr key={item._id} className="border-b border-gray-700">
-                    <td className="py-2 px-3">{item.name}</td>
-                    <td className="py-2 px-3">{item.email}</td>
-                    <td className="py-2 px-3">{item.company || "--"}</td>
-                    <td className="py-2 px-3">{item.message || "--"}</td>
-                    <td className="py-2 px-3">
-                      {new Date(item.createdAt).toLocaleString()}
-                    </td>
-                  </tr>
-                ))}
+                {visibleConsultingRows.map((item) => {
+                  const qa = isObviousQaRecord(item);
+                  const noteVal =
+                    consultingNotes[item._id] ?? item.adminNote ?? "";
+                  return (
+                    <tr
+                      key={item._id}
+                      className={`border-b border-gray-700 ${qa ? "bg-yellow-500/10" : ""}`}
+                    >
+                      <td className="py-2 px-3">
+                        <div>{item.name}</div>
+                        {qa ? (
+                          <div className="text-[11px] text-yellow-300">
+                            QA/test-like submission
+                          </div>
+                        ) : null}
+                      </td>
+                      <td className="py-2 px-3">{item.email}</td>
+                      <td className="py-2 px-3">
+                        {item.company || item.businessName || "--"}
+                      </td>
+                      <td
+                        className="py-2 px-3 max-w-[280px] truncate"
+                        title={item.message || ""}
+                      >
+                        {item.message || "--"}
+                      </td>
+                      <td className="py-2 px-3 text-xs text-gray-300">
+                        <div>collection: {item.collection || "--"}</div>
+                        <div>source: {item.source || "--"}</div>
+                        <div>IP: {item.ip || "--"}</div>
+                      </td>
+                      <td className="py-2 px-3">
+                        <div className="capitalize">
+                          {item.status || "pending"}
+                        </div>
+                        <textarea
+                          className="mt-1 w-full rounded border border-gray-700 bg-gray-900 p-1 text-[11px]"
+                          rows={2}
+                          placeholder="Admin note"
+                          value={noteVal}
+                          onChange={(e) =>
+                            setConsultingNotes((prev) => ({
+                              ...prev,
+                              [item._id]: e.target.value,
+                            }))
+                          }
+                        />
+                      </td>
+                      <td className="py-2 px-3">
+                        <div className="flex flex-wrap gap-1 text-[11px]">
+                          <button
+                            className="rounded bg-emerald-600/80 px-2 py-1 font-semibold"
+                            disabled={consultingSavingId === item._id}
+                            onClick={() =>
+                              updateConsultingItem(item, "approved")
+                            }
+                          >
+                            Approve
+                          </button>
+                          <button
+                            className="rounded bg-orange-600/80 px-2 py-1 font-semibold"
+                            disabled={consultingSavingId === item._id}
+                            onClick={() =>
+                              updateConsultingItem(item, "rejected")
+                            }
+                          >
+                            Reject
+                          </button>
+                          <button
+                            className="rounded bg-rose-700/80 px-2 py-1 font-semibold"
+                            disabled={consultingSavingId === item._id}
+                            onClick={() => updateConsultingItem(item, "spam")}
+                          >
+                            Spam/Flag
+                          </button>
+                          <button
+                            className="rounded bg-red-700/80 px-2 py-1 font-semibold"
+                            disabled={consultingSavingId === item._id}
+                            onClick={() => deleteConsultingItem(item)}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                      <td className="py-2 px-3">
+                        {new Date(item.createdAt).toLocaleString()}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
@@ -1052,7 +1713,10 @@ const AdminLink = ({ href, label }: { href: string; label: string }) => (
 
 export default AdminDashboard;
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  query,
+}) => {
   const cookies = cookie.parse(req.headers.cookie || "");
   const token = cookies.session_token;
   if (!token) {
@@ -1086,5 +1750,17 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     };
   }
 
-  return { props: {} };
+  const initialRecentJoinAccountType =
+    typeof query.joinType === "string" && query.joinType.trim()
+      ? query.joinType.trim().toLowerCase()
+      : "all";
+  const initialRecentJoinHideTests =
+    String(query.hideTests ?? "1").toLowerCase() !== "0";
+
+  return {
+    props: {
+      initialRecentJoinAccountType,
+      initialRecentJoinHideTests,
+    },
+  };
 };

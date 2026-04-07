@@ -90,6 +90,29 @@ export default async function handler(
     };
 
     const result = await collection.insertOne(newAd);
+
+    await db.collection("flow_events").insertOne({
+      eventType: "advertising_submission_completed",
+      pageRoute: "/api/advertising/submit",
+      section: "advertising_submit_api",
+      source: "advertising_submit_api",
+      source_variant: "standard_submit",
+      path: req.url || "/api/advertising/submit",
+      adOption: option || null,
+      ad_type: option || null,
+      package_type: option || null,
+      checkout_variant: "unified_advertising_checkout",
+      placement: placement || null,
+      durationDays:
+        Number.isFinite(durationDays) && durationDays > 0
+          ? Math.floor(durationDays)
+          : null,
+      campaignId: result.insertedId.toString(),
+      accountType: "advertiser",
+      isAuthenticated: null,
+      createdAt: new Date(),
+    });
+
     return res.status(201).json({
       success: true,
       message: "Ad request submitted",

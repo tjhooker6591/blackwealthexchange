@@ -98,22 +98,23 @@ export default async function handler(
     }
 
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-    const collectionName =
-      typeof reset.collection === "string" ? reset.collection : null;
+    const now = new Date();
 
-    if (!collectionName) {
-      return res.status(500).json({ error: "Reset record is malformed." });
-    }
+    const targetCollections = ["users", "sellers", "businesses", "employers"];
+    let matchedTotal = 0;
 
-    const updateResult = await db.collection(collectionName).updateOne(
-      { email: reset.email },
-      {
-        $set: {
-          password: hashedPassword,
-          updatedAt: new Date(),
+    for (const coll of targetCollections) {
+      const result = await db.collection(coll).updateMany(
+        { email: reset.email },
+        {
+          $set: {
+            password: hashedPassword,
+            updatedAt: now,
+          },
         },
-      },
-    );
+      );
+      matchedTotal += result.matchedCount || 0;
+    }
 
     await db
       .collection("password_resets")
@@ -122,10 +123,10 @@ export default async function handler(
         { $set: { usedAt: new Date(), consumedAt: new Date() } },
       );
 
-    if (updateResult.matchedCount === 0) {
-      return res
-        .status(200)
-        .json({ success: true, message: "Password updated." });
+    if (matchedTotal === 0) {
+      return res.status(404).json({
+        error: "No matching account found for reset token email.",
+      });
     }
 
     return res

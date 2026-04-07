@@ -1,7 +1,6 @@
-// File: src/pages/profile.tsx
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -20,12 +19,24 @@ type MeUser = {
   businessName?: string;
 };
 
+type AssetMeta = {
+  url: string;
+  filename?: string;
+  uploadedAt?: string;
+  contentType?: string;
+  size?: number;
+};
+
 type UserProfile = {
   id: string;
   name: string;
   email: string;
-  profileImage?: string;
   bio?: string;
+  profileImageUrl?: string;
+  avatar: AssetMeta | null;
+  resume: AssetMeta | null;
+  // compatibility
+  profileImage?: string;
   resumeUrl?: string;
 };
 
@@ -42,22 +53,38 @@ function GlowBackground() {
   );
 }
 
+function formatDate(iso?: string) {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  return d.toLocaleString();
+}
+
+function formatBytes(size?: number) {
+  if (!size || size <= 0) return "";
+  const units = ["B", "KB", "MB", "GB"];
+  let n = size;
+  let i = 0;
+  while (n >= 1024 && i < units.length - 1) {
+    n /= 1024;
+    i += 1;
+  }
+  return `${n.toFixed(i === 0 ? 0 : 1)} ${units[i]}`;
+}
+
 export default function ProfilePage() {
   const router = useRouter();
 
   const [me, setMe] = useState<MeUser | null>(null);
-
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Form state
   const [name, setName] = useState("");
-  const [email, setEmail] = useState(""); // keep read-only unless you fully support email change
+  const [email, setEmail] = useState("");
   const [bio, setBio] = useState("");
   const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
   const [resumeFile, setResumeFile] = useState<File | null>(null);
 
-  // Status flags
   const [saveStatus, setSaveStatus] = useState<
     "idle" | "saving" | "success" | "error"
   >("idle");
@@ -68,46 +95,50 @@ export default function ProfilePage() {
     "idle" | "uploading" | "success" | "error"
   >("idle");
 
-  // Gate + load profile
+  const [removeAvatarBusy, setRemoveAvatarBusy] = useState(false);
+  const [removeResumeBusy, setRemoveResumeBusy] = useState(false);
+
+  const fetchProfile = useCallback(async (signal?: AbortSignal) => {
+    const meRes = await fetch("/api/auth/me", {
+      cache: "no-store",
+      credentials: "include",
+      signal,
+    });
+
+    if (!meRes.ok) {
+      router.replace("/login?redirect=/profile");
+      return;
+    }
+
+    const meData = await meRes.json().catch(() => null);
+    const meUser = (meData?.user ?? null) as MeUser | null;
+    if (!meUser?.accountType) {
+      router.replace("/login?redirect=/profile");
+      return;
+    }
+
+    setMe(meUser);
+
+    const res = await fetch("/api/profile", {
+      cache: "no-store",
+      credentials: "include",
+      signal,
+    });
+    if (!res.ok) throw new Error("Failed to load profile");
+
+    const data: UserProfile = await res.json();
+    setProfile(data);
+    setName(data.name || "");
+    setEmail(data.email || meUser.email || "");
+    setBio(data.bio || "");
+  }, [router]);
+
   useEffect(() => {
     const controller = new AbortController();
 
     (async () => {
       try {
-        // 1) Auth gate
-        const meRes = await fetch("/api/auth/me", {
-          cache: "no-store",
-          credentials: "include",
-          signal: controller.signal,
-        });
-
-        if (!meRes.ok) {
-          router.replace("/login?redirect=/profile");
-          return;
-        }
-
-        const meData = await meRes.json().catch(() => null);
-        const meUser = (meData?.user ?? null) as MeUser | null;
-        if (!meUser?.accountType) {
-          router.replace("/login?redirect=/profile");
-          return;
-        }
-        setMe(meUser);
-
-        // 2) Load profile
-        const res = await fetch("/api/profile", {
-          cache: "no-store",
-          credentials: "include",
-          signal: controller.signal,
-        });
-
-        if (!res.ok) throw new Error("Failed to load profile");
-
-        const data: UserProfile = await res.json();
-        setProfile(data);
-        setName(data.name || "");
-        setEmail(data.email || meUser.email || "");
-        setBio(data.bio || "");
+        await fetchProfile(controller.signal);
       } catch (e: any) {
         if (e?.name !== "AbortError") {
           console.error(e);
@@ -118,12 +149,21 @@ export default function ProfilePage() {
     })();
 
     return () => controller.abort();
-  }, [router]);
+  }, [fetchProfile]);
 
   const whoLabel = useMemo(() => {
     if (!me) return "";
     return me.businessName || me.email;
   }, [me]);
+
+  const avatarUrl = useMemo(() => {
+    return (
+      profile?.avatar?.url ||
+      profile?.profileImageUrl ||
+      profile?.profileImage ||
+      ""
+    );
+  }, [profile]);
 
   const initials = useMemo(() => {
     const n = (name || whoLabel || "").trim();
@@ -135,10 +175,8 @@ export default function ProfilePage() {
   }, [name, whoLabel]);
 
   if (loading) return <Loader />;
-
   if (!profile) return <NotFound />;
 
-  // Handlers
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaveStatus("saving");
@@ -150,8 +188,7 @@ export default function ProfilePage() {
         body: JSON.stringify({ name, bio }),
       });
       if (!res.ok) throw new Error();
-      const updated: UserProfile = await res.json();
-      setProfile(updated);
+      await fetchProfile();
       setSaveStatus("success");
       setTimeout(() => setSaveStatus("idle"), 1500);
     } catch {
@@ -163,7 +200,6 @@ export default function ProfilePage() {
     e.preventDefault();
     if (!profileImageFile) return;
 
-    // basic safety checks
     if (profileImageFile.size > 5 * 1024 * 1024) {
       setImgStatus("error");
       return;
@@ -180,13 +216,31 @@ export default function ProfilePage() {
         body: form,
       });
       if (!res.ok) throw new Error();
-      const { imageUrl } = await res.json();
-      setProfile((p) => (p ? { ...p, profileImage: imageUrl } : p));
+      await fetchProfile(); // refresh from persisted backend state
       setProfileImageFile(null);
       setImgStatus("success");
       setTimeout(() => setImgStatus("idle"), 1500);
     } catch {
       setImgStatus("error");
+    }
+  };
+
+  const handleRemoveAvatar = async () => {
+    if (removeAvatarBusy) return;
+    setRemoveAvatarBusy(true);
+    try {
+      const res = await fetch("/api/profile", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ removeAvatar: true }),
+      });
+      if (!res.ok) throw new Error();
+      await fetchProfile(); // refresh from persisted backend state
+    } catch {
+      // no-op UI fallback
+    } finally {
+      setRemoveAvatarBusy(false);
     }
   };
 
@@ -210,8 +264,7 @@ export default function ProfilePage() {
         body: form,
       });
       if (!res.ok) throw new Error();
-      const { resumeUrl } = await res.json();
-      setProfile((p) => (p ? { ...p, resumeUrl } : p));
+      await fetchProfile(); // refresh from persisted backend state
       setResumeFile(null);
       setResumeStatus("success");
       setTimeout(() => setResumeStatus("idle"), 1500);
@@ -220,54 +273,39 @@ export default function ProfilePage() {
     }
   };
 
+  const handleRemoveResume = async () => {
+    if (removeResumeBusy) return;
+    setRemoveResumeBusy(true);
+    try {
+      const res = await fetch("/api/profile", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ removeResume: true }),
+      });
+      if (!res.ok) throw new Error();
+      await fetchProfile(); // refresh from persisted backend state
+    } catch {
+      // no-op
+    } finally {
+      setRemoveResumeBusy(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-black text-white relative">
       <GlowBackground />
 
       <div className="relative mx-auto max-w-4xl p-6 space-y-8">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-          <div>
-            <h1 className="text-3xl md:text-4xl font-extrabold text-yellow-300 tracking-tight">
-              Your Profile
-            </h1>
-            <p className="text-gray-300 mt-1">
-              Update your profile, photo, and resume.
-              {me?.accountType ? (
-                <span className="ml-2 inline-flex items-center rounded-full border border-yellow-500/25 px-2 py-0.5 text-[11px] text-yellow-200">
-                  {String(me.accountType).toUpperCase()}
-                </span>
-              ) : null}
-            </p>
-          </div>
-
-          <div className="flex gap-3">
-            <button
-              onClick={() => router.back()}
-              className="px-4 py-2 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition text-sm"
-            >
-              Back
-            </button>
-
-            {/* ✅ Fix: use Next Link for internal navigation */}
-            <Link
-              href="/"
-              className="px-4 py-2 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition text-sm"
-            >
-              Home
-            </Link>
-          </div>
-        </div>
-
-        {/* Profile Card */}
-        <section className="rounded-2xl border border-yellow-500/15 bg-gray-900/60 p-6 shadow-xl">
-          <div className="flex flex-col md:flex-row md:items-center gap-6">
-            {/* Avatar */}
+        {/* Header with persisted avatar */}
+        <section className="rounded-2xl border border-yellow-500/20 bg-gray-900/60 p-6 shadow-xl">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
             <div className="flex items-center gap-4">
-              <div className="relative h-20 w-20 rounded-full overflow-hidden border border-yellow-500/20 bg-black/40">
-                {profile.profileImage ? (
+              <div className="relative h-20 w-20 rounded-full overflow-hidden border border-yellow-500/25 bg-black/40">
+                {avatarUrl ? (
                   <Image
-                    src={profile.profileImage}
-                    alt="Profile image"
+                    src={avatarUrl}
+                    alt="Profile avatar"
                     fill
                     className="object-cover"
                     sizes="80px"
@@ -279,68 +317,100 @@ export default function ProfilePage() {
                 )}
               </div>
 
-              {/* Upload image */}
-              <form
-                onSubmit={handleImageUpload}
-                encType="multipart/form-data"
-                className="space-y-2"
-              >
-                <div className="text-sm font-semibold text-gray-200">
-                  Profile Photo
-                </div>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) =>
-                      setProfileImageFile(e.target.files?.[0] ?? null)
-                    }
-                    className="text-xs text-gray-200 file:mr-3 file:rounded-lg file:border-0 file:bg-white/10 file:px-3 file:py-2 file:text-gray-100 hover:file:bg-white/15"
-                  />
-                  <button
-                    type="submit"
-                    disabled={imgStatus === "uploading" || !profileImageFile}
-                    className={cx(
-                      "px-4 py-2 rounded-xl font-semibold transition text-sm",
-                      "bg-yellow-400 text-black hover:bg-yellow-300",
-                      (imgStatus === "uploading" || !profileImageFile) &&
-                        "opacity-60 cursor-not-allowed",
-                    )}
-                  >
-                    {imgStatus === "uploading" ? "Uploading…" : "Upload"}
-                  </button>
-                  {imgStatus === "success" && (
-                    <span className="text-green-400 text-sm">✔</span>
-                  )}
-                  {imgStatus === "error" && (
-                    <span className="text-red-400 text-sm">✖</span>
-                  )}
-                </div>
-                <div className="text-[11px] text-gray-400">
-                  Max 5MB. JPG/PNG recommended.
-                </div>
-              </form>
+              <div>
+                <h1 className="text-3xl md:text-4xl font-extrabold text-yellow-300 tracking-tight">
+                  Your Profile
+                </h1>
+                <p className="text-gray-300 mt-1">
+                  Manage your profile, avatar, and resume.
+                  {me?.accountType ? (
+                    <span className="ml-2 inline-flex items-center rounded-full border border-yellow-500/25 px-2 py-0.5 text-[11px] text-yellow-200">
+                      {String(me.accountType).toUpperCase()}
+                    </span>
+                  ) : null}
+                </p>
+              </div>
             </div>
 
-            {/* Basic identity */}
-            <div className="flex-1 grid gap-3 md:grid-cols-3 text-sm">
-              <InfoPill
-                label="Signed in as"
-                value={whoLabel || profile.email}
-              />
-              <InfoPill label="Email" value={profile.email} />
-              <InfoPill label="Profile ID" value={profile.id} />
+            <div className="flex gap-3">
+              <button
+                onClick={() => router.back()}
+                className="px-4 py-2 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition text-sm"
+              >
+                Back
+              </button>
+              <Link
+                href="/"
+                className="px-4 py-2 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition text-sm"
+              >
+                Home
+              </Link>
             </div>
           </div>
         </section>
 
-        {/* Profile Form */}
+        {/* Avatar Management */}
+        <section className="rounded-2xl border border-yellow-500/15 bg-gray-900/60 p-6 shadow-xl">
+          <h2 className="text-xl font-bold text-yellow-200">Profile Photo</h2>
+          <p className="text-gray-300 text-sm mt-1">
+            Current avatar is loaded from persisted profile data.
+          </p>
+
+          <div className="mt-4 grid gap-3 text-sm text-gray-300">
+            <div>
+              Current: {profile.avatar?.filename || (avatarUrl ? "Uploaded avatar" : "No avatar uploaded")}
+            </div>
+            {profile.avatar?.uploadedAt ? (
+              <div>Uploaded: {formatDate(profile.avatar.uploadedAt)}</div>
+            ) : null}
+          </div>
+
+          <form
+            onSubmit={handleImageUpload}
+            encType="multipart/form-data"
+            className="mt-4 flex flex-wrap items-center gap-2"
+          >
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setProfileImageFile(e.target.files?.[0] ?? null)}
+              className="text-xs text-gray-200 file:mr-3 file:rounded-lg file:border-0 file:bg-white/10 file:px-3 file:py-2 file:text-gray-100 hover:file:bg-white/15"
+            />
+            <button
+              type="submit"
+              disabled={imgStatus === "uploading" || !profileImageFile}
+              className={cx(
+                "px-4 py-2 rounded-xl font-semibold transition text-sm",
+                "bg-yellow-400 text-black hover:bg-yellow-300",
+                (imgStatus === "uploading" || !profileImageFile) &&
+                  "opacity-60 cursor-not-allowed",
+              )}
+            >
+              {imgStatus === "uploading" ? "Uploading…" : "Replace Avatar"}
+            </button>
+
+            <button
+              type="button"
+              onClick={handleRemoveAvatar}
+              disabled={removeAvatarBusy || !avatarUrl}
+              className={cx(
+                "px-4 py-2 rounded-xl border border-red-400/50 text-red-300 hover:bg-red-500/10 transition text-sm",
+                (removeAvatarBusy || !avatarUrl) && "opacity-50 cursor-not-allowed",
+              )}
+            >
+              {removeAvatarBusy ? "Removing…" : "Remove Avatar"}
+            </button>
+
+            {imgStatus === "success" && <span className="text-green-400 text-sm">Updated</span>}
+            {imgStatus === "error" && <span className="text-red-400 text-sm">Upload failed</span>}
+          </form>
+
+          <div className="mt-2 text-[11px] text-gray-400">Max 5MB. JPG/PNG recommended.</div>
+        </section>
+
+        {/* Profile details */}
         <section className="rounded-2xl border border-yellow-500/15 bg-gray-900/60 p-6 shadow-xl">
           <h2 className="text-xl font-bold text-yellow-200">Profile Details</h2>
-          <p className="text-gray-300 text-sm mt-1">
-            Keep this updated so employers, sponsors, and your own dashboard
-            tools stay accurate.
-          </p>
 
           <form onSubmit={handleSave} className="mt-6 grid gap-4">
             <label className="block">
@@ -354,20 +424,13 @@ export default function ProfilePage() {
             </label>
 
             <label className="block">
-              <div className="text-sm text-gray-200 font-semibold">
-                Email (locked)
-              </div>
+              <div className="text-sm text-gray-200 font-semibold">Email (locked)</div>
               <input
                 type="email"
                 className="w-full mt-2 rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-gray-300 outline-none"
                 value={email}
                 readOnly
               />
-              <div className="text-[11px] text-gray-400 mt-1">
-                Email changes typically require a dedicated verification flow.
-                If you want it editable, tell me and I’ll wire the full safe
-                update process.
-              </div>
             </label>
 
             <label className="block">
@@ -376,7 +439,7 @@ export default function ProfilePage() {
                 className="w-full mt-2 min-h-[120px] rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-white outline-none focus:border-yellow-400/40"
                 value={bio}
                 onChange={(e) => setBio(e.target.value)}
-                placeholder="Tell people what you do, what you offer, and what you’re looking for."
+                placeholder="Tell people what you do."
               />
             </label>
 
@@ -392,88 +455,110 @@ export default function ProfilePage() {
               >
                 {saveStatus === "saving" ? "Saving…" : "Save Profile"}
               </button>
-              {saveStatus === "success" && (
-                <p className="text-green-400">Saved!</p>
-              )}
-              {saveStatus === "error" && (
-                <p className="text-red-400">Save failed.</p>
-              )}
+              {saveStatus === "success" && <p className="text-green-400">Saved</p>}
+              {saveStatus === "error" && <p className="text-red-400">Save failed</p>}
             </div>
           </form>
         </section>
 
-        {/* Resume */}
+        {/* Current Resume */}
         <section className="rounded-2xl border border-yellow-500/15 bg-gray-900/60 p-6 shadow-xl">
-          <h2 className="text-xl font-bold text-yellow-200">Resume</h2>
+          <h2 className="text-xl font-bold text-yellow-200">Current Resume</h2>
           <p className="text-gray-300 text-sm mt-1">
-            Upload a PDF/DOC/DOCX so employers can view it.
+            Upload, view, download, replace, or remove your currently saved resume.
           </p>
 
-          <div className="mt-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-            <div className="text-sm">
-              {profile.resumeUrl ? (
+          {profile.resume?.url ? (
+            <div className="mt-4 rounded-xl border border-white/10 bg-black/30 p-4 text-sm text-gray-200 space-y-2">
+              <div>
+                <span className="text-gray-400">Filename:</span>{" "}
+                {profile.resume.filename || "Resume file"}
+              </div>
+              <div>
+                <span className="text-gray-400">Uploaded:</span>{" "}
+                {formatDate(profile.resume.uploadedAt) || "Unknown"}
+              </div>
+              {profile.resume.contentType ? (
+                <div>
+                  <span className="text-gray-400">Type:</span> {profile.resume.contentType}
+                </div>
+              ) : null}
+              {profile.resume.size ? (
+                <div>
+                  <span className="text-gray-400">Size:</span> {formatBytes(profile.resume.size)}
+                </div>
+              ) : null}
+
+              <div className="pt-2 flex flex-wrap gap-2">
                 <a
-                  href={profile.resumeUrl}
+                  href={profile.resume.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="underline text-yellow-300 hover:text-yellow-200"
+                  className="px-3 py-2 rounded border border-yellow-400/40 text-yellow-200 hover:bg-yellow-400/10"
                 >
-                  View current resume
+                  View
                 </a>
-              ) : (
-                <span className="text-gray-400">No resume uploaded yet.</span>
-              )}
+                <a
+                  href={profile.resume.url}
+                  download={profile.resume.filename || "resume"}
+                  className="px-3 py-2 rounded border border-white/20 text-white hover:bg-white/10"
+                >
+                  Download
+                </a>
+                <button
+                  type="button"
+                  onClick={handleRemoveResume}
+                  disabled={removeResumeBusy}
+                  className={cx(
+                    "px-3 py-2 rounded border border-red-400/50 text-red-300 hover:bg-red-500/10",
+                    removeResumeBusy && "opacity-50 cursor-not-allowed",
+                  )}
+                >
+                  {removeResumeBusy ? "Removing…" : "Remove"}
+                </button>
+              </div>
             </div>
+          ) : (
+            <div className="mt-4 rounded-xl border border-dashed border-gray-700 bg-black/20 p-4 text-sm text-gray-400">
+              No resume uploaded yet.
+            </div>
+          )}
 
-            <form
-              onSubmit={handleResumeUpload}
-              encType="multipart/form-data"
-              className="flex items-center gap-2"
+          <form
+            onSubmit={handleResumeUpload}
+            encType="multipart/form-data"
+            className="mt-4 flex flex-wrap items-center gap-2"
+          >
+            <input
+              type="file"
+              accept=".pdf,.doc,.docx"
+              onChange={(e) => setResumeFile(e.target.files?.[0] ?? null)}
+              className="text-xs text-gray-200 file:mr-3 file:rounded-lg file:border-0 file:bg-white/10 file:px-3 file:py-2 file:text-gray-100 hover:file:bg-white/15"
+            />
+            <button
+              type="submit"
+              disabled={resumeStatus === "uploading" || !resumeFile}
+              className={cx(
+                "px-4 py-2 rounded-xl font-semibold transition text-sm",
+                "bg-yellow-400 text-black hover:bg-yellow-300",
+                (resumeStatus === "uploading" || !resumeFile) &&
+                  "opacity-60 cursor-not-allowed",
+              )}
             >
-              <input
-                type="file"
-                accept=".pdf,.doc,.docx"
-                onChange={(e) => setResumeFile(e.target.files?.[0] ?? null)}
-                className="text-xs text-gray-200 file:mr-3 file:rounded-lg file:border-0 file:bg-white/10 file:px-3 file:py-2 file:text-gray-100 hover:file:bg-white/15"
-              />
-              <button
-                type="submit"
-                disabled={resumeStatus === "uploading" || !resumeFile}
-                className={cx(
-                  "px-4 py-2 rounded-xl font-semibold transition text-sm",
-                  "bg-yellow-400 text-black hover:bg-yellow-300",
-                  (resumeStatus === "uploading" || !resumeFile) &&
-                    "opacity-60 cursor-not-allowed",
-                )}
-              >
-                {resumeStatus === "uploading" ? "Uploading…" : "Upload"}
-              </button>
-              {resumeStatus === "success" && (
-                <span className="text-green-400 text-sm">✔</span>
-              )}
-              {resumeStatus === "error" && (
-                <span className="text-red-400 text-sm">✖</span>
-              )}
-            </form>
-          </div>
+              {resumeStatus === "uploading" ? "Uploading…" : "Replace Resume"}
+            </button>
 
-          <div className="mt-2 text-[11px] text-gray-400">Max 10MB.</div>
+            {resumeStatus === "success" && <span className="text-green-400 text-sm">Updated</span>}
+            {resumeStatus === "error" && <span className="text-red-400 text-sm">Upload failed</span>}
+          </form>
+
+          <div className="mt-2 text-[11px] text-gray-400">Max 10MB. PDF/DOC/DOCX.</div>
         </section>
       </div>
     </div>
   );
 }
 
-function InfoPill({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-xl border border-yellow-500/15 bg-black/30 px-4 py-3">
-      <div className="text-xs text-gray-400">{label}</div>
-      <div className="text-sm text-gray-200 mt-0.5 truncate">{value}</div>
-    </div>
-  );
-}
-
-// Helper components
 function Loader() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-black text-white relative p-6">
@@ -493,11 +578,7 @@ function NotFound() {
       <GlowBackground />
       <div className="relative w-full max-w-md rounded-2xl border border-red-500/25 bg-red-500/10 p-6 shadow-xl">
         <div className="text-xl font-bold text-red-200">Profile not found.</div>
-        <p className="text-gray-200 mt-2">
-          If you just signed up, your profile may not be created yet.
-        </p>
-
-        {/* ✅ Fix: use Next Link for internal navigation */}
+        <p className="text-gray-200 mt-2">If you just signed up, your profile may not be created yet.</p>
         <Link
           href="/"
           className="inline-block mt-4 px-4 py-2 rounded-xl bg-yellow-400 text-black font-semibold hover:bg-yellow-300 transition"

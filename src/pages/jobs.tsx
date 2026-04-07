@@ -1,7 +1,33 @@
 // src/pages/jobs.tsx
 import Link from "next/link";
+import { useEffect } from "react";
+import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 
 export default function JobsHubPage() {
+  useEffect(() => {
+    emitFlowEvent({
+      eventType: "jobs_landing_viewed",
+      pageRoute: "/jobs",
+      section: "jobs_hub",
+    });
+  }, []);
+
+  const trackJobEntry = (
+    ctaId: string,
+    ctaLabel: string,
+    destination: string,
+  ) => {
+    emitFlowEvent({
+      eventType: "employer_post_job_started",
+      pageRoute: "/jobs",
+      section: "jobs_hub",
+      ctaId,
+      ctaLabel,
+      destination,
+      entityType: "job_post",
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gray-950 text-white px-6 py-10">
       {/* subtle glow */}
@@ -54,6 +80,9 @@ export default function JobsHubPage() {
             href="/post-job"
             buttonLabel="Post a Job"
             variant="blue"
+            onClick={() =>
+              trackJobEntry("jobs_hub_post_job", "Post a Job", "/post-job")
+            }
           />
 
           <HubCard
@@ -150,6 +179,7 @@ function HubCard({
   variant,
   muted,
   mutedLabel,
+  onClick,
 }: {
   title: string;
   description: string;
@@ -158,6 +188,7 @@ function HubCard({
   variant: "gold" | "blue" | "green" | "red";
   muted?: boolean;
   mutedLabel?: string;
+  onClick?: () => void;
 }) {
   const styles =
     variant === "gold"
@@ -196,7 +227,7 @@ function HubCard({
           {mutedLabel || "Coming soon"}
         </div>
       ) : (
-        <Link href={href}>
+        <Link href={href} onClick={onClick}>
           <button className="mt-4 px-5 py-2 rounded bg-yellow-400 text-black font-semibold hover:bg-yellow-300 transition">
             {buttonLabel}
           </button>
