@@ -13,20 +13,11 @@ import Image from "next/image";
 import Head from "next/head";
 import { canonicalUrl, getBaseUrl, truncateMeta } from "@/lib/seo";
 import {
-  BookOpen,
-  GraduationCap,
-  Users,
-  Briefcase,
   Sparkles,
   Search,
   ShoppingBag,
   Newspaper,
   SlidersHorizontal,
-  ArrowRight,
-  ChevronDown,
-  ChevronUp,
-  Bell,
-  UserPlus,
 } from "lucide-react";
 import { useRouter } from "next/router";
 import useAuth from "@/hooks/useAuth";
@@ -454,7 +445,6 @@ function TabButton({
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
-  const [studentDrawerOpen, setStudentDrawerOpen] = useState(false);
 
   const [aiMode, setAiMode] = useState(false);
   const [toolsOpen, setToolsOpen] = useState(false);
@@ -581,64 +571,88 @@ export default function Home() {
     runSearch({ aiOverride: next });
   };
 
+  const stableSponsorFallback = useMemo(
+    () => [
+      {
+        img: "/images/sponsors/titanera.jpg",
+        name: "TitanEra",
+        url: "/",
+      },
+      {
+        img: "/images/sponsors/thomashookerauthor.png",
+        name: "Thomas Hooker Author",
+        url: "/",
+      },
+      {
+        img: "/images/sponsors/pamfaunitedcitizen.jpg",
+        name: "Pamfa United Citizen",
+        url: "/",
+      },
+      {
+        img: "/images/sponsors/thelastnephilim.jpg",
+        name: "The Last Nephilim",
+        url: "/",
+      },
+      {
+        img: "/images/sponsors/Guardiansoftheforgottenrealm.jpg",
+        name: "Guardians of the Forgotten Realm",
+        url: "/",
+      },
+      {
+        img: "/images/sponsors/tiana-song-sprouts.jpg",
+        name: "Tiana Song Sprouts",
+        url: "/",
+      },
+    ],
+    [],
+  );
+
   const [sponsors, setSponsors] = useState<
     Array<{ img: string; name: string; url?: string; tagline?: string }>
-  >([]);
+  >(stableSponsorFallback);
 
   useEffect(() => {
+    const controller = new AbortController();
     let cancelled = false;
+
     (async () => {
+      const timeout = setTimeout(() => controller.abort(), 4000);
       try {
         const res = await fetch("/api/sponsored-businesses", {
           cache: "no-store",
+          signal: controller.signal,
         });
         const data = await res.json().catch(() => ({}));
-        if (!res.ok || !Array.isArray(data?.sponsors)) return;
-        if (cancelled) return;
+        if (!res.ok || !Array.isArray(data?.sponsors) || cancelled) return;
 
-        setSponsors(
-          data.sponsors.map((s: any) => ({
-            img:
-              typeof s?.img === "string" && s.img
-                ? s.img
-                : "/default-image.jpg",
-            name:
-              typeof s?.name === "string" && s.name
-                ? s.name
-                : "Featured Sponsor",
-            url: typeof s?.url === "string" ? s.url : undefined,
-            tagline: typeof s?.tagline === "string" ? s.tagline : undefined,
-          })),
-        );
+        const normalized = data.sponsors.map((s: any) => ({
+          img:
+            typeof s?.img === "string" && s.img
+              ? s.img
+              : "/default-image.jpg",
+          name:
+            typeof s?.name === "string" && s.name
+              ? s.name
+              : "Featured Sponsor",
+          url: typeof s?.url === "string" ? s.url : undefined,
+          tagline: typeof s?.tagline === "string" ? s.tagline : undefined,
+        }));
+
+        setSponsors(normalized.length ? normalized : stableSponsorFallback);
       } catch {
-        // keep fallback rendering
+        // keep stable fallback; do not force late redraw from slow API
+      } finally {
+        clearTimeout(timeout);
       }
     })();
 
     return () => {
       cancelled = true;
+      controller.abort();
     };
-  }, []);
+  }, [stableSponsorFallback]);
 
-  const sponsorRail = sponsors.length
-    ? sponsors
-    : [
-        {
-          img: "/images/sponsors/titanera.jpg",
-          name: "TitanEra",
-          url: "/",
-        },
-        {
-          img: "/images/sponsors/thomashookerauthor.png",
-          name: "Thomas Hooker Author",
-          url: "/",
-        },
-        {
-          img: "/images/sponsors/pamfaunitedcitizens.jpg",
-          name: "Pamfa United Citizen",
-          url: "/",
-        },
-      ];
+  const sponsorRail = sponsors.length ? sponsors : stableSponsorFallback;
 
   const base = getBaseUrl();
   const canonical = canonicalUrl("/");
@@ -671,29 +685,6 @@ export default function Home() {
       "https://www.linkedin.com/company/black-wealth-exchange/",
     ],
   };
-
-  const studentOpportunities = [
-    {
-      title: "Scholarships",
-      icon: BookOpen,
-      href: "/black-student-opportunities/scholarships",
-    },
-    {
-      title: "Grants",
-      icon: GraduationCap,
-      href: "/black-student-opportunities/grants",
-    },
-    {
-      title: "Mentorship",
-      icon: Users,
-      href: "/black-student-opportunities/mentorship",
-    },
-    {
-      title: "Internships",
-      icon: Briefcase,
-      href: "/black-student-opportunities/internships",
-    },
-  ];
 
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-neutral-950 text-white">
@@ -1093,488 +1084,47 @@ export default function Home() {
 
       <section className="relative z-10 pt-3 pb-8 sm:pt-4 sm:pb-10">
         <div className="container mx-auto max-w-6xl px-4">
-          <div className="mb-4 rounded-2xl border border-white/10 bg-white/[0.03] p-3 sm:p-4">
+          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
             <div className="mb-2 text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
-              Quick paths
+              Core pathways
             </div>
-            <div className="grid gap-2 sm:grid-cols-3">
+            <div className="grid gap-2 text-sm sm:grid-cols-2 lg:grid-cols-3">
               <Link
-                href="/financial-literacy"
-                className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-sm font-semibold text-white/85 transition hover:border-[#D4AF37]/30 hover:bg-black/40"
-                onClick={() =>
-                  trackHomepageEvent("homepage_education_entry_clicked", {
-                    section: "quick_paths",
-                    ctaId: "quick_path_learn",
-                    ctaLabel: "I’m here to learn",
-                    destination: "/financial-literacy",
-                  })
-                }
+                href="/business-directory"
+                className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/85 transition hover:bg-black/40"
               >
-                I’m here to learn
+                Directory
               </Link>
-
+              <Link
+                href="/marketplace"
+                className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/85 transition hover:bg-black/40"
+              >
+                Marketplace
+              </Link>
               <Link
                 href="/job-listings"
-                className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-sm font-semibold text-white/85 transition hover:border-[#D4AF37]/30 hover:bg-black/40"
+                className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/85 transition hover:bg-black/40"
               >
-                I’m here to find opportunities
-              </Link>
-
-              <Link
-                href="/marketplace/become-a-seller"
-                className="rounded-xl border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-3 py-2 text-sm font-semibold text-[#EFD27A] transition hover:border-[#D4AF37]/50 hover:bg-[#D4AF37]/15"
-                onClick={() =>
-                  trackHomepageEvent("seller_entry_clicked", {
-                    section: "quick_paths",
-                    ctaId: "quick_path_i_run_a_business",
-                    ctaLabel: "I run a business",
-                    destination: "/marketplace/become-a-seller",
-                  })
-                }
-              >
-                I run a business
-              </Link>
-            </div>
-          </div>
-
-          <div className="relative mb-4 overflow-hidden rounded-2xl border border-white/10 bg-black p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.04)]">
-            <div
-              className="pointer-events-none absolute inset-0"
-              style={{
-                backgroundImage:
-                  "linear-gradient(110deg, rgba(0,0,0,0.9) 15%, rgba(0,0,0,0.74) 56%, rgba(0,0,0,0.88) 100%), url('/ads/sample-banner3.jpg')",
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-              }}
-            />
-            <div className="relative">
-              <div className="text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
-                Learn
-              </div>
-              <h3 className="mt-1 text-lg font-extrabold text-white sm:text-xl">
-                Featured Learning Block
-              </h3>
-              <p className="mt-1 text-sm text-white/75">
-                One focused track for financial basics, career setup, and Black
-                history/economic context.
-              </p>
-              <div className="mt-3 flex flex-wrap gap-2 text-xs text-white/80">
-                <span className="rounded-full border border-white/15 bg-black/35 px-3 py-1">
-                  Financial basics
-                </span>
-                <span className="rounded-full border border-white/15 bg-black/35 px-3 py-1">
-                  Career setup
-                </span>
-                <span className="rounded-full border border-white/15 bg-black/35 px-3 py-1">
-                  Black history/economic context
-                </span>
-              </div>
-              <div className="mt-4 flex flex-wrap gap-2">
-                <Link
-                  href="/financial-literacy"
-                  className="inline-flex h-10 items-center rounded-xl bg-[#D4AF37] px-5 text-sm font-extrabold text-black transition hover:bg-yellow-500"
-                  onClick={() =>
-                    trackHomepageEvent("homepage_education_entry_clicked", {
-                      section: "featured_learning_block",
-                      ctaId: "featured_learning_start_track",
-                      ctaLabel: "Start the Track",
-                      destination: "/financial-literacy",
-                    })
-                  }
-                >
-                  Financial Literacy
-                </Link>
-                <Link
-                  href="/library-of-black-history"
-                  className="inline-flex h-10 items-center rounded-xl border border-[#D4AF37]/40 bg-[#D4AF37]/10 px-5 text-sm font-bold text-[#F1D57A] transition hover:bg-[#D4AF37]/16"
-                  onClick={() =>
-                    trackHomepageEvent("homepage_history_truth_entry_clicked", {
-                      section: "featured_learning_block",
-                      ctaId: "featured_learning_history_library",
-                      ctaLabel: "Library of Black History",
-                      destination: "/library-of-black-history",
-                    })
-                  }
-                >
-                  Library of Black History
-                </Link>
-              </div>
-            </div>
-          </div>
-
-          <div className="mb-4 grid gap-3 sm:grid-cols-2">
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
-              <div className="flex items-center justify-between gap-2">
-                <h3 className="text-base font-extrabold text-white sm:text-lg">
-                  Opportunities
-                </h3>
-                <Link
-                  href="/black-student-opportunities"
-                  className="text-xs font-bold text-[#D4AF37]"
-                  onClick={() =>
-                    trackHomepageEvent("student_portal_entry_clicked", {
-                      section: "opportunities_card",
-                      ctaId: "open_hub_header",
-                      ctaLabel: "Open Hub",
-                      destination: "/black-student-opportunities",
-                    })
-                  }
-                >
-                  Open Hub →
-                </Link>
-              </div>
-              <div className="mt-3 grid gap-2 text-sm sm:grid-cols-3">
-                <Link
-                  href="/black-student-opportunities"
-                  className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40"
-                  onClick={() =>
-                    trackHomepageEvent("student_portal_entry_clicked", {
-                      section: "opportunities_card",
-                      ctaId: "opportunities_students_tile",
-                      ctaLabel: "Students",
-                      destination: "/black-student-opportunities",
-                    })
-                  }
-                >
-                  Students
-                </Link>
-                <Link
-                  href="/job-listings"
-                  className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40"
-                >
-                  Jobs
-                </Link>
-                <Link
-                  href="/internships"
-                  className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40"
-                >
-                  Internships
-                </Link>
-              </div>
-            </div>
-
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
-              <h3 className="text-base font-extrabold text-white sm:text-lg">
-                Business Growth
-              </h3>
-              <div className="mt-3 grid gap-2 text-sm sm:grid-cols-3">
-                <Link
-                  href="/marketplace"
-                  className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40"
-                >
-                  Marketplace
-                </Link>
-                <Link
-                  href="/business-directory"
-                  className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40"
-                >
-                  Sponsored / Directory
-                </Link>
-                <Link
-                  href="/advertise-with-us"
-                  className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40"
-                >
-                  Advertising
-                </Link>
-              </div>
-            </div>
-          </div>
-
-          <div className="mb-4 rounded-2xl border border-white/10 bg-white/[0.02] p-4 sm:p-5">
-            <div className="mb-2 text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
-              More key sections
-            </div>
-            <div className="grid gap-2 text-sm sm:grid-cols-2 lg:grid-cols-4">
-              <Link
-                href="/affiliate"
-                className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40"
-              >
-                Affiliate & Partnership
+                Jobs
               </Link>
               <Link
-                href="/black-entertainment-news"
-                className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40"
+                href="/travel-map/explore"
+                className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/85 transition hover:bg-black/40"
               >
-                Black Entertainment Pulse
+                Travel Map
               </Link>
               <Link
-                href="/business-directory/sponsored-business"
-                className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40"
+                href="/wealth-builder"
+                className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/85 transition hover:bg-black/40"
               >
-                Sponsored Businesses
+                Wealth Builder
               </Link>
               <Link
-                href="/investment"
-                className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/80 transition hover:bg-black/40"
-                onClick={() =>
-                  trackHomepageEvent("homepage_education_entry_clicked", {
-                    section: "more_key_sections",
-                    ctaId: "more_key_investment_wealth",
-                    ctaLabel: "Investment & Wealth",
-                    destination: "/investment",
-                  })
-                }
+                href="/financial-literacy"
+                className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/85 transition hover:bg-black/40"
               >
-                Investment & Wealth
+                Financial Literacy
               </Link>
-            </div>
-          </div>
-
-          <div className="mb-4 text-center">
-            <Link
-              href="/more"
-              className="text-sm font-bold text-[#D4AF37] transition hover:underline"
-            >
-              Explore all resources →
-            </Link>
-          </div>
-
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
-            <div className="mb-4 flex flex-wrap items-start justify-between gap-4 sm:mb-5">
-              <div>
-                <h3 className="text-xl font-extrabold tracking-tight text-[#D4AF37] sm:text-3xl">
-                  Student Opportunities
-                </h3>
-                <p className="mt-1 text-sm text-white/60">
-                  Scholarships, grants, mentorship, internships — and a
-                  launchpad to join BWE.
-                </p>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <span className="inline-flex rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/70">
-                  Public Access
-                </span>
-                <Link
-                  href="/black-student-opportunities"
-                  className="inline-flex items-center gap-2 rounded-xl border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-3 py-2 text-[11px] font-extrabold text-[#D4AF37] transition hover:border-[#D4AF37]/55 hover:bg-[#D4AF37]/15 sm:text-xs"
-                  onClick={() =>
-                    trackHomepageEvent("student_portal_entry_clicked", {
-                      section: "student_hub_banner",
-                      ctaId: "student_hub_open_hub",
-                      ctaLabel: "Open Hub",
-                      destination: "/black-student-opportunities",
-                    })
-                  }
-                >
-                  <GraduationCap className="h-4 w-4" />
-                  Open Hub
-                </Link>
-              </div>
-            </div>
-
-            <div className="relative overflow-hidden rounded-2xl border border-[#D4AF37]/25 bg-black p-4 sm:p-5">
-              <div
-                className="pointer-events-none absolute inset-0"
-                style={{
-                  backgroundImage:
-                    "linear-gradient(120deg, rgba(0,0,0,0.9) 12%, rgba(0,0,0,0.72) 54%, rgba(0,0,0,0.88) 100%), url('/ads/sample-banner7.jpg')",
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                }}
-              />
-              <div className="pointer-events-none absolute -top-24 left-1/2 h-48 w-[34rem] -translate-x-1/2 rounded-full bg-[#D4AF37]/10 blur-3xl" />
-              <div className="pointer-events-none absolute -bottom-28 right-[-6rem] h-64 w-64 rounded-full bg-emerald-500/10 blur-3xl" />
-
-              <div className="relative flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-                <div className="max-w-2xl">
-                  <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-black tracking-wide text-white/75 sm:text-[11px]">
-                    <Sparkles className="h-4 w-4 text-[#D4AF37]" />
-                    STUDENT OPPORTUNITIES HUB
-                  </div>
-
-                  <h4 className="mt-3 text-lg font-extrabold tracking-tight text-white sm:text-2xl">
-                    Your Launchpad to Scholarships, Internships, Mentorship —
-                    and Real Access
-                    <span className="text-[#D4AF37]">.</span>
-                  </h4>
-
-                  <p className="mt-2 text-sm text-white/70">
-                    This is the student “power drawer” of BWE. We keep it clean,
-                    trusted, and easy to use — so students can move fast, apply
-                    faster, and connect with real opportunity.
-                  </p>
-
-                  <div className="mt-4 flex flex-col gap-2.5 sm:flex-row sm:items-center sm:gap-3">
-                    <Link
-                      href="/black-student-opportunities"
-                      className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#D4AF37] px-4 py-2.5 text-sm font-extrabold leading-tight text-black shadow transition hover:bg-yellow-500 sm:w-auto sm:px-5"
-                      onClick={() =>
-                        trackHomepageEvent("student_portal_entry_clicked", {
-                          section: "student_hub_banner",
-                          ctaId: "student_hub_enter",
-                          ctaLabel: "Enter Student Hub",
-                          destination: "/black-student-opportunities",
-                        })
-                      }
-                    >
-                      <span className="whitespace-nowrap">
-                        Enter Student Hub
-                      </span>
-                      <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                    </Link>
-
-                    <Link
-                      href="/signup?redirect=/black-student-opportunities"
-                      className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-extrabold leading-tight text-white/80 transition hover:border-white/20 hover:bg-white/10 sm:w-auto sm:px-5"
-                    >
-                      <UserPlus className="h-3.5 w-3.5 shrink-0 text-white/70 sm:h-4 sm:w-4" />
-                      <span className="text-center">
-                        Create Free Student Profile
-                      </span>
-                    </Link>
-
-                    <button
-                      type="button"
-                      onClick={() => setStudentDrawerOpen((v) => !v)}
-                      className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm font-extrabold leading-tight text-white/75 transition hover:bg-white/[0.06] sm:w-auto sm:px-5"
-                      aria-expanded={studentDrawerOpen}
-                    >
-                      <span className="whitespace-nowrap">Power Drawer</span>
-                      {studentDrawerOpen ? (
-                        <ChevronUp className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                      ) : (
-                        <ChevronDown className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                      )}
-                    </button>
-                  </div>
-                </div>
-
-                <div className="mt-3 sm:mt-4 md:mt-0">
-                  <div className="rounded-2xl border border-white/10 bg-black/30 p-3.5 sm:p-4">
-                    <div className="text-[11px] font-extrabold uppercase tracking-wide text-white/70 sm:text-xs">
-                      Why students stay on BWE
-                    </div>
-                    <ul className="mt-2.5 space-y-1.5 text-[13px] leading-relaxed text-white/75 sm:mt-3 sm:space-y-2 sm:text-sm">
-                      <li className="flex items-start gap-2">
-                        <span className="mt-1 h-2 w-2 rounded-full bg-emerald-300" />
-                        Trusted links + clean info (no clutter)
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="mt-1 h-2 w-2 rounded-full bg-[#D4AF37]" />
-                        Everything in one place (hub style)
-                      </li>
-                      <li className="flex items-start gap-2">
-                        <span className="mt-1 h-2 w-2 rounded-full bg-sky-300" />
-                        Fast navigation (apply / learn more instantly)
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-              <div
-                className={cx(
-                  "relative mt-5 overflow-hidden rounded-2xl border border-white/10 bg-black/20 transition-all duration-300",
-                  studentDrawerOpen
-                    ? "max-h-[520px] opacity-100"
-                    : "max-h-0 opacity-0",
-                )}
-              >
-                <div className="p-4 sm:p-5">
-                  <div className="mb-3 flex items-center justify-between gap-3">
-                    <div className="text-sm font-extrabold tracking-tight text-white">
-                      What’s inside the Student Hub
-                    </div>
-                    <span className="inline-flex rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[11px] font-bold text-white/60">
-                      Built for 2026+
-                    </span>
-                  </div>
-
-                  <div className="grid gap-3 md:grid-cols-2">
-                    <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
-                      <div className="flex items-center gap-2 text-sm font-extrabold text-[#D4AF37]">
-                        <Bell className="h-4 w-4" />
-                        Scholarship & grant updates (expandable)
-                      </div>
-                      <p className="mt-1 text-xs text-white/65">
-                        Pages are structured to support feeds later (so content
-                        stays current).
-                      </p>
-                    </div>
-
-                    <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
-                      <div className="flex items-center gap-2 text-sm font-extrabold text-[#D4AF37]">
-                        <Users className="h-4 w-4" />
-                        Mentorship pathways
-                      </div>
-                      <p className="mt-1 text-xs text-white/65">
-                        Guidance + networks + professional readiness. Simple and
-                        trusted.
-                      </p>
-                    </div>
-
-                    <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
-                      <div className="flex items-center gap-2 text-sm font-extrabold text-[#D4AF37]">
-                        <Briefcase className="h-4 w-4" />
-                        Internships & career acceleration
-                      </div>
-                      <p className="mt-1 text-xs text-white/65">
-                        A clear pipeline from student → internship → job →
-                        career.
-                      </p>
-                    </div>
-
-                    <div className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
-                      <div className="flex items-center gap-2 text-sm font-extrabold text-[#D4AF37]">
-                        <BookOpen className="h-4 w-4" />
-                        Application playbooks (next)
-                      </div>
-                      <p className="mt-1 text-xs text-white/65">
-                        “Scholarship kit” templates and step-by-step checklists
-                        will live here.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 flex flex-col gap-3 sm:flex-row">
-                    <Link
-                      href="/black-student-opportunities"
-                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#D4AF37] px-4 py-2.5 text-sm font-extrabold text-black shadow transition hover:bg-yellow-500 sm:px-5"
-                      onClick={() =>
-                        trackHomepageEvent("student_portal_entry_clicked", {
-                          section: "student_hub_drawer",
-                          ctaId: "student_hub_go_to_hub",
-                          ctaLabel: "Go to Student Hub",
-                          destination: "/black-student-opportunities",
-                        })
-                      }
-                    >
-                      Go to Student Hub <ArrowRight className="h-4 w-4" />
-                    </Link>
-
-                    <Link
-                      href="/signup?redirect=/black-student-opportunities"
-                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-4 py-2.5 text-sm font-extrabold text-[#D4AF37] transition hover:border-[#D4AF37]/55 hover:bg-[#D4AF37]/15 sm:px-5"
-                    >
-                      <UserPlus className="h-4 w-4" />
-                      Join BWE as a Student
-                    </Link>
-                  </div>
-
-                  <p className="mt-3 text-[11px] text-white/45">
-                    Student pages remain public. Creating a profile unlocks
-                    future features (saved opportunities, alerts, and student
-                    networking).
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-5 grid grid-cols-2 gap-3 sm:mt-6 sm:gap-4 md:grid-cols-4">
-              {studentOpportunities.map((item, index) => (
-                <Link key={index} href={item.href}>
-                  <div className="group flex cursor-pointer flex-col items-center rounded-2xl border border-white/10 bg-white/[0.03] p-3 text-center transition hover:bg-white/[0.06] sm:p-4">
-                    <item.icon className="mb-2 h-8 w-8 text-[#D4AF37] sm:h-10 sm:w-10" />
-                    <span className="text-sm font-semibold text-white sm:text-base">
-                      {item.title}
-                    </span>
-                    <span className="mt-1 text-[11px] text-white/55 group-hover:text-white/70 sm:text-xs">
-                      Tap to explore →
-                    </span>
-                  </div>
-                </Link>
-              ))}
             </div>
           </div>
         </div>
@@ -1677,13 +1227,13 @@ export default function Home() {
               {[...sponsorRail, ...sponsorRail].map((sponsor, index) => {
                 const card = (
                   <div className="relative h-14 w-24 overflow-hidden rounded-lg border border-white/10 shadow sm:h-16 sm:w-32">
-                    <img
+                    <Image
                       src={sponsor.img}
                       alt={sponsor.name}
+                      width={160}
+                      height={80}
                       className="h-full w-full object-cover"
-                      loading={index < 4 ? "eager" : "lazy"}
-                      decoding="async"
-                      referrerPolicy="no-referrer"
+                      priority={index < 4}
                     />
                     <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent px-1.5 py-1 text-center text-[9px] font-semibold text-[#F1D57A] sm:text-[10px]">
                       {sponsor.name}
