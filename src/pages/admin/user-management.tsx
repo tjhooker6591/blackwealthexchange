@@ -9,7 +9,8 @@ const UserManagement = () => {
       try {
         const res = await fetch("/api/admin/get-users");
         const data = await res.json();
-        setUsers(data);
+        const rows = Array.isArray(data) ? data : Array.isArray(data?.users) ? data.users : [];
+        setUsers(rows);
       } catch (err) {
         console.error("Failed to load users", err);
       } finally {

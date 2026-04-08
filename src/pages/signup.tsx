@@ -94,15 +94,18 @@ export default function Signup() {
         throw new Error(data.error || "Signup failed.");
       }
 
-      // If seller, trigger redirect via onboardingUrl state
+      // Seller flow fallback: use onboarding link when provided, otherwise
+      // continue through existing marketplace seller onboarding route.
       if (data.accountType === "seller") {
         if (data.stripeOnboardingLink) {
           setOnboardingUrl(data.stripeOnboardingLink);
-        } else {
-          setError(
-            "Signup succeeded but Stripe onboarding link was not provided. Please try again.",
-          );
+          return;
         }
+
+        setSuccess(true);
+        setTimeout(() => {
+          router.push("/marketplace/become-a-seller");
+        }, 500);
         return;
       }
 
