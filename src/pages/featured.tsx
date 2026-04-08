@@ -32,32 +32,31 @@ function safeExternal(v: string) {
   }
 }
 
+function queryValue(router: ReturnType<typeof useRouter>, key: string) {
+  const direct = Array.isArray(router.query[key])
+    ? router.query[key][0]
+    : router.query[key];
+
+  if (typeof direct === "string" && direct.trim()) return direct.trim();
+
+  const asPath = router.asPath || "";
+  const idx = asPath.indexOf("?");
+  if (idx === -1) return "";
+
+  const params = new URLSearchParams(asPath.slice(idx + 1));
+  const fromPath = params.get(key);
+  return fromPath ? fromPath.trim() : "";
+}
+
 export default function FeaturedBusinessPage() {
   const router = useRouter();
 
-  const name =
-    s(
-      Array.isArray(router.query.name)
-        ? router.query.name[0]
-        : router.query.name,
-    ) || "Featured Business";
-  const tagline = s(
-    Array.isArray(router.query.tagline)
-      ? router.query.tagline[0]
-      : router.query.tagline,
-  );
+  const name = s(queryValue(router, "name")) || "Featured Business";
+  const tagline = s(queryValue(router, "tagline"));
   const img = normalizeSponsorImagePath(
-    s(
-      Array.isArray(router.query.img) ? router.query.img[0] : router.query.img,
-    ) || "/images/sponsors/house-draft.jpg",
+    s(queryValue(router, "img")) || "/images/sponsors/house-draft.jpg",
   );
-  const target = safeExternal(
-    s(
-      Array.isArray(router.query.target)
-        ? router.query.target[0]
-        : router.query.target,
-    ),
-  );
+  const target = safeExternal(s(queryValue(router, "target")));
 
   const title = `${name} | Featured Business | Black Wealth Exchange`;
   const canonical = useMemo(
