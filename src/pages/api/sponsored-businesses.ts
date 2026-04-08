@@ -1,7 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
-import { ObjectId } from "mongodb";
 import { weekStartUtc } from "@/lib/advertising/sponsorSchedule";
 
 type SponsorCard = {
@@ -27,13 +26,14 @@ const HOUSE_SPONSOR_FALLBACK = "/images/sponsors/house-draft.jpg";
 const HOUSE_SPONSOR_IMAGE_MAP: Record<string, string> = {
   TitanEra: "/images/sponsors/titanera.jpg",
   "Thomas Hooker Author": "/images/sponsors/thomashookerauthor.png",
-  "Thomas Hooker Publisher": "/images/sponsors/thomas hooker publisher.jpg",
+  "Thomas Hooker Publisher": "/images/sponsors/house-draft.jpg",
   Millianious: "/images/sponsors/millianious.jpg",
   "Tiana Song Sprouts": "/images/sponsors/tiana-song-sprouts.jpg",
   "The Last Nephilim": "/images/sponsors/thelastnephilim.jpg",
-  "Pamfa United Citizen": "/images/sponsors/pamfaunitedcitizens.jpg",
+  "Pamfa United Citizen": "/images/sponsors/pamfaunitedcitizen.jpg",
+  "Pamfa United Citizens": "/images/sponsors/pamfaunitedcitizen.jpg",
   "Guardians of the Forgotten Realm":
-    "/images/sponsors/guardiansoftheforgottenreleam.jpg",
+    "/images/sponsors/Guardiansoftheforgottenrealm.jpg",
 };
 
 const HOUSE_SPONSOR_ROTATION: Array<{ name: string; url: string }> = [
@@ -45,11 +45,49 @@ const HOUSE_SPONSOR_ROTATION: Array<{ name: string; url: string }> = [
   { name: "Tiana Song Sprouts", url: "/" },
 ];
 
+const SPONSOR_IMAGE_PATH_ALIASES: Record<string, string> = {
+  "/images/sponsors/guardiansoftheforgottenrealm.jpg":
+    "/images/sponsors/Guardiansoftheforgottenrealm.jpg",
+  "/images/sponsors/pamfaunitedcitizens.jpg":
+    "/images/sponsors/pamfaunitedcitizen.jpg",
+};
+
+function normalizeSponsorImagePath(v: string) {
+  const key = v.trim();
+  return SPONSOR_IMAGE_PATH_ALIASES[key] || key;
+}
+
+function safeSponsorImage(raw: string) {
+  const v = s(raw);
+  if (!v) return HOUSE_SPONSOR_FALLBACK;
+  if (v.startsWith("/")) return normalizeSponsorImagePath(v);
+
+  try {
+    const u = new URL(v);
+    if (u.hostname === "example.com" || u.hostname.endsWith(".example.com")) {
+      return HOUSE_SPONSOR_FALLBACK;
+    }
+    if (u.protocol === "http:" || u.protocol === "https:") {
+      return v;
+    }
+    return HOUSE_SPONSOR_FALLBACK;
+  } catch {
+    return HOUSE_SPONSOR_FALLBACK;
+  }
+}
+
 function resolveSponsorImage(name: string, raw: string) {
-  const normalizedName = s(name);
-  const mapped = HOUSE_SPONSOR_IMAGE_MAP[normalizedName];
+  const direct = safeSponsorImage(raw);
+
+  // DB creativeUrl must win first.
+  if (direct !== HOUSE_SPONSOR_FALLBACK) {
+    return direct;
+  }
+
+  const mapped = HOUSE_SPONSOR_IMAGE_MAP[s(name)];
   if (mapped) return mapped;
-  return safeSponsorImage(raw);
+
+  return HOUSE_SPONSOR_FALLBACK;
 }
 
 function normalizeBusinessUrl(raw: string) {
@@ -92,28 +130,28 @@ function featuredProfileUrl(
   return `/featured?${qs.toString()}`;
 }
 
-function safeSponsorImage(raw: string) {
-  const v = s(raw);
-  if (!v) return HOUSE_SPONSOR_FALLBACK;
-  if (v.startsWith("/")) return v;
+function mapScheduleRows(rows: any[]): SponsorCard[] {
+  return rows.map((row: any, i: number) => {
+    const name = s(row.businessName) || "Featured Sponsor";
+    const tagline =
+      s(row.tagline).slice(0, 90) || "Featured on Black Wealth Exchange";
+    const img = resolveSponsorImage(name, s(row.creativeUrl));
+    const target = normalizeBusinessUrl(s(row.targetUrl || row.website));
 
-  try {
-    const u = new URL(v);
-    if (u.hostname === "example.com" || u.hostname.endsWith(".example.com")) {
-      return HOUSE_SPONSOR_FALLBACK;
-    }
-    if (u.protocol === "http:" || u.protocol === "https:") {
-      return v;
-    }
-    return HOUSE_SPONSOR_FALLBACK;
-  } catch {
-    return HOUSE_SPONSOR_FALLBACK;
-  }
-}
-
-function asObjectId(id: string): ObjectId | null {
-  if (!id || !ObjectId.isValid(id)) return null;
-  return new ObjectId(id);
+    return {
+      _id: String(row.campaignId || row._id),
+      name,
+      tagline,
+      img,
+      url: featuredProfileUrl(name, tagline, img, target),
+      cta: "Learn More",
+      tier: "featured-sponsor",
+      featuredSlot: typeof row.sortOrder === "number" ? row.sortOrder : i + 1,
+      source: "featured_sponsor_schedule",
+      weekStart: row.weekStart ? new Date(row.weekStart).toISOString() : null,
+      queueStatus: s(row.queueStatus) || null,
+    };
+  });
 }
 
 export default async function handler(
@@ -128,6 +166,8 @@ export default async function handler(
   try {
     const client = await clientPromise;
     const db = client.db(getMongoDbName());
+    const collection = db.collection("featured_sponsor_schedule");
+
     const now = new Date();
     const weekParam = s(req.query.weekStart);
     const weekInput = weekParam ? new Date(weekParam) : now;
@@ -135,8 +175,7 @@ export default async function handler(
       Number.isNaN(weekInput.getTime()) ? now : weekInput,
     );
 
-    const scheduled = await db
-      .collection("featured_sponsor_schedule")
+    const scheduled = await collection
       .find({
         placement: "homepage-featured-sponsor",
         status: { $in: ["scheduled", "active"] },
@@ -149,155 +188,102 @@ export default async function handler(
           },
         ],
       })
-      .sort({ status: 1, queueStatus: 1, createdAt: 1 })
+      .sort({ sortOrder: 1, createdAt: 1 })
       .limit(12)
       .toArray();
 
     if (scheduled.length) {
-      const cards: SponsorCard[] = scheduled.map((row: any, i: number) => {
-        const name = s(row.businessName) || "Featured Sponsor";
-        const tagline =
-          s(row.tagline).slice(0, 90) || "Featured on Black Wealth Exchange";
-        const img = resolveSponsorImage(name, s(row.creativeUrl));
-        const target = normalizeBusinessUrl(s(row.targetUrl || row.website));
+      return res
+        .status(200)
+        .json({ ok: true, sponsors: mapScheduleRows(scheduled) });
+    }
+
+    // Exact regression fix:
+    // if current-week rows are missing/expired, stay inside featured_sponsor_schedule
+    // and use the most recent schedule set instead of falling back to stale
+    // directory_listings / legacy businesses.
+    const latestAnchor = await collection
+      .find({
+        placement: "homepage-featured-sponsor",
+        status: { $in: ["scheduled", "active"] },
+      })
+      .sort({ weekStart: -1, sortOrder: 1, createdAt: -1 })
+      .limit(1)
+      .toArray();
+
+    if (latestAnchor.length && latestAnchor[0]?.weekStart) {
+      const latestWeekStart = new Date(latestAnchor[0].weekStart);
+      const latestWeekEnd = new Date(latestWeekStart);
+      latestWeekEnd.setUTCDate(latestWeekEnd.getUTCDate() + 1);
+
+      const latestScheduled = await collection
+        .find({
+          placement: "homepage-featured-sponsor",
+          status: { $in: ["scheduled", "active"] },
+          weekStart: {
+            $gte: latestWeekStart,
+            $lt: latestWeekEnd,
+          },
+        })
+        .sort({ sortOrder: 1, createdAt: 1 })
+        .limit(12)
+        .toArray();
+
+      if (latestScheduled.length) {
+        return res
+          .status(200)
+          .json({ ok: true, sponsors: mapScheduleRows(latestScheduled) });
+      }
+    }
+
+    const houseCards: SponsorCard[] = HOUSE_SPONSOR_ROTATION.map(
+      (sponsor, i) => {
+        const img = resolveSponsorImage(sponsor.name, "");
+        const tagline = "Featured on Black Wealth Exchange";
 
         return {
-          _id: String(row.campaignId || row._id),
-          name,
+          _id: `house-${i + 1}`,
+          name: sponsor.name,
           tagline,
           img,
-          url: featuredProfileUrl(name, tagline, img, target),
+          url: featuredProfileUrl(sponsor.name, tagline, img, sponsor.url),
           cta: "Learn More",
           tier: "featured-sponsor",
           featuredSlot: i + 1,
           source: "featured_sponsor_schedule",
-          weekStart: row.weekStart
-            ? new Date(row.weekStart).toISOString()
-            : null,
-          queueStatus: s(row.queueStatus) || null,
+          weekStart: currentWeek.toISOString(),
+          queueStatus: "assigned",
         };
-      });
-
-      return res.status(200).json({ ok: true, sponsors: cards });
-    }
-
-    const listings = await db
-      .collection("directory_listings")
-      .find({
-        listingStatus: "active",
-        tier: "featured",
-        paymentStatus: "paid",
-        $or: [{ featuredEndDate: { $gt: now } }, { expiresAt: { $gt: now } }],
-      })
-      .sort({ featuredSlot: 1, paidAt: -1 })
-      .limit(20)
-      .toArray();
-
-    const businessIds = listings
-      .map((l: any) => s(l?.businessIdReal) || s(l?.businessId))
-      .filter((id: string) => id && !id.startsWith("UNLINKED:"))
-      .map(asObjectId)
-      .filter((x): x is ObjectId => Boolean(x));
-
-    const businesses = businessIds.length
-      ? await db
-          .collection("businesses")
-          .find({ _id: { $in: businessIds } })
-          .project({
-            business_name: 1,
-            description: 1,
-            image: 1,
-            website: 1,
-          })
-          .toArray()
-      : [];
-
-    const businessMap = new Map(businesses.map((b: any) => [String(b._id), b]));
-
-    const featuredCards: SponsorCard[] = listings
-      .map((listing: any) => {
-        const businessId = s(listing?.businessIdReal) || s(listing?.businessId);
-        const b = businessMap.get(businessId);
-        if (!b) return null;
-
-        const name = s(b?.business_name) || "Featured Sponsor";
-        const tagline =
-          s(b?.description).slice(0, 90) || "Featured on Black Wealth Exchange";
-        const img = resolveSponsorImage(name, s(b?.image));
-        const target = normalizeBusinessUrl(s(b?.website));
-
-        return {
-          _id: businessId,
-          name,
-          tagline,
-          img,
-          url: featuredProfileUrl(name, tagline, img, target),
-          cta: "Learn More",
-          tier: s(listing?.tier),
-          featuredSlot:
-            typeof listing?.featuredSlot === "number"
-              ? listing.featuredSlot
-              : null,
-          source: "directory_listings",
-        };
-      })
-      .filter(Boolean) as SponsorCard[];
-
-    if (featuredCards.length) {
-      return res.status(200).json({ ok: true, sponsors: featuredCards });
-    }
-
-    const legacy = await db
-      .collection("businesses")
-      .find({ sponsored: true })
-      .sort({ tier: 1 })
-      .limit(20)
-      .toArray();
-
-    const legacyCards: SponsorCard[] = legacy.map((b: any) => {
-      const name = s(b?.business_name) || "Sponsored Business";
-      const tagline = s(b?.description).slice(0, 90) || "Sponsored listing";
-      const img = resolveSponsorImage(name, s(b?.image));
-      const target = normalizeBusinessUrl(s(b?.website));
-
-      return {
-        _id: String(b._id),
-        name,
-        tagline,
-        img,
-        url: featuredProfileUrl(name, tagline, img, target),
-        cta: "Learn More",
-        tier: s(b?.tier),
-        featuredSlot: null,
-        source: "businesses",
-      };
-    });
-
-    if (legacyCards.length) {
-      return res.status(200).json({ ok: true, sponsors: legacyCards });
-    }
-
-    const houseCards: SponsorCard[] = HOUSE_SPONSOR_ROTATION.map((sponsor, i) => {
-      const img = resolveSponsorImage(sponsor.name, "");
-      const tagline = "Featured on Black Wealth Exchange";
-      return {
-        _id: `house-${i + 1}`,
-        name: sponsor.name,
-        tagline,
-        img,
-        url: featuredProfileUrl(sponsor.name, tagline, img, sponsor.url),
-        cta: "Learn More",
-        tier: "featured-sponsor",
-        featuredSlot: i + 1,
-        source: "featured_sponsor_schedule",
-        weekStart: currentWeek.toISOString(),
-        queueStatus: "assigned",
-      };
-    });
+      },
+    );
 
     return res.status(200).json({ ok: true, sponsors: houseCards });
   } catch (error) {
     console.error("Failed to fetch sponsored businesses:", error);
-    return res.status(500).json({ ok: false, error: "Internal server error" });
+
+    const houseCards: SponsorCard[] = HOUSE_SPONSOR_ROTATION.map(
+      (sponsor, i) => {
+        const img = resolveSponsorImage(sponsor.name, "");
+        const tagline = "Featured on Black Wealth Exchange";
+
+        return {
+          _id: `house-fallback-${i + 1}`,
+          name: sponsor.name,
+          tagline,
+          img,
+          url: featuredProfileUrl(sponsor.name, tagline, img, sponsor.url),
+          cta: "Learn More",
+          tier: "featured-sponsor",
+          featuredSlot: i + 1,
+          source: "featured_sponsor_schedule",
+          weekStart: null,
+          queueStatus: "assigned",
+        };
+      },
+    );
+
+    return res
+      .status(200)
+      .json({ ok: true, sponsors: houseCards, meta: { source: "fallback" } });
   }
 }

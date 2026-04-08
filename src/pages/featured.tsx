@@ -9,6 +9,18 @@ function s(v: unknown) {
   return typeof v === "string" ? v.trim() : "";
 }
 
+const SPONSOR_IMAGE_PATH_ALIASES: Record<string, string> = {
+  "/images/sponsors/guardiansoftheforgottenrealm.jpg":
+    "/images/sponsors/Guardiansoftheforgottenrealm.jpg",
+  "/images/sponsors/pamfaunitedcitizens.jpg":
+    "/images/sponsors/pamfaunitedcitizen.jpg",
+};
+
+function normalizeSponsorImagePath(v: string) {
+  const key = v.trim();
+  return SPONSOR_IMAGE_PATH_ALIASES[key] || key;
+}
+
 function safeExternal(v: string) {
   if (!v) return "";
   try {
@@ -34,10 +46,11 @@ export default function FeaturedBusinessPage() {
       ? router.query.tagline[0]
       : router.query.tagline,
   );
-  const img =
+  const img = normalizeSponsorImagePath(
     s(
       Array.isArray(router.query.img) ? router.query.img[0] : router.query.img,
-    ) || "/images/house-draft.jpg";
+    ) || "/images/sponsors/house-draft.jpg",
+  );
   const target = safeExternal(
     s(
       Array.isArray(router.query.target)
