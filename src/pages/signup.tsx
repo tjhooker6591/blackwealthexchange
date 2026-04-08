@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
@@ -22,10 +23,22 @@ export default function Signup() {
   const [loading, setLoading] = useState(false);
   const [onboardingUrl, setOnboardingUrl] = useState<string | null>(null);
 
+  const isTrustedStripeOnboardingUrl = (candidate: string) => {
+    try {
+      const parsed = new URL(candidate);
+      return (
+        parsed.protocol === "https:" &&
+        (parsed.hostname === "connect.stripe.com" ||
+          parsed.hostname.endsWith(".stripe.com"))
+      );
+    } catch {
+      return false;
+    }
+  };
+
   // Redirect immediately when onboardingUrl is set
   useEffect(() => {
     if (onboardingUrl) {
-      // Optionally show a toast or loader before redirect
       window.location.assign(onboardingUrl);
     }
   }, [onboardingUrl]);
@@ -98,6 +111,10 @@ export default function Signup() {
       // continue through existing marketplace seller onboarding route.
       if (data.accountType === "seller") {
         if (data.stripeOnboardingLink) {
+          if (!isTrustedStripeOnboardingUrl(data.stripeOnboardingLink)) {
+            throw new Error("Unexpected onboarding destination. Please retry.");
+          }
+
           setOnboardingUrl(data.stripeOnboardingLink);
           return;
         }
@@ -135,14 +152,30 @@ export default function Signup() {
       }, 500);
     } catch (err) {
       console.error("Signup error:", err);
-      setError("Signup failed. Please try again.");
+      const message =
+        err instanceof Error ? err.message : "Signup failed. Please try again.";
+      setError(message);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-gray-100 p-6">
+    <>
+      <Head>
+        <title>Sign Up | Black Wealth Exchange</title>
+        <meta
+          name="description"
+          content="Create your Black Wealth Exchange account to access wealth-building tools, marketplace features, and community resources."
+        />
+        <link rel="canonical" href="https://blackwealthexchange.co/signup" />
+        <meta property="og:title" content="Sign Up | Black Wealth Exchange" />
+        <meta
+          property="og:description"
+          content="Create your Black Wealth Exchange account to access wealth-building tools, marketplace features, and community resources."
+        />
+      </Head>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-gray-100 p-6">
       <div className="bg-white p-8 shadow-lg rounded-lg w-full max-w-md">
         <h2 className="text-3xl font-bold text-center text-gold">
           Create an Account
@@ -294,6 +327,7 @@ export default function Signup() {
           </Link>
         </p>
       </div>
-    </div>
+      </div>
+    </>
   );
 }
