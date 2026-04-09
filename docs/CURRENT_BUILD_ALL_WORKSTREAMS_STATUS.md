@@ -160,6 +160,26 @@ Status labels allowed:
 - **Files/routes/endpoints involved:** `src/pages/course-enrollment.tsx`, `src/pages/course-dashboard.tsx`, `src/pages/api/courses/checkout-session.ts`, `src/pages/api/courses/verify-session.ts`, `src/pages/api/courses/enroll.ts`, Stripe webhook path.
 - **Exact closure condition:** canonical paid run proves DB entitlement write and successful access/delivery in UI.
 
+## 16) Consultant/Employer workflow completion lane
+
+- **Status:** PARTIAL
+- **Entry point:** `/dashboard/consultant/requests`, `/dashboard/employer/consultants/*`, `/dashboard/employer/consultants/pipeline`
+- **Expected final outcome:** employer requests are triaged with consultant response actions, moderation/admin queue exists for blocked/flagged requests, and conversion analytics cover full workflow.
+- **Current actual outcome:** discovery hub, profile authoring, employer pipeline board, consultant inbox/moderation/instrumentation exist; consultant response actions (accept/decline/request-more-info) are now implemented via inbox API/UI update in current branch.
+- **Exact blocker:** admin moderation queue for blocked/flagged requests + richer conversion/workflow analytics + trust-hardening completion/polish still open.
+- **Files/routes/endpoints involved:** `src/pages/dashboard/consultant/requests.tsx`, `src/pages/api/consultants/contact-requests.ts`, `src/pages/api/employer/consultant-contact-requests.ts`, `src/pages/dashboard/employer/consultants/[id].tsx`.
+- **Exact closure condition:** consultant action loop, employer/admin moderation queue, analytics coverage, and trust-hardening all proven with end-to-end evidence.
+
+## 17) Production auth/session audit lane
+
+- **Status:** OPEN DEFECT
+- **Entry point:** production auth/logout/session behavior (`/api/auth/logout`, `/api/auth/me`, cookie issuance paths)
+- **Expected final outcome:** logout invalidates active session predictably and timeout policy is explicit + consistently enforced.
+- **Current actual outcome:** code audit indicates cookie issuance/clearing mismatch risks and inconsistent timeout policy across login/signup paths.
+- **Exact blocker:** production header/cookie evidence confirmation + approved narrow fix path.
+- **Files/routes/endpoints involved:** `src/pages/api/auth/logout.ts`, `src/pages/api/auth/login.ts`, `src/pages/api/auth/signup.ts`, `src/pages/api/auth/me.ts`, `src/hooks/useAuth.ts`.
+- **Exact closure condition:** root cause confirmed with production evidence and resolved via approved path (audit-only or narrow controlled release).
+
 ---
 
 ## Grouped summary
@@ -179,6 +199,7 @@ Status labels allowed:
 - 12. Affiliate functionality
 - 13. Music platform / music selling
 - 14. Creator-selling / broader creator commerce
+- 16. Consultant/Employer workflow completion lane
 
 ### BLOCKED BY ENV/CONFIG
 
@@ -194,4 +215,4 @@ Status labels allowed:
 
 ### OPEN DEFECT
 
-- _(none currently classified as open defect in this snapshot; unresolved items are currently PARTIAL or payment/env blocked)_
+- 17. Production auth/session audit lane

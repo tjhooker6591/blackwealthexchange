@@ -5,6 +5,8 @@ export default function ConsultantRequestInboxPage() {
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [busyId, setBusyId] = useState<string | null>(null);
+  const [actionMessage, setActionMessage] = useState("");
 
   useEffect(() => {
     (async () => {
@@ -26,28 +28,91 @@ export default function ConsultantRequestInboxPage() {
     })();
   }, []);
 
+  async function respondToRequest(
+    requestId: string,
+    action: "accept" | "decline" | "request_more_info",
+  ) {
+    setBusyId(requestId);
+    setActionMessage("");
+    try {
+      const res = await fetch("/api/consultants/contact-requests", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ requestId, action }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error || "Failed to update request");
+
+      setItems((prev) =>
+        prev.map((x) =>
+          x.id === requestId
+            ? {
+                ...x,
+                status: data?.status || x.status,
+                consultantResponseAction: action,
+                consultantRespondedAt: new Date().toISOString(),
+              }
+            : x,
+        ),
+      );
+      setActionMessage("Request updated.");
+    } catch (err) {
+      setActionMessage(
+        err instanceof Error ? err.message : "Failed to update request",
+      );
+    } finally {
+      setBusyId(null);
+    }
+  }
+
   return (
     <main className="min-h-screen bg-black px-4 py-8 text-white">
       <div className="mx-auto max-w-4xl">
         <div className="mb-6 flex items-end justify-between gap-3">
           <div>
-            <p className="text-xs uppercase tracking-[0.2em] text-cyan-300">Consultant inbox</p>
+            <p className="text-xs uppercase tracking-[0.2em] text-cyan-300">
+              Consultant inbox
+            </p>
             <h1 className="mt-2 text-3xl font-extrabold">Employer Requests</h1>
-            <p className="mt-2 text-sm text-zinc-300">View employer contact and interview requests tied to your consultant profile.</p>
+            <p className="mt-2 text-sm text-zinc-300">
+              View employer contact and interview requests tied to your
+              consultant profile.
+            </p>
           </div>
-          <Link href="/dashboard/consultant/profile" className="text-sm text-cyan-200 underline">Back to profile</Link>
+          <Link
+            href="/dashboard/consultant/profile"
+            className="text-sm text-cyan-200 underline"
+          >
+            Back to profile
+          </Link>
         </div>
 
-        {error ? <div className="mb-4 rounded-lg border border-red-700/50 bg-red-950/40 p-3 text-sm text-red-100">{error}</div> : null}
+        {error ? (
+          <div className="mb-4 rounded-lg border border-red-700/50 bg-red-950/40 p-3 text-sm text-red-100">
+            {error}
+          </div>
+        ) : null}
+
+        {actionMessage ? (
+          <div className="mb-4 rounded-lg border border-cyan-700/40 bg-cyan-950/30 p-3 text-sm text-cyan-100">
+            {actionMessage}
+          </div>
+        ) : null}
 
         {loading ? (
           <p className="text-zinc-300">Loading requests...</p>
         ) : items.length === 0 ? (
-          <div className="rounded-xl border border-white/10 bg-zinc-950 p-4 text-sm text-zinc-300">No requests yet.</div>
+          <div className="rounded-xl border border-white/10 bg-zinc-950 p-4 text-sm text-zinc-300">
+            No requests yet.
+          </div>
         ) : (
           <div className="space-y-3">
             {items.map((r) => (
-              <article key={r.id} className="rounded-xl border border-white/10 bg-zinc-950 p-4">
+              <article
+                key={r.id}
+                className="rounded-xl border border-white/10 bg-zinc-950 p-4"
+              >
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <p className="text-sm font-semibold text-zinc-100">
                     {r.requestType === "interview_request"
@@ -60,8 +125,38 @@ export default function ConsultantRequestInboxPage() {
                 </div>
                 <p className="mt-2 text-sm text-zinc-300">{r.message}</p>
                 <p className="mt-2 text-xs text-zinc-500">
-                  From: {r.employerEmail || "Employer"} • {new Date(r.createdAt).toLocaleString()}
+                  From: {r.employerEmail || "Employer"} •{" "}
+                  {new Date(r.createdAt).toLocaleString()}
                 </p>
+
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <button
+                    onClick={() => void respondToRequest(r.id, "accept")}
+                    disabled={busyId === r.id || r.status === "accepted"}
+                    className="rounded border border-emerald-400/50 px-2 py-1 text-xs text-emerald-200 disabled:opacity-50"
+                  >
+                    Accept
+                  </button>
+                  <button
+                    onClick={() => void respondToRequest(r.id, "decline")}
+                    disabled={busyId === r.id || r.status === "declined"}
+                    className="rounded border border-red-400/50 px-2 py-1 text-xs text-red-200 disabled:opacity-50"
+                  >
+                    Decline
+                  </button>
+                  <button
+                    onClick={() =>
+                      void respondToRequest(r.id, "request_more_info")
+                    }
+                    disabled={busyId === r.id || r.status === "more_info_requested"}
+                    className="rounded border border-amber-400/50 px-2 py-1 text-xs text-amber-200 disabled:opacity-50"
+                  >
+                    Request info
+                  </button>
+                  <span className="text-xs text-zinc-400">
+                    Status: {r.status || "submitted"}
+                  </span>
+                </div>
               </article>
             ))}
           </div>
