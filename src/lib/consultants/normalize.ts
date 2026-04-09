@@ -11,6 +11,7 @@ export type ConsultantRecord = {
   category: string;
   topSkills: string[];
   yearsExperience: number | null;
+  completenessScore: number;
   industriesServed: string[];
   summary: string;
   engagementType: string;
@@ -77,6 +78,10 @@ export function normalizeConsultantProfile(doc: any): ConsultantRecord {
     asList(doc?.topSkills),
   );
 
+  const completenessScore = Number.isFinite(Number(doc?.completenessScore))
+    ? Math.max(0, Math.min(100, Number(doc?.completenessScore)))
+    : 55;
+
   return {
     id: String(doc?._id || doc?.id || ""),
     name: asText(doc?.name) || "Unnamed consultant",
@@ -86,6 +91,7 @@ export function normalizeConsultantProfile(doc: any): ConsultantRecord {
     yearsExperience: Number.isFinite(Number(doc?.yearsExperience))
       ? Number(doc?.yearsExperience)
       : null,
+    completenessScore,
     industriesServed: asList(doc?.industriesServed),
     summary,
     engagementType: asText(doc?.engagementType) || "Project-based",

@@ -115,7 +115,16 @@ export default function RecruitingConsultingPage() {
                 Browse Consultant Discovery Hub
               </Link>
             </div>
-          ) : null}
+          ) : (
+            <div className="mt-3">
+              <Link
+                href="/dashboard/consultant/profile"
+                className="inline-flex rounded-lg border border-cyan-400/40 px-3 py-2 text-xs font-semibold text-cyan-200 hover:bg-cyan-500/10"
+              >
+                Build Structured Consultant Profile
+              </Link>
+            </div>
+          )}
 
           <div className="mt-5 grid grid-cols-2 gap-2 rounded-xl border border-white/10 bg-black/30 p-1">
             <button
