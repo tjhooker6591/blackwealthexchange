@@ -165,9 +165,9 @@ Status labels allowed:
 - **Status:** PARTIAL
 - **Entry point:** `/dashboard/consultant/requests`, `/dashboard/employer/consultants/*`, `/dashboard/employer/consultants/pipeline`
 - **Expected final outcome:** employer requests are triaged with consultant response actions, moderation/admin queue exists for blocked/flagged requests, and conversion analytics cover full workflow.
-- **Current actual outcome:** discovery hub, profile authoring, employer pipeline board, consultant inbox/moderation/instrumentation exist; consultant response actions (accept/decline/request-more-info) are now implemented via inbox API/UI update in current branch.
-- **Exact blocker:** admin moderation queue for blocked/flagged requests + richer conversion/workflow analytics + trust-hardening completion/polish still open.
-- **Files/routes/endpoints involved:** `src/pages/dashboard/consultant/requests.tsx`, `src/pages/api/consultants/contact-requests.ts`, `src/pages/api/employer/consultant-contact-requests.ts`, `src/pages/dashboard/employer/consultants/[id].tsx`.
+- **Current actual outcome:** discovery hub, profile authoring, employer pipeline board, consultant inbox/moderation/instrumentation exist; consultant response actions (accept/decline/request-more-info) are implemented; admin moderation queue read path is now added (`/api/admin/consultant-moderation-queue` + `/admin/consultant-moderation`) for blocked/flagged event review.
+- **Exact blocker:** richer conversion/workflow analytics + trust-hardening completion/polish still open; moderation queue actions/escalation workflow still pending.
+- **Files/routes/endpoints involved:** `src/pages/dashboard/consultant/requests.tsx`, `src/pages/api/consultants/contact-requests.ts`, `src/pages/api/employer/consultant-contact-requests.ts`, `src/pages/dashboard/employer/consultants/[id].tsx`, `src/pages/api/admin/consultant-moderation-queue.ts`, `src/pages/admin/consultant-moderation.tsx`.
 - **Exact closure condition:** consultant action loop, employer/admin moderation queue, analytics coverage, and trust-hardening all proven with end-to-end evidence.
 
 ## 17) Production auth/session audit lane
@@ -175,10 +175,10 @@ Status labels allowed:
 - **Status:** OPEN DEFECT
 - **Entry point:** production auth/logout/session behavior (`/api/auth/logout`, `/api/auth/me`, cookie issuance paths)
 - **Expected final outcome:** logout invalidates active session predictably and timeout policy is explicit + consistently enforced.
-- **Current actual outcome:** code audit indicates cookie issuance/clearing mismatch risks and inconsistent timeout policy across login/signup paths.
-- **Exact blocker:** production header/cookie evidence confirmation + approved narrow fix path.
-- **Files/routes/endpoints involved:** `src/pages/api/auth/logout.ts`, `src/pages/api/auth/login.ts`, `src/pages/api/auth/signup.ts`, `src/pages/api/auth/me.ts`, `src/hooks/useAuth.ts`.
-- **Exact closure condition:** root cause confirmed with production evidence and resolved via approved path (audit-only or narrow controlled release).
+- **Current actual outcome:** audit now confirms root cause at code-path level: (1) logout clear-scope mismatch vs issued cookie scope and (2) mixed 30m vs 7d session model across login/signup.
+- **Exact blocker:** production evidence packet capture + approval for narrow controlled release fix.
+- **Files/routes/endpoints involved:** `src/pages/api/auth/logout.ts`, `src/pages/api/auth/login.ts`, `src/pages/api/auth/signup.ts`, `src/pages/api/auth/me.ts`, `src/hooks/useAuth.ts`, `docs/PRODUCTION_AUTH_SESSION_AUDIT_2026-04-09.md`.
+- **Exact closure condition:** narrow release fix shipped and verified (logout clears correctly + timeout behavior matches defined policy) with production evidence.
 
 ---
 
