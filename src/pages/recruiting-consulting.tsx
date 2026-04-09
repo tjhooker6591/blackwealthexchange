@@ -106,6 +106,16 @@ export default function RecruitingConsultingPage() {
             We operate as your middle-layer partner: talent sourcing, candidate
             qualification, and guided placement support.
           </p>
+          {mode === "employer" ? (
+            <div className="mt-3">
+              <Link
+                href="/dashboard/employer/consultants"
+                className="inline-flex rounded-lg border border-[#D4AF37]/40 px-3 py-2 text-xs font-semibold text-[#D4AF37] hover:bg-[#D4AF37]/10"
+              >
+                Browse Consultant Discovery Hub
+              </Link>
+            </div>
+          ) : null}
 
           <div className="mt-5 grid grid-cols-2 gap-2 rounded-xl border border-white/10 bg-black/30 p-1">
             <button

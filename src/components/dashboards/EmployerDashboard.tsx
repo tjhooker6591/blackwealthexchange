@@ -56,6 +56,7 @@ const ROUTES = {
   profile: "/employer/profile",
   billing: "/dashboard/employer/billing",
   consultingInterest: "/dashboard/employer/consulting-interest",
+  consultantDiscovery: "/dashboard/employer/consultants",
 };
 
 function formatDate(value?: string) {
@@ -319,7 +320,7 @@ export default function EmployerDashboard() {
         </div>
 
         {/* Quick actions */}
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
           <div className="col-span-1">
             <ActionCard
               icon={<PlusCircle className="h-5 w-5 text-yellow-300" />}
@@ -335,6 +336,14 @@ export default function EmployerDashboard() {
               title="Applicants"
               description="Review and contact qualified candidates."
               href={ROUTES.applicants}
+            />
+          </div>
+          <div className="col-span-2 md:col-span-1">
+            <ActionCard
+              icon={<Users className="h-5 w-5 text-yellow-300" />}
+              title="Consultant Discovery"
+              description="Browse, filter, and shortlist vetted consultants."
+              href={ROUTES.consultantDiscovery}
             />
           </div>
           <div className="col-span-2 md:col-span-1">
@@ -511,16 +520,24 @@ export default function EmployerDashboard() {
                 Recruiting & Consulting Services
               </h3>
               <p className="mt-1 text-sm text-gray-200">
-                Get notified when we launch premium recruiting support for
-                employers.
+                Discover available consultants now, then escalate into managed
+                recruiting support when needed.
               </p>
             </div>
-            <Link
-              href={ROUTES.consultingInterest}
-              className="w-full rounded-xl bg-yellow-400 px-5 py-2.5 text-center text-sm font-semibold text-black transition hover:bg-yellow-500 md:w-auto"
-            >
-              Join Waitlist
-            </Link>
+            <div className="flex w-full gap-2 md:w-auto">
+              <Link
+                href={ROUTES.consultantDiscovery}
+                className="w-full rounded-xl bg-yellow-400 px-5 py-2.5 text-center text-sm font-semibold text-black transition hover:bg-yellow-500 md:w-auto"
+              >
+                Open Consultant Hub
+              </Link>
+              <Link
+                href={ROUTES.consultingInterest}
+                className="w-full rounded-xl border border-yellow-400/40 px-5 py-2.5 text-center text-sm font-semibold text-yellow-200 transition hover:bg-yellow-500/10 md:w-auto"
+              >
+                Request Managed Support
+              </Link>
+            </div>
           </div>
         </div>
       </div>
