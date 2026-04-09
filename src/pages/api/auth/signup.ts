@@ -6,6 +6,12 @@ import { serialize } from "cookie";
 import nodemailer from "nodemailer";
 import { getJwtSecret, getMongoDbName } from "@/lib/env";
 import {
+  getAuthCookieDomain,
+  getAuthCookieSecure,
+  SESSION_TTL_LABEL,
+  SESSION_TTL_SECONDS,
+} from "@/lib/authCookiePolicy";
+import {
   ensureApiRateLimitIndexes,
   getClientIp,
   hitApiRateLimit,
@@ -187,7 +193,7 @@ export default async function handler(
         accountType: String(newUser.accountType),
       },
       getJwtSecret(),
-      { expiresIn: "30m" },
+      { expiresIn: SESSION_TTL_LABEL },
     );
 
     const transporter = nodemailer.createTransport({
@@ -254,14 +260,14 @@ Let's make history — together.
       console.error("❌ Failed to send welcome email:", emailErr);
     }
 
-    const isProd = process.env.NODE_ENV === "production";
-    const cookieDomain = isProd ? ".blackwealthexchange.com" : undefined;
+    const isProd = getAuthCookieSecure();
+    const cookieDomain = getAuthCookieDomain();
 
     res.setHeader("Set-Cookie", [
       serialize("session_token", token, {
         httpOnly: true,
         path: "/",
-        maxAge: 60 * 30,
+        maxAge: SESSION_TTL_SECONDS,
         sameSite: "lax",
         secure: isProd,
         domain: cookieDomain,
@@ -269,7 +275,7 @@ Let's make history — together.
       serialize("accountType", String(newUser.accountType), {
         httpOnly: false,
         path: "/",
-        maxAge: 60 * 30,
+        maxAge: SESSION_TTL_SECONDS,
         sameSite: "lax",
         secure: isProd,
         domain: cookieDomain,

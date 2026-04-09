@@ -10,6 +10,12 @@ import {
   getClientIp,
   hitApiRateLimit,
 } from "@/lib/apiRateLimit";
+import {
+  getAuthCookieDomain,
+  getAuthCookieSecure,
+  SESSION_TTL_LABEL,
+  SESSION_TTL_SECONDS,
+} from "@/lib/authCookiePolicy";
 
 interface UserRecord {
   _id: ObjectId;
@@ -155,7 +161,6 @@ export default async function handler(
       canonicalUser?.isAdmin === true ||
       user.isAdmin === true;
 
-    // 30-minute JWT
     const token = jwt.sign(
       {
         userId: user._id.toString(),
@@ -164,11 +169,11 @@ export default async function handler(
         isAdmin,
       },
       SECRET,
-      { expiresIn: "30m" },
+      { expiresIn: SESSION_TTL_LABEL },
     );
 
-    const isProd = process.env.NODE_ENV === "production";
-    const cookieDomain = isProd ? ".blackwealthexchange.com" : undefined;
+    const isProd = getAuthCookieSecure();
+    const cookieDomain = getAuthCookieDomain();
 
     res.setHeader("Set-Cookie", [
       cookie.serialize("session_token", token, {
@@ -176,7 +181,7 @@ export default async function handler(
         secure: isProd,
         sameSite: "lax",
         path: "/",
-        maxAge: 60 * 30,
+        maxAge: SESSION_TTL_SECONDS,
         domain: cookieDomain,
       }),
       cookie.serialize("accountType", role, {
@@ -184,7 +189,7 @@ export default async function handler(
         secure: isProd,
         sameSite: "lax",
         path: "/",
-        maxAge: 60 * 30,
+        maxAge: SESSION_TTL_SECONDS,
         domain: cookieDomain,
       }),
     ]);

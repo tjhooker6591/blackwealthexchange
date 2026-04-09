@@ -2,6 +2,7 @@
 
 import type { NextApiRequest, NextApiResponse } from "next";
 import { serialize } from "cookie";
+import { getAuthCookieDomain, getAuthCookieSecure } from "@/lib/authCookiePolicy";
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   res.setHeader("Cache-Control", "no-store, max-age=0");
@@ -11,8 +12,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     return res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 
-  const isProd = process.env.NODE_ENV === "production";
-  const cookieDomain = isProd ? ".blackwealthexchange.com" : undefined;
+  const isProd = getAuthCookieSecure();
+  const cookieDomain = getAuthCookieDomain();
 
   function clearCookie(name: string, httpOnly: boolean) {
     const base = {
