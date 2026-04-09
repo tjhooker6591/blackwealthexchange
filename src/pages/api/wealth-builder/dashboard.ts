@@ -209,17 +209,7 @@ export default async function handler(
   const debtToIncome = monthIncome > 0 ? totalDebt / monthIncome : 0;
   const savingsRate = monthIncome > 0 ? totalSavings / monthIncome : 0;
   const monthlySurplus = monthIncome - monthExpenses;
-  const cashflowHealth:
-    | "surplus"
-    | "breakeven"
-    | "deficit" =
-    monthlySurplus > 0
-      ? "surplus"
-      : monthlySurplus === 0
-        ? "breakeven"
-        : "deficit";
-  const monthlyDebtCapacity =
-    totalMinimumPayments + Math.max(monthlySurplus * 0.25, 0);
+  const monthlyDebtCapacity = totalMinimumPayments + Math.max(monthlySurplus * 0.25, 0);
   const estimatedDebtFreeMonths =
     totalDebt > 0 && monthlyDebtCapacity > 0
       ? Math.ceil(totalDebt / monthlyDebtCapacity)
@@ -315,7 +305,7 @@ export default async function handler(
       href: "/wealth-builder/budget",
       status: budgetPlan ? "active" : "needs_setup",
       metric: budgetPlan
-        ? `${Math.max((monthExpenses / Math.max(budgetTotalPlanned, 1)) * 100, 0).toFixed(0)}% of plan used`
+        ? `${Math.max(((monthExpenses / Math.max(budgetTotalPlanned, 1)) * 100), 0).toFixed(0)}% of plan used`
         : "Not configured",
       guidance: budgetPlan
         ? "Review category drift and rebalance before month-end."
@@ -445,7 +435,6 @@ export default async function handler(
         savingsRate,
         recurringBillsCount: recurringBills.length,
         monthlySurplus,
-        cashflowHealth,
         estimatedDebtFreeMonths,
         emergencyFundTarget,
         emergencyFundCoverageMonths,
@@ -459,7 +448,6 @@ export default async function handler(
       alerts,
       recommendations,
       nextActions,
-      nextActionCount: nextActions.length,
       connectedFlow,
       recentTransactionsCount: transactionItems.length,
     },
