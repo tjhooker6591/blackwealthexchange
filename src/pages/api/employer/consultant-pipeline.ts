@@ -83,6 +83,18 @@ export default async function handler(
         { upsert: true },
       );
 
+      await db.collection("flow_events").insertOne({
+        eventType: "consultant_pipeline_status_set",
+        pageRoute: "/api/employer/consultant-pipeline",
+        section: "consultant_pipeline",
+        source: "consultant_pipeline_api",
+        source_variant: "post",
+        employerId: auth.employerId,
+        consultantId,
+        status,
+        createdAt: now,
+      });
+
       return res.status(200).json({ ok: true, consultantId, status });
     }
 
@@ -94,10 +106,24 @@ export default async function handler(
       const status = normalizePipelineStatus(req.body?.status);
       const notes = asText(req.body?.notes);
 
+      const now = new Date();
       await col.updateOne(
         { _id: new ObjectId(itemId), employerId: auth.employerId },
-        { $set: { status, notes, updatedAt: new Date() } },
+        { $set: { status, notes, updatedAt: now } },
       );
+
+      await db.collection("flow_events").insertOne({
+        eventType: "consultant_pipeline_status_set",
+        pageRoute: "/api/employer/consultant-pipeline",
+        section: "consultant_pipeline",
+        source: "consultant_pipeline_api",
+        source_variant: "patch",
+        employerId: auth.employerId,
+        pipelineId: itemId,
+        status,
+        createdAt: now,
+      });
+
       return res.status(200).json({ ok: true, id: itemId, status });
     }
 

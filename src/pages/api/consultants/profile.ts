@@ -14,8 +14,12 @@ export default async function handler(
   try {
     const user = await getUserFromRequest(req);
     if (!user) return res.status(401).json({ error: "Unauthorized" });
+    const sessionUserId = String((user as any).id || (user as any).userId || "");
+    if (!sessionUserId) return res.status(401).json({ error: "Unauthorized" });
     if (user.accountType === "employer") {
-      return res.status(403).json({ error: "Employers cannot author consultant profiles." });
+      return res
+        .status(403)
+        .json({ error: "Employers cannot author consultant profiles." });
     }
 
     const client = await clientPromise;
@@ -23,7 +27,7 @@ export default async function handler(
     const col = db.collection("consultant_profiles");
 
     if (req.method === "GET") {
-      const profile = await col.findOne({ userId: user.id });
+      const profile = await col.findOne({ userId: sessionUserId });
       return res.status(200).json({
         ok: true,
         profile: profile
@@ -48,12 +52,14 @@ export default async function handler(
       const completenessScore = consultantProfileCompleteness(parsed.value);
 
       await col.updateOne(
-        { userId: user.id },
+        { userId: sessionUserId },
         {
           $set: {
-            userId: user.id,
+            userId: sessionUserId,
             email: user.email,
             accountType: user.accountType,
+            sourceCollection: "consultant_profiles",
+            sourceId: sessionUserId,
             name: req.body?.name || user.email.split("@")[0],
             ...parsed.value,
             completenessScore,
@@ -67,7 +73,7 @@ export default async function handler(
         { upsert: true },
       );
 
-      const updated = await col.findOne({ userId: user.id });
+      const updated = await col.findOne({ userId: sessionUserId });
       return res.status(200).json({
         ok: true,
         profile: updated
@@ -83,6 +89,8 @@ export default async function handler(
     return res.status(405).json({ error: "Method Not Allowed" });
   } catch (error) {
     console.error("[api/consultants/profile]", error);
-    return res.status(500).json({ error: "Failed to process consultant profile" });
+    return res
+      .status(500)
+      .json({ error: "Failed to process consultant profile" });
   }
 }

@@ -3,9 +3,41 @@ import cookie from "cookie";
 import jwt from "jsonwebtoken";
 import clientPromise from "@/lib/mongodb";
 import { getJwtSecret, getMongoDbName } from "@/lib/env";
+import {
+  ensureApiRateLimitIndexes,
+  getClientIp,
+  hitApiRateLimit,
+} from "@/lib/apiRateLimit";
 
 function asText(v: unknown) {
   return typeof v === "string" ? v.trim() : "";
+}
+
+function containsSuspiciousContent(message: string) {
+  const lower = message.toLowerCase();
+  const blockedTerms = [
+    "wire money",
+    "crypto only",
+    "send gift card",
+    "telegram only",
+    "whatsapp only",
+  ];
+  const hasBlockedTerm = blockedTerms.some((x) => lower.includes(x));
+  const urlCount = (message.match(/https?:\/\//gi) || []).length;
+  const repeatedCharRun = /(.)\1{7,}/.test(message);
+  const excessiveCaps =
+    message.length > 30 &&
+    message.replace(/[^A-Z]/g, "").length / message.length > 0.5;
+
+  return {
+    flagged: hasBlockedTerm || urlCount > 2 || repeatedCharRun || excessiveCaps,
+    reasons: [
+      hasBlockedTerm ? "blocked_term" : null,
+      urlCount > 2 ? "too_many_links" : null,
+      repeatedCharRun ? "repeated_characters" : null,
+      excessiveCaps ? "excessive_caps" : null,
+    ].filter(Boolean),
+  };
 }
 
 function requireEmployer(req: NextApiRequest) {
@@ -69,9 +101,57 @@ export default async function handler(
       if (!consultantId) {
         return res.status(400).json({ error: "consultantId is required" });
       }
-      if (!message || message.length < 20) {
+      if (!message || message.length < 20 || message.length > 1200) {
         return res.status(400).json({
-          error: "Message is required and should be at least 20 characters.",
+          error:
+            "Message is required and should be between 20 and 1200 characters.",
+        });
+      }
+
+      await ensureApiRateLimitIndexes(db);
+      const ip = getClientIp(req);
+      const ipLimit = await hitApiRateLimit(
+        db,
+        `consultant_contact:ip:${ip}`,
+        30,
+        15,
+      );
+      const employerLimit = await hitApiRateLimit(
+        db,
+        `consultant_contact:employer:${auth.employerId}`,
+        20,
+        15,
+      );
+
+      if (ipLimit.blocked || employerLimit.blocked) {
+        res.setHeader(
+          "Retry-After",
+          String(
+            Math.max(ipLimit.retryAfterSeconds, employerLimit.retryAfterSeconds),
+          ),
+        );
+        return res
+          .status(429)
+          .json({ error: "Too many contact requests. Please try later." });
+      }
+
+      const moderation = containsSuspiciousContent(message);
+      if (moderation.flagged) {
+        await db.collection("flow_events").insertOne({
+          eventType: "consultant_contact_request_blocked",
+          pageRoute: "/api/employer/consultant-contact-requests",
+          section: "consultant_contact",
+          source: "consultant_contact_api",
+          source_variant: requestType || "contact",
+          employerId: auth.employerId,
+          consultantId,
+          moderationReasons: moderation.reasons,
+          createdAt: new Date(),
+        });
+
+        return res.status(400).json({
+          error:
+            "Request was blocked by moderation checks. Please revise message.",
         });
       }
 
@@ -85,6 +165,7 @@ export default async function handler(
         consultantId,
         requestType: normalizedRequestType,
         message,
+        moderationStatus: "clean",
         status: "submitted",
         createdAt: now,
       });
@@ -109,6 +190,30 @@ export default async function handler(
         },
         { upsert: true },
       );
+
+      await db.collection("flow_events").insertOne({
+        eventType: "consultant_contact_request_submitted",
+        pageRoute: "/api/employer/consultant-contact-requests",
+        section: "consultant_contact",
+        source: "consultant_contact_api",
+        source_variant: normalizedRequestType,
+        employerId: auth.employerId,
+        consultantId,
+        resultingPipelineStatus: nextPipelineStatus,
+        createdAt: now,
+      });
+
+      await db.collection("flow_events").insertOne({
+        eventType: "consultant_pipeline_status_set",
+        pageRoute: "/api/employer/consultant-contact-requests",
+        section: "consultant_pipeline",
+        source: "consultant_contact_api",
+        source_variant: normalizedRequestType,
+        employerId: auth.employerId,
+        consultantId,
+        status: nextPipelineStatus,
+        createdAt: now,
+      });
 
       return res.status(201).json({
         ok: true,
