@@ -32,6 +32,9 @@ export default function EmployerConsultantDiscoveryPage() {
   const [pipeline, setPipeline] = useState<PipelineItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [contactDrafts, setContactDrafts] = useState<Record<string, string>>({});
+  const [contactMode, setContactMode] = useState<Record<string, "contact" | "interview_request">>({});
+  const [sendingContactId, setSendingContactId] = useState("");
 
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
@@ -51,8 +54,10 @@ export default function EmployerConsultantDiscoveryPage() {
       if (skills.trim()) params.set("skills", skills.trim());
       if (industry.trim()) params.set("industries", industry.trim());
       if (availability.trim()) params.set("availability", availability.trim());
-      if (engagementType.trim()) params.set("engagementType", engagementType.trim());
-      if (minExperience.trim()) params.set("minExperience", minExperience.trim());
+      if (engagementType.trim())
+        params.set("engagementType", engagementType.trim());
+      if (minExperience.trim())
+        params.set("minExperience", minExperience.trim());
 
       const [consultantsRes, pipelineRes] = await Promise.all([
         fetch(`/api/employer/consultants?${params.toString()}`, {
@@ -108,6 +113,41 @@ export default function EmployerConsultantDiscoveryPage() {
     await load();
   }
 
+  async function sendContactRequest(consultantId: string) {
+    const message = (contactDrafts[consultantId] || "").trim();
+    const requestType = contactMode[consultantId] || "contact";
+
+    if (message.length < 20) {
+      setError("Contact message must be at least 20 characters.");
+      return;
+    }
+
+    setSendingContactId(consultantId);
+    try {
+      const res = await fetch("/api/employer/consultant-contact-requests", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ consultantId, requestType, message }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data?.error || "Failed to submit contact request");
+      }
+
+      setContactDrafts((prev) => ({ ...prev, [consultantId]: "" }));
+      await load();
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to submit contact request",
+      );
+    } finally {
+      setSendingContactId("");
+    }
+  }
+
   return (
     <main className="min-h-screen bg-black px-4 py-8 text-white">
       <div className="mx-auto max-w-7xl">
@@ -124,12 +164,20 @@ export default function EmployerConsultantDiscoveryPage() {
               hiring pipeline.
             </p>
           </div>
-          <Link
-            href="/recruiting-consulting?type=employer"
-            className="rounded-xl border border-yellow-500/40 px-4 py-2 text-sm text-yellow-200 hover:bg-yellow-500/10"
-          >
-            Submit staffing brief
-          </Link>
+          <div className="flex flex-wrap gap-2">
+            <Link
+              href="/dashboard/employer/consultants/pipeline"
+              className="rounded-xl border border-cyan-500/40 px-4 py-2 text-sm text-cyan-200 hover:bg-cyan-500/10"
+            >
+              Open Shortlist Board
+            </Link>
+            <Link
+              href="/recruiting-consulting?type=employer"
+              className="rounded-xl border border-yellow-500/40 px-4 py-2 text-sm text-yellow-200 hover:bg-yellow-500/10"
+            >
+              Submit staffing brief
+            </Link>
+          </div>
         </div>
 
         <section className="rounded-2xl border border-white/10 bg-zinc-950 p-4 md:p-6">
@@ -272,6 +320,48 @@ export default function EmployerConsultantDiscoveryPage() {
                       className="rounded-lg bg-yellow-400 px-3 py-2 text-xs font-bold text-black"
                     >
                       Request Interview
+                    </button>
+                  </div>
+
+                  <div className="mt-3 rounded-lg border border-white/10 bg-black/30 p-3">
+                    <p className="text-[11px] uppercase tracking-wide text-zinc-400">
+                      Contact workflow
+                    </p>
+                    <div className="mt-2 flex gap-2">
+                      <select
+                        value={contactMode[c.id] || "contact"}
+                        onChange={(e) =>
+                          setContactMode((prev) => ({
+                            ...prev,
+                            [c.id]: e.target.value as "contact" | "interview_request",
+                          }))
+                        }
+                        className="rounded border border-white/10 bg-black px-2 py-1 text-xs"
+                      >
+                        <option value="contact">Contact request</option>
+                        <option value="interview_request">Interview request</option>
+                      </select>
+                    </div>
+                    <textarea
+                      value={contactDrafts[c.id] || ""}
+                      onChange={(e) =>
+                        setContactDrafts((prev) => ({
+                          ...prev,
+                          [c.id]: e.target.value,
+                        }))
+                      }
+                      rows={3}
+                      placeholder="Write a personalized request (20+ chars)..."
+                      className="mt-2 w-full rounded border border-white/10 bg-black px-2 py-1 text-xs"
+                    />
+                    <button
+                      onClick={() => void sendContactRequest(c.id)}
+                      disabled={sendingContactId === c.id}
+                      className="mt-2 rounded border border-cyan-400/40 px-2 py-1 text-xs text-cyan-200 hover:bg-cyan-500/10 disabled:opacity-60"
+                    >
+                      {sendingContactId === c.id
+                        ? "Sending..."
+                        : "Send contact request"}
                     </button>
                   </div>
 

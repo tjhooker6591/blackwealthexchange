@@ -57,6 +57,7 @@ const ROUTES = {
   billing: "/dashboard/employer/billing",
   consultingInterest: "/dashboard/employer/consulting-interest",
   consultantDiscovery: "/dashboard/employer/consultants",
+  consultantPipeline: "/dashboard/employer/consultants/pipeline",
 };
 
 function formatDate(value?: string) {
@@ -344,6 +345,14 @@ export default function EmployerDashboard() {
               title="Consultant Discovery"
               description="Browse, filter, and shortlist vetted consultants."
               href={ROUTES.consultantDiscovery}
+            />
+          </div>
+          <div className="col-span-2 md:col-span-1">
+            <ActionCard
+              icon={<Users className="h-5 w-5 text-yellow-300" />}
+              title="Consultant Pipeline"
+              description="Track saved, contacted, interview, review, and hired stages."
+              href={ROUTES.consultantPipeline}
             />
           </div>
           <div className="col-span-2 md:col-span-1">
