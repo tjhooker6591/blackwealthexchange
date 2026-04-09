@@ -14,61 +14,31 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   const isProd = process.env.NODE_ENV === "production";
   const cookieDomain = isProd ? ".blackwealthexchange.com" : undefined;
 
+  function clearCookie(name: string, httpOnly: boolean) {
+    const base = {
+      httpOnly,
+      secure: isProd,
+      sameSite: "lax" as const,
+      path: "/",
+      maxAge: -1,
+      expires: new Date(0),
+    };
+
+    const hostOnly = serialize(name, "", base);
+    const domainScoped = cookieDomain
+      ? serialize(name, "", { ...base, domain: cookieDomain })
+      : null;
+
+    return domainScoped ? [hostOnly, domainScoped] : [hostOnly];
+  }
+
   const cookiesToClear = [
-    serialize("session_token", "", {
-      httpOnly: true,
-      secure: isProd,
-      sameSite: "lax",
-      path: "/",
-      maxAge: -1,
-      expires: new Date(0),
-      domain: cookieDomain,
-    }),
-    serialize("accountType", "", {
-      httpOnly: false,
-      secure: isProd,
-      sameSite: "lax",
-      path: "/",
-      maxAge: -1,
-      expires: new Date(0),
-      domain: cookieDomain,
-    }),
-    serialize("next-auth.session-token", "", {
-      httpOnly: true,
-      secure: isProd,
-      sameSite: "lax",
-      path: "/",
-      maxAge: -1,
-      expires: new Date(0),
-      domain: cookieDomain,
-    }),
-    serialize("__Secure-next-auth.session-token", "", {
-      httpOnly: true,
-      secure: isProd,
-      sameSite: "lax",
-      path: "/",
-      maxAge: -1,
-      expires: new Date(0),
-      domain: cookieDomain,
-    }),
-    serialize("next-auth.csrf-token", "", {
-      httpOnly: false,
-      secure: isProd,
-      sameSite: "lax",
-      path: "/",
-      maxAge: -1,
-      expires: new Date(0),
-      domain: cookieDomain,
-    }),
-    serialize("next-auth.callback-url", "", {
-      httpOnly: false,
-      secure: isProd,
-      sameSite: "lax",
-      path: "/",
-      maxAge: -1,
-      expires: new Date(0),
-      domain: cookieDomain,
-    }),
+    ...clearCookie("session_token", true),
+    ...clearCookie("accountType", false),
+    ...clearCookie("next-auth.session-token", true),
+    ...clearCookie("__Secure-next-auth.session-token", true),
+    ...clearCookie("next-auth.csrf-token", false),
+    ...clearCookie("next-auth.callback-url", false),
   ];
 
   res.setHeader("Set-Cookie", cookiesToClear);
