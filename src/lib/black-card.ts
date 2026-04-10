@@ -18,8 +18,8 @@ export const BLACK_CARD_TIERS: Record<BlackCardTier, BlackCardTierConfig> = {
     tier: "standard",
     label: "BWE Black Card Standard",
     checkoutItemId: "black-card-standard",
-    priceCents: 6300,
-    priceLabel: "$63.00",
+    priceCents: 3800,
+    priceLabel: "$38.00",
     billingModel: "entry_fee",
     tagline: "Accessible entry card with limited but real member access.",
     benefits: [
