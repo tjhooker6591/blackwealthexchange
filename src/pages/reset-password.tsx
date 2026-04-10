@@ -2,6 +2,7 @@
 "use client";
 
 import Link from "next/link";
+import Head from "next/head";
 import { useMemo, useState } from "react";
 import { useRouter } from "next/router";
 
@@ -90,7 +91,11 @@ export default function ResetPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black text-white p-6">
+    <>
+      <Head>
+        <meta name="robots" content="noindex,nofollow" />
+      </Head>
+      <div className="min-h-screen flex items-center justify-center bg-black text-white p-6">
       {/* subtle glow */}
       <div className="pointer-events-none fixed inset-0 opacity-40">
         <div className="absolute -top-40 -left-40 h-[520px] w-[520px] rounded-full blur-3xl bg-yellow-500/20" />
@@ -198,6 +203,7 @@ export default function ResetPasswordPage() {
           </>
         )}
       </div>
-    </div>
+      </div>
+    </>
   );
 }

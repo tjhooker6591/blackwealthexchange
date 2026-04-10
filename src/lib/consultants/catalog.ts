@@ -48,3 +48,13 @@ export const CONSULTANT_PIPELINE_STATUSES = [
 
 export type ConsultantPipelineStatus =
   (typeof CONSULTANT_PIPELINE_STATUSES)[number];
+
+export const CONSULTANT_CONTACT_REQUEST_STATUSES = [
+  "submitted",
+  "accepted",
+  "declined",
+  "more_info_requested",
+] as const;
+
+export type ConsultantContactRequestStatus =
+  (typeof CONSULTANT_CONTACT_REQUEST_STATUSES)[number];

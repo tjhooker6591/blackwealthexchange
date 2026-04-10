@@ -19,16 +19,21 @@ export default async function handler(
     const client = await clientPromise;
     const db = client.db(getMongoDbName());
 
-    const items = await db
-      .collection("flow_events")
-      .find({
-        eventType: {
-          $in: [
-            "consultant_contact_request_blocked",
-            "consultant_contact_request_flagged",
-          ],
-        },
-      })
+    const reason =
+      typeof req.query.reason === "string" ? req.query.reason.trim() : "";
+
+    const filter: Record<string, unknown> = {
+      eventType: {
+        $in: [
+          "consultant_contact_request_blocked",
+          "consultant_contact_request_flagged",
+        ],
+      },
+    };
+
+    if (reason) filter.moderationReasons = reason;
+
+    const items = await db.collection("flow_events").find(filter)
       .sort({ createdAt: -1 })
       .limit(300)
       .toArray();

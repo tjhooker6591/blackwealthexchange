@@ -168,7 +168,8 @@ export default function Signup() {
           name="description"
           content="Create your Black Wealth Exchange account to access wealth-building tools, marketplace features, and community resources."
         />
-        <link rel="canonical" href="https://blackwealthexchange.co/signup" />
+        <meta name="robots" content="noindex,nofollow" />
+        <link rel="canonical" href="https://www.blackwealthexchange.com/signup" />
         <meta property="og:title" content="Sign Up | Black Wealth Exchange" />
         <meta
           property="og:description"
@@ -176,157 +177,159 @@ export default function Signup() {
         />
       </Head>
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-gray-100 p-6">
-      <div className="bg-white p-8 shadow-lg rounded-lg w-full max-w-md">
-        <h2 className="text-3xl font-bold text-center text-gold">
-          Create an Account
-        </h2>
-        <p className="text-center text-gray-600 mt-2">Join the BWE Community</p>
-
-        {error && <p className="text-red-500 text-center mt-2">{error}</p>}
-        {success && !onboardingUrl && (
-          <p className="text-green-500 text-center mt-2">
-            Signup Successful! 🎉
+        <div className="bg-white p-8 shadow-lg rounded-lg w-full max-w-md">
+          <h2 className="text-3xl font-bold text-center text-gold">
+            Create an Account
+          </h2>
+          <p className="text-center text-gray-600 mt-2">
+            Join the BWE Community
           </p>
-        )}
-        {/* Fallback message and link if auto-redirect fails */}
-        {onboardingUrl && (
-          <p className="mt-4 text-center">
-            Redirecting you to Stripe to complete your setup. If you are not
-            redirected automatically,{" "}
-            <a
-              href={onboardingUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-ggold underline"
-            >
-              click here
-            </a>
-            .
-          </p>
-        )}
 
-        <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-          {/* Form fields unchanged */}
-          <div>
-            <label className="block text-gray-700 font-semibold">
-              Account Type
-            </label>
-            <select
-              name="accountType"
-              value={accountType}
-              onChange={handleAccountTypeChange}
-              className="w-full p-3 border rounded-lg bg-gray-200 text-black"
-            >
-              <option value="user">General User</option>
-              <option value="seller">Seller</option>
-              <option value="business">Business Owner</option>
-              <option value="employer">Employer</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-gray-700 font-semibold">Email</label>
-            <input
-              type="email"
-              name="email"
-              placeholder="Enter your email"
-              value={formData.email}
-              onChange={handleChange}
-              className="w-full p-3 border rounded-lg bg-gray-200 text-black"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-gray-700 font-semibold">
-              Password
-            </label>
-            <input
-              type="password"
-              name="password"
-              placeholder="Create a strong password"
-              value={formData.password}
-              onChange={handleChange}
-              className="w-full p-3 border rounded-lg bg-gray-200 text-black"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-gray-700 font-semibold">
-              Confirm Password
-            </label>
-            <input
-              type="password"
-              name="confirmPassword"
-              placeholder="Re-enter your password"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              className="w-full p-3 border rounded-lg bg-gray-200 text-black"
-              required
-            />
-          </div>
-
-          {accountType === "business" && (
-            <>
-              <div>
-                <label className="block text-gray-700 font-semibold">
-                  Business Name
-                </label>
-                <input
-                  type="text"
-                  name="businessName"
-                  value={formData.businessName}
-                  onChange={handleChange}
-                  className="w-full p-3 border rounded-lg bg-gray-200 text-black"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700 font-semibold">
-                  Business Address
-                </label>
-                <input
-                  type="text"
-                  name="businessAddress"
-                  value={formData.businessAddress}
-                  onChange={handleChange}
-                  className="w-full p-3 border rounded-lg bg-gray-200 text-black"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700 font-semibold">
-                  Business Phone
-                </label>
-                <input
-                  type="text"
-                  name="businessPhone"
-                  value={formData.businessPhone}
-                  onChange={handleChange}
-                  className="w-full p-3 border rounded-lg bg-gray-200 text-black"
-                />
-              </div>
-            </>
+          {error && <p className="text-red-500 text-center mt-2">{error}</p>}
+          {success && !onboardingUrl && (
+            <p className="text-green-500 text-center mt-2">
+              Signup Successful! 🎉
+            </p>
+          )}
+          {/* Fallback message and link if auto-redirect fails */}
+          {onboardingUrl && (
+            <p className="mt-4 text-center">
+              Redirecting you to Stripe to complete your setup. If you are not
+              redirected automatically,{" "}
+              <a
+                href={onboardingUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-ggold underline"
+              >
+                click here
+              </a>
+              .
+            </p>
           )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-3 bg-gold text-black font-semibold rounded-lg hover:bg-opacity-90 transition"
-          >
-            {loading ? "Signing up..." : "Sign Up"}
-          </button>
-        </form>
+          <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+            {/* Form fields unchanged */}
+            <div>
+              <label className="block text-gray-700 font-semibold">
+                Account Type
+              </label>
+              <select
+                name="accountType"
+                value={accountType}
+                onChange={handleAccountTypeChange}
+                className="w-full p-3 border rounded-lg bg-gray-200 text-black"
+              >
+                <option value="user">General User</option>
+                <option value="seller">Seller</option>
+                <option value="business">Business Owner</option>
+                <option value="employer">Employer</option>
+              </select>
+            </div>
 
-        <p className="text-center mt-4 text-gray-600">
-          Already have an account?{" "}
-          <Link
-            href="/login"
-            className="text-gold font-semibold hover:underline"
-          >
-            Login
-          </Link>
-        </p>
-      </div>
+            <div>
+              <label className="block text-gray-700 font-semibold">Email</label>
+              <input
+                type="email"
+                name="email"
+                placeholder="Enter your email"
+                value={formData.email}
+                onChange={handleChange}
+                className="w-full p-3 border rounded-lg bg-gray-200 text-black"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-gray-700 font-semibold">
+                Password
+              </label>
+              <input
+                type="password"
+                name="password"
+                placeholder="Create a strong password"
+                value={formData.password}
+                onChange={handleChange}
+                className="w-full p-3 border rounded-lg bg-gray-200 text-black"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-gray-700 font-semibold">
+                Confirm Password
+              </label>
+              <input
+                type="password"
+                name="confirmPassword"
+                placeholder="Re-enter your password"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                className="w-full p-3 border rounded-lg bg-gray-200 text-black"
+                required
+              />
+            </div>
+
+            {accountType === "business" && (
+              <>
+                <div>
+                  <label className="block text-gray-700 font-semibold">
+                    Business Name
+                  </label>
+                  <input
+                    type="text"
+                    name="businessName"
+                    value={formData.businessName}
+                    onChange={handleChange}
+                    className="w-full p-3 border rounded-lg bg-gray-200 text-black"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700 font-semibold">
+                    Business Address
+                  </label>
+                  <input
+                    type="text"
+                    name="businessAddress"
+                    value={formData.businessAddress}
+                    onChange={handleChange}
+                    className="w-full p-3 border rounded-lg bg-gray-200 text-black"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700 font-semibold">
+                    Business Phone
+                  </label>
+                  <input
+                    type="text"
+                    name="businessPhone"
+                    value={formData.businessPhone}
+                    onChange={handleChange}
+                    className="w-full p-3 border rounded-lg bg-gray-200 text-black"
+                  />
+                </div>
+              </>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3 bg-gold text-black font-semibold rounded-lg hover:bg-opacity-90 transition"
+            >
+              {loading ? "Signing up..." : "Sign Up"}
+            </button>
+          </form>
+
+          <p className="text-center mt-4 text-gray-600">
+            Already have an account?{" "}
+            <Link
+              href="/login"
+              className="text-gold font-semibold hover:underline"
+            >
+              Login
+            </Link>
+          </p>
+        </div>
       </div>
     </>
   );

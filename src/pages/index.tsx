@@ -627,13 +627,9 @@ export default function Home() {
 
         const normalized = data.sponsors.map((s: any) => ({
           img:
-            typeof s?.img === "string" && s.img
-              ? s.img
-              : "/default-image.jpg",
+            typeof s?.img === "string" && s.img ? s.img : "/default-image.jpg",
           name:
-            typeof s?.name === "string" && s.name
-              ? s.name
-              : "Featured Sponsor",
+            typeof s?.name === "string" && s.name ? s.name : "Featured Sponsor",
           url: typeof s?.url === "string" ? s.url : undefined,
           tagline: typeof s?.tagline === "string" ? s.tagline : undefined,
         }));
@@ -1094,6 +1090,12 @@ export default function Home() {
                 className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/85 transition hover:bg-black/40"
               >
                 Directory
+              </Link>
+              <Link
+                href="/black-wealth"
+                className="rounded-xl border border-white/10 bg-black/30 px-3 py-2 text-white/85 transition hover:bg-black/40"
+              >
+                Black Wealth Guide
               </Link>
               <Link
                 href="/marketplace"

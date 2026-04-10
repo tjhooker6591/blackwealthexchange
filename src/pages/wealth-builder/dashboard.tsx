@@ -21,6 +21,7 @@ type DashboardResponse = {
       healthScore?: number;
       recurringBillsCount?: number;
       monthlySurplus?: number;
+      cashflowHealth?: "surplus" | "breakeven" | "deficit";
       estimatedDebtFreeMonths?: number | null;
       emergencyFundTarget?: number;
       emergencyFundCoverageMonths?: number;
@@ -41,6 +42,7 @@ type DashboardResponse = {
       href: string;
       priority: "high" | "medium" | "low";
     }>;
+    nextActionCount?: number;
     connectedFlow?: Array<{
       id: string;
       label: string;
@@ -187,6 +189,12 @@ export default function WealthBuilderDashboardPage() {
               One connected view of spending, debts, savings, budgets, recurring
               bills, and progress.
             </p>
+            {summary ? (
+              <p className="mt-3 text-sm text-zinc-400">
+                Cashflow: <span className="font-semibold text-zinc-200">{summary.cashflowHealth || "breakeven"}</span>
+                {" · "}Next actions: <span className="font-semibold text-zinc-200">{data?.nextActionCount ?? data?.nextActions?.length ?? 0}</span>
+              </p>
+            ) : null}
 
             {error ? (
               <div className="mt-6 rounded-2xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-100">
@@ -249,15 +257,17 @@ export default function WealthBuilderDashboardPage() {
               <SummaryCard
                 title="Monthly Surplus"
                 value={
-                  loading
-                    ? "..."
-                    : formatCurrency(summary?.monthlySurplus || 0)
+                  loading ? "..." : formatCurrency(summary?.monthlySurplus || 0)
                 }
                 description="Income minus spending"
               />
               <SummaryCard
                 title="Debt-Free Forecast"
-                value={loading ? "..." : formatMonths(summary?.estimatedDebtFreeMonths)}
+                value={
+                  loading
+                    ? "..."
+                    : formatMonths(summary?.estimatedDebtFreeMonths)
+                }
                 description="Based on minimums + surplus contribution"
               />
               <SummaryCard
@@ -336,8 +346,9 @@ export default function WealthBuilderDashboardPage() {
                 Connected money flow
               </h3>
               <p className="mt-2 text-sm text-zinc-300">
-                Keep this chain active: transactions feed budget accuracy, budget
-                funds debt strategy, debt payoff unlocks savings acceleration.
+                Keep this chain active: transactions feed budget accuracy,
+                budget funds debt strategy, debt payoff unlocks savings
+                acceleration.
               </p>
               <div className="mt-4 grid gap-3 md:grid-cols-2">
                 {(data?.connectedFlow || []).map((step) => (
@@ -359,7 +370,9 @@ export default function WealthBuilderDashboardPage() {
                       </span>
                     </div>
                     <p className="mt-2 text-sm text-cyan-100">{step.metric}</p>
-                    <p className="mt-1 text-xs text-zinc-400">{step.guidance}</p>
+                    <p className="mt-1 text-xs text-zinc-400">
+                      {step.guidance}
+                    </p>
                   </Link>
                 ))}
               </div>
@@ -437,16 +450,21 @@ export default function WealthBuilderDashboardPage() {
               <div className="mt-3 rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-3">
                 <div className="flex items-center justify-between text-xs uppercase tracking-wide text-emerald-200">
                   <span>Emergency fund progress</span>
-                  <span>{Math.round(summary?.emergencyFundProgress || 0)}%</span>
+                  <span>
+                    {Math.round(summary?.emergencyFundProgress || 0)}%
+                  </span>
                 </div>
                 <div className="mt-2 h-2 overflow-hidden rounded-full bg-white/10">
                   <div
                     className="h-full rounded-full bg-emerald-400"
-                    style={{ width: `${Math.round(summary?.emergencyFundProgress || 0)}%` }}
+                    style={{
+                      width: `${Math.round(summary?.emergencyFundProgress || 0)}%`,
+                    }}
                   />
                 </div>
                 <p className="mt-2 text-xs text-zinc-400">
-                  Target: {formatCurrency(summary?.emergencyFundTarget || 0)} (about 3 months of expenses)
+                  Target: {formatCurrency(summary?.emergencyFundTarget || 0)}{" "}
+                  (about 3 months of expenses)
                 </p>
               </div>
               <div className="mt-3 grid gap-3 md:grid-cols-2">

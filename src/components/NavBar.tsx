@@ -60,6 +60,13 @@ export default function NavBar() {
           </Link>
 
           <Link
+            href="/black-wealth"
+            className="font-semibold transition-colors hover:text-[#D4AF37]"
+          >
+            Black Wealth Guide
+          </Link>
+
+          <Link
             href="/global-timeline"
             className="font-semibold transition-colors hover:text-[#D4AF37]"
           >
@@ -71,6 +78,20 @@ export default function NavBar() {
             className="font-semibold transition-colors hover:text-[#D4AF37]"
           >
             Events
+          </Link>
+
+          <Link
+            href="/travel-map/explore"
+            className="font-semibold transition-colors hover:text-[#D4AF37]"
+          >
+            Travel Map
+          </Link>
+
+          <Link
+            href="/wealth-builder"
+            className="font-semibold transition-colors hover:text-[#D4AF37]"
+          >
+            Wealth Builder
           </Link>
 
           <Link
@@ -180,6 +201,14 @@ export default function NavBar() {
             </Link>
 
             <Link
+              href="/black-wealth"
+              className="block rounded-xl px-3 py-2.5 font-medium text-white/85 transition-colors hover:bg-white/[0.04] hover:text-[#D4AF37]"
+              onClick={() => handleMobileNav()}
+            >
+              Black Wealth Guide
+            </Link>
+
+            <Link
               href="/global-timeline"
               className="block rounded-xl px-3 py-2.5 font-medium text-white/85 transition-colors hover:bg-white/[0.04] hover:text-[#D4AF37]"
               onClick={() => handleMobileNav()}
@@ -193,6 +222,22 @@ export default function NavBar() {
               onClick={() => handleMobileNav()}
             >
               Events
+            </Link>
+
+            <Link
+              href="/travel-map/explore"
+              className="block rounded-xl px-3 py-2.5 font-medium text-white/85 transition-colors hover:bg-white/[0.04] hover:text-[#D4AF37]"
+              onClick={() => handleMobileNav()}
+            >
+              Travel Map
+            </Link>
+
+            <Link
+              href="/wealth-builder"
+              className="block rounded-xl px-3 py-2.5 font-medium text-white/85 transition-colors hover:bg-white/[0.04] hover:text-[#D4AF37]"
+              onClick={() => handleMobileNav()}
+            >
+              Wealth Builder
             </Link>
 
             <Link

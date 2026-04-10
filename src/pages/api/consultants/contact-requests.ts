@@ -3,6 +3,7 @@ import { ObjectId } from "mongodb";
 import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
 import { getUserFromRequest } from "@/lib/auth";
+import type { ConsultantContactRequestStatus } from "@/lib/consultants/catalog";
 
 export default async function handler(
   req: NextApiRequest,
@@ -40,14 +41,16 @@ export default async function handler(
 
     if (req.method === "PATCH") {
       const requestId = String(req.body?.requestId || "").trim();
-      const action = String(req.body?.action || "").trim().toLowerCase();
+      const action = String(req.body?.action || "")
+        .trim()
+        .toLowerCase();
       const note = String(req.body?.note || "").trim();
 
       if (!requestId || !ObjectId.isValid(requestId)) {
         return res.status(400).json({ error: "Valid requestId is required." });
       }
 
-      const actionToStatus: Record<string, string> = {
+      const actionToStatus: Record<string, ConsultantContactRequestStatus> = {
         accept: "accepted",
         decline: "declined",
         request_more_info: "more_info_requested",
@@ -60,7 +63,9 @@ export default async function handler(
         });
       }
 
-      const current = await requestsCol.findOne({ _id: new ObjectId(requestId) });
+      const current = await requestsCol.findOne({
+        _id: new ObjectId(requestId),
+      });
       if (!current) return res.status(404).json({ error: "Request not found" });
       if (!consultantIds.includes(String(current.consultantId || ""))) {
         return res.status(403).json({ error: "Not allowed for this request" });
@@ -80,6 +85,33 @@ export default async function handler(
         },
       );
 
+      const resultingPipelineStatus =
+        nextStatus === "accepted"
+          ? "under_review"
+          : nextStatus === "declined"
+            ? "saved"
+            : "contacted";
+
+      await db.collection("employer_consultant_pipeline").updateOne(
+        {
+          employerId: String(current.employerId || ""),
+          consultantId: String(current.consultantId || ""),
+        },
+        {
+          $set: {
+            status: resultingPipelineStatus,
+            updatedAt: now,
+            lastConsultantResponseStatus: nextStatus,
+            lastConsultantRespondedAt: now,
+          },
+          $setOnInsert: {
+            createdAt: now,
+            employerEmail: String(current.employerEmail || ""),
+          },
+        },
+        { upsert: true },
+      );
+
       await db.collection("flow_events").insertOne({
         eventType: "consultant_contact_request_responded",
         pageRoute: "/api/consultants/contact-requests",
@@ -90,6 +122,7 @@ export default async function handler(
         employerId: String(current.employerId || ""),
         requestId,
         resultingStatus: nextStatus,
+        resultingPipelineStatus,
         createdAt: now,
       });
 

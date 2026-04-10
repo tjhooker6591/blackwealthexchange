@@ -10,6 +10,18 @@ export default function Footer() {
           reserved.
         </p>
         <div className="flex flex-wrap justify-center gap-4 text-xs sm:text-sm text-white">
+          <Link href="/black-wealth" className="hover:text-gold transition">
+            Black Wealth Guide
+          </Link>
+          <Link href="/business-directory" className="hover:text-gold transition">
+            Black-owned Business Directory
+          </Link>
+          <Link href="/wealth-builder" className="hover:text-gold transition">
+            Wealth Builder Dashboard
+          </Link>
+          <Link href="/travel-map/explore" className="hover:text-gold transition">
+            Travel Map for Black-owned businesses
+          </Link>
           <Link href="/terms-of-service" className="hover:text-gold transition">
             Terms of Service
           </Link>

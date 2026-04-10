@@ -2,6 +2,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
@@ -154,7 +155,11 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black px-4 py-10 text-white">
+    <>
+      <Head>
+        <meta name="robots" content="noindex,nofollow" />
+      </Head>
+      <div className="min-h-screen flex items-center justify-center bg-black px-4 py-10 text-white">
       {/* subtle glow */}
       <div className="pointer-events-none fixed inset-0 opacity-40">
         <div className="absolute -top-40 -left-40 h-[520px] w-[520px] rounded-full blur-3xl bg-yellow-500/20" />
@@ -269,6 +274,7 @@ export default function Login() {
           </Link>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }
