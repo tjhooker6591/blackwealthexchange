@@ -41,7 +41,7 @@ export default function BlackCardLandingPage() {
                 alt="BWE Black Card close-up"
                 width={1400}
                 height={875}
-                className="h-48 w-auto max-w-full object-contain sm:h-56"
+                className="h-auto w-full max-w-full object-contain max-h-56 sm:max-h-64"
                 priority
               />
             </div>

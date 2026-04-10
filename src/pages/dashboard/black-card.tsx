@@ -13,6 +13,7 @@ type MemberSummaryResponse = {
     status: string;
     memberSince: string | null;
     planExpiresAt: string | null;
+    renewalState?: "active" | "renewal_due" | "expired" | "unknown";
   };
   rewards?: {
     balance: number;
@@ -29,6 +30,15 @@ type MemberSummaryResponse = {
     status: string;
     at: string | null;
   }>;
+  ledger?: Array<{
+    id: string;
+    type: string;
+    points: number;
+    actionType: string;
+    rewardType: string | null;
+    balanceAfter: number;
+    at: string | null;
+  }>;
   error?: string;
 };
 
@@ -36,27 +46,58 @@ export default function BlackCardDashboardPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<MemberSummaryResponse | null>(null);
+  const [redeemLoading, setRedeemLoading] = useState(false);
+  const [redeemMessage, setRedeemMessage] = useState("");
+
+  async function fetchSummary() {
+    const res = await fetch("/api/black-card/member-summary", {
+      credentials: "include",
+      cache: "no-store",
+    });
+
+    if (res.status === 401) {
+      router.replace("/login?redirect=/dashboard/black-card");
+      return;
+    }
+
+    const json = (await res.json()) as MemberSummaryResponse;
+    setData(json);
+  }
 
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch("/api/black-card/member-summary", {
-          credentials: "include",
-          cache: "no-store",
-        });
-
-        if (res.status === 401) {
-          router.replace("/login?redirect=/dashboard/black-card");
-          return;
-        }
-
-        const json = (await res.json()) as MemberSummaryResponse;
-        setData(json);
+        await fetchSummary();
       } finally {
         setLoading(false);
       }
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
+
+  async function redeemReward(rewardType: string) {
+    setRedeemLoading(true);
+    setRedeemMessage("");
+    try {
+      const res = await fetch("/api/black-card/rewards/redeem", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ rewardType, referenceId: `${rewardType}-${Date.now()}` }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setRedeemMessage(json?.error || "Unable to redeem right now");
+        return;
+      }
+      setRedeemMessage("Redemption request submitted.");
+      await fetchSummary();
+    } catch {
+      setRedeemMessage("Network error while redeeming reward");
+    } finally {
+      setRedeemLoading(false);
+    }
+  }
 
   return (
     <>
@@ -112,6 +153,9 @@ export default function BlackCardDashboardPage() {
                     <div className="text-sm text-white/70">
                       Status: {data.member?.status || "inactive"}
                     </div>
+                    <div className="mt-2 inline-flex rounded-full border border-yellow-500/30 bg-black/30 px-3 py-1 text-xs text-yellow-200">
+                      Renewal: {data.member?.renewalState || "unknown"}
+                    </div>
                   </div>
                   <div className="space-y-3">
                     <div className="text-sm text-white/75">
@@ -138,10 +182,18 @@ export default function BlackCardDashboardPage() {
                         alt="BWE Black Card"
                         width={1400}
                         height={875}
-                        className="h-48 w-auto max-w-full object-contain sm:h-56"
+                        className="h-auto w-full max-w-full object-contain max-h-56 sm:max-h-64"
                       />
                     </div>
                   </div>
+                </div>
+                <div className="mt-4 flex flex-wrap gap-3">
+                  <Link href="/black-card/join?tier=signature" className="rounded-lg border border-yellow-500/30 px-4 py-2 text-sm text-yellow-200">
+                    Upgrade to Signature
+                  </Link>
+                  <Link href="/black-card/join?tier=elite" className="rounded-lg border border-yellow-500/30 px-4 py-2 text-sm text-yellow-200">
+                    Upgrade to Elite
+                  </Link>
                 </div>
               </section>
 
@@ -163,6 +215,12 @@ export default function BlackCardDashboardPage() {
                   <h2 className="text-xl font-bold text-yellow-200">
                     Redemption Area
                   </h2>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <button onClick={() => redeemReward("ad_credit")} disabled={redeemLoading} className="rounded-lg border border-yellow-500/30 px-3 py-1.5 text-xs text-yellow-200 disabled:opacity-60">Redeem Ad Credit</button>
+                    <button onClick={() => redeemReward("marketplace_fee_credit")} disabled={redeemLoading} className="rounded-lg border border-yellow-500/30 px-3 py-1.5 text-xs text-yellow-200 disabled:opacity-60">Redeem Fee Credit</button>
+                    <button onClick={() => redeemReward("event_access")} disabled={redeemLoading} className="rounded-lg border border-yellow-500/30 px-3 py-1.5 text-xs text-yellow-200 disabled:opacity-60">Redeem Event Access</button>
+                  </div>
+                  {redeemMessage ? <p className="mt-2 text-xs text-yellow-200">{redeemMessage}</p> : null}
                   {data.redemptions && data.redemptions.length > 0 ? (
                     <ul className="mt-3 space-y-2 text-sm">
                       {data.redemptions.slice(0, 5).map((item) => (
@@ -186,25 +244,44 @@ export default function BlackCardDashboardPage() {
               </section>
 
               <section className="rounded-2xl border border-white/10 bg-white/5 p-5">
-                <h2 className="text-xl font-bold text-yellow-200">Activity</h2>
-                {data.activity && data.activity.length > 0 ? (
+                <h2 className="text-xl font-bold text-yellow-200">Rewards Ledger</h2>
+                {data.ledger && data.ledger.length > 0 ? (
                   <ul className="mt-3 space-y-2 text-sm">
-                    {data.activity.map((item) => (
+                    {data.ledger.map((item) => (
                       <li
                         key={item.id}
                         className="rounded-lg border border-white/10 bg-black/30 p-3"
                       >
-                        <div className="font-semibold">{item.type}</div>
+                        <div className="font-semibold">
+                          {item.type === "credit" ? "+" : ""}
+                          {item.points} • {item.actionType}
+                        </div>
                         <div className="text-white/70">
-                          {item.at ? new Date(item.at).toLocaleString() : "—"}
+                          Balance: {item.balanceAfter} • {item.at ? new Date(item.at).toLocaleString() : "—"}
                         </div>
                       </li>
                     ))}
                   </ul>
                 ) : (
                   <p className="mt-3 text-sm text-white/70">
-                    No Black Card activity yet.
+                    No rewards ledger entries yet.
                   </p>
+                )}
+              </section>
+
+              <section className="rounded-2xl border border-white/10 bg-white/5 p-5">
+                <h2 className="text-xl font-bold text-yellow-200">Activity</h2>
+                {data.activity && data.activity.length > 0 ? (
+                  <ul className="mt-3 space-y-2 text-sm">
+                    {data.activity.map((item) => (
+                      <li key={item.id} className="rounded-lg border border-white/10 bg-black/30 p-3">
+                        <div className="font-semibold">{item.type}</div>
+                        <div className="text-white/70">{item.at ? new Date(item.at).toLocaleString() : "—"}</div>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="mt-3 text-sm text-white/70">No Black Card activity yet.</p>
                 )}
               </section>
             </>

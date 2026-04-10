@@ -37,22 +37,24 @@ export default async function handler(
     const client = await clientPromise;
     const db = client.db(getMongoDbName());
 
-    const userDoc = await db.collection("users").findOne(
-      ObjectId.isValid(payload.userId)
-        ? { _id: new ObjectId(payload.userId) }
-        : { email: payload.email },
-      {
-        projection: {
-          email: 1,
-          fullName: 1,
-          blackCardTier: 1,
-          blackCardStatus: 1,
-          blackCardMemberSince: 1,
-          blackCardPlanExpiresAt: 1,
-          blackCardRewardsBalance: 1,
+    const userDoc = await db
+      .collection("users")
+      .findOne(
+        ObjectId.isValid(payload.userId)
+          ? { _id: new ObjectId(payload.userId) }
+          : { email: payload.email },
+        {
+          projection: {
+            email: 1,
+            fullName: 1,
+            blackCardTier: 1,
+            blackCardStatus: 1,
+            blackCardMemberSince: 1,
+            blackCardPlanExpiresAt: 1,
+            blackCardRewardsBalance: 1,
+          },
         },
-      },
-    );
+      );
 
     if (!userDoc) {
       return res.status(404).json({ ok: false, error: "User not found" });
@@ -75,6 +77,25 @@ export default async function handler(
       .limit(10)
       .toArray();
 
+    const ledger = await db
+      .collection("black_card_rewards_ledger")
+      .find({ userId: payload.userId })
+      .sort({ createdAt: -1 })
+      .limit(20)
+      .toArray();
+
+    const now = Date.now();
+    const expiresAt = userDoc.blackCardPlanExpiresAt
+      ? new Date(userDoc.blackCardPlanExpiresAt).getTime()
+      : null;
+    const renewalState = !expiresAt
+      ? "unknown"
+      : expiresAt < now
+        ? "expired"
+        : expiresAt - now < 1000 * 60 * 60 * 24 * 7
+          ? "renewal_due"
+          : "active";
+
     return res.status(200).json({
       ok: true,
       member: {
@@ -90,6 +111,7 @@ export default async function handler(
             : "inactive",
         memberSince: userDoc.blackCardMemberSince || null,
         planExpiresAt: userDoc.blackCardPlanExpiresAt || null,
+        renewalState,
       },
       rewards: {
         balance:
@@ -107,6 +129,15 @@ export default async function handler(
         rewardType: String(item.rewardType || "reward"),
         value: typeof item.value === "number" ? item.value : 0,
         status: String(item.status || "pending"),
+        at: item.createdAt || null,
+      })),
+      ledger: ledger.map((item) => ({
+        id: String(item._id),
+        type: String(item.type || "entry"),
+        points: Number(item.points || 0),
+        actionType: String(item.actionType || ""),
+        rewardType: item.rewardType ? String(item.rewardType) : null,
+        balanceAfter: Number(item.balanceAfter || 0),
         at: item.createdAt || null,
       })),
     });
