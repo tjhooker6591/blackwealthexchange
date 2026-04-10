@@ -3,6 +3,7 @@ import Link from "next/link";
 
 type QueueItem = {
   id: string;
+  requestId?: string | null;
   eventType: string;
   consultantId: string;
   employerId: string;
@@ -17,26 +18,53 @@ export default function ConsultantModerationPage() {
   const [items, setItems] = useState<QueueItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [busyId, setBusyId] = useState<string | null>(null);
+
+  async function load() {
+    setLoading(true);
+    setError("");
+    try {
+      const res = await fetch("/api/admin/consultant-moderation-queue", {
+        credentials: "include",
+        cache: "no-store",
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error || "Failed to load queue");
+      setItems(Array.isArray(data?.items) ? data.items : []);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to load queue");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
-    (async () => {
-      setLoading(true);
-      setError("");
-      try {
-        const res = await fetch("/api/admin/consultant-moderation-queue", {
-          credentials: "include",
-          cache: "no-store",
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data?.error || "Failed to load queue");
-        setItems(Array.isArray(data?.items) ? data.items : []);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load queue");
-      } finally {
-        setLoading(false);
-      }
-    })();
+    void load();
   }, []);
+
+  async function moderate(
+    item: QueueItem,
+    disposition: "resolved" | "escalated" | "rejected",
+  ) {
+    if (!item.requestId) return;
+    setBusyId(item.id);
+    setError("");
+    try {
+      const res = await fetch("/api/admin/consultant-moderation-queue", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ requestId: item.requestId, disposition }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error || "Failed to update request");
+      await load();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to update request");
+    } finally {
+      setBusyId(null);
+    }
+  }
 
   return (
     <main className="min-h-screen bg-black px-4 py-8 text-white">
@@ -53,7 +81,10 @@ export default function ConsultantModerationPage() {
               Blocked/flagged employer-to-consultant request events for review.
             </p>
           </div>
-          <Link href="/admin/dashboard" className="text-sm text-cyan-200 underline">
+          <Link
+            href="/admin/dashboard"
+            className="text-sm text-cyan-200 underline"
+          >
             Back to admin dashboard
           </Link>
         </div>
@@ -73,22 +104,57 @@ export default function ConsultantModerationPage() {
         ) : (
           <div className="space-y-3">
             {items.map((item) => (
-              <article key={item.id} className="rounded-xl border border-white/10 bg-zinc-950 p-4">
+              <article
+                key={item.id}
+                className="rounded-xl border border-white/10 bg-zinc-950 p-4"
+              >
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <p className="text-sm font-semibold text-zinc-100">{item.eventType}</p>
+                  <p className="text-sm font-semibold text-zinc-100">
+                    {item.eventType}
+                  </p>
                   <span className="rounded-full border border-amber-400/40 px-2 py-1 text-[11px] text-amber-200">
                     {item.sourceVariant || "unknown"}
                   </span>
                 </div>
                 <p className="mt-2 text-sm text-zinc-300">
-                  Reasons: {item.moderationReasons.length ? item.moderationReasons.join(", ") : "none recorded"}
+                  Reasons:{" "}
+                  {item.moderationReasons.length
+                    ? item.moderationReasons.join(", ")
+                    : "none recorded"}
                 </p>
                 <p className="mt-2 text-xs text-zinc-500">
-                  Employer: {item.employerId || "n/a"} • Consultant: {item.consultantId || "n/a"}
+                  Employer: {item.employerId || "n/a"} • Consultant:{" "}
+                  {item.consultantId || "n/a"}
                 </p>
                 <p className="mt-1 text-xs text-zinc-500">
-                  Route: {item.pageRoute || "n/a"} • {item.createdAt ? new Date(item.createdAt).toLocaleString() : "unknown"}
+                  Route: {item.pageRoute || "n/a"} •{" "}
+                  {item.createdAt
+                    ? new Date(item.createdAt).toLocaleString()
+                    : "unknown"}
                 </p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <button
+                    disabled={!item.requestId || busyId === item.id}
+                    onClick={() => void moderate(item, "resolved")}
+                    className="rounded border border-emerald-400/40 px-2 py-1 text-xs text-emerald-200 disabled:opacity-40"
+                  >
+                    Resolve
+                  </button>
+                  <button
+                    disabled={!item.requestId || busyId === item.id}
+                    onClick={() => void moderate(item, "escalated")}
+                    className="rounded border border-amber-400/40 px-2 py-1 text-xs text-amber-200 disabled:opacity-40"
+                  >
+                    Escalate
+                  </button>
+                  <button
+                    disabled={!item.requestId || busyId === item.id}
+                    onClick={() => void moderate(item, "rejected")}
+                    className="rounded border border-red-400/40 px-2 py-1 text-xs text-red-200 disabled:opacity-40"
+                  >
+                    Reject
+                  </button>
+                </div>
               </article>
             ))}
           </div>

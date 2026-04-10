@@ -22,6 +22,35 @@ function makeRequestId() {
   return Math.random().toString(16).slice(2) + Date.now().toString(16);
 }
 
+function safeText(v: unknown) {
+  return typeof v === "string" ? v : "";
+}
+
+function relevanceScore(item: any, search: string) {
+  const q = search.toLowerCase().trim();
+  if (!q) return 0;
+
+  const name = safeText(item?.business_name).toLowerCase();
+  const alias = safeText(item?.alias).toLowerCase();
+  const category = `${safeText(item?.category)} ${safeText(item?.categories)} ${safeText(item?.display_categories)}`.toLowerCase();
+  const description = safeText(item?.description).toLowerCase();
+  const location = `${safeText(item?.city)} ${safeText(item?.state)} ${safeText(item?.address)}`.toLowerCase();
+
+  let score = 0;
+  if (name === q) score += 120;
+  if (name.startsWith(q)) score += 65;
+  if (name.includes(q)) score += 35;
+  if (alias.includes(q)) score += 20;
+  if (category.includes(q)) score += 22;
+  if (description.includes(q)) score += 10;
+  if (location.includes(q)) score += 8;
+
+  if (item?.isVerified === true || item?.verified === true) score += 8;
+  if (Number(item?.amountPaid || 0) > 0) score += 4;
+
+  return score;
+}
+
 /**
  * GET /api/search/businesses
  * Query:
@@ -151,13 +180,34 @@ export default async function handler(
 
     const total = await col.countDocuments(query);
 
-    const items = await col
-      .find(query)
-      // Sponsor-friendly + stable sort (uses your new index)
-      .sort({ amountPaid: -1, createdAt: -1, business_name: 1 })
-      .skip(skip)
-      .limit(limit)
-      .toArray();
+    let items: any[] = [];
+
+    if (search) {
+      const candidateLimit = Math.max(limit * 8, 120);
+      const candidates = await col
+        .find(query)
+        .sort({ createdAt: -1, business_name: 1 })
+        .limit(candidateLimit)
+        .toArray();
+
+      const ranked = candidates
+        .map((item) => ({ item, score: relevanceScore(item, search) }))
+        .sort((a, b) => {
+          if (b.score !== a.score) return b.score - a.score;
+          return Number(b.item?.amountPaid || 0) - Number(a.item?.amountPaid || 0);
+        })
+        .map((x) => x.item);
+
+      items = ranked.slice(skip, skip + limit);
+    } else {
+      items = await col
+        .find(query)
+        // Sponsor-friendly + stable sort for broad browse
+        .sort({ amountPaid: -1, createdAt: -1, business_name: 1 })
+        .skip(skip)
+        .limit(limit)
+        .toArray();
+    }
 
     const tookMs = Date.now() - t0;
 

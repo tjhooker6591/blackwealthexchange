@@ -6,7 +6,8 @@ type UrlEntry = { loc: string; changefreq?: string; priority?: string };
 function buildUrlSet(urls: UrlEntry[]) {
   const body = urls
     .map(
-      (u) => `<url><loc>${u.loc}</loc>${u.changefreq ? `<changefreq>${u.changefreq}</changefreq>` : ""}${u.priority ? `<priority>${u.priority}</priority>` : ""}</url>`,
+      (u) =>
+        `<url><loc>${u.loc}</loc>${u.changefreq ? `<changefreq>${u.changefreq}</changefreq>` : ""}${u.priority ? `<priority>${u.priority}</priority>` : ""}</url>`,
     )
     .join("");
 
@@ -19,12 +20,48 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
   const urls: UrlEntry[] = [
     { loc: `${base}/`, changefreq: "daily", priority: "1.0" },
     { loc: `${base}/black-wealth`, changefreq: "weekly", priority: "0.95" },
-    { loc: `${base}/business-directory`, changefreq: "daily", priority: "0.95" },
+    {
+      loc: `${base}/business-directory`,
+      changefreq: "daily",
+      priority: "0.95",
+    },
+    {
+      loc: `${base}/black-owned-businesses`,
+      changefreq: "weekly",
+      priority: "0.85",
+    },
+    {
+      loc: `${base}/black-owned-businesses/ca`,
+      changefreq: "weekly",
+      priority: "0.75",
+    },
+    {
+      loc: `${base}/black-owned-businesses/tx`,
+      changefreq: "weekly",
+      priority: "0.75",
+    },
+    {
+      loc: `${base}/black-owned-businesses/ga`,
+      changefreq: "weekly",
+      priority: "0.75",
+    },
     { loc: `${base}/search-results`, changefreq: "daily", priority: "0.8" },
-    { loc: `${base}/travel-map/explore`, changefreq: "daily", priority: "0.85" },
+    {
+      loc: `${base}/travel-map/explore`,
+      changefreq: "daily",
+      priority: "0.85",
+    },
     { loc: `${base}/wealth-builder`, changefreq: "daily", priority: "0.85" },
-    { loc: `${base}/recruiting-consulting`, changefreq: "weekly", priority: "0.8" },
-    { loc: `${base}/financial-literacy`, changefreq: "weekly", priority: "0.75" },
+    {
+      loc: `${base}/recruiting-consulting`,
+      changefreq: "weekly",
+      priority: "0.8",
+    },
+    {
+      loc: `${base}/financial-literacy`,
+      changefreq: "weekly",
+      priority: "0.75",
+    },
     { loc: `${base}/job-listings`, changefreq: "daily", priority: "0.8" },
     { loc: `${base}/marketplace`, changefreq: "daily", priority: "0.8" },
     { loc: `${base}/about`, changefreq: "monthly", priority: "0.6" },

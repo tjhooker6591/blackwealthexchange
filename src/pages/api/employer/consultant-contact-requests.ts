@@ -127,7 +127,10 @@ export default async function handler(
         res.setHeader(
           "Retry-After",
           String(
-            Math.max(ipLimit.retryAfterSeconds, employerLimit.retryAfterSeconds),
+            Math.max(
+              ipLimit.retryAfterSeconds,
+              employerLimit.retryAfterSeconds,
+            ),
           ),
         );
         return res
@@ -137,6 +140,20 @@ export default async function handler(
 
       const moderation = containsSuspiciousContent(message);
       if (moderation.flagged) {
+        const now = new Date();
+        const blockedInsert = await requestsCol.insertOne({
+          employerId: auth.employerId,
+          employerEmail: auth.employerEmail,
+          consultantId,
+          requestType: requestType || "contact",
+          message,
+          moderationStatus: "blocked",
+          moderationReasons: moderation.reasons,
+          status: "blocked",
+          createdAt: now,
+          updatedAt: now,
+        });
+
         await db.collection("flow_events").insertOne({
           eventType: "consultant_contact_request_blocked",
           pageRoute: "/api/employer/consultant-contact-requests",
@@ -145,13 +162,15 @@ export default async function handler(
           source_variant: requestType || "contact",
           employerId: auth.employerId,
           consultantId,
+          requestId: String(blockedInsert.insertedId),
           moderationReasons: moderation.reasons,
-          createdAt: new Date(),
+          createdAt: now,
         });
 
         return res.status(400).json({
           error:
             "Request was blocked by moderation checks. Please revise message.",
+          requestId: String(blockedInsert.insertedId),
         });
       }
 
