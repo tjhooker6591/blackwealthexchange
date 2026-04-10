@@ -275,7 +275,7 @@ export default function Pricing() {
                   alt="BWE Black Card"
                   width={1400}
                   height={875}
-                  className="h-44 w-full object-cover"
+                  className="h-32 w-full object-cover sm:h-36"
                 />
               </div>
               <div className="mt-4">

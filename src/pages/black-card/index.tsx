@@ -34,18 +34,20 @@ export default function BlackCardLandingPage() {
             benefits, and ecosystem incentives that reward action.
           </p>
 
-          <div className="mt-6 overflow-hidden rounded-2xl border border-white/10 bg-white/5">
-            <Image
-              src="/images/black-card/bwe-black-card-close-up.png"
-              alt="BWE Black Card close-up"
-              width={1400}
-              height={875}
-              className="h-auto w-full object-cover"
-              priority
-            />
+          <div className="mt-5">
+            <div className="mx-auto w-full max-w-3xl overflow-hidden rounded-xl border border-white/10 bg-white/5 shadow-[0_10px_40px_rgba(0,0,0,0.35)]">
+              <Image
+                src="/images/black-card/bwe-black-card-close-up.png"
+                alt="BWE Black Card close-up"
+                width={1400}
+                height={875}
+                className="h-44 w-full object-cover sm:h-52"
+                priority
+              />
+            </div>
           </div>
 
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
+          <div className="mt-6 grid gap-4 md:grid-cols-3">
             {ORDER.map((tierKey) => {
               const tier = BLACK_CARD_TIERS[tierKey];
               return (

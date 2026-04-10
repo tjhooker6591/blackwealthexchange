@@ -118,7 +118,9 @@ export default function BlackCardDashboardPage() {
                       <div>
                         Member since:{" "}
                         {data.member?.memberSince
-                          ? new Date(data.member.memberSince).toLocaleDateString()
+                          ? new Date(
+                              data.member.memberSince,
+                            ).toLocaleDateString()
                           : "—"}
                       </div>
                       <div>
@@ -130,13 +132,13 @@ export default function BlackCardDashboardPage() {
                           : "—"}
                       </div>
                     </div>
-                    <div className="overflow-hidden rounded-xl border border-white/15">
+                    <div className="overflow-hidden rounded-xl border border-white/15 sm:max-w-sm">
                       <Image
                         src="/images/black-card/bwe-black-card-close-up.png"
                         alt="BWE Black Card"
                         width={1400}
                         height={875}
-                        className="h-auto w-full object-cover"
+                        className="h-40 w-full object-cover"
                       />
                     </div>
                   </div>
