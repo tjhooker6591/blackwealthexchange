@@ -16,7 +16,10 @@ const STATE_NAME: Record<string, string> = {
 
 export default function StateDirectoryLanding() {
   const router = useRouter();
-  const stateRaw = typeof router.query.state === "string" ? router.query.state.toLowerCase() : "";
+  const stateRaw =
+    typeof router.query.state === "string"
+      ? router.query.state.toLowerCase()
+      : "";
   const state = stateRaw.slice(0, 2);
   const stateName = STATE_NAME[state] || state.toUpperCase() || "this state";
 
@@ -35,10 +38,15 @@ export default function StateDirectoryLanding() {
       </Head>
       <main className="min-h-screen bg-black px-6 py-12 text-white">
         <div className="mx-auto max-w-4xl">
-          <p className="text-xs uppercase tracking-[0.2em] text-yellow-300">State landing</p>
-          <h1 className="mt-3 text-4xl font-extrabold">Black-owned businesses in {stateName}</h1>
+          <p className="text-xs uppercase tracking-[0.2em] text-yellow-300">
+            State landing
+          </p>
+          <h1 className="mt-3 text-4xl font-extrabold">
+            Black-owned businesses in {stateName}
+          </h1>
           <p className="mt-4 text-zinc-300">
-            Use this state entry point to find Black-owned businesses by category, city, and trust signals.
+            Use this state entry point to find Black-owned businesses by
+            category, city, and trust signals.
           </p>
 
           <div className="mt-6 flex flex-wrap gap-3">

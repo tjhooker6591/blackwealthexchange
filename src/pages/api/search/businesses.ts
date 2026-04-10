@@ -32,9 +32,11 @@ function relevanceScore(item: any, search: string) {
 
   const name = safeText(item?.business_name).toLowerCase();
   const alias = safeText(item?.alias).toLowerCase();
-  const category = `${safeText(item?.category)} ${safeText(item?.categories)} ${safeText(item?.display_categories)}`.toLowerCase();
+  const category =
+    `${safeText(item?.category)} ${safeText(item?.categories)} ${safeText(item?.display_categories)}`.toLowerCase();
   const description = safeText(item?.description).toLowerCase();
-  const location = `${safeText(item?.city)} ${safeText(item?.state)} ${safeText(item?.address)}`.toLowerCase();
+  const location =
+    `${safeText(item?.city)} ${safeText(item?.state)} ${safeText(item?.address)}`.toLowerCase();
 
   let score = 0;
   if (name === q) score += 120;
@@ -194,7 +196,9 @@ export default async function handler(
         .map((item) => ({ item, score: relevanceScore(item, search) }))
         .sort((a, b) => {
           if (b.score !== a.score) return b.score - a.score;
-          return Number(b.item?.amountPaid || 0) - Number(a.item?.amountPaid || 0);
+          return (
+            Number(b.item?.amountPaid || 0) - Number(a.item?.amountPaid || 0)
+          );
         })
         .map((x) => x.item);
 

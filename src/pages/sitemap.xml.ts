@@ -45,6 +45,16 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
       changefreq: "weekly",
       priority: "0.75",
     },
+    {
+      loc: `${base}/black-owned-businesses/category/financial-services`,
+      changefreq: "weekly",
+      priority: "0.72",
+    },
+    {
+      loc: `${base}/black-owned-businesses/city/atlanta-ga`,
+      changefreq: "weekly",
+      priority: "0.72",
+    },
     { loc: `${base}/search-results`, changefreq: "daily", priority: "0.8" },
     {
       loc: `${base}/travel-map/explore`,
