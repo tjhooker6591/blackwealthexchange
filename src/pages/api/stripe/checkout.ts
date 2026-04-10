@@ -11,6 +11,11 @@ import {
   getAdQuote,
 } from "@/lib/advertising/pricing";
 import { getMongoDbName } from "@/lib/env";
+import {
+  BLACK_CARD_TIERS,
+  BLACK_CARD_TIER_BY_ITEM_ID,
+  isBlackCardPlanItemId,
+} from "@/lib/black-card";
 
 const stripeSecret = process.env.STRIPE_SECRET_KEY;
 const stripe = new Stripe(stripeSecret || "sk_missing", {
@@ -48,11 +53,9 @@ function withCheckoutSessionId(url: string) {
 }
 
 function getOrigin(req: NextApiRequest) {
-  // canonical production origin
   const prod = "https://www.blackwealthexchange.com";
   if (process.env.NODE_ENV === "production") return prod;
 
-  // dev/preview
   const proto = (req.headers["x-forwarded-proto"] as string) || "http";
   const host =
     (req.headers["x-forwarded-host"] as string) ||
@@ -126,6 +129,62 @@ function buildCheckoutFingerprint(input: {
   ].join("|");
 }
 
+function getAccountCollectionName(accountType?: string) {
+  return accountType === "seller"
+    ? "sellers"
+    : accountType === "employer"
+      ? "employers"
+      : accountType === "business"
+        ? "businesses"
+        : "users";
+}
+
+function isPremiumActiveFromDoc(doc: any) {
+  if (!doc || typeof doc !== "object") return false;
+
+  const currentPlan =
+    typeof doc.currentPlan === "string" ? doc.currentPlan.toLowerCase() : "";
+
+  const premiumStatus =
+    typeof doc.premiumStatus === "string"
+      ? doc.premiumStatus.toLowerCase()
+      : "";
+
+  return (
+    doc.isPremium === true ||
+    currentPlan === "premium" ||
+    premiumStatus === "active"
+  );
+}
+
+function isWealthBuilderPremiumEntitlementActive(doc: any) {
+  if (!doc || typeof doc !== "object") return false;
+
+  const productKey =
+    typeof doc.productKey === "string" ? doc.productKey.toLowerCase() : "";
+  const tier = typeof doc.tier === "string" ? doc.tier.toLowerCase() : "";
+  const status = typeof doc.status === "string" ? doc.status.toLowerCase() : "";
+
+  return (
+    productKey === "wealth_builder_premium" &&
+    tier === "premium" &&
+    (status === "active" || status === "trialing")
+  );
+}
+
+function isBlackCardTierActiveFromDoc(doc: any, requestedTier: string) {
+  if (!doc || typeof doc !== "object") return false;
+
+  const normalizedTier =
+    typeof doc.blackCardTier === "string" ? doc.blackCardTier.toLowerCase() : "";
+  const normalizedStatus =
+    typeof doc.blackCardStatus === "string"
+      ? doc.blackCardStatus.toLowerCase()
+      : "inactive";
+
+  return normalizedTier === requestedTier && normalizedStatus === "active";
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
@@ -141,12 +200,13 @@ export default async function handler(
 
   const payload = req.body as CheckoutPayload;
 
-  // Auth via your custom session cookie
   const cookies = cookie.parse(req.headers.cookie || "");
   const token = cookies.session_token;
+  const cookieAccountType = cookies.accountType || "user";
 
   let sessionUserId = "";
   let sessionEmail = "";
+  let sessionAccountType = cookieAccountType;
 
   if (token) {
     try {
@@ -156,6 +216,8 @@ export default async function handler(
       const decoded = jwt.verify(token, SECRET as string) as any;
       sessionUserId = decoded?.userId;
       sessionEmail = decoded?.email || "";
+      sessionAccountType = decoded?.accountType || cookieAccountType || "user";
+
       if (!sessionUserId) {
         return res.status(401).json({ error: "Unauthorized" });
       }
@@ -168,6 +230,7 @@ export default async function handler(
     typeof payload.userId === "string"
   ) {
     sessionUserId = payload.userId;
+    sessionAccountType = cookieAccountType || "user";
   } else {
     return res.status(401).json({ error: "Unauthorized" });
   }
@@ -178,7 +241,6 @@ export default async function handler(
     return res.status(400).json({ error: "Missing or invalid fields" });
   }
 
-  // ✅ Support both new top-level fields and older nested metadata
   const metadataIn = payload.metadata || {};
   const requestedDurationDays = parseOptionalPositiveInt(
     payload.durationDays,
@@ -205,7 +267,6 @@ export default async function handler(
 
     const origin = getOrigin(req);
 
-    // ✅ Match your existing pages in the repo
     let successUrl = withCheckoutSessionId(`${origin}/payment-success`);
     let cancelUrl = `${origin}/payment-cancel`;
 
@@ -222,16 +283,13 @@ export default async function handler(
     const normalizedPlacement = requestedPlacement || "";
     let normalizedJobId = requestedJobId || "";
 
-    // ✅ Keep normalized item id for metadata/payments/webhook consistency
     let finalItemId = itemId;
 
-    // Optional: store a normalized user ObjectId if valid (useful for queries)
     const userObjectId = ObjectId.isValid(sessionUserId)
       ? new ObjectId(sessionUserId)
       : null;
 
     if (isAd) {
-      // ✅ Shared server-side pricing authority + alias normalization
       const adItemId = normalizeAdItemId(itemId);
       finalItemId = adItemId;
 
@@ -263,7 +321,6 @@ export default async function handler(
 
       isPlatformAccount = true;
     } else if (type === "product") {
-      // Product purchase: look up product & price server-side (don’t trust client amount)
       const product = await db
         .collection("products")
         .findOne(
@@ -291,7 +348,6 @@ export default async function handler(
 
       itemName = product?.name || itemName;
 
-      // Expect product.price in dollars or cents — adjust to your schema
       if (typeof product.price === "number") {
         unitAmount = Math.round(product.price * 100);
       } else if (typeof (product as any).priceCents === "number") {
@@ -320,24 +376,95 @@ export default async function handler(
       isPlatformAccount =
         stripeAccountId === (process.env.PLATFORM_STRIPE_ACCOUNT_ID as string);
     } else if (type === "plan") {
-      // If you support plan upgrades through this endpoint, price them server-side
-      const planMap: Record<string, number> = {
-        premium: 1200, // $12.00
-        founder: 4900, // $49.00
-        "music-creator-starter": 2900, // $29.00
-        "music-creator-pro": 7900, // $79.00
+      const planMap: Record<
+        string,
+        {
+          amount: number;
+          name: string;
+          billingInterval?: "monthly" | "annual" | null;
+        }
+      > = {
+        premium: {
+          amount: 1200,
+          name: "Plan Upgrade (premium)",
+          billingInterval: null,
+        },
+        founder: {
+          amount: 4900,
+          name: "Plan Upgrade (founder)",
+          billingInterval: null,
+        },
+        "music-creator-starter": {
+          amount: 2900,
+          name: "Plan Upgrade (music-creator-starter)",
+          billingInterval: null,
+        },
+        "music-creator-pro": {
+          amount: 7900,
+          name: "Plan Upgrade (music-creator-pro)",
+          billingInterval: null,
+        },
+
+        // Wealth Builder Premium
+        "wealth-builder-premium-monthly": {
+          amount: 899,
+          name: "Wealth Builder Premium (Monthly)",
+          billingInterval: "monthly",
+        },
+        "wealth-builder-premium-annual": {
+          amount: 7900,
+          name: "Wealth Builder Premium (Annual)",
+          billingInterval: "annual",
+        },
+
+        // BWE Black Card membership tiers
+        "black-card-standard": {
+          amount: BLACK_CARD_TIERS.standard.priceCents,
+          name: BLACK_CARD_TIERS.standard.label,
+          billingInterval: "monthly",
+        },
+        "black-card-signature": {
+          amount: BLACK_CARD_TIERS.signature.priceCents,
+          name: BLACK_CARD_TIERS.signature.label,
+          billingInterval: "monthly",
+        },
+        "black-card-elite": {
+          amount: BLACK_CARD_TIERS.elite.priceCents,
+          name: BLACK_CARD_TIERS.elite.label,
+          billingInterval: "monthly",
+        },
       };
 
-      unitAmount = planMap[itemId];
-      if (!unitAmount) return res.status(400).json({ error: "Invalid plan" });
+      const plan = planMap[itemId];
+      if (!plan) {
+        return res.status(400).json({ error: "Invalid plan" });
+      }
 
-      itemName = `Plan Upgrade (${itemId})`;
+      unitAmount = plan.amount;
+      itemName = plan.name;
       isPlatformAccount = true;
       stripeAccountId = process.env.PLATFORM_STRIPE_ACCOUNT_ID as string;
 
       if (itemId.startsWith("music-creator-")) {
         successUrl = withCheckoutSessionId(`${origin}/music/join?activated=1`);
         cancelUrl = `${origin}/music/pricing?canceled=1`;
+      }
+
+      if (
+        itemId === "wealth-builder-premium-monthly" ||
+        itemId === "wealth-builder-premium-annual"
+      ) {
+        successUrl = withCheckoutSessionId(
+          `${origin}/wealth-builder/upgrade?checkout=success`,
+        );
+        cancelUrl = `${origin}/wealth-builder/upgrade?checkout=cancel`;
+      }
+
+      if (isBlackCardPlanItemId(itemId)) {
+        successUrl = withCheckoutSessionId(
+          `${origin}/black-card/join?tier=${BLACK_CARD_TIER_BY_ITEM_ID[itemId]}&checkout=success`,
+        );
+        cancelUrl = `${origin}/black-card/join?tier=${BLACK_CARD_TIER_BY_ITEM_ID[itemId]}&checkout=cancel`;
       }
     } else if (type === "course") {
       const courseMap: Record<string, { name: string; amount: number }> = {
@@ -384,8 +511,9 @@ export default async function handler(
       };
 
       const job = jobMap[itemId];
-      if (!job)
+      if (!job) {
         return res.status(400).json({ error: "Invalid job posting type" });
+      }
 
       unitAmount = job.amount;
       itemName = job.name;
@@ -433,6 +561,7 @@ export default async function handler(
       userId: sessionUserId,
       itemId: finalItemId,
       type,
+      accountType: sessionAccountType,
       durationDays:
         typeof normalizedDurationDays === "number"
           ? String(normalizedDurationDays)
@@ -447,11 +576,108 @@ export default async function handler(
       metadata.courseId = finalItemId;
     }
 
+    if (
+      type === "plan" &&
+      (finalItemId === "wealth-builder-premium-monthly" ||
+        finalItemId === "wealth-builder-premium-annual")
+    ) {
+      metadata.productKey = "wealth_builder_premium";
+      metadata.tier = "premium";
+      metadata.billingInterval =
+        finalItemId === "wealth-builder-premium-annual" ? "annual" : "monthly";
+    }
+
+    if (type === "plan" && isBlackCardPlanItemId(finalItemId)) {
+      metadata.productKey = "bwe_black_card";
+      metadata.tier = BLACK_CARD_TIER_BY_ITEM_ID[finalItemId];
+      metadata.billingInterval = "monthly";
+    }
+
+    // ---------------------------------------------------------
+    // PLAN GUARD (server-side)
+    // ---------------------------------------------------------
+    if (
+      type === "plan" &&
+      (finalItemId === "premium" ||
+        finalItemId === "wealth-builder-premium-monthly" ||
+        finalItemId === "wealth-builder-premium-annual" ||
+        isBlackCardPlanItemId(finalItemId))
+    ) {
+      const accountCollectionName =
+        getAccountCollectionName(sessionAccountType);
+
+      const accountQuery = {
+        $or: [
+          ...(userObjectId ? [{ _id: userObjectId }] : []),
+          ...(sessionEmail ? [{ email: sessionEmail }] : []),
+        ],
+      };
+
+      let accountDoc = await db
+        .collection(accountCollectionName)
+        .findOne(accountQuery);
+
+      if (!accountDoc && accountCollectionName !== "users") {
+        accountDoc = await db.collection("users").findOne(accountQuery);
+      }
+
+      if (finalItemId === "premium" && isPremiumActiveFromDoc(accountDoc)) {
+        return res.status(409).json({
+          error: "Premium account already active",
+          code: "PREMIUM_ALREADY_ACTIVE",
+        });
+      }
+
+      if (
+        finalItemId === "wealth-builder-premium-monthly" ||
+        finalItemId === "wealth-builder-premium-annual"
+      ) {
+        if (sessionAccountType !== "user") {
+          return res.status(403).json({
+            error:
+              "Wealth Builder Premium is only available for personal user accounts",
+            code: "WEALTH_BUILDER_USER_ACCOUNT_REQUIRED",
+          });
+        }
+
+        const existingEntitlement = await db
+          .collection("user_entitlements")
+          .findOne({
+            userId: sessionUserId,
+            accountType: "user",
+            productKey: "wealth_builder_premium",
+          });
+
+        if (isWealthBuilderPremiumEntitlementActive(existingEntitlement)) {
+          return res.status(409).json({
+            error: "Wealth Builder Premium is already active",
+            code: "WEALTH_BUILDER_PREMIUM_ALREADY_ACTIVE",
+          });
+        }
+      }
+
+      if (isBlackCardPlanItemId(finalItemId)) {
+        if (sessionAccountType !== "user") {
+          return res.status(403).json({
+            error:
+              "BWE Black Card membership is currently available for personal user accounts",
+            code: "BLACK_CARD_USER_ACCOUNT_REQUIRED",
+          });
+        }
+
+        const requestedTier = BLACK_CARD_TIER_BY_ITEM_ID[finalItemId];
+        if (isBlackCardTierActiveFromDoc(accountDoc, requestedTier)) {
+          return res.status(409).json({
+            error: `BWE Black Card ${requestedTier} is already active`,
+            code: "BLACK_CARD_TIER_ALREADY_ACTIVE",
+          });
+        }
+      }
+    }
+
     // ---------------------------------------------------------
     // P0 DUPLICATE GUARD (server-side)
     // ---------------------------------------------------------
-    // Only enforce this strict recent-match guard for ad checkouts right now
-    // to avoid accidental blocking of legitimate rapid product/plan purchases.
     if (type === "ad") {
       const createdAfter = new Date(Date.now() - 60_000);
 
@@ -482,7 +708,6 @@ export default async function handler(
       );
 
       if (existingRecent?.stripeSessionId) {
-        // If already paid, block another checkout immediately.
         if (existingRecent.status === "paid") {
           return res.status(409).json({
             error:
@@ -493,7 +718,6 @@ export default async function handler(
           });
         }
 
-        // Try to reuse an existing open Checkout Session.
         try {
           const existingSession = await stripe.checkout.sessions.retrieve(
             existingRecent.stripeSessionId,
@@ -513,7 +737,6 @@ export default async function handler(
           );
         }
 
-        // If session isn't reusable, block rapid duplicate creation.
         return res.status(409).json({
           error:
             "A checkout attempt is already in progress. Please wait a moment and try again.",
@@ -524,7 +747,6 @@ export default async function handler(
       }
     }
 
-    // Helpful for dedupe debugging / replay diagnostics
     const checkoutFingerprint = buildCheckoutFingerprint({
       userId: sessionUserId,
       email: sessionEmail,
@@ -539,8 +761,6 @@ export default async function handler(
 
     metadata.checkoutFingerprint = checkoutFingerprint;
 
-    // Stripe idempotency key protects against near-simultaneous duplicate requests.
-    // Minute bucket keeps it stable for rapid retries but allows legitimate future purchases.
     const minuteBucket = Math.floor(Date.now() / 60_000);
     const idempotencyKey = `checkout:${sha256Hex(
       `${checkoutFingerprint}|${minuteBucket}`,
@@ -563,8 +783,6 @@ export default async function handler(
       metadata,
       success_url: successUrl,
       cancel_url: cancelUrl,
-
-      // Helpful for reconciliation
       client_reference_id: sessionUserId,
       payment_intent_data: {
         metadata,
@@ -581,7 +799,6 @@ export default async function handler(
       idempotencyKey,
     });
 
-    // ✅ Create a pending payment record so Admin can always reconcile
     await payments.updateOne(
       { stripeSessionId: stripeSession.id },
       {
@@ -609,6 +826,30 @@ export default async function handler(
             placement: normalizedPlacement || null,
             jobId: normalizedJobId || null,
             checkoutFingerprint,
+            productKey:
+              type === "plan" &&
+              (finalItemId === "wealth-builder-premium-monthly" ||
+                finalItemId === "wealth-builder-premium-annual")
+                ? "wealth_builder_premium"
+                : type === "plan" && isBlackCardPlanItemId(finalItemId)
+                  ? "bwe_black_card"
+                  : null,
+            tier:
+              type === "plan" &&
+              (finalItemId === "wealth-builder-premium-monthly" ||
+                finalItemId === "wealth-builder-premium-annual")
+                ? "premium"
+                : type === "plan" && isBlackCardPlanItemId(finalItemId)
+                  ? BLACK_CARD_TIER_BY_ITEM_ID[finalItemId]
+                  : null,
+            billingInterval:
+              type === "plan" && finalItemId === "wealth-builder-premium-annual"
+                ? "annual"
+                : type === "plan" &&
+                    (finalItemId === "wealth-builder-premium-monthly" ||
+                      isBlackCardPlanItemId(finalItemId))
+                  ? "monthly"
+                  : null,
           },
         },
         $set: {
@@ -644,7 +885,6 @@ export default async function handler(
   } catch (err: any) {
     console.error("❌ Stripe session creation failed:", err);
 
-    // More helpful message for the seller transfer capability issue you hit
     if (err?.code === "insufficient_capabilities_for_transfer") {
       return res.status(400).json({
         error:

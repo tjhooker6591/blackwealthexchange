@@ -846,6 +846,33 @@ export default function Home() {
             </div>
           </div>
 
+          <div className="mx-auto mt-4 max-w-4xl rounded-2xl border border-yellow-500/25 bg-yellow-500/10 p-4 sm:p-5">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <div className="text-[11px] font-bold uppercase tracking-[0.15em] text-yellow-300">
+                  Membership Product
+                </div>
+                <div className="mt-1 text-sm font-semibold text-white sm:text-base">
+                  BWE Black Card • Built for Black Economic Power
+                </div>
+              </div>
+              <Link
+                href="/black-card"
+                onClick={() =>
+                  trackHomepageEvent("homepage_cta_clicked", {
+                    section: "hero",
+                    ctaId: "hero_black_card",
+                    ctaLabel: "Explore BWE Black Card",
+                    destination: "/black-card",
+                  })
+                }
+                className="inline-flex items-center justify-center rounded-xl border border-yellow-400/40 bg-black/40 px-4 py-2 text-sm font-semibold text-yellow-200 hover:bg-black/60"
+              >
+                Explore BWE Black Card
+              </Link>
+            </div>
+          </div>
+
           <section id="search-dominant" className="mt-5 sm:mt-6 scroll-mt-24">
             <div className="mx-auto max-w-4xl">
               <div className="mb-2.5">

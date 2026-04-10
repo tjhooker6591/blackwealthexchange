@@ -249,7 +249,7 @@ export default function UserDashboard() {
           </div>
 
           {/* Quick actions */}
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-3">
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-4 sm:gap-3">
             <Link
               href="/job-listings"
               className="inline-flex items-center justify-center gap-2 rounded-xl bg-gold px-4 py-2.5 text-center text-sm font-semibold text-black transition hover:bg-yellow-500 sm:px-5"
@@ -272,6 +272,14 @@ export default function UserDashboard() {
             >
               <Crown className="h-4 w-4 text-yellow-300" />
               Premium Tools
+            </Link>
+
+            <Link
+              href="/black-card"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-yellow-500/20 bg-yellow-500/10 px-4 py-2.5 text-center text-sm transition hover:bg-yellow-500/15 sm:px-5"
+            >
+              <Crown className="h-4 w-4 text-yellow-300" />
+              BWE Black Card
             </Link>
           </div>
         </div>
