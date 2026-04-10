@@ -35,7 +35,7 @@ export default function BlackCardLandingPage() {
           </p>
 
           <div className="mt-4">
-            <div className="mx-auto flex w-full max-w-xl items-center justify-center rounded-xl border border-white/10 bg-white/5 p-3 shadow-[0_8px_24px_rgba(0,0,0,0.3)] sm:p-4">
+            <div className="mx-auto flex w-full max-w-xl items-center justify-center rounded-xl border border-white/10 bg-black p-3 shadow-[0_8px_24px_rgba(0,0,0,0.3)] sm:p-4">
               <Image
                 src="/images/black-card/bwe-black-card-close-up.png"
                 alt="BWE Black Card close-up"
