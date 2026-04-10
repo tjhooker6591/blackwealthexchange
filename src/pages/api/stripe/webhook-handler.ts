@@ -13,7 +13,10 @@ import {
   reserveFeaturedSponsorWeeks,
   weekStartUtc,
 } from "@/lib/advertising/sponsorSchedule";
-import { BLACK_CARD_TIER_BY_ITEM_ID, isBlackCardPlanItemId } from "@/lib/black-card";
+import {
+  BLACK_CARD_TIER_BY_ITEM_ID,
+  isBlackCardPlanItemId,
+} from "@/lib/black-card";
 
 export const config = {
   api: { bodyParser: false },
@@ -1107,7 +1110,8 @@ export default async function webhookHandler(
      */
     if (metaType === "plan" && isBlackCardPlanItemId(normalizedItemId)) {
       const blackCardTier = BLACK_CARD_TIER_BY_ITEM_ID[normalizedItemId];
-      const membershipDurationDays = parseDurationDays(mergedMeta.durationDays) || 30;
+      const membershipDurationDays =
+        parseDurationDays(mergedMeta.durationDays) || 30;
       const planStartAt = paidAt;
       const planExpiresAt = new Date(
         planStartAt.getTime() + membershipDurationDays * 24 * 60 * 60 * 1000,
@@ -1121,6 +1125,7 @@ export default async function webhookHandler(
         blackCardPlanExpiresAt: planExpiresAt,
         blackCardStripeSessionId: stripeSessionId,
         blackCardPaymentIntentId: paymentIntentId || null,
+        blackCardRewardsBalance: 0,
         updatedAt: now,
       };
 
@@ -1141,6 +1146,21 @@ export default async function webhookHandler(
           },
         );
       }
+
+      await db.collection("flow_events").insertOne({
+        eventType: "black_card_membership_activated",
+        pageRoute: "/api/stripe/webhook-handler",
+        section: "black_card_membership_entitlement",
+        source: "stripe_webhook",
+        source_variant: "activated",
+        stripeSessionId,
+        paymentIntentId: paymentIntentId || null,
+        userId: userId || null,
+        email: email || null,
+        itemId: normalizedItemId,
+        tier: blackCardTier,
+        createdAt: now,
+      });
 
       console.log(
         `✅ BWE Black Card activated tier=${blackCardTier} user=${userId || email}`,

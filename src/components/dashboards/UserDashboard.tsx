@@ -275,7 +275,7 @@ export default function UserDashboard() {
             </Link>
 
             <Link
-              href="/black-card"
+              href="/dashboard/black-card"
               className="inline-flex items-center justify-center gap-2 rounded-xl border border-yellow-500/20 bg-yellow-500/10 px-4 py-2.5 text-center text-sm transition hover:bg-yellow-500/15 sm:px-5"
             >
               <Crown className="h-4 w-4 text-yellow-300" />

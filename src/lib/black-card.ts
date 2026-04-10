@@ -17,9 +17,9 @@ export const BLACK_CARD_TIERS: Record<BlackCardTier, BlackCardTierConfig> = {
     tier: "standard",
     label: "BWE Black Card Standard",
     checkoutItemId: "black-card-standard",
-    priceCents: 23100,
-    monthlyLabel: "$231",
-    tagline: "Official ecosystem membership identity + starter benefits.",
+    priceCents: 2310,
+    monthlyLabel: "$23.10",
+    tagline: "Accessible ecosystem membership identity + starter benefits.",
     benefits: [
       "Digital Black Card member identity",
       "Starter rewards on approved ecosystem activity",
@@ -49,7 +49,8 @@ export const BLACK_CARD_TIERS: Record<BlackCardTier, BlackCardTierConfig> = {
     checkoutItemId: "black-card-elite",
     priceCents: 199900,
     monthlyLabel: "$1,999",
-    tagline: "Top-tier status with VIP ecosystem access and business advantages.",
+    tagline:
+      "Top-tier status with VIP ecosystem access and business advantages.",
     benefits: [
       "Everything in Signature",
       "VIP event, summit, and private session access",
