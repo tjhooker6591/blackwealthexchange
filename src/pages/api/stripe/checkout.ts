@@ -176,7 +176,9 @@ function isBlackCardTierActiveFromDoc(doc: any, requestedTier: string) {
   if (!doc || typeof doc !== "object") return false;
 
   const normalizedTier =
-    typeof doc.blackCardTier === "string" ? doc.blackCardTier.toLowerCase() : "";
+    typeof doc.blackCardTier === "string"
+      ? doc.blackCardTier.toLowerCase()
+      : "";
   const normalizedStatus =
     typeof doc.blackCardStatus === "string"
       ? doc.blackCardStatus.toLowerCase()
@@ -421,7 +423,7 @@ export default async function handler(
         "black-card-standard": {
           amount: BLACK_CARD_TIERS.standard.priceCents,
           name: BLACK_CARD_TIERS.standard.label,
-          billingInterval: "monthly",
+          billingInterval: null,
         },
         "black-card-signature": {
           amount: BLACK_CARD_TIERS.signature.priceCents,
@@ -588,9 +590,13 @@ export default async function handler(
     }
 
     if (type === "plan" && isBlackCardPlanItemId(finalItemId)) {
+      const blackCardTier = BLACK_CARD_TIER_BY_ITEM_ID[finalItemId];
       metadata.productKey = "bwe_black_card";
-      metadata.tier = BLACK_CARD_TIER_BY_ITEM_ID[finalItemId];
-      metadata.billingInterval = "monthly";
+      metadata.tier = blackCardTier;
+      metadata.billingInterval =
+        BLACK_CARD_TIERS[blackCardTier].billingModel === "entry_fee"
+          ? "entry_fee"
+          : "monthly";
     }
 
     // ---------------------------------------------------------
@@ -845,11 +851,14 @@ export default async function handler(
             billingInterval:
               type === "plan" && finalItemId === "wealth-builder-premium-annual"
                 ? "annual"
-                : type === "plan" &&
-                    (finalItemId === "wealth-builder-premium-monthly" ||
-                      isBlackCardPlanItemId(finalItemId))
+                : type === "plan" && finalItemId === "wealth-builder-premium-monthly"
                   ? "monthly"
-                  : null,
+                  : type === "plan" && isBlackCardPlanItemId(finalItemId)
+                    ? BLACK_CARD_TIERS[BLACK_CARD_TIER_BY_ITEM_ID[finalItemId]].billingModel ===
+                      "entry_fee"
+                      ? "entry_fee"
+                      : "monthly"
+                    : null,
           },
         },
         $set: {

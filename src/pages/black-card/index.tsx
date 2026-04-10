@@ -58,8 +58,10 @@ export default function BlackCardLandingPage() {
                   </h2>
                   <p className="mt-1 text-sm text-white/70">{tier.tagline}</p>
                   <p className="mt-4 text-3xl font-extrabold">
-                    {tier.monthlyLabel}
-                    <span className="text-sm text-white/60">/mo</span>
+                    {tier.priceLabel}
+                    <span className="text-sm text-white/60">
+                      {tier.billingModel === "entry_fee" ? " entry fee" : "/mo"}
+                    </span>
                   </p>
                   <ul className="mt-4 space-y-2 text-sm text-white/85">
                     {tier.benefits.map((benefit) => (

@@ -5,7 +5,8 @@ export interface BlackCardTierConfig {
   label: string;
   checkoutItemId: string;
   priceCents: number;
-  monthlyLabel: string;
+  priceLabel: string;
+  billingModel: "entry_fee" | "monthly";
   tagline: string;
   benefits: string[];
 }
@@ -17,15 +18,16 @@ export const BLACK_CARD_TIERS: Record<BlackCardTier, BlackCardTierConfig> = {
     tier: "standard",
     label: "BWE Black Card Standard",
     checkoutItemId: "black-card-standard",
-    priceCents: 2310,
-    monthlyLabel: "$23.10",
-    tagline: "Accessible ecosystem membership identity + starter benefits.",
+    priceCents: 6300,
+    priceLabel: "$63.00",
+    billingModel: "entry_fee",
+    tagline: "Accessible entry card with limited but real member access.",
     benefits: [
-      "Digital Black Card member identity",
-      "Starter rewards on approved ecosystem activity",
-      "Member-only discounts and partner offers",
-      "Events/webinar access (standard lane)",
-      "Course unlock credits and marketplace fee credits",
+      "Digital Black Card access",
+      "Official membership identity inside BWE",
+      "Access to selected events",
+      "Access to selected seminars/webinars",
+      "Basic member offers/discounts and basic ecosystem perks",
     ],
   },
   signature: {
@@ -33,7 +35,8 @@ export const BLACK_CARD_TIERS: Record<BlackCardTier, BlackCardTierConfig> = {
     label: "BWE Black Card Signature",
     checkoutItemId: "black-card-signature",
     priceCents: 79900,
-    monthlyLabel: "$799",
+    priceLabel: "$799",
+    billingModel: "monthly",
     tagline: "Upgraded access, stronger rewards, and premium member value.",
     benefits: [
       "Everything in Standard",
@@ -48,7 +51,8 @@ export const BLACK_CARD_TIERS: Record<BlackCardTier, BlackCardTierConfig> = {
     label: "BWE Black Card Elite",
     checkoutItemId: "black-card-elite",
     priceCents: 199900,
-    monthlyLabel: "$1,999",
+    priceLabel: "$1,999",
+    billingModel: "monthly",
     tagline:
       "Top-tier status with VIP ecosystem access and business advantages.",
     benefits: [
