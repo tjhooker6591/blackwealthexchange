@@ -7,7 +7,9 @@ export type BlackCardSession = {
   email: string;
 };
 
-export function getBlackCardSession(req: NextApiRequest): BlackCardSession | null {
+export function getBlackCardSession(
+  req: NextApiRequest,
+): BlackCardSession | null {
   try {
     const parsed = cookie.parse(req.headers.cookie || "");
     const token = parsed.session_token || req.cookies?.session_token;
@@ -16,7 +18,10 @@ export function getBlackCardSession(req: NextApiRequest): BlackCardSession | nul
     const secret = process.env.JWT_SECRET || process.env.NEXTAUTH_SECRET;
     if (!secret) return null;
 
-    const payload = jwt.verify(token, secret) as { userId?: string; email?: string };
+    const payload = jwt.verify(token, secret) as {
+      userId?: string;
+      email?: string;
+    };
     if (!payload?.userId || !payload?.email) return null;
 
     return { userId: payload.userId, email: payload.email };
@@ -44,6 +49,14 @@ export const BLACK_CARD_REDEMPTION_COSTS: Record<string, number> = {
   partner_offer: 100,
 };
 
+export const BLACK_CARD_REDEMPTION_MIN_TIER: Record<string, BlackCardTier> = {
+  ad_credit: "signature",
+  marketplace_fee_credit: "standard",
+  course_unlock: "signature",
+  event_access: "standard",
+  partner_offer: "elite",
+};
+
 export const BLACK_CARD_TIER_ORDER = {
   standard: 1,
   signature: 2,
@@ -52,9 +65,14 @@ export const BLACK_CARD_TIER_ORDER = {
 
 export type BlackCardTier = keyof typeof BLACK_CARD_TIER_ORDER;
 
-export function isTierAllowed(currentTier: string | null | undefined, minimumTier: BlackCardTier) {
+export function isTierAllowed(
+  currentTier: string | null | undefined,
+  minimumTier: BlackCardTier,
+) {
   if (!currentTier) return false;
   const normalized = currentTier.toLowerCase() as BlackCardTier;
   if (!(normalized in BLACK_CARD_TIER_ORDER)) return false;
-  return BLACK_CARD_TIER_ORDER[normalized] >= BLACK_CARD_TIER_ORDER[minimumTier];
+  return (
+    BLACK_CARD_TIER_ORDER[normalized] >= BLACK_CARD_TIER_ORDER[minimumTier]
+  );
 }

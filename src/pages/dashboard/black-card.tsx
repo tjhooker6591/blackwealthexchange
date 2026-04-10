@@ -48,6 +48,11 @@ export default function BlackCardDashboardPage() {
   const [data, setData] = useState<MemberSummaryResponse | null>(null);
   const [redeemLoading, setRedeemLoading] = useState(false);
   const [redeemMessage, setRedeemMessage] = useState("");
+  const [entitlements, setEntitlements] = useState<{
+    ad_credit?: boolean;
+    marketplace_fee_credit?: boolean;
+    event_access?: boolean;
+  }>({});
 
   async function fetchSummary() {
     const res = await fetch("/api/black-card/member-summary", {
@@ -62,6 +67,30 @@ export default function BlackCardDashboardPage() {
 
     const json = (await res.json()) as MemberSummaryResponse;
     setData(json);
+
+    const entitlementChecks = await Promise.all([
+      fetch("/api/black-card/entitlements/check?benefit=priority_events", {
+        credentials: "include",
+      }),
+      fetch("/api/black-card/entitlements/check?benefit=selected_events", {
+        credentials: "include",
+      }),
+      fetch("/api/black-card/entitlements/check?benefit=selected_events", {
+        credentials: "include",
+      }),
+    ]);
+
+    const entitlementJson = await Promise.all(
+      entitlementChecks.map(async (r) =>
+        r.ok ? await r.json() : { allowed: false },
+      ),
+    );
+
+    setEntitlements({
+      ad_credit: Boolean(entitlementJson[0]?.allowed),
+      marketplace_fee_credit: Boolean(entitlementJson[1]?.allowed),
+      event_access: Boolean(entitlementJson[2]?.allowed),
+    });
   }
 
   useEffect(() => {
@@ -83,7 +112,10 @@ export default function BlackCardDashboardPage() {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ rewardType, referenceId: `${rewardType}-${Date.now()}` }),
+        body: JSON.stringify({
+          rewardType,
+          referenceId: `${rewardType}-${Date.now()}`,
+        }),
       });
       const json = await res.json().catch(() => ({}));
       if (!res.ok) {
@@ -188,10 +220,16 @@ export default function BlackCardDashboardPage() {
                   </div>
                 </div>
                 <div className="mt-4 flex flex-wrap gap-3">
-                  <Link href="/black-card/join?tier=signature" className="rounded-lg border border-yellow-500/30 px-4 py-2 text-sm text-yellow-200">
+                  <Link
+                    href="/black-card/join?tier=signature"
+                    className="rounded-lg border border-yellow-500/30 px-4 py-2 text-sm text-yellow-200"
+                  >
                     Upgrade to Signature
                   </Link>
-                  <Link href="/black-card/join?tier=elite" className="rounded-lg border border-yellow-500/30 px-4 py-2 text-sm text-yellow-200">
+                  <Link
+                    href="/black-card/join?tier=elite"
+                    className="rounded-lg border border-yellow-500/30 px-4 py-2 text-sm text-yellow-200"
+                  >
                     Upgrade to Elite
                   </Link>
                 </div>
@@ -216,11 +254,34 @@ export default function BlackCardDashboardPage() {
                     Redemption Area
                   </h2>
                   <div className="mt-3 flex flex-wrap gap-2">
-                    <button onClick={() => redeemReward("ad_credit")} disabled={redeemLoading} className="rounded-lg border border-yellow-500/30 px-3 py-1.5 text-xs text-yellow-200 disabled:opacity-60">Redeem Ad Credit</button>
-                    <button onClick={() => redeemReward("marketplace_fee_credit")} disabled={redeemLoading} className="rounded-lg border border-yellow-500/30 px-3 py-1.5 text-xs text-yellow-200 disabled:opacity-60">Redeem Fee Credit</button>
-                    <button onClick={() => redeemReward("event_access")} disabled={redeemLoading} className="rounded-lg border border-yellow-500/30 px-3 py-1.5 text-xs text-yellow-200 disabled:opacity-60">Redeem Event Access</button>
+                    <button
+                      onClick={() => redeemReward("ad_credit")}
+                      disabled={redeemLoading || !entitlements.ad_credit}
+                      className="rounded-lg border border-yellow-500/30 px-3 py-1.5 text-xs text-yellow-200 disabled:opacity-60"
+                      title={entitlements.ad_credit ? "" : "Requires Signature tier"}
+                    >
+                      Redeem Ad Credit
+                    </button>
+                    <button
+                      onClick={() => redeemReward("marketplace_fee_credit")}
+                      disabled={redeemLoading || !entitlements.marketplace_fee_credit}
+                      className="rounded-lg border border-yellow-500/30 px-3 py-1.5 text-xs text-yellow-200 disabled:opacity-60"
+                    >
+                      Redeem Fee Credit
+                    </button>
+                    <button
+                      onClick={() => redeemReward("event_access")}
+                      disabled={redeemLoading || !entitlements.event_access}
+                      className="rounded-lg border border-yellow-500/30 px-3 py-1.5 text-xs text-yellow-200 disabled:opacity-60"
+                    >
+                      Redeem Event Access
+                    </button>
                   </div>
-                  {redeemMessage ? <p className="mt-2 text-xs text-yellow-200">{redeemMessage}</p> : null}
+                  {redeemMessage ? (
+                    <p className="mt-2 text-xs text-yellow-200">
+                      {redeemMessage}
+                    </p>
+                  ) : null}
                   {data.redemptions && data.redemptions.length > 0 ? (
                     <ul className="mt-3 space-y-2 text-sm">
                       {data.redemptions.slice(0, 5).map((item) => (
@@ -244,7 +305,9 @@ export default function BlackCardDashboardPage() {
               </section>
 
               <section className="rounded-2xl border border-white/10 bg-white/5 p-5">
-                <h2 className="text-xl font-bold text-yellow-200">Rewards Ledger</h2>
+                <h2 className="text-xl font-bold text-yellow-200">
+                  Rewards Ledger
+                </h2>
                 {data.ledger && data.ledger.length > 0 ? (
                   <ul className="mt-3 space-y-2 text-sm">
                     {data.ledger.map((item) => (
@@ -257,7 +320,8 @@ export default function BlackCardDashboardPage() {
                           {item.points} • {item.actionType}
                         </div>
                         <div className="text-white/70">
-                          Balance: {item.balanceAfter} • {item.at ? new Date(item.at).toLocaleString() : "—"}
+                          Balance: {item.balanceAfter} •{" "}
+                          {item.at ? new Date(item.at).toLocaleString() : "—"}
                         </div>
                       </li>
                     ))}
@@ -274,14 +338,21 @@ export default function BlackCardDashboardPage() {
                 {data.activity && data.activity.length > 0 ? (
                   <ul className="mt-3 space-y-2 text-sm">
                     {data.activity.map((item) => (
-                      <li key={item.id} className="rounded-lg border border-white/10 bg-black/30 p-3">
+                      <li
+                        key={item.id}
+                        className="rounded-lg border border-white/10 bg-black/30 p-3"
+                      >
                         <div className="font-semibold">{item.type}</div>
-                        <div className="text-white/70">{item.at ? new Date(item.at).toLocaleString() : "—"}</div>
+                        <div className="text-white/70">
+                          {item.at ? new Date(item.at).toLocaleString() : "—"}
+                        </div>
                       </li>
                     ))}
                   </ul>
                 ) : (
-                  <p className="mt-3 text-sm text-white/70">No Black Card activity yet.</p>
+                  <p className="mt-3 text-sm text-white/70">
+                    No Black Card activity yet.
+                  </p>
                 )}
               </section>
             </>

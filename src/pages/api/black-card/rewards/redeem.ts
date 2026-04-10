@@ -2,46 +2,93 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { ObjectId } from "mongodb";
 import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
-import { BLACK_CARD_REDEMPTION_COSTS, getBlackCardSession } from "@/lib/black-card-member";
+import {
+  BLACK_CARD_REDEMPTION_COSTS,
+  BLACK_CARD_REDEMPTION_MIN_TIER,
+  getBlackCardSession,
+  isTierAllowed,
+} from "@/lib/black-card-member";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method !== "POST") {
     res.setHeader("Allow", ["POST"]);
     return res.status(405).json({ ok: false, error: "Method Not Allowed" });
   }
 
   const session = getBlackCardSession(req);
-  if (!session) return res.status(401).json({ ok: false, error: "Unauthorized" });
+  if (!session)
+    return res.status(401).json({ ok: false, error: "Unauthorized" });
 
   const rewardType = String(req.body?.rewardType || "").trim();
-  const referenceId = String(req.body?.referenceId || `redeem-${Date.now()}`).trim();
+  const referenceId = String(
+    req.body?.referenceId || `redeem-${Date.now()}`,
+  ).trim();
   const cost = BLACK_CARD_REDEMPTION_COSTS[rewardType];
-  if (!cost) return res.status(400).json({ ok: false, error: "Unsupported rewardType" });
+  if (!cost)
+    return res.status(400).json({ ok: false, error: "Unsupported rewardType" });
 
   const client = await clientPromise;
   const db = client.db(getMongoDbName());
   const now = new Date();
 
-  const user = await db.collection("users").findOne(
-    ObjectId.isValid(session.userId) ? { _id: new ObjectId(session.userId) } : { email: session.email },
-    { projection: { blackCardStatus: 1, blackCardRewardsBalance: 1 } },
-  );
+  const user = await db
+    .collection("users")
+    .findOne(
+      ObjectId.isValid(session.userId)
+        ? { _id: new ObjectId(session.userId) }
+        : { email: session.email },
+      {
+        projection: {
+          blackCardStatus: 1,
+          blackCardRewardsBalance: 1,
+          blackCardTier: 1,
+        },
+      },
+    );
 
-  if (!user || String(user.blackCardStatus || "inactive").toLowerCase() !== "active") {
-    return res.status(403).json({ ok: false, error: "Active Black Card membership required" });
+  if (
+    !user ||
+    String(user.blackCardStatus || "inactive").toLowerCase() !== "active"
+  ) {
+    return res
+      .status(403)
+      .json({ ok: false, error: "Active Black Card membership required" });
+  }
+
+  const minimumTier = BLACK_CARD_REDEMPTION_MIN_TIER[rewardType];
+  const tier = typeof user.blackCardTier === "string" ? user.blackCardTier : null;
+  if (minimumTier && !isTierAllowed(tier, minimumTier)) {
+    return res.status(403).json({
+      ok: false,
+      error: `This redemption requires ${minimumTier} tier or higher`,
+      code: "INSUFFICIENT_TIER",
+    });
   }
 
   const balance = Number(user.blackCardRewardsBalance || 0);
   if (balance < cost) {
-    return res.status(409).json({ ok: false, error: "Insufficient rewards balance", code: "INSUFFICIENT_BALANCE" });
+    return res
+      .status(409)
+      .json({
+        ok: false,
+        error: "Insufficient rewards balance",
+        code: "INSUFFICIENT_BALANCE",
+      });
   }
 
   const nextBalance = balance - cost;
 
-  await db.collection("users").updateOne(
-    ObjectId.isValid(session.userId) ? { _id: new ObjectId(session.userId) } : { email: session.email },
-    { $set: { blackCardRewardsBalance: nextBalance, updatedAt: now } },
-  );
+  await db
+    .collection("users")
+    .updateOne(
+      ObjectId.isValid(session.userId)
+        ? { _id: new ObjectId(session.userId) }
+        : { email: session.email },
+      { $set: { blackCardRewardsBalance: nextBalance, updatedAt: now } },
+    );
 
   const redemption = {
     userId: session.userId,
@@ -75,5 +122,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     createdAt: now,
   });
 
-  return res.status(200).json({ ok: true, redemption: { rewardType, status: "pending", pointsCost: cost }, balance: nextBalance });
+  return res
+    .status(200)
+    .json({
+      ok: true,
+      redemption: { rewardType, status: "pending", pointsCost: cost },
+      balance: nextBalance,
+    });
 }
