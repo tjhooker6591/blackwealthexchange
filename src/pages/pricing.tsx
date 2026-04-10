@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import {
@@ -268,6 +269,15 @@ export default function Pricing() {
                 Tiered membership identity + access + rewards. Launching with
                 Standard, Signature, and Elite tiers.
               </p>
+              <div className="mt-4 overflow-hidden rounded-xl border border-white/10">
+                <Image
+                  src="/images/black-card/bwe-black-card-close-up.png"
+                  alt="BWE Black Card"
+                  width={1400}
+                  height={875}
+                  className="h-44 w-full object-cover"
+                />
+              </div>
               <div className="mt-4">
                 <GoldButton href="/black-card" variant="ghost">
                   Explore BWE Black Card <ArrowRight className="h-4 w-4" />
