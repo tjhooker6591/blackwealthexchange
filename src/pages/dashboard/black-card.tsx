@@ -132,13 +132,13 @@ export default function BlackCardDashboardPage() {
                           : "—"}
                       </div>
                     </div>
-                    <div className="overflow-hidden rounded-xl border border-white/15 sm:max-w-sm">
+                    <div className="flex w-full items-center justify-center overflow-hidden rounded-xl border border-white/15 bg-black/30 p-3 sm:p-4">
                       <Image
                         src="/images/black-card/bwe-black-card-close-up.png"
                         alt="BWE Black Card"
                         width={1400}
                         height={875}
-                        className="h-40 w-full object-cover"
+                        className="h-48 w-auto max-w-full object-contain sm:h-56"
                       />
                     </div>
                   </div>

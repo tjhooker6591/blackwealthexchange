@@ -34,14 +34,14 @@ export default function BlackCardLandingPage() {
             benefits, and ecosystem incentives that reward action.
           </p>
 
-          <div className="mt-5">
-            <div className="mx-auto w-full max-w-3xl overflow-hidden rounded-xl border border-white/10 bg-white/5 shadow-[0_10px_40px_rgba(0,0,0,0.35)]">
+          <div className="mt-4">
+            <div className="mx-auto flex w-full max-w-xl items-center justify-center rounded-xl border border-white/10 bg-white/5 p-3 shadow-[0_8px_24px_rgba(0,0,0,0.3)] sm:p-4">
               <Image
                 src="/images/black-card/bwe-black-card-close-up.png"
                 alt="BWE Black Card close-up"
                 width={1400}
                 height={875}
-                className="h-44 w-full object-cover sm:h-52"
+                className="h-48 w-auto max-w-full object-contain sm:h-56"
                 priority
               />
             </div>

@@ -269,13 +269,13 @@ export default function Pricing() {
                 Tiered membership identity + access + rewards. Launching with
                 Standard, Signature, and Elite tiers.
               </p>
-              <div className="mt-4 overflow-hidden rounded-xl border border-white/10">
+              <div className="mt-4 flex w-full items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-black/30 p-3 sm:p-4">
                 <Image
                   src="/images/black-card/bwe-black-card-close-up.png"
                   alt="BWE Black Card"
                   width={1400}
                   height={875}
-                  className="h-32 w-full object-cover sm:h-36"
+                  className="h-48 w-auto max-w-full object-contain sm:h-56"
                 />
               </div>
               <div className="mt-4">
