@@ -36,7 +36,10 @@ export default function NavBar() {
     <nav className="relative z-50 border-b border-white/5 bg-black text-white">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         {/* Logo */}
-        <Link href="/" className="flex min-w-0 items-center gap-2 lg:max-w-[220px] xl:max-w-none">
+        <Link
+          href="/"
+          className="flex min-w-0 items-center gap-2 lg:max-w-[220px] xl:max-w-none"
+        >
           <Image
             src="/favicon.png"
             alt="BWE Logo"
@@ -81,54 +84,66 @@ export default function NavBar() {
               More
             </summary>
             <div className="absolute right-0 z-50 mt-2 w-56 rounded-xl border border-white/10 bg-black/95 p-2 shadow-2xl">
-              <Link href="/about" className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]">About</Link>
-              <Link href="/global-timeline" className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]">Journey</Link>
-              <Link href="/travel-map/explore" className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]">Travel Map</Link>
-              <Link href="/wealth-builder" className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]">Wealth Builder</Link>
-              <Link href="/music" className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]">Music</Link>
-              <Link href="/join-the-mission" className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]">Mission</Link>
+              <Link
+                href="/about"
+                className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]"
+              >
+                About
+              </Link>
+              <Link
+                href="/global-timeline"
+                className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]"
+              >
+                Journey
+              </Link>
+              <Link
+                href="/travel-map/explore"
+                className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]"
+              >
+                Travel Map
+              </Link>
+              <Link
+                href="/wealth-builder"
+                className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]"
+              >
+                Wealth Builder
+              </Link>
+              <Link
+                href="/music"
+                className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]"
+              >
+                Music
+              </Link>
+              <Link
+                href="/join-the-mission"
+                className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]"
+              >
+                Mission
+              </Link>
             </div>
           </details>
 
           {loading ? null : user ? (
-            <>
-              <Link
-                href={dashboardHref}
-                className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 transition-colors hover:bg-white/5 hover:text-[#D4AF37]"
-              >
-                Dashboard
-              </Link>
-
-              <Link
-                href={profileHref}
-                className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 transition-colors hover:bg-white/5 hover:text-[#D4AF37]"
-              >
-                Profile
-              </Link>
-
-              <button
-                onClick={logout}
-                className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 transition-colors hover:bg-white/5 hover:text-red-500"
-              >
-                Sign Out
-              </button>
-            </>
+            <details className="group relative ml-1">
+              <summary className="list-none cursor-pointer rounded-lg px-3 py-2 text-sm font-semibold text-white/90 transition-colors hover:bg-white/5 hover:text-[#D4AF37]">
+                Account
+              </summary>
+              <div className="absolute right-0 z-50 mt-2 w-48 rounded-xl border border-white/10 bg-black/95 p-2 shadow-2xl">
+                <Link href={dashboardHref} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]">Dashboard</Link>
+                <Link href={profileHref} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]">Profile</Link>
+                <button onClick={logout} className="block w-full rounded-lg px-3 py-2 text-left text-sm text-white/85 hover:bg-white/5 hover:text-red-500">Sign Out</button>
+              </div>
+            </details>
           ) : (
-            <>
-              <Link
-                href="/login"
-                className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 transition-colors hover:bg-white/5 hover:text-[#D4AF37]"
-              >
-                Log In
-              </Link>
-
-              <Link
-                href="/signup"
-                className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 transition-colors hover:bg-white/5 hover:text-[#D4AF37]"
-              >
-                Sign Up
-              </Link>
-            </>
+            <details className="group relative ml-1">
+              <summary className="list-none cursor-pointer rounded-lg px-3 py-2 text-sm font-semibold text-white/90 transition-colors hover:bg-white/5 hover:text-[#D4AF37]">
+                Account
+              </summary>
+              <div className="absolute right-0 z-50 mt-2 w-44 rounded-xl border border-white/10 bg-black/95 p-2 shadow-2xl">
+                <Link href="/login" className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]">Log In</Link>
+                <Link href="/signup" className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]">Sign Up</Link>
+              </div>
+            </details>
           )}
         </div>
 

@@ -34,6 +34,18 @@ export default async function handler(
   const db = client.db(getMongoDbName());
   const now = new Date();
 
+  const recentRedeemCount = await db.collection("black_card_redemptions").countDocuments({
+    userId: session.userId,
+    createdAt: { $gte: new Date(Date.now() - 1000 * 60 * 10) },
+  });
+  if (recentRedeemCount >= 5) {
+    return res.status(429).json({
+      ok: false,
+      error: "Too many redemption attempts. Please wait and try again.",
+      code: "RATE_LIMITED",
+    });
+  }
+
   const user = await db
     .collection("users")
     .findOne(
@@ -59,7 +71,8 @@ export default async function handler(
   }
 
   const minimumTier = BLACK_CARD_REDEMPTION_MIN_TIER[rewardType];
-  const tier = typeof user.blackCardTier === "string" ? user.blackCardTier : null;
+  const tier =
+    typeof user.blackCardTier === "string" ? user.blackCardTier : null;
   if (minimumTier && !isTierAllowed(tier, minimumTier)) {
     return res.status(403).json({
       ok: false,
@@ -70,13 +83,11 @@ export default async function handler(
 
   const balance = Number(user.blackCardRewardsBalance || 0);
   if (balance < cost) {
-    return res
-      .status(409)
-      .json({
-        ok: false,
-        error: "Insufficient rewards balance",
-        code: "INSUFFICIENT_BALANCE",
-      });
+    return res.status(409).json({
+      ok: false,
+      error: "Insufficient rewards balance",
+      code: "INSUFFICIENT_BALANCE",
+    });
   }
 
   const nextBalance = balance - cost;
@@ -122,11 +133,9 @@ export default async function handler(
     createdAt: now,
   });
 
-  return res
-    .status(200)
-    .json({
-      ok: true,
-      redemption: { rewardType, status: "pending", pointsCost: cost },
-      balance: nextBalance,
-    });
+  return res.status(200).json({
+    ok: true,
+    redemption: { rewardType, status: "pending", pointsCost: cost },
+    balance: nextBalance,
+  });
 }
