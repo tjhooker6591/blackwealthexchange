@@ -39,6 +39,11 @@ type MemberSummaryResponse = {
     balanceAfter: number;
     at: string | null;
   }>;
+  card?: {
+    cardIdDisplay: string;
+    digitalStatus: string;
+    issueVersion: number;
+  } | null;
   error?: string;
 };
 
@@ -188,6 +193,9 @@ export default function BlackCardDashboardPage() {
                     <div className="mt-2 inline-flex rounded-full border border-yellow-500/30 bg-black/30 px-3 py-1 text-xs text-yellow-200">
                       Renewal: {data.member?.renewalState || "unknown"}
                     </div>
+                    <div className="mt-2 text-xs text-white/70">
+                      Card ID: {data.card?.cardIdDisplay || "Will appear after first paid activation"}
+                    </div>
                   </div>
                   <div className="space-y-3">
                     <div className="text-sm text-white/75">
@@ -258,13 +266,17 @@ export default function BlackCardDashboardPage() {
                       onClick={() => redeemReward("ad_credit")}
                       disabled={redeemLoading || !entitlements.ad_credit}
                       className="rounded-lg border border-yellow-500/30 px-3 py-1.5 text-xs text-yellow-200 disabled:opacity-60"
-                      title={entitlements.ad_credit ? "" : "Requires Signature tier"}
+                      title={
+                        entitlements.ad_credit ? "" : "Requires Signature tier"
+                      }
                     >
                       Redeem Ad Credit
                     </button>
                     <button
                       onClick={() => redeemReward("marketplace_fee_credit")}
-                      disabled={redeemLoading || !entitlements.marketplace_fee_credit}
+                      disabled={
+                        redeemLoading || !entitlements.marketplace_fee_credit
+                      }
                       className="rounded-lg border border-yellow-500/30 px-3 py-1.5 text-xs text-yellow-200 disabled:opacity-60"
                     >
                       Redeem Fee Credit

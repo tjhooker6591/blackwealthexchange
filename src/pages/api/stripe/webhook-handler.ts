@@ -17,6 +17,7 @@ import {
   BLACK_CARD_TIER_BY_ITEM_ID,
   isBlackCardPlanItemId,
 } from "@/lib/black-card";
+import { ensureBlackCardMembershipAndCard } from "@/lib/black-card-membership";
 
 export const config = {
   api: { bodyParser: false },
@@ -1117,35 +1118,16 @@ export default async function webhookHandler(
         planStartAt.getTime() + membershipDurationDays * 24 * 60 * 60 * 1000,
       );
 
-      const blackCardEntitlementPatch = {
-        blackCardProductKey: "bwe_black_card",
-        blackCardTier,
-        blackCardStatus: "active",
-        blackCardMemberSince: planStartAt,
-        blackCardPlanExpiresAt: planExpiresAt,
-        blackCardStripeSessionId: stripeSessionId,
-        blackCardPaymentIntentId: paymentIntentId || null,
-        blackCardRewardsBalance: 0,
-        updatedAt: now,
-      };
-
-      if (userId && ObjectId.isValid(userId)) {
-        await db.collection("users").updateOne(
-          { _id: new ObjectId(userId) },
-          {
-            $set: blackCardEntitlementPatch,
-          },
-        );
-      }
-
-      if (email) {
-        await db.collection("users").updateOne(
-          { email },
-          {
-            $set: blackCardEntitlementPatch,
-          },
-        );
-      }
+      const issuance = await ensureBlackCardMembershipAndCard({
+        db,
+        userId,
+        email,
+        stripeSessionId,
+        paymentIntentId: paymentIntentId || null,
+        itemId: normalizedItemId,
+        paidAt: planStartAt,
+        planExpiresAt,
+      });
 
       await db.collection("flow_events").insertOne({
         eventType: "black_card_membership_activated",
@@ -1159,11 +1141,13 @@ export default async function webhookHandler(
         email: email || null,
         itemId: normalizedItemId,
         tier: blackCardTier,
+        membershipId: issuance.ok ? issuance.membershipId : null,
+        cardIdDisplay: issuance.ok ? issuance.cardIdDisplay : null,
         createdAt: now,
       });
 
       console.log(
-        `✅ BWE Black Card activated tier=${blackCardTier} user=${userId || email}`,
+        `✅ BWE Black Card activated tier=${blackCardTier} user=${userId || email} card=${issuance.ok ? issuance.cardIdDisplay : "n/a"}`,
       );
     }
 

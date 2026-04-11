@@ -84,6 +84,18 @@ export default async function handler(
       .limit(20)
       .toArray();
 
+    const membership = await db.collection("black_card_memberships").findOne(
+      { $or: [{ userId: payload.userId }, { email: payload.email }] },
+      { projection: { _id: 1 } },
+    );
+
+    const card = membership
+      ? await db.collection("black_card_cards").findOne(
+          { membershipId: String(membership._id), issueVersion: 1 },
+          { projection: { cardIdDisplay: 1, digitalStatus: 1, issueVersion: 1 } },
+        )
+      : null;
+
     const now = Date.now();
     const expiresAt = userDoc.blackCardPlanExpiresAt
       ? new Date(userDoc.blackCardPlanExpiresAt).getTime()
@@ -119,6 +131,13 @@ export default async function handler(
             ? userDoc.blackCardRewardsBalance
             : 0,
       },
+      card: card
+        ? {
+            cardIdDisplay: String(card.cardIdDisplay || ""),
+            digitalStatus: String(card.digitalStatus || "active"),
+            issueVersion: Number(card.issueVersion || 1),
+          }
+        : null,
       activity: recentActivity.map((item) => ({
         id: String(item._id),
         type: String(item.eventType || "black_card_activity"),

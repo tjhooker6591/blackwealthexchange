@@ -12,6 +12,7 @@ type RedemptionItem = {
 
 export default function AdminBlackCardPage() {
   const [items, setItems] = useState<RedemptionItem[]>([]);
+  const [membershipItems, setMembershipItems] = useState<any[]>([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -29,16 +30,26 @@ export default function AdminBlackCardPage() {
     if (queueUserId) params.set("userId", queueUserId);
 
     const query = params.toString();
-    const res = await fetch(`/api/admin/black-card/redemptions${query ? `?${query}` : ""}`, {
-      credentials: "include",
-      cache: "no-store",
-    });
-    const json = await res.json().catch(() => ({}));
-    if (!res.ok) {
-      setError(json?.error || "Unable to load redemptions");
+    const [redRes, memRes] = await Promise.all([
+      fetch(`/api/admin/black-card/redemptions${query ? `?${query}` : ""}`, {
+        credentials: "include",
+        cache: "no-store",
+      }),
+      fetch(`/api/admin/black-card/memberships`, {
+        credentials: "include",
+        cache: "no-store",
+      }),
+    ]);
+
+    const redJson = await redRes.json().catch(() => ({}));
+    const memJson = await memRes.json().catch(() => ({}));
+
+    if (!redRes.ok) {
+      setError(redJson?.error || "Unable to load redemptions");
       return;
     }
-    setItems(Array.isArray(json.items) ? json.items : []);
+    setItems(Array.isArray(redJson.items) ? redJson.items : []);
+    setMembershipItems(Array.isArray(memJson.items) ? memJson.items : []);
   }
 
   useEffect(() => {
@@ -140,20 +151,57 @@ export default function AdminBlackCardPage() {
         </section>
 
         <section className="rounded-2xl border border-white/10 bg-white/5 p-5">
+          <h2 className="text-lg font-bold text-yellow-200">Membership + Card visibility</h2>
+          <div className="mt-3 space-y-2 text-sm">
+            {membershipItems.slice(0, 10).map((m) => (
+              <div key={m.membershipId} className="rounded-lg border border-white/10 bg-black/30 p-3">
+                <div className="font-semibold">{m.email || m.userId || m.membershipId}</div>
+                <div className="text-white/70">Tier: {m.tier || "—"} • Status: {m.status || "—"}</div>
+                <div className="text-white/70">Card: {m.cardIdDisplay || "—"} • Version: {m.issueVersion || "—"}</div>
+              </div>
+            ))}
+            {membershipItems.length === 0 ? <p className="text-white/70">No Black Card memberships yet.</p> : null}
+          </div>
+        </section>
+
+        <section className="rounded-2xl border border-white/10 bg-white/5 p-5">
           <h2 className="text-lg font-bold text-yellow-200">
             Redemption review queue
           </h2>
           <div className="mt-3 grid gap-2 sm:grid-cols-4">
-            <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="rounded bg-black/40 px-3 py-2 text-sm">
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="rounded bg-black/40 px-3 py-2 text-sm"
+            >
               <option value="">All statuses</option>
               <option value="pending">Pending</option>
               <option value="approved">Approved</option>
               <option value="rejected">Rejected</option>
               <option value="fulfilled">Fulfilled</option>
             </select>
-            <input value={queueUserId} onChange={(e) => setQueueUserId(e.target.value)} placeholder="Filter by user ID" className="rounded bg-black/40 px-3 py-2 text-sm" />
-            <button onClick={() => loadRedemptions()} className="rounded border border-yellow-500/30 px-3 py-2 text-sm text-yellow-200">Apply filters</button>
-            <button onClick={() => { setStatusFilter(""); setQueueUserId(""); setTimeout(() => loadRedemptions(), 0); }} className="rounded border border-white/20 px-3 py-2 text-sm text-white/85">Reset</button>
+            <input
+              value={queueUserId}
+              onChange={(e) => setQueueUserId(e.target.value)}
+              placeholder="Filter by user ID"
+              className="rounded bg-black/40 px-3 py-2 text-sm"
+            />
+            <button
+              onClick={() => loadRedemptions()}
+              className="rounded border border-yellow-500/30 px-3 py-2 text-sm text-yellow-200"
+            >
+              Apply filters
+            </button>
+            <button
+              onClick={() => {
+                setStatusFilter("");
+                setQueueUserId("");
+                setTimeout(() => loadRedemptions(), 0);
+              }}
+              className="rounded border border-white/20 px-3 py-2 text-sm text-white/85"
+            >
+              Reset
+            </button>
           </div>
           {loading ? (
             <p className="mt-3 text-sm text-white/70">Loading...</p>
