@@ -43,6 +43,8 @@ type MemberSummaryResponse = {
     cardIdDisplay: string;
     digitalStatus: string;
     issueVersion: number;
+    verificationCode?: string;
+    walletPassState?: string;
   } | null;
   error?: string;
 };
@@ -176,28 +178,24 @@ export default function BlackCardDashboardPage() {
                   Identity Card
                 </p>
                 <div className="mt-3 grid gap-4 md:grid-cols-2">
-                  <div>
-                    <div className="text-2xl font-extrabold text-yellow-100">
-                      {(
-                        data.member?.fullName ||
-                        data.member?.email ||
-                        "Member"
-                      ).toUpperCase()}
-                    </div>
-                    <div className="mt-1 text-sm text-white/80">
-                      Tier: {data.member?.tier || "Not Active"}
-                    </div>
-                    <div className="text-sm text-white/70">
-                      Status: {data.member?.status || "inactive"}
-                    </div>
-                    <div className="mt-2 inline-flex rounded-full border border-yellow-500/30 bg-black/30 px-3 py-1 text-xs text-yellow-200">
-                      Renewal: {data.member?.renewalState || "unknown"}
-                    </div>
-                    <div className="mt-2 text-xs text-white/70">
-                      Card ID: {data.card?.cardIdDisplay || "Will appear after first paid activation"}
-                    </div>
-                  </div>
                   <div className="space-y-3">
+                    <div className="rounded-2xl border border-yellow-400/20 bg-black/60 p-4">
+                      <div className="text-[10px] uppercase tracking-[0.18em] text-yellow-300">BWE Black Card</div>
+                      <div className="mt-1 text-lg font-extrabold text-yellow-100">
+                        {(
+                          data.member?.fullName ||
+                          data.member?.email ||
+                          "Member"
+                        ).toUpperCase()}
+                      </div>
+                      <div className="mt-1 text-xs text-white/75">{data.card?.cardIdDisplay || "Pending Issuance"}</div>
+                      <div className="mt-2 flex flex-wrap gap-2 text-xs">
+                        <span className="rounded-full border border-yellow-500/30 bg-black/30 px-2 py-1 text-yellow-200">{data.member?.tier || "not-active"}</span>
+                        <span className="rounded-full border border-white/20 bg-black/30 px-2 py-1 text-white/80">{data.member?.status || "inactive"}</span>
+                        <span className="rounded-full border border-white/20 bg-black/30 px-2 py-1 text-white/80">v{data.card?.issueVersion || 1}</span>
+                      </div>
+                    </div>
+
                     <div className="text-sm text-white/75">
                       <div>
                         Member since:{" "}
@@ -215,7 +213,11 @@ export default function BlackCardDashboardPage() {
                             ).toLocaleDateString()
                           : "—"}
                       </div>
+                      <div className="mt-1">Wallet pass: {data.card?.walletPassState || "planned"}</div>
                     </div>
+                  </div>
+
+                  <div className="space-y-3">
                     <div className="flex w-full items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-black p-3 sm:p-4">
                       <Image
                         src="/images/black-card/bwe-black-card-close-up.png"
@@ -224,6 +226,13 @@ export default function BlackCardDashboardPage() {
                         height={875}
                         className="h-auto w-full max-w-full object-contain max-h-56 sm:max-h-64"
                       />
+                    </div>
+                    <div className="rounded-xl border border-white/10 bg-black/40 p-3">
+                      <div className="text-xs text-white/70">Member verification code</div>
+                      <div className="mt-1 font-mono text-sm text-yellow-200">{data.card?.verificationCode || "N/A"}</div>
+                      <div className="mt-2 text-[11px] text-white/60 break-all">
+                        Verify endpoint: {data.card?.cardIdDisplay && data.card?.verificationCode ? `/api/black-card/verify?cardId=${encodeURIComponent(data.card.cardIdDisplay)}&code=${encodeURIComponent(data.card.verificationCode)}` : "Available after issuance"}
+                      </div>
                     </div>
                   </div>
                 </div>

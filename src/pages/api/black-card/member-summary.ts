@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import cookie from "cookie";
 import jwt from "jsonwebtoken";
+import { createHash } from "crypto";
 import { ObjectId } from "mongodb";
 import clientPromise from "@/lib/mongodb";
 import { getJwtSecret, getMongoDbName } from "@/lib/env";
@@ -84,15 +85,23 @@ export default async function handler(
       .limit(20)
       .toArray();
 
-    const membership = await db.collection("black_card_memberships").findOne(
-      { $or: [{ userId: payload.userId }, { email: payload.email }] },
-      { projection: { _id: 1 } },
-    );
+    const membership = await db
+      .collection("black_card_memberships")
+      .findOne(
+        { $or: [{ userId: payload.userId }, { email: payload.email }] },
+        { projection: { _id: 1 } },
+      );
 
     const card = membership
       ? await db.collection("black_card_cards").findOne(
           { membershipId: String(membership._id), issueVersion: 1 },
-          { projection: { cardIdDisplay: 1, digitalStatus: 1, issueVersion: 1 } },
+          {
+            projection: {
+              cardIdDisplay: 1,
+              digitalStatus: 1,
+              issueVersion: 1,
+            },
+          },
         )
       : null;
 
@@ -136,6 +145,12 @@ export default async function handler(
             cardIdDisplay: String(card.cardIdDisplay || ""),
             digitalStatus: String(card.digitalStatus || "active"),
             issueVersion: Number(card.issueVersion || 1),
+            verificationCode: createHash("sha256")
+              .update(`${String(card.cardIdDisplay || "")}:${String(userDoc.email || payload.email)}:${String(card.issueVersion || 1)}`)
+              .digest("hex")
+              .slice(0, 12)
+              .toUpperCase(),
+            walletPassState: "planned",
           }
         : null,
       activity: recentActivity.map((item) => ({
