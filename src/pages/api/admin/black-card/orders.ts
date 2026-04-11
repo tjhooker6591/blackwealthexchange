@@ -30,7 +30,10 @@ const ALLOWED_TRANSITIONS: Record<string, string[]> = {
   cancelled: [],
 };
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   const admin = await requireAdminFromRequest(req, res);
   if (!admin) return;
 
@@ -38,8 +41,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const db = client.db(getMongoDbName());
 
   if (req.method === "GET") {
-    const status = String(req.query.status || "").trim().toLowerCase();
-    const orderType = String(req.query.orderType || "").trim().toLowerCase();
+    const status = String(req.query.status || "")
+      .trim()
+      .toLowerCase();
+    const orderType = String(req.query.orderType || "")
+      .trim()
+      .toLowerCase();
     const userId = String(req.query.userId || "").trim();
 
     const query: Record<string, unknown> = {};
@@ -76,21 +83,41 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (req.method === "PATCH") {
     const orderId = String(req.body?.orderId || "").trim();
-    const nextStatus = String(req.body?.status || "").trim().toLowerCase();
+    const nextStatus = String(req.body?.status || "")
+      .trim()
+      .toLowerCase();
     const reason = String(req.body?.reason || "").trim() || null;
-    const fulfillmentRef = String(req.body?.fulfillmentRef || "").trim() || null;
-    const trackingNumber = String(req.body?.trackingNumber || "").trim() || null;
+    const fulfillmentRef =
+      String(req.body?.fulfillmentRef || "").trim() || null;
+    const trackingNumber =
+      String(req.body?.trackingNumber || "").trim() || null;
 
-    if (!orderId || !ObjectId.isValid(orderId) || !VALID_STATUS.has(nextStatus)) {
-      return res.status(400).json({ ok: false, error: "orderId and valid status are required" });
+    if (
+      !orderId ||
+      !ObjectId.isValid(orderId) ||
+      !VALID_STATUS.has(nextStatus)
+    ) {
+      return res
+        .status(400)
+        .json({ ok: false, error: "orderId and valid status are required" });
     }
 
-    const order = await db.collection("black_card_orders").findOne({ _id: new ObjectId(orderId) });
-    if (!order) return res.status(404).json({ ok: false, error: "Order not found" });
+    const order = await db
+      .collection("black_card_orders")
+      .findOne({ _id: new ObjectId(orderId) });
+    if (!order)
+      return res.status(404).json({ ok: false, error: "Order not found" });
 
-    const currentStatus = String(order.status || "pending_profile").toLowerCase();
+    const currentStatus = String(
+      order.status || "pending_profile",
+    ).toLowerCase();
     if (!ALLOWED_TRANSITIONS[currentStatus]?.includes(nextStatus)) {
-      return res.status(409).json({ ok: false, error: `Invalid transition from ${currentStatus} to ${nextStatus}` });
+      return res
+        .status(409)
+        .json({
+          ok: false,
+          error: `Invalid transition from ${currentStatus} to ${nextStatus}`,
+        });
     }
 
     const now = new Date();
@@ -110,30 +137,35 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     await db.collection("black_card_order_events").insertOne({
       orderId,
+      membershipId: String(order.membershipId || ""),
+      cardId: order.cardId ? String(order.cardId) : null,
+      userId: String(order.userId || ""),
       eventType: "status_transition",
       fromStatus: currentStatus,
       toStatus: nextStatus,
-      actorRole: "admin",
+      actorType: "admin",
       actorId: admin.userId || null,
-      actorEmail: admin.email || null,
-      reason,
-      fulfillmentRef,
-      trackingNumber,
+      note: reason,
       createdAt: now,
     });
 
     await db.collection("black_card_admin_audit").insertOne({
+      targetType: "order",
+      targetId: orderId,
       action: "order_status_transition",
       orderId,
       membershipId: String(order.membershipId || ""),
       cardId: order.cardId ? String(order.cardId) : null,
       actorId: admin.userId || null,
-      actorEmail: admin.email || null,
-      fromStatus: currentStatus,
-      toStatus: nextStatus,
       reason,
-      fulfillmentRef,
-      trackingNumber,
+      before: {
+        status: currentStatus,
+      },
+      after: {
+        status: nextStatus,
+        fulfillmentRef,
+        trackingNumber,
+      },
       createdAt: now,
     });
 

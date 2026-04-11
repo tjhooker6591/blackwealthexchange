@@ -3,7 +3,10 @@ import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
 import { requireAdminFromRequest } from "@/lib/adminAuth";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method !== "GET") {
     res.setHeader("Allow", ["GET"]);
     return res.status(405).json({ ok: false, error: "Method Not Allowed" });
@@ -26,14 +29,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     ok: true,
     items: items.map((item: any) => ({
       id: String(item._id),
+      targetType: item.targetType || null,
+      targetId: item.targetId ? String(item.targetId) : null,
       action: String(item.action || "action"),
       orderId: item.orderId ? String(item.orderId) : null,
       membershipId: item.membershipId ? String(item.membershipId) : null,
       cardId: item.cardId ? String(item.cardId) : null,
-      actorEmail: item.actorEmail || null,
-      fromStatus: item.fromStatus || null,
-      toStatus: item.toStatus || null,
+      actorId: item.actorId || null,
       reason: item.reason || null,
+      before: item.before || null,
+      after: item.after || null,
       createdAt: item.createdAt || null,
     })),
     meta: { requestedBy: admin.email || admin.userId || "admin" },
