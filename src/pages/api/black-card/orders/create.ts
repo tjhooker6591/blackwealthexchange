@@ -26,20 +26,20 @@ export default async function handler(
   const reason = String(req.body?.reason || "").trim() || null;
   const shippingProfileId =
     String(req.body?.shippingProfileId || "").trim() || null;
+  const printName = String(req.body?.printName || "").trim() || null;
+  const printNameApproved = req.body?.printNameApproved === true;
 
   const client = await clientPromise;
   const db = client.db(getMongoDbName());
   const now = new Date();
 
-  const membership = await db
-    .collection("black_card_memberships")
-    .findOne(
-      {
-        $or: [{ userId: session.userId }, { email: session.email }],
-        status: "active",
-      },
-      { projection: { _id: 1, userId: 1, email: 1, status: 1 } },
-    );
+  const membership = await db.collection("black_card_memberships").findOne(
+    {
+      $or: [{ userId: session.userId }, { email: session.email }],
+      status: "active",
+    },
+    { projection: { _id: 1, userId: 1, email: 1, status: 1 } },
+  );
 
   if (!membership) {
     return res
@@ -53,6 +53,14 @@ export default async function handler(
     .sort({ issueVersion: -1 })
     .limit(1)
     .next();
+
+  if (!printName || !printNameApproved) {
+    return res.status(400).json({
+      ok: false,
+      error:
+        "printName and explicit printNameApproved are required before physical order creation",
+    });
+  }
 
   const status = shippingProfileId ? "ready_to_fulfill" : "pending_profile";
 
@@ -85,6 +93,9 @@ export default async function handler(
     status,
     reason,
     shippingProfileId,
+    printName,
+    printNameApproved: true,
+    printNameApprovedAt: now,
     requestedBy: "member",
     createdAt: now,
     updatedAt: now,
@@ -109,7 +120,7 @@ export default async function handler(
     toStatus: status,
     actorType: "member",
     actorId: session.userId,
-    note: reason,
+    note: reason || `printName:${printName}`,
     createdAt: now,
   });
 

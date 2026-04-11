@@ -15,6 +15,9 @@ export default function BlackCardJoinPage() {
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string>("");
+  const [printName, setPrintName] = useState("");
+  const [printApproved, setPrintApproved] = useState(false);
+  const [orderLoading, setOrderLoading] = useState(false);
 
   const tier = useMemo(
     () =>
@@ -25,6 +28,43 @@ export default function BlackCardJoinPage() {
   );
 
   const tierConfig = BLACK_CARD_TIERS[tier];
+  const checkoutSuccess = router.query.checkout === "success";
+
+  async function submitPhysicalOrder() {
+    if (!user) {
+      router.push(`/login?next=${encodeURIComponent(`/black-card/join?tier=${tier}&checkout=success`)}`);
+      return;
+    }
+
+    setOrderLoading(true);
+    setMessage("");
+
+    try {
+      const res = await fetch("/api/black-card/orders/create", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          orderType: "initial",
+          reason: "initial_physical_issue",
+          printName,
+          printNameApproved: printApproved,
+        }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setMessage(data?.error || "Unable to create physical card order.");
+        return;
+      }
+
+      setMessage("Physical card request submitted. Digital card stays active while fulfillment is processed.");
+    } catch {
+      setMessage("Network error while submitting card personalization.");
+    } finally {
+      setOrderLoading(false);
+    }
+  }
 
   async function startCheckout() {
     if (!user) {
@@ -84,7 +124,9 @@ export default function BlackCardJoinPage() {
           <p className="mt-4 text-4xl font-black">
             {tierConfig.priceLabel}
             <span className="text-base font-medium text-white/70">
-              {tierConfig.billingModel === "entry_fee" ? " one-time entry fee" : "/month"}
+              {tierConfig.billingModel === "entry_fee"
+                ? " one-time entry fee"
+                : "/month"}
             </span>
           </p>
 
@@ -94,13 +136,20 @@ export default function BlackCardJoinPage() {
             ))}
           </ul>
 
+          <div className="mt-6 rounded-xl border border-white/10 bg-black/30 p-4 text-sm text-white/80">
+            <div>Step 1: Select membership tier (current page)</div>
+            <div className="mt-1">Step 2: Complete secure payment checkout</div>
+            <div className="mt-1">Step 3: Confirm physical card personalization (print name)</div>
+            <div className="mt-1">Step 4: Physical order enters approval/fulfillment workflow</div>
+          </div>
+
           <div className="mt-6 flex flex-wrap gap-3">
             <button
               onClick={startCheckout}
-              disabled={loading}
+              disabled={loading || checkoutSuccess}
               className="rounded-lg bg-yellow-500 px-4 py-2 font-semibold text-black hover:bg-yellow-400 disabled:opacity-60"
             >
-              {loading ? "Starting checkout..." : "Continue to Secure Checkout"}
+              {loading ? "Starting checkout..." : checkoutSuccess ? "Checkout Completed" : "Continue to Secure Checkout"}
             </button>
             <Link
               href="/black-card"
@@ -110,8 +159,42 @@ export default function BlackCardJoinPage() {
             </Link>
           </div>
 
+          {checkoutSuccess ? (
+            <div className="mt-6 rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-4">
+              <h2 className="text-lg font-bold text-yellow-200">Card Personalization (Required for physical card)</h2>
+              <p className="mt-1 text-sm text-white/80">
+                Digital membership is active first. Physical printing starts only after you confirm the exact print name below.
+              </p>
+              <label className="mt-4 block text-sm text-white/80">
+                Name to print on card
+                <input
+                  value={printName}
+                  onChange={(e) => setPrintName(e.target.value)}
+                  placeholder="Enter exact print name"
+                  className="mt-2 w-full rounded-lg border border-white/20 bg-black/40 px-3 py-2 text-white"
+                />
+              </label>
+              <label className="mt-3 flex items-start gap-2 text-sm text-white/80">
+                <input
+                  type="checkbox"
+                  checked={printApproved}
+                  onChange={(e) => setPrintApproved(e.target.checked)}
+                  className="mt-1"
+                />
+                <span>I approve this exact print name for physical card production.</span>
+              </label>
+              <button
+                onClick={submitPhysicalOrder}
+                disabled={orderLoading || !printName.trim() || !printApproved}
+                className="mt-4 rounded-lg bg-yellow-500 px-4 py-2 font-semibold text-black hover:bg-yellow-400 disabled:opacity-60"
+              >
+                {orderLoading ? "Submitting..." : "Approve Name & Submit Physical Card Request"}
+              </button>
+            </div>
+          ) : null}
+
           {message ? (
-            <p className="mt-4 text-sm text-red-400">{message}</p>
+            <p className="mt-4 text-sm text-yellow-200">{message}</p>
           ) : null}
         </div>
       </main>
