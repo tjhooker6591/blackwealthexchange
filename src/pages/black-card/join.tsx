@@ -17,6 +17,7 @@ export default function BlackCardJoinPage() {
   const [message, setMessage] = useState<string>("");
   const [printName, setPrintName] = useState("");
   const [printApproved, setPrintApproved] = useState(false);
+  const [printPreviewConfirmed, setPrintPreviewConfirmed] = useState(false);
   const [orderLoading, setOrderLoading] = useState(false);
 
   const tier = useMemo(
@@ -29,10 +30,13 @@ export default function BlackCardJoinPage() {
 
   const tierConfig = BLACK_CARD_TIERS[tier];
   const checkoutSuccess = router.query.checkout === "success";
+  const printNameFinal = printName.replace(/\s+/g, " ").trim();
 
   async function submitPhysicalOrder() {
     if (!user) {
-      router.push(`/login?next=${encodeURIComponent(`/black-card/join?tier=${tier}&checkout=success`)}`);
+      router.push(
+        `/login?next=${encodeURIComponent(`/black-card/join?tier=${tier}&checkout=success`)}`,
+      );
       return;
     }
 
@@ -47,7 +51,7 @@ export default function BlackCardJoinPage() {
         body: JSON.stringify({
           orderType: "initial",
           reason: "initial_physical_issue",
-          printName,
+          printName: printNameFinal,
           printNameApproved: printApproved,
         }),
       });
@@ -58,7 +62,9 @@ export default function BlackCardJoinPage() {
         return;
       }
 
-      setMessage("Physical card request submitted. Digital card stays active while fulfillment is processed.");
+      setMessage(
+        "Physical card request submitted. Digital card stays active while fulfillment is processed.",
+      );
     } catch {
       setMessage("Network error while submitting card personalization.");
     } finally {
@@ -139,8 +145,12 @@ export default function BlackCardJoinPage() {
           <div className="mt-6 rounded-xl border border-white/10 bg-black/30 p-4 text-sm text-white/80">
             <div>Step 1: Select membership tier (current page)</div>
             <div className="mt-1">Step 2: Complete secure payment checkout</div>
-            <div className="mt-1">Step 3: Confirm physical card personalization (print name)</div>
-            <div className="mt-1">Step 4: Physical order enters approval/fulfillment workflow</div>
+            <div className="mt-1">
+              Step 3: Confirm physical card personalization (print name)
+            </div>
+            <div className="mt-1">
+              Step 4: Physical order enters approval/fulfillment workflow
+            </div>
           </div>
 
           <div className="mt-6 flex flex-wrap gap-3">
@@ -149,7 +159,11 @@ export default function BlackCardJoinPage() {
               disabled={loading || checkoutSuccess}
               className="rounded-lg bg-yellow-500 px-4 py-2 font-semibold text-black hover:bg-yellow-400 disabled:opacity-60"
             >
-              {loading ? "Starting checkout..." : checkoutSuccess ? "Checkout Completed" : "Continue to Secure Checkout"}
+              {loading
+                ? "Starting checkout..."
+                : checkoutSuccess
+                  ? "Checkout Completed"
+                  : "Continue to Secure Checkout"}
             </button>
             <Link
               href="/black-card"
@@ -161,19 +175,35 @@ export default function BlackCardJoinPage() {
 
           {checkoutSuccess ? (
             <div className="mt-6 rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-4">
-              <h2 className="text-lg font-bold text-yellow-200">Card Personalization (Required for physical card)</h2>
+              <h2 className="text-lg font-bold text-yellow-200">
+                Card Personalization (Required for physical card)
+              </h2>
               <p className="mt-1 text-sm text-white/80">
-                Digital membership is active first. Physical printing starts only after you confirm the exact print name below.
+                Digital membership is active first. Physical printing starts
+                only after you confirm the exact print name below.
               </p>
               <label className="mt-4 block text-sm text-white/80">
                 Name to print on card
                 <input
                   value={printName}
-                  onChange={(e) => setPrintName(e.target.value)}
+                  onChange={(e) => {
+                    setPrintName(e.target.value);
+                    setPrintPreviewConfirmed(false);
+                  }}
                   placeholder="Enter exact print name"
                   className="mt-2 w-full rounded-lg border border-white/20 bg-black/40 px-3 py-2 text-white"
                 />
               </label>
+              <div className="mt-4 rounded-xl border border-white/10 bg-black/50 p-4">
+                <div className="text-xs uppercase tracking-[0.15em] text-yellow-300">Final print preview</div>
+                <div className="mt-2 rounded-lg border border-yellow-500/30 bg-black px-3 py-4 text-center font-semibold tracking-[0.08em] text-yellow-100">
+                  {printNameFinal || "ENTER PRINT NAME"}
+                </div>
+                <p className="mt-2 text-xs text-white/65">
+                  Preview uses trimmed spacing exactly as production will receive it.
+                </p>
+              </div>
+
               <label className="mt-3 flex items-start gap-2 text-sm text-white/80">
                 <input
                   type="checkbox"
@@ -181,14 +211,36 @@ export default function BlackCardJoinPage() {
                   onChange={(e) => setPrintApproved(e.target.checked)}
                   className="mt-1"
                 />
-                <span>I approve this exact print name for physical card production.</span>
+                <span>
+                  I approve this exact print name for physical card production.
+                </span>
               </label>
+
+              <label className="mt-2 flex items-start gap-2 text-sm text-white/80">
+                <input
+                  type="checkbox"
+                  checked={printPreviewConfirmed}
+                  onChange={(e) => setPrintPreviewConfirmed(e.target.checked)}
+                  className="mt-1"
+                />
+                <span>
+                  I have reviewed the final preview and confirm it is correct.
+                </span>
+              </label>
+
               <button
                 onClick={submitPhysicalOrder}
-                disabled={orderLoading || !printName.trim() || !printApproved}
+                disabled={
+                  orderLoading ||
+                  !printNameFinal ||
+                  !printApproved ||
+                  !printPreviewConfirmed
+                }
                 className="mt-4 rounded-lg bg-yellow-500 px-4 py-2 font-semibold text-black hover:bg-yellow-400 disabled:opacity-60"
               >
-                {orderLoading ? "Submitting..." : "Approve Name & Submit Physical Card Request"}
+                {orderLoading
+                  ? "Submitting..."
+                  : "Finalize Print Approval & Submit Physical Card Request"}
               </button>
             </div>
           ) : null}
