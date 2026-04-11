@@ -7,7 +7,12 @@ const SECRET = process.env.JWT_SECRET || process.env.NEXTAUTH_SECRET;
 if (!SECRET) throw new Error("Missing JWT secret");
 
 const token = jwt.sign(
-  { userId: "admin-proof-user", email: "admin-proof@bwe.local", role: "admin", isAdmin: true },
+  {
+    userId: "admin-proof-user",
+    email: "admin-proof@bwe.local",
+    role: "admin",
+    isAdmin: true,
+  },
   SECRET,
   { expiresIn: "1h" },
 );
@@ -24,22 +29,33 @@ async function call(path, options = {}) {
   });
   const txt = await res.text();
   let json;
-  try { json = JSON.parse(txt); } catch { json = txt; }
+  try {
+    json = JSON.parse(txt);
+  } catch {
+    json = txt;
+  }
   return { status: res.status, json };
 }
 
-const list = await call('/api/admin/black-card/redemptions?status=pending');
-const firstId = Array.isArray(list.json?.items) && list.json.items.length ? list.json.items[0].id : null;
+const list = await call("/api/admin/black-card/redemptions?status=pending");
+const firstId =
+  Array.isArray(list.json?.items) && list.json.items.length
+    ? list.json.items[0].id
+    : null;
 
 const out = { list };
 if (firstId) {
-  out.approve = await call('/api/admin/black-card/redemptions', {
-    method: 'PATCH',
-    body: JSON.stringify({ redemptionId: firstId, status: 'approved' }),
+  out.approve = await call("/api/admin/black-card/redemptions", {
+    method: "PATCH",
+    body: JSON.stringify({ redemptionId: firstId, status: "approved" }),
   });
-  out.fulfill = await call('/api/admin/black-card/redemptions', {
-    method: 'PATCH',
-    body: JSON.stringify({ redemptionId: firstId, status: 'fulfilled' }),
+  out.invalidTransition = await call("/api/admin/black-card/redemptions", {
+    method: "PATCH",
+    body: JSON.stringify({ redemptionId: firstId, status: "rejected" }),
+  });
+  out.fulfill = await call("/api/admin/black-card/redemptions", {
+    method: "PATCH",
+    body: JSON.stringify({ redemptionId: firstId, status: "fulfilled" }),
   });
 }
 

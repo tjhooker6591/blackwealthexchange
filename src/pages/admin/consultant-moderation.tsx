@@ -19,15 +19,22 @@ export default function ConsultantModerationPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [reasonFilter, setReasonFilter] = useState("");
 
   async function load() {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch("/api/admin/consultant-moderation-queue", {
-        credentials: "include",
-        cache: "no-store",
-      });
+      const params = new URLSearchParams();
+      if (reasonFilter) params.set("reason", reasonFilter);
+
+      const res = await fetch(
+        `/api/admin/consultant-moderation-queue${params.toString() ? `?${params.toString()}` : ""}`,
+        {
+          credentials: "include",
+          cache: "no-store",
+        },
+      );
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "Failed to load queue");
       setItems(Array.isArray(data?.items) ? data.items : []);
@@ -94,6 +101,35 @@ export default function ConsultantModerationPage() {
             {error}
           </div>
         ) : null}
+
+        <div className="mb-4 flex flex-wrap items-center gap-2 rounded-xl border border-white/10 bg-zinc-950 p-3">
+          <select
+            value={reasonFilter}
+            onChange={(e) => setReasonFilter(e.target.value)}
+            className="rounded border border-white/10 bg-black px-3 py-2 text-sm text-white"
+          >
+            <option value="">All reasons</option>
+            <option value="invalid_payload">invalid_payload</option>
+            <option value="disallowed_message">disallowed_message</option>
+            <option value="rate_limited">rate_limited</option>
+            <option value="blocked_phrase">blocked_phrase</option>
+          </select>
+          <button
+            onClick={() => void load()}
+            className="rounded border border-cyan-400/40 px-3 py-2 text-sm text-cyan-200"
+          >
+            Apply filter
+          </button>
+          <button
+            onClick={() => {
+              setReasonFilter("");
+              setTimeout(() => void load(), 0);
+            }}
+            className="rounded border border-white/20 px-3 py-2 text-sm text-white/85"
+          >
+            Reset
+          </button>
+        </div>
 
         {loading ? (
           <p className="text-zinc-300">Loading moderation queue...</p>

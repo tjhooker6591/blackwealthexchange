@@ -9,6 +9,7 @@ import type {
   TravelMapBusiness,
   TravelMapSearchResponse,
 } from "@/types/travel-map";
+import { canonicalUrl, truncateMeta } from "@/lib/seo";
 
 const initialFilters: TravelMapFilterValues = {
   q: "",
@@ -17,6 +18,7 @@ const initialFilters: TravelMapFilterValues = {
   category: "",
   verified: false,
   sponsored: false,
+  sort: "relevance",
 };
 
 function buildQuery(filters: TravelMapFilterValues, page: number) {
@@ -27,6 +29,7 @@ function buildQuery(filters: TravelMapFilterValues, page: number) {
   if (filters.category) params.set("category", filters.category);
   if (filters.verified) params.set("verified", "true");
   if (filters.sponsored) params.set("sponsored", "true");
+  params.set("sort", filters.sort);
   params.set("page", String(page));
   params.set("pageSize", "12");
   return params.toString();
@@ -52,14 +55,16 @@ export default function TravelMapExplorePage() {
   useEffect(() => {
     if (mode !== "search") return;
 
-    let cancelled = false;
+    const controller = new AbortController();
 
     async function load() {
       setLoading(true);
       setError("");
 
       try {
-        const res = await fetch(`/api/travel-map/search?${queryString}`);
+        const res = await fetch(`/api/travel-map/search?${queryString}`, {
+          signal: controller.signal,
+        });
         const data = (await res.json()) as
           | TravelMapSearchResponse
           | { ok: false; error: string };
@@ -70,27 +75,24 @@ export default function TravelMapExplorePage() {
           );
         }
 
-        if (!cancelled) {
-          setResults(data.results);
-          setTotal(data.total);
-          setPageSize(data.pageSize);
-          setDataSource(data.meta?.source || "db");
-        }
+        setResults(data.results);
+        setTotal(data.total);
+        setPageSize(data.pageSize);
+        setDataSource(data.meta?.source || "db");
       } catch (err: any) {
-        if (!cancelled) {
-          setError(err?.message || "Failed to load results");
-          setResults([]);
-          setTotal(0);
-        }
+        if (err?.name === "AbortError") return;
+        setError(err?.message || "Failed to load results");
+        setResults([]);
+        setTotal(0);
       } finally {
-        if (!cancelled) setLoading(false);
+        if (!controller.signal.aborted) setLoading(false);
       }
     }
 
     void load();
 
     return () => {
-      cancelled = true;
+      controller.abort();
     };
   }, [queryString, mode]);
 
@@ -174,11 +176,16 @@ export default function TravelMapExplorePage() {
   return (
     <>
       <Head>
-        <title>Explore Travel Map | Black Wealth Exchange</title>
+        <title>
+          Travel Map: Black-owned Business Discovery | Black Wealth Exchange
+        </title>
         <meta
           name="description"
-          content="Search and explore Black-owned businesses while traveling with the BWE Travel Map."
+          content={truncateMeta(
+            "Search and explore Black-owned businesses while traveling with the BWE Travel Map.",
+          )}
         />
+        <link rel="canonical" href={canonicalUrl("/travel-map/explore")} />
       </Head>
 
       <div className="min-h-screen bg-black text-white">
@@ -197,7 +204,12 @@ export default function TravelMapExplorePage() {
                   : "Search mode active · city/state/category filters"}
               </p>
               <p className="mt-1 text-xs text-zinc-500">
-                Data source: {dataSource === "db" ? "Live business data" : dataSource === "nearby" ? "Nearby search" : "Fallback sample data"}
+                Data source:{" "}
+                {dataSource === "db"
+                  ? "Live business data"
+                  : dataSource === "nearby"
+                    ? "Nearby search"
+                    : "Fallback sample data"}
               </p>
             </div>
 
