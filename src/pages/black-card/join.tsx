@@ -131,10 +131,13 @@ export default function BlackCardJoinPage() {
             {tierConfig.priceLabel}
             <span className="text-base font-medium text-white/70">
               {tierConfig.billingModel === "entry_fee"
-                ? " one-time entry fee"
-                : "/month"}
+                ? " one-time membership entry fee"
+                : "/month membership"}
             </span>
           </p>
+          <div className="mt-2 rounded-lg border border-yellow-500/25 bg-yellow-500/10 px-3 py-2 text-xs text-yellow-100">
+            Membership price charged at checkout: <span className="font-semibold">{tierConfig.priceLabel} {tierConfig.billingModel === "entry_fee" ? "one-time" : "per month"}</span>. Physical card personalization/order step does not charge a second price in this flow.
+          </div>
 
           <ul className="mt-5 space-y-2 text-sm text-white/85">
             {tierConfig.benefits.map((benefit) => (
@@ -144,9 +147,9 @@ export default function BlackCardJoinPage() {
 
           <div className="mt-6 rounded-xl border border-white/10 bg-black/30 p-4 text-sm text-white/80">
             <div>Step 1: Select membership tier (current page)</div>
-            <div className="mt-1">Step 2: Complete secure payment checkout</div>
+            <div className="mt-1">Step 2: Complete secure payment checkout (membership charge only)</div>
             <div className="mt-1">
-              Step 3: Confirm physical card personalization (print name)
+              Step 3: Confirm physical card personalization (print name, no second membership charge)
             </div>
             <div className="mt-1">
               Step 4: Physical order enters approval/fulfillment workflow
@@ -182,6 +185,10 @@ export default function BlackCardJoinPage() {
                 Digital membership is active first. Physical printing starts
                 only after you confirm the exact print name below.
               </p>
+              <p className="mt-2 rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-xs text-white/75">
+                This step is personalization + fulfillment approval. It is not a second membership price.
+                If a future physical fulfillment fee is introduced, it must be shown explicitly before payment.
+              </p>
               <label className="mt-4 block text-sm text-white/80">
                 Name to print on card
                 <input
@@ -195,12 +202,15 @@ export default function BlackCardJoinPage() {
                 />
               </label>
               <div className="mt-4 rounded-xl border border-white/10 bg-black/50 p-4">
-                <div className="text-xs uppercase tracking-[0.15em] text-yellow-300">Final print preview</div>
+                <div className="text-xs uppercase tracking-[0.15em] text-yellow-300">
+                  Final print preview
+                </div>
                 <div className="mt-2 rounded-lg border border-yellow-500/30 bg-black px-3 py-4 text-center font-semibold tracking-[0.08em] text-yellow-100">
                   {printNameFinal || "ENTER PRINT NAME"}
                 </div>
                 <p className="mt-2 text-xs text-white/65">
-                  Preview uses trimmed spacing exactly as production will receive it.
+                  Preview uses trimmed spacing exactly as production will
+                  receive it.
                 </p>
               </div>
 
