@@ -1,5 +1,9 @@
 import { useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
+import type { GetServerSideProps } from "next";
+import cookie from "cookie";
+import jwt from "jsonwebtoken";
+import { getJwtSecret } from "@/lib/env";
 
 type RedemptionItem = {
   id: string;
@@ -151,16 +155,30 @@ export default function AdminBlackCardPage() {
         </section>
 
         <section className="rounded-2xl border border-white/10 bg-white/5 p-5">
-          <h2 className="text-lg font-bold text-yellow-200">Membership + Card visibility</h2>
+          <h2 className="text-lg font-bold text-yellow-200">
+            Membership + Card visibility
+          </h2>
           <div className="mt-3 space-y-2 text-sm">
             {membershipItems.slice(0, 10).map((m) => (
-              <div key={m.membershipId} className="rounded-lg border border-white/10 bg-black/30 p-3">
-                <div className="font-semibold">{m.email || m.userId || m.membershipId}</div>
-                <div className="text-white/70">Tier: {m.tier || "—"} • Status: {m.status || "—"}</div>
-                <div className="text-white/70">Card: {m.cardIdDisplay || "—"} • Version: {m.issueVersion || "—"}</div>
+              <div
+                key={m.membershipId}
+                className="rounded-lg border border-white/10 bg-black/30 p-3"
+              >
+                <div className="font-semibold">
+                  {m.email || m.userId || m.membershipId}
+                </div>
+                <div className="text-white/70">
+                  Tier: {m.tier || "—"} • Status: {m.status || "—"}
+                </div>
+                <div className="text-white/70">
+                  Card: {m.cardIdDisplay || "—"} • Version:{" "}
+                  {m.issueVersion || "—"}
+                </div>
               </div>
             ))}
-            {membershipItems.length === 0 ? <p className="text-white/70">No Black Card memberships yet.</p> : null}
+            {membershipItems.length === 0 ? (
+              <p className="text-white/70">No Black Card memberships yet.</p>
+            ) : null}
           </div>
         </section>
 
@@ -254,3 +272,40 @@ export default function AdminBlackCardPage() {
     </main>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const cookies = cookie.parse(req.headers.cookie || "");
+  const token = cookies.session_token;
+  if (!token) {
+    return {
+      redirect: {
+        destination: "/login?redirect=/admin/black-card",
+        permanent: false,
+      },
+    };
+  }
+
+  try {
+    const payload = jwt.verify(token, getJwtSecret()) as {
+      accountType?: string;
+      isAdmin?: boolean;
+    };
+    if (!(payload.isAdmin === true || payload.accountType === "admin")) {
+      return {
+        redirect: {
+          destination: "/",
+          permanent: false,
+        },
+      };
+    }
+  } catch {
+    return {
+      redirect: {
+        destination: "/login?redirect=/admin/black-card",
+        permanent: false,
+      },
+    };
+  }
+
+  return { props: {} };
+};
