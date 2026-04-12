@@ -3,6 +3,7 @@ import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
 import { requireAdminFromRequest } from "@/lib/adminAuth";
 import { ObjectId } from "mongodb";
+import { ensureFinancialClassIndexes } from "@/lib/financialClassIndexes";
 
 export default async function handler(
   req: NextApiRequest,
@@ -34,6 +35,7 @@ export default async function handler(
 
   const client = await clientPromise;
   const db = client.db(getMongoDbName());
+  await ensureFinancialClassIndexes(db);
 
   const paymentQuery: any = {
     $or: [{ type: "course" }, { "metadata.type": "course" }],
@@ -45,7 +47,9 @@ export default async function handler(
   if (stripeSessionId) and.push({ stripeSessionId });
   if (paymentIntentId) and.push({ paymentIntentId });
   if (courseId)
-    and.push({ $or: [{ itemId: courseId }, { "metadata.courseId": courseId }] });
+    and.push({
+      $or: [{ itemId: courseId }, { "metadata.courseId": courseId }],
+    });
 
   if (and.length) paymentQuery.$and = and;
 
@@ -63,20 +67,23 @@ export default async function handler(
         String(p?.itemId || "").trim();
       const resolvedUserId = String(p?.userId || "").trim();
 
-      const enrollment = resolvedUserId && resolvedCourseId
-        ? await db.collection("enrollments").findOne({
-            userId: resolvedUserId,
-            courseId: resolvedCourseId,
-          })
-        : null;
+      const enrollment =
+        resolvedUserId && resolvedCourseId
+          ? await db.collection("enrollments").findOne({
+              userId: resolvedUserId,
+              courseId: resolvedCourseId,
+            })
+          : null;
 
       const user = resolvedUserId
-        ? await db.collection("users").findOne(
-            ObjectId.isValid(resolvedUserId)
-              ? { _id: new ObjectId(resolvedUserId) }
-              : { email: String(p.email || "").toLowerCase() },
-            { projection: { purchasedCourses: 1, email: 1 } },
-          )
+        ? await db
+            .collection("users")
+            .findOne(
+              ObjectId.isValid(resolvedUserId)
+                ? { _id: new ObjectId(resolvedUserId) }
+                : { email: String(p.email || "").toLowerCase() },
+              { projection: { purchasedCourses: 1, email: 1 } },
+            )
         : null;
 
       const purchasedCourses = Array.isArray(user?.purchasedCourses)
@@ -87,8 +94,22 @@ export default async function handler(
         ? purchasedCourses.includes(resolvedCourseId)
         : false;
 
-      const entitlementStatus = enrollment || hasPurchasedCourse ? "granted" : "missing";
-      const fulfillmentStatus = entitlementStatus === "granted" ? "fulfilled" : "unfulfilled";
+      const entitlementStatus =
+        enrollment || hasPurchasedCourse ? "granted" : "missing";
+      const fulfillmentStatus =
+        entitlementStatus === "granted" ? "fulfilled" : "unfulfilled";
+
+      const repairAudit = await db
+        .collection("financial_class_admin_audit")
+        .find({
+          $or: [
+            { stripeSessionId: p.stripeSessionId || null },
+            { userId: resolvedUserId || null, courseId: resolvedCourseId || null },
+          ],
+        })
+        .sort({ createdAt: -1 })
+        .limit(10)
+        .toArray();
 
       return {
         payment: {
@@ -128,7 +149,18 @@ export default async function handler(
             entitlementStatus === "missing"
               ? "paid_without_enrollment_or_course_access"
               : null,
+          recommendedRepairAction:
+            entitlementStatus === "missing"
+              ? "grant_missing_enrollment_from_paid_session"
+              : null,
         },
+        repairAudit: repairAudit.map((a: any) => ({
+          id: String(a._id),
+          action: a.action || null,
+          reason: a.reason || null,
+          actorEmail: a.actorEmail || null,
+          createdAt: a.createdAt || null,
+        })),
       };
     }),
   );

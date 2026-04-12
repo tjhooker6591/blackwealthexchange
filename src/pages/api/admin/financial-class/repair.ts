@@ -3,6 +3,7 @@ import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
 import { requireAdminFromRequest } from "@/lib/adminAuth";
 import { grantCourseAccess } from "@/lib/db/courses";
+import { ensureFinancialClassIndexes } from "@/lib/financialClassIndexes";
 
 export default async function handler(
   req: NextApiRequest,
@@ -27,6 +28,7 @@ export default async function handler(
 
   const client = await clientPromise;
   const db = client.db(getMongoDbName());
+  await ensureFinancialClassIndexes(db);
 
   const payment = await db.collection("payments").findOne({ stripeSessionId });
   if (!payment) {
