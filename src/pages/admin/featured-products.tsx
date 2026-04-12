@@ -37,7 +37,7 @@ export default function FeaturedProducts() {
   const handleToggleFeatured = async (productId: string, current: boolean) => {
     setMessage("");
     try {
-      const res = await fetch("/api/admin/feature-product", {
+      const res = await fetch("/api/admin/featured-products", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ productId, isFeatured: !current }),
