@@ -45,10 +45,17 @@ export default function TravelMapExplorePage() {
   const [locating, setLocating] = useState(false);
   const [error, setError] = useState("");
   const [view, setView] = useState<"split" | "list">("split");
-  const [mode, setMode] = useState<"search" | "nearby">("search");
-  const [dataSource, setDataSource] = useState<"db" | "fallback" | "nearby">(
-    "db",
-  );
+  const [mode, setMode] = useState<"search" | "nearby" | "route">("search");
+  const [dataSource, setDataSource] = useState<
+    "db" | "fallback" | "nearby" | "route"
+  >("db");
+  const [routeInput, setRouteInput] = useState({
+    fromLat: "",
+    fromLng: "",
+    toLat: "",
+    toLng: "",
+    corridorKm: "15",
+  });
 
   const queryString = useMemo(() => buildQuery(filters, page), [filters, page]);
 
@@ -95,6 +102,67 @@ export default function TravelMapExplorePage() {
       controller.abort();
     };
   }, [queryString, mode]);
+
+  async function runRouteCorridorSearch() {
+    setError("");
+    setLocating(true);
+    setMode("route");
+    setPage(1);
+
+    try {
+      const params = new URLSearchParams({
+        fromLat: routeInput.fromLat,
+        fromLng: routeInput.fromLng,
+        toLat: routeInput.toLat,
+        toLng: routeInput.toLng,
+        corridorKm: routeInput.corridorKm || "15",
+      });
+      const res = await fetch(
+        `/api/travel-map/route-corridor?${params.toString()}`,
+      );
+      const data = await res.json();
+      if (!res.ok || !data?.ok) {
+        throw new Error(
+          data?.error || "Failed to load route corridor results.",
+        );
+      }
+
+      let routeResults: TravelMapBusiness[] = Array.isArray(data.results)
+        ? data.results.map((r: any) => ({
+            _id: r.id,
+            business_name: r.business_name,
+            slug: r.slug,
+            category: r.category,
+            address: { city: r.city || "", state: r.state || "" },
+            location: { lat: r.latitude, lng: r.longitude },
+            verified: r.verified,
+            sponsored: r.sponsored,
+          }))
+        : [];
+
+      if (filters.category) {
+        const term = filters.category.toLowerCase();
+        routeResults = routeResults.filter((item) =>
+          `${item.category || ""}`.toLowerCase().includes(term),
+        );
+      }
+      if (filters.verified)
+        routeResults = routeResults.filter((item) => item.verified);
+      if (filters.sponsored)
+        routeResults = routeResults.filter((item) => item.sponsored);
+
+      setResults(routeResults);
+      setTotal(routeResults.length);
+      setPageSize(routeResults.length || 12);
+      setDataSource("route");
+    } catch (err: any) {
+      setError(err?.message || "Failed to run route corridor search.");
+      setResults([]);
+      setTotal(0);
+    } finally {
+      setLocating(false);
+    }
+  }
 
   async function runNearbySearch() {
     if (!navigator.geolocation) {
@@ -209,7 +277,9 @@ export default function TravelMapExplorePage() {
                   ? "Live business data"
                   : dataSource === "nearby"
                     ? "Nearby search"
-                    : "Fallback sample data"}
+                    : dataSource === "route"
+                      ? "Route corridor discovery"
+                      : "Fallback sample data"}
               </p>
             </div>
 
@@ -247,6 +317,64 @@ export default function TravelMapExplorePage() {
             onUseMyLocation={() => void runNearbySearch()}
             locating={locating}
           />
+
+          <div className="mt-4 rounded-2xl border border-yellow-500/30 bg-yellow-500/10 p-4">
+            <p className="text-sm text-yellow-100 font-semibold">
+              Route Corridor Discovery (free business inclusion)
+            </p>
+            <p className="text-xs text-yellow-200/80 mt-1">
+              Enter origin/destination coordinates to discover registered BWE
+              businesses near your travel path.
+            </p>
+            <div className="mt-3 grid md:grid-cols-5 gap-2">
+              <input
+                className="rounded bg-black/60 border border-white/20 px-2 py-2 text-sm"
+                placeholder="fromLat"
+                value={routeInput.fromLat}
+                onChange={(e) =>
+                  setRouteInput((p) => ({ ...p, fromLat: e.target.value }))
+                }
+              />
+              <input
+                className="rounded bg-black/60 border border-white/20 px-2 py-2 text-sm"
+                placeholder="fromLng"
+                value={routeInput.fromLng}
+                onChange={(e) =>
+                  setRouteInput((p) => ({ ...p, fromLng: e.target.value }))
+                }
+              />
+              <input
+                className="rounded bg-black/60 border border-white/20 px-2 py-2 text-sm"
+                placeholder="toLat"
+                value={routeInput.toLat}
+                onChange={(e) =>
+                  setRouteInput((p) => ({ ...p, toLat: e.target.value }))
+                }
+              />
+              <input
+                className="rounded bg-black/60 border border-white/20 px-2 py-2 text-sm"
+                placeholder="toLng"
+                value={routeInput.toLng}
+                onChange={(e) =>
+                  setRouteInput((p) => ({ ...p, toLng: e.target.value }))
+                }
+              />
+              <input
+                className="rounded bg-black/60 border border-white/20 px-2 py-2 text-sm"
+                placeholder="corridorKm"
+                value={routeInput.corridorKm}
+                onChange={(e) =>
+                  setRouteInput((p) => ({ ...p, corridorKm: e.target.value }))
+                }
+              />
+            </div>
+            <button
+              onClick={() => void runRouteCorridorSearch()}
+              className="mt-3 rounded bg-yellow-500 text-black px-3 py-2 text-sm font-semibold"
+            >
+              Search Along Route
+            </button>
+          </div>
 
           <div className="mt-6 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-gray-300">
             {loading ? "Loading results..." : `${total} businesses found`}
