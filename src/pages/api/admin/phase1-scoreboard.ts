@@ -19,7 +19,7 @@ type MetricRow = {
 type GroupDef = {
   key: string;
   title: string;
-  metrics: Array<{ eventType: string; label: string }>;
+  metrics: Array<{ eventType: string; label: string; pageRoute?: string }>;
 };
 
 function emptyCounts(): WindowCounts {
@@ -32,6 +32,32 @@ function ratio(numerator: number, denominator: number) {
 }
 
 const GROUPS: GroupDef[] = [
+  {
+    key: "page_access",
+    title: "Page Access (Shared Backend Source)",
+    metrics: [
+      {
+        eventType: "page_view",
+        pageRoute: "/",
+        label: "Homepage page views",
+      },
+      {
+        eventType: "page_view",
+        pageRoute: "/financial-literacy",
+        label: "Financial literacy page views",
+      },
+      {
+        eventType: "page_view",
+        pageRoute: "/marketplace",
+        label: "Marketplace page views",
+      },
+      {
+        eventType: "page_view",
+        pageRoute: "/admin/phase1-scoreboard",
+        label: "Phase1 scoreboard page views",
+      },
+    ],
+  },
   {
     key: "discovery",
     title: "Discovery / Top of Funnel",
@@ -243,6 +269,8 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
+  res.setHeader("Cache-Control", "no-store, max-age=0");
+
   if (req.method !== "GET") {
     return res.status(405).json({ error: "Method not allowed" });
   }
@@ -293,7 +321,10 @@ export default async function handler(
         },
         {
           $group: {
-            _id: "$eventType",
+            _id: {
+              eventType: "$eventType",
+              pageRoute: { $ifNull: ["$pageRoute", null] },
+            },
             today: {
               $sum: {
                 $cond: [{ $gte: ["$createdAt", startToday] }, 1, 0],
@@ -312,18 +343,38 @@ export default async function handler(
 
     const countMap = new Map<string, WindowCounts>();
     for (const r of rows) {
-      countMap.set(String(r._id), {
+      const eventType = String(r?._id?.eventType || "");
+      const pageRoute =
+        typeof r?._id?.pageRoute === "string" ? r._id.pageRoute : "";
+      const key = `${eventType}::${pageRoute}`;
+      const eventOnlyKey = `${eventType}::`;
+      const counts = {
         today: Number(r.today || 0),
         last7d: Number(r.last7d || 0),
         last30d: Number(r.last30d || 0),
+      };
+      countMap.set(key, counts);
+
+      const prev = countMap.get(eventOnlyKey) || emptyCounts();
+      countMap.set(eventOnlyKey, {
+        today: prev.today + counts.today,
+        last7d: prev.last7d + counts.last7d,
+        last30d: prev.last30d + counts.last30d,
       });
     }
 
+    const getCounts = (eventType: string, pageRoute?: string) => {
+      if (pageRoute) {
+        return countMap.get(`${eventType}::${pageRoute}`) || emptyCounts();
+      }
+      return countMap.get(`${eventType}::`) || emptyCounts();
+    };
+
     const groups = GROUPS.map((group) => {
       const metrics: MetricRow[] = group.metrics.map((m) => ({
-        eventType: m.eventType,
+        eventType: m.pageRoute ? `${m.eventType} @ ${m.pageRoute}` : m.eventType,
         label: m.label,
-        counts: countMap.get(m.eventType) || emptyCounts(),
+        counts: getCounts(m.eventType, m.pageRoute),
       }));
 
       const totals = metrics.reduce((acc, m) => {
@@ -341,7 +392,8 @@ export default async function handler(
       };
     });
 
-    const get = (eventType: string) => countMap.get(eventType) || emptyCounts();
+    const get = (eventType: string) =>
+      countMap.get(`${eventType}::`) || emptyCounts();
 
     const kpis = {
       discoverySearchSubmitted: get("homepage_search_submitted"),

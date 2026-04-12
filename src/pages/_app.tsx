@@ -3,15 +3,31 @@ import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import { useEffect } from "react";
+import { useRouter } from "next/router";
+import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/footer";
 import { SessionProvider } from "next-auth/react";
+import "leaflet/dist/leaflet.css";
 
 export default function App({
   Component,
   pageProps: { session, ...pageProps },
 }: AppProps) {
+  const router = useRouter();
   useEffect(() => {
+    const trackPageView = (url: string) => {
+      emitFlowEvent({
+        eventType: "page_view",
+        pageRoute: url,
+        section: "global_navigation",
+        source: "app_router",
+      });
+    };
+
+    trackPageView(router.asPath || "/");
+    router.events.on("routeChangeComplete", trackPageView);
+
     // Prevent right-click context menu
     const disableContextMenu = (e: MouseEvent) => e.preventDefault();
     document.addEventListener("contextmenu", disableContextMenu);
@@ -39,11 +55,12 @@ export default function App({
     window.addEventListener("keydown", handleKeyDown);
 
     return () => {
+      router.events.off("routeChangeComplete", trackPageView);
       document.removeEventListener("contextmenu", disableContextMenu);
       document.body.style.userSelect = "auto";
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, []);
+  }, [router]);
 
   return (
     <SessionProvider session={session}>
