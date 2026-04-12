@@ -3,6 +3,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import type { GetServerSideProps } from "next";
+import cookie from "cookie";
+import jwt from "jsonwebtoken";
+import { getJwtSecret } from "@/lib/env";
 
 type MemberSummaryResponse = {
   ok: boolean;
@@ -79,10 +83,10 @@ export default function BlackCardDashboardPage() {
       fetch("/api/black-card/entitlements/check?benefit=priority_events", {
         credentials: "include",
       }),
-      fetch("/api/black-card/entitlements/check?benefit=selected_events", {
+      fetch("/api/black-card/entitlements/check?benefit=premium_partner_offers", {
         credentials: "include",
       }),
-      fetch("/api/black-card/entitlements/check?benefit=selected_events", {
+      fetch("/api/black-card/entitlements/check?benefit=vip_events", {
         credentials: "include",
       }),
     ]);
@@ -180,7 +184,9 @@ export default function BlackCardDashboardPage() {
                 <div className="mt-3 grid gap-4 md:grid-cols-2">
                   <div className="space-y-3">
                     <div className="rounded-2xl border border-yellow-400/20 bg-black/60 p-4">
-                      <div className="text-[10px] uppercase tracking-[0.18em] text-yellow-300">BWE Black Card</div>
+                      <div className="text-[10px] uppercase tracking-[0.18em] text-yellow-300">
+                        BWE Black Card
+                      </div>
                       <div className="mt-1 text-lg font-extrabold text-yellow-100">
                         {(
                           data.member?.fullName ||
@@ -188,11 +194,19 @@ export default function BlackCardDashboardPage() {
                           "Member"
                         ).toUpperCase()}
                       </div>
-                      <div className="mt-1 text-xs text-white/75">{data.card?.cardIdDisplay || "Pending Issuance"}</div>
+                      <div className="mt-1 text-xs text-white/75">
+                        {data.card?.cardIdDisplay || "Pending Issuance"}
+                      </div>
                       <div className="mt-2 flex flex-wrap gap-2 text-xs">
-                        <span className="rounded-full border border-yellow-500/30 bg-black/30 px-2 py-1 text-yellow-200">{data.member?.tier || "not-active"}</span>
-                        <span className="rounded-full border border-white/20 bg-black/30 px-2 py-1 text-white/80">{data.member?.status || "inactive"}</span>
-                        <span className="rounded-full border border-white/20 bg-black/30 px-2 py-1 text-white/80">v{data.card?.issueVersion || 1}</span>
+                        <span className="rounded-full border border-yellow-500/30 bg-black/30 px-2 py-1 text-yellow-200">
+                          {data.member?.tier || "not-active"}
+                        </span>
+                        <span className="rounded-full border border-white/20 bg-black/30 px-2 py-1 text-white/80">
+                          {data.member?.status || "inactive"}
+                        </span>
+                        <span className="rounded-full border border-white/20 bg-black/30 px-2 py-1 text-white/80">
+                          v{data.card?.issueVersion || 1}
+                        </span>
                       </div>
                     </div>
 
@@ -213,7 +227,9 @@ export default function BlackCardDashboardPage() {
                             ).toLocaleDateString()
                           : "—"}
                       </div>
-                      <div className="mt-1">Wallet pass: {data.card?.walletPassState || "planned"}</div>
+                      <div className="mt-1">
+                        Wallet pass: {data.card?.walletPassState || "planned"}
+                      </div>
                     </div>
                   </div>
 
@@ -228,10 +244,17 @@ export default function BlackCardDashboardPage() {
                       />
                     </div>
                     <div className="rounded-xl border border-white/10 bg-black/40 p-3">
-                      <div className="text-xs text-white/70">Member verification code</div>
-                      <div className="mt-1 font-mono text-sm text-yellow-200">{data.card?.verificationCode || "N/A"}</div>
+                      <div className="text-xs text-white/70">
+                        Member verification code
+                      </div>
+                      <div className="mt-1 font-mono text-sm text-yellow-200">
+                        {data.card?.verificationCode || "N/A"}
+                      </div>
                       <div className="mt-2 text-[11px] text-white/60 break-all">
-                        Verify endpoint: {data.card?.cardIdDisplay && data.card?.verificationCode ? `/api/black-card/verify?cardId=${encodeURIComponent(data.card.cardIdDisplay)}&code=${encodeURIComponent(data.card.verificationCode)}` : "Available after issuance"}
+                        Verify endpoint:{" "}
+                        {data.card?.cardIdDisplay && data.card?.verificationCode
+                          ? `/api/black-card/verify?cardId=${encodeURIComponent(data.card.cardIdDisplay)}&code=${encodeURIComponent(data.card.verificationCode)}`
+                          : "Available after issuance"}
                       </div>
                     </div>
                   </div>
@@ -388,3 +411,29 @@ export default function BlackCardDashboardPage() {
     </>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const cookies = cookie.parse(req.headers.cookie || "");
+  const token = cookies.session_token;
+  if (!token) {
+    return {
+      redirect: {
+        destination: "/login?redirect=/dashboard/black-card",
+        permanent: false,
+      },
+    };
+  }
+
+  try {
+    jwt.verify(token, getJwtSecret());
+  } catch {
+    return {
+      redirect: {
+        destination: "/login?redirect=/dashboard/black-card",
+        permanent: false,
+      },
+    };
+  }
+
+  return { props: {} };
+};

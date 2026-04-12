@@ -1,6 +1,10 @@
 import Head from "next/head";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import type { GetServerSideProps } from "next";
+import cookie from "cookie";
+import jwt from "jsonwebtoken";
+import { getJwtSecret } from "@/lib/env";
 import WealthBuilderNav from "@/components/wealth-builder/WealthBuilderNav";
 import SummaryCard from "@/components/wealth-builder/SummaryCard";
 
@@ -191,8 +195,14 @@ export default function WealthBuilderDashboardPage() {
             </p>
             {summary ? (
               <p className="mt-3 text-sm text-zinc-400">
-                Cashflow: <span className="font-semibold text-zinc-200">{summary.cashflowHealth || "breakeven"}</span>
-                {" · "}Next actions: <span className="font-semibold text-zinc-200">{data?.nextActionCount ?? data?.nextActions?.length ?? 0}</span>
+                Cashflow:{" "}
+                <span className="font-semibold text-zinc-200">
+                  {summary.cashflowHealth || "breakeven"}
+                </span>
+                {" · "}Next actions:{" "}
+                <span className="font-semibold text-zinc-200">
+                  {data?.nextActionCount ?? data?.nextActions?.length ?? 0}
+                </span>
               </p>
             ) : null}
 
@@ -519,3 +529,29 @@ export default function WealthBuilderDashboardPage() {
     </>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const cookies = cookie.parse(req.headers.cookie || "");
+  const token = cookies.session_token;
+  if (!token) {
+    return {
+      redirect: {
+        destination: "/login?redirect=/wealth-builder/dashboard",
+        permanent: false,
+      },
+    };
+  }
+
+  try {
+    jwt.verify(token, getJwtSecret());
+  } catch {
+    return {
+      redirect: {
+        destination: "/login?redirect=/wealth-builder/dashboard",
+        permanent: false,
+      },
+    };
+  }
+
+  return { props: {} };
+};

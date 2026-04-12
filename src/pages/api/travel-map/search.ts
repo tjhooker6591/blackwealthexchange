@@ -318,7 +318,10 @@ export default async function handler(
     const page = firstPositiveInt(req.query.page, 1);
     const pageSize = Math.min(firstPositiveInt(req.query.pageSize, 12), 48);
 
-    if (process.env.NODE_ENV !== "production" && req.query.source === "fallback") {
+    if (
+      process.env.NODE_ENV !== "production" &&
+      req.query.source === "fallback"
+    ) {
       throw new Error("Forced fallback source for runtime proof");
     }
 
@@ -440,11 +443,18 @@ export default async function handler(
 
     let results = docs.map(mapBusiness);
 
+    results = results.sort((a, b) => {
+      const aMapped = Number(Number.isFinite(a.location?.lat) && Number.isFinite(a.location?.lng));
+      const bMapped = Number(Number.isFinite(b.location?.lat) && Number.isFinite(b.location?.lng));
+      return bMapped - aMapped;
+    });
+
     if (q && sort !== "recent") {
       const qNorm = q.toLowerCase();
       results = results
         .map((item) => {
-          const text = `${item.business_name} ${item.description || ""} ${item.category || ""} ${item.subcategory || ""} ${item.address?.city || ""} ${item.address?.state || ""}`.toLowerCase();
+          const text =
+            `${item.business_name} ${item.description || ""} ${item.category || ""} ${item.subcategory || ""} ${item.address?.city || ""} ${item.address?.state || ""}`.toLowerCase();
           let score = 0;
           if (item.business_name?.toLowerCase() === qNorm) score += 100;
           if (item.business_name?.toLowerCase().startsWith(qNorm)) score += 50;
@@ -456,6 +466,8 @@ export default async function handler(
         .sort((a, b) => b.score - a.score)
         .map((x) => x.item);
     }
+
+    const mappedCount = results.filter((item) => Number.isFinite(item.location?.lat) && Number.isFinite(item.location?.lng)).length;
 
     return res.status(200).json({
       ok: true,
@@ -474,6 +486,7 @@ export default async function handler(
       },
       meta: {
         source: "db",
+        mappedCount,
       },
     });
   } catch (error) {
@@ -489,7 +502,7 @@ export default async function handler(
     const page = firstPositiveInt(req.query.page, 1);
     const pageSize = Math.min(firstPositiveInt(req.query.pageSize, 12), 48);
 
-    const fallback = filterFallbackBusinesses(loadFallbackBusinesses(), {
+    let fallback = filterFallbackBusinesses(loadFallbackBusinesses(), {
       q,
       city,
       state,
@@ -499,6 +512,7 @@ export default async function handler(
     });
 
     const paged = fallback.slice((page - 1) * pageSize, page * pageSize);
+    const mappedCount = fallback.filter((item) => Number.isFinite(item.location?.lat) && Number.isFinite(item.location?.lng)).length;
 
     return res.status(200).json({
       ok: true,
@@ -517,6 +531,7 @@ export default async function handler(
       },
       meta: {
         source: "fallback",
+        mappedCount,
       },
     });
   }
