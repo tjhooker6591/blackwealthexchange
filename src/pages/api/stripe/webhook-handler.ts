@@ -1183,7 +1183,24 @@ export default async function webhookHandler(
       (metaType === "course" ? normalizedItemId : "");
 
     if (resolvedCourseId && userId) {
-      await grantCourseAccess(userId, resolvedCourseId);
+      await grantCourseAccess(userId, resolvedCourseId, {
+        stripeSessionId,
+        paymentIntentId: paymentIntentId || null,
+        source: "stripe_webhook",
+      });
+
+      await db.collection("payments").updateOne(
+        { stripeSessionId },
+        {
+          $set: {
+            fulfillmentStatus: "fulfilled",
+            entitlementStatus: "granted",
+            lastReconciledAt: now,
+            updatedAt: now,
+          },
+        },
+      );
+
       console.log(`✅ Granted course ${resolvedCourseId} to user ${userId}`);
     }
 

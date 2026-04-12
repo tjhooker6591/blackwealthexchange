@@ -65,6 +65,9 @@ export default async function handler(
       mode: "payment",
       metadata: {
         userId: sessionUser.userId,
+        type: "course",
+        itemId: courseSlug,
+        courseId: courseSlug,
         courseSlug,
       },
       success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/course-dashboard?course=${courseSlug}&session_id={CHECKOUT_SESSION_ID}`,

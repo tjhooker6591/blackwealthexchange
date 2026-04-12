@@ -1,8 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
-import { ObjectId } from "mongodb";
 import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
+import { grantCourseAccess } from "@/lib/db/courses";
 
 type VerifyResponse = {
   ok: boolean;
@@ -39,7 +39,8 @@ export default async function handler(
 
   try {
     const session = await stripe.checkout.sessions.retrieve(sessionId);
-    const paid = String((session as any).payment_status || "").toLowerCase() === "paid";
+    const paid =
+      String((session as any).payment_status || "").toLowerCase() === "paid";
 
     const metadata = (session.metadata || {}) as Record<string, string>;
     const metaType = String(metadata.type || "").toLowerCase();
@@ -47,7 +48,9 @@ export default async function handler(
     const courseId = String(metadata.courseId || metadata.itemId || "").trim();
 
     if (!paid) {
-      return res.status(200).json({ ok: true, paid: false, reason: "not_paid" });
+      return res
+        .status(200)
+        .json({ ok: true, paid: false, reason: "not_paid" });
     }
 
     if (metaType !== "course") {
@@ -69,35 +72,28 @@ export default async function handler(
     const client = await clientPromise;
     const db = client.db(getMongoDbName());
 
-    let enrollmentCreated = false;
+    const paymentIntentId =
+      typeof session.payment_intent === "string" ? session.payment_intent : null;
 
-    if (ObjectId.isValid(userId)) {
-      await db.collection("users").updateOne(
-        { _id: new ObjectId(userId) },
-        { $addToSet: { purchasedCourses: courseId }, $set: { updatedAt: new Date() } },
-      );
-    }
+    const grant = await grantCourseAccess(userId, courseId, {
+      stripeSessionId: sessionId,
+      paymentIntentId,
+      source: "verify_session",
+    });
 
-    const enrollmentResult = await db.collection("enrollments").updateOne(
-      { userId, courseId },
+    await db.collection("payments").updateOne(
+      { stripeSessionId: sessionId },
       {
-        $setOnInsert: {
-          userId,
-          courseId,
-          enrolledAt: new Date(),
-          progress: 0,
-          completed: false,
-          source: "stripe_verify_session",
-          stripeSessionId: sessionId,
-        },
         $set: {
+          fulfillmentStatus: "fulfilled",
+          entitlementStatus: "granted",
+          lastReconciledAt: new Date(),
           updatedAt: new Date(),
         },
       },
-      { upsert: true },
     );
 
-    enrollmentCreated = Boolean(enrollmentResult.upsertedCount);
+    const enrollmentCreated = grant.enrollmentUpserted;
 
     return res.status(200).json({
       ok: true,
