@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import { requireAdminFromRequest } from "@/lib/adminAuth";
 import { ObjectId } from "mongodb";
+import { getMongoDbName } from "@/lib/env";
 
 export default async function handler(
   req: NextApiRequest,
@@ -17,7 +18,7 @@ export default async function handler(
 
   try {
     const client = await clientPromise;
-    const db = client.db("bwes-cluster");
+    const db = client.db(getMongoDbName());
 
     const [clicks, conversions] = await Promise.all([
       db

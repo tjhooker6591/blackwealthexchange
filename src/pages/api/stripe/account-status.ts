@@ -3,6 +3,7 @@ import Stripe from "stripe";
 import clientPromise from "@/lib/mongodb";
 import cookie from "cookie";
 import jwt from "jsonwebtoken";
+import { getMongoDbName } from "@/lib/env";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
@@ -31,7 +32,7 @@ export default async function handler(
       return res.status(401).json({ error: "Unauthorized" });
 
     const client = await clientPromise;
-    const db = client.db("bwes-cluster");
+    const db = client.db(getMongoDbName());
 
     // Robust lookup: userId first, fallback to email
     const seller = await db.collection("sellers").findOne({
