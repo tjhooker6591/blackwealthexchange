@@ -56,6 +56,10 @@ export default function TravelMapExplorePage() {
     toLng: "",
     corridorKm: "15",
   });
+  const [savedBusinessIds, setSavedBusinessIds] = useState<Set<string>>(
+    () => new Set(),
+  );
+  const [savingBusinessId, setSavingBusinessId] = useState<string | null>(null);
 
   const queryString = useMemo(() => buildQuery(filters, page), [filters, page]);
 
@@ -239,6 +243,89 @@ export default function TravelMapExplorePage() {
     );
   }
 
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadSavedState() {
+      try {
+        const res = await fetch("/api/travel-map/saved");
+        if (!res.ok) {
+          if (!cancelled) setSavedBusinessIds(new Set());
+          return;
+        }
+
+        const data = await res.json();
+        if (!data?.ok || !Array.isArray(data.items)) {
+          if (!cancelled) setSavedBusinessIds(new Set());
+          return;
+        }
+
+        const next = new Set<string>();
+        for (const item of data.items) {
+          const businessId = `${item?.businessId || ""}`.trim();
+          if (businessId) next.add(businessId);
+        }
+
+        if (!cancelled) setSavedBusinessIds(next);
+      } catch {
+        if (!cancelled) setSavedBusinessIds(new Set());
+      }
+    }
+
+    void loadSavedState();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [results]);
+
+  async function handleToggleSave(
+    business: TravelMapBusiness,
+    nextSaved: boolean,
+  ) {
+    setSavingBusinessId(business._id);
+
+    try {
+      const method = nextSaved ? "POST" : "DELETE";
+      const res = await fetch("/api/travel-map/saved", {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ businessId: business._id }),
+      });
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok || !data?.ok) {
+        throw new Error(
+          data?.message ||
+            (nextSaved
+              ? "Failed to save place."
+              : "Failed to remove saved place."),
+        );
+      }
+
+      setSavedBusinessIds((prev) => {
+        const next = new Set(prev);
+        if (nextSaved) {
+          next.add(business._id);
+        } else {
+          next.delete(business._id);
+        }
+        return next;
+      });
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : nextSaved
+            ? "Failed to save place."
+            : "Failed to remove saved place.",
+      );
+      throw err;
+    } finally {
+      setSavingBusinessId(null);
+    }
+  }
+
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
 
   return (
@@ -403,7 +490,13 @@ export default function TravelMapExplorePage() {
                 </div>
               ) : (
                 results.map((business) => (
-                  <TravelMapCard key={business._id} business={business} />
+                  <TravelMapCard
+                    key={business._id}
+                    business={business}
+                    isSaved={savedBusinessIds.has(business._id)}
+                    saveBusy={savingBusinessId === business._id}
+                    onToggleSave={handleToggleSave}
+                  />
                 ))
               )}
 
