@@ -17,8 +17,9 @@ import {
   BLACK_CARD_TIER_BY_ITEM_ID,
   isBlackCardPlanItemId,
 } from "@/lib/black-card";
+import { getStripeSecretKey } from "@/lib/stripeSecret";
 
-const stripeSecret = process.env.STRIPE_SECRET_KEY;
+const stripeSecret = getStripeSecretKey();
 const stripe = new Stripe(stripeSecret || "sk_missing", {
   apiVersion: "2025-02-24.acacia" as any,
 });

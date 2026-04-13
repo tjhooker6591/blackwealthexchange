@@ -3,17 +3,14 @@ import Stripe from "stripe";
 import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
 import { createProductCheckoutSessionCore } from "@/lib/checkout/createProductCheckoutSession";
+import { requireStripeSecretKey } from "@/lib/stripeSecret";
 
 function isProd() {
   return process.env.NODE_ENV === "production";
 }
 
 function getStripe() {
-  const secretKey = process.env.STRIPE_SECRET_KEY;
-  if (!secretKey) {
-    throw new Error("Missing STRIPE_SECRET_KEY");
-  }
-  return new Stripe(secretKey);
+  return new Stripe(requireStripeSecretKey());
 }
 
 function safeJsonBody(body: unknown): Record<string, any> {

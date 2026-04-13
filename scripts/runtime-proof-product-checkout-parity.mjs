@@ -8,7 +8,8 @@ dotenv.config({ path: ".env.local" });
 const baseUrl = process.env.BASE_URL || "http://localhost:3000";
 const mongoUri = process.env.MONGODB_URI;
 const dbName = process.env.MONGODB_DB;
-const stripeSecret = process.env.STRIPE_SECRET_KEY || "";
+const stripeSecret =
+  process.env.STRIPE_SECRET_KEY || process.env.STRIPE_SECRET || "";
 const stripe = stripeSecret
   ? new Stripe(stripeSecret, { apiVersion: "2025-02-24.acacia" })
   : null;
@@ -71,7 +72,9 @@ try {
     const seller = await sellers.findOne({
       $or: [
         ...(rawSellerId ? [{ _id: rawSellerId }] : []),
-        ...(ObjectId.isValid(rawSellerId) ? [{ _id: new ObjectId(rawSellerId) }] : []),
+        ...(ObjectId.isValid(rawSellerId)
+          ? [{ _id: new ObjectId(rawSellerId) }]
+          : []),
       ],
     });
 
@@ -84,7 +87,9 @@ try {
   }
 
   if (!selected) {
-    throw new Error("No eligible product+seller with Stripe account found for proof");
+    throw new Error(
+      "No eligible product+seller with Stripe account found for proof",
+    );
   }
 
   const productId = asIdString(selected._id);
@@ -137,7 +142,10 @@ try {
     Boolean(legacy.json?.payoutMode) &&
     Boolean(legacy.json?.sessionId);
 
-  checks.push({ name: "canonical_response_contract", pass: canonicalFieldsPresent });
+  checks.push({
+    name: "canonical_response_contract",
+    pass: canonicalFieldsPresent,
+  });
   checks.push({ name: "legacy_response_contract", pass: legacyFieldsPresent });
 
   if (!stripe) {
@@ -147,7 +155,8 @@ try {
           baseUrl,
           productId,
           blocked: true,
-          blocker: "STRIPE_SECRET_KEY missing for metadata retrieval parity proof",
+          blocker:
+            "Stripe secret missing for metadata retrieval parity proof (STRIPE_SECRET_KEY or STRIPE_SECRET)",
           canonical: canonical.json,
           legacy: legacy.json,
           checks,
@@ -159,8 +168,12 @@ try {
     process.exit(1);
   }
 
-  const cSession = await stripe.checkout.sessions.retrieve(canonical.json.sessionId);
-  const lSession = await stripe.checkout.sessions.retrieve(legacy.json.sessionId);
+  const cSession = await stripe.checkout.sessions.retrieve(
+    canonical.json.sessionId,
+  );
+  const lSession = await stripe.checkout.sessions.retrieve(
+    legacy.json.sessionId,
+  );
 
   function validMeta(meta, expectedOrderId) {
     return (
@@ -247,7 +260,11 @@ try {
           orderId: legacy.json?.orderId || null,
           payoutMode: legacy.json?.payoutMode || null,
         },
-        totals: { total: checks.length, passed: checks.length - failed, failed },
+        totals: {
+          total: checks.length,
+          passed: checks.length - failed,
+          failed,
+        },
         checks,
       },
       null,
