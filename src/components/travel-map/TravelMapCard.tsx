@@ -27,7 +27,10 @@ export default function TravelMapCard({
   business: TravelMapBusiness;
   enableSave?: boolean;
   isSaved?: boolean;
-  onToggleSave?: (business: TravelMapBusiness, nextSaved: boolean) => Promise<void> | void;
+  onToggleSave?: (
+    business: TravelMapBusiness,
+    nextSaved: boolean,
+  ) => Promise<void> | void;
   saveBusy?: boolean;
 }) {
   async function savePlace() {
@@ -54,11 +57,15 @@ export default function TravelMapCard({
       if (!res.ok || !data?.ok) {
         throw new Error(
           data?.message ||
-            (isSaved ? "Failed to remove saved place." : "Failed to save place."),
+            (isSaved
+              ? "Failed to remove saved place."
+              : "Failed to save place."),
         );
       }
 
-      window.alert(isSaved ? "Removed from Travel Map." : "Saved to Travel Map.");
+      window.alert(
+        isSaved ? "Removed from Travel Map." : "Saved to Travel Map.",
+      );
     } catch (err) {
       const message =
         err instanceof Error
@@ -95,7 +102,7 @@ export default function TravelMapCard({
               Verified
             </span>
           ) : null}
-          {isSaved ? (
+          {isSaved && !saveHydrating ? (
             <span className="rounded-full border border-cyan-400/30 bg-cyan-500/10 px-2 py-1 text-cyan-200">
               Saved
             </span>
@@ -169,7 +176,13 @@ export default function TravelMapCard({
                 : "border border-emerald-400/30 bg-emerald-500/10 text-emerald-200 hover:bg-emerald-500/20"
             }`}
           >
-            {saveBusy ? (isSaved ? "Removing..." : "Saving...") : isSaved ? "Remove saved" : "Save"}
+            {saveBusy
+              ? isSaved
+                ? "Removing..."
+                : "Saving..."
+              : isSaved
+                ? "Remove saved"
+                : "Save"}
           </button>
         ) : null}
       </div>

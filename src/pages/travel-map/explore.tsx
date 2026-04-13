@@ -59,6 +59,7 @@ export default function TravelMapExplorePage() {
   const [savedBusinessIds, setSavedBusinessIds] = useState<Set<string>>(
     () => new Set(),
   );
+  const [savedStateHydrating, setSavedStateHydrating] = useState(false);
   const [savingBusinessId, setSavingBusinessId] = useState<string | null>(null);
 
   const queryString = useMemo(() => buildQuery(filters, page), [filters, page]);
@@ -246,30 +247,53 @@ export default function TravelMapExplorePage() {
   useEffect(() => {
     let cancelled = false;
 
+    const visibleBusinessIds = new Set(results.map((result) => result._id));
+    setSavedStateHydrating(true);
+
     async function loadSavedState() {
       try {
         const res = await fetch("/api/travel-map/saved");
         if (!res.ok) {
-          if (!cancelled) setSavedBusinessIds(new Set());
+          if (!cancelled) {
+            setSavedBusinessIds(new Set());
+            setSavedStateHydrating(false);
+          }
           return;
         }
 
         const data = await res.json();
         if (!data?.ok || !Array.isArray(data.items)) {
-          if (!cancelled) setSavedBusinessIds(new Set());
+          if (!cancelled) {
+            setSavedBusinessIds(new Set());
+            setSavedStateHydrating(false);
+          }
           return;
         }
 
         const next = new Set<string>();
         for (const item of data.items) {
           const businessId = `${item?.businessId || ""}`.trim();
-          if (businessId) next.add(businessId);
+          if (businessId && visibleBusinessIds.has(businessId)) next.add(businessId);
         }
 
-        if (!cancelled) setSavedBusinessIds(next);
+        if (!cancelled) {
+          setSavedBusinessIds(next);
+          setSavedStateHydrating(false);
+        }
       } catch {
-        if (!cancelled) setSavedBusinessIds(new Set());
+        if (!cancelled) {
+          setSavedBusinessIds(new Set());
+          setSavedStateHydrating(false);
+        }
       }
+    }
+
+    if (!results.length) {
+      setSavedBusinessIds(new Set());
+      setSavedStateHydrating(false);
+      return () => {
+        cancelled = true;
+      };
     }
 
     void loadSavedState();
@@ -494,7 +518,8 @@ export default function TravelMapExplorePage() {
                     key={business._id}
                     business={business}
                     isSaved={savedBusinessIds.has(business._id)}
-                    saveBusy={savingBusinessId === business._id}
+                    saveBusy={savingBusinessId === business._id || savedStateHydrating}
+                    saveHydrating={savedStateHydrating}
                     onToggleSave={handleToggleSave}
                   />
                 ))
