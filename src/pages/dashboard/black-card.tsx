@@ -83,9 +83,12 @@ export default function BlackCardDashboardPage() {
       fetch("/api/black-card/entitlements/check?benefit=priority_events", {
         credentials: "include",
       }),
-      fetch("/api/black-card/entitlements/check?benefit=premium_partner_offers", {
-        credentials: "include",
-      }),
+      fetch(
+        "/api/black-card/entitlements/check?benefit=premium_partner_offers",
+        {
+          credentials: "include",
+        },
+      ),
       fetch("/api/black-card/entitlements/check?benefit=vip_events", {
         credentials: "include",
       }),

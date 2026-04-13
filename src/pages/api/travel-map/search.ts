@@ -444,8 +444,12 @@ export default async function handler(
     let results = docs.map(mapBusiness);
 
     results = results.sort((a, b) => {
-      const aMapped = Number(Number.isFinite(a.location?.lat) && Number.isFinite(a.location?.lng));
-      const bMapped = Number(Number.isFinite(b.location?.lat) && Number.isFinite(b.location?.lng));
+      const aMapped = Number(
+        Number.isFinite(a.location?.lat) && Number.isFinite(a.location?.lng),
+      );
+      const bMapped = Number(
+        Number.isFinite(b.location?.lat) && Number.isFinite(b.location?.lng),
+      );
       return bMapped - aMapped;
     });
 
@@ -467,7 +471,11 @@ export default async function handler(
         .map((x) => x.item);
     }
 
-    const mappedCount = results.filter((item) => Number.isFinite(item.location?.lat) && Number.isFinite(item.location?.lng)).length;
+    const mappedCount = results.filter(
+      (item) =>
+        Number.isFinite(item.location?.lat) &&
+        Number.isFinite(item.location?.lng),
+    ).length;
 
     return res.status(200).json({
       ok: true,
@@ -502,7 +510,7 @@ export default async function handler(
     const page = firstPositiveInt(req.query.page, 1);
     const pageSize = Math.min(firstPositiveInt(req.query.pageSize, 12), 48);
 
-    let fallback = filterFallbackBusinesses(loadFallbackBusinesses(), {
+    const fallback = filterFallbackBusinesses(loadFallbackBusinesses(), {
       q,
       city,
       state,
@@ -512,7 +520,11 @@ export default async function handler(
     });
 
     const paged = fallback.slice((page - 1) * pageSize, page * pageSize);
-    const mappedCount = fallback.filter((item) => Number.isFinite(item.location?.lat) && Number.isFinite(item.location?.lng)).length;
+    const mappedCount = fallback.filter(
+      (item) =>
+        Number.isFinite(item.location?.lat) &&
+        Number.isFinite(item.location?.lng),
+    ).length;
 
     return res.status(200).json({
       ok: true,
