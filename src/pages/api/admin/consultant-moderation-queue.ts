@@ -33,6 +33,11 @@ export default async function handler(
           error: "disposition must be resolved, escalated, or rejected",
         });
       }
+      if ((disposition === "escalated" || disposition === "rejected") && !note) {
+        return res
+          .status(400)
+          .json({ error: "note is required for escalated or rejected actions" });
+      }
 
       const now = new Date();
       await db.collection("employer_consultant_contact_requests").updateOne(
@@ -60,7 +65,41 @@ export default async function handler(
         createdAt: now,
       });
 
-      return res.status(200).json({ ok: true, requestId, disposition });
+      let escalationId: string | null = null;
+      if (disposition === "escalated") {
+        const escalations = db.collection("consultant_moderation_escalations");
+        const updateResult = await escalations.updateOne(
+          { requestId },
+          {
+            $set: {
+              requestId,
+              status: "open",
+              escalationNote: note,
+              escalatedBy: String(admin.email || admin.userId || "admin"),
+              escalatedAt: now,
+              updatedAt: now,
+            },
+            $setOnInsert: {
+              createdAt: now,
+            },
+          },
+          { upsert: true },
+        );
+
+        if (updateResult.upsertedId) {
+          escalationId = String(updateResult.upsertedId);
+        } else {
+          const existing = await escalations.findOne(
+            { requestId },
+            { projection: { _id: 1 } },
+          );
+          escalationId = existing?._id ? String(existing._id) : null;
+        }
+      }
+
+      return res
+        .status(200)
+        .json({ ok: true, requestId, disposition, escalationId });
     }
 
     const reason =

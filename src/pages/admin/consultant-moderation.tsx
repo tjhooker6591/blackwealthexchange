@@ -20,6 +20,7 @@ export default function ConsultantModerationPage() {
   const [error, setError] = useState("");
   const [busyId, setBusyId] = useState<string | null>(null);
   const [reasonFilter, setReasonFilter] = useState("");
+  const [notes, setNotes] = useState<Record<string, string>>({});
 
   async function load() {
     setLoading(true);
@@ -61,7 +62,7 @@ export default function ConsultantModerationPage() {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ requestId: item.requestId, disposition }),
+        body: JSON.stringify({ requestId: item.requestId, disposition, note: notes[item.id] || "" }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "Failed to update request");
@@ -88,12 +89,20 @@ export default function ConsultantModerationPage() {
               Blocked/flagged employer-to-consultant request events for review.
             </p>
           </div>
-          <Link
-            href="/admin/dashboard"
-            className="text-sm text-cyan-200 underline"
-          >
-            Back to admin dashboard
-          </Link>
+          <div className="flex flex-col items-end gap-1">
+            <Link
+              href="/admin/dashboard"
+              className="text-sm text-cyan-200 underline"
+            >
+              Back to admin dashboard
+            </Link>
+            <Link
+              href="/admin/consultant-escalations"
+              className="text-sm text-amber-200 underline"
+            >
+              View escalations
+            </Link>
+          </div>
         </div>
 
         {error ? (
@@ -168,6 +177,19 @@ export default function ConsultantModerationPage() {
                     ? new Date(item.createdAt).toLocaleString()
                     : "unknown"}
                 </p>
+                <div className="mt-3">
+                  <textarea
+                    value={notes[item.id] || ""}
+                    onChange={(e) =>
+                      setNotes((prev) => ({
+                        ...prev,
+                        [item.id]: e.target.value,
+                      }))
+                    }
+                    placeholder="Action note (required for escalate/reject)"
+                    className="min-h-[56px] w-full rounded border border-white/10 bg-black px-3 py-2 text-xs text-white"
+                  />
+                </div>
                 <div className="mt-3 flex flex-wrap gap-2">
                   <button
                     disabled={!item.requestId || busyId === item.id}
