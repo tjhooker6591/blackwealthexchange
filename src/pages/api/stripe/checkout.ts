@@ -11,6 +11,7 @@ import {
   getAdQuote,
 } from "@/lib/advertising/pricing";
 import { getMongoDbName } from "@/lib/env";
+import { createProductCheckoutSessionCore } from "@/lib/checkout/createProductCheckoutSession";
 import {
   BLACK_CARD_TIERS,
   BLACK_CARD_TIER_BY_ITEM_ID,
@@ -267,6 +268,21 @@ export default async function handler(
     const db = client.db(getMongoDbName());
     const payments = db.collection("payments");
 
+    if (type === "product") {
+      const result = await createProductCheckoutSessionCore({
+        req,
+        db,
+        productId: itemId,
+        stripe,
+      });
+
+      if (result.status === 429 && result.body?.retryAfterSeconds) {
+        res.setHeader("Retry-After", String(result.body.retryAfterSeconds));
+      }
+
+      return res.status(result.status).json(result.body);
+    }
+
     const origin = getOrigin(req);
 
     let successUrl = withCheckoutSessionId(`${origin}/payment-success`);
@@ -284,7 +300,6 @@ export default async function handler(
     const normalizedCampaignId = requestedCampaignId || "";
     const normalizedPlacement = requestedPlacement || "";
     let normalizedJobId = requestedJobId || "";
-    let legacyOrderId = "";
 
     let finalItemId = itemId;
 
@@ -323,89 +338,6 @@ export default async function handler(
       }
 
       isPlatformAccount = true;
-    } else if (type === "product") {
-      const product = await db
-        .collection("products")
-        .findOne(
-          ObjectId.isValid(itemId)
-            ? { _id: new ObjectId(itemId) }
-            : { slug: itemId },
-        );
-
-      if (!product?.sellerId) {
-        console.error("Invalid product or missing seller:", itemId);
-        return res
-          .status(400)
-          .json({ error: "Invalid product or missing seller" });
-      }
-
-      const productStock = Number(
-        (product as any).stock ?? (product as any).inventory ?? 1,
-      );
-      if (Number.isFinite(productStock) && productStock <= 0) {
-        return res.status(409).json({
-          error:
-            "This product is out of stock and cannot be purchased right now.",
-        });
-      }
-
-      itemName = product?.name || itemName;
-
-      if (typeof product.price === "number") {
-        unitAmount = Math.round(product.price * 100);
-      } else if (typeof (product as any).priceCents === "number") {
-        unitAmount = (product as any).priceCents;
-      } else {
-        return res.status(400).json({ error: "Product price missing" });
-      }
-
-      const seller = await db.collection("sellers").findOne({
-        $or: [
-          { userId: product.sellerId },
-          ...(ObjectId.isValid(product.sellerId)
-            ? [{ _id: new ObjectId(product.sellerId) }]
-            : []),
-        ],
-      });
-
-      if (!seller?.stripeAccountId) {
-        console.error("Stripe account not found for seller:", product.sellerId);
-        return res
-          .status(400)
-          .json({ error: "Seller is not connected to Stripe" });
-      }
-
-      stripeAccountId = seller.stripeAccountId;
-      isPlatformAccount =
-        stripeAccountId === (process.env.PLATFORM_STRIPE_ACCOUNT_ID as string);
-
-      const orderObjectId = new ObjectId();
-      legacyOrderId = orderObjectId.toString();
-      await db.collection("orders").updateOne(
-        { _id: orderObjectId },
-        {
-          $setOnInsert: {
-            _id: orderObjectId,
-            createdAt: new Date(),
-            status: "pending_checkout",
-            paymentStatus: "pending",
-            paid: false,
-          },
-          $set: {
-            productId: product._id,
-            sellerId: seller._id,
-            stripeAccountId,
-            subtotal: unitAmount,
-            shipping: 0,
-            total: unitAmount,
-            userId: sessionUserId || null,
-            stripeSessionId: null,
-            paymentSessionId: null,
-            updatedAt: new Date(),
-          },
-        },
-        { upsert: true },
-      );
     } else if (type === "plan") {
       const planMap: Record<
         string,
@@ -601,7 +533,6 @@ export default async function handler(
       campaignId: normalizedCampaignId,
       placement: normalizedPlacement,
       jobId: normalizedJobId,
-      orderId: legacyOrderId,
     };
 
     if (type === "course") {
@@ -835,7 +766,11 @@ export default async function handler(
       idempotencyKey,
     });
 
-    if (type === "product" && legacyOrderId && ObjectId.isValid(legacyOrderId)) {
+    if (
+      type === "product" &&
+      legacyOrderId &&
+      ObjectId.isValid(legacyOrderId)
+    ) {
       await db.collection("orders").updateOne(
         { _id: new ObjectId(legacyOrderId) },
         {
