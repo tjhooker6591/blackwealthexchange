@@ -284,6 +284,7 @@ export default async function handler(
     const normalizedCampaignId = requestedCampaignId || "";
     const normalizedPlacement = requestedPlacement || "";
     let normalizedJobId = requestedJobId || "";
+    let legacyOrderId = "";
 
     let finalItemId = itemId;
 
@@ -377,6 +378,34 @@ export default async function handler(
       stripeAccountId = seller.stripeAccountId;
       isPlatformAccount =
         stripeAccountId === (process.env.PLATFORM_STRIPE_ACCOUNT_ID as string);
+
+      const orderObjectId = new ObjectId();
+      legacyOrderId = orderObjectId.toString();
+      await db.collection("orders").updateOne(
+        { _id: orderObjectId },
+        {
+          $setOnInsert: {
+            _id: orderObjectId,
+            createdAt: new Date(),
+            status: "pending_checkout",
+            paymentStatus: "pending",
+            paid: false,
+          },
+          $set: {
+            productId: product._id,
+            sellerId: seller._id,
+            stripeAccountId,
+            subtotal: unitAmount,
+            shipping: 0,
+            total: unitAmount,
+            userId: sessionUserId || null,
+            stripeSessionId: null,
+            paymentSessionId: null,
+            updatedAt: new Date(),
+          },
+        },
+        { upsert: true },
+      );
     } else if (type === "plan") {
       const planMap: Record<
         string,
@@ -572,6 +601,7 @@ export default async function handler(
       campaignId: normalizedCampaignId,
       placement: normalizedPlacement,
       jobId: normalizedJobId,
+      orderId: legacyOrderId,
     };
 
     if (type === "course") {
@@ -805,6 +835,20 @@ export default async function handler(
       idempotencyKey,
     });
 
+    if (type === "product" && legacyOrderId && ObjectId.isValid(legacyOrderId)) {
+      await db.collection("orders").updateOne(
+        { _id: new ObjectId(legacyOrderId) },
+        {
+          $set: {
+            sessionId: stripeSession.id,
+            stripeSessionId: stripeSession.id,
+            paymentSessionId: stripeSession.id,
+            updatedAt: new Date(),
+          },
+        },
+      );
+    }
+
     await payments.updateOne(
       { stripeSessionId: stripeSession.id },
       {
@@ -851,11 +895,12 @@ export default async function handler(
             billingInterval:
               type === "plan" && finalItemId === "wealth-builder-premium-annual"
                 ? "annual"
-                : type === "plan" && finalItemId === "wealth-builder-premium-monthly"
+                : type === "plan" &&
+                    finalItemId === "wealth-builder-premium-monthly"
                   ? "monthly"
                   : type === "plan" && isBlackCardPlanItemId(finalItemId)
-                    ? BLACK_CARD_TIERS[BLACK_CARD_TIER_BY_ITEM_ID[finalItemId]].billingModel ===
-                      "entry_fee"
+                    ? BLACK_CARD_TIERS[BLACK_CARD_TIER_BY_ITEM_ID[finalItemId]]
+                        .billingModel === "entry_fee"
                       ? "entry_fee"
                       : "monthly"
                     : null,
