@@ -2,6 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
 import clientPromise from "@/lib/mongodb";
+import { getMongoDbName } from "@/lib/env";
 
 type ApiResponse =
   | {
@@ -373,7 +374,7 @@ export default async function handler(
   const successPath = sanitizePath(body.successPath, "/payment-success");
   const cancelPath = sanitizePath(body.cancelPath, "/payment-cancel");
 
-  const db = (await clientPromise).db("bwes-cluster");
+  const db = (await clientPromise).db(getMongoDbName());
   const campaigns = db.collection("advertising_campaigns");
 
   const now = new Date();

@@ -18,6 +18,7 @@ import {
   isBlackCardPlanItemId,
 } from "@/lib/black-card";
 import { ensureBlackCardMembershipAndCard } from "@/lib/black-card-membership";
+import { getMongoDbName } from "@/lib/env";
 
 export const config = {
   api: { bodyParser: false },
@@ -369,10 +370,7 @@ export default async function webhookHandler(
 
   try {
     const client = await clientPromise;
-
-    const dbName =
-      process.env.MONGODB_DB || process.env.MONGODB_DB_NAME || "bwes-cluster";
-    const db = client.db(dbName);
+    const db = client.db(getMongoDbName());
 
     const now = new Date();
     const sessionCreatedAt = unixToDate((session as any).created, now);
