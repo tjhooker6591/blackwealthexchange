@@ -1,5 +1,8 @@
 #!/usr/bin/env node
+import dotenv from "dotenv";
 import { MongoClient } from "mongodb";
+
+dotenv.config({ path: ".env.local" });
 
 const uri = process.env.MONGODB_URI;
 const dbName = process.env.MONGODB_DB || "bwes-cluster";
@@ -8,7 +11,8 @@ if (!uri) throw new Error("MONGODB_URI is required");
 const query = (process.argv[2] || "black coffee").trim();
 
 function score(item, q) {
-  const text = `${item.business_name || ""} ${item.description || ""} ${item.category || ""} ${item.categories || ""} ${item.display_categories || ""} ${item.city || ""} ${item.state || ""}`.toLowerCase();
+  const text =
+    `${item.business_name || ""} ${item.description || ""} ${item.category || ""} ${item.categories || ""} ${item.display_categories || ""} ${item.city || ""} ${item.state || ""}`.toLowerCase();
   const name = String(item.business_name || "").toLowerCase();
   const qq = q.toLowerCase();
   let s = 0;
@@ -58,13 +62,17 @@ const ranked = [...docs]
   }));
 
 console.log(
-  JSON.stringify({
-    ok: true,
-    query,
-    candidateCount: docs.length,
-    beforeSponsorFirstTop5: baseline,
-    afterRelevanceTop5: ranked,
-  }, null, 2),
+  JSON.stringify(
+    {
+      ok: true,
+      query,
+      candidateCount: docs.length,
+      beforeSponsorFirstTop5: baseline,
+      afterRelevanceTop5: ranked,
+    },
+    null,
+    2,
+  ),
 );
 
 await client.close();

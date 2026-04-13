@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
-const baseUrl = process.env.BASE_URL || "http://localhost:3000";
+const baseUrl =
+  process.env.BASE_URL || process.env.SMOKE_BASE_URL || "http://localhost:3000";
 
 const checks = [
   { name: "public_home", path: "/", expect: [200] },
