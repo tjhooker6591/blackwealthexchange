@@ -10,7 +10,8 @@ import {
   hitApiRateLimit,
 } from "@/lib/apiRateLimit";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+const stripeSecret = process.env.STRIPE_SECRET_KEY;
+const stripe = new Stripe(stripeSecret || "sk_missing", {
   // match your installed @stripe/stripe-node types
   apiVersion: "2025-02-24.acacia",
 });
@@ -21,10 +22,10 @@ export default async function handler(
 ) {
   if (req.method !== "POST") {
     res.setHeader("Allow", ["POST"]);
-    return res.status(405).json({ error: "Method not allowed" });
+    return res.status(405).json({ error: "Method Not Allowed" });
   }
 
-  if (!process.env.STRIPE_SECRET_KEY) {
+  if (!stripeSecret) {
     return res.status(500).json({ error: "Stripe is not configured" });
   }
 

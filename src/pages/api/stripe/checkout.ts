@@ -199,7 +199,7 @@ export default async function handler(
   }
 
   if (!stripeSecret) {
-    return res.status(500).json({ error: "Stripe not configured" });
+    return res.status(500).json({ error: "Stripe is not configured" });
   }
 
   const payload = req.body as CheckoutPayload;
