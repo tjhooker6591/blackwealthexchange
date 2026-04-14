@@ -612,6 +612,37 @@ export default async function webhookHandler(
           `ℹ️ Campaign ${campaignId} already paid or missing; skipping`,
         );
       }
+
+      const adminCampaignFilter = ObjectId.isValid(campaignId)
+        ? {
+            $or: [
+              { _id: new ObjectId(campaignId) },
+              { stripeSessionId },
+              { "metadata.campaignId": campaignId },
+            ],
+          }
+        : {
+            $or: [{ stripeSessionId }, { "metadata.campaignId": campaignId }],
+          };
+
+      const adminCampaignUpdate = await db
+        .collection("advertising_campaigns")
+        .updateOne(adminCampaignFilter, {
+          $set: {
+            status: "paid",
+            paymentStatus: "paid",
+            paidAt,
+            stripeSessionId,
+            stripePaymentIntentId: paymentIntentId || null,
+            updatedAt: now,
+          },
+        });
+
+      if (adminCampaignUpdate.matchedCount > 0) {
+        console.log(
+          `✅ advertising_campaigns marked paid campaignId=${campaignId} session=${stripeSessionId}`,
+        );
+      }
     }
 
     /**
@@ -1291,20 +1322,17 @@ export default async function webhookHandler(
           ? { _id: new ObjectId(jobId) }
           : { stripeSessionId };
 
-      const jobUpdate = await db.collection("jobs").updateOne(
-        jobFilter,
-        {
-          $set: {
-            isPaid: true,
-            paymentStatus: "paid",
-            status: "pending_approval",
-            stripeSessionId,
-            paymentIntentId: paymentIntentId || null,
-            paidAt,
-            updatedAt: now,
-          },
+      const jobUpdate = await db.collection("jobs").updateOne(jobFilter, {
+        $set: {
+          isPaid: true,
+          paymentStatus: "paid",
+          status: "pending_approval",
+          stripeSessionId,
+          paymentIntentId: paymentIntentId || null,
+          paidAt,
+          updatedAt: now,
         },
-      );
+      });
 
       if (jobUpdate.matchedCount > 0) {
         if (jobId && ObjectId.isValid(jobId)) {
