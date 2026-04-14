@@ -468,7 +468,9 @@ export default async function webhookHandler(
     const userId = asString(mergedMeta.userId || existingPayment?.userId);
 
     const campaignId = asString(
-      mergedMeta.campaignId || mergedMeta.campaignIdFallback,
+      mergedMeta.campaignId ||
+        mergedMeta.campaignIdFallback ||
+        session.client_reference_id,
     );
     const jobId = asString(mergedMeta.jobId);
 
@@ -476,8 +478,21 @@ export default async function webhookHandler(
     let normalizedItemId =
       canonicalAdItemId || normalizeAdItemId(rawMetaItemId) || "";
 
+    const existingAdPurchase = await db.collection("ad_purchases").findOne({
+      $or: [
+        { stripeSessionId },
+        ...(paymentIntentId ? [{ paymentIntentId }] : []),
+      ],
+    });
+
+    if (!normalizedItemId) {
+      normalizedItemId = normalizeAdItemId(asString(existingAdPurchase?.itemId));
+    }
+
     if (!normalizedItemId && campaignId) {
-      const legacyCampaign = await getCampaignById(campaignId).catch(() => null);
+      const legacyCampaign = await getCampaignById(campaignId).catch(
+        () => null,
+      );
       const adminCampaign = ObjectId.isValid(campaignId)
         ? await db
             .collection("advertising_campaigns")
@@ -783,7 +798,9 @@ export default async function webhookHandler(
       metaType === "ad" ||
       metaType === "" ||
       isKnownAdItem(normalizedItemId) ||
-      isDirectoryPurchase;
+      isDirectoryPurchase ||
+      Boolean(existingAdPurchase) ||
+      Boolean(campaignId);
 
     if (isAdPurchase && normalizedItemId) {
       const knownAd = isKnownAdItem(normalizedItemId);
