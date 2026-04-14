@@ -2,13 +2,14 @@ import { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
 import clientPromise from "@/lib/mongodb";
 import { getAppUrl, getMongoDbName } from "@/lib/env";
+import { getStripeSecretKey } from "@/lib/stripeSecret";
 import {
   ensureApiRateLimitIndexes,
   getClientIp,
   hitApiRateLimit,
 } from "@/lib/apiRateLimit";
 
-const stripeSecret = process.env.STRIPE_SECRET_KEY;
+const stripeSecret = getStripeSecretKey();
 const stripe = new Stripe(stripeSecret || "sk_missing", {
   apiVersion: "2025-02-24.acacia" as any,
 });
@@ -41,17 +42,26 @@ export default async function handler(
   const { adType, email, businessId, duration = 7 } = req.body || {};
 
   const priceMap: Record<string, { amount: number; tier: string }> = {
-    "Featured Sponsor": { amount: 5000, tier: "top" },
-    "Business Directory": { amount: 3000, tier: "standard" },
-    "Banner Ads": { amount: 4000, tier: "standard" },
-    "Custom Solutions": { amount: 10000, tier: "custom" },
+    "featured-sponsor": { amount: 5000, tier: "top" },
+    "directory-standard": { amount: 3000, tier: "standard" },
+    "banner-ad": { amount: 4000, tier: "standard" },
+    "sponsored-listing": { amount: 10000, tier: "custom" },
   };
 
-  const adTypeText = typeof adType === "string" ? adType.trim() : "";
+  const adTypeRaw = typeof adType === "string" ? adType.trim() : "";
+  const adTypeAliases: Record<string, string> = {
+    "featured sponsor": "featured-sponsor",
+    "featured-sponsor-ad": "featured-sponsor",
+    "business directory": "directory-standard",
+    "banner ads": "banner-ad",
+    "custom solutions": "sponsored-listing",
+  };
+  const adTypeKey = adTypeAliases[adTypeRaw.toLowerCase()] || adTypeRaw;
+  const adTypeText = adTypeKey;
   const emailText = typeof email === "string" ? email.trim().toLowerCase() : "";
   const durationNum = Number(duration);
 
-  const pricing = priceMap[adTypeText];
+  const pricing = priceMap[adTypeKey];
   if (!pricing) {
     return res.status(400).json({ error: "Invalid ad type selected." });
   }
@@ -87,13 +97,15 @@ export default async function handler(
         businessId: typeof businessId === "string" ? businessId : "",
         tier: pricing.tier,
         duration: String(Math.round(durationNum)),
-        adType: adTypeText,
+        adType: adTypeRaw,
+        itemId: adTypeKey,
+        type: "ad",
       },
       success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/advertise-form`,
     });
 
-    return res.status(200).json({ url: session.url });
+    return res.status(200).json({ url: session.url, sessionId: session.id });
   } catch (err) {
     console.error("Stripe session error:", err);
     return res
