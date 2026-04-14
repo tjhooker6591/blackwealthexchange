@@ -1,5 +1,6 @@
 // src/lib/db/orders.ts
 import clientPromise from "@/lib/mongodb";
+import { getMongoDbName } from "@/lib/env";
 import { ObjectId } from "mongodb";
 
 /**
@@ -7,7 +8,7 @@ import { ObjectId } from "mongodb";
  */
 export async function fulfillOrder(orderId: string, paymentIntentId: string) {
   const client = await clientPromise;
-  const db = client.db();
+  const db = client.db(getMongoDbName());
   return db
     .collection("orders")
     .updateOne(

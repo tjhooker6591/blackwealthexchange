@@ -2,6 +2,7 @@
 
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
+import { getMongoDbName } from "@/lib/env";
 
 type ResponseData =
   | { success: true; requestId: string; message: string }
@@ -92,7 +93,7 @@ export default async function handler(
     }
 
     const client = await clientPromise;
-    const db = client.db("bwes-cluster");
+    const db = client.db(getMongoDbName());
     const now = new Date();
 
     const result = await db.collection("advertising_requests").insertOne({
