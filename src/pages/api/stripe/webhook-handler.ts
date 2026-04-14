@@ -19,17 +19,25 @@ import {
 } from "@/lib/black-card";
 import { ensureBlackCardMembershipAndCard } from "@/lib/black-card-membership";
 import { getMongoDbName } from "@/lib/env";
+import { requireStripeSecretKey } from "@/lib/stripeSecret";
 
 export const config = {
   api: { bodyParser: false },
 };
 
-// Keep apiVersion only if this matches your Stripe project version
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2025-02-24.acacia" as any,
-});
+let stripeClient: Stripe | null = null;
 
-const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
+function getStripeClient() {
+  if (stripeClient) return stripeClient;
+  stripeClient = new Stripe(requireStripeSecretKey(), {
+    apiVersion: "2025-02-24.acacia" as any,
+  });
+  return stripeClient;
+}
+
+function getWebhookSecret() {
+  return (process.env.STRIPE_WEBHOOK_SECRET || "").trim();
+}
 
 interface SessionMetadata {
   // existing flows
@@ -345,29 +353,34 @@ export default async function webhookHandler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
+  const fail = (status: number, code: string, message: string) =>
+    res.status(status).json({ ok: false, code, message });
+
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
-    return res.status(405).end("Method Not Allowed");
+    return fail(405, "METHOD_NOT_ALLOWED", "Method Not Allowed");
   }
 
+  const endpointSecret = getWebhookSecret();
   if (!endpointSecret) {
     console.error("❌ STRIPE_WEBHOOK_SECRET missing in env");
-    return res.status(500).end("Webhook not configured");
+    return fail(500, "WEBHOOK_NOT_CONFIGURED", "Webhook not configured");
   }
 
   const sig = req.headers["stripe-signature"];
   if (!sig || typeof sig !== "string") {
     console.error("❌ Missing stripe-signature header");
-    return res.status(400).end("Webhook Error");
+    return fail(400, "INVALID_SIGNATURE", "Invalid webhook signature");
   }
 
   let event: Stripe.Event;
   try {
     const buf = await buffer(req);
+    const stripe = getStripeClient();
     event = stripe.webhooks.constructEvent(buf, sig, endpointSecret);
   } catch (err: any) {
     console.error("⚠️ Webhook signature verification failed:", err?.message);
-    return res.status(400).end("Webhook Error");
+    return fail(400, "INVALID_WEBHOOK", "Invalid webhook payload");
   }
 
   // Primary events for checkout payments
@@ -390,6 +403,18 @@ export default async function webhookHandler(
   }
 
   const session = event.data.object as Stripe.Checkout.Session;
+  if (
+    !session ||
+    (session as any).object !== "checkout.session" ||
+    typeof session.id !== "string" ||
+    !session.id.trim()
+  ) {
+    console.error("❌ Malformed checkout.session payload", {
+      eventId: event.id,
+      type: event.type,
+    });
+    return fail(400, "INVALID_EVENT_PAYLOAD", "Invalid checkout session payload");
+  }
 
   // Only fulfill when actually paid
   const paymentStatus = asString((session as any).payment_status).toLowerCase();
@@ -486,7 +511,9 @@ export default async function webhookHandler(
     });
 
     if (!normalizedItemId) {
-      normalizedItemId = normalizeAdItemId(asString(existingAdPurchase?.itemId));
+      normalizedItemId = normalizeAdItemId(
+        asString(existingAdPurchase?.itemId),
+      );
     }
 
     if (!normalizedItemId && campaignId) {
