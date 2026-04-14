@@ -197,6 +197,38 @@ function resolveCanonicalAdItemId(meta: SessionMetadata) {
   return "";
 }
 
+function inferCanonicalAdItemIdFromCampaignContext(input: {
+  legacyCampaign?: any;
+  adminCampaign?: any;
+}) {
+  const candidates: unknown[] = [
+    input.adminCampaign?.option,
+    input.adminCampaign?.itemId,
+    input.adminCampaign?.metadata?.itemId,
+    input.adminCampaign?.metadata?.option,
+    input.adminCampaign?.placement,
+    input.legacyCampaign?.name,
+    input.legacyCampaign?.banner,
+  ];
+
+  for (const raw of candidates) {
+    const normalized = normalizeAdItemId(asString(raw));
+    if (normalized && isKnownAdItem(normalized)) return normalized;
+
+    const lowered = asString(raw).toLowerCase();
+    if (lowered.includes("directory") && lowered.includes("featured")) {
+      return "directory-featured";
+    }
+    if (lowered.includes("directory")) return "directory-standard";
+    if (lowered.includes("featured") && lowered.includes("sponsor")) {
+      return "featured-sponsor";
+    }
+    if (lowered.includes("banner")) return "banner-ad";
+  }
+
+  return "";
+}
+
 // Used only when businessId is missing; prevents collisions if you have unique constraints later.
 function unlinkedBusinessIdPlaceholder(stripeSessionId: string) {
   return `UNLINKED:${stripeSessionId}`;
@@ -427,12 +459,6 @@ export default async function webhookHandler(
     );
     const rawMetaOption = asString(mergedMeta.option);
 
-    const canonicalAdItemId = resolveCanonicalAdItemId(mergedMeta);
-    const normalizedItemId =
-      canonicalAdItemId || normalizeAdItemId(rawMetaItemId) || "";
-
-    const isDirectoryPurchase = isDirectorySku(normalizedItemId);
-
     const durationDays = parseDurationDays(mergedMeta.durationDays);
     const businessIdRaw = mergedMeta.businessId;
     const businessId =
@@ -445,6 +471,30 @@ export default async function webhookHandler(
       mergedMeta.campaignId || mergedMeta.campaignIdFallback,
     );
     const jobId = asString(mergedMeta.jobId);
+
+    const canonicalAdItemId = resolveCanonicalAdItemId(mergedMeta);
+    let normalizedItemId =
+      canonicalAdItemId || normalizeAdItemId(rawMetaItemId) || "";
+
+    if (!normalizedItemId && campaignId) {
+      const legacyCampaign = await getCampaignById(campaignId).catch(() => null);
+      const adminCampaign = ObjectId.isValid(campaignId)
+        ? await db
+            .collection("advertising_campaigns")
+            .findOne({ _id: new ObjectId(campaignId) })
+            .catch(() => null)
+        : null;
+
+      const inferred = inferCanonicalAdItemIdFromCampaignContext({
+        legacyCampaign,
+        adminCampaign,
+      });
+      if (inferred) {
+        normalizedItemId = inferred;
+      }
+    }
+
+    const isDirectoryPurchase = isDirectorySku(normalizedItemId);
 
     console.log(
       `🔔 Paid webhook received type=${event.type} session=${stripeSessionId} item=${normalizedItemId || "n/a"} amount=${session.amount_total ?? "n/a"}`,
