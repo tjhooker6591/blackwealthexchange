@@ -2,8 +2,10 @@ import { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
 import cookie from "cookie";
 import jwt from "jsonwebtoken";
+import { getAppUrl } from "@/lib/env";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
+const stripeSecret = process.env.STRIPE_SECRET_KEY;
+const stripe = new Stripe(stripeSecret || "sk_missing", {
   apiVersion: "2025-02-24.acacia", // Match your main stripe logic!
 });
 
@@ -19,6 +21,10 @@ export default async function handler(
   res: NextApiResponse,
 ) {
   if (req.method !== "POST") return res.status(405).end("Method not allowed");
+
+  if (!stripeSecret) {
+    return res.status(500).json({ error: "Stripe is not configured" });
+  }
 
   // Authenticate user using JWT session token from cookie
   const cookies = cookie.parse(req.headers.cookie || "");
@@ -47,6 +53,7 @@ export default async function handler(
   if (!course) return res.status(400).json({ error: "Invalid course" });
 
   try {
+    const appUrl = getAppUrl();
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       ...(sessionUser.email && { customer_email: sessionUser.email }), // Use email if available
@@ -70,8 +77,8 @@ export default async function handler(
         courseId: courseSlug,
         courseSlug,
       },
-      success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/course-dashboard?course=${courseSlug}&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/course-enrollment?cancelled=1`,
+      success_url: `${appUrl}/course-dashboard?course=${courseSlug}&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${appUrl}/course-enrollment?cancelled=1`,
     });
 
     res.status(200).json({ url: session.url });
