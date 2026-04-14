@@ -1238,48 +1238,92 @@ export default async function webhookHandler(
       asString(mergedMeta.courseId || "") ||
       (metaType === "course" ? normalizedItemId : "");
 
-    if (resolvedCourseId && userId) {
-      await grantCourseAccess(userId, resolvedCourseId, {
-        stripeSessionId,
-        paymentIntentId: paymentIntentId || null,
-        source: "stripe_webhook",
-      });
+    if (resolvedCourseId) {
+      const courseUserId = await resolveEntitlementUserId(db, userId, email);
 
-      await db.collection("payments").updateOne(
-        { stripeSessionId },
-        {
-          $set: {
-            fulfillmentStatus: "fulfilled",
-            entitlementStatus: "granted",
-            lastReconciledAt: now,
-            updatedAt: now,
+      if (courseUserId) {
+        await grantCourseAccess(courseUserId, resolvedCourseId, {
+          stripeSessionId,
+          paymentIntentId: paymentIntentId || null,
+          source: "stripe_webhook",
+        });
+
+        await db.collection("payments").updateOne(
+          { stripeSessionId },
+          {
+            $set: {
+              fulfillmentStatus: "fulfilled",
+              entitlementStatus: "granted",
+              lastReconciledAt: now,
+              updatedAt: now,
+            },
           },
-        },
-      );
+        );
 
-      console.log(`✅ Granted course ${resolvedCourseId} to user ${userId}`);
+        console.log(
+          `✅ Granted course ${resolvedCourseId} to user ${courseUserId}`,
+        );
+      } else {
+        await db.collection("flow_events").insertOne({
+          eventType: "course_paid_webhook_missing_user",
+          pageRoute: "/api/stripe/webhook-handler",
+          section: "course_webhook_invariant",
+          source: "stripe_webhook",
+          source_variant: "missing_user",
+          stripeSessionId,
+          paymentIntentId: paymentIntentId || null,
+          courseId: resolvedCourseId,
+          email: email || null,
+          createdAt: now,
+        });
+        console.warn(
+          `⚠️ Course paid webhook missing resolvable user session=${stripeSessionId} course=${resolvedCourseId}`,
+        );
+      }
     }
 
     /**
      * 6) Paid job posting completion (existing canonical job checkout)
      */
     if (metaType === "job") {
-      if (jobId && ObjectId.isValid(jobId)) {
-        await db.collection("jobs").updateOne(
-          { _id: new ObjectId(jobId) },
-          {
-            $set: {
-              isPaid: true,
-              paymentStatus: "paid",
-              status: "pending_approval",
-              stripeSessionId,
-              paymentIntentId: paymentIntentId || null,
-              paidAt,
-              updatedAt: now,
-            },
+      const jobFilter =
+        jobId && ObjectId.isValid(jobId)
+          ? { _id: new ObjectId(jobId) }
+          : { stripeSessionId };
+
+      const jobUpdate = await db.collection("jobs").updateOne(
+        jobFilter,
+        {
+          $set: {
+            isPaid: true,
+            paymentStatus: "paid",
+            status: "pending_approval",
+            stripeSessionId,
+            paymentIntentId: paymentIntentId || null,
+            paidAt,
+            updatedAt: now,
           },
-        );
-        console.log(`✅ Paid job posting marked paid jobId=${jobId}`);
+        },
+      );
+
+      if (jobUpdate.matchedCount > 0) {
+        if (jobId && ObjectId.isValid(jobId)) {
+          console.log(`✅ Paid job posting marked paid jobId=${jobId}`);
+        } else {
+          await db.collection("flow_events").insertOne({
+            eventType: "job_paid_webhook_session_fallback",
+            pageRoute: "/api/stripe/webhook-handler",
+            section: "job_webhook_fallback",
+            source: "stripe_webhook",
+            source_variant: "session_id_fallback",
+            stripeSessionId,
+            paymentIntentId: paymentIntentId || null,
+            createdAt: now,
+          });
+          console.log(
+            `✅ Paid job posting marked paid via session fallback session=${stripeSessionId}`,
+          );
+        }
       } else {
         await db.collection("flow_events").insertOne({
           eventType: "job_paid_webhook_missing_job_id",
@@ -1292,7 +1336,7 @@ export default async function webhookHandler(
           createdAt: now,
         });
         console.warn(
-          `⚠️ Job paid webhook missing jobId metadata session=${stripeSessionId}`,
+          `⚠️ Job paid webhook missing job target session=${stripeSessionId}`,
         );
       }
     }

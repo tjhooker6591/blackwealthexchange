@@ -767,6 +767,19 @@ export default async function handler(
       idempotencyKey,
     });
 
+    if (type === "job" && normalizedJobId && ObjectId.isValid(normalizedJobId)) {
+      await db.collection("jobs").updateOne(
+        { _id: new ObjectId(normalizedJobId) },
+        {
+          $set: {
+            stripeSessionId: stripeSession.id,
+            paymentStatus: "pending",
+            updatedAt: new Date(),
+          },
+        },
+      );
+    }
+
     await payments.updateOne(
       { stripeSessionId: stripeSession.id },
       {
