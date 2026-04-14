@@ -4,34 +4,70 @@ import Stripe from "stripe";
 import { getCampaignById } from "../../../lib/db/ads";
 import clientPromise from "@/lib/mongodb";
 import { getAppUrl, getMongoDbName } from "@/lib/env";
+import { getStripeSecretKey } from "@/lib/stripeSecret";
 import {
   ensureApiRateLimitIndexes,
   getClientIp,
   hitApiRateLimit,
 } from "@/lib/apiRateLimit";
 
-const stripeSecret = process.env.STRIPE_SECRET_KEY;
+type ApiResponse =
+  | {
+      ok: true;
+      url: string;
+      sessionId: string;
+      campaignId: string;
+      amountCents: number;
+    }
+  | {
+      ok: false;
+      code: string;
+      message: string;
+    };
+
+function safeJsonBody(body: unknown): Record<string, any> {
+  if (!body) return {};
+  if (typeof body === "string") {
+    try {
+      return JSON.parse(body);
+    } catch {
+      return {};
+    }
+  }
+  if (typeof body === "object") return body as Record<string, any>;
+  return {};
+}
+
+const stripeSecret = getStripeSecretKey();
 const stripe = new Stripe(stripeSecret || "sk_missing", {
-  // match your installed @stripe/stripe-node types
   apiVersion: "2025-02-24.acacia",
 });
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse,
+  res: NextApiResponse<ApiResponse>,
 ) {
   if (req.method !== "POST") {
     res.setHeader("Allow", ["POST"]);
-    return res.status(405).json({ error: "Method Not Allowed" });
+    return res.status(405).json({
+      ok: false,
+      code: "METHOD_NOT_ALLOWED",
+      message: "Method not allowed",
+    });
   }
 
   if (!stripeSecret) {
-    return res.status(500).json({ error: "Stripe is not configured" });
+    return res.status(500).json({
+      ok: false,
+      code: "STRIPE_NOT_CONFIGURED",
+      message: "Checkout is temporarily unavailable",
+    });
   }
 
   const client = await clientPromise;
   const db = client.db(getMongoDbName());
   await ensureApiRateLimitIndexes(db);
+
   const ip = getClientIp(req);
   const ipLimit = await hitApiRateLimit(
     db,
@@ -41,23 +77,42 @@ export default async function handler(
   );
   if (ipLimit.blocked) {
     res.setHeader("Retry-After", String(ipLimit.retryAfterSeconds));
-    return res.status(429).json({ error: "Too many checkout attempts" });
+    return res.status(429).json({
+      ok: false,
+      code: "RATE_LIMITED",
+      message: "Too many checkout attempts. Please try again shortly.",
+    });
   }
 
   try {
+    const body = safeJsonBody(req.body);
     const campaignId =
-      typeof req.body?.campaignId === "string"
-        ? req.body.campaignId.trim()
-        : "";
-    if (!campaignId)
-      return res.status(400).json({ error: "Missing campaignId" });
+      typeof body.campaignId === "string" ? body.campaignId.trim() : "";
+
+    if (!campaignId) {
+      return res.status(400).json({
+        ok: false,
+        code: "CAMPAIGN_ID_REQUIRED",
+        message: "Missing campaignId",
+      });
+    }
 
     const campaign = await getCampaignById(campaignId);
-    if (!campaign) return res.status(404).json({ error: "Campaign not found" });
+    if (!campaign) {
+      return res.status(404).json({
+        ok: false,
+        code: "CAMPAIGN_NOT_FOUND",
+        message: "Campaign not found",
+      });
+    }
 
     const amountCents = Math.round(Number(campaign.price || 0) * 100);
     if (!Number.isFinite(amountCents) || amountCents <= 0) {
-      return res.status(400).json({ error: "Invalid campaign price" });
+      return res.status(400).json({
+        ok: false,
+        code: "INVALID_CAMPAIGN_PRICE",
+        message: "Invalid campaign price",
+      });
     }
 
     const appUrl = getAppUrl();
@@ -74,14 +129,35 @@ export default async function handler(
         },
       ],
       mode: "payment",
-      metadata: { campaignId },
-      success_url: `${appUrl}/ads/${campaignId}?status=success`,
+      metadata: {
+        type: "ad",
+        campaignId,
+      },
+      success_url: `${appUrl}/ads/${campaignId}?status=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${appUrl}/ads/${campaignId}?status=cancelled`,
     });
 
-    return res.status(200).json({ url: session.url });
+    if (!session.url) {
+      return res.status(500).json({
+        ok: false,
+        code: "CHECKOUT_URL_MISSING",
+        message: "Checkout session is unavailable",
+      });
+    }
+
+    return res.status(200).json({
+      ok: true,
+      url: session.url,
+      sessionId: session.id,
+      campaignId,
+      amountCents,
+    });
   } catch (error) {
     console.error("ads checkout session error", error);
-    return res.status(500).json({ error: "Failed to create checkout session" });
+    return res.status(500).json({
+      ok: false,
+      code: "CHECKOUT_CREATE_FAILED",
+      message: "Failed to create checkout session",
+    });
   }
 }

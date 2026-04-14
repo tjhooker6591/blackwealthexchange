@@ -2,7 +2,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
 import clientPromise from "@/lib/mongodb";
-import { getMongoDbName } from "@/lib/env";
+import { getAppUrl, getMongoDbName } from "@/lib/env";
+import { getStripeSecretKey } from "@/lib/stripeSecret";
 
 type ApiResponse =
   | {
@@ -60,7 +61,7 @@ type CheckoutBody = {
   endDate?: string;
 };
 
-const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+const stripeSecretKey = getStripeSecretKey();
 const stripe = stripeSecretKey ? new Stripe(stripeSecretKey) : null;
 
 /**
@@ -94,19 +95,8 @@ function n(value: unknown): number | undefined {
   return undefined;
 }
 
-function getBaseUrl(req: NextApiRequest): string {
-  const envBase =
-    process.env.NEXT_PUBLIC_SITE_URL ||
-    process.env.SITE_URL ||
-    process.env.NEXTAUTH_URL;
-
-  if (envBase) return envBase.replace(/\/+$/, "");
-
-  const protoHeader = req.headers["x-forwarded-proto"];
-  const proto = Array.isArray(protoHeader) ? protoHeader[0] : protoHeader;
-  const protocol = proto || "http";
-  const host = req.headers.host || "localhost:3000";
-  return `${protocol}://${host}`;
+function getBaseUrl(): string {
+  return getAppUrl();
 }
 
 function sanitizePath(input: string | undefined, fallback: string): string {
@@ -368,7 +358,7 @@ export default async function handler(
   const endDate = s(body.endDate);
   const plan = s(body.plan);
 
-  const baseUrl = getBaseUrl(req);
+  const baseUrl = getBaseUrl();
 
   // Align defaults to your unified checkout success/cancel pages
   const successPath = sanitizePath(body.successPath, "/payment-success");
