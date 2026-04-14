@@ -42,6 +42,7 @@ interface SessionMetadata {
   // checkout.ts / api/stripe/checkout.ts metadata
   itemId?: string;
   option?: string; // admin advertising checkout uses option as the ad sku
+  adType?: string; // legacy create-checkout-session ad label
   type?: string; // "ad" | "product" | "plan" | "advertising" (legacy)
   durationDays?: string | number; // "7" | "14" | "30" etc (or number)
   businessId?: string | null;
@@ -123,9 +124,15 @@ function normalizeAdItemId(raw: string) {
   const item = raw.trim();
   if (!item) return "";
 
+  const key = item.toLowerCase();
   const aliases: Record<string, string> = {
+    "featured sponsor": "featured-sponsor",
     "featured-sponsor-ad": "featured-sponsor",
     "sponsor-featured": "featured-sponsor",
+
+    "business directory": "directory-standard",
+    "banner ads": "banner-ad",
+    "custom solutions": "sponsored-listing",
 
     "banner-homepage-top": "banner-ad",
     "banner-sidebar": "banner-ad",
@@ -133,7 +140,7 @@ function normalizeAdItemId(raw: string) {
     "banner-dashboard": "banner-ad",
   };
 
-  return aliases[item] || item;
+  return aliases[key] || item;
 }
 
 function isDirectorySku(itemId: string) {
@@ -183,6 +190,9 @@ function resolveCanonicalAdItemId(meta: SessionMetadata) {
 
   const itemId = normalizeAdItemId(asString(meta.itemId));
   if (itemId && isKnownAdItem(itemId)) return itemId;
+
+  const adType = normalizeAdItemId(asString(meta.adType));
+  if (adType && isKnownAdItem(adType)) return adType;
 
   return "";
 }
@@ -1168,10 +1178,9 @@ export default async function webhookHandler(
       );
       console.log(`✅ Order ${mergedMeta.orderId} fulfilled`);
     } else if (metaType === "product") {
-      const orderBySession = await db.collection("orders").findOne(
-        { sessionId: stripeSessionId },
-        { projection: { _id: 1 } },
-      );
+      const orderBySession = await db
+        .collection("orders")
+        .findOne({ sessionId: stripeSessionId }, { projection: { _id: 1 } });
 
       if (orderBySession?._id) {
         const fallbackOrderId = idToString(orderBySession._id);
