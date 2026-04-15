@@ -1160,6 +1160,75 @@ export default function Home() {
       </section>
 
       <main className="container relative z-10 mx-auto max-w-6xl px-4 pb-0">
+        <section className="mb-5 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
+          <div className="mb-3 flex items-center justify-between gap-3">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
+                Start with confidence
+              </p>
+              <h2 className="mt-1 text-lg font-extrabold tracking-tight text-white sm:text-xl">
+                Pick your path in one tap
+              </h2>
+            </div>
+          </div>
+
+          <div className="grid gap-3 md:grid-cols-3">
+            <article className="rounded-2xl border border-[#D4AF37]/30 bg-black/35 p-4">
+              <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
+                Start Here
+              </p>
+              <h3 className="mt-1 text-base font-extrabold text-white">
+                Quick Path
+              </h3>
+              <p className="mt-1 text-sm text-white/70">
+                Get guided into the right BWE lane based on your goals.
+              </p>
+              <Link
+                href="/start-here"
+                className="mt-3 inline-flex rounded-xl bg-[#D4AF37] px-3.5 py-2 text-sm font-extrabold text-black hover:bg-yellow-500"
+              >
+                Open Quick Path
+              </Link>
+            </article>
+
+            <article className="rounded-2xl border border-white/10 bg-black/30 p-4">
+              <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#F1D57A]">
+                Learn
+              </p>
+              <h3 className="mt-1 text-base font-extrabold text-white">
+                Financial Literacy
+              </h3>
+              <p className="mt-1 text-sm text-white/70">
+                Build practical money skills, investing habits, and legacy systems.
+              </p>
+              <Link
+                href="/financial-literacy"
+                className="mt-3 inline-flex rounded-xl border border-[#D4AF37]/40 bg-[#D4AF37]/12 px-3.5 py-2 text-sm font-bold text-[#F1D57A] hover:bg-[#D4AF37]/18"
+              >
+                Start Learning
+              </Link>
+            </article>
+
+            <article className="rounded-2xl border border-white/10 bg-black/30 p-4">
+              <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-emerald-300">
+                Opportunities
+              </p>
+              <h3 className="mt-1 text-base font-extrabold text-white">
+                Student Opportunities
+              </h3>
+              <p className="mt-1 text-sm text-white/70">
+                Access internships, scholarships, grants, and mentorship pathways.
+              </p>
+              <Link
+                href="/black-student-opportunities"
+                className="mt-3 inline-flex rounded-xl border border-emerald-300/35 bg-emerald-400/10 px-3.5 py-2 text-sm font-bold text-emerald-200 hover:bg-emerald-400/15"
+              >
+                View Opportunities
+              </Link>
+            </article>
+          </div>
+        </section>
+
         <section className="relative mb-5 overflow-hidden rounded-2xl border border-[#D4AF37]/30 bg-black p-4 sm:p-6 shadow-[0_0_0_1px_rgba(255,255,255,0.06)]">
           <div
             className="pointer-events-none absolute inset-0"
