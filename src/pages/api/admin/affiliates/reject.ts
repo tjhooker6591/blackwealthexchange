@@ -4,34 +4,52 @@ import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 import { getAdminDecodedFromRequest, isAdminDecoded } from "@/lib/adminAuth";
 import { getMongoDbName } from "@/lib/env";
+import { ADMIN_ERROR_CODES, adminFail } from "@/lib/adminApiContract";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  const fail = (status: number, code: string, message: string) =>
-    res.status(status).json({ ok: false, code, message });
-
   if (req.method !== "POST") {
     res.setHeader("Allow", ["POST"]);
-    return fail(405, "METHOD_NOT_ALLOWED", "Method Not Allowed");
+    return adminFail(
+      res,
+      405,
+      ADMIN_ERROR_CODES.METHOD_NOT_ALLOWED,
+      "Method Not Allowed",
+    );
   }
 
   const admin = getAdminDecodedFromRequest(req);
   if (!admin) {
-    return fail(401, "UNAUTHORIZED", "Unauthorized");
+    return adminFail(
+      res,
+      401,
+      ADMIN_ERROR_CODES.UNAUTHORIZED,
+      "Unauthorized",
+    );
   }
   if (!isAdminDecoded(admin)) {
-    return fail(403, "FORBIDDEN", "Forbidden");
+    return adminFail(res, 403, ADMIN_ERROR_CODES.FORBIDDEN, "Forbidden");
   }
 
   const { affiliateId } = req.body;
   if (!affiliateId) {
-    return fail(400, "MISSING_AFFILIATE_ID", "Missing affiliateId");
+    return adminFail(
+      res,
+      400,
+      ADMIN_ERROR_CODES.MISSING_AFFILIATE_ID,
+      "Missing affiliateId",
+    );
   }
 
   if (!ObjectId.isValid(affiliateId)) {
-    return fail(400, "INVALID_AFFILIATE_ID", "Invalid affiliateId");
+    return adminFail(
+      res,
+      400,
+      ADMIN_ERROR_CODES.INVALID_AFFILIATE_ID,
+      "Invalid affiliateId",
+    );
   }
 
   try {
@@ -46,7 +64,12 @@ export default async function handler(
       console.warn(
         `Attempted to reject non-existent affiliate ID: ${affiliateId}`,
       );
-      return fail(404, "AFFILIATE_NOT_FOUND", "Affiliate not found");
+      return adminFail(
+        res,
+        404,
+        ADMIN_ERROR_CODES.AFFILIATE_NOT_FOUND,
+        "Affiliate not found",
+      );
     }
 
     if (affiliate.status === "rejected") {
@@ -55,16 +78,23 @@ export default async function handler(
         .json({ ok: true, message: "Affiliate is already rejected" });
     }
 
-    await db.collection("affiliates").updateOne(
-      { _id: new ObjectId(affiliateId) },
-      { $set: { status: "rejected", rejectedAt: new Date() } },
-    );
+    await db
+      .collection("affiliates")
+      .updateOne(
+        { _id: new ObjectId(affiliateId) },
+        { $set: { status: "rejected", rejectedAt: new Date() } },
+      );
 
     console.log(`❌ Affiliate ${affiliate.email} has been rejected.`);
 
     return res.status(200).json({ ok: true, message: "Affiliate rejected." });
   } catch (err) {
     console.error("Affiliate rejection error:", err);
-    return fail(500, "INTERNAL_ERROR", "Internal Server Error");
+    return adminFail(
+      res,
+      500,
+      ADMIN_ERROR_CODES.INTERNAL_ERROR,
+      "Internal Server Error",
+    );
   }
 }
