@@ -59,10 +59,31 @@ export default function NavBar() {
         {/* Desktop Nav */}
         <div className="hidden items-center gap-1 lg:flex">
           <Link
+            href="/start-here"
+            className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 transition-colors hover:bg-white/5 hover:text-[#D4AF37]"
+          >
+            Quick Path
+          </Link>
+
+          <Link
             href="/black-wealth"
             className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 transition-colors hover:bg-white/5 hover:text-[#D4AF37]"
           >
             Wealth Guide
+          </Link>
+
+          <Link
+            href="/financial-literacy"
+            className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 transition-colors hover:bg-white/5 hover:text-[#D4AF37]"
+          >
+            Learn
+          </Link>
+
+          <Link
+            href="/black-student-opportunities"
+            className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 transition-colors hover:bg-white/5 hover:text-[#D4AF37]"
+          >
+            Student Opportunities
           </Link>
 
           <Link
@@ -129,9 +150,24 @@ export default function NavBar() {
                 Account
               </summary>
               <div className="absolute right-0 z-50 mt-2 w-48 rounded-xl border border-white/10 bg-black/95 p-2 shadow-2xl">
-                <Link href={dashboardHref} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]">Dashboard</Link>
-                <Link href={profileHref} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]">Profile</Link>
-                <button onClick={logout} className="block w-full rounded-lg px-3 py-2 text-left text-sm text-white/85 hover:bg-white/5 hover:text-red-500">Sign Out</button>
+                <Link
+                  href={dashboardHref}
+                  className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]"
+                >
+                  Dashboard
+                </Link>
+                <Link
+                  href={profileHref}
+                  className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]"
+                >
+                  Profile
+                </Link>
+                <button
+                  onClick={logout}
+                  className="block w-full rounded-lg px-3 py-2 text-left text-sm text-white/85 hover:bg-white/5 hover:text-red-500"
+                >
+                  Sign Out
+                </button>
               </div>
             </details>
           ) : (
@@ -140,8 +176,18 @@ export default function NavBar() {
                 Account
               </summary>
               <div className="absolute right-0 z-50 mt-2 w-44 rounded-xl border border-white/10 bg-black/95 p-2 shadow-2xl">
-                <Link href="/login" className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]">Log In</Link>
-                <Link href="/signup" className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]">Sign Up</Link>
+                <Link
+                  href="/login"
+                  className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]"
+                >
+                  Log In
+                </Link>
+                <Link
+                  href="/signup"
+                  className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]"
+                >
+                  Sign Up
+                </Link>
               </div>
             </details>
           )}
@@ -190,6 +236,14 @@ export default function NavBar() {
         >
           <div className="space-y-1 rounded-2xl border border-white/10 bg-white/[0.03] p-3 shadow-[0_0_0_1px_rgba(255,255,255,0.04)]">
             <Link
+              href="/start-here"
+              className="block rounded-xl px-3 py-2.5 font-medium text-white/85 transition-colors hover:bg-white/[0.04] hover:text-[#D4AF37]"
+              onClick={() => handleMobileNav()}
+            >
+              Quick Path
+            </Link>
+
+            <Link
               href="/about"
               className="block rounded-xl px-3 py-2.5 font-medium text-white/85 transition-colors hover:bg-white/[0.04] hover:text-[#D4AF37]"
               onClick={() => handleMobileNav()}
@@ -203,6 +257,22 @@ export default function NavBar() {
               onClick={() => handleMobileNav()}
             >
               Black Wealth Guide
+            </Link>
+
+            <Link
+              href="/financial-literacy"
+              className="block rounded-xl px-3 py-2.5 font-medium text-white/85 transition-colors hover:bg-white/[0.04] hover:text-[#D4AF37]"
+              onClick={() => handleMobileNav()}
+            >
+              Learn
+            </Link>
+
+            <Link
+              href="/black-student-opportunities"
+              className="block rounded-xl px-3 py-2.5 font-medium text-white/85 transition-colors hover:bg-white/[0.04] hover:text-[#D4AF37]"
+              onClick={() => handleMobileNav()}
+            >
+              Student Opportunities
             </Link>
 
             <Link
