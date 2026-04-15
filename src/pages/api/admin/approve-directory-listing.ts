@@ -5,6 +5,7 @@ import { ObjectId } from "mongodb";
 import { getMongoDbName } from "@/lib/env";
 import { canApproveDirectoryListing } from "@/lib/stateTransitions";
 import { getAdminDecodedFromRequest, isAdminDecoded } from "@/lib/adminAuth";
+import { ADMIN_ERROR_CODES, adminFail } from "@/lib/adminApiContract";
 
 type ApproveBody = {
   listingId?: string; // directory_listings _id OR payments _id (fallback rows)
@@ -14,7 +15,6 @@ type ApproveBody = {
 };
 
 const DEFAULT_MAX_SLOTS = 10;
-
 
 function s(v: unknown): string | null {
   return typeof v === "string" && v.trim() ? v.trim() : null;
@@ -89,25 +89,31 @@ function getLinkedBusinessId(doc: any): string | null {
   return businessId;
 }
 
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  const fail = (status: number, code: string, message: string) =>
-    res.status(status).json({ ok: false, code, message });
-
   if (req.method !== "POST") {
     res.setHeader("Allow", ["POST"]);
-    return fail(405, "METHOD_NOT_ALLOWED", "Method Not Allowed");
+    return adminFail(
+      res,
+      405,
+      ADMIN_ERROR_CODES.METHOD_NOT_ALLOWED,
+      "Method Not Allowed",
+    );
   }
 
   const admin = getAdminDecodedFromRequest(req);
   if (!admin) {
-    return fail(401, "UNAUTHORIZED", "Unauthorized");
+    return adminFail(
+      res,
+      401,
+      ADMIN_ERROR_CODES.UNAUTHORIZED,
+      "Unauthorized",
+    );
   }
   if (!isAdminDecoded(admin)) {
-    return fail(403, "FORBIDDEN", "Forbidden");
+    return adminFail(res, 403, ADMIN_ERROR_CODES.FORBIDDEN, "Forbidden");
   }
 
   try {
@@ -122,9 +128,10 @@ export default async function handler(
     const forceApproveUnpaid = Boolean(body.forceApproveUnpaid);
 
     if (!listingId && !stripeSessionIdInput) {
-      return fail(
+      return adminFail(
+        res,
         400,
-        "MISSING_IDENTIFIER",
+        ADMIN_ERROR_CODES.MISSING_IDENTIFIER,
         "listingId or stripeSessionId is required",
       );
     }
@@ -174,14 +181,20 @@ export default async function handler(
       }
 
       if (!payment) {
-        return fail(404, "LISTING_OR_PAYMENT_NOT_FOUND", "Listing/payment record not found");
+        return adminFail(
+          res,
+          404,
+          ADMIN_ERROR_CODES.LISTING_OR_PAYMENT_NOT_FOUND,
+          "Listing/payment record not found",
+        );
       }
 
       const itemId = pickPaymentItemId(payment);
       if (!isDirectoryItem(itemId)) {
-        return fail(
+        return adminFail(
+          res,
           400,
-          "NOT_DIRECTORY_PURCHASE",
+          ADMIN_ERROR_CODES.NOT_DIRECTORY_PURCHASE,
           "Record is not a directory listing purchase",
         );
       }
@@ -192,7 +205,12 @@ export default async function handler(
         forceApproveUnpaid,
       });
       if (!approvalGate.ok) {
-        return fail(409, "UNPAID_LISTING", "Cannot approve an unpaid listing");
+        return adminFail(
+          res,
+          409,
+          ADMIN_ERROR_CODES.UNPAID_LISTING,
+          "Cannot approve an unpaid listing",
+        );
       }
 
       const tier = inferTierFromItemId(itemId);
@@ -201,7 +219,12 @@ export default async function handler(
 
       const paymentStripeSessionId = s(payment?.stripeSessionId);
       if (!paymentStripeSessionId) {
-        return fail(400, "MISSING_STRIPE_SESSION_ID", "Payment missing stripeSessionId");
+        return adminFail(
+          res,
+          400,
+          ADMIN_ERROR_CODES.MISSING_STRIPE_SESSION_ID,
+          "Payment missing stripeSessionId",
+        );
       }
 
       const linkedBusinessId =
@@ -285,7 +308,12 @@ export default async function handler(
     }
 
     if (!listing || !listingObjectId) {
-      return fail(404, "DIRECTORY_LISTING_NOT_FOUND", "Directory listing not found");
+      return adminFail(
+        res,
+        404,
+        ADMIN_ERROR_CODES.DIRECTORY_LISTING_NOT_FOUND,
+        "Directory listing not found",
+      );
     }
 
     const tier = (s(listing?.tier) || "standard") as "standard" | "featured";
@@ -307,7 +335,12 @@ export default async function handler(
     });
 
     if (!listingApprovalGate.ok) {
-      return fail(409, "LISTING_NOT_PAID", "Listing is not paid");
+      return adminFail(
+        res,
+        409,
+        ADMIN_ERROR_CODES.LISTING_NOT_PAID,
+        "Listing is not paid",
+      );
     }
 
     const linkedBusinessId = getLinkedBusinessId(listing);
@@ -327,9 +360,10 @@ export default async function handler(
         },
       );
 
-      return fail(
+      return adminFail(
+        res,
         409,
-        "LISTING_UNLINKED",
+        ADMIN_ERROR_CODES.LISTING_UNLINKED,
         "Listing is not linked to a business",
       );
     }
@@ -505,6 +539,11 @@ export default async function handler(
     });
   } catch (err: any) {
     console.error("[/api/admin/approve-directory-listing] error:", err);
-    return fail(500, "INTERNAL_ERROR", "Internal Server Error");
+    return adminFail(
+      res,
+      500,
+      ADMIN_ERROR_CODES.INTERNAL_ERROR,
+      "Internal Server Error",
+    );
   }
 }
