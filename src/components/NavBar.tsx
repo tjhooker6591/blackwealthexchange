@@ -100,6 +100,13 @@ export default function NavBar() {
             Black Card
           </Link>
 
+          <Link
+            href="/advertise-with-us"
+            className="rounded-lg border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-3 py-2 text-sm font-semibold text-[#F1D57A] transition-colors hover:bg-[#D4AF37]/18"
+          >
+            Advertise
+          </Link>
+
           <details className="group relative">
             <summary className="list-none cursor-pointer rounded-lg px-3 py-2 text-sm font-semibold text-white/90 transition-colors hover:bg-white/5 hover:text-[#D4AF37]">
               More
@@ -289,6 +296,14 @@ export default function NavBar() {
               onClick={() => handleMobileNav()}
             >
               Events
+            </Link>
+
+            <Link
+              href="/advertise-with-us"
+              className="block rounded-xl border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-3 py-2.5 font-semibold text-[#F1D57A] transition-colors hover:bg-[#D4AF37]/18"
+              onClick={() => handleMobileNav()}
+            >
+              Advertise with BWE
             </Link>
 
             <Link

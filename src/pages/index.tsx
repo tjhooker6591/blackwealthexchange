@@ -1293,6 +1293,36 @@ export default function Home() {
           </div>
         </section>
 
+        <section className="mb-5 rounded-2xl border border-[#D4AF37]/25 bg-gradient-to-r from-black via-[#121212] to-black p-4 sm:p-5 shadow-[0_0_0_1px_rgba(212,175,55,0.14)]">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="max-w-3xl">
+              <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
+                Growth lane
+              </p>
+              <h3 className="mt-1 text-lg font-extrabold tracking-tight text-white sm:text-xl">
+                Advertise with BWE
+              </h3>
+              <p className="mt-1 text-sm text-white/70">
+                Turn sponsor visibility into customer action with premium placements designed for trusted Black-owned brands.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Link
+                href="/advertise-with-us"
+                className="rounded-xl bg-[#D4AF37] px-4 py-2.5 text-sm font-extrabold text-black hover:bg-yellow-500"
+              >
+                Become a Sponsor
+              </Link>
+              <Link
+                href="/advertise/featured-sponsor"
+                className="rounded-xl border border-[#D4AF37]/40 bg-[#D4AF37]/12 px-4 py-2.5 text-sm font-bold text-[#F1D57A] hover:bg-[#D4AF37]/18"
+              >
+                View Sponsor Packages
+              </Link>
+            </div>
+          </div>
+        </section>
+
         <section className="mb-0 mt-5 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
           <p className="text-xs font-bold uppercase tracking-[0.08em] text-white/65">
             Expansion areas
