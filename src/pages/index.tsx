@@ -1107,13 +1107,24 @@ export default function Home() {
 
       <section className="relative z-10 pt-3 pb-8 sm:pt-4 sm:pb-10">
         <div className="container mx-auto max-w-6xl px-4">
-          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
-            <div className="mb-2 text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
+          <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
+            <div
+              className="pointer-events-none absolute inset-0 opacity-[0.12]"
+              style={{
+                backgroundImage: "url('/images/story3.jpg')",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+            />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/80 via-black/65 to-black/80" />
+            <div className="relative z-10 mb-2 text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
               Start here
             </div>
-            <div className="grid gap-3 md:grid-cols-3">
+            <div className="relative z-10 grid gap-3 md:grid-cols-3">
               <article className="rounded-xl border border-[#D4AF37]/30 bg-black/35 p-4">
-                <h3 className="text-sm font-extrabold text-white">Quick Path</h3>
+                <h3 className="text-sm font-extrabold text-white">
+                  Quick Path
+                </h3>
                 <p className="mt-1 text-xs text-white/70">
                   New here? Get routed to the right lane in under a minute.
                 </p>
@@ -1137,7 +1148,9 @@ export default function Home() {
                 </Link>
               </article>
               <article className="rounded-xl border border-white/10 bg-black/30 p-4">
-                <h3 className="text-sm font-extrabold text-white">Opportunities</h3>
+                <h3 className="text-sm font-extrabold text-white">
+                  Opportunities
+                </h3>
                 <p className="mt-1 text-xs text-white/70">
                   Explore jobs and student pathways aligned to your goals.
                 </p>
@@ -1154,17 +1167,28 @@ export default function Home() {
       </section>
 
       <main className="container relative z-10 mx-auto max-w-6xl px-4 pb-0">
-        <section className="mb-5 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
-          <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
+        <section className="relative mb-5 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
+          <div
+            className="pointer-events-none absolute inset-0 opacity-[0.1]"
+            style={{
+              backgroundImage: "url('/ads/sample-banner8.jpg')",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+          />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/85 via-black/72 to-black/85" />
+          <p className="relative z-10 text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
             Core platform pillars
           </p>
-          <h2 className="mt-1 text-lg font-extrabold tracking-tight text-white sm:text-xl">
+          <h2 className="relative z-10 mt-1 text-lg font-extrabold tracking-tight text-white sm:text-xl">
             What BWE helps you do
           </h2>
 
-          <div className="mt-3 grid gap-3 md:grid-cols-3">
+          <div className="relative z-10 mt-3 grid gap-3 md:grid-cols-3">
             <article className="rounded-2xl border border-white/10 bg-black/30 p-4">
-              <h3 className="text-base font-extrabold text-white">Businesses</h3>
+              <h3 className="text-base font-extrabold text-white">
+                Businesses
+              </h3>
               <p className="mt-1 text-sm text-white/70">
                 Discover trusted Black-owned businesses, products, and services.
               </p>
@@ -1177,7 +1201,9 @@ export default function Home() {
             </article>
 
             <article className="rounded-2xl border border-white/10 bg-black/30 p-4">
-              <h3 className="text-base font-extrabold text-white">Opportunities</h3>
+              <h3 className="text-base font-extrabold text-white">
+                Opportunities
+              </h3>
               <p className="mt-1 text-sm text-white/70">
                 Access jobs, pathways, and career advancement opportunities.
               </p>
@@ -1285,51 +1311,74 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="mb-0 mt-5 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
-          <p className="text-xs font-bold uppercase tracking-[0.08em] text-white/65">
+        <section className="relative mb-0 mt-5 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
+          <div className="pointer-events-none absolute -top-16 left-1/2 h-40 w-[32rem] -translate-x-1/2 rounded-full bg-[#D4AF37]/10 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-24 right-[-4rem] h-52 w-52 rounded-full bg-emerald-500/10 blur-3xl" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/[0.02] via-transparent to-black/30" />
+          <p className="relative z-10 text-xs font-bold uppercase tracking-[0.08em] text-white/65">
             Expansion areas
           </p>
-          <h3 className="mt-1 text-lg font-extrabold tracking-tight text-[#D4AF37] sm:text-xl">
+          <h3 className="relative z-10 mt-1 text-lg font-extrabold tracking-tight text-[#D4AF37] sm:text-xl">
             Go deeper across the BWE ecosystem
           </h3>
 
-          <div className="mt-3 grid gap-3 md:grid-cols-2">
+          <div className="relative z-10 mt-3 grid gap-3 md:grid-cols-2">
             <article className="rounded-xl border border-white/10 bg-black/30 p-4">
-              <h4 className="text-sm font-extrabold text-white">Music & Creator Economy</h4>
+              <h4 className="text-sm font-extrabold text-white">
+                Music & Creator Economy
+              </h4>
               <p className="mt-1 text-xs text-white/70">
                 Explore artists and launch creator storefronts.
               </p>
-              <Link href="/music" className="mt-3 inline-flex rounded-lg bg-[#D4AF37] px-3 py-2 text-xs font-extrabold text-black hover:bg-yellow-500">
+              <Link
+                href="/music"
+                className="mt-3 inline-flex rounded-lg bg-[#D4AF37] px-3 py-2 text-xs font-extrabold text-black hover:bg-yellow-500"
+              >
                 Explore Music
               </Link>
             </article>
 
             <article className="rounded-xl border border-white/10 bg-black/30 p-4">
-              <h4 className="text-sm font-extrabold text-white">Real Estate & Investment</h4>
+              <h4 className="text-sm font-extrabold text-white">
+                Real Estate & Investment
+              </h4>
               <p className="mt-1 text-xs text-white/70">
                 Find ownership and investment pathways.
               </p>
-              <Link href="/real-estate-investment" className="mt-3 inline-flex rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-xs font-bold text-white/85 hover:bg-white/10">
+              <Link
+                href="/real-estate-investment"
+                className="mt-3 inline-flex rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-xs font-bold text-white/85 hover:bg-white/10"
+              >
                 Explore Real Estate
               </Link>
             </article>
 
             <article className="rounded-xl border border-white/10 bg-black/30 p-4">
-              <h4 className="text-sm font-extrabold text-white">Recruiting & Consulting</h4>
+              <h4 className="text-sm font-extrabold text-white">
+                Recruiting & Consulting
+              </h4>
               <p className="mt-1 text-xs text-white/70">
                 Connect employers with vetted talent pathways.
               </p>
-              <Link href="/recruiting-consulting?type=employer" className="mt-3 inline-flex rounded-lg border border-[#D4AF37]/40 bg-[#D4AF37]/12 px-3 py-2 text-xs font-bold text-[#F1D57A] hover:bg-[#D4AF37]/18">
+              <Link
+                href="/recruiting-consulting?type=employer"
+                className="mt-3 inline-flex rounded-lg border border-[#D4AF37]/40 bg-[#D4AF37]/12 px-3 py-2 text-xs font-bold text-[#F1D57A] hover:bg-[#D4AF37]/18"
+              >
                 Open Recruiting
               </Link>
             </article>
 
             <article className="rounded-xl border border-white/10 bg-black/30 p-4">
-              <h4 className="text-sm font-extrabold text-white">Advertise with BWE</h4>
+              <h4 className="text-sm font-extrabold text-white">
+                Advertise with BWE
+              </h4>
               <p className="mt-1 text-xs text-white/70">
                 Reach high-intent audiences with premium placements.
               </p>
-              <Link href="/advertise-with-us" className="mt-3 inline-flex rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-xs font-bold text-white/85 hover:bg-white/10">
+              <Link
+                href="/advertise-with-us"
+                className="mt-3 inline-flex rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-xs font-bold text-white/85 hover:bg-white/10"
+              >
                 View Ad Options
               </Link>
             </article>
