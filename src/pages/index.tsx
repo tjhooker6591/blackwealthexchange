@@ -1107,20 +1107,11 @@ export default function Home() {
 
       <section className="relative z-10 pt-3 pb-8 sm:pt-4 sm:pb-10">
         <div className="container mx-auto max-w-6xl px-4">
-          <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
-            <div
-              className="pointer-events-none absolute inset-0 opacity-[0.12]"
-              style={{
-                backgroundImage: "url('/images/story3.jpg')",
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-              }}
-            />
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/80 via-black/65 to-black/80" />
-            <div className="relative z-10 mb-2 text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
+          <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
+            <div className="mb-2 text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
               Start here
             </div>
-            <div className="relative z-10 grid gap-3 md:grid-cols-3">
+            <div className="grid gap-3 md:grid-cols-3">
               <article className="rounded-xl border border-[#D4AF37]/30 bg-black/35 p-4">
                 <h3 className="text-sm font-extrabold text-white">
                   Quick Path
@@ -1167,24 +1158,15 @@ export default function Home() {
       </section>
 
       <main className="container relative z-10 mx-auto max-w-6xl px-4 pb-0">
-        <section className="relative mb-5 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
-          <div
-            className="pointer-events-none absolute inset-0 opacity-[0.1]"
-            style={{
-              backgroundImage: "url('/ads/sample-banner8.jpg')",
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-          />
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/85 via-black/72 to-black/85" />
-          <p className="relative z-10 text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
+        <section className="mb-5 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
+          <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
             Core platform pillars
           </p>
-          <h2 className="relative z-10 mt-1 text-lg font-extrabold tracking-tight text-white sm:text-xl">
+          <h2 className="mt-1 text-lg font-extrabold tracking-tight text-white sm:text-xl">
             What BWE helps you do
           </h2>
 
-          <div className="relative z-10 mt-3 grid gap-3 md:grid-cols-3">
+          <div className="mt-3 grid gap-3 md:grid-cols-3">
             <article className="rounded-2xl border border-white/10 bg-black/30 p-4">
               <h3 className="text-base font-extrabold text-white">
                 Businesses
@@ -1311,18 +1293,57 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="relative mb-0 mt-5 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
-          <div className="pointer-events-none absolute -top-16 left-1/2 h-40 w-[32rem] -translate-x-1/2 rounded-full bg-[#D4AF37]/10 blur-3xl" />
-          <div className="pointer-events-none absolute -bottom-24 right-[-4rem] h-52 w-52 rounded-full bg-emerald-500/10 blur-3xl" />
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/[0.02] via-transparent to-black/30" />
-          <p className="relative z-10 text-xs font-bold uppercase tracking-[0.08em] text-white/65">
+        <section className="mb-0 mt-5 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
+          <p className="text-xs font-bold uppercase tracking-[0.08em] text-white/65">
             Expansion areas
           </p>
-          <h3 className="relative z-10 mt-1 text-lg font-extrabold tracking-tight text-[#D4AF37] sm:text-xl">
+          <h3 className="mt-1 text-lg font-extrabold tracking-tight text-[#D4AF37] sm:text-xl">
             Go deeper across the BWE ecosystem
           </h3>
 
-          <div className="relative z-10 mt-3 grid gap-3 md:grid-cols-2">
+          <section className="relative mb-3 overflow-hidden rounded-2xl border border-[#D4AF37]/30 bg-black p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.06)]">
+            <div
+              className="pointer-events-none absolute inset-0"
+              style={{
+                backgroundImage:
+                  "linear-gradient(110deg, rgba(0,0,0,0.88) 14%, rgba(0,0,0,0.72) 52%, rgba(0,0,0,0.9) 100%), url('/ads/sample-banner8.jpg')",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+            />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/45 via-transparent to-black/55" />
+
+            <div className="relative flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div className="max-w-3xl">
+                <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
+                  Creator Economy
+                </p>
+                <h4 className="mt-1 text-base font-extrabold tracking-tight text-white sm:text-lg">
+                  BWE Music / Creator Platform
+                </h4>
+                <p className="mt-1 text-xs text-white/80 sm:text-sm">
+                  Explore artists, launch creator storefronts, and support music
+                  commerce through canonical checkout and fulfillment.
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <Link
+                  href="/music"
+                  className="rounded-xl bg-[#D4AF37] px-3.5 py-2 text-xs font-extrabold text-black hover:bg-yellow-500 sm:text-sm"
+                >
+                  Explore Music
+                </Link>
+                <Link
+                  href="/music/join"
+                  className="rounded-xl border border-[#D4AF37]/45 bg-[#D4AF37]/10 px-3.5 py-2 text-xs font-bold text-[#F1D57A] hover:bg-[#D4AF37]/18 sm:text-sm"
+                >
+                  Join as Creator
+                </Link>
+              </div>
+            </div>
+          </section>
+
+          <div className="mt-3 grid gap-3 md:grid-cols-2">
             <article className="rounded-xl border border-white/10 bg-black/30 p-4">
               <h4 className="text-sm font-extrabold text-white">
                 Music & Creator Economy
