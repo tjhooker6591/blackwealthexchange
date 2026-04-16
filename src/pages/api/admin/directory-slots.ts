@@ -2,6 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import { getAdminDecodedFromRequest, isAdminDecoded } from "@/lib/adminAuth";
+import { ADMIN_ERROR_CODES, adminFail } from "@/lib/adminApiContract";
 import { getMongoDbName } from "@/lib/env";
 
 const DEFAULT_MAX_SLOTS = 10;
@@ -71,20 +72,22 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  const fail = (status: number, code: string, message: string) =>
-    res.status(status).json({ ok: false, code, message });
-
   if (req.method !== "GET") {
     res.setHeader("Allow", ["GET"]);
-    return fail(405, "METHOD_NOT_ALLOWED", "Method Not Allowed");
+    return adminFail(
+      res,
+      405,
+      ADMIN_ERROR_CODES.METHOD_NOT_ALLOWED,
+      "Method Not Allowed",
+    );
   }
 
   const admin = getAdminDecodedFromRequest(req);
   if (!admin) {
-    return fail(401, "UNAUTHORIZED", "Unauthorized");
+    return adminFail(res, 401, ADMIN_ERROR_CODES.UNAUTHORIZED, "Unauthorized");
   }
   if (!isAdminDecoded(admin)) {
-    return fail(403, "FORBIDDEN", "Forbidden");
+    return adminFail(res, 403, ADMIN_ERROR_CODES.FORBIDDEN, "Forbidden");
   }
 
   try {
@@ -234,6 +237,11 @@ export default async function handler(
     });
   } catch (err) {
     console.error("[/api/admin/directory-slots] error:", err);
-    return fail(500, "DIRECTORY_SLOTS_FAILED", "Failed to load slot info");
+    return adminFail(
+      res,
+      500,
+      ADMIN_ERROR_CODES.INTERNAL_ERROR,
+      "Failed to load slot info",
+    );
   }
 }
