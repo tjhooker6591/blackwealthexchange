@@ -3,6 +3,8 @@ export function getStripeSecretKey(): string {
     process.env.STRIPE_SECRET_KEY ||
     process.env.STRIPE_SECRET ||
     process.env.STRIPE_API_SECRET_KEY ||
+    process.env.STRIPE_TEST_API_KEY ||
+    process.env.STRIPE_LIVE_SECRET_KEY ||
     ""
   ).trim();
 }
