@@ -33,8 +33,16 @@ interface ApiErrorShape {
   error?: string;
 }
 
-function toApiErrorText(data: ApiErrorShape | null | undefined, fallback: string) {
-  const code = typeof data?.code === "string" ? data.code : "";
+type ParsedApiError = {
+  code: string;
+  message: string;
+};
+
+function parseApiError(
+  data: ApiErrorShape | null | undefined,
+  fallback: string,
+): ParsedApiError {
+  const code = typeof data?.code === "string" ? data.code.trim() : "";
   const message =
     typeof data?.message === "string"
       ? data.message
@@ -42,7 +50,11 @@ function toApiErrorText(data: ApiErrorShape | null | undefined, fallback: string
         ? data.error
         : fallback;
 
-  return code ? `${code}: ${message}` : message;
+  return { code, message };
+}
+
+function toApiErrorText(parsed: ParsedApiError) {
+  return parsed.code ? `${parsed.code}: ${parsed.message}` : parsed.message;
 }
 
 function userIsAdmin(user?: MeResponse["user"]) {
@@ -64,6 +76,7 @@ export default function AdminAffiliates() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState("");
+  const [errorCode, setErrorCode] = useState("");
 
   const loadAffiliateData = useCallback(async () => {
     const res = await fetch("/api/admin/affiliates/list", {
@@ -74,7 +87,10 @@ export default function AdminAffiliates() {
     const data = await res.json().catch(() => ({}));
 
     if (!res.ok) {
-      throw new Error(toApiErrorText(data, "Failed to load affiliates"));
+      const parsed = parseApiError(data, "Failed to load affiliates");
+      const err = new Error(toApiErrorText(parsed));
+      (err as any).apiCode = parsed.code;
+      throw err;
     }
 
     setPending(Array.isArray(data?.pending) ? data.pending : []);
@@ -88,6 +104,7 @@ export default function AdminAffiliates() {
     const checkAdminAndFetch = async () => {
       try {
         setError("");
+        setErrorCode("");
 
         const sessionRes = await fetch("/api/auth/me", {
           cache: "no-store",
@@ -111,6 +128,7 @@ export default function AdminAffiliates() {
         await loadAffiliateData();
       } catch (err: any) {
         if (mounted) {
+          setErrorCode(typeof err?.apiCode === "string" ? err.apiCode : "");
           setError(err?.message || "Failed to load affiliates");
         }
       } finally {
@@ -129,8 +147,10 @@ export default function AdminAffiliates() {
     try {
       setRefreshing(true);
       setError("");
+      setErrorCode("");
       await loadAffiliateData();
     } catch (err: any) {
+      setErrorCode(typeof err?.apiCode === "string" ? err.apiCode : "");
       setError(err?.message || "Failed to refresh affiliates");
     } finally {
       setRefreshing(false);
@@ -140,6 +160,7 @@ export default function AdminAffiliates() {
   const handleAction = async (id: string, action: "approve" | "reject") => {
     try {
       setError("");
+      setErrorCode("");
 
       const res = await fetch(`/api/admin/affiliates/${action}`, {
         method: "POST",
@@ -151,11 +172,15 @@ export default function AdminAffiliates() {
       const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
-        throw new Error(toApiErrorText(data, `Failed to ${action} affiliate`));
+        const parsed = parseApiError(data, `Failed to ${action} affiliate`);
+        const err = new Error(toApiErrorText(parsed));
+        (err as any).apiCode = parsed.code;
+        throw err;
       }
 
       await refreshData();
     } catch (err: any) {
+      setErrorCode(typeof err?.apiCode === "string" ? err.apiCode : "");
       setError(err?.message || `Failed to ${action} affiliate`);
     }
   };
@@ -205,7 +230,15 @@ export default function AdminAffiliates() {
             <>
               {error ? (
                 <div className="mb-6 rounded-xl border border-red-500/30 bg-red-950/20 p-4 text-red-200">
-                  {error}
+                  {errorCode ? (
+                    <div className="mb-1 text-xs text-red-300/90">
+                      Code:{" "}
+                      <span className="whitespace-nowrap font-mono tracking-normal">
+                        {errorCode}
+                      </span>
+                    </div>
+                  ) : null}
+                  <div>{error}</div>
                 </div>
               ) : null}
 
