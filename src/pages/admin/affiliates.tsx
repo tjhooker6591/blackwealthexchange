@@ -27,6 +27,24 @@ interface MeResponse {
   };
 }
 
+interface ApiErrorShape {
+  code?: string;
+  message?: string;
+  error?: string;
+}
+
+function toApiErrorText(data: ApiErrorShape | null | undefined, fallback: string) {
+  const code = typeof data?.code === "string" ? data.code : "";
+  const message =
+    typeof data?.message === "string"
+      ? data.message
+      : typeof data?.error === "string"
+        ? data.error
+        : fallback;
+
+  return code ? `${code}: ${message}` : message;
+}
+
 function userIsAdmin(user?: MeResponse["user"]) {
   if (!user) return false;
   if (user.isAdmin) return true;
@@ -56,7 +74,7 @@ export default function AdminAffiliates() {
     const data = await res.json().catch(() => ({}));
 
     if (!res.ok) {
-      throw new Error(data?.error || "Failed to load affiliates");
+      throw new Error(toApiErrorText(data, "Failed to load affiliates"));
     }
 
     setPending(Array.isArray(data?.pending) ? data.pending : []);
@@ -133,7 +151,7 @@ export default function AdminAffiliates() {
       const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
-        throw new Error(data?.error || `Failed to ${action} affiliate`);
+        throw new Error(toApiErrorText(data, `Failed to ${action} affiliate`));
       }
 
       await refreshData();
