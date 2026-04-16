@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import cookie from "cookie";
 import jwt from "jsonwebtoken";
+import { ADMIN_ERROR_CODES, adminFail } from "@/lib/adminApiContract";
 
 export type AdminDecoded = {
   userId?: string;
@@ -54,19 +55,19 @@ export async function requireAdminFromRequest(
 ): Promise<AdminDecoded | null> {
   const decoded = getAdminDecodedFromRequest(req);
   if (!decoded) {
-    res.status(401).json({ error: "Unauthorized" });
+    adminFail(res, 401, ADMIN_ERROR_CODES.UNAUTHORIZED, "Unauthorized");
     return null;
   }
 
   try {
     if (!isAdminDecoded(decoded)) {
-      res.status(403).json({ error: "Forbidden" });
+      adminFail(res, 403, ADMIN_ERROR_CODES.FORBIDDEN, "Forbidden");
       return null;
     }
 
     return decoded;
   } catch {
-    res.status(401).json({ error: "Unauthorized" });
+    adminFail(res, 401, ADMIN_ERROR_CODES.UNAUTHORIZED, "Unauthorized");
     return null;
   }
 }
