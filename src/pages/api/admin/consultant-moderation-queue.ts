@@ -3,6 +3,7 @@ import { ObjectId } from "mongodb";
 import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
 import { requireAdminFromRequest } from "@/lib/adminAuth";
+import { ADMIN_ERROR_CODES, adminFail } from "@/lib/adminApiContract";
 
 export default async function handler(
   req: NextApiRequest,
@@ -10,7 +11,12 @@ export default async function handler(
 ) {
   if (!["GET", "PATCH"].includes(req.method || "")) {
     res.setHeader("Allow", ["GET", "PATCH"]);
-    return res.status(405).json({ error: "Method Not Allowed" });
+    return adminFail(
+      res,
+      405,
+      ADMIN_ERROR_CODES.METHOD_NOT_ALLOWED,
+      "Method Not Allowed",
+    );
   }
 
   const admin = await requireAdminFromRequest(req, res);
@@ -26,21 +32,35 @@ export default async function handler(
       const note = String(req.body?.note || "").trim();
 
       if (!requestId || !ObjectId.isValid(requestId)) {
-        return res.status(400).json({ error: "Valid requestId is required" });
+        return adminFail(
+          res,
+          400,
+          "INVALID_REQUEST_ID",
+          "Valid requestId is required",
+        );
       }
       if (!["resolved", "escalated", "rejected"].includes(disposition)) {
-        return res.status(400).json({
-          error: "disposition must be resolved, escalated, or rejected",
-        });
+        return adminFail(
+          res,
+          400,
+          "INVALID_DISPOSITION",
+          "disposition must be resolved, escalated, or rejected",
+        );
       }
-      if ((disposition === "escalated" || disposition === "rejected") && !note) {
-        return res
-          .status(400)
-          .json({ error: "note is required for escalated or rejected actions" });
+      if (
+        (disposition === "escalated" || disposition === "rejected") &&
+        !note
+      ) {
+        return adminFail(
+          res,
+          400,
+          "NOTE_REQUIRED",
+          "note is required for escalated or rejected actions",
+        );
       }
 
       const now = new Date();
-      await db.collection("employer_consultant_contact_requests").updateOne(
+      const update = await db.collection("employer_consultant_contact_requests").updateOne(
         { _id: new ObjectId(requestId) },
         {
           $set: {
@@ -52,6 +72,15 @@ export default async function handler(
           },
         },
       );
+
+      if (!update.matchedCount) {
+        return adminFail(
+          res,
+          404,
+          "REQUEST_NOT_FOUND",
+          "Request not found",
+        );
+      }
 
       await db.collection("flow_events").insertOne({
         eventType: "consultant_contact_request_moderated",
@@ -145,6 +174,11 @@ export default async function handler(
     });
   } catch (error) {
     console.error("[api/admin/consultant-moderation-queue]", error);
-    return res.status(500).json({ error: "Failed to load moderation queue" });
+    return adminFail(
+      res,
+      500,
+      ADMIN_ERROR_CODES.INTERNAL_ERROR,
+      "Failed to load moderation queue",
+    );
   }
 }

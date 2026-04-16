@@ -165,8 +165,8 @@ Status labels allowed:
 - **Status:** PARTIAL
 - **Entry point:** `/dashboard/consultant/requests`, `/dashboard/employer/consultants/*`, `/dashboard/employer/consultants/pipeline`
 - **Expected final outcome:** employer requests are triaged with consultant response actions, moderation/admin queue exists for blocked/flagged requests, and conversion analytics cover full workflow.
-- **Current actual outcome:** discovery hub, profile authoring, employer pipeline board, consultant inbox/moderation/instrumentation exist; consultant response actions (accept/decline/request-more-info) are implemented; admin moderation queue read path is now added (`/api/admin/consultant-moderation-queue` + `/admin/consultant-moderation`) for blocked/flagged event review.
-- **Exact blocker:** richer conversion/workflow analytics + trust-hardening completion/polish still open; moderation queue actions/escalation workflow still pending.
+- **Current actual outcome:** discovery hub, profile authoring, employer pipeline board, consultant inbox/moderation/instrumentation exist; consultant response actions (accept/decline/request-more-info) are implemented; admin moderation queue read path is live (`/api/admin/consultant-moderation-queue` + `/admin/consultant-moderation`), and moderation queue action/escalation writes are now live via PATCH with canonical contract responses and not-found protection.
+- **Exact blocker:** richer conversion/workflow analytics + trust-hardening completion/polish still open.
 - **Files/routes/endpoints involved:** `src/pages/dashboard/consultant/requests.tsx`, `src/pages/api/consultants/contact-requests.ts`, `src/pages/api/employer/consultant-contact-requests.ts`, `src/pages/dashboard/employer/consultants/[id].tsx`, `src/pages/api/admin/consultant-moderation-queue.ts`, `src/pages/admin/consultant-moderation.tsx`.
 - **Exact closure condition:** consultant action loop, employer/admin moderation queue, analytics coverage, and trust-hardening all proven with end-to-end evidence.
 
