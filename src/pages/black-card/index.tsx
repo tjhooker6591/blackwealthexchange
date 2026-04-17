@@ -42,13 +42,15 @@ export default function BlackCardLandingPage() {
           <section className="rounded-3xl border border-[#9E7B2B]/35 bg-gradient-to-b from-[#17120A] via-[#0E0C08] to-[#080808] p-7 shadow-[0_20px_70px_rgba(0,0,0,0.55)]">
             <div className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
               <div>
-                <p className="text-xs uppercase tracking-[0.24em] text-[#D4AF37]">
+                <div className="inline-flex rounded-full border border-[#D4AF37]/60 bg-[#D4AF37]/10 px-3 py-1 text-sm font-extrabold uppercase tracking-[0.22em] text-[#F1D57A]">
                   BLACK CARD
-                </p>
-                <h1 className="mt-2 text-4xl font-black text-[#F1D57A] md:text-5xl">
+                </div>
+                <h1 className="mt-3 text-5xl font-black leading-tight text-[#F1D57A] md:text-6xl">
                   Built for Ownership.
                 </h1>
-                <p className="mt-1 text-lg font-semibold text-white">Move Different.</p>
+                <p className="mt-2 text-2xl font-bold text-white md:text-3xl">
+                  Move Different.
+                </p>
                 <p className="mt-3 max-w-3xl text-[#D9D9D9]">
                   {BLACK_CARD_POSITIONING}. Black Card is a real membership
                   product, not just a visual badge. Join a tier, activate your
@@ -105,7 +107,9 @@ export default function BlackCardLandingPage() {
               Tier comparison (clear, side-by-side)
             </h2>
             <p className="mt-2 text-sm text-[#B0B0B0]">
-              Standard is the lower-cost entry for membership identity and core access, Signature adds stronger monthly rewards and priority access, and Elite is for highest-value VIP access and support.
+              Standard is the lower-cost entry for membership identity and core
+              access, Signature adds stronger monthly rewards and priority
+              access, and Elite is for highest-value VIP access and support.
             </p>
             <div className="mt-4 overflow-x-auto">
               <table className="w-full min-w-[900px] text-sm">
