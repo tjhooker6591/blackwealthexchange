@@ -161,19 +161,24 @@ export default function AdvertiseWithUs() {
         </section>
 
         <section className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow">
-          <h2 className="text-2xl font-bold text-yellow-200">Why Advertise on BWE</h2>
+          <h2 className="text-2xl font-bold text-yellow-200">
+            Why Advertise on BWE
+          </h2>
           <div className="mt-4 grid gap-4 md:grid-cols-2">
             <div className="rounded-xl border border-white/10 bg-black/30 p-4 text-sm text-white/85">
               Targeted audience focused on supporting Black-owned businesses.
             </div>
             <div className="rounded-xl border border-white/10 bg-black/30 p-4 text-sm text-white/85">
-              Mission-driven platform with high-trust context and brand-safe placement.
+              Mission-driven platform with high-trust context and brand-safe
+              placement.
             </div>
             <div className="rounded-xl border border-white/10 bg-black/30 p-4 text-sm text-white/85">
-              Homepage and discovery surfaces designed for premium sponsor visibility.
+              Homepage and discovery surfaces designed for premium sponsor
+              visibility.
             </div>
             <div className="rounded-xl border border-white/10 bg-black/30 p-4 text-sm text-white/85">
-              Structured review and lifecycle states so campaigns are clear and verifiable.
+              Structured review and lifecycle states so campaigns are clear and
+              verifiable.
             </div>
           </div>
         </section>
@@ -197,11 +202,23 @@ export default function AdvertiseWithUs() {
                 }
                 className="rounded-2xl border border-yellow-500/20 bg-gray-900/40 p-6 shadow hover:shadow-2xl hover:border-yellow-400/35 transition"
               >
-                <p className="text-xs uppercase tracking-[0.1em] text-yellow-300/80">{item.goal}</p>
-                <h3 className="mt-1 text-xl font-bold text-white">{item.title}</h3>
-                <p className="mt-3 text-sm text-white/80"><span className="text-white/60">Where it appears:</span> {item.where}</p>
-                <p className="mt-2 text-sm text-white/80"><span className="text-white/60">Who it is for:</span> {item.who}</p>
-                <div className="mt-4 text-sm font-semibold text-yellow-200">Choose this option →</div>
+                <p className="text-xs uppercase tracking-[0.1em] text-yellow-300/80">
+                  {item.goal}
+                </p>
+                <h3 className="mt-1 text-xl font-bold text-white">
+                  {item.title}
+                </h3>
+                <p className="mt-3 text-sm text-white/80">
+                  <span className="text-white/60">Where it appears:</span>{" "}
+                  {item.where}
+                </p>
+                <p className="mt-2 text-sm text-white/80">
+                  <span className="text-white/60">Who it is for:</span>{" "}
+                  {item.who}
+                </p>
+                <div className="mt-4 text-sm font-semibold text-yellow-200">
+                  Choose this option →
+                </div>
               </Link>
             ))}
           </div>
@@ -217,7 +234,9 @@ export default function AdvertiseWithUs() {
         </section>
 
         <section className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow">
-          <h2 className="text-2xl font-bold text-yellow-200">Pricing and What You Get</h2>
+          <h2 className="text-2xl font-bold text-yellow-200">
+            Pricing and What You Get
+          </h2>
           <div className="mt-4 overflow-x-auto">
             <table className="w-full min-w-[680px] text-sm">
               <thead>
@@ -231,13 +250,23 @@ export default function AdvertiseWithUs() {
               </thead>
               <tbody>
                 {pricingRows.map((row) => (
-                  <tr key={`${row.placement}-${row.duration}`} className="border-b border-white/5">
-                    <td className="py-3 pr-4 font-semibold text-white">{row.placement}</td>
+                  <tr
+                    key={`${row.placement}-${row.duration}`}
+                    className="border-b border-white/5"
+                  >
+                    <td className="py-3 pr-4 font-semibold text-white">
+                      {row.placement}
+                    </td>
                     <td className="py-3 pr-4 text-white/80">{row.duration}</td>
-                    <td className="py-3 pr-4 text-yellow-300 font-semibold">{row.price}</td>
+                    <td className="py-3 pr-4 text-yellow-300 font-semibold">
+                      {row.price}
+                    </td>
                     <td className="py-3 pr-4 text-white/70">{row.note}</td>
                     <td className="py-3">
-                      <Link href={row.href} className="text-yellow-200 font-semibold hover:text-yellow-100">
+                      <Link
+                        href={row.href}
+                        className="text-yellow-200 font-semibold hover:text-yellow-100"
+                      >
                         Open package
                       </Link>
                     </td>
@@ -247,37 +276,87 @@ export default function AdvertiseWithUs() {
             </table>
           </div>
           <p className="mt-3 text-xs text-white/60">
-            Prices shown from current package configuration ({AD_PRICING["featured-sponsor"].label}, banners, directory, custom deposit).
+            Prices shown from current package configuration (
+            {AD_PRICING["featured-sponsor"].label}, banners, directory, custom
+            deposit).
           </p>
         </section>
 
         <section className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow">
-          <h2 className="text-2xl font-bold text-yellow-200">Proof and Trust</h2>
+          <h2 className="text-2xl font-bold text-yellow-200">
+            Proof and Trust
+          </h2>
           <p className="mt-2 text-white/80">
-            Live sponsor placements are visible in the Featured Sponsors rail on the homepage. Campaigns move through review and active scheduling states before display.
+            Live sponsor placements are visible in the Featured Sponsors rail on
+            the homepage. Campaigns move through review and active scheduling
+            states before display.
           </p>
           <div className="mt-4 flex flex-wrap gap-3">
-            <Link href="/" className="rounded-xl border border-yellow-500/40 bg-black/30 px-4 py-2 text-yellow-200 font-semibold">
+            <Link
+              href="/"
+              className="rounded-xl border border-yellow-500/40 bg-black/30 px-4 py-2 text-yellow-200 font-semibold"
+            >
               View Homepage Sponsor Rail
             </Link>
-            <Link href="/featured" className="rounded-xl border border-yellow-500/40 bg-black/30 px-4 py-2 text-yellow-200 font-semibold">
+            <Link
+              href="/featured"
+              className="rounded-xl border border-yellow-500/40 bg-black/30 px-4 py-2 text-yellow-200 font-semibold"
+            >
               View Sponsor Profile Template
             </Link>
           </div>
         </section>
 
         <section className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow">
-          <h2 className="text-2xl font-bold text-yellow-200">Need Help Choosing?</h2>
+          <h2 className="text-2xl font-bold text-yellow-200">
+            Need Help Choosing?
+          </h2>
           <p className="mt-2 text-white/80">
-            If you are unsure which package fits your business, start with Custom Solutions and we will shape a campaign based on your goal, budget, and timeline.
+            If you are unsure which package fits your business, start with
+            Custom Solutions and we will shape a campaign based on your goal,
+            budget, and timeline.
           </p>
-          <div className="mt-4 flex flex-wrap gap-3">
-            <Link href="/advertise/custom" className="rounded-xl bg-yellow-500 px-5 py-2.5 font-bold text-black hover:bg-yellow-400">
-              Request Custom Campaign
-            </Link>
-            <Link href="/legal/advertising-guidelines" className="rounded-xl border border-white/20 px-5 py-2.5 font-semibold text-white/85 hover:bg-white/10">
-              Read Advertising Guidelines
-            </Link>
+
+          <div className="mt-4 grid gap-3 md:grid-cols-2">
+            <div className="rounded-xl border border-white/15 bg-black/35 p-4">
+              <p className="text-xs uppercase tracking-[0.08em] text-yellow-300/80">
+                Direct Support
+              </p>
+              <p className="mt-1 text-sm text-white/90">
+                Contact the advertising team directly for package guidance,
+                launch timing, and campaign support.
+              </p>
+              <a
+                href="mailto:advertising@blackwealthexchange.com?subject=BWE%20Advertising%20Support"
+                className="mt-3 inline-flex rounded-lg border border-yellow-400/50 bg-yellow-400/10 px-3 py-2 text-sm font-semibold text-yellow-200 hover:bg-yellow-400/20"
+              >
+                Email Advertising Support
+              </a>
+            </div>
+
+            <div className="rounded-xl border border-white/15 bg-black/35 p-4">
+              <p className="text-xs uppercase tracking-[0.08em] text-yellow-300/80">
+                Guided Option
+              </p>
+              <p className="mt-1 text-sm text-white/90">
+                Need a tailored plan? Start a custom campaign request and we
+                will match placement, budget, and duration to your goals.
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <Link
+                  href="/advertise/custom"
+                  className="rounded-lg bg-yellow-500 px-4 py-2 text-sm font-bold text-black hover:bg-yellow-400"
+                >
+                  Request Custom Campaign
+                </Link>
+                <Link
+                  href="/legal/advertising-guidelines"
+                  className="rounded-lg border border-white/20 px-4 py-2 text-sm font-semibold text-white/85 hover:bg-white/10"
+                >
+                  Advertising Guidelines
+                </Link>
+              </div>
+            </div>
           </div>
         </section>
       </div>
