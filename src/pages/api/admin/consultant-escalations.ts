@@ -87,22 +87,79 @@ export default async function handler(
       }
 
       const requestId = result.requestId ? String(result.requestId) : null;
+      let requestSync: {
+        requestId: string;
+        matched: boolean;
+        disposition: string | null;
+        note: string | null;
+        by: string | null;
+        at: Date | null;
+      } | null = null;
 
       if (requestId && ObjectId.isValid(requestId)) {
-        const mappedDisposition = status === "closed" ? "resolved" : "escalated";
-        await db.collection("employer_consultant_contact_requests").updateOne(
-          { _id: new ObjectId(requestId) },
-          {
-            $set: {
-              adminDisposition: mappedDisposition,
-              adminDispositionNote:
-                resolutionNote || String(result.escalationNote || "").trim() || null,
-              adminDispositionBy: actedBy,
-              adminDispositionAt: now,
-              updatedAt: now,
+        const mappedDisposition =
+          status === "closed" ? "resolved" : "escalated";
+        const requestObjectId = new ObjectId(requestId);
+        const syncNote =
+          resolutionNote || String(result.escalationNote || "").trim() || null;
+
+        const syncUpdate = await db
+          .collection("employer_consultant_contact_requests")
+          .updateOne(
+            { _id: requestObjectId },
+            {
+              $set: {
+                adminDisposition: mappedDisposition,
+                adminDispositionNote: syncNote,
+                adminDispositionBy: actedBy,
+                adminDispositionAt: now,
+                updatedAt: now,
+              },
             },
-          },
-        );
+          );
+
+        if (syncUpdate.matchedCount) {
+          const synced = await db
+            .collection("employer_consultant_contact_requests")
+            .findOne(
+              { _id: requestObjectId },
+              {
+                projection: {
+                  adminDisposition: 1,
+                  adminDispositionNote: 1,
+                  adminDispositionBy: 1,
+                  adminDispositionAt: 1,
+                },
+              },
+            );
+
+          requestSync = {
+            requestId,
+            matched: true,
+            disposition:
+              typeof synced?.adminDisposition === "string"
+                ? synced.adminDisposition
+                : null,
+            note:
+              typeof synced?.adminDispositionNote === "string"
+                ? synced.adminDispositionNote
+                : null,
+            by:
+              typeof synced?.adminDispositionBy === "string"
+                ? synced.adminDispositionBy
+                : null,
+            at: synced?.adminDispositionAt ? new Date(synced.adminDispositionAt) : null,
+          };
+        } else {
+          requestSync = {
+            requestId,
+            matched: false,
+            disposition: null,
+            note: null,
+            by: null,
+            at: null,
+          };
+        }
       }
 
       await db.collection("flow_events").insertOne({
@@ -123,6 +180,7 @@ export default async function handler(
         escalationId,
         status,
         requestId,
+        requestSync,
       });
     }
 
