@@ -37,7 +37,7 @@ export default function ConsultantModerationPage() {
         },
       );
       const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || "Failed to load queue");
+      if (!res.ok) throw new Error(data?.message || data?.error || "Failed to load queue");
       setItems(Array.isArray(data?.items) ? data.items : []);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load queue");
@@ -62,10 +62,14 @@ export default function ConsultantModerationPage() {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ requestId: item.requestId, disposition, note: notes[item.id] || "" }),
+        body: JSON.stringify({
+          requestId: item.requestId,
+          disposition,
+          note: notes[item.id] || "",
+        }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || "Failed to update request");
+      if (!res.ok) throw new Error(data?.message || data?.error || "Failed to update request");
       await load();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to update request");

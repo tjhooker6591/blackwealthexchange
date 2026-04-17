@@ -20,9 +20,9 @@ export default function ConsultantEscalationsPage() {
   const [error, setError] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [busyId, setBusyId] = useState<string | null>(null);
-  const [resolutionNotes, setResolutionNotes] = useState<Record<string, string>>(
-    {},
-  );
+  const [resolutionNotes, setResolutionNotes] = useState<
+    Record<string, string>
+  >({});
 
   async function load() {
     setLoading(true);
@@ -38,10 +38,12 @@ export default function ConsultantEscalationsPage() {
         },
       );
       const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || "Failed to load escalations");
+      if (!res.ok) throw new Error(data?.message || data?.error || "Failed to load escalations");
       setItems(Array.isArray(data?.items) ? data.items : []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load escalations");
+      setError(
+        err instanceof Error ? err.message : "Failed to load escalations",
+      );
     } finally {
       setLoading(false);
     }
@@ -70,10 +72,13 @@ export default function ConsultantEscalationsPage() {
         }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || "Failed to update escalation");
+      if (!res.ok)
+        throw new Error(data?.message || data?.error || "Failed to update escalation");
       await load();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to update escalation");
+      setError(
+        err instanceof Error ? err.message : "Failed to update escalation",
+      );
     } finally {
       setBusyId(null);
     }

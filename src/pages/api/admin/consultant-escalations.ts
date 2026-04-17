@@ -3,6 +3,7 @@ import { ObjectId } from "mongodb";
 import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
 import { requireAdminFromRequest } from "@/lib/adminAuth";
+import { ADMIN_ERROR_CODES, adminFail } from "@/lib/adminApiContract";
 
 const VALID_STATUS = ["open", "in_review", "closed"] as const;
 
@@ -14,7 +15,12 @@ export default async function handler(
 ) {
   if (!["GET", "PATCH"].includes(req.method || "")) {
     res.setHeader("Allow", ["GET", "PATCH"]);
-    return res.status(405).json({ error: "Method Not Allowed" });
+    return adminFail(
+      res,
+      405,
+      ADMIN_ERROR_CODES.METHOD_NOT_ALLOWED,
+      "Method Not Allowed",
+    );
   }
 
   const admin = await requireAdminFromRequest(req, res);
@@ -31,17 +37,28 @@ export default async function handler(
       const resolutionNote = String(req.body?.resolutionNote || "").trim();
 
       if (!escalationId || !ObjectId.isValid(escalationId)) {
-        return res.status(400).json({ error: "Valid escalationId is required" });
+        return adminFail(
+          res,
+          400,
+          "INVALID_ESCALATION_ID",
+          "Valid escalationId is required",
+        );
       }
       if (!VALID_STATUS.includes(status)) {
-        return res
-          .status(400)
-          .json({ error: "status must be open, in_review, or closed" });
+        return adminFail(
+          res,
+          400,
+          "INVALID_STATUS",
+          "status must be open, in_review, or closed",
+        );
       }
       if (status === "closed" && !resolutionNote) {
-        return res
-          .status(400)
-          .json({ error: "resolutionNote is required when closing" });
+        return adminFail(
+          res,
+          400,
+          "RESOLUTION_NOTE_REQUIRED",
+          "resolutionNote is required when closing",
+        );
       }
 
       const now = new Date();
@@ -60,7 +77,12 @@ export default async function handler(
       );
 
       if (!result) {
-        return res.status(404).json({ error: "Escalation not found" });
+        return adminFail(
+          res,
+          404,
+          "ESCALATION_NOT_FOUND",
+          "Escalation not found",
+        );
       }
 
       await db.collection("flow_events").insertOne({
@@ -118,6 +140,11 @@ export default async function handler(
     });
   } catch (error) {
     console.error("[api/admin/consultant-escalations]", error);
-    return res.status(500).json({ error: "Failed to process escalations" });
+    return adminFail(
+      res,
+      500,
+      ADMIN_ERROR_CODES.INTERNAL_ERROR,
+      "Failed to process escalations",
+    );
   }
 }
