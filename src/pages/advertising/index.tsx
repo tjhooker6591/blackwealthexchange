@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
+import { getAdDurationOptions } from "@/lib/advertising/pricing";
 
 function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
@@ -70,6 +71,13 @@ function optionToDetailsHref(option: string) {
 }
 
 export default function AdvertisingIndexPage() {
+  const featuredBase = getAdDurationOptions("featured-sponsor")[0];
+  const directoryBase = getAdDurationOptions("directory-standard")[0];
+  const bannerBase = getAdDurationOptions("banner-ad")[0];
+  const customBase = getAdDurationOptions("custom-solution-deposit")[0];
+
+  const priceLabel = (base?: { amountDollars: number; durationDays: number }) =>
+    base ? `$${base.amountDollars} / ${base.durationDays} days` : "See details";
   const router = useRouter();
   const success = router.query.success === "1";
 
@@ -150,7 +158,7 @@ export default function AdvertisingIndexPage() {
           <AdCard
             title="Featured Sponsor"
             desc="Top placement for maximum visibility across the platform."
-            price="$25 / 7 days"
+            price={priceLabel(featuredBase)}
             badge="Most Popular"
             href="/advertise/featured-sponsor"
             onStart={() =>
@@ -169,7 +177,7 @@ export default function AdvertisingIndexPage() {
           <AdCard
             title="Directory Listings"
             desc="Choose standard or featured placement based on your growth goals."
-            price="$49 / 30 days"
+            price={priceLabel(directoryBase)}
             href="/advertise/business-directory"
             onStart={() =>
               trackAdvertisingEvent("advertising_option_selected", {
@@ -187,7 +195,7 @@ export default function AdvertisingIndexPage() {
           <AdCard
             title="Banner Ads"
             desc="Tasteful banner placement near high-traffic areas."
-            price="$199 / 14 days"
+            price={priceLabel(bannerBase)}
             href="/advertise/banner-ads"
             onStart={() =>
               trackAdvertisingEvent("advertising_option_selected", {
@@ -205,7 +213,7 @@ export default function AdvertisingIndexPage() {
           <AdCard
             title="Custom Solutions"
             desc="Recruiting, consulting, partnerships, sponsored content, or bundled campaigns."
-            price="$100 deposit"
+            price={customBase ? `$${customBase.amountDollars} deposit` : "See details"}
             href="/advertise/custom"
             onStart={() =>
               trackAdvertisingEvent("advertising_option_selected", {

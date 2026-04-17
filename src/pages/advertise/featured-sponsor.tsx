@@ -4,6 +4,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
+import { getAdDurationOptions, getAdQuote } from "@/lib/advertising/pricing";
 
 export default function FeaturedSponsorPage() {
   const router = useRouter();
@@ -34,6 +35,11 @@ export default function FeaturedSponsorPage() {
   const [creativeUrl, setCreativeUrl] = useState("");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+
+  const featuredDurationOptions = useMemo(
+    () => getAdDurationOptions("featured-sponsor"),
+    [],
+  );
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -95,12 +101,12 @@ export default function FeaturedSponsorPage() {
         adImage: adImageFile?.name || creativeUrl.trim(),
         website,
         targetUrl: targetUrl || website,
-        budget:
-          campaignDuration === "7"
-            ? "25"
-            : campaignDuration === "14"
-              ? "45"
-              : "80",
+        budget: String(
+          getAdQuote({
+            option: "featured-sponsor",
+            durationDays: Number(campaignDuration),
+          })?.amountDollars || "",
+        ),
         option: "featured-sponsor",
         durationDays: Number(campaignDuration),
         placement: "homepage-featured-sponsor",
@@ -226,32 +232,40 @@ export default function FeaturedSponsorPage() {
             sponsors receive top billing across key areas.
           </p>
           <div className="flex justify-center gap-6 flex-wrap">
-            {[
-              { label: "1 Week", value: "7", price: "$25" },
-              { label: "2 Weeks", value: "14", price: "$45" },
-              { label: "1 Month", value: "30", price: "$80" },
-            ].map(({ label, value, price }) => (
-              <div
-                key={value}
-                onClick={() => {
-                  setCampaignDuration(value);
-                  trackAdEvent("advertising_option_selected", {
-                    ctaId: `featured_duration_${value}`,
-                    ctaLabel: `${label} ${price}`,
-                    ad_option: "featured-sponsor",
-                    duration_days: Number(value),
-                  });
-                }}
-                className={`cursor-pointer p-6 rounded-lg border ${
-                  campaignDuration === value
-                    ? "border-gold bg-gray-800"
-                    : "border-gray-600"
-                }`}
-              >
-                <h4 className="text-lg font-semibold text-white">{label}</h4>
-                <p className="text-gold">{price}</p>
-              </div>
-            ))}
+            {featuredDurationOptions.map(({ durationDays, amountDollars }) => {
+              const value = String(durationDays);
+              const label =
+                durationDays === 7
+                  ? "1 Week"
+                  : durationDays === 14
+                    ? "2 Weeks"
+                    : durationDays === 30
+                      ? "1 Month"
+                      : `${durationDays} Days`;
+              const price = `$${amountDollars}`;
+              return (
+                <div
+                  key={value}
+                  onClick={() => {
+                    setCampaignDuration(value);
+                    trackAdEvent("advertising_option_selected", {
+                      ctaId: `featured_duration_${value}`,
+                      ctaLabel: `${label} ${price}`,
+                      ad_option: "featured-sponsor",
+                      duration_days: Number(value),
+                    });
+                  }}
+                  className={`cursor-pointer p-6 rounded-lg border ${
+                    campaignDuration === value
+                      ? "border-gold bg-gray-800"
+                      : "border-gray-600"
+                  }`}
+                >
+                  <h4 className="text-lg font-semibold text-white">{label}</h4>
+                  <p className="text-gold">{price}</p>
+                </div>
+              );
+            })}
           </div>
         </section>
 

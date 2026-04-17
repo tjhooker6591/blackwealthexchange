@@ -4,6 +4,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { getAdQuote } from "@/lib/advertising/pricing";
 
 type PlanType = "standard" | "featured";
 
@@ -20,6 +21,9 @@ export default function BusinessDirectoryAdPage() {
   const [notes, setNotes] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+
+  const standardQuote = getAdQuote({ option: "directory-standard", durationDays: 30 });
+  const featuredQuote = getAdQuote({ option: "directory-featured", durationDays: 30 });
 
   useEffect(() => {
     let mounted = true;
@@ -291,7 +295,9 @@ export default function BusinessDirectoryAdPage() {
                 disabled={submitting}
                 className="w-full px-4 py-2 bg-black text-gold rounded hover:bg-gray-900 transition disabled:opacity-60"
               >
-                {submitting ? "Saving Request..." : "$49 - Select Plan"}
+                {submitting
+                  ? "Saving Request..."
+                  : `${standardQuote ? `$${standardQuote.amountDollars}` : "See"} - Select Plan`}
               </button>
             </div>
           </div>
@@ -316,7 +322,9 @@ export default function BusinessDirectoryAdPage() {
                 disabled={submitting}
                 className="w-full px-4 py-2 bg-black text-gold rounded hover:bg-gray-900 transition disabled:opacity-60"
               >
-                {submitting ? "Saving Request..." : "$99 - Select Plan"}
+                {submitting
+                  ? "Saving Request..."
+                  : `${featuredQuote ? `$${featuredQuote.amountDollars}` : "See"} - Select Plan`}
               </button>
             </div>
           </div>

@@ -5,6 +5,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
+import { getAdDurationOptions } from "@/lib/advertising/pricing";
 
 type BannerPlacement = "homepage-top" | "sidebar" | "footer" | "dashboard";
 type BannerDuration = "14" | "30";
@@ -21,10 +22,13 @@ const BANNER_DURATION_OPTIONS: Array<{
   label: string;
   value: BannerDuration;
   priceLabel: string;
-}> = [
-  { label: "2 Weeks", value: "14", priceLabel: "$199" },
-  { label: "1 Month", value: "30", priceLabel: "$349" },
-];
+}> = getAdDurationOptions("banner-ad")
+  .filter((d) => d.durationDays === 14 || d.durationDays === 30)
+  .map((d) => ({
+    label: d.durationDays === 14 ? "2 Weeks" : "1 Month",
+    value: String(d.durationDays) as BannerDuration,
+    priceLabel: `$${d.amountDollars}`,
+  }));
 
 const PLACEMENTS: Array<{
   title: string;
@@ -167,7 +171,9 @@ export default function BannerAdsPage() {
           adText: notes || `Banner ad campaign request (${selectedPlacement})`,
           adImage: creativeUrl.trim(),
           website,
-          budget: duration === "14" ? "199" : "349",
+          budget:
+            BANNER_DURATION_OPTIONS.find((d) => d.value === duration)
+              ?.priceLabel.replace("$", "") || "",
           option: "banner-ad",
           durationDays: Number(duration),
           placement: selectedPlacement,
@@ -321,7 +327,7 @@ export default function BannerAdsPage() {
           <div className="text-sm text-zinc-300 mt-1">
             <span className="font-semibold text-white">Checkout Price:</span>{" "}
             <span className="text-gold">
-              {selectedDurationMeta?.priceLabel || "$199"}
+              {selectedDurationMeta?.priceLabel || "See pricing"}
             </span>
           </div>
         </div>

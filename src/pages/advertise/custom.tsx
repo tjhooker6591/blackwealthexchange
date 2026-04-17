@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
+import { getAdQuote } from "@/lib/advertising/pricing";
 
 type SaveResponse =
   | { success: true; requestId: string; message: string }
@@ -60,6 +61,13 @@ const CUSTOM_OPTIONS = [
 ];
 
 export default function CustomAd() {
+  const customDeposit = getAdQuote({
+    option: "custom-solution-deposit",
+    durationDays: 30,
+  });
+  const customDepositLabel = customDeposit
+    ? `$${customDeposit.amountDollars}`
+    : "$100";
   const [userId, setUserId] = useState("guest");
 
   const trackAdEvent = (
@@ -179,8 +187,6 @@ export default function CustomAd() {
 
       setRequestId(data.requestId);
       setSubmitted(true);
-
-
     } catch (err) {
       const message =
         err instanceof Error ? err.message : "Failed to save custom request.";
@@ -284,12 +290,12 @@ export default function CustomAd() {
         </div>
 
         <div className="bg-gray-700 text-left p-6 rounded-lg mb-10">
-          <h3 className="text-xl font-bold text-gold mb-2">Starting at $100</h3>
+          <h3 className="text-xl font-bold text-gold mb-2">Starting at {customDepositLabel}</h3>
           <p className="text-gray-300 text-sm">
-            Custom campaigns start at $100. Pricing varies based on scope,
+            Custom campaigns start at {customDepositLabel}. Pricing varies based on scope,
             duration, placement, creative needs, and campaign complexity. Submit
             your request first, and if you are ready, you can reserve your
-            campaign with the $100 deposit after submission.
+            campaign with the {customDepositLabel} deposit after submission.
           </p>
         </div>
 
@@ -443,7 +449,7 @@ export default function CustomAd() {
               <div className="font-semibold">Review Before Checkout</div>
               <div className="mt-1">Option: Custom Solution Deposit</div>
               <div>Duration: 30 days</div>
-              <div>Price: $100 deposit</div>
+              <div>Price: {customDepositLabel} deposit</div>
               <div className="text-xs mt-1 opacity-90">
                 Next step: continue to advertising checkout review, then secure
                 payment.
@@ -459,7 +465,7 @@ export default function CustomAd() {
               >
                 {startingCheckout
                   ? "Starting checkout..."
-                  : "Continue to Checkout Review ($100 Deposit)"}
+                  : `Continue to Checkout Review (${customDepositLabel} Deposit)`}
               </button>
             </div>
           </div>
