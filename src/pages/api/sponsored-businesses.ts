@@ -60,20 +60,13 @@ function normalizeSponsorImagePath(v: string) {
 function safeSponsorImage(raw: string) {
   const v = s(raw);
   if (!v) return HOUSE_SPONSOR_FALLBACK;
-  if (v.startsWith("/")) return normalizeSponsorImagePath(v);
 
-  try {
-    const u = new URL(v);
-    if (u.hostname === "example.com" || u.hostname.endsWith(".example.com")) {
-      return HOUSE_SPONSOR_FALLBACK;
-    }
-    if (u.protocol === "http:" || u.protocol === "https:") {
-      return v;
-    }
-    return HOUSE_SPONSOR_FALLBACK;
-  } catch {
-    return HOUSE_SPONSOR_FALLBACK;
+  // Homepage sponsor path is strict: approved local assets only.
+  if (v.startsWith("/images/sponsors/")) {
+    return normalizeSponsorImagePath(v);
   }
+
+  return HOUSE_SPONSOR_FALLBACK;
 }
 
 function resolveSponsorImage(name: string, raw: string) {
@@ -131,27 +124,37 @@ function featuredProfileUrl(
 }
 
 function mapScheduleRows(rows: any[]): SponsorCard[] {
-  return rows.map((row: any, i: number) => {
-    const name = s(row.businessName) || "Featured Sponsor";
-    const tagline =
-      s(row.tagline).slice(0, 90) || "Featured on Black Wealth Exchange";
-    const img = resolveSponsorImage(name, s(row.creativeUrl));
-    const target = normalizeBusinessUrl(s(row.targetUrl || row.website));
+  return rows
+    .map((row: any, i: number) => {
+      const name = s(row.businessName) || "Featured Sponsor";
+      const tagline =
+        s(row.tagline).slice(0, 90) || "Featured on Black Wealth Exchange";
+      const img = resolveSponsorImage(name, s(row.creativeUrl));
+      const target = normalizeBusinessUrl(s(row.targetUrl || row.website));
+      const isKnownSponsor = Boolean(HOUSE_SPONSOR_IMAGE_MAP[s(name)]);
+      const hasExplicitApprovedImage =
+        img.startsWith("/images/sponsors/") && img !== HOUSE_SPONSOR_FALLBACK;
 
-    return {
-      _id: String(row.campaignId || row._id),
-      name,
-      tagline,
-      img,
-      url: featuredProfileUrl(name, tagline, img, target),
-      cta: "Learn More",
-      tier: "featured-sponsor",
-      featuredSlot: typeof row.sortOrder === "number" ? row.sortOrder : i + 1,
-      source: "featured_sponsor_schedule",
-      weekStart: row.weekStart ? new Date(row.weekStart).toISOString() : null,
-      queueStatus: s(row.queueStatus) || null,
-    };
-  });
+      if (!isKnownSponsor && !hasExplicitApprovedImage) {
+        return null;
+      }
+
+      return {
+        _id: String(row.campaignId || row._id),
+        name,
+        tagline,
+        img,
+        url: featuredProfileUrl(name, tagline, img, target),
+        cta: "Learn More",
+        tier: "featured-sponsor",
+        featuredSlot:
+          typeof row.sortOrder === "number" ? row.sortOrder : i + 1,
+        source: "featured_sponsor_schedule",
+        weekStart: row.weekStart ? new Date(row.weekStart).toISOString() : null,
+        queueStatus: s(row.queueStatus) || null,
+      };
+    })
+    .filter(Boolean) as SponsorCard[];
 }
 
 export default async function handler(
@@ -193,11 +196,14 @@ export default async function handler(
       .toArray();
 
     if (scheduled.length) {
-      return res.status(200).json({
-        ok: true,
-        sponsors: mapScheduleRows(scheduled),
-        meta: { source: "featured_sponsor_schedule_current_week" },
-      });
+      const mappedScheduled = mapScheduleRows(scheduled);
+      if (mappedScheduled.length) {
+        return res.status(200).json({
+          ok: true,
+          sponsors: mappedScheduled,
+          meta: { source: "featured_sponsor_schedule_current_week" },
+        });
+      }
     }
 
     // If current-week rows are missing, use the most recent schedule set.
@@ -229,11 +235,14 @@ export default async function handler(
         .toArray();
 
       if (latestScheduled.length) {
-        return res.status(200).json({
-          ok: true,
-          sponsors: mapScheduleRows(latestScheduled),
-          meta: { source: "featured_sponsor_schedule_latest_week" },
-        });
+        const mappedLatest = mapScheduleRows(latestScheduled);
+        if (mappedLatest.length) {
+          return res.status(200).json({
+            ok: true,
+            sponsors: mappedLatest,
+            meta: { source: "featured_sponsor_schedule_latest_week" },
+          });
+        }
       }
     }
 
@@ -260,15 +269,23 @@ export default async function handler(
         const paidAt = row?.paidAt ? new Date(row.paidAt) : null;
         const duration = Number(row?.durationDays || 30);
         const expiresAt = paidAt
-          ? new Date(paidAt.getTime() + Math.max(1, duration) * 24 * 60 * 60 * 1000)
+          ? new Date(
+              paidAt.getTime() + Math.max(1, duration) * 24 * 60 * 60 * 1000,
+            )
           : null;
 
         if (expiresAt && expiresAt < now) return null;
 
         const name = s(row.business) || "Featured Sponsor";
-        const tagline = s(row.details).slice(0, 90) || "Featured on Black Wealth Exchange";
+        const tagline =
+          s(row.details).slice(0, 90) || "Featured on Black Wealth Exchange";
         const img = resolveSponsorImage(name, s(row.adImage));
         const target = normalizeBusinessUrl(s(row.targetUrl || row.website));
+        const isKnownSponsor = Boolean(HOUSE_SPONSOR_IMAGE_MAP[s(name)]);
+        const hasExplicitApprovedImage =
+          img.startsWith("/images/sponsors/") && img !== HOUSE_SPONSOR_FALLBACK;
+
+        if (!isKnownSponsor && !hasExplicitApprovedImage) return null;
 
         return {
           _id: String(row._id),
