@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
+import { AD_PRICING, getAdDurationOptions } from "@/lib/advertising/pricing";
 
 function GlowBackground() {
   return (
@@ -14,52 +15,47 @@ function GlowBackground() {
   );
 }
 
-function _cx(...classes: Array<string | false | null | undefined>) {
-  return classes.filter(Boolean).join(" ");
-}
-
-const AD_OPTIONS = [
+const GOAL_OPTIONS = [
   {
+    goal: "Get Maximum Visibility",
     title: "Featured Sponsor",
-    description:
-      "Highlight your brand to a dedicated, engaged audience on our homepage.",
+    option: "featured-sponsor",
+    where: "Homepage Featured Sponsors rail",
+    who: "Best for launches, brand awareness, and premium positioning",
     href: "/advertise/featured-sponsor",
-    tag: "Highest visibility",
   },
   {
-    title: "Business Directory",
-    description:
-      "Get your business featured in our Black-owned business directory.",
-    href: "/advertise/business-directory",
-    tag: "Directory boost",
-  },
-  {
-    title: "Banner Ads",
-    description: "Place your ads on high-traffic pages across the platform.",
+    goal: "Promote Your Brand",
+    title: "Banner Placement",
+    option: "banner-ad",
+    where: "High-traffic pages across BWE",
+    who: "Best for strong visual campaigns and repeated impressions",
     href: "/advertise/banner-ads",
-    tag: "Site-wide placements",
   },
   {
-    title: "Custom Solutions",
-    description: "Let’s build a tailored advertising plan for your business.",
+    goal: "Increase Discovery",
+    title: "Directory Placement",
+    option: "directory-featured",
+    where: "Business Directory sponsored slots",
+    who: "Best for local discovery and ongoing lead visibility",
+    href: "/advertise/business-directory",
+  },
+  {
+    goal: "Run a Custom Campaign",
+    title: "Custom Solution",
+    option: "custom-solution-deposit",
+    where: "Tailored placements + campaign strategy",
+    who: "Best for multi-surface campaigns and larger initiatives",
     href: "/advertise/custom",
-    tag: "Custom packages",
   },
 ] as const;
 
-const BENEFITS = [
-  {
-    title: "Wide Reach",
-    text: "Engage visitors who are actively looking to support Black-owned businesses.",
-  },
-  {
-    title: "Flexible Placements",
-    text: "Choose from homepage banners, category highlights, or featured directory listings.",
-  },
-  {
-    title: "Affordable Packages",
-    text: "Ad tiers for every budget—from small businesses to major sponsors.",
-  },
+const HOW_IT_WORKS = [
+  "Choose a package based on your growth goal.",
+  "Submit campaign details and creative assets.",
+  "Campaign enters review and approval workflow.",
+  "Approved campaign goes live in selected placements.",
+  "Campaign runs for the selected duration, then rotates/ends by schedule.",
 ] as const;
 
 export default function AdvertiseWithUs() {
@@ -78,15 +74,47 @@ export default function AdvertiseWithUs() {
   };
 
   useEffect(() => {
-    trackAdEvent("advertising_landing_viewed");
+    trackAdEvent("advertising_landing_viewed", {
+      source_variant: "advertise_with_us_google_model",
+    });
+  }, []);
+
+  const pricingRows = useMemo(() => {
+    const rows: Array<{
+      placement: string;
+      duration: string;
+      price: string;
+      href: string;
+      note: string;
+    }> = [];
+
+    for (const item of GOAL_OPTIONS) {
+      const durations = getAdDurationOptions(item.option);
+      if (!durations.length) continue;
+
+      const top = durations[0];
+      rows.push({
+        placement: item.title,
+        duration:
+          top.durationDays === 30
+            ? "30 days"
+            : top.durationDays === 14
+              ? "14 days"
+              : `${top.durationDays} days`,
+        price: `$${top.amountDollars}`,
+        href: item.href,
+        note: "Review and approval required before live placement.",
+      });
+    }
+
+    return rows;
   }, []);
 
   return (
     <div className="min-h-screen bg-black text-white relative">
       <GlowBackground />
 
-      <div className="relative max-w-6xl mx-auto px-6 py-10 space-y-10">
-        {/* Top bar */}
+      <div className="relative max-w-6xl mx-auto px-6 py-10 space-y-8">
         <div className="flex items-center justify-between gap-4">
           <button
             onClick={() => router.back()}
@@ -94,169 +122,161 @@ export default function AdvertiseWithUs() {
           >
             ← Back
           </button>
-
           <Link
-            href="/pricing"
+            href="/advertising"
             className="hidden md:inline-flex items-center rounded-full bg-yellow-400 px-4 py-2 font-semibold text-black hover:bg-yellow-300 transition"
           >
-            View Pricing
+            View Options
           </Link>
         </div>
 
-        {/* Hero */}
         <section className="rounded-2xl border border-yellow-500/25 bg-gradient-to-b from-yellow-500/10 to-transparent p-8 shadow-xl">
-          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-yellow-300">
-            Want to increase visibility for your business?
+          <p className="text-xs uppercase tracking-[0.12em] text-yellow-200/80">
+            Advertise with BWE
+          </p>
+          <h1 className="mt-2 text-4xl md:text-5xl font-extrabold tracking-tight text-yellow-300">
+            Promote your business to customers who actively support Black-owned
+            brands.
           </h1>
           <p className="mt-4 text-lg text-gray-200/90 leading-relaxed max-w-3xl">
-            Choose an advertising option that fits your goals. Reserve your slot
-            with secure checkout, then our team reviews and publishes your ad.
+            BWE advertising is for businesses that want trusted visibility,
+            premium placement, and mission-aligned growth. Launch a campaign,
+            move through review, and go live in a clear lifecycle.
           </p>
 
           <div className="mt-6 flex flex-col sm:flex-row gap-3">
-            <a
-              href="#options"
+            <Link
+              href="/advertising"
               className="inline-flex justify-center rounded-xl bg-yellow-500 px-6 py-3 font-bold text-black hover:bg-yellow-400 transition shadow"
             >
-              Explore Ad Options
-            </a>
-            <Link
-              href="/business-directory"
+              Start Campaign
+            </Link>
+            <a
+              href="#options"
               className="inline-flex justify-center rounded-xl border border-yellow-500/30 bg-black/30 px-6 py-3 font-bold text-yellow-300 hover:bg-yellow-500/10 transition"
             >
-              View Sponsored Directory
-            </Link>
-          </div>
-
-          <div className="mt-4 text-sm text-gray-300">
-            Tip: Have your banner image ready (PNG/JPG), website link, and the
-            dates you want to run.
+              View Options
+            </a>
           </div>
         </section>
 
-        {/* Benefits */}
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {BENEFITS.map((item) => (
-            <div
-              key={item.title}
-              className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow hover:bg-white/10 transition"
-            >
-              <h3 className="text-xl font-semibold text-yellow-200 mb-2">
-                {item.title}
-              </h3>
-              <p className="text-gray-200/90">{item.text}</p>
-            </div>
-          ))}
-        </section>
-
-        {/* How it works */}
         <section className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow">
-          <h2 className="text-2xl font-bold text-yellow-200 text-center">
-            How It Works
-          </h2>
-          <ol className="mt-4 list-decimal list-inside space-y-2 max-w-2xl mx-auto text-gray-200/90">
-            <li>Choose your ad package.</li>
-            <li>Review pricing and placement options.</li>
-            <li>Submit your details and upload your banner (if applicable).</li>
-            <li>Pay securely and reserve your slot.</li>
-            <li>We review and publish your ad.</li>
-          </ol>
+          <h2 className="text-2xl font-bold text-yellow-200">Why Advertise on BWE</h2>
+          <div className="mt-4 grid gap-4 md:grid-cols-2">
+            <div className="rounded-xl border border-white/10 bg-black/30 p-4 text-sm text-white/85">
+              Targeted audience focused on supporting Black-owned businesses.
+            </div>
+            <div className="rounded-xl border border-white/10 bg-black/30 p-4 text-sm text-white/85">
+              Mission-driven platform with high-trust context and brand-safe placement.
+            </div>
+            <div className="rounded-xl border border-white/10 bg-black/30 p-4 text-sm text-white/85">
+              Homepage and discovery surfaces designed for premium sponsor visibility.
+            </div>
+            <div className="rounded-xl border border-white/10 bg-black/30 p-4 text-sm text-white/85">
+              Structured review and lifecycle states so campaigns are clear and verifiable.
+            </div>
+          </div>
         </section>
 
-        {/* Options */}
-        <section id="options" className="space-y-4">
-          <div>
-            <h2 className="text-3xl font-extrabold text-yellow-300">
-              Advertising Options
-            </h2>
-            <p className="mt-2 text-gray-200/90 max-w-3xl">
-              Select one of the options below to begin. Each option leads to a
-              simple, streamlined page before checkout.
-            </p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {AD_OPTIONS.map((option) => (
+        <section id="options" className="space-y-3">
+          <h2 className="text-3xl font-extrabold text-yellow-300">
+            Advertising Options by Goal
+          </h2>
+          <div className="grid md:grid-cols-2 gap-5">
+            {GOAL_OPTIONS.map((item) => (
               <Link
-                key={option.title}
-                href={option.href}
+                key={item.title}
+                href={item.href}
                 onClick={() =>
                   trackAdEvent("advertising_option_selected", {
-                    ctaId: `advertise_with_us_${option.title.toLowerCase().replace(/\s+/g, "_")}`,
-                    ctaLabel: option.title,
-                    destination: option.href,
-                    ad_option: option.title.toLowerCase().replace(/\s+/g, "-"),
-                    ad_type: option.title.toLowerCase().replace(/\s+/g, "-"),
-                    source_variant: "advertise_with_us",
+                    ctaLabel: item.title,
+                    destination: item.href,
+                    ad_option: item.option,
+                    source_variant: "advertise_with_us_goal_grouped",
                   })
                 }
-                className="group rounded-2xl border border-yellow-500/20 bg-gray-900/40 p-6 shadow hover:shadow-2xl hover:border-yellow-400/35 transition"
+                className="rounded-2xl border border-yellow-500/20 bg-gray-900/40 p-6 shadow hover:shadow-2xl hover:border-yellow-400/35 transition"
               >
-                <div className="flex items-start justify-between gap-3">
-                  <h3 className="text-xl font-bold text-white group-hover:text-yellow-200 transition">
-                    {option.title}
-                  </h3>
-                  <span className="text-[11px] rounded-full border border-yellow-500/25 bg-black/30 px-2 py-1 text-yellow-300">
-                    {option.tag}
-                  </span>
-                </div>
-                <p className="mt-3 text-sm text-gray-300 leading-relaxed">
-                  {option.description}
-                </p>
-                <div className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-yellow-300 group-hover:text-yellow-200">
-                  Start → <span className="opacity-70">({option.href})</span>
-                </div>
+                <p className="text-xs uppercase tracking-[0.1em] text-yellow-300/80">{item.goal}</p>
+                <h3 className="mt-1 text-xl font-bold text-white">{item.title}</h3>
+                <p className="mt-3 text-sm text-white/80"><span className="text-white/60">Where it appears:</span> {item.where}</p>
+                <p className="mt-2 text-sm text-white/80"><span className="text-white/60">Who it is for:</span> {item.who}</p>
+                <div className="mt-4 text-sm font-semibold text-yellow-200">Choose this option →</div>
               </Link>
             ))}
           </div>
         </section>
 
-        {/* Workflow continuity */}
         <section className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow">
-          <h3 className="text-xl font-semibold text-white text-center">
-            Campaign Flow (What happens next)
-          </h3>
-          <div className="mt-4 grid gap-3 md:grid-cols-4 text-sm">
-            <div className="rounded-xl border border-white/10 bg-black/30 p-3">
-              <div className="text-yellow-300 font-semibold">
-                1. Select Option
-              </div>
-              <div className="text-gray-300 mt-1">
-                Choose Featured, Directory, Banner, or Custom.
-              </div>
-            </div>
-            <div className="rounded-xl border border-white/10 bg-black/30 p-3">
-              <div className="text-yellow-300 font-semibold">
-                2. Add Details
-              </div>
-              <div className="text-gray-300 mt-1">
-                Submit campaign details and contact information.
-              </div>
-            </div>
-            <div className="rounded-xl border border-white/10 bg-black/30 p-3">
-              <div className="text-yellow-300 font-semibold">
-                3. Review Checkout
-              </div>
-              <div className="text-gray-300 mt-1">
-                Confirm option, duration, and pricing before payment.
-              </div>
-            </div>
-            <div className="rounded-xl border border-white/10 bg-black/30 p-3">
-              <div className="text-yellow-300 font-semibold">
-                4. Reserve Slot
-              </div>
-              <div className="text-gray-300 mt-1">
-                Checkout reserves your campaign for activation review.
-              </div>
-            </div>
-          </div>
+          <h2 className="text-2xl font-bold text-yellow-200">How It Works</h2>
+          <ol className="mt-4 list-decimal list-inside space-y-2 text-white/85">
+            {HOW_IT_WORKS.map((step) => (
+              <li key={step}>{step}</li>
+            ))}
+          </ol>
+        </section>
 
-          <div className="mt-5 text-center">
-            <Link
-              href="/advertising"
-              className="inline-flex justify-center rounded-xl bg-yellow-500 px-6 py-3 font-bold text-black hover:bg-yellow-400 transition shadow"
-            >
-              Open Advertising Flow
+        <section className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow">
+          <h2 className="text-2xl font-bold text-yellow-200">Pricing and What You Get</h2>
+          <div className="mt-4 overflow-x-auto">
+            <table className="w-full min-w-[680px] text-sm">
+              <thead>
+                <tr className="text-left text-white/70 border-b border-white/10">
+                  <th className="py-2 pr-4">Placement</th>
+                  <th className="py-2 pr-4">Typical Duration</th>
+                  <th className="py-2 pr-4">Starting Price</th>
+                  <th className="py-2 pr-4">Includes</th>
+                  <th className="py-2">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {pricingRows.map((row) => (
+                  <tr key={`${row.placement}-${row.duration}`} className="border-b border-white/5">
+                    <td className="py-3 pr-4 font-semibold text-white">{row.placement}</td>
+                    <td className="py-3 pr-4 text-white/80">{row.duration}</td>
+                    <td className="py-3 pr-4 text-yellow-300 font-semibold">{row.price}</td>
+                    <td className="py-3 pr-4 text-white/70">{row.note}</td>
+                    <td className="py-3">
+                      <Link href={row.href} className="text-yellow-200 font-semibold hover:text-yellow-100">
+                        Open package
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="mt-3 text-xs text-white/60">
+            Prices shown from current package configuration ({AD_PRICING["featured-sponsor"].label}, banners, directory, custom deposit).
+          </p>
+        </section>
+
+        <section className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow">
+          <h2 className="text-2xl font-bold text-yellow-200">Proof and Trust</h2>
+          <p className="mt-2 text-white/80">
+            Live sponsor placements are visible in the Featured Sponsors rail on the homepage. Campaigns move through review and active scheduling states before display.
+          </p>
+          <div className="mt-4 flex flex-wrap gap-3">
+            <Link href="/" className="rounded-xl border border-yellow-500/40 bg-black/30 px-4 py-2 text-yellow-200 font-semibold">
+              View Homepage Sponsor Rail
+            </Link>
+            <Link href="/featured" className="rounded-xl border border-yellow-500/40 bg-black/30 px-4 py-2 text-yellow-200 font-semibold">
+              View Sponsor Profile Template
+            </Link>
+          </div>
+        </section>
+
+        <section className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow">
+          <h2 className="text-2xl font-bold text-yellow-200">Need Help Choosing?</h2>
+          <p className="mt-2 text-white/80">
+            If you are unsure which package fits your business, start with Custom Solutions and we will shape a campaign based on your goal, budget, and timeline.
+          </p>
+          <div className="mt-4 flex flex-wrap gap-3">
+            <Link href="/advertise/custom" className="rounded-xl bg-yellow-500 px-5 py-2.5 font-bold text-black hover:bg-yellow-400">
+              Request Custom Campaign
+            </Link>
+            <Link href="/legal/advertising-guidelines" className="rounded-xl border border-white/20 px-5 py-2.5 font-semibold text-white/85 hover:bg-white/10">
+              Read Advertising Guidelines
             </Link>
           </div>
         </section>

@@ -609,7 +609,8 @@ export default function Home() {
 
   const [sponsors, setSponsors] = useState<
     Array<{ img: string; name: string; url?: string; tagline?: string }>
-  >(stableSponsorFallback);
+  >([]);
+  const [sponsorFeedLoaded, setSponsorFeedLoaded] = useState(false);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -623,7 +624,10 @@ export default function Home() {
           signal: controller.signal,
         });
         const data = await res.json().catch(() => ({}));
-        if (!res.ok || !Array.isArray(data?.sponsors) || cancelled) return;
+        if (!res.ok || !Array.isArray(data?.sponsors) || cancelled) {
+          if (!cancelled) setSponsors(stableSponsorFallback);
+          return;
+        }
 
         const normalized = data.sponsors.map((s: any) => ({
           img:
@@ -636,8 +640,9 @@ export default function Home() {
 
         setSponsors(normalized.length ? normalized : stableSponsorFallback);
       } catch {
-        // keep stable fallback; do not force late redraw from slow API
+        if (!cancelled) setSponsors(stableSponsorFallback);
       } finally {
+        if (!cancelled) setSponsorFeedLoaded(true);
         clearTimeout(timeout);
       }
     })();
@@ -1253,6 +1258,11 @@ export default function Home() {
           </div>
 
           <div className="relative h-20 w-full overflow-hidden rounded-xl border border-white/10 bg-black/25 sm:h-24">
+            {!sponsorFeedLoaded ? (
+              <div className="absolute inset-0 flex items-center justify-center text-[11px] text-white/55">
+                Loading live sponsors...
+              </div>
+            ) : null}
             <div className="pointer-events-none absolute left-0 top-0 h-full w-10 bg-gradient-to-r from-black/70 to-transparent" />
             <div className="pointer-events-none absolute right-0 top-0 h-full w-10 bg-gradient-to-l from-black/70 to-transparent" />
 
@@ -1303,7 +1313,8 @@ export default function Home() {
                 Advertise with BWE
               </h3>
               <p className="mt-1 text-sm text-white/70">
-                Turn sponsor visibility into customer action with premium placements designed for trusted Black-owned brands.
+                Turn sponsor visibility into customer action with premium
+                placements designed for trusted Black-owned brands.
               </p>
             </div>
             <div className="flex flex-wrap gap-2">
