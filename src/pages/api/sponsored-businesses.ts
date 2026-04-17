@@ -193,15 +193,14 @@ export default async function handler(
       .toArray();
 
     if (scheduled.length) {
-      return res
-        .status(200)
-        .json({ ok: true, sponsors: mapScheduleRows(scheduled) });
+      return res.status(200).json({
+        ok: true,
+        sponsors: mapScheduleRows(scheduled),
+        meta: { source: "featured_sponsor_schedule_current_week" },
+      });
     }
 
-    // Exact regression fix:
-    // if current-week rows are missing/expired, stay inside featured_sponsor_schedule
-    // and use the most recent schedule set instead of falling back to stale
-    // directory_listings / legacy businesses.
+    // If current-week rows are missing, use the most recent schedule set.
     const latestAnchor = await collection
       .find({
         placement: "homepage-featured-sponsor",
@@ -212,9 +211,9 @@ export default async function handler(
       .toArray();
 
     if (latestAnchor.length && latestAnchor[0]?.weekStart) {
-      const latestWeekStart = new Date(latestAnchor[0].weekStart);
+      const latestWeekStart = weekStartUtc(new Date(latestAnchor[0].weekStart));
       const latestWeekEnd = new Date(latestWeekStart);
-      latestWeekEnd.setUTCDate(latestWeekEnd.getUTCDate() + 1);
+      latestWeekEnd.setUTCDate(latestWeekEnd.getUTCDate() + 7);
 
       const latestScheduled = await collection
         .find({
@@ -230,10 +229,69 @@ export default async function handler(
         .toArray();
 
       if (latestScheduled.length) {
-        return res
-          .status(200)
-          .json({ ok: true, sponsors: mapScheduleRows(latestScheduled) });
+        return res.status(200).json({
+          ok: true,
+          sponsors: mapScheduleRows(latestScheduled),
+          meta: { source: "featured_sponsor_schedule_latest_week" },
+        });
       }
+    }
+
+    // Final non-fallback source: paid + approved featured-sponsor campaigns
+    // that are not expired yet, even if scheduler rows were not generated.
+    const paidFeatured = await db
+      .collection("advertising_requests")
+      .aggregate([
+        {
+          $match: {
+            option: "featured-sponsor",
+            paymentStatus: "paid",
+            reviewStatus: "approved",
+            status: { $in: ["approved", "active"] },
+          },
+        },
+        { $sort: { paidAt: -1, updatedAt: -1, createdAt: -1 } },
+        { $limit: 20 },
+      ])
+      .toArray();
+
+    const paidRows = paidFeatured
+      .map((row: any, i: number) => {
+        const paidAt = row?.paidAt ? new Date(row.paidAt) : null;
+        const duration = Number(row?.durationDays || 30);
+        const expiresAt = paidAt
+          ? new Date(paidAt.getTime() + Math.max(1, duration) * 24 * 60 * 60 * 1000)
+          : null;
+
+        if (expiresAt && expiresAt < now) return null;
+
+        const name = s(row.business) || "Featured Sponsor";
+        const tagline = s(row.details).slice(0, 90) || "Featured on Black Wealth Exchange";
+        const img = resolveSponsorImage(name, s(row.adImage));
+        const target = normalizeBusinessUrl(s(row.targetUrl || row.website));
+
+        return {
+          _id: String(row._id),
+          name,
+          tagline,
+          img,
+          url: featuredProfileUrl(name, tagline, img, target),
+          cta: "Learn More",
+          tier: "featured-sponsor",
+          featuredSlot: i + 1,
+          source: "featured_sponsor_schedule" as const,
+          weekStart: null,
+          queueStatus: "assigned",
+        } satisfies SponsorCard;
+      })
+      .filter(Boolean) as SponsorCard[];
+
+    if (paidRows.length) {
+      return res.status(200).json({
+        ok: true,
+        sponsors: paidRows.slice(0, 12),
+        meta: { source: "advertising_requests_paid_approved" },
+      });
     }
 
     const houseCards: SponsorCard[] = HOUSE_SPONSOR_ROTATION.map(
