@@ -152,6 +152,22 @@ export default function AdvertisingRequestsAdminPage() {
     return next;
   }, [rows, filter, lifecycleFilter, statusFilter]);
 
+  const lifecycleCounts = useMemo(() => {
+    const counts = {
+      pending: 0,
+      queued: 0,
+      scheduled: 0,
+      active: 0,
+      completed: 0,
+    };
+    for (const r of rows) {
+      if (r.campaignLifecycle in counts) {
+        counts[r.campaignLifecycle as keyof typeof counts] += 1;
+      }
+    }
+    return counts;
+  }, [rows]);
+
   return (
     <div className="min-h-screen bg-gray-900 text-white p-6 md:p-10">
       <div className="mx-auto max-w-7xl">
@@ -221,6 +237,13 @@ export default function AdvertisingRequestsAdminPage() {
         </div>
 
         <div className="mb-4 flex flex-wrap gap-2">
+          <div className="w-full grid grid-cols-2 md:grid-cols-5 gap-2 text-xs mb-2">
+            <div className="rounded border border-gray-700 bg-gray-800 px-3 py-2">Pending: <span className="text-amber-200 font-semibold">{lifecycleCounts.pending}</span></div>
+            <div className="rounded border border-gray-700 bg-gray-800 px-3 py-2">Queued: <span className="text-blue-200 font-semibold">{lifecycleCounts.queued}</span></div>
+            <div className="rounded border border-gray-700 bg-gray-800 px-3 py-2">Scheduled: <span className="text-cyan-200 font-semibold">{lifecycleCounts.scheduled}</span></div>
+            <div className="rounded border border-gray-700 bg-gray-800 px-3 py-2">Active: <span className="text-emerald-200 font-semibold">{lifecycleCounts.active}</span></div>
+            <div className="rounded border border-gray-700 bg-gray-800 px-3 py-2">Expired/Completed: <span className="text-purple-200 font-semibold">{lifecycleCounts.completed}</span></div>
+          </div>
           {(
             [
               "all",
@@ -282,8 +305,25 @@ export default function AdvertisingRequestsAdminPage() {
                       <div className="text-xs text-gray-400">
                         {r.email || "—"}
                       </div>
-                      <div className="text-[11px] text-yellow-300 mt-1">
-                        lifecycle: {r.campaignLifecycle}
+                      <div className="text-[11px] mt-1">
+                        lifecycle:{" "}
+                        <span
+                          className={`rounded px-1.5 py-0.5 border ${
+                            r.campaignLifecycle === "active"
+                              ? "border-emerald-500/40 bg-emerald-500/15 text-emerald-200"
+                              : r.campaignLifecycle === "scheduled"
+                                ? "border-cyan-500/40 bg-cyan-500/15 text-cyan-200"
+                                : r.campaignLifecycle === "queued"
+                                  ? "border-blue-500/40 bg-blue-500/15 text-blue-200"
+                                  : r.campaignLifecycle === "completed"
+                                    ? "border-purple-500/40 bg-purple-500/15 text-purple-200"
+                                    : "border-amber-500/40 bg-amber-500/15 text-amber-200"
+                          }`}
+                        >
+                          {r.campaignLifecycle === "completed"
+                            ? "expired/completed"
+                            : r.campaignLifecycle}
+                        </span>
                       </div>
                     </td>
                     <td className="p-3 text-xs text-gray-200 space-y-1">

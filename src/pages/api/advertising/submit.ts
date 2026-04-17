@@ -118,6 +118,12 @@ export default async function handler(
       message: "Ad request submitted",
       adId: result.insertedId.toString(),
       requestId: result.insertedId.toString(),
+      lifecycle: "pending_review",
+      nextSteps: [
+        "Your campaign is now in review.",
+        "After approval, it moves to scheduled placement.",
+        "When your scheduled week starts, it appears live in sponsor placements.",
+      ],
     });
   } catch (error) {
     console.error("Error saving ad request:", error);
