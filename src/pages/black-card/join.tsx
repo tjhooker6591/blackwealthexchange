@@ -136,7 +136,17 @@ export default function BlackCardJoinPage() {
             </span>
           </p>
           <div className="mt-2 rounded-lg border border-yellow-500/25 bg-yellow-500/10 px-3 py-2 text-xs text-yellow-100">
-            Membership price charged at checkout: <span className="font-semibold">{tierConfig.priceLabel} {tierConfig.billingModel === "entry_fee" ? "one-time" : "per month"}</span>. Physical card personalization/order step does not charge a second price in this flow.
+            Membership price charged at checkout:{" "}
+            <span className="font-semibold">
+              {tierConfig.priceLabel}{" "}
+              {tierConfig.billingModel === "entry_fee"
+                ? "one-time"
+                : "per month"}
+            </span>
+            . Physical card personalization/order step does not charge a second
+            membership price in this flow. {tierConfig.billingModel === "monthly"
+              ? "Monthly tiers renew on cadence until canceled or ended."
+              : "Entry tier is a one-time membership entry charge."}
           </div>
 
           <ul className="mt-5 space-y-2 text-sm text-white/85">
@@ -146,13 +156,37 @@ export default function BlackCardJoinPage() {
           </ul>
 
           <div className="mt-6 rounded-xl border border-white/10 bg-black/30 p-4 text-sm text-white/80">
-            <div>Step 1: Select membership tier (current page)</div>
-            <div className="mt-1">Step 2: Complete secure payment checkout (membership charge only)</div>
+            <div className="font-semibold text-yellow-200">
+              What happens after you click join
+            </div>
+            <div className="mt-2">Step 1: Select membership tier (current page).</div>
             <div className="mt-1">
-              Step 3: Confirm physical card personalization (print name, no second membership charge)
+              Step 2: Complete secure checkout (this is the membership charge).
             </div>
             <div className="mt-1">
-              Step 4: Physical order enters approval/fulfillment workflow
+              Step 3: Membership status activates after successful checkout.
+            </div>
+            <div className="mt-1">
+              Step 4: Confirm physical card personalization (no second
+              membership charge).
+            </div>
+            <div className="mt-1">
+              Step 5: Use active member benefits and maintain status by billing
+              cadence.
+            </div>
+          </div>
+
+          <div className="mt-5 rounded-lg border border-white/10 bg-black/40 p-3 text-xs text-white/75">
+            <div>Activation: after successful checkout.</div>
+            <div>
+              Renewal: {tierConfig.billingModel === "monthly"
+                ? "monthly for this tier"
+                : "no recurring renewal for this tier"}
+              .
+            </div>
+            <div>
+              Expiration behavior: when membership is inactive/expired, gated
+              benefits pause until reactivation.
             </div>
           </div>
 
@@ -186,8 +220,9 @@ export default function BlackCardJoinPage() {
                 only after you confirm the exact print name below.
               </p>
               <p className="mt-2 rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-xs text-white/75">
-                This step is personalization + fulfillment approval. It is not a second membership price.
-                If a future physical fulfillment fee is introduced, it must be shown explicitly before payment.
+                This step is personalization + fulfillment approval. It is not a
+                second membership price. If a future physical fulfillment fee is
+                introduced, it must be shown explicitly before payment.
               </p>
               <label className="mt-4 block text-sm text-white/80">
                 Name to print on card
