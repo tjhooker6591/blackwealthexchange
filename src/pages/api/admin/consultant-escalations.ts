@@ -62,6 +62,7 @@ export default async function handler(
       }
 
       const now = new Date();
+      const actedBy = String(admin.email || admin.userId || "admin");
       const result = await escalations.findOneAndUpdate(
         { _id: new ObjectId(escalationId) },
         {
@@ -69,7 +70,7 @@ export default async function handler(
             status,
             resolutionNote: resolutionNote || null,
             updatedAt: now,
-            actedBy: String(admin.email || admin.userId || "admin"),
+            actedBy,
             actedAt: now,
           },
         },
@@ -85,6 +86,25 @@ export default async function handler(
         );
       }
 
+      const requestId = result.requestId ? String(result.requestId) : null;
+
+      if (requestId && ObjectId.isValid(requestId)) {
+        const mappedDisposition = status === "closed" ? "resolved" : "escalated";
+        await db.collection("employer_consultant_contact_requests").updateOne(
+          { _id: new ObjectId(requestId) },
+          {
+            $set: {
+              adminDisposition: mappedDisposition,
+              adminDispositionNote:
+                resolutionNote || String(result.escalationNote || "").trim() || null,
+              adminDispositionBy: actedBy,
+              adminDispositionAt: now,
+              updatedAt: now,
+            },
+          },
+        );
+      }
+
       await db.collection("flow_events").insertOne({
         eventType: "consultant_moderation_escalation_updated",
         pageRoute: "/api/admin/consultant-escalations",
@@ -92,9 +112,9 @@ export default async function handler(
         source: "admin_escalations",
         source_variant: status,
         escalationId,
-        requestId: result.requestId || null,
+        requestId,
         note: resolutionNote || null,
-        actedBy: String(admin.email || admin.userId || "admin"),
+        actedBy,
         createdAt: now,
       });
 
@@ -102,7 +122,7 @@ export default async function handler(
         ok: true,
         escalationId,
         status,
-        requestId: result.requestId || null,
+        requestId,
       });
     }
 
