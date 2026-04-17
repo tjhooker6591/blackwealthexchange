@@ -2,7 +2,7 @@ import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image";
 import { useMemo } from "react";
-import { useRouter } from "next/router";
+import type { GetServerSideProps } from "next";
 import { canonicalUrl } from "@/lib/seo";
 
 function s(v: unknown) {
@@ -32,32 +32,19 @@ function safeExternal(v: string) {
   }
 }
 
-function queryValue(router: ReturnType<typeof useRouter>, key: string) {
-  const direct = Array.isArray(router.query[key])
-    ? router.query[key][0]
-    : router.query[key];
+type FeaturedProps = {
+  name: string;
+  tagline: string;
+  img: string;
+  target: string;
+};
 
-  if (typeof direct === "string" && direct.trim()) return direct.trim();
-
-  const asPath = router.asPath || "";
-  const idx = asPath.indexOf("?");
-  if (idx === -1) return "";
-
-  const params = new URLSearchParams(asPath.slice(idx + 1));
-  const fromPath = params.get(key);
-  return fromPath ? fromPath.trim() : "";
-}
-
-export default function FeaturedBusinessPage() {
-  const router = useRouter();
-
-  const name = s(queryValue(router, "name")) || "Featured Business";
-  const tagline = s(queryValue(router, "tagline"));
-  const img = normalizeSponsorImagePath(
-    s(queryValue(router, "img")) || "/images/sponsors/house-draft.jpg",
-  );
-  const target = safeExternal(s(queryValue(router, "target")));
-
+export default function FeaturedBusinessPage({
+  name,
+  tagline,
+  img,
+  target,
+}: FeaturedProps) {
   const title = `${name} | Featured Business | Black Wealth Exchange`;
   const canonical = useMemo(
     () => canonicalUrl(`/featured?name=${encodeURIComponent(name)}`),
@@ -124,3 +111,29 @@ export default function FeaturedBusinessPage() {
     </main>
   );
 }
+
+export const getServerSideProps: GetServerSideProps<FeaturedProps> = async (
+  ctx,
+) => {
+  const q = ctx.query || {};
+  const pick = (key: string) => {
+    const v = Array.isArray(q[key]) ? q[key][0] : q[key];
+    return typeof v === "string" ? v : "";
+  };
+
+  const name = s(pick("name")) || "Featured Business";
+  const tagline = s(pick("tagline"));
+  const img = normalizeSponsorImagePath(
+    s(pick("img")) || "/images/sponsors/house-draft.jpg",
+  );
+  const target = safeExternal(s(pick("target")));
+
+  return {
+    props: {
+      name,
+      tagline,
+      img,
+      target,
+    },
+  };
+};
