@@ -27,6 +27,9 @@ const ProductDetailPage = () => {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
+  const [messageText, setMessageText] = useState("");
+  const [messageState, setMessageState] = useState<string | null>(null);
+  const [sendingMessage, setSendingMessage] = useState(false);
 
   const trackMarketplaceProductEvent = (
     eventType: string,
@@ -102,6 +105,51 @@ const ProductDetailPage = () => {
     fetchRelated();
   }, [product]);
 
+  async function handleContactSeller() {
+    if (!product?._id || !product?.seller?.id) {
+      setMessageState("Seller contact is unavailable for this product.");
+      return;
+    }
+
+    const text = messageText.trim();
+    if (text.length < 8) {
+      setMessageState("Please enter at least 8 characters.");
+      return;
+    }
+
+    try {
+      setSendingMessage(true);
+      setMessageState(null);
+
+      const res = await fetch("/api/marketplace/contact-seller", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          productId: product._id,
+          sellerId: product.seller.id,
+          message: text,
+        }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setMessageState(data?.error || "Could not send message right now.");
+        return;
+      }
+
+      setMessageText("");
+      setMessageState(
+        data?.message ||
+          "Message sent. BWE will route this to the seller.",
+      );
+    } catch {
+      setMessageState("Could not send message right now.");
+    } finally {
+      setSendingMessage(false);
+    }
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-black text-white text-center py-20">
@@ -158,12 +206,12 @@ const ProductDetailPage = () => {
                 label="Buy Now"
               />
 
-              <a
-                href={`mailto:support@blackwealthexchange.com?subject=${encodeURIComponent(`Marketplace question: ${product.name}`)}`}
+              <Link
+                href="/marketplace/my-orders"
                 className="block w-full py-2.5 px-4 border border-gold text-gold font-semibold rounded-lg hover:bg-gold hover:text-black transition text-center"
               >
-                Questions Before Purchase
-              </a>
+                View My Orders
+              </Link>
             </div>
 
             <div className="mt-6 rounded-lg border border-white/10 bg-white/5 p-4 text-sm text-gray-300 space-y-3">
@@ -172,15 +220,48 @@ const ProductDetailPage = () => {
                 {product?.seller?.name || "Verified BWE Marketplace Seller"}
               </p>
               <p>
-                <span className="font-semibold text-white">How fulfillment works:</span>{" "}
+                <span className="font-semibold text-white">
+                  How fulfillment works:
+                </span>{" "}
                 Black Wealth Exchange processes payment and routes your order to
                 the seller for fulfillment.
               </p>
               <p>
-                <span className="font-semibold text-white">Shipping responsibility:</span>{" "}
+                <span className="font-semibold text-white">
+                  Shipping responsibility:
+                </span>{" "}
                 The seller is responsible for packaging, shipping, delivery
                 timing, and post-purchase shipping updates.
               </p>
+              <p>
+                <span className="font-semibold text-white">Need to contact seller?</span>{" "}
+                Use the secure marketplace contact form below. BWE mediates the
+                channel, no direct personal contact details are exposed.
+              </p>
+            </div>
+
+            <div className="mt-4 rounded-lg border border-white/10 bg-black/30 p-4">
+              <label className="block text-sm font-semibold text-gold mb-2">
+                Message seller (mediated by BWE)
+              </label>
+              <textarea
+                value={messageText}
+                onChange={(e) => setMessageText(e.target.value)}
+                rows={3}
+                placeholder="Ask about shipping, product details, or availability"
+                className="w-full rounded-lg border border-white/20 bg-black/40 p-2 text-sm text-white focus:outline-none focus:border-gold"
+              />
+              <button
+                type="button"
+                onClick={handleContactSeller}
+                disabled={sendingMessage}
+                className="mt-3 w-full rounded-lg border border-gold px-3 py-2 text-sm font-semibold text-gold hover:bg-gold hover:text-black transition disabled:opacity-60"
+              >
+                {sendingMessage ? "Sending..." : "Send Message"}
+              </button>
+              {messageState ? (
+                <p className="mt-2 text-xs text-gray-300">{messageState}</p>
+              ) : null}
             </div>
           </div>
         </div>
@@ -233,7 +314,6 @@ const ProductDetailPage = () => {
           </div>
         </div>
       )}
-
     </div>
   );
 };

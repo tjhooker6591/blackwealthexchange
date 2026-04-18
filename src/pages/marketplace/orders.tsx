@@ -9,6 +9,10 @@ type Order = {
   orderState?: string;
   productName?: string;
   buyerEmail?: string;
+  paymentState?: string;
+  fulfillmentState?: string;
+  trackingNumber?: string | null;
+  trackingCarrier?: string | null;
 };
 
 type StripeStatus = {
@@ -40,17 +44,38 @@ export default function MarketplaceOrdersPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [stripeStatus, setStripeStatus] = useState<StripeStatus | null>(null);
+  const [fulfillmentStateById, setFulfillmentStateById] = useState<Record<string, string>>({});
+  const [trackingNumberById, setTrackingNumberById] = useState<Record<string, string>>({});
+  const [trackingCarrierById, setTrackingCarrierById] = useState<Record<string, string>>({});
+  const [savingOrderId, setSavingOrderId] = useState<string | null>(null);
+
+  async function loadOrders() {
+    const res = await fetch("/api/marketplace/get-orders", {
+      credentials: "include",
+      cache: "no-store",
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data?.error || "Failed to load orders");
+    const loaded = Array.isArray(data?.orders) ? data.orders : [];
+    setOrders(loaded);
+
+    const initialState: Record<string, string> = {};
+    const initialTracking: Record<string, string> = {};
+    const initialCarrier: Record<string, string> = {};
+    for (const o of loaded) {
+      initialState[o._id] = String(o.fulfillmentState || "processing");
+      initialTracking[o._id] = String(o.trackingNumber || "");
+      initialCarrier[o._id] = String(o.trackingCarrier || "");
+    }
+    setFulfillmentStateById(initialState);
+    setTrackingNumberById(initialTracking);
+    setTrackingCarrierById(initialCarrier);
+  }
 
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch("/api/marketplace/get-orders", {
-          credentials: "include",
-          cache: "no-store",
-        });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok) throw new Error(data?.error || "Failed to load orders");
-        setOrders(Array.isArray(data?.orders) ? data.orders : []);
+        await loadOrders();
 
         const stripeRes = await fetch("/api/stripe/account-status", {
           credentials: "include",
@@ -66,14 +91,38 @@ export default function MarketplaceOrdersPage() {
     })();
   }, []);
 
+  async function saveFulfillment(orderId: string) {
+    try {
+      setSavingOrderId(orderId);
+      const res = await fetch("/api/marketplace/update-order-fulfillment", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          orderId,
+          fulfillmentState: fulfillmentStateById[orderId] || "processing",
+          trackingNumber: trackingNumberById[orderId] || "",
+          trackingCarrier: trackingCarrierById[orderId] || "",
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.error || "Failed to update fulfillment");
+      await loadOrders();
+    } catch (e: any) {
+      alert(e?.message || "Failed to update fulfillment");
+    } finally {
+      setSavingOrderId(null);
+    }
+  }
+
   const actionableOrders = orders.filter((o) => {
     const s = normalizeOrderStatus(o);
     return ["paid", "processing", "pending", "pending_fulfillment"].includes(s);
   });
 
   const pendingFulfillment = orders.filter((o) => {
-    const s = normalizeOrderStatus(o);
-    return ["paid", "processing", "pending_fulfillment"].includes(s);
+    const s = String(o.fulfillmentState || "processing").toLowerCase();
+    return ["processing", "pending", "pending_fulfillment", "paid"].includes(s);
   });
 
   const payoutReady =
@@ -84,7 +133,7 @@ export default function MarketplaceOrdersPage() {
 
   return (
     <main className="min-h-screen bg-black p-6 text-white">
-      <div className="mx-auto max-w-4xl">
+      <div className="mx-auto max-w-5xl">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-black text-[#D4AF37]">Seller Orders</h1>
           <Link
@@ -134,18 +183,19 @@ export default function MarketplaceOrdersPage() {
                   <th className="p-3">Buyer</th>
                   <th className="p-3">Status</th>
                   <th className="p-3">Total</th>
+                  <th className="p-3">Fulfillment</th>
                 </tr>
               </thead>
               <tbody>
                 {orders.length === 0 ? (
                   <tr>
-                    <td className="p-3 text-white/60" colSpan={5}>
+                    <td className="p-3 text-white/60" colSpan={6}>
                       No orders yet.
                     </td>
                   </tr>
                 ) : (
                   orders.map((o) => (
-                    <tr key={o._id} className="border-t border-white/10">
+                    <tr key={o._id} className="border-t border-white/10 align-top">
                       <td className="p-3">
                         {o.createdAt
                           ? new Date(o.createdAt).toLocaleString()
@@ -162,6 +212,53 @@ export default function MarketplaceOrdersPage() {
                       </td>
                       <td className="p-3">
                         ${Number(o.totalPrice || 0).toFixed(2)}
+                      </td>
+                      <td className="p-3">
+                        <div className="space-y-2 min-w-[220px]">
+                          <select
+                            value={fulfillmentStateById[o._id] || "processing"}
+                            onChange={(e) =>
+                              setFulfillmentStateById((prev) => ({
+                                ...prev,
+                                [o._id]: e.target.value,
+                              }))
+                            }
+                            className="w-full rounded border border-white/20 bg-black/40 px-2 py-1"
+                          >
+                            <option value="processing">processing</option>
+                            <option value="fulfilled">fulfilled</option>
+                            <option value="shipped">shipped</option>
+                          </select>
+                          <input
+                            value={trackingCarrierById[o._id] || ""}
+                            onChange={(e) =>
+                              setTrackingCarrierById((prev) => ({
+                                ...prev,
+                                [o._id]: e.target.value,
+                              }))
+                            }
+                            placeholder="Tracking carrier (optional)"
+                            className="w-full rounded border border-white/20 bg-black/40 px-2 py-1"
+                          />
+                          <input
+                            value={trackingNumberById[o._id] || ""}
+                            onChange={(e) =>
+                              setTrackingNumberById((prev) => ({
+                                ...prev,
+                                [o._id]: e.target.value,
+                              }))
+                            }
+                            placeholder="Tracking number (optional)"
+                            className="w-full rounded border border-white/20 bg-black/40 px-2 py-1"
+                          />
+                          <button
+                            onClick={() => saveFulfillment(o._id)}
+                            disabled={savingOrderId === o._id}
+                            className="w-full rounded border border-[#D4AF37] px-2 py-1 text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black disabled:opacity-60"
+                          >
+                            {savingOrderId === o._id ? "Saving..." : "Update fulfillment"}
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   ))

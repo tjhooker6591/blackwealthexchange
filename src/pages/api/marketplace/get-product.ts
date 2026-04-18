@@ -33,12 +33,12 @@ export default async function handler(
     let seller: any = null;
 
     if (rawSellerId) {
-      const sellerOr = [{ userId: rawSellerId }, { _id: rawSellerId }];
+      const sellerOr: any[] = [{ userId: rawSellerId }];
       if (ObjectId.isValid(rawSellerId)) {
-        sellerOr.push({ _id: new ObjectId(rawSellerId) } as any);
+        sellerOr.push({ _id: new ObjectId(rawSellerId) });
       }
 
-      seller = await db.collection("sellers").findOne({ $or: sellerOr });
+      seller = await db.collection("sellers").findOne({ $or: sellerOr } as any);
     }
 
     return res.status(200).json({

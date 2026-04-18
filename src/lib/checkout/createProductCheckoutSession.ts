@@ -1,7 +1,10 @@
 import type { NextApiRequest } from "next";
 import Stripe from "stripe";
 import { ObjectId, type Db } from "mongodb";
+import { parse } from "cookie";
+import jwt from "jsonwebtoken";
 import { calculateShipping, type CartItem } from "@/lib/shipping";
+import { getJwtSecret } from "@/lib/env";
 import {
   ensureApiRateLimitIndexes,
   getClientIp,
@@ -32,6 +35,24 @@ function normalizeObjectId(value: unknown): ObjectId | null {
 
 function isProd() {
   return process.env.NODE_ENV === "production";
+}
+
+function resolveBuyerFromRequest(req: NextApiRequest): {
+  buyerUserId: string | null;
+  buyerEmail: string | null;
+} {
+  try {
+    const cookies = parse(req.headers.cookie || "");
+    const token = cookies.session_token || cookies.token;
+    if (!token) return { buyerUserId: null, buyerEmail: null };
+
+    const payload = jwt.verify(token, getJwtSecret()) as any;
+    const buyerUserId = String(payload?.userId || "").trim() || null;
+    const buyerEmail = String(payload?.email || "").trim().toLowerCase() || null;
+    return { buyerUserId, buyerEmail };
+  } catch {
+    return { buyerUserId: null, buyerEmail: null };
+  }
 }
 
 function getFrontendUrl(req: NextApiRequest) {
@@ -349,6 +370,7 @@ export async function createProductCheckoutSessionCore({
 
   const orderObjectId = new ObjectId();
   const orderId = orderObjectId.toString();
+  const { buyerUserId, buyerEmail } = resolveBuyerFromRequest(req);
 
   const subtotalCents = unitAmountCents;
   const shippingCents = shippingCostCents;
@@ -373,6 +395,8 @@ export async function createProductCheckoutSessionCore({
         productId: product._id,
         sellerId: seller._id,
         stripeAccountId,
+        buyerUserId,
+        buyerEmail,
         currency: "usd",
 
         subtotalCents,

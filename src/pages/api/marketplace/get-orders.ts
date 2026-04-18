@@ -53,7 +53,7 @@ export default async function handler(
               { _id: { $in: productIds } },
               { _id: { $in: objectProductIds } },
             ],
-          })
+          } as any)
           .toArray()
       : [];
 
@@ -70,6 +70,14 @@ export default async function handler(
         o?.totalCents ?? o?.totalPrice ?? o?.total ?? 0,
       );
 
+      const paymentState = String(o?.paymentStatus || "pending").toLowerCase();
+      const fulfillmentState = String(
+        o?.fulfillmentStatus ||
+          (["shipped", "fulfilled"].includes(String(o?.status || "").toLowerCase())
+            ? String(o?.status).toLowerCase()
+            : "processing"),
+      ).toLowerCase();
+
       return {
         ...o,
         productName:
@@ -77,6 +85,10 @@ export default async function handler(
         totalCents,
         totalPrice: totalCents / 100,
         orderState: o?.orderState || null,
+        paymentState,
+        fulfillmentState,
+        trackingNumber: o?.trackingNumber || null,
+        trackingCarrier: o?.trackingCarrier || null,
         status: o?.orderState || o?.status || o?.paymentStatus || "pending",
       };
     });

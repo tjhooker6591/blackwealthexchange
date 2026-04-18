@@ -639,7 +639,8 @@ export default async function webhookHandler(
     );
 
     if (metaType === "product") {
-      const orderId = idToString(orderRecord?._id) || asString(mergedMeta.orderId);
+      const orderId =
+        idToString(orderRecord?._id) || asString(mergedMeta.orderId);
       const productId =
         idToString(orderRecord?.productId) ||
         asString(mergedMeta.itemId || existingPayment?.itemId);
@@ -667,14 +668,17 @@ export default async function webhookHandler(
           source: "stripe_webhook",
           source_variant: "missing_order_or_product_linkage",
           stripeSessionId,
-          paymentIntentId: paymentIntentId || existingPayment?.paymentIntentId || null,
+          paymentIntentId:
+            paymentIntentId || existingPayment?.paymentIntentId || null,
           orderId: orderId || null,
           productId: productId || null,
           createdAt: now,
         });
       }
 
-      const orderState = asString((orderRecord as any)?.orderState || (orderRecord as any)?.status);
+      const orderState = asString(
+        (orderRecord as any)?.orderState || (orderRecord as any)?.status,
+      );
       if (
         orderState &&
         ![
@@ -1344,10 +1348,9 @@ export default async function webhookHandler(
       let fulfillmentMethod = "order_id_metadata";
 
       if (!targetOrderId) {
-        const orderBySession = await db.collection("orders").findOne(
-          { sessionId: stripeSessionId },
-          { projection: { _id: 1 } },
-        );
+        const orderBySession = await db
+          .collection("orders")
+          .findOne({ sessionId: stripeSessionId }, { projection: { _id: 1 } });
 
         if (orderBySession?._id) {
           targetOrderId = idToString(orderBySession._id);
@@ -1380,7 +1383,33 @@ export default async function webhookHandler(
           createdAt: now,
         });
       } else {
-        const fulfillment = await dbFulfillOrder(targetOrderId, paymentIntentId);
+        const webhookBuyerEmail = asString(
+          (session as any)?.customer_details?.email || (session as any)?.customer_email,
+        ).toLowerCase();
+        const webhookBuyerName = asString((session as any)?.customer_details?.name);
+
+        if (webhookBuyerEmail || webhookBuyerName) {
+          const orderOid = ObjectId.isValid(targetOrderId)
+            ? new ObjectId(targetOrderId)
+            : null;
+          if (orderOid) {
+            await db.collection("orders").updateOne(
+              { _id: orderOid },
+              {
+                $set: {
+                  ...(webhookBuyerEmail ? { buyerEmail: webhookBuyerEmail } : {}),
+                  ...(webhookBuyerName ? { buyerName: webhookBuyerName } : {}),
+                  updatedAt: now,
+                },
+              },
+            );
+          }
+        }
+
+        const fulfillment = await dbFulfillOrder(
+          targetOrderId,
+          paymentIntentId,
+        );
 
         if (!fulfillment.ok) {
           const eventTypeByCode: Record<string, string> = {
