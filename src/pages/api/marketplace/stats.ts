@@ -38,16 +38,21 @@ export default async function handler(
           $group: {
             _id: null,
             count: { $sum: 1 },
-            revenue: { $sum: { $ifNull: ["$totalPrice", "$total", 0] } },
+            revenueCents: {
+              $sum: { $ifNull: ["$totalCents", { $ifNull: ["$totalPrice", "$total"] }] },
+            },
           },
         },
       ])
       .toArray();
 
+    const revenueCents = Number(orderStats?.revenueCents || 0);
+
     return res.status(200).json({
       products,
       orders: Number(orderStats?.count || 0),
-      revenue: Number(orderStats?.revenue || 0),
+      revenue: revenueCents / 100,
+      revenueCents,
     });
   } catch (err) {
     console.error("Stats: Database error:", err);

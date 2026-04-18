@@ -66,14 +66,16 @@ export default async function handler(
 
     const orders = ordersRaw.map((o) => {
       const productId = o?.productId ? String(o.productId) : "";
+      const totalCents = Number(o?.totalCents ?? o?.totalPrice ?? o?.total ?? 0);
+
       return {
         ...o,
         productName:
-          o?.productName ||
-          productNameById.get(productId) ||
-          "Unknown product",
-        totalPrice: Number(o?.totalPrice ?? o?.total ?? 0),
-        status: o?.status || o?.paymentStatus || "pending",
+          o?.productName || productNameById.get(productId) || "Unknown product",
+        totalCents,
+        totalPrice: totalCents / 100,
+        orderState: o?.orderState || null,
+        status: o?.orderState || o?.status || o?.paymentStatus || "pending",
       };
     });
 

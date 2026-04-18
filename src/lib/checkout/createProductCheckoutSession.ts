@@ -204,7 +204,12 @@ export async function createProductCheckoutSessionCore({
 
   await ensureApiRateLimitIndexes(db);
   const ip = getClientIp(req);
-  const ipLimit = await hitApiRateLimit(db, `checkout:product:ip:${ip}`, 40, 10);
+  const ipLimit = await hitApiRateLimit(
+    db,
+    `checkout:product:ip:${ip}`,
+    40,
+    10,
+  );
   if (ipLimit.blocked) {
     return {
       status: 429,
@@ -221,7 +226,8 @@ export async function createProductCheckoutSessionCore({
 
   let product: any | null = null;
   if (pid) product = await productsCol.findOne({ _id: pid });
-  if (!product) product = await productsCol.findOne({ _id: normalizedProductId });
+  if (!product)
+    product = await productsCol.findOne({ _id: normalizedProductId });
 
   if (!product) {
     return {
@@ -247,7 +253,8 @@ export async function createProductCheckoutSessionCore({
     normalizeObjectId(rawSellerId) ||
     normalizeObjectId(typeof rawSellerId === "string" ? rawSellerId : "");
 
-  if (sellerObjectId) seller = await sellersCol.findOne({ _id: sellerObjectId });
+  if (sellerObjectId)
+    seller = await sellersCol.findOne({ _id: sellerObjectId });
   if (!seller && typeof rawSellerId === "string") {
     seller = await sellersCol.findOne({ _id: rawSellerId });
   }
@@ -288,7 +295,10 @@ export async function createProductCheckoutSessionCore({
   if (Number.isFinite(stockRaw) && stockRaw <= 0) {
     return {
       status: 409,
-      body: { code: "OUT_OF_STOCK", message: "This product is currently out of stock." },
+      body: {
+        code: "OUT_OF_STOCK",
+        message: "This product is currently out of stock.",
+      },
     };
   }
 
@@ -340,24 +350,42 @@ export async function createProductCheckoutSessionCore({
   const orderObjectId = new ObjectId();
   const orderId = orderObjectId.toString();
 
+  const subtotalCents = unitAmountCents;
+  const shippingCents = shippingCostCents;
+  const totalCents = subtotalCents + shippingCents;
+
   await db.collection("orders").updateOne(
     { _id: orderObjectId },
     {
       $setOnInsert: {
         _id: orderObjectId,
         createdAt: new Date(),
+        canonicalSchemaVersion: 1,
+        orderState: "checkout_pending",
         status: "pending_checkout",
         paymentStatus: "pending",
+        fulfillmentStatus: "pending",
+        payoutStatus: "pending",
         paid: false,
       },
       $set: {
+        canonicalSchemaVersion: 1,
         productId: product._id,
         sellerId: seller._id,
         stripeAccountId,
-        subtotal: unitAmountCents,
-        shipping: shippingCostCents,
+        currency: "usd",
+
+        subtotalCents,
+        shippingCents,
+        totalCents,
+
+        // legacy mirrors (kept for existing UI compatibility)
+        subtotal: subtotalCents,
+        shipping: shippingCents,
+        total: totalCents,
+        totalPrice: totalCents,
+
         applicationFee,
-        total: unitAmountCents + shippingCostCents,
         payoutMode,
         needsManualSellerPayout: false,
         updatedAt: new Date(),
