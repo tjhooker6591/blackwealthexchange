@@ -30,8 +30,6 @@ export default async function handler(
 
   try {
     const client = await clientPromise;
-    const db = client.db(getMongoDbName());
-    const collection = db.collection("products");
 
     const filter: any = {};
 
@@ -75,15 +73,54 @@ export default async function handler(
             ? { price: -1, _id: -1 }
             : { _id: -1 };
 
-    const total = await collection.countDocuments(filter);
-    const products = await collection
-      .find(filter)
-      .sort(sortSpec)
-      .skip(skip)
-      .limit(limitNum)
-      .toArray();
+    const primaryDbName = getMongoDbName();
+    const primaryCollection = client.db(primaryDbName).collection("products");
 
-    return res.status(200).json({ products, total });
+    const queryProducts = async (collection: any) => {
+      const total = await collection.countDocuments(filter);
+      const products = await collection
+        .find(filter)
+        .sort(sortSpec)
+        .skip(skip)
+        .limit(limitNum)
+        .toArray();
+      return { total, products };
+    };
+
+    let usedDbName = primaryDbName;
+    let result = await queryProducts(primaryCollection);
+
+    // Runtime safety: if env points to a DB with no marketplace rows,
+    // fallback to canonical marketplace DB so real products still render.
+    if (
+      result.total === 0 &&
+      primaryDbName !== "bwes-cluster" &&
+      sellerView !== "true"
+    ) {
+      const fallbackCollection = client.db("bwes-cluster").collection("products");
+      const fallbackResult = await queryProducts(fallbackCollection);
+      if (fallbackResult.total > 0) {
+        usedDbName = "bwes-cluster";
+        result = fallbackResult;
+      }
+    }
+
+    if (String(req.query.debug || "") === "1") {
+      return res.status(200).json({
+        products: result.products,
+        total: result.total,
+        _debug: {
+          filter,
+          primaryDbName,
+          usedDbName,
+          sortKey,
+          pageNum,
+          limitNum,
+        },
+      });
+    }
+
+    return res.status(200).json({ products: result.products, total: result.total });
   } catch (error) {
     console.error("Error fetching products:", error);
     return res.status(500).json({ error: "Failed to fetch products" });
