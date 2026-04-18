@@ -51,7 +51,7 @@ export default function PaymentSuccessPage() {
 
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
-                href="/shop"
+                href="/marketplace"
                 className="inline-flex items-center rounded-md bg-yellow-500 px-4 py-2 font-semibold text-black hover:bg-yellow-400 transition"
               >
                 Continue Shopping
