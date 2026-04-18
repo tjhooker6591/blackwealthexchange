@@ -9,6 +9,7 @@ type Product = {
   name: string;
   price: number;
   status: string;
+  stockQuantity?: number;
 };
 
 export default function ManageProducts() {
@@ -16,6 +17,7 @@ export default function ManageProducts() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [sellerReady, setSellerReady] = useState<boolean | null>(null);
+  const [pendingOrderCount, setPendingOrderCount] = useState(0);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -50,6 +52,18 @@ export default function ManageProducts() {
           { withCredentials: true },
         );
         setProducts(Array.isArray(res.data?.products) ? res.data.products : []);
+
+        const ordersRes = await axios.get(`/api/marketplace/get-orders`, {
+          withCredentials: true,
+        });
+        const orders = Array.isArray(ordersRes.data?.orders)
+          ? ordersRes.data.orders
+          : [];
+        const pending = orders.filter((o: any) => {
+          const status = String(o?.orderState || o?.status || "pending").toLowerCase();
+          return ["paid", "pending", "pending_fulfillment", "processing"].includes(status);
+        }).length;
+        setPendingOrderCount(pending);
       } catch (err: any) {
         console.error("Failed to load products", err);
         setError(err?.response?.data?.error || "Failed to load products");
@@ -74,6 +88,10 @@ export default function ManageProducts() {
     }
   };
 
+  const outOfStockCount = products.filter(
+    (p) => Number(p?.stockQuantity ?? 0) <= 0,
+  ).length;
+
   return (
     <div className="p-8 bg-black text-white min-h-screen">
       <div className="mx-auto max-w-5xl">
@@ -97,18 +115,33 @@ export default function ManageProducts() {
           </div>
         </div>
 
-        {sellerReady === false ? (
-          <div className="mb-5 rounded border border-yellow-500/40 bg-yellow-900/20 p-3 text-sm text-yellow-100">
-            Payout setup is not complete yet. You can still draft products, but
-            complete payout setup before selling.
-            <Link
-              href="/marketplace/become-a-seller?refresh=1"
-              className="ml-2 underline"
-            >
-              Finish payout setup
-            </Link>
-          </div>
-        ) : null}
+        <div className="mb-5 rounded border border-yellow-500/40 bg-yellow-900/20 p-3 text-sm text-yellow-100">
+          <p className="font-semibold">Action Required</p>
+          <ul className="mt-2 list-disc pl-5 space-y-1">
+            <li>
+              New or pending fulfillment orders: <span className="font-semibold">{pendingOrderCount}</span>
+            </li>
+            <li>
+              Out-of-stock products: <span className="font-semibold">{outOfStockCount}</span>
+            </li>
+            <li>
+              Payout status:{" "}
+              {sellerReady === false ? (
+                <>
+                  <span className="font-semibold">Setup required</span>
+                  <Link
+                    href="/marketplace/become-a-seller?refresh=1"
+                    className="ml-2 underline"
+                  >
+                    Finish payout setup
+                  </Link>
+                </>
+              ) : (
+                <span className="font-semibold text-emerald-300">Ready</span>
+              )}
+            </li>
+          </ul>
+        </div>
 
         {loading ? (
           <p>Loading your products...</p>
@@ -145,8 +178,14 @@ export default function ManageProducts() {
                 <div>
                   <h2 className="text-lg text-gold">{product.name}</h2>
                   <p>${Number(product.price || 0).toFixed(2)}</p>
+                  <p className="text-sm text-gray-400">Status: {product.status}</p>
                   <p className="text-sm text-gray-400">
-                    Status: {product.status}
+                    Stock: {Number(product.stockQuantity ?? 0)}
+                    {Number(product.stockQuantity ?? 0) <= 0 ? (
+                      <span className="ml-2 rounded bg-red-500/20 px-2 py-0.5 text-xs text-red-300 border border-red-400/40">
+                        Out of stock, update inventory
+                      </span>
+                    ) : null}
                   </p>
                 </div>
                 <div className="space-x-3">

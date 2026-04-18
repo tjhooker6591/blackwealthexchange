@@ -29,7 +29,31 @@ export default async function handler(
       return res.status(404).json({ error: "Product not found." });
     }
 
-    return res.status(200).json({ product });
+    const rawSellerId = String(product?.sellerId || "").trim();
+    let seller: any = null;
+
+    if (rawSellerId) {
+      const sellerOr = [{ userId: rawSellerId }, { _id: rawSellerId }];
+      if (ObjectId.isValid(rawSellerId)) {
+        sellerOr.push({ _id: new ObjectId(rawSellerId) } as any);
+      }
+
+      seller = await db.collection("sellers").findOne({ $or: sellerOr });
+    }
+
+    return res.status(200).json({
+      product: {
+        ...product,
+        seller: {
+          id: rawSellerId || null,
+          name:
+            seller?.storeName ||
+            seller?.businessName ||
+            seller?.ownerName ||
+            "Verified BWE Marketplace Seller",
+        },
+      },
+    });
   } catch (error) {
     console.error("Error fetching product:", error);
     return res.status(500).json({ error: "Internal Server Error" });

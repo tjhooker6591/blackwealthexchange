@@ -14,6 +14,10 @@ interface Product {
   price: number;
   category: string;
   imageUrl?: string;
+  seller?: {
+    id?: string | null;
+    name?: string;
+  };
 }
 
 const ProductDetailPage = () => {
@@ -22,7 +26,6 @@ const ProductDetailPage = () => {
 
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
-  const [showModal, setShowModal] = useState(false);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
 
   const trackMarketplaceProductEvent = (
@@ -155,19 +158,28 @@ const ProductDetailPage = () => {
                 label="Buy Now"
               />
 
-              <button
-                onClick={() => setShowModal(true)}
-                className="w-full py-2.5 px-4 border border-gold text-gold font-semibold rounded-lg hover:bg-gold hover:text-black transition"
+              <a
+                href={`mailto:support@blackwealthexchange.com?subject=${encodeURIComponent(`Marketplace question: ${product.name}`)}`}
+                className="block w-full py-2.5 px-4 border border-gold text-gold font-semibold rounded-lg hover:bg-gold hover:text-black transition text-center"
               >
-                Contact Seller
-              </button>
+                Questions Before Purchase
+              </a>
             </div>
 
-            <div className="mt-6 rounded-lg border border-white/10 bg-white/5 p-4 text-sm text-gray-300">
+            <div className="mt-6 rounded-lg border border-white/10 bg-white/5 p-4 text-sm text-gray-300 space-y-3">
               <p>
-                You do not need an account to purchase. If checkout is
-                temporarily unavailable for this product, please try again
-                shortly or use Contact Seller for more information.
+                <span className="font-semibold text-white">Sold by:</span>{" "}
+                {product?.seller?.name || "Verified BWE Marketplace Seller"}
+              </p>
+              <p>
+                <span className="font-semibold text-white">How fulfillment works:</span>{" "}
+                Black Wealth Exchange processes payment and routes your order to
+                the seller for fulfillment.
+              </p>
+              <p>
+                <span className="font-semibold text-white">Shipping responsibility:</span>{" "}
+                The seller is responsible for packaging, shipping, delivery
+                timing, and post-purchase shipping updates.
               </p>
             </div>
           </div>
@@ -222,27 +234,6 @@ const ProductDetailPage = () => {
         </div>
       )}
 
-      {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/80 z-50 px-4">
-          <div className="bg-gray-900 border border-gold text-white rounded-xl p-6 max-w-md w-full shadow-lg">
-            <h2 className="text-xl font-bold text-gold mb-4 text-center">
-              Contact the Seller
-            </h2>
-
-            <p className="text-gray-300 mb-4 text-sm text-center">
-              This is a placeholder message. In the future, this can show the
-              seller’s contact email, messaging link, or seller profile.
-            </p>
-
-            <button
-              onClick={() => setShowModal(false)}
-              className="w-full mt-2 bg-gold text-black py-2 rounded-lg font-semibold hover:bg-yellow-500 transition"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

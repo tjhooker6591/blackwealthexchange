@@ -472,6 +472,46 @@ export default function SellerDashboard() {
           ) : null}
         </div>
 
+        <div className="rounded-2xl border border-yellow-500/25 bg-yellow-500/10 p-4 shadow-xl sm:p-5">
+          <h2 className="text-lg font-bold text-gold">Action Required</h2>
+          <ul className="mt-2 space-y-2 text-sm text-white/85">
+            <li>
+              New order queue: <span className="font-semibold text-white">{stats.orders}</span>{" "}
+              <Link href="/marketplace/orders" className="ml-2 underline text-gold">
+                review now
+              </Link>
+            </li>
+            <li>
+              Pending fulfillment: <span className="font-semibold text-white">Check orders marked pending/paid/processing</span>{" "}
+              <Link href="/marketplace/orders" className="ml-2 underline text-gold">
+                open orders
+              </Link>
+            </li>
+            <li>
+              Payout status:{" "}
+              {payoutReady ? (
+                <span className="font-semibold text-emerald-300">Ready</span>
+              ) : (
+                <>
+                  <span className="font-semibold text-yellow-200">Setup required</span>
+                  <Link
+                    href="/marketplace/become-a-seller?refresh=1"
+                    className="ml-2 underline text-gold"
+                  >
+                    finish setup
+                  </Link>
+                </>
+              )}
+            </li>
+            <li>
+              Out-of-stock warnings: <span className="font-semibold text-white">Review inventory on product list</span>{" "}
+              <Link href="/dashboard/seller/products" className="ml-2 underline text-gold">
+                manage stock
+              </Link>
+            </li>
+          </ul>
+        </div>
+
         {/* Quick Actions */}
         <div className="grid gap-3 md:grid-cols-2 md:gap-6">
           <ActionCard
