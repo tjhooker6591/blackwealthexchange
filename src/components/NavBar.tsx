@@ -80,6 +80,13 @@ export default function NavBar() {
           </Link>
 
           <Link
+            href="/marketplace"
+            className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 transition-colors hover:bg-white/5 hover:text-[#D4AF37]"
+          >
+            Marketplace
+          </Link>
+
+          <Link
             href="/black-student-opportunities"
             className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 transition-colors hover:bg-white/5 hover:text-[#D4AF37]"
           >
@@ -272,6 +279,14 @@ export default function NavBar() {
               onClick={() => handleMobileNav()}
             >
               Learn
+            </Link>
+
+            <Link
+              href="/marketplace"
+              className="block rounded-xl px-3 py-2.5 font-medium text-white/85 transition-colors hover:bg-white/[0.04] hover:text-[#D4AF37]"
+              onClick={() => handleMobileNav()}
+            >
+              Marketplace
             </Link>
 
             <Link

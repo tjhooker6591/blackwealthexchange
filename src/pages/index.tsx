@@ -505,7 +505,7 @@ export default function Home() {
 
     if (v === "shopping") {
       return router.push({
-        pathname: "/shop",
+        pathname: "/marketplace",
         query: q
           ? { q, search: q, ai: ai ? "1" : "0" }
           : { ai: ai ? "1" : "0" },
@@ -553,7 +553,7 @@ export default function Home() {
       ctaLabel: trigger,
       destination:
         vertical === "shopping"
-          ? "/shop"
+          ? "/marketplace"
           : vertical === "news"
             ? "/news"
             : "/search-results",
@@ -1171,7 +1171,7 @@ export default function Home() {
             What BWE helps you do
           </h2>
 
-          <div className="mt-3 grid gap-3 md:grid-cols-3">
+          <div className="mt-3 grid gap-3 md:grid-cols-4">
             <article className="rounded-2xl border border-white/10 bg-black/30 p-4">
               <h3 className="text-base font-extrabold text-white">
                 Businesses
@@ -1184,6 +1184,21 @@ export default function Home() {
                 className="mt-3 inline-flex rounded-xl border border-white/20 bg-white/5 px-3.5 py-2 text-sm font-bold text-white/85 hover:bg-white/10"
               >
                 Browse Directory
+              </Link>
+            </article>
+
+            <article className="rounded-2xl border border-[#D4AF37]/30 bg-black/30 p-4">
+              <h3 className="text-base font-extrabold text-white">
+                Marketplace
+              </h3>
+              <p className="mt-1 text-sm text-white/70">
+                Shop curated products from independent Black-owned sellers.
+              </p>
+              <Link
+                href="/marketplace"
+                className="mt-3 inline-flex rounded-xl border border-[#D4AF37]/40 bg-[#D4AF37]/12 px-3.5 py-2 text-sm font-bold text-[#F1D57A] hover:bg-[#D4AF37]/18"
+              >
+                Open Marketplace
               </Link>
             </article>
 
