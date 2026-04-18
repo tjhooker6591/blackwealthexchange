@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
-import { getMongoDbName } from "@/lib/env";
+import { getMarketplaceDbName } from "@/lib/marketplace/db";
 import { resolveSellerSession } from "@/lib/marketplace/sellerSession";
 import { ObjectId } from "mongodb";
 
@@ -17,7 +17,7 @@ export default async function handler(
 
   try {
     const client = await clientPromise;
-    const db = client.db(getMongoDbName());
+    const db = client.db(getMarketplaceDbName());
 
     const sellerSession = await resolveSellerSession(req, db);
     if (!sellerSession.ok) {
@@ -66,7 +66,9 @@ export default async function handler(
 
     const orders = ordersRaw.map((o) => {
       const productId = o?.productId ? String(o.productId) : "";
-      const totalCents = Number(o?.totalCents ?? o?.totalPrice ?? o?.total ?? 0);
+      const totalCents = Number(
+        o?.totalCents ?? o?.totalPrice ?? o?.total ?? 0,
+      );
 
       return {
         ...o,

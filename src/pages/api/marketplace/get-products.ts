@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
-import { getMongoDbName } from "@/lib/env";
+import { getAppEnv } from "@/lib/env";
+import { getMarketplaceDbName } from "@/lib/marketplace/db";
 
 export default async function handler(
   req: NextApiRequest,
@@ -73,8 +74,9 @@ export default async function handler(
             ? { price: -1, _id: -1 }
             : { _id: -1 };
 
-    const primaryDbName = getMongoDbName();
-    const primaryCollection = client.db(primaryDbName).collection("products");
+    const usedDbName = getMarketplaceDbName();
+    const environment = getAppEnv();
+    const productsCollection = client.db(usedDbName).collection("products");
 
     const queryProducts = async (collection: any) => {
       const total = await collection.countDocuments(filter);
@@ -87,23 +89,7 @@ export default async function handler(
       return { total, products };
     };
 
-    let usedDbName = primaryDbName;
-    let result = await queryProducts(primaryCollection);
-
-    // Runtime safety: if env points to a DB with no marketplace rows,
-    // fallback to canonical marketplace DB so real products still render.
-    if (
-      result.total === 0 &&
-      primaryDbName !== "bwes-cluster" &&
-      sellerView !== "true"
-    ) {
-      const fallbackCollection = client.db("bwes-cluster").collection("products");
-      const fallbackResult = await queryProducts(fallbackCollection);
-      if (fallbackResult.total > 0) {
-        usedDbName = "bwes-cluster";
-        result = fallbackResult;
-      }
-    }
+    const result = await queryProducts(productsCollection);
 
     if (String(req.query.debug || "") === "1") {
       return res.status(200).json({
@@ -111,8 +97,8 @@ export default async function handler(
         total: result.total,
         _debug: {
           filter,
-          primaryDbName,
           usedDbName,
+          environment,
           sortKey,
           pageNum,
           limitNum,

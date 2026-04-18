@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
-import { getMongoDbName } from "@/lib/env";
+import { getMarketplaceDbName } from "@/lib/marketplace/db";
 import { resolveSellerSession } from "@/lib/marketplace/sellerSession";
 
 export default async function handler(
@@ -16,7 +16,7 @@ export default async function handler(
 
   try {
     const client = await clientPromise;
-    const db = client.db(getMongoDbName());
+    const db = client.db(getMarketplaceDbName());
 
     const sellerSession = await resolveSellerSession(req, db);
     if (!sellerSession.ok) {
@@ -39,7 +39,12 @@ export default async function handler(
             _id: null,
             count: { $sum: 1 },
             revenueCents: {
-              $sum: { $ifNull: ["$totalCents", { $ifNull: ["$totalPrice", "$total"] }] },
+              $sum: {
+                $ifNull: [
+                  "$totalCents",
+                  { $ifNull: ["$totalPrice", "$total"] },
+                ],
+              },
             },
           },
         },

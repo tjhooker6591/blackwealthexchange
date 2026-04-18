@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
+import { getMarketplaceDbName } from "@/lib/marketplace/db";
 import { ObjectId } from "mongodb";
 
 export default async function handler(
@@ -18,7 +19,7 @@ export default async function handler(
 
   try {
     const client = await clientPromise;
-    const db = client.db("bwes-cluster");
+    const db = client.db(getMarketplaceDbName());
 
     const product = await db
       .collection("products")

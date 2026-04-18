@@ -2,6 +2,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { ObjectId } from "mongodb";
 import clientPromise from "@/lib/mongodb";
+import { getMarketplaceDbName } from "@/lib/marketplace/db";
 
 export default async function handler(
   req: NextApiRequest,
@@ -31,7 +32,7 @@ export default async function handler(
   try {
     // Reuse the shared MongoDB client
     const client = await clientPromise;
-    const db = client.db("bwes-cluster");
+    const db = client.db(getMarketplaceDbName());
     const product = await db.collection("products").findOne({ _id: productId });
 
     if (!product) {

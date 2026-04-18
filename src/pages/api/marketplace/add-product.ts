@@ -4,6 +4,7 @@ import fs from "fs";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
 import clientPromise from "@/lib/mongodb";
+import { getMarketplaceDbName } from "@/lib/marketplace/db";
 import { ObjectId } from "mongodb";
 import { parse } from "cookie";
 import jwt from "jsonwebtoken";
@@ -76,7 +77,7 @@ export default async function handler(
 
   // 3) Ensure seller profile exists (match on _id)
   const client = await clientPromise;
-  const db = client.db("bwes-cluster");
+  const db = client.db(getMarketplaceDbName());
   let sellerRecord;
   try {
     sellerRecord = await db

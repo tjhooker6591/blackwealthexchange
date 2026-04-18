@@ -1,6 +1,7 @@
 // pages/api/marketplace/create-seller.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
+import { getMarketplaceDbName } from "@/lib/marketplace/db";
 import bcrypt from "bcryptjs";
 import { ObjectId } from "mongodb";
 import jwt from "jsonwebtoken";
@@ -89,7 +90,7 @@ export default async function handler(
   }
 
   const client = await clientPromise;
-  const db = client.db(); // If needed: client.db("bwes-cluster")
+  const db = client.db(getMarketplaceDbName());
 
   // ---------- FLOW B: Upgrade existing user to seller ----------
   // Only allowed if session user matches userId

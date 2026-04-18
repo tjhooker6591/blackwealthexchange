@@ -2,7 +2,8 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import jwt from "jsonwebtoken";
 import cookie from "cookie";
 import clientPromise from "@/lib/mongodb";
-import { getJwtSecret, getMongoDbName } from "@/lib/env";
+import { getJwtSecret } from "@/lib/env";
+import { getMarketplaceDbName } from "@/lib/marketplace/db";
 
 export default async function handler(
   req: NextApiRequest,
@@ -25,7 +26,7 @@ export default async function handler(
       return res.status(401).json({ error: "Unauthorized" });
 
     const client = await clientPromise;
-    const db = client.db(getMongoDbName());
+    const db = client.db(getMarketplaceDbName());
 
     const seller = await db.collection("sellers").findOne({
       $or: [{ userId }, { email }],
