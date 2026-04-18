@@ -21,10 +21,8 @@ const CATEGORY_OPTIONS = [
   "Art",
   "Books",
   "Home",
-  "Food",
   "Other",
 ] as const;
-
 function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
@@ -42,8 +40,6 @@ function normalizeCategory(input: string) {
     home: "Home",
     "home goods": "Home",
     homegoods: "Home",
-    food: "Food",
-    "food & drink": "Food",
     other: "Other",
   };
   return map[lower] || input; // if already Title Case, keep it

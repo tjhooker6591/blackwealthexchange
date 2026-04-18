@@ -24,10 +24,8 @@ const CATEGORY_OPTIONS = [
   "Art",
   "Books",
   "Home",
-  "Food",
   "Other",
 ] as const;
-
 type Category = (typeof CATEGORY_OPTIONS)[number];
 
 function cx(...classes: Array<string | false | null | undefined>) {
@@ -46,8 +44,6 @@ function toTitleCategory(val: string): Category | "" {
     home: "Home",
     "home goods": "Home",
     homegoods: "Home",
-    food: "Food",
-    "food & drink": "Food",
     other: "Other",
   };
   return map[lower] || (CATEGORY_OPTIONS as readonly string[]).includes(val)

@@ -22,7 +22,10 @@ export default async function handler(
     sort = "relevance",
   } = req.query;
   const pageNum = Math.max(1, parseInt(page as string, 10) || 1);
-  const limitNum = Math.min(50, Math.max(1, parseInt(limit as string, 10) || 8));
+  const limitNum = Math.min(
+    50,
+    Math.max(1, parseInt(limit as string, 10) || 8),
+  );
   const skip = (pageNum - 1) * limitNum;
 
   try {
@@ -46,9 +49,10 @@ export default async function handler(
       }
       filter.sellerId = sellerId;
     } else {
-      // Public Marketplace View ➔ Only show active & published products
+      // Public Marketplace View ➔ show active products, including legacy docs
+      // where isPublished was never set. Explicitly unpublished remains hidden.
       filter.status = "active";
-      filter.isPublished = true;
+      filter.isPublished = { $ne: false };
     }
 
     const search = String(q || "").trim();

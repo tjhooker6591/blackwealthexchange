@@ -2,6 +2,7 @@
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import Head from "next/head";
+import { canonicalUrl, truncateMeta } from "@/lib/seo";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -36,7 +37,6 @@ const CATEGORIES = [
   "Art",
   "Books",
   "Home",
-  "Food",
   "Other",
 ] as const;
 
@@ -244,11 +244,14 @@ export default function Marketplace() {
   return (
     <div className="min-h-screen bg-black text-white">
       <Head>
-        <title>Marketplace | Black Wealth Exchange</title>
+        <title>Black Marketplace | Black Wealth Exchange</title>
         <meta
           name="description"
-          content="Discover and support Black-owned businesses. Shop with purpose on Black Wealth Exchange."
+          content={truncateMeta(
+            "Discover Black-owned products and brands in the Black Wealth Exchange marketplace.",
+          )}
         />
+        <link rel="canonical" href={canonicalUrl("/marketplace")} />
       </Head>
 
       <div className="pointer-events-none fixed inset-0 opacity-60">
