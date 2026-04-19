@@ -107,21 +107,33 @@ export default function RecruitingConsultingPage() {
             qualification, and guided placement support.
           </p>
           {mode === "employer" ? (
-            <div className="mt-3">
+            <div className="mt-3 flex flex-wrap gap-2">
               <Link
                 href="/dashboard/employer/consultants"
                 className="inline-flex rounded-lg border border-[#D4AF37]/40 px-3 py-2 text-xs font-semibold text-[#D4AF37] hover:bg-[#D4AF37]/10"
               >
                 Browse Consultant Discovery Hub
               </Link>
+              <Link
+                href="/recruiting-consulting/status"
+                className="inline-flex rounded-lg border border-white/20 px-3 py-2 text-xs font-semibold text-white/80 hover:bg-white/10"
+              >
+                Check submission status
+              </Link>
             </div>
           ) : (
-            <div className="mt-3">
+            <div className="mt-3 flex flex-wrap gap-2">
               <Link
                 href="/dashboard/consultant/profile"
                 className="inline-flex rounded-lg border border-cyan-400/40 px-3 py-2 text-xs font-semibold text-cyan-200 hover:bg-cyan-500/10"
               >
                 Build Structured Consultant Profile
+              </Link>
+              <Link
+                href="/recruiting-consulting/status"
+                className="inline-flex rounded-lg border border-white/20 px-3 py-2 text-xs font-semibold text-white/80 hover:bg-white/10"
+              >
+                Check submission status
               </Link>
             </div>
           )}
