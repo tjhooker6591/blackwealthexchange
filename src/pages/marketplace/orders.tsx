@@ -30,7 +30,9 @@ function statusBadge(status: string) {
   if (["fulfilled", "shipped", "completed"].includes(status)) {
     return "bg-emerald-500/15 text-emerald-300 border-emerald-400/40";
   }
-  if (["paid", "processing", "pending_fulfillment", "pending"].includes(status)) {
+  if (
+    ["paid", "processing", "pending_fulfillment", "pending"].includes(status)
+  ) {
     return "bg-yellow-500/15 text-yellow-200 border-yellow-400/40";
   }
   if (["cancelled", "canceled", "failed", "refunded"].includes(status)) {
@@ -44,10 +46,17 @@ export default function MarketplaceOrdersPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [stripeStatus, setStripeStatus] = useState<StripeStatus | null>(null);
-  const [fulfillmentStateById, setFulfillmentStateById] = useState<Record<string, string>>({});
-  const [trackingNumberById, setTrackingNumberById] = useState<Record<string, string>>({});
-  const [trackingCarrierById, setTrackingCarrierById] = useState<Record<string, string>>({});
+  const [fulfillmentStateById, setFulfillmentStateById] = useState<
+    Record<string, string>
+  >({});
+  const [trackingNumberById, setTrackingNumberById] = useState<
+    Record<string, string>
+  >({});
+  const [trackingCarrierById, setTrackingCarrierById] = useState<
+    Record<string, string>
+  >({});
   const [savingOrderId, setSavingOrderId] = useState<string | null>(null);
+  const [saveError, setSaveError] = useState<string>("");
 
   async function loadOrders() {
     const res = await fetch("/api/marketplace/get-orders", {
@@ -55,7 +64,13 @@ export default function MarketplaceOrdersPage() {
       cache: "no-store",
     });
     const data = await res.json().catch(() => ({}));
-    if (!res.ok) throw new Error(data?.error || "Failed to load orders");
+    if (!res.ok) {
+      const fallback =
+        res.status === 401
+          ? "Please sign in with a seller account to view seller orders."
+          : "We could not load seller orders. Please refresh and try again.";
+      throw new Error(data?.error || fallback);
+    }
     const loaded = Array.isArray(data?.orders) ? data.orders : [];
     setOrders(loaded);
 
@@ -84,7 +99,10 @@ export default function MarketplaceOrdersPage() {
         const stripeData = await stripeRes.json().catch(() => ({}));
         if (stripeRes.ok) setStripeStatus(stripeData);
       } catch (e: any) {
-        setError(e?.message || "Failed to load orders");
+        setError(
+          e?.message ||
+            "We could not load seller orders. Please refresh and try again.",
+        );
       } finally {
         setLoading(false);
       }
@@ -93,6 +111,7 @@ export default function MarketplaceOrdersPage() {
 
   async function saveFulfillment(orderId: string) {
     try {
+      setSaveError("");
       setSavingOrderId(orderId);
       const res = await fetch("/api/marketplace/update-order-fulfillment", {
         method: "POST",
@@ -106,10 +125,14 @@ export default function MarketplaceOrdersPage() {
         }),
       });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data?.error || "Failed to update fulfillment");
+      if (!res.ok)
+        throw new Error(data?.error || "Failed to update fulfillment");
       await loadOrders();
     } catch (e: any) {
-      alert(e?.message || "Failed to update fulfillment");
+      setSaveError(
+        e?.message ||
+          "Fulfillment update was not saved. Check inputs and try again.",
+      );
     } finally {
       setSavingOrderId(null);
     }
@@ -146,27 +169,42 @@ export default function MarketplaceOrdersPage() {
 
         {loading ? <p className="mt-4 text-white/70">Loading orders…</p> : null}
         {error ? <p className="mt-4 text-red-400">{error}</p> : null}
+        {saveError ? <p className="mt-2 text-red-400">{saveError}</p> : null}
 
         {!loading && !error ? (
           <section className="mt-4 rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-4">
-            <h2 className="text-base font-bold text-[#D4AF37]">Action Required</h2>
+            <h2 className="text-base font-bold text-[#D4AF37]">
+              Action Required
+            </h2>
             <ul className="mt-2 space-y-2 text-sm text-white/85">
               <li>
-                New orders needing review: <span className="font-semibold text-white">{actionableOrders.length}</span>
+                New orders needing review:{" "}
+                <span className="font-semibold text-white">
+                  {actionableOrders.length}
+                </span>
               </li>
               <li>
-                Pending fulfillment: <span className="font-semibold text-white">{pendingFulfillment.length}</span>
+                Orders needing fulfillment:{" "}
+                <span className="font-semibold text-white">
+                  {pendingFulfillment.length}
+                </span>
               </li>
               <li>
-                Payout status: {payoutReady ? (
+                Payout status:{" "}
+                {payoutReady ? (
                   <span className="font-semibold text-emerald-300">Ready</span>
                 ) : (
-                  <span className="font-semibold text-yellow-200">Setup required, finish Stripe onboarding</span>
+                  <span className="font-semibold text-yellow-200">
+                    Setup required, finish Stripe onboarding
+                  </span>
                 )}
               </li>
             </ul>
             {!payoutReady ? (
-              <Link href="/marketplace/become-a-seller?refresh=1" className="mt-3 inline-block text-sm underline text-[#D4AF37]">
+              <Link
+                href="/marketplace/become-a-seller?refresh=1"
+                className="mt-3 inline-block text-sm underline text-[#D4AF37]"
+              >
                 Complete payout setup
               </Link>
             ) : null}
@@ -181,9 +219,9 @@ export default function MarketplaceOrdersPage() {
                   <th className="p-3">Date</th>
                   <th className="p-3">Product</th>
                   <th className="p-3">Buyer</th>
-                  <th className="p-3">Status</th>
+                  <th className="p-3">Order state</th>
                   <th className="p-3">Total</th>
-                  <th className="p-3">Fulfillment</th>
+                  <th className="p-3">Fulfillment actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -195,7 +233,10 @@ export default function MarketplaceOrdersPage() {
                   </tr>
                 ) : (
                   orders.map((o) => (
-                    <tr key={o._id} className="border-t border-white/10 align-top">
+                    <tr
+                      key={o._id}
+                      className="border-t border-white/10 align-top"
+                    >
                       <td className="p-3">
                         {o.createdAt
                           ? new Date(o.createdAt).toLocaleString()
@@ -215,6 +256,12 @@ export default function MarketplaceOrdersPage() {
                       </td>
                       <td className="p-3">
                         <div className="space-y-2 min-w-[220px]">
+                          <p className="text-xs text-white/60">
+                            Payment status: {String(o.paymentState || "pending").toLowerCase()}
+                          </p>
+                          <p className="text-xs text-white/60">
+                            Current fulfillment status: {String(o.fulfillmentState || "processing").toLowerCase()}
+                          </p>
                           <select
                             value={fulfillmentStateById[o._id] || "processing"}
                             onChange={(e) =>
@@ -256,7 +303,9 @@ export default function MarketplaceOrdersPage() {
                             disabled={savingOrderId === o._id}
                             className="w-full rounded border border-[#D4AF37] px-2 py-1 text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black disabled:opacity-60"
                           >
-                            {savingOrderId === o._id ? "Saving..." : "Update fulfillment"}
+                            {savingOrderId === o._id
+                              ? "Saving..."
+                              : "Update fulfillment"}
                           </button>
                         </div>
                       </td>

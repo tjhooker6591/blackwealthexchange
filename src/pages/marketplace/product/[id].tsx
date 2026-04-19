@@ -54,7 +54,13 @@ const ProductDetailPage = () => {
       try {
         setLoading(true);
         const res = await fetch(`/api/marketplace/get-product?id=${id}`);
-        if (!res.ok) throw new Error("Failed to fetch product");
+        if (!res.ok) {
+          throw new Error(
+            res.status === 404
+              ? "This listing is no longer available."
+              : "We could not load this listing. Please refresh and try again.",
+          );
+        }
 
         const data = await res.json();
         const loadedProduct = data?.product || null;
@@ -134,17 +140,21 @@ const ProductDetailPage = () => {
 
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        setMessageState(data?.error || "Could not send message right now.");
+        setMessageState(
+          data?.error ||
+            "Message was not sent. Please review your text and try again.",
+        );
         return;
       }
 
       setMessageText("");
       setMessageState(
-        data?.message ||
-          "Message sent. BWE will route this to the seller.",
+        data?.message || "Message sent. BWE will route this to the seller.",
       );
     } catch {
-      setMessageState("Could not send message right now.");
+      setMessageState(
+        "Message was not sent. Please try again in a moment.",
+      );
     } finally {
       setSendingMessage(false);
     }
@@ -161,7 +171,7 @@ const ProductDetailPage = () => {
   if (!product) {
     return (
       <div className="min-h-screen bg-black text-white text-center py-20">
-        Product not found.
+        This marketplace listing is unavailable right now.
       </div>
     );
   }
@@ -210,7 +220,7 @@ const ProductDetailPage = () => {
                 href="/marketplace/my-orders"
                 className="block w-full py-2.5 px-4 border border-gold text-gold font-semibold rounded-lg hover:bg-gold hover:text-black transition text-center"
               >
-                View My Orders
+                Track My Orders
               </Link>
             </div>
 
@@ -223,32 +233,34 @@ const ProductDetailPage = () => {
                 <span className="font-semibold text-white">
                   How fulfillment works:
                 </span>{" "}
-                Black Wealth Exchange processes payment and routes your order to
-                the seller for fulfillment.
+                BWE confirms your order and sends it to the seller for
+                fulfillment.
               </p>
               <p>
                 <span className="font-semibold text-white">
                   Shipping responsibility:
                 </span>{" "}
                 The seller is responsible for packaging, shipping, delivery
-                timing, and post-purchase shipping updates.
+                timing, and tracking updates.
               </p>
               <p>
-                <span className="font-semibold text-white">Need to contact seller?</span>{" "}
-                Use the secure marketplace contact form below. BWE mediates the
-                channel, no direct personal contact details are exposed.
+                <span className="font-semibold text-white">
+                  Need to contact seller?
+                </span>{" "}
+                Use the secure marketplace contact form below. BWE relays your
+                message to the seller without exposing personal contact details.
               </p>
             </div>
 
             <div className="mt-4 rounded-lg border border-white/10 bg-black/30 p-4">
               <label className="block text-sm font-semibold text-gold mb-2">
-                Message seller (mediated by BWE)
+                Message seller (secure BWE channel)
               </label>
               <textarea
                 value={messageText}
                 onChange={(e) => setMessageText(e.target.value)}
                 rows={3}
-                placeholder="Ask about shipping, product details, or availability"
+                placeholder="Ask about fulfillment timing, shipping, or product details"
                 className="w-full rounded-lg border border-white/20 bg-black/40 p-2 text-sm text-white focus:outline-none focus:border-gold"
               />
               <button

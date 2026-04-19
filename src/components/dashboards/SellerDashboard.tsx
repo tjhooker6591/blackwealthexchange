@@ -313,7 +313,7 @@ export default function SellerDashboard() {
             <p className="mt-1 text-sm text-gray-300 sm:text-base">
               Welcome,{" "}
               <span className="font-semibold text-white">{sellerName}</span>.
-              Manage products, orders, and payouts.
+              Manage products, orders, fulfillment, and payouts.
             </p>
             {lastUpdated ? (
               <p className="mt-2 text-xs text-gray-500">
@@ -476,14 +476,24 @@ export default function SellerDashboard() {
           <h2 className="text-lg font-bold text-gold">Action Required</h2>
           <ul className="mt-2 space-y-2 text-sm text-white/85">
             <li>
-              New order queue: <span className="font-semibold text-white">{stats.orders}</span>{" "}
-              <Link href="/marketplace/orders" className="ml-2 underline text-gold">
+              New order queue:{" "}
+              <span className="font-semibold text-white">{stats.orders}</span>{" "}
+              <Link
+                href="/marketplace/orders"
+                className="ml-2 underline text-gold"
+              >
                 review now
               </Link>
             </li>
             <li>
-              Pending fulfillment: <span className="font-semibold text-white">Check orders marked pending/paid/processing</span>{" "}
-              <Link href="/marketplace/orders" className="ml-2 underline text-gold">
+              Orders needing fulfillment:{" "}
+              <span className="font-semibold text-white">
+                Review orders with payment received and update fulfillment status
+              </span>{" "}
+              <Link
+                href="/marketplace/orders"
+                className="ml-2 underline text-gold"
+              >
                 open orders
               </Link>
             </li>
@@ -493,7 +503,9 @@ export default function SellerDashboard() {
                 <span className="font-semibold text-emerald-300">Ready</span>
               ) : (
                 <>
-                  <span className="font-semibold text-yellow-200">Setup required</span>
+                  <span className="font-semibold text-yellow-200">
+                    Setup required
+                  </span>
                   <Link
                     href="/marketplace/become-a-seller?refresh=1"
                     className="ml-2 underline text-gold"
@@ -504,8 +516,14 @@ export default function SellerDashboard() {
               )}
             </li>
             <li>
-              Out-of-stock warnings: <span className="font-semibold text-white">Review inventory on product list</span>{" "}
-              <Link href="/dashboard/seller/products" className="ml-2 underline text-gold">
+              Inventory warnings:{" "}
+              <span className="font-semibold text-white">
+                Review inventory on product list
+              </span>{" "}
+              <Link
+                href="/dashboard/seller/products"
+                className="ml-2 underline text-gold"
+              >
                 manage stock
               </Link>
             </li>
@@ -529,7 +547,7 @@ export default function SellerDashboard() {
           <ActionCard
             icon={<ShoppingCart className="h-5 w-5 text-yellow-300" />}
             title="Orders"
-            description="Track customer orders and fulfillment status."
+            description="Review order state and update fulfillment status."
             href="/marketplace/orders"
           />
           <ActionCard

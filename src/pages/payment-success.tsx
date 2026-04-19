@@ -26,21 +26,20 @@ export default function PaymentSuccessPage() {
             </h1>
 
             <p className="mt-3 text-white/80">
-              Thanks, your Marketplace payment was received successfully.
+              Your Marketplace order payment is complete.
             </p>
 
             <div className="mt-4 rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-4 text-sm text-yellow-100">
               <p className="font-semibold text-yellow-200">What happens next</p>
               <ul className="mt-2 list-disc pl-5 space-y-1">
                 <li>
-                  BWE confirms payment and sends order details to the seller.
+                  BWE confirms your payment and sends the order to the seller.
                 </li>
                 <li>
-                  The seller handles packaging, shipping, and delivery timing.
+                  The seller handles fulfillment, shipping, and delivery timing.
                 </li>
                 <li>
-                  You should receive seller shipping updates after fulfillment
-                  begins.
+                  You can track order and shipping status in My Marketplace Orders.
                 </li>
               </ul>
             </div>
@@ -57,9 +56,7 @@ export default function PaymentSuccessPage() {
             ) : (
               <div className="mt-4 rounded-xl border border-white/10 bg-black/30 p-3">
                 <p className="text-sm text-white/70">
-                  Keep this page open until you note your order confirmation. If
-                  updates do not appear soon, contact support with your session
-                  ID.
+                  If your order does not appear in My Marketplace Orders, contact support and include your checkout session ID.
                 </p>
               </div>
             )}
@@ -76,7 +73,7 @@ export default function PaymentSuccessPage() {
                 href="/marketplace/my-orders"
                 className="inline-flex items-center rounded-md border border-yellow-500/40 px-4 py-2 font-semibold text-yellow-300 hover:border-yellow-400/70 transition"
               >
-                Track My Order
+                Track My Orders
               </Link>
 
               <a
@@ -96,9 +93,7 @@ export default function PaymentSuccessPage() {
 
             <div className="mt-8 border-t border-white/10 pt-4">
               <p className="text-xs text-white/50">
-                If you were charged but do not receive seller fulfillment
-                updates, contact support and include the session ID above so we
-                can trace your order quickly.
+                If you were charged but your order status does not update, contact support and include the checkout session ID above so we can trace the order quickly.
               </p>
             </div>
           </div>
