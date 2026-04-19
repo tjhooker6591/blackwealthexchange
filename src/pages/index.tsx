@@ -685,8 +685,17 @@ export default function Home() {
     });
   };
 
-  const submitHomepageSearch = (trigger: string, queryOverride?: string) => {
+  const submitHomepageSearch = (
+    trigger: string,
+    queryOverride?: string,
+    opts?: {
+      verticalOverride?: VerticalKey;
+      scopeOverride?: "businesses" | "organizations";
+    },
+  ) => {
     const q = (queryOverride ?? searchQuery).trim();
+    const trackedVertical = opts?.verticalOverride ?? vertical;
+    const trackedScope = opts?.scopeOverride ?? leftScope;
 
     trackHomepageEvent("homepage_search_submitted", {
       section: "hero_search",
@@ -695,17 +704,21 @@ export default function Home() {
       ctaId: "homepage_search_submit",
       ctaLabel: trigger,
       destination:
-        vertical === "shopping"
+        trackedVertical === "shopping"
           ? "/marketplace"
-          : vertical === "news"
+          : trackedVertical === "news"
             ? "/news"
             : "/business-directory",
-      vertical,
+      vertical: trackedVertical,
       aiMode,
-      scope: leftScope,
+      scope: trackedScope,
     });
 
-    runSearch({ queryOverride: queryOverride ?? searchQuery });
+    runSearch({
+      queryOverride: queryOverride ?? searchQuery,
+      verticalOverride: opts?.verticalOverride,
+      scopeOverride: opts?.scopeOverride,
+    });
   };
 
   const onToggleAi = () => {
@@ -1248,7 +1261,11 @@ export default function Home() {
                           onClick={() => {
                             setSearchQuery("restaurant");
                             setLeftScope("businesses");
-                            submitHomepageSearch("quick_intent_restaurant", "restaurant");
+                            submitHomepageSearch(
+                              "quick_intent_restaurant",
+                              "restaurant",
+                              { scopeOverride: "businesses" },
+                            );
                           }}
                           className="rounded-full border border-white/12 bg-white/[0.03] px-3 py-1.5 text-[11px] font-bold text-white/75 transition hover:bg-white/[0.07]"
                         >
@@ -1259,7 +1276,11 @@ export default function Home() {
                           onClick={() => {
                             setSearchQuery("financial advisor");
                             setLeftScope("businesses");
-                            submitHomepageSearch("quick_intent_finance", "financial advisor");
+                            submitHomepageSearch(
+                              "quick_intent_finance",
+                              "financial advisor",
+                              { scopeOverride: "businesses" },
+                            );
                           }}
                           className="rounded-full border border-white/12 bg-white/[0.03] px-3 py-1.5 text-[11px] font-bold text-white/75 transition hover:bg-white/[0.07]"
                         >
@@ -1270,7 +1291,11 @@ export default function Home() {
                           onClick={() => {
                             setSearchQuery("nonprofit");
                             setLeftScope("organizations");
-                            submitHomepageSearch("quick_intent_nonprofit", "nonprofit");
+                            submitHomepageSearch(
+                              "quick_intent_nonprofit",
+                              "nonprofit",
+                              { scopeOverride: "organizations" },
+                            );
                           }}
                           className="rounded-full border border-white/12 bg-white/[0.03] px-3 py-1.5 text-[11px] font-bold text-white/75 transition hover:bg-white/[0.07]"
                         >
@@ -1363,7 +1388,9 @@ export default function Home() {
                 <p className="mt-1 text-xs font-semibold uppercase tracking-[0.08em] text-white/55">
                   {monthlySpotlight.subtitle}
                 </p>
-                <p className="mt-2 text-sm text-white/78">{monthlySpotlight.insight}</p>
+                <p className="mt-2 text-sm text-white/78">
+                  {monthlySpotlight.insight}
+                </p>
               </div>
               <Link
                 href={monthlySpotlight.ctaHref}
