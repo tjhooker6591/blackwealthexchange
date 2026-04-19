@@ -69,14 +69,15 @@ export default function BuyerOrdersPage() {
         </div>
 
         <p className="mt-2 text-sm text-white/70">
-          Track payment status, fulfillment status, and shipping status for each order.
+          Track payment status, fulfillment status, and shipping status for each
+          order.
         </p>
 
         {loading ? <p className="mt-4 text-white/70">Loading orders…</p> : null}
         {error ? <p className="mt-4 text-red-400">{error}</p> : null}
 
         {!loading && !error ? (
-          <div className="mt-4 space-y-4">
+          <div className="mt-5 space-y-5">
             {orders.length === 0 ? (
               <div className="rounded-xl border border-white/10 bg-white/5 p-4 text-white/70">
                 No orders found yet. After checkout, your order status appears
@@ -86,7 +87,7 @@ export default function BuyerOrdersPage() {
               orders.map((o) => (
                 <article
                   key={o._id}
-                  className="rounded-xl border border-white/10 bg-white/5 p-4"
+                  className="rounded-xl border border-white/10 bg-white/5 p-4 md:p-5"
                 >
                   <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
                     <div>
@@ -100,7 +101,7 @@ export default function BuyerOrdersPage() {
                           : "-"}
                       </p>
                     </div>
-                    <div className="text-sm text-white/80">
+                    <div className="text-base font-semibold text-gold">
                       ${(Number(o.totalCents || 0) / 100).toFixed(2)}
                     </div>
                   </div>
@@ -136,7 +137,7 @@ export default function BuyerOrdersPage() {
                     <p className="text-xs uppercase tracking-wide text-white/60">
                       Order timeline
                     </p>
-                    <div className="mt-2 flex gap-2">
+                    <div className="mt-2 flex flex-wrap gap-2">
                       {(o.timeline || []).map((step) => (
                         <div
                           key={step.key}

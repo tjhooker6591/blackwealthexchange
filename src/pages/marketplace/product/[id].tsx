@@ -152,9 +152,7 @@ const ProductDetailPage = () => {
         data?.message || "Message sent. BWE will route this to the seller.",
       );
     } catch {
-      setMessageState(
-        "Message was not sent. Please try again in a moment.",
-      );
+      setMessageState("Message was not sent. Please try again in a moment.");
     } finally {
       setSendingMessage(false);
     }
@@ -178,7 +176,7 @@ const ProductDetailPage = () => {
 
   return (
     <div className="min-h-screen bg-black text-white px-4 py-10">
-      <div className="max-w-5xl mx-auto bg-gray-900 border border-gold rounded-xl p-6 shadow-xl">
+      <div className="max-w-5xl mx-auto bg-gray-900 border border-gold rounded-xl p-6 md:p-8 shadow-xl">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="relative w-full h-72 md:h-[500px] overflow-hidden rounded-lg border border-white/10 bg-black/30">
             <Image
@@ -208,12 +206,13 @@ const ProductDetailPage = () => {
               {product.description || "No description provided."}
             </p>
 
-            <div className="space-y-3">
+            <div className="space-y-3 rounded-lg border border-gold/25 bg-gold/5 p-4">
               <BuyNowButton
                 itemId={product._id}
                 amount={product.price}
                 type="product"
                 label="Buy Now"
+                className="w-full rounded-lg bg-gold px-4 py-3 text-base font-bold text-black shadow-md transition hover:bg-yellow-400"
               />
 
               <Link
@@ -252,7 +251,7 @@ const ProductDetailPage = () => {
               </p>
             </div>
 
-            <div className="mt-4 rounded-lg border border-white/10 bg-black/30 p-4">
+            <div className="mt-5 rounded-lg border border-white/10 bg-black/30 p-4">
               <label className="block text-sm font-semibold text-gold mb-2">
                 Message seller (secure BWE channel)
               </label>
@@ -278,11 +277,12 @@ const ProductDetailPage = () => {
           </div>
         </div>
 
-        <div className="text-center mt-10">
-          <Link href="/marketplace">
-            <button className="px-6 py-2 bg-transparent text-gold border border-gold font-semibold rounded-lg hover:bg-gold hover:text-black transition">
-              🔙 Back to Marketplace
-            </button>
+        <div className="mt-10 text-center">
+          <Link
+            href="/marketplace"
+            className="inline-flex items-center rounded-lg border border-gold px-6 py-2 font-semibold text-gold transition hover:bg-gold hover:text-black"
+          >
+            Back to Marketplace
           </Link>
         </div>
       </div>

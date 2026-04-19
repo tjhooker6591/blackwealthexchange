@@ -212,8 +212,8 @@ export default function MarketplaceOrdersPage() {
         ) : null}
 
         {!loading && !error ? (
-          <div className="mt-4 overflow-hidden rounded-xl border border-white/10">
-            <table className="w-full text-sm">
+          <div className="mt-4 overflow-x-auto rounded-xl border border-white/10">
+            <table className="w-full min-w-[980px] text-sm">
               <thead className="bg-white/5 text-left text-white/70">
                 <tr>
                   <th className="p-3">Date</th>
@@ -257,10 +257,14 @@ export default function MarketplaceOrdersPage() {
                       <td className="p-3">
                         <div className="space-y-2 min-w-[220px]">
                           <p className="text-xs text-white/60">
-                            Payment status: {String(o.paymentState || "pending").toLowerCase()}
+                            Payment status:{" "}
+                            {String(o.paymentState || "pending").toLowerCase()}
                           </p>
                           <p className="text-xs text-white/60">
-                            Current fulfillment status: {String(o.fulfillmentState || "processing").toLowerCase()}
+                            Current fulfillment status:{" "}
+                            {String(
+                              o.fulfillmentState || "processing",
+                            ).toLowerCase()}
                           </p>
                           <select
                             value={fulfillmentStateById[o._id] || "processing"}
@@ -270,7 +274,7 @@ export default function MarketplaceOrdersPage() {
                                 [o._id]: e.target.value,
                               }))
                             }
-                            className="w-full rounded border border-white/20 bg-black/40 px-2 py-1"
+                            className="w-full rounded border border-white/20 bg-black/40 px-2 py-1.5"
                           >
                             <option value="processing">processing</option>
                             <option value="fulfilled">fulfilled</option>
@@ -285,7 +289,7 @@ export default function MarketplaceOrdersPage() {
                               }))
                             }
                             placeholder="Tracking carrier (optional)"
-                            className="w-full rounded border border-white/20 bg-black/40 px-2 py-1"
+                            className="w-full rounded border border-white/20 bg-black/40 px-2 py-1.5"
                           />
                           <input
                             value={trackingNumberById[o._id] || ""}
@@ -296,12 +300,12 @@ export default function MarketplaceOrdersPage() {
                               }))
                             }
                             placeholder="Tracking number (optional)"
-                            className="w-full rounded border border-white/20 bg-black/40 px-2 py-1"
+                            className="w-full rounded border border-white/20 bg-black/40 px-2 py-1.5"
                           />
                           <button
                             onClick={() => saveFulfillment(o._id)}
                             disabled={savingOrderId === o._id}
-                            className="w-full rounded border border-[#D4AF37] px-2 py-1 text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black disabled:opacity-60"
+                            className="w-full rounded border border-[#D4AF37] px-2 py-1.5 font-semibold text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black disabled:opacity-60"
                           >
                             {savingOrderId === o._id
                               ? "Saving..."
