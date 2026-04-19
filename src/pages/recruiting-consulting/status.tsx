@@ -9,6 +9,8 @@ type Submission = {
   lifecycleStage: string;
   nextAction: string;
   moderationStatus: string;
+  stageLabel: string;
+  actionOwner: "submitter" | "internal_team" | "internal_review" | "complete" | string;
   source: string;
   createdAt: string | null;
   updatedAt: string | null;
@@ -62,7 +64,8 @@ export default function ConsultingSubmissionStatusPage() {
             Check Your Consulting Request Status
           </h1>
           <p className="mt-2 text-sm text-white/70">
-            Enter the same email used for your intake to view current status and next action.
+            Enter the same email used for your intake to view current status and
+            next action.
           </p>
 
           <form onSubmit={checkStatus} className="mt-4 space-y-3">
@@ -99,14 +102,24 @@ export default function ConsultingSubmissionStatusPage() {
                       {x.submissionType}
                     </span>
                   </div>
-                  <p className="mt-2 text-sm text-white/90">Status: {x.status}</p>
-                  <p className="text-sm text-white/80">Lifecycle: {x.lifecycleStage}</p>
-                  <p className="text-sm text-white/80">Next action: {x.nextAction}</p>
+                  <p className="mt-2 text-sm text-white/90">
+                    Status: {x.status}
+                  </p>
+                  <p className="text-sm text-white/80">
+                    Lifecycle: {x.stageLabel || x.lifecycleStage}
+                  </p>
+                  <p className="text-sm text-white/80">
+                    Next action: {x.nextAction}
+                  </p>
                   <p className="mt-1 text-xs text-white/60">
                     Moderation: {x.moderationStatus} • Source: {x.source}
                   </p>
+                  <p className="mt-1 text-xs text-white/60">
+                    Action owner: {x.actionOwner.replace("_", " ")}
+                  </p>
                   <p className="mt-1 text-xs text-white/50">
-                    Submitted: {x.createdAt ? new Date(x.createdAt).toLocaleString() : "-"}
+                    Submitted:{" "}
+                    {x.createdAt ? new Date(x.createdAt).toLocaleString() : "-"}
                     {x.followUpAt
                       ? ` • Follow-up: ${new Date(x.followUpAt).toLocaleString()}`
                       : ""}

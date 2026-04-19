@@ -11,6 +11,28 @@ function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
+function stageLabel(stage: string) {
+  const map: Record<string, string> = {
+    new: "New",
+    triaged: "Triaged",
+    reviewed: "Reviewed",
+    approved: "Approved",
+    discovery_scheduled: "Discovery Scheduled",
+    proposal_sent: "Proposal Sent",
+    in_delivery: "In Delivery",
+    closed_won: "Closed Won",
+    closed_lost: "Closed Lost",
+  };
+  return map[stage] || stage;
+}
+
+function inferActionOwner(stage: string, status: string) {
+  if (["closed_won", "closed_lost"].includes(stage)) return "complete";
+  if (status === "flagged" || status === "spam") return "internal_review";
+  if (stage === "discovery_scheduled") return "submitter";
+  return "internal_team";
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
@@ -26,7 +48,9 @@ export default async function handler(
       .toLowerCase();
 
     if (!email || !isValidEmail(email)) {
-      return res.status(400).json({ ok: false, error: "Valid email is required." });
+      return res
+        .status(400)
+        .json({ ok: false, error: "Valid email is required." });
     }
 
     const client = await clientPromise;
@@ -45,7 +69,10 @@ export default async function handler(
       res.setHeader("Retry-After", String(limiter.retryAfterSeconds));
       return res
         .status(429)
-        .json({ ok: false, error: "Too many requests. Please try again later." });
+        .json({
+          ok: false,
+          error: "Too many requests. Please try again later.",
+        });
     }
 
     const [interestRows, intakeRows] = await Promise.all([
@@ -95,6 +122,11 @@ export default async function handler(
         lifecycleStage: String(x.lifecycleStage || "new"),
         nextAction: String(x.nextAction || "Initial triage pending"),
         moderationStatus: String(x.moderationStatus || "clean"),
+        stageLabel: stageLabel(String(x.lifecycleStage || "new")),
+        actionOwner: inferActionOwner(
+          String(x.lifecycleStage || "new"),
+          String(x.status || "pending"),
+        ),
         source: String(x.source || "website"),
         createdAt: x.createdAt ? new Date(x.createdAt).toISOString() : null,
         updatedAt: x.updatedAt ? new Date(x.updatedAt).toISOString() : null,
@@ -108,6 +140,11 @@ export default async function handler(
         lifecycleStage: String(x.lifecycleStage || "new"),
         nextAction: String(x.nextAction || "Initial triage pending"),
         moderationStatus: String(x.moderationStatus || "clean"),
+        stageLabel: stageLabel(String(x.lifecycleStage || "new")),
+        actionOwner: inferActionOwner(
+          String(x.lifecycleStage || "new"),
+          String(x.status || "pending"),
+        ),
         source: String(x.source || "recruiting_consulting_page"),
         createdAt: x.createdAt ? new Date(x.createdAt).toISOString() : null,
         updatedAt: x.updatedAt ? new Date(x.updatedAt).toISOString() : null,

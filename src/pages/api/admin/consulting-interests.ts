@@ -72,8 +72,11 @@ export default async function handler(
         followUpAt,
         adminNote,
       } = req.body || {};
-      const nextStatus = normalizeStatus(status);
+      let nextStatus = normalizeStatus(status);
       const nextStage = normalizeStage(stage || status || "new");
+
+      if (nextStage === "closed_won") nextStatus = "approved";
+      if (nextStage === "closed_lost") nextStatus = "rejected";
 
       if (!id || !collection) {
         return res.status(400).json({ error: "Missing id or collection" });
@@ -99,7 +102,8 @@ export default async function handler(
       const updateDoc = {
         $set: {
           status: nextStatus,
-          lifecycleStage: nextStage,
+          lifecycleStage:
+            nextStatus === "deleted" ? "closed_lost" : nextStage,
           nextAction: trimmedNextAction,
           owner: typeof owner === "string" ? owner.trim() : "",
           followUpAt: followUpAt ? new Date(followUpAt) : null,
@@ -112,7 +116,7 @@ export default async function handler(
             at: new Date(),
             by: actor,
             status: nextStatus,
-            stage: nextStage,
+            stage: nextStatus === "deleted" ? "closed_lost" : nextStage,
             nextAction: trimmedNextAction,
             adminNote: trimmedAdminNote,
           },
