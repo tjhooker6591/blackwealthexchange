@@ -25,6 +25,7 @@ type Lead = {
   lifecycleStage?:
     | "new"
     | "triaged"
+    | "reviewed"
     | "approved"
     | "discovery_scheduled"
     | "proposal_sent"
@@ -41,6 +42,8 @@ type Lead = {
   adminNote?: string;
   ip?: string | null;
   userAgent?: string | null;
+  moderationStatus?: string;
+  moderationReasons?: string[];
 };
 
 export default function ConsultingLeadsAdminPage() {
@@ -211,6 +214,12 @@ export default function ConsultingLeadsAdminPage() {
                         <div className="mt-1 text-[11px] text-white/55">
                           stage: {r.lifecycleStage || "new"}
                         </div>
+                        <div className="mt-1 text-[11px] text-white/55">
+                          moderation: {r.moderationStatus || "clean"}
+                          {Array.isArray(r.moderationReasons) && r.moderationReasons.length
+                            ? ` (${r.moderationReasons.join(", ")})`
+                            : ""}
+                        </div>
                       </td>
                       <td className="p-2 text-xs text-white/70 max-w-[260px]">
                         {r.nextAction || "No next action set"}
@@ -261,6 +270,18 @@ export default function ConsultingLeadsAdminPage() {
                             Approve + discovery
                           </button>
                           <button
+                            className="rounded bg-cyan-700/80 px-2 py-1 text-[11px] font-semibold"
+                            disabled={savingId === r._id}
+                            onClick={() =>
+                              updateLead(r, {
+                                lifecycleStage: "reviewed",
+                                nextAction: "Move to managed-service follow-up",
+                              })
+                            }
+                          >
+                            Mark reviewed
+                          </button>
+                          <button
                             className="rounded bg-sky-600/80 px-2 py-1 text-[11px] font-semibold"
                             disabled={savingId === r._id}
                             onClick={() =>
@@ -283,6 +304,34 @@ export default function ConsultingLeadsAdminPage() {
                             }
                           >
                             Move to delivery
+                          </button>
+                          <button
+                            className="rounded bg-emerald-700/80 px-2 py-1 text-[11px] font-semibold"
+                            disabled={savingId === r._id}
+                            onClick={() =>
+                              updateLead(r, {
+                                status: "approved",
+                                lifecycleStage: "closed_won",
+                                nextAction: "Managed-service engagement active",
+                                followUpAt: null,
+                              })
+                            }
+                          >
+                            Mark closed won
+                          </button>
+                          <button
+                            className="rounded bg-zinc-700/80 px-2 py-1 text-[11px] font-semibold"
+                            disabled={savingId === r._id}
+                            onClick={() =>
+                              updateLead(r, {
+                                status: "rejected",
+                                lifecycleStage: "closed_lost",
+                                nextAction: "No further action",
+                                followUpAt: null,
+                              })
+                            }
+                          >
+                            Mark closed lost
                           </button>
                           <button
                             className="rounded bg-red-700/80 px-2 py-1 text-[11px] font-semibold"

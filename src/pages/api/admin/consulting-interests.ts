@@ -12,6 +12,7 @@ type ConsultingStatus =
 type LifecycleStage =
   | "new"
   | "triaged"
+  | "reviewed"
   | "approved"
   | "discovery_scheduled"
   | "proposal_sent"
@@ -36,6 +37,7 @@ function normalizeStage(value: unknown): LifecycleStage {
   const allowed: LifecycleStage[] = [
     "new",
     "triaged",
+    "reviewed",
     "approved",
     "discovery_scheduled",
     "proposal_sent",
@@ -212,6 +214,8 @@ export default async function handler(
           updatedAt: 1,
           source: 1,
           adminNote: 1,
+          moderationStatus: 1,
+          moderationReasons: 1,
           ip: 1,
           requestIp: 1,
           userAgent: 1,
@@ -238,6 +242,8 @@ export default async function handler(
           updatedAt: 1,
           source: 1,
           adminNote: 1,
+          moderationStatus: 1,
+          moderationReasons: 1,
           ip: 1,
           requestIp: 1,
           userAgent: 1,
@@ -263,6 +269,10 @@ export default async function handler(
         owner: x.owner || "",
         followUpAt: x.followUpAt ? new Date(x.followUpAt).toISOString() : null,
         adminNote: x.adminNote || "",
+        moderationStatus: x.moderationStatus || "clean",
+        moderationReasons: Array.isArray(x.moderationReasons)
+          ? x.moderationReasons
+          : [],
         ip: x.ip || x.requestIp || null,
         userAgent: x.userAgent || null,
         lifecycleLogCount: Array.isArray(x.lifecycleLog)
@@ -292,6 +302,10 @@ export default async function handler(
         owner: x.owner || "",
         followUpAt: x.followUpAt ? new Date(x.followUpAt).toISOString() : null,
         adminNote: x.adminNote || "",
+        moderationStatus: x.moderationStatus || "clean",
+        moderationReasons: Array.isArray(x.moderationReasons)
+          ? x.moderationReasons
+          : [],
         ip: x.ip || x.requestIp || null,
         userAgent: x.userAgent || null,
         lifecycleLogCount: Array.isArray(x.lifecycleLog)

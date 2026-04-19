@@ -88,7 +88,12 @@ export default async function handler(
           requestType: x.requestType,
           message: x.message,
           status: x.status,
+          moderationStatus: x.moderationStatus || "clean",
+          consultantResponseAction: x.consultantResponseAction || null,
+          consultantResponseNote: x.consultantResponseNote || "",
+          consultantRespondedAt: x.consultantRespondedAt || null,
           createdAt: x.createdAt,
+          updatedAt: x.updatedAt || x.createdAt,
         })),
       });
     }

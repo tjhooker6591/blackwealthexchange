@@ -18,6 +18,29 @@ function validEmail(v: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 }
 
+function moderateIntakeText(message: string) {
+  const lower = message.toLowerCase();
+  const blockedTerms = [
+    "wire money",
+    "crypto only",
+    "gift card",
+    "telegram only",
+    "whatsapp only",
+  ];
+  const hasBlockedTerm = blockedTerms.some((x) => lower.includes(x));
+  const urlCount = (message.match(/https?:\/\//gi) || []).length;
+  const repeatedCharRun = /(.)\1{7,}/.test(message);
+
+  return {
+    flagged: hasBlockedTerm || urlCount > 4 || repeatedCharRun,
+    reasons: [
+      hasBlockedTerm ? "blocked_term" : null,
+      urlCount > 4 ? "too_many_links" : null,
+      repeatedCharRun ? "repeated_characters" : null,
+    ].filter(Boolean),
+  };
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Ok | Err>,
@@ -88,6 +111,7 @@ export default async function handler(
     }
 
     const createdAt = new Date();
+    const moderation = moderateIntakeText(details);
 
     await db.collection("consulting_intake").insertOne({
       type,
@@ -96,11 +120,17 @@ export default async function handler(
       company: company || null,
       phone: phone || null,
       details,
-      status: "pending",
+      status: moderation.flagged ? "flagged" : "pending",
       lifecycleStage: "new",
-      nextAction: "Initial triage pending",
+      nextAction: moderation.flagged
+        ? "Review moderation flags before outreach"
+        : "Initial triage pending",
+      moderationStatus: moderation.flagged ? "flagged" : "clean",
+      moderationReasons: moderation.reasons,
       createdAt,
-      source: "homepage_recruiting_section",
+      source: "recruiting_consulting_page",
+      requestIp: getClientIp(req),
+      userAgent: String(req.headers["user-agent"] || ""),
     });
 
     await db.collection("flow_events").insertOne({
@@ -119,7 +149,7 @@ export default async function handler(
       success: true,
       message:
         type === "employer"
-          ? "Employer request received. We will contact you shortly."
+          ? "Employer request received. We will contact you after triage."
           : "Talent profile received. We will review and follow up.",
     });
   } catch (err) {

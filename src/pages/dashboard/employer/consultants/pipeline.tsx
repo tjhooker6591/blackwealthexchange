@@ -17,7 +17,10 @@ type Consultant = {
   completenessScore: number;
 };
 
-const STATUS_LABELS: Record<(typeof CONSULTANT_PIPELINE_STATUSES)[number], string> = {
+const STATUS_LABELS: Record<
+  (typeof CONSULTANT_PIPELINE_STATUSES)[number],
+  string
+> = {
   saved: "Saved",
   contacted: "Contacted",
   interview_requested: "Interview Requested",
@@ -84,7 +87,10 @@ export default function EmployerConsultantPipelinePage() {
   }, [consultants]);
 
   const grouped = useMemo(() => {
-    const bucket: Record<(typeof CONSULTANT_PIPELINE_STATUSES)[number], PipelineItem[]> = {
+    const bucket: Record<
+      (typeof CONSULTANT_PIPELINE_STATUSES)[number],
+      PipelineItem[]
+    > = {
       saved: [],
       contacted: [],
       interview_requested: [],
@@ -112,30 +118,75 @@ export default function EmployerConsultantPipelinePage() {
       <div className="mx-auto max-w-7xl">
         <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="text-xs uppercase tracking-[0.2em] text-yellow-300">Employer pipeline board</p>
-            <h1 className="mt-2 text-3xl font-extrabold">Consultant Shortlist Board</h1>
-            <p className="mt-2 text-sm text-zinc-300">Track consultants through saved → contacted → interview requested → under review → hired.</p>
+            <p className="text-xs uppercase tracking-[0.2em] text-yellow-300">
+              Employer pipeline board
+            </p>
+            <h1 className="mt-2 text-3xl font-extrabold">
+              Consultant Shortlist Board
+            </h1>
+            <p className="mt-2 text-sm text-zinc-300">
+              Track consultants through saved → contacted → interview requested
+              → under review → hired.
+            </p>
           </div>
           <div className="flex gap-2">
-            <Link href="/dashboard/employer/consultants" className="rounded-xl border border-yellow-500/40 px-4 py-2 text-sm text-yellow-200 hover:bg-yellow-500/10">Open Discovery</Link>
+            <Link
+              href="/dashboard/employer/consultants"
+              className="rounded-xl border border-yellow-500/40 px-4 py-2 text-sm text-yellow-200 hover:bg-yellow-500/10"
+            >
+              Open Discovery
+            </Link>
           </div>
         </div>
 
-        {error ? <div className="mb-4 rounded-lg border border-red-700/50 bg-red-950/40 p-3 text-sm text-red-100">{error}</div> : null}
+        {error ? (
+          <div className="mb-4 rounded-lg border border-red-700/50 bg-red-950/40 p-3 text-sm text-red-100">
+            {error}
+          </div>
+        ) : null}
 
         <section className="mb-6 rounded-2xl border border-white/10 bg-zinc-950 p-4">
           <h2 className="text-lg font-semibold">Recent contact requests</h2>
           {requests.length === 0 ? (
-            <p className="mt-2 text-sm text-zinc-400">No contact requests yet.</p>
+            <p className="mt-2 text-sm text-zinc-400">
+              No contact requests yet.
+            </p>
           ) : (
             <ul className="mt-3 space-y-2 text-sm">
               {requests.slice(0, 8).map((r) => (
-                <li key={r.id} className="rounded-lg border border-white/10 bg-black/30 p-3">
+                <li
+                  key={r.id}
+                  className="rounded-lg border border-white/10 bg-black/30 p-3"
+                >
                   <p className="font-semibold text-zinc-100">
-                    {STATUS_LABELS[(r.requestType === "interview_request" ? "interview_requested" : "contacted") as keyof typeof STATUS_LABELS]}
-                    {" "}request for consultant {r.consultantId}
+                    {
+                      STATUS_LABELS[
+                        (r.requestType === "interview_request"
+                          ? "interview_requested"
+                          : "contacted") as keyof typeof STATUS_LABELS
+                      ]
+                    }{" "}
+                    request for consultant {r.consultantId}
                   </p>
                   <p className="mt-1 text-zinc-300">{r.message}</p>
+                  <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px] text-zinc-400">
+                    <span className="rounded border border-white/15 px-2 py-0.5">
+                      request: {r.status || "submitted"}
+                    </span>
+                    <span className="rounded border border-white/15 px-2 py-0.5">
+                      moderation: {r.moderationStatus || "clean"}
+                    </span>
+                    {r.consultantResponseAction ? (
+                      <span className="rounded border border-cyan-400/30 px-2 py-0.5 text-cyan-200">
+                        consultant: {String(r.consultantResponseAction).replace("_", " ")}
+                      </span>
+                    ) : null}
+                  </div>
+                  {r.consultantResponseNote ? (
+                    <p className="mt-2 text-xs text-cyan-100/90">
+                      Consultant note: {r.consultantResponseNote}
+                    </p>
+                  ) : null}
                 </li>
               ))}
             </ul>
@@ -147,32 +198,56 @@ export default function EmployerConsultantPipelinePage() {
         ) : (
           <section className="grid gap-3 md:grid-cols-2 xl:grid-cols-5">
             {CONSULTANT_PIPELINE_STATUSES.map((status) => (
-              <div key={status} className="rounded-2xl border border-white/10 bg-zinc-950 p-3">
-                <h3 className="text-sm font-bold text-yellow-200">{STATUS_LABELS[status]}</h3>
-                <p className="mt-1 text-xs text-zinc-400">{grouped[status].length} consultant(s)</p>
+              <div
+                key={status}
+                className="rounded-2xl border border-white/10 bg-zinc-950 p-3"
+              >
+                <h3 className="text-sm font-bold text-yellow-200">
+                  {STATUS_LABELS[status]}
+                </h3>
+                <p className="mt-1 text-xs text-zinc-400">
+                  {grouped[status].length} consultant(s)
+                </p>
 
                 <div className="mt-3 space-y-2">
                   {grouped[status].length === 0 ? (
-                    <div className="rounded-lg border border-white/10 bg-black/30 p-2 text-xs text-zinc-500">No consultants</div>
+                    <div className="rounded-lg border border-white/10 bg-black/30 p-2 text-xs text-zinc-500">
+                      No consultants
+                    </div>
                   ) : (
                     grouped[status].map((item) => {
                       const c = consultantMap.get(item.consultantId);
                       return (
-                        <article key={item.id} className="rounded-lg border border-white/10 bg-black/30 p-3 text-xs">
-                          <p className="font-semibold text-zinc-100">{c?.name || item.consultantId}</p>
-                          <p className="mt-1 text-zinc-300">{c?.professionalTitle || "Consultant"}</p>
-                          <p className="mt-1 text-zinc-400">{c?.category || "Category N/A"}</p>
-                          <p className="mt-1 text-zinc-400">Profile quality: {c?.completenessScore ?? "N/A"}%</p>
+                        <article
+                          key={item.id}
+                          className="rounded-lg border border-white/10 bg-black/30 p-3 text-xs"
+                        >
+                          <p className="font-semibold text-zinc-100">
+                            {c?.name || item.consultantId}
+                          </p>
+                          <p className="mt-1 text-zinc-300">
+                            {c?.professionalTitle || "Consultant"}
+                          </p>
+                          <p className="mt-1 text-zinc-400">
+                            {c?.category || "Category N/A"}
+                          </p>
+                          <p className="mt-1 text-zinc-400">
+                            Profile quality: {c?.completenessScore ?? "N/A"}%
+                          </p>
                           <div className="mt-2 flex flex-wrap gap-1">
-                            {CONSULTANT_PIPELINE_STATUSES.filter((s) => s !== status).slice(0, 2).map((next) => (
-                              <button
-                                key={next}
-                                onClick={() => void move(item, next)}
-                                className="rounded border border-yellow-400/40 px-2 py-1 text-[10px] text-yellow-200 hover:bg-yellow-500/10"
-                              >
-                                Move to {STATUS_LABELS[next]}
-                              </button>
-                            ))}
+                            {CONSULTANT_PIPELINE_STATUSES.filter(
+                              (s) => s !== status,
+                            )
+                              .slice(0, 2)
+                              .map((next) => (
+                                <button
+                                  key={next}
+                                  onClick={() => void move(item, next)}
+                                  className="rounded border border-yellow-400/40 px-2 py-1 text-[10px] text-yellow-200 hover:bg-yellow-500/10"
+                                >
+                                  Move to {STATUS_LABELS[next]}
+                                </button>
+                              ))}
                           </div>
                         </article>
                       );
