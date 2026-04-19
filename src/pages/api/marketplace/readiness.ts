@@ -69,6 +69,14 @@ export default async function handler(
       payoutConnected,
       payoutReady,
       dashboardReady: payoutReady,
+      creatorPlanStatus: seller?.creatorPlanStatus || "inactive",
+      creatorPlanId: seller?.creatorPlanId || null,
+      creatorReady: Boolean(seller?.creatorReady),
+      musicCreatorReady: Boolean(
+        seller?.creatorOnboardingStatus === "onboarded" &&
+          seller?.creatorPlanStatus === "active" &&
+          payoutReady,
+      ),
       stripeAccountId,
       requirements,
     });

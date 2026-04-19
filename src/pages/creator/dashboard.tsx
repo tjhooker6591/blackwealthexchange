@@ -7,6 +7,9 @@ type Readiness = {
   payoutConnected: boolean;
   payoutReady: boolean;
   dashboardReady: boolean;
+  creatorPlanStatus?: string;
+  creatorReady?: boolean;
+  musicCreatorReady?: boolean;
   stripeAccountId?: string | null;
   requirements?: string[];
 };
@@ -69,11 +72,19 @@ export default function CreatorDashboardPage() {
               label="Payout Ready"
               value={state.payoutReady ? "Yes" : "No"}
             />
+            <Card
+              label="Creator Plan"
+              value={state.creatorPlanStatus || "inactive"}
+            />
+            <Card
+              label="Creator Ready"
+              value={state.musicCreatorReady || state.creatorReady ? "Yes" : "No"}
+            />
           </div>
         ) : null}
 
         <div className="mt-6 flex flex-wrap gap-3">
-          {state?.dashboardReady ? (
+          {state?.musicCreatorReady || state?.creatorReady ? (
             <Link
               href="/marketplace/add-products"
               className="rounded-xl bg-[#D4AF37] px-4 py-2 font-bold text-black"
@@ -102,7 +113,7 @@ export default function CreatorDashboardPage() {
           </Link>
         </div>
 
-        {state && !state.dashboardReady ? (
+        {state && !(state.musicCreatorReady || state.creatorReady) ? (
           <div className="mt-6 rounded-xl border border-yellow-400/30 bg-yellow-500/10 p-4">
             <h2 className="font-extrabold text-[#D4AF37]">
               Creator account not fully ready yet

@@ -9,6 +9,9 @@ type Readiness = {
   payoutConnected?: boolean;
   payoutReady?: boolean;
   dashboardReady?: boolean;
+  creatorPlanStatus?: string;
+  creatorReady?: boolean;
+  musicCreatorReady?: boolean;
 };
 
 export default function MusicPricingPage() {
@@ -61,8 +64,8 @@ export default function MusicPricingPage() {
           return;
         }
 
-        if (data?.dashboardReady && data?.payoutReady) {
-          // Pricing lane is for activation. If already ready, send to creator dashboard.
+        if (data?.musicCreatorReady || data?.creatorReady) {
+          // Pricing lane is for activation. If already fully creator-ready, send to dashboard.
           router.replace("/creator/dashboard");
           return;
         }
@@ -89,7 +92,8 @@ export default function MusicPricingPage() {
       billing_cycle: "monthly",
       destination: "/api/stripe/checkout",
       ctaId: `music_plan_${planId}`,
-      ctaLabel: planId === "music-creator-pro" ? "Choose Pro" : "Choose Starter",
+      ctaLabel:
+        planId === "music-creator-pro" ? "Choose Pro" : "Choose Starter",
     });
 
     try {
