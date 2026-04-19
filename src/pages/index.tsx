@@ -448,9 +448,9 @@ const MONTHLY_SPOTLIGHTS: MonthlySpotlight[] = [
     title: "Diaspora Innovation",
     subtitle: "April spotlight",
     insight:
-      "Highlighting creators and founders turning local talent into global impact.",
-    ctaLabel: "Discover opportunities",
-    ctaHref: "/job-listings",
+      "Highlighting creators and founders turning local talent into global impact through Black-owned businesses.",
+    ctaLabel: "Explore Black-owned businesses",
+    ctaHref: "/business-directory",
   },
   {
     month: 4,
@@ -1376,6 +1376,15 @@ export default function Home() {
       <section className="relative z-10 pb-8 sm:pb-10">
         <div className="container mx-auto max-w-6xl px-4">
           <div className="relative overflow-hidden rounded-2xl border border-[#D4AF37]/25 bg-gradient-to-br from-[#D4AF37]/10 via-black to-black p-4 sm:p-5 shadow-[0_0_0_1px_rgba(212,175,55,0.15)]">
+            <div
+              className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-[0.14]"
+              style={{ backgroundImage: "url('/images/hero1.jpg')" }}
+              aria-hidden="true"
+            />
+            <div
+              className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/82 via-black/72 to-black/82"
+              aria-hidden="true"
+            />
             <div className="pointer-events-none absolute -top-20 right-[-4rem] h-48 w-48 rounded-full bg-[#D4AF37]/12 blur-3xl" />
             <div className="relative flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
               <div className="max-w-3xl">
