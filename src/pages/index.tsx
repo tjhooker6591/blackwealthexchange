@@ -406,6 +406,134 @@ const EconomicImpactSimulator = () => {
 
 type VerticalKey = "all" | "shopping" | "news";
 
+type MonthlySpotlight = {
+  month: number;
+  title: string;
+  subtitle: string;
+  insight: string;
+  ctaLabel: string;
+  ctaHref: string;
+};
+
+const MONTHLY_SPOTLIGHTS: MonthlySpotlight[] = [
+  {
+    month: 0,
+    title: "Global Black Futures",
+    subtitle: "January spotlight",
+    insight:
+      "Opening each year by honoring builders shaping Black futures across continents.",
+    ctaLabel: "Explore the mission",
+    ctaHref: "/about",
+  },
+  {
+    month: 1,
+    title: "Legacy and Leadership",
+    subtitle: "February spotlight",
+    insight:
+      "Recognizing leaders whose courage expanded economic access and collective ownership.",
+    ctaLabel: "Read our vision",
+    ctaHref: "/about",
+  },
+  {
+    month: 2,
+    title: "Women Building Wealth",
+    subtitle: "March spotlight",
+    insight:
+      "Centering Black women worldwide advancing families, communities, and enterprise.",
+    ctaLabel: "See platform pillars",
+    ctaHref: "/about",
+  },
+  {
+    month: 3,
+    title: "Diaspora Innovation",
+    subtitle: "April spotlight",
+    insight:
+      "Highlighting creators and founders turning local talent into global impact.",
+    ctaLabel: "Discover opportunities",
+    ctaHref: "/job-listings",
+  },
+  {
+    month: 4,
+    title: "Community Enterprise",
+    subtitle: "May spotlight",
+    insight:
+      "Honoring community-rooted businesses that keep value circulating where it belongs.",
+    ctaLabel: "Browse the directory",
+    ctaHref: "/business-directory",
+  },
+  {
+    month: 5,
+    title: "Culture as Capital",
+    subtitle: "June spotlight",
+    insight:
+      "Celebrating Black cultural influence as a force for ownership and long-term prosperity.",
+    ctaLabel: "Learn more",
+    ctaHref: "/financial-literacy",
+  },
+  {
+    month: 6,
+    title: "Economic Freedom Now",
+    subtitle: "July spotlight",
+    insight:
+      "A midsummer focus on practical paths to ownership, autonomy, and generational wealth.",
+    ctaLabel: "Start your path",
+    ctaHref: "/start-here",
+  },
+  {
+    month: 7,
+    title: "Builders of Tomorrow",
+    subtitle: "August spotlight",
+    insight:
+      "Recognizing students and early-career talent preparing to lead the next economy.",
+    ctaLabel: "View opportunities",
+    ctaHref: "/job-listings",
+  },
+  {
+    month: 8,
+    title: "Diaspora Connections",
+    subtitle: "September spotlight",
+    insight:
+      "Spotlighting cross-border Black networks turning relationships into durable growth.",
+    ctaLabel: "Connect through BWE",
+    ctaHref: "/business-directory",
+  },
+  {
+    month: 9,
+    title: "Ownership in Action",
+    subtitle: "October spotlight",
+    insight:
+      "Featuring actionable ways families and founders can move from intent to ownership.",
+    ctaLabel: "Open search",
+    ctaHref: "/search-results",
+  },
+  {
+    month: 10,
+    title: "Collective Progress",
+    subtitle: "November spotlight",
+    insight:
+      "Honoring collaboration, reciprocity, and the businesses that uplift whole communities.",
+    ctaLabel: "Support Black businesses",
+    ctaHref: "/business-directory",
+  },
+  {
+    month: 11,
+    title: "Year-End Reflection",
+    subtitle: "December spotlight",
+    insight:
+      "Closing the year with gratitude for Black excellence and renewed focus on what comes next.",
+    ctaLabel: "Read our commitment",
+    ctaHref: "/about",
+  },
+];
+
+function getMonthlySpotlight(date = new Date()): MonthlySpotlight {
+  const fallback = MONTHLY_SPOTLIGHTS[0];
+  return (
+    MONTHLY_SPOTLIGHTS.find((item) => item.month === date.getMonth()) ||
+    fallback
+  );
+}
+
 function TabButton({
   active,
   onClick,
@@ -465,6 +593,7 @@ export default function Home() {
 
   const router = useRouter();
   const { user } = useAuth();
+  const monthlySpotlight = useMemo(() => getMonthlySpotlight(), []);
 
   const trackHomepageEvent = (
     eventType: string,
@@ -521,22 +650,36 @@ export default function Home() {
 
     if (!q) {
       return router.push({
-        pathname: "/search-results",
+        pathname: "/business-directory",
         query: {
           q: "",
           search: "",
           scope,
+          type: scope,
+          tab: scope,
+          verifiedOnly: verifiedOnly ? "1" : "0",
+          sponsoredFirst: sponsoredFirst ? "1" : "0",
+          sort,
+          state: stateFilter.trim().toUpperCase(),
+          ...(category.trim() ? { category: category.trim() } : {}),
           ai: ai ? "1" : "0",
         },
       });
     }
 
     return router.push({
-      pathname: "/search-results",
+      pathname: "/business-directory",
       query: {
         q,
         search: q,
         scope,
+        type: scope,
+        tab: scope,
+        verifiedOnly: verifiedOnly ? "1" : "0",
+        sponsoredFirst: sponsoredFirst ? "1" : "0",
+        sort,
+        state: stateFilter.trim().toUpperCase(),
+        ...(category.trim() ? { category: category.trim() } : {}),
         ai: ai ? "1" : "0",
       },
     });
@@ -556,7 +699,7 @@ export default function Home() {
           ? "/marketplace"
           : vertical === "news"
             ? "/news"
-            : "/search-results",
+            : "/business-directory",
       vertical,
       aiMode,
       scope: leftScope,
@@ -1094,10 +1237,53 @@ export default function Home() {
                       </span>
 
                       <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[10px] sm:text-[11px]">
-                        Tap{" "}
-                        <span className="font-black text-white/75">Search</span>
+                        Sends you to the full directory
                       </span>
                     </div>
+
+                    {vertical === "all" && (
+                      <div className="mt-2.5 flex flex-wrap items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSearchQuery("restaurant");
+                            setLeftScope("businesses");
+                            submitHomepageSearch("quick_intent_restaurant", "restaurant");
+                          }}
+                          className="rounded-full border border-white/12 bg-white/[0.03] px-3 py-1.5 text-[11px] font-bold text-white/75 transition hover:bg-white/[0.07]"
+                        >
+                          Restaurants
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSearchQuery("financial advisor");
+                            setLeftScope("businesses");
+                            submitHomepageSearch("quick_intent_finance", "financial advisor");
+                          }}
+                          className="rounded-full border border-white/12 bg-white/[0.03] px-3 py-1.5 text-[11px] font-bold text-white/75 transition hover:bg-white/[0.07]"
+                        >
+                          Financial advisors
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSearchQuery("nonprofit");
+                            setLeftScope("organizations");
+                            submitHomepageSearch("quick_intent_nonprofit", "nonprofit");
+                          }}
+                          className="rounded-full border border-white/12 bg-white/[0.03] px-3 py-1.5 text-[11px] font-bold text-white/75 transition hover:bg-white/[0.07]"
+                        >
+                          Nonprofits
+                        </button>
+                        <Link
+                          href="/business-directory"
+                          className="rounded-full border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-3 py-1.5 text-[11px] font-bold text-[#F1D57A] transition hover:bg-[#D4AF37]/16"
+                        >
+                          Open full directory
+                        </Link>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -1157,6 +1343,34 @@ export default function Home() {
                   Explore Opportunities
                 </Link>
               </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="relative z-10 pb-8 sm:pb-10">
+        <div className="container mx-auto max-w-6xl px-4">
+          <div className="relative overflow-hidden rounded-2xl border border-[#D4AF37]/25 bg-gradient-to-br from-[#D4AF37]/10 via-black to-black p-4 sm:p-5 shadow-[0_0_0_1px_rgba(212,175,55,0.15)]">
+            <div className="pointer-events-none absolute -top-20 right-[-4rem] h-48 w-48 rounded-full bg-[#D4AF37]/12 blur-3xl" />
+            <div className="relative flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+              <div className="max-w-3xl">
+                <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#D4AF37]">
+                  BWE Monthly Spotlight
+                </p>
+                <h2 className="mt-1 text-lg font-extrabold tracking-tight text-white sm:text-xl">
+                  {monthlySpotlight.title}
+                </h2>
+                <p className="mt-1 text-xs font-semibold uppercase tracking-[0.08em] text-white/55">
+                  {monthlySpotlight.subtitle}
+                </p>
+                <p className="mt-2 text-sm text-white/78">{monthlySpotlight.insight}</p>
+              </div>
+              <Link
+                href={monthlySpotlight.ctaHref}
+                className="inline-flex items-center rounded-xl border border-[#D4AF37]/40 bg-black/30 px-3.5 py-2 text-xs font-bold text-[#F1D57A] hover:bg-black/50"
+              >
+                {monthlySpotlight.ctaLabel}
+              </Link>
             </div>
           </div>
         </div>
