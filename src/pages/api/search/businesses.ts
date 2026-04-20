@@ -70,6 +70,16 @@ function buildTokenSearchClause(tokens: string[], fields: string[]) {
   };
 }
 
+function buildTokenAnyClause(tokens: string[], fields: string[]) {
+  if (!tokens.length) return null;
+  return {
+    $or: tokens.map((token) => {
+      const rx = new RegExp(escapeRegex(token), "i");
+      return { $or: fields.map((field) => ({ [field]: rx })) };
+    }),
+  };
+}
+
 function relevanceScoreBusiness(item: any, search: string) {
   const q = search.toLowerCase().trim();
   if (!q) return 0;
@@ -236,6 +246,29 @@ export default async function handler(
     }
 
     const and: any[] = [];
+    const searchFields = isOrganizations
+      ? [
+          "name",
+          "alias",
+          "description",
+          "orgType",
+          "denomination",
+          "address",
+          "city",
+          "state",
+        ]
+      : [
+          "business_name",
+          "alias",
+          "description",
+          "categories",
+          "display_categories",
+          "category",
+          "address",
+          "city",
+          "state",
+          "country",
+        ];
 
     if (!includeAllStatuses) {
       and.push({
@@ -250,35 +283,11 @@ export default async function handler(
       });
     }
 
-    if (search) {
-      const tokens = normalizeSearchTokens(search);
-      const tokenClause = buildTokenSearchClause(
-        tokens,
-        isOrganizations
-          ? [
-              "name",
-              "alias",
-              "description",
-              "orgType",
-              "denomination",
-              "address",
-              "city",
-              "state",
-            ]
-          : [
-              "business_name",
-              "alias",
-              "description",
-              "categories",
-              "display_categories",
-              "category",
-              "address",
-              "city",
-              "state",
-              "country",
-            ],
-      );
-      if (tokenClause) and.push(tokenClause);
+    const searchTokens = search ? normalizeSearchTokens(search) : [];
+    let searchTokenClause: any = null;
+    if (search && searchTokens.length) {
+      searchTokenClause = buildTokenSearchClause(searchTokens, searchFields);
+      if (searchTokenClause) and.push(searchTokenClause);
     }
 
     if (!isOrganizations && category && category !== "All") {
@@ -311,8 +320,18 @@ export default async function handler(
       });
     }
 
-    const query = and.length ? { $and: and } : {};
-    const total = await col.countDocuments(query);
+    const strictQuery = and.length ? { $and: and } : {};
+    let query: any = strictQuery;
+    let total = await col.countDocuments(query);
+
+    if (search && total === 0 && searchTokens.length > 1) {
+      const baseAnd = searchTokenClause
+        ? and.filter((clause) => clause !== searchTokenClause)
+        : and;
+      const tokenAnyClause = buildTokenAnyClause(searchTokens, searchFields);
+      query = tokenAnyClause ? { $and: [...baseAnd, tokenAnyClause] } : strictQuery;
+      total = await col.countDocuments(query);
+    }
 
     let items: any[] = [];
 

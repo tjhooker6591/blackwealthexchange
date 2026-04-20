@@ -1277,6 +1277,44 @@ export default function BusinessDirectory() {
                   </div>
                 ) : null}
 
+                {hasSearched && total > 0 && total < 5 ? (
+                  <div className="mt-2 flex flex-wrap items-center gap-2 rounded-xl border border-white/10 bg-white/[0.02] px-3 py-2 text-[11px] text-white/70">
+                    <span className="font-semibold text-white/85">Few results.</span>
+                    {stateFilter ? (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setStateFilter("");
+                          setPage(1);
+                        }}
+                        className="rounded-full border border-white/20 bg-black/30 px-2.5 py-1 text-[11px] text-white/85"
+                      >
+                        Remove state filter
+                      </button>
+                    ) : null}
+                    {scope === "businesses" ? (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          router.push({
+                            pathname: "/business-directory",
+                            query: {
+                              ...router.query,
+                              type: "organizations",
+                              scope: "organizations",
+                              tab: "organizations",
+                              page: 1,
+                            },
+                          });
+                        }}
+                        className="rounded-full border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-2.5 py-1 text-[11px] text-[#F1D57A]"
+                      >
+                        Check Organizations
+                      </button>
+                    ) : null}
+                  </div>
+                ) : null}
+
                 <div className="relative mt-3 min-h-[160px]">
                   {isLoading && (
                     <div className="absolute inset-0 z-20 rounded-xl bg-black/70 p-4 backdrop-blur-sm">
@@ -1435,14 +1473,18 @@ export default function BusinessDirectory() {
                             });
                             trackFlowEvent({
                               eventType: "rescue_action_clicked",
-                              source: "business_directory_no_result_switch_scope",
+                              source:
+                                "business_directory_no_result_switch_scope",
                               query: input.trim(),
                               fromScope: scope,
                             });
                           }}
                           className="rounded-lg border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-3 py-1.5 text-xs font-bold text-[#F1D57A] hover:bg-[#D4AF37]/20"
                         >
-                          Try {scope === "businesses" ? "Organizations" : "Businesses"}
+                          Try{" "}
+                          {scope === "businesses"
+                            ? "Organizations"
+                            : "Businesses"}
                         </button>
                       </div>
 
