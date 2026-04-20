@@ -28,12 +28,27 @@ function safeText(v: unknown) {
 }
 
 function normalizeSearchTokens(search: string) {
+  const stopwords = new Set([
+    "black",
+    "owned",
+    "owner",
+    "business",
+    "businesses",
+    "company",
+    "companies",
+    "near",
+    "me",
+    "help",
+    "find",
+  ]);
+
   return search
     .toLowerCase()
     .trim()
     .split(/\s+/)
     .map((t) => t.trim())
     .filter(Boolean)
+    .filter((t) => !stopwords.has(t))
     .slice(0, 8);
 }
 
@@ -286,7 +301,7 @@ export default async function handler(
       });
     }
 
-    if (!includeIncomplete) {
+    if (!includeIncomplete && !isOrganizations) {
       and.push({
         $or: [
           { isComplete: true },

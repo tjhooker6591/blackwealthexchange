@@ -1247,7 +1247,10 @@ export default function BusinessDirectory() {
                   </div>
                 </div>
 
-                {hasSearched && total > 0 && scope === "businesses" && relatedCategorySuggestions.length ? (
+                {hasSearched &&
+                total > 0 &&
+                scope === "businesses" &&
+                relatedCategorySuggestions.length ? (
                   <div className="mt-2 flex flex-wrap items-center gap-2">
                     <span className="text-[11px] font-bold uppercase tracking-[0.08em] text-white/45">
                       Related categories
@@ -1408,6 +1411,39 @@ export default function BusinessDirectory() {
                         >
                           Clear search
                         </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            router.push({
+                              pathname: "/business-directory",
+                              query: {
+                                ...router.query,
+                                type:
+                                  scope === "businesses"
+                                    ? "organizations"
+                                    : "businesses",
+                                scope:
+                                  scope === "businesses"
+                                    ? "organizations"
+                                    : "businesses",
+                                tab:
+                                  scope === "businesses"
+                                    ? "organizations"
+                                    : "businesses",
+                                page: 1,
+                              },
+                            });
+                            trackFlowEvent({
+                              eventType: "rescue_action_clicked",
+                              source: "business_directory_no_result_switch_scope",
+                              query: input.trim(),
+                              fromScope: scope,
+                            });
+                          }}
+                          className="rounded-lg border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-3 py-1.5 text-xs font-bold text-[#F1D57A] hover:bg-[#D4AF37]/20"
+                        >
+                          Try {scope === "businesses" ? "Organizations" : "Businesses"}
+                        </button>
                       </div>
 
                       <div className="mt-4 space-y-2 text-center">
@@ -1469,131 +1505,131 @@ export default function BusinessDirectory() {
                   ) : (
                     <div className="divide-y divide-white/10 overflow-hidden rounded-xl border border-white/10 bg-black/20">
                       {visibleWithSponsors.map((item, idx) => (
-                          <div
-                            key={(item as any)._id ?? `r-${idx}`}
-                            className="flex items-start gap-3 px-3 py-4"
-                          >
-                            {/* Thumbnail (business only if available) */}
-                            <img
-                              src={
-                                (item as any).__kind === "business"
-                                  ? (item as any).image || "/default-image.jpg"
-                                  : "/default-image.jpg"
-                              }
-                              alt={getTitle(item as Row) || "Listing"}
-                              width={48}
-                              height={48}
-                              className="mt-0.5 h-12 w-12 rounded-xl object-cover border border-white/15 bg-black/40"
-                              onError={handleImageError}
-                            />
+                        <div
+                          key={(item as any)._id ?? `r-${idx}`}
+                          className="flex items-start gap-3 px-3 py-4"
+                        >
+                          {/* Thumbnail (business only if available) */}
+                          <img
+                            src={
+                              (item as any).__kind === "business"
+                                ? (item as any).image || "/default-image.jpg"
+                                : "/default-image.jpg"
+                            }
+                            alt={getTitle(item as Row) || "Listing"}
+                            width={48}
+                            height={48}
+                            className="mt-0.5 h-12 w-12 rounded-xl object-cover border border-white/15 bg-black/40"
+                            onError={handleImageError}
+                          />
 
-                            {/* Google-like text block */}
-                            <div className="min-w-0 flex-1">
-                              {/* Title must always be clickable */}
-                              <Link
-                                href={getHref(item as Row)}
-                                className="block truncate text-[#D4AF37] font-extrabold hover:underline"
-                              >
-                                {getTitle(item as Row) || "Untitled Listing"}
-                              </Link>
+                          {/* Google-like text block */}
+                          <div className="min-w-0 flex-1">
+                            {/* Title must always be clickable */}
+                            <Link
+                              href={getHref(item as Row)}
+                              className="block truncate text-[#D4AF37] font-extrabold hover:underline"
+                            >
+                              {getTitle(item as Row) || "Untitled Listing"}
+                            </Link>
 
-                              <div className="mt-1 flex flex-wrap items-center gap-1.5">
-                                {getTrustMeta(item as Row).verified ? (
-                                  <span className="rounded-full border border-emerald-400/30 bg-emerald-400/15 px-2 py-0.5 text-[10px] font-bold text-emerald-200">
-                                    Verified
-                                  </span>
-                                ) : getTrustMeta(item as Row).approved ? (
-                                  <span className="rounded-full border border-white/20 bg-white/10 px-2 py-0.5 text-[10px] font-bold text-white/75">
-                                    Approved listing
-                                  </span>
-                                ) : null}
-                                {getTrustMeta(item as Row).sponsored && (
-                                  <span className="rounded-full border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-2 py-0.5 text-[10px] font-bold text-[#D4AF37]">
-                                    Sponsored
-                                  </span>
-                                )}
-                                {!getTrustMeta(item as Row).isComplete && (
-                                  <span className="rounded-full border border-sky-400/30 bg-sky-400/15 px-2 py-0.5 text-[10px] font-bold text-sky-200">
-                                    Incomplete profile
-                                  </span>
-                                )}
-                              </div>
-
-                              {/* Details line: rating · price · category */}
-                              <div className="mt-1 text-[12px] text-white/70">
-                                {getRatingLine(item as Row) ||
-                                  getCategoryLabel(item as Row) ||
-                                  ""}
-                              </div>
-
-                              {/* Location line ALWAYS shown (city/state preferred) */}
-                              <div className="mt-0.5 text-[12px] text-white/55">
-                                {getLocation(item as Row) ||
-                                  "Location not available"}
-                              </div>
-
-                              {/* Snippet line (quote-style like your example) */}
-                              <div
-                                className="mt-1 text-[12px] text-white/65"
-                                style={{
-                                  display: "-webkit-box",
-                                  WebkitBoxOrient: "vertical" as any,
-                                  WebkitLineClamp: 2 as any,
-                                  overflow: "hidden",
-                                }}
-                              >
-                                {getDesc(item as Row)
-                                  ? `“${getDesc(item as Row)}”`
-                                  : "“Description not available.”"}
-                              </div>
-
-                              <div className="mt-2 flex flex-wrap gap-2">
-                                <Link
-                                  href={getHref(item as Row)}
-                                  className="rounded-lg bg-[#D4AF37] px-3 py-1.5 text-[11px] font-extrabold text-black hover:bg-yellow-500"
-                                >
-                                  View details
-                                </Link>
-                                {getWebsite(item as Row) ? (
-                                  <a
-                                    href={getWebsite(item as Row)}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="rounded-lg border border-white/20 bg-black/30 px-3 py-1.5 text-[11px] font-bold text-white/80 hover:bg-black/45"
-                                  >
-                                    Website
-                                  </a>
-                                ) : null}
-                                {getLocation(item as Row) ? (
-                                  <a
-                                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(getLocation(item as Row))}`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="rounded-lg border border-white/20 bg-black/30 px-3 py-1.5 text-[11px] font-bold text-white/80 hover:bg-black/45"
-                                  >
-                                    Directions
-                                  </a>
-                                ) : null}
-                              </div>
-                            </div>
-
-                            {/* Right mini meta (phone) */}
-                            <div className="hidden sm:block min-w-[140px] text-right text-[11px] text-white/55">
-                              {getPhone(item as Row) ? (
-                                <a
-                                  href={`tel:${getPhone(item as Row)}`}
-                                  className="truncate underline hover:text-white/80"
-                                >
-                                  {getPhone(item as Row)}
-                                </a>
-                              ) : (
-                                <div className="text-white/35">
-                                  No phone listed
-                                </div>
+                            <div className="mt-1 flex flex-wrap items-center gap-1.5">
+                              {getTrustMeta(item as Row).verified ? (
+                                <span className="rounded-full border border-emerald-400/30 bg-emerald-400/15 px-2 py-0.5 text-[10px] font-bold text-emerald-200">
+                                  Verified
+                                </span>
+                              ) : getTrustMeta(item as Row).approved ? (
+                                <span className="rounded-full border border-white/20 bg-white/10 px-2 py-0.5 text-[10px] font-bold text-white/75">
+                                  Approved listing
+                                </span>
+                              ) : null}
+                              {getTrustMeta(item as Row).sponsored && (
+                                <span className="rounded-full border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-2 py-0.5 text-[10px] font-bold text-[#D4AF37]">
+                                  Sponsored
+                                </span>
+                              )}
+                              {!getTrustMeta(item as Row).isComplete && (
+                                <span className="rounded-full border border-sky-400/30 bg-sky-400/15 px-2 py-0.5 text-[10px] font-bold text-sky-200">
+                                  Incomplete profile
+                                </span>
                               )}
                             </div>
+
+                            {/* Details line: rating · price · category */}
+                            <div className="mt-1 text-[12px] text-white/70">
+                              {getRatingLine(item as Row) ||
+                                getCategoryLabel(item as Row) ||
+                                ""}
+                            </div>
+
+                            {/* Location line ALWAYS shown (city/state preferred) */}
+                            <div className="mt-0.5 text-[12px] text-white/55">
+                              {getLocation(item as Row) ||
+                                "Location not available"}
+                            </div>
+
+                            {/* Snippet line (quote-style like your example) */}
+                            <div
+                              className="mt-1 text-[12px] text-white/65"
+                              style={{
+                                display: "-webkit-box",
+                                WebkitBoxOrient: "vertical" as any,
+                                WebkitLineClamp: 2 as any,
+                                overflow: "hidden",
+                              }}
+                            >
+                              {getDesc(item as Row)
+                                ? `“${getDesc(item as Row)}”`
+                                : "“Description not available.”"}
+                            </div>
+
+                            <div className="mt-2 flex flex-wrap gap-2">
+                              <Link
+                                href={getHref(item as Row)}
+                                className="rounded-lg bg-[#D4AF37] px-3 py-1.5 text-[11px] font-extrabold text-black hover:bg-yellow-500"
+                              >
+                                View details
+                              </Link>
+                              {getWebsite(item as Row) ? (
+                                <a
+                                  href={getWebsite(item as Row)}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="rounded-lg border border-white/20 bg-black/30 px-3 py-1.5 text-[11px] font-bold text-white/80 hover:bg-black/45"
+                                >
+                                  Website
+                                </a>
+                              ) : null}
+                              {getLocation(item as Row) ? (
+                                <a
+                                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(getLocation(item as Row))}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="rounded-lg border border-white/20 bg-black/30 px-3 py-1.5 text-[11px] font-bold text-white/80 hover:bg-black/45"
+                                >
+                                  Directions
+                                </a>
+                              ) : null}
+                            </div>
                           </div>
-                        ))}
+
+                          {/* Right mini meta (phone) */}
+                          <div className="hidden sm:block min-w-[140px] text-right text-[11px] text-white/55">
+                            {getPhone(item as Row) ? (
+                              <a
+                                href={`tel:${getPhone(item as Row)}`}
+                                className="truncate underline hover:text-white/80"
+                              >
+                                {getPhone(item as Row)}
+                              </a>
+                            ) : (
+                              <div className="text-white/35">
+                                No phone listed
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   )}
 
