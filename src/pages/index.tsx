@@ -758,7 +758,7 @@ export default function Home() {
                 priority
               />
               <span className="font-extrabold tracking-wide">
-                BWE PLATFORM • OWNERSHIP • ACCESS • CIRCULATION
+                BLACK WEALTH EXCHANGE • DIRECTORY • JOBS • MARKETPLACE
               </span>
             </div>
 
@@ -781,9 +781,9 @@ export default function Home() {
               </h1>
 
               <p className="mx-auto mt-3 max-w-2xl text-sm text-white/72 sm:text-base md:text-lg">
-                Discover trusted Black-owned businesses, move into high-value
-                opportunities, and take real economic action from one premium
-                platform.
+                Black Wealth Exchange helps you find Black-owned businesses,
+                explore jobs and opportunities, and support sellers in one place.
+                Every action keeps more dollars circulating in Black communities.
               </p>
             </div>
 
@@ -834,43 +834,43 @@ export default function Home() {
                     <button className="h-11 w-full rounded-xl border border-[#D4AF37]/45 bg-[#D4AF37]/8 px-5 text-sm font-bold text-[#F1D57A] transition hover:-translate-y-0.5 hover:bg-[#D4AF37]/16 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 sm:h-11 sm:w-auto sm:px-6">
                       {user?.accountType === "admin"
                         ? "Admin Dashboard"
-                        : "Explore Directory"}
+                        : "Find Black-owned businesses"}
                     </button>
                   </Link>
                 </>
               ) : (
                 <>
                   <Link
-                    href="/login"
+                    href="/job-listings"
                     className="w-full sm:w-auto"
                     onClick={() =>
                       trackHomepageEvent("homepage_cta_clicked", {
                         section: "hero",
-                        ctaId: "hero_login",
-                        ctaLabel: "Login",
-                        destination: "/login",
+                        ctaId: "hero_jobs",
+                        ctaLabel: "Explore jobs and opportunities",
+                        destination: "/job-listings",
                       })
                     }
                   >
                     <button className="h-11 w-full rounded-xl border border-[#D4AF37]/45 bg-[#D4AF37]/8 px-5 text-sm font-bold text-[#F1D57A] transition hover:-translate-y-0.5 hover:bg-[#D4AF37]/16 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 sm:h-11 sm:w-auto sm:px-6">
-                      Login
+                      Explore jobs and opportunities
                     </button>
                   </Link>
                   <Link
-                    href="/signup?intent=join-bwe"
+                    href="/marketplace/become-a-seller"
                     onClick={() =>
                       trackHomepageEvent("homepage_cta_clicked", {
                         section: "hero",
-                        ctaId: "hero_signup",
-                        ctaLabel: "Sign Up",
-                        destination: "/signup?intent=join-bwe",
-                        category: "signup",
+                        ctaId: "hero_start_selling",
+                        ctaLabel: "Start selling your products",
+                        destination: "/marketplace/become-a-seller",
+                        category: "seller",
                       })
                     }
                     className="w-full sm:w-auto"
                   >
                     <button className="h-11 w-full rounded-xl border border-[#D4AF37]/45 bg-[#D4AF37]/8 px-5 text-sm font-bold text-[#F1D57A] transition hover:-translate-y-0.5 hover:bg-[#D4AF37]/16 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 sm:h-11 sm:w-auto sm:px-6">
-                      Sign Up
+                      Start selling your products
                     </button>
                   </Link>
                 </>
@@ -912,7 +912,7 @@ export default function Home() {
                   Primary action
                 </div>
                 <div className="text-sm font-semibold text-white/88 sm:text-[15px]">
-                  Search the BWE ecosystem first
+                  Start with search, then take action
                 </div>
               </div>
 
@@ -1113,15 +1113,12 @@ export default function Home() {
 
                     <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-white/55 sm:text-[12px]">
                       <span>
-                        Trusted ranking + clean results.
-                        <span className="text-white/40">
-                          {" "}
-                          Filters are optional.
-                        </span>
+                        Real listings, clear trust labels, and direct next steps.
+                        <span className="text-white/40"> Filters are optional.</span>
                       </span>
 
                       <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[10px] sm:text-[11px]">
-                        Sends you to the full directory
+                        Opens full results with filters and scope controls
                       </span>
                     </div>
 
@@ -1196,47 +1193,47 @@ export default function Home() {
         <div className="container mx-auto max-w-6xl px-4">
           <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
             <div className="mb-2 text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
-              Start here
+              Choose your next move
             </div>
             <div className="grid gap-3 md:grid-cols-3">
               <article className="rounded-xl border border-[#D4AF37]/30 bg-black/35 p-4">
                 <h3 className="text-sm font-extrabold text-white">
-                  Quick Path
+                  Find Black-owned businesses
                 </h3>
                 <p className="mt-1 text-xs text-white/70">
-                  New here? Get routed to the right lane in under a minute.
+                  Search trusted listings, compare options, and open full profiles fast.
                 </p>
                 <Link
-                  href="/start-here"
+                  href="/business-directory"
                   className="mt-3 inline-flex rounded-lg bg-[#D4AF37] px-3 py-2 text-xs font-extrabold text-black hover:bg-yellow-500"
                 >
-                  Begin Guided Path
+                  Open Directory Search
                 </Link>
               </article>
               <article className="rounded-xl border border-white/10 bg-black/30 p-4">
-                <h3 className="text-sm font-extrabold text-white">Learn</h3>
+                <h3 className="text-sm font-extrabold text-white">Explore jobs and opportunities</h3>
                 <p className="mt-1 text-xs text-white/70">
-                  Build practical money skills and ownership playbooks.
+                  Find internships, jobs, and growth pathways aligned with your goals.
                 </p>
                 <Link
-                  href="/financial-literacy"
+                  href="/job-listings"
                   className="mt-3 inline-flex rounded-lg border border-[#D4AF37]/40 bg-[#D4AF37]/12 px-3 py-2 text-xs font-bold text-[#F1D57A] hover:bg-[#D4AF37]/18"
                 >
-                  Start Learning
+                  Explore Opportunities
                 </Link>
               </article>
               <article className="rounded-xl border border-white/10 bg-black/30 p-4">
                 <h3 className="text-sm font-extrabold text-white">
-                  Opportunities
+                  Start selling your products
                 </h3>
                 <p className="mt-1 text-xs text-white/70">
-                  Explore jobs and student pathways aligned to your goals.
+                  Launch your storefront, list products, and reach buyers on BWE.
                 </p>
                 <Link
-                  href="/job-listings"
+                  href="/marketplace/become-a-seller"
                   className="mt-3 inline-flex rounded-lg border border-emerald-300/35 bg-emerald-400/10 px-3 py-2 text-xs font-bold text-emerald-200 hover:bg-emerald-400/15"
                 >
-                  Explore Opportunities
+                  Start Selling
                 </Link>
               </article>
             </div>
@@ -1250,7 +1247,7 @@ export default function Home() {
             Core platform pillars
           </p>
           <h2 className="mt-1 text-lg font-extrabold tracking-tight text-white sm:text-xl">
-            What BWE helps you do
+            What you can do on Black Wealth Exchange
           </h2>
 
           <div className="mt-3 grid gap-3 md:grid-cols-4">
@@ -1346,7 +1343,7 @@ export default function Home() {
                 Featured Sponsors
               </h3>
               <p className="text-[11px] text-white/55">
-                Credibility partners and premium placements
+                Active partners supporting verified discovery and visibility
               </p>
             </div>
             <span className="text-[10px] rounded border border-white/15 px-2 py-1 text-white/55">
