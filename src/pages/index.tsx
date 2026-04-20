@@ -411,6 +411,7 @@ type MonthlySpotlight = {
   title: string;
   subtitle: string;
   insight: string;
+  impact: string;
   ctaLabel: string;
   ctaHref: string;
 };
@@ -419,109 +420,121 @@ const MONTHLY_SPOTLIGHTS: MonthlySpotlight[] = [
   {
     month: 0,
     title: "Global Black Futures",
-    subtitle: "January spotlight",
+    subtitle: "January economic focus",
     insight:
-      "Opening each year by honoring builders shaping Black futures across continents.",
-    ctaLabel: "Explore the mission",
+      "How Black builders are setting the tone for ownership, jobs, and opportunity across regions.",
+    impact: "BWE connects those builders to visibility, buyers, and long-term growth paths.",
+    ctaLabel: "See how BWE drives ownership",
     ctaHref: "/about",
   },
   {
     month: 1,
     title: "Legacy and Leadership",
-    subtitle: "February spotlight",
+    subtitle: "February economic focus",
     insight:
-      "Recognizing leaders whose courage expanded economic access and collective ownership.",
-    ctaLabel: "Read our vision",
+      "Honoring leadership that expanded Black access to capital, enterprise, and institutional influence.",
+    impact: "BWE continues that work by turning values into practical economic tools.",
+    ctaLabel: "Read the mission in action",
     ctaHref: "/about",
   },
   {
     month: 2,
     title: "Women Building Wealth",
-    subtitle: "March spotlight",
+    subtitle: "March economic focus",
     insight:
-      "Centering Black women worldwide advancing families, communities, and enterprise.",
-    ctaLabel: "See platform pillars",
+      "Centering Black women creating jobs, scaling businesses, and strengthening family wealth.",
+    impact: "BWE amplifies that leadership through discovery, commerce, and trusted opportunities.",
+    ctaLabel: "Explore BWE platform pillars",
     ctaHref: "/about",
   },
   {
     month: 3,
     title: "Diaspora Innovation",
-    subtitle: "April spotlight",
+    subtitle: "April economic focus",
     insight:
-      "Highlighting creators and founders turning local talent into global impact through Black-owned businesses.",
-    ctaLabel: "Explore Black-owned businesses",
+      "This month highlights Black founders turning local expertise into cross-border business growth.",
+    impact: "BWE helps convert that momentum into durable visibility, revenue, and ownership outcomes.",
+    ctaLabel: "Meet diaspora-led businesses",
     ctaHref: "/business-directory",
   },
   {
     month: 4,
     title: "Community Enterprise",
-    subtitle: "May spotlight",
+    subtitle: "May economic focus",
     insight:
-      "Honoring community-rooted businesses that keep value circulating where it belongs.",
-    ctaLabel: "Browse the directory",
+      "Featuring community-rooted businesses that keep value circulating where people live and work.",
+    impact: "BWE strengthens local ecosystems by connecting customers directly to Black-owned providers.",
+    ctaLabel: "Support community businesses",
     ctaHref: "/business-directory",
   },
   {
     month: 5,
     title: "Culture as Capital",
-    subtitle: "June spotlight",
+    subtitle: "June economic focus",
     insight:
-      "Celebrating Black cultural influence as a force for ownership and long-term prosperity.",
-    ctaLabel: "Learn more",
+      "Examining how Black culture drives markets and can be converted into ownership and equity.",
+    impact: "BWE pairs cultural influence with financial literacy and ownership-focused action.",
+    ctaLabel: "Build wealth skills now",
     ctaHref: "/financial-literacy",
   },
   {
     month: 6,
     title: "Economic Freedom Now",
-    subtitle: "July spotlight",
+    subtitle: "July economic focus",
     insight:
-      "A midsummer focus on practical paths to ownership, autonomy, and generational wealth.",
-    ctaLabel: "Start your path",
+      "A direct focus on practical paths from income to assets, autonomy, and generational stability.",
+    impact: "BWE gives users concrete routes to start, grow, and protect wealth.",
+    ctaLabel: "Start your ownership path",
     ctaHref: "/start-here",
   },
   {
     month: 7,
     title: "Builders of Tomorrow",
-    subtitle: "August spotlight",
+    subtitle: "August economic focus",
     insight:
-      "Recognizing students and early-career talent preparing to lead the next economy.",
-    ctaLabel: "View opportunities",
+      "Highlighting students and early-career talent preparing to lead the next Black economic chapter.",
+    impact: "BWE links emerging talent to real opportunities, mentors, and career momentum.",
+    ctaLabel: "Open jobs and pathways",
     ctaHref: "/job-listings",
   },
   {
     month: 8,
     title: "Diaspora Connections",
-    subtitle: "September spotlight",
+    subtitle: "September economic focus",
     insight:
-      "Spotlighting cross-border Black networks turning relationships into durable growth.",
-    ctaLabel: "Connect through BWE",
+      "Focusing on Black global networks that turn relationships into trade, partnerships, and growth.",
+    impact: "BWE helps those networks translate into measurable business outcomes.",
+    ctaLabel: "Discover global Black networks",
     ctaHref: "/business-directory",
   },
   {
     month: 9,
     title: "Ownership in Action",
-    subtitle: "October spotlight",
+    subtitle: "October economic focus",
     insight:
-      "Featuring actionable ways families and founders can move from intent to ownership.",
-    ctaLabel: "Open search",
+      "Spotlighting concrete moves families and founders can make this month toward ownership.",
+    impact: "BWE turns intent into execution with searchable businesses, tools, and next steps.",
+    ctaLabel: "Find your next ownership move",
     ctaHref: "/search-results",
   },
   {
     month: 10,
     title: "Collective Progress",
-    subtitle: "November spotlight",
+    subtitle: "November economic focus",
     insight:
-      "Honoring collaboration, reciprocity, and the businesses that uplift whole communities.",
-    ctaLabel: "Support Black businesses",
+      "Recognizing collaboration models where Black businesses grow together and share opportunity.",
+    impact: "BWE reinforces collective progress by expanding discovery and reciprocal support.",
+    ctaLabel: "Back collective growth",
     ctaHref: "/business-directory",
   },
   {
     month: 11,
     title: "Year-End Reflection",
-    subtitle: "December spotlight",
+    subtitle: "December economic focus",
     insight:
-      "Closing the year with gratitude for Black excellence and renewed focus on what comes next.",
-    ctaLabel: "Read our commitment",
+      "Reviewing wins, lessons, and priorities shaping the next year of Black economic progress.",
+    impact: "BWE closes the year by refocusing the mission on ownership, access, and momentum.",
+    ctaLabel: "Read BWE year-end commitment",
     ctaHref: "/about",
   },
 ];
@@ -1375,35 +1388,40 @@ export default function Home() {
 
       <section className="relative z-10 pb-8 sm:pb-10">
         <div className="container mx-auto max-w-6xl px-4">
-          <div className="relative overflow-hidden rounded-2xl border border-[#D4AF37]/25 bg-gradient-to-br from-[#D4AF37]/10 via-black to-black p-4 sm:p-5 shadow-[0_0_0_1px_rgba(212,175,55,0.15)]">
+          <div className="relative overflow-hidden rounded-2xl border border-[#D4AF37]/35 bg-gradient-to-br from-[#D4AF37]/20 via-[#100f0a] to-black p-5 sm:p-6 shadow-[0_0_0_1px_rgba(212,175,55,0.22),0_20px_48px_rgba(0,0,0,0.32)]">
             <div
-              className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-[0.14]"
+              className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-[0.28]"
               style={{ backgroundImage: "url('/images/hero1.jpg')" }}
               aria-hidden="true"
             />
             <div
-              className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/82 via-black/72 to-black/82"
+              className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/88 via-black/78 to-black/86"
               aria-hidden="true"
             />
-            <div className="pointer-events-none absolute -top-20 right-[-4rem] h-48 w-48 rounded-full bg-[#D4AF37]/12 blur-3xl" />
-            <div className="relative flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_78%_22%,rgba(212,175,55,0.18),transparent_46%)]" />
+            <div className="pointer-events-none absolute -top-24 right-[-4rem] h-56 w-56 rounded-full bg-[#D4AF37]/16 blur-3xl" />
+            <div className="relative flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <div className="max-w-3xl">
-                <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#D4AF37]">
+                <p className="inline-flex items-center rounded-full border border-[#D4AF37]/45 bg-[#D4AF37]/14 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#F1D57A]">
                   BWE Monthly Spotlight
                 </p>
-                <h2 className="mt-1 text-lg font-extrabold tracking-tight text-white sm:text-xl">
+                <h2 className="mt-2 text-xl font-extrabold tracking-tight text-white sm:text-2xl">
                   {monthlySpotlight.title}
                 </h2>
-                <p className="mt-1 text-xs font-semibold uppercase tracking-[0.08em] text-white/55">
+                <p className="mt-1 text-xs font-semibold uppercase tracking-[0.09em] text-white/70">
                   {monthlySpotlight.subtitle}
                 </p>
-                <p className="mt-2 text-sm text-white/78">
+                <p className="mt-3 text-sm text-white/86">
+                  <span className="font-semibold text-white">Why this matters now:</span>{" "}
                   {monthlySpotlight.insight}
+                </p>
+                <p className="mt-2 text-sm text-[#F3DF9A]">
+                  {monthlySpotlight.impact}
                 </p>
               </div>
               <Link
                 href={monthlySpotlight.ctaHref}
-                className="inline-flex items-center rounded-xl border border-[#D4AF37]/40 bg-black/30 px-3.5 py-2 text-xs font-bold text-[#F1D57A] hover:bg-black/50"
+                className="inline-flex items-center rounded-xl border border-[#D4AF37]/55 bg-[#0f0e09]/70 px-4 py-2.5 text-xs font-bold text-[#F1D57A] hover:bg-[#15130d]"
               >
                 {monthlySpotlight.ctaLabel}
               </Link>
