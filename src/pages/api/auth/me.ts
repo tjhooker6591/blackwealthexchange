@@ -9,6 +9,7 @@ interface JwtPayload {
   userId: string;
   email: string;
   accountType?: string;
+  tokenVersion?: number;
 }
 
 interface UserProfile {
@@ -29,6 +30,7 @@ interface UserProfile {
   blackCardTier?: string;
   blackCardStatus?: string;
   blackCardMemberSince?: Date | null;
+  tokenVersion?: number;
   [key: string]: unknown;
 }
 
@@ -90,6 +92,21 @@ export default async function handler(
 
     if (!profile) {
       return res.status(404).json({ user: null, error: "User not found." });
+    }
+
+    const currentTokenVersion =
+      typeof profile.tokenVersion === "number" && Number.isFinite(profile.tokenVersion)
+        ? profile.tokenVersion
+        : 0;
+    const incomingTokenVersion =
+      typeof payload.tokenVersion === "number" && Number.isFinite(payload.tokenVersion)
+        ? payload.tokenVersion
+        : 0;
+
+    if (incomingTokenVersion !== currentTokenVersion) {
+      return res
+        .status(401)
+        .json({ user: null, error: "Invalid or expired token." });
     }
 
     const { password: _password, ...sanitized } = profile;

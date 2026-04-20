@@ -1,14 +1,10 @@
-// src/pages/marketplace/dashboard.tsx
-"use client";
-
 import type { GetServerSideProps } from "next";
 import cookie from "cookie";
 import jwt from "jsonwebtoken";
-import SellerDashboard from "@/components/dashboards/SellerDashboard";
 import { getJwtSecret } from "@/lib/env";
 
-export default function SellerDashboardPage() {
-  return <SellerDashboard />;
+export default function AddBusinessAliasPage() {
+  return null;
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
@@ -19,7 +15,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     if (!token) {
       return {
         redirect: {
-          destination: "/login?redirect=/marketplace/dashboard",
+          destination: "/login?redirect=/add-business",
           permanent: false,
         },
       };
@@ -29,20 +25,25 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
       accountType?: string;
     };
 
-    if (payload.accountType !== "seller") {
+    if (payload.accountType !== "business") {
       return {
         redirect: {
-          destination: "/login?redirect=/marketplace/dashboard",
+          destination: "/login?redirect=/add-business",
           permanent: false,
         },
       };
     }
 
-    return { props: {} };
+    return {
+      redirect: {
+        destination: "/business-directory/add-business",
+        permanent: false,
+      },
+    };
   } catch {
     return {
       redirect: {
-        destination: "/login?redirect=/marketplace/dashboard",
+        destination: "/login?redirect=/add-business",
         permanent: false,
       },
     };

@@ -23,6 +23,7 @@ interface UserRecord {
   password?: string;
   accountType: string;
   isAdmin?: boolean;
+  tokenVersion?: number;
   [key: string]: unknown;
 }
 
@@ -161,12 +162,18 @@ export default async function handler(
       canonicalUser?.isAdmin === true ||
       user.isAdmin === true;
 
+    const tokenVersion =
+      typeof user.tokenVersion === "number" && Number.isFinite(user.tokenVersion)
+        ? user.tokenVersion
+        : 0;
+
     const token = jwt.sign(
       {
         userId: user._id.toString(),
         email: emailNorm,
         accountType: role,
         isAdmin,
+        tokenVersion,
       },
       SECRET,
       { expiresIn: SESSION_TTL_LABEL },
