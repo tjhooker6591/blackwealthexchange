@@ -638,6 +638,17 @@ export default function Home() {
     Array<{ img: string; name: string; url?: string; tagline?: string }>
   >([]);
   const [sponsorFeedLoaded, setSponsorFeedLoaded] = useState(false);
+  const [trustStats, setTrustStats] = useState<{
+    businesses: number | null;
+    organizations: number | null;
+    opportunities: number | null;
+    products: number | null;
+  }>({
+    businesses: null,
+    organizations: null,
+    opportunities: null,
+    products: null,
+  });
 
   useEffect(() => {
     const controller = new AbortController();
@@ -680,6 +691,73 @@ export default function Home() {
     };
   }, [stableSponsorFallback]);
 
+  useEffect(() => {
+    let cancelled = false;
+    const controller = new AbortController();
+
+    (async () => {
+      try {
+        const [businessesRes, orgsRes, jobsRes, productsRes] = await Promise.all([
+          fetch("/api/search/businesses?type=businesses&limit=1&page=1", {
+            cache: "no-store",
+            signal: controller.signal,
+          }),
+          fetch("/api/search/businesses?type=organizations&limit=1&page=1", {
+            cache: "no-store",
+            signal: controller.signal,
+          }),
+          fetch("/api/jobs/list?limit=300", {
+            cache: "no-store",
+            signal: controller.signal,
+          }),
+          fetch("/api/marketplace/get-products?limit=1&page=1", {
+            cache: "no-store",
+            signal: controller.signal,
+          }),
+        ]);
+
+        const [businessesData, orgsData, jobsData, productsData] =
+          await Promise.all([
+            businessesRes.json().catch(() => null),
+            orgsRes.json().catch(() => null),
+            jobsRes.json().catch(() => null),
+            productsRes.json().catch(() => null),
+          ]);
+
+        if (cancelled) return;
+
+        setTrustStats({
+          businesses: Number.isFinite(Number(businessesData?.total))
+            ? Number(businessesData.total)
+            : null,
+          organizations: Number.isFinite(Number(orgsData?.total))
+            ? Number(orgsData.total)
+            : null,
+          opportunities: Array.isArray(jobsData?.jobs)
+            ? jobsData.jobs.length
+            : null,
+          products: Number.isFinite(Number(productsData?.total))
+            ? Number(productsData.total)
+            : null,
+        });
+      } catch {
+        if (!cancelled) {
+          setTrustStats({
+            businesses: null,
+            organizations: null,
+            opportunities: null,
+            products: null,
+          });
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+      controller.abort();
+    };
+  }, []);
+
   const sponsorRail = sponsors.length ? sponsors : stableSponsorFallback;
 
   const base = getBaseUrl();
@@ -689,6 +767,11 @@ export default function Home() {
   const description = truncateMeta(
     "Discover Black-owned businesses, shop Black-owned brands, explore jobs and career opportunities, and access financial literacy resources built to strengthen Black economic power.",
   );
+
+  const formatStat = (value: number | null) =>
+    typeof value === "number" && Number.isFinite(value)
+      ? value.toLocaleString("en-US")
+      : "Live";
 
   const websiteSchema = {
     "@context": "https://schema.org",
@@ -782,9 +865,48 @@ export default function Home() {
 
               <p className="mx-auto mt-3 max-w-2xl text-sm text-white/72 sm:text-base md:text-lg">
                 Black Wealth Exchange helps you find Black-owned businesses,
-                explore jobs and opportunities, and support sellers in one place.
-                Every action keeps more dollars circulating in Black communities.
+                explore jobs and opportunities, and support sellers in one
+                place. Every action keeps more dollars circulating in Black
+                communities.
               </p>
+
+              <div className="mx-auto mt-3 grid w-full max-w-3xl grid-cols-2 gap-2 text-left sm:grid-cols-4">
+                <div className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2">
+                  <div className="text-[10px] uppercase tracking-[0.08em] text-white/45">
+                    Businesses
+                  </div>
+                  <div className="mt-0.5 text-sm font-extrabold text-white">
+                    {formatStat(trustStats.businesses)}
+                  </div>
+                </div>
+                <div className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2">
+                  <div className="text-[10px] uppercase tracking-[0.08em] text-white/45">
+                    Organizations
+                  </div>
+                  <div className="mt-0.5 text-sm font-extrabold text-white">
+                    {formatStat(trustStats.organizations)}
+                  </div>
+                </div>
+                <div className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2">
+                  <div className="text-[10px] uppercase tracking-[0.08em] text-white/45">
+                    Opportunities
+                  </div>
+                  <div className="mt-0.5 text-sm font-extrabold text-white">
+                    {formatStat(trustStats.opportunities)}
+                  </div>
+                </div>
+                <div className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2">
+                  <div className="text-[10px] uppercase tracking-[0.08em] text-white/45">
+                    Products
+                  </div>
+                  <div className="mt-0.5 text-sm font-extrabold text-white">
+                    {formatStat(trustStats.products)}
+                  </div>
+                </div>
+              </div>
+              <div className="mx-auto mt-1 max-w-3xl text-left text-[11px] text-white/50">
+                Live platform inventory snapshot.
+              </div>
             </div>
 
             <div className="mx-auto mt-4 flex w-full max-w-xl flex-col gap-2 sm:flex-row sm:justify-center">
@@ -823,7 +945,7 @@ export default function Home() {
                         ctaLabel:
                           user?.accountType === "admin"
                             ? "Admin Dashboard"
-                            : "Explore Directory",
+                            : "Find Black-owned businesses",
                         destination:
                           user?.accountType === "admin"
                             ? "/admin/dashboard"
@@ -1113,8 +1235,12 @@ export default function Home() {
 
                     <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-[11px] text-white/55 sm:text-[12px]">
                       <span>
-                        Real listings, clear trust labels, and direct next steps.
-                        <span className="text-white/40"> Filters are optional.</span>
+                        Real listings, clear trust labels, and direct next
+                        steps.
+                        <span className="text-white/40">
+                          {" "}
+                          Filters are optional.
+                        </span>
                       </span>
 
                       <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[10px] sm:text-[11px]">
@@ -1201,7 +1327,8 @@ export default function Home() {
                   Find Black-owned businesses
                 </h3>
                 <p className="mt-1 text-xs text-white/70">
-                  Search trusted listings, compare options, and open full profiles fast.
+                  Search trusted listings, compare options, and open full
+                  profiles fast.
                 </p>
                 <Link
                   href="/business-directory"
@@ -1211,9 +1338,12 @@ export default function Home() {
                 </Link>
               </article>
               <article className="rounded-xl border border-white/10 bg-black/30 p-4">
-                <h3 className="text-sm font-extrabold text-white">Explore jobs and opportunities</h3>
+                <h3 className="text-sm font-extrabold text-white">
+                  Explore jobs and opportunities
+                </h3>
                 <p className="mt-1 text-xs text-white/70">
-                  Find internships, jobs, and growth pathways aligned with your goals.
+                  Find internships, jobs, and growth pathways aligned with your
+                  goals.
                 </p>
                 <Link
                   href="/job-listings"
@@ -1227,7 +1357,8 @@ export default function Home() {
                   Start selling your products
                 </h3>
                 <p className="mt-1 text-xs text-white/70">
-                  Launch your storefront, list products, and reach buyers on BWE.
+                  Launch your storefront, list products, and reach buyers on
+                  BWE.
                 </p>
                 <Link
                   href="/marketplace/become-a-seller"
@@ -1315,14 +1446,14 @@ export default function Home() {
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="max-w-3xl">
               <p className="text-xs font-bold uppercase tracking-[0.08em] text-emerald-300">
-                Mission pathway
+                Active opportunity lane
               </p>
               <h2 className="mt-1 text-xl font-extrabold tracking-tight text-white sm:text-2xl">
                 Student Opportunities
               </h2>
               <p className="mt-2 text-sm text-white/80">
-                Centralized access to internships, scholarships, grants, and
-                mentorship designed to accelerate student outcomes.
+                Access internships, scholarships, grants, and mentorship in one
+                focused student opportunities hub.
               </p>
             </div>
             <div className="flex flex-wrap gap-2">
