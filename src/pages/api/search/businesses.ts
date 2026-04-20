@@ -204,7 +204,11 @@ function textHasPattern(text: string, token: string) {
   );
 }
 
-function getMatchQuality(item: any, intentTokens: string[], locationTokens: string[]) {
+function getMatchQuality(
+  item: any,
+  intentTokens: string[],
+  locationTokens: string[],
+) {
   const name = safeText(item?.business_name || item?.name).toLowerCase();
   const alias = safeText(item?.alias).toLowerCase();
   const category =
@@ -214,7 +218,9 @@ function getMatchQuality(item: any, intentTokens: string[], locationTokens: stri
     `${safeText(item?.city)} ${safeText(item?.state)} ${safeText(item?.address)} ${safeText(item?.country)}`.toLowerCase();
 
   const intentHits = intentTokens.filter((token) =>
-    [name, alias, category, description].some((text) => textHasPattern(text, token)),
+    [name, alias, category, description].some((text) =>
+      textHasPattern(text, token),
+    ),
   ).length;
   const locationHits = locationTokens.filter((token) =>
     textHasPattern(location, token),
@@ -235,6 +241,36 @@ function getMatchQuality(item: any, intentTokens: string[], locationTokens: stri
     return "close";
   }
   return "approximate";
+}
+
+function matchQualityRank(quality: string) {
+  if (quality === "exact") return 3;
+  if (quality === "close") return 2;
+  return 1;
+}
+
+function listingStrength(item: any) {
+  const completeness = computeListingCompleteness(item).completenessScore;
+  const hasDescription = safeText(item?.description).trim().length >= 30;
+  const hasLocation =
+    Boolean(safeText(item?.city).trim()) ||
+    Boolean(safeText(item?.state).trim()) ||
+    Boolean(safeText(item?.address).trim());
+  const hasCategory =
+    Boolean(safeText(item?.category).trim()) ||
+    Boolean(safeText(item?.categories).trim()) ||
+    Boolean(safeText(item?.display_categories).trim()) ||
+    Boolean(safeText(item?.orgType).trim());
+  const hasContact =
+    Boolean(safeText(item?.website).trim()) || Boolean(safeText(item?.phone).trim());
+
+  let strength = completeness;
+  if (hasDescription) strength += 8;
+  if (hasLocation) strength += 10;
+  if (hasCategory) strength += 10;
+  if (hasContact) strength += 6;
+
+  return Math.max(0, Math.min(140, strength));
 }
 
 function relevanceScoreOrg(item: any, search: string) {
@@ -452,7 +488,11 @@ export default async function handler(
     const strictQuery = and.length ? { $and: and } : {};
     let query: any = strictQuery;
     let total = await col.countDocuments(query);
-    let queryMode: "strict" | "fallback_intent_location" | "fallback_location" | "fallback_intent" = "strict";
+    let queryMode:
+      | "strict"
+      | "fallback_intent_location"
+      | "fallback_location"
+      | "fallback_intent" = "strict";
 
     if (search && total === 0) {
       const baseAnd = searchTokenClause
@@ -503,16 +543,33 @@ export default async function handler(
         .toArray();
 
       const ranked = candidates
-        .map((item) => ({
-          item,
-          score: isOrganizations
+        .map((item) => {
+          const matchQuality = getMatchQuality(item, intentTokens, locationTokens);
+          const strength = listingStrength(item);
+          const baseScore = isOrganizations
             ? relevanceScoreOrg(item, search)
-            : relevanceScoreBusiness(item, search),
-          completeness: computeListingCompleteness(item).completenessScore,
-          matchQuality: getMatchQuality(item, intentTokens, locationTokens),
-        }))
+            : relevanceScoreBusiness(item, search);
+          const matchTier = matchQualityRank(matchQuality);
+
+          let score = baseScore + strength * 0.15;
+          if (queryMode !== "strict" && matchQuality === "approximate") {
+            score -= 18;
+          }
+
+          return {
+            item,
+            score,
+            baseScore,
+            strength,
+            completeness: computeListingCompleteness(item).completenessScore,
+            matchQuality,
+            matchTier,
+          };
+        })
         .sort((a, b) => {
+          if (b.matchTier !== a.matchTier) return b.matchTier - a.matchTier;
           if (b.score !== a.score) return b.score - a.score;
+          if (b.strength !== a.strength) return b.strength - a.strength;
           if (sort === "completeness" && b.completeness !== a.completeness) {
             return b.completeness - a.completeness;
           }
@@ -528,6 +585,7 @@ export default async function handler(
         .map((x) => ({
           ...x.item,
           _matchQuality: x.matchQuality,
+          _listingStrength: x.strength,
         }));
 
       items = ranked.slice(skip, skip + limit);
@@ -543,12 +601,14 @@ export default async function handler(
                 ? { amountPaid: -1, createdAt: -1, business_name: 1 }
                 : { createdAt: -1, business_name: 1 };
 
-      items = (await col
-        .find(query)
-        .sort(baseSort as any)
-        .skip(skip)
-        .limit(limit)
-        .toArray()).map((item) => ({
+      items = (
+        await col
+          .find(query)
+          .sort(baseSort as any)
+          .skip(skip)
+          .limit(limit)
+          .toArray()
+      ).map((item) => ({
         ...item,
         _matchQuality: getMatchQuality(item, intentTokens, locationTokens),
       }));

@@ -582,7 +582,9 @@ export default function BusinessDirectory() {
             setTotal(toInt(data.total, tagged.length));
             setServerPaged(true);
             setHasSearched(true);
-            setQueryMode(typeof data.queryMode === "string" ? data.queryMode : "strict");
+            setQueryMode(
+              typeof data.queryMode === "string" ? data.queryMode : "strict",
+            );
             setSearchMeta(data.searchMeta || null);
             return;
           }
@@ -816,6 +818,22 @@ export default function BusinessDirectory() {
 
   const getWebsite = (r: Row) => safeStr((r as any).website);
   const getPhone = (r: Row) => safeStr((r as any).phone);
+
+  const getListingStrengthLabel = (r: Row) => {
+    const strength = Number((r as any)._listingStrength || 0);
+    if (strength >= 92) return "Strong profile";
+    if (strength >= 72) return "Solid profile";
+    return "Basic profile";
+  };
+
+  const getListingSignalLine = (r: Row) => {
+    const parts: string[] = [];
+    const location = getLocation(r);
+    const category = getCategoryLabel(r);
+    if (category) parts.push(category);
+    if (location && location !== "Location not available") parts.push(location);
+    return parts.slice(0, 2).join(" · ");
+  };
 
   const sponsorsToShow = [
     ...sponsorAds,
@@ -1318,7 +1336,8 @@ export default function BusinessDirectory() {
                       Approximate matches shown
                     </div>
                     <div className="mt-0.5 text-amber-100/85">
-                      Exact intent matches are limited right now. These results prioritize your location and closest intent terms.
+                      Exact intent matches are limited right now. These results
+                      prioritize your location and closest intent terms.
                       {exactMatchCount > 0
                         ? ` ${exactMatchCount} exact match${exactMatchCount === 1 ? "" : "es"} found on this page.`
                         : ""}
@@ -1684,18 +1703,26 @@ export default function BusinessDirectory() {
                                   Incomplete profile
                                 </span>
                               )}
-                              {safeStr((item as any)._matchQuality).toLowerCase() ===
-                              "exact" ? (
+                              {safeStr(
+                                (item as any)._matchQuality,
+                              ).toLowerCase() === "exact" ? (
                                 <span className="rounded-full border border-emerald-300/40 bg-emerald-400/10 px-2 py-0.5 text-[10px] font-bold text-emerald-200">
                                   Exact intent match
                                 </span>
                               ) : safeStr(
-                                    (item as any)._matchQuality,
-                                  ).toLowerCase() === "approximate" ? (
+                                  (item as any)._matchQuality,
+                                ).toLowerCase() === "approximate" ? (
                                 <span className="rounded-full border border-amber-300/40 bg-amber-300/10 px-2 py-0.5 text-[10px] font-bold text-amber-100">
                                   Approximate match
                                 </span>
-                              ) : null}
+                              ) : (
+                                <span className="rounded-full border border-white/25 bg-white/10 px-2 py-0.5 text-[10px] font-bold text-white/80">
+                                  Close intent match
+                                </span>
+                              )}
+                              <span className="rounded-full border border-white/20 bg-black/25 px-2 py-0.5 text-[10px] font-bold text-white/75">
+                                {getListingStrengthLabel(item as Row)}
+                              </span>
                             </div>
 
                             {/* Details line: rating · price · category */}
@@ -1705,10 +1732,9 @@ export default function BusinessDirectory() {
                                 ""}
                             </div>
 
-                            {/* Location line ALWAYS shown (city/state preferred) */}
                             <div className="mt-0.5 text-[12px] text-white/55">
-                              {getLocation(item as Row) ||
-                                "Location not available"}
+                              {getListingSignalLine(item as Row) ||
+                                "Category or location details are limited"}
                             </div>
 
                             {/* Snippet line (quote-style like your example) */}
