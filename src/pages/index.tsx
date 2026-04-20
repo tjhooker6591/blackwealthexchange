@@ -411,7 +411,7 @@ type MonthlySpotlight = {
   title: string;
   subtitle: string;
   insight: string;
-  impact: string;
+  signals: [string, string, string];
   ctaLabel: string;
   ctaHref: string;
 };
@@ -421,121 +421,157 @@ const MONTHLY_SPOTLIGHTS: MonthlySpotlight[] = [
     month: 0,
     title: "Global Black Futures",
     subtitle: "January economic focus",
-    insight:
-      "How Black builders are setting the tone for ownership, jobs, and opportunity across regions.",
-    impact: "BWE connects those builders to visibility, buyers, and long-term growth paths.",
-    ctaLabel: "See how BWE drives ownership",
-    ctaHref: "/about",
+    insight: "Where early-year momentum is forming across Black business ecosystems.",
+    signals: [
+      "Cross-border partnerships are forming earlier in Q1, not late-year.",
+      "Founder demand is shifting from awareness to repeat-customer strategy.",
+      "Communities are prioritizing ownership-focused spending over one-time support.",
+    ],
+    ctaLabel: "Explore businesses building this momentum",
+    ctaHref: "/business-directory",
   },
   {
     month: 1,
     title: "Legacy and Leadership",
     subtitle: "February economic focus",
-    insight:
-      "Honoring leadership that expanded Black access to capital, enterprise, and institutional influence.",
-    impact: "BWE continues that work by turning values into practical economic tools.",
-    ctaLabel: "Read the mission in action",
-    ctaHref: "/about",
+    insight: "How leadership patterns are translating into practical economic outcomes.",
+    signals: [
+      "Mission-led brands with clear operations are scaling faster than story-only brands.",
+      "Local trust networks remain a top growth channel for Black-owned businesses.",
+      "Visibility paired with operational consistency is driving stronger retention.",
+    ],
+    ctaLabel: "Find trusted Black-owned businesses",
+    ctaHref: "/business-directory",
   },
   {
     month: 2,
     title: "Women Building Wealth",
     subtitle: "March economic focus",
-    insight:
-      "Centering Black women creating jobs, scaling businesses, and strengthening family wealth.",
-    impact: "BWE amplifies that leadership through discovery, commerce, and trusted opportunities.",
-    ctaLabel: "Explore BWE platform pillars",
-    ctaHref: "/about",
+    insight: "Signals from women-led growth across Black communities.",
+    signals: [
+      "Women-led service businesses are expanding into product and digital offers.",
+      "Family-centered business models are proving resilient in uncertain cycles.",
+      "Mentorship and peer circles are accelerating first-year business survival.",
+    ],
+    ctaLabel: "Support women-led Black businesses",
+    ctaHref: "/business-directory",
   },
   {
     month: 3,
     title: "Diaspora Innovation",
     subtitle: "April economic focus",
-    insight:
-      "This month highlights Black founders turning local expertise into cross-border business growth.",
-    impact: "BWE helps convert that momentum into durable visibility, revenue, and ownership outcomes.",
-    ctaLabel: "Meet diaspora-led businesses",
+    insight: "What is moving right now in diaspora-led business growth.",
+    signals: [
+      "Diaspora founders are using cross-market collaboration to lower launch risk.",
+      "Bilingual and culturally fluent brands are converting faster in mixed markets.",
+      "Partnership-led distribution is outperforming paid-only acquisition for early growth.",
+    ],
+    ctaLabel: "Discover diaspora-led businesses",
     ctaHref: "/business-directory",
   },
   {
     month: 4,
     title: "Community Enterprise",
     subtitle: "May economic focus",
-    insight:
-      "Featuring community-rooted businesses that keep value circulating where people live and work.",
-    impact: "BWE strengthens local ecosystems by connecting customers directly to Black-owned providers.",
-    ctaLabel: "Support community businesses",
+    insight: "Community-level signals that directly affect local economic strength.",
+    signals: [
+      "Neighborhood businesses with service reliability are winning repeat spend.",
+      "Local collaborations are reducing customer acquisition cost for small teams.",
+      "Community buyers increasingly reward transparent pricing and clear delivery.",
+    ],
+    ctaLabel: "Support local Black-owned businesses",
     ctaHref: "/business-directory",
   },
   {
     month: 5,
     title: "Culture as Capital",
     subtitle: "June economic focus",
-    insight:
-      "Examining how Black culture drives markets and can be converted into ownership and equity.",
-    impact: "BWE pairs cultural influence with financial literacy and ownership-focused action.",
-    ctaLabel: "Build wealth skills now",
+    insight: "How cultural influence is being converted into durable business value.",
+    signals: [
+      "Audience trust now converts better when paired with clear product utility.",
+      "Creators with ownership structures are capturing more long-term upside.",
+      "Brand communities are favoring businesses that teach, not just sell.",
+    ],
+    ctaLabel: "Open wealth-building resources",
     ctaHref: "/financial-literacy",
   },
   {
     month: 6,
     title: "Economic Freedom Now",
     subtitle: "July economic focus",
-    insight:
-      "A direct focus on practical paths from income to assets, autonomy, and generational stability.",
-    impact: "BWE gives users concrete routes to start, grow, and protect wealth.",
-    ctaLabel: "Start your ownership path",
+    insight: "Practical signals around ownership, stability, and next-step execution.",
+    signals: [
+      "Consumers are prioritizing value durability over lowest-price decisions.",
+      "Small businesses with cash-flow discipline are holding stronger margins.",
+      "Ownership-focused planning is becoming a mainstream household priority.",
+    ],
+    ctaLabel: "Start your next wealth step",
     ctaHref: "/start-here",
   },
   {
     month: 7,
     title: "Builders of Tomorrow",
     subtitle: "August economic focus",
-    insight:
-      "Highlighting students and early-career talent preparing to lead the next Black economic chapter.",
-    impact: "BWE links emerging talent to real opportunities, mentors, and career momentum.",
-    ctaLabel: "Open jobs and pathways",
+    insight: "Where emerging talent is finding real pathways into the economy.",
+    signals: [
+      "Skill-based hiring is opening faster entry points than degree-only filters.",
+      "Early-career talent is prioritizing employers with growth mentorship.",
+      "Students are seeking paid pathways tied to ownership and long-term mobility.",
+    ],
+    ctaLabel: "View current opportunities",
     ctaHref: "/job-listings",
   },
   {
     month: 8,
     title: "Diaspora Connections",
     subtitle: "September economic focus",
-    insight:
-      "Focusing on Black global networks that turn relationships into trade, partnerships, and growth.",
-    impact: "BWE helps those networks translate into measurable business outcomes.",
-    ctaLabel: "Discover global Black networks",
+    insight: "Network-level signals influencing Black global commerce this month.",
+    signals: [
+      "Trust-based referrals remain a top driver of cross-region deal flow.",
+      "Service partnerships are scaling faster than solo expansion attempts.",
+      "Networked buying circles are increasing small-business order consistency.",
+    ],
+    ctaLabel: "Browse globally connected businesses",
     ctaHref: "/business-directory",
   },
   {
     month: 9,
     title: "Ownership in Action",
     subtitle: "October economic focus",
-    insight:
-      "Spotlighting concrete moves families and founders can make this month toward ownership.",
-    impact: "BWE turns intent into execution with searchable businesses, tools, and next steps.",
-    ctaLabel: "Find your next ownership move",
+    insight: "Execution signals for people moving from intention to ownership.",
+    signals: [
+      "Households are combining income growth plans with debt reduction discipline.",
+      "Micro-steps, repeated monthly, are outperforming one-time financial resets.",
+      "Business owners are prioritizing systems before scale to avoid burn.",
+    ],
+    ctaLabel: "Find your next practical move",
     ctaHref: "/search-results",
   },
   {
     month: 10,
     title: "Collective Progress",
     subtitle: "November economic focus",
-    insight:
-      "Recognizing collaboration models where Black businesses grow together and share opportunity.",
-    impact: "BWE reinforces collective progress by expanding discovery and reciprocal support.",
-    ctaLabel: "Back collective growth",
+    insight: "Signals showing how coordinated effort raises outcomes across communities.",
+    signals: [
+      "Shared customer ecosystems are improving resilience across small businesses.",
+      "Partnership bundles are increasing average order value and retention.",
+      "Collective visibility efforts are reducing dependence on paid promotion.",
+    ],
+    ctaLabel: "Support collective business growth",
     ctaHref: "/business-directory",
   },
   {
     month: 11,
     title: "Year-End Reflection",
     subtitle: "December economic focus",
-    insight:
-      "Reviewing wins, lessons, and priorities shaping the next year of Black economic progress.",
-    impact: "BWE closes the year by refocusing the mission on ownership, access, and momentum.",
-    ctaLabel: "Read BWE year-end commitment",
-    ctaHref: "/about",
+    insight: "What year-end patterns reveal before the next economic cycle begins.",
+    signals: [
+      "Businesses with strong repeat buyers are entering the new year with leverage.",
+      "Families reviewing spending patterns are making stronger Q1 financial decisions.",
+      "Teams with clear priorities are executing faster than those chasing volume.",
+    ],
+    ctaLabel: "Review practical next steps",
+    ctaHref: "/start-here",
   },
 ];
 
@@ -1412,12 +1448,19 @@ export default function Home() {
                   {monthlySpotlight.subtitle}
                 </p>
                 <p className="mt-3 text-sm text-white/86">
-                  <span className="font-semibold text-white">Why this matters now:</span>{" "}
+                  <span className="font-semibold text-white">
+                    This month at a glance:
+                  </span>{" "}
                   {monthlySpotlight.insight}
                 </p>
-                <p className="mt-2 text-sm text-[#F3DF9A]">
-                  {monthlySpotlight.impact}
-                </p>
+                <ul className="mt-2 space-y-1.5 text-sm text-[#F3DF9A]">
+                  {monthlySpotlight.signals.map((signal) => (
+                    <li key={signal} className="flex items-start gap-2">
+                      <span className="mt-[6px] h-1.5 w-1.5 flex-shrink-0 rounded-full bg-[#D4AF37]" />
+                      <span>{signal}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
               <Link
                 href={monthlySpotlight.ctaHref}
