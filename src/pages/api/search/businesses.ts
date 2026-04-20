@@ -29,7 +29,6 @@ function safeText(v: unknown) {
 
 function normalizeSearchTokens(search: string) {
   const stopwords = new Set([
-    "black",
     "owned",
     "owner",
     "business",
@@ -100,11 +99,12 @@ function relevanceScoreBusiness(item: any, search: string) {
   if (name.includes(q)) score += 40;
 
   for (const token of tokens) {
-    score += scoreTokenMatch(name, token) * 2;
-    score += scoreTokenMatch(alias, token);
-    score += scoreTokenMatch(category, token) * 1.4;
-    score += scoreTokenMatch(description, token) * 0.8;
-    score += scoreTokenMatch(location, token) * 0.8;
+    const tokenWeight = token === "black" ? 0.35 : 1;
+    score += scoreTokenMatch(name, token) * 2 * tokenWeight;
+    score += scoreTokenMatch(alias, token) * tokenWeight;
+    score += scoreTokenMatch(category, token) * 1.4 * tokenWeight;
+    score += scoreTokenMatch(description, token) * 0.8 * tokenWeight;
+    score += scoreTokenMatch(location, token) * 0.8 * tokenWeight;
   }
 
   if (item?.isVerified === true || item?.verified === true) score += 10;
@@ -133,12 +133,13 @@ function relevanceScoreOrg(item: any, search: string) {
   if (name.includes(q)) score += 40;
 
   for (const token of tokens) {
-    score += scoreTokenMatch(name, token) * 2;
-    score += scoreTokenMatch(alias, token);
-    score += scoreTokenMatch(orgType, token) * 1.5;
-    score += scoreTokenMatch(denomination, token);
-    score += scoreTokenMatch(description, token) * 0.8;
-    score += scoreTokenMatch(location, token) * 0.8;
+    const tokenWeight = token === "black" ? 0.35 : 1;
+    score += scoreTokenMatch(name, token) * 2 * tokenWeight;
+    score += scoreTokenMatch(alias, token) * tokenWeight;
+    score += scoreTokenMatch(orgType, token) * 1.5 * tokenWeight;
+    score += scoreTokenMatch(denomination, token) * tokenWeight;
+    score += scoreTokenMatch(description, token) * 0.8 * tokenWeight;
+    score += scoreTokenMatch(location, token) * 0.8 * tokenWeight;
   }
 
   if (item?.isVerified === true || item?.verified === true) score += 8;
@@ -329,7 +330,9 @@ export default async function handler(
         ? and.filter((clause) => clause !== searchTokenClause)
         : and;
       const tokenAnyClause = buildTokenAnyClause(searchTokens, searchFields);
-      query = tokenAnyClause ? { $and: [...baseAnd, tokenAnyClause] } : strictQuery;
+      query = tokenAnyClause
+        ? { $and: [...baseAnd, tokenAnyClause] }
+        : strictQuery;
       total = await col.countDocuments(query);
     }
 
