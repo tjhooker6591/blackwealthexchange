@@ -51,6 +51,38 @@ function normalizeSearchTokens(search: string) {
     .slice(0, 8);
 }
 
+const CITY_STATE_ALIASES: Record<string, string> = {
+  atlanta: "GA",
+  houston: "TX",
+  chicago: "IL",
+};
+
+function tokenPatterns(token: string): string[] {
+  const normalized = token.toLowerCase().trim();
+  if (!normalized) return [];
+
+  if (normalized in CITY_STATE_ALIASES) {
+    return [normalized, CITY_STATE_ALIASES[normalized].toLowerCase()];
+  }
+
+  if (normalized === "dentist") return ["dentist", "dental", "dentistry"];
+  if (normalized === "restaurant") {
+    return ["restaurant", "restaurants", "cafe", "eatery"];
+  }
+  if (normalized === "nonprofit") {
+    return ["nonprofit", "non-profit", "non profit", "charity", "foundation"];
+  }
+
+  return [normalized];
+}
+
+function isLocationToken(token: string) {
+  const t = token.toLowerCase().trim();
+  if (!t) return false;
+  if (t in CITY_STATE_ALIASES) return true;
+  return /^[a-z]{2}$/.test(t);
+}
+
 function scoreTokenMatch(text: string, token: string) {
   if (!text || !token) return 0;
   if (text === token) return 35;
@@ -59,12 +91,50 @@ function scoreTokenMatch(text: string, token: string) {
   return 0;
 }
 
+function buildLocationTokenConditions(token: string, fields: string[]) {
+  const t = token.toLowerCase().trim();
+  if (!t) return [];
+
+  if (t in CITY_STATE_ALIASES) {
+    const cityRx = new RegExp(escapeRegex(t), "i");
+    const stateCode = CITY_STATE_ALIASES[t].toUpperCase();
+    const conditions: any[] = [];
+
+    if (fields.includes("city")) conditions.push({ city: cityRx });
+    if (fields.includes("address")) conditions.push({ address: cityRx });
+    if (fields.includes("country")) conditions.push({ country: cityRx });
+    if (fields.includes("state")) conditions.push({ state: stateCode });
+
+    return conditions;
+  }
+
+  if (/^[a-z]{2}$/.test(t)) {
+    return fields.includes("state") ? [{ state: t.toUpperCase() }] : [];
+  }
+
+  const rx = new RegExp(escapeRegex(t), "i");
+  return fields.map((field) => ({ [field]: rx }));
+}
+
 function buildTokenSearchClause(tokens: string[], fields: string[]) {
   if (!tokens.length) return null;
+  const locationFields = ["city", "state", "address", "country"];
   return {
     $and: tokens.map((token) => {
-      const rx = new RegExp(escapeRegex(token), "i");
-      return { $or: fields.map((field) => ({ [field]: rx })) };
+      if (isLocationToken(token)) {
+        const locationConditions = buildLocationTokenConditions(
+          token,
+          locationFields,
+        );
+        return { $or: locationConditions };
+      }
+
+      const regexes = tokenPatterns(token).map(
+        (p) => new RegExp(escapeRegex(p), "i"),
+      );
+      return {
+        $or: regexes.flatMap((rx) => fields.map((field) => ({ [field]: rx }))),
+      };
     }),
   };
 }
@@ -73,10 +143,24 @@ function buildTokenAnyClause(tokens: string[], fields: string[]) {
   if (!tokens.length) return null;
   return {
     $or: tokens.map((token) => {
-      const rx = new RegExp(escapeRegex(token), "i");
-      return { $or: fields.map((field) => ({ [field]: rx })) };
+      const regexes = tokenPatterns(token).map(
+        (p) => new RegExp(escapeRegex(p), "i"),
+      );
+      return {
+        $or: regexes.flatMap((rx) => fields.map((field) => ({ [field]: rx }))),
+      };
     }),
   };
+}
+
+function buildLocationClause(tokens: string[]) {
+  if (!tokens.length) return null;
+  const locationFields = ["city", "state", "address", "country"];
+  const conditions = tokens.flatMap((token) =>
+    buildLocationTokenConditions(token, locationFields),
+  );
+
+  return conditions.length ? { $or: conditions } : null;
 }
 
 function relevanceScoreBusiness(item: any, search: string) {
@@ -285,9 +369,13 @@ export default async function handler(
     }
 
     const searchTokens = search ? normalizeSearchTokens(search) : [];
+    const strictTokens = searchTokens.filter((t) => t !== "black");
+    const locationTokens = strictTokens.filter((t) => isLocationToken(t));
+    const intentTokens = strictTokens.filter((t) => !isLocationToken(t));
+
     let searchTokenClause: any = null;
-    if (search && searchTokens.length) {
-      searchTokenClause = buildTokenSearchClause(searchTokens, searchFields);
+    if (search && strictTokens.length) {
+      searchTokenClause = buildTokenSearchClause(strictTokens, searchFields);
       if (searchTokenClause) and.push(searchTokenClause);
     }
 
@@ -325,15 +413,35 @@ export default async function handler(
     let query: any = strictQuery;
     let total = await col.countDocuments(query);
 
-    if (search && total === 0 && searchTokens.length > 1) {
+    if (search && total === 0) {
       const baseAnd = searchTokenClause
         ? and.filter((clause) => clause !== searchTokenClause)
         : and;
-      const tokenAnyClause = buildTokenAnyClause(searchTokens, searchFields);
-      query = tokenAnyClause
-        ? { $and: [...baseAnd, tokenAnyClause] }
-        : strictQuery;
-      total = await col.countDocuments(query);
+
+      if (intentTokens.length && locationTokens.length) {
+        const intentAnyClause = buildTokenAnyClause(intentTokens, searchFields);
+        const locationClause = buildLocationClause(locationTokens);
+        if (intentAnyClause && locationClause) {
+          query = { $and: [...baseAnd, intentAnyClause, locationClause] };
+          total = await col.countDocuments(query);
+        }
+      }
+
+      if (total === 0 && locationTokens.length) {
+        const locationClause = buildLocationClause(locationTokens);
+        if (locationClause) {
+          query = { $and: [...baseAnd, locationClause] };
+          total = await col.countDocuments(query);
+        }
+      }
+
+      if (total === 0 && intentTokens.length) {
+        const intentAnyClause = buildTokenAnyClause(intentTokens, searchFields);
+        if (intentAnyClause) {
+          query = { $and: [...baseAnd, intentAnyClause] };
+          total = await col.countDocuments(query);
+        }
+      }
     }
 
     let items: any[] = [];
