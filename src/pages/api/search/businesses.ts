@@ -197,6 +197,46 @@ function relevanceScoreBusiness(item: any, search: string) {
   return score;
 }
 
+function textHasPattern(text: string, token: string) {
+  if (!text || !token) return false;
+  return tokenPatterns(token).some((pattern) =>
+    new RegExp(escapeRegex(pattern), "i").test(text),
+  );
+}
+
+function getMatchQuality(item: any, intentTokens: string[], locationTokens: string[]) {
+  const name = safeText(item?.business_name || item?.name).toLowerCase();
+  const alias = safeText(item?.alias).toLowerCase();
+  const category =
+    `${safeText(item?.category)} ${safeText(item?.categories)} ${safeText(item?.display_categories)} ${safeText(item?.orgType)} ${safeText(item?.denomination)}`.toLowerCase();
+  const description = safeText(item?.description).toLowerCase();
+  const location =
+    `${safeText(item?.city)} ${safeText(item?.state)} ${safeText(item?.address)} ${safeText(item?.country)}`.toLowerCase();
+
+  const intentHits = intentTokens.filter((token) =>
+    [name, alias, category, description].some((text) => textHasPattern(text, token)),
+  ).length;
+  const locationHits = locationTokens.filter((token) =>
+    textHasPattern(location, token),
+  ).length;
+
+  const intentCoverage = intentTokens.length
+    ? intentHits / intentTokens.length
+    : 0;
+  const locationCoverage = locationTokens.length
+    ? locationHits / locationTokens.length
+    : 0;
+
+  const exactIntent = intentTokens.length > 0 && intentCoverage === 1;
+  const exactLocation = locationTokens.length === 0 || locationCoverage === 1;
+
+  if (exactIntent && exactLocation) return "exact";
+  if (exactIntent || (intentCoverage >= 0.5 && locationCoverage >= 0.5)) {
+    return "close";
+  }
+  return "approximate";
+}
+
 function relevanceScoreOrg(item: any, search: string) {
   const q = search.toLowerCase().trim();
   if (!q) return 0;
@@ -412,6 +452,7 @@ export default async function handler(
     const strictQuery = and.length ? { $and: and } : {};
     let query: any = strictQuery;
     let total = await col.countDocuments(query);
+    let queryMode: "strict" | "fallback_intent_location" | "fallback_location" | "fallback_intent" = "strict";
 
     if (search && total === 0) {
       const baseAnd = searchTokenClause
@@ -424,6 +465,7 @@ export default async function handler(
         if (intentAnyClause && locationClause) {
           query = { $and: [...baseAnd, intentAnyClause, locationClause] };
           total = await col.countDocuments(query);
+          if (total > 0) queryMode = "fallback_intent_location";
         }
       }
 
@@ -432,6 +474,7 @@ export default async function handler(
         if (locationClause) {
           query = { $and: [...baseAnd, locationClause] };
           total = await col.countDocuments(query);
+          if (total > 0) queryMode = "fallback_location";
         }
       }
 
@@ -440,6 +483,7 @@ export default async function handler(
         if (intentAnyClause) {
           query = { $and: [...baseAnd, intentAnyClause] };
           total = await col.countDocuments(query);
+          if (total > 0) queryMode = "fallback_intent";
         }
       }
     }
@@ -465,6 +509,7 @@ export default async function handler(
             ? relevanceScoreOrg(item, search)
             : relevanceScoreBusiness(item, search),
           completeness: computeListingCompleteness(item).completenessScore,
+          matchQuality: getMatchQuality(item, intentTokens, locationTokens),
         }))
         .sort((a, b) => {
           if (b.score !== a.score) return b.score - a.score;
@@ -480,7 +525,10 @@ export default async function handler(
             Number(b.item?.amountPaid || 0) - Number(a.item?.amountPaid || 0)
           );
         })
-        .map((x) => x.item);
+        .map((x) => ({
+          ...x.item,
+          _matchQuality: x.matchQuality,
+        }));
 
       items = ranked.slice(skip, skip + limit);
     } else {
@@ -495,12 +543,15 @@ export default async function handler(
                 ? { amountPaid: -1, createdAt: -1, business_name: 1 }
                 : { createdAt: -1, business_name: 1 };
 
-      items = await col
+      items = (await col
         .find(query)
-        .sort(baseSort)
+        .sort(baseSort as any)
         .skip(skip)
         .limit(limit)
-        .toArray();
+        .toArray()).map((item) => ({
+        ...item,
+        _matchQuality: getMatchQuality(item, intentTokens, locationTokens),
+      }));
     }
 
     const tookMs = Date.now() - t0;
@@ -515,6 +566,13 @@ export default async function handler(
       hasMore: page * limit < total,
       type: isOrganizations ? "organizations" : "businesses",
       sort,
+      queryMode,
+      searchMeta: {
+        strictTokens,
+        intentTokens,
+        locationTokens,
+        usedFallback: queryMode !== "strict",
+      },
       items,
     });
   } catch (error: any) {

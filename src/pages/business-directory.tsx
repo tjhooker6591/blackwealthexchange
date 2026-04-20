@@ -340,6 +340,13 @@ export default function BusinessDirectory() {
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [fetchError, setFetchError] = useState("");
+  const [queryMode, setQueryMode] = useState<string>("strict");
+  const [searchMeta, setSearchMeta] = useState<{
+    strictTokens?: string[];
+    intentTokens?: string[];
+    locationTokens?: string[];
+    usedFallback?: boolean;
+  } | null>(null);
 
   const [page, setPage] = useState(1);
   const pageSize = 20;
@@ -511,6 +518,8 @@ export default function BusinessDirectory() {
       setTotal(0);
       setHasSearched(false);
       setServerPaged(false);
+      setQueryMode("strict");
+      setSearchMeta(null);
       return;
     }
 
@@ -558,6 +567,8 @@ export default function BusinessDirectory() {
             setTotal(tagged.length);
             setServerPaged(false);
             setHasSearched(true);
+            setQueryMode("strict");
+            setSearchMeta(null);
             return;
           }
 
@@ -571,6 +582,8 @@ export default function BusinessDirectory() {
             setTotal(toInt(data.total, tagged.length));
             setServerPaged(true);
             setHasSearched(true);
+            setQueryMode(typeof data.queryMode === "string" ? data.queryMode : "strict");
+            setSearchMeta(data.searchMeta || null);
             return;
           }
 
@@ -578,6 +591,8 @@ export default function BusinessDirectory() {
           setTotal(0);
           setServerPaged(false);
           setHasSearched(true);
+          setQueryMode("strict");
+          setSearchMeta(null);
         })
         .catch((err) => {
           if (err?.name !== "AbortError") {
@@ -585,6 +600,8 @@ export default function BusinessDirectory() {
             setTotal(0);
             setServerPaged(false);
             setHasSearched(true);
+            setQueryMode("strict");
+            setSearchMeta(null);
             setFetchError("Could not load directory results. Please retry.");
           }
         })
@@ -661,6 +678,24 @@ export default function BusinessDirectory() {
       .filter((name) => name.toLowerCase() !== category.toLowerCase())
       .slice(0, 5);
   }, [pageRows, scope, category]);
+
+  const isApproximateSearch =
+    hasSearched && total > 0 && queryMode !== "strict" && Boolean(input.trim());
+
+  const suggestedRefinement = useMemo(() => {
+    const intent = (searchMeta?.intentTokens || [])[0] || "";
+    const location = (searchMeta?.locationTokens || [])[0] || "";
+    if (intent && location) return `${intent} in ${location}`;
+    return intent || location || "";
+  }, [searchMeta]);
+
+  const exactMatchCount = useMemo(
+    () =>
+      visibleWithSponsors.filter(
+        (row: any) => safeStr(row?._matchQuality).toLowerCase() === "exact",
+      ).length,
+    [visibleWithSponsors],
+  );
 
   const goPage = (p: number) => {
     const next = Math.min(Math.max(1, p), totalPages);
@@ -1277,9 +1312,63 @@ export default function BusinessDirectory() {
                   </div>
                 ) : null}
 
+                {isApproximateSearch ? (
+                  <div className="mt-2 rounded-xl border border-amber-400/30 bg-amber-400/10 px-3 py-2 text-[11px] text-amber-100">
+                    <div className="font-semibold text-amber-50">
+                      Approximate matches shown
+                    </div>
+                    <div className="mt-0.5 text-amber-100/85">
+                      Exact intent matches are limited right now. These results prioritize your location and closest intent terms.
+                      {exactMatchCount > 0
+                        ? ` ${exactMatchCount} exact match${exactMatchCount === 1 ? "" : "es"} found on this page.`
+                        : ""}
+                    </div>
+                    {suggestedRefinement ? (
+                      <div className="mt-1 text-amber-100/80">
+                        Try refining to: “{suggestedRefinement}”
+                      </div>
+                    ) : null}
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setCategory("All");
+                          setVerifiedOnly(false);
+                          setPage(1);
+                        }}
+                        className="rounded-full border border-amber-200/40 bg-black/20 px-2.5 py-1 text-[11px] text-amber-50"
+                      >
+                        Broaden category filters
+                      </button>
+                      {scope === "businesses" ? (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            router.push({
+                              pathname: "/business-directory",
+                              query: {
+                                ...router.query,
+                                type: "organizations",
+                                scope: "organizations",
+                                tab: "organizations",
+                                page: 1,
+                              },
+                            });
+                          }}
+                          className="rounded-full border border-amber-200/40 bg-black/20 px-2.5 py-1 text-[11px] text-amber-50"
+                        >
+                          Switch to Organizations
+                        </button>
+                      ) : null}
+                    </div>
+                  </div>
+                ) : null}
+
                 {hasSearched && total > 0 && total < 5 ? (
                   <div className="mt-2 flex flex-wrap items-center gap-2 rounded-xl border border-white/10 bg-white/[0.02] px-3 py-2 text-[11px] text-white/70">
-                    <span className="font-semibold text-white/85">Few results.</span>
+                    <span className="font-semibold text-white/85">
+                      Few results.
+                    </span>
                     {stateFilter ? (
                       <button
                         type="button"
@@ -1595,6 +1684,18 @@ export default function BusinessDirectory() {
                                   Incomplete profile
                                 </span>
                               )}
+                              {safeStr((item as any)._matchQuality).toLowerCase() ===
+                              "exact" ? (
+                                <span className="rounded-full border border-emerald-300/40 bg-emerald-400/10 px-2 py-0.5 text-[10px] font-bold text-emerald-200">
+                                  Exact intent match
+                                </span>
+                              ) : safeStr(
+                                    (item as any)._matchQuality,
+                                  ).toLowerCase() === "approximate" ? (
+                                <span className="rounded-full border border-amber-300/40 bg-amber-300/10 px-2 py-0.5 text-[10px] font-bold text-amber-100">
+                                  Approximate match
+                                </span>
+                              ) : null}
                             </div>
 
                             {/* Details line: rating · price · category */}
