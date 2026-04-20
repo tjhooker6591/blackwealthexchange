@@ -5,6 +5,10 @@ import React, { useCallback, useEffect, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import type { GetServerSideProps } from "next";
+import cookie from "cookie";
+import jwt from "jsonwebtoken";
+import { getJwtSecret } from "@/lib/env";
 
 interface Affiliate {
   _id: string;
@@ -374,3 +378,50 @@ export default function AdminAffiliates() {
     </>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  try {
+    const cookies = cookie.parse(req.headers.cookie || "");
+    const token = cookies.session_token;
+
+    if (!token) {
+      return {
+        redirect: {
+          destination: "/login?redirect=/admin/affiliates",
+          permanent: false,
+        },
+      };
+    }
+
+    const payload = jwt.verify(token, getJwtSecret()) as {
+      accountType?: string;
+      role?: string;
+      isAdmin?: boolean;
+      roles?: string[];
+    };
+
+    const isAdmin =
+      payload.isAdmin === true ||
+      payload.accountType === "admin" ||
+      payload.role === "admin" ||
+      (Array.isArray(payload.roles) && payload.roles.includes("admin"));
+
+    if (!isAdmin) {
+      return {
+        redirect: {
+          destination: "/login?redirect=/admin/affiliates",
+          permanent: false,
+        },
+      };
+    }
+
+    return { props: {} };
+  } catch {
+    return {
+      redirect: {
+        destination: "/login?redirect=/admin/affiliates",
+        permanent: false,
+      },
+    };
+  }
+};
