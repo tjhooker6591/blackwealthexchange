@@ -656,6 +656,41 @@ export default function BusinessDirectory() {
   }, [filteredRows, serverPaged, page]);
 
   const visibleWithSponsors = useMemo(() => pageRows, [pageRows]);
+  const approximateMode =
+    hasSearched && total > 0 && queryMode !== "strict" && Boolean(input.trim());
+
+  const curatedVisibleRows = useMemo(() => {
+    if (!approximateMode) return visibleWithSponsors;
+
+    const filtered = visibleWithSponsors.filter((row: any) => {
+      const quality = safeStr(row?._matchQuality).toLowerCase();
+      const strength = Number(row?._listingStrength || 0);
+      const hasUsefulDescription = safeStr(row?.description).trim().length >= 24;
+      const hasUsefulLocation =
+        Boolean(safeStr(row?.city).trim()) ||
+        Boolean(safeStr(row?.state).trim()) ||
+        Boolean(safeStr(row?.address).trim());
+      const hasUsefulCategory =
+        Boolean(safeStr(row?.category).trim()) ||
+        Boolean(safeStr(row?.categories).trim()) ||
+        Boolean(safeStr(row?.display_categories).trim()) ||
+        Boolean(safeStr(row?.orgType).trim());
+
+      if (quality !== "approximate") return true;
+      if (strength >= 62) return true;
+      if ((hasUsefulDescription && hasUsefulLocation) || hasUsefulCategory) {
+        return true;
+      }
+      return false;
+    });
+
+    return filtered.length >= 3 ? filtered : visibleWithSponsors;
+  }, [visibleWithSponsors, approximateMode]);
+
+  const weakListingsSuppressedCount = Math.max(
+    0,
+    visibleWithSponsors.length - curatedVisibleRows.length,
+  );
 
   const relatedCategorySuggestions = useMemo(() => {
     if (scope !== "businesses") return [] as string[];
@@ -681,8 +716,7 @@ export default function BusinessDirectory() {
       .slice(0, 5);
   }, [pageRows, scope, category]);
 
-  const isApproximateSearch =
-    hasSearched && total > 0 && queryMode !== "strict" && Boolean(input.trim());
+  const isApproximateSearch = approximateMode;
 
   const suggestedRefinement = useMemo(() => {
     const intent = (searchMeta?.intentTokens || [])[0] || "";
@@ -848,7 +882,9 @@ export default function BusinessDirectory() {
 
   const showingFrom = total === 0 ? 0 : (page - 1) * pageSize + 1;
   const showingTo =
-    total === 0 ? 0 : Math.min((page - 1) * pageSize + pageRows.length, total);
+    total === 0
+      ? 0
+      : Math.min((page - 1) * pageSize + curatedVisibleRows.length, total);
 
   useEffect(() => {
     if (!hasSearched || isLoading || total !== 0) return;
@@ -1342,6 +1378,12 @@ export default function BusinessDirectory() {
                         ? ` ${exactMatchCount} exact match${exactMatchCount === 1 ? "" : "es"} found on this page.`
                         : ""}
                     </div>
+                    {weakListingsSuppressedCount > 0 ? (
+                      <div className="mt-1 text-amber-100/80">
+                        Hidden {weakListingsSuppressedCount} low-confidence listing
+                        {weakListingsSuppressedCount === 1 ? "" : "s"} to keep results useful.
+                      </div>
+                    ) : null}
                     {suggestedRefinement ? (
                       <div className="mt-1 text-amber-100/80">
                         Try refining to: “{suggestedRefinement}”
@@ -1654,7 +1696,7 @@ export default function BusinessDirectory() {
                     </div>
                   ) : (
                     <div className="divide-y divide-white/10 overflow-hidden rounded-xl border border-white/10 bg-black/20">
-                      {visibleWithSponsors.map((item, idx) => (
+                      {curatedVisibleRows.map((item, idx) => (
                         <div
                           key={(item as any)._id ?? `r-${idx}`}
                           className="flex items-start gap-3 px-3 py-4"
