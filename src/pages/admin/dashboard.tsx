@@ -420,6 +420,53 @@ const AdminDashboard = ({
     };
   }, [statsRaw]);
 
+  const attentionItems = useMemo(
+    () => [
+      {
+        key: "businesses",
+        label: "Business approvals",
+        value: stats.pendingBusinesses,
+        href: "/admin/business-approvals",
+      },
+      {
+        key: "jobs",
+        label: "Job approvals",
+        value: stats.pendingJobs,
+        href: "/admin/job-approvals",
+      },
+      {
+        key: "products",
+        label: "Product approvals",
+        value: stats.pendingProducts,
+        href: "/admin/product-approvals",
+      },
+      {
+        key: "directory",
+        label: "Directory approvals",
+        value: stats.pendingDirectory,
+        href: "/admin/directory-approvals",
+      },
+      {
+        key: "payouts",
+        label: "Affiliate payouts",
+        value: stats.pendingPayouts,
+        href: "/admin/affiliate-payouts",
+      },
+    ],
+    [
+      stats.pendingBusinesses,
+      stats.pendingJobs,
+      stats.pendingProducts,
+      stats.pendingDirectory,
+      stats.pendingPayouts,
+    ],
+  );
+
+  const needsAttentionNow = useMemo(
+    () => attentionItems.filter((item) => item.value > 0),
+    [attentionItems],
+  );
+
   const recentJoinsRows = useMemo<RecentJoinRow[]>(() => {
     const rows = Array.isArray(statsRaw?.recentJoins?.rows)
       ? (statsRaw.recentJoins.rows as RecentJoinRow[])
@@ -763,6 +810,121 @@ const AdminDashboard = ({
           </div>
         )}
       </header>
+
+      <section className="mt-8 rounded-xl border border-gray-700 bg-gray-800/70 p-5">
+        <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+          <div>
+            <h2 className="text-xl font-bold text-gold">Admin Control Center</h2>
+            <p className="text-sm text-gray-300">
+              One place to see operational load, triage pending work, and jump
+              directly into moderation queues.
+            </p>
+          </div>
+          <Link
+            href="/admin/analytics"
+            className="inline-flex w-fit items-center rounded border border-gray-700 bg-gray-900 px-3 py-2 text-xs hover:bg-gray-700"
+          >
+            View Platform Analytics →
+          </Link>
+        </div>
+
+        <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
+          <div className="rounded-lg border border-gray-700 bg-gray-900 p-4">
+            <h3 className="text-sm font-semibold text-gray-200">
+              Needs attention now
+            </h3>
+            {needsAttentionNow.length === 0 ? (
+              <p className="mt-2 text-sm text-emerald-300">
+                No open approval queues right now.
+              </p>
+            ) : (
+              <div className="mt-3 space-y-2">
+                {needsAttentionNow.map((item) => (
+                  <Link
+                    key={item.key}
+                    href={item.href}
+                    className="flex items-center justify-between rounded border border-gray-700 bg-gray-800 px-3 py-2 text-sm hover:bg-gray-700"
+                  >
+                    <span>{item.label}</span>
+                    <span className="rounded bg-yellow-500/20 px-2 py-0.5 text-xs text-yellow-200">
+                      {item.value}
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="rounded-lg border border-gray-700 bg-gray-900 p-4">
+            <h3 className="text-sm font-semibold text-gray-200">
+              Activity indicators
+            </h3>
+            <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
+              <div className="rounded border border-gray-700 bg-gray-800 p-2">
+                <div className="text-xs text-gray-400">Joined today</div>
+                <div className="text-lg font-bold text-gold">
+                  {recentJoinsSummary.today}
+                </div>
+              </div>
+              <div className="rounded border border-gray-700 bg-gray-800 p-2">
+                <div className="text-xs text-gray-400">Joined last 7d</div>
+                <div className="text-lg font-bold text-gold">
+                  {recentJoinsSummary.last7Days}
+                </div>
+              </div>
+              <div className="rounded border border-gray-700 bg-gray-800 p-2">
+                <div className="text-xs text-gray-400">Pending approvals</div>
+                <div className="text-lg font-bold text-gold">
+                  {stats.pendingApprovalsTotal}
+                </div>
+              </div>
+              <div className="rounded border border-gray-700 bg-gray-800 p-2">
+                <div className="text-xs text-gray-400">Paid unlinked listings</div>
+                <div
+                  className={cx(
+                    "text-lg font-bold",
+                    stats.directoryPaidUnlinked > 0 ? "text-red-300" : "text-emerald-300",
+                  )}
+                >
+                  {stats.directoryPaidUnlinked}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-lg border border-gray-700 bg-gray-900 p-4">
+            <h3 className="text-sm font-semibold text-gray-200">
+              Priority lanes
+            </h3>
+            <div className="mt-3 space-y-2 text-sm">
+              <Link
+                href="/admin/business-approvals"
+                className="block rounded border border-gray-700 bg-gray-800 px-3 py-2 hover:bg-gray-700"
+              >
+                Business moderation queue
+              </Link>
+              <Link
+                href="/admin/job-approvals"
+                className="block rounded border border-gray-700 bg-gray-800 px-3 py-2 hover:bg-gray-700"
+              >
+                Job moderation queue
+              </Link>
+              <Link
+                href="/admin/product-approvals"
+                className="block rounded border border-gray-700 bg-gray-800 px-3 py-2 hover:bg-gray-700"
+              >
+                Product moderation queue
+              </Link>
+              <Link
+                href="/admin/affiliate-payouts"
+                className="block rounded border border-gray-700 bg-gray-800 px-3 py-2 hover:bg-gray-700"
+              >
+                Affiliate payouts operations
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Top sections */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">

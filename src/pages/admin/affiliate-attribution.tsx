@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import type { GetServerSideProps } from "next";
+import cookie from "cookie";
+import jwt from "jsonwebtoken";
+import { getJwtSecret } from "@/lib/env";
 
 type ClickRow = {
   _id: string;
@@ -50,9 +54,14 @@ export default function AffiliateAttributionAdminPage() {
     <main className="min-h-screen bg-black p-6 text-white">
       <div className="mx-auto max-w-6xl">
         <div className="mb-5 flex items-center justify-between">
-          <h1 className="text-3xl font-black text-[#D4AF37]">
-            Affiliate Attribution
-          </h1>
+          <div>
+            <h1 className="text-3xl font-black text-[#D4AF37]">
+              Affiliate Attribution
+            </h1>
+            <p className="mt-1 text-sm text-white/70">
+              Monitor affiliate click and conversion activity in one admin view.
+            </p>
+          </div>
           <Link
             href="/admin/dashboard"
             className="text-sm text-[#D4AF37] hover:underline"
@@ -157,3 +166,50 @@ export default function AffiliateAttributionAdminPage() {
     </main>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  try {
+    const cookies = cookie.parse(req.headers.cookie || "");
+    const token = cookies.session_token;
+
+    if (!token) {
+      return {
+        redirect: {
+          destination: "/login?redirect=/admin/affiliate-attribution",
+          permanent: false,
+        },
+      };
+    }
+
+    const payload = jwt.verify(token, getJwtSecret()) as {
+      accountType?: string;
+      role?: string;
+      isAdmin?: boolean;
+      roles?: string[];
+    };
+
+    const isAdmin =
+      payload.isAdmin === true ||
+      payload.accountType === "admin" ||
+      payload.role === "admin" ||
+      (Array.isArray(payload.roles) && payload.roles.includes("admin"));
+
+    if (!isAdmin) {
+      return {
+        redirect: {
+          destination: "/login?redirect=/admin/affiliate-attribution",
+          permanent: false,
+        },
+      };
+    }
+
+    return { props: {} };
+  } catch {
+    return {
+      redirect: {
+        destination: "/login?redirect=/admin/affiliate-attribution",
+        permanent: false,
+      },
+    };
+  }
+};
