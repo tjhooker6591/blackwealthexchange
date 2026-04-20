@@ -45,6 +45,16 @@ function scoreTokenMatch(text: string, token: string) {
   return 0;
 }
 
+function buildTokenSearchClause(tokens: string[], fields: string[]) {
+  if (!tokens.length) return null;
+  return {
+    $and: tokens.map((token) => {
+      const rx = new RegExp(escapeRegex(token), "i");
+      return { $or: fields.map((field) => ({ [field]: rx })) };
+    }),
+  };
+}
+
 function relevanceScoreBusiness(item: any, search: string) {
   const q = search.toLowerCase().trim();
   if (!q) return 0;
@@ -53,9 +63,11 @@ function relevanceScoreBusiness(item: any, search: string) {
 
   const name = safeText(item?.business_name).toLowerCase();
   const alias = safeText(item?.alias).toLowerCase();
-  const category = `${safeText(item?.category)} ${safeText(item?.categories)} ${safeText(item?.display_categories)}`.toLowerCase();
+  const category =
+    `${safeText(item?.category)} ${safeText(item?.categories)} ${safeText(item?.display_categories)}`.toLowerCase();
   const description = safeText(item?.description).toLowerCase();
-  const location = `${safeText(item?.city)} ${safeText(item?.state)} ${safeText(item?.address)}`.toLowerCase();
+  const location =
+    `${safeText(item?.city)} ${safeText(item?.state)} ${safeText(item?.address)}`.toLowerCase();
 
   let score = 0;
   if (name === q) score += 120;
@@ -87,7 +99,8 @@ function relevanceScoreOrg(item: any, search: string) {
   const orgType = safeText(item?.orgType).toLowerCase();
   const denomination = safeText(item?.denomination).toLowerCase();
   const description = safeText(item?.description).toLowerCase();
-  const location = `${safeText(item?.city)} ${safeText(item?.state)} ${safeText(item?.address)}`.toLowerCase();
+  const location =
+    `${safeText(item?.city)} ${safeText(item?.state)} ${safeText(item?.address)}`.toLowerCase();
 
   let score = 0;
   if (name === q) score += 120;
@@ -134,7 +147,12 @@ export default async function handler(
 
     await ensureApiRateLimitIndexes(db);
     const ip = getClientIp(req);
-    const ipLimit = await hitApiRateLimit(db, `search:businesses:ip:${ip}`, 120, 5);
+    const ipLimit = await hitApiRateLimit(
+      db,
+      `search:businesses:ip:${ip}`,
+      120,
+      5,
+    );
     if (ipLimit.blocked) {
       res.setHeader("Retry-After", String(ipLimit.retryAfterSeconds));
       return res.status(429).json({
@@ -168,7 +186,8 @@ export default async function handler(
     const categoryRaw =
       typeof req.query.category === "string" ? req.query.category : "";
     const stateRaw = typeof req.query.state === "string" ? req.query.state : "";
-    const sortRaw = typeof req.query.sort === "string" ? req.query.sort : "relevance";
+    const sortRaw =
+      typeof req.query.sort === "string" ? req.query.sort : "relevance";
     const verifiedOnly = req.query.verifiedOnly === "1";
     const sponsoredFirst = req.query.sponsoredFirst === "1";
     const includeIncomplete = req.query.includeIncomplete === "1";
@@ -217,36 +236,34 @@ export default async function handler(
     }
 
     if (search) {
-      const rx = new RegExp(escapeRegex(search), "i");
-      and.push(
+      const tokens = normalizeSearchTokens(search);
+      const tokenClause = buildTokenSearchClause(
+        tokens,
         isOrganizations
-          ? {
-              $or: [
-                { name: rx },
-                { alias: rx },
-                { description: rx },
-                { orgType: rx },
-                { denomination: rx },
-                { address: rx },
-                { city: rx },
-                { state: rx },
-              ],
-            }
-          : {
-              $or: [
-                { business_name: rx },
-                { alias: rx },
-                { description: rx },
-                { categories: rx },
-                { display_categories: rx },
-                { category: rx },
-                { address: rx },
-                { city: rx },
-                { state: rx },
-                { country: rx },
-              ],
-            },
+          ? [
+              "name",
+              "alias",
+              "description",
+              "orgType",
+              "denomination",
+              "address",
+              "city",
+              "state",
+            ]
+          : [
+              "business_name",
+              "alias",
+              "description",
+              "categories",
+              "display_categories",
+              "category",
+              "address",
+              "city",
+              "state",
+              "country",
+            ],
       );
+      if (tokenClause) and.push(tokenClause);
     }
 
     if (!isOrganizations && category && category !== "All") {
@@ -314,7 +331,9 @@ export default async function handler(
               Number(b.item?.amountPaid || 0) - Number(a.item?.amountPaid || 0);
             if (paidDiff !== 0) return paidDiff;
           }
-          return Number(b.item?.amountPaid || 0) - Number(a.item?.amountPaid || 0);
+          return (
+            Number(b.item?.amountPaid || 0) - Number(a.item?.amountPaid || 0)
+          );
         })
         .map((x) => x.item);
 
@@ -331,7 +350,12 @@ export default async function handler(
                 ? { amountPaid: -1, createdAt: -1, business_name: 1 }
                 : { createdAt: -1, business_name: 1 };
 
-      items = await col.find(query).sort(baseSort).skip(skip).limit(limit).toArray();
+      items = await col
+        .find(query)
+        .sort(baseSort)
+        .skip(skip)
+        .limit(limit)
+        .toArray();
     }
 
     const tookMs = Date.now() - t0;

@@ -42,6 +42,16 @@ function categoriesToString(v: any): string {
   return safeStr(v);
 }
 
+function splitCategoryTokens(v: any): string[] {
+  const raw = categoriesToString(v);
+  if (!raw) return [];
+  return raw
+    .split(/[,&/|]/g)
+    .map((x) => x.trim())
+    .filter(Boolean)
+    .slice(0, 6);
+}
+
 function trackFlowEvent(payload: Record<string, unknown>) {
   if (typeof window === "undefined") return;
   const body = JSON.stringify(payload);
@@ -628,6 +638,30 @@ export default function BusinessDirectory() {
 
   const visibleWithSponsors = useMemo(() => pageRows, [pageRows]);
 
+  const relatedCategorySuggestions = useMemo(() => {
+    if (scope !== "businesses") return [] as string[];
+    const counts = new Map<string, number>();
+
+    pageRows.forEach((row) => {
+      if ((row as any).__kind !== "business") return;
+      const tokens = splitCategoryTokens(
+        (row as any).display_categories ||
+          (row as any).categories ||
+          (row as any).category,
+      );
+      tokens.forEach((token) => {
+        const current = counts.get(token) || 0;
+        counts.set(token, current + 1);
+      });
+    });
+
+    return Array.from(counts.entries())
+      .sort((a, b) => b[1] - a[1])
+      .map(([name]) => name)
+      .filter((name) => name.toLowerCase() !== category.toLowerCase())
+      .slice(0, 5);
+  }, [pageRows, scope, category]);
+
   const goPage = (p: number) => {
     const next = Math.min(Math.max(1, p), totalPages);
     setPage(next);
@@ -964,7 +998,8 @@ export default function BusinessDirectory() {
                 </div>
                 <div className="mt-2 flex items-center justify-between text-[11px] text-white/50">
                   <span>
-                    Try keywords like “tax”, “restaurant”, “barber”, or “real estate”.
+                    Try keywords like “tax”, “restaurant”, “barber”, or “real
+                    estate”.
                   </span>
                   <span className="inline-flex items-center gap-1 text-white/45">
                     <SlidersHorizontal className="h-3.5 w-3.5" />
@@ -1212,6 +1247,33 @@ export default function BusinessDirectory() {
                   </div>
                 </div>
 
+                {hasSearched && total > 0 && scope === "businesses" && relatedCategorySuggestions.length ? (
+                  <div className="mt-2 flex flex-wrap items-center gap-2">
+                    <span className="text-[11px] font-bold uppercase tracking-[0.08em] text-white/45">
+                      Related categories
+                    </span>
+                    {relatedCategorySuggestions.map((suggestion) => (
+                      <button
+                        key={suggestion}
+                        type="button"
+                        onClick={() => {
+                          setCategory(suggestion);
+                          setPage(1);
+                          trackFlowEvent({
+                            eventType: "related_category_clicked",
+                            source: "business_directory_results",
+                            query: input.trim(),
+                            category: suggestion,
+                          });
+                        }}
+                        className="rounded-full border border-white/20 bg-black/30 px-3 py-1 text-[11px] text-white/85"
+                      >
+                        {suggestion}
+                      </button>
+                    ))}
+                  </div>
+                ) : null}
+
                 <div className="relative mt-3 min-h-[160px]">
                   {isLoading && (
                     <div className="absolute inset-0 z-20 rounded-xl bg-black/70 p-4 backdrop-blur-sm">
@@ -1233,14 +1295,31 @@ export default function BusinessDirectory() {
                   {!hasSearched ? (
                     <div className="py-10 text-center text-white/50">
                       <div>
-                        Discover and support Black-owned businesses and organizations. Start with a keyword, category, or state.
+                        Discover and support Black-owned businesses and
+                        organizations. Start with a keyword, category, or state.
                       </div>
                       <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
                         {[
-                          { label: "Nearby restaurants", q: "restaurant", c: "Food" },
-                          { label: "Tax and accounting", q: "tax", c: "Financial Services" },
-                          { label: "Home services", q: "home", c: "Home Services" },
-                          { label: "Legal help", q: "legal", c: "Professional Services" },
+                          {
+                            label: "Nearby restaurants",
+                            q: "restaurant",
+                            c: "Food",
+                          },
+                          {
+                            label: "Tax and accounting",
+                            q: "tax",
+                            c: "Financial Services",
+                          },
+                          {
+                            label: "Home services",
+                            q: "home",
+                            c: "Home Services",
+                          },
+                          {
+                            label: "Legal help",
+                            q: "legal",
+                            c: "Professional Services",
+                          },
                         ].map((intent) => (
                           <button
                             key={intent.label}
@@ -1389,37 +1468,7 @@ export default function BusinessDirectory() {
                     </div>
                   ) : (
                     <div className="divide-y divide-white/10 overflow-hidden rounded-xl border border-white/10 bg-black/20">
-                      {visibleWithSponsors.map((item, idx) =>
-                        (item as any).isSponsor ? (
-                          <div
-                            key={(item as any).key ?? `s-${idx}`}
-                            className="relative flex items-center gap-3 px-3 py-3"
-                          >
-                            <img
-                              src={sponsorAds[(item as any).sponsorIdx].img}
-                              alt={sponsorAds[(item as any).sponsorIdx].name}
-                              width={48}
-                              height={48}
-                              className="h-12 w-12 rounded-xl object-cover border border-white/15"
-                            />
-                            <div className="min-w-0 flex-1">
-                              <a
-                                href={sponsorAds[(item as any).sponsorIdx].url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="block truncate text-[#D4AF37] font-extrabold hover:underline"
-                              >
-                                {sponsorAds[(item as any).sponsorIdx].name}
-                              </a>
-                              <div className="truncate text-[12px] text-white/55">
-                                {sponsorAds[(item as any).sponsorIdx].tagline}
-                              </div>
-                            </div>
-                            <span className="rounded-full border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-2 py-0.5 text-[10px] font-extrabold text-[#D4AF37]">
-                              Sponsored
-                            </span>
-                          </div>
-                        ) : (
+                      {visibleWithSponsors.map((item, idx) => (
                           <div
                             key={(item as any)._id ?? `r-${idx}`}
                             className="flex items-start gap-3 px-3 py-4"
@@ -1544,8 +1593,7 @@ export default function BusinessDirectory() {
                               )}
                             </div>
                           </div>
-                        ),
-                      )}
+                        ))}
                     </div>
                   )}
 
