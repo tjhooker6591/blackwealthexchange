@@ -10,6 +10,8 @@ function normalizeTier(value: unknown): BlackCardTier {
   return "standard";
 }
 
+const TIER_ORDER: BlackCardTier[] = ["standard", "signature", "elite"];
+
 export default function BlackCardJoinPage() {
   const router = useRouter();
   const { user } = useAuth();
@@ -121,109 +123,118 @@ export default function BlackCardJoinPage() {
         <meta name="robots" content="noindex,nofollow" />
       </Head>
 
-      <main className="min-h-screen bg-black text-white px-4 py-10">
-        <div className="mx-auto max-w-2xl rounded-2xl border border-white/10 bg-white/5 p-6">
-          <h1 className="text-3xl font-extrabold text-yellow-200">
-            Join {tierConfig.label}
-          </h1>
-          <p className="mt-2 text-white/80">{tierConfig.tagline}</p>
-          <p className="mt-4 text-4xl font-black">
-            {tierConfig.priceLabel}
-            <span className="text-base font-medium text-white/70">
-              {tierConfig.billingModel === "entry_fee"
-                ? " one-time membership entry fee"
-                : "/month membership"}
-            </span>
-          </p>
-          <div className="mt-2 rounded-lg border border-yellow-500/25 bg-yellow-500/10 px-3 py-2 text-xs text-yellow-100">
-            Membership price charged at checkout:{" "}
-            <span className="font-semibold">
-              {tierConfig.priceLabel}{" "}
-              {tierConfig.billingModel === "entry_fee"
-                ? "one-time"
-                : "per month"}
-            </span>
-            . Physical card personalization/order step does not charge a second
-            membership price in this flow. {tierConfig.billingModel === "monthly"
-              ? "Monthly tiers renew on cadence until canceled or ended."
-              : "Entry tier is a one-time membership entry charge."}
-          </div>
+      <main className="min-h-screen bg-black px-4 py-10 text-white">
+        <div className="mx-auto max-w-6xl space-y-5">
+          <section className="rounded-2xl border border-yellow-500/25 bg-gradient-to-br from-[#17120A] via-[#0F0C08] to-[#080808] p-6">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <p className="text-xs uppercase tracking-[0.2em] text-yellow-300">
+                  Black Card Join
+                </p>
+                <h1 className="mt-1 text-3xl font-extrabold text-yellow-100">
+                  {tierConfig.label}
+                </h1>
+                <p className="mt-1 text-sm text-white/75">{tierConfig.tagline}</p>
+              </div>
+              <Link
+                href="/black-card"
+                className="rounded-lg border border-white/20 px-4 py-2 text-sm"
+              >
+                Back to Tier Overview
+              </Link>
+            </div>
 
-          <ul className="mt-5 space-y-2 text-sm text-white/85">
-            {tierConfig.benefits.map((benefit) => (
-              <li key={benefit}>• {benefit}</li>
-            ))}
-          </ul>
+            <div className="mt-4 grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
+              <div className="rounded-xl border border-white/10 bg-black/40 p-4">
+                <div className="text-xs uppercase tracking-[0.16em] text-yellow-300">
+                  Membership Price
+                </div>
+                <div className="mt-2 text-4xl font-black text-yellow-100">
+                  {tierConfig.priceLabel}
+                </div>
+                <div className="text-sm text-white/70">
+                  {tierConfig.billingModel === "entry_fee"
+                    ? "One-time membership activation fee"
+                    : "Monthly membership plan"}
+                </div>
+                <p className="mt-3 text-xs text-white/70">
+                  Checkout charges only this membership amount. Physical card
+                  personalization occurs after successful membership activation.
+                </p>
+              </div>
 
-          <div className="mt-6 rounded-xl border border-white/10 bg-black/30 p-4 text-sm text-white/80">
-            <div className="font-semibold text-yellow-200">
-              What happens after you click join
+              <div className="rounded-xl border border-white/10 bg-black/40 p-4">
+                <div className="text-xs uppercase tracking-[0.16em] text-yellow-300">
+                  Included Value
+                </div>
+                <ul className="mt-2 space-y-1 text-sm text-white/85">
+                  {tierConfig.benefits.map((benefit) => (
+                    <li key={benefit}>• {benefit}</li>
+                  ))}
+                </ul>
+              </div>
             </div>
-            <div className="mt-2">Step 1: Select membership tier (current page).</div>
-            <div className="mt-1">
-              Step 2: Complete secure checkout (this is the membership charge).
-            </div>
-            <div className="mt-1">
-              Step 3: Membership status activates after successful checkout.
-            </div>
-            <div className="mt-1">
-              Step 4: Confirm physical card personalization (no second
-              membership charge).
-            </div>
-            <div className="mt-1">
-              Step 5: Use active member benefits and maintain status by billing
-              cadence.
-            </div>
-          </div>
 
-          <div className="mt-5 rounded-lg border border-white/10 bg-black/40 p-3 text-xs text-white/75">
-            <div>Activation: after successful checkout.</div>
-            <div>
-              Renewal: {tierConfig.billingModel === "monthly"
-                ? "monthly for this tier"
-                : "no recurring renewal for this tier"}
-              .
+            <div className="mt-4 grid gap-3 md:grid-cols-3">
+              {TIER_ORDER.map((k) => {
+                const cfg = BLACK_CARD_TIERS[k];
+                const active = k === tier;
+                return (
+                  <Link
+                    key={k}
+                    href={`/black-card/join?tier=${k}`}
+                    className={`rounded-lg border px-3 py-2 text-sm ${
+                      active
+                        ? "border-yellow-400 bg-yellow-500/15 text-yellow-100"
+                        : "border-white/15 bg-black/30 text-white/75 hover:bg-black/45"
+                    }`}
+                  >
+                    <div className="font-semibold">{cfg.label}</div>
+                    <div className="text-xs">{cfg.priceLabel}</div>
+                  </Link>
+                );
+              })}
             </div>
-            <div>
-              Expiration behavior: when membership is inactive/expired, gated
-              benefits pause until reactivation.
-            </div>
-          </div>
 
-          <div className="mt-6 flex flex-wrap gap-3">
-            <button
-              onClick={startCheckout}
-              disabled={loading || checkoutSuccess}
-              className="rounded-lg bg-yellow-500 px-4 py-2 font-semibold text-black hover:bg-yellow-400 disabled:opacity-60"
-            >
-              {loading
-                ? "Starting checkout..."
-                : checkoutSuccess
-                  ? "Checkout Completed"
-                  : "Continue to Secure Checkout"}
-            </button>
-            <Link
-              href="/black-card"
-              className="rounded-lg border border-white/20 px-4 py-2"
-            >
-              Back to Black Card
-            </Link>
-          </div>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <button
+                onClick={startCheckout}
+                disabled={loading || checkoutSuccess}
+                className="rounded-lg bg-yellow-500 px-4 py-2 font-semibold text-black hover:bg-yellow-400 disabled:opacity-60"
+              >
+                {loading
+                  ? "Starting checkout..."
+                  : checkoutSuccess
+                    ? "Checkout Completed"
+                    : `Activate ${tierConfig.label}`}
+              </button>
+              <a
+                href="#post-checkout"
+                className="rounded-lg border border-yellow-500/30 px-4 py-2 text-sm text-yellow-200"
+              >
+                View Post-Checkout Steps
+              </a>
+            </div>
+          </section>
+
+          <section id="post-checkout" className="rounded-xl border border-white/10 bg-white/5 p-4 text-sm text-white/80">
+            <div className="font-semibold text-yellow-200">Post-checkout flow</div>
+            <div className="mt-2">1. Complete secure checkout for selected membership tier.</div>
+            <div className="mt-1">2. Membership status activates on successful payment.</div>
+            <div className="mt-1">3. Confirm exact print details for physical card issuance.</div>
+            <div className="mt-1">4. Use membership benefits while card fulfillment completes.</div>
+          </section>
 
           {checkoutSuccess ? (
-            <div className="mt-6 rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-4">
+            <section className="rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-4">
               <h2 className="text-lg font-bold text-yellow-200">
-                Card Personalization (Required for physical card)
+                Physical Card Personalization (Required)
               </h2>
               <p className="mt-1 text-sm text-white/80">
-                Digital membership is active first. Physical printing starts
-                only after you confirm the exact print name below.
+                Digital membership is already active. Submit print approval to
+                initiate physical card production.
               </p>
-              <p className="mt-2 rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-xs text-white/75">
-                This step is personalization + fulfillment approval. It is not a
-                second membership price. If a future physical fulfillment fee is
-                introduced, it must be shown explicitly before payment.
-              </p>
+
               <label className="mt-4 block text-sm text-white/80">
                 Name to print on card
                 <input
@@ -236,6 +247,7 @@ export default function BlackCardJoinPage() {
                   className="mt-2 w-full rounded-lg border border-white/20 bg-black/40 px-3 py-2 text-white"
                 />
               </label>
+
               <div className="mt-4 rounded-xl border border-white/10 bg-black/50 p-4">
                 <div className="text-xs uppercase tracking-[0.15em] text-yellow-300">
                   Final print preview
@@ -243,10 +255,6 @@ export default function BlackCardJoinPage() {
                 <div className="mt-2 rounded-lg border border-yellow-500/30 bg-black px-3 py-4 text-center font-semibold tracking-[0.08em] text-yellow-100">
                   {printNameFinal || "ENTER PRINT NAME"}
                 </div>
-                <p className="mt-2 text-xs text-white/65">
-                  Preview uses trimmed spacing exactly as production will
-                  receive it.
-                </p>
               </div>
 
               <label className="mt-3 flex items-start gap-2 text-sm text-white/80">
@@ -256,9 +264,7 @@ export default function BlackCardJoinPage() {
                   onChange={(e) => setPrintApproved(e.target.checked)}
                   className="mt-1"
                 />
-                <span>
-                  I approve this exact print name for physical card production.
-                </span>
+                <span>I approve this exact print name for production.</span>
               </label>
 
               <label className="mt-2 flex items-start gap-2 text-sm text-white/80">
@@ -268,31 +274,24 @@ export default function BlackCardJoinPage() {
                   onChange={(e) => setPrintPreviewConfirmed(e.target.checked)}
                   className="mt-1"
                 />
-                <span>
-                  I have reviewed the final preview and confirm it is correct.
-                </span>
+                <span>I reviewed and confirmed the final preview.</span>
               </label>
 
               <button
                 onClick={submitPhysicalOrder}
                 disabled={
-                  orderLoading ||
-                  !printNameFinal ||
-                  !printApproved ||
-                  !printPreviewConfirmed
+                  orderLoading || !printNameFinal || !printApproved || !printPreviewConfirmed
                 }
                 className="mt-4 rounded-lg bg-yellow-500 px-4 py-2 font-semibold text-black hover:bg-yellow-400 disabled:opacity-60"
               >
                 {orderLoading
                   ? "Submitting..."
-                  : "Finalize Print Approval & Submit Physical Card Request"}
+                  : "Finalize Print Approval & Submit Card Request"}
               </button>
-            </div>
+            </section>
           ) : null}
 
-          {message ? (
-            <p className="mt-4 text-sm text-yellow-200">{message}</p>
-          ) : null}
+          {message ? <p className="text-sm text-yellow-200">{message}</p> : null}
         </div>
       </main>
     </>
