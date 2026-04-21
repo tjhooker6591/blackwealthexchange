@@ -20,6 +20,15 @@ interface Applicant {
   jobTitle?: string;
   jobId?: string;
   hiringStatus?: HiringStatus;
+  employerNote?: string;
+  rejectionReason?: string;
+  statusHistory?: Array<{
+    status: HiringStatus;
+    changedAt?: string;
+    actor?: string;
+    note?: string;
+    rejectionReason?: string;
+  }>;
 }
 
 const STATUS_ORDER: HiringStatus[] = [
@@ -52,6 +61,10 @@ export default function EmployerApplicantsPage() {
   const [loading, setLoading] = useState(true);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [error, setError] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"all" | HiringStatus>("all");
+  const [search, setSearch] = useState("");
+  const [notesDraft, setNotesDraft] = useState<Record<string, string>>({});
+  const [reasonDraft, setReasonDraft] = useState<Record<string, string>>({});
 
   const jobId =
     typeof router.query.jobId === "string" ? router.query.jobId : "";
@@ -61,6 +74,8 @@ export default function EmployerApplicantsPage() {
       try {
         const qs = new URLSearchParams();
         if (jobId) qs.set("jobId", jobId);
+        if (statusFilter !== "all") qs.set("status", statusFilter);
+        if (search.trim()) qs.set("q", search.trim());
         const res = await fetch(`/api/employer/applicants?${qs.toString()}`, {
           credentials: "include",
           cache: "no-store",
@@ -79,7 +94,7 @@ export default function EmployerApplicantsPage() {
     };
 
     fetchApplicants();
-  }, [jobId]);
+  }, [jobId, statusFilter, search]);
 
   const grouped = useMemo(() => {
     const base: Record<HiringStatus, Applicant[]> = {
@@ -99,6 +114,8 @@ export default function EmployerApplicantsPage() {
   }, [applicants]);
 
   const updateStatus = async (applicantId: string, status: HiringStatus) => {
+    const note = (notesDraft[applicantId] || "").trim();
+    const rejectionReason = (reasonDraft[applicantId] || "").trim();
     setBusyId(applicantId);
     setError("");
 
@@ -114,11 +131,36 @@ export default function EmployerApplicantsPage() {
         method: "PATCH",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ applicantId, status }),
+        body: JSON.stringify({ applicantId, status, note, rejectionReason }),
       });
 
       const data = await res.json().catch(() => null);
       if (!res.ok) throw new Error(data?.error || "Failed to update status");
+      setApplicants((cur) =>
+        cur.map((a) =>
+          a._id === applicantId
+            ? {
+                ...a,
+                hiringStatus: status,
+                employerNote: note || a.employerNote,
+                rejectionReason:
+                  status === "rejected"
+                    ? rejectionReason || a.rejectionReason
+                    : a.rejectionReason,
+                statusHistory: [
+                  {
+                    status,
+                    changedAt: data?.statusChangedAt || new Date().toISOString(),
+                    actor: "employer",
+                    note,
+                    rejectionReason: status === "rejected" ? rejectionReason : "",
+                  },
+                  ...(a.statusHistory || []),
+                ],
+              }
+            : a,
+        ),
+      );
     } catch (e: any) {
       setApplicants(prev);
       setError(e?.message || "Failed to update status");
@@ -142,6 +184,27 @@ export default function EmployerApplicantsPage() {
               Back to Jobs
             </button>
           </Link>
+        </div>
+
+        <div className="mb-4 grid gap-2 md:grid-cols-3">
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search by name, email, or job"
+            className="rounded border border-gray-700 bg-gray-900 px-3 py-2 text-sm"
+          />
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value as "all" | HiringStatus)}
+            className="rounded border border-gray-700 bg-gray-900 px-3 py-2 text-sm"
+          >
+            <option value="all">All stages</option>
+            {STATUS_ORDER.map((s) => (
+              <option key={s} value={s}>
+                {STATUS_LABEL[s]}
+              </option>
+            ))}
+          </select>
         </div>
 
         {error ? (
@@ -221,6 +284,31 @@ export default function EmployerApplicantsPage() {
                           </div>
 
                           <div className="mt-4 space-y-2">
+                            <textarea
+                              value={notesDraft[applicant._id] ?? applicant.employerNote ?? ""}
+                              onChange={(e) =>
+                                setNotesDraft((cur) => ({
+                                  ...cur,
+                                  [applicant._id]: e.target.value,
+                                }))
+                              }
+                              placeholder="Add internal notes for this applicant"
+                              className="w-full rounded border border-gray-700 bg-gray-900 px-3 py-2 text-sm"
+                              rows={2}
+                            />
+                            {(applicant.hiringStatus || "new") !== "rejected" ? (
+                              <input
+                                value={reasonDraft[applicant._id] ?? applicant.rejectionReason ?? ""}
+                                onChange={(e) =>
+                                  setReasonDraft((cur) => ({
+                                    ...cur,
+                                    [applicant._id]: e.target.value,
+                                  }))
+                                }
+                                placeholder="Optional rejection reason"
+                                className="w-full rounded border border-gray-700 bg-gray-900 px-3 py-2 text-sm"
+                              />
+                            ) : null}
                             <div className="flex flex-wrap gap-2">
                               {STATUS_ORDER.map((next) => {
                                 const active =
@@ -228,7 +316,9 @@ export default function EmployerApplicantsPage() {
                                 return (
                                   <button
                                     key={next}
-                                    disabled={busyId === applicant._id || active}
+                                    disabled={
+                                      busyId === applicant._id || active
+                                    }
                                     onClick={() =>
                                       updateStatus(applicant._id, next)
                                     }
@@ -245,30 +335,64 @@ export default function EmployerApplicantsPage() {
                             </div>
 
                             <div className="flex flex-wrap gap-2">
-                              {NEXT_STATUS[(applicant.hiringStatus || "new") as HiringStatus] ? (
+                              {NEXT_STATUS[
+                                (applicant.hiringStatus ||
+                                  "new") as HiringStatus
+                              ] ? (
                                 <button
                                   disabled={busyId === applicant._id}
                                   onClick={() =>
                                     updateStatus(
                                       applicant._id,
-                                      NEXT_STATUS[(applicant.hiringStatus || "new") as HiringStatus] as HiringStatus,
+                                      NEXT_STATUS[
+                                        (applicant.hiringStatus ||
+                                          "new") as HiringStatus
+                                      ] as HiringStatus,
                                     )
                                   }
                                   className="px-3 py-1.5 text-xs rounded border border-emerald-400/40 bg-emerald-500/10 text-emerald-200 hover:bg-emerald-500/20 disabled:opacity-60"
                                 >
-                                  Move to {STATUS_LABEL[NEXT_STATUS[(applicant.hiringStatus || "new") as HiringStatus] as HiringStatus]}
+                                  Move to{" "}
+                                  {
+                                    STATUS_LABEL[
+                                      NEXT_STATUS[
+                                        (applicant.hiringStatus ||
+                                          "new") as HiringStatus
+                                      ] as HiringStatus
+                                    ]
+                                  }
                                 </button>
                               ) : null}
-                              {(applicant.hiringStatus || "new") !== "rejected" ? (
+                              {(applicant.hiringStatus || "new") !==
+                              "rejected" ? (
                                 <button
                                   disabled={busyId === applicant._id}
-                                  onClick={() => updateStatus(applicant._id, "rejected")}
+                                  onClick={() =>
+                                    updateStatus(applicant._id, "rejected")
+                                  }
                                   className="px-3 py-1.5 text-xs rounded border border-red-400/40 bg-red-500/10 text-red-200 hover:bg-red-500/20 disabled:opacity-60"
                                 >
                                   Reject
                                 </button>
                               ) : null}
                             </div>
+
+                            {applicant.statusHistory?.length ? (
+                              <div className="mt-2 rounded border border-gray-700 bg-gray-900/60 p-2">
+                                <p className="text-xs text-gray-400 mb-1">History</p>
+                                <ul className="space-y-1 text-xs text-gray-300">
+                                  {applicant.statusHistory.slice(0, 4).map((h, i) => (
+                                    <li key={`${applicant._id}-h-${i}`}>
+                                      Moved to {STATUS_LABEL[h.status]} on{" "}
+                                      {h.changedAt
+                                        ? new Date(h.changedAt).toLocaleString()
+                                        : "unknown date"}
+                                      {h.actor ? ` by ${h.actor}` : ""}
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            ) : null}
                           </div>
                         </div>
                       ))}

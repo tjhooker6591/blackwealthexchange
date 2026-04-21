@@ -16,6 +16,15 @@ interface ApplicantRecord {
   appliedDate?: string;
   hiringStatus?: "new" | "reviewed" | "shortlisted" | "contacted" | "rejected";
   statusUpdatedAt?: Date;
+  employerNote?: string;
+  rejectionReason?: string;
+  statusHistory?: Array<{
+    status: string;
+    changedAt?: Date;
+    actor?: string;
+    note?: string;
+    rejectionReason?: string;
+  }>;
 }
 
 interface JobRecord {
@@ -59,6 +68,12 @@ export default async function handler(
     typeof req.query.jobId === "string" && ObjectId.isValid(req.query.jobId)
       ? new ObjectId(req.query.jobId)
       : null;
+  const statusFilter =
+    typeof req.query.status === "string"
+      ? req.query.status.trim().toLowerCase()
+      : "all";
+  const searchQuery =
+    typeof req.query.q === "string" ? req.query.q.trim().toLowerCase() : "";
 
   try {
     const client = await clientPromise;
@@ -85,9 +100,17 @@ export default async function handler(
       return res.status(403).json({ error: "Access denied" });
     }
 
-    const applicantsQuery = jobIdFilter
+    const applicantsQuery: Record<string, any> = jobIdFilter
       ? { jobId: jobIdFilter }
       : { jobId: { $in: jobObjectIds } };
+
+    if (
+      statusFilter &&
+      statusFilter !== "all" &&
+      ["new", "reviewed", "shortlisted", "contacted", "rejected"].includes(statusFilter)
+    ) {
+      applicantsQuery.hiringStatus = statusFilter;
+    }
 
     const applicants = await db
       .collection<WithId<ApplicantRecord>>("applicants")
@@ -96,18 +119,35 @@ export default async function handler(
       .limit(limit)
       .toArray();
 
-    const result = applicants.map((a) => ({
-      _id: a._id.toHexString(),
-      jobId: a.jobId.toHexString(),
-      name: a.name || a.email,
-      email: a.email,
-      resumeUrl: a.resumeUrl || "",
-      jobTitle: jobMap[a.jobId.toHexString()] || "Unknown",
-      hiringStatus: a.hiringStatus || "new",
-      appliedDate:
-        a.appliedAt?.toISOString() ||
-        (typeof a.appliedDate === "string" ? a.appliedDate : ""),
-    }));
+    const result = applicants
+      .map((a) => ({
+        _id: a._id.toHexString(),
+        jobId: a.jobId.toHexString(),
+        name: a.name || a.email,
+        email: a.email,
+        resumeUrl: a.resumeUrl || "",
+        jobTitle: jobMap[a.jobId.toHexString()] || "Unknown",
+        hiringStatus: a.hiringStatus || "new",
+        employerNote: a.employerNote || "",
+        rejectionReason: a.rejectionReason || "",
+        statusHistory: Array.isArray(a.statusHistory)
+          ? a.statusHistory.map((h) => ({
+              status: h.status,
+              changedAt: h.changedAt ? new Date(h.changedAt).toISOString() : "",
+              actor: h.actor || "",
+              note: h.note || "",
+              rejectionReason: h.rejectionReason || "",
+            }))
+          : [],
+        appliedDate:
+          a.appliedAt?.toISOString() ||
+          (typeof a.appliedDate === "string" ? a.appliedDate : ""),
+      }))
+      .filter((item) => {
+        if (!searchQuery) return true;
+        const hay = `${item.name} ${item.email} ${item.jobTitle}`.toLowerCase();
+        return hay.includes(searchQuery);
+      });
 
     const statusCounts = result.reduce(
       (acc, item) => {

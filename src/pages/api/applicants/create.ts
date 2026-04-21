@@ -53,6 +53,13 @@ export default async function handler(
     appliedAt: now,
     hiringStatus: "new",
     statusUpdatedAt: now,
+    statusHistory: [
+      {
+        status: "new",
+        changedAt: now,
+        actor: "system:application_submitted",
+      },
+    ],
   });
 
   res.status(201).json({ success: true, applicantId: result.insertedId });

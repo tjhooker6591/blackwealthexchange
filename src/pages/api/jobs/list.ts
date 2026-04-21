@@ -47,9 +47,9 @@ export default async function handler(
       const featureEndMs = job?.featureEndDate
         ? new Date(job.featureEndDate).getTime()
         : NaN;
+      const hasPaidFeatureWindow = Number.isFinite(featureEndMs);
       const featuredActiveRaw =
-        Boolean(job?.isFeatured) &&
-        (!Number.isFinite(featureEndMs) || featureEndMs > now);
+        Boolean(job?.isFeatured) && hasPaidFeatureWindow && featureEndMs > now;
 
       const canShowFeatured =
         featuredActiveRaw && featuredVisibleCount < FEATURED_JOB_TOP_CAP;
@@ -58,6 +58,11 @@ export default async function handler(
       return {
         ...job,
         isFeatured: canShowFeatured,
+        featuredEligibility: {
+          hasPaidFeatureWindow,
+          featureEndDate: job?.featureEndDate || null,
+          activeNow: featuredActiveRaw,
+        },
       };
     });
 
@@ -68,6 +73,13 @@ export default async function handler(
       jobs,
       meta: {
         featuredJobTopCap: FEATURED_JOB_TOP_CAP,
+        featuredRules: [
+          "status must be approved",
+          "isFeatured must be true",
+          "featureEndDate must exist",
+          "featureEndDate must be in the future",
+          "result is capped by FEATURED_JOB_TOP_CAP",
+        ],
       },
     });
   } catch (error) {

@@ -129,6 +129,7 @@ export default async function handler(
           rejected: row?.rejected || 0,
         },
         isFeatured: Boolean(job.isFeatured),
+        viewCount: Number(job.viewCount || 0),
       };
     });
 

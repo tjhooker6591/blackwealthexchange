@@ -40,9 +40,11 @@ export default async function handler(
     const jobObjectId = new ObjectId(id);
 
     if (req.method === "GET") {
-      const job = await jobs.findOne(
+      const updated = await jobs.findOneAndUpdate(
         { _id: jobObjectId, status: "approved" },
+        { $inc: { viewCount: 1 } },
         {
+          returnDocument: "after",
           projection: {
             title: 1,
             company: 1,
@@ -53,6 +55,7 @@ export default async function handler(
             createdAt: 1,
             isFeatured: 1,
             appliedCount: 1,
+            viewCount: 1,
             employerEmail: 1,
             companyWebsite: 1,
             companyDescription: 1,
@@ -60,6 +63,7 @@ export default async function handler(
         },
       );
 
+      const job = updated;
       if (!job) {
         return res.status(404).json({ success: false, error: "Job not found" });
       }

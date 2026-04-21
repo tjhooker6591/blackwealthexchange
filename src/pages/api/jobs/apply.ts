@@ -15,7 +15,9 @@ export default async function handler(
 
   try {
     const { jobId, name, email, resumeUrl } = req.body;
-    const normalizedEmail = String(email || "").trim().toLowerCase();
+    const normalizedEmail = String(email || "")
+      .trim()
+      .toLowerCase();
 
     if (!jobId || !name || !normalizedEmail) {
       return res
@@ -58,6 +60,13 @@ export default async function handler(
       appliedAt: insertedAt,
       hiringStatus: "new",
       statusUpdatedAt: insertedAt,
+      statusHistory: [
+        {
+          status: "new",
+          changedAt: insertedAt,
+          actor: "system:application_submitted",
+        },
+      ],
     });
 
     await db.collection("flow_events").insertOne({

@@ -18,6 +18,7 @@ interface Job {
   datePosted: string;
   applicants: number;
   isFeatured?: boolean;
+  viewCount?: number;
   statusCounts?: {
     new: number;
     reviewed: number;
@@ -150,6 +151,9 @@ export default function EmployerJobsPage() {
                 <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">
                   <span className="text-gray-100 font-semibold">
                     {job.applicants} applicant{job.applicants !== 1 && "s"}
+                  </span>
+                  <span className="text-gray-300">
+                    {job.viewCount || 0} view{(job.viewCount || 0) === 1 ? "" : "s"}
                   </span>
                   {(job.statusCounts?.new || 0) > 0 ? (
                     <span className="px-2 py-0.5 rounded border border-emerald-400/30 bg-emerald-500/10 text-emerald-200 text-xs">
