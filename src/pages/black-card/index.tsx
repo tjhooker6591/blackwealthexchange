@@ -21,22 +21,22 @@ const TIER_CONTEXT: Record<
   standard: {
     segment: "Entry Membership",
     valueSummary:
-      "Fast entry into the Black Card ecosystem with identity, core access, and immediate member status.",
-    cta: "Start with Standard",
+      "Pay once to activate your digital card, unlock verified member identity, and start claiming member-priced opportunities immediately.",
+    cta: "Activate Standard",
     badge: "ENTRY",
   },
   signature: {
     segment: "Growth Membership",
     valueSummary:
-      "Higher monthly value with stronger rewards velocity, priority access, and better business leverage.",
-    cta: "Choose Signature",
+      "Convert monthly activity into bigger credits, faster rewards, and priority placement that improves your visibility and savings.",
+    cta: "Unlock Signature",
     badge: "MEMBERSHIP",
   },
   elite: {
     segment: "Executive Membership",
     valueSummary:
-      "Flagship tier for founders and leaders who want highest access, premium introductions, and concierge support.",
-    cta: "Enter Elite",
+      "Run at highest tier with VIP lanes, top reward multipliers, and direct introductions that open high-value opportunities.",
+    cta: "Activate Elite",
     badge: "ELITE",
   },
 };
@@ -64,7 +64,7 @@ export default function BlackCardLandingPage() {
                   BWE Black Card
                 </h1>
                 <p className="mt-2 text-xl font-bold text-white md:text-2xl">
-                  Built for Ownership, Access, and Economic Power.
+                  Built for faster opportunities, stronger savings, and verified member advantage.
                 </p>
                 <p className="mt-4 max-w-3xl text-[#D9D9D9]">
                   {BLACK_CARD_POSITIONING}. Black Card is a digital-first
@@ -108,7 +108,7 @@ export default function BlackCardLandingPage() {
                     href="#digital-experience"
                     className="rounded-xl border border-[#B08A32]/50 bg-[#1A140A] px-5 py-2.5 font-semibold text-[#F0D37A] hover:bg-[#221A0D]"
                   >
-                    See Digital Experience
+                    See Member Advantage
                   </a>
                 </div>
               </div>
@@ -134,8 +134,7 @@ export default function BlackCardLandingPage() {
               Choose your tier
             </h2>
             <p className="mt-2 text-sm text-[#B0B0B0]">
-              Each tier has a clear value model, defined benefit profile, and
-              direct activation path.
+              Each tier changes what you can do, what you can claim, and how quickly opportunities move toward you.
             </p>
 
             <div className="mt-4 grid gap-4 lg:grid-cols-3">
@@ -233,12 +232,10 @@ export default function BlackCardLandingPage() {
                 Why members upgrade
               </h3>
               <ul className="mt-3 space-y-2 text-sm text-[#D8D8D8]">
-                <li>• Standard → identity and immediate entry access.</li>
-                <li>
-                  • Signature → higher rewards and priority opportunities.
-                </li>
-                <li>• Elite → executive-level access and premium support.</li>
-                <li>• Clear differentiation by value, not vague labels.</li>
+                <li>• Standard gives immediate identity and member-priced entry points.</li>
+                <li>• Signature increases credits and priority so monthly actions return more value.</li>
+                <li>• Elite adds VIP lanes and introductions for highest business leverage.</li>
+                <li>• Upgrading is about measurable advantage, not cosmetic status.</li>
               </ul>
             </div>
           </section>

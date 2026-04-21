@@ -1005,10 +1005,10 @@ export default function Home() {
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <div className="text-[11px] font-bold uppercase tracking-[0.15em] text-yellow-300">
-                  Flagship Membership
+                  Flagship Membership Advantage
                 </div>
                 <div className="mt-1 text-sm font-semibold text-white sm:text-base">
-                  BWE Black Card, digital-first membership with instant account activation
+                  BWE Black Card unlocks verified member identity, faster opportunities, and reward-based savings
                 </div>
               </div>
               <Link
@@ -1017,13 +1017,13 @@ export default function Home() {
                   trackHomepageEvent("homepage_cta_clicked", {
                     section: "hero",
                     ctaId: "hero_black_card",
-                    ctaLabel: "View Black Card membership tiers",
+                    ctaLabel: "Unlock Black Card",
                     destination: "/black-card",
                   })
                 }
                 className="inline-flex items-center justify-center rounded-xl border border-yellow-400/40 bg-black/40 px-4 py-2 text-sm font-semibold text-yellow-200 hover:bg-black/60"
               >
-                View Black Card Membership
+                Unlock Black Card
               </Link>
             </div>
           </div>

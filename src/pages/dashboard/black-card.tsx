@@ -170,7 +170,7 @@ export default function BlackCardDashboardPage() {
               href="/black-card"
               className="rounded-lg border border-yellow-500/30 px-4 py-2 text-yellow-200"
             >
-              View Black Card Tiers
+Upgrade Membership Advantage
             </Link>
           </header>
 
@@ -231,7 +231,8 @@ export default function BlackCardDashboardPage() {
                           : "—"}
                       </div>
                       <div className="mt-1">
-                        Wallet pass status: {data.card?.walletPassState || "in dashboard"}
+                        Wallet pass status:{" "}
+                        {data.card?.walletPassState || "in dashboard"}
                       </div>
                     </div>
                   </div>
@@ -267,13 +268,13 @@ export default function BlackCardDashboardPage() {
                     href="/black-card/join?tier=signature"
                     className="rounded-lg border border-yellow-500/30 px-4 py-2 text-sm text-yellow-200"
                   >
-                    Upgrade to Signature
+Unlock Signature Advantage
                   </Link>
                   <Link
                     href="/black-card/join?tier=elite"
                     className="rounded-lg border border-yellow-500/30 px-4 py-2 text-sm text-yellow-200"
                   >
-                    Upgrade to Elite
+Activate Elite Advantage
                   </Link>
                 </div>
               </section>
@@ -281,20 +282,21 @@ export default function BlackCardDashboardPage() {
               <section className="grid gap-4 md:grid-cols-2">
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
                   <h2 className="text-xl font-bold text-yellow-200">
-                    Rewards Balance
+Live Rewards Balance
                   </h2>
                   <p className="mt-3 text-4xl font-black">
                     {data.rewards?.balance ?? 0}
                   </p>
                   <p className="mt-2 text-sm text-white/70">
-                    Available for ecosystem redemptions: ad credits, marketplace
-                    fee credits, course/event access, and partner offers.
+                    Updates as your membership activity is processed. Redeem
+                    this balance for ad credits, fee credits, event access, and
+                    partner offers.
                   </p>
                 </div>
 
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
                   <h2 className="text-xl font-bold text-yellow-200">
-                    Redemption Area
+Redemption Actions
                   </h2>
                   <div className="mt-3 flex flex-wrap gap-2">
                     <button
@@ -345,7 +347,8 @@ export default function BlackCardDashboardPage() {
                     </ul>
                   ) : (
                     <p className="mt-3 text-sm text-white/70">
-                      No redemptions yet. Redemption actions will appear here.
+                      No redemptions yet. Use actions above to convert your
+                      current tier advantage into real credits and access.
                     </p>
                   )}
                 </div>
@@ -353,7 +356,7 @@ export default function BlackCardDashboardPage() {
 
               <section className="rounded-2xl border border-white/10 bg-white/5 p-5">
                 <h2 className="text-xl font-bold text-yellow-200">
-                  Rewards Ledger
+Live Rewards Ledger
                 </h2>
                 {data.ledger && data.ledger.length > 0 ? (
                   <ul className="mt-3 space-y-2 text-sm">
@@ -375,13 +378,16 @@ export default function BlackCardDashboardPage() {
                   </ul>
                 ) : (
                   <p className="mt-3 text-sm text-white/70">
-                    No rewards ledger entries yet.
+                    No rewards ledger entries yet. New entries appear
+                    automatically as points are earned or redeemed.
                   </p>
                 )}
               </section>
 
               <section className="rounded-2xl border border-white/10 bg-white/5 p-5">
-                <h2 className="text-xl font-bold text-yellow-200">Activity</h2>
+                <h2 className="text-xl font-bold text-yellow-200">
+                  Live Membership Activity
+                </h2>
                 {data.activity && data.activity.length > 0 ? (
                   <ul className="mt-3 space-y-2 text-sm">
                     {data.activity.map((item) => (
@@ -398,7 +404,8 @@ export default function BlackCardDashboardPage() {
                   </ul>
                 ) : (
                   <p className="mt-3 text-sm text-white/70">
-                    No Black Card activity yet.
+                    No Black Card activity yet. Your joins, redemptions, and
+                    member events will stream here as they happen.
                   </p>
                 )}
               </section>

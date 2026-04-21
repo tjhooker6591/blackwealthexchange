@@ -148,7 +148,7 @@ export default function BlackCardJoinPage() {
                 href="/black-card"
                 className="rounded-lg border border-white/20 px-4 py-2 text-sm"
               >
-                Back to Tier Overview
+                Compare Membership Advantage
               </Link>
             </div>
 
@@ -220,7 +220,7 @@ export default function BlackCardJoinPage() {
                 href="#post-checkout"
                 className="rounded-lg border border-yellow-500/30 px-4 py-2 text-sm text-yellow-200"
               >
-                View Post-Checkout Steps
+                See Instant Activation Flow
               </a>
             </div>
           </section>

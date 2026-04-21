@@ -21,13 +21,14 @@ export const BLACK_CARD_TIERS: Record<BlackCardTier, BlackCardTierConfig> = {
     priceCents: 3800,
     priceLabel: "$38.00",
     billingModel: "entry_fee",
-    tagline: "Accessible entry card with limited but real member access.",
+    tagline:
+      "Activate your verified member identity and start using Black Card tools today.",
     benefits: [
-      "Digital Black Card access",
-      "Official membership identity inside BWE",
-      "Access to selected events",
-      "Access to selected seminars/webinars",
-      "Basic member offers/discounts and basic ecosystem perks",
+      "Instant digital member card in your dashboard after checkout",
+      "Verified BWE member identity used across supported experiences",
+      "Member-priced entry to selected events",
+      "Member-only seminar and webinar invites",
+      "Starter partner savings and ecosystem offers",
     ],
   },
   signature: {
@@ -37,13 +38,14 @@ export const BLACK_CARD_TIERS: Record<BlackCardTier, BlackCardTierConfig> = {
     priceCents: 14900,
     priceLabel: "$149",
     billingModel: "monthly",
-    tagline: "Upgraded access, stronger rewards, and premium member value.",
+    tagline:
+      "Turn monthly activity into measurable savings, priority placement, and faster opportunities.",
     benefits: [
       "Everything in Standard",
-      "Higher rewards earn rate for BWE activity",
-      "Priority access to selected events and seminars",
-      "Larger ad + marketplace fee credit pools",
-      "Priority partner offers and premium placement opportunities",
+      "Higher rewards earn rate from BWE activity",
+      "Priority event and seminar entry before Standard",
+      "Larger ad credit and marketplace fee credit pools",
+      "Partner offers with stronger member pricing",
     ],
   },
   elite: {
@@ -54,13 +56,13 @@ export const BLACK_CARD_TIERS: Record<BlackCardTier, BlackCardTierConfig> = {
     priceLabel: "$399",
     billingModel: "monthly",
     tagline:
-      "Top-tier status with VIP ecosystem access and business advantages.",
+      "Operate at executive level with highest rewards velocity, VIP lanes, and direct opportunity leverage.",
     benefits: [
       "Everything in Signature",
-      "VIP event, summit, and private session access",
-      "Highest rewards multipliers + premium placement credits",
-      "Elite partner network and opportunity introductions",
-      "Dedicated member support path for premium experiences",
+      "VIP access to events, summits, and private sessions",
+      "Highest rewards multipliers and premium placement credits",
+      "Elite partner network and direct opportunity introductions",
+      "Priority support lane for high-value member actions",
     ],
   },
 };
