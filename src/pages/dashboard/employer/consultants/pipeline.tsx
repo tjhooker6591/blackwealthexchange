@@ -116,6 +116,26 @@ export default function EmployerConsultantPipelinePage() {
     return bucket;
   }, [pipeline]);
 
+  const metrics = useMemo(() => {
+    const totalInPipeline = pipeline.length;
+    const interviewRequested = pipeline.filter(
+      (x) => x.status === "interview_requested",
+    ).length;
+    const consultantResponded = requests.filter(
+      (r) => !!r.consultantResponseAction,
+    ).length;
+    const blockedRequests = requests.filter(
+      (r) => String(r.moderationStatus || "") === "blocked",
+    ).length;
+
+    return {
+      totalInPipeline,
+      interviewRequested,
+      consultantResponded,
+      blockedRequests,
+    };
+  }, [pipeline, requests]);
+
   async function move(item: PipelineItem, status: string) {
     setError("");
     setSuccess("");
@@ -182,6 +202,41 @@ export default function EmployerConsultantPipelinePage() {
           </div>
         ) : null}
 
+        <section className="mb-6 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+          <article className="rounded-2xl border border-white/10 bg-zinc-950 p-4">
+            <p className="text-xs uppercase tracking-wide text-zinc-400">
+              Total in pipeline
+            </p>
+            <p className="mt-1 text-2xl font-extrabold text-white">
+              {metrics.totalInPipeline}
+            </p>
+          </article>
+          <article className="rounded-2xl border border-white/10 bg-zinc-950 p-4">
+            <p className="text-xs uppercase tracking-wide text-zinc-400">
+              Interview requested
+            </p>
+            <p className="mt-1 text-2xl font-extrabold text-yellow-200">
+              {metrics.interviewRequested}
+            </p>
+          </article>
+          <article className="rounded-2xl border border-white/10 bg-zinc-950 p-4">
+            <p className="text-xs uppercase tracking-wide text-zinc-400">
+              Consultant responded
+            </p>
+            <p className="mt-1 text-2xl font-extrabold text-cyan-200">
+              {metrics.consultantResponded}
+            </p>
+          </article>
+          <article className="rounded-2xl border border-white/10 bg-zinc-950 p-4">
+            <p className="text-xs uppercase tracking-wide text-zinc-400">
+              Blocked requests
+            </p>
+            <p className="mt-1 text-2xl font-extrabold text-red-200">
+              {metrics.blockedRequests}
+            </p>
+          </article>
+        </section>
+
         <section className="mb-6 rounded-2xl border border-white/10 bg-zinc-950 p-4">
           <h2 className="text-lg font-semibold">Recent contact requests</h2>
           {requests.length === 0 ? (
@@ -203,7 +258,8 @@ export default function EmployerConsultantPipelinePage() {
                           : "contacted") as keyof typeof STATUS_LABELS
                       ]
                     }{" "}
-                    request for {consultantMap.get(r.consultantId)?.name || r.consultantId}
+                    request for{" "}
+                    {consultantMap.get(r.consultantId)?.name || r.consultantId}
                   </p>
                   <p className="mt-1 text-zinc-300">{r.message}</p>
                   <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px] text-zinc-400">
