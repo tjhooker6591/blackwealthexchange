@@ -697,24 +697,25 @@ export default function Home() {
 
     (async () => {
       try {
-        const [businessesRes, orgsRes, jobsRes, productsRes] = await Promise.all([
-          fetch("/api/search/businesses?type=businesses&limit=1&page=1", {
-            cache: "no-store",
-            signal: controller.signal,
-          }),
-          fetch("/api/search/businesses?type=organizations&limit=1&page=1", {
-            cache: "no-store",
-            signal: controller.signal,
-          }),
-          fetch("/api/jobs/list?limit=300", {
-            cache: "no-store",
-            signal: controller.signal,
-          }),
-          fetch("/api/marketplace/get-products?limit=1&page=1", {
-            cache: "no-store",
-            signal: controller.signal,
-          }),
-        ]);
+        const [businessesRes, orgsRes, jobsRes, productsRes] =
+          await Promise.all([
+            fetch("/api/search/businesses?type=businesses&limit=1&page=1", {
+              cache: "no-store",
+              signal: controller.signal,
+            }),
+            fetch("/api/search/businesses?type=organizations&limit=1&page=1", {
+              cache: "no-store",
+              signal: controller.signal,
+            }),
+            fetch("/api/jobs/list?limit=300", {
+              cache: "no-store",
+              signal: controller.signal,
+            }),
+            fetch("/api/marketplace/get-products?limit=1&page=1", {
+              cache: "no-store",
+              signal: controller.signal,
+            }),
+          ]);
 
         const [businessesData, orgsData, jobsData, productsData] =
           await Promise.all([
@@ -1023,6 +1024,33 @@ export default function Home() {
                 className="inline-flex items-center justify-center rounded-xl border border-yellow-400/40 bg-black/40 px-4 py-2 text-sm font-semibold text-yellow-200 hover:bg-black/60"
               >
                 Explore BWE Black Card
+              </Link>
+            </div>
+
+            <div className="mt-3 flex flex-wrap gap-2 text-xs">
+              <Link
+                href="/business-directory"
+                className="rounded-full border border-white/20 bg-white/5 px-3 py-1.5 text-white/90 hover:bg-white/10"
+              >
+                Business Directory
+              </Link>
+              <Link
+                href="/jobs"
+                className="rounded-full border border-white/20 bg-white/5 px-3 py-1.5 text-white/90 hover:bg-white/10"
+              >
+                Jobs Hub
+              </Link>
+              <Link
+                href="/marketplace"
+                className="rounded-full border border-white/20 bg-white/5 px-3 py-1.5 text-white/90 hover:bg-white/10"
+              >
+                Marketplace
+              </Link>
+              <Link
+                href="/black-card/join"
+                className="rounded-full border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-3 py-1.5 text-[#F1D57A] hover:bg-[#D4AF37]/25"
+              >
+                Black Card Join
               </Link>
             </div>
           </div>

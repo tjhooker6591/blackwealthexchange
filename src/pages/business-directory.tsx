@@ -665,7 +665,8 @@ export default function BusinessDirectory() {
     const filtered = visibleWithSponsors.filter((row: any) => {
       const quality = safeStr(row?._matchQuality).toLowerCase();
       const strength = Number(row?._listingStrength || 0);
-      const hasUsefulDescription = safeStr(row?.description).trim().length >= 24;
+      const hasUsefulDescription =
+        safeStr(row?.description).trim().length >= 24;
       const hasUsefulLocation =
         Boolean(safeStr(row?.city).trim()) ||
         Boolean(safeStr(row?.state).trim()) ||
@@ -1380,8 +1381,10 @@ export default function BusinessDirectory() {
                     </div>
                     {weakListingsSuppressedCount > 0 ? (
                       <div className="mt-1 text-amber-100/80">
-                        Hidden {weakListingsSuppressedCount} low-confidence listing
-                        {weakListingsSuppressedCount === 1 ? "" : "s"} to keep results useful.
+                        Hidden {weakListingsSuppressedCount} low-confidence
+                        listing
+                        {weakListingsSuppressedCount === 1 ? "" : "s"} to keep
+                        results useful.
                       </div>
                     ) : null}
                     {suggestedRefinement ? (
@@ -1537,12 +1540,13 @@ export default function BusinessDirectory() {
                   ) : total === 0 && !isLoading ? (
                     <div className="py-10 text-center text-white/50">
                       <div>
-                        No results found for{" "}
-                        <span className="text-white/70">“{input.trim()}”</span>.
+                        No listings match{" "}
+                        <span className="text-white/70">“{input.trim()}”</span>{" "}
+                        with current filters.
                       </div>
                       <div className="mt-2 text-xs text-white/40">
-                        Try a broader term, clear filters, or switch between
-                        Businesses and Organizations.
+                        Try a broader keyword, clear active filters, or switch
+                        between Businesses and Organizations.
                       </div>
                       <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-[11px]">
                         {scope === "businesses" && category !== "All" ? (
@@ -1598,6 +1602,21 @@ export default function BusinessDirectory() {
                           className="rounded-lg border border-white/20 bg-black/30 px-3 py-1.5 text-xs font-bold text-white/80 hover:bg-black/45"
                         >
                           Clear search
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setInput("");
+                            setCategory("All");
+                            setStateFilter("");
+                            setVerifiedOnly(false);
+                            setSponsoredFirst(false);
+                            setIncludeIncomplete(false);
+                            setPage(1);
+                          }}
+                          className="rounded-lg border border-[#D4AF37]/40 bg-[#D4AF37]/10 px-3 py-1.5 text-xs font-bold text-[#F1D57A] hover:bg-[#D4AF37]/20"
+                        >
+                          Browse all listings
                         </button>
                         <button
                           type="button"

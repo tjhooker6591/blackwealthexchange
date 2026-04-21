@@ -337,6 +337,27 @@ export default function Marketplace() {
           </div>
 
           <div className="mt-3 text-sm text-gray-400">{resultLabel}</div>
+
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs">
+            <Link
+              href="/marketplace/dashboard"
+              className="rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-gray-100 hover:bg-white/10"
+            >
+              Open Seller Dashboard
+            </Link>
+            <Link
+              href="/marketplace/become-a-seller"
+              className="rounded-full border border-yellow-500/30 bg-yellow-500/10 px-3 py-1.5 text-yellow-200 hover:bg-yellow-500/20"
+            >
+              Start Selling
+            </Link>
+            <Link
+              href="/legal/marketplace"
+              className="rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-gray-100 hover:bg-white/10"
+            >
+              Marketplace Terms
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -434,9 +455,12 @@ export default function Marketplace() {
           </div>
         ) : products.length === 0 ? (
           <div className="rounded-2xl border border-white/10 bg-white/5 p-10 text-center">
-            <p className="font-semibold text-gray-200">No products found.</p>
+            <p className="font-semibold text-gray-200">
+              No products match the current search and filter settings.
+            </p>
             <p className="mt-1 text-sm text-gray-400">
-              Try a different category or adjust your search.
+              Try a broader query, switch category, or reset sort/filter
+              options.
             </p>
           </div>
         ) : (
@@ -464,7 +488,7 @@ export default function Marketplace() {
                       ) : (
                         <div className="flex h-full w-full items-center justify-center">
                           <span className="text-xs text-gray-400 sm:text-sm">
-                            No Image
+                            Image unavailable
                           </span>
                         </div>
                       )}
@@ -494,7 +518,7 @@ export default function Marketplace() {
                         </p>
                       ) : (
                         <p className="mt-2 line-clamp-2 text-sm text-gray-500">
-                          No description provided.
+                          Product details are available on the product page.
                         </p>
                       )}
                     </div>
