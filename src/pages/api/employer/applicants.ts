@@ -14,6 +14,8 @@ interface ApplicantRecord {
   resumeUrl?: string;
   appliedAt?: Date;
   appliedDate?: string;
+  hiringStatus?: "new" | "reviewed" | "shortlisted" | "contacted" | "rejected";
+  statusUpdatedAt?: Date;
 }
 
 interface JobRecord {
@@ -53,6 +55,10 @@ export default async function handler(
     typeof limitParam === "string" && !isNaN(Number(limitParam))
       ? parseInt(limitParam, 10)
       : 50;
+  const jobIdFilter =
+    typeof req.query.jobId === "string" && ObjectId.isValid(req.query.jobId)
+      ? new ObjectId(req.query.jobId)
+      : null;
 
   try {
     const client = await clientPromise;
@@ -72,9 +78,20 @@ export default async function handler(
     });
 
     // Match applicants by job ObjectId
+    if (
+      jobIdFilter &&
+      !jobObjectIds.some((id) => id.toHexString() === jobIdFilter.toHexString())
+    ) {
+      return res.status(403).json({ error: "Access denied" });
+    }
+
+    const applicantsQuery = jobIdFilter
+      ? { jobId: jobIdFilter }
+      : { jobId: { $in: jobObjectIds } };
+
     const applicants = await db
       .collection<WithId<ApplicantRecord>>("applicants")
-      .find({ jobId: { $in: jobObjectIds } })
+      .find(applicantsQuery)
       .sort({ appliedAt: -1 }) // sorting only affects newer records
       .limit(limit)
       .toArray();
@@ -86,12 +103,28 @@ export default async function handler(
       email: a.email,
       resumeUrl: a.resumeUrl || "",
       jobTitle: jobMap[a.jobId.toHexString()] || "Unknown",
+      hiringStatus: a.hiringStatus || "new",
       appliedDate:
         a.appliedAt?.toISOString() ||
         (typeof a.appliedDate === "string" ? a.appliedDate : ""),
     }));
 
-    return res.status(200).json({ applicants: result });
+    const statusCounts = result.reduce(
+      (acc, item) => {
+        const key = item.hiringStatus || "new";
+        acc[key] = (acc[key] || 0) + 1;
+        return acc;
+      },
+      {
+        new: 0,
+        reviewed: 0,
+        shortlisted: 0,
+        contacted: 0,
+        rejected: 0,
+      } as Record<string, number>,
+    );
+
+    return res.status(200).json({ applicants: result, meta: { statusCounts } });
   } catch (err) {
     console.error("[API /employer/applicants] Error:", err);
     return res.status(500).json({ error: "Internal server error" });

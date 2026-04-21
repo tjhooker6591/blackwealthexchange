@@ -46,10 +46,13 @@ export default async function handler(
     return res.status(400).json({ error: "Already applied to this job" });
   }
 
+  const now = new Date();
   const result = await db.collection("applicants").insertOne({
     jobId: new ObjectId(jobId),
     userId: new ObjectId(userId),
-    appliedAt: new Date(),
+    appliedAt: now,
+    hiringStatus: "new",
+    statusUpdatedAt: now,
   });
 
   res.status(201).json({ success: true, applicantId: result.insertedId });

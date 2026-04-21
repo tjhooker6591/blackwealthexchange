@@ -16,10 +16,10 @@ export default async function handler(
   try {
     const { jobId, name, email, resumeUrl } = req.body;
 
-    if (!jobId || !name || !email || !resumeUrl) {
+    if (!jobId || !name || !email) {
       return res
         .status(400)
-        .json({ success: false, error: "All fields are required." });
+        .json({ success: false, error: "Name, email, and job are required." });
     }
 
     if (!ObjectId.isValid(jobId)) {
@@ -40,8 +40,10 @@ export default async function handler(
       jobId: jobObjectId,
       name,
       email,
-      resumeUrl,
+      resumeUrl: typeof resumeUrl === "string" ? resumeUrl : "",
       appliedAt: insertedAt,
+      hiringStatus: "new",
+      statusUpdatedAt: insertedAt,
     });
 
     await db.collection("flow_events").insertOne({

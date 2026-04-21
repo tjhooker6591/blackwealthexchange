@@ -17,6 +17,16 @@ interface Job {
   type: string;
   datePosted: string;
   applicants: number;
+  isFeatured?: boolean;
+}
+
+function freshnessLabel(datePosted: string) {
+  const d = new Date(datePosted);
+  if (Number.isNaN(d.getTime())) return "Unknown freshness";
+  const days = Math.floor((Date.now() - d.getTime()) / (1000 * 60 * 60 * 24));
+  if (days <= 2) return "Fresh";
+  if (days <= 7) return "Active this week";
+  return "Older listing";
 }
 
 export default function EmployerJobsPage() {
@@ -109,27 +119,35 @@ export default function EmployerJobsPage() {
                 key={job._id}
                 className="bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-700"
               >
-                <div className="flex justify-between items-center mb-2">
-                  <h2 className="text-xl font-bold text-gold">{job.title}</h2>
-                  <span className="text-sm text-gray-400">
-                    Posted: {job.datePosted}
-                  </span>
+                <div className="flex justify-between items-center mb-2 gap-3">
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-xl font-bold text-gold">{job.title}</h2>
+                    {job.isFeatured ? (
+                      <span className="px-2 py-0.5 rounded bg-yellow-500/20 border border-yellow-500/30 text-[11px] text-yellow-200">
+                        Featured
+                      </span>
+                    ) : null}
+                  </div>
+                  <div className="text-right">
+                    <span className="text-sm text-gray-400 block">Posted: {job.datePosted}</span>
+                    <span className="text-xs text-blue-300">{freshnessLabel(job.datePosted)}</span>
+                  </div>
                 </div>
                 <p className="text-gray-300">
                   {job.company} • {job.location} • {job.type}
                 </p>
-                <p className="text-gray-400 mt-2">
+                <p className="text-gray-300 mt-2 font-medium">
                   {job.applicants} applicant{job.applicants !== 1 && "s"}
                 </p>
                 <div className="mt-4 flex gap-3">
                   <Link href={`/employer/applicants?jobId=${job._id}`}>
                     <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
-                      View Applicants
+                      Manage Applicants
                     </button>
                   </Link>
                   <Link href={`/employer/edit-job/${job._id}`}>
                     <button className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition">
-                      Edit
+                      Manage Listing
                     </button>
                   </Link>
                   <button
