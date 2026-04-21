@@ -115,6 +115,12 @@ export default function AdvertisingIndexPage() {
               Promote your business on Black Wealth Exchange with trusted,
               tasteful placements.
             </p>
+            <p className="mt-2 text-xs text-zinc-400">
+              Placement definitions: {" "}
+              <Link href="/advertising/placements" className="underline text-yellow-200">
+                /advertising/placements
+              </Link>
+            </p>
           </div>
 
           <div className="flex gap-2">

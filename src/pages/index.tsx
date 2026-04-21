@@ -23,6 +23,7 @@ import { useRouter } from "next/router";
 import useAuth from "@/hooks/useAuth";
 import { normalizeScope } from "@/lib/directory/queryState";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
+import { FEATURED_SPONSOR_RAIL_CAP } from "@/lib/advertising/placementDefinitions";
 
 function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
@@ -719,8 +720,7 @@ export default function Home() {
                   ? topBanner.tagline
                   : "Sponsored campaign",
               targetUrl:
-                typeof topBanner.targetUrl === "string" &&
-                topBanner.targetUrl
+                typeof topBanner.targetUrl === "string" && topBanner.targetUrl
                   ? topBanner.targetUrl
                   : "#",
             });
@@ -813,7 +813,10 @@ export default function Home() {
     };
   }, []);
 
-  const sponsorRail = sponsors.length ? sponsors : stableSponsorFallback;
+  const sponsorRail = (sponsors.length ? sponsors : stableSponsorFallback).slice(
+    0,
+    FEATURED_SPONSOR_RAIL_CAP,
+  );
 
   const base = getBaseUrl();
   const canonical = canonicalUrl("/");
@@ -1564,7 +1567,7 @@ export default function Home() {
               </p>
             </div>
             <span className="text-[10px] rounded border border-white/15 px-2 py-1 text-white/55">
-              Weekly slots
+              Weekly slots · max {FEATURED_SPONSOR_RAIL_CAP}
             </span>
           </div>
 

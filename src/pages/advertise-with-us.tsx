@@ -36,7 +36,8 @@ const GOAL_OPTIONS = [
     goal: "Increase Discovery",
     title: "Directory Placement",
     option: "directory-featured",
-    where: "Business Directory featured placements block and directory listing tiers",
+    where:
+      "Business Directory featured placements block and directory listing tiers",
     who: "Best for local discovery and ongoing lead visibility",
     href: "/advertise/business-directory",
   },
@@ -44,7 +45,8 @@ const GOAL_OPTIONS = [
     goal: "Run a Custom Campaign",
     title: "Custom Solution",
     option: "custom-solution-deposit",
-    where: "Scoped surfaces defined in approval (no fixed slot promised at intake)",
+    where:
+      "Scoped surfaces defined in approval (no fixed slot promised at intake)",
     who: "Best for multi-surface campaigns and larger initiatives",
     href: "/advertise/custom",
   },
@@ -104,7 +106,9 @@ export default function AdvertiseWithUs() {
             : top.durationDays === 14
               ? "14 days"
               : `${top.durationDays} days`,
-        price: isCustom ? `$${top.amountDollars} deposit` : `$${top.amountDollars}`,
+        price: isCustom
+          ? `$${top.amountDollars} deposit`
+          : `$${top.amountDollars}`,
         href: item.href,
         note: isCustom
           ? "Deposit starts planning. Final surfaces and schedule are approved before launch."
@@ -284,6 +288,12 @@ export default function AdvertiseWithUs() {
             Prices shown from current package configuration (
             {AD_PRICING["featured-sponsor"].label}, banners, directory, custom
             deposit).
+          </p>
+          <p className="mt-2 text-xs text-white/70">
+            Placement rules source of truth: {" "}
+            <Link href="/advertising/placements" className="text-yellow-200 underline">
+              /advertising/placements
+            </Link>
           </p>
         </section>
 

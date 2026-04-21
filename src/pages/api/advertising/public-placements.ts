@@ -1,6 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
+import {
+  BANNER_HOMEPAGE_TOP_CAP,
+  BANNER_SIDEBAR_CAP,
+  DIRECTORY_FEATURED_CAP,
+} from "@/lib/advertising/placementDefinitions";
 
 type PublicPlacement = {
   id: string;
@@ -39,7 +44,9 @@ function toDate(v: unknown): Date | null {
 
 function isActiveWindow(paidAt: Date | null, durationDays: number, now: Date) {
   if (!paidAt) return false;
-  const endsAt = new Date(paidAt.getTime() + durationDays * 24 * 60 * 60 * 1000);
+  const endsAt = new Date(
+    paidAt.getTime() + durationDays * 24 * 60 * 60 * 1000,
+  );
   return paidAt <= now && now < endsAt;
 }
 
@@ -47,7 +54,8 @@ function mapPlacement(doc: any, now: Date): PublicPlacement | null {
   const option = s(doc?.option);
   const placement = s(doc?.placement || doc?.placementType);
   const name = s(doc?.business) || "Sponsored";
-  const tagline = s(doc?.details).slice(0, 120) || "Paid placement on Black Wealth Exchange";
+  const tagline =
+    s(doc?.details).slice(0, 120) || "Paid placement on Black Wealth Exchange";
   const image = s(doc?.adImage) || "/default-image.jpg";
   const targetUrl = normalizeUrl(s(doc?.targetUrl || doc?.website));
   const durationDays = Number.isFinite(Number(doc?.durationDays))
@@ -108,15 +116,15 @@ export default async function handler(
 
     const bannerHomepageTop = mapped
       .filter((x) => x.option === "banner-ad" && x.placement === "homepage-top")
-      .slice(0, 1);
+      .slice(0, BANNER_HOMEPAGE_TOP_CAP);
 
     const bannerSidebar = mapped
       .filter((x) => x.option === "banner-ad" && x.placement === "sidebar")
-      .slice(0, 3);
+      .slice(0, BANNER_SIDEBAR_CAP);
 
     const directoryFeatured = mapped
       .filter((x) => x.option === "directory-featured")
-      .slice(0, 6);
+      .slice(0, DIRECTORY_FEATURED_CAP);
 
     return res.status(200).json({
       ok: true,
@@ -124,6 +132,11 @@ export default async function handler(
         bannerHomepageTop,
         bannerSidebar,
         directoryFeatured,
+      },
+      caps: {
+        bannerHomepageTop: BANNER_HOMEPAGE_TOP_CAP,
+        bannerSidebar: BANNER_SIDEBAR_CAP,
+        directoryFeatured: DIRECTORY_FEATURED_CAP,
       },
       generatedAt: now.toISOString(),
     });
