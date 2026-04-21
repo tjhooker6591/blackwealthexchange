@@ -76,7 +76,10 @@ export default function AdvertisingIndexPage() {
   const bannerBase = getAdDurationOptions("banner-ad")[0];
   const customBase = getAdDurationOptions("custom-solution-deposit")[0];
 
-  const priceLabel = (base?: { amountDollars: number; durationDays: number }) =>
+  const priceLabel = (base?: {
+    amountDollars: number;
+    durationDays: number;
+  }) =>
     base ? `$${base.amountDollars} / ${base.durationDays} days` : "See details";
   const router = useRouter();
   const success = router.query.success === "1";
@@ -157,7 +160,7 @@ export default function AdvertisingIndexPage() {
         <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
           <AdCard
             title="Featured Sponsor"
-            desc="Top placement for maximum visibility across the platform."
+            desc="Homepage Featured Sponsors rail placement with weekly scheduling."
             price={priceLabel(featuredBase)}
             badge="Most Popular"
             href="/advertise/featured-sponsor"
@@ -176,7 +179,7 @@ export default function AdvertisingIndexPage() {
 
           <AdCard
             title="Directory Listings"
-            desc="Choose standard or featured placement based on your growth goals."
+            desc="Directory campaign tiers with explicit review and placement lifecycle."
             price={priceLabel(directoryBase)}
             href="/advertise/business-directory"
             onStart={() =>
@@ -194,7 +197,7 @@ export default function AdvertisingIndexPage() {
 
           <AdCard
             title="Banner Ads"
-            desc="Tasteful banner placement near high-traffic areas."
+            desc="Request banner inventory by placement, then launch after approval + scheduling."
             price={priceLabel(bannerBase)}
             href="/advertise/banner-ads"
             onStart={() =>
@@ -212,8 +215,12 @@ export default function AdvertisingIndexPage() {
 
           <AdCard
             title="Custom Solutions"
-            desc="Recruiting, consulting, partnerships, sponsored content, or bundled campaigns."
-            price={customBase ? `$${customBase.amountDollars} deposit` : "See details"}
+            desc="Custom scoped campaigns with deliverables defined before launch."
+            price={
+              customBase
+                ? `$${customBase.amountDollars} deposit`
+                : "See details"
+            }
             href="/advertise/custom"
             onStart={() =>
               trackAdvertisingEvent("advertising_option_selected", {

@@ -22,8 +22,14 @@ export default function BusinessDirectoryAdPage() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
-  const standardQuote = getAdQuote({ option: "directory-standard", durationDays: 30 });
-  const featuredQuote = getAdQuote({ option: "directory-featured", durationDays: 30 });
+  const standardQuote = getAdQuote({
+    option: "directory-standard",
+    durationDays: 30,
+  });
+  const featuredQuote = getAdQuote({
+    option: "directory-featured",
+    durationDays: 30,
+  });
 
   useEffect(() => {
     let mounted = true;
@@ -170,9 +176,9 @@ export default function BusinessDirectoryAdPage() {
       </h1>
 
       <p className="text-lg text-gray-400 max-w-2xl mb-10">
-        Feature your business at the top of relevant categories in our
-        Black-Owned Business Directory. Get seen by users actively searching for
-        services like yours.
+        Submit a paid directory campaign for review and activation in directory
+        discovery surfaces. Listing behavior depends on approved tier and
+        fulfillment status.
       </p>
 
       {/* Tracking / linking notice */}
@@ -247,7 +253,7 @@ export default function BusinessDirectoryAdPage() {
         {[
           {
             title: "Top Placement",
-            text: "Be seen first in your business category to increase traffic and credibility.",
+            text: "Request higher-visibility directory placement through approved featured inventory.",
           },
           {
             title: "Community Support",
@@ -307,13 +313,13 @@ export default function BusinessDirectoryAdPage() {
             <div>
               <h3 className="text-2xl font-bold mb-2">Featured Listing</h3>
               <p className="text-sm mb-4">
-                Stand out at the top of the directory with a highlighted badge
-                and priority placement.
+                Request featured directory treatment with sponsored labeling and
+                higher-priority placement rules after approval.
               </p>
               <ul className="text-sm list-disc list-inside mb-4 text-left">
                 <li>Featured for 30 days</li>
-                <li>Highlighted background</li>
-                <li>Priority category placement</li>
+                <li>Sponsored/featured labeling when active</li>
+                <li>Higher-priority ordering policy versus standard listings</li>
               </ul>
             </div>
             <div className="space-y-2 w-full">

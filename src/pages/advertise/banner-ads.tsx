@@ -39,25 +39,25 @@ const PLACEMENTS: Array<{
     title: "Top of Homepage",
     placement: "homepage-top",
     description:
-      "Get maximum visibility with a large banner at the very top of the homepage.",
+      "Homepage top banner inventory request, fulfilled only after review and scheduling confirmation.",
   },
   {
     title: "Sidebar Ad",
     placement: "sidebar",
     description:
-      "A persistent sidebar banner visible throughout user navigation.",
+      "Sidebar banner inventory request for eligible pages after approval.",
   },
   {
     title: "Footer Banner",
     placement: "footer",
     description:
-      "Appears at the bottom of key pages — great for long-term visibility.",
+      "Footer banner inventory request for approved campaign windows.",
   },
   {
     title: "User Dashboard",
     placement: "dashboard",
     description:
-      "Display your banner on the business or user dashboard for targeted exposure.",
+      "Dashboard banner inventory request for approved dashboard surfaces.",
   },
 ];
 
@@ -172,8 +172,9 @@ export default function BannerAdsPage() {
           adImage: creativeUrl.trim(),
           website,
           budget:
-            BANNER_DURATION_OPTIONS.find((d) => d.value === duration)
-              ?.priceLabel.replace("$", "") || "",
+            BANNER_DURATION_OPTIONS.find(
+              (d) => d.value === duration,
+            )?.priceLabel.replace("$", "") || "",
           option: "banner-ad",
           durationDays: Number(duration),
           placement: selectedPlacement,
@@ -229,9 +230,9 @@ export default function BannerAdsPage() {
       </h1>
 
       <p className="text-lg text-gray-400 max-w-2xl mb-10">
-        Promote your business with visually engaging banner ads placed across
-        high-traffic areas of the platform. Select a banner placement and
-        campaign duration below to begin checkout.
+        Submit a banner campaign request with your preferred placement and
+        duration. Campaigns go live only after review, approval, and confirmed
+        placement scheduling.
       </p>
 
       {/* Placement cards */}
@@ -271,7 +272,7 @@ export default function BannerAdsPage() {
               </button>
 
               <p className="text-xs text-gray-500 mt-1">
-                Placement selection is included with your campaign request.
+                This selects your preferred inventory request for admin review.
               </p>
             </div>
           );
@@ -284,8 +285,9 @@ export default function BannerAdsPage() {
           Pricing & Duration
         </h2>
         <p className="text-sm text-zinc-300 mb-6">
-          Banner checkout pricing is based on campaign duration. Placement is
-          selected above and submitted with your banner campaign request.
+          Banner pricing is based on campaign duration. Placement selected
+          above is treated as requested inventory and is confirmed during
+          fulfillment.
         </p>
 
         <div className="flex justify-center gap-4 flex-wrap">

@@ -28,7 +28,7 @@ const GOAL_OPTIONS = [
     goal: "Promote Your Brand",
     title: "Banner Placement",
     option: "banner-ad",
-    where: "High-traffic pages across BWE",
+    where: "Requested banner inventory (approved + scheduled placements)",
     who: "Best for strong visual campaigns and repeated impressions",
     href: "/advertise/banner-ads",
   },
@@ -36,7 +36,7 @@ const GOAL_OPTIONS = [
     goal: "Increase Discovery",
     title: "Directory Placement",
     option: "directory-featured",
-    where: "Business Directory sponsored slots",
+    where: "Directory paid placement inventory with tier-based priority",
     who: "Best for local discovery and ongoing lead visibility",
     href: "/advertise/business-directory",
   },
@@ -139,9 +139,9 @@ export default function AdvertiseWithUs() {
             brands.
           </h1>
           <p className="mt-4 text-lg text-gray-200/90 leading-relaxed max-w-3xl">
-            BWE advertising is for businesses that want trusted visibility,
-            premium placement, and mission-aligned growth. Launch a campaign,
-            move through review, and go live in a clear lifecycle.
+            BWE advertising is for businesses that want trusted visibility with
+            explicit placement rules. Launch a campaign, move through review,
+            then activate in approved inventory.
           </p>
 
           <div className="mt-6 flex flex-col sm:flex-row gap-3">
@@ -173,8 +173,8 @@ export default function AdvertiseWithUs() {
               placement.
             </div>
             <div className="rounded-xl border border-white/10 bg-black/30 p-4 text-sm text-white/85">
-              Homepage and discovery surfaces designed for premium sponsor
-              visibility.
+              Featured Sponsor is implemented in the homepage sponsor rail with
+              weekly scheduling.
             </div>
             <div className="rounded-xl border border-white/10 bg-black/30 p-4 text-sm text-white/85">
               Structured review and lifecycle states so campaigns are clear and
@@ -288,8 +288,8 @@ export default function AdvertiseWithUs() {
           </h2>
           <p className="mt-2 text-white/80">
             Live sponsor placements are visible in the Featured Sponsors rail on
-            the homepage. Campaigns move through review and active scheduling
-            states before display.
+            the homepage. Other paid products are launched through explicit
+            approval + fulfillment states before they display.
           </p>
           <div className="mt-4 flex flex-wrap gap-3">
             <Link

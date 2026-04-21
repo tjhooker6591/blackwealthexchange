@@ -168,9 +168,9 @@ export default function FeaturedSponsorPage() {
             Wealth Exchange.
           </p>
           <p className="text-gray-500 mt-4">
-            Get highlighted on our homepage, business directory, and key
-            platform pages. Drive more traffic, attract new customers, and show
-            your support for Black economic empowerment.
+            Featured Sponsor campaigns are scheduled into the homepage Featured
+            Sponsors rail. Placement is approval-based and follows weekly
+            capacity.
           </p>
         </section>
 
@@ -180,16 +180,14 @@ export default function FeaturedSponsorPage() {
             Limited Availability: Weekly Sponsor Slots
           </h2>
           <p className="text-gray-300 mb-4">
-            Your business will appear in the{" "}
-            <strong>rolling Featured Sponsor section</strong> on the homepage —
-            shown to every visitor on the site. Each campaign runs for{" "}
-            <strong>7 days</strong> with
-            <strong> only 8 sponsor slots</strong> available per week.
+            Your business appears in the <strong>homepage Featured Sponsors rail</strong>.
+            Campaign weeks are assigned by schedule and can roll to the next
+            available week when capacity is full.
           </p>
           <p className="text-gray-300 mb-4">
-            With <strong>52 total weekly rotations per year</strong>, space is
-            limited and demand is high. Once a week is full, your ad will
-            automatically be queued for the next available slot.
+            Duration is sold in 7, 14, or 30-day packages and mapped to weekly
+            schedule blocks. If your requested week is full, your campaign is
+            queued into the next open week.
           </p>
           <p className="text-yellow-400 font-semibold">
             Reserve your placement early to secure visibility during your ideal
@@ -202,7 +200,7 @@ export default function FeaturedSponsorPage() {
           {[
             {
               title: "Homepage Placement",
-              text: "Your brand will be placed at the top of the homepage as a Featured Sponsor.",
+              text: "Your brand is scheduled into the homepage Featured Sponsors rail with sponsor labeling.",
             },
             {
               title: "High Visibility",
@@ -210,7 +208,7 @@ export default function FeaturedSponsorPage() {
             },
             {
               title: "Priority Exposure",
-              text: "Featured across platform sections, including directory and marketplace banners.",
+              text: "Approval + weekly scheduling keep placement predictable and auditable.",
             },
           ].map((item) => (
             <div key={item.title} className="bg-gray-800 p-6 rounded-lg shadow">
@@ -228,8 +226,8 @@ export default function FeaturedSponsorPage() {
             Pricing & Duration
           </h2>
           <p className="text-gray-400 mb-6">
-            Choose a duration that fits your campaign needs. All featured
-            sponsors receive top billing across key areas.
+            Choose a duration that fits your campaign needs. Featured Sponsor
+            placement is the homepage sponsor rail, scheduled by campaign week.
           </p>
           <div className="flex justify-center gap-6 flex-wrap">
             {featuredDurationOptions.map(({ durationDays, amountDollars }) => {

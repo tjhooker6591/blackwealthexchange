@@ -349,7 +349,7 @@ const PostJob = () => {
         <div className="grid md:grid-cols-3 gap-4 mb-8 mt-8">
           <TierCard
             title="Free Post"
-            subtitle="Basic listing, 1 per account"
+            subtitle="Basic listing submitted for approval"
             price="$0"
             active={tier === "free"}
             onSelect={() => setTier("free")}
@@ -357,7 +357,7 @@ const PostJob = () => {
 
           <TierCard
             title="Standard Post"
-            subtitle="30-day listing, enhanced visibility"
+            subtitle="Paid listing with standard placement in job listings"
             price="$29.99"
             active={tier === "standard"}
             onSelect={() => setTier("standard")}
@@ -398,7 +398,7 @@ const PostJob = () => {
 
           <TierCard
             title="Featured Post"
-            subtitle="Homepage promo, pinned, bold style"
+            subtitle="Featured badge + featured-first sort in job listings"
             price="$79.99"
             active={tier === "featured"}
             onSelect={() => setTier("featured")}

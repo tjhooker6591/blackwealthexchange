@@ -236,9 +236,9 @@ export default function CustomAd() {
         </h1>
 
         <p className="text-lg text-gray-400 mb-6">
-          Want something more tailored than a standard ad placement? Build a
-          campaign around your goals with flexible promotional options designed
-          for your brand.
+          Want something more tailored than a standard ad placement? Submit a
+          scoped custom campaign request and we will confirm exact deliverables,
+          placement surfaces, and schedule before launch.
         </p>
 
         <div className="bg-gray-800 p-6 rounded-lg text-left mb-10">
@@ -246,7 +246,8 @@ export default function CustomAd() {
             Available Custom Advertising Options
           </h2>
           <p className="text-gray-300 mb-4">
-            Select one or more options below when submitting your request.
+            Select one or more options below as planning inputs. Final placement
+            and execution are defined during approval and fulfillment.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -290,12 +291,15 @@ export default function CustomAd() {
         </div>
 
         <div className="bg-gray-700 text-left p-6 rounded-lg mb-10">
-          <h3 className="text-xl font-bold text-gold mb-2">Starting at {customDepositLabel}</h3>
+          <h3 className="text-xl font-bold text-gold mb-2">
+            Starting at {customDepositLabel}
+          </h3>
           <p className="text-gray-300 text-sm">
-            Custom campaigns start at {customDepositLabel}. Pricing varies based on scope,
-            duration, placement, creative needs, and campaign complexity. Submit
-            your request first, and if you are ready, you can reserve your
-            campaign with the {customDepositLabel} deposit after submission.
+            Custom campaigns start at {customDepositLabel}. Pricing varies based
+            on scope, duration, placement, creative needs, and campaign
+            complexity. Submit your request first, and if you are ready, you can
+            reserve your campaign with the {customDepositLabel} deposit after
+            submission.
           </p>
         </div>
 
