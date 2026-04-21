@@ -174,6 +174,12 @@ export default function JobApply() {
       const data = await res.json().catch(() => null);
 
       if (!res.ok) {
+        if (res.status === 409) {
+          throw new Error(
+            data?.error ||
+              "You already applied with this email. You can wait for a response or contact the employer with updates.",
+          );
+        }
         throw new Error(
           data?.error || data?.message || "Failed to submit application.",
         );
@@ -307,12 +313,18 @@ export default function JobApply() {
                 : "bg-gold text-black hover:bg-yellow-500"
             }`}
           >
-            {submitting ? "Sending..." : successMsg ? "Application Submitted" : "Send Application"}
+            {submitting
+              ? "Sending..."
+              : successMsg
+                ? "Application Submitted"
+                : "Send Application"}
           </button>
 
           <button
             type="button"
-            onClick={() => (successMsg ? router.push("/job-listings") : router.back())}
+            onClick={() =>
+              successMsg ? router.push("/job-listings") : router.back()
+            }
             className="w-full px-4 py-2 border border-gray-600 rounded hover:bg-gray-700 transition"
           >
             {successMsg ? "Back to Job Listings" : "Cancel"}

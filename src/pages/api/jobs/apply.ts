@@ -15,8 +15,9 @@ export default async function handler(
 
   try {
     const { jobId, name, email, resumeUrl } = req.body;
+    const normalizedEmail = String(email || "").trim().toLowerCase();
 
-    if (!jobId || !name || !email) {
+    if (!jobId || !name || !normalizedEmail) {
       return res
         .status(400)
         .json({ success: false, error: "Name, email, and job are required." });
@@ -33,13 +34,26 @@ export default async function handler(
 
     const applicants = db.collection("applicants");
 
+    const existing = await applicants.findOne({
+      jobId: jobObjectId,
+      email: normalizedEmail,
+    });
+
+    if (existing) {
+      return res.status(409).json({
+        success: false,
+        error:
+          "You have already applied for this role with this email. If needed, contact the employer directly to share updates.",
+      });
+    }
+
     // ✅ Insert the applicant into the collection
     const insertedAt = new Date();
 
     const result = await applicants.insertOne({
       jobId: jobObjectId,
       name,
-      email,
+      email: normalizedEmail,
       resumeUrl: typeof resumeUrl === "string" ? resumeUrl : "",
       appliedAt: insertedAt,
       hiringStatus: "new",

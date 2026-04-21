@@ -18,6 +18,13 @@ interface Job {
   datePosted: string;
   applicants: number;
   isFeatured?: boolean;
+  statusCounts?: {
+    new: number;
+    reviewed: number;
+    shortlisted: number;
+    contacted: number;
+    rejected: number;
+  };
 }
 
 function freshnessLabel(datePosted: string) {
@@ -129,16 +136,42 @@ export default function EmployerJobsPage() {
                     ) : null}
                   </div>
                   <div className="text-right">
-                    <span className="text-sm text-gray-400 block">Posted: {job.datePosted}</span>
-                    <span className="text-xs text-blue-300">{freshnessLabel(job.datePosted)}</span>
+                    <span className="text-sm text-gray-400 block">
+                      Posted: {job.datePosted}
+                    </span>
+                    <span className="text-xs text-blue-300">
+                      {freshnessLabel(job.datePosted)}
+                    </span>
                   </div>
                 </div>
                 <p className="text-gray-300">
                   {job.company} • {job.location} • {job.type}
                 </p>
-                <p className="text-gray-300 mt-2 font-medium">
-                  {job.applicants} applicant{job.applicants !== 1 && "s"}
-                </p>
+                <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">
+                  <span className="text-gray-100 font-semibold">
+                    {job.applicants} applicant{job.applicants !== 1 && "s"}
+                  </span>
+                  {(job.statusCounts?.new || 0) > 0 ? (
+                    <span className="px-2 py-0.5 rounded border border-emerald-400/30 bg-emerald-500/10 text-emerald-200 text-xs">
+                      {job.statusCounts?.new} new
+                    </span>
+                  ) : null}
+                </div>
+
+                <div className="mt-2 flex flex-wrap gap-2 text-[11px]">
+                  <span className="px-2 py-0.5 rounded border border-gray-600 text-gray-300">
+                    Reviewed: {job.statusCounts?.reviewed || 0}
+                  </span>
+                  <span className="px-2 py-0.5 rounded border border-gray-600 text-gray-300">
+                    Shortlisted: {job.statusCounts?.shortlisted || 0}
+                  </span>
+                  <span className="px-2 py-0.5 rounded border border-gray-600 text-gray-300">
+                    Contacted: {job.statusCounts?.contacted || 0}
+                  </span>
+                  <span className="px-2 py-0.5 rounded border border-gray-600 text-gray-300">
+                    Rejected: {job.statusCounts?.rejected || 0}
+                  </span>
+                </div>
                 <div className="mt-4 flex gap-3">
                   <Link href={`/employer/applicants?jobId=${job._id}`}>
                     <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
