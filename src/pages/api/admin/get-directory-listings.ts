@@ -235,7 +235,7 @@ export default async function handler(
     return res.status(401).json({ error: "Unauthorized" });
   }
 
-  if (process.env.NODE_ENV === "production" && !isAdmin(decoded)) {
+  if (!isAdmin(decoded)) {
     return res.status(403).json({ error: "Forbidden" });
   }
 

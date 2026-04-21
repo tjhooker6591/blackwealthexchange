@@ -467,6 +467,11 @@ const AdminDashboard = ({
     [attentionItems],
   );
 
+  const prioritizedAttentionItems = useMemo(
+    () => [...needsAttentionNow].sort((a, b) => b.value - a.value),
+    [needsAttentionNow],
+  );
+
   const recentJoinsRows = useMemo<RecentJoinRow[]>(() => {
     const rows = Array.isArray(statsRaw?.recentJoins?.rows)
       ? (statsRaw.recentJoins.rows as RecentJoinRow[])
@@ -835,25 +840,42 @@ const AdminDashboard = ({
             <h3 className="text-sm font-semibold text-gray-200">
               Needs attention now
             </h3>
-            {needsAttentionNow.length === 0 ? (
+            {prioritizedAttentionItems.length === 0 ? (
               <p className="mt-2 text-sm text-emerald-300">
                 No open approval queues right now.
               </p>
             ) : (
-              <div className="mt-3 space-y-2">
-                {needsAttentionNow.map((item) => (
+              <>
+                <div className="mt-3 rounded border border-yellow-500/30 bg-yellow-500/10 p-3">
+                  <div className="text-xs uppercase tracking-wide text-yellow-200">
+                    Do first
+                  </div>
+                  <div className="mt-1 text-sm text-white">
+                    {prioritizedAttentionItems[0].label}
+                  </div>
                   <Link
-                    key={item.key}
-                    href={item.href}
-                    className="flex items-center justify-between rounded border border-gray-700 bg-gray-800 px-3 py-2 text-sm hover:bg-gray-700"
+                    href={prioritizedAttentionItems[0].href}
+                    className="mt-2 inline-flex rounded border border-yellow-500/40 bg-yellow-500/20 px-2 py-1 text-xs text-yellow-100 hover:bg-yellow-500/30"
                   >
-                    <span>{item.label}</span>
-                    <span className="rounded bg-yellow-500/20 px-2 py-0.5 text-xs text-yellow-200">
-                      {item.value}
-                    </span>
+                    Open top queue ({prioritizedAttentionItems[0].value})
                   </Link>
-                ))}
-              </div>
+                </div>
+
+                <div className="mt-3 space-y-2">
+                  {prioritizedAttentionItems.map((item) => (
+                    <Link
+                      key={item.key}
+                      href={item.href}
+                      className="flex items-center justify-between rounded border border-gray-700 bg-gray-800 px-3 py-2 text-sm hover:bg-gray-700"
+                    >
+                      <span>{item.label}</span>
+                      <span className="rounded bg-yellow-500/20 px-2 py-0.5 text-xs text-yellow-200">
+                        {item.value}
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              </>
             )}
           </div>
 
@@ -1550,67 +1572,52 @@ const AdminDashboard = ({
       </div>
 
       {/* Quick Actions */}
-      <SectionTitle>Quick Admin Actions</SectionTitle>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-4xl mx-auto mb-12">
-        <AdminLink
-          href="/admin/business-approvals"
-          label="Manage Business Approvals"
-        />
-        <AdminLink
-          href="/admin/organizations"
-          label="Manage Organization Approvals"
-        />
-        <AdminLink
-          href="/admin/directory-approvals"
-          label="Approve Directory Listings"
-        />
-        <AdminLink
-          href="/admin/affiliate-payouts"
-          label="Review Affiliate Payouts"
-        />
-        <AdminLink href="/admin/affiliates" label="Manage Affiliates" />
-        <AdminLink
-          href="/admin/affiliate-attribution"
-          label="Review Affiliate Attribution"
-        />
-        <AdminLink
-          href="/admin/consulting-leads"
-          label="Review Consulting Leads"
-        />
-        <AdminLink
-          href="/admin/advertising-requests"
-          label="Review Advertising Requests"
-        />
-        <AdminLink href="/admin/job-approvals" label="Approve Job Postings" />
-        <AdminLink
-          href="/admin/product-approvals"
-          label="Approve Marketplace Products"
-        />
-        <AdminLink
-          href="/admin/user-management"
-          label="User & Account Management"
-        />
-        <AdminLink
-          href="/admin/content-moderation"
-          label="Moderate Articles & Resources"
-        />
-        <AdminLink href="/admin/analytics" label="View Platform Analytics" />
-        <AdminLink
-          href="/admin/phase1-scoreboard"
-          label="Phase 1 Operating Scoreboard"
-        />
-        <AdminLink
-          href="/admin/featured-products"
-          label="Manage Featured Products"
-        />
-        <AdminLink
-          href="/admin/inventory-report"
-          label="View Inventory Report"
-        />
-        <AdminLink
-          href="/admin/intern-applications"
-          label="Intern Applications"
-        />
+      <SectionTitle>Control Center Navigation</SectionTitle>
+      <div className="mb-12 grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <div className="rounded border border-gray-700 bg-gray-800 p-4">
+          <h3 className="text-sm font-semibold text-gold">Review Queues</h3>
+          <p className="mt-1 text-xs text-gray-400">
+            Time-sensitive moderation and payout decisions.
+          </p>
+          <div className="mt-3 space-y-2">
+            <AdminLink href="/admin/business-approvals" label="Business approvals" />
+            <AdminLink href="/admin/job-approvals" label="Job approvals" />
+            <AdminLink href="/admin/product-approvals" label="Product approvals" />
+            <AdminLink href="/admin/directory-approvals" label="Directory approvals" />
+            <AdminLink href="/admin/affiliate-payouts" label="Affiliate payouts" />
+            <AdminLink href="/admin/consultant-escalations" label="Consultant escalations" />
+          </div>
+        </div>
+
+        <div className="rounded border border-gray-700 bg-gray-800 p-4">
+          <h3 className="text-sm font-semibold text-gold">Platform Management</h3>
+          <p className="mt-1 text-xs text-gray-400">
+            Core operations, users, integrity, and business configuration.
+          </p>
+          <div className="mt-3 space-y-2">
+            <AdminLink href="/admin/user-management" label="User & account management" />
+            <AdminLink href="/admin/organizations" label="Organizations" />
+            <AdminLink href="/admin/affiliates" label="Affiliates" />
+            <AdminLink href="/admin/affiliate-attribution" label="Affiliate attribution" />
+            <AdminLink href="/admin/content-moderation" label="Content moderation" />
+            <AdminLink href="/admin/directory-duplicates" label="Directory duplicates" />
+          </div>
+        </div>
+
+        <div className="rounded border border-gray-700 bg-gray-800 p-4">
+          <h3 className="text-sm font-semibold text-gold">Secondary Tools</h3>
+          <p className="mt-1 text-xs text-gray-400">
+            Reporting, diagnostics, and specialized admin utilities.
+          </p>
+          <div className="mt-3 space-y-2">
+            <AdminLink href="/admin/analytics" label="Platform analytics" />
+            <AdminLink href="/admin/inventory-report" label="Inventory report" />
+            <AdminLink href="/admin/featured-products" label="Featured products" />
+            <AdminLink href="/admin/advertising-requests" label="Advertising requests" />
+            <AdminLink href="/admin/consulting-leads" label="Consulting leads" />
+            <AdminLink href="/admin/tools" label="Admin tools" />
+          </div>
+        </div>
       </div>
 
       {/* Consulting Service Waitlist */}
