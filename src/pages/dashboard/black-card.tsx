@@ -182,7 +182,7 @@ export default function BlackCardDashboardPage() {
             <>
               <section className="rounded-2xl border border-yellow-500/30 bg-yellow-500/10 p-6">
                 <p className="text-xs uppercase tracking-[0.18em] text-yellow-300">
-                  Identity Card
+                  Digital Member Card
                 </p>
                 <div className="mt-3 grid gap-4 md:grid-cols-2">
                   <div className="space-y-3">
@@ -231,7 +231,7 @@ export default function BlackCardDashboardPage() {
                           : "—"}
                       </div>
                       <div className="mt-1">
-                        Wallet pass: {data.card?.walletPassState || "planned"}
+                        Wallet pass status: {data.card?.walletPassState || "in dashboard"}
                       </div>
                     </div>
                   </div>

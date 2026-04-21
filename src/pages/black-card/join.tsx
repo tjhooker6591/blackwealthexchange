@@ -137,6 +137,12 @@ export default function BlackCardJoinPage() {
                 <p className="mt-1 text-sm text-white/75">
                   {tierConfig.tagline}
                 </p>
+                <p className="mt-2 max-w-2xl text-xs text-white/65">
+                  Digital membership activates in your account after checkout.
+                  Your member dashboard becomes your primary card experience,
+                  with tier status, verification data, rewards, and redemption
+                  controls.
+                </p>
               </div>
               <Link
                 href="/black-card"
@@ -167,7 +173,7 @@ export default function BlackCardJoinPage() {
 
               <div className="rounded-xl border border-white/10 bg-black/40 p-4">
                 <div className="text-xs uppercase tracking-[0.16em] text-yellow-300">
-                  Included Value
+                  What you get in this tier
                 </div>
                 <ul className="mt-2 space-y-1 text-sm text-white/85">
                   {tierConfig.benefits.map((benefit) => (
@@ -224,7 +230,7 @@ export default function BlackCardJoinPage() {
             className="rounded-xl border border-white/10 bg-white/5 p-4 text-sm text-white/80"
           >
             <div className="font-semibold text-yellow-200">
-              Post-checkout flow
+              Post-checkout digital flow
             </div>
             <div className="mt-2">
               1. Complete secure checkout for selected membership tier.
@@ -233,21 +239,23 @@ export default function BlackCardJoinPage() {
               2. Membership status activates on successful payment.
             </div>
             <div className="mt-1">
-              3. Confirm exact print details for physical card issuance.
+              3. Open /dashboard/black-card to access your digital member card
+              state, verification details, rewards, and redemptions.
             </div>
             <div className="mt-1">
-              4. Use membership benefits while card fulfillment completes.
+              4. Optional physical personalization runs separately without
+              blocking digital access.
             </div>
           </section>
 
           {checkoutSuccess ? (
             <section className="rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-4">
               <h2 className="text-lg font-bold text-yellow-200">
-                Physical Card Personalization (Required)
+                Physical Card Personalization (Optional Add-on)
               </h2>
               <p className="mt-1 text-sm text-white/80">
-                Digital membership is already active. Submit print approval to
-                initiate physical card production.
+                Digital membership is already active. Submit print approval only
+                if you want physical card production.
               </p>
 
               <label className="mt-4 block text-sm text-white/80">

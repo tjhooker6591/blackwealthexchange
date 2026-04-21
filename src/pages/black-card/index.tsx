@@ -67,9 +67,10 @@ export default function BlackCardLandingPage() {
                   Built for Ownership, Access, and Economic Power.
                 </p>
                 <p className="mt-4 max-w-3xl text-[#D9D9D9]">
-                  {BLACK_CARD_POSITIONING}. Black Card is a live membership
-                  system with tiered value, secure activation, and ongoing
-                  member benefits across BWE.
+                  {BLACK_CARD_POSITIONING}. Black Card is a digital-first
+                  membership system with instant account activation, persistent
+                  member identity in your dashboard, and premium benefits
+                  available across BWE immediately after checkout.
                 </p>
 
                 <div className="mt-6 grid gap-3 text-sm text-[#DDD] sm:grid-cols-3">
@@ -104,10 +105,10 @@ export default function BlackCardLandingPage() {
                     Activate Membership
                   </Link>
                   <a
-                    href="#tiers"
+                    href="#digital-experience"
                     className="rounded-xl border border-[#B08A32]/50 bg-[#1A140A] px-5 py-2.5 font-semibold text-[#F0D37A] hover:bg-[#221A0D]"
                   >
-                    Explore Tiers
+                    See Digital Experience
                   </a>
                 </div>
               </div>
@@ -201,16 +202,29 @@ export default function BlackCardLandingPage() {
             </div>
           </section>
 
-          <section className="grid gap-4 md:grid-cols-2">
+          <section
+            id="digital-experience"
+            className="grid gap-4 md:grid-cols-2"
+          >
             <div className="rounded-2xl border border-white/10 bg-[#0C0C0C] p-5">
               <h3 className="text-lg font-bold text-[#F1D57A]">
-                Activation flow
+                Digital card experience
               </h3>
               <ul className="mt-3 space-y-2 text-sm text-[#D8D8D8]">
                 <li>1. Select your tier and continue to secure checkout.</li>
-                <li>2. Membership activates after successful payment.</li>
-                <li>3. Complete physical card personalization in join flow.</li>
-                <li>4. Use tier benefits across supported BWE experiences.</li>
+                <li>
+                  2. Membership activates in your account immediately after
+                  successful payment.
+                </li>
+                <li>
+                  3. Your digital Black Card identity appears in
+                  /dashboard/black-card with status, tier, and verification
+                  data.
+                </li>
+                <li>
+                  4. Use digital membership benefits instantly while optional
+                  physical personalization is handled separately.
+                </li>
               </ul>
             </div>
 
