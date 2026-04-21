@@ -25,6 +25,7 @@ export default function ConsultantEscalationsPage() {
   const [resolutionNotes, setResolutionNotes] = useState<
     Record<string, string>
   >({});
+  const [success, setSuccess] = useState("");
 
   async function load() {
     setLoading(true);
@@ -56,6 +57,7 @@ export default function ConsultantEscalationsPage() {
 
   useEffect(() => {
     void load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function updateEscalation(
@@ -64,6 +66,7 @@ export default function ConsultantEscalationsPage() {
   ) {
     setBusyId(item.id);
     setError("");
+    setSuccess("");
     try {
       const resolutionNote = resolutionNotes[item.id] || "";
       const res = await fetch("/api/admin/consultant-escalations", {
@@ -81,6 +84,7 @@ export default function ConsultantEscalationsPage() {
         throw new Error(
           data?.message || data?.error || "Failed to update escalation",
         );
+      setSuccess(`Escalation moved to ${status.replace("_", " ")}.`);
       await load();
     } catch (err) {
       setError(
@@ -139,6 +143,12 @@ export default function ConsultantEscalationsPage() {
             Apply filter
           </button>
         </div>
+
+        {success ? (
+          <div className="mb-4 rounded-lg border border-emerald-500/40 bg-emerald-500/10 p-3 text-sm text-emerald-100">
+            {success}
+          </div>
+        ) : null}
 
         {loading ? (
           <p className="text-zinc-300">Loading escalations...</p>

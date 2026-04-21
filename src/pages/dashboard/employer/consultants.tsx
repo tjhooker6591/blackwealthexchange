@@ -32,9 +32,14 @@ export default function EmployerConsultantDiscoveryPage() {
   const [pipeline, setPipeline] = useState<PipelineItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [contactDrafts, setContactDrafts] = useState<Record<string, string>>({});
-  const [contactMode, setContactMode] = useState<Record<string, "contact" | "interview_request">>({});
+  const [contactDrafts, setContactDrafts] = useState<Record<string, string>>(
+    {},
+  );
+  const [contactMode, setContactMode] = useState<
+    Record<string, "contact" | "interview_request">
+  >({});
   const [sendingContactId, setSendingContactId] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
@@ -104,12 +109,20 @@ export default function EmployerConsultantDiscoveryPage() {
   }, [pipeline]);
 
   async function saveConsultant(consultantId: string, status: string) {
-    await fetch("/api/employer/consultant-pipeline", {
+    setError("");
+    setSuccessMessage("");
+    const res = await fetch("/api/employer/consultant-pipeline", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
       body: JSON.stringify({ consultantId, status }),
     });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      setError(data?.error || "Failed to update pipeline status.");
+      return;
+    }
+    setSuccessMessage("Shortlist status updated.");
     await load();
   }
 
@@ -136,12 +149,15 @@ export default function EmployerConsultantDiscoveryPage() {
       }
 
       setContactDrafts((prev) => ({ ...prev, [consultantId]: "" }));
+      setSuccessMessage(
+        requestType === "interview_request"
+          ? "Interview request submitted and pipeline updated."
+          : "Contact request submitted and pipeline updated.",
+      );
       await load();
     } catch (err) {
       setError(
-        err instanceof Error
-          ? err.message
-          : "Failed to submit contact request",
+        err instanceof Error ? err.message : "Failed to submit contact request",
       );
     } finally {
       setSendingContactId("");
@@ -247,6 +263,12 @@ export default function EmployerConsultantDiscoveryPage() {
           </div>
         ) : null}
 
+        {successMessage ? (
+          <div className="mt-4 rounded-lg border border-emerald-500/40 bg-emerald-500/10 p-3 text-sm text-emerald-100">
+            {successMessage}
+          </div>
+        ) : null}
+
         <section className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {loading ? (
             <div className="text-sm text-zinc-300">Loading consultants...</div>
@@ -333,13 +355,17 @@ export default function EmployerConsultantDiscoveryPage() {
                         onChange={(e) =>
                           setContactMode((prev) => ({
                             ...prev,
-                            [c.id]: e.target.value as "contact" | "interview_request",
+                            [c.id]: e.target.value as
+                              | "contact"
+                              | "interview_request",
                           }))
                         }
                         className="rounded border border-white/10 bg-black px-2 py-1 text-xs"
                       >
                         <option value="contact">Contact request</option>
-                        <option value="interview_request">Interview request</option>
+                        <option value="interview_request">
+                          Interview request
+                        </option>
                       </select>
                     </div>
                     <textarea
@@ -365,9 +391,21 @@ export default function EmployerConsultantDiscoveryPage() {
                     </button>
                   </div>
 
-                  <p className="mt-3 text-[11px] text-zinc-400">
-                    Pipeline status: {state.replace("_", " ")}
-                  </p>
+                  <div className="mt-3">
+                    <span
+                      className={`inline-flex rounded-full border px-2 py-1 text-[11px] ${
+                        state === "hired"
+                          ? "border-emerald-400/50 text-emerald-200"
+                          : state === "under_review"
+                            ? "border-cyan-400/50 text-cyan-200"
+                            : state === "interview_requested"
+                              ? "border-yellow-400/50 text-yellow-200"
+                              : "border-white/20 text-zinc-300"
+                      }`}
+                    >
+                      Pipeline: {state.replace("_", " ")}
+                    </span>
+                  </div>
                 </article>
               );
             })

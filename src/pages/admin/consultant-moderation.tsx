@@ -23,6 +23,7 @@ export default function ConsultantModerationPage() {
   const [busyId, setBusyId] = useState<string | null>(null);
   const [reasonFilter, setReasonFilter] = useState("");
   const [notes, setNotes] = useState<Record<string, string>>({});
+  const [success, setSuccess] = useState("");
 
   async function load() {
     setLoading(true);
@@ -51,6 +52,7 @@ export default function ConsultantModerationPage() {
 
   useEffect(() => {
     void load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function moderate(
@@ -60,6 +62,7 @@ export default function ConsultantModerationPage() {
     if (!item.requestId) return;
     setBusyId(item.id);
     setError("");
+    setSuccess("");
     try {
       const res = await fetch("/api/admin/consultant-moderation-queue", {
         method: "PATCH",
@@ -76,6 +79,7 @@ export default function ConsultantModerationPage() {
         throw new Error(
           data?.message || data?.error || "Failed to update request",
         );
+      setSuccess(`Request ${disposition}.`);
       await load();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to update request");
@@ -128,10 +132,10 @@ export default function ConsultantModerationPage() {
             className="rounded border border-white/10 bg-black px-3 py-2 text-sm text-white"
           >
             <option value="">All reasons</option>
-            <option value="invalid_payload">invalid_payload</option>
-            <option value="disallowed_message">disallowed_message</option>
-            <option value="rate_limited">rate_limited</option>
-            <option value="blocked_phrase">blocked_phrase</option>
+            <option value="blocked_term">blocked_term</option>
+            <option value="too_many_links">too_many_links</option>
+            <option value="repeated_characters">repeated_characters</option>
+            <option value="excessive_caps">excessive_caps</option>
           </select>
           <button
             onClick={() => void load()}
@@ -149,6 +153,12 @@ export default function ConsultantModerationPage() {
             Reset
           </button>
         </div>
+
+        {success ? (
+          <div className="mb-4 rounded-lg border border-emerald-500/40 bg-emerald-500/10 p-3 text-sm text-emerald-100">
+            {success}
+          </div>
+        ) : null}
 
         {loading ? (
           <p className="text-zinc-300">Loading moderation queue...</p>

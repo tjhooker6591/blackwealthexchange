@@ -28,12 +28,25 @@ const STATUS_LABELS: Record<
   hired: "Hired",
 };
 
+const STATUS_NEXT: Record<
+  (typeof CONSULTANT_PIPELINE_STATUSES)[number],
+  (typeof CONSULTANT_PIPELINE_STATUSES)[number][]
+> = {
+  saved: ["contacted", "interview_requested"],
+  contacted: ["interview_requested", "under_review"],
+  interview_requested: ["under_review", "hired"],
+  under_review: ["hired", "saved"],
+  hired: ["under_review"],
+};
+
 export default function EmployerConsultantPipelinePage() {
   const [pipeline, setPipeline] = useState<PipelineItem[]>([]);
   const [consultants, setConsultants] = useState<Consultant[]>([]);
   const [requests, setRequests] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+  const [busyMoveId, setBusyMoveId] = useState<string | null>(null);
 
   async function load() {
     setLoading(true);
@@ -104,13 +117,31 @@ export default function EmployerConsultantPipelinePage() {
   }, [pipeline]);
 
   async function move(item: PipelineItem, status: string) {
-    await fetch("/api/employer/consultant-pipeline", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ id: item.id, status }),
-    });
-    await load();
+    setError("");
+    setSuccess("");
+    setBusyMoveId(item.id);
+    try {
+      const res = await fetch("/api/employer/consultant-pipeline", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ id: item.id, status }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(data?.error || "Failed to update pipeline item");
+      }
+      setSuccess(
+        `Moved consultant to ${STATUS_LABELS[status as keyof typeof STATUS_LABELS]}.`,
+      );
+      await load();
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Failed to update pipeline item",
+      );
+    } finally {
+      setBusyMoveId(null);
+    }
   }
 
   return (
@@ -145,6 +176,12 @@ export default function EmployerConsultantPipelinePage() {
           </div>
         ) : null}
 
+        {success ? (
+          <div className="mb-4 rounded-lg border border-emerald-500/40 bg-emerald-500/10 p-3 text-sm text-emerald-100">
+            {success}
+          </div>
+        ) : null}
+
         <section className="mb-6 rounded-2xl border border-white/10 bg-zinc-950 p-4">
           <h2 className="text-lg font-semibold">Recent contact requests</h2>
           {requests.length === 0 ? (
@@ -166,7 +203,7 @@ export default function EmployerConsultantPipelinePage() {
                           : "contacted") as keyof typeof STATUS_LABELS
                       ]
                     }{" "}
-                    request for consultant {r.consultantId}
+                    request for {consultantMap.get(r.consultantId)?.name || r.consultantId}
                   </p>
                   <p className="mt-1 text-zinc-300">{r.message}</p>
                   <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px] text-zinc-400">
@@ -178,7 +215,8 @@ export default function EmployerConsultantPipelinePage() {
                     </span>
                     {r.consultantResponseAction ? (
                       <span className="rounded border border-cyan-400/30 px-2 py-0.5 text-cyan-200">
-                        consultant: {String(r.consultantResponseAction).replace("_", " ")}
+                        consultant:{" "}
+                        {String(r.consultantResponseAction).replace("_", " ")}
                       </span>
                     ) : null}
                   </div>
@@ -235,19 +273,16 @@ export default function EmployerConsultantPipelinePage() {
                             Profile quality: {c?.completenessScore ?? "N/A"}%
                           </p>
                           <div className="mt-2 flex flex-wrap gap-1">
-                            {CONSULTANT_PIPELINE_STATUSES.filter(
-                              (s) => s !== status,
-                            )
-                              .slice(0, 2)
-                              .map((next) => (
-                                <button
-                                  key={next}
-                                  onClick={() => void move(item, next)}
-                                  className="rounded border border-yellow-400/40 px-2 py-1 text-[10px] text-yellow-200 hover:bg-yellow-500/10"
-                                >
-                                  Move to {STATUS_LABELS[next]}
-                                </button>
-                              ))}
+                            {STATUS_NEXT[status].map((next) => (
+                              <button
+                                key={next}
+                                onClick={() => void move(item, next)}
+                                disabled={busyMoveId === item.id}
+                                className="rounded border border-yellow-400/40 px-2 py-1 text-[10px] text-yellow-200 hover:bg-yellow-500/10 disabled:opacity-50"
+                              >
+                                Move to {STATUS_LABELS[next]}
+                              </button>
+                            ))}
                           </div>
                         </article>
                       );

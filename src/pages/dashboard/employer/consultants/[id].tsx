@@ -9,8 +9,12 @@ export default function EmployerConsultantProfilePage() {
   const [error, setError] = useState("");
   const [consultant, setConsultant] = useState<any>(null);
   const [message, setMessage] = useState("");
-  const [requestType, setRequestType] = useState<"contact" | "interview_request">("contact");
+  const [requestType, setRequestType] = useState<
+    "contact" | "interview_request"
+  >("contact");
   const [requestStatus, setRequestStatus] = useState("");
+  const [pipelineStatus, setPipelineStatus] = useState("");
+  const [pipelineBusy, setPipelineBusy] = useState(false);
 
   useEffect(() => {
     if (!id || typeof id !== "string") return;
@@ -36,12 +40,27 @@ export default function EmployerConsultantProfilePage() {
 
   async function updatePipeline(status: string) {
     if (!consultant?.id) return;
-    await fetch("/api/employer/consultant-pipeline", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ consultantId: consultant.id, status }),
-    });
+    setPipelineBusy(true);
+    setPipelineStatus("");
+    try {
+      const res = await fetch("/api/employer/consultant-pipeline", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ consultantId: consultant.id, status }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(data?.error || "Failed to update pipeline status");
+      }
+      setPipelineStatus(`Pipeline updated: ${String(status).replace("_", " ")}.`);
+    } catch (err) {
+      setPipelineStatus(
+        err instanceof Error ? err.message : "Failed to update pipeline status",
+      );
+    } finally {
+      setPipelineBusy(false);
+    }
   }
 
   async function sendContactRequest() {
@@ -57,7 +76,11 @@ export default function EmployerConsultantProfilePage() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
-      body: JSON.stringify({ consultantId: consultant.id, requestType, message: msg }),
+      body: JSON.stringify({
+        consultantId: consultant.id,
+        requestType,
+        message: msg,
+      }),
     });
     const data = await res.json();
     if (!res.ok) {
@@ -165,23 +188,30 @@ export default function EmployerConsultantProfilePage() {
               ) : null}
               <button
                 onClick={() => void updatePipeline("saved")}
-                className="rounded-lg border border-yellow-400/40 px-4 py-2 text-sm text-yellow-200 hover:bg-yellow-500/10"
+                disabled={pipelineBusy}
+                className="rounded-lg border border-yellow-400/40 px-4 py-2 text-sm text-yellow-200 hover:bg-yellow-500/10 disabled:opacity-60"
               >
                 Save
               </button>
               <button
                 onClick={() => void updatePipeline("contacted")}
-                className="rounded-lg border border-yellow-400/40 px-4 py-2 text-sm text-yellow-200 hover:bg-yellow-500/10"
+                disabled={pipelineBusy}
+                className="rounded-lg border border-yellow-400/40 px-4 py-2 text-sm text-yellow-200 hover:bg-yellow-500/10 disabled:opacity-60"
               >
                 Contact
               </button>
               <button
                 onClick={() => void updatePipeline("interview_requested")}
-                className="rounded-lg bg-yellow-400 px-4 py-2 text-sm font-bold text-black"
+                disabled={pipelineBusy}
+                className="rounded-lg bg-yellow-400 px-4 py-2 text-sm font-bold text-black disabled:opacity-60"
               >
                 Request Interview
               </button>
             </div>
+
+            {pipelineStatus ? (
+              <p className="mt-3 text-sm text-emerald-100">{pipelineStatus}</p>
+            ) : null}
 
             <div className="mt-6 rounded-xl border border-cyan-500/30 bg-cyan-500/5 p-4">
               <h3 className="text-sm font-semibold uppercase tracking-wide text-cyan-200">
@@ -191,7 +221,9 @@ export default function EmployerConsultantProfilePage() {
                 <select
                   value={requestType}
                   onChange={(e) =>
-                    setRequestType(e.target.value as "contact" | "interview_request")
+                    setRequestType(
+                      e.target.value as "contact" | "interview_request",
+                    )
                   }
                   className="rounded border border-white/10 bg-black px-2 py-1 text-sm"
                 >

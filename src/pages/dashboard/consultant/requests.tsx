@@ -7,25 +7,28 @@ export default function ConsultantRequestInboxPage() {
   const [error, setError] = useState("");
   const [busyId, setBusyId] = useState<string | null>(null);
   const [actionMessage, setActionMessage] = useState("");
+  const [responseNotes, setResponseNotes] = useState<Record<string, string>>({});
+
+  async function loadInbox() {
+    setLoading(true);
+    setError("");
+    try {
+      const res = await fetch("/api/consultants/contact-requests", {
+        cache: "no-store",
+        credentials: "include",
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data?.error || "Failed to load inbox");
+      setItems(Array.isArray(data?.items) ? data.items : []);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to load inbox");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
-    (async () => {
-      setLoading(true);
-      setError("");
-      try {
-        const res = await fetch("/api/consultants/contact-requests", {
-          cache: "no-store",
-          credentials: "include",
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data?.error || "Failed to load inbox");
-        setItems(Array.isArray(data?.items) ? data.items : []);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load inbox");
-      } finally {
-        setLoading(false);
-      }
-    })();
+    void loadInbox();
   }, []);
 
   async function respondToRequest(
@@ -39,7 +42,11 @@ export default function ConsultantRequestInboxPage() {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ requestId, action }),
+        body: JSON.stringify({
+          requestId,
+          action,
+          note: (responseNotes[requestId] || "").trim(),
+        }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data?.error || "Failed to update request");
@@ -57,6 +64,7 @@ export default function ConsultantRequestInboxPage() {
         ),
       );
       setActionMessage("Request updated.");
+      setResponseNotes((prev) => ({ ...prev, [requestId]: "" }));
     } catch (err) {
       setActionMessage(
         err instanceof Error ? err.message : "Failed to update request",
@@ -80,12 +88,20 @@ export default function ConsultantRequestInboxPage() {
               consultant profile.
             </p>
           </div>
-          <Link
-            href="/dashboard/consultant/profile"
-            className="text-sm text-cyan-200 underline"
-          >
-            Back to profile
-          </Link>
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              onClick={() => void loadInbox()}
+              className="rounded border border-white/20 px-2 py-1 text-xs text-zinc-200"
+            >
+              Refresh inbox
+            </button>
+            <Link
+              href="/dashboard/consultant/profile"
+              className="text-sm text-cyan-200 underline"
+            >
+              Back to profile
+            </Link>
+          </div>
         </div>
 
         {error ? (
@@ -129,7 +145,7 @@ export default function ConsultantRequestInboxPage() {
                   {new Date(r.createdAt).toLocaleString()}
                 </p>
 
-                <div className="mt-3 flex flex-wrap gap-2">
+                <div className="mt-3 flex flex-wrap gap-2 items-center">
                   <button
                     onClick={() => void respondToRequest(r.id, "accept")}
                     disabled={busyId === r.id || r.status === "accepted"}
@@ -148,15 +164,43 @@ export default function ConsultantRequestInboxPage() {
                     onClick={() =>
                       void respondToRequest(r.id, "request_more_info")
                     }
-                    disabled={busyId === r.id || r.status === "more_info_requested"}
+                    disabled={
+                      busyId === r.id || r.status === "more_info_requested"
+                    }
                     className="rounded border border-amber-400/50 px-2 py-1 text-xs text-amber-200 disabled:opacity-50"
                   >
                     Request info
                   </button>
-                  <span className="text-xs text-zinc-400">
-                    Status: {r.status || "submitted"}
+                  <span className="rounded-full border border-white/20 px-2 py-1 text-xs text-zinc-200">
+                    Status: {String(r.status || "submitted").replace("_", " ")}
                   </span>
                 </div>
+
+                {r.consultantResponseNote ? (
+                  <p className="mt-2 text-xs text-cyan-100/90">
+                    Last response note: {r.consultantResponseNote}
+                  </p>
+                ) : null}
+
+                <div className="mt-2 text-[11px] text-zinc-500">
+                  Responded: {r.consultantRespondedAt ? new Date(r.consultantRespondedAt).toLocaleString() : "Not yet"}
+                </div>
+
+                <label className="mt-3 block text-xs text-zinc-300">
+                  Optional response note
+                  <textarea
+                    value={responseNotes[r.id] || ""}
+                    onChange={(e) =>
+                      setResponseNotes((prev) => ({
+                        ...prev,
+                        [r.id]: e.target.value,
+                      }))
+                    }
+                    rows={2}
+                    placeholder="Add scheduling details, conditions, or next-step context"
+                    className="mt-1 w-full rounded border border-white/10 bg-black px-2 py-1 text-xs"
+                  />
+                </label>
               </article>
             ))}
           </div>
