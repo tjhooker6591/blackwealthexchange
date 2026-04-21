@@ -45,9 +45,8 @@ const PLACEMENTS: Array<{
     title: "Sidebar Ad",
     placement: "sidebar",
     description:
-      "Sidebar banner inventory request for eligible pages after approval.",
+      "Business Directory sidebar banner inventory request after approval.",
   },
-
 ];
 
 export default function BannerAdsPage() {

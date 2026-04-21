@@ -164,8 +164,8 @@ export default function FeaturedSponsorPage() {
             Every Black-owned business is welcome in our free directory — but if
             you want to
             <span className="text-gold font-semibold"> stand out</span>,
-            Featured Sponsor Ads give your brand premium visibility across Black
-            Wealth Exchange.
+            Featured Sponsor Ads place your brand in the homepage Featured
+            Sponsors rail (and sponsor modules that read that feed).
           </p>
           <p className="text-gray-500 mt-4">
             Featured Sponsor campaigns are scheduled into the homepage Featured
@@ -180,9 +180,10 @@ export default function FeaturedSponsorPage() {
             Limited Availability: Weekly Sponsor Slots
           </h2>
           <p className="text-gray-300 mb-4">
-            Your business appears in the <strong>homepage Featured Sponsors rail</strong>.
-            Campaign weeks are assigned by schedule and can roll to the next
-            available week when capacity is full.
+            Your business appears in the{" "}
+            <strong>homepage Featured Sponsors rail</strong>. Campaign weeks are
+            assigned by schedule and can roll to the next available week when
+            capacity is full.
           </p>
           <p className="text-gray-300 mb-4">
             Duration is sold in 7, 14, or 30-day packages and mapped to weekly
@@ -273,8 +274,9 @@ export default function FeaturedSponsorPage() {
             Upload Your Sponsor Ad Graphic
           </h3>
           <p className="text-sm text-gray-400 mb-2">
-            This image will be displayed as your Featured Sponsor Ad across the
-            platform. Upload a file or provide a hosted creative URL below.
+            This image is used for your Featured Sponsor card in scheduled
+            sponsor placements. Upload a file or provide a hosted creative URL
+            below.
           </p>
           <input
             type="file"

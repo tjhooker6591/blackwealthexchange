@@ -241,6 +241,31 @@ export default function CustomAd() {
           placement surfaces, and schedule before launch.
         </p>
 
+        <div className="bg-gray-800 p-6 rounded-lg text-left mb-8">
+          <h2 className="text-2xl text-gold font-semibold mb-4">
+            Custom Solution Delivery Model
+          </h2>
+          <ul className="space-y-2 text-sm text-gray-300 list-disc pl-5">
+            <li>
+              This product starts as a scoped request, not an instant fixed-slot
+              placement.
+            </li>
+            <li>
+              Exact surfaces (for example homepage module, sponsor rail,
+              directory block, banner slot, or dedicated campaign page) are
+              documented during review.
+            </li>
+            <li>
+              Launch timing, duration, and campaign priority are confirmed in
+              approval and fulfillment.
+            </li>
+            <li>
+              If a requested surface is unavailable, we provide an approved
+              alternative before activation.
+            </li>
+          </ul>
+        </div>
+
         <div className="bg-gray-800 p-6 rounded-lg text-left mb-10">
           <h2 className="text-2xl text-gold font-semibold mb-4">
             Available Custom Advertising Options

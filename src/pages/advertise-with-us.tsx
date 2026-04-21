@@ -28,7 +28,7 @@ const GOAL_OPTIONS = [
     goal: "Promote Your Brand",
     title: "Banner Placement",
     option: "banner-ad",
-    where: "Requested banner inventory (approved + scheduled placements)",
+    where: "Homepage top banner slot or Business Directory sidebar banner slot",
     who: "Best for strong visual campaigns and repeated impressions",
     href: "/advertise/banner-ads",
   },
@@ -36,7 +36,7 @@ const GOAL_OPTIONS = [
     goal: "Increase Discovery",
     title: "Directory Placement",
     option: "directory-featured",
-    where: "Directory paid placement inventory with tier-based priority",
+    where: "Business Directory featured placements block and directory listing tiers",
     who: "Best for local discovery and ongoing lead visibility",
     href: "/advertise/business-directory",
   },
@@ -44,7 +44,7 @@ const GOAL_OPTIONS = [
     goal: "Run a Custom Campaign",
     title: "Custom Solution",
     option: "custom-solution-deposit",
-    where: "Tailored placements + campaign strategy",
+    where: "Scoped surfaces defined in approval (no fixed slot promised at intake)",
     who: "Best for multi-surface campaigns and larger initiatives",
     href: "/advertise/custom",
   },
@@ -93,17 +93,22 @@ export default function AdvertiseWithUs() {
       if (!durations.length) continue;
 
       const top = durations[0];
+      const isCustom = item.option === "custom-solution-deposit";
+
       rows.push({
         placement: item.title,
-        duration:
-          top.durationDays === 30
+        duration: isCustom
+          ? "Scoped per approved plan"
+          : top.durationDays === 30
             ? "30 days"
             : top.durationDays === 14
               ? "14 days"
               : `${top.durationDays} days`,
-        price: `$${top.amountDollars}`,
+        price: isCustom ? `$${top.amountDollars} deposit` : `$${top.amountDollars}`,
         href: item.href,
-        note: "Review and approval required before live placement.",
+        note: isCustom
+          ? "Deposit starts planning. Final surfaces and schedule are approved before launch."
+          : "Review and approval required before live placement.",
       });
     }
 
