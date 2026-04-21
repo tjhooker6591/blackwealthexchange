@@ -25,26 +25,26 @@ export default function AffiliatePayouts() {
   const [message, setMessage] = useState("");
   const [busyId, setBusyId] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchPayouts = async () => {
-      try {
-        setError("");
-        const res = await fetch("/api/admin/get-payouts", {
-          credentials: "include",
-          cache: "no-store",
-        });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok) {
-          throw new Error(data?.error || "Failed to load payout records");
-        }
-        setPayouts(Array.isArray(data?.payouts) ? data.payouts : []);
-      } catch (err: any) {
-        setError(err?.message || "Failed to load payout records");
-      } finally {
-        setLoading(false);
+  const fetchPayouts = async () => {
+    try {
+      setError("");
+      const res = await fetch("/api/admin/get-payouts", {
+        credentials: "include",
+        cache: "no-store",
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(data?.error || "Failed to load payout records");
       }
-    };
+      setPayouts(Array.isArray(data?.payouts) ? data.payouts : []);
+    } catch (err: any) {
+      setError(err?.message || "Failed to load payout records");
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchPayouts();
   }, []);
 
@@ -118,10 +118,25 @@ export default function AffiliatePayouts() {
           </div>
         ) : null}
 
+        <div className="mb-4 flex flex-wrap items-center gap-2 text-xs">
+          <span className="rounded border border-yellow-500/30 bg-yellow-500/10 px-2 py-1 text-yellow-200">
+            Pending: {payouts.filter((p) => p.status === "pending").length}
+          </span>
+          <span className="rounded border border-emerald-500/30 bg-emerald-500/10 px-2 py-1 text-emerald-200">
+            Completed: {payouts.filter((p) => p.status === "completed").length}
+          </span>
+          <button
+            onClick={fetchPayouts}
+            className="rounded border border-zinc-700 bg-zinc-900 px-2 py-1 text-zinc-200 hover:bg-zinc-800"
+          >
+            Refresh
+          </button>
+        </div>
+
         {loading ? (
-          <p>Loading...</p>
+          <div className="rounded-lg border border-zinc-800 bg-zinc-950 p-4 text-sm text-zinc-300">Loading payout records…</div>
         ) : payouts.length === 0 ? (
-          <p>No payout records found.</p>
+          <div className="rounded-lg border border-zinc-800 bg-zinc-950 p-4 text-sm text-zinc-300">No payout requests are in the system yet.</div>
         ) : (
           <div className="overflow-x-auto rounded-lg border border-gray-700">
             <table className="w-full text-sm">

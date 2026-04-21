@@ -1433,7 +1433,8 @@ const AdminDashboard = ({
                 {formatMoney(stats.directoryRevenue)}
               </div>
               <div className="text-xs text-gray-500 mt-1">
-                (Set to 0 until you add revenue calculation in the stats API.)
+                Revenue reflects tracked listing transactions in current admin
+                reporting.
               </div>
             </div>
           </div>
@@ -1555,7 +1556,8 @@ const AdminDashboard = ({
               </div>
             ) : (
               <p className="mt-3 text-sm text-gray-300">
-                No directory slot data found.
+                No slot records are available yet. This panel will populate once
+                featured placements or queue records exist.
               </p>
             )}
           </div>
@@ -1580,27 +1582,56 @@ const AdminDashboard = ({
             Time-sensitive moderation and payout decisions.
           </p>
           <div className="mt-3 space-y-2">
-            <AdminLink href="/admin/business-approvals" label="Business approvals" />
+            <AdminLink
+              href="/admin/business-approvals"
+              label="Business approvals"
+            />
             <AdminLink href="/admin/job-approvals" label="Job approvals" />
-            <AdminLink href="/admin/product-approvals" label="Product approvals" />
-            <AdminLink href="/admin/directory-approvals" label="Directory approvals" />
-            <AdminLink href="/admin/affiliate-payouts" label="Affiliate payouts" />
-            <AdminLink href="/admin/consultant-escalations" label="Consultant escalations" />
+            <AdminLink
+              href="/admin/product-approvals"
+              label="Product approvals"
+            />
+            <AdminLink
+              href="/admin/directory-approvals"
+              label="Directory approvals"
+            />
+            <AdminLink
+              href="/admin/affiliate-payouts"
+              label="Affiliate payouts"
+            />
+            <AdminLink
+              href="/admin/consultant-escalations"
+              label="Consultant escalations"
+            />
           </div>
         </div>
 
         <div className="rounded border border-gray-700 bg-gray-800 p-4">
-          <h3 className="text-sm font-semibold text-gold">Platform Management</h3>
+          <h3 className="text-sm font-semibold text-gold">
+            Platform Management
+          </h3>
           <p className="mt-1 text-xs text-gray-400">
             Core operations, users, integrity, and business configuration.
           </p>
           <div className="mt-3 space-y-2">
-            <AdminLink href="/admin/user-management" label="User & account management" />
+            <AdminLink
+              href="/admin/user-management"
+              label="User & account management"
+            />
             <AdminLink href="/admin/organizations" label="Organizations" />
             <AdminLink href="/admin/affiliates" label="Affiliates" />
-            <AdminLink href="/admin/affiliate-attribution" label="Affiliate attribution" />
-            <AdminLink href="/admin/content-moderation" label="Content moderation" />
-            <AdminLink href="/admin/directory-duplicates" label="Directory duplicates" />
+            <AdminLink
+              href="/admin/affiliate-attribution"
+              label="Affiliate attribution"
+            />
+            <AdminLink
+              href="/admin/content-moderation"
+              label="Content moderation"
+            />
+            <AdminLink
+              href="/admin/directory-duplicates"
+              label="Directory duplicates"
+            />
           </div>
         </div>
 
@@ -1611,10 +1642,22 @@ const AdminDashboard = ({
           </p>
           <div className="mt-3 space-y-2">
             <AdminLink href="/admin/analytics" label="Platform analytics" />
-            <AdminLink href="/admin/inventory-report" label="Inventory report" />
-            <AdminLink href="/admin/featured-products" label="Featured products" />
-            <AdminLink href="/admin/advertising-requests" label="Advertising requests" />
-            <AdminLink href="/admin/consulting-leads" label="Consulting leads" />
+            <AdminLink
+              href="/admin/inventory-report"
+              label="Inventory report"
+            />
+            <AdminLink
+              href="/admin/featured-products"
+              label="Featured products"
+            />
+            <AdminLink
+              href="/admin/advertising-requests"
+              label="Advertising requests"
+            />
+            <AdminLink
+              href="/admin/consulting-leads"
+              label="Consulting leads"
+            />
             <AdminLink href="/admin/tools" label="Admin tools" />
           </div>
         </div>
