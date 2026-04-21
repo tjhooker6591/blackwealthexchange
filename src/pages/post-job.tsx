@@ -398,7 +398,7 @@ const PostJob = () => {
 
           <TierCard
             title="Featured Post"
-            subtitle="Featured badge + featured-first sort in job listings"
+            subtitle="30-day featured badge + featured-first sort in job listings"
             price="$79.99"
             active={tier === "featured"}
             onSelect={() => setTier("featured")}

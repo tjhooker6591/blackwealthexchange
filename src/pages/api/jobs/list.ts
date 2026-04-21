@@ -32,12 +32,27 @@ export default async function handler(
       ? Math.max(1, Math.min(300, Math.floor(limitRaw)))
       : 100;
 
-    const jobs = await db
+    const jobsRaw = await db
       .collection("jobs")
       .find({ status: "approved" }) // ✅ Only approved jobs
       .sort({ createdAt: -1 })
       .limit(limit)
       .toArray();
+
+    const now = Date.now();
+    const jobs = jobsRaw.map((job: any) => {
+      const featureEndMs = job?.featureEndDate
+        ? new Date(job.featureEndDate).getTime()
+        : NaN;
+      const featuredActive =
+        Boolean(job?.isFeatured) &&
+        (!Number.isFinite(featureEndMs) || featureEndMs > now);
+
+      return {
+        ...job,
+        isFeatured: featuredActive,
+      };
+    });
 
     res.setHeader("X-Result-Limit", String(limit));
 

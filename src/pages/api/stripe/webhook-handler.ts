@@ -1384,9 +1384,12 @@ export default async function webhookHandler(
         });
       } else {
         const webhookBuyerEmail = asString(
-          (session as any)?.customer_details?.email || (session as any)?.customer_email,
+          (session as any)?.customer_details?.email ||
+            (session as any)?.customer_email,
         ).toLowerCase();
-        const webhookBuyerName = asString((session as any)?.customer_details?.name);
+        const webhookBuyerName = asString(
+          (session as any)?.customer_details?.name,
+        );
 
         if (webhookBuyerEmail || webhookBuyerName) {
           const orderOid = ObjectId.isValid(targetOrderId)
@@ -1397,7 +1400,9 @@ export default async function webhookHandler(
               { _id: orderOid },
               {
                 $set: {
-                  ...(webhookBuyerEmail ? { buyerEmail: webhookBuyerEmail } : {}),
+                  ...(webhookBuyerEmail
+                    ? { buyerEmail: webhookBuyerEmail }
+                    : {}),
                   ...(webhookBuyerName ? { buyerName: webhookBuyerName } : {}),
                   updatedAt: now,
                 },
@@ -1551,6 +1556,15 @@ export default async function webhookHandler(
           ? { _id: new ObjectId(jobId) }
           : { stripeSessionId };
 
+      const jobItemId = asString(mergedMeta.itemId || normalizedItemId);
+      const isFeaturedJob =
+        jobItemId === "job-featured-post" ||
+        jobItemId === "job-posting-featured";
+      const featuredDays = 30;
+      const featureEndDate = isFeaturedJob
+        ? new Date(now.getTime() + featuredDays * 24 * 60 * 60 * 1000)
+        : null;
+
       const jobUpdate = await db.collection("jobs").updateOne(jobFilter, {
         $set: {
           isPaid: true,
@@ -1560,6 +1574,11 @@ export default async function webhookHandler(
           paymentIntentId: paymentIntentId || null,
           paidAt,
           updatedAt: now,
+          listingTier: isFeaturedJob ? "featured" : "standard",
+          isFeatured: isFeaturedJob,
+          ...(isFeaturedJob
+            ? { featureEndDate }
+            : { featureEndDate: null }),
         },
       });
 
