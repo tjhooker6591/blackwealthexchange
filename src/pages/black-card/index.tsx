@@ -29,7 +29,7 @@ const TIER_CONTEXT: Record<
     segment: "Growth Membership",
     valueSummary:
       "Convert monthly activity into bigger credits, faster rewards, and priority placement that improves your visibility and savings.",
-    cta: "Unlock Signature",
+    cta: "Join Signature",
     badge: "MEMBERSHIP",
   },
   elite: {
@@ -64,7 +64,8 @@ export default function BlackCardLandingPage() {
                   BWE Black Card
                 </h1>
                 <p className="mt-2 text-xl font-bold text-white md:text-2xl">
-                  Built for faster opportunities, stronger savings, and verified member advantage.
+                  Built for faster opportunities, stronger savings, and verified
+                  member advantage.
                 </p>
                 <p className="mt-4 max-w-3xl text-[#D9D9D9]">
                   {BLACK_CARD_POSITIONING}. Black Card is a digital-first
@@ -134,7 +135,8 @@ export default function BlackCardLandingPage() {
               Choose your tier
             </h2>
             <p className="mt-2 text-sm text-[#B0B0B0]">
-              Each tier changes what you can do, what you can claim, and how quickly opportunities move toward you.
+              Each tier changes what you can do, what you can claim, and how
+              quickly opportunities move toward you.
             </p>
 
             <div className="mt-4 grid gap-4 lg:grid-cols-3">
@@ -232,10 +234,22 @@ export default function BlackCardLandingPage() {
                 Why members upgrade
               </h3>
               <ul className="mt-3 space-y-2 text-sm text-[#D8D8D8]">
-                <li>• Standard gives immediate identity and member-priced entry points.</li>
-                <li>• Signature increases credits and priority so monthly actions return more value.</li>
-                <li>• Elite adds VIP lanes and introductions for highest business leverage.</li>
-                <li>• Upgrading is about measurable advantage, not cosmetic status.</li>
+                <li>
+                  • Standard gives immediate identity and member-priced entry
+                  points.
+                </li>
+                <li>
+                  • Signature increases credits and priority so monthly actions
+                  return more value.
+                </li>
+                <li>
+                  • Elite adds VIP lanes and introductions for highest business
+                  leverage.
+                </li>
+                <li>
+                  • Upgrading is about measurable advantage, not cosmetic
+                  status.
+                </li>
               </ul>
             </div>
           </section>

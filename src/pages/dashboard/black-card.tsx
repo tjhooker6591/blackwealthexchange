@@ -170,7 +170,7 @@ export default function BlackCardDashboardPage() {
               href="/black-card"
               className="rounded-lg border border-yellow-500/30 px-4 py-2 text-yellow-200"
             >
-Upgrade Membership Advantage
+              Upgrade Membership Advantage
             </Link>
           </header>
 
@@ -268,13 +268,13 @@ Upgrade Membership Advantage
                     href="/black-card/join?tier=signature"
                     className="rounded-lg border border-yellow-500/30 px-4 py-2 text-sm text-yellow-200"
                   >
-Unlock Signature Advantage
+                    Join Signature Membership
                   </Link>
                   <Link
                     href="/black-card/join?tier=elite"
                     className="rounded-lg border border-yellow-500/30 px-4 py-2 text-sm text-yellow-200"
                   >
-Activate Elite Advantage
+                    Activate Elite Advantage
                   </Link>
                 </div>
               </section>
@@ -282,7 +282,7 @@ Activate Elite Advantage
               <section className="grid gap-4 md:grid-cols-2">
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
                   <h2 className="text-xl font-bold text-yellow-200">
-Live Rewards Balance
+                    Live Rewards Balance
                   </h2>
                   <p className="mt-3 text-4xl font-black">
                     {data.rewards?.balance ?? 0}
@@ -296,7 +296,7 @@ Live Rewards Balance
 
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
                   <h2 className="text-xl font-bold text-yellow-200">
-Redemption Actions
+                    Redemption Actions
                   </h2>
                   <div className="mt-3 flex flex-wrap gap-2">
                     <button
@@ -356,7 +356,7 @@ Redemption Actions
 
               <section className="rounded-2xl border border-white/10 bg-white/5 p-5">
                 <h2 className="text-xl font-bold text-yellow-200">
-Live Rewards Ledger
+                  Live Rewards Ledger
                 </h2>
                 {data.ledger && data.ledger.length > 0 ? (
                   <ul className="mt-3 space-y-2 text-sm">

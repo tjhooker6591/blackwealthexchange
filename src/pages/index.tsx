@@ -1008,7 +1008,8 @@ export default function Home() {
                   Flagship Membership Advantage
                 </div>
                 <div className="mt-1 text-sm font-semibold text-white sm:text-base">
-                  BWE Black Card unlocks verified member identity, faster opportunities, and reward-based savings
+                  BWE Black Card unlocks verified member identity, faster
+                  opportunities, and reward-based savings
                 </div>
               </div>
               <Link
@@ -1017,13 +1018,13 @@ export default function Home() {
                   trackHomepageEvent("homepage_cta_clicked", {
                     section: "hero",
                     ctaId: "hero_black_card",
-                    ctaLabel: "Unlock Black Card",
+                    ctaLabel: "Join Black Card",
                     destination: "/black-card",
                   })
                 }
-                className="inline-flex items-center justify-center rounded-xl border border-yellow-400/40 bg-black/40 px-4 py-2 text-sm font-semibold text-yellow-200 hover:bg-black/60"
+                className="inline-flex w-full sm:w-auto min-w-[12rem] justify-center whitespace-nowrap rounded-xl border border-yellow-400/40 bg-black/40 px-5 py-2.5 text-sm font-semibold text-yellow-200 hover:bg-black/60"
               >
-                Unlock Black Card
+                Join Black Card
               </Link>
             </div>
           </div>
