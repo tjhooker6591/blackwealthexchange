@@ -14,6 +14,13 @@ type QueueItem = {
   sourceVariant: string;
   pageRoute: string;
   createdAt: string | null;
+  requestMessage?: string;
+  requestStatus?: string | null;
+  requestModerationStatus?: string | null;
+  adminDisposition?: string | null;
+  adminDispositionNote?: string;
+  adminDispositionBy?: string | null;
+  adminDispositionAt?: string | null;
 };
 
 export default function ConsultantModerationPage() {
@@ -187,6 +194,12 @@ export default function ConsultantModerationPage() {
                     ? item.moderationReasons.join(", ")
                     : "none recorded"}
                 </p>
+                {item.requestMessage ? (
+                  <p className="mt-2 rounded border border-white/10 bg-black/30 p-2 text-xs text-zinc-200">
+                    Message preview: {item.requestMessage.slice(0, 280)}
+                    {item.requestMessage.length > 280 ? "…" : ""}
+                  </p>
+                ) : null}
                 <p className="mt-2 text-xs text-zinc-500">
                   Employer: {item.employerId || "n/a"} • Consultant:{" "}
                   {item.consultantId || "n/a"}
@@ -197,6 +210,24 @@ export default function ConsultantModerationPage() {
                     ? new Date(item.createdAt).toLocaleString()
                     : "unknown"}
                 </p>
+                <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px] text-zinc-400">
+                  <span className="rounded border border-white/15 px-2 py-0.5">
+                    request: {String(item.requestStatus || "unknown").replace("_", " ")}
+                  </span>
+                  <span className="rounded border border-white/15 px-2 py-0.5">
+                    moderation: {String(item.requestModerationStatus || "unknown").replace("_", " ")}
+                  </span>
+                  {item.adminDisposition ? (
+                    <span className="rounded border border-cyan-400/30 px-2 py-0.5 text-cyan-200">
+                      disposition: {String(item.adminDisposition).replace("_", " ")}
+                    </span>
+                  ) : null}
+                </div>
+                {item.adminDispositionNote ? (
+                  <p className="mt-2 text-xs text-cyan-100/90">
+                    Last disposition note: {item.adminDispositionNote}
+                  </p>
+                ) : null}
                 <div className="mt-3">
                   <textarea
                     value={notes[item.id] || ""}

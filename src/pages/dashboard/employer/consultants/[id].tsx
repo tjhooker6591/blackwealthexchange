@@ -15,6 +15,8 @@ export default function EmployerConsultantProfilePage() {
   const [requestStatus, setRequestStatus] = useState("");
   const [pipelineStatus, setPipelineStatus] = useState("");
   const [pipelineBusy, setPipelineBusy] = useState(false);
+  const [currentPipeline, setCurrentPipeline] = useState<string>("saved");
+  const [requestHistory, setRequestHistory] = useState<any[]>([]);
 
   useEffect(() => {
     if (!id || typeof id !== "string") return;
@@ -23,13 +25,47 @@ export default function EmployerConsultantProfilePage() {
       setLoading(true);
       setError("");
       try {
-        const res = await fetch(`/api/employer/consultants/${id}`, {
-          cache: "no-store",
-          credentials: "include",
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data?.error || "Failed to load profile");
-        setConsultant(data.consultant);
+        const [profileRes, pipelineRes, requestsRes] = await Promise.all([
+          fetch(`/api/employer/consultants/${id}`, {
+            cache: "no-store",
+            credentials: "include",
+          }),
+          fetch("/api/employer/consultant-pipeline", {
+            cache: "no-store",
+            credentials: "include",
+          }),
+          fetch("/api/employer/consultant-contact-requests", {
+            cache: "no-store",
+            credentials: "include",
+          }),
+        ]);
+
+        const profileData = await profileRes.json();
+        const pipelineData = await pipelineRes.json().catch(() => ({}));
+        const requestsData = await requestsRes.json().catch(() => ({}));
+
+        if (!profileRes.ok) {
+          throw new Error(profileData?.error || "Failed to load profile");
+        }
+
+        setConsultant(profileData.consultant);
+
+        const pipelineItems = Array.isArray(pipelineData?.items)
+          ? pipelineData.items
+          : [];
+        const matchedPipeline = pipelineItems.find(
+          (x: any) => String(x.consultantId || "") === String(id),
+        );
+        setCurrentPipeline(String(matchedPipeline?.status || "saved"));
+
+        const allRequests = Array.isArray(requestsData?.items)
+          ? requestsData.items
+          : [];
+        setRequestHistory(
+          allRequests
+            .filter((x: any) => String(x.consultantId || "") === String(id))
+            .slice(0, 10),
+        );
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to load profile");
       } finally {
@@ -53,7 +89,10 @@ export default function EmployerConsultantProfilePage() {
       if (!res.ok) {
         throw new Error(data?.error || "Failed to update pipeline status");
       }
-      setPipelineStatus(`Pipeline updated: ${String(status).replace("_", " ")}.`);
+      setCurrentPipeline(status);
+      setPipelineStatus(
+        `Pipeline updated: ${String(status).replace("_", " ")}.`,
+      );
     } catch (err) {
       setPipelineStatus(
         err instanceof Error ? err.message : "Failed to update pipeline status",
@@ -89,6 +128,22 @@ export default function EmployerConsultantProfilePage() {
     }
     setRequestStatus("Contact request submitted.");
     setMessage("");
+    setCurrentPipeline(
+      requestType === "interview_request" ? "interview_requested" : "contacted",
+    );
+    setRequestHistory((prev) => [
+      {
+        id: String(data?.id || `${Date.now()}`),
+        requestType,
+        message: msg,
+        status: "submitted",
+        moderationStatus: "clean",
+        consultantResponseAction: null,
+        consultantResponseNote: "",
+        createdAt: new Date().toISOString(),
+      },
+      ...prev,
+    ]);
   }
 
   return (
@@ -209,9 +264,14 @@ export default function EmployerConsultantProfilePage() {
               </button>
             </div>
 
-            {pipelineStatus ? (
-              <p className="mt-3 text-sm text-emerald-100">{pipelineStatus}</p>
-            ) : null}
+            <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
+              <span className="rounded-full border border-white/20 px-2 py-1 text-zinc-200">
+                Current pipeline: {String(currentPipeline || "saved").replace("_", " ")}
+              </span>
+              {pipelineStatus ? (
+                <span className="text-emerald-100">{pipelineStatus}</span>
+              ) : null}
+            </div>
 
             <div className="mt-6 rounded-xl border border-cyan-500/30 bg-cyan-500/5 p-4">
               <h3 className="text-sm font-semibold uppercase tracking-wide text-cyan-200">
@@ -253,6 +313,51 @@ export default function EmployerConsultantProfilePage() {
               {requestStatus ? (
                 <p className="mt-2 text-sm text-cyan-100">{requestStatus}</p>
               ) : null}
+            </div>
+
+            <div className="mt-6 rounded-xl border border-white/10 bg-black/30 p-4">
+              <h3 className="text-sm font-semibold uppercase tracking-wide text-zinc-200">
+                Request lifecycle history
+              </h3>
+              {requestHistory.length === 0 ? (
+                <p className="mt-2 text-sm text-zinc-400">
+                  No requests sent to this consultant yet.
+                </p>
+              ) : (
+                <ul className="mt-3 space-y-2">
+                  {requestHistory.map((r) => (
+                    <li
+                      key={r.id}
+                      className="rounded border border-white/10 bg-black/30 p-3 text-xs"
+                    >
+                      <p className="text-zinc-100">
+                        {r.requestType === "interview_request"
+                          ? "Interview request"
+                          : "Contact request"}
+                      </p>
+                      <p className="mt-1 text-zinc-300">{r.message}</p>
+                      <div className="mt-2 flex flex-wrap gap-2 text-[11px] text-zinc-400">
+                        <span className="rounded border border-white/15 px-2 py-0.5">
+                          status: {String(r.status || "submitted").replace("_", " ")}
+                        </span>
+                        <span className="rounded border border-white/15 px-2 py-0.5">
+                          moderation: {String(r.moderationStatus || "clean").replace("_", " ")}
+                        </span>
+                        {r.consultantResponseAction ? (
+                          <span className="rounded border border-cyan-400/30 px-2 py-0.5 text-cyan-200">
+                            consultant: {String(r.consultantResponseAction).replace("_", " ")}
+                          </span>
+                        ) : null}
+                      </div>
+                      {r.consultantResponseNote ? (
+                        <p className="mt-2 text-cyan-100/90">
+                          Consultant note: {r.consultantResponseNote}
+                        </p>
+                      ) : null}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           </section>
         ) : null}
