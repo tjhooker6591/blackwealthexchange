@@ -134,7 +134,9 @@ export default function BlackCardJoinPage() {
                 <h1 className="mt-1 text-3xl font-extrabold text-yellow-100">
                   {tierConfig.label}
                 </h1>
-                <p className="mt-1 text-sm text-white/75">{tierConfig.tagline}</p>
+                <p className="mt-1 text-sm text-white/75">
+                  {tierConfig.tagline}
+                </p>
               </div>
               <Link
                 href="/black-card"
@@ -217,12 +219,25 @@ export default function BlackCardJoinPage() {
             </div>
           </section>
 
-          <section id="post-checkout" className="rounded-xl border border-white/10 bg-white/5 p-4 text-sm text-white/80">
-            <div className="font-semibold text-yellow-200">Post-checkout flow</div>
-            <div className="mt-2">1. Complete secure checkout for selected membership tier.</div>
-            <div className="mt-1">2. Membership status activates on successful payment.</div>
-            <div className="mt-1">3. Confirm exact print details for physical card issuance.</div>
-            <div className="mt-1">4. Use membership benefits while card fulfillment completes.</div>
+          <section
+            id="post-checkout"
+            className="rounded-xl border border-white/10 bg-white/5 p-4 text-sm text-white/80"
+          >
+            <div className="font-semibold text-yellow-200">
+              Post-checkout flow
+            </div>
+            <div className="mt-2">
+              1. Complete secure checkout for selected membership tier.
+            </div>
+            <div className="mt-1">
+              2. Membership status activates on successful payment.
+            </div>
+            <div className="mt-1">
+              3. Confirm exact print details for physical card issuance.
+            </div>
+            <div className="mt-1">
+              4. Use membership benefits while card fulfillment completes.
+            </div>
           </section>
 
           {checkoutSuccess ? (
@@ -280,7 +295,10 @@ export default function BlackCardJoinPage() {
               <button
                 onClick={submitPhysicalOrder}
                 disabled={
-                  orderLoading || !printNameFinal || !printApproved || !printPreviewConfirmed
+                  orderLoading ||
+                  !printNameFinal ||
+                  !printApproved ||
+                  !printPreviewConfirmed
                 }
                 className="mt-4 rounded-lg bg-yellow-500 px-4 py-2 font-semibold text-black hover:bg-yellow-400 disabled:opacity-60"
               >
@@ -291,7 +309,9 @@ export default function BlackCardJoinPage() {
             </section>
           ) : null}
 
-          {message ? <p className="text-sm text-yellow-200">{message}</p> : null}
+          {message ? (
+            <p className="text-sm text-yellow-200">{message}</p>
+          ) : null}
         </div>
       </main>
     </>

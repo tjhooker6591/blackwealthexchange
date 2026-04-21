@@ -125,10 +125,16 @@ export default function BlackCardLandingPage() {
             </div>
           </section>
 
-          <section id="tiers" className="rounded-2xl border border-[#9E7B2B]/35 bg-[#0A0A0A] p-5">
-            <h2 className="text-2xl font-extrabold text-[#F1D57A]">Choose your tier</h2>
+          <section
+            id="tiers"
+            className="rounded-2xl border border-[#9E7B2B]/35 bg-[#0A0A0A] p-5"
+          >
+            <h2 className="text-2xl font-extrabold text-[#F1D57A]">
+              Choose your tier
+            </h2>
             <p className="mt-2 text-sm text-[#B0B0B0]">
-              Each tier has a clear value model, defined benefit profile, and direct activation path.
+              Each tier has a clear value model, defined benefit profile, and
+              direct activation path.
             </p>
 
             <div className="mt-4 grid gap-4 lg:grid-cols-3">
@@ -150,14 +156,20 @@ export default function BlackCardLandingPage() {
                       <span className="rounded-full border border-[#D4AF37]/40 bg-[#D4AF37]/10 px-2 py-1 text-[10px] font-bold tracking-[0.16em] text-[#F1D57A]">
                         {context.badge}
                       </span>
-                      <span className="text-xs text-white/60">{context.segment}</span>
+                      <span className="text-xs text-white/60">
+                        {context.segment}
+                      </span>
                     </div>
 
-                    <h3 className="mt-3 text-xl font-extrabold text-white">{tier.label}</h3>
+                    <h3 className="mt-3 text-xl font-extrabold text-white">
+                      {tier.label}
+                    </h3>
                     <p className="mt-1 text-sm text-white/75">{tier.tagline}</p>
 
                     <div className="mt-4 rounded-xl border border-white/10 bg-black/40 p-3">
-                      <div className="text-2xl font-black text-[#F2D77C]">{tier.priceLabel}</div>
+                      <div className="text-2xl font-black text-[#F2D77C]">
+                        {tier.priceLabel}
+                      </div>
                       <div className="text-xs text-white/65">
                         {tier.billingModel === "entry_fee"
                           ? "One-time membership activation"
@@ -165,7 +177,9 @@ export default function BlackCardLandingPage() {
                       </div>
                     </div>
 
-                    <p className="mt-3 text-sm text-[#D9D9D9]">{context.valueSummary}</p>
+                    <p className="mt-3 text-sm text-[#D9D9D9]">
+                      {context.valueSummary}
+                    </p>
 
                     <ul className="mt-3 space-y-1 text-sm text-[#D9D9D9]">
                       {tier.benefits.slice(0, 5).map((b) => (
@@ -189,7 +203,9 @@ export default function BlackCardLandingPage() {
 
           <section className="grid gap-4 md:grid-cols-2">
             <div className="rounded-2xl border border-white/10 bg-[#0C0C0C] p-5">
-              <h3 className="text-lg font-bold text-[#F1D57A]">Activation flow</h3>
+              <h3 className="text-lg font-bold text-[#F1D57A]">
+                Activation flow
+              </h3>
               <ul className="mt-3 space-y-2 text-sm text-[#D8D8D8]">
                 <li>1. Select your tier and continue to secure checkout.</li>
                 <li>2. Membership activates after successful payment.</li>
@@ -199,10 +215,14 @@ export default function BlackCardLandingPage() {
             </div>
 
             <div className="rounded-2xl border border-white/10 bg-[#0C0C0C] p-5">
-              <h3 className="text-lg font-bold text-[#F1D57A]">Why members upgrade</h3>
+              <h3 className="text-lg font-bold text-[#F1D57A]">
+                Why members upgrade
+              </h3>
               <ul className="mt-3 space-y-2 text-sm text-[#D8D8D8]">
                 <li>• Standard → identity and immediate entry access.</li>
-                <li>• Signature → higher rewards and priority opportunities.</li>
+                <li>
+                  • Signature → higher rewards and priority opportunities.
+                </li>
                 <li>• Elite → executive-level access and premium support.</li>
                 <li>• Clear differentiation by value, not vague labels.</li>
               </ul>
