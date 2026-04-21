@@ -134,7 +134,13 @@ export default async function handler(
     }
 
     const requests = await requestsCol
-      .find({ consultantId: { $in: consultantIds } })
+      .find({
+        consultantId: { $in: consultantIds },
+        $or: [
+          { moderationStatus: { $ne: "blocked" } },
+          { adminDisposition: "resolved" },
+        ],
+      })
       .sort({ createdAt: -1 })
       .limit(200)
       .toArray();

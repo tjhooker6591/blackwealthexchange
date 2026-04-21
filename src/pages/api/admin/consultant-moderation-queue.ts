@@ -60,17 +60,24 @@ export default async function handler(
       }
 
       const now = new Date();
+      const adminActor = String(admin.email || admin.userId || "admin");
+      const dispositionRequestUpdate =
+        disposition === "resolved"
+          ? { status: "submitted", moderationStatus: "clean" }
+          : disposition === "escalated"
+            ? { status: "under_admin_review", moderationStatus: "escalated" }
+            : { status: "rejected", moderationStatus: "blocked" };
+
       const update = await db
         .collection("employer_consultant_contact_requests")
         .updateOne(
           { _id: new ObjectId(requestId) },
           {
             $set: {
+              ...dispositionRequestUpdate,
               adminDisposition: disposition,
               adminDispositionNote: note,
-              adminDispositionBy: String(
-                admin.email || admin.userId || "admin",
-              ),
+              adminDispositionBy: adminActor,
               adminDispositionAt: now,
               updatedAt: now,
             },
@@ -89,7 +96,7 @@ export default async function handler(
         source_variant: disposition,
         requestId,
         note,
-        actedBy: String(admin.email || admin.userId || "admin"),
+        actedBy: adminActor,
         createdAt: now,
       });
 

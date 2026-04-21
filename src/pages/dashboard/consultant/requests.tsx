@@ -1,13 +1,34 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
+
+const STATUS_LABELS: Record<string, string> = {
+  submitted: "Waiting on consultant response",
+  accepted: "Accepted by consultant",
+  declined: "Declined by consultant",
+  more_info_requested: "More info requested",
+  under_admin_review: "Under admin review",
+  rejected: "Rejected",
+};
+
+const STATUS_NEXT_STEP: Record<string, string> = {
+  submitted: "Choose Accept, Decline, or Request info.",
+  accepted: "Employer should follow up with scheduling details.",
+  declined: "No further action required unless employer retries.",
+  more_info_requested: "Wait for employer clarification.",
+  under_admin_review: "Admin moderation team is reviewing this request.",
+  rejected: "Request is closed by moderation.",
+};
+
 export default function ConsultantRequestInboxPage() {
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [busyId, setBusyId] = useState<string | null>(null);
   const [actionMessage, setActionMessage] = useState("");
-  const [responseNotes, setResponseNotes] = useState<Record<string, string>>({});
+  const [responseNotes, setResponseNotes] = useState<Record<string, string>>(
+    {},
+  );
 
   async function loadInbox() {
     setLoading(true);
@@ -172,7 +193,7 @@ export default function ConsultantRequestInboxPage() {
                     Request info
                   </button>
                   <span className="rounded-full border border-white/20 px-2 py-1 text-xs text-zinc-200">
-                    Status: {String(r.status || "submitted").replace("_", " ")}
+                    Status: {STATUS_LABELS[String(r.status || "submitted")] || String(r.status || "submitted").replace("_", " ")}
                   </span>
                 </div>
 
@@ -183,8 +204,14 @@ export default function ConsultantRequestInboxPage() {
                 ) : null}
 
                 <div className="mt-2 text-[11px] text-zinc-500">
-                  Responded: {r.consultantRespondedAt ? new Date(r.consultantRespondedAt).toLocaleString() : "Not yet"}
+                  Responded:{" "}
+                  {r.consultantRespondedAt
+                    ? new Date(r.consultantRespondedAt).toLocaleString()
+                    : "Not yet"}
                 </div>
+                <p className="mt-1 text-[11px] text-zinc-400">
+                  Next step: {STATUS_NEXT_STEP[String(r.status || "submitted")] || "Follow request lifecycle updates."}
+                </p>
 
                 <label className="mt-3 block text-xs text-zinc-300">
                   Optional response note

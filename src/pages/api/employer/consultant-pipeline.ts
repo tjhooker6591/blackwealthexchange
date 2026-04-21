@@ -107,10 +107,13 @@ export default async function handler(
       const notes = asText(req.body?.notes);
 
       const now = new Date();
-      await col.updateOne(
+      const updated = await col.updateOne(
         { _id: new ObjectId(itemId), employerId: auth.employerId },
         { $set: { status, notes, updatedAt: now } },
       );
+      if (!updated.matchedCount) {
+        return res.status(404).json({ error: "Pipeline item not found" });
+      }
 
       await db.collection("flow_events").insertOne({
         eventType: "consultant_pipeline_status_set",

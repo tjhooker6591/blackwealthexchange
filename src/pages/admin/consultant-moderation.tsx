@@ -95,6 +95,11 @@ export default function ConsultantModerationPage() {
     }
   }
 
+
+  const unresolvedCount = items.filter((x) => !x.adminDisposition).length;
+  const escalatedCount = items.filter((x) => x.adminDisposition === "escalated").length;
+  const rejectedCount = items.filter((x) => x.adminDisposition === "rejected").length;
+
   return (
     <main className="min-h-screen bg-black px-4 py-8 text-white">
       <div className="mx-auto max-w-6xl">
@@ -167,6 +172,21 @@ export default function ConsultantModerationPage() {
           </div>
         ) : null}
 
+        <section className="mb-4 grid gap-3 md:grid-cols-3">
+          <article className="rounded-xl border border-white/10 bg-zinc-950 p-3">
+            <p className="text-xs uppercase tracking-wide text-zinc-400">Needs action</p>
+            <p className="mt-1 text-2xl font-extrabold text-white">{unresolvedCount}</p>
+          </article>
+          <article className="rounded-xl border border-white/10 bg-zinc-950 p-3">
+            <p className="text-xs uppercase tracking-wide text-zinc-400">Escalated</p>
+            <p className="mt-1 text-2xl font-extrabold text-amber-200">{escalatedCount}</p>
+          </article>
+          <article className="rounded-xl border border-white/10 bg-zinc-950 p-3">
+            <p className="text-xs uppercase tracking-wide text-zinc-400">Rejected</p>
+            <p className="mt-1 text-2xl font-extrabold text-red-200">{rejectedCount}</p>
+          </article>
+        </section>
+
         {loading ? (
           <p className="text-zinc-300">Loading moderation queue...</p>
         ) : items.length === 0 ? (
@@ -212,14 +232,20 @@ export default function ConsultantModerationPage() {
                 </p>
                 <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px] text-zinc-400">
                   <span className="rounded border border-white/15 px-2 py-0.5">
-                    request: {String(item.requestStatus || "unknown").replace("_", " ")}
+                    request:{" "}
+                    {String(item.requestStatus || "unknown").replace("_", " ")}
                   </span>
                   <span className="rounded border border-white/15 px-2 py-0.5">
-                    moderation: {String(item.requestModerationStatus || "unknown").replace("_", " ")}
+                    moderation:{" "}
+                    {String(item.requestModerationStatus || "unknown").replace(
+                      "_",
+                      " ",
+                    )}
                   </span>
                   {item.adminDisposition ? (
                     <span className="rounded border border-cyan-400/30 px-2 py-0.5 text-cyan-200">
-                      disposition: {String(item.adminDisposition).replace("_", " ")}
+                      disposition:{" "}
+                      {String(item.adminDisposition).replace("_", " ")}
                     </span>
                   ) : null}
                 </div>

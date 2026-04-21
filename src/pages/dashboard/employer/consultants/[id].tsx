@@ -2,6 +2,27 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
+
+const REQUEST_STATUS_LABELS: Record<string, string> = {
+  submitted: "Submitted to consultant",
+  accepted: "Accepted by consultant",
+  declined: "Declined by consultant",
+  more_info_requested: "Consultant requested more info",
+  under_admin_review: "Under admin review",
+  rejected: "Rejected",
+  blocked: "Blocked by moderation",
+};
+
+const REQUEST_STATUS_NEXT_STEP: Record<string, string> = {
+  submitted: "Await consultant response.",
+  accepted: "Move to interview scheduling or under review.",
+  declined: "Select another consultant or revise request.",
+  more_info_requested: "Send clarifying details in a follow-up request.",
+  under_admin_review: "Await moderation disposition.",
+  rejected: "Request closed by moderation.",
+  blocked: "Revise message and resubmit.",
+};
+
 export default function EmployerConsultantProfilePage() {
   const router = useRouter();
   const { id } = router.query;
@@ -266,7 +287,8 @@ export default function EmployerConsultantProfilePage() {
 
             <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
               <span className="rounded-full border border-white/20 px-2 py-1 text-zinc-200">
-                Current pipeline: {String(currentPipeline || "saved").replace("_", " ")}
+                Current pipeline:{" "}
+                {String(currentPipeline || "saved").replace("_", " ")}
               </span>
               {pipelineStatus ? (
                 <span className="text-emerald-100">{pipelineStatus}</span>
@@ -338,17 +360,29 @@ export default function EmployerConsultantProfilePage() {
                       <p className="mt-1 text-zinc-300">{r.message}</p>
                       <div className="mt-2 flex flex-wrap gap-2 text-[11px] text-zinc-400">
                         <span className="rounded border border-white/15 px-2 py-0.5">
-                          status: {String(r.status || "submitted").replace("_", " ")}
+                          status:{" "}
+                          {REQUEST_STATUS_LABELS[String(r.status || "submitted")] || String(r.status || "submitted").replace("_", " ")}
                         </span>
                         <span className="rounded border border-white/15 px-2 py-0.5">
-                          moderation: {String(r.moderationStatus || "clean").replace("_", " ")}
+                          moderation:{" "}
+                          {String(r.moderationStatus || "clean").replace(
+                            "_",
+                            " ",
+                          )}
                         </span>
                         {r.consultantResponseAction ? (
                           <span className="rounded border border-cyan-400/30 px-2 py-0.5 text-cyan-200">
-                            consultant: {String(r.consultantResponseAction).replace("_", " ")}
+                            consultant:{" "}
+                            {String(r.consultantResponseAction).replace(
+                              "_",
+                              " ",
+                            )}
                           </span>
                         ) : null}
                       </div>
+                      <p className="mt-2 text-[11px] text-zinc-400">
+                        Next step: {REQUEST_STATUS_NEXT_STEP[String(r.status || "submitted")] || "Follow request lifecycle updates."}
+                      </p>
                       {r.consultantResponseNote ? (
                         <p className="mt-2 text-cyan-100/90">
                           Consultant note: {r.consultantResponseNote}
