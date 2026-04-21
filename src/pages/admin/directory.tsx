@@ -8,7 +8,12 @@ export default function LegacyDirectoryRedirect() {
   useEffect(() => {
     router.replace("/admin/directory-approvals");
   }, [router]);
-  return null;
+
+  return (
+    <main className="min-h-screen bg-black p-8 text-white">
+      <p className="text-sm text-gray-300">Redirecting to directory approvals…</p>
+    </main>
+  );
 }
 
 export const getServerSideProps: GetServerSideProps =

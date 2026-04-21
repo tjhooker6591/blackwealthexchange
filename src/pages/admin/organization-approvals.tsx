@@ -8,7 +8,12 @@ export default function LegacyOrganizationApprovalsRedirect() {
   useEffect(() => {
     router.replace("/admin/organizations");
   }, [router]);
-  return null;
+
+  return (
+    <main className="min-h-screen bg-black p-8 text-white">
+      <p className="text-sm text-gray-300">Redirecting to organizations…</p>
+    </main>
+  );
 }
 
 export const getServerSideProps: GetServerSideProps = requireAdminPageProps(

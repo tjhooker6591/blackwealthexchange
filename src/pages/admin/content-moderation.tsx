@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import type { GetServerSideProps } from "next";
-import cookie from "cookie";
-import jwt from "jsonwebtoken";
-import { getJwtSecret } from "@/lib/env";
+import Link from "next/link";
+import { requireAdminPageProps } from "@/lib/adminPageGuard";
 
 type Row = {
   targetType: string;
@@ -65,16 +64,53 @@ export default function ContentModeration() {
 
   return (
     <main className="min-h-screen bg-black text-white p-8">
-      <h1 className="text-3xl font-bold text-gold mb-2">Content Moderation</h1>
-      <p className="text-gray-400 mb-4">
-        Real moderation queue with audited actions.
-      </p>
-      {error ? <div className="mb-3 text-red-300">{error}</div> : null}
-      {loading ? (
-        <p>Loading moderation queue...</p>
-      ) : (
-        <div className="space-y-3">
-          {items.map((row) => (
+      <div className="mx-auto max-w-6xl">
+        <div className="mb-6 flex items-center justify-between gap-3">
+          <div>
+            <h1 className="text-3xl font-bold text-gold mb-1">
+              Content Moderation
+            </h1>
+            <p className="text-sm text-gray-400">
+              Review flagged content and apply audited moderation actions.
+            </p>
+          </div>
+          <Link
+            href="/admin/dashboard"
+            className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-zinc-200 hover:bg-zinc-800"
+          >
+            Back to Admin Dashboard
+          </Link>
+        </div>
+
+        <div className="mb-4 flex items-center gap-2 text-xs">
+          <span className="rounded border border-zinc-700 bg-zinc-900 px-2 py-1 text-zinc-200">
+            Queue items: {items.length}
+          </span>
+          <button
+            onClick={load}
+            className="rounded border border-zinc-700 bg-zinc-900 px-2 py-1 text-zinc-200 hover:bg-zinc-800"
+          >
+            Refresh
+          </button>
+        </div>
+
+        {error ? (
+          <div className="mb-3 rounded border border-red-500/40 bg-red-900/20 p-3 text-sm text-red-200">
+            {error}
+          </div>
+        ) : null}
+
+        {loading ? (
+          <div className="rounded-lg border border-zinc-800 bg-zinc-950 p-4 text-sm text-zinc-300">
+            Loading moderation queue…
+          </div>
+        ) : items.length === 0 ? (
+          <div className="rounded-lg border border-zinc-800 bg-zinc-950 p-4 text-sm text-zinc-300">
+            No moderation items are currently awaiting admin action.
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {items.map((row) => (
             <div
               key={row.targetType + row.targetId}
               className="border border-gray-800 rounded p-3 bg-gray-900"
@@ -119,41 +155,13 @@ export default function ContentModeration() {
               </div>
             </div>
           ))}
-        </div>
-      )}
+          </div>
+        )}
+      </div>
     </main>
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  const cookies = cookie.parse(req.headers.cookie || "");
-  const token = cookies.session_token;
-  if (!token)
-    return {
-      redirect: {
-        destination: "/login?redirect=/admin/content-moderation",
-        permanent: false,
-      },
-    };
-  try {
-    const payload = jwt.verify(token, getJwtSecret()) as {
-      accountType?: string;
-      isAdmin?: boolean;
-    };
-    if (!(payload.isAdmin === true || payload.accountType === "admin"))
-      return {
-        redirect: {
-          destination: "/login?redirect=/admin/content-moderation",
-          permanent: false,
-        },
-      };
-  } catch {
-    return {
-      redirect: {
-        destination: "/login?redirect=/admin/content-moderation",
-        permanent: false,
-      },
-    };
-  }
-  return { props: {} };
-};
+export const getServerSideProps: GetServerSideProps = requireAdminPageProps(
+  "/admin/content-moderation",
+);

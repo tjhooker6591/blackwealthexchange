@@ -1,8 +1,7 @@
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { GetServerSideProps } from "next";
-import cookie from "cookie";
-import jwt from "jsonwebtoken";
-import { getJwtSecret } from "@/lib/env";
+import { requireAdminPageProps } from "@/lib/adminPageGuard";
 
 type InternApplication = {
   _id?: string;
@@ -119,11 +118,44 @@ export default function InternApplicationsAdmin() {
     }
   };
 
-  if (loading) return <p className="p-6 text-white">Loading…</p>;
-
   return (
-    <div className="p-6 text-white">
-      <h1 className="text-3xl font-bold text-gold mb-6">Intern Applications</h1>
+    <div className="min-h-screen bg-black p-6 text-white">
+      <div className="mx-auto max-w-6xl">
+        <div className="mb-6 flex items-center justify-between gap-3">
+          <div>
+            <h1 className="text-3xl font-bold text-gold mb-1">
+              Intern Applications
+            </h1>
+            <p className="text-sm text-gray-400">
+              Review internship candidates and move each application through the
+              intake pipeline.
+            </p>
+          </div>
+          <Link
+            href="/admin/dashboard"
+            className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-zinc-200 hover:bg-zinc-800"
+          >
+            Back to Admin Dashboard
+          </Link>
+        </div>
+
+        <div className="mb-4 flex items-center gap-2 text-xs">
+          <span className="rounded border border-zinc-700 bg-zinc-900 px-2 py-1 text-zinc-200">
+            Applications: {apps.length}
+          </span>
+          <button
+            onClick={load}
+            className="rounded border border-zinc-700 bg-zinc-900 px-2 py-1 text-zinc-200 hover:bg-zinc-800"
+          >
+            Refresh
+          </button>
+        </div>
+
+        {loading ? (
+          <div className="mb-4 rounded-lg border border-zinc-800 bg-zinc-950 p-4 text-sm text-zinc-300">
+            Loading internship applications…
+          </div>
+        ) : null}
 
       {pageError && (
         <div className="mb-6 rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-red-200">
@@ -137,7 +169,7 @@ export default function InternApplicationsAdmin() {
         </div>
       )}
 
-      <div className="space-y-4">
+      {!loading ? <div className="space-y-4">
         {apps.map((app) => {
           const appId = getId(app);
 
@@ -208,46 +240,12 @@ export default function InternApplicationsAdmin() {
             </div>
           );
         })}
+      </div> : null}
       </div>
     </div>
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  const cookies = cookie.parse(req.headers.cookie || "");
-  const token = cookies.session_token;
-
-  if (!token) {
-    return {
-      redirect: {
-        destination: "/login?redirect=/admin/intern-applications",
-        permanent: false,
-      },
-    };
-  }
-
-  try {
-    const payload = jwt.verify(token, getJwtSecret()) as {
-      accountType?: string;
-      isAdmin?: boolean;
-    };
-
-    if (!(payload.isAdmin === true || payload.accountType === "admin")) {
-      return {
-        redirect: {
-          destination: "/login?redirect=/admin/intern-applications",
-          permanent: false,
-        },
-      };
-    }
-  } catch {
-    return {
-      redirect: {
-        destination: "/login?redirect=/admin/intern-applications",
-        permanent: false,
-      },
-    };
-  }
-
-  return { props: {} };
-};
+export const getServerSideProps: GetServerSideProps = requireAdminPageProps(
+  "/admin/intern-applications",
+);
