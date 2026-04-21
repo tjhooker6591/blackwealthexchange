@@ -33,6 +33,16 @@ function formatDate(input?: string) {
   });
 }
 
+function freshnessLabel(input?: string) {
+  if (!input) return "Recently posted";
+  const d = new Date(input);
+  if (Number.isNaN(d.getTime())) return "Recently posted";
+  const days = Math.floor((Date.now() - d.getTime()) / (1000 * 60 * 60 * 24));
+  if (days <= 2) return "Fresh";
+  if (days <= 7) return "This week";
+  return "Older";
+}
+
 export default function JobListingsPage() {
   const router = useRouter();
 
@@ -76,13 +86,15 @@ export default function JobListingsPage() {
       })
       .then((data) => {
         const apiCap = Number(data?.meta?.featuredJobTopCap);
-        const cap = Number.isFinite(apiCap) && apiCap > 0 ? apiCap : FEATURED_JOB_TOP_CAP;
+        const cap =
+          Number.isFinite(apiCap) && apiCap > 0 ? apiCap : FEATURED_JOB_TOP_CAP;
         setFeaturedCap(cap);
 
         const incoming = Array.isArray(data?.jobs) ? data.jobs : [];
         let featuredVisibleCount = 0;
         const cappedJobs = incoming.map((job: Job) => {
-          const allowFeatured = Boolean(job?.isFeatured) && featuredVisibleCount < cap;
+          const allowFeatured =
+            Boolean(job?.isFeatured) && featuredVisibleCount < cap;
           if (allowFeatured) featuredVisibleCount += 1;
           return { ...job, isFeatured: allowFeatured };
         });
@@ -132,21 +144,18 @@ export default function JobListingsPage() {
       return hay.includes(query);
     });
 
-    arr.sort((a, b) => {
+    const sorter = (a: Job, b: Job) => {
       const aTime = a.createdAt ? new Date(a.createdAt).getTime() : 0;
       const bTime = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+      if (sort === "oldest") return aTime - bTime;
+      return bTime - aTime;
+    };
 
-      if (sort === "featured") {
-        const aFeat = a.isFeatured ? 1 : 0;
-        const bFeat = b.isFeatured ? 1 : 0;
-        if (bFeat !== aFeat) return bFeat - aFeat; // featured first
-        return bTime - aTime; // newest next
-      }
-      if (sort === "newest") return bTime - aTime;
-      return aTime - bTime;
-    });
+    const featured = arr.filter((job) => job.isFeatured).sort(sorter);
+    const nonFeatured = arr.filter((job) => !job.isFeatured).sort(sorter);
 
-    return arr;
+    // Featured stays pinned at the top in all sort modes.
+    return [...featured, ...nonFeatured];
   }, [jobs, q, featuredOnly, typeFilter, locationFilter, sort]);
 
   const totalPages = Math.max(1, Math.ceil(filteredSorted.length / PAGE_SIZE));
@@ -336,7 +345,8 @@ export default function JobListingsPage() {
               <div className="text-sm text-gray-400">
                 Showing{" "}
                 <span className="text-gray-200">{filteredSorted.length}</span>{" "}
-                result(s) · Featured cap: <span className="text-gray-200">{featuredCap}</span>
+                result(s) · Featured cap:{" "}
+                <span className="text-gray-200">{featuredCap}</span>
               </div>
             </div>
           </div>
@@ -403,7 +413,7 @@ export default function JobListingsPage() {
                               ? ` • 💰 ${job.salary}`
                               : " • Salary not listed"}
                             {job.createdAt
-                              ? ` • Posted ${formatDate(job.createdAt)}`
+                              ? ` • Posted ${formatDate(job.createdAt)} (${freshnessLabel(job.createdAt)})`
                               : ""}
                           </p>
                         </div>

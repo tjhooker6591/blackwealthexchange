@@ -657,6 +657,17 @@ export default function Home() {
     opportunities: null,
     products: null,
   });
+  const [featuredJobs, setFeaturedJobs] = useState<
+    Array<{
+      _id: string;
+      title: string;
+      company: string;
+      location: string;
+      type: string;
+      createdAt?: string;
+      isFeatured?: boolean;
+    }>
+  >([]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -781,6 +792,8 @@ export default function Home() {
 
         if (cancelled) return;
 
+        const jobs = Array.isArray(jobsData?.jobs) ? jobsData.jobs : [];
+
         setTrustStats({
           businesses: Number.isFinite(Number(businessesData?.total))
             ? Number(businessesData.total)
@@ -788,13 +801,26 @@ export default function Home() {
           organizations: Number.isFinite(Number(orgsData?.total))
             ? Number(orgsData.total)
             : null,
-          opportunities: Array.isArray(jobsData?.jobs)
-            ? jobsData.jobs.length
-            : null,
+          opportunities: jobs.length,
           products: Number.isFinite(Number(productsData?.total))
             ? Number(productsData.total)
             : null,
         });
+
+        setFeaturedJobs(
+          jobs
+            .filter((j: any) => Boolean(j?.isFeatured))
+            .slice(0, 4)
+            .map((j: any) => ({
+              _id: String(j._id),
+              title: String(j.title || "Featured role"),
+              company: String(j.company || "Hiring Company"),
+              location: String(j.location || "Location flexible"),
+              type: String(j.type || "Role"),
+              createdAt: typeof j.createdAt === "string" ? j.createdAt : undefined,
+              isFeatured: Boolean(j.isFeatured),
+            })),
+        );
       } catch {
         if (!cancelled) {
           setTrustStats({
@@ -803,6 +829,7 @@ export default function Home() {
             opportunities: null,
             products: null,
           });
+          setFeaturedJobs([]);
         }
       }
     })();
@@ -813,10 +840,9 @@ export default function Home() {
     };
   }, []);
 
-  const sponsorRail = (sponsors.length ? sponsors : stableSponsorFallback).slice(
-    0,
-    FEATURED_SPONSOR_RAIL_CAP,
-  );
+  const sponsorRail = (
+    sponsors.length ? sponsors : stableSponsorFallback
+  ).slice(0, FEATURED_SPONSOR_RAIL_CAP);
 
   const base = getBaseUrl();
   const canonical = canonicalUrl("/");
@@ -1406,6 +1432,35 @@ export default function Home() {
 
       <section className="relative z-10 pt-3 pb-8 sm:pt-4 sm:pb-10">
         <div className="container mx-auto max-w-6xl px-4">
+          {featuredJobs.length ? (
+            <div className="mb-4 rounded-2xl border border-yellow-500/30 bg-yellow-500/10 p-4 sm:p-5">
+              <div className="flex items-center justify-between gap-2 mb-3">
+                <div>
+                  <div className="text-[11px] font-bold uppercase tracking-[0.1em] text-yellow-300">
+                    Featured Jobs
+                  </div>
+                  <div className="text-sm font-semibold text-white">
+                    Premium placements from active hiring employers
+                  </div>
+                </div>
+                <Link href="/job-listings" className="text-xs text-yellow-200 hover:underline">
+                  View all jobs
+                </Link>
+              </div>
+              <div className="grid gap-2 md:grid-cols-2">
+                {featuredJobs.map((job) => (
+                  <Link key={job._id} href={`/job/${job._id}`} className="rounded-xl border border-yellow-400/30 bg-black/30 p-3 hover:bg-black/45">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="font-bold text-white truncate">{job.title}</p>
+                      <span className="text-[10px] px-2 py-0.5 rounded bg-yellow-400 text-black font-bold">Featured</span>
+                    </div>
+                    <p className="mt-1 text-xs text-white/75 truncate">{job.company} • {job.location} • {job.type}</p>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          ) : null}
+
           <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
             <div className="mb-2 text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
               Choose your next move

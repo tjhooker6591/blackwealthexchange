@@ -38,6 +38,14 @@ const STATUS_LABEL: Record<HiringStatus, string> = {
   rejected: "Rejected",
 };
 
+const NEXT_STATUS: Record<HiringStatus, HiringStatus | null> = {
+  new: "reviewed",
+  reviewed: "shortlisted",
+  shortlisted: "contacted",
+  contacted: "rejected",
+  rejected: null,
+};
+
 export default function EmployerApplicantsPage() {
   const router = useRouter();
   const [applicants, setApplicants] = useState<Applicant[]>([]);
@@ -45,7 +53,8 @@ export default function EmployerApplicantsPage() {
   const [busyId, setBusyId] = useState<string | null>(null);
   const [error, setError] = useState("");
 
-  const jobId = typeof router.query.jobId === "string" ? router.query.jobId : "";
+  const jobId =
+    typeof router.query.jobId === "string" ? router.query.jobId : "";
 
   useEffect(() => {
     const fetchApplicants = async () => {
@@ -95,7 +104,9 @@ export default function EmployerApplicantsPage() {
 
     const prev = applicants;
     setApplicants((cur) =>
-      cur.map((a) => (a._id === applicantId ? { ...a, hiringStatus: status } : a)),
+      cur.map((a) =>
+        a._id === applicantId ? { ...a, hiringStatus: status } : a,
+      ),
     );
 
     try {
@@ -147,9 +158,16 @@ export default function EmployerApplicantsPage() {
           <>
             <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
               {STATUS_ORDER.map((s) => (
-                <div key={s} className="rounded-lg border border-gray-700 bg-gray-900 p-3">
-                  <div className="text-xs text-gray-400 uppercase">{STATUS_LABEL[s]}</div>
-                  <div className="text-2xl font-bold text-gold">{grouped[s].length}</div>
+                <div
+                  key={s}
+                  className="rounded-lg border border-gray-700 bg-gray-900 p-3"
+                >
+                  <div className="text-xs text-gray-400 uppercase">
+                    {STATUS_LABEL[s]}
+                  </div>
+                  <div className="text-2xl font-bold text-gold">
+                    {grouped[s].length}
+                  </div>
                 </div>
               ))}
             </div>
@@ -173,13 +191,20 @@ export default function EmployerApplicantsPage() {
                         >
                           <div className="flex flex-wrap items-start justify-between gap-4">
                             <div>
-                              <h3 className="text-lg font-bold text-gold">{applicant.name}</h3>
+                              <h3 className="text-lg font-bold text-gold">
+                                {applicant.name}
+                              </h3>
                               <p className="text-gray-300">{applicant.email}</p>
                               <p className="text-sm text-gray-400 mt-1">
-                                Applied: {new Date(applicant.appliedDate).toLocaleDateString()}
+                                Applied:{" "}
+                                {new Date(
+                                  applicant.appliedDate,
+                                ).toLocaleDateString()}
                               </p>
                               {applicant.jobTitle ? (
-                                <p className="text-sm text-blue-300 mt-1">For job: {applicant.jobTitle}</p>
+                                <p className="text-sm text-blue-300 mt-1">
+                                  For job: {applicant.jobTitle}
+                                </p>
                               ) : null}
                             </div>
 
@@ -195,24 +220,55 @@ export default function EmployerApplicantsPage() {
                             ) : null}
                           </div>
 
-                          <div className="mt-4 flex flex-wrap gap-2">
-                            {STATUS_ORDER.map((next) => {
-                              const active = (applicant.hiringStatus || "new") === next;
-                              return (
+                          <div className="mt-4 space-y-2">
+                            <div className="flex flex-wrap gap-2">
+                              {STATUS_ORDER.map((next) => {
+                                const active =
+                                  (applicant.hiringStatus || "new") === next;
+                                return (
+                                  <button
+                                    key={next}
+                                    disabled={busyId === applicant._id || active}
+                                    onClick={() =>
+                                      updateStatus(applicant._id, next)
+                                    }
+                                    className={`px-3 py-1.5 text-xs rounded border transition ${
+                                      active
+                                        ? "border-yellow-400/60 bg-yellow-400/20 text-yellow-200"
+                                        : "border-gray-600 text-gray-200 hover:border-yellow-400/50"
+                                    } ${busyId === applicant._id ? "opacity-60 cursor-not-allowed" : ""}`}
+                                  >
+                                    {STATUS_LABEL[next]}
+                                  </button>
+                                );
+                              })}
+                            </div>
+
+                            <div className="flex flex-wrap gap-2">
+                              {NEXT_STATUS[(applicant.hiringStatus || "new") as HiringStatus] ? (
                                 <button
-                                  key={next}
-                                  disabled={busyId === applicant._id || active}
-                                  onClick={() => updateStatus(applicant._id, next)}
-                                  className={`px-3 py-1.5 text-xs rounded border transition ${
-                                    active
-                                      ? "border-yellow-400/60 bg-yellow-400/20 text-yellow-200"
-                                      : "border-gray-600 text-gray-200 hover:border-yellow-400/50"
-                                  } ${busyId === applicant._id ? "opacity-60 cursor-not-allowed" : ""}`}
+                                  disabled={busyId === applicant._id}
+                                  onClick={() =>
+                                    updateStatus(
+                                      applicant._id,
+                                      NEXT_STATUS[(applicant.hiringStatus || "new") as HiringStatus] as HiringStatus,
+                                    )
+                                  }
+                                  className="px-3 py-1.5 text-xs rounded border border-emerald-400/40 bg-emerald-500/10 text-emerald-200 hover:bg-emerald-500/20 disabled:opacity-60"
                                 >
-                                  {STATUS_LABEL[next]}
+                                  Move to {STATUS_LABEL[NEXT_STATUS[(applicant.hiringStatus || "new") as HiringStatus] as HiringStatus]}
                                 </button>
-                              );
-                            })}
+                              ) : null}
+                              {(applicant.hiringStatus || "new") !== "rejected" ? (
+                                <button
+                                  disabled={busyId === applicant._id}
+                                  onClick={() => updateStatus(applicant._id, "rejected")}
+                                  className="px-3 py-1.5 text-xs rounded border border-red-400/40 bg-red-500/10 text-red-200 hover:bg-red-500/20 disabled:opacity-60"
+                                >
+                                  Reject
+                                </button>
+                              ) : null}
+                            </div>
                           </div>
                         </div>
                       ))}

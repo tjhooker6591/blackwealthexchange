@@ -27,7 +27,9 @@ export default async function handler(
   const { id } = req.query;
 
   if (!id || typeof id !== "string" || !ObjectId.isValid(id)) {
-    return res.status(400).json({ success: false, error: "Job ID is required." });
+    return res
+      .status(400)
+      .json({ success: false, error: "Job ID is required." });
   }
 
   const client = await clientPromise;
@@ -51,6 +53,9 @@ export default async function handler(
             createdAt: 1,
             isFeatured: 1,
             appliedCount: 1,
+            employerEmail: 1,
+            companyWebsite: 1,
+            companyDescription: 1,
           },
         },
       );
@@ -64,7 +69,9 @@ export default async function handler(
 
     const userIdFromToken = getSessionUserId(req);
     if (!userIdFromToken) {
-      return res.status(401).json({ success: false, error: "Not authenticated" });
+      return res
+        .status(401)
+        .json({ success: false, error: "Not authenticated" });
     }
 
     const job = await jobs.findOne({ _id: jobObjectId });
@@ -73,7 +80,9 @@ export default async function handler(
     }
 
     if (job.userId?.toString() !== userIdFromToken) {
-      return res.status(403).json({ success: false, error: "Unauthorized access to job" });
+      return res
+        .status(403)
+        .json({ success: false, error: "Unauthorized access to job" });
     }
 
     if (req.method === "PUT") {
@@ -100,7 +109,9 @@ export default async function handler(
       if (promotionDuration) {
         const days = parseInt(promotionDuration, 10);
         if (Number.isFinite(days) && days > 0) {
-          const featureEndDate = new Date(Date.now() + days * 24 * 60 * 60 * 1000);
+          const featureEndDate = new Date(
+            Date.now() + days * 24 * 60 * 60 * 1000,
+          );
           updateFields.isFeatured = true;
           updateFields.featureEndDate = featureEndDate;
         }
@@ -108,17 +119,25 @@ export default async function handler(
 
       await jobs.updateOne({ _id: jobObjectId }, { $set: updateFields });
 
-      return res.status(200).json({ success: true, message: "Job updated successfully" });
+      return res
+        .status(200)
+        .json({ success: true, message: "Job updated successfully" });
     }
 
     if (req.method === "DELETE") {
       await jobs.deleteOne({ _id: jobObjectId });
-      return res.status(200).json({ success: true, message: "Job deleted successfully" });
+      return res
+        .status(200)
+        .json({ success: true, message: "Job deleted successfully" });
     }
 
-    return res.status(405).json({ success: false, error: "Method not allowed" });
+    return res
+      .status(405)
+      .json({ success: false, error: "Method not allowed" });
   } catch (error) {
     console.error("Job handler error:", error);
-    return res.status(500).json({ success: false, error: "Internal Server Error" });
+    return res
+      .status(500)
+      .json({ success: false, error: "Internal Server Error" });
   }
 }

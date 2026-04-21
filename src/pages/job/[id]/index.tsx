@@ -17,6 +17,9 @@ interface Job {
   createdAt?: string;
   isFeatured?: boolean;
   appliedCount?: number;
+  employerEmail?: string;
+  companyWebsite?: string;
+  companyDescription?: string;
 }
 
 function formatDate(iso?: string) {
@@ -302,34 +305,78 @@ export default function JobDetail() {
           <hr className="my-6 border-gray-700" />
 
           <div className="grid gap-6 md:grid-cols-3">
-            <div className="md:col-span-2">
-              <h2 className="text-xl font-bold text-white">Role Overview</h2>
-              <p className="mt-2 whitespace-pre-line text-gray-200 leading-relaxed">
-                {job.description}
-              </p>
+            <div className="md:col-span-2 space-y-6">
+              <div>
+                <h2 className="text-xl font-bold text-white">Role Overview</h2>
+                <p className="mt-2 whitespace-pre-line text-gray-200 leading-relaxed">
+                  {job.description}
+                </p>
+              </div>
+
+              <div>
+                <h2 className="text-xl font-bold text-white">Expectations</h2>
+                <p className="mt-2 text-gray-300">
+                  Candidates should be ready to discuss relevant experience,
+                  availability, and role-specific fit during follow-up.
+                </p>
+              </div>
             </div>
-            <div className="rounded-lg border border-gray-700 bg-black/20 p-4">
-              <h3 className="text-sm font-semibold text-yellow-300 uppercase tracking-wide">
-                Job Snapshot
-              </h3>
-              <div className="mt-3 space-y-2 text-sm text-gray-300">
-                <p>
-                  <span className="text-gray-400">Role:</span> {job.title}
-                </p>
-                <p>
-                  <span className="text-gray-400">Company:</span> {job.company}
-                </p>
-                <p>
-                  <span className="text-gray-400">Location:</span>{" "}
-                  {job.location}
-                </p>
-                <p>
-                  <span className="text-gray-400">Type:</span> {job.type}
-                </p>
-                <p>
-                  <span className="text-gray-400">Compensation:</span>{" "}
-                  {job.salary || "Salary not listed"}
-                </p>
+            <div className="space-y-4">
+              <div className="rounded-lg border border-gray-700 bg-black/20 p-4">
+                <h3 className="text-sm font-semibold text-yellow-300 uppercase tracking-wide">
+                  Job Snapshot
+                </h3>
+                <div className="mt-3 space-y-2 text-sm text-gray-300">
+                  <p>
+                    <span className="text-gray-400">Role:</span> {job.title}
+                  </p>
+                  <p>
+                    <span className="text-gray-400">Company:</span> {job.company}
+                  </p>
+                  <p>
+                    <span className="text-gray-400">Location:</span>{" "}
+                    {job.location}
+                  </p>
+                  <p>
+                    <span className="text-gray-400">Type:</span> {job.type}
+                  </p>
+                  <p>
+                    <span className="text-gray-400">Compensation:</span>{" "}
+                    {job.salary || "Salary not listed"}
+                  </p>
+                </div>
+              </div>
+
+              <div className="rounded-lg border border-gray-700 bg-black/20 p-4">
+                <h3 className="text-sm font-semibold text-yellow-300 uppercase tracking-wide">
+                  Company Context
+                </h3>
+                <div className="mt-3 space-y-2 text-sm text-gray-300">
+                  {job.companyDescription ? (
+                    <p className="text-gray-200">{job.companyDescription}</p>
+                  ) : (
+                    <p>This employer is actively reviewing applications for this role.</p>
+                  )}
+                  {job.companyWebsite ? (
+                    <p>
+                      <span className="text-gray-400">Website:</span>{" "}
+                      <a
+                        href={job.companyWebsite}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-300 hover:underline"
+                      >
+                        {job.companyWebsite}
+                      </a>
+                    </p>
+                  ) : null}
+                  {job.employerEmail ? (
+                    <p>
+                      <span className="text-gray-400">Hiring contact:</span>{" "}
+                      {job.employerEmail}
+                    </p>
+                  ) : null}
+                </div>
               </div>
             </div>
           </div>
