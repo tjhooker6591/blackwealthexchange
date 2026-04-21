@@ -535,10 +535,7 @@ const PostJob = () => {
         </form>
 
         <div className="text-center mt-6">
-          <Link
-            href="/dashboard/employer"
-            className="text-blue-500 hover:underline"
-          >
+          <Link href="/employer" className="text-blue-500 hover:underline">
             ← Back to Employer Dashboard
           </Link>
         </div>

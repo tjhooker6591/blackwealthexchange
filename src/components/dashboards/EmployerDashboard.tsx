@@ -20,7 +20,7 @@ import {
 interface Stats {
   jobsPosted: number;
   totalApplicants: number;
-  messages: number;
+  outreachQueue: number;
   profileCompletion: number; // 0-100
 }
 
@@ -50,8 +50,6 @@ const ROUTES = {
   postJob: "/post-job",
   jobs: "/employer/jobs",
   applicants: "/employer/applicants",
-  messages: "/employer/messages",
-  analytics: "/employer/analytics",
   resources: "/employer/resources",
   profile: "/employer/profile",
   billing: "/dashboard/employer/billing",
@@ -111,7 +109,7 @@ export default function EmployerDashboard() {
   const [stats, setStats] = useState<Stats>({
     jobsPosted: 0,
     totalApplicants: 0,
-    messages: 0,
+    outreachQueue: 0,
     profileCompletion: 0,
   });
 
@@ -204,7 +202,7 @@ export default function EmployerDashboard() {
           totalApplicants: Number(
             statsData?.totalApplicants ?? applicants.length ?? 0,
           ),
-          messages: Number(statsData?.messages ?? 0),
+          outreachQueue: Number(statsData?.outreachQueue ?? 0),
           profileCompletion: Number(statsData?.profileCompletion ?? 0),
         });
 
@@ -398,9 +396,9 @@ export default function EmployerDashboard() {
           />
           <StatTile
             icon={<MessageSquare className="h-5 w-5 text-yellow-300" />}
-            label="Messages"
-            value={stats.messages}
-            href={ROUTES.messages}
+            label="Managed Support Requests"
+            value={stats.outreachQueue}
+            href={ROUTES.consultingInterest}
           />
           <div className="col-span-2 rounded-2xl border border-white/10 bg-white/5 p-4 shadow-xl lg:col-span-1 lg:p-5">
             <div className="flex items-center justify-between gap-2">
@@ -508,10 +506,10 @@ export default function EmployerDashboard() {
                       </div>
 
                       <Link
-                        href={`${ROUTES.jobs}/${job._id}`}
+                        href={`/employer/edit-job/${job._id}`}
                         className="inline-flex items-center gap-2 text-sm text-yellow-300 hover:underline sm:whitespace-nowrap"
                       >
-                        Details <ArrowRight className="h-4 w-4 shrink-0" />
+                        Manage Listing <ArrowRight className="h-4 w-4 shrink-0" />
                       </Link>
                     </div>
                   </div>
