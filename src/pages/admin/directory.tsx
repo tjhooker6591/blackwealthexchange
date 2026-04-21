@@ -11,5 +11,5 @@ export default function LegacyDirectoryRedirect() {
   return null;
 }
 
-
-export const getServerSideProps: GetServerSideProps = requireAdminPageProps("/admin/directory");
+export const getServerSideProps: GetServerSideProps =
+  requireAdminPageProps("/admin/directory");

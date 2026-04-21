@@ -1000,5 +1000,5 @@ export default function AdminToolsPage() {
   );
 }
 
-
-export const getServerSideProps: GetServerSideProps = requireAdminPageProps("/admin/tools");
+export const getServerSideProps: GetServerSideProps =
+  requireAdminPageProps("/admin/tools");

@@ -199,7 +199,7 @@ export default function DirectoryDuplicatesPage() {
             </div>
           ) : rows.length === 0 ? (
             <div className="rounded-lg border border-zinc-800 bg-zinc-950 p-5 text-zinc-300">
-              No unresolved duplicates found.
+              No unresolved duplicate records match current filters.
             </div>
           ) : (
             <div className="overflow-x-auto rounded-lg border border-zinc-800 bg-zinc-950">
@@ -288,5 +288,6 @@ export default function DirectoryDuplicatesPage() {
   );
 }
 
-
-export const getServerSideProps: GetServerSideProps = requireAdminPageProps("/admin/directory-duplicates");
+export const getServerSideProps: GetServerSideProps = requireAdminPageProps(
+  "/admin/directory-duplicates",
+);

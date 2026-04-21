@@ -89,7 +89,12 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
       isAdmin?: boolean;
     };
     if (!(payload.isAdmin === true || payload.accountType === "admin")) {
-      return { redirect: { destination: "/login?redirect=/admin/verifier-unified", permanent: false } };
+      return {
+        redirect: {
+          destination: "/login?redirect=/admin/verifier-unified",
+          permanent: false,
+        },
+      };
     }
   } catch {
     return {

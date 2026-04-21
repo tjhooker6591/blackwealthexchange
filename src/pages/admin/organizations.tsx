@@ -238,7 +238,7 @@ export default function AdminOrganizationsPage() {
           {loading ? (
             <p>Loading...</p>
           ) : items.length === 0 ? (
-            <p className="text-gray-400">No results.</p>
+            <p className="text-gray-400">No organizations match the current filters.</p>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
@@ -321,5 +321,6 @@ export default function AdminOrganizationsPage() {
   );
 }
 
-
-export const getServerSideProps: GetServerSideProps = requireAdminPageProps("/admin/organizations");
+export const getServerSideProps: GetServerSideProps = requireAdminPageProps(
+  "/admin/organizations",
+);

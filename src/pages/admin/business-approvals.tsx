@@ -274,5 +274,6 @@ export default function BusinessApprovals() {
   );
 }
 
-
-export const getServerSideProps: GetServerSideProps = requireAdminPageProps("/admin/business-approvals");
+export const getServerSideProps: GetServerSideProps = requireAdminPageProps(
+  "/admin/business-approvals",
+);

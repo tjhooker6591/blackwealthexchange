@@ -1174,7 +1174,7 @@ const AdminDashboard = ({
             ),
           )}
           {Object.keys(recentJoinsSummary.byAccountType || {}).length === 0 ? (
-            <div className="text-sm text-gray-400">No join data yet.</div>
+            <div className="text-sm text-gray-400">No join activity is available for the current reporting window.</div>
           ) : null}
         </div>
       </div>
@@ -1501,7 +1501,7 @@ const AdminDashboard = ({
                       ))}
                     </ul>
                   ) : (
-                    <div className="text-gray-400">No featured slots.</div>
+                    <div className="text-gray-400">No featured directory slots are currently assigned.</div>
                   )}
                 </div>
 
@@ -1529,7 +1529,7 @@ const AdminDashboard = ({
                       </div>
                     ) : (
                       <div className="text-gray-400">
-                        No one in the waitlist.
+                        No businesses are currently in the featured-slot waitlist.
                       </div>
                     )}
                   </div>
@@ -1699,7 +1699,7 @@ const AdminDashboard = ({
           </div>
         ) : visibleConsultingRows.length === 0 ? (
           <p className="text-gray-400 text-sm">
-            No one has signed up for notifications yet.
+            No consulting notification signups are currently in queue.
           </p>
         ) : (
           <div className="overflow-x-auto">

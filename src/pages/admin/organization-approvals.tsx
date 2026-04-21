@@ -11,5 +11,6 @@ export default function LegacyOrganizationApprovalsRedirect() {
   return null;
 }
 
-
-export const getServerSideProps: GetServerSideProps = requireAdminPageProps("/admin/organization-approvals");
+export const getServerSideProps: GetServerSideProps = requireAdminPageProps(
+  "/admin/organization-approvals",
+);

@@ -154,5 +154,5 @@ export default function AdminHealthPage() {
   );
 }
 
-
-export const getServerSideProps: GetServerSideProps = requireAdminPageProps("/admin/health");
+export const getServerSideProps: GetServerSideProps =
+  requireAdminPageProps("/admin/health");

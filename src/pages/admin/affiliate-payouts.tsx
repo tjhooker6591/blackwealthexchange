@@ -134,9 +134,13 @@ export default function AffiliatePayouts() {
         </div>
 
         {loading ? (
-          <div className="rounded-lg border border-zinc-800 bg-zinc-950 p-4 text-sm text-zinc-300">Loading payout records…</div>
+          <div className="rounded-lg border border-zinc-800 bg-zinc-950 p-4 text-sm text-zinc-300">
+            Loading payout records…
+          </div>
         ) : payouts.length === 0 ? (
-          <div className="rounded-lg border border-zinc-800 bg-zinc-950 p-4 text-sm text-zinc-300">No payout requests are in the system yet.</div>
+          <div className="rounded-lg border border-zinc-800 bg-zinc-950 p-4 text-sm text-zinc-300">
+            No payout requests are in the system yet.
+          </div>
         ) : (
           <div className="overflow-x-auto rounded-lg border border-gray-700">
             <table className="w-full text-sm">

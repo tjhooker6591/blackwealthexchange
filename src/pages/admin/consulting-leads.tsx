@@ -158,7 +158,8 @@ export default function ConsultingLeadsAdminPage() {
 
         <div className="mb-4 flex flex-wrap items-center gap-2 text-xs">
           <span className="rounded border border-yellow-500/30 bg-yellow-500/10 px-2 py-1 text-yellow-200">
-            Pending: {rows.filter((r) => (r.status || "pending") === "pending").length}
+            Pending:{" "}
+            {rows.filter((r) => (r.status || "pending") === "pending").length}
           </span>
           <span className="rounded border border-emerald-500/30 bg-emerald-500/10 px-2 py-1 text-emerald-200">
             Approved: {rows.filter((r) => r.status === "approved").length}
@@ -172,10 +173,14 @@ export default function ConsultingLeadsAdminPage() {
         </div>
 
         {loading ? (
-          <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4 text-sm text-zinc-300">Loading consulting lead queue…</div>
+          <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4 text-sm text-zinc-300">
+            Loading consulting lead queue…
+          </div>
         ) : null}
         {error ? (
-          <div className="rounded-xl border border-red-500/40 bg-red-900/20 p-4 text-sm text-red-200">{error}</div>
+          <div className="rounded-xl border border-red-500/40 bg-red-900/20 p-4 text-sm text-red-200">
+            {error}
+          </div>
         ) : null}
 
         {!loading && !error ? (

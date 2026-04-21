@@ -154,7 +154,7 @@ export default function ConsultantModerationPage() {
           <p className="text-zinc-300">Loading moderation queue...</p>
         ) : items.length === 0 ? (
           <div className="rounded-xl border border-white/10 bg-zinc-950 p-4 text-sm text-zinc-300">
-            No blocked/flagged request events found.
+            No blocked or flagged consultant request events match this view.
           </div>
         ) : (
           <div className="space-y-3">
@@ -232,5 +232,6 @@ export default function ConsultantModerationPage() {
   );
 }
 
-
-export const getServerSideProps: GetServerSideProps = requireAdminPageProps("/admin/consultant-moderation");
+export const getServerSideProps: GetServerSideProps = requireAdminPageProps(
+  "/admin/consultant-moderation",
+);

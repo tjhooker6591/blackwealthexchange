@@ -124,7 +124,7 @@ const UserManagement = () => {
           {loading ? (
             <p>Loading users...</p>
           ) : filteredUsers.length === 0 ? (
-            <p>No users found for this query.</p>
+            <p>No users match the current search query.</p>
           ) : (
             <div className="overflow-x-auto rounded-lg border border-gray-700">
               <table className="w-full min-w-[760px] text-left text-sm">

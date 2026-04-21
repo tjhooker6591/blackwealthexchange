@@ -76,7 +76,7 @@ export default function FeaturedProducts() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {products.length === 0 && (
-            <p className="col-span-3 text-gray-400">No products found.</p>
+            <p className="col-span-3 text-gray-400">No products match the current featured-product view.</p>
           )}
           {products.map((product) => (
             <div
@@ -126,5 +126,6 @@ export default function FeaturedProducts() {
   );
 }
 
-
-export const getServerSideProps: GetServerSideProps = requireAdminPageProps("/admin/featured-products");
+export const getServerSideProps: GetServerSideProps = requireAdminPageProps(
+  "/admin/featured-products",
+);

@@ -144,7 +144,7 @@ export default function ConsultantEscalationsPage() {
           <p className="text-zinc-300">Loading escalations...</p>
         ) : items.length === 0 ? (
           <div className="rounded-xl border border-white/10 bg-zinc-950 p-4 text-sm text-zinc-300">
-            No escalation records found.
+            No consultant escalation records match the current filters.
           </div>
         ) : (
           <div className="space-y-3">
@@ -220,5 +220,6 @@ export default function ConsultantEscalationsPage() {
   );
 }
 
-
-export const getServerSideProps: GetServerSideProps = requireAdminPageProps("/admin/consultant-escalations");
+export const getServerSideProps: GetServerSideProps = requireAdminPageProps(
+  "/admin/consultant-escalations",
+);

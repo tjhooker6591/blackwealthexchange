@@ -246,7 +246,9 @@ export default function AnalyticsDashboard() {
 
               {/* Seller Leaderboard */}
               <div className="mb-10 rounded-xl border border-zinc-800 bg-zinc-950 p-6">
-                <h2 className="mb-4 text-xl font-bold text-gold">Top Sellers</h2>
+                <h2 className="mb-4 text-xl font-bold text-gold">
+                  Top Sellers
+                </h2>
 
                 <div className="overflow-x-auto">
                   <table className="w-full text-left text-sm text-white">
@@ -273,9 +275,12 @@ export default function AnalyticsDashboard() {
                         ))
                       ) : (
                         <tr>
-                          <td colSpan={3} className="p-4 text-center text-zinc-400">
-                            No seller order volume yet. Seller activity will appear
-                            here after first processed orders.
+                          <td
+                            colSpan={3}
+                            className="p-4 text-center text-zinc-400"
+                          >
+                            No seller order volume yet. Seller activity will
+                            appear here after first processed orders.
                           </td>
                         </tr>
                       )}
@@ -286,7 +291,9 @@ export default function AnalyticsDashboard() {
 
               {/* Buyer Activity */}
               <div className="mb-10 rounded-xl border border-zinc-800 bg-zinc-950 p-6">
-                <h2 className="mb-4 text-xl font-bold text-gold">Buyer Activity</h2>
+                <h2 className="mb-4 text-xl font-bold text-gold">
+                  Buyer Activity
+                </h2>
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
                   <StatCard
                     label="Unique Buyers"

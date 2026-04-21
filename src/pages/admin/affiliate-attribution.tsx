@@ -87,10 +87,14 @@ export default function AffiliateAttributionAdminPage() {
         </div>
 
         {loading ? (
-          <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4 text-sm text-zinc-300">Loading attribution activity…</div>
+          <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4 text-sm text-zinc-300">
+            Loading attribution activity…
+          </div>
         ) : null}
         {error ? (
-          <div className="rounded-xl border border-red-500/40 bg-red-900/20 p-4 text-sm text-red-200">{error}</div>
+          <div className="rounded-xl border border-red-500/40 bg-red-900/20 p-4 text-sm text-red-200">
+            {error}
+          </div>
         ) : null}
 
         {!loading && !error ? (

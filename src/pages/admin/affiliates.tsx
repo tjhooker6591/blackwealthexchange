@@ -254,7 +254,7 @@ export default function AdminAffiliates() {
 
                 {pending.length === 0 ? (
                   <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4 text-zinc-300">
-                    No pending applications.
+                    No affiliate applications are awaiting review.
                   </div>
                 ) : (
                   <div className="space-y-3">
@@ -296,7 +296,7 @@ export default function AdminAffiliates() {
 
                 {active.length === 0 ? (
                   <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4 text-zinc-300">
-                    No active affiliates yet.
+                    No affiliates are currently active.
                   </div>
                 ) : (
                   <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-zinc-950">
@@ -339,7 +339,7 @@ export default function AdminAffiliates() {
 
                 {rejected.length === 0 ? (
                   <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4 text-zinc-300">
-                    No rejected affiliates.
+                    No rejected affiliates are recorded in this view.
                   </div>
                 ) : (
                   <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-zinc-950">

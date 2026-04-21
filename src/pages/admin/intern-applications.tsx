@@ -133,7 +133,7 @@ export default function InternApplicationsAdmin() {
 
       {!pageError && apps.length === 0 && (
         <div className="rounded-lg border border-white/10 bg-white/5 px-4 py-6 text-white/80">
-          No applications found yet.
+          No intern applications are currently available.
         </div>
       )}
 

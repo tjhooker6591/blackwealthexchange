@@ -836,5 +836,6 @@ export default function DirectoryApprovalsPage() {
   );
 }
 
-
-export const getServerSideProps: GetServerSideProps = requireAdminPageProps("/admin/directory-approvals");
+export const getServerSideProps: GetServerSideProps = requireAdminPageProps(
+  "/admin/directory-approvals",
+);

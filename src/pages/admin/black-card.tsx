@@ -177,7 +177,7 @@ export default function AdminBlackCardPage() {
               </div>
             ))}
             {membershipItems.length === 0 ? (
-              <p className="text-white/70">No Black Card memberships yet.</p>
+              <p className="text-white/70">No Black Card memberships are currently active.</p>
             ) : null}
           </div>
         </section>
@@ -262,7 +262,7 @@ export default function AdminBlackCardPage() {
               ))}
               {items.length === 0 ? (
                 <p className="text-sm text-white/70">
-                  No redemptions in queue.
+                  No redemption requests are currently queued.
                 </p>
               ) : null}
             </div>

@@ -256,7 +256,7 @@ export default function Phase1ScoreboardPage() {
               </h3>
               {lowSignalEvents.length ? (
                 <p className="mt-2 text-sm text-gray-300">
-                  No 30-day volume yet: {lowSignalEvents.join(", ")}
+                  No 30-day volume recorded yet for: {lowSignalEvents.join(", ")}
                 </p>
               ) : (
                 <p className="mt-2 text-sm text-gray-300">

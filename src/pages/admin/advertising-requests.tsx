@@ -303,7 +303,7 @@ export default function AdvertisingRequestsAdminPage() {
           </div>
         ) : filtered.length === 0 ? (
           <div className="rounded border border-gray-700 bg-gray-800 p-4 text-gray-300">
-            No advertising requests found.
+            No advertising requests match the current view.
           </div>
         ) : (
           <div className="overflow-x-auto rounded border border-gray-700 bg-gray-800">

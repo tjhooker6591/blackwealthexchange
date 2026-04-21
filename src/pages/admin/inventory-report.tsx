@@ -75,7 +75,7 @@ export default function InventoryReport() {
               {filteredProducts.length === 0 && (
                 <tr>
                   <td colSpan={5} className="text-center text-gray-400 py-8">
-                    No products found.
+                    No inventory products match the current search.
                   </td>
                 </tr>
               )}
@@ -131,5 +131,6 @@ export default function InventoryReport() {
   );
 }
 
-
-export const getServerSideProps: GetServerSideProps = requireAdminPageProps("/admin/inventory-report");
+export const getServerSideProps: GetServerSideProps = requireAdminPageProps(
+  "/admin/inventory-report",
+);
