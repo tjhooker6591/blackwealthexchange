@@ -637,6 +637,13 @@ export default function Home() {
   const [sponsors, setSponsors] = useState<
     Array<{ img: string; name: string; url?: string; tagline?: string }>
   >([]);
+  const [homepageBanner, setHomepageBanner] = useState<{
+    id: string;
+    image: string;
+    name: string;
+    tagline: string;
+    targetUrl: string;
+  } | null>(null);
   const [sponsorFeedLoaded, setSponsorFeedLoaded] = useState(false);
   const [trustStats, setTrustStats] = useState<{
     businesses: number | null;
@@ -657,28 +664,75 @@ export default function Home() {
     (async () => {
       const timeout = setTimeout(() => controller.abort(), 4000);
       try {
-        const res = await fetch("/api/sponsored-businesses", {
-          cache: "no-store",
-          signal: controller.signal,
-        });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok || !Array.isArray(data?.sponsors) || cancelled) {
+        const [sponsorsRes, placementsRes] = await Promise.all([
+          fetch("/api/sponsored-businesses", {
+            cache: "no-store",
+            signal: controller.signal,
+          }),
+          fetch("/api/advertising/public-placements", {
+            cache: "no-store",
+            signal: controller.signal,
+          }),
+        ]);
+
+        const data = await sponsorsRes.json().catch(() => ({}));
+        if (!sponsorsRes.ok || !Array.isArray(data?.sponsors) || cancelled) {
           if (!cancelled) setSponsors(stableSponsorFallback);
-          return;
+        } else {
+          const normalized = data.sponsors.map((s: any) => ({
+            img:
+              typeof s?.img === "string" && s.img
+                ? s.img
+                : "/default-image.jpg",
+            name:
+              typeof s?.name === "string" && s.name
+                ? s.name
+                : "Featured Sponsor",
+            url: typeof s?.url === "string" ? s.url : undefined,
+            tagline: typeof s?.tagline === "string" ? s.tagline : undefined,
+          }));
+
+          setSponsors(normalized.length ? normalized : stableSponsorFallback);
         }
 
-        const normalized = data.sponsors.map((s: any) => ({
-          img:
-            typeof s?.img === "string" && s.img ? s.img : "/default-image.jpg",
-          name:
-            typeof s?.name === "string" && s.name ? s.name : "Featured Sponsor",
-          url: typeof s?.url === "string" ? s.url : undefined,
-          tagline: typeof s?.tagline === "string" ? s.tagline : undefined,
-        }));
+        const placementData = await placementsRes.json().catch(() => ({}));
+        if (!cancelled && placementsRes.ok) {
+          const topBanner = Array.isArray(
+            placementData?.placements?.bannerHomepageTop,
+          )
+            ? placementData.placements.bannerHomepageTop[0]
+            : null;
 
-        setSponsors(normalized.length ? normalized : stableSponsorFallback);
+          if (topBanner) {
+            setHomepageBanner({
+              id: String(topBanner.id || "banner-homepage-top"),
+              image:
+                typeof topBanner.image === "string" && topBanner.image
+                  ? topBanner.image
+                  : "/default-image.jpg",
+              name:
+                typeof topBanner.name === "string" && topBanner.name
+                  ? topBanner.name
+                  : "Homepage Banner",
+              tagline:
+                typeof topBanner.tagline === "string"
+                  ? topBanner.tagline
+                  : "Sponsored campaign",
+              targetUrl:
+                typeof topBanner.targetUrl === "string" &&
+                topBanner.targetUrl
+                  ? topBanner.targetUrl
+                  : "#",
+            });
+          } else {
+            setHomepageBanner(null);
+          }
+        }
       } catch {
-        if (!cancelled) setSponsors(stableSponsorFallback);
+        if (!cancelled) {
+          setSponsors(stableSponsorFallback);
+          setHomepageBanner(null);
+        }
       } finally {
         if (!cancelled) setSponsorFeedLoaded(true);
         clearTimeout(timeout);
@@ -1000,6 +1054,36 @@ export default function Home() {
               )}
             </div>
           </div>
+
+          {homepageBanner ? (
+            <section className="mx-auto mt-4 max-w-5xl overflow-hidden rounded-2xl border border-[#D4AF37]/30 bg-black/35 p-3 shadow-[0_0_0_1px_rgba(212,175,55,0.2)]">
+              <a
+                href={homepageBanner.targetUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block"
+              >
+                <img
+                  src={homepageBanner.image}
+                  alt={homepageBanner.name}
+                  className="h-24 w-full rounded-xl object-cover sm:h-28"
+                />
+                <div className="mt-2 flex items-center justify-between gap-3 px-1">
+                  <div className="min-w-0">
+                    <div className="truncate text-sm font-bold text-white">
+                      {homepageBanner.name}
+                    </div>
+                    <div className="truncate text-xs text-white/70">
+                      {homepageBanner.tagline}
+                    </div>
+                  </div>
+                  <span className="shrink-0 rounded-full border border-[#D4AF37]/40 bg-[#D4AF37]/20 px-2 py-0.5 text-[10px] font-bold text-[#F1D57A]">
+                    Sponsored Banner
+                  </span>
+                </div>
+              </a>
+            </section>
+          ) : null}
 
           <div className="mx-auto mt-4 max-w-4xl rounded-2xl border border-yellow-500/25 bg-yellow-500/10 p-4 sm:p-5">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

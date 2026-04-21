@@ -90,6 +90,16 @@ const DEFAULT_SPONSOR_ADS = [
   },
 ];
 
+type PlacementCard = {
+  id: string;
+  name: string;
+  tagline: string;
+  image: string;
+  targetUrl: string;
+  startsAt?: string | null;
+  endsAt?: string | null;
+};
+
 type DirectoryScope = "businesses" | "organizations";
 
 type Business = {
@@ -335,6 +345,10 @@ export default function BusinessDirectory() {
   const [rows, setRows] = useState<Row[]>([]);
   const [total, setTotal] = useState(0);
   const [sponsorAds, setSponsorAds] = useState(DEFAULT_SPONSOR_ADS);
+  const [directoryFeaturedAds, setDirectoryFeaturedAds] = useState<
+    PlacementCard[]
+  >([]);
+  const [sidebarBannerAds, setSidebarBannerAds] = useState<PlacementCard[]>([]);
   const [serverPaged, setServerPaged] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -386,11 +400,19 @@ export default function BusinessDirectory() {
     let cancelled = false;
     (async () => {
       try {
-        const res = await fetch("/api/sponsored-businesses", {
-          cache: "no-store",
-        });
-        const data = await res.json().catch(() => null);
-        const incoming = Array.isArray(data?.sponsors) ? data.sponsors : [];
+        const [sponsorsRes, placementsRes] = await Promise.all([
+          fetch("/api/sponsored-businesses", {
+            cache: "no-store",
+          }),
+          fetch("/api/advertising/public-placements", {
+            cache: "no-store",
+          }),
+        ]);
+
+        const sponsorData = await sponsorsRes.json().catch(() => null);
+        const incoming = Array.isArray(sponsorData?.sponsors)
+          ? sponsorData.sponsors
+          : [];
         if (!cancelled && incoming.length) {
           setSponsorAds(
             incoming.map((x: any) => ({
@@ -401,6 +423,20 @@ export default function BusinessDirectory() {
               url: safeStr(x?.url) || "#",
               cta: safeStr(x?.cta) || "Learn More",
             })),
+          );
+        }
+
+        const placementsData = await placementsRes.json().catch(() => null);
+        if (!cancelled && placementsData?.ok) {
+          setDirectoryFeaturedAds(
+            Array.isArray(placementsData?.placements?.directoryFeatured)
+              ? placementsData.placements.directoryFeatured
+              : [],
+          );
+          setSidebarBannerAds(
+            Array.isArray(placementsData?.placements?.bannerSidebar)
+              ? placementsData.placements.bannerSidebar
+              : [],
           );
         }
       } catch {
@@ -1300,6 +1336,47 @@ export default function BusinessDirectory() {
                 </Swiper>
               </div>
 
+              {scope === "businesses" && directoryFeaturedAds.length ? (
+                <div className="mt-5 rounded-2xl border border-[#D4AF37]/25 bg-[#D4AF37]/[0.06] p-4 shadow-[0_0_0_1px_rgba(212,175,55,0.18)]">
+                  <div className="mb-3 flex items-center justify-between">
+                    <h2 className="text-[11px] uppercase tracking-widest text-[#D4AF37] font-extrabold">
+                      Featured Directory Placements
+                    </h2>
+                    <span className="text-[11px] text-white/65">
+                      Paid featured listings
+                    </span>
+                  </div>
+                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                    {directoryFeaturedAds.map((ad) => (
+                      <a
+                        key={ad.id}
+                        href={ad.targetUrl || "#"}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="rounded-xl border border-white/15 bg-black/35 p-3 hover:bg-black/45"
+                      >
+                        <img
+                          src={ad.image || "/default-image.jpg"}
+                          alt={ad.name}
+                          className="h-24 w-full rounded-lg object-cover"
+                        />
+                        <div className="mt-2 flex items-center justify-between gap-2">
+                          <div className="text-sm font-bold text-white truncate">
+                            {ad.name}
+                          </div>
+                          <span className="rounded-full border border-[#D4AF37]/40 bg-[#D4AF37]/20 px-2 py-0.5 text-[10px] font-bold text-[#F1D57A]">
+                            Featured
+                          </span>
+                        </div>
+                        <div className="mt-1 text-[11px] text-white/70 line-clamp-2">
+                          {ad.tagline}
+                        </div>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              ) : null}
+
               {/* Results */}
               <div
                 ref={resultsTopRef}
@@ -1879,6 +1956,26 @@ export default function BusinessDirectory() {
             {/* Sidebar */}
             <aside className="hidden md:block">
               <div className="sticky top-6 space-y-4">
+                {sidebarBannerAds.length ? (
+                  <div className="rounded-2xl border border-[#D4AF37]/25 bg-[#D4AF37]/[0.06] p-4 shadow-[0_0_0_1px_rgba(212,175,55,0.16)] backdrop-blur">
+                    <div className="text-[11px] uppercase tracking-widest text-[#D4AF37] font-extrabold mb-3">
+                      Banner Placement
+                    </div>
+                    <div className="space-y-3">
+                      {sidebarBannerAds.map((ad) => (
+                        <SidebarAdCard
+                          key={ad.id}
+                          img={ad.image || "/default-image.jpg"}
+                          name={ad.name}
+                          tagline={ad.tagline}
+                          url={ad.targetUrl || "#"}
+                          cta="View"
+                        />
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+
                 <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
                   <div className="text-[11px] uppercase tracking-widest text-white/50 font-extrabold mb-3">
                     Sponsored

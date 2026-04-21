@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 import { getAdDurationOptions } from "@/lib/advertising/pricing";
 
-type BannerPlacement = "homepage-top" | "sidebar" | "footer" | "dashboard";
+type BannerPlacement = "homepage-top" | "sidebar";
 type BannerDuration = "14" | "30";
 
 /**
@@ -47,18 +47,7 @@ const PLACEMENTS: Array<{
     description:
       "Sidebar banner inventory request for eligible pages after approval.",
   },
-  {
-    title: "Footer Banner",
-    placement: "footer",
-    description:
-      "Footer banner inventory request for approved campaign windows.",
-  },
-  {
-    title: "User Dashboard",
-    placement: "dashboard",
-    description:
-      "Dashboard banner inventory request for approved dashboard surfaces.",
-  },
+
 ];
 
 export default function BannerAdsPage() {
@@ -285,9 +274,8 @@ export default function BannerAdsPage() {
           Pricing & Duration
         </h2>
         <p className="text-sm text-zinc-300 mb-6">
-          Banner pricing is based on campaign duration. Placement selected
-          above is treated as requested inventory and is confirmed during
-          fulfillment.
+          Banner pricing is based on campaign duration. Placement selected above
+          is treated as requested inventory and is confirmed during fulfillment.
         </p>
 
         <div className="flex justify-center gap-4 flex-wrap">
