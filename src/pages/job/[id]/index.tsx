@@ -263,7 +263,8 @@ export default function JobDetail() {
                 ) : null}
                 {typeof job.appliedCount === "number" ? (
                   <span className="px-2 py-1 rounded border border-emerald-500/30 bg-emerald-500/10 text-emerald-200">
-                    {job.appliedCount} applicant{job.appliedCount === 1 ? "" : "s"}
+                    {job.appliedCount} applicant
+                    {job.appliedCount === 1 ? "" : "s"}
                   </span>
                 ) : null}
                 {job.isFeatured ? (
@@ -280,7 +281,7 @@ export default function JobDetail() {
                 onClick={() =>
                   trackJobEvent("job_apply_started", {
                     ctaId: "job_detail_apply_primary",
-                    ctaLabel: "Apply Now",
+                    ctaLabel: "Apply for This Role",
                   })
                 }
               >
@@ -312,10 +313,19 @@ export default function JobDetail() {
                 Job Snapshot
               </h3>
               <div className="mt-3 space-y-2 text-sm text-gray-300">
-                <p><span className="text-gray-400">Role:</span> {job.title}</p>
-                <p><span className="text-gray-400">Company:</span> {job.company}</p>
-                <p><span className="text-gray-400">Location:</span> {job.location}</p>
-                <p><span className="text-gray-400">Type:</span> {job.type}</p>
+                <p>
+                  <span className="text-gray-400">Role:</span> {job.title}
+                </p>
+                <p>
+                  <span className="text-gray-400">Company:</span> {job.company}
+                </p>
+                <p>
+                  <span className="text-gray-400">Location:</span>{" "}
+                  {job.location}
+                </p>
+                <p>
+                  <span className="text-gray-400">Type:</span> {job.type}
+                </p>
                 <p>
                   <span className="text-gray-400">Compensation:</span>{" "}
                   {job.salary || "Salary not listed"}
