@@ -17,6 +17,7 @@ interface Job {
   createdAt?: string;
   isFeatured?: boolean;
   appliedCount?: number;
+  viewCount?: number;
   employerEmail?: string;
   companyWebsite?: string;
   companyDescription?: string;
@@ -210,6 +211,18 @@ export default function JobDetail() {
     .map((line) => line.trim())
     .filter((line) => line.length > 0);
 
+  const companyName = job.company?.trim() || "Hiring Company";
+  const companyDescription =
+    job.companyDescription?.trim() ||
+    "This employer is actively reviewing applications for this role.";
+  const companyWebsite =
+    job.companyWebsite && /^https?:\/\//i.test(job.companyWebsite)
+      ? job.companyWebsite
+      : job.companyWebsite
+        ? `https://${job.companyWebsite}`
+        : "";
+  const isHighInterest = (job.appliedCount || 0) >= 10;
+
   return (
     <div className="min-h-screen bg-gray-900 text-white p-8">
       <div className="max-w-4xl mx-auto">
@@ -268,6 +281,16 @@ export default function JobDetail() {
                   <span className="px-2 py-1 rounded border border-emerald-500/30 bg-emerald-500/10 text-emerald-200">
                     {job.appliedCount} applicant
                     {job.appliedCount === 1 ? "" : "s"}
+                  </span>
+                ) : null}
+                {typeof job.viewCount === "number" ? (
+                  <span className="px-2 py-1 rounded border border-purple-500/30 bg-purple-500/10 text-purple-200">
+                    {job.viewCount} view{job.viewCount === 1 ? "" : "s"}
+                  </span>
+                ) : null}
+                {isHighInterest ? (
+                  <span className="px-2 py-1 rounded border border-red-500/30 bg-red-500/10 text-red-200">
+                    High interest
                   </span>
                 ) : null}
                 {job.isFeatured ? (
@@ -331,7 +354,8 @@ export default function JobDetail() {
                     <span className="text-gray-400">Role:</span> {job.title}
                   </p>
                   <p>
-                    <span className="text-gray-400">Company:</span> {job.company}
+                    <span className="text-gray-400">Company:</span>{" "}
+                    {companyName}
                   </p>
                   <p>
                     <span className="text-gray-400">Location:</span>{" "}
@@ -352,24 +376,24 @@ export default function JobDetail() {
                   Company Context
                 </h3>
                 <div className="mt-3 space-y-2 text-sm text-gray-300">
-                  {job.companyDescription ? (
-                    <p className="text-gray-200">{job.companyDescription}</p>
-                  ) : (
-                    <p>This employer is actively reviewing applications for this role.</p>
-                  )}
-                  {job.companyWebsite ? (
+                  <p className="text-gray-200">{companyDescription}</p>
+                  {companyWebsite ? (
                     <p>
                       <span className="text-gray-400">Website:</span>{" "}
                       <a
-                        href={job.companyWebsite}
+                        href={companyWebsite}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-blue-300 hover:underline"
                       >
-                        {job.companyWebsite}
+                        {companyWebsite}
                       </a>
                     </p>
-                  ) : null}
+                  ) : (
+                    <p>
+                      <span className="text-gray-400">Website:</span> Not provided
+                    </p>
+                  )}
                   {job.employerEmail ? (
                     <p>
                       <span className="text-gray-400">Hiring contact:</span>{" "}

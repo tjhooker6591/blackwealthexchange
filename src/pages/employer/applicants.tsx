@@ -65,6 +65,10 @@ export default function EmployerApplicantsPage() {
   const [search, setSearch] = useState("");
   const [notesDraft, setNotesDraft] = useState<Record<string, string>>({});
   const [reasonDraft, setReasonDraft] = useState<Record<string, string>>({});
+  const [messageDraft, setMessageDraft] = useState<Record<string, string>>({});
+  const [messagesByApplicant, setMessagesByApplicant] = useState<
+    Record<string, Array<{ _id: string; sender: string; senderRole: string; body: string; createdAt: string }>>
+  >({});
 
   const jobId =
     typeof router.query.jobId === "string" ? router.query.jobId : "";
@@ -150,10 +154,12 @@ export default function EmployerApplicantsPage() {
                 statusHistory: [
                   {
                     status,
-                    changedAt: data?.statusChangedAt || new Date().toISOString(),
+                    changedAt:
+                      data?.statusChangedAt || new Date().toISOString(),
                     actor: "employer",
                     note,
-                    rejectionReason: status === "rejected" ? rejectionReason : "",
+                    rejectionReason:
+                      status === "rejected" ? rejectionReason : "",
                   },
                   ...(a.statusHistory || []),
                 ],
@@ -164,6 +170,43 @@ export default function EmployerApplicantsPage() {
     } catch (e: any) {
       setApplicants(prev);
       setError(e?.message || "Failed to update status");
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  const loadMessages = async (applicantId: string) => {
+    try {
+      const res = await fetch(`/api/employer/applicants/messages?applicantId=${applicantId}`, {
+        credentials: "include",
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setMessagesByApplicant((cur) => ({ ...cur, [applicantId]: data.messages || [] }));
+      }
+    } catch {
+      // ignore
+    }
+  };
+
+  const sendMessage = async (applicant: Applicant) => {
+    const applicantId = applicant._id;
+    const body = (messageDraft[applicantId] || "").trim();
+    if (!body) return;
+    setBusyId(applicantId);
+    try {
+      const res = await fetch("/api/employer/applicants/messages", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ applicantId, body }),
+      });
+      const data = await res.json().catch(() => null);
+      if (!res.ok) throw new Error(data?.error || "Failed to send message");
+      setMessageDraft((cur) => ({ ...cur, [applicantId]: "" }));
+      await loadMessages(applicantId);
+    } catch (e: any) {
+      setError(e?.message || "Failed to send message");
     } finally {
       setBusyId(null);
     }
@@ -195,7 +238,9 @@ export default function EmployerApplicantsPage() {
           />
           <select
             value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value as "all" | HiringStatus)}
+            onChange={(e) =>
+              setStatusFilter(e.target.value as "all" | HiringStatus)
+            }
             className="rounded border border-gray-700 bg-gray-900 px-3 py-2 text-sm"
           >
             <option value="all">All stages</option>
@@ -285,7 +330,11 @@ export default function EmployerApplicantsPage() {
 
                           <div className="mt-4 space-y-2">
                             <textarea
-                              value={notesDraft[applicant._id] ?? applicant.employerNote ?? ""}
+                              value={
+                                notesDraft[applicant._id] ??
+                                applicant.employerNote ??
+                                ""
+                              }
                               onChange={(e) =>
                                 setNotesDraft((cur) => ({
                                   ...cur,
@@ -296,9 +345,14 @@ export default function EmployerApplicantsPage() {
                               className="w-full rounded border border-gray-700 bg-gray-900 px-3 py-2 text-sm"
                               rows={2}
                             />
-                            {(applicant.hiringStatus || "new") !== "rejected" ? (
+                            {(applicant.hiringStatus || "new") !==
+                            "rejected" ? (
                               <input
-                                value={reasonDraft[applicant._id] ?? applicant.rejectionReason ?? ""}
+                                value={
+                                  reasonDraft[applicant._id] ??
+                                  applicant.rejectionReason ??
+                                  ""
+                                }
                                 onChange={(e) =>
                                   setReasonDraft((cur) => ({
                                     ...cur,
@@ -379,18 +433,64 @@ export default function EmployerApplicantsPage() {
 
                             {applicant.statusHistory?.length ? (
                               <div className="mt-2 rounded border border-gray-700 bg-gray-900/60 p-2">
-                                <p className="text-xs text-gray-400 mb-1">History</p>
+                                <p className="text-xs text-gray-400 mb-1">
+                                  History
+                                </p>
                                 <ul className="space-y-1 text-xs text-gray-300">
-                                  {applicant.statusHistory.slice(0, 4).map((h, i) => (
-                                    <li key={`${applicant._id}-h-${i}`}>
-                                      Moved to {STATUS_LABEL[h.status]} on{" "}
-                                      {h.changedAt
-                                        ? new Date(h.changedAt).toLocaleString()
-                                        : "unknown date"}
-                                      {h.actor ? ` by ${h.actor}` : ""}
-                                    </li>
-                                  ))}
+                                  {applicant.statusHistory
+                                    .slice(0, 4)
+                                    .map((h, i) => (
+                                      <li key={`${applicant._id}-h-${i}`}>
+                                        Moved to {STATUS_LABEL[h.status]} on{" "}
+                                        {h.changedAt
+                                          ? new Date(
+                                              h.changedAt,
+                                            ).toLocaleString()
+                                          : "unknown date"}
+                                        {h.actor ? ` by ${h.actor}` : ""}
+                                      </li>
+                                    ))}
                                 </ul>
+                              </div>
+                            ) : null}
+
+                            {(applicant.hiringStatus === "shortlisted" || applicant.hiringStatus === "contacted") ? (
+                              <div className="mt-2 rounded border border-gray-700 bg-gray-900/60 p-2 space-y-2">
+                                <div className="flex items-center justify-between">
+                                  <p className="text-xs text-gray-300">Applicant Messages</p>
+                                  <button
+                                    onClick={() => loadMessages(applicant._id)}
+                                    className="text-xs text-blue-300 hover:underline"
+                                  >
+                                    Load history
+                                  </button>
+                                </div>
+                                {messagesByApplicant[applicant._id]?.length ? (
+                                  <div className="max-h-32 overflow-y-auto space-y-1 text-xs">
+                                    {messagesByApplicant[applicant._id].map((m) => (
+                                      <div key={m._id} className="rounded border border-gray-700 p-1.5">
+                                        <div className="text-gray-400">{m.sender} • {new Date(m.createdAt).toLocaleString()}</div>
+                                        <div className="text-gray-200">{m.body}</div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                ) : null}
+                                <textarea
+                                  value={messageDraft[applicant._id] || ""}
+                                  onChange={(e) =>
+                                    setMessageDraft((cur) => ({ ...cur, [applicant._id]: e.target.value }))
+                                  }
+                                  rows={2}
+                                  placeholder="Send applicant a message"
+                                  className="w-full rounded border border-gray-700 bg-black/40 px-2 py-1 text-xs"
+                                />
+                                <button
+                                  disabled={busyId === applicant._id}
+                                  onClick={() => sendMessage(applicant)}
+                                  className="px-2 py-1 text-xs rounded bg-blue-600 text-white hover:bg-blue-500 disabled:opacity-60"
+                                >
+                                  Send Message
+                                </button>
                               </div>
                             ) : null}
                           </div>

@@ -84,6 +84,37 @@ export default async function handler(
       createdAt: insertedAt,
     });
 
+    const job = await db
+      .collection("jobs")
+      .findOne({ _id: jobObjectId }, { projection: { title: 1, employerEmail: 1, email: 1 } });
+
+    await db.collection("notification_events").insertMany([
+      {
+        type: "application_submitted",
+        audience: "applicant",
+        applicantId: result.insertedId.toString(),
+        applicantEmail: normalizedEmail,
+        jobId,
+        title: "Application submitted",
+        body: `Your application for ${job?.title || "this role"} was submitted successfully.`,
+
+        read: false,
+        createdAt: insertedAt,
+      },
+      {
+        type: "new_applicant",
+        audience: "employer",
+        employerEmail: String(job?.employerEmail || job?.email || "").toLowerCase(),
+        applicantId: result.insertedId.toString(),
+        applicantEmail: normalizedEmail,
+        jobId,
+        title: "New applicant received",
+        body: `${name} applied for ${job?.title || "your job posting"}.`,
+        read: false,
+        createdAt: insertedAt,
+      },
+    ]);
+
     // ✅ Safe increment of appliedCount: ensure it starts at 0 if missing
     await db.collection("jobs").updateOne(
       { _id: jobObjectId },

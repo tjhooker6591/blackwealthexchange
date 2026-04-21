@@ -49,7 +49,9 @@ export default async function handler(
     typeof req.body?.applicantId === "string" ? req.body.applicantId : "";
   const nextStatus = asStatus(req.body?.status);
   const note =
-    typeof req.body?.note === "string" ? req.body.note.trim().slice(0, 1000) : "";
+    typeof req.body?.note === "string"
+      ? req.body.note.trim().slice(0, 1000)
+      : "";
   const rejectionReason =
     typeof req.body?.rejectionReason === "string"
       ? req.body.rejectionReason.trim().slice(0, 500)
@@ -67,7 +69,7 @@ export default async function handler(
       .collection("applicants")
       .findOne(
         { _id: new ObjectId(applicantId) },
-        { projection: { jobId: 1 } },
+        { projection: { jobId: 1, email: 1 } },
       );
 
     if (!applicant?.jobId) {
@@ -89,7 +91,9 @@ export default async function handler(
     }
 
     const now = new Date();
-    const actor = String(payload.email || payload.userId || "employer").toLowerCase();
+    const actor = String(
+      payload.email || payload.userId || "employer",
+    ).toLowerCase();
 
     await db.collection("applicants").updateOne(
       { _id: new ObjectId(applicantId) },
@@ -115,6 +119,19 @@ export default async function handler(
         },
       },
     );
+
+    await db.collection("notification_events").insertOne({
+      type: "application_status_changed",
+      audience: "applicant",
+      applicantId,
+      jobId: String(applicant.jobId),
+      applicantEmail: applicant.email || "",
+      employerEmail: ownerEmail,
+      title: "Application status updated",
+      body: `Your application status is now ${nextStatus}.`,
+      read: false,
+      createdAt: now,
+    });
 
     return res.status(200).json({
       success: true,
