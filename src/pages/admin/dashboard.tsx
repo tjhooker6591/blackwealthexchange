@@ -814,7 +814,9 @@ const AdminDashboard = ({
       <section className="mt-8 rounded-xl border border-gray-700 bg-gray-800/70 p-5">
         <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
           <div>
-            <h2 className="text-xl font-bold text-gold">Admin Control Center</h2>
+            <h2 className="text-xl font-bold text-gold">
+              Admin Control Center
+            </h2>
             <p className="text-sm text-gray-300">
               One place to see operational load, triage pending work, and jump
               directly into moderation queues.
@@ -879,11 +881,15 @@ const AdminDashboard = ({
                 </div>
               </div>
               <div className="rounded border border-gray-700 bg-gray-800 p-2">
-                <div className="text-xs text-gray-400">Paid unlinked listings</div>
+                <div className="text-xs text-gray-400">
+                  Paid unlinked listings
+                </div>
                 <div
                   className={cx(
                     "text-lg font-bold",
-                    stats.directoryPaidUnlinked > 0 ? "text-red-300" : "text-emerald-300",
+                    stats.directoryPaidUnlinked > 0
+                      ? "text-red-300"
+                      : "text-emerald-300",
                   )}
                 >
                   {stats.directoryPaidUnlinked}

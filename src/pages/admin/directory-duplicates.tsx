@@ -1,7 +1,9 @@
+import type { GetServerSideProps } from "next";
 import React, { useCallback, useEffect, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { requireAdminPageProps } from "@/lib/adminPageGuard";
 
 type DuplicateRow = {
   id: string;
@@ -285,3 +287,6 @@ export default function DirectoryDuplicatesPage() {
     </>
   );
 }
+
+
+export const getServerSideProps: GetServerSideProps = requireAdminPageProps("/admin/directory-duplicates");

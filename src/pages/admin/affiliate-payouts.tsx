@@ -62,7 +62,9 @@ export default function AffiliatePayouts() {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
-        throw new Error(data?.error || data?.message || "Failed to complete payout");
+        throw new Error(
+          data?.error || data?.message || "Failed to complete payout",
+        );
       }
 
       setPayouts((prev) =>
@@ -138,7 +140,10 @@ export default function AffiliatePayouts() {
               </thead>
               <tbody>
                 {payouts.map((payout) => (
-                  <tr key={payout._id} className="border-b border-gray-800 bg-black">
+                  <tr
+                    key={payout._id}
+                    className="border-b border-gray-800 bg-black"
+                  >
                     <td className="p-3">{payout.affiliateName}</td>
                     <td className="p-3">{payout.affiliateEmail}</td>
                     <td className="p-3">${payout.amount}</td>
@@ -164,7 +169,9 @@ export default function AffiliatePayouts() {
                           disabled={busyId === payout._id}
                           className="bg-gold text-black px-3 py-1 rounded hover:bg-yellow-400 disabled:opacity-50"
                         >
-                          {busyId === payout._id ? "Working..." : "Mark Completed"}
+                          {busyId === payout._id
+                            ? "Working..."
+                            : "Mark Completed"}
                         </button>
                       ) : (
                         "—"

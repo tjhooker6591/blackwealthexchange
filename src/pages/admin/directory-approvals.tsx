@@ -1,6 +1,8 @@
 // src/pages/admin/directory-approvals.tsx
+import type { GetServerSideProps } from "next";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { requireAdminPageProps } from "@/lib/adminPageGuard";
 
 type ListingRow = {
   _id?: any;
@@ -833,3 +835,6 @@ export default function DirectoryApprovalsPage() {
     </div>
   );
 }
+
+
+export const getServerSideProps: GetServerSideProps = requireAdminPageProps("/admin/directory-approvals");

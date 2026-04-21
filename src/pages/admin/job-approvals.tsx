@@ -80,7 +80,9 @@ const JobApprovals = () => {
         await fetchUnapproved();
       } catch (err: any) {
         if (mounted) {
-          setError(err?.response?.data?.error || err?.message || "Failed to load jobs");
+          setError(
+            err?.response?.data?.error || err?.message || "Failed to load jobs",
+          );
         }
       } finally {
         if (mounted) setLoading(false);
@@ -100,7 +102,9 @@ const JobApprovals = () => {
       setActionMessage("");
       await fetchUnapproved();
     } catch (err: any) {
-      setError(err?.response?.data?.error || err?.message || "Failed to refresh jobs");
+      setError(
+        err?.response?.data?.error || err?.message || "Failed to refresh jobs",
+      );
     } finally {
       setRefreshing(false);
     }
@@ -111,7 +115,11 @@ const JobApprovals = () => {
     setError("");
     setActionMessage("");
     try {
-      await axios.put(`/api/admin/approve-job/${jobId}`, {}, { withCredentials: true });
+      await axios.put(
+        `/api/admin/approve-job/${jobId}`,
+        {},
+        { withCredentials: true },
+      );
       setJobs((prev) => prev.filter((j) => j._id !== jobId));
       setActionMessage("Job approved.");
     } catch (err: any) {
@@ -147,7 +155,9 @@ const JobApprovals = () => {
     <div className="p-8 bg-gray-900 text-white min-h-screen">
       <div className="mx-auto max-w-3xl">
         <div className="mb-6 flex items-center justify-between gap-3">
-          <h1 className="text-3xl font-bold text-gold">💼 Job Post Approvals</h1>
+          <h1 className="text-3xl font-bold text-gold">
+            💼 Job Post Approvals
+          </h1>
           <div className="flex gap-2">
             <button
               onClick={refreshData}
@@ -178,9 +188,13 @@ const JobApprovals = () => {
         ) : null}
 
         {loading ? (
-          <p className="text-center text-gray-400">Loading job moderation queue...</p>
+          <p className="text-center text-gray-400">
+            Loading job moderation queue...
+          </p>
         ) : jobs.length === 0 ? (
-          <p className="text-center text-gray-400">No job posts awaiting approval.</p>
+          <p className="text-center text-gray-400">
+            No job posts awaiting approval.
+          </p>
         ) : (
           <div className="space-y-4">
             {jobs.map((job) => (

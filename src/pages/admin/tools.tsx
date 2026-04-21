@@ -1,10 +1,10 @@
 // src/pages/admin/tools.tsx
-"use client";
-
+import type { GetServerSideProps } from "next";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { requireAdminPageProps } from "@/lib/adminPageGuard";
 
 type ToolItemType = "page" | "api_get" | "api_post";
 type ToolCategory =
@@ -999,3 +999,6 @@ export default function AdminToolsPage() {
     </>
   );
 }
+
+
+export const getServerSideProps: GetServerSideProps = requireAdminPageProps("/admin/tools");

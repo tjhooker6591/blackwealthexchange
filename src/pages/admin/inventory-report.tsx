@@ -1,4 +1,6 @@
+import type { GetServerSideProps } from "next";
 import { useEffect, useState } from "react";
+import { requireAdminPageProps } from "@/lib/adminPageGuard";
 
 type Product = {
   _id: string;
@@ -128,3 +130,6 @@ export default function InventoryReport() {
     </div>
   );
 }
+
+
+export const getServerSideProps: GetServerSideProps = requireAdminPageProps("/admin/inventory-report");

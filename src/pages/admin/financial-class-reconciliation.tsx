@@ -57,7 +57,11 @@ export default function FinancialClassReconciliationPage() {
       setError("Repair reason is required.");
       return;
     }
-    if (!confirm("This will grant missing course access and write audit logs. Continue?")) {
+    if (
+      !confirm(
+        "This will grant missing course access and write audit logs. Continue?",
+      )
+    ) {
       return;
     }
 
@@ -87,18 +91,24 @@ export default function FinancialClassReconciliationPage() {
       <div className="max-w-7xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-gold">Financial Class Reconciliation</h1>
+            <h1 className="text-3xl font-bold text-gold">
+              Financial Class Reconciliation
+            </h1>
             <p className="text-sm text-gray-400 mt-1">
               Verify payment-to-access fulfillment and run audited repairs.
             </p>
           </div>
-          <Link href="/admin/dashboard" className="rounded border border-gray-700 bg-gray-900 px-3 py-2 text-sm hover:bg-gray-800">
+          <Link
+            href="/admin/dashboard"
+            className="rounded border border-gray-700 bg-gray-900 px-3 py-2 text-sm hover:bg-gray-800"
+          >
             Back to Admin Dashboard
           </Link>
         </div>
 
         <div className="rounded border border-yellow-500/30 bg-yellow-500/10 p-3 text-sm text-yellow-100 mb-4">
-          Warning: Repair actions require a reason and are permanently audit logged.
+          Warning: Repair actions require a reason and are permanently audit
+          logged.
         </div>
 
         <div className="grid md:grid-cols-5 gap-2 mb-3">
@@ -106,7 +116,9 @@ export default function FinancialClassReconciliationPage() {
             <input
               key={k}
               value={v}
-              onChange={(e) => setFilters((prev) => ({ ...prev, [k]: e.target.value }))}
+              onChange={(e) =>
+                setFilters((prev) => ({ ...prev, [k]: e.target.value }))
+              }
               placeholder={k}
               className="rounded border border-gray-700 bg-gray-900 px-3 py-2 text-sm"
             />
@@ -123,41 +135,91 @@ export default function FinancialClassReconciliationPage() {
           </button>
         </div>
 
-        {error ? <div className="mb-3 rounded border border-red-500/40 bg-red-500/10 p-2 text-red-200 text-sm">{error}</div> : null}
-        {msg ? <div className="mb-3 rounded border border-emerald-500/40 bg-emerald-500/10 p-2 text-emerald-200 text-sm">{msg}</div> : null}
+        {error ? (
+          <div className="mb-3 rounded border border-red-500/40 bg-red-500/10 p-2 text-red-200 text-sm">
+            {error}
+          </div>
+        ) : null}
+        {msg ? (
+          <div className="mb-3 rounded border border-emerald-500/40 bg-emerald-500/10 p-2 text-emerald-200 text-sm">
+            {msg}
+          </div>
+        ) : null}
 
         <div className="space-y-4">
           {items.map((item, idx) => {
             const sid = String(item?.payment?.stripeSessionId || `row-${idx}`);
             const canRepair = Boolean(item?.verification?.canRepair);
             return (
-              <div key={sid + idx} className="rounded border border-gray-800 bg-gray-900 p-4">
+              <div
+                key={sid + idx}
+                className="rounded border border-gray-800 bg-gray-900 p-4"
+              >
                 <div className="grid md:grid-cols-2 gap-3 text-sm">
                   <div>
-                    <h3 className="text-gold font-semibold mb-1">Payment Record</h3>
-                    <pre className="text-xs text-gray-300 whitespace-pre-wrap">{JSON.stringify(item.payment, null, 2)}</pre>
+                    <h3 className="text-gold font-semibold mb-1">
+                      Payment Record
+                    </h3>
+                    <pre className="text-xs text-gray-300 whitespace-pre-wrap">
+                      {JSON.stringify(item.payment, null, 2)}
+                    </pre>
                   </div>
                   <div>
-                    <h3 className="text-gold font-semibold mb-1">Enrollment + Mirror</h3>
-                    <pre className="text-xs text-gray-300 whitespace-pre-wrap">{JSON.stringify({ enrollment: item.enrollment, purchasedCourseMirror: item.purchasedCourseMirror }, null, 2)}</pre>
+                    <h3 className="text-gold font-semibold mb-1">
+                      Enrollment + Mirror
+                    </h3>
+                    <pre className="text-xs text-gray-300 whitespace-pre-wrap">
+                      {JSON.stringify(
+                        {
+                          enrollment: item.enrollment,
+                          purchasedCourseMirror: item.purchasedCourseMirror,
+                        },
+                        null,
+                        2,
+                      )}
+                    </pre>
                   </div>
                 </div>
 
                 <div className="mt-3 rounded border border-gray-700 bg-black/40 p-3 text-sm">
-                  <div>Entitlement status: <span className="font-semibold">{item?.verification?.entitlementStatus || "unknown"}</span></div>
-                  <div>Failure point: <span className="font-semibold">{item?.verification?.failurePoint || "none"}</span></div>
-                  <div>Recommended repair: <span className="font-semibold">{item?.verification?.recommendedRepairAction || "none"}</span></div>
+                  <div>
+                    Entitlement status:{" "}
+                    <span className="font-semibold">
+                      {item?.verification?.entitlementStatus || "unknown"}
+                    </span>
+                  </div>
+                  <div>
+                    Failure point:{" "}
+                    <span className="font-semibold">
+                      {item?.verification?.failurePoint || "none"}
+                    </span>
+                  </div>
+                  <div>
+                    Recommended repair:{" "}
+                    <span className="font-semibold">
+                      {item?.verification?.recommendedRepairAction || "none"}
+                    </span>
+                  </div>
                 </div>
 
                 <div className="mt-3">
-                  <h4 className="text-sm text-gold font-semibold mb-1">Repair History / Audit</h4>
-                  <pre className="text-xs text-gray-300 whitespace-pre-wrap">{JSON.stringify(item?.repairAudit || [], null, 2)}</pre>
+                  <h4 className="text-sm text-gold font-semibold mb-1">
+                    Repair History / Audit
+                  </h4>
+                  <pre className="text-xs text-gray-300 whitespace-pre-wrap">
+                    {JSON.stringify(item?.repairAudit || [], null, 2)}
+                  </pre>
                 </div>
 
                 <div className="mt-3 flex flex-col md:flex-row gap-2 md:items-center">
                   <input
                     value={repairReason[sid] || ""}
-                    onChange={(e) => setRepairReason((prev) => ({ ...prev, [sid]: e.target.value }))}
+                    onChange={(e) =>
+                      setRepairReason((prev) => ({
+                        ...prev,
+                        [sid]: e.target.value,
+                      }))
+                    }
                     placeholder="Required repair reason"
                     className="rounded border border-gray-700 bg-gray-900 px-3 py-2 text-sm md:min-w-[360px]"
                   />
@@ -166,7 +228,9 @@ export default function FinancialClassReconciliationPage() {
                     onClick={() => repair(item?.payment?.stripeSessionId)}
                     className="rounded bg-emerald-500 text-black px-4 py-2 text-sm font-semibold disabled:opacity-50"
                   >
-                    {repairing === sid ? "Repairing..." : "Run Repair (Audited)"}
+                    {repairing === sid
+                      ? "Repairing..."
+                      : "Run Repair (Audited)"}
                   </button>
                 </div>
               </div>
@@ -174,7 +238,9 @@ export default function FinancialClassReconciliationPage() {
           })}
 
           {!loading && items.length === 0 ? (
-            <div className="text-sm text-gray-400">No records yet. Run verification with at least one filter.</div>
+            <div className="text-sm text-gray-400">
+              No records yet. Run verification with at least one filter.
+            </div>
           ) : null}
         </div>
       </div>
@@ -202,7 +268,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     if (!(payload.isAdmin === true || payload.accountType === "admin")) {
       return {
         redirect: {
-          destination: "/",
+          destination: "/login?redirect=/admin/financial-class-reconciliation",
           permanent: false,
         },
       };

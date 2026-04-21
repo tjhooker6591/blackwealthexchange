@@ -216,7 +216,8 @@ export default function ConsultingLeadsAdminPage() {
                         </div>
                         <div className="mt-1 text-[11px] text-white/55">
                           moderation: {r.moderationStatus || "clean"}
-                          {Array.isArray(r.moderationReasons) && r.moderationReasons.length
+                          {Array.isArray(r.moderationReasons) &&
+                          r.moderationReasons.length
                             ? ` (${r.moderationReasons.join(", ")})`
                             : ""}
                         </div>

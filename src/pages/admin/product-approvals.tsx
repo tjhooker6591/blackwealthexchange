@@ -80,7 +80,11 @@ const ProductApprovals = () => {
         await fetchUnapproved();
       } catch (err: any) {
         if (mounted) {
-          setError(err?.response?.data?.error || err?.message || "Failed to load products");
+          setError(
+            err?.response?.data?.error ||
+              err?.message ||
+              "Failed to load products",
+          );
         }
       } finally {
         if (mounted) setLoading(false);
@@ -100,7 +104,11 @@ const ProductApprovals = () => {
       setActionMessage("");
       await fetchUnapproved();
     } catch (err: any) {
-      setError(err?.response?.data?.error || err?.message || "Failed to refresh products");
+      setError(
+        err?.response?.data?.error ||
+          err?.message ||
+          "Failed to refresh products",
+      );
     } finally {
       setRefreshing(false);
     }
@@ -151,7 +159,9 @@ const ProductApprovals = () => {
     <div className="p-8 bg-gray-900 text-white min-h-screen">
       <div className="mx-auto max-w-3xl">
         <div className="mb-6 flex items-center justify-between gap-3">
-          <h1 className="text-3xl font-bold text-gold">🛡️ Approve Marketplace Products</h1>
+          <h1 className="text-3xl font-bold text-gold">
+            🛡️ Approve Marketplace Products
+          </h1>
           <div className="flex gap-2">
             <button
               onClick={refreshData}
@@ -182,9 +192,13 @@ const ProductApprovals = () => {
         ) : null}
 
         {loading ? (
-          <p className="text-center text-gray-400">Loading product moderation queue...</p>
+          <p className="text-center text-gray-400">
+            Loading product moderation queue...
+          </p>
         ) : products.length === 0 ? (
-          <p className="text-center text-gray-400">No products awaiting approval.</p>
+          <p className="text-center text-gray-400">
+            No products awaiting approval.
+          </p>
         ) : (
           <div className="space-y-4">
             {products.map((product) => (
@@ -196,14 +210,18 @@ const ProductApprovals = () => {
                 <div className="mt-3 flex gap-2">
                   <button
                     onClick={() => handleApprove(product._id)}
-                    disabled={approvingId === product._id || rejectingId === product._id}
+                    disabled={
+                      approvingId === product._id || rejectingId === product._id
+                    }
                     className="bg-gold text-black px-4 py-2 rounded font-semibold hover:bg-yellow-400 transition disabled:opacity-50"
                   >
                     {approvingId === product._id ? "Approving..." : "Approve"}
                   </button>
                   <button
                     onClick={() => handleReject(product._id)}
-                    disabled={approvingId === product._id || rejectingId === product._id}
+                    disabled={
+                      approvingId === product._id || rejectingId === product._id
+                    }
                     className="bg-red-600 text-white px-4 py-2 rounded font-semibold hover:bg-red-500 transition disabled:opacity-50"
                   >
                     {rejectingId === product._id ? "Rejecting..." : "Reject"}

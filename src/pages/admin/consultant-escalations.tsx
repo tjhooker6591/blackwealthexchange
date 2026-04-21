@@ -1,5 +1,7 @@
+import type { GetServerSideProps } from "next";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { requireAdminPageProps } from "@/lib/adminPageGuard";
 
 type EscalationItem = {
   id: string;
@@ -38,7 +40,10 @@ export default function ConsultantEscalationsPage() {
         },
       );
       const data = await res.json();
-      if (!res.ok) throw new Error(data?.message || data?.error || "Failed to load escalations");
+      if (!res.ok)
+        throw new Error(
+          data?.message || data?.error || "Failed to load escalations",
+        );
       setItems(Array.isArray(data?.items) ? data.items : []);
     } catch (err) {
       setError(
@@ -73,7 +78,9 @@ export default function ConsultantEscalationsPage() {
       });
       const data = await res.json();
       if (!res.ok)
-        throw new Error(data?.message || data?.error || "Failed to update escalation");
+        throw new Error(
+          data?.message || data?.error || "Failed to update escalation",
+        );
       await load();
     } catch (err) {
       setError(
@@ -212,3 +219,6 @@ export default function ConsultantEscalationsPage() {
     </main>
   );
 }
+
+
+export const getServerSideProps: GetServerSideProps = requireAdminPageProps("/admin/consultant-escalations");

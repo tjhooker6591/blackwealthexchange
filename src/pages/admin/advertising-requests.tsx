@@ -238,11 +238,36 @@ export default function AdvertisingRequestsAdminPage() {
 
         <div className="mb-4 flex flex-wrap gap-2">
           <div className="w-full grid grid-cols-2 md:grid-cols-5 gap-2 text-xs mb-2">
-            <div className="rounded border border-gray-700 bg-gray-800 px-3 py-2">Pending: <span className="text-amber-200 font-semibold">{lifecycleCounts.pending}</span></div>
-            <div className="rounded border border-gray-700 bg-gray-800 px-3 py-2">Queued: <span className="text-blue-200 font-semibold">{lifecycleCounts.queued}</span></div>
-            <div className="rounded border border-gray-700 bg-gray-800 px-3 py-2">Scheduled: <span className="text-cyan-200 font-semibold">{lifecycleCounts.scheduled}</span></div>
-            <div className="rounded border border-gray-700 bg-gray-800 px-3 py-2">Active: <span className="text-emerald-200 font-semibold">{lifecycleCounts.active}</span></div>
-            <div className="rounded border border-gray-700 bg-gray-800 px-3 py-2">Expired/Completed: <span className="text-purple-200 font-semibold">{lifecycleCounts.completed}</span></div>
+            <div className="rounded border border-gray-700 bg-gray-800 px-3 py-2">
+              Pending:{" "}
+              <span className="text-amber-200 font-semibold">
+                {lifecycleCounts.pending}
+              </span>
+            </div>
+            <div className="rounded border border-gray-700 bg-gray-800 px-3 py-2">
+              Queued:{" "}
+              <span className="text-blue-200 font-semibold">
+                {lifecycleCounts.queued}
+              </span>
+            </div>
+            <div className="rounded border border-gray-700 bg-gray-800 px-3 py-2">
+              Scheduled:{" "}
+              <span className="text-cyan-200 font-semibold">
+                {lifecycleCounts.scheduled}
+              </span>
+            </div>
+            <div className="rounded border border-gray-700 bg-gray-800 px-3 py-2">
+              Active:{" "}
+              <span className="text-emerald-200 font-semibold">
+                {lifecycleCounts.active}
+              </span>
+            </div>
+            <div className="rounded border border-gray-700 bg-gray-800 px-3 py-2">
+              Expired/Completed:{" "}
+              <span className="text-purple-200 font-semibold">
+                {lifecycleCounts.completed}
+              </span>
+            </div>
           </div>
           {(
             [

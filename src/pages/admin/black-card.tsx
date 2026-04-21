@@ -293,7 +293,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     if (!(payload.isAdmin === true || payload.accountType === "admin")) {
       return {
         redirect: {
-          destination: "/",
+          destination: "/login?redirect=/admin/black-card",
           permanent: false,
         },
       };

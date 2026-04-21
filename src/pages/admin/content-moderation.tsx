@@ -141,7 +141,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
       isAdmin?: boolean;
     };
     if (!(payload.isAdmin === true || payload.accountType === "admin"))
-      return { redirect: { destination: "/", permanent: false } };
+      return { redirect: { destination: "/login?redirect=/admin/content-moderation", permanent: false } };
   } catch {
     return {
       redirect: {

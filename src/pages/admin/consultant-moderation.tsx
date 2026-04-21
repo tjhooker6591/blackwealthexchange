@@ -1,5 +1,7 @@
+import type { GetServerSideProps } from "next";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { requireAdminPageProps } from "@/lib/adminPageGuard";
 
 type QueueItem = {
   id: string;
@@ -37,7 +39,8 @@ export default function ConsultantModerationPage() {
         },
       );
       const data = await res.json();
-      if (!res.ok) throw new Error(data?.message || data?.error || "Failed to load queue");
+      if (!res.ok)
+        throw new Error(data?.message || data?.error || "Failed to load queue");
       setItems(Array.isArray(data?.items) ? data.items : []);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load queue");
@@ -69,7 +72,10 @@ export default function ConsultantModerationPage() {
         }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data?.message || data?.error || "Failed to update request");
+      if (!res.ok)
+        throw new Error(
+          data?.message || data?.error || "Failed to update request",
+        );
       await load();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to update request");
@@ -225,3 +231,6 @@ export default function ConsultantModerationPage() {
     </main>
   );
 }
+
+
+export const getServerSideProps: GetServerSideProps = requireAdminPageProps("/admin/consultant-moderation");

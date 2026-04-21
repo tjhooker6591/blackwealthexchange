@@ -95,10 +95,15 @@ const UserManagement = () => {
               <div className="text-xs uppercase tracking-wide text-zinc-400">
                 Total users loaded
               </div>
-              <div className="mt-1 text-2xl font-bold text-gold">{users.length}</div>
+              <div className="mt-1 text-2xl font-bold text-gold">
+                {users.length}
+              </div>
             </div>
             <div className="rounded-lg border border-zinc-800 bg-zinc-950 p-3 md:col-span-2">
-              <label htmlFor="user-search" className="mb-1 block text-xs text-zinc-400">
+              <label
+                htmlFor="user-search"
+                className="mb-1 block text-xs text-zinc-400"
+              >
                 Search by name, email, or role
               </label>
               <input

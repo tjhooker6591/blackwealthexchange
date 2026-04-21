@@ -1,6 +1,8 @@
 // src/pages/admin/organizations.tsx
+import type { GetServerSideProps } from "next";
 import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { requireAdminPageProps } from "@/lib/adminPageGuard";
 
 type Org = {
   _id: string;
@@ -318,3 +320,6 @@ export default function AdminOrganizationsPage() {
     </div>
   );
 }
+
+
+export const getServerSideProps: GetServerSideProps = requireAdminPageProps("/admin/organizations");
