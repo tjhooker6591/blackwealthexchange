@@ -28,6 +28,8 @@ type StripeStatus = {
   chargesEnabled: boolean;
   payoutsEnabled: boolean;
   requirements: string[];
+  statusUnavailable?: boolean;
+  statusMessage?: string;
 };
 
 type SellerUser = {
@@ -284,20 +286,25 @@ export default function SellerDashboard() {
         text: "Checking…",
         cls: "border-white/10 bg-black/30 text-gray-200",
       }
-    : payoutReady
+    : stripeStatus?.statusUnavailable
       ? {
-          text: "Payouts Enabled",
-          cls: "border-emerald-500/30 bg-emerald-500/10 text-emerald-200",
+          text: "Status Unavailable",
+          cls: "border-yellow-500/30 bg-yellow-500/10 text-yellow-200",
         }
-      : stripeStatus?.connected
+      : payoutReady
         ? {
-            text: "Setup Required",
-            cls: "border-yellow-500/30 bg-yellow-500/10 text-yellow-200",
+            text: "Payouts Enabled",
+            cls: "border-emerald-500/30 bg-emerald-500/10 text-emerald-200",
           }
-        : {
-            text: "Not Connected",
-            cls: "border-yellow-500/30 bg-yellow-500/10 text-yellow-200",
-          };
+        : stripeStatus?.connected
+          ? {
+              text: "Setup Required",
+              cls: "border-yellow-500/30 bg-yellow-500/10 text-yellow-200",
+            }
+          : {
+              text: "Not Connected",
+              cls: "border-yellow-500/30 bg-yellow-500/10 text-yellow-200",
+            };
 
   return (
     <div className="min-h-screen bg-black text-white relative">
@@ -419,6 +426,11 @@ export default function SellerDashboard() {
               </p>
               {stripeError ? (
                 <p className="mt-2 text-sm text-red-300">{stripeError}</p>
+              ) : stripeStatus?.statusUnavailable ? (
+                <p className="mt-2 text-sm text-yellow-200">
+                  {stripeStatus.statusMessage ||
+                    "Payout status is temporarily unavailable. You can continue managing products and orders."}
+                </p>
               ) : null}
             </div>
 
@@ -488,7 +500,8 @@ export default function SellerDashboard() {
             <li>
               Orders needing fulfillment:{" "}
               <span className="font-semibold text-white">
-                Review orders with payment received and update fulfillment status
+                Review orders with payment received and update fulfillment
+                status
               </span>{" "}
               <Link
                 href="/marketplace/orders"

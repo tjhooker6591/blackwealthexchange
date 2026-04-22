@@ -5,7 +5,11 @@ import cookie from "cookie";
 import jwt from "jsonwebtoken";
 import { getMongoDbName } from "@/lib/env";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
+function getStripeClient() {
+  const key = process.env.STRIPE_SECRET_KEY;
+  if (!key) return null;
+  return new Stripe(key);
+}
 
 function getSession(req: NextApiRequest) {
   const cookies = cookie.parse(req.headers.cookie || "");
@@ -55,6 +59,20 @@ export default async function handler(
       });
     }
 
+    const stripe = getStripeClient();
+    if (!stripe) {
+      return res.status(200).json({
+        connected: true,
+        stripeAccountId: String(seller.stripeAccountId),
+        detailsSubmitted: false,
+        chargesEnabled: false,
+        payoutsEnabled: false,
+        requirements: [],
+        statusUnavailable: true,
+        statusMessage: "Payout status is temporarily unavailable. You can continue managing products and orders.",
+      });
+    }
+
     const account = await stripe.accounts.retrieve(
       String(seller.stripeAccountId),
     );
@@ -69,6 +87,19 @@ export default async function handler(
     });
   } catch (err: any) {
     console.error("Error fetching Stripe account status:", err);
-    return res.status(500).json({ error: err?.message || "Server error" });
+    const message = String(err?.message || "Server error");
+    if (message.includes("Neither apiKey nor config.authenticator provided")) {
+      return res.status(200).json({
+        connected: false,
+        stripeAccountId: null,
+        detailsSubmitted: false,
+        chargesEnabled: false,
+        payoutsEnabled: false,
+        requirements: [],
+        statusUnavailable: true,
+        statusMessage: "Payout status is temporarily unavailable. You can continue managing products and orders.",
+      });
+    }
+    return res.status(500).json({ error: message });
   }
 }
