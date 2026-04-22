@@ -25,6 +25,10 @@ type Product = {
   price: number;
   category: string;
   imageUrl?: string;
+  stockQuantity?: number;
+  views?: number;
+  condition?: string;
+  status?: string;
 };
 
 const itemsPerPage = 12;
@@ -266,7 +270,7 @@ export default function Marketplace() {
         <div className="mx-auto max-w-5xl">
           <div className="inline-flex items-center gap-2 rounded-full border border-yellow-500/30 bg-white/5 px-3 py-2 text-xs text-gray-200 sm:px-4 sm:text-sm">
             <Sparkles className="h-4 w-4 text-yellow-400" />
-            Trusted checkout • Stripe powered • Shop Black-owned brands
+            Curated marketplace • Clear product details • Shop Black-owned brands
           </div>
 
           <h1 className="mt-5 text-4xl font-extrabold tracking-tight text-gold md:text-5xl">
@@ -466,86 +470,91 @@ export default function Marketplace() {
         ) : (
           <>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4 xl:grid-cols-5 lg:gap-6">
-              {products.map((product) => (
-                <div
-                  key={product._id}
-                  className="group rounded-2xl border border-white/10 bg-white/5 p-2.5 shadow-lg transition hover:shadow-2xl sm:p-4"
-                >
-                  <Link
-                    href={`/marketplace/product/${product._id}`}
-                    className="block"
-                    aria-label={`View details for ${product.name}`}
+              {products.map((product) => {
+                const stock = Number(product.stockQuantity ?? 0);
+                const availability =
+                  stock <= 0 ? "Out of stock" : stock <= 3 ? "Low stock" : "In stock";
+                const availabilityCls =
+                  stock <= 0
+                    ? "border-red-500/40 bg-red-500/10 text-red-300"
+                    : stock <= 3
+                      ? "border-yellow-500/40 bg-yellow-500/10 text-yellow-200"
+                      : "border-emerald-500/40 bg-emerald-500/10 text-emerald-300";
+
+                return (
+                  <div
+                    key={product._id}
+                    className="group rounded-2xl border border-white/10 bg-white/5 p-2.5 shadow-lg transition hover:shadow-2xl sm:p-4"
                   >
-                    <div className="relative h-28 w-full overflow-hidden rounded-xl border border-white/10 bg-black/40 sm:h-44">
-                      {product.imageUrl ? (
-                        <Image
-                          src={product.imageUrl}
-                          alt={product.name}
-                          fill
-                          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, (max-width: 1536px) 25vw, 20vw"
-                          className="object-cover transition duration-500 group-hover:scale-[1.03] object-center w-full h-56 sm:h-64"
-                        />
-                      ) : (
-                        <div className="flex h-full w-full items-center justify-center">
-                          <span className="text-xs text-gray-400 sm:text-sm">
-                            Image unavailable
-                          </span>
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="mt-3 flex items-start justify-between gap-2">
-                      <h4 className="line-clamp-2 min-w-0 text-sm font-semibold leading-tight text-gold sm:text-base">
-                        {product.name}
-                      </h4>
-                      <p className="shrink-0 text-sm font-semibold text-gray-200 sm:text-base">
-                        ${product.price.toFixed(2)}
-                      </p>
-                    </div>
-
-                    <p className="mt-1 truncate text-[11px] text-gray-400 sm:text-xs">
-                      {product.category || "Other"}
-                    </p>
-
-                    <p className="mt-1 text-[11px] text-white/45 sm:hidden">
-                      Tap for details
-                    </p>
-
-                    <div className="hidden sm:block">
-                      {product.description ? (
-                        <p className="mt-2 line-clamp-2 text-sm text-gray-300">
-                          {product.description}
-                        </p>
-                      ) : (
-                        <p className="mt-2 line-clamp-2 text-sm text-gray-500">
-                          Product details are available on the product page.
-                        </p>
-                      )}
-                    </div>
-                  </Link>
-
-                  {/* Desktop actions only */}
-                  <div className="mt-4 hidden sm:grid sm:grid-cols-2 sm:gap-2">
-                    <div className="min-w-0">
-                      <BuyNowButton
-                        itemId={product._id}
-                        amount={product.price}
-                        type="product"
-                        label="Buy Now"
-                      />
-                    </div>
-
-                    <button
-                      onClick={() =>
-                        router.push(`/marketplace/product/${product._id}`)
-                      }
-                      className="w-full rounded-xl border border-white/10 px-3 py-2 text-sm text-gray-200 transition hover:bg-white/10"
+                    <Link
+                      href={`/marketplace/product/${product._id}`}
+                      className="block"
+                      aria-label={`View details for ${product.name}`}
                     >
-                      View Details
-                    </button>
+                      <div className="relative h-28 w-full overflow-hidden rounded-xl border border-white/10 bg-black/40 sm:h-44">
+                        {product.imageUrl ? (
+                          <Image
+                            src={product.imageUrl}
+                            alt={product.name}
+                            fill
+                            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, (max-width: 1536px) 25vw, 20vw"
+                            className="object-cover transition duration-500 group-hover:scale-[1.03] object-center w-full h-56 sm:h-64"
+                          />
+                        ) : (
+                          <div className="flex h-full w-full items-center justify-center">
+                            <span className="text-xs text-gray-400 sm:text-sm">Image unavailable</span>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="mt-3 flex items-start justify-between gap-2">
+                        <h4 className="line-clamp-2 min-w-0 text-sm font-semibold leading-tight text-gold sm:text-base">
+                          {product.name}
+                        </h4>
+                        <p className="shrink-0 text-sm font-semibold text-gray-100 sm:text-base">
+                          ${product.price.toFixed(2)}
+                        </p>
+                      </div>
+
+                      <div className="mt-2 flex flex-wrap gap-1.5 text-[11px] sm:text-xs">
+                        <span className="rounded-full border border-white/20 bg-white/5 px-2 py-0.5 text-gray-300">
+                          {product.category || "Other"}
+                        </span>
+                        <span className={`rounded-full border px-2 py-0.5 ${availabilityCls}`}>
+                          {availability}
+                        </span>
+                        <span className="rounded-full border border-white/20 bg-white/5 px-2 py-0.5 text-gray-300">
+                          {product.condition || "New"}
+                        </span>
+                      </div>
+
+                      {product.description ? (
+                        <p className="mt-2 line-clamp-2 text-xs text-gray-300 sm:text-sm">{product.description}</p>
+                      ) : (
+                        <p className="mt-2 line-clamp-2 text-xs text-gray-500 sm:text-sm">Open this product for full details.</p>
+                      )}
+                    </Link>
+
+                    <div className="mt-4 grid grid-cols-2 gap-2">
+                      <div className="min-w-0">
+                        <BuyNowButton
+                          itemId={product._id}
+                          amount={product.price}
+                          type="product"
+                          label="Buy"
+                        />
+                      </div>
+
+                      <button
+                        onClick={() => router.push(`/marketplace/product/${product._id}`)}
+                        className="w-full rounded-xl border border-white/10 px-3 py-2 text-sm text-gray-200 transition hover:bg-white/10"
+                      >
+                        Details
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             {totalPages > 1 ? (
