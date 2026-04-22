@@ -5,6 +5,7 @@ import clientPromise from "@/lib/mongodb";
 import Stripe from "stripe";
 import { getJwtSecret } from "@/lib/env";
 import { getMarketplaceDbName } from "@/lib/marketplace/db";
+import { ObjectId } from "mongodb";
 
 export default async function handler(
   req: NextApiRequest,
@@ -36,12 +37,65 @@ export default async function handler(
     if (!seller) {
       return res.status(200).json({
         sellerExists: false,
+        readinessState: "not_started",
+        readinessLabel: "Not started",
+        readinessProgress: 0,
+        readinessChecks: {
+          profileValid: false,
+          publishedProduct: false,
+        },
         onboardingStatus: "none",
         payoutConnected: false,
         payoutReady: false,
         dashboardReady: false,
       });
     }
+
+    const sellerId = String(seller._id);
+    const sellerObjectId = ObjectId.isValid(sellerId)
+      ? new ObjectId(sellerId)
+      : null;
+
+    const hasPublishedProduct =
+      (await db.collection("products").countDocuments({
+        $and: [
+          {
+            $or: [
+              { sellerId },
+              ...(sellerObjectId ? [{ sellerId: sellerObjectId }] : []),
+            ],
+          },
+          { status: "active" },
+          { isPublished: { $ne: false } },
+        ],
+      })) > 0;
+
+    const profileValid = Boolean(
+      String(seller?.businessName || "").trim() &&
+        String(seller?.email || "").trim() &&
+        String(seller?.businessPhone || "").trim() &&
+        String(seller?.businessAddress || "").trim() &&
+        String(seller?.description || "").trim(),
+    );
+
+    let readinessState: "not_started" | "in_progress" | "ready_to_sell" =
+      "not_started";
+
+    if (profileValid && hasPublishedProduct) {
+      readinessState = "ready_to_sell";
+    } else if (profileValid || hasPublishedProduct) {
+      readinessState = "in_progress";
+    }
+
+    const readinessLabel =
+      readinessState === "ready_to_sell"
+        ? "Ready to sell"
+        : readinessState === "in_progress"
+          ? "In progress"
+          : "Not started";
+
+    const readinessProgress =
+      Number(profileValid) + Number(hasPublishedProduct);
 
     const stripeAccountId = seller?.stripeAccountId || null;
     let payoutConnected = Boolean(stripeAccountId);
@@ -64,7 +118,14 @@ export default async function handler(
 
     return res.status(200).json({
       sellerExists: true,
-      sellerId: String(seller._id),
+      sellerId,
+      readinessState,
+      readinessLabel,
+      readinessProgress,
+      readinessChecks: {
+        profileValid,
+        publishedProduct: hasPublishedProduct,
+      },
       onboardingStatus: seller?.creatorOnboardingStatus || "seller-created",
       payoutConnected,
       payoutReady,
@@ -74,8 +135,8 @@ export default async function handler(
       creatorReady: Boolean(seller?.creatorReady),
       musicCreatorReady: Boolean(
         seller?.creatorOnboardingStatus === "onboarded" &&
-          seller?.creatorPlanStatus === "active" &&
-          payoutReady,
+        seller?.creatorPlanStatus === "active" &&
+        payoutReady,
       ),
       stripeAccountId,
       requirements,

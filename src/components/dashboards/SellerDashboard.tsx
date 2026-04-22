@@ -11,7 +11,6 @@ import {
   Store,
   Lock,
   ArrowRight,
-  BadgeCheck,
   AlertTriangle,
 } from "lucide-react";
 
@@ -38,6 +37,17 @@ type SellerUser = {
   accountType?: string;
 };
 
+type Readiness = {
+  sellerExists: boolean;
+  readinessState: "not_started" | "in_progress" | "ready_to_sell";
+  readinessLabel: "Not started" | "In progress" | "Ready to sell";
+  readinessProgress: number;
+  readinessChecks?: {
+    profileValid: boolean;
+    publishedProduct: boolean;
+  };
+};
+
 export default function SellerDashboard() {
   const router = useRouter();
 
@@ -50,17 +60,15 @@ export default function SellerDashboard() {
   const [sellerName, setSellerName] = useState<string>("Seller");
   const [loading, setLoading] = useState(true);
   const [accessDenied, setAccessDenied] = useState(false);
-
   const [lastUpdated, setLastUpdated] = useState<number | null>(null);
-
-  // Separate data/system errors from true auth denial
   const [dataError, setDataError] = useState<string | null>(null);
 
-  // Stripe payout status
   const [stripeStatus, setStripeStatus] = useState<StripeStatus | null>(null);
   const [stripeLoading, setStripeLoading] = useState(false);
   const [stripeWorking, setStripeWorking] = useState(false);
   const [stripeError, setStripeError] = useState<string | null>(null);
+
+  const [readiness, setReadiness] = useState<Readiness | null>(null);
 
   const payoutReady =
     !!stripeStatus?.connected &&
@@ -73,32 +81,82 @@ export default function SellerDashboard() {
     return n.toLocaleString(undefined, { style: "currency", currency: "USD" });
   }, [stats.revenue]);
 
-  const setupStage = useMemo(() => {
-    if (payoutReady && stats.products > 0) {
+  const readinessProgress = Math.max(
+    0,
+    Math.min(2, Number(readiness?.readinessProgress || 0)),
+  );
+  const readinessPercent = Math.round((readinessProgress / 2) * 100);
+
+  const onboardingSteps = [
+    {
+      id: "add",
+      label: "Add first product",
+      description: "Create your first listing with photos, pricing, and stock.",
+      done: stats.products > 0,
+      href: "/marketplace/add-products",
+      cta: stats.products > 0 ? "Add another product" : "Add first product",
+    },
+    {
+      id: "publish",
+      label: "Publish product",
+      description: "A listing is considered published when it is active and visible to buyers.",
+      done: Boolean(readiness?.readinessChecks?.publishedProduct),
+      href: "/dashboard/seller/products",
+      cta: "Review listing status",
+    },
+    {
+      id: "manage",
+      label: "View and manage listings",
+      description: "Edit inventory, pricing, and product details from one place.",
+      done: stats.products > 0,
+      href: "/dashboard/seller/products",
+      cta: "Manage listings",
+    },
+    {
+      id: "orders",
+      label: "Begin receiving orders",
+      description: "Monitor new orders, then mark fulfillment as you process them.",
+      done: stats.orders > 0,
+      href: "/marketplace/orders",
+      cta: stats.orders > 0 ? "Manage orders" : "Open orders",
+    },
+  ];
+
+  const nextStep = useMemo(() => {
+    if (!readiness?.readinessChecks?.profileValid) {
       return {
-        title: "Seller setup complete",
-        body: "Payouts are enabled and you have active product setup progress.",
-        ctaHref: "/dashboard/seller/products",
-        ctaLabel: "Manage products",
+        title: "Complete seller profile",
+        body: "Add required seller profile details so your storefront is complete.",
+        href: "/marketplace/become-a-seller?refresh=1",
+        cta: "Complete profile",
       };
     }
 
-    if (!payoutReady) {
+    if (!stats.products) {
       return {
-        title: "Finish payout setup",
-        body: "Complete Stripe onboarding to receive payouts, then add your first product.",
-        ctaHref: "/marketplace/become-a-seller?refresh=1",
-        ctaLabel: "Finish payout setup",
+        title: "Add your first product",
+        body: "Create your first listing to begin onboarding progress.",
+        href: "/marketplace/add-products",
+        cta: "Add first product",
+      };
+    }
+
+    if (!readiness?.readinessChecks?.publishedProduct) {
+      return {
+        title: "Publish a product",
+        body: "Set at least one listing active so buyers can find it.",
+        href: "/dashboard/seller/products",
+        cta: "Publish now",
       };
     }
 
     return {
-      title: "Add your first product",
-      body: "Payout setup is complete. Add your first product to start selling.",
-      ctaHref: "/marketplace/add-products",
-      ctaLabel: "Add first product",
+      title: "Optimize for first sale",
+      body: "You are ready to sell. Keep listings fresh and monitor orders daily.",
+      href: "/dashboard/seller/products",
+      cta: "Review listings",
     };
-  }, [payoutReady, stats.products]);
+  }, [readiness, stats.products]);
 
   async function refreshStripeStatus(signal?: AbortSignal) {
     setStripeLoading(true);
@@ -142,9 +200,7 @@ export default function SellerDashboard() {
       const data = await r.json().catch(() => ({}));
 
       if (!r.ok) {
-        throw new Error(
-          data?.error || `Stripe onboarding failed (${r.status})`,
-        );
+        throw new Error(data?.error || `Stripe onboarding failed (${r.status})`);
       }
 
       if (!data?.url) throw new Error("Missing Stripe onboarding URL");
@@ -188,7 +244,6 @@ export default function SellerDashboard() {
 
         let hadDataIssue = false;
 
-        // Stats load should NOT trigger Access Denied
         try {
           const statsRes = await fetch("/api/marketplace/stats", {
             cache: "no-store",
@@ -200,7 +255,6 @@ export default function SellerDashboard() {
             hadDataIssue = true;
           } else {
             const statsData = await statsRes.json();
-
             setStats({
               products: statsData.products || 0,
               orders: statsData.orders || 0,
@@ -208,13 +262,25 @@ export default function SellerDashboard() {
             });
           }
         } catch (err: any) {
-          if (err?.name !== "AbortError") {
-            console.error("Stats fetch failed:", err);
-            hadDataIssue = true;
-          }
+          if (err?.name !== "AbortError") hadDataIssue = true;
         }
 
-        // Stripe status load should NOT trigger Access Denied
+        try {
+          const readinessRes = await fetch("/api/marketplace/readiness", {
+            cache: "no-store",
+            credentials: "include",
+            signal: controller.signal,
+          });
+          if (!readinessRes.ok) {
+            hadDataIssue = true;
+          } else {
+            const readinessData = await readinessRes.json();
+            setReadiness(readinessData);
+          }
+        } catch (err: any) {
+          if (err?.name !== "AbortError") hadDataIssue = true;
+        }
+
         try {
           await refreshStripeStatus(controller.signal);
         } catch {
@@ -230,7 +296,6 @@ export default function SellerDashboard() {
         setLastUpdated(Date.now());
       } catch (err: any) {
         if (err?.name !== "AbortError") {
-          console.error("Failed to load seller dashboard:", err);
           setDataError(
             "We had trouble loading your seller dashboard. Please refresh and try again.",
           );
@@ -255,9 +320,7 @@ export default function SellerDashboard() {
             <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-black/30 sm:h-12 sm:w-12">
               <Lock className="h-5 w-5 text-yellow-300" />
             </div>
-            <h2 className="text-xl font-bold text-gold sm:text-2xl">
-              Access Denied
-            </h2>
+            <h2 className="text-xl font-bold text-gold sm:text-2xl">Access Denied</h2>
             <p className="mt-2 text-sm text-gray-300">
               Please log in with a seller account to view the seller dashboard.
             </p>
@@ -281,57 +344,21 @@ export default function SellerDashboard() {
     );
   }
 
-  const statusPill = stripeLoading
-    ? {
-        text: "Checking…",
-        cls: "border-white/10 bg-black/30 text-gray-200",
-      }
-    : stripeStatus?.statusUnavailable
-      ? {
-          text: "Status Unavailable",
-          cls: "border-yellow-500/30 bg-yellow-500/10 text-yellow-200",
-        }
-      : payoutReady
-        ? {
-            text: "Payouts Enabled",
-            cls: "border-emerald-500/30 bg-emerald-500/10 text-emerald-200",
-          }
-        : stripeStatus?.connected
-          ? {
-              text: "Setup Required",
-              cls: "border-yellow-500/30 bg-yellow-500/10 text-yellow-200",
-            }
-          : {
-              text: "Not Connected",
-              cls: "border-yellow-500/30 bg-yellow-500/10 text-yellow-200",
-            };
-
   return (
     <div className="min-h-screen bg-black text-white relative">
       <GlowBackground />
-
       <div className="relative mx-auto max-w-6xl space-y-6 px-3 py-5 sm:space-y-8 sm:px-4 sm:py-8">
-        {/* Header */}
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
             <h1 className="text-2xl font-extrabold tracking-tight text-gold sm:text-3xl md:text-4xl">
               Seller Dashboard
             </h1>
             <p className="mt-1 text-sm text-gray-300 sm:text-base">
-              Welcome,{" "}
-              <span className="font-semibold text-white">{sellerName}</span>.
-              Manage products, orders, fulfillment, and payouts.
+              Welcome, <span className="font-semibold text-white">{sellerName}</span>.
             </p>
             {lastUpdated ? (
               <p className="mt-2 text-xs text-gray-500">
-                Last updated:{" "}
-                {new Date(lastUpdated).toLocaleString(undefined, {
-                  year: "numeric",
-                  month: "short",
-                  day: "numeric",
-                  hour: "numeric",
-                  minute: "2-digit",
-                })}
+                Last updated: {new Date(lastUpdated).toLocaleString()}
               </p>
             ) : null}
           </div>
@@ -341,41 +368,104 @@ export default function SellerDashboard() {
               href="/marketplace/add-products"
               className="inline-flex items-center justify-center gap-2 rounded-xl bg-gold px-4 py-2.5 text-center text-sm font-semibold text-black transition hover:bg-yellow-500 sm:px-5"
             >
-              <PlusCircle className="h-4 w-4" />
-              Add Product
+              <PlusCircle className="h-4 w-4" /> Add Product
             </Link>
-
             <Link
               href="/marketplace"
               className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-center text-sm transition hover:bg-white/10 sm:px-5"
             >
-              <Store className="h-4 w-4 text-yellow-300" />
-              Marketplace
+              <Store className="h-4 w-4 text-yellow-300" /> Marketplace
             </Link>
           </div>
         </div>
 
         <div className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-xl sm:p-5">
-          <h2 className="text-lg font-bold text-gold">Current Seller Step</h2>
-          <p className="mt-1 text-sm text-gray-300">{setupStage.body}</p>
+          <h2 className="text-lg font-bold text-gold">Seller readiness</h2>
+          <p className="mt-1 text-sm text-gray-300">
+            State: <span className="font-semibold text-white">{readiness?.readinessLabel || "Not started"}</span>
+          </p>
+          <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-white/10">
+            <div className="h-full bg-gold transition-all" style={{ width: `${readinessPercent}%` }} />
+          </div>
+          <p className="mt-2 text-xs text-gray-400">Progress: {readinessProgress}/2 ({readinessPercent}%)</p>
+          <div className="mt-3 text-sm text-gray-300 space-y-1">
+            <div>{readiness?.readinessChecks?.profileValid ? "✅" : "⬜"} Valid seller profile</div>
+            <div>{readiness?.readinessChecks?.publishedProduct ? "✅" : "⬜"} At least one published product</div>
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-yellow-500/25 bg-yellow-500/10 p-4 shadow-xl sm:p-5">
+          <h2 className="text-lg font-bold text-gold">Next step</h2>
+          <p className="mt-1 text-sm text-gray-300">{nextStep.body}</p>
           <div className="mt-3 flex flex-wrap gap-2">
-            <Link
-              href={setupStage.ctaHref}
-              className="inline-flex items-center gap-2 rounded-xl bg-gold px-4 py-2 text-sm font-semibold text-black hover:bg-yellow-500"
-            >
-              {setupStage.ctaLabel}
-              <ArrowRight className="h-4 w-4" />
+            <Link href={nextStep.href} className="inline-flex items-center gap-2 rounded-xl bg-gold px-4 py-2 text-sm font-semibold text-black hover:bg-yellow-500">
+              {nextStep.cta} <ArrowRight className="h-4 w-4" />
             </Link>
-            <Link
-              href="/marketplace/become-a-seller?refresh=1"
-              className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm hover:bg-white/10"
-            >
-              View setup status
+            <Link href="/marketplace/dashboard" className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm hover:bg-white/10">
+              Refresh dashboard
             </Link>
           </div>
         </div>
 
-        {/* Data/system warning */}
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-xl sm:p-6">
+          <h2 className="text-lg font-bold text-gold">Guided onboarding flow</h2>
+          <div className="mt-3 grid gap-3 md:grid-cols-2">
+            {onboardingSteps.map((step, idx) => (
+              <div key={step.id} className="rounded-xl border border-white/10 bg-black/30 p-3">
+                <p className="text-sm font-semibold text-white">{idx + 1}. {step.label}</p>
+                <p className="mt-1 text-xs text-gray-400">{step.description}</p>
+                <p className="mt-2 text-xs">{step.done ? "✅ Done" : "⬜ Pending"}</p>
+                <Link href={step.href} className="mt-2 inline-flex items-center gap-1 text-sm text-gold underline">
+                  {step.cta}
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-3 lg:gap-6">
+          <StatTile icon={<Package className="h-5 w-5 text-yellow-300" />} label="Products Listed" value={stats.products} />
+          <StatTile icon={<ShoppingCart className="h-5 w-5 text-yellow-300" />} label="Orders Received" value={stats.orders} />
+          <div className="col-span-2 lg:col-span-1">
+            <StatTile icon={<BarChart3 className="h-5 w-5 text-yellow-300" />} label="Total Revenue" value={formattedRevenue} />
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-xl sm:p-6">
+          <h2 className="text-lg font-bold text-gold sm:text-xl">Payout status</h2>
+          {stripeError ? <p className="mt-2 text-sm text-red-300">{stripeError}</p> : null}
+          <p className="mt-2 text-sm text-gray-300">
+            {stripeLoading
+              ? "Checking payout status..."
+              : payoutReady
+                ? "✅ Ready for payouts."
+                : "Payout setup still required before funds can be received."}
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <button onClick={() => refreshStripeStatus()} className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm transition hover:bg-white/10">Refresh</button>
+            {!payoutReady ? (
+              <button onClick={startStripeOnboarding} disabled={stripeWorking} className="inline-flex items-center justify-center gap-2 rounded-xl bg-gold px-4 py-2 text-sm font-semibold text-black transition hover:bg-yellow-500 disabled:opacity-60">
+                {stripeWorking ? "Opening…" : "Finish Stripe Setup"} <ArrowRight className="h-4 w-4" />
+              </button>
+            ) : null}
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-emerald-500/25 bg-emerald-500/10 p-4 shadow-xl sm:p-5">
+          <h2 className="text-lg font-bold text-gold">First-sale guidance</h2>
+          <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-gray-200">
+            <li>Add a complete product listing with clear photos and pricing.</li>
+            <li>Keep at least one listing active and in stock.</li>
+            <li>Review listings daily and update weak titles/descriptions.</li>
+            <li>Watch your orders page so new purchases are fulfilled fast.</li>
+          </ul>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <Link href="/marketplace/add-products" className="inline-flex items-center gap-2 rounded-xl bg-gold px-4 py-2 text-sm font-semibold text-black hover:bg-yellow-500">Add product</Link>
+            <Link href="/dashboard/seller/products" className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm hover:bg-white/10">Review listings</Link>
+            <Link href="/marketplace/orders" className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm hover:bg-white/10">Open orders</Link>
+          </div>
+        </div>
+
         {dataError ? (
           <div className="rounded-2xl border border-yellow-500/25 bg-yellow-500/10 p-4 shadow-xl">
             <div className="flex items-start gap-3">
@@ -383,205 +473,16 @@ export default function SellerDashboard() {
                 <AlertTriangle className="h-5 w-5 text-yellow-300" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-gold sm:text-base">
-                  Seller dashboard data is partially unavailable
-                </h3>
+                <h3 className="text-sm font-bold text-gold sm:text-base">Seller dashboard data is partially unavailable</h3>
                 <p className="mt-1 text-sm text-gray-300">{dataError}</p>
               </div>
             </div>
           </div>
         ) : null}
-
-        {/* Top Stats */}
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-3 lg:gap-6">
-          <StatTile
-            icon={<Package className="h-5 w-5 text-yellow-300" />}
-            label="Products Listed"
-            value={stats.products}
-          />
-          <StatTile
-            icon={<ShoppingCart className="h-5 w-5 text-yellow-300" />}
-            label="Orders Received"
-            value={stats.orders}
-          />
-          <div className="col-span-2 lg:col-span-1">
-            <StatTile
-              icon={<BarChart3 className="h-5 w-5 text-yellow-300" />}
-              label="Total Revenue"
-              value={formattedRevenue}
-            />
-          </div>
-        </div>
-
-        {/* Payout status */}
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-xl sm:p-6">
-          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div>
-              <h2 className="text-lg font-bold text-gold sm:text-xl">
-                Payout Status
-              </h2>
-              <p className="mt-1 text-sm text-gray-400">
-                Stripe payouts must be enabled before you can receive funds to
-                your bank.
-              </p>
-              {stripeError ? (
-                <p className="mt-2 text-sm text-red-300">{stripeError}</p>
-              ) : stripeStatus?.statusUnavailable ? (
-                <p className="mt-2 text-sm text-yellow-200">
-                  {stripeStatus.statusMessage ||
-                    "Payout status is temporarily unavailable. You can continue managing products and orders."}
-                </p>
-              ) : null}
-            </div>
-
-            <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-start md:justify-end">
-              <span
-                className={`inline-flex items-center justify-center gap-2 rounded-full border px-3 py-1 text-sm font-semibold ${statusPill.cls}`}
-              >
-                {payoutReady ? <BadgeCheck className="h-4 w-4" /> : null}
-                {statusPill.text}
-              </span>
-
-              <button
-                onClick={() => refreshStripeStatus()}
-                className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm transition hover:bg-white/10"
-              >
-                Refresh
-              </button>
-
-              {!payoutReady ? (
-                <button
-                  onClick={startStripeOnboarding}
-                  disabled={stripeWorking}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-gold px-4 py-2 text-sm font-semibold text-black transition hover:bg-yellow-500 disabled:opacity-60"
-                >
-                  {stripeWorking
-                    ? "Opening…"
-                    : stripeStatus?.connected
-                      ? "Finish Stripe Setup"
-                      : "Connect Stripe"}
-                  <ArrowRight className="h-4 w-4" />
-                </button>
-              ) : null}
-            </div>
-          </div>
-
-          {!stripeLoading &&
-          !payoutReady &&
-          stripeStatus?.requirements?.length ? (
-            <p className="mt-4 text-xs text-gray-400">
-              Stripe still needs:{" "}
-              <span className="text-gray-300">
-                {stripeStatus.requirements.join(", ")}
-              </span>
-            </p>
-          ) : null}
-
-          {!stripeLoading && payoutReady ? (
-            <p className="mt-4 text-sm text-gray-300">
-              ✅ You’re ready — buyers can now check out your products.
-            </p>
-          ) : null}
-        </div>
-
-        <div className="rounded-2xl border border-yellow-500/25 bg-yellow-500/10 p-4 shadow-xl sm:p-5">
-          <h2 className="text-lg font-bold text-gold">Action Required</h2>
-          <ul className="mt-2 space-y-2 text-sm text-white/85">
-            <li>
-              New order queue:{" "}
-              <span className="font-semibold text-white">{stats.orders}</span>{" "}
-              <Link
-                href="/marketplace/orders"
-                className="ml-2 underline text-gold"
-              >
-                review now
-              </Link>
-            </li>
-            <li>
-              Orders needing fulfillment:{" "}
-              <span className="font-semibold text-white">
-                Review orders with payment received and update fulfillment
-                status
-              </span>{" "}
-              <Link
-                href="/marketplace/orders"
-                className="ml-2 underline text-gold"
-              >
-                open orders
-              </Link>
-            </li>
-            <li>
-              Payout status:{" "}
-              {payoutReady ? (
-                <span className="font-semibold text-emerald-300">Ready</span>
-              ) : (
-                <>
-                  <span className="font-semibold text-yellow-200">
-                    Setup required
-                  </span>
-                  <Link
-                    href="/marketplace/become-a-seller?refresh=1"
-                    className="ml-2 underline text-gold"
-                  >
-                    finish setup
-                  </Link>
-                </>
-              )}
-            </li>
-            <li>
-              Inventory warnings:{" "}
-              <span className="font-semibold text-white">
-                Review inventory on product list
-              </span>{" "}
-              <Link
-                href="/dashboard/seller/products"
-                className="ml-2 underline text-gold"
-              >
-                manage stock
-              </Link>
-            </li>
-          </ul>
-        </div>
-
-        {/* Quick Actions */}
-        <div className="grid gap-3 md:grid-cols-2 md:gap-6">
-          <ActionCard
-            icon={<PlusCircle className="h-5 w-5 text-yellow-300" />}
-            title="Add Product"
-            description="Publish a new listing in the marketplace."
-            href="/marketplace/add-products"
-          />
-          <ActionCard
-            icon={<Package className="h-5 w-5 text-yellow-300" />}
-            title="My Products"
-            description="Edit, delete, and manage your products."
-            href="/dashboard/seller/products"
-          />
-          <ActionCard
-            icon={<ShoppingCart className="h-5 w-5 text-yellow-300" />}
-            title="Orders"
-            description="Review order state and update fulfillment status."
-            href="/marketplace/orders"
-          />
-          <ActionCard
-            icon={<BarChart3 className="h-5 w-5 text-yellow-300" />}
-            title="Analytics"
-            description="Understand sales performance and trends."
-            href="/marketplace/analytics"
-          />
-          <ActionCard
-            icon={<BadgeCheck className="h-5 w-5 text-yellow-300" />}
-            title="Payout Setup"
-            description="Check or complete Stripe payout readiness."
-            href="/marketplace/become-a-seller?refresh=1"
-          />
-        </div>
       </div>
     </div>
   );
 }
-
-/* UI Helpers */
 
 function GlowBackground() {
   return (
@@ -592,60 +493,15 @@ function GlowBackground() {
   );
 }
 
-function StatTile({
-  icon,
-  label,
-  value,
-}: {
-  icon: ReactNode;
-  label: string;
-  value: string | number;
-}) {
+function StatTile({ icon, label, value }: { icon: ReactNode; label: string; value: string | number }) {
   return (
     <div className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-xl sm:p-6">
       <div className="flex items-start gap-2 text-gray-200">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-black/30 sm:h-10 sm:w-10">
-          {icon}
-        </div>
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-black/30 sm:h-10 sm:w-10">{icon}</div>
         <div className="min-w-0 text-xs text-gray-300 sm:text-sm">{label}</div>
       </div>
-      <div className="mt-3 break-words text-2xl font-extrabold text-white sm:mt-4 sm:text-4xl">
-        {value}
-      </div>
+      <div className="mt-3 break-words text-2xl font-extrabold text-white sm:mt-4 sm:text-4xl">{value}</div>
     </div>
-  );
-}
-
-function ActionCard({
-  icon,
-  title,
-  description,
-  href,
-}: {
-  icon: ReactNode;
-  title: string;
-  description: string;
-  href: string;
-}) {
-  return (
-    <Link href={href} className="block">
-      <div className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-xl transition hover:bg-white/10 hover:shadow-2xl sm:p-6">
-        <div className="flex items-start gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-black/30">
-            {icon}
-          </div>
-          <div className="min-w-0">
-            <h3 className="text-lg font-extrabold text-white sm:text-xl">
-              {title}
-            </h3>
-            <p className="mt-1 text-sm text-gray-400">{description}</p>
-          </div>
-        </div>
-        <div className="mt-4 inline-flex items-center gap-2 font-semibold text-gold sm:mt-5">
-          Open <ArrowRight className="h-4 w-4" />
-        </div>
-      </div>
-    </Link>
   );
 }
 
@@ -656,36 +512,6 @@ function DashboardSkeleton() {
       <div className="relative mx-auto max-w-6xl space-y-5 px-3 py-5 sm:space-y-6 sm:px-4 sm:py-8">
         <div className="h-8 w-2/3 animate-pulse rounded bg-white/10 sm:h-10" />
         <div className="h-4 w-1/2 animate-pulse rounded bg-white/10 sm:h-5" />
-
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-3 lg:gap-6">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <div
-              key={i}
-              className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-xl sm:p-6"
-            >
-              <div className="h-5 w-1/2 animate-pulse rounded bg-white/10 sm:h-6" />
-              <div className="mt-4 h-8 w-1/3 animate-pulse rounded bg-white/10 sm:h-10" />
-            </div>
-          ))}
-        </div>
-
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-xl sm:p-6">
-          <div className="h-5 w-1/3 animate-pulse rounded bg-white/10 sm:h-6" />
-          <div className="mt-4 h-24 animate-pulse rounded bg-white/10" />
-        </div>
-
-        <div className="grid gap-3 md:grid-cols-2 md:gap-6">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <div
-              key={i}
-              className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-xl sm:p-6"
-            >
-              <div className="h-6 w-1/2 animate-pulse rounded bg-white/10" />
-              <div className="mt-3 h-4 w-3/4 animate-pulse rounded bg-white/10" />
-              <div className="mt-5 h-4 w-1/4 animate-pulse rounded bg-white/10" />
-            </div>
-          ))}
-        </div>
       </div>
     </div>
   );
