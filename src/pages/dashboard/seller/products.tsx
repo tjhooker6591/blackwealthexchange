@@ -3,6 +3,10 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
+import type { GetServerSideProps } from "next";
+import cookie from "cookie";
+import jwt from "jsonwebtoken";
+import { getJwtSecret } from "@/lib/env";
 
 type Product = {
   _id: string;
@@ -60,8 +64,15 @@ export default function ManageProducts() {
           ? ordersRes.data.orders
           : [];
         const pending = orders.filter((o: any) => {
-          const status = String(o?.orderState || o?.status || "pending").toLowerCase();
-          return ["paid", "pending", "pending_fulfillment", "processing"].includes(status);
+          const status = String(
+            o?.orderState || o?.status || "pending",
+          ).toLowerCase();
+          return [
+            "paid",
+            "pending",
+            "pending_fulfillment",
+            "processing",
+          ].includes(status);
         }).length;
         setPendingOrderCount(pending);
       } catch (err: any) {
@@ -119,10 +130,12 @@ export default function ManageProducts() {
           <p className="font-semibold">Action Required</p>
           <ul className="mt-2 list-disc pl-5 space-y-1">
             <li>
-              New or pending fulfillment orders: <span className="font-semibold">{pendingOrderCount}</span>
+              New or pending fulfillment orders:{" "}
+              <span className="font-semibold">{pendingOrderCount}</span>
             </li>
             <li>
-              Out-of-stock products: <span className="font-semibold">{outOfStockCount}</span>
+              Out-of-stock products:{" "}
+              <span className="font-semibold">{outOfStockCount}</span>
             </li>
             <li>
               Payout status:{" "}
@@ -178,7 +191,9 @@ export default function ManageProducts() {
                 <div>
                   <h2 className="text-lg text-gold">{product.name}</h2>
                   <p>${Number(product.price || 0).toFixed(2)}</p>
-                  <p className="text-sm text-gray-400">Status: {product.status}</p>
+                  <p className="text-sm text-gray-400">
+                    Status: {product.status}
+                  </p>
                   <p className="text-sm text-gray-400">
                     Stock: {Number(product.stockQuantity ?? 0)}
                     {Number(product.stockQuantity ?? 0) <= 0 ? (
@@ -210,3 +225,38 @@ export default function ManageProducts() {
     </div>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const cookies = cookie.parse(req.headers.cookie || "");
+  const token = cookies.session_token;
+
+  if (!token) {
+    return {
+      redirect: {
+        destination: "/login?redirect=/dashboard/seller/products",
+        permanent: false,
+      },
+    };
+  }
+
+  try {
+    const payload = jwt.verify(token, getJwtSecret()) as { accountType?: string };
+    if (payload.accountType !== "seller") {
+      return {
+        redirect: {
+          destination: "/login?redirect=/dashboard/seller/products",
+          permanent: false,
+        },
+      };
+    }
+  } catch {
+    return {
+      redirect: {
+        destination: "/login?redirect=/dashboard/seller/products",
+        permanent: false,
+      },
+    };
+  }
+
+  return { props: {} };
+};
