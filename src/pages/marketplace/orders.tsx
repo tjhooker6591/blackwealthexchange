@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import type { GetServerSideProps } from "next";
+import cookie from "cookie";
+import jwt from "jsonwebtoken";
+import { getJwtSecret } from "@/lib/env";
 
 type Order = {
   _id: string;
@@ -227,8 +231,27 @@ export default function MarketplaceOrdersPage() {
               <tbody>
                 {orders.length === 0 ? (
                   <tr>
-                    <td className="p-3 text-white/60" colSpan={6}>
-                      No orders yet.
+                    <td className="p-5 text-white/70" colSpan={6}>
+                      <div className="rounded-lg border border-white/10 bg-white/5 p-4">
+                        <p className="font-semibold text-white">No orders yet</p>
+                        <p className="mt-1 text-sm text-white/70">
+                          Next step: add a product and publish inventory so buyers can place orders.
+                        </p>
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          <Link
+                            href="/marketplace/add-products"
+                            className="rounded border border-[#D4AF37] px-3 py-1.5 text-xs font-semibold text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black"
+                          >
+                            Add product
+                          </Link>
+                          <Link
+                            href="/dashboard/seller/products"
+                            className="rounded border border-white/20 px-3 py-1.5 text-xs font-semibold text-white/90 hover:bg-white/10"
+                          >
+                            Manage products
+                          </Link>
+                        </div>
+                      </div>
                     </td>
                   </tr>
                 ) : (
@@ -324,3 +347,38 @@ export default function MarketplaceOrdersPage() {
     </main>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const cookies = cookie.parse(req.headers.cookie || "");
+  const token = cookies.session_token;
+
+  if (!token) {
+    return {
+      redirect: {
+        destination: "/login?redirect=/marketplace/orders",
+        permanent: false,
+      },
+    };
+  }
+
+  try {
+    const payload = jwt.verify(token, getJwtSecret()) as { accountType?: string };
+    if (payload.accountType !== "seller") {
+      return {
+        redirect: {
+          destination: "/login?redirect=/marketplace/orders",
+          permanent: false,
+        },
+      };
+    }
+  } catch {
+    return {
+      redirect: {
+        destination: "/login?redirect=/marketplace/orders",
+        permanent: false,
+      },
+    };
+  }
+
+  return { props: {} };
+};
