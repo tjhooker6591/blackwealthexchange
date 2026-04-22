@@ -29,6 +29,13 @@ type Product = {
   views?: number;
   condition?: string;
   status?: string;
+  isFeatured?: boolean;
+  recentlyAdded?: boolean;
+  seller?: {
+    id?: string | null;
+    name?: string;
+    profileComplete?: boolean;
+  };
 };
 
 const itemsPerPage = 12;
@@ -270,7 +277,8 @@ export default function Marketplace() {
         <div className="mx-auto max-w-5xl">
           <div className="inline-flex items-center gap-2 rounded-full border border-yellow-500/30 bg-white/5 px-3 py-2 text-xs text-gray-200 sm:px-4 sm:text-sm">
             <Sparkles className="h-4 w-4 text-yellow-400" />
-            Curated marketplace • Clear product details • Shop Black-owned brands
+            Curated marketplace • Clear product details • Shop Black-owned
+            brands
           </div>
 
           <h1 className="mt-5 text-4xl font-extrabold tracking-tight text-gold md:text-5xl">
@@ -341,6 +349,9 @@ export default function Marketplace() {
           </div>
 
           <div className="mt-3 text-sm text-gray-400">{resultLabel}</div>
+          <p className="mt-1 text-xs text-gray-500">
+            Each listing shows seller identity and availability before you open details.
+          </p>
 
           <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs">
             <Link
@@ -473,7 +484,11 @@ export default function Marketplace() {
               {products.map((product) => {
                 const stock = Number(product.stockQuantity ?? 0);
                 const availability =
-                  stock <= 0 ? "Out of stock" : stock <= 3 ? "Low stock" : "In stock";
+                  stock <= 0
+                    ? "Out of stock"
+                    : stock <= 3
+                      ? "Low stock"
+                      : "In stock";
                 const availabilityCls =
                   stock <= 0
                     ? "border-red-500/40 bg-red-500/10 text-red-300"
@@ -502,7 +517,9 @@ export default function Marketplace() {
                           />
                         ) : (
                           <div className="flex h-full w-full items-center justify-center">
-                            <span className="text-xs text-gray-400 sm:text-sm">Image unavailable</span>
+                            <span className="text-xs text-gray-400 sm:text-sm">
+                              Image unavailable
+                            </span>
                           </div>
                         )}
                       </div>
@@ -517,10 +534,22 @@ export default function Marketplace() {
                       </div>
 
                       <div className="mt-2 flex flex-wrap gap-1.5 text-[11px] sm:text-xs">
+                        {product.isFeatured ? (
+                          <span className="rounded-full border border-gold/40 bg-gold/20 px-2 py-0.5 text-gold">
+                            Featured
+                          </span>
+                        ) : null}
+                        {product.recentlyAdded ? (
+                          <span className="rounded-full border border-blue-400/40 bg-blue-500/10 px-2 py-0.5 text-blue-200">
+                            Recently added
+                          </span>
+                        ) : null}
                         <span className="rounded-full border border-white/20 bg-white/5 px-2 py-0.5 text-gray-300">
                           {product.category || "Other"}
                         </span>
-                        <span className={`rounded-full border px-2 py-0.5 ${availabilityCls}`}>
+                        <span
+                          className={`rounded-full border px-2 py-0.5 ${availabilityCls}`}
+                        >
                           {availability}
                         </span>
                         <span className="rounded-full border border-white/20 bg-white/5 px-2 py-0.5 text-gray-300">
@@ -528,10 +557,23 @@ export default function Marketplace() {
                         </span>
                       </div>
 
+                      <p className="mt-2 text-[11px] text-gray-300 sm:text-xs">
+                        Sold by <span className="font-semibold text-gray-100">{product?.seller?.name || "Verified BWE Marketplace Seller"}</span>
+                        {product?.seller?.profileComplete ? " • verified profile" : " • basic profile"}
+                      </p>
+
+                      <p className="mt-1 text-[11px] text-gray-400 sm:text-xs">
+                        Interest: {Number(product.views || 0).toLocaleString()} views
+                      </p>
+
                       {product.description ? (
-                        <p className="mt-2 line-clamp-2 text-xs text-gray-300 sm:text-sm">{product.description}</p>
+                        <p className="mt-2 line-clamp-2 text-xs text-gray-300 sm:text-sm">
+                          {product.description}
+                        </p>
                       ) : (
-                        <p className="mt-2 line-clamp-2 text-xs text-gray-500 sm:text-sm">Open this product for full details.</p>
+                        <p className="mt-2 line-clamp-2 text-xs text-gray-500 sm:text-sm">
+                          Open this product for full details.
+                        </p>
                       )}
                     </Link>
 
@@ -546,7 +588,9 @@ export default function Marketplace() {
                       </div>
 
                       <button
-                        onClick={() => router.push(`/marketplace/product/${product._id}`)}
+                        onClick={() =>
+                          router.push(`/marketplace/product/${product._id}`)
+                        }
                         className="w-full rounded-xl border border-white/10 px-3 py-2 text-sm text-gray-200 transition hover:bg-white/10"
                       >
                         Details

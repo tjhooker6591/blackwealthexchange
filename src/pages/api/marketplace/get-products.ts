@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import { getAppEnv } from "@/lib/env";
 import { getMarketplaceDbName } from "@/lib/marketplace/db";
+import { ObjectId } from "mongodb";
 
 export default async function handler(
   req: NextApiRequest,
@@ -67,12 +68,12 @@ export default async function handler(
     const sortKey = String(sort || "relevance");
     const sortSpec: Record<string, 1 | -1> =
       sortKey === "newest"
-        ? { createdAt: -1, _id: -1 }
+        ? { isFeatured: -1, createdAt: -1, _id: -1 }
         : sortKey === "price_asc"
-          ? { price: 1, _id: -1 }
+          ? { isFeatured: -1, price: 1, _id: -1 }
           : sortKey === "price_desc"
-            ? { price: -1, _id: -1 }
-            : { _id: -1 };
+            ? { isFeatured: -1, price: -1, _id: -1 }
+            : { isFeatured: -1, _id: -1 };
 
     const usedDbName = getMarketplaceDbName();
     const environment = getAppEnv();
@@ -91,9 +92,70 @@ export default async function handler(
 
     const result = await queryProducts(productsCollection);
 
+    const sellerIds = Array.from(
+      new Set(
+        result.products
+          .map((p: any) => String(p?.sellerId || "").trim())
+          .filter(Boolean),
+      ),
+    );
+
+    const sellerObjectIds = sellerIds
+      .filter((id) => ObjectId.isValid(id))
+      .map((id) => new ObjectId(id));
+
+    const sellers = sellerIds.length
+      ? await client
+          .db(usedDbName)
+          .collection("sellers")
+          .find({
+            $or: [
+              { userId: { $in: sellerIds } },
+              ...(sellerObjectIds.length ? [{ _id: { $in: sellerObjectIds } }] : []),
+            ],
+          })
+          .toArray()
+      : [];
+
+    const sellerByKey = new Map<string, any>();
+    for (const s of sellers) {
+      const sid = String(s?._id || "").trim();
+      const uid = String(s?.userId || "").trim();
+      if (sid) sellerByKey.set(sid, s);
+      if (uid) sellerByKey.set(uid, s);
+    }
+
+    const hydratedProducts = result.products.map((p: any) => {
+      const sellerKey = String(p?.sellerId || "").trim();
+      const seller = sellerByKey.get(sellerKey);
+      const createdAt = p?.createdAt ? new Date(p.createdAt) : null;
+      const recentlyAdded =
+        createdAt instanceof Date && !Number.isNaN(createdAt.getTime())
+          ? Date.now() - createdAt.getTime() <= 14 * 24 * 60 * 60 * 1000
+          : false;
+
+      return {
+        ...p,
+        recentlyAdded,
+        seller: {
+          id: sellerKey || null,
+          name:
+            seller?.storeName ||
+            seller?.businessName ||
+            seller?.ownerName ||
+            "Verified BWE Marketplace Seller",
+          profileComplete: Boolean(
+            String(seller?.businessName || "").trim() &&
+              String(seller?.email || "").trim() &&
+              String(seller?.description || "").trim(),
+          ),
+        },
+      };
+    });
+
     if (String(req.query.debug || "") === "1") {
       return res.status(200).json({
-        products: result.products,
+        products: hydratedProducts,
         total: result.total,
         _debug: {
           filter,
@@ -106,7 +168,9 @@ export default async function handler(
       });
     }
 
-    return res.status(200).json({ products: result.products, total: result.total });
+    return res
+      .status(200)
+      .json({ products: hydratedProducts, total: result.total });
   } catch (error) {
     console.error("Error fetching products:", error);
     return res.status(500).json({ error: "Failed to fetch products" });

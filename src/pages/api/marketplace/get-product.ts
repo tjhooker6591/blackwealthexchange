@@ -31,7 +31,10 @@ export default async function handler(
 
     await db
       .collection("products")
-      .updateOne({ _id: productId }, { $inc: { views: 1 }, $set: { updatedAt: new Date() } });
+      .updateOne(
+        { _id: productId },
+        { $inc: { views: 1 }, $set: { updatedAt: new Date() } },
+      );
 
     const effectiveViews = Number(product?.views || 0) + 1;
 
@@ -47,6 +50,13 @@ export default async function handler(
       seller = await db.collection("sellers").findOne({ $or: sellerOr } as any);
     }
 
+
+    const createdAt = product?.createdAt ? new Date(product.createdAt) : null;
+    const recentlyAdded =
+      createdAt instanceof Date && !Number.isNaN(createdAt.getTime())
+        ? Date.now() - createdAt.getTime() <= 14 * 24 * 60 * 60 * 1000
+        : false;
+
     const stockQuantity = Number(product?.stockQuantity ?? 0);
     const availability =
       stockQuantity <= 0
@@ -61,6 +71,8 @@ export default async function handler(
         views: effectiveViews,
         condition: String(product?.condition || "New"),
         availability,
+        recentlyAdded,
+        activeListing: String(product?.status || "").toLowerCase() === "active",
         seller: {
           id: rawSellerId || null,
           name:
@@ -71,8 +83,8 @@ export default async function handler(
           joinedAt: seller?.createdAt || null,
           profileComplete: Boolean(
             String(seller?.businessName || "").trim() &&
-              String(seller?.email || "").trim() &&
-              String(seller?.description || "").trim(),
+            String(seller?.email || "").trim() &&
+            String(seller?.description || "").trim(),
           ),
         },
       },
