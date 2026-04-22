@@ -177,7 +177,7 @@ function SponsorCard({ img, name, tagline, url, cta }: any) {
   );
 }
 
-function SidebarAdCard({ img, name, tagline, url, cta }: any) {
+function SidebarAdCard({ img, name, tagline, url, cta, label = "Sponsored" }: any) {
   return (
     <a
       href={url}
@@ -187,7 +187,7 @@ function SidebarAdCard({ img, name, tagline, url, cta }: any) {
     >
       <div className="pointer-events-none absolute -top-14 left-1/2 h-28 w-72 -translate-x-1/2 rounded-full bg-[#D4AF37]/10 blur-3xl" />
       <span className="absolute top-3 right-3 rounded-full border border-white/10 bg-black/40 px-2 py-0.5 text-[10px] font-extrabold text-white/70">
-        Ad
+        {label}
       </span>
       <div className="flex items-start gap-3">
         <img
@@ -906,16 +906,7 @@ export default function BusinessDirectory() {
     return parts.slice(0, 2).join(" · ");
   };
 
-  const sponsorsToShow = [
-    ...sponsorAds,
-    ...Array(Math.max(0, 10 - sponsorAds.length)).fill({
-      img: "/placeholder.png",
-      name: "Your Business Here",
-      tagline: "Sponsor This Spot!",
-      url: "/advertise",
-      cta: "Advertise",
-    }),
-  ].slice(0, 10);
+  const sponsorsToShow = sponsorAds.slice(0, 10);
 
   const showingFrom = total === 0 ? 0 : (page - 1) * pageSize + 1;
   const showingTo =
@@ -1318,22 +1309,28 @@ export default function BusinessDirectory() {
                   </a>
                 </div>
 
-                <Swiper
-                  modules={[Navigation]}
-                  spaceBetween={10}
-                  slidesPerView="auto"
-                  navigation
-                  style={{ paddingBottom: 8 }}
-                >
-                  {sponsorsToShow.map((ad, idx) => (
-                    <SwiperSlide
-                      key={`${ad.url}-${idx}`}
-                      className="!w-[170px] sm:!w-[190px]"
-                    >
-                      <SponsorCard {...ad} />
-                    </SwiperSlide>
-                  ))}
-                </Swiper>
+                {sponsorsToShow.length ? (
+                  <Swiper
+                    modules={[Navigation]}
+                    spaceBetween={10}
+                    slidesPerView="auto"
+                    navigation
+                    style={{ paddingBottom: 8 }}
+                  >
+                    {sponsorsToShow.map((ad, idx) => (
+                      <SwiperSlide
+                        key={`${ad.url}-${idx}`}
+                        className="!w-[170px] sm:!w-[190px]"
+                      >
+                        <SponsorCard {...ad} />
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
+                ) : (
+                  <div className="rounded-xl border border-white/10 bg-black/30 p-4 text-sm text-white/65">
+                    No active sponsor campaigns in this slot right now.
+                  </div>
+                )}
               </div>
 
               {scope === "businesses" && directoryFeaturedAds.length ? (
@@ -1970,6 +1967,7 @@ export default function BusinessDirectory() {
                           tagline={ad.tagline}
                           url={ad.targetUrl || "#"}
                           cta="View"
+                          label="Sponsored Banner"
                         />
                       ))}
                     </div>
@@ -1981,9 +1979,13 @@ export default function BusinessDirectory() {
                     Sponsored
                   </div>
                   <div className="space-y-3">
-                    {sponsorAds.map((ad) => (
-                      <SidebarAdCard key={ad.url} {...ad} />
-                    ))}
+                    {sponsorAds.length ? (
+                      sponsorAds.map((ad) => <SidebarAdCard key={ad.url} {...ad} label="Sponsored" />)
+                    ) : (
+                      <div className="rounded-xl border border-white/10 bg-black/30 p-3 text-xs text-white/60">
+                        No active sponsored sidebar cards right now.
+                      </div>
+                    )}
                   </div>
                 </div>
 

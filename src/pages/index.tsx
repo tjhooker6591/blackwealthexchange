@@ -599,41 +599,7 @@ export default function Home() {
     runSearch({ aiOverride: next });
   };
 
-  const stableSponsorFallback = useMemo(
-    () => [
-      {
-        img: "/images/sponsors/titanera.jpg",
-        name: "TitanEra",
-        url: "/",
-      },
-      {
-        img: "/images/sponsors/thomashookerauthor.png",
-        name: "Thomas Hooker Author",
-        url: "/",
-      },
-      {
-        img: "/images/sponsors/pamfaunitedcitizen.jpg",
-        name: "Pamfa United Citizen",
-        url: "/",
-      },
-      {
-        img: "/images/sponsors/thelastnephilim.jpg",
-        name: "The Last Nephilim",
-        url: "/",
-      },
-      {
-        img: "/images/sponsors/Guardiansoftheforgottenrealm.jpg",
-        name: "Guardians of the Forgotten Realm",
-        url: "/",
-      },
-      {
-        img: "/images/sponsors/tiana-song-sprouts.jpg",
-        name: "Tiana Song Sprouts",
-        url: "/",
-      },
-    ],
-    [],
-  );
+  const stableSponsorFallback = useMemo(() => [], []);
 
   const [sponsors, setSponsors] = useState<
     Array<{ img: string; name: string; url?: string; tagline?: string }>
@@ -689,7 +655,7 @@ export default function Home() {
 
         const data = await sponsorsRes.json().catch(() => ({}));
         if (!sponsorsRes.ok || !Array.isArray(data?.sponsors) || cancelled) {
-          if (!cancelled) setSponsors(stableSponsorFallback);
+          if (!cancelled) setSponsors([]);
         } else {
           const normalized = data.sponsors.map((s: any) => ({
             img:
@@ -704,7 +670,7 @@ export default function Home() {
             tagline: typeof s?.tagline === "string" ? s.tagline : undefined,
           }));
 
-          setSponsors(normalized.length ? normalized : stableSponsorFallback);
+          setSponsors(normalized);
         }
 
         const placementData = await placementsRes.json().catch(() => ({}));
@@ -741,7 +707,7 @@ export default function Home() {
         }
       } catch {
         if (!cancelled) {
-          setSponsors(stableSponsorFallback);
+          setSponsors([]);
           setHomepageBanner(null);
         }
       } finally {
@@ -817,7 +783,8 @@ export default function Home() {
               company: String(j.company || "Hiring Company"),
               location: String(j.location || "Location flexible"),
               type: String(j.type || "Role"),
-              createdAt: typeof j.createdAt === "string" ? j.createdAt : undefined,
+              createdAt:
+                typeof j.createdAt === "string" ? j.createdAt : undefined,
               isFeatured: Boolean(j.isFeatured),
             })),
         );
@@ -840,9 +807,7 @@ export default function Home() {
     };
   }, []);
 
-  const sponsorRail = (
-    sponsors.length ? sponsors : stableSponsorFallback
-  ).slice(0, FEATURED_SPONSOR_RAIL_CAP);
+  const sponsorRail = sponsors.slice(0, FEATURED_SPONSOR_RAIL_CAP);
 
   const base = getBaseUrl();
   const canonical = canonicalUrl("/");
@@ -1443,18 +1408,31 @@ export default function Home() {
                     Premium placements from active hiring employers
                   </div>
                 </div>
-                <Link href="/job-listings" className="text-xs text-yellow-200 hover:underline">
+                <Link
+                  href="/job-listings"
+                  className="text-xs text-yellow-200 hover:underline"
+                >
                   View all jobs
                 </Link>
               </div>
               <div className="grid gap-2 md:grid-cols-2">
                 {featuredJobs.map((job) => (
-                  <Link key={job._id} href={`/job/${job._id}`} className="rounded-xl border border-yellow-400/30 bg-black/30 p-3 hover:bg-black/45">
+                  <Link
+                    key={job._id}
+                    href={`/job/${job._id}`}
+                    className="rounded-xl border border-yellow-400/30 bg-black/30 p-3 hover:bg-black/45"
+                  >
                     <div className="flex items-center justify-between gap-2">
-                      <p className="font-bold text-white truncate">{job.title}</p>
-                      <span className="text-[10px] px-2 py-0.5 rounded bg-yellow-400 text-black font-bold">Featured</span>
+                      <p className="font-bold text-white truncate">
+                        {job.title}
+                      </p>
+                      <span className="text-[10px] px-2 py-0.5 rounded bg-yellow-400 text-black font-bold">
+                        Featured
+                      </span>
                     </div>
-                    <p className="mt-1 text-xs text-white/75 truncate">{job.company} • {job.location} • {job.type}</p>
+                    <p className="mt-1 text-xs text-white/75 truncate">
+                      {job.company} • {job.location} • {job.type}
+                    </p>
                   </Link>
                 ))}
               </div>
@@ -1635,38 +1613,47 @@ export default function Home() {
             <div className="pointer-events-none absolute left-0 top-0 h-full w-10 bg-gradient-to-r from-black/70 to-transparent" />
             <div className="pointer-events-none absolute right-0 top-0 h-full w-10 bg-gradient-to-l from-black/70 to-transparent" />
 
-            <div className="animate-scroll absolute flex space-x-3 px-3 py-3 sm:space-x-4">
-              {[...sponsorRail, ...sponsorRail].map((sponsor, index) => {
-                const card = (
-                  <div className="relative h-14 w-24 overflow-hidden rounded-lg border border-white/10 shadow sm:h-16 sm:w-32">
-                    <img
-                      src={sponsor.img}
-                      alt={sponsor.name}
-                      className="h-full w-full object-cover"
-                      loading={index < 4 ? "eager" : "lazy"}
-                    />
-                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent px-1.5 py-1 text-center text-[9px] font-semibold text-[#F1D57A] sm:text-[10px]">
-                      {sponsor.name}
+            {sponsorRail.length ? (
+              <div className="animate-scroll absolute flex space-x-3 px-3 py-3 sm:space-x-4">
+                {[...sponsorRail, ...sponsorRail].map((sponsor, index) => {
+                  const card = (
+                    <div className="relative h-14 w-24 overflow-hidden rounded-lg border border-white/10 shadow sm:h-16 sm:w-32">
+                      <img
+                        src={sponsor.img}
+                        alt={sponsor.name}
+                        className="h-full w-full object-cover"
+                        loading={index < 4 ? "eager" : "lazy"}
+                      />
+                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent px-1.5 py-1 text-center text-[9px] font-semibold text-[#F1D57A] sm:text-[10px]">
+                        {sponsor.name}
+                      </div>
+                      <span className="absolute left-1.5 top-1.5 rounded border border-[#D4AF37]/40 bg-black/55 px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wide text-[#F1D57A]">
+                        Sponsored
+                      </span>
                     </div>
-                  </div>
-                );
-
-                if (sponsor.url) {
-                  return (
-                    <a
-                      key={index}
-                      href={sponsor.url}
-                      target="_blank"
-                      rel="noreferrer noopener"
-                    >
-                      {card}
-                    </a>
                   );
-                }
 
-                return <div key={index}>{card}</div>;
-              })}
-            </div>
+                  if (sponsor.url) {
+                    return (
+                      <a
+                        key={index}
+                        href={sponsor.url}
+                        target="_blank"
+                        rel="noreferrer noopener"
+                      >
+                        {card}
+                      </a>
+                    );
+                  }
+
+                  return <div key={index}>{card}</div>;
+                })}
+              </div>
+            ) : sponsorFeedLoaded ? (
+              <div className="absolute inset-0 flex items-center justify-center text-[11px] text-white/55">
+                No active featured sponsors in this slot right now.
+              </div>
+            ) : null}
           </div>
         </section>
 
