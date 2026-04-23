@@ -337,39 +337,57 @@ const EconomicImpactSimulator = () => {
       <div className="pointer-events-none absolute inset-0 animate-[pulse_12s_ease-in-out_infinite] bg-[radial-gradient(circle_at_25%_18%,rgba(16,185,129,0.12),transparent_42%),radial-gradient(circle_at_78%_76%,rgba(212,175,55,0.10),transparent_38%)]" />
       <div className="counter-sweep pointer-events-none absolute inset-0 opacity-65 mix-blend-screen" />
 
-      <div className="relative flex flex-col items-center text-center">
-        <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-bold tracking-wide text-white/80">
-          <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
-          BUYING POWER (ANNUAL ESTIMATE)
+      <div className="relative grid gap-4 lg:grid-cols-[1.1fr_0.9fr] lg:items-stretch">
+        <div className="rounded-xl border border-white/10 bg-white/[0.03] p-3 text-left sm:p-4">
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-bold tracking-wide text-white/80">
+            <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
+            BUYING POWER (ANNUAL ESTIMATE)
+          </div>
+
+          <h2 className="mt-2 text-base font-extrabold tracking-[0.015em] text-white sm:text-xl md:text-2xl">
+            African American Buying Power{" "}
+            <span className="text-[#D4AF37]">({currentYear})</span>
+          </h2>
+
+          <div className="relative mt-2 text-[2rem] font-black tracking-tight tabular-nums sm:text-5xl md:text-6xl">
+            <span className="counter-value relative z-10 bg-gradient-to-r from-emerald-200 via-emerald-400 to-[#D4AF37] bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(16,185,129,0.34)]">
+              {formatCurrency(Math.floor(total))}
+            </span>
+            <span
+              aria-hidden
+              className="counter-value-sheen pointer-events-none absolute inset-0 z-0 bg-clip-text text-transparent"
+            >
+              {formatCurrency(Math.floor(total))}
+            </span>
+          </div>
+
+          <div className="mt-1 flex flex-wrap items-center gap-2 text-[11px] sm:text-xs">
+            <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-white/78">
+              ≈ $4.2 billion per day
+            </span>
+            <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-white/78">
+              ≈ $48,000 per second
+            </span>
+          </div>
+
+          <p className="mt-3 text-[11px] text-white/50">
+            A simple visual tracker to keep the impact front-and-center.
+          </p>
+
+          <div className="mt-2 hidden flex-wrap items-center gap-2 text-[11px] text-white/70 sm:flex">
+            <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">
+              ~{formatCurrency(perMonth)} / month
+            </span>
+            <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">
+              ~{formatCurrency(perDay)} / day
+            </span>
+            <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">
+              ~{formatCurrency(perSecondLive)} / second
+            </span>
+          </div>
         </div>
 
-        <h2 className="mt-2 text-base font-extrabold tracking-[0.015em] text-white sm:text-xl md:text-2xl">
-          African American Buying Power{" "}
-          <span className="text-[#D4AF37]">({currentYear})</span>
-        </h2>
-
-        <div className="relative mt-2 text-[2rem] font-black tracking-tight tabular-nums sm:text-5xl md:text-6xl">
-          <span className="counter-value relative z-10 bg-gradient-to-r from-emerald-200 via-emerald-400 to-[#D4AF37] bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(16,185,129,0.34)]">
-            {formatCurrency(Math.floor(total))}
-          </span>
-          <span
-            aria-hidden
-            className="counter-value-sheen pointer-events-none absolute inset-0 z-0 bg-clip-text text-transparent"
-          >
-            {formatCurrency(Math.floor(total))}
-          </span>
-        </div>
-
-        <div className="mt-1 flex flex-wrap items-center justify-center gap-2 text-[11px] sm:text-xs">
-          <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-white/78">
-            ≈ $4.2 billion per day
-          </span>
-          <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-white/78">
-            ≈ $48,000 per second
-          </span>
-        </div>
-
-        <div className="mt-3 w-full max-w-4xl">
+        <div className="rounded-xl border border-white/15 bg-[#071018]/85 p-3 sm:p-4">
           <div className="flex items-center justify-between text-[11px] text-white/55">
             <span>Baseline (2010): {formatCurrency(initialValue)}</span>
             <span>Projected (2026): {formatCurrency(projected)}</span>
@@ -379,38 +397,43 @@ const EconomicImpactSimulator = () => {
             Spending Flow Progress
           </p>
 
-          <div className="flow-track relative mt-2 h-4 w-full overflow-hidden rounded-full border border-white/20 bg-[#070b0f] shadow-[inset_0_2px_3px_rgba(255,255,255,0.12),inset_0_-2px_4px_rgba(0,0,0,0.65)]">
-            <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.15),rgba(255,255,255,0.01)_45%,rgba(0,0,0,0.45)_100%)]" />
-            <div className="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(90deg,rgba(255,255,255,0.02),rgba(255,255,255,0.02)_14px,rgba(255,255,255,0.08)_15px,rgba(255,255,255,0.02)_16px)] opacity-45" />
+          <div className="signal-panel relative mt-2 overflow-hidden rounded-xl border border-white/10 bg-black/35 p-2">
+            <div className="signal-orb pointer-events-none absolute right-2 top-2 h-16 w-16 rounded-full" />
+            <div className="signal-rings pointer-events-none absolute inset-y-0 right-2 w-20" />
 
-            <div
-              className="flow-fill relative h-full overflow-hidden rounded-full bg-gradient-to-r from-emerald-400 via-emerald-300 to-[#D4AF37] shadow-[0_0_26px_rgba(16,185,129,0.45)] transition-[width] duration-1000 ease-out"
-              style={{ width: `${progressPct}%` }}
-            >
-              <span className="flow-beam pointer-events-none absolute inset-y-0 -left-8 w-14 bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.85),transparent)]" />
-              <span className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.45)_52%,transparent_100%)] opacity-70" />
+            <div className="flow-track flow-lane relative h-5 w-full overflow-hidden rounded-full border border-white/20 bg-[#070b0f] shadow-[inset_0_2px_3px_rgba(255,255,255,0.12),inset_0_-2px_4px_rgba(0,0,0,0.65)]">
+              <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.15),rgba(255,255,255,0.01)_45%,rgba(0,0,0,0.45)_100%)]" />
+              <div className="flow-grid pointer-events-none absolute inset-0" />
+
+              <div
+                className="flow-fill relative h-full overflow-hidden rounded-full bg-gradient-to-r from-emerald-400 via-emerald-300 to-[#D4AF37] shadow-[0_0_28px_rgba(16,185,129,0.48)] transition-[width] duration-1000 ease-out"
+                style={{ width: `${progressPct}%` }}
+              >
+                <span className="flow-beam pointer-events-none absolute inset-y-0 -left-8 w-16 bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.9),transparent)]" />
+                <span className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.45)_52%,transparent_100%)] opacity-70" />
+              </div>
+
+              <span
+                className="pointer-events-none absolute top-1/2 h-5 w-[2px] -translate-y-1/2 rounded bg-emerald-100/85 shadow-[0_0_10px_rgba(16,185,129,0.5)]"
+                style={{ left: `${progressMarker(initialValue)}%` }}
+                title="Baseline (2010)"
+              />
+              <span
+                className="pointer-events-none absolute top-1/2 h-6 w-[2px] -translate-y-1/2 rounded bg-[#D4AF37] shadow-[0_0_12px_rgba(212,175,55,0.8)]"
+                style={{ left: `${currentMarker}%` }}
+                title="Current"
+              />
+              <span
+                className="pointer-events-none absolute top-1/2 h-5 w-[2px] -translate-y-1/2 rounded bg-white/90 shadow-[0_0_10px_rgba(255,255,255,0.45)]"
+                style={{ left: `${progressMarker(projected)}%` }}
+                title="Projected (2026)"
+              />
+
+              <span
+                className="flow-head pointer-events-none absolute top-1/2 h-3.5 w-3.5 -translate-y-1/2 rounded-full border border-[#D4AF37]/80 bg-[#D4AF37]"
+                style={{ left: `calc(${Math.max(1, progressPct)}% - 7px)` }}
+              />
             </div>
-
-            <span
-              className="pointer-events-none absolute top-1/2 h-4 w-[2px] -translate-y-1/2 rounded bg-emerald-100/85 shadow-[0_0_10px_rgba(16,185,129,0.5)]"
-              style={{ left: `${progressMarker(initialValue)}%` }}
-              title="Baseline (2010)"
-            />
-            <span
-              className="pointer-events-none absolute top-1/2 h-5 w-[2px] -translate-y-1/2 rounded bg-[#D4AF37] shadow-[0_0_12px_rgba(212,175,55,0.8)]"
-              style={{ left: `${currentMarker}%` }}
-              title="Current"
-            />
-            <span
-              className="pointer-events-none absolute top-1/2 h-4 w-[2px] -translate-y-1/2 rounded bg-white/90 shadow-[0_0_10px_rgba(255,255,255,0.45)]"
-              style={{ left: `${progressMarker(projected)}%` }}
-              title="Projected (2026)"
-            />
-
-            <span
-              className="flow-head pointer-events-none absolute top-1/2 h-3 w-3 -translate-y-1/2 rounded-full border border-[#D4AF37]/80 bg-[#D4AF37]"
-              style={{ left: `calc(${Math.max(1, progressPct)}% - 6px)` }}
-            />
           </div>
 
           <div className="mt-1 flex items-center justify-between text-[10px] text-white/52">
@@ -418,65 +441,58 @@ const EconomicImpactSimulator = () => {
             <span>Current</span>
             <span>Projected (2026)</span>
           </div>
-
-          <p className="mt-2 text-center text-[11px] text-white/50">
-            A simple visual tracker to keep the impact front-and-center.
-          </p>
         </div>
 
-        <div className="mt-2 hidden flex-wrap items-center justify-center gap-2 text-[11px] text-white/70 sm:flex">
-          <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">
-            ~{formatCurrency(perMonth)} / month
-          </span>
-          <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">
-            ~{formatCurrency(perDay)} / day
-          </span>
-          <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">
-            ~{formatCurrency(perSecondLive)} / second
-          </span>
-        </div>
+        <div className="lg:col-span-2">
+          <div className="mt-0 w-full rounded-lg border border-[#D4AF37]/35 bg-[#D4AF37]/8 px-3 py-2 text-center text-[11px] text-white/85">
+            <span className="font-semibold text-[#D4AF37]">
+              If 5% stays within our ecosystem → $105B retained annually
+            </span>
+          </div>
 
-        <div className="mt-3 w-full rounded-lg border border-[#D4AF37]/35 bg-[#D4AF37]/8 px-3 py-2 text-center text-[11px] text-white/85">
-          <span className="font-semibold text-[#D4AF37]">
-            If 5% stays within our ecosystem → $105B retained annually
-          </span>
-        </div>
+          <div className="mt-4 grid w-full gap-2 sm:grid-cols-2 sm:gap-3">
+            <Link
+              href="/1.8trillionimpact"
+              className="group inline-flex items-center justify-center rounded-xl border border-[#D4AF37]/40 bg-[#D4AF37]/10 px-3 py-2 text-center shadow-sm transition hover:border-[#D4AF37]/80 hover:bg-gradient-to-r hover:from-[#D4AF37]/20 hover:to-emerald-400/10 hover:shadow-[0_0_18px_rgba(212,175,55,0.2)] sm:px-4 sm:py-2.5"
+            >
+              <div className="flex w-full items-center justify-between gap-3">
+                <span className="text-[11px] font-extrabold tracking-wide text-[#D4AF37] sm:text-sm">
+                  Knowledge is Power
+                </span>
+                <span className="truncate text-[10px] text-white/70 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-white sm:text-sm">
+                  Where the money goes →
+                </span>
+              </div>
+            </Link>
 
-        <div className="mt-4 grid w-full gap-2 sm:grid-cols-2 sm:gap-3">
-          <Link
-            href="/1.8trillionimpact"
-            className="group inline-flex items-center justify-center rounded-xl border border-[#D4AF37]/40 bg-[#D4AF37]/10 px-3 py-2 text-center shadow-sm transition hover:border-[#D4AF37]/80 hover:bg-gradient-to-r hover:from-[#D4AF37]/20 hover:to-emerald-400/10 hover:shadow-[0_0_18px_rgba(212,175,55,0.2)] sm:px-4 sm:py-2.5"
-          >
-            <div className="flex w-full items-center justify-between gap-3">
-              <span className="text-[11px] font-extrabold tracking-wide text-[#D4AF37] sm:text-sm">
-                Knowledge is Power
-              </span>
-              <span className="truncate text-[10px] text-white/70 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-white sm:text-sm">
-                Where the money goes →
-              </span>
-            </div>
-          </Link>
-
-          <Link
-            href="/economic-freedom"
-            className="group inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-center transition hover:border-[#D4AF37]/30 hover:bg-gradient-to-r hover:from-white/10 hover:to-[#D4AF37]/10 hover:shadow-[0_0_14px_rgba(212,175,55,0.14)] sm:px-4 sm:py-2.5"
-          >
-            <div className="flex w-full items-center justify-between gap-3">
-              <span className="text-[11px] font-extrabold tracking-wide text-[#D4AF37] sm:text-sm">
-                Economic Slavery
-              </span>
-              <span className="truncate text-[10px] text-white/70 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-white sm:text-sm">
-                Learn more →
-              </span>
-            </div>
-          </Link>
+            <Link
+              href="/economic-freedom"
+              className="group inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-center transition hover:border-[#D4AF37]/30 hover:bg-gradient-to-r hover:from-white/10 hover:to-[#D4AF37]/10 hover:shadow-[0_0_14px_rgba(212,175,55,0.14)] sm:px-4 sm:py-2.5"
+            >
+              <div className="flex w-full items-center justify-between gap-3">
+                <span className="text-[11px] font-extrabold tracking-wide text-[#D4AF37] sm:text-sm">
+                  Economic Slavery
+                </span>
+                <span className="truncate text-[10px] text-white/70 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-white sm:text-sm">
+                  Learn more →
+                </span>
+              </div>
+            </Link>
+          </div>
         </div>
       </div>
       <style jsx>{`
         .counter-grid {
-          background-image: linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-          background-size: 24px 24px, 24px 24px;
+          background-image:
+            linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+            linear-gradient(
+              90deg,
+              rgba(255, 255, 255, 0.04) 1px,
+              transparent 1px
+            );
+          background-size:
+            24px 24px,
+            24px 24px;
         }
 
         .counter-sweep {
@@ -518,6 +534,54 @@ const EconomicImpactSimulator = () => {
           animation: headPulse 1.8s ease-in-out infinite;
         }
 
+        .flow-grid {
+          background-image: repeating-linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.03),
+            rgba(255, 255, 255, 0.03) 16px,
+            rgba(255, 255, 255, 0.12) 17px,
+            rgba(255, 255, 255, 0.03) 18px
+          );
+          opacity: 0.38;
+        }
+
+        .flow-lane {
+          box-shadow:
+            inset 0 2px 3px rgba(255, 255, 255, 0.16),
+            inset 0 -2px 4px rgba(0, 0, 0, 0.68),
+            0 0 0 1px rgba(255, 255, 255, 0.04);
+        }
+
+        .signal-panel {
+          background: linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.05),
+            rgba(255, 255, 255, 0.01) 34%,
+            rgba(0, 0, 0, 0.3)
+          );
+        }
+
+        .signal-orb {
+          background: radial-gradient(
+            circle,
+            rgba(16, 185, 129, 0.5),
+            rgba(16, 185, 129, 0.12) 46%,
+            transparent 68%
+          );
+          animation: valuePulse 2.8s ease-in-out infinite;
+        }
+
+        .signal-rings {
+          background: repeating-radial-gradient(
+            circle at 100% 50%,
+            rgba(212, 175, 55, 0.2) 0,
+            rgba(212, 175, 55, 0.2) 1px,
+            transparent 10px,
+            transparent 17px
+          );
+          opacity: 0.45;
+        }
+
         @keyframes signalSweep {
           0% {
             background-position: 115% 0;
@@ -536,7 +600,7 @@ const EconomicImpactSimulator = () => {
             opacity: 1;
           }
           100% {
-            transform: translateX(420px);
+            transform: translateX(520px);
             opacity: 0;
           }
         }
@@ -554,12 +618,16 @@ const EconomicImpactSimulator = () => {
         @keyframes trackBreath {
           0%,
           100% {
-            box-shadow: inset 0 2px 3px rgba(255, 255, 255, 0.12),
-              inset 0 -2px 4px rgba(0, 0, 0, 0.65), 0 0 0 rgba(16, 185, 129, 0);
+            box-shadow:
+              inset 0 2px 3px rgba(255, 255, 255, 0.12),
+              inset 0 -2px 4px rgba(0, 0, 0, 0.65),
+              0 0 0 rgba(16, 185, 129, 0);
           }
           50% {
-            box-shadow: inset 0 2px 3px rgba(255, 255, 255, 0.14),
-              inset 0 -2px 4px rgba(0, 0, 0, 0.65), 0 0 18px rgba(16, 185, 129, 0.22);
+            box-shadow:
+              inset 0 2px 3px rgba(255, 255, 255, 0.14),
+              inset 0 -2px 4px rgba(0, 0, 0, 0.65),
+              0 0 18px rgba(16, 185, 129, 0.22);
           }
         }
 
