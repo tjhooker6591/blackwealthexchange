@@ -321,11 +321,16 @@ const EconomicImpactSimulator = () => {
   const progressPct = Math.min(100, (total / projected) * 100);
   const perMonth = projected / 12;
   const perDay = perMonth / 30.44;
+  const perSecondLive = projected / (365 * 24 * 60 * 60);
+  const progressMarker = (value: number) => Math.min(100, (value / projected) * 100);
+  const currentMarker = progressMarker(total);
 
   return (
-    <section className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
-      <div className="pointer-events-none absolute -top-24 left-1/2 h-48 w-[34rem] -translate-x-1/2 rounded-full bg-[#D4AF37]/12 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-28 right-[-6rem] h-64 w-64 rounded-full bg-emerald-500/10 blur-3xl" />
+    <section className="relative overflow-hidden rounded-2xl border border-transparent bg-white/[0.03] p-4 shadow-[0_12px_34px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.07)] backdrop-blur sm:p-5">
+      <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-r from-emerald-400/30 via-transparent to-[#D4AF37]/35 p-[1px] [mask:linear-gradient(#fff_0_0)_content-box,linear-gradient(#fff_0_0)] [mask-composite:xor]" />
+      <div className="pointer-events-none absolute -top-24 left-1/2 h-52 w-[36rem] -translate-x-1/2 rounded-full bg-[#D4AF37]/12 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-28 right-[-6rem] h-64 w-64 rounded-full bg-emerald-400/12 blur-3xl" />
+      <div className="pointer-events-none absolute inset-0 animate-[pulse_10s_ease-in-out_infinite] bg-[radial-gradient(circle_at_25%_18%,rgba(16,185,129,0.12),transparent_42%),radial-gradient(circle_at_78%_76%,rgba(212,175,55,0.10),transparent_38%)]" />
 
       <div className="relative flex flex-col items-center text-center">
         <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-bold tracking-wide text-white/80">
@@ -333,28 +338,66 @@ const EconomicImpactSimulator = () => {
           BUYING POWER (ANNUAL ESTIMATE)
         </div>
 
-        <h2 className="mt-2 text-base font-extrabold tracking-tight text-white sm:text-xl md:text-2xl">
+        <h2 className="mt-2 text-base font-extrabold tracking-[0.015em] text-white sm:text-xl md:text-2xl">
           African American Buying Power{" "}
           <span className="text-[#D4AF37]">({currentYear})</span>
         </h2>
 
-        <div className="mt-2 text-2xl font-extrabold tracking-tight tabular-nums sm:text-4xl md:text-5xl">
-          <span className="bg-gradient-to-r from-emerald-200 via-emerald-400 to-emerald-200 bg-clip-text text-transparent">
+        <div className="mt-2 text-[2rem] font-black tracking-tight tabular-nums sm:text-5xl md:text-6xl">
+          <span className="bg-gradient-to-r from-emerald-200 via-emerald-400 to-[#D4AF37] bg-clip-text text-transparent drop-shadow-[0_0_16px_rgba(16,185,129,0.18)]">
             {formatCurrency(Math.floor(total))}
+          </span>
+        </div>
+
+        <div className="mt-1 flex flex-wrap items-center justify-center gap-2 text-[11px] sm:text-xs">
+          <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-white/78">
+            ≈ $4.2 billion per day
+          </span>
+          <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-white/78">
+            ≈ $48,000 per second
           </span>
         </div>
 
         <div className="mt-3 w-full max-w-4xl">
           <div className="flex items-center justify-between text-[11px] text-white/55">
-            <span>{formatCurrency(initialValue)} baseline</span>
-            <span>{formatCurrency(projected)} estimate</span>
+            <span>Baseline (2010): {formatCurrency(initialValue)}</span>
+            <span>Projected (2026): {formatCurrency(projected)}</span>
           </div>
 
-          <div className="mt-2 h-2 w-full rounded-full bg-white/10">
+          <p className="mt-2 text-center text-[11px] font-medium tracking-wide text-white/62">
+            Spending Flow Progress
+          </p>
+
+          <div className="relative mt-2 h-3 w-full rounded-full border border-white/10 bg-[#0f1316] shadow-[inset_0_1px_2px_rgba(255,255,255,0.06)]">
             <div
-              className="h-2 rounded-full bg-gradient-to-r from-[#D4AF37] via-emerald-400 to-emerald-300 shadow-[0_0_14px_rgba(16,185,129,0.18)] transition-[width] duration-200"
+              className="h-full rounded-full bg-gradient-to-r from-emerald-400 via-emerald-300 to-[#D4AF37] shadow-[0_0_16px_rgba(16,185,129,0.28)] transition-[width] duration-1000 ease-out"
               style={{ width: `${progressPct}%` }}
             />
+            <span
+              className="pointer-events-none absolute top-1/2 h-2.5 w-2.5 -translate-y-1/2 rounded-full bg-[#D4AF37] shadow-[0_0_12px_rgba(212,175,55,0.65)]"
+              style={{ left: `calc(${Math.max(1, progressPct)}% - 5px)` }}
+            />
+            <span
+              className="pointer-events-none absolute top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-emerald-200/70 bg-emerald-300/85"
+              style={{ left: `${progressMarker(initialValue)}%` }}
+              title="Baseline (2010)"
+            />
+            <span
+              className="pointer-events-none absolute top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#D4AF37]/80 bg-[#D4AF37]"
+              style={{ left: `${currentMarker}%` }}
+              title="Current"
+            />
+            <span
+              className="pointer-events-none absolute top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/70 bg-white/90"
+              style={{ left: `${progressMarker(projected)}%` }}
+              title="Projected (2026)"
+            />
+          </div>
+
+          <div className="mt-1 flex items-center justify-between text-[10px] text-white/52">
+            <span>Baseline (2010)</span>
+            <span>Current</span>
+            <span>Projected (2026)</span>
           </div>
 
           <p className="mt-2 text-center text-[11px] text-white/50">
@@ -369,18 +412,27 @@ const EconomicImpactSimulator = () => {
           <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">
             ~{formatCurrency(perDay)} / day
           </span>
+          <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">
+            ~{formatCurrency(perSecondLive)} / second
+          </span>
         </div>
 
-        <div className="mt-4 grid w-full gap-2 sm:gap-3 sm:grid-cols-2">
+        <div className="mt-3 w-full rounded-lg border border-[#D4AF37]/35 bg-[#D4AF37]/8 px-3 py-2 text-center text-[11px] text-white/85">
+          <span className="font-semibold text-[#D4AF37]">
+            If 5% stays within our ecosystem → $105B retained annually
+          </span>
+        </div>
+
+        <div className="mt-4 grid w-full gap-2 sm:grid-cols-2 sm:gap-3">
           <Link
             href="/1.8trillionimpact"
-            className="group inline-flex items-center justify-center rounded-xl border border-[#D4AF37]/40 bg-[#D4AF37]/10 px-3 py-2 sm:px-4 sm:py-2.5 text-center shadow-sm transition hover:border-[#D4AF37]/70 hover:bg-[#D4AF37]/15"
+            className="group inline-flex items-center justify-center rounded-xl border border-[#D4AF37]/40 bg-[#D4AF37]/10 px-3 py-2 text-center shadow-sm transition hover:border-[#D4AF37]/80 hover:bg-gradient-to-r hover:from-[#D4AF37]/20 hover:to-emerald-400/10 hover:shadow-[0_0_18px_rgba(212,175,55,0.2)] sm:px-4 sm:py-2.5"
           >
             <div className="flex w-full items-center justify-between gap-3">
               <span className="text-[11px] font-extrabold tracking-wide text-[#D4AF37] sm:text-sm">
                 Knowledge is Power
               </span>
-              <span className="truncate text-[10px] text-white/70 group-hover:text-white sm:text-sm">
+              <span className="truncate text-[10px] text-white/70 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-white sm:text-sm">
                 Where the money goes →
               </span>
             </div>
@@ -388,13 +440,13 @@ const EconomicImpactSimulator = () => {
 
           <Link
             href="/economic-freedom"
-            className="group inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 px-3 py-2 sm:px-4 sm:py-2.5 text-center transition hover:border-white/20 hover:bg-white/10"
+            className="group inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-center transition hover:border-[#D4AF37]/30 hover:bg-gradient-to-r hover:from-white/10 hover:to-[#D4AF37]/10 hover:shadow-[0_0_14px_rgba(212,175,55,0.14)] sm:px-4 sm:py-2.5"
           >
             <div className="flex w-full items-center justify-between gap-3">
               <span className="text-[11px] font-extrabold tracking-wide text-[#D4AF37] sm:text-sm">
                 Economic Slavery
               </span>
-              <span className="truncate text-[10px] text-white/70 group-hover:text-white sm:text-sm">
+              <span className="truncate text-[10px] text-white/70 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-white sm:text-sm">
                 Learn more →
               </span>
             </div>
@@ -808,7 +860,8 @@ export default function Home() {
   }, []);
 
   const sponsorRail = sponsors.slice(0, FEATURED_SPONSOR_RAIL_CAP);
-  const showHomepageBanner = Boolean(homepageBanner) && sponsorRail.length === 0;
+  const showHomepageBanner =
+    Boolean(homepageBanner) && sponsorRail.length === 0;
 
   const base = getBaseUrl();
   const canonical = canonicalUrl("/");
