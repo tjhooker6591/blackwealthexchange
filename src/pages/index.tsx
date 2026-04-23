@@ -286,10 +286,10 @@ const EconomicImpactSimulator = () => {
     });
 
   return (
-    <section className="relative overflow-hidden py-3 sm:py-5">
+    <section className="relative overflow-hidden py-2 sm:py-4">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_18%,rgba(16,185,129,0.12),transparent_34%),radial-gradient(circle_at_88%_76%,rgba(212,175,55,0.13),transparent_40%)]" />
 
-      <div className="relative grid gap-3 rounded-xl border border-white/10 bg-[#05090c]/92 p-2.5 shadow-[0_12px_34px_rgba(0,0,0,0.42)] backdrop-blur sm:p-4 lg:grid-cols-[0.38fr_0.62fr] lg:items-stretch">
+      <div className="relative grid gap-3 rounded-xl border border-white/10 bg-[#05090c]/92 p-2 shadow-[0_12px_34px_rgba(0,0,0,0.42)] backdrop-blur sm:p-3.5 lg:grid-cols-[0.38fr_0.62fr] lg:items-stretch">
         <div className="min-w-0 lg:pr-2">
           <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-bold tracking-wide text-white/80">
             <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
@@ -297,7 +297,7 @@ const EconomicImpactSimulator = () => {
           </div>
 
           <h2 className="mt-1.5 text-sm font-extrabold tracking-[0.01em] text-white sm:mt-2 sm:text-xl">
-            African American Buying Power{' '}
+            African American Buying Power{" "}
             <span className="text-[#D4AF37]">({currentYear})</span>
           </h2>
 
@@ -316,15 +316,23 @@ const EconomicImpactSimulator = () => {
           <div className="mt-2 grid grid-cols-2 gap-2 text-[10px] sm:text-xs">
             <div className="rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5">
               <p className="text-white/55">Baseline (2010)</p>
-              <p className="font-semibold text-white">{formatCurrency(baseline)}</p>
+              <p className="font-semibold text-white">
+                {formatCurrency(baseline)}
+              </p>
               <p className="mt-0.5 text-white/55">Current</p>
-              <p className="font-semibold text-white">{formatCurrency(current)}</p>
+              <p className="font-semibold text-white">
+                {formatCurrency(current)}
+              </p>
             </div>
             <div className="rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5">
               <p className="text-white/55">Daily flow</p>
-              <p className="font-semibold text-white">{formatCurrency(perDay)} / day</p>
+              <p className="font-semibold text-white">
+                {formatCurrency(perDay)} / day
+              </p>
               <p className="mt-0.5 text-white/55">Second-level flow</p>
-              <p className="font-semibold text-white">{formatCurrency(perSecond)} / sec</p>
+              <p className="font-semibold text-white">
+                {formatCurrency(perSecond)} / sec
+              </p>
             </div>
           </div>
         </div>
@@ -334,7 +342,7 @@ const EconomicImpactSimulator = () => {
             Spending Flow Progress
           </div>
 
-          <div className="viz-shell relative h-[190px] overflow-hidden rounded-lg border border-white/12 bg-[#060b10]/90 p-2.5 sm:h-[230px] sm:p-3">
+          <div className="viz-shell relative h-[168px] overflow-hidden rounded-lg border border-white/12 bg-[#060b10]/90 p-2 sm:h-[208px] sm:p-2.5">
             <div className="viz-grid pointer-events-none absolute inset-0" />
             <div className="ambient-shift pointer-events-none absolute inset-0" />
             <div className="recapture-zone pointer-events-none absolute inset-y-0 right-0 w-[28%]" />
@@ -355,7 +363,9 @@ const EconomicImpactSimulator = () => {
                     width="5.1"
                     height={h * 0.58}
                     rx="0.8"
-                    fill={i > 8 ? 'rgba(212,175,55,0.58)' : 'rgba(16,185,129,0.52)'}
+                    fill={
+                      i > 8 ? "rgba(212,175,55,0.58)" : "rgba(16,185,129,0.52)"
+                    }
                   />
                 );
               })}
@@ -423,11 +433,12 @@ const EconomicImpactSimulator = () => {
         <div className="lg:col-span-2">
           <div className="rounded-lg border border-[#D4AF37]/35 bg-[#D4AF37]/8 px-3 py-1.5 text-center text-[10px] text-white/86 sm:py-2 sm:text-[11px]">
             <span className="font-semibold text-[#D4AF37]">
-              If {recapturePct}% stays within our ecosystem → {formatCurrency(recaptureValue)} retained annually
+              If {recapturePct}% stays within our ecosystem →{" "}
+              {formatCurrency(recaptureValue)} retained annually
             </span>
           </div>
 
-          <div className="mt-2 grid w-full gap-2 sm:grid-cols-2 sm:gap-3">
+          <div className="mt-1.5 grid w-full gap-2 sm:mt-2 sm:grid-cols-2 sm:gap-3">
             <Link
               href="/1.8trillionimpact"
               className="group inline-flex items-center justify-center rounded-xl border border-[#D4AF37]/40 bg-[#D4AF37]/10 px-3 py-1.5 text-center shadow-sm transition hover:border-[#D4AF37]/80 hover:bg-gradient-to-r hover:from-[#D4AF37]/20 hover:to-emerald-400/10 sm:px-4 sm:py-2.5"
@@ -463,7 +474,11 @@ const EconomicImpactSimulator = () => {
         .viz-grid {
           background-image:
             linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            linear-gradient(
+              90deg,
+              rgba(255, 255, 255, 0.05) 1px,
+              transparent 1px
+            );
           background-size: 20px 20px;
           opacity: 0.32;
         }
@@ -539,7 +554,6 @@ const EconomicImpactSimulator = () => {
     </section>
   );
 };
-
 
 type VerticalKey = "all" | "shopping" | "news";
 
