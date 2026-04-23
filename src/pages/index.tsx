@@ -327,30 +327,25 @@ const EconomicImpactSimulator = () => {
   const currentMarker = progressMarker(total);
 
   return (
-    <section className="relative overflow-hidden rounded-2xl border border-transparent bg-[#05080b]/95 p-4 shadow-[0_20px_52px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.12),inset_0_-30px_48px_rgba(0,0,0,0.36)] backdrop-blur sm:p-5">
-      <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-r from-emerald-400/35 via-transparent to-[#D4AF37]/40 p-[1px] [mask:linear-gradient(#fff_0_0)_content-box,linear-gradient(#fff_0_0)] [mask-composite:xor]" />
-      <div className="pointer-events-none absolute inset-[1px] rounded-2xl bg-[linear-gradient(160deg,rgba(255,255,255,0.05),rgba(255,255,255,0.00)_42%,rgba(0,0,0,0.22)_100%)]" />
-      <div className="pointer-events-none absolute inset-[10px] rounded-xl border border-white/15 bg-[radial-gradient(circle_at_22%_18%,rgba(16,185,129,0.16),transparent_38%),radial-gradient(circle_at_82%_78%,rgba(212,175,55,0.14),transparent_40%)]" />
-      <div className="counter-grid pointer-events-none absolute inset-[10px] rounded-xl opacity-35" />
-      <div className="pointer-events-none absolute -top-24 left-1/2 h-52 w-[36rem] -translate-x-1/2 rounded-full bg-[#D4AF37]/12 blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-28 right-[-6rem] h-64 w-64 rounded-full bg-emerald-400/12 blur-3xl" />
-      <div className="pointer-events-none absolute inset-0 animate-[pulse_12s_ease-in-out_infinite] bg-[radial-gradient(circle_at_25%_18%,rgba(16,185,129,0.12),transparent_42%),radial-gradient(circle_at_78%_76%,rgba(212,175,55,0.10),transparent_38%)]" />
-      <div className="counter-sweep pointer-events-none absolute inset-0 opacity-65 mix-blend-screen" />
+    <section className="relative isolate overflow-hidden py-6 sm:py-8">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(16,185,129,0.14),transparent_36%),radial-gradient(circle_at_88%_75%,rgba(212,175,55,0.14),transparent_42%)]" />
+      <div className="counter-grid pointer-events-none absolute inset-0 opacity-35" />
+      <div className="counter-sweep pointer-events-none absolute inset-0 opacity-70 mix-blend-screen" />
 
-      <div className="relative grid gap-4 lg:grid-cols-[1.1fr_0.9fr] lg:items-stretch">
-        <div className="rounded-xl border border-white/10 bg-white/[0.03] p-3 text-left sm:p-4">
+      <div className="relative grid gap-6 lg:grid-cols-[1.05fr_1.2fr] lg:items-end">
+        <div className="text-left">
           <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-bold tracking-wide text-white/80">
             <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
             BUYING POWER (ANNUAL ESTIMATE)
           </div>
 
-          <h2 className="mt-2 text-base font-extrabold tracking-[0.015em] text-white sm:text-xl md:text-2xl">
+          <h2 className="mt-3 text-base font-extrabold tracking-[0.015em] text-white sm:text-xl md:text-2xl">
             African American Buying Power{" "}
             <span className="text-[#D4AF37]">({currentYear})</span>
           </h2>
 
-          <div className="relative mt-2 text-[2rem] font-black tracking-tight tabular-nums sm:text-5xl md:text-6xl">
-            <span className="counter-value relative z-10 bg-gradient-to-r from-emerald-200 via-emerald-400 to-[#D4AF37] bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(16,185,129,0.34)]">
+          <div className="relative mt-2 text-[2.2rem] font-black tracking-tight tabular-nums sm:text-5xl md:text-6xl">
+            <span className="counter-value relative z-10 bg-gradient-to-r from-emerald-200 via-emerald-400 to-[#D4AF37] bg-clip-text text-transparent drop-shadow-[0_0_24px_rgba(16,185,129,0.42)]">
               {formatCurrency(Math.floor(total))}
             </span>
             <span
@@ -361,7 +356,7 @@ const EconomicImpactSimulator = () => {
             </span>
           </div>
 
-          <div className="mt-1 flex flex-wrap items-center gap-2 text-[11px] sm:text-xs">
+          <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px] sm:text-xs">
             <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-white/78">
               ≈ $4.2 billion per day
             </span>
@@ -370,7 +365,7 @@ const EconomicImpactSimulator = () => {
             </span>
           </div>
 
-          <p className="mt-3 text-[11px] text-white/50">
+          <p className="mt-3 text-[11px] text-white/52">
             A simple visual tracker to keep the impact front-and-center.
           </p>
 
@@ -387,56 +382,54 @@ const EconomicImpactSimulator = () => {
           </div>
         </div>
 
-        <div className="rounded-xl border border-white/15 bg-[#071018]/85 p-3 sm:p-4">
-          <div className="flex items-center justify-between text-[11px] text-white/55">
+        <div className="relative overflow-hidden rounded-xl border border-white/10 bg-black/30 p-4">
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.01)_45%,rgba(0,0,0,0.4)_100%)]" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-28 bg-[radial-gradient(circle_at_80%_50%,rgba(16,185,129,0.28),transparent_58%)]" />
+
+          <div className="relative flex items-center justify-between text-[11px] text-white/60">
             <span>Baseline (2010): {formatCurrency(initialValue)}</span>
             <span>Projected (2026): {formatCurrency(projected)}</span>
           </div>
 
-          <p className="mt-2 text-center text-[11px] font-medium tracking-wide text-white/62">
+          <p className="relative mt-2 text-center text-[11px] font-medium tracking-wide text-white/66">
             Spending Flow Progress
           </p>
 
-          <div className="signal-panel relative mt-2 overflow-hidden rounded-xl border border-white/10 bg-black/35 p-2">
-            <div className="signal-orb pointer-events-none absolute right-2 top-2 h-16 w-16 rounded-full" />
-            <div className="signal-rings pointer-events-none absolute inset-y-0 right-2 w-20" />
+          <div className="signal-field relative mt-3 h-28 overflow-hidden rounded-lg border border-white/10 bg-[#070b0f]/85">
+            <div className="flow-grid pointer-events-none absolute inset-0" />
+            <div className="pointer-events-none absolute left-0 right-0 top-1/2 h-[1px] -translate-y-1/2 bg-white/25" />
 
-            <div className="flow-track flow-lane relative h-5 w-full overflow-hidden rounded-full border border-white/20 bg-[#070b0f] shadow-[inset_0_2px_3px_rgba(255,255,255,0.12),inset_0_-2px_4px_rgba(0,0,0,0.65)]">
-              <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.15),rgba(255,255,255,0.01)_45%,rgba(0,0,0,0.45)_100%)]" />
-              <div className="flow-grid pointer-events-none absolute inset-0" />
-
-              <div
-                className="flow-fill relative h-full overflow-hidden rounded-full bg-gradient-to-r from-emerald-400 via-emerald-300 to-[#D4AF37] shadow-[0_0_28px_rgba(16,185,129,0.48)] transition-[width] duration-1000 ease-out"
-                style={{ width: `${progressPct}%` }}
-              >
-                <span className="flow-beam pointer-events-none absolute inset-y-0 -left-8 w-16 bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.9),transparent)]" />
-                <span className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.45)_52%,transparent_100%)] opacity-70" />
-              </div>
-
-              <span
-                className="pointer-events-none absolute top-1/2 h-5 w-[2px] -translate-y-1/2 rounded bg-emerald-100/85 shadow-[0_0_10px_rgba(16,185,129,0.5)]"
-                style={{ left: `${progressMarker(initialValue)}%` }}
-                title="Baseline (2010)"
-              />
-              <span
-                className="pointer-events-none absolute top-1/2 h-6 w-[2px] -translate-y-1/2 rounded bg-[#D4AF37] shadow-[0_0_12px_rgba(212,175,55,0.8)]"
-                style={{ left: `${currentMarker}%` }}
-                title="Current"
-              />
-              <span
-                className="pointer-events-none absolute top-1/2 h-5 w-[2px] -translate-y-1/2 rounded bg-white/90 shadow-[0_0_10px_rgba(255,255,255,0.45)]"
-                style={{ left: `${progressMarker(projected)}%` }}
-                title="Projected (2026)"
-              />
-
-              <span
-                className="flow-head pointer-events-none absolute top-1/2 h-3.5 w-3.5 -translate-y-1/2 rounded-full border border-[#D4AF37]/80 bg-[#D4AF37]"
-                style={{ left: `calc(${Math.max(1, progressPct)}% - 7px)` }}
-              />
+            <div className="pointer-events-none absolute left-0 right-0 top-1/2 h-[2px] -translate-y-1/2 bg-gradient-to-r from-emerald-300/20 via-emerald-300/70 to-[#D4AF37]/45" />
+            <div
+              className="flow-fill absolute left-0 top-1/2 h-[3px] -translate-y-1/2 rounded-full bg-gradient-to-r from-emerald-300 via-emerald-400 to-[#D4AF37] shadow-[0_0_18px_rgba(16,185,129,0.48)] transition-[width] duration-1000 ease-out"
+              style={{ width: `${progressPct}%` }}
+            >
+              <span className="flow-beam pointer-events-none absolute inset-y-0 -left-8 w-16 bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.95),transparent)]" />
             </div>
+
+            <span
+              className="pointer-events-none absolute top-1/2 h-10 w-[2px] -translate-y-1/2 rounded bg-emerald-100/85 shadow-[0_0_10px_rgba(16,185,129,0.45)]"
+              style={{ left: `${progressMarker(initialValue)}%` }}
+              title="Baseline (2010)"
+            />
+            <span
+              className="pointer-events-none absolute top-1/2 h-12 w-[2px] -translate-y-1/2 rounded bg-[#D4AF37] shadow-[0_0_12px_rgba(212,175,55,0.75)]"
+              style={{ left: `${currentMarker}%` }}
+              title="Current"
+            />
+            <span
+              className="pointer-events-none absolute top-1/2 h-10 w-[2px] -translate-y-1/2 rounded bg-white/90 shadow-[0_0_10px_rgba(255,255,255,0.4)]"
+              style={{ left: `${progressMarker(projected)}%` }}
+              title="Projected (2026)"
+            />
+
+            <span
+              className="flow-head pointer-events-none absolute top-1/2 h-3.5 w-3.5 -translate-y-1/2 rounded-full border border-[#D4AF37]/85 bg-[#D4AF37]"
+              style={{ left: `calc(${Math.max(1, progressPct)}% - 7px)` }}
+            />
           </div>
 
-          <div className="mt-1 flex items-center justify-between text-[10px] text-white/52">
+          <div className="relative mt-2 flex items-center justify-between text-[10px] text-white/56">
             <span>Baseline (2010)</span>
             <span>Current</span>
             <span>Projected (2026)</span>
@@ -444,7 +437,7 @@ const EconomicImpactSimulator = () => {
         </div>
 
         <div className="lg:col-span-2">
-          <div className="mt-0 w-full rounded-lg border border-[#D4AF37]/35 bg-[#D4AF37]/8 px-3 py-2 text-center text-[11px] text-white/85">
+          <div className="w-full rounded-lg border border-[#D4AF37]/35 bg-[#D4AF37]/8 px-3 py-2 text-center text-[11px] text-white/86">
             <span className="font-semibold text-[#D4AF37]">
               If 5% stays within our ecosystem → $105B retained annually
             </span>
@@ -481,113 +474,67 @@ const EconomicImpactSimulator = () => {
           </div>
         </div>
       </div>
+
       <style jsx>{`
         .counter-grid {
           background-image:
-            linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
-            linear-gradient(
-              90deg,
-              rgba(255, 255, 255, 0.04) 1px,
-              transparent 1px
-            );
-          background-size:
-            24px 24px,
-            24px 24px;
+            linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+          background-size: 30px 30px;
         }
 
         .counter-sweep {
           background: linear-gradient(
             110deg,
-            transparent 8%,
-            rgba(255, 255, 255, 0.12) 36%,
-            transparent 62%
+            transparent 10%,
+            rgba(255, 255, 255, 0.12) 38%,
+            transparent 68%
           );
           background-size: 220% 100%;
-          animation: signalSweep 6.2s ease-in-out infinite;
+          animation: signalSweep 5.2s ease-in-out infinite;
         }
 
         .counter-value {
-          animation: valuePulse 2.6s ease-in-out infinite;
+          animation: valuePulse 2.2s ease-in-out infinite;
         }
 
         .counter-value-sheen {
           background-image: linear-gradient(
             100deg,
-            transparent 20%,
-            rgba(255, 255, 255, 0.7) 46%,
-            transparent 72%
+            transparent 22%,
+            rgba(255, 255, 255, 0.75) 46%,
+            transparent 70%
           );
-          animation: signalSweep 3.4s ease-in-out infinite;
+          animation: signalSweep 3s ease-in-out infinite;
           mix-blend-mode: screen;
-        }
-
-        .flow-track {
-          animation: trackBreath 3.2s ease-in-out infinite;
-        }
-
-        .flow-beam {
-          animation: flowRun 1.8s linear infinite;
-        }
-
-        .flow-head {
-          box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.85);
-          animation: headPulse 1.8s ease-in-out infinite;
         }
 
         .flow-grid {
           background-image: repeating-linear-gradient(
             90deg,
             rgba(255, 255, 255, 0.03),
-            rgba(255, 255, 255, 0.03) 16px,
-            rgba(255, 255, 255, 0.12) 17px,
-            rgba(255, 255, 255, 0.03) 18px
-          );
-          opacity: 0.38;
-        }
-
-        .flow-lane {
-          box-shadow:
-            inset 0 2px 3px rgba(255, 255, 255, 0.16),
-            inset 0 -2px 4px rgba(0, 0, 0, 0.68),
-            0 0 0 1px rgba(255, 255, 255, 0.04);
-        }
-
-        .signal-panel {
-          background: linear-gradient(
-            180deg,
-            rgba(255, 255, 255, 0.05),
-            rgba(255, 255, 255, 0.01) 34%,
-            rgba(0, 0, 0, 0.3)
-          );
-        }
-
-        .signal-orb {
-          background: radial-gradient(
-            circle,
-            rgba(16, 185, 129, 0.5),
-            rgba(16, 185, 129, 0.12) 46%,
-            transparent 68%
-          );
-          animation: valuePulse 2.8s ease-in-out infinite;
-        }
-
-        .signal-rings {
-          background: repeating-radial-gradient(
-            circle at 100% 50%,
-            rgba(212, 175, 55, 0.2) 0,
-            rgba(212, 175, 55, 0.2) 1px,
-            transparent 10px,
-            transparent 17px
+            rgba(255, 255, 255, 0.03) 14px,
+            rgba(255, 255, 255, 0.11) 15px,
+            rgba(255, 255, 255, 0.03) 16px
           );
           opacity: 0.45;
         }
 
+        .flow-beam {
+          animation: flowRun 1.4s linear infinite;
+        }
+
+        .flow-head {
+          box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.85);
+          animation: headPulse 1.6s ease-in-out infinite;
+        }
+
         @keyframes signalSweep {
           0% {
-            background-position: 115% 0;
+            background-position: 112% 0;
           }
           100% {
-            background-position: -30% 0;
+            background-position: -28% 0;
           }
         }
 
@@ -596,11 +543,11 @@ const EconomicImpactSimulator = () => {
             transform: translateX(-18px);
             opacity: 0;
           }
-          20% {
+          22% {
             opacity: 1;
           }
           100% {
-            transform: translateX(520px);
+            transform: translateX(560px);
             opacity: 0;
           }
         }
@@ -608,26 +555,10 @@ const EconomicImpactSimulator = () => {
         @keyframes valuePulse {
           0%,
           100% {
-            filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.2));
+            filter: drop-shadow(0 0 10px rgba(16, 185, 129, 0.26));
           }
           50% {
-            filter: drop-shadow(0 0 20px rgba(16, 185, 129, 0.46));
-          }
-        }
-
-        @keyframes trackBreath {
-          0%,
-          100% {
-            box-shadow:
-              inset 0 2px 3px rgba(255, 255, 255, 0.12),
-              inset 0 -2px 4px rgba(0, 0, 0, 0.65),
-              0 0 0 rgba(16, 185, 129, 0);
-          }
-          50% {
-            box-shadow:
-              inset 0 2px 3px rgba(255, 255, 255, 0.14),
-              inset 0 -2px 4px rgba(0, 0, 0, 0.65),
-              0 0 18px rgba(16, 185, 129, 0.22);
+            filter: drop-shadow(0 0 24px rgba(16, 185, 129, 0.52));
           }
         }
 
@@ -637,7 +568,7 @@ const EconomicImpactSimulator = () => {
             box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7);
           }
           50% {
-            box-shadow: 0 0 0 7px rgba(212, 175, 55, 0.08);
+            box-shadow: 0 0 0 8px rgba(212, 175, 55, 0.1);
           }
         }
       `}</style>
