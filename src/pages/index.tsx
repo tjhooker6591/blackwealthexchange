@@ -274,6 +274,7 @@ const EconomicImpactSimulator = () => {
   const perSecond = 48_000;
   const recapturePct = 5;
   const recaptureValue = projected * (recapturePct / 100);
+  const current = 1_700_000_000_000;
 
   const formatCurrency = (num: number) =>
     num.toLocaleString("en-US", {
@@ -284,72 +285,101 @@ const EconomicImpactSimulator = () => {
     });
 
   return (
-    <section className="relative overflow-hidden py-4 sm:py-5">
+    <section className="relative overflow-hidden py-3 sm:py-5">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_20%,rgba(16,185,129,0.12),transparent_36%),radial-gradient(circle_at_90%_78%,rgba(212,175,55,0.12),transparent_42%)]" />
 
-      <div className="relative grid gap-3 rounded-xl border border-white/10 bg-[#05080b]/92 p-3 shadow-[0_12px_34px_rgba(0,0,0,0.45)] backdrop-blur sm:gap-4 sm:p-4 lg:grid-cols-[1.05fr_1.2fr] lg:items-center">
+      <div className="relative grid gap-3 rounded-xl border border-white/10 bg-[#05080b]/92 p-2.5 shadow-[0_12px_34px_rgba(0,0,0,0.45)] backdrop-blur sm:gap-4 sm:p-4 lg:grid-cols-[1.05fr_1.2fr] lg:items-center">
         <div className="min-w-0">
           <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-bold tracking-wide text-white/80">
             <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
             BUYING POWER (ANNUAL ESTIMATE)
           </div>
 
-          <h2 className="mt-2 text-sm font-extrabold tracking-[0.01em] text-white sm:text-xl">
-            African American Buying Power{' '}
+          <h2 className="mt-1.5 text-sm font-extrabold tracking-[0.01em] text-white sm:mt-2 sm:text-xl">
+            African American Buying Power{" "}
             <span className="text-[#D4AF37]">({currentYear})</span>
           </h2>
 
-          <p className="mt-2 text-sm text-white/78">
+          <p className="mt-1.5 text-xs text-white/78 sm:mt-2 sm:text-sm">
             Massive spending power currently leaks outward. Redirecting even a
             small share into BWE creates outsized retained value.
           </p>
 
-          <div className="mt-2 grid grid-cols-2 gap-2 text-[11px] sm:text-xs">
+          <div className="mt-2 text-[1.7rem] font-black tracking-tight text-[#D4AF37] tabular-nums sm:text-4xl">
+            {formatCurrency(projected)}
+          </div>
+
+          <div className="mt-1.5 grid grid-cols-2 gap-2 text-[10px] sm:mt-2 sm:text-xs">
             <div className="rounded-lg border border-white/10 bg-white/5 px-3 py-1.5">
               <p className="text-white/55">Annual estimate</p>
-              <p className="font-bold text-[#D4AF37]">{formatCurrency(projected)}</p>
+              <p className="font-bold text-[#D4AF37]">
+                {formatCurrency(projected)}
+              </p>
               <p className="mt-0.5 text-white/55">Baseline (2010)</p>
-              <p className="font-semibold text-white">{formatCurrency(baseline)}</p>
+              <p className="font-semibold text-white">
+                {formatCurrency(baseline)}
+              </p>
             </div>
             <div className="rounded-lg border border-white/10 bg-white/5 px-3 py-1.5">
               <p className="text-white/55">Daily flow</p>
-              <p className="font-bold text-white">{formatCurrency(perDay)} / day</p>
+              <p className="font-bold text-white">
+                {formatCurrency(perDay)} / day
+              </p>
               <p className="mt-0.5 text-white/55">Second-level flow</p>
-              <p className="font-semibold text-white">{formatCurrency(perSecond)} / sec</p>
+              <p className="font-semibold text-white">
+                {formatCurrency(perSecond)} / sec
+              </p>
             </div>
           </div>
         </div>
 
         <div className="relative min-w-0">
-          <div className="mb-2 text-center text-[11px] font-medium tracking-wide text-white/66">
+          <div className="mb-1.5 text-center text-[10px] font-medium tracking-wide text-white/66 sm:mb-2 sm:text-[11px]">
             Spending Flow Progress
           </div>
 
-          <div className="relative rounded-lg border border-white/12 bg-black/35 p-2.5 sm:p-3">
+          <div className="relative rounded-lg border border-white/12 bg-black/35 p-2 sm:p-3">
             <div className="flow-grid pointer-events-none absolute inset-0 rounded-lg opacity-35" />
 
-            <div className="relative h-14 sm:h-20">
-              <div className="pointer-events-none absolute left-[10%] right-[10%] top-1/2 h-[2px] -translate-y-1/2 bg-white/15" />
-              <div className="pointer-events-none absolute left-[10%] right-[10%] top-1/2 h-[3px] -translate-y-1/2 bg-gradient-to-r from-emerald-300/20 via-emerald-300/85 to-[#D4AF37]/65" />
-
-              <span className="node absolute left-[10%] top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border border-emerald-200/70 bg-emerald-300/90" />
-              <span className="node node-live absolute left-1/2 top-1/2 h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#D4AF37]/80 bg-[#D4AF37]" />
-              <span className="node absolute right-[10%] top-1/2 h-3 w-3 translate-x-1/2 -translate-y-1/2 rounded-full border border-white/70 bg-white/90" />
-
-              <span className="beam pointer-events-none absolute left-[10%] top-1/2 h-[6px] w-16 -translate-y-1/2 rounded-full bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.95),transparent)]" />
-
-              <div className="absolute left-[10%] top-[72%] -translate-x-1/2 text-[10px] text-white/62">
-                Baseline
+            <div className="relative h-[72px] sm:h-28">
+              <div className="chart-cols absolute inset-x-2 bottom-6 top-2 grid grid-cols-3 gap-2">
+                <div className="relative flex items-end justify-center">
+                  <div className="w-7 rounded-t-md bg-white/25" style={{ height: "18%" }} />
+                </div>
+                <div className="relative flex items-end justify-center">
+                  <div className="w-7 rounded-t-md bg-white/35" style={{ height: "78%" }} />
+                </div>
+                <div className="relative flex items-end justify-center">
+                  <div className="w-7 rounded-t-md bg-[#D4AF37]/55" style={{ height: "94%" }} />
+                </div>
               </div>
-              <div className="absolute left-1/2 top-[72%] -translate-x-1/2 text-[10px] text-white/72">
-                Current
-              </div>
-              <div className="absolute right-[10%] top-[72%] translate-x-1/2 text-[10px] text-white/62">
-                Projected
+
+              <svg
+                viewBox="0 0 100 40"
+                className="pointer-events-none absolute inset-x-3 top-3 h-14 w-[calc(100%-1.5rem)] sm:h-16"
+                preserveAspectRatio="none"
+              >
+                <polyline
+                  points="8,33 50,16 92,9"
+                  fill="none"
+                  stroke="rgba(16,185,129,0.95)"
+                  strokeWidth="1.8"
+                />
+                <circle cx="8" cy="33" r="1.9" fill="rgba(255,255,255,0.85)" />
+                <circle cx="50" cy="16" r="2.1" fill="rgba(16,185,129,0.95)" />
+                <circle cx="92" cy="9" r="2.1" fill="rgba(212,175,55,0.95)" />
+              </svg>
+
+              <span className="beam pointer-events-none absolute left-[9%] top-[42%] h-[7px] w-16 rounded-full bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.95),transparent)]" />
+
+              <div className="absolute inset-x-2 bottom-0 grid grid-cols-3 text-center text-[9px] text-white/66 sm:text-[10px]">
+                <span>Baseline</span>
+                <span>Current</span>
+                <span>Projected</span>
               </div>
             </div>
 
-            <div className="mt-1.5 grid gap-1.5 text-[10px] text-white/72 sm:mt-2 sm:grid-cols-3 sm:gap-2 sm:text-[11px]">
+            <div className="mt-1 grid gap-1 text-[9px] text-white/72 sm:mt-2 sm:grid-cols-3 sm:gap-2 sm:text-[11px]">
               <div className="rounded-md border border-white/10 bg-white/5 px-2 py-1.5 text-center">
                 Black Spending Power
               </div>
@@ -360,20 +390,27 @@ const EconomicImpactSimulator = () => {
                 BWE Recapture Opportunity
               </div>
             </div>
+
+            <div className="mt-1 hidden grid-cols-3 text-center text-[10px] text-white/58 sm:grid">
+              <span>{formatCurrency(baseline)}</span>
+              <span>{formatCurrency(current)}</span>
+              <span>{formatCurrency(projected)}</span>
+            </div>
           </div>
         </div>
 
         <div className="lg:col-span-2">
-          <div className="rounded-lg border border-[#D4AF37]/35 bg-[#D4AF37]/8 px-3 py-2 text-center text-[11px] text-white/86">
+          <div className="rounded-lg border border-[#D4AF37]/35 bg-[#D4AF37]/8 px-3 py-1.5 text-center text-[10px] text-white/86 sm:py-2 sm:text-[11px]">
             <span className="font-semibold text-[#D4AF37]">
-              If {recapturePct}% stays within our ecosystem → {formatCurrency(recaptureValue)} retained annually
+              If {recapturePct}% stays within our ecosystem →{" "}
+              {formatCurrency(recaptureValue)} retained annually
             </span>
           </div>
 
-          <div className="mt-2 grid w-full gap-2 sm:mt-3 sm:grid-cols-2 sm:gap-3">
+          <div className="mt-1.5 grid w-full gap-2 sm:mt-3 sm:grid-cols-2 sm:gap-3">
             <Link
               href="/1.8trillionimpact"
-              className="group inline-flex items-center justify-center rounded-xl border border-[#D4AF37]/40 bg-[#D4AF37]/10 px-3 py-2 text-center shadow-sm transition hover:border-[#D4AF37]/80 hover:bg-gradient-to-r hover:from-[#D4AF37]/20 hover:to-emerald-400/10 sm:px-4 sm:py-2.5"
+              className="group inline-flex items-center justify-center rounded-xl border border-[#D4AF37]/40 bg-[#D4AF37]/10 px-3 py-1.5 text-center shadow-sm transition hover:border-[#D4AF37]/80 hover:bg-gradient-to-r hover:from-[#D4AF37]/20 hover:to-emerald-400/10 sm:px-4 sm:py-2.5"
             >
               <div className="flex w-full items-center justify-between gap-3">
                 <span className="text-[11px] font-extrabold tracking-wide text-[#D4AF37] sm:text-sm">
@@ -387,7 +424,7 @@ const EconomicImpactSimulator = () => {
 
             <Link
               href="/economic-freedom"
-              className="group inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-center transition hover:border-[#D4AF37]/30 hover:bg-gradient-to-r hover:from-white/10 hover:to-[#D4AF37]/10 sm:px-4 sm:py-2.5"
+              className="group inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 px-3 py-1.5 text-center transition hover:border-[#D4AF37]/30 hover:bg-gradient-to-r hover:from-white/10 hover:to-[#D4AF37]/10 sm:px-4 sm:py-2.5"
             >
               <div className="flex w-full items-center justify-between gap-3">
                 <span className="text-[11px] font-extrabold tracking-wide text-[#D4AF37] sm:text-sm">
@@ -406,7 +443,11 @@ const EconomicImpactSimulator = () => {
         .flow-grid {
           background-image:
             linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            linear-gradient(
+              90deg,
+              rgba(255, 255, 255, 0.05) 1px,
+              transparent 1px
+            );
           background-size: 24px 24px;
           animation: gridDrift 14s linear infinite;
         }
@@ -446,17 +487,20 @@ const EconomicImpactSimulator = () => {
 
         @keyframes gridDrift {
           0% {
-            background-position: 0 0, 0 0;
+            background-position:
+              0 0,
+              0 0;
           }
           100% {
-            background-position: 24px 0, 0 24px;
+            background-position:
+              24px 0,
+              0 24px;
           }
         }
       `}</style>
     </section>
   );
 };
-
 
 type VerticalKey = "all" | "shopping" | "news";
 
