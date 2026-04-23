@@ -14,7 +14,7 @@ const footerSections: Array<{
     ],
   },
   {
-    title: "Programs",
+    title: "Ecosystem",
     links: [
       { href: "/black-card", label: "Black Card" },
       { href: "/affiliate/index", label: "Affiliate" },
@@ -48,6 +48,27 @@ export default function Footer() {
   return (
     <footer className="border-t border-white/10 bg-black/95 px-4 py-3 text-white/80 sm:py-4">
       <div className="mx-auto max-w-6xl">
+        <div className="mb-2.5 flex flex-col gap-2 border-b border-white/10 pb-2.5 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-[11px] leading-tight text-white/70 sm:text-xs">
+            Building Black ownership, economic power, and multi-generational
+            growth.
+          </p>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/signup"
+              className="inline-flex min-h-8 items-center justify-center rounded-full bg-[#D4AF37] px-3 text-[11px] font-semibold text-black transition hover:brightness-105"
+            >
+              Join Black Wealth Exchange
+            </Link>
+            <Link
+              href="/signup"
+              className="inline-flex min-h-8 items-center justify-center rounded-full border border-[#D4AF37]/50 px-3 text-[11px] font-semibold text-[#D4AF37] transition hover:border-[#D4AF37] hover:text-[#E7C96E]"
+            >
+              Start Building
+            </Link>
+          </div>
+        </div>
+
         <div className="grid grid-cols-2 gap-x-5 gap-y-2 sm:gap-x-6 lg:grid-cols-4 lg:gap-y-1">
           {footerSections.map((section) => (
             <div key={section.title} className="min-w-0">
