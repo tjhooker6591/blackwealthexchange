@@ -322,15 +322,19 @@ const EconomicImpactSimulator = () => {
   const perMonth = projected / 12;
   const perDay = perMonth / 30.44;
   const perSecondLive = projected / (365 * 24 * 60 * 60);
-  const progressMarker = (value: number) => Math.min(100, (value / projected) * 100);
+  const progressMarker = (value: number) =>
+    Math.min(100, (value / projected) * 100);
   const currentMarker = progressMarker(total);
 
   return (
-    <section className="relative overflow-hidden rounded-2xl border border-transparent bg-white/[0.03] p-4 shadow-[0_12px_34px_rgba(0,0,0,0.35),inset_0_1px_0_rgba(255,255,255,0.07)] backdrop-blur sm:p-5">
-      <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-r from-emerald-400/30 via-transparent to-[#D4AF37]/35 p-[1px] [mask:linear-gradient(#fff_0_0)_content-box,linear-gradient(#fff_0_0)] [mask-composite:xor]" />
+    <section className="relative overflow-hidden rounded-2xl border border-transparent bg-white/[0.03] p-4 shadow-[0_14px_40px_rgba(0,0,0,0.38),inset_0_1px_0_rgba(255,255,255,0.08),inset_0_-24px_40px_rgba(0,0,0,0.24)] backdrop-blur sm:p-5">
+      <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-r from-emerald-400/35 via-transparent to-[#D4AF37]/40 p-[1px] [mask:linear-gradient(#fff_0_0)_content-box,linear-gradient(#fff_0_0)] [mask-composite:xor]" />
+      <div className="pointer-events-none absolute inset-[1px] rounded-2xl bg-[linear-gradient(160deg,rgba(255,255,255,0.05),rgba(255,255,255,0.00)_42%,rgba(0,0,0,0.22)_100%)]" />
+      <div className="pointer-events-none absolute inset-[10px] rounded-xl border border-white/10 bg-[radial-gradient(circle_at_22%_18%,rgba(16,185,129,0.10),transparent_38%),radial-gradient(circle_at_82%_78%,rgba(212,175,55,0.08),transparent_40%)]" />
       <div className="pointer-events-none absolute -top-24 left-1/2 h-52 w-[36rem] -translate-x-1/2 rounded-full bg-[#D4AF37]/12 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-28 right-[-6rem] h-64 w-64 rounded-full bg-emerald-400/12 blur-3xl" />
-      <div className="pointer-events-none absolute inset-0 animate-[pulse_10s_ease-in-out_infinite] bg-[radial-gradient(circle_at_25%_18%,rgba(16,185,129,0.12),transparent_42%),radial-gradient(circle_at_78%_76%,rgba(212,175,55,0.10),transparent_38%)]" />
+      <div className="pointer-events-none absolute inset-0 animate-[pulse_12s_ease-in-out_infinite] bg-[radial-gradient(circle_at_25%_18%,rgba(16,185,129,0.12),transparent_42%),radial-gradient(circle_at_78%_76%,rgba(212,175,55,0.10),transparent_38%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(110deg,transparent_12%,rgba(255,255,255,0.08)_42%,transparent_70%)] bg-[length:220%_100%] opacity-40 mix-blend-screen animate-[pulse_9s_ease-in-out_infinite]" />
 
       <div className="relative flex flex-col items-center text-center">
         <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-bold tracking-wide text-white/80">
@@ -343,8 +347,14 @@ const EconomicImpactSimulator = () => {
           <span className="text-[#D4AF37]">({currentYear})</span>
         </h2>
 
-        <div className="mt-2 text-[2rem] font-black tracking-tight tabular-nums sm:text-5xl md:text-6xl">
-          <span className="bg-gradient-to-r from-emerald-200 via-emerald-400 to-[#D4AF37] bg-clip-text text-transparent drop-shadow-[0_0_16px_rgba(16,185,129,0.18)]">
+        <div className="relative mt-2 text-[2rem] font-black tracking-tight tabular-nums sm:text-5xl md:text-6xl">
+          <span className="relative z-10 bg-gradient-to-r from-emerald-200 via-emerald-400 to-[#D4AF37] bg-clip-text text-transparent drop-shadow-[0_0_16px_rgba(16,185,129,0.2)]">
+            {formatCurrency(Math.floor(total))}
+          </span>
+          <span
+            aria-hidden
+            className="pointer-events-none absolute inset-0 z-0 bg-[linear-gradient(105deg,transparent_20%,rgba(255,255,255,0.55)_45%,transparent_70%)] bg-clip-text text-transparent opacity-55 blur-[0.2px] mix-blend-screen animate-[pulse_5.2s_ease-in-out_infinite]"
+          >
             {formatCurrency(Math.floor(total))}
           </span>
         </div>
@@ -368,29 +378,36 @@ const EconomicImpactSimulator = () => {
             Spending Flow Progress
           </p>
 
-          <div className="relative mt-2 h-3 w-full rounded-full border border-white/10 bg-[#0f1316] shadow-[inset_0_1px_2px_rgba(255,255,255,0.06)]">
+          <div className="relative mt-2 h-3.5 w-full overflow-hidden rounded-full border border-white/15 bg-[#0b1014] shadow-[inset_0_1px_2px_rgba(255,255,255,0.08),inset_0_-1px_3px_rgba(0,0,0,0.45)]">
+            <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.10),rgba(255,255,255,0.01)_45%,rgba(0,0,0,0.3)_100%)]" />
+            <div className="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(90deg,transparent,transparent_24px,rgba(255,255,255,0.05)_25px)] opacity-30" />
+
             <div
-              className="h-full rounded-full bg-gradient-to-r from-emerald-400 via-emerald-300 to-[#D4AF37] shadow-[0_0_16px_rgba(16,185,129,0.28)] transition-[width] duration-1000 ease-out"
+              className="relative h-full overflow-hidden rounded-full bg-gradient-to-r from-emerald-400 via-emerald-300 to-[#D4AF37] shadow-[0_0_20px_rgba(16,185,129,0.35)] transition-[width] duration-1000 ease-out"
               style={{ width: `${progressPct}%` }}
-            />
+            >
+              <span className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.35)_52%,transparent_100%)] opacity-65 animate-[pulse_3.2s_ease-in-out_infinite]" />
+            </div>
+
             <span
-              className="pointer-events-none absolute top-1/2 h-2.5 w-2.5 -translate-y-1/2 rounded-full bg-[#D4AF37] shadow-[0_0_12px_rgba(212,175,55,0.65)]"
-              style={{ left: `calc(${Math.max(1, progressPct)}% - 5px)` }}
-            />
-            <span
-              className="pointer-events-none absolute top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-emerald-200/70 bg-emerald-300/85"
+              className="pointer-events-none absolute top-1/2 h-3 w-[2px] -translate-y-1/2 rounded bg-emerald-100/80 shadow-[0_0_8px_rgba(16,185,129,0.4)]"
               style={{ left: `${progressMarker(initialValue)}%` }}
               title="Baseline (2010)"
             />
             <span
-              className="pointer-events-none absolute top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#D4AF37]/80 bg-[#D4AF37]"
+              className="pointer-events-none absolute top-1/2 h-3.5 w-[2px] -translate-y-1/2 rounded bg-[#D4AF37] shadow-[0_0_10px_rgba(212,175,55,0.6)]"
               style={{ left: `${currentMarker}%` }}
               title="Current"
             />
             <span
-              className="pointer-events-none absolute top-1/2 h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/70 bg-white/90"
+              className="pointer-events-none absolute top-1/2 h-3 w-[2px] -translate-y-1/2 rounded bg-white/85 shadow-[0_0_8px_rgba(255,255,255,0.35)]"
               style={{ left: `${progressMarker(projected)}%` }}
               title="Projected (2026)"
+            />
+
+            <span
+              className="pointer-events-none absolute top-1/2 h-2.5 w-2.5 -translate-y-1/2 rounded-full border border-[#D4AF37]/70 bg-[#D4AF37] shadow-[0_0_16px_rgba(212,175,55,0.7)]"
+              style={{ left: `calc(${Math.max(1, progressPct)}% - 5px)` }}
             />
           </div>
 
