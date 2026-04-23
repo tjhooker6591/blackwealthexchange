@@ -356,6 +356,8 @@ const EconomicImpactSimulator = () => {
             </span>
           </div>
 
+          <div className="signal-link mt-1 h-[2px] w-full max-w-xs rounded-full bg-gradient-to-r from-emerald-300/70 via-[#D4AF37]/80 to-transparent" />
+
           <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px] sm:text-xs">
             <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-white/78">
               ≈ $4.2 billion per day
@@ -397,14 +399,15 @@ const EconomicImpactSimulator = () => {
 
           <div className="signal-field relative mt-3 h-28 overflow-hidden rounded-lg border border-white/10 bg-[#070b0f]/85">
             <div className="flow-grid pointer-events-none absolute inset-0" />
-            <div className="pointer-events-none absolute left-0 right-0 top-1/2 h-[1px] -translate-y-1/2 bg-white/25" />
+            <div className="pointer-events-none absolute left-0 right-0 top-1/2 h-[1px] -translate-y-1/2 bg-white/12" />
 
-            <div className="pointer-events-none absolute left-0 right-0 top-1/2 h-[2px] -translate-y-1/2 bg-gradient-to-r from-emerald-300/20 via-emerald-300/70 to-[#D4AF37]/45" />
+            <div className="pointer-events-none absolute left-0 right-0 top-1/2 h-[2px] -translate-y-1/2 bg-gradient-to-r from-emerald-300/10 via-emerald-300/30 to-[#D4AF37]/25" />
             <div
-              className="flow-fill absolute left-0 top-1/2 h-[3px] -translate-y-1/2 rounded-full bg-gradient-to-r from-emerald-300 via-emerald-400 to-[#D4AF37] shadow-[0_0_18px_rgba(16,185,129,0.48)] transition-[width] duration-1000 ease-out"
+              className="flow-fill absolute left-0 top-1/2 h-[3px] -translate-y-1/2 rounded-full bg-gradient-to-r from-emerald-300 via-emerald-400 to-[#D4AF37] shadow-[0_0_22px_rgba(16,185,129,0.62)] transition-[width] duration-1000 ease-out"
               style={{ width: `${progressPct}%` }}
             >
-              <span className="flow-beam pointer-events-none absolute inset-y-0 -left-8 w-16 bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.95),transparent)]" />
+              <span className="flow-beam pointer-events-none absolute inset-y-0 -left-10 w-20 bg-[linear-gradient(90deg,transparent,rgba(255,255,255,1),transparent)]" />
+              <span className="flow-beam-secondary pointer-events-none absolute inset-y-0 -left-16 w-14 bg-[linear-gradient(90deg,transparent,rgba(212,175,55,0.95),transparent)]" />
             </div>
 
             <span
@@ -479,8 +482,13 @@ const EconomicImpactSimulator = () => {
         .counter-grid {
           background-image:
             linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            linear-gradient(
+              90deg,
+              rgba(255, 255, 255, 0.05) 1px,
+              transparent 1px
+            );
           background-size: 30px 30px;
+          animation: gridDrift 14s linear infinite;
         }
 
         .counter-sweep {
@@ -521,12 +529,22 @@ const EconomicImpactSimulator = () => {
         }
 
         .flow-beam {
-          animation: flowRun 1.4s linear infinite;
+          animation: flowRun 1.15s linear infinite;
+        }
+
+        .flow-beam-secondary {
+          animation: flowRunSecondary 1.9s linear infinite;
+          opacity: 0.85;
         }
 
         .flow-head {
-          box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.85);
-          animation: headPulse 1.6s ease-in-out infinite;
+          box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.9);
+          animation: headPulse 1.2s ease-in-out infinite;
+        }
+
+        .signal-link {
+          box-shadow: 0 0 14px rgba(16, 185, 129, 0.35);
+          animation: linkPulse 1.8s ease-in-out infinite;
         }
 
         @keyframes signalSweep {
@@ -540,14 +558,28 @@ const EconomicImpactSimulator = () => {
 
         @keyframes flowRun {
           0% {
-            transform: translateX(-18px);
+            transform: translateX(-20px);
             opacity: 0;
           }
-          22% {
+          16% {
             opacity: 1;
           }
           100% {
-            transform: translateX(560px);
+            transform: translateX(620px);
+            opacity: 0;
+          }
+        }
+
+        @keyframes flowRunSecondary {
+          0% {
+            transform: translateX(-28px);
+            opacity: 0;
+          }
+          18% {
+            opacity: 0.9;
+          }
+          100% {
+            transform: translateX(600px);
             opacity: 0;
           }
         }
@@ -565,10 +597,29 @@ const EconomicImpactSimulator = () => {
         @keyframes headPulse {
           0%,
           100% {
-            box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7);
+            box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.78);
           }
           50% {
-            box-shadow: 0 0 0 8px rgba(212, 175, 55, 0.1);
+            box-shadow: 0 0 0 10px rgba(212, 175, 55, 0.14);
+          }
+        }
+
+        @keyframes linkPulse {
+          0%,
+          100% {
+            opacity: 0.55;
+          }
+          50% {
+            opacity: 1;
+          }
+        }
+
+        @keyframes gridDrift {
+          0% {
+            background-position: 0 0, 0 0;
+          }
+          100% {
+            background-position: 30px 0, 0 30px;
           }
         }
       `}</style>
