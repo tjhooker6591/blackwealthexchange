@@ -31,6 +31,9 @@ export default function Footer() {
           >
             Travel Map for Black-owned businesses
           </Link>
+          <Link href="/affiliate/index" className="hover:text-gold transition">
+            Earn with BWE
+          </Link>
           <Link href="/terms-of-service" className="hover:text-gold transition">
             Terms of Service
           </Link>
