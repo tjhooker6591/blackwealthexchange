@@ -616,10 +616,14 @@ const EconomicImpactSimulator = () => {
 
         @keyframes gridDrift {
           0% {
-            background-position: 0 0, 0 0;
+            background-position:
+              0 0,
+              0 0;
           }
           100% {
-            background-position: 30px 0, 0 30px;
+            background-position:
+              30px 0,
+              0 30px;
           }
         }
       `}</style>
