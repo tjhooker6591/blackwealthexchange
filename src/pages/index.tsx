@@ -808,6 +808,7 @@ export default function Home() {
   }, []);
 
   const sponsorRail = sponsors.slice(0, FEATURED_SPONSOR_RAIL_CAP);
+  const showHomepageBanner = Boolean(homepageBanner) && sponsorRail.length === 0;
 
   const base = getBaseUrl();
   const canonical = canonicalUrl("/");
@@ -1049,7 +1050,7 @@ export default function Home() {
             </div>
           </div>
 
-          {homepageBanner ? (
+          {showHomepageBanner ? (
             <section className="mx-auto mt-4 max-w-5xl overflow-hidden rounded-2xl border border-[#D4AF37]/30 bg-black/35 p-3 shadow-[0_0_0_1px_rgba(212,175,55,0.2)]">
               <a
                 href={homepageBanner.targetUrl}
@@ -1072,7 +1073,7 @@ export default function Home() {
                     </div>
                   </div>
                   <span className="shrink-0 rounded-full border border-[#D4AF37]/40 bg-[#D4AF37]/20 px-2 py-0.5 text-[10px] font-bold text-[#F1D57A]">
-                    Sponsored Banner
+                    Sponsored Banner · Limited Slot
                   </span>
                 </div>
               </a>

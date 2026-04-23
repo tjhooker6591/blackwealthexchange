@@ -36,13 +36,13 @@ const PLACEMENTS: Array<{
   description: string;
 }> = [
   {
-    title: "Top of Homepage",
+    title: "Top of Homepage (Limited)",
     placement: "homepage-top",
     description:
-      "Homepage top banner inventory request, fulfilled only after review and scheduling confirmation.",
+      "Tightly limited homepage banner request. This slot can be deferred when Featured Sponsor campaigns are active to preserve homepage clarity.",
   },
   {
-    title: "Sidebar Ad",
+    title: "Sidebar Ad (Primary Banner Surface)",
     placement: "sidebar",
     description:
       "Business Directory sidebar banner inventory request after approval.",

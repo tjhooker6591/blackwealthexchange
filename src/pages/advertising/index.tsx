@@ -116,8 +116,11 @@ export default function AdvertisingIndexPage() {
               tasteful placements.
             </p>
             <p className="mt-2 text-xs text-zinc-400">
-              Placement definitions: {" "}
-              <Link href="/advertising/placements" className="underline text-yellow-200">
+              Placement definitions:{" "}
+              <Link
+                href="/advertising/placements"
+                className="underline text-yellow-200"
+              >
                 /advertising/placements
               </Link>
             </p>
@@ -166,7 +169,7 @@ export default function AdvertisingIndexPage() {
         <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
           <AdCard
             title="Featured Sponsor"
-            desc="Homepage Featured Sponsors rail placement with weekly scheduling."
+            desc="Primary homepage sponsorship surface with weekly scheduled Featured Sponsor rail placement."
             price={priceLabel(featuredBase)}
             badge="Most Popular"
             href="/advertise/featured-sponsor"
@@ -203,7 +206,7 @@ export default function AdvertisingIndexPage() {
 
           <AdCard
             title="Banner Ads"
-            desc="Request banner inventory by placement, then launch after approval + scheduling."
+            desc="Directory-first banner inventory with tightly limited homepage top banner availability."
             price={priceLabel(bannerBase)}
             href="/advertise/banner-ads"
             onStart={() =>
