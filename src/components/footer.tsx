@@ -17,7 +17,7 @@ const footerSections: Array<{
     title: "Ecosystem",
     links: [
       { href: "/black-card", label: "Black Card" },
-      { href: "/affiliate/index", label: "Affiliate" },
+      { href: "/affiliate", label: "Affiliate" },
       { href: "/financial-literacy", label: "Learn" },
       { href: "/music", label: "Music" },
     ],
