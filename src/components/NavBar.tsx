@@ -18,13 +18,11 @@ export default function NavBar() {
       : user?.accountType === "employer"
         ? "/employer/jobs"
         : user?.accountType === "business"
-          ? "/dashboard/business/profile"
+          ? "/dashboard/edit-business"
           : "/dashboard";
 
   const profileHref =
-    user?.accountType === "business"
-      ? "/dashboard/business/profile"
-      : "/profile";
+    user?.accountType === "business" ? "/dashboard/edit-business" : "/profile";
 
   // Helper for mobile nav actions
   const handleMobileNav = (href?: string) => {
@@ -148,6 +146,12 @@ export default function NavBar() {
                 className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]"
               >
                 Music
+              </Link>
+              <Link
+                href="/affiliate/index"
+                className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]"
+              >
+                Earn with BWE
               </Link>
               <Link
                 href="/join-the-mission"
@@ -343,6 +347,14 @@ export default function NavBar() {
               onClick={() => handleMobileNav()}
             >
               Music
+            </Link>
+
+            <Link
+              href="/affiliate/index"
+              className="block rounded-xl px-3 py-2.5 font-medium text-white/85 transition-colors hover:bg-white/[0.04] hover:text-[#D4AF37]"
+              onClick={() => handleMobileNav()}
+            >
+              Earn with BWE
             </Link>
 
             <Link
