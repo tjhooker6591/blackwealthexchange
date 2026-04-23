@@ -3,6 +3,8 @@
 
 import React from "react";
 import Link from "next/link";
+import type { GetServerSideProps } from "next";
+import { resolvePremiumCourseAccess } from "@/lib/entitlements/courseAccess";
 
 const Module8 = () => {
   return (
@@ -147,3 +149,27 @@ const Module8 = () => {
 };
 
 export default Module8;
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const access = await resolvePremiumCourseAccess(ctx.req as any);
+
+  if (!access.authenticated) {
+    return {
+      redirect: {
+        destination: `/login?next=${encodeURIComponent(ctx.resolvedUrl || "/premium-finance")}`,
+        permanent: false,
+      },
+    };
+  }
+
+  if (!access.hasAccess) {
+    return {
+      redirect: {
+        destination: "/financial-literacy?locked=premium-finance",
+        permanent: false,
+      },
+    };
+  }
+
+  return { props: {} };
+};

@@ -145,6 +145,9 @@ export default function BlackCardDashboardPage() {
     }
   }
 
+  const membershipActive =
+    String(data?.member?.status || "inactive").toLowerCase() === "active";
+
   return (
     <>
       <Head>
@@ -180,6 +183,22 @@ export default function BlackCardDashboardPage() {
             </div>
           ) : data?.ok ? (
             <>
+              {!membershipActive ? (
+                <section className="rounded-2xl border border-yellow-500/30 bg-yellow-500/10 p-6">
+                  <h2 className="text-xl font-bold text-yellow-200">Membership inactive</h2>
+                  <p className="mt-2 text-sm text-white/80">
+                    Black Card member-only rewards and redemptions are locked until membership is active.
+                  </p>
+                  <div className="mt-4">
+                    <Link
+                      href="/black-card"
+                      className="rounded-lg bg-yellow-500 px-4 py-2 text-sm font-semibold text-black"
+                    >
+                      Activate or Upgrade Membership
+                    </Link>
+                  </div>
+                </section>
+              ) : null}
               <section className="rounded-2xl border border-yellow-500/30 bg-yellow-500/10 p-6">
                 <p className="text-xs uppercase tracking-[0.18em] text-yellow-300">
                   Digital Member Card
@@ -301,7 +320,7 @@ export default function BlackCardDashboardPage() {
                   <div className="mt-3 flex flex-wrap gap-2">
                     <button
                       onClick={() => redeemReward("ad_credit")}
-                      disabled={redeemLoading || !entitlements.ad_credit}
+                      disabled={!membershipActive || redeemLoading || !entitlements.ad_credit}
                       className="rounded-lg border border-yellow-500/30 px-3 py-1.5 text-xs text-yellow-200 disabled:opacity-60"
                       title={
                         entitlements.ad_credit ? "" : "Requires Signature tier"
@@ -312,7 +331,9 @@ export default function BlackCardDashboardPage() {
                     <button
                       onClick={() => redeemReward("marketplace_fee_credit")}
                       disabled={
-                        redeemLoading || !entitlements.marketplace_fee_credit
+                        !membershipActive ||
+                        redeemLoading ||
+                        !entitlements.marketplace_fee_credit
                       }
                       className="rounded-lg border border-yellow-500/30 px-3 py-1.5 text-xs text-yellow-200 disabled:opacity-60"
                     >
@@ -320,7 +341,9 @@ export default function BlackCardDashboardPage() {
                     </button>
                     <button
                       onClick={() => redeemReward("event_access")}
-                      disabled={redeemLoading || !entitlements.event_access}
+                      disabled={
+                        !membershipActive || redeemLoading || !entitlements.event_access
+                      }
                       className="rounded-lg border border-yellow-500/30 px-3 py-1.5 text-xs text-yellow-200 disabled:opacity-60"
                     >
                       Redeem Event Access

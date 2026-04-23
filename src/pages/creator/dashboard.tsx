@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import useAuth from "@/hooks/useAuth";
 
 type Readiness = {
   sellerExists: boolean;
@@ -15,11 +17,19 @@ type Readiness = {
 };
 
 export default function CreatorDashboardPage() {
+  const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
   const [state, setState] = useState<Readiness | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
+    if (authLoading) return;
+    if (!user) {
+      router.replace(`/login?redirect=${encodeURIComponent("/creator/dashboard")}`);
+      return;
+    }
+
     (async () => {
       try {
         const res = await fetch("/api/marketplace/readiness", {
@@ -35,7 +45,7 @@ export default function CreatorDashboardPage() {
         setLoading(false);
       }
     })();
-  }, []);
+  }, [authLoading, router, user]);
 
   return (
     <main className="min-h-screen bg-black p-6 text-white">
@@ -78,7 +88,9 @@ export default function CreatorDashboardPage() {
             />
             <Card
               label="Creator Ready"
-              value={state.musicCreatorReady || state.creatorReady ? "Yes" : "No"}
+              value={
+                state.musicCreatorReady || state.creatorReady ? "Yes" : "No"
+              }
             />
           </div>
         ) : null}

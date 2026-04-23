@@ -44,8 +44,14 @@ const AffiliatePartnershipPage: NextPage = () => {
           return;
         }
 
+        const resolvedUserId = sessionData?.user?.id || sessionData?.user?._id;
+        if (!resolvedUserId) {
+          setAffiliateStatus("inactive");
+          return;
+        }
+
         const linksRes = await fetch(
-          `/api/affiliate/get-links?userId=${sessionData.user.userId}`,
+          `/api/affiliate/get-links?userId=${encodeURIComponent(resolvedUserId)}`,
           {
             cache: "no-store",
             credentials: "include",
