@@ -59,6 +59,14 @@ export default function About() {
               Join the Mission
             </Link>
           </div>
+          <div className="mt-4">
+            <Link
+              href="/founding-principle"
+              className="text-sm font-medium text-[#D4AF37] underline-offset-4 hover:underline"
+            >
+              Read the complete founding message
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -85,11 +93,13 @@ export default function About() {
 
       <section className="border-y border-white/10 bg-white/[0.01]">
         <div className="mx-auto max-w-6xl px-4 py-12 sm:py-14">
-          <h2 className="mb-4 text-2xl font-bold sm:text-3xl">Our Commitment</h2>
+          <h2 className="mb-4 text-2xl font-bold sm:text-3xl">
+            Our Commitment
+          </h2>
           <p className="max-w-3xl text-sm leading-relaxed text-white/72 sm:text-base">
             We are committed to lawful, strategic, and high-integrity execution.
-            This is not performative messaging. It is infrastructure, discipline,
-            and accountability in service of community advancement.
+            This is not performative messaging. It is infrastructure,
+            discipline, and accountability in service of community advancement.
           </p>
           <ul className="mt-5 grid gap-3 text-sm text-white/80 sm:grid-cols-2">
             {commitments.map((point) => (
