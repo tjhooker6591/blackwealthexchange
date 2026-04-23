@@ -8,19 +8,9 @@ const footerSections: Array<{
   {
     title: "Platform",
     links: [
-      { href: "/start-here", label: "Quick Path" },
-      { href: "/events", label: "Events" },
-      { href: "/travel-map/explore", label: "Travel Map" },
-      { href: "/wealth-builder", label: "Wealth Builder" },
-    ],
-  },
-  {
-    title: "Opportunities",
-    links: [
       { href: "/business-directory", label: "Directory" },
       { href: "/jobs", label: "Jobs" },
       { href: "/marketplace", label: "Marketplace" },
-      { href: "/advertise-with-us", label: "Advertise with BWE" },
     ],
   },
   {
@@ -37,6 +27,12 @@ const footerSections: Array<{
     links: [
       { href: "/about", label: "About" },
       { href: "/join-the-mission", label: "Join the Mission" },
+      { href: "/advertise-with-us", label: "Advertise with BWE" },
+    ],
+  },
+  {
+    title: "Legal",
+    links: [
       { href: "/terms-of-service", label: "Terms of Service" },
       { href: "/privacy-policy", label: "Privacy Policy" },
       { href: "/legal/community-conduct", label: "Code of Conduct" },
