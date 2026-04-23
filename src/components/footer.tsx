@@ -50,20 +50,20 @@ const footerSections: Array<{
 
 export default function Footer() {
   return (
-    <footer className="bg-black px-4 py-5 text-white/90 sm:py-6">
+    <footer className="border-t border-white/10 bg-black/95 px-4 py-3 text-white/80 sm:py-4">
       <div className="mx-auto max-w-6xl">
-        <div className="grid grid-cols-2 gap-x-6 gap-y-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-x-5 gap-y-2 sm:gap-x-6 lg:grid-cols-4 lg:gap-y-1">
           {footerSections.map((section) => (
-            <div key={section.title}>
-              <h3 className="mb-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#D4AF37]">
+            <div key={section.title} className="min-w-0">
+              <h3 className="mb-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#D4AF37]/90">
                 {section.title}
               </h3>
-              <ul className="space-y-1">
+              <ul className="space-y-0.5">
                 {section.links.map((item) => (
-                  <li key={item.href}>
+                  <li key={item.href} className="leading-tight">
                     <Link
                       href={item.href}
-                      className="text-xs text-white/75 transition hover:text-[#D4AF37] sm:text-sm"
+                      className="text-[11px] text-white/65 transition hover:text-[#D4AF37] sm:text-xs"
                     >
                       {item.label}
                     </Link>
@@ -74,7 +74,7 @@ export default function Footer() {
           ))}
         </div>
 
-        <div className="mt-4 border-t border-white/10 pt-3 text-center text-[11px] text-white/55 sm:text-xs">
+        <div className="mt-2 border-t border-white/10 pt-2 text-center text-[10px] text-white/45 sm:text-[11px]">
           &copy; {new Date().getFullYear()} Black Wealth Exchange. All rights
           reserved.
         </div>
