@@ -327,14 +327,15 @@ const EconomicImpactSimulator = () => {
   const currentMarker = progressMarker(total);
 
   return (
-    <section className="relative overflow-hidden rounded-2xl border border-transparent bg-white/[0.03] p-4 shadow-[0_14px_40px_rgba(0,0,0,0.38),inset_0_1px_0_rgba(255,255,255,0.08),inset_0_-24px_40px_rgba(0,0,0,0.24)] backdrop-blur sm:p-5">
+    <section className="relative overflow-hidden rounded-2xl border border-transparent bg-[#05080b]/95 p-4 shadow-[0_20px_52px_rgba(0,0,0,0.5),inset_0_1px_0_rgba(255,255,255,0.12),inset_0_-30px_48px_rgba(0,0,0,0.36)] backdrop-blur sm:p-5">
       <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-r from-emerald-400/35 via-transparent to-[#D4AF37]/40 p-[1px] [mask:linear-gradient(#fff_0_0)_content-box,linear-gradient(#fff_0_0)] [mask-composite:xor]" />
       <div className="pointer-events-none absolute inset-[1px] rounded-2xl bg-[linear-gradient(160deg,rgba(255,255,255,0.05),rgba(255,255,255,0.00)_42%,rgba(0,0,0,0.22)_100%)]" />
-      <div className="pointer-events-none absolute inset-[10px] rounded-xl border border-white/10 bg-[radial-gradient(circle_at_22%_18%,rgba(16,185,129,0.10),transparent_38%),radial-gradient(circle_at_82%_78%,rgba(212,175,55,0.08),transparent_40%)]" />
+      <div className="pointer-events-none absolute inset-[10px] rounded-xl border border-white/15 bg-[radial-gradient(circle_at_22%_18%,rgba(16,185,129,0.16),transparent_38%),radial-gradient(circle_at_82%_78%,rgba(212,175,55,0.14),transparent_40%)]" />
+      <div className="counter-grid pointer-events-none absolute inset-[10px] rounded-xl opacity-35" />
       <div className="pointer-events-none absolute -top-24 left-1/2 h-52 w-[36rem] -translate-x-1/2 rounded-full bg-[#D4AF37]/12 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-28 right-[-6rem] h-64 w-64 rounded-full bg-emerald-400/12 blur-3xl" />
       <div className="pointer-events-none absolute inset-0 animate-[pulse_12s_ease-in-out_infinite] bg-[radial-gradient(circle_at_25%_18%,rgba(16,185,129,0.12),transparent_42%),radial-gradient(circle_at_78%_76%,rgba(212,175,55,0.10),transparent_38%)]" />
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(110deg,transparent_12%,rgba(255,255,255,0.08)_42%,transparent_70%)] bg-[length:220%_100%] opacity-40 mix-blend-screen animate-[pulse_9s_ease-in-out_infinite]" />
+      <div className="counter-sweep pointer-events-none absolute inset-0 opacity-65 mix-blend-screen" />
 
       <div className="relative flex flex-col items-center text-center">
         <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-bold tracking-wide text-white/80">
@@ -348,12 +349,12 @@ const EconomicImpactSimulator = () => {
         </h2>
 
         <div className="relative mt-2 text-[2rem] font-black tracking-tight tabular-nums sm:text-5xl md:text-6xl">
-          <span className="relative z-10 bg-gradient-to-r from-emerald-200 via-emerald-400 to-[#D4AF37] bg-clip-text text-transparent drop-shadow-[0_0_16px_rgba(16,185,129,0.2)]">
+          <span className="counter-value relative z-10 bg-gradient-to-r from-emerald-200 via-emerald-400 to-[#D4AF37] bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(16,185,129,0.34)]">
             {formatCurrency(Math.floor(total))}
           </span>
           <span
             aria-hidden
-            className="pointer-events-none absolute inset-0 z-0 bg-[linear-gradient(105deg,transparent_20%,rgba(255,255,255,0.55)_45%,transparent_70%)] bg-clip-text text-transparent opacity-55 blur-[0.2px] mix-blend-screen animate-[pulse_5.2s_ease-in-out_infinite]"
+            className="counter-value-sheen pointer-events-none absolute inset-0 z-0 bg-clip-text text-transparent"
           >
             {formatCurrency(Math.floor(total))}
           </span>
@@ -378,36 +379,37 @@ const EconomicImpactSimulator = () => {
             Spending Flow Progress
           </p>
 
-          <div className="relative mt-2 h-3.5 w-full overflow-hidden rounded-full border border-white/15 bg-[#0b1014] shadow-[inset_0_1px_2px_rgba(255,255,255,0.08),inset_0_-1px_3px_rgba(0,0,0,0.45)]">
-            <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.10),rgba(255,255,255,0.01)_45%,rgba(0,0,0,0.3)_100%)]" />
-            <div className="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(90deg,transparent,transparent_24px,rgba(255,255,255,0.05)_25px)] opacity-30" />
+          <div className="flow-track relative mt-2 h-4 w-full overflow-hidden rounded-full border border-white/20 bg-[#070b0f] shadow-[inset_0_2px_3px_rgba(255,255,255,0.12),inset_0_-2px_4px_rgba(0,0,0,0.65)]">
+            <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.15),rgba(255,255,255,0.01)_45%,rgba(0,0,0,0.45)_100%)]" />
+            <div className="pointer-events-none absolute inset-0 bg-[repeating-linear-gradient(90deg,rgba(255,255,255,0.02),rgba(255,255,255,0.02)_14px,rgba(255,255,255,0.08)_15px,rgba(255,255,255,0.02)_16px)] opacity-45" />
 
             <div
-              className="relative h-full overflow-hidden rounded-full bg-gradient-to-r from-emerald-400 via-emerald-300 to-[#D4AF37] shadow-[0_0_20px_rgba(16,185,129,0.35)] transition-[width] duration-1000 ease-out"
+              className="flow-fill relative h-full overflow-hidden rounded-full bg-gradient-to-r from-emerald-400 via-emerald-300 to-[#D4AF37] shadow-[0_0_26px_rgba(16,185,129,0.45)] transition-[width] duration-1000 ease-out"
               style={{ width: `${progressPct}%` }}
             >
-              <span className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.35)_52%,transparent_100%)] opacity-65 animate-[pulse_3.2s_ease-in-out_infinite]" />
+              <span className="flow-beam pointer-events-none absolute inset-y-0 -left-8 w-14 bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.85),transparent)]" />
+              <span className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.45)_52%,transparent_100%)] opacity-70" />
             </div>
 
             <span
-              className="pointer-events-none absolute top-1/2 h-3 w-[2px] -translate-y-1/2 rounded bg-emerald-100/80 shadow-[0_0_8px_rgba(16,185,129,0.4)]"
+              className="pointer-events-none absolute top-1/2 h-4 w-[2px] -translate-y-1/2 rounded bg-emerald-100/85 shadow-[0_0_10px_rgba(16,185,129,0.5)]"
               style={{ left: `${progressMarker(initialValue)}%` }}
               title="Baseline (2010)"
             />
             <span
-              className="pointer-events-none absolute top-1/2 h-3.5 w-[2px] -translate-y-1/2 rounded bg-[#D4AF37] shadow-[0_0_10px_rgba(212,175,55,0.6)]"
+              className="pointer-events-none absolute top-1/2 h-5 w-[2px] -translate-y-1/2 rounded bg-[#D4AF37] shadow-[0_0_12px_rgba(212,175,55,0.8)]"
               style={{ left: `${currentMarker}%` }}
               title="Current"
             />
             <span
-              className="pointer-events-none absolute top-1/2 h-3 w-[2px] -translate-y-1/2 rounded bg-white/85 shadow-[0_0_8px_rgba(255,255,255,0.35)]"
+              className="pointer-events-none absolute top-1/2 h-4 w-[2px] -translate-y-1/2 rounded bg-white/90 shadow-[0_0_10px_rgba(255,255,255,0.45)]"
               style={{ left: `${progressMarker(projected)}%` }}
               title="Projected (2026)"
             />
 
             <span
-              className="pointer-events-none absolute top-1/2 h-2.5 w-2.5 -translate-y-1/2 rounded-full border border-[#D4AF37]/70 bg-[#D4AF37] shadow-[0_0_16px_rgba(212,175,55,0.7)]"
-              style={{ left: `calc(${Math.max(1, progressPct)}% - 5px)` }}
+              className="flow-head pointer-events-none absolute top-1/2 h-3 w-3 -translate-y-1/2 rounded-full border border-[#D4AF37]/80 bg-[#D4AF37]"
+              style={{ left: `calc(${Math.max(1, progressPct)}% - 6px)` }}
             />
           </div>
 
@@ -470,6 +472,107 @@ const EconomicImpactSimulator = () => {
           </Link>
         </div>
       </div>
+      <style jsx>{`
+        .counter-grid {
+          background-image: linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+          background-size: 24px 24px, 24px 24px;
+        }
+
+        .counter-sweep {
+          background: linear-gradient(
+            110deg,
+            transparent 8%,
+            rgba(255, 255, 255, 0.12) 36%,
+            transparent 62%
+          );
+          background-size: 220% 100%;
+          animation: signalSweep 6.2s ease-in-out infinite;
+        }
+
+        .counter-value {
+          animation: valuePulse 2.6s ease-in-out infinite;
+        }
+
+        .counter-value-sheen {
+          background-image: linear-gradient(
+            100deg,
+            transparent 20%,
+            rgba(255, 255, 255, 0.7) 46%,
+            transparent 72%
+          );
+          animation: signalSweep 3.4s ease-in-out infinite;
+          mix-blend-mode: screen;
+        }
+
+        .flow-track {
+          animation: trackBreath 3.2s ease-in-out infinite;
+        }
+
+        .flow-beam {
+          animation: flowRun 1.8s linear infinite;
+        }
+
+        .flow-head {
+          box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.85);
+          animation: headPulse 1.8s ease-in-out infinite;
+        }
+
+        @keyframes signalSweep {
+          0% {
+            background-position: 115% 0;
+          }
+          100% {
+            background-position: -30% 0;
+          }
+        }
+
+        @keyframes flowRun {
+          0% {
+            transform: translateX(-18px);
+            opacity: 0;
+          }
+          20% {
+            opacity: 1;
+          }
+          100% {
+            transform: translateX(420px);
+            opacity: 0;
+          }
+        }
+
+        @keyframes valuePulse {
+          0%,
+          100% {
+            filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.2));
+          }
+          50% {
+            filter: drop-shadow(0 0 20px rgba(16, 185, 129, 0.46));
+          }
+        }
+
+        @keyframes trackBreath {
+          0%,
+          100% {
+            box-shadow: inset 0 2px 3px rgba(255, 255, 255, 0.12),
+              inset 0 -2px 4px rgba(0, 0, 0, 0.65), 0 0 0 rgba(16, 185, 129, 0);
+          }
+          50% {
+            box-shadow: inset 0 2px 3px rgba(255, 255, 255, 0.14),
+              inset 0 -2px 4px rgba(0, 0, 0, 0.65), 0 0 18px rgba(16, 185, 129, 0.22);
+          }
+        }
+
+        @keyframes headPulse {
+          0%,
+          100% {
+            box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7);
+          }
+          50% {
+            box-shadow: 0 0 0 7px rgba(212, 175, 55, 0.08);
+          }
+        }
+      `}</style>
     </section>
   );
 };
