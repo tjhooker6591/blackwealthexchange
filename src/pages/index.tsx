@@ -3,7 +3,6 @@
 import {
   useEffect,
   useMemo,
-  useRef,
   useState,
   type FormEvent,
   type ComponentType,
@@ -270,45 +269,11 @@ function ConsultingInterestModal({
 const EconomicImpactSimulator = () => {
   const currentYear = 2026;
   const projected = 2_100_000_000_000;
-  const initialValue = 300_000_000_000;
-  const impactSecondsToReach = 8 * 60;
-
-  const [total, setTotal] = useState<number>(initialValue);
-
-  const perSecond = useMemo(() => {
-    const span = Math.max(1, projected - initialValue);
-    return span / Math.max(1, impactSecondsToReach);
-  }, [projected, initialValue, impactSecondsToReach]);
-
-  const rafRef = useRef<number | null>(null);
-  const lastRef = useRef<number>(0);
-  const totalRef = useRef<number>(initialValue);
-
-  useEffect(() => {
-    totalRef.current = total;
-  }, [total]);
-
-  useEffect(() => {
-    setTotal(initialValue);
-    totalRef.current = initialValue;
-    lastRef.current = performance.now();
-
-    const tick = (now: number) => {
-      const dt = Math.min(0.05, Math.max(0, (now - lastRef.current) / 1000));
-      lastRef.current = now;
-
-      const next = Math.min(projected, totalRef.current + perSecond * dt);
-      totalRef.current = next;
-      setTotal(next);
-
-      if (next < projected) rafRef.current = requestAnimationFrame(tick);
-    };
-
-    rafRef.current = requestAnimationFrame(tick);
-    return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    };
-  }, [initialValue, perSecond, projected]);
+  const baseline = 300_000_000_000;
+  const perDay = 4_200_000_000;
+  const perSecond = 48_000;
+  const recapturePct = 5;
+  const recaptureValue = projected * (recapturePct / 100);
 
   const formatCurrency = (num: number) =>
     num.toLocaleString("en-US", {
@@ -318,138 +283,97 @@ const EconomicImpactSimulator = () => {
       maximumFractionDigits: 0,
     });
 
-  const progressPct = Math.min(100, (total / projected) * 100);
-  const perMonth = projected / 12;
-  const perDay = perMonth / 30.44;
-  const perSecondLive = projected / (365 * 24 * 60 * 60);
-  const progressMarker = (value: number) =>
-    Math.min(100, (value / projected) * 100);
-  const currentMarker = progressMarker(total);
-
   return (
-    <section className="relative isolate overflow-hidden py-6 sm:py-8">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(16,185,129,0.14),transparent_36%),radial-gradient(circle_at_88%_75%,rgba(212,175,55,0.14),transparent_42%)]" />
-      <div className="counter-grid pointer-events-none absolute inset-0 opacity-35" />
-      <div className="counter-sweep pointer-events-none absolute inset-0 opacity-70 mix-blend-screen" />
+    <section className="relative overflow-hidden py-4 sm:py-5">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_20%,rgba(16,185,129,0.12),transparent_36%),radial-gradient(circle_at_90%_78%,rgba(212,175,55,0.12),transparent_42%)]" />
 
-      <div className="relative grid gap-6 lg:grid-cols-[1.05fr_1.2fr] lg:items-end">
-        <div className="text-left">
+      <div className="relative grid gap-3 rounded-xl border border-white/10 bg-[#05080b]/92 p-3 shadow-[0_12px_34px_rgba(0,0,0,0.45)] backdrop-blur sm:gap-4 sm:p-4 lg:grid-cols-[1.05fr_1.2fr] lg:items-center">
+        <div className="min-w-0">
           <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-bold tracking-wide text-white/80">
             <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
             BUYING POWER (ANNUAL ESTIMATE)
           </div>
 
-          <h2 className="mt-3 text-base font-extrabold tracking-[0.015em] text-white sm:text-xl md:text-2xl">
-            African American Buying Power{" "}
+          <h2 className="mt-2 text-sm font-extrabold tracking-[0.01em] text-white sm:text-xl">
+            African American Buying Power{' '}
             <span className="text-[#D4AF37]">({currentYear})</span>
           </h2>
 
-          <div className="relative mt-2 text-[2.2rem] font-black tracking-tight tabular-nums sm:text-5xl md:text-6xl">
-            <span className="counter-value relative z-10 bg-gradient-to-r from-emerald-200 via-emerald-400 to-[#D4AF37] bg-clip-text text-transparent drop-shadow-[0_0_24px_rgba(16,185,129,0.42)]">
-              {formatCurrency(Math.floor(total))}
-            </span>
-            <span
-              aria-hidden
-              className="counter-value-sheen pointer-events-none absolute inset-0 z-0 bg-clip-text text-transparent"
-            >
-              {formatCurrency(Math.floor(total))}
-            </span>
-          </div>
-
-          <div className="signal-link mt-1 h-[2px] w-full max-w-xs rounded-full bg-gradient-to-r from-emerald-300/70 via-[#D4AF37]/80 to-transparent" />
-
-          <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px] sm:text-xs">
-            <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-white/78">
-              ≈ $4.2 billion per day
-            </span>
-            <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-white/78">
-              ≈ $48,000 per second
-            </span>
-          </div>
-
-          <p className="mt-3 text-[11px] text-white/52">
-            A simple visual tracker to keep the impact front-and-center.
+          <p className="mt-2 text-sm text-white/78">
+            Massive spending power currently leaks outward. Redirecting even a
+            small share into BWE creates outsized retained value.
           </p>
 
-          <div className="mt-2 hidden flex-wrap items-center gap-2 text-[11px] text-white/70 sm:flex">
-            <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">
-              ~{formatCurrency(perMonth)} / month
-            </span>
-            <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">
-              ~{formatCurrency(perDay)} / day
-            </span>
-            <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1">
-              ~{formatCurrency(perSecondLive)} / second
-            </span>
+          <div className="mt-2 grid grid-cols-2 gap-2 text-[11px] sm:text-xs">
+            <div className="rounded-lg border border-white/10 bg-white/5 px-3 py-1.5">
+              <p className="text-white/55">Annual estimate</p>
+              <p className="font-bold text-[#D4AF37]">{formatCurrency(projected)}</p>
+              <p className="mt-0.5 text-white/55">Baseline (2010)</p>
+              <p className="font-semibold text-white">{formatCurrency(baseline)}</p>
+            </div>
+            <div className="rounded-lg border border-white/10 bg-white/5 px-3 py-1.5">
+              <p className="text-white/55">Daily flow</p>
+              <p className="font-bold text-white">{formatCurrency(perDay)} / day</p>
+              <p className="mt-0.5 text-white/55">Second-level flow</p>
+              <p className="font-semibold text-white">{formatCurrency(perSecond)} / sec</p>
+            </div>
           </div>
         </div>
 
-        <div className="relative overflow-hidden rounded-xl border border-white/10 bg-black/30 p-4">
-          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.06),rgba(255,255,255,0.01)_45%,rgba(0,0,0,0.4)_100%)]" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-28 bg-[radial-gradient(circle_at_80%_50%,rgba(16,185,129,0.28),transparent_58%)]" />
-
-          <div className="relative flex items-center justify-between text-[11px] text-white/60">
-            <span>Baseline (2010): {formatCurrency(initialValue)}</span>
-            <span>Projected (2026): {formatCurrency(projected)}</span>
+        <div className="relative min-w-0">
+          <div className="mb-2 text-center text-[11px] font-medium tracking-wide text-white/66">
+            Spending Flow Progress
           </div>
 
-          <p className="relative mt-2 text-center text-[11px] font-medium tracking-wide text-white/66">
-            Spending Flow Progress
-          </p>
+          <div className="relative rounded-lg border border-white/12 bg-black/35 p-2.5 sm:p-3">
+            <div className="flow-grid pointer-events-none absolute inset-0 rounded-lg opacity-35" />
 
-          <div className="signal-field relative mt-3 h-28 overflow-hidden rounded-lg border border-white/10 bg-[#070b0f]/85">
-            <div className="flow-grid pointer-events-none absolute inset-0" />
-            <div className="pointer-events-none absolute left-0 right-0 top-1/2 h-[1px] -translate-y-1/2 bg-white/12" />
+            <div className="relative h-14 sm:h-20">
+              <div className="pointer-events-none absolute left-[10%] right-[10%] top-1/2 h-[2px] -translate-y-1/2 bg-white/15" />
+              <div className="pointer-events-none absolute left-[10%] right-[10%] top-1/2 h-[3px] -translate-y-1/2 bg-gradient-to-r from-emerald-300/20 via-emerald-300/85 to-[#D4AF37]/65" />
 
-            <div className="pointer-events-none absolute left-0 right-0 top-1/2 h-[2px] -translate-y-1/2 bg-gradient-to-r from-emerald-300/10 via-emerald-300/30 to-[#D4AF37]/25" />
-            <div
-              className="flow-fill absolute left-0 top-1/2 h-[3px] -translate-y-1/2 rounded-full bg-gradient-to-r from-emerald-300 via-emerald-400 to-[#D4AF37] shadow-[0_0_22px_rgba(16,185,129,0.62)] transition-[width] duration-1000 ease-out"
-              style={{ width: `${progressPct}%` }}
-            >
-              <span className="flow-beam pointer-events-none absolute inset-y-0 -left-10 w-20 bg-[linear-gradient(90deg,transparent,rgba(255,255,255,1),transparent)]" />
-              <span className="flow-beam-secondary pointer-events-none absolute inset-y-0 -left-16 w-14 bg-[linear-gradient(90deg,transparent,rgba(212,175,55,0.95),transparent)]" />
+              <span className="node absolute left-[10%] top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border border-emerald-200/70 bg-emerald-300/90" />
+              <span className="node node-live absolute left-1/2 top-1/2 h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#D4AF37]/80 bg-[#D4AF37]" />
+              <span className="node absolute right-[10%] top-1/2 h-3 w-3 translate-x-1/2 -translate-y-1/2 rounded-full border border-white/70 bg-white/90" />
+
+              <span className="beam pointer-events-none absolute left-[10%] top-1/2 h-[6px] w-16 -translate-y-1/2 rounded-full bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.95),transparent)]" />
+
+              <div className="absolute left-[10%] top-[72%] -translate-x-1/2 text-[10px] text-white/62">
+                Baseline
+              </div>
+              <div className="absolute left-1/2 top-[72%] -translate-x-1/2 text-[10px] text-white/72">
+                Current
+              </div>
+              <div className="absolute right-[10%] top-[72%] translate-x-1/2 text-[10px] text-white/62">
+                Projected
+              </div>
             </div>
 
-            <span
-              className="pointer-events-none absolute top-1/2 h-10 w-[2px] -translate-y-1/2 rounded bg-emerald-100/85 shadow-[0_0_10px_rgba(16,185,129,0.45)]"
-              style={{ left: `${progressMarker(initialValue)}%` }}
-              title="Baseline (2010)"
-            />
-            <span
-              className="pointer-events-none absolute top-1/2 h-12 w-[2px] -translate-y-1/2 rounded bg-[#D4AF37] shadow-[0_0_12px_rgba(212,175,55,0.75)]"
-              style={{ left: `${currentMarker}%` }}
-              title="Current"
-            />
-            <span
-              className="pointer-events-none absolute top-1/2 h-10 w-[2px] -translate-y-1/2 rounded bg-white/90 shadow-[0_0_10px_rgba(255,255,255,0.4)]"
-              style={{ left: `${progressMarker(projected)}%` }}
-              title="Projected (2026)"
-            />
-
-            <span
-              className="flow-head pointer-events-none absolute top-1/2 h-3.5 w-3.5 -translate-y-1/2 rounded-full border border-[#D4AF37]/85 bg-[#D4AF37]"
-              style={{ left: `calc(${Math.max(1, progressPct)}% - 7px)` }}
-            />
-          </div>
-
-          <div className="relative mt-2 flex items-center justify-between text-[10px] text-white/56">
-            <span>Baseline (2010)</span>
-            <span>Current</span>
-            <span>Projected (2026)</span>
+            <div className="mt-1.5 grid gap-1.5 text-[10px] text-white/72 sm:mt-2 sm:grid-cols-3 sm:gap-2 sm:text-[11px]">
+              <div className="rounded-md border border-white/10 bg-white/5 px-2 py-1.5 text-center">
+                Black Spending Power
+              </div>
+              <div className="rounded-md border border-white/10 bg-white/5 px-2 py-1.5 text-center">
+                Outside Economy Flow
+              </div>
+              <div className="rounded-md border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-2 py-1.5 text-center text-[#D4AF37]">
+                BWE Recapture Opportunity
+              </div>
+            </div>
           </div>
         </div>
 
         <div className="lg:col-span-2">
-          <div className="w-full rounded-lg border border-[#D4AF37]/35 bg-[#D4AF37]/8 px-3 py-2 text-center text-[11px] text-white/86">
+          <div className="rounded-lg border border-[#D4AF37]/35 bg-[#D4AF37]/8 px-3 py-2 text-center text-[11px] text-white/86">
             <span className="font-semibold text-[#D4AF37]">
-              If 5% stays within our ecosystem → $105B retained annually
+              If {recapturePct}% stays within our ecosystem → {formatCurrency(recaptureValue)} retained annually
             </span>
           </div>
 
-          <div className="mt-4 grid w-full gap-2 sm:grid-cols-2 sm:gap-3">
+          <div className="mt-2 grid w-full gap-2 sm:mt-3 sm:grid-cols-2 sm:gap-3">
             <Link
               href="/1.8trillionimpact"
-              className="group inline-flex items-center justify-center rounded-xl border border-[#D4AF37]/40 bg-[#D4AF37]/10 px-3 py-2 text-center shadow-sm transition hover:border-[#D4AF37]/80 hover:bg-gradient-to-r hover:from-[#D4AF37]/20 hover:to-emerald-400/10 hover:shadow-[0_0_18px_rgba(212,175,55,0.2)] sm:px-4 sm:py-2.5"
+              className="group inline-flex items-center justify-center rounded-xl border border-[#D4AF37]/40 bg-[#D4AF37]/10 px-3 py-2 text-center shadow-sm transition hover:border-[#D4AF37]/80 hover:bg-gradient-to-r hover:from-[#D4AF37]/20 hover:to-emerald-400/10 sm:px-4 sm:py-2.5"
             >
               <div className="flex w-full items-center justify-between gap-3">
                 <span className="text-[11px] font-extrabold tracking-wide text-[#D4AF37] sm:text-sm">
@@ -463,7 +387,7 @@ const EconomicImpactSimulator = () => {
 
             <Link
               href="/economic-freedom"
-              className="group inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-center transition hover:border-[#D4AF37]/30 hover:bg-gradient-to-r hover:from-white/10 hover:to-[#D4AF37]/10 hover:shadow-[0_0_14px_rgba(212,175,55,0.14)] sm:px-4 sm:py-2.5"
+              className="group inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-center transition hover:border-[#D4AF37]/30 hover:bg-gradient-to-r hover:from-white/10 hover:to-[#D4AF37]/10 sm:px-4 sm:py-2.5"
             >
               <div className="flex w-full items-center justify-between gap-3">
                 <span className="text-[11px] font-extrabold tracking-wide text-[#D4AF37] sm:text-sm">
@@ -479,157 +403,60 @@ const EconomicImpactSimulator = () => {
       </div>
 
       <style jsx>{`
-        .counter-grid {
+        .flow-grid {
           background-image:
             linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-            linear-gradient(
-              90deg,
-              rgba(255, 255, 255, 0.05) 1px,
-              transparent 1px
-            );
-          background-size: 30px 30px;
+            linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+          background-size: 24px 24px;
           animation: gridDrift 14s linear infinite;
         }
 
-        .counter-sweep {
-          background: linear-gradient(
-            110deg,
-            transparent 10%,
-            rgba(255, 255, 255, 0.12) 38%,
-            transparent 68%
-          );
-          background-size: 220% 100%;
-          animation: signalSweep 5.2s ease-in-out infinite;
+        .beam {
+          animation: flowRun 1.2s linear infinite;
         }
 
-        .counter-value {
-          animation: valuePulse 2.2s ease-in-out infinite;
-        }
-
-        .counter-value-sheen {
-          background-image: linear-gradient(
-            100deg,
-            transparent 22%,
-            rgba(255, 255, 255, 0.75) 46%,
-            transparent 70%
-          );
-          animation: signalSweep 3s ease-in-out infinite;
-          mix-blend-mode: screen;
-        }
-
-        .flow-grid {
-          background-image: repeating-linear-gradient(
-            90deg,
-            rgba(255, 255, 255, 0.03),
-            rgba(255, 255, 255, 0.03) 14px,
-            rgba(255, 255, 255, 0.11) 15px,
-            rgba(255, 255, 255, 0.03) 16px
-          );
-          opacity: 0.45;
-        }
-
-        .flow-beam {
-          animation: flowRun 1.15s linear infinite;
-        }
-
-        .flow-beam-secondary {
-          animation: flowRunSecondary 1.9s linear infinite;
-          opacity: 0.85;
-        }
-
-        .flow-head {
-          box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.9);
-          animation: headPulse 1.2s ease-in-out infinite;
-        }
-
-        .signal-link {
-          box-shadow: 0 0 14px rgba(16, 185, 129, 0.35);
-          animation: linkPulse 1.8s ease-in-out infinite;
-        }
-
-        @keyframes signalSweep {
-          0% {
-            background-position: 112% 0;
-          }
-          100% {
-            background-position: -28% 0;
-          }
+        .node-live {
+          box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.85);
+          animation: nodePulse 1.2s ease-in-out infinite;
         }
 
         @keyframes flowRun {
           0% {
-            transform: translateX(-20px);
+            transform: translate(-8px, -50%);
             opacity: 0;
           }
-          16% {
+          20% {
             opacity: 1;
           }
           100% {
-            transform: translateX(620px);
+            transform: translate(460px, -50%);
             opacity: 0;
           }
         }
 
-        @keyframes flowRunSecondary {
-          0% {
-            transform: translateX(-28px);
-            opacity: 0;
-          }
-          18% {
-            opacity: 0.9;
-          }
-          100% {
-            transform: translateX(600px);
-            opacity: 0;
-          }
-        }
-
-        @keyframes valuePulse {
+        @keyframes nodePulse {
           0%,
           100% {
-            filter: drop-shadow(0 0 10px rgba(16, 185, 129, 0.26));
+            box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.7);
           }
           50% {
-            filter: drop-shadow(0 0 24px rgba(16, 185, 129, 0.52));
-          }
-        }
-
-        @keyframes headPulse {
-          0%,
-          100% {
-            box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.78);
-          }
-          50% {
-            box-shadow: 0 0 0 10px rgba(212, 175, 55, 0.14);
-          }
-        }
-
-        @keyframes linkPulse {
-          0%,
-          100% {
-            opacity: 0.55;
-          }
-          50% {
-            opacity: 1;
+            box-shadow: 0 0 0 9px rgba(212, 175, 55, 0.13);
           }
         }
 
         @keyframes gridDrift {
           0% {
-            background-position:
-              0 0,
-              0 0;
+            background-position: 0 0, 0 0;
           }
           100% {
-            background-position:
-              30px 0,
-              0 30px;
+            background-position: 24px 0, 0 24px;
           }
         }
       `}</style>
     </section>
   );
 };
+
 
 type VerticalKey = "all" | "shopping" | "news";
 
