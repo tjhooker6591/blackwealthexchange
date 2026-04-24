@@ -148,7 +148,7 @@ export default function NavBar() {
                 Music
               </Link>
               <Link
-                href="/affiliate/index"
+                href="/affiliate"
                 className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]"
               >
                 Earn with BWE
@@ -350,7 +350,7 @@ export default function NavBar() {
             </Link>
 
             <Link
-              href="/affiliate/index"
+              href="/affiliate"
               className="block rounded-xl px-3 py-2.5 font-medium text-white/85 transition-colors hover:bg-white/[0.04] hover:text-[#D4AF37]"
               onClick={() => handleMobileNav()}
             >

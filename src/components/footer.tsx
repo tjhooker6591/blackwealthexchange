@@ -6,28 +6,11 @@ const footerSections: Array<{
   links: Array<{ href: string; label: string }>;
 }> = [
   {
-    title: "Platform",
+    title: "Support",
     links: [
       { href: "/business-directory", label: "Directory" },
       { href: "/jobs", label: "Jobs" },
-      { href: "/marketplace", label: "Marketplace" },
-    ],
-  },
-  {
-    title: "Ecosystem",
-    links: [
-      { href: "/black-card", label: "Black Card" },
-      { href: "/affiliate", label: "Affiliate" },
-      { href: "/financial-literacy", label: "Learn" },
-      { href: "/music", label: "Music" },
-    ],
-  },
-  {
-    title: "Company",
-    links: [
-      { href: "/about", label: "About" },
-      { href: "/join-the-mission", label: "Join the Mission" },
-      { href: "/advertise-with-us", label: "Advertise with BWE" },
+      { href: "/about", label: "About BWE" },
     ],
   },
   {
@@ -36,10 +19,16 @@ const footerSections: Array<{
       { href: "/terms-of-service", label: "Terms of Service" },
       { href: "/privacy-policy", label: "Privacy Policy" },
       { href: "/legal/community-conduct", label: "Code of Conduct" },
+    ],
+  },
+  {
+    title: "Compliance",
+    links: [
       {
         href: "/legal/advertising-guidelines",
         label: "Advertising Guidelines",
       },
+      { href: "/affiliate", label: "Affiliate Program" },
     ],
   },
 ];
@@ -48,28 +37,19 @@ export default function Footer() {
   return (
     <footer className="border-t border-white/10 bg-black/95 px-4 py-3 text-white/80 sm:py-4">
       <div className="mx-auto max-w-6xl">
-        <div className="mb-2.5 flex flex-col gap-2 border-b border-white/10 pb-2.5 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mb-2.5 flex items-center justify-between gap-3 border-b border-white/10 pb-2.5">
           <p className="text-[11px] leading-tight text-white/70 sm:text-xs">
-            Building Black ownership, economic power, and multi-generational
-            growth.
+            Building Black ownership and long-term economic power.
           </p>
-          <div className="flex items-center gap-2">
-            <Link
-              href="/signup"
-              className="inline-flex min-h-8 items-center justify-center rounded-full bg-[#D4AF37] px-3 text-[11px] font-semibold text-black transition hover:brightness-105"
-            >
-              Join Black Wealth Exchange
-            </Link>
-            <Link
-              href="/signup"
-              className="inline-flex min-h-8 items-center justify-center rounded-full border border-[#D4AF37]/50 px-3 text-[11px] font-semibold text-[#D4AF37] transition hover:border-[#D4AF37] hover:text-[#E7C96E]"
-            >
-              Start Building
-            </Link>
-          </div>
+          <Link
+            href="/signup"
+            className="inline-flex min-h-8 items-center justify-center rounded-full bg-[#D4AF37] px-3 text-[11px] font-semibold text-black transition hover:brightness-105"
+          >
+            Join Black Wealth Exchange
+          </Link>
         </div>
 
-        <div className="grid grid-cols-2 gap-x-5 gap-y-2 sm:gap-x-6 lg:grid-cols-4 lg:gap-y-1">
+        <div className="grid grid-cols-2 gap-x-5 gap-y-2 sm:grid-cols-3 sm:gap-x-6">
           {footerSections.map((section) => (
             <div key={section.title} className="min-w-0">
               <h3 className="mb-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#D4AF37]/90">
