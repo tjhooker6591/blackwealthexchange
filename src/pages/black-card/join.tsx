@@ -1,6 +1,6 @@
 import Head from "next/head";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import useAuth from "@/hooks/useAuth";
 import { BLACK_CARD_TIERS, type BlackCardTier } from "@/lib/black-card";
@@ -32,7 +32,36 @@ export default function BlackCardJoinPage() {
 
   const tierConfig = BLACK_CARD_TIERS[tier];
   const checkoutSuccess = router.query.checkout === "success";
+  const [membershipActive, setMembershipActive] = useState(false);
+  const [membershipStatusChecked, setMembershipStatusChecked] = useState(false);
   const printNameFinal = printName.replace(/\s+/g, " ").trim();
+
+  useEffect(() => {
+    (async () => {
+      if (!user) {
+        setMembershipActive(false);
+        setMembershipStatusChecked(true);
+        return;
+      }
+
+      try {
+        const res = await fetch("/api/black-card/member-summary", {
+          credentials: "include",
+          cache: "no-store",
+        });
+        const json = await res.json().catch(() => ({}));
+        const active =
+          res.ok &&
+          String(json?.member?.status || "inactive").toLowerCase() ===
+            "active";
+        setMembershipActive(Boolean(active));
+      } catch {
+        setMembershipActive(false);
+      } finally {
+        setMembershipStatusChecked(true);
+      }
+    })();
+  }, [user]);
 
   async function submitPhysicalOrder() {
     if (!user) {
@@ -207,13 +236,13 @@ export default function BlackCardJoinPage() {
             <div className="mt-5 flex flex-wrap gap-3">
               <button
                 onClick={startCheckout}
-                disabled={loading || checkoutSuccess}
+                disabled={loading || membershipActive}
                 className="rounded-lg bg-yellow-500 px-4 py-2 font-semibold text-black hover:bg-yellow-400 disabled:opacity-60"
               >
                 {loading
                   ? "Starting checkout..."
-                  : checkoutSuccess
-                    ? "Checkout Completed"
+                  : membershipActive
+                    ? "Membership Active"
                     : `Activate ${tierConfig.label}`}
               </button>
               <a
@@ -248,14 +277,14 @@ export default function BlackCardJoinPage() {
             </div>
           </section>
 
-          {checkoutSuccess ? (
+          {checkoutSuccess && membershipStatusChecked && membershipActive ? (
             <section className="rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-4">
               <h2 className="text-lg font-bold text-yellow-200">
                 Physical Card Personalization (Optional Add-on)
               </h2>
               <p className="mt-1 text-sm text-white/80">
-                Digital membership is already active. Submit print approval only
-                if you want physical card production.
+                Reason: digital membership is active. Optional physical card
+                personalization is available now.
               </p>
               <p className="mt-1 text-xs text-white/65">
                 Next action: open your Black Card dashboard for live rewards,
@@ -326,6 +355,32 @@ export default function BlackCardJoinPage() {
                   ? "Submitting..."
                   : "Finalize Print Approval & Submit Card Request"}
               </button>
+            </section>
+          ) : checkoutSuccess && membershipStatusChecked && !membershipActive ? (
+            <section className="rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-4 text-sm text-white/80">
+              <p>
+                Reason: checkout return was detected, but active membership has
+                not been verified yet.
+              </p>
+              <p className="mt-1">
+                Next action: open your Black Card dashboard to confirm
+                activation status, or retry from membership activation.
+              </p>
+              <div className="mt-3 flex gap-2">
+                <Link
+                  href="/dashboard/black-card"
+                  className="rounded-lg border border-yellow-500/40 px-3 py-2 text-xs text-yellow-200"
+                >
+                  Open Black Card Dashboard
+                </Link>
+                <button
+                  onClick={startCheckout}
+                  disabled={loading}
+                  className="rounded-lg bg-yellow-500 px-3 py-2 text-xs font-semibold text-black"
+                >
+                  Retry Membership Activation
+                </button>
+              </div>
             </section>
           ) : null}
 

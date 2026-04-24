@@ -22,7 +22,9 @@ type AccessState = {
   loading: boolean;
   isLoggedIn: boolean;
   hasAccess: boolean;
+  reason: string;
   statusMessage: string;
+  nextAction: string;
 };
 
 const CourseEnrollmentPage: React.FC = () => {
@@ -30,7 +32,9 @@ const CourseEnrollmentPage: React.FC = () => {
     loading: true,
     isLoggedIn: false,
     hasAccess: false,
+    reason: "",
     statusMessage: "",
+    nextAction: "",
   });
   const [isProcessing, setIsProcessing] = useState(false);
   const [checkoutError, setCheckoutError] = useState("");
@@ -48,7 +52,9 @@ const CourseEnrollmentPage: React.FC = () => {
           loading: false,
           isLoggedIn: false,
           hasAccess: false,
-          statusMessage: "Log in to purchase or access this premium course.",
+          reason: "login_required",
+          statusMessage: "Access is locked because you are not logged in.",
+          nextAction: "Log in or create an account to continue enrollment.",
         });
         return;
       }
@@ -59,21 +65,37 @@ const CourseEnrollmentPage: React.FC = () => {
       });
       const accessData = await accessRes.json().catch(() => ({}));
       const hasAccess = Boolean(accessData?.hasAccess);
+      const reason = String(accessData?.reason || "");
+
+      const reasonMessageMap: Record<string, string> = {
+        premium_active: "Access active through your premium plan.",
+        user_purchased_courses: "Access active from your purchased course entitlement.",
+        enrollment_granted: "Access active from your enrollment grant.",
+        no_entitlement: "Access is locked because your premium entitlement is not active yet.",
+        user_not_found: "Access is locked because your account record could not be found.",
+      };
 
       setState({
         loading: false,
         isLoggedIn: true,
         hasAccess,
+        reason,
         statusMessage: hasAccess
-          ? "Access active. Enter your premium course modules."
-          : "Premium access not active yet. Complete checkout to unlock modules.",
+          ? reasonMessageMap[reason] || "Access active. Enter your premium course modules."
+          : reasonMessageMap[reason] ||
+            "Access is locked until premium enrollment is completed.",
+        nextAction: hasAccess
+          ? "Enter course modules and begin your next lesson."
+          : "Complete checkout to activate entitlement and unlock modules.",
       });
     } catch {
       setState({
         loading: false,
         isLoggedIn: false,
         hasAccess: false,
-        statusMessage: "Unable to verify access right now.",
+        reason: "access_check_failed",
+        statusMessage: "We could not verify course access right now.",
+        nextAction: "Retry, then log in and continue enrollment.",
       });
     }
   }
@@ -134,10 +156,11 @@ const CourseEnrollmentPage: React.FC = () => {
           <p className="mt-2 text-gray-300">
             One-time fee: ${COURSE_DATA.price}
           </p>
-          <p className="mt-2 text-sm text-gray-400">{state.statusMessage}</p>
+          <p className="mt-2 text-sm text-gray-400">Reason: {state.statusMessage}</p>
+          <p className="mt-1 text-sm text-gray-300">Next action: {state.nextAction}</p>
           <p className="mt-1 text-xs text-gray-500">
-            Locked state explains why access is blocked. Unlocked state sends you
-            directly to course modules.
+            Locked state explains why access is blocked. Unlocked state sends
+            you directly to course modules.
           </p>
         </header>
 
@@ -161,7 +184,7 @@ const CourseEnrollmentPage: React.FC = () => {
             <div className="space-y-3">
               <p className="text-green-300">Premium access verified.</p>
               <Link
-                href="/premium-finance/index"
+                href="/premium-finance"
                 className="inline-block bg-blue-600 text-white py-2 px-6 rounded hover:bg-blue-700 transition"
               >
                 Enter Course Modules
@@ -203,7 +226,8 @@ const CourseEnrollmentPage: React.FC = () => {
             ))}
           </ul>
           <p className="mt-3 text-xs text-gray-400">
-            Next action: {state.hasAccess
+            State reason code: {state.reason || "n/a"}. Next action:{" "}
+            {state.hasAccess
               ? "enter modules and begin Module 1"
               : state.isLoggedIn
                 ? "complete enrollment to unlock modules"

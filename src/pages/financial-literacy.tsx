@@ -248,9 +248,22 @@ const FinancialLiteracy = () => {
             </div>
 
             {router.query.locked ? (
-              <div className="mt-6 inline-flex rounded-xl border border-yellow-500/30 bg-yellow-500/10 px-4 py-2 text-sm text-yellow-100">
-                This premium course area is locked until your course entitlement
-                is active.
+              <div className="mt-6 rounded-xl border border-yellow-500/30 bg-yellow-500/10 px-4 py-3 text-sm text-yellow-100">
+                <p>
+                  Reason: premium course modules are locked until your
+                  entitlement is active.
+                </p>
+                <p className="mt-1 text-yellow-50/90">
+                  Next action: complete enrollment, then re-enter modules.
+                </p>
+                <div className="mt-3">
+                  <Link
+                    href="/course-enrollment"
+                    className="inline-flex rounded-lg bg-gold px-3 py-1.5 text-xs font-semibold text-black hover:bg-yellow-500"
+                  >
+                    Go to Enrollment
+                  </Link>
+                </div>
               </div>
             ) : null}
 
@@ -349,9 +362,15 @@ const FinancialLiteracy = () => {
                   stability to long-term leverage.
                 </p>
                 <div className="mt-4 grid md:grid-cols-3 gap-3 text-sm text-gray-300">
-                  <CardLine>Phase 1: Stabilize cash flow and eliminate chaos</CardLine>
-                  <CardLine>Phase 2: Build credit and invest with discipline</CardLine>
-                  <CardLine>Phase 3: Protect assets and grow legacy systems</CardLine>
+                  <CardLine>
+                    Phase 1: Stabilize cash flow and eliminate chaos
+                  </CardLine>
+                  <CardLine>
+                    Phase 2: Build credit and invest with discipline
+                  </CardLine>
+                  <CardLine>
+                    Phase 3: Protect assets and grow legacy systems
+                  </CardLine>
                 </div>
               </section>
 

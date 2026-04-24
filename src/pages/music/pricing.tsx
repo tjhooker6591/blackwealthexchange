@@ -1,7 +1,11 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import type { GetServerSideProps } from "next";
+import cookie from "cookie";
+import jwt from "jsonwebtoken";
 import useAuth from "@/hooks/useAuth";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
+import { getJwtSecret } from "@/lib/env";
 
 type Readiness = {
   sellerExists: boolean;
@@ -44,12 +48,7 @@ export default function MusicPricingPage() {
 
     (async () => {
       if (loading) return;
-      if (!user) {
-        router.replace(
-          `/login?redirect=${encodeURIComponent("/music/pricing")}`,
-        );
-        return;
-      }
+      if (!user) return;
 
       try {
         const res = await fetch("/api/marketplace/readiness", {
@@ -60,16 +59,30 @@ export default function MusicPricingPage() {
         if (!res.ok) throw new Error(data?.error || "Failed to load readiness");
         setReadiness(data);
 
-        if (!data?.sellerExists || data?.onboardingStatus !== "onboarded") {
+        if (!data?.sellerExists) {
+          setLockedReason(
+            "No creator profile found for this account. Pricing unlocks only after creator onboarding is started.",
+          );
+          return;
+        }
+
+        if (data?.onboardingStatus !== "onboarded") {
           setLockedReason(
             "Creator onboarding is not complete. Finish onboarding to unlock plan activation.",
           );
           return;
         }
 
+        if (!data?.payoutReady) {
+          setLockedReason(
+            "Payout setup is incomplete. Plan activation unlocks only after payout readiness is verified.",
+          );
+          return;
+        }
+
         if (data?.musicCreatorReady || data?.creatorReady) {
           setLockedReason(
-            "Creator access is already active. Pricing is only for activation.",
+            "Creator access is already active. Pricing is only for first-time activation or tier changes.",
           );
           return;
         }
@@ -129,10 +142,13 @@ export default function MusicPricingPage() {
     return (
       <main className="min-h-screen bg-black p-6 text-white">
         <div className="mx-auto max-w-3xl rounded-2xl border border-yellow-400/30 bg-yellow-500/10 p-6">
-          <h1 className="text-2xl font-black text-[#D4AF37]">Plan Activation Locked</h1>
+          <h1 className="text-2xl font-black text-[#D4AF37]">
+            Plan Activation Locked
+          </h1>
           <p className="mt-2 text-white/80">Reason: {lockedReason}</p>
           <p className="mt-2 text-sm text-white/70">
-            Next action: {readiness?.musicCreatorReady || readiness?.creatorReady
+            Next action:{" "}
+            {readiness?.musicCreatorReady || readiness?.creatorReady
               ? "Open your creator dashboard."
               : "Go to Music Join, complete onboarding and readiness, then return here."}
           </p>
@@ -146,10 +162,18 @@ export default function MusicPricingPage() {
               </button>
             ) : (
               <button
-                onClick={() => router.push("/music/join")}
+                onClick={() =>
+                  router.push(
+                    readiness?.sellerExists && readiness?.onboardingStatus === "onboarded"
+                      ? "/marketplace/become-a-seller?refresh=1"
+                      : "/music/join",
+                  )
+                }
                 className="rounded-xl bg-[#D4AF37] px-4 py-2 font-bold text-black"
               >
-                Complete Music Join
+                {readiness?.sellerExists && readiness?.onboardingStatus === "onboarded"
+                  ? "Finish Payout Setup"
+                  : "Complete Music Join"}
               </button>
             )}
             <button
@@ -186,8 +210,8 @@ export default function MusicPricingPage() {
 
         {readiness && !readiness.payoutReady ? (
           <div className="mt-4 rounded-xl border border-yellow-400/30 bg-yellow-500/10 p-3 text-sm text-yellow-200">
-            Payout setup is still incomplete. Complete that step for fully
-            unlocked creator operations after plan activation.
+            Reason: payout setup is incomplete. Next action: complete payout
+            setup first, then return for plan activation.
           </div>
         ) : null}
 
@@ -232,3 +256,32 @@ export default function MusicPricingPage() {
     </main>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  resolvedUrl,
+}) => {
+  const cookies = cookie.parse(req.headers.cookie || "");
+  const token = cookies.session_token;
+  if (!token) {
+    return {
+      redirect: {
+        destination: `/login?next=${encodeURIComponent(resolvedUrl || "/music/pricing")}`,
+        permanent: false,
+      },
+    };
+  }
+
+  try {
+    jwt.verify(token, getJwtSecret());
+  } catch {
+    return {
+      redirect: {
+        destination: `/login?next=${encodeURIComponent(resolvedUrl || "/music/pricing")}`,
+        permanent: false,
+      },
+    };
+  }
+
+  return { props: {} };
+};
