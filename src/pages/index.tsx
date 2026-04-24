@@ -295,7 +295,6 @@ const EconomicImpactSimulator = () => {
   const perDay = 4_200_000_000;
   const perSecond = 48_000;
   const recapturePct = 5;
-  const leakagePct = 100 - recapturePct;
   const recaptureValue = projected * (recapturePct / 100);
   const leakageValue = projected - recaptureValue;
   const durationMs = 180_000;
@@ -461,7 +460,13 @@ const EconomicImpactSimulator = () => {
                   <stop offset="0%" stopColor="rgba(90,213,255,0.66)" />
                   <stop offset="100%" stopColor="rgba(40,116,190,0.2)" />
                 </linearGradient>
-                <linearGradient id="recaptureFillGold" x1="0" y1="0" x2="0" y2="1">
+                <linearGradient
+                  id="recaptureFillGold"
+                  x1="0"
+                  y1="0"
+                  x2="0"
+                  y2="1"
+                >
                   <stop offset="0%" stopColor="rgba(245,214,112,0.96)" />
                   <stop offset="100%" stopColor="rgba(212,175,55,0.86)" />
                 </linearGradient>
@@ -607,58 +612,7 @@ const EconomicImpactSimulator = () => {
                 opacity={0.12}
               />
 
-              <rect
-                x="110"
-                y={66 - 49}
-                width="6"
-                height="49"
-                rx="1"
-                fill="rgba(86,193,246,0.2)"
-                stroke="rgba(170,228,255,0.38)"
-                strokeWidth="0.45"
-                vectorEffect="non-scaling-stroke"
-              />
-              <rect
-                x="110"
-                y={66 - 49}
-                width="6"
-                height={Math.max(2.4, 49 * (recapturePct / 100))}
-                rx="1"
-                fill="url(#recaptureFillGold)"
-                stroke="rgba(255,242,190,0.9)"
-                strokeWidth="0.35"
-                vectorEffect="non-scaling-stroke"
-              />
-              <text
-                x="89"
-                y="19"
-                fill="rgba(241,213,122,0.96)"
-                fontSize="3.1"
-                fontWeight="700"
-              >
-                Recaptured ({recapturePct}%)
-              </text>
-              <path
-                d="M 104 18 L 110 18"
-                stroke="rgba(241,213,122,0.9)"
-                strokeWidth="0.5"
-                vectorEffect="non-scaling-stroke"
-              />
-              <text
-                x="84"
-                y="56"
-                fill="rgba(171,227,255,0.86)"
-                fontSize="2.9"
-                fontWeight="600"
-              >
-                Leakage ({leakagePct}%)
-              </text>
-              <path
-                d="M 101 55 L 110 55"
-                stroke="rgba(171,227,255,0.7)"
-                strokeWidth="0.45"
-                vectorEffect="non-scaling-stroke"
-              />
+
             </svg>
 
             <div
@@ -671,7 +625,8 @@ const EconomicImpactSimulator = () => {
               Black Spending Power → Outside Economy Flow
             </div>
             <div className="absolute left-2 top-[30px] rounded-md border border-white/10 bg-[#07111d]/90 px-2 py-1 text-[9px] text-white/78 sm:text-[10px]">
-              Gold segment = recaptured in BWE, blue segment = leakage outside BWE
+              Gold top on projected bars = 5% recaptured. Remaining bar area =
+              95% leakage.
             </div>
             <div className="absolute bottom-1.5 left-2 right-2 grid grid-cols-3 text-center text-[9px] font-medium tracking-[0.04em] text-white/78 sm:text-[10px]">
               <span className="rounded-sm bg-black/25 py-0.5">Baseline</span>
@@ -684,7 +639,8 @@ const EconomicImpactSimulator = () => {
         <div className="lg:col-span-2">
           <div className="rounded-lg border border-[#D4AF37]/35 bg-[#D4AF37]/8 px-3 py-1.5 text-center text-[10px] text-white/86 sm:py-2 sm:text-[11px]">
             <span className="font-semibold text-[#D4AF37]">
-              Projected: {formatCurrency(projected)} total, {formatCurrency(leakageValue)} leakage ({leakagePct}%) and {formatCurrency(recaptureValue)} recaptured ({recapturePct}%)
+              5% recaptured = {formatCurrency(recaptureValue)} retained inside
+              BWE. 95% leakage = {formatCurrency(leakageValue)} outside flow.
             </span>
           </div>
 
