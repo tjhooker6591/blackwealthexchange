@@ -273,7 +273,7 @@ const EconomicImpactSimulator = () => {
   const perSecond = 48_000;
   const recapturePct = 5;
   const recaptureValue = projected * (recapturePct / 100);
-  const durationMs = 36_000;
+  const durationMs = 38_000;
 
   const [progress, setProgress] = useState(0);
 
@@ -303,32 +303,24 @@ const EconomicImpactSimulator = () => {
     });
 
   const currentValue = baseline + (projected - baseline) * progress;
-  const markerX = 8 + 104 * progress;
-  const markerY = 52 - progress * 35;
-  const unlock = Math.min(Math.max((progress - 0.8) / 0.2, 0), 1);
+  const markerX = 12 + 96 * progress;
+  const markerY = 53 - 34 * progress;
+  const unlock = Math.min(Math.max((progress - 0.82) / 0.18, 0), 1);
 
-  const bars = [0.22, 0.31, 0.38, 0.45, 0.42, 0.55, 0.61, 0.58, 0.68, 0.74, 0.82, 0.93];
+  const bars = [0.2, 0.26, 0.34, 0.41, 0.5, 0.57, 0.64, 0.7, 0.66, 0.61, 0.56, 0.5, 0.44, 0.39];
+  const flowPath = "M12 53 C 22 54, 35 47, 44 41 C 56 34, 67 29, 77 28 C 88 27, 97 23, 108 19";
+  const flowActive = `M12 53 C 22 54, 35 47, 44 41 C 56 34, 67 29, 77 28 C 88 27, 97 23, ${markerX.toFixed(2)} ${markerY.toFixed(2)}`;
 
-  const flowPathFull = "M8 51 C 22 46, 70 26, 112 14";
-  const flowPathActive = `M8 51 C 22 46, 70 26, ${markerX.toFixed(2)} ${markerY.toFixed(2)}`;
-
-  const arrows = [0.14, 0.38, 0.62].map((o) => {
-    const p = Math.min(Math.max(progress - o, 0), 1);
-    return {
-      x: 82 + p * 24,
-      y: 22 + p * 12,
-      opacity: 0.18 + p * 0.55,
-    };
-  });
+  const arcShift = 1 - progress;
 
   return (
     <section className="relative overflow-hidden py-2 sm:py-4">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_18%,rgba(43,174,255,0.12),transparent_34%),radial-gradient(circle_at_88%_76%,rgba(212,175,55,0.14),transparent_40%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_8%_22%,rgba(96,190,255,0.12),transparent_32%),radial-gradient(circle_at_78%_80%,rgba(212,175,55,0.14),transparent_44%)]" />
 
-      <div className="relative grid gap-3 rounded-xl border border-white/10 bg-[#040910]/94 p-2 shadow-[0_14px_40px_rgba(0,0,0,0.46)] backdrop-blur sm:p-3.5 lg:grid-cols-[0.36fr_0.64fr] lg:items-stretch">
+      <div className="relative grid gap-3 rounded-xl border border-white/10 bg-[#040812]/94 p-2 shadow-[0_16px_42px_rgba(0,0,0,0.5)] backdrop-blur sm:p-3.5 lg:grid-cols-[0.36fr_0.64fr] lg:items-stretch">
         <div className="min-w-0 lg:pr-2">
           <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-bold tracking-wide text-white/80">
-            <span className="h-2 w-2 rounded-full bg-cyan-400" />
+            <span className="h-2 w-2 rounded-full bg-cyan-300" />
             BUYING POWER (ANNUAL ESTIMATE)
           </div>
 
@@ -340,11 +332,14 @@ const EconomicImpactSimulator = () => {
             Spending scale is massive, leakage remains high, and recapture inside BWE creates outsized retained value.
           </p>
 
-          <div className="mt-2 text-[1.7rem] font-black tracking-tight text-[#D4AF37] tabular-nums sm:text-4xl" data-counter-value={Math.floor(currentValue)}>
+          <div
+            className="mt-2 text-[1.7rem] font-black tracking-tight text-[#D4AF37] tabular-nums sm:text-4xl"
+            data-counter-value={Math.floor(currentValue)}
+          >
             {formatCurrency(Math.floor(currentValue))}
           </div>
           <p className="text-[10px] uppercase tracking-[0.08em] text-white/56 sm:text-[11px]">Annual Buying Power</p>
-          <p className="mt-1 text-[10px] text-cyan-200/75 sm:text-[11px]">2010 → 2026, now tracking toward 2026 estimate</p>
+          <p className="mt-1 text-[10px] text-cyan-200/75 sm:text-[11px]">2010 → 2026</p>
 
           <div className="mt-2 grid grid-cols-2 gap-2 text-[10px] sm:text-xs">
             <div className="rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5">
@@ -365,79 +360,115 @@ const EconomicImpactSimulator = () => {
         <div className="relative min-w-0">
           <div className="mb-1.5 text-center text-[10px] font-medium tracking-wide text-white/66 sm:mb-2 sm:text-[11px]">Spending Flow Progress</div>
 
-          <div className="relative h-[170px] overflow-hidden rounded-lg border border-cyan-300/15 bg-[#050d18]/92 p-2 sm:h-[214px] sm:p-2.5" data-progress={progress.toFixed(4)}>
-            <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(72,120,170,0.14)_1px,transparent_1px),linear-gradient(90deg,rgba(72,120,170,0.14)_1px,transparent_1px)] bg-[size:18px_18px]" />
+          <div className="relative h-[172px] overflow-hidden rounded-lg border border-cyan-300/15 bg-[#050d1a]/94 p-2 sm:h-[214px] sm:p-2.5" data-progress={progress.toFixed(4)}>
+            <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(88,128,178,0.14)_1px,transparent_1px),linear-gradient(90deg,rgba(88,128,178,0.14)_1px,transparent_1px)] bg-[size:17px_17px]" />
             <div
               className="pointer-events-none absolute inset-0"
               style={{
-                background:
-                  "linear-gradient(110deg, rgba(33,76,120,0.06) 5%, rgba(54,160,230,0.18) 45%, rgba(212,175,55,0.16) 78%, rgba(9,16,28,0.04) 100%)",
-                opacity: 0.2 + progress * 0.35,
+                background: "radial-gradient(80% 55% at 22% 80%, rgba(53,137,219,0.25), transparent 70%), radial-gradient(58% 42% at 62% 38%, rgba(64,180,255,0.16), transparent 72%)",
+                opacity: 0.45,
               }}
             />
             <div
               className="pointer-events-none absolute inset-y-0 right-0 w-[30%] border-l border-[#D4AF37]/25"
               style={{
-                background: "linear-gradient(90deg, rgba(212,175,55,0.05), rgba(212,175,55,0.24))",
-                opacity: 0.15 + unlock * 0.85,
+                background: "linear-gradient(90deg, rgba(212,175,55,0.04), rgba(212,175,55,0.23))",
+                opacity: 0.2 + unlock * 0.8,
               }}
             />
 
             <svg viewBox="0 0 120 70" className="absolute inset-2 h-[calc(100%-1rem)] w-[calc(100%-1rem)]" preserveAspectRatio="none">
               <defs>
-                <linearGradient id="barGlow" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="rgba(80,220,255,0.9)" />
-                  <stop offset="50%" stopColor="rgba(35,155,220,0.55)" />
-                  <stop offset="100%" stopColor="rgba(22,84,140,0.24)" />
+                <linearGradient id="barFillMagenta" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="rgba(255,190,172,0.95)" />
+                  <stop offset="46%" stopColor="rgba(255,107,176,0.9)" />
+                  <stop offset="100%" stopColor="rgba(215,67,157,0.42)" />
+                </linearGradient>
+                <linearGradient id="barFillBlue" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="rgba(90,213,255,0.9)" />
+                  <stop offset="100%" stopColor="rgba(40,116,190,0.3)" />
                 </linearGradient>
                 <linearGradient id="flowGlow" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0%" stopColor="rgba(80,220,255,0.72)" />
-                  <stop offset="70%" stopColor="rgba(38,208,255,0.95)" />
-                  <stop offset="100%" stopColor="rgba(212,175,55,0.95)" />
+                  <stop offset="0%" stopColor="rgba(148,235,255,0.8)" />
+                  <stop offset="72%" stopColor="rgba(102,224,255,0.95)" />
+                  <stop offset="100%" stopColor="rgba(255,255,255,0.95)" />
                 </linearGradient>
               </defs>
 
               {bars.map((h, i) => {
-                const x = 6 + i * 9.1;
-                const baseH = h * 34;
-                const grown = Math.max(4, baseH * (0.1 + progress * 0.9));
+                const x = 8 + i * 7.1;
+                const maxH = h * 35;
+                const grown = Math.max(3.5, maxH * (0.12 + progress * 0.88));
                 const y = 64 - grown;
-                const bright = i > 8;
+                const blueTop = Math.max(2, grown * 0.32);
                 return (
                   <g key={x}>
-                    <rect x={x - 0.4} y={y - 0.6} width="5.9" height={grown + 0.6} rx="1" fill={bright ? 'rgba(212,175,55,0.17)' : 'rgba(80,220,255,0.12)'} />
-                    <rect
-                      x={x}
-                      y={y}
-                      width="5.1"
-                      height={grown}
-                      rx="0.8"
-                      fill={bright ? 'rgba(212,175,55,0.68)' : 'url(#barGlow)'}
-                      style={{ filter: `drop-shadow(0 0 ${2 + progress * 3}px ${bright ? 'rgba(212,175,55,0.42)' : 'rgba(80,220,255,0.38)'})` }}
-                    />
+                    <rect x={x - 0.5} y={y - 1.2} width="5.8" height={grown + 1.4} rx="1" fill="rgba(85,210,255,0.16)" />
+                    <rect x={x + 0.25} y={y - blueTop * 0.45} width="4.2" height={blueTop} rx="0.8" fill="url(#barFillBlue)" opacity={0.82} />
+                    <rect x={x} y={y} width="4.7" height={grown} rx="0.8" fill="url(#barFillMagenta)" style={{ filter: 'drop-shadow(0 0 4px rgba(255,108,194,0.38))' }} />
+                    <rect x={x} y={y} width="4.7" height={grown} rx="0.8" fill="none" stroke="rgba(240,246,255,0.68)" strokeWidth="0.45" />
                   </g>
                 );
               })}
 
-              <path d={flowPathFull} fill="none" stroke="rgba(170,220,255,0.18)" strokeWidth="1.1" strokeDasharray="2.2 2.2" />
-              <path d={flowPathActive} fill="none" stroke="url(#flowGlow)" strokeWidth="2.5" style={{ filter: 'drop-shadow(0 0 5px rgba(80,220,255,0.45))' }} />
+              <path d={flowPath} fill="none" stroke="rgba(176,228,255,0.26)" strokeWidth="1.1" />
+              <path d={flowActive} fill="none" stroke="url(#flowGlow)" strokeWidth="2.4" style={{ filter: 'drop-shadow(0 0 5px rgba(135,226,255,0.6))' }} />
 
-              <circle cx={markerX} cy={markerY} r="2.4" fill="rgba(255,255,255,0.98)" style={{ filter: 'drop-shadow(0 0 7px rgba(140,230,255,0.8))' }} />
-              <circle cx="8" cy="51" r="1.7" fill="rgba(190,240,255,0.88)" />
-              <circle cx="112" cy="14" r="2.2" fill="rgba(212,175,55,1)" opacity={0.45 + unlock * 0.55} />
+              {[0.06, 0.18, 0.33, 0.49, 0.65, 0.79, 0.93].map((t) => {
+                const x = 12 + 96 * t;
+                const y = 53 - 34 * t + Math.sin(t * 8) * 1.1;
+                return <circle key={t} cx={x} cy={y} r="1.1" fill="rgba(180,240,255,0.8)" opacity={t <= progress ? 0.96 : 0.34} />;
+              })}
 
-              {arrows.map((a, i) => (
-                <g key={i} opacity={a.opacity}>
-                  <path d={`M ${a.x.toFixed(2)} ${a.y.toFixed(2)} C ${(a.x + 4).toFixed(2)} ${(a.y + 1.5).toFixed(2)}, ${(a.x + 8).toFixed(2)} ${(a.y + 4).toFixed(2)}, ${(a.x + 12).toFixed(2)} ${(a.y + 6).toFixed(2)}`} fill="none" stroke="rgba(130,220,255,0.55)" strokeWidth="1" strokeDasharray="1.6 1.8" />
-                  <path d={`M ${(a.x + 11.4).toFixed(2)} ${(a.y + 5.4).toFixed(2)} l 1.8 0.7 l -1.5 1.1`} fill="none" stroke="rgba(130,220,255,0.62)" strokeWidth="0.9" />
-                </g>
-              ))}
+              <circle cx={markerX} cy={markerY} r="2.45" fill="rgba(255,255,255,0.98)" style={{ filter: 'drop-shadow(0 0 8px rgba(177,238,255,0.9))' }} />
+              <path d={`M ${markerX.toFixed(2)} ${markerY.toFixed(2)} L ${(Math.min(markerX + 4.8, 112)).toFixed(2)} ${(Math.max(markerY - 1.8, 14)).toFixed(2)}`} stroke="rgba(255,255,255,0.95)" strokeWidth="1.25" strokeLinecap="round" />
+
+              <path d="M8 66 L108 66" stroke="rgba(61,162,243,0.58)" strokeWidth="1.1" style={{ filter: 'drop-shadow(0 0 6px rgba(70,167,247,0.72))' }} />
+
+              <path
+                d="M 6 62 C 22 18, 63 10, 112 36"
+                fill="none"
+                stroke="rgba(102,217,255,0.62)"
+                strokeWidth="1"
+                strokeDasharray="1.7 2.3"
+                strokeDashoffset={24 * arcShift}
+                opacity={0.72}
+              />
+              <path
+                d="M 16 60 C 38 20, 74 18, 112 34"
+                fill="none"
+                stroke="rgba(102,217,255,0.5)"
+                strokeWidth="0.9"
+                strokeDasharray="1.4 2"
+                strokeDashoffset={20 * arcShift}
+                opacity={0.64}
+              />
+              <path
+                d="M 26 58 C 48 28, 82 24, 112 32"
+                fill="none"
+                stroke="rgba(102,217,255,0.44)"
+                strokeWidth="0.8"
+                strokeDasharray="1.2 1.8"
+                strokeDashoffset={16 * arcShift}
+                opacity={0.58}
+              />
+
+              {[0.18, 0.44, 0.7].map((k) => {
+                const p = Math.min(Math.max((progress - k) / (1 - k), 0), 1);
+                const x = 82 + p * 24;
+                const y = 25 + p * 8;
+                return (
+                  <g key={k} opacity={0.18 + p * 0.72}>
+                    <path d={`M ${x.toFixed(2)} ${y.toFixed(2)} l 1.6 0.55 l -1.2 1`} fill="none" stroke="rgba(139,230,255,0.82)" strokeWidth="0.95" />
+                  </g>
+                );
+              })}
             </svg>
 
-            <div className="absolute right-2 top-2 rounded-md border border-[#D4AF37]/35 bg-[#D4AF37]/12 px-2 py-1 text-[9px] font-medium text-[#D4AF37] sm:text-[10px]" style={{ opacity: 0.48 + unlock * 0.52 }}>
+            <div className="absolute right-2 top-2 rounded-md border border-[#D4AF37]/35 bg-[#D4AF37]/12 px-2 py-1 text-[9px] font-medium text-[#D4AF37] sm:text-[10px]" style={{ opacity: 0.45 + unlock * 0.55 }}>
               BWE Recapture Opportunity
             </div>
-            <div className="absolute left-2 top-2 rounded-md border border-cyan-300/20 bg-[#06111d]/85 px-2 py-1 text-[9px] text-cyan-100/78 sm:text-[10px]">
+            <div className="absolute left-2 top-2 rounded-md border border-cyan-300/20 bg-[#07111d]/85 px-2 py-1 text-[9px] text-cyan-100/78 sm:text-[10px]">
               Black Spending Power → Outside Economy Flow
             </div>
             <div className="absolute bottom-1 left-2 right-2 grid grid-cols-3 text-center text-[9px] text-white/66 sm:text-[10px]">
