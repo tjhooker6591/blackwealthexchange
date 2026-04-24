@@ -416,7 +416,8 @@ const EconomicImpactSimulator = () => {
             <svg
               viewBox="0 0 120 70"
               className="absolute inset-2 h-[calc(100%-1rem)] w-[calc(100%-1rem)]"
-              preserveAspectRatio="none"
+              preserveAspectRatio="xMidYMid meet"
+              shapeRendering="geometricPrecision"
             >
               <defs>
                 <linearGradient id="barFillMagenta" x1="0" y1="0" x2="0" y2="1">
@@ -480,6 +481,7 @@ const EconomicImpactSimulator = () => {
                       fill="none"
                       stroke="rgba(240,246,255,0.68)"
                       strokeWidth="0.45"
+                      vectorEffect="non-scaling-stroke"
                     />
                   </g>
                 );
@@ -490,6 +492,7 @@ const EconomicImpactSimulator = () => {
                 fill="none"
                 stroke="rgba(176,228,255,0.14)"
                 strokeWidth="1.1"
+                vectorEffect="non-scaling-stroke"
               />
               <path
                 d={flowPath}
@@ -499,6 +502,7 @@ const EconomicImpactSimulator = () => {
                 pathLength={1}
                 strokeDasharray={`${Math.max(progress, 0.0001)} 1`}
                 strokeLinecap="round"
+                vectorEffect="non-scaling-stroke"
                 style={{ filter: "drop-shadow(0 0 5px rgba(135,226,255,0.6))" }}
               />
 
@@ -529,6 +533,7 @@ const EconomicImpactSimulator = () => {
                 d="M8 66 L108 66"
                 stroke="rgba(61,162,243,0.58)"
                 strokeWidth="1.1"
+                vectorEffect="non-scaling-stroke"
                 style={{ filter: "drop-shadow(0 0 6px rgba(70,167,247,0.72))" }}
               />
 
@@ -539,6 +544,7 @@ const EconomicImpactSimulator = () => {
                 strokeWidth="1"
                 strokeDasharray="1.7 2.3"
                 strokeDashoffset={24 * arcShift}
+                vectorEffect="non-scaling-stroke"
                 opacity={0.72}
               />
               <path
@@ -548,6 +554,7 @@ const EconomicImpactSimulator = () => {
                 strokeWidth="0.9"
                 strokeDasharray="1.4 2"
                 strokeDashoffset={20 * arcShift}
+                vectorEffect="non-scaling-stroke"
                 opacity={0.64}
               />
               <path
@@ -557,6 +564,7 @@ const EconomicImpactSimulator = () => {
                 strokeWidth="0.8"
                 strokeDasharray="1.2 1.8"
                 strokeDashoffset={16 * arcShift}
+                vectorEffect="non-scaling-stroke"
                 opacity={0.58}
               />
 
@@ -571,6 +579,7 @@ const EconomicImpactSimulator = () => {
                       fill="none"
                       stroke="rgba(139,230,255,0.82)"
                       strokeWidth="0.95"
+                      vectorEffect="non-scaling-stroke"
                     />
                   </g>
                 );
