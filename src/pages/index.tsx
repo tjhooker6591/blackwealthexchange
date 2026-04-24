@@ -267,15 +267,34 @@ function ConsultingInterestModal({
  *  ECONOMIC IMPACT (2026 projection)
  *  ----------------------------- */
 const EconomicImpactSimulator = () => {
-  const currentYear = 2026;
-  const projected = 2_100_000_000_000;
+  const startYear = 2010;
+  const endYear = 2026;
   const baseline = 300_000_000_000;
-  const current = 1_700_000_000_000;
+  const projected = 2_100_000_000_000;
   const perDay = 4_200_000_000;
   const perSecond = 48_000;
   const recapturePct = 5;
   const recaptureValue = projected * (recapturePct / 100);
-  const bars = [24, 30, 38, 45, 42, 56, 61, 58, 69, 74, 80, 88];
+  const durationMs = 30_000;
+
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    let raf = 0;
+    let startTs: number | null = null;
+
+    const tick = (ts: number) => {
+      if (startTs === null) startTs = ts;
+      const elapsed = ts - startTs;
+      const raw = Math.min(elapsed / durationMs, 1);
+      const eased = 1 - Math.pow(1 - raw, 3);
+      setProgress(eased);
+      if (raw < 1) raf = requestAnimationFrame(tick);
+    };
+
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, []);
 
   const formatCurrency = (num: number) =>
     num.toLocaleString("en-US", {
@@ -285,6 +304,50 @@ const EconomicImpactSimulator = () => {
       maximumFractionDigits: 0,
     });
 
+  const currentValue = useMemo(
+    () => baseline + (projected - baseline) * progress,
+    [baseline, projected, progress],
+  );
+
+  const timelineYear = useMemo(
+    () => startYear + (endYear - startYear) * progress,
+    [startYear, endYear, progress],
+  );
+
+  const markerX = useMemo(() => 8 + 104 * progress, [progress]);
+  const unlock = useMemo(
+    () => Math.min(Math.max((progress - 0.78) / 0.22, 0), 1),
+    [progress],
+  );
+
+  const bars = [
+    0.2, 0.28, 0.35, 0.41, 0.39, 0.52, 0.58, 0.56, 0.66, 0.72, 0.8, 0.92,
+  ];
+
+  const pathForProgress = useMemo(() => {
+    const p = Math.min(Math.max(progress, 0), 1);
+    const x = 8 + 104 * p;
+    const c1x = 22;
+    const c2x = 70;
+    const y0 = 51;
+    const y1 = 14;
+
+    const c1y = 46;
+    const c2y = 26;
+
+    const yAtX = (xv: number) => {
+      const t = (xv - 8) / 104;
+      return y0 * (1 - t) + y1 * t - 9 * t * (1 - t);
+    };
+
+    const y = yAtX(x);
+
+    return {
+      active: `M8 51 C ${c1x} ${c1y}, ${c2x} ${c2y}, ${x.toFixed(2)} ${y.toFixed(2)}`,
+      full: 'M8 51 C 22 46, 70 26, 112 14',
+    };
+  }, [progress]);
+
   return (
     <section className="relative overflow-hidden py-2 sm:py-4">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_18%,rgba(16,185,129,0.12),transparent_34%),radial-gradient(circle_at_88%_76%,rgba(212,175,55,0.13),transparent_40%)]" />
@@ -292,13 +355,12 @@ const EconomicImpactSimulator = () => {
       <div className="relative grid gap-3 rounded-xl border border-white/10 bg-[#05090c]/92 p-2 shadow-[0_12px_34px_rgba(0,0,0,0.42)] backdrop-blur sm:p-3.5 lg:grid-cols-[0.38fr_0.62fr] lg:items-stretch">
         <div className="min-w-0 lg:pr-2">
           <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-bold tracking-wide text-white/80">
-            <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
+            <span className="h-2 w-2 rounded-full bg-emerald-400" />
             BUYING POWER (ANNUAL ESTIMATE)
           </div>
 
           <h2 className="mt-1.5 text-sm font-extrabold tracking-[0.01em] text-white sm:mt-2 sm:text-xl">
-            African American Buying Power{" "}
-            <span className="text-[#D4AF37]">({currentYear})</span>
+            African American Buying Power <span className="text-[#D4AF37]">(2026)</span>
           </h2>
 
           <p className="mt-1.5 text-xs text-white/78 sm:text-sm">
@@ -306,33 +368,30 @@ const EconomicImpactSimulator = () => {
             Redirecting a small share into BWE creates major retained impact.
           </p>
 
-          <div className="mt-2 text-[1.7rem] font-black tracking-tight text-[#D4AF37] tabular-nums sm:text-4xl">
-            {formatCurrency(projected)}
+          <div className="mt-2 text-[1.7rem] font-black tracking-tight text-[#D4AF37] tabular-nums sm:text-4xl" data-counter-value={Math.floor(currentValue)}>
+            {formatCurrency(Math.floor(currentValue))}
           </div>
           <p className="text-[10px] uppercase tracking-[0.08em] text-white/56 sm:text-[11px]">
             Annual Buying Power
           </p>
 
+          <div className="mt-2 flex items-center justify-between rounded-md border border-white/10 bg-white/5 px-2.5 py-1.5 text-[10px] text-white/72">
+            <span>Timeline</span>
+            <span className="font-semibold text-white">{timelineYear.toFixed(1)}</span>
+          </div>
+
           <div className="mt-2 grid grid-cols-2 gap-2 text-[10px] sm:text-xs">
             <div className="rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5">
               <p className="text-white/55">Baseline (2010)</p>
-              <p className="font-semibold text-white">
-                {formatCurrency(baseline)}
-              </p>
-              <p className="mt-0.5 text-white/55">Current</p>
-              <p className="font-semibold text-white">
-                {formatCurrency(current)}
-              </p>
+              <p className="font-semibold text-white">{formatCurrency(baseline)}</p>
+              <p className="mt-0.5 text-white/55">Projected (2026)</p>
+              <p className="font-semibold text-white">{formatCurrency(projected)}</p>
             </div>
             <div className="rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5">
               <p className="text-white/55">Daily flow</p>
-              <p className="font-semibold text-white">
-                {formatCurrency(perDay)} / day
-              </p>
+              <p className="font-semibold text-white">{formatCurrency(perDay)} / day</p>
               <p className="mt-0.5 text-white/55">Second-level flow</p>
-              <p className="font-semibold text-white">
-                {formatCurrency(perSecond)} / sec
-              </p>
+              <p className="font-semibold text-white">{formatCurrency(perSecond)} / sec</p>
             </div>
           </div>
         </div>
@@ -342,10 +401,10 @@ const EconomicImpactSimulator = () => {
             Spending Flow Progress
           </div>
 
-          <div className="viz-shell relative h-[168px] overflow-hidden rounded-lg border border-white/12 bg-[#060b10]/90 p-2 sm:h-[208px] sm:p-2.5">
+          <div className="viz-shell relative h-[168px] overflow-hidden rounded-lg border border-white/12 bg-[#060b10]/90 p-2 sm:h-[208px] sm:p-2.5" data-progress={progress.toFixed(4)}>
             <div className="viz-grid pointer-events-none absolute inset-0" />
-            <div className="ambient-shift pointer-events-none absolute inset-0" />
-            <div className="recapture-zone pointer-events-none absolute inset-y-0 right-0 w-[28%]" />
+            <div className="ambient-shift pointer-events-none absolute inset-0" style={{ opacity: 0.22 + progress * 0.28 }} />
+            <div className="recapture-zone pointer-events-none absolute inset-y-0 right-0 w-[28%]" style={{ opacity: 0.15 + unlock * 0.8 }} />
 
             <svg
               viewBox="0 0 120 70"
@@ -354,63 +413,58 @@ const EconomicImpactSimulator = () => {
             >
               {bars.map((h, i) => {
                 const x = 6 + i * 9.1;
-                const y = 64 - h * 0.58;
+                const maxH = h * 34;
+                const grown = Math.max(4, maxH * (0.12 + progress * 0.88));
+                const y = 64 - grown;
+                const inRecapture = i > 8;
                 return (
                   <rect
                     key={x}
                     x={x}
                     y={y}
                     width="5.1"
-                    height={h * 0.58}
+                    height={grown}
                     rx="0.8"
-                    fill={
-                      i > 8 ? "rgba(212,175,55,0.58)" : "rgba(16,185,129,0.52)"
-                    }
+                    fill={inRecapture ? 'rgba(212,175,55,0.62)' : 'rgba(16,185,129,0.52)'}
+                    style={{ filter: `drop-shadow(0 0 ${2 + progress * 2}px ${inRecapture ? 'rgba(212,175,55,0.35)' : 'rgba(16,185,129,0.28)'})` }}
                   />
                 );
               })}
 
               <path
-                d="M8 50 C 20 45, 30 42, 42 38 C 55 33, 67 29, 80 24 C 92 20, 101 17, 112 14"
+                d={pathForProgress.full}
                 fill="none"
-                stroke="rgba(255,255,255,0.24)"
+                stroke="rgba(255,255,255,0.18)"
                 strokeWidth="1.2"
               />
               <path
-                d="M8 50 C 20 45, 30 42, 42 38 C 55 33, 67 29, 80 24 C 92 20, 101 17, 112 14"
+                d={pathForProgress.active}
                 fill="none"
-                stroke="url(#flowGradient)"
-                strokeWidth="2.2"
+                stroke="url(#flowGradientSync)"
+                strokeWidth="2.3"
               />
 
               <defs>
-                <linearGradient id="flowGradient" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0%" stopColor="rgba(16,185,129,0.7)" />
+                <linearGradient id="flowGradientSync" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="rgba(16,185,129,0.72)" />
                   <stop offset="70%" stopColor="rgba(16,185,129,1)" />
-                  <stop offset="100%" stopColor="rgba(212,175,55,0.92)" />
+                  <stop offset="100%" stopColor="rgba(212,175,55,0.95)" />
                 </linearGradient>
               </defs>
 
-              <circle cx="8" cy="50" r="1.8" fill="rgba(255,255,255,0.88)" />
-              <circle cx="80" cy="24" r="2" fill="rgba(16,185,129,1)" />
-              <circle cx="112" cy="14" r="2.2" fill="rgba(212,175,55,1)" />
+              <circle cx={markerX} cy={52 - progress * 35} r="2.35" fill="rgba(255,255,255,0.98)" style={{ filter: 'drop-shadow(0 0 7px rgba(255,255,255,0.65))' }} />
 
-              <circle r="2.6" fill="rgba(255,255,255,0.96)">
-                <animateMotion
-                  dur="2.4s"
-                  repeatCount="indefinite"
-                  path="M8 50 C 20 45, 30 42, 42 38 C 55 33, 67 29, 80 24 C 92 20, 101 17, 112 14"
-                />
-              </circle>
+              <circle cx="8" cy="51" r="1.6" fill="rgba(255,255,255,0.88)" />
+              <circle cx="112" cy="14" r="2.2" fill="rgba(212,175,55,1)" opacity={0.45 + unlock * 0.55} />
             </svg>
 
-            <div className="leak leak-1" aria-hidden>
+            <div className="leak leak-1" style={{ opacity: 0.2 + progress * 0.45 }} aria-hidden>
               →
             </div>
-            <div className="leak leak-2" aria-hidden>
+            <div className="leak leak-2" style={{ opacity: 0.15 + progress * 0.5 }} aria-hidden>
               →
             </div>
-            <div className="leak leak-3" aria-hidden>
+            <div className="leak leak-3" style={{ opacity: 0.12 + progress * 0.56 }} aria-hidden>
               →
             </div>
 
@@ -420,7 +474,7 @@ const EconomicImpactSimulator = () => {
               <span>Projected</span>
             </div>
 
-            <div className="absolute right-2 top-2 rounded-md border border-[#D4AF37]/35 bg-[#D4AF37]/12 px-2 py-1 text-[9px] font-medium text-[#D4AF37] sm:text-[10px]">
+            <div className="absolute right-2 top-2 rounded-md border border-[#D4AF37]/35 bg-[#D4AF37]/12 px-2 py-1 text-[9px] font-medium text-[#D4AF37] sm:text-[10px]" style={{ opacity: 0.45 + unlock * 0.55 }}>
               BWE Recapture Opportunity
             </div>
 
@@ -433,8 +487,7 @@ const EconomicImpactSimulator = () => {
         <div className="lg:col-span-2">
           <div className="rounded-lg border border-[#D4AF37]/35 bg-[#D4AF37]/8 px-3 py-1.5 text-center text-[10px] text-white/86 sm:py-2 sm:text-[11px]">
             <span className="font-semibold text-[#D4AF37]">
-              If {recapturePct}% stays within our ecosystem →{" "}
-              {formatCurrency(recaptureValue)} retained annually
+              If {recapturePct}% stays within our ecosystem → {formatCurrency(recaptureValue)} retained annually
             </span>
           </div>
 
@@ -474,11 +527,7 @@ const EconomicImpactSimulator = () => {
         .viz-grid {
           background-image:
             linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-            linear-gradient(
-              90deg,
-              rgba(255, 255, 255, 0.05) 1px,
-              transparent 1px
-            );
+            linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
           background-size: 20px 20px;
           opacity: 0.32;
         }
@@ -492,15 +541,14 @@ const EconomicImpactSimulator = () => {
             transparent 92%
           );
           background-size: 230% 100%;
-          animation: ambientMove 8s ease-in-out infinite;
-          opacity: 0.45;
+          animation: ambientMove 9s ease-in-out infinite;
         }
 
         .recapture-zone {
           background: linear-gradient(
             90deg,
             rgba(212, 175, 55, 0.04),
-            rgba(212, 175, 55, 0.22)
+            rgba(212, 175, 55, 0.24)
           );
           border-left: 1px solid rgba(212, 175, 55, 0.24);
         }
@@ -510,22 +558,22 @@ const EconomicImpactSimulator = () => {
           right: 7%;
           font-size: 10px;
           color: rgba(255, 255, 255, 0.55);
-          animation: leakFlow 1.9s linear infinite;
+          animation: leakFlow 2.6s linear infinite;
         }
 
         .leak-1 {
           top: 40%;
-          animation-delay: 0s;
+          animation-delay: 0.2s;
         }
 
         .leak-2 {
           top: 48%;
-          animation-delay: 0.5s;
+          animation-delay: 0.9s;
         }
 
         .leak-3 {
           top: 56%;
-          animation-delay: 1s;
+          animation-delay: 1.6s;
         }
 
         @keyframes ambientMove {
@@ -546,7 +594,7 @@ const EconomicImpactSimulator = () => {
             opacity: 1;
           }
           100% {
-            transform: translateX(18px);
+            transform: translateX(16px);
             opacity: 0;
           }
         }
@@ -554,6 +602,7 @@ const EconomicImpactSimulator = () => {
     </section>
   );
 };
+
 
 type VerticalKey = "all" | "shopping" | "news";
 
