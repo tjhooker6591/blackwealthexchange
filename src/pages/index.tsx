@@ -611,8 +611,6 @@ const EconomicImpactSimulator = () => {
                 vectorEffect="non-scaling-stroke"
                 opacity={0.12}
               />
-
-
             </svg>
 
             <div
@@ -624,15 +622,15 @@ const EconomicImpactSimulator = () => {
             <div className="absolute left-2 top-2 rounded-md border border-cyan-300/20 bg-[#07111d]/85 px-2 py-1 text-[9px] text-cyan-100/78 sm:text-[10px]">
               Black Spending Power → Outside Economy Flow
             </div>
-            <div className="absolute left-2 top-[30px] rounded-md border border-white/10 bg-[#07111d]/90 px-2 py-1 text-[9px] text-white/78 sm:text-[10px]">
-              Gold top on projected bars = 5% recaptured. Remaining bar area =
-              95% leakage.
-            </div>
             <div className="absolute bottom-1.5 left-2 right-2 grid grid-cols-3 text-center text-[9px] font-medium tracking-[0.04em] text-white/78 sm:text-[10px]">
               <span className="rounded-sm bg-black/25 py-0.5">Baseline</span>
               <span className="rounded-sm bg-black/25 py-0.5">Current</span>
               <span className="rounded-sm bg-black/25 py-0.5">Projected</span>
             </div>
+          </div>
+
+          <div className="mt-2 rounded-lg border border-white/10 bg-[#07111d]/70 px-2.5 py-2 text-[10px] leading-relaxed text-white/80 sm:px-3 sm:text-[11px]">
+            Gold top on projected bars = 5% recaptured ({formatCurrency(recaptureValue)}) retained inside BWE. Remaining bar area = 95% leakage ({formatCurrency(leakageValue)}) outside flow.
           </div>
         </div>
 
