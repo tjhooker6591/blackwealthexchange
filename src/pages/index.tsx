@@ -303,13 +303,28 @@ const EconomicImpactSimulator = () => {
     });
 
   const currentValue = baseline + (projected - baseline) * progress;
-  const markerX = 12 + 96 * progress;
-  const markerY = 53 - 34 * progress;
   const unlock = Math.min(Math.max((progress - 0.82) / 0.18, 0), 1);
 
-  const bars = [0.2, 0.26, 0.34, 0.41, 0.5, 0.57, 0.64, 0.7, 0.66, 0.61, 0.56, 0.5, 0.44, 0.39];
-  const flowPath = "M12 53 C 22 54, 35 47, 44 41 C 56 34, 67 29, 77 28 C 88 27, 97 23, 108 19";
-  const flowActive = `M12 53 C 22 54, 35 47, 44 41 C 56 34, 67 29, 77 28 C 88 27, 97 23, ${markerX.toFixed(2)} ${markerY.toFixed(2)}`;
+  const bars = [
+    0.2, 0.26, 0.34, 0.41, 0.5, 0.57, 0.64, 0.7, 0.66, 0.61, 0.56, 0.5, 0.44,
+    0.39,
+  ];
+  const flowPath = "M12 53 C 30 52, 74 26, 108 19";
+  const t = Math.min(Math.max(progress, 0), 1);
+  const p0 = { x: 12, y: 53 };
+  const p1 = { x: 30, y: 52 };
+  const p2 = { x: 74, y: 26 };
+  const p3 = { x: 108, y: 19 };
+  const markerX =
+    Math.pow(1 - t, 3) * p0.x +
+    3 * Math.pow(1 - t, 2) * t * p1.x +
+    3 * (1 - t) * Math.pow(t, 2) * p2.x +
+    Math.pow(t, 3) * p3.x;
+  const markerY =
+    Math.pow(1 - t, 3) * p0.y +
+    3 * Math.pow(1 - t, 2) * t * p1.y +
+    3 * (1 - t) * Math.pow(t, 2) * p2.y +
+    Math.pow(t, 3) * p3.y;
 
   const arcShift = 1 - progress;
 
@@ -325,11 +340,13 @@ const EconomicImpactSimulator = () => {
           </div>
 
           <h2 className="mt-1.5 text-sm font-extrabold tracking-[0.01em] text-white sm:mt-2 sm:text-xl">
-            African American Buying Power <span className="text-[#D4AF37]">(2026)</span>
+            African American Buying Power{" "}
+            <span className="text-[#D4AF37]">(2026)</span>
           </h2>
 
           <p className="mt-1.5 text-xs text-white/78 sm:text-sm">
-            Spending scale is massive, leakage remains high, and recapture inside BWE creates outsized retained value.
+            Spending scale is massive, leakage remains high, and recapture
+            inside BWE creates outsized retained value.
           </p>
 
           <div
@@ -338,46 +355,69 @@ const EconomicImpactSimulator = () => {
           >
             {formatCurrency(Math.floor(currentValue))}
           </div>
-          <p className="text-[10px] uppercase tracking-[0.08em] text-white/56 sm:text-[11px]">Annual Buying Power</p>
-          <p className="mt-1 text-[10px] text-cyan-200/75 sm:text-[11px]">2010 → 2026</p>
+          <p className="text-[10px] uppercase tracking-[0.08em] text-white/56 sm:text-[11px]">
+            Annual Buying Power
+          </p>
+          <p className="mt-1 text-[10px] text-cyan-200/75 sm:text-[11px]">
+            2010 → 2026
+          </p>
 
           <div className="mt-2 grid grid-cols-2 gap-2 text-[10px] sm:text-xs">
             <div className="rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5">
               <p className="text-white/55">Baseline 2010</p>
-              <p className="font-semibold text-white">{formatCurrency(baseline)}</p>
+              <p className="font-semibold text-white">
+                {formatCurrency(baseline)}
+              </p>
               <p className="mt-0.5 text-white/55">Projected 2026</p>
-              <p className="font-semibold text-white">{formatCurrency(projected)}</p>
+              <p className="font-semibold text-white">
+                {formatCurrency(projected)}
+              </p>
             </div>
             <div className="rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5">
               <p className="text-white/55">Daily flow</p>
-              <p className="font-semibold text-white">{formatCurrency(perDay)} / day</p>
+              <p className="font-semibold text-white">
+                {formatCurrency(perDay)} / day
+              </p>
               <p className="mt-0.5 text-white/55">Second-level flow</p>
-              <p className="font-semibold text-white">{formatCurrency(perSecond)} / sec</p>
+              <p className="font-semibold text-white">
+                {formatCurrency(perSecond)} / sec
+              </p>
             </div>
           </div>
         </div>
 
         <div className="relative min-w-0">
-          <div className="mb-1.5 text-center text-[10px] font-medium tracking-wide text-white/66 sm:mb-2 sm:text-[11px]">Spending Flow Progress</div>
+          <div className="mb-1.5 text-center text-[10px] font-medium tracking-wide text-white/66 sm:mb-2 sm:text-[11px]">
+            Spending Flow Progress
+          </div>
 
-          <div className="relative h-[172px] overflow-hidden rounded-lg border border-cyan-300/15 bg-[#050d1a]/94 p-2 sm:h-[214px] sm:p-2.5" data-progress={progress.toFixed(4)}>
+          <div
+            className="relative h-[172px] overflow-hidden rounded-lg border border-cyan-300/15 bg-[#050d1a]/94 p-2 sm:h-[214px] sm:p-2.5"
+            data-progress={progress.toFixed(4)}
+          >
             <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(88,128,178,0.14)_1px,transparent_1px),linear-gradient(90deg,rgba(88,128,178,0.14)_1px,transparent_1px)] bg-[size:17px_17px]" />
             <div
               className="pointer-events-none absolute inset-0"
               style={{
-                background: "radial-gradient(80% 55% at 22% 80%, rgba(53,137,219,0.25), transparent 70%), radial-gradient(58% 42% at 62% 38%, rgba(64,180,255,0.16), transparent 72%)",
+                background:
+                  "radial-gradient(80% 55% at 22% 80%, rgba(53,137,219,0.25), transparent 70%), radial-gradient(58% 42% at 62% 38%, rgba(64,180,255,0.16), transparent 72%)",
                 opacity: 0.45,
               }}
             />
             <div
               className="pointer-events-none absolute inset-y-0 right-0 w-[30%] border-l border-[#D4AF37]/25"
               style={{
-                background: "linear-gradient(90deg, rgba(212,175,55,0.04), rgba(212,175,55,0.23))",
+                background:
+                  "linear-gradient(90deg, rgba(212,175,55,0.04), rgba(212,175,55,0.23))",
                 opacity: 0.2 + unlock * 0.8,
               }}
             />
 
-            <svg viewBox="0 0 120 70" className="absolute inset-2 h-[calc(100%-1rem)] w-[calc(100%-1rem)]" preserveAspectRatio="none">
+            <svg
+              viewBox="0 0 120 70"
+              className="absolute inset-2 h-[calc(100%-1rem)] w-[calc(100%-1rem)]"
+              preserveAspectRatio="none"
+            >
               <defs>
                 <linearGradient id="barFillMagenta" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="0%" stopColor="rgba(255,190,172,0.95)" />
@@ -403,27 +443,94 @@ const EconomicImpactSimulator = () => {
                 const blueTop = Math.max(2, grown * 0.32);
                 return (
                   <g key={x}>
-                    <rect x={x - 0.5} y={y - 1.2} width="5.8" height={grown + 1.4} rx="1" fill="rgba(85,210,255,0.16)" />
-                    <rect x={x + 0.25} y={y - blueTop * 0.45} width="4.2" height={blueTop} rx="0.8" fill="url(#barFillBlue)" opacity={0.82} />
-                    <rect x={x} y={y} width="4.7" height={grown} rx="0.8" fill="url(#barFillMagenta)" style={{ filter: 'drop-shadow(0 0 4px rgba(255,108,194,0.38))' }} />
-                    <rect x={x} y={y} width="4.7" height={grown} rx="0.8" fill="none" stroke="rgba(240,246,255,0.68)" strokeWidth="0.45" />
+                    <rect
+                      x={x - 0.5}
+                      y={y - 1.2}
+                      width="5.8"
+                      height={grown + 1.4}
+                      rx="1"
+                      fill="rgba(85,210,255,0.16)"
+                    />
+                    <rect
+                      x={x + 0.25}
+                      y={y - blueTop * 0.45}
+                      width="4.2"
+                      height={blueTop}
+                      rx="0.8"
+                      fill="url(#barFillBlue)"
+                      opacity={0.82}
+                    />
+                    <rect
+                      x={x}
+                      y={y}
+                      width="4.7"
+                      height={grown}
+                      rx="0.8"
+                      fill="url(#barFillMagenta)"
+                      style={{
+                        filter: "drop-shadow(0 0 4px rgba(255,108,194,0.38))",
+                      }}
+                    />
+                    <rect
+                      x={x}
+                      y={y}
+                      width="4.7"
+                      height={grown}
+                      rx="0.8"
+                      fill="none"
+                      stroke="rgba(240,246,255,0.68)"
+                      strokeWidth="0.45"
+                    />
                   </g>
                 );
               })}
 
-              <path d={flowPath} fill="none" stroke="rgba(176,228,255,0.26)" strokeWidth="1.1" />
-              <path d={flowActive} fill="none" stroke="url(#flowGlow)" strokeWidth="2.4" style={{ filter: 'drop-shadow(0 0 5px rgba(135,226,255,0.6))' }} />
+              <path
+                d={flowPath}
+                fill="none"
+                stroke="rgba(176,228,255,0.14)"
+                strokeWidth="1.1"
+              />
+              <path
+                d={flowPath}
+                fill="none"
+                stroke="url(#flowGlow)"
+                strokeWidth="2.4"
+                pathLength={1}
+                strokeDasharray={`${Math.max(progress, 0.0001)} 1`}
+                strokeLinecap="round"
+                style={{ filter: "drop-shadow(0 0 5px rgba(135,226,255,0.6))" }}
+              />
 
               {[0.06, 0.18, 0.33, 0.49, 0.65, 0.79, 0.93].map((t) => {
                 const x = 12 + 96 * t;
                 const y = 53 - 34 * t + Math.sin(t * 8) * 1.1;
-                return <circle key={t} cx={x} cy={y} r="1.1" fill="rgba(180,240,255,0.8)" opacity={t <= progress ? 0.96 : 0.34} />;
+                return (
+                  <circle
+                    key={t}
+                    cx={x}
+                    cy={y}
+                    r="1.1"
+                    fill="rgba(180,240,255,0.8)"
+                    opacity={t <= progress ? 0.96 : 0.12}
+                  />
+                );
               })}
 
-              <circle cx={markerX} cy={markerY} r="2.45" fill="rgba(255,255,255,0.98)" style={{ filter: 'drop-shadow(0 0 8px rgba(177,238,255,0.9))' }} />
-              <path d={`M ${markerX.toFixed(2)} ${markerY.toFixed(2)} L ${(Math.min(markerX + 4.8, 112)).toFixed(2)} ${(Math.max(markerY - 1.8, 14)).toFixed(2)}`} stroke="rgba(255,255,255,0.95)" strokeWidth="1.25" strokeLinecap="round" />
+              <circle
+                cx={markerX}
+                cy={markerY}
+                r="2.45"
+                fill="rgba(255,255,255,0.98)"
+                style={{ filter: "drop-shadow(0 0 8px rgba(177,238,255,0.9))" }}
+              />
 
-              <path d="M8 66 L108 66" stroke="rgba(61,162,243,0.58)" strokeWidth="1.1" style={{ filter: 'drop-shadow(0 0 6px rgba(70,167,247,0.72))' }} />
+              <path
+                d="M8 66 L108 66"
+                stroke="rgba(61,162,243,0.58)"
+                strokeWidth="1.1"
+                style={{ filter: "drop-shadow(0 0 6px rgba(70,167,247,0.72))" }}
+              />
 
               <path
                 d="M 6 62 C 22 18, 63 10, 112 36"
@@ -459,13 +566,21 @@ const EconomicImpactSimulator = () => {
                 const y = 25 + p * 8;
                 return (
                   <g key={k} opacity={0.18 + p * 0.72}>
-                    <path d={`M ${x.toFixed(2)} ${y.toFixed(2)} l 1.6 0.55 l -1.2 1`} fill="none" stroke="rgba(139,230,255,0.82)" strokeWidth="0.95" />
+                    <path
+                      d={`M ${x.toFixed(2)} ${y.toFixed(2)} l 1.6 0.55 l -1.2 1`}
+                      fill="none"
+                      stroke="rgba(139,230,255,0.82)"
+                      strokeWidth="0.95"
+                    />
                   </g>
                 );
               })}
             </svg>
 
-            <div className="absolute right-2 top-2 rounded-md border border-[#D4AF37]/35 bg-[#D4AF37]/12 px-2 py-1 text-[9px] font-medium text-[#D4AF37] sm:text-[10px]" style={{ opacity: 0.45 + unlock * 0.55 }}>
+            <div
+              className="absolute right-2 top-2 rounded-md border border-[#D4AF37]/35 bg-[#D4AF37]/12 px-2 py-1 text-[9px] font-medium text-[#D4AF37] sm:text-[10px]"
+              style={{ opacity: 0.45 + unlock * 0.55 }}
+            >
               BWE Recapture Opportunity
             </div>
             <div className="absolute left-2 top-2 rounded-md border border-cyan-300/20 bg-[#07111d]/85 px-2 py-1 text-[9px] text-cyan-100/78 sm:text-[10px]">
@@ -482,7 +597,8 @@ const EconomicImpactSimulator = () => {
         <div className="lg:col-span-2">
           <div className="rounded-lg border border-[#D4AF37]/35 bg-[#D4AF37]/8 px-3 py-1.5 text-center text-[10px] text-white/86 sm:py-2 sm:text-[11px]">
             <span className="font-semibold text-[#D4AF37]">
-              If {recapturePct}% stays within our ecosystem → {formatCurrency(recaptureValue)} retained annually
+              If {recapturePct}% stays within our ecosystem →{" "}
+              {formatCurrency(recaptureValue)} retained annually
             </span>
           </div>
 
@@ -492,8 +608,12 @@ const EconomicImpactSimulator = () => {
               className="group inline-flex items-center justify-center rounded-xl border border-[#D4AF37]/40 bg-[#D4AF37]/10 px-3 py-1.5 text-center shadow-sm transition hover:border-[#D4AF37]/80 hover:bg-gradient-to-r hover:from-[#D4AF37]/20 hover:to-cyan-400/10 sm:px-4 sm:py-2.5"
             >
               <div className="flex w-full items-center justify-between gap-3">
-                <span className="text-[11px] font-extrabold tracking-wide text-[#D4AF37] sm:text-sm">Knowledge is Power</span>
-                <span className="truncate text-[10px] text-white/70 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-white sm:text-sm">Where the money goes →</span>
+                <span className="text-[11px] font-extrabold tracking-wide text-[#D4AF37] sm:text-sm">
+                  Knowledge is Power
+                </span>
+                <span className="truncate text-[10px] text-white/70 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-white sm:text-sm">
+                  Where the money goes →
+                </span>
               </div>
             </Link>
 
@@ -502,8 +622,12 @@ const EconomicImpactSimulator = () => {
               className="group inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 px-3 py-1.5 text-center transition hover:border-[#D4AF37]/30 hover:bg-gradient-to-r hover:from-white/10 hover:to-[#D4AF37]/10 sm:px-4 sm:py-2.5"
             >
               <div className="flex w-full items-center justify-between gap-3">
-                <span className="text-[11px] font-extrabold tracking-wide text-[#D4AF37] sm:text-sm">Economic Slavery</span>
-                <span className="truncate text-[10px] text-white/70 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-white sm:text-sm">Learn more →</span>
+                <span className="text-[11px] font-extrabold tracking-wide text-[#D4AF37] sm:text-sm">
+                  Economic Slavery
+                </span>
+                <span className="truncate text-[10px] text-white/70 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-white sm:text-sm">
+                  Learn more →
+                </span>
               </div>
             </Link>
           </div>
@@ -512,7 +636,6 @@ const EconomicImpactSimulator = () => {
     </section>
   );
 };
-
 
 type VerticalKey = "all" | "shopping" | "news";
 
