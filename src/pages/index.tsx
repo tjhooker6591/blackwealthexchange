@@ -483,7 +483,7 @@ const EconomicImpactSimulator = () => {
                       width={CHART_SYSTEM.bar.backWidth}
                       height={grown + 1.4}
                       rx="1"
-                      fill="rgba(85,210,255,0.12)"
+                      fill="rgba(85,210,255,0.09)"
                     />
                     <rect
                       x={x + 0.25}
@@ -492,7 +492,7 @@ const EconomicImpactSimulator = () => {
                       height={blueTop}
                       rx="0.8"
                       fill="url(#barFillBlue)"
-                      opacity={0.52}
+                      opacity={0.44}
                     />
                     <rect
                       x={x}
@@ -502,7 +502,7 @@ const EconomicImpactSimulator = () => {
                       rx="0.8"
                       fill="url(#barFillMagenta)"
                       style={{
-                        filter: "drop-shadow(0 0 2px rgba(255,108,194,0.24))",
+                        filter: "drop-shadow(0 0 1.5px rgba(255,108,194,0.18))",
                       }}
                     />
                     <rect
@@ -512,7 +512,7 @@ const EconomicImpactSimulator = () => {
                       height={grown}
                       rx="0.8"
                       fill="none"
-                      stroke="rgba(240,246,255,0.68)"
+                      stroke="rgba(240,246,255,0.52)"
                       strokeWidth="0.45"
                       vectorEffect="non-scaling-stroke"
                     />
@@ -536,7 +536,9 @@ const EconomicImpactSimulator = () => {
                 strokeDasharray={`${Math.max(progress, 0.0001)} 1`}
                 strokeLinecap="round"
                 vectorEffect="non-scaling-stroke"
-                style={{ filter: "drop-shadow(0 0 7px rgba(135,226,255,0.74))" }}
+                style={{
+                  filter: "drop-shadow(0 0 7px rgba(135,226,255,0.74))",
+                }}
               />
 
               {[0.06, 0.18, 0.33, 0.49, 0.65, 0.79, 0.93].map((t) => {
@@ -561,7 +563,9 @@ const EconomicImpactSimulator = () => {
                 cy={markerY}
                 r={CHART_SYSTEM.scale.pulseDot}
                 fill="rgba(255,255,255,0.98)"
-                style={{ filter: "drop-shadow(0 0 6px rgba(177,238,255,0.72))" }}
+                style={{
+                  filter: "drop-shadow(0 0 6px rgba(177,238,255,0.72))",
+                }}
               />
 
               <path
@@ -575,32 +579,32 @@ const EconomicImpactSimulator = () => {
               <path
                 d="M 6 62 C 22 18, 63 10, 112 36"
                 fill="none"
-                stroke="rgba(102,217,255,0.24)"
+                stroke="rgba(102,217,255,0.2)"
                 strokeWidth={CHART_SYSTEM.scale.secondaryLine}
                 strokeDasharray="1.7 2.3"
                 strokeDashoffset={24 * arcShift}
                 vectorEffect="non-scaling-stroke"
-                opacity={0.32}
+                opacity={0.24}
               />
               <path
                 d="M 16 60 C 38 20, 74 18, 112 34"
                 fill="none"
-                stroke="rgba(102,217,255,0.2)"
+                stroke="rgba(102,217,255,0.16)"
                 strokeWidth={CHART_SYSTEM.scale.tertiaryLine}
                 strokeDasharray="1.4 2"
                 strokeDashoffset={20 * arcShift}
                 vectorEffect="non-scaling-stroke"
-                opacity={0.24}
+                opacity={0.18}
               />
               <path
                 d="M 26 58 C 48 28, 82 24, 112 32"
                 fill="none"
-                stroke="rgba(102,217,255,0.16)"
+                stroke="rgba(102,217,255,0.13)"
                 strokeWidth={CHART_SYSTEM.scale.tertiaryLine}
                 strokeDasharray="1.2 1.8"
                 strokeDashoffset={16 * arcShift}
                 vectorEffect="non-scaling-stroke"
-                opacity={0.16}
+                opacity={0.12}
               />
 
               {[0.18, 0.44, 0.7].map((k) => {
@@ -622,18 +626,18 @@ const EconomicImpactSimulator = () => {
             </svg>
 
             <div
-              className="absolute right-2 top-2 rounded-md border border-[#D4AF37]/35 bg-[#D4AF37]/12 px-2 py-1 text-[9px] font-medium text-[#D4AF37] sm:text-[10px]"
-              style={{ opacity: 0.45 + unlock * 0.55 }}
+              className="absolute right-2 top-2 rounded-md border border-[#D4AF37]/45 bg-[linear-gradient(135deg,rgba(212,175,55,0.2),rgba(212,175,55,0.1))] px-2.5 py-1 text-[9px] font-semibold tracking-[0.03em] text-[#F1D57A] shadow-[0_0_14px_rgba(212,175,55,0.14)] sm:text-[10px]"
+              style={{ opacity: 0.72 + unlock * 0.28 }}
             >
               BWE Recapture Opportunity
             </div>
             <div className="absolute left-2 top-2 rounded-md border border-cyan-300/20 bg-[#07111d]/85 px-2 py-1 text-[9px] text-cyan-100/78 sm:text-[10px]">
               Black Spending Power → Outside Economy Flow
             </div>
-            <div className="absolute bottom-1 left-2 right-2 grid grid-cols-3 text-center text-[9px] text-white/66 sm:text-[10px]">
-              <span>Baseline</span>
-              <span>Current</span>
-              <span>Projected</span>
+            <div className="absolute bottom-1.5 left-2 right-2 grid grid-cols-3 text-center text-[9px] font-medium tracking-[0.04em] text-white/78 sm:text-[10px]">
+              <span className="rounded-sm bg-black/25 py-0.5">Baseline</span>
+              <span className="rounded-sm bg-black/25 py-0.5">Current</span>
+              <span className="rounded-sm bg-black/25 py-0.5">Projected</span>
             </div>
           </div>
         </div>
