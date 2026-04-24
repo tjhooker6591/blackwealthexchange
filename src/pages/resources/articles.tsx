@@ -21,12 +21,12 @@ export default function GeneralArticlesPage() {
         <div className="grid md:grid-cols-2 gap-6">
           <ArticleCard
             title="Financial Literacy 101"
-            href="/courses/personal-finance"
+            href="/financial-literacy"
             description="Understand budgeting, saving, credit, and the foundation of building wealth."
           />
           <ArticleCard
             title="How to Start a Black-Owned Business"
-            href="/resources/starting-a-business"
+            href="/add-business"
             description="Step-by-step guidance to get your vision off the ground — from LLCs to branding."
           />
           <ArticleCard
@@ -36,7 +36,7 @@ export default function GeneralArticlesPage() {
           />
           <ArticleCard
             title="Building Generational Wealth"
-            href="/courses/building-wealth"
+            href="/courses/generational-wealth"
             description="Explore long-term strategies like investing, insurance, and real estate."
           />
           <ArticleCard

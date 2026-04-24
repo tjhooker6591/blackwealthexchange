@@ -45,12 +45,14 @@ export default function MusicLandingPage() {
             <button
               onClick={() =>
                 router.push(
-                  user ? "/music/join" : "/login?redirect=/music/join",
+                  user
+                    ? "/music/pricing"
+                    : "/login?redirect=/music/pricing",
                 )
               }
               className="rounded-xl border border-white/20 bg-white/5 px-5 py-2.5 font-bold text-white hover:bg-white/10"
             >
-              Join as a Creator
+              View Creator Plans
             </button>
           </div>
         </div>
@@ -82,7 +84,9 @@ export default function MusicLandingPage() {
         </section>
 
         <section className="mt-6 rounded-xl border border-[#D4AF37]/20 bg-[#D4AF37]/10 p-4">
-          <h2 className="font-extrabold text-[#D4AF37]">Creator access clarity</h2>
+          <h2 className="font-extrabold text-[#D4AF37]">
+            Creator access clarity
+          </h2>
           <p className="mt-2 text-sm text-white/80">
             Locked state: you complete onboarding and readiness. Unlocked state:
             you get direct creator dashboard and listing access.
