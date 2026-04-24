@@ -273,7 +273,7 @@ const EconomicImpactSimulator = () => {
   const perSecond = 48_000;
   const recapturePct = 5;
   const recaptureValue = projected * (recapturePct / 100);
-  const durationMs = 38_000;
+  const durationMs = 90_000;
 
   const [progress, setProgress] = useState(0);
 
