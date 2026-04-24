@@ -267,15 +267,13 @@ function ConsultingInterestModal({
  *  ECONOMIC IMPACT (2026 projection)
  *  ----------------------------- */
 const EconomicImpactSimulator = () => {
-  const startYear = 2010;
-  const endYear = 2026;
   const baseline = 300_000_000_000;
   const projected = 2_100_000_000_000;
   const perDay = 4_200_000_000;
   const perSecond = 48_000;
   const recapturePct = 5;
   const recaptureValue = projected * (recapturePct / 100);
-  const durationMs = 30_000;
+  const durationMs = 36_000;
 
   const [progress, setProgress] = useState(0);
 
@@ -304,58 +302,33 @@ const EconomicImpactSimulator = () => {
       maximumFractionDigits: 0,
     });
 
-  const currentValue = useMemo(
-    () => baseline + (projected - baseline) * progress,
-    [baseline, projected, progress],
-  );
+  const currentValue = baseline + (projected - baseline) * progress;
+  const markerX = 8 + 104 * progress;
+  const markerY = 52 - progress * 35;
+  const unlock = Math.min(Math.max((progress - 0.8) / 0.2, 0), 1);
 
-  const timelineYear = useMemo(
-    () => startYear + (endYear - startYear) * progress,
-    [startYear, endYear, progress],
-  );
+  const bars = [0.22, 0.31, 0.38, 0.45, 0.42, 0.55, 0.61, 0.58, 0.68, 0.74, 0.82, 0.93];
 
-  const markerX = useMemo(() => 8 + 104 * progress, [progress]);
-  const unlock = useMemo(
-    () => Math.min(Math.max((progress - 0.78) / 0.22, 0), 1),
-    [progress],
-  );
+  const flowPathFull = "M8 51 C 22 46, 70 26, 112 14";
+  const flowPathActive = `M8 51 C 22 46, 70 26, ${markerX.toFixed(2)} ${markerY.toFixed(2)}`;
 
-  const bars = [
-    0.2, 0.28, 0.35, 0.41, 0.39, 0.52, 0.58, 0.56, 0.66, 0.72, 0.8, 0.92,
-  ];
-
-  const pathForProgress = useMemo(() => {
-    const p = Math.min(Math.max(progress, 0), 1);
-    const x = 8 + 104 * p;
-    const c1x = 22;
-    const c2x = 70;
-    const y0 = 51;
-    const y1 = 14;
-
-    const c1y = 46;
-    const c2y = 26;
-
-    const yAtX = (xv: number) => {
-      const t = (xv - 8) / 104;
-      return y0 * (1 - t) + y1 * t - 9 * t * (1 - t);
-    };
-
-    const y = yAtX(x);
-
+  const arrows = [0.14, 0.38, 0.62].map((o) => {
+    const p = Math.min(Math.max(progress - o, 0), 1);
     return {
-      active: `M8 51 C ${c1x} ${c1y}, ${c2x} ${c2y}, ${x.toFixed(2)} ${y.toFixed(2)}`,
-      full: 'M8 51 C 22 46, 70 26, 112 14',
+      x: 82 + p * 24,
+      y: 22 + p * 12,
+      opacity: 0.18 + p * 0.55,
     };
-  }, [progress]);
+  });
 
   return (
     <section className="relative overflow-hidden py-2 sm:py-4">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_18%,rgba(16,185,129,0.12),transparent_34%),radial-gradient(circle_at_88%_76%,rgba(212,175,55,0.13),transparent_40%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_18%,rgba(43,174,255,0.12),transparent_34%),radial-gradient(circle_at_88%_76%,rgba(212,175,55,0.14),transparent_40%)]" />
 
-      <div className="relative grid gap-3 rounded-xl border border-white/10 bg-[#05090c]/92 p-2 shadow-[0_12px_34px_rgba(0,0,0,0.42)] backdrop-blur sm:p-3.5 lg:grid-cols-[0.38fr_0.62fr] lg:items-stretch">
+      <div className="relative grid gap-3 rounded-xl border border-white/10 bg-[#040910]/94 p-2 shadow-[0_14px_40px_rgba(0,0,0,0.46)] backdrop-blur sm:p-3.5 lg:grid-cols-[0.36fr_0.64fr] lg:items-stretch">
         <div className="min-w-0 lg:pr-2">
           <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-bold tracking-wide text-white/80">
-            <span className="h-2 w-2 rounded-full bg-emerald-400" />
+            <span className="h-2 w-2 rounded-full bg-cyan-400" />
             BUYING POWER (ANNUAL ESTIMATE)
           </div>
 
@@ -364,27 +337,20 @@ const EconomicImpactSimulator = () => {
           </h2>
 
           <p className="mt-1.5 text-xs text-white/78 sm:text-sm">
-            Black buying power is massive. Most flow exits our ecosystem.
-            Redirecting a small share into BWE creates major retained impact.
+            Spending scale is massive, leakage remains high, and recapture inside BWE creates outsized retained value.
           </p>
 
           <div className="mt-2 text-[1.7rem] font-black tracking-tight text-[#D4AF37] tabular-nums sm:text-4xl" data-counter-value={Math.floor(currentValue)}>
             {formatCurrency(Math.floor(currentValue))}
           </div>
-          <p className="text-[10px] uppercase tracking-[0.08em] text-white/56 sm:text-[11px]">
-            Annual Buying Power
-          </p>
-
-          <div className="mt-2 flex items-center justify-between rounded-md border border-white/10 bg-white/5 px-2.5 py-1.5 text-[10px] text-white/72">
-            <span>Timeline</span>
-            <span className="font-semibold text-white">{timelineYear.toFixed(1)}</span>
-          </div>
+          <p className="text-[10px] uppercase tracking-[0.08em] text-white/56 sm:text-[11px]">Annual Buying Power</p>
+          <p className="mt-1 text-[10px] text-cyan-200/75 sm:text-[11px]">2010 → 2026, now tracking toward 2026 estimate</p>
 
           <div className="mt-2 grid grid-cols-2 gap-2 text-[10px] sm:text-xs">
             <div className="rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5">
-              <p className="text-white/55">Baseline (2010)</p>
+              <p className="text-white/55">Baseline 2010</p>
               <p className="font-semibold text-white">{formatCurrency(baseline)}</p>
-              <p className="mt-0.5 text-white/55">Projected (2026)</p>
+              <p className="mt-0.5 text-white/55">Projected 2026</p>
               <p className="font-semibold text-white">{formatCurrency(projected)}</p>
             </div>
             <div className="rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5">
@@ -397,89 +363,87 @@ const EconomicImpactSimulator = () => {
         </div>
 
         <div className="relative min-w-0">
-          <div className="mb-1.5 text-center text-[10px] font-medium tracking-wide text-white/66 sm:mb-2 sm:text-[11px]">
-            Spending Flow Progress
-          </div>
+          <div className="mb-1.5 text-center text-[10px] font-medium tracking-wide text-white/66 sm:mb-2 sm:text-[11px]">Spending Flow Progress</div>
 
-          <div className="viz-shell relative h-[168px] overflow-hidden rounded-lg border border-white/12 bg-[#060b10]/90 p-2 sm:h-[208px] sm:p-2.5" data-progress={progress.toFixed(4)}>
-            <div className="viz-grid pointer-events-none absolute inset-0" />
-            <div className="ambient-shift pointer-events-none absolute inset-0" style={{ opacity: 0.22 + progress * 0.28 }} />
-            <div className="recapture-zone pointer-events-none absolute inset-y-0 right-0 w-[28%]" style={{ opacity: 0.15 + unlock * 0.8 }} />
+          <div className="relative h-[170px] overflow-hidden rounded-lg border border-cyan-300/15 bg-[#050d18]/92 p-2 sm:h-[214px] sm:p-2.5" data-progress={progress.toFixed(4)}>
+            <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(72,120,170,0.14)_1px,transparent_1px),linear-gradient(90deg,rgba(72,120,170,0.14)_1px,transparent_1px)] bg-[size:18px_18px]" />
+            <div
+              className="pointer-events-none absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(110deg, rgba(33,76,120,0.06) 5%, rgba(54,160,230,0.18) 45%, rgba(212,175,55,0.16) 78%, rgba(9,16,28,0.04) 100%)",
+                opacity: 0.2 + progress * 0.35,
+              }}
+            />
+            <div
+              className="pointer-events-none absolute inset-y-0 right-0 w-[30%] border-l border-[#D4AF37]/25"
+              style={{
+                background: "linear-gradient(90deg, rgba(212,175,55,0.05), rgba(212,175,55,0.24))",
+                opacity: 0.15 + unlock * 0.85,
+              }}
+            />
 
-            <svg
-              viewBox="0 0 120 70"
-              className="absolute inset-2 h-[calc(100%-1rem)] w-[calc(100%-1rem)]"
-              preserveAspectRatio="none"
-            >
-              {bars.map((h, i) => {
-                const x = 6 + i * 9.1;
-                const maxH = h * 34;
-                const grown = Math.max(4, maxH * (0.12 + progress * 0.88));
-                const y = 64 - grown;
-                const inRecapture = i > 8;
-                return (
-                  <rect
-                    key={x}
-                    x={x}
-                    y={y}
-                    width="5.1"
-                    height={grown}
-                    rx="0.8"
-                    fill={inRecapture ? 'rgba(212,175,55,0.62)' : 'rgba(16,185,129,0.52)'}
-                    style={{ filter: `drop-shadow(0 0 ${2 + progress * 2}px ${inRecapture ? 'rgba(212,175,55,0.35)' : 'rgba(16,185,129,0.28)'})` }}
-                  />
-                );
-              })}
-
-              <path
-                d={pathForProgress.full}
-                fill="none"
-                stroke="rgba(255,255,255,0.18)"
-                strokeWidth="1.2"
-              />
-              <path
-                d={pathForProgress.active}
-                fill="none"
-                stroke="url(#flowGradientSync)"
-                strokeWidth="2.3"
-              />
-
+            <svg viewBox="0 0 120 70" className="absolute inset-2 h-[calc(100%-1rem)] w-[calc(100%-1rem)]" preserveAspectRatio="none">
               <defs>
-                <linearGradient id="flowGradientSync" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0%" stopColor="rgba(16,185,129,0.72)" />
-                  <stop offset="70%" stopColor="rgba(16,185,129,1)" />
+                <linearGradient id="barGlow" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="rgba(80,220,255,0.9)" />
+                  <stop offset="50%" stopColor="rgba(35,155,220,0.55)" />
+                  <stop offset="100%" stopColor="rgba(22,84,140,0.24)" />
+                </linearGradient>
+                <linearGradient id="flowGlow" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="rgba(80,220,255,0.72)" />
+                  <stop offset="70%" stopColor="rgba(38,208,255,0.95)" />
                   <stop offset="100%" stopColor="rgba(212,175,55,0.95)" />
                 </linearGradient>
               </defs>
 
-              <circle cx={markerX} cy={52 - progress * 35} r="2.35" fill="rgba(255,255,255,0.98)" style={{ filter: 'drop-shadow(0 0 7px rgba(255,255,255,0.65))' }} />
+              {bars.map((h, i) => {
+                const x = 6 + i * 9.1;
+                const baseH = h * 34;
+                const grown = Math.max(4, baseH * (0.1 + progress * 0.9));
+                const y = 64 - grown;
+                const bright = i > 8;
+                return (
+                  <g key={x}>
+                    <rect x={x - 0.4} y={y - 0.6} width="5.9" height={grown + 0.6} rx="1" fill={bright ? 'rgba(212,175,55,0.17)' : 'rgba(80,220,255,0.12)'} />
+                    <rect
+                      x={x}
+                      y={y}
+                      width="5.1"
+                      height={grown}
+                      rx="0.8"
+                      fill={bright ? 'rgba(212,175,55,0.68)' : 'url(#barGlow)'}
+                      style={{ filter: `drop-shadow(0 0 ${2 + progress * 3}px ${bright ? 'rgba(212,175,55,0.42)' : 'rgba(80,220,255,0.38)'})` }}
+                    />
+                  </g>
+                );
+              })}
 
-              <circle cx="8" cy="51" r="1.6" fill="rgba(255,255,255,0.88)" />
+              <path d={flowPathFull} fill="none" stroke="rgba(170,220,255,0.18)" strokeWidth="1.1" strokeDasharray="2.2 2.2" />
+              <path d={flowPathActive} fill="none" stroke="url(#flowGlow)" strokeWidth="2.5" style={{ filter: 'drop-shadow(0 0 5px rgba(80,220,255,0.45))' }} />
+
+              <circle cx={markerX} cy={markerY} r="2.4" fill="rgba(255,255,255,0.98)" style={{ filter: 'drop-shadow(0 0 7px rgba(140,230,255,0.8))' }} />
+              <circle cx="8" cy="51" r="1.7" fill="rgba(190,240,255,0.88)" />
               <circle cx="112" cy="14" r="2.2" fill="rgba(212,175,55,1)" opacity={0.45 + unlock * 0.55} />
+
+              {arrows.map((a, i) => (
+                <g key={i} opacity={a.opacity}>
+                  <path d={`M ${a.x.toFixed(2)} ${a.y.toFixed(2)} C ${(a.x + 4).toFixed(2)} ${(a.y + 1.5).toFixed(2)}, ${(a.x + 8).toFixed(2)} ${(a.y + 4).toFixed(2)}, ${(a.x + 12).toFixed(2)} ${(a.y + 6).toFixed(2)}`} fill="none" stroke="rgba(130,220,255,0.55)" strokeWidth="1" strokeDasharray="1.6 1.8" />
+                  <path d={`M ${(a.x + 11.4).toFixed(2)} ${(a.y + 5.4).toFixed(2)} l 1.8 0.7 l -1.5 1.1`} fill="none" stroke="rgba(130,220,255,0.62)" strokeWidth="0.9" />
+                </g>
+              ))}
             </svg>
 
-            <div className="leak leak-1" style={{ opacity: 0.2 + progress * 0.45 }} aria-hidden>
-              →
+            <div className="absolute right-2 top-2 rounded-md border border-[#D4AF37]/35 bg-[#D4AF37]/12 px-2 py-1 text-[9px] font-medium text-[#D4AF37] sm:text-[10px]" style={{ opacity: 0.48 + unlock * 0.52 }}>
+              BWE Recapture Opportunity
             </div>
-            <div className="leak leak-2" style={{ opacity: 0.15 + progress * 0.5 }} aria-hidden>
-              →
+            <div className="absolute left-2 top-2 rounded-md border border-cyan-300/20 bg-[#06111d]/85 px-2 py-1 text-[9px] text-cyan-100/78 sm:text-[10px]">
+              Black Spending Power → Outside Economy Flow
             </div>
-            <div className="leak leak-3" style={{ opacity: 0.12 + progress * 0.56 }} aria-hidden>
-              →
-            </div>
-
             <div className="absolute bottom-1 left-2 right-2 grid grid-cols-3 text-center text-[9px] text-white/66 sm:text-[10px]">
               <span>Baseline</span>
               <span>Current</span>
               <span>Projected</span>
-            </div>
-
-            <div className="absolute right-2 top-2 rounded-md border border-[#D4AF37]/35 bg-[#D4AF37]/12 px-2 py-1 text-[9px] font-medium text-[#D4AF37] sm:text-[10px]" style={{ opacity: 0.45 + unlock * 0.55 }}>
-              BWE Recapture Opportunity
-            </div>
-
-            <div className="absolute left-2 top-2 rounded-md border border-white/10 bg-black/30 px-2 py-1 text-[9px] text-white/68 sm:text-[10px]">
-              Black Spending Power → Outside Economy Flow
             </div>
           </div>
         </div>
@@ -494,15 +458,11 @@ const EconomicImpactSimulator = () => {
           <div className="mt-1.5 grid w-full gap-2 sm:mt-2 sm:grid-cols-2 sm:gap-3">
             <Link
               href="/1.8trillionimpact"
-              className="group inline-flex items-center justify-center rounded-xl border border-[#D4AF37]/40 bg-[#D4AF37]/10 px-3 py-1.5 text-center shadow-sm transition hover:border-[#D4AF37]/80 hover:bg-gradient-to-r hover:from-[#D4AF37]/20 hover:to-emerald-400/10 sm:px-4 sm:py-2.5"
+              className="group inline-flex items-center justify-center rounded-xl border border-[#D4AF37]/40 bg-[#D4AF37]/10 px-3 py-1.5 text-center shadow-sm transition hover:border-[#D4AF37]/80 hover:bg-gradient-to-r hover:from-[#D4AF37]/20 hover:to-cyan-400/10 sm:px-4 sm:py-2.5"
             >
               <div className="flex w-full items-center justify-between gap-3">
-                <span className="text-[11px] font-extrabold tracking-wide text-[#D4AF37] sm:text-sm">
-                  Knowledge is Power
-                </span>
-                <span className="truncate text-[10px] text-white/70 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-white sm:text-sm">
-                  Where the money goes →
-                </span>
+                <span className="text-[11px] font-extrabold tracking-wide text-[#D4AF37] sm:text-sm">Knowledge is Power</span>
+                <span className="truncate text-[10px] text-white/70 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-white sm:text-sm">Where the money goes →</span>
               </div>
             </Link>
 
@@ -511,94 +471,13 @@ const EconomicImpactSimulator = () => {
               className="group inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 px-3 py-1.5 text-center transition hover:border-[#D4AF37]/30 hover:bg-gradient-to-r hover:from-white/10 hover:to-[#D4AF37]/10 sm:px-4 sm:py-2.5"
             >
               <div className="flex w-full items-center justify-between gap-3">
-                <span className="text-[11px] font-extrabold tracking-wide text-[#D4AF37] sm:text-sm">
-                  Economic Slavery
-                </span>
-                <span className="truncate text-[10px] text-white/70 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-white sm:text-sm">
-                  Learn more →
-                </span>
+                <span className="text-[11px] font-extrabold tracking-wide text-[#D4AF37] sm:text-sm">Economic Slavery</span>
+                <span className="truncate text-[10px] text-white/70 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:text-white sm:text-sm">Learn more →</span>
               </div>
             </Link>
           </div>
         </div>
       </div>
-
-      <style jsx>{`
-        .viz-grid {
-          background-image:
-            linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-          background-size: 20px 20px;
-          opacity: 0.32;
-        }
-
-        .ambient-shift {
-          background: linear-gradient(
-            105deg,
-            transparent 8%,
-            rgba(16, 185, 129, 0.16) 42%,
-            rgba(212, 175, 55, 0.14) 72%,
-            transparent 92%
-          );
-          background-size: 230% 100%;
-          animation: ambientMove 9s ease-in-out infinite;
-        }
-
-        .recapture-zone {
-          background: linear-gradient(
-            90deg,
-            rgba(212, 175, 55, 0.04),
-            rgba(212, 175, 55, 0.24)
-          );
-          border-left: 1px solid rgba(212, 175, 55, 0.24);
-        }
-
-        .leak {
-          position: absolute;
-          right: 7%;
-          font-size: 10px;
-          color: rgba(255, 255, 255, 0.55);
-          animation: leakFlow 2.6s linear infinite;
-        }
-
-        .leak-1 {
-          top: 40%;
-          animation-delay: 0.2s;
-        }
-
-        .leak-2 {
-          top: 48%;
-          animation-delay: 0.9s;
-        }
-
-        .leak-3 {
-          top: 56%;
-          animation-delay: 1.6s;
-        }
-
-        @keyframes ambientMove {
-          0% {
-            background-position: 118% 0;
-          }
-          100% {
-            background-position: -24% 0;
-          }
-        }
-
-        @keyframes leakFlow {
-          0% {
-            transform: translateX(0);
-            opacity: 0;
-          }
-          25% {
-            opacity: 1;
-          }
-          100% {
-            transform: translateX(16px);
-            opacity: 0;
-          }
-        }
-      `}</style>
     </section>
   );
 };
