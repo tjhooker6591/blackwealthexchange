@@ -326,6 +326,14 @@ export default function NavBar() {
             </Link>
 
             <Link
+              href="/advertising"
+              className="block rounded-xl px-3 py-2.5 font-medium text-white/85 transition-colors hover:bg-white/[0.04] hover:text-[#D4AF37]"
+              onClick={() => handleMobileNav()}
+            >
+              Sponsor Packages
+            </Link>
+
+            <Link
               href="/travel-map/explore"
               className="block rounded-xl px-3 py-2.5 font-medium text-white/85 transition-colors hover:bg-white/[0.04] hover:text-[#D4AF37]"
               onClick={() => handleMobileNav()}
