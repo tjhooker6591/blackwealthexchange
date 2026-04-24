@@ -267,6 +267,29 @@ function ConsultingInterestModal({
  *  ECONOMIC IMPACT (2026 projection)
  *  ----------------------------- */
 const EconomicImpactSimulator = () => {
+  const CHART_SYSTEM = {
+    layoutCols: "lg:grid-cols-[1fr_1fr]",
+    viewBox: { w: 120, h: 70 },
+    bar: {
+      startX: 8,
+      gap: 7.1,
+      bodyWidth: 4.7,
+      backWidth: 5.8,
+      capWidth: 4.2,
+      maxHeight: 35,
+      minHeight: 3.5,
+    },
+    scale: {
+      primaryLine: 2.35,
+      baselineLine: 1.05,
+      secondaryLine: 1,
+      tertiaryLine: 0.8,
+      pulseDot: 2.4,
+      dataDot: 1.05,
+      gridSize: 16,
+    },
+  } as const;
+
   const baseline = 300_000_000_000;
   const projected = 2_100_000_000_000;
   const perDay = 4_200_000_000;
@@ -332,7 +355,9 @@ const EconomicImpactSimulator = () => {
     <section className="relative overflow-hidden py-2 sm:py-4">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_8%_22%,rgba(96,190,255,0.12),transparent_32%),radial-gradient(circle_at_78%_80%,rgba(212,175,55,0.14),transparent_44%)]" />
 
-      <div className="relative grid gap-3 rounded-xl border border-white/10 bg-[#040812]/94 p-2 shadow-[0_16px_42px_rgba(0,0,0,0.5)] backdrop-blur sm:p-3.5 lg:grid-cols-[0.36fr_0.64fr] lg:items-stretch">
+      <div
+        className={`relative grid gap-3 rounded-xl border border-white/10 bg-[#040812]/94 p-2 shadow-[0_16px_42px_rgba(0,0,0,0.5)] backdrop-blur sm:p-3.5 ${CHART_SYSTEM.layoutCols} lg:items-stretch`}
+      >
         <div className="min-w-0 lg:pr-2">
           <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-bold tracking-wide text-white/80">
             <span className="h-2 w-2 rounded-full bg-cyan-300" />
@@ -392,10 +417,15 @@ const EconomicImpactSimulator = () => {
           </div>
 
           <div
-            className="relative h-[172px] overflow-hidden rounded-lg border border-cyan-300/15 bg-[#050d1a]/94 p-2 sm:h-[214px] sm:p-2.5"
+            className="relative h-[188px] overflow-hidden rounded-lg border border-cyan-300/15 bg-[#050d1a]/94 sm:h-[228px] lg:h-[252px]"
             data-progress={progress.toFixed(4)}
           >
-            <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(88,128,178,0.14)_1px,transparent_1px),linear-gradient(90deg,rgba(88,128,178,0.14)_1px,transparent_1px)] bg-[size:17px_17px]" />
+            <div
+              className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(88,128,178,0.14)_1px,transparent_1px),linear-gradient(90deg,rgba(88,128,178,0.14)_1px,transparent_1px)]"
+              style={{
+                backgroundSize: `${CHART_SYSTEM.scale.gridSize}px ${CHART_SYSTEM.scale.gridSize}px`,
+              }}
+            />
             <div
               className="pointer-events-none absolute inset-0"
               style={{
@@ -414,9 +444,9 @@ const EconomicImpactSimulator = () => {
             />
 
             <svg
-              viewBox="0 0 120 70"
+              viewBox={`0 0 ${CHART_SYSTEM.viewBox.w} ${CHART_SYSTEM.viewBox.h}`}
               className="absolute inset-0 h-full w-full"
-              preserveAspectRatio="xMidYMid slice"
+              preserveAspectRatio="xMidYMid meet"
               shapeRendering="geometricPrecision"
             >
               <defs>
@@ -437,9 +467,12 @@ const EconomicImpactSimulator = () => {
               </defs>
 
               {bars.map((h, i) => {
-                const x = 8 + i * 7.1;
-                const maxH = h * 35;
-                const grown = Math.max(3.5, maxH * (0.12 + progress * 0.88));
+                const x = CHART_SYSTEM.bar.startX + i * CHART_SYSTEM.bar.gap;
+                const maxH = h * CHART_SYSTEM.bar.maxHeight;
+                const grown = Math.max(
+                  CHART_SYSTEM.bar.minHeight,
+                  maxH * (0.12 + progress * 0.88),
+                );
                 const y = 64 - grown;
                 const blueTop = Math.max(2, grown * 0.32);
                 return (
@@ -447,24 +480,24 @@ const EconomicImpactSimulator = () => {
                     <rect
                       x={x - 0.5}
                       y={y - 1.2}
-                      width="5.8"
+                      width={CHART_SYSTEM.bar.backWidth}
                       height={grown + 1.4}
                       rx="1"
-                      fill="rgba(85,210,255,0.16)"
+                      fill="rgba(85,210,255,0.12)"
                     />
                     <rect
                       x={x + 0.25}
                       y={y - blueTop * 0.45}
-                      width="4.2"
+                      width={CHART_SYSTEM.bar.capWidth}
                       height={blueTop}
                       rx="0.8"
                       fill="url(#barFillBlue)"
-                      opacity={0.82}
+                      opacity={0.72}
                     />
                     <rect
                       x={x}
                       y={y}
-                      width="4.7"
+                      width={CHART_SYSTEM.bar.bodyWidth}
                       height={grown}
                       rx="0.8"
                       fill="url(#barFillMagenta)"
@@ -475,7 +508,7 @@ const EconomicImpactSimulator = () => {
                     <rect
                       x={x}
                       y={y}
-                      width="4.7"
+                      width={CHART_SYSTEM.bar.bodyWidth}
                       height={grown}
                       rx="0.8"
                       fill="none"
@@ -491,14 +524,14 @@ const EconomicImpactSimulator = () => {
                 d={flowPath}
                 fill="none"
                 stroke="rgba(176,228,255,0.14)"
-                strokeWidth="1.1"
+                strokeWidth={CHART_SYSTEM.scale.baselineLine}
                 vectorEffect="non-scaling-stroke"
               />
               <path
                 d={flowPath}
                 fill="none"
                 stroke="url(#flowGlow)"
-                strokeWidth="2.4"
+                strokeWidth={CHART_SYSTEM.scale.primaryLine}
                 pathLength={1}
                 strokeDasharray={`${Math.max(progress, 0.0001)} 1`}
                 strokeLinecap="round"
@@ -509,14 +542,16 @@ const EconomicImpactSimulator = () => {
               {[0.06, 0.18, 0.33, 0.49, 0.65, 0.79, 0.93].map((t) => {
                 const x = 12 + 96 * t;
                 const y = 53 - 34 * t + Math.sin(t * 8) * 1.1;
+                const dist = Math.abs(t - progress);
+                const smoothOpacity = Math.max(0.14, 0.96 - dist * 2.6);
                 return (
                   <circle
                     key={t}
                     cx={x}
                     cy={y}
-                    r="1.1"
+                    r={CHART_SYSTEM.scale.dataDot}
                     fill="rgba(180,240,255,0.8)"
-                    opacity={t <= progress ? 0.96 : 0.12}
+                    opacity={smoothOpacity}
                   />
                 );
               })}
@@ -524,7 +559,7 @@ const EconomicImpactSimulator = () => {
               <circle
                 cx={markerX}
                 cy={markerY}
-                r="2.45"
+                r={CHART_SYSTEM.scale.pulseDot}
                 fill="rgba(255,255,255,0.98)"
                 style={{ filter: "drop-shadow(0 0 8px rgba(177,238,255,0.9))" }}
               />
@@ -532,7 +567,7 @@ const EconomicImpactSimulator = () => {
               <path
                 d="M8 66 L108 66"
                 stroke="rgba(61,162,243,0.58)"
-                strokeWidth="1.1"
+                strokeWidth={CHART_SYSTEM.scale.baselineLine}
                 vectorEffect="non-scaling-stroke"
                 style={{ filter: "drop-shadow(0 0 6px rgba(70,167,247,0.72))" }}
               />
@@ -540,32 +575,32 @@ const EconomicImpactSimulator = () => {
               <path
                 d="M 6 62 C 22 18, 63 10, 112 36"
                 fill="none"
-                stroke="rgba(102,217,255,0.62)"
-                strokeWidth="1"
+                stroke="rgba(102,217,255,0.38)"
+                strokeWidth={CHART_SYSTEM.scale.secondaryLine}
                 strokeDasharray="1.7 2.3"
                 strokeDashoffset={24 * arcShift}
                 vectorEffect="non-scaling-stroke"
-                opacity={0.72}
+                opacity={0.52}
               />
               <path
                 d="M 16 60 C 38 20, 74 18, 112 34"
                 fill="none"
-                stroke="rgba(102,217,255,0.5)"
-                strokeWidth="0.9"
+                stroke="rgba(102,217,255,0.32)"
+                strokeWidth={CHART_SYSTEM.scale.tertiaryLine}
                 strokeDasharray="1.4 2"
                 strokeDashoffset={20 * arcShift}
                 vectorEffect="non-scaling-stroke"
-                opacity={0.64}
+                opacity={0.42}
               />
               <path
                 d="M 26 58 C 48 28, 82 24, 112 32"
                 fill="none"
-                stroke="rgba(102,217,255,0.44)"
-                strokeWidth="0.8"
+                stroke="rgba(102,217,255,0.26)"
+                strokeWidth={CHART_SYSTEM.scale.tertiaryLine}
                 strokeDasharray="1.2 1.8"
                 strokeDashoffset={16 * arcShift}
                 vectorEffect="non-scaling-stroke"
-                opacity={0.58}
+                opacity={0.32}
               />
 
               {[0.18, 0.44, 0.7].map((k) => {
