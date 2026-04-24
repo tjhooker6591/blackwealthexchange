@@ -295,7 +295,9 @@ const EconomicImpactSimulator = () => {
   const perDay = 4_200_000_000;
   const perSecond = 48_000;
   const recapturePct = 5;
+  const leakagePct = 100 - recapturePct;
   const recaptureValue = projected * (recapturePct / 100);
+  const leakageValue = projected - recaptureValue;
   const durationMs = 180_000;
 
   const [progress, setProgress] = useState(0);
@@ -459,6 +461,10 @@ const EconomicImpactSimulator = () => {
                   <stop offset="0%" stopColor="rgba(90,213,255,0.66)" />
                   <stop offset="100%" stopColor="rgba(40,116,190,0.2)" />
                 </linearGradient>
+                <linearGradient id="recaptureFillGold" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="rgba(245,214,112,0.96)" />
+                  <stop offset="100%" stopColor="rgba(212,175,55,0.86)" />
+                </linearGradient>
                 <linearGradient id="flowGlow" x1="0" y1="0" x2="1" y2="0">
                   <stop offset="0%" stopColor="rgba(148,235,255,0.9)" />
                   <stop offset="72%" stopColor="rgba(102,224,255,1)" />
@@ -516,6 +522,17 @@ const EconomicImpactSimulator = () => {
                       strokeWidth="0.45"
                       vectorEffect="non-scaling-stroke"
                     />
+                    {i >= bars.length - 4 ? (
+                      <rect
+                        x={x}
+                        y={y}
+                        width={CHART_SYSTEM.bar.bodyWidth}
+                        height={Math.max(1, grown * (recapturePct / 100))}
+                        rx="0.8"
+                        fill="url(#recaptureFillGold)"
+                        opacity={0.96}
+                      />
+                    ) : null}
                   </g>
                 );
               })}
@@ -540,23 +557,6 @@ const EconomicImpactSimulator = () => {
                   filter: "drop-shadow(0 0 7px rgba(135,226,255,0.74))",
                 }}
               />
-
-              {[0.06, 0.18, 0.33, 0.49, 0.65, 0.79, 0.93].map((t) => {
-                const x = 12 + 96 * t;
-                const y = 53 - 34 * t + Math.sin(t * 8) * 1.1;
-                const dist = Math.abs(t - progress);
-                const smoothOpacity = Math.max(0.08, 0.68 - dist * 2.15);
-                return (
-                  <circle
-                    key={t}
-                    cx={x}
-                    cy={y}
-                    r={CHART_SYSTEM.scale.dataDot}
-                    fill="rgba(180,240,255,0.8)"
-                    opacity={smoothOpacity}
-                  />
-                );
-              })}
 
               <circle
                 cx={markerX}
@@ -607,22 +607,58 @@ const EconomicImpactSimulator = () => {
                 opacity={0.12}
               />
 
-              {[0.18, 0.44, 0.7].map((k) => {
-                const p = Math.min(Math.max((progress - k) / (1 - k), 0), 1);
-                const x = 82 + p * 24;
-                const y = 25 + p * 8;
-                return (
-                  <g key={k} opacity={0.12 + p * 0.4}>
-                    <path
-                      d={`M ${x.toFixed(2)} ${y.toFixed(2)} l 1.6 0.55 l -1.2 1`}
-                      fill="none"
-                      stroke="rgba(139,230,255,0.82)"
-                      strokeWidth="0.95"
-                      vectorEffect="non-scaling-stroke"
-                    />
-                  </g>
-                );
-              })}
+              <rect
+                x="110"
+                y={66 - 49}
+                width="6"
+                height="49"
+                rx="1"
+                fill="rgba(86,193,246,0.2)"
+                stroke="rgba(170,228,255,0.38)"
+                strokeWidth="0.45"
+                vectorEffect="non-scaling-stroke"
+              />
+              <rect
+                x="110"
+                y={66 - 49}
+                width="6"
+                height={Math.max(2.4, 49 * (recapturePct / 100))}
+                rx="1"
+                fill="url(#recaptureFillGold)"
+                stroke="rgba(255,242,190,0.9)"
+                strokeWidth="0.35"
+                vectorEffect="non-scaling-stroke"
+              />
+              <text
+                x="89"
+                y="19"
+                fill="rgba(241,213,122,0.96)"
+                fontSize="3.1"
+                fontWeight="700"
+              >
+                Recaptured ({recapturePct}%)
+              </text>
+              <path
+                d="M 104 18 L 110 18"
+                stroke="rgba(241,213,122,0.9)"
+                strokeWidth="0.5"
+                vectorEffect="non-scaling-stroke"
+              />
+              <text
+                x="84"
+                y="56"
+                fill="rgba(171,227,255,0.86)"
+                fontSize="2.9"
+                fontWeight="600"
+              >
+                Leakage ({leakagePct}%)
+              </text>
+              <path
+                d="M 101 55 L 110 55"
+                stroke="rgba(171,227,255,0.7)"
+                strokeWidth="0.45"
+                vectorEffect="non-scaling-stroke"
+              />
             </svg>
 
             <div
@@ -633,6 +669,9 @@ const EconomicImpactSimulator = () => {
             </div>
             <div className="absolute left-2 top-2 rounded-md border border-cyan-300/20 bg-[#07111d]/85 px-2 py-1 text-[9px] text-cyan-100/78 sm:text-[10px]">
               Black Spending Power → Outside Economy Flow
+            </div>
+            <div className="absolute left-2 top-[30px] rounded-md border border-white/10 bg-[#07111d]/90 px-2 py-1 text-[9px] text-white/78 sm:text-[10px]">
+              Gold segment = recaptured in BWE, blue segment = leakage outside BWE
             </div>
             <div className="absolute bottom-1.5 left-2 right-2 grid grid-cols-3 text-center text-[9px] font-medium tracking-[0.04em] text-white/78 sm:text-[10px]">
               <span className="rounded-sm bg-black/25 py-0.5">Baseline</span>
@@ -645,8 +684,7 @@ const EconomicImpactSimulator = () => {
         <div className="lg:col-span-2">
           <div className="rounded-lg border border-[#D4AF37]/35 bg-[#D4AF37]/8 px-3 py-1.5 text-center text-[10px] text-white/86 sm:py-2 sm:text-[11px]">
             <span className="font-semibold text-[#D4AF37]">
-              If {recapturePct}% stays within our ecosystem →{" "}
-              {formatCurrency(recaptureValue)} retained annually
+              Projected: {formatCurrency(projected)} total, {formatCurrency(leakageValue)} leakage ({leakagePct}%) and {formatCurrency(recaptureValue)} recaptured ({recapturePct}%)
             </span>
           </div>
 
