@@ -415,8 +415,8 @@ const EconomicImpactSimulator = () => {
 
             <svg
               viewBox="0 0 120 70"
-              className="absolute inset-2 h-[calc(100%-1rem)] w-[calc(100%-1rem)]"
-              preserveAspectRatio="xMidYMid meet"
+              className="absolute inset-0 h-full w-full"
+              preserveAspectRatio="xMidYMid slice"
               shapeRendering="geometricPrecision"
             >
               <defs>
