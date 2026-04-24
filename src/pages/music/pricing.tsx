@@ -126,23 +126,23 @@ export default function MusicPricingPage() {
           Music Creator Plans
         </h1>
         <p className="mt-2 text-white/70">
-          Select a plan to activate creator commerce and listing access.
+          Select a plan to activate creator commerce and unlock creator-ready
+          access.
         </p>
 
         <div className="mt-4 rounded-xl border border-white/10 bg-white/5 p-3 text-sm text-white/75">
-          <p className="font-bold text-[#D4AF37]">Before you pay</p>
-          <p className="mt-1">1) Creator profile must be onboarded</p>
-          <p>2) Payout setup should be completed in Stripe</p>
-          <p>3) Plan activation unlocks creator-ready state</p>
+          <p className="font-bold text-[#D4AF37]">Access behavior</p>
+          <p className="mt-1">Locked: finish onboarding and payouts first.</p>
+          <p>Unlocked: plan activation takes you to creator-ready access.</p>
+          <p className="mt-1">You are now in the activation step.</p>
         </div>
 
         {error ? <p className="mt-3 text-sm text-red-400">{error}</p> : null}
 
         {readiness && !readiness.payoutReady ? (
           <div className="mt-4 rounded-xl border border-yellow-400/30 bg-yellow-500/10 p-3 text-sm text-yellow-200">
-            Payout/connect setup is not fully ready yet. You can choose a plan
-            now, then finish any remaining payout requirements in music
-            activation.
+            Payout setup is still incomplete. Complete that step for fully
+            unlocked creator operations after plan activation.
           </div>
         ) : null}
 

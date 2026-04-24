@@ -209,22 +209,18 @@ export default function BlackCardLandingPage() {
           >
             <div className="rounded-2xl border border-white/10 bg-[#0C0C0C] p-5">
               <h3 className="text-lg font-bold text-[#F1D57A]">
-                Digital card experience
+                Access behavior
               </h3>
               <ul className="mt-3 space-y-2 text-sm text-[#D8D8D8]">
                 <li>1. Select your tier and continue to secure checkout.</li>
+                <li>2. Locked state: member-only rewards stay unavailable.</li>
                 <li>
-                  2. Membership activates in your account immediately after
-                  successful payment.
+                  3. Unlocked state: your dashboard card, rewards, and
+                  redemption actions become available immediately.
                 </li>
                 <li>
-                  3. Your digital Black Card identity appears in
-                  /dashboard/black-card with status, tier, and verification
-                  data.
-                </li>
-                <li>
-                  4. Use digital membership benefits instantly while optional
-                  physical personalization is handled separately.
+                  4. Optional physical personalization is separate and never
+                  blocks digital membership use.
                 </li>
               </ul>
             </div>

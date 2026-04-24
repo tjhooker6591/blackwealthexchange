@@ -185,9 +185,16 @@ export default function BlackCardDashboardPage() {
             <>
               {!membershipActive ? (
                 <section className="rounded-2xl border border-yellow-500/30 bg-yellow-500/10 p-6">
-                  <h2 className="text-xl font-bold text-yellow-200">Membership inactive</h2>
+                  <h2 className="text-xl font-bold text-yellow-200">
+                    Membership inactive
+                  </h2>
                   <p className="mt-2 text-sm text-white/80">
-                    Black Card member-only rewards and redemptions are locked until membership is active.
+                    Black Card member-only rewards and redemptions are locked
+                    until membership is active.
+                  </p>
+                  <p className="mt-1 text-xs text-white/70">
+                    Next step: choose a tier, activate membership, then return
+                    here for immediate digital access.
                   </p>
                   <div className="mt-4">
                     <Link
@@ -320,7 +327,11 @@ export default function BlackCardDashboardPage() {
                   <div className="mt-3 flex flex-wrap gap-2">
                     <button
                       onClick={() => redeemReward("ad_credit")}
-                      disabled={!membershipActive || redeemLoading || !entitlements.ad_credit}
+                      disabled={
+                        !membershipActive ||
+                        redeemLoading ||
+                        !entitlements.ad_credit
+                      }
                       className="rounded-lg border border-yellow-500/30 px-3 py-1.5 text-xs text-yellow-200 disabled:opacity-60"
                       title={
                         entitlements.ad_credit ? "" : "Requires Signature tier"
@@ -342,7 +353,9 @@ export default function BlackCardDashboardPage() {
                     <button
                       onClick={() => redeemReward("event_access")}
                       disabled={
-                        !membershipActive || redeemLoading || !entitlements.event_access
+                        !membershipActive ||
+                        redeemLoading ||
+                        !entitlements.event_access
                       }
                       className="rounded-lg border border-yellow-500/30 px-3 py-1.5 text-xs text-yellow-200 disabled:opacity-60"
                     >

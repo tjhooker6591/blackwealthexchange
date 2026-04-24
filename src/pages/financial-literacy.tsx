@@ -249,7 +249,8 @@ const FinancialLiteracy = () => {
 
             {router.query.locked ? (
               <div className="mt-6 inline-flex rounded-xl border border-yellow-500/30 bg-yellow-500/10 px-4 py-2 text-sm text-yellow-100">
-                This premium course area is locked until your course entitlement is active.
+                This premium course area is locked until your course entitlement
+                is active.
               </div>
             ) : null}
 
@@ -330,6 +331,27 @@ const FinancialLiteracy = () => {
                     </span>{" "}
                     One-time payment. Your access stays active forever.
                   </p>
+                  <p className="mt-2 text-xs text-gray-400">
+                    Locked state: curriculum and outcomes are visible here.
+                    Unlocked state: your full course area opens with direct
+                    module access.
+                  </p>
+                </div>
+              </section>
+
+              <section className="bg-gray-900/70 border border-gray-800 p-8 rounded-2xl shadow-lg">
+                <h2 className="text-2xl font-bold text-gold mb-3">
+                  Why this matters
+                </h2>
+                <p className="text-gray-300">
+                  Wealth outcomes come from repeatable habits, clear systems,
+                  and ownership decisions. This curriculum moves from financial
+                  stability to long-term leverage.
+                </p>
+                <div className="mt-4 grid md:grid-cols-3 gap-3 text-sm text-gray-300">
+                  <CardLine>Phase 1: Stabilize cash flow and eliminate chaos</CardLine>
+                  <CardLine>Phase 2: Build credit and invest with discipline</CardLine>
+                  <CardLine>Phase 3: Protect assets and grow legacy systems</CardLine>
                 </div>
               </section>
 
