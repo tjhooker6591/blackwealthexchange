@@ -257,6 +257,18 @@ export default function BlackCardJoinPage() {
                 Digital membership is already active. Submit print approval only
                 if you want physical card production.
               </p>
+              <p className="mt-1 text-xs text-white/65">
+                Next action: open your Black Card dashboard for live rewards,
+                tier state, and redemption actions.
+              </p>
+              <div className="mt-3">
+                <Link
+                  href="/dashboard/black-card"
+                  className="rounded-lg border border-yellow-500/40 px-3 py-2 text-xs text-yellow-200"
+                >
+                  Open Black Card Dashboard
+                </Link>
+              </div>
 
               <label className="mt-4 block text-sm text-white/80">
                 Name to print on card

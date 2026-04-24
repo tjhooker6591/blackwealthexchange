@@ -6,6 +6,16 @@ const COURSE_DATA = {
   slug: "personal-finance-101",
   name: "Personal Finance 101: Mastering Budgeting, Saving, and Money Management",
   price: 29,
+  modules: [
+    "Breaking Financial Myths",
+    "Budgeting for Real Life",
+    "Credit Repair & Power",
+    "Building Wealth with Investments",
+    "Side Hustles & Business Basics",
+    "Debt Management & Elimination",
+    "Retirement Planning",
+    "Building Legacy & Asset Protection",
+  ],
 };
 
 type AccessState = {
@@ -76,9 +86,12 @@ const CourseEnrollmentPage: React.FC = () => {
           : "";
 
       if (sessionId) {
-        await fetch(`/api/courses/verify-session?session_id=${encodeURIComponent(sessionId)}`, {
-          credentials: "include",
-        }).catch(() => null);
+        await fetch(
+          `/api/courses/verify-session?session_id=${encodeURIComponent(sessionId)}`,
+          {
+            credentials: "include",
+          },
+        ).catch(() => null);
 
         router.replace("/course-enrollment", undefined, { shallow: true });
       }
@@ -118,8 +131,14 @@ const CourseEnrollmentPage: React.FC = () => {
       <div className="max-w-4xl mx-auto bg-gray-800 p-6 rounded-lg shadow-lg">
         <header className="mb-6">
           <h1 className="text-3xl font-bold text-gold">{COURSE_DATA.name}</h1>
-          <p className="mt-2 text-gray-300">One-time fee: ${COURSE_DATA.price}</p>
+          <p className="mt-2 text-gray-300">
+            One-time fee: ${COURSE_DATA.price}
+          </p>
           <p className="mt-2 text-sm text-gray-400">{state.statusMessage}</p>
+          <p className="mt-1 text-xs text-gray-500">
+            Locked state explains why access is blocked. Unlocked state sends you
+            directly to course modules.
+          </p>
         </header>
 
         <section className="mt-6 rounded-lg border border-gray-700 p-4 bg-gray-900/60">
@@ -160,7 +179,8 @@ const CourseEnrollmentPage: React.FC = () => {
                   : `Buy & Enroll for $${COURSE_DATA.price}`}
               </button>
               <p className="text-xs text-gray-400">
-                You will be granted access after successful checkout verification.
+                You will be granted access after successful checkout
+                verification.
               </p>
             </div>
           )}
@@ -170,8 +190,33 @@ const CourseEnrollmentPage: React.FC = () => {
           ) : null}
         </section>
 
+        <section className="mt-6 rounded-lg border border-gray-700 bg-gray-900/60 p-4">
+          <h2 className="text-lg font-semibold text-gold">What you unlock</h2>
+          <p className="mt-1 text-sm text-gray-300">
+            8-module premium path with practical action steps and progression.
+          </p>
+          <ul className="mt-3 grid gap-2 text-sm text-gray-300 sm:grid-cols-2">
+            {COURSE_DATA.modules.map((moduleTitle, index) => (
+              <li key={moduleTitle} className="rounded bg-black/30 px-2 py-1">
+                {index + 1}. {moduleTitle}
+              </li>
+            ))}
+          </ul>
+          <p className="mt-3 text-xs text-gray-400">
+            Next action: {state.hasAccess
+              ? "enter modules and begin Module 1"
+              : state.isLoggedIn
+                ? "complete enrollment to unlock modules"
+                : "log in or sign up to start enrollment"}
+            .
+          </p>
+        </section>
+
         <footer className="mt-8 text-sm text-gray-300">
-          <Link href="/financial-literacy" className="text-gold hover:underline">
+          <Link
+            href="/financial-literacy"
+            className="text-gold hover:underline"
+          >
             Back to Financial Literacy Overview
           </Link>
         </footer>

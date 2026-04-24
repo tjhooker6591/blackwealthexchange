@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import useAuth from "@/hooks/useAuth";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
@@ -18,23 +18,24 @@ export default function MusicPricingPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
 
-  const trackMusicPricingEvent = (
-    eventType: string,
-    extras: Record<string, unknown> = {},
-  ) => {
-    emitFlowEvent({
-      eventType,
-      pageRoute: "/music/pricing",
-      section: "music_pricing",
-      isAuthenticated: Boolean(user),
-      accountType: user?.accountType || "anonymous",
-      ...extras,
-    });
-  };
+  const trackMusicPricingEvent = useCallback(
+    (eventType: string, extras: Record<string, unknown> = {}) => {
+      emitFlowEvent({
+        eventType,
+        pageRoute: "/music/pricing",
+        section: "music_pricing",
+        isAuthenticated: Boolean(user),
+        accountType: user?.accountType || "anonymous",
+        ...extras,
+      });
+    },
+    [user],
+  );
   const [busy, setBusy] = useState<string>("");
   const [error, setError] = useState("");
   const [gateLoading, setGateLoading] = useState(true);
   const [readiness, setReadiness] = useState<Readiness | null>(null);
+  const [lockedReason, setLockedReason] = useState("");
 
   useEffect(() => {
     if (!loading) {
@@ -60,23 +61,28 @@ export default function MusicPricingPage() {
         setReadiness(data);
 
         if (!data?.sellerExists || data?.onboardingStatus !== "onboarded") {
-          router.replace("/music/join");
+          setLockedReason(
+            "Creator onboarding is not complete. Finish onboarding to unlock plan activation.",
+          );
           return;
         }
 
         if (data?.musicCreatorReady || data?.creatorReady) {
-          // Pricing lane is for activation. If already fully creator-ready, send to dashboard.
-          router.replace("/creator/dashboard");
+          setLockedReason(
+            "Creator access is already active. Pricing is only for activation.",
+          );
           return;
         }
       } catch {
-        router.replace("/music/join");
+        setLockedReason(
+          "Unable to verify creator readiness right now. Re-enter onboarding to refresh access state.",
+        );
         return;
       } finally {
         setGateLoading(false);
       }
     })();
-  }, [loading, router, user]);
+  }, [loading, router, trackMusicPricingEvent, user]);
 
   async function start(planId: "music-creator-starter" | "music-creator-pro") {
     if (!user) {
@@ -118,6 +124,45 @@ export default function MusicPricingPage() {
     return (
       <main className="min-h-screen bg-black p-8 text-white">Loading…</main>
     );
+
+  if (lockedReason) {
+    return (
+      <main className="min-h-screen bg-black p-6 text-white">
+        <div className="mx-auto max-w-3xl rounded-2xl border border-yellow-400/30 bg-yellow-500/10 p-6">
+          <h1 className="text-2xl font-black text-[#D4AF37]">Plan Activation Locked</h1>
+          <p className="mt-2 text-white/80">Reason: {lockedReason}</p>
+          <p className="mt-2 text-sm text-white/70">
+            Next action: {readiness?.musicCreatorReady || readiness?.creatorReady
+              ? "Open your creator dashboard."
+              : "Go to Music Join, complete onboarding and readiness, then return here."}
+          </p>
+          <div className="mt-4 flex flex-wrap gap-3">
+            {readiness?.musicCreatorReady || readiness?.creatorReady ? (
+              <button
+                onClick={() => router.push("/creator/dashboard")}
+                className="rounded-xl bg-[#D4AF37] px-4 py-2 font-bold text-black"
+              >
+                Open Creator Dashboard
+              </button>
+            ) : (
+              <button
+                onClick={() => router.push("/music/join")}
+                className="rounded-xl bg-[#D4AF37] px-4 py-2 font-bold text-black"
+              >
+                Complete Music Join
+              </button>
+            )}
+            <button
+              onClick={() => router.push("/music")}
+              className="rounded-xl border border-white/20 px-4 py-2 font-bold text-white"
+            >
+              Back to Music Landing
+            </button>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-black p-6 text-white">

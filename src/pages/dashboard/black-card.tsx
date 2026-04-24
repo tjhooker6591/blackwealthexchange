@@ -367,6 +367,27 @@ export default function BlackCardDashboardPage() {
                       {redeemMessage}
                     </p>
                   ) : null}
+                  {!membershipActive ? (
+                    <p className="mt-2 text-xs text-white/65">
+                      Locked reason: membership is inactive. Next action:
+                      activate membership to unlock redemptions.
+                    </p>
+                  ) : null}
+                  {membershipActive && !entitlements.ad_credit ? (
+                    <p className="mt-1 text-xs text-white/65">
+                      Ad Credit locked. Next action: Signature tier or higher.
+                    </p>
+                  ) : null}
+                  {membershipActive && !entitlements.marketplace_fee_credit ? (
+                    <p className="mt-1 text-xs text-white/65">
+                      Fee Credit locked. Next action: Signature tier or higher.
+                    </p>
+                  ) : null}
+                  {membershipActive && !entitlements.event_access ? (
+                    <p className="mt-1 text-xs text-white/65">
+                      Event Access locked. Next action: Elite tier required.
+                    </p>
+                  ) : null}
                   {data.redemptions && data.redemptions.length > 0 ? (
                     <ul className="mt-3 space-y-2 text-sm">
                       {data.redemptions.slice(0, 5).map((item) => (
