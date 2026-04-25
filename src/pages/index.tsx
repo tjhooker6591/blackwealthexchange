@@ -354,7 +354,7 @@ const EconomicImpactSimulator = () => {
           </p>
 
           <div
-            className="mt-3 text-[2.25rem] font-black tracking-tight text-[#D4AF37] tabular-nums sm:text-5xl"
+            className="mt-3 text-[1.95rem] font-black tracking-tight text-[#D4AF37] tabular-nums sm:text-[2.5rem] lg:text-[2.8rem]"
             data-counter-value={Math.floor(currentValue)}
           >
             {formatCurrency(Math.floor(currentValue))}
@@ -440,7 +440,7 @@ const EconomicImpactSimulator = () => {
           </div>
 
           <div
-            className="relative h-[clamp(220px,42vw,380px)] overflow-hidden rounded-xl border border-cyan-300/18 bg-[#050d1a]/95"
+            className="relative h-[clamp(220px,28vw,320px)] overflow-hidden rounded-xl border border-cyan-300/18 bg-[#050d1a]/95"
             data-progress={progress.toFixed(4)}
           >
             <div className="pointer-events-none absolute left-2 top-2 z-10 text-[10px] text-white/62 sm:text-xs">
@@ -574,6 +574,8 @@ const EconomicImpactSimulator = () => {
                 fill="none"
                 stroke="url(#flowGlow)"
                 strokeWidth={Math.max(CHART_SYSTEM.scale.primaryLine, 1.45)}
+                pathLength={1}
+                strokeDasharray={`${Math.max(progress, 0.0001)} 1`}
                 strokeLinecap="round"
                 vectorEffect="non-scaling-stroke"
                 style={{
@@ -582,6 +584,7 @@ const EconomicImpactSimulator = () => {
               />
 
               {([0, 0.2, 0.38, 0.56, 0.72, 0.86, 1] as const).map((k) => {
+                if (k > progress + 0.001) return null;
                 const x =
                   Math.pow(1 - k, 3) * 12 +
                   3 * Math.pow(1 - k, 2) * k * 30 +
