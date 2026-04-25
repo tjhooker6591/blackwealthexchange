@@ -305,41 +305,41 @@ const EconomicImpactSimulator = () => {
 
   const currentValue = baseline + (projected - baseline) * progress;
   return (
-    <section className="relative overflow-hidden py-2 sm:py-4">
+    <section className="relative overflow-hidden py-1.5 sm:py-2">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_8%_20%,rgba(96,190,255,0.12),transparent_34%),radial-gradient(circle_at_80%_84%,rgba(212,175,55,0.1),transparent_45%)]" />
 
-      <div className="relative grid max-w-full gap-4 overflow-hidden rounded-2xl border border-[#D4AF37]/55 bg-[#04070f]/98 p-4 shadow-[0_22px_56px_rgba(0,0,0,0.62)] sm:p-6">
+      <div className="relative grid max-w-full gap-2.5 overflow-hidden rounded-2xl border border-[#D4AF37]/55 bg-[#04070f]/98 p-3 shadow-[0_22px_56px_rgba(0,0,0,0.62)] sm:gap-3 sm:p-4 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)] lg:items-start lg:p-5">
         <div className="min-w-0">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-[#0a101c] px-4 py-1.5 text-[11px] font-bold tracking-[0.08em] text-white/90">
-            <span className="h-2 w-2 rounded-full bg-[#D4AF37]" />
+          <div className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-[#0a101c] px-3 py-1 text-[10px] font-bold tracking-[0.08em] text-white/90 sm:text-[11px]">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#D4AF37]" />
             BUYING POWER (ANNUAL ESTIMATE)
           </div>
 
-          <h2 className="mt-3 text-lg font-extrabold tracking-[0.01em] text-white sm:text-3xl">
+          <h2 className="mt-2 text-base font-extrabold tracking-[0.01em] text-white sm:text-2xl lg:text-[1.8rem]">
             African American Buying Power{" "}
             <span className="text-[#D4AF37]">(2026)</span>
           </h2>
 
-          <p className="mt-2 text-sm text-white/82 sm:text-base">
+          <p className="mt-1.5 text-xs text-white/82 sm:text-sm lg:text-[15px]">
             Spending scale is massive, leakage remains high, and recapture
             inside BWE creates outsized retained value.
           </p>
 
           <div
-            className="mt-3 text-[1.95rem] font-black tracking-tight text-[#D4AF37] tabular-nums sm:text-[2.5rem] lg:text-[2.8rem]"
+            className="mt-2 text-[1.7rem] font-black tracking-tight text-[#D4AF37] tabular-nums sm:text-[2.15rem] lg:text-[2.35rem]"
             data-counter-value={Math.floor(currentValue)}
           >
             {formatCurrency(Math.floor(currentValue))}
           </div>
-          <p className="text-xs uppercase tracking-[0.08em] text-white/65 sm:text-sm">
+          <p className="text-[10px] uppercase tracking-[0.08em] text-white/65 sm:text-xs">
             ANNUAL BUYING POWER
           </p>
-          <p className="mt-1 text-[10px] text-cyan-300/80 sm:text-[11px]">
+          <p className="mt-0.5 text-[10px] text-cyan-300/80 sm:text-[11px]">
             2010 → 2026
           </p>
 
-          <div className="mt-3 grid grid-cols-2 gap-2 text-[11px] sm:gap-3 sm:text-sm">
-            <div className="rounded-xl border border-white/15 bg-[#0a101a] px-3.5 py-3">
+          <div className="mt-2 grid grid-cols-2 gap-2 text-[10px] sm:gap-2.5 sm:text-xs lg:text-[13px]">
+            <div className="rounded-xl border border-white/15 bg-[#0a101a] px-3 py-2.5">
               <p className="text-white/60">Baseline 2010</p>
               <p className="font-semibold text-white">
                 {formatCurrency(baseline)}
@@ -351,7 +351,7 @@ const EconomicImpactSimulator = () => {
               </p>
             </div>
 
-            <div className="rounded-xl border border-white/15 bg-[#0a101a] px-3.5 py-3">
+            <div className="rounded-xl border border-white/15 bg-[#0a101a] px-3 py-2.5">
               <p className="text-white/60">Daily flow</p>
               <p className="font-semibold text-white">
                 {formatCurrency(perDay)} / day
@@ -365,75 +365,58 @@ const EconomicImpactSimulator = () => {
           </div>
         </div>
 
-        <div>
-          <div className="rounded-xl border border-[#D4AF37]/50 bg-[#151309]/72 px-4 py-3 sm:px-5 sm:py-4">
-            <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 sm:gap-3">
-              <div className="flex min-w-0 items-center gap-1.5 sm:gap-2.5">
-                <div className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-[#D4AF37]/50 text-[#D4AF37] sm:h-8 sm:w-8">
-                  <svg
-                    viewBox="0 0 24 24"
-                    className="h-4 w-4"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <circle cx="12" cy="12" r="8" />
-                    <circle cx="12" cy="12" r="4" />
-                    <circle cx="12" cy="12" r="1.2" fill="currentColor" />
-                  </svg>
-                </div>
-                <div className="min-w-0">
-                  <p className="text-xs text-white/85">
-                    <span className="mr-1 inline-block h-1.5 w-1.5 rounded-full bg-[#D4AF37]" />
-                    5% recaptured =
-                  </p>
-                  <p className="break-words text-[12px] font-extrabold leading-tight tracking-tight text-[#D4AF37] sm:text-xl">
-                    {formatCurrency(recaptureValue)}
-                  </p>
-                  <p className="text-[11px] text-white/75">
-                    retained inside BWE
-                  </p>
-                </div>
+        <div className="min-w-0">
+          <div className="rounded-xl border border-[#D4AF37]/50 bg-[#151309]/72 px-3 py-2.5 sm:px-4 sm:py-3">
+            <div className="grid grid-cols-1 items-center gap-2 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] sm:gap-3">
+              <div className="min-w-0">
+                <p className="text-[11px] text-white/85 sm:text-xs">
+                  <span className="mr-1 inline-block h-1.5 w-1.5 rounded-full bg-[#D4AF37]" />
+                  5% recaptured =
+                </p>
+                <p className="break-words text-[12px] font-extrabold leading-tight tracking-tight text-[#D4AF37] sm:text-lg">
+                  {formatCurrency(recaptureValue)}
+                </p>
+                <p className="text-[10px] text-white/75 sm:text-[11px]">
+                  retained inside BWE
+                </p>
               </div>
 
-              <div className="mx-auto h-12 w-px bg-white/25" />
+              <div className="h-px w-full bg-white/25 sm:h-12 sm:w-px" />
 
-              <div className="flex min-w-0 items-center gap-1.5 sm:gap-2.5">
-                <div className="min-w-0">
-                  <p className="text-xs text-white/85">
-                    <span className="mr-1 inline-block h-1.5 w-1.5 rounded-full bg-pink-400" />
-                    95% leakage =
-                  </p>
-                  <p className="break-words text-[12px] font-extrabold leading-tight tracking-tight text-pink-300 sm:text-xl">
-                    {formatCurrency(leakageValue)}
-                  </p>
-                  <p className="text-[11px] text-white/75">outside flow</p>
-                </div>
+              <div className="min-w-0">
+                <p className="text-[11px] text-white/85 sm:text-xs">
+                  <span className="mr-1 inline-block h-1.5 w-1.5 rounded-full bg-pink-400" />
+                  95% leakage =
+                </p>
+                <p className="break-words text-[12px] font-extrabold leading-tight tracking-tight text-pink-300 sm:text-lg">
+                  {formatCurrency(leakageValue)}
+                </p>
+                <p className="text-[10px] text-white/75 sm:text-[11px]">outside flow</p>
               </div>
             </div>
           </div>
 
-          <div className="mt-3 grid w-full gap-2.5">
+          <div className="mt-2 grid w-full gap-2">
             <Link
               href="/1.8trillionimpact"
-              className="group inline-flex w-full items-center justify-between gap-3 rounded-xl border border-[#D4AF37]/50 bg-[#D4AF37]/10 px-4 py-3 shadow-sm transition hover:border-[#D4AF37]/80"
+              className="group inline-flex w-full items-center justify-between gap-2 rounded-xl border border-[#D4AF37]/50 bg-[#D4AF37]/10 px-3 py-2.5 shadow-sm transition hover:border-[#D4AF37]/80"
             >
-              <span className="text-[11px] font-extrabold tracking-wide text-[#D4AF37] sm:text-sm">
+              <span className="text-[10px] font-extrabold tracking-wide text-[#D4AF37] sm:text-sm">
                 Knowledge is Power
               </span>
-              <span className="min-w-0 whitespace-normal text-right text-[10px] leading-tight text-white/75 sm:text-sm">
+              <span className="min-w-0 whitespace-normal text-right text-[10px] leading-tight text-white/75 sm:text-xs lg:text-sm">
                 Where the money goes <span className="text-[#D4AF37]">→</span>
               </span>
             </Link>
 
             <Link
               href="/economic-freedom"
-              className="group inline-flex w-full items-center justify-between gap-3 rounded-xl border border-pink-400/45 bg-pink-400/10 px-4 py-3 transition hover:border-pink-300/70"
+              className="group inline-flex w-full items-center justify-between gap-2 rounded-xl border border-pink-400/45 bg-pink-400/10 px-3 py-2.5 transition hover:border-pink-300/70"
             >
-              <span className="text-[11px] font-extrabold tracking-wide text-pink-300 sm:text-sm">
+              <span className="text-[10px] font-extrabold tracking-wide text-pink-300 sm:text-sm">
                 Economic Slavery
               </span>
-              <span className="min-w-0 whitespace-normal text-right text-[10px] leading-tight text-white/75 sm:text-sm">
+              <span className="min-w-0 whitespace-normal text-right text-[10px] leading-tight text-white/75 sm:text-xs lg:text-sm">
                 Learn more <span className="text-pink-300">→</span>
               </span>
             </Link>
