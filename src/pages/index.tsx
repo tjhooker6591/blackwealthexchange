@@ -612,10 +612,7 @@ const EconomicImpactSimulator = () => {
                 opacity={0.12}
               />
             </svg>
-            <div className="absolute left-2 top-2 rounded-md border border-cyan-300/20 bg-[#07111d]/85 px-2 py-1 text-[9px] text-cyan-100/78 sm:text-[10px]">
-              Black Spending Power → Outside Economy Flow
-            </div>
-            <div className="absolute bottom-1.5 left-2 right-2 grid grid-cols-3 text-center text-[9px] font-medium tracking-[0.04em] text-white/78 sm:text-[10px]">
+            <div className="absolute bottom-1.5 left-2 right-2 grid grid-cols-3 text-center text-[10px] font-medium tracking-[0.04em] text-white/82 sm:text-[11px]">
               <span className="rounded-sm bg-black/25 py-0.5">Baseline</span>
               <span className="rounded-sm bg-black/25 py-0.5">Current</span>
               <span className="rounded-sm bg-black/25 py-0.5">Projected</span>
@@ -624,11 +621,13 @@ const EconomicImpactSimulator = () => {
         </div>
 
         <div className="lg:col-span-2">
-          <div className="rounded-lg border border-[#D4AF37]/35 bg-[#D4AF37]/8 px-3 py-1.5 text-center text-[10px] text-white/86 sm:py-2 sm:text-[11px]">
-            <span className="font-semibold text-[#D4AF37]">
-              5% recaptured = {formatCurrency(recaptureValue)} retained inside
-              BWE. 95% leakage = {formatCurrency(leakageValue)} outside flow.
-            </span>
+          <div className="rounded-lg border border-[#D4AF37]/35 bg-[#D4AF37]/8 px-3 py-2 text-center text-xs leading-relaxed text-white/90 sm:py-2.5 sm:text-sm">
+            <p className="font-semibold text-[#D4AF37]">
+              5% recaptured = {formatCurrency(recaptureValue)} retained inside BWE.
+            </p>
+            <p className="font-semibold text-[#D4AF37]">
+              95% leakage = {formatCurrency(leakageValue)} outside flow.
+            </p>
           </div>
 
           <div className="mt-1.5 grid w-full gap-2 sm:mt-2 sm:grid-cols-2 sm:gap-3">
