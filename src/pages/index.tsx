@@ -353,69 +353,100 @@ const EconomicImpactSimulator = () => {
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_8%_20%,rgba(96,190,255,0.12),transparent_34%),radial-gradient(circle_at_80%_84%,rgba(212,175,55,0.1),transparent_45%)]" />
 
       <div
-        className={`relative grid gap-3 rounded-2xl border border-[#D4AF37]/45 bg-[#04070f]/96 p-3 shadow-[0_18px_46px_rgba(0,0,0,0.55)] sm:p-4 ${CHART_SYSTEM.layoutCols} lg:items-stretch`}
+        className="relative grid gap-4 rounded-2xl border border-[#D4AF37]/55 bg-[#04070f]/98 p-4 shadow-[0_22px_56px_rgba(0,0,0,0.62)] sm:p-6"
       >
-        <div className="min-w-0 lg:pr-2">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-[#0a101c] px-3 py-1 text-[10px] font-bold tracking-[0.08em] text-white/85">
+        <div className="min-w-0">
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-[#0a101c] px-4 py-1.5 text-[11px] font-bold tracking-[0.08em] text-white/90">
             <span className="h-2 w-2 rounded-full bg-[#D4AF37]" />
             BUYING POWER (ANNUAL ESTIMATE)
           </div>
 
-          <h2 className="mt-2 text-sm font-extrabold tracking-[0.01em] text-white sm:text-xl">
-            African American Buying Power <span className="text-[#D4AF37]">(2026)</span>
+          <h2 className="mt-3 text-lg font-extrabold tracking-[0.01em] text-white sm:text-3xl">
+            African American Buying Power{" "}
+            <span className="text-[#D4AF37]">(2026)</span>
           </h2>
 
-          <p className="mt-1.5 text-xs text-white/78 sm:text-sm">
+          <p className="mt-2 text-sm text-white/82 sm:text-base">
             Spending scale is massive, leakage remains high, and recapture
             inside BWE creates outsized retained value.
           </p>
 
           <div
-            className="mt-2 text-[1.85rem] font-black tracking-tight text-[#D4AF37] tabular-nums sm:text-4xl"
+            className="mt-3 text-[2.25rem] font-black tracking-tight text-[#D4AF37] tabular-nums sm:text-5xl"
             data-counter-value={Math.floor(currentValue)}
           >
-            {formatCurrency(Math.floor(currentValue))}
+            {formatCurrency(projected)}
           </div>
-          <p className="text-[10px] uppercase tracking-[0.08em] text-white/58 sm:text-[11px]">
+          <p className="text-xs uppercase tracking-[0.08em] text-white/65 sm:text-sm">
             ANNUAL BUYING POWER
           </p>
-          <p className="mt-1 text-[10px] text-cyan-300/80 sm:text-[11px]">2010 → 2026</p>
+          <p className="mt-1 text-[10px] text-cyan-300/80 sm:text-[11px]">
+            2010 → 2026
+          </p>
 
-          <div className="mt-2 grid grid-cols-1 gap-2 text-[10px] sm:grid-cols-2 sm:text-xs">
-            <div className="rounded-xl border border-white/12 bg-[#0a101a] px-3 py-2">
-              <div className="mb-1.5 inline-flex h-5 w-5 items-center justify-center rounded-full border border-pink-300/45 text-pink-200">
-                <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M4 16l5-5 3 3 8-8" strokeLinecap="round" strokeLinejoin="round" />
+          <div className="mt-3 grid grid-cols-1 gap-3 text-xs sm:grid-cols-2 sm:text-sm">
+            <div className="rounded-xl border border-white/15 bg-[#0a101a] px-3.5 py-3">
+              <div className="mb-2 inline-flex h-7 w-7 items-center justify-center rounded-full border border-pink-300/45 text-pink-200">
+                <svg
+                  viewBox="0 0 24 24"
+                  className="h-4 w-4"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path
+                    d="M4 16l5-5 3 3 8-8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
                 </svg>
               </div>
               <p className="text-white/60">Baseline 2010</p>
-              <p className="font-semibold text-white">{formatCurrency(baseline)}</p>
+              <p className="font-semibold text-white">
+                {formatCurrency(baseline)}
+              </p>
               <div className="my-1 h-px bg-white/10" />
               <p className="text-white/60">Projected 2026</p>
-              <p className="font-semibold text-white">{formatCurrency(projected)}</p>
+              <p className="font-semibold text-white">
+                {formatCurrency(projected)}
+              </p>
             </div>
 
-            <div className="rounded-xl border border-white/12 bg-[#0a101a] px-3 py-2">
-              <div className="mb-1.5 inline-flex h-5 w-5 items-center justify-center rounded-full border border-cyan-300/45 text-cyan-200">
-                <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M12 4v16M16 8c0-1.8-1.8-3-4-3s-4 1.2-4 3 1.2 2.4 4 3 4 1.2 4 3-1.8 3-4 3-4-1.2-4-3" strokeLinecap="round" strokeLinejoin="round" />
+            <div className="rounded-xl border border-white/15 bg-[#0a101a] px-3.5 py-3">
+              <div className="mb-2 inline-flex h-7 w-7 items-center justify-center rounded-full border border-cyan-300/45 text-cyan-200">
+                <svg
+                  viewBox="0 0 24 24"
+                  className="h-4 w-4"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path
+                    d="M12 4v16M16 8c0-1.8-1.8-3-4-3s-4 1.2-4 3 1.2 2.4 4 3 4 1.2 4 3-1.8 3-4 3-4-1.2-4-3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
                 </svg>
               </div>
               <p className="text-white/60">Daily flow</p>
-              <p className="font-semibold text-white">{formatCurrency(perDay)} / day</p>
+              <p className="font-semibold text-white">
+                {formatCurrency(perDay)} / day
+              </p>
               <div className="my-1 h-px bg-white/10" />
               <p className="text-white/60">Second-level flow</p>
-              <p className="font-semibold text-white">{formatCurrency(perSecond)} / sec</p>
+              <p className="font-semibold text-white">
+                {formatCurrency(perSecond)} / sec
+              </p>
             </div>
           </div>
         </div>
 
         <div className="relative min-w-0">
-          <div className="mb-2 text-center text-xs font-semibold tracking-wide text-white/78 sm:text-sm">
+          <div className="mb-2.5 text-center text-sm font-semibold tracking-wide text-white/82 sm:text-base">
             Spending Flow Progress
           </div>
 
-          <div className="mb-2 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-[10px] sm:text-[11px]">
+          <div className="mb-2.5 flex flex-wrap items-center justify-center gap-x-5 gap-y-1.5 text-xs sm:text-sm">
             <span className="inline-flex items-center gap-1.5 text-cyan-200/90">
               <span className="h-0.5 w-4 rounded bg-cyan-300" />
               Black Spending Power (Outside Economy Flow)
@@ -427,11 +458,13 @@ const EconomicImpactSimulator = () => {
           </div>
 
           <div
-            className="relative h-[210px] overflow-hidden rounded-xl border border-cyan-300/15 bg-[#050d1a]/95 sm:h-[250px] lg:h-[272px]"
+            className="relative h-[280px] overflow-hidden rounded-xl border border-cyan-300/18 bg-[#050d1a]/95 sm:h-[360px] lg:h-[420px]"
             data-progress={progress.toFixed(4)}
           >
-            <div className="pointer-events-none absolute left-1.5 top-2 z-10 text-[9px] text-white/58 sm:text-[10px]">USD (Trillions)</div>
-            <div className="pointer-events-none absolute left-1.5 top-6 z-10 grid gap-[20px] text-[8.5px] text-white/55 sm:gap-[24px] sm:text-[9.5px]">
+            <div className="pointer-events-none absolute left-2 top-2 z-10 text-[10px] text-white/62 sm:text-xs">
+              USD (Trillions)
+            </div>
+            <div className="pointer-events-none absolute left-2 top-7 z-10 grid gap-[24px] text-[9px] text-white/62 sm:gap-[32px] sm:text-[11px]">
               <span>2.5T</span>
               <span>2.0T</span>
               <span>1.5T</span>
@@ -452,7 +485,13 @@ const EconomicImpactSimulator = () => {
                   <stop offset="48%" stopColor="rgba(255,106,183,0.72)" />
                   <stop offset="100%" stopColor="rgba(197,63,143,0.38)" />
                 </linearGradient>
-                <linearGradient id="recaptureFillGold" x1="0" y1="0" x2="0" y2="1">
+                <linearGradient
+                  id="recaptureFillGold"
+                  x1="0"
+                  y1="0"
+                  x2="0"
+                  y2="1"
+                >
                   <stop offset="0%" stopColor="rgba(245,214,112,0.98)" />
                   <stop offset="100%" stopColor="rgba(212,175,55,0.9)" />
                 </linearGradient>
@@ -480,26 +519,87 @@ const EconomicImpactSimulator = () => {
                 />
               ))}
 
-              <line x1="67" y1="10" x2="67" y2="66" stroke="rgba(157,184,213,0.2)" strokeDasharray="1.6 2.1" strokeWidth="0.35" vectorEffect="non-scaling-stroke" />
-              <line x1="98" y1="10" x2="98" y2="66" stroke="rgba(157,184,213,0.2)" strokeDasharray="1.6 2.1" strokeWidth="0.35" vectorEffect="non-scaling-stroke" />
+              <line
+                x1="67"
+                y1="10"
+                x2="67"
+                y2="66"
+                stroke="rgba(157,184,213,0.2)"
+                strokeDasharray="1.6 2.1"
+                strokeWidth="0.35"
+                vectorEffect="non-scaling-stroke"
+              />
+              <line
+                x1="98"
+                y1="10"
+                x2="98"
+                y2="66"
+                stroke="rgba(157,184,213,0.2)"
+                strokeDasharray="1.6 2.1"
+                strokeWidth="0.35"
+                vectorEffect="non-scaling-stroke"
+              />
 
               {bars.map((h, i) => {
                 const x = CHART_SYSTEM.bar.startX + i * CHART_SYSTEM.bar.gap;
                 const maxH = h * CHART_SYSTEM.bar.maxHeight;
-                const grown = Math.max(CHART_SYSTEM.bar.minHeight, maxH * (0.12 + progress * 0.88));
+                const grown = Math.max(
+                  CHART_SYSTEM.bar.minHeight,
+                  maxH * (0.12 + progress * 0.88),
+                );
                 const y = 64 - grown;
                 const capH = Math.max(1, grown * (recapturePct / 100));
                 return (
                   <g key={x}>
-                    <rect x={x} y={y} width={CHART_SYSTEM.bar.bodyWidth} height={grown} rx="0.9" fill="url(#barFillMagenta)" />
-                    <rect x={x} y={y} width={CHART_SYSTEM.bar.bodyWidth} height={capH} rx="0.9" fill="url(#recaptureFillGold)" opacity={i >= 9 ? 0.98 : 0.88} />
-                    <rect x={x} y={y} width={CHART_SYSTEM.bar.bodyWidth} height={grown} rx="0.9" fill="none" stroke="rgba(247,248,252,0.38)" strokeWidth="0.38" vectorEffect="non-scaling-stroke" />
+                    <rect
+                      x={x}
+                      y={y}
+                      width={CHART_SYSTEM.bar.bodyWidth}
+                      height={grown}
+                      rx="0.9"
+                      fill="url(#barFillMagenta)"
+                    />
+                    <rect
+                      x={x}
+                      y={y}
+                      width={CHART_SYSTEM.bar.bodyWidth}
+                      height={capH}
+                      rx="0.9"
+                      fill="url(#recaptureFillGold)"
+                      opacity={i >= 9 ? 0.98 : 0.88}
+                    />
+                    <rect
+                      x={x}
+                      y={y}
+                      width={CHART_SYSTEM.bar.bodyWidth}
+                      height={grown}
+                      rx="0.9"
+                      fill="none"
+                      stroke="rgba(247,248,252,0.38)"
+                      strokeWidth="0.38"
+                      vectorEffect="non-scaling-stroke"
+                    />
                   </g>
                 );
               })}
 
-              <path d="M12 66 L12 53 C 30 52, 74 26, 108 19 L108 66 Z" fill="url(#flowArea)" />
-              <path d={flowPath} fill="none" stroke="url(#flowGlow)" strokeWidth={CHART_SYSTEM.scale.primaryLine} pathLength={1} strokeDasharray={`${Math.max(progress, 0.0001)} 1`} strokeLinecap="round" vectorEffect="non-scaling-stroke" style={{ filter: "drop-shadow(0 0 5px rgba(123,219,255,0.52))" }} />
+              <path
+                d="M12 66 L12 53 C 30 52, 74 26, 108 19 L108 66 Z"
+                fill="url(#flowArea)"
+              />
+              <path
+                d={flowPath}
+                fill="none"
+                stroke="url(#flowGlow)"
+                strokeWidth={Math.max(CHART_SYSTEM.scale.primaryLine,1.35)}
+                pathLength={1}
+                strokeDasharray={`${Math.max(progress, 0.0001)} 1`}
+                strokeLinecap="round"
+                vectorEffect="non-scaling-stroke"
+                style={{
+                  filter: "drop-shadow(0 0 5px rgba(123,219,255,0.52))",
+                }}
+              />
 
               {[
                 { x: 12, y: 53 },
@@ -510,36 +610,74 @@ const EconomicImpactSimulator = () => {
                 { x: 91, y: 22 },
                 { x: 108, y: 19 },
               ].map((pt) => (
-                <circle key={`${pt.x}-${pt.y}`} cx={pt.x} cy={pt.y} r={0.95} fill="rgba(207,242,255,0.96)" />
+                <circle
+                  key={`${pt.x}-${pt.y}`}
+                  cx={pt.x}
+                  cy={pt.y}
+                  r={1.25}
+                  fill="rgba(207,242,255,0.96)"
+                />
               ))}
 
-              <circle cx={markerX} cy={markerY} r={CHART_SYSTEM.scale.pulseDot} fill="rgba(255,255,255,0.98)" style={{ filter: "drop-shadow(0 0 5px rgba(177,238,255,0.62))" }} />
-              <path d="M8 66 L108 66" stroke="rgba(61,162,243,0.58)" strokeWidth={CHART_SYSTEM.scale.baselineLine} vectorEffect="non-scaling-stroke" />
+              <circle
+                cx={markerX}
+                cy={markerY}
+                r={CHART_SYSTEM.scale.pulseDot}
+                fill="rgba(255,255,255,0.98)"
+                style={{
+                  filter: "drop-shadow(0 0 5px rgba(177,238,255,0.62))",
+                }}
+              />
+              <path
+                d="M8 66 L108 66"
+                stroke="rgba(61,162,243,0.58)"
+                strokeWidth={CHART_SYSTEM.scale.baselineLine}
+                vectorEffect="non-scaling-stroke"
+              />
             </svg>
 
-            <div className="absolute bottom-1.5 left-2 right-2 grid grid-cols-3 text-center text-[10px] font-semibold tracking-[0.04em] text-white/86 sm:text-[11px]">
-              <span className="rounded-sm bg-black/25 py-0.5">Baseline<div className="text-cyan-300/90">2010</div></span>
-              <span className="rounded-sm bg-black/25 py-0.5">Current<div className="text-cyan-300/90">2023</div></span>
-              <span className="rounded-sm bg-black/25 py-0.5">Projected<div className="text-cyan-300/90">2026</div></span>
+            <div className="absolute bottom-1.5 left-2 right-2 grid grid-cols-3 text-center text-[11px] font-semibold tracking-[0.04em] text-white/90 sm:text-xs">
+              <span className="rounded-sm bg-black/30 py-0.5">
+                Baseline<div className="text-cyan-300/90">2010</div>
+              </span>
+              <span className="rounded-sm bg-black/30 py-0.5">
+                Current<div className="text-cyan-300/90">2023</div>
+              </span>
+              <span className="rounded-sm bg-black/30 py-0.5">
+                Projected<div className="text-cyan-300/90">2026</div>
+              </span>
             </div>
           </div>
         </div>
 
-        <div className="lg:col-span-2">
-          <div className="rounded-xl border border-[#D4AF37]/45 bg-[#151309]/70 px-3 py-2.5 sm:px-4 sm:py-3">
-            <div className="grid items-center gap-2 sm:grid-cols-[1fr_auto_1fr]">
+        <div>
+          <div className="rounded-xl border border-[#D4AF37]/50 bg-[#151309]/72 px-4 py-3 sm:px-5 sm:py-4">
+            <div className="grid items-center gap-3 sm:grid-cols-[1fr_auto_1fr]">
               <div className="flex items-center gap-2.5">
                 <div className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#D4AF37]/50 text-[#D4AF37]">
-                  <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
                     <circle cx="12" cy="12" r="8" />
                     <circle cx="12" cy="12" r="4" />
                     <circle cx="12" cy="12" r="1.2" fill="currentColor" />
                   </svg>
                 </div>
                 <div className="min-w-0">
-                  <p className="text-xs text-white/85"><span className="mr-1 inline-block h-1.5 w-1.5 rounded-full bg-[#D4AF37]" />5% recaptured =</p>
-                  <p className="text-sm font-extrabold text-[#D4AF37] sm:text-base">{formatCurrency(recaptureValue)}</p>
-                  <p className="text-[11px] text-white/75">retained inside BWE</p>
+                  <p className="text-xs text-white/85">
+                    <span className="mr-1 inline-block h-1.5 w-1.5 rounded-full bg-[#D4AF37]" />
+                    5% recaptured =
+                  </p>
+                  <p className="text-base font-extrabold text-[#D4AF37] sm:text-xl">
+                    {formatCurrency(recaptureValue)}
+                  </p>
+                  <p className="text-[11px] text-white/75">
+                    retained inside BWE
+                  </p>
                 </div>
               </div>
 
@@ -547,40 +685,71 @@ const EconomicImpactSimulator = () => {
 
               <div className="flex items-center gap-2.5">
                 <div className="min-w-0">
-                  <p className="text-xs text-white/85"><span className="mr-1 inline-block h-1.5 w-1.5 rounded-full bg-pink-400" />95% leakage =</p>
-                  <p className="text-sm font-extrabold text-pink-300 sm:text-base">{formatCurrency(leakageValue)}</p>
+                  <p className="text-xs text-white/85">
+                    <span className="mr-1 inline-block h-1.5 w-1.5 rounded-full bg-pink-400" />
+                    95% leakage =
+                  </p>
+                  <p className="text-base font-extrabold text-pink-300 sm:text-xl">
+                    {formatCurrency(leakageValue)}
+                  </p>
                   <p className="text-[11px] text-white/75">outside flow</p>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="mt-2 grid w-full gap-2 sm:grid-cols-2 sm:gap-3">
+          <div className="mt-3 grid w-full gap-2.5">
             <Link
               href="/1.8trillionimpact"
-              className="group inline-flex items-center justify-between gap-3 rounded-xl border border-[#D4AF37]/45 bg-[#D4AF37]/10 px-3 py-2 shadow-sm transition hover:border-[#D4AF37]/80"
+              className="group inline-flex w-full items-center justify-between gap-3 rounded-xl border border-[#D4AF37]/50 bg-[#D4AF37]/10 px-4 py-3 shadow-sm transition hover:border-[#D4AF37]/80"
             >
               <div className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-[#D4AF37]/45 text-[#D4AF37]">
-                <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M9 8a3 3 0 1 1 6 0c0 1.3-.84 2.2-1.7 2.8-.66.47-1.3.84-1.3 1.7" strokeLinecap="round" />
+                <svg
+                  viewBox="0 0 24 24"
+                  className="h-4 w-4"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path
+                    d="M9 8a3 3 0 1 1 6 0c0 1.3-.84 2.2-1.7 2.8-.66.47-1.3.84-1.3 1.7"
+                    strokeLinecap="round"
+                  />
                   <circle cx="12" cy="17" r="0.8" fill="currentColor" />
                 </svg>
               </div>
-              <span className="text-[11px] font-extrabold tracking-wide text-[#D4AF37] sm:text-sm">Knowledge is Power</span>
-              <span className="truncate text-[10px] text-white/75 sm:text-sm">Where the money goes <span className="text-[#D4AF37]">→</span></span>
+              <span className="text-[11px] font-extrabold tracking-wide text-[#D4AF37] sm:text-sm">
+                Knowledge is Power
+              </span>
+              <span className="truncate text-[10px] text-white/75 sm:text-sm">
+                Where the money goes <span className="text-[#D4AF37]">→</span>
+              </span>
             </Link>
 
             <Link
               href="/economic-freedom"
-              className="group inline-flex items-center justify-between gap-3 rounded-xl border border-pink-400/40 bg-pink-400/10 px-3 py-2 transition hover:border-pink-300/70"
+              className="group inline-flex w-full items-center justify-between gap-3 rounded-xl border border-pink-400/45 bg-pink-400/10 px-4 py-3 transition hover:border-pink-300/70"
             >
               <div className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-pink-400/45 text-pink-300">
-                <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M8 8l3 3m2 2l3 3M10 6l2 2m2 2l2 2M7 17l2-2m6-6l2-2" strokeLinecap="round" />
+                <svg
+                  viewBox="0 0 24 24"
+                  className="h-4 w-4"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path
+                    d="M8 8l3 3m2 2l3 3M10 6l2 2m2 2l2 2M7 17l2-2m6-6l2-2"
+                    strokeLinecap="round"
+                  />
                 </svg>
               </div>
-              <span className="text-[11px] font-extrabold tracking-wide text-pink-300 sm:text-sm">Economic Slavery</span>
-              <span className="truncate text-[10px] text-white/75 sm:text-sm">Learn more <span className="text-pink-300">→</span></span>
+              <span className="text-[11px] font-extrabold tracking-wide text-pink-300 sm:text-sm">
+                Economic Slavery
+              </span>
+              <span className="truncate text-[10px] text-white/75 sm:text-sm">
+                Learn more <span className="text-pink-300">→</span>
+              </span>
             </Link>
           </div>
         </div>
