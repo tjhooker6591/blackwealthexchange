@@ -350,7 +350,8 @@ export default function Marketplace() {
 
           <div className="mt-3 text-sm text-gray-400">{resultLabel}</div>
           <p className="mt-1 text-xs text-gray-500">
-            Each listing shows seller identity and availability before you open details.
+            Each listing shows seller identity and availability before you open
+            details.
           </p>
 
           <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs">
@@ -518,7 +519,7 @@ export default function Marketplace() {
                         ) : (
                           <div className="flex h-full w-full items-center justify-center">
                             <span className="text-xs text-gray-400 sm:text-sm">
-                              Image unavailable
+                              Product image coming soon
                             </span>
                           </div>
                         )}
@@ -528,7 +529,7 @@ export default function Marketplace() {
                         <h4 className="line-clamp-2 min-w-0 text-sm font-semibold leading-tight text-gold sm:text-base">
                           {product.name}
                         </h4>
-                        <p className="shrink-0 text-sm font-semibold text-gray-100 sm:text-base">
+                        <p className="shrink-0 text-sm font-semibold text-gray-100 sm:text-base" aria-label={`Price ${product.price.toFixed(2)} USD`}>
                           ${product.price.toFixed(2)}
                         </p>
                       </div>
@@ -558,12 +559,13 @@ export default function Marketplace() {
                       </div>
 
                       <p className="mt-2 text-[11px] text-gray-300 sm:text-xs">
-                        Sold by <span className="font-semibold text-gray-100">{product?.seller?.name || "Verified BWE Marketplace Seller"}</span>
-                        {product?.seller?.profileComplete ? " • verified profile" : " • basic profile"}
-                      </p>
-
-                      <p className="mt-1 text-[11px] text-gray-400 sm:text-xs">
-                        Interest: {Number(product.views || 0).toLocaleString()} views
+                        Sold by{" "}
+                        <span className="font-semibold text-gray-100">
+                          {product?.seller?.name || "Verified BWE Seller"}
+                        </span>
+                        {product?.seller?.profileComplete
+                          ? " • identity confirmed"
+                          : " • profile pending completion"}
                       </p>
 
                       {product.description ? (
@@ -572,7 +574,7 @@ export default function Marketplace() {
                         </p>
                       ) : (
                         <p className="mt-2 line-clamp-2 text-xs text-gray-500 sm:text-sm">
-                          Open this product for full details.
+                          Open for full specs, seller policy, and delivery details.
                         </p>
                       )}
                     </Link>

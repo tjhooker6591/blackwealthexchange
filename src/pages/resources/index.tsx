@@ -31,15 +31,14 @@ export default function ResourcesIndex() {
           Employer Resources
         </h1>
         <p className="text-gray-300 mb-8">
-          Discover tools and strategies to help you hire, support, and retain
-          diverse talent.
+          Practical guidance for hiring, onboarding, and retaining diverse talent with clear implementation steps.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {articles.map((article) => (
             <div
               key={article.slug}
-              className="bg-gray-800 p-6 rounded-lg border border-gray-700"
+              className="bg-gray-900/90 p-6 rounded-xl border border-gray-700/80 shadow-sm"
             >
               <h2 className="text-xl font-semibold text-gold mb-2">
                 {article.title}
@@ -47,7 +46,7 @@ export default function ResourcesIndex() {
               <p className="text-gray-400 mb-4">{article.summary}</p>
               <Link
                 href={`/resources/${article.slug}`}
-                className="text-blue-500 hover:underline font-medium"
+                className="text-gold hover:underline font-medium"
               >
                 Read Article →
               </Link>

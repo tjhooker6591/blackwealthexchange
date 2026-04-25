@@ -350,11 +350,6 @@ const EconomicImpactSimulator = () => {
     3 * (1 - t) * Math.pow(t, 2) * p2.y +
     Math.pow(t, 3) * p3.y;
 
-  const recaptureScale = recapturePct / 100;
-  const recaptureY = (y: number) => 66 - (66 - y) * recaptureScale;
-  const recapturePath = `M12 ${recaptureY(53).toFixed(2)} C 30 ${recaptureY(52).toFixed(2)}, 74 ${recaptureY(26).toFixed(2)}, 108 ${recaptureY(19).toFixed(2)}`;
-  const recaptureMarkerY = recaptureY(markerY);
-
   const arcShift = 1 - progress;
 
   return (
@@ -567,19 +562,6 @@ const EconomicImpactSimulator = () => {
                   filter: "drop-shadow(0 0 7px rgba(135,226,255,0.74))",
                 }}
               />
-              <path
-                d={recapturePath}
-                fill="none"
-                stroke="rgba(241,213,122,0.96)"
-                strokeWidth={CHART_SYSTEM.scale.secondaryLine}
-                pathLength={1}
-                strokeDasharray={`${Math.max(progress, 0.0001)} 1`}
-                strokeLinecap="round"
-                vectorEffect="non-scaling-stroke"
-                style={{
-                  filter: "drop-shadow(0 0 4px rgba(241,213,122,0.45))",
-                }}
-              />
 
               <circle
                 cx={markerX}
@@ -588,15 +570,6 @@ const EconomicImpactSimulator = () => {
                 fill="rgba(255,255,255,0.98)"
                 style={{
                   filter: "drop-shadow(0 0 6px rgba(177,238,255,0.72))",
-                }}
-              />
-              <circle
-                cx={markerX}
-                cy={recaptureMarkerY}
-                r={Math.max(0.9, CHART_SYSTEM.scale.dataDot)}
-                fill="rgba(241,213,122,0.96)"
-                style={{
-                  filter: "drop-shadow(0 0 3px rgba(241,213,122,0.45))",
                 }}
               />
 
@@ -638,21 +611,6 @@ const EconomicImpactSimulator = () => {
                 vectorEffect="non-scaling-stroke"
                 opacity={0.12}
               />
-              <path
-                d="M 91 61 L 103 64"
-                stroke="rgba(241,213,122,0.9)"
-                strokeWidth="0.45"
-                vectorEffect="non-scaling-stroke"
-              />
-              <text
-                x="53"
-                y="61.5"
-                fill="rgba(241,213,122,0.98)"
-                fontSize="2.8"
-                fontWeight="700"
-              >
-                BWE Recapture Opportunity
-              </text>
             </svg>
             <div className="absolute left-2 top-2 rounded-md border border-cyan-300/20 bg-[#07111d]/85 px-2 py-1 text-[9px] text-cyan-100/78 sm:text-[10px]">
               Black Spending Power → Outside Economy Flow
@@ -663,7 +621,6 @@ const EconomicImpactSimulator = () => {
               <span className="rounded-sm bg-black/25 py-0.5">Projected</span>
             </div>
           </div>
-
         </div>
 
         <div className="lg:col-span-2">

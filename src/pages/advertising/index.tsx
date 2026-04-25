@@ -166,6 +166,17 @@ export default function AdvertisingIndexPage() {
           </div>
         ) : null}
 
+        <div className="mt-6 rounded-2xl border border-white/10 bg-zinc-950 p-5">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-300">
+            How advertising works
+          </h2>
+          <ol className="mt-3 grid gap-2 text-sm text-zinc-300 md:grid-cols-3 md:gap-4">
+            <li><span className="font-semibold text-yellow-200">1. Choose placement</span><br />Pick the format that matches your goal and budget.</li>
+            <li><span className="font-semibold text-yellow-200">2. Submit campaign details</span><br />Complete targeting and creative requirements.</li>
+            <li><span className="font-semibold text-yellow-200">3. Review and activation</span><br />BWE confirms eligibility, then schedules placement.</li>
+          </ol>
+        </div>
+
         <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
           <AdCard
             title="Featured Sponsor"
@@ -243,38 +254,6 @@ export default function AdvertisingIndexPage() {
               })
             }
           />
-        </div>
-
-        <div className="mt-6 rounded-2xl border border-yellow-500/15 bg-zinc-950 p-5">
-          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-            <div>
-              <h3 className="text-lg font-semibold text-yellow-200">
-                Custom Solutions
-              </h3>
-              <p className="mt-1 text-sm text-zinc-300">
-                Recruiting, consulting, partnerships, sponsored content, or
-                bundled campaigns.
-              </p>
-            </div>
-
-            <Link
-              href="/advertise/custom"
-              onClick={() =>
-                trackAdvertisingEvent("advertising_option_selected", {
-                  ctaId: "ad_option_custom_request_plan",
-                  ctaLabel: "Request a Custom Plan",
-                  destination: "/advertise/custom",
-                  ad_option: "custom-solution",
-                  ad_type: "custom-solution",
-                  package_type: "custom",
-                  source_variant: "advertising_index",
-                })
-              }
-              className="rounded-xl border border-yellow-500/20 bg-yellow-500/10 px-4 py-2 text-sm font-semibold text-yellow-200 hover:bg-yellow-500/15"
-            >
-              Request a Custom Plan →
-            </Link>
-          </div>
         </div>
       </div>
     </div>
