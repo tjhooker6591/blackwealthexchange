@@ -270,8 +270,16 @@ const EconomicImpactSimulator = () => {
   return (
     <section className="relative py-2 sm:py-3">
       <div className="rounded-2xl border border-[#D4AF37]/45 bg-[#060a12] p-4 sm:p-5">
-        <h2 className="text-xl font-extrabold text-white sm:text-2xl">
-          <span className="text-[#D4AF37]">$2.1 Trillion</span> in Black Spending Power
+        <h2 className="flex items-center gap-2 text-xl font-extrabold text-white sm:text-2xl">
+          <span className="inline-flex h-6 w-6 items-center justify-center rounded-full border border-[#D4AF37]/55 text-[#D4AF37]">
+            <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="12" r="8" />
+              <circle cx="12" cy="12" r="4" />
+            </svg>
+          </span>
+          <span>
+            <span className="text-[#D4AF37]">$2.1 Trillion</span> in Black Spending Power
+          </span>
         </h2>
         <p className="mt-1.5 text-sm text-white/75 sm:text-base">
           Most of it leaves our communities. We’re changing that.
