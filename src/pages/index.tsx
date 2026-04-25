@@ -336,7 +336,7 @@ const EconomicImpactSimulator = () => {
     <section className="relative overflow-hidden py-2 sm:py-4">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_8%_20%,rgba(96,190,255,0.12),transparent_34%),radial-gradient(circle_at_80%_84%,rgba(212,175,55,0.1),transparent_45%)]" />
 
-      <div className="relative grid gap-4 rounded-2xl border border-[#D4AF37]/55 bg-[#04070f]/98 p-4 shadow-[0_22px_56px_rgba(0,0,0,0.62)] sm:p-6">
+      <div className="relative grid max-w-full gap-4 overflow-hidden rounded-2xl border border-[#D4AF37]/55 bg-[#04070f]/98 p-4 shadow-[0_22px_56px_rgba(0,0,0,0.62)] sm:p-6">
         <div className="min-w-0">
           <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-[#0a101c] px-4 py-1.5 text-[11px] font-bold tracking-[0.08em] text-white/90">
             <span className="h-2 w-2 rounded-full bg-[#D4AF37]" />
@@ -366,7 +366,7 @@ const EconomicImpactSimulator = () => {
             2010 → 2026
           </p>
 
-          <div className="mt-3 grid grid-cols-2 gap-3 text-xs sm:text-sm">
+          <div className="mt-3 grid grid-cols-1 gap-3 text-xs sm:grid-cols-2 sm:text-sm">
             <div className="rounded-xl border border-white/15 bg-[#0a101a] px-3.5 py-3">
               <div className="mb-2 inline-flex h-7 w-7 items-center justify-center rounded-full border border-pink-300/45 text-pink-200">
                 <svg
@@ -440,7 +440,7 @@ const EconomicImpactSimulator = () => {
           </div>
 
           <div
-            className="relative h-[clamp(220px,28vw,320px)] overflow-hidden rounded-xl border border-cyan-300/18 bg-[#050d1a]/95"
+            className="relative h-[clamp(220px,24vw,280px)] max-w-full overflow-hidden rounded-xl border border-cyan-300/18 bg-[#050d1a]/95"
             data-progress={progress.toFixed(4)}
           >
             <div className="pointer-events-none absolute left-2 top-2 z-10 text-[10px] text-white/62 sm:text-xs">
@@ -630,7 +630,7 @@ const EconomicImpactSimulator = () => {
 
         <div>
           <div className="rounded-xl border border-[#D4AF37]/50 bg-[#151309]/72 px-4 py-3 sm:px-5 sm:py-4">
-            <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3">
+            <div className="grid grid-cols-1 items-center gap-3 sm:grid-cols-[1fr_auto_1fr]">
               <div className="flex items-center gap-2.5">
                 <div className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#D4AF37]/50 text-[#D4AF37]">
                   <svg
@@ -659,7 +659,7 @@ const EconomicImpactSimulator = () => {
                 </div>
               </div>
 
-              <div className="mx-auto h-12 w-px bg-white/25" />
+              <div className="mx-auto hidden h-12 w-px bg-white/25 sm:block" />
 
               <div className="flex items-center gap-2.5">
                 <div className="min-w-0">
@@ -699,7 +699,7 @@ const EconomicImpactSimulator = () => {
               <span className="text-[11px] font-extrabold tracking-wide text-[#D4AF37] sm:text-sm">
                 Knowledge is Power
               </span>
-              <span className="truncate text-[10px] text-white/75 sm:text-sm">
+              <span className="min-w-0 whitespace-normal text-right text-[10px] leading-tight text-white/75 sm:text-sm">
                 Where the money goes <span className="text-[#D4AF37]">→</span>
               </span>
             </Link>
@@ -725,7 +725,7 @@ const EconomicImpactSimulator = () => {
               <span className="text-[11px] font-extrabold tracking-wide text-pink-300 sm:text-sm">
                 Economic Slavery
               </span>
-              <span className="truncate text-[10px] text-white/75 sm:text-sm">
+              <span className="min-w-0 whitespace-normal text-right text-[10px] leading-tight text-white/75 sm:text-sm">
                 Learn more <span className="text-pink-300">→</span>
               </span>
             </Link>
