@@ -267,33 +267,237 @@ function ConsultingInterestModal({
  *  ECONOMIC IMPACT (simplified)
  *  ----------------------------- */
 const EconomicImpactSimulator = () => {
-  return (
-    <section className="relative py-2 sm:py-3">
-      <div className="rounded-2xl border border-[#D4AF37]/45 bg-[#060a12] p-4 sm:p-5">
-        <h2 className="text-xl font-extrabold text-white sm:text-2xl">
-          <span className="text-[#D4AF37]">$2.1 Trillion</span> in Black Spending Power
-        </h2>
-        <p className="mt-1.5 text-sm text-white/75 sm:text-base">
-          Most of it leaves our communities. We’re changing that.
-        </p>
+  const baseline = 300_000_000_000;
+  const projected = 2_100_000_000_000;
+  const perDay = 4_200_000_000;
+  const perSecond = 48_000;
+  const recapturePct = 5;
+  const recaptureValue = projected * (recapturePct / 100);
+  const leakageValue = projected - recaptureValue;
+  const durationMs = 180_000;
 
-        <div className="mt-3 overflow-hidden rounded-xl border border-white/10 bg-white/[0.04]">
-          <div className="flex h-5 w-full text-[10px] font-bold">
-            <div className="flex w-[95%] items-center justify-start bg-pink-500/70 px-2 text-black/90">
-              95%
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    let raf = 0;
+    let startTs: number | null = null;
+
+    const tick = (ts: number) => {
+      if (startTs === null) startTs = ts;
+      const elapsed = ts - startTs;
+      const raw = Math.min(elapsed / durationMs, 1);
+      const eased = 1 - Math.pow(1 - raw, 3);
+      setProgress(eased);
+      if (raw < 1) raf = requestAnimationFrame(tick);
+    };
+
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  const formatCurrency = (num: number) =>
+    num.toLocaleString("en-US", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    });
+
+  const currentValue = baseline + (projected - baseline) * progress;
+  return (
+    <section className="relative overflow-hidden py-2 sm:py-4">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_8%_20%,rgba(96,190,255,0.12),transparent_34%),radial-gradient(circle_at_80%_84%,rgba(212,175,55,0.1),transparent_45%)]" />
+
+      <div className="relative grid max-w-full gap-4 overflow-hidden rounded-2xl border border-[#D4AF37]/55 bg-[#04070f]/98 p-4 shadow-[0_22px_56px_rgba(0,0,0,0.62)] sm:p-6">
+        <div className="min-w-0">
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-[#0a101c] px-4 py-1.5 text-[11px] font-bold tracking-[0.08em] text-white/90">
+            <span className="h-2 w-2 rounded-full bg-[#D4AF37]" />
+            BUYING POWER (ANNUAL ESTIMATE)
+          </div>
+
+          <h2 className="mt-3 text-lg font-extrabold tracking-[0.01em] text-white sm:text-3xl">
+            African American Buying Power{" "}
+            <span className="text-[#D4AF37]">(2026)</span>
+          </h2>
+
+          <p className="mt-2 text-sm text-white/82 sm:text-base">
+            Spending scale is massive, leakage remains high, and recapture
+            inside BWE creates outsized retained value.
+          </p>
+
+          <div
+            className="mt-3 text-[1.95rem] font-black tracking-tight text-[#D4AF37] tabular-nums sm:text-[2.5rem] lg:text-[2.8rem]"
+            data-counter-value={Math.floor(currentValue)}
+          >
+            {formatCurrency(Math.floor(currentValue))}
+          </div>
+          <p className="text-xs uppercase tracking-[0.08em] text-white/65 sm:text-sm">
+            ANNUAL BUYING POWER
+          </p>
+          <p className="mt-1 text-[10px] text-cyan-300/80 sm:text-[11px]">
+            2010 → 2026
+          </p>
+
+          <div className="mt-3 grid grid-cols-2 gap-2 text-[11px] sm:gap-3 sm:text-sm">
+            <div className="rounded-xl border border-white/15 bg-[#0a101a] px-3.5 py-3">
+              <div className="mb-2 inline-flex h-7 w-7 items-center justify-center rounded-full border border-pink-300/45 text-pink-200">
+                <svg
+                  viewBox="0 0 24 24"
+                  className="h-4 w-4"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path
+                    d="M4 16l5-5 3 3 8-8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </div>
+              <p className="text-white/60">Baseline 2010</p>
+              <p className="font-semibold text-white">
+                {formatCurrency(baseline)}
+              </p>
+              <div className="my-1 h-px bg-white/10" />
+              <p className="text-white/60">Projected 2026</p>
+              <p className="font-semibold text-white">
+                {formatCurrency(Math.floor(currentValue))}
+              </p>
             </div>
-            <div className="flex w-[5%] items-center justify-center bg-[#D4AF37] text-black">
-              5%
+
+            <div className="rounded-xl border border-white/15 bg-[#0a101a] px-3.5 py-3">
+              <div className="mb-2 inline-flex h-7 w-7 items-center justify-center rounded-full border border-cyan-300/45 text-cyan-200">
+                <svg
+                  viewBox="0 0 24 24"
+                  className="h-4 w-4"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path
+                    d="M12 4v16M16 8c0-1.8-1.8-3-4-3s-4 1.2-4 3 1.2 2.4 4 3 4 1.2 4 3-1.8 3-4 3-4-1.2-4-3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </div>
+              <p className="text-white/60">Daily flow</p>
+              <p className="font-semibold text-white">
+                {formatCurrency(perDay)} / day
+              </p>
+              <div className="my-1 h-px bg-white/10" />
+              <p className="text-white/60">Second-level flow</p>
+              <p className="font-semibold text-white">
+                {formatCurrency(perSecond)} / sec
+              </p>
             </div>
           </div>
         </div>
 
-        <Link
-          href="/1.8trillionimpact"
-          className="mt-3 inline-flex items-center rounded-lg border border-[#D4AF37]/50 bg-[#D4AF37]/12 px-3.5 py-2 text-sm font-semibold text-[#F1D57A] transition hover:bg-[#D4AF37]/20"
-        >
-          Learn Where the Money Goes
-        </Link>
+        <div>
+          <div className="rounded-xl border border-[#D4AF37]/50 bg-[#151309]/72 px-4 py-3 sm:px-5 sm:py-4">
+            <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 sm:gap-3">
+              <div className="flex min-w-0 items-center gap-1.5 sm:gap-2.5">
+                <div className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-[#D4AF37]/50 text-[#D4AF37] sm:h-8 sm:w-8">
+                  <svg
+                    viewBox="0 0 24 24"
+                    className="h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <circle cx="12" cy="12" r="8" />
+                    <circle cx="12" cy="12" r="4" />
+                    <circle cx="12" cy="12" r="1.2" fill="currentColor" />
+                  </svg>
+                </div>
+                <div className="min-w-0">
+                  <p className="text-xs text-white/85">
+                    <span className="mr-1 inline-block h-1.5 w-1.5 rounded-full bg-[#D4AF37]" />
+                    5% recaptured =
+                  </p>
+                  <p className="break-words text-[12px] font-extrabold leading-tight tracking-tight text-[#D4AF37] sm:text-xl">
+                    {formatCurrency(recaptureValue)}
+                  </p>
+                  <p className="text-[11px] text-white/75">
+                    retained inside BWE
+                  </p>
+                </div>
+              </div>
+
+              <div className="mx-auto h-12 w-px bg-white/25" />
+
+              <div className="flex min-w-0 items-center gap-1.5 sm:gap-2.5">
+                <div className="min-w-0">
+                  <p className="text-xs text-white/85">
+                    <span className="mr-1 inline-block h-1.5 w-1.5 rounded-full bg-pink-400" />
+                    95% leakage =
+                  </p>
+                  <p className="break-words text-[12px] font-extrabold leading-tight tracking-tight text-pink-300 sm:text-xl">
+                    {formatCurrency(leakageValue)}
+                  </p>
+                  <p className="text-[11px] text-white/75">outside flow</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-3 grid w-full gap-2.5">
+            <Link
+              href="/1.8trillionimpact"
+              className="group inline-flex w-full items-center justify-between gap-3 rounded-xl border border-[#D4AF37]/50 bg-[#D4AF37]/10 px-4 py-3 shadow-sm transition hover:border-[#D4AF37]/80"
+            >
+              <div className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-[#D4AF37]/45 text-[#D4AF37]">
+                <svg
+                  viewBox="0 0 24 24"
+                  className="h-4 w-4"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path
+                    d="M9 8a3 3 0 1 1 6 0c0 1.3-.84 2.2-1.7 2.8-.66.47-1.3.84-1.3 1.7"
+                    strokeLinecap="round"
+                  />
+                  <circle cx="12" cy="17" r="0.8" fill="currentColor" />
+                </svg>
+              </div>
+              <span className="text-[11px] font-extrabold tracking-wide text-[#D4AF37] sm:text-sm">
+                Knowledge is Power
+              </span>
+              <span className="min-w-0 whitespace-normal text-right text-[10px] leading-tight text-white/75 sm:text-sm">
+                Where the money goes <span className="text-[#D4AF37]">→</span>
+              </span>
+            </Link>
+
+            <Link
+              href="/economic-freedom"
+              className="group inline-flex w-full items-center justify-between gap-3 rounded-xl border border-pink-400/45 bg-pink-400/10 px-4 py-3 transition hover:border-pink-300/70"
+            >
+              <div className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-pink-400/45 text-pink-300">
+                <svg
+                  viewBox="0 0 24 24"
+                  className="h-4 w-4"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path
+                    d="M8 8l3 3m2 2l3 3M10 6l2 2m2 2l2 2M7 17l2-2m6-6l2-2"
+                    strokeLinecap="round"
+                  />
+                </svg>
+              </div>
+              <span className="text-[11px] font-extrabold tracking-wide text-pink-300 sm:text-sm">
+                Economic Slavery
+              </span>
+              <span className="min-w-0 whitespace-normal text-right text-[10px] leading-tight text-white/75 sm:text-sm">
+                Learn more <span className="text-pink-300">→</span>
+              </span>
+            </Link>
+          </div>
+        </div>
       </div>
     </section>
   );
