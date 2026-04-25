@@ -262,7 +262,8 @@ function listingStrength(item: any) {
     Boolean(safeText(item?.display_categories).trim()) ||
     Boolean(safeText(item?.orgType).trim());
   const hasContact =
-    Boolean(safeText(item?.website).trim()) || Boolean(safeText(item?.phone).trim());
+    Boolean(safeText(item?.website).trim()) ||
+    Boolean(safeText(item?.phone).trim());
 
   let strength = completeness;
   if (hasDescription) strength += 8;
@@ -271,6 +272,49 @@ function listingStrength(item: any) {
   if (hasContact) strength += 6;
 
   return Math.max(0, Math.min(140, strength));
+}
+
+
+
+function normalizeResultItem(item: any, isOrganizations: boolean) {
+  const title = isOrganizations
+    ? safeText(item?.name || item?.business_name)
+    : safeText(item?.business_name || item?.name);
+  const primaryCategory = isOrganizations
+    ? safeText(item?.orgType || item?.denomination || item?.category)
+    : safeText(item?.display_categories || item?.category || item?.categories);
+  const city = safeText(item?.city);
+  const state = safeText(item?.state).toUpperCase();
+  const address = safeText(item?.address);
+  const locationDisplay = [city, state].filter(Boolean).join(", ") || address;
+  const listingStatus = safeText(item?.status || item?.trustStatus).toLowerCase();
+  const slug = safeText(item?.alias) || safeText(item?._id);
+
+  const isVerified =
+    item?.isVerified === true ||
+    item?.verified === true ||
+    listingStatus === "verified";
+
+  const isSponsored =
+    item?.isSponsored === true || Number(item?.amountPaid || 0) > 0;
+
+  const isComplete =
+    typeof item?.isComplete === "boolean"
+      ? item.isComplete
+      : Number(item?.qualityScore || item?.completenessScore || 0) >= 70;
+
+  return {
+    ...item,
+    kind: isOrganizations ? "organization" : "business",
+    title,
+    primaryCategory,
+    locationDisplay,
+    listingStatus,
+    isVerified,
+    isSponsored,
+    isComplete,
+    slug,
+  };
 }
 
 function relevanceScoreOrg(item: any, search: string) {
@@ -380,7 +424,6 @@ export default async function handler(
 
     const page = clampInt(req.query.page, 1, 9999, 1);
     const limit = clampInt(req.query.limit, 1, 50, 20);
-    const skip = (page - 1) * limit;
 
     const search = searchRaw.trim().slice(0, 120);
     const category = categoryRaw.trim().slice(0, 60);
@@ -528,10 +571,14 @@ export default async function handler(
       }
     }
 
+    const totalPages = Math.max(1, Math.ceil(total / limit));
+    const effectivePage = Math.min(page, totalPages);
+    const effectiveSkip = (effectivePage - 1) * limit;
+
     let items: any[] = [];
 
     if (search || sort === "relevance") {
-      const candidateLimit = Math.max(skip + limit * 10, 150);
+      const candidateLimit = Math.max(effectiveSkip + limit * 10, 150);
       const candidates = await col
         .find(query)
         .sort(
@@ -544,7 +591,11 @@ export default async function handler(
 
       const ranked = candidates
         .map((item) => {
-          const matchQuality = getMatchQuality(item, intentTokens, locationTokens);
+          const matchQuality = getMatchQuality(
+            item,
+            intentTokens,
+            locationTokens,
+          );
           const strength = listingStrength(item);
           const baseScore = isOrganizations
             ? relevanceScoreOrg(item, search)
@@ -582,13 +633,18 @@ export default async function handler(
             Number(b.item?.amountPaid || 0) - Number(a.item?.amountPaid || 0)
           );
         })
-        .map((x) => ({
-          ...x.item,
-          _matchQuality: x.matchQuality,
-          _listingStrength: x.strength,
-        }));
+        .map((x) =>
+          normalizeResultItem(
+            {
+              ...x.item,
+              _matchQuality: x.matchQuality,
+              _listingStrength: x.strength,
+            },
+            isOrganizations,
+          ),
+        );
 
-      items = ranked.slice(skip, skip + limit);
+      items = ranked.slice(effectiveSkip, effectiveSkip + limit);
     } else {
       const baseSort =
         sort === "newest"
@@ -605,13 +661,18 @@ export default async function handler(
         await col
           .find(query)
           .sort(baseSort as any)
-          .skip(skip)
+          .skip(effectiveSkip)
           .limit(limit)
           .toArray()
-      ).map((item) => ({
-        ...item,
-        _matchQuality: getMatchQuality(item, intentTokens, locationTokens),
-      }));
+      ).map((item) =>
+        normalizeResultItem(
+          {
+            ...item,
+            _matchQuality: getMatchQuality(item, intentTokens, locationTokens),
+          },
+          isOrganizations,
+        ),
+      );
     }
 
     const tookMs = Date.now() - t0;
@@ -620,10 +681,10 @@ export default async function handler(
       status: "ok",
       requestId,
       tookMs,
-      page,
+      page: effectivePage,
       limit,
       total,
-      hasMore: page * limit < total,
+      hasMore: effectivePage * limit < total,
       type: isOrganizations ? "organizations" : "businesses",
       sort,
       queryMode,

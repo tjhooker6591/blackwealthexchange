@@ -73,6 +73,16 @@ function toInt(v: any, def: number) {
   return Number.isFinite(n) ? n : def;
 }
 
+function formatStatusLabel(status: string) {
+  const normalized = safeStr(status).toLowerCase();
+  if (!normalized) return "";
+  return normalized
+    .split(/[_\s-]+/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
 const DEFAULT_SPONSOR_ADS = [
   {
     img: "/pamfa1.jpg",
@@ -177,7 +187,14 @@ function SponsorCard({ img, name, tagline, url, cta }: any) {
   );
 }
 
-function SidebarAdCard({ img, name, tagline, url, cta, label = "Sponsored" }: any) {
+function SidebarAdCard({
+  img,
+  name,
+  tagline,
+  url,
+  cta,
+  label = "Sponsored",
+}: any) {
   return (
     <a
       href={url}
@@ -622,6 +639,11 @@ export default function BusinessDirectory() {
               typeof data.queryMode === "string" ? data.queryMode : "strict",
             );
             setSearchMeta(data.searchMeta || null);
+            const serverPage = toInt(data.page, page);
+            if (serverPage !== page) {
+              skipNextPageResetRef.current = true;
+              setPage(serverPage);
+            }
             return;
           }
 
@@ -861,7 +883,7 @@ export default function BusinessDirectory() {
 
   const getTrustMeta = (r: Row) => {
     const status = safeStr(
-      (r as any).trustStatus || (r as any).status,
+      (r as any).listingStatus || (r as any).trustStatus || (r as any).status,
     ).toLowerCase();
     const verified =
       (r as any).isVerified === true ||
@@ -1828,11 +1850,30 @@ export default function BusinessDirectory() {
                                   Approved listing
                                 </span>
                               ) : null}
-                              {getTrustMeta(item as Row).sponsored && (
+                              {getTrustMeta(item as Row).sponsored ? (
                                 <span className="rounded-full border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-2 py-0.5 text-[10px] font-bold text-[#D4AF37]">
                                   Sponsored
                                 </span>
+                              ) : (
+                                <span className="rounded-full border border-white/20 bg-white/10 px-2 py-0.5 text-[10px] font-bold text-white/75">
+                                  Organic listing
+                                </span>
                               )}
+                              {formatStatusLabel(
+                                safeStr(
+                                  (item as any).listingStatus ||
+                                    (item as any).status,
+                                ),
+                              ) ? (
+                                <span className="rounded-full border border-white/20 bg-black/30 px-2 py-0.5 text-[10px] font-bold text-white/75">
+                                  {formatStatusLabel(
+                                    safeStr(
+                                      (item as any).listingStatus ||
+                                        (item as any).status,
+                                    ),
+                                  )}
+                                </span>
+                              ) : null}
                               {!getTrustMeta(item as Row).isComplete && (
                                 <span className="rounded-full border border-sky-400/30 bg-sky-400/15 px-2 py-0.5 text-[10px] font-bold text-sky-200">
                                   Incomplete profile
@@ -1980,7 +2021,9 @@ export default function BusinessDirectory() {
                   </div>
                   <div className="space-y-3">
                     {sponsorAds.length ? (
-                      sponsorAds.map((ad) => <SidebarAdCard key={ad.url} {...ad} label="Sponsored" />)
+                      sponsorAds.map((ad) => (
+                        <SidebarAdCard key={ad.url} {...ad} label="Sponsored" />
+                      ))
                     ) : (
                       <div className="rounded-xl border border-white/10 bg-black/30 p-3 text-xs text-white/60">
                         No active sponsored sidebar cards right now.
