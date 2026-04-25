@@ -357,7 +357,7 @@ const EconomicImpactSimulator = () => {
             className="mt-3 text-[2.25rem] font-black tracking-tight text-[#D4AF37] tabular-nums sm:text-5xl"
             data-counter-value={Math.floor(currentValue)}
           >
-            {formatCurrency(projected)}
+            {formatCurrency(Math.floor(currentValue))}
           </div>
           <p className="text-xs uppercase tracking-[0.08em] text-white/65 sm:text-sm">
             ANNUAL BUYING POWER
@@ -390,7 +390,7 @@ const EconomicImpactSimulator = () => {
               <div className="my-1 h-px bg-white/10" />
               <p className="text-white/60">Projected 2026</p>
               <p className="font-semibold text-white">
-                {formatCurrency(projected)}
+                {formatCurrency(Math.floor(currentValue))}
               </p>
             </div>
 
