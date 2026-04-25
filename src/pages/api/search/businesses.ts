@@ -274,8 +274,6 @@ function listingStrength(item: any) {
   return Math.max(0, Math.min(140, strength));
 }
 
-
-
 function normalizeResultItem(item: any, isOrganizations: boolean) {
   const title = isOrganizations
     ? safeText(item?.name || item?.business_name)
@@ -287,7 +285,9 @@ function normalizeResultItem(item: any, isOrganizations: boolean) {
   const state = safeText(item?.state).toUpperCase();
   const address = safeText(item?.address);
   const locationDisplay = [city, state].filter(Boolean).join(", ") || address;
-  const listingStatus = safeText(item?.status || item?.trustStatus).toLowerCase();
+  const listingStatus = safeText(
+    item?.status || item?.trustStatus,
+  ).toLowerCase();
   const slug = safeText(item?.alias) || safeText(item?._id);
 
   const isVerified =
@@ -536,6 +536,10 @@ export default async function handler(
       | "fallback_intent_location"
       | "fallback_location"
       | "fallback_intent" = "strict";
+
+    if (search && strictTokens.length === 0) {
+      queryMode = "fallback_intent";
+    }
 
     if (search && total === 0) {
       const baseAnd = searchTokenClause

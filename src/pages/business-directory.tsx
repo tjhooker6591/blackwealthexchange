@@ -718,18 +718,51 @@ export default function BusinessDirectory() {
     hasSearched && total > 0 && queryMode !== "strict" && Boolean(input.trim());
 
   const curatedVisibleRows = useMemo(() => {
-    if (!approximateMode) return visibleWithSponsors;
+    const qualityRank = (q: string) => {
+      const quality = safeStr(q).toLowerCase();
+      if (quality === "exact") return 3;
+      if (quality === "close") return 2;
+      return 1;
+    };
 
-    const filtered = visibleWithSponsors.filter((row: any) => {
+    const qualitySorted = [...visibleWithSponsors].sort((a: any, b: any) => {
+      const aq = qualityRank(a?._matchQuality);
+      const bq = qualityRank(b?._matchQuality);
+      if (bq !== aq) return bq - aq;
+
+      const aVerified = a?.isVerified === true || a?.verified === true;
+      const bVerified = b?.isVerified === true || b?.verified === true;
+      if (aVerified !== bVerified) return bVerified ? 1 : -1;
+
+      const aComplete =
+        typeof a?.isComplete === "boolean"
+          ? a.isComplete
+          : Number(a?.completenessScore || a?.qualityScore || 0) >= 70;
+      const bComplete =
+        typeof b?.isComplete === "boolean"
+          ? b.isComplete
+          : Number(b?.completenessScore || b?.qualityScore || 0) >= 70;
+      if (aComplete !== bComplete) return bComplete ? 1 : -1;
+
+      const aStrength = Number(a?._listingStrength || 0);
+      const bStrength = Number(b?._listingStrength || 0);
+      return bStrength - aStrength;
+    });
+
+    if (!approximateMode) return qualitySorted;
+
+    const filtered = qualitySorted.filter((row: any) => {
       const quality = safeStr(row?._matchQuality).toLowerCase();
       const strength = Number(row?._listingStrength || 0);
       const hasUsefulDescription =
         safeStr(row?.description).trim().length >= 24;
       const hasUsefulLocation =
+        Boolean(safeStr(row?.locationDisplay).trim()) ||
         Boolean(safeStr(row?.city).trim()) ||
         Boolean(safeStr(row?.state).trim()) ||
         Boolean(safeStr(row?.address).trim());
       const hasUsefulCategory =
+        Boolean(safeStr(row?.primaryCategory).trim()) ||
         Boolean(safeStr(row?.category).trim()) ||
         Boolean(safeStr(row?.categories).trim()) ||
         Boolean(safeStr(row?.display_categories).trim()) ||
@@ -743,7 +776,7 @@ export default function BusinessDirectory() {
       return false;
     });
 
-    return filtered.length >= 3 ? filtered : visibleWithSponsors;
+    return filtered.length >= 3 ? filtered : qualitySorted;
   }, [visibleWithSponsors, approximateMode]);
 
   const weakListingsSuppressedCount = Math.max(
@@ -786,10 +819,18 @@ export default function BusinessDirectory() {
 
   const exactMatchCount = useMemo(
     () =>
-      visibleWithSponsors.filter(
+      curatedVisibleRows.filter(
         (row: any) => safeStr(row?._matchQuality).toLowerCase() === "exact",
       ).length,
-    [visibleWithSponsors],
+    [curatedVisibleRows],
+  );
+
+  const approximateCount = useMemo(
+    () =>
+      curatedVisibleRows.filter(
+        (row: any) => safeStr(row?._matchQuality).toLowerCase() === "approximate",
+      ).length,
+    [curatedVisibleRows],
   );
 
   const goPage = (p: number) => {
@@ -917,15 +958,6 @@ export default function BusinessDirectory() {
     if (strength >= 92) return "Strong profile";
     if (strength >= 72) return "Solid profile";
     return "Basic profile";
-  };
-
-  const getListingSignalLine = (r: Row) => {
-    const parts: string[] = [];
-    const location = getLocation(r);
-    const category = getCategoryLabel(r);
-    if (category) parts.push(category);
-    if (location && location !== "Location not available") parts.push(location);
-    return parts.slice(0, 2).join(" · ");
   };
 
   const sponsorsToShow = sponsorAds.slice(0, 10);
@@ -1564,6 +1596,13 @@ export default function BusinessDirectory() {
                   </div>
                 ) : null}
 
+                {hasSearched && total > 0 && approximateCount > 0 && !isApproximateSearch ? (
+                  <div className="mt-2 rounded-xl border border-amber-300/25 bg-amber-300/10 px-3 py-2 text-[11px] text-amber-100">
+                    <span className="font-semibold text-amber-50">Some results are weaker matches.</span>{" "}
+                    Try adding a category, state, or a more specific keyword to sharpen relevance.
+                  </div>
+                ) : null}
+
                 <div className="relative mt-3 min-h-[160px]">
                   {isLoading && (
                     <div className="absolute inset-0 z-20 rounded-xl bg-black/70 p-4 backdrop-blur-sm">
@@ -1643,6 +1682,9 @@ export default function BusinessDirectory() {
                       <div className="mt-2 text-xs text-white/40">
                         Try a broader keyword, clear active filters, or switch
                         between Businesses and Organizations.
+                      </div>
+                      <div className="mt-2 text-[11px] text-white/55">
+                        Helpful queries: <span className="text-white/75">restaurant</span>, <span className="text-white/75">clothing</span>, <span className="text-white/75">services</span>
                       </div>
                       <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-[11px]">
                         {scope === "businesses" && category !== "All" ? (
@@ -1866,7 +1908,7 @@ export default function BusinessDirectory() {
                                 ),
                               ) ? (
                                 <span className="rounded-full border border-white/20 bg-black/30 px-2 py-0.5 text-[10px] font-bold text-white/75">
-                                  {formatStatusLabel(
+                                  Status: {formatStatusLabel(
                                     safeStr(
                                       (item as any).listingStatus ||
                                         (item as any).status,
@@ -1909,8 +1951,11 @@ export default function BusinessDirectory() {
                             </div>
 
                             <div className="mt-0.5 text-[12px] text-white/55">
-                              {getListingSignalLine(item as Row) ||
-                                "Category or location details are limited"}
+                              <span className="text-white/72">Category:</span>{" "}
+                              {getCategoryLabel(item as Row) || "Not provided"}
+                              {" · "}
+                              <span className="text-white/72">Location:</span>{" "}
+                              {getLocation(item as Row) || "Not provided"}
                             </div>
 
                             {/* Snippet line (quote-style like your example) */}
@@ -1943,6 +1988,14 @@ export default function BusinessDirectory() {
                                   className="rounded-lg border border-white/20 bg-black/30 px-3 py-1.5 text-[11px] font-bold text-white/80 hover:bg-black/45"
                                 >
                                   Website
+                                </a>
+                              ) : null}
+                              {getPhone(item as Row) ? (
+                                <a
+                                  href={`tel:${getPhone(item as Row)}`}
+                                  className="rounded-lg border border-white/20 bg-black/30 px-3 py-1.5 text-[11px] font-bold text-white/80 hover:bg-black/45 sm:hidden"
+                                >
+                                  Call
                                 </a>
                               ) : null}
                               {getLocation(item as Row) ? (
