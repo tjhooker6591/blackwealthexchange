@@ -332,6 +332,17 @@ const EconomicImpactSimulator = () => {
     0.39,
   ];
   const flowPath = "M12 53 C 30 52, 74 26, 108 19";
+  const t = Math.min(Math.max(progress, 0), 1);
+  const markerX =
+    Math.pow(1 - t, 3) * 12 +
+    3 * Math.pow(1 - t, 2) * t * 30 +
+    3 * (1 - t) * Math.pow(t, 2) * 74 +
+    Math.pow(t, 3) * 108;
+  const markerY =
+    Math.pow(1 - t, 3) * 53 +
+    3 * Math.pow(1 - t, 2) * t * 52 +
+    3 * (1 - t) * Math.pow(t, 2) * 26 +
+    Math.pow(t, 3) * 19;
   return (
     <section className="relative overflow-hidden py-2 sm:py-4">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_8%_20%,rgba(96,190,255,0.12),transparent_34%),radial-gradient(circle_at_80%_84%,rgba(212,175,55,0.1),transparent_45%)]" />
@@ -572,6 +583,14 @@ const EconomicImpactSimulator = () => {
               <path
                 d={flowPath}
                 fill="none"
+                stroke="rgba(88,205,255,0.34)"
+                strokeWidth={Math.max(CHART_SYSTEM.scale.primaryLine, 1.2)}
+                strokeLinecap="round"
+                vectorEffect="non-scaling-stroke"
+              />
+              <path
+                d={flowPath}
+                fill="none"
                 stroke="url(#flowGlow)"
                 strokeWidth={Math.max(CHART_SYSTEM.scale.primaryLine, 1.45)}
                 pathLength={1}
@@ -584,7 +603,6 @@ const EconomicImpactSimulator = () => {
               />
 
               {([0, 0.2, 0.38, 0.56, 0.72, 0.86, 1] as const).map((k) => {
-                if (k > progress + 0.001) return null;
                 const x =
                   Math.pow(1 - k, 3) * 12 +
                   3 * Math.pow(1 - k, 2) * k * 30 +
@@ -600,11 +618,19 @@ const EconomicImpactSimulator = () => {
                     key={k}
                     cx={x}
                     cy={y}
-                    r={1.25}
+                    r={1.2}
                     fill="rgba(88,205,255,1)"
                   />
                 );
               })}
+
+              <circle
+                cx={markerX}
+                cy={markerY}
+                r={1.55}
+                fill="rgba(215,246,255,1)"
+                style={{ filter: "drop-shadow(0 0 4px rgba(88,205,255,0.8))" }}
+              />
 
               <path
                 d="M8 66 L108 66"
