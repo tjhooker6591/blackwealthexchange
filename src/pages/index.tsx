@@ -340,21 +340,6 @@ const EconomicImpactSimulator = () => {
 
           <div className="mt-3 grid grid-cols-2 gap-2 text-[11px] sm:gap-3 sm:text-sm">
             <div className="rounded-xl border border-white/15 bg-[#0a101a] px-3.5 py-3">
-              <div className="mb-2 inline-flex h-7 w-7 items-center justify-center rounded-full border border-pink-300/45 text-pink-200">
-                <svg
-                  viewBox="0 0 24 24"
-                  className="h-4 w-4"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path
-                    d="M4 16l5-5 3 3 8-8"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
               <p className="text-white/60">Baseline 2010</p>
               <p className="font-semibold text-white">
                 {formatCurrency(baseline)}
@@ -367,21 +352,6 @@ const EconomicImpactSimulator = () => {
             </div>
 
             <div className="rounded-xl border border-white/15 bg-[#0a101a] px-3.5 py-3">
-              <div className="mb-2 inline-flex h-7 w-7 items-center justify-center rounded-full border border-cyan-300/45 text-cyan-200">
-                <svg
-                  viewBox="0 0 24 24"
-                  className="h-4 w-4"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path
-                    d="M12 4v16M16 8c0-1.8-1.8-3-4-3s-4 1.2-4 3 1.2 2.4 4 3 4 1.2 4 3-1.8 3-4 3-4-1.2-4-3"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
               <p className="text-white/60">Daily flow</p>
               <p className="font-semibold text-white">
                 {formatCurrency(perDay)} / day
@@ -448,21 +418,6 @@ const EconomicImpactSimulator = () => {
               href="/1.8trillionimpact"
               className="group inline-flex w-full items-center justify-between gap-3 rounded-xl border border-[#D4AF37]/50 bg-[#D4AF37]/10 px-4 py-3 shadow-sm transition hover:border-[#D4AF37]/80"
             >
-              <div className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-[#D4AF37]/45 text-[#D4AF37]">
-                <svg
-                  viewBox="0 0 24 24"
-                  className="h-4 w-4"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path
-                    d="M9 8a3 3 0 1 1 6 0c0 1.3-.84 2.2-1.7 2.8-.66.47-1.3.84-1.3 1.7"
-                    strokeLinecap="round"
-                  />
-                  <circle cx="12" cy="17" r="0.8" fill="currentColor" />
-                </svg>
-              </div>
               <span className="text-[11px] font-extrabold tracking-wide text-[#D4AF37] sm:text-sm">
                 Knowledge is Power
               </span>
@@ -475,20 +430,6 @@ const EconomicImpactSimulator = () => {
               href="/economic-freedom"
               className="group inline-flex w-full items-center justify-between gap-3 rounded-xl border border-pink-400/45 bg-pink-400/10 px-4 py-3 transition hover:border-pink-300/70"
             >
-              <div className="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-pink-400/45 text-pink-300">
-                <svg
-                  viewBox="0 0 24 24"
-                  className="h-4 w-4"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path
-                    d="M8 8l3 3m2 2l3 3M10 6l2 2m2 2l2 2M7 17l2-2m6-6l2-2"
-                    strokeLinecap="round"
-                  />
-                </svg>
-              </div>
               <span className="text-[11px] font-extrabold tracking-wide text-pink-300 sm:text-sm">
                 Economic Slavery
               </span>
