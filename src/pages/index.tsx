@@ -366,7 +366,7 @@ const EconomicImpactSimulator = () => {
             2010 → 2026
           </p>
 
-          <div className="mt-3 grid grid-cols-1 gap-3 text-xs sm:grid-cols-2 sm:text-sm">
+          <div className="mt-3 grid grid-cols-2 gap-2 text-[11px] sm:gap-3 sm:text-sm">
             <div className="rounded-xl border border-white/15 bg-[#0a101a] px-3.5 py-3">
               <div className="mb-2 inline-flex h-7 w-7 items-center justify-center rounded-full border border-pink-300/45 text-pink-200">
                 <svg
@@ -630,7 +630,7 @@ const EconomicImpactSimulator = () => {
 
         <div>
           <div className="rounded-xl border border-[#D4AF37]/50 bg-[#151309]/72 px-4 py-3 sm:px-5 sm:py-4">
-            <div className="grid grid-cols-1 items-center gap-3 sm:grid-cols-[1fr_auto_1fr]">
+            <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 sm:gap-3">
               <div className="flex items-center gap-2.5">
                 <div className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#D4AF37]/50 text-[#D4AF37]">
                   <svg
@@ -659,7 +659,7 @@ const EconomicImpactSimulator = () => {
                 </div>
               </div>
 
-              <div className="mx-auto hidden h-12 w-px bg-white/25 sm:block" />
+              <div className="mx-auto h-12 w-px bg-white/25" />
 
               <div className="flex items-center gap-2.5">
                 <div className="min-w-0">
