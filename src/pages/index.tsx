@@ -440,7 +440,7 @@ const EconomicImpactSimulator = () => {
           </div>
 
           <div
-            className="relative h-[280px] overflow-hidden rounded-xl border border-cyan-300/18 bg-[#050d1a]/95 sm:h-[360px] lg:h-[420px]"
+            className="relative h-[clamp(220px,42vw,380px)] overflow-hidden rounded-xl border border-cyan-300/18 bg-[#050d1a]/95"
             data-progress={progress.toFixed(4)}
           >
             <div className="pointer-events-none absolute left-2 top-2 z-10 text-[10px] text-white/62 sm:text-xs">
@@ -581,23 +581,27 @@ const EconomicImpactSimulator = () => {
                 }}
               />
 
-              {[
-                { x: 12, y: 53 },
-                { x: 23, y: 49 },
-                { x: 39, y: 41 },
-                { x: 56, y: 31 },
-                { x: 74, y: 26 },
-                { x: 91, y: 22 },
-                { x: 108, y: 19 },
-              ].map((pt) => (
-                <circle
-                  key={`${pt.x}-${pt.y}`}
-                  cx={pt.x}
-                  cy={pt.y}
-                  r={1.25}
-                  fill="rgba(88,205,255,1)"
-                />
-              ))}
+              {([0, 0.2, 0.38, 0.56, 0.72, 0.86, 1] as const).map((k) => {
+                const x =
+                  Math.pow(1 - k, 3) * 12 +
+                  3 * Math.pow(1 - k, 2) * k * 30 +
+                  3 * (1 - k) * Math.pow(k, 2) * 74 +
+                  Math.pow(k, 3) * 108;
+                const y =
+                  Math.pow(1 - k, 3) * 53 +
+                  3 * Math.pow(1 - k, 2) * k * 52 +
+                  3 * (1 - k) * Math.pow(k, 2) * 26 +
+                  Math.pow(k, 3) * 19;
+                return (
+                  <circle
+                    key={k}
+                    cx={x}
+                    cy={y}
+                    r={1.25}
+                    fill="rgba(88,205,255,1)"
+                  />
+                );
+              })}
 
               <path
                 d="M8 66 L108 66"
@@ -607,7 +611,7 @@ const EconomicImpactSimulator = () => {
               />
             </svg>
 
-            <div className="absolute bottom-1.5 left-2 right-2 grid grid-cols-3 text-center text-[11px] font-semibold tracking-[0.04em] text-white/90 sm:text-xs">
+            <div className="absolute bottom-1.5 left-2 right-2 grid grid-cols-3 text-center text-[10px] font-semibold tracking-[0.04em] text-white/90 sm:text-xs">
               <span className="rounded-sm bg-black/30 py-0.5">
                 Baseline<div className="text-cyan-300/90">2010</div>
               </span>
