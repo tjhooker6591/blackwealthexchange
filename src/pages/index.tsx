@@ -332,29 +332,11 @@ const EconomicImpactSimulator = () => {
     0.39,
   ];
   const flowPath = "M12 53 C 30 52, 74 26, 108 19";
-  const t = Math.min(Math.max(progress, 0), 1);
-  const p0 = { x: 12, y: 53 };
-  const p1 = { x: 30, y: 52 };
-  const p2 = { x: 74, y: 26 };
-  const p3 = { x: 108, y: 19 };
-  const markerX =
-    Math.pow(1 - t, 3) * p0.x +
-    3 * Math.pow(1 - t, 2) * t * p1.x +
-    3 * (1 - t) * Math.pow(t, 2) * p2.x +
-    Math.pow(t, 3) * p3.x;
-  const markerY =
-    Math.pow(1 - t, 3) * p0.y +
-    3 * Math.pow(1 - t, 2) * t * p1.y +
-    3 * (1 - t) * Math.pow(t, 2) * p2.y +
-    Math.pow(t, 3) * p3.y;
-
   return (
     <section className="relative overflow-hidden py-2 sm:py-4">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_8%_20%,rgba(96,190,255,0.12),transparent_34%),radial-gradient(circle_at_80%_84%,rgba(212,175,55,0.1),transparent_45%)]" />
 
-      <div
-        className="relative grid gap-4 rounded-2xl border border-[#D4AF37]/55 bg-[#04070f]/98 p-4 shadow-[0_22px_56px_rgba(0,0,0,0.62)] sm:p-6"
-      >
+      <div className="relative grid gap-4 rounded-2xl border border-[#D4AF37]/55 bg-[#04070f]/98 p-4 shadow-[0_22px_56px_rgba(0,0,0,0.62)] sm:p-6">
         <div className="min-w-0">
           <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-[#0a101c] px-4 py-1.5 text-[11px] font-bold tracking-[0.08em] text-white/90">
             <span className="h-2 w-2 rounded-full bg-[#D4AF37]" />
@@ -384,7 +366,7 @@ const EconomicImpactSimulator = () => {
             2010 → 2026
           </p>
 
-          <div className="mt-3 grid grid-cols-1 gap-3 text-xs sm:grid-cols-2 sm:text-sm">
+          <div className="mt-3 grid grid-cols-2 gap-3 text-xs sm:text-sm">
             <div className="rounded-xl border border-white/15 bg-[#0a101a] px-3.5 py-3">
               <div className="mb-2 inline-flex h-7 w-7 items-center justify-center rounded-full border border-pink-300/45 text-pink-200">
                 <svg
@@ -591,9 +573,7 @@ const EconomicImpactSimulator = () => {
                 d={flowPath}
                 fill="none"
                 stroke="url(#flowGlow)"
-                strokeWidth={Math.max(CHART_SYSTEM.scale.primaryLine,1.35)}
-                pathLength={1}
-                strokeDasharray={`${Math.max(progress, 0.0001)} 1`}
+                strokeWidth={Math.max(CHART_SYSTEM.scale.primaryLine, 1.45)}
                 strokeLinecap="round"
                 vectorEffect="non-scaling-stroke"
                 style={{
@@ -615,19 +595,10 @@ const EconomicImpactSimulator = () => {
                   cx={pt.x}
                   cy={pt.y}
                   r={1.25}
-                  fill="rgba(207,242,255,0.96)"
+                  fill="rgba(88,205,255,1)"
                 />
               ))}
 
-              <circle
-                cx={markerX}
-                cy={markerY}
-                r={CHART_SYSTEM.scale.pulseDot}
-                fill="rgba(255,255,255,0.98)"
-                style={{
-                  filter: "drop-shadow(0 0 5px rgba(177,238,255,0.62))",
-                }}
-              />
               <path
                 d="M8 66 L108 66"
                 stroke="rgba(61,162,243,0.58)"
