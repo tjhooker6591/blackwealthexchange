@@ -631,8 +631,8 @@ const EconomicImpactSimulator = () => {
         <div>
           <div className="rounded-xl border border-[#D4AF37]/50 bg-[#151309]/72 px-4 py-3 sm:px-5 sm:py-4">
             <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 sm:gap-3">
-              <div className="flex items-center gap-2.5">
-                <div className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#D4AF37]/50 text-[#D4AF37]">
+              <div className="flex min-w-0 items-center gap-1.5 sm:gap-2.5">
+                <div className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-[#D4AF37]/50 text-[#D4AF37] sm:h-8 sm:w-8">
                   <svg
                     viewBox="0 0 24 24"
                     className="h-4 w-4"
@@ -650,7 +650,7 @@ const EconomicImpactSimulator = () => {
                     <span className="mr-1 inline-block h-1.5 w-1.5 rounded-full bg-[#D4AF37]" />
                     5% recaptured =
                   </p>
-                  <p className="text-base font-extrabold text-[#D4AF37] sm:text-xl">
+                  <p className="break-words text-[12px] font-extrabold leading-tight tracking-tight text-[#D4AF37] sm:text-xl">
                     {formatCurrency(recaptureValue)}
                   </p>
                   <p className="text-[11px] text-white/75">
@@ -661,13 +661,13 @@ const EconomicImpactSimulator = () => {
 
               <div className="mx-auto h-12 w-px bg-white/25" />
 
-              <div className="flex items-center gap-2.5">
+              <div className="flex min-w-0 items-center gap-1.5 sm:gap-2.5">
                 <div className="min-w-0">
                   <p className="text-xs text-white/85">
                     <span className="mr-1 inline-block h-1.5 w-1.5 rounded-full bg-pink-400" />
                     95% leakage =
                   </p>
-                  <p className="text-base font-extrabold text-pink-300 sm:text-xl">
+                  <p className="break-words text-[12px] font-extrabold leading-tight tracking-tight text-pink-300 sm:text-xl">
                     {formatCurrency(leakageValue)}
                   </p>
                   <p className="text-[11px] text-white/75">outside flow</p>
