@@ -28,17 +28,16 @@ const GOAL_OPTIONS = [
     goal: "Promote Your Brand",
     title: "Banner Placement",
     option: "banner-ad",
-    where: "Homepage top banner slot or Business Directory sidebar banner slot",
-    who: "Best for strong visual campaigns and repeated impressions",
+    where: "Business Directory banner and sidebar inventory",
+    who: "Best for strong visual campaigns and repeated impressions in directory browsing",
     href: "/advertise/banner-ads",
   },
   {
     goal: "Increase Discovery",
     title: "Directory Placement",
     option: "directory-featured",
-    where:
-      "Business Directory featured placements block and directory listing tiers",
-    who: "Best for local discovery and ongoing lead visibility",
+    where: "Business Directory featured and top placement areas",
+    who: "Best for local discovery and priority visibility in directory browsing",
     href: "/advertise/business-directory",
   },
   {
@@ -67,14 +66,15 @@ const PLACEMENT_MAP = [
     userGets: "Priority homepage sponsor visibility with weekly scheduling",
   },
   {
-    placement: "Homepage top banner or Directory sidebar banner",
+    placement: "Business Directory banner and sidebar inventory",
     package: "Banner Placement",
-    userGets: "Visual banner impressions in approved banner inventory",
+    userGets:
+      "Visual banner impressions in approved Business Directory banner inventory",
   },
   {
-    placement: "Business Directory featured blocks and tiered listings",
+    placement: "Business Directory featured and top placement areas",
     package: "Directory Placement",
-    userGets: "Directory discovery visibility with explicit listing tier behavior",
+    userGets: "Priority visibility inside the Business Directory experience",
   },
   {
     placement: "Custom approved surfaces",
@@ -220,7 +220,8 @@ export default function AdvertiseWithUs() {
             Placement Clarity Map
           </h2>
           <p className="mt-2 text-white/80">
-            Use this map to avoid ambiguity between homepage, directory, and custom placements.
+            Use this map to avoid ambiguity between homepage, directory, and
+            custom placements.
           </p>
           <div className="mt-4 grid gap-3 md:grid-cols-2">
             {PLACEMENT_MAP.map((row) => (
@@ -231,8 +232,12 @@ export default function AdvertiseWithUs() {
                 <p className="text-xs uppercase tracking-[0.08em] text-yellow-300/80">
                   {row.package}
                 </p>
-                <p className="mt-1 text-sm font-semibold text-white">{row.placement}</p>
-                <p className="mt-1 text-sm text-white/75">What you get: {row.userGets}</p>
+                <p className="mt-1 text-sm font-semibold text-white">
+                  {row.placement}
+                </p>
+                <p className="mt-1 text-sm text-white/75">
+                  What you get: {row.userGets}
+                </p>
               </div>
             ))}
           </div>
@@ -337,9 +342,15 @@ export default function AdvertiseWithUs() {
                 key={`mobile-${row.placement}-${row.duration}`}
                 className="rounded-xl border border-white/10 bg-black/30 p-4"
               >
-                <p className="text-sm font-semibold text-white">{row.placement}</p>
-                <p className="mt-1 text-xs text-white/70">Duration: {row.duration}</p>
-                <p className="mt-1 text-sm font-semibold text-yellow-300">{row.price}</p>
+                <p className="text-sm font-semibold text-white">
+                  {row.placement}
+                </p>
+                <p className="mt-1 text-xs text-white/70">
+                  Duration: {row.duration}
+                </p>
+                <p className="mt-1 text-sm font-semibold text-yellow-300">
+                  {row.price}
+                </p>
                 <p className="mt-1 text-xs text-white/70">{row.note}</p>
                 <Link
                   href={row.href}
@@ -397,7 +408,9 @@ export default function AdvertiseWithUs() {
             What happens next after you choose
           </h2>
           <p className="mt-2 text-white/80">
-            After you select a package, you enter campaign details, submit for review, and then proceed to activation flow for the same package. No package switching happens silently.
+            After you select a package, you enter campaign details, submit for
+            review, and then proceed to activation flow for the same package. No
+            package switching happens silently.
           </p>
         </section>
 

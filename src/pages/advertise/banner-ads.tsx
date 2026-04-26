@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 import { getAdDurationOptions } from "@/lib/advertising/pricing";
 
-type BannerPlacement = "homepage-top" | "sidebar";
+type BannerPlacement = "sidebar";
 type BannerDuration = "14" | "30";
 
 /**
@@ -36,16 +36,10 @@ const PLACEMENTS: Array<{
   description: string;
 }> = [
   {
-    title: "Top of Homepage (Limited)",
-    placement: "homepage-top",
-    description:
-      "Tightly limited homepage banner request. This slot can be deferred when Featured Sponsor campaigns are active to preserve homepage clarity.",
-  },
-  {
-    title: "Sidebar Ad (Primary Banner Surface)",
+    title: "Business Directory Banner / Sidebar",
     placement: "sidebar",
     description:
-      "Business Directory sidebar banner inventory request after approval.",
+      "Business Directory banner and sidebar inventory request after approval.",
   },
 ];
 

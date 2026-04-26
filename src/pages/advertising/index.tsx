@@ -36,10 +36,14 @@ const AdCard = ({
         <h3 className="text-lg font-semibold text-yellow-200">{title}</h3>
         <p className="mt-1 text-sm text-zinc-300">{desc}</p>
         <p className="mt-2 text-xs text-zinc-400">
-          <span className="font-semibold text-zinc-200">Where it appears:</span> {where}
+          <span className="font-semibold text-zinc-200">Where it appears:</span>{" "}
+          {where}
         </p>
         <p className="mt-1 text-xs text-zinc-400">
-          <span className="font-semibold text-zinc-200">What happens next:</span> {nextStep}
+          <span className="font-semibold text-zinc-200">
+            What happens next:
+          </span>{" "}
+          {nextStep}
         </p>
       </div>
 
@@ -126,7 +130,8 @@ export default function AdvertisingIndexPage() {
               tasteful placements.
             </p>
             <p className="mt-1 text-xs text-zinc-400">
-              Choose package → complete campaign details → review/approval → scheduled placement activation.
+              Choose package → complete campaign details → review/approval →
+              scheduled placement activation.
             </p>
             <p className="mt-2 text-xs text-zinc-400">
               Placement definitions:{" "}
@@ -233,7 +238,7 @@ export default function AdvertisingIndexPage() {
           <AdCard
             title="Directory Listings"
             desc="Directory campaign tiers with explicit review and placement lifecycle."
-            where="Business Directory featured blocks and listing tiers"
+            where="Business Directory featured and top placement areas"
             nextStep="Choose standard or featured listing, then submit campaign details for review."
             price={priceLabel(directoryBase)}
             href="/advertise/business-directory"
@@ -252,8 +257,8 @@ export default function AdvertisingIndexPage() {
 
           <AdCard
             title="Banner Ads"
-            desc="Directory-first banner inventory with tightly limited homepage top banner availability."
-            where="Directory sidebar banner or limited homepage top banner"
+            desc="Business Directory banner inventory for high-visibility campaign impressions."
+            where="Business Directory banner and sidebar inventory"
             nextStep="Select requested banner placement and duration, then submit campaign details."
             price={priceLabel(bannerBase)}
             href="/advertise/banner-ads"
