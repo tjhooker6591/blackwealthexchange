@@ -7,7 +7,6 @@ import { useRouter } from "next/router";
 import {
   Briefcase,
   Bookmark,
-  Crown,
   User as UserIcon,
   ArrowRight,
   Lock,
@@ -175,6 +174,49 @@ export default function UserDashboard() {
     return dashboardData?.fullName || user?.email || "Member";
   }, [dashboardData?.fullName, user?.email]);
 
+  const nextStep = useMemo(() => {
+    const completionPct =
+      typeof dashboardData.profileCompletion === "number"
+        ? dashboardData.profileCompletion
+        : 0;
+    const savedCount = Number(dashboardData.savedJobs || 0);
+    const applicationCount = Number(dashboardData.applications || 0);
+
+    if (completionPct < 80) {
+      return {
+        title: "Complete your profile first",
+        body: "A stronger profile improves job match quality and response rate.",
+        href: "/profile",
+        cta: "Update profile",
+      };
+    }
+
+    if (!savedCount) {
+      return {
+        title: "Save 3 to 5 jobs",
+        body: "Build a shortlist so you can apply quickly and track your best opportunities.",
+        href: "/job-listings",
+        cta: "Find jobs",
+      };
+    }
+
+    if (!applicationCount) {
+      return {
+        title: "Submit your first application",
+        body: "You already have a shortlist. Start applying to move your dashboard forward.",
+        href: "/applications",
+        cta: "View applications",
+      };
+    }
+
+    return {
+      title: "Keep momentum",
+      body: "Track application updates daily and keep your profile current.",
+      href: "/applications",
+      cta: "Track updates",
+    };
+  }, [dashboardData.applications, dashboardData.profileCompletion, dashboardData.savedJobs]);
+
   if (loading) return <DashboardSkeleton />;
 
   if (accessDenied) {
@@ -249,7 +291,7 @@ export default function UserDashboard() {
           </div>
 
           {/* Quick actions */}
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-5 sm:gap-3">
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-3 sm:gap-3">
             <Link
               href="/job-listings"
               className="inline-flex items-center justify-center gap-2 rounded-xl bg-gold px-4 py-2.5 text-center text-sm font-semibold text-black transition hover:bg-yellow-500 sm:px-5"
@@ -267,27 +309,11 @@ export default function UserDashboard() {
             </Link>
 
             <Link
-              href="/pricing"
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-yellow-500/20 bg-yellow-500/10 px-4 py-2.5 text-center text-sm transition hover:bg-yellow-500/15 sm:px-5"
+              href="/applications"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-center text-sm transition hover:bg-white/10 sm:px-5"
             >
-              <Crown className="h-4 w-4 text-yellow-300" />
-              Premium Tools
-            </Link>
-
-            <Link
-              href="/dashboard/black-card"
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-yellow-500/20 bg-yellow-500/10 px-4 py-2.5 text-center text-sm transition hover:bg-yellow-500/15 sm:px-5"
-            >
-              <Crown className="h-4 w-4 text-yellow-300" />
-              BWE Black Card
-            </Link>
-
-            <Link
-              href="/affiliate/index"
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-2.5 text-center text-sm transition hover:bg-emerald-500/15 sm:px-5"
-            >
-              <ArrowRight className="h-4 w-4 text-emerald-300" />
-              Affiliate Dashboard
+              <ArrowRight className="h-4 w-4 text-yellow-300" />
+              Track Applications
             </Link>
           </div>
         </div>
@@ -308,6 +334,25 @@ export default function UserDashboard() {
             </div>
           </div>
         ) : null}
+
+        <div className="rounded-2xl border border-yellow-500/25 bg-yellow-500/10 p-4 shadow-xl sm:p-5">
+          <h2 className="text-lg font-bold text-gold">Next step</h2>
+          <p className="mt-1 text-sm text-gray-300">{nextStep.body}</p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <Link
+              href={nextStep.href}
+              className="inline-flex items-center gap-2 rounded-xl bg-gold px-4 py-2 text-sm font-semibold text-black hover:bg-yellow-500"
+            >
+              {nextStep.cta} <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
+              href="/dashboard"
+              className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm hover:bg-white/10"
+            >
+              Dashboard home
+            </Link>
+          </div>
+        </div>
 
         {/* Stat cards */}
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-3 lg:gap-6">

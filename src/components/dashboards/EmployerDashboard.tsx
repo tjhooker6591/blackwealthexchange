@@ -231,6 +231,38 @@ export default function EmployerDashboard() {
     return Math.max(0, Math.min(100, n));
   }, [stats.profileCompletion]);
 
+  const nextStep = useMemo(() => {
+    if (!stats.jobsPosted) {
+      return {
+        body: "Post your first job so candidates can discover your team.",
+        href: ROUTES.postJob,
+        cta: "Post first job",
+      };
+    }
+
+    if (!stats.totalApplicants) {
+      return {
+        body: "Your jobs are live. Review listing quality and distribution to drive first applicants.",
+        href: ROUTES.jobs,
+        cta: "Review active jobs",
+      };
+    }
+
+    if (completion < 80) {
+      return {
+        body: "Improve your employer profile to increase candidate trust and response rates.",
+        href: ROUTES.profile,
+        cta: "Improve profile",
+      };
+    }
+
+    return {
+      body: "Prioritize applicant follow-up to keep top candidates engaged.",
+      href: ROUTES.applicants,
+      cta: "Open applicants",
+    };
+  }, [completion, stats.jobsPosted, stats.totalApplicants]);
+
   if (loading) {
     return (
       <div className="min-h-[calc(100vh-80px)] bg-black text-white">
@@ -380,6 +412,25 @@ export default function EmployerDashboard() {
           </div>
         ) : null}
 
+        <div className="rounded-2xl border border-yellow-500/25 bg-yellow-500/10 p-4 shadow-xl sm:p-5">
+          <h2 className="text-lg font-bold text-gold">Next step</h2>
+          <p className="mt-1 text-sm text-gray-300">{nextStep.body}</p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <Link
+              href={nextStep.href}
+              className="inline-flex items-center gap-2 rounded-xl bg-yellow-400 px-4 py-2 text-sm font-semibold text-black hover:bg-yellow-500"
+            >
+              {nextStep.cta} <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
+              href={ROUTES.jobs}
+              className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm hover:bg-white/10"
+            >
+              Manage jobs
+            </Link>
+          </div>
+        </div>
+
         {/* Stats */}
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-5">
           <StatTile
@@ -509,7 +560,8 @@ export default function EmployerDashboard() {
                         href={`/employer/edit-job/${job._id}`}
                         className="inline-flex items-center gap-2 text-sm text-yellow-300 hover:underline sm:whitespace-nowrap"
                       >
-                        Manage Listing <ArrowRight className="h-4 w-4 shrink-0" />
+                        Manage Listing{" "}
+                        <ArrowRight className="h-4 w-4 shrink-0" />
                       </Link>
                     </div>
                   </div>
