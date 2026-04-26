@@ -8,18 +8,21 @@ const articles = [
     summary:
       "Learn how to craft job posts that attract diverse candidates and avoid unconscious bias.",
     slug: "inclusive-job-descriptions",
+    available: true,
   },
   {
     title: "Hiring Black Talent: Best Practices",
     summary:
       "Strategies and tools to effectively engage, attract, and support Black professionals.",
     slug: "hiring-black-talent",
+    available: false,
   },
   {
     title: "How to Build an Internship Pipeline",
     summary:
       "Develop a structured program to mentor and hire students from underrepresented communities.",
     slug: "internship-pipeline-guide",
+    available: false,
   },
 ];
 
@@ -31,7 +34,8 @@ export default function ResourcesIndex() {
           Employer Resources
         </h1>
         <p className="text-gray-300 mb-8">
-          Practical guidance for hiring, onboarding, and retaining diverse talent with clear implementation steps.
+          Practical guidance for hiring, onboarding, and retaining diverse
+          talent with clear implementation steps.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -44,12 +48,18 @@ export default function ResourcesIndex() {
                 {article.title}
               </h2>
               <p className="text-gray-400 mb-4">{article.summary}</p>
-              <Link
-                href={`/resources/${article.slug}`}
-                className="text-gold hover:underline font-medium"
-              >
-                Read Article →
-              </Link>
+              {article.available ? (
+                <Link
+                  href={`/resources/${article.slug}`}
+                  className="font-medium text-gold hover:underline"
+                >
+                  Read Article →
+                </Link>
+              ) : (
+                <span className="font-medium text-gray-500">
+                  Article coming soon
+                </span>
+              )}
             </div>
           ))}
         </div>

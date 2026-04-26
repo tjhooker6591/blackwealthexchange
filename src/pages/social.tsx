@@ -79,13 +79,8 @@ const posts: Post[] = [
 
 const Social: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"feed" | "trending">("feed");
-  const [postContent, setPostContent] = useState<string>("");
+  const [postContent] = useState<string>("");
 
-  const handlePost = () => {
-    // Logic to handle new post
-    console.log("New post:", postContent);
-    setPostContent("");
-  };
 
   return (
     <div className="bg-gray-900 text-white min-h-screen">
@@ -110,6 +105,9 @@ const Social: React.FC = () => {
         <h1 className="text-4xl font-bold text-center text-yellow-400 mb-8">
           BWES Social
         </h1>
+        <div className="mb-6 rounded-lg border border-yellow-500/30 bg-yellow-500/10 p-3 text-center text-sm text-yellow-200">
+          Social posting is coming soon. Feed and trends are preview-only.
+        </div>
 
         {/* Tabs */}
         <div className="mb-8">
@@ -133,19 +131,19 @@ const Social: React.FC = () => {
               {/* New Post Input */}
               <div className="bg-gray-800 p-4 rounded-lg mb-6 mt-4">
                 <textarea
-                  placeholder="What's on your mind?"
+                  placeholder="Posting is coming soon"
                   value={postContent}
-                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                    setPostContent(e.target.value)
-                  }
-                  className="w-full bg-gray-700 text-white rounded-lg p-2 mb-2"
+                  disabled
+                  readOnly
+                  className="mb-2 w-full cursor-not-allowed rounded-lg bg-gray-700/60 p-2 text-white/70"
                   rows={3}
                 />
                 <button
-                  onClick={handlePost}
-                  className="w-full bg-yellow-400 text-black font-bold py-2 px-4 rounded hover:bg-yellow-500 transition duration-200"
+                  disabled
+                  aria-disabled="true"
+                  className="w-full cursor-not-allowed rounded bg-gray-600 py-2 px-4 font-bold text-gray-300"
                 >
-                  Post
+                  Post (Coming Soon)
                 </button>
               </div>
 

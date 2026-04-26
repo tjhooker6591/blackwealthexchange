@@ -581,8 +581,7 @@ export default function EventsPage() {
                         </a>
                       ) : null}
 
-                      {/* Optional future RSVP page */}
-                      {evt.rsvpUrl ? (
+                      {evt.rsvpUrl && evt.rsvpUrl !== "/events/rsvp" ? (
                         <Link
                           href={evt.rsvpUrl}
                           className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition text-sm"
@@ -590,7 +589,12 @@ export default function EventsPage() {
                           <Calendar className="h-4 w-4" />
                           RSVP
                         </Link>
-                      ) : null}
+                      ) : (
+                        <span className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-gray-400">
+                          <Calendar className="h-4 w-4" />
+                          RSVP Coming Soon
+                        </span>
+                      )}
                     </div>
                   </div>
                 ))}
