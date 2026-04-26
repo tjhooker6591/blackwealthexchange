@@ -57,6 +57,12 @@ function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
+function formatUsd(value: unknown) {
+  const num = Number(value);
+  if (!Number.isFinite(num)) return "$0.00";
+  return `$${num.toFixed(2)}`;
+}
+
 function useDebouncedValue<T>(value: T, delayMs: number) {
   const [debounced, setDebounced] = useState(value);
   useEffect(() => {
@@ -483,6 +489,8 @@ export default function Marketplace() {
           <>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4 xl:grid-cols-5 lg:gap-6">
               {products.map((product) => {
+                const productName =
+                  String(product?.name || "").trim() || "Marketplace item";
                 const stock = Number(product.stockQuantity ?? 0);
                 const availability =
                   stock <= 0
@@ -516,16 +524,16 @@ export default function Marketplace() {
                     <Link
                       href={`/marketplace/product/${product._id}`}
                       className="block"
-                      aria-label={`View details for ${product.name}`}
+                      aria-label={`View details for ${productName}`}
                     >
                       <div className="relative h-28 w-full overflow-hidden rounded-xl border border-white/10 bg-black/40 sm:h-44">
                         {product.imageUrl ? (
                           <Image
                             src={product.imageUrl}
-                            alt={product.name}
+                            alt={productName}
                             fill
                             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, (max-width: 1536px) 25vw, 20vw"
-                            className="object-cover transition duration-500 group-hover:scale-[1.03] object-center w-full h-56 sm:h-64"
+                            className="object-cover object-center transition duration-500 group-hover:scale-[1.03]"
                           />
                         ) : (
                           <div className="flex h-full w-full items-center justify-center">
@@ -538,13 +546,13 @@ export default function Marketplace() {
 
                       <div className="mt-3 flex items-start justify-between gap-2">
                         <h4 className="line-clamp-2 min-w-0 text-sm font-semibold leading-tight text-gold sm:text-base">
-                          {product.name}
+                          {productName}
                         </h4>
                         <p
                           className="shrink-0 text-sm font-semibold text-gray-100 sm:text-base"
-                          aria-label={`Price ${product.price.toFixed(2)} USD`}
+                          aria-label={`Price ${formatUsd(product.price)} USD`}
                         >
-                          ${product.price.toFixed(2)}
+                          {formatUsd(product.price)}
                         </p>
                       </div>
 
@@ -576,7 +584,10 @@ export default function Marketplace() {
                       </div>
 
                       <p className="mt-2 text-[11px] text-gray-300 sm:text-xs">
-                        Sold by <span className="font-semibold text-gray-100">{sellerName}</span>
+                        Sold by{" "}
+                        <span className="font-semibold text-gray-100">
+                          {sellerName}
+                        </span>
                       </p>
                       <p className="mt-0.5 text-[11px] text-gray-400 sm:text-xs">
                         {sellerTrustLabel}

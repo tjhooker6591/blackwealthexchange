@@ -108,6 +108,7 @@ const ProductDetailPage = () => {
     fetchRelated();
   }, [product]);
 
+  const productName = String(product?.name || "").trim() || "Marketplace item";
   const stockQuantity = Number(product?.stockQuantity ?? 0);
   const availability =
     product?.availability ||
@@ -116,8 +117,7 @@ const ProductDetailPage = () => {
       : stockQuantity <= 3
         ? "Low stock"
         : "In stock");
-  const sellerName =
-    product?.seller?.name || "Verified BWE Marketplace Seller";
+  const sellerName = product?.seller?.name || "Verified BWE Marketplace Seller";
   const sellerTrust = product?.seller?.profileComplete
     ? "Verified seller profile details on file"
     : "Basic seller profile on file";
@@ -208,7 +208,7 @@ const ProductDetailPage = () => {
           <div className="relative w-full h-72 md:h-[540px] overflow-hidden rounded-xl border border-white/10 bg-black/40">
             <Image
               src={product.imageUrl || "/placeholder.png"}
-              alt={product.name}
+              alt={productName}
               fill
               className="object-cover"
               sizes="(max-width: 768px) 100vw, 50vw"
@@ -232,7 +232,7 @@ const ProductDetailPage = () => {
             </div>
 
             <h1 className="mt-3 text-3xl font-extrabold text-gold">
-              {product.name}
+              {productName}
             </h1>
             <p className="mt-2 text-3xl font-bold text-white">
               ${Number(product.price || 0).toFixed(2)}
@@ -279,6 +279,10 @@ const ProductDetailPage = () => {
               </p>
             </div>
 
+            <p className="mt-3 text-xs text-gray-300">
+              Next step: use <span className="font-semibold text-white">Buy Now</span> to place an order, or <span className="font-semibold text-white">Contact Seller</span> for fit, shipping, or product questions.
+            </p>
+
             <div className="mt-4 rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-4 text-sm text-gray-100">
               <p className="font-semibold text-gold">How purchasing works</p>
               <ul className="mt-2 list-disc space-y-1 pl-5 text-gray-200">
@@ -315,7 +319,7 @@ const ProductDetailPage = () => {
                 disabled={!canContactSeller}
                 className="w-full rounded-xl border border-gold px-4 py-3 text-sm font-semibold text-gold transition enabled:hover:bg-gold enabled:hover:text-black disabled:cursor-not-allowed disabled:opacity-60"
               >
-                Contact Seller
+                Ask Seller a Question
               </button>
               <Link
                 href="/marketplace/my-orders"
