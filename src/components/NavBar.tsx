@@ -1,12 +1,18 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/router";
 import useAuth from "@/hooks/useAuth";
+
+type DesktopMenu = "explore" | "account" | null;
 
 export default function NavBar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [desktopMenuOpen, setDesktopMenuOpen] = useState<DesktopMenu>(null);
+  const navRef = useRef<HTMLElement | null>(null);
+  const router = useRouter();
   const { user, loading, logout } = useAuth();
 
   const dashboardHref =
@@ -21,13 +27,41 @@ export default function NavBar() {
   const profileHref =
     user?.accountType === "business" ? "/dashboard/edit-business" : "/profile";
 
-  const closeMobileMenu = () => setMobileMenuOpen(false);
+  const closeAllMenus = () => {
+    setMobileMenuOpen(false);
+    setDesktopMenuOpen(null);
+  };
+
+  const handleItemClick = () => {
+    closeAllMenus();
+  };
+
+  useEffect(() => {
+    const onRouteStart = () => closeAllMenus();
+    router.events.on("routeChangeStart", onRouteStart);
+    return () => router.events.off("routeChangeStart", onRouteStart);
+  }, [router.events]);
+
+  useEffect(() => {
+    const onMouseDown = (event: MouseEvent) => {
+      if (!navRef.current) return;
+      if (!navRef.current.contains(event.target as Node)) {
+        closeAllMenus();
+      }
+    };
+    document.addEventListener("mousedown", onMouseDown);
+    return () => document.removeEventListener("mousedown", onMouseDown);
+  }, []);
 
   return (
-    <nav className="relative z-50 border-b border-white/5 bg-black text-white">
+    <nav
+      ref={navRef}
+      className="relative z-50 border-b border-white/5 bg-black text-white"
+    >
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link
           href="/"
+          onClick={handleItemClick}
           className="flex min-w-0 items-center gap-2 lg:max-w-[220px] xl:max-w-none"
         >
           <Image
@@ -47,75 +81,74 @@ export default function NavBar() {
         </Link>
 
         <div className="hidden items-center gap-1 lg:flex">
-          <Link href="/start-here" className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 hover:bg-white/5 hover:text-[#D4AF37]">
-            Start Here
-          </Link>
-          <Link href="/business-directory" className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 hover:bg-white/5 hover:text-[#D4AF37]">
-            Search &amp; Directory
-          </Link>
-          <Link href="/marketplace" className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 hover:bg-white/5 hover:text-[#D4AF37]">
-            Marketplace
-          </Link>
-          <Link href="/jobs" className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 hover:bg-white/5 hover:text-[#D4AF37]">
-            Jobs
-          </Link>
-          <Link href="/advertising" className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 hover:bg-white/5 hover:text-[#D4AF37]">
-            Advertising
-          </Link>
-          <Link href="/financial-literacy" className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 hover:bg-white/5 hover:text-[#D4AF37]">
-            Learn
-          </Link>
+          <Link href="/start-here" onClick={handleItemClick} className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 hover:bg-white/5 hover:text-[#D4AF37]">Start Here</Link>
+          <Link href="/business-directory" onClick={handleItemClick} className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 hover:bg-white/5 hover:text-[#D4AF37]">Search &amp; Directory</Link>
+          <Link href="/marketplace" onClick={handleItemClick} className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 hover:bg-white/5 hover:text-[#D4AF37]">Marketplace</Link>
+          <Link href="/jobs" onClick={handleItemClick} className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 hover:bg-white/5 hover:text-[#D4AF37]">Jobs</Link>
+          <Link href="/advertising" onClick={handleItemClick} className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 hover:bg-white/5 hover:text-[#D4AF37]">Advertising</Link>
+          <Link href="/financial-literacy" onClick={handleItemClick} className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 hover:bg-white/5 hover:text-[#D4AF37]">Learn</Link>
 
-          <details className="group relative">
-            <summary className="list-none cursor-pointer rounded-lg px-3 py-2 text-sm font-semibold text-white/90 hover:bg-white/5 hover:text-[#D4AF37]">
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() =>
+                setDesktopMenuOpen((prev) => (prev === "explore" ? null : "explore"))
+              }
+              className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 hover:bg-white/5 hover:text-[#D4AF37]"
+              aria-expanded={desktopMenuOpen === "explore"}
+            >
               Explore
-            </summary>
-            <div className="absolute right-0 z-50 mt-2 w-64 rounded-xl border border-white/10 bg-black/95 p-2 shadow-2xl">
-              <Link href="/black-card" className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]">Black Card</Link>
-              <Link href="/affiliate" className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]">Earn with BWE</Link>
-              <Link href="/black-entertainment-news" className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]">Culture &amp; Entertainment</Link>
-              <Link href="/music" className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]">Music</Link>
-              <Link href="/black-student-opportunities" className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]">Student Opportunities</Link>
-              <Link href="/wealth-builder" className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]">Wealth Builder</Link>
-              <Link href="/travel-map/explore" className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]">Travel Map</Link>
-              <a
-                href="https://www.youtube.com/@blackwealthexchangesociety8390"
-                target="_blank"
-                rel="noreferrer"
-                className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]"
-              >
-                BWE Live
-              </a>
-            </div>
-          </details>
+            </button>
+            {desktopMenuOpen === "explore" && (
+              <div className="absolute right-0 z-50 mt-2 w-64 rounded-xl border border-white/10 bg-black/95 p-2 shadow-2xl">
+                <Link href="/black-card" onClick={handleItemClick} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]">Black Card</Link>
+                <Link href="/affiliate" onClick={handleItemClick} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]">Earn with BWE</Link>
+                <Link href="/black-entertainment-news" onClick={handleItemClick} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]">Culture &amp; Entertainment</Link>
+                <Link href="/music" onClick={handleItemClick} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]">Music</Link>
+                <Link href="/black-student-opportunities" onClick={handleItemClick} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]">Student Opportunities</Link>
+                <Link href="/wealth-builder" onClick={handleItemClick} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]">Wealth Builder</Link>
+                <Link href="/travel-map/explore" onClick={handleItemClick} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]">Travel Map</Link>
+                <a href="https://www.youtube.com/@blackwealthexchangesociety8390" target="_blank" rel="noreferrer" onClick={handleItemClick} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]">BWE Live</a>
+              </div>
+            )}
+          </div>
 
-          {loading ? null : user ? (
-            <details className="group relative ml-1">
-              <summary className="list-none cursor-pointer rounded-lg px-3 py-2 text-sm font-semibold text-white/90 hover:bg-white/5 hover:text-[#D4AF37]">
-                Account
-              </summary>
+          <div className="relative ml-1">
+            <button
+              type="button"
+              onClick={() =>
+                setDesktopMenuOpen((prev) => (prev === "account" ? null : "account"))
+              }
+              className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 hover:bg-white/5 hover:text-[#D4AF37]"
+              aria-expanded={desktopMenuOpen === "account"}
+            >
+              Account
+            </button>
+            {desktopMenuOpen === "account" && (
               <div className="absolute right-0 z-50 mt-2 w-48 rounded-xl border border-white/10 bg-black/95 p-2 shadow-2xl">
-                <Link href={dashboardHref} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]">Dashboard</Link>
-                <Link href={profileHref} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]">Profile</Link>
-                <button
-                  onClick={logout}
-                  className="block w-full rounded-lg px-3 py-2 text-left text-sm text-white/85 hover:bg-white/5 hover:text-red-500"
-                >
-                  Sign Out
-                </button>
+                {loading ? null : user ? (
+                  <>
+                    <Link href={dashboardHref} onClick={handleItemClick} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]">Dashboard</Link>
+                    <Link href={profileHref} onClick={handleItemClick} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]">Profile</Link>
+                    <button
+                      onClick={() => {
+                        closeAllMenus();
+                        logout();
+                      }}
+                      className="block w-full rounded-lg px-3 py-2 text-left text-sm text-white/85 hover:bg-white/5 hover:text-red-500"
+                    >
+                      Sign Out
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link href="/login" onClick={handleItemClick} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]">Log In</Link>
+                    <Link href="/signup" onClick={handleItemClick} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]">Sign Up</Link>
+                  </>
+                )}
               </div>
-            </details>
-          ) : (
-            <details className="group relative ml-1">
-              <summary className="list-none cursor-pointer rounded-lg px-3 py-2 text-sm font-semibold text-white/90 hover:bg-white/5 hover:text-[#D4AF37]">
-                Account
-              </summary>
-              <div className="absolute right-0 z-50 mt-2 w-44 rounded-xl border border-white/10 bg-black/95 p-2 shadow-2xl">
-                <Link href="/login" className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]">Log In</Link>
-                <Link href="/signup" className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]">Sign Up</Link>
-              </div>
-            </details>
-          )}
+            )}
+          </div>
         </div>
 
         <button
@@ -143,12 +176,12 @@ export default function NavBar() {
             <div>
               <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#D4AF37]/90">Primary</p>
               <div className="space-y-0.5">
-                <Link href="/start-here" onClick={closeMobileMenu} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]">Start Here</Link>
-                <Link href="/business-directory" onClick={closeMobileMenu} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]">Search &amp; Directory</Link>
-                <Link href="/marketplace" onClick={closeMobileMenu} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]">Marketplace</Link>
-                <Link href="/jobs" onClick={closeMobileMenu} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]">Jobs</Link>
-                <Link href="/advertising" onClick={closeMobileMenu} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]">Advertising</Link>
-                <Link href="/financial-literacy" onClick={closeMobileMenu} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]">Learn</Link>
+                <Link href="/start-here" onClick={handleItemClick} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]">Start Here</Link>
+                <Link href="/business-directory" onClick={handleItemClick} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]">Search &amp; Directory</Link>
+                <Link href="/marketplace" onClick={handleItemClick} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]">Marketplace</Link>
+                <Link href="/jobs" onClick={handleItemClick} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]">Jobs</Link>
+                <Link href="/advertising" onClick={handleItemClick} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]">Advertising</Link>
+                <Link href="/financial-literacy" onClick={handleItemClick} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]">Learn</Link>
               </div>
             </div>
 
@@ -157,22 +190,14 @@ export default function NavBar() {
             <div>
               <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#D4AF37]/90">Explore</p>
               <div className="space-y-0.5">
-                <Link href="/black-card" onClick={closeMobileMenu} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]">Black Card</Link>
-                <Link href="/affiliate" onClick={closeMobileMenu} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]">Earn with BWE</Link>
-                <Link href="/black-entertainment-news" onClick={closeMobileMenu} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]">Culture &amp; Entertainment</Link>
-                <Link href="/music" onClick={closeMobileMenu} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]">Music</Link>
-                <Link href="/black-student-opportunities" onClick={closeMobileMenu} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]">Student Opportunities</Link>
-                <Link href="/wealth-builder" onClick={closeMobileMenu} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]">Wealth Builder</Link>
-                <Link href="/travel-map/explore" onClick={closeMobileMenu} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]">Travel Map</Link>
-                <a
-                  href="https://www.youtube.com/@blackwealthexchangesociety8390"
-                  target="_blank"
-                  rel="noreferrer"
-                  onClick={closeMobileMenu}
-                  className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]"
-                >
-                  BWE Live
-                </a>
+                <Link href="/black-card" onClick={handleItemClick} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]">Black Card</Link>
+                <Link href="/affiliate" onClick={handleItemClick} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]">Earn with BWE</Link>
+                <Link href="/black-entertainment-news" onClick={handleItemClick} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]">Culture &amp; Entertainment</Link>
+                <Link href="/music" onClick={handleItemClick} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]">Music</Link>
+                <Link href="/black-student-opportunities" onClick={handleItemClick} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]">Student Opportunities</Link>
+                <Link href="/wealth-builder" onClick={handleItemClick} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]">Wealth Builder</Link>
+                <Link href="/travel-map/explore" onClick={handleItemClick} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]">Travel Map</Link>
+                <a href="https://www.youtube.com/@blackwealthexchangesociety8390" target="_blank" rel="noreferrer" onClick={handleItemClick} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]">BWE Live</a>
               </div>
             </div>
 
@@ -183,12 +208,12 @@ export default function NavBar() {
               <div className="space-y-0.5">
                 {loading ? null : user ? (
                   <>
-                    <Link href={dashboardHref} onClick={closeMobileMenu} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]">Dashboard</Link>
-                    <Link href={profileHref} onClick={closeMobileMenu} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]">Profile</Link>
+                    <Link href={dashboardHref} onClick={handleItemClick} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]">Dashboard</Link>
+                    <Link href={profileHref} onClick={handleItemClick} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]">Profile</Link>
                     <button
                       onClick={() => {
+                        closeAllMenus();
                         logout();
-                        closeMobileMenu();
                       }}
                       className="block w-full rounded-lg px-3 py-2 text-left text-sm text-white/85 hover:bg-white/[0.04] hover:text-red-500"
                     >
@@ -197,8 +222,8 @@ export default function NavBar() {
                   </>
                 ) : (
                   <>
-                    <Link href="/login" onClick={closeMobileMenu} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]">Log In</Link>
-                    <Link href="/signup" onClick={closeMobileMenu} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]">Sign Up</Link>
+                    <Link href="/login" onClick={handleItemClick} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]">Log In</Link>
+                    <Link href="/signup" onClick={handleItemClick} className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/[0.04] hover:text-[#D4AF37]">Sign Up</Link>
                   </>
                 )}
               </div>
