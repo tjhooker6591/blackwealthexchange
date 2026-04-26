@@ -234,6 +234,7 @@ export default function EmployerDashboard() {
   const nextStep = useMemo(() => {
     if (!stats.jobsPosted) {
       return {
+        title: "Post your first job",
         body: "Post your first job so candidates can discover your team.",
         href: ROUTES.postJob,
         cta: "Post first job",
@@ -242,6 +243,7 @@ export default function EmployerDashboard() {
 
     if (!stats.totalApplicants) {
       return {
+        title: "Optimize live listings",
         body: "Your jobs are live. Review listing quality and distribution to drive first applicants.",
         href: ROUTES.jobs,
         cta: "Review active jobs",
@@ -250,6 +252,7 @@ export default function EmployerDashboard() {
 
     if (completion < 80) {
       return {
+        title: "Strengthen employer profile",
         body: "Improve your employer profile to increase candidate trust and response rates.",
         href: ROUTES.profile,
         cta: "Improve profile",
@@ -257,6 +260,7 @@ export default function EmployerDashboard() {
     }
 
     return {
+      title: "Follow up with applicants",
       body: "Prioritize applicant follow-up to keep top candidates engaged.",
       href: ROUTES.applicants,
       cta: "Open applicants",
@@ -414,6 +418,7 @@ export default function EmployerDashboard() {
 
         <div className="rounded-2xl border border-yellow-500/25 bg-yellow-500/10 p-4 shadow-xl sm:p-5">
           <h2 className="text-lg font-bold text-gold">Next step</h2>
+          <p className="mt-1 text-sm font-semibold text-white">{nextStep.title}</p>
           <p className="mt-1 text-sm text-gray-300">{nextStep.body}</p>
           <div className="mt-3 flex flex-wrap gap-2">
             <Link

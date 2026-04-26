@@ -215,7 +215,11 @@ export default function UserDashboard() {
       href: "/applications",
       cta: "Track updates",
     };
-  }, [dashboardData.applications, dashboardData.profileCompletion, dashboardData.savedJobs]);
+  }, [
+    dashboardData.applications,
+    dashboardData.profileCompletion,
+    dashboardData.savedJobs,
+  ]);
 
   if (loading) return <DashboardSkeleton />;
 
@@ -337,6 +341,7 @@ export default function UserDashboard() {
 
         <div className="rounded-2xl border border-yellow-500/25 bg-yellow-500/10 p-4 shadow-xl sm:p-5">
           <h2 className="text-lg font-bold text-gold">Next step</h2>
+          <p className="mt-1 text-sm font-semibold text-white">{nextStep.title}</p>
           <p className="mt-1 text-sm text-gray-300">{nextStep.body}</p>
           <div className="mt-3 flex flex-wrap gap-2">
             <Link
