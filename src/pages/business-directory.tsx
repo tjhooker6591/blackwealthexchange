@@ -828,7 +828,8 @@ export default function BusinessDirectory() {
   const approximateCount = useMemo(
     () =>
       curatedVisibleRows.filter(
-        (row: any) => safeStr(row?._matchQuality).toLowerCase() === "approximate",
+        (row: any) =>
+          safeStr(row?._matchQuality).toLowerCase() === "approximate",
       ).length,
     [curatedVisibleRows],
   );
@@ -919,7 +920,7 @@ export default function BusinessDirectory() {
     qp.set("from", "directory");
     if (input.trim()) qp.set("q", input.trim());
 
-    return `/business-directory/${slug}?${qp.toString()}`;
+    return `/business/${slug}?${qp.toString()}`;
   };
 
   const getTrustMeta = (r: Row) => {
@@ -1596,10 +1597,16 @@ export default function BusinessDirectory() {
                   </div>
                 ) : null}
 
-                {hasSearched && total > 0 && approximateCount > 0 && !isApproximateSearch ? (
+                {hasSearched &&
+                total > 0 &&
+                approximateCount > 0 &&
+                !isApproximateSearch ? (
                   <div className="mt-2 rounded-xl border border-amber-300/25 bg-amber-300/10 px-3 py-2 text-[11px] text-amber-100">
-                    <span className="font-semibold text-amber-50">Some results are weaker matches.</span>{" "}
-                    Try adding a category, state, or a more specific keyword to sharpen relevance.
+                    <span className="font-semibold text-amber-50">
+                      Some results are weaker matches.
+                    </span>{" "}
+                    Try adding a category, state, or a more specific keyword to
+                    sharpen relevance.
                   </div>
                 ) : null}
 
@@ -1684,7 +1691,10 @@ export default function BusinessDirectory() {
                         between Businesses and Organizations.
                       </div>
                       <div className="mt-2 text-[11px] text-white/55">
-                        Helpful queries: <span className="text-white/75">restaurant</span>, <span className="text-white/75">clothing</span>, <span className="text-white/75">services</span>
+                        Helpful queries:{" "}
+                        <span className="text-white/75">restaurant</span>,{" "}
+                        <span className="text-white/75">clothing</span>,{" "}
+                        <span className="text-white/75">services</span>
                       </div>
                       <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-[11px]">
                         {scope === "businesses" && category !== "All" ? (
@@ -1908,7 +1918,8 @@ export default function BusinessDirectory() {
                                 ),
                               ) ? (
                                 <span className="rounded-full border border-white/20 bg-black/30 px-2 py-0.5 text-[10px] font-bold text-white/75">
-                                  Status: {formatStatusLabel(
+                                  Status:{" "}
+                                  {formatStatusLabel(
                                     safeStr(
                                       (item as any).listingStatus ||
                                         (item as any).status,
@@ -1954,7 +1965,9 @@ export default function BusinessDirectory() {
                               <span className="text-white/72">Category:</span>{" "}
                               {getCategoryLabel(item as Row) || "Not provided"}
                               {" · "}
-                              <span className="text-white/72">Location:</span>{" "}
+                              <span className="text-white/72">
+                                Location:
+                              </span>{" "}
                               {getLocation(item as Row) || "Not provided"}
                             </div>
 
