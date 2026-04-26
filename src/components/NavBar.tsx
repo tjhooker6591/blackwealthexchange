@@ -109,7 +109,7 @@ export default function NavBar() {
             href="/advertise-with-us"
             className="rounded-lg border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-3 py-2 text-sm font-semibold text-[#F1D57A] transition-colors hover:bg-[#D4AF37]/18"
           >
-            Advertise
+            Advertise with BWE
           </Link>
 
           <details className="group relative">
@@ -330,7 +330,7 @@ export default function NavBar() {
               className="block rounded-xl px-3 py-2.5 font-medium text-white/85 transition-colors hover:bg-white/[0.04] hover:text-[#D4AF37]"
               onClick={() => handleMobileNav()}
             >
-              Sponsor Packages
+              Advertising Packages
             </Link>
 
             <Link

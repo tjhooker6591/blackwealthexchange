@@ -14,6 +14,8 @@ function cx(...classes: Array<string | false | null | undefined>) {
 const AdCard = ({
   title,
   desc,
+  where,
+  nextStep,
   price,
   href,
   badge,
@@ -21,6 +23,8 @@ const AdCard = ({
 }: {
   title: string;
   desc: string;
+  where: string;
+  nextStep: string;
   price: string;
   href: string;
   badge?: string;
@@ -31,6 +35,12 @@ const AdCard = ({
       <div>
         <h3 className="text-lg font-semibold text-yellow-200">{title}</h3>
         <p className="mt-1 text-sm text-zinc-300">{desc}</p>
+        <p className="mt-2 text-xs text-zinc-400">
+          <span className="font-semibold text-zinc-200">Where it appears:</span> {where}
+        </p>
+        <p className="mt-1 text-xs text-zinc-400">
+          <span className="font-semibold text-zinc-200">What happens next:</span> {nextStep}
+        </p>
       </div>
 
       {badge ? (
@@ -115,6 +125,9 @@ export default function AdvertisingIndexPage() {
               Promote your business on Black Wealth Exchange with trusted,
               tasteful placements.
             </p>
+            <p className="mt-1 text-xs text-zinc-400">
+              Choose package → complete campaign details → review/approval → scheduled placement activation.
+            </p>
             <p className="mt-2 text-xs text-zinc-400">
               Placement definitions:{" "}
               <Link
@@ -171,9 +184,27 @@ export default function AdvertisingIndexPage() {
             How advertising works
           </h2>
           <ol className="mt-3 grid gap-2 text-sm text-zinc-300 md:grid-cols-3 md:gap-4">
-            <li><span className="font-semibold text-yellow-200">1. Choose placement</span><br />Pick the format that matches your goal and budget.</li>
-            <li><span className="font-semibold text-yellow-200">2. Submit campaign details</span><br />Complete targeting and creative requirements.</li>
-            <li><span className="font-semibold text-yellow-200">3. Review and activation</span><br />BWE confirms eligibility, then schedules placement.</li>
+            <li>
+              <span className="font-semibold text-yellow-200">
+                1. Choose placement
+              </span>
+              <br />
+              Pick the format that matches your goal and budget.
+            </li>
+            <li>
+              <span className="font-semibold text-yellow-200">
+                2. Submit campaign details
+              </span>
+              <br />
+              Complete targeting and creative requirements.
+            </li>
+            <li>
+              <span className="font-semibold text-yellow-200">
+                3. Review and activation
+              </span>
+              <br />
+              BWE confirms eligibility, then schedules placement.
+            </li>
           </ol>
         </div>
 
@@ -181,6 +212,8 @@ export default function AdvertisingIndexPage() {
           <AdCard
             title="Featured Sponsor"
             desc="Primary homepage sponsorship surface with weekly scheduled Featured Sponsor rail placement."
+            where="Homepage Featured Sponsors rail"
+            nextStep="Open package details, provide campaign info, then continue through approval and scheduling."
             price={priceLabel(featuredBase)}
             badge="Most Popular"
             href="/advertise/featured-sponsor"
@@ -200,6 +233,8 @@ export default function AdvertisingIndexPage() {
           <AdCard
             title="Directory Listings"
             desc="Directory campaign tiers with explicit review and placement lifecycle."
+            where="Business Directory featured blocks and listing tiers"
+            nextStep="Choose standard or featured listing, then submit campaign details for review."
             price={priceLabel(directoryBase)}
             href="/advertise/business-directory"
             onStart={() =>
@@ -218,6 +253,8 @@ export default function AdvertisingIndexPage() {
           <AdCard
             title="Banner Ads"
             desc="Directory-first banner inventory with tightly limited homepage top banner availability."
+            where="Directory sidebar banner or limited homepage top banner"
+            nextStep="Select requested banner placement and duration, then submit campaign details."
             price={priceLabel(bannerBase)}
             href="/advertise/banner-ads"
             onStart={() =>
@@ -236,6 +273,8 @@ export default function AdvertisingIndexPage() {
           <AdCard
             title="Custom Solutions"
             desc="Custom scoped campaigns with deliverables defined before launch."
+            where="Approved custom surfaces (defined in campaign plan)"
+            nextStep="Submit custom request first, then proceed with scoped activation flow."
             price={
               customBase
                 ? `$${customBase.amountDollars} deposit`

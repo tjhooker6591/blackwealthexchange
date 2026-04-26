@@ -53,11 +53,34 @@ const GOAL_OPTIONS = [
 ] as const;
 
 const HOW_IT_WORKS = [
-  "Choose a package based on your growth goal.",
+  "Choose a package based on your growth goal and exact placement.",
   "Submit campaign details and creative assets.",
   "Campaign enters review and approval workflow.",
-  "Approved campaign goes live in selected placements.",
+  "Approved campaign goes live in the placement listed for your package.",
   "Campaign runs for the selected duration, then rotates/ends by schedule.",
+] as const;
+
+const PLACEMENT_MAP = [
+  {
+    placement: "Homepage Featured Sponsors rail",
+    package: "Featured Sponsor",
+    userGets: "Priority homepage sponsor visibility with weekly scheduling",
+  },
+  {
+    placement: "Homepage top banner or Directory sidebar banner",
+    package: "Banner Placement",
+    userGets: "Visual banner impressions in approved banner inventory",
+  },
+  {
+    placement: "Business Directory featured blocks and tiered listings",
+    package: "Directory Placement",
+    userGets: "Directory discovery visibility with explicit listing tier behavior",
+  },
+  {
+    placement: "Custom approved surfaces",
+    package: "Custom Solution",
+    userGets: "Scoped multi-surface campaign defined before launch",
+  },
 ] as const;
 
 export default function AdvertiseWithUs() {
@@ -192,6 +215,29 @@ export default function AdvertiseWithUs() {
           </div>
         </section>
 
+        <section className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow">
+          <h2 className="text-2xl font-bold text-yellow-200">
+            Placement Clarity Map
+          </h2>
+          <p className="mt-2 text-white/80">
+            Use this map to avoid ambiguity between homepage, directory, and custom placements.
+          </p>
+          <div className="mt-4 grid gap-3 md:grid-cols-2">
+            {PLACEMENT_MAP.map((row) => (
+              <div
+                key={row.placement}
+                className="rounded-xl border border-white/10 bg-black/30 p-4"
+              >
+                <p className="text-xs uppercase tracking-[0.08em] text-yellow-300/80">
+                  {row.package}
+                </p>
+                <p className="mt-1 text-sm font-semibold text-white">{row.placement}</p>
+                <p className="mt-1 text-sm text-white/75">What you get: {row.userGets}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
         <section id="options" className="space-y-3">
           <h2 className="text-3xl font-extrabold text-yellow-300">
             Advertising Options by Goal
@@ -246,7 +292,7 @@ export default function AdvertiseWithUs() {
           <h2 className="text-2xl font-bold text-yellow-200">
             Pricing and What You Get
           </h2>
-          <div className="mt-4 overflow-x-auto">
+          <div className="mt-4 hidden overflow-x-auto md:block">
             <table className="w-full min-w-[680px] text-sm">
               <thead>
                 <tr className="text-left text-white/70 border-b border-white/10">
@@ -284,14 +330,38 @@ export default function AdvertiseWithUs() {
               </tbody>
             </table>
           </div>
+
+          <div className="mt-4 grid gap-3 md:hidden">
+            {pricingRows.map((row) => (
+              <div
+                key={`mobile-${row.placement}-${row.duration}`}
+                className="rounded-xl border border-white/10 bg-black/30 p-4"
+              >
+                <p className="text-sm font-semibold text-white">{row.placement}</p>
+                <p className="mt-1 text-xs text-white/70">Duration: {row.duration}</p>
+                <p className="mt-1 text-sm font-semibold text-yellow-300">{row.price}</p>
+                <p className="mt-1 text-xs text-white/70">{row.note}</p>
+                <Link
+                  href={row.href}
+                  className="mt-2 inline-flex text-sm font-semibold text-yellow-200"
+                >
+                  Open package
+                </Link>
+              </div>
+            ))}
+          </div>
+
           <p className="mt-3 text-xs text-white/60">
             Prices shown from current package configuration (
             {AD_PRICING["featured-sponsor"].label}, banners, directory, custom
             deposit).
           </p>
           <p className="mt-2 text-xs text-white/70">
-            Placement rules source of truth: {" "}
-            <Link href="/advertising/placements" className="text-yellow-200 underline">
+            Placement rules source of truth:{" "}
+            <Link
+              href="/advertising/placements"
+              className="text-yellow-200 underline"
+            >
               /advertising/placements
             </Link>
           </p>
@@ -320,6 +390,15 @@ export default function AdvertiseWithUs() {
               View Sponsor Profile Template
             </Link>
           </div>
+        </section>
+
+        <section className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow">
+          <h2 className="text-2xl font-bold text-yellow-200">
+            What happens next after you choose
+          </h2>
+          <p className="mt-2 text-white/80">
+            After you select a package, you enter campaign details, submit for review, and then proceed to activation flow for the same package. No package switching happens silently.
+          </p>
         </section>
 
         <section className="rounded-2xl border border-white/10 bg-white/5 p-6 shadow">
