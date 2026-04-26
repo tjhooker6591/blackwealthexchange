@@ -1356,51 +1356,6 @@ export default function Home() {
 
                     {vertical === "all" && (
                       <div className="mt-2.5 flex flex-wrap items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setSearchQuery("restaurant");
-                            setLeftScope("businesses");
-                            submitHomepageSearch(
-                              "quick_intent_restaurant",
-                              "restaurant",
-                              { scopeOverride: "businesses" },
-                            );
-                          }}
-                          className="rounded-full border border-white/12 bg-white/[0.03] px-3 py-1.5 text-[11px] font-bold text-white/75 transition hover:bg-white/[0.07]"
-                        >
-                          Restaurants
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setSearchQuery("financial advisor");
-                            setLeftScope("businesses");
-                            submitHomepageSearch(
-                              "quick_intent_finance",
-                              "financial advisor",
-                              { scopeOverride: "businesses" },
-                            );
-                          }}
-                          className="rounded-full border border-white/12 bg-white/[0.03] px-3 py-1.5 text-[11px] font-bold text-white/75 transition hover:bg-white/[0.07]"
-                        >
-                          Financial advisors
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setSearchQuery("nonprofit");
-                            setLeftScope("organizations");
-                            submitHomepageSearch(
-                              "quick_intent_nonprofit",
-                              "nonprofit",
-                              { scopeOverride: "organizations" },
-                            );
-                          }}
-                          className="rounded-full border border-white/12 bg-white/[0.03] px-3 py-1.5 text-[11px] font-bold text-white/75 transition hover:bg-white/[0.07]"
-                        >
-                          Nonprofits
-                        </button>
                         <Link
                           href="/business-directory"
                           className="rounded-full border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-3 py-1.5 text-[11px] font-bold text-[#F1D57A] transition hover:bg-[#D4AF37]/16"
