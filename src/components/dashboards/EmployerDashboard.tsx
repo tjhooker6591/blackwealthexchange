@@ -52,7 +52,6 @@ const ROUTES = {
   applicants: "/employer/applicants",
   resources: "/employer/resources",
   profile: "/employer/profile",
-  billing: "/dashboard/employer/billing",
   consultingInterest: "/dashboard/employer/consulting-interest",
   consultantDiscovery: "/dashboard/employer/consultants",
   consultantPipeline: "/dashboard/employer/consultants/pipeline",
@@ -418,7 +417,9 @@ export default function EmployerDashboard() {
 
         <div className="rounded-2xl border border-yellow-500/25 bg-yellow-500/10 p-4 shadow-xl sm:p-5">
           <h2 className="text-lg font-bold text-gold">Next step</h2>
-          <p className="mt-1 text-sm font-semibold text-white">{nextStep.title}</p>
+          <p className="mt-1 text-sm font-semibold text-white">
+            {nextStep.title}
+          </p>
           <p className="mt-1 text-sm text-gray-300">{nextStep.body}</p>
           <div className="mt-3 flex flex-wrap gap-2">
             <Link
