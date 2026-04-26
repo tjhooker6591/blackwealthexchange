@@ -1044,13 +1044,13 @@ export default function Home() {
                       trackHomepageEvent("homepage_cta_clicked", {
                         section: "hero",
                         ctaId: "hero_jobs",
-                        ctaLabel: "Explore jobs and opportunities",
+                        ctaLabel: "Find Jobs",
                         destination: "/job-listings",
                       })
                     }
                   >
                     <button className="h-11 w-full rounded-xl border border-[#D4AF37]/45 bg-[#D4AF37]/8 px-5 text-sm font-bold text-[#F1D57A] transition hover:-translate-y-0.5 hover:bg-[#D4AF37]/16 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 sm:h-11 sm:w-auto sm:px-6">
-                      Explore jobs and opportunities
+                      Find Jobs
                     </button>
                   </Link>
                   <Link
@@ -1442,7 +1442,7 @@ export default function Home() {
               </article>
               <article className="rounded-xl border border-white/10 bg-black/30 p-4">
                 <h3 className="text-sm font-extrabold text-white">
-                  Explore jobs and opportunities
+                  Find Jobs
                 </h3>
                 <p className="mt-1 text-xs text-white/70">
                   Find internships, jobs, and growth pathways aligned with your
@@ -1452,7 +1452,7 @@ export default function Home() {
                   href="/job-listings"
                   className="mt-3 inline-flex rounded-lg border border-[#D4AF37]/40 bg-[#D4AF37]/12 px-3 py-2 text-xs font-bold text-[#F1D57A] hover:bg-[#D4AF37]/18"
                 >
-                  Explore Opportunities
+                  Find Jobs
                 </Link>
               </article>
               <article className="rounded-xl border border-white/10 bg-black/30 p-4">
@@ -1476,75 +1476,6 @@ export default function Home() {
       </section>
 
       <main className="container relative z-10 mx-auto max-w-6xl px-4 pb-0">
-        <section className="mb-5 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
-          <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
-            Core platform pillars
-          </p>
-          <h2 className="mt-1 text-lg font-extrabold tracking-tight text-white sm:text-xl">
-            What you can do on Black Wealth Exchange
-          </h2>
-
-          <div className="mt-3 grid gap-3 md:grid-cols-4">
-            <article className="rounded-2xl border border-white/10 bg-black/30 p-4">
-              <h3 className="text-base font-extrabold text-white">
-                Businesses
-              </h3>
-              <p className="mt-1 text-sm text-white/70">
-                Discover trusted Black-owned businesses, products, and services.
-              </p>
-              <Link
-                href="/business-directory"
-                className="mt-3 inline-flex rounded-xl border border-white/20 bg-white/5 px-3.5 py-2 text-sm font-bold text-white/85 hover:bg-white/10"
-              >
-                Browse Directory
-              </Link>
-            </article>
-
-            <article className="rounded-2xl border border-[#D4AF37]/30 bg-black/30 p-4">
-              <h3 className="text-base font-extrabold text-white">
-                Marketplace
-              </h3>
-              <p className="mt-1 text-sm text-white/70">
-                Shop curated products from independent Black-owned sellers.
-              </p>
-              <Link
-                href="/marketplace"
-                className="mt-3 inline-flex rounded-xl border border-[#D4AF37]/40 bg-[#D4AF37]/12 px-3.5 py-2 text-sm font-bold text-[#F1D57A] hover:bg-[#D4AF37]/18"
-              >
-                Open Marketplace
-              </Link>
-            </article>
-
-            <article className="rounded-2xl border border-white/10 bg-black/30 p-4">
-              <h3 className="text-base font-extrabold text-white">
-                Opportunities
-              </h3>
-              <p className="mt-1 text-sm text-white/70">
-                Access jobs, pathways, and career advancement opportunities.
-              </p>
-              <Link
-                href="/job-listings"
-                className="mt-3 inline-flex rounded-xl border border-white/20 bg-white/5 px-3.5 py-2 text-sm font-bold text-white/85 hover:bg-white/10"
-              >
-                View Opportunities
-              </Link>
-            </article>
-
-            <article className="rounded-2xl border border-white/10 bg-black/30 p-4">
-              <h3 className="text-base font-extrabold text-white">Learn</h3>
-              <p className="mt-1 text-sm text-white/70">
-                Build financial literacy and long-term wealth strategy.
-              </p>
-              <Link
-                href="/financial-literacy"
-                className="mt-3 inline-flex rounded-xl border border-[#D4AF37]/40 bg-[#D4AF37]/12 px-3.5 py-2 text-sm font-bold text-[#F1D57A] hover:bg-[#D4AF37]/18"
-              >
-                Go to Learn
-              </Link>
-            </article>
-          </div>
-        </section>
-
         <section className="mb-5 rounded-2xl border border-emerald-300/20 bg-gradient-to-r from-black via-[#0f1511] to-black p-4 sm:p-5 shadow-[0_0_0_1px_rgba(16,185,129,0.15)]">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="max-w-3xl">
@@ -1722,21 +1653,6 @@ export default function Home() {
           <div className="mt-3 grid gap-3 md:grid-cols-2">
             <article className="rounded-xl border border-white/10 bg-black/30 p-4">
               <h4 className="text-sm font-extrabold text-white">
-                Music & Creator Economy
-              </h4>
-              <p className="mt-1 text-xs text-white/70">
-                Explore artists and launch creator storefronts.
-              </p>
-              <Link
-                href="/music"
-                className="mt-3 inline-flex rounded-lg bg-[#D4AF37] px-3 py-2 text-xs font-extrabold text-black hover:bg-yellow-500"
-              >
-                Explore Music
-              </Link>
-            </article>
-
-            <article className="rounded-xl border border-white/10 bg-black/30 p-4">
-              <h4 className="text-sm font-extrabold text-white">
                 Real Estate & Investment
               </h4>
               <p className="mt-1 text-xs text-white/70">
@@ -1765,20 +1681,6 @@ export default function Home() {
               </Link>
             </article>
 
-            <article className="rounded-xl border border-white/10 bg-black/30 p-4">
-              <h4 className="text-sm font-extrabold text-white">
-                Advertise with BWE
-              </h4>
-              <p className="mt-1 text-xs text-white/70">
-                Reach high-intent audiences with premium placements.
-              </p>
-              <Link
-                href="/advertise-with-us"
-                className="mt-3 inline-flex rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-xs font-bold text-white/85 hover:bg-white/10"
-              >
-                View Ad Options
-              </Link>
-            </article>
           </div>
         </section>
       </main>
