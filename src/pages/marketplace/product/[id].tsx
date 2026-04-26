@@ -116,6 +116,15 @@ const ProductDetailPage = () => {
       : stockQuantity <= 3
         ? "Low stock"
         : "In stock");
+  const sellerName =
+    product?.seller?.name || "Verified BWE Marketplace Seller";
+  const sellerTrust = product?.seller?.profileComplete
+    ? "Verified seller profile details on file"
+    : "Basic seller profile on file";
+  const listingStatusLabel = product?.activeListing
+    ? "Active listing"
+    : "Status not fully confirmed";
+  const canContactSeller = Boolean(product?.seller?.id);
 
   const availabilityClass = useMemo(() => {
     if (availability.toLowerCase().includes("out"))
@@ -250,32 +259,41 @@ const ProductDetailPage = () => {
                   {stockQuantity > 0 ? ` (${stockQuantity} left)` : ""}
                 </p>
                 {stockQuantity > 0 && stockQuantity <= 3 ? (
-                  <p className="mt-1 text-xs text-yellow-200">Only a few units left. Buyers are viewing this listing now.</p>
+                  <p className="mt-1 text-xs text-yellow-200">
+                    Only a few units left. Buyers are viewing this listing now.
+                  </p>
                 ) : null}
               </div>
             </div>
 
             <div className="mt-4 rounded-xl border border-white/10 bg-white/5 p-4 text-sm text-gray-200">
               <p>
-                <span className="font-semibold text-white">Seller:</span>{" "}
-                {product?.seller?.name || "Verified BWE Marketplace Seller"}
+                <span className="font-semibold text-white">Seller:</span> {sellerName}
               </p>
               <p className="mt-1">
-                <span className="font-semibold text-white">
-                  Seller profile:
-                </span>{" "}
-                {product?.seller?.profileComplete
-                  ? "Verified profile details on file"
-                  : "Basic profile on file"}
+                <span className="font-semibold text-white">Seller profile:</span> {sellerTrust}
+              </p>
+              <p className="mt-1">
+                <span className="font-semibold text-white">Listing:</span> {listingStatusLabel}
+                {product?.recentlyAdded ? " • Recently added" : ""}
               </p>
             </div>
 
             <div className="mt-4 rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-4 text-sm text-gray-100">
               <p className="font-semibold text-gold">How purchasing works</p>
               <ul className="mt-2 list-disc space-y-1 pl-5 text-gray-200">
-                <li>Black Wealth Exchange is the marketplace intermediary for secure ordering.</li>
-                <li>The seller fulfills the order and handles shipment/delivery updates.</li>
-                <li>After purchase, use order tracking and contact seller if you need help.</li>
+                <li>
+                  Black Wealth Exchange is the marketplace intermediary for
+                  secure ordering.
+                </li>
+                <li>
+                  The seller fulfills the order and handles shipment/delivery
+                  updates.
+                </li>
+                <li>
+                  After purchase, use order tracking and contact seller if you
+                  need help.
+                </li>
               </ul>
             </div>
 
@@ -294,7 +312,8 @@ const ProductDetailPage = () => {
                     .getElementById("contact-seller")
                     ?.scrollIntoView({ behavior: "smooth", block: "start" })
                 }
-                className="w-full rounded-xl border border-gold px-4 py-3 text-sm font-semibold text-gold hover:bg-gold hover:text-black transition"
+                disabled={!canContactSeller}
+                className="w-full rounded-xl border border-gold px-4 py-3 text-sm font-semibold text-gold transition enabled:hover:bg-gold enabled:hover:text-black disabled:cursor-not-allowed disabled:opacity-60"
               >
                 Contact Seller
               </button>
@@ -325,11 +344,16 @@ const ProductDetailPage = () => {
           <button
             type="button"
             onClick={handleContactSeller}
-            disabled={sendingMessage}
-            className="mt-3 w-full rounded-lg border border-gold px-3 py-2 text-sm font-semibold text-gold hover:bg-gold hover:text-black transition disabled:opacity-60"
+            disabled={sendingMessage || !canContactSeller}
+            className="mt-3 w-full rounded-lg border border-gold px-3 py-2 text-sm font-semibold text-gold transition enabled:hover:bg-gold enabled:hover:text-black disabled:cursor-not-allowed disabled:opacity-60"
           >
             {sendingMessage ? "Sending..." : "Send Message"}
           </button>
+          {!canContactSeller ? (
+            <p className="mt-2 text-xs text-gray-400">
+              Seller contact is not available for this listing yet.
+            </p>
+          ) : null}
           {messageState ? (
             <p className="mt-2 text-xs text-gray-300">{messageState}</p>
           ) : null}
