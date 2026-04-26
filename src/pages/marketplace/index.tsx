@@ -516,10 +516,17 @@ export default function Marketplace() {
                     ? "Active listing"
                     : "Listing status pending";
 
+                const isTopPick = Boolean(product.isFeatured);
+
                 return (
                   <div
                     key={product._id}
-                    className="group rounded-2xl border border-white/10 bg-white/5 p-2.5 shadow-lg transition hover:shadow-2xl sm:p-4"
+                    className={cx(
+                      "group rounded-2xl border bg-white/5 p-2.5 shadow-lg transition hover:shadow-2xl sm:p-4",
+                      isTopPick
+                        ? "border-gold/40 ring-1 ring-gold/25"
+                        : "border-white/10",
+                    )}
                   >
                     <Link
                       href={`/marketplace/product/${product._id}`}
@@ -559,7 +566,7 @@ export default function Marketplace() {
                       <div className="mt-2 flex flex-wrap gap-1.5 text-[11px] sm:text-xs">
                         {product.isFeatured ? (
                           <span className="rounded-full border border-gold/40 bg-gold/20 px-2 py-0.5 text-gold">
-                            Featured
+                            Top pick
                           </span>
                         ) : null}
                         {product.recentlyAdded ? (
@@ -605,7 +612,11 @@ export default function Marketplace() {
                       )}
                     </Link>
 
-                    <div className="mt-4 grid grid-cols-2 gap-2">
+                    <p className="mt-3 text-[11px] text-gray-400 sm:text-xs">
+                      Quick action: use Buy for direct checkout, or open Details for full specs and seller context.
+                    </p>
+
+                    <div className="mt-3 grid grid-cols-2 gap-2">
                       <div className="min-w-0">
                         <BuyNowButton
                           itemId={product._id}
@@ -619,9 +630,9 @@ export default function Marketplace() {
                         onClick={() =>
                           router.push(`/marketplace/product/${product._id}`)
                         }
-                        className="w-full rounded-xl border border-white/10 px-3 py-2 text-sm text-gray-200 transition hover:bg-white/10"
+                        className="w-full rounded-xl border border-white/20 px-3 py-2 text-sm font-semibold text-gray-100 transition hover:bg-white/10"
                       >
-                        Details
+                        View Details
                       </button>
                     </div>
                   </div>

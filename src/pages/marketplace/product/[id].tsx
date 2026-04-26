@@ -268,19 +268,24 @@ const ProductDetailPage = () => {
 
             <div className="mt-4 rounded-xl border border-white/10 bg-white/5 p-4 text-sm text-gray-200">
               <p>
-                <span className="font-semibold text-white">Seller:</span> {sellerName}
+                <span className="font-semibold text-white">Seller:</span>{" "}
+                {sellerName}
               </p>
               <p className="mt-1">
-                <span className="font-semibold text-white">Seller profile:</span> {sellerTrust}
+                <span className="font-semibold text-white">
+                  Seller profile:
+                </span>{" "}
+                {sellerTrust}
               </p>
               <p className="mt-1">
-                <span className="font-semibold text-white">Listing:</span> {listingStatusLabel}
+                <span className="font-semibold text-white">Listing:</span>{" "}
+                {listingStatusLabel}
                 {product?.recentlyAdded ? " • Recently added" : ""}
               </p>
             </div>
 
             <p className="mt-3 text-xs text-gray-300">
-              Next step: use <span className="font-semibold text-white">Buy Now</span> to place an order, or <span className="font-semibold text-white">Contact Seller</span> for fit, shipping, or product questions.
+              Next step: use <span className="font-semibold text-white">Buy Now</span> to place an order, or <span className="font-semibold text-white">Ask Seller a Question</span> for fit, shipping, or product questions.
             </p>
 
             <div className="mt-4 rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-4 text-sm text-gray-100">
@@ -301,12 +306,18 @@ const ProductDetailPage = () => {
               </ul>
             </div>
 
+            <div className="mt-4 rounded-xl border border-white/10 bg-white/5 p-3 text-xs text-gray-200">
+              <p><span className="font-semibold text-white">What this is:</span> {productName}</p>
+              <p className="mt-1"><span className="font-semibold text-white">Who is selling:</span> {sellerName}</p>
+              <p className="mt-1"><span className="font-semibold text-white">What to do next:</span> Buy now to checkout, or ask seller a question first.</p>
+            </div>
+
             <div className="mt-4 space-y-2">
               <BuyNowButton
                 itemId={product._id}
                 amount={product.price}
                 type="product"
-                label="Buy Now"
+                label="Buy Now • Checkout"
                 className="w-full rounded-xl bg-gold px-4 py-3 text-base font-bold text-black shadow-md transition hover:bg-yellow-400"
               />
               <button
