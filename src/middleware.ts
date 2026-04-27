@@ -7,14 +7,7 @@ import {
   isStateChangingMethod,
 } from "@/lib/security/csrf";
 
-const loginRequiredRoutes = [
-  "/marketplace",
-  "/job-listings",
-  "/jobs",
-  "/investment",
-  "/student-opportunities",
-  "/courses",
-];
+const loginRequiredRoutes = ["/investment", "/student-opportunities", "/courses"];
 
 const roleProtectedRoutes: Record<string, string | string[]> = {
   "/seller": "seller",
@@ -44,7 +37,10 @@ async function getSessionRole(req: NextRequest): Promise<string | null> {
   if (!secret) return null;
 
   try {
-    const { payload } = await jwtVerify(token, new TextEncoder().encode(secret));
+    const { payload } = await jwtVerify(
+      token,
+      new TextEncoder().encode(secret),
+    );
     const role = payload?.accountType;
     return typeof role === "string" ? role : null;
   } catch {
@@ -55,7 +51,9 @@ async function getSessionRole(req: NextRequest): Promise<string | null> {
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const isLoggedIn = req.cookies.get("session_token");
-  const requestProto = req.headers.get("x-forwarded-proto") || req.nextUrl.protocol.replace(":", "");
+  const requestProto =
+    req.headers.get("x-forwarded-proto") ||
+    req.nextUrl.protocol.replace(":", "");
 
   if (process.env.NODE_ENV === "production" && requestProto !== "https") {
     const httpsUrl = req.nextUrl.clone();
@@ -84,7 +82,9 @@ export async function middleware(req: NextRequest) {
     );
   }
 
-  for (const [routePrefix, requiredRole] of Object.entries(roleProtectedRoutes)) {
+  for (const [routePrefix, requiredRole] of Object.entries(
+    roleProtectedRoutes,
+  )) {
     if (!pathname.startsWith(routePrefix)) continue;
 
     if (!isLoggedIn) {
@@ -105,13 +105,6 @@ export async function middleware(req: NextRequest) {
       loginUrl.searchParams.set("redirect", pathname);
       return NextResponse.redirect(loginUrl);
     }
-  }
-
-  if (pathname.startsWith("/business-directory/") && !isLoggedIn) {
-    const loginUrl = req.nextUrl.clone();
-    loginUrl.pathname = "/login";
-    loginUrl.searchParams.set("redirect", pathname);
-    return NextResponse.redirect(loginUrl);
   }
 
   for (const loginRoute of loginRequiredRoutes) {
@@ -147,7 +140,6 @@ export const config = {
     "/student-opportunities",
     "/courses/:path*",
     "/courses",
-    "/business-directory/:path*",
     "/post-job",
     "/employer/:path*",
     "/employer",
