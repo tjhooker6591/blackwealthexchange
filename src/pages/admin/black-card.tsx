@@ -3,7 +3,9 @@ import Link from "next/link";
 import type { GetServerSideProps } from "next";
 import cookie from "cookie";
 import jwt from "jsonwebtoken";
-import { getJwtSecret } from "@/lib/env";
+import { ObjectId } from "mongodb";
+import clientPromise from "@/lib/mongodb";
+import { getJwtSecret, getMongoDbName } from "@/lib/env";
 
 type CardItem = {
   cardId: string;
@@ -44,16 +46,47 @@ type RedemptionItem = {
   createdAt: string | null;
 };
 
+type LedgerRow = {
+  id: string;
+  user: string;
+  points: number;
+  reason: string;
+  timestamp: string | null;
+  status: string;
+};
+
+type PageProps = {
+  initialLedger: LedgerRow[];
+  initialTotalPointsIssued: number;
+};
+
 function fmtDate(value?: string | null) {
   if (!value) return "—";
   const d = new Date(value);
   return Number.isNaN(d.getTime()) ? "—" : d.toLocaleString();
 }
 
-export default function AdminBlackCardPage() {
+function toTitleLabel(value: string) {
+  return (value || "")
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+function maskUserId(userId?: string | null) {
+  const v = String(userId || "");
+  if (!v) return "—";
+  if (v.length <= 8) return v;
+  return `${v.slice(0, 4)}…${v.slice(-4)}`;
+}
+
+export default function AdminBlackCardPage({
+  initialLedger,
+  initialTotalPointsIssued,
+}: PageProps) {
   const [cards, setCards] = useState<CardItem[]>([]);
   const [physical, setPhysical] = useState<PhysicalRequestItem[]>([]);
   const [redemptions, setRedemptions] = useState<RedemptionItem[]>([]);
+  const [ledger] = useState<LedgerRow[]>(initialLedger || []);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -68,6 +101,19 @@ export default function AdminBlackCardPage() {
 
   const cardRows = useMemo(() => cards.slice(0, 200), [cards]);
   const requestRows = useMemo(() => physical.slice(0, 200), [physical]);
+
+  const pendingRedemptions = useMemo(
+    () => redemptions.filter((r) => r.status === "pending").length,
+    [redemptions],
+  );
+  const activeCards = useMemo(
+    () => cardRows.filter((c) => c.cardStatus === "active").length,
+    [cardRows],
+  );
+  const suspendedCards = useMemo(
+    () => cardRows.filter((c) => c.cardStatus === "suspended").length,
+    [cardRows],
+  );
 
   async function loadData() {
     setError("");
@@ -201,6 +247,29 @@ export default function AdminBlackCardPage() {
           </Link>
         </header>
 
+        <section className="grid grid-cols-2 gap-3 rounded-2xl border border-white/10 bg-white/5 p-5 text-sm sm:grid-cols-5">
+          <div className="rounded border border-white/10 bg-black/30 p-3">
+            <div className="text-white/60">Total cards issued</div>
+            <div className="text-xl font-bold text-yellow-200">{cardRows.length}</div>
+          </div>
+          <div className="rounded border border-white/10 bg-black/30 p-3">
+            <div className="text-white/60">Active cards</div>
+            <div className="text-xl font-bold text-green-300">{activeCards}</div>
+          </div>
+          <div className="rounded border border-white/10 bg-black/30 p-3">
+            <div className="text-white/60">Suspended cards</div>
+            <div className="text-xl font-bold text-red-300">{suspendedCards}</div>
+          </div>
+          <div className="rounded border border-white/10 bg-black/30 p-3">
+            <div className="text-white/60">Pending redemptions</div>
+            <div className="text-xl font-bold text-yellow-300">{pendingRedemptions}</div>
+          </div>
+          <div className="rounded border border-white/10 bg-black/30 p-3">
+            <div className="text-white/60">Total points issued</div>
+            <div className="text-xl font-bold text-blue-300">{initialTotalPointsIssued}</div>
+          </div>
+        </section>
+
         <section className="rounded-2xl border border-white/10 bg-white/5 p-5 text-sm text-white/85">
           <h2 className="text-lg font-bold text-yellow-200">How this works</h2>
           <ul className="mt-2 list-disc space-y-1 pl-5">
@@ -255,7 +324,7 @@ export default function AdminBlackCardPage() {
         </section>
 
         <section className="rounded-2xl border border-white/10 bg-white/5 p-5">
-          <h2 className="text-lg font-bold text-yellow-200">Issued cards</h2>
+          <h2 className="text-lg font-bold text-yellow-200">A. Cards</h2>
           {loading ? (
             <p className="mt-3 text-sm text-white/70">Loading...</p>
           ) : error ? (
@@ -284,7 +353,7 @@ export default function AdminBlackCardPage() {
                       <tr key={c.cardId} className="border-t border-white/10 align-top">
                         <td className="pr-4 py-2">{c.memberId || "—"}</td>
                         <td className="pr-4 py-2">{c.cardType || "—"}</td>
-                        <td className="pr-4 py-2">{c.cardStatus || "—"}</td>
+                        <td className="pr-4 py-2">{toTitleLabel(c.cardStatus || "—")}</td>
                         <td className="pr-4 py-2 break-all">
                           <div>{c.userId || "—"}</div>
                           <div className="text-white/60">{c.email || "—"}</div>
@@ -301,9 +370,9 @@ export default function AdminBlackCardPage() {
                         <td className="pr-4 py-2">{fmtDate(c.updatedAt)}</td>
                         <td className="pr-4 py-2">
                           <div className="flex flex-wrap gap-1">
-                            <button onClick={() => cardAction(c.cardId, "suspend")} className="rounded border border-yellow-500/30 px-2 py-1">Suspend</button>
-                            <button onClick={() => cardAction(c.cardId, "revoke")} className="rounded border border-red-500/30 px-2 py-1">Revoke</button>
-                            <button onClick={() => cardAction(c.cardId, "replace")} className="rounded border border-blue-500/30 px-2 py-1">Replace</button>
+                            <button onClick={() => cardAction(c.cardId, "suspend")} className="rounded border border-yellow-500/30 px-2 py-1">Suspend card</button>
+                            <button onClick={() => cardAction(c.cardId, "revoke")} className="rounded border border-red-500/30 px-2 py-1">Revoke card</button>
+                            <button onClick={() => cardAction(c.cardId, "replace")} className="rounded border border-blue-500/30 px-2 py-1">Replace card</button>
                           </div>
                         </td>
                       </tr>
@@ -312,14 +381,14 @@ export default function AdminBlackCardPage() {
                 </tbody>
               </table>
               {cardRows.length === 0 ? (
-                <p className="text-sm text-white/70">No issued cards found.</p>
+                <p className="text-sm text-white/70">No Black Cards issued yet</p>
               ) : null}
             </div>
           )}
         </section>
 
         <section className="rounded-2xl border border-white/10 bg-white/5 p-5">
-          <h2 className="text-lg font-bold text-yellow-200">Physical card request tracking</h2>
+          <h2 className="text-lg font-bold text-yellow-200">B. Physical Card Requests</h2>
           <div className="mt-3 overflow-x-auto">
             <table className="min-w-full text-left text-xs">
               <thead className="text-white/70">
@@ -341,7 +410,7 @@ export default function AdminBlackCardPage() {
                       <div className="text-white/60">{r.email || r.userId || "—"}</div>
                     </td>
                     <td className="pr-4 py-2">{r.nameToPrint || "—"}</td>
-                    <td className="pr-4 py-2">{r.status || "—"}</td>
+                    <td className="pr-4 py-2">{toTitleLabel(r.status || "—")}</td>
                     <td className="pr-4 py-2 break-all">
                       <div>Member: {r.memberId || "—"}</div>
                       <div className="text-white/60">Card: {r.cardId || r.cardSerial || "—"}</div>
@@ -353,7 +422,7 @@ export default function AdminBlackCardPage() {
                     <td className="pr-4 py-2">{fmtDate(r.updatedAt)}</td>
                     <td className="pr-4 py-2">
                       <div className="flex flex-wrap gap-1">
-                        <button onClick={() => requestAction(r.requestId, "approve")} className="rounded border border-green-500/30 px-2 py-1">Approve</button>
+                        <button onClick={() => requestAction(r.requestId, "approve")} className="rounded border border-green-500/30 px-2 py-1">Approve physical request</button>
                         <button onClick={() => requestAction(r.requestId, "sent_to_vendor")} className="rounded border border-yellow-500/30 px-2 py-1">Mark sent to vendor</button>
                         <button onClick={() => requestAction(r.requestId, "shipped")} className="rounded border border-blue-500/30 px-2 py-1">Mark shipped</button>
                         <button onClick={() => requestAction(r.requestId, "delivered")} className="rounded border border-purple-500/30 px-2 py-1">Mark delivered</button>
@@ -364,18 +433,54 @@ export default function AdminBlackCardPage() {
               </tbody>
             </table>
             {requestRows.length === 0 ? (
-              <p className="text-sm text-white/70">No physical requests found.</p>
+              <p className="text-sm text-white/70">No physical card requests yet</p>
             ) : null}
           </div>
         </section>
 
         <section className="rounded-2xl border border-white/10 bg-white/5 p-5">
-          <h2 className="text-lg font-bold text-yellow-200">Redemption queue and rewards adjustment</h2>
+          <h2 className="text-lg font-bold text-yellow-200">C. Rewards Ledger</h2>
+          <div className="mt-3 overflow-x-auto">
+            <table className="min-w-full text-left text-xs">
+              <thead className="text-white/70">
+                <tr>
+                  <th className="pr-4 py-2">User</th>
+                  <th className="pr-4 py-2">Points +/-</th>
+                  <th className="pr-4 py-2">Reason</th>
+                  <th className="pr-4 py-2">Timestamp</th>
+                  <th className="pr-4 py-2">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {ledger.map((row) => (
+                  <tr key={row.id} className="border-t border-white/10 align-top">
+                    <td className="pr-4 py-2 break-all">{row.user}</td>
+                    <td className={`pr-4 py-2 font-semibold ${row.points >= 0 ? "text-green-300" : "text-red-300"}`}>
+                      {row.points >= 0 ? `+${row.points}` : `${row.points}`}
+                    </td>
+                    <td className="pr-4 py-2">{row.reason || "—"}</td>
+                    <td className="pr-4 py-2">{fmtDate(row.timestamp)}</td>
+                    <td className="pr-4 py-2">{toTitleLabel(row.status || "posted")}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {ledger.length === 0 ? (
+              <p className="text-sm text-white/70">No rewards ledger entries yet</p>
+            ) : null}
+          </div>
+        </section>
+
+        <section className="rounded-2xl border border-white/10 bg-white/5 p-5">
+          <h2 className="text-lg font-bold text-yellow-200">D. Redemptions</h2>
           <div className="mt-3 space-y-2 text-sm">
-            {redemptions.slice(0, 20).map((item) => (
+            {redemptions.slice(0, 100).map((item) => (
               <div key={item.id} className="rounded-lg border border-white/10 bg-black/30 p-3">
-                <div className="font-semibold">{item.rewardType} • {item.pointsCost} pts</div>
-                <div className="text-white/70">user: {item.userId} • status: {item.status} • {fmtDate(item.createdAt)}</div>
+                <div>Action: {toTitleLabel(item.rewardType || "reward")}</div>
+                <div>Points: +{Number(item.pointsCost || 0)}</div>
+                <div>Status: {toTitleLabel(item.status || "pending")}</div>
+                <div>User: {maskUserId(item.userId)}</div>
+                <div>Time: {fmtDate(item.createdAt)}</div>
                 <div className="mt-2 flex gap-2">
                   <button onClick={() => setRedemptionStatus(item.id, "approved")} className="rounded border border-yellow-500/30 px-2 py-1 text-xs text-yellow-200">Approve</button>
                   <button onClick={() => setRedemptionStatus(item.id, "rejected")} className="rounded border border-red-500/30 px-2 py-1 text-xs text-red-200">Reject</button>
@@ -384,8 +489,14 @@ export default function AdminBlackCardPage() {
               </div>
             ))}
           </div>
+          {redemptions.length === 0 ? (
+            <p className="text-sm text-white/70">No redemptions found</p>
+          ) : null}
+        </section>
 
-          <form onSubmit={submitAdjust} className="mt-5 grid gap-3 sm:grid-cols-4">
+        <section className="rounded-2xl border border-white/10 bg-white/5 p-5">
+          <h2 className="text-lg font-bold text-yellow-200">E. Manual Adjustments</h2>
+          <form onSubmit={submitAdjust} className="mt-3 grid gap-3 sm:grid-cols-4">
             <input value={userId} onChange={(e) => setUserId(e.target.value)} placeholder="User ID" className="rounded bg-black/40 px-3 py-2 text-sm" />
             <input value={pointsDelta} onChange={(e) => setPointsDelta(e.target.value)} placeholder="Points Delta" className="rounded bg-black/40 px-3 py-2 text-sm" />
             <input value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Reason" className="rounded bg-black/40 px-3 py-2 text-sm" />
@@ -398,7 +509,7 @@ export default function AdminBlackCardPage() {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+export const getServerSideProps: GetServerSideProps<PageProps> = async ({ req }) => {
   const cookies = cookie.parse(req.headers.cookie || "");
   const token = cookies.session_token;
   if (!token) {
@@ -432,6 +543,62 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
         },
       };
     }
+
+    const client = await clientPromise;
+    const db = client.db(getMongoDbName());
+
+    const ledgerDocs = await db
+      .collection("black_card_rewards_ledger")
+      .find({})
+      .sort({ createdAt: -1 })
+      .limit(500)
+      .toArray();
+
+    const userIds = Array.from(
+      new Set(
+        ledgerDocs
+          .map((d: any) => String(d.userId || ""))
+          .filter((id) => ObjectId.isValid(id)),
+      ),
+    );
+
+    const users = userIds.length
+      ? await db
+          .collection("users")
+          .find({ _id: { $in: userIds.map((id) => new ObjectId(id)) } })
+          .project({ _id: 1, email: 1 })
+          .toArray()
+      : [];
+
+    const emailByUserId = new Map<string, string>();
+    for (const u of users as any[]) {
+      emailByUserId.set(String(u._id), String(u.email || ""));
+    }
+
+    const initialLedger: LedgerRow[] = ledgerDocs.map((row: any) => {
+      const uid = String(row.userId || "");
+      const email = emailByUserId.get(uid);
+      return {
+        id: String(row._id),
+        user: email || maskUserId(uid),
+        points: Number(row.points || 0),
+        reason: String(row.reason || row.actionType || row.rewardType || "").trim(),
+        timestamp: row.createdAt ? new Date(row.createdAt).toISOString() : null,
+        status: String(row.status || "posted"),
+      };
+    });
+
+    const initialTotalPointsIssued = ledgerDocs.reduce((sum: number, row: any) => {
+      const points = Number(row.points || 0);
+      return points > 0 ? sum + points : sum;
+    }, 0);
+
+    return {
+      props: {
+        initialLedger,
+        initialTotalPointsIssued,
+      },
+    };
   } catch {
     return {
       redirect: {
@@ -440,6 +607,4 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
       },
     };
   }
-
-  return { props: {} };
 };
