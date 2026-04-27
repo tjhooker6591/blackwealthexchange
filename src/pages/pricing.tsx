@@ -51,6 +51,7 @@ function PriceCard({
   onCta,
   finePrint,
   disabled = false,
+  billingNote,
 }: {
   title: string;
   price: string;
@@ -62,6 +63,7 @@ function PriceCard({
   onCta: () => void;
   finePrint?: string;
   disabled?: boolean;
+  billingNote?: string;
 }) {
   return (
     <div
@@ -105,7 +107,7 @@ function PriceCard({
           {price}
         </div>
         <div className="text-sm text-gray-400 mt-1">
-          Billed monthly • Cancel anytime
+          {billingNote || "Access term applied at checkout"}
         </div>
       </div>
 
@@ -224,9 +226,8 @@ export default function Pricing() {
               Upgrade to Premium
             </h1>
             <p className="text-base sm:text-lg text-gray-200 mt-4">
-              Unlock the Investment Hub, premium learning tools, trusted search
-              flow, and deeper community features—built to help you move from
-              browsing to building.
+              Choose the plan that matches your current stage. This page lists
+              only benefits available today, plus clearly labeled rollout items.
             </p>
 
             <div className="mt-6 flex flex-wrap items-center gap-3">
@@ -240,7 +241,7 @@ export default function Pricing() {
               </Pill>
               <Pill>
                 <Sparkles className="h-4 w-4" />
-                Premium tools + reports
+                Black Card tier included with paid plans
               </Pill>
             </div>
 
@@ -266,8 +267,9 @@ export default function Pricing() {
                 BWE Black Card Membership
               </h2>
               <p className="mt-2 text-sm text-gray-200">
-                Tiered membership identity + access + rewards. Launching with
-                Standard, Signature, and Elite tiers.
+                Tiered membership identity and rewards access. Pricing plan
+                mapping: Premium includes Black Card Standard, Founding includes
+                Black Card Signature (or keeps your higher active tier).
               </p>
               <div className="mt-4 flex w-full items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-black p-3 sm:p-4">
                 <Image
@@ -293,42 +295,44 @@ export default function Pricing() {
           <PriceCard
             title="Free"
             price="$0"
-            sub="Perfect for exploring the platform."
+            sub="Explore core BWE experiences."
+            billingNote="No plan charge"
             features={[
-              { ok: true, text: "Search + browse public content" },
-              { ok: true, text: "Marketplace browsing (view products)" },
-              { ok: true, text: "Limited directory results" },
-              { ok: false, text: "Investment Hub access" },
-              { ok: false, text: "Premium reports & insights" },
-              { ok: false, text: "Advanced trusted search tools" },
+              { ok: true, text: "Search, filters, tabs, and AI Mode (available to all users)" },
+              { ok: true, text: "Marketplace browsing and public content access" },
+              { ok: true, text: "Core account and dashboard access" },
+              { ok: false, text: "Paid-plan Black Card tier mapping" },
+              { ok: false, text: "Black Card rewards earn/redeem access" },
+              { ok: false, text: "Premium-gated learning and investment experiences" },
             ]}
             ctaText={
               !authUser || !isPremiumActive
                 ? "Current Plan"
-                : "Included in Premium"
+                : "Included in Paid Plans"
             }
             onCta={() => router.push("/")}
-            finePrint="You can upgrade anytime."
+            finePrint="Upgrade when you want paid-plan access and Black Card tier inclusion."
           />
 
           <PriceCard
             title="Premium"
-            price="$9.99"
-            sub="Best value for most members."
+            price="$12.00"
+            sub="Paid plan with Black Card Standard included."
+            billingNote="Plan access term applied at checkout"
             highlight
             badge="Most Popular"
             features={[
-              { ok: true, text: "Full Business Directory access" },
+              { ok: true, text: "Everything in Free" },
               {
                 ok: true,
-                text: "Investment Hub: funding, investing, wealth tools",
+                text: "Black Card Standard mapping on activation",
               },
-              { ok: true, text: "Premium learning modules & checklists" },
-              { ok: true, text: "Monthly reports & insights" },
-              { ok: true, text: "Unlimited community access" },
+              { ok: true, text: "Black Card rewards earn/redeem access (subject to card status, tier, and points checks)" },
+              { ok: true, text: "Investment and learning flows currently tied to paid-plan access" },
+              { ok: true, text: "Optional physical Black Card request once membership is active" },
               {
-                ok: true,
-                text: "Trusted search tools + filters (AI Mode & tabs ready)",
+                ok: false,
+                text: "Community/reporting features not currently active as standalone products",
               },
             ]}
             ctaText={isPremiumActive ? "Premium Active" : "Upgrade to Premium"}
@@ -337,70 +341,68 @@ export default function Pricing() {
             finePrint={
               isPremiumActive
                 ? "Your Premium membership is already active."
-                : "Cancel anytime. Your access stays active through the billing period."
+                : "Activation maps your account to Black Card Standard."
             }
           />
 
           <PriceCard
             title="Founding Member"
-            price="$19.99"
-            sub="Support the mission + unlock founder perks."
+            price="$49.00"
+            sub="Paid plan with Black Card Signature mapping."
+            billingNote="Plan access term applied at checkout"
             features={[
               { ok: true, text: "Everything in Premium" },
-              { ok: true, text: "Priority support & feedback channel" },
-              { ok: true, text: "Early access to new features (beta)" },
-              { ok: true, text: "Founder badge on profile (optional)" },
-              { ok: true, text: "Exclusive quarterly strategy briefings" },
+              { ok: true, text: "Black Card Signature mapping on activation" },
+              { ok: true, text: "If you already have a higher Black Card tier, that higher tier is kept" },
+              { ok: true, text: "Black Card rewards and redemption workflows with admin-tracked status" },
+              { ok: true, text: "Early access language applies only to features marked rolling out" },
               {
-                ok: true,
-                text: "Tools pack: deal templates, trackers, and planning sheets",
+                ok: false,
+                text: "No guaranteed VIP lane, direct introductions, or custom reporting claims",
               },
             ]}
             ctaText="Become a Founder"
             onCta={() => goCheckout("founder")}
-            finePrint="Best for power users who want to help shape BWE."
+            finePrint="Activation maps your account to at least Black Card Signature."
           />
         </div>
 
         <div className="mt-8 bg-white/5 border border-white/10 rounded-2xl p-6 sm:p-8">
           <h2 className="text-xl sm:text-2xl font-extrabold text-yellow-200">
-            Why Go Premium?
+            Plan clarity: Free vs Premium vs Founding
           </h2>
           <p className="text-gray-300 mt-2 max-w-3xl">
-            Premium isn’t just “more pages.” It’s tools and trusted workflows
-            that help you take action: better directory discovery,
-            wealth-building education, investment resources, and reports that
-            keep you informed.
+            Free includes search, filters, tabs, and AI Mode. Paid plans map to
+            Black Card tiers and unlock Black Card rewards access with current
+            system checks.
           </p>
 
           <div className="mt-5 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
             <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
-              <div className="text-yellow-200 font-extrabold">
-                Trusted Search
-              </div>
+              <div className="text-yellow-200 font-extrabold">Free Plan</div>
               <p className="text-gray-300 mt-2">
-                Cleaner discovery (AI Mode + tabs + filters) so users find the
-                right businesses faster.
+                Core discovery is already available: search, filters, tabs, and
+                AI Mode.
               </p>
             </div>
 
             <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
               <div className="text-yellow-200 font-extrabold">
-                Investment Hub
+                Premium Plan
               </div>
               <p className="text-gray-300 mt-2">
-                Structured resources for funding, investing, and long-term
-                wealth—built for clarity, not hype.
+                Includes Black Card Standard mapping and rewards access in the
+                current Black Card system.
               </p>
             </div>
 
             <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
               <div className="text-yellow-200 font-extrabold">
-                Reports & Insights
+                Founding Plan
               </div>
               <p className="text-gray-300 mt-2">
-                Monthly insights that keep members focused on what matters and
-                what’s trending in the ecosystem.
+                Includes Black Card Signature mapping (or keeps your higher tier
+                if already active).
               </p>
             </div>
           </div>

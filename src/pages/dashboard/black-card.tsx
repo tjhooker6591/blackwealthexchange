@@ -8,6 +8,13 @@ import cookie from "cookie";
 import jwt from "jsonwebtoken";
 import { getJwtSecret } from "@/lib/env";
 
+type MeResponse = {
+  user?: {
+    currentPlan?: string;
+    premiumStatus?: string;
+  } | null;
+};
+
 type MemberSummaryResponse = {
   ok: boolean;
   member?: {
@@ -65,6 +72,7 @@ export default function BlackCardDashboardPage() {
     marketplace_fee_credit?: boolean;
     event_access?: boolean;
   }>({});
+  const [currentPlan, setCurrentPlan] = useState<string>("free");
 
   async function fetchSummary() {
     const res = await fetch("/api/black-card/member-summary", {
@@ -79,6 +87,16 @@ export default function BlackCardDashboardPage() {
 
     const json = (await res.json()) as MemberSummaryResponse;
     setData(json);
+
+    const meRes = await fetch("/api/auth/me", {
+      credentials: "include",
+      cache: "no-store",
+    });
+    if (meRes.ok) {
+      const meJson = (await meRes.json()) as MeResponse;
+      const plan = String(meJson?.user?.currentPlan || "free").toLowerCase();
+      setCurrentPlan(plan || "free");
+    }
 
     const entitlementChecks = await Promise.all([
       fetch("/api/black-card/entitlements/check?benefit=priority_events", {
@@ -149,6 +167,13 @@ export default function BlackCardDashboardPage() {
   const membershipActive =
     String(data?.member?.status || "inactive").toLowerCase() === "active";
 
+  const includedTierByPlan =
+    currentPlan === "founding"
+      ? "Signature"
+      : currentPlan === "premium"
+        ? "Standard"
+        : "No included Black Card tier";
+
   const latestPhysicalRequestActivity = data?.activity?.find((a) =>
     ["black_card_order_created", "physical_card_requested"].includes(
       String(a.type || "").toLowerCase(),
@@ -202,6 +227,9 @@ export default function BlackCardDashboardPage() {
                   It is not a debit card, credit card, bank card, or payment
                   card.
                 </p>
+                <p className="mt-3 rounded-lg border border-yellow-500/30 bg-yellow-500/10 px-3 py-2 text-yellow-100">
+                  Your plan includes this tier: <strong>{includedTierByPlan}</strong>
+                </p>
               </section>
 
               <section className="grid gap-4 md:grid-cols-2">
@@ -214,7 +242,8 @@ export default function BlackCardDashboardPage() {
                     activity. You can redeem points for approved BWE benefits.
                   </p>
                   <div className="mt-3 text-white/70">
-                    Points balance: <strong>{data.rewards?.balance ?? 0}</strong>
+                    Points balance:{" "}
+                    <strong>{data.rewards?.balance ?? 0}</strong>
                   </div>
                 </div>
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-5 text-sm text-white/80">
@@ -222,10 +251,19 @@ export default function BlackCardDashboardPage() {
                     How points are earned and redeemed
                   </h2>
                   <ul className="mt-2 list-disc space-y-1 pl-5">
-                    <li>Earn via eligible BWE activity (for example marketplace, events, learning, referrals).</li>
+                    <li>
+                      Earn via eligible BWE activity (for example marketplace,
+                      events, learning, referrals).
+                    </li>
                     <li>Choose a reward in Redemption Actions.</li>
-                    <li>System checks membership status, tier eligibility, and available points.</li>
-                    <li>Some rewards go to review, then status updates in your dashboard.</li>
+                    <li>
+                      System checks membership status, tier eligibility, and
+                      available points.
+                    </li>
+                    <li>
+                      Some rewards go to review, then status updates in your
+                      dashboard.
+                    </li>
                   </ul>
                 </div>
               </section>
@@ -344,7 +382,9 @@ export default function BlackCardDashboardPage() {
                             Open live verification page
                           </a>
                         ) : (
-                          <span className="text-white/60">Available after issuance</span>
+                          <span className="text-white/60">
+                            Available after issuance
+                          </span>
                         )}
                       </div>
                     </div>
@@ -358,12 +398,17 @@ export default function BlackCardDashboardPage() {
                     <div className="mt-1">
                       Request detected at{" "}
                       {latestPhysicalRequestActivity.at
-                        ? new Date(latestPhysicalRequestActivity.at).toLocaleString()
+                        ? new Date(
+                            latestPhysicalRequestActivity.at,
+                          ).toLocaleString()
                         : "recent activity"}
-                      . Current fulfillment status is processed in Black Card operations.
+                      . Current fulfillment status is processed in Black Card
+                      operations.
                     </div>
                   ) : (
-                    <div className="mt-1">No physical card request activity yet.</div>
+                    <div className="mt-1">
+                      No physical card request activity yet.
+                    </div>
                   )}
                 </div>
 

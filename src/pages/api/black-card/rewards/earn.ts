@@ -51,11 +51,13 @@ export default async function handler(
     });
   }
 
-  const recentEarnCount = await db.collection("black_card_rewards_ledger").countDocuments({
-    userId: session.userId,
-    type: "credit",
-    createdAt: { $gte: new Date(Date.now() - 1000 * 60 * 5) },
-  });
+  const recentEarnCount = await db
+    .collection("black_card_rewards_ledger")
+    .countDocuments({
+      userId: session.userId,
+      type: "credit",
+      createdAt: { $gte: new Date(Date.now() - 1000 * 60 * 5) },
+    });
   if (recentEarnCount >= 10) {
     return res.status(429).json({
       ok: false,
@@ -74,14 +76,28 @@ export default async function handler(
         projection: {
           blackCardTier: 1,
           blackCardStatus: 1,
+          blackCardPlanExpiresAt: 1,
           blackCardRewardsBalance: 1,
         },
       },
     );
 
+  const planExpiresAt =
+    user?.blackCardPlanExpiresAt instanceof Date
+      ? user.blackCardPlanExpiresAt
+      : user?.blackCardPlanExpiresAt
+        ? new Date(user.blackCardPlanExpiresAt as string)
+        : null;
+
+  const isExpired =
+    !!planExpiresAt &&
+    Number.isFinite(planExpiresAt.getTime()) &&
+    planExpiresAt.getTime() <= Date.now();
+
   if (
     !user ||
-    String(user.blackCardStatus || "inactive").toLowerCase() !== "active"
+    String(user.blackCardStatus || "inactive").toLowerCase() !== "active" ||
+    isExpired
   ) {
     return res
       .status(403)

@@ -133,9 +133,11 @@ export default async function handler(
             ? userDoc.blackCardTier
             : null,
         status:
-          typeof userDoc.blackCardStatus === "string"
-            ? userDoc.blackCardStatus
-            : "inactive",
+          renewalState === "expired"
+            ? "inactive"
+            : typeof userDoc.blackCardStatus === "string"
+              ? userDoc.blackCardStatus
+              : "inactive",
         memberSince: userDoc.blackCardMemberSince || null,
         planExpiresAt: userDoc.blackCardPlanExpiresAt || null,
         renewalState,
@@ -152,7 +154,9 @@ export default async function handler(
             memberId: String(card.memberId || ""),
             cardSerial: String(card.cardSerial || ""),
             cardType: String(card.cardType || "user"),
-            digitalStatus: String(card.status || card.digitalStatus || "active"),
+            digitalStatus: String(
+              card.status || card.digitalStatus || "active",
+            ),
             issueVersion: Number(card.issueVersion || 1),
             verificationCode: createHash("sha256")
               .update(

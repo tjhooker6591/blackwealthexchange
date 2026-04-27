@@ -168,10 +168,26 @@ export default async function handler(
     const normalizedBlackCardTier =
       typeof profile.blackCardTier === "string" ? profile.blackCardTier : null;
 
-    const normalizedBlackCardStatus =
+    const rawBlackCardStatus =
       typeof profile.blackCardStatus === "string"
         ? profile.blackCardStatus.toLowerCase()
         : "inactive";
+
+    const blackCardPlanExpiresAt =
+      profile.blackCardPlanExpiresAt instanceof Date
+        ? profile.blackCardPlanExpiresAt
+        : profile.blackCardPlanExpiresAt
+          ? new Date(profile.blackCardPlanExpiresAt)
+          : null;
+
+    const blackCardExpired =
+      !!blackCardPlanExpiresAt &&
+      Number.isFinite(blackCardPlanExpiresAt.getTime()) &&
+      blackCardPlanExpiresAt.getTime() <= Date.now();
+
+    const normalizedBlackCardStatus = blackCardExpired
+      ? "inactive"
+      : rawBlackCardStatus;
 
     return res.status(200).json({
       user: {

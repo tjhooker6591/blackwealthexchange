@@ -1200,9 +1200,12 @@ export default async function webhookHandler(
     }
 
     /**
-     * 3.6) Premium membership plan entitlement (existing)
+     * 3.6) Paid-plan entitlement mapped to Black Card tier
      */
-    if (metaType === "plan" && normalizedItemId === "premium") {
+    if (
+      metaType === "plan" &&
+      (normalizedItemId === "premium" || normalizedItemId === "founder")
+    ) {
       const membershipDurationDays =
         parseDurationDays(mergedMeta.durationDays) || 30;
       const planStartAt = paidAt;
@@ -1210,17 +1213,23 @@ export default async function webhookHandler(
         planStartAt.getTime() + membershipDurationDays * 24 * 60 * 60 * 1000,
       );
 
+      const isFounding = normalizedItemId === "founder";
+      const mappedPlanId = isFounding ? "founding" : "premium";
+      const mappedTierItemId = isFounding
+        ? "black-card-signature"
+        : "black-card-standard";
+
       const premiumEntitlementPatch = {
         // canonical app fields
         isPremium: true,
-        currentPlan: "premium",
+        currentPlan: mappedPlanId,
         premiumStatus: "active",
         premiumActivatedAt: planStartAt,
         premiumStripeSessionId: stripeSessionId,
         premiumPaymentIntentId: paymentIntentId || null,
 
         // existing legacy membership fields
-        membershipPlanId: "premium",
+        membershipPlanId: mappedPlanId,
         membershipPlanStatus: "active",
         membershipPlanDurationDays: membershipDurationDays,
         membershipPlanStartAt: planStartAt,
@@ -1247,6 +1256,42 @@ export default async function webhookHandler(
         );
       }
 
+      // Plan-to-tier mapping enforcement:
+      // premium -> standard, founder -> signature (without downgrading higher active tier)
+      const userDoc = await db
+        .collection("users")
+        .findOne(
+          userId && ObjectId.isValid(userId)
+            ? { _id: new ObjectId(userId) }
+            : { email },
+          {
+            projection: { blackCardTier: 1, blackCardStatus: 1 },
+          },
+        );
+
+      const existingTier =
+        typeof userDoc?.blackCardTier === "string"
+          ? userDoc.blackCardTier.toLowerCase()
+          : "";
+      const existingActive =
+        String(userDoc?.blackCardStatus || "inactive").toLowerCase() ===
+        "active";
+      const effectiveTierItemId =
+        isFounding && existingActive && existingTier === "elite"
+          ? "black-card-elite"
+          : mappedTierItemId;
+
+      await ensureBlackCardMembershipAndCard({
+        db,
+        userId,
+        email,
+        stripeSessionId,
+        paymentIntentId: paymentIntentId || null,
+        itemId: effectiveTierItemId,
+        paidAt: planStartAt,
+        planExpiresAt,
+      });
+
       const membershipInvariant = await db
         .collection("users")
         .findOne(
@@ -1264,6 +1309,8 @@ export default async function webhookHandler(
               membershipPlanId: 1,
               membershipPlanStatus: 1,
               membershipPlanExpiresAt: 1,
+              blackCardTier: 1,
+              blackCardStatus: 1,
             },
           },
         );
@@ -1271,15 +1318,17 @@ export default async function webhookHandler(
       if (
         !membershipInvariant ||
         membershipInvariant.isPremium !== true ||
-        membershipInvariant.currentPlan !== "premium" ||
+        membershipInvariant.currentPlan !== mappedPlanId ||
         membershipInvariant.premiumStatus !== "active" ||
-        membershipInvariant.membershipPlanId !== "premium" ||
-        membershipInvariant.membershipPlanStatus !== "active"
+        membershipInvariant.membershipPlanId !== mappedPlanId ||
+        membershipInvariant.membershipPlanStatus !== "active" ||
+        String(membershipInvariant.blackCardStatus || "inactive").toLowerCase() !==
+          "active"
       ) {
         await db.collection("flow_events").insertOne({
-          eventType: "premium_membership_entitlement_invariant_failed",
+          eventType: "paid_plan_black_card_mapping_invariant_failed",
           pageRoute: "/api/stripe/webhook-handler",
-          section: "premium_membership_entitlement_invariant",
+          section: "paid_plan_black_card_mapping",
           source: "stripe_webhook",
           source_variant: "invariant_failed",
           stripeSessionId,
@@ -1291,7 +1340,9 @@ export default async function webhookHandler(
         });
       }
 
-      console.log(`✅ Premium membership activated user=${userId || email}`);
+      console.log(
+        `✅ Paid plan activated plan=${mappedPlanId} mappedTierItem=${effectiveTierItemId} user=${userId || email}`,
+      );
     }
 
     /**
@@ -1576,9 +1627,7 @@ export default async function webhookHandler(
           updatedAt: now,
           listingTier: isFeaturedJob ? "featured" : "standard",
           isFeatured: isFeaturedJob,
-          ...(isFeaturedJob
-            ? { featureEndDate }
-            : { featureEndDate: null }),
+          ...(isFeaturedJob ? { featureEndDate } : { featureEndDate: null }),
         },
       });
 

@@ -34,10 +34,12 @@ export default async function handler(
   const db = client.db(getMongoDbName());
   const now = new Date();
 
-  const recentRedeemCount = await db.collection("black_card_redemptions").countDocuments({
-    userId: session.userId,
-    createdAt: { $gte: new Date(Date.now() - 1000 * 60 * 10) },
-  });
+  const recentRedeemCount = await db
+    .collection("black_card_redemptions")
+    .countDocuments({
+      userId: session.userId,
+      createdAt: { $gte: new Date(Date.now() - 1000 * 60 * 10) },
+    });
   if (recentRedeemCount >= 5) {
     return res.status(429).json({
       ok: false,
@@ -55,15 +57,29 @@ export default async function handler(
       {
         projection: {
           blackCardStatus: 1,
+          blackCardPlanExpiresAt: 1,
           blackCardRewardsBalance: 1,
           blackCardTier: 1,
         },
       },
     );
 
+  const planExpiresAt =
+    user?.blackCardPlanExpiresAt instanceof Date
+      ? user.blackCardPlanExpiresAt
+      : user?.blackCardPlanExpiresAt
+        ? new Date(user.blackCardPlanExpiresAt as string)
+        : null;
+
+  const isExpired =
+    !!planExpiresAt &&
+    Number.isFinite(planExpiresAt.getTime()) &&
+    planExpiresAt.getTime() <= Date.now();
+
   if (
     !user ||
-    String(user.blackCardStatus || "inactive").toLowerCase() !== "active"
+    String(user.blackCardStatus || "inactive").toLowerCase() !== "active" ||
+    isExpired
   ) {
     return res
       .status(403)

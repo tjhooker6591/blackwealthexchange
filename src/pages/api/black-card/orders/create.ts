@@ -38,10 +38,29 @@ export default async function handler(
       $or: [{ userId: session.userId }, { email: session.email }],
       status: "active",
     },
-    { projection: { _id: 1, userId: 1, email: 1, status: 1 } },
+    {
+      projection: {
+        _id: 1,
+        userId: 1,
+        email: 1,
+        status: 1,
+        planExpiresAt: 1,
+      },
+    },
   );
 
-  if (!membership) {
+  const membershipExpiresAt =
+    membership?.planExpiresAt instanceof Date
+      ? membership.planExpiresAt
+      : membership?.planExpiresAt
+        ? new Date(membership.planExpiresAt as string)
+        : null;
+  const membershipExpired =
+    !!membershipExpiresAt &&
+    Number.isFinite(membershipExpiresAt.getTime()) &&
+    membershipExpiresAt.getTime() <= Date.now();
+
+  if (!membership || membershipExpired) {
     return res
       .status(403)
       .json({ ok: false, error: "Active Black Card membership required" });
