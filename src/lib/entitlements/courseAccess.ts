@@ -5,7 +5,10 @@ import { ObjectId } from "mongodb";
 import clientPromise from "@/lib/mongodb";
 import { getJwtSecret, getMongoDbName } from "@/lib/env";
 
-const COURSE_IDS = ["financial-literacy-premium", "personal-finance-101"] as const;
+const COURSE_IDS = [
+  "financial-literacy-premium",
+  "personal-finance-101",
+] as const;
 
 type SessionPayload = {
   userId?: string;
@@ -48,24 +51,28 @@ export async function resolvePremiumCourseAccess(
   }
 
   const userId = String(session.userId || session.id || "").trim();
-  const email = String(session.email || "").trim().toLowerCase();
+  const email = String(session.email || "")
+    .trim()
+    .toLowerCase();
 
   const client = await clientPromise;
   const db = client.db(getMongoDbName());
 
-  const user = await db.collection("users").findOne(
-    ObjectId.isValid(userId) ? { _id: new ObjectId(userId) } : { email },
-    {
-      projection: {
-        _id: 1,
-        email: 1,
-        purchasedCourses: 1,
-        isPremium: 1,
-        premiumStatus: 1,
-        currentPlan: 1,
+  const user = await db
+    .collection("users")
+    .findOne(
+      ObjectId.isValid(userId) ? { _id: new ObjectId(userId) } : { email },
+      {
+        projection: {
+          _id: 1,
+          email: 1,
+          purchasedCourses: 1,
+          isPremium: 1,
+          premiumStatus: 1,
+          currentPlan: 1,
+        },
       },
-    },
-  );
+    );
 
   if (!user) {
     return {

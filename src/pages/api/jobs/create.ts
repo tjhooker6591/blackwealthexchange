@@ -2,10 +2,10 @@ import { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import { parse } from "cookie";
 import jwt from "jsonwebtoken";
-import { getMongoDbName } from "@/lib/env";
+import { getJwtSecret, getMongoDbName } from "@/lib/env";
 
 // Fallback secret for local dev
-const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-key";
+const JWT_SECRET = getJwtSecret();
 
 // Basic sanitization function to strip HTML/script tags
 function sanitize(input: string): string {

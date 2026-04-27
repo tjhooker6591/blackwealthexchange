@@ -890,14 +890,10 @@ export default function Home() {
         <meta name="twitter:description" content={description} />
       </Head>
 
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
-      />
+      <script type="application/ld+json">{JSON.stringify(websiteSchema)}</script>
+      <script type="application/ld+json">
+        {JSON.stringify(organizationSchema)}
+      </script>
       <div className="absolute inset-0 bg-neutral-950" />
       <div className="absolute inset-0 bg-gradient-to-b from-neutral-950 via-neutral-950/70 to-black/90" />
       <div className="pointer-events-none absolute -top-40 left-1/2 h-[900px] w-[900px] -translate-x-1/2 rounded-full bg-[#D4AF37]/[0.06] blur-3xl" />
@@ -1441,9 +1437,7 @@ export default function Home() {
                 </Link>
               </article>
               <article className="rounded-xl border border-white/10 bg-black/30 p-4">
-                <h3 className="text-sm font-extrabold text-white">
-                  Find Jobs
-                </h3>
+                <h3 className="text-sm font-extrabold text-white">Find Jobs</h3>
                 <p className="mt-1 text-xs text-white/70">
                   Find internships, jobs, and growth pathways aligned with your
                   goals.
@@ -1680,7 +1674,6 @@ export default function Home() {
                 Open Recruiting
               </Link>
             </article>
-
           </div>
         </section>
       </main>

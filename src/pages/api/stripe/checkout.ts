@@ -10,7 +10,7 @@ import {
   getAdPriceCents,
   getAdQuote,
 } from "@/lib/advertising/pricing";
-import { getMongoDbName } from "@/lib/env";
+import { getJwtSecret, getMongoDbName } from "@/lib/env";
 import { createProductCheckoutSessionCore } from "@/lib/checkout/createProductCheckoutSession";
 import {
   BLACK_CARD_TIERS,
@@ -214,7 +214,7 @@ export default async function handler(
 
   if (token) {
     try {
-      const SECRET = process.env.JWT_SECRET || process.env.NEXTAUTH_SECRET;
+      const SECRET = getJwtSecret();
       if (!SECRET) throw new Error("JWT_SECRET is not set");
 
       const decoded = jwt.verify(token, SECRET as string) as any;
@@ -767,7 +767,11 @@ export default async function handler(
       idempotencyKey,
     });
 
-    if (type === "job" && normalizedJobId && ObjectId.isValid(normalizedJobId)) {
+    if (
+      type === "job" &&
+      normalizedJobId &&
+      ObjectId.isValid(normalizedJobId)
+    ) {
       await db.collection("jobs").updateOne(
         { _id: new ObjectId(normalizedJobId) },
         {

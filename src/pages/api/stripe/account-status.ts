@@ -3,7 +3,7 @@ import Stripe from "stripe";
 import clientPromise from "@/lib/mongodb";
 import cookie from "cookie";
 import jwt from "jsonwebtoken";
-import { getMongoDbName } from "@/lib/env";
+import { getJwtSecret, getMongoDbName } from "@/lib/env";
 
 function getStripeClient() {
   const key = process.env.STRIPE_SECRET_KEY;
@@ -16,7 +16,7 @@ function getSession(req: NextApiRequest) {
   const token = cookies.session_token;
   if (!token) return null;
 
-  const SECRET = process.env.JWT_SECRET || process.env.NEXTAUTH_SECRET;
+  const SECRET = getJwtSecret();
   if (!SECRET) throw new Error("JWT_SECRET is not set");
 
   const decoded = jwt.verify(token, SECRET) as any;
@@ -69,7 +69,8 @@ export default async function handler(
         payoutsEnabled: false,
         requirements: [],
         statusUnavailable: true,
-        statusMessage: "Payout status is temporarily unavailable. You can continue managing products and orders.",
+        statusMessage:
+          "Payout status is temporarily unavailable. You can continue managing products and orders.",
       });
     }
 
@@ -97,7 +98,8 @@ export default async function handler(
         payoutsEnabled: false,
         requirements: [],
         statusUnavailable: true,
-        statusMessage: "Payout status is temporarily unavailable. You can continue managing products and orders.",
+        statusMessage:
+          "Payout status is temporarily unavailable. You can continue managing products and orders.",
       });
     }
     return res.status(500).json({ error: message });

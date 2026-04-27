@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import { parse } from "cookie";
 import { ObjectId } from "mongodb";
 import clientPromise from "@/lib/mongodb";
+import { getJwtSecret } from "@/lib/env";
 
 const ALLOWED = [
   "new",
@@ -35,7 +36,7 @@ export default async function handler(
 
   let payload: { email: string; accountType?: string; userId?: string };
   try {
-    const secret = process.env.JWT_SECRET ?? process.env.NEXTAUTH_SECRET!;
+    const secret = getJwtSecret();
     payload = jwt.verify(token, secret) as typeof payload;
   } catch {
     return res.status(401).json({ error: "Invalid or expired token" });

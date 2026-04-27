@@ -2,6 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import jwt from "jsonwebtoken";
 import clientPromise from "@/lib/mongodb";
+import { getJwtSecret } from "@/lib/env";
 
 interface TokenPayload {
   email: string;
@@ -33,7 +34,7 @@ export default async function handler(
   try {
     payload = jwt.verify(
       raw,
-      process.env.JWT_SECRET as string, // must match /api/auth/login
+      getJwtSecret(), // must match /api/auth/login
     ) as TokenPayload;
   } catch {
     return res.status(401).json({ error: "Unauthorized: bad token" });

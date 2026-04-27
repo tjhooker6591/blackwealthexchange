@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
 import cookie from "cookie";
 import jwt from "jsonwebtoken";
-import { getAppUrl } from "@/lib/env";
+import { getAppUrl, getJwtSecret } from "@/lib/env";
 import { requireStripeSecretKey } from "@/lib/stripeSecret";
 
 type ErrorBody = { code: string; message: string };
@@ -54,7 +54,7 @@ export default async function handler(
 
   let sessionUser: { userId: string; email?: string };
   try {
-    const SECRET = process.env.JWT_SECRET || process.env.NEXTAUTH_SECRET;
+    const SECRET = getJwtSecret();
     if (!SECRET) {
       return res.status(500).json({
         code: "AUTH_CONFIG_MISSING",

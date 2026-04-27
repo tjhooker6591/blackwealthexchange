@@ -3,6 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import crypto from "crypto";
 import clientPromise from "../../../lib/mongodb";
 import { sendEmail } from "@/lib/sendEmail";
+import { getMongoDbName, getResetTokenSecret } from "@/lib/env";
 
 /**
  * Build APP_URL safely:
@@ -15,10 +16,7 @@ const APP_URL =
   process.env.APP_URL ||
   (process.env.NODE_ENV === "development" ? "http://localhost:3000" : "");
 
-const RESET_TOKEN_SECRET =
-  process.env.RESET_TOKEN_SECRET ||
-  process.env.JWT_SECRET ||
-  "dev-reset-secret";
+const RESET_TOKEN_SECRET = getResetTokenSecret();
 
 const RESET_TTL_MINUTES = 60;
 
@@ -74,7 +72,7 @@ export default async function handler(
 
   try {
     const client = await clientPromise;
-    const db = client.db("bwes-cluster");
+    const db = client.db(getMongoDbName());
 
     // Prevent spam/replay: ignore repeated active requests for same email within 10 minutes
     const recent = await db.collection("password_resets").findOne({

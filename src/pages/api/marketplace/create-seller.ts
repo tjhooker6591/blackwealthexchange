@@ -5,6 +5,7 @@ import { getMarketplaceDbName } from "@/lib/marketplace/db";
 import bcrypt from "bcryptjs";
 import { ObjectId } from "mongodb";
 import jwt from "jsonwebtoken";
+import { getJwtSecret } from "@/lib/env";
 
 type ApiOk = { success: true; seller: Record<string, any> };
 type ApiErr = { success: false; error: string };
@@ -26,11 +27,8 @@ function getSessionUserId(req: NextApiRequest) {
   const token = getCookie(req, "session_token");
   if (!token) return "";
 
-  const secret = process.env.JWT_SECRET;
-  if (!secret) return "";
-
   try {
-    const payload = jwt.verify(token, secret) as any;
+    const payload = jwt.verify(token, getJwtSecret()) as any;
     return String(payload?.userId || payload?.id || payload?._id || "");
   } catch {
     return "";

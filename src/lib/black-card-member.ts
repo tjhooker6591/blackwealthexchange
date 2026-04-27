@@ -1,6 +1,7 @@
 import cookie from "cookie";
 import jwt from "jsonwebtoken";
 import type { NextApiRequest } from "next";
+import { getJwtSecret } from "@/lib/env";
 
 export type BlackCardSession = {
   userId: string;
@@ -15,7 +16,7 @@ export function getBlackCardSession(
     const token = parsed.session_token || req.cookies?.session_token;
     if (!token) return null;
 
-    const secret = process.env.JWT_SECRET || process.env.NEXTAUTH_SECRET;
+    const secret = getJwtSecret();
     if (!secret) return null;
 
     const payload = jwt.verify(token, secret) as {

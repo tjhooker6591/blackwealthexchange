@@ -2,8 +2,9 @@ import { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 import jwt from "jsonwebtoken";
+import { getJwtSecret } from "@/lib/env";
 
-const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-key";
+const JWT_SECRET = getJwtSecret();
 
 interface DecodedToken {
   email?: string;

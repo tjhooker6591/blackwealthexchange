@@ -2,13 +2,14 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import cookie from "cookie";
 import jwt from "jsonwebtoken";
+import { getJwtSecret } from "@/lib/env";
 
 function getSessionUserId(req: NextApiRequest) {
   const cookies = cookie.parse(req.headers.cookie || "");
   const token = cookies.session_token;
   if (!token) return "";
   try {
-    const secret = process.env.JWT_SECRET || process.env.NEXTAUTH_SECRET;
+    const secret = getJwtSecret();
     if (!secret) return "";
     const decoded = jwt.verify(token, secret) as any;
     return String(decoded?.userId || "");

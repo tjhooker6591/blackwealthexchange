@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
 import clientPromise from "@/lib/mongodb";
-import { getMongoDbName } from "@/lib/env";
+import { getJwtSecret, getMongoDbName } from "@/lib/env";
 import cookie from "cookie";
 import jwt from "jsonwebtoken";
 
@@ -19,7 +19,7 @@ function getSession(req: NextApiRequest) {
   const token = cookies.session_token;
   if (!token) return null;
 
-  const SECRET = process.env.JWT_SECRET || process.env.NEXTAUTH_SECRET;
+  const SECRET = getJwtSecret();
   if (!SECRET) throw new Error("JWT_SECRET is not set");
 
   const decoded = jwt.verify(token, SECRET) as any;

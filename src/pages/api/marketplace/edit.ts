@@ -4,8 +4,9 @@ import { getMarketplaceDbName } from "@/lib/marketplace/db";
 import { parse } from "cookie";
 import jwt from "jsonwebtoken";
 import { ObjectId } from "mongodb";
+import { getJwtSecret } from "@/lib/env";
 
-const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-key";
+const JWT_SECRET = getJwtSecret();
 
 interface DecodedToken {
   userId: string;

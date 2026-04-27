@@ -3,6 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 import ErrorPage from "next/error";
 import { industryNewsData, IndustryNews } from "../../lib/IndustryNewsEntry";
+import { sanitizeRichHtml } from "@/lib/security/sanitizeHtml";
 
 interface Props {
   entry: IndustryNews;
@@ -10,6 +11,7 @@ interface Props {
 
 const NewsDetail: NextPage<Props> = ({ entry }) => {
   if (!entry) return <ErrorPage statusCode={404} />;
+  const safeContent = sanitizeRichHtml(entry.content);
 
   return (
     <>
@@ -29,7 +31,7 @@ const NewsDetail: NextPage<Props> = ({ entry }) => {
 
           <article
             className="prose prose-invert lg:prose-lg max-w-none mt-6"
-            dangerouslySetInnerHTML={{ __html: entry.content }}
+            dangerouslySetInnerHTML={{ __html: safeContent }}
           />
         </section>
       </main>

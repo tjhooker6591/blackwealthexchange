@@ -2,7 +2,7 @@ import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import clientPromise from "@/lib/mongodb";
-import { getMongoDbName } from "@/lib/env";
+import { getMongoDbName, getNextAuthSecret } from "@/lib/env";
 
 // NextAuth configuration
 export const authOptions: NextAuthOptions = {
@@ -49,7 +49,7 @@ export const authOptions: NextAuthOptions = {
   },
 
   // Auth secret (must be configured in runtime env)
-  secret: process.env.NEXTAUTH_SECRET ?? process.env.JWT_SECRET,
+  secret: getNextAuthSecret(),
 
   // Enable debug logging in non-production
   debug: process.env.NODE_ENV !== "production",

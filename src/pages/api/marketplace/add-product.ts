@@ -8,8 +8,9 @@ import { getMarketplaceDbName } from "@/lib/marketplace/db";
 import { ObjectId } from "mongodb";
 import { parse } from "cookie";
 import jwt from "jsonwebtoken";
+import { getJwtSecret } from "@/lib/env";
 
-const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-key";
+const JWT_SECRET = getJwtSecret();
 
 // Disable Next.js body parsing to handle file uploads
 export const config = { api: { bodyParser: false } };

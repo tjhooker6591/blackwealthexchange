@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import cookie from "cookie";
 import { ObjectId } from "mongodb";
 import clientPromise from "@/lib/mongodb";
+import { getJwtSecret } from "@/lib/env";
 
 type AppRow = {
   id: string;
@@ -14,7 +15,7 @@ type AppRow = {
   statusUpdatedAt: string;
 };
 
-const SECRET = process.env.JWT_SECRET ?? process.env.NEXTAUTH_SECRET!;
+const SECRET = getJwtSecret();
 
 export default async function handler(
   req: NextApiRequest,

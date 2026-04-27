@@ -44,7 +44,6 @@ export default async function handler(
     const raw = req.headers.cookie || "";
     const cookies = cookie.parse(raw);
     const token = cookies.session_token;
-    const cookieRole = cookies.accountType;
 
     if (!token) {
       return res
@@ -72,7 +71,7 @@ export default async function handler(
         .json({ user: null, error: "Invalid or expired token." });
     }
 
-    const role = payload.accountType || cookieRole || "user";
+    const role = payload.accountType || "user";
 
     const collectionName =
       role === "seller"
@@ -95,11 +94,13 @@ export default async function handler(
     }
 
     const currentTokenVersion =
-      typeof profile.tokenVersion === "number" && Number.isFinite(profile.tokenVersion)
+      typeof profile.tokenVersion === "number" &&
+      Number.isFinite(profile.tokenVersion)
         ? profile.tokenVersion
         : 0;
     const incomingTokenVersion =
-      typeof payload.tokenVersion === "number" && Number.isFinite(payload.tokenVersion)
+      typeof payload.tokenVersion === "number" &&
+      Number.isFinite(payload.tokenVersion)
         ? payload.tokenVersion
         : 0;
 

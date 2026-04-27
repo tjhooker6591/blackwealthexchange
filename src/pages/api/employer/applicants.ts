@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import { parse } from "cookie";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId, WithId } from "mongodb";
+import { getJwtSecret } from "@/lib/env";
 
 interface ApplicantRecord {
   _id: ObjectId;
@@ -48,7 +49,7 @@ export default async function handler(
 
   let payload: { userId: string; email: string; accountType?: string };
   try {
-    const SECRET = process.env.JWT_SECRET ?? process.env.NEXTAUTH_SECRET!;
+    const SECRET = getJwtSecret();
     payload = jwt.verify(token, SECRET) as typeof payload;
   } catch (err) {
     console.error("JWT verification failed:", err);
@@ -107,7 +108,9 @@ export default async function handler(
     if (
       statusFilter &&
       statusFilter !== "all" &&
-      ["new", "reviewed", "shortlisted", "contacted", "rejected"].includes(statusFilter)
+      ["new", "reviewed", "shortlisted", "contacted", "rejected"].includes(
+        statusFilter,
+      )
     ) {
       applicantsQuery.hiringStatus = statusFilter;
     }

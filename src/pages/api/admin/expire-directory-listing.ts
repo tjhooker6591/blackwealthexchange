@@ -4,6 +4,7 @@ import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 import cookie from "cookie";
 import jwt from "jsonwebtoken";
+import { getJwtSecret } from "@/lib/env";
 
 type Decoded = {
   userId?: string;
@@ -46,7 +47,7 @@ async function requireAdmin(
   }
 
   try {
-    const SECRET = process.env.JWT_SECRET || process.env.NEXTAUTH_SECRET;
+    const SECRET = getJwtSecret();
     if (!SECRET) throw new Error("JWT secret missing");
 
     const decoded = jwt.verify(token, SECRET) as Decoded;

@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "../../../lib/mongodb";
 import jwt from "jsonwebtoken";
 import { ObjectId } from "mongodb";
+import { getJwtSecret } from "@/lib/env";
 
 export default async function handler(
   req: NextApiRequest,
@@ -24,7 +25,7 @@ export default async function handler(
 
   let payload: any;
   try {
-    payload = jwt.verify(session_token, process.env.JWT_SECRET!);
+    payload = jwt.verify(session_token, getJwtSecret());
   } catch (_err) {
     return res.status(401).json({ error: "Invalid session" });
   }

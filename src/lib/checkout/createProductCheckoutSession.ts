@@ -48,7 +48,10 @@ function resolveBuyerFromRequest(req: NextApiRequest): {
 
     const payload = jwt.verify(token, getJwtSecret()) as any;
     const buyerUserId = String(payload?.userId || "").trim() || null;
-    const buyerEmail = String(payload?.email || "").trim().toLowerCase() || null;
+    const buyerEmail =
+      String(payload?.email || "")
+        .trim()
+        .toLowerCase() || null;
     return { buyerUserId, buyerEmail };
   } catch {
     return { buyerUserId: null, buyerEmail: null };

@@ -3,6 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import cookie from "cookie";
 import jwt from "jsonwebtoken";
+import { getJwtSecret } from "@/lib/env";
 
 type Decoded = {
   userId?: string;
@@ -228,7 +229,7 @@ export default async function handler(
 
   let decoded: Decoded;
   try {
-    const SECRET = process.env.JWT_SECRET || process.env.NEXTAUTH_SECRET;
+    const SECRET = getJwtSecret();
     if (!SECRET) throw new Error("JWT_SECRET missing");
     decoded = jwt.verify(token, SECRET) as Decoded;
   } catch {

@@ -4,8 +4,9 @@ import clientPromise from "../../../lib/mongodb";
 import jwt from "jsonwebtoken";
 import cookie from "cookie";
 import { ObjectId } from "mongodb";
+import { getJwtSecret } from "@/lib/env";
 
-const SECRET = process.env.JWT_SECRET!;
+const SECRET = getJwtSecret();
 
 export default async function handler(
   req: NextApiRequest,
