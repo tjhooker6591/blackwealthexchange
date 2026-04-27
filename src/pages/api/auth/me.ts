@@ -9,6 +9,9 @@ interface JwtPayload {
   userId: string;
   email: string;
   accountType?: string;
+  isAdmin?: boolean;
+  role?: string;
+  roles?: string[];
   tokenVersion?: number;
 }
 
@@ -24,6 +27,9 @@ interface UserProfile {
   updatedAt?: Date;
   password?: string;
   isPremium?: boolean;
+  isAdmin?: boolean;
+  role?: string;
+  roles?: string[];
   currentPlan?: string;
   premiumStatus?: string;
   premiumActivatedAt?: Date | null;
@@ -32,6 +38,20 @@ interface UserProfile {
   blackCardMemberSince?: Date | null;
   tokenVersion?: number;
   [key: string]: unknown;
+}
+
+function isAdminPayload(payload: {
+  accountType?: string;
+  isAdmin?: boolean;
+  role?: string;
+  roles?: string[];
+}) {
+  return (
+    payload.isAdmin === true ||
+    payload.accountType === "admin" ||
+    payload.role === "admin" ||
+    (Array.isArray(payload.roles) && payload.roles.includes("admin"))
+  );
 }
 
 export default async function handler(
@@ -110,6 +130,15 @@ export default async function handler(
         .json({ user: null, error: "Invalid or expired token." });
     }
 
+    const canonicalIdentity = await db
+      .collection<UserProfile>("users")
+      .findOne({ email: payload.email }, { projection: { isAdmin: 1 } });
+
+    const isAdmin =
+      canonicalIdentity?.isAdmin === true ||
+      profile.isAdmin === true ||
+      isAdminPayload(payload);
+
     const { password: _password, ...sanitized } = profile;
 
     const normalizedAccountType =
@@ -150,6 +179,7 @@ export default async function handler(
         id: payload.userId,
         email: payload.email,
         accountType: normalizedAccountType,
+        isAdmin,
         isPremium: normalizedIsPremium,
         currentPlan: normalizedCurrentPlan,
         premiumStatus: normalizedPremiumStatus,
