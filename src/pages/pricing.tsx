@@ -233,7 +233,7 @@ export default function Pricing() {
             <div className="mt-6 flex flex-wrap items-center gap-3">
               <Pill tone="muted">
                 <ShieldCheck className="h-4 w-4" />
-                Cancel anytime
+                Access period applied at checkout
               </Pill>
               <Pill tone="muted">
                 <Users className="h-4 w-4" />
@@ -298,12 +298,15 @@ export default function Pricing() {
             sub="Explore core BWE experiences."
             billingNote="No plan charge"
             features={[
-              { ok: true, text: "Search, filters, tabs, and AI Mode (available to all users)" },
-              { ok: true, text: "Marketplace browsing and public content access" },
+              {
+                ok: true,
+                text: "Search, filters, tabs, and AI Mode available to all users",
+              },
+              {
+                ok: true,
+                text: "Marketplace browsing and public content access",
+              },
               { ok: true, text: "Core account and dashboard access" },
-              { ok: false, text: "Paid-plan Black Card tier mapping" },
-              { ok: false, text: "Black Card rewards earn/redeem access" },
-              { ok: false, text: "Premium-gated learning and investment experiences" },
             ]}
             ctaText={
               !authUser || !isPremiumActive
@@ -327,12 +330,17 @@ export default function Pricing() {
                 ok: true,
                 text: "Black Card Standard mapping on activation",
               },
-              { ok: true, text: "Black Card rewards earn/redeem access (subject to card status, tier, and points checks)" },
-              { ok: true, text: "Investment and learning flows currently tied to paid-plan access" },
-              { ok: true, text: "Optional physical Black Card request once membership is active" },
               {
-                ok: false,
-                text: "Community/reporting features not currently active as standalone products",
+                ok: true,
+                text: "Black Card rewards earn/redeem access (subject to card status, tier, and points checks)",
+              },
+              {
+                ok: true,
+                text: "Gated learning modules tied to paid-plan access",
+              },
+              {
+                ok: true,
+                text: "Optional physical Black Card request once membership is active",
               },
             ]}
             ctaText={isPremiumActive ? "Premium Active" : "Upgrade to Premium"}
@@ -353,12 +361,17 @@ export default function Pricing() {
             features={[
               { ok: true, text: "Everything in Premium" },
               { ok: true, text: "Black Card Signature mapping on activation" },
-              { ok: true, text: "If you already have a higher Black Card tier, that higher tier is kept" },
-              { ok: true, text: "Black Card rewards and redemption workflows with admin-tracked status" },
-              { ok: true, text: "Early access language applies only to features marked rolling out" },
               {
-                ok: false,
-                text: "No guaranteed VIP lane, direct introductions, or custom reporting claims",
+                ok: true,
+                text: "Keeps higher existing tier if already assigned",
+              },
+              {
+                ok: true,
+                text: "Black Card rewards/redemption workflows with admin-tracked status",
+              },
+              {
+                ok: true,
+                text: "Early access only to features clearly marked rolling out",
               },
             ]}
             ctaText="Become a Founder"
@@ -376,6 +389,10 @@ export default function Pricing() {
             Black Card tiers and unlock Black Card rewards access with current
             system checks.
           </p>
+          <p className="mt-3 text-xs text-gray-400">
+            Future roadmap items such as community features, custom reports, and
+            VIP partner lanes are not included unless explicitly marked active.
+          </p>
 
           <div className="mt-5 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
             <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
@@ -387,9 +404,7 @@ export default function Pricing() {
             </div>
 
             <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
-              <div className="text-yellow-200 font-extrabold">
-                Premium Plan
-              </div>
+              <div className="text-yellow-200 font-extrabold">Premium Plan</div>
               <p className="text-gray-300 mt-2">
                 Includes Black Card Standard mapping and rewards access in the
                 current Black Card system.
