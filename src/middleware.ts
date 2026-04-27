@@ -7,7 +7,11 @@ import {
   isStateChangingMethod,
 } from "@/lib/security/csrf";
 
-const loginRequiredRoutes = ["/investment", "/student-opportunities", "/courses"];
+const loginRequiredRoutes = [
+  "/investment",
+  "/student-opportunities",
+  "/courses",
+];
 
 const roleProtectedRoutes: Record<string, string | string[]> = {
   "/seller": "seller",
@@ -29,12 +33,27 @@ const roleProtectedRoutes: Record<string, string | string[]> = {
   "/admin/:path*": "admin",
 };
 
-async function getSessionRole(req: NextRequest): Promise<string | null> {
+type SessionClaims = {
+  role: string | null;
+  isAdmin: boolean;
+};
+
+function isAdminFromClaims(payload: Record<string, unknown>) {
+  if (payload?.isAdmin === true) return true;
+  if (payload?.accountType === "admin") return true;
+  if (payload?.role === "admin") return true;
+  if (Array.isArray(payload?.roles) && payload.roles.includes("admin")) {
+    return true;
+  }
+  return false;
+}
+
+async function getSessionClaims(req: NextRequest): Promise<SessionClaims> {
   const token = req.cookies.get("session_token")?.value;
-  if (!token) return null;
+  if (!token) return { role: null, isAdmin: false };
 
   const secret = process.env.JWT_SECRET || process.env.NEXTAUTH_SECRET;
-  if (!secret) return null;
+  if (!secret) return { role: null, isAdmin: false };
 
   try {
     const { payload } = await jwtVerify(
@@ -42,9 +61,12 @@ async function getSessionRole(req: NextRequest): Promise<string | null> {
       new TextEncoder().encode(secret),
     );
     const role = payload?.accountType;
-    return typeof role === "string" ? role : null;
+    return {
+      role: typeof role === "string" ? role : null,
+      isAdmin: isAdminFromClaims(payload),
+    };
   } catch {
-    return null;
+    return { role: null, isAdmin: false };
   }
 }
 
@@ -94,10 +116,13 @@ export async function middleware(req: NextRequest) {
       return NextResponse.redirect(loginUrl);
     }
 
-    const role = await getSessionRole(req);
-    const allowed = Array.isArray(requiredRole)
-      ? requiredRole.includes(role || "")
-      : role === requiredRole;
+    const { role, isAdmin } = await getSessionClaims(req);
+    const allowed =
+      requiredRole === "admin"
+        ? isAdmin
+        : Array.isArray(requiredRole)
+          ? requiredRole.includes(role || "")
+          : role === requiredRole;
 
     if (!allowed) {
       const loginUrl = req.nextUrl.clone();
