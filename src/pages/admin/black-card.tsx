@@ -162,7 +162,10 @@ export default function AdminBlackCardPage({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  async function cardAction(cardId: string, action: "suspend" | "revoke" | "replace") {
+  async function cardAction(
+    cardId: string,
+    action: "suspend" | "revoke" | "replace",
+  ) {
     const res = await fetch("/api/admin/black-card/cards", {
       method: "PATCH",
       credentials: "include",
@@ -250,38 +253,58 @@ export default function AdminBlackCardPage({
         <section className="grid grid-cols-2 gap-3 rounded-2xl border border-white/10 bg-white/5 p-5 text-sm sm:grid-cols-5">
           <div className="rounded border border-white/10 bg-black/30 p-3">
             <div className="text-white/60">Total cards issued</div>
-            <div className="text-xl font-bold text-yellow-200">{cardRows.length}</div>
+            <div className="text-xl font-bold text-yellow-200">
+              {cardRows.length}
+            </div>
           </div>
           <div className="rounded border border-white/10 bg-black/30 p-3">
             <div className="text-white/60">Active cards</div>
-            <div className="text-xl font-bold text-green-300">{activeCards}</div>
+            <div className="text-xl font-bold text-green-300">
+              {activeCards}
+            </div>
           </div>
           <div className="rounded border border-white/10 bg-black/30 p-3">
             <div className="text-white/60">Suspended cards</div>
-            <div className="text-xl font-bold text-red-300">{suspendedCards}</div>
+            <div className="text-xl font-bold text-red-300">
+              {suspendedCards}
+            </div>
           </div>
           <div className="rounded border border-white/10 bg-black/30 p-3">
             <div className="text-white/60">Pending redemptions</div>
-            <div className="text-xl font-bold text-yellow-300">{pendingRedemptions}</div>
+            <div className="text-xl font-bold text-yellow-300">
+              {pendingRedemptions}
+            </div>
           </div>
           <div className="rounded border border-white/10 bg-black/30 p-3">
             <div className="text-white/60">Total points issued</div>
-            <div className="text-xl font-bold text-blue-300">{initialTotalPointsIssued}</div>
+            <div className="text-xl font-bold text-blue-300">
+              {initialTotalPointsIssued}
+            </div>
           </div>
         </section>
 
         <section className="rounded-2xl border border-white/10 bg-white/5 p-5 text-sm text-white/85">
           <h2 className="text-lg font-bold text-yellow-200">How this works</h2>
           <ul className="mt-2 list-disc space-y-1 pl-5">
-            <li>BWE issues and controls the digital Black Card identity and verification.</li>
+            <li>
+              BWE issues and controls the digital Black Card identity and
+              verification.
+            </li>
             <li>Physical cards are vendor-produced fulfillment artifacts.</li>
-            <li>QR/member verification is controlled by BWE and must pass live verification.</li>
-            <li>Copied card images are not valid unless live verification passes.</li>
+            <li>
+              QR/member verification is controlled by BWE and must pass live
+              verification.
+            </li>
+            <li>
+              Copied card images are not valid unless live verification passes.
+            </li>
           </ul>
         </section>
 
         <section className="rounded-2xl border border-white/10 bg-white/5 p-5">
-          <h2 className="text-lg font-bold text-yellow-200">Search and filters</h2>
+          <h2 className="text-lg font-bold text-yellow-200">
+            Search and filters
+          </h2>
           <div className="mt-3 grid gap-2 sm:grid-cols-4">
             <input
               value={query}
@@ -350,10 +373,15 @@ export default function AdminBlackCardPage({
                       ? `/black-card/verify/${c.publicVerificationId}`
                       : null;
                     return (
-                      <tr key={c.cardId} className="border-t border-white/10 align-top">
+                      <tr
+                        key={c.cardId}
+                        className="border-t border-white/10 align-top"
+                      >
                         <td className="pr-4 py-2">{c.memberId || "—"}</td>
                         <td className="pr-4 py-2">{c.cardType || "—"}</td>
-                        <td className="pr-4 py-2">{toTitleLabel(c.cardStatus || "—")}</td>
+                        <td className="pr-4 py-2">
+                          {toTitleLabel(c.cardStatus || "—")}
+                        </td>
                         <td className="pr-4 py-2 break-all">
                           <div>{c.userId || "—"}</div>
                           <div className="text-white/60">{c.email || "—"}</div>
@@ -361,7 +389,10 @@ export default function AdminBlackCardPage({
                         <td className="pr-4 py-2 break-all">
                           <div>{c.publicVerificationId || "—"}</div>
                           {verifyLink ? (
-                            <Link className="text-yellow-300 underline" href={verifyLink}>
+                            <Link
+                              className="text-yellow-300 underline"
+                              href={verifyLink}
+                            >
                               Open verification
                             </Link>
                           ) : null}
@@ -370,9 +401,24 @@ export default function AdminBlackCardPage({
                         <td className="pr-4 py-2">{fmtDate(c.updatedAt)}</td>
                         <td className="pr-4 py-2">
                           <div className="flex flex-wrap gap-1">
-                            <button onClick={() => cardAction(c.cardId, "suspend")} className="rounded border border-yellow-500/30 px-2 py-1">Suspend card</button>
-                            <button onClick={() => cardAction(c.cardId, "revoke")} className="rounded border border-red-500/30 px-2 py-1">Revoke card</button>
-                            <button onClick={() => cardAction(c.cardId, "replace")} className="rounded border border-blue-500/30 px-2 py-1">Replace card</button>
+                            <button
+                              onClick={() => cardAction(c.cardId, "suspend")}
+                              className="rounded border border-yellow-500/30 px-2 py-1"
+                            >
+                              Suspend card
+                            </button>
+                            <button
+                              onClick={() => cardAction(c.cardId, "revoke")}
+                              className="rounded border border-red-500/30 px-2 py-1"
+                            >
+                              Revoke card
+                            </button>
+                            <button
+                              onClick={() => cardAction(c.cardId, "replace")}
+                              className="rounded border border-blue-500/30 px-2 py-1"
+                            >
+                              Replace card
+                            </button>
                           </div>
                         </td>
                       </tr>
@@ -381,14 +427,18 @@ export default function AdminBlackCardPage({
                 </tbody>
               </table>
               {cardRows.length === 0 ? (
-                <p className="text-sm text-white/70">No Black Cards issued yet</p>
+                <p className="text-sm text-white/70">
+                  No Black Cards issued yet
+                </p>
               ) : null}
             </div>
           )}
         </section>
 
         <section className="rounded-2xl border border-white/10 bg-white/5 p-5">
-          <h2 className="text-lg font-bold text-yellow-200">B. Physical Card Requests</h2>
+          <h2 className="text-lg font-bold text-yellow-200">
+            B. Physical Card Requests
+          </h2>
           <div className="mt-3 overflow-x-auto">
             <table className="min-w-full text-left text-xs">
               <thead className="text-white/70">
@@ -404,16 +454,25 @@ export default function AdminBlackCardPage({
               </thead>
               <tbody>
                 {requestRows.map((r) => (
-                  <tr key={r.requestId} className="border-t border-white/10 align-top">
+                  <tr
+                    key={r.requestId}
+                    className="border-t border-white/10 align-top"
+                  >
                     <td className="pr-4 py-2 break-all">
                       <div>{r.requestId}</div>
-                      <div className="text-white/60">{r.email || r.userId || "—"}</div>
+                      <div className="text-white/60">
+                        {r.email || r.userId || "—"}
+                      </div>
                     </td>
                     <td className="pr-4 py-2">{r.nameToPrint || "—"}</td>
-                    <td className="pr-4 py-2">{toTitleLabel(r.status || "—")}</td>
+                    <td className="pr-4 py-2">
+                      {toTitleLabel(r.status || "—")}
+                    </td>
                     <td className="pr-4 py-2 break-all">
                       <div>Member: {r.memberId || "—"}</div>
-                      <div className="text-white/60">Card: {r.cardId || r.cardSerial || "—"}</div>
+                      <div className="text-white/60">
+                        Card: {r.cardId || r.cardSerial || "—"}
+                      </div>
                     </td>
                     <td className="pr-4 py-2 break-all">
                       <div>Vendor ref: {r.vendorRef || "—"}</div>
@@ -422,10 +481,34 @@ export default function AdminBlackCardPage({
                     <td className="pr-4 py-2">{fmtDate(r.updatedAt)}</td>
                     <td className="pr-4 py-2">
                       <div className="flex flex-wrap gap-1">
-                        <button onClick={() => requestAction(r.requestId, "approve")} className="rounded border border-green-500/30 px-2 py-1">Approve physical request</button>
-                        <button onClick={() => requestAction(r.requestId, "sent_to_vendor")} className="rounded border border-yellow-500/30 px-2 py-1">Mark sent to vendor</button>
-                        <button onClick={() => requestAction(r.requestId, "shipped")} className="rounded border border-blue-500/30 px-2 py-1">Mark shipped</button>
-                        <button onClick={() => requestAction(r.requestId, "delivered")} className="rounded border border-purple-500/30 px-2 py-1">Mark delivered</button>
+                        <button
+                          onClick={() => requestAction(r.requestId, "approve")}
+                          className="rounded border border-green-500/30 px-2 py-1"
+                        >
+                          Approve physical request
+                        </button>
+                        <button
+                          onClick={() =>
+                            requestAction(r.requestId, "sent_to_vendor")
+                          }
+                          className="rounded border border-yellow-500/30 px-2 py-1"
+                        >
+                          Mark sent to vendor
+                        </button>
+                        <button
+                          onClick={() => requestAction(r.requestId, "shipped")}
+                          className="rounded border border-blue-500/30 px-2 py-1"
+                        >
+                          Mark shipped
+                        </button>
+                        <button
+                          onClick={() =>
+                            requestAction(r.requestId, "delivered")
+                          }
+                          className="rounded border border-purple-500/30 px-2 py-1"
+                        >
+                          Mark delivered
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -433,13 +516,21 @@ export default function AdminBlackCardPage({
               </tbody>
             </table>
             {requestRows.length === 0 ? (
-              <p className="text-sm text-white/70">No physical card requests yet</p>
+              <p className="text-sm text-white/70">
+                No physical card requests yet
+              </p>
             ) : null}
           </div>
         </section>
 
         <section className="rounded-2xl border border-white/10 bg-white/5 p-5">
-          <h2 className="text-lg font-bold text-yellow-200">C. Rewards Ledger</h2>
+          <h2 className="text-lg font-bold text-yellow-200">
+            C. Rewards Ledger
+          </h2>
+          <p className="mt-2 text-xs text-white/70">
+            Ledger shows points issued (credits) and points redeemed (debits),
+            with reason and posting status for audit clarity.
+          </p>
           <div className="mt-3 overflow-x-auto">
             <table className="min-w-full text-left text-xs">
               <thead className="text-white/70">
@@ -453,38 +544,69 @@ export default function AdminBlackCardPage({
               </thead>
               <tbody>
                 {ledger.map((row) => (
-                  <tr key={row.id} className="border-t border-white/10 align-top">
+                  <tr
+                    key={row.id}
+                    className="border-t border-white/10 align-top"
+                  >
                     <td className="pr-4 py-2 break-all">{row.user}</td>
-                    <td className={`pr-4 py-2 font-semibold ${row.points >= 0 ? "text-green-300" : "text-red-300"}`}>
+                    <td
+                      className={`pr-4 py-2 font-semibold ${row.points >= 0 ? "text-green-300" : "text-red-300"}`}
+                    >
                       {row.points >= 0 ? `+${row.points}` : `${row.points}`}
                     </td>
                     <td className="pr-4 py-2">{row.reason || "—"}</td>
                     <td className="pr-4 py-2">{fmtDate(row.timestamp)}</td>
-                    <td className="pr-4 py-2">{toTitleLabel(row.status || "posted")}</td>
+                    <td className="pr-4 py-2">
+                      {toTitleLabel(row.status || "posted")}
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
             {ledger.length === 0 ? (
-              <p className="text-sm text-white/70">No rewards ledger entries yet</p>
+              <p className="text-sm text-white/70">
+                No rewards ledger entries yet
+              </p>
             ) : null}
           </div>
         </section>
 
         <section className="rounded-2xl border border-white/10 bg-white/5 p-5">
           <h2 className="text-lg font-bold text-yellow-200">D. Redemptions</h2>
+          <p className="mt-2 text-xs text-white/70">
+            Redemptions may require admin action. Use Approve, Reject, and
+            Fulfilled controls to move each request through status.
+          </p>
           <div className="mt-3 space-y-2 text-sm">
             {redemptions.slice(0, 100).map((item) => (
-              <div key={item.id} className="rounded-lg border border-white/10 bg-black/30 p-3">
+              <div
+                key={item.id}
+                className="rounded-lg border border-white/10 bg-black/30 p-3"
+              >
                 <div>Action: {toTitleLabel(item.rewardType || "reward")}</div>
                 <div>Points: +{Number(item.pointsCost || 0)}</div>
                 <div>Status: {toTitleLabel(item.status || "pending")}</div>
                 <div>User: {maskUserId(item.userId)}</div>
                 <div>Time: {fmtDate(item.createdAt)}</div>
                 <div className="mt-2 flex gap-2">
-                  <button onClick={() => setRedemptionStatus(item.id, "approved")} className="rounded border border-yellow-500/30 px-2 py-1 text-xs text-yellow-200">Approve</button>
-                  <button onClick={() => setRedemptionStatus(item.id, "rejected")} className="rounded border border-red-500/30 px-2 py-1 text-xs text-red-200">Reject</button>
-                  <button onClick={() => setRedemptionStatus(item.id, "fulfilled")} className="rounded border border-green-500/30 px-2 py-1 text-xs text-green-200">Fulfilled</button>
+                  <button
+                    onClick={() => setRedemptionStatus(item.id, "approved")}
+                    className="rounded border border-yellow-500/30 px-2 py-1 text-xs text-yellow-200"
+                  >
+                    Approve
+                  </button>
+                  <button
+                    onClick={() => setRedemptionStatus(item.id, "rejected")}
+                    className="rounded border border-red-500/30 px-2 py-1 text-xs text-red-200"
+                  >
+                    Reject
+                  </button>
+                  <button
+                    onClick={() => setRedemptionStatus(item.id, "fulfilled")}
+                    className="rounded border border-green-500/30 px-2 py-1 text-xs text-green-200"
+                  >
+                    Fulfilled
+                  </button>
                 </div>
               </div>
             ))}
@@ -495,21 +617,47 @@ export default function AdminBlackCardPage({
         </section>
 
         <section className="rounded-2xl border border-white/10 bg-white/5 p-5">
-          <h2 className="text-lg font-bold text-yellow-200">E. Manual Adjustments</h2>
-          <form onSubmit={submitAdjust} className="mt-3 grid gap-3 sm:grid-cols-4">
-            <input value={userId} onChange={(e) => setUserId(e.target.value)} placeholder="User ID" className="rounded bg-black/40 px-3 py-2 text-sm" />
-            <input value={pointsDelta} onChange={(e) => setPointsDelta(e.target.value)} placeholder="Points Delta" className="rounded bg-black/40 px-3 py-2 text-sm" />
-            <input value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Reason" className="rounded bg-black/40 px-3 py-2 text-sm" />
-            <button className="rounded bg-yellow-500 px-3 py-2 text-sm font-semibold text-black">Submit points adjustment</button>
+          <h2 className="text-lg font-bold text-yellow-200">
+            E. Manual Adjustments
+          </h2>
+          <form
+            onSubmit={submitAdjust}
+            className="mt-3 grid gap-3 sm:grid-cols-4"
+          >
+            <input
+              value={userId}
+              onChange={(e) => setUserId(e.target.value)}
+              placeholder="User ID"
+              className="rounded bg-black/40 px-3 py-2 text-sm"
+            />
+            <input
+              value={pointsDelta}
+              onChange={(e) => setPointsDelta(e.target.value)}
+              placeholder="Points Delta"
+              className="rounded bg-black/40 px-3 py-2 text-sm"
+            />
+            <input
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              placeholder="Reason"
+              className="rounded bg-black/40 px-3 py-2 text-sm"
+            />
+            <button className="rounded bg-yellow-500 px-3 py-2 text-sm font-semibold text-black">
+              Submit points adjustment
+            </button>
           </form>
-          {adjustMsg ? <p className="mt-2 text-sm text-yellow-200">{adjustMsg}</p> : null}
+          {adjustMsg ? (
+            <p className="mt-2 text-sm text-yellow-200">{adjustMsg}</p>
+          ) : null}
         </section>
       </div>
     </main>
   );
 }
 
-export const getServerSideProps: GetServerSideProps<PageProps> = async ({ req }) => {
+export const getServerSideProps: GetServerSideProps<PageProps> = async ({
+  req,
+}) => {
   const cookies = cookie.parse(req.headers.cookie || "");
   const token = cookies.session_token;
   if (!token) {
@@ -582,16 +730,21 @@ export const getServerSideProps: GetServerSideProps<PageProps> = async ({ req })
         id: String(row._id),
         user: email || maskUserId(uid),
         points: Number(row.points || 0),
-        reason: String(row.reason || row.actionType || row.rewardType || "").trim(),
+        reason: String(
+          row.reason || row.actionType || row.rewardType || "",
+        ).trim(),
         timestamp: row.createdAt ? new Date(row.createdAt).toISOString() : null,
         status: String(row.status || "posted"),
       };
     });
 
-    const initialTotalPointsIssued = ledgerDocs.reduce((sum: number, row: any) => {
-      const points = Number(row.points || 0);
-      return points > 0 ? sum + points : sum;
-    }, 0);
+    const initialTotalPointsIssued = ledgerDocs.reduce(
+      (sum: number, row: any) => {
+        const points = Number(row.points || 0);
+        return points > 0 ? sum + points : sum;
+      },
+      0,
+    );
 
     return {
       props: {

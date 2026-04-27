@@ -22,13 +22,13 @@ export const BLACK_CARD_TIERS: Record<BlackCardTier, BlackCardTierConfig> = {
     priceLabel: "$38.00",
     billingModel: "entry_fee",
     tagline:
-      "Activate your verified member identity and start using Black Card tools today.",
+      "Activate verified BWE membership identity and start using Black Card rewards tools today.",
     benefits: [
       "Instant digital member card in your dashboard after checkout",
       "Verified BWE member identity used across supported experiences",
-      "Member-priced entry to selected events",
-      "Member-only seminar and webinar invites",
-      "Starter partner savings and ecosystem offers",
+      "Access to the existing BWE rewards and redemption system",
+      "QR-verifiable membership card for live status checks",
+      "Optional physical card request after membership activation",
     ],
   },
   signature: {
@@ -39,13 +39,13 @@ export const BLACK_CARD_TIERS: Record<BlackCardTier, BlackCardTierConfig> = {
     priceLabel: "$149",
     billingModel: "monthly",
     tagline:
-      "Turn monthly activity into measurable savings, priority placement, and faster opportunities.",
+      "Build on Standard with expanding benefits, broader redemption access, and priority access rolling out across experiences.",
     benefits: [
       "Everything in Standard",
-      "Higher rewards earn rate from BWE activity",
-      "Priority event and seminar entry before Standard",
-      "Larger ad credit and marketplace fee credit pools",
-      "Partner offers with stronger member pricing",
+      "Expanding premium member experiences as rollout continues",
+      "Priority access (rolling out) for selected events and offers",
+      "Advanced Black Card features coming to dashboard workflows",
+      "Ongoing admin-tracked redemption and membership operations",
     ],
   },
   elite: {
@@ -56,13 +56,13 @@ export const BLACK_CARD_TIERS: Record<BlackCardTier, BlackCardTierConfig> = {
     priceLabel: "$399",
     billingModel: "monthly",
     tagline:
-      "Operate at executive level with highest rewards velocity, VIP lanes, and direct opportunity leverage.",
+      "Highest Black Card tier with verified identity, rewards access, and advanced experiences that continue to expand.",
     benefits: [
       "Everything in Signature",
-      "VIP access to events, summits, and private sessions",
-      "Highest rewards multipliers and premium placement credits",
-      "Elite partner network and direct opportunity introductions",
-      "Priority support lane for high-value member actions",
+      "Expanded access as Elite experiences roll out",
+      "Priority access (rolling out) to selected high-touch member moments",
+      "Advanced features coming for Elite membership workflows",
+      "Full visibility through Black Card dashboard and admin tracking",
     ],
   },
 };

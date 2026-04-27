@@ -28,14 +28,14 @@ const TIER_CONTEXT: Record<
   signature: {
     segment: "Growth Membership",
     valueSummary:
-      "Convert monthly activity into bigger credits, faster rewards, and priority placement that improves your visibility and savings.",
+      "Build on Standard with expanding benefits, broader redemption access, and priority access rolling out across BWE experiences.",
     cta: "Join Signature",
     badge: "MEMBERSHIP",
   },
   elite: {
     segment: "Executive Membership",
     valueSummary:
-      "Run at highest tier with VIP lanes, top reward multipliers, and direct introductions that open high-value opportunities.",
+      "Run at the highest Black Card tier with verified identity, rewards access, and advanced features coming as rollout expands.",
     cta: "Activate Elite",
     badge: "ELITE",
   },
@@ -69,9 +69,9 @@ export default function BlackCardLandingPage() {
                 </p>
                 <p className="mt-4 max-w-3xl text-[#D9D9D9]">
                   {BLACK_CARD_POSITIONING}. Black Card is a digital-first
-                  membership system with instant account activation, persistent
-                  member identity in your dashboard, and premium benefits
-                  available across BWE immediately after checkout.
+                  membership identity and rewards access system with instant
+                  account activation, persistent member identity in your
+                  dashboard, and expanding tier experiences after checkout.
                 </p>
 
                 <div className="mt-6 grid gap-3 text-sm text-[#DDD] sm:grid-cols-3">
@@ -94,7 +94,7 @@ export default function BlackCardLandingPage() {
                       Executive Tier
                     </div>
                     <div className="mt-1 font-semibold">Elite</div>
-                    <div className="text-xs text-white/70">VIP access</div>
+                    <div className="text-xs text-white/70">Expanded access</div>
                   </div>
                 </div>
 
@@ -235,12 +235,12 @@ export default function BlackCardLandingPage() {
                   points.
                 </li>
                 <li>
-                  • Signature increases credits and priority so monthly actions
-                  return more value.
+                  • Signature adds expanding access and broader redemption
+                  opportunities as rollout continues.
                 </li>
                 <li>
-                  • Elite adds VIP lanes and introductions for highest business
-                  leverage.
+                  • Elite extends this with advanced features coming and the
+                  highest-tier membership experience.
                 </li>
                 <li>
                   • Upgrading is about measurable advantage, not cosmetic

@@ -48,6 +48,7 @@ type MemberSummaryResponse = {
     digitalStatus: string;
     issueVersion: number;
     verificationCode?: string;
+    verificationUrl?: string | null;
     walletPassState?: string;
   } | null;
   error?: string;
@@ -148,6 +149,12 @@ export default function BlackCardDashboardPage() {
   const membershipActive =
     String(data?.member?.status || "inactive").toLowerCase() === "active";
 
+  const latestPhysicalRequestActivity = data?.activity?.find((a) =>
+    ["black_card_order_created", "physical_card_requested"].includes(
+      String(a.type || "").toLowerCase(),
+    ),
+  );
+
   return (
     <>
       <Head>
@@ -183,6 +190,45 @@ export default function BlackCardDashboardPage() {
             </div>
           ) : data?.ok ? (
             <>
+              <section className="rounded-2xl border border-white/10 bg-white/5 p-5 text-sm text-white/80">
+                <h2 className="text-lg font-bold text-yellow-200">
+                  What Black Card is
+                </h2>
+                <p className="mt-2">
+                  Black Card is your verified BWE membership identity, rewards
+                  access card, and QR-verifiable membership card.
+                </p>
+                <p className="mt-2 text-white/65">
+                  It is not a debit card, credit card, bank card, or payment
+                  card.
+                </p>
+              </section>
+
+              <section className="grid gap-4 md:grid-cols-2">
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-5 text-sm text-white/80">
+                  <h2 className="text-lg font-bold text-yellow-200">
+                    What points are for
+                  </h2>
+                  <p className="mt-2">
+                    Points are BWE rewards earned through eligible platform
+                    activity. You can redeem points for approved BWE benefits.
+                  </p>
+                  <div className="mt-3 text-white/70">
+                    Points balance: <strong>{data.rewards?.balance ?? 0}</strong>
+                  </div>
+                </div>
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-5 text-sm text-white/80">
+                  <h2 className="text-lg font-bold text-yellow-200">
+                    How points are earned and redeemed
+                  </h2>
+                  <ul className="mt-2 list-disc space-y-1 pl-5">
+                    <li>Earn via eligible BWE activity (for example marketplace, events, learning, referrals).</li>
+                    <li>Choose a reward in Redemption Actions.</li>
+                    <li>System checks membership status, tier eligibility, and available points.</li>
+                    <li>Some rewards go to review, then status updates in your dashboard.</li>
+                  </ul>
+                </div>
+              </section>
               {!membershipActive ? (
                 <section className="rounded-2xl border border-yellow-500/30 bg-yellow-500/10 p-6">
                   <h2 className="text-xl font-bold text-yellow-200">
@@ -286,9 +332,41 @@ export default function BlackCardDashboardPage() {
                           ? `/api/black-card/verify?cardId=${encodeURIComponent(data.card.cardIdDisplay)}&code=${encodeURIComponent(data.card.verificationCode)}`
                           : "Available after issuance"}
                       </div>
+                      <div className="mt-2 text-xs">
+                        Verification link:{" "}
+                        {data.card?.verificationUrl ? (
+                          <a
+                            href={data.card.verificationUrl}
+                            className="text-yellow-200 underline"
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            Open live verification page
+                          </a>
+                        ) : (
+                          <span className="text-white/60">Available after issuance</span>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
+                <div className="mt-4 rounded-xl border border-white/10 bg-black/30 p-3 text-xs text-white/75">
+                  <div className="font-semibold text-yellow-200">
+                    Physical card request status
+                  </div>
+                  {latestPhysicalRequestActivity ? (
+                    <div className="mt-1">
+                      Request detected at{" "}
+                      {latestPhysicalRequestActivity.at
+                        ? new Date(latestPhysicalRequestActivity.at).toLocaleString()
+                        : "recent activity"}
+                      . Current fulfillment status is processed in Black Card operations.
+                    </div>
+                  ) : (
+                    <div className="mt-1">No physical card request activity yet.</div>
+                  )}
+                </div>
+
                 <div className="mt-4 flex flex-wrap gap-3">
                   <Link
                     href="/black-card/join?tier=signature"
@@ -324,6 +402,11 @@ export default function BlackCardDashboardPage() {
                   <h2 className="text-xl font-bold text-yellow-200">
                     Redemption Actions
                   </h2>
+                  <p className="mt-2 text-xs text-white/70">
+                    Redemption flow: choose reward, system checks card status,
+                    tier, and points, then request may require admin approval.
+                    Final status appears in your redemptions list.
+                  </p>
                   <div className="mt-3 flex flex-wrap gap-2">
                     <button
                       onClick={() => redeemReward("ad_credit")}
