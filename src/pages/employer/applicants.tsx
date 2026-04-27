@@ -3,6 +3,8 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import type { GetServerSideProps } from "next";
+import { requirePageRole } from "@/lib/security/pageRoleGuard";
 
 type HiringStatus =
   | "new"
@@ -67,7 +69,16 @@ export default function EmployerApplicantsPage() {
   const [reasonDraft, setReasonDraft] = useState<Record<string, string>>({});
   const [messageDraft, setMessageDraft] = useState<Record<string, string>>({});
   const [messagesByApplicant, setMessagesByApplicant] = useState<
-    Record<string, Array<{ _id: string; sender: string; senderRole: string; body: string; createdAt: string }>>
+    Record<
+      string,
+      Array<{
+        _id: string;
+        sender: string;
+        senderRole: string;
+        body: string;
+        createdAt: string;
+      }>
+    >
   >({});
 
   const jobId =
@@ -177,12 +188,18 @@ export default function EmployerApplicantsPage() {
 
   const loadMessages = async (applicantId: string) => {
     try {
-      const res = await fetch(`/api/employer/applicants/messages?applicantId=${applicantId}`, {
-        credentials: "include",
-      });
+      const res = await fetch(
+        `/api/employer/applicants/messages?applicantId=${applicantId}`,
+        {
+          credentials: "include",
+        },
+      );
       const data = await res.json();
       if (res.ok) {
-        setMessagesByApplicant((cur) => ({ ...cur, [applicantId]: data.messages || [] }));
+        setMessagesByApplicant((cur) => ({
+          ...cur,
+          [applicantId]: data.messages || [],
+        }));
       }
     } catch {
       // ignore
@@ -454,10 +471,13 @@ export default function EmployerApplicantsPage() {
                               </div>
                             ) : null}
 
-                            {(applicant.hiringStatus === "shortlisted" || applicant.hiringStatus === "contacted") ? (
+                            {applicant.hiringStatus === "shortlisted" ||
+                            applicant.hiringStatus === "contacted" ? (
                               <div className="mt-2 rounded border border-gray-700 bg-gray-900/60 p-2 space-y-2">
                                 <div className="flex items-center justify-between">
-                                  <p className="text-xs text-gray-300">Applicant Messages</p>
+                                  <p className="text-xs text-gray-300">
+                                    Applicant Messages
+                                  </p>
                                   <button
                                     onClick={() => loadMessages(applicant._id)}
                                     className="text-xs text-blue-300 hover:underline"
@@ -467,18 +487,33 @@ export default function EmployerApplicantsPage() {
                                 </div>
                                 {messagesByApplicant[applicant._id]?.length ? (
                                   <div className="max-h-32 overflow-y-auto space-y-1 text-xs">
-                                    {messagesByApplicant[applicant._id].map((m) => (
-                                      <div key={m._id} className="rounded border border-gray-700 p-1.5">
-                                        <div className="text-gray-400">{m.sender} • {new Date(m.createdAt).toLocaleString()}</div>
-                                        <div className="text-gray-200">{m.body}</div>
-                                      </div>
-                                    ))}
+                                    {messagesByApplicant[applicant._id].map(
+                                      (m) => (
+                                        <div
+                                          key={m._id}
+                                          className="rounded border border-gray-700 p-1.5"
+                                        >
+                                          <div className="text-gray-400">
+                                            {m.sender} •{" "}
+                                            {new Date(
+                                              m.createdAt,
+                                            ).toLocaleString()}
+                                          </div>
+                                          <div className="text-gray-200">
+                                            {m.body}
+                                          </div>
+                                        </div>
+                                      ),
+                                    )}
                                   </div>
                                 ) : null}
                                 <textarea
                                   value={messageDraft[applicant._id] || ""}
                                   onChange={(e) =>
-                                    setMessageDraft((cur) => ({ ...cur, [applicant._id]: e.target.value }))
+                                    setMessageDraft((cur) => ({
+                                      ...cur,
+                                      [applicant._id]: e.target.value,
+                                    }))
                                   }
                                   rows={2}
                                   placeholder="Send applicant a message"
@@ -507,3 +542,7 @@ export default function EmployerApplicantsPage() {
     </div>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  return requirePageRole(ctx, ["employer"], "/employer/applicants");
+};

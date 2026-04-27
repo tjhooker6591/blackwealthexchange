@@ -8,7 +8,7 @@ export default async function handler(
 ) {
   const { id } = req.query;
 
-  if (!id || typeof id !== "string") {
+  if (!id || typeof id !== "string" || !ObjectId.isValid(id)) {
     return res.status(400).json({ success: false, error: "Missing job ID." });
   }
 

@@ -13,9 +13,9 @@ export default async function handler(
     return res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 
-  const { jobId } = req.body;
-  if (!jobId) {
-    return res.status(400).json({ error: "Missing jobId" });
+  const jobId = typeof req.body?.jobId === "string" ? req.body.jobId : "";
+  if (!jobId || !ObjectId.isValid(jobId)) {
+    return res.status(400).json({ error: "Invalid jobId" });
   }
 
   const { session_token } = req.cookies;
@@ -31,8 +31,8 @@ export default async function handler(
   }
 
   const userId = payload.userId;
-  if (!userId) {
-    return res.status(401).json({ error: "Invalid session payload" });
+  if (!userId || !ObjectId.isValid(userId)) {
+    return res.status(400).json({ error: "Invalid session payload" });
   }
 
   const client = await clientPromise;

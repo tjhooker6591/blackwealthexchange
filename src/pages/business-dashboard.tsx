@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import type { GetServerSideProps } from "next";
+import { requirePageRole } from "@/lib/security/pageRoleGuard";
 
 interface User {
   email: string;
@@ -39,3 +41,7 @@ const BusinessDashboard = () => {
 };
 
 export default BusinessDashboard;
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  return requirePageRole(ctx, ["business"], "/business-dashboard");
+};

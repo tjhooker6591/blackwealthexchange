@@ -17,9 +17,9 @@ export default async function handler(
     return res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 
-  const { jobId } = req.body;
-  if (!jobId) {
-    return res.status(400).json({ error: "Missing jobId" });
+  const jobId = typeof req.body?.jobId === "string" ? req.body.jobId : "";
+  if (!jobId || !ObjectId.isValid(jobId)) {
+    return res.status(400).json({ error: "Invalid jobId" });
   }
 
   // Parse & verify session token
@@ -41,6 +41,9 @@ export default async function handler(
     return res.status(403).json({ error: "Forbidden" });
   }
   const userId = payload.userId;
+  if (!userId || !ObjectId.isValid(userId)) {
+    return res.status(400).json({ error: "Invalid userId" });
+  }
 
   const client = await clientPromise;
   const db = client.db("bwes-cluster");
