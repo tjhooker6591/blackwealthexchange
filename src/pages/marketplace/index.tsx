@@ -251,6 +251,18 @@ export default function Marketplace() {
     () => buildPageList(currentPage, totalPages),
     [currentPage, totalPages],
   );
+  const title = "Black Marketplace | Black Wealth Exchange";
+  const description = truncateMeta(
+    "Discover Black-owned products and brands in the Black Wealth Exchange marketplace.",
+  );
+  const canonical = canonicalUrl("/marketplace");
+  const collectionSchema = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: title,
+    description,
+    url: canonical,
+  };
 
   const resultLabel = loading
     ? "Loading…"
@@ -261,15 +273,22 @@ export default function Marketplace() {
   return (
     <div className="min-h-screen bg-black text-white">
       <Head>
-        <title>Black Marketplace | Black Wealth Exchange</title>
-        <meta
-          name="description"
-          content={truncateMeta(
-            "Discover Black-owned products and brands in the Black Wealth Exchange marketplace.",
-          )}
-        />
-        <link rel="canonical" href={canonicalUrl("/marketplace")} />
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonical} />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:image" content={canonicalUrl("/images/hero1.jpg")} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={canonicalUrl("/images/hero1.jpg")} />
       </Head>
+      <script type="application/ld+json">
+        {JSON.stringify(collectionSchema)}
+      </script>
 
       <div className="pointer-events-none fixed inset-0 opacity-60">
         <div className="absolute -top-24 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-yellow-500/10 blur-3xl" />
@@ -613,7 +632,8 @@ export default function Marketplace() {
                     </Link>
 
                     <p className="mt-3 text-[11px] text-gray-400 sm:text-xs">
-                      Quick action: use Buy for direct checkout, or open Details for full specs and seller context.
+                      Quick action: use Buy for direct checkout, or open Details
+                      for full specs and seller context.
                     </p>
 
                     <div className="mt-3 grid grid-cols-2 gap-2">

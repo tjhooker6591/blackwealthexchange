@@ -2,10 +2,43 @@
 
 import React from "react";
 import Link from "next/link";
+import Head from "next/head";
+import { canonicalUrl, truncateMeta } from "@/lib/seo";
 
 export default function GeneralArticlesPage() {
+  const title = "Articles & Resources | Black Wealth Exchange";
+  const description = truncateMeta(
+    "Explore curated resources on financial literacy, entrepreneurship, inclusive hiring, and building generational wealth.",
+  );
+  const canonical = canonicalUrl("/resources/articles");
+  const articleListSchema = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: title,
+    description,
+    url: canonical,
+  };
+
   return (
-    <div className="min-h-screen bg-black text-white py-16 px-6">
+    <>
+      <Head>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonical} />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:image" content={canonicalUrl("/images/hero1.jpg")} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={canonicalUrl("/images/hero1.jpg")} />
+      </Head>
+      <script type="application/ld+json">
+        {JSON.stringify(articleListSchema)}
+      </script>
+      <div className="min-h-screen bg-black text-white py-16 px-6">
       <div className="max-w-5xl mx-auto">
         <h1 className="text-4xl font-bold text-gold mb-6">
           Empowerment Articles & Resources
@@ -51,7 +84,8 @@ export default function GeneralArticlesPage() {
           />
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }
 

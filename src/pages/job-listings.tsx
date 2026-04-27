@@ -226,19 +226,36 @@ export default function JobListingsPage() {
   };
 
   const overlayRef = useRef<HTMLDivElement | null>(null);
+  const title = "Black Jobs & Careers | Black Wealth Exchange";
+  const description = truncateMeta(
+    "Search Black jobs, careers, and hiring opportunities on Black Wealth Exchange.",
+  );
+  const canonical = canonicalUrl("/job-listings");
+  const jobsSchema = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: title,
+    description,
+    url: canonical,
+  };
 
   return (
     <>
       <Head>
-        <title>Black Jobs & Careers | Black Wealth Exchange</title>
-        <meta
-          name="description"
-          content={truncateMeta(
-            "Search Black jobs, careers, and hiring opportunities on Black Wealth Exchange.",
-          )}
-        />
-        <link rel="canonical" href={canonicalUrl("/job-listings")} />
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonical} />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:image" content={canonicalUrl("/images/hero1.jpg")} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={canonicalUrl("/images/hero1.jpg")} />
       </Head>
+      <script type="application/ld+json">{JSON.stringify(jobsSchema)}</script>
       <div className="min-h-screen overflow-x-hidden bg-gray-950 text-white px-6 py-10">
         {/* subtle gold glow background */}
         <div className="pointer-events-none fixed inset-0 opacity-40">

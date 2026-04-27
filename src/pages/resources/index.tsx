@@ -1,6 +1,8 @@
 // pages/resources/index.tsx
 import Link from "next/link";
+import Head from "next/head";
 import React from "react";
+import { canonicalUrl, truncateMeta } from "@/lib/seo";
 
 const articles = [
   {
@@ -27,8 +29,39 @@ const articles = [
 ];
 
 export default function ResourcesIndex() {
+  const title = "Employer Resources | Black Wealth Exchange";
+  const description = truncateMeta(
+    "Practical hiring, onboarding, and retention guidance to help employers build equitable teams and support Black talent.",
+  );
+  const canonical = canonicalUrl("/resources");
+  const collectionSchema = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: title,
+    description,
+    url: canonical,
+  };
+
   return (
-    <div className="min-h-screen bg-black text-white p-8">
+    <>
+      <Head>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonical} />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:image" content={canonicalUrl("/images/hero1.jpg")} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={canonicalUrl("/images/hero1.jpg")} />
+      </Head>
+      <script type="application/ld+json">
+        {JSON.stringify(collectionSchema)}
+      </script>
+      <div className="min-h-screen bg-black text-white p-8">
       <div className="max-w-5xl mx-auto">
         <h1 className="text-4xl font-bold text-gold mb-6">
           Employer Resources
@@ -64,6 +97,7 @@ export default function ResourcesIndex() {
           ))}
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

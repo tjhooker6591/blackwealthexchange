@@ -2,10 +2,12 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
+import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import BuyNowButton from "@/components/BuyNowButton";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
+import { canonicalUrl, truncateMeta } from "@/lib/seo";
 
 interface Product {
   _id: string;
@@ -194,8 +196,53 @@ const ProductDetailPage = () => {
     );
   }
 
+  const canonical = canonicalUrl(
+    `/marketplace/product/${encodeURIComponent(product._id)}`,
+  );
+  const title = `${productName} | Black Marketplace | Black Wealth Exchange`;
+  const description = truncateMeta(
+    product.description ||
+      `Shop ${productName} from ${sellerName} on the Black Wealth Exchange marketplace.`,
+  );
+  const image = product.imageUrl || "/placeholder.png";
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: productName,
+    description,
+    image,
+    sku: product._id,
+    brand: { "@type": "Brand", name: sellerName },
+    offers: {
+      "@type": "Offer",
+      price: Number(product.price || 0),
+      priceCurrency: "USD",
+      availability:
+        stockQuantity > 0
+          ? "https://schema.org/InStock"
+          : "https://schema.org/OutOfStock",
+      url: canonical,
+    },
+  };
+
   return (
-    <div className="min-h-screen bg-black text-white px-4 py-8">
+    <>
+      <Head>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonical} />
+        <meta property="og:type" content="product" />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:image" content={image} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={image} />
+      </Head>
+      <script type="application/ld+json">{JSON.stringify(productSchema)}</script>
+      <div className="min-h-screen bg-black text-white px-4 py-8">
       <div className="max-w-6xl mx-auto">
         <Link
           href="/marketplace"
@@ -285,7 +332,13 @@ const ProductDetailPage = () => {
             </div>
 
             <p className="mt-3 text-xs text-gray-300">
-              Next step: use <span className="font-semibold text-white">Buy Now</span> to place an order, or <span className="font-semibold text-white">Ask Seller a Question</span> for fit, shipping, or product questions.
+              Next step: use{" "}
+              <span className="font-semibold text-white">Buy Now</span> to place
+              an order, or{" "}
+              <span className="font-semibold text-white">
+                Ask Seller a Question
+              </span>{" "}
+              for fit, shipping, or product questions.
             </p>
 
             <div className="mt-4 rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-4 text-sm text-gray-100">
@@ -307,9 +360,22 @@ const ProductDetailPage = () => {
             </div>
 
             <div className="mt-4 rounded-xl border border-white/10 bg-white/5 p-3 text-xs text-gray-200">
-              <p><span className="font-semibold text-white">What this is:</span> {productName}</p>
-              <p className="mt-1"><span className="font-semibold text-white">Who is selling:</span> {sellerName}</p>
-              <p className="mt-1"><span className="font-semibold text-white">What to do next:</span> Buy now to checkout, or ask seller a question first.</p>
+              <p>
+                <span className="font-semibold text-white">What this is:</span>{" "}
+                {productName}
+              </p>
+              <p className="mt-1">
+                <span className="font-semibold text-white">
+                  Who is selling:
+                </span>{" "}
+                {sellerName}
+              </p>
+              <p className="mt-1">
+                <span className="font-semibold text-white">
+                  What to do next:
+                </span>{" "}
+                Buy now to checkout, or ask seller a question first.
+              </p>
             </div>
 
             <div className="mt-4 space-y-2">
@@ -412,7 +478,8 @@ const ProductDetailPage = () => {
           </div>
         </div>
       )}
-    </div>
+      </div>
+    </>
   );
 };
 

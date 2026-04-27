@@ -3,8 +3,10 @@
 
 import { useRouter } from "next/router";
 import Link from "next/link";
+import Head from "next/head";
 import React, { useEffect, useMemo, useState } from "react";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
+import { canonicalUrl, truncateMeta } from "@/lib/seo";
 
 interface Job {
   _id: string;
@@ -222,9 +224,65 @@ export default function JobDetail() {
         ? `https://${job.companyWebsite}`
         : "";
   const isHighInterest = (job.appliedCount || 0) >= 10;
+  const canonical = canonicalUrl(`/job/${encodeURIComponent(job._id)}`);
+  const title = `${job.title} at ${companyName} | Black Jobs | Black Wealth Exchange`;
+  const description = truncateMeta(
+    job.description ||
+      `${companyName} is hiring for ${job.title} in ${job.location || "multiple locations"}. Apply on Black Wealth Exchange.`,
+  );
+  const jobPostingSchema = {
+    "@context": "https://schema.org",
+    "@type": "JobPosting",
+    title: job.title,
+    description: job.description || description,
+    datePosted: job.createdAt || new Date().toISOString(),
+    employmentType: job.type || "FULL_TIME",
+    hiringOrganization: {
+      "@type": "Organization",
+      name: companyName,
+      sameAs: companyWebsite || undefined,
+    },
+    jobLocation: {
+      "@type": "Place",
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: job.location || "United States",
+      },
+    },
+    baseSalary: job.salary
+      ? {
+          "@type": "MonetaryAmount",
+          currency: "USD",
+          value: {
+            "@type": "QuantitativeValue",
+            value: job.salary,
+            unitText: "YEAR",
+          },
+        }
+      : undefined,
+    url: canonical,
+  };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-8">
+    <>
+      <Head>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonical} />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:image" content={canonicalUrl("/images/hero1.jpg")} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={canonicalUrl("/images/hero1.jpg")} />
+      </Head>
+      <script type="application/ld+json">
+        {JSON.stringify(jobPostingSchema)}
+      </script>
+      <div className="min-h-screen bg-gray-900 text-white p-8">
       <div className="max-w-4xl mx-auto">
         {/* Top actions */}
         <div className="flex items-center justify-between gap-3 mb-6">
@@ -391,7 +449,8 @@ export default function JobDetail() {
                     </p>
                   ) : (
                     <p>
-                      <span className="text-gray-400">Website:</span> Not provided
+                      <span className="text-gray-400">Website:</span> Not
+                      provided
                     </p>
                   )}
                   {job.employerEmail ? (
@@ -444,6 +503,7 @@ export default function JobDetail() {
           </p>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

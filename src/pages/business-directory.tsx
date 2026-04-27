@@ -968,6 +968,18 @@ export default function BusinessDirectory() {
     total === 0
       ? 0
       : Math.min((page - 1) * pageSize + curatedVisibleRows.length, total);
+  const title = "Black Business Directory | Black Wealth Exchange";
+  const description = truncateMeta(
+    "Search the Black business directory by category, city, and state to find trusted Black-owned businesses.",
+  );
+  const canonical = canonicalUrl("/business-directory");
+  const directorySchema = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: title,
+    description,
+    url: canonical,
+  };
 
   useEffect(() => {
     if (!hasSearched || isLoading || total !== 0) return;
@@ -983,15 +995,22 @@ export default function BusinessDirectory() {
   return (
     <>
       <Head>
-        <title>Black Business Directory | Black Wealth Exchange</title>
-        <meta
-          name="description"
-          content={truncateMeta(
-            "Search the Black business directory by category, city, and state to find trusted Black-owned businesses.",
-          )}
-        />
-        <link rel="canonical" href={canonicalUrl("/business-directory")} />
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonical} />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:image" content={canonicalUrl("/images/hero1.jpg")} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={canonicalUrl("/images/hero1.jpg")} />
       </Head>
+      <script type="application/ld+json">
+        {JSON.stringify(directorySchema)}
+      </script>
       <div className="relative min-h-screen overflow-hidden bg-neutral-950 text-white">
         {/* subtle glows like index */}
         <div className="pointer-events-none absolute -top-40 left-1/2 h-[800px] w-[800px] -translate-x-1/2 rounded-full bg-[#D4AF37]/[0.06] blur-3xl" />

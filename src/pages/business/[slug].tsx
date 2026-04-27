@@ -1,8 +1,10 @@
 import fs from "node:fs";
 import path from "node:path";
 import { GetServerSideProps, NextPage } from "next";
+import Head from "next/head";
 import Image from "next/image";
 import ErrorPage from "next/error";
+import { canonicalUrl, truncateMeta } from "@/lib/seo";
 import clientPromise from "@/lib/mongodb";
 import { Spotlight, spotlightData } from "../../lib/SpotlightEntry";
 import { sanitizeRichHtml } from "@/lib/security/sanitizeHtml";
@@ -16,6 +18,7 @@ type BusinessEntry = {
 
 interface Props {
   entry: BusinessEntry | null;
+  slug: string;
 }
 
 const DEFAULT_IMAGE = "/images/sponsors/house-draft.jpg";
@@ -105,13 +108,47 @@ function loadFallbackBusinessBySlug(slug: string): BusinessEntry | null {
   }
 }
 
-const BusinessDetail: NextPage<Props> = ({ entry }) => {
+const BusinessDetail: NextPage<Props> = ({ entry, slug }) => {
   if (!entry) {
     return <ErrorPage statusCode={404} />;
   }
 
+  const title = `${entry.name} | Black Business Directory | Black Wealth Exchange`;
+  const description = truncateMeta(
+    entry.story ||
+      `${entry.name} is listed on Black Wealth Exchange. Explore business details and trusted directory information.`,
+  );
+  const canonical = canonicalUrl(`/business/${encodeURIComponent(slug)}`);
+  const image = entry.imageSrc || "/images/sponsors/house-draft.jpg";
+  const localBusinessSchema = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    name: entry.name,
+    description,
+    image,
+    url: canonical,
+  };
+
   return (
-    <main className="bg-gray-900 text-white min-h-screen">
+    <>
+      <Head>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonical} />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:image" content={image} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={image} />
+      </Head>
+      <script type="application/ld+json">
+        {JSON.stringify(localBusinessSchema)}
+      </script>
+      <main className="bg-gray-900 text-white min-h-screen">
       <section className="container mx-auto px-6 py-12 space-y-8">
         <h1 className="text-4xl font-extrabold text-gold">{entry.name}</h1>
 
@@ -131,12 +168,15 @@ const BusinessDetail: NextPage<Props> = ({ entry }) => {
           {entry.details && (
             <div
               className="mt-6"
-              dangerouslySetInnerHTML={{ __html: sanitizeRichHtml(entry.details) }}
+              dangerouslySetInnerHTML={{
+                __html: sanitizeRichHtml(entry.details),
+              }}
             />
           )}
         </article>
       </section>
-    </main>
+      </main>
+    </>
   );
 };
 
@@ -158,6 +198,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
           story: spotlight.story,
           details: spotlight.details,
         },
+        slug,
       },
     };
   }
@@ -190,18 +231,19 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
     if (!doc) {
       const fallback = loadFallbackBusinessBySlug(slug);
       if (!fallback) return { notFound: true };
-      return { props: { entry: fallback } };
+      return { props: { entry: fallback, slug } };
     }
 
     return {
       props: {
         entry: mapDbBusinessToEntry(doc),
+        slug,
       },
     };
   } catch {
     const fallback = loadFallbackBusinessBySlug(slug);
     if (!fallback) return { notFound: true };
-    return { props: { entry: fallback } };
+    return { props: { entry: fallback, slug } };
   }
 };
 
