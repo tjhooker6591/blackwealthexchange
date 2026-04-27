@@ -15,7 +15,6 @@ const TIER_ORDER: BlackCardTier[] = ["standard", "signature", "elite"];
 export default function BlackCardJoinPage() {
   const router = useRouter();
   const { user } = useAuth();
-  const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string>("");
   const [printName, setPrintName] = useState("");
   const [printApproved, setPrintApproved] = useState(false);
@@ -52,8 +51,7 @@ export default function BlackCardJoinPage() {
         const json = await res.json().catch(() => ({}));
         const active =
           res.ok &&
-          String(json?.member?.status || "inactive").toLowerCase() ===
-            "active";
+          String(json?.member?.status || "inactive").toLowerCase() === "active";
         setMembershipActive(Boolean(active));
       } catch {
         setMembershipActive(false);
@@ -103,47 +101,6 @@ export default function BlackCardJoinPage() {
     }
   }
 
-  async function startCheckout() {
-    if (!user) {
-      router.push(
-        `/login?next=${encodeURIComponent(`/black-card/join?tier=${tier}`)}`,
-      );
-      return;
-    }
-
-    setLoading(true);
-    setMessage("");
-
-    try {
-      const res = await fetch("/api/stripe/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-          type: "plan",
-          itemId: tierConfig.checkoutItemId,
-        }),
-      });
-
-      const data = await res.json().catch(() => ({}));
-
-      if (!res.ok) {
-        setMessage(data?.error || "Unable to start checkout.");
-        return;
-      }
-
-      if (data?.url) {
-        window.location.href = data.url;
-        return;
-      }
-
-      setMessage("Checkout URL missing. Please try again.");
-    } catch {
-      setMessage("Network error while starting checkout.");
-    } finally {
-      setLoading(false);
-    }
-  }
 
   return (
     <>
@@ -158,7 +115,7 @@ export default function BlackCardJoinPage() {
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <p className="text-xs uppercase tracking-[0.2em] text-yellow-300">
-                  Black Card Join
+                  Black Card Plan Mapping
                 </p>
                 <h1 className="mt-1 text-3xl font-extrabold text-yellow-100">
                   {tierConfig.label}
@@ -167,10 +124,9 @@ export default function BlackCardJoinPage() {
                   {tierConfig.tagline}
                 </p>
                 <p className="mt-2 max-w-2xl text-xs text-white/65">
-                  Digital membership activates in your account after checkout.
-                  Your member dashboard becomes your primary card experience,
-                  with tier status, verification data, rewards, and redemption
-                  controls.
+                  Pricing is the primary checkout path. Black Card is included
+                  with eligible plans and becomes active in your dashboard after
+                  successful plan activation.
                 </p>
               </div>
               <Link
@@ -190,13 +146,16 @@ export default function BlackCardJoinPage() {
                   {tierConfig.priceLabel}
                 </div>
                 <div className="text-sm text-white/70">
-                  {tierConfig.billingModel === "entry_fee"
-                    ? "One-time membership activation fee"
-                    : "Monthly membership plan"}
+                  {tier === "standard"
+                    ? "Included with Premium"
+                    : tier === "signature"
+                      ? "Included with Founding"
+                      : "Invite Only"}
                 </div>
                 <p className="mt-3 text-xs text-white/70">
-                  Checkout charges only this membership amount. Physical card
-                  personalization occurs after successful membership activation.
+                  To activate membership, use /pricing and choose the matching
+                  plan. This page exists for post-checkout continuity and member
+                  guidance.
                 </p>
               </div>
 
@@ -234,22 +193,17 @@ export default function BlackCardJoinPage() {
             </div>
 
             <div className="mt-5 flex flex-wrap gap-3">
-              <button
-                onClick={startCheckout}
-                disabled={loading || membershipActive}
-                className="rounded-lg bg-yellow-500 px-4 py-2 font-semibold text-black hover:bg-yellow-400 disabled:opacity-60"
+              <Link
+                href="/pricing"
+                className="rounded-lg bg-yellow-500 px-4 py-2 font-semibold text-black hover:bg-yellow-400"
               >
-                {loading
-                  ? "Starting checkout..."
-                  : membershipActive
-                    ? "Membership Active"
-                    : `Activate ${tierConfig.label}`}
-              </button>
+                Go to Pricing
+              </Link>
               <a
                 href="#post-checkout"
                 className="rounded-lg border border-yellow-500/30 px-4 py-2 text-sm text-yellow-200"
               >
-                See Instant Activation Flow
+                See Membership Activation Flow
               </a>
             </div>
           </section>
@@ -259,13 +213,11 @@ export default function BlackCardJoinPage() {
             className="rounded-xl border border-white/10 bg-white/5 p-4 text-sm text-white/80"
           >
             <div className="font-semibold text-yellow-200">
-              Post-checkout digital flow
+              Membership activation flow
             </div>
-            <div className="mt-2">
-              1. Complete secure checkout for selected membership tier.
-            </div>
+            <div className="mt-2">1. Open /pricing and choose your plan.</div>
             <div className="mt-1">
-              2. Membership status activates on successful payment.
+              2. Membership status activates on successful plan payment.
             </div>
             <div className="mt-1">
               3. Open /dashboard/black-card to access your digital member card
@@ -356,7 +308,9 @@ export default function BlackCardJoinPage() {
                   : "Finalize Print Approval & Submit Card Request"}
               </button>
             </section>
-          ) : checkoutSuccess && membershipStatusChecked && !membershipActive ? (
+          ) : checkoutSuccess &&
+            membershipStatusChecked &&
+            !membershipActive ? (
             <section className="rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-4 text-sm text-white/80">
               <p>
                 Reason: checkout return was detected, but active membership has

@@ -890,7 +890,9 @@ export default function Home() {
         <meta name="twitter:description" content={description} />
       </Head>
 
-      <script type="application/ld+json">{JSON.stringify(websiteSchema)}</script>
+      <script type="application/ld+json">
+        {JSON.stringify(websiteSchema)}
+      </script>
       <script type="application/ld+json">
         {JSON.stringify(organizationSchema)}
       </script>
@@ -1113,18 +1115,18 @@ export default function Home() {
                 </div>
               </div>
               <Link
-                href="/black-card"
+                href="/pricing"
                 onClick={() =>
                   trackHomepageEvent("homepage_cta_clicked", {
                     section: "hero",
                     ctaId: "hero_black_card",
-                    ctaLabel: "Join Black Card",
-                    destination: "/black-card",
+                    ctaLabel: "View Membership Pricing",
+                    destination: "/pricing",
                   })
                 }
                 className="inline-flex w-full sm:w-auto min-w-[12rem] justify-center whitespace-nowrap rounded-xl border border-yellow-400/40 bg-black/40 px-5 py-2.5 text-sm font-semibold text-yellow-200 hover:bg-black/60"
               >
-                Join Black Card
+                View Membership Pricing
               </Link>
             </div>
           </div>

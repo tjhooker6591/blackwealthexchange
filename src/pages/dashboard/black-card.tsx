@@ -228,7 +228,8 @@ export default function BlackCardDashboardPage() {
                   card.
                 </p>
                 <p className="mt-3 rounded-lg border border-yellow-500/30 bg-yellow-500/10 px-3 py-2 text-yellow-100">
-                  Your plan includes this tier: <strong>{includedTierByPlan}</strong>
+                  Your plan includes this tier:{" "}
+                  <strong>{includedTierByPlan}</strong>
                 </p>
               </section>
 
@@ -414,17 +415,14 @@ export default function BlackCardDashboardPage() {
 
                 <div className="mt-4 flex flex-wrap gap-3">
                   <Link
-                    href="/black-card/join?tier=signature"
+                    href="/pricing"
                     className="rounded-lg border border-yellow-500/30 px-4 py-2 text-sm text-yellow-200"
                   >
-                    Join Signature Membership
+                    Compare Premium & Founding Plans
                   </Link>
-                  <Link
-                    href="/black-card/join?tier=elite"
-                    className="rounded-lg border border-yellow-500/30 px-4 py-2 text-sm text-yellow-200"
-                  >
-                    Activate Elite Advantage
-                  </Link>
+                  <span className="rounded-lg border border-white/20 px-4 py-2 text-sm text-white/70">
+                    Elite: Invite Only
+                  </span>
                 </div>
               </section>
 

@@ -223,11 +223,11 @@ export default function Pricing() {
         <div className="relative max-w-6xl mx-auto px-4 py-10 sm:py-14">
           <div className="max-w-3xl">
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-yellow-200 leading-tight drop-shadow">
-              Upgrade to Premium
+              Activate your membership and receive your Black Card tier
             </h1>
             <p className="text-base sm:text-lg text-gray-200 mt-4">
-              Choose the plan that matches your current stage. This page lists
-              only benefits available today, plus clearly labeled rollout items.
+              Choose the plan that matches your current stage. This is the
+              primary membership checkout path.
             </p>
 
             <div className="mt-6 flex flex-wrap items-center gap-3">
@@ -272,8 +272,8 @@ export default function Pricing() {
                 Card Signature (or keeps your higher active tier).
               </p>
               <p className="mt-2 text-xs text-gray-300">
-                Black Card page shows direct one-time tier activations. Pricing
-                plans map tiers as part of plan activation.
+                Black Card is included with your plan. Use this page for plan
+                activation and checkout.
               </p>
               <div className="mt-4 flex w-full items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-black p-3 sm:p-4">
                 <Image

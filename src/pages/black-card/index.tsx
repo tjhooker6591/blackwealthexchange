@@ -16,28 +16,33 @@ const TIER_CONTEXT: Record<
     valueSummary: string;
     cta: string;
     badge: string;
+    ctaHref?: string;
+    ctaDisabled?: boolean;
   }
 > = {
   standard: {
     segment: "Entry Membership",
     valueSummary:
-      "Pay once to activate your digital card, unlock verified member identity, and start claiming member-priced opportunities immediately.",
-    cta: "Activate Standard",
+      "Black Card Standard is included when you activate Premium on the pricing page.",
+    cta: "Included with Premium",
     badge: "ENTRY",
+    ctaHref: "/pricing",
   },
   signature: {
     segment: "Growth Membership",
     valueSummary:
-      "Build on Standard with expanding benefits, broader redemption access, and priority access rolling out across BWE experiences.",
-    cta: "Activate Signature",
+      "Black Card Signature is included when you activate Founding on the pricing page.",
+    cta: "Included with Founding",
     badge: "MEMBERSHIP",
+    ctaHref: "/pricing",
   },
   elite: {
     segment: "Executive Membership",
     valueSummary:
-      "Run at the highest Black Card tier with verified identity, rewards access, and advanced features coming as rollout expands.",
-    cta: "Activate Elite",
+      "Elite is a high-touch tier and is not available as self-serve checkout.",
+    cta: "Invite Only",
     badge: "ELITE",
+    ctaDisabled: true,
   },
 };
 
@@ -87,7 +92,9 @@ export default function BlackCardLandingPage() {
                       Membership Tier
                     </div>
                     <div className="mt-1 font-semibold">Signature</div>
-                    <div className="text-xs text-white/70">One-time activation</div>
+                    <div className="text-xs text-white/70">
+                      One-time activation
+                    </div>
                   </div>
                   <div className="rounded-xl border border-white/10 bg-black/40 p-3">
                     <div className="text-xs uppercase tracking-[0.16em] text-[#CDA94C]">
@@ -100,10 +107,10 @@ export default function BlackCardLandingPage() {
 
                 <div className="mt-6 flex flex-wrap gap-3">
                   <Link
-                    href="/black-card/join?tier=standard"
+                    href="/pricing"
                     className="rounded-xl bg-[#D4AF37] px-5 py-2.5 font-bold text-black hover:bg-[#E2C35A]"
                   >
-                    Activate Membership
+                    View Pricing Plans
                   </Link>
                   <a
                     href="#digital-experience"
@@ -132,11 +139,11 @@ export default function BlackCardLandingPage() {
             className="rounded-2xl border border-[#9E7B2B]/35 bg-[#0A0A0A] p-5"
           >
             <h2 className="text-2xl font-extrabold text-[#F1D57A]">
-              Choose your tier
+              Black Card tiers and plan mapping
             </h2>
             <p className="mt-2 text-sm text-[#B0B0B0]">
-              Each tier changes what you can do, what you can claim, and how
-              quickly opportunities move toward you.
+              Black Card is included with your plan. Use pricing as the only
+              membership checkout path.
             </p>
             <p className="mt-2 text-xs text-[#AFAFAF]">
               Plan mapping clarity: Premium maps to Black Card Standard, and
@@ -177,7 +184,9 @@ export default function BlackCardLandingPage() {
                         {tier.priceLabel}
                       </div>
                       <div className="text-xs text-white/65">
-                        One-time membership activation
+                        {tierKey === "elite"
+                          ? "Invite Only"
+                          : "Included with paid plan activation"}
                       </div>
                     </div>
 
@@ -192,12 +201,18 @@ export default function BlackCardLandingPage() {
                     </ul>
 
                     <div className="mt-4">
-                      <Link
-                        href={`/black-card/join?tier=${tier.tier}`}
-                        className="inline-flex w-full items-center justify-center rounded-lg border border-[#B08A32]/50 bg-[#1A140A] px-3 py-2 font-semibold text-[#F0D37A] hover:bg-[#221A0D]"
-                      >
-                        {context.cta}
-                      </Link>
+                      {context.ctaDisabled ? (
+                        <div className="inline-flex w-full items-center justify-center rounded-lg border border-white/20 bg-black/30 px-3 py-2 font-semibold text-white/70">
+                          {context.cta}
+                        </div>
+                      ) : (
+                        <Link
+                          href={context.ctaHref || "/pricing"}
+                          className="inline-flex w-full items-center justify-center rounded-lg border border-[#B08A32]/50 bg-[#1A140A] px-3 py-2 font-semibold text-[#F0D37A] hover:bg-[#221A0D]"
+                        >
+                          {context.cta}
+                        </Link>
+                      )}
                     </div>
                   </article>
                 );
@@ -214,7 +229,7 @@ export default function BlackCardLandingPage() {
                 Access behavior
               </h3>
               <ul className="mt-3 space-y-2 text-sm text-[#D8D8D8]">
-                <li>1. Select your tier and continue to secure checkout.</li>
+                <li>1. Activate Premium or Founding from /pricing.</li>
                 <li>2. Locked state: member-only rewards stay unavailable.</li>
                 <li>
                   3. Unlocked state: your dashboard card, rewards, and
