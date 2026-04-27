@@ -267,9 +267,13 @@ export default function Pricing() {
                 BWE Black Card Membership
               </h2>
               <p className="mt-2 text-sm text-gray-200">
-                Tiered membership identity and rewards access. Pricing plan
-                mapping: Premium includes Black Card Standard, Founding includes
-                Black Card Signature (or keeps your higher active tier).
+                Tiered membership identity and rewards access. Plan mapping:
+                Premium includes Black Card Standard, Founding includes Black
+                Card Signature (or keeps your higher active tier).
+              </p>
+              <p className="mt-2 text-xs text-gray-300">
+                Black Card page shows direct one-time tier activations. Pricing
+                plans map tiers as part of plan activation.
               </p>
               <div className="mt-4 flex w-full items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-black p-3 sm:p-4">
                 <Image
@@ -371,7 +375,7 @@ export default function Pricing() {
               },
               {
                 ok: true,
-                text: "Early access only to features clearly marked rolling out",
+                text: "Early access to features as they are released",
               },
             ]}
             ctaText="Become a Founder"

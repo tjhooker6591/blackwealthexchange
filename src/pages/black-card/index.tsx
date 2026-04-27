@@ -29,7 +29,7 @@ const TIER_CONTEXT: Record<
     segment: "Growth Membership",
     valueSummary:
       "Build on Standard with expanding benefits, broader redemption access, and priority access rolling out across BWE experiences.",
-    cta: "Join Signature",
+    cta: "Activate Signature",
     badge: "MEMBERSHIP",
   },
   elite: {
@@ -87,7 +87,7 @@ export default function BlackCardLandingPage() {
                       Membership Tier
                     </div>
                     <div className="mt-1 font-semibold">Signature</div>
-                    <div className="text-xs text-white/70">Monthly growth</div>
+                    <div className="text-xs text-white/70">One-time activation</div>
                   </div>
                   <div className="rounded-xl border border-white/10 bg-black/40 p-3">
                     <div className="text-xs uppercase tracking-[0.16em] text-[#CDA94C]">
@@ -138,6 +138,10 @@ export default function BlackCardLandingPage() {
               Each tier changes what you can do, what you can claim, and how
               quickly opportunities move toward you.
             </p>
+            <p className="mt-2 text-xs text-[#AFAFAF]">
+              Plan mapping clarity: Premium maps to Black Card Standard, and
+              Founding maps to Black Card Signature.
+            </p>
 
             <div className="mt-4 grid gap-4 lg:grid-cols-3">
               {ORDER.map((tierKey) => {
@@ -173,9 +177,7 @@ export default function BlackCardLandingPage() {
                         {tier.priceLabel}
                       </div>
                       <div className="text-xs text-white/65">
-                        {tier.billingModel === "entry_fee"
-                          ? "One-time membership activation"
-                          : "Monthly membership plan"}
+                        One-time membership activation
                       </div>
                     </div>
 

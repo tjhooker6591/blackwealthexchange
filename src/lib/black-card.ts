@@ -36,7 +36,7 @@ export const BLACK_CARD_TIERS: Record<BlackCardTier, BlackCardTierConfig> = {
     label: "BWE Black Card Signature",
     checkoutItemId: "black-card-signature",
     priceCents: 14900,
-    priceLabel: "$149",
+    priceLabel: "$149.00",
     billingModel: "monthly",
     tagline:
       "Build on Standard with expanding benefits, broader redemption access, and priority access rolling out across experiences.",
@@ -53,7 +53,7 @@ export const BLACK_CARD_TIERS: Record<BlackCardTier, BlackCardTierConfig> = {
     label: "BWE Black Card Elite",
     checkoutItemId: "black-card-elite",
     priceCents: 39900,
-    priceLabel: "$399",
+    priceLabel: "$399.00",
     billingModel: "monthly",
     tagline:
       "Highest Black Card tier with verified identity, rewards access, and advanced experiences that continue to expand.",
