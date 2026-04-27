@@ -1,0 +1,154 @@
+import type { NextApiRequest, NextApiResponse } from "next";
+import { ObjectId } from "mongodb";
+import clientPromise from "@/lib/mongodb";
+import { getMongoDbName } from "@/lib/env";
+import { requireAdminFromRequest } from "@/lib/adminAuth";
+
+const ALLOWED_STATUS = new Set([
+  "active",
+  "inactive",
+  "suspended",
+  "expired",
+  "revoked",
+  "replaced",
+]);
+
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
+  const admin = await requireAdminFromRequest(req, res);
+  if (!admin) return;
+
+  const client = await clientPromise;
+  const db = client.db(getMongoDbName());
+
+  if (req.method === "GET") {
+    const q = String(req.query.q || "").trim();
+    const cardStatus = String(req.query.cardStatus || "").trim();
+    const requestStatus = String(req.query.requestStatus || "").trim();
+
+    const cardFilter: Record<string, unknown> = {};
+    if (cardStatus) cardFilter.status = cardStatus;
+    if (q) {
+      cardFilter.$or = [
+        { userId: q },
+        { memberId: { $regex: new RegExp(q, "i") } },
+        { cardSerial: { $regex: new RegExp(q, "i") } },
+        { email: { $regex: new RegExp(q, "i") } },
+      ];
+    }
+
+    const cards = await db
+      .collection("black_card_cards")
+      .find(cardFilter)
+      .sort({ updatedAt: -1 })
+      .limit(200)
+      .toArray();
+
+    const memberIds = cards.map((c: any) => String(c.memberId || "")).filter(Boolean);
+    const requestFilter: Record<string, unknown> = memberIds.length
+      ? { memberId: { $in: memberIds } }
+      : { _id: { $exists: false } };
+    if (requestStatus) requestFilter.status = requestStatus;
+
+    const requests = await db
+      .collection("black_card_physical_requests")
+      .find(requestFilter)
+      .sort({ updatedAt: -1 })
+      .toArray();
+
+    const byMember = new Map<string, any>();
+    for (const r of requests) {
+      const m = String(r.memberId || "");
+      if (m && !byMember.has(m)) byMember.set(m, r);
+    }
+
+    return res.status(200).json({
+      ok: true,
+      items: cards.map((c: any) => ({
+        cardId: String(c._id),
+        userId: c.userId || null,
+        email: c.email || null,
+        memberId: c.memberId || null,
+        cardSerial: c.cardSerial || null,
+        cardType: c.cardType || "user",
+        cardStatus: c.status || c.digitalStatus || "inactive",
+        publicVerificationId: c.publicVerificationId || null,
+        physicalRequestStatus: byMember.get(String(c.memberId || ""))?.status || null,
+        updatedAt: c.updatedAt || c.createdAt || null,
+      })),
+      meta: { requestedBy: admin.email || admin.userId || "admin" },
+    });
+  }
+
+  if (req.method === "PATCH") {
+    const action = String(req.body?.action || "").trim();
+    const cardId = String(req.body?.cardId || "").trim();
+
+    if (!ObjectId.isValid(cardId)) {
+      return res.status(400).json({ ok: false, error: "Invalid cardId" });
+    }
+
+    const card = await db
+      .collection("black_card_cards")
+      .findOne({ _id: new ObjectId(cardId) });
+
+    if (!card) return res.status(404).json({ ok: false, error: "Card not found" });
+
+    const now = new Date();
+
+    if (action === "suspend" || action === "revoke") {
+      const nextStatus = action === "suspend" ? "suspended" : "revoked";
+      await db.collection("black_card_cards").updateOne(
+        { _id: card._id },
+        { $set: { status: nextStatus, digitalStatus: nextStatus, updatedAt: now } },
+      );
+
+      await db.collection("black_card_audit_events").insertOne({
+        eventType: `card_${action}`,
+        cardId,
+        memberId: card.memberId || null,
+        actorAdmin: admin.email || admin.userId || "admin",
+        createdAt: now,
+      });
+
+      return res.status(200).json({ ok: true, cardStatus: nextStatus });
+    }
+
+    if (action === "replace") {
+      const nextStatus = "replaced";
+      await db.collection("black_card_cards").updateOne(
+        { _id: card._id },
+        { $set: { status: nextStatus, digitalStatus: nextStatus, updatedAt: now } },
+      );
+
+      await db.collection("black_card_audit_events").insertOne({
+        eventType: "card_replace_marked",
+        cardId,
+        memberId: card.memberId || null,
+        actorAdmin: admin.email || admin.userId || "admin",
+        createdAt: now,
+      });
+
+      return res.status(200).json({ ok: true, cardStatus: nextStatus });
+    }
+
+    if (action === "set_status") {
+      const status = String(req.body?.status || "").trim().toLowerCase();
+      if (!ALLOWED_STATUS.has(status)) {
+        return res.status(400).json({ ok: false, error: "Invalid status" });
+      }
+      await db.collection("black_card_cards").updateOne(
+        { _id: card._id },
+        { $set: { status, digitalStatus: status, updatedAt: now } },
+      );
+      return res.status(200).json({ ok: true, cardStatus: status });
+    }
+
+    return res.status(400).json({ ok: false, error: "Unsupported action" });
+  }
+
+  res.setHeader("Allow", ["GET", "PATCH"]);
+  return res.status(405).json({ ok: false, error: "Method Not Allowed" });
+}

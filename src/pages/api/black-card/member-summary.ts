@@ -5,6 +5,7 @@ import { createHash } from "crypto";
 import { ObjectId } from "mongodb";
 import clientPromise from "@/lib/mongodb";
 import { getJwtSecret, getMongoDbName } from "@/lib/env";
+import { getVerificationUrl } from "@/lib/black-card-identity";
 
 interface JwtPayload {
   userId: string;
@@ -100,6 +101,11 @@ export default async function handler(
               cardIdDisplay: 1,
               digitalStatus: 1,
               issueVersion: 1,
+              memberId: 1,
+              cardSerial: 1,
+              cardType: 1,
+              status: 1,
+              publicVerificationId: 1,
             },
           },
         )
@@ -143,13 +149,24 @@ export default async function handler(
       card: card
         ? {
             cardIdDisplay: String(card.cardIdDisplay || ""),
-            digitalStatus: String(card.digitalStatus || "active"),
+            memberId: String(card.memberId || ""),
+            cardSerial: String(card.cardSerial || ""),
+            cardType: String(card.cardType || "user"),
+            digitalStatus: String(card.status || card.digitalStatus || "active"),
             issueVersion: Number(card.issueVersion || 1),
             verificationCode: createHash("sha256")
-              .update(`${String(card.cardIdDisplay || "")}:${String(userDoc.email || payload.email)}:${String(card.issueVersion || 1)}`)
+              .update(
+                `${String(card.cardIdDisplay || "")}:${String(userDoc.email || payload.email)}:${String(card.issueVersion || 1)}`,
+              )
               .digest("hex")
               .slice(0, 12)
               .toUpperCase(),
+            verificationUrl: card.publicVerificationId
+              ? getVerificationUrl(String(card.publicVerificationId))
+              : null,
+            qrPayload: card.publicVerificationId
+              ? getVerificationUrl(String(card.publicVerificationId))
+              : null,
             walletPassState: "planned",
           }
         : null,

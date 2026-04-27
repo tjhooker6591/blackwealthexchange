@@ -3,7 +3,10 @@ import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
 import { requireAdminFromRequest } from "@/lib/adminAuth";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method !== "GET") {
     res.setHeader("Allow", ["GET"]);
     return res.status(405).json({ ok: false, error: "Method Not Allowed" });
@@ -15,11 +18,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const client = await clientPromise;
   const db = client.db(getMongoDbName());
 
+  const q = String(req.query.q || "").trim();
+  const status = String(req.query.status || "").trim();
+  const filter: Record<string, unknown> = {};
+  if (status) filter.status = status;
+  if (q) {
+    filter.$or = [
+      { userId: q },
+      { email: { $regex: new RegExp(q, "i") } },
+    ];
+  }
+
   const memberships = await db
     .collection("black_card_memberships")
-    .find({})
+    .find(filter)
     .sort({ createdAt: -1 })
-    .limit(50)
+    .limit(200)
     .toArray();
 
   const cards = await db
@@ -29,7 +43,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     .limit(100)
     .toArray();
 
-  const byMembership = new Map(cards.map((c: any) => [String(c.membershipId), c]));
+  const byMembership = new Map(
+    cards.map((c: any) => [String(c.membershipId), c]),
+  );
 
   return res.status(200).json({
     ok: true,
@@ -45,7 +61,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         sourceStripeSessionId: m.sourceStripeSessionId || null,
         sourcePaymentIntentId: m.sourcePaymentIntentId || null,
         cardIdDisplay: card?.cardIdDisplay || null,
-        digitalStatus: card?.digitalStatus || null,
+        memberId: card?.memberId || null,
+        cardSerial: card?.cardSerial || null,
+        cardType: card?.cardType || null,
+        publicVerificationId: card?.publicVerificationId || null,
+        digitalStatus: card?.status || card?.digitalStatus || null,
         issueVersion: card?.issueVersion || null,
         createdAt: m.createdAt || null,
       };
