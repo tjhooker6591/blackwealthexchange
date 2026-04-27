@@ -1174,7 +1174,9 @@ const AdminDashboard = ({
             ),
           )}
           {Object.keys(recentJoinsSummary.byAccountType || {}).length === 0 ? (
-            <div className="text-sm text-gray-400">No join activity is available for the current reporting window.</div>
+            <div className="text-sm text-gray-400">
+              No join activity is available for the current reporting window.
+            </div>
           ) : null}
         </div>
       </div>
@@ -1501,7 +1503,9 @@ const AdminDashboard = ({
                       ))}
                     </ul>
                   ) : (
-                    <div className="text-gray-400">No featured directory slots are currently assigned.</div>
+                    <div className="text-gray-400">
+                      No featured directory slots are currently assigned.
+                    </div>
                   )}
                 </div>
 
@@ -1529,7 +1533,8 @@ const AdminDashboard = ({
                       </div>
                     ) : (
                       <div className="text-gray-400">
-                        No businesses are currently in the featured-slot waitlist.
+                        No businesses are currently in the featured-slot
+                        waitlist.
                       </div>
                     )}
                   </div>
@@ -1619,6 +1624,10 @@ const AdminDashboard = ({
               label="User & account management"
             />
             <AdminLink href="/admin/organizations" label="Organizations" />
+            <AdminLink
+              href="/admin/black-card"
+              label="Black Card Management"
+            />
             <AdminLink href="/admin/affiliates" label="Affiliates" />
             <AdminLink
               href="/admin/affiliate-attribution"

@@ -46,7 +46,9 @@ export default async function handler(
       .limit(200)
       .toArray();
 
-    const memberIds = cards.map((c: any) => String(c.memberId || "")).filter(Boolean);
+    const memberIds = cards
+      .map((c: any) => String(c.memberId || ""))
+      .filter(Boolean);
     const requestFilter: Record<string, unknown> = memberIds.length
       ? { memberId: { $in: memberIds } }
       : { _id: { $exists: false } };
@@ -75,7 +77,9 @@ export default async function handler(
         cardType: c.cardType || "user",
         cardStatus: c.status || c.digitalStatus || "inactive",
         publicVerificationId: c.publicVerificationId || null,
-        physicalRequestStatus: byMember.get(String(c.memberId || ""))?.status || null,
+        physicalRequestStatus:
+          byMember.get(String(c.memberId || ""))?.status || null,
+        createdAt: c.createdAt || null,
         updatedAt: c.updatedAt || c.createdAt || null,
       })),
       meta: { requestedBy: admin.email || admin.userId || "admin" },
@@ -94,7 +98,8 @@ export default async function handler(
       .collection("black_card_cards")
       .findOne({ _id: new ObjectId(cardId) });
 
-    if (!card) return res.status(404).json({ ok: false, error: "Card not found" });
+    if (!card)
+      return res.status(404).json({ ok: false, error: "Card not found" });
 
     const now = new Date();
 
@@ -102,7 +107,13 @@ export default async function handler(
       const nextStatus = action === "suspend" ? "suspended" : "revoked";
       await db.collection("black_card_cards").updateOne(
         { _id: card._id },
-        { $set: { status: nextStatus, digitalStatus: nextStatus, updatedAt: now } },
+        {
+          $set: {
+            status: nextStatus,
+            digitalStatus: nextStatus,
+            updatedAt: now,
+          },
+        },
       );
 
       await db.collection("black_card_audit_events").insertOne({
@@ -120,7 +131,13 @@ export default async function handler(
       const nextStatus = "replaced";
       await db.collection("black_card_cards").updateOne(
         { _id: card._id },
-        { $set: { status: nextStatus, digitalStatus: nextStatus, updatedAt: now } },
+        {
+          $set: {
+            status: nextStatus,
+            digitalStatus: nextStatus,
+            updatedAt: now,
+          },
+        },
       );
 
       await db.collection("black_card_audit_events").insertOne({
@@ -135,14 +152,18 @@ export default async function handler(
     }
 
     if (action === "set_status") {
-      const status = String(req.body?.status || "").trim().toLowerCase();
+      const status = String(req.body?.status || "")
+        .trim()
+        .toLowerCase();
       if (!ALLOWED_STATUS.has(status)) {
         return res.status(400).json({ ok: false, error: "Invalid status" });
       }
-      await db.collection("black_card_cards").updateOne(
-        { _id: card._id },
-        { $set: { status, digitalStatus: status, updatedAt: now } },
-      );
+      await db
+        .collection("black_card_cards")
+        .updateOne(
+          { _id: card._id },
+          { $set: { status, digitalStatus: status, updatedAt: now } },
+        );
       return res.status(200).json({ ok: true, cardStatus: status });
     }
 

@@ -148,6 +148,14 @@ export default function AdminToolsPage() {
         method: "GET",
       },
       {
+        id: "p-black-card",
+        type: "page",
+        category: "System",
+        label: "Black Card Management",
+        path: "/admin/black-card",
+        method: "GET",
+      },
+      {
         id: "p-dir-approvals",
         type: "page",
         category: "Directory",

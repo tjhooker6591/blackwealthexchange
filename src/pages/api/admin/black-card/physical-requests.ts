@@ -35,18 +35,44 @@ export default async function handler(
       .limit(200)
       .toArray();
 
+    const memberIds = items
+      .map((i: any) => String(i.memberId || ""))
+      .filter(Boolean);
+
+    const cards = memberIds.length
+      ? await db
+          .collection("black_card_cards")
+          .find({ memberId: { $in: memberIds } })
+          .project({ _id: 1, memberId: 1, cardSerial: 1, email: 1, userId: 1 })
+          .toArray()
+      : [];
+
+    const byMember = new Map<string, any>();
+    for (const c of cards) {
+      const m = String((c as any).memberId || "");
+      if (m && !byMember.has(m)) byMember.set(m, c);
+    }
+
     return res.status(200).json({
       ok: true,
-      items: items.map((i: any) => ({
-        requestId: String(i._id),
-        memberId: i.memberId || null,
-        userId: i.userId || null,
-        cardType: i.cardType || null,
-        status: i.status || "requested",
-        nameToPrint: i.nameToPrint || "",
-        createdAt: i.createdAt || null,
-        updatedAt: i.updatedAt || null,
-      })),
+      items: items.map((i: any) => {
+        const card = byMember.get(String(i.memberId || ""));
+        return {
+          requestId: String(i._id),
+          memberId: i.memberId || null,
+          userId: i.userId || card?.userId || null,
+          email: card?.email || null,
+          cardId: card?._id ? String(card._id) : null,
+          cardSerial: card?.cardSerial || null,
+          cardType: i.cardType || null,
+          status: i.status || "requested",
+          nameToPrint: i.nameToPrint || "",
+          vendorRef: i.vendorRef || null,
+          trackingNumber: i.trackingNumber || null,
+          createdAt: i.createdAt || null,
+          updatedAt: i.updatedAt || null,
+        };
+      }),
       meta: { requestedBy: admin.email || admin.userId || "admin" },
     });
   }
@@ -54,7 +80,9 @@ export default async function handler(
   if (req.method === "PATCH") {
     const requestId = String(req.body?.requestId || "").trim();
     const action = String(req.body?.action || "").trim();
-    const nextStatus = String(req.body?.status || "").trim().toLowerCase();
+    const nextStatus = String(req.body?.status || "")
+      .trim()
+      .toLowerCase();
 
     if (!ObjectId.isValid(requestId)) {
       return res.status(400).json({ ok: false, error: "Invalid requestId" });
