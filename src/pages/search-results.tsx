@@ -288,6 +288,8 @@ export default function SearchResults() {
                     src={s.img}
                     alt={s.name}
                     className="h-12 w-12 rounded-lg border border-white/20 object-cover"
+                    loading="lazy"
+                    decoding="async"
                   />
                   <div className="min-w-0 flex-1">
                     <div className="truncate text-sm font-semibold text-[#EFD27A]">

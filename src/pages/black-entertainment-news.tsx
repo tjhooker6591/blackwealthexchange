@@ -584,6 +584,7 @@ function PosterImage({
           alt=""
           className="absolute inset-0 h-full w-full object-cover opacity-80"
           loading="lazy"
+          decoding="async"
           referrerPolicy="no-referrer"
           onError={() => setBad(true)}
         />

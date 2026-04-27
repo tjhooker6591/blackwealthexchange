@@ -170,6 +170,8 @@ function SponsorCard({ img, name, tagline, url, cta }: any) {
         alt={name}
         className="h-12 w-12 object-cover rounded-xl shadow border border-white/15 mb-2"
         style={{ background: "#111" }}
+        loading="lazy"
+        decoding="async"
       />
       <div className="text-[#D4AF37] font-extrabold text-xs text-center truncate w-full">
         {name}
@@ -211,6 +213,8 @@ function SidebarAdCard({
           src={img}
           className="h-12 w-12 object-cover rounded-xl border border-white/15 shadow"
           alt={name}
+          loading="lazy"
+          decoding="async"
         />
         <div className="min-w-0 flex-1">
           <div className="font-extrabold text-white truncate">{name}</div>
@@ -1006,7 +1010,10 @@ export default function BusinessDirectory() {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
-        <meta name="twitter:image" content={canonicalUrl("/images/hero1.jpg")} />
+        <meta
+          name="twitter:image"
+          content={canonicalUrl("/images/hero1.jpg")}
+        />
       </Head>
       <script type="application/ld+json">
         {JSON.stringify(directorySchema)}
@@ -1430,6 +1437,8 @@ export default function BusinessDirectory() {
                           src={ad.image || "/default-image.jpg"}
                           alt={ad.name}
                           className="h-24 w-full rounded-lg object-cover"
+                          loading="lazy"
+                          decoding="async"
                         />
                         <div className="mt-2 flex items-center justify-between gap-2">
                           <div className="text-sm font-bold text-white truncate">
@@ -1899,6 +1908,8 @@ export default function BusinessDirectory() {
                             height={48}
                             className="mt-0.5 h-12 w-12 rounded-xl object-cover border border-white/15 bg-black/40"
                             onError={handleImageError}
+                            loading="lazy"
+                            decoding="async"
                           />
 
                           {/* Google-like text block */}

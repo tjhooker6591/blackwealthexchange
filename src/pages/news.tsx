@@ -515,6 +515,8 @@ export default function NewsPage() {
                   alt={hero.title}
                   className="w-full h-[260px] sm:h-[320px] object-cover opacity-90"
                   loading="lazy"
+                  decoding="async"
+                  referrerPolicy="no-referrer"
                 />
               ) : (
                 <div className="w-full h-[260px] sm:h-[320px] bg-gradient-to-r from-gray-900/80 via-black/60 to-gray-900/80" />
@@ -802,6 +804,8 @@ export default function NewsPage() {
                         alt={it.title}
                         className="w-full h-40 object-cover"
                         loading="lazy"
+                        decoding="async"
+                        referrerPolicy="no-referrer"
                       />
                       <div className="absolute top-3 left-3 inline-flex items-center gap-2 px-2.5 py-1 rounded-full border border-gray-800 bg-black/60 text-xs text-gray-100">
                         <span className="text-gold font-semibold">{cat}</span>

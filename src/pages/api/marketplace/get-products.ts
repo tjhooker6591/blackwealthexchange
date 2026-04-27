@@ -12,13 +12,21 @@ export default async function handler(
     return res.status(405).json({ error: "Method Not Allowed" });
   }
 
-  res.setHeader("Cache-Control", "no-store, max-age=0");
+  const isSellerView = req.query.sellerView === "true";
+  const isDebug = String(req.query.debug || "") === "1";
+
+  // Public listing responses can be short-lived cached at the edge.
+  // Seller/debug responses stay uncached for correctness.
+  if (!isSellerView && !isDebug) {
+    res.setHeader("Cache-Control", "s-maxage=30, stale-while-revalidate=120");
+  } else {
+    res.setHeader("Cache-Control", "no-store, max-age=0");
+  }
 
   const {
     page = "1",
     limit = "8",
     category = "All",
-    sellerView,
     sellerId,
     q = "",
     sort = "relevance",
@@ -40,7 +48,7 @@ export default async function handler(
       filter.category = { $regex: new RegExp(category as string, "i") };
     }
 
-    if (sellerView === "true") {
+    if (isSellerView) {
       // Seller Dashboard View ➔ Show all products by this seller
       if (!sellerId) {
         return res
@@ -80,13 +88,10 @@ export default async function handler(
     const productsCollection = client.db(usedDbName).collection("products");
 
     const queryProducts = async (collection: any) => {
-      const total = await collection.countDocuments(filter);
-      const products = await collection
-        .find(filter)
-        .sort(sortSpec)
-        .skip(skip)
-        .limit(limitNum)
-        .toArray();
+      const [total, products] = await Promise.all([
+        collection.countDocuments(filter),
+        collection.find(filter).sort(sortSpec).skip(skip).limit(limitNum).toArray(),
+      ]);
       return { total, products };
     };
 
@@ -111,7 +116,9 @@ export default async function handler(
           .find({
             $or: [
               { userId: { $in: sellerIds } },
-              ...(sellerObjectIds.length ? [{ _id: { $in: sellerObjectIds } }] : []),
+              ...(sellerObjectIds.length
+                ? [{ _id: { $in: sellerObjectIds } }]
+                : []),
             ],
           })
           .toArray()
@@ -146,14 +153,14 @@ export default async function handler(
             "Verified BWE Marketplace Seller",
           profileComplete: Boolean(
             String(seller?.businessName || "").trim() &&
-              String(seller?.email || "").trim() &&
-              String(seller?.description || "").trim(),
+            String(seller?.email || "").trim() &&
+            String(seller?.description || "").trim(),
           ),
         },
       };
     });
 
-    if (String(req.query.debug || "") === "1") {
+    if (isDebug) {
       return res.status(200).json({
         products: hydratedProducts,
         total: result.total,
