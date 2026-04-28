@@ -23,16 +23,16 @@ const TIER_CONTEXT: Record<
   standard: {
     segment: "Entry Membership",
     valueSummary:
-      "Black Card Standard is included when you activate Premium on the pricing page.",
-    cta: "Included with Premium",
+      "Included with Premium plan.",
+    cta: "Included with Premium plan",
     badge: "ENTRY",
     ctaHref: "/pricing",
   },
   signature: {
     segment: "Growth Membership",
     valueSummary:
-      "Black Card Signature is included when you activate Founding on the pricing page.",
-    cta: "Included with Founding",
+      "Included with Founding plan.",
+    cta: "Included with Founding plan",
     badge: "MEMBERSHIP",
     ctaHref: "/pricing",
   },
@@ -73,10 +73,8 @@ export default function BlackCardLandingPage() {
                   member advantage.
                 </p>
                 <p className="mt-4 max-w-3xl text-[#D9D9D9]">
-                  {BLACK_CARD_POSITIONING}. Black Card is a digital-first
-                  membership identity and rewards access system with instant
-                  account activation, persistent member identity in your
-                  dashboard, and expanding tier experiences after checkout.
+                  {BLACK_CARD_POSITIONING}. Black Card is included with your
+                  membership plan. Use pricing page to activate membership.
                 </p>
 
                 <div className="mt-6 grid gap-3 text-sm text-[#DDD] sm:grid-cols-3">
@@ -85,7 +83,9 @@ export default function BlackCardLandingPage() {
                       Entry Tier
                     </div>
                     <div className="mt-1 font-semibold">Standard</div>
-                    <div className="text-xs text-white/70">Included with Premium</div>
+                    <div className="text-xs text-white/70">
+                      Included with Premium
+                    </div>
                   </div>
                   <div className="rounded-xl border border-white/10 bg-black/40 p-3">
                     <div className="text-xs uppercase tracking-[0.16em] text-[#CDA94C]">
@@ -180,13 +180,15 @@ export default function BlackCardLandingPage() {
                     <p className="mt-1 text-sm text-white/75">{tier.tagline}</p>
 
                     <div className="mt-4 rounded-xl border border-white/10 bg-black/40 p-3">
-                      <div className="text-2xl font-black text-[#F2D77C]">
-                        {tier.priceLabel}
+                      <div className="text-base font-bold text-[#F2D77C]">
+                        {tierKey === "standard"
+                          ? "Included with Premium plan"
+                          : tierKey === "signature"
+                            ? "Included with Founding plan"
+                            : "Invite Only"}
                       </div>
                       <div className="text-xs text-white/65">
-                        {tierKey === "elite"
-                          ? "Invite Only"
-                          : "Included with paid plan activation"}
+                        Black Card is included with your membership plan.
                       </div>
                     </div>
 

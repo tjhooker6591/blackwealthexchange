@@ -101,7 +101,6 @@ export default function BlackCardJoinPage() {
     }
   }
 
-
   return (
     <>
       <Head>
@@ -140,17 +139,17 @@ export default function BlackCardJoinPage() {
             <div className="mt-4 grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
               <div className="rounded-xl border border-white/10 bg-black/40 p-4">
                 <div className="text-xs uppercase tracking-[0.16em] text-yellow-300">
-                  Membership Price
+                  Membership Inclusion
                 </div>
-                <div className="mt-2 text-4xl font-black text-yellow-100">
-                  {tierConfig.priceLabel}
+                <div className="mt-2 text-lg font-black text-yellow-100">
+                  {tier === "standard"
+                    ? "Included with Premium plan"
+                    : tier === "signature"
+                      ? "Included with Founding plan"
+                      : "Invite Only"}
                 </div>
                 <div className="text-sm text-white/70">
-                  {tier === "standard"
-                    ? "Included with Premium"
-                    : tier === "signature"
-                      ? "Included with Founding"
-                      : "Invite Only"}
+                  Black Card is included with your membership plan.
                 </div>
                 <p className="mt-3 text-xs text-white/70">
                   To activate membership, use /pricing and choose the matching
@@ -186,7 +185,13 @@ export default function BlackCardJoinPage() {
                     }`}
                   >
                     <div className="font-semibold">{cfg.label}</div>
-                    <div className="text-xs">{cfg.priceLabel}</div>
+                    <div className="text-xs">
+                      {k === "standard"
+                        ? "Included with Premium plan"
+                        : k === "signature"
+                          ? "Included with Founding plan"
+                          : "Invite Only"}
+                    </div>
                   </Link>
                 );
               })}
