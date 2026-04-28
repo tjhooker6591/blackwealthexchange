@@ -20,19 +20,19 @@ export default function CheckoutPage() {
 
   const authUser = (user ?? null) as Record<string, unknown> | null;
 
-  const isPremiumActive =
+  const isPaidMembershipActive =
     authUser?.isPremium === true ||
     authUser?.currentPlan === "premium" ||
+    authUser?.currentPlan === "founding" ||
     authUser?.premiumStatus === "active";
 
   const isPremiumPlan = (plan || "premium") === "premium";
-
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string>("");
 
   async function startCheckout() {
-    if (isPremiumPlan && isPremiumActive) {
-      setMessage("Your Premium account is already active.");
+    if (isPremiumPlan && isPaidMembershipActive) {
+      setMessage("Your paid membership is already active.");
       return;
     }
 
@@ -79,7 +79,7 @@ export default function CheckoutPage() {
     }
   }
 
-  const showPremiumActiveState = isPremiumPlan && isPremiumActive;
+  const showPremiumActiveState = isPremiumPlan && isPaidMembershipActive;
 
   return (
     <>
@@ -94,7 +94,7 @@ export default function CheckoutPage() {
 
           <p className="mt-3 text-white/80">
             {plan
-              ? `You're checking out: ${PLAN_LABELS[plan] || plan}.`
+              ? `You're checking out: ${PLAN_LABELS[plan] || plan}. Billed annually with auto-renew.`
               : "Select a plan to continue to secure checkout."}
           </p>
 

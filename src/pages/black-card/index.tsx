@@ -85,7 +85,7 @@ export default function BlackCardLandingPage() {
                       Entry Tier
                     </div>
                     <div className="mt-1 font-semibold">Standard</div>
-                    <div className="text-xs text-white/70">One-time join</div>
+                    <div className="text-xs text-white/70">Included with Premium</div>
                   </div>
                   <div className="rounded-xl border border-white/10 bg-black/40 p-3">
                     <div className="text-xs uppercase tracking-[0.16em] text-[#CDA94C]">
@@ -93,7 +93,7 @@ export default function BlackCardLandingPage() {
                     </div>
                     <div className="mt-1 font-semibold">Signature</div>
                     <div className="text-xs text-white/70">
-                      One-time activation
+                      Included with Founding
                     </div>
                   </div>
                   <div className="rounded-xl border border-white/10 bg-black/40 p-3">

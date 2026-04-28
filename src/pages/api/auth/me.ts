@@ -36,6 +36,14 @@ interface UserProfile {
   blackCardTier?: string;
   blackCardStatus?: string;
   blackCardMemberSince?: Date | null;
+  stripeSubscriptionId?: string | null;
+  stripeCustomerId?: string | null;
+  subscriptionStatus?: string | null;
+  subscriptionCurrentPeriodStart?: Date | null;
+  subscriptionCurrentPeriodEnd?: Date | null;
+  subscriptionCancelAtPeriodEnd?: boolean;
+  nextBillingDate?: Date | null;
+  renewalStatus?: string | null;
   tokenVersion?: number;
   [key: string]: unknown;
 }
@@ -156,13 +164,16 @@ export default async function handler(
     const normalizedPremiumStatus =
       typeof profile.premiumStatus === "string" && profile.premiumStatus.trim()
         ? profile.premiumStatus.toLowerCase()
-        : normalizedCurrentPlan === "premium" || profile.isPremium === true
-          ? "active"
-          : "inactive";
+        : normalizedCurrentPlan === "premium" ||
+          normalizedCurrentPlan === "founding" ||
+          profile.isPremium === true
+        ? "active"
+        : "inactive";
 
     const normalizedIsPremium =
       profile.isPremium === true ||
       normalizedCurrentPlan === "premium" ||
+      normalizedCurrentPlan === "founding" ||
       normalizedPremiumStatus === "active";
 
     const normalizedBlackCardTier =
@@ -203,6 +214,16 @@ export default async function handler(
         blackCardTier: normalizedBlackCardTier,
         blackCardStatus: normalizedBlackCardStatus,
         blackCardMemberSince: profile.blackCardMemberSince ?? null,
+        stripeSubscriptionId: profile.stripeSubscriptionId ?? null,
+        stripeCustomerId: profile.stripeCustomerId ?? null,
+        subscriptionStatus: profile.subscriptionStatus ?? null,
+        subscriptionCurrentPeriodStart:
+          profile.subscriptionCurrentPeriodStart ?? null,
+        subscriptionCurrentPeriodEnd: profile.subscriptionCurrentPeriodEnd ?? null,
+        subscriptionCancelAtPeriodEnd:
+          profile.subscriptionCancelAtPeriodEnd ?? false,
+        nextBillingDate: profile.nextBillingDate ?? null,
+        renewalStatus: profile.renewalStatus ?? null,
       },
     });
   } catch (err) {

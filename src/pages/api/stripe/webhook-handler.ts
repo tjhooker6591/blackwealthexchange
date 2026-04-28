@@ -20,6 +20,7 @@ import {
 import { ensureBlackCardMembershipAndCard } from "@/lib/black-card-membership";
 import { getMongoDbName } from "@/lib/env";
 import { requireStripeSecretKey } from "@/lib/stripeSecret";
+import { sendEmail } from "@/lib/sendEmail";
 
 export const config = {
   api: { bodyParser: false },
@@ -349,6 +350,148 @@ async function upsertWealthBuilderPremiumEntitlement(
   );
 }
 
+function mapPlanToBlackCardTier(plan: "premium" | "founding") {
+  return plan === "founding" ? "signature" : "standard";
+}
+
+async function sendMembershipEmailSafe(params: {
+  to?: string | null;
+  subject: string;
+  text: string;
+}) {
+  if (!params.to) return;
+  try {
+    await sendEmail({
+      to: params.to,
+      subject: params.subject,
+      text: params.text,
+      html: `<p>${params.text.replace(/\n/g, "<br/>")}</p>`,
+    });
+  } catch (err) {
+    console.warn("[stripe-webhook] membership email failed", {
+      to: params.to,
+      subject: params.subject,
+      err: (err as any)?.message || String(err),
+    });
+  }
+}
+
+async function pushMembershipNotification(
+  db: Db,
+  input: {
+    userId?: string | null;
+    email?: string | null;
+    type: string;
+    message: string;
+    createdAt: Date;
+    meta?: Record<string, unknown>;
+  },
+) {
+  try {
+    await db.collection("notifications").insertOne({
+      userId: input.userId || null,
+      email: input.email || null,
+      type: input.type,
+      message: input.message,
+      read: false,
+      createdAt: input.createdAt,
+      metadata: input.meta || {},
+    });
+  } catch {}
+}
+
+async function applySubscriptionEntitlement(
+  db: Db,
+  input: {
+    userId?: string | null;
+    email?: string | null;
+    stripeCustomerId?: string | null;
+    stripeSubscriptionId?: string | null;
+    plan: "premium" | "founding";
+    status:
+      | "active"
+      | "trialing"
+      | "past_due"
+      | "canceled"
+      | "unpaid"
+      | "incomplete"
+      | "incomplete_expired";
+    currentPeriodStart?: Date | null;
+    currentPeriodEnd?: Date | null;
+    cancelAtPeriodEnd?: boolean;
+    canceledAt?: Date | null;
+    updatedAt: Date;
+  },
+) {
+  const keepActiveUntilPeriodEnd =
+    input.cancelAtPeriodEnd &&
+    input.currentPeriodEnd &&
+    input.currentPeriodEnd.getTime() > Date.now();
+
+  const active =
+    input.status === "active" ||
+    input.status === "trialing" ||
+    keepActiveUntilPeriodEnd;
+
+  const patch: Record<string, unknown> = {
+    stripeCustomerId: input.stripeCustomerId || null,
+    stripeSubscriptionId: input.stripeSubscriptionId || null,
+    subscriptionStatus: input.status,
+    subscriptionCurrentPeriodStart: input.currentPeriodStart || null,
+    subscriptionCurrentPeriodEnd: input.currentPeriodEnd || null,
+    subscriptionCancelAtPeriodEnd: Boolean(input.cancelAtPeriodEnd),
+    subscriptionCanceledAt: input.canceledAt || null,
+    nextBillingDate: input.currentPeriodEnd || null,
+    renewalStatus: keepActiveUntilPeriodEnd
+      ? "canceling"
+      : active
+        ? "active"
+        : "inactive",
+    updatedAt: input.updatedAt,
+  };
+
+  if (active) {
+    const tier = mapPlanToBlackCardTier(input.plan);
+    Object.assign(patch, {
+      isPremium: true,
+      currentPlan: input.plan,
+      premiumStatus: "active",
+      premiumActivatedAt: input.currentPeriodStart || input.updatedAt,
+      membershipPlanId: input.plan,
+      membershipPlanStatus: keepActiveUntilPeriodEnd ? "canceling" : "active",
+      membershipPlanStartAt: input.currentPeriodStart || null,
+      membershipPlanExpiresAt: input.currentPeriodEnd || null,
+      blackCardTier: tier,
+      blackCardStatus: "active",
+      blackCardPlanExpiresAt: input.currentPeriodEnd || null,
+    });
+  } else {
+    Object.assign(patch, {
+      isPremium: false,
+      currentPlan: "free",
+      premiumStatus: "inactive",
+      membershipPlanStatus: "inactive",
+      membershipPlanExpiresAt: input.currentPeriodEnd || input.updatedAt,
+      blackCardStatus: "inactive",
+    });
+  }
+
+  const filters: Record<string, unknown>[] = [];
+  if (input.userId && ObjectId.isValid(input.userId)) {
+    filters.push({ _id: new ObjectId(input.userId) });
+  }
+  if (input.email) filters.push({ email: input.email });
+  if (input.stripeSubscriptionId) {
+    filters.push({ stripeSubscriptionId: input.stripeSubscriptionId });
+  }
+  if (input.stripeCustomerId) {
+    filters.push({ stripeCustomerId: input.stripeCustomerId });
+  }
+
+  if (!filters.length) return;
+  await db.collection("users").updateMany({ $or: filters }, { $set: patch });
+}
+
 export default async function webhookHandler(
   req: NextApiRequest,
   res: NextApiResponse,
@@ -383,14 +526,6 @@ export default async function webhookHandler(
     return fail(400, "INVALID_WEBHOOK", "Invalid webhook payload");
   }
 
-  // Primary events for checkout payments
-  if (
-    event.type !== "checkout.session.completed" &&
-    event.type !== "checkout.session.async_payment_succeeded"
-  ) {
-    return res.status(200).json({ received: true });
-  }
-
   if (
     process.env.NODE_ENV === "production" &&
     (event as any).livemode !== true
@@ -400,6 +535,204 @@ export default async function webhookHandler(
       type: event.type,
     });
     return res.status(200).json({ received: true, skipped: "non_live_event" });
+  }
+
+  const stripe = getStripeClient();
+
+  if (event.type === "invoice.upcoming") {
+    const client = await clientPromise;
+    const db = client.db(getMongoDbName());
+    const invoice = event.data.object as Stripe.Invoice;
+    const customerId = typeof invoice.customer === "string" ? invoice.customer : "";
+    const user = customerId
+      ? await db
+          .collection("users")
+          .findOne({ stripeCustomerId: customerId }, { projection: { _id: 1, email: 1 } })
+      : null;
+    const email = (user as any)?.email || (invoice as any)?.customer_email || "";
+    const dueDate = invoice.next_payment_attempt
+      ? new Date(invoice.next_payment_attempt * 1000).toLocaleDateString()
+      : "soon";
+
+    await sendMembershipEmailSafe({
+      to: email,
+      subject: "BWE membership renewal reminder",
+      text: `Your membership renewal is coming up (${dueDate}). Your plan will auto-renew annually unless canceled.`,
+    });
+
+    await pushMembershipNotification(db, {
+      userId: user?._id ? String(user._id) : null,
+      email,
+      type: "membership_renewal_reminder",
+      message: `Your membership renewal is coming up (${dueDate}).`,
+      createdAt: new Date(),
+      meta: { invoiceId: invoice.id },
+    });
+
+    return res.status(200).json({ received: true });
+  }
+
+  if (
+    event.type === "invoice.paid" ||
+    event.type === "invoice.payment_failed" ||
+    event.type === "customer.subscription.updated" ||
+    event.type === "customer.subscription.deleted"
+  ) {
+    const client = await clientPromise;
+    const db = client.db(getMongoDbName());
+    const now = new Date();
+
+    const subIdFromInvoice =
+      event.type.startsWith("invoice.")
+        ? typeof (event.data.object as Stripe.Invoice).subscription === "string"
+          ? ((event.data.object as Stripe.Invoice).subscription as string)
+          : ""
+        : "";
+
+    const subscription =
+      event.type.startsWith("customer.subscription")
+        ? (event.data.object as Stripe.Subscription)
+        : subIdFromInvoice
+          ? await stripe.subscriptions.retrieve(subIdFromInvoice)
+          : null;
+
+    if (!subscription) {
+      return res.status(200).json({ received: true, skipped: "missing_subscription" });
+    }
+
+    const subscriptionId = subscription.id;
+    const customerId =
+      typeof subscription.customer === "string" ? subscription.customer : "";
+
+    const user = await db.collection("users").findOne(
+      {
+        $or: [
+          { stripeSubscriptionId: subscriptionId },
+          ...(customerId ? [{ stripeCustomerId: customerId }] : []),
+        ],
+      },
+      {
+        projection: { _id: 1, email: 1, currentPlan: 1, subscriptionPlan: 1 },
+      },
+    );
+
+    const planGuess =
+      String((user as any)?.subscriptionPlan || (user as any)?.currentPlan || "").toLowerCase() ===
+      "founding"
+        ? "founding"
+        : "premium";
+
+    const periodStart = (subscription as any).current_period_start
+      ? new Date((subscription as any).current_period_start * 1000)
+      : null;
+    const periodEnd = (subscription as any).current_period_end
+      ? new Date((subscription as any).current_period_end * 1000)
+      : null;
+    const canceledAt = (subscription as any).canceled_at
+      ? new Date((subscription as any).canceled_at * 1000)
+      : null;
+
+    let statusForEntitlement = String(subscription.status || "inactive") as
+      | "active"
+      | "trialing"
+      | "past_due"
+      | "canceled"
+      | "unpaid"
+      | "incomplete"
+      | "incomplete_expired";
+
+    if (event.type === "invoice.payment_failed") {
+      statusForEntitlement = "past_due";
+    }
+
+    if (event.type === "invoice.payment_failed") {
+      await applySubscriptionEntitlement(db, {
+        userId: user?._id ? String(user._id) : null,
+        email: (user as any)?.email || null,
+        stripeCustomerId: customerId || null,
+        stripeSubscriptionId: subscriptionId,
+        plan: planGuess,
+        status: "past_due",
+        currentPeriodStart: periodStart,
+        currentPeriodEnd: periodEnd,
+        cancelAtPeriodEnd: Boolean((subscription as any).cancel_at_period_end),
+        canceledAt,
+        updatedAt: now,
+      });
+
+      await sendMembershipEmailSafe({
+        to: (user as any)?.email || null,
+        subject: "BWE payment failed",
+        text: "We were unable to process your renewal payment. Your paid access has been downgraded to Free until payment is resolved.",
+      });
+
+      await pushMembershipNotification(db, {
+        userId: user?._id ? String(user._id) : null,
+        email: (user as any)?.email || null,
+        type: "membership_payment_failed",
+        message:
+          "Renewal payment failed. Account moved to Free until payment is resolved.",
+        createdAt: now,
+        meta: { subscriptionId },
+      });
+    } else {
+      await applySubscriptionEntitlement(db, {
+        userId: user?._id ? String(user._id) : null,
+        email: (user as any)?.email || null,
+        stripeCustomerId: customerId || null,
+        stripeSubscriptionId: subscriptionId,
+        plan: planGuess,
+        status: statusForEntitlement,
+        currentPeriodStart: periodStart,
+        currentPeriodEnd: periodEnd,
+        cancelAtPeriodEnd: Boolean((subscription as any).cancel_at_period_end),
+        canceledAt,
+        updatedAt: now,
+      });
+
+      if (event.type === "invoice.paid") {
+        await sendMembershipEmailSafe({
+          to: (user as any)?.email || null,
+          subject: "BWE renewal successful",
+          text: `Your membership renewed successfully. Next billing date: ${periodEnd ? periodEnd.toLocaleDateString() : "annual cycle"}.`,
+        });
+      }
+
+      if (
+        event.type === "customer.subscription.updated" &&
+        Boolean((subscription as any).cancel_at_period_end)
+      ) {
+        await sendMembershipEmailSafe({
+          to: (user as any)?.email || null,
+          subject: "BWE cancellation scheduled",
+          text: `Your subscription will cancel at period end (${periodEnd ? periodEnd.toLocaleDateString() : "end of current period"}). You keep access until then.`,
+        });
+      }
+    }
+
+    await db.collection("subscription_events").insertOne({
+      stripeEventId: event.id,
+      stripeEventType: event.type,
+      stripeSubscriptionId: subscriptionId,
+      stripeCustomerId: customerId || null,
+      userId: user?._id ? String(user._id) : null,
+      email: (user as any)?.email || null,
+      plan: planGuess,
+      status: statusForEntitlement,
+      currentPeriodStart: periodStart,
+      currentPeriodEnd: periodEnd,
+      cancelAtPeriodEnd: Boolean((subscription as any).cancel_at_period_end),
+      createdAt: now,
+    });
+
+    return res.status(200).json({ received: true });
+  }
+
+  if (
+    event.type !== "checkout.session.completed" &&
+    event.type !== "checkout.session.async_payment_succeeded"
+  ) {
+    return res.status(200).json({ received: true });
   }
 
   const session = event.data.object as Stripe.Checkout.Session;
@@ -1206,32 +1539,69 @@ export default async function webhookHandler(
       metaType === "plan" &&
       (normalizedItemId === "premium" || normalizedItemId === "founder")
     ) {
-      const membershipDurationDays =
-        parseDurationDays(mergedMeta.durationDays) || 30;
-      const planStartAt = paidAt;
-      const planExpiresAt = new Date(
-        planStartAt.getTime() + membershipDurationDays * 24 * 60 * 60 * 1000,
-      );
-
       const isFounding = normalizedItemId === "founder";
       const mappedPlanId = isFounding ? "founding" : "premium";
       const mappedTierItemId = isFounding
         ? "black-card-signature"
         : "black-card-standard";
 
+      const stripeSubscriptionId =
+        typeof (session as any).subscription === "string"
+          ? ((session as any).subscription as string)
+          : "";
+
+      let planStartAt = paidAt;
+      let planExpiresAt = new Date(
+        planStartAt.getTime() + 365 * 24 * 60 * 60 * 1000,
+      );
+      let cancelAtPeriodEnd = false;
+      let stripeCustomerId =
+        typeof session.customer === "string" ? session.customer : null;
+
+      if (stripeSubscriptionId) {
+        try {
+          const sub = await getStripeClient().subscriptions.retrieve(
+            stripeSubscriptionId,
+          );
+          if ((sub as any).current_period_start) {
+            planStartAt = new Date((sub as any).current_period_start * 1000);
+          }
+          if ((sub as any).current_period_end) {
+            planExpiresAt = new Date((sub as any).current_period_end * 1000);
+          }
+          cancelAtPeriodEnd = Boolean((sub as any).cancel_at_period_end);
+          if (typeof sub.customer === "string") stripeCustomerId = sub.customer;
+        } catch (err) {
+          console.warn("[webhook] failed to retrieve subscription", {
+            stripeSubscriptionId,
+            err: (err as any)?.message || String(err),
+          });
+        }
+      }
+
       const premiumEntitlementPatch = {
         // canonical app fields
         isPremium: true,
         currentPlan: mappedPlanId,
+        subscriptionPlan: mappedPlanId,
         premiumStatus: "active",
         premiumActivatedAt: planStartAt,
         premiumStripeSessionId: stripeSessionId,
         premiumPaymentIntentId: paymentIntentId || null,
 
+        stripeCustomerId: stripeCustomerId || null,
+        stripeSubscriptionId: stripeSubscriptionId || null,
+        subscriptionStatus: "active",
+        subscriptionCurrentPeriodStart: planStartAt,
+        subscriptionCurrentPeriodEnd: planExpiresAt,
+        subscriptionCancelAtPeriodEnd: cancelAtPeriodEnd,
+        nextBillingDate: planExpiresAt,
+        renewalStatus: cancelAtPeriodEnd ? "canceling" : "active",
+
         // existing legacy membership fields
         membershipPlanId: mappedPlanId,
-        membershipPlanStatus: "active",
-        membershipPlanDurationDays: membershipDurationDays,
+        membershipPlanStatus: cancelAtPeriodEnd ? "canceling" : "active",
+        membershipPlanDurationDays: 365,
         membershipPlanStartAt: planStartAt,
         membershipPlanExpiresAt: planExpiresAt,
 
@@ -1322,8 +1692,9 @@ export default async function webhookHandler(
         membershipInvariant.premiumStatus !== "active" ||
         membershipInvariant.membershipPlanId !== mappedPlanId ||
         membershipInvariant.membershipPlanStatus !== "active" ||
-        String(membershipInvariant.blackCardStatus || "inactive").toLowerCase() !==
-          "active"
+        String(
+          membershipInvariant.blackCardStatus || "inactive",
+        ).toLowerCase() !== "active"
       ) {
         await db.collection("flow_events").insertOne({
           eventType: "paid_plan_black_card_mapping_invariant_failed",
@@ -1339,6 +1710,37 @@ export default async function webhookHandler(
           createdAt: now,
         });
       }
+
+      await db.collection("subscription_events").insertOne({
+        stripeEventId: event.id,
+        stripeEventType: event.type,
+        stripeSessionId,
+        stripeSubscriptionId: stripeSubscriptionId || null,
+        stripeCustomerId: stripeCustomerId || null,
+        userId: userId || null,
+        email: email || null,
+        plan: mappedPlanId,
+        status: "active",
+        currentPeriodStart: planStartAt,
+        currentPeriodEnd: planExpiresAt,
+        cancelAtPeriodEnd,
+        createdAt: now,
+      });
+
+      await sendMembershipEmailSafe({
+        to: email || null,
+        subject: "BWE membership purchase confirmation",
+        text: `Your ${mappedPlanId === "founding" ? "Founding Member" : "Premium"} plan is active. It is billed annually and auto-renews annually. Next billing date: ${planExpiresAt.toLocaleDateString()}.`,
+      });
+
+      await pushMembershipNotification(db, {
+        userId: userId || null,
+        email: email || null,
+        type: "membership_purchase_confirmed",
+        message: `Your ${mappedPlanId} plan is active. Next billing date: ${planExpiresAt.toLocaleDateString()}.`,
+        createdAt: now,
+        meta: { stripeSessionId, stripeSubscriptionId: stripeSubscriptionId || null },
+      });
 
       console.log(
         `✅ Paid plan activated plan=${mappedPlanId} mappedTierItem=${effectiveTierItemId} user=${userId || email}`,

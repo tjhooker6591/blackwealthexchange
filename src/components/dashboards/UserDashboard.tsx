@@ -56,6 +56,15 @@ interface ChartData {
   applications: number;
 }
 
+interface SubscriptionState {
+  currentPlan: string;
+  renewalStatus: string;
+  nextBillingDate: string | null;
+  cancelAtPeriodEnd: boolean;
+  status: string;
+  hasManageableSubscription: boolean;
+}
+
 export default function UserDashboard() {
   const router = useRouter();
 
@@ -68,7 +77,9 @@ export default function UserDashboard() {
   const [dataError, setDataError] = useState<string | null>(null);
 
   const [lastUpdated, setLastUpdated] = useState<number | null>(null);
-
+  const [subscription, setSubscription] = useState<SubscriptionState | null>(null);
+  const [cancelingSubscription, setCancelingSubscription] = useState(false);
+  const [subscriptionMessage, setSubscriptionMessage] = useState("");
   useEffect(() => {
     const controller = new AbortController();
 
@@ -101,7 +112,7 @@ export default function UserDashboard() {
         setDashboardData({});
         setChartData([]);
 
-        const [dashRes, chartRes] = await Promise.allSettled([
+        const [dashRes, chartRes, subscriptionRes] = await Promise.allSettled([
           fetch(
             `/api/user/get-dashboard?email=${encodeURIComponent(u.email)}`,
             {
@@ -118,6 +129,11 @@ export default function UserDashboard() {
               signal: controller.signal,
             },
           ),
+          fetch("/api/billing/subscription-status", {
+            cache: "no-store",
+            credentials: "include",
+            signal: controller.signal,
+          }),
         ]);
 
         let hadDataIssue = false;
@@ -144,6 +160,11 @@ export default function UserDashboard() {
           }
         } else {
           hadDataIssue = true;
+        }
+
+        if (subscriptionRes.status === "fulfilled" && subscriptionRes.value.ok) {
+          const subscriptionJson = await subscriptionRes.value.json();
+          setSubscription(subscriptionJson?.subscription || null);
         }
 
         if (hadDataIssue) {
@@ -258,6 +279,38 @@ export default function UserDashboard() {
     );
   }
 
+  async function cancelSubscription() {
+    try {
+      setCancelingSubscription(true);
+      setSubscriptionMessage("");
+
+      const res = await fetch("/api/billing/cancel-subscription", {
+        method: "POST",
+        credentials: "include",
+      });
+      const json = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        setSubscriptionMessage(json?.error || "Unable to cancel subscription.");
+        return;
+      }
+
+      setSubscriptionMessage(json?.message || "Cancellation scheduled.");
+      const statusRes = await fetch("/api/billing/subscription-status", {
+        credentials: "include",
+        cache: "no-store",
+      });
+      if (statusRes.ok) {
+        const statusJson = await statusRes.json();
+        setSubscription(statusJson?.subscription || null);
+      }
+    } catch {
+      setSubscriptionMessage("Unable to cancel subscription right now.");
+    } finally {
+      setCancelingSubscription(false);
+    }
+  }
+
   const savedJobs = dashboardData.savedJobs || 0;
   const applications = dashboardData.applications || 0;
   const completion =
@@ -338,6 +391,47 @@ export default function UserDashboard() {
             </div>
           </div>
         ) : null}
+
+        <div className="rounded-2xl border border-yellow-500/25 bg-yellow-500/10 p-4 shadow-xl sm:p-5">
+          <h2 className="text-lg font-bold text-gold">Membership billing</h2>
+          <p className="mt-1 text-sm text-white/90">
+            Current plan: <strong>{String(subscription?.currentPlan || "free").toUpperCase()}</strong>
+          </p>
+          <p className="mt-1 text-sm text-white/80">
+            Renewal status: {subscription?.renewalStatus || "inactive"}
+          </p>
+          <p className="mt-1 text-sm text-white/80">
+            Next billing date:{" "}
+            {subscription?.nextBillingDate
+              ? new Date(subscription.nextBillingDate).toLocaleDateString()
+              : "N/A"}
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {subscription?.hasManageableSubscription ? (
+              <button
+                onClick={cancelSubscription}
+                disabled={cancelingSubscription || subscription?.cancelAtPeriodEnd}
+                className="inline-flex items-center gap-2 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm text-red-200 hover:bg-red-500/15 disabled:opacity-60"
+              >
+                {subscription?.cancelAtPeriodEnd
+                  ? "Cancellation Scheduled"
+                  : cancelingSubscription
+                    ? "Scheduling..."
+                    : "Cancel Subscription"}
+              </button>
+            ) : (
+              <Link
+                href="/pricing"
+                className="inline-flex items-center gap-2 rounded-xl bg-gold px-4 py-2 text-sm font-semibold text-black hover:bg-yellow-500"
+              >
+                Upgrade Plan
+              </Link>
+            )}
+          </div>
+          {subscriptionMessage ? (
+            <p className="mt-2 text-xs text-yellow-200">{subscriptionMessage}</p>
+          ) : null}
+        </div>
 
         <div className="rounded-2xl border border-yellow-500/25 bg-yellow-500/10 p-4 shadow-xl sm:p-5">
           <h2 className="text-lg font-bold text-gold">Next step</h2>

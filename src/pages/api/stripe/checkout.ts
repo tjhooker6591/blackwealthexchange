@@ -155,6 +155,7 @@ function isPremiumActiveFromDoc(doc: any) {
   return (
     doc.isPremium === true ||
     currentPlan === "premium" ||
+    currentPlan === "founding" ||
     premiumStatus === "active"
   );
 }
@@ -351,12 +352,12 @@ export default async function handler(
         premium: {
           amount: 1200,
           name: "Plan Upgrade (premium)",
-          billingInterval: null,
+          billingInterval: "annual",
         },
         founder: {
           amount: 4900,
           name: "Plan Upgrade (founder)",
-          billingInterval: null,
+          billingInterval: "annual",
         },
         "music-creator-starter": {
           amount: 2900,
@@ -551,6 +552,15 @@ export default async function handler(
         finalItemId === "wealth-builder-premium-annual" ? "annual" : "monthly";
     }
 
+    if (
+      type === "plan" &&
+      (finalItemId === "premium" || finalItemId === "founder")
+    ) {
+      metadata.productKey = "bwe_membership";
+      metadata.tier = finalItemId === "founder" ? "founding" : "premium";
+      metadata.billingInterval = "annual";
+    }
+
     if (type === "plan" && isBlackCardPlanItemId(finalItemId)) {
       const blackCardTier = BLACK_CARD_TIER_BY_ITEM_ID[finalItemId];
       metadata.productKey = "bwe_black_card";
@@ -734,8 +744,11 @@ export default async function handler(
       `${checkoutFingerprint}|${minuteBucket}`,
     )}`;
 
+    const isAnnualMembershipSubscription =
+      type === "plan" && (finalItemId === "premium" || finalItemId === "founder");
+
     const baseParams: Stripe.Checkout.SessionCreateParams = {
-      mode: "payment",
+      mode: isAnnualMembershipSubscription ? "subscription" : "payment",
       payment_method_types: ["card"],
       line_items: [
         {
@@ -743,6 +756,9 @@ export default async function handler(
             currency: "usd",
             product_data: { name: itemName },
             unit_amount: unitAmount,
+            ...(isAnnualMembershipSubscription
+              ? { recurring: { interval: "year" as const, interval_count: 1 } }
+              : {}),
           },
           quantity: 1,
         },
@@ -752,15 +768,23 @@ export default async function handler(
       success_url: successUrl,
       cancel_url: cancelUrl,
       client_reference_id: sessionUserId,
-      payment_intent_data: {
-        metadata,
-        ...(isPlatformAccount
-          ? {}
-          : {
-              application_fee_amount: Math.round(unitAmount * 0.12),
-              transfer_data: { destination: stripeAccountId },
-            }),
-      },
+      ...(isAnnualMembershipSubscription
+        ? {
+            subscription_data: {
+              metadata,
+            },
+          }
+        : {
+            payment_intent_data: {
+              metadata,
+              ...(isPlatformAccount
+                ? {}
+                : {
+                    application_fee_amount: Math.round(unitAmount * 0.12),
+                    transfer_data: { destination: stripeAccountId },
+                  }),
+            },
+          }),
     };
 
     const stripeSession = await stripe.checkout.sessions.create(baseParams, {
@@ -828,17 +852,20 @@ export default async function handler(
                   ? BLACK_CARD_TIER_BY_ITEM_ID[finalItemId]
                   : null,
             billingInterval:
-              type === "plan" && finalItemId === "wealth-builder-premium-annual"
+              type === "plan" &&
+              (finalItemId === "premium" || finalItemId === "founder")
                 ? "annual"
-                : type === "plan" &&
-                    finalItemId === "wealth-builder-premium-monthly"
-                  ? "monthly"
-                  : type === "plan" && isBlackCardPlanItemId(finalItemId)
-                    ? BLACK_CARD_TIERS[BLACK_CARD_TIER_BY_ITEM_ID[finalItemId]]
-                        .billingModel === "entry_fee"
-                      ? "entry_fee"
-                      : "monthly"
-                    : null,
+                : type === "plan" && finalItemId === "wealth-builder-premium-annual"
+                  ? "annual"
+                  : type === "plan" &&
+                      finalItemId === "wealth-builder-premium-monthly"
+                    ? "monthly"
+                    : type === "plan" && isBlackCardPlanItemId(finalItemId)
+                      ? BLACK_CARD_TIERS[BLACK_CARD_TIER_BY_ITEM_ID[finalItemId]]
+                          .billingModel === "entry_fee"
+                        ? "entry_fee"
+                        : "monthly"
+                      : null,
           },
         },
         $set: {

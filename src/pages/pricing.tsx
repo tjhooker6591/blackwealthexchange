@@ -233,7 +233,7 @@ export default function Pricing() {
             <div className="mt-6 flex flex-wrap items-center gap-3">
               <Pill tone="muted">
                 <ShieldCheck className="h-4 w-4" />
-                Access period applied at checkout
+                Billed annually • Auto-renews annually
               </Pill>
               <Pill tone="muted">
                 <Users className="h-4 w-4" />
@@ -269,7 +269,8 @@ export default function Pricing() {
               <p className="mt-2 text-sm text-gray-200">
                 Tiered membership identity and rewards access. Plan mapping:
                 Premium includes Black Card Standard, Founding includes Black
-                Card Signature (or keeps your higher active tier).
+                Card Signature (or keeps your higher active tier). Billed
+                annually, auto-renews annually, cancel anytime.
               </p>
               <p className="mt-2 text-xs text-gray-300">
                 Black Card is included with your plan. Use this page for plan
@@ -325,7 +326,7 @@ export default function Pricing() {
             title="Premium"
             price="$12.00"
             sub="Paid plan with Black Card Standard included."
-            billingNote="Plan access term applied at checkout"
+            billingNote="Billed annually • Auto-renews annually • Cancel anytime"
             highlight
             badge="Most Popular"
             features={[
@@ -361,7 +362,7 @@ export default function Pricing() {
             title="Founding Member"
             price="$49.00"
             sub="Paid plan with Black Card Signature mapping."
-            billingNote="Plan access term applied at checkout"
+            billingNote="Billed annually • Auto-renews annually • Cancel anytime"
             features={[
               { ok: true, text: "Everything in Premium" },
               { ok: true, text: "Black Card Signature mapping on activation" },

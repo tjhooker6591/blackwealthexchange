@@ -156,6 +156,14 @@ export default function AdminToolsPage() {
         method: "GET",
       },
       {
+        id: "p-subscriptions",
+        type: "page",
+        category: "System",
+        label: "Subscriptions",
+        path: "/admin/subscriptions",
+        method: "GET",
+      },
+      {
         id: "p-dir-approvals",
         type: "page",
         category: "Directory",
