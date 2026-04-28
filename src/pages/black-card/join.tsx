@@ -15,11 +15,7 @@ const TIER_ORDER: BlackCardTier[] = ["standard", "signature", "elite"];
 export default function BlackCardJoinPage() {
   const router = useRouter();
   const { user } = useAuth();
-  const [message, setMessage] = useState<string>("");
-  const [printName, setPrintName] = useState("");
-  const [printApproved, setPrintApproved] = useState(false);
-  const [printPreviewConfirmed, setPrintPreviewConfirmed] = useState(false);
-  const [orderLoading, setOrderLoading] = useState(false);
+  const [message] = useState<string>("");
 
   const tier = useMemo(
     () =>
@@ -33,7 +29,6 @@ export default function BlackCardJoinPage() {
   const checkoutSuccess = router.query.checkout === "success";
   const [membershipActive, setMembershipActive] = useState(false);
   const [membershipStatusChecked, setMembershipStatusChecked] = useState(false);
-  const printNameFinal = printName.replace(/\s+/g, " ").trim();
 
   useEffect(() => {
     (async () => {
@@ -60,46 +55,6 @@ export default function BlackCardJoinPage() {
       }
     })();
   }, [user]);
-
-  async function submitPhysicalOrder() {
-    if (!user) {
-      router.push(
-        `/login?next=${encodeURIComponent(`/black-card/join?tier=${tier}&checkout=success`)}`,
-      );
-      return;
-    }
-
-    setOrderLoading(true);
-    setMessage("");
-
-    try {
-      const res = await fetch("/api/black-card/orders/create", {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          orderType: "initial",
-          reason: "initial_physical_issue",
-          printName: printNameFinal,
-          printNameApproved: printApproved,
-        }),
-      });
-
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        setMessage(data?.error || "Unable to create physical card order.");
-        return;
-      }
-
-      setMessage(
-        "Physical card request submitted. Digital card stays active while fulfillment is processed.",
-      );
-    } catch {
-      setMessage("Network error while submitting card personalization.");
-    } finally {
-      setOrderLoading(false);
-    }
-  }
 
   return (
     <>
@@ -229,93 +184,12 @@ export default function BlackCardJoinPage() {
               state, verification details, rewards, and redemptions.
             </div>
             <div className="mt-1">
-              4. Optional physical personalization runs separately without
-              blocking digital access.
+              4. Physical card option planned for a future vendor-fulfilled
+              phase.
             </div>
           </section>
 
-          {checkoutSuccess && membershipStatusChecked && membershipActive ? (
-            <section className="rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-4">
-              <h2 className="text-lg font-bold text-yellow-200">
-                Physical Card Personalization (Optional Add-on)
-              </h2>
-              <p className="mt-1 text-sm text-white/80">
-                Reason: digital membership is active. Optional physical card
-                personalization is available now.
-              </p>
-              <p className="mt-1 text-xs text-white/65">
-                Next action: open your Black Card dashboard for live rewards,
-                tier state, and redemption actions.
-              </p>
-              <div className="mt-3">
-                <Link
-                  href="/dashboard/black-card"
-                  className="rounded-lg border border-yellow-500/40 px-3 py-2 text-xs text-yellow-200"
-                >
-                  Open Black Card Dashboard
-                </Link>
-              </div>
-
-              <label className="mt-4 block text-sm text-white/80">
-                Name to print on card
-                <input
-                  value={printName}
-                  onChange={(e) => {
-                    setPrintName(e.target.value);
-                    setPrintPreviewConfirmed(false);
-                  }}
-                  placeholder="Enter exact print name"
-                  className="mt-2 w-full rounded-lg border border-white/20 bg-black/40 px-3 py-2 text-white"
-                />
-              </label>
-
-              <div className="mt-4 rounded-xl border border-white/10 bg-black/50 p-4">
-                <div className="text-xs uppercase tracking-[0.15em] text-yellow-300">
-                  Final print preview
-                </div>
-                <div className="mt-2 rounded-lg border border-yellow-500/30 bg-black px-3 py-4 text-center font-semibold tracking-[0.08em] text-yellow-100">
-                  {printNameFinal || "ENTER PRINT NAME"}
-                </div>
-              </div>
-
-              <label className="mt-3 flex items-start gap-2 text-sm text-white/80">
-                <input
-                  type="checkbox"
-                  checked={printApproved}
-                  onChange={(e) => setPrintApproved(e.target.checked)}
-                  className="mt-1"
-                />
-                <span>I approve this exact print name for production.</span>
-              </label>
-
-              <label className="mt-2 flex items-start gap-2 text-sm text-white/80">
-                <input
-                  type="checkbox"
-                  checked={printPreviewConfirmed}
-                  onChange={(e) => setPrintPreviewConfirmed(e.target.checked)}
-                  className="mt-1"
-                />
-                <span>I reviewed and confirmed the final preview.</span>
-              </label>
-
-              <button
-                onClick={submitPhysicalOrder}
-                disabled={
-                  orderLoading ||
-                  !printNameFinal ||
-                  !printApproved ||
-                  !printPreviewConfirmed
-                }
-                className="mt-4 rounded-lg bg-yellow-500 px-4 py-2 font-semibold text-black hover:bg-yellow-400 disabled:opacity-60"
-              >
-                {orderLoading
-                  ? "Submitting..."
-                  : "Finalize Print Approval & Submit Card Request"}
-              </button>
-            </section>
-          ) : checkoutSuccess &&
-            membershipStatusChecked &&
-            !membershipActive ? (
+          {checkoutSuccess && membershipStatusChecked && !membershipActive ? (
             <section className="rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-4 text-sm text-white/80">
               <p>
                 Reason: checkout return was detected, but active membership has

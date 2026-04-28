@@ -174,11 +174,6 @@ export default function BlackCardDashboardPage() {
         ? "Standard"
         : "No included Black Card tier";
 
-  const latestPhysicalRequestActivity = data?.activity?.find((a) =>
-    ["black_card_order_created", "physical_card_requested"].includes(
-      String(a.type || "").toLowerCase(),
-    ),
-  );
 
   return (
     <>
@@ -393,24 +388,12 @@ export default function BlackCardDashboardPage() {
                 </div>
                 <div className="mt-4 rounded-xl border border-white/10 bg-black/30 p-3 text-xs text-white/75">
                   <div className="font-semibold text-yellow-200">
-                    Physical card request status
+                    Physical card availability
                   </div>
-                  {latestPhysicalRequestActivity ? (
-                    <div className="mt-1">
-                      Request detected at{" "}
-                      {latestPhysicalRequestActivity.at
-                        ? new Date(
-                            latestPhysicalRequestActivity.at,
-                          ).toLocaleString()
-                        : "recent activity"}
-                      . Current fulfillment status is processed in Black Card
-                      operations.
-                    </div>
-                  ) : (
-                    <div className="mt-1">
-                      No physical card request activity yet.
-                    </div>
-                  )}
+                  <div className="mt-1">
+                    Physical card option planned for a future vendor-fulfilled
+                    phase.
+                  </div>
                 </div>
 
                 <div className="mt-4 flex flex-wrap gap-3">

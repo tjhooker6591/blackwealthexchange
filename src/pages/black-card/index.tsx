@@ -22,16 +22,14 @@ const TIER_CONTEXT: Record<
 > = {
   standard: {
     segment: "Entry Membership",
-    valueSummary:
-      "Included with Premium plan.",
+    valueSummary: "Included with Premium plan.",
     cta: "Included with Premium plan",
     badge: "ENTRY",
     ctaHref: "/pricing",
   },
   signature: {
     segment: "Growth Membership",
-    valueSummary:
-      "Included with Founding plan.",
+    valueSummary: "Included with Founding plan.",
     cta: "Included with Founding plan",
     badge: "MEMBERSHIP",
     ctaHref: "/pricing",
@@ -238,8 +236,8 @@ export default function BlackCardLandingPage() {
                   redemption actions become available immediately.
                 </li>
                 <li>
-                  4. Optional physical personalization is separate and never
-                  blocks digital membership use.
+                  4. Physical card option planned for a future vendor-fulfilled
+                  phase.
                 </li>
               </ul>
             </div>

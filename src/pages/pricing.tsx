@@ -345,7 +345,7 @@ export default function Pricing() {
               },
               {
                 ok: true,
-                text: "Optional physical Black Card request once membership is active",
+                text: "Physical card option planned for a future vendor-fulfilled phase",
               },
             ]}
             ctaText={isPremiumActive ? "Premium Active" : "Upgrade to Premium"}
