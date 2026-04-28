@@ -308,7 +308,7 @@ const EconomicImpactSimulator = () => {
     <section className="relative overflow-hidden py-1 sm:py-1.5">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_8%_20%,rgba(96,190,255,0.12),transparent_34%),radial-gradient(circle_at_80%_84%,rgba(212,175,55,0.1),transparent_45%)]" />
 
-      <div className="relative grid max-w-full gap-1.5 overflow-hidden rounded-2xl border border-[#D4AF37]/55 bg-[#04070f]/98 p-2.5 shadow-[0_22px_56px_rgba(0,0,0,0.62)] sm:gap-2 sm:p-3 md:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] md:items-stretch lg:p-3.5">
+      <div className="relative grid max-w-full gap-1.5 overflow-hidden rounded-2xl border border-[#D4AF37]/55 bg-[#04070f]/98 p-2.5 shadow-[0_22px_56px_rgba(0,0,0,0.62)] sm:gap-2 sm:p-3 md:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)] md:items-start md:gap-3 md:py-2.5 lg:p-3 lg:py-2.5">
         <div className="min-w-0">
           <div className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-[#0a101c] px-3 py-1 text-[10px] font-bold tracking-[0.08em] text-white/90 sm:text-[11px]">
             <span className="h-1.5 w-1.5 rounded-full bg-[#D4AF37]" />
@@ -338,30 +338,15 @@ const EconomicImpactSimulator = () => {
             2010 → 2026
           </p>
 
-          <div className="mt-1 grid max-w-[34rem] grid-cols-2 gap-1 text-[10px] sm:gap-1.5 sm:text-[11px] lg:text-[12px]">
-            <div className="rounded-xl border border-white/15 bg-[#0a101a] px-2 py-1.5 sm:px-2.5 sm:py-2">
-              <p className="text-white/60">Baseline 2010</p>
-              <p className="font-semibold text-white">
-                {formatCurrency(baseline)}
-              </p>
-              <div className="my-0.5 h-px bg-white/10" />
-              <p className="text-white/60">Projected 2026</p>
-              <p className="font-semibold text-white">
-                {formatCurrency(Math.floor(currentValue))}
-              </p>
-            </div>
-
-            <div className="rounded-xl border border-white/15 bg-[#0a101a] px-2 py-1.5 sm:px-2.5 sm:py-2">
-              <p className="text-white/60">Daily flow</p>
-              <p className="font-semibold text-white">
-                {formatCurrency(perDay)} / day
-              </p>
-              <div className="my-0.5 h-px bg-white/10" />
-              <p className="text-white/60">Second-level flow</p>
-              <p className="font-semibold text-white">
-                {formatCurrency(perSecond)} / sec
-              </p>
-            </div>
+          <div className="mt-1 text-[10px] text-white/78 sm:text-[11px] lg:text-[12px]">
+            <span className="font-semibold text-white">Baseline:</span>{" "}
+            {formatCurrency(baseline)}
+            <span className="mx-1.5 text-white/45">•</span>
+            <span className="font-semibold text-white">Daily:</span>{" "}
+            {formatCurrency(perDay)}
+            <span className="mx-1.5 text-white/45">•</span>
+            <span className="font-semibold text-white">Per sec:</span>{" "}
+            {formatCurrency(perSecond)}
           </div>
         </div>
 
@@ -398,27 +383,21 @@ const EconomicImpactSimulator = () => {
             </div>
           </div>
 
-          <div className="mt-1 grid w-full gap-1 sm:mt-1.5 sm:gap-1">
+          <div className="mt-1 grid w-full gap-1 sm:mt-1.5 sm:gap-1 md:flex md:justify-end md:gap-3 md:mt-2">
             <Link
               href="/1.8trillionimpact"
-              className="group inline-flex w-full items-center justify-between gap-2 rounded-xl border border-[#D4AF37]/50 bg-[#D4AF37]/10 px-2.5 py-1.5 shadow-sm transition hover:border-[#D4AF37]/80"
+              className="group inline-flex w-full items-center justify-between gap-2 rounded-xl border border-[#D4AF37]/50 bg-[#D4AF37]/10 px-2.5 py-1.5 shadow-sm transition hover:border-[#D4AF37]/80 md:w-auto md:justify-center md:px-3 md:py-1"
             >
-              <span className="text-[10px] font-extrabold tracking-wide text-[#D4AF37] sm:text-sm">
-                Knowledge is Power
-              </span>
-              <span className="min-w-0 whitespace-normal text-right text-[10px] leading-tight text-white/75 sm:text-xs lg:text-sm">
+              <span className="min-w-0 whitespace-normal text-right text-[10px] leading-tight text-white/85 sm:text-xs lg:text-sm">
                 Where the money goes <span className="text-[#D4AF37]">→</span>
               </span>
             </Link>
 
             <Link
               href="/economic-freedom"
-              className="group inline-flex w-full items-center justify-between gap-2 rounded-xl border border-pink-400/45 bg-pink-400/10 px-2.5 py-1.5 transition hover:border-pink-300/70"
+              className="group inline-flex w-full items-center justify-between gap-2 rounded-xl border border-pink-400/45 bg-pink-400/10 px-2.5 py-1.5 transition hover:border-pink-300/70 md:w-auto md:justify-center md:px-3 md:py-1"
             >
-              <span className="text-[10px] font-extrabold tracking-wide text-pink-300 sm:text-sm">
-                Economic Slavery
-              </span>
-              <span className="min-w-0 whitespace-normal text-right text-[10px] leading-tight text-white/75 sm:text-xs lg:text-sm">
+              <span className="min-w-0 whitespace-normal text-right text-[10px] leading-tight text-white/85 sm:text-xs lg:text-sm">
                 Learn more <span className="text-pink-300">→</span>
               </span>
             </Link>
