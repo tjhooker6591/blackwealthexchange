@@ -181,8 +181,8 @@ const FinancialLiteracy = () => {
         a: "No. The course is designed to help you build stability first—then growth—using real tools and realistic steps.",
       },
       {
-        q: "Is this a monthly subscription?",
-        a: "No. It’s a one-time payment for lifetime access (including updates).",
+        q: "How is access billed?",
+        a: "Course access is included through active paid BWE subscription plans at launch.",
       },
       {
         q: "How do I access the course after purchase?",
@@ -236,12 +236,12 @@ const FinancialLiteracy = () => {
               Premium Financial Literacy Course
             </h1>
             <p className="text-lg md:text-2xl mt-4 font-light text-gray-200 max-w-3xl mx-auto">
-              Lifetime access to the tools, knowledge, and confidence to build
-              real Black wealth. Pay once. Own it forever.
+              Practical tools, knowledge, and confidence to build real Black
+              wealth, included with active paid BWE subscription plans.
             </p>
 
             <div className="mt-7 flex flex-wrap items-center justify-center gap-3 text-sm text-gray-300">
-              <Badge>✅ Lifetime access</Badge>
+              <Badge>✅ Included with paid plans</Badge>
               <Badge>✅ Templates & worksheets</Badge>
               <Badge>✅ Beginner-friendly</Badge>
               <Badge>✅ Built for real life</Badge>
@@ -273,7 +273,7 @@ const FinancialLiteracy = () => {
                 disabled={quickLoading}
                 className="px-7 py-3 bg-gold text-black font-semibold rounded-lg hover:bg-yellow-500 transition disabled:opacity-60"
               >
-                {quickLoading ? "Redirecting..." : "Get Lifetime Access"}
+                {quickLoading ? "Redirecting..." : "Activate Course Access"}
               </button>
               <a href="#modules">
                 <button className="px-7 py-3 border border-gold text-gold font-semibold rounded-lg hover:bg-gold hover:text-black transition">
@@ -295,12 +295,12 @@ const FinancialLiteracy = () => {
                 className="bg-gray-900/80 border border-gold/20 p-8 rounded-2xl shadow-xl"
               >
                 <h2 className="text-3xl font-semibold text-gold mb-3">
-                  Unlock the Full Premium Course — $49 (One Time)
+                  Unlock the Full Premium Course
                 </h2>
                 <p className="text-gray-200 text-lg mb-6 max-w-3xl">
                   Learn how to budget, fix credit, invest, and build legacy
-                  wealth with step-by-step guidance. This is more than education
-                  — it’s transformation.
+                  wealth with step-by-step guidance. Course access is activated
+                  through eligible paid BWE subscription plans.
                 </p>
 
                 <div className="grid md:grid-cols-2 gap-8 text-left text-gray-200">

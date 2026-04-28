@@ -3,7 +3,7 @@ import Stripe from "stripe";
 import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
 import { createProductCheckoutSessionCore } from "@/lib/checkout/createProductCheckoutSession";
-import { requireStripeSecretKey } from "@/lib/stripeSecret";
+import { getStripeSecretKey, requireStripeSecretKey } from "@/lib/stripeSecret";
 
 function isProd() {
   return process.env.NODE_ENV === "production";
@@ -40,6 +40,14 @@ export default async function handler(
     const body = safeJsonBody(req.body);
     const productId =
       typeof body.productId === "string" ? body.productId.trim() : "";
+
+    if (!getStripeSecretKey()) {
+      return res.status(503).json({
+        code: "STRIPE_NOT_CONFIGURED",
+        message:
+          "Checkout is temporarily unavailable while payments are being configured.",
+      });
+    }
 
     const client = await clientPromise;
     const db = client.db(getMongoDbName());
