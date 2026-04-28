@@ -256,8 +256,8 @@ export default function BlackCardLandingPage() {
                   opportunities as rollout continues.
                 </li>
                 <li>
-                  • Elite extends this with advanced features coming and the
-                  highest-tier membership experience.
+                  • Elite is invite-only and represents the highest-tier
+                  membership experience.
                 </li>
                 <li>
                   • Upgrading is about measurable advantage, not cosmetic

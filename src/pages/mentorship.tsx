@@ -72,12 +72,12 @@ const MentorshipProgram: React.FC = () => {
         {/* 🚀 Take Action */}
         <Section title="Next Steps">
           <p className="text-gray-300">
-            Ready to take your career to the next level? Become a mentee today
-            and unlock the support you deserve.
+            Mentorship intake is not open for public launch yet. Join the
+            waitlist to get notified when mentee enrollment opens.
           </p>
-          <Link href="/become-a-mentee">
+          <Link href="/subscribe?product=mentorship">
             <button className="mt-4 px-5 py-2 bg-green-600 text-white font-semibold rounded hover:bg-green-700 transition">
-              Become a Mentee
+              Join Mentorship Waitlist
             </button>
           </Link>
         </Section>

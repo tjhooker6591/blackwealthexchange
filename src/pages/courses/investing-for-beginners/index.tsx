@@ -291,7 +291,7 @@ const InvestingForBeginners: React.FC = () => {
             <li>
               <strong>Q: Do I have to pay a monthly fee?</strong>
               <br />
-              A: No, you only pay a one-time enrollment for lifetime access.
+              A: Access is tied to eligible paid BWE subscription plans at launch.
             </li>
             <li>
               <strong>Q: Can I access the course on my phone?</strong>

@@ -174,7 +174,6 @@ export default function BlackCardDashboardPage() {
         ? "Standard"
         : "No included Black Card tier";
 
-
   return (
     <>
       <Head>
@@ -388,11 +387,10 @@ export default function BlackCardDashboardPage() {
                 </div>
                 <div className="mt-4 rounded-xl border border-white/10 bg-black/30 p-3 text-xs text-white/75">
                   <div className="font-semibold text-yellow-200">
-                    Physical card availability
+                    Card format
                   </div>
                   <div className="mt-1">
-                    Physical card option planned for a future vendor-fulfilled
-                    phase.
+                    Black Card is digital-only for launch.
                   </div>
                 </div>
 

@@ -522,7 +522,7 @@ const FinancialLiteracy = () => {
                         itemId={ITEM_ID}
                         amount={PRICE_CENTS}
                         type="course"
-                        label="Get Lifetime Access"
+                        label="Activate Course Access"
                       />
                     )}
 
@@ -550,8 +550,7 @@ const FinancialLiteracy = () => {
         <div className="fixed bottom-0 left-0 right-0 z-20 border-t border-gray-800 bg-black/70 backdrop-blur">
           <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between gap-4">
             <p className="text-sm text-gray-300">
-              Premium Financial Literacy Course —{" "}
-              <span className="text-gold font-semibold">$49</span> one-time
+              Premium Financial Literacy Course — included with eligible paid BWE plans
             </p>
             <button
               onClick={startCourseCheckout}
