@@ -1,32 +1,36 @@
 export const SUPPORT_CATEGORIES = [
-  "Account / Login",
+  "Account/Login",
   "Marketplace Order",
-  "Seller / Product Issue",
+  "Seller/Payout",
   "Business Directory",
-  "Advertising / Sponsorship",
-  "Job Posting / Employer",
-  "Billing / Payment",
-  "Course / Membership",
-  "Black Card",
-  "Technical Bug",
-  "Trust & Safety",
+  "Advertising/Sponsorship",
+  "Jobs/Employer",
+  "Billing/Refund",
+  "Membership/Black Card",
+  "Financial Education",
+  "Wealth Builder",
+  "Music/Creator",
+  "Security/Trust & Safety",
+  "Technical Issue",
   "General Question",
 ] as const;
 
 export const SUPPORT_PRIORITIES = [
-  "low",
-  "normal",
-  "high",
-  "urgent",
-  "financial",
-  "security",
+  "Low",
+  "Normal",
+  "High",
+  "Urgent",
+  "Financial",
+  "Security",
 ] as const;
 
 export const SUPPORT_STATUSES = [
-  "new",
-  "in_review",
-  "waiting_on_user",
-  "escalated",
-  "resolved",
-  "closed",
+  "New",
+  "In Review",
+  "Waiting on User",
+  "Escalated",
+  "Resolved",
+  "Closed",
 ] as const;
+
+export const SLA_HOURS = { firstResponse: 24, resolve: 72 } as const;
