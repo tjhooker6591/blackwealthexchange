@@ -84,6 +84,14 @@ export default function FinancialReviewPage() {
           </Link>
         </div>
 
+        <Section title="Top Totals">
+          <div className="grid md:grid-cols-3 gap-3 text-sm">
+            <div className="rounded border border-zinc-800 bg-zinc-950 p-3">Total Revenue: {money(data?.totalRevenue)}</div>
+            <div className="rounded border border-zinc-800 bg-zinc-950 p-3">BWE Net Revenue: {money(data?.totalRevenue)}</div>
+            <div className="rounded border border-zinc-800 bg-zinc-950 p-3">Pending Payments: {money(data?.pendingRevenue)}</div>
+          </div>
+        </Section>
+
         <Section title="Revenue Streams">
           {FINANCE_STREAMS.map(({ label, key }) => {
             const backing = DISPLAY_TO_BACKING[key] || [key];
@@ -112,6 +120,21 @@ export default function FinancialReviewPage() {
               </div>
             );
           })}
+        </Section>
+
+        <Section title="Monthly Summary">
+          {Object.keys(data?.monthlySummary || {}).length === 0 ? (
+            <p className="text-sm text-zinc-300">No monthly revenue data yet.</p>
+          ) : (
+            <div className="space-y-1 text-sm">
+              {Object.entries(data?.monthlySummary || {}).sort().reverse().map(([month, cents]) => (
+                <div key={month} className="flex justify-between border-b border-zinc-800 py-1">
+                  <span>{month}</span>
+                  <span>{money(cents)}</span>
+                </div>
+              ))}
+            </div>
+          )}
         </Section>
 
         <Section title="Ledger Readiness">
@@ -163,9 +186,41 @@ export default function FinancialReviewPage() {
           <h2 className="text-lg text-yellow-400 mb-2">
             Ledger Transactions — Source of Truth Preview
           </h2>
-          <p className="text-xs text-zinc-400 mb-2">
-            Selected stream: {hasSelectedStream ? selectedStream : "none"}
-          </p>
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-xs text-zinc-400 mb-2">
+              Selected stream: {hasSelectedStream ? selectedStream : "none"}
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                if (!ledger.length) return;
+                const rows = ledger.map((r) => [
+                  r.createdAt || "",
+                  r.userId || "",
+                  r.revenueStream || "",
+                  r.grossAmount || 0,
+                  r.bweFeeAmount || 0,
+                  r.netBweRevenue || 0,
+                  r.paymentStatus || "",
+                  r.fulfillmentStatus || "",
+                  r.stripeSessionId || "",
+                  r.sourceRoute || "",
+                ]);
+                const head = ["createdAt","userId","revenueStream","grossAmount","bweFeeAmount","netBweRevenue","paymentStatus","fulfillmentStatus","stripeSessionId","sourceRoute"];
+                const csv = [head, ...rows]
+                  .map((line) => line.map((v) => `"${String(v).replaceAll('"', '""')}"`).join(","))
+                  .join("\n");
+                const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+                const a = document.createElement("a");
+                a.href = URL.createObjectURL(blob);
+                a.download = `financial-ledger-${hasSelectedStream ? selectedStream : "all"}.csv`;
+                a.click();
+              }}
+              className="text-xs border border-zinc-700 px-2 py-1 rounded"
+            >
+              Export CSV (filtered)
+            </button>
+          </div>
 
           {hasSelectedStream ? (
             <div className="space-y-3">

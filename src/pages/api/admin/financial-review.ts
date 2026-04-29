@@ -12,15 +12,17 @@ const STREAMS = [
   "courses",
   "wealth_builder",
   "music_creator_plan",
+  "affiliate_revenue",
   "affiliate_liability",
   "consulting_opportunity_network",
-  "other",
+  "manual_offline",
 ] as const;
 
 function streamFor(type: string, itemId: string) {
   if (type === "product") return "marketplace";
   if (type === "ad") {
-    if (itemId === "directory-standard" || itemId === "directory-featured") return "directory";
+    if (itemId === "directory-standard" || itemId === "directory-featured")
+      return "directory";
     return "advertising";
   }
   if (type === "job") return "jobs";
@@ -28,13 +30,24 @@ function streamFor(type: string, itemId: string) {
   if (type === "plan") {
     if (itemId.startsWith("music-creator-")) return "music_creator_plan";
     if (itemId.startsWith("wealth-builder-")) return "wealth_builder";
-    if (itemId.startsWith("black-card") || itemId === "premium" || itemId === "founder") return "membership_black_card";
+    if (
+      itemId.startsWith("black-card") ||
+      itemId === "premium" ||
+      itemId === "founder"
+    )
+      return "membership_black_card";
   }
+  if (type === "affiliate") return "affiliate_revenue";
+  if (type === "manual") return "manual_offline";
   return "other";
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== "GET") return res.status(405).json({ error: "Method not allowed" });
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
+  if (req.method !== "GET")
+    return res.status(405).json({ error: "Method not allowed" });
   const admin = await requireAdminFromRequest(req, res);
   if (!admin) return;
 
@@ -43,12 +56,44 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const now = new Date();
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
 
-  const payments = await db.collection("payments").find({}, { projection: { type: 1, itemId: 1, amountCents: 1, bweFee: 1, payout: 1, status: 1, paidAt: 1, updatedAt: 1 } }).sort({ updatedAt: -1 }).limit(5000).toArray();
+  const payments = await db
+    .collection("payments")
+    .find(
+      {},
+      {
+        projection: {
+          type: 1,
+          itemId: 1,
+          amountCents: 1,
+          bweFee: 1,
+          payout: 1,
+          status: 1,
+          paidAt: 1,
+          updatedAt: 1,
+        },
+      },
+    )
+    .sort({ updatedAt: -1 })
+    .limit(5000)
+    .toArray();
 
   const byStream: Record<string, any> = {};
-  for (const s of STREAMS) byStream[s] = { gross: 0, retained: 0, payouts: 0, pending: 0, completed: 0, failed: 0, refunded: 0, count: 0 };
+  for (const s of STREAMS)
+    byStream[s] = {
+      gross: 0,
+      retained: 0,
+      payouts: 0,
+      pending: 0,
+      completed: 0,
+      failed: 0,
+      refunded: 0,
+      count: 0,
+    };
 
-  let totalRevenue = 0, thisMonth = 0, pending = 0, failedRefunded = 0;
+  let totalRevenue = 0,
+    thisMonth = 0,
+    pending = 0,
+    failedRefunded = 0;
 
   for (const p of payments as any[]) {
     const stream = streamFor(String(p.type || ""), String(p.itemId || ""));
@@ -79,8 +124,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   }
 
-  const affiliatePending = await db.collection("affiliatePayouts").aggregate([{ $match: { status: "pending" } }, { $group: { _id: null, total: { $sum: { $ifNull: ["$amount", 0] } } } }]).toArray();
-  byStream.affiliate_liability.pending = Number(affiliatePending[0]?.total || 0);
+  const affiliatePending = await db
+    .collection("affiliatePayouts")
+    .aggregate([
+      { $match: { status: "pending" } },
+      { $group: { _id: null, total: { $sum: { $ifNull: ["$amount", 0] } } } },
+    ])
+    .toArray();
+  byStream.affiliate_liability.pending = Number(
+    affiliatePending[0]?.total || 0,
+  );
 
   const latestTransactions = (payments as any[]).slice(0, 30).map((p) => ({
     type: p.type || "unknown",
@@ -92,17 +145,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     updatedAt: p.updatedAt || null,
   }));
 
+  const monthlySummary: Record<string, number> = {};
+  for (const p of payments as any[]) {
+    const fee = Number(p.bweFee ?? p.amountCents ?? 0);
+    const d = p.paidAt
+      ? new Date(p.paidAt)
+      : p.updatedAt
+        ? new Date(p.updatedAt)
+        : null;
+    if (!d || Number.isNaN(d.getTime())) continue;
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+    monthlySummary[key] = (monthlySummary[key] || 0) + fee;
+  }
+
   return res.status(200).json({
     totalRevenue,
     revenueThisMonth: thisMonth,
     pendingRevenue: pending,
     failedOrRefunded: failedRefunded,
     byStream,
+    monthlySummary,
     latestTransactions,
     notes: {
-      musicSalesRoyalties: "Not connected yet",
-      consultingOpportunityNetwork: "Not connected yet",
-      manualRevenue: "Not connected yet",
+      consultingOpportunityNetwork: "Manual entry (Phase 1)",
+      manualRevenue: "Manual / Offline Revenue",
     },
   });
 }
