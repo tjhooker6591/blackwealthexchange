@@ -1,21 +1,175 @@
 import type { GetServerSideProps } from "next";
-import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
 import { requireAdminPageProps } from "@/lib/adminPageGuard";
 
 type Metric = { value: number | string; sourceStatus: string; note?: string; link?: string };
 
-function Card({ label, m }: { label: string; m: Metric }) {
-  const badge = m?.sourceStatus || "needs_mapping";
-  return <div className="rounded border border-zinc-800 bg-zinc-950 p-3"><div className="text-xs text-zinc-400">{label}</div><div className="text-2xl font-bold text-yellow-300">{String(m?.value ?? 0)}</div><div className="text-[11px] text-zinc-500">{badge}{m?.note?` • ${m.note}`:""}</div></div>;
+function valueNum(m?: Metric) {
+  const n = Number(m?.value ?? 0);
+  return Number.isFinite(n) ? n : 0;
 }
 
-export default function Page(){
-  const [d,setD]=useState<any>(null); const [e,setE]=useState("");
-  useEffect(()=>{fetch('/api/admin/metrics/command-center',{credentials:'include'}).then(async r=>{const j=await r.json();if(!r.ok) throw new Error(j?.message||'Failed'); setD(j);}).catch(err=>setE(err.message));},[]);
-  if(e) return <main className="min-h-screen bg-black text-white p-8">Error: {e}</main>;
-  if(!d) return <main className="min-h-screen bg-black text-white p-8">Loading command center...</main>;
-  const sec=(title:string,obj:any)=><section className="space-y-2"><h2 className="text-xl font-semibold text-yellow-400">{title}</h2><div className="grid md:grid-cols-4 gap-3">{Object.entries(obj||{}).map(([k,v]:any)=><Card key={k} label={k} m={v} />)}</div></section>;
-  return <main className="min-h-screen bg-black text-white p-8"><div className="max-w-7xl mx-auto space-y-6"><h1 className="text-3xl font-bold text-yellow-400">CEO Command Center</h1><div className="text-sm text-zinc-400">Generated: {d.generatedAt}</div>{sec('Company Health',d.companyHealth)}{sec('Revenue Health',d.revenueHealth)}{sec('Support Health',d.supportHealth)}{sec('Product / Engineering Health',d.productEngineeringHealth)}{sec('Growth Health',d.growthHealth)}{sec('Trust & Safety Health',d.trustSafetyHealth)}<section className="space-y-2"><h2 className="text-xl font-semibold text-yellow-400">Executive Priorities</h2><pre className="rounded border border-zinc-800 bg-zinc-950 p-3 text-xs overflow-auto">{JSON.stringify(d.executivePriorities,null,2)}</pre></section></div></main>;
+function statusTone(sourceStatus?: string) {
+  if (sourceStatus === "live") return "bg-emerald-500/20 text-emerald-300 border-emerald-500/40";
+  if (sourceStatus === "empty") return "bg-zinc-500/20 text-zinc-300 border-zinc-500/40";
+  if (sourceStatus === "collection_missing") return "bg-amber-500/20 text-amber-300 border-amber-500/40";
+  return "bg-sky-500/20 text-sky-300 border-sky-500/40";
 }
 
-export const getServerSideProps: GetServerSideProps = requireAdminPageProps('/admin/command-center');
+function prettyStatus(sourceStatus?: string) {
+  if (sourceStatus === "collection_missing") return "Collection missing";
+  if (sourceStatus === "needs_mapping") return "Needs mapping";
+  if (sourceStatus === "empty") return "Empty";
+  return "Live";
+}
+
+function MetricCard({ label, metric, href, help }: { label: string; metric?: Metric; href: string; help: string }) {
+  return (
+    <Link href={href} className="rounded-xl border border-zinc-800 bg-zinc-950 p-4 hover:border-yellow-500/50 transition block">
+      <div className="flex items-center justify-between gap-2">
+        <div className="text-xs text-zinc-400">{label}</div>
+        <span className={`text-[11px] px-2 py-0.5 rounded-full border ${statusTone(metric?.sourceStatus)}`}>
+          {prettyStatus(metric?.sourceStatus)}
+        </span>
+      </div>
+      <div className="mt-2 text-2xl font-bold text-yellow-300">{String(metric?.value ?? 0)}</div>
+      <div className="mt-1 text-[11px] text-zinc-500">{help}{metric?.note ? ` • ${metric.note}` : ""}</div>
+    </Link>
+  );
+}
+
+export default function CommandCenterPage() {
+  const [d, setD] = useState<any>(null);
+  const [err, setErr] = useState("");
+
+  useEffect(() => {
+    fetch("/api/admin/metrics/command-center", { credentials: "include" })
+      .then(async (r) => {
+        const j = await r.json();
+        if (!r.ok) throw new Error(j?.message || "Failed to load command center");
+        setD(j);
+      })
+      .catch((e) => setErr(e?.message || "Failed to load command center"));
+  }, []);
+
+  const company = d?.companyHealth || {};
+  const revenue = d?.revenueHealth || {};
+  const support = d?.supportHealth || {};
+  const pe = d?.productEngineeringHealth || {};
+  const trust = d?.trustSafetyHealth || {};
+  const priorities = d?.executivePriorities || {};
+
+  const snapshot = useMemo(() => {
+    const totalUsers = valueNum(company.totalUsers);
+    const pendingApprovals = valueNum(company.pendingAdminApprovals);
+    const escalated = valueNum(support.escalated);
+    const critical = valueNum(company.criticalIssues);
+    const scoreRaw = 100 - Math.min(60, escalated * 3 + pendingApprovals * 0.1 + critical * 5);
+    const companyHealthScore: Metric = {
+      value: Math.max(0, Math.round(scoreRaw)),
+      sourceStatus: "live",
+      note: "Derived from approvals, escalations, and critical issues",
+    };
+
+    const openTickets: Metric = {
+      value: valueNum(support.newTickets) + valueNum(support.inReview) + valueNum(support.waitingOnUser) + valueNum(support.escalated),
+      sourceStatus: [support.newTickets, support.inReview, support.waitingOnUser, support.escalated].some((m: any) => m?.sourceStatus === "live") ? "live" : "empty",
+    };
+
+    const founderDecisions: Metric = {
+      value: Array.isArray(priorities.decisionsNeeded) ? priorities.decisionsNeeded.length : 0,
+      sourceStatus: Array.isArray(priorities.decisionsNeeded) ? "live" : "needs_mapping",
+    };
+
+    const blockers: Metric = {
+      value: Array.isArray(priorities.blockers) ? priorities.blockers.length : valueNum(pe.activeBlockers),
+      sourceStatus: Array.isArray(priorities.blockers) ? "live" : pe.activeBlockers?.sourceStatus || "needs_mapping",
+    };
+
+    return { companyHealthScore, openTickets, founderDecisions, blockers, totalUsers };
+  }, [company, support, priorities, pe.activeBlockers]);
+
+  const quickLinks = [
+    ["Revenue Overview", "/admin/revenue"],
+    ["Financial Review", "/admin/financial-review"],
+    ["Support Tickets", "/admin/support"],
+    ["Refunds / Disputes", "/admin/financial-review"],
+    ["Business Lines", "/admin/business-lines"],
+    ["Product Roadmap", "/admin/product"],
+    ["Engineering Health", "/admin/engineering"],
+    ["Releases", "/admin/releases"],
+    ["Growth", "/admin/growth"],
+    ["Partnerships", "/admin/partnerships"],
+    ["Trust & Safety", "/admin/trust-safety"],
+    ["Legal / Policies", "/admin/legal"],
+    ["Marketplace Admin", "/admin/product-approvals"],
+    ["Jobs Admin", "/admin/job-approvals"],
+    ["Advertising Admin", "/admin/advertising-requests"],
+    ["Sponsors Admin", "/admin/advertising-requests"],
+  ];
+
+  if (err) {
+    return <main className="min-h-screen bg-black text-white p-8">Error: {err}</main>;
+  }
+  if (!d) {
+    return <main className="min-h-screen bg-black text-white p-8">Loading CEO command center...</main>;
+  }
+
+  return (
+    <main className="min-h-screen bg-black text-white p-6 md:p-8">
+      <div className="max-w-7xl mx-auto space-y-6">
+        <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold text-yellow-400">BWE CEO Command Center</h1>
+            <p className="text-sm text-zinc-400">Generated {d.generatedAt}</p>
+          </div>
+          <div className="text-xs text-zinc-400">Fast executive view, linked to operating pages</div>
+        </header>
+
+        <section className="space-y-3">
+          <h2 className="text-xl font-semibold text-yellow-300">CEO Executive Snapshot</h2>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <MetricCard label="Company Health Score" metric={snapshot.companyHealthScore} href="/admin/business-lines" help="Overall operating signal" />
+            <MetricCard label="Revenue This Month" metric={revenue.revenueThisMonth} href="/admin/revenue" help="BWE recognized revenue" />
+            <MetricCard label="Revenue Today" metric={revenue.revenueToday} href="/admin/revenue" help="Today recognized revenue" />
+            <MetricCard label="Open Support Tickets" metric={snapshot.openTickets} href="/admin/support" help="Active support workload" />
+            <MetricCard label="Escalated Issues" metric={support.escalated} href="/admin/support" help="Escalated support cases" />
+            <MetricCard label="Pending Approvals" metric={company.pendingAdminApprovals} href="/admin/trust-safety" help="Admin queue pressure" />
+            <MetricCard label="Active Sponsors" metric={company.activeSponsors} href="/admin/partnerships" help="Active sponsor accounts" />
+            <MetricCard label="Current Release Status" metric={pe.currentReleaseStatus} href="/admin/releases" help="Release channel status" />
+            <MetricCard label="Go / No-Go Status" metric={pe.goNoGoStatus} href="/admin/releases" help="Launch decision state" />
+            <MetricCard label="Critical Blockers" metric={snapshot.blockers} href="/admin/product" help="Blocked high-priority work" />
+            <MetricCard label="Founder Decisions Needed" metric={snapshot.founderDecisions} href="/admin/command-center" help="Executive decisions pending" />
+          </div>
+        </section>
+
+        <section className="space-y-3">
+          <h2 className="text-xl font-semibold text-yellow-300">Executive Quick Access / All Access Cheat Sheet</h2>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {quickLinks.map(([label, href]) => (
+              <Link key={label} href={href} className="rounded-xl border border-zinc-800 bg-zinc-950 px-4 py-3 hover:border-yellow-500/50 transition">
+                <div className="text-sm font-medium text-zinc-100">{label}</div>
+                <div className="text-[11px] text-zinc-500 mt-1">{href}</div>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        <section className="space-y-3">
+          <h2 className="text-xl font-semibold text-yellow-300">Graphic Operating Dashboard</h2>
+          <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-3">
+            <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4"><h3 className="text-yellow-300 font-semibold mb-2">Revenue Health</h3><MetricCard label="Revenue This Month" metric={revenue.revenueThisMonth} href="/admin/revenue" help="Executive summary" /></div>
+            <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4"><h3 className="text-yellow-300 font-semibold mb-2">Support Health</h3><MetricCard label="Escalated" metric={support.escalated} href="/admin/support" help="Escalation pressure" /></div>
+            <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4"><h3 className="text-yellow-300 font-semibold mb-2">Growth Health</h3><MetricCard label="New Users This Month" metric={d?.growthHealth?.newUsersThisMonth} href="/admin/growth" help="Acquisition trend" /></div>
+            <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4"><h3 className="text-yellow-300 font-semibold mb-2">Product / Engineering Health</h3><MetricCard label="Active Blockers" metric={pe.activeBlockers} href="/admin/engineering" help="Execution risk" /></div>
+            <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4"><h3 className="text-yellow-300 font-semibold mb-2">Trust & Safety Health</h3><MetricCard label="Pending Business Approvals" metric={trust.pendingBusinessApprovals} href="/admin/trust-safety" help="Review queue" /></div>
+            <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4"><h3 className="text-yellow-300 font-semibold mb-2">Release Readiness</h3><MetricCard label="Go / No-Go" metric={pe.goNoGoStatus} href="/admin/releases" help="Release decision" /></div>
+          </div>
+        </section>
+      </div>
+    </main>
+  );
+}
+
+export const getServerSideProps: GetServerSideProps = requireAdminPageProps("/admin/command-center");
