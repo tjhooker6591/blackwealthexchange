@@ -3,7 +3,12 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { requireAdminPageProps } from "@/lib/adminPageGuard";
 
-type Metric = { value: number | string; sourceStatus: string; note?: string; link?: string };
+type Metric = {
+  value: number | string;
+  sourceStatus: string;
+  note?: string;
+  link?: string;
+};
 
 function valueNum(m?: Metric) {
   const n = Number(m?.value ?? 0);
@@ -11,9 +16,12 @@ function valueNum(m?: Metric) {
 }
 
 function statusTone(sourceStatus?: string) {
-  if (sourceStatus === "live") return "bg-emerald-500/20 text-emerald-300 border-emerald-500/40";
-  if (sourceStatus === "empty") return "bg-zinc-500/20 text-zinc-300 border-zinc-500/40";
-  if (sourceStatus === "collection_missing") return "bg-amber-500/20 text-amber-300 border-amber-500/40";
+  if (sourceStatus === "live")
+    return "bg-emerald-500/20 text-emerald-300 border-emerald-500/40";
+  if (sourceStatus === "empty")
+    return "bg-zinc-500/20 text-zinc-300 border-zinc-500/40";
+  if (sourceStatus === "collection_missing")
+    return "bg-amber-500/20 text-amber-300 border-amber-500/40";
   return "bg-sky-500/20 text-sky-300 border-sky-500/40";
 }
 
@@ -24,33 +32,60 @@ function prettyStatus(sourceStatus?: string) {
   return "Live";
 }
 
-function MetricCard({ label, metric, href, help }: { label: string; metric?: Metric; href: string; help: string }) {
+function MetricCard({
+  label,
+  metric,
+  href,
+  help,
+}: {
+  label: string;
+  metric?: Metric;
+  href: string;
+  help: string;
+}) {
   return (
-    <Link href={href} className="rounded-xl border border-zinc-800 bg-zinc-950 p-4 hover:border-yellow-500/50 transition block">
+    <Link
+      href={href}
+      className="rounded-xl border border-zinc-800 bg-zinc-950 p-4 hover:border-yellow-500/50 transition block"
+    >
       <div className="flex items-center justify-between gap-2">
         <div className="text-xs text-zinc-400">{label}</div>
-        <span className={`text-[11px] px-2 py-0.5 rounded-full border ${statusTone(metric?.sourceStatus)}`}>
+        <span
+          className={`text-[11px] px-2 py-0.5 rounded-full border ${statusTone(metric?.sourceStatus)}`}
+        >
           {prettyStatus(metric?.sourceStatus)}
         </span>
       </div>
-      <div className="mt-2 text-2xl font-bold text-yellow-300">{String(metric?.value ?? 0)}</div>
-      <div className="mt-1 text-[11px] text-zinc-500">{help}{metric?.note ? ` • ${metric.note}` : ""}</div>
+      <div className="mt-2 text-2xl font-bold text-yellow-300">
+        {String(metric?.value ?? 0)}
+      </div>
+      <div className="mt-1 text-[11px] text-zinc-500">
+        {help}
+        {metric?.note ? ` • ${metric.note}` : ""}
+      </div>
     </Link>
   );
 }
 
 export default function CommandCenterPage() {
   const [d, setD] = useState<any>(null);
+  const [plan, setPlan] = useState<any>(null);
   const [err, setErr] = useState("");
 
   useEffect(() => {
     fetch("/api/admin/metrics/command-center", { credentials: "include" })
       .then(async (r) => {
         const j = await r.json();
-        if (!r.ok) throw new Error(j?.message || "Failed to load command center");
+        if (!r.ok)
+          throw new Error(j?.message || "Failed to load command center");
         setD(j);
       })
       .catch((e) => setErr(e?.message || "Failed to load command center"));
+
+    fetch("/api/admin/execution-plan", { credentials: "include" })
+      .then((r) => r.json())
+      .then((j) => setPlan(j?.row || null))
+      .catch(() => setPlan(null));
   }, []);
 
   const company = d?.companyHealth || {};
@@ -65,7 +100,8 @@ export default function CommandCenterPage() {
     const pendingApprovals = valueNum(company.pendingAdminApprovals);
     const escalated = valueNum(support.escalated);
     const critical = valueNum(company.criticalIssues);
-    const scoreRaw = 100 - Math.min(60, escalated * 3 + pendingApprovals * 0.1 + critical * 5);
+    const scoreRaw =
+      100 - Math.min(60, escalated * 3 + pendingApprovals * 0.1 + critical * 5);
     const companyHealthScore: Metric = {
       value: Math.max(0, Math.round(scoreRaw)),
       sourceStatus: "live",
@@ -73,21 +109,46 @@ export default function CommandCenterPage() {
     };
 
     const openTickets: Metric = {
-      value: valueNum(support.newTickets) + valueNum(support.inReview) + valueNum(support.waitingOnUser) + valueNum(support.escalated),
-      sourceStatus: [support.newTickets, support.inReview, support.waitingOnUser, support.escalated].some((m: any) => m?.sourceStatus === "live") ? "live" : "empty",
+      value:
+        valueNum(support.newTickets) +
+        valueNum(support.inReview) +
+        valueNum(support.waitingOnUser) +
+        valueNum(support.escalated),
+      sourceStatus: [
+        support.newTickets,
+        support.inReview,
+        support.waitingOnUser,
+        support.escalated,
+      ].some((m: any) => m?.sourceStatus === "live")
+        ? "live"
+        : "empty",
     };
 
     const founderDecisions: Metric = {
-      value: Array.isArray(priorities.decisionsNeeded) ? priorities.decisionsNeeded.length : 0,
-      sourceStatus: Array.isArray(priorities.decisionsNeeded) ? "live" : "needs_mapping",
+      value: Array.isArray(priorities.decisionsNeeded)
+        ? priorities.decisionsNeeded.length
+        : 0,
+      sourceStatus: Array.isArray(priorities.decisionsNeeded)
+        ? "live"
+        : "needs_mapping",
     };
 
     const blockers: Metric = {
-      value: Array.isArray(priorities.blockers) ? priorities.blockers.length : valueNum(pe.activeBlockers),
-      sourceStatus: Array.isArray(priorities.blockers) ? "live" : pe.activeBlockers?.sourceStatus || "needs_mapping",
+      value: Array.isArray(priorities.blockers)
+        ? priorities.blockers.length
+        : valueNum(pe.activeBlockers),
+      sourceStatus: Array.isArray(priorities.blockers)
+        ? "live"
+        : pe.activeBlockers?.sourceStatus || "needs_mapping",
     };
 
-    return { companyHealthScore, openTickets, founderDecisions, blockers, totalUsers };
+    return {
+      companyHealthScore,
+      openTickets,
+      founderDecisions,
+      blockers,
+      totalUsers,
+    };
   }, [company, support, priorities, pe.activeBlockers]);
 
   const quickLinks = [
@@ -110,10 +171,16 @@ export default function CommandCenterPage() {
   ];
 
   if (err) {
-    return <main className="min-h-screen bg-black text-white p-8">Error: {err}</main>;
+    return (
+      <main className="min-h-screen bg-black text-white p-8">Error: {err}</main>
+    );
   }
   if (!d) {
-    return <main className="min-h-screen bg-black text-white p-8">Loading CEO command center...</main>;
+    return (
+      <main className="min-h-screen bg-black text-white p-8">
+        Loading CEO command center...
+      </main>
+    );
   }
 
   return (
@@ -121,34 +188,101 @@ export default function CommandCenterPage() {
       <div className="max-w-7xl mx-auto space-y-6">
         <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold text-yellow-400">BWE CEO Command Center</h1>
+            <h1 className="text-3xl md:text-4xl font-bold text-yellow-400">
+              BWE CEO Command Center
+            </h1>
             <p className="text-sm text-zinc-400">Generated {d.generatedAt}</p>
           </div>
-          <div className="text-xs text-zinc-400">Fast executive view, linked to operating pages</div>
+          <div className="text-xs text-zinc-400">
+            Fast executive view, linked to operating pages
+          </div>
         </header>
 
         <section className="space-y-3">
-          <h2 className="text-xl font-semibold text-yellow-300">CEO Executive Snapshot</h2>
+          <h2 className="text-xl font-semibold text-yellow-300">
+            CEO Executive Snapshot
+          </h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            <MetricCard label="Company Health Score" metric={snapshot.companyHealthScore} href="/admin/business-lines" help="Overall operating signal" />
-            <MetricCard label="Revenue This Month" metric={revenue.revenueThisMonth} href="/admin/revenue" help="BWE recognized revenue" />
-            <MetricCard label="Revenue Today" metric={revenue.revenueToday} href="/admin/revenue" help="Today recognized revenue" />
-            <MetricCard label="Open Support Tickets" metric={snapshot.openTickets} href="/admin/support" help="Active support workload" />
-            <MetricCard label="Escalated Issues" metric={support.escalated} href="/admin/support" help="Escalated support cases" />
-            <MetricCard label="Pending Approvals" metric={company.pendingAdminApprovals} href="/admin/trust-safety" help="Admin queue pressure" />
-            <MetricCard label="Active Sponsors" metric={company.activeSponsors} href="/admin/partnerships" help="Active sponsor accounts" />
-            <MetricCard label="Current Release Status" metric={pe.currentReleaseStatus} href="/admin/releases" help="Release channel status" />
-            <MetricCard label="Go / No-Go Status" metric={pe.goNoGoStatus} href="/admin/releases" help="Launch decision state" />
-            <MetricCard label="Critical Blockers" metric={snapshot.blockers} href="/admin/product" help="Blocked high-priority work" />
-            <MetricCard label="Founder Decisions Needed" metric={snapshot.founderDecisions} href="/admin/command-center" help="Executive decisions pending" />
+            <MetricCard
+              label="Company Health Score"
+              metric={snapshot.companyHealthScore}
+              href="/admin/business-lines"
+              help="Overall operating signal"
+            />
+            <MetricCard
+              label="Revenue This Month"
+              metric={revenue.revenueThisMonth}
+              href="/admin/revenue"
+              help="BWE recognized revenue"
+            />
+            <MetricCard
+              label="Revenue Today"
+              metric={revenue.revenueToday}
+              href="/admin/revenue"
+              help="Today recognized revenue"
+            />
+            <MetricCard
+              label="Open Support Tickets"
+              metric={snapshot.openTickets}
+              href="/admin/support"
+              help="Active support workload"
+            />
+            <MetricCard
+              label="Escalated Issues"
+              metric={support.escalated}
+              href="/admin/support"
+              help="Escalated support cases"
+            />
+            <MetricCard
+              label="Pending Approvals"
+              metric={company.pendingAdminApprovals}
+              href="/admin/trust-safety"
+              help="Admin queue pressure"
+            />
+            <MetricCard
+              label="Active Sponsors"
+              metric={company.activeSponsors}
+              href="/admin/partnerships"
+              help="Active sponsor accounts"
+            />
+            <MetricCard
+              label="Current Release Status"
+              metric={pe.currentReleaseStatus}
+              href="/admin/releases"
+              help="Release channel status"
+            />
+            <MetricCard
+              label="Go / No-Go Status"
+              metric={pe.goNoGoStatus}
+              href="/admin/releases"
+              help="Launch decision state"
+            />
+            <MetricCard
+              label="Critical Blockers"
+              metric={snapshot.blockers}
+              href="/admin/product"
+              help="Blocked high-priority work"
+            />
+            <MetricCard
+              label="Founder Decisions Needed"
+              metric={snapshot.founderDecisions}
+              href="/admin/command-center"
+              help="Executive decisions pending"
+            />
           </div>
         </section>
 
         <section className="space-y-3">
-          <h2 className="text-xl font-semibold text-yellow-300">Executive Quick Access / All Access Cheat Sheet</h2>
+          <h2 className="text-xl font-semibold text-yellow-300">
+            Executive Quick Access / All Access Cheat Sheet
+          </h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {quickLinks.map(([label, href]) => (
-              <Link key={label} href={href} className="rounded-xl border border-zinc-800 bg-zinc-950 px-4 py-3 hover:border-yellow-500/50 transition">
+              <Link
+                key={label}
+                href={href}
+                className="rounded-xl border border-zinc-800 bg-zinc-950 px-4 py-3 hover:border-yellow-500/50 transition"
+              >
                 <div className="text-sm font-medium text-zinc-100">{label}</div>
                 <div className="text-[11px] text-zinc-500 mt-1">{href}</div>
               </Link>
@@ -157,14 +291,132 @@ export default function CommandCenterPage() {
         </section>
 
         <section className="space-y-3">
-          <h2 className="text-xl font-semibold text-yellow-300">Graphic Operating Dashboard</h2>
+          <h2 className="text-xl font-semibold text-yellow-300">
+            Execution Plan
+          </h2>
+          <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4 space-y-3">
+            <div className="flex items-center justify-between gap-3 flex-wrap">
+              <div>
+                <div className="text-sm text-zinc-400">Current Phase</div>
+                <div className="text-lg font-semibold text-yellow-300">
+                  {plan?.currentPhase || "Phase 1 (Days 1-30): Stabilize + Instrument"}
+                </div>
+              </div>
+              <a
+                className="text-xs underline text-zinc-300"
+                href="/docs/BWE_TOP_TIER_90_DAY_EXECUTION_PLAN.md"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Open Full Plan
+              </a>
+            </div>
+            <div className="grid md:grid-cols-2 gap-3">
+              <div>
+                <div className="text-sm text-zinc-400 mb-1">Top Actions</div>
+                <ul className="list-disc ml-5 text-sm text-zinc-200 space-y-1">
+                  {(plan?.topActions?.length
+                    ? plan.topActions
+                    : [
+                        "Implement admin_metrics_snapshots and fallback logic",
+                        "Wire system health logging into failure paths",
+                        "Finalize releases collection writer",
+                      ]
+                  ).map((x: string, i: number) => (
+                    <li key={i}>{x}</li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <div className="text-sm text-zinc-400 mb-1">Owner Review Needed</div>
+                <ul className="list-disc ml-5 text-sm text-zinc-200 space-y-1">
+                  {(plan?.ownerReviewNeeded?.length
+                    ? plan.ownerReviewNeeded
+                    : [
+                        "Approve lane owners for reliability/support/growth",
+                        "Confirm release go/no-go criteria",
+                        "Set weekly CEO review cadence",
+                      ]
+                  ).map((x: string, i: number) => (
+                    <li key={i}>{x}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="space-y-3">
+          <h2 className="text-xl font-semibold text-yellow-300">
+            Graphic Operating Dashboard
+          </h2>
           <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-3">
-            <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4"><h3 className="text-yellow-300 font-semibold mb-2">Revenue Health</h3><MetricCard label="Revenue This Month" metric={revenue.revenueThisMonth} href="/admin/revenue" help="Executive summary" /></div>
-            <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4"><h3 className="text-yellow-300 font-semibold mb-2">Support Health</h3><MetricCard label="Escalated" metric={support.escalated} href="/admin/support" help="Escalation pressure" /></div>
-            <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4"><h3 className="text-yellow-300 font-semibold mb-2">Growth Health</h3><MetricCard label="New Users This Month" metric={d?.growthHealth?.newUsersThisMonth} href="/admin/growth" help="Acquisition trend" /></div>
-            <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4"><h3 className="text-yellow-300 font-semibold mb-2">Product / Engineering Health</h3><MetricCard label="Active Blockers" metric={pe.activeBlockers} href="/admin/engineering" help="Execution risk" /></div>
-            <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4"><h3 className="text-yellow-300 font-semibold mb-2">Trust & Safety Health</h3><MetricCard label="Pending Business Approvals" metric={trust.pendingBusinessApprovals} href="/admin/trust-safety" help="Review queue" /></div>
-            <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4"><h3 className="text-yellow-300 font-semibold mb-2">Release Readiness</h3><MetricCard label="Go / No-Go" metric={pe.goNoGoStatus} href="/admin/releases" help="Release decision" /></div>
+            <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
+              <h3 className="text-yellow-300 font-semibold mb-2">
+                Revenue Health
+              </h3>
+              <MetricCard
+                label="Revenue This Month"
+                metric={revenue.revenueThisMonth}
+                href="/admin/revenue"
+                help="Executive summary"
+              />
+            </div>
+            <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
+              <h3 className="text-yellow-300 font-semibold mb-2">
+                Support Health
+              </h3>
+              <MetricCard
+                label="Escalated"
+                metric={support.escalated}
+                href="/admin/support"
+                help="Escalation pressure"
+              />
+            </div>
+            <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
+              <h3 className="text-yellow-300 font-semibold mb-2">
+                Growth Health
+              </h3>
+              <MetricCard
+                label="New Users This Month"
+                metric={d?.growthHealth?.newUsersThisMonth}
+                href="/admin/growth"
+                help="Acquisition trend"
+              />
+            </div>
+            <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
+              <h3 className="text-yellow-300 font-semibold mb-2">
+                Product / Engineering Health
+              </h3>
+              <MetricCard
+                label="Active Blockers"
+                metric={pe.activeBlockers}
+                href="/admin/engineering"
+                help="Execution risk"
+              />
+            </div>
+            <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
+              <h3 className="text-yellow-300 font-semibold mb-2">
+                Trust & Safety Health
+              </h3>
+              <MetricCard
+                label="Pending Business Approvals"
+                metric={trust.pendingBusinessApprovals}
+                href="/admin/trust-safety"
+                help="Review queue"
+              />
+            </div>
+            <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
+              <h3 className="text-yellow-300 font-semibold mb-2">
+                Release Readiness
+              </h3>
+              <MetricCard
+                label="Go / No-Go"
+                metric={pe.goNoGoStatus}
+                href="/admin/releases"
+                help="Release decision"
+              />
+            </div>
           </div>
         </section>
       </div>
@@ -172,4 +424,6 @@ export default function CommandCenterPage() {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = requireAdminPageProps("/admin/command-center");
+export const getServerSideProps: GetServerSideProps = requireAdminPageProps(
+  "/admin/command-center",
+);
