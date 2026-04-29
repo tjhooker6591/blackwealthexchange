@@ -191,7 +191,7 @@ export default function CommandCenterPage() {
             <h1 className="text-3xl md:text-4xl font-bold text-yellow-400">
               BWE CEO Command Center
             </h1>
-            <p className="text-sm text-zinc-400">Generated {d.generatedAt}</p>
+            <p className="text-sm text-zinc-400">Generated {d.generatedAt} • Source: {d.source}</p>
           </div>
           <div className="text-xs text-zinc-400">
             Fast executive view, linked to operating pages
@@ -299,7 +299,8 @@ export default function CommandCenterPage() {
               <div>
                 <div className="text-sm text-zinc-400">Current Phase</div>
                 <div className="text-lg font-semibold text-yellow-300">
-                  {plan?.currentPhase || "Phase 1 (Days 1-30): Stabilize + Instrument"}
+                  {plan?.currentPhase ||
+                    "Phase 1 (Days 1-30): Stabilize + Instrument"}
                 </div>
               </div>
               <a
@@ -328,7 +329,9 @@ export default function CommandCenterPage() {
                 </ul>
               </div>
               <div>
-                <div className="text-sm text-zinc-400 mb-1">Owner Review Needed</div>
+                <div className="text-sm text-zinc-400 mb-1">
+                  Owner Review Needed
+                </div>
                 <ul className="list-disc ml-5 text-sm text-zinc-200 space-y-1">
                   {(plan?.ownerReviewNeeded?.length
                     ? plan.ownerReviewNeeded
@@ -343,6 +346,15 @@ export default function CommandCenterPage() {
                 </ul>
               </div>
             </div>
+          </div>
+        </section>
+
+        <section className="space-y-3">
+          <h2 className="text-xl font-semibold text-yellow-300">Trend (7d/30d)</h2>
+          <div className="grid md:grid-cols-3 gap-3">
+            <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4"><div className="text-yellow-300 font-semibold">Revenue Trend</div><pre className="text-xs mt-2 text-zinc-300 overflow-auto">{JSON.stringify(d?.trends?.revenue || {}, null, 2)}</pre></div>
+            <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4"><div className="text-yellow-300 font-semibold">Support Trend</div><pre className="text-xs mt-2 text-zinc-300 overflow-auto">{JSON.stringify(d?.trends?.support || {}, null, 2)}</pre></div>
+            <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4"><div className="text-yellow-300 font-semibold">Growth Trend</div><pre className="text-xs mt-2 text-zinc-300 overflow-auto">{JSON.stringify(d?.trends?.growth || {}, null, 2)}</pre></div>
           </div>
         </section>
 
