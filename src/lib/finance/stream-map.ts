@@ -26,6 +26,7 @@ export const FINANCE_STREAMS: Array<{
   },
   { label: "Music Creator Plan Revenue", key: "music_creator_plan" },
   { label: "Directory Listing / Featured Placement Revenue", key: "directory" },
-  { label: "Affiliate Revenue", key: "affiliate_revenue" },
+  { label: "Affiliate Revenue Received", key: "affiliate_revenue" },
+  { label: "Affiliate Payout Liability", key: "affiliate_liability" },
   { label: "Manual / Offline Revenue", key: "manual_offline" },
 ];

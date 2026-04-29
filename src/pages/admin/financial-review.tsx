@@ -16,7 +16,8 @@ const DISPLAY_TO_BACKING: Record<string, string[]> = {
   consulting_opportunity_network: ["consulting_opportunity_network"],
   music_creator_plan: ["music_creator_plan"],
   directory: ["directory"],
-  affiliate_revenue: ["affiliate_revenue", "affiliate_liability"],
+  affiliate_revenue: ["affiliate_revenue"],
+  affiliate_liability: ["affiliate_liability"],
   manual_offline: ["manual_offline", "other"],
 };
 
@@ -87,7 +88,10 @@ export default function FinancialReviewPage() {
           {FINANCE_STREAMS.map(({ label, key }) => {
             const backing = DISPLAY_TO_BACKING[key] || [key];
             const hasAmount = backing.some((k) => Boolean(streams[k]?.count));
-            const total = backing.reduce((sum, k) => sum + Number(streams[k]?.retained || 0), 0);
+            const total = backing.reduce(
+              (sum, k) => sum + Number(streams[k]?.retained || 0),
+              0,
+            );
             return (
               <div
                 key={key}
