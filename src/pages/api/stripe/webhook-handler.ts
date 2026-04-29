@@ -21,7 +21,10 @@ import { ensureBlackCardMembershipAndCard } from "@/lib/black-card-membership";
 import { getMongoDbName } from "@/lib/env";
 import { requireStripeSecretKey } from "@/lib/stripeSecret";
 import { sendEmail } from "@/lib/sendEmail";
-import { checkoutTypeToRevenueType, computeRevenueSplit } from "@/lib/payments/revenue";
+import {
+  checkoutTypeToRevenueType,
+  computeRevenueSplit,
+} from "@/lib/payments/revenue";
 
 export const config = {
   api: { bodyParser: false },
@@ -39,6 +42,10 @@ function getStripeClient() {
 
 function getWebhookSecret() {
   return (process.env.STRIPE_WEBHOOK_SECRET || "").trim();
+}
+
+function isFinancialLedgerEnabled() {
+  return String(process.env.ENABLE_FINANCIAL_LEDGER || "false").toLowerCase() === "true";
 }
 
 interface SessionMetadata {
@@ -882,8 +889,14 @@ export default async function webhookHandler(
 
     const isDirectoryPurchase = isDirectorySku(normalizedItemId);
 
-    const resolvedAmountCents = typeof session.amount_total === "number" ? session.amount_total : (existingPayment?.amountCents ?? 0);
-    const resolvedRevenueType = checkoutTypeToRevenueType(metaType || "", normalizedItemId || rawMetaItemId);
+    const resolvedAmountCents =
+      typeof session.amount_total === "number"
+        ? session.amount_total
+        : (existingPayment?.amountCents ?? 0);
+    const resolvedRevenueType = checkoutTypeToRevenueType(
+      metaType || "",
+      normalizedItemId || rawMetaItemId,
+    );
     const split = computeRevenueSplit(resolvedRevenueType, resolvedAmountCents);
 
     console.log(
@@ -982,6 +995,49 @@ export default async function webhookHandler(
       },
     );
 
+
+    if (isFinancialLedgerEnabled()) {
+      await db.collection("financial_ledger").updateOne(
+        { transactionId: stripeSessionId },
+        {
+          $setOnInsert: {
+            transactionId: stripeSessionId,
+            stripeSessionId,
+            stripePaymentIntentId: paymentIntentId || null,
+            createdAt: sessionCreatedAt,
+          },
+          $set: {
+            updatedAt: now,
+            userId: userId || null,
+            sellerId: orderRecord?.sellerId ? idToString(orderRecord.sellerId) : null,
+            employerId: null,
+            businessId: businessId || null,
+            creatorId: null,
+            revenueStream: resolvedRevenueType,
+            grossAmount: resolvedAmountCents || 0,
+            bweFeeAmount: split.bweFee || 0,
+            bweFeePercent: split.bweFeePercent || 0,
+            sellerPayoutAmount: split.sellerPayout || 0,
+            partnerPayoutAmount: 0,
+            netBweRevenue: split.bweFee || 0,
+            paymentStatus: "paid",
+            fulfillmentStatus: orderRecord ? "fulfilled" : "pending",
+            payoutStatus: split.sellerPayout > 0 ? (orderRecord?.payoutMode === "platform_hold" ? "platform_held" : "ready") : "not_applicable",
+            refundStatus: "none",
+            disputeStatus: "none",
+            sourceRoute: "/api/stripe/webhook-handler",
+            webhookEventId: event.id,
+            metadata: {
+              type: metaType || null,
+              itemId: normalizedItemId || rawMetaItemId || null,
+              campaignId: campaignId || null,
+              jobId: jobId || null,
+            },
+          },
+        },
+        { upsert: true },
+      );
+    }
     if (metaType === "product") {
       const orderId =
         idToString(orderRecord?._id) || asString(mergedMeta.orderId);
