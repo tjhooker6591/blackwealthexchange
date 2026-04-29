@@ -18,6 +18,7 @@ import {
   isBlackCardPlanItemId,
 } from "@/lib/black-card";
 import { getStripeSecretKey } from "@/lib/stripeSecret";
+import { checkoutTypeToRevenueType, computeRevenueSplit } from "@/lib/payments/revenue";
 
 const stripeSecret = getStripeSecretKey();
 const stripe = new Stripe(stripeSecret || "sk_missing", {
@@ -725,6 +726,9 @@ export default async function handler(
       }
     }
 
+    const revenueType = checkoutTypeToRevenueType(type, finalItemId);
+    const split = computeRevenueSplit(revenueType, unitAmount);
+
     const checkoutFingerprint = buildCheckoutFingerprint({
       userId: sessionUserId,
       email: sessionEmail,
@@ -745,7 +749,8 @@ export default async function handler(
     )}`;
 
     const isAnnualMembershipSubscription =
-      type === "plan" && (finalItemId === "premium" || finalItemId === "founder");
+      type === "plan" &&
+      (finalItemId === "premium" || finalItemId === "founder");
 
     const baseParams: Stripe.Checkout.SessionCreateParams = {
       mode: isAnnualMembershipSubscription ? "subscription" : "payment",
@@ -823,6 +828,9 @@ export default async function handler(
           type,
           itemId: finalItemId,
           amountCents: unitAmount,
+          bweFee: split.bweFee,
+          bweFeePercent: split.bweFeePercent,
+          payout: split.sellerPayout,
           status: "pending",
           createdAt: new Date(),
           metadata: {
@@ -835,6 +843,8 @@ export default async function handler(
             placement: normalizedPlacement || null,
             jobId: normalizedJobId || null,
             checkoutFingerprint,
+            grossAmount: split.grossAmount,
+            netAmount: split.netAmount,
             productKey:
               type === "plan" &&
               (finalItemId === "wealth-builder-premium-monthly" ||
@@ -855,14 +865,16 @@ export default async function handler(
               type === "plan" &&
               (finalItemId === "premium" || finalItemId === "founder")
                 ? "annual"
-                : type === "plan" && finalItemId === "wealth-builder-premium-annual"
+                : type === "plan" &&
+                    finalItemId === "wealth-builder-premium-annual"
                   ? "annual"
                   : type === "plan" &&
                       finalItemId === "wealth-builder-premium-monthly"
                     ? "monthly"
                     : type === "plan" && isBlackCardPlanItemId(finalItemId)
-                      ? BLACK_CARD_TIERS[BLACK_CARD_TIER_BY_ITEM_ID[finalItemId]]
-                          .billingModel === "entry_fee"
+                      ? BLACK_CARD_TIERS[
+                          BLACK_CARD_TIER_BY_ITEM_ID[finalItemId]
+                        ].billingModel === "entry_fee"
                         ? "entry_fee"
                         : "monthly"
                       : null,

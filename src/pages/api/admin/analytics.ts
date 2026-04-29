@@ -135,6 +135,23 @@ export default async function handler(
       orders: toNum(row.orders),
     }));
 
+
+    const paymentsByType = await db
+      .collection("payments")
+      .aggregate([
+        { $match: { amountCents: { $type: "number" } } },
+        {
+          $group: {
+            _id: { $ifNull: ["$type", "unknown"] },
+            gross: { $sum: { $ifNull: ["$amountCents", 0] } },
+            bweRevenue: { $sum: { $ifNull: ["$bweFee", 0] } },
+            payouts: { $sum: { $ifNull: ["$payout", 0] } },
+            count: { $sum: 1 },
+          },
+        },
+      ])
+      .toArray();
+
     // Seller Leaderboard
     const sellerLeaderboardAgg = await db
       .collection("orders")
@@ -290,6 +307,7 @@ export default async function handler(
       businessGrowth, // ✅ added
       organizationGrowth, // ✅ added
       revenueByMonth,
+      paymentRevenueByType: paymentsByType.map((row: any) => ({ type: row._id, gross: toNum(row.gross), bweRevenue: toNum(row.bweRevenue), payouts: toNum(row.payouts), count: toNum(row.count) })),
 
       // Engagement / sellers
       sellerLeaderboard: sellerLeaderboardAgg,

@@ -21,6 +21,7 @@ import { ensureBlackCardMembershipAndCard } from "@/lib/black-card-membership";
 import { getMongoDbName } from "@/lib/env";
 import { requireStripeSecretKey } from "@/lib/stripeSecret";
 import { sendEmail } from "@/lib/sendEmail";
+import { checkoutTypeToRevenueType, computeRevenueSplit } from "@/lib/payments/revenue";
 
 export const config = {
   api: { bodyParser: false },
@@ -543,13 +544,18 @@ export default async function webhookHandler(
     const client = await clientPromise;
     const db = client.db(getMongoDbName());
     const invoice = event.data.object as Stripe.Invoice;
-    const customerId = typeof invoice.customer === "string" ? invoice.customer : "";
+    const customerId =
+      typeof invoice.customer === "string" ? invoice.customer : "";
     const user = customerId
       ? await db
           .collection("users")
-          .findOne({ stripeCustomerId: customerId }, { projection: { _id: 1, email: 1 } })
+          .findOne(
+            { stripeCustomerId: customerId },
+            { projection: { _id: 1, email: 1 } },
+          )
       : null;
-    const email = (user as any)?.email || (invoice as any)?.customer_email || "";
+    const email =
+      (user as any)?.email || (invoice as any)?.customer_email || "";
     const dueDate = invoice.next_payment_attempt
       ? new Date(invoice.next_payment_attempt * 1000).toLocaleDateString()
       : "soon";
@@ -582,22 +588,22 @@ export default async function webhookHandler(
     const db = client.db(getMongoDbName());
     const now = new Date();
 
-    const subIdFromInvoice =
-      event.type.startsWith("invoice.")
-        ? typeof (event.data.object as Stripe.Invoice).subscription === "string"
-          ? ((event.data.object as Stripe.Invoice).subscription as string)
-          : ""
-        : "";
+    const subIdFromInvoice = event.type.startsWith("invoice.")
+      ? typeof (event.data.object as Stripe.Invoice).subscription === "string"
+        ? ((event.data.object as Stripe.Invoice).subscription as string)
+        : ""
+      : "";
 
-    const subscription =
-      event.type.startsWith("customer.subscription")
-        ? (event.data.object as Stripe.Subscription)
-        : subIdFromInvoice
-          ? await stripe.subscriptions.retrieve(subIdFromInvoice)
-          : null;
+    const subscription = event.type.startsWith("customer.subscription")
+      ? (event.data.object as Stripe.Subscription)
+      : subIdFromInvoice
+        ? await stripe.subscriptions.retrieve(subIdFromInvoice)
+        : null;
 
     if (!subscription) {
-      return res.status(200).json({ received: true, skipped: "missing_subscription" });
+      return res
+        .status(200)
+        .json({ received: true, skipped: "missing_subscription" });
     }
 
     const subscriptionId = subscription.id;
@@ -617,8 +623,9 @@ export default async function webhookHandler(
     );
 
     const planGuess =
-      String((user as any)?.subscriptionPlan || (user as any)?.currentPlan || "").toLowerCase() ===
-      "founding"
+      String(
+        (user as any)?.subscriptionPlan || (user as any)?.currentPlan || "",
+      ).toLowerCase() === "founding"
         ? "founding"
         : "premium";
 
@@ -875,6 +882,10 @@ export default async function webhookHandler(
 
     const isDirectoryPurchase = isDirectorySku(normalizedItemId);
 
+    const resolvedAmountCents = typeof session.amount_total === "number" ? session.amount_total : (existingPayment?.amountCents ?? 0);
+    const resolvedRevenueType = checkoutTypeToRevenueType(metaType || "", normalizedItemId || rawMetaItemId);
+    const split = computeRevenueSplit(resolvedRevenueType, resolvedAmountCents);
+
     console.log(
       `🔔 Paid webhook received type=${event.type} session=${stripeSessionId} item=${normalizedItemId || "n/a"} amount=${session.amount_total ?? "n/a"}`,
     );
@@ -899,10 +910,10 @@ export default async function webhookHandler(
           paymentIntentId:
             paymentIntentId || existingPayment?.paymentIntentId || null,
           email: email || null,
-          amountCents:
-            typeof session.amount_total === "number"
-              ? session.amount_total
-              : (existingPayment?.amountCents ?? null),
+          amountCents: resolvedAmountCents || null,
+          bweFee: split.bweFee,
+          bweFeePercent: split.bweFeePercent,
+          payout: split.sellerPayout,
           currency: session.currency || "usd",
 
           lastWebhookEventId: event.id,
@@ -1560,9 +1571,10 @@ export default async function webhookHandler(
 
       if (stripeSubscriptionId) {
         try {
-          const sub = await getStripeClient().subscriptions.retrieve(
-            stripeSubscriptionId,
-          );
+          const sub =
+            await getStripeClient().subscriptions.retrieve(
+              stripeSubscriptionId,
+            );
           if ((sub as any).current_period_start) {
             planStartAt = new Date((sub as any).current_period_start * 1000);
           }
@@ -1739,7 +1751,10 @@ export default async function webhookHandler(
         type: "membership_purchase_confirmed",
         message: `Your ${mappedPlanId} plan is active. Next billing date: ${planExpiresAt.toLocaleDateString()}.`,
         createdAt: now,
-        meta: { stripeSessionId, stripeSubscriptionId: stripeSubscriptionId || null },
+        meta: {
+          stripeSessionId,
+          stripeSubscriptionId: stripeSubscriptionId || null,
+        },
       });
 
       console.log(

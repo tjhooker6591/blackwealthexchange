@@ -10,6 +10,7 @@ import {
   getClientIp,
   hitApiRateLimit,
 } from "@/lib/apiRateLimit";
+import { computeRevenueSplit } from "@/lib/payments/revenue";
 
 type OidLike = { $oid?: string; oid?: string; _id?: unknown } | any;
 type PayoutMode = "destination_charge" | "platform_hold";
@@ -343,8 +344,8 @@ export async function createProductCheckoutSessionCore({
     };
   }
 
-  const commissionRate = 0.12;
-  const applicationFee = Math.round(unitAmountCents * commissionRate);
+  const split = computeRevenueSplit("marketplace", unitAmountCents);
+  const applicationFee = split.bweFee;
   const cartItems: CartItem[] = [
     {
       id: String(product._id),
@@ -413,6 +414,11 @@ export async function createProductCheckoutSessionCore({
         totalPrice: totalCents,
 
         applicationFee,
+        grossAmount: split.grossAmount,
+        bweFee: split.bweFee,
+        bweFeePercent: split.bweFeePercent,
+        sellerPayout: split.sellerPayout,
+        netAmount: split.netAmount,
         payoutMode,
         needsManualSellerPayout: false,
         updatedAt: new Date(),
