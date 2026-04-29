@@ -1,6 +1,8 @@
+import type { GetServerSideProps } from "next";
 import Head from "next/head";
 import { useEffect, useMemo, useState } from "react";
 import WealthBuilderNav from "@/components/wealth-builder/WealthBuilderNav";
+import { requireWealthBuilderPageUser } from "@/lib/wealth-builder/page-auth";
 
 type BudgetCategory = {
   name: string;
@@ -186,7 +188,10 @@ export default function WealthBuilderBudgetPage() {
 
       setCategories((current) => {
         const mapped = new Map<string, number>(
-          suggested.map((item) => [item.category.toLowerCase(), Number(item.amount) || 0]),
+          suggested.map((item) => [
+            item.category.toLowerCase(),
+            Number(item.amount) || 0,
+          ]),
         );
 
         const next = current.map((item) => {
@@ -203,7 +208,9 @@ export default function WealthBuilderBudgetPage() {
         );
 
         for (const row of suggested) {
-          const key = String(row.category || "").trim().toLowerCase();
+          const key = String(row.category || "")
+            .trim()
+            .toLowerCase();
           if (!key || knownKeys.has(key)) continue;
           next.push({
             name: row.category,
@@ -460,7 +467,9 @@ export default function WealthBuilderBudgetPage() {
                     disabled={syncingActuals || loading}
                     className="rounded-full border border-cyan-400/50 bg-cyan-500/10 px-4 py-2 text-sm font-semibold text-cyan-200 transition hover:bg-cyan-500/20 disabled:opacity-60"
                   >
-                    {syncingActuals ? "Syncing..." : "Sync Actuals from Transactions"}
+                    {syncingActuals
+                      ? "Syncing..."
+                      : "Sync Actuals from Transactions"}
                   </button>
                   <button
                     type="button"
@@ -584,3 +593,8 @@ export default function WealthBuilderBudgetPage() {
     </>
   );
 }
+
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  return requireWealthBuilderPageUser(context, "/wealth-builder/budget");
+};

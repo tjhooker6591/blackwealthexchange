@@ -1,7 +1,9 @@
+import type { GetServerSideProps } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import WealthBuilderNav from "@/components/wealth-builder/WealthBuilderNav";
+import { requireWealthBuilderPageUser } from "@/lib/wealth-builder/page-auth";
 
 type StatusResponse = {
   ok: boolean;
@@ -69,24 +71,28 @@ export default function WealthBuilderStatusPage() {
       ? {
           label: "Add your first transaction",
           href: "/wealth-builder/transactions",
-          reason: "No transactions logged yet, so insights cannot reflect real cash flow.",
+          reason:
+            "No transactions logged yet, so insights cannot reflect real cash flow.",
         }
       : data.summary.budgetCount === 0
         ? {
             label: "Create your monthly budget",
             href: "/wealth-builder/budget",
-            reason: "No budget plan found, so spending drift is harder to catch early.",
+            reason:
+              "No budget plan found, so spending drift is harder to catch early.",
           }
         : data.summary.debtCount === 0 && data.summary.goalCount === 0
           ? {
               label: "Add debt and savings targets",
               href: "/wealth-builder/debt",
-              reason: "Debt and savings records are missing, so payoff and growth guidance is incomplete.",
+              reason:
+                "Debt and savings records are missing, so payoff and growth guidance is incomplete.",
             }
           : {
               label: "Review premium insights",
               href: "/wealth-builder/insights",
-              reason: "Core records are in place — next step is performance insights and optimization.",
+              reason:
+                "Core records are in place — next step is performance insights and optimization.",
             }
     : null;
 
@@ -464,3 +470,8 @@ export default function WealthBuilderStatusPage() {
     </>
   );
 }
+
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  return requireWealthBuilderPageUser(context, "/wealth-builder/status");
+};

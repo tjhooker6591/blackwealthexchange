@@ -1,8 +1,10 @@
+import type { GetServerSideProps } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import WealthBuilderNav from "@/components/wealth-builder/WealthBuilderNav";
+import { requireWealthBuilderPageUser } from "@/lib/wealth-builder/page-auth";
 
 type CheckoutPlan = "annual";
 
@@ -217,7 +219,9 @@ export default function WealthBuilderUpgradePage() {
                   <p>• Unlimited savings goals</p>
                   <p>• Budget history</p>
                   <p>• Premium insights</p>
-                  <p>• Advanced planning tools currently available in Premium</p>
+                  <p>
+                    • Advanced planning tools currently available in Premium
+                  </p>
                 </div>
 
                 <div className="mt-8">
@@ -272,3 +276,8 @@ export default function WealthBuilderUpgradePage() {
     </>
   );
 }
+
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  return requireWealthBuilderPageUser(context, "/wealth-builder/upgrade");
+};

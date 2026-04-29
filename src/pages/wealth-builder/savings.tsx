@@ -1,6 +1,8 @@
+import type { GetServerSideProps } from "next";
 import Head from "next/head";
 import { useEffect, useMemo, useState } from "react";
 import WealthBuilderNav from "@/components/wealth-builder/WealthBuilderNav";
+import { requireWealthBuilderPageUser } from "@/lib/wealth-builder/page-auth";
 
 type GoalStatus = "active" | "completed" | "paused" | "cancelled" | "archived";
 
@@ -80,7 +82,10 @@ function getProgressPercent(currentAmount: number, targetAmount: number) {
 }
 
 function estimateGoalEtaMonths(goal: SavingsGoal) {
-  const remaining = Math.max((goal.targetAmount || 0) - (goal.currentAmount || 0), 0);
+  const remaining = Math.max(
+    (goal.targetAmount || 0) - (goal.currentAmount || 0),
+    0,
+  );
   const pace = Math.max(goal.monthlyContributionTarget || 0, 0);
   if (remaining <= 0) return 0;
   if (pace <= 0) return null;
@@ -332,7 +337,9 @@ export default function WealthBuilderSavingsPage() {
             <div className="mt-6 rounded-2xl border border-cyan-500/25 bg-cyan-500/5 p-4 text-sm text-cyan-100">
               <p className="font-semibold">Contribution pacing guidance</p>
               <p className="mt-1 text-cyan-50/90">
-                Set monthly contribution targets on each goal to unlock ETA guidance and keep savings planning tied to your monthly cash flow.
+                Set monthly contribution targets on each goal to unlock ETA
+                guidance and keep savings planning tied to your monthly cash
+                flow.
               </p>
             </div>
 
@@ -628,7 +635,9 @@ export default function WealthBuilderSavingsPage() {
                             </div>
 
                             <div className="rounded-xl border border-white/10 bg-zinc-950/80 p-4 md:col-span-2 xl:col-span-4">
-                              <p className="text-xs uppercase tracking-wide text-zinc-400">ETA at current monthly pace</p>
+                              <p className="text-xs uppercase tracking-wide text-zinc-400">
+                                ETA at current monthly pace
+                              </p>
                               <p className="mt-2 text-lg font-bold text-cyan-200">
                                 {formatEta(estimateGoalEtaMonths(item))}
                               </p>
@@ -672,3 +681,8 @@ export default function WealthBuilderSavingsPage() {
     </>
   );
 }
+
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  return requireWealthBuilderPageUser(context, "/wealth-builder/savings");
+};

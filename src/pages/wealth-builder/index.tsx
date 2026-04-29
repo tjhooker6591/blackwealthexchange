@@ -14,7 +14,10 @@ export default function WealthBuilderIndexPage() {
             "A premium money command center to track spending, debt, savings, budgets, recurring bills, and net worth.",
           )}
         />
-        <meta property="og:title" content="Wealth Builder Dashboard | Black Wealth Exchange" />
+        <meta
+          property="og:title"
+          content="Wealth Builder Dashboard | Black Wealth Exchange"
+        />
         <meta
           property="og:description"
           content={truncateMeta(
@@ -24,7 +27,10 @@ export default function WealthBuilderIndexPage() {
         <meta property="og:type" content="website" />
         <meta property="og:url" content={canonicalUrl("/wealth-builder")} />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Wealth Builder Dashboard | Black Wealth Exchange" />
+        <meta
+          name="twitter:title"
+          content="Wealth Builder Dashboard | Black Wealth Exchange"
+        />
         <meta
           name="twitter:description"
           content={truncateMeta(
@@ -54,16 +60,16 @@ export default function WealthBuilderIndexPage() {
 
             <div className="mt-8 flex flex-wrap gap-4">
               <Link
-                href="/wealth-builder/dashboard"
+                href="/login?redirect=/wealth-builder/dashboard"
                 className="rounded-full border border-yellow-400 bg-yellow-500/15 px-5 py-3 font-semibold text-yellow-300 transition hover:bg-yellow-500/25"
               >
-                Open Dashboard
+                Log in to access Wealth Builder
               </Link>
               <Link
-                href="/wealth-builder/transactions"
+                href="/signup"
                 className="rounded-full border border-white/15 px-5 py-3 font-semibold text-white transition hover:border-yellow-400 hover:text-yellow-300"
               >
-                Track Transactions
+                Create account
               </Link>
             </div>
           </section>

@@ -1,7 +1,9 @@
+import type { GetServerSideProps } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import WealthBuilderNav from "@/components/wealth-builder/WealthBuilderNav";
+import { requireWealthBuilderPageUser } from "@/lib/wealth-builder/page-auth";
 
 type EntitlementResponse = {
   ok: boolean;
@@ -222,3 +224,8 @@ export default function WealthBuilderInsightsPage() {
     </>
   );
 }
+
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  return requireWealthBuilderPageUser(context, "/wealth-builder/insights");
+};

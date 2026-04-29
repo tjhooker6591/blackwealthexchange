@@ -1,7 +1,9 @@
+import type { GetServerSideProps } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import WealthBuilderNav from "@/components/wealth-builder/WealthBuilderNav";
+import { requireWealthBuilderPageUser } from "@/lib/wealth-builder/page-auth";
 
 type TransactionType =
   | "income"
@@ -240,20 +242,31 @@ export default function WealthBuilderTransactionsPage() {
             </div>
 
             <div className="mt-6 rounded-2xl border border-indigo-500/25 bg-indigo-500/5 p-4">
-              <p className="text-sm font-semibold text-indigo-200">Next best action</p>
+              <p className="text-sm font-semibold text-indigo-200">
+                Next best action
+              </p>
               <p className="mt-1 text-sm text-zinc-200">
                 {totals.net < 0
                   ? "You are net negative. Sync your budget actuals, then reduce high-spend categories before adding extra debt payments."
                   : "You are net positive. Sync budget actuals, then route surplus to highest-interest debt and emergency savings."}
               </p>
               <div className="mt-3 flex flex-wrap gap-2">
-                <Link href="/wealth-builder/budget" className="rounded-full border border-white/20 px-3 py-1.5 text-xs font-semibold text-white hover:border-indigo-300">
+                <Link
+                  href="/wealth-builder/budget"
+                  className="rounded-full border border-white/20 px-3 py-1.5 text-xs font-semibold text-white hover:border-indigo-300"
+                >
                   Open Budget
                 </Link>
-                <Link href="/wealth-builder/debt" className="rounded-full border border-white/20 px-3 py-1.5 text-xs font-semibold text-white hover:border-indigo-300">
+                <Link
+                  href="/wealth-builder/debt"
+                  className="rounded-full border border-white/20 px-3 py-1.5 text-xs font-semibold text-white hover:border-indigo-300"
+                >
                   Open Debt Plan
                 </Link>
-                <Link href="/wealth-builder/savings" className="rounded-full border border-white/20 px-3 py-1.5 text-xs font-semibold text-white hover:border-indigo-300">
+                <Link
+                  href="/wealth-builder/savings"
+                  className="rounded-full border border-white/20 px-3 py-1.5 text-xs font-semibold text-white hover:border-indigo-300"
+                >
                   Open Savings Goals
                 </Link>
               </div>
@@ -404,3 +417,8 @@ export default function WealthBuilderTransactionsPage() {
     </>
   );
 }
+
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  return requireWealthBuilderPageUser(context, "/wealth-builder/transactions");
+};
