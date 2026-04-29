@@ -7,6 +7,19 @@ import { FINANCE_STREAMS } from "@/lib/finance/stream-map";
 
 type Data = any;
 
+const DISPLAY_TO_BACKING: Record<string, string[]> = {
+  advertising: ["advertising"],
+  marketplace: ["marketplace"],
+  jobs: ["jobs"],
+  membership_black_card: ["membership_black_card"],
+  courses: ["courses"],
+  consulting_opportunity_network: ["consulting_opportunity_network"],
+  music_creator_plan: ["music_creator_plan"],
+  directory: ["directory"],
+  affiliate_revenue: ["affiliate_revenue", "affiliate_liability"],
+  manual_offline: ["manual_offline", "other"],
+};
+
 export default function FinancialReviewPage() {
   const router = useRouter();
   const [data, setData] = useState<Data | null>(null);
@@ -72,8 +85,9 @@ export default function FinancialReviewPage() {
 
         <Section title="Revenue Streams">
           {FINANCE_STREAMS.map(({ label, key }) => {
-            const hasAmount = Boolean(streams[key]?.count);
-            const total = Number(streams[key]?.retained || 0);
+            const backing = DISPLAY_TO_BACKING[key] || [key];
+            const hasAmount = backing.some((k) => Boolean(streams[k]?.count));
+            const total = backing.reduce((sum, k) => sum + Number(streams[k]?.retained || 0), 0);
             return (
               <div
                 key={key}
@@ -138,17 +152,30 @@ export default function FinancialReviewPage() {
             </div>
           )}
         </Section>
-        <section id="transaction-details" className="rounded border border-zinc-800 bg-zinc-950 p-4">
-          <h2 className="text-lg text-yellow-400 mb-2">Ledger Transactions — Source of Truth Preview</h2>
-          <p className="text-xs text-zinc-400 mb-2">Selected stream: {hasSelectedStream ? selectedStream : "none"}</p>
+        <section
+          id="transaction-details"
+          className="rounded border border-zinc-800 bg-zinc-950 p-4"
+        >
+          <h2 className="text-lg text-yellow-400 mb-2">
+            Ledger Transactions — Source of Truth Preview
+          </h2>
+          <p className="text-xs text-zinc-400 mb-2">
+            Selected stream: {hasSelectedStream ? selectedStream : "none"}
+          </p>
 
           {hasSelectedStream ? (
             <div className="space-y-3">
-              <h3 className="text-sm text-yellow-300">Transaction Details — {selectedLabel}</h3>
+              <h3 className="text-sm text-yellow-300">
+                Transaction Details — {selectedLabel}
+              </h3>
               {!ledgerEnabled ? (
-                <p className="text-sm text-zinc-300">Financial ledger not enabled yet.</p>
+                <p className="text-sm text-zinc-300">
+                  Financial ledger not enabled yet.
+                </p>
               ) : ledger.length === 0 ? (
-                <p className="text-sm text-zinc-300">No transaction records found for this stream yet.</p>
+                <p className="text-sm text-zinc-300">
+                  No transaction records found for this stream yet.
+                </p>
               ) : (
                 <div className="overflow-auto">
                   <table className="min-w-full text-xs">
@@ -194,7 +221,10 @@ export default function FinancialReviewPage() {
               )}
             </div>
           ) : (
-            <p className="text-sm text-zinc-300">Select a connected revenue amount above to view filtered transaction details.</p>
+            <p className="text-sm text-zinc-300">
+              Select a connected revenue amount above to view filtered
+              transaction details.
+            </p>
           )}
         </section>
       </div>

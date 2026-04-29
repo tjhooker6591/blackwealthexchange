@@ -8,7 +8,8 @@ export type FinanceStreamKey =
   | "music_creator_plan"
   | "directory"
   | "affiliate_liability"
-  | "other";
+  | "affiliate_revenue"
+  | "manual_offline";
 
 export const FINANCE_STREAMS: Array<{
   label: string;
@@ -25,6 +26,6 @@ export const FINANCE_STREAMS: Array<{
   },
   { label: "Music Creator Plan Revenue", key: "music_creator_plan" },
   { label: "Directory Listing / Featured Placement Revenue", key: "directory" },
-  { label: "Affiliate Revenue", key: "affiliate_liability" },
-  { label: "Other / Manual Revenue", key: "other" },
+  { label: "Affiliate Revenue", key: "affiliate_revenue" },
+  { label: "Manual / Offline Revenue", key: "manual_offline" },
 ];
