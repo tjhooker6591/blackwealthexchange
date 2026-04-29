@@ -46,6 +46,8 @@ export function adminSafeLedgerProjection() {
     payoutStatus: 1,
     refundStatus: 1,
     disputeStatus: 1,
+    sourceRoute: 1,
+    userId: 1,
     createdAt: 1,
     updatedAt: 1,
   };
