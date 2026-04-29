@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { useRouter } from "next/router";
 import { SUPPORT_CATEGORIES, SUPPORT_PRIORITIES } from "@/lib/support";
 
 export default function SupportTicketForm({
@@ -6,11 +7,16 @@ export default function SupportTicketForm({
 }: {
   defaultCategory?: string;
 }) {
+  const router = useRouter();
+  const pre = useMemo(() => ({
+    category: String(router.query.category || defaultCategory || "General Question"),
+    priority: String(router.query.priority || "Normal"),
+  }), [router.query.category, router.query.priority, defaultCategory]);
   const [f, setF] = useState({
     name: "",
     email: "",
-    category: defaultCategory || "General Question",
-    priority: "normal",
+    category: pre.category,
+    priority: pre.priority,
     subject: "",
     message: "",
     relatedOrderId: "",
@@ -36,23 +42,97 @@ export default function SupportTicketForm({
   }
 
   return (
-    <form onSubmit={onSubmit} className="space-y-3 rounded border border-zinc-800 bg-zinc-950 p-4">
-      <input className="w-full p-2 bg-zinc-900 border border-zinc-700 rounded" placeholder="Name" value={f.name} onChange={(e)=>set("name", e.target.value)} required />
-      <input className="w-full p-2 bg-zinc-900 border border-zinc-700 rounded" placeholder="Email" value={f.email} onChange={(e)=>set("email", e.target.value)} required />
+    <form
+      onSubmit={onSubmit}
+      className="space-y-3 rounded border border-zinc-800 bg-zinc-950 p-4"
+    >
+      <input
+        className="w-full p-2 bg-zinc-900 border border-zinc-700 rounded"
+        placeholder="Name"
+        value={f.name}
+        onChange={(e) => set("name", e.target.value)}
+        required
+      />
+      <input
+        className="w-full p-2 bg-zinc-900 border border-zinc-700 rounded"
+        placeholder="Email"
+        value={f.email}
+        onChange={(e) => set("email", e.target.value)}
+        required
+      />
       <div className="grid md:grid-cols-3 gap-3">
-        <select className="p-2 bg-zinc-900 border border-zinc-700 rounded" value={f.category} onChange={(e)=>set("category", e.target.value)}>{SUPPORT_CATEGORIES.map(c=><option key={c} value={c}>{c}</option>)}</select>
-        <select className="p-2 bg-zinc-900 border border-zinc-700 rounded" value={f.priority} onChange={(e)=>set("priority", e.target.value)}>{SUPPORT_PRIORITIES.map(p=><option key={p} value={p}>{p}</option>)}</select>
-        <input className="p-2 bg-zinc-900 border border-zinc-700 rounded" placeholder="Account Type" value={f.accountType} onChange={(e)=>set("accountType", e.target.value)} />
+        <select
+          className="p-2 bg-zinc-900 border border-zinc-700 rounded"
+          value={f.category}
+          onChange={(e) => set("category", e.target.value)}
+        >
+          {SUPPORT_CATEGORIES.map((c) => (
+            <option key={c} value={c}>
+              {c}
+            </option>
+          ))}
+        </select>
+        <select
+          className="p-2 bg-zinc-900 border border-zinc-700 rounded"
+          value={f.priority}
+          onChange={(e) => set("priority", e.target.value)}
+        >
+          {SUPPORT_PRIORITIES.map((p) => (
+            <option key={p} value={p}>
+              {p}
+            </option>
+          ))}
+        </select>
+        <input
+          className="p-2 bg-zinc-900 border border-zinc-700 rounded"
+          placeholder="Account Type"
+          value={f.accountType}
+          onChange={(e) => set("accountType", e.target.value)}
+        />
       </div>
-      <input className="w-full p-2 bg-zinc-900 border border-zinc-700 rounded" placeholder="Subject" value={f.subject} onChange={(e)=>set("subject", e.target.value)} required />
-      <textarea className="w-full p-2 min-h-32 bg-zinc-900 border border-zinc-700 rounded" placeholder="Message" value={f.message} onChange={(e)=>set("message", e.target.value)} required />
+      <input
+        className="w-full p-2 bg-zinc-900 border border-zinc-700 rounded"
+        placeholder="Subject"
+        value={f.subject}
+        onChange={(e) => set("subject", e.target.value)}
+        required
+      />
+      <textarea
+        className="w-full p-2 min-h-32 bg-zinc-900 border border-zinc-700 rounded"
+        placeholder="Message"
+        value={f.message}
+        onChange={(e) => set("message", e.target.value)}
+        required
+      />
       <div className="grid md:grid-cols-2 gap-3">
-        <input className="p-2 bg-zinc-900 border border-zinc-700 rounded" placeholder="Related Order ID" value={f.relatedOrderId} onChange={(e)=>set("relatedOrderId", e.target.value)} />
-        <input className="p-2 bg-zinc-900 border border-zinc-700 rounded" placeholder="Related Payment ID" value={f.relatedPaymentId} onChange={(e)=>set("relatedPaymentId", e.target.value)} />
-        <input className="p-2 bg-zinc-900 border border-zinc-700 rounded" placeholder="Related Business ID" value={f.relatedBusinessId} onChange={(e)=>set("relatedBusinessId", e.target.value)} />
-        <input className="p-2 bg-zinc-900 border border-zinc-700 rounded" placeholder="Related Product ID" value={f.relatedProductId} onChange={(e)=>set("relatedProductId", e.target.value)} />
+        <input
+          className="p-2 bg-zinc-900 border border-zinc-700 rounded"
+          placeholder="Related Order ID"
+          value={f.relatedOrderId}
+          onChange={(e) => set("relatedOrderId", e.target.value)}
+        />
+        <input
+          className="p-2 bg-zinc-900 border border-zinc-700 rounded"
+          placeholder="Related Payment ID"
+          value={f.relatedPaymentId}
+          onChange={(e) => set("relatedPaymentId", e.target.value)}
+        />
+        <input
+          className="p-2 bg-zinc-900 border border-zinc-700 rounded"
+          placeholder="Related Business ID"
+          value={f.relatedBusinessId}
+          onChange={(e) => set("relatedBusinessId", e.target.value)}
+        />
+        <input
+          className="p-2 bg-zinc-900 border border-zinc-700 rounded"
+          placeholder="Related Product ID"
+          value={f.relatedProductId}
+          onChange={(e) => set("relatedProductId", e.target.value)}
+        />
       </div>
-      <button className="px-4 py-2 rounded bg-yellow-500 text-black font-semibold">Create Ticket</button>
+      <button className="px-4 py-2 rounded bg-yellow-500 text-black font-semibold">
+        Create Ticket
+      </button>
       {msg && <p className="text-sm text-zinc-300">{msg}</p>}
     </form>
   );
