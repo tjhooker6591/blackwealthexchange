@@ -1,17 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import Stripe from "stripe";
-import clientPromise from "@/lib/mongodb";
-import { getMongoDbName } from "@/lib/env";
-import { createProductCheckoutSessionCore } from "@/lib/checkout/createProductCheckoutSession";
-import { getStripeSecretKey, requireStripeSecretKey } from "@/lib/stripeSecret";
-
-function isProd() {
-  return process.env.NODE_ENV === "production";
-}
-
-function getStripe() {
-  return new Stripe(requireStripeSecretKey());
-}
+import stripeCheckoutHandler from "@/pages/api/stripe/checkout";
 
 function safeJsonBody(body: unknown): Record<string, any> {
   if (!body) return {};
@@ -30,55 +18,26 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  try {
-    if (req.method !== "POST") {
-      return res
-        .status(405)
-        .json({ code: "METHOD_NOT_ALLOWED", message: "Method not allowed" });
-    }
-
-    const body = safeJsonBody(req.body);
-    const productId =
-      typeof body.productId === "string" ? body.productId.trim() : "";
-
-    if (!getStripeSecretKey()) {
-      return res.status(503).json({
-        code: "STRIPE_NOT_CONFIGURED",
-        message:
-          "Checkout is temporarily unavailable while payments are being configured.",
-      });
-    }
-
-    const client = await clientPromise;
-    const db = client.db(getMongoDbName());
-    const stripe = getStripe();
-
-    const result = await createProductCheckoutSessionCore({
-      req,
-      db,
-      productId,
-      stripe,
-    });
-
-    if (result.status === 429 && result.body?.retryAfterSeconds) {
-      res.setHeader("Retry-After", String(result.body.retryAfterSeconds));
-    }
-
-    return res.status(result.status).json(result.body);
-  } catch (err: any) {
-    console.error("Error creating checkout session:", err);
-
-    return res.status(500).json({
-      code: "SERVER_ERROR",
-      message: "Checkout is temporarily unavailable. Please try again shortly.",
-      debug: !isProd()
-        ? {
-            error: err?.message || "Unknown error",
-            type: err?.type,
-            code: err?.code,
-            raw: err?.raw?.message,
-          }
-        : undefined,
-    });
+  if (req.method !== "POST") {
+    res.setHeader("Allow", ["POST"]);
+    return res
+      .status(405)
+      .json({ code: "METHOD_NOT_ALLOWED", message: "Method not allowed" });
   }
+
+  const body = safeJsonBody(req.body);
+  const productId =
+    typeof body.productId === "string" ? body.productId.trim() : "";
+
+  req.body = {
+    ...body,
+    type: "product",
+    itemId: productId || String(body.itemId || "").trim(),
+    metadata: {
+      ...(typeof body.metadata === "object" && body.metadata ? body.metadata : {}),
+      source: "legacy_checkout_create_session",
+    },
+  };
+
+  return stripeCheckoutHandler(req, res);
 }
