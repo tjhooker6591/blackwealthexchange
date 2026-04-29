@@ -46,9 +46,12 @@ export default function FinancialReviewPage() {
   }, []);
 
   const streams = data?.byStream || {};
+  const hasSelectedStream = selectedStream.length > 0;
+
   const selectedLabel = useMemo(
     () =>
-      FINANCE_STREAMS.find((x) => x.key === selectedStream)?.label || selectedStream,
+      FINANCE_STREAMS.find((x) => x.key === selectedStream)?.label ||
+      selectedStream,
     [selectedStream],
   );
 
@@ -79,7 +82,7 @@ export default function FinancialReviewPage() {
                 {label}:{" "}
                 {hasAmount ? (
                   <Link
-                    href={`/admin/financial-review?stream=${encodeURIComponent(key)}`}
+                    href={`/admin/financial-review?stream=${encodeURIComponent(key)}#transaction-details`}
                     aria-label={`View ${label} transaction details`}
                     className="text-yellow-300 underline decoration-yellow-500 hover:text-yellow-200"
                   >
@@ -135,20 +138,17 @@ export default function FinancialReviewPage() {
             </div>
           )}
         </Section>
-        <Section title="Ledger Transactions — Source of Truth Preview">
-          {!ledgerEnabled ? (
-            <p className="text-sm text-zinc-300">
-              Financial ledger not enabled yet
-            </p>
-          ) : selectedStream ? (
+        <section id="transaction-details" className="rounded border border-zinc-800 bg-zinc-950 p-4">
+          <h2 className="text-lg text-yellow-400 mb-2">Ledger Transactions — Source of Truth Preview</h2>
+          <p className="text-xs text-zinc-400 mb-2">Selected stream: {hasSelectedStream ? selectedStream : "none"}</p>
+
+          {hasSelectedStream ? (
             <div className="space-y-3">
-              <h3 className="text-sm text-yellow-300">
-                Transaction Details — {selectedLabel}
-              </h3>
-              {ledger.length === 0 ? (
-                <p className="text-sm text-zinc-300">
-No transaction records found for this stream yet.
-                </p>
+              <h3 className="text-sm text-yellow-300">Transaction Details — {selectedLabel}</h3>
+              {!ledgerEnabled ? (
+                <p className="text-sm text-zinc-300">Financial ledger not enabled yet.</p>
+              ) : ledger.length === 0 ? (
+                <p className="text-sm text-zinc-300">No transaction records found for this stream yet.</p>
               ) : (
                 <div className="overflow-auto">
                   <table className="min-w-full text-xs">
@@ -194,12 +194,9 @@ No transaction records found for this stream yet.
               )}
             </div>
           ) : (
-            <p className="text-sm text-zinc-300">
-              Select a connected revenue amount above to view filtered
-              transaction details.
-            </p>
+            <p className="text-sm text-zinc-300">Select a connected revenue amount above to view filtered transaction details.</p>
           )}
-        </Section>
+        </section>
       </div>
     </div>
   );
