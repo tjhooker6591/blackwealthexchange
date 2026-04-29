@@ -8,6 +8,7 @@ type Data = any;
 export default function FinancialReviewPage() {
   const [data, setData] = useState<Data | null>(null);
   const [ledger, setLedger] = useState<any[]>([]);
+  const [ledgerEnabled, setLedgerEnabled] = useState<boolean>(true);
 
   useEffect(() => {
     fetch("/api/admin/financial-review", { credentials: "include" })
@@ -17,8 +18,8 @@ export default function FinancialReviewPage() {
 
     fetch("/api/admin/financial-ledger?limit=20", { credentials: "include" })
       .then((r) => r.json())
-      .then((d) => setLedger(d?.rows || []))
-      .catch(() => setLedger([]));
+      .then((d) => { setLedger(d?.rows || []); setLedgerEnabled(d?.enabled !== false); })
+      .catch(() => { setLedger([]); setLedgerEnabled(false); });
   }, []);
 
   const streams = data?.byStream || {};
@@ -75,10 +76,13 @@ export default function FinancialReviewPage() {
           ))}
         </Section>
 
-
         <Section title="Ledger Transactions (Source of Truth Preview)">
           <pre className="text-xs overflow-auto">
-            {JSON.stringify(ledger, null, 2)}
+            {!ledgerEnabled
+              ? "Financial ledger not enabled yet"
+              : ledger.length === 0
+                ? "No ledger records yet"
+                : JSON.stringify(ledger, null, 2)}
           </pre>
         </Section>
         <Section title="Transaction Review">

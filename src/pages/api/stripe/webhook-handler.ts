@@ -25,6 +25,10 @@ import {
   checkoutTypeToRevenueType,
   computeRevenueSplit,
 } from "@/lib/payments/revenue";
+import {
+  ensureFinancialLedgerIndexes,
+  isFinancialLedgerEnabled,
+} from "@/lib/finance/ledger";
 
 export const config = {
   api: { bodyParser: false },
@@ -44,9 +48,6 @@ function getWebhookSecret() {
   return (process.env.STRIPE_WEBHOOK_SECRET || "").trim();
 }
 
-function isFinancialLedgerEnabled() {
-  return String(process.env.ENABLE_FINANCIAL_LEDGER || "false").toLowerCase() === "true";
-}
 
 interface SessionMetadata {
   // existing flows
@@ -789,6 +790,9 @@ export default async function webhookHandler(
   try {
     const client = await clientPromise;
     const db = client.db(getMongoDbName());
+    if (isFinancialLedgerEnabled()) {
+      await ensureFinancialLedgerIndexes(db);
+    }
 
     const now = new Date();
     const sessionCreatedAt = unixToDate((session as any).created, now);
@@ -899,9 +903,7 @@ export default async function webhookHandler(
     );
     const split = computeRevenueSplit(resolvedRevenueType, resolvedAmountCents);
 
-    console.log(
-      `🔔 Paid webhook received type=${event.type} session=${stripeSessionId} item=${normalizedItemId || "n/a"} amount=${session.amount_total ?? "n/a"}`,
-    );
+    console.log(`stripe webhook paid session=${stripeSessionId} type=${event.type}`);
 
     /**
      * 0) Always upsert payments (idempotent reconciliation)
@@ -995,10 +997,9 @@ export default async function webhookHandler(
       },
     );
 
-
     if (isFinancialLedgerEnabled()) {
       await db.collection("financial_ledger").updateOne(
-        { transactionId: stripeSessionId },
+        { transactionId: stripeSessionId, webhookEventId: event.id },
         {
           $setOnInsert: {
             transactionId: stripeSessionId,
@@ -1009,7 +1010,9 @@ export default async function webhookHandler(
           $set: {
             updatedAt: now,
             userId: userId || null,
-            sellerId: orderRecord?.sellerId ? idToString(orderRecord.sellerId) : null,
+            sellerId: orderRecord?.sellerId
+              ? idToString(orderRecord.sellerId)
+              : null,
             employerId: null,
             businessId: businessId || null,
             creatorId: null,
@@ -1022,11 +1025,18 @@ export default async function webhookHandler(
             netBweRevenue: split.bweFee || 0,
             paymentStatus: "paid",
             fulfillmentStatus: orderRecord ? "fulfilled" : "pending",
-            payoutStatus: split.sellerPayout > 0 ? (orderRecord?.payoutMode === "platform_hold" ? "platform_held" : "ready") : "not_applicable",
+            payoutStatus:
+              split.sellerPayout > 0
+                ? orderRecord?.payoutMode === "platform_hold"
+                  ? "platform_held"
+                  : "ready"
+                : "not_applicable",
             refundStatus: "none",
             disputeStatus: "none",
             sourceRoute: "/api/stripe/webhook-handler",
             webhookEventId: event.id,
+            actorType: "system",
+            immutableOriginalAmount: resolvedAmountCents || 0,
             metadata: {
               type: metaType || null,
               itemId: normalizedItemId || rawMetaItemId || null,
