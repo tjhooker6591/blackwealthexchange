@@ -12,6 +12,7 @@ const footerSections: Array<{
       { href: "/marketplace", label: "Marketplace" },
       { href: "/jobs", label: "Jobs" },
       { href: "/advertising", label: "Advertising" },
+      { href: "/support", label: "Support" },
     ],
   },
   {
@@ -44,7 +45,10 @@ const footerSections: Array<{
       { href: "/terms-of-service", label: "Terms" },
       { href: "/privacy-policy", label: "Privacy" },
       { href: "/legal/community-conduct", label: "Code of Conduct" },
-      { href: "/legal/advertising-guidelines", label: "Advertising Guidelines" },
+      {
+        href: "/legal/advertising-guidelines",
+        label: "Advertising Guidelines",
+      },
     ],
   },
 ];
@@ -99,7 +103,8 @@ export default function Footer() {
         </div>
 
         <div className="mt-2 border-t border-white/10 pt-2 text-center text-[10px] text-white/45 sm:text-[11px]">
-          &copy; {new Date().getFullYear()} Black Wealth Exchange. All rights reserved.
+          &copy; {new Date().getFullYear()} Black Wealth Exchange. All rights
+          reserved.
         </div>
       </div>
     </footer>
