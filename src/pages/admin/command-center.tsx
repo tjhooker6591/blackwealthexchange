@@ -70,6 +70,10 @@ function MetricCard({
 export default function CommandCenterPage() {
   const [d, setD] = useState<any>(null);
   const [plan, setPlan] = useState<any>(null);
+  const [weekly, setWeekly] = useState<any>(null);
+  const [retention, setRetention] = useState<any>(null);
+  const [trustM, setTrustM] = useState<any>(null);
+  const [sponsor, setSponsor] = useState<any>(null);
   const [err, setErr] = useState("");
 
   useEffect(() => {
@@ -86,6 +90,14 @@ export default function CommandCenterPage() {
       .then((r) => r.json())
       .then((j) => setPlan(j?.row || null))
       .catch(() => setPlan(null));
+    fetch("/api/admin/weekly-operating-review/current", { credentials: "include" })
+      .then((r) => r.json())
+      .then((j) => setWeekly(j?.review || null))
+      .catch(() => setWeekly(null));
+    fetch("/api/admin/metrics/retention", { credentials: "include" }).then((r)=>r.json()).then(setRetention).catch(()=>setRetention(null));
+    fetch("/api/admin/metrics/marketplace-trust", { credentials: "include" }).then((r)=>r.json()).then(setTrustM).catch(()=>setTrustM(null));
+    fetch("/api/admin/metrics/sponsor-proof", { credentials: "include" }).then((r)=>r.json()).then(setSponsor).catch(()=>setSponsor(null));
+
   }, []);
 
   const company = d?.companyHealth || {};
@@ -191,7 +203,9 @@ export default function CommandCenterPage() {
             <h1 className="text-3xl md:text-4xl font-bold text-yellow-400">
               BWE CEO Command Center
             </h1>
-            <p className="text-sm text-zinc-400">Generated {d.generatedAt} • Source: {d.source}</p>
+            <p className="text-sm text-zinc-400">
+              Generated {d.generatedAt} • Source: {d.source}
+            </p>
           </div>
           <div className="text-xs text-zinc-400">
             Fast executive view, linked to operating pages
@@ -273,6 +287,34 @@ export default function CommandCenterPage() {
         </section>
 
         <section className="space-y-3">
+          <h2 className="text-xl font-semibold text-yellow-300">Weekly CEO Operating Cadence</h2>
+          <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4 text-sm text-zinc-200 space-y-2">
+            {!weekly ? <div className="text-zinc-400">No weekly review started yet. <a href="#weekly-review" className="underline">Start current week review</a>.</div> : <div className="text-zinc-300">Current week: {String(weekly.weekStart || "set weekStart")}</div>}
+            <div><b>MONDAY</b> - Top 3 priorities, blockers, founder decisions needed</div>
+            <div><b>TUES/WED</b> - Engineering progress, route/API health, support risk, marketplace trust issues</div>
+            <div><b>THURSDAY</b> - Sponsor proof, ad performance, marketplace revenue, jobs pipeline, partnerships</div>
+            <div><b>FRIDAY</b> - Release readiness, support status, revenue review, trust/safety, deploy or hold</div>
+            <div><b>SUNDAY</b> - Mission progress, revenue progress, trust progress, stop/carry-forward</div>
+          </div>
+        </section>
+
+        <section className="space-y-3" id="weekly-review">
+          <h2 className="text-xl font-semibold text-yellow-300">Weekly Operating Review</h2>
+          <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4 text-sm">
+            {weekly ? <pre className="text-xs text-zinc-300 overflow-auto">{JSON.stringify(weekly, null, 2)}</pre> : <div className="text-zinc-400">No weekly review started yet.</div>}
+          </div>
+        </section>
+
+        <section className="space-y-3">
+          <h2 className="text-xl font-semibold text-yellow-300">P0 Operating Loops</h2>
+          <div className="grid md:grid-cols-3 gap-3 text-xs">
+            <div className="rounded border border-zinc-800 bg-zinc-950 p-3"><div className="font-semibold text-yellow-300">Retention Loop</div><pre className="text-zinc-300 mt-1 overflow-auto">{JSON.stringify(retention?.retention || {sourceStatus:"needs_mapping"},null,2)}</pre></div>
+            <div className="rounded border border-zinc-800 bg-zinc-950 p-3"><div className="font-semibold text-yellow-300">Marketplace Trust</div><pre className="text-zinc-300 mt-1 overflow-auto">{JSON.stringify(trustM?.metrics || {sourceStatus:"needs_mapping"},null,2)}</pre></div>
+            <div className="rounded border border-zinc-800 bg-zinc-950 p-3"><div className="font-semibold text-yellow-300">Sponsor Proof</div><pre className="text-zinc-300 mt-1 overflow-auto">{JSON.stringify(sponsor?.metrics || {sourceStatus:"needs_tracking"},null,2)}</pre></div>
+          </div>
+        </section>
+
+        <section className="space-y-3">
           <h2 className="text-xl font-semibold text-yellow-300">
             Executive Quick Access / All Access Cheat Sheet
           </h2>
@@ -350,11 +392,28 @@ export default function CommandCenterPage() {
         </section>
 
         <section className="space-y-3">
-          <h2 className="text-xl font-semibold text-yellow-300">Trend (7d/30d)</h2>
+          <h2 className="text-xl font-semibold text-yellow-300">
+            Trend (7d/30d)
+          </h2>
           <div className="grid md:grid-cols-3 gap-3">
-            <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4"><div className="text-yellow-300 font-semibold">Revenue Trend</div><pre className="text-xs mt-2 text-zinc-300 overflow-auto">{JSON.stringify(d?.trends?.revenue || {}, null, 2)}</pre></div>
-            <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4"><div className="text-yellow-300 font-semibold">Support Trend</div><pre className="text-xs mt-2 text-zinc-300 overflow-auto">{JSON.stringify(d?.trends?.support || {}, null, 2)}</pre></div>
-            <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4"><div className="text-yellow-300 font-semibold">Growth Trend</div><pre className="text-xs mt-2 text-zinc-300 overflow-auto">{JSON.stringify(d?.trends?.growth || {}, null, 2)}</pre></div>
+            <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
+              <div className="text-yellow-300 font-semibold">Revenue Trend</div>
+              <pre className="text-xs mt-2 text-zinc-300 overflow-auto">
+                {JSON.stringify(d?.trends?.revenue || {}, null, 2)}
+              </pre>
+            </div>
+            <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
+              <div className="text-yellow-300 font-semibold">Support Trend</div>
+              <pre className="text-xs mt-2 text-zinc-300 overflow-auto">
+                {JSON.stringify(d?.trends?.support || {}, null, 2)}
+              </pre>
+            </div>
+            <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4">
+              <div className="text-yellow-300 font-semibold">Growth Trend</div>
+              <pre className="text-xs mt-2 text-zinc-300 overflow-auto">
+                {JSON.stringify(d?.trends?.growth || {}, null, 2)}
+              </pre>
+            </div>
           </div>
         </section>
 
