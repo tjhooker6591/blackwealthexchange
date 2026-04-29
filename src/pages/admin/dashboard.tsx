@@ -1624,10 +1624,7 @@ const AdminDashboard = ({
               label="User & account management"
             />
             <AdminLink href="/admin/organizations" label="Organizations" />
-            <AdminLink
-              href="/admin/black-card"
-              label="Black Card Management"
-            />
+            <AdminLink href="/admin/black-card" label="Black Card Management" />
             <AdminLink href="/admin/affiliates" label="Affiliates" />
             <AdminLink
               href="/admin/affiliate-attribution"
@@ -1644,6 +1641,22 @@ const AdminDashboard = ({
           </div>
         </div>
 
+
+        <div className="rounded border border-yellow-700 bg-gray-800 p-4">
+          <h3 className="text-sm font-semibold text-gold">Financial Review</h3>
+          <p className="mt-1 text-xs text-gray-400">Dedicated finance control center separate from general analytics.</p>
+          <div className="mt-3 space-y-2 text-xs text-gray-300">
+            <div>Total Revenue</div>
+            <div>Revenue This Month</div>
+            <div>Pending / Unconfirmed Revenue</div>
+            <div>Refunded / Failed Payments</div>
+            <div>Revenue by Stream</div>
+            <div>Latest Transactions</div>
+          </div>
+          <div className="mt-3">
+            <AdminLink href="/admin/financial-review" label="Open Financial Review" />
+          </div>
+        </div>
         <div className="rounded border border-gray-700 bg-gray-800 p-4">
           <h3 className="text-sm font-semibold text-gold">Secondary Tools</h3>
           <p className="mt-1 text-xs text-gray-400">

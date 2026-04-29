@@ -1,4 +1,11 @@
-export type RevenueType = "marketplace" | "ads" | "jobs" | "courses" | "membership" | "music" | "other";
+export type RevenueType =
+  | "marketplace"
+  | "ads"
+  | "jobs"
+  | "courses"
+  | "membership"
+  | "music"
+  | "other";
 
 export type RevenueSplit = {
   grossAmount: number;
@@ -18,12 +25,21 @@ const FEE_PERCENT_BY_TYPE: Record<RevenueType, number> = {
   other: 100,
 };
 
-export function computeRevenueSplit(type: RevenueType, grossAmount: number): RevenueSplit {
+export function computeRevenueSplit(
+  type: RevenueType,
+  grossAmount: number,
+): RevenueSplit {
   const gross = Math.max(0, Math.round(Number(grossAmount) || 0));
   const percent = FEE_PERCENT_BY_TYPE[type] ?? 100;
 
   if (percent >= 100) {
-    return { grossAmount: gross, bweFee: gross, bweFeePercent: 100, sellerPayout: 0, netAmount: gross };
+    return {
+      grossAmount: gross,
+      bweFee: gross,
+      bweFeePercent: 100,
+      sellerPayout: 0,
+      netAmount: gross,
+    };
   }
 
   const fee = Math.round((gross * percent) / 100);
@@ -37,14 +53,23 @@ export function computeRevenueSplit(type: RevenueType, grossAmount: number): Rev
   };
 }
 
-export function checkoutTypeToRevenueType(type: string, itemId?: string): RevenueType {
+export function checkoutTypeToRevenueType(
+  type: string,
+  itemId?: string,
+): RevenueType {
   if (type === "product") return "marketplace";
   if (type === "ad") return "ads";
   if (type === "job") return "jobs";
   if (type === "course") return "courses";
   if (type === "plan") {
-    if ((itemId || "").startsWith("music-creator-")) return "music";
-    if ((itemId || "").startsWith("black-card") || itemId === "premium" || itemId === "founder" || (itemId || "").startsWith("wealth-builder-")) return "membership";
+    if ((itemId || "").startsWith("music-creator-")) return "music"; // creator plan only
+    if (
+      (itemId || "").startsWith("black-card") ||
+      itemId === "premium" ||
+      itemId === "founder" ||
+      (itemId || "").startsWith("wealth-builder-")
+    )
+      return "membership";
   }
   return "other";
 }
