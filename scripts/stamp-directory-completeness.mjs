@@ -1,5 +1,55 @@
 import { MongoClient } from "mongodb";
-import { computeListingCompleteness } from "../src/lib/directory/completeness";
+
+function asTrimmed(v) {
+  if (typeof v === "string") return v.trim();
+  if (v === null || v === undefined) return "";
+  return String(v).trim();
+}
+
+function hasValue(v) {
+  if (Array.isArray(v)) return v.some((x) => asTrimmed(x).length > 0);
+  return asTrimmed(v).length > 0;
+}
+
+function getAliasCategory(doc) {
+  if (hasValue(doc.display_categories)) return asTrimmed(doc.display_categories);
+  if (Array.isArray(doc.categories))
+    return doc.categories
+      .map((x) => asTrimmed(x))
+      .filter(Boolean)
+      .join(", ");
+  if (hasValue(doc.categories)) return asTrimmed(doc.categories);
+  if (hasValue(doc.category)) return asTrimmed(doc.category);
+  if (hasValue(doc.orgType)) return asTrimmed(doc.orgType);
+  return "";
+}
+
+function computeListingCompleteness(doc) {
+  const checks = [
+    [
+      "name",
+      hasValue(doc.business_name) ||
+        hasValue(doc.name) ||
+        hasValue(doc.organization_name),
+    ],
+    ["description", hasValue(doc.description)],
+    ["address", hasValue(doc.address)],
+    ["city", hasValue(doc.city)],
+    ["state", hasValue(doc.state)],
+    ["phone", hasValue(doc.phone)],
+    ["category", hasValue(getAliasCategory(doc))],
+    ["website", hasValue(doc.website)],
+    ["image", hasValue(doc.image)],
+  ];
+
+  const total = checks.length;
+  const present = checks.filter(([, ok]) => ok).length;
+  const missingFields = checks.filter(([, ok]) => !ok).map(([k]) => k);
+  const completenessScore = Math.round((present / total) * 100);
+  const isComplete = present >= 7;
+
+  return { missingFields, completenessScore, isComplete };
+}
 
 const URI =
   process.env.MONGO_URI ||
