@@ -49,6 +49,31 @@ function getWebhookSecret() {
 }
 
 
+function redactId(value: string) {
+  if (!value) return "";
+  return `${value.slice(0, 12)}••••`;
+}
+
+async function logWebhookDebug(db: Db, input: {
+  eventId?: string;
+  eventType?: string;
+  sessionId?: string;
+  revenueStream?: string;
+  status: "received" | "processed" | "ledger_written" | "failed";
+  ledgerAttempted: boolean;
+}) {
+  try {
+    await db.collection("webhook_events_debug").insertOne({
+      eventId: input.eventId || null,
+      eventType: input.eventType || null,
+      sessionId: input.sessionId || null,
+      revenueStream: input.revenueStream || null,
+      status: input.status,
+      ledgerAttempted: input.ledgerAttempted,
+      createdAt: new Date(),
+    });
+  } catch {}
+}
 interface SessionMetadata {
   // existing flows
   campaignId?: string;
@@ -594,6 +619,16 @@ export default async function webhookHandler(
   ) {
     const client = await clientPromise;
     const db = client.db(getMongoDbName());
+    await logWebhookDebug(db, {
+      eventId: event.id,
+      eventType: event.type,
+      sessionId: stripeSessionId,
+      status: "received",
+      ledgerAttempted: false,
+    });
+
+    console.log(`[webhook] received type=${event.type} event=${redactId(event.id)} session=${redactId(stripeSessionId)}`);
+
     const now = new Date();
 
     const subIdFromInvoice = event.type.startsWith("invoice.")
@@ -790,9 +825,20 @@ export default async function webhookHandler(
   try {
     const client = await clientPromise;
     const db = client.db(getMongoDbName());
-    if (isFinancialLedgerEnabled()) {
+    const ledgerEnabled = isFinancialLedgerEnabled();
+    if (ledgerEnabled) {
       await ensureFinancialLedgerIndexes(db);
     }
+
+    await logWebhookDebug(db, {
+      eventId: event.id,
+      eventType: event.type,
+      sessionId: stripeSessionId,
+      status: "received",
+      ledgerAttempted: false,
+    });
+
+    console.log(`[webhook] received type=${event.type} event=${redactId(event.id)} session=${redactId(stripeSessionId)}`);
 
     const now = new Date();
     const sessionCreatedAt = unixToDate((session as any).created, now);
@@ -903,7 +949,9 @@ export default async function webhookHandler(
     );
     const split = computeRevenueSplit(resolvedRevenueType, resolvedAmountCents);
 
-    console.log(`stripe webhook paid session=${stripeSessionId} type=${event.type}`);
+    console.log(
+      `stripe webhook paid session=${stripeSessionId} type=${event.type}`,
+    );
 
     /**
      * 0) Always upsert payments (idempotent reconciliation)
@@ -997,7 +1045,8 @@ export default async function webhookHandler(
       },
     );
 
-    if (isFinancialLedgerEnabled()) {
+    const ledgerEnabled = isFinancialLedgerEnabled();
+    if (ledgerEnabled) {
       await db.collection("financial_ledger").updateOne(
         { transactionId: stripeSessionId, webhookEventId: event.id },
         {
@@ -1047,7 +1096,27 @@ export default async function webhookHandler(
         },
         { upsert: true },
       );
+      await logWebhookDebug(db, {
+        eventId: event.id,
+        eventType: event.type,
+        sessionId: stripeSessionId,
+        revenueStream: resolvedRevenueType,
+        status: "ledger_written",
+        ledgerAttempted: true,
+      });
     }
+
+    await logWebhookDebug(db, {
+      eventId: event.id,
+      eventType: event.type,
+      sessionId: stripeSessionId,
+      revenueStream: resolvedRevenueType,
+      status: "processed",
+      ledgerAttempted: ledgerEnabled,
+    });
+
+    console.log(`[webhook] processed type=${event.type} event=${redactId(event.id)} session=${redactId(stripeSessionId)} stream=${resolvedRevenueType} ledger_attempted=${ledgerEnabled ? "yes" : "no"}`);
+
     if (metaType === "product") {
       const orderId =
         idToString(orderRecord?._id) || asString(mergedMeta.orderId);

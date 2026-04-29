@@ -37,6 +37,7 @@ export default function FinancialReviewPage() {
   const [data, setData] = useState<Data | null>(null);
   const [ledger, setLedger] = useState<any[]>([]);
   const [ledgerEnabled, setLedgerEnabled] = useState<boolean>(true);
+  const [eventRows, setEventRows] = useState<any[]>([]);
   const selectedStream = String(router.query.stream || "").trim();
 
   useEffect(() => {
@@ -62,9 +63,17 @@ export default function FinancialReviewPage() {
       });
   }, [selectedStream]);
 
+  useEffect(() => {
+    fetch("/api/admin/webhook-events?limit=20", { credentials: "include" })
+      .then((r) => r.json())
+      .then((d) => setEventRows(d?.rows || []))
+      .catch(() => setEventRows([]));
+  }, []);
+
   const streams = data?.byStream || {};
   const selectedLabel = useMemo(
-    () => STREAMS.find(([, key]) => key === selectedStream)?.[0] || selectedStream,
+    () =>
+      STREAMS.find(([, key]) => key === selectedStream)?.[0] || selectedStream,
     [selectedStream],
   );
 
@@ -72,17 +81,30 @@ export default function FinancialReviewPage() {
     <div className="min-h-screen bg-black text-white p-8">
       <div className="max-w-7xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-3xl font-bold text-yellow-400">Financial Review</h1>
-          <Link href="/admin/dashboard" className="text-sm border border-zinc-700 px-3 py-2 rounded">Back to Admin</Link>
+          <h1 className="text-3xl font-bold text-yellow-400">
+            Financial Review
+          </h1>
+          <Link
+            href="/admin/dashboard"
+            className="text-sm border border-zinc-700 px-3 py-2 rounded"
+          >
+            Back to Admin
+          </Link>
         </div>
 
         <Section title="Revenue Streams">
           {STREAMS.map(([label, key]) => {
             const backingKeys = BY_STREAM_KEYS[key] || [key];
             const hasAmount = backingKeys.some((k) => streams[k]?.count);
-            const total = backingKeys.reduce((sum, k) => sum + Number(streams[k]?.retained || 0), 0);
+            const total = backingKeys.reduce(
+              (sum, k) => sum + Number(streams[k]?.retained || 0),
+              0,
+            );
             return (
-              <div key={key} className="rounded border border-zinc-800 bg-zinc-950 p-3 text-sm">
+              <div
+                key={key}
+                className="rounded border border-zinc-800 bg-zinc-950 p-3 text-sm"
+              >
                 {label}:{" "}
                 {hasAmount ? (
                   <Link
@@ -100,26 +122,86 @@ export default function FinancialReviewPage() {
           })}
         </Section>
 
+
+        <Section title="Ledger Readiness">
+          <p className="text-sm text-zinc-300">
+            {ledgerEnabled
+              ? "Ledger enabled, new transactions will be recorded"
+              : "Ledger disabled, no financial records will be written"}
+          </p>
+        </Section>
+
+        <Section title="Recent Payment Events (Debug View)">
+          {eventRows.length === 0 ? (
+            <p className="text-sm text-zinc-300">No webhook events captured yet.</p>
+          ) : (
+            <div className="overflow-auto">
+              <table className="min-w-full text-xs">
+                <thead>
+                  <tr className="text-zinc-400">
+                    <th className="text-left p-2">Event Time</th>
+                    <th className="text-left p-2">Revenue Stream</th>
+                    <th className="text-left p-2">Status</th>
+                    <th className="text-left p-2">Session ID</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {eventRows.map((r, i) => (
+                    <tr key={i} className="border-t border-zinc-800">
+                      <td className="p-2">{r.createdAt ? new Date(r.createdAt).toLocaleString() : "-"}</td>
+                      <td className="p-2">{r.revenueStream || "-"}</td>
+                      <td className="p-2">{r.status || "-"}</td>
+                      <td className="p-2">{r.sessionId || "-"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </Section>
         <Section title="Ledger Transactions — Source of Truth Preview">
           {!ledgerEnabled ? (
-            <p className="text-sm text-zinc-300">Financial ledger not enabled yet</p>
+            <p className="text-sm text-zinc-300">
+              Financial ledger not enabled yet
+            </p>
           ) : selectedStream ? (
             <div className="space-y-3">
-              <h3 className="text-sm text-yellow-300">Transaction Details — {selectedLabel}</h3>
+              <h3 className="text-sm text-yellow-300">
+                Transaction Details — {selectedLabel}
+              </h3>
               {ledger.length === 0 ? (
-                <p className="text-sm text-zinc-300">Revenue total exists, but detailed transaction records are not available yet for this stream.</p>
+                <p className="text-sm text-zinc-300">
+                  Revenue total exists, but detailed transaction records are not
+                  available yet for this stream.
+                </p>
               ) : (
                 <div className="overflow-auto">
                   <table className="min-w-full text-xs">
                     <thead>
                       <tr className="text-zinc-400">
-                        <th className="text-left p-2">Date</th><th className="text-left p-2">Customer / User</th><th className="text-left p-2">Revenue Stream</th><th className="text-left p-2">Gross Amount</th><th className="text-left p-2">BWE Fee</th><th className="text-left p-2">Net BWE Revenue</th><th className="text-left p-2">Payment Status</th><th className="text-left p-2">Fulfillment Status</th><th className="text-left p-2">Stripe Session ID</th><th className="text-left p-2">Source</th>
+                        <th className="text-left p-2">Date</th>
+                        <th className="text-left p-2">Customer / User</th>
+                        <th className="text-left p-2">Revenue Stream</th>
+                        <th className="text-left p-2">Gross Amount</th>
+                        <th className="text-left p-2">BWE Fee</th>
+                        <th className="text-left p-2">Net BWE Revenue</th>
+                        <th className="text-left p-2">Payment Status</th>
+                        <th className="text-left p-2">Fulfillment Status</th>
+                        <th className="text-left p-2">Stripe Session ID</th>
+                        <th className="text-left p-2">Source</th>
                       </tr>
                     </thead>
                     <tbody>
                       {ledger.map((r, i) => (
-                        <tr key={`${r.transactionId || i}`} className="border-t border-zinc-800">
-                          <td className="p-2">{r.createdAt ? new Date(r.createdAt).toLocaleString() : "-"}</td>
+                        <tr
+                          key={`${r.transactionId || i}`}
+                          className="border-t border-zinc-800"
+                        >
+                          <td className="p-2">
+                            {r.createdAt
+                              ? new Date(r.createdAt).toLocaleString()
+                              : "-"}
+                          </td>
                           <td className="p-2">{r.userId || "-"}</td>
                           <td className="p-2">{r.revenueStream || "-"}</td>
                           <td className="p-2">{money(r.grossAmount)}</td>
@@ -137,7 +219,10 @@ export default function FinancialReviewPage() {
               )}
             </div>
           ) : (
-            <p className="text-sm text-zinc-300">Select a connected revenue amount above to view filtered transaction details.</p>
+            <p className="text-sm text-zinc-300">
+              Select a connected revenue amount above to view filtered
+              transaction details.
+            </p>
           )}
         </Section>
       </div>
