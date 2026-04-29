@@ -1,13 +1,3 @@
-import SupportTicketForm from "@/components/support/SupportTicketForm";
-
-export default function SupportPage() {
-  return (
-    <main className="min-h-screen bg-black text-white p-8">
-      <div className="max-w-3xl mx-auto space-y-4">
-        <h1 className="text-3xl font-bold text-yellow-400">Support Center</h1>
-        <p className="text-zinc-300">Tell us what you need help with.</p>
-        <SupportTicketForm />
-      </div>
-    </main>
-  );
-}
+import Link from "next/link";
+const cards = [["Open a Ticket","/support/new"],["My Tickets","/support/tickets"],["System Status","/support/status"],["Releases / Release Schedule","/support/releases"],["Billing Help","/support/billing"],["Seller Help","/support/seller"],["Business Directory Help","/support/business"],["Employer Help","/support/employer"],["Advertising Help","/support/advertising"],["Security / Trust & Safety","/support/security"],["Help Center","/support/help-center"]];
+export default function Support(){return <main className="min-h-screen bg-black text-white p-8"><div className="max-w-6xl mx-auto space-y-4"><h1 className="text-3xl font-bold text-yellow-400">BWE Customer Support Portal</h1><p className="text-zinc-300">For urgent billing/security issues, submit priority support.</p><div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">{cards.map(([l,h])=><Link key={String(h)} href={String(h)} className="rounded border border-zinc-800 bg-zinc-950 p-4 hover:border-yellow-400">{l}</Link>)}</div></div></main>}
