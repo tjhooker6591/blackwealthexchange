@@ -34,7 +34,9 @@ export default async function handler(
     type: "product",
     itemId: productId || String(body.itemId || "").trim(),
     metadata: {
-      ...(typeof body.metadata === "object" && body.metadata ? body.metadata : {}),
+      ...(typeof body.metadata === "object" && body.metadata
+        ? body.metadata
+        : {}),
       source: "legacy_checkout_create_session",
     },
   };

@@ -86,9 +86,15 @@ export default function FinancialReviewPage() {
 
         <Section title="Top Totals">
           <div className="grid md:grid-cols-3 gap-3 text-sm">
-            <div className="rounded border border-zinc-800 bg-zinc-950 p-3">Total Revenue: {money(data?.totalRevenue)}</div>
-            <div className="rounded border border-zinc-800 bg-zinc-950 p-3">BWE Net Revenue: {money(data?.totalRevenue)}</div>
-            <div className="rounded border border-zinc-800 bg-zinc-950 p-3">Pending Payments: {money(data?.pendingRevenue)}</div>
+            <div className="rounded border border-zinc-800 bg-zinc-950 p-3">
+              Total Revenue: {money(data?.totalRevenue)}
+            </div>
+            <div className="rounded border border-zinc-800 bg-zinc-950 p-3">
+              BWE Net Revenue: {money(data?.totalRevenue)}
+            </div>
+            <div className="rounded border border-zinc-800 bg-zinc-950 p-3">
+              Pending Payments: {money(data?.pendingRevenue)}
+            </div>
           </div>
         </Section>
 
@@ -124,15 +130,23 @@ export default function FinancialReviewPage() {
 
         <Section title="Monthly Summary">
           {Object.keys(data?.monthlySummary || {}).length === 0 ? (
-            <p className="text-sm text-zinc-300">No monthly revenue data yet.</p>
+            <p className="text-sm text-zinc-300">
+              No monthly revenue data yet.
+            </p>
           ) : (
             <div className="space-y-1 text-sm">
-              {Object.entries(data?.monthlySummary || {}).sort().reverse().map(([month, cents]) => (
-                <div key={month} className="flex justify-between border-b border-zinc-800 py-1">
-                  <span>{month}</span>
-                  <span>{money(cents)}</span>
-                </div>
-              ))}
+              {Object.entries(data?.monthlySummary || {})
+                .sort()
+                .reverse()
+                .map(([month, cents]) => (
+                  <div
+                    key={month}
+                    className="flex justify-between border-b border-zinc-800 py-1"
+                  >
+                    <span>{month}</span>
+                    <span>{money(cents)}</span>
+                  </div>
+                ))}
             </div>
           )}
         </Section>
@@ -206,11 +220,28 @@ export default function FinancialReviewPage() {
                   r.stripeSessionId || "",
                   r.sourceRoute || "",
                 ]);
-                const head = ["createdAt","userId","revenueStream","grossAmount","bweFeeAmount","netBweRevenue","paymentStatus","fulfillmentStatus","stripeSessionId","sourceRoute"];
+                const head = [
+                  "createdAt",
+                  "userId",
+                  "revenueStream",
+                  "grossAmount",
+                  "bweFeeAmount",
+                  "netBweRevenue",
+                  "paymentStatus",
+                  "fulfillmentStatus",
+                  "stripeSessionId",
+                  "sourceRoute",
+                ];
                 const csv = [head, ...rows]
-                  .map((line) => line.map((v) => `"${String(v).replaceAll('"', '""')}"`).join(","))
+                  .map((line) =>
+                    line
+                      .map((v) => `"${String(v).replaceAll('"', '""')}"`)
+                      .join(","),
+                  )
                   .join("\n");
-                const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+                const blob = new Blob([csv], {
+                  type: "text/csv;charset=utf-8;",
+                });
                 const a = document.createElement("a");
                 a.href = URL.createObjectURL(blob);
                 a.download = `financial-ledger-${hasSelectedStream ? selectedStream : "all"}.csv`;
