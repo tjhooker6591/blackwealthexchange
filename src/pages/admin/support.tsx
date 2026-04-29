@@ -28,7 +28,12 @@ export default function AdminSupportPage() {
       <div className="max-w-6xl mx-auto space-y-4">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-bold text-yellow-400">Admin Support</h1>
-          <Link href="/admin/dashboard" className="text-sm border border-zinc-700 px-3 py-2 rounded">Back to Admin</Link>
+          <Link
+            href="/admin/dashboard"
+            className="text-sm border border-zinc-700 px-3 py-2 rounded"
+          >
+            Back to Admin
+          </Link>
         </div>
         <div className="rounded border border-zinc-800 bg-zinc-950 p-4 overflow-auto">
           <table className="min-w-full text-sm">
@@ -43,8 +48,13 @@ export default function AdminSupportPage() {
             </thead>
             <tbody>
               {rows.map((r, i) => (
-                <tr key={r.ticketId || String(i)} className="border-t border-zinc-800">
-                  <td className="p-2">{r.createdAt ? new Date(r.createdAt).toLocaleString() : "-"}</td>
+                <tr
+                  key={r.ticketId || String(i)}
+                  className="border-t border-zinc-800"
+                >
+                  <td className="p-2">
+                    {r.createdAt ? new Date(r.createdAt).toLocaleString() : "-"}
+                  </td>
                   <td className="p-2">{r.email || "-"}</td>
                   <td className="p-2">{r.subject || "-"}</td>
                   <td className="p-2">{r.priority || "normal"}</td>
@@ -59,6 +69,5 @@ export default function AdminSupportPage() {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = requireAdminPageProps(
-  "/admin/support",
-);
+export const getServerSideProps: GetServerSideProps =
+  requireAdminPageProps("/admin/support");

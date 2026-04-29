@@ -6,13 +6,22 @@ import {
   getClientIp,
   hitApiRateLimit,
 } from "@/lib/apiRateLimit";
+import { sanitizeRichHtml } from "@/lib/security/sanitizeHtml";
+import { SUPPORT_CATEGORIES, SUPPORT_PRIORITIES } from "@/lib/support";
 
 type Body = {
   userId?: string;
+  accountType?: string;
+  name?: string;
   email?: string;
+  category?: string;
+  priority?: string;
   subject?: string;
-  description?: string;
-  priority?: "low" | "normal" | "high";
+  message?: string;
+  relatedOrderId?: string;
+  relatedPaymentId?: string;
+  relatedBusinessId?: string;
+  relatedProductId?: string;
 };
 
 export default async function handler(
@@ -28,15 +37,28 @@ export default async function handler(
     typeof req.body === "string" ? JSON.parse(req.body || "{}") : req.body || {};
 
   const userId = String(body.userId || "").trim();
+  const accountType = String(body.accountType || "guest").trim();
+  const name = String(body.name || "").trim();
   const email = String(body.email || "").trim().toLowerCase();
+  const category = String(body.category || "General Question").trim();
+  const priority = String(body.priority || "normal").trim();
   const subject = String(body.subject || "").trim();
-  const description = String(body.description || "").trim();
-  const priority = body.priority === "high" || body.priority === "low" ? body.priority : "normal";
+  const message = sanitizeRichHtml(body.message || "").trim();
+  const relatedOrderId = String(body.relatedOrderId || "").trim();
+  const relatedPaymentId = String(body.relatedPaymentId || "").trim();
+  const relatedBusinessId = String(body.relatedBusinessId || "").trim();
+  const relatedProductId = String(body.relatedProductId || "").trim();
 
-  if (!subject || subject.length < 4 || !description || description.length < 10) {
+  if (!email || !subject || subject.length < 4 || !message || message.length < 10) {
     return res.status(400).json({
-      message: "subject (>=4 chars) and description (>=10 chars) are required",
+      message: "email, subject (>=4), and message (>=10) are required",
     });
+  }
+  if (!SUPPORT_CATEGORIES.includes(category as any)) {
+    return res.status(400).json({ message: "Invalid category" });
+  }
+  if (!SUPPORT_PRIORITIES.includes(priority as any)) {
+    return res.status(400).json({ message: "Invalid priority" });
   }
 
   const client = await clientPromise;
@@ -53,18 +75,36 @@ export default async function handler(
   }
 
   const now = new Date();
+  const ticketId = `SUP-${now.getTime()}`;
   const ticket = {
+    ticketId,
     userId: userId || null,
-    email: email || null,
-    subject,
-    description,
+    accountType,
+    name: name || null,
+    email,
+    category,
     priority,
-    status: "open",
-    sourceRoute: "/api/support/create-ticket",
+    subject,
+    message,
+    relatedOrderId: relatedOrderId || null,
+    relatedPaymentId: relatedPaymentId || null,
+    relatedBusinessId: relatedBusinessId || null,
+    relatedProductId: relatedProductId || null,
+    status: "new",
+    assignedTo: null,
+    internalNotes: [],
     createdAt: now,
     updatedAt: now,
   };
 
-  const result = await db.collection("support_tickets").insertOne(ticket);
-  return res.status(201).json({ ok: true, ticketId: String(result.insertedId) });
+  await db.collection("support_tickets").insertOne(ticket);
+  await db.collection("support_events").insertOne({
+    type: "support_ticket_created",
+    ticketId,
+    category,
+    priority,
+    createdAt: now,
+  });
+
+  return res.status(201).json({ ok: true, ticketId });
 }
