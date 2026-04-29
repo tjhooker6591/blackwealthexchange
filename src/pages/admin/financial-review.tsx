@@ -3,34 +3,9 @@ import { requireAdminPageProps } from "@/lib/adminPageGuard";
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { FINANCE_STREAMS } from "@/lib/finance/stream-map";
 
 type Data = any;
-
-const STREAMS = [
-  ["Advertising / Sponsorship Revenue", "advertising"],
-  ["Marketplace Platform Fees", "marketplace"],
-  ["Job Posting Revenue", "jobs"],
-  ["Membership / Black Card Revenue", "membership"],
-  ["Course / Financial Literacy Revenue", "courses"],
-  ["Consulting / Opportunity Network Revenue", "consulting"],
-  ["Music Creator Plan Revenue", "music_creator_plan"],
-  ["Directory Listing / Featured Placement Revenue", "directory"],
-  ["Affiliate Revenue", "affiliate"],
-  ["Other / Manual Revenue", "manual"],
-] as const;
-
-const BY_STREAM_KEYS: Record<string, string[]> = {
-  advertising: ["advertising"],
-  marketplace: ["marketplace"],
-  jobs: ["jobs"],
-  membership: ["membership_black_card"],
-  courses: ["courses"],
-  consulting: ["consulting_opportunity_network"],
-  music_creator_plan: ["music_creator_plan"],
-  directory: ["directory"],
-  affiliate: ["affiliate_liability"],
-  manual: ["other"],
-};
 
 export default function FinancialReviewPage() {
   const router = useRouter();
@@ -73,7 +48,7 @@ export default function FinancialReviewPage() {
   const streams = data?.byStream || {};
   const selectedLabel = useMemo(
     () =>
-      STREAMS.find(([, key]) => key === selectedStream)?.[0] || selectedStream,
+      FINANCE_STREAMS.find((x) => x.key === selectedStream)?.label || selectedStream,
     [selectedStream],
   );
 
@@ -93,13 +68,9 @@ export default function FinancialReviewPage() {
         </div>
 
         <Section title="Revenue Streams">
-          {STREAMS.map(([label, key]) => {
-            const backingKeys = BY_STREAM_KEYS[key] || [key];
-            const hasAmount = backingKeys.some((k) => streams[k]?.count);
-            const total = backingKeys.reduce(
-              (sum, k) => sum + Number(streams[k]?.retained || 0),
-              0,
-            );
+          {FINANCE_STREAMS.map(({ label, key }) => {
+            const hasAmount = Boolean(streams[key]?.count);
+            const total = Number(streams[key]?.retained || 0);
             return (
               <div
                 key={key}
@@ -122,7 +93,6 @@ export default function FinancialReviewPage() {
           })}
         </Section>
 
-
         <Section title="Ledger Readiness">
           <p className="text-sm text-zinc-300">
             {ledgerEnabled
@@ -133,7 +103,9 @@ export default function FinancialReviewPage() {
 
         <Section title="Recent Payment Events (Debug View)">
           {eventRows.length === 0 ? (
-            <p className="text-sm text-zinc-300">No webhook events captured yet.</p>
+            <p className="text-sm text-zinc-300">
+              No webhook events captured yet.
+            </p>
           ) : (
             <div className="overflow-auto">
               <table className="min-w-full text-xs">
@@ -148,7 +120,11 @@ export default function FinancialReviewPage() {
                 <tbody>
                   {eventRows.map((r, i) => (
                     <tr key={i} className="border-t border-zinc-800">
-                      <td className="p-2">{r.createdAt ? new Date(r.createdAt).toLocaleString() : "-"}</td>
+                      <td className="p-2">
+                        {r.createdAt
+                          ? new Date(r.createdAt).toLocaleString()
+                          : "-"}
+                      </td>
                       <td className="p-2">{r.revenueStream || "-"}</td>
                       <td className="p-2">{r.status || "-"}</td>
                       <td className="p-2">{r.sessionId || "-"}</td>
@@ -171,8 +147,7 @@ export default function FinancialReviewPage() {
               </h3>
               {ledger.length === 0 ? (
                 <p className="text-sm text-zinc-300">
-                  Revenue total exists, but detailed transaction records are not
-                  available yet for this stream.
+No transaction records found for this stream yet.
                 </p>
               ) : (
                 <div className="overflow-auto">
