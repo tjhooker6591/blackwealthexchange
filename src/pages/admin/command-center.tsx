@@ -26,10 +26,22 @@ function statusTone(sourceStatus?: string) {
 }
 
 function prettyStatus(sourceStatus?: string) {
-  if (sourceStatus === "collection_missing") return "Collection missing";
-  if (sourceStatus === "needs_mapping") return "Needs mapping";
-  if (sourceStatus === "empty") return "Empty";
+  if (sourceStatus === "collection_missing") return "⚠️ Data Missing";
+  if (sourceStatus === "needs_mapping") return "⚠️ Needs Mapping";
+  if (sourceStatus === "needs_tracking") return "⚠️ Not Tracked";
+  if (sourceStatus === "empty") return "No Activity";
   return "Live";
+}
+
+function loopRow(label: string, metric?: Metric) {
+  return (
+    <div className="flex items-center justify-between gap-2 py-1">
+      <span className="text-zinc-300">{label}</span>
+      <span className="text-zinc-100 font-semibold text-right">
+        {String(metric?.value ?? 0)} ({prettyStatus(metric?.sourceStatus)})
+      </span>
+    </div>
+  );
 }
 
 function MetricCard({
@@ -75,6 +87,9 @@ export default function CommandCenterPage() {
   const [trustM, setTrustM] = useState<any>(null);
   const [sponsor, setSponsor] = useState<any>(null);
   const [err, setErr] = useState("");
+  const [showRetention, setShowRetention] = useState(false);
+  const [showTrust, setShowTrust] = useState(false);
+  const [showSponsor, setShowSponsor] = useState(false);
 
   useEffect(() => {
     fetch("/api/admin/metrics/command-center", { credentials: "include" })
@@ -90,14 +105,24 @@ export default function CommandCenterPage() {
       .then((r) => r.json())
       .then((j) => setPlan(j?.row || null))
       .catch(() => setPlan(null));
-    fetch("/api/admin/weekly-operating-review/current", { credentials: "include" })
+    fetch("/api/admin/weekly-operating-review/current", {
+      credentials: "include",
+    })
       .then((r) => r.json())
       .then((j) => setWeekly(j?.review || null))
       .catch(() => setWeekly(null));
-    fetch("/api/admin/metrics/retention", { credentials: "include" }).then((r)=>r.json()).then(setRetention).catch(()=>setRetention(null));
-    fetch("/api/admin/metrics/marketplace-trust", { credentials: "include" }).then((r)=>r.json()).then(setTrustM).catch(()=>setTrustM(null));
-    fetch("/api/admin/metrics/sponsor-proof", { credentials: "include" }).then((r)=>r.json()).then(setSponsor).catch(()=>setSponsor(null));
-
+    fetch("/api/admin/metrics/retention", { credentials: "include" })
+      .then((r) => r.json())
+      .then(setRetention)
+      .catch(() => setRetention(null));
+    fetch("/api/admin/metrics/marketplace-trust", { credentials: "include" })
+      .then((r) => r.json())
+      .then(setTrustM)
+      .catch(() => setTrustM(null));
+    fetch("/api/admin/metrics/sponsor-proof", { credentials: "include" })
+      .then((r) => r.json())
+      .then(setSponsor)
+      .catch(() => setSponsor(null));
   }, []);
 
   const company = d?.companyHealth || {};
@@ -287,30 +312,90 @@ export default function CommandCenterPage() {
         </section>
 
         <section className="space-y-3">
-          <h2 className="text-xl font-semibold text-yellow-300">Weekly CEO Operating Cadence</h2>
+          <h2 className="text-xl font-semibold text-yellow-300">
+            Weekly CEO Operating Cadence
+          </h2>
           <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4 text-sm text-zinc-200 space-y-2">
-            {!weekly ? <div className="text-zinc-400">No weekly review started yet. <a href="#weekly-review" className="underline">Start current week review</a>.</div> : <div className="text-zinc-300">Current week: {String(weekly.weekStart || "set weekStart")}</div>}
-            <div><b>MONDAY</b> - Top 3 priorities, blockers, founder decisions needed</div>
-            <div><b>TUES/WED</b> - Engineering progress, route/API health, support risk, marketplace trust issues</div>
-            <div><b>THURSDAY</b> - Sponsor proof, ad performance, marketplace revenue, jobs pipeline, partnerships</div>
-            <div><b>FRIDAY</b> - Release readiness, support status, revenue review, trust/safety, deploy or hold</div>
-            <div><b>SUNDAY</b> - Mission progress, revenue progress, trust progress, stop/carry-forward</div>
+            {!weekly ? (
+              <div className="text-zinc-400">
+                No weekly review started yet.{" "}
+                <a href="#weekly-review" className="underline">
+                  Start current week review
+                </a>
+                .
+              </div>
+            ) : (
+              <div className="text-zinc-300">
+                Current week: {String(weekly.weekStart || "set weekStart")}
+              </div>
+            )}
+            <div>
+              <b>MONDAY</b> - Top 3 priorities, blockers, founder decisions
+              needed
+            </div>
+            <div>
+              <b>TUES/WED</b> - Engineering progress, route/API health, support
+              risk, marketplace trust issues
+            </div>
+            <div>
+              <b>THURSDAY</b> - Sponsor proof, ad performance, marketplace
+              revenue, jobs pipeline, partnerships
+            </div>
+            <div>
+              <b>FRIDAY</b> - Release readiness, support status, revenue review,
+              trust/safety, deploy or hold
+            </div>
+            <div>
+              <b>SUNDAY</b> - Mission progress, revenue progress, trust
+              progress, stop/carry-forward
+            </div>
           </div>
         </section>
 
         <section className="space-y-3" id="weekly-review">
-          <h2 className="text-xl font-semibold text-yellow-300">Weekly Operating Review</h2>
+          <h2 className="text-xl font-semibold text-yellow-300">
+            Weekly Operating Review
+          </h2>
           <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4 text-sm">
-            {weekly ? <pre className="text-xs text-zinc-300 overflow-auto">{JSON.stringify(weekly, null, 2)}</pre> : <div className="text-zinc-400">No weekly review started yet.</div>}
+            {weekly ? (
+              <pre className="text-xs text-zinc-300 overflow-auto">
+                {JSON.stringify(weekly, null, 2)}
+              </pre>
+            ) : (
+              <div className="text-zinc-400">No weekly review started yet.</div>
+            )}
           </div>
         </section>
 
         <section className="space-y-3">
-          <h2 className="text-xl font-semibold text-yellow-300">P0 Operating Loops</h2>
+          <h2 className="text-xl font-semibold text-yellow-300">
+            P0 Operating Loops
+          </h2>
           <div className="grid md:grid-cols-3 gap-3 text-xs">
-            <div className="rounded border border-zinc-800 bg-zinc-950 p-3"><div className="font-semibold text-yellow-300">Retention Loop</div><pre className="text-zinc-300 mt-1 overflow-auto">{JSON.stringify(retention?.retention || {sourceStatus:"needs_mapping"},null,2)}</pre></div>
-            <div className="rounded border border-zinc-800 bg-zinc-950 p-3"><div className="font-semibold text-yellow-300">Marketplace Trust</div><pre className="text-zinc-300 mt-1 overflow-auto">{JSON.stringify(trustM?.metrics || {sourceStatus:"needs_mapping"},null,2)}</pre></div>
-            <div className="rounded border border-zinc-800 bg-zinc-950 p-3"><div className="font-semibold text-yellow-300">Sponsor Proof</div><pre className="text-zinc-300 mt-1 overflow-auto">{JSON.stringify(sponsor?.metrics || {sourceStatus:"needs_tracking"},null,2)}</pre></div>
+            <div className="rounded border border-zinc-800 bg-zinc-950 p-3">
+              <div className="font-semibold text-yellow-300">Retention</div>
+              {loopRow("Active Users", retention?.retention?.activeUsers)}
+              {loopRow("New This Week", retention?.retention?.newUsersThisWeek)}
+              {loopRow("Listings Needing Action", retention?.retention?.listingsNeedingAction)}
+              <button type="button" className="mt-2 text-[11px] text-yellow-300 underline" onClick={() => setShowRetention((v) => !v)}>[ View Details {showRetention ? "▲" : "▼"} ]</button>
+              {showRetention ? <div className="mt-2 space-y-1 text-[11px] text-zinc-300 break-words">{Object.entries(retention?.retention || {}).map(([k, v]) => (<div key={k}><span className="text-zinc-400">{k}:</span> {typeof v === "object" && v !== null ? `${String((v as any).value ?? "")}` + ` (${prettyStatus((v as any).sourceStatus)})` : String(v)}</div>))}</div> : null}
+            </div>
+            <div className="rounded border border-zinc-800 bg-zinc-950 p-3">
+              <div className="font-semibold text-yellow-300">Marketplace Trust</div>
+              {loopRow("Total Orders", trustM?.metrics?.totalOrders)}
+              {loopRow("Completed Orders", trustM?.metrics?.completedOrders)}
+              {loopRow("Support Issues", trustM?.metrics?.supportIssues)}
+              <button type="button" className="mt-2 text-[11px] text-yellow-300 underline" onClick={() => setShowTrust((v) => !v)}>[ View Details {showTrust ? "▲" : "▼"} ]</button>
+              {showTrust ? <div className="mt-2 space-y-1 text-[11px] text-zinc-300 break-words">{Object.entries(trustM?.metrics || {}).map(([k, v]) => (<div key={k}><span className="text-zinc-400">{k}:</span> {typeof v === "object" && v !== null ? `${String((v as any).value ?? "")}` + ` (${prettyStatus((v as any).sourceStatus)})` : String(v)}</div>))}</div> : null}
+            </div>
+            <div className="rounded border border-zinc-800 bg-zinc-950 p-3">
+              <div className="font-semibold text-yellow-300">Sponsor Proof</div>
+              {loopRow("Active Campaigns", sponsor?.metrics?.activeCampaigns)}
+              {loopRow("Expired Campaigns", sponsor?.metrics?.expiredCampaigns)}
+              {loopRow("Impressions", sponsor?.metrics?.impressions)}
+              <button type="button" className="mt-2 text-[11px] text-yellow-300 underline" onClick={() => setShowSponsor((v) => !v)}>[ View Details {showSponsor ? "▲" : "▼"} ]</button>
+              {showSponsor ? <div className="mt-2 space-y-1 text-[11px] text-zinc-300 break-words">{Object.entries(sponsor?.metrics || {}).map(([k, v]) => (<div key={k}><span className="text-zinc-400">{k}:</span> {typeof v === "object" && v !== null ? `${String((v as any).value ?? "")}` + ` (${prettyStatus((v as any).sourceStatus)})` : String(v)}</div>))}</div> : null}
+            </div>
           </div>
         </section>
 

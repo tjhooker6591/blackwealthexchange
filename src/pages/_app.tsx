@@ -28,7 +28,6 @@ export default function App({
     trackPageView(router.asPath || "/");
     router.events.on("routeChangeComplete", trackPageView);
 
-
     // Blur on PrintScreen
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "PrintScreen") {

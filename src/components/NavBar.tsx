@@ -42,7 +42,6 @@ export default function NavBar() {
     return () => router.events.off("routeChangeStart", onRouteStart);
   }, [router.events]);
 
-
   useEffect(() => {
     const hotRoutes = [
       "/",
