@@ -96,30 +96,31 @@ export default async function handler(
       payload.email || payload.userId || "employer",
     ).toLowerCase();
 
-    await db.collection("applicants").updateOne(
-      { _id: new ObjectId(applicantId) },
-      {
-        $set: {
-          hiringStatus: nextStatus,
-          statusUpdatedAt: now,
-          ...(note ? { employerNote: note } : {}),
+    const updateDoc: any = {
+      $set: {
+        hiringStatus: nextStatus,
+        statusUpdatedAt: now,
+        ...(note ? { employerNote: note } : {}),
+        ...(nextStatus === "rejected" && rejectionReason
+          ? { rejectionReason }
+          : {}),
+      },
+      $push: {
+        statusHistory: {
+          status: nextStatus,
+          changedAt: now,
+          actor,
+          ...(note ? { note } : {}),
           ...(nextStatus === "rejected" && rejectionReason
             ? { rejectionReason }
             : {}),
         },
-        $push: {
-          statusHistory: {
-            status: nextStatus,
-            changedAt: now,
-            actor,
-            ...(note ? { note } : {}),
-            ...(nextStatus === "rejected" && rejectionReason
-              ? { rejectionReason }
-              : {}),
-          },
-        },
       },
-    );
+    };
+
+    await db
+      .collection("applicants")
+      .updateOne({ _id: new ObjectId(applicantId) }, updateDoc);
 
     await db.collection("notification_events").insertOne({
       type: "application_status_changed",

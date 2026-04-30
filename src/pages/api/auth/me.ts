@@ -123,8 +123,13 @@ export default async function handler(
 
     const mongoQueryMs = Date.now() - queryStart;
     if (process.env.NODE_ENV !== "production") {
-      res.setHeader("Server-Timing", `mongo_connect;dur=${mongoConnectMs}, mongo_query;dur=${mongoQueryMs}, total;dur=${Date.now()-startedAt}`);
-      console.info(`[timing][api/auth/me] total=${Date.now()-startedAt}ms connect=${mongoConnectMs}ms query=${mongoQueryMs}ms role=${role}`);
+      res.setHeader(
+        "Server-Timing",
+        `mongo_connect;dur=${mongoConnectMs}, mongo_query;dur=${mongoQueryMs}, total;dur=${Date.now() - startedAt}`,
+      );
+      console.info(
+        `[timing][api/auth/me] total=${Date.now() - startedAt}ms connect=${mongoConnectMs}ms query=${mongoQueryMs}ms role=${role}`,
+      );
     }
 
     if (!profile) {
@@ -194,11 +199,13 @@ export default async function handler(
         ? profile.blackCardStatus.toLowerCase()
         : "inactive";
 
+    const rawBlackCardPlanExpiresAt = profile.blackCardPlanExpiresAt;
     const blackCardPlanExpiresAt =
-      profile.blackCardPlanExpiresAt instanceof Date
-        ? profile.blackCardPlanExpiresAt
-        : profile.blackCardPlanExpiresAt
-          ? new Date(profile.blackCardPlanExpiresAt)
+      rawBlackCardPlanExpiresAt instanceof Date
+        ? rawBlackCardPlanExpiresAt
+        : typeof rawBlackCardPlanExpiresAt === "string" ||
+            typeof rawBlackCardPlanExpiresAt === "number"
+          ? new Date(rawBlackCardPlanExpiresAt)
           : null;
 
     const blackCardExpired =
