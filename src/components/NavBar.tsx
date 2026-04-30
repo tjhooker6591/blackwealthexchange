@@ -42,6 +42,22 @@ export default function NavBar() {
     return () => router.events.off("routeChangeStart", onRouteStart);
   }, [router.events]);
 
+
+  useEffect(() => {
+    const hotRoutes = [
+      "/",
+      "/business-directory",
+      "/marketplace",
+      "/job-listings",
+      "/advertising",
+      "/support",
+      "/login",
+      "/signup",
+      "/admin/command-center",
+    ];
+    hotRoutes.forEach((r) => router.prefetch(r).catch(() => {}));
+  }, [router]);
+
   useEffect(() => {
     const onMouseDown = (event: MouseEvent) => {
       if (!navRef.current) return;
@@ -84,49 +100,49 @@ export default function NavBar() {
           <Link
             href="/start-here"
             onClick={handleItemClick}
-            className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 hover:bg-white/5 hover:text-[#D4AF37]"
+            className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
           >
             Start Here
           </Link>
           <Link
             href="/business-directory"
             onClick={handleItemClick}
-            className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 hover:bg-white/5 hover:text-[#D4AF37]"
+            className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
           >
             Search &amp; Directory
           </Link>
           <Link
             href="/marketplace"
             onClick={handleItemClick}
-            className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 hover:bg-white/5 hover:text-[#D4AF37]"
+            className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
           >
             Marketplace
           </Link>
           <Link
             href="/jobs"
             onClick={handleItemClick}
-            className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 hover:bg-white/5 hover:text-[#D4AF37]"
+            className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
           >
             Jobs
           </Link>
           <Link
             href="/advertising"
             onClick={handleItemClick}
-            className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 hover:bg-white/5 hover:text-[#D4AF37]"
+            className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
           >
             Advertising
           </Link>
           <Link
             href="/financial-literacy"
             onClick={handleItemClick}
-            className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 hover:bg-white/5 hover:text-[#D4AF37]"
+            className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
           >
             Learn
           </Link>
           <Link
             href="/support"
             onClick={handleItemClick}
-            className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 hover:bg-white/5 hover:text-[#D4AF37]"
+            className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
           >
             Support
           </Link>
@@ -139,7 +155,7 @@ export default function NavBar() {
                   prev === "explore" ? null : "explore",
                 )
               }
-              className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 hover:bg-white/5 hover:text-[#D4AF37]"
+              className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
               aria-expanded={desktopMenuOpen === "explore"}
             >
               Explore
@@ -149,49 +165,49 @@ export default function NavBar() {
                 <Link
                   href="/black-card"
                   onClick={handleItemClick}
-                  className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]"
+                  className="block rounded-lg px-3 py-2 text-sm text-white/85 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
                 >
                   Black Card
                 </Link>
                 <Link
                   href="/affiliate"
                   onClick={handleItemClick}
-                  className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]"
+                  className="block rounded-lg px-3 py-2 text-sm text-white/85 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
                 >
                   Earn with BWE
                 </Link>
                 <Link
                   href="/black-entertainment-news"
                   onClick={handleItemClick}
-                  className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]"
+                  className="block rounded-lg px-3 py-2 text-sm text-white/85 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
                 >
                   Culture &amp; Entertainment
                 </Link>
                 <Link
                   href="/music"
                   onClick={handleItemClick}
-                  className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]"
+                  className="block rounded-lg px-3 py-2 text-sm text-white/85 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
                 >
                   Music
                 </Link>
                 <Link
                   href="/black-student-opportunities"
                   onClick={handleItemClick}
-                  className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]"
+                  className="block rounded-lg px-3 py-2 text-sm text-white/85 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
                 >
                   Student Opportunities
                 </Link>
                 <Link
                   href="/wealth-builder"
                   onClick={handleItemClick}
-                  className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]"
+                  className="block rounded-lg px-3 py-2 text-sm text-white/85 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
                 >
                   Wealth Builder
                 </Link>
                 <Link
                   href="/travel-map/explore"
                   onClick={handleItemClick}
-                  className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]"
+                  className="block rounded-lg px-3 py-2 text-sm text-white/85 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
                 >
                   Travel Map
                 </Link>
@@ -200,7 +216,7 @@ export default function NavBar() {
                   target="_blank"
                   rel="noreferrer"
                   onClick={handleItemClick}
-                  className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]"
+                  className="block rounded-lg px-3 py-2 text-sm text-white/85 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
                 >
                   BWE Live
                 </a>
@@ -216,7 +232,7 @@ export default function NavBar() {
                   prev === "account" ? null : "account",
                 )
               }
-              className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 hover:bg-white/5 hover:text-[#D4AF37]"
+              className="rounded-lg px-3 py-2 text-sm font-semibold text-white/90 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
               aria-expanded={desktopMenuOpen === "account"}
             >
               Account
@@ -228,14 +244,14 @@ export default function NavBar() {
                     <Link
                       href={dashboardHref}
                       onClick={handleItemClick}
-                      className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]"
+                      className="block rounded-lg px-3 py-2 text-sm text-white/85 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
                     >
                       Dashboard
                     </Link>
                     <Link
                       href={profileHref}
                       onClick={handleItemClick}
-                      className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]"
+                      className="block rounded-lg px-3 py-2 text-sm text-white/85 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
                     >
                       Profile
                     </Link>
@@ -244,7 +260,7 @@ export default function NavBar() {
                         closeAllMenus();
                         logout();
                       }}
-                      className="block w-full rounded-lg px-3 py-2 text-left text-sm text-white/85 hover:bg-white/5 hover:text-red-500"
+                      className="block w-full rounded-lg px-3 py-2 text-left text-sm text-white/85 hover:bg-white/5 md:hover:text-red-500"
                     >
                       Sign Out
                     </button>
@@ -254,14 +270,14 @@ export default function NavBar() {
                     <Link
                       href="/login"
                       onClick={handleItemClick}
-                      className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]"
+                      className="block rounded-lg px-3 py-2 text-sm text-white/85 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
                     >
                       Log In
                     </Link>
                     <Link
                       href="/signup"
                       onClick={handleItemClick}
-                      className="block rounded-lg px-3 py-2 text-sm text-white/85 hover:bg-white/5 hover:text-[#D4AF37]"
+                      className="block rounded-lg px-3 py-2 text-sm text-white/85 md:hover:bg-white/5 md:hover:text-[#D4AF37]"
                     >
                       Sign Up
                     </Link>
@@ -465,7 +481,7 @@ export default function NavBar() {
                         closeAllMenus();
                         logout();
                       }}
-                      className="block w-full rounded-lg px-3 py-2 text-left text-sm text-white/85 hover:bg-white/[0.04] hover:text-red-500"
+                      className="block w-full rounded-lg px-3 py-2 text-left text-sm text-white/85 hover:bg-white/[0.04] md:hover:text-red-500"
                     >
                       Sign Out
                     </button>

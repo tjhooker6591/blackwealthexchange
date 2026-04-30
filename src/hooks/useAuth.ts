@@ -29,7 +29,7 @@ function useAuth() {
       setLoading(false);
     }
     fetchUser();
-  }, [router.pathname]);
+  }, []);
 
   // Logout function
   const logout = async () => {

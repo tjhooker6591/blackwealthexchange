@@ -28,20 +28,6 @@ export default function App({
     trackPageView(router.asPath || "/");
     router.events.on("routeChangeComplete", trackPageView);
 
-    // Prevent right-click context menu
-    const disableContextMenu = (e: MouseEvent) => e.preventDefault();
-    document.addEventListener("contextmenu", disableContextMenu);
-
-    // Disable text selection
-    document.body.style.userSelect = "none";
-
-    // Prevent image dragging
-    const disableImageDrag = () => {
-      document
-        .querySelectorAll("img")
-        .forEach((img) => img.setAttribute("draggable", "false"));
-    };
-    disableImageDrag();
 
     // Blur on PrintScreen
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -56,8 +42,6 @@ export default function App({
 
     return () => {
       router.events.off("routeChangeComplete", trackPageView);
-      document.removeEventListener("contextmenu", disableContextMenu);
-      document.body.style.userSelect = "auto";
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [router]);
