@@ -284,7 +284,10 @@ export default function Marketplace() {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
-        <meta name="twitter:image" content={canonicalUrl("/images/hero1.jpg")} />
+        <meta
+          name="twitter:image"
+          content={canonicalUrl("/images/hero1.jpg")}
+        />
       </Head>
       <script type="application/ld+json">
         {JSON.stringify(collectionSchema)}
@@ -564,7 +567,7 @@ export default function Marketplace() {
                         ) : (
                           <div className="flex h-full w-full items-center justify-center">
                             <span className="text-xs text-gray-400 sm:text-sm">
-                              Product image coming soon
+                              Product image unavailable
                             </span>
                           </div>
                         )}

@@ -81,7 +81,6 @@ const Social: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"feed" | "trending">("feed");
   const [postContent] = useState<string>("");
 
-
   return (
     <div className="bg-gray-900 text-white min-h-screen">
       {/* Navigation */}
@@ -106,7 +105,7 @@ const Social: React.FC = () => {
           BWES Social
         </h1>
         <div className="mb-6 rounded-lg border border-yellow-500/30 bg-yellow-500/10 p-3 text-center text-sm text-yellow-200">
-          Social posting is coming soon. Feed and trends are preview-only.
+          Social posting is currently unavailable. Feed and trends are preview-only.
         </div>
 
         {/* Tabs */}
@@ -131,7 +130,7 @@ const Social: React.FC = () => {
               {/* New Post Input */}
               <div className="bg-gray-800 p-4 rounded-lg mb-6 mt-4">
                 <textarea
-                  placeholder="Posting is coming soon"
+                  placeholder="Posting is currently unavailable"
                   value={postContent}
                   disabled
                   readOnly
@@ -143,7 +142,7 @@ const Social: React.FC = () => {
                   aria-disabled="true"
                   className="w-full cursor-not-allowed rounded bg-gray-600 py-2 px-4 font-bold text-gray-300"
                 >
-                  Post (Coming Soon)
+                  Post (Unavailable)
                 </button>
               </div>
 

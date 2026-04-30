@@ -56,47 +56,50 @@ export default function ResourcesIndex() {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
-        <meta name="twitter:image" content={canonicalUrl("/images/hero1.jpg")} />
+        <meta
+          name="twitter:image"
+          content={canonicalUrl("/images/hero1.jpg")}
+        />
       </Head>
       <script type="application/ld+json">
         {JSON.stringify(collectionSchema)}
       </script>
       <div className="min-h-screen bg-black text-white p-8">
-      <div className="max-w-5xl mx-auto">
-        <h1 className="text-4xl font-bold text-gold mb-6">
-          Employer Resources
-        </h1>
-        <p className="text-gray-300 mb-8">
-          Practical guidance for hiring, onboarding, and retaining diverse
-          talent with clear implementation steps.
-        </p>
+        <div className="max-w-5xl mx-auto">
+          <h1 className="text-4xl font-bold text-gold mb-6">
+            Employer Resources
+          </h1>
+          <p className="text-gray-300 mb-8">
+            Practical guidance for hiring, onboarding, and retaining diverse
+            talent with clear implementation steps.
+          </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {articles.map((article) => (
-            <div
-              key={article.slug}
-              className="bg-gray-900/90 p-6 rounded-xl border border-gray-700/80 shadow-sm"
-            >
-              <h2 className="text-xl font-semibold text-gold mb-2">
-                {article.title}
-              </h2>
-              <p className="text-gray-400 mb-4">{article.summary}</p>
-              {article.available ? (
-                <Link
-                  href={`/resources/${article.slug}`}
-                  className="font-medium text-gold hover:underline"
-                >
-                  Read Article →
-                </Link>
-              ) : (
-                <span className="font-medium text-gray-500">
-                  Article coming soon
-                </span>
-              )}
-            </div>
-          ))}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {articles.map((article) => (
+              <div
+                key={article.slug}
+                className="bg-gray-900/90 p-6 rounded-xl border border-gray-700/80 shadow-sm"
+              >
+                <h2 className="text-xl font-semibold text-gold mb-2">
+                  {article.title}
+                </h2>
+                <p className="text-gray-400 mb-4">{article.summary}</p>
+                {article.available ? (
+                  <Link
+                    href={`/resources/${article.slug}`}
+                    className="font-medium text-gold hover:underline"
+                  >
+                    Read Article →
+                  </Link>
+                ) : (
+                  <span className="font-medium text-gray-500">
+                    Article in editorial queue
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
       </div>
     </>
   );
