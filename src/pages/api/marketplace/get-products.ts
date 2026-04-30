@@ -1,8 +1,15 @@
+import { performance } from "node:perf_hooks";
 import { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import { getAppEnv } from "@/lib/env";
 import { getMarketplaceDbName } from "@/lib/marketplace/db";
 import { ObjectId } from "mongodb";
+
+const marketplaceWarmupPromise = clientPromise
+  .then(async (client) => {
+    await client.db(getMarketplaceDbName()).command({ ping: 1 });
+  })
+  .catch(() => null);
 
 export default async function handler(
   req: NextApiRequest,
@@ -39,7 +46,10 @@ export default async function handler(
   const skip = (pageNum - 1) * limitNum;
 
   try {
+    const t0 = performance.now();
+    await marketplaceWarmupPromise;
     const client = await clientPromise;
+    const tConnected = performance.now();
 
     const filter: any = {};
 
@@ -90,39 +100,61 @@ export default async function handler(
     const queryProducts = async (collection: any) => {
       const [total, products] = await Promise.all([
         collection.countDocuments(filter),
-        collection.find(filter).sort(sortSpec).skip(skip).limit(limitNum).toArray(),
+        collection
+          .find(filter)
+          .sort(sortSpec)
+          .skip(skip)
+          .limit(limitNum)
+          .toArray(),
       ]);
       return { total, products };
     };
 
+    const tBeforeProductQuery = performance.now();
     const result = await queryProducts(productsCollection);
+    const tAfterProductQuery = performance.now();
 
-    const sellerIds = Array.from(
+    const sellerIds: string[] = Array.from(
       new Set(
         result.products
           .map((p: any) => String(p?.sellerId || "").trim())
-          .filter(Boolean),
+          .filter((id: string) => id.length > 0),
       ),
     );
 
     const sellerObjectIds = sellerIds
-      .filter((id) => ObjectId.isValid(id))
-      .map((id) => new ObjectId(id));
+      .filter((id: string) => ObjectId.isValid(id))
+      .map((id: string) => new ObjectId(id));
 
+    const tBeforeSellerQuery = performance.now();
     const sellers = sellerIds.length
       ? await client
           .db(usedDbName)
           .collection("sellers")
-          .find({
-            $or: [
-              { userId: { $in: sellerIds } },
-              ...(sellerObjectIds.length
-                ? [{ _id: { $in: sellerObjectIds } }]
-                : []),
-            ],
-          })
+          .find(
+            {
+              $or: [
+                { userId: { $in: sellerIds } },
+                ...(sellerObjectIds.length
+                  ? [{ _id: { $in: sellerObjectIds } }]
+                  : []),
+              ],
+            },
+            {
+              projection: {
+                _id: 1,
+                userId: 1,
+                storeName: 1,
+                businessName: 1,
+                ownerName: 1,
+                email: 1,
+                description: 1,
+              },
+            },
+          )
           .toArray()
       : [];
+    const tAfterSellerQuery = performance.now();
 
     const sellerByKey = new Map<string, any>();
     for (const s of sellers) {
@@ -132,6 +164,7 @@ export default async function handler(
       if (uid) sellerByKey.set(uid, s);
     }
 
+    const tBeforeHydration = performance.now();
     const hydratedProducts = result.products.map((p: any) => {
       const sellerKey = String(p?.sellerId || "").trim();
       const seller = sellerByKey.get(sellerKey);
@@ -160,6 +193,18 @@ export default async function handler(
       };
     });
 
+    const tAfterHydration = performance.now();
+    const connectMs = Math.round(tConnected - t0);
+    const productsQueryMs = Math.round(tAfterProductQuery - tBeforeProductQuery);
+    const sellersQueryMs = Math.round(tAfterSellerQuery - tBeforeSellerQuery);
+    const hydrationMs = Math.round(tAfterHydration - tBeforeHydration);
+    const totalMs = Math.round(tAfterHydration - t0);
+
+    res.setHeader(
+      "Server-Timing",
+      `db_connect;dur=${connectMs},products_query;dur=${productsQueryMs},sellers_query;dur=${sellersQueryMs},hydrate;dur=${hydrationMs},total;dur=${totalMs}`,
+    );
+
     if (isDebug) {
       return res.status(200).json({
         products: hydratedProducts,
@@ -171,6 +216,13 @@ export default async function handler(
           sortKey,
           pageNum,
           limitNum,
+          timing: {
+            dbConnectMs: connectMs,
+            productsQueryMs,
+            sellersQueryMs,
+            hydrationMs,
+            totalMs,
+          },
         },
       });
     }
