@@ -38,7 +38,9 @@ export default function AdminSubscriptionsPage() {
       <main className="min-h-screen bg-black px-4 py-8 text-white">
         <div className="mx-auto max-w-7xl space-y-6">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-yellow-200">Subscription Admin</h1>
+            <h1 className="text-2xl font-bold text-yellow-200">
+              Subscription Admin
+            </h1>
             <Link href="/admin/tools" className="text-yellow-300 underline">
               Back to Admin Tools
             </Link>
@@ -51,20 +53,30 @@ export default function AdminSubscriptionsPage() {
               <section className="grid gap-3 sm:grid-cols-3">
                 <div className="rounded-lg border border-white/15 bg-white/5 p-4">
                   <div className="text-xs text-white/70">Active</div>
-                  <div className="text-2xl font-bold text-yellow-200">{data.summary?.active || 0}</div>
+                  <div className="text-2xl font-bold text-yellow-200">
+                    {data.summary?.active || 0}
+                  </div>
                 </div>
                 <div className="rounded-lg border border-white/15 bg-white/5 p-4">
-                  <div className="text-xs text-white/70">Canceled/Canceling</div>
-                  <div className="text-2xl font-bold text-yellow-200">{data.summary?.canceled || 0}</div>
+                  <div className="text-xs text-white/70">
+                    Canceled/Canceling
+                  </div>
+                  <div className="text-2xl font-bold text-yellow-200">
+                    {data.summary?.canceled || 0}
+                  </div>
                 </div>
                 <div className="rounded-lg border border-white/15 bg-white/5 p-4">
                   <div className="text-xs text-white/70">Failed/Past Due</div>
-                  <div className="text-2xl font-bold text-yellow-200">{data.summary?.failed || 0}</div>
+                  <div className="text-2xl font-bold text-yellow-200">
+                    {data.summary?.failed || 0}
+                  </div>
                 </div>
               </section>
 
               <section className="rounded-lg border border-white/15 bg-white/5 p-4">
-                <h2 className="mb-3 text-lg font-semibold text-yellow-200">User → Plan Mapping</h2>
+                <h2 className="mb-3 text-lg font-semibold text-yellow-200">
+                  User → Plan Mapping
+                </h2>
                 <div className="overflow-x-auto">
                   <table className="min-w-full text-sm">
                     <thead>
@@ -79,13 +91,25 @@ export default function AdminSubscriptionsPage() {
                     <tbody>
                       {(data.subscriptions || []).map((row, idx) => (
                         <tr key={idx} className="border-t border-white/10">
-                          <td className="pr-4 py-2">{String(row.email || "")}</td>
-                          <td className="pr-4 py-2">{String(row.subscriptionPlan || row.currentPlan || "free")}</td>
-                          <td className="pr-4 py-2">{String(row.subscriptionStatus || "inactive")}</td>
-                          <td className="pr-4 py-2">{String(row.renewalStatus || "inactive")}</td>
+                          <td className="pr-4 py-2">
+                            {String(row.email || "")}
+                          </td>
+                          <td className="pr-4 py-2">
+                            {String(
+                              row.subscriptionPlan || row.currentPlan || "free",
+                            )}
+                          </td>
+                          <td className="pr-4 py-2">
+                            {String(row.subscriptionStatus || "inactive")}
+                          </td>
+                          <td className="pr-4 py-2">
+                            {String(row.renewalStatus || "inactive")}
+                          </td>
                           <td className="pr-4 py-2">
                             {row.nextBillingDate
-                              ? new Date(row.nextBillingDate).toLocaleDateString()
+                              ? new Date(
+                                  row.nextBillingDate,
+                                ).toLocaleDateString()
                               : "-"}
                           </td>
                         </tr>
@@ -96,13 +120,19 @@ export default function AdminSubscriptionsPage() {
               </section>
 
               <section className="rounded-lg border border-white/15 bg-white/5 p-4">
-                <h2 className="mb-3 text-lg font-semibold text-yellow-200">Renewal History</h2>
+                <h2 className="mb-3 text-lg font-semibold text-yellow-200">
+                  Renewal History
+                </h2>
                 <div className="space-y-2 text-sm">
                   {(data.renewalHistory || []).slice(0, 100).map((e, idx) => (
-                    <div key={idx} className="rounded border border-white/10 p-2">
+                    <div
+                      key={idx}
+                      className="rounded border border-white/10 p-2"
+                    >
                       <div>{String(e.stripeEventType || "event")}</div>
                       <div className="text-white/70">
-                        {String(e.email || "")} · {String(e.plan || "")} · {String(e.status || "")}
+                        {String(e.email || "")} · {String(e.plan || "")} ·{" "}
+                        {String(e.status || "")}
                       </div>
                     </div>
                   ))}
@@ -116,6 +146,5 @@ export default function AdminSubscriptionsPage() {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  return requireAdminPageProps(ctx);
-};
+export const getServerSideProps: GetServerSideProps =
+  requireAdminPageProps("/admin/subscriptions");

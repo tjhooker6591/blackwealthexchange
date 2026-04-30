@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import type { GetServerSideProps } from "next";
 import cookie from "cookie";
 import jwt from "jsonwebtoken";
@@ -45,7 +46,30 @@ type Row = {
   };
 };
 
+
+const adminNavLinks = [
+  ["Command Center", "/admin/command-center"],
+  ["Financial Review", "/admin/financial-review"],
+  ["Dashboard", "/admin/dashboard"],
+  ["Support", "/admin/support"],
+  ["Revenue", "/admin/revenue"],
+  ["Growth", "/admin/growth"],
+  ["Partnerships", "/admin/partnerships"],
+] as const;
+
+function AdminHubNav() {
+  return (
+    <div className="flex flex-wrap gap-2">
+      {adminNavLinks.map(([label, href]) => (
+        <Link key={href} href={href} className="text-xs border border-zinc-700 px-3 py-1.5 rounded">
+          {label}
+        </Link>
+      ))}
+    </div>
+  );
+}
 export default function AdvertisingRequestsAdminPage() {
+  const router = useRouter();
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -171,6 +195,12 @@ export default function AdvertisingRequestsAdminPage() {
   return (
     <div className="min-h-screen bg-gray-900 text-white p-6 md:p-10">
       <div className="mx-auto max-w-7xl">
+        <AdminHubNav />
+
+        {router.query.source === "command-center" ? (
+          <div className="mt-2 rounded border border-yellow-500/30 bg-yellow-500/10 px-3 py-2 text-xs text-yellow-200">Opened from Command Center{router.query.focus ? ` • Focus: ${String(router.query.focus)}` : ""}</div>
+        ) : null}
+
         <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div>
             <h1 className="text-3xl font-bold text-gold">

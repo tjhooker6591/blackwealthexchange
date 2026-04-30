@@ -376,25 +376,114 @@ export default function CommandCenterPage() {
               <div className="font-semibold text-yellow-300">Retention</div>
               {loopRow("Active Users", retention?.retention?.activeUsers)}
               {loopRow("New This Week", retention?.retention?.newUsersThisWeek)}
-              {loopRow("Listings Needing Action", retention?.retention?.listingsNeedingAction)}
-              <button type="button" className="mt-2 text-[11px] text-yellow-300 underline" onClick={() => setShowRetention((v) => !v)}>[ View Details {showRetention ? "▲" : "▼"} ]</button>
-              {showRetention ? <div className="mt-2 space-y-1 text-[11px] text-zinc-300 break-words">{Object.entries(retention?.retention || {}).map(([k, v]) => (<div key={k}><span className="text-zinc-400">{k}:</span> {typeof v === "object" && v !== null ? `${String((v as any).value ?? "")}` + ` (${prettyStatus((v as any).sourceStatus)})` : String(v)}</div>))}</div> : null}
+              {loopRow(
+                "Listings Needing Action",
+                retention?.retention?.listingsNeedingAction,
+              )}
+              <button
+                type="button"
+                className="mt-2 text-[11px] text-yellow-300 underline"
+                onClick={() => setShowRetention((v) => !v)}
+              >
+                [ View Details {showRetention ? "▲" : "▼"} ]
+              </button>
+              <div className="mt-1">
+                <Link
+                  href="/admin/dashboard?source=command-center&focus=operations"
+                  className="text-[11px] text-yellow-300 underline"
+                >
+                  Go to → Dashboard
+                </Link>
+              </div>
+              {showRetention ? (
+                <div className="mt-2 space-y-1 text-[11px] text-zinc-300 break-words">
+                  {Object.entries(retention?.retention || {}).map(([k, v]) => (
+                    <div key={k}>
+                      <span className="text-zinc-400">{k}:</span>{" "}
+                      {typeof v === "object" && v !== null
+                        ? `${String((v as any).value ?? "")}` +
+                          ` (${prettyStatus((v as any).sourceStatus)})`
+                        : String(v)}
+                    </div>
+                  ))}
+                </div>
+              ) : null}
             </div>
             <div className="rounded border border-zinc-800 bg-zinc-950 p-3">
-              <div className="font-semibold text-yellow-300">Marketplace Trust</div>
+              <div className="font-semibold text-yellow-300">
+                Marketplace Trust
+              </div>
               {loopRow("Total Orders", trustM?.metrics?.totalOrders)}
               {loopRow("Completed Orders", trustM?.metrics?.completedOrders)}
               {loopRow("Support Issues", trustM?.metrics?.supportIssues)}
-              <button type="button" className="mt-2 text-[11px] text-yellow-300 underline" onClick={() => setShowTrust((v) => !v)}>[ View Details {showTrust ? "▲" : "▼"} ]</button>
-              {showTrust ? <div className="mt-2 space-y-1 text-[11px] text-zinc-300 break-words">{Object.entries(trustM?.metrics || {}).map(([k, v]) => (<div key={k}><span className="text-zinc-400">{k}:</span> {typeof v === "object" && v !== null ? `${String((v as any).value ?? "")}` + ` (${prettyStatus((v as any).sourceStatus)})` : String(v)}</div>))}</div> : null}
+              <button
+                type="button"
+                className="mt-2 text-[11px] text-yellow-300 underline"
+                onClick={() => setShowTrust((v) => !v)}
+              >
+                [ View Details {showTrust ? "▲" : "▼"} ]
+              </button>
+              <div className="mt-1 flex flex-wrap gap-3">
+                <Link
+                  href="/admin/financial-review?source=command-center&focus=revenue"
+                  className="text-[11px] text-yellow-300 underline"
+                >
+                  Go to → Financial Review
+                </Link>
+                <Link
+                  href="/admin/support?source=command-center&focus=priority"
+                  className="text-[11px] text-yellow-300 underline"
+                >
+                  Go to → Support
+                </Link>
+              </div>
+              {showTrust ? (
+                <div className="mt-2 space-y-1 text-[11px] text-zinc-300 break-words">
+                  {Object.entries(trustM?.metrics || {}).map(([k, v]) => (
+                    <div key={k}>
+                      <span className="text-zinc-400">{k}:</span>{" "}
+                      {typeof v === "object" && v !== null
+                        ? `${String((v as any).value ?? "")}` +
+                          ` (${prettyStatus((v as any).sourceStatus)})`
+                        : String(v)}
+                    </div>
+                  ))}
+                </div>
+              ) : null}
             </div>
             <div className="rounded border border-zinc-800 bg-zinc-950 p-3">
               <div className="font-semibold text-yellow-300">Sponsor Proof</div>
               {loopRow("Active Campaigns", sponsor?.metrics?.activeCampaigns)}
               {loopRow("Expired Campaigns", sponsor?.metrics?.expiredCampaigns)}
               {loopRow("Impressions", sponsor?.metrics?.impressions)}
-              <button type="button" className="mt-2 text-[11px] text-yellow-300 underline" onClick={() => setShowSponsor((v) => !v)}>[ View Details {showSponsor ? "▲" : "▼"} ]</button>
-              {showSponsor ? <div className="mt-2 space-y-1 text-[11px] text-zinc-300 break-words">{Object.entries(sponsor?.metrics || {}).map(([k, v]) => (<div key={k}><span className="text-zinc-400">{k}:</span> {typeof v === "object" && v !== null ? `${String((v as any).value ?? "")}` + ` (${prettyStatus((v as any).sourceStatus)})` : String(v)}</div>))}</div> : null}
+              <button
+                type="button"
+                className="mt-2 text-[11px] text-yellow-300 underline"
+                onClick={() => setShowSponsor((v) => !v)}
+              >
+                [ View Details {showSponsor ? "▲" : "▼"} ]
+              </button>
+              <div className="mt-1">
+                <Link
+                  href="/admin/advertising-requests?source=command-center&focus=sponsor-proof"
+                  className="text-[11px] text-yellow-300 underline"
+                >
+                  Go to → Advertising Requests
+                </Link>
+              </div>
+              {showSponsor ? (
+                <div className="mt-2 space-y-1 text-[11px] text-zinc-300 break-words">
+                  {Object.entries(sponsor?.metrics || {}).map(([k, v]) => (
+                    <div key={k}>
+                      <span className="text-zinc-400">{k}:</span>{" "}
+                      {typeof v === "object" && v !== null
+                        ? `${String((v as any).value ?? "")}` +
+                          ` (${prettyStatus((v as any).sourceStatus)})`
+                        : String(v)}
+                    </div>
+                  ))}
+                </div>
+              ) : null}
             </div>
           </div>
         </section>

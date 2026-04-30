@@ -102,7 +102,7 @@ export default function TravelMapCard({
               Verified
             </span>
           ) : null}
-          {isSaved && !saveHydrating ? (
+          {isSaved && !saveBusy ? (
             <span className="rounded-full border border-cyan-400/30 bg-cyan-500/10 px-2 py-1 text-cyan-200">
               Saved
             </span>

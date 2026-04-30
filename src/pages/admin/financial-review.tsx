@@ -21,6 +21,28 @@ const DISPLAY_TO_BACKING: Record<string, string[]> = {
   manual_offline: ["manual_offline", "other"],
 };
 
+
+const adminNavLinks = [
+  ["Command Center", "/admin/command-center"],
+  ["Financial Review", "/admin/financial-review"],
+  ["Dashboard", "/admin/dashboard"],
+  ["Support", "/admin/support"],
+  ["Revenue", "/admin/revenue"],
+  ["Growth", "/admin/growth"],
+  ["Partnerships", "/admin/partnerships"],
+] as const;
+
+function AdminHubNav() {
+  return (
+    <div className="flex flex-wrap gap-2">
+      {adminNavLinks.map(([label, href]) => (
+        <Link key={href} href={href} className="text-xs border border-zinc-700 px-3 py-1.5 rounded">
+          {label}
+        </Link>
+      ))}
+    </div>
+  );
+}
 export default function FinancialReviewPage() {
   const router = useRouter();
   const [data, setData] = useState<Data | null>(null);
@@ -72,6 +94,14 @@ export default function FinancialReviewPage() {
   return (
     <div className="min-h-screen bg-black text-white p-8">
       <div className="max-w-7xl mx-auto space-y-6">
+        <AdminHubNav />
+
+        {router.query.source === "command-center" ? (
+          <div className="rounded border border-yellow-500/30 bg-yellow-500/10 px-3 py-2 text-xs text-yellow-200">
+            Opened from Command Center{router.query.focus ? ` • Focus: ${String(router.query.focus)}` : ""}
+          </div>
+        ) : null}
+
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-bold text-yellow-400">
             Financial Review
@@ -150,6 +180,14 @@ export default function FinancialReviewPage() {
             </div>
           )}
         </Section>
+
+        <section className="rounded border border-zinc-800 bg-zinc-950 p-4">
+          <h2 className="text-lg text-yellow-400 mb-2">Related Actions</h2>
+          <div className="flex flex-wrap gap-2 text-sm">
+            <Link href="/admin/command-center?source=command-center&focus=marketplace-trust" className="underline text-yellow-300">View marketplace trust</Link>
+            <Link href="/admin/support?source=command-center&focus=priority" className="underline text-yellow-300">View support issues</Link>
+          </div>
+        </section>
 
         <Section title="Ledger Readiness">
           <p className="text-sm text-zinc-300">

@@ -1063,7 +1063,15 @@ const AdminDashboard = ({
 
               {/* Businesses summary */}
               <div className="bg-gray-800 rounded p-4 border border-gray-700 mb-4">
-                <div className="flex items-center justify-between">
+                <AdminHubNav />
+
+        {router.query.source === "command-center" ? (
+          <div className="rounded border border-yellow-500/30 bg-yellow-500/10 px-3 py-2 text-xs text-yellow-200">
+            Opened from Command Center{router.query.focus ? ` • Focus: ${String(router.query.focus)}` : ""}
+          </div>
+        ) : null}
+
+        <div className="flex items-center justify-between">
                   <h3 className="text-lg text-gold">Businesses Snapshot</h3>
                   <div className="text-xs text-gray-400">
                     Total:{" "}
@@ -1641,10 +1649,11 @@ const AdminDashboard = ({
           </div>
         </div>
 
-
         <div className="rounded border border-yellow-700 bg-gray-800 p-4">
           <h3 className="text-sm font-semibold text-gold">Financial Review</h3>
-          <p className="mt-1 text-xs text-gray-400">Dedicated finance control center separate from general analytics.</p>
+          <p className="mt-1 text-xs text-gray-400">
+            Dedicated finance control center separate from general analytics.
+          </p>
           <div className="mt-3 space-y-2 text-xs text-gray-300">
             <div>Total Revenue</div>
             <div>Revenue This Month</div>
@@ -1654,7 +1663,10 @@ const AdminDashboard = ({
             <div>Latest Transactions</div>
           </div>
           <div className="mt-3">
-            <AdminLink href="/admin/financial-review" label="Open Financial Review" />
+            <AdminLink
+              href="/admin/financial-review"
+              label="Open Financial Review"
+            />
           </div>
         </div>
         <div className="rounded border border-gray-700 bg-gray-800 p-4">
@@ -2004,3 +2016,25 @@ export const getServerSideProps: GetServerSideProps = async ({
     },
   };
 };
+const adminNavLinks = [
+  ["Command Center", "/admin/command-center"],
+  ["Financial Review", "/admin/financial-review"],
+  ["Dashboard", "/admin/dashboard"],
+  ["Support", "/admin/support"],
+  ["Revenue", "/admin/revenue"],
+  ["Growth", "/admin/growth"],
+  ["Partnerships", "/admin/partnerships"],
+] as const;
+
+function AdminHubNav() {
+  return (
+    <div className="flex flex-wrap gap-2">
+      {adminNavLinks.map(([label, href]) => (
+        <Link key={href} href={href} className="text-xs border border-zinc-700 px-3 py-1.5 rounded">
+          {label}
+        </Link>
+      ))}
+    </div>
+  );
+}
+
