@@ -68,6 +68,7 @@ export default async function handler(
 ) {
   res.setHeader("Cache-Control", "no-store");
 
+  const startedAt = Date.now();
   try {
     const raw = req.headers.cookie || "";
     const cookies = cookie.parse(raw);
@@ -110,12 +111,21 @@ export default async function handler(
             ? "businesses"
             : "users";
 
+    const mongoStart = Date.now();
     const client = await clientPromise;
+    const mongoConnectMs = Date.now() - mongoStart;
     const db = client.db(getMongoDbName());
 
+    const queryStart = Date.now();
     const profile = await db
       .collection<UserProfile>(collectionName)
       .findOne({ email: payload.email });
+
+    const mongoQueryMs = Date.now() - queryStart;
+    if (process.env.NODE_ENV !== "production") {
+      res.setHeader("Server-Timing", `mongo_connect;dur=${mongoConnectMs}, mongo_query;dur=${mongoQueryMs}, total;dur=${Date.now()-startedAt}`);
+      console.info(`[timing][api/auth/me] total=${Date.now()-startedAt}ms connect=${mongoConnectMs}ms query=${mongoQueryMs}ms role=${role}`);
+    }
 
     if (!profile) {
       return res.status(404).json({ user: null, error: "User not found." });
@@ -165,10 +175,10 @@ export default async function handler(
       typeof profile.premiumStatus === "string" && profile.premiumStatus.trim()
         ? profile.premiumStatus.toLowerCase()
         : normalizedCurrentPlan === "premium" ||
-          normalizedCurrentPlan === "founding" ||
-          profile.isPremium === true
-        ? "active"
-        : "inactive";
+            normalizedCurrentPlan === "founding" ||
+            profile.isPremium === true
+          ? "active"
+          : "inactive";
 
     const normalizedIsPremium =
       profile.isPremium === true ||
@@ -219,7 +229,8 @@ export default async function handler(
         subscriptionStatus: profile.subscriptionStatus ?? null,
         subscriptionCurrentPeriodStart:
           profile.subscriptionCurrentPeriodStart ?? null,
-        subscriptionCurrentPeriodEnd: profile.subscriptionCurrentPeriodEnd ?? null,
+        subscriptionCurrentPeriodEnd:
+          profile.subscriptionCurrentPeriodEnd ?? null,
         subscriptionCancelAtPeriodEnd:
           profile.subscriptionCancelAtPeriodEnd ?? false,
         nextBillingDate: profile.nextBillingDate ?? null,

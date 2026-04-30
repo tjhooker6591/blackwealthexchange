@@ -27,6 +27,31 @@ export default function App({
 
     trackPageView(router.asPath || "/");
     router.events.on("routeChangeComplete", trackPageView);
+    if (process.env.NODE_ENV !== "production" && typeof window !== "undefined") {
+      const onStart = (url: string) => {
+        performance.mark("routeStart");
+        console.info(`[timing] route start -> ${url}`);
+      };
+      const onDone = (url: string) => {
+        performance.mark("routeEnd");
+        performance.measure("routeNav", "routeStart", "routeEnd");
+        const m = performance.getEntriesByName("routeNav").pop();
+        console.info(`[timing] route complete ${url} ${Math.round(m?.duration || 0)}ms`);
+      };
+      router.events.on("routeChangeStart", onStart);
+      router.events.on("routeChangeComplete", onDone);
+
+      const _fetch = window.fetch.bind(window);
+      window.fetch = async (...args) => {
+        const u = String(args[0]);
+        const t0 = performance.now();
+        const res = await _fetch(...args);
+        const t1 = performance.now();
+        if (u.startsWith("/api/")) console.info(`[timing] fetch ${u} ${Math.round(t1-t0)}ms status=${res.status}`);
+        return res;
+      };
+    }
+
 
     // Blur on PrintScreen
     const handleKeyDown = (e: KeyboardEvent) => {
