@@ -77,7 +77,17 @@ export async function middleware(req: NextRequest) {
     req.headers.get("x-forwarded-proto") ||
     req.nextUrl.protocol.replace(":", "");
 
-  if (process.env.NODE_ENV === "production" && requestProto !== "https") {
+  const host = req.headers.get("host") || "";
+  const isLocalHost =
+    host.startsWith("localhost") ||
+    host.startsWith("127.0.0.1") ||
+    host.startsWith("[::1]");
+
+  if (
+    process.env.NODE_ENV === "production" &&
+    !isLocalHost &&
+    requestProto !== "https"
+  ) {
     const httpsUrl = req.nextUrl.clone();
     httpsUrl.protocol = "https:";
     return NextResponse.redirect(httpsUrl, 308);
