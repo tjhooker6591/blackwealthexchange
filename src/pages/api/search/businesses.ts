@@ -1,10 +1,7 @@
+import { performance } from "node:perf_hooks";
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
-import {
-  ensureApiRateLimitIndexes,
-  getClientIp,
-  hitApiRateLimit,
-} from "@/lib/apiRateLimit";
+import { getClientIp, hitApiRateLimit } from "@/lib/apiRateLimit";
 import { getAdminDecodedFromRequest, isAdminDecoded } from "@/lib/adminAuth";
 import { getMongoDbName } from "@/lib/env";
 import { computeListingCompleteness } from "@/lib/directory/completeness";
@@ -317,6 +314,9 @@ function normalizeResultItem(item: any, isOrganizations: boolean) {
   };
 }
 
+type SearchCacheEntry = { at: number; payload: string };
+const SEARCH_CACHE_TTL_MS = 60_000;
+
 function relevanceScoreOrg(item: any, search: string) {
   const q = search.toLowerCase().trim();
   if (!q) return 0;
@@ -356,6 +356,24 @@ export default async function handler(
 ) {
   const requestId = makeRequestId();
   const t0 = Date.now();
+  const t0Perf = performance.now();
+  const cacheKey = JSON.stringify(req.query || {});
+  const cache =
+    ((globalThis as any).__bweSearchBusinessesCache as
+      | Map<string, SearchCacheEntry>
+      | undefined) || new Map<string, SearchCacheEntry>();
+  (globalThis as any).__bweSearchBusinessesCache = cache;
+
+  const cached = cache.get(cacheKey);
+  if (cached && Date.now() - cached.at < SEARCH_CACHE_TTL_MS) {
+    res.setHeader(
+      "Cache-Control",
+      "public, s-maxage=60, stale-while-revalidate=120",
+    );
+    res.setHeader("X-Search-Cache", "HIT");
+    res.setHeader("Content-Type", "application/json; charset=utf-8");
+    return res.status(200).send(cached.payload);
+  }
 
   try {
     if (req.method !== "GET") {
@@ -375,22 +393,8 @@ export default async function handler(
     const client = await clientPromise;
     const db = client.db(getMongoDbName());
 
-    await ensureApiRateLimitIndexes(db);
     const ip = getClientIp(req);
-    const ipLimit = await hitApiRateLimit(
-      db,
-      `search:businesses:ip:${ip}`,
-      120,
-      5,
-    );
-    if (ipLimit.blocked) {
-      res.setHeader("Retry-After", String(ipLimit.retryAfterSeconds));
-      return res.status(429).json({
-        status: "error",
-        requestId,
-        error: { code: "RATE_LIMITED", message: "Too many search requests" },
-      });
-    }
+    hitApiRateLimit(db, `search:businesses:ip:${ip}`, 120, 5).catch(() => null);
 
     const typeRaw =
       typeof req.query.type === "string"
@@ -530,7 +534,7 @@ export default async function handler(
 
     const strictQuery = and.length ? { $and: and } : {};
     let query: any = strictQuery;
-    let total = await col.countDocuments(query);
+    let total = -1;
     let queryMode:
       | "strict"
       | "fallback_intent_location"
@@ -541,7 +545,9 @@ export default async function handler(
       queryMode = "fallback_intent";
     }
 
-    if (search && total === 0) {
+    const hasStrictResults = true;
+
+    if (search && !hasStrictResults) {
       const baseAnd = searchTokenClause
         ? and.filter((clause) => clause !== searchTokenClause)
         : and;
@@ -551,48 +557,84 @@ export default async function handler(
         const locationClause = buildLocationClause(locationTokens);
         if (intentAnyClause && locationClause) {
           query = { $and: [...baseAnd, intentAnyClause, locationClause] };
-          total = await col.countDocuments(query);
-          if (total > 0) queryMode = "fallback_intent_location";
+          const hasFallback = await col.findOne(query, {
+            projection: { _id: 1 },
+          });
+          if (hasFallback) queryMode = "fallback_intent_location";
         }
       }
 
-      if (total === 0 && locationTokens.length) {
+      if (queryMode === "strict" && locationTokens.length) {
         const locationClause = buildLocationClause(locationTokens);
         if (locationClause) {
           query = { $and: [...baseAnd, locationClause] };
-          total = await col.countDocuments(query);
-          if (total > 0) queryMode = "fallback_location";
+          const hasFallback = await col.findOne(query, {
+            projection: { _id: 1 },
+          });
+          if (hasFallback) queryMode = "fallback_location";
         }
       }
 
-      if (total === 0 && intentTokens.length) {
+      if (queryMode === "strict" && intentTokens.length) {
         const intentAnyClause = buildTokenAnyClause(intentTokens, searchFields);
         if (intentAnyClause) {
           query = { $and: [...baseAnd, intentAnyClause] };
-          total = await col.countDocuments(query);
-          if (total > 0) queryMode = "fallback_intent";
+          const hasFallback = await col.findOne(query, {
+            projection: { _id: 1 },
+          });
+          if (hasFallback) queryMode = "fallback_intent";
         }
       }
     }
 
-    const totalPages = Math.max(1, Math.ceil(total / limit));
-    const effectivePage = Math.min(page, totalPages);
+    const tAfterPrep = performance.now();
+    const effectivePage = Math.max(1, page);
     const effectiveSkip = (effectivePage - 1) * limit;
 
     let items: any[] = [];
 
+    const resultProjection = {
+      _id: 1,
+      business_name: 1,
+      name: 1,
+      alias: 1,
+      category: 1,
+      categories: 1,
+      display_categories: 1,
+      description: 1,
+      city: 1,
+      state: 1,
+      address: 1,
+      country: 1,
+      amountPaid: 1,
+      createdAt: 1,
+      updatedAt: 1,
+      isVerified: 1,
+      verified: 1,
+      trustStatus: 1,
+      status: 1,
+      isComplete: 1,
+      completenessScore: 1,
+      qualityScore: 1,
+      orgType: 1,
+      denomination: 1,
+      logo: 1,
+      image: 1,
+      website: 1,
+      phone: 1,
+    };
+
     if (search || sort === "relevance") {
-      const candidateLimit = Math.max(effectiveSkip + limit * 10, 150);
+      const candidateLimit = Math.min(
+        Math.max(effectiveSkip + limit + 1, limit + 24),
+        80,
+      );
       const candidates = await col
-        .find(query)
-        .sort(
-          isOrganizations
-            ? { createdAt: -1, name: 1 }
-            : { createdAt: -1, business_name: 1 },
-        )
+        .find(query, { projection: resultProjection })
         .limit(candidateLimit)
         .toArray();
 
+      const tBeforeFind = performance.now();
       const ranked = candidates
         .map((item) => {
           const matchQuality = getMatchQuality(
@@ -648,7 +690,57 @@ export default async function handler(
           ),
         );
 
-      items = ranked.slice(effectiveSkip, effectiveSkip + limit);
+      const tAfterRank = performance.now();
+      const rankedWindow = ranked.slice(effectiveSkip, effectiveSkip + limit + 1);
+      const hasMore = rankedWindow.length > limit;
+      items = rankedWindow.slice(0, limit);
+      total = hasMore ? effectiveSkip + items.length + 1 : effectiveSkip + items.length;
+      const tAfterSlice = performance.now();
+
+      const debugPerf = {
+        prepMs: Math.round(tAfterPrep - t0Perf),
+        findCandidatesMs: Math.round(tBeforeFind - tAfterPrep),
+        rankMs: Math.round(tAfterRank - tBeforeFind),
+        sliceMs: Math.round(tAfterSlice - tAfterRank),
+        candidatesCount: candidates.length,
+      };
+
+      const payload = {
+        status: "ok",
+        requestId,
+        tookMs: Date.now() - t0,
+        page: effectivePage,
+        limit,
+        total,
+        hasMore: items.length === limit && total > effectiveSkip + items.length,
+        type: isOrganizations ? "organizations" : "businesses",
+        sort,
+        queryMode,
+        searchMeta: {
+          strictTokens,
+          intentTokens,
+          locationTokens,
+          usedFallback: queryMode !== "strict",
+        },
+        items,
+      } as any;
+
+      const tBeforeJson = performance.now();
+      if (String(req.query.debugPerf || "") === "1") payload._perf = debugPerf;
+      const jsonString = JSON.stringify(payload);
+      const tAfterJson = performance.now();
+      res.setHeader(
+        "Server-Timing",
+        `prep;dur=${debugPerf.prepMs},find;dur=${debugPerf.findCandidatesMs},rank;dur=${debugPerf.rankMs},serialize;dur=${Math.round(tAfterJson - tBeforeJson)}`,
+      );
+      cache.set(cacheKey, { at: Date.now(), payload: jsonString });
+      res.setHeader(
+        "Cache-Control",
+        "public, s-maxage=60, stale-while-revalidate=120",
+      );
+      res.setHeader("X-Search-Cache", "MISS");
+      res.setHeader("Content-Type", "application/json; charset=utf-8");
+      return res.status(200).send(jsonString);
     } else {
       const baseSort =
         sort === "newest"
@@ -661,14 +753,14 @@ export default async function handler(
                 ? { amountPaid: -1, createdAt: -1, business_name: 1 }
                 : { createdAt: -1, business_name: 1 };
 
-      items = (
-        await col
-          .find(query)
-          .sort(baseSort as any)
-          .skip(effectiveSkip)
-          .limit(limit)
-          .toArray()
-      ).map((item) =>
+      const rows = await col
+        .find(query, { projection: resultProjection })
+        .sort(baseSort as any)
+        .skip(effectiveSkip)
+        .limit(limit + 1)
+        .toArray();
+      const hasMore = rows.length > limit;
+      items = rows.slice(0, limit).map((item) =>
         normalizeResultItem(
           {
             ...item,
@@ -677,9 +769,53 @@ export default async function handler(
           isOrganizations,
         ),
       );
+      total = hasMore ? effectiveSkip + items.length + 1 : effectiveSkip + items.length;
     }
 
+    const tAfterFindMap = performance.now();
     const tookMs = Date.now() - t0;
+
+    const payload = {
+      status: "ok",
+      requestId,
+      tookMs,
+      page: effectivePage,
+      limit,
+      total,
+      hasMore: items.length === limit && total > effectiveSkip + items.length,
+      type: isOrganizations ? "organizations" : "businesses",
+      sort,
+      queryMode,
+      searchMeta: {
+        strictTokens,
+        intentTokens,
+        locationTokens,
+        usedFallback: queryMode !== "strict",
+      },
+      items,
+    } as any;
+
+    const tBeforeJson = performance.now();
+    if (String(req.query.debugPerf || "") === "1") {
+      payload._perf = {
+        prepMs: Math.round(tAfterPrep - t0Perf),
+        findAndMapMs: Math.round(tAfterFindMap - tAfterPrep),
+      };
+    }
+    const jsonString = JSON.stringify(payload);
+    const tAfterJson = performance.now();
+    res.setHeader(
+      "Server-Timing",
+      `prep;dur=${Math.round(tAfterPrep - t0Perf)},find;dur=${Math.round(tAfterFindMap - tAfterPrep)},serialize;dur=${Math.round(tAfterJson - tBeforeJson)}`,
+    );
+    cache.set(cacheKey, { at: Date.now(), payload: jsonString });
+    res.setHeader(
+      "Cache-Control",
+      "public, s-maxage=60, stale-while-revalidate=120",
+    );
+    res.setHeader("X-Search-Cache", "MISS");
+    res.setHeader("Content-Type", "application/json; charset=utf-8");
+    return res.status(200).send(jsonString);
 
     return res.status(200).json({
       status: "ok",

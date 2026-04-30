@@ -55,6 +55,10 @@ export default async function handler(
   }
 
   try {
+    const dbgHost = String(req.headers.host || "");
+    const dbgProto = String(req.headers["x-forwarded-proto"] || "");
+    const dbgCookieNames = Object.keys(cookie.parse(req.headers.cookie || ""));
+
     if (req.method !== "POST") {
       res.setHeader("Allow", ["POST"]);
       return res
@@ -79,6 +83,13 @@ export default async function handler(
     }
 
     const emailNorm = normalizeEmail(email);
+    console.info("[auth/login] request", {
+      host: dbgHost,
+      proto: dbgProto,
+      cookieNames: dbgCookieNames,
+      accountType: bodyAccountType || null,
+      email: emailNorm,
+    });
 
     const client = await clientPromise;
     const db = client.db(getMongoDbName());
@@ -107,24 +118,43 @@ export default async function handler(
       });
     }
 
-    let collName: "users" | "businesses" | "sellers" | "employers" = "users";
-    if (bodyAccountType === "business") collName = "businesses";
-    else if (bodyAccountType === "seller") collName = "sellers";
-    else if (bodyAccountType === "employer") collName = "employers";
+    const roleCollections: Array<{
+      role: "user" | "business" | "seller" | "employer";
+      coll: "users" | "businesses" | "sellers" | "employers";
+    }> = [
+      { role: "user", coll: "users" },
+      { role: "business", coll: "businesses" },
+      { role: "seller", coll: "sellers" },
+      { role: "employer", coll: "employers" },
+    ];
 
-    const collection = db.collection<UserRecord>(collName);
+    const preferredOrder = bodyAccountType
+      ? [
+          ...roleCollections.filter((x) => x.role === bodyAccountType),
+          ...roleCollections.filter((x) => x.role !== bodyAccountType),
+        ]
+      : roleCollections;
 
-    // Primary lookup (normalized email)
-    let user = await collection.findOne({ email: emailNorm });
+    let user: UserRecord | null = null;
+    let resolvedRole: "user" | "business" | "seller" | "employer" =
+      bodyAccountType || "user";
 
-    // Fallback for legacy mixed-case emails (optional but helpful)
-    if (!user) {
-      user = await collection.findOne({
-        email: { $regex: `^${escapeRegex(email.trim())}$`, $options: "i" },
-      });
+    for (const entry of preferredOrder) {
+      const collection = db.collection<UserRecord>(entry.coll);
+      user = await collection.findOne({ email: emailNorm });
+      if (!user) {
+        user = await collection.findOne({
+          email: { $regex: `^${escapeRegex(email.trim())}$`, $options: "i" },
+        });
+      }
+      if (user) {
+        resolvedRole = entry.role;
+        break;
+      }
     }
 
     if (!user) {
+      console.info("[auth/login] user_not_found", { email: emailNorm, accountType: bodyAccountType || null });
       return res
         .status(401)
         .json({ success: false, error: "Invalid credentials." });
@@ -144,12 +174,13 @@ export default async function handler(
 
     const isValid = await bcrypt.compare(password, user.password);
     if (!isValid) {
+      console.info("[auth/login] password_invalid", { email: emailNorm, resolvedRole });
       return res
         .status(401)
         .json({ success: false, error: "Invalid credentials." });
     }
 
-    const role = bodyAccountType || user.accountType || "user";
+    const role = resolvedRole || bodyAccountType || user.accountType || "user";
 
     // Canonical admin permission comes from the users identity record,
     // not from role-specific collection accountType values.
@@ -163,7 +194,8 @@ export default async function handler(
       user.isAdmin === true;
 
     const tokenVersion =
-      typeof user.tokenVersion === "number" && Number.isFinite(user.tokenVersion)
+      typeof user.tokenVersion === "number" &&
+      Number.isFinite(user.tokenVersion)
         ? user.tokenVersion
         : 0;
 
@@ -179,8 +211,13 @@ export default async function handler(
       { expiresIn: SESSION_TTL_LABEL },
     );
 
-    const isProd = getAuthCookieSecure();
-    const cookieDomain = getAuthCookieDomain();
+    const host = (req.headers.host || "").toLowerCase();
+    const isLocalHost =
+      host.startsWith("localhost") ||
+      host.startsWith("127.0.0.1") ||
+      host.startsWith("[::1]");
+    const isProd = isLocalHost ? false : getAuthCookieSecure();
+    const cookieDomain = isLocalHost ? undefined : getAuthCookieDomain();
 
     res.setHeader("Set-Cookie", [
       cookie.serialize("session_token", token, {
@@ -200,6 +237,14 @@ export default async function handler(
         domain: cookieDomain,
       }),
     ]);
+
+    console.info("[auth/login] success", {
+      host: dbgHost,
+      proto: dbgProto,
+      resolvedRole: role,
+      cookieDomain: cookieDomain || "<host-only>",
+      cookieSecure: isProd,
+    });
 
     return res.status(200).json({
       success: true,

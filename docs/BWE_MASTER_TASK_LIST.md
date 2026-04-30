@@ -141,3 +141,95 @@ Owner default: `BlackForge`
 - proof required: intake->pipeline->status transitions
 - dependencies: admin UI/API extension
 - last updated commit: pending
+
+11. Lane 3 backlog: business detail image trust improvement
+
+- status: incomplete
+- owner/agent: BlackForge
+- proof required: business image precedence + category fallback matrix + persistence proof + trust QA screenshots
+- dependencies: Lane 3 search quality/trust window (do not execute during Lane 2)
+- requirements:
+  - use business-provided image/logo first
+  - if missing, use category-specific fallback imagery
+  - do not use one generic fallback across all businesses
+  - do not hotlink random web images
+  - use licensed/public/approved sources only
+  - store selected fallback image/source metadata for consistency per listing
+  - unknown categories use premium BWE-branded fallback
+- last updated commit: pending
+
+## Lane Issue Log and Closure Verification (mandatory)
+
+### P0 stable baseline issue log (2026-04-30)
+
+- Issue name: Login session persistence failure (kicked back to login)
+- Description: User could login but session did not persist and returned to login.
+- When/where: P0 stability sweep during Lane 2 closure attempts.
+- Root cause: auth role/collection drift + cookie scope mismatch for localhost/proto handling.
+- Files involved: `src/pages/api/auth/login.ts`, `src/pages/api/auth/me.ts`, `src/pages/api/auth/logout.ts`, `src/pages/api/auth/signup.ts`, `src/middleware.ts`
+- Fix applied: cross-collection role fallback in login/me; localhost-safe cookie domain/secure handling.
+- Date/time resolved: 2026-04-30 PDT
+
+- Issue name: Cookie/session handling issue
+- Description: session cookie/accountType cookie not consistently reused across follow-up auth checks.
+- When/where: auth validation during P0.
+- Root cause: cookie attribute mismatch for local host/protocol and role lookup assumptions.
+- Files involved: `src/pages/api/auth/login.ts`, `src/pages/api/auth/me.ts`, `src/pages/api/auth/logout.ts`, `src/pages/api/auth/signup.ts`
+- Fix applied: host-aware cookie policy in auth routes and resilient identity resolution.
+- Date/time resolved: 2026-04-30 PDT
+
+- Issue name: One-click/navigation delay (5-6s)
+- Description: delayed click response/navigation reported by user.
+- When/where: homepage/core navigation P0 report.
+- Root cause: request-path overhead in search endpoint (`count`/prep path) and auth-path overhead investigations.
+- Files involved: `src/pages/api/search/businesses.ts`, `src/middleware.ts`
+- Fix applied: remove request-path count logic; reduce prep overhead; middleware localhost redirect guard.
+- Date/time resolved: 2026-04-30 PDT (user-validated P0 closure)
+
+- Issue name: Search count/data-trust issue (incorrect inventory numbers)
+- Description: homepage displayed low page-limited totals instead of true inventory counts.
+- When/where: homepage hero stat cards.
+- Root cause: homepage consumed search pagination `total` after search count-path optimization.
+- Files involved: `src/pages/index.tsx`, `src/pages/api/search/businesses.ts`, `src/pages/api/stats/inventory.ts`
+- Fix applied: separated global inventory stats to dedicated endpoint.
+- Date/time resolved: 2026-04-30 PDT
+
+- Issue name: Middleware/redirect behavior issue
+- Description: local runtime API calls redirected unexpectedly under production mode behavior.
+- When/where: middleware HTTPS enforcement and protected-route redirects.
+- Root cause: HTTPS redirect enforced without localhost exemption.
+- Files involved: `src/middleware.ts`
+- Fix applied: localhost bypass for HTTPS redirect enforcement.
+- Date/time resolved: 2026-04-30 PDT
+
+### Issue Verification Block (required)
+
+- Issue: Login session persistence failure
+  - Original behavior: Login then bounce to login window.
+  - Root cause: role collection drift + cookie scope mismatch.
+  - Fix: auth fallback + host-aware cookie settings.
+  - Re-test result: PASS
+
+- Issue: Cookie/session handling issue
+  - Original behavior: session cookie not reliably honored.
+  - Root cause: domain/secure mismatch in local host contexts.
+  - Fix: localhost cookie overrides in login/signup/logout.
+  - Re-test result: PASS
+
+- Issue: One-click/navigation delay
+  - Original behavior: 5-6 second click delay.
+  - Root cause: heavy search cold prep/count path and redirect overhead.
+  - Fix: removed count path from search request and tightened prep path.
+  - Re-test result: PASS
+
+- Issue: Search count/data-trust issue
+  - Original behavior: homepage counts showed page-limited values.
+  - Root cause: search totals reused for global stats.
+  - Fix: dedicated `/api/stats/inventory` endpoint and homepage wiring.
+  - Re-test result: PASS
+
+- Issue: Middleware/redirect behavior issue
+  - Original behavior: unintended local redirects.
+  - Root cause: strict production HTTPS redirect without localhost carve-out.
+  - Fix: localhost bypass in middleware.
+  - Re-test result: PASS

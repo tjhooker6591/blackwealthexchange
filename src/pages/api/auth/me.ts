@@ -71,10 +71,16 @@ export default async function handler(
   const startedAt = Date.now();
   try {
     const raw = req.headers.cookie || "";
+    const cookieNames = Object.keys(cookie.parse(raw));
     const cookies = cookie.parse(raw);
     const token = cookies.session_token;
 
     if (!token) {
+      console.info("[auth/me] no_token", {
+        host: String(req.headers.host || ""),
+        proto: String(req.headers["x-forwarded-proto"] || ""),
+        cookieNames,
+      });
       return res
         .status(401)
         .json({ user: null, error: "No token cookie found." });
@@ -101,15 +107,22 @@ export default async function handler(
     }
 
     const role = payload.accountType || "user";
+    console.info("[auth/me] token_ok", {
+      host: String(req.headers.host || ""),
+      proto: String(req.headers["x-forwarded-proto"] || ""),
+      cookieNames,
+      tokenRole: role,
+      email: payload.email,
+    });
 
-    const collectionName =
+    const orderedCollections =
       role === "seller"
-        ? "sellers"
+        ? ["sellers", "users", "businesses", "employers"]
         : role === "employer"
-          ? "employers"
+          ? ["employers", "users", "businesses", "sellers"]
           : role === "business"
-            ? "businesses"
-            : "users";
+            ? ["businesses", "users", "sellers", "employers"]
+            : ["users", "businesses", "sellers", "employers"];
 
     const mongoStart = Date.now();
     const client = await clientPromise;
@@ -117,9 +130,13 @@ export default async function handler(
     const db = client.db(getMongoDbName());
 
     const queryStart = Date.now();
-    const profile = await db
-      .collection<UserProfile>(collectionName)
-      .findOne({ email: payload.email });
+    let profile: UserProfile | null = null;
+    for (const collName of orderedCollections) {
+      profile = await db
+        .collection<UserProfile>(collName)
+        .findOne({ email: payload.email });
+      if (profile) break;
+    }
 
     const mongoQueryMs = Date.now() - queryStart;
     if (process.env.NODE_ENV !== "production") {
@@ -133,6 +150,7 @@ export default async function handler(
     }
 
     if (!profile) {
+      console.info("[auth/me] profile_not_found", { email: payload.email, tokenRole: role });
       return res.status(404).json({ user: null, error: "User not found." });
     }
 
@@ -217,6 +235,12 @@ export default async function handler(
       ? "inactive"
       : rawBlackCardStatus;
 
+    console.info("[auth/me] success", {
+      email: payload.email,
+      tokenRole: role,
+      normalizedAccountType,
+      isAdmin,
+    });
     return res.status(200).json({
       user: {
         ...sanitized,

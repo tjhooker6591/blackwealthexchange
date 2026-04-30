@@ -11,7 +11,10 @@ import {
   getAuthCookieSecure,
 } from "@/lib/authCookiePolicy";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   res.setHeader("Cache-Control", "no-store, max-age=0");
 
   if (req.method !== "POST") {
@@ -56,8 +59,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Never fail logout cookie clearing due revocation-side issues.
   }
 
-  const isProd = getAuthCookieSecure();
-  const cookieDomain = getAuthCookieDomain();
+  const host = (req.headers.host || "").toLowerCase();
+  const isLocalHost =
+    host.startsWith("localhost") ||
+    host.startsWith("127.0.0.1") ||
+    host.startsWith("[::1]");
+  const isProd = isLocalHost ? false : getAuthCookieSecure();
+  const cookieDomain = isLocalHost ? undefined : getAuthCookieDomain();
 
   function clearCookie(name: string, httpOnly: boolean) {
     const base = {

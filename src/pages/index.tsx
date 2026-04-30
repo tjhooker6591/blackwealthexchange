@@ -776,48 +776,38 @@ export default function Home() {
 
     (async () => {
       try {
-        const [businessesRes, orgsRes, jobsRes, productsRes] =
-          await Promise.all([
-            fetch("/api/search/businesses?type=businesses&limit=1&page=1", {
-              cache: "no-store",
-              signal: controller.signal,
-            }),
-            fetch("/api/search/businesses?type=organizations&limit=1&page=1", {
-              cache: "no-store",
-              signal: controller.signal,
-            }),
-            fetch("/api/jobs/list?limit=300", {
-              cache: "no-store",
-              signal: controller.signal,
-            }),
-            fetch("/api/marketplace/get-products?limit=1&page=1", {
-              cache: "no-store",
-              signal: controller.signal,
-            }),
-          ]);
+        const [inventoryRes, jobsRes] = await Promise.all([
+          fetch("/api/stats/inventory", {
+            cache: "no-store",
+            signal: controller.signal,
+          }),
+          fetch("/api/jobs/list?limit=300", {
+            cache: "no-store",
+            signal: controller.signal,
+          }),
+        ]);
 
-        const [businessesData, orgsData, jobsData, productsData] =
-          await Promise.all([
-            businessesRes.json().catch(() => null),
-            orgsRes.json().catch(() => null),
-            jobsRes.json().catch(() => null),
-            productsRes.json().catch(() => null),
-          ]);
+        const [inventoryData, jobsData] = await Promise.all([
+          inventoryRes.json().catch(() => null),
+          jobsRes.json().catch(() => null),
+        ]);
 
         if (cancelled) return;
 
         const jobs = Array.isArray(jobsData?.jobs) ? jobsData.jobs : [];
 
         setTrustStats({
-          businesses: Number.isFinite(Number(businessesData?.total))
-            ? Number(businessesData.total)
+          businesses: Number.isFinite(Number(inventoryData?.businesses))
+            ? Number(inventoryData.businesses)
             : null,
-          organizations: Number.isFinite(Number(orgsData?.total))
-            ? Number(orgsData.total)
+          organizations: Number.isFinite(Number(inventoryData?.organizations))
+            ? Number(inventoryData.organizations)
             : null,
-          opportunities: jobs.length,
-          products: Number.isFinite(Number(productsData?.total))
-            ? Number(productsData.total)
+          opportunities: Number.isFinite(Number(inventoryData?.opportunities))
+            ? Number(inventoryData.opportunities)
+            : jobs.length,
+          products: Number.isFinite(Number(inventoryData?.products))
+            ? Number(inventoryData.products)
             : null,
         });
 

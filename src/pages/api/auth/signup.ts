@@ -260,8 +260,13 @@ Let's make history — together.
       console.error("❌ Failed to send welcome email:", emailErr);
     }
 
-    const isProd = getAuthCookieSecure();
-    const cookieDomain = getAuthCookieDomain();
+    const host = (req.headers.host || "").toLowerCase();
+    const isLocalHost =
+      host.startsWith("localhost") ||
+      host.startsWith("127.0.0.1") ||
+      host.startsWith("[::1]");
+    const isProd = isLocalHost ? false : getAuthCookieSecure();
+    const cookieDomain = isLocalHost ? undefined : getAuthCookieDomain();
 
     res.setHeader("Set-Cookie", [
       serialize("session_token", token, {
