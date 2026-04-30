@@ -33,13 +33,14 @@ export default function TravelMapBusinessDetailPage() {
 
   useEffect(() => {
     if (typeof id !== "string" || !id) return;
+    const businessId = id;
 
     let cancelled = false;
 
     async function loadSavedState() {
       try {
         const res = await fetch(
-          `/api/travel-map/saved?businessId=${encodeURIComponent(id)}`,
+          `/api/travel-map/saved?businessId=${encodeURIComponent(businessId)}`,
         );
 
         if (!res.ok) return;
@@ -60,7 +61,7 @@ export default function TravelMapBusinessDetailPage() {
       setError("");
 
       try {
-        const res = await fetch(`/api/travel-map/business/${id}`);
+        const res = await fetch(`/api/travel-map/business/${businessId}`);
         const data = await res.json();
 
         if (!res.ok || !data?.ok) {
@@ -110,9 +111,7 @@ export default function TravelMapBusinessDetailPage() {
       if (!res.ok || !data?.ok) {
         throw new Error(
           data?.message ||
-            (saved
-              ? "Failed to remove saved place."
-              : "Failed to save place."),
+            (saved ? "Failed to remove saved place." : "Failed to save place."),
         );
       }
 

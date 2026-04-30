@@ -206,13 +206,12 @@ export default function BlackCardJoinPage() {
                 >
                   Open Black Card Dashboard
                 </Link>
-                <button
-                  onClick={startCheckout}
-                  disabled={loading}
+                <Link
+                  href="/pricing"
                   className="rounded-lg bg-yellow-500 px-3 py-2 text-xs font-semibold text-black"
                 >
                   Retry Membership Activation
-                </button>
+                </Link>
               </div>
             </section>
           ) : null}

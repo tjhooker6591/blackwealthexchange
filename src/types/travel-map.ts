@@ -46,5 +46,6 @@ export type TravelMapSearchResponse = {
   };
   meta?: {
     source: "db" | "fallback";
+    mappedCount?: number;
   };
 };

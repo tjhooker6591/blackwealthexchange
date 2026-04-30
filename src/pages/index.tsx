@@ -1100,23 +1100,23 @@ export default function Home() {
           {showHomepageBanner ? (
             <section className="mx-auto mt-4 max-w-5xl overflow-hidden rounded-2xl border border-[#D4AF37]/30 bg-black/35 p-3 shadow-[0_0_0_1px_rgba(212,175,55,0.2)]">
               <a
-                href={homepageBanner.targetUrl}
+                href={homepageBanner!.targetUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block"
               >
                 <img
-                  src={homepageBanner.image}
-                  alt={homepageBanner.name}
+                  src={homepageBanner!.image}
+                  alt={homepageBanner!.name}
                   className="h-24 w-full rounded-xl object-cover sm:h-28"
                 />
                 <div className="mt-2 flex items-center justify-between gap-3 px-1">
                   <div className="min-w-0">
                     <div className="truncate text-sm font-bold text-white">
-                      {homepageBanner.name}
+                      {homepageBanner!.name}
                     </div>
                     <div className="truncate text-xs text-white/70">
-                      {homepageBanner.tagline}
+                      {homepageBanner!.tagline}
                     </div>
                   </div>
                   <span className="shrink-0 rounded-full border border-[#D4AF37]/40 bg-[#D4AF37]/20 px-2 py-0.5 text-[10px] font-bold text-[#F1D57A]">

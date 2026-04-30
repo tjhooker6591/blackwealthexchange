@@ -23,6 +23,7 @@ export default function TravelMapCard({
   isSaved,
   onToggleSave,
   saveBusy = false,
+  saveHydrating = false,
 }: {
   business: TravelMapBusiness;
   enableSave?: boolean;
@@ -32,6 +33,7 @@ export default function TravelMapCard({
     nextSaved: boolean,
   ) => Promise<void> | void;
   saveBusy?: boolean;
+  saveHydrating?: boolean;
 }) {
   async function savePlace() {
     if (onToggleSave) {
@@ -169,20 +171,22 @@ export default function TravelMapCard({
           <button
             type="button"
             onClick={() => void savePlace()}
-            disabled={saveBusy}
+            disabled={saveBusy || saveHydrating}
             className={`rounded-xl px-4 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${
               isSaved
                 ? "border border-red-500/30 bg-red-500/10 text-red-200 hover:bg-red-500/20"
                 : "border border-emerald-400/30 bg-emerald-500/10 text-emerald-200 hover:bg-emerald-500/20"
             }`}
           >
-            {saveBusy
-              ? isSaved
-                ? "Removing..."
-                : "Saving..."
-              : isSaved
-                ? "Remove saved"
-                : "Save"}
+            {saveHydrating
+              ? "Syncing..."
+              : saveBusy
+                ? isSaved
+                  ? "Removing..."
+                  : "Saving..."
+                : isSaved
+                  ? "Remove saved"
+                  : "Save"}
           </button>
         ) : null}
       </div>
