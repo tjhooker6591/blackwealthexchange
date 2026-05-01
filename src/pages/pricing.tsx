@@ -1,4 +1,5 @@
 import React from "react";
+import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -12,6 +13,7 @@ import {
   Users,
 } from "lucide-react";
 import useAuth from "@/hooks/useAuth";
+import { canonicalUrl, truncateMeta } from "@/lib/seo";
 
 function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
@@ -185,7 +187,16 @@ export default function Pricing() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <>
+      <Head>
+        <title>Membership Pricing | Black Wealth Exchange</title>
+        <meta
+          name="description"
+          content={truncateMeta("Compare BWE membership plans, activate Black Card tier access, and choose the right path for marketplace, music, and consulting growth.")}
+        />
+        <link rel="canonical" href={canonicalUrl("/pricing")} />
+      </Head>
+      <div className="min-h-screen bg-black text-white">
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
         <div className="absolute -top-24 -right-24 h-96 w-96 rounded-full bg-yellow-500/10 blur-3xl" />
         <div className="absolute top-1/3 -left-24 h-[28rem] w-[28rem] rounded-full bg-yellow-500/8 blur-3xl" />
@@ -427,35 +438,52 @@ export default function Pricing() {
             </div>
           </div>
 
-          <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <div className="text-xs text-gray-400">
-              Educational only. Premium tools help decision-making; always
-              verify with qualified professionals.
-            </div>
-            <div className="flex items-center gap-2">
-              {isPremiumActive ? (
-                <div className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-semibold bg-white/10 text-gray-300 border border-white/10">
-                  Premium Active
-                </div>
-              ) : (
-                <GoldButton href="/checkout?plan=premium" variant="ghost">
-                  Go to Checkout <ArrowRight className="h-4 w-4" />
-                </GoldButton>
-              )}
-
-              <GoldButton
-                href="/business-directory?category=Real%20Estate"
-                variant="ghost"
+          <div className="mt-6 space-y-3">
+            <div className="flex flex-wrap gap-3 text-sm">
+              <Link href="/marketplace" className="text-yellow-200 underline">
+                Explore Marketplace
+              </Link>
+              <Link href="/music" className="text-yellow-200 underline">
+                Explore Music
+              </Link>
+              <Link
+                href="/recruiting-consulting"
+                className="text-yellow-200 underline"
               >
-                Explore Directory <ArrowRight className="h-4 w-4" />
-              </GoldButton>
+                Explore Recruiting & Consulting
+              </Link>
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div className="text-xs text-gray-400">
+                Educational only. Premium tools help decision-making; always
+                verify with qualified professionals.
+              </div>
+              <div className="flex items-center gap-2">
+                {isPremiumActive ? (
+                  <div className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-semibold bg-white/10 text-gray-300 border border-white/10">
+                    Premium Active
+                  </div>
+                ) : (
+                  <GoldButton href="/checkout?plan=premium" variant="ghost">
+                    Go to Checkout <ArrowRight className="h-4 w-4" />
+                  </GoldButton>
+                )}
+
+                <GoldButton
+                  href="/business-directory?category=Real%20Estate"
+                  variant="ghost"
+                >
+                  Explore Directory <ArrowRight className="h-4 w-4" />
+                </GoldButton>
+              </div>
             </div>
           </div>
-        </div>
       </main>
 
       <div className="h-10" />
-    </div>
+      </div>
+    </>
   );
 }
 

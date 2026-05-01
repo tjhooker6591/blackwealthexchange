@@ -1,17 +1,28 @@
 import Link from "next/link";
+import Head from "next/head";
 import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
+import { canonicalUrl, truncateMeta } from "@/lib/seo";
 
 const helpTopics = [
   { title: "Account/Login", href: "/support/help-center?topic=account-login" },
-  { title: "Marketplace Orders", href: "/support/new?category=marketplace-orders" },
+  {
+    title: "Marketplace Orders",
+    href: "/support/new?category=marketplace-orders",
+  },
   { title: "Billing/Refunds", href: "/support/billing" },
   { title: "Seller/Payouts", href: "/support/seller" },
   { title: "Business Directory", href: "/support/business" },
   { title: "Advertising/Sponsorship", href: "/support/advertising" },
   { title: "Jobs/Employer", href: "/support/employer" },
-  { title: "Membership/Black Card", href: "/support/new?category=membership-black-card" },
-  { title: "Financial Education", href: "/support/new?category=financial-education" },
+  {
+    title: "Membership/Black Card",
+    href: "/support/new?category=membership-black-card",
+  },
+  {
+    title: "Financial Education",
+    href: "/support/new?category=financial-education",
+  },
   { title: "Wealth Builder", href: "/support/new?category=wealth-builder" },
   { title: "Music/Creator", href: "/support/new?category=music-creator" },
   { title: "Security/Trust & Safety", href: "/support/security" },
@@ -60,7 +71,18 @@ export default function Support() {
     ? helpTopics.filter((t) => t.title.toLowerCase().includes(q))
     : [];
   return (
-    <main className="min-h-screen bg-black text-white p-8">
+    <>
+      <Head>
+        <title>Support Center | Black Wealth Exchange</title>
+        <meta
+          name="description"
+          content={truncateMeta(
+            "Get help with your BWE account, jobs, marketplace orders, billing, and support tickets from one support center.",
+          )}
+        />
+        <link rel="canonical" href={canonicalUrl("/support")} />
+      </Head>
+      <main className="min-h-screen bg-black text-white p-8">
       <section className="mx-auto mt-4 max-w-6xl rounded-xl border border-white/15 bg-white/[0.03] p-3 text-sm text-white/80">
         <div className="font-bold text-white">
           Action Required / What Changed
@@ -122,7 +144,8 @@ export default function Support() {
                 </div>
               ) : (
                 <div className="text-sm text-zinc-300">
-                  No exact match found. You can open a ticket or browse all support categories.
+                  No exact match found. You can open a ticket or browse all
+                  support categories.
                 </div>
               )}
             </div>
@@ -156,7 +179,23 @@ export default function Support() {
             />
           </div>
         </section>
+
+        <section className="space-y-3 rounded-2xl border border-zinc-800 bg-zinc-950 p-5">
+          <h2 className="text-lg font-semibold text-yellow-300">Next steps</h2>
+          <div className="grid gap-2 sm:grid-cols-3">
+            <Link href="/job-listings" className="text-sm text-yellow-300 underline">
+              Jobs and opportunities
+            </Link>
+            <Link href="/marketplace" className="text-sm text-yellow-300 underline">
+              Marketplace orders and sellers
+            </Link>
+            <Link href="/login" className="text-sm text-yellow-300 underline">
+              Account login and access
+            </Link>
+          </div>
+        </section>
       </div>
-    </main>
+      </main>
+    </>
   );
 }

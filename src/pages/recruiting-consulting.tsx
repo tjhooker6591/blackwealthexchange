@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
+import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
+import { canonicalUrl, truncateMeta } from "@/lib/seo";
 
 type Mode = "employer" | "candidate";
 
@@ -89,7 +91,16 @@ export default function RecruitingConsultingPage() {
   }
 
   return (
-    <main className="min-h-screen bg-neutral-950 px-4 py-10 text-white">
+    <>
+      <Head>
+        <title>Recruiting and Consulting Services | Black Wealth Exchange</title>
+        <meta
+          name="description"
+          content={truncateMeta("Connect employers with vetted Black talent and submit recruiting or consulting intake requests through BWE.")}
+        />
+        <link rel="canonical" href={canonicalUrl("/recruiting-consulting")} />
+      </Head>
+      <main className="min-h-screen bg-neutral-950 px-4 py-10 text-white">
       <div className="mx-auto max-w-3xl">
         <Link href="/" className="text-sm text-[#D4AF37] hover:underline">
           ← Back to Homepage
@@ -249,6 +260,7 @@ export default function RecruitingConsultingPage() {
           </form>
         </div>
       </div>
-    </main>
+      </main>
+    </>
   );
 }

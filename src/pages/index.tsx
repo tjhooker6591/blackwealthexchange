@@ -951,11 +951,17 @@ export default function Home() {
               </h1>
 
               <p className="mx-auto mt-3 max-w-2xl text-sm text-white/72 sm:text-base md:text-lg">
-                Black Wealth Exchange helps you find Black-owned businesses,
-                explore jobs and opportunities, and support sellers in one
-                place. Every action keeps more dollars circulating in Black
-                communities.
+                Black Wealth Exchange is a growth platform for Black communities.
+                Find businesses, discover jobs, shop the marketplace, and build
+                wealth through practical tools in one place.
               </p>
+
+              <div className="mx-auto mt-3 flex w-full max-w-2xl flex-wrap items-center justify-center gap-2 text-xs sm:text-sm">
+                <Link href="/business-directory" className="rounded-full border border-white/20 px-3 py-1 text-white/90 hover:bg-white/10">Find Businesses</Link>
+                <Link href="/job-listings" className="rounded-full border border-white/20 px-3 py-1 text-white/90 hover:bg-white/10">Find Jobs</Link>
+                <Link href="/marketplace" className="rounded-full border border-white/20 px-3 py-1 text-white/90 hover:bg-white/10">Shop Marketplace</Link>
+                <Link href="/financial-literacy" className="rounded-full border border-white/20 px-3 py-1 text-white/90 hover:bg-white/10">Learn and Build Wealth</Link>
+              </div>
 
               <div className="mx-auto mt-3 grid w-full max-w-3xl grid-cols-2 gap-2 text-left sm:grid-cols-4">
                 <div className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2">
@@ -1549,9 +1555,6 @@ export default function Home() {
                       <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent px-1.5 py-1 text-center text-[9px] font-semibold text-[#F1D57A] sm:text-[10px]">
                         {sponsor.name}
                       </div>
-                      <span className="absolute left-1.5 top-1.5 rounded border border-[#D4AF37]/40 bg-black/55 px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-wide text-[#F1D57A]">
-                        Sponsored
-                      </span>
                     </div>
                   );
 
