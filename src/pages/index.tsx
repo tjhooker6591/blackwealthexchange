@@ -1133,6 +1133,10 @@ export default function Home() {
                   BWE Black Card unlocks verified member identity, faster
                   opportunities, and reward-based savings
                 </div>
+                <div className="mt-2 text-xs text-white/75">
+                  Start with plans on Pricing, then complete activation in
+                  secure checkout.
+                </div>
               </div>
               <Link
                 href="/pricing"
@@ -1146,7 +1150,34 @@ export default function Home() {
                 }
                 className="inline-flex w-full sm:w-auto min-w-[12rem] justify-center whitespace-nowrap rounded-xl border border-yellow-400/40 bg-black/40 px-5 py-2.5 text-sm font-semibold text-yellow-200 hover:bg-black/60"
               >
-                View Membership Pricing
+                Compare Membership Plans
+              </Link>
+            </div>
+          </div>
+
+          <div className="mx-auto mt-3 max-w-4xl rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
+            <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#D4AF37]">
+              Monetized Paths
+            </div>
+            <div className="mt-1 text-sm text-white/80">
+              Pick the path that matches your goal. No lock-in to a single flow.
+            </div>
+            <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+              <Link href="/pricing" className="rounded-xl border border-yellow-400/35 bg-yellow-500/10 p-3 hover:bg-yellow-500/15">
+                <div className="text-xs font-extrabold text-yellow-200">Membership Plans</div>
+                <div className="mt-1 text-[11px] text-white/70">Compare Free, Premium, Founding</div>
+              </Link>
+              <Link href="/marketplace/become-a-seller" className="rounded-xl border border-emerald-400/30 bg-emerald-500/10 p-3 hover:bg-emerald-500/15">
+                <div className="text-xs font-extrabold text-emerald-200">Seller Activation</div>
+                <div className="mt-1 text-[11px] text-white/70">Launch products and storefront</div>
+              </Link>
+              <Link href="/advertise/featured-sponsor" className="rounded-xl border border-[#D4AF37]/35 bg-[#D4AF37]/10 p-3 hover:bg-[#D4AF37]/15">
+                <div className="text-xs font-extrabold text-[#F1D57A]">Sponsor Packages</div>
+                <div className="mt-1 text-[11px] text-white/70">Choose visibility placements</div>
+              </Link>
+              <Link href="/music/pricing" className="rounded-xl border border-white/15 bg-black/35 p-3 hover:bg-black/50">
+                <div className="text-xs font-extrabold text-white">Music Creator Plans</div>
+                <div className="mt-1 text-[11px] text-white/70">Activate creator selling lane</div>
               </Link>
             </div>
           </div>
