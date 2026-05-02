@@ -951,16 +951,37 @@ export default function Home() {
               </h1>
 
               <p className="mx-auto mt-3 max-w-2xl text-sm text-white/72 sm:text-base md:text-lg">
-                Black Wealth Exchange is a growth platform for Black communities.
-                Find businesses, discover jobs, shop the marketplace, and build
-                wealth through practical tools in one place.
+                Black Wealth Exchange is a growth platform for Black
+                communities. Find businesses, discover jobs, shop the
+                marketplace, and build wealth through practical tools in one
+                place.
               </p>
 
               <div className="mx-auto mt-3 flex w-full max-w-2xl flex-wrap items-center justify-center gap-2 text-xs sm:text-sm">
-                <Link href="/business-directory" className="rounded-full border border-white/20 px-3 py-1 text-white/90 hover:bg-white/10">Find Businesses</Link>
-                <Link href="/job-listings" className="rounded-full border border-white/20 px-3 py-1 text-white/90 hover:bg-white/10">Find Jobs</Link>
-                <Link href="/marketplace" className="rounded-full border border-white/20 px-3 py-1 text-white/90 hover:bg-white/10">Shop Marketplace</Link>
-                <Link href="/financial-literacy" className="rounded-full border border-white/20 px-3 py-1 text-white/90 hover:bg-white/10">Learn and Build Wealth</Link>
+                <Link
+                  href="/business-directory"
+                  className="rounded-full border border-white/20 px-3 py-1 text-white/90 hover:bg-white/10"
+                >
+                  Find Businesses
+                </Link>
+                <Link
+                  href="/job-listings"
+                  className="rounded-full border border-white/20 px-3 py-1 text-white/90 hover:bg-white/10"
+                >
+                  Find Jobs
+                </Link>
+                <Link
+                  href="/marketplace"
+                  className="rounded-full border border-white/20 px-3 py-1 text-white/90 hover:bg-white/10"
+                >
+                  Shop Marketplace
+                </Link>
+                <Link
+                  href="/financial-literacy"
+                  className="rounded-full border border-white/20 px-3 py-1 text-white/90 hover:bg-white/10"
+                >
+                  Learn and Build Wealth
+                </Link>
               </div>
 
               <div className="mx-auto mt-3 grid w-full max-w-3xl grid-cols-2 gap-2 text-left sm:grid-cols-4">
@@ -1155,29 +1176,37 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="mx-auto mt-3 max-w-4xl rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
-            <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#D4AF37]">
-              Monetized Paths
+          <div className="mx-auto mt-3 max-w-4xl rounded-xl border border-white/10 bg-white/[0.03] p-3 sm:p-3.5">
+            <div className="flex items-center justify-between gap-2">
+              <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#D4AF37]">
+                Monetized Paths
+              </div>
+              <div className="text-[10px] text-white/55">Choose based on your goal</div>
             </div>
-            <div className="mt-1 text-sm text-white/80">
-              Pick the path that matches your goal. No lock-in to a single flow.
-            </div>
-            <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
-              <Link href="/pricing" className="rounded-xl border border-yellow-400/35 bg-yellow-500/10 p-3 hover:bg-yellow-500/15">
+
+            <div className="mt-2 grid gap-1.5 lg:grid-cols-2">
+              <Link href="/pricing" className="rounded-lg border border-yellow-400/35 bg-yellow-500/10 px-2.5 py-2 hover:bg-yellow-500/15">
                 <div className="text-xs font-extrabold text-yellow-200">Membership Plans</div>
-                <div className="mt-1 text-[11px] text-white/70">Compare Free, Premium, Founding</div>
+                <div className="mt-0.5 text-[11px] text-white/85">For members who want premium tools and Black Card benefits.</div>
+                <div className="mt-0.5 text-[10px] text-yellow-100/85">Next: compare Free vs Premium vs Founding</div>
               </Link>
-              <Link href="/marketplace/become-a-seller" className="rounded-xl border border-emerald-400/30 bg-emerald-500/10 p-3 hover:bg-emerald-500/15">
+
+              <Link href="/marketplace/become-a-seller" className="rounded-lg border border-emerald-400/30 bg-emerald-500/10 px-2.5 py-2 hover:bg-emerald-500/15">
                 <div className="text-xs font-extrabold text-emerald-200">Seller Activation</div>
-                <div className="mt-1 text-[11px] text-white/70">Launch products and storefront</div>
+                <div className="mt-0.5 text-[11px] text-white/85">For businesses ready to launch a storefront and sell products.</div>
+                <div className="mt-0.5 text-[10px] text-emerald-100/85">Next: complete onboarding and publish products</div>
               </Link>
-              <Link href="/advertise/featured-sponsor" className="rounded-xl border border-[#D4AF37]/35 bg-[#D4AF37]/10 p-3 hover:bg-[#D4AF37]/15">
+
+              <Link href="/advertise/featured-sponsor" className="rounded-lg border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-2.5 py-2 hover:bg-[#D4AF37]/15">
                 <div className="text-xs font-extrabold text-[#F1D57A]">Sponsor Packages</div>
-                <div className="mt-1 text-[11px] text-white/70">Choose visibility placements</div>
+                <div className="mt-0.5 text-[11px] text-white/85">For brands that want paid visibility placements across BWE.</div>
+                <div className="mt-0.5 text-[10px] text-[#F4DE9E]">Next: select placement and checkout</div>
               </Link>
-              <Link href="/music/pricing" className="rounded-xl border border-white/15 bg-black/35 p-3 hover:bg-black/50">
+
+              <Link href="/music/pricing" className="rounded-lg border border-white/15 bg-black/35 px-2.5 py-2 hover:bg-black/50">
                 <div className="text-xs font-extrabold text-white">Music Creator Plans</div>
-                <div className="mt-1 text-[11px] text-white/70">Activate creator selling lane</div>
+                <div className="mt-0.5 text-[11px] text-white/85">For artists and creators activating music selling tools.</div>
+                <div className="mt-0.5 text-[10px] text-white/70">Next: choose a creator plan and activate</div>
               </Link>
             </div>
           </div>
