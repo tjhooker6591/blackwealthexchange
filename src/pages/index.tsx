@@ -1176,40 +1176,6 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="mx-auto mt-3 max-w-4xl rounded-xl border border-white/10 bg-white/[0.03] p-3 sm:p-3.5">
-            <div className="flex items-center justify-between gap-2">
-              <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#D4AF37]">
-                Monetized Paths
-              </div>
-              <div className="text-[10px] text-white/55">Choose based on your goal</div>
-            </div>
-
-            <div className="mt-2 grid gap-1.5 lg:grid-cols-2">
-              <Link href="/pricing" className="rounded-lg border border-yellow-400/35 bg-yellow-500/10 px-2.5 py-2 hover:bg-yellow-500/15">
-                <div className="text-xs font-extrabold text-yellow-200">Membership Plans</div>
-                <div className="mt-0.5 text-[11px] text-white/85">For members who want premium tools and Black Card benefits.</div>
-                <div className="mt-0.5 text-[10px] text-yellow-100/85">Next: compare Free vs Premium vs Founding</div>
-              </Link>
-
-              <Link href="/marketplace/become-a-seller" className="rounded-lg border border-emerald-400/30 bg-emerald-500/10 px-2.5 py-2 hover:bg-emerald-500/15">
-                <div className="text-xs font-extrabold text-emerald-200">Seller Activation</div>
-                <div className="mt-0.5 text-[11px] text-white/85">For businesses ready to launch a storefront and sell products.</div>
-                <div className="mt-0.5 text-[10px] text-emerald-100/85">Next: complete onboarding and publish products</div>
-              </Link>
-
-              <Link href="/advertise/featured-sponsor" className="rounded-lg border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-2.5 py-2 hover:bg-[#D4AF37]/15">
-                <div className="text-xs font-extrabold text-[#F1D57A]">Sponsor Packages</div>
-                <div className="mt-0.5 text-[11px] text-white/85">For brands that want paid visibility placements across BWE.</div>
-                <div className="mt-0.5 text-[10px] text-[#F4DE9E]">Next: select placement and checkout</div>
-              </Link>
-
-              <Link href="/music/pricing" className="rounded-lg border border-white/15 bg-black/35 px-2.5 py-2 hover:bg-black/50">
-                <div className="text-xs font-extrabold text-white">Music Creator Plans</div>
-                <div className="mt-0.5 text-[11px] text-white/85">For artists and creators activating music selling tools.</div>
-                <div className="mt-0.5 text-[10px] text-white/70">Next: choose a creator plan and activate</div>
-              </Link>
-            </div>
-          </div>
 
           <section id="search-dominant" className="mt-5 sm:mt-6 scroll-mt-24">
             <div className="mx-auto max-w-4xl">
@@ -1451,6 +1417,41 @@ export default function Home() {
           <section className="mt-5 sm:mt-6">
             <EconomicImpactSimulator />
           </section>
+
+          <div className="mx-auto mt-5 max-w-4xl rounded-xl border border-white/10 bg-white/[0.03] p-3 sm:p-3.5">
+            <div className="flex items-center justify-between gap-2">
+              <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#D4AF37]">
+                Goal-Based Next Steps
+              </div>
+              <div className="text-[10px] text-white/55">Secondary actions after search</div>
+            </div>
+
+            <div className="mt-2 grid gap-1.5 lg:grid-cols-2">
+              <Link href="/pricing" className="rounded-lg border border-yellow-400/35 bg-yellow-500/10 px-2.5 py-2 hover:bg-yellow-500/15">
+                <div className="text-xs font-extrabold text-yellow-200">Membership Plans</div>
+                <div className="mt-0.5 text-[11px] text-white/85">For members who want premium tools and Black Card benefits.</div>
+                <div className="mt-0.5 text-[10px] text-yellow-100/85">Next: compare Free vs Premium vs Founding</div>
+              </Link>
+
+              <Link href="/marketplace/become-a-seller" className="rounded-lg border border-emerald-400/30 bg-emerald-500/10 px-2.5 py-2 hover:bg-emerald-500/15">
+                <div className="text-xs font-extrabold text-emerald-200">Seller Activation</div>
+                <div className="mt-0.5 text-[11px] text-white/85">For businesses ready to launch a storefront and sell products.</div>
+                <div className="mt-0.5 text-[10px] text-emerald-100/85">Next: complete onboarding and publish products</div>
+              </Link>
+
+              <Link href="/advertise/featured-sponsor" className="rounded-lg border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-2.5 py-2 hover:bg-[#D4AF37]/15">
+                <div className="text-xs font-extrabold text-[#F1D57A]">Sponsor Packages</div>
+                <div className="mt-0.5 text-[11px] text-white/85">For brands that want paid visibility placements across BWE.</div>
+                <div className="mt-0.5 text-[10px] text-[#F4DE9E]">Next: select placement and checkout</div>
+              </Link>
+
+              <Link href="/music/pricing" className="rounded-lg border border-white/15 bg-black/35 px-2.5 py-2 hover:bg-black/50">
+                <div className="text-xs font-extrabold text-white">Music Creator Plans</div>
+                <div className="mt-0.5 text-[11px] text-white/85">For artists and creators activating music selling tools.</div>
+                <div className="mt-0.5 text-[10px] text-white/70">Next: choose a creator plan and activate</div>
+              </Link>
+            </div>
+          </div>
         </div>
       </header>
 
