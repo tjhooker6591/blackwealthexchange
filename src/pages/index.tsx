@@ -1144,7 +1144,6 @@ export default function Home() {
             </section>
           ) : null}
 
-
           <section id="search-dominant" className="mt-5 sm:mt-6 scroll-mt-24">
             <div className="mx-auto max-w-4xl">
               <div className="mb-2.5">
@@ -1385,8 +1384,12 @@ export default function Home() {
           <div className="mx-auto mt-5 max-w-4xl rounded-xl border border-yellow-500/20 bg-yellow-500/8 p-3 sm:p-3.5">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-yellow-300">Black Card Support</div>
-                <div className="mt-0.5 text-xs sm:text-sm text-white/85">After search, compare plans and activate Black Card membership when you are ready.</div>
+                <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-yellow-300">
+                  Black Card Membership
+                </div>
+                <div className="mt-0.5 text-xs sm:text-sm text-white/85">
+                  Verified member benefits, faster access to opportunities, and reward-based savings across BWE.
+                </div>
               </div>
               <Link
                 href="/pricing"
@@ -1394,13 +1397,13 @@ export default function Home() {
                   trackHomepageEvent("homepage_cta_clicked", {
                     section: "post_search",
                     ctaId: "post_search_black_card",
-                    ctaLabel: "Compare Membership Plans",
+                    ctaLabel: "Learn About Black Card",
                     destination: "/pricing",
                   })
                 }
                 className="inline-flex w-full sm:w-auto justify-center rounded-lg border border-yellow-400/35 bg-black/35 px-4 py-2 text-xs font-semibold text-yellow-200 hover:bg-black/55"
               >
-                Compare Membership Plans
+                Learn About Black Card
               </Link>
             </div>
           </div>
