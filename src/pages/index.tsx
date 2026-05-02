@@ -1388,7 +1388,8 @@ export default function Home() {
                   Black Card Membership
                 </div>
                 <div className="mt-0.5 text-xs sm:text-sm text-white/85">
-                  Verified member benefits, faster access to opportunities, and reward-based savings across BWE.
+                  Verified member benefits, faster access to opportunities, and
+                  reward-based savings across BWE.
                 </div>
               </div>
               <Link
@@ -1460,8 +1461,11 @@ export default function Home() {
 
           <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
             <div className="mb-2 text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
-              Choose your next move
+              Goal-based actions
             </div>
+            <p className="mb-3 text-xs text-white/65">
+              Pick the path that matches what you want to do right now.
+            </p>
             <div className="grid gap-3 md:grid-cols-3">
               <article className="rounded-xl border border-[#D4AF37]/30 bg-black/35 p-4">
                 <h3 className="text-sm font-extrabold text-white">
@@ -1488,7 +1492,7 @@ export default function Home() {
                   href="/job-listings"
                   className="mt-3 inline-flex rounded-lg border border-[#D4AF37]/40 bg-[#D4AF37]/12 px-3 py-2 text-xs font-bold text-[#F1D57A] hover:bg-[#D4AF37]/18"
                 >
-                  Find Jobs
+                  Find Jobs Now
                 </Link>
               </article>
               <article className="rounded-xl border border-white/10 bg-black/30 p-4">

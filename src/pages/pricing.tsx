@@ -192,207 +192,347 @@ export default function Pricing() {
         <title>Membership Pricing | Black Wealth Exchange</title>
         <meta
           name="description"
-          content={truncateMeta("Compare BWE membership plans, activate Black Card tier access, and choose the right path for marketplace, music, and consulting growth.")}
+          content={truncateMeta(
+            "Compare BWE membership plans, activate Black Card tier access, and choose the right path for marketplace, music, and consulting growth.",
+          )}
         />
         <link rel="canonical" href={canonicalUrl("/pricing")} />
       </Head>
       <div className="min-h-screen bg-black text-white">
-      <div className="pointer-events-none fixed inset-0 overflow-hidden">
-        <div className="absolute -top-24 -right-24 h-96 w-96 rounded-full bg-yellow-500/10 blur-3xl" />
-        <div className="absolute top-1/3 -left-24 h-[28rem] w-[28rem] rounded-full bg-yellow-500/8 blur-3xl" />
-        <div className="absolute -bottom-24 right-1/4 h-[30rem] w-[30rem] rounded-full bg-white/5 blur-3xl" />
-      </div>
+        <div className="pointer-events-none fixed inset-0 overflow-hidden">
+          <div className="absolute -top-24 -right-24 h-96 w-96 rounded-full bg-yellow-500/10 blur-3xl" />
+          <div className="absolute top-1/3 -left-24 h-[28rem] w-[28rem] rounded-full bg-yellow-500/8 blur-3xl" />
+          <div className="absolute -bottom-24 right-1/4 h-[30rem] w-[30rem] rounded-full bg-white/5 blur-3xl" />
+        </div>
 
-      <div className="sticky top-0 z-30 bg-black/70 backdrop-blur border-b border-white/10">
-        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition"
-          >
-            <ArrowRight className="h-4 w-4 rotate-180 text-yellow-200" />
-            <span className="text-sm font-semibold">Back to Home</span>
-          </Link>
-
-          <div className="flex items-center gap-2">
-            <Pill>
-              <Lock className="h-4 w-4" />
-              Premium Access
-            </Pill>
+        <div className="sticky top-0 z-30 bg-black/70 backdrop-blur border-b border-white/10">
+          <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
             <Link
-              href="/business-directory"
-              className="hidden sm:inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition text-sm font-semibold"
+              href="/"
+              className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition"
             >
-              Browse Directory <ArrowRight className="h-4 w-4" />
+              <ArrowRight className="h-4 w-4 rotate-180 text-yellow-200" />
+              <span className="text-sm font-semibold">Back to Home</span>
             </Link>
-          </div>
-        </div>
-      </div>
 
-      <section className="relative">
-        <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/20 via-yellow-500/10 to-transparent" />
-        <div className="absolute inset-0 bg-black/75" />
-        <div className="relative max-w-6xl mx-auto px-4 py-10 sm:py-14">
-          <div className="max-w-3xl">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-yellow-200 leading-tight drop-shadow">
-              Activate your membership and receive your Black Card tier
-            </h1>
-            <p className="text-base sm:text-lg text-gray-200 mt-4">
-              Choose the plan that matches your current stage. This is the
-              primary membership checkout path.
-            </p>
-            <div className="mt-3 text-sm text-yellow-100/90">
-              Decision path: Compare plans here, then complete secure checkout.
-            </div>
-
-            <div className="mt-6 flex flex-wrap items-center gap-3">
-              <Pill tone="muted">
-                <ShieldCheck className="h-4 w-4" />
-                Billed annually • Auto-renews annually
-              </Pill>
-              <Pill tone="muted">
-                <Users className="h-4 w-4" />
-                Built for Black economic power
-              </Pill>
+            <div className="flex items-center gap-2">
               <Pill>
-                <Sparkles className="h-4 w-4" />
-                Black Card tier included with paid plans
+                <Lock className="h-4 w-4" />
+                Premium Access
               </Pill>
+              <Link
+                href="/business-directory"
+                className="hidden sm:inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition text-sm font-semibold"
+              >
+                Browse Directory <ArrowRight className="h-4 w-4" />
+              </Link>
             </div>
+          </div>
+        </div>
 
-            {isPremiumActive ? (
-              <div className="mt-6 rounded-2xl border border-yellow-500/30 bg-yellow-500/10 p-4">
-                <div className="text-lg font-extrabold text-yellow-200">
-                  Premium Active
-                </div>
-                <div className="mt-1 text-sm text-gray-200">
-                  Your Premium account is already active.
-                  {premiumActivatedLabel
-                    ? ` Active since ${premiumActivatedLabel}.`
-                    : ""}
-                </div>
-              </div>
-            ) : null}
-
-            <div className="mt-6 rounded-2xl border border-white/15 bg-white/5 p-4 sm:p-5">
-              <div className="text-xs uppercase tracking-[0.18em] text-yellow-300">
-                New Product Line
-              </div>
-              <h2 className="mt-1 text-xl font-extrabold text-yellow-200">
-                BWE Black Card Membership
-              </h2>
-              <p className="mt-2 text-sm text-gray-200">
-                Tiered membership identity and rewards access. Plan mapping:
-                Premium includes Black Card Standard, Founding includes Black
-                Card Signature (or keeps your higher active tier). Billed
-                annually, auto-renews annually, cancel anytime.
+        <section className="relative">
+          <div className="absolute inset-0 bg-gradient-to-r from-yellow-500/20 via-yellow-500/10 to-transparent" />
+          <div className="absolute inset-0 bg-black/75" />
+          <div className="relative max-w-6xl mx-auto px-4 py-10 sm:py-14">
+            <div className="max-w-3xl">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-yellow-200 leading-tight drop-shadow">
+                Activate your membership and receive your Black Card tier
+              </h1>
+              <p className="text-base sm:text-lg text-gray-200 mt-4">
+                Choose the plan that matches your current stage. This is the
+                primary membership checkout path.
               </p>
-              <p className="mt-2 text-xs text-gray-300">
-                Black Card is included with your plan. Use this page for plan
-                activation and checkout.
+              <div className="mt-3 text-sm text-yellow-100/90">
+                Decision path: Compare plans here, then complete secure
+                checkout.
+              </div>
+
+              <div className="mt-6 flex flex-wrap items-center gap-3">
+                <Pill tone="muted">
+                  <ShieldCheck className="h-4 w-4" />
+                  Billed annually • Auto-renews annually
+                </Pill>
+                <Pill tone="muted">
+                  <Users className="h-4 w-4" />
+                  Built for Black economic power
+                </Pill>
+                <Pill>
+                  <Sparkles className="h-4 w-4" />
+                  Black Card tier included with paid plans
+                </Pill>
+              </div>
+              <p className="mt-3 text-xs text-gray-300">
+                Checkout is secure and plan mapping is applied after successful
+                payment confirmation.
               </p>
-              <div className="mt-4 flex w-full items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-black p-3 sm:p-4">
-                <Image
-                  src="/images/black-card/bwe-black-card-close-up.png"
-                  alt="BWE Black Card"
-                  width={1400}
-                  height={875}
-                  className="h-auto w-full max-w-full object-contain max-h-56 sm:max-h-64"
-                />
-              </div>
-              <div className="mt-4">
-                <GoldButton href="/black-card" variant="ghost">
-                  Explore BWE Black Card <ArrowRight className="h-4 w-4" />
-                </GoldButton>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
-      <main className="relative max-w-6xl mx-auto px-4 pb-14">
-        <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
-          <PriceCard title="Free" price="$0" sub="Explore core BWE experiences." billingNote="No plan charge" features={[{ ok: true, text: "Search, filters, tabs, and AI Mode available to all users" }, { ok: true, text: "Marketplace browsing and public content access" }, { ok: true, text: "Core account and dashboard access" }]} ctaText={!authUser || !isPremiumActive ? "Current Plan" : "Included in Paid Plans"} onCta={() => router.push("/")} finePrint="Upgrade when you want paid-plan access and Black Card tier inclusion." />
+              {isPremiumActive ? (
+                <div className="mt-6 rounded-2xl border border-yellow-500/30 bg-yellow-500/10 p-4">
+                  <div className="text-lg font-extrabold text-yellow-200">
+                    Premium Active
+                  </div>
+                  <div className="mt-1 text-sm text-gray-200">
+                    Your Premium account is already active.
+                    {premiumActivatedLabel
+                      ? ` Active since ${premiumActivatedLabel}.`
+                      : ""}
+                  </div>
+                </div>
+              ) : null}
 
-          <PriceCard title="Premium" price="$12.00" sub="Paid plan with Black Card Standard included." billingNote="Billed annually • Auto-renews annually • Cancel anytime" highlight badge="Most Popular" features={[{ ok: true, text: "Everything in Free" }, { ok: true, text: "Black Card Standard mapping on activation" }, { ok: true, text: "Black Card rewards earn/redeem access (subject to card status, tier, and points checks)" }, { ok: true, text: "Gated learning modules tied to paid-plan access" }, { ok: true, text: "Physical card option planned for a future vendor-fulfilled phase" }]} ctaText={isPremiumActive ? "Premium Active" : "Upgrade to Premium"} onCta={() => goCheckout("premium")} disabled={isPremiumActive} finePrint={isPremiumActive ? "Your Premium membership is already active." : "Activation maps your account to Black Card Standard."} />
-
-          <PriceCard title="Founding Member" price="$49.00" sub="Paid plan with Black Card Signature mapping." billingNote="Billed annually • Auto-renews annually • Cancel anytime" features={[{ ok: true, text: "Everything in Premium" }, { ok: true, text: "Black Card Signature mapping on activation" }, { ok: true, text: "Keeps higher existing tier if already assigned" }, { ok: true, text: "Black Card rewards/redemption workflows with admin-tracked status" }, { ok: true, text: "Early access to features as they are released" }]} ctaText="Become a Founder" onCta={() => goCheckout("founder")} finePrint="Activation maps your account to at least Black Card Signature." />
-        </div>
-
-        <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-6 sm:p-8">
-          <h2 className="text-xl sm:text-2xl font-extrabold text-yellow-200">Plan clarity: Free vs Premium vs Founding</h2>
-          <div className="mt-4 overflow-x-auto rounded-xl border border-white/10 bg-black/35">
-            <table className="min-w-full text-left text-xs sm:text-sm">
-              <thead className="bg-white/5 text-yellow-100">
-                <tr>
-                  <th className="px-3 py-2">Plan</th>
-                  <th className="px-3 py-2">Price</th>
-                  <th className="px-3 py-2">Black Card Mapping</th>
-                  <th className="px-3 py-2">Best For</th>
-                </tr>
-              </thead>
-              <tbody className="text-gray-200">
-                <tr className="border-t border-white/10">
-                  <td className="px-3 py-2 font-semibold">Free</td>
-                  <td className="px-3 py-2">$0</td>
-                  <td className="px-3 py-2">None</td>
-                  <td className="px-3 py-2">Discovery and exploration</td>
-                </tr>
-                <tr className="border-t border-white/10">
-                  <td className="px-3 py-2 font-semibold">Premium</td>
-                  <td className="px-3 py-2">$12.00</td>
-                  <td className="px-3 py-2">Black Card Standard</td>
-                  <td className="px-3 py-2">Member access and rewards path</td>
-                </tr>
-                <tr className="border-t border-white/10">
-                  <td className="px-3 py-2 font-semibold">Founding</td>
-                  <td className="px-3 py-2">$49.00</td>
-                  <td className="px-3 py-2">Black Card Signature (or higher retained)</td>
-                  <td className="px-3 py-2">Higher-tier members and early access</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <p className="mt-2 max-w-3xl text-gray-300">Free includes search, filters, tabs, and AI Mode. Paid plans map to Black Card tiers and unlock Black Card rewards access with current system checks.</p>
-          <p className="mt-3 text-xs text-gray-400">Future roadmap items such as community features, custom reports, and VIP partner lanes are not included unless explicitly marked active.</p>
-
-          <div className="mt-5 grid grid-cols-1 gap-4 text-sm md:grid-cols-3">
-            <div className="rounded-2xl border border-white/10 bg-black/40 p-5">
-              <div className="font-extrabold text-yellow-200">Free Plan</div>
-              <p className="mt-2 text-gray-300">Core discovery is already available: search, filters, tabs, and AI Mode.</p>
-            </div>
-            <div className="rounded-2xl border border-white/10 bg-black/40 p-5">
-              <div className="font-extrabold text-yellow-200">Premium Plan</div>
-              <p className="mt-2 text-gray-300">Includes Black Card Standard mapping and rewards access in the current Black Card system.</p>
-            </div>
-            <div className="rounded-2xl border border-white/10 bg-black/40 p-5">
-              <div className="font-extrabold text-yellow-200">Founding Plan</div>
-              <p className="mt-2 text-gray-300">Includes Black Card Signature mapping (or keeps your higher tier if already active).</p>
-            </div>
-          </div>
-
-          <div className="mt-6 space-y-3">
-            <div className="flex flex-wrap gap-3 text-sm">
-              <Link href="/marketplace" className="text-yellow-200 underline">Explore Marketplace</Link>
-              <Link href="/music" className="text-yellow-200 underline">Explore Music</Link>
-              <Link href="/recruiting-consulting" className="text-yellow-200 underline">Explore Recruiting & Consulting</Link>
-            </div>
-
-            <div className="flex flex-col items-center justify-between gap-3 sm:flex-row">
-              <div className="text-xs text-gray-400">Educational only. Premium tools help decision-making; always verify with qualified professionals.</div>
-              <div className="flex items-center gap-2">
-                {isPremiumActive ? (
-                  <div className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/10 px-5 py-3 font-semibold text-gray-300">Premium Active</div>
-                ) : (
-                  <GoldButton href="/checkout?plan=premium" variant="ghost">Go to Checkout <ArrowRight className="h-4 w-4" /></GoldButton>
-                )}
-                <GoldButton href="/business-directory?category=Real%20Estate" variant="ghost">Explore Directory <ArrowRight className="h-4 w-4" /></GoldButton>
+              <div className="mt-6 rounded-2xl border border-white/15 bg-white/5 p-4 sm:p-5">
+                <div className="text-xs uppercase tracking-[0.18em] text-yellow-300">
+                  New Product Line
+                </div>
+                <h2 className="mt-1 text-xl font-extrabold text-yellow-200">
+                  BWE Black Card Membership
+                </h2>
+                <p className="mt-2 text-sm text-gray-200">
+                  Tiered membership identity and rewards access. Plan mapping:
+                  Premium includes Black Card Standard, Founding includes Black
+                  Card Signature (or keeps your higher active tier). Billed
+                  annually, auto-renews annually, cancel anytime.
+                </p>
+                <p className="mt-2 text-xs text-gray-300">
+                  Black Card is included with your plan. Use this page for plan
+                  activation and checkout.
+                </p>
+                <div className="mt-4 flex w-full items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-black p-3 sm:p-4">
+                  <Image
+                    src="/images/black-card/bwe-black-card-close-up.png"
+                    alt="BWE Black Card"
+                    width={1400}
+                    height={875}
+                    className="h-auto w-full max-w-full object-contain max-h-56 sm:max-h-64"
+                  />
+                </div>
+                <div className="mt-4">
+                  <GoldButton href="/black-card" variant="ghost">
+                    Explore BWE Black Card <ArrowRight className="h-4 w-4" />
+                  </GoldButton>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </main>
+        </section>
 
-      <div className="h-10" />
+        <main className="relative max-w-6xl mx-auto px-4 pb-14">
+          <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
+            <PriceCard
+              title="Free"
+              price="$0"
+              sub="Explore core BWE experiences."
+              billingNote="No plan charge"
+              features={[
+                {
+                  ok: true,
+                  text: "Search, filters, tabs, and AI Mode available to all users",
+                },
+                {
+                  ok: true,
+                  text: "Marketplace browsing and public content access",
+                },
+                { ok: true, text: "Core account and dashboard access" },
+              ]}
+              ctaText={
+                !authUser || !isPremiumActive
+                  ? "Current Plan"
+                  : "Included in Paid Plans"
+              }
+              onCta={() => router.push("/")}
+              finePrint="Upgrade when you want paid-plan access and Black Card tier inclusion."
+            />
+
+            <PriceCard
+              title="Premium"
+              price="$12.00"
+              sub="Paid plan with Black Card Standard included."
+              billingNote="Billed annually • Auto-renews annually • Cancel anytime"
+              highlight
+              badge="Most Popular"
+              features={[
+                { ok: true, text: "Everything in Free" },
+                { ok: true, text: "Black Card Standard mapping on activation" },
+                {
+                  ok: true,
+                  text: "Black Card rewards earn/redeem access (subject to card status, tier, and points checks)",
+                },
+                {
+                  ok: true,
+                  text: "Gated learning modules tied to paid-plan access",
+                },
+                {
+                  ok: true,
+                  text: "Physical card option planned for a future vendor-fulfilled phase",
+                },
+              ]}
+              ctaText={
+                isPremiumActive ? "Premium Active" : "Upgrade to Premium"
+              }
+              onCta={() => goCheckout("premium")}
+              disabled={isPremiumActive}
+              finePrint={
+                isPremiumActive
+                  ? "Your Premium membership is already active."
+                  : "Activation maps your account to Black Card Standard."
+              }
+            />
+
+            <PriceCard
+              title="Founding Member"
+              price="$49.00"
+              sub="Paid plan with Black Card Signature mapping."
+              billingNote="Billed annually • Auto-renews annually • Cancel anytime"
+              features={[
+                { ok: true, text: "Everything in Premium" },
+                {
+                  ok: true,
+                  text: "Black Card Signature mapping on activation",
+                },
+                {
+                  ok: true,
+                  text: "Keeps higher existing tier if already assigned",
+                },
+                {
+                  ok: true,
+                  text: "Black Card rewards/redemption workflows with admin-tracked status",
+                },
+                {
+                  ok: true,
+                  text: "Early access to features as they are released",
+                },
+              ]}
+              ctaText="Become a Founder"
+              onCta={() => goCheckout("founder")}
+              finePrint="Activation maps your account to at least Black Card Signature."
+            />
+          </div>
+
+          <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-6 sm:p-8">
+            <h2 className="text-xl sm:text-2xl font-extrabold text-yellow-200">
+              Plan clarity: Free vs Premium vs Founding
+            </h2>
+            <div className="mt-4 overflow-x-auto rounded-xl border border-white/10 bg-black/35">
+              <table className="min-w-full text-left text-xs sm:text-sm">
+                <thead className="bg-white/5 text-yellow-100">
+                  <tr>
+                    <th className="px-3 py-2">Plan</th>
+                    <th className="px-3 py-2">Price</th>
+                    <th className="px-3 py-2">Black Card Mapping</th>
+                    <th className="px-3 py-2">Best For</th>
+                  </tr>
+                </thead>
+                <tbody className="text-gray-200">
+                  <tr className="border-t border-white/10">
+                    <td className="px-3 py-2 font-semibold">Free</td>
+                    <td className="px-3 py-2">$0</td>
+                    <td className="px-3 py-2">None</td>
+                    <td className="px-3 py-2">Discovery and exploration</td>
+                  </tr>
+                  <tr className="border-t border-white/10">
+                    <td className="px-3 py-2 font-semibold">Premium</td>
+                    <td className="px-3 py-2">$12.00</td>
+                    <td className="px-3 py-2">Black Card Standard</td>
+                    <td className="px-3 py-2">
+                      Member access and rewards path
+                    </td>
+                  </tr>
+                  <tr className="border-t border-white/10">
+                    <td className="px-3 py-2 font-semibold">Founding</td>
+                    <td className="px-3 py-2">$49.00</td>
+                    <td className="px-3 py-2">
+                      Black Card Signature (or higher retained)
+                    </td>
+                    <td className="px-3 py-2">
+                      Higher-tier members and early access
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p className="mt-2 max-w-3xl text-gray-300">
+              Free includes search, filters, tabs, and AI Mode. Paid plans map
+              to Black Card tiers and unlock Black Card rewards access with
+              current system checks.
+            </p>
+            <p className="mt-3 text-xs text-gray-400">
+              Future roadmap items such as community features, custom reports,
+              and VIP partner lanes are not included unless explicitly marked
+              active.
+            </p>
+
+            <div className="mt-5 grid grid-cols-1 gap-4 text-sm md:grid-cols-3">
+              <div className="rounded-2xl border border-white/10 bg-black/40 p-5">
+                <div className="font-extrabold text-yellow-200">Free Plan</div>
+                <p className="mt-2 text-gray-300">
+                  Core discovery is already available: search, filters, tabs,
+                  and AI Mode.
+                </p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-black/40 p-5">
+                <div className="font-extrabold text-yellow-200">
+                  Premium Plan
+                </div>
+                <p className="mt-2 text-gray-300">
+                  Includes Black Card Standard mapping and rewards access in the
+                  current Black Card system.
+                </p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-black/40 p-5">
+                <div className="font-extrabold text-yellow-200">
+                  Founding Plan
+                </div>
+                <p className="mt-2 text-gray-300">
+                  Includes Black Card Signature mapping (or keeps your higher
+                  tier if already active).
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-6 space-y-3">
+              <div className="flex flex-wrap gap-3 text-sm">
+                <Link href="/marketplace" className="text-yellow-200 underline">
+                  Explore Marketplace
+                </Link>
+                <Link href="/music" className="text-yellow-200 underline">
+                  Explore Music
+                </Link>
+                <Link
+                  href="/recruiting-consulting"
+                  className="text-yellow-200 underline"
+                >
+                  Explore Recruiting & Consulting
+                </Link>
+              </div>
+
+              <div className="flex flex-col items-center justify-between gap-3 sm:flex-row">
+                <div className="text-xs text-gray-400">
+                  Educational only. Premium tools help decision-making; always
+                  verify with qualified professionals.
+                </div>
+                <div className="flex items-center gap-2">
+                  {isPremiumActive ? (
+                    <div className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/10 px-5 py-3 font-semibold text-gray-300">
+                      Premium Active
+                    </div>
+                  ) : (
+                    <GoldButton href="/checkout?plan=premium" variant="ghost">
+                      Start Premium Checkout <ArrowRight className="h-4 w-4" />
+                    </GoldButton>
+                  )}
+                  <GoldButton
+                    href="/business-directory?category=Real%20Estate"
+                    variant="ghost"
+                  >
+                    Explore Directory <ArrowRight className="h-4 w-4" />
+                  </GoldButton>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+
+        <div className="h-10" />
       </div>
     </>
   );
