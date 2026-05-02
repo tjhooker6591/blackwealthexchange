@@ -1144,38 +1144,6 @@ export default function Home() {
             </section>
           ) : null}
 
-          <div className="mx-auto mt-4 max-w-4xl rounded-2xl border border-yellow-500/25 bg-yellow-500/10 p-4 sm:p-5">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <div className="text-[11px] font-bold uppercase tracking-[0.15em] text-yellow-300">
-                  Flagship Membership Advantage
-                </div>
-                <div className="mt-1 text-sm font-semibold text-white sm:text-base">
-                  BWE Black Card unlocks verified member identity, faster
-                  opportunities, and reward-based savings
-                </div>
-                <div className="mt-2 text-xs text-white/75">
-                  Start with plans on Pricing, then complete activation in
-                  secure checkout.
-                </div>
-              </div>
-              <Link
-                href="/pricing"
-                onClick={() =>
-                  trackHomepageEvent("homepage_cta_clicked", {
-                    section: "hero",
-                    ctaId: "hero_black_card",
-                    ctaLabel: "View Membership Pricing",
-                    destination: "/pricing",
-                  })
-                }
-                className="inline-flex w-full sm:w-auto min-w-[12rem] justify-center whitespace-nowrap rounded-xl border border-yellow-400/40 bg-black/40 px-5 py-2.5 text-sm font-semibold text-yellow-200 hover:bg-black/60"
-              >
-                Compare Membership Plans
-              </Link>
-            </div>
-          </div>
-
 
           <section id="search-dominant" className="mt-5 sm:mt-6 scroll-mt-24">
             <div className="mx-auto max-w-4xl">
@@ -1414,44 +1382,32 @@ export default function Home() {
             </div>
           </section>
 
-          <section className="mt-5 sm:mt-6">
-            <EconomicImpactSimulator />
-          </section>
-
-          <div className="mx-auto mt-5 max-w-4xl rounded-xl border border-white/10 bg-white/[0.03] p-3 sm:p-3.5">
-            <div className="flex items-center justify-between gap-2">
-              <div className="text-[11px] font-bold uppercase tracking-[0.12em] text-[#D4AF37]">
-                Goal-Based Next Steps
+          <div className="mx-auto mt-5 max-w-4xl rounded-xl border border-yellow-500/20 bg-yellow-500/8 p-3 sm:p-3.5">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-yellow-300">Black Card Support</div>
+                <div className="mt-0.5 text-xs sm:text-sm text-white/85">After search, compare plans and activate Black Card membership when you are ready.</div>
               </div>
-              <div className="text-[10px] text-white/55">Secondary actions after search</div>
-            </div>
-
-            <div className="mt-2 grid gap-1.5 lg:grid-cols-2">
-              <Link href="/pricing" className="rounded-lg border border-yellow-400/35 bg-yellow-500/10 px-2.5 py-2 hover:bg-yellow-500/15">
-                <div className="text-xs font-extrabold text-yellow-200">Membership Plans</div>
-                <div className="mt-0.5 text-[11px] text-white/85">For members who want premium tools and Black Card benefits.</div>
-                <div className="mt-0.5 text-[10px] text-yellow-100/85">Next: compare Free vs Premium vs Founding</div>
-              </Link>
-
-              <Link href="/marketplace/become-a-seller" className="rounded-lg border border-emerald-400/30 bg-emerald-500/10 px-2.5 py-2 hover:bg-emerald-500/15">
-                <div className="text-xs font-extrabold text-emerald-200">Seller Activation</div>
-                <div className="mt-0.5 text-[11px] text-white/85">For businesses ready to launch a storefront and sell products.</div>
-                <div className="mt-0.5 text-[10px] text-emerald-100/85">Next: complete onboarding and publish products</div>
-              </Link>
-
-              <Link href="/advertise/featured-sponsor" className="rounded-lg border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-2.5 py-2 hover:bg-[#D4AF37]/15">
-                <div className="text-xs font-extrabold text-[#F1D57A]">Sponsor Packages</div>
-                <div className="mt-0.5 text-[11px] text-white/85">For brands that want paid visibility placements across BWE.</div>
-                <div className="mt-0.5 text-[10px] text-[#F4DE9E]">Next: select placement and checkout</div>
-              </Link>
-
-              <Link href="/music/pricing" className="rounded-lg border border-white/15 bg-black/35 px-2.5 py-2 hover:bg-black/50">
-                <div className="text-xs font-extrabold text-white">Music Creator Plans</div>
-                <div className="mt-0.5 text-[11px] text-white/85">For artists and creators activating music selling tools.</div>
-                <div className="mt-0.5 text-[10px] text-white/70">Next: choose a creator plan and activate</div>
+              <Link
+                href="/pricing"
+                onClick={() =>
+                  trackHomepageEvent("homepage_cta_clicked", {
+                    section: "post_search",
+                    ctaId: "post_search_black_card",
+                    ctaLabel: "Compare Membership Plans",
+                    destination: "/pricing",
+                  })
+                }
+                className="inline-flex w-full sm:w-auto justify-center rounded-lg border border-yellow-400/35 bg-black/35 px-4 py-2 text-xs font-semibold text-yellow-200 hover:bg-black/55"
+              >
+                Compare Membership Plans
               </Link>
             </div>
           </div>
+
+          <section className="mt-5 sm:mt-6">
+            <EconomicImpactSimulator />
+          </section>
         </div>
       </header>
 
