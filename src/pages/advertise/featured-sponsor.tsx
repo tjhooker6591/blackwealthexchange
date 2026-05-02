@@ -51,26 +51,19 @@ export default function FeaturedSponsorPage() {
     trackAdEvent("advertising_landing_viewed");
   }, []);
 
+  const hasCreative =
+    Boolean(adImageFile) || /^https?:\/\//i.test(creativeUrl.trim());
+  const hasValidEmail = /^\S+@\S+\.\S+$/.test(email.trim());
   const canProceed = useMemo(() => {
-    const hasCreative =
-      Boolean(adImageFile) || /^https?:\/\//i.test(creativeUrl.trim());
     return (
       Boolean(campaignDuration) &&
       confirmed &&
       hasCreative &&
       name.trim().length >= 2 &&
       businessName.trim().length >= 2 &&
-      /^\S+@\S+\.\S+$/.test(email.trim())
+      hasValidEmail
     );
-  }, [
-    campaignDuration,
-    confirmed,
-    adImageFile,
-    creativeUrl,
-    name,
-    businessName,
-    email,
-  ]);
+  }, [campaignDuration, confirmed, hasCreative, name, businessName, hasValidEmail]);
 
   const handleProceed = async () => {
     setError("");
@@ -372,9 +365,30 @@ export default function FeaturedSponsorPage() {
           </label>
         </section>
 
+        <section className="bg-gray-800 p-6 rounded-lg text-left space-y-2">
+          <h3 className="text-lg font-semibold text-gold">Checkout readiness checklist</h3>
+          <ul className="text-sm text-gray-300 space-y-1">
+            <li>{campaignDuration ? "✅" : "❌"} Select campaign duration</li>
+            <li>{hasCreative ? "✅" : "❌"} Add creative file or hosted creative URL</li>
+            <li>{name.trim().length >= 2 ? "✅" : "❌"} Enter contact name</li>
+            <li>{businessName.trim().length >= 2 ? "✅" : "❌"} Enter business name</li>
+            <li>{hasValidEmail ? "✅" : "❌"} Enter valid email</li>
+            <li>{confirmed ? "✅" : "❌"} Confirm campaign details are correct</li>
+          </ul>
+          <p className="text-xs text-gray-400 pt-1">
+            Review timeline: requests are reviewed, approved campaigns are scheduled into weekly capacity, then activated.
+          </p>
+          <p className="text-xs text-gray-400">Need help before payment? Use /support or include escalation notes in campaign notes.</p>
+        </section>
+
         {/* Proceed Button */}
         <div className="text-center">
           {error ? <p className="text-sm text-red-300 mb-2">{error}</p> : null}
+          {!canProceed ? (
+            <p className="text-xs text-yellow-300 mb-2">
+              Checkout is disabled until all checklist items are complete.
+            </p>
+          ) : null}
           <button
             onClick={handleProceed}
             disabled={!canProceed || submitting}
