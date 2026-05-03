@@ -10,12 +10,28 @@ type Submission = {
   nextAction: string;
   moderationStatus: string;
   stageLabel: string;
-  actionOwner: "submitter" | "internal_team" | "internal_review" | "complete" | string;
+  actionOwner:
+    | "submitter"
+    | "internal_team"
+    | "internal_review"
+    | "complete"
+    | string;
   source: string;
   createdAt: string | null;
   updatedAt: string | null;
   followUpAt: string | null;
 };
+
+function statusTone(status: string) {
+  if (["approved", "closed_won"].includes(status)) return "text-emerald-300";
+  if (["flagged", "spam", "blocked"].includes(status)) return "text-amber-300";
+  if (["closed_lost", "declined"].includes(status)) return "text-rose-300";
+  return "text-white/90";
+}
+
+function ownerLabel(owner: string) {
+  return owner.replaceAll("_", " ");
+}
 
 export default function ConsultingSubmissionStatusPage() {
   const [email, setEmail] = useState("");
@@ -67,6 +83,10 @@ export default function ConsultingSubmissionStatusPage() {
             Enter the same email used for your intake to view current status and
             next action.
           </p>
+          <p className="mt-1 text-xs text-white/50">
+            We keep up to your 10 most recent consulting submissions and show who
+            owns the next action.
+          </p>
 
           <form onSubmit={checkStatus} className="mt-4 space-y-3">
             <input
@@ -102,7 +122,7 @@ export default function ConsultingSubmissionStatusPage() {
                       {x.submissionType}
                     </span>
                   </div>
-                  <p className="mt-2 text-sm text-white/90">
+                  <p className={`mt-2 text-sm font-semibold ${statusTone(x.status)}`}>
                     Status: {x.status}
                   </p>
                   <p className="text-sm text-white/80">
@@ -115,7 +135,7 @@ export default function ConsultingSubmissionStatusPage() {
                     Moderation: {x.moderationStatus} • Source: {x.source}
                   </p>
                   <p className="mt-1 text-xs text-white/60">
-                    Action owner: {x.actionOwner.replace("_", " ")}
+                    Action owner: {ownerLabel(x.actionOwner)}
                   </p>
                   <p className="mt-1 text-xs text-white/50">
                     Submitted:{" "}
