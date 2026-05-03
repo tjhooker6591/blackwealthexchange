@@ -55,7 +55,7 @@ function splitCategoryTokens(v: any): string[] {
 function trackFlowEvent(payload: Record<string, unknown>) {
   if (typeof window === "undefined") return;
   const body = JSON.stringify(payload);
-  const url = "/api/flow-events";
+  const url = "/api/search/quality-events";
   if (navigator.sendBeacon) {
     navigator.sendBeacon(url, new Blob([body], { type: "application/json" }));
     return;
@@ -381,6 +381,7 @@ export default function BusinessDirectory() {
     intentTokens?: string[];
     locationTokens?: string[];
     usedFallback?: boolean;
+    noExactCategoryMatchInLocation?: boolean;
   } | null>(null);
 
   const [page, setPage] = useState(1);
@@ -718,6 +719,33 @@ export default function BusinessDirectory() {
   }, [filteredRows, serverPaged, page]);
 
   const visibleWithSponsors = useMemo(() => pageRows, [pageRows]);
+
+  useEffect(() => {
+    if (!hasSearched) return;
+    trackFlowEvent({
+      eventType: "search_results_loaded",
+      query: input.trim(),
+      resultCount: total,
+      filters: {
+        scope,
+        category,
+        stateFilter,
+        verifiedOnly,
+        sponsoredFirst,
+        includeIncomplete,
+      },
+    });
+  }, [
+    hasSearched,
+    input,
+    total,
+    scope,
+    category,
+    stateFilter,
+    verifiedOnly,
+    sponsoredFirst,
+    includeIncomplete,
+  ]);
   const approximateMode =
     hasSearched && total > 0 && queryMode !== "strict" && Boolean(input.trim());
 
@@ -917,6 +945,11 @@ export default function BusinessDirectory() {
   };
 
   const getHref = (r: Row) => {
+    const sponsoredUrl = safeStr((r as any).website);
+    if ((r as any).__sponsoredPlacement && /^https?:\/\//i.test(sponsoredUrl)) {
+      return sponsoredUrl;
+    }
+
     const slug = encodeURIComponent(getSlug(r));
     if (r.__kind === "org") return `/organizations/${slug}`;
 
@@ -1494,6 +1527,37 @@ export default function BusinessDirectory() {
                   </div>
                 </div>
 
+                {hasSearched ? (
+                  <div className="mt-3 rounded-xl border border-white/15 bg-white/[0.03] p-3 text-xs text-white/80">
+                    <div className="font-bold text-white">
+                      Action Required / What Changed
+                    </div>
+                    <div className="mt-1">
+                      What changed: {total} results for current query and
+                      filters.
+                    </div>
+                    <div>
+                      Needs action: refine filters if results are weak or empty.
+                    </div>
+                    <div>
+                      At risk: missing mappings for some relevance/trust
+                      analytics.
+                    </div>
+                    <div className="mt-1">
+                      sourceStatus:{" "}
+                      <span className="font-semibold">needs_tracking</span>
+                    </div>
+                    <div className="mt-2">
+                      <a
+                        href="#directory-search"
+                        className="text-[#D4AF37] underline"
+                      >
+                        Next action: adjust search filters
+                      </a>
+                    </div>
+                  </div>
+                ) : null}
+
                 {hasSearched &&
                 total > 0 &&
                 scope === "businesses" &&
@@ -1622,6 +1686,21 @@ export default function BusinessDirectory() {
                         Check Organizations
                       </button>
                     ) : null}
+                  </div>
+                ) : null}
+
+                {isApproximateSearch ? (
+                  <div className="mt-2 rounded-xl border border-cyan-300/25 bg-cyan-300/10 px-3 py-2 text-[11px] text-cyan-100">
+                    <span className="font-semibold text-cyan-50">
+                      {searchMeta?.noExactCategoryMatchInLocation
+                        ? "No exact category match in this location, showing related results."
+                        : queryMode === "fallback_intent" &&
+                            (searchMeta?.locationTokens || []).length > 0
+                          ? `No results found in ${(searchMeta?.locationTokens || []).join(" ")}, showing related results.`
+                          : "Broadened results."}
+                    </span>{" "}
+                    We expanded matching to show related results. Exact matches
+                    are still ranked first.
                   </div>
                 ) : null}
 
@@ -1918,6 +1997,22 @@ export default function BusinessDirectory() {
                             <Link
                               href={getHref(item as Row)}
                               className="block truncate text-[#D4AF37] font-extrabold hover:underline"
+                              onClick={() =>
+                                trackFlowEvent({
+                                  eventType: "search_result_clicked",
+                                  query: input.trim(),
+                                  resultCount: total,
+                                  selectedBusinessId: (item as any)._id,
+                                  filters: {
+                                    scope,
+                                    category,
+                                    stateFilter,
+                                    verifiedOnly,
+                                    sponsoredFirst,
+                                    includeIncomplete,
+                                  },
+                                })
+                              }
                             >
                               {getTitle(item as Row) || "Untitled Listing"}
                             </Link>

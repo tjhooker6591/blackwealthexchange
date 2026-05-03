@@ -227,6 +227,9 @@ function getMatchQuality(
   intentTokens: string[],
   locationTokens: string[],
 ) {
+  if (intentTokens.length === 0 && locationTokens.length === 0) {
+    return "close";
+  }
   const name = safeText(item?.business_name || item?.name).toLowerCase();
   const alias = safeText(item?.alias).toLowerCase();
   const category =
@@ -822,7 +825,17 @@ export default async function handler(
 
         if (insertionCap > 0) {
           const now = new Date();
-          const sponsorCandidatesRaw = await db
+          const sponsorScheduleRaw = await db
+            .collection("featured_sponsor_schedule")
+            .find({
+              placement: "homepage-featured-sponsor",
+              status: { $in: ["scheduled", "active"] },
+            })
+            .sort({ weekStart: -1, sortOrder: 1, createdAt: -1 })
+            .limit(40)
+            .toArray();
+
+          const sponsorFallbackRaw = await db
             .collection("advertising_requests")
             .find({
               option: "featured-sponsor",
@@ -833,6 +846,24 @@ export default async function handler(
             .sort({ paidAt: -1, updatedAt: -1, createdAt: -1 })
             .limit(40)
             .toArray();
+
+          const sponsorCandidatesRaw = [
+            ...sponsorScheduleRaw.map((s: any) => ({
+              _id: s.campaignId || s._id,
+              business: s.businessName,
+              details: s.tagline,
+              businessId: s.businessId || s.campaignId || s._id,
+              targetUrl: s.targetUrl || s.website,
+              placement: s.placement,
+              city: s.city,
+              state: s.state,
+              address: s.address,
+              paidAt: s.weekStart || s.createdAt,
+              durationDays: 30,
+              __source: "featured_sponsor_schedule",
+            })),
+            ...sponsorFallbackRaw.map((s: any) => ({ ...s, __source: "advertising_requests" })),
+          ];
 
           const sessionKey = `${ip}:${queryFamily}:${search.toLowerCase()}`;
           const visibleIds = new Set(items.map((x: any) => String(x._id)));
@@ -895,7 +926,9 @@ export default async function handler(
           );
 
           const rankedSponsors = eligibleSponsors.sort((a, b) => {
-            const mq = matchQualityRank(b.matchQuality) - matchQualityRank(a.matchQuality);
+            const mq =
+              matchQualityRank(b.matchQuality) -
+              matchQualityRank(a.matchQuality);
             if (mq !== 0) return mq;
             const ea = exposureMap.get(a.campaignId) || 0;
             const eb = exposureMap.get(b.campaignId) || 0;
@@ -918,7 +951,10 @@ export default async function handler(
           const merged: any[] = [...items];
           const insertionPositions = [4, 10, 16];
           selected.forEach((s, i) => {
-            const pos = Math.min(insertionPositions[i] ?? merged.length, merged.length);
+            const pos = Math.min(
+              insertionPositions[i] ?? merged.length,
+              merged.length,
+            );
             const sponsorCard: SponsoredPlacement = {
               _id: `sponsored:${s.campaignId}`,
               name: s.title,
@@ -954,7 +990,9 @@ export default async function handler(
                 sessionCapCol.updateOne(
                   { sessionKey, sponsorId: s.campaignId },
                   {
-                    $set: { expiresAt: new Date(Date.now() + SESSION_CAP_TTL_MS) },
+                    $set: {
+                      expiresAt: new Date(Date.now() + SESSION_CAP_TTL_MS),
+                    },
                     $inc: { count: 1 },
                   },
                   { upsert: true },
