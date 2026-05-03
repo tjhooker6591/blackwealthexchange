@@ -405,7 +405,30 @@ export default function Marketplace() {
         </div>
       </section>
 
-      {/* Compact seller CTA */}
+      {/* Buyer trust strip */}
+      <section className="relative mx-auto mb-4 max-w-6xl px-4 sm:mb-6">
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-4 sm:p-5">
+          <h2 className="text-base font-bold text-gold sm:text-lg">Shop with confidence on BWE</h2>
+          <div className="mt-2 grid gap-2 text-xs text-white/80 sm:grid-cols-3 sm:text-sm">
+            <p>1) Open product details and confirm seller, availability, and policies.</p>
+            <p>2) Use secure checkout to place your order.</p>
+            <p>3) Track progress in My Orders and get support if needed.</p>
+          </div>
+          <div className="mt-3 flex flex-wrap gap-2 text-xs">
+            <Link href="/marketplace/my-orders" className="rounded-full border border-white/20 px-3 py-1.5 text-white/90 hover:bg-white/10">
+              My Orders
+            </Link>
+            <Link href="/support/marketplace" className="rounded-full border border-white/20 px-3 py-1.5 text-white/90 hover:bg-white/10">
+              Marketplace Support
+            </Link>
+            <Link href="/legal/marketplace" className="rounded-full border border-white/20 px-3 py-1.5 text-white/90 hover:bg-white/10">
+              Buyer terms
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Compact seller CTA (secondary) */}
       <section className="relative mx-auto mb-6 max-w-6xl px-4 sm:mb-8">
         <div className="overflow-hidden rounded-2xl border border-yellow-500/20 bg-gradient-to-r from-yellow-500/15 via-white/5 to-white/0 shadow-xl">
           <div className="flex flex-col gap-4 p-4 sm:p-5 md:flex-row md:items-center md:justify-between md:p-6">
@@ -415,7 +438,7 @@ export default function Marketplace() {
               </div>
               <div>
                 <h3 className="text-lg font-bold text-gold sm:text-2xl">
-                  Own a Business?
+                  Selling on BWE
                 </h3>
                 <p className="max-w-xl text-sm text-gray-200/90 sm:text-base">
                   Join the marketplace and manage your products from one place.
@@ -503,9 +526,22 @@ export default function Marketplace() {
               No products match the current search and filter settings.
             </p>
             <p className="mt-1 text-sm text-gray-400">
-              Try a broader query, switch category, or reset sort/filter
-              options.
+              Try a broader query, switch category, or reset sort/filter options.
             </p>
+            <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs sm:text-sm">
+              <button onClick={() => { setSelectedCategory("All"); setSort("newest"); setQ(""); setCurrentPage(1); }} className="rounded-lg border border-white/20 px-3 py-2 text-white/90 hover:bg-white/10">
+                View newest products
+              </button>
+              <button onClick={() => { setSelectedCategory("Apparel"); setQ(""); setCurrentPage(1); }} className="rounded-lg border border-white/20 px-3 py-2 text-white/90 hover:bg-white/10">
+                Browse Apparel
+              </button>
+              <button onClick={() => { setSelectedCategory("Home"); setQ(""); setCurrentPage(1); }} className="rounded-lg border border-white/20 px-3 py-2 text-white/90 hover:bg-white/10">
+                Browse Home
+              </button>
+              <Link href="/support/marketplace" className="rounded-lg border border-yellow-500/30 px-3 py-2 text-yellow-200 hover:bg-yellow-500/10">
+                Need buying help?
+              </Link>
+            </div>
           </div>
         ) : (
           <>
@@ -528,10 +564,10 @@ export default function Marketplace() {
                       : "border-emerald-500/40 bg-emerald-500/10 text-emerald-300";
 
                 const sellerName =
-                  product?.seller?.name || "Verified BWE Marketplace Seller";
+                  product?.seller?.name || "Seller on Black Wealth Exchange";
                 const sellerTrustLabel = product?.seller?.profileComplete
-                  ? "Verified seller profile"
-                  : "Basic seller profile";
+                  ? "Active seller profile"
+                  : "Seller on Black Wealth Exchange";
 
                 const listingStatusLabel =
                   String(product?.status || "").toLowerCase() === "active"
@@ -635,8 +671,9 @@ export default function Marketplace() {
                     </Link>
 
                     <p className="mt-3 text-[11px] text-gray-400 sm:text-xs">
-                      Quick action: use Buy for direct checkout, or open Details
-                      for full specs and seller context.
+                      Quick action: use Buy to start secure checkout. Shipping
+                      and delivery are handled by the seller and shown on
+                      details.
                     </p>
 
                     <div className="mt-3 grid grid-cols-2 gap-2">
@@ -787,6 +824,7 @@ export default function Marketplace() {
             alt="Empowering the Community"
             width={520}
             height={360}
+            unoptimized
             className="mx-auto mb-5 rounded-2xl border border-white/10 object-cover shadow-xl object-center w-full h-56 sm:h-64"
           />
         </div>
