@@ -1,7 +1,11 @@
 import { performance } from "node:perf_hooks";
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
-import { getClientIp, hitApiRateLimit } from "@/lib/apiRateLimit";
+import {
+  ensureApiRateLimitIndexes,
+  getClientIp,
+  hitApiRateLimit,
+} from "@/lib/apiRateLimit";
 import { getAdminDecodedFromRequest, isAdminDecoded } from "@/lib/adminAuth";
 import { getMongoDbName } from "@/lib/env";
 import { computeListingCompleteness } from "@/lib/directory/completeness";
@@ -38,11 +42,22 @@ function normalizeSearchTokens(search: string) {
     "find",
   ]);
 
-  return search
-    .toLowerCase()
-    .trim()
+  const phraseTokens = [
+    "los angeles",
+    "new york",
+    "san francisco",
+    "washington dc",
+  ];
+
+  let normalized = search.toLowerCase().trim().replace(/[-_]+/g, " ");
+  for (const phrase of phraseTokens) {
+    const phraseRx = new RegExp(`\\b${escapeRegex(phrase)}\\b`, "gi");
+    normalized = normalized.replace(phraseRx, phrase.replace(/\s+/g, "_"));
+  }
+
+  return normalized
     .split(/\s+/)
-    .map((t) => t.trim())
+    .map((t) => t.trim().replace(/_/g, " "))
     .filter(Boolean)
     .filter((t) => !stopwords.has(t))
     .slice(0, 8);
@@ -52,6 +67,12 @@ const CITY_STATE_ALIASES: Record<string, string> = {
   atlanta: "GA",
   houston: "TX",
   chicago: "IL",
+  dallas: "TX",
+  miami: "FL",
+  "los angeles": "CA",
+  "new york": "NY",
+  "san francisco": "CA",
+  "washington dc": "DC",
 };
 
 function tokenPatterns(token: string): string[] {
@@ -316,6 +337,44 @@ function normalizeResultItem(item: any, isOrganizations: boolean) {
 
 type SearchCacheEntry = { at: number; payload: string };
 const SEARCH_CACHE_TTL_MS = 60_000;
+const SESSION_CAP_TTL_MS = 1000 * 60 * 60 * 6;
+
+type SponsoredPlacement = {
+  _id: string;
+  name: string;
+  business_name: string;
+  description: string;
+  category: string;
+  primaryCategory: string;
+  locationDisplay: string;
+  city?: string;
+  state?: string;
+  address?: string;
+  alias: string;
+  website?: string;
+  isSponsored: true;
+  __sponsoredPlacement: true;
+  __kind: "business";
+  __sponsorCampaignId: string;
+  _matchQuality: "exact" | "close";
+};
+
+function buildQueryFamilyKey(intentTokens: string[], locationTokens: string[]) {
+  const i = [...intentTokens].sort().join("+") || "all-intent";
+  const l = [...locationTokens].sort().join("+") || "all-locations";
+  return `${i}::${l}`;
+}
+
+function insertionBudgetForCount(count: number) {
+  if (count <= 7) return 0;
+  if (count <= 19) return 1;
+  if (count <= 39) return 2;
+  return 3;
+}
+
+function densityCapForCount(count: number) {
+  return Math.floor(count * 0.15);
+}
 
 function relevanceScoreOrg(item: any, search: string) {
   const q = search.toLowerCase().trim();
@@ -393,8 +452,25 @@ export default async function handler(
     const client = await clientPromise;
     const db = client.db(getMongoDbName());
 
+    await ensureApiRateLimitIndexes(db);
     const ip = getClientIp(req);
-    hitApiRateLimit(db, `search:businesses:ip:${ip}`, 120, 5).catch(() => null);
+    const searchRate = await hitApiRateLimit(
+      db,
+      `search:businesses:ip:${ip}`,
+      120,
+      5,
+    );
+    if (searchRate.blocked) {
+      res.setHeader("Retry-After", String(searchRate.retryAfterSeconds));
+      return res.status(429).json({
+        status: "error",
+        requestId,
+        error: {
+          code: "RATE_LIMITED",
+          message: "Too many search requests. Please try again shortly.",
+        },
+      });
+    }
 
     const typeRaw =
       typeof req.query.type === "string"
@@ -410,6 +486,8 @@ export default async function handler(
       normalizedType === "orgs";
 
     const col = db.collection(isOrganizations ? "organizations" : "businesses");
+    const exposureCol = db.collection("sponsor_search_exposure");
+    const sessionCapCol = db.collection("sponsor_search_session_caps");
 
     const searchRaw =
       typeof req.query.search === "string"
@@ -545,33 +623,47 @@ export default async function handler(
       queryMode = "fallback_intent";
     }
 
-    const hasStrictResults = true;
+    const shouldAttemptFallback = Boolean(search) && strictTokens.length >= 2;
+    let hasStrictResults = true;
 
-    if (search && !hasStrictResults) {
+    if (shouldAttemptFallback) {
+      hasStrictResults = Boolean(
+        await col.findOne(strictQuery, { projection: { _id: 1 } }),
+      );
+    }
+
+    if (shouldAttemptFallback && !hasStrictResults) {
       const baseAnd = searchTokenClause
         ? and.filter((clause) => clause !== searchTokenClause)
         : and;
 
-      if (intentTokens.length && locationTokens.length) {
-        const intentAnyClause = buildTokenAnyClause(intentTokens, searchFields);
-        const locationClause = buildLocationClause(locationTokens);
-        if (intentAnyClause && locationClause) {
-          query = { $and: [...baseAnd, intentAnyClause, locationClause] };
-          const hasFallback = await col.findOne(query, {
-            projection: { _id: 1 },
-          });
-          if (hasFallback) queryMode = "fallback_intent_location";
+      // location-first fallback order when location intent exists:
+      // 1) location + intent, 2) location-only, 3) intent-only
+      if (locationTokens.length) {
+        if (intentTokens.length) {
+          const intentAnyClause = buildTokenAnyClause(
+            intentTokens,
+            searchFields,
+          );
+          const locationClause = buildLocationClause(locationTokens);
+          if (intentAnyClause && locationClause) {
+            query = { $and: [...baseAnd, intentAnyClause, locationClause] };
+            const hasFallback = await col.findOne(query, {
+              projection: { _id: 1 },
+            });
+            if (hasFallback) queryMode = "fallback_intent_location";
+          }
         }
-      }
 
-      if (queryMode === "strict" && locationTokens.length) {
-        const locationClause = buildLocationClause(locationTokens);
-        if (locationClause) {
-          query = { $and: [...baseAnd, locationClause] };
-          const hasFallback = await col.findOne(query, {
-            projection: { _id: 1 },
-          });
-          if (hasFallback) queryMode = "fallback_location";
+        if (queryMode === "strict") {
+          const locationClause = buildLocationClause(locationTokens);
+          if (locationClause) {
+            query = { $and: [...baseAnd, locationClause] };
+            const hasFallback = await col.findOne(query, {
+              projection: { _id: 1 },
+            });
+            if (hasFallback) queryMode = "fallback_location";
+          }
         }
       }
 
@@ -648,9 +740,32 @@ export default async function handler(
             : relevanceScoreBusiness(item, search);
           const matchTier = matchQualityRank(matchQuality);
 
-          let score = baseScore + strength * 0.15;
+          const locationText =
+            `${safeText(item?.city)} ${safeText(item?.state)} ${safeText(item?.address)} ${safeText(item?.country)}`.toLowerCase();
+          const locationHitCount = locationTokens.filter((token) =>
+            textHasPattern(locationText, token),
+          ).length;
+          const locationBoost =
+            locationTokens.length > 0
+              ? (locationHitCount / locationTokens.length) * 35
+              : 0;
+
+          const categoryText =
+            `${safeText(item?.category)} ${safeText(item?.categories)} ${safeText(item?.display_categories)} ${safeText(item?.orgType)}`.toLowerCase();
+          const intentCategoryHits = intentTokens.filter((token) =>
+            textHasPattern(categoryText, token),
+          ).length;
+
+          let score = baseScore + strength * 0.15 + locationBoost;
           if (queryMode !== "strict" && matchQuality === "approximate") {
             score -= 18;
+          }
+          if (
+            queryMode !== "strict" &&
+            intentTokens.length > 0 &&
+            intentCategoryHits === 0
+          ) {
+            score -= 65;
           }
 
           return {
@@ -691,10 +806,170 @@ export default async function handler(
         );
 
       const tAfterRank = performance.now();
-      const rankedWindow = ranked.slice(effectiveSkip, effectiveSkip + limit + 1);
+      const rankedWindow = ranked.slice(
+        effectiveSkip,
+        effectiveSkip + limit + 1,
+      );
       const hasMore = rankedWindow.length > limit;
       items = rankedWindow.slice(0, limit);
-      total = hasMore ? effectiveSkip + items.length + 1 : effectiveSkip + items.length;
+
+      if (!isOrganizations && items.length > 0) {
+        const queryFamily = buildQueryFamilyKey(intentTokens, locationTokens);
+        const organicCount = items.length;
+        const bandBudget = insertionBudgetForCount(organicCount);
+        const densityCap = densityCapForCount(organicCount);
+        const insertionCap = Math.min(bandBudget, Math.max(0, densityCap));
+
+        if (insertionCap > 0) {
+          const now = new Date();
+          const sponsorCandidatesRaw = await db
+            .collection("advertising_requests")
+            .find({
+              option: "featured-sponsor",
+              paymentStatus: "paid",
+              reviewStatus: "approved",
+              status: { $in: ["approved", "active"] },
+            })
+            .sort({ paidAt: -1, updatedAt: -1, createdAt: -1 })
+            .limit(40)
+            .toArray();
+
+          const sessionKey = `${ip}:${queryFamily}:${search.toLowerCase()}`;
+          const visibleIds = new Set(items.map((x: any) => String(x._id)));
+          const eligibleSponsors = sponsorCandidatesRaw
+            .map((c: any) => {
+              const paidAt = c?.paidAt ? new Date(c.paidAt) : null;
+              const duration = Math.max(1, Number(c?.durationDays || 30));
+              if (!paidAt || Number.isNaN(paidAt.getTime())) return null;
+              const expiresAt = new Date(
+                paidAt.getTime() + duration * 24 * 60 * 60 * 1000,
+              );
+              if (expiresAt <= now) return null;
+
+              const title = safeText(c?.business || c?.businessName).trim();
+              if (!title) return null;
+              const alias = safeText(c?.businessId || c?._id);
+              const mm = getMatchQuality(
+                {
+                  business_name: title,
+                  description: safeText(c?.details),
+                  category: safeText(c?.placement),
+                  city: safeText(c?.city),
+                  state: safeText(c?.state),
+                  address: safeText(c?.address),
+                },
+                intentTokens,
+                locationTokens,
+              );
+              if (mm === "approximate") return null;
+              if (visibleIds.has(String(c?.businessId || c?._id))) return null;
+
+              return {
+                campaignId: String(c._id),
+                title,
+                description:
+                  safeText(c?.details).slice(0, 180) ||
+                  "Sponsored partner listing.",
+                category: safeText(c?.placement || "Sponsored"),
+                website: safeText(c?.targetUrl || c?.website),
+                alias,
+                matchQuality: mm as "exact" | "close",
+                paidAt,
+              };
+            })
+            .filter(Boolean) as any[];
+
+          const recentExposure = await exposureCol
+            .aggregate([
+              {
+                $match: {
+                  queryFamily,
+                  at: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) },
+                },
+              },
+              { $group: { _id: "$sponsorId", c: { $sum: "$count" } } },
+            ])
+            .toArray();
+          const exposureMap = new Map<string, number>(
+            recentExposure.map((r: any) => [String(r._id), Number(r.c || 0)]),
+          );
+
+          const rankedSponsors = eligibleSponsors.sort((a, b) => {
+            const mq = matchQualityRank(b.matchQuality) - matchQualityRank(a.matchQuality);
+            if (mq !== 0) return mq;
+            const ea = exposureMap.get(a.campaignId) || 0;
+            const eb = exposureMap.get(b.campaignId) || 0;
+            if (ea !== eb) return ea - eb;
+            return b.paidAt.getTime() - a.paidAt.getTime();
+          });
+
+          const selected: any[] = [];
+          for (const s of rankedSponsors) {
+            if (selected.length >= insertionCap) break;
+            const sess = await sessionCapCol.findOne({
+              sessionKey,
+              sponsorId: s.campaignId,
+              expiresAt: { $gt: now },
+            });
+            if (sess && Number(sess.count || 0) >= 2) continue;
+            selected.push(s);
+          }
+
+          const merged: any[] = [...items];
+          const insertionPositions = [4, 10, 16];
+          selected.forEach((s, i) => {
+            const pos = Math.min(insertionPositions[i] ?? merged.length, merged.length);
+            const sponsorCard: SponsoredPlacement = {
+              _id: `sponsored:${s.campaignId}`,
+              name: s.title,
+              business_name: s.title,
+              description: s.description,
+              category: s.category,
+              primaryCategory: s.category,
+              locationDisplay: "Sponsored Placement",
+              alias: s.alias,
+              website: s.website,
+              isSponsored: true,
+              __sponsoredPlacement: true,
+              __kind: "business",
+              __sponsorCampaignId: s.campaignId,
+              _matchQuality: s.matchQuality,
+            };
+            merged.splice(pos, 0, sponsorCard);
+          });
+
+          if (selected.length) {
+            await Promise.all(
+              selected.map((s) =>
+                exposureCol.insertOne({
+                  sponsorId: s.campaignId,
+                  queryFamily,
+                  at: now,
+                  count: 1,
+                }),
+              ),
+            );
+            await Promise.all(
+              selected.map((s) =>
+                sessionCapCol.updateOne(
+                  { sessionKey, sponsorId: s.campaignId },
+                  {
+                    $set: { expiresAt: new Date(Date.now() + SESSION_CAP_TTL_MS) },
+                    $inc: { count: 1 },
+                  },
+                  { upsert: true },
+                ),
+              ),
+            );
+          }
+
+          items = merged;
+        }
+      }
+
+      total = hasMore
+        ? effectiveSkip + items.length + 1
+        : effectiveSkip + items.length;
       const tAfterSlice = performance.now();
 
       const debugPerf = {
@@ -704,6 +979,16 @@ export default async function handler(
         sliceMs: Math.round(tAfterSlice - tAfterRank),
         candidatesCount: candidates.length,
       };
+
+      const categoryPageText = items
+        .map((it) =>
+          `${safeText((it as any)?.category)} ${safeText((it as any)?.categories)} ${safeText((it as any)?.display_categories)} ${safeText((it as any)?.orgType)}`.toLowerCase(),
+        )
+        .join(" ");
+      const noExactCategoryMatchInLocation =
+        queryMode !== "strict" &&
+        intentTokens.length > 0 &&
+        !intentTokens.some((token) => textHasPattern(categoryPageText, token));
 
       const payload = {
         status: "ok",
@@ -721,6 +1006,7 @@ export default async function handler(
           intentTokens,
           locationTokens,
           usedFallback: queryMode !== "strict",
+          noExactCategoryMatchInLocation,
         },
         items,
       } as any;
@@ -769,11 +1055,23 @@ export default async function handler(
           isOrganizations,
         ),
       );
-      total = hasMore ? effectiveSkip + items.length + 1 : effectiveSkip + items.length;
+      total = hasMore
+        ? effectiveSkip + items.length + 1
+        : effectiveSkip + items.length;
     }
 
     const tAfterFindMap = performance.now();
     const tookMs = Date.now() - t0;
+
+    const categoryPageText = items
+      .map((it) =>
+        `${safeText((it as any)?.category)} ${safeText((it as any)?.categories)} ${safeText((it as any)?.display_categories)} ${safeText((it as any)?.orgType)}`.toLowerCase(),
+      )
+      .join(" ");
+    const noExactCategoryMatchInLocation =
+      queryMode !== "strict" &&
+      intentTokens.length > 0 &&
+      !intentTokens.some((token) => textHasPattern(categoryPageText, token));
 
     const payload = {
       status: "ok",
@@ -791,6 +1089,7 @@ export default async function handler(
         intentTokens,
         locationTokens,
         usedFallback: queryMode !== "strict",
+        noExactCategoryMatchInLocation,
       },
       items,
     } as any;
@@ -816,26 +1115,6 @@ export default async function handler(
     res.setHeader("X-Search-Cache", "MISS");
     res.setHeader("Content-Type", "application/json; charset=utf-8");
     return res.status(200).send(jsonString);
-
-    return res.status(200).json({
-      status: "ok",
-      requestId,
-      tookMs,
-      page: effectivePage,
-      limit,
-      total,
-      hasMore: effectivePage * limit < total,
-      type: isOrganizations ? "organizations" : "businesses",
-      sort,
-      queryMode,
-      searchMeta: {
-        strictTokens,
-        intentTokens,
-        locationTokens,
-        usedFallback: queryMode !== "strict",
-      },
-      items,
-    });
   } catch (error: any) {
     console.error("Search Error:", error);
     return res.status(500).json({

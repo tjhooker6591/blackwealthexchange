@@ -146,10 +146,10 @@ export default function AdvertisingIndexPage() {
 
           <div className="flex gap-2">
             <Link
-              href="/advertise-with-us"
+              href="/advertising/placements"
               className="rounded-xl border border-zinc-800 bg-zinc-950 px-4 py-2 text-sm hover:bg-zinc-900"
             >
-              Back to Hub
+              View Placements
             </Link>
             <Link
               href="/"

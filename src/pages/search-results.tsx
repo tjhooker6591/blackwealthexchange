@@ -313,8 +313,11 @@ export default function SearchResults() {
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {results.map((r, idx) => {
+            const isSponsoredPlacement = Boolean((r as any).__sponsoredPlacement);
             const slug = encodeURIComponent(safe(r.alias).trim() || r._id);
-            const href = `/business-directory/${slug}?from=search-results&q=${encodeURIComponent(search)}`;
+            const href = isSponsoredPlacement
+              ? safe((r as any).website || "#")
+              : `/business-directory/${slug}?from=search-results&q=${encodeURIComponent(search)}`;
             const location =
               safe((r as any).locationDisplay) ||
               [safe(r.city), safe(r.state)].filter(Boolean).join(", ") ||
@@ -357,21 +360,41 @@ export default function SearchResults() {
                   </span>
                 </div>
 
-                <Link
-                  href={href}
-                  onClick={() =>
-                    trackSearchEvent("search_result_clicked", {
-                      entity_id: r._id,
-                      entity_type: "business",
-                      result_rank: idx + 1,
-                      source: "search_results_card_title",
-                      businessAlias: safe(r.alias) || null,
-                    })
-                  }
-                  className="text-lg font-semibold text-gold hover:underline"
-                >
-                  {safe(r.business_name) || "Untitled Business"}
-                </Link>
+                {isSponsoredPlacement ? (
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={() =>
+                      trackSearchEvent("search_result_clicked", {
+                        entity_id: r._id,
+                        entity_type: "sponsored_business",
+                        result_rank: idx + 1,
+                        source: "search_results_card_title",
+                        businessAlias: safe(r.alias) || null,
+                      })
+                    }
+                    className="text-lg font-semibold text-gold hover:underline"
+                  >
+                    {safe(r.business_name) || "Untitled Business"}
+                  </a>
+                ) : (
+                  <Link
+                    href={href}
+                    onClick={() =>
+                      trackSearchEvent("search_result_clicked", {
+                        entity_id: r._id,
+                        entity_type: "business",
+                        result_rank: idx + 1,
+                        source: "search_results_card_title",
+                        businessAlias: safe(r.alias) || null,
+                      })
+                    }
+                    className="text-lg font-semibold text-gold hover:underline"
+                  >
+                    {safe(r.business_name) || "Untitled Business"}
+                  </Link>
+                )}
 
                 <p className="mt-1 text-sm text-gray-400">{category}</p>
                 <p className="mt-2 text-sm text-gray-300">
@@ -382,21 +405,41 @@ export default function SearchResults() {
                 </p>
 
                 <div className="mt-3 flex gap-2">
-                  <Link
-                    href={href}
-                    onClick={() =>
-                      trackSearchEvent("search_result_clicked", {
-                        entity_id: r._id,
-                        entity_type: "business",
-                        result_rank: idx + 1,
-                        source: "search_results_card_primary_cta",
-                        businessAlias: safe(r.alias) || null,
-                      })
-                    }
-                    className="rounded bg-gold px-3 py-1.5 text-sm font-semibold text-black"
-                  >
-                    View Profile
-                  </Link>
+                  {isSponsoredPlacement ? (
+                    <a
+                      href={href}
+                      target="_blank"
+                      rel="noreferrer"
+                      onClick={() =>
+                        trackSearchEvent("search_result_clicked", {
+                          entity_id: r._id,
+                          entity_type: "sponsored_business",
+                          result_rank: idx + 1,
+                          source: "search_results_card_primary_cta",
+                          businessAlias: safe(r.alias) || null,
+                        })
+                      }
+                      className="rounded bg-gold px-3 py-1.5 text-sm font-semibold text-black"
+                    >
+                      Visit Sponsor
+                    </a>
+                  ) : (
+                    <Link
+                      href={href}
+                      onClick={() =>
+                        trackSearchEvent("search_result_clicked", {
+                          entity_id: r._id,
+                          entity_type: "business",
+                          result_rank: idx + 1,
+                          source: "search_results_card_primary_cta",
+                          businessAlias: safe(r.alias) || null,
+                        })
+                      }
+                      className="rounded bg-gold px-3 py-1.5 text-sm font-semibold text-black"
+                    >
+                      View Profile
+                    </Link>
+                  )}
                   {location ? (
                     <a
                       href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`}
