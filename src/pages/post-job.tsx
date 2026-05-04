@@ -54,6 +54,11 @@ const PostJob = () => {
     description: "",
     salary: "",
     contactEmail: "",
+    requiredSkills: "",
+    requiredCertifications: "",
+    minimumYearsExperience: "",
+    requiresResume: true,
+    workAuthorizationRequired: false,
   });
 
   const autoPostRanRef = useRef(false);
@@ -518,6 +523,55 @@ const PostJob = () => {
             required
             className="w-full p-3 rounded bg-gray-700 border border-gray-600"
           />
+
+          <div className="rounded border border-gray-700 bg-gray-900/60 p-4 space-y-3">
+            <p className="text-sm font-semibold text-gold">Screening rules (optional but recommended)</p>
+            <input
+              type="text"
+              name="requiredSkills"
+              placeholder="Required skills (comma-separated)"
+              value={formData.requiredSkills}
+              onChange={handleChange}
+              className="w-full p-3 rounded bg-gray-700 border border-gray-600"
+            />
+            <input
+              type="text"
+              name="requiredCertifications"
+              placeholder="Required certifications/licenses (comma-separated)"
+              value={formData.requiredCertifications}
+              onChange={handleChange}
+              className="w-full p-3 rounded bg-gray-700 border border-gray-600"
+            />
+            <input
+              type="number"
+              min="0"
+              name="minimumYearsExperience"
+              placeholder="Minimum years of experience"
+              value={formData.minimumYearsExperience}
+              onChange={handleChange}
+              className="w-full p-3 rounded bg-gray-700 border border-gray-600"
+            />
+            <label className="flex items-center gap-2 text-sm text-gray-200">
+              <input
+                type="checkbox"
+                checked={formData.requiresResume}
+                onChange={(e) =>
+                  setFormData((cur) => ({ ...cur, requiresResume: e.target.checked }))
+                }
+              />
+              Require resume for this job
+            </label>
+            <label className="flex items-center gap-2 text-sm text-gray-200">
+              <input
+                type="checkbox"
+                checked={formData.workAuthorizationRequired}
+                onChange={(e) =>
+                  setFormData((cur) => ({ ...cur, workAuthorizationRequired: e.target.checked }))
+                }
+              />
+              Work authorization required
+            </label>
+          </div>
 
           {/* Free post submit */}
           <button

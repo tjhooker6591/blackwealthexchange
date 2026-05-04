@@ -419,11 +419,33 @@ export default function EmployerApplicantsPage() {
                                   : "missing"}
                               </div>
                               <div>
+                                <span className="font-semibold">Required-match:</span>{" "}
+                                Matched {applicant.vettingSignals?.roleMatch?.matchedKeywords?.length || 0}, Missing {applicant.vettingSignals?.roleMatch?.missingKeywords?.length || 0}
+                              </div>
+                              {(applicant.vettingSignals?.knockout?.reasons || []).length ? (
+                                <div>
+                                  <span className="font-semibold">Missing requirements:</span>{" "}
+                                  {(applicant.vettingSignals?.knockout?.reasons || []).join("; ")}
+                                </div>
+                              ) : (
+                                <div>
+                                  <span className="font-semibold">Missing requirements:</span> None detected
+                                </div>
+                              )}
+                              <div>
                                 <span className="font-semibold">
                                   Screening summary:
                                 </span>{" "}
                                 {applicant.vettingSummary ||
                                   "Awaiting screening summary."}
+                              </div>
+                              <div>
+                                <span className="font-semibold">Decision guidance:</span>{" "}
+                                {applicant.vettingStatus === "qualified"
+                                  ? "Core configured requirements appear satisfied."
+                                  : applicant.vettingStatus === "not_yet_qualified"
+                                    ? "Configured knockout requirement(s) were not satisfied."
+                                    : "Needs human review due to partial or lower-confidence signals."}
                               </div>
                               {applicant.overrideReason ? (
                                 <div>
