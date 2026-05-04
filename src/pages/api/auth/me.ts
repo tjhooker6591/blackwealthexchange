@@ -76,14 +76,7 @@ export default async function handler(
     const token = cookies.session_token;
 
     if (!token) {
-      console.info("[auth/me] no_token", {
-        host: String(req.headers.host || ""),
-        proto: String(req.headers["x-forwarded-proto"] || ""),
-        cookieNames,
-      });
-      return res
-        .status(401)
-        .json({ user: null, error: "No token cookie found." });
+      return res.status(200).json({ user: null });
     }
 
     let secret: string;
@@ -101,9 +94,7 @@ export default async function handler(
       payload = jwt.verify(token, secret) as JwtPayload;
     } catch (err) {
       console.error("[/api/auth/me] JWT verification failed:", err);
-      return res
-        .status(401)
-        .json({ user: null, error: "Invalid or expired token." });
+      return res.status(200).json({ user: null });
     }
 
     const role = payload.accountType || "user";
@@ -135,6 +126,16 @@ export default async function handler(
       profile = await db
         .collection<UserProfile>(collName)
         .findOne({ email: payload.email });
+      if (!profile) {
+        profile = await db
+          .collection<UserProfile>(collName)
+          .findOne({ ownerEmail: payload.email } as any);
+      }
+      if (!profile) {
+        profile = await db
+          .collection<UserProfile>(collName)
+          .findOne({ business_email: payload.email } as any);
+      }
       if (profile) break;
     }
 
@@ -150,8 +151,11 @@ export default async function handler(
     }
 
     if (!profile) {
-      console.info("[auth/me] profile_not_found", { email: payload.email, tokenRole: role });
-      return res.status(404).json({ user: null, error: "User not found." });
+      console.info("[auth/me] profile_not_found", {
+        email: payload.email,
+        tokenRole: role,
+      });
+      return res.status(200).json({ user: null });
     }
 
     const currentTokenVersion =
@@ -166,9 +170,7 @@ export default async function handler(
         : 0;
 
     if (incomingTokenVersion !== currentTokenVersion) {
-      return res
-        .status(401)
-        .json({ user: null, error: "Invalid or expired token." });
+      return res.status(200).json({ user: null });
     }
 
     const canonicalIdentity = await db

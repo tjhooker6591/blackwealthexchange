@@ -147,6 +147,16 @@ export default async function handler(
           email: { $regex: `^${escapeRegex(email.trim())}$`, $options: "i" },
         });
       }
+      if (!user) {
+        user = await collection.findOne({
+          ownerEmail: { $regex: `^${escapeRegex(email.trim())}$`, $options: "i" },
+        } as any);
+      }
+      if (!user) {
+        user = await collection.findOne({
+          business_email: { $regex: `^${escapeRegex(email.trim())}$`, $options: "i" },
+        } as any);
+      }
       if (user) {
         resolvedRole = entry.role;
         break;
@@ -154,7 +164,10 @@ export default async function handler(
     }
 
     if (!user) {
-      console.info("[auth/login] user_not_found", { email: emailNorm, accountType: bodyAccountType || null });
+      console.info("[auth/login] user_not_found", {
+        email: emailNorm,
+        accountType: bodyAccountType || null,
+      });
       return res
         .status(401)
         .json({ success: false, error: "Invalid credentials." });
@@ -164,7 +177,14 @@ export default async function handler(
     // The selected route collection is the source of truth for this login context.
 
     // Must have a password hash to login (unless you later support OAuth)
-    if (!user.password) {
+    const storedPasswordHash =
+      typeof user.password === "string" && user.password
+        ? user.password
+        : typeof (user as any).passwordHash === "string"
+          ? (user as any).passwordHash
+          : "";
+
+    if (!storedPasswordHash) {
       return res.status(401).json({
         success: false,
         error:
@@ -172,9 +192,12 @@ export default async function handler(
       });
     }
 
-    const isValid = await bcrypt.compare(password, user.password);
+    const isValid = await bcrypt.compare(password, storedPasswordHash);
     if (!isValid) {
-      console.info("[auth/login] password_invalid", { email: emailNorm, resolvedRole });
+      console.info("[auth/login] password_invalid", {
+        email: emailNorm,
+        resolvedRole,
+      });
       return res
         .status(401)
         .json({ success: false, error: "Invalid credentials." });
