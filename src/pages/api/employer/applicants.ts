@@ -15,7 +15,14 @@ interface ApplicantRecord {
   resumeUrl?: string;
   appliedAt?: Date;
   appliedDate?: string;
-  hiringStatus?: "new" | "reviewed" | "shortlisted" | "contacted" | "rejected";
+  hiringStatus?: "new" | "reviewed" | "shortlisted" | "contacted" | "rejected" | "interview" | "hired";
+  vettingStatus?: "qualified" | "review_needed" | "not_yet_qualified";
+  vettingSignals?: any;
+  vettingSummary?: string;
+  vettingUpdatedAt?: Date;
+  vettingConfidenceBand?: "high" | "medium" | "low";
+  manualOverride?: boolean;
+  overrideReason?: string;
   statusUpdatedAt?: Date;
   employerNote?: string;
   rejectionReason?: string;
@@ -145,6 +152,15 @@ export default async function handler(
         appliedDate:
           a.appliedAt?.toISOString() ||
           (typeof a.appliedDate === "string" ? a.appliedDate : ""),
+        vettingStatus: a.vettingStatus || "review_needed",
+        vettingSignals: a.vettingSignals || null,
+        vettingSummary: a.vettingSummary || "Awaiting screening summary.",
+        vettingUpdatedAt: a.vettingUpdatedAt
+          ? new Date(a.vettingUpdatedAt).toISOString()
+          : "",
+        vettingConfidenceBand: a.vettingConfidenceBand || "low",
+        manualOverride: Boolean(a.manualOverride),
+        overrideReason: a.overrideReason || "",
       }))
       .filter((item) => {
         if (!searchQuery) return true;

@@ -3,6 +3,7 @@ import clientPromise from "../../../lib/mongodb";
 import jwt from "jsonwebtoken";
 import { ObjectId } from "mongodb";
 import { getJwtSecret } from "@/lib/env";
+import { runApplicantVetting } from "@/lib/hiring/vetting";
 
 export default async function handler(
   req: NextApiRequest,
@@ -48,12 +49,26 @@ export default async function handler(
   }
 
   const now = new Date();
+  const user = await db.collection("users").findOne({ _id: new ObjectId(userId) });
+  const resumeUrl = typeof user?.resumeUrl === "string" ? user.resumeUrl : "";
+  const vetting = await runApplicantVetting(db, { userId: new ObjectId(userId), jobId: new ObjectId(jobId), resumeUrl });
+
   const result = await db.collection("applicants").insertOne({
     jobId: new ObjectId(jobId),
     userId: new ObjectId(userId),
+    name: user?.name || user?.email || "",
+    email: user?.email || "",
+    resumeUrl,
     appliedAt: now,
     hiringStatus: "new",
     statusUpdatedAt: now,
+    vettingStatus: vetting.vettingStatus,
+    vettingSignals: vetting.vettingSignals,
+    vettingSummary: vetting.vettingSummary,
+    vettingUpdatedAt: vetting.vettingUpdatedAt,
+    vettingConfidenceBand: vetting.vettingConfidenceBand,
+    manualOverride: false,
+    overrideReason: "",
     statusHistory: [
       {
         status: "new",
@@ -63,5 +78,5 @@ export default async function handler(
     ],
   });
 
-  res.status(201).json({ success: true, applicantId: result.insertedId });
+  res.status(201).json({ success: true, applicantId: result.insertedId, vettingStatus: vetting.vettingStatus });
 }

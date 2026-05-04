@@ -10,6 +10,8 @@ const ALLOWED = [
   "reviewed",
   "shortlisted",
   "contacted",
+  "interview",
+  "hired",
   "rejected",
 ] as const;
 type HiringStatus = (typeof ALLOWED)[number];
@@ -57,6 +59,11 @@ export default async function handler(
     typeof req.body?.rejectionReason === "string"
       ? req.body.rejectionReason.trim().slice(0, 500)
       : "";
+  const manualOverride = req.body?.manualOverride === true;
+  const overrideReason =
+    typeof req.body?.overrideReason === "string"
+      ? req.body.overrideReason.trim().slice(0, 500)
+      : "";
 
   if (!ObjectId.isValid(applicantId) || !nextStatus) {
     return res.status(400).json({ error: "Invalid applicantId or status" });
@@ -103,6 +110,9 @@ export default async function handler(
         ...(note ? { employerNote: note } : {}),
         ...(nextStatus === "rejected" && rejectionReason
           ? { rejectionReason }
+          : {}),
+        ...(manualOverride
+          ? { manualOverride: true, overrideReason }
           : {}),
       },
       $push: {

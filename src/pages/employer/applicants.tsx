@@ -11,9 +11,18 @@ type HiringStatus =
   | "reviewed"
   | "shortlisted"
   | "contacted"
+  | "interview"
+  | "hired"
   | "rejected";
 
 interface Applicant {
+  vettingStatus?: "qualified" | "review_needed" | "not_yet_qualified";
+  vettingSignals?: any;
+  vettingSummary?: string;
+  vettingUpdatedAt?: string;
+  vettingConfidenceBand?: "high" | "medium" | "low";
+  manualOverride?: boolean;
+  overrideReason?: string;
   _id: string;
   name: string;
   email: string;
@@ -38,6 +47,8 @@ const STATUS_ORDER: HiringStatus[] = [
   "reviewed",
   "shortlisted",
   "contacted",
+  "interview",
+  "hired",
   "rejected",
 ];
 
@@ -46,6 +57,8 @@ const STATUS_LABEL: Record<HiringStatus, string> = {
   reviewed: "Reviewed",
   shortlisted: "Shortlisted",
   contacted: "Contacted",
+  interview: "Interview",
+  hired: "Hired",
   rejected: "Rejected",
 };
 
@@ -53,7 +66,9 @@ const NEXT_STATUS: Record<HiringStatus, HiringStatus | null> = {
   new: "reviewed",
   reviewed: "shortlisted",
   shortlisted: "contacted",
-  contacted: "rejected",
+  contacted: "interview",
+  interview: "hired",
+  hired: null,
   rejected: null,
 };
 
@@ -128,7 +143,11 @@ export default function EmployerApplicantsPage() {
     return base;
   }, [applicants]);
 
-  const updateStatus = async (applicantId: string, status: HiringStatus) => {
+  const updateStatus = async (
+    applicantId: string,
+    status: HiringStatus,
+    options?: { manualOverride?: boolean },
+  ) => {
     const note = (notesDraft[applicantId] || "").trim();
     const rejectionReason = (reasonDraft[applicantId] || "").trim();
     setBusyId(applicantId);
@@ -146,7 +165,14 @@ export default function EmployerApplicantsPage() {
         method: "PATCH",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ applicantId, status, note, rejectionReason }),
+        body: JSON.stringify({
+          applicantId,
+          status,
+          note,
+          rejectionReason,
+          manualOverride: Boolean(options?.manualOverride),
+          overrideReason: Boolean(options?.manualOverride) ? note || "Manual employer override" : "",
+        }),
       });
 
       const data = await res.json().catch(() => null);
@@ -236,7 +262,10 @@ export default function EmployerApplicantsPage() {
           <div>
             <h1 className="text-3xl font-bold text-gold">Applicant Pipeline</h1>
             <p className="text-sm text-gray-400 mt-1">
-              Move candidates through your hiring workflow in one place.
+              Structured candidate review with automated role-match checks plus human hiring decisions.
+            </p>
+            <p className="text-xs text-gray-500 mt-1">
+              Automated screening assists review, it does not replace hiring judgment.
             </p>
           </div>
           <Link href="/employer/jobs">
@@ -346,6 +375,20 @@ export default function EmployerApplicantsPage() {
                           </div>
 
                           <div className="mt-4 space-y-2">
+                            <div className="rounded border border-gray-700 bg-gray-900/60 p-3 text-xs text-gray-200 space-y-1">
+                              <div className="flex flex-wrap items-center gap-2">
+                                <span className="font-semibold">Quality Status:</span>
+                                <span className="px-2 py-0.5 rounded border border-gray-600">{(applicant.vettingStatus || "review_needed").replaceAll("_", " ")}</span>
+                                <span className="px-2 py-0.5 rounded border border-gray-600">Role-match: {(applicant.vettingConfidenceBand || "low").toUpperCase()}</span>
+                                {applicant.manualOverride ? <span className="px-2 py-0.5 rounded border border-emerald-500/40 text-emerald-200">Manual override</span> : null}
+                              </div>
+                              <div>
+                                <span className="font-semibold">Readiness:</span>{" "}
+                                Profile {applicant.vettingSignals?.profileCompleteness?.passed ? "complete" : "partial"}, Resume {applicant.vettingSignals?.resume?.present ? "present" : "missing"}
+                              </div>
+                              <div><span className="font-semibold">Screening summary:</span> {applicant.vettingSummary || "Awaiting screening summary."}</div>
+                              {applicant.overrideReason ? <div><span className="font-semibold">Override reason:</span> {applicant.overrideReason}</div> : null}
+                            </div>
                             <textarea
                               value={
                                 notesDraft[applicant._id] ??
@@ -406,6 +449,26 @@ export default function EmployerApplicantsPage() {
                             </div>
 
                             <div className="flex flex-wrap gap-2">
+                              <button
+                                disabled={busyId === applicant._id}
+                                onClick={() => loadMessages(applicant._id)}
+                                className="px-3 py-1.5 text-xs rounded border border-blue-400/40 bg-blue-500/10 text-blue-200 hover:bg-blue-500/20 disabled:opacity-60"
+                              >
+                                Request info
+                              </button>
+                              <button
+                                disabled={busyId === applicant._id}
+                                onClick={() =>
+                                  updateStatus(
+                                    applicant._id,
+                                    (applicant.hiringStatus || "new") as HiringStatus,
+                                    { manualOverride: true },
+                                  )
+                                }
+                                className="px-3 py-1.5 text-xs rounded border border-emerald-400/40 bg-emerald-500/10 text-emerald-200 hover:bg-emerald-500/20 disabled:opacity-60"
+                              >
+                                Apply manual override
+                              </button>
                               {NEXT_STATUS[
                                 (applicant.hiringStatus ||
                                   "new") as HiringStatus
