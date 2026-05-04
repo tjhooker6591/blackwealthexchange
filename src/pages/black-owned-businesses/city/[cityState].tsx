@@ -29,6 +29,7 @@ export default function CityDirectoryLanding() {
 
   const city = cityRaw.join("-");
   const state = stateRaw.slice(0, 2);
+  const isValidCityState = /^[a-z0-9-]{2,80}$/.test(cityState) && /^[a-z]{2}$/.test(state);
   const cityLabel = pretty(city || "city");
   const stateLabel = state.toUpperCase() || "US";
 
@@ -44,13 +45,31 @@ export default function CityDirectoryLanding() {
         <title>{title}</title>
         <meta name="description" content={description} />
         <link rel="canonical" href={canonical} />
+        {!isValidCityState && <meta name="robots" content="noindex,follow" />}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "CollectionPage",
+              name: title,
+              description,
+              url: canonical,
+            }),
+          }}
+        />
       </Head>
       <main className="min-h-screen bg-black px-6 py-12 text-white">
         <div className="mx-auto max-w-4xl">
-          <p className="text-xs uppercase tracking-[0.2em] text-yellow-300">City landing</p>
-          <h1 className="mt-3 text-4xl font-extrabold">Black-owned businesses in {cityLabel}, {stateLabel}</h1>
+          <p className="text-xs uppercase tracking-[0.2em] text-yellow-300">
+            City landing
+          </p>
+          <h1 className="mt-3 text-4xl font-extrabold">
+            Black-owned businesses in {cityLabel}, {stateLabel}
+          </h1>
           <p className="mt-4 text-zinc-300">
-            Jump into local directory and map exploration with this city-level entry point.
+            Jump into local directory and map exploration with this city-level
+            entry point.
           </p>
 
           <div className="mt-6 flex flex-wrap gap-3">

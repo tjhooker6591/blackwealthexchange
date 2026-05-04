@@ -30,19 +30,43 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
   const urls: UrlEntry[] = [
     { loc: `${base}/`, changefreq: "daily", priority: "1.0" },
     { loc: `${base}/black-wealth`, changefreq: "weekly", priority: "0.95" },
-    { loc: `${base}/business-directory`, changefreq: "daily", priority: "0.95" },
-    { loc: `${base}/black-owned-businesses`, changefreq: "weekly", priority: "0.85" },
+    {
+      loc: `${base}/business-directory`,
+      changefreq: "daily",
+      priority: "0.95",
+    },
+    {
+      loc: `${base}/black-owned-businesses`,
+      changefreq: "weekly",
+      priority: "0.85",
+    },
     { loc: `${base}/search-results`, changefreq: "daily", priority: "0.8" },
-    { loc: `${base}/travel-map/explore`, changefreq: "daily", priority: "0.85" },
+    {
+      loc: `${base}/travel-map/explore`,
+      changefreq: "daily",
+      priority: "0.85",
+    },
     { loc: `${base}/wealth-builder`, changefreq: "daily", priority: "0.85" },
     { loc: `${base}/black-card`, changefreq: "weekly", priority: "0.86" },
-    { loc: `${base}/recruiting-consulting`, changefreq: "weekly", priority: "0.8" },
-    { loc: `${base}/financial-literacy`, changefreq: "weekly", priority: "0.75" },
+    {
+      loc: `${base}/recruiting-consulting`,
+      changefreq: "weekly",
+      priority: "0.8",
+    },
+    {
+      loc: `${base}/financial-literacy`,
+      changefreq: "weekly",
+      priority: "0.75",
+    },
     { loc: `${base}/job-listings`, changefreq: "daily", priority: "0.8" },
     { loc: `${base}/marketplace`, changefreq: "daily", priority: "0.8" },
     { loc: `${base}/about`, changefreq: "monthly", priority: "0.6" },
     { loc: `${base}/resources`, changefreq: "weekly", priority: "0.72" },
-    { loc: `${base}/resources/articles`, changefreq: "weekly", priority: "0.72" },
+    {
+      loc: `${base}/resources/articles`,
+      changefreq: "weekly",
+      priority: "0.72",
+    },
   ];
 
   try {
@@ -69,10 +93,47 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
         .limit(1000)
         .toArray(),
       db.collection("businesses").distinct("category"),
+      db
+        .collection("businesses")
+        .aggregate([
+          {
+            $match: {
+              city: { $type: "string", $ne: "" },
+              state: { $type: "string", $ne: "" },
+            },
+          },
+          {
+            $project: {
+              city: { $trim: { input: "$city" } },
+              state: { $toUpper: { $trim: { input: "$state" } } },
+            },
+          },
+          {
+            $match: {
+              city: { $ne: "" },
+              state: { $regex: "^[A-Z]{2}$" },
+            },
+          },
+          {
+            $group: {
+              _id: {
+                city: { $toLower: "$city" },
+                state: "$state",
+              },
+              count: { $sum: 1 },
+            },
+          },
+          { $match: { count: { $gte: 3 } } },
+          { $sort: { count: -1 } },
+          { $limit: 120 },
+        ])
+        .toArray(),
     ]);
 
     for (const b of businesses) {
-      const slug = String(b?.slug || b?.alias || slugify(b?.business_name || ""));
+      const slug = String(
+        b?.slug || b?.alias || slugify(b?.business_name || ""),
+      );
       if (!slug) continue;
       urls.push({
         loc: `${base}/business/${encodeURIComponent(slug)}`,
@@ -108,6 +169,17 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
         loc: `${base}/black-owned-businesses/category/${encodeURIComponent(cat)}`,
         changefreq: "weekly",
         priority: "0.68",
+      });
+    }
+
+    for (const row of cityStatePairs) {
+      const city = slugify(String(row?._id?.city || ""));
+      const state = slugify(String(row?._id?.state || "")).slice(0, 2);
+      if (!city || !state) continue;
+      urls.push({
+        loc: `${base}/black-owned-businesses/city/${encodeURIComponent(`${city}-${state}`)}`,
+        changefreq: "weekly",
+        priority: "0.66",
       });
     }
   } catch {
