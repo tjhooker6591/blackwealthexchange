@@ -491,17 +491,36 @@ export default function Pricing() {
 
             <div className="mt-6 space-y-3">
               <div className="rounded-2xl border border-white/10 bg-black/40 p-4 text-sm text-gray-200">
-                <div className="font-extrabold text-yellow-200">What happens after checkout</div>
+                <div className="font-extrabold text-yellow-200">
+                  What happens after checkout
+                </div>
                 <ol className="mt-2 list-decimal pl-5 space-y-1 text-gray-300">
                   <li>Complete secure checkout for your selected plan.</li>
-                  <li>Payment is verified and your plan entitlement is mapped to your account.</li>
-                  <li>Your Black Card tier mapping is applied (Premium → Standard, Founding → Signature or higher retained).</li>
+                  <li>
+                    Payment is verified and your plan entitlement is mapped to
+                    your account.
+                  </li>
+                  <li>
+                    Your Black Card tier mapping is applied (Premium → Standard,
+                    Founding → Signature or higher retained).
+                  </li>
                 </ol>
-                <div className="mt-3 text-xs text-gray-400">Need help with billing or activation? Contact support from your account help/contact routes. Cancellation stops future renewals.</div>
+                <div className="mt-3 text-xs text-gray-400">
+                  Need help with billing or activation? Contact support from
+                  your account help/contact routes. Cancellation stops future
+                  renewals.
+                </div>
               </div>
 
               <div className="rounded-xl border border-white/10 bg-white/5 p-3 text-xs text-gray-300">
-                Billing confidence: billed annually, auto-renews annually, cancel anytime, secure checkout flow.
+                Entitlement truth: this page sells annual memberships. Course
+                pages may use one-time purchases. If checkout is
+                canceled/interrupted, no new entitlement is granted.
+              </div>
+
+              <div className="rounded-xl border border-white/10 bg-white/5 p-3 text-xs text-gray-300">
+                Billing confidence: billed annually, auto-renews annually,
+                cancel anytime, secure checkout flow.
               </div>
 
               <div className="flex flex-wrap gap-3 text-sm">
@@ -534,7 +553,7 @@ export default function Pricing() {
                       Start Premium Checkout <ArrowRight className="h-4 w-4" />
                     </GoldButton>
                   )}
-                                  </div>
+                </div>
               </div>
             </div>
           </div>

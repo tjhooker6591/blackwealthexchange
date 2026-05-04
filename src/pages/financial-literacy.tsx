@@ -4,7 +4,6 @@ import Link from "next/link";
 import Image from "next/legacy/image";
 import { useRouter } from "next/router";
 import { canonicalUrl, truncateMeta } from "@/lib/seo";
-import BuyNowButton from "@/components/BuyNowButton";
 
 type MeUser = {
   _id?: string;
@@ -13,7 +12,6 @@ type MeUser = {
   accountType?: string;
 };
 
-const PRICE_CENTS = 4900; // $49.00
 const ITEM_ID = "financial-literacy-premium";
 
 const FinancialLiteracy = () => {
@@ -44,13 +42,20 @@ const FinancialLiteracy = () => {
 
   const userId = useMemo(() => user?._id || user?.id || "", [user]);
   const [quickLoading, setQuickLoading] = useState(false);
+  const [ctaState, setCtaState] = useState<
+    "idle" | "loading" | "redirect-login" | "redirect-checkout" | "failed"
+  >("idle");
+  const [ctaError, setCtaError] = useState("");
 
   const startCourseCheckout = async () => {
+    setCtaError("");
     if (!userId) {
-      router.push(`/login?next=${encodeURIComponent("/financial-literacy")}`);
+      setCtaState("redirect-login");
+      void router.push(`/login?next=${encodeURIComponent("/financial-literacy")}`);
       return;
     }
 
+    setCtaState("loading");
     setQuickLoading(true);
     try {
       const res = await fetch("/api/stripe/checkout", {
@@ -62,9 +67,18 @@ const FinancialLiteracy = () => {
 
       const data = await res.json().catch(() => ({}));
       if (res.ok && data?.url) {
-        window.location.href = data.url;
+        setCtaState("redirect-checkout");
+        window.location.assign(data.url);
         return;
       }
+
+      setCtaState("failed");
+      setCtaError(
+        data?.message || data?.error || "Unable to start checkout session.",
+      );
+    } catch {
+      setCtaState("failed");
+      setCtaError("Something went wrong while starting checkout.");
     } finally {
       setQuickLoading(false);
     }
@@ -212,7 +226,7 @@ const FinancialLiteracy = () => {
         {/* Background Effects */}
         <div
           className="absolute inset-0 bg-cover bg-center opacity-35 z-0"
-          style={{ backgroundImage: "url('/black-wealth-bg.jpg')" }}
+          style={{ backgroundImage: "url('/images/story3.jpg')" }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black opacity-60 z-0" />
 
@@ -504,12 +518,12 @@ const FinancialLiteracy = () => {
                           profile.
                         </p>
                         <div className="mt-3 flex gap-2">
-                          <Link href="/signup">
+                          <Link href="/signup?next=/financial-literacy">
                             <button className="px-4 py-2 rounded bg-gold text-black font-semibold hover:bg-yellow-500 transition">
                               Sign Up
                             </button>
                           </Link>
-                          <Link href="/login">
+                          <Link href="/login?next=/financial-literacy">
                             <button className="px-4 py-2 rounded border border-gold text-gold hover:bg-gold hover:text-black transition">
                               Login
                             </button>
@@ -517,18 +531,33 @@ const FinancialLiteracy = () => {
                         </div>
                       </div>
                     ) : (
-                      <BuyNowButton
-                        userId={userId || "guest"}
-                        itemId={ITEM_ID}
-                        amount={PRICE_CENTS}
-                        type="course"
-                        label="Activate Course Access"
-                      />
+                      <button
+                        type="button"
+                        onClick={startCourseCheckout}
+                        disabled={quickLoading}
+                        className="w-full px-4 py-2 rounded bg-gold text-black font-semibold hover:bg-yellow-500 transition disabled:opacity-60"
+                      >
+                        {quickLoading
+                          ? "Starting checkout..."
+                          : "Activate Course Access"}
+                      </button>
                     )}
 
                     <p className="text-xs text-gray-400 mt-3">
-                      Secure checkout • Instant access after purchase
+                      {ctaState === "idle" &&
+                        "State: idle. Secure checkout available."}
+                      {ctaState === "loading" &&
+                        "State: starting checkout..."}
+                      {ctaState === "redirect-login" &&
+                        "State: redirecting to login..."}
+                      {ctaState === "redirect-checkout" &&
+                        "State: redirecting to secure checkout..."}
+                      {ctaState === "failed" &&
+                        "State: failed to start checkout."}
                     </p>
+                    {ctaError ? (
+                      <p className="mt-2 text-xs text-red-300">{ctaError}</p>
+                    ) : null}
                   </div>
                 </div>
 
@@ -550,7 +579,8 @@ const FinancialLiteracy = () => {
         <div className="fixed bottom-0 left-0 right-0 z-20 border-t border-gray-800 bg-black/70 backdrop-blur">
           <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between gap-4">
             <p className="text-sm text-gray-300">
-              Premium Financial Literacy Course — included with eligible paid BWE plans
+              Premium Financial Literacy Course — included with eligible paid
+              BWE plans
             </p>
             <button
               onClick={startCourseCheckout}
