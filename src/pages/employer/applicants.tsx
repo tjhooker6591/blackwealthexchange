@@ -132,12 +132,15 @@ export default function EmployerApplicantsPage() {
       reviewed: [],
       shortlisted: [],
       contacted: [],
+      interview: [],
+      hired: [],
       rejected: [],
     };
 
     for (const a of applicants) {
       const s = (a.hiringStatus || "new") as HiringStatus;
-      base[s].push(a);
+      const bucket = base[s] ?? base.new;
+      bucket.push(a);
     }
 
     return base;
@@ -171,7 +174,9 @@ export default function EmployerApplicantsPage() {
           note,
           rejectionReason,
           manualOverride: Boolean(options?.manualOverride),
-          overrideReason: Boolean(options?.manualOverride) ? note || "Manual employer override" : "",
+          overrideReason: Boolean(options?.manualOverride)
+            ? note || "Manual employer override"
+            : "",
         }),
       });
 
@@ -262,10 +267,12 @@ export default function EmployerApplicantsPage() {
           <div>
             <h1 className="text-3xl font-bold text-gold">Applicant Pipeline</h1>
             <p className="text-sm text-gray-400 mt-1">
-              Structured candidate review with automated role-match checks plus human hiring decisions.
+              Structured candidate review with automated role-match checks plus
+              human hiring decisions.
             </p>
             <p className="text-xs text-gray-500 mt-1">
-              Automated screening assists review, it does not replace hiring judgment.
+              Automated screening assists review, it does not replace hiring
+              judgment.
             </p>
           </div>
           <Link href="/employer/jobs">
@@ -320,7 +327,7 @@ export default function EmployerApplicantsPage() {
                     {STATUS_LABEL[s]}
                   </div>
                   <div className="text-2xl font-bold text-gold">
-                    {grouped[s].length}
+                    {(grouped?.[s] ?? []).length}
                   </div>
                 </div>
               ))}
@@ -330,15 +337,15 @@ export default function EmployerApplicantsPage() {
               {STATUS_ORDER.map((status) => (
                 <section key={status}>
                   <h2 className="text-xl font-bold text-gold mb-3">
-                    {STATUS_LABEL[status]} ({grouped[status].length})
+                    {STATUS_LABEL[status]} ({(grouped?.[status] ?? []).length})
                   </h2>
-                  {grouped[status].length === 0 ? (
+                  {(grouped?.[status] ?? []).length === 0 ? (
                     <div className="rounded-lg border border-gray-800 bg-gray-900/40 p-4 text-gray-500">
                       No applicants in this stage.
                     </div>
                   ) : (
                     <div className="space-y-4">
-                      {grouped[status].map((applicant) => (
+                      {(grouped?.[status] ?? []).map((applicant) => (
                         <div
                           key={applicant._id}
                           className="bg-gray-800 p-5 rounded-lg shadow-lg border border-gray-700"
@@ -377,17 +384,55 @@ export default function EmployerApplicantsPage() {
                           <div className="mt-4 space-y-2">
                             <div className="rounded border border-gray-700 bg-gray-900/60 p-3 text-xs text-gray-200 space-y-1">
                               <div className="flex flex-wrap items-center gap-2">
-                                <span className="font-semibold">Quality Status:</span>
-                                <span className="px-2 py-0.5 rounded border border-gray-600">{(applicant.vettingStatus || "review_needed").replaceAll("_", " ")}</span>
-                                <span className="px-2 py-0.5 rounded border border-gray-600">Role-match: {(applicant.vettingConfidenceBand || "low").toUpperCase()}</span>
-                                {applicant.manualOverride ? <span className="px-2 py-0.5 rounded border border-emerald-500/40 text-emerald-200">Manual override</span> : null}
+                                <span className="font-semibold">
+                                  Quality Status:
+                                </span>
+                                <span className="px-2 py-0.5 rounded border border-gray-600">
+                                  {(
+                                    applicant.vettingStatus || "review_needed"
+                                  ).replaceAll("_", " ")}
+                                </span>
+                                <span className="px-2 py-0.5 rounded border border-gray-600">
+                                  Role-match:{" "}
+                                  {(
+                                    applicant.vettingConfidenceBand || "low"
+                                  ).toUpperCase()}
+                                </span>
+                                {applicant.manualOverride ? (
+                                  <span className="px-2 py-0.5 rounded border border-emerald-500/40 text-emerald-200">
+                                    Manual override
+                                  </span>
+                                ) : null}
                               </div>
                               <div>
-                                <span className="font-semibold">Readiness:</span>{" "}
-                                Profile {applicant.vettingSignals?.profileCompleteness?.passed ? "complete" : "partial"}, Resume {applicant.vettingSignals?.resume?.present ? "present" : "missing"}
+                                <span className="font-semibold">
+                                  Readiness:
+                                </span>{" "}
+                                Profile{" "}
+                                {applicant.vettingSignals?.profileCompleteness
+                                  ?.passed
+                                  ? "complete"
+                                  : "partial"}
+                                , Resume{" "}
+                                {applicant.vettingSignals?.resume?.present
+                                  ? "present"
+                                  : "missing"}
                               </div>
-                              <div><span className="font-semibold">Screening summary:</span> {applicant.vettingSummary || "Awaiting screening summary."}</div>
-                              {applicant.overrideReason ? <div><span className="font-semibold">Override reason:</span> {applicant.overrideReason}</div> : null}
+                              <div>
+                                <span className="font-semibold">
+                                  Screening summary:
+                                </span>{" "}
+                                {applicant.vettingSummary ||
+                                  "Awaiting screening summary."}
+                              </div>
+                              {applicant.overrideReason ? (
+                                <div>
+                                  <span className="font-semibold">
+                                    Override reason:
+                                  </span>{" "}
+                                  {applicant.overrideReason}
+                                </div>
+                              ) : null}
                             </div>
                             <textarea
                               value={
@@ -461,7 +506,8 @@ export default function EmployerApplicantsPage() {
                                 onClick={() =>
                                   updateStatus(
                                     applicant._id,
-                                    (applicant.hiringStatus || "new") as HiringStatus,
+                                    (applicant.hiringStatus ||
+                                      "new") as HiringStatus,
                                     { manualOverride: true },
                                   )
                                 }
