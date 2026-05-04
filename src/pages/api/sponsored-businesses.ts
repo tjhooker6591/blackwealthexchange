@@ -196,43 +196,25 @@ export default async function handler(
       }
     }
 
-    // If current-week rows are missing, use the most recent schedule set.
-    const latestAnchor = await collection
+    // If current-week rows are missing/empty-after-filter, use the most recent
+    // mappable scheduled rows across recent weeks.
+    const recentScheduled = await collection
       .find({
         placement: "homepage-featured-sponsor",
         status: { $in: ["scheduled", "active"] },
       })
       .sort({ weekStart: -1, sortOrder: 1, createdAt: -1 })
-      .limit(1)
+      .limit(60)
       .toArray();
 
-    if (latestAnchor.length && latestAnchor[0]?.weekStart) {
-      const latestWeekStart = weekStartUtc(new Date(latestAnchor[0].weekStart));
-      const latestWeekEnd = new Date(latestWeekStart);
-      latestWeekEnd.setUTCDate(latestWeekEnd.getUTCDate() + 7);
-
-      const latestScheduled = await collection
-        .find({
-          placement: "homepage-featured-sponsor",
-          status: { $in: ["scheduled", "active"] },
-          weekStart: {
-            $gte: latestWeekStart,
-            $lt: latestWeekEnd,
-          },
-        })
-        .sort({ sortOrder: 1, createdAt: 1 })
-        .limit(12)
-        .toArray();
-
-      if (latestScheduled.length) {
-        const mappedLatest = mapScheduleRows(latestScheduled);
-        if (mappedLatest.length) {
-          return res.status(200).json({
-            ok: true,
-            sponsors: mappedLatest,
-            meta: { source: "featured_sponsor_schedule_latest_week" },
-          });
-        }
+    if (recentScheduled.length) {
+      const mappedRecent = mapScheduleRows(recentScheduled);
+      if (mappedRecent.length) {
+        return res.status(200).json({
+          ok: true,
+          sponsors: mappedRecent.slice(0, 12),
+          meta: { source: "featured_sponsor_schedule_recent_mappable" },
+        });
       }
     }
 
