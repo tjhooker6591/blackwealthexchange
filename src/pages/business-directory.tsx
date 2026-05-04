@@ -1005,9 +1005,9 @@ export default function BusinessDirectory() {
     total === 0
       ? 0
       : Math.min((page - 1) * pageSize + curatedVisibleRows.length, total);
-  const title = "Black Business Directory | Black Wealth Exchange";
+  const title = "Black-Owned Business Directory by City & Category | Black Wealth Exchange";
   const description = truncateMeta(
-    "Search the Black business directory by category, city, and state to find trusted Black-owned businesses.",
+    "Search Black-owned businesses by city, state, and category in the Black Wealth Exchange directory. Use trust signals and filters to find, compare, and contact the right business faster.",
   );
   const canonical = canonicalUrl("/business-directory");
   const directorySchema = {
@@ -1067,15 +1067,15 @@ export default function BusinessDirectory() {
                 <div>
                   <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-white">
                     {scope === "organizations"
-                      ? "Organizations Directory"
-                      : "Business Directory"}
+                      ? "Black Organizations Directory"
+                      : "Black-Owned Business Directory"}
                     <span className="ml-2 text-[#D4AF37]">
-                      • Trusted Search
+                      • City + Category Hub
                     </span>
                   </h1>
                   <p className="mt-1 text-sm text-white/65 sm:text-base">
-                    Premium discovery flow with clean ranking, trust cues, and
-                    faster decisions.
+                    Use this directory hub to discover trusted listings by city,
+                    state, and category, then compare and contact the best fit.
                   </p>
                 </div>
 
@@ -1159,6 +1159,15 @@ export default function BusinessDirectory() {
                     Find, vet, and contact quickly
                   </div>
                 </div>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm text-white/70">
+                <span className="font-semibold text-white/85">Popular discovery paths:</span>
+                <Link href="/black-owned-businesses/city/atlanta-ga" className="rounded-full border border-white/15 px-3 py-1 hover:border-[#D4AF37]/40 hover:text-[#D4AF37]">Atlanta, GA</Link>
+                <Link href="/black-owned-businesses/city/houston-tx" className="rounded-full border border-white/15 px-3 py-1 hover:border-[#D4AF37]/40 hover:text-[#D4AF37]">Houston, TX</Link>
+                <Link href="/black-owned-businesses/category/restaurant" className="rounded-full border border-white/15 px-3 py-1 hover:border-[#D4AF37]/40 hover:text-[#D4AF37]">Restaurants</Link>
+                <Link href="/black-owned-businesses/category/beauty" className="rounded-full border border-white/15 px-3 py-1 hover:border-[#D4AF37]/40 hover:text-[#D4AF37]">Beauty</Link>
+                <Link href="/black-owned-businesses/category/health-and-wellness" className="rounded-full border border-white/15 px-3 py-1 hover:border-[#D4AF37]/40 hover:text-[#D4AF37]">Health & Wellness</Link>
               </div>
             </div>
           </div>

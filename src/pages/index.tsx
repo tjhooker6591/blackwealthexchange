@@ -852,9 +852,9 @@ export default function Home() {
   const base = getBaseUrl();
   const canonical = canonicalUrl("/");
   const title =
-    "Black Wealth Exchange | Black-Owned Businesses, Jobs, Marketplace & Financial Literacy";
+    "Black-Owned Business Directory, Jobs & Marketplace | Black Wealth Exchange";
   const description = truncateMeta(
-    "Discover Black-owned businesses, shop Black-owned brands, explore jobs and career opportunities, and access financial literacy resources built to strengthen Black economic power.",
+    "Black Wealth Exchange is a discovery and growth platform centered on Black-owned businesses. Search the directory, find jobs, shop the marketplace, and build wealth with practical financial literacy resources.",
   );
 
   const formatStat = (value: number | null) =>
@@ -951,10 +951,10 @@ export default function Home() {
               </h1>
 
               <p className="mx-auto mt-3 max-w-2xl text-sm text-white/72 sm:text-base md:text-lg">
-                Black Wealth Exchange is a growth platform for Black
-                communities. Find businesses, discover jobs, shop the
-                marketplace, and build wealth through practical tools in one
-                place.
+                Black Wealth Exchange is a Black-owned business discovery and
+                growth platform. Start with the directory, then move into jobs,
+                marketplace opportunities, and financial literacy programs that
+                support long-term wealth building.
               </p>
 
               <div className="mx-auto mt-3 flex w-full max-w-2xl flex-wrap items-center justify-center gap-2 text-xs sm:text-sm">
@@ -982,6 +982,13 @@ export default function Home() {
                 >
                   Learn and Build Wealth
                 </Link>
+              </div>
+
+              <div className="mx-auto mt-3 max-w-3xl text-center text-xs text-white/65 sm:text-sm">
+                Primary paths: <Link href="/business-directory" className="text-[#D4AF37] hover:underline">Business Directory</Link>,{" "}
+                <Link href="/marketplace" className="text-[#D4AF37] hover:underline">Marketplace</Link>,{" "}
+                <Link href="/job-listings" className="text-[#D4AF37] hover:underline">Jobs</Link>,{" "}
+                and <Link href="/financial-literacy" className="text-[#D4AF37] hover:underline">Financial Literacy</Link>.
               </div>
 
               <div className="mx-auto mt-3 grid w-full max-w-3xl grid-cols-2 gap-2 text-left sm:grid-cols-4">
