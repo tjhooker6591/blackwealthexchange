@@ -253,7 +253,10 @@ export default function JobListingsPage() {
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
-        <meta name="twitter:image" content={canonicalUrl("/images/hero1.jpg")} />
+        <meta
+          name="twitter:image"
+          content={canonicalUrl("/images/hero1.jpg")}
+        />
       </Head>
       <script type="application/ld+json">{JSON.stringify(jobsSchema)}</script>
       <div className="min-h-screen overflow-x-hidden bg-gray-950 text-white px-6 py-10">
@@ -272,8 +275,7 @@ export default function JobListingsPage() {
                 <span className="text-yellow-400">for Our Community</span>
               </h1>
               <p className="text-gray-300 mt-2 max-w-2xl">
-                Browse opportunities for free. Create an account to save jobs
-                and submit applications.
+                Browse opportunities for free. Employers using BWE can run structured candidate review with role-match and readiness indicators plus human review.
               </p>
             </div>
 
@@ -289,6 +291,10 @@ export default function JobListingsPage() {
                 </button>
               </Link>
             </div>
+          </div>
+
+          <div className="mb-4 rounded-xl border border-blue-500/30 bg-blue-500/10 p-3 text-sm text-blue-100">
+            <span className="font-semibold">For employers:</span> applications can be screened with readiness and role-match signals, then reviewed by humans before hiring decisions.
           </div>
 
           {/* Tools */}

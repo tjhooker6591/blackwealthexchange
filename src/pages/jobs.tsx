@@ -42,8 +42,7 @@ export default function JobsHubPage() {
               Jobs & Careers <span className="text-yellow-400">Hub</span>
             </h1>
             <p className="mt-2 max-w-2xl text-gray-300">
-              Find high-quality opportunities, hire top Black talent, and build
-              career momentum in one trusted hiring ecosystem.
+              Find opportunities or hire through a structured candidate review workflow with automated role-match checks, readiness indicators, and human hiring decisions.
             </p>
           </div>
 
@@ -66,6 +65,27 @@ export default function JobsHubPage() {
               className="rounded border border-gray-700 px-4 py-2 text-gray-100 transition hover:bg-gray-900"
             >
               Post a Job
+            </Link>
+          </div>
+        </div>
+
+        <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4">
+          <div className="text-xs uppercase tracking-[0.14em] text-emerald-300">
+            Employer Trust Workflow
+          </div>
+          <div className="mt-1 text-lg font-bold">Structured review, not hype</div>
+          <ul className="mt-2 list-disc pl-5 text-sm text-gray-200 space-y-1">
+            <li>Applications get first-pass screening for readiness and role-match signals.</li>
+            <li>Employers see quality status, match band, and screening summary in the applicant pipeline.</li>
+            <li>Automated screening assists review, it does not replace hiring judgment.</li>
+            <li>Manual override remains available with reason logging.</li>
+          </ul>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <Link href="/post-job" onClick={() => trackJobEntry("jobs_hub_post_job_trust", "Post a Job (Trust block)", "/post-job")} className="rounded bg-emerald-400 px-3 py-1.5 text-sm font-semibold text-black hover:bg-emerald-300">
+              Start structured hiring
+            </Link>
+            <Link href="/employer/applicants" className="rounded border border-emerald-300/40 px-3 py-1.5 text-sm text-emerald-100 hover:bg-emerald-500/10">
+              View applicant pipeline
             </Link>
           </div>
         </div>
