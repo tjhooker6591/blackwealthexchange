@@ -15,7 +15,14 @@ interface ApplicantRecord {
   resumeUrl?: string;
   appliedAt?: Date;
   appliedDate?: string;
-  hiringStatus?: "new" | "reviewed" | "shortlisted" | "contacted" | "rejected" | "interview" | "hired";
+  hiringStatus?:
+    | "new"
+    | "reviewed"
+    | "shortlisted"
+    | "contacted"
+    | "rejected"
+    | "interview"
+    | "hired";
   vettingStatus?: "qualified" | "review_needed" | "not_yet_qualified";
   vettingSignals?: any;
   vettingSummary?: string;
@@ -130,13 +137,23 @@ export default async function handler(
       .toArray();
 
     const result = applicants
-      .map((a) => ({
-        _id: a._id.toHexString(),
-        jobId: a.jobId.toHexString(),
+      .map((a) => {
+        const applicantId =
+          a._id && typeof (a._id as any).toHexString === "function"
+            ? (a._id as any).toHexString()
+            : String(a._id || "");
+        const jobIdStr =
+          a.jobId && typeof (a.jobId as any).toHexString === "function"
+            ? (a.jobId as any).toHexString()
+            : String(a.jobId || "");
+
+        return {
+        _id: applicantId,
+        jobId: jobIdStr,
         name: a.name || a.email,
         email: a.email,
         resumeUrl: a.resumeUrl || "",
-        jobTitle: jobMap[a.jobId.toHexString()] || "Unknown",
+        jobTitle: jobMap[jobIdStr] || "Unknown",
         hiringStatus: a.hiringStatus || "new",
         employerNote: a.employerNote || "",
         rejectionReason: a.rejectionReason || "",
@@ -161,7 +178,8 @@ export default async function handler(
         vettingConfidenceBand: a.vettingConfidenceBand || "low",
         manualOverride: Boolean(a.manualOverride),
         overrideReason: a.overrideReason || "",
-      }))
+      };
+      })
       .filter((item) => {
         if (!searchQuery) return true;
         const hay = `${item.name} ${item.email} ${item.jobTitle}`.toLowerCase();
