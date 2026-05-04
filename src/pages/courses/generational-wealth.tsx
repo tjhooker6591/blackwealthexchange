@@ -53,6 +53,7 @@ const COURSE_DATA = {
 const GenerationalWealthCourse: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isProcessing, setIsProcessing] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -65,6 +66,27 @@ const GenerationalWealthCourse: React.FC = () => {
   }, []);
 
   const handleBackClick = () => router.back();
+
+  const handlePurchase = async () => {
+    setIsProcessing(true);
+    try {
+      const response = await fetch("/api/courses/checkout-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ courseSlug: "generational-wealth" }),
+      });
+      const data = await response.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert(data.error || "Unable to start checkout session.");
+      }
+    } catch {
+      alert("Something went wrong with payment.");
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   if (loading) return <div>Loading...</div>;
 
@@ -141,23 +163,26 @@ const GenerationalWealthCourse: React.FC = () => {
               One-time Fee: ${COURSE_DATA.price}
             </span>
             <br />
-            Secure your seat and get lifetime access to all content & updates!
+            Pay once for this course. After payment verification, course access is unlocked on your account and appears in your course dashboard.
           </p>
           <div className="mt-4">
-            {isLoggedIn ? (
-              <button
-                onClick={() => router.push("/course-dashboard")}
-                className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition"
-              >
-                Go to Course Dashboard
-              </button>
-            ) : (
+            {!isLoggedIn ? (
               <button
                 type="button"
                 className="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition"
-                // No onClick for now—payment integration later
+                onClick={() => router.push("/login?next=/courses/generational-wealth")}
               >
-                Buy & Enroll
+                Log in to Enroll
+              </button>
+            ) : (
+              <button
+                onClick={handlePurchase}
+                disabled={isProcessing}
+                className="bg-gold text-black py-2 px-6 rounded font-bold hover:bg-yellow-500 transition disabled:opacity-60"
+              >
+                {isProcessing
+                  ? "Redirecting to Payment..."
+                  : `Buy & Enroll for $${COURSE_DATA.price}`}
               </button>
             )}
           </div>
@@ -223,6 +248,11 @@ const GenerationalWealthCourse: React.FC = () => {
             Frequently Asked Questions
           </h2>
           <ul className="mt-4 space-y-2 text-gray-300">
+            <li>
+              <strong>Q: What unlocks after purchase?</strong>
+              <br />
+              A: This course unlocks on your account after payment verification, then appears in your course dashboard.
+            </li>
             <li>
               <strong>
                 Q: Can I take this course if I’m a complete beginner?

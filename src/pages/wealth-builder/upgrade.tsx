@@ -154,8 +154,7 @@ export default function WealthBuilderUpgradePage() {
                   Unlock Wealth Builder Premium
                 </h1>
                 <p className="mt-4 max-w-3xl text-zinc-300">
-                  Upgrade to expand savings goals, unlock insights, and use
-                  richer planning tools over time.
+                  Upgrade for clearer month-to-month decisions: remove savings-goal caps, track budget history, and unlock premium insights that help you spot drift earlier.
                 </p>
               </div>
 
@@ -196,6 +195,14 @@ export default function WealthBuilderUpgradePage() {
                 {entitlementStatus ? ` (${entitlementStatus})` : ""}.
               </div>
             ) : null}
+
+            <div className="mt-8 rounded-2xl border border-white/10 bg-black/30 p-4 text-sm text-zinc-200">
+              <div className="font-semibold text-yellow-300">Free vs Premium outcome difference</div>
+              <ul className="mt-2 space-y-1 text-zinc-300">
+                <li>Free: current-month focus and limited goals for lightweight planning.</li>
+                <li>Premium: longer-horizon planning with history + unlimited goals + deeper insights.</li>
+              </ul>
+            </div>
 
             <div className="mt-10 grid gap-6 lg:grid-cols-2">
               <div className="rounded-2xl border border-white/10 bg-zinc-950/80 p-6">
@@ -243,14 +250,20 @@ export default function WealthBuilderUpgradePage() {
                     <div className="mt-1 text-sm text-zinc-300">
                       {loadingPlan === "annual"
                         ? "Starting checkout..."
-                        : "Upgrade now"}
+                        : "Upgrade to Premium Annual"}
                     </div>
                   </button>
                 </div>
 
                 <div className="mt-6 rounded-2xl border border-white/10 bg-black/30 p-4 text-sm text-zinc-300">
-                  Premium purchases use your existing Black Wealth Exchange
-                  checkout flow and stay tied to the logged-in user account.
+                  Premium purchases use your existing Black Wealth Exchange checkout flow and stay tied to the logged-in user account.
+                  <div className="mt-3 font-semibold text-yellow-300">After payment</div>
+                  <ol className="mt-2 list-decimal pl-5 space-y-1">
+                    <li>We verify payment.</li>
+                    <li>We activate Wealth Builder Premium entitlement.</li>
+                    <li>You continue in Wealth Builder with premium features unlocked.</li>
+                  </ol>
+                  <p className="mt-3 text-xs text-zinc-400">Billing confidence: annual renewal, secure checkout, and support available via account help/contact routes.</p>
                 </div>
               </div>
             </div>
@@ -276,7 +289,6 @@ export default function WealthBuilderUpgradePage() {
     </>
   );
 }
-
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   return requireWealthBuilderPageUser(context, "/wealth-builder/upgrade");

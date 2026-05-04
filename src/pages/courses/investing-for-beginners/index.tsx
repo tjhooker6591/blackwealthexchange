@@ -199,8 +199,18 @@ const InvestingForBeginners: React.FC = () => {
               One-time Fee: ${COURSE.price}
             </span>
             <br />
-            Pay once for lifetime access and future updates.
+            Pay once for this course. After payment verification, this course is unlocked on your account and appears in your course dashboard.
           </p>
+          <div className="mt-4 rounded-xl border border-white/10 bg-black/30 p-4 text-sm text-gray-300">
+            <div className="font-semibold text-gold">Enrollment clarity</div>
+            <ul className="mt-2 list-disc ml-5 space-y-1">
+              <li>This purchase unlocks Investing for Beginners course access for your account.</li>
+              <li>Checkout is secure and tied to your logged-in BWE account.</li>
+              <li>If checkout is canceled, access is not granted.</li>
+            </ul>
+            <p className="mt-2 text-xs text-gray-400">Support is available via BWE help/contact routes for payment and access issues.</p>
+          </div>
+
           <div className="mt-4">
             {!isLoggedIn ? (
               <div className="flex flex-col space-y-3">
@@ -291,7 +301,7 @@ const InvestingForBeginners: React.FC = () => {
             <li>
               <strong>Q: Do I have to pay a monthly fee?</strong>
               <br />
-              A: Access is tied to eligible paid BWE subscription plans at launch.
+              A: No. This course uses a one-time purchase for course access.
             </li>
             <li>
               <strong>Q: Can I access the course on my phone?</strong>
