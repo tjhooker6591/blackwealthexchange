@@ -1,6 +1,8 @@
 // src/pages/jobs.tsx
 import Link from "next/link";
+import Head from "next/head";
 import { useEffect } from "react";
+import { canonicalUrl, robotsDirective, truncateMeta } from "@/lib/seo";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 
 export default function JobsHubPage() {
@@ -28,7 +30,19 @@ export default function JobsHubPage() {
     });
   };
 
+  const title = "Jobs Hub | Black Wealth Exchange";
+  const description = truncateMeta(
+    "Jobs navigation hub for candidates and employers. For indexable job listings, use the main Job Listings page.",
+  );
+
   return (
+    <>
+      <Head>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonicalUrl('/job-listings')} />
+        <meta name="robots" content={robotsDirective({ noindex: true })} />
+      </Head>
     <div className="min-h-screen bg-gray-950 px-6 py-10 text-white">
       <div className="pointer-events-none fixed inset-0 opacity-40">
         <div className="absolute -left-40 -top-40 h-[520px] w-[520px] rounded-full bg-yellow-500/20 blur-3xl" />
@@ -42,7 +56,9 @@ export default function JobsHubPage() {
               Jobs & Careers <span className="text-yellow-400">Hub</span>
             </h1>
             <p className="mt-2 max-w-2xl text-gray-300">
-              Find opportunities or hire through a structured candidate review workflow with automated role-match checks, readiness indicators, and human hiring decisions.
+              Find opportunities or hire through a structured candidate review
+              workflow with automated role-match checks, readiness indicators,
+              and human hiring decisions.
             </p>
           </div>
 
@@ -73,18 +89,42 @@ export default function JobsHubPage() {
           <div className="text-xs uppercase tracking-[0.14em] text-emerald-300">
             Employer Trust Workflow
           </div>
-          <div className="mt-1 text-lg font-bold">Structured review, not hype</div>
+          <div className="mt-1 text-lg font-bold">
+            Structured review, not hype
+          </div>
           <ul className="mt-2 list-disc pl-5 text-sm text-gray-200 space-y-1">
-            <li>Applications get first-pass screening for readiness and role-match signals.</li>
-            <li>Employers see quality status, match band, and screening summary in the applicant pipeline.</li>
-            <li>Automated screening assists review, it does not replace hiring judgment.</li>
+            <li>
+              Applications get first-pass screening for readiness and role-match
+              signals.
+            </li>
+            <li>
+              Employers see quality status, match band, and screening summary in
+              the applicant pipeline.
+            </li>
+            <li>
+              Automated screening assists review, it does not replace hiring
+              judgment.
+            </li>
             <li>Manual override remains available with reason logging.</li>
           </ul>
           <div className="mt-3 flex flex-wrap gap-2">
-            <Link href="/post-job" onClick={() => trackJobEntry("jobs_hub_post_job_trust", "Post a Job (Trust block)", "/post-job")} className="rounded bg-emerald-400 px-3 py-1.5 text-sm font-semibold text-black hover:bg-emerald-300">
+            <Link
+              href="/post-job"
+              onClick={() =>
+                trackJobEntry(
+                  "jobs_hub_post_job_trust",
+                  "Post a Job (Trust block)",
+                  "/post-job",
+                )
+              }
+              className="rounded bg-emerald-400 px-3 py-1.5 text-sm font-semibold text-black hover:bg-emerald-300"
+            >
               Start structured hiring
             </Link>
-            <Link href="/employer/applicants" className="rounded border border-emerald-300/40 px-3 py-1.5 text-sm text-emerald-100 hover:bg-emerald-500/10">
+            <Link
+              href="/employer/applicants"
+              className="rounded border border-emerald-300/40 px-3 py-1.5 text-sm text-emerald-100 hover:bg-emerald-500/10"
+            >
               View applicant pipeline
             </Link>
           </div>
@@ -202,6 +242,7 @@ export default function JobsHubPage() {
         </div>
       </div>
     </div>
+    </>
   );
 }
 

@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import Head from "next/head";
+import { canonicalUrl, robotsDirective, truncateMeta } from "@/lib/seo";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 
 type Result = {
@@ -175,7 +177,20 @@ export default function SearchResults() {
     });
   }, [search, loading, error, results.length]);
 
+  const title = "Search Businesses | Black Wealth Exchange";
+  const description = truncateMeta(
+    "Search and discovery helper for Black-owned businesses. For full indexed directory browsing, use the Business Directory hub.",
+  );
+  const canonical = canonicalUrl("/business-directory");
+
   return (
+    <>
+      <Head>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonical} />
+        <meta name="robots" content={robotsDirective({ noindex: true })} />
+      </Head>
     <div className="min-h-screen bg-black text-white p-6">
       <div className="mx-auto max-w-6xl">
         <div className="mb-6 flex items-center justify-between">
@@ -313,7 +328,9 @@ export default function SearchResults() {
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {results.map((r, idx) => {
-            const isSponsoredPlacement = Boolean((r as any).__sponsoredPlacement);
+            const isSponsoredPlacement = Boolean(
+              (r as any).__sponsoredPlacement,
+            );
             const slug = encodeURIComponent(safe(r.alias).trim() || r._id);
             const href = isSponsoredPlacement
               ? safe((r as any).website || "#")
@@ -479,5 +496,6 @@ export default function SearchResults() {
         ) : null}
       </div>
     </div>
+    </>
   );
 }
