@@ -29,7 +29,13 @@ export default async function handler(
     return res.status(405).json({ message: "Method Not Allowed" });
 
   const session = getSession(req);
-  if (!session) return res.status(401).json({ message: "Unauthorized" });
+  if (!session) {
+    return res.status(401).json({
+      ok: false,
+      code: "UNAUTHORIZED",
+      message: "Login required",
+    });
+  }
 
   const userId = String(req.query.userId || "").trim();
   if (!userId) return res.status(400).json({ message: "User ID is required" });
@@ -38,17 +44,21 @@ export default async function handler(
   const isAdmin = String(session.accountType || "").toLowerCase() === "admin";
 
   if (!isAdmin && sessionUserId !== userId) {
-    return res.status(403).json({ message: "Cannot fetch another user's affiliate links" });
+    return res
+      .status(403)
+      .json({ message: "Cannot fetch another user's affiliate links" });
   }
 
   try {
     const client = await clientPromise;
     const db = client.db(getMongoDbName());
 
-    const affiliate = await db.collection("affiliates").findOne(
-      { userId },
-      { projection: { referralLink: 1, referralCode: 1, status: 1 } },
-    );
+    const affiliate = await db
+      .collection("affiliates")
+      .findOne(
+        { userId },
+        { projection: { referralLink: 1, referralCode: 1, status: 1 } },
+      );
 
     if (!affiliate) {
       return res.status(404).json({ message: "Affiliate profile not found." });
