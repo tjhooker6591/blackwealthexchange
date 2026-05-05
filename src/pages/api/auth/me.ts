@@ -48,6 +48,10 @@ interface UserProfile {
   [key: string]: unknown;
 }
 
+function escapeRegex(input: string) {
+  return input.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 function isAdminPayload(payload: {
   accountType?: string;
   isAdmin?: boolean;
@@ -106,6 +110,8 @@ export default async function handler(
       email: payload.email,
     });
 
+    const emailNorm = String(payload.email || "").trim().toLowerCase();
+
     const orderedCollections =
       role === "seller"
         ? ["sellers", "users", "businesses", "employers"]
@@ -125,16 +131,37 @@ export default async function handler(
     for (const collName of orderedCollections) {
       profile = await db
         .collection<UserProfile>(collName)
-        .findOne({ email: payload.email });
+        .findOne({ email: emailNorm });
       if (!profile) {
-        profile = await db
-          .collection<UserProfile>(collName)
-          .findOne({ ownerEmail: payload.email } as any);
+        profile = await db.collection<UserProfile>(collName).findOne({
+          email: { $regex: `^${escapeRegex(emailNorm)}$`, $options: "i" },
+        } as any);
       }
       if (!profile) {
         profile = await db
           .collection<UserProfile>(collName)
-          .findOne({ business_email: payload.email } as any);
+          .findOne({ ownerEmail: emailNorm } as any);
+      }
+      if (!profile) {
+        profile = await db.collection<UserProfile>(collName).findOne({
+          ownerEmail: {
+            $regex: `^${escapeRegex(emailNorm)}$`,
+            $options: "i",
+          },
+        } as any);
+      }
+      if (!profile) {
+        profile = await db
+          .collection<UserProfile>(collName)
+          .findOne({ business_email: emailNorm } as any);
+      }
+      if (!profile) {
+        profile = await db.collection<UserProfile>(collName).findOne({
+          business_email: {
+            $regex: `^${escapeRegex(emailNorm)}$`,
+            $options: "i",
+          },
+        } as any);
       }
       if (profile) break;
     }
