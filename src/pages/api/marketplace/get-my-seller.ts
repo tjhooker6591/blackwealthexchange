@@ -17,13 +17,24 @@ export default async function handler(
   try {
     const cookies = cookie.parse(req.headers.cookie || "");
     const token = cookies.session_token;
-    if (!token) return res.status(401).json({ error: "Unauthorized" });
+    if (!token) {
+      return res.status(401).json({
+        ok: false,
+        code: "UNAUTHORIZED",
+        message: "Login required",
+      });
+    }
 
     const payload = jwt.verify(token, getJwtSecret()) as any;
     const userId = String(payload?.userId || "");
     const email = String(payload?.email || "").toLowerCase();
-    if (!userId && !email)
-      return res.status(401).json({ error: "Unauthorized" });
+    if (!userId && !email) {
+      return res.status(401).json({
+        ok: false,
+        code: "UNAUTHORIZED",
+        message: "Login required",
+      });
+    }
 
     const client = await clientPromise;
     const db = client.db(getMarketplaceDbName());
