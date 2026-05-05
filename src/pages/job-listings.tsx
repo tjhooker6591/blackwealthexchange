@@ -238,6 +238,17 @@ export default function JobListingsPage() {
     description,
     url: canonical,
   };
+  const jobsItemListSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Job Listings",
+    itemListElement: paged.slice(0, 10).map((job, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      url: canonicalUrl(`/job/${job._id}`),
+      name: job.title,
+    })),
+  };
 
   return (
     <>
@@ -259,6 +270,9 @@ export default function JobListingsPage() {
         />
       </Head>
       <script type="application/ld+json">{JSON.stringify(jobsSchema)}</script>
+      <script type="application/ld+json">
+        {JSON.stringify(jobsItemListSchema)}
+      </script>
       <div className="min-h-screen overflow-x-hidden bg-gray-950 text-white px-6 py-10">
         {/* subtle gold glow background */}
         <div className="pointer-events-none fixed inset-0 opacity-40">
@@ -275,7 +289,9 @@ export default function JobListingsPage() {
                 <span className="text-yellow-400">for Our Community</span>
               </h1>
               <p className="text-gray-300 mt-2 max-w-2xl">
-                Browse opportunities for free. Employers using BWE can run structured candidate review with role-match and readiness indicators plus human review.
+                Browse opportunities for free. Employers using BWE can run
+                structured candidate review with role-match and readiness
+                indicators plus human review.
               </p>
             </div>
 
@@ -290,11 +306,18 @@ export default function JobListingsPage() {
                   Post a Job
                 </button>
               </Link>
+              <Link href="/business-directory">
+                <button className="px-4 py-2 rounded border border-gray-700 text-gray-200 hover:bg-gray-900 transition">
+                  Directory Hub
+                </button>
+              </Link>
             </div>
           </div>
 
           <div className="mb-4 rounded-xl border border-blue-500/30 bg-blue-500/10 p-3 text-sm text-blue-100">
-            <span className="font-semibold">For employers:</span> applications can be screened with readiness and role-match signals, then reviewed by humans before hiring decisions.
+            <span className="font-semibold">For employers:</span> applications
+            can be screened with readiness and role-match signals, then reviewed
+            by humans before hiring decisions.
           </div>
 
           {/* Tools */}

@@ -263,6 +263,17 @@ export default function Marketplace() {
     description,
     url: canonical,
   };
+  const marketplaceItemListSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Marketplace Products",
+    itemListElement: products.slice(0, 10).map((product, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      url: canonicalUrl(`/marketplace/product/${product._id}`),
+      name: product.name,
+    })),
+  };
 
   const resultLabel = loading
     ? "Loading…"
@@ -291,6 +302,9 @@ export default function Marketplace() {
       </Head>
       <script type="application/ld+json">
         {JSON.stringify(collectionSchema)}
+      </script>
+      <script type="application/ld+json">
+        {JSON.stringify(marketplaceItemListSchema)}
       </script>
 
       <div className="pointer-events-none fixed inset-0 opacity-60">
@@ -408,20 +422,34 @@ export default function Marketplace() {
       {/* Buyer trust strip */}
       <section className="relative mx-auto mb-4 max-w-6xl px-4 sm:mb-6">
         <div className="rounded-2xl border border-white/10 bg-white/5 p-4 sm:p-5">
-          <h2 className="text-base font-bold text-gold sm:text-lg">Shop with confidence on BWE</h2>
+          <h2 className="text-base font-bold text-gold sm:text-lg">
+            Shop with confidence on BWE
+          </h2>
           <div className="mt-2 grid gap-2 text-xs text-white/80 sm:grid-cols-3 sm:text-sm">
-            <p>1) Open product details and confirm seller, availability, and policies.</p>
+            <p>
+              1) Open product details and confirm seller, availability, and
+              policies.
+            </p>
             <p>2) Use secure checkout to place your order.</p>
             <p>3) Track progress in My Orders and get support if needed.</p>
           </div>
           <div className="mt-3 flex flex-wrap gap-2 text-xs">
-            <Link href="/marketplace/my-orders" className="rounded-full border border-white/20 px-3 py-1.5 text-white/90 hover:bg-white/10">
+            <Link
+              href="/marketplace/my-orders"
+              className="rounded-full border border-white/20 px-3 py-1.5 text-white/90 hover:bg-white/10"
+            >
               My Orders
             </Link>
-            <Link href="/support/marketplace" className="rounded-full border border-white/20 px-3 py-1.5 text-white/90 hover:bg-white/10">
+            <Link
+              href="/support/marketplace"
+              className="rounded-full border border-white/20 px-3 py-1.5 text-white/90 hover:bg-white/10"
+            >
               Marketplace Support
             </Link>
-            <Link href="/legal/marketplace" className="rounded-full border border-white/20 px-3 py-1.5 text-white/90 hover:bg-white/10">
+            <Link
+              href="/legal/marketplace"
+              className="rounded-full border border-white/20 px-3 py-1.5 text-white/90 hover:bg-white/10"
+            >
               Buyer terms
             </Link>
           </div>
@@ -526,19 +554,45 @@ export default function Marketplace() {
               No products match the current search and filter settings.
             </p>
             <p className="mt-1 text-sm text-gray-400">
-              Try a broader query, switch category, or reset sort/filter options.
+              Try a broader query, switch category, or reset sort/filter
+              options.
             </p>
             <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs sm:text-sm">
-              <button onClick={() => { setSelectedCategory("All"); setSort("newest"); setQ(""); setCurrentPage(1); }} className="rounded-lg border border-white/20 px-3 py-2 text-white/90 hover:bg-white/10">
+              <button
+                onClick={() => {
+                  setSelectedCategory("All");
+                  setSort("newest");
+                  setQ("");
+                  setCurrentPage(1);
+                }}
+                className="rounded-lg border border-white/20 px-3 py-2 text-white/90 hover:bg-white/10"
+              >
                 View newest products
               </button>
-              <button onClick={() => { setSelectedCategory("Apparel"); setQ(""); setCurrentPage(1); }} className="rounded-lg border border-white/20 px-3 py-2 text-white/90 hover:bg-white/10">
+              <button
+                onClick={() => {
+                  setSelectedCategory("Apparel");
+                  setQ("");
+                  setCurrentPage(1);
+                }}
+                className="rounded-lg border border-white/20 px-3 py-2 text-white/90 hover:bg-white/10"
+              >
                 Browse Apparel
               </button>
-              <button onClick={() => { setSelectedCategory("Home"); setQ(""); setCurrentPage(1); }} className="rounded-lg border border-white/20 px-3 py-2 text-white/90 hover:bg-white/10">
+              <button
+                onClick={() => {
+                  setSelectedCategory("Home");
+                  setQ("");
+                  setCurrentPage(1);
+                }}
+                className="rounded-lg border border-white/20 px-3 py-2 text-white/90 hover:bg-white/10"
+              >
                 Browse Home
               </button>
-              <Link href="/support/marketplace" className="rounded-lg border border-yellow-500/30 px-3 py-2 text-yellow-200 hover:bg-yellow-500/10">
+              <Link
+                href="/support/marketplace"
+                className="rounded-lg border border-yellow-500/30 px-3 py-2 text-yellow-200 hover:bg-yellow-500/10"
+              >
                 Need buying help?
               </Link>
             </div>
