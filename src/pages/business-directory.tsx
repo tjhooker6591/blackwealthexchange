@@ -1005,7 +1005,8 @@ export default function BusinessDirectory() {
     total === 0
       ? 0
       : Math.min((page - 1) * pageSize + curatedVisibleRows.length, total);
-  const title = "Black-Owned Business Directory by City & Category | Black Wealth Exchange";
+  const title =
+    "Black-Owned Business Directory by City & Category | Black Wealth Exchange";
   const description = truncateMeta(
     "Search Black-owned businesses by city, state, and category in the Black Wealth Exchange directory. Use trust signals and filters to find, compare, and contact the right business faster.",
   );
@@ -1162,12 +1163,39 @@ export default function BusinessDirectory() {
               </div>
 
               <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm text-white/70">
-                <span className="font-semibold text-white/85">Popular discovery paths:</span>
-                <Link href="/black-owned-businesses/city/atlanta-ga" className="rounded-full border border-white/15 px-3 py-1 hover:border-[#D4AF37]/40 hover:text-[#D4AF37]">Atlanta, GA</Link>
-                <Link href="/black-owned-businesses/city/houston-tx" className="rounded-full border border-white/15 px-3 py-1 hover:border-[#D4AF37]/40 hover:text-[#D4AF37]">Houston, TX</Link>
-                <Link href="/black-owned-businesses/category/restaurant" className="rounded-full border border-white/15 px-3 py-1 hover:border-[#D4AF37]/40 hover:text-[#D4AF37]">Restaurants</Link>
-                <Link href="/black-owned-businesses/category/beauty" className="rounded-full border border-white/15 px-3 py-1 hover:border-[#D4AF37]/40 hover:text-[#D4AF37]">Beauty</Link>
-                <Link href="/black-owned-businesses/category/health-and-wellness" className="rounded-full border border-white/15 px-3 py-1 hover:border-[#D4AF37]/40 hover:text-[#D4AF37]">Health & Wellness</Link>
+                <span className="font-semibold text-white/85">
+                  Popular discovery paths:
+                </span>
+                <Link
+                  href="/black-owned-businesses/city/atlanta-ga"
+                  className="rounded-full border border-white/15 px-3 py-1 hover:border-[#D4AF37]/40 hover:text-[#D4AF37]"
+                >
+                  Atlanta, GA
+                </Link>
+                <Link
+                  href="/black-owned-businesses/city/houston-tx"
+                  className="rounded-full border border-white/15 px-3 py-1 hover:border-[#D4AF37]/40 hover:text-[#D4AF37]"
+                >
+                  Houston, TX
+                </Link>
+                <Link
+                  href="/black-owned-businesses/category/restaurant"
+                  className="rounded-full border border-white/15 px-3 py-1 hover:border-[#D4AF37]/40 hover:text-[#D4AF37]"
+                >
+                  Restaurants
+                </Link>
+                <Link
+                  href="/black-owned-businesses/category/beauty"
+                  className="rounded-full border border-white/15 px-3 py-1 hover:border-[#D4AF37]/40 hover:text-[#D4AF37]"
+                >
+                  Beauty
+                </Link>
+                <Link
+                  href="/black-owned-businesses/category/health-and-wellness"
+                  className="rounded-full border border-white/15 px-3 py-1 hover:border-[#D4AF37]/40 hover:text-[#D4AF37]"
+                >
+                  Health & Wellness
+                </Link>
               </div>
             </div>
           </div>
@@ -1728,7 +1756,18 @@ export default function BusinessDirectory() {
 
                 <div className="relative mt-3 min-h-[160px]">
                   {isLoading && (
-                    <div className="absolute inset-0 z-20 rounded-xl bg-black/70 p-4 backdrop-blur-sm">
+                    <div
+                      className="absolute inset-0 z-20 rounded-xl bg-black/70 p-4 backdrop-blur-sm"
+                      role="status"
+                      aria-live="polite"
+                      aria-label="Loading search results"
+                    >
+                      <div className="mb-2 text-sm font-semibold text-[#D4AF37]">
+                        Loading results...
+                      </div>
+                      <div className="mb-3 text-xs text-white/70">
+                        Updating listings for your current page and filters.
+                      </div>
                       <div className="mb-3 h-4 w-40 animate-pulse rounded bg-white/10" />
                       <div className="space-y-2">
                         <div className="h-14 animate-pulse rounded-lg bg-white/10" />
