@@ -73,62 +73,63 @@ export const getServerSideProps: GetServerSideProps = async ({ res }) => {
     const client = await clientPromise;
     const db = client.db("bwes-cluster");
 
-    const [businesses, products, jobs, categories] = await Promise.all([
-      db
-        .collection("businesses")
-        .find(
-          { status: { $nin: ["rejected", "archived"] } },
-          { projection: { slug: 1, alias: 1, business_name: 1 } },
-        )
-        .limit(1000)
-        .toArray(),
-      db
-        .collection("products")
-        .find({ status: { $ne: "archived" } }, { projection: { _id: 1 } })
-        .limit(1000)
-        .toArray(),
-      db
-        .collection("jobs")
-        .find({ status: "approved" }, { projection: { _id: 1 } })
-        .limit(1000)
-        .toArray(),
-      db.collection("businesses").distinct("category"),
-      db
-        .collection("businesses")
-        .aggregate([
-          {
-            $match: {
-              city: { $type: "string", $ne: "" },
-              state: { $type: "string", $ne: "" },
-            },
-          },
-          {
-            $project: {
-              city: { $trim: { input: "$city" } },
-              state: { $toUpper: { $trim: { input: "$state" } } },
-            },
-          },
-          {
-            $match: {
-              city: { $ne: "" },
-              state: { $regex: "^[A-Z]{2}$" },
-            },
-          },
-          {
-            $group: {
-              _id: {
-                city: { $toLower: "$city" },
-                state: "$state",
+    const [businesses, products, jobs, categories, cityStatePairs] =
+      await Promise.all([
+        db
+          .collection("businesses")
+          .find(
+            { status: { $nin: ["rejected", "archived"] } },
+            { projection: { slug: 1, alias: 1, business_name: 1 } },
+          )
+          .limit(1000)
+          .toArray(),
+        db
+          .collection("products")
+          .find({ status: { $ne: "archived" } }, { projection: { _id: 1 } })
+          .limit(1000)
+          .toArray(),
+        db
+          .collection("jobs")
+          .find({ status: "approved" }, { projection: { _id: 1 } })
+          .limit(1000)
+          .toArray(),
+        db.collection("businesses").distinct("category"),
+        db
+          .collection("businesses")
+          .aggregate([
+            {
+              $match: {
+                city: { $type: "string", $ne: "" },
+                state: { $type: "string", $ne: "" },
               },
-              count: { $sum: 1 },
             },
-          },
-          { $match: { count: { $gte: 3 } } },
-          { $sort: { count: -1 } },
-          { $limit: 120 },
-        ])
-        .toArray(),
-    ]);
+            {
+              $project: {
+                city: { $trim: { input: "$city" } },
+                state: { $toUpper: { $trim: { input: "$state" } } },
+              },
+            },
+            {
+              $match: {
+                city: { $ne: "" },
+                state: { $regex: "^[A-Z]{2}$" },
+              },
+            },
+            {
+              $group: {
+                _id: {
+                  city: { $toLower: "$city" },
+                  state: "$state",
+                },
+                count: { $sum: 1 },
+              },
+            },
+            { $match: { count: { $gte: 3 } } },
+            { $sort: { count: -1 } },
+            { $limit: 120 },
+          ])
+          .toArray(),
+      ]);
 
     for (const b of businesses) {
       const slug = String(

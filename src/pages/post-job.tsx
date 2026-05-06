@@ -159,13 +159,13 @@ const PostJob = () => {
       const draft = JSON.parse(raw) as JobDraft;
 
       // restore into UI
-      setFormData(draft.formData);
+      setFormData((prev) => ({ ...prev, ...draft.formData }));
       setTier(paidTier);
       setDraftSaved(true);
 
       // auto-submit paid job
       (async () => {
-        await submitJob(draft.formData, paidTier, true);
+        await submitJob({ ...formData, ...draft.formData }, paidTier, true);
         // clear query params after posting (prevents accidental duplicates on refresh)
         router.replace("/job-listings");
       })();
