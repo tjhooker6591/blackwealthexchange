@@ -813,7 +813,6 @@ export default async function handler(
         effectiveSkip,
         effectiveSkip + limit + 1,
       );
-      const hasMore = rankedWindow.length > limit;
       items = rankedWindow.slice(0, limit);
 
       if (!isOrganizations && items.length > 0) {
@@ -848,6 +847,11 @@ export default async function handler(
             .toArray();
 
           const sponsorCandidatesRaw = [
+            ...sponsorFallbackRaw.map((s: any) => ({
+              ...s,
+              __source: "advertising_requests",
+              __inventoryTier: 1,
+            })),
             ...sponsorScheduleRaw.map((s: any) => ({
               _id: s.campaignId || s._id,
               business: s.businessName,
@@ -861,8 +865,8 @@ export default async function handler(
               paidAt: s.weekStart || s.createdAt,
               durationDays: 30,
               __source: "featured_sponsor_schedule",
+              __inventoryTier: 2,
             })),
-            ...sponsorFallbackRaw.map((s: any) => ({ ...s, __source: "advertising_requests" })),
           ];
 
           const sessionKey = `${ip}:${queryFamily}:${search.toLowerCase()}`;
@@ -906,6 +910,7 @@ export default async function handler(
                 alias,
                 matchQuality: mm as "exact" | "close",
                 paidAt,
+                inventoryTier: Number(c?.__inventoryTier || 2),
               };
             })
             .filter(Boolean) as any[];
@@ -930,6 +935,9 @@ export default async function handler(
               matchQualityRank(b.matchQuality) -
               matchQualityRank(a.matchQuality);
             if (mq !== 0) return mq;
+            if (a.inventoryTier !== b.inventoryTier) {
+              return a.inventoryTier - b.inventoryTier;
+            }
             const ea = exposureMap.get(a.campaignId) || 0;
             const eb = exposureMap.get(b.campaignId) || 0;
             if (ea !== eb) return ea - eb;
@@ -1005,9 +1013,7 @@ export default async function handler(
         }
       }
 
-      total = hasMore
-        ? effectiveSkip + items.length + 1
-        : effectiveSkip + items.length;
+      total = await col.countDocuments(query);
       const tAfterSlice = performance.now();
 
       const debugPerf = {
@@ -1083,7 +1089,6 @@ export default async function handler(
         .skip(effectiveSkip)
         .limit(limit + 1)
         .toArray();
-      const hasMore = rows.length > limit;
       items = rows.slice(0, limit).map((item) =>
         normalizeResultItem(
           {
@@ -1093,9 +1098,7 @@ export default async function handler(
           isOrganizations,
         ),
       );
-      total = hasMore
-        ? effectiveSkip + items.length + 1
-        : effectiveSkip + items.length;
+      total = await col.countDocuments(query);
     }
 
     const tAfterFindMap = performance.now();
