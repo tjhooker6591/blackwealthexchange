@@ -1,0 +1,284 @@
+{
+  "desktop": {
+    "label": "desktop",
+    "route": "http://localhost:3000/business-directory?q=auditpagination&type=businesses&scope=businesses&tab=businesses&page=1",
+    "beforeUrl": "http://localhost:3000/business-directory?q=auditpagination&type=businesses&scope=businesses&tab=businesses&search=auditpagination",
+    "afterUrl": "http://localhost:3000/business-directory?q=auditpagination&type=businesses&scope=businesses&tab=businesses&search=auditpagination&page=2",
+    "control": "button|a text=2",
+    "before": {
+      "count": 40,
+      "first5": [
+        {
+          "title": "auditpagination_business_1",
+          "href": "/business/69fb7e1d078c73b5736db2c9?from=directory&q=auditpagination"
+        },
+        {
+          "title": "View details",
+          "href": "/business/69fb7e1d078c73b5736db2c9?from=directory&q=auditpagination"
+        },
+        {
+          "title": "auditpagination_business_10",
+          "href": "/business/69fb7e1e078c73b5736db2d2?from=directory&q=auditpagination"
+        },
+        {
+          "title": "View details",
+          "href": "/business/69fb7e1e078c73b5736db2d2?from=directory&q=auditpagination"
+        },
+        {
+          "title": "auditpagination_business_11",
+          "href": "/business/69fb7e1e078c73b5736db2d3?from=directory&q=auditpagination"
+        }
+      ],
+      "last5": [
+        {
+          "title": "View details",
+          "href": "/business/69fb7e20078c73b5736db2e1?from=directory&q=auditpagination"
+        },
+        {
+          "title": "auditpagination_business_26",
+          "href": "/business/69fb7e20078c73b5736db2e2?from=directory&q=auditpagination"
+        },
+        {
+          "title": "View details",
+          "href": "/business/69fb7e20078c73b5736db2e2?from=directory&q=auditpagination"
+        },
+        {
+          "title": "auditpagination_business_27",
+          "href": "/business/69fb7e20078c73b5736db2e3?from=directory&q=auditpagination"
+        },
+        {
+          "title": "View details",
+          "href": "/business/69fb7e20078c73b5736db2e3?from=directory&q=auditpagination"
+        }
+      ],
+      "currentPage": "1",
+      "loadingSeen": false
+    },
+    "after": {
+      "count": 40,
+      "first5": [
+        {
+          "title": "auditpagination_business_28",
+          "href": "/business/69fb7e20078c73b5736db2e4?from=directory&q=auditpagination"
+        },
+        {
+          "title": "View details",
+          "href": "/business/69fb7e20078c73b5736db2e4?from=directory&q=auditpagination"
+        },
+        {
+          "title": "auditpagination_business_29",
+          "href": "/business/69fb7e20078c73b5736db2e5?from=directory&q=auditpagination"
+        },
+        {
+          "title": "View details",
+          "href": "/business/69fb7e20078c73b5736db2e5?from=directory&q=auditpagination"
+        },
+        {
+          "title": "auditpagination_business_3",
+          "href": "/business/69fb7e1e078c73b5736db2cb?from=directory&q=auditpagination"
+        }
+      ],
+      "last5": [
+        {
+          "title": "View details",
+          "href": "/business/69fb7e21078c73b5736db2f3?from=directory&q=auditpagination"
+        },
+        {
+          "title": "auditpagination_business_44",
+          "href": "/business/69fb7e21078c73b5736db2f4?from=directory&q=auditpagination"
+        },
+        {
+          "title": "View details",
+          "href": "/business/69fb7e21078c73b5736db2f4?from=directory&q=auditpagination"
+        },
+        {
+          "title": "auditpagination_business_45",
+          "href": "/business/69fb7e21078c73b5736db2f5?from=directory&q=auditpagination"
+        },
+        {
+          "title": "View details",
+          "href": "/business/69fb7e21078c73b5736db2f5?from=directory&q=auditpagination"
+        }
+      ],
+      "currentPage": "2",
+      "loadingSeen": false
+    },
+    "contentDelta": true,
+    "apiCalledPage2": true,
+    "clickTs": 1778091677992,
+    "urlChangeTs": 1778091678160,
+    "apiStartTs": 1778091678295,
+    "apiEndTs": 1778091679208,
+    "domUpdateTs": 1778091679276,
+    "timing": {
+      "clickToUrlMs": 168,
+      "apiDurationMs": 913,
+      "clickToDomUpdateMs": 1284,
+      "totalMs": 1284
+    },
+    "imageStats": {
+      "total": 37,
+      "incomplete": 0
+    },
+    "fullReload": false,
+    "consoleErrors": [],
+    "networkErrors": [],
+    "apiCalls": [
+      {
+        "url": "http://localhost:3000/api/search/businesses?search=auditpagination&q=auditpagination&type=businesses&limit=20&page=1&sort=relevance&__nocache=1",
+        "status": 200,
+        "bytes": 14460,
+        "serverTiming": "prep;dur=377,find;dur=151,rank;dur=1,serialize;dur=0",
+        "ts": 1778091676766
+      },
+      {
+        "url": "http://localhost:3000/api/search/businesses?search=auditpagination&q=auditpagination&type=businesses&limit=20&page=2&sort=relevance&__nocache=1",
+        "status": 200,
+        "bytes": 14459,
+        "serverTiming": "prep;dur=364,find;dur=171,rank;dur=1,serialize;dur=0",
+        "ts": 1778091679208
+      }
+    ]
+  },
+  "mobile": {
+    "label": "mobile",
+    "route": "http://localhost:3000/business-directory?q=auditpagination&type=businesses&scope=businesses&tab=businesses&page=1",
+    "beforeUrl": "http://localhost:3000/business-directory?q=auditpagination&type=businesses&scope=businesses&tab=businesses&search=auditpagination",
+    "afterUrl": "http://localhost:3000/business-directory?q=auditpagination&type=businesses&scope=businesses&tab=businesses&search=auditpagination&page=2",
+    "control": "button|a text=2",
+    "before": {
+      "count": 40,
+      "first5": [
+        {
+          "title": "auditpagination_business_1",
+          "href": "/business/69fb7e1d078c73b5736db2c9?from=directory&q=auditpagination"
+        },
+        {
+          "title": "View details",
+          "href": "/business/69fb7e1d078c73b5736db2c9?from=directory&q=auditpagination"
+        },
+        {
+          "title": "auditpagination_business_10",
+          "href": "/business/69fb7e1e078c73b5736db2d2?from=directory&q=auditpagination"
+        },
+        {
+          "title": "View details",
+          "href": "/business/69fb7e1e078c73b5736db2d2?from=directory&q=auditpagination"
+        },
+        {
+          "title": "auditpagination_business_11",
+          "href": "/business/69fb7e1e078c73b5736db2d3?from=directory&q=auditpagination"
+        }
+      ],
+      "last5": [
+        {
+          "title": "View details",
+          "href": "/business/69fb7e20078c73b5736db2e1?from=directory&q=auditpagination"
+        },
+        {
+          "title": "auditpagination_business_26",
+          "href": "/business/69fb7e20078c73b5736db2e2?from=directory&q=auditpagination"
+        },
+        {
+          "title": "View details",
+          "href": "/business/69fb7e20078c73b5736db2e2?from=directory&q=auditpagination"
+        },
+        {
+          "title": "auditpagination_business_27",
+          "href": "/business/69fb7e20078c73b5736db2e3?from=directory&q=auditpagination"
+        },
+        {
+          "title": "View details",
+          "href": "/business/69fb7e20078c73b5736db2e3?from=directory&q=auditpagination"
+        }
+      ],
+      "currentPage": "1",
+      "loadingSeen": false
+    },
+    "after": {
+      "count": 40,
+      "first5": [
+        {
+          "title": "auditpagination_business_28",
+          "href": "/business/69fb7e20078c73b5736db2e4?from=directory&q=auditpagination"
+        },
+        {
+          "title": "View details",
+          "href": "/business/69fb7e20078c73b5736db2e4?from=directory&q=auditpagination"
+        },
+        {
+          "title": "auditpagination_business_29",
+          "href": "/business/69fb7e20078c73b5736db2e5?from=directory&q=auditpagination"
+        },
+        {
+          "title": "View details",
+          "href": "/business/69fb7e20078c73b5736db2e5?from=directory&q=auditpagination"
+        },
+        {
+          "title": "auditpagination_business_3",
+          "href": "/business/69fb7e1e078c73b5736db2cb?from=directory&q=auditpagination"
+        }
+      ],
+      "last5": [
+        {
+          "title": "View details",
+          "href": "/business/69fb7e21078c73b5736db2f3?from=directory&q=auditpagination"
+        },
+        {
+          "title": "auditpagination_business_44",
+          "href": "/business/69fb7e21078c73b5736db2f4?from=directory&q=auditpagination"
+        },
+        {
+          "title": "View details",
+          "href": "/business/69fb7e21078c73b5736db2f4?from=directory&q=auditpagination"
+        },
+        {
+          "title": "auditpagination_business_45",
+          "href": "/business/69fb7e21078c73b5736db2f5?from=directory&q=auditpagination"
+        },
+        {
+          "title": "View details",
+          "href": "/business/69fb7e21078c73b5736db2f5?from=directory&q=auditpagination"
+        }
+      ],
+      "currentPage": "2",
+      "loadingSeen": false
+    },
+    "contentDelta": true,
+    "apiCalledPage2": true,
+    "clickTs": 1778091682511,
+    "urlChangeTs": 1778091682679,
+    "apiStartTs": 1778091682811,
+    "apiEndTs": 1778091682863,
+    "domUpdateTs": 1778091682925,
+    "timing": {
+      "clickToUrlMs": 168,
+      "apiDurationMs": 52,
+      "clickToDomUpdateMs": 414,
+      "totalMs": 414
+    },
+    "imageStats": {
+      "total": 37,
+      "incomplete": 0
+    },
+    "fullReload": false,
+    "consoleErrors": [],
+    "networkErrors": [],
+    "apiCalls": [
+      {
+        "url": "http://localhost:3000/api/search/businesses?search=auditpagination&q=auditpagination&type=businesses&limit=20&page=1&sort=relevance&__nocache=1",
+        "status": 200,
+        "bytes": 14460,
+        "serverTiming": "",
+        "ts": 1778091680299
+      },
+      {
+        "url": "http://localhost:3000/api/search/businesses?search=auditpagination&q=auditpagination&type=businesses&limit=20&page=2&sort=relevance&__nocache=1",
+        "status": 200,
+        "bytes": 14459,
+        "serverTiming": "",
+        "ts": 1778091682863
+      }
+    ]
+  }
+}

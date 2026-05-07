@@ -1,0 +1,32 @@
+{
+  "desktop": {
+    "mobile": false,
+    "route": "http://localhost:3000/business-directory?q=audit&type=businesses&scope=businesses&tab=businesses&page=1",
+    "beforeUrl": "http://localhost:3000/business-directory?q=audit&type=businesses&scope=businesses&tab=businesses&page=1",
+    "afterUrl": "http://localhost:3000/business-directory?q=audit&type=businesses&scope=businesses&tab=businesses&page=1",
+    "selector": null,
+    "clickTriggered": false,
+    "urlChanged": false,
+    "apiCalled": false,
+    "timingMs": 3003,
+    "loadingSeen": false,
+    "beforeCount": 0,
+    "afterCount": 0,
+    "net": []
+  },
+  "mobile": {
+    "mobile": true,
+    "route": "http://localhost:3000/business-directory?q=audit&type=businesses&scope=businesses&tab=businesses&page=1",
+    "beforeUrl": "http://localhost:3000/business-directory?q=audit&type=businesses&scope=businesses&tab=businesses&page=1",
+    "afterUrl": "http://localhost:3000/business-directory?q=audit&type=businesses&scope=businesses&tab=businesses&page=1",
+    "selector": null,
+    "clickTriggered": false,
+    "urlChanged": false,
+    "apiCalled": false,
+    "timingMs": 3002,
+    "loadingSeen": false,
+    "beforeCount": 0,
+    "afterCount": 0,
+    "net": []
+  }
+}

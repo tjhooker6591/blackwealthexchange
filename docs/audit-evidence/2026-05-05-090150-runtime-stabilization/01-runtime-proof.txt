@@ -1,0 +1,36 @@
+### date
+Tue May  5 09:01:59 PDT 2026
+### pwd
+/Users/blackforge/workspace/bwe/repos/repo_clean
+### node
+v22.22.0
+### npm
+10.9.4
+### next pkg version
+^15.5.9
+### ps next/node
+blackforge        1231   0.0  1.3 524530832 211840 s003  S+   Sun03PM  12:03.85 next-server (v15.5.12) 
+blackforge        1230   0.0  0.1 458037344  21968 s003  S+   Sun03PM   0:00.35 node /Users/blackforge/workspace/bwe/repos/repo_clean/node_modules/.bin/next dev
+### lsof 3000
+COMMAND  PID       USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    1231 blackforge   17u  IPv6 0xcd0402fa205396d6      0t0  TCP *:3000 (LISTEN)
+### lsof 3001
+### curl root 3000
+HTTP/1.1 200 OK
+X-Frame-Options: SAMEORIGIN
+X-Content-Type-Options: nosniff
+Referrer-Policy: strict-origin-when-cross-origin
+Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+Permissions-Policy: camera=(), microphone=(), geolocation=(self)
+Content-Security-Policy: default-src 'self'; base-uri 'self'; frame-ancestors 'self'; object-src 'none'; img-src 'self' data: https:; font-src 'self' data: https:; style-src 'self' 'unsafe-inline' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; connect-src 'self' https: wss:; frame-src 'self' https:; form-action 'self'
+Cache-Control: no-store, must-revalidate
+X-Powered-By: Next.js
+ETag: "cgz6apq4l2wqz"
+Content-Type: text/html; charset=utf-8
+Content-Length: 42471
+Vary: Accept-Encoding
+Date: Tue, 05 May 2026 16:01:59 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+### curl root 3001

@@ -1,15 +1,18 @@
 # BWE CFO-Grade Revenue System Design
 
 ## Objective
+
 Create a unified financial control system where every monetized stream can be traced:
 UI -> Checkout -> Stripe -> Webhook -> Ledger -> Fulfillment -> Admin Review -> Payout/Reconciliation.
 
 ## 1) Unified Revenue Ledger
 
 ### Canonical collection
+
 `financial_ledger`
 
 ### Canonical record
+
 ```json
 {
   "transactionId": "string",
@@ -41,6 +44,7 @@ UI -> Checkout -> Stripe -> Webhook -> Ledger -> Fulfillment -> Admin Review -> 
 ```
 
 ## 2) Supported streams
+
 - Marketplace sales
 - Marketplace commission
 - Advertising/sponsorship
@@ -57,6 +61,7 @@ UI -> Checkout -> Stripe -> Webhook -> Ledger -> Fulfillment -> Admin Review -> 
 - Manual/offline revenue
 
 ## 3) Standard BWE fee model
+
 - Marketplace: 10-15% platform fee (current code path is 12% in centralized split module)
 - Ads/Sponsor/Directory/Jobs/Membership/Black Card/Courses/Creator plans: 100% retained
 - Music royalties: not BWE revenue by default
@@ -64,7 +69,9 @@ UI -> Checkout -> Stripe -> Webhook -> Ledger -> Fulfillment -> Admin Review -> 
 - Affiliate: track confirmed commission received and payout liabilities separately
 
 ## 4) Required payment flow contract
+
 Every paid stream must produce all of:
+
 1. Checkout creation with canonical metadata
 2. Stripe session created
 3. Webhook paid event processed
@@ -75,8 +82,10 @@ Every paid stream must produce all of:
 8. Payout status visible where applicable
 
 ## 5) Admin financial review requirements
+
 Route: `/admin/financial-review`
 Sections:
+
 - Revenue Overview
 - Revenue by Stream
 - Latest Transactions
@@ -90,6 +99,7 @@ Sections:
 - Export/Report Preparation
 
 ## 6) Stream status labels
+
 - Complete
 - Partially Connected
 - Checkout Only
@@ -100,6 +110,7 @@ Sections:
 - Not Connected Yet
 
 ## 7) Payout logic rules
+
 - Marketplace: auto compute seller payout + platform fee; if connect unavailable -> `platform_held`
 - Ads/Directory/Jobs/Creator plan/Membership/Courses: no seller payout
 - Consulting: manual/contract workflow required
@@ -107,25 +118,26 @@ Sections:
 
 ## 8) Current audit report (implementation-state)
 
-| Revenue Stream | Payment Type | BWE Fee % | Customer Pays | Who Gets Paid | Checkout Route | Webhook Fulfilled | DB Updated | Admin Visible | Payout Logic | Status | Required Fix |
-|---|---:|---:|---|---|---|---|---|---|---|---|---|
-| Advertising / Sponsorship | One-time | 100 | Advertiser | BWE | `/api/stripe/checkout` (+ legacy wrappers) | Yes | `payments`,`ad_purchases` | Yes | N/A payout | Partially Connected | Fully retire duplicate creators |
-| Featured Sponsor placements | One-time | 100 | Advertiser | BWE | `/api/stripe/checkout` | Yes | `payments`,`ad_purchases` | Yes | N/A | Partially Connected | Same as above |
-| Banner Ads | One-time | 100 | Advertiser | BWE | `/api/stripe/checkout` | Yes | `payments`,`ad_purchases` | Yes | N/A | Partially Connected | Same as above |
-| Business Directory paid listings | One-time | 100 | Business | BWE | `/api/stripe/checkout` | Yes | `payments`,`ad_purchases` | Yes | N/A | Complete (code-ready) | Stripe transaction proof run |
-| Marketplace product sales | Per txn | 10-15 target (12 current) | Buyer | Seller + BWE fee | `/api/stripe/checkout` (`type=product`) | Yes | `orders`,`payments` | Yes | destination/held payout | Complete (code-ready) | Stripe transaction proof run |
-| Marketplace commission | Per txn | 12 current | Buyer | BWE + seller | same | Yes | split on `orders`,`payments` | Yes | payout status tracked | Complete | Historical backfill |
-| Job posting payments | One-time | 100 | Employer | BWE | `/api/stripe/checkout` | Yes | `payments`,`jobs` | Yes | N/A | Partially Connected | unify SKU map |
-| Employer featured upgrades | One-time | 100 | Employer | BWE | `/api/stripe/checkout` | Yes | `payments`,`jobs` | Yes | N/A | Partially Connected | unify SKU map |
-| Membership / Premium | Annual sub | 100 | User | BWE | `/api/stripe/checkout` | Yes | `payments`,`users`,`subscription_events` | Yes | N/A | Complete | Stripe proof run |
-| Black Card membership | Plan fee | 100 | User | BWE | `/api/stripe/checkout` | Yes | `payments`, card/member records | Yes | N/A | Complete | Stripe proof run |
-| Courses / Financial Literacy | One-time | 100 | Learner | BWE | `/api/stripe/checkout` (+ legacy course endpoint) | Yes | `payments`, course access records | Yes | N/A | Partially Connected | route legacy endpoint to canonical |
-| Music creator plans | Plan fee | 100 | Creator | BWE | `/api/stripe/checkout` | Yes | `payments` | Yes | N/A | Complete | keep royalty policy explicit |
-| Consulting / Opportunity Network | N/A | contract | N/A | N/A | none | No | `consulting_*` leads only | partial ops visibility | not wired | Not Connected Yet | build paid contract + ledger path |
-| Affiliate revenue | Liability flow | n/a | N/A | Affiliate payouts | no direct checkout | Partial | `affiliate*` collections | Yes | manual/ops payout | Partially Connected | add explicit ledger entries for liability+settlement |
-| Manual / offline revenue | Manual | varies | varies | varies | none | No | no unified ledger | No | manual only | Not Connected Yet | add manual ledger entry workflow |
+| Revenue Stream                   |   Payment Type |                 BWE Fee % | Customer Pays | Who Gets Paid     | Checkout Route                                    | Webhook Fulfilled | DB Updated                               | Admin Visible          | Payout Logic            | Status                | Required Fix                                         |
+| -------------------------------- | -------------: | ------------------------: | ------------- | ----------------- | ------------------------------------------------- | ----------------- | ---------------------------------------- | ---------------------- | ----------------------- | --------------------- | ---------------------------------------------------- |
+| Advertising / Sponsorship        |       One-time |                       100 | Advertiser    | BWE               | `/api/stripe/checkout` (+ legacy wrappers)        | Yes               | `payments`,`ad_purchases`                | Yes                    | N/A payout              | Partially Connected   | Fully retire duplicate creators                      |
+| Featured Sponsor placements      |       One-time |                       100 | Advertiser    | BWE               | `/api/stripe/checkout`                            | Yes               | `payments`,`ad_purchases`                | Yes                    | N/A                     | Partially Connected   | Same as above                                        |
+| Banner Ads                       |       One-time |                       100 | Advertiser    | BWE               | `/api/stripe/checkout`                            | Yes               | `payments`,`ad_purchases`                | Yes                    | N/A                     | Partially Connected   | Same as above                                        |
+| Business Directory paid listings |       One-time |                       100 | Business      | BWE               | `/api/stripe/checkout`                            | Yes               | `payments`,`ad_purchases`                | Yes                    | N/A                     | Complete (code-ready) | Stripe transaction proof run                         |
+| Marketplace product sales        |        Per txn | 10-15 target (12 current) | Buyer         | Seller + BWE fee  | `/api/stripe/checkout` (`type=product`)           | Yes               | `orders`,`payments`                      | Yes                    | destination/held payout | Complete (code-ready) | Stripe transaction proof run                         |
+| Marketplace commission           |        Per txn |                12 current | Buyer         | BWE + seller      | same                                              | Yes               | split on `orders`,`payments`             | Yes                    | payout status tracked   | Complete              | Historical backfill                                  |
+| Job posting payments             |       One-time |                       100 | Employer      | BWE               | `/api/stripe/checkout`                            | Yes               | `payments`,`jobs`                        | Yes                    | N/A                     | Partially Connected   | unify SKU map                                        |
+| Employer featured upgrades       |       One-time |                       100 | Employer      | BWE               | `/api/stripe/checkout`                            | Yes               | `payments`,`jobs`                        | Yes                    | N/A                     | Partially Connected   | unify SKU map                                        |
+| Membership / Premium             |     Annual sub |                       100 | User          | BWE               | `/api/stripe/checkout`                            | Yes               | `payments`,`users`,`subscription_events` | Yes                    | N/A                     | Complete              | Stripe proof run                                     |
+| Black Card membership            |       Plan fee |                       100 | User          | BWE               | `/api/stripe/checkout`                            | Yes               | `payments`, card/member records          | Yes                    | N/A                     | Complete              | Stripe proof run                                     |
+| Courses / Financial Literacy     |       One-time |                       100 | Learner       | BWE               | `/api/stripe/checkout` (+ legacy course endpoint) | Yes               | `payments`, course access records        | Yes                    | N/A                     | Partially Connected   | route legacy endpoint to canonical                   |
+| Music creator plans              |       Plan fee |                       100 | Creator       | BWE               | `/api/stripe/checkout`                            | Yes               | `payments`                               | Yes                    | N/A                     | Complete              | keep royalty policy explicit                         |
+| Consulting / Opportunity Network |            N/A |                  contract | N/A           | N/A               | none                                              | No                | `consulting_*` leads only                | partial ops visibility | not wired               | Not Connected Yet     | build paid contract + ledger path                    |
+| Affiliate revenue                | Liability flow |                       n/a | N/A           | Affiliate payouts | no direct checkout                                | Partial           | `affiliate*` collections                 | Yes                    | manual/ops payout       | Partially Connected   | add explicit ledger entries for liability+settlement |
+| Manual / offline revenue         |         Manual |                    varies | varies        | varies            | none                                              | No                | no unified ledger                        | No                     | manual only             | Not Connected Yet     | add manual ledger entry workflow                     |
 
 ## 9) Safety rules enforced
+
 - Do not count unpaid sessions as revenue.
 - Do not treat pending as completed revenue.
 - Do not count seller payout as BWE revenue.
@@ -133,6 +145,7 @@ Sections:
 - Do not treat music royalties as BWE revenue by default.
 
 ## 10) Launch blockers
+
 1. `financial_ledger` not yet physically implemented/wired in webhook.
 2. Legacy checkout routes still exist (some now wrappers, but retirement incomplete).
 3. Consulting/manual streams not connected to payments.

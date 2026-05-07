@@ -1,0 +1,42 @@
+timestamp=2026-05-05 09:36:30 PDT
+runtime_check=BEGIN
+  PID COMM             ARGS
+ 1231 next-server (v15 next-server (v15.5.12) 
+COMMAND  PID       USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    1231 blackforge   17u  IPv6 0xcd0402fa205396d6      0t0  TCP *:3000 (LISTEN)
+HTTP/1.1 401 Unauthorized
+X-Frame-Options: SAMEORIGIN
+X-Content-Type-Options: nosniff
+Referrer-Policy: strict-origin-when-cross-origin
+Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+Permissions-Policy: camera=(), microphone=(), geolocation=(self)
+Content-Security-Policy: default-src 'self'; base-uri 'self'; frame-ancestors 'self'; object-src 'none'; img-src 'self' data: https:; font-src 'self' data: https:; style-src 'self' 'unsafe-inline' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; connect-src 'self' https: wss:; frame-src 'self' https:; form-action 'self'
+Cache-Control: no-store
+Content-Type: application/json; charset=utf-8
+ETag: "3oizc6c8xy1p"
+Content-Length: 61
+Vary: Accept-Encoding
+Date: Tue, 05 May 2026 16:36:31 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+HTTP/1.1 405 Method Not Allowed
+X-Frame-Options: SAMEORIGIN
+X-Content-Type-Options: nosniff
+Referrer-Policy: strict-origin-when-cross-origin
+Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+Permissions-Policy: camera=(), microphone=(), geolocation=(self)
+Content-Security-Policy: default-src 'self'; base-uri 'self'; frame-ancestors 'self'; object-src 'none'; img-src 'self' data: https:; font-src 'self' data: https:; style-src 'self' 'unsafe-inline' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; connect-src 'self' https: wss:; frame-src 'self' https:; form-action 'self'
+Cache-Control: no-store
+Allow: GET
+Content-Type: application/json; charset=utf-8
+ETag: "13g4yqnko0i1z"
+Content-Length: 71
+Vary: Accept-Encoding
+Date: Tue, 05 May 2026 16:36:31 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+unauth_get_body={"ok":false,"code":"UNAUTHORIZED","message":"Login required"}
+post_body={"ok":false,"code":"METHOD_NOT_ALLOWED","message":"Method not allowed"}
+runtime_check=END

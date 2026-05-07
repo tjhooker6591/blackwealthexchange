@@ -1,0 +1,17 @@
+/
+/marketplace
+/job-listings
+/business-directory
+/support
+/pricing
+/travel-map
+/affiliate
+/dashboard
+/profile
+/admin
+/employer
+/sellers/register
+/courses/investing-for-beginners
+/wealth-builder
+/black-card
+/music

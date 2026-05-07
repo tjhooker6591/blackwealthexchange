@@ -1,0 +1,70 @@
+{
+  "desktop": {
+    "label": "desktop",
+    "route": "http://localhost:3000/business-directory?q=auditpagination&type=businesses&scope=businesses&tab=businesses&page=1",
+    "beforeUrl": "http://localhost:3000/business-directory?q=auditpagination&type=businesses&scope=businesses&tab=businesses&search=auditpagination",
+    "afterUrl": "http://localhost:3000/business-directory?q=auditpagination&type=businesses&scope=businesses&tab=businesses&search=auditpagination&page=2",
+    "resultCount": {
+      "before": 40,
+      "after": 40
+    },
+    "pagerVisible": true,
+    "selector": "button|a text=2",
+    "clickTriggered": true,
+    "urlChanged": true,
+    "apiCalled": true,
+    "timingMs": 3547,
+    "loadingStateSeen": false,
+    "resultDelta": false,
+    "consoleErrors": [],
+    "networkErrors": [],
+    "apiCalls": [
+      {
+        "url": "http://localhost:3000/api/search/businesses?search=auditpagination&q=auditpagination&type=businesses&limit=20&page=1&sort=relevance&__nocache=1",
+        "status": 200,
+        "bytes": 14460,
+        "ts": 1778091469424
+      },
+      {
+        "url": "http://localhost:3000/api/search/businesses?search=auditpagination&q=auditpagination&type=businesses&limit=20&page=2&sort=relevance&__nocache=1",
+        "status": 200,
+        "bytes": 14460,
+        "ts": 1778091471905
+      }
+    ]
+  },
+  "mobile": {
+    "label": "mobile",
+    "route": "http://localhost:3000/business-directory?q=auditpagination&type=businesses&scope=businesses&tab=businesses&page=1",
+    "beforeUrl": "http://localhost:3000/business-directory?q=auditpagination&type=businesses&scope=businesses&tab=businesses&search=auditpagination",
+    "afterUrl": "http://localhost:3000/business-directory?q=auditpagination&type=businesses&scope=businesses&tab=businesses&search=auditpagination&page=2",
+    "resultCount": {
+      "before": 40,
+      "after": 40
+    },
+    "pagerVisible": true,
+    "selector": "button|a text=2",
+    "clickTriggered": true,
+    "urlChanged": true,
+    "apiCalled": true,
+    "timingMs": 3541,
+    "loadingStateSeen": false,
+    "resultDelta": false,
+    "consoleErrors": [],
+    "networkErrors": [],
+    "apiCalls": [
+      {
+        "url": "http://localhost:3000/api/search/businesses?search=auditpagination&q=auditpagination&type=businesses&limit=20&page=1&sort=relevance&__nocache=1",
+        "status": 200,
+        "bytes": 14460,
+        "ts": 1778091475195
+      },
+      {
+        "url": "http://localhost:3000/api/search/businesses?search=auditpagination&q=auditpagination&type=businesses&limit=20&page=2&sort=relevance&__nocache=1",
+        "status": 200,
+        "bytes": 14460,
+        "ts": 1778091477683
+      }
+    ]
+  }
+}
