@@ -28,9 +28,9 @@ export const getServerSideProps: GetServerSideProps<Props> = async () => {
         .toArray()
     ).map((p: any) => ({
       _id: String(p._id),
-      name: p.name,
-      category: p.category,
-      price: p.price,
+      name: typeof p.name === "string" ? p.name : null,
+      category: typeof p.category === "string" ? p.category : null,
+      price: typeof p.price === "number" ? p.price : null,
     }));
     return { props: { products, total } };
   } catch {

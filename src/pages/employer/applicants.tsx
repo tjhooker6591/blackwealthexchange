@@ -419,17 +419,35 @@ export default function EmployerApplicantsPage() {
                                   : "missing"}
                               </div>
                               <div>
-                                <span className="font-semibold">Required-match:</span>{" "}
-                                Matched {applicant.vettingSignals?.roleMatch?.matchedKeywords?.length || 0}, Missing {applicant.vettingSignals?.roleMatch?.missingKeywords?.length || 0}
+                                <span className="font-semibold">
+                                  Required-match:
+                                </span>{" "}
+                                Matched{" "}
+                                {applicant.vettingSignals?.roleMatch
+                                  ?.matchedKeywords?.length || 0}
+                                , Missing{" "}
+                                {applicant.vettingSignals?.roleMatch
+                                  ?.missingKeywords?.length || 0}
                               </div>
-                              {(applicant.vettingSignals?.knockout?.reasons || []).length ? (
+                              {(
+                                applicant.vettingSignals?.knockout?.reasons ||
+                                []
+                              ).length ? (
                                 <div>
-                                  <span className="font-semibold">Missing requirements:</span>{" "}
-                                  {(applicant.vettingSignals?.knockout?.reasons || []).join("; ")}
+                                  <span className="font-semibold">
+                                    Missing requirements:
+                                  </span>{" "}
+                                  {(
+                                    applicant.vettingSignals?.knockout
+                                      ?.reasons || []
+                                  ).join("; ")}
                                 </div>
                               ) : (
                                 <div>
-                                  <span className="font-semibold">Missing requirements:</span> None detected
+                                  <span className="font-semibold">
+                                    Missing requirements:
+                                  </span>{" "}
+                                  None detected
                                 </div>
                               )}
                               <div>
@@ -440,10 +458,13 @@ export default function EmployerApplicantsPage() {
                                   "Awaiting screening summary."}
                               </div>
                               <div>
-                                <span className="font-semibold">Decision guidance:</span>{" "}
+                                <span className="font-semibold">
+                                  Decision guidance:
+                                </span>{" "}
                                 {applicant.vettingStatus === "qualified"
                                   ? "Core configured requirements appear satisfied."
-                                  : applicant.vettingStatus === "not_yet_qualified"
+                                  : applicant.vettingStatus ===
+                                      "not_yet_qualified"
                                     ? "Configured knockout requirement(s) were not satisfied."
                                     : "Needs human review due to partial or lower-confidence signals."}
                               </div>

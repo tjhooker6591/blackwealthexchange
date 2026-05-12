@@ -148,37 +148,39 @@ export default async function handler(
             : String(a.jobId || "");
 
         return {
-        _id: applicantId,
-        jobId: jobIdStr,
-        name: a.name || a.email,
-        email: a.email,
-        resumeUrl: a.resumeUrl || "",
-        jobTitle: jobMap[jobIdStr] || "Unknown",
-        hiringStatus: a.hiringStatus || "new",
-        employerNote: a.employerNote || "",
-        rejectionReason: a.rejectionReason || "",
-        statusHistory: Array.isArray(a.statusHistory)
-          ? a.statusHistory.map((h) => ({
-              status: h.status,
-              changedAt: h.changedAt ? new Date(h.changedAt).toISOString() : "",
-              actor: h.actor || "",
-              note: h.note || "",
-              rejectionReason: h.rejectionReason || "",
-            }))
-          : [],
-        appliedDate:
-          a.appliedAt?.toISOString() ||
-          (typeof a.appliedDate === "string" ? a.appliedDate : ""),
-        vettingStatus: a.vettingStatus || "review_needed",
-        vettingSignals: a.vettingSignals || null,
-        vettingSummary: a.vettingSummary || "Awaiting screening summary.",
-        vettingUpdatedAt: a.vettingUpdatedAt
-          ? new Date(a.vettingUpdatedAt).toISOString()
-          : "",
-        vettingConfidenceBand: a.vettingConfidenceBand || "low",
-        manualOverride: Boolean(a.manualOverride),
-        overrideReason: a.overrideReason || "",
-      };
+          _id: applicantId,
+          jobId: jobIdStr,
+          name: a.name || a.email,
+          email: a.email,
+          resumeUrl: a.resumeUrl || "",
+          jobTitle: jobMap[jobIdStr] || "Unknown",
+          hiringStatus: a.hiringStatus || "new",
+          employerNote: a.employerNote || "",
+          rejectionReason: a.rejectionReason || "",
+          statusHistory: Array.isArray(a.statusHistory)
+            ? a.statusHistory.map((h) => ({
+                status: h.status,
+                changedAt: h.changedAt
+                  ? new Date(h.changedAt).toISOString()
+                  : "",
+                actor: h.actor || "",
+                note: h.note || "",
+                rejectionReason: h.rejectionReason || "",
+              }))
+            : [],
+          appliedDate:
+            a.appliedAt?.toISOString() ||
+            (typeof a.appliedDate === "string" ? a.appliedDate : ""),
+          vettingStatus: a.vettingStatus || "review_needed",
+          vettingSignals: a.vettingSignals || null,
+          vettingSummary: a.vettingSummary || "Awaiting screening summary.",
+          vettingUpdatedAt: a.vettingUpdatedAt
+            ? new Date(a.vettingUpdatedAt).toISOString()
+            : "",
+          vettingConfidenceBand: a.vettingConfidenceBand || "low",
+          manualOverride: Boolean(a.manualOverride),
+          overrideReason: a.overrideReason || "",
+        };
       })
       .filter((item) => {
         if (!searchQuery) return true;

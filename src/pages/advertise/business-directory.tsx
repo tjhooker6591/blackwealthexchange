@@ -175,7 +175,8 @@ export default function BusinessDirectoryAdPage() {
         Promote Your Business in the Directory
       </h1>
       <p className="text-xs text-gray-400 max-w-2xl mb-3">
-        Who this is for: businesses that want stronger directory visibility with clear sponsored treatment when applicable.
+        Who this is for: businesses that want stronger directory visibility with
+        clear sponsored treatment when applicable.
       </p>
 
       <p className="text-lg text-gray-400 max-w-2xl mb-10">
@@ -280,11 +281,25 @@ export default function BusinessDirectoryAdPage() {
       </div>
 
       <section className="w-full max-w-4xl mb-8 rounded-xl border border-gray-700 bg-gray-900 p-5 text-left space-y-2">
-        <h3 className="text-lg font-semibold text-gold">Approval, labeling, and timeline</h3>
-        <p className="text-sm text-gray-300">Approval criteria include campaign detail quality, policy alignment, and placement capacity.</p>
-        <p className="text-sm text-gray-300">Featured campaigns are clearly labeled as sponsored/featured when active.</p>
-        <p className="text-sm text-gray-300">Post-payment lifecycle: payment confirmation → admin review → approval/scheduling → active placement window.</p>
-        <p className="text-xs text-gray-400">Need help or escalation? Use /support and include your campaign request context.</p>
+        <h3 className="text-lg font-semibold text-gold">
+          Approval, labeling, and timeline
+        </h3>
+        <p className="text-sm text-gray-300">
+          Approval criteria include campaign detail quality, policy alignment,
+          and placement capacity.
+        </p>
+        <p className="text-sm text-gray-300">
+          Featured campaigns are clearly labeled as sponsored/featured when
+          active.
+        </p>
+        <p className="text-sm text-gray-300">
+          Post-payment lifecycle: payment confirmation → admin review →
+          approval/scheduling → active placement window.
+        </p>
+        <p className="text-xs text-gray-400">
+          Need help or escalation? Use /support and include your campaign
+          request context.
+        </p>
       </section>
 
       {/* Plan Options */}
@@ -300,7 +315,8 @@ export default function BusinessDirectoryAdPage() {
                 Best for: businesses that want affordable baseline visibility.
               </p>
               <p className="text-sm mb-4">
-                What you get: 30-day directory presence with clickable profile listing.
+                What you get: 30-day directory presence with clickable profile
+                listing.
               </p>
               <ul className="text-sm list-disc list-inside mb-4 text-left">
                 <li>Listed for 30 days</li>
@@ -329,7 +345,8 @@ export default function BusinessDirectoryAdPage() {
                 Best for: businesses that need stronger discovery priority.
               </p>
               <p className="text-sm mb-4">
-                What you get: sponsored/featured treatment and higher-priority placement after approval.
+                What you get: sponsored/featured treatment and higher-priority
+                placement after approval.
               </p>
               <ul className="text-sm list-disc list-inside mb-4 text-left">
                 <li>Featured for 30 days</li>

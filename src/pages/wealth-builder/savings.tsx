@@ -682,7 +682,6 @@ export default function WealthBuilderSavingsPage() {
   );
 }
 
-
 export const getServerSideProps: GetServerSideProps = async (context) => {
   return requireWealthBuilderPageUser(context, "/wealth-builder/savings");
 };

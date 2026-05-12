@@ -28,7 +28,11 @@ export function requireWealthBuilderPageUser(
     const payload = jwt.verify(token, getJwtSecret()) as RolePayload | string;
     if (typeof payload === "string") throw new Error("Invalid token payload");
 
-    const accountType = (payload.accountType || payload.role || "user").toLowerCase();
+    const accountType = (
+      payload.accountType ||
+      payload.role ||
+      "user"
+    ).toLowerCase();
     if (accountType !== "user") {
       return {
         redirect: {

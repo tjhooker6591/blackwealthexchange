@@ -72,10 +72,10 @@ export default async function handler(
 
     const profileValid = Boolean(
       String(seller?.businessName || "").trim() &&
-        String(seller?.email || "").trim() &&
-        String(seller?.businessPhone || "").trim() &&
-        String(seller?.businessAddress || "").trim() &&
-        String(seller?.description || "").trim(),
+      String(seller?.email || "").trim() &&
+      String(seller?.businessPhone || "").trim() &&
+      String(seller?.businessAddress || "").trim() &&
+      String(seller?.description || "").trim(),
     );
 
     let readinessState: "not_started" | "in_progress" | "ready_to_sell" =

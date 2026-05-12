@@ -64,11 +64,9 @@ export async function grantCourseAccess(
     };
   }
 
-  const enrollmentResult = await db.collection("enrollments").updateOne(
-    { userId, courseId },
-    enrollmentUpdate,
-    { upsert: true },
-  );
+  const enrollmentResult = await db
+    .collection("enrollments")
+    .updateOne({ userId, courseId }, enrollmentUpdate, { upsert: true });
 
   return {
     enrollmentUpserted: Boolean(enrollmentResult.upsertedCount),

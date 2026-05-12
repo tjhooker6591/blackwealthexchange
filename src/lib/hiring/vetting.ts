@@ -73,7 +73,8 @@ export async function runApplicantVetting(
   const years = Number(user?.yearsExperience || 0);
   const minYears = Number(job?.minimumYearsExperience || 0);
   const experienceFit = {
-    passed: minYears > 0 ? years >= minYears : Boolean(user?.experience || years),
+    passed:
+      minYears > 0 ? years >= minYears : Boolean(user?.experience || years),
     note:
       minYears > 0
         ? `${years || 0} years listed, minimum required ${minYears}`
@@ -124,9 +125,12 @@ export async function runApplicantVetting(
   );
 
   const knockoutReasons: string[] = [];
-  if (requiresResume && !resumePresent) knockoutReasons.push("Resume required by role");
+  if (requiresResume && !resumePresent)
+    knockoutReasons.push("Resume required by role");
   if (missingRequiredSkills.length > 0)
-    knockoutReasons.push(`Missing required skills: ${missingRequiredSkills.join(", ")}`);
+    knockoutReasons.push(
+      `Missing required skills: ${missingRequiredSkills.join(", ")}`,
+    );
   if (missingRequiredCertifications.length > 0)
     knockoutReasons.push(
       `Missing required certifications/licenses: ${missingRequiredCertifications.join(", ")}`,
@@ -152,8 +156,12 @@ export async function runApplicantVetting(
     resume: { present: resumePresent, parseable: resumeParseable },
     roleMatch: {
       band: roleBand,
-      matchedKeywords: Array.from(new Set([...matchedRequiredSkills, ...matched])).slice(0, 8),
-      missingKeywords: Array.from(new Set([...missingRequiredSkills, ...missingK])).slice(0, 8),
+      matchedKeywords: Array.from(
+        new Set([...matchedRequiredSkills, ...matched]),
+      ).slice(0, 8),
+      missingKeywords: Array.from(
+        new Set([...missingRequiredSkills, ...missingK]),
+      ).slice(0, 8),
     },
     experienceFit,
     locationFit,

@@ -339,21 +339,38 @@ export default function BusinessDirectory() {
   }, [router.isReady, router.query.type, router.query.scope, router.query.tab]);
 
   // Categories only apply to businesses
-  const TOP_CATEGORIES = [
+  const CATEGORY_COUNTS: Record<string, number> = {
+    Barbershop: 126,
+    Dining: 8,
+    Food: 8,
+    Health: 6,
+    Wellness: 6,
+    Shopping: 0,
+    Beauty: 0,
+    "Financial Services": 0,
+    "Professional Services": 3,
+    Clothing: 0,
+    "Real Estate": 1,
+    Technology: 1,
+  };
+  const PRIMARY_CATEGORIES = [
+    "All",
+    "Barbershop",
+    "Dining",
     "Food",
+    "Health",
+    "Wellness",
+  ];
+  const MORE_CATEGORIES = [
     "Shopping",
     "Beauty",
-    "Health",
-    "Professional Services",
     "Financial Services",
-    "Real Estate",
-    "Home Services",
-    "Education",
-    "Technology",
-    "Arts & Culture",
+    "Professional Services",
     "Clothing",
+    "Real Estate",
+    "Technology",
+    "Wellness",
   ];
-  const _CATEGORIES = ["All", ...TOP_CATEGORIES];
 
   const [input, setInput] = useState("");
   const [category, setCategory] = useState("All");
@@ -939,9 +956,9 @@ export default function BusinessDirectory() {
 
   // ✅ FIX: alias can be non-string; always coerce safely
   const getSlug = (r: Row) => {
-    const aliasRaw = (r as any).alias;
-    const alias = safeStr(aliasRaw).trim(); // safeStr ensures .trim exists
-    return alias || safeStr((r as any)._id);
+    const alias = safeStr((r as any).alias).trim();
+    const slug = safeStr((r as any).slug).trim();
+    return alias || slug;
   };
 
   const getHref = (r: Row) => {
@@ -950,14 +967,19 @@ export default function BusinessDirectory() {
       return sponsoredUrl;
     }
 
-    const slug = encodeURIComponent(getSlug(r));
-    if (r.__kind === "org") return `/organizations/${slug}`;
+    const kind = safeStr((r as any).kind || (r as any).__kind).toLowerCase();
+    const orgLike = kind === "organization" || kind === "org";
+    const slugKey = getSlug(r);
+    const idKey = safeStr((r as any)._id);
+    const key = encodeURIComponent(slugKey || idKey);
+
+    if (orgLike) return `/organizations/${key}`;
 
     const qp = new URLSearchParams();
     qp.set("from", "directory");
     if (input.trim()) qp.set("q", input.trim());
 
-    return `/business/${slug}?${qp.toString()}`;
+    return `/business/${key}?${qp.toString()}`;
   };
 
   const getTrustMeta = (r: Row) => {
@@ -1059,14 +1081,14 @@ export default function BusinessDirectory() {
 
         <div className="mx-auto max-w-7xl px-3 sm:px-4 md:px-6 py-6">
           {/* Header */}
-          <div className="relative mb-5 overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-white/[0.07] via-white/[0.03] to-transparent p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_40px_90px_rgba(0,0,0,0.55)] sm:p-5">
+          <div className="relative mb-4 overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-white/[0.07] via-white/[0.03] to-transparent p-3 shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_40px_90px_rgba(0,0,0,0.55)] sm:mb-5 sm:p-5">
             <div className="pointer-events-none absolute -top-24 left-1/2 h-56 w-[40rem] -translate-x-1/2 rounded-full bg-[#D4AF37]/10 blur-3xl" />
             <div className="pointer-events-none absolute -bottom-28 right-[-6rem] h-64 w-64 rounded-full bg-emerald-500/10 blur-3xl" />
 
             <div className="relative flex flex-col gap-4">
-              <div className="flex flex-wrap items-end justify-between gap-3">
+              <div className="flex flex-wrap items-start justify-between gap-2 sm:items-end sm:gap-3">
                 <div>
-                  <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-white">
+                  <h1 className="text-2xl sm:text-4xl font-black tracking-tight text-white">
                     {scope === "organizations"
                       ? "Black Organizations Directory"
                       : "Black-Owned Business Directory"}
@@ -1074,13 +1096,13 @@ export default function BusinessDirectory() {
                       • City + Category Hub
                     </span>
                   </h1>
-                  <p className="mt-1 text-sm text-white/65 sm:text-base">
+                  <p className="mt-1 text-xs text-white/70 sm:text-base">
                     Use this directory hub to discover trusted listings by city,
                     state, and category, then compare and contact the best fit.
                   </p>
                 </div>
 
-                <span className="inline-flex items-center gap-1 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-3 py-1.5 text-xs font-bold text-emerald-200">
+                <span className="hidden sm:inline-flex items-center gap-1 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-3 py-1.5 text-xs font-bold text-emerald-200">
                   <ShieldCheck className="h-3.5 w-3.5" />
                   Trusted listings
                 </span>
@@ -1135,7 +1157,7 @@ export default function BusinessDirectory() {
                 </button>
               </div>
 
-              <div className="grid gap-2 sm:grid-cols-3">
+              <div className="hidden sm:grid gap-2 sm:grid-cols-3">
                 <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-2">
                   <div className="text-[10px] uppercase tracking-[0.08em] text-white/50 font-bold">
                     Ranking
@@ -1162,41 +1184,44 @@ export default function BusinessDirectory() {
                 </div>
               </div>
 
-              <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm text-white/70">
-                <span className="font-semibold text-white/85">
-                  Popular discovery paths:
-                </span>
-                <Link
-                  href="/black-owned-businesses/city/atlanta-ga"
-                  className="rounded-full border border-white/15 px-3 py-1 hover:border-[#D4AF37]/40 hover:text-[#D4AF37]"
-                >
-                  Atlanta, GA
-                </Link>
-                <Link
-                  href="/black-owned-businesses/city/houston-tx"
-                  className="rounded-full border border-white/15 px-3 py-1 hover:border-[#D4AF37]/40 hover:text-[#D4AF37]"
-                >
-                  Houston, TX
-                </Link>
-                <Link
-                  href="/black-owned-businesses/category/restaurant"
-                  className="rounded-full border border-white/15 px-3 py-1 hover:border-[#D4AF37]/40 hover:text-[#D4AF37]"
-                >
-                  Restaurants
-                </Link>
-                <Link
-                  href="/black-owned-businesses/category/beauty"
-                  className="rounded-full border border-white/15 px-3 py-1 hover:border-[#D4AF37]/40 hover:text-[#D4AF37]"
-                >
-                  Beauty
-                </Link>
-                <Link
-                  href="/black-owned-businesses/category/health-and-wellness"
-                  className="rounded-full border border-white/15 px-3 py-1 hover:border-[#D4AF37]/40 hover:text-[#D4AF37]"
-                >
-                  Health & Wellness
-                </Link>
+              <details className="sm:hidden rounded-xl border border-white/10 bg-black/20 px-3 py-2">
+                <summary className="cursor-pointer list-none text-xs font-bold text-white/85">
+                  Why this directory?
+                </summary>
+                <div className="mt-2 grid gap-2">
+                  <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-2">
+                    <div className="text-[10px] uppercase tracking-[0.08em] text-white/50 font-bold">Ranking</div>
+                    <div className="text-xs font-semibold text-white/80">Trust + relevance first</div>
+                  </div>
+                  <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-2">
+                    <div className="text-[10px] uppercase tracking-[0.08em] text-white/50 font-bold">Control</div>
+                    <div className="text-xs font-semibold text-white/80">Strong filters, zero clutter</div>
+                  </div>
+                  <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-2">
+                    <div className="text-[10px] uppercase tracking-[0.08em] text-white/50 font-bold">Goal</div>
+                    <div className="text-xs font-semibold text-white/80">Find, vet, and contact quickly</div>
+                  </div>
+                </div>
+              </details>
+
+              <div className="hidden sm:flex flex-wrap items-center gap-2 text-xs sm:text-sm text-white/70">
+                <span className="font-semibold text-white/85">Popular discovery paths:</span>
+                <Link href="/black-owned-businesses/city/atlanta-ga" className="rounded-full border border-white/15 px-3 py-1 hover:border-[#D4AF37]/40 hover:text-[#D4AF37]">Atlanta, GA</Link>
+                <Link href="/black-owned-businesses/city/houston-tx" className="rounded-full border border-white/15 px-3 py-1 hover:border-[#D4AF37]/40 hover:text-[#D4AF37]">Houston, TX</Link>
+                <Link href="/black-owned-businesses/category/restaurant" className="rounded-full border border-white/15 px-3 py-1 hover:border-[#D4AF37]/40 hover:text-[#D4AF37]">Restaurants</Link>
+                <Link href="/black-owned-businesses/category/beauty" className="rounded-full border border-white/15 px-3 py-1 hover:border-[#D4AF37]/40 hover:text-[#D4AF37]">Beauty</Link>
+                <Link href="/black-owned-businesses/category/health-and-wellness" className="rounded-full border border-white/15 px-3 py-1 hover:border-[#D4AF37]/40 hover:text-[#D4AF37]">Health & Wellness</Link>
               </div>
+
+              <details className="sm:hidden rounded-xl border border-white/10 bg-black/20 px-3 py-2">
+                <summary className="cursor-pointer list-none text-xs font-bold text-white/85">Popular searches</summary>
+                <div className="mt-2 flex flex-wrap gap-2 text-xs text-white/70">
+                  <Link href="/black-owned-businesses/city/atlanta-ga" className="rounded-full border border-white/15 px-3 py-1">Atlanta, GA</Link>
+                  <Link href="/black-owned-businesses/city/houston-tx" className="rounded-full border border-white/15 px-3 py-1">Houston, TX</Link>
+                  <Link href="/black-owned-businesses/category/restaurant" className="rounded-full border border-white/15 px-3 py-1">Restaurants</Link>
+                  <Link href="/black-owned-businesses/category/beauty" className="rounded-full border border-white/15 px-3 py-1">Beauty</Link>
+                </div>
+              </details>
             </div>
           </div>
 
@@ -1205,21 +1230,46 @@ export default function BusinessDirectory() {
             <div className="min-w-0">
               {/* Categories (business only) */}
               {scope === "businesses" && (
-                <div className="mb-3 flex flex-wrap gap-2">
-                  {_CATEGORIES.map((cat) => (
-                    <button
-                      key={cat}
-                      onClick={() => setCategory(cat)}
-                      className={cx(
-                        "rounded-xl border px-3 py-2 text-[12px] font-extrabold tracking-wide transition",
-                        category === cat
-                          ? "border-[#D4AF37]/60 bg-[#D4AF37]/15 text-[#D4AF37]"
-                          : "border-white/10 bg-white/[0.03] text-white/75 hover:bg-white/[0.06]",
-                      )}
-                    >
-                      {cat}
-                    </button>
-                  ))}
+                <div className="mb-3 space-y-2">
+                  <div className="flex gap-2 overflow-x-auto pb-1 md:flex-wrap md:overflow-visible">
+                    {PRIMARY_CATEGORIES.map((cat) => {
+                      return (
+                        <button
+                          key={cat}
+                          onClick={() => setCategory(cat)}
+                          className={cx(
+                            "rounded-xl border px-3 py-2 text-[12px] font-extrabold tracking-wide transition whitespace-nowrap",
+                            category === cat
+                              ? "border-[#D4AF37]/60 bg-[#D4AF37]/15 text-[#D4AF37]"
+                              : "border-white/10 bg-white/[0.03] text-white/75 hover:bg-white/[0.06]",
+                          )}
+                        >
+                          {cat}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <details className="rounded-xl border border-white/10 bg-black/20 px-3 py-2">
+                    <summary className="cursor-pointer list-none text-xs font-bold text-white/80">
+                      More categories
+                    </summary>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {MORE_CATEGORIES.map((cat) => (
+                        <button
+                          key={cat}
+                          onClick={() => setCategory(cat)}
+                          className={cx(
+                            "rounded-xl border px-3 py-1.5 text-[11px] font-bold transition",
+                            category === cat
+                              ? "border-[#D4AF37]/60 bg-[#D4AF37]/15 text-[#D4AF37]"
+                              : "border-white/10 bg-white/[0.03] text-white/75 hover:bg-white/[0.06]",
+                          )}
+                        >
+                          {cat}
+                        </button>
+                      ))}
+                    </div>
+                  </details>
                 </div>
               )}
 
@@ -1277,8 +1327,11 @@ export default function BusinessDirectory() {
               </div>
 
               {/* Filter/sort controls */}
-              <div className="mt-3 rounded-2xl border border-white/10 bg-white/[0.03] p-3 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
-                <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+              <details className="mt-3 rounded-2xl border border-white/10 bg-white/[0.03] p-3 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
+                <summary className="cursor-pointer list-none text-sm font-bold text-white/85">
+                  Filters
+                </summary>
+                <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
                   <label className="rounded-xl border border-white/10 bg-black/20 px-3 py-2">
                     <div className="text-[11px] font-bold text-white/55">
                       Sort
@@ -1444,88 +1497,48 @@ export default function BusinessDirectory() {
                     </span>
                   )}
                 </div>
-              </div>
+              </details>
 
-              {/* Sponsors carousel */}
-              <div className="mt-5 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
-                <div className="mb-2 flex items-center justify-between">
-                  <h2 className="text-[11px] uppercase tracking-widest text-[#D4AF37] font-extrabold">
-                    Featured Sponsors
-                  </h2>
-                  <a
-                    href="/all-sponsors"
-                    className="text-[12px] text-white/70 hover:text-[#D4AF37] font-bold"
-                  >
-                    See All
-                  </a>
+              <details className="mt-4 rounded-2xl border border-white/10 bg-white/[0.03] p-3">
+                <summary className="cursor-pointer list-none text-sm font-bold text-white/80">
+                  Featured sponsors and placements
+                </summary>
+                <div className="mt-3 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
+                  <div className="mb-2 flex items-center justify-between">
+                    <h2 className="text-[11px] uppercase tracking-widest text-[#D4AF37] font-extrabold">Featured Sponsors</h2>
+                    <a href="/all-sponsors" className="text-[12px] text-white/70 hover:text-[#D4AF37] font-bold">See All</a>
+                  </div>
+                  {sponsorsToShow.length ? (
+                    <Swiper modules={[Navigation]} spaceBetween={10} slidesPerView="auto" navigation style={{ paddingBottom: 8 }}>
+                      {sponsorsToShow.map((ad, idx) => (
+                        <SwiperSlide key={`${ad.url}-${idx}`} className="!w-[170px] sm:!w-[190px]"><SponsorCard {...ad} /></SwiperSlide>
+                      ))}
+                    </Swiper>
+                  ) : (
+                    <div className="rounded-xl border border-white/10 bg-black/30 p-4 text-sm text-white/65">No active sponsor campaigns in this slot right now.</div>
+                  )}
                 </div>
-
-                {sponsorsToShow.length ? (
-                  <Swiper
-                    modules={[Navigation]}
-                    spaceBetween={10}
-                    slidesPerView="auto"
-                    navigation
-                    style={{ paddingBottom: 8 }}
-                  >
-                    {sponsorsToShow.map((ad, idx) => (
-                      <SwiperSlide
-                        key={`${ad.url}-${idx}`}
-                        className="!w-[170px] sm:!w-[190px]"
-                      >
-                        <SponsorCard {...ad} />
-                      </SwiperSlide>
-                    ))}
-                  </Swiper>
-                ) : (
-                  <div className="rounded-xl border border-white/10 bg-black/30 p-4 text-sm text-white/65">
-                    No active sponsor campaigns in this slot right now.
-                  </div>
-                )}
-              </div>
-
-              {scope === "businesses" && directoryFeaturedAds.length ? (
-                <div className="mt-5 rounded-2xl border border-[#D4AF37]/25 bg-[#D4AF37]/[0.06] p-4 shadow-[0_0_0_1px_rgba(212,175,55,0.18)]">
-                  <div className="mb-3 flex items-center justify-between">
-                    <h2 className="text-[11px] uppercase tracking-widest text-[#D4AF37] font-extrabold">
-                      Featured Directory Placements
-                    </h2>
-                    <span className="text-[11px] text-white/65">
-                      Paid featured listings
-                    </span>
-                  </div>
-                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                    {directoryFeaturedAds.map((ad) => (
-                      <a
-                        key={ad.id}
-                        href={ad.targetUrl || "#"}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="rounded-xl border border-white/15 bg-black/35 p-3 hover:bg-black/45"
-                      >
-                        <img
-                          src={ad.image || "/default-image.jpg"}
-                          alt={ad.name}
-                          className="h-24 w-full rounded-lg object-cover"
-                          loading="lazy"
-                          decoding="async"
-                        />
-                        <div className="mt-2 flex items-center justify-between gap-2">
-                          <div className="text-sm font-bold text-white truncate">
-                            {ad.name}
+                {scope === "businesses" && directoryFeaturedAds.length ? (
+                  <div className="mt-4 rounded-2xl border border-[#D4AF37]/25 bg-[#D4AF37]/[0.06] p-4 shadow-[0_0_0_1px_rgba(212,175,55,0.18)]">
+                    <div className="mb-3 flex items-center justify-between">
+                      <h2 className="text-[11px] uppercase tracking-widest text-[#D4AF37] font-extrabold">Featured Directory Placements</h2>
+                      <span className="text-[11px] text-white/65">Paid featured listings</span>
+                    </div>
+                    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                      {directoryFeaturedAds.map((ad) => (
+                        <a key={ad.id} href={ad.targetUrl || "#"} target="_blank" rel="noopener noreferrer" className="rounded-xl border border-white/15 bg-black/35 p-3 hover:bg-black/45">
+                          <img src={ad.image || "/default-image.jpg"} alt={ad.name} className="h-24 w-full rounded-lg object-cover" loading="lazy" decoding="async" />
+                          <div className="mt-2 flex items-center justify-between gap-2">
+                            <div className="text-sm font-bold text-white truncate">{ad.name}</div>
+                            <span className="rounded-full border border-[#D4AF37]/40 bg-[#D4AF37]/20 px-2 py-0.5 text-[10px] font-bold text-[#F1D57A]">Featured</span>
                           </div>
-                          <span className="rounded-full border border-[#D4AF37]/40 bg-[#D4AF37]/20 px-2 py-0.5 text-[10px] font-bold text-[#F1D57A]">
-                            Featured
-                          </span>
-                        </div>
-                        <div className="mt-1 text-[11px] text-white/70 line-clamp-2">
-                          {ad.tagline}
-                        </div>
-                      </a>
-                    ))}
+                          <div className="mt-1 text-[11px] text-white/70 line-clamp-2">{ad.tagline}</div>
+                        </a>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ) : null}
+                ) : null}
+              </details>
 
               {/* Results */}
               <div
@@ -1837,9 +1850,11 @@ export default function BusinessDirectory() {
                   ) : total === 0 && !isLoading ? (
                     <div className="py-10 text-center text-white/50">
                       <div>
-                        No listings match{" "}
-                        <span className="text-white/70">“{input.trim()}”</span>{" "}
-                        with current filters.
+                        {scope === "businesses" && category !== "All" && (CATEGORY_COUNTS[category] ?? 0) === 0
+                          ? `No listings in this category yet. Try All or another category.`
+                          : <>
+                              No listings match <span className="text-white/70">“{input.trim()}”</span> with current filters.
+                            </>}
                       </div>
                       <div className="mt-2 text-xs text-white/40">
                         Try a broader keyword, clear active filters, or switch

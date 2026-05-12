@@ -3,14 +3,18 @@ import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
 import { getBlackCardSession } from "@/lib/black-card-member";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method !== "GET") {
     res.setHeader("Allow", ["GET"]);
     return res.status(405).json({ ok: false, error: "Method Not Allowed" });
   }
 
   const session = getBlackCardSession(req);
-  if (!session) return res.status(401).json({ ok: false, error: "Unauthorized" });
+  if (!session)
+    return res.status(401).json({ ok: false, error: "Unauthorized" });
 
   const client = await clientPromise;
   const db = client.db(getMongoDbName());

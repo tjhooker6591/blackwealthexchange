@@ -12,6 +12,9 @@ const IndustryNewsIndex: React.FC = () => (
         <h1 className="text-4xl font-extrabold text-gold">
           Industry News & Trends
         </h1>
+        <p className="text-white/70">
+          Business, market, and workplace developments. Public content (Free).
+        </p>
         <ul className="space-y-6">
           {industryNewsData.map((item: IndustryNews) => (
             <li
@@ -25,7 +28,7 @@ const IndustryNewsIndex: React.FC = () => (
                 href={`/industry-news/${item.slug}`}
                 className="mt-4 inline-block text-gold underline"
               >
-                Read full article →
+                Read full article (Free) →
               </Link>
             </li>
           ))}

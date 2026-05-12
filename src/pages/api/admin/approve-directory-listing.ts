@@ -105,12 +105,7 @@ export default async function handler(
 
   const admin = getAdminDecodedFromRequest(req);
   if (!admin) {
-    return adminFail(
-      res,
-      401,
-      ADMIN_ERROR_CODES.UNAUTHORIZED,
-      "Unauthorized",
-    );
+    return adminFail(res, 401, ADMIN_ERROR_CODES.UNAUTHORIZED, "Unauthorized");
   }
   if (!isAdminDecoded(admin)) {
     return adminFail(res, 403, ADMIN_ERROR_CODES.FORBIDDEN, "Forbidden");

@@ -76,7 +76,7 @@ const PROGRAMS: Program[] = [
     who: "Students selected through Posse cohorts",
     format: "Cohort model + leadership + support network",
     tags: ["Leadership", "Community", "Career"],
-    href: "https://www.possefoundation.org/", 
+    href: "https://www.possefoundation.org/",
   },
 ];
 

@@ -26,7 +26,8 @@ export default async function handler(
   try {
     const cookies = cookie.parse(req.headers.cookie || "");
     const token = cookies.session_token;
-    if (!token) return res.status(401).json({ ok: false, error: "unauthorized" });
+    if (!token)
+      return res.status(401).json({ ok: false, error: "unauthorized" });
 
     const decoded = jwt.verify(token, getJwtSecret()) as any;
     const userId = String(decoded?.userId || "");
@@ -45,7 +46,8 @@ export default async function handler(
       { projection: { _id: 1, email: 1, stripeSubscriptionId: 1 } },
     );
 
-    if (!user) return res.status(404).json({ ok: false, error: "user_not_found" });
+    if (!user)
+      return res.status(404).json({ ok: false, error: "user_not_found" });
 
     const stripeSubscriptionId = String(user.stripeSubscriptionId || "");
     if (!stripeSubscriptionId) {

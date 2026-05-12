@@ -570,6 +570,32 @@ export default async function handler(
           { status: null },
         ],
       });
+
+      // Public-result safety guard: exclude obvious local audit/test fixtures.
+      if (!isOrganizations) {
+        and.push({
+          $nor: [
+            { isTest: true },
+            { auditTag: { $exists: true } },
+            { auditTag: /^BWE_LOCAL_AUDIT/i },
+            { category: /^auditpagination$/i },
+            { categories: /^auditpagination$/i },
+            { display_categories: /^auditpagination$/i },
+            { email: /@local\.test$/i },
+            { business_name: /^auditpagination_/i },
+            { name: /^auditpagination_/i },
+          ],
+        });
+
+        // Public detail-key safety: only include records that can resolve
+        // via /business/[slug] (alias OR slug).
+        and.push({
+          $or: [
+            { alias: { $exists: true, $type: "string", $ne: "" } },
+            { slug: { $exists: true, $type: "string", $ne: "" } },
+          ],
+        });
+      }
     }
 
     const searchTokens = search ? normalizeSearchTokens(search) : [];

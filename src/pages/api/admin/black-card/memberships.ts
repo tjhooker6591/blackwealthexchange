@@ -23,10 +23,7 @@ export default async function handler(
   const filter: Record<string, unknown> = {};
   if (status) filter.status = status;
   if (q) {
-    filter.$or = [
-      { userId: q },
-      { email: { $regex: new RegExp(q, "i") } },
-    ];
+    filter.$or = [{ userId: q }, { email: { $regex: new RegExp(q, "i") } }];
   }
 
   const memberships = await db

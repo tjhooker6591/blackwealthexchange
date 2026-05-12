@@ -151,10 +151,7 @@ export async function ensureBlackCardMembershipAndCard(params: {
     if (!card.status) patch.status = "active";
     if (Object.keys(patch).length > 0) {
       patch.updatedAt = now;
-      await cardCollection.updateOne(
-        { _id: card._id },
-        { $set: patch },
-      );
+      await cardCollection.updateOne({ _id: card._id }, { $set: patch });
       card = await cardCollection.findOne({ _id: card._id });
     }
   }

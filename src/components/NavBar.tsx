@@ -13,7 +13,7 @@ export default function NavBar() {
   const [desktopMenuOpen, setDesktopMenuOpen] = useState<DesktopMenu>(null);
   const navRef = useRef<HTMLElement | null>(null);
   const router = useRouter();
-  const { user, loading, logout } = useAuth();
+  const { user, loading, logout } = useAuth({ silentOnPublic: true });
 
   const dashboardHref =
     user?.accountType === "seller"

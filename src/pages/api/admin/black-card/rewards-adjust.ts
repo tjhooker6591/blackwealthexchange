@@ -4,7 +4,10 @@ import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
 import { requireAdminFromRequest } from "@/lib/adminAuth";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method !== "POST") {
     res.setHeader("Allow", ["POST"]);
     return res.status(405).json({ ok: false, error: "Method Not Allowed" });
@@ -17,8 +20,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const pointsDelta = Number(req.body?.pointsDelta || 0);
   const reason = String(req.body?.reason || "").trim();
 
-  if (!userId || !Number.isFinite(pointsDelta) || pointsDelta === 0 || !reason) {
-    return res.status(400).json({ ok: false, error: "userId, pointsDelta, and reason are required" });
+  if (
+    !userId ||
+    !Number.isFinite(pointsDelta) ||
+    pointsDelta === 0 ||
+    !reason
+  ) {
+    return res.status(400).json({
+      ok: false,
+      error: "userId, pointsDelta, and reason are required",
+    });
   }
 
   if (!ObjectId.isValid(userId)) {
@@ -29,20 +40,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const db = client.db(getMongoDbName());
   const now = new Date();
 
-  const user = await db.collection("users").findOne(
-    { _id: new ObjectId(userId) },
-    { projection: { blackCardRewardsBalance: 1, email: 1 } },
-  );
+  const user = await db
+    .collection("users")
+    .findOne(
+      { _id: new ObjectId(userId) },
+      { projection: { blackCardRewardsBalance: 1, email: 1 } },
+    );
 
-  if (!user) return res.status(404).json({ ok: false, error: "User not found" });
+  if (!user)
+    return res.status(404).json({ ok: false, error: "User not found" });
 
   const current = Number(user.blackCardRewardsBalance || 0);
   const next = current + pointsDelta;
 
-  await db.collection("users").updateOne(
-    { _id: user._id },
-    { $set: { blackCardRewardsBalance: next, updatedAt: now } },
-  );
+  await db
+    .collection("users")
+    .updateOne(
+      { _id: user._id },
+      { $set: { blackCardRewardsBalance: next, updatedAt: now } },
+    );
 
   await db.collection("black_card_rewards_ledger").insertOne({
     userId: String(user._id),

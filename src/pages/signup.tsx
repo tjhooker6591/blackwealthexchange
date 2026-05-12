@@ -169,7 +169,10 @@ export default function Signup() {
           content="Create your Black Wealth Exchange account to access wealth-building tools, marketplace features, and community resources."
         />
         <meta name="robots" content="noindex,nofollow" />
-        <link rel="canonical" href="https://www.blackwealthexchange.com/signup" />
+        <link
+          rel="canonical"
+          href="https://www.blackwealthexchange.com/signup"
+        />
         <meta property="og:title" content="Sign Up | Black Wealth Exchange" />
         <meta
           property="og:description"

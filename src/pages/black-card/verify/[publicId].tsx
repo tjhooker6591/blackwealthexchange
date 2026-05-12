@@ -14,7 +14,8 @@ type VerifyResponse = {
 
 export default function BlackCardVerifyPage() {
   const router = useRouter();
-  const publicId = typeof router.query.publicId === "string" ? router.query.publicId : "";
+  const publicId =
+    typeof router.query.publicId === "string" ? router.query.publicId : "";
   const [data, setData] = useState<VerifyResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -70,7 +71,9 @@ export default function BlackCardVerifyPage() {
               </div>
               <p>
                 <span className="text-white/70">Card type:</span>{" "}
-                <span className="font-semibold">{data.cardType || "unknown"}</span>
+                <span className="font-semibold">
+                  {data.cardType || "unknown"}
+                </span>
               </p>
               <p>
                 <span className="text-white/70">Status:</span>{" "}

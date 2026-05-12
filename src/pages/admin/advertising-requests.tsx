@@ -46,7 +46,6 @@ type Row = {
   };
 };
 
-
 const adminNavLinks = [
   ["Command Center", "/admin/command-center"],
   ["Financial Review", "/admin/financial-review"],
@@ -61,7 +60,11 @@ function AdminHubNav() {
   return (
     <div className="flex flex-wrap gap-2">
       {adminNavLinks.map(([label, href]) => (
-        <Link key={href} href={href} className="text-xs border border-zinc-700 px-3 py-1.5 rounded">
+        <Link
+          key={href}
+          href={href}
+          className="text-xs border border-zinc-700 px-3 py-1.5 rounded"
+        >
           {label}
         </Link>
       ))}
@@ -198,7 +201,12 @@ export default function AdvertisingRequestsAdminPage() {
         <AdminHubNav />
 
         {router.query.source === "command-center" ? (
-          <div className="mt-2 rounded border border-yellow-500/30 bg-yellow-500/10 px-3 py-2 text-xs text-yellow-200">Opened from Command Center{router.query.focus ? ` • Focus: ${String(router.query.focus)}` : ""}</div>
+          <div className="mt-2 rounded border border-yellow-500/30 bg-yellow-500/10 px-3 py-2 text-xs text-yellow-200">
+            Opened from Command Center
+            {router.query.focus
+              ? ` • Focus: ${String(router.query.focus)}`
+              : ""}
+          </div>
         ) : null}
 
         <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">

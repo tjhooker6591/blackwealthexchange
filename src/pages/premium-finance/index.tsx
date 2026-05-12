@@ -110,7 +110,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   if (!access.hasAccess) {
     return {
       redirect: {
-        destination: `/financial-literacy?locked=premium-finance&reason=${encodeURIComponent(access.reason || "no_entitlement")}`, 
+        destination: `/financial-literacy?locked=premium-finance&reason=${encodeURIComponent(access.reason || "no_entitlement")}`,
         permanent: false,
       },
     };

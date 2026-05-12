@@ -157,90 +157,92 @@ export default function InternApplicationsAdmin() {
           </div>
         ) : null}
 
-      {pageError && (
-        <div className="mb-6 rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-red-200">
-          {pageError}
-        </div>
-      )}
+        {pageError && (
+          <div className="mb-6 rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-red-200">
+            {pageError}
+          </div>
+        )}
 
-      {!pageError && apps.length === 0 && (
-        <div className="rounded-lg border border-white/10 bg-white/5 px-4 py-6 text-white/80">
-          No intern applications are currently available.
-        </div>
-      )}
+        {!pageError && apps.length === 0 && (
+          <div className="rounded-lg border border-white/10 bg-white/5 px-4 py-6 text-white/80">
+            No intern applications are currently available.
+          </div>
+        )}
 
-      {!loading ? <div className="space-y-4">
-        {apps.map((app) => {
-          const appId = getId(app);
+        {!loading ? (
+          <div className="space-y-4">
+            {apps.map((app) => {
+              const appId = getId(app);
 
-          return (
-            <div
-              key={appId || `${app.email}-${app.createdAt}`}
-              className="border border-gold rounded-lg p-4 bg-black"
-            >
-              <div className="flex flex-col md:flex-row md:justify-between gap-4">
-                <div>
-                  <h2 className="font-bold text-lg">{app.fullName}</h2>
-                  <p className="text-sm text-gray-400">{app.email}</p>
+              return (
+                <div
+                  key={appId || `${app.email}-${app.createdAt}`}
+                  className="border border-gold rounded-lg p-4 bg-black"
+                >
+                  <div className="flex flex-col md:flex-row md:justify-between gap-4">
+                    <div>
+                      <h2 className="font-bold text-lg">{app.fullName}</h2>
+                      <p className="text-sm text-gray-400">{app.email}</p>
 
-                  <p className="text-sm mt-2">
-                    <strong>Role:</strong> {app.role}
-                  </p>
+                      <p className="text-sm mt-2">
+                        <strong>Role:</strong> {app.role}
+                      </p>
 
-                  {app.skills && (
-                    <p className="text-sm">
-                      <strong>Skills:</strong> {app.skills}
-                    </p>
-                  )}
+                      {app.skills && (
+                        <p className="text-sm">
+                          <strong>Skills:</strong> {app.skills}
+                        </p>
+                      )}
 
-                  {app.why && (
-                    <p className="text-sm mt-2 text-gray-300">{app.why}</p>
-                  )}
+                      {app.why && (
+                        <p className="text-sm mt-2 text-gray-300">{app.why}</p>
+                      )}
 
-                  {app.createdAt && (
-                    <p className="text-xs mt-2 text-white/50">
-                      Submitted: {new Date(app.createdAt).toLocaleString()}
-                    </p>
-                  )}
+                      {app.createdAt && (
+                        <p className="text-xs mt-2 text-white/50">
+                          Submitted: {new Date(app.createdAt).toLocaleString()}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="space-y-2">
+                      <select
+                        value={app.status}
+                        onChange={(e) => updateStatus(appId, e.target.value)}
+                        className="bg-black border border-gold p-2 rounded w-full md:w-auto"
+                      >
+                        <option value="new">New</option>
+                        <option value="reviewed">Reviewed</option>
+                        <option value="contacted">Contacted</option>
+                        <option value="accepted">Accepted</option>
+                        <option value="rejected">Rejected</option>
+                        <option value="deleted">Deleted</option>
+                      </select>
+
+                      <button
+                        onClick={() => deleteApplication(appId)}
+                        className="w-full md:w-auto rounded bg-red-700/80 px-3 py-2 text-xs font-semibold"
+                      >
+                        Delete
+                      </button>
+
+                      {app.links && (
+                        <a
+                          href={app.links}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="block text-yellow-400 underline text-sm"
+                        >
+                          View Links
+                        </a>
+                      )}
+                    </div>
+                  </div>
                 </div>
-
-                <div className="space-y-2">
-                  <select
-                    value={app.status}
-                    onChange={(e) => updateStatus(appId, e.target.value)}
-                    className="bg-black border border-gold p-2 rounded w-full md:w-auto"
-                  >
-                    <option value="new">New</option>
-                    <option value="reviewed">Reviewed</option>
-                    <option value="contacted">Contacted</option>
-                    <option value="accepted">Accepted</option>
-                    <option value="rejected">Rejected</option>
-                    <option value="deleted">Deleted</option>
-                  </select>
-
-                  <button
-                    onClick={() => deleteApplication(appId)}
-                    className="w-full md:w-auto rounded bg-red-700/80 px-3 py-2 text-xs font-semibold"
-                  >
-                    Delete
-                  </button>
-
-                  {app.links && (
-                    <a
-                      href={app.links}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="block text-yellow-400 underline text-sm"
-                    >
-                      View Links
-                    </a>
-                  )}
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div> : null}
+              );
+            })}
+          </div>
+        ) : null}
       </div>
     </div>
   );

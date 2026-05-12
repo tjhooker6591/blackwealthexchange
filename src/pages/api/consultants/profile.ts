@@ -14,7 +14,9 @@ export default async function handler(
   try {
     const user = await getUserFromRequest(req);
     if (!user) return res.status(401).json({ error: "Unauthorized" });
-    const sessionUserId = String((user as any).id || (user as any).userId || "");
+    const sessionUserId = String(
+      (user as any).id || (user as any).userId || "",
+    );
     if (!sessionUserId) return res.status(401).json({ error: "Unauthorized" });
     if (user.accountType === "employer") {
       return res

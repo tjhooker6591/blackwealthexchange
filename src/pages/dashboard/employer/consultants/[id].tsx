@@ -2,7 +2,6 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
-
 const REQUEST_STATUS_LABELS: Record<string, string> = {
   submitted: "Submitted to consultant",
   accepted: "Accepted by consultant",
@@ -361,7 +360,10 @@ export default function EmployerConsultantProfilePage() {
                       <div className="mt-2 flex flex-wrap gap-2 text-[11px] text-zinc-400">
                         <span className="rounded border border-white/15 px-2 py-0.5">
                           status:{" "}
-                          {REQUEST_STATUS_LABELS[String(r.status || "submitted")] || String(r.status || "submitted").replace("_", " ")}
+                          {REQUEST_STATUS_LABELS[
+                            String(r.status || "submitted")
+                          ] ||
+                            String(r.status || "submitted").replace("_", " ")}
                         </span>
                         <span className="rounded border border-white/15 px-2 py-0.5">
                           moderation:{" "}
@@ -381,7 +383,10 @@ export default function EmployerConsultantProfilePage() {
                         ) : null}
                       </div>
                       <p className="mt-2 text-[11px] text-zinc-400">
-                        Next step: {REQUEST_STATUS_NEXT_STEP[String(r.status || "submitted")] || "Follow request lifecycle updates."}
+                        Next step:{" "}
+                        {REQUEST_STATUS_NEXT_STEP[
+                          String(r.status || "submitted")
+                        ] || "Follow request lifecycle updates."}
                       </p>
                       {r.consultantResponseNote ? (
                         <p className="mt-2 text-cyan-100/90">

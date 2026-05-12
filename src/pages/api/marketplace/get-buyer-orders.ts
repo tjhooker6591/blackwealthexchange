@@ -6,15 +6,25 @@ import { resolveBuyerSession } from "@/lib/marketplace/buyerSession";
 
 function normalizeTimeline(order: any) {
   const paymentStatus = String(order?.paymentStatus || "pending").toLowerCase();
-  const orderState = String(order?.orderState || order?.status || "pending").toLowerCase();
-  const fulfillmentStatus = String(order?.fulfillmentStatus || "pending").toLowerCase();
+  const orderState = String(
+    order?.orderState || order?.status || "pending",
+  ).toLowerCase();
+  const fulfillmentStatus = String(
+    order?.fulfillmentStatus || "pending",
+  ).toLowerCase();
 
   const orderedDone = true;
   const processingDone =
     ["paid", "fulfilled", "ready"].includes(paymentStatus) ||
-    ["paid_unfulfilled", "fulfilled_payout_ready", "fulfilled_payout_pending"].includes(orderState) ||
+    [
+      "paid_unfulfilled",
+      "fulfilled_payout_ready",
+      "fulfilled_payout_pending",
+    ].includes(orderState) ||
     ["processing", "fulfilled", "shipped"].includes(fulfillmentStatus);
-  const shippedDone = ["shipped", "fulfilled", "delivered"].includes(fulfillmentStatus);
+  const shippedDone = ["shipped", "fulfilled", "delivered"].includes(
+    fulfillmentStatus,
+  );
 
   return [
     { key: "ordered", label: "Ordered", done: orderedDone },
@@ -97,7 +107,9 @@ export default async function handler(
       const paymentState = String(o?.paymentStatus || "pending").toLowerCase();
       const fulfillmentState = String(
         o?.fulfillmentStatus ||
-          (["shipped", "fulfilled"].includes(String(o?.status || "").toLowerCase())
+          (["shipped", "fulfilled"].includes(
+            String(o?.status || "").toLowerCase(),
+          )
             ? String(o?.status).toLowerCase()
             : "processing"),
       ).toLowerCase();

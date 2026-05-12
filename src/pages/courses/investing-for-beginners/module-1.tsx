@@ -10,8 +10,27 @@ export default function Module1() {
         </h1>
 
         <div className="mb-6 rounded-xl border border-white/10 bg-black/30 p-4 text-sm text-gray-200">
-          <div className="font-semibold text-gold">Access status: Preview route</div>
-          <p className="mt-1 text-gray-300">Full enrolled-member access is granted after eligible course enrollment/purchase verification. If you need access, go to the course home and complete enrollment.</p>
+          <div className="font-semibold text-gold">
+            Access status: Preview route
+          </div>
+          <p className="mt-1 text-gray-300">
+            Full enrolled-member access is granted after eligible course
+            enrollment/purchase verification.
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <Link
+              href="/courses/investing-for-beginners"
+              className="rounded bg-gold px-3 py-2 text-black font-semibold hover:bg-yellow-400 transition"
+            >
+              Activate Course Access
+            </Link>
+            <Link
+              href="/login?next=/courses/investing-for-beginners"
+              className="rounded border border-white/20 px-3 py-2 text-white hover:bg-white/10 transition"
+            >
+              Log in and return
+            </Link>
+          </div>
         </div>
 
         <p className="mb-6 text-lg text-gray-200">

@@ -2,7 +2,8 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 // import { ObjectId } from "mongodb"; // Reserved for future use if needed
 import { sendBusinessAlert } from "@/lib/sendEmail";
-import { getAdminDecodedFromRequest, isAdminDecoded } from "@/lib/adminAuth";
+import { requireAdminFromRequest } from "@/lib/adminAuth";
+import { ADMIN_ERROR_CODES, adminFail } from "@/lib/adminApiContract";
 import { getMongoDbName } from "@/lib/env";
 
 // const MAX_SLOTS = 10; // Reserved for future use if needed
@@ -30,17 +31,16 @@ export default async function handler(
 
   if (req.method !== "POST") {
     res.setHeader("Allow", ["POST"]);
-    return fail(405, "METHOD_NOT_ALLOWED", "Method Not Allowed");
+    return adminFail(
+      res,
+      405,
+      ADMIN_ERROR_CODES.METHOD_NOT_ALLOWED,
+      "Method Not Allowed",
+    ) as any;
   }
 
-  const admin = getAdminDecodedFromRequest(req);
-  if (!admin) {
-    return fail(401, "UNAUTHORIZED", "Unauthorized");
-  }
-
-  if (!isAdminDecoded(admin)) {
-    return fail(403, "FORBIDDEN", "Forbidden");
-  }
+  const admin = await requireAdminFromRequest(req, res);
+  if (!admin) return;
 
   try {
     const client = await clientPromise;

@@ -8,7 +8,9 @@ type BuyerToken = {
   email?: string;
 };
 
-export function resolveBuyerSession(req: NextApiRequest):
+export function resolveBuyerSession(
+  req: NextApiRequest,
+):
   | { ok: true; userId: string; email: string }
   | { ok: false; status: number; error: string } {
   const cookies = parse(req.headers.cookie || "");
@@ -25,10 +27,16 @@ export function resolveBuyerSession(req: NextApiRequest):
   }
 
   const userId = String(decoded.userId || "").trim();
-  const email = String(decoded.email || "").trim().toLowerCase();
+  const email = String(decoded.email || "")
+    .trim()
+    .toLowerCase();
 
   if (!userId && !email) {
-    return { ok: false, status: 401, error: "Unauthorized: Missing buyer identity" };
+    return {
+      ok: false,
+      status: 401,
+      error: "Unauthorized: Missing buyer identity",
+    };
   }
 
   return { ok: true, userId, email };

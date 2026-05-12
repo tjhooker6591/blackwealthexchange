@@ -194,13 +194,20 @@ const ProductDetailPage = () => {
         <div className="mx-auto max-w-2xl rounded-2xl border border-white/10 bg-white/5 p-6 text-center">
           <h1 className="text-2xl font-bold text-gold">Listing unavailable</h1>
           <p className="mt-2 text-sm text-white/80">
-            This item is currently unavailable or was removed. You can continue shopping or contact support for help finding a replacement.
+            This item is currently unavailable or was removed. You can continue
+            shopping or contact support for help finding a replacement.
           </p>
           <div className="mt-5 flex flex-wrap justify-center gap-3">
-            <Link href="/marketplace" className="rounded-lg bg-gold px-4 py-2 text-sm font-semibold text-black">
+            <Link
+              href="/marketplace"
+              className="rounded-lg bg-gold px-4 py-2 text-sm font-semibold text-black"
+            >
               Continue shopping
             </Link>
-            <Link href="/support/marketplace" className="rounded-lg border border-white/20 px-4 py-2 text-sm font-semibold text-white/85 hover:bg-white/10">
+            <Link
+              href="/support/marketplace"
+              className="rounded-lg border border-white/20 px-4 py-2 text-sm font-semibold text-white/85 hover:bg-white/10"
+            >
               Marketplace support
             </Link>
           </div>

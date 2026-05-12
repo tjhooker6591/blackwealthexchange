@@ -8,6 +8,7 @@ import {
   getClientIp,
   hitApiRateLimit,
 } from "@/lib/apiRateLimit";
+import { sanitizeRichHtml } from "@/lib/security/sanitizeHtml";
 
 type Data =
   | { success: true; message: string }
@@ -55,7 +56,9 @@ export default async function handler(
     const rawName = typeof req.body?.name === "string" ? req.body.name : "";
     const rawEmail = typeof req.body?.email === "string" ? req.body.email : "";
 
-    const name = rawName.trim();
+    const name = sanitizeRichHtml(rawName)
+      .replace(/<[^>]*>?/gm, "")
+      .trim();
     const email = rawEmail.trim().toLowerCase();
 
     if (!name || !email) {

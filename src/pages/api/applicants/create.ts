@@ -49,9 +49,15 @@ export default async function handler(
   }
 
   const now = new Date();
-  const user = await db.collection("users").findOne({ _id: new ObjectId(userId) });
+  const user = await db
+    .collection("users")
+    .findOne({ _id: new ObjectId(userId) });
   const resumeUrl = typeof user?.resumeUrl === "string" ? user.resumeUrl : "";
-  const vetting = await runApplicantVetting(db, { userId: new ObjectId(userId), jobId: new ObjectId(jobId), resumeUrl });
+  const vetting = await runApplicantVetting(db, {
+    userId: new ObjectId(userId),
+    jobId: new ObjectId(jobId),
+    resumeUrl,
+  });
 
   const result = await db.collection("applicants").insertOne({
     jobId: new ObjectId(jobId),
@@ -78,5 +84,9 @@ export default async function handler(
     ],
   });
 
-  res.status(201).json({ success: true, applicantId: result.insertedId, vettingStatus: vetting.vettingStatus });
+  res.status(201).json({
+    success: true,
+    applicantId: result.insertedId,
+    vettingStatus: vetting.vettingStatus,
+  });
 }

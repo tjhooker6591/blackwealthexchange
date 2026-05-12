@@ -59,7 +59,8 @@ export default async function handler(
       typeof item.category === "string" && item.category.trim()
         ? item.category.trim()
         : "Other";
-    acc[key] = (acc[key] || 0) + (typeof item.amount === "number" ? item.amount : 0);
+    acc[key] =
+      (acc[key] || 0) + (typeof item.amount === "number" ? item.amount : 0);
     return acc;
   }, {});
 

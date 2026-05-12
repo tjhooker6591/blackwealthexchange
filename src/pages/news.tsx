@@ -418,8 +418,8 @@ export default function NewsPage() {
               </span>
             </div>
             <p className="text-sm text-gray-400 mt-2 max-w-2xl">
-              Auto-updating headlines from Black news worldwide. Curated via
-              multiple RSS feeds, refreshed every 10 minutes.
+              General Black news across business, politics, culture, and global
+              stories. Public content (Free).
             </p>
           </div>
 

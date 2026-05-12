@@ -63,7 +63,14 @@ export default function FeaturedSponsorPage() {
       businessName.trim().length >= 2 &&
       hasValidEmail
     );
-  }, [campaignDuration, confirmed, hasCreative, name, businessName, hasValidEmail]);
+  }, [
+    campaignDuration,
+    confirmed,
+    hasCreative,
+    name,
+    businessName,
+    hasValidEmail,
+  ]);
 
   const handleProceed = async () => {
     setError("");
@@ -366,19 +373,33 @@ export default function FeaturedSponsorPage() {
         </section>
 
         <section className="bg-gray-800 p-6 rounded-lg text-left space-y-2">
-          <h3 className="text-lg font-semibold text-gold">Checkout readiness checklist</h3>
+          <h3 className="text-lg font-semibold text-gold">
+            Checkout readiness checklist
+          </h3>
           <ul className="text-sm text-gray-300 space-y-1">
             <li>{campaignDuration ? "✅" : "❌"} Select campaign duration</li>
-            <li>{hasCreative ? "✅" : "❌"} Add creative file or hosted creative URL</li>
+            <li>
+              {hasCreative ? "✅" : "❌"} Add creative file or hosted creative
+              URL
+            </li>
             <li>{name.trim().length >= 2 ? "✅" : "❌"} Enter contact name</li>
-            <li>{businessName.trim().length >= 2 ? "✅" : "❌"} Enter business name</li>
+            <li>
+              {businessName.trim().length >= 2 ? "✅" : "❌"} Enter business
+              name
+            </li>
             <li>{hasValidEmail ? "✅" : "❌"} Enter valid email</li>
-            <li>{confirmed ? "✅" : "❌"} Confirm campaign details are correct</li>
+            <li>
+              {confirmed ? "✅" : "❌"} Confirm campaign details are correct
+            </li>
           </ul>
           <p className="text-xs text-gray-400 pt-1">
-            Review timeline: requests are reviewed, approved campaigns are scheduled into weekly capacity, then activated.
+            Review timeline: requests are reviewed, approved campaigns are
+            scheduled into weekly capacity, then activated.
           </p>
-          <p className="text-xs text-gray-400">Need help before payment? Use /support or include escalation notes in campaign notes.</p>
+          <p className="text-xs text-gray-400">
+            Need help before payment? Use /support or include escalation notes
+            in campaign notes.
+          </p>
         </section>
 
         {/* Proceed Button */}

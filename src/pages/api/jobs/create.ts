@@ -106,7 +106,9 @@ export default async function handler(
       requiresResume: requiresResume !== false,
       requiredSkills: normalizedRequiredSkills,
       requiredCertifications: normalizedRequiredCertifications,
-      minimumYearsExperience: Number.isFinite(minYears) ? Math.max(0, minYears) : 0,
+      minimumYearsExperience: Number.isFinite(minYears)
+        ? Math.max(0, minYears)
+        : 0,
       workAuthorizationRequired: Boolean(workAuthorizationRequired),
       status: "pending", // <-- Updated from "active" to "pending"
       createdAt: new Date(),

@@ -67,12 +67,10 @@ export default async function handler(
 
     if (limiter.blocked) {
       res.setHeader("Retry-After", String(limiter.retryAfterSeconds));
-      return res
-        .status(429)
-        .json({
-          ok: false,
-          error: "Too many requests. Please try again later.",
-        });
+      return res.status(429).json({
+        ok: false,
+        error: "Too many requests. Please try again later.",
+      });
     }
 
     const [interestRows, intakeRows] = await Promise.all([

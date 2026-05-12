@@ -149,12 +149,18 @@ export default async function handler(
       }
       if (!user) {
         user = await collection.findOne({
-          ownerEmail: { $regex: `^${escapeRegex(email.trim())}$`, $options: "i" },
+          ownerEmail: {
+            $regex: `^${escapeRegex(email.trim())}$`,
+            $options: "i",
+          },
         } as any);
       }
       if (!user) {
         user = await collection.findOne({
-          business_email: { $regex: `^${escapeRegex(email.trim())}$`, $options: "i" },
+          business_email: {
+            $regex: `^${escapeRegex(email.trim())}$`,
+            $options: "i",
+          },
         } as any);
       }
       if (user) {

@@ -48,20 +48,22 @@ function getWebhookSecret() {
   return (process.env.STRIPE_WEBHOOK_SECRET || "").trim();
 }
 
-
 function redactId(value: string) {
   if (!value) return "";
   return `${value.slice(0, 12)}••••`;
 }
 
-async function logWebhookDebug(db: Db, input: {
-  eventId?: string;
-  eventType?: string;
-  sessionId?: string;
-  revenueStream?: string;
-  status: "received" | "processed" | "ledger_written" | "failed";
-  ledgerAttempted: boolean;
-}) {
+async function logWebhookDebug(
+  db: Db,
+  input: {
+    eventId?: string;
+    eventType?: string;
+    sessionId?: string;
+    revenueStream?: string;
+    status: "received" | "processed" | "ledger_written" | "failed";
+    ledgerAttempted: boolean;
+  },
+) {
   try {
     await db.collection("webhook_events_debug").insertOne({
       eventId: input.eventId || null,
@@ -622,12 +624,14 @@ export default async function webhookHandler(
     await logWebhookDebug(db, {
       eventId: event.id,
       eventType: event.type,
-      sessionId: stripeSessionId,
+      sessionId: "",
       status: "received",
       ledgerAttempted: false,
     });
 
-    console.log(`[webhook] received type=${event.type} event=${redactId(event.id)} session=${redactId(stripeSessionId)}`);
+    console.log(
+      `[webhook] received type=${event.type} event=${redactId(event.id)} subscription-lifecycle`,
+    );
 
     const now = new Date();
 
@@ -838,7 +842,9 @@ export default async function webhookHandler(
       ledgerAttempted: false,
     });
 
-    console.log(`[webhook] received type=${event.type} event=${redactId(event.id)} session=${redactId(stripeSessionId)}`);
+    console.log(
+      `[webhook] received type=${event.type} event=${redactId(event.id)} session=${redactId(stripeSessionId)}`,
+    );
 
     const now = new Date();
     const sessionCreatedAt = unixToDate((session as any).created, now);
@@ -1045,7 +1051,6 @@ export default async function webhookHandler(
       },
     );
 
-    const ledgerEnabled = isFinancialLedgerEnabled();
     if (ledgerEnabled) {
       await db.collection("financial_ledger").updateOne(
         { transactionId: stripeSessionId, webhookEventId: event.id },
@@ -1115,7 +1120,9 @@ export default async function webhookHandler(
       ledgerAttempted: ledgerEnabled,
     });
 
-    console.log(`[webhook] processed type=${event.type} event=${redactId(event.id)} session=${redactId(stripeSessionId)} stream=${resolvedRevenueType} ledger_attempted=${ledgerEnabled ? "yes" : "no"}`);
+    console.log(
+      `[webhook] processed type=${event.type} event=${redactId(event.id)} session=${redactId(stripeSessionId)} stream=${resolvedRevenueType} ledger_attempted=${ledgerEnabled ? "yes" : "no"}`,
+    );
 
     if (metaType === "product") {
       const orderId =

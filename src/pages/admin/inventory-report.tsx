@@ -46,7 +46,9 @@ export default function InventoryReport() {
     <div className="min-h-screen bg-black text-white p-8">
       <div className="mb-6 flex items-center justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-bold text-gold mb-1">Inventory Report</h1>
+          <h1 className="text-3xl font-bold text-gold mb-1">
+            Inventory Report
+          </h1>
           <p className="text-sm text-gray-400">
             Track marketplace inventory and quickly identify low-stock or
             out-of-stock products.
@@ -77,7 +79,9 @@ export default function InventoryReport() {
         <div className="mb-4 p-3 bg-red-700 rounded text-center">{message}</div>
       )}
       {loading ? (
-        <div className="rounded-lg border border-zinc-800 bg-zinc-950 p-4 text-sm text-zinc-300">Loading inventory…</div>
+        <div className="rounded-lg border border-zinc-800 bg-zinc-950 p-4 text-sm text-zinc-300">
+          Loading inventory…
+        </div>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full text-sm bg-gray-900 rounded shadow">

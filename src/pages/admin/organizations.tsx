@@ -238,7 +238,9 @@ export default function AdminOrganizationsPage() {
           {loading ? (
             <p>Loading...</p>
           ) : items.length === 0 ? (
-            <p className="text-gray-400">No organizations match the current filters.</p>
+            <p className="text-gray-400">
+              No organizations match the current filters.
+            </p>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">

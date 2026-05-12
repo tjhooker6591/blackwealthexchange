@@ -31,7 +31,12 @@ export default function TicketDetailPage() {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
-      body: JSON.stringify({ status, internalNote: note, assignedTo, escalationLevel }),
+      body: JSON.stringify({
+        status,
+        internalNote: note,
+        assignedTo,
+        escalationLevel,
+      }),
     });
     location.reload();
   }
@@ -61,8 +66,18 @@ export default function TicketDetailPage() {
             value={status}
             onChange={(e) => setStatus(e.target.value)}
           />
-          <input className="w-full p-2 bg-zinc-900 border border-zinc-700 rounded" placeholder="Assigned to" value={assignedTo} onChange={(e)=>setAssignedTo(e.target.value)} />
-          <input className="w-full p-2 bg-zinc-900 border border-zinc-700 rounded" placeholder="Escalation level (none/l1/l2/security/finance)" value={escalationLevel} onChange={(e)=>setEscalationLevel(e.target.value)} />
+          <input
+            className="w-full p-2 bg-zinc-900 border border-zinc-700 rounded"
+            placeholder="Assigned to"
+            value={assignedTo}
+            onChange={(e) => setAssignedTo(e.target.value)}
+          />
+          <input
+            className="w-full p-2 bg-zinc-900 border border-zinc-700 rounded"
+            placeholder="Escalation level (none/l1/l2/security/finance)"
+            value={escalationLevel}
+            onChange={(e) => setEscalationLevel(e.target.value)}
+          />
           <textarea
             className="w-full p-2 bg-zinc-900 border border-zinc-700 rounded min-h-24"
             value={note}

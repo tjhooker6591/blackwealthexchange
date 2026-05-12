@@ -89,7 +89,7 @@ export default function ResourcesIndex() {
                     href={`/resources/${article.slug}`}
                     className="font-medium text-gold hover:underline"
                   >
-                    Read Article →
+                    Read Article (Free) →
                   </Link>
                 ) : (
                   <span className="font-medium text-gray-500">

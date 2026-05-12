@@ -67,12 +67,12 @@ export default function MarketplaceAnalyticsPage() {
           </div>
         ) : null}
 
-
         {!loading && !error ? (
           <section className="mt-5 rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-4">
             <h2 className="text-base font-bold text-[#D4AF37]">Next action</h2>
             <p className="mt-1 text-sm text-white/80">
-              Use analytics to tune listings, then return to products and orders to improve conversion.
+              Use analytics to tune listings, then return to products and orders
+              to improve conversion.
             </p>
             <div className="mt-3 flex flex-wrap gap-2">
               <Link

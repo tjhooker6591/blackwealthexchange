@@ -24,7 +24,8 @@ export const PAID_PLACEMENT_DEFINITIONS: PlacementDefinition[] = [
   },
   {
     product: "Featured Sponsor",
-    where: "Homepage Featured Sponsors rail (primary homepage sponsorship surface)",
+    where:
+      "Homepage Featured Sponsors rail (primary homepage sponsorship surface)",
     how: "Scheduled sponsor cards from approved sponsor feed",
     limits: `Max ${FEATURED_SPONSOR_RAIL_CAP} visible sponsors in homepage rail`,
     duration: "7, 14, or 30 days",
@@ -40,7 +41,8 @@ export const PAID_PLACEMENT_DEFINITIONS: PlacementDefinition[] = [
   },
   {
     product: "Banner Placement",
-    where: "Business Directory sidebar banner + tightly limited homepage top banner",
+    where:
+      "Business Directory sidebar banner + tightly limited homepage top banner",
     how: "Approved banner creatives rendered in slot-based placements",
     limits: `Homepage top: ${BANNER_HOMEPAGE_TOP_CAP} (deferred when Featured Sponsor campaigns are live); Directory sidebar: ${BANNER_SIDEBAR_CAP}`,
     duration: "14 or 30 days",

@@ -6,6 +6,7 @@ import {
   getClientIp,
   hitApiRateLimit,
 } from "@/lib/apiRateLimit";
+import { sanitizeRichHtml } from "@/lib/security/sanitizeHtml";
 
 type Ok = { success: true; message: string };
 type Err = { success: false; error: string };
@@ -56,9 +57,9 @@ export default async function handler(
     const type = asText(req.body?.type).toLowerCase();
     const name = asText(req.body?.name);
     const email = asText(req.body?.email).toLowerCase();
-    const company = asText(req.body?.company);
+    const company = sanitizeRichHtml(asText(req.body?.company)).trim();
     const phone = asText(req.body?.phone);
-    const details = asText(req.body?.details);
+    const details = sanitizeRichHtml(asText(req.body?.details)).trim();
 
     if (!["employer", "candidate"].includes(type)) {
       return res

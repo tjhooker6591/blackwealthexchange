@@ -46,7 +46,10 @@ export default async function handler(
         db.collection("products").countDocuments({}),
       ]);
 
-    res.setHeader("Cache-Control", "public, s-maxage=60, stale-while-revalidate=120");
+    res.setHeader(
+      "Cache-Control",
+      "public, s-maxage=60, stale-while-revalidate=120",
+    );
     return res.status(200).json({
       businesses,
       organizations,

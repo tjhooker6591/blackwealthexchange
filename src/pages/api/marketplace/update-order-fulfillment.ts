@@ -21,13 +21,16 @@ export default async function handler(
     return res.status(405).json({ error: "Method Not Allowed" });
   }
 
-  const { orderId, fulfillmentState, trackingNumber, trackingCarrier } = req.body || {};
+  const { orderId, fulfillmentState, trackingNumber, trackingCarrier } =
+    req.body || {};
   const oid = parseOrderId(orderId);
   if (!oid) {
     return res.status(400).json({ error: "Invalid orderId" });
   }
 
-  const nextState = String(fulfillmentState || "").trim().toLowerCase();
+  const nextState = String(fulfillmentState || "")
+    .trim()
+    .toLowerCase();
   if (!["processing", "fulfilled", "shipped"].includes(nextState)) {
     return res.status(400).json({
       error: "Invalid fulfillmentState. Use processing, fulfilled, or shipped.",
@@ -40,14 +43,18 @@ export default async function handler(
 
     const sellerSession = await resolveSellerSession(req, db);
     if (!sellerSession.ok) {
-      return res.status(sellerSession.status).json({ error: sellerSession.error });
+      return res
+        .status(sellerSession.status)
+        .json({ error: sellerSession.error });
     }
 
     const order = await db.collection("orders").findOne({ _id: oid });
     if (!order) return res.status(404).json({ error: "Order not found" });
 
     if (String(order?.sellerId || "") !== sellerSession.sellerId) {
-      return res.status(403).json({ error: "Forbidden: You do not own this order" });
+      return res
+        .status(403)
+        .json({ error: "Forbidden: You do not own this order" });
     }
 
     const now = new Date();

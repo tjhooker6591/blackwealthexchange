@@ -62,43 +62,45 @@ export default function UnifiedVerifierPage() {
           </span>
         </div>
 
-      <div className="grid md:grid-cols-5 gap-2">
-        {Object.entries(filters).map(([k, v]) => (
-          <input
-            key={k}
-            value={v}
-            onChange={(e) => setFilters((p) => ({ ...p, [k]: e.target.value }))}
-            placeholder={k}
-            className="bg-gray-900 border border-gray-700 rounded px-2 py-2 text-sm"
-          />
-        ))}
-      </div>
-      <button
-        onClick={run}
-        className="mt-3 bg-gold text-black px-3 py-2 rounded text-sm"
-      >
-        {loading ? "Running..." : "Run Verification"}
-      </button>
-      {error ? (
-        <div className="mt-2 rounded border border-red-500/40 bg-red-900/20 p-3 text-sm text-red-200">
-          {error}
+        <div className="grid md:grid-cols-5 gap-2">
+          {Object.entries(filters).map(([k, v]) => (
+            <input
+              key={k}
+              value={v}
+              onChange={(e) =>
+                setFilters((p) => ({ ...p, [k]: e.target.value }))
+              }
+              placeholder={k}
+              className="bg-gray-900 border border-gray-700 rounded px-2 py-2 text-sm"
+            />
+          ))}
         </div>
-      ) : null}
-      <div className="mt-4 space-y-2">
-        {!loading && !error && items.length === 0 ? (
-          <div className="rounded border border-zinc-800 bg-zinc-950 p-4 text-sm text-zinc-300">
-            No verifier records match the current filters.
+        <button
+          onClick={run}
+          className="mt-3 bg-gold text-black px-3 py-2 rounded text-sm"
+        >
+          {loading ? "Running..." : "Run Verification"}
+        </button>
+        {error ? (
+          <div className="mt-2 rounded border border-red-500/40 bg-red-900/20 p-3 text-sm text-red-200">
+            {error}
           </div>
         ) : null}
-        {items.map((it, idx) => (
-          <pre
-            key={idx}
-            className="bg-gray-900 border border-gray-800 rounded p-3 text-xs overflow-x-auto"
-          >
-            {JSON.stringify(it, null, 2)}
-          </pre>
-        ))}
-      </div>
+        <div className="mt-4 space-y-2">
+          {!loading && !error && items.length === 0 ? (
+            <div className="rounded border border-zinc-800 bg-zinc-950 p-4 text-sm text-zinc-300">
+              No verifier records match the current filters.
+            </div>
+          ) : null}
+          {items.map((it, idx) => (
+            <pre
+              key={idx}
+              className="bg-gray-900 border border-gray-800 rounded p-3 text-xs overflow-x-auto"
+            >
+              {JSON.stringify(it, null, 2)}
+            </pre>
+          ))}
+        </div>
       </div>
     </main>
   );

@@ -273,7 +273,8 @@ export default function TravelMapExplorePage() {
         const next = new Set<string>();
         for (const item of data.items) {
           const businessId = `${item?.businessId || ""}`.trim();
-          if (businessId && visibleBusinessIds.has(businessId)) next.add(businessId);
+          if (businessId && visibleBusinessIds.has(businessId))
+            next.add(businessId);
         }
 
         if (!cancelled) {
@@ -518,7 +519,9 @@ export default function TravelMapExplorePage() {
                     key={business._id}
                     business={business}
                     isSaved={savedBusinessIds.has(business._id)}
-                    saveBusy={savingBusinessId === business._id || savedStateHydrating}
+                    saveBusy={
+                      savingBusinessId === business._id || savedStateHydrating
+                    }
                     saveHydrating={savedStateHydrating}
                     onToggleSave={handleToggleSave}
                   />

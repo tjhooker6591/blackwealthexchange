@@ -45,9 +45,7 @@ export default function MusicLandingPage() {
             <button
               onClick={() =>
                 router.push(
-                  user
-                    ? "/music/pricing"
-                    : "/login?redirect=/music/pricing",
+                  user ? "/music/pricing" : "/login?redirect=/music/pricing",
                 )
               }
               className="rounded-xl border border-white/20 bg-white/5 px-5 py-2.5 font-bold text-white hover:bg-white/10"

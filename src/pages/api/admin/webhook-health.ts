@@ -4,7 +4,10 @@ import { requireAdminFromRequest } from "@/lib/adminAuth";
 import { getMongoDbName } from "@/lib/env";
 import { redactStripeId } from "@/lib/finance/ledger";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method !== "GET") {
     res.setHeader("Allow", "GET");
     return res.status(405).json({ error: "Method not allowed" });
@@ -13,7 +16,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (!admin) return;
 
   const db = (await clientPromise).db(getMongoDbName());
-  const last = await db.collection("webhook_events_debug").find({}).sort({ createdAt: -1 }).limit(1).next();
+  const last = await db
+    .collection("webhook_events_debug")
+    .find({})
+    .sort({ createdAt: -1 })
+    .limit(1)
+    .next();
 
   return res.status(200).json({
     lastWebhookReceivedAt: last?.createdAt || null,

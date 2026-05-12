@@ -192,9 +192,9 @@ const AffiliatePartnershipPage: NextPage = () => {
                   Affiliate &amp; Partnership Program
                 </h1>
                 <p className="mt-3 text-sm sm:text-base md:text-lg text-white/70 max-w-3xl">
-                  The BWE Affiliate Program lets you share approved links,
-                  drive qualified traffic to Black-owned brands, and earn
-                  commissions from valid conversions.
+                  The BWE Affiliate Program lets you share approved links, drive
+                  qualified traffic to Black-owned brands, and earn commissions
+                  from valid conversions.
                 </p>
 
                 <p className="mt-2 text-sm text-white/60 max-w-3xl">

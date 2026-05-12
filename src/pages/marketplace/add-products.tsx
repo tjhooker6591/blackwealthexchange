@@ -92,7 +92,10 @@ export default function AddProductPage() {
       try {
         const res = await fetch("/api/auth/me");
         if (!res.ok) {
-          router.replace("/auth/seller-login");
+          setError("Please sign in with your seller account to add products.");
+          router.replace(
+            "/auth/seller-login?redirect=/marketplace/add-products",
+          );
           return;
         }
         const data = await res.json();
@@ -100,6 +103,9 @@ export default function AddProductPage() {
 
         // If not seller, send them to become-a-seller
         if (acct !== "seller") {
+          setError(
+            "Seller profile required. Complete seller setup to add products.",
+          );
           router.replace("/marketplace/become-a-seller");
           return;
         }

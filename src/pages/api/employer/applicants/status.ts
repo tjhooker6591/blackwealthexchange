@@ -111,9 +111,7 @@ export default async function handler(
         ...(nextStatus === "rejected" && rejectionReason
           ? { rejectionReason }
           : {}),
-        ...(manualOverride
-          ? { manualOverride: true, overrideReason }
-          : {}),
+        ...(manualOverride ? { manualOverride: true, overrideReason } : {}),
       },
       $push: {
         statusHistory: {

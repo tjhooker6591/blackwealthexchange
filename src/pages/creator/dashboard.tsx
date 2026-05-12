@@ -26,7 +26,9 @@ export default function CreatorDashboardPage() {
   useEffect(() => {
     if (authLoading) return;
     if (!user) {
-      router.replace(`/login?redirect=${encodeURIComponent("/creator/dashboard")}`);
+      router.replace(
+        `/login?redirect=${encodeURIComponent("/creator/dashboard")}`,
+      );
       return;
     }
 

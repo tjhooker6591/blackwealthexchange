@@ -45,7 +45,12 @@ function toIso(value: unknown): string | undefined {
 
 function normalizeAsset(doc: any, key: "avatar" | "resume"): AssetMeta | null {
   const raw = doc?.[key];
-  if (raw && typeof raw === "object" && typeof raw.url === "string" && raw.url) {
+  if (
+    raw &&
+    typeof raw === "object" &&
+    typeof raw.url === "string" &&
+    raw.url
+  ) {
     return {
       url: raw.url,
       filename: typeof raw.filename === "string" ? raw.filename : undefined,
@@ -150,7 +155,8 @@ export default async function handler(
       await col.updateOne({ _id: new ObjectId(String(doc._id)) }, update);
 
       const updated = await col.findOne({ _id: new ObjectId(String(doc._id)) });
-      if (!updated) return res.status(500).json({ error: "Profile update failed" });
+      if (!updated)
+        return res.status(500).json({ error: "Profile update failed" });
 
       return res.status(200).json(mapProfile(updated, email));
     }

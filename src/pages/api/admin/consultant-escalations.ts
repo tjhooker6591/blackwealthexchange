@@ -148,7 +148,9 @@ export default async function handler(
               typeof synced?.adminDispositionBy === "string"
                 ? synced.adminDispositionBy
                 : null,
-            at: synced?.adminDispositionAt ? new Date(synced.adminDispositionAt) : null,
+            at: synced?.adminDispositionAt
+              ? new Date(synced.adminDispositionAt)
+              : null,
           };
         } else {
           requestSync = {

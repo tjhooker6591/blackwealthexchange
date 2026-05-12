@@ -12,6 +12,9 @@ type Business = {
   description: string;
   slug: string;
   logo?: string;
+  image?: string;
+  imageUrl?: string;
+  img?: string;
   tier: string;
 
   // new (expected from API)
@@ -36,6 +39,15 @@ function _cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
+function normalizeImageSrc(biz: Business) {
+  const raw = biz.logo || biz.image || biz.imageUrl || biz.img || "";
+  const v = String(raw || "").trim();
+  if (!v) return "/ads/default-banner.jpg";
+  if (v.startsWith("/")) return v;
+  if (/^https?:\/\//i.test(v)) return v;
+  return `/${v}`;
+}
+
 export default function SponsoredBusinessPage() {
   const [businesses, setBusinesses] = useState<Business[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -50,7 +62,13 @@ export default function SponsoredBusinessPage() {
       try {
         const res = await fetch("/api/sponsored-businesses");
         const data = await res.json();
-        setBusinesses(Array.isArray(data?.sponsors) ? data.sponsors : Array.isArray(data) ? data : []);
+        setBusinesses(
+          Array.isArray(data?.sponsors)
+            ? data.sponsors
+            : Array.isArray(data)
+              ? data
+              : [],
+        );
       } catch (e) {
         console.error("Failed to load sponsored businesses:", e);
         setBusinesses([]);
@@ -247,13 +265,9 @@ export default function SponsoredBusinessPage() {
                     key={biz._id}
                     className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-[#D4AF37]/14 to-white/5 shadow-[0_0_0_1px_rgba(255,255,255,0.04)] hover:border-white/20 transition"
                   >
-                    <div className="absolute right-4 top-4 rounded-full border border-white/10 bg-black/70 px-3 py-1 text-xs font-bold text-gold">
-                      Featured Sponsored
-                    </div>
-
                     <div className="relative h-44 w-full">
                       <Image
-                        src={biz.logo || "/ads/default-banner.jpg"}
+                        src={normalizeImageSrc(biz)}
                         alt={biz.name}
                         layout="fill"
                         objectFit="cover"
@@ -266,6 +280,9 @@ export default function SponsoredBusinessPage() {
                       <h3 className="text-lg md:text-xl font-bold text-white">
                         {biz.name}
                       </h3>
+                      <p className="mt-1 text-[11px] text-white/55">
+                        Sponsored listing
+                      </p>
 
                       {/* NEW: location */}
                       {(biz.city || biz.state) && (
@@ -339,7 +356,7 @@ export default function SponsoredBusinessPage() {
                   >
                     <div className="relative h-40 w-full">
                       <Image
-                        src={biz.logo || "/ads/default-banner.jpg"}
+                        src={normalizeImageSrc(biz)}
                         alt={biz.name}
                         layout="fill"
                         objectFit="cover"

@@ -104,7 +104,10 @@ export default async function handler(
         .find({
           $or: [
             { stripeSessionId: p.stripeSessionId || null },
-            { userId: resolvedUserId || null, courseId: resolvedCourseId || null },
+            {
+              userId: resolvedUserId || null,
+              courseId: resolvedCourseId || null,
+            },
           ],
         })
         .sort({ createdAt: -1 })

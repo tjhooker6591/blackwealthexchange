@@ -125,8 +125,12 @@ export default function RecruitingConsultingPage() {
               <p className="font-semibold text-white">What to expect</p>
               <ul className="mt-1 list-disc space-y-1 pl-5">
                 <li>Initial triage within 1 business day.</li>
-                <li>Status updates available at any time via your intake email.</li>
-                <li>Flagged submissions enter manual review before outreach.</li>
+                <li>
+                  Status updates available at any time via your intake email.
+                </li>
+                <li>
+                  Flagged submissions enter manual review before outreach.
+                </li>
               </ul>
             </div>
             {mode === "employer" ? (

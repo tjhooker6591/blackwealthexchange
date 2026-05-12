@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-
 const adminNavLinks = [
   ["Command Center", "/admin/command-center"],
   ["Financial Review", "/admin/financial-review"],
@@ -19,7 +18,11 @@ function AdminHubNav() {
   return (
     <div className="flex flex-wrap gap-2">
       {adminNavLinks.map(([label, href]) => (
-        <Link key={href} href={href} className="text-xs border border-zinc-700 px-3 py-1.5 rounded">
+        <Link
+          key={href}
+          href={href}
+          className="text-xs border border-zinc-700 px-3 py-1.5 rounded"
+        >
           {label}
         </Link>
       ))}
@@ -48,7 +51,10 @@ export default function AdminSupportPage() {
 
         {router.query.source === "command-center" ? (
           <div className="rounded border border-yellow-500/30 bg-yellow-500/10 px-3 py-2 text-xs text-yellow-200">
-            Opened from Command Center{router.query.focus ? ` • Focus: ${String(router.query.focus)}` : ""}
+            Opened from Command Center
+            {router.query.focus
+              ? ` • Focus: ${String(router.query.focus)}`
+              : ""}
           </div>
         ) : null}
 
@@ -74,7 +80,12 @@ export default function AdminSupportPage() {
 
         <section className="rounded border border-zinc-800 bg-zinc-950 p-3 text-sm">
           <span className="text-zinc-300 mr-3">Related actions:</span>
-          <Link href="/admin/revenue?source=command-center&focus=support-impact" className="underline text-yellow-300">View related revenue impact</Link>
+          <Link
+            href="/admin/revenue?source=command-center&focus=support-impact"
+            className="underline text-yellow-300"
+          >
+            View related revenue impact
+          </Link>
         </section>
 
         <div className="grid md:grid-cols-3 gap-2">

@@ -66,7 +66,9 @@ export default function BlackWealthPage() {
         <link rel="canonical" href={canonical} />
       </Head>
 
-      <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>
+      <script type="application/ld+json">
+        {JSON.stringify(articleSchema)}
+      </script>
 
       <main className="min-h-screen bg-black px-6 py-12 text-white">
         <div className="mx-auto max-w-5xl">

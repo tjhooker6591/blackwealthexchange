@@ -15,7 +15,9 @@ export default async function handler(
   const db = client.db(getMongoDbName());
 
   if (req.method === "GET") {
-    const statusFilter = String(req.query.status || "").trim().toLowerCase();
+    const statusFilter = String(req.query.status || "")
+      .trim()
+      .toLowerCase();
     const userIdFilter = String(req.query.userId || "").trim();
     const query: Record<string, unknown> = {};
     if (statusFilter) query.status = statusFilter;
@@ -97,18 +99,28 @@ export default async function handler(
       if (pointsRefund > 0 && existing.userId) {
         const userId = String(existing.userId);
         if (!ObjectId.isValid(userId)) {
-          return res.status(400).json({ ok: false, error: "Invalid redemption userId" });
+          return res
+            .status(400)
+            .json({ ok: false, error: "Invalid redemption userId" });
         }
-        const user = await db.collection("users").findOne(
-          { _id: new ObjectId(userId) },
-          { projection: { blackCardRewardsBalance: 1 } },
-        );
+        const user = await db
+          .collection("users")
+          .findOne(
+            { _id: new ObjectId(userId) },
+            { projection: { blackCardRewardsBalance: 1 } },
+          );
 
         if (user) {
-          const nextBalance = Number(user.blackCardRewardsBalance || 0) + pointsRefund;
+          const nextBalance =
+            Number(user.blackCardRewardsBalance || 0) + pointsRefund;
           await db.collection("users").updateOne(
             { _id: new ObjectId(userId) },
-            { $set: { blackCardRewardsBalance: nextBalance, updatedAt: new Date() } },
+            {
+              $set: {
+                blackCardRewardsBalance: nextBalance,
+                updatedAt: new Date(),
+              },
+            },
           );
 
           await db.collection("black_card_rewards_ledger").insertOne({

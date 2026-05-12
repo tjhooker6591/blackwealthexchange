@@ -1,7 +1,7 @@
 // src/pages/api/admin/affiliates/list.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
-import { getAdminDecodedFromRequest, isAdminDecoded } from "@/lib/adminAuth";
+import { requireAdminFromRequest } from "@/lib/adminAuth";
 import { ADMIN_ERROR_CODES, adminFail } from "@/lib/adminApiContract";
 import { getMongoDbName } from "@/lib/env";
 
@@ -19,13 +19,8 @@ export default async function handler(
     );
   }
 
-  const admin = getAdminDecodedFromRequest(req);
-  if (!admin) {
-    return adminFail(res, 401, ADMIN_ERROR_CODES.UNAUTHORIZED, "Unauthorized");
-  }
-  if (!isAdminDecoded(admin)) {
-    return adminFail(res, 403, ADMIN_ERROR_CODES.FORBIDDEN, "Forbidden");
-  }
+  const admin = await requireAdminFromRequest(req, res);
+  if (!admin) return;
 
   try {
     const client = await clientPromise;

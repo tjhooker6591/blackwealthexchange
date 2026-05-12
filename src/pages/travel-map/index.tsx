@@ -9,7 +9,9 @@ export default function TravelMapLandingPage() {
         <title>Travel Map | Black Wealth Exchange</title>
         <meta
           name="description"
-          content={truncateMeta("Discover Black-owned businesses by city and category with the BWE Travel Map, then continue exploring the full business directory.")}
+          content={truncateMeta(
+            "Discover Black-owned businesses by city and category with the BWE Travel Map, then continue exploring the full business directory.",
+          )}
         />
         <link rel="canonical" href={canonicalUrl("/travel-map")} />
       </Head>

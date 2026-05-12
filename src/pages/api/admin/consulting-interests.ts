@@ -102,8 +102,7 @@ export default async function handler(
       const updateDoc = {
         $set: {
           status: nextStatus,
-          lifecycleStage:
-            nextStatus === "deleted" ? "closed_lost" : nextStage,
+          lifecycleStage: nextStatus === "deleted" ? "closed_lost" : nextStage,
           nextAction: trimmedNextAction,
           owner: typeof owner === "string" ? owner.trim() : "",
           followUpAt: followUpAt ? new Date(followUpAt) : null,

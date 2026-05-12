@@ -90,11 +90,9 @@ export default async function handler(
       new Date(b.updatedAt || 0).getTime() -
       new Date(a.updatedAt || 0).getTime(),
   );
-  return res
-    .status(200)
-    .json({
-      ok: true,
-      items: queues.slice(0, limit),
-      requestedBy: admin.email || admin.userId || "admin",
-    });
+  return res.status(200).json({
+    ok: true,
+    items: queues.slice(0, limit),
+    requestedBy: admin.email || admin.userId || "admin",
+  });
 }

@@ -525,7 +525,9 @@ const PostJob = () => {
           />
 
           <div className="rounded border border-gray-700 bg-gray-900/60 p-4 space-y-3">
-            <p className="text-sm font-semibold text-gold">Screening rules (optional but recommended)</p>
+            <p className="text-sm font-semibold text-gold">
+              Screening rules (optional but recommended)
+            </p>
             <input
               type="text"
               name="requiredSkills"
@@ -556,7 +558,10 @@ const PostJob = () => {
                 type="checkbox"
                 checked={formData.requiresResume}
                 onChange={(e) =>
-                  setFormData((cur) => ({ ...cur, requiresResume: e.target.checked }))
+                  setFormData((cur) => ({
+                    ...cur,
+                    requiresResume: e.target.checked,
+                  }))
                 }
               />
               Require resume for this job
@@ -566,7 +571,10 @@ const PostJob = () => {
                 type="checkbox"
                 checked={formData.workAuthorizationRequired}
                 onChange={(e) =>
-                  setFormData((cur) => ({ ...cur, workAuthorizationRequired: e.target.checked }))
+                  setFormData((cur) => ({
+                    ...cur,
+                    workAuthorizationRequired: e.target.checked,
+                  }))
                 }
               />
               Work authorization required

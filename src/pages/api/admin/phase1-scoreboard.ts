@@ -1,8 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import cookie from "cookie";
-import jwt from "jsonwebtoken";
 import clientPromise from "@/lib/mongodb";
-import { getJwtSecret } from "@/lib/env";
+import { requireAdminFromRequest } from "@/lib/adminAuth";
+import { ADMIN_ERROR_CODES, adminFail } from "@/lib/adminApiContract";
+import { getMongoDbName } from "@/lib/env";
 
 type WindowCounts = {
   today: number;
@@ -272,27 +272,21 @@ export default async function handler(
   res.setHeader("Cache-Control", "no-store, max-age=0");
 
   if (req.method !== "GET") {
-    return res.status(405).json({ error: "Method not allowed" });
+    res.setHeader("Allow", ["GET"]);
+    return adminFail(
+      res,
+      405,
+      ADMIN_ERROR_CODES.METHOD_NOT_ALLOWED,
+      "Method Not Allowed",
+    );
   }
 
-  const cookies = cookie.parse(req.headers.cookie || "");
-  const token = cookies.session_token;
-  if (!token) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
+  const admin = await requireAdminFromRequest(req, res);
+  if (!admin) return;
 
   try {
-    const payload = jwt.verify(token, getJwtSecret()) as {
-      accountType?: string;
-      isAdmin?: boolean;
-    };
-
-    if (!(payload.isAdmin === true || payload.accountType === "admin")) {
-      return res.status(403).json({ error: "Forbidden" });
-    }
-
     const client = await clientPromise;
-    const db = client.db("bwes-cluster");
+    const db = client.db(getMongoDbName());
 
     const now = new Date();
     const startToday = new Date(now);
@@ -372,7 +366,9 @@ export default async function handler(
 
     const groups = GROUPS.map((group) => {
       const metrics: MetricRow[] = group.metrics.map((m) => ({
-        eventType: m.pageRoute ? `${m.eventType} @ ${m.pageRoute}` : m.eventType,
+        eventType: m.pageRoute
+          ? `${m.eventType} @ ${m.pageRoute}`
+          : m.eventType,
         label: m.label,
         counts: getCounts(m.eventType, m.pageRoute),
       }));
@@ -478,6 +474,11 @@ export default async function handler(
     });
   } catch (error) {
     console.error("[/api/admin/phase1-scoreboard]", error);
-    return res.status(500).json({ error: "Internal Server Error" });
+    return adminFail(
+      res,
+      500,
+      ADMIN_ERROR_CODES.INTERNAL_ERROR,
+      "Internal Server Error",
+    );
   }
 }

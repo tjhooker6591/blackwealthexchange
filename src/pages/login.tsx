@@ -17,9 +17,7 @@ function safeParseJSON(text: string) {
 }
 
 function isAllowedAccountType(v?: string): v is AccountType {
-  return (
-    v === "user" || v === "seller" || v === "business" || v === "employer"
-  );
+  return v === "user" || v === "seller" || v === "business" || v === "employer";
 }
 
 function canRoleAccessRedirect(role: AccountType, redirectTarget: string) {

@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
-
 const STATUS_LABELS: Record<string, string> = {
   submitted: "Waiting on consultant response",
   accepted: "Accepted by consultant",
@@ -193,7 +192,9 @@ export default function ConsultantRequestInboxPage() {
                     Request info
                   </button>
                   <span className="rounded-full border border-white/20 px-2 py-1 text-xs text-zinc-200">
-                    Status: {STATUS_LABELS[String(r.status || "submitted")] || String(r.status || "submitted").replace("_", " ")}
+                    Status:{" "}
+                    {STATUS_LABELS[String(r.status || "submitted")] ||
+                      String(r.status || "submitted").replace("_", " ")}
                   </span>
                 </div>
 
@@ -210,7 +211,9 @@ export default function ConsultantRequestInboxPage() {
                     : "Not yet"}
                 </div>
                 <p className="mt-1 text-[11px] text-zinc-400">
-                  Next step: {STATUS_NEXT_STEP[String(r.status || "submitted")] || "Follow request lifecycle updates."}
+                  Next step:{" "}
+                  {STATUS_NEXT_STEP[String(r.status || "submitted")] ||
+                    "Follow request lifecycle updates."}
                 </p>
 
                 <label className="mt-3 block text-xs text-zinc-300">

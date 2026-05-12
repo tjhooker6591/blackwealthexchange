@@ -774,7 +774,6 @@ export default function WealthBuilderDebtPage() {
   );
 }
 
-
 export const getServerSideProps: GetServerSideProps = async (context) => {
   return requireWealthBuilderPageUser(context, "/wealth-builder/debt");
 };

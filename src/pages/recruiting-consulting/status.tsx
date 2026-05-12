@@ -84,8 +84,8 @@ export default function ConsultingSubmissionStatusPage() {
             next action.
           </p>
           <p className="mt-1 text-xs text-white/50">
-            We keep up to your 10 most recent consulting submissions and show who
-            owns the next action.
+            We keep up to your 10 most recent consulting submissions and show
+            who owns the next action.
           </p>
 
           <form onSubmit={checkStatus} className="mt-4 space-y-3">
@@ -122,7 +122,9 @@ export default function ConsultingSubmissionStatusPage() {
                       {x.submissionType}
                     </span>
                   </div>
-                  <p className={`mt-2 text-sm font-semibold ${statusTone(x.status)}`}>
+                  <p
+                    className={`mt-2 text-sm font-semibold ${statusTone(x.status)}`}
+                  >
                     Status: {x.status}
                   </p>
                   <p className="text-sm text-white/80">

@@ -8,10 +8,15 @@ export default function SupportTicketForm({
   defaultCategory?: string;
 }) {
   const router = useRouter();
-  const pre = useMemo(() => ({
-    category: String(router.query.category || defaultCategory || "General Question"),
-    priority: String(router.query.priority || "Normal"),
-  }), [router.query.category, router.query.priority, defaultCategory]);
+  const pre = useMemo(
+    () => ({
+      category: String(
+        router.query.category || defaultCategory || "General Question",
+      ),
+      priority: String(router.query.priority || "Normal"),
+    }),
+    [router.query.category, router.query.priority, defaultCategory],
+  );
   const [f, setF] = useState({
     name: "",
     email: "",

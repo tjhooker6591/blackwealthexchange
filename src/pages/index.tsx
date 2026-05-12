@@ -985,10 +985,35 @@ export default function Home() {
               </div>
 
               <div className="mx-auto mt-3 max-w-3xl text-center text-xs text-white/65 sm:text-sm">
-                Primary paths: <Link href="/business-directory" className="text-[#D4AF37] hover:underline">Business Directory</Link>,{" "}
-                <Link href="/marketplace" className="text-[#D4AF37] hover:underline">Marketplace</Link>,{" "}
-                <Link href="/job-listings" className="text-[#D4AF37] hover:underline">Jobs</Link>,{" "}
-                and <Link href="/financial-literacy" className="text-[#D4AF37] hover:underline">Financial Literacy</Link>.
+                Primary paths:{" "}
+                <Link
+                  href="/business-directory"
+                  className="text-[#D4AF37] hover:underline"
+                >
+                  Business Directory
+                </Link>
+                ,{" "}
+                <Link
+                  href="/marketplace"
+                  className="text-[#D4AF37] hover:underline"
+                >
+                  Marketplace
+                </Link>
+                ,{" "}
+                <Link
+                  href="/job-listings"
+                  className="text-[#D4AF37] hover:underline"
+                >
+                  Jobs
+                </Link>
+                , and{" "}
+                <Link
+                  href="/financial-literacy"
+                  className="text-[#D4AF37] hover:underline"
+                >
+                  Financial Literacy
+                </Link>
+                .
               </div>
 
               <div className="mx-auto mt-3 grid w-full max-w-3xl grid-cols-2 gap-2 text-left sm:grid-cols-4">

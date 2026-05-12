@@ -11,7 +11,9 @@ export default function LegacyDirectoryRedirect() {
 
   return (
     <main className="min-h-screen bg-black p-8 text-white">
-      <p className="text-sm text-gray-300">Redirecting to directory approvals…</p>
+      <p className="text-sm text-gray-300">
+        Redirecting to directory approvals…
+      </p>
     </main>
   );
 }

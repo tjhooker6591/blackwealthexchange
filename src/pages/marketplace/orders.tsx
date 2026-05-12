@@ -233,9 +233,12 @@ export default function MarketplaceOrdersPage() {
                   <tr>
                     <td className="p-5 text-white/70" colSpan={6}>
                       <div className="rounded-lg border border-white/10 bg-white/5 p-4">
-                        <p className="font-semibold text-white">No orders yet</p>
+                        <p className="font-semibold text-white">
+                          No orders yet
+                        </p>
                         <p className="mt-1 text-sm text-white/70">
-                          Next step: add a product and publish inventory so buyers can place orders.
+                          Next step: add a product and publish inventory so
+                          buyers can place orders.
                         </p>
                         <div className="mt-3 flex flex-wrap gap-2">
                           <Link
@@ -362,7 +365,9 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   }
 
   try {
-    const payload = jwt.verify(token, getJwtSecret()) as { accountType?: string };
+    const payload = jwt.verify(token, getJwtSecret()) as {
+      accountType?: string;
+    };
     if (payload.accountType !== "seller") {
       return {
         redirect: {

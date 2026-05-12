@@ -69,10 +69,13 @@ const CourseEnrollmentPage: React.FC = () => {
 
       const reasonMessageMap: Record<string, string> = {
         premium_active: "Access active through your premium plan.",
-        user_purchased_courses: "Access active from your purchased course entitlement.",
+        user_purchased_courses:
+          "Access active from your purchased course entitlement.",
         enrollment_granted: "Access active from your enrollment grant.",
-        no_entitlement: "Access is locked because your premium entitlement is not active yet.",
-        user_not_found: "Access is locked because your account record could not be found.",
+        no_entitlement:
+          "Access is locked because your premium entitlement is not active yet.",
+        user_not_found:
+          "Access is locked because your account record could not be found.",
       };
 
       setState({
@@ -81,7 +84,8 @@ const CourseEnrollmentPage: React.FC = () => {
         hasAccess,
         reason,
         statusMessage: hasAccess
-          ? reasonMessageMap[reason] || "Access active. Enter your premium course modules."
+          ? reasonMessageMap[reason] ||
+            "Access active. Enter your premium course modules."
           : reasonMessageMap[reason] ||
             "Access is locked until premium enrollment is completed.",
         nextAction: hasAccess
@@ -156,8 +160,12 @@ const CourseEnrollmentPage: React.FC = () => {
           <p className="mt-2 text-gray-300">
             One-time fee: ${COURSE_DATA.price}
           </p>
-          <p className="mt-2 text-sm text-gray-400">Reason: {state.statusMessage}</p>
-          <p className="mt-1 text-sm text-gray-300">Next action: {state.nextAction}</p>
+          <p className="mt-2 text-sm text-gray-400">
+            Reason: {state.statusMessage}
+          </p>
+          <p className="mt-1 text-sm text-gray-300">
+            Next action: {state.nextAction}
+          </p>
           <p className="mt-1 text-xs text-gray-500">
             Locked state explains why access is blocked. Unlocked state sends
             you directly to course modules.

@@ -195,7 +195,9 @@ export default async function handler(
 
     const tAfterHydration = performance.now();
     const connectMs = Math.round(tConnected - t0);
-    const productsQueryMs = Math.round(tAfterProductQuery - tBeforeProductQuery);
+    const productsQueryMs = Math.round(
+      tAfterProductQuery - tBeforeProductQuery,
+    );
     const sellersQueryMs = Math.round(tAfterSellerQuery - tBeforeSellerQuery);
     const hydrationMs = Math.round(tAfterHydration - tBeforeHydration);
     const totalMs = Math.round(tAfterHydration - t0);

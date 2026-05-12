@@ -258,7 +258,11 @@ export default async function handler(
       if (process.env.RESET_DEBUG_MODE === "1") {
         return res.status(200).json({
           message: "If this email exists, reset instructions will be sent.",
-          _debug: { token, resetLink, mailError: mailErr?.message || String(mailErr) },
+          _debug: {
+            token,
+            resetLink,
+            mailError: mailErr?.message || String(mailErr),
+          },
         });
       }
 

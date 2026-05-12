@@ -50,7 +50,6 @@ export default async function handler(
       seller = await db.collection("sellers").findOne({ $or: sellerOr } as any);
     }
 
-
     const createdAt = product?.createdAt ? new Date(product.createdAt) : null;
     const recentlyAdded =
       createdAt instanceof Date && !Number.isNaN(createdAt.getTime())

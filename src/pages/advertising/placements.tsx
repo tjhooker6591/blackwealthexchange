@@ -17,8 +17,9 @@ export default function AdvertisingPlacementsPage() {
             Paid Placement Definitions (Source of Truth)
           </h1>
           <p className="mt-2 text-sm text-white/75">
-            This page defines exactly what each paid visibility product includes,
-            where it appears, and how limits/duration/expiration are enforced.
+            This page defines exactly what each paid visibility product
+            includes, where it appears, and how limits/duration/expiration are
+            enforced.
           </p>
 
           <div className="mt-6 overflow-x-auto rounded-2xl border border-white/10 bg-white/[0.03] p-4">
@@ -35,8 +36,13 @@ export default function AdvertisingPlacementsPage() {
               </thead>
               <tbody>
                 {PAID_PLACEMENT_DEFINITIONS.map((row: PlacementDefinition) => (
-                  <tr key={row.product} className="border-b border-white/10 align-top">
-                    <td className="py-3 pr-4 font-semibold text-white">{row.product}</td>
+                  <tr
+                    key={row.product}
+                    className="border-b border-white/10 align-top"
+                  >
+                    <td className="py-3 pr-4 font-semibold text-white">
+                      {row.product}
+                    </td>
                     <td className="py-3 pr-4 text-white/80">{row.where}</td>
                     <td className="py-3 pr-4 text-white/80">{row.how}</td>
                     <td className="py-3 pr-4 text-white/80">{row.limits}</td>

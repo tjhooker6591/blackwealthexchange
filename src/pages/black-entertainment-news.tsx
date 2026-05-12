@@ -288,8 +288,8 @@ export default function BlackEntertainmentNewsPage() {
               </h1>
 
               <p className="max-w-2xl text-white/70">
-                Clean, mobile-first Moments — even when publishers don’t provide
-                images.
+                Entertainment-focused stories, artist coverage, and culture
+                moments. Public content (Free).
               </p>
 
               {updatedAt ? (

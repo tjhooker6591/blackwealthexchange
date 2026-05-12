@@ -239,7 +239,8 @@ export default function FinancialClassReconciliationPage() {
 
           {!loading && items.length === 0 ? (
             <div className="text-sm text-gray-400">
-              No reconciliation records match the selected filters. Run verification with at least one filter.
+              No reconciliation records match the selected filters. Run
+              verification with at least one filter.
             </div>
           ) : null}
         </div>

@@ -21,7 +21,6 @@ const DISPLAY_TO_BACKING: Record<string, string[]> = {
   manual_offline: ["manual_offline", "other"],
 };
 
-
 const adminNavLinks = [
   ["Command Center", "/admin/command-center"],
   ["Financial Review", "/admin/financial-review"],
@@ -36,7 +35,11 @@ function AdminHubNav() {
   return (
     <div className="flex flex-wrap gap-2">
       {adminNavLinks.map(([label, href]) => (
-        <Link key={href} href={href} className="text-xs border border-zinc-700 px-3 py-1.5 rounded">
+        <Link
+          key={href}
+          href={href}
+          className="text-xs border border-zinc-700 px-3 py-1.5 rounded"
+        >
           {label}
         </Link>
       ))}
@@ -98,7 +101,10 @@ export default function FinancialReviewPage() {
 
         {router.query.source === "command-center" ? (
           <div className="rounded border border-yellow-500/30 bg-yellow-500/10 px-3 py-2 text-xs text-yellow-200">
-            Opened from Command Center{router.query.focus ? ` • Focus: ${String(router.query.focus)}` : ""}
+            Opened from Command Center
+            {router.query.focus
+              ? ` • Focus: ${String(router.query.focus)}`
+              : ""}
           </div>
         ) : null}
 
@@ -184,8 +190,18 @@ export default function FinancialReviewPage() {
         <section className="rounded border border-zinc-800 bg-zinc-950 p-4">
           <h2 className="text-lg text-yellow-400 mb-2">Related Actions</h2>
           <div className="flex flex-wrap gap-2 text-sm">
-            <Link href="/admin/command-center?source=command-center&focus=marketplace-trust" className="underline text-yellow-300">View marketplace trust</Link>
-            <Link href="/admin/support?source=command-center&focus=priority" className="underline text-yellow-300">View support issues</Link>
+            <Link
+              href="/admin/command-center?source=command-center&focus=marketplace-trust"
+              className="underline text-yellow-300"
+            >
+              View marketplace trust
+            </Link>
+            <Link
+              href="/admin/support?source=command-center&focus=priority"
+              className="underline text-yellow-300"
+            >
+              View support issues
+            </Link>
           </div>
         </section>
 

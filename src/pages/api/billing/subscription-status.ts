@@ -30,7 +30,8 @@ export default async function handler(
   try {
     const cookies = cookie.parse(req.headers.cookie || "");
     const token = cookies.session_token;
-    if (!token) return res.status(401).json({ ok: false, error: "unauthorized" });
+    if (!token)
+      return res.status(401).json({ ok: false, error: "unauthorized" });
 
     const decoded = jwt.verify(token, getJwtSecret()) as any;
     const userId = String(decoded?.userId || "");
@@ -61,7 +62,8 @@ export default async function handler(
       },
     );
 
-    if (!user) return res.status(404).json({ ok: false, error: "user_not_found" });
+    if (!user)
+      return res.status(404).json({ ok: false, error: "user_not_found" });
 
     const nextBillingDate =
       user.nextBillingDate instanceof Date
@@ -81,16 +83,23 @@ export default async function handler(
           ? new Date(user.membershipPlanExpiresAt as any)
           : null;
 
-    const currentPlan = String(user.currentPlan || (fallbackPremium ? "premium" : "free")).toLowerCase();
+    const currentPlan = String(
+      user.currentPlan || (fallbackPremium ? "premium" : "free"),
+    ).toLowerCase();
 
     return res.status(200).json({
       ok: true,
       subscription: {
         currentPlan,
-        renewalStatus: String(user.renewalStatus || (fallbackPremium ? "active" : "inactive")),
-        nextBillingDate: (nextBillingDate || fallbackExpiry)?.toISOString() || null,
+        renewalStatus: String(
+          user.renewalStatus || (fallbackPremium ? "active" : "inactive"),
+        ),
+        nextBillingDate:
+          (nextBillingDate || fallbackExpiry)?.toISOString() || null,
         cancelAtPeriodEnd: Boolean(user.subscriptionCancelAtPeriodEnd),
-        status: String(user.subscriptionStatus || (fallbackPremium ? "active" : "inactive")),
+        status: String(
+          user.subscriptionStatus || (fallbackPremium ? "active" : "inactive"),
+        ),
         hasManageableSubscription: Boolean(user.stripeSubscriptionId),
       },
     });

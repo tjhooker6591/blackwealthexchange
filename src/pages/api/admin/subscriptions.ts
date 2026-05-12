@@ -34,17 +34,15 @@ export default async function handler(
     const [active, canceled, failed, subscriptions, renewalHistory] =
       await Promise.all([
         db.collection("users").countDocuments({ subscriptionStatus: "active" }),
-        db
-          .collection("users")
-          .countDocuments({
-            $or: [
-              { subscriptionStatus: "canceled" },
-              { subscriptionCancelAtPeriodEnd: true },
-            ],
-          }),
-        db
-          .collection("users")
-          .countDocuments({ subscriptionStatus: { $in: ["past_due", "unpaid"] } }),
+        db.collection("users").countDocuments({
+          $or: [
+            { subscriptionStatus: "canceled" },
+            { subscriptionCancelAtPeriodEnd: true },
+          ],
+        }),
+        db.collection("users").countDocuments({
+          subscriptionStatus: { $in: ["past_due", "unpaid"] },
+        }),
         db
           .collection("users")
           .find(

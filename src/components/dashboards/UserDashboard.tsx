@@ -77,7 +77,9 @@ export default function UserDashboard() {
   const [dataError, setDataError] = useState<string | null>(null);
 
   const [lastUpdated, setLastUpdated] = useState<number | null>(null);
-  const [subscription, setSubscription] = useState<SubscriptionState | null>(null);
+  const [subscription, setSubscription] = useState<SubscriptionState | null>(
+    null,
+  );
   const [cancelingSubscription, setCancelingSubscription] = useState(false);
   const [subscriptionMessage, setSubscriptionMessage] = useState("");
   useEffect(() => {
@@ -162,7 +164,10 @@ export default function UserDashboard() {
           hadDataIssue = true;
         }
 
-        if (subscriptionRes.status === "fulfilled" && subscriptionRes.value.ok) {
+        if (
+          subscriptionRes.status === "fulfilled" &&
+          subscriptionRes.value.ok
+        ) {
           const subscriptionJson = await subscriptionRes.value.json();
           setSubscription(subscriptionJson?.subscription || null);
         }
@@ -395,7 +400,10 @@ export default function UserDashboard() {
         <div className="rounded-2xl border border-yellow-500/25 bg-yellow-500/10 p-4 shadow-xl sm:p-5">
           <h2 className="text-lg font-bold text-gold">Membership billing</h2>
           <p className="mt-1 text-sm text-white/90">
-            Current plan: <strong>{String(subscription?.currentPlan || "free").toUpperCase()}</strong>
+            Current plan:{" "}
+            <strong>
+              {String(subscription?.currentPlan || "free").toUpperCase()}
+            </strong>
           </p>
           <p className="mt-1 text-sm text-white/80">
             Renewal status: {subscription?.renewalStatus || "inactive"}
@@ -410,7 +418,9 @@ export default function UserDashboard() {
             {subscription?.hasManageableSubscription ? (
               <button
                 onClick={cancelSubscription}
-                disabled={cancelingSubscription || subscription?.cancelAtPeriodEnd}
+                disabled={
+                  cancelingSubscription || subscription?.cancelAtPeriodEnd
+                }
                 className="inline-flex items-center gap-2 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm text-red-200 hover:bg-red-500/15 disabled:opacity-60"
               >
                 {subscription?.cancelAtPeriodEnd
@@ -429,7 +439,9 @@ export default function UserDashboard() {
             )}
           </div>
           {subscriptionMessage ? (
-            <p className="mt-2 text-xs text-yellow-200">{subscriptionMessage}</p>
+            <p className="mt-2 text-xs text-yellow-200">
+              {subscriptionMessage}
+            </p>
           ) : null}
         </div>
 

@@ -46,11 +46,9 @@ export default async function handler(
   }
 
   res.setHeader("Allow", ["GET", "PATCH"]);
-  return res
-    .status(405)
-    .json({
-      ok: false,
-      code: "METHOD_NOT_ALLOWED",
-      message: "Method not allowed",
-    });
+  return res.status(405).json({
+    ok: false,
+    code: "METHOD_NOT_ALLOWED",
+    message: "Method not allowed",
+  });
 }

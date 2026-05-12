@@ -15,8 +15,15 @@ export default async function handler(
     const affiliateId = String(req.body?.affiliateId || "").trim();
     const amount = Number(req.body?.amount || 0);
 
-    if (!affiliateId || !ObjectId.isValid(affiliateId) || !Number.isFinite(amount) || amount <= 0) {
-      return res.status(400).json({ message: "Valid affiliateId and amount are required" });
+    if (
+      !affiliateId ||
+      !ObjectId.isValid(affiliateId) ||
+      !Number.isFinite(amount) ||
+      amount <= 0
+    ) {
+      return res
+        .status(400)
+        .json({ message: "Valid affiliateId and amount are required" });
     }
 
     const commissionRate = 0.1;

@@ -3,7 +3,10 @@ import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
 import { requireAdminFromRequest } from "@/lib/adminAuth";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   const admin = await requireAdminFromRequest(req, res);
   if (!admin) return;
 
@@ -22,7 +25,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (qPriority) filter.priority = qPriority;
 
   const db = (await clientPromise).db(getMongoDbName());
-  const docs = await db.collection("support_tickets").find(filter, { projection: { ticketId: 1, email: 1, subject: 1, category: 1, priority: 1, status: 1, assignedTo: 1, escalationLevel: 1, createdAt: 1, updatedAt: 1 } }).sort({ createdAt: -1 }).limit(300).toArray();
+  const docs = await db
+    .collection("support_tickets")
+    .find(filter, {
+      projection: {
+        ticketId: 1,
+        email: 1,
+        subject: 1,
+        category: 1,
+        priority: 1,
+        status: 1,
+        assignedTo: 1,
+        escalationLevel: 1,
+        createdAt: 1,
+        updatedAt: 1,
+      },
+    })
+    .sort({ createdAt: -1 })
+    .limit(300)
+    .toArray();
 
   const rows = docs.map((d: any) => ({
     ticketId: d.ticketId || String(d._id),

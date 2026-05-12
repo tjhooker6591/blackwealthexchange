@@ -190,11 +190,22 @@ const GenerationalWealthCourse: React.FC = () => {
           <div className="mt-4 rounded-xl border border-white/10 bg-black/30 p-4 text-sm text-gray-300">
             <div className="font-semibold text-gold">Entitlement truth</div>
             <ul className="mt-2 list-disc ml-5 space-y-1">
-              <li>This is a one-time course purchase tied to your BWE account.</li>
-              <li>After verified checkout, course access appears in your course dashboard.</li>
-              <li>If checkout is canceled or interrupted, access is not granted yet.</li>
+              <li>
+                This is a one-time course purchase tied to your BWE account.
+              </li>
+              <li>
+                After verified checkout, course access appears in your course
+                dashboard.
+              </li>
+              <li>
+                If checkout is canceled or interrupted, access is not granted
+                yet.
+              </li>
             </ul>
-            <p className="mt-2 text-xs text-gray-400">Support is available via BWE help/contact routes for payment, access, and billing questions.</p>
+            <p className="mt-2 text-xs text-gray-400">
+              Support is available via BWE help/contact routes for payment,
+              access, and billing questions.
+            </p>
           </div>
 
           <div className="mt-4">

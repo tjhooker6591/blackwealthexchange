@@ -2,6 +2,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
+import { getMongoDbName } from "@/lib/env";
 
 export default async function handler(
   req: NextApiRequest,
@@ -32,7 +33,7 @@ export default async function handler(
     const jobObjectId = new ObjectId(jobId);
 
     const client = await clientPromise;
-    const db = client.db("bwes-cluster");
+    const db = client.db(getMongoDbName());
 
     const applicants = db.collection("applicants");
 
@@ -86,7 +87,10 @@ export default async function handler(
 
     const job = await db
       .collection("jobs")
-      .findOne({ _id: jobObjectId }, { projection: { title: 1, employerEmail: 1, email: 1 } });
+      .findOne(
+        { _id: jobObjectId },
+        { projection: { title: 1, employerEmail: 1, email: 1 } },
+      );
 
     await db.collection("notification_events").insertMany([
       {
@@ -104,7 +108,9 @@ export default async function handler(
       {
         type: "new_applicant",
         audience: "employer",
-        employerEmail: String(job?.employerEmail || job?.email || "").toLowerCase(),
+        employerEmail: String(
+          job?.employerEmail || job?.email || "",
+        ).toLowerCase(),
         applicantId: result.insertedId.toString(),
         applicantEmail: normalizedEmail,
         jobId,

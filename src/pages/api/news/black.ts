@@ -184,6 +184,8 @@ function normalizeItem(source: Source, item: any): NewsItem | null {
   };
 }
 
+const FEED_TIMEOUT_MS = 1200;
+
 async function fetchFeed(source: Source): Promise<NewsItem[]> {
   const res = await fetch(source.url, {
     headers: {
@@ -191,6 +193,7 @@ async function fetchFeed(source: Source): Promise<NewsItem[]> {
       Accept:
         "application/rss+xml, application/xml;q=0.9, text/xml;q=0.8, */*;q=0.7",
     },
+    signal: AbortSignal.timeout(FEED_TIMEOUT_MS),
   });
 
   if (!res.ok)

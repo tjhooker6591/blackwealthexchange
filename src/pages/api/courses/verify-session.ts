@@ -73,7 +73,9 @@ export default async function handler(
     const db = client.db(getMongoDbName());
 
     const paymentIntentId =
-      typeof session.payment_intent === "string" ? session.payment_intent : null;
+      typeof session.payment_intent === "string"
+        ? session.payment_intent
+        : null;
 
     const grant = await grantCourseAccess(userId, courseId, {
       stripeSessionId: sessionId,

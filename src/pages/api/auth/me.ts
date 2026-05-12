@@ -110,7 +110,9 @@ export default async function handler(
       email: payload.email,
     });
 
-    const emailNorm = String(payload.email || "").trim().toLowerCase();
+    const emailNorm = String(payload.email || "")
+      .trim()
+      .toLowerCase();
 
     const orderedCollections =
       role === "seller"

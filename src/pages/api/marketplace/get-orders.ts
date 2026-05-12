@@ -73,7 +73,9 @@ export default async function handler(
       const paymentState = String(o?.paymentStatus || "pending").toLowerCase();
       const fulfillmentState = String(
         o?.fulfillmentStatus ||
-          (["shipped", "fulfilled"].includes(String(o?.status || "").toLowerCase())
+          (["shipped", "fulfilled"].includes(
+            String(o?.status || "").toLowerCase(),
+          )
             ? String(o?.status).toLowerCase()
             : "processing"),
       ).toLowerCase();

@@ -594,7 +594,6 @@ export default function WealthBuilderBudgetPage() {
   );
 }
 
-
 export const getServerSideProps: GetServerSideProps = async (context) => {
   return requireWealthBuilderPageUser(context, "/wealth-builder/budget");
 };

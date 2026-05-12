@@ -119,7 +119,9 @@ const CourseDashboard: React.FC = () => {
                 style={{ width: `${progress}%` }}
               ></div>
             </div>
-            <p className="mt-2 text-gray-300">{Math.round(progress)}% Complete</p>
+            <p className="mt-2 text-gray-300">
+              {Math.round(progress)}% Complete
+            </p>
           </div>
         </section>
 
@@ -127,7 +129,10 @@ const CourseDashboard: React.FC = () => {
           <h2 className="text-2xl font-semibold text-blue-500">Modules</h2>
           <ul className="list-decimal ml-6 mt-4 text-gray-300">
             {["1", "2", "3", "4", "5", "6", "7", "8"].map((moduleId) => (
-              <li key={moduleId} className="flex justify-between items-center mt-4">
+              <li
+                key={moduleId}
+                className="flex justify-between items-center mt-4"
+              >
                 <span className="text-lg">{getModuleTitle(moduleId)}</span>
                 <button
                   onClick={() => handleModuleClick(moduleId)}

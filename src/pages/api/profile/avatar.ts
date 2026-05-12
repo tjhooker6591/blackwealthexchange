@@ -88,7 +88,10 @@ export default async function handler(
       }
 
       const savedPath = file.filepath;
-      const relative = path.relative(path.join(process.cwd(), "public"), savedPath);
+      const relative = path.relative(
+        path.join(process.cwd(), "public"),
+        savedPath,
+      );
       const avatarUrl = "/" + relative.replace(/\\/g, "/");
       const uploadedAt = new Date().toISOString();
 

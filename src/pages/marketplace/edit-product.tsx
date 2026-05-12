@@ -607,7 +607,9 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
   }
 
   try {
-    const payload = jwt.verify(token, getJwtSecret()) as { accountType?: string };
+    const payload = jwt.verify(token, getJwtSecret()) as {
+      accountType?: string;
+    };
     if (payload.accountType !== "seller") {
       return {
         redirect: {

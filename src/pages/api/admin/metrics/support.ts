@@ -49,14 +49,31 @@ export default async function handler(
     (t: any) =>
       now - new Date(t.createdAt || 0).getTime() > 3 * 24 * 3600 * 1000,
   ).length;
-  const escalated = all.filter((t: any) => String(t.status||"").toLowerCase().includes("escalat")).length;
+  const escalated = all.filter((t: any) =>
+    String(t.status || "")
+      .toLowerCase()
+      .includes("escalat"),
+  ).length;
   const escalationRatePercent = all.length
     ? Number(((escalated / all.length) * 100).toFixed(2))
     : 0;
-  const withAging = all.map((t:any)=>({ ...t, ageHours: (nowMs - new Date(t.createdAt || 0).getTime())/3600000 }));
-  const atRisk = withAging.filter((t:any)=>t.ageHours > 24 && !["resolved","closed"].includes(String(t.status||"").toLowerCase())).length;
-  const overdue = withAging.filter((t:any)=>t.ageHours > 72 && !["resolved","closed"].includes(String(t.status||"").toLowerCase())).length;
-  const slaPerformancePercent = all.length ? Number((((all.length - overdue) / all.length) * 100).toFixed(2)) : 100;
+  const withAging = all.map((t: any) => ({
+    ...t,
+    ageHours: (nowMs - new Date(t.createdAt || 0).getTime()) / 3600000,
+  }));
+  const atRisk = withAging.filter(
+    (t: any) =>
+      t.ageHours > 24 &&
+      !["resolved", "closed"].includes(String(t.status || "").toLowerCase()),
+  ).length;
+  const overdue = withAging.filter(
+    (t: any) =>
+      t.ageHours > 72 &&
+      !["resolved", "closed"].includes(String(t.status || "").toLowerCase()),
+  ).length;
+  const slaPerformancePercent = all.length
+    ? Number((((all.length - overdue) / all.length) * 100).toFixed(2))
+    : 100;
   const criticalIssueDetection = all.filter(
     (t: any) =>
       ["security", "urgent"].includes(String(t.priority || "").toLowerCase()) ||

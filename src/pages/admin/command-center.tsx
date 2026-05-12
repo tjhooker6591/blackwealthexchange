@@ -26,11 +26,16 @@ function statusTone(sourceStatus?: string) {
 }
 
 function prettyStatus(sourceStatus?: string) {
-  if (sourceStatus === "collection_missing") return "⚠️ Data Missing";
-  if (sourceStatus === "needs_mapping") return "⚠️ Needs Mapping";
-  if (sourceStatus === "needs_tracking") return "⚠️ Not Tracked";
-  if (sourceStatus === "empty") return "No Activity";
-  return "Live";
+  if (sourceStatus === "live") return "Live data";
+  if (sourceStatus === "empty") return "No data yet";
+  if (
+    sourceStatus === "collection_missing" ||
+    sourceStatus === "needs_mapping" ||
+    sourceStatus === "needs_tracking"
+  ) {
+    return "Partial data";
+  }
+  return "Partial data";
 }
 
 function loopRow(label: string, metric?: Metric) {

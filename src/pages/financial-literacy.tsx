@@ -51,7 +51,9 @@ const FinancialLiteracy = () => {
     setCtaError("");
     if (!userId) {
       setCtaState("redirect-login");
-      void router.push(`/login?next=${encodeURIComponent("/financial-literacy")}`);
+      void router.push(
+        `/login?next=${encodeURIComponent("/financial-literacy")}`,
+      );
       return;
     }
 
@@ -546,8 +548,7 @@ const FinancialLiteracy = () => {
                     <p className="text-xs text-gray-400 mt-3">
                       {ctaState === "idle" &&
                         "State: idle. Secure checkout available."}
-                      {ctaState === "loading" &&
-                        "State: starting checkout..."}
+                      {ctaState === "loading" && "State: starting checkout..."}
                       {ctaState === "redirect-login" &&
                         "State: redirecting to login..."}
                       {ctaState === "redirect-checkout" &&

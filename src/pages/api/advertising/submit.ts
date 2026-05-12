@@ -147,12 +147,11 @@ export default async function handler(
       adId: result.insertedId.toString(),
       requestId: result.insertedId.toString(),
       lifecycle: "pending_review",
-      nextSteps:
-        nextStepsByOption[option] || [
-          "Your campaign is now in review.",
-          "After approval and payment, fulfillment scheduling is finalized.",
-          "Campaign placement begins when the assigned schedule window starts.",
-        ],
+      nextSteps: nextStepsByOption[option] || [
+        "Your campaign is now in review.",
+        "After approval and payment, fulfillment scheduling is finalized.",
+        "Campaign placement begins when the assigned schedule window starts.",
+      ],
     });
   } catch (error) {
     console.error("Error saving ad request:", error);

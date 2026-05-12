@@ -85,7 +85,10 @@ export default async function handler(
         return res.status(400).json({ error: "Invalid file type" });
       }
 
-      const relative = path.relative(path.join(process.cwd(), "public"), file.filepath);
+      const relative = path.relative(
+        path.join(process.cwd(), "public"),
+        file.filepath,
+      );
       const resumeUrl = "/" + relative.replace(/\\/g, "/");
       const uploadedAt = new Date().toISOString();
 

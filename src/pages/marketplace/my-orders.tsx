@@ -23,7 +23,8 @@ type BuyerOrder = {
 
 function toneForStatus(status: string) {
   const s = status.toLowerCase();
-  if (["paid", "shipped", "delivered", "completed"].includes(s)) return "text-emerald-300";
+  if (["paid", "shipped", "delivered", "completed"].includes(s))
+    return "text-emerald-300";
   if (["failed", "cancelled", "refunded"].includes(s)) return "text-rose-300";
   return "text-yellow-200";
 }
@@ -31,9 +32,12 @@ function toneForStatus(status: string) {
 function nextStepForOrder(o: BuyerOrder) {
   const payment = String(o.paymentState || "pending").toLowerCase();
   const fulfillment = String(o.fulfillmentState || "processing").toLowerCase();
-  if (payment === "failed") return "Retry payment or contact support to complete your order.";
-  if (fulfillment === "shipped" && o.trackingNumber) return "Use tracking details below for delivery updates.";
-  if (fulfillment === "delivered") return "Order delivered. If there is an issue, use Need help.";
+  if (payment === "failed")
+    return "Retry payment or contact support to complete your order.";
+  if (fulfillment === "shipped" && o.trackingNumber)
+    return "Use tracking details below for delivery updates.";
+  if (fulfillment === "delivered")
+    return "Order delivered. If there is an issue, use Need help.";
   return "Seller is preparing your order. Check back soon for shipping updates.";
 }
 
@@ -85,15 +89,22 @@ export default function BuyerOrdersPage() {
         </div>
 
         <p className="mt-2 text-sm text-white/70">
-          Track payment status, fulfillment status, and shipping status for each order.
+          Track payment status, fulfillment status, and shipping status for each
+          order.
         </p>
 
         <div className="mt-4 rounded-xl border border-white/10 bg-white/5 p-3 text-xs text-white/75 sm:text-sm">
           <p className="font-semibold text-white">Order status legend</p>
           <div className="mt-2 flex flex-wrap gap-2">
-            <span className="rounded-full border border-emerald-500/40 bg-emerald-500/10 px-2 py-1 text-emerald-300">Paid / Shipped / Delivered</span>
-            <span className="rounded-full border border-yellow-500/40 bg-yellow-500/10 px-2 py-1 text-yellow-200">Pending / Processing</span>
-            <span className="rounded-full border border-rose-500/40 bg-rose-500/10 px-2 py-1 text-rose-300">Failed / Cancelled / Refunded</span>
+            <span className="rounded-full border border-emerald-500/40 bg-emerald-500/10 px-2 py-1 text-emerald-300">
+              Paid / Shipped / Delivered
+            </span>
+            <span className="rounded-full border border-yellow-500/40 bg-yellow-500/10 px-2 py-1 text-yellow-200">
+              Pending / Processing
+            </span>
+            <span className="rounded-full border border-rose-500/40 bg-rose-500/10 px-2 py-1 text-rose-300">
+              Failed / Cancelled / Refunded
+            </span>
           </div>
         </div>
 
@@ -112,11 +123,26 @@ export default function BuyerOrdersPage() {
           <div className="mt-5 space-y-5">
             {orders.length === 0 ? (
               <div className="rounded-xl border border-white/10 bg-white/5 p-4 text-white/70">
-                <p>No orders found yet. After checkout, your order status appears here.</p>
-                <p className="mt-1 text-xs text-white/60">Next step: browse products and use Buy now on any listing.</p>
+                <p>
+                  No orders found yet. After checkout, your order status appears
+                  here.
+                </p>
+                <p className="mt-1 text-xs text-white/60">
+                  Next step: browse products and use Buy now on any listing.
+                </p>
                 <div className="mt-3 flex flex-wrap gap-3">
-                  <Link href="/marketplace" className="text-sm text-[#D4AF37] hover:underline">Browse products</Link>
-                  <Link href="/support/marketplace" className="text-sm text-[#D4AF37] hover:underline">Marketplace support</Link>
+                  <Link
+                    href="/marketplace"
+                    className="text-sm text-[#D4AF37] hover:underline"
+                  >
+                    Browse products
+                  </Link>
+                  <Link
+                    href="/support/marketplace"
+                    className="text-sm text-[#D4AF37] hover:underline"
+                  >
+                    Marketplace support
+                  </Link>
                 </div>
               </div>
             ) : (
@@ -145,11 +171,23 @@ export default function BuyerOrdersPage() {
                   <div className="mt-3 grid gap-2 text-sm text-white/85 md:grid-cols-3">
                     <p>
                       <span className="text-white/60">Payment status:</span>{" "}
-                      <span className={toneForStatus(String(o.paymentState || "pending"))}>{o.paymentState || "pending"}</span>
+                      <span
+                        className={toneForStatus(
+                          String(o.paymentState || "pending"),
+                        )}
+                      >
+                        {o.paymentState || "pending"}
+                      </span>
                     </p>
                     <p>
                       <span className="text-white/60">Fulfillment status:</span>{" "}
-                      <span className={toneForStatus(String(o.fulfillmentState || "processing"))}>{o.fulfillmentState || "processing"}</span>
+                      <span
+                        className={toneForStatus(
+                          String(o.fulfillmentState || "processing"),
+                        )}
+                      >
+                        {o.fulfillmentState || "processing"}
+                      </span>
                     </p>
                     <p>
                       <span className="text-white/60">Seller:</span>{" "}
@@ -169,7 +207,9 @@ export default function BuyerOrdersPage() {
                     </p>
                   )}
 
-                  <p className="mt-3 text-xs text-white/75">Next step: {nextStepForOrder(o)}</p>
+                  <p className="mt-3 text-xs text-white/75">
+                    Next step: {nextStepForOrder(o)}
+                  </p>
 
                   <div className="mt-3">
                     <p className="text-xs uppercase tracking-wide text-white/60">
@@ -188,9 +228,24 @@ export default function BuyerOrdersPage() {
                   </div>
 
                   <div className="mt-4 flex flex-wrap gap-3 text-xs sm:text-sm">
-                    <Link href="/support/marketplace" className="rounded-lg border border-white/20 px-3 py-2 text-white/90 hover:bg-white/10">Need help</Link>
-                    <Link href="/support/marketplace" className="rounded-lg border border-white/20 px-3 py-2 text-white/90 hover:bg-white/10">Contact seller</Link>
-                    <Link href="/support/new" className="rounded-lg border border-[#D4AF37]/30 px-3 py-2 text-[#D4AF37] hover:bg-[#D4AF37]/10">Open support ticket</Link>
+                    <Link
+                      href="/support/marketplace"
+                      className="rounded-lg border border-white/20 px-3 py-2 text-white/90 hover:bg-white/10"
+                    >
+                      Need help
+                    </Link>
+                    <Link
+                      href="/support/marketplace"
+                      className="rounded-lg border border-white/20 px-3 py-2 text-white/90 hover:bg-white/10"
+                    >
+                      Contact seller
+                    </Link>
+                    <Link
+                      href="/support/new"
+                      className="rounded-lg border border-[#D4AF37]/30 px-3 py-2 text-[#D4AF37] hover:bg-[#D4AF37]/10"
+                    >
+                      Open support ticket
+                    </Link>
                   </div>
                 </article>
               ))

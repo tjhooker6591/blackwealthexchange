@@ -88,7 +88,9 @@ export default function FeaturedProducts() {
         </div>
       )}
       {loading ? (
-        <div className="rounded-lg border border-zinc-800 bg-zinc-950 p-4 text-sm text-zinc-300">Loading products…</div>
+        <div className="rounded-lg border border-zinc-800 bg-zinc-950 p-4 text-sm text-zinc-300">
+          Loading products…
+        </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {products.length === 0 && (

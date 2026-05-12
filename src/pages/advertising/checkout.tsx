@@ -363,7 +363,9 @@ export default function AdvertisingCheckoutPage() {
           ) : null}
           <div className="pt-2 border-t border-white/10">
             <span className="text-zinc-400">Estimated Total:</span>{" "}
-            <span className="text-yellow-300 font-semibold">${parsed.amountDollars}</span>
+            <span className="text-yellow-300 font-semibold">
+              ${parsed.amountDollars}
+            </span>
           </div>
         </div>
 
@@ -376,9 +378,13 @@ export default function AdvertisingCheckoutPage() {
             rules.
           </p>
           <p className="pt-1">
-            Need help? Visit <span className="text-yellow-200">/support</span>
-            {" "}or review
-            <span className="text-yellow-200"> /legal/advertising-guidelines</span>.
+            Need help? Visit <span className="text-yellow-200">/support</span>{" "}
+            or review
+            <span className="text-yellow-200">
+              {" "}
+              /legal/advertising-guidelines
+            </span>
+            .
           </p>
         </div>
 

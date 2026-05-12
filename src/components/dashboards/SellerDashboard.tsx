@@ -99,7 +99,8 @@ export default function SellerDashboard() {
     {
       id: "publish",
       label: "Publish product",
-      description: "A listing is considered published when it is active and visible to buyers.",
+      description:
+        "A listing is considered published when it is active and visible to buyers.",
       done: Boolean(readiness?.readinessChecks?.publishedProduct),
       href: "/dashboard/seller/products",
       cta: "Review listing status",
@@ -107,7 +108,8 @@ export default function SellerDashboard() {
     {
       id: "manage",
       label: "View and manage listings",
-      description: "Edit inventory, pricing, and product details from one place.",
+      description:
+        "Edit inventory, pricing, and product details from one place.",
       done: stats.products > 0,
       href: "/dashboard/seller/products",
       cta: "Manage listings",
@@ -115,7 +117,8 @@ export default function SellerDashboard() {
     {
       id: "orders",
       label: "Begin receiving orders",
-      description: "Monitor new orders, then mark fulfillment as you process them.",
+      description:
+        "Monitor new orders, then mark fulfillment as you process them.",
       done: stats.orders > 0,
       href: "/marketplace/orders",
       cta: stats.orders > 0 ? "Manage orders" : "Open orders",
@@ -200,7 +203,9 @@ export default function SellerDashboard() {
       const data = await r.json().catch(() => ({}));
 
       if (!r.ok) {
-        throw new Error(data?.error || `Stripe onboarding failed (${r.status})`);
+        throw new Error(
+          data?.error || `Stripe onboarding failed (${r.status})`,
+        );
       }
 
       if (!data?.url) throw new Error("Missing Stripe onboarding URL");
@@ -320,7 +325,9 @@ export default function SellerDashboard() {
             <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-black/30 sm:h-12 sm:w-12">
               <Lock className="h-5 w-5 text-yellow-300" />
             </div>
-            <h2 className="text-xl font-bold text-gold sm:text-2xl">Access Denied</h2>
+            <h2 className="text-xl font-bold text-gold sm:text-2xl">
+              Access Denied
+            </h2>
             <p className="mt-2 text-sm text-gray-300">
               Please log in with a seller account to view the seller dashboard.
             </p>
@@ -354,7 +361,8 @@ export default function SellerDashboard() {
               Seller Dashboard
             </h1>
             <p className="mt-1 text-sm text-gray-300 sm:text-base">
-              Welcome, <span className="font-semibold text-white">{sellerName}</span>.
+              Welcome,{" "}
+              <span className="font-semibold text-white">{sellerName}</span>.
             </p>
             {lastUpdated ? (
               <p className="mt-2 text-xs text-gray-500">
@@ -382,15 +390,29 @@ export default function SellerDashboard() {
         <div className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-xl sm:p-5">
           <h2 className="text-lg font-bold text-gold">Seller readiness</h2>
           <p className="mt-1 text-sm text-gray-300">
-            State: <span className="font-semibold text-white">{readiness?.readinessLabel || "Not started"}</span>
+            State:{" "}
+            <span className="font-semibold text-white">
+              {readiness?.readinessLabel || "Not started"}
+            </span>
           </p>
           <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-white/10">
-            <div className="h-full bg-gold transition-all" style={{ width: `${readinessPercent}%` }} />
+            <div
+              className="h-full bg-gold transition-all"
+              style={{ width: `${readinessPercent}%` }}
+            />
           </div>
-          <p className="mt-2 text-xs text-gray-400">Progress: {readinessProgress}/2 ({readinessPercent}%)</p>
+          <p className="mt-2 text-xs text-gray-400">
+            Progress: {readinessProgress}/2 ({readinessPercent}%)
+          </p>
           <div className="mt-3 text-sm text-gray-300 space-y-1">
-            <div>{readiness?.readinessChecks?.profileValid ? "✅" : "⬜"} Valid seller profile</div>
-            <div>{readiness?.readinessChecks?.publishedProduct ? "✅" : "⬜"} At least one published product</div>
+            <div>
+              {readiness?.readinessChecks?.profileValid ? "✅" : "⬜"} Valid
+              seller profile
+            </div>
+            <div>
+              {readiness?.readinessChecks?.publishedProduct ? "✅" : "⬜"} At
+              least one published product
+            </div>
           </div>
         </div>
 
@@ -398,24 +420,42 @@ export default function SellerDashboard() {
           <h2 className="text-lg font-bold text-gold">Next step</h2>
           <p className="mt-1 text-sm text-gray-300">{nextStep.body}</p>
           <div className="mt-3 flex flex-wrap gap-2">
-            <Link href={nextStep.href} className="inline-flex items-center gap-2 rounded-xl bg-gold px-4 py-2 text-sm font-semibold text-black hover:bg-yellow-500">
+            <Link
+              href={nextStep.href}
+              className="inline-flex items-center gap-2 rounded-xl bg-gold px-4 py-2 text-sm font-semibold text-black hover:bg-yellow-500"
+            >
               {nextStep.cta} <ArrowRight className="h-4 w-4" />
             </Link>
-            <Link href="/marketplace/dashboard" className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm hover:bg-white/10">
+            <Link
+              href="/marketplace/dashboard"
+              className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm hover:bg-white/10"
+            >
               Refresh dashboard
             </Link>
           </div>
         </div>
 
         <div className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-xl sm:p-6">
-          <h2 className="text-lg font-bold text-gold">Guided onboarding flow</h2>
+          <h2 className="text-lg font-bold text-gold">
+            Guided onboarding flow
+          </h2>
           <div className="mt-3 grid gap-3 md:grid-cols-2">
             {onboardingSteps.map((step, idx) => (
-              <div key={step.id} className="rounded-xl border border-white/10 bg-black/30 p-3">
-                <p className="text-sm font-semibold text-white">{idx + 1}. {step.label}</p>
+              <div
+                key={step.id}
+                className="rounded-xl border border-white/10 bg-black/30 p-3"
+              >
+                <p className="text-sm font-semibold text-white">
+                  {idx + 1}. {step.label}
+                </p>
                 <p className="mt-1 text-xs text-gray-400">{step.description}</p>
-                <p className="mt-2 text-xs">{step.done ? "✅ Done" : "⬜ Pending"}</p>
-                <Link href={step.href} className="mt-2 inline-flex items-center gap-1 text-sm text-gold underline">
+                <p className="mt-2 text-xs">
+                  {step.done ? "✅ Done" : "⬜ Pending"}
+                </p>
+                <Link
+                  href={step.href}
+                  className="mt-2 inline-flex items-center gap-1 text-sm text-gold underline"
+                >
                   {step.cta}
                 </Link>
               </div>
@@ -424,16 +464,32 @@ export default function SellerDashboard() {
         </div>
 
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-3 lg:gap-6">
-          <StatTile icon={<Package className="h-5 w-5 text-yellow-300" />} label="Products Listed" value={stats.products} />
-          <StatTile icon={<ShoppingCart className="h-5 w-5 text-yellow-300" />} label="Orders Received" value={stats.orders} />
+          <StatTile
+            icon={<Package className="h-5 w-5 text-yellow-300" />}
+            label="Products Listed"
+            value={stats.products}
+          />
+          <StatTile
+            icon={<ShoppingCart className="h-5 w-5 text-yellow-300" />}
+            label="Orders Received"
+            value={stats.orders}
+          />
           <div className="col-span-2 lg:col-span-1">
-            <StatTile icon={<BarChart3 className="h-5 w-5 text-yellow-300" />} label="Total Revenue" value={formattedRevenue} />
+            <StatTile
+              icon={<BarChart3 className="h-5 w-5 text-yellow-300" />}
+              label="Total Revenue"
+              value={formattedRevenue}
+            />
           </div>
         </div>
 
         <div className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-xl sm:p-6">
-          <h2 className="text-lg font-bold text-gold sm:text-xl">Payout status</h2>
-          {stripeError ? <p className="mt-2 text-sm text-red-300">{stripeError}</p> : null}
+          <h2 className="text-lg font-bold text-gold sm:text-xl">
+            Payout status
+          </h2>
+          {stripeError ? (
+            <p className="mt-2 text-sm text-red-300">{stripeError}</p>
+          ) : null}
           <p className="mt-2 text-sm text-gray-300">
             {stripeLoading
               ? "Checking payout status..."
@@ -442,10 +498,20 @@ export default function SellerDashboard() {
                 : "Payout setup still required before funds can be received."}
           </p>
           <div className="mt-3 flex flex-wrap gap-2">
-            <button onClick={() => refreshStripeStatus()} className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm transition hover:bg-white/10">Refresh</button>
+            <button
+              onClick={() => refreshStripeStatus()}
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm transition hover:bg-white/10"
+            >
+              Refresh
+            </button>
             {!payoutReady ? (
-              <button onClick={startStripeOnboarding} disabled={stripeWorking} className="inline-flex items-center justify-center gap-2 rounded-xl bg-gold px-4 py-2 text-sm font-semibold text-black transition hover:bg-yellow-500 disabled:opacity-60">
-                {stripeWorking ? "Opening…" : "Finish Stripe Setup"} <ArrowRight className="h-4 w-4" />
+              <button
+                onClick={startStripeOnboarding}
+                disabled={stripeWorking}
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-gold px-4 py-2 text-sm font-semibold text-black transition hover:bg-yellow-500 disabled:opacity-60"
+              >
+                {stripeWorking ? "Opening…" : "Finish Stripe Setup"}{" "}
+                <ArrowRight className="h-4 w-4" />
               </button>
             ) : null}
           </div>
@@ -454,15 +520,32 @@ export default function SellerDashboard() {
         <div className="rounded-2xl border border-emerald-500/25 bg-emerald-500/10 p-4 shadow-xl sm:p-5">
           <h2 className="text-lg font-bold text-gold">First-sale guidance</h2>
           <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-gray-200">
-            <li>Add a complete product listing with clear photos and pricing.</li>
+            <li>
+              Add a complete product listing with clear photos and pricing.
+            </li>
             <li>Keep at least one listing active and in stock.</li>
             <li>Review listings daily and update weak titles/descriptions.</li>
             <li>Watch your orders page so new purchases are fulfilled fast.</li>
           </ul>
           <div className="mt-3 flex flex-wrap gap-2">
-            <Link href="/marketplace/add-products" className="inline-flex items-center gap-2 rounded-xl bg-gold px-4 py-2 text-sm font-semibold text-black hover:bg-yellow-500">Add product</Link>
-            <Link href="/dashboard/seller/products" className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm hover:bg-white/10">Review listings</Link>
-            <Link href="/marketplace/orders" className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm hover:bg-white/10">Open orders</Link>
+            <Link
+              href="/marketplace/add-products"
+              className="inline-flex items-center gap-2 rounded-xl bg-gold px-4 py-2 text-sm font-semibold text-black hover:bg-yellow-500"
+            >
+              Add product
+            </Link>
+            <Link
+              href="/dashboard/seller/products"
+              className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm hover:bg-white/10"
+            >
+              Review listings
+            </Link>
+            <Link
+              href="/marketplace/orders"
+              className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm hover:bg-white/10"
+            >
+              Open orders
+            </Link>
           </div>
         </div>
 
@@ -473,7 +556,9 @@ export default function SellerDashboard() {
                 <AlertTriangle className="h-5 w-5 text-yellow-300" />
               </div>
               <div>
-                <h3 className="text-sm font-bold text-gold sm:text-base">Seller dashboard data is partially unavailable</h3>
+                <h3 className="text-sm font-bold text-gold sm:text-base">
+                  Seller dashboard data is partially unavailable
+                </h3>
                 <p className="mt-1 text-sm text-gray-300">{dataError}</p>
               </div>
             </div>
@@ -493,14 +578,26 @@ function GlowBackground() {
   );
 }
 
-function StatTile({ icon, label, value }: { icon: ReactNode; label: string; value: string | number }) {
+function StatTile({
+  icon,
+  label,
+  value,
+}: {
+  icon: ReactNode;
+  label: string;
+  value: string | number;
+}) {
   return (
     <div className="rounded-2xl border border-white/10 bg-white/5 p-4 shadow-xl sm:p-6">
       <div className="flex items-start gap-2 text-gray-200">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-black/30 sm:h-10 sm:w-10">{icon}</div>
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-black/30 sm:h-10 sm:w-10">
+          {icon}
+        </div>
         <div className="min-w-0 text-xs text-gray-300 sm:text-sm">{label}</div>
       </div>
-      <div className="mt-3 break-words text-2xl font-extrabold text-white sm:mt-4 sm:text-4xl">{value}</div>
+      <div className="mt-3 break-words text-2xl font-extrabold text-white sm:mt-4 sm:text-4xl">
+        {value}
+      </div>
     </div>
   );
 }

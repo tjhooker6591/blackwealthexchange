@@ -31,7 +31,9 @@ export default async function handler(
   }
 
   if (safeMessage.length > 1000) {
-    return res.status(400).json({ error: "Message is too long (max 1000 characters)." });
+    return res
+      .status(400)
+      .json({ error: "Message is too long (max 1000 characters)." });
   }
 
   try {

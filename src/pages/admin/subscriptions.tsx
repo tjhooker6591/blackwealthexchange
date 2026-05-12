@@ -146,5 +146,6 @@ export default function AdminSubscriptionsPage() {
   );
 }
 
-export const getServerSideProps: GetServerSideProps =
-  requireAdminPageProps("/admin/subscriptions");
+export const getServerSideProps: GetServerSideProps = requireAdminPageProps(
+  "/admin/subscriptions",
+);

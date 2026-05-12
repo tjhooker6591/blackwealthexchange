@@ -38,9 +38,13 @@ export default function CheckoutPage() {
     return typeof n === "string" ? n : "";
   }, [router.query.productName]);
 
-  const amountLabel = useMemo(() => asMoney(router.query.amount), [router.query.amount]);
+  const amountLabel = useMemo(
+    () => asMoney(router.query.amount),
+    [router.query.amount],
+  );
 
-  const isMarketplaceOrder = checkoutType === "product" || source === "marketplace";
+  const isMarketplaceOrder =
+    checkoutType === "product" || source === "marketplace";
 
   const authUser = (user ?? null) as Record<string, unknown> | null;
 
@@ -130,11 +134,16 @@ export default function CheckoutPage() {
             <div className="mt-5 rounded-xl border border-white/10 bg-white/5 p-4 text-sm text-white/85">
               <p className="font-semibold text-white">Order summary</p>
               <p className="mt-1">Item: {productName || "Marketplace item"}</p>
-              <p className="mt-1">Subtotal: {amountLabel || "Shown on payment page"}</p>
-              <p className="mt-1">Shipping and taxes: Calculated by seller/payment flow.</p>
+              <p className="mt-1">
+                Subtotal: {amountLabel || "Shown on payment page"}
+              </p>
+              <p className="mt-1">
+                Shipping and taxes: Calculated by seller/payment flow.
+              </p>
               <p className="mt-3 text-xs text-white/70">
-                Payment is processed securely. You receive confirmation immediately after successful payment.
-                Fulfillment and shipping updates follow from the seller and are visible in My Orders.
+                Payment is processed securely. You receive confirmation
+                immediately after successful payment. Fulfillment and shipping
+                updates follow from the seller and are visible in My Orders.
               </p>
             </div>
           ) : null}

@@ -18,7 +18,10 @@ import {
   isBlackCardPlanItemId,
 } from "@/lib/black-card";
 import { getStripeSecretKey } from "@/lib/stripeSecret";
-import { checkoutTypeToRevenueType, computeRevenueSplit } from "@/lib/payments/revenue";
+import {
+  checkoutTypeToRevenueType,
+  computeRevenueSplit,
+} from "@/lib/payments/revenue";
 
 const stripeSecret = getStripeSecretKey();
 const stripe = new Stripe(stripeSecret || "sk_missing", {

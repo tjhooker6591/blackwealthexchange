@@ -120,7 +120,11 @@ export async function middleware(req: NextRequest) {
     if (!pathname.startsWith(routePrefix)) continue;
 
     if (!isLoggedIn) {
-      if (pathname.startsWith("/dashboard") || pathname.startsWith("/employer") || pathname.startsWith("/marketplace")) {
+      if (
+        pathname.startsWith("/dashboard") ||
+        pathname.startsWith("/employer") ||
+        pathname.startsWith("/marketplace")
+      ) {
         console.info("[middleware] redirect_login_missing_cookie", {
           path: pathname,
           host,
@@ -142,7 +146,11 @@ export async function middleware(req: NextRequest) {
           : role === requiredRole;
 
     if (!allowed) {
-      if (pathname.startsWith("/dashboard") || pathname.startsWith("/employer") || pathname.startsWith("/marketplace")) {
+      if (
+        pathname.startsWith("/dashboard") ||
+        pathname.startsWith("/employer") ||
+        pathname.startsWith("/marketplace")
+      ) {
         console.info("[middleware] redirect_login_role_mismatch", {
           path: pathname,
           requiredRole,

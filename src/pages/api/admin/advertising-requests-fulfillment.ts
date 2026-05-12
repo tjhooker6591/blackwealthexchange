@@ -31,7 +31,9 @@ export default async function handler(
   if (!admin) return;
 
   const body: Body =
-    typeof req.body === "string" ? JSON.parse(req.body || "{}") : req.body || {};
+    typeof req.body === "string"
+      ? JSON.parse(req.body || "{}")
+      : req.body || {};
 
   const requestId = String(body.requestId || "").trim();
   if (!ObjectId.isValid(requestId)) {
@@ -52,9 +54,11 @@ export default async function handler(
 
     const option = String(reqDoc.option || "").trim();
     const durationDays =
-      Number.isFinite(Number(body.durationDays)) && Number(body.durationDays) > 0
+      Number.isFinite(Number(body.durationDays)) &&
+      Number(body.durationDays) > 0
         ? Math.floor(Number(body.durationDays))
-        : Number.isFinite(Number(reqDoc.durationDays)) && Number(reqDoc.durationDays) > 0
+        : Number.isFinite(Number(reqDoc.durationDays)) &&
+            Number(reqDoc.durationDays) > 0
           ? Math.floor(Number(reqDoc.durationDays))
           : 30;
 

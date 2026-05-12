@@ -117,7 +117,9 @@ export default async function handler(
       return_url: `${origin}${safeReturnTo}`,
     });
 
-    return res.status(200).json({ ok: true, data: { url: link.url, stripeAccountId } });
+    return res
+      .status(200)
+      .json({ ok: true, data: { url: link.url, stripeAccountId } });
   } catch (err: any) {
     console.error("create-account-link error:", err);
     return res.status(500).json({

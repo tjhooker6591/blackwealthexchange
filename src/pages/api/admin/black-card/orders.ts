@@ -112,12 +112,10 @@ export default async function handler(
       order.status || "pending_profile",
     ).toLowerCase();
     if (!ALLOWED_TRANSITIONS[currentStatus]?.includes(nextStatus)) {
-      return res
-        .status(409)
-        .json({
-          ok: false,
-          error: `Invalid transition from ${currentStatus} to ${nextStatus}`,
-        });
+      return res.status(409).json({
+        ok: false,
+        error: `Invalid transition from ${currentStatus} to ${nextStatus}`,
+      });
     }
 
     const now = new Date();

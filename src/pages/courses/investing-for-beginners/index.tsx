@@ -220,12 +220,16 @@ const InvestingForBeginners: React.FC = () => {
             <div className="font-semibold text-gold">Entitlement truth</div>
             <ul className="mt-2 list-disc ml-5 space-y-1">
               <li>
-                This is a one-time course purchase that unlocks Investing for Beginners for your account.
+                This is a one-time course purchase that unlocks Investing for
+                Beginners for your account.
               </li>
               <li>
                 Checkout is secure and tied to your logged-in BWE account.
               </li>
-              <li>If checkout is canceled or interrupted, access is not granted yet.</li>
+              <li>
+                If checkout is canceled or interrupted, access is not granted
+                yet.
+              </li>
             </ul>
             <p className="mt-2 text-xs text-gray-400">
               Support is available via BWE help/contact routes for payment,
@@ -240,7 +244,9 @@ const InvestingForBeginners: React.FC = () => {
                   type="button"
                   onClick={() => {
                     setCtaState("redirect-login");
-                    void router.push(`/signup?next=${encodeURIComponent(router.asPath)}`);
+                    void router.push(
+                      `/signup?next=${encodeURIComponent(router.asPath)}`,
+                    );
                   }}
                   className="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition"
                 >
@@ -250,7 +256,9 @@ const InvestingForBeginners: React.FC = () => {
                   type="button"
                   onClick={() => {
                     setCtaState("redirect-login");
-                    void router.push(`/login?next=${encodeURIComponent(router.asPath)}`);
+                    void router.push(
+                      `/login?next=${encodeURIComponent(router.asPath)}`,
+                    );
                   }}
                   className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition"
                 >

@@ -49,35 +49,31 @@ export default async function handler(
   const client = await clientPromise;
   const db = client.db(getMongoDbName());
   const now = new Date();
-  const result = await db
-    .collection(collectionName)
-    .updateOne(
-      { _id: new ObjectId(targetId) },
-      {
-        $set: {
-          status: nextStatus,
-          moderationNote: reason,
-          moderatedAt: now,
-          moderatedBy: admin.email || admin.userId || "admin",
-          updatedAt: now,
-        },
+  const result = await db.collection(collectionName).updateOne(
+    { _id: new ObjectId(targetId) },
+    {
+      $set: {
+        status: nextStatus,
+        moderationNote: reason,
+        moderatedAt: now,
+        moderatedBy: admin.email || admin.userId || "admin",
+        updatedAt: now,
       },
-    );
+    },
+  );
   if (!result.matchedCount)
     return res.status(404).json({ ok: false, error: "Target not found" });
 
-  await db
-    .collection("admin_moderation_audit")
-    .insertOne({
-      targetType,
-      targetId,
-      action,
-      nextStatus,
-      reason,
-      actorId: admin.userId || null,
-      actorEmail: admin.email || null,
-      createdAt: now,
-    });
+  await db.collection("admin_moderation_audit").insertOne({
+    targetType,
+    targetId,
+    action,
+    nextStatus,
+    reason,
+    actorId: admin.userId || null,
+    actorEmail: admin.email || null,
+    createdAt: now,
+  });
 
   return res.status(200).json({ ok: true, targetType, targetId, nextStatus });
 }

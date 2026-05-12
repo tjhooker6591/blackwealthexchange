@@ -273,7 +273,7 @@ export default function JobListingsPage() {
       <script type="application/ld+json">
         {JSON.stringify(jobsItemListSchema)}
       </script>
-      <div className="min-h-screen overflow-x-hidden bg-gray-950 text-white px-6 py-10">
+      <div className="min-h-screen overflow-x-hidden bg-gray-950 text-white px-3 sm:px-6 py-5 sm:py-10">
         {/* subtle gold glow background */}
         <div className="pointer-events-none fixed inset-0 opacity-40">
           <div className="absolute -top-40 -left-40 h-[520px] w-[520px] rounded-full blur-3xl bg-yellow-500/20" />
@@ -282,46 +282,45 @@ export default function JobListingsPage() {
 
         <div className="relative max-w-6xl mx-auto">
           {/* Header */}
-          <div className="flex items-start justify-between gap-4 mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4 mb-4 sm:mb-6">
             <div>
-              <h1 className="text-3xl font-bold tracking-tight">
-                Job Listings{" "}
-                <span className="text-yellow-400">for Our Community</span>
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight leading-tight">
+                Job Listings <span className="text-yellow-400">for Our Community</span>
               </h1>
-              <p className="text-gray-300 mt-2 max-w-2xl">
+              <p className="text-gray-300 mt-1.5 sm:mt-2 max-w-2xl text-sm sm:text-base">
                 Browse opportunities for free. Employers using BWE can run
                 structured candidate review with role-match and readiness
                 indicators plus human review.
               </p>
             </div>
 
-            <div className="flex gap-3">
+            <div className="grid grid-cols-2 sm:flex gap-2 sm:gap-3 w-full sm:w-auto">
               <Link href="/">
-                <button className="px-4 py-2 rounded border border-gray-700 text-gray-200 hover:bg-gray-900 transition">
+                <button className="px-3 sm:px-4 py-2 rounded border border-gray-700 text-gray-200 text-sm sm:text-base hover:bg-gray-900 transition">
                   ← Back
                 </button>
               </Link>
               <Link href="/post-job">
-                <button className="px-4 py-2 rounded bg-yellow-400 text-black font-semibold hover:bg-yellow-300 transition">
+                <button className="px-3 sm:px-4 py-2 rounded bg-yellow-400 text-black font-semibold text-sm sm:text-base hover:bg-yellow-300 transition">
                   Post a Job
                 </button>
               </Link>
               <Link href="/business-directory">
-                <button className="px-4 py-2 rounded border border-gray-700 text-gray-200 hover:bg-gray-900 transition">
+                <button className="px-3 sm:px-4 py-2 rounded border border-gray-700 text-gray-200 text-sm sm:text-base hover:bg-gray-900 transition">
                   Directory Hub
                 </button>
               </Link>
             </div>
           </div>
 
-          <div className="mb-4 rounded-xl border border-blue-500/30 bg-blue-500/10 p-3 text-sm text-blue-100">
+          <div className="mb-3 sm:mb-4 rounded-xl border border-blue-500/30 bg-blue-500/10 p-2.5 sm:p-3 text-xs sm:text-sm text-blue-100">
             <span className="font-semibold">For employers:</span> applications
             can be screened with readiness and role-match signals, then reviewed
             by humans before hiring decisions.
           </div>
 
           {/* Tools */}
-          <div className="bg-gray-900/70 border border-gray-800 rounded-xl p-4 shadow-lg backdrop-blur">
+          <div className="bg-gray-900/70 border border-gray-800 rounded-xl p-3 sm:p-4 shadow-lg backdrop-blur">
             <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
               <div className="md:col-span-5">
                 <label className="text-xs text-gray-400">Search</label>
@@ -377,7 +376,7 @@ export default function JobListingsPage() {
               </div>
             </div>
 
-            <div className="flex items-center justify-between mt-3">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-3">
               <label className="flex items-center gap-2 text-sm text-gray-300 select-none">
                 <input
                   type="checkbox"
@@ -398,7 +397,7 @@ export default function JobListingsPage() {
           </div>
 
           {/* Results */}
-          <section className="mt-8">
+          <section className="mt-5 sm:mt-8">
             <h2 className="text-lg font-semibold text-yellow-400 mb-4">
               Opportunities
             </h2>
@@ -427,7 +426,7 @@ export default function JobListingsPage() {
                     <div
                       key={job._id}
                       className={[
-                        "p-5 rounded-xl border shadow-lg transition",
+                        "p-4 sm:p-5 rounded-xl border shadow-lg transition",
                         "bg-gray-900/70 border-gray-800 hover:border-yellow-400/30 hover:shadow-yellow-400/10",
                         job.isFeatured ? "ring-1 ring-yellow-400/40" : "",
                       ].join(" ")}
@@ -435,7 +434,7 @@ export default function JobListingsPage() {
                       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
                         <div className="min-w-0">
                           <div className="flex items-center gap-2">
-                            <h3 className="text-lg sm:text-xl font-semibold text-white break-words">
+                            <h3 className="text-base sm:text-xl font-semibold text-white break-words leading-snug">
                               {job.title}
                             </h3>
                             {job.isFeatured && (
@@ -445,7 +444,7 @@ export default function JobListingsPage() {
                             )}
                           </div>
 
-                          <p className="text-gray-300 mt-1 break-words">
+                          <p className="text-gray-300 mt-1 break-words text-sm sm:text-base">
                             {job.company}{" "}
                             <span className="text-gray-500">•</span>{" "}
                             <span className="text-gray-300">
@@ -453,7 +452,7 @@ export default function JobListingsPage() {
                             </span>
                           </p>
 
-                          <p className="text-sm text-gray-400 mt-1">
+                          <p className="text-xs sm:text-sm text-gray-400 mt-1">
                             Type: {job.type}
                             {job.salary
                               ? ` • 💰 ${job.salary}`
@@ -467,7 +466,7 @@ export default function JobListingsPage() {
                         <div className="flex w-full flex-wrap gap-2 sm:w-auto sm:shrink-0">
                           <button
                             onClick={() => setSelectedJob(job)}
-                            className="flex-1 sm:flex-none px-4 py-2 rounded bg-yellow-400 text-black font-semibold hover:bg-yellow-300 transition"
+                            className="flex-1 sm:flex-none px-3 sm:px-4 py-2 rounded bg-yellow-400 text-black text-sm sm:text-base font-semibold hover:bg-yellow-300 transition"
                           >
                             View
                           </button>
@@ -476,7 +475,7 @@ export default function JobListingsPage() {
                             onClick={() => saveJob(job._id)}
                             disabled={saveBusyId === job._id}
                             className={[
-                              "flex-1 sm:flex-none px-4 py-2 rounded border transition",
+                              "flex-1 sm:flex-none px-3 sm:px-4 py-2 rounded border transition text-sm sm:text-base",
                               "border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black",
                               saveBusyId === job._id
                                 ? "opacity-60 cursor-not-allowed"
@@ -488,7 +487,7 @@ export default function JobListingsPage() {
                         </div>
                       </div>
 
-                      <p className="text-gray-300 mt-4 line-clamp-3">
+                      <p className="text-gray-300 mt-3 sm:mt-4 line-clamp-3 text-sm sm:text-base">
                         {job.description}
                       </p>
                     </div>

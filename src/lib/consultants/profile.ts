@@ -77,12 +77,17 @@ export function validateConsultantProfileInput(body: any): {
     errors.push("Category is invalid.");
   }
   if (topSkills.length < 3) errors.push("At least 3 top skills are required.");
-  if (!Number.isFinite(yearsExperience) || yearsExperience < 0 || yearsExperience > 60) {
+  if (
+    !Number.isFinite(yearsExperience) ||
+    yearsExperience < 0 ||
+    yearsExperience > 60
+  ) {
     errors.push("Years of experience must be between 0 and 60.");
   }
   if (!availability) errors.push("Availability is required.");
   if (!engagementType) errors.push("Engagement type is required.");
-  if (industriesServed.length < 1) errors.push("At least 1 industry is required.");
+  if (industriesServed.length < 1)
+    errors.push("At least 1 industry is required.");
 
   return { ok: errors.length === 0, errors, value };
 }

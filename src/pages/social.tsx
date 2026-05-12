@@ -105,7 +105,8 @@ const Social: React.FC = () => {
           BWES Social
         </h1>
         <div className="mb-6 rounded-lg border border-yellow-500/30 bg-yellow-500/10 p-3 text-center text-sm text-yellow-200">
-          Social posting is currently unavailable. Feed and trends are preview-only.
+          Social posting is currently unavailable. Feed and trends are
+          preview-only.
         </div>
 
         {/* Tabs */}

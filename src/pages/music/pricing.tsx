@@ -164,14 +164,16 @@ export default function MusicPricingPage() {
               <button
                 onClick={() =>
                   router.push(
-                    readiness?.sellerExists && readiness?.onboardingStatus === "onboarded"
+                    readiness?.sellerExists &&
+                      readiness?.onboardingStatus === "onboarded"
                       ? "/marketplace/become-a-seller?refresh=1"
                       : "/music/join",
                   )
                 }
                 className="rounded-xl bg-[#D4AF37] px-4 py-2 font-bold text-black"
               >
-                {readiness?.sellerExists && readiness?.onboardingStatus === "onboarded"
+                {readiness?.sellerExists &&
+                readiness?.onboardingStatus === "onboarded"
                   ? "Finish Payout Setup"
                   : "Complete Music Join"}
               </button>

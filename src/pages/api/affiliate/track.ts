@@ -38,7 +38,9 @@ export default async function handler(
   }
 
   if (sessionUserId && sessionUserId !== targetUserId) {
-    return res.status(403).json({ error: "Cannot attribute referral for another user" });
+    return res
+      .status(403)
+      .json({ error: "Cannot attribute referral for another user" });
   }
 
   try {
@@ -56,7 +58,10 @@ export default async function handler(
 
     const user = await db
       .collection("users")
-      .findOne({ _id: new ObjectId(targetUserId) }, { projection: { referredBy: 1 } });
+      .findOne(
+        { _id: new ObjectId(targetUserId) },
+        { projection: { referredBy: 1 } },
+      );
 
     if (!user) {
       return res.status(404).json({ error: "Target user not found" });

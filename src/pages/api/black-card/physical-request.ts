@@ -33,14 +33,18 @@ export default async function handler(
   }
 
   const session = getBlackCardSession(req);
-  if (!session) return res.status(401).json({ ok: false, error: "Unauthorized" });
+  if (!session)
+    return res.status(401).json({ ok: false, error: "Unauthorized" });
 
   const rate = getRateBucket(session.userId);
   if (rate.count >= RATE_LIMIT_MAX) {
     return res.status(429).json({
       ok: false,
       error: "Too many requests. Please try again later.",
-      retryAfterSeconds: Math.max(1, Math.floor((rate.resetAt - Date.now()) / 1000)),
+      retryAfterSeconds: Math.max(
+        1,
+        Math.floor((rate.resetAt - Date.now()) / 1000),
+      ),
     });
   }
 
@@ -48,7 +52,9 @@ export default async function handler(
   const mailingAddress = req.body?.mailingAddress || {};
 
   if (!nameToPrint) {
-    return res.status(400).json({ ok: false, error: "nameToPrint is required" });
+    return res
+      .status(400)
+      .json({ ok: false, error: "nameToPrint is required" });
   }
 
   const client = await clientPromise;
@@ -98,7 +104,9 @@ export default async function handler(
     updatedAt: now,
   };
 
-  const result = await db.collection("black_card_physical_requests").insertOne(requestDoc);
+  const result = await db
+    .collection("black_card_physical_requests")
+    .insertOne(requestDoc);
 
   await db.collection("black_card_audit_events").insertOne({
     eventType: "physical_card_requested",

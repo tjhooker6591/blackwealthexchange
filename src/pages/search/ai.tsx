@@ -193,7 +193,8 @@ export default function SearchAI() {
         </div>
 
         <div className="mt-10 text-xs text-white/45">
-          AI Mode uses BWE directory data and routes you to source listings for final verification.
+          AI Mode uses BWE directory data and routes you to source listings for
+          final verification.
         </div>
       </div>
     </div>

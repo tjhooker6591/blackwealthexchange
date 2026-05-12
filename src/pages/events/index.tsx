@@ -574,7 +574,6 @@ export default function EventsPage() {
                           Official Site
                         </a>
                       ) : null}
-
                     </div>
                   </div>
                 ))}

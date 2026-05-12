@@ -1065,13 +1065,16 @@ const AdminDashboard = ({
               <div className="bg-gray-800 rounded p-4 border border-gray-700 mb-4">
                 <AdminHubNav />
 
-        {router.query.source === "command-center" ? (
-          <div className="rounded border border-yellow-500/30 bg-yellow-500/10 px-3 py-2 text-xs text-yellow-200">
-            Opened from Command Center{router.query.focus ? ` • Focus: ${String(router.query.focus)}` : ""}
-          </div>
-        ) : null}
+                {router.query.source === "command-center" ? (
+                  <div className="rounded border border-yellow-500/30 bg-yellow-500/10 px-3 py-2 text-xs text-yellow-200">
+                    Opened from Command Center
+                    {router.query.focus
+                      ? ` • Focus: ${String(router.query.focus)}`
+                      : ""}
+                  </div>
+                ) : null}
 
-        <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between">
                   <h3 className="text-lg text-gold">Businesses Snapshot</h3>
                   <div className="text-xs text-gray-400">
                     Total:{" "}
@@ -2030,11 +2033,14 @@ function AdminHubNav() {
   return (
     <div className="flex flex-wrap gap-2">
       {adminNavLinks.map(([label, href]) => (
-        <Link key={href} href={href} className="text-xs border border-zinc-700 px-3 py-1.5 rounded">
+        <Link
+          key={href}
+          href={href}
+          className="text-xs border border-zinc-700 px-3 py-1.5 rounded"
+        >
           {label}
         </Link>
       ))}
     </div>
   );
 }
-

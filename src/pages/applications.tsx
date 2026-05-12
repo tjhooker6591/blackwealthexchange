@@ -76,10 +76,16 @@ export default function ApplicationsPage() {
                 <p className="text-sm text-gray-400">{app.company}</p>
                 <p className="text-sm text-yellow-400">Status: {app.status}</p>
                 <p className="text-xs text-gray-400">
-                  Applied: {app.submittedAt ? new Date(app.submittedAt).toLocaleDateString() : "-"}
+                  Applied:{" "}
+                  {app.submittedAt
+                    ? new Date(app.submittedAt).toLocaleDateString()
+                    : "-"}
                 </p>
                 <p className="text-xs text-gray-400">
-                  Last update: {app.statusUpdatedAt ? new Date(app.statusUpdatedAt).toLocaleString() : "Pending review"}
+                  Last update:{" "}
+                  {app.statusUpdatedAt
+                    ? new Date(app.statusUpdatedAt).toLocaleString()
+                    : "Pending review"}
                 </p>
               </div>
               <Link

@@ -471,7 +471,6 @@ export default function WealthBuilderStatusPage() {
   );
 }
 
-
 export const getServerSideProps: GetServerSideProps = async (context) => {
   return requireWealthBuilderPageUser(context, "/wealth-builder/status");
 };

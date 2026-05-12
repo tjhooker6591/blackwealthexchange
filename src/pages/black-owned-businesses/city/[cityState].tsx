@@ -29,7 +29,8 @@ export default function CityDirectoryLanding() {
 
   const city = cityRaw.join("-");
   const state = stateRaw.slice(0, 2);
-  const isValidCityState = /^[a-z0-9-]{2,80}$/.test(cityState) && /^[a-z]{2}$/.test(state);
+  const isValidCityState =
+    /^[a-z0-9-]{2,80}$/.test(cityState) && /^[a-z]{2}$/.test(state);
   const cityLabel = pretty(city || "city");
   const stateLabel = state.toUpperCase() || "US";
 

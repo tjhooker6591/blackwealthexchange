@@ -8,6 +8,7 @@ import {
   getClientIp,
   hitApiRateLimit,
 } from "@/lib/apiRateLimit";
+import { sanitizeRichHtml } from "@/lib/security/sanitizeHtml";
 
 function asText(v: unknown) {
   return typeof v === "string" ? v.trim() : "";
@@ -101,7 +102,7 @@ export default async function handler(
     if (req.method === "POST") {
       const consultantId = asText(req.body?.consultantId);
       const requestType = asText(req.body?.requestType).toLowerCase();
-      const message = asText(req.body?.message);
+      const message = sanitizeRichHtml(asText(req.body?.message)).trim();
 
       if (!consultantId) {
         return res.status(400).json({ error: "consultantId is required" });

@@ -51,7 +51,9 @@ export default async function handler(
     });
   }
 
-  const status = String(card.status || card.digitalStatus || "inactive").toLowerCase();
+  const status = String(
+    card.status || card.digitalStatus || "inactive",
+  ).toLowerCase();
   const valid = !INVALID_STATUSES.has(status);
 
   return res.status(200).json({
@@ -61,7 +63,9 @@ export default async function handler(
     cardType: String(card.cardType || "user"),
     status,
     memberRef: card.memberId ? String(card.memberId).slice(-4) : null,
-    lastUpdatedAt: card.updatedAt ? new Date(card.updatedAt).toISOString() : null,
+    lastUpdatedAt: card.updatedAt
+      ? new Date(card.updatedAt).toISOString()
+      : null,
     lastVerifiedAt: new Date().toISOString(),
   });
 }

@@ -111,50 +111,50 @@ export default function ContentModeration() {
         ) : (
           <div className="space-y-3">
             {items.map((row) => (
-            <div
-              key={row.targetType + row.targetId}
-              className="border border-gray-800 rounded p-3 bg-gray-900"
-            >
-              <div className="text-sm">
-                <span className="text-gold">{row.targetType}</span> •{" "}
-                {row.title} • status: {row.status}
+              <div
+                key={row.targetType + row.targetId}
+                className="border border-gray-800 rounded p-3 bg-gray-900"
+              >
+                <div className="text-sm">
+                  <span className="text-gold">{row.targetType}</span> •{" "}
+                  {row.title} • status: {row.status}
+                </div>
+                <input
+                  className="mt-2 w-full bg-black border border-gray-700 rounded px-2 py-1 text-sm"
+                  placeholder="reason (required)"
+                  value={reason[row.targetId] || ""}
+                  onChange={(e) =>
+                    setReason((prev) => ({
+                      ...prev,
+                      [row.targetId]: e.target.value,
+                    }))
+                  }
+                />
+                <div className="mt-2 flex gap-2">
+                  <button
+                    disabled={saving === row.targetId}
+                    onClick={() => act(row, "approve")}
+                    className="px-2 py-1 rounded bg-emerald-600 text-black text-sm"
+                  >
+                    Approve
+                  </button>
+                  <button
+                    disabled={saving === row.targetId}
+                    onClick={() => act(row, "reject")}
+                    className="px-2 py-1 rounded bg-orange-600 text-black text-sm"
+                  >
+                    Reject
+                  </button>
+                  <button
+                    disabled={saving === row.targetId}
+                    onClick={() => act(row, "remove")}
+                    className="px-2 py-1 rounded bg-red-600 text-black text-sm"
+                  >
+                    Remove
+                  </button>
+                </div>
               </div>
-              <input
-                className="mt-2 w-full bg-black border border-gray-700 rounded px-2 py-1 text-sm"
-                placeholder="reason (required)"
-                value={reason[row.targetId] || ""}
-                onChange={(e) =>
-                  setReason((prev) => ({
-                    ...prev,
-                    [row.targetId]: e.target.value,
-                  }))
-                }
-              />
-              <div className="mt-2 flex gap-2">
-                <button
-                  disabled={saving === row.targetId}
-                  onClick={() => act(row, "approve")}
-                  className="px-2 py-1 rounded bg-emerald-600 text-black text-sm"
-                >
-                  Approve
-                </button>
-                <button
-                  disabled={saving === row.targetId}
-                  onClick={() => act(row, "reject")}
-                  className="px-2 py-1 rounded bg-orange-600 text-black text-sm"
-                >
-                  Reject
-                </button>
-                <button
-                  disabled={saving === row.targetId}
-                  onClick={() => act(row, "remove")}
-                  className="px-2 py-1 rounded bg-red-600 text-black text-sm"
-                >
-                  Remove
-                </button>
-              </div>
-            </div>
-          ))}
+            ))}
           </div>
         )}
       </div>

@@ -22,7 +22,10 @@ export default async function handler(
 
     const affiliate = await db
       .collection("affiliates")
-      .findOne({ _id: new ObjectId(affiliateId) }, { projection: { _id: 1, status: 1 } });
+      .findOne(
+        { _id: new ObjectId(affiliateId) },
+        { projection: { _id: 1, status: 1 } },
+      );
 
     if (!affiliate) {
       return res.status(404).json({ message: "Affiliate not found" });
