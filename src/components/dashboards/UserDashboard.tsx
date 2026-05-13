@@ -65,6 +65,10 @@ interface SubscriptionState {
   hasManageableSubscription: boolean;
 }
 
+interface BlackCardSummaryState {
+  status: string;
+}
+
 export default function UserDashboard() {
   const router = useRouter();
 
@@ -82,6 +86,8 @@ export default function UserDashboard() {
   );
   const [cancelingSubscription, setCancelingSubscription] = useState(false);
   const [subscriptionMessage, setSubscriptionMessage] = useState("");
+  const [blackCardSummary, setBlackCardSummary] =
+    useState<BlackCardSummaryState | null>(null);
   useEffect(() => {
     const controller = new AbortController();
 
@@ -114,7 +120,7 @@ export default function UserDashboard() {
         setDashboardData({});
         setChartData([]);
 
-        const [dashRes, chartRes, subscriptionRes] = await Promise.allSettled([
+        const [dashRes, chartRes, subscriptionRes, blackCardRes] = await Promise.allSettled([
           fetch(
             `/api/user/get-dashboard?email=${encodeURIComponent(u.email)}`,
             {
@@ -132,6 +138,11 @@ export default function UserDashboard() {
             },
           ),
           fetch("/api/billing/subscription-status", {
+            cache: "no-store",
+            credentials: "include",
+            signal: controller.signal,
+          }),
+          fetch("/api/black-card/member-summary", {
             cache: "no-store",
             credentials: "include",
             signal: controller.signal,
@@ -170,6 +181,15 @@ export default function UserDashboard() {
         ) {
           const subscriptionJson = await subscriptionRes.value.json();
           setSubscription(subscriptionJson?.subscription || null);
+        }
+
+        if (blackCardRes.status === "fulfilled" && blackCardRes.value.ok) {
+          const blackCardJson = await blackCardRes.value.json();
+          setBlackCardSummary({
+            status: String(blackCardJson?.member?.status || "inactive").toLowerCase(),
+          });
+        } else {
+          setBlackCardSummary({ status: "inactive" });
         }
 
         if (hadDataIssue) {
@@ -318,6 +338,10 @@ export default function UserDashboard() {
 
   const savedJobs = dashboardData.savedJobs || 0;
   const applications = dashboardData.applications || 0;
+  const currentPlan = String(subscription?.currentPlan || "free").toLowerCase();
+  const isPremiumActive =
+    currentPlan === "premium" || currentPlan === "founding";
+  const blackCardStatus = String(blackCardSummary?.status || "inactive").toLowerCase();
   const completion =
     typeof dashboardData.profileCompletion === "number"
       ? dashboardData.profileCompletion
@@ -443,6 +467,43 @@ export default function UserDashboard() {
               {subscriptionMessage}
             </p>
           ) : null}
+        </div>
+
+        <div className="rounded-2xl border border-yellow-500/25 bg-yellow-500/10 p-4 shadow-xl sm:p-5">
+          <h2 className="text-lg font-bold text-gold">Black Card</h2>
+          {blackCardStatus === "active" ? (
+            <p className="mt-1 text-sm text-white/90">Black Card active</p>
+          ) : isPremiumActive ? (
+            <>
+              <p className="mt-1 text-sm text-white/90">
+                {blackCardStatus === "requested" || blackCardStatus === "pending"
+                  ? "Black Card request pending"
+                  : "Premium is active. Activate your Black Card now."}
+              </p>
+              {blackCardStatus === "requested" || blackCardStatus === "pending" ? null : (
+                <div className="mt-3">
+                  <Link
+                    href="/black-card/join"
+                    className="inline-flex items-center gap-2 rounded-xl bg-gold px-4 py-2 text-sm font-semibold text-black hover:bg-yellow-500"
+                  >
+                    Activate Black Card
+                  </Link>
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="mt-2 flex flex-wrap items-center gap-2">
+              <p className="text-sm text-white/90">
+                Upgrade to Premium to unlock Black Card benefits
+              </p>
+              <Link
+                href="/pricing"
+                className="inline-flex items-center gap-2 rounded-xl bg-gold px-3 py-1.5 text-xs font-semibold text-black hover:bg-yellow-500"
+              >
+                Upgrade
+              </Link>
+            </div>
+          )}
         </div>
 
         <div className="rounded-2xl border border-yellow-500/25 bg-yellow-500/10 p-4 shadow-xl sm:p-5">

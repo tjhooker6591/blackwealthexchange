@@ -28,7 +28,9 @@ export default function BlackCardJoinPage() {
   const tierConfig = BLACK_CARD_TIERS[tier];
   const checkoutSuccess = router.query.checkout === "success";
   const [membershipActive, setMembershipActive] = useState(false);
+  const [membershipStatus, setMembershipStatus] = useState("inactive");
   const [membershipStatusChecked, setMembershipStatusChecked] = useState(false);
+  const [currentPlan, setCurrentPlan] = useState("free");
 
   useEffect(() => {
     (async () => {
@@ -39,16 +41,25 @@ export default function BlackCardJoinPage() {
       }
 
       try {
-        const res = await fetch("/api/black-card/member-summary", {
-          credentials: "include",
-          cache: "no-store",
-        });
-        const json = await res.json().catch(() => ({}));
-        const active =
-          res.ok &&
-          String(json?.member?.status || "inactive").toLowerCase() === "active";
-        setMembershipActive(Boolean(active));
+        const [summaryRes, meRes] = await Promise.all([
+          fetch("/api/black-card/member-summary", {
+            credentials: "include",
+            cache: "no-store",
+          }),
+          fetch("/api/auth/me", {
+            credentials: "include",
+            cache: "no-store",
+          }),
+        ]);
+        const summaryJson = await summaryRes.json().catch(() => ({}));
+        const status = String(summaryJson?.member?.status || "inactive").toLowerCase();
+        setMembershipStatus(status);
+        setMembershipActive(summaryRes.ok && status === "active");
+
+        const meJson = await meRes.json().catch(() => ({}));
+        setCurrentPlan(String(meJson?.user?.currentPlan || "free").toLowerCase());
       } catch {
+        setMembershipStatus("inactive");
         setMembershipActive(false);
       } finally {
         setMembershipStatusChecked(true);
@@ -172,6 +183,25 @@ export default function BlackCardJoinPage() {
             id="post-checkout"
             className="rounded-xl border border-white/10 bg-white/5 p-4 text-sm text-white/80"
           >
+            <div className="mb-3 rounded-lg border border-yellow-500/30 bg-yellow-500/10 p-3">
+              {membershipStatus === "active" ? (
+                <div className="text-yellow-100">Black Card active</div>
+              ) : currentPlan === "premium" || currentPlan === "founding" ? (
+                membershipStatus === "requested" || membershipStatus === "pending" ? (
+                  <div className="text-yellow-100">Black Card request pending</div>
+                ) : (
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-yellow-100">Premium is active. Activate your Black Card.</span>
+                    <Link href="/dashboard/black-card" className="rounded-lg bg-yellow-500 px-3 py-1.5 text-xs font-semibold text-black">Activate Black Card</Link>
+                  </div>
+                )
+              ) : (
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-white/90">Upgrade to Premium to unlock Black Card benefits</span>
+                  <Link href="/pricing" className="rounded-lg bg-yellow-500 px-3 py-1.5 text-xs font-semibold text-black">Upgrade to Premium</Link>
+                </div>
+              )}
+            </div>
             <div className="font-semibold text-yellow-200">
               Membership activation flow
             </div>
