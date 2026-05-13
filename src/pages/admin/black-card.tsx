@@ -21,6 +21,20 @@ type CardItem = {
   updatedAt: string | null;
 };
 
+type DigitalRequestItem = {
+  requestId: string;
+  userId: string | null;
+  email: string | null;
+  fullName: string | null;
+  accountStatus: string;
+  currentPlan: string;
+  status: string;
+  memberId?: string | null;
+  publicVerificationId?: string | null;
+  approvedAt?: string | null;
+  updatedAt: string | null;
+};
+
 type PhysicalRequestItem = {
   requestId: string;
   memberId: string | null;
@@ -85,6 +99,8 @@ export default function AdminBlackCardPage({
 }: PageProps) {
   const [cards, setCards] = useState<CardItem[]>([]);
   const [physical, setPhysical] = useState<PhysicalRequestItem[]>([]);
+  const [digitalRequests, setDigitalRequests] = useState<DigitalRequestItem[]>([]);
+  const [actionMessage, setActionMessage] = useState("");
   const [redemptions, setRedemptions] = useState<RedemptionItem[]>([]);
   const [ledger] = useState<LedgerRow[]>(initialLedger || []);
   const [error, setError] = useState("");
@@ -122,7 +138,7 @@ export default function AdminBlackCardPage({
     if (cardStatus) params.set("cardStatus", cardStatus);
     if (requestStatus) params.set("requestStatus", requestStatus);
 
-    const [cardsRes, physicalRes, redRes] = await Promise.all([
+    const [cardsRes, physicalRes, redRes, digitalRes] = await Promise.all([
       fetch(`/api/admin/black-card/cards?${params.toString()}`, {
         credentials: "include",
         cache: "no-store",
@@ -135,11 +151,16 @@ export default function AdminBlackCardPage({
         credentials: "include",
         cache: "no-store",
       }),
+      fetch("/api/admin/black-card/digital-requests", {
+        credentials: "include",
+        cache: "no-store",
+      }),
     ]);
 
     const cardsJson = await cardsRes.json().catch(() => ({}));
     const physicalJson = await physicalRes.json().catch(() => ({}));
     const redJson = await redRes.json().catch(() => ({}));
+    const digitalJson = await digitalRes.json().catch(() => ({}));
 
     if (!cardsRes.ok) {
       setError(cardsJson?.error || "Unable to load Black Card data.");
@@ -149,6 +170,14 @@ export default function AdminBlackCardPage({
     setCards(Array.isArray(cardsJson.items) ? cardsJson.items : []);
     setPhysical(Array.isArray(physicalJson.items) ? physicalJson.items : []);
     setRedemptions(Array.isArray(redJson.items) ? redJson.items : []);
+    setDigitalRequests(Array.isArray(digitalJson.items) ? digitalJson.items.map((d: any) => ({
+      requestId: String(d._id), userId: d.userId || null, email: d.email || null, fullName: d.fullName || null,
+      accountStatus: String(d?.membershipStatusAtRequest?.accountStatus || "unknown"),
+      currentPlan: String(d?.membershipStatusAtRequest?.currentPlan || "unknown"),
+      status: String(d?.status || "pending"),
+      memberId: d?.memberId || null, publicVerificationId: d?.publicVerificationId || null,
+      approvedAt: d?.approvedAt || null, updatedAt: d?.updatedAt || d?.createdAt || null,
+    })) : []);
   }
 
   useEffect(() => {
@@ -196,6 +225,15 @@ export default function AdminBlackCardPage({
     });
 
     if (res.ok) await loadData();
+  }
+
+  async function setDigitalRequestStatus(requestId: string, action: "approve" | "reject") {
+    setActionMessage("");
+    const res = await fetch("/api/admin/black-card/digital-requests", { method: "PATCH", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ requestId, action }) });
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok) { setActionMessage(json?.error || "Digital request action failed"); return; }
+    setActionMessage(`Digital request ${action}d successfully`);
+    await loadData();
   }
 
   async function setRedemptionStatus(
@@ -436,8 +474,28 @@ export default function AdminBlackCardPage({
         </section>
 
         <section className="rounded-2xl border border-white/10 bg-white/5 p-5">
+          <h2 className="text-lg font-bold text-yellow-200">B. Digital Black Card Requests</h2>
+          {actionMessage ? <p className="mt-2 text-sm text-yellow-200">{actionMessage}</p> : null}
+          <div className="mt-3 space-y-2 text-sm">
+            {digitalRequests.map((r) => (
+              <div key={r.requestId} className="rounded border border-white/10 bg-black/30 p-3">
+                <div>{r.fullName || "—"} ({r.email || r.userId || "—"})</div>
+                <div>Account: {toTitleLabel(r.accountStatus)} / {r.currentPlan}</div>
+                <div>Request: {toTitleLabel(r.status)}</div>
+                <div>Card: {r.memberId || "—"} / {r.publicVerificationId || "—"}</div>
+                <div className="mt-2 flex gap-2">
+                  <button onClick={() => setDigitalRequestStatus(r.requestId, "approve")} className="rounded border border-green-500/30 px-2 py-1">Approve + Issue</button>
+                  <button onClick={() => setDigitalRequestStatus(r.requestId, "reject")} className="rounded border border-red-500/30 px-2 py-1">Reject</button>
+                </div>
+              </div>
+            ))}
+            {digitalRequests.length === 0 ? <p className="text-white/70">No digital requests yet</p> : null}
+          </div>
+        </section>
+
+        <section className="rounded-2xl border border-white/10 bg-white/5 p-5">
           <h2 className="text-lg font-bold text-yellow-200">
-            B. Physical Card Requests
+            C. Physical Card Requests
           </h2>
           <div className="mt-3 overflow-x-auto">
             <table className="min-w-full text-left text-xs">

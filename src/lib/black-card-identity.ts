@@ -44,7 +44,7 @@ async function nextSeq(db: Db, scope: string) {
     { scope },
     {
       $inc: { nextValue: 1 },
-      $setOnInsert: { scope, nextValue: 0, createdAt: now },
+      $setOnInsert: { scope, createdAt: now },
       $set: { updatedAt: now },
     },
     { upsert: true, returnDocument: "after" },

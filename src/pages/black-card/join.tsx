@@ -31,6 +31,8 @@ export default function BlackCardJoinPage() {
   const [membershipStatus, setMembershipStatus] = useState("inactive");
   const [membershipStatusChecked, setMembershipStatusChecked] = useState(false);
   const [currentPlan, setCurrentPlan] = useState("free");
+  const [requestPending, setRequestPending] = useState(false);
+  const [actionMsg, setActionMsg] = useState("");
 
   useEffect(() => {
     (async () => {
@@ -55,6 +57,7 @@ export default function BlackCardJoinPage() {
         const status = String(summaryJson?.member?.status || "inactive").toLowerCase();
         setMembershipStatus(status);
         setMembershipActive(summaryRes.ok && status === "active");
+        setRequestPending(summaryRes.ok && String(summaryJson?.request?.status || "") === "pending");
 
         const meJson = await meRes.json().catch(() => ({}));
         setCurrentPlan(String(meJson?.user?.currentPlan || "free").toLowerCase());
@@ -66,6 +69,22 @@ export default function BlackCardJoinPage() {
       }
     })();
   }, [user]);
+
+  async function submitDigitalRequest() {
+    setActionMsg("");
+    const res = await fetch("/api/black-card/digital-request", {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+    });
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      setActionMsg(json?.error || "Unable to submit request");
+      return;
+    }
+    setRequestPending(true);
+    setActionMsg("Request submitted. Status: pending admin review.");
+  }
 
   return (
     <>
@@ -186,15 +205,13 @@ export default function BlackCardJoinPage() {
             <div className="mb-3 rounded-lg border border-yellow-500/30 bg-yellow-500/10 p-3">
               {membershipStatus === "active" ? (
                 <div className="text-yellow-100">Black Card active</div>
+              ) : requestPending || membershipStatus === "requested" || membershipStatus === "pending" ? (
+                <div className="text-yellow-100">Black Card request pending</div>
               ) : currentPlan === "premium" || currentPlan === "founding" ? (
-                membershipStatus === "requested" || membershipStatus === "pending" ? (
-                  <div className="text-yellow-100">Black Card request pending</div>
-                ) : (
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-yellow-100">Premium is active. Activate your Black Card.</span>
-                    <Link href="/dashboard/black-card" className="rounded-lg bg-yellow-500 px-3 py-1.5 text-xs font-semibold text-black">Activate Black Card</Link>
-                  </div>
-                )
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-yellow-100">Eligible now. Submit your digital Black Card request.</span>
+                  <button onClick={submitDigitalRequest} className="rounded-lg bg-yellow-500 px-3 py-1.5 text-xs font-semibold text-black">Request Black Card</button>
+                </div>
               ) : (
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="text-white/90">Upgrade to Premium to unlock Black Card benefits</span>
@@ -213,10 +230,8 @@ export default function BlackCardJoinPage() {
               3. Open /dashboard/black-card to access your digital member card
               state, verification details, rewards, and redemptions.
             </div>
-            <div className="mt-1">
-              4. Physical card option planned for a future vendor-fulfilled
-              phase.
-            </div>
+            <div className="mt-1">4. Admin approves valid request and issues digital card.</div>
+            {actionMsg ? <div className="mt-2 text-yellow-200">{actionMsg}</div> : null}
           </section>
 
           {checkoutSuccess && membershipStatusChecked && !membershipActive ? (

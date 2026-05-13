@@ -93,6 +93,13 @@ export default async function handler(
         { projection: { _id: 1 } },
       );
 
+    const pendingDigitalRequest = await db
+      .collection("black_card_digital_requests")
+      .findOne(
+        { $or: [{ userId: payload.userId }, { email: payload.email }], status: "pending" },
+        { projection: { _id: 1, status: 1, createdAt: 1, membershipStatusAtRequest: 1 } },
+      );
+
     const card = membership
       ? await db.collection("black_card_cards").findOne(
           { membershipId: String(membership._id), issueVersion: 1 },
@@ -172,6 +179,17 @@ export default async function handler(
               ? getVerificationUrl(String(card.publicVerificationId))
               : null,
             walletPassState: "planned",
+          }
+        : null,
+      request: pendingDigitalRequest
+        ? {
+            id: String(pendingDigitalRequest._id),
+            status: String(pendingDigitalRequest.status || "pending"),
+            createdAt: pendingDigitalRequest.createdAt || null,
+            accountStatus:
+              String(
+                pendingDigitalRequest?.membershipStatusAtRequest?.accountStatus || "unknown",
+              ),
           }
         : null,
       activity: recentActivity.map((item) => ({
