@@ -289,7 +289,7 @@ export default function Pricing() {
                 </h2>
                 <p className="mt-2 text-sm text-gray-200">
                   Tiered membership identity and rewards access. Plan mapping:
-                  Premium includes Black Card Standard, Founding includes Black
+                  Premium includes Standard Black Card, Founding Member includes Black
                   Card Signature (or keeps your higher active tier). Billed
                   annually, auto-renews annually, cancel anytime.
                 </p>
@@ -346,13 +346,13 @@ export default function Pricing() {
             <PriceCard
               title="Premium"
               price="$12/year"
-              sub="Paid plan with Black Card Standard included."
+              sub="Paid plan with Standard Black Card included."
               billingNote="Billed annually • Auto-renews annually • Cancel anytime"
               highlight
               badge="Most Popular"
               features={[
                 { ok: true, text: "Everything in Free" },
-                { ok: true, text: "Black Card Standard mapping on activation" },
+                { ok: true, text: "Standard Black Card mapping on activation" },
                 {
                   ok: true,
                   text: "Black Card rewards earn/redeem access (subject to card status, tier, and points checks)",
@@ -374,20 +374,20 @@ export default function Pricing() {
               finePrint={
                 isPremiumActive
                   ? "Your Premium membership is already active."
-                  : "Activation maps your account to Black Card Standard."
+                  : "Activation maps your account to Standard Black Card."
               }
             />
 
             <PriceCard
-              title="Founding Member"
+              title="Founding Member Member"
               price="$49/year"
-              sub="Paid plan with Black Card Signature mapping."
+              sub="Paid plan with Premium Black Card mapping."
               billingNote="Billed annually • Auto-renews annually • Cancel anytime"
               features={[
                 { ok: true, text: "Everything in Premium" },
                 {
                   ok: true,
-                  text: "Black Card Signature mapping on activation",
+                  text: "Premium Black Card mapping on activation",
                 },
                 {
                   ok: true,
@@ -404,13 +404,13 @@ export default function Pricing() {
               ]}
               ctaText="Become a Founder"
               onCta={() => goCheckout("founder")}
-              finePrint="Activation maps your account to at least Black Card Signature."
+              finePrint="Activation maps your account to at least Premium Black Card."
             />
           </div>
 
           <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-6 sm:p-8">
             <h2 className="text-xl sm:text-2xl font-extrabold text-yellow-200">
-              Plan clarity: Free vs Premium vs Founding
+              Plan clarity: Free vs Premium vs Founding Member
             </h2>
             <div className="mt-4 overflow-x-auto rounded-xl border border-white/10 bg-black/35">
               <table className="min-w-full text-left text-xs sm:text-sm">
@@ -432,16 +432,16 @@ export default function Pricing() {
                   <tr className="border-t border-white/10">
                     <td className="px-3 py-2 font-semibold">Premium</td>
                     <td className="px-3 py-2">$12/year</td>
-                    <td className="px-3 py-2">Black Card Standard</td>
+                    <td className="px-3 py-2">Standard Black Card</td>
                     <td className="px-3 py-2">
                       Member access and rewards path
                     </td>
                   </tr>
                   <tr className="border-t border-white/10">
-                    <td className="px-3 py-2 font-semibold">Founding</td>
+                    <td className="px-3 py-2 font-semibold">Founding Member</td>
                     <td className="px-3 py-2">$49/year</td>
                     <td className="px-3 py-2">
-                      Black Card Signature (or higher retained)
+                      Premium Black Card (or higher retained)
                     </td>
                     <td className="px-3 py-2">
                       Higher-tier members and early access
@@ -474,16 +474,16 @@ export default function Pricing() {
                   Premium Plan
                 </div>
                 <p className="mt-2 text-gray-300">
-                  Includes Black Card Standard mapping and rewards access in the
+                  Includes Standard Black Card mapping and rewards access in the
                   current Black Card system.
                 </p>
               </div>
               <div className="rounded-2xl border border-white/10 bg-black/40 p-5">
                 <div className="font-extrabold text-yellow-200">
-                  Founding Plan
+                  Founding Member Plan
                 </div>
                 <p className="mt-2 text-gray-300">
-                  Includes Black Card Signature mapping (or keeps your higher
+                  Includes Premium Black Card mapping (or keeps your higher
                   tier if already active).
                 </p>
               </div>
@@ -502,7 +502,7 @@ export default function Pricing() {
                   </li>
                   <li>
                     Your Black Card tier mapping is applied (Premium → Standard,
-                    Founding → Signature or higher retained).
+                    Founding Member → Signature or higher retained).
                   </li>
                 </ol>
                 <div className="mt-3 text-xs text-gray-400">

@@ -77,7 +77,7 @@ type PageProps = {
 function fmtDate(value?: string | null) {
   if (!value) return "—";
   const d = new Date(value);
-  return Number.isNaN(d.getTime()) ? "—" : d.toLocaleString();
+  return Number.isNaN(d.getTime()) ? "—" : d.toISOString().replace("T", " ").replace(".000Z", " UTC");
 }
 
 function toTitleLabel(value: string) {
@@ -91,6 +91,10 @@ function maskUserId(userId?: string | null) {
   if (!v) return "—";
   if (v.length <= 8) return v;
   return `${v.slice(0, 4)}…${v.slice(-4)}`;
+}
+
+function isTestRecord(...values: Array<string | null | undefined>) {
+  return values.some((v) => String(v || "").toUpperCase().includes("TEST_BC_LIFECYCLE"));
 }
 
 export default function AdminBlackCardPage({
@@ -395,6 +399,7 @@ export default function AdminBlackCardPage({
               <table className="min-w-full text-left text-xs">
                 <thead className="text-white/70">
                   <tr>
+                    <th className="pr-4 py-2">Type</th>
                     <th className="pr-4 py-2">Member ID</th>
                     <th className="pr-4 py-2">Card Type</th>
                     <th className="pr-4 py-2">Card Status</th>
@@ -410,11 +415,13 @@ export default function AdminBlackCardPage({
                     const verifyLink = c.publicVerificationId
                       ? `/black-card/verify/${c.publicVerificationId}`
                       : null;
+                    const test = isTestRecord(c.email, c.memberId, c.publicVerificationId);
                     return (
                       <tr
                         key={c.cardId}
                         className="border-t border-white/10 align-top"
                       >
+                        <td className="pr-4 py-2">{test ? "TEST" : "LIVE"}</td>
                         <td className="pr-4 py-2">{c.memberId || "—"}</td>
                         <td className="pr-4 py-2">{c.cardType || "—"}</td>
                         <td className="pr-4 py-2">
@@ -479,10 +486,12 @@ export default function AdminBlackCardPage({
           <div className="mt-3 space-y-2 text-sm">
             {digitalRequests.map((r) => (
               <div key={r.requestId} className="rounded border border-white/10 bg-black/30 p-3">
-                <div>{r.fullName || "—"} ({r.email || r.userId || "—"})</div>
-                <div>Account: {toTitleLabel(r.accountStatus)} / {r.currentPlan}</div>
-                <div>Request: {toTitleLabel(r.status)}</div>
-                <div>Card: {r.memberId || "—"} / {r.publicVerificationId || "—"}</div>
+                <div>{r.fullName || "—"} ({r.email || r.userId || "—"}) {isTestRecord(r.email, r.fullName) ? <span className="ml-2 rounded border border-yellow-500/40 px-2 py-0.5 text-[10px] text-yellow-200">TEST_BC_LIFECYCLE</span> : null}</div>
+                <div>Plan/account status: {toTitleLabel(r.accountStatus)} / {toTitleLabel(r.currentPlan)}</div>
+                <div>Request status: {toTitleLabel(r.status)}</div>
+                <div>Card status: {r.memberId ? "Active" : "Not requested"}</div>
+                <div>Issued date: {fmtDate(r.approvedAt || r.updatedAt)}</div>
+                <div>Verification ID: {r.publicVerificationId || "—"}</div>
                 <div className="mt-2 flex gap-2">
                   <button onClick={() => setDigitalRequestStatus(r.requestId, "approve")} className="rounded border border-green-500/30 px-2 py-1">Approve + Issue</button>
                   <button onClick={() => setDigitalRequestStatus(r.requestId, "reject")} className="rounded border border-red-500/30 px-2 py-1">Reject</button>

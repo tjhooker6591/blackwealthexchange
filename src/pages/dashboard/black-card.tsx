@@ -386,12 +386,13 @@ export default function BlackCardDashboardPage() {
                   </div>
                 </div>
                 <div className="mt-4 rounded-xl border border-white/10 bg-black/30 p-3 text-xs text-white/75">
-                  <div className="font-semibold text-yellow-200">
-                    Card format
-                  </div>
-                  <div className="mt-1">
-                    Black Card is digital-only for launch.
-                  </div>
+                  <div className="font-semibold text-yellow-200">Card access on your phone</div>
+                  <ul className="mt-1 list-disc pl-5 space-y-1">
+                    <li>View your digital Black Card anytime in this dashboard.</li>
+                    <li>Use the verification link above to open your live verification page.</li>
+                    <li>Save this dashboard page to your phone home screen for quick access.</li>
+                    <li>Apple Wallet and Google Wallet are not yet built in this release.</li>
+                  </ul>
                 </div>
 
                 <div className="mt-4 flex flex-wrap gap-3">

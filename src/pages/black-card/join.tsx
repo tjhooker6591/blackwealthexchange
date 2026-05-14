@@ -99,7 +99,7 @@ export default function BlackCardJoinPage() {
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <p className="text-xs uppercase tracking-[0.2em] text-yellow-300">
-                  Black Card Plan Mapping
+                  Black Card Plan and Black Card Tier Mapping
                 </p>
                 <h1 className="mt-1 text-3xl font-extrabold text-yellow-100">
                   {tierConfig.label}
@@ -130,7 +130,7 @@ export default function BlackCardJoinPage() {
                   {tier === "standard"
                     ? "Included with Premium plan"
                     : tier === "signature"
-                      ? "Included with Founding plan"
+                      ? "Included with Founding Member plan"
                       : "Invite Only"}
                 </div>
                 <div className="text-sm text-white/70">
@@ -174,7 +174,7 @@ export default function BlackCardJoinPage() {
                       {k === "standard"
                         ? "Included with Premium plan"
                         : k === "signature"
-                          ? "Included with Founding plan"
+                          ? "Included with Founding Member plan"
                           : "Invite Only"}
                     </div>
                   </Link>
@@ -227,10 +227,10 @@ export default function BlackCardJoinPage() {
               2. Membership status activates on successful plan payment.
             </div>
             <div className="mt-1">
-              3. Open /dashboard/black-card to access your digital member card
-              state, verification details, rewards, and redemptions.
+              3. Open /dashboard/black-card to access your digital card status and verification details.
             </div>
-            <div className="mt-1">4. Admin approves valid request and issues digital card.</div>
+            <div className="mt-1">4. If status is Not requested, submit request. If Pending review, wait for admin approval.</div>
+            <div className="mt-1">5. After approval, card status becomes Active and card appears in dashboard.</div>
             {actionMsg ? <div className="mt-2 text-yellow-200">{actionMsg}</div> : null}
           </section>
 
