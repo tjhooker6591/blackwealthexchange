@@ -91,6 +91,10 @@ function normalize(v: unknown): string {
     .toLowerCase();
 }
 
+
+function normalizeListingStatus(v: unknown) {
+  return normalize(v).replace(/[\s-]+/g, "_");
+}
 function pickDirectoryItemId(doc: any): string | null {
   return (
     s(doc?.itemId) ||
@@ -126,7 +130,7 @@ function getPaymentStateFromListing(doc: any): "paid" | "pending" | "refunded" {
 function getListingStateFromListing(
   doc: any,
 ): "unlinked" | "pending_approval" | "approved" | "active" | "expired" {
-  const explicit = normalize(doc?.listingStatus);
+  const explicit = normalizeListingStatus(doc?.listingStatus);
   if (
     explicit === "unlinked" ||
     explicit === "pending_approval" ||
@@ -142,7 +146,7 @@ function getListingStateFromListing(
       | "expired";
   }
 
-  const status = normalize(doc?.status);
+  const status = normalizeListingStatus(doc?.status);
   if (
     status === "unlinked" ||
     status === "pending_approval" ||
