@@ -11,6 +11,7 @@ export default function TicketDetailPage() {
   const [note, setNote] = useState("");
   const [assignedTo, setAssignedTo] = useState("");
   const [escalationLevel, setEscalationLevel] = useState("none");
+  const [saveMsg, setSaveMsg] = useState("");
 
   useEffect(() => {
     if (!id) return;
@@ -27,7 +28,8 @@ export default function TicketDetailPage() {
   }, [id]);
 
   async function save() {
-    await fetch(`/api/admin/support/${encodeURIComponent(id)}`, {
+    setSaveMsg("Saving...");
+    const r = await fetch(`/api/admin/support/${encodeURIComponent(id)}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -38,7 +40,35 @@ export default function TicketDetailPage() {
         escalationLevel,
       }),
     });
-    location.reload();
+    const d = await r.json().catch(() => ({}));
+
+    if (!r.ok) {
+      setSaveMsg(d?.error || "Update failed");
+      return;
+    }
+
+    const n = d?.emailNotification;
+    if (n?.attempted) {
+      setSaveMsg(
+        n?.sent
+          ? `Ticket updated. Email sent to ${n?.to}.`
+          : `Ticket updated. Email failed${n?.error ? `: ${n.error}` : ""}`,
+      );
+    } else {
+      setSaveMsg("Ticket updated.");
+    }
+
+    await fetch(`/api/admin/support/${encodeURIComponent(id)}`, {
+      credentials: "include",
+    })
+      .then((x) => x.json())
+      .then((x) => {
+        setT(x.ticket);
+        setStatus(x.ticket?.status || "new");
+        setAssignedTo(x.ticket?.assignedTo || "");
+        setEscalationLevel(x.ticket?.escalationLevel || "none");
+        setNote("");
+      });
   }
 
   if (!t)
@@ -90,6 +120,7 @@ export default function TicketDetailPage() {
           >
             Update Ticket
           </button>
+          {saveMsg ? <p className="text-sm text-zinc-300">{saveMsg}</p> : null}
         </div>
       </div>
     </main>

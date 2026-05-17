@@ -80,6 +80,13 @@ export default async function handler(
       { $set: update, ...(internalNote ? { $push: push } : {}) },
     );
 
+    let emailNotification: {
+      attempted: boolean;
+      sent: boolean;
+      to?: string;
+      error?: string;
+    } = { attempted: false, sent: false };
+
     if (
       existing?.email &&
       status &&
@@ -105,6 +112,12 @@ export default async function handler(
         </div>
       `;
 
+      emailNotification = {
+        attempted: true,
+        sent: false,
+        to: existing.email,
+      };
+
       try {
         await sendEmail({
           to: existing.email,
@@ -112,7 +125,13 @@ export default async function handler(
           text,
           html,
         });
-      } catch (mailErr) {
+        emailNotification.sent = true;
+      } catch (mailErr: any) {
+        emailNotification.error =
+          String(mailErr?.message || mailErr || "Email send failed").slice(
+            0,
+            300,
+          );
         console.error("[admin/support] email send failed", {
           ticketId: id,
           to: existing.email,
@@ -121,7 +140,7 @@ export default async function handler(
       }
     }
 
-    return res.status(200).json({ ok: true });
+    return res.status(200).json({ ok: true, emailNotification });
   }
 
   res.setHeader("Allow", ["GET", "PATCH"]);
