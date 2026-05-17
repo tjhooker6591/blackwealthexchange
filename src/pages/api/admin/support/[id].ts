@@ -5,165 +5,66 @@ import { requireAdminFromRequest } from "@/lib/adminAuth";
 import { SUPPORT_STATUSES } from "@/lib/support";
 import { sendEmail } from "@/lib/sendEmail";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse,
-) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const admin = await requireAdminFromRequest(req, res);
   if (!admin) return;
   const id = String(req.query.id || "").trim();
   if (!id) return res.status(400).json({ error: "id required" });
 
   const db = (await clientPromise).db(getMongoDbName());
+  const tickets = db.collection("support_tickets");
 
   if (req.method === "GET") {
-    const ticket = await db.collection("support_tickets").findOne(
+    const ticket = await tickets.findOne(
       { ticketId: id },
-      {
-        projection: {
-          internalNotes: 1,
-          ticketId: 1,
-          userId: 1,
-          accountType: 1,
-          name: 1,
-          email: 1,
-          category: 1,
-          priority: 1,
-          subject: 1,
-          message: 1,
-          relatedOrderId: 1,
-          relatedPaymentId: 1,
-          relatedBusinessId: 1,
-          relatedProductId: 1,
-          status: 1,
-          assignedTo: 1,
-          createdAt: 1,
-          updatedAt: 1,
-          emailEvents: 1,
-        },
-      },
+      { projection: { internalNotes: 1, publicReplies: 1, ticketId: 1, userId: 1, accountType: 1, name: 1, email: 1, category: 1, priority: 1, subject: 1, message: 1, relatedOrderId: 1, relatedPaymentId: 1, relatedBusinessId: 1, relatedProductId: 1, relatedJobId: 1, relatedAdCampaignId: 1, status: 1, assignedTo: 1, escalationLevel: 1, createdAt: 1, updatedAt: 1, firstResponseAt: 1, resolvedAt: 1, emailEvents: 1, lastUpdatedBy: 1 } },
     );
     if (!ticket) return res.status(404).json({ error: "Not found" });
     return res.status(200).json({ ok: true, ticket });
   }
 
   if (req.method === "PATCH") {
-    const body =
-      typeof req.body === "string"
-        ? JSON.parse(req.body || "{}")
-        : req.body || {};
+    const body = typeof req.body === "string" ? JSON.parse(req.body || "{}") : req.body || {};
     const status = String(body.status || "").trim();
     const internalNote = String(body.internalNote || "").trim();
     const assignedTo = String(body.assignedTo || "").trim();
     const escalationLevel = String(body.escalationLevel || "").trim();
-    if (status && !SUPPORT_STATUSES.includes(status as any)) {
-      return res.status(400).json({ error: "Invalid status" });
-    }
-    const update: any = { updatedAt: new Date() };
+    const followUpMessage = String(body.followUpMessage || "").trim();
+    if (status && !SUPPORT_STATUSES.includes(status as any)) return res.status(400).json({ error: "Invalid status" });
+
+    const existing: any = await tickets.findOne({ ticketId: id }, { projection: { email: 1, subject: 1, status: 1, firstResponseAt: 1 } });
+    if (!existing) return res.status(404).json({ error: "Not found" });
+
+    const update: any = { updatedAt: new Date(), lastUpdatedBy: admin.email || admin.userId || "admin" };
     if (status) update.status = status;
-    if (assignedTo) update.assignedTo = assignedTo;
-    if (escalationLevel) update.escalationLevel = escalationLevel;
+    if (assignedTo || assignedTo === "") update.assignedTo = assignedTo;
+    if (escalationLevel || escalationLevel === "") update.escalationLevel = escalationLevel;
+    if (status === "Resolved" || status === "Closed") update.resolvedAt = new Date();
+
     const push: any = {};
-    if (internalNote)
-      push.internalNotes = {
-        note: internalNote,
-        at: new Date(),
-        by: admin.email || admin.userId || "admin",
-      };
-    const tickets = db.collection("support_tickets");
-    const existing = await tickets.findOne(
-      { ticketId: id },
-      { projection: { ticketId: 1, email: 1, subject: 1, status: 1 } },
-    );
+    if (internalNote) push.internalNotes = { note: internalNote, at: new Date(), by: admin.email || admin.userId || "admin" };
+    if (followUpMessage.length >= 3) push.publicReplies = { from: "admin", message: followUpMessage, at: new Date(), by: admin.email || admin.userId || "admin" };
 
-    const pushUpdate: any = { ...(internalNote ? push : {}) };
+    if (followUpMessage.length >= 3 && !existing.firstResponseAt) update.firstResponseAt = new Date();
 
-    await tickets.updateOne(
-      { ticketId: id },
-      {
-        $set: update,
-        ...(Object.keys(pushUpdate).length ? { $push: pushUpdate } : {}),
-      },
-    );
+    await tickets.updateOne({ ticketId: id }, { $set: update, ...(Object.keys(push).length ? { $push: push } : {}) });
 
-    let emailNotification: {
-      attempted: boolean;
-      sent: boolean;
-      to?: string;
-      error?: string;
-    } = { attempted: false, sent: false };
-
-    if (
-      existing?.email &&
-      status &&
-      status !== existing.status &&
-      status.toLowerCase() === "waiting on user"
-    ) {
+    let emailNotification: any = { attempted: false, sent: false };
+    const shouldEmail = (followUpMessage.length >= 3 || status === "Waiting on User") && existing?.email;
+    if (shouldEmail) {
       const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
       const ticketUrl = `${baseUrl}/support/tickets/${encodeURIComponent(id)}`;
-      const subjectLine = `Action needed for support ticket ${id}`;
-      const ticketSubject = existing.subject || "Support request";
-      const text = [
-        `Your support ticket ${id} is waiting on your response.`,
-        `Subject: ${ticketSubject}`,
-        `Open your ticket: ${ticketUrl}`,
-      ].join("\n\n");
-      const html = `
-        <div style="font-family: Arial, sans-serif; line-height: 1.5; color: #111;">
-          <h2>Support update from Black Wealth Exchange</h2>
-          <p>Your ticket <strong>${id}</strong> is now marked <strong>Waiting on User</strong>.</p>
-          <p><strong>Subject:</strong> ${ticketSubject}</p>
-          <p>Please reply so we can keep helping you.</p>
-          <p><a href="${ticketUrl}">Open your ticket</a></p>
-        </div>
-      `;
+      const subjectLine = followUpMessage.length >= 3 ? `Support follow-up for ticket ${id}` : `Action needed for support ticket ${id}`;
+      const text = followUpMessage.length >= 3 ? `${followUpMessage}\n\nReply here: ${ticketUrl}` : `Your support ticket ${id} is waiting on your response.\n\nOpen your ticket: ${ticketUrl}`;
+      const html = `<div style="font-family:Arial,sans-serif;line-height:1.5;"><p>${followUpMessage.length >= 3 ? followUpMessage : "Your ticket is waiting on your response."}</p><p><a href="${ticketUrl}">Open ticket</a></p></div>`;
+      emailNotification = { attempted: true, sent: false, to: existing.email };
+      try { await sendEmail({ to: existing.email, subject: subjectLine, text, html }); emailNotification.sent = true; }
+      catch (e: any) { emailNotification.error = String(e?.message || e || "Email send failed").slice(0, 300); }
 
-      emailNotification = {
-        attempted: true,
-        sent: false,
-        to: existing.email,
-      };
-
-      try {
-        await sendEmail({
-          to: existing.email,
-          subject: subjectLine,
-          text,
-          html,
-        });
-        emailNotification.sent = true;
-      } catch (mailErr: any) {
-        emailNotification.error =
-          String(mailErr?.message || mailErr || "Email send failed").slice(
-            0,
-            300,
-          );
-        console.error("[admin/support] email send failed", {
-          ticketId: id,
-          to: existing.email,
-          error: mailErr,
-        });
-      }
-
-      await tickets.updateOne(
-        { ticketId: id },
-        {
-          $push: {
-            emailEvents: {
-              at: new Date(),
-              type: "waiting_on_user",
-              to: existing.email,
-              sent: emailNotification.sent,
-              error: emailNotification.error || null,
-              by: admin.email || admin.userId || "admin",
-            },
-          },
-          $set: { updatedAt: new Date() },
-        },
-      );
+      await tickets.updateOne({ ticketId: id }, { $push: { emailEvents: { at: new Date(), type: followUpMessage.length >= 3 ? "admin_follow_up" : "waiting_on_user", to: existing.email, sent: emailNotification.sent, error: emailNotification.error || null, by: admin.email || admin.userId || "admin" } } });
     }
 
-    return res.status(200).json({ ok: true, emailNotification });
+    return res.status(200).json({ ok: true, emailNotification, replySaved: followUpMessage.length >= 3 });
   }
 
   res.setHeader("Allow", ["GET", "PATCH"]);
