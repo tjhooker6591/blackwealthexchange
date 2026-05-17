@@ -39,6 +39,7 @@ export default async function handler(
           assignedTo: 1,
           createdAt: 1,
           updatedAt: 1,
+          emailEvents: 1,
         },
       },
     );
@@ -75,9 +76,14 @@ export default async function handler(
       { projection: { ticketId: 1, email: 1, subject: 1, status: 1 } },
     );
 
+    const pushUpdate: any = { ...(internalNote ? push : {}) };
+
     await tickets.updateOne(
       { ticketId: id },
-      { $set: update, ...(internalNote ? { $push: push } : {}) },
+      {
+        $set: update,
+        ...(Object.keys(pushUpdate).length ? { $push: pushUpdate } : {}),
+      },
     );
 
     let emailNotification: {
@@ -138,6 +144,23 @@ export default async function handler(
           error: mailErr,
         });
       }
+
+      await tickets.updateOne(
+        { ticketId: id },
+        {
+          $push: {
+            emailEvents: {
+              at: new Date(),
+              type: "waiting_on_user",
+              to: existing.email,
+              sent: emailNotification.sent,
+              error: emailNotification.error || null,
+              by: admin.email || admin.userId || "admin",
+            },
+          },
+          $set: { updatedAt: new Date() },
+        },
+      );
     }
 
     return res.status(200).json({ ok: true, emailNotification });

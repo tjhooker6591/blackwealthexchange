@@ -90,6 +90,31 @@ export default function TicketDetailPage() {
           <div>Business: {t.relatedBusinessId || "-"}</div>
           <div>Product: {t.relatedProductId || "-"}</div>
         </div>
+
+        <div className="rounded border border-zinc-800 bg-zinc-950 p-4 text-sm space-y-2">
+          <div className="font-semibold text-yellow-400">Email Delivery Log</div>
+          {Array.isArray(t.emailEvents) && t.emailEvents.length ? (
+            <ul className="space-y-2">
+              {t.emailEvents
+                .slice()
+                .reverse()
+                .map((e: any, i: number) => (
+                  <li key={i} className="border border-zinc-800 rounded p-2">
+                    <div>
+                      {new Date(e.at).toLocaleString()} - {e.type} -{" "}
+                      {e.sent ? "SENT" : "FAILED"}
+                    </div>
+                    <div>To: {e.to || "-"}</div>
+                    <div>By: {e.by || "-"}</div>
+                    {e.error ? <div>Error: {e.error}</div> : null}
+                  </li>
+                ))}
+            </ul>
+          ) : (
+            <div className="text-zinc-400">No email events yet.</div>
+          )}
+        </div>
+
         <div className="rounded border border-zinc-800 bg-zinc-950 p-4 space-y-2">
           <input
             className="w-full p-2 bg-zinc-900 border border-zinc-700 rounded"
