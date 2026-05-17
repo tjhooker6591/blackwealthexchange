@@ -3,6 +3,7 @@ import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
 import { requireAdminFromRequest } from "@/lib/adminAuth";
 import { SUPPORT_STATUSES } from "@/lib/support";
+import { sendEmail } from "@/lib/sendEmail";
 
 export default async function handler(
   req: NextApiRequest,
@@ -68,12 +69,58 @@ export default async function handler(
         at: new Date(),
         by: admin.email || admin.userId || "admin",
       };
-    await db
-      .collection("support_tickets")
-      .updateOne(
-        { ticketId: id },
-        { $set: update, ...(internalNote ? { $push: push } : {}) },
-      );
+    const tickets = db.collection("support_tickets");
+    const existing = await tickets.findOne(
+      { ticketId: id },
+      { projection: { ticketId: 1, email: 1, subject: 1, status: 1 } },
+    );
+
+    await tickets.updateOne(
+      { ticketId: id },
+      { $set: update, ...(internalNote ? { $push: push } : {}) },
+    );
+
+    if (
+      existing?.email &&
+      status &&
+      status !== existing.status &&
+      status.toLowerCase() === "waiting on user"
+    ) {
+      const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+      const ticketUrl = `${baseUrl}/support/tickets/${encodeURIComponent(id)}`;
+      const subjectLine = `Action needed for support ticket ${id}`;
+      const ticketSubject = existing.subject || "Support request";
+      const text = [
+        `Your support ticket ${id} is waiting on your response.`,
+        `Subject: ${ticketSubject}`,
+        `Open your ticket: ${ticketUrl}`,
+      ].join("\n\n");
+      const html = `
+        <div style="font-family: Arial, sans-serif; line-height: 1.5; color: #111;">
+          <h2>Support update from Black Wealth Exchange</h2>
+          <p>Your ticket <strong>${id}</strong> is now marked <strong>Waiting on User</strong>.</p>
+          <p><strong>Subject:</strong> ${ticketSubject}</p>
+          <p>Please reply so we can keep helping you.</p>
+          <p><a href="${ticketUrl}">Open your ticket</a></p>
+        </div>
+      `;
+
+      try {
+        await sendEmail({
+          to: existing.email,
+          subject: subjectLine,
+          text,
+          html,
+        });
+      } catch (mailErr) {
+        console.error("[admin/support] email send failed", {
+          ticketId: id,
+          to: existing.email,
+          error: mailErr,
+        });
+      }
+    }
+
     return res.status(200).json({ ok: true });
   }
 
