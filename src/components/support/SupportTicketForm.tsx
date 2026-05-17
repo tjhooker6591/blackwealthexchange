@@ -2,6 +2,30 @@ import { useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import { SUPPORT_CATEGORIES, SUPPORT_PRIORITIES } from "@/lib/support";
 
+function normalizeIncomingValue(
+  value: unknown,
+  allowed: readonly string[],
+  fallback: string,
+) {
+  const raw = String(value ?? "").trim();
+  if (!raw) return fallback;
+
+  if (allowed.includes(raw)) return raw;
+
+  const compact = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, "");
+  const normalizedRaw = compact(raw);
+
+  const exact = allowed.find((option) => compact(option) === normalizedRaw);
+  if (exact) return exact;
+
+  const partial = allowed.find((option) =>
+    compact(option).startsWith(normalizedRaw),
+  );
+  if (partial) return partial;
+
+  return fallback;
+}
+
 export default function SupportTicketForm({
   defaultCategory,
 }: {
@@ -10,10 +34,16 @@ export default function SupportTicketForm({
   const router = useRouter();
   const pre = useMemo(
     () => ({
-      category: String(
-        router.query.category || defaultCategory || "General Question",
+      category: normalizeIncomingValue(
+        router.query.category || defaultCategory,
+        SUPPORT_CATEGORIES,
+        "General Question",
       ),
-      priority: String(router.query.priority || "Normal"),
+      priority: normalizeIncomingValue(
+        router.query.priority,
+        SUPPORT_PRIORITIES,
+        "Normal",
+      ),
     }),
     [router.query.category, router.query.priority, defaultCategory],
   );
