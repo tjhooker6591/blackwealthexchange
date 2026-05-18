@@ -106,6 +106,11 @@ export async function ensureBlackCardMembershipAndCard(params: {
         currentPlan: planForTier,
         blackCardTier: tier,
         membershipStatus: "active",
+        membershipReviewStatus: "pending_review",
+        membershipReviewNotes: [],
+        reviewedBy: null,
+        reviewedAt: null,
+        welcomeEmailStatus: "pending",
         lastMembershipEventType: "membership_activated",
         planExpiresAt,
         sourceStripeSessionId: stripeSessionId,
@@ -128,6 +133,10 @@ export async function ensureBlackCardMembershipAndCard(params: {
             : null,
         sourceStripeSessionId: stripeSessionId,
         sourcePaymentIntentId: paymentIntentId || null,
+        membershipReviewStatus:
+          String((priorUser as any)?.blackCardTier || "") !== tier
+            ? "pending_review"
+            : "auto_activated",
       },
       $push: {
         membershipEvents: {
@@ -289,7 +298,13 @@ export async function ensureBlackCardMembershipAndCard(params: {
 
   await membershipCollection.updateOne(
     { _id: membership._id },
-    { $push: { membershipEmailEvents: membershipEmailEvent }, $set: { updatedAt: new Date() } },
+    {
+      $push: { membershipEmailEvents: membershipEmailEvent },
+      $set: {
+        updatedAt: new Date(),
+        welcomeEmailStatus: membershipEmailEvent.sent ? "sent" : "failed",
+      },
+    },
   );
 
   return {

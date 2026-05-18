@@ -83,6 +83,29 @@ type MembershipEmailEvent = {
   at: string | null;
 };
 
+type LifecycleItem = {
+  _id: string;
+  email?: string | null;
+  userId?: string | null;
+  previousPlan?: string;
+  currentPlan?: string;
+  previousBlackCardTier?: string;
+  blackCardTier?: string;
+  membershipStatus?: string;
+  lastPaymentSessionId?: string | null;
+  lastPaymentIntentId?: string | null;
+  sourceStripeSessionId?: string | null;
+  sourcePaymentIntentId?: string | null;
+  lastMembershipEventType?: string;
+  membershipReviewStatus?: string;
+  membershipReviewNotes?: any[];
+  reviewedBy?: string;
+  reviewedAt?: string | null;
+  createdAt?: string | null;
+  updatedAt?: string | null;
+  membershipEmailEvents?: any[];
+};
+
 type PageProps = {
   initialLedger: LedgerRow[];
   initialTotalPointsIssued: number;
@@ -121,6 +144,9 @@ export default function AdminBlackCardPage({
   const [actionMessage, setActionMessage] = useState("");
   const [redemptions, setRedemptions] = useState<RedemptionItem[]>([]);
   const [membershipEmailEvents, setMembershipEmailEvents] = useState<MembershipEmailEvent[]>([]);
+  const [lifecycleItems, setLifecycleItems] = useState<LifecycleItem[]>([]);
+  const [lifecycleFilter, setLifecycleFilter] = useState("all");
+  const [reviewNote, setReviewNote] = useState("");
   const [ledger] = useState<LedgerRow[]>(initialLedger || []);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
@@ -157,6 +183,7 @@ export default function AdminBlackCardPage({
     if (cardStatus) params.set("cardStatus", cardStatus);
     if (requestStatus) params.set("requestStatus", requestStatus);
 
+    params.set("lifecycleFilter", lifecycleFilter);
     const [cardsRes, physicalRes, redRes, digitalRes] = await Promise.all([
       fetch(`/api/admin/black-card/cards?${params.toString()}`, {
         credentials: "include",
@@ -188,6 +215,7 @@ export default function AdminBlackCardPage({
 
     setCards(Array.isArray(cardsJson.items) ? cardsJson.items : []);
     setMembershipEmailEvents(Array.isArray(cardsJson.membershipEmailEvents) ? cardsJson.membershipEmailEvents : []);
+    setLifecycleItems(Array.isArray(cardsJson.lifecycleItems) ? cardsJson.lifecycleItems : []);
     setPhysical(Array.isArray(physicalJson.items) ? physicalJson.items : []);
     setRedemptions(Array.isArray(redJson.items) ? redJson.items : []);
     setDigitalRequests(Array.isArray(digitalJson.items) ? digitalJson.items.map((d: any) => ({
@@ -209,7 +237,7 @@ export default function AdminBlackCardPage({
       }
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [lifecycleFilter]);
 
   async function cardAction(
     cardId: string,
@@ -269,6 +297,19 @@ export default function AdminBlackCardPage({
     }
     setActionMessage(`Digital request ${action}d successfully`);
     await loadData();
+  }
+
+  async function reviewMembership(membershipId: string, reviewStatus: string) {
+    const res = await fetch("/api/admin/black-card/cards", {
+      method: "PATCH",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "review_membership", membershipId, reviewStatus, note: reviewNote }),
+    });
+    if (res.ok) {
+      setReviewNote("");
+      await loadData();
+    }
   }
 
   async function setRedemptionStatus(
@@ -420,7 +461,53 @@ export default function AdminBlackCardPage({
         </section>
 
         <section className="rounded-2xl border border-white/10 bg-white/5 p-5">
-          <h2 className="text-lg font-bold text-yellow-200">A. Membership Email Events</h2>
+          <h2 className="text-lg font-bold text-yellow-200">A. Membership Lifecycle / Plan Changes</h2>
+          <div className="mt-2 flex flex-wrap gap-2 text-xs">
+            {[
+              ["all", "All"],
+              ["membership_activated", "New Activations"],
+              ["membership_upgraded", "Upgrades"],
+              ["pending_review", "Pending Review"],
+              ["needs_attention", "Needs Attention"],
+              ["confirmed", "Confirmed"],
+              ["failed_email", "Failed Email"],
+            ].map(([v, l]) => (
+              <button key={v} onClick={() => setLifecycleFilter(v)} className="rounded border border-white/20 px-2 py-1">
+                {l}
+              </button>
+            ))}
+          </div>
+          <textarea className="mt-2 w-full rounded bg-black/40 px-3 py-2 text-xs" placeholder="Admin review note" value={reviewNote} onChange={(e) => setReviewNote(e.target.value)} />
+          <div className="mt-3 space-y-2 text-xs">
+            {lifecycleItems
+              .filter((x: any) => lifecycleFilter === "all" || lifecycleFilter === "pending_review" || lifecycleFilter === "needs_attention" || lifecycleFilter === "confirmed" || lifecycleFilter === "failed_email" ? true : String(x.lastMembershipEventType || "") === lifecycleFilter)
+              .map((x: any) => {
+                const latestEmail = Array.isArray(x.membershipEmailEvents) && x.membershipEmailEvents.length ? x.membershipEmailEvents[x.membershipEmailEvents.length - 1] : null;
+                return (
+                  <div key={x._id} className="rounded border border-white/10 bg-black/30 p-2">
+                    <div>{x.email || x.userId || "-"}</div>
+                    <div>Plan: {toTitleLabel(String(x.previousPlan || "free"))} → {toTitleLabel(String(x.currentPlan || "unknown"))}</div>
+                    <div>Tier: {toTitleLabel(String(x.previousBlackCardTier || "none"))} → {toTitleLabel(String(x.blackCardTier || "unknown"))}</div>
+                    <div>Event: {toTitleLabel(String(x.lastMembershipEventType || "-"))} • Review: {toTitleLabel(String(x.membershipReviewStatus || "pending_review"))}</div>
+                    <div>Payment: {x.lastPaymentSessionId || x.sourceStripeSessionId || "-"} / {x.lastPaymentIntentId || x.sourcePaymentIntentId || "-"}</div>
+                    <div>Status: {toTitleLabel(String(x.membershipStatus || "active"))} • Email: {latestEmail ? (latestEmail.sent ? "sent" : `failed (${latestEmail.error || "error"})`) : "none"}</div>
+                    <div>Reviewed: {x.reviewedBy || "-"} at {fmtDate(x.reviewedAt)}</div>
+                    <div className="mt-1 flex flex-wrap gap-1">
+                      <button onClick={() => reviewMembership(x._id, "approved")} className="rounded border border-green-500/30 px-2 py-1">Approve / Confirm Membership</button>
+                      <button onClick={() => reviewMembership(x._id, "rejected")} className="rounded border border-red-500/30 px-2 py-1">Reject / Flag Issue</button>
+                      <button onClick={() => reviewMembership(x._id, "needs_attention")} className="rounded border border-yellow-500/30 px-2 py-1">Mark Needs Attention</button>
+                      <button onClick={() => reviewMembership(x._id, "corrected")} className="rounded border border-blue-500/30 px-2 py-1">Correct Plan/Tier</button>
+                      <button onClick={() => reviewMembership(x._id, "pending_review")} className="rounded border border-white/30 px-2 py-1">Set Pending Review</button>
+                    </div>
+                  </div>
+                );
+              })}
+            {lifecycleItems.length === 0 ? <p className="text-white/70">No membership lifecycle records yet.</p> : null}
+          </div>
+        </section>
+
+        <section className="rounded-2xl border border-white/10 bg-white/5 p-5">
+          <h2 className="text-lg font-bold text-yellow-200">A2. Membership Email Events</h2>
           <div className="mt-3 space-y-2 text-xs">
             {membershipEmailEvents.filter((e) => !e.sent).length ? (
               membershipEmailEvents.filter((e) => !e.sent).map((e, i) => (
