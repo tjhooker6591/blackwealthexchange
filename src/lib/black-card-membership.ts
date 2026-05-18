@@ -9,6 +9,7 @@ import {
   generatePublicVerificationId,
   mapAccountTypeToCardType,
 } from "@/lib/black-card-identity";
+import { sendEmail } from "@/lib/sendEmail";
 
 function pad(n: number, width = 6) {
   return String(n).padStart(width, "0");
@@ -85,7 +86,7 @@ export async function ensureBlackCardMembershipAndCard(params: {
 
   const planForTier = tier === "signature" ? "founding" : tier === "standard" ? "premium" : "unknown";
   const priorUser = email
-    ? await db.collection("users").findOne({ email }, { projection: { currentPlan: 1, blackCardTier: 1, blackCardStatus: 1 } })
+    ? await db.collection("users").findOne({ email }, { projection: { currentPlan: 1, blackCardTier: 1, blackCardStatus: 1, fullName: 1 } })
     : null;
 
   const membership = await membershipCollection.findOneAndUpdate(
@@ -235,6 +236,61 @@ export async function ensureBlackCardMembershipAndCard(params: {
   if (email) {
     await db.collection("users").updateOne({ email }, { $set: mirrorPatch });
   }
+
+  const planName = planForTier === "founding" ? "Founding Member" : "Premium";
+  const tierName = tier === "signature" ? "Signature" : "Standard";
+  const emailType =
+    String((priorUser as any)?.blackCardTier || "") !== tier
+      ? "membership_upgrade"
+      : "membership_activation";
+  const dashboardUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/dashboard/black-card`;
+  let membershipEmailEvent: any = {
+    at: new Date(),
+    type: emailType,
+    plan: planForTier,
+    cardTier: tier,
+    recipient: email || null,
+    sent: false,
+    error: null,
+    stripeSessionId,
+    paymentIntentId: paymentIntentId || null,
+  };
+
+  if (email) {
+    try {
+      await sendEmail({
+        to: email,
+        subject:
+          planForTier === "founding"
+            ? "Founding Member / Signature Black Card Activated"
+            : "Premium / Standard Black Card Activated",
+        text:
+          `Hello ${String((priorUser as any)?.fullName || "Member")},\n\n` +
+          `Plan: ${planName}\n` +
+          `Black Card Tier: ${tierName}\n` +
+          `${planForTier === "founding" ? "Founding recognition and priority advantages are now active.\n" : "Your core member benefits are now active.\n"}` +
+          `Open your dashboard: ${dashboardUrl}\n\n` +
+          `Black Card is a membership ID card, not a payment card.`,
+        html:
+          `<div style="font-family:Arial,sans-serif;line-height:1.5">` +
+          `<p>Hello ${String((priorUser as any)?.fullName || "Member")},</p>` +
+          `<p><strong>Plan:</strong> ${planName}<br/><strong>Black Card Tier:</strong> ${tierName}</p>` +
+          `${planForTier === "founding" ? "<p>Your Founding Member recognition and priority advantages are now active.</p>" : "<p>Your Premium member benefits are now active.</p>"}` +
+          `<p><a href="${dashboardUrl}">Open Black Card Dashboard</a></p>` +
+          `<p>Black Card is a membership ID card, not a payment card.</p></div>`,
+      });
+      membershipEmailEvent.sent = true;
+    } catch (err: any) {
+      membershipEmailEvent.error = String(err?.message || err || "email send failed").slice(0, 300);
+    }
+  } else {
+    membershipEmailEvent.error = "missing recipient email";
+  }
+
+  await membershipCollection.updateOne(
+    { _id: membership._id },
+    { $push: { membershipEmailEvents: membershipEmailEvent }, $set: { updatedAt: new Date() } },
+  );
 
   return {
     ok: true,

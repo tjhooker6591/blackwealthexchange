@@ -69,6 +69,20 @@ type LedgerRow = {
   status: string;
 };
 
+type MembershipEmailEvent = {
+  email: string | null;
+  userId: string | null;
+  plan: string | null;
+  cardTier: string | null;
+  type: string | null;
+  recipient: string | null;
+  sent: boolean;
+  error: string | null;
+  stripeSessionId: string | null;
+  paymentIntentId: string | null;
+  at: string | null;
+};
+
 type PageProps = {
   initialLedger: LedgerRow[];
   initialTotalPointsIssued: number;
@@ -106,6 +120,7 @@ export default function AdminBlackCardPage({
   const [digitalRequests, setDigitalRequests] = useState<DigitalRequestItem[]>([]);
   const [actionMessage, setActionMessage] = useState("");
   const [redemptions, setRedemptions] = useState<RedemptionItem[]>([]);
+  const [membershipEmailEvents, setMembershipEmailEvents] = useState<MembershipEmailEvent[]>([]);
   const [ledger] = useState<LedgerRow[]>(initialLedger || []);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
@@ -172,6 +187,7 @@ export default function AdminBlackCardPage({
     }
 
     setCards(Array.isArray(cardsJson.items) ? cardsJson.items : []);
+    setMembershipEmailEvents(Array.isArray(cardsJson.membershipEmailEvents) ? cardsJson.membershipEmailEvents : []);
     setPhysical(Array.isArray(physicalJson.items) ? physicalJson.items : []);
     setRedemptions(Array.isArray(redJson.items) ? redJson.items : []);
     setDigitalRequests(Array.isArray(digitalJson.items) ? digitalJson.items.map((d: any) => ({
@@ -404,7 +420,35 @@ export default function AdminBlackCardPage({
         </section>
 
         <section className="rounded-2xl border border-white/10 bg-white/5 p-5">
-          <h2 className="text-lg font-bold text-yellow-200">A. Cards</h2>
+          <h2 className="text-lg font-bold text-yellow-200">A. Membership Email Events</h2>
+          <div className="mt-3 space-y-2 text-xs">
+            {membershipEmailEvents.filter((e) => !e.sent).length ? (
+              membershipEmailEvents.filter((e) => !e.sent).map((e, i) => (
+                <div key={`fail-${i}`} className="rounded border border-red-500/30 bg-red-500/10 p-2">
+                  <div>{fmtDate(e.at)} • FAILED • {e.recipient || e.email || "-"}</div>
+                  <div>Plan/Tier: {toTitleLabel(String(e.plan || "-"))} / {toTitleLabel(String(e.cardTier || "-"))}</div>
+                  <div>Type: {toTitleLabel(String(e.type || "-"))}</div>
+                  <div>Error: {e.error || "-"}</div>
+                  <div>Session: {e.stripeSessionId || "-"} • Payment: {e.paymentIntentId || "-"}</div>
+                </div>
+              ))
+            ) : (
+              <p className="text-white/70">No failed membership emails found.</p>
+            )}
+
+            <div className="mt-3 text-sm font-semibold text-yellow-200">Recent membership email events</div>
+            {membershipEmailEvents.map((e, i) => (
+              <div key={`evt-${i}`} className="rounded border border-white/10 bg-black/30 p-2">
+                <div>{fmtDate(e.at)} • {e.sent ? "SENT" : "FAILED"} • {e.recipient || e.email || "-"}</div>
+                <div>Plan/Tier: {toTitleLabel(String(e.plan || "-"))} / {toTitleLabel(String(e.cardTier || "-"))}</div>
+                <div>Type: {toTitleLabel(String(e.type || "-"))}</div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="rounded-2xl border border-white/10 bg-white/5 p-5">
+          <h2 className="text-lg font-bold text-yellow-200">B. Cards</h2>
           {loading ? (
             <p className="mt-3 text-sm text-white/70">Loading...</p>
           ) : error ? (

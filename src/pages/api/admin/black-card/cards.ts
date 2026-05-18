@@ -66,6 +66,43 @@ export default async function handler(
       if (m && !byMember.has(m)) byMember.set(m, r);
     }
 
+    const membershipsWithEmailEvents = await db
+      .collection("black_card_memberships")
+      .find(
+        { membershipEmailEvents: { $exists: true, $ne: [] } },
+        {
+          projection: {
+            email: 1,
+            userId: 1,
+            currentPlan: 1,
+            blackCardTier: 1,
+            membershipEmailEvents: { $slice: -20 },
+          },
+        },
+      )
+      .sort({ updatedAt: -1 })
+      .limit(200)
+      .toArray();
+
+    const membershipEmailEvents = membershipsWithEmailEvents
+      .flatMap((m: any) =>
+        (Array.isArray(m.membershipEmailEvents) ? m.membershipEmailEvents : []).map((e: any) => ({
+          email: m.email || null,
+          userId: m.userId || null,
+          plan: e.plan || m.currentPlan || null,
+          cardTier: e.cardTier || m.blackCardTier || null,
+          type: e.type || null,
+          recipient: e.recipient || m.email || null,
+          sent: Boolean(e.sent),
+          error: e.error || null,
+          stripeSessionId: e.stripeSessionId || null,
+          paymentIntentId: e.paymentIntentId || null,
+          at: e.at || null,
+        })),
+      )
+      .sort((a: any, b: any) => +new Date(b.at || 0) - +new Date(a.at || 0))
+      .slice(0, 100);
+
     return res.status(200).json({
       ok: true,
       items: cards.map((c: any) => ({
@@ -82,6 +119,7 @@ export default async function handler(
         createdAt: c.createdAt || null,
         updatedAt: c.updatedAt || c.createdAt || null,
       })),
+      membershipEmailEvents,
       meta: { requestedBy: admin.email || admin.userId || "admin" },
     });
   }
@@ -103,8 +141,9 @@ export default async function handler(
 
     const now = new Date();
 
-    if (action === "suspend" || action === "revoke") {
-      const nextStatus = action === "suspend" ? "suspended" : "revoked";
+    if (action === "activate" || action === "suspend" || action === "revoke") {
+      const nextStatus =
+        action === "activate" ? "active" : action === "suspend" ? "suspended" : "revoked";
       await db.collection("black_card_cards").updateOne(
         { _id: card._id },
         {
