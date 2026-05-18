@@ -229,7 +229,9 @@ export default async function handler(
       state: resolvedState,
       resolvedBlackCard,
       plan,
+      planName,
       cardTier: tier,
+      cardTierName,
       member: {
         fullName: userDoc.fullName || null,
         email: userDoc.email || payload.email,

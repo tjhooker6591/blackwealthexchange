@@ -79,6 +79,8 @@ export default function BlackCardDashboardPage() {
                     memberId={memberId}
                     status={statusActive ? "Active" : "Inactive"}
                     verificationId={data.card?.verificationCode || "bcv_5a59ac86be5b520d"}
+                    cardTier={String((data as any)?.cardTierName || (data as any)?.cardTier || "Standard")}
+                    planName={String((data as any)?.planName || (data as any)?.plan || "Premium")}
                   />
                   <div className="space-y-3">
                     <div className="rounded-xl border border-white/10 bg-black/40 p-4 text-sm">

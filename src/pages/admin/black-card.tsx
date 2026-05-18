@@ -197,15 +197,22 @@ export default function AdminBlackCardPage({
 
   async function cardAction(
     cardId: string,
-    action: "suspend" | "revoke" | "replace",
+    action: "activate" | "suspend" | "revoke" | "replace",
   ) {
+    setActionMessage("");
     const res = await fetch("/api/admin/black-card/cards", {
       method: "PATCH",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ cardId, action }),
     });
-    if (res.ok) await loadData();
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      setActionMessage(json?.error || "Card action failed");
+      return;
+    }
+    setActionMessage(`Card ${action}d successfully`);
+    await loadData();
   }
 
   async function requestAction(
@@ -235,7 +242,15 @@ export default function AdminBlackCardPage({
     setActionMessage("");
     const res = await fetch("/api/admin/black-card/digital-requests", { method: "PATCH", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ requestId, action }) });
     const json = await res.json().catch(() => ({}));
-    if (!res.ok) { setActionMessage(json?.error || "Digital request action failed"); return; }
+    if (!res.ok) {
+      const raw = String(json?.error || "Digital request action failed");
+      if (res.status === 409 && raw.toLowerCase().includes("invalid transition from approved to approved")) {
+        setActionMessage("This request is already approved and the digital card has already been issued.");
+        return;
+      }
+      setActionMessage(raw);
+      return;
+    }
     setActionMessage(`Digital request ${action}d successfully`);
     await loadData();
   }
@@ -446,6 +461,14 @@ export default function AdminBlackCardPage({
                         <td className="pr-4 py-2">{fmtDate(c.updatedAt)}</td>
                         <td className="pr-4 py-2">
                           <div className="flex flex-wrap gap-1">
+                            {c.cardStatus !== "active" ? (
+                              <button
+                                onClick={() => cardAction(c.cardId, "activate")}
+                                className="rounded border border-green-500/30 px-2 py-1"
+                              >
+                                Activate card
+                              </button>
+                            ) : null}
                             <button
                               onClick={() => cardAction(c.cardId, "suspend")}
                               className="rounded border border-yellow-500/30 px-2 py-1"
@@ -492,9 +515,40 @@ export default function AdminBlackCardPage({
                 <div>Card status: {r.memberId ? "Active" : "Not requested"}</div>
                 <div>Issued date: {fmtDate(r.approvedAt || r.updatedAt)}</div>
                 <div>Verification ID: {r.publicVerificationId || "—"}</div>
-                <div className="mt-2 flex gap-2">
-                  <button onClick={() => setDigitalRequestStatus(r.requestId, "approve")} className="rounded border border-green-500/30 px-2 py-1">Approve + Issue</button>
-                  <button onClick={() => setDigitalRequestStatus(r.requestId, "reject")} className="rounded border border-red-500/30 px-2 py-1">Reject</button>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {r.status === "pending" ? (
+                    <>
+                      <button onClick={() => setDigitalRequestStatus(r.requestId, "approve")} className="rounded border border-green-500/30 px-2 py-1">Approve digital request</button>
+                      <button onClick={() => setDigitalRequestStatus(r.requestId, "reject")} className="rounded border border-red-500/30 px-2 py-1">Reject</button>
+                    </>
+                  ) : null}
+
+                  {r.status === "approved" ? (
+                    <>
+                      <span className="rounded border border-green-500/30 bg-green-500/10 px-2 py-1 text-green-200">Approved — Digital Card Issued</span>
+                      {r.memberId || r.publicVerificationId ? (
+                        <>
+                          <Link href="/dashboard/black-card" className="rounded border border-yellow-500/30 px-2 py-1 text-yellow-200">View issued card</Link>
+                          {r.publicVerificationId ? (
+                            <Link href={`/black-card/verify/${r.publicVerificationId}`} className="rounded border border-yellow-500/30 px-2 py-1 text-yellow-200">Open verification page</Link>
+                          ) : null}
+                          {r.memberId ? <span className="rounded border border-white/20 px-2 py-1 text-white/80">Card status: Active</span> : null}
+                        </>
+                      ) : (
+                        <>
+                          <span className="rounded border border-yellow-500/30 bg-yellow-500/10 px-2 py-1 text-yellow-100">Approved but card issuance record is missing.</span>
+                          <span className="rounded border border-white/20 px-2 py-1 text-white/80">Action: Review issuance record.</span>
+                        </>
+                      )}
+                    </>
+                  ) : null}
+
+                  {r.status === "rejected" ? (
+                    <>
+                      <span className="rounded border border-red-500/30 bg-red-500/10 px-2 py-1 text-red-200">Rejected</span>
+                      <span className="rounded border border-white/20 px-2 py-1 text-white/70">No action available</span>
+                    </>
+                  ) : null}
                 </div>
               </div>
             ))}
@@ -656,24 +710,17 @@ export default function AdminBlackCardPage({
                 <div>User: {maskUserId(item.userId)}</div>
                 <div>Time: {fmtDate(item.createdAt)}</div>
                 <div className="mt-2 flex gap-2">
-                  <button
-                    onClick={() => setRedemptionStatus(item.id, "approved")}
-                    className="rounded border border-yellow-500/30 px-2 py-1 text-xs text-yellow-200"
-                  >
-                    Approve
-                  </button>
-                  <button
-                    onClick={() => setRedemptionStatus(item.id, "rejected")}
-                    className="rounded border border-red-500/30 px-2 py-1 text-xs text-red-200"
-                  >
-                    Reject
-                  </button>
-                  <button
-                    onClick={() => setRedemptionStatus(item.id, "fulfilled")}
-                    className="rounded border border-green-500/30 px-2 py-1 text-xs text-green-200"
-                  >
-                    Fulfilled
-                  </button>
+                  {item.status === "pending" ? (
+                    <>
+                      <button onClick={() => setRedemptionStatus(item.id, "approved")} className="rounded border border-yellow-500/30 px-2 py-1 text-xs text-yellow-200">Approve</button>
+                      <button onClick={() => setRedemptionStatus(item.id, "rejected")} className="rounded border border-red-500/30 px-2 py-1 text-xs text-red-200">Reject</button>
+                    </>
+                  ) : null}
+                  {item.status === "approved" ? (
+                    <button onClick={() => setRedemptionStatus(item.id, "fulfilled")} className="rounded border border-green-500/30 px-2 py-1 text-xs text-green-200">Mark Fulfilled</button>
+                  ) : null}
+                  {item.status === "fulfilled" ? <span className="rounded border border-green-500/30 px-2 py-1 text-xs text-green-200">Fulfilled</span> : null}
+                  {item.status === "rejected" ? <span className="rounded border border-red-500/30 px-2 py-1 text-xs text-red-200">Rejected</span> : null}
                 </div>
               </div>
             ))}

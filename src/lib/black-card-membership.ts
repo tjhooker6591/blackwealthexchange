@@ -83,6 +83,11 @@ export async function ensureBlackCardMembershipAndCard(params: {
     String(userAccountType?.accountType || "user"),
   );
 
+  const planForTier = tier === "signature" ? "founding" : tier === "standard" ? "premium" : "unknown";
+  const priorUser = email
+    ? await db.collection("users").findOne({ email }, { projection: { currentPlan: 1, blackCardTier: 1, blackCardStatus: 1 } })
+    : null;
+
   const membership = await membershipCollection.findOneAndUpdate(
     { sourceStripeSessionId: stripeSessionId },
     {
@@ -93,6 +98,14 @@ export async function ensureBlackCardMembershipAndCard(params: {
         tier,
         status: "active",
         memberSince: paidAt,
+        activatedAt: paidAt,
+        upgradedAt: planForTier === "founding" ? paidAt : null,
+        previousPlan: String((priorUser as any)?.currentPlan || "free"),
+        previousBlackCardTier: String((priorUser as any)?.blackCardTier || "none"),
+        currentPlan: planForTier,
+        blackCardTier: tier,
+        membershipStatus: "active",
+        lastMembershipEventType: "membership_activated",
         planExpiresAt,
         sourceStripeSessionId: stripeSessionId,
         sourcePaymentIntentId: paymentIntentId || null,
@@ -100,6 +113,35 @@ export async function ensureBlackCardMembershipAndCard(params: {
       },
       $set: {
         updatedAt: now,
+        tier,
+        currentPlan: planForTier,
+        blackCardTier: tier,
+        membershipStatus: "active",
+        lastMembershipEventType:
+          String((priorUser as any)?.blackCardTier || "") !== tier
+            ? "membership_upgraded"
+            : "membership_renewed",
+        upgradedAt:
+          String((priorUser as any)?.blackCardTier || "") !== tier && planForTier === "founding"
+            ? paidAt
+            : null,
+        sourceStripeSessionId: stripeSessionId,
+        sourcePaymentIntentId: paymentIntentId || null,
+      },
+      $push: {
+        membershipEvents: {
+          at: now,
+          eventType:
+            String((priorUser as any)?.blackCardTier || "") !== tier
+              ? "membership_upgraded"
+              : "membership_activated",
+          previousPlan: String((priorUser as any)?.currentPlan || "free"),
+          currentPlan: planForTier,
+          previousBlackCardTier: String((priorUser as any)?.blackCardTier || "none"),
+          blackCardTier: tier,
+          stripeSessionId,
+          paymentIntentId: paymentIntentId || null,
+        },
       },
     },
     { upsert: true, returnDocument: "after" },
@@ -166,6 +208,22 @@ export async function ensureBlackCardMembershipAndCard(params: {
     blackCardStripeSessionId: stripeSessionId,
     blackCardPaymentIntentId: paymentIntentId || null,
     blackCardRewardsBalance: 0,
+    previousPlan: String((priorUser as any)?.currentPlan || "free"),
+    currentPlan: planForTier,
+    previousBlackCardTier: String((priorUser as any)?.blackCardTier || "none"),
+    blackCardTier: tier,
+    membershipStatus: "active",
+    activatedAt: paidAt,
+    upgradedAt:
+      String((priorUser as any)?.blackCardTier || "") !== tier && planForTier === "founding"
+        ? paidAt
+        : null,
+    lastPaymentSessionId: stripeSessionId,
+    lastPaymentIntentId: paymentIntentId || null,
+    lastMembershipEventType:
+      String((priorUser as any)?.blackCardTier || "") !== tier
+        ? "membership_upgraded"
+        : "membership_activated",
     updatedAt: now,
   };
 
