@@ -1688,11 +1688,18 @@ export default async function webhookHandler(
     /**
      * 3.6) Paid-plan entitlement mapped to Black Card tier
      */
+    const normalizedPlanItemId =
+      metaType === "plan"
+        ? asString(normalizedItemId || rawMetaItemId || existingPayment?.itemId)
+            .trim()
+            .toLowerCase()
+        : "";
+
     if (
       metaType === "plan" &&
-      (normalizedItemId === "premium" || normalizedItemId === "founder")
+      (normalizedPlanItemId === "premium" || normalizedPlanItemId === "founder")
     ) {
-      const isFounding = normalizedItemId === "founder";
+      const isFounding = normalizedPlanItemId === "founder";
       const mappedPlanId = isFounding ? "founding" : "premium";
       const mappedTierItemId = isFounding
         ? "black-card-signature"
