@@ -6,6 +6,7 @@ import { ObjectId } from "mongodb";
 import clientPromise from "@/lib/mongodb";
 import { getJwtSecret, getMongoDbName } from "@/lib/env";
 import { getVerificationUrl } from "@/lib/black-card-identity";
+import { resolveBlackCardState } from "@/lib/black-card-state";
 
 interface JwtPayload {
   userId: string;
@@ -54,6 +55,8 @@ export default async function handler(
             blackCardMemberSince: 1,
             blackCardPlanExpiresAt: 1,
             blackCardRewardsBalance: 1,
+            currentPlan: 1,
+            premiumStatus: 1,
           },
         },
       );
@@ -100,10 +103,11 @@ export default async function handler(
         { projection: { _id: 1, status: 1, createdAt: 1, membershipStatusAtRequest: 1 } },
       );
 
-    const card = membership
+    const cardByMembership = membership
       ? await db.collection("black_card_cards").findOne(
-          { membershipId: String(membership._id), issueVersion: 1 },
+          { membershipId: String(membership._id) },
           {
+            sort: { issueVersion: -1, updatedAt: -1, createdAt: -1 },
             projection: {
               cardIdDisplay: 1,
               digitalStatus: 1,
@@ -118,6 +122,27 @@ export default async function handler(
         )
       : null;
 
+    const cardByIdentity = await db.collection("black_card_cards").findOne(
+      {
+        $or: [{ userId: payload.userId }, { email: payload.email }],
+      },
+      {
+        sort: { status: -1, issueVersion: -1, updatedAt: -1, createdAt: -1 },
+        projection: {
+          cardIdDisplay: 1,
+          digitalStatus: 1,
+          issueVersion: 1,
+          memberId: 1,
+          cardSerial: 1,
+          cardType: 1,
+          status: 1,
+          publicVerificationId: 1,
+        },
+      },
+    );
+
+    const card = cardByMembership || cardByIdentity;
+
     const now = Date.now();
     const expiresAt = userDoc.blackCardPlanExpiresAt
       ? new Date(userDoc.blackCardPlanExpiresAt).getTime()
@@ -130,8 +155,81 @@ export default async function handler(
           ? "renewal_due"
           : "active";
 
+    const resolvedState = resolveBlackCardState({
+      loggedIn: true,
+      currentPlan: String((userDoc as any)?.currentPlan || "unknown"),
+      premiumStatus: String((userDoc as any)?.premiumStatus || "unknown"),
+      hasPendingRequest: Boolean(pendingDigitalRequest),
+      cardStatus: String((card as any)?.status || (card as any)?.digitalStatus || ""),
+      hasActiveCardSignal: Boolean(card && (String((card as any)?.status || "").toLowerCase() === "active" || (card as any)?.cardIdDisplay)),
+    });
+
+    const plan = String((userDoc as any)?.currentPlan || "unknown").toLowerCase();
+    const planName = plan === "premium" ? "Premium" : plan === "founding" ? "Founding Member" : plan === "free" ? "Free" : "Unknown";
+    const rawTier = String((userDoc as any)?.blackCardTier || "").toLowerCase();
+    const tier = rawTier === "elite" || rawTier === "signature" || rawTier === "standard"
+      ? rawTier
+      : plan === "founding"
+        ? "signature"
+        : "standard";
+    const cardTierName = tier === "elite" ? "Elite Black Card" : tier === "signature" ? "Signature Black Card" : "Standard Black Card";
+    const publicVerificationId = card?.publicVerificationId ? String(card.publicVerificationId) : null;
+    const verificationUrl = publicVerificationId ? getVerificationUrl(publicVerificationId) : null;
+    const digitalStatus = String(card?.status || card?.digitalStatus || "inactive").toLowerCase();
+    const isResolvedActiveCard = ["PREMIUM_ACTIVE_CARD", "FOUNDING_ACTIVE_CARD", "ACTIVE_CARD_BUT_PLAN_UNKNOWN"].includes(resolvedState);
+    const effectiveCardStatus = isResolvedActiveCard
+      ? "active"
+      : String(card?.status || card?.digitalStatus || userDoc.blackCardStatus || "inactive").toLowerCase();
+
+    const resolvedBlackCard = {
+      state: ["PREMIUM_ACTIVE_CARD", "FOUNDING_ACTIVE_CARD", "ACTIVE_CARD_BUT_PLAN_UNKNOWN"].includes(resolvedState)
+        ? "ACTIVE_CARD"
+        : resolvedState === "SUSPENDED_CARD"
+          ? "SUSPENDED_CARD"
+          : resolvedState === "REVOKED_CARD"
+            ? "REVOKED_CARD"
+            : ["PREMIUM_PENDING_REQUEST", "FOUNDING_PENDING_REQUEST", "FREE_PENDING_REQUEST", "DUPLICATE_PENDING_REQUEST"].includes(resolvedState)
+              ? "PENDING_REQUEST"
+              : ["PREMIUM_NO_REQUEST", "FOUNDING_NO_REQUEST"].includes(resolvedState)
+                ? "ELIGIBLE_NO_REQUEST"
+                : resolvedState === "NOT_LOGGED_IN"
+                  ? "NOT_LOGGED_IN"
+                  : resolvedState === "FREE_NO_REQUEST"
+                    ? "FREE_REQUIRES_UPGRADE"
+                    : "UNKNOWN",
+      planName,
+      cardTierName,
+      memberId: String(card?.memberId || ""),
+      status: effectiveCardStatus,
+      digitalStatus: isResolvedActiveCard ? "active" : digitalStatus,
+      publicVerificationId,
+      verificationUrl,
+      primaryMessage: ["PREMIUM_ACTIVE_CARD", "FOUNDING_ACTIVE_CARD", "ACTIVE_CARD_BUT_PLAN_UNKNOWN"].includes(resolvedState)
+        ? `Your ${cardTierName} is active`
+        : ["PREMIUM_PENDING_REQUEST", "FOUNDING_PENDING_REQUEST", "FREE_PENDING_REQUEST", "DUPLICATE_PENDING_REQUEST"].includes(resolvedState)
+          ? "Your Black Card request is pending review"
+          : ["PREMIUM_NO_REQUEST", "FOUNDING_NO_REQUEST"].includes(resolvedState)
+            ? `Eligible for ${cardTierName}`
+            : "Upgrade to Premium to request your Black Card",
+      primaryActionLabel: ["PREMIUM_ACTIVE_CARD", "FOUNDING_ACTIVE_CARD", "ACTIVE_CARD_BUT_PLAN_UNKNOWN"].includes(resolvedState)
+        ? "View My Digital Black Card"
+        : ["PREMIUM_NO_REQUEST", "FOUNDING_NO_REQUEST"].includes(resolvedState)
+          ? "Request Black Card"
+          : "View Pricing",
+      primaryActionHref: ["PREMIUM_ACTIVE_CARD", "FOUNDING_ACTIVE_CARD", "ACTIVE_CARD_BUT_PLAN_UNKNOWN"].includes(resolvedState)
+        ? "/dashboard/black-card"
+        : ["PREMIUM_NO_REQUEST", "FOUNDING_NO_REQUEST"].includes(resolvedState)
+          ? "/black-card/join"
+          : "/pricing",
+      phoneGuidanceVisible: ["PREMIUM_ACTIVE_CARD", "FOUNDING_ACTIVE_CARD", "ACTIVE_CARD_BUT_PLAN_UNKNOWN"].includes(resolvedState),
+    };
+
     return res.status(200).json({
       ok: true,
+      state: resolvedState,
+      resolvedBlackCard,
+      plan,
+      cardTier: tier,
       member: {
         fullName: userDoc.fullName || null,
         email: userDoc.email || payload.email,
@@ -139,12 +237,7 @@ export default async function handler(
           typeof userDoc.blackCardTier === "string"
             ? userDoc.blackCardTier
             : null,
-        status:
-          renewalState === "expired"
-            ? "inactive"
-            : typeof userDoc.blackCardStatus === "string"
-              ? userDoc.blackCardStatus
-              : "inactive",
+        status: effectiveCardStatus,
         memberSince: userDoc.blackCardMemberSince || null,
         planExpiresAt: userDoc.blackCardPlanExpiresAt || null,
         renewalState,

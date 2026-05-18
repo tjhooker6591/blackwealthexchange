@@ -32,6 +32,7 @@ export default function BlackCardJoinPage() {
   const [membershipStatusChecked, setMembershipStatusChecked] = useState(false);
   const [currentPlan, setCurrentPlan] = useState("free");
   const [requestPending, setRequestPending] = useState(false);
+  const [resolvedBlackCard, setResolvedBlackCard] = useState<any>(null);
   const [actionMsg, setActionMsg] = useState("");
 
   useEffect(() => {
@@ -54,10 +55,12 @@ export default function BlackCardJoinPage() {
           }),
         ]);
         const summaryJson = await summaryRes.json().catch(() => ({}));
-        const status = String(summaryJson?.member?.status || "inactive").toLowerCase();
+        const resolved = summaryJson?.resolvedBlackCard || null;
+        setResolvedBlackCard(resolved);
+        const status = String(resolved?.status || summaryJson?.member?.status || "inactive").toLowerCase();
         setMembershipStatus(status);
-        setMembershipActive(summaryRes.ok && status === "active");
-        setRequestPending(summaryRes.ok && String(summaryJson?.request?.status || "") === "pending");
+        setMembershipActive(summaryRes.ok && String(resolved?.state || "") === "ACTIVE_CARD");
+        setRequestPending(summaryRes.ok && String(resolved?.state || "") === "PENDING_REQUEST");
 
         const meJson = await meRes.json().catch(() => ({}));
         setCurrentPlan(String(meJson?.user?.currentPlan || "free").toLowerCase());
@@ -137,9 +140,7 @@ export default function BlackCardJoinPage() {
                   Black Card is included with your membership plan.
                 </div>
                 <p className="mt-3 text-xs text-white/70">
-                  To activate membership, use /pricing and choose the matching
-                  plan. This page exists for post-checkout continuity and member
-                  guidance.
+                  Your membership plan determines your Black Card tier. Premium activates Standard. Founding Member activates Signature. Elite is invite-only. Use /pricing and choose the matching plan.
                 </p>
               </div>
 
@@ -175,7 +176,7 @@ export default function BlackCardJoinPage() {
                         ? "Included with Premium plan"
                         : k === "signature"
                           ? "Included with Founding Member plan"
-                          : "Invite Only"}
+                          : "Invite Only (not purchasable)"}
                     </div>
                   </Link>
                 );
@@ -202,9 +203,15 @@ export default function BlackCardJoinPage() {
             id="post-checkout"
             className="rounded-xl border border-white/10 bg-white/5 p-4 text-sm text-white/80"
           >
+            {membershipStatus === "active" ? (
+              <div className="mb-3 rounded-lg border border-green-500/30 bg-green-500/10 p-3">
+                <div className="text-green-100 font-semibold">Your Black Card is active</div>
+                <Link href="/dashboard/black-card" className="text-yellow-200 underline">View My Digital Card</Link>
+              </div>
+            ) : null}
             <div className="mb-3 rounded-lg border border-yellow-500/30 bg-yellow-500/10 p-3">
-              {membershipStatus === "active" ? (
-                <div className="text-yellow-100">Black Card active</div>
+              {String(resolvedBlackCard?.state || "") === "ACTIVE_CARD" ? (
+                <div className="text-yellow-100">Your Black Card is active. <Link href="/dashboard/black-card" className="underline">View My Digital Black Card</Link>.</div>
               ) : requestPending || membershipStatus === "requested" || membershipStatus === "pending" ? (
                 <div className="text-yellow-100">Black Card request pending</div>
               ) : currentPlan === "premium" || currentPlan === "founding" ? (

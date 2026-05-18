@@ -3,10 +3,10 @@ export type BlackCardTier = "standard" | "signature" | "elite";
 export interface BlackCardTierConfig {
   tier: BlackCardTier;
   label: string;
-  checkoutItemId: string;
-  priceCents: number;
+  checkoutItemId: string | null;
+  priceCents: number | null;
   priceLabel: string;
-  billingModel: "entry_fee" | "monthly";
+  billingModel: "annual" | "invite_only";
   tagline: string;
   benefits: string[];
 }
@@ -17,10 +17,10 @@ export const BLACK_CARD_TIERS: Record<BlackCardTier, BlackCardTierConfig> = {
   standard: {
     tier: "standard",
     label: "BWE Black Card Standard",
-    checkoutItemId: "black-card-standard",
-    priceCents: 3800,
-    priceLabel: "$38.00",
-    billingModel: "entry_fee",
+    checkoutItemId: "premium",
+    priceCents: 1200,
+    priceLabel: "$12/year",
+    billingModel: "annual",
     tagline:
       "Activate verified BWE membership identity and start using Black Card rewards tools today.",
     benefits: [
@@ -34,10 +34,10 @@ export const BLACK_CARD_TIERS: Record<BlackCardTier, BlackCardTierConfig> = {
   signature: {
     tier: "signature",
     label: "BWE Black Card Signature",
-    checkoutItemId: "black-card-signature",
-    priceCents: 14900,
-    priceLabel: "$149.00",
-    billingModel: "monthly",
+    checkoutItemId: "founder",
+    priceCents: 4900,
+    priceLabel: "$49/year",
+    billingModel: "annual",
     tagline:
       "Build on Standard with expanding benefits, broader redemption access, and priority access rolling out across experiences.",
     benefits: [
@@ -51,10 +51,10 @@ export const BLACK_CARD_TIERS: Record<BlackCardTier, BlackCardTierConfig> = {
   elite: {
     tier: "elite",
     label: "BWE Black Card Elite",
-    checkoutItemId: "black-card-elite",
-    priceCents: 39900,
-    priceLabel: "$399.00",
-    billingModel: "monthly",
+    checkoutItemId: null,
+    priceCents: null,
+    priceLabel: "Invite-only",
+    billingModel: "invite_only",
     tagline:
       "Highest Black Card tier with verified identity, rewards access, and advanced experiences that continue to expand.",
     benefits: [
@@ -68,9 +68,8 @@ export const BLACK_CARD_TIERS: Record<BlackCardTier, BlackCardTierConfig> = {
 };
 
 export const BLACK_CARD_TIER_BY_ITEM_ID: Record<string, BlackCardTier> = {
-  "black-card-standard": "standard",
-  "black-card-signature": "signature",
-  "black-card-elite": "elite",
+  premium: "standard",
+  founder: "signature",
 };
 
 export function isBlackCardPlanItemId(itemId: string) {

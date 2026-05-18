@@ -1,6 +1,7 @@
 import Head from "next/head";
-import Image from "next/image";
+import PremiumDigitalCard from "@/components/black-card/PremiumDigitalCard";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import {
   BLACK_CARD_POSITIONING,
   BLACK_CARD_TIERS,
@@ -45,6 +46,25 @@ const TIER_CONTEXT: Record<
 };
 
 export default function BlackCardLandingPage() {
+  const [hasActiveCard, setHasActiveCard] = useState(false);
+  const [memberId, setMemberId] = useState("");
+  const [verificationUrl, setVerificationUrl] = useState("");
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch("/api/black-card/member-summary", { credentials: "include", cache: "no-store" });
+        const json = await res.json().catch(() => ({}));
+        const active = res.ok && (String(json?.member?.status || "").toLowerCase() === "active" || Boolean(json?.card?.cardIdDisplay));
+        setHasActiveCard(active);
+        setMemberId(String(json?.card?.memberId || ""));
+        setVerificationUrl(String(json?.card?.verificationUrl || ""));
+      } catch {
+        setHasActiveCard(false);
+      }
+    })();
+  }, []);
+
   return (
     <>
       <Head>
@@ -57,6 +77,14 @@ export default function BlackCardLandingPage() {
 
       <main className="min-h-screen bg-[#050505] px-4 py-10 text-white">
         <div className="mx-auto max-w-7xl space-y-6">
+          {hasActiveCard ? (
+            <section className="rounded-xl border border-green-500/30 bg-green-500/10 p-4 text-sm">
+              <div className="text-green-200 font-semibold">Your Standard Black Card is active</div>
+              {memberId ? <div className="text-white/80">Member ID: {memberId}</div> : null}
+              <div className="text-white/80">Verification status: {verificationUrl ? "Available" : "Pending"}</div>
+              <Link href="/dashboard/black-card" className="mt-2 inline-block text-yellow-200 underline">View My Digital Black Card</Link>
+            </section>
+          ) : null}
           <section className="rounded-3xl border border-[#9E7B2B]/35 bg-gradient-to-br from-[#17120A] via-[#0C0A07] to-[#070707] p-7 shadow-[0_30px_80px_rgba(0,0,0,0.55)]">
             <div className="grid items-center gap-8 lg:grid-cols-[1.1fr_0.9fr]">
               <div>
@@ -99,7 +127,7 @@ export default function BlackCardLandingPage() {
                       Executive Tier
                     </div>
                     <div className="mt-1 font-semibold">Elite</div>
-                    <div className="text-xs text-white/70">Expanded access</div>
+                    <div className="text-xs text-white/70">Invite-only/admin-approved</div>
                   </div>
                 </div>
 
@@ -120,13 +148,12 @@ export default function BlackCardLandingPage() {
               </div>
 
               <div className="rounded-2xl border border-[#9E7B2B]/35 bg-[#0B0B0B] p-3 shadow-[0_14px_50px_rgba(0,0,0,0.5)]">
-                <Image
-                  src="/images/black-card/bwe-black-card-close-up.png"
-                  alt="BWE Black Card premium visual"
-                  width={1400}
-                  height={875}
-                  className="h-auto w-full rounded-xl object-contain"
-                  priority
+                <PremiumDigitalCard
+                  memberName="Thomas"
+                  memberId="BCM-XXXXXXX"
+                  status="Active"
+                  verificationId="BCV-XXXXXX"
+                  isExample
                 />
               </div>
             </div>
@@ -144,8 +171,7 @@ export default function BlackCardLandingPage() {
               membership checkout path.
             </p>
             <p className="mt-2 text-xs text-[#AFAFAF]">
-              Plan mapping clarity: Premium maps to Black Card Standard, and
-              Founding maps to Black Card Signature.
+              Your membership plan determines your Black Card tier. Premium activates Standard. Founding Member activates Signature. Elite is invite-only.
             </p>
 
             <div className="mt-4 grid gap-4 lg:grid-cols-3">

@@ -1,6 +1,6 @@
 import React from "react";
 import Head from "next/head";
-import Image from "next/image";
+import PremiumDigitalCard from "@/components/black-card/PremiumDigitalCard";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import {
@@ -289,21 +289,22 @@ export default function Pricing() {
                 </h2>
                 <p className="mt-2 text-sm text-gray-200">
                   Tiered membership identity and rewards access. Plan mapping:
-                  Premium includes Standard Black Card, Founding Member includes Black
-                  Card Signature (or keeps your higher active tier). Billed
-                  annually, auto-renews annually, cancel anytime.
+                  Premium includes the Standard Black Card, Founding Member includes the Signature Black Card.
+                  Elite is invite-only. Your membership plan determines your Black Card tier.
+                  Billed annually,
+                  auto-renews annually, cancel anytime.
                 </p>
                 <p className="mt-2 text-xs text-gray-300">
                   Black Card is included with your plan. Use this page for plan
                   activation and checkout.
                 </p>
-                <div className="mt-4 flex w-full items-center justify-center overflow-hidden rounded-xl border border-white/10 bg-black p-3 sm:p-4">
-                  <Image
-                    src="/images/black-card/bwe-black-card-close-up.png"
-                    alt="BWE Black Card"
-                    width={1400}
-                    height={875}
-                    className="h-auto w-full max-w-full object-contain max-h-56 sm:max-h-64"
+                <div className="mt-4 overflow-hidden rounded-xl border border-white/10 bg-black p-3 sm:p-4">
+                  <PremiumDigitalCard
+                    memberName="Thomas"
+                    memberId="BCM-XXXXXXX"
+                    status="Active"
+                    verificationId="BCV-XXXXXX"
+                    isExample
                   />
                 </div>
                 <div className="mt-4">
@@ -346,7 +347,7 @@ export default function Pricing() {
             <PriceCard
               title="Premium"
               price="$12/year"
-              sub="Paid plan with Standard Black Card included."
+              sub="Premium includes the Standard Black Card."
               billingNote="Billed annually • Auto-renews annually • Cancel anytime"
               highlight
               badge="Most Popular"
@@ -379,15 +380,15 @@ export default function Pricing() {
             />
 
             <PriceCard
-              title="Founding Member Member"
+              title="Founding Member"
               price="$49/year"
-              sub="Paid plan with Premium Black Card mapping."
+              sub="Paid plan with Signature Black Card mapping."
               billingNote="Billed annually • Auto-renews annually • Cancel anytime"
               features={[
                 { ok: true, text: "Everything in Premium" },
                 {
                   ok: true,
-                  text: "Premium Black Card mapping on activation",
+                  text: "Signature Black Card mapping on activation",
                 },
                 {
                   ok: true,
