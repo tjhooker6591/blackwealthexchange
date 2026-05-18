@@ -195,7 +195,7 @@ export default async function handler(
                 },
               }
             : {}),
-        },
+        } as any,
       );
       return res.status(200).json({ ok: true });
     }

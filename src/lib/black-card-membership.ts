@@ -153,7 +153,7 @@ export async function ensureBlackCardMembershipAndCard(params: {
           paymentIntentId: paymentIntentId || null,
         },
       },
-    },
+    } as any,
     { upsert: true, returnDocument: "after" },
   );
 
@@ -211,7 +211,6 @@ export async function ensureBlackCardMembershipAndCard(params: {
   // users mirror (fast runtime)
   const mirrorPatch = {
     blackCardProductKey: "bwe_black_card",
-    blackCardTier: tier,
     blackCardStatus: "active",
     blackCardMemberSince: paidAt,
     blackCardPlanExpiresAt: planExpiresAt,
@@ -253,7 +252,7 @@ export async function ensureBlackCardMembershipAndCard(params: {
       ? "membership_upgrade"
       : "membership_activation";
   const dashboardUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/dashboard/black-card`;
-  let membershipEmailEvent: any = {
+  const membershipEmailEvent: any = {
     at: new Date(),
     type: emailType,
     plan: planForTier,
