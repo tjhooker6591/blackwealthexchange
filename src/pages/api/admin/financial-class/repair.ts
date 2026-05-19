@@ -59,6 +59,11 @@ export default async function handler(
     source: "admin_repair",
     repairedBy: admin.email || admin.userId || "admin",
     reason,
+    paymentStatus: "paid",
+    purchasedAt: new Date(payment.paidAt || payment.updatedAt || payment.createdAt || Date.now()),
+    email: String(payment.email || payment?.metadata?.email || "") || null,
+    courseName: String(payment?.metadata?.courseName || payment?.metadata?.itemName || courseId),
+    sendAccessEmail: true,
   });
 
   const now = new Date();

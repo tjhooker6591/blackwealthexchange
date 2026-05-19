@@ -81,6 +81,11 @@ export default async function handler(
       stripeSessionId: sessionId,
       paymentIntentId,
       source: "verify_session",
+      paymentStatus: "paid",
+      purchasedAt: new Date(),
+      email: metadata.email || null,
+      courseName: metadata.courseName || courseId,
+      sendAccessEmail: true,
     });
 
     await db.collection("payments").updateOne(

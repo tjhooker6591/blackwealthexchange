@@ -131,13 +131,24 @@ export default async function handler(
           ? {
               id: String(enrollment._id),
               userId: enrollment.userId,
+              email: enrollment.email || null,
               courseId: enrollment.courseId,
+              courseName: enrollment.courseName || null,
               entitlementStatus: enrollment.entitlementStatus || null,
+              accessStatus: enrollment.accessStatus || null,
+              paymentStatus: enrollment.paymentStatus || null,
+              entitlementType: enrollment.entitlementType || null,
+              source: enrollment.source || null,
               sourceStripeSessionId: enrollment.sourceStripeSessionId || null,
               sourcePaymentIntentId: enrollment.sourcePaymentIntentId || null,
               grantedBy: enrollment.grantedBy || null,
+              purchasedAt: enrollment.purchasedAt || null,
               grantedAt: enrollment.grantedAt || null,
               updatedAt: enrollment.updatedAt || null,
+              courseEmailStatus: enrollment.courseEmailStatus || null,
+              courseEmailEvents: Array.isArray(enrollment.courseEmailEvents)
+                ? enrollment.courseEmailEvents.slice(-5)
+                : [],
             }
           : null,
         purchasedCourseMirror: hasPurchasedCourse,

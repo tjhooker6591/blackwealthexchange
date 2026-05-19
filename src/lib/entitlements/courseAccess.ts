@@ -102,6 +102,27 @@ export async function resolvePremiumCourseAccess(
     };
   }
 
+  const enrollment = await db.collection("enrollments").findOne(
+    {
+      userId: resolvedUserId,
+      courseId: { $in: [...COURSE_IDS] },
+      entitlementStatus: { $in: ["granted", "active"] },
+      accessStatus: { $in: ["active", null] },
+    },
+    { projection: { _id: 1 } },
+  );
+
+  if (enrollment) {
+    return {
+      ok: true,
+      authenticated: true,
+      hasAccess: true,
+      userId: resolvedUserId,
+      email,
+      reason: "enrollment_granted",
+    };
+  }
+
   const purchased = Array.isArray((user as any).purchasedCourses)
     ? ((user as any).purchasedCourses as unknown[]).map((v) => String(v))
     : [];
@@ -116,21 +137,12 @@ export async function resolvePremiumCourseAccess(
     };
   }
 
-  const enrollment = await db.collection("enrollments").findOne(
-    {
-      userId: resolvedUserId,
-      courseId: { $in: [...COURSE_IDS] },
-      entitlementStatus: { $in: ["granted", "active"] },
-    },
-    { projection: { _id: 1 } },
-  );
-
   return {
     ok: true,
     authenticated: true,
-    hasAccess: Boolean(enrollment),
+    hasAccess: false,
     userId: resolvedUserId,
     email,
-    reason: enrollment ? "enrollment_granted" : "no_entitlement",
+    reason: "no_entitlement",
   };
 }

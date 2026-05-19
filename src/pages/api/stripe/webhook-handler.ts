@@ -2124,10 +2124,28 @@ export default async function webhookHandler(
       const courseUserId = await resolveEntitlementUserId(db, userId, email);
 
       if (courseUserId) {
+        await db.collection("flow_events").insertOne({
+          eventType: "course_entitlement_upsert_attempted",
+          pageRoute: "/api/stripe/webhook-handler",
+          section: "course_webhook_fulfillment",
+          source: "stripe_webhook",
+          stripeSessionId,
+          paymentIntentId: paymentIntentId || null,
+          userId: courseUserId,
+          email: email || null,
+          courseId: resolvedCourseId,
+          createdAt: now,
+        });
+
         await grantCourseAccess(courseUserId, resolvedCourseId, {
           stripeSessionId,
           paymentIntentId: paymentIntentId || null,
           source: "stripe_webhook",
+          paymentStatus: "paid",
+          purchasedAt: paidAt,
+          email: email || null,
+          courseName: asString(mergedMeta.courseName || mergedMeta.itemName || resolvedCourseId),
+          sendAccessEmail: true,
         });
 
         await db.collection("payments").updateOne(

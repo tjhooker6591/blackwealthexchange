@@ -2,6 +2,7 @@
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 import { getMongoDbName } from "@/lib/env";
+import { sendEmail } from "@/lib/sendEmail";
 
 type GrantSource = "stripe_webhook" | "verify_session" | "admin_repair";
 
@@ -14,6 +15,11 @@ export async function grantCourseAccess(
     source?: GrantSource;
     repairedBy?: string | null;
     reason?: string | null;
+    paymentStatus?: string | null;
+    purchasedAt?: Date | null;
+    email?: string | null;
+    courseName?: string | null;
+    sendAccessEmail?: boolean;
   },
 ) {
   const client = await clientPromise;
@@ -33,6 +39,16 @@ export async function grantCourseAccess(
   const source = options?.source || "stripe_webhook";
   const stripeSessionId = options?.stripeSessionId || null;
   const paymentIntentId = options?.paymentIntentId || null;
+  const purchasedAt = options?.purchasedAt || now;
+  const paymentStatus = String(options?.paymentStatus || "paid");
+
+  const userDoc = await db
+    .collection("users")
+    .findOne(ObjectId.isValid(userId) ? { _id: new ObjectId(userId) } : { _id: null }, { projection: { email: 1 } });
+  const resolvedEmail = String(options?.email || userDoc?.email || "").trim().toLowerCase() || null;
+  const resolvedCourseName = String(options?.courseName || courseId)
+    .replace(/-/g, " ")
+    .replace(/\b\w/g, (m) => m.toUpperCase());
 
   const enrollmentUpdate: any = {
     $setOnInsert: {
@@ -44,11 +60,18 @@ export async function grantCourseAccess(
     },
     $set: {
       updatedAt: now,
+      email: resolvedEmail,
+      courseName: resolvedCourseName,
       entitlementStatus: "granted",
+      accessStatus: "active",
+      paymentStatus,
+      entitlementType: "course",
+      source: "stripe_checkout",
       grantedAt: now,
       grantedBy: source,
       sourceStripeSessionId: stripeSessionId,
       sourcePaymentIntentId: paymentIntentId,
+      purchasedAt,
     },
   };
 
@@ -68,8 +91,51 @@ export async function grantCourseAccess(
     .collection("enrollments")
     .updateOne({ userId, courseId }, enrollmentUpdate, { upsert: true });
 
+  const emailEvent: any = {
+    type: "course_access_email",
+    courseId,
+    courseName: resolvedCourseName,
+    recipient: resolvedEmail,
+    sent: false,
+    error: null,
+    stripeSessionId,
+    paymentIntentId,
+    at: new Date(),
+  };
+
+  if (options?.sendAccessEmail !== false && resolvedEmail) {
+    try {
+      const dashboardUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/course-dashboard`;
+      const courseUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/premium-finance`;
+      const supportUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/support`;
+      await sendEmail({
+        to: resolvedEmail,
+        subject: `Course access is active: ${resolvedCourseName}`,
+        text:
+          `Your course access is now active.\n\nCourse: ${resolvedCourseName}\n` +
+          `Open dashboard: ${dashboardUrl}\nOpen course: ${courseUrl}\nSupport: ${supportUrl}\n\n` +
+          `Note: Your Stripe receipt may arrive separately.`,
+      });
+      emailEvent.sent = true;
+    } catch (err: any) {
+      emailEvent.error = String(err?.message || err || "email send failed").slice(0, 300);
+    }
+  } else if (!resolvedEmail) {
+    emailEvent.error = "missing recipient email";
+  }
+
+  await db.collection("enrollments").updateOne(
+    { userId, courseId },
+    {
+      $push: { courseEmailEvents: emailEvent },
+      $set: { courseEmailStatus: emailEvent.sent ? "sent" : "failed", updatedAt: new Date() },
+    },
+  );
+
   return {
     enrollmentUpserted: Boolean(enrollmentResult.upsertedCount),
     enrollmentMatched: enrollmentResult.matchedCount,
+    emailSent: Boolean(emailEvent.sent),
+    emailError: emailEvent.error || null,
   };
 }
