@@ -180,14 +180,11 @@ const RealEstateInvestment = () => {
   const router = useRouter();
   const { user } = useAuth();
 
-  const goPremium = () => {
-    if (!user) {
-      router.push(
-        `/login?next=${encodeURIComponent("/real-estate-investment")}`,
-      );
-      return;
-    }
-    router.push("/pricing");
+  const plan = String((user as any)?.currentPlan || "free").toLowerCase();
+  const hasToolkitAccess = plan === "premium" || plan === "founding";
+
+  const goToolkit = () => {
+    router.push("/real-estate-toolkit");
   };
 
   /** -----------------------------
@@ -278,9 +275,11 @@ const RealEstateInvestment = () => {
               <MapPin className="h-4 w-4" />
               Browse Directory
             </GoldButton>
-            <GoldButton href="/pricing">
+            <GoldButton href="/real-estate-toolkit">
               <Lock className="h-4 w-4" />
-              Premium Toolkit
+              {hasToolkitAccess
+                ? "Open Real Estate Toolkit"
+                : "Unlock Real Estate Toolkit"}
             </GoldButton>
           </div>
         </div>
@@ -1260,8 +1259,10 @@ const RealEstateInvestment = () => {
           subtitle="For users who want a faster path with structure: ready-to-use documents, checklists, and underwriting templates."
           icon={<Lock className="h-5 w-5" />}
           right={
-            <GoldButton onClick={goPremium}>
-              Unlock Premium <ArrowRight className="h-4 w-4" />
+            <GoldButton onClick={goToolkit}>
+              {hasToolkitAccess
+                ? "Open Real Estate Toolkit"
+                : "Unlock Real Estate Toolkit"} <ArrowRight className="h-4 w-4" />
             </GoldButton>
           }
         >
