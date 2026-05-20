@@ -189,6 +189,22 @@ const RealEstateInvestment = () => {
     router.push("/real-estate-toolkit");
   };
 
+  const revealSection = (targetId: string, detailsId?: string) => {
+    if (detailsId && typeof document !== "undefined") {
+      const details = document.getElementById(detailsId) as HTMLDetailsElement | null;
+      if (details && !details.open) details.open = true;
+    }
+    if (typeof window !== "undefined") {
+      window.requestAnimationFrame(() => {
+        const el = document.getElementById(targetId);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+          window.history.replaceState(null, "", `#${targetId}`);
+        }
+      });
+    }
+  };
+
   /** -----------------------------
    *  Calculator 1: Home Loan Estimate
    *  ----------------------------- */
@@ -361,7 +377,7 @@ const RealEstateInvestment = () => {
                 financing options, and how to avoid costly mistakes.
               </p>
               <div className="mt-4">
-                <GoldButton href="#homebuyer" variant="ghost">
+                <GoldButton href="#homebuyer" variant="ghost" onClick={() => revealSection("homebuyer", "homebuyer-path") }>
                   Go to Homebuyer Path <ArrowRight className="h-4 w-4" />
                 </GoldButton>
               </div>
@@ -377,7 +393,7 @@ const RealEstateInvestment = () => {
                 deals, estimate returns, and build a steady portfolio.
               </p>
               <div className="mt-4">
-                <GoldButton href="#investor" variant="ghost">
+                <GoldButton href="#investor" variant="ghost" onClick={() => revealSection("investor", "investor-path") }>
                   Go to Investor Path <ArrowRight className="h-4 w-4" />
                 </GoldButton>
               </div>
@@ -393,7 +409,7 @@ const RealEstateInvestment = () => {
                 show up where the community is building wealth.
               </p>
               <div className="mt-4">
-                <GoldButton href="#professionals" variant="ghost">
+                <GoldButton href="#professionals" variant="ghost" onClick={() => revealSection("professionals", "investor-path") }>
                   Go to Pro Section <ArrowRight className="h-4 w-4" />
                 </GoldButton>
               </div>
@@ -425,7 +441,7 @@ const RealEstateInvestment = () => {
         </Card>
 
         {/* Homebuyer Path */}
-        <details className="rounded-2xl border border-white/10 bg-white/5 p-4">
+        <details id="homebuyer-path" className="rounded-2xl border border-white/10 bg-white/5 p-4">
           <summary className="cursor-pointer font-bold text-yellow-200">Homebuyer Path (expand)</summary>
         <Card
           id="homebuyer"
@@ -662,7 +678,7 @@ const RealEstateInvestment = () => {
         </details>
 
         {/* Investor Path */}
-        <details className="rounded-2xl border border-white/10 bg-white/5 p-4">
+        <details id="investor-path" className="rounded-2xl border border-white/10 bg-white/5 p-4">
           <summary className="cursor-pointer font-bold text-yellow-200">Investor Path (expand)</summary>
         <Card
           id="investor"
