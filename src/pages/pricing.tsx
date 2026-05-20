@@ -171,6 +171,11 @@ export default function Pricing() {
     ? new Date(premiumActivatedAt).toLocaleDateString()
     : null;
 
+  const feature = typeof router.query.feature === "string" ? router.query.feature : "";
+  const returnTo =
+    typeof router.query.returnTo === "string" ? router.query.returnTo : "";
+  const isRealEstateToolkitContext = feature === "real-estate-toolkit";
+
   const goCheckout = (plan: "premium" | "founder") => {
     if (!authUser) {
       router.push(
@@ -246,6 +251,22 @@ export default function Pricing() {
                 Decision path: Compare plans here, then complete secure
                 checkout.
               </div>
+
+              {isRealEstateToolkitContext ? (
+                <div className="mt-5 rounded-2xl border border-yellow-500/30 bg-yellow-500/10 p-4">
+                  <div className="text-lg font-extrabold text-yellow-200">
+                    Unlocking Real Estate Toolkit
+                  </div>
+                  <div className="mt-1 text-sm text-gray-200">
+                    Premium includes access to real estate calculators, checklists, worksheets, and planning tools.
+                  </div>
+                  {returnTo ? (
+                    <Link href={returnTo} className="mt-2 inline-flex items-center gap-2 text-sm text-yellow-200 underline">
+                      Back to Real Estate Toolkit <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  ) : null}
+                </div>
+              ) : null}
 
               <div className="mt-6 flex flex-wrap items-center gap-3">
                 <Pill tone="muted">

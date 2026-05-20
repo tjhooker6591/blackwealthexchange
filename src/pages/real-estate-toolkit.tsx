@@ -100,9 +100,9 @@ const RealEstateToolkit = () => {
 
         {!isPremium && (
           <section className="rounded-2xl border border-yellow-500/30 bg-yellow-500/10 p-5">
-            <h3 className="font-bold text-yellow-200 inline-flex items-center gap-2"><Lock className="h-4 w-4" /> Upgrade for full toolkit</h3>
-            <p className="text-sm text-gray-300 mt-1">You can preview this toolkit for free. Upgrade to unlock full deal analyzer and premium worksheets.</p>
-            <Link href="/pricing" className="mt-3 inline-flex items-center gap-2 rounded-xl bg-yellow-500 px-4 py-2 text-black font-semibold">View Premium Options <ArrowRight className="h-4 w-4" /></Link>
+            <h3 className="font-bold text-yellow-200 inline-flex items-center gap-2"><Lock className="h-4 w-4" /> Unlock with Premium Membership</h3>
+            <p className="text-sm text-gray-300 mt-1">The full Real Estate Toolkit is included with Premium and Founding membership. Premium unlocks core tools. Founding includes advanced worksheets and priority resources.</p>
+            <Link href="/pricing?feature=real-estate-toolkit&returnTo=%2Freal-estate-toolkit" className="mt-3 inline-flex items-center gap-2 rounded-xl bg-yellow-500 px-4 py-2 text-black font-semibold">Unlock Real Estate Toolkit <ArrowRight className="h-4 w-4" /></Link>
           </section>
         )}
       </main>
