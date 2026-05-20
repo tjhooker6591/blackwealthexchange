@@ -75,11 +75,11 @@ function Card({
               </div>
             ) : null}
             <div className="min-w-0">
-              <h2 className="text-xl sm:text-2xl font-extrabold text-yellow-200">
+              <h2 className="text-lg sm:text-2xl font-extrabold text-yellow-200 leading-snug break-words">
                 {title}
               </h2>
               {subtitle ? (
-                <p className="text-sm sm:text-base text-gray-300 mt-1">
+                <p className="text-sm sm:text-base text-gray-300 mt-1 leading-relaxed break-words">
                   {subtitle}
                 </p>
               ) : null}
@@ -106,7 +106,7 @@ function GoldButton({
   variant?: "solid" | "ghost";
 }) {
   const base =
-    "inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-semibold transition active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-yellow-500/50";
+    "inline-flex w-full sm:w-auto items-center justify-center gap-2 px-4 sm:px-5 py-3 rounded-xl font-semibold transition active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-yellow-500/50 whitespace-normal text-center break-words";
   const style =
     variant === "solid"
       ? "bg-yellow-500 text-black hover:bg-yellow-400"
@@ -269,7 +269,7 @@ const RealEstateInvestment = () => {
   }, [purchasePrice, rentMonthly, mortgageMonthly, opsMonthly, cashInvested]);
 
   return (
-    <div className="min-h-screen text-white bg-black">
+    <div className="min-h-screen text-white bg-black overflow-x-hidden">
       {/* Subtle “index-style” background glow */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
         <div className="absolute -top-24 -right-24 h-96 w-96 rounded-full bg-yellow-500/10 blur-3xl" />
@@ -318,18 +318,18 @@ const RealEstateInvestment = () => {
         <div className="absolute inset-0 bg-black/75" />
         <div className="relative max-w-6xl mx-auto px-4 py-10 sm:py-14 md:py-16">
           <div className="max-w-3xl">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-yellow-200 leading-tight drop-shadow">
+            <h1 className="text-2xl sm:text-3xl md:text-5xl font-extrabold text-yellow-200 leading-snug break-words drop-shadow">
               Explore Black-Owned Real Estate Options & Wealth-Building
               Investments
             </h1>
-            <p className="text-base sm:text-lg text-gray-200 mt-4">
+            <p className="text-sm sm:text-base md:text-lg text-gray-200 mt-4 leading-relaxed break-words">
               Real estate is one of the most powerful tools for building
               generational wealth— when you have the right plan, the right team,
               and the right deal. This page is a step-by-step guide to help you
               move with confidence.
             </p>
 
-            <div className="mt-6 flex flex-wrap items-center gap-3">
+            <div className="mt-6 flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-2 sm:gap-3">
               <GoldButton href="#start-here">
                 Start Here <ArrowRight className="h-4 w-4" />
               </GoldButton>
@@ -344,7 +344,7 @@ const RealEstateInvestment = () => {
               </GoldButton>
             </div>
 
-            <div className="mt-6 flex flex-wrap gap-2">
+            <div className="mt-5 flex flex-wrap gap-2 min-w-0">
               <Pill tone="muted">Homebuying</Pill>
               <Pill tone="muted">Rent-to-own</Pill>
               <Pill tone="muted">House hacking</Pill>
@@ -373,13 +373,13 @@ const RealEstateInvestment = () => {
             </div>
           }
         >
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
             <div className={`rounded-2xl p-5 border ${activeSection === "homebuyer" ? "bg-yellow-500/10 border-yellow-400/60" : "bg-black/40 border-white/10"}`}>
               <div className="flex items-center gap-2 text-yellow-200 font-bold">
                 <Home className="h-4 w-4" />
                 Homebuyer
               </div>
-              <p className="text-gray-300 text-sm mt-2">
+              <p className="text-gray-300 text-sm mt-2 break-words leading-relaxed">
                 Buying your first home (or upgrading)? Learn the steps, the
                 financing options, and how to avoid costly mistakes.
               </p>
@@ -395,7 +395,7 @@ const RealEstateInvestment = () => {
                 <Building2 className="h-4 w-4" />
                 Investor
               </div>
-              <p className="text-gray-300 text-sm mt-2">
+              <p className="text-gray-300 text-sm mt-2 break-words leading-relaxed">
                 Want cashflow, appreciation, or both? Learn how to analyze
                 deals, estimate returns, and build a steady portfolio.
               </p>
@@ -411,7 +411,7 @@ const RealEstateInvestment = () => {
                 <Landmark className="h-4 w-4" />
                 Real Estate Pro
               </div>
-              <p className="text-gray-300 text-sm mt-2">
+              <p className="text-gray-300 text-sm mt-2 break-words leading-relaxed">
                 Agents, lenders, inspectors, contractors, and property managers:
                 show up where the community is building wealth.
               </p>
@@ -448,7 +448,7 @@ const RealEstateInvestment = () => {
         </Card>
 
         {/* Homebuyer Path */}
-        <details id="homebuyer-path" open={activeSection === "homebuyer"} onToggle={(e) => { if ((e.currentTarget as HTMLDetailsElement).open) setActiveSection("homebuyer"); }} className="rounded-2xl border border-white/10 bg-white/5 p-4">
+        <details id="homebuyer-path" open={activeSection === "homebuyer"} onToggle={(e) => { if ((e.currentTarget as HTMLDetailsElement).open) setActiveSection("homebuyer"); }} className="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 min-w-0">
           <summary className="cursor-pointer font-bold text-yellow-200">Homebuyer Path (expand)</summary>
         <Card
           id="homebuyer"
@@ -458,7 +458,7 @@ const RealEstateInvestment = () => {
         >
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-4">
-              <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
+              <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
                 <h3 className="text-lg font-extrabold text-yellow-200">
                   Step-by-step roadmap
                 </h3>
@@ -535,7 +535,7 @@ const RealEstateInvestment = () => {
                 </ol>
               </div>
 
-              <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
+              <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
                 <h3 className="text-lg font-extrabold text-yellow-200">
                   Common financing options (quick guide)
                 </h3>
@@ -587,11 +587,11 @@ const RealEstateInvestment = () => {
                 </div>
               </div>
 
-              <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
+              <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
                 <h3 className="text-lg font-extrabold text-yellow-200">
                   New reality: understand representation & fees
                 </h3>
-                <p className="text-gray-300 text-sm mt-2">
+                <p className="text-gray-300 text-sm mt-2 break-words leading-relaxed">
                   Before touring homes, ask your agent to clearly explain any
                   representation agreement, what services are included, and how
                   compensation works. If anything feels unclear, slow down and
@@ -606,7 +606,7 @@ const RealEstateInvestment = () => {
             </div>
 
             <div className="space-y-4">
-              <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
+              <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
                 <div className="flex items-center gap-2 text-yellow-200 font-extrabold">
                   <BadgeCheck className="h-4 w-4" />
                   Quick checklist
@@ -621,12 +621,12 @@ const RealEstateInvestment = () => {
                 </ul>
               </div>
 
-              <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
+              <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
                 <div className="flex items-center gap-2 text-yellow-200 font-extrabold">
                   <Users className="h-4 w-4" />
                   Find Black-owned pros
                 </div>
-                <p className="text-gray-300 text-sm mt-2">
+                <p className="text-gray-300 text-sm mt-2 break-words leading-relaxed">
                   Browse Black-owned agencies, lenders, inspectors, contractors,
                   and property managers through the BWE directory.
                 </p>
@@ -646,7 +646,7 @@ const RealEstateInvestment = () => {
                 </div>
               </div>
 
-              <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
+              <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
                 <div className="flex items-center gap-2 text-yellow-200 font-extrabold">
                   <FileText className="h-4 w-4" />
                   Trusted directories
@@ -685,7 +685,7 @@ const RealEstateInvestment = () => {
         </details>
 
         {/* Investor Path */}
-        <details id="investor-path" open={activeSection === "investor"} onToggle={(e) => { if ((e.currentTarget as HTMLDetailsElement).open) setActiveSection("investor"); }} className="rounded-2xl border border-white/10 bg-white/5 p-4">
+        <details id="investor-path" open={activeSection === "investor"} onToggle={(e) => { if ((e.currentTarget as HTMLDetailsElement).open) setActiveSection("investor"); }} className="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 min-w-0">
           <summary className="cursor-pointer font-bold text-yellow-200">Investor Path (expand)</summary>
         <Card
           id="investor"
@@ -695,7 +695,7 @@ const RealEstateInvestment = () => {
         >
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-4">
-              <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
+              <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
                 <h3 className="text-lg font-extrabold text-yellow-200">
                   Investor strategies (choose one to start)
                 </h3>
@@ -742,7 +742,7 @@ const RealEstateInvestment = () => {
                 </div>
               </div>
 
-              <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
+              <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
                 <h3 className="text-lg font-extrabold text-yellow-200">
                   Deal analysis framework (what to estimate every time)
                 </h3>
@@ -791,7 +791,7 @@ const RealEstateInvestment = () => {
                 </div>
               </div>
 
-              <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
+              <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
                 <h3 className="text-lg font-extrabold text-yellow-200">
                   Real estate crowdfunding / pooled investing (know the
                   tradeoffs)
@@ -812,7 +812,7 @@ const RealEstateInvestment = () => {
             </div>
 
             <div className="space-y-4">
-              <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
+              <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
                 <div className="flex items-center gap-2 text-yellow-200 font-extrabold">
                   <ShieldAlert className="h-4 w-4" />
                   Investor red flags
@@ -827,7 +827,7 @@ const RealEstateInvestment = () => {
                 </ul>
               </div>
 
-              <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
+              <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
                 <div className="flex items-center gap-2 text-yellow-200 font-extrabold">
                   <MapPin className="h-4 w-4" />
                   Build locally + responsibly
@@ -839,7 +839,7 @@ const RealEstateInvestment = () => {
                 </p>
               </div>
 
-              <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
+              <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
                 <div className="flex items-center gap-2 text-yellow-200 font-extrabold">
                   <Users className="h-4 w-4" />
                   Find property managers & contractors
@@ -875,7 +875,7 @@ const RealEstateInvestment = () => {
         >
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Home loan estimate */}
-            <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
+            <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
               <div className="flex items-center justify-between gap-3">
                 <h3 className="text-lg font-extrabold text-yellow-200">
                   Monthly Home Payment Estimate
@@ -883,7 +883,7 @@ const RealEstateInvestment = () => {
                 <Pill tone="muted">Principal + Taxes + Insurance + HOA</Pill>
               </div>
 
-              <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                 <label className="text-sm text-gray-300">
                   Home price
                   <input
@@ -969,7 +969,7 @@ const RealEstateInvestment = () => {
             </div>
 
             {/* Rental deal snapshot */}
-            <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
+            <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
               <div className="flex items-center justify-between gap-3">
                 <h3 className="text-lg font-extrabold text-yellow-200">
                   Rental Deal Snapshot
@@ -977,7 +977,7 @@ const RealEstateInvestment = () => {
                 <Pill tone="muted">Cashflow • Cap Rate • Cash-on-Cash</Pill>
               </div>
 
-              <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                 <label className="text-sm text-gray-300">
                   Purchase price
                   <input
@@ -1064,7 +1064,7 @@ const RealEstateInvestment = () => {
         </details>
 
         {/* Professionals */}
-        <details id="professionals-path" open={activeSection === "professionals"} onToggle={(e) => { if (!(e.currentTarget as HTMLDetailsElement).open) setActiveSection(null); }} className="rounded-2xl border border-white/10 bg-white/5 p-4">
+        <details id="professionals-path" open={activeSection === "professionals"} onToggle={(e) => { if (!(e.currentTarget as HTMLDetailsElement).open) setActiveSection(null); }} className="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 min-w-0">
           <summary className="cursor-pointer font-bold text-yellow-200">Real Estate Pro Section (expand)</summary>
         <Card
           id="professionals"
@@ -1074,7 +1074,7 @@ const RealEstateInvestment = () => {
         >
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-4">
-              <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
+              <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
                 <h3 className="text-lg font-extrabold text-yellow-200">
                   Why your team matters
                 </h3>
@@ -1113,7 +1113,7 @@ const RealEstateInvestment = () => {
                 </div>
               </div>
 
-              <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
+              <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
                 <h3 className="text-lg font-extrabold text-yellow-200">
                   Featured directories & associations
                 </h3>
@@ -1156,7 +1156,7 @@ const RealEstateInvestment = () => {
             </div>
 
             <div className="space-y-4">
-              <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
+              <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
                 <div className="text-yellow-200 font-extrabold">
                   Pro categories to build your team
                 </div>
@@ -1172,7 +1172,7 @@ const RealEstateInvestment = () => {
                 </ul>
               </div>
 
-              <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
+              <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
                 <div className="text-yellow-200 font-extrabold">
                   Community impact tip
                 </div>
@@ -1189,7 +1189,7 @@ const RealEstateInvestment = () => {
         </details>
 
         {/* Education & Resources */}
-        <details className="rounded-2xl border border-white/10 bg-white/5 p-4">
+        <details className="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 min-w-0">
           <summary className="cursor-pointer font-bold text-yellow-200">Education & Resources (expand)</summary>
         <Card
           id="education"
@@ -1198,7 +1198,7 @@ const RealEstateInvestment = () => {
           icon={<FileText className="h-5 w-5" />}
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
-            <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
+            <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
               <div className="text-yellow-200 font-extrabold">
                 Homebuying (Official)
               </div>
@@ -1230,7 +1230,7 @@ const RealEstateInvestment = () => {
               </ul>
             </div>
 
-            <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
+            <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
               <div className="text-yellow-200 font-extrabold">
                 Low down payment options (Official)
               </div>
@@ -1366,7 +1366,7 @@ const RealEstateInvestment = () => {
           icon={<FileText className="h-5 w-5" />}
         >
           <div className="space-y-3">
-            <details className="bg-black/40 border border-white/10 rounded-2xl p-5">
+            <details className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
               <summary className="cursor-pointer text-yellow-200 font-bold">
                 What’s the safest “first investment” if I’m nervous?
               </summary>
@@ -1378,7 +1378,7 @@ const RealEstateInvestment = () => {
               </p>
             </details>
 
-            <details className="bg-black/40 border border-white/10 rounded-2xl p-5">
+            <details className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
               <summary className="cursor-pointer text-yellow-200 font-bold">
                 How much cash do I need besides the down payment?
               </summary>
@@ -1388,7 +1388,7 @@ const RealEstateInvestment = () => {
               </p>
             </details>
 
-            <details className="bg-black/40 border border-white/10 rounded-2xl p-5">
+            <details className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
               <summary className="cursor-pointer text-yellow-200 font-bold">
                 What if I don’t know any Black-owned professionals yet?
               </summary>
