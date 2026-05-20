@@ -86,9 +86,11 @@ export async function resolvePremiumCourseAccess(
   }
 
   const resolvedUserId = String(user._id);
+  const normalizedPlan = String(user.currentPlan || "").toLowerCase();
   const premiumActive =
     user.isPremium === true ||
-    String(user.currentPlan || "").toLowerCase() === "premium" ||
+    normalizedPlan === "premium" ||
+    normalizedPlan === "founding" ||
     String(user.premiumStatus || "").toLowerCase() === "active";
 
   if (premiumActive) {
