@@ -66,8 +66,8 @@ function Card({
       id={id}
       className="relative bg-white/5 border border-white/10 rounded-2xl shadow-lg p-5 sm:p-6 md:p-8"
     >
-      <div className="flex items-start justify-between gap-4">
-        <div className="min-w-0">
+      <div className="flex flex-col sm:flex-row items-start justify-between gap-3 sm:gap-4">
+        <div className="min-w-0 w-full">
           <div className="flex items-center gap-3">
             {icon ? (
               <div className="h-11 w-11 rounded-xl bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center text-yellow-200">
@@ -86,7 +86,7 @@ function Card({
             </div>
           </div>
         </div>
-        {right ? <div className="shrink-0">{right}</div> : null}
+        {right ? <div className="w-full sm:w-auto shrink-0">{right}</div> : null}
       </div>
 
       <div className="mt-5">{children}</div>
@@ -278,8 +278,8 @@ const RealEstateInvestment = () => {
       </div>
 
       {/* Top Bar */}
-      <div className="sticky top-0 z-30 bg-black/70 backdrop-blur border-b border-white/10">
-        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
+      <div className="sticky top-0 z-30 bg-black sm:bg-black/70 sm:backdrop-blur border-b border-white/5 sm:border-white/10">
+        <div className="max-w-6xl mx-auto px-4 py-2 sm:py-3 flex items-center justify-between gap-2 sm:gap-3">
           <div className="flex items-center gap-3">
             <Link
               href="/"
@@ -312,13 +312,13 @@ const RealEstateInvestment = () => {
 
       {/* Hero */}
       <section
-        className="relative bg-cover bg-center"
+        className="relative bg-cover bg-center overflow-hidden"
         style={{ backgroundImage: "url(/images/blackrealstate.jpg)" }}
       >
         <div className="absolute inset-0 bg-black/75" />
-        <div className="relative max-w-6xl mx-auto px-4 py-10 sm:py-14 md:py-16">
+        <div className="relative max-w-6xl mx-auto px-4 py-6 sm:py-12 md:py-16">
           <div className="max-w-3xl">
-            <h1 className="text-2xl sm:text-3xl md:text-5xl font-extrabold text-yellow-200 leading-snug break-words drop-shadow">
+            <h1 className="text-xl sm:text-3xl md:text-5xl font-extrabold text-yellow-200 leading-snug break-words drop-shadow">
               Explore Black-Owned Real Estate Options & Wealth-Building
               Investments
             </h1>
@@ -329,7 +329,7 @@ const RealEstateInvestment = () => {
               move with confidence.
             </p>
 
-            <div className="mt-6 flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-2 sm:gap-3">
+            <div className="mt-4 flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-2 sm:gap-3">
               <GoldButton href="#start-here">
                 Start Here <ArrowRight className="h-4 w-4" />
               </GoldButton>
@@ -344,7 +344,7 @@ const RealEstateInvestment = () => {
               </GoldButton>
             </div>
 
-            <div className="mt-5 flex flex-wrap gap-2 min-w-0">
+            <div className="mt-3 flex flex-wrap gap-2 min-w-0">
               <Pill tone="muted">Homebuying</Pill>
               <Pill tone="muted">Rent-to-own</Pill>
               <Pill tone="muted">House hacking</Pill>
@@ -1295,7 +1295,7 @@ const RealEstateInvestment = () => {
         {/* Premium Toolkit */}
         <Card
           id="premium"
-          title="Premium Toolkit (Optional): Templates, Checklists, and Deal Analyzer"
+          title="Premium Toolkit: Templates, Checklists, and Deal Analyzer"
           subtitle="For users who want a faster path with structure: ready-to-use documents, checklists, and underwriting templates."
           icon={<Lock className="h-5 w-5" />}
           right={
@@ -1306,7 +1306,7 @@ const RealEstateInvestment = () => {
             </GoldButton>
           }
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
             <div className="bg-black/40 border border-yellow-500/20 rounded-2xl p-5">
               <div className="flex items-center gap-2 text-yellow-200 font-extrabold">
                 <Lock className="h-4 w-4" />
