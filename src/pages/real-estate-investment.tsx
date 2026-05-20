@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import {
@@ -117,7 +117,7 @@ function GoldButton({
 
   if (href) {
     return (
-      <Link href={href} className={cx(base, style)}>
+      <Link href={href} onClick={() => onClick?.()} className={cx(base, style)}>
         {content}
       </Link>
     );
@@ -189,21 +189,30 @@ const RealEstateInvestment = () => {
     router.push("/real-estate-toolkit");
   };
 
-  const revealSection = (targetId: string, detailsId?: string) => {
-    if (detailsId && typeof document !== "undefined") {
-      const details = document.getElementById(detailsId) as HTMLDetailsElement | null;
-      if (details && !details.open) details.open = true;
-    }
-    if (typeof window !== "undefined") {
-      window.requestAnimationFrame(() => {
-        const el = document.getElementById(targetId);
-        if (el) {
-          el.scrollIntoView({ behavior: "smooth", block: "start" });
-          window.history.replaceState(null, "", `#${targetId}`);
-        }
-      });
-    }
+  const [activeSection, setActiveSection] = useState<"homebuyer" | "investor" | "professionals" | null>(null);
+
+  const revealSection = (section: "homebuyer" | "investor" | "professionals") => {
+    setActiveSection(section);
   };
+
+  useEffect(() => {
+    if (!activeSection || typeof window === "undefined") return;
+    window.requestAnimationFrame(() => {
+      const el = document.getElementById(activeSection);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+        window.history.replaceState(null, "", `#${activeSection}`);
+      }
+    });
+  }, [activeSection]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const hash = window.location.hash.replace("#", "");
+    if (hash === "homebuyer" || hash === "investor" || hash === "professionals") {
+      setActiveSection(hash);
+    }
+  }, []);
 
   /** -----------------------------
    *  Calculator 1: Home Loan Estimate
@@ -367,7 +376,7 @@ const RealEstateInvestment = () => {
           }
         >
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
+            <div className={`rounded-2xl p-5 border ${activeSection === "homebuyer" ? "bg-yellow-500/10 border-yellow-400/60" : "bg-black/40 border-white/10"}`}>
               <div className="flex items-center gap-2 text-yellow-200 font-bold">
                 <Home className="h-4 w-4" />
                 Homebuyer
@@ -377,13 +386,13 @@ const RealEstateInvestment = () => {
                 financing options, and how to avoid costly mistakes.
               </p>
               <div className="mt-4">
-                <GoldButton href="#homebuyer" variant="ghost" onClick={() => revealSection("homebuyer", "homebuyer-path") }>
+                <GoldButton href="#homebuyer" variant="ghost" onClick={() => revealSection("homebuyer") }>
                   Go to Homebuyer Path <ArrowRight className="h-4 w-4" />
                 </GoldButton>
               </div>
             </div>
 
-            <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
+            <div className={`rounded-2xl p-5 border ${activeSection === "investor" ? "bg-yellow-500/10 border-yellow-400/60" : "bg-black/40 border-white/10"}`}>
               <div className="flex items-center gap-2 text-yellow-200 font-bold">
                 <Building2 className="h-4 w-4" />
                 Investor
@@ -393,13 +402,13 @@ const RealEstateInvestment = () => {
                 deals, estimate returns, and build a steady portfolio.
               </p>
               <div className="mt-4">
-                <GoldButton href="#investor" variant="ghost" onClick={() => revealSection("investor", "investor-path") }>
+                <GoldButton href="#investor" variant="ghost" onClick={() => revealSection("investor") }>
                   Go to Investor Path <ArrowRight className="h-4 w-4" />
                 </GoldButton>
               </div>
             </div>
 
-            <div className="bg-black/40 border border-white/10 rounded-2xl p-5">
+            <div className={`rounded-2xl p-5 border ${activeSection === "professionals" ? "bg-yellow-500/10 border-yellow-400/60" : "bg-black/40 border-white/10"}`}>
               <div className="flex items-center gap-2 text-yellow-200 font-bold">
                 <Landmark className="h-4 w-4" />
                 Real Estate Pro
@@ -409,7 +418,7 @@ const RealEstateInvestment = () => {
                 show up where the community is building wealth.
               </p>
               <div className="mt-4">
-                <GoldButton href="#professionals" variant="ghost" onClick={() => revealSection("professionals", "investor-path") }>
+                <GoldButton href="#professionals" variant="ghost" onClick={() => revealSection("professionals") }>
                   Go to Pro Section <ArrowRight className="h-4 w-4" />
                 </GoldButton>
               </div>
@@ -441,7 +450,7 @@ const RealEstateInvestment = () => {
         </Card>
 
         {/* Homebuyer Path */}
-        <details id="homebuyer-path" className="rounded-2xl border border-white/10 bg-white/5 p-4">
+        <details id="homebuyer-path" open={activeSection === "homebuyer"} onToggle={(e) => { if ((e.currentTarget as HTMLDetailsElement).open) setActiveSection("homebuyer"); }} className="rounded-2xl border border-white/10 bg-white/5 p-4">
           <summary className="cursor-pointer font-bold text-yellow-200">Homebuyer Path (expand)</summary>
         <Card
           id="homebuyer"
@@ -678,7 +687,7 @@ const RealEstateInvestment = () => {
         </details>
 
         {/* Investor Path */}
-        <details id="investor-path" className="rounded-2xl border border-white/10 bg-white/5 p-4">
+        <details id="investor-path" open={activeSection === "investor" || activeSection === "professionals"} onToggle={(e) => { if ((e.currentTarget as HTMLDetailsElement).open) setActiveSection("investor"); }} className="rounded-2xl border border-white/10 bg-white/5 p-4">
           <summary className="cursor-pointer font-bold text-yellow-200">Investor Path (expand)</summary>
         <Card
           id="investor"
