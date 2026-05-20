@@ -192,11 +192,15 @@ const RealEstateInvestment = () => {
   const [activeSection, setActiveSection] = useState<"homebuyer" | "investor" | "professionals" | null>(null);
 
   const revealSection = (section: "homebuyer" | "investor" | "professionals") => {
-    setActiveSection(section);
+    setActiveSection((prev) => (prev === section ? null : section));
   };
 
   useEffect(() => {
-    if (!activeSection || typeof window === "undefined") return;
+    if (typeof window === "undefined") return;
+    if (!activeSection) {
+      window.history.replaceState(null, "", window.location.pathname);
+      return;
+    }
     window.requestAnimationFrame(() => {
       const el = document.getElementById(activeSection);
       if (el) {
@@ -206,13 +210,7 @@ const RealEstateInvestment = () => {
     });
   }, [activeSection]);
 
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const hash = window.location.hash.replace("#", "");
-    if (hash === "homebuyer" || hash === "investor" || hash === "professionals") {
-      setActiveSection(hash);
-    }
-  }, []);
+
 
   /** -----------------------------
    *  Calculator 1: Home Loan Estimate
@@ -386,7 +384,7 @@ const RealEstateInvestment = () => {
                 financing options, and how to avoid costly mistakes.
               </p>
               <div className="mt-4">
-                <GoldButton href="#homebuyer" variant="ghost" onClick={() => revealSection("homebuyer") }>
+                <GoldButton variant="ghost" onClick={() => revealSection("homebuyer") }>
                   Go to Homebuyer Path <ArrowRight className="h-4 w-4" />
                 </GoldButton>
               </div>
@@ -402,7 +400,7 @@ const RealEstateInvestment = () => {
                 deals, estimate returns, and build a steady portfolio.
               </p>
               <div className="mt-4">
-                <GoldButton href="#investor" variant="ghost" onClick={() => revealSection("investor") }>
+                <GoldButton variant="ghost" onClick={() => revealSection("investor") }>
                   Go to Investor Path <ArrowRight className="h-4 w-4" />
                 </GoldButton>
               </div>
@@ -418,7 +416,7 @@ const RealEstateInvestment = () => {
                 show up where the community is building wealth.
               </p>
               <div className="mt-4">
-                <GoldButton href="#professionals" variant="ghost" onClick={() => revealSection("professionals") }>
+                <GoldButton variant="ghost" onClick={() => revealSection("professionals") }>
                   Go to Pro Section <ArrowRight className="h-4 w-4" />
                 </GoldButton>
               </div>
@@ -687,7 +685,7 @@ const RealEstateInvestment = () => {
         </details>
 
         {/* Investor Path */}
-        <details id="investor-path" open={activeSection === "investor" || activeSection === "professionals"} onToggle={(e) => { if ((e.currentTarget as HTMLDetailsElement).open) setActiveSection("investor"); }} className="rounded-2xl border border-white/10 bg-white/5 p-4">
+        <details id="investor-path" open={activeSection === "investor"} onToggle={(e) => { if ((e.currentTarget as HTMLDetailsElement).open) setActiveSection("investor"); }} className="rounded-2xl border border-white/10 bg-white/5 p-4">
           <summary className="cursor-pointer font-bold text-yellow-200">Investor Path (expand)</summary>
         <Card
           id="investor"
@@ -1063,8 +1061,11 @@ const RealEstateInvestment = () => {
             </div>
           </div>
         </Card>
+        </details>
 
         {/* Professionals */}
+        <details id="professionals-path" open={activeSection === "professionals"} onToggle={(e) => { if (!(e.currentTarget as HTMLDetailsElement).open) setActiveSection(null); }} className="rounded-2xl border border-white/10 bg-white/5 p-4">
+          <summary className="cursor-pointer font-bold text-yellow-200">Real Estate Pro Section (expand)</summary>
         <Card
           id="professionals"
           title="4) Black-Owned Real Estate Agencies & Professionals"
