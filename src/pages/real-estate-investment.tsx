@@ -176,6 +176,8 @@ function money(n: number) {
   return n.toLocaleString(undefined, { style: "currency", currency: "USD" });
 }
 
+const num = (value: string) => Number(value || 0);
+
 const RealEstateInvestment = () => {
   const router = useRouter();
   const { user } = useAuth();
@@ -190,26 +192,26 @@ const RealEstateInvestment = () => {
   /** -----------------------------
    *  Calculator 1: Home Loan Estimate
    *  ----------------------------- */
-  const [homePrice, setHomePrice] = useState<number>(450000);
-  const [downPct, setDownPct] = useState<number>(5);
-  const [rate, setRate] = useState<number>(6.5);
-  const [termYears, setTermYears] = useState<number>(30);
-  const [taxMonthly, setTaxMonthly] = useState<number>(350);
-  const [insMonthly, setInsMonthly] = useState<number>(160);
-  const [hoaMonthly, setHoaMonthly] = useState<number>(0);
+  const [homePrice, setHomePrice] = useState<string>("450000");
+  const [downPct, setDownPct] = useState<string>("5");
+  const [rate, setRate] = useState<string>("6.5");
+  const [termYears, setTermYears] = useState<string>("30");
+  const [taxMonthly, setTaxMonthly] = useState<string>("350");
+  const [insMonthly, setInsMonthly] = useState<string>("160");
+  const [hoaMonthly, setHoaMonthly] = useState<string>("0");
 
   const loanEst = useMemo(() => {
-    const down = (homePrice * downPct) / 100;
-    const principal = Math.max(homePrice - down, 0);
-    const r = rate / 100 / 12;
-    const n = termYears * 12;
+    const down = (num(homePrice) * num(downPct)) / 100;
+    const principal = Math.max(num(homePrice) - down, 0);
+    const r = num(rate) / 100 / 12;
+    const n = num(termYears) * 12;
 
     const pmt =
       r > 0
         ? (principal * (r * Math.pow(1 + r, n))) / (Math.pow(1 + r, n) - 1)
         : principal / n;
 
-    const total = pmt + taxMonthly + insMonthly + hoaMonthly;
+    const total = pmt + num(taxMonthly) + num(insMonthly) + num(hoaMonthly);
 
     return {
       down,
@@ -222,18 +224,18 @@ const RealEstateInvestment = () => {
   /** -----------------------------
    *  Calculator 2: Rental Deal Snapshot
    *  ----------------------------- */
-  const [purchasePrice, setPurchasePrice] = useState<number>(250000);
-  const [rentMonthly, setRentMonthly] = useState<number>(2200);
-  const [mortgageMonthly, setMortgageMonthly] = useState<number>(1400);
-  const [opsMonthly, setOpsMonthly] = useState<number>(450); // taxes/ins/repairs/vacancy/pm baseline
-  const [cashInvested, setCashInvested] = useState<number>(25000);
+  const [purchasePrice, setPurchasePrice] = useState<string>("250000");
+  const [rentMonthly, setRentMonthly] = useState<string>("2200");
+  const [mortgageMonthly, setMortgageMonthly] = useState<string>("1400");
+  const [opsMonthly, setOpsMonthly] = useState<string>("450"); // taxes/ins/repairs/vacancy/pm baseline
+  const [cashInvested, setCashInvested] = useState<string>("25000");
 
   const rentalEst = useMemo(() => {
-    const netMonthly = rentMonthly - mortgageMonthly - opsMonthly;
+    const netMonthly = num(rentMonthly) - num(mortgageMonthly) - num(opsMonthly);
     const netAnnual = netMonthly * 12;
 
-    const capRate = purchasePrice > 0 ? (netAnnual / purchasePrice) * 100 : NaN;
-    const coc = cashInvested > 0 ? (netAnnual / cashInvested) * 100 : NaN;
+    const capRate = num(purchasePrice) > 0 ? (netAnnual / num(purchasePrice)) * 100 : NaN;
+    const coc = num(cashInvested) > 0 ? (netAnnual / num(cashInvested)) * 100 : NaN;
 
     return {
       netMonthly,
@@ -423,6 +425,8 @@ const RealEstateInvestment = () => {
         </Card>
 
         {/* Homebuyer Path */}
+        <details className="rounded-2xl border border-white/10 bg-white/5 p-4">
+          <summary className="cursor-pointer font-bold text-yellow-200">Homebuyer Path (expand)</summary>
         <Card
           id="homebuyer"
           title="1) Homebuyer Path: From “I’m Not Sure” to Closing Day"
@@ -655,7 +659,11 @@ const RealEstateInvestment = () => {
           </div>
         </Card>
 
+        </details>
+
         {/* Investor Path */}
+        <details className="rounded-2xl border border-white/10 bg-white/5 p-4">
+          <summary className="cursor-pointer font-bold text-yellow-200">Investor Path (expand)</summary>
         <Card
           id="investor"
           title="2) Investor Path: Learn the Numbers (Cashflow, Risk, and Returns)"
@@ -856,37 +864,37 @@ const RealEstateInvestment = () => {
                 <label className="text-sm text-gray-300">
                   Home price
                   <input
-                    type="number"
+                    type="text" inputMode="decimal"
                     value={homePrice}
-                    onChange={(e) => setHomePrice(Number(e.target.value))}
+                    onChange={(e) => setHomePrice(e.target.value)}
                     className="mt-1 w-full rounded-xl bg-black/50 border border-white/10 px-3 py-2 text-white"
                   />
                 </label>
                 <label className="text-sm text-gray-300">
                   Down payment (%)
                   <input
-                    type="number"
+                    type="text" inputMode="decimal"
                     value={downPct}
-                    onChange={(e) => setDownPct(Number(e.target.value))}
+                    onChange={(e) => setDownPct(e.target.value)}
                     className="mt-1 w-full rounded-xl bg-black/50 border border-white/10 px-3 py-2 text-white"
                   />
                 </label>
                 <label className="text-sm text-gray-300">
                   Interest rate (%)
                   <input
-                    type="number"
+                    type="text" inputMode="decimal"
                     step="0.01"
                     value={rate}
-                    onChange={(e) => setRate(Number(e.target.value))}
+                    onChange={(e) => setRate(e.target.value)}
                     className="mt-1 w-full rounded-xl bg-black/50 border border-white/10 px-3 py-2 text-white"
                   />
                 </label>
                 <label className="text-sm text-gray-300">
                   Term (years)
                   <input
-                    type="number"
+                    type="text" inputMode="decimal"
                     value={termYears}
-                    onChange={(e) => setTermYears(Number(e.target.value))}
+                    onChange={(e) => setTermYears(e.target.value)}
                     className="mt-1 w-full rounded-xl bg-black/50 border border-white/10 px-3 py-2 text-white"
                   />
                 </label>
@@ -894,18 +902,18 @@ const RealEstateInvestment = () => {
                 <label className="text-sm text-gray-300">
                   Property tax (monthly)
                   <input
-                    type="number"
+                    type="text" inputMode="decimal"
                     value={taxMonthly}
-                    onChange={(e) => setTaxMonthly(Number(e.target.value))}
+                    onChange={(e) => setTaxMonthly(e.target.value)}
                     className="mt-1 w-full rounded-xl bg-black/50 border border-white/10 px-3 py-2 text-white"
                   />
                 </label>
                 <label className="text-sm text-gray-300">
                   Insurance (monthly)
                   <input
-                    type="number"
+                    type="text" inputMode="decimal"
                     value={insMonthly}
-                    onChange={(e) => setInsMonthly(Number(e.target.value))}
+                    onChange={(e) => setInsMonthly(e.target.value)}
                     className="mt-1 w-full rounded-xl bg-black/50 border border-white/10 px-3 py-2 text-white"
                   />
                 </label>
@@ -913,9 +921,9 @@ const RealEstateInvestment = () => {
                 <label className="text-sm text-gray-300">
                   HOA (monthly)
                   <input
-                    type="number"
+                    type="text" inputMode="decimal"
                     value={hoaMonthly}
-                    onChange={(e) => setHoaMonthly(Number(e.target.value))}
+                    onChange={(e) => setHoaMonthly(e.target.value)}
                     className="mt-1 w-full rounded-xl bg-black/50 border border-white/10 px-3 py-2 text-white"
                   />
                 </label>
@@ -950,45 +958,45 @@ const RealEstateInvestment = () => {
                 <label className="text-sm text-gray-300">
                   Purchase price
                   <input
-                    type="number"
+                    type="text" inputMode="decimal"
                     value={purchasePrice}
-                    onChange={(e) => setPurchasePrice(Number(e.target.value))}
+                    onChange={(e) => setPurchasePrice(e.target.value)}
                     className="mt-1 w-full rounded-xl bg-black/50 border border-white/10 px-3 py-2 text-white"
                   />
                 </label>
                 <label className="text-sm text-gray-300">
                   Monthly rent
                   <input
-                    type="number"
+                    type="text" inputMode="decimal"
                     value={rentMonthly}
-                    onChange={(e) => setRentMonthly(Number(e.target.value))}
+                    onChange={(e) => setRentMonthly(e.target.value)}
                     className="mt-1 w-full rounded-xl bg-black/50 border border-white/10 px-3 py-2 text-white"
                   />
                 </label>
                 <label className="text-sm text-gray-300">
                   Mortgage (monthly)
                   <input
-                    type="number"
+                    type="text" inputMode="decimal"
                     value={mortgageMonthly}
-                    onChange={(e) => setMortgageMonthly(Number(e.target.value))}
+                    onChange={(e) => setMortgageMonthly(e.target.value)}
                     className="mt-1 w-full rounded-xl bg-black/50 border border-white/10 px-3 py-2 text-white"
                   />
                 </label>
                 <label className="text-sm text-gray-300">
                   Ops estimate (monthly)
                   <input
-                    type="number"
+                    type="text" inputMode="decimal"
                     value={opsMonthly}
-                    onChange={(e) => setOpsMonthly(Number(e.target.value))}
+                    onChange={(e) => setOpsMonthly(e.target.value)}
                     className="mt-1 w-full rounded-xl bg-black/50 border border-white/10 px-3 py-2 text-white"
                   />
                 </label>
                 <label className="text-sm text-gray-300">
                   Cash invested
                   <input
-                    type="number"
+                    type="text" inputMode="decimal"
                     value={cashInvested}
-                    onChange={(e) => setCashInvested(Number(e.target.value))}
+                    onChange={(e) => setCashInvested(e.target.value)}
                     className="mt-1 w-full rounded-xl bg-black/50 border border-white/10 px-3 py-2 text-white"
                   />
                 </label>
@@ -1152,7 +1160,11 @@ const RealEstateInvestment = () => {
           </div>
         </Card>
 
+        </details>
+
         {/* Education & Resources */}
+        <details className="rounded-2xl border border-white/10 bg-white/5 p-4">
+          <summary className="cursor-pointer font-bold text-yellow-200">Education & Resources (expand)</summary>
         <Card
           id="education"
           title="5) Education & Trusted Resources"
@@ -1251,6 +1263,8 @@ const RealEstateInvestment = () => {
             </div>
           </div>
         </Card>
+
+        </details>
 
         {/* Premium Toolkit */}
         <Card
