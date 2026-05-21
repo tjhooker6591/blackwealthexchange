@@ -943,18 +943,16 @@ export default function Home() {
               />
               <div className="pointer-events-none absolute inset-0 -z-10 bg-black/82" />
 
-              <h1 className="text-3xl font-black tracking-tight leading-[1.05] sm:text-4xl md:text-5xl lg:text-6xl">
-                <span className="text-white">Build Black </span>
+              <h1 className="text-3xl font-black tracking-tight leading-[1.08] sm:text-4xl md:text-5xl lg:text-6xl">
+                <span className="text-white">Find and Support </span>
                 <span className="bg-gradient-to-r from-[#D4AF37] via-[#F2D77C] to-[#D4AF37] bg-clip-text text-transparent">
-                  Economic Power
+                  Black-Owned Businesses Near You
                 </span>
               </h1>
 
               <p className="mx-auto mt-3 max-w-2xl text-sm text-white/72 sm:text-base md:text-lg">
-                Black Wealth Exchange is a Black-owned business discovery and
-                growth platform. Start with the directory, then move into jobs,
-                marketplace opportunities, and financial literacy programs that
-                support long-term wealth building.
+                Build Black Economic Power by searching, supporting, shopping,
+                hiring, learning, and growing through BWE.
               </p>
 
               <div className="mx-auto mt-3 flex w-full max-w-2xl flex-wrap items-center justify-center gap-2 text-xs sm:text-sm">
@@ -1056,93 +1054,13 @@ export default function Home() {
             </div>
 
             <div className="mx-auto mt-4 flex w-full max-w-xl flex-col gap-2 sm:flex-row sm:justify-center">
-              {user ? (
-                <>
-                  <Link
-                    href="/dashboard"
-                    className="w-full sm:w-auto"
-                    onClick={() =>
-                      trackHomepageEvent("homepage_cta_clicked", {
-                        section: "hero",
-                        ctaId: "hero_go_to_dashboard",
-                        ctaLabel: "Go to Dashboard",
-                        destination: "/dashboard",
-                      })
-                    }
-                  >
-                    <button className="h-11 w-full rounded-xl border border-[#D4AF37]/45 bg-[#D4AF37]/8 px-5 text-sm font-bold text-[#F1D57A] transition hover:-translate-y-0.5 hover:bg-[#D4AF37]/16 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 sm:h-11 sm:w-auto sm:px-6">
-                      Go to Dashboard
-                    </button>
-                  </Link>
-                  <Link
-                    href={
-                      user?.accountType === "admin"
-                        ? "/admin/dashboard"
-                        : "/business-directory"
-                    }
-                    className="w-full sm:w-auto"
-                    onClick={() =>
-                      trackHomepageEvent("homepage_cta_clicked", {
-                        section: "hero",
-                        ctaId:
-                          user?.accountType === "admin"
-                            ? "hero_admin_dashboard"
-                            : "hero_explore_directory",
-                        ctaLabel:
-                          user?.accountType === "admin"
-                            ? "Admin Dashboard"
-                            : "Find Black-owned businesses",
-                        destination:
-                          user?.accountType === "admin"
-                            ? "/admin/dashboard"
-                            : "/business-directory",
-                      })
-                    }
-                  >
-                    <button className="h-11 w-full rounded-xl border border-[#D4AF37]/45 bg-[#D4AF37]/8 px-5 text-sm font-bold text-[#F1D57A] transition hover:-translate-y-0.5 hover:bg-[#D4AF37]/16 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 sm:h-11 sm:w-auto sm:px-6">
-                      {user?.accountType === "admin"
-                        ? "Admin Dashboard"
-                        : "Find Black-owned businesses"}
-                    </button>
-                  </Link>
-                </>
-              ) : (
-                <>
-                  <Link
-                    href="/job-listings"
-                    className="w-full sm:w-auto"
-                    onClick={() =>
-                      trackHomepageEvent("homepage_cta_clicked", {
-                        section: "hero",
-                        ctaId: "hero_jobs",
-                        ctaLabel: "Find Jobs",
-                        destination: "/job-listings",
-                      })
-                    }
-                  >
-                    <button className="h-11 w-full rounded-xl border border-[#D4AF37]/45 bg-[#D4AF37]/8 px-5 text-sm font-bold text-[#F1D57A] transition hover:-translate-y-0.5 hover:bg-[#D4AF37]/16 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 sm:h-11 sm:w-auto sm:px-6">
-                      Find Jobs
-                    </button>
-                  </Link>
-                  <Link
-                    href="/marketplace/become-a-seller"
-                    onClick={() =>
-                      trackHomepageEvent("homepage_cta_clicked", {
-                        section: "hero",
-                        ctaId: "hero_start_selling",
-                        ctaLabel: "Start selling your products",
-                        destination: "/marketplace/become-a-seller",
-                        category: "seller",
-                      })
-                    }
-                    className="w-full sm:w-auto"
-                  >
-                    <button className="h-11 w-full rounded-xl border border-[#D4AF37]/45 bg-[#D4AF37]/8 px-5 text-sm font-bold text-[#F1D57A] transition hover:-translate-y-0.5 hover:bg-[#D4AF37]/16 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 sm:h-11 sm:w-auto sm:px-6">
-                      Start selling your products
-                    </button>
-                  </Link>
-                </>
-              )}
+              <Link href="/business-directory" className="w-full sm:w-auto" onClick={() => trackHomepageEvent("homepage_cta_clicked", { section: "hero", ctaId: "hero_search_businesses", ctaLabel: "Search Businesses", destination: "/business-directory" })}>
+                <button className="h-11 w-full rounded-xl border border-[#D4AF37]/45 bg-[#D4AF37]/18 px-5 text-sm font-bold text-[#F1D57A] transition hover:-translate-y-0.5 hover:bg-[#D4AF37]/25 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 sm:h-11 sm:w-auto sm:px-6">Search Businesses</button>
+              </Link>
+              <Link href="/business-directory/submit" className="w-full sm:w-auto" onClick={() => trackHomepageEvent("homepage_cta_clicked", { section: "hero", ctaId: "hero_add_business", ctaLabel: "Add Your Business", destination: "/business-directory/submit" })}>
+                <button className="h-11 w-full rounded-xl border border-[#D4AF37]/45 bg-[#D4AF37]/8 px-5 text-sm font-bold text-[#F1D57A] transition hover:-translate-y-0.5 hover:bg-[#D4AF37]/16 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 sm:h-11 sm:w-auto sm:px-6">Add Your Business</button>
+              </Link>
+              {user ? <Link href="/dashboard" className="w-full sm:w-auto" onClick={() => trackHomepageEvent("homepage_cta_clicked", { section: "hero", ctaId: "hero_go_to_dashboard", ctaLabel: "Go to Dashboard", destination: "/dashboard" })}><button className="h-11 w-full rounded-xl border border-white/25 bg-white/5 px-5 text-sm font-semibold text-white/85 transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/20 sm:h-11 sm:w-auto sm:px-6">Go to Dashboard</button></Link> : null}
             </div>
           </div>
 
