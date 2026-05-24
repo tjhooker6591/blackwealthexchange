@@ -8,15 +8,32 @@ type User = {
   // Add more fields as needed!
 };
 
-function useAuth() {
+function useAuth(options?: { silentOnPublic?: boolean }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
+    if (!router.isReady) return;
+
+    const isHomepage = router.pathname === "/" || router.asPath === "/";
+    if (options?.silentOnPublic && isHomepage) {
+      setUser(null);
+      setLoading(false);
+      return;
+    }
+
     async function fetchUser() {
       try {
+        const t0 =
+          typeof performance !== "undefined" ? performance.now() : Date.now();
         const res = await fetch("/api/auth/me", { credentials: "include" });
+        const t1 =
+          typeof performance !== "undefined" ? performance.now() : Date.now();
+        if (process.env.NODE_ENV !== "production")
+          console.info(
+            `[timing] auth/me ${Math.round(t1 - t0)}ms status=${res.status}`,
+          );
         if (!res.ok) {
           setUser(null);
         } else {
@@ -29,7 +46,7 @@ function useAuth() {
       setLoading(false);
     }
     fetchUser();
-  }, [router.pathname]);
+  }, [router.isReady, router.pathname, router.asPath]);
 
   // Logout function
   const logout = async () => {

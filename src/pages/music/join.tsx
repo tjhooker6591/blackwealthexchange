@@ -1,8 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import type { GetServerSideProps } from "next";
+import cookie from "cookie";
+import jwt from "jsonwebtoken";
 import useAuth from "@/hooks/useAuth";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
+import { getJwtSecret } from "@/lib/env";
 
 type Seller = {
   _id: string;
@@ -169,13 +173,16 @@ export default function MusicCreatorJoinPage() {
           Join as a Music Creator
         </h1>
         <p className="mt-2 text-white/70">
-          Complete onboarding, payout/connect setup, and creator plan
-          activation.
+          Complete onboarding, connect payouts, and activate your creator plan.
+          Each step unlocks the next stage of creator access.
         </p>
 
         <div className="mt-4 rounded-xl border border-white/10 bg-black/30 p-3 text-sm">
           <p className="font-bold text-[#D4AF37]">
             Creator Activation Progress
+          </p>
+          <p className="mt-1 text-white/65">
+            Locked: missing steps below. Unlocked: all three are complete.
           </p>
           <div className="mt-2 space-y-1 text-white/80">
             {steps.map((s, i) => (
@@ -257,7 +264,7 @@ export default function MusicCreatorJoinPage() {
               Step 2: Connect Payouts
             </h2>
             <p className="mt-1 text-sm text-white/75">
-              Finish Stripe Connect onboarding to become payout-ready.
+              Finish payout setup to unlock plan activation and publishing.
             </p>
             <Link
               href="/marketplace/become-a-seller?refresh=1"
@@ -274,7 +281,8 @@ export default function MusicCreatorJoinPage() {
               Step 3: Activate Music Creator Plan
             </h2>
             <p className="mt-1 text-sm text-white/75">
-              Choose your creator plan to unlock music commerce features.
+              Choose your creator plan to unlock direct creator dashboard
+              access.
             </p>
             <Link
               href="/music/pricing"
@@ -288,3 +296,32 @@ export default function MusicCreatorJoinPage() {
     </main>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async ({
+  req,
+  resolvedUrl,
+}) => {
+  const cookies = cookie.parse(req.headers.cookie || "");
+  const token = cookies.session_token;
+  if (!token) {
+    return {
+      redirect: {
+        destination: `/login?next=${encodeURIComponent(resolvedUrl || "/music/join")}`,
+        permanent: false,
+      },
+    };
+  }
+
+  try {
+    jwt.verify(token, getJwtSecret());
+  } catch {
+    return {
+      redirect: {
+        destination: `/login?next=${encodeURIComponent(resolvedUrl || "/music/join")}`,
+        permanent: false,
+      },
+    };
+  }
+
+  return { props: {} };
+};

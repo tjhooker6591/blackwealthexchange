@@ -3,9 +3,10 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import jwt from "jsonwebtoken";
+import { getJwtSecret } from "@/lib/env";
 import cookie from "cookie"; // ✅ FIX: Add this import
 
-const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-key";
+const JWT_SECRET = getJwtSecret();
 
 export default async function handler(
   req: NextApiRequest,

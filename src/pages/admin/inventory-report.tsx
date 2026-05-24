@@ -1,4 +1,7 @@
+import type { GetServerSideProps } from "next";
+import Link from "next/link";
 import { useEffect, useState } from "react";
+import { requireAdminPageProps } from "@/lib/adminPageGuard";
 
 type Product = {
   _id: string;
@@ -41,11 +44,31 @@ export default function InventoryReport() {
 
   return (
     <div className="min-h-screen bg-black text-white p-8">
-      <h1 className="text-3xl font-bold text-gold mb-6">Inventory Report</h1>
-      <p className="mb-8 text-gray-400">
-        Track inventory across all marketplace products. Low-stock and
-        out-of-stock items are highlighted.
-      </p>
+      <div className="mb-6 flex items-center justify-between gap-3">
+        <div>
+          <h1 className="text-3xl font-bold text-gold mb-1">
+            Inventory Report
+          </h1>
+          <p className="text-sm text-gray-400">
+            Track marketplace inventory and quickly identify low-stock or
+            out-of-stock products.
+          </p>
+        </div>
+        <Link
+          href="/admin/dashboard"
+          className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-zinc-200 hover:bg-zinc-800"
+        >
+          Back to Admin Dashboard
+        </Link>
+      </div>
+      <div className="mb-4 flex items-center gap-2 text-xs">
+        <span className="rounded border border-zinc-700 bg-zinc-900 px-2 py-1 text-zinc-200">
+          Total products: {products.length}
+        </span>
+        <span className="rounded border border-zinc-700 bg-zinc-900 px-2 py-1 text-zinc-200">
+          Results: {filteredProducts.length}
+        </span>
+      </div>
       <input
         className="w-full max-w-md mb-6 px-4 py-2 rounded bg-gray-800 text-white border border-gray-700"
         placeholder="Search products..."
@@ -56,7 +79,9 @@ export default function InventoryReport() {
         <div className="mb-4 p-3 bg-red-700 rounded text-center">{message}</div>
       )}
       {loading ? (
-        <p>Loading inventory...</p>
+        <div className="rounded-lg border border-zinc-800 bg-zinc-950 p-4 text-sm text-zinc-300">
+          Loading inventory…
+        </div>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full text-sm bg-gray-900 rounded shadow">
@@ -73,7 +98,7 @@ export default function InventoryReport() {
               {filteredProducts.length === 0 && (
                 <tr>
                   <td colSpan={5} className="text-center text-gray-400 py-8">
-                    No products found.
+                    No inventory products match the current search.
                   </td>
                 </tr>
               )}
@@ -99,7 +124,7 @@ export default function InventoryReport() {
                         />
                       ) : (
                         <span className="w-10 h-10 bg-gray-700 flex items-center justify-center rounded text-xs text-gray-400">
-                          No Img
+                          No image
                         </span>
                       )}
                       <span>{product.name}</span>
@@ -128,3 +153,7 @@ export default function InventoryReport() {
     </div>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = requireAdminPageProps(
+  "/admin/inventory-report",
+);

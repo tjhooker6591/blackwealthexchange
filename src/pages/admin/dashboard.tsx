@@ -420,6 +420,58 @@ const AdminDashboard = ({
     };
   }, [statsRaw]);
 
+  const attentionItems = useMemo(
+    () => [
+      {
+        key: "businesses",
+        label: "Business approvals",
+        value: stats.pendingBusinesses,
+        href: "/admin/business-approvals",
+      },
+      {
+        key: "jobs",
+        label: "Job approvals",
+        value: stats.pendingJobs,
+        href: "/admin/job-approvals",
+      },
+      {
+        key: "products",
+        label: "Product approvals",
+        value: stats.pendingProducts,
+        href: "/admin/product-approvals",
+      },
+      {
+        key: "directory",
+        label: "Directory approvals",
+        value: stats.pendingDirectory,
+        href: "/admin/directory-approvals",
+      },
+      {
+        key: "payouts",
+        label: "Affiliate payouts",
+        value: stats.pendingPayouts,
+        href: "/admin/affiliate-payouts",
+      },
+    ],
+    [
+      stats.pendingBusinesses,
+      stats.pendingJobs,
+      stats.pendingProducts,
+      stats.pendingDirectory,
+      stats.pendingPayouts,
+    ],
+  );
+
+  const needsAttentionNow = useMemo(
+    () => attentionItems.filter((item) => item.value > 0),
+    [attentionItems],
+  );
+
+  const prioritizedAttentionItems = useMemo(
+    () => [...needsAttentionNow].sort((a, b) => b.value - a.value),
+    [needsAttentionNow],
+  );
+
   const recentJoinsRows = useMemo<RecentJoinRow[]>(() => {
     const rows = Array.isArray(statsRaw?.recentJoins?.rows)
       ? (statsRaw.recentJoins.rows as RecentJoinRow[])
@@ -764,6 +816,144 @@ const AdminDashboard = ({
         )}
       </header>
 
+      <section className="mt-8 rounded-xl border border-gray-700 bg-gray-800/70 p-5">
+        <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+          <div>
+            <h2 className="text-xl font-bold text-gold">
+              Admin Control Center
+            </h2>
+            <p className="text-sm text-gray-300">
+              One place to see operational load, triage pending work, and jump
+              directly into moderation queues.
+            </p>
+          </div>
+          <Link
+            href="/admin/analytics"
+            className="inline-flex w-fit items-center rounded border border-gray-700 bg-gray-900 px-3 py-2 text-xs hover:bg-gray-700"
+          >
+            View Platform Analytics →
+          </Link>
+        </div>
+
+        <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-3">
+          <div className="rounded-lg border border-gray-700 bg-gray-900 p-4">
+            <h3 className="text-sm font-semibold text-gray-200">
+              Needs attention now
+            </h3>
+            {prioritizedAttentionItems.length === 0 ? (
+              <p className="mt-2 text-sm text-emerald-300">
+                No open approval queues right now.
+              </p>
+            ) : (
+              <>
+                <div className="mt-3 rounded border border-yellow-500/30 bg-yellow-500/10 p-3">
+                  <div className="text-xs uppercase tracking-wide text-yellow-200">
+                    Do first
+                  </div>
+                  <div className="mt-1 text-sm text-white">
+                    {prioritizedAttentionItems[0].label}
+                  </div>
+                  <Link
+                    href={prioritizedAttentionItems[0].href}
+                    className="mt-2 inline-flex rounded border border-yellow-500/40 bg-yellow-500/20 px-2 py-1 text-xs text-yellow-100 hover:bg-yellow-500/30"
+                  >
+                    Open top queue ({prioritizedAttentionItems[0].value})
+                  </Link>
+                </div>
+
+                <div className="mt-3 space-y-2">
+                  {prioritizedAttentionItems.map((item) => (
+                    <Link
+                      key={item.key}
+                      href={item.href}
+                      className="flex items-center justify-between rounded border border-gray-700 bg-gray-800 px-3 py-2 text-sm hover:bg-gray-700"
+                    >
+                      <span>{item.label}</span>
+                      <span className="rounded bg-yellow-500/20 px-2 py-0.5 text-xs text-yellow-200">
+                        {item.value}
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+
+          <div className="rounded-lg border border-gray-700 bg-gray-900 p-4">
+            <h3 className="text-sm font-semibold text-gray-200">
+              Activity indicators
+            </h3>
+            <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
+              <div className="rounded border border-gray-700 bg-gray-800 p-2">
+                <div className="text-xs text-gray-400">Joined today</div>
+                <div className="text-lg font-bold text-gold">
+                  {recentJoinsSummary.today}
+                </div>
+              </div>
+              <div className="rounded border border-gray-700 bg-gray-800 p-2">
+                <div className="text-xs text-gray-400">Joined last 7d</div>
+                <div className="text-lg font-bold text-gold">
+                  {recentJoinsSummary.last7Days}
+                </div>
+              </div>
+              <div className="rounded border border-gray-700 bg-gray-800 p-2">
+                <div className="text-xs text-gray-400">Pending approvals</div>
+                <div className="text-lg font-bold text-gold">
+                  {stats.pendingApprovalsTotal}
+                </div>
+              </div>
+              <div className="rounded border border-gray-700 bg-gray-800 p-2">
+                <div className="text-xs text-gray-400">
+                  Paid unlinked listings
+                </div>
+                <div
+                  className={cx(
+                    "text-lg font-bold",
+                    stats.directoryPaidUnlinked > 0
+                      ? "text-red-300"
+                      : "text-emerald-300",
+                  )}
+                >
+                  {stats.directoryPaidUnlinked}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="rounded-lg border border-gray-700 bg-gray-900 p-4">
+            <h3 className="text-sm font-semibold text-gray-200">
+              Priority lanes
+            </h3>
+            <div className="mt-3 space-y-2 text-sm">
+              <Link
+                href="/admin/business-approvals"
+                className="block rounded border border-gray-700 bg-gray-800 px-3 py-2 hover:bg-gray-700"
+              >
+                Business moderation queue
+              </Link>
+              <Link
+                href="/admin/job-approvals"
+                className="block rounded border border-gray-700 bg-gray-800 px-3 py-2 hover:bg-gray-700"
+              >
+                Job moderation queue
+              </Link>
+              <Link
+                href="/admin/product-approvals"
+                className="block rounded border border-gray-700 bg-gray-800 px-3 py-2 hover:bg-gray-700"
+              >
+                Product moderation queue
+              </Link>
+              <Link
+                href="/admin/affiliate-payouts"
+                className="block rounded border border-gray-700 bg-gray-800 px-3 py-2 hover:bg-gray-700"
+              >
+                Affiliate payouts operations
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Top sections */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
         {/* Platform Stats */}
@@ -873,6 +1063,17 @@ const AdminDashboard = ({
 
               {/* Businesses summary */}
               <div className="bg-gray-800 rounded p-4 border border-gray-700 mb-4">
+                <AdminHubNav />
+
+                {router.query.source === "command-center" ? (
+                  <div className="rounded border border-yellow-500/30 bg-yellow-500/10 px-3 py-2 text-xs text-yellow-200">
+                    Opened from Command Center
+                    {router.query.focus
+                      ? ` • Focus: ${String(router.query.focus)}`
+                      : ""}
+                  </div>
+                ) : null}
+
                 <div className="flex items-center justify-between">
                   <h3 className="text-lg text-gold">Businesses Snapshot</h3>
                   <div className="text-xs text-gray-400">
@@ -984,7 +1185,9 @@ const AdminDashboard = ({
             ),
           )}
           {Object.keys(recentJoinsSummary.byAccountType || {}).length === 0 ? (
-            <div className="text-sm text-gray-400">No join data yet.</div>
+            <div className="text-sm text-gray-400">
+              No join activity is available for the current reporting window.
+            </div>
           ) : null}
         </div>
       </div>
@@ -1243,7 +1446,8 @@ const AdminDashboard = ({
                 {formatMoney(stats.directoryRevenue)}
               </div>
               <div className="text-xs text-gray-500 mt-1">
-                (Set to 0 until you add revenue calculation in the stats API.)
+                Revenue reflects tracked listing transactions in current admin
+                reporting.
               </div>
             </div>
           </div>
@@ -1310,7 +1514,9 @@ const AdminDashboard = ({
                       ))}
                     </ul>
                   ) : (
-                    <div className="text-gray-400">No featured slots.</div>
+                    <div className="text-gray-400">
+                      No featured directory slots are currently assigned.
+                    </div>
                   )}
                 </div>
 
@@ -1338,7 +1544,8 @@ const AdminDashboard = ({
                       </div>
                     ) : (
                       <div className="text-gray-400">
-                        No one in the waitlist.
+                        No businesses are currently in the featured-slot
+                        waitlist.
                       </div>
                     )}
                   </div>
@@ -1365,7 +1572,8 @@ const AdminDashboard = ({
               </div>
             ) : (
               <p className="mt-3 text-sm text-gray-300">
-                No directory slot data found.
+                No slot records are available yet. This panel will populate once
+                featured placements or queue records exist.
               </p>
             )}
           </div>
@@ -1382,67 +1590,114 @@ const AdminDashboard = ({
       </div>
 
       {/* Quick Actions */}
-      <SectionTitle>Quick Admin Actions</SectionTitle>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-4xl mx-auto mb-12">
-        <AdminLink
-          href="/admin/business-approvals"
-          label="Manage Business Approvals"
-        />
-        <AdminLink
-          href="/admin/organizations"
-          label="Manage Organization Approvals"
-        />
-        <AdminLink
-          href="/admin/directory-approvals"
-          label="Approve Directory Listings"
-        />
-        <AdminLink
-          href="/admin/affiliate-payouts"
-          label="Review Affiliate Payouts"
-        />
-        <AdminLink href="/admin/affiliates" label="Manage Affiliates" />
-        <AdminLink
-          href="/admin/affiliate-attribution"
-          label="Review Affiliate Attribution"
-        />
-        <AdminLink
-          href="/admin/consulting-leads"
-          label="Review Consulting Leads"
-        />
-        <AdminLink
-          href="/admin/advertising-requests"
-          label="Review Advertising Requests"
-        />
-        <AdminLink href="/admin/job-approvals" label="Approve Job Postings" />
-        <AdminLink
-          href="/admin/product-approvals"
-          label="Approve Marketplace Products"
-        />
-        <AdminLink
-          href="/admin/user-management"
-          label="User & Account Management"
-        />
-        <AdminLink
-          href="/admin/content-moderation"
-          label="Moderate Articles & Resources"
-        />
-        <AdminLink href="/admin/analytics" label="View Platform Analytics" />
-        <AdminLink
-          href="/admin/phase1-scoreboard"
-          label="Phase 1 Operating Scoreboard"
-        />
-        <AdminLink
-          href="/admin/featured-products"
-          label="Manage Featured Products"
-        />
-        <AdminLink
-          href="/admin/inventory-report"
-          label="View Inventory Report"
-        />
-        <AdminLink
-          href="/admin/intern-applications"
-          label="Intern Applications"
-        />
+      <SectionTitle>Control Center Navigation</SectionTitle>
+      <div className="mb-12 grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <div className="rounded border border-gray-700 bg-gray-800 p-4">
+          <h3 className="text-sm font-semibold text-gold">Review Queues</h3>
+          <p className="mt-1 text-xs text-gray-400">
+            Time-sensitive moderation and payout decisions.
+          </p>
+          <div className="mt-3 space-y-2">
+            <AdminLink
+              href="/admin/business-approvals"
+              label="Business approvals"
+            />
+            <AdminLink href="/admin/job-approvals" label="Job approvals" />
+            <AdminLink
+              href="/admin/product-approvals"
+              label="Product approvals"
+            />
+            <AdminLink
+              href="/admin/directory-approvals"
+              label="Directory approvals"
+            />
+            <AdminLink
+              href="/admin/affiliate-payouts"
+              label="Affiliate payouts"
+            />
+            <AdminLink
+              href="/admin/consultant-escalations"
+              label="Consultant escalations"
+            />
+          </div>
+        </div>
+
+        <div className="rounded border border-gray-700 bg-gray-800 p-4">
+          <h3 className="text-sm font-semibold text-gold">
+            Platform Management
+          </h3>
+          <p className="mt-1 text-xs text-gray-400">
+            Core operations, users, integrity, and business configuration.
+          </p>
+          <div className="mt-3 space-y-2">
+            <AdminLink
+              href="/admin/user-management"
+              label="User & account management"
+            />
+            <AdminLink href="/admin/organizations" label="Organizations" />
+            <AdminLink href="/admin/black-card" label="Black Card Management" />
+            <AdminLink href="/admin/affiliates" label="Affiliates" />
+            <AdminLink
+              href="/admin/affiliate-attribution"
+              label="Affiliate attribution"
+            />
+            <AdminLink
+              href="/admin/content-moderation"
+              label="Content moderation"
+            />
+            <AdminLink
+              href="/admin/directory-duplicates"
+              label="Directory duplicates"
+            />
+          </div>
+        </div>
+
+        <div className="rounded border border-yellow-700 bg-gray-800 p-4">
+          <h3 className="text-sm font-semibold text-gold">Financial Review</h3>
+          <p className="mt-1 text-xs text-gray-400">
+            Dedicated finance control center separate from general analytics.
+          </p>
+          <div className="mt-3 space-y-2 text-xs text-gray-300">
+            <div>Total Revenue</div>
+            <div>Revenue This Month</div>
+            <div>Pending / Unconfirmed Revenue</div>
+            <div>Refunded / Failed Payments</div>
+            <div>Revenue by Stream</div>
+            <div>Latest Transactions</div>
+          </div>
+          <div className="mt-3">
+            <AdminLink
+              href="/admin/financial-review"
+              label="Open Financial Review"
+            />
+          </div>
+        </div>
+        <div className="rounded border border-gray-700 bg-gray-800 p-4">
+          <h3 className="text-sm font-semibold text-gold">Secondary Tools</h3>
+          <p className="mt-1 text-xs text-gray-400">
+            Reporting, diagnostics, and specialized admin utilities.
+          </p>
+          <div className="mt-3 space-y-2">
+            <AdminLink href="/admin/analytics" label="Platform analytics" />
+            <AdminLink
+              href="/admin/inventory-report"
+              label="Inventory report"
+            />
+            <AdminLink
+              href="/admin/featured-products"
+              label="Featured products"
+            />
+            <AdminLink
+              href="/admin/advertising-requests"
+              label="Advertising requests"
+            />
+            <AdminLink
+              href="/admin/consulting-leads"
+              label="Consulting leads"
+            />
+            <AdminLink href="/admin/tools" label="Admin tools" />
+          </div>
+        </div>
       </div>
 
       {/* Consulting Service Waitlist */}
@@ -1481,7 +1736,7 @@ const AdminDashboard = ({
           </div>
         ) : visibleConsultingRows.length === 0 ? (
           <p className="text-gray-400 text-sm">
-            No one has signed up for notifications yet.
+            No consulting notification signups are currently in queue.
           </p>
         ) : (
           <div className="overflow-x-auto">
@@ -1764,3 +2019,28 @@ export const getServerSideProps: GetServerSideProps = async ({
     },
   };
 };
+const adminNavLinks = [
+  ["Command Center", "/admin/command-center"],
+  ["Financial Review", "/admin/financial-review"],
+  ["Dashboard", "/admin/dashboard"],
+  ["Support", "/admin/support"],
+  ["Revenue", "/admin/revenue"],
+  ["Growth", "/admin/growth"],
+  ["Partnerships", "/admin/partnerships"],
+] as const;
+
+function AdminHubNav() {
+  return (
+    <div className="flex flex-wrap gap-2">
+      {adminNavLinks.map(([label, href]) => (
+        <Link
+          key={href}
+          href={href}
+          className="text-xs border border-zinc-700 px-3 py-1.5 rounded"
+        >
+          {label}
+        </Link>
+      ))}
+    </div>
+  );
+}

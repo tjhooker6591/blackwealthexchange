@@ -3,6 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import { parse } from "cookie";
 import jwt from "jsonwebtoken";
+import { getJwtSecret } from "@/lib/env";
 
 export default async function handler(
   req: NextApiRequest,
@@ -22,7 +23,7 @@ export default async function handler(
       return res.status(401).json({ error: "Unauthorized: No token found" });
     }
 
-    const SECRET = process.env.JWT_SECRET || "dev-secret-key";
+    const SECRET = getJwtSecret();
     const decoded = jwt.verify(token, SECRET) as {
       email: string;
       accountType: string;

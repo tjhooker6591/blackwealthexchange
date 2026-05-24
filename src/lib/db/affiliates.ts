@@ -1,5 +1,6 @@
 // src/lib/db/affiliates.ts
 import clientPromise from "@/lib/mongodb";
+import { getMongoDbName } from "@/lib/env";
 
 export async function recordAffiliateConversion(
   affiliateCode: string,
@@ -7,7 +8,7 @@ export async function recordAffiliateConversion(
   sessionId: string,
 ) {
   const client = await clientPromise;
-  const db = client.db();
+  const db = client.db(getMongoDbName());
   return db.collection("affiliateConversions").insertOne({
     affiliateCode,
     amount,

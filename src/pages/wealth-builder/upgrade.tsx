@@ -1,10 +1,12 @@
+import type { GetServerSideProps } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useState } from "react";
 import WealthBuilderNav from "@/components/wealth-builder/WealthBuilderNav";
+import { requireWealthBuilderPageUser } from "@/lib/wealth-builder/page-auth";
 
-type CheckoutPlan = "monthly" | "annual";
+type CheckoutPlan = "annual";
 
 type CheckoutResponse = {
   sessionId?: string;
@@ -102,10 +104,7 @@ export default function WealthBuilderUpgradePage() {
     setInfoMessage("");
 
     try {
-      const itemId =
-        plan === "annual"
-          ? "wealth-builder-premium-annual"
-          : "wealth-builder-premium-monthly";
+      const itemId = "wealth-builder-premium-annual";
 
       const response = await fetch("/api/stripe/checkout", {
         method: "POST",
@@ -155,8 +154,9 @@ export default function WealthBuilderUpgradePage() {
                   Unlock Wealth Builder Premium
                 </h1>
                 <p className="mt-4 max-w-3xl text-zinc-300">
-                  Upgrade to expand savings goals, unlock insights, and use
-                  richer planning tools over time.
+                  Upgrade for clearer month-to-month decisions: remove
+                  savings-goal caps, track budget history, and unlock premium
+                  insights that help you spot drift earlier.
                 </p>
               </div>
 
@@ -198,6 +198,22 @@ export default function WealthBuilderUpgradePage() {
               </div>
             ) : null}
 
+            <div className="mt-8 rounded-2xl border border-white/10 bg-black/30 p-4 text-sm text-zinc-200">
+              <div className="font-semibold text-yellow-300">
+                Free vs Premium outcome difference
+              </div>
+              <ul className="mt-2 space-y-1 text-zinc-300">
+                <li>
+                  Free: current-month focus and limited goals for lightweight
+                  planning.
+                </li>
+                <li>
+                  Premium: longer-horizon planning with history + unlimited
+                  goals + deeper insights.
+                </li>
+              </ul>
+            </div>
+
             <div className="mt-10 grid gap-6 lg:grid-cols-2">
               <div className="rounded-2xl border border-white/10 bg-zinc-950/80 p-6">
                 <h2 className="text-2xl font-semibold text-yellow-300">Free</h2>
@@ -214,39 +230,18 @@ export default function WealthBuilderUpgradePage() {
                 <h2 className="text-2xl font-semibold text-yellow-300">
                   Premium
                 </h2>
-                <p className="mt-3 text-3xl font-bold">$8.99/month</p>
-                <p className="mt-1 text-sm text-zinc-400">$79/year</p>
+                <p className="mt-3 text-3xl font-bold">$79/year</p>
 
                 <div className="mt-5 space-y-3 text-sm text-zinc-300">
                   <p>• Unlimited savings goals</p>
                   <p>• Budget history</p>
                   <p>• Premium insights</p>
-                  <p>• Future advanced tools</p>
+                  <p>
+                    • Advanced planning tools currently available in Premium
+                  </p>
                 </div>
 
-                <div className="mt-8 grid gap-4 sm:grid-cols-2">
-                  <button
-                    type="button"
-                    onClick={() => void startCheckout("monthly")}
-                    disabled={
-                      loadingPlan !== null ||
-                      loadingEntitlement ||
-                      !isAuthenticated ||
-                      isPremium
-                    }
-                    className="rounded-2xl border border-yellow-400 bg-yellow-500/15 px-5 py-4 text-left font-semibold text-yellow-300 transition hover:bg-yellow-500/25 disabled:cursor-not-allowed disabled:opacity-60"
-                  >
-                    <div className="text-sm uppercase tracking-wide text-yellow-200">
-                      Monthly
-                    </div>
-                    <div className="mt-2 text-xl">$8.99</div>
-                    <div className="mt-1 text-sm text-zinc-300">
-                      {loadingPlan === "monthly"
-                        ? "Starting checkout..."
-                        : "Upgrade monthly"}
-                    </div>
-                  </button>
-
+                <div className="mt-8">
                   <button
                     type="button"
                     onClick={() => void startCheckout("annual")}
@@ -256,23 +251,44 @@ export default function WealthBuilderUpgradePage() {
                       !isAuthenticated ||
                       isPremium
                     }
-                    className="rounded-2xl border border-yellow-400 bg-yellow-500/15 px-5 py-4 text-left font-semibold text-yellow-300 transition hover:bg-yellow-500/25 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="w-full rounded-2xl border border-yellow-400 bg-yellow-500/15 px-5 py-4 text-left font-semibold text-yellow-300 transition hover:bg-yellow-500/25 disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     <div className="text-sm uppercase tracking-wide text-yellow-200">
-                      Annual
+                      Annual Subscription
                     </div>
                     <div className="mt-2 text-xl">$79</div>
                     <div className="mt-1 text-sm text-zinc-300">
                       {loadingPlan === "annual"
                         ? "Starting checkout..."
-                        : "Upgrade annually"}
+                        : "Upgrade to Premium Annual"}
                     </div>
                   </button>
                 </div>
 
                 <div className="mt-6 rounded-2xl border border-white/10 bg-black/30 p-4 text-sm text-zinc-300">
-                  Premium purchases use your existing Black Wealth Exchange
-                  checkout flow and stay tied to the logged-in user account.
+                  Entitlement truth: this is an annual Wealth Builder Premium
+                  plan upgrade tied to your logged-in account (separate from
+                  one-time course purchases).
+                  <div className="mt-2">
+                    Premium purchases use your existing Black Wealth Exchange
+                    checkout flow and stay tied to the logged-in user account.
+                  </div>
+                  <div className="mt-3 font-semibold text-yellow-300">
+                    After payment
+                  </div>
+                  <ol className="mt-2 list-decimal pl-5 space-y-1">
+                    <li>We verify payment.</li>
+                    <li>We activate Wealth Builder Premium entitlement.</li>
+                    <li>
+                      You continue in Wealth Builder with premium features
+                      unlocked.
+                    </li>
+                  </ol>
+                  <p className="mt-3 text-xs text-zinc-400">
+                    Billing confidence: annual renewal, cancellation stops
+                    future renewals, secure checkout, support via account
+                    help/contact routes.
+                  </p>
                 </div>
               </div>
             </div>
@@ -298,3 +314,7 @@ export default function WealthBuilderUpgradePage() {
     </>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  return requireWealthBuilderPageUser(context, "/wealth-builder/upgrade");
+};

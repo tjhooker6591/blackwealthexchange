@@ -1,10 +1,10 @@
 // src/pages/admin/business-approvals.tsx
-"use client";
-
+import type { GetServerSideProps } from "next";
 import React, { useCallback, useEffect, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { requireAdminPageProps } from "@/lib/adminPageGuard";
 
 type Business = {
   _id: string;
@@ -273,3 +273,7 @@ export default function BusinessApprovals() {
     </>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = requireAdminPageProps(
+  "/admin/business-approvals",
+);

@@ -2,6 +2,8 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "../../../lib/mongodb";
 import jwt from "jsonwebtoken";
 import { ObjectId } from "mongodb";
+import { getJwtSecret } from "@/lib/env";
+import { runApplicantVetting } from "@/lib/hiring/vetting";
 
 export default async function handler(
   req: NextApiRequest,
@@ -12,9 +14,9 @@ export default async function handler(
     return res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 
-  const { jobId } = req.body;
-  if (!jobId) {
-    return res.status(400).json({ error: "Missing jobId" });
+  const jobId = typeof req.body?.jobId === "string" ? req.body.jobId : "";
+  if (!jobId || !ObjectId.isValid(jobId)) {
+    return res.status(400).json({ error: "Invalid jobId" });
   }
 
   const { session_token } = req.cookies;
@@ -24,14 +26,14 @@ export default async function handler(
 
   let payload: any;
   try {
-    payload = jwt.verify(session_token, process.env.JWT_SECRET!);
+    payload = jwt.verify(session_token, getJwtSecret());
   } catch (_err) {
     return res.status(401).json({ error: "Invalid session" });
   }
 
   const userId = payload.userId;
-  if (!userId) {
-    return res.status(401).json({ error: "Invalid session payload" });
+  if (!userId || !ObjectId.isValid(userId)) {
+    return res.status(400).json({ error: "Invalid session payload" });
   }
 
   const client = await clientPromise;
@@ -46,11 +48,45 @@ export default async function handler(
     return res.status(400).json({ error: "Already applied to this job" });
   }
 
+  const now = new Date();
+  const user = await db
+    .collection("users")
+    .findOne({ _id: new ObjectId(userId) });
+  const resumeUrl = typeof user?.resumeUrl === "string" ? user.resumeUrl : "";
+  const vetting = await runApplicantVetting(db, {
+    userId: new ObjectId(userId),
+    jobId: new ObjectId(jobId),
+    resumeUrl,
+  });
+
   const result = await db.collection("applicants").insertOne({
     jobId: new ObjectId(jobId),
     userId: new ObjectId(userId),
-    appliedAt: new Date(),
+    name: user?.name || user?.email || "",
+    email: user?.email || "",
+    resumeUrl,
+    appliedAt: now,
+    hiringStatus: "new",
+    statusUpdatedAt: now,
+    vettingStatus: vetting.vettingStatus,
+    vettingSignals: vetting.vettingSignals,
+    vettingSummary: vetting.vettingSummary,
+    vettingUpdatedAt: vetting.vettingUpdatedAt,
+    vettingConfidenceBand: vetting.vettingConfidenceBand,
+    manualOverride: false,
+    overrideReason: "",
+    statusHistory: [
+      {
+        status: "new",
+        changedAt: now,
+        actor: "system:application_submitted",
+      },
+    ],
   });
 
-  res.status(201).json({ success: true, applicantId: result.insertedId });
+  res.status(201).json({
+    success: true,
+    applicantId: result.insertedId,
+    vettingStatus: vetting.vettingStatus,
+  });
 }

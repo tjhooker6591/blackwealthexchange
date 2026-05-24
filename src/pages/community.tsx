@@ -76,9 +76,16 @@ export default function Community() {
         <h2 className="text-xl font-bold text-gray-800">
           Be Part of the Movement
         </h2>
-        <button className="px-6 py-3 bg-gold text-black font-semibold rounded-lg hover:bg-opacity-90 transition mt-4">
-          Join Now
+        <button
+          disabled
+          aria-disabled="true"
+          className="mt-4 cursor-not-allowed rounded-lg border border-gray-400 bg-gray-200 px-6 py-3 font-semibold text-gray-600"
+        >
+          Join Now (Coming Soon)
         </button>
+        <p className="mt-2 text-sm text-gray-500">
+          Community signup and posting tools are not active yet.
+        </p>
       </div>
 
       {/* ✅ Back to Home Button */}

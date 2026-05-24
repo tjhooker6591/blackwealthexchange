@@ -78,6 +78,7 @@ export default function ProfilePage() {
   const [me, setMe] = useState<MeUser | null>(null);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -125,9 +126,15 @@ export default function ProfilePage() {
         credentials: "include",
         signal,
       });
+      if (res.status === 404) {
+        setNotFound(true);
+        setProfile(null);
+        return;
+      }
       if (!res.ok) throw new Error("Failed to load profile");
 
       const data: UserProfile = await res.json();
+      setNotFound(false);
       setProfile(data);
       setName(data.name || "");
       setEmail(data.email || meUser.email || "");
@@ -145,6 +152,7 @@ export default function ProfilePage() {
       } catch (e: any) {
         if (e?.name !== "AbortError") {
           console.error(e);
+          setNotFound(false);
         }
       } finally {
         setLoading(false);
@@ -178,7 +186,8 @@ export default function ProfilePage() {
   }, [name, whoLabel]);
 
   if (loading) return <Loader />;
-  if (!profile) return <NotFound />;
+  if (notFound) return <NotFound />;
+  if (!profile) return <Loader />;
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -342,6 +351,12 @@ export default function ProfilePage() {
               >
                 Back
               </button>
+              <Link
+                href="/dashboard/black-card"
+                className="px-4 py-2 rounded-xl border border-yellow-500/30 bg-yellow-500/10 hover:bg-yellow-500/20 transition text-sm text-yellow-200"
+              >
+                Black Card, View digital card
+              </Link>
               <Link
                 href="/"
                 className="px-4 py-2 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition text-sm"

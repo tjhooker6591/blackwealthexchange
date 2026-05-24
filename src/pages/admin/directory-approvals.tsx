@@ -1,6 +1,8 @@
 // src/pages/admin/directory-approvals.tsx
+import type { GetServerSideProps } from "next";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { requireAdminPageProps } from "@/lib/adminPageGuard";
 
 type ListingRow = {
   _id?: any;
@@ -105,6 +107,10 @@ function normalize(v: unknown) {
     .toLowerCase();
 }
 
+function normalizeListingStatus(v: unknown) {
+  return normalize(v).replace(/[\s-]+/g, "_");
+}
+
 function isFallbackRow(row: ListingRow) {
   return (
     row.source === "payments_fallback" ||
@@ -145,7 +151,7 @@ function getPaymentState(row: ListingRow): "paid" | "pending" | "refunded" {
     if (!Number.isNaN(d.getTime())) return "paid";
   }
 
-  const status = normalize(row.status);
+  const status = normalizeListingStatus(row.status);
   if (status === "refunded") return "refunded";
   if (status === "payment_pending" || status === "pending_payment")
     return "pending";
@@ -169,7 +175,7 @@ function getListingState(
   | "active"
   | "expired"
   | "fallback" {
-  const explicit = normalize(row.listingStatus);
+  const explicit = normalizeListingStatus(row.listingStatus);
   if (
     explicit === "unlinked" ||
     explicit === "pending_approval" ||
@@ -185,7 +191,7 @@ function getListingState(
       | "expired";
   }
 
-  const status = normalize(row.status);
+  const status = normalizeListingStatus(row.status);
   if (
     status === "unlinked" ||
     status === "pending_approval" ||
@@ -687,10 +693,15 @@ export default function DirectoryApprovalsPage() {
                     const endsAt = row.featuredEndDate || row.expiresAt || null;
 
                     const canApprove =
-                      !fallback &&
                       !!id &&
+                      paymentState === "paid" &&
                       (listingState === "pending_approval" ||
                         listingState === "unlinked");
+
+                    const canLinkOrCreate =
+                      !!id &&
+                      paymentState === "paid" &&
+                      (listingState === "unlinked" || fallback);
 
                     const canExpire =
                       !fallback &&
@@ -814,7 +825,16 @@ export default function DirectoryApprovalsPage() {
                               </button>
                             ) : null}
 
-                            {fallback ? (
+                            {canLinkOrCreate ? (
+                              <Link
+                                href={`/admin/business-approvals?listingId=${encodeURIComponent(id)}`}
+                                className="rounded border border-zinc-600 px-2 py-1 text-xs text-zinc-200 hover:bg-zinc-800"
+                              >
+                                {listingState === "unlinked"
+                                  ? "Link Listing"
+                                  : "Create Listing"}
+                              </Link>
+                            ) : fallback ? (
                               <span className="rounded border border-zinc-700 px-2 py-1 text-xs text-zinc-400">
                                 Fallback
                               </span>
@@ -833,3 +853,7 @@ export default function DirectoryApprovalsPage() {
     </div>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = requireAdminPageProps(
+  "/admin/directory-approvals",
+);

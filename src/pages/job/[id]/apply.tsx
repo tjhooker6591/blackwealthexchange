@@ -166,7 +166,7 @@ export default function JobApply() {
           jobId,
           name: form.name.trim(),
           email: form.email.trim(),
-          resumeUrl: form.resume.trim() || "n/a",
+          resumeUrl: form.resume.trim(),
           coverLetter: (form.coverLetter || "").trim(),
         }),
       });
@@ -174,16 +174,18 @@ export default function JobApply() {
       const data = await res.json().catch(() => null);
 
       if (!res.ok) {
+        if (res.status === 409) {
+          throw new Error(
+            data?.error ||
+              "You already applied with this email. You can wait for a response or contact the employer with updates.",
+          );
+        }
         throw new Error(
           data?.error || data?.message || "Failed to submit application.",
         );
       }
 
-      setSuccessMsg("✅ Application sent successfully!");
-      // slight delay so they see success
-      setTimeout(() => {
-        router.back();
-      }, 800);
+      setSuccessMsg("Application submitted successfully.");
     } catch (err: unknown) {
       setErrorMsg(
         err instanceof Error ? err.message : "Failed to submit application.",
@@ -236,8 +238,16 @@ export default function JobApply() {
           </div>
         )}
         {successMsg && (
-          <div className="mb-4 rounded border border-green-500/40 bg-green-500/10 p-3 text-sm text-green-200">
-            {successMsg}
+          <div className="mb-4 rounded border border-green-500/40 bg-green-500/10 p-3 text-sm text-green-100">
+            <p className="font-semibold">✅ {successMsg}</p>
+            <p className="mt-1">
+              What happens next: the employer will review your profile and may
+              contact you directly by email if you are a fit.
+            </p>
+            <p className="mt-1 text-green-200/90">
+              You do not need to submit again unless you want to update your
+              information.
+            </p>
           </div>
         )}
 
@@ -272,7 +282,7 @@ export default function JobApply() {
 
           {/* Resume (optional) */}
           <label className="block">
-            <span className="text-gray-300">Resume (URL or Text)</span>
+            <span className="text-gray-300">Resume (optional URL or text)</span>
             <textarea
               value={form.resume}
               onChange={(e) => update("resume", e.target.value)}
@@ -296,22 +306,28 @@ export default function JobApply() {
 
           <button
             type="submit"
-            disabled={submitting}
+            disabled={submitting || Boolean(successMsg)}
             className={`w-full px-4 py-2 font-semibold rounded transition ${
-              submitting
+              submitting || successMsg
                 ? "bg-gray-500 text-gray-200 cursor-not-allowed"
                 : "bg-gold text-black hover:bg-yellow-500"
             }`}
           >
-            {submitting ? "Sending..." : "Send Application"}
+            {submitting
+              ? "Sending..."
+              : successMsg
+                ? "Application Submitted"
+                : "Send Application"}
           </button>
 
           <button
             type="button"
-            onClick={() => router.back()}
+            onClick={() =>
+              successMsg ? router.push("/job-listings") : router.back()
+            }
             className="w-full px-4 py-2 border border-gray-600 rounded hover:bg-gray-700 transition"
           >
-            Cancel
+            {successMsg ? "Back to Job Listings" : "Cancel"}
           </button>
         </form>
       </div>

@@ -1,5 +1,6 @@
 import Head from "next/head";
 import Link from "next/link";
+import { canonicalUrl, truncateMeta } from "@/lib/seo";
 
 export default function TravelMapLandingPage() {
   return (
@@ -8,8 +9,11 @@ export default function TravelMapLandingPage() {
         <title>Travel Map | Black Wealth Exchange</title>
         <meta
           name="description"
-          content="Discover Black-owned businesses while traveling with the Black Wealth Exchange Travel Map."
+          content={truncateMeta(
+            "Discover Black-owned businesses by city and category with the BWE Travel Map, then continue exploring the full business directory.",
+          )}
         />
+        <link rel="canonical" href={canonicalUrl("/travel-map")} />
       </Head>
 
       <div className="min-h-screen bg-black text-white">

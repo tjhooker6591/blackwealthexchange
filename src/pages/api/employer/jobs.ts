@@ -4,6 +4,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import jwt from "jsonwebtoken";
 import cookie from "cookie";
 import clientPromise from "@/lib/mongodb";
+import { getJwtSecret } from "@/lib/env";
 
 interface JobRecord {
   _id: any;
@@ -33,7 +34,7 @@ export default async function handler(
 
   let payload: { userId: string; email: string; accountType?: string };
   try {
-    const SECRET = process.env.JWT_SECRET ?? process.env.NEXTAUTH_SECRET!;
+    const SECRET = getJwtSecret();
     payload = jwt.verify(token, SECRET) as typeof payload;
   } catch {
     return res.status(401).json({ error: "Invalid or expired token" });

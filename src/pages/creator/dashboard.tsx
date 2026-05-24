@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import useAuth from "@/hooks/useAuth";
 
 type Readiness = {
   sellerExists: boolean;
@@ -7,16 +9,29 @@ type Readiness = {
   payoutConnected: boolean;
   payoutReady: boolean;
   dashboardReady: boolean;
+  creatorPlanStatus?: string;
+  creatorReady?: boolean;
+  musicCreatorReady?: boolean;
   stripeAccountId?: string | null;
   requirements?: string[];
 };
 
 export default function CreatorDashboardPage() {
+  const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
   const [state, setState] = useState<Readiness | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
+    if (authLoading) return;
+    if (!user) {
+      router.replace(
+        `/login?redirect=${encodeURIComponent("/creator/dashboard")}`,
+      );
+      return;
+    }
+
     (async () => {
       try {
         const res = await fetch("/api/marketplace/readiness", {
@@ -32,7 +47,7 @@ export default function CreatorDashboardPage() {
         setLoading(false);
       }
     })();
-  }, []);
+  }, [authLoading, router, user]);
 
   return (
     <main className="min-h-screen bg-black p-6 text-white">
@@ -69,11 +84,21 @@ export default function CreatorDashboardPage() {
               label="Payout Ready"
               value={state.payoutReady ? "Yes" : "No"}
             />
+            <Card
+              label="Creator Plan"
+              value={state.creatorPlanStatus || "inactive"}
+            />
+            <Card
+              label="Creator Ready"
+              value={
+                state.musicCreatorReady || state.creatorReady ? "Yes" : "No"
+              }
+            />
           </div>
         ) : null}
 
         <div className="mt-6 flex flex-wrap gap-3">
-          {state?.dashboardReady ? (
+          {state?.musicCreatorReady || state?.creatorReady ? (
             <Link
               href="/marketplace/add-products"
               className="rounded-xl bg-[#D4AF37] px-4 py-2 font-bold text-black"
@@ -102,7 +127,7 @@ export default function CreatorDashboardPage() {
           </Link>
         </div>
 
-        {state && !state.dashboardReady ? (
+        {state && !(state.musicCreatorReady || state.creatorReady) ? (
           <div className="mt-6 rounded-xl border border-yellow-400/30 bg-yellow-500/10 p-4">
             <h2 className="font-extrabold text-[#D4AF37]">
               Creator account not fully ready yet

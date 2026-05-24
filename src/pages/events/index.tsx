@@ -29,7 +29,6 @@ type EventItem = {
   description: string[];
   href?: string; // official link
   streamUrl?: string; // livestream link (YouTube/StreamYard/Zoom)
-  rsvpUrl?: string; // your RSVP page (future)
   tags?: string[];
 };
 
@@ -71,8 +70,7 @@ const BWE_LIVE_2026: EventItem[] = [
       "Walkthrough: Directory + Marketplace + Jobs + Trusted listings.",
       "Live Q&A: how to use BWE, how to list, how to monetize and grow.",
     ],
-    streamUrl: "https://youtube.com/@BlackWealthExchange/live", // update
-    rsvpUrl: "/events/rsvp", // optional future page
+    streamUrl: "https://www.youtube.com/@blackwealthexchangesociety8390", // update
     tags: ["demo", "q&a", "weekly"],
   },
   {
@@ -86,8 +84,7 @@ const BWE_LIVE_2026: EventItem[] = [
       "How to become a seller + Stripe payouts + listing best practices.",
       "Bring your product — we help you publish it correctly.",
     ],
-    streamUrl: "https://youtube.com/@BlackWealthExchange/live", // update
-    rsvpUrl: "/events/rsvp",
+    streamUrl: "https://www.youtube.com/@blackwealthexchangesociety8390", // update
     tags: ["seller", "stripe", "workshop"],
   },
   {
@@ -102,7 +99,6 @@ const BWE_LIVE_2026: EventItem[] = [
       "Wealth frameworks: budgeting → investing → ownership.",
       "Interactive Q&A and resource drops.",
     ],
-    rsvpUrl: "/events/rsvp",
     tags: ["webinar", "wealth"],
   },
   {
@@ -117,7 +113,6 @@ const BWE_LIVE_2026: EventItem[] = [
       "Tools + workflows to scale Black-owned businesses.",
       "Automation, marketing systems, and lead capture.",
     ],
-    rsvpUrl: "/events/rsvp",
     tags: ["webinar", "growth", "tech"],
   },
   {
@@ -132,7 +127,6 @@ const BWE_LIVE_2026: EventItem[] = [
       "Pitch readiness: story, numbers, offer, and proof.",
       "Crowdfunding + grants + investor basics.",
     ],
-    rsvpUrl: "/events/rsvp",
     tags: ["webinar", "funding"],
   },
 ];
@@ -461,13 +455,13 @@ export default function EventsPage() {
 
               <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
                 <a
-                  href="https://youtube.com/@BlackWealthExchange/live"
+                  href="https://www.youtube.com/@blackwealthexchangesociety8390"
                   target="_blank"
                   rel="noreferrer"
                   className="inline-flex items-center justify-center gap-2 px-5 py-2 rounded-xl bg-gold text-black font-semibold hover:bg-yellow-500 transition"
                 >
                   <PlayCircle className="h-5 w-5" />
-                  Watch BWE Live
+                  Live Events (YouTube)
                 </a>
 
                 <Link
@@ -565,7 +559,7 @@ export default function EventsPage() {
                           className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gold text-black font-semibold hover:bg-yellow-500 transition text-sm"
                         >
                           <Radio className="h-4 w-4" />
-                          Watch Live
+                          BWE Live (YouTube)
                         </a>
                       ) : null}
 
@@ -579,17 +573,6 @@ export default function EventsPage() {
                           <ExternalLink className="h-4 w-4" />
                           Official Site
                         </a>
-                      ) : null}
-
-                      {/* Optional future RSVP page */}
-                      {evt.rsvpUrl ? (
-                        <Link
-                          href={evt.rsvpUrl}
-                          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition text-sm"
-                        >
-                          <Calendar className="h-4 w-4" />
-                          RSVP
-                        </Link>
                       ) : null}
                     </div>
                   </div>

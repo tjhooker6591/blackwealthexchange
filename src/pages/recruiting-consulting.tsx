@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
+import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
+import { canonicalUrl, truncateMeta } from "@/lib/seo";
 
 type Mode = "employer" | "candidate";
 
@@ -89,135 +91,192 @@ export default function RecruitingConsultingPage() {
   }
 
   return (
-    <main className="min-h-screen bg-neutral-950 px-4 py-10 text-white">
-      <div className="mx-auto max-w-3xl">
-        <Link href="/" className="text-sm text-[#D4AF37] hover:underline">
-          ← Back to Homepage
-        </Link>
+    <>
+      <Head>
+        <title>
+          Recruiting and Consulting Services | Black Wealth Exchange
+        </title>
+        <meta
+          name="description"
+          content={truncateMeta(
+            "Connect employers with vetted Black talent and submit recruiting or consulting intake requests through BWE.",
+          )}
+        />
+        <link rel="canonical" href={canonicalUrl("/recruiting-consulting")} />
+      </Head>
+      <main className="min-h-screen bg-neutral-950 px-4 py-10 text-white">
+        <div className="mx-auto max-w-3xl">
+          <Link href="/" className="text-sm text-[#D4AF37] hover:underline">
+            ← Back to Homepage
+          </Link>
 
-        <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.03] p-5 sm:p-6">
-          <div className="mb-2 text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
-            BWE Recruiting & Consulting Services
-          </div>
-          <h1 className="text-2xl font-black tracking-tight sm:text-3xl">
-            Connect Employers with Vetted Black Talent
-          </h1>
-          <p className="mt-2 text-sm text-white/70 sm:text-base">
-            We operate as your middle-layer partner: talent sourcing, candidate
-            qualification, and guided placement support.
-          </p>
-
-          <div className="mt-5 grid grid-cols-2 gap-2 rounded-xl border border-white/10 bg-black/30 p-1">
-            <button
-              type="button"
-              onClick={() => {
-                setMode("employer");
-                trackConsultingEvent("consulting_entry_clicked", {
-                  ctaId: "consulting_mode_employer",
-                  ctaLabel: "Employer Request",
-                  destination: "/recruiting-consulting?type=employer",
-                  source_variant: "employer",
-                });
-              }}
-              className={`rounded-lg px-3 py-2 text-sm font-bold transition ${
-                mode === "employer"
-                  ? "bg-[#D4AF37] text-black"
-                  : "text-white/75 hover:bg-white/10"
-              }`}
-            >
-              Employer Request
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setMode("candidate");
-                trackConsultingEvent("consulting_entry_clicked", {
-                  ctaId: "consulting_mode_candidate",
-                  ctaLabel: "Talent Intake",
-                  destination: "/recruiting-consulting?type=candidate",
-                  source_variant: "candidate",
-                });
-              }}
-              className={`rounded-lg px-3 py-2 text-sm font-bold transition ${
-                mode === "candidate"
-                  ? "bg-[#D4AF37] text-black"
-                  : "text-white/75 hover:bg-white/10"
-              }`}
-            >
-              Talent Intake
-            </button>
-          </div>
-
-          <form onSubmit={submit} className="mt-4 space-y-3">
-            <input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Full name"
-              className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm outline-none focus:border-[#D4AF37]/50"
-              required
-            />
-            <input
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              type="email"
-              placeholder="Email"
-              className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm outline-none focus:border-[#D4AF37]/50"
-              required
-            />
-            <input
-              value={company}
-              onChange={(e) => setCompany(e.target.value)}
-              placeholder={
-                mode === "employer"
-                  ? "Company"
-                  : "Current school/company (optional)"
-              }
-              className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm outline-none focus:border-[#D4AF37]/50"
-            />
-            <input
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="Phone (optional)"
-              className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm outline-none focus:border-[#D4AF37]/50"
-            />
-            <textarea
-              value={details}
-              onChange={(e) => setDetails(e.target.value)}
-              rows={5}
-              placeholder={
-                mode === "employer"
-                  ? "Tell us what role(s) you need to fill, timeline, and budget range."
-                  : "Share your target role, skills, availability, and goals."
-              }
-              className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm outline-none focus:border-[#D4AF37]/50"
-              required
-            />
-
-            {err ? <div className="text-sm text-red-300">{err}</div> : null}
-            {msg ? (
-              <div className="text-sm text-emerald-300 space-y-1">
-                <div>{msg}</div>
-                <div className="text-emerald-200/80 text-xs">
-                  Next step: our team triages requests within 1 business day.
-                  Approved requests move to discovery scheduling and proposal
-                  planning.
-                </div>
+          <div className="mt-4 rounded-2xl border border-white/10 bg-white/[0.03] p-5 sm:p-6">
+            <div className="mb-2 text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
+              BWE Recruiting & Consulting Services
+            </div>
+            <h1 className="text-2xl font-black tracking-tight sm:text-3xl">
+              Connect Employers with Vetted Black Talent
+            </h1>
+            <p className="mt-2 text-sm text-white/70 sm:text-base">
+              We operate as your middle-layer partner: talent sourcing,
+              candidate qualification, and guided placement support.
+            </p>
+            <div className="mt-3 rounded-xl border border-white/10 bg-black/30 p-3 text-xs text-white/75 sm:text-sm">
+              <p className="font-semibold text-white">What to expect</p>
+              <ul className="mt-1 list-disc space-y-1 pl-5">
+                <li>Initial triage within 1 business day.</li>
+                <li>
+                  Status updates available at any time via your intake email.
+                </li>
+                <li>
+                  Flagged submissions enter manual review before outreach.
+                </li>
+              </ul>
+            </div>
+            {mode === "employer" ? (
+              <div className="mt-3 flex flex-wrap gap-2">
+                <Link
+                  href="/dashboard/employer/consultants"
+                  className="inline-flex rounded-lg border border-[#D4AF37]/40 px-3 py-2 text-xs font-semibold text-[#D4AF37] hover:bg-[#D4AF37]/10"
+                >
+                  Browse Consultant Discovery Hub
+                </Link>
+                <Link
+                  href="/recruiting-consulting/status"
+                  className="inline-flex rounded-lg border border-white/20 px-3 py-2 text-xs font-semibold text-white/80 hover:bg-white/10"
+                >
+                  Check submission status
+                </Link>
               </div>
-            ) : null}
+            ) : (
+              <div className="mt-3 flex flex-wrap gap-2">
+                <Link
+                  href="/dashboard/consultant/profile"
+                  className="inline-flex rounded-lg border border-cyan-400/40 px-3 py-2 text-xs font-semibold text-cyan-200 hover:bg-cyan-500/10"
+                >
+                  Build Structured Consultant Profile
+                </Link>
+                <Link
+                  href="/recruiting-consulting/status"
+                  className="inline-flex rounded-lg border border-white/20 px-3 py-2 text-xs font-semibold text-white/80 hover:bg-white/10"
+                >
+                  Check submission status
+                </Link>
+              </div>
+            )}
 
-            <button
-              disabled={loading}
-              className="h-11 rounded-xl bg-[#D4AF37] px-5 text-sm font-extrabold text-black transition hover:bg-yellow-500 disabled:opacity-60"
-            >
-              {loading
-                ? "Submitting..."
-                : mode === "employer"
-                  ? "Submit Employer Request"
-                  : "Submit Talent Profile"}
-            </button>
-          </form>
+            <div className="mt-5 grid grid-cols-2 gap-2 rounded-xl border border-white/10 bg-black/30 p-1">
+              <button
+                type="button"
+                onClick={() => {
+                  setMode("employer");
+                  trackConsultingEvent("consulting_entry_clicked", {
+                    ctaId: "consulting_mode_employer",
+                    ctaLabel: "Employer Request",
+                    destination: "/recruiting-consulting?type=employer",
+                    source_variant: "employer",
+                  });
+                }}
+                className={`rounded-lg px-3 py-2 text-sm font-bold transition ${
+                  mode === "employer"
+                    ? "bg-[#D4AF37] text-black"
+                    : "text-white/75 hover:bg-white/10"
+                }`}
+              >
+                Employer Request
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setMode("candidate");
+                  trackConsultingEvent("consulting_entry_clicked", {
+                    ctaId: "consulting_mode_candidate",
+                    ctaLabel: "Talent Intake",
+                    destination: "/recruiting-consulting?type=candidate",
+                    source_variant: "candidate",
+                  });
+                }}
+                className={`rounded-lg px-3 py-2 text-sm font-bold transition ${
+                  mode === "candidate"
+                    ? "bg-[#D4AF37] text-black"
+                    : "text-white/75 hover:bg-white/10"
+                }`}
+              >
+                Talent Intake
+              </button>
+            </div>
+
+            <form onSubmit={submit} className="mt-4 space-y-3">
+              <input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Full name"
+                className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm outline-none focus:border-[#D4AF37]/50"
+                required
+              />
+              <input
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                type="email"
+                placeholder="Email"
+                className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm outline-none focus:border-[#D4AF37]/50"
+                required
+              />
+              <input
+                value={company}
+                onChange={(e) => setCompany(e.target.value)}
+                placeholder={
+                  mode === "employer"
+                    ? "Company"
+                    : "Current school/company (optional)"
+                }
+                className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm outline-none focus:border-[#D4AF37]/50"
+              />
+              <input
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="Phone (optional)"
+                className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm outline-none focus:border-[#D4AF37]/50"
+              />
+              <textarea
+                value={details}
+                onChange={(e) => setDetails(e.target.value)}
+                rows={5}
+                placeholder={
+                  mode === "employer"
+                    ? "Tell us what role(s) you need to fill, timeline, and budget range."
+                    : "Share your target role, skills, availability, and goals."
+                }
+                className="w-full rounded-xl border border-white/10 bg-black/30 px-3 py-2.5 text-sm outline-none focus:border-[#D4AF37]/50"
+                required
+              />
+
+              {err ? <div className="text-sm text-red-300">{err}</div> : null}
+              {msg ? (
+                <div className="text-sm text-emerald-300 space-y-1">
+                  <div>{msg}</div>
+                  <div className="text-emerald-200/80 text-xs">
+                    Next step: our team triages requests within 1 business day.
+                    Approved requests move to discovery scheduling and proposal
+                    planning.
+                  </div>
+                </div>
+              ) : null}
+
+              <button
+                disabled={loading}
+                className="h-11 rounded-xl bg-[#D4AF37] px-5 text-sm font-extrabold text-black transition hover:bg-yellow-500 disabled:opacity-60"
+              >
+                {loading
+                  ? "Submitting..."
+                  : mode === "employer"
+                    ? "Submit Employer Request"
+                    : "Submit Talent Profile"}
+              </button>
+            </form>
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </>
   );
 }

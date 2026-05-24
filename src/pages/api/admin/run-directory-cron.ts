@@ -2,20 +2,49 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 // import { ObjectId } from "mongodb"; // Reserved for future use if needed
 import { sendBusinessAlert } from "@/lib/sendEmail";
+import { requireAdminFromRequest } from "@/lib/adminAuth";
+import { ADMIN_ERROR_CODES, adminFail } from "@/lib/adminApiContract";
+import { getMongoDbName } from "@/lib/env";
 
 // const MAX_SLOTS = 10; // Reserved for future use if needed
 const SLOT_DURATION_DAYS = 30;
 
+type ApiResponse =
+  | {
+      ok: true;
+      processed: number;
+      changes: any[];
+      ranAt: Date;
+    }
+  | {
+      ok: false;
+      code: string;
+      message: string;
+    };
+
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse,
+  res: NextApiResponse<ApiResponse>,
 ) {
-  if (req.method !== "POST" && req.method !== "GET")
-    return res.status(405).end();
+  const fail = (status: number, code: string, message: string) =>
+    res.status(status).json({ ok: false, code, message });
+
+  if (req.method !== "POST") {
+    res.setHeader("Allow", ["POST"]);
+    return adminFail(
+      res,
+      405,
+      ADMIN_ERROR_CODES.METHOD_NOT_ALLOWED,
+      "Method Not Allowed",
+    ) as any;
+  }
+
+  const admin = await requireAdminFromRequest(req, res);
+  if (!admin) return;
 
   try {
     const client = await clientPromise;
-    const db = client.db("bwes-cluster");
+    const db = client.db(getMongoDbName());
     const now = new Date();
 
     // Find all expired slots
@@ -119,13 +148,13 @@ export default async function handler(
     }
 
     res.status(200).json({
-      success: true,
+      ok: true,
       processed: expiredSlots.length,
       changes,
       ranAt: new Date(),
     });
   } catch (err) {
     console.error("Auto-promotion CRON error:", err);
-    res.status(500).json({ error: "Directory CRON failed" });
+    return fail(500, "DIRECTORY_CRON_FAILED", "Directory CRON failed");
   }
 }

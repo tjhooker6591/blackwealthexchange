@@ -2,7 +2,9 @@
 
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import type { GetServerSideProps } from "next";
 import BuyNowButton from "@/components/BuyNowButton";
+import { requirePageRole } from "@/lib/security/pageRoleGuard";
 
 interface Job {
   _id?: string;
@@ -223,3 +225,8 @@ export default function EditJobPage() {
     </div>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const id = typeof ctx.params?.id === "string" ? ctx.params.id : "";
+  return requirePageRole(ctx, ["employer"], `/employer/edit-job/${id}`);
+};

@@ -1,6 +1,8 @@
 // src/pages/admin/organizations.tsx
+import type { GetServerSideProps } from "next";
 import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { requireAdminPageProps } from "@/lib/adminPageGuard";
 
 type Org = {
   _id: string;
@@ -236,7 +238,9 @@ export default function AdminOrganizationsPage() {
           {loading ? (
             <p>Loading...</p>
           ) : items.length === 0 ? (
-            <p className="text-gray-400">No results.</p>
+            <p className="text-gray-400">
+              No organizations match the current filters.
+            </p>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
@@ -318,3 +322,7 @@ export default function AdminOrganizationsPage() {
     </div>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = requireAdminPageProps(
+  "/admin/organizations",
+);

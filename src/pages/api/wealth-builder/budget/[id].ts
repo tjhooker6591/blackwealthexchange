@@ -7,12 +7,20 @@ import {
   toNonNegativeNumber,
   toObjectId,
 } from "@/lib/wealth-builder/helpers";
+import { getWealthBuilderEntitlementForUser } from "@/lib/wealth-builder/entitlements";
 
 type BudgetCategory = {
   name: string;
   plannedAmount: number;
   actualAmount: number;
 };
+
+function isCurrentMonthYear(month: number, year: number) {
+  const now = new Date();
+  const currentMonth = now.getMonth() + 1;
+  const currentYear = now.getFullYear();
+  return month === currentMonth && year === currentYear;
+}
 
 export default async function handler(
   req: NextApiRequest,
@@ -40,37 +48,54 @@ export default async function handler(
     userId: auth.userId,
     accountType: "user" as const,
   };
+  const entitlement = await getWealthBuilderEntitlementForUser(auth.userId);
+  const existing = await collection.findOne(filter);
+
+  if (!existing) {
+    return res
+      .status(404)
+      .json({ ok: false, message: "Budget plan not found." });
+  }
+
+  const existingMonth = Number(existing.month);
+  const existingYear = Number(existing.year);
+
+  if (
+    entitlement.limits.currentMonthBudgetOnly &&
+    Number.isFinite(existingMonth) &&
+    Number.isFinite(existingYear) &&
+    !isCurrentMonthYear(existingMonth, existingYear)
+  ) {
+    return res.status(403).json({
+      ok: false,
+      code: "PREMIUM_REQUIRED",
+      message:
+        "Free Wealth Builder can only modify current month budget. Upgrade to Premium for budget history updates.",
+    });
+  }
 
   if (req.method === "PATCH") {
-    const body: Record<string, unknown> =
-      req.body && typeof req.body === "object"
-        ? (req.body as Record<string, unknown>)
-        : {};
-
+    const body = typeof req.body === "object" && req.body ? req.body : {};
     const update: Record<string, unknown> = { updatedAt: new Date() };
 
     if (Array.isArray(body.categories)) {
       const categories: BudgetCategory[] = body.categories
-        .map((item: unknown): BudgetCategory | null => {
+        .map((item: any): BudgetCategory | null => {
           if (!item || typeof item !== "object") return null;
-
-          const category = item as Record<string, unknown>;
-          const name =
-            typeof category.name === "string" ? category.name.trim() : "";
-
+          const name = typeof item.name === "string" ? item.name.trim() : "";
           if (!name) return null;
 
           return {
             name,
-            plannedAmount: toNonNegativeNumber(category.plannedAmount, 0),
-            actualAmount: toNonNegativeNumber(category.actualAmount, 0),
+            plannedAmount: toNonNegativeNumber(item.plannedAmount, 0),
+            actualAmount: toNonNegativeNumber(item.actualAmount, 0),
           };
         })
-        .filter((item): item is BudgetCategory => item !== null);
+        .filter(Boolean) as BudgetCategory[];
 
       update.categories = categories;
       update.totalBudgeted = categories.reduce(
-        (sum, item) => sum + item.plannedAmount,
+        (sum: number, item: BudgetCategory) => sum + item.plannedAmount,
         0,
       );
     }
@@ -89,13 +114,6 @@ export default async function handler(
   }
 
   if (req.method === "DELETE") {
-    const existing = await collection.findOne(filter);
-    if (!existing) {
-      return res
-        .status(404)
-        .json({ ok: false, message: "Budget plan not found." });
-    }
-
     await collection.deleteOne(filter);
     return res.status(200).json({ ok: true, deletedId: id });
   }

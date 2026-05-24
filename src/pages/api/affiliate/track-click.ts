@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
+import { getMongoDbName } from "@/lib/env";
 
 export default async function handler(
   req: NextApiRequest,
@@ -11,18 +12,33 @@ export default async function handler(
   }
 
   try {
-    const { affiliateId } = req.body;
-
-    if (!affiliateId) {
-      return res.status(400).json({ message: "Affiliate ID required" });
+    const affiliateId = String(req.body?.affiliateId || "").trim();
+    if (!affiliateId || !ObjectId.isValid(affiliateId)) {
+      return res.status(400).json({ message: "Valid affiliate ID required" });
     }
 
     const client = await clientPromise;
-    const db = client.db("bwes-cluster");
+    const db = client.db(getMongoDbName());
+
+    const affiliate = await db
+      .collection("affiliates")
+      .findOne(
+        { _id: new ObjectId(affiliateId) },
+        { projection: { _id: 1, status: 1 } },
+      );
+
+    if (!affiliate) {
+      return res.status(404).json({ message: "Affiliate not found" });
+    }
 
     await db.collection("affiliateClicks").insertOne({
       affiliateId,
       clickedAt: new Date(),
+      userAgent: req.headers["user-agent"] || null,
+      ip:
+        (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() ||
+        req.socket.remoteAddress ||
+        null,
     });
 
     await db

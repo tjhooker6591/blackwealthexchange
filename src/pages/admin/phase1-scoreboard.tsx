@@ -93,6 +93,10 @@ export default function Phase1ScoreboardPage() {
 
   useEffect(() => {
     load();
+    const interval = window.setInterval(() => {
+      load();
+    }, 30000);
+    return () => window.clearInterval(interval);
   }, []);
 
   const lowSignalEvents = useMemo(() => {
@@ -113,7 +117,7 @@ export default function Phase1ScoreboardPage() {
             </h1>
             <p className="mt-1 text-sm text-gray-400">
               Flow-event scoreboard for growth, trust, conversion, and revenue
-              pathways.
+              pathways. Auto-refreshes every 30 seconds from backend source.
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -252,7 +256,8 @@ export default function Phase1ScoreboardPage() {
               </h3>
               {lowSignalEvents.length ? (
                 <p className="mt-2 text-sm text-gray-300">
-                  No 30-day volume yet: {lowSignalEvents.join(", ")}
+                  No 30-day volume recorded yet for:{" "}
+                  {lowSignalEvents.join(", ")}
                 </p>
               ) : (
                 <p className="mt-2 text-sm text-gray-300">
@@ -289,7 +294,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     if (!(payload.isAdmin === true || payload.accountType === "admin")) {
       return {
         redirect: {
-          destination: "/",
+          destination: "/login?redirect=/admin/phase1-scoreboard",
           permanent: false,
         },
       };

@@ -1,6 +1,9 @@
+import type { GetServerSideProps } from "next";
 import Head from "next/head";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import WealthBuilderNav from "@/components/wealth-builder/WealthBuilderNav";
+import { requireWealthBuilderPageUser } from "@/lib/wealth-builder/page-auth";
 
 type StatusResponse = {
   ok: boolean;
@@ -63,6 +66,36 @@ export default function WealthBuilderStatusPage() {
   const [error, setError] = useState("");
   const [data, setData] = useState<StatusResponse["status"] | null>(null);
 
+  const nextBestAction = data
+    ? data.summary.transactionCount === 0
+      ? {
+          label: "Add your first transaction",
+          href: "/wealth-builder/transactions",
+          reason:
+            "No transactions logged yet, so insights cannot reflect real cash flow.",
+        }
+      : data.summary.budgetCount === 0
+        ? {
+            label: "Create your monthly budget",
+            href: "/wealth-builder/budget",
+            reason:
+              "No budget plan found, so spending drift is harder to catch early.",
+          }
+        : data.summary.debtCount === 0 && data.summary.goalCount === 0
+          ? {
+              label: "Add debt and savings targets",
+              href: "/wealth-builder/debt",
+              reason:
+                "Debt and savings records are missing, so payoff and growth guidance is incomplete.",
+            }
+          : {
+              label: "Review premium insights",
+              href: "/wealth-builder/insights",
+              reason:
+                "Core records are in place — next step is performance insights and optimization.",
+            }
+    : null;
+
   async function loadStatus() {
     setLoading(true);
     setError("");
@@ -100,6 +133,15 @@ export default function WealthBuilderStatusPage() {
         <meta
           name="description"
           content="Verification view for Wealth Builder entitlement and finance status."
+        />
+        <link
+          rel="canonical"
+          href="https://blackwealthexchange.co/wealth-builder/status"
+        />
+        <meta property="og:title" content="Status | Wealth Builder" />
+        <meta
+          property="og:description"
+          content="Verify Wealth Builder plan status, recent payments, and next best actions."
         />
       </Head>
 
@@ -193,7 +235,7 @@ export default function WealthBuilderStatusPage() {
                   </div>
                 </div>
 
-                <div className="mt-8 grid gap-6 lg:grid-cols-2)">
+                <div className="mt-8 grid gap-6 lg:grid-cols-2">
                   <div className="rounded-2xl border border-white/10 bg-black/30 p-6">
                     <h2 className="text-xl font-semibold text-white">
                       Entitlement details
@@ -279,6 +321,74 @@ export default function WealthBuilderStatusPage() {
                   </div>
                 </div>
 
+                {nextBestAction ? (
+                  <div className="mt-8 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-6">
+                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-200">
+                      Next best action
+                    </p>
+                    <h2 className="mt-2 text-2xl font-semibold text-white">
+                      {nextBestAction.label}
+                    </h2>
+                    <p className="mt-2 text-sm text-emerald-100/90">
+                      {nextBestAction.reason}
+                    </p>
+                    <Link
+                      href={nextBestAction.href}
+                      className="mt-4 inline-flex rounded-full border border-emerald-300/50 px-4 py-2 text-sm font-semibold text-emerald-100 hover:bg-emerald-400/10"
+                    >
+                      Do this now
+                    </Link>
+                  </div>
+                ) : null}
+
+                <div className="mt-8 rounded-2xl border border-cyan-500/25 bg-cyan-500/5 p-6">
+                  <h2 className="text-xl font-semibold text-cyan-100">
+                    Recommended next actions
+                  </h2>
+                  <div className="mt-4 grid gap-3 md:grid-cols-3">
+                    <Link
+                      href="/wealth-builder/transactions"
+                      className="rounded-xl border border-white/10 bg-black/30 p-4 hover:border-cyan-300/40"
+                    >
+                      <p className="text-sm font-semibold text-white">
+                        1) Keep transactions current
+                      </p>
+                      <p className="mt-1 text-xs text-zinc-400">
+                        {data.summary.transactionCount > 0
+                          ? `${data.summary.transactionCount} recorded transaction${data.summary.transactionCount === 1 ? "" : "s"}`
+                          : "No transactions yet — start here."}
+                      </p>
+                    </Link>
+                    <Link
+                      href="/wealth-builder/budget"
+                      className="rounded-xl border border-white/10 bg-black/30 p-4 hover:border-cyan-300/40"
+                    >
+                      <p className="text-sm font-semibold text-white">
+                        2) Align budget to real spend
+                      </p>
+                      <p className="mt-1 text-xs text-zinc-400">
+                        {data.summary.budgetCount > 0
+                          ? `${data.summary.budgetCount} budget plan${data.summary.budgetCount === 1 ? "" : "s"} found`
+                          : "No budget plan found — add your monthly plan."}
+                      </p>
+                    </Link>
+                    <Link
+                      href="/wealth-builder/debt"
+                      className="rounded-xl border border-white/10 bg-black/30 p-4 hover:border-cyan-300/40"
+                    >
+                      <p className="text-sm font-semibold text-white">
+                        3) Improve debt + savings pace
+                      </p>
+                      <p className="mt-1 text-xs text-zinc-400">
+                        {data.summary.debtCount > 0 ||
+                        data.summary.goalCount > 0
+                          ? `Debt records: ${data.summary.debtCount}, savings goals: ${data.summary.goalCount}`
+                          : "No debt/savings records yet — add both to unlock guidance."}
+                      </p>
+                    </Link>
+                  </div>
+                </div>
+
                 <div className="mt-8 rounded-2xl border border-white/10 bg-black/30 p-6">
                   <h2 className="text-xl font-semibold text-white">
                     Recent Wealth Builder payments
@@ -360,3 +470,7 @@ export default function WealthBuilderStatusPage() {
     </>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  return requireWealthBuilderPageUser(context, "/wealth-builder/status");
+};

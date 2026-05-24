@@ -7,12 +7,20 @@ import {
   toIntegerInRange,
   toNonNegativeNumber,
 } from "@/lib/wealth-builder/helpers";
+import { getWealthBuilderEntitlementForUser } from "@/lib/wealth-builder/entitlements";
 
 type BudgetCategory = {
   name: string;
   plannedAmount: number;
   actualAmount: number;
 };
+
+function isCurrentMonthYear(month: number, year: number) {
+  const now = new Date();
+  const currentMonth = now.getMonth() + 1;
+  const currentYear = now.getFullYear();
+  return month === currentMonth && year === currentYear;
+}
 
 export default async function handler(
   req: NextApiRequest,
@@ -23,6 +31,7 @@ export default async function handler(
 
   const db = await getWealthDb();
   const collection = db.collection("budget_plans");
+  const entitlement = await getWealthBuilderEntitlementForUser(auth.userId);
 
   if (req.method === "GET") {
     const now = new Date();
@@ -39,6 +48,18 @@ export default async function handler(
       now.getFullYear(),
     );
 
+    if (
+      entitlement.limits.currentMonthBudgetOnly &&
+      !isCurrentMonthYear(month, year)
+    ) {
+      return res.status(403).json({
+        ok: false,
+        code: "PREMIUM_REQUIRED",
+        message:
+          "Free Wealth Builder includes current-month budget only. Upgrade to Premium for budget history.",
+      });
+    }
+
     const plan = await collection.findOne({
       userId: auth.userId,
       accountType: "user",
@@ -53,38 +74,42 @@ export default async function handler(
   }
 
   if (req.method === "POST") {
-    const body: Record<string, unknown> =
-      req.body && typeof req.body === "object"
-        ? (req.body as Record<string, unknown>)
-        : {};
-
+    const body = typeof req.body === "object" && req.body ? req.body : {};
     const now = new Date();
 
     const month = toIntegerInRange(body.month, 1, 12, now.getMonth() + 1);
     const year = toIntegerInRange(body.year, 2000, 2100, now.getFullYear());
 
+    if (
+      entitlement.limits.currentMonthBudgetOnly &&
+      !isCurrentMonthYear(month, year)
+    ) {
+      return res.status(403).json({
+        ok: false,
+        code: "PREMIUM_REQUIRED",
+        message:
+          "Free Wealth Builder can only create/update the current month budget. Upgrade to Premium for historical budgets.",
+      });
+    }
+
     const categories: BudgetCategory[] = Array.isArray(body.categories)
-      ? body.categories
-          .map((item: unknown): BudgetCategory | null => {
+      ? (body.categories
+          .map((item: any): BudgetCategory | null => {
             if (!item || typeof item !== "object") return null;
-
-            const category = item as Record<string, unknown>;
-            const name =
-              typeof category.name === "string" ? category.name.trim() : "";
-
+            const name = typeof item.name === "string" ? item.name.trim() : "";
             if (!name) return null;
 
             return {
               name,
-              plannedAmount: toNonNegativeNumber(category.plannedAmount, 0),
-              actualAmount: toNonNegativeNumber(category.actualAmount, 0),
+              plannedAmount: toNonNegativeNumber(item.plannedAmount, 0),
+              actualAmount: toNonNegativeNumber(item.actualAmount, 0),
             };
           })
-          .filter((item): item is BudgetCategory => item !== null)
+          .filter(Boolean) as BudgetCategory[])
       : [];
 
     const totalBudgeted = categories.reduce(
-      (sum, item) => sum + item.plannedAmount,
+      (sum: number, item: BudgetCategory) => sum + item.plannedAmount,
       0,
     );
 

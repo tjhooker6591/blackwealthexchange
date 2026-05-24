@@ -6,6 +6,12 @@ import { serialize } from "cookie";
 import nodemailer from "nodemailer";
 import { getJwtSecret, getMongoDbName } from "@/lib/env";
 import {
+  getAuthCookieDomain,
+  getAuthCookieSecure,
+  SESSION_TTL_LABEL,
+  SESSION_TTL_SECONDS,
+} from "@/lib/authCookiePolicy";
+import {
   ensureApiRateLimitIndexes,
   getClientIp,
   hitApiRateLimit,
@@ -187,7 +193,7 @@ export default async function handler(
         accountType: String(newUser.accountType),
       },
       getJwtSecret(),
-      { expiresIn: "7d" },
+      { expiresIn: SESSION_TTL_LABEL },
     );
 
     const transporter = nodemailer.createTransport({
@@ -254,19 +260,30 @@ Let's make history — together.
       console.error("❌ Failed to send welcome email:", emailErr);
     }
 
+    const host = (req.headers.host || "").toLowerCase();
+    const isLocalHost =
+      host.startsWith("localhost") ||
+      host.startsWith("127.0.0.1") ||
+      host.startsWith("[::1]");
+    const isProd = isLocalHost ? false : getAuthCookieSecure();
+    const cookieDomain = isLocalHost ? undefined : getAuthCookieDomain();
+
     res.setHeader("Set-Cookie", [
       serialize("session_token", token, {
         httpOnly: true,
         path: "/",
-        maxAge: 60 * 60 * 24 * 7,
-        sameSite: "strict",
-        secure: process.env.NODE_ENV === "production",
+        maxAge: SESSION_TTL_SECONDS,
+        sameSite: "lax",
+        secure: isProd,
+        domain: cookieDomain,
       }),
       serialize("accountType", String(newUser.accountType), {
+        httpOnly: false,
         path: "/",
-        maxAge: 60 * 60 * 24 * 7,
-        sameSite: "strict",
-        secure: process.env.NODE_ENV === "production",
+        maxAge: SESSION_TTL_SECONDS,
+        sameSite: "lax",
+        secure: isProd,
+        domain: cookieDomain,
       }),
     ]);
 

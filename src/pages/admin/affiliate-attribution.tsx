@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import type { GetServerSideProps } from "next";
+import cookie from "cookie";
+import jwt from "jsonwebtoken";
+import { getJwtSecret } from "@/lib/env";
 
 type ClickRow = {
   _id: string;
@@ -25,34 +29,40 @@ export default function AffiliateAttributionAdminPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const loadData = async () => {
+    try {
+      setError("");
+      const res = await fetch("/api/admin/affiliate-attribution", {
+        credentials: "include",
+        cache: "no-store",
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data?.error || "Failed to load data");
+      setClicks(Array.isArray(data?.clicks) ? data.clicks : []);
+      setConversions(Array.isArray(data?.conversions) ? data.conversions : []);
+    } catch (e: any) {
+      setError(e?.message || "Failed to load attribution data");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    (async () => {
-      try {
-        const res = await fetch("/api/admin/affiliate-attribution", {
-          credentials: "include",
-          cache: "no-store",
-        });
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok) throw new Error(data?.error || "Failed to load data");
-        setClicks(Array.isArray(data?.clicks) ? data.clicks : []);
-        setConversions(
-          Array.isArray(data?.conversions) ? data.conversions : [],
-        );
-      } catch (e: any) {
-        setError(e?.message || "Failed to load attribution data");
-      } finally {
-        setLoading(false);
-      }
-    })();
+    loadData();
   }, []);
 
   return (
     <main className="min-h-screen bg-black p-6 text-white">
       <div className="mx-auto max-w-6xl">
         <div className="mb-5 flex items-center justify-between">
-          <h1 className="text-3xl font-black text-[#D4AF37]">
-            Affiliate Attribution
-          </h1>
+          <div>
+            <h1 className="text-3xl font-black text-[#D4AF37]">
+              Affiliate Attribution
+            </h1>
+            <p className="mt-1 text-sm text-white/70">
+              Monitor affiliate click and conversion activity in one admin view.
+            </p>
+          </div>
           <Link
             href="/admin/dashboard"
             className="text-sm text-[#D4AF37] hover:underline"
@@ -61,8 +71,31 @@ export default function AffiliateAttributionAdminPage() {
           </Link>
         </div>
 
-        {loading ? <p className="text-white/70">Loading…</p> : null}
-        {error ? <p className="text-red-400">{error}</p> : null}
+        <div className="mb-4 flex flex-wrap items-center gap-2 text-xs">
+          <span className="rounded border border-zinc-700 bg-zinc-900 px-2 py-1 text-zinc-200">
+            Click records: {clicks.length}
+          </span>
+          <span className="rounded border border-zinc-700 bg-zinc-900 px-2 py-1 text-zinc-200">
+            Conversion records: {conversions.length}
+          </span>
+          <button
+            onClick={loadData}
+            className="rounded border border-zinc-700 bg-zinc-900 px-2 py-1 text-zinc-200 hover:bg-zinc-800"
+          >
+            Refresh
+          </button>
+        </div>
+
+        {loading ? (
+          <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4 text-sm text-zinc-300">
+            Loading attribution activity…
+          </div>
+        ) : null}
+        {error ? (
+          <div className="rounded-xl border border-red-500/40 bg-red-900/20 p-4 text-sm text-red-200">
+            {error}
+          </div>
+        ) : null}
 
         {!loading && !error ? (
           <div className="grid gap-6 lg:grid-cols-2">
@@ -83,7 +116,7 @@ export default function AffiliateAttributionAdminPage() {
                     {clicks.length === 0 ? (
                       <tr>
                         <td className="p-2 text-white/60" colSpan={3}>
-                          No click data yet.
+                          No affiliate click activity has been captured yet.
                         </td>
                       </tr>
                     ) : (
@@ -124,7 +157,7 @@ export default function AffiliateAttributionAdminPage() {
                     {conversions.length === 0 ? (
                       <tr>
                         <td className="p-2 text-white/60" colSpan={4}>
-                          No conversion data yet.
+                          No affiliate conversions have been recorded yet.
                         </td>
                       </tr>
                     ) : (
@@ -157,3 +190,50 @@ export default function AffiliateAttributionAdminPage() {
     </main>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  try {
+    const cookies = cookie.parse(req.headers.cookie || "");
+    const token = cookies.session_token;
+
+    if (!token) {
+      return {
+        redirect: {
+          destination: "/login?redirect=/admin/affiliate-attribution",
+          permanent: false,
+        },
+      };
+    }
+
+    const payload = jwt.verify(token, getJwtSecret()) as {
+      accountType?: string;
+      role?: string;
+      isAdmin?: boolean;
+      roles?: string[];
+    };
+
+    const isAdmin =
+      payload.isAdmin === true ||
+      payload.accountType === "admin" ||
+      payload.role === "admin" ||
+      (Array.isArray(payload.roles) && payload.roles.includes("admin"));
+
+    if (!isAdmin) {
+      return {
+        redirect: {
+          destination: "/login?redirect=/admin/affiliate-attribution",
+          permanent: false,
+        },
+      };
+    }
+
+    return { props: {} };
+  } catch {
+    return {
+      redirect: {
+        destination: "/login?redirect=/admin/affiliate-attribution",
+        permanent: false,
+      },
+    };
+  }
+};

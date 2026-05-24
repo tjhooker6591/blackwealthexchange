@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
+import { getAdDurationOptions } from "@/lib/advertising/pricing";
 
 function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
@@ -13,6 +14,8 @@ function cx(...classes: Array<string | false | null | undefined>) {
 const AdCard = ({
   title,
   desc,
+  where,
+  nextStep,
   price,
   href,
   badge,
@@ -20,6 +23,8 @@ const AdCard = ({
 }: {
   title: string;
   desc: string;
+  where: string;
+  nextStep: string;
   price: string;
   href: string;
   badge?: string;
@@ -30,6 +35,16 @@ const AdCard = ({
       <div>
         <h3 className="text-lg font-semibold text-yellow-200">{title}</h3>
         <p className="mt-1 text-sm text-zinc-300">{desc}</p>
+        <p className="mt-2 text-xs text-zinc-400">
+          <span className="font-semibold text-zinc-200">Where it appears:</span>{" "}
+          {where}
+        </p>
+        <p className="mt-1 text-xs text-zinc-400">
+          <span className="font-semibold text-zinc-200">
+            What happens next:
+          </span>{" "}
+          {nextStep}
+        </p>
       </div>
 
       {badge ? (
@@ -70,6 +85,16 @@ function optionToDetailsHref(option: string) {
 }
 
 export default function AdvertisingIndexPage() {
+  const featuredBase = getAdDurationOptions("featured-sponsor")[0];
+  const directoryBase = getAdDurationOptions("directory-standard")[0];
+  const bannerBase = getAdDurationOptions("banner-ad")[0];
+  const customBase = getAdDurationOptions("custom-solution-deposit")[0];
+
+  const priceLabel = (base?: {
+    amountDollars: number;
+    durationDays: number;
+  }) =>
+    base ? `$${base.amountDollars} / ${base.durationDays} days` : "See details";
   const router = useRouter();
   const success = router.query.success === "1";
 
@@ -104,14 +129,27 @@ export default function AdvertisingIndexPage() {
               Promote your business on Black Wealth Exchange with trusted,
               tasteful placements.
             </p>
+            <p className="mt-1 text-xs text-zinc-400">
+              Choose package → complete campaign details → review/approval →
+              scheduled placement activation.
+            </p>
+            <p className="mt-2 text-xs text-zinc-400">
+              Placement definitions:{" "}
+              <Link
+                href="/advertising/placements"
+                className="underline text-yellow-200"
+              >
+                /advertising/placements
+              </Link>
+            </p>
           </div>
 
           <div className="flex gap-2">
             <Link
-              href="/advertise-with-us"
+              href="/advertising/placements"
               className="rounded-xl border border-zinc-800 bg-zinc-950 px-4 py-2 text-sm hover:bg-zinc-900"
             >
-              Back to Hub
+              View Placements
             </Link>
             <Link
               href="/"
@@ -146,11 +184,42 @@ export default function AdvertisingIndexPage() {
           </div>
         ) : null}
 
+        <div className="mt-6 rounded-2xl border border-white/10 bg-zinc-950 p-5">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-zinc-300">
+            How advertising works
+          </h2>
+          <ol className="mt-3 grid gap-2 text-sm text-zinc-300 md:grid-cols-3 md:gap-4">
+            <li>
+              <span className="font-semibold text-yellow-200">
+                1. Choose placement
+              </span>
+              <br />
+              Pick the format that matches your goal and budget.
+            </li>
+            <li>
+              <span className="font-semibold text-yellow-200">
+                2. Submit campaign details
+              </span>
+              <br />
+              Complete targeting and creative requirements.
+            </li>
+            <li>
+              <span className="font-semibold text-yellow-200">
+                3. Review and activation
+              </span>
+              <br />
+              BWE confirms eligibility, then schedules placement.
+            </li>
+          </ol>
+        </div>
+
         <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
           <AdCard
             title="Featured Sponsor"
-            desc="Top placement for maximum visibility across the platform."
-            price="$25 / 7 days"
+            desc="Primary homepage sponsorship surface with weekly scheduled Featured Sponsor rail placement."
+            where="Homepage Featured Sponsors rail"
+            nextStep="Open package details, provide campaign info, then continue through approval and scheduling."
+            price={priceLabel(featuredBase)}
             badge="Most Popular"
             href="/advertise/featured-sponsor"
             onStart={() =>
@@ -168,8 +237,10 @@ export default function AdvertisingIndexPage() {
 
           <AdCard
             title="Directory Listings"
-            desc="Choose standard or featured placement based on your growth goals."
-            price="$49 / 30 days"
+            desc="Directory campaign tiers with explicit review and placement lifecycle."
+            where="Business Directory featured and top placement areas"
+            nextStep="Choose standard or featured listing, then submit campaign details for review."
+            price={priceLabel(directoryBase)}
             href="/advertise/business-directory"
             onStart={() =>
               trackAdvertisingEvent("advertising_option_selected", {
@@ -186,8 +257,10 @@ export default function AdvertisingIndexPage() {
 
           <AdCard
             title="Banner Ads"
-            desc="Tasteful banner placement near high-traffic areas."
-            price="$199 / 14 days"
+            desc="Business Directory banner inventory for high-visibility campaign impressions."
+            where="Business Directory banner and sidebar inventory"
+            nextStep="Select requested banner placement and duration, then submit campaign details."
+            price={priceLabel(bannerBase)}
             href="/advertise/banner-ads"
             onStart={() =>
               trackAdvertisingEvent("advertising_option_selected", {
@@ -204,8 +277,14 @@ export default function AdvertisingIndexPage() {
 
           <AdCard
             title="Custom Solutions"
-            desc="Recruiting, consulting, partnerships, sponsored content, or bundled campaigns."
-            price="$100 deposit"
+            desc="Custom scoped campaigns with deliverables defined before launch."
+            where="Approved custom surfaces (defined in campaign plan)"
+            nextStep="Submit custom request first, then proceed with scoped activation flow."
+            price={
+              customBase
+                ? `$${customBase.amountDollars} deposit`
+                : "See details"
+            }
             href="/advertise/custom"
             onStart={() =>
               trackAdvertisingEvent("advertising_option_selected", {
@@ -219,38 +298,6 @@ export default function AdvertisingIndexPage() {
               })
             }
           />
-        </div>
-
-        <div className="mt-6 rounded-2xl border border-yellow-500/15 bg-zinc-950 p-5">
-          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-            <div>
-              <h3 className="text-lg font-semibold text-yellow-200">
-                Custom Solutions
-              </h3>
-              <p className="mt-1 text-sm text-zinc-300">
-                Recruiting, consulting, partnerships, sponsored content, or
-                bundled campaigns.
-              </p>
-            </div>
-
-            <Link
-              href="/advertise/custom"
-              onClick={() =>
-                trackAdvertisingEvent("advertising_option_selected", {
-                  ctaId: "ad_option_custom_request_plan",
-                  ctaLabel: "Request a Custom Plan",
-                  destination: "/advertise/custom",
-                  ad_option: "custom-solution",
-                  ad_type: "custom-solution",
-                  package_type: "custom",
-                  source_variant: "advertising_index",
-                })
-              }
-              className="rounded-xl border border-yellow-500/20 bg-yellow-500/10 px-4 py-2 text-sm font-semibold text-yellow-200 hover:bg-yellow-500/15"
-            >
-              Request a Custom Plan →
-            </Link>
-          </div>
         </div>
       </div>
     </div>

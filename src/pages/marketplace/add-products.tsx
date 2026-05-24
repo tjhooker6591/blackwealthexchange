@@ -24,10 +24,8 @@ const CATEGORY_OPTIONS = [
   "Art",
   "Books",
   "Home",
-  "Food",
   "Other",
 ] as const;
-
 type Category = (typeof CATEGORY_OPTIONS)[number];
 
 function cx(...classes: Array<string | false | null | undefined>) {
@@ -46,8 +44,6 @@ function toTitleCategory(val: string): Category | "" {
     home: "Home",
     "home goods": "Home",
     homegoods: "Home",
-    food: "Food",
-    "food & drink": "Food",
     other: "Other",
   };
   return map[lower] || (CATEGORY_OPTIONS as readonly string[]).includes(val)
@@ -96,7 +92,10 @@ export default function AddProductPage() {
       try {
         const res = await fetch("/api/auth/me");
         if (!res.ok) {
-          router.replace("/auth/seller-login");
+          setError("Please sign in with your seller account to add products.");
+          router.replace(
+            "/auth/seller-login?redirect=/marketplace/add-products",
+          );
           return;
         }
         const data = await res.json();
@@ -104,6 +103,9 @@ export default function AddProductPage() {
 
         // If not seller, send them to become-a-seller
         if (acct !== "seller") {
+          setError(
+            "Seller profile required. Complete seller setup to add products.",
+          );
           router.replace("/marketplace/become-a-seller");
           return;
         }

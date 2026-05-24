@@ -1,8 +1,11 @@
-// middleware.ts
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import {
+  isCookieAuthenticated,
+  isSameOriginRequest,
+  isStateChangingMethod,
+} from "@/lib/security/csrf";
 
-// Define routes that require any account (login, any type)
 const loginRequiredRoutes = [
   "/marketplace",
   "/job-listings",
@@ -12,16 +15,16 @@ const loginRequiredRoutes = [
   "/courses",
 ];
 
-// Define routes requiring *specific roles*
 const roleProtectedRoutes: Record<string, string | string[]> = {
   "/marketplace/add-products": "seller",
   "/marketplace/edit-products": "seller",
   "/marketplace/dashboard": "seller",
+  "/dashboard/seller": "seller",
   "/post-job": "employer",
-  "/employer/jobs": "employer",
-  "/employer/applicants": "employer",
+  "/employer": "employer",
+  "/dashboard/employer": "employer",
   "/add-business": "business",
-  "/advertise": ["business", "seller"], // both business and seller can advertise
+  "/advertise": ["business", "seller"],
   "/admin": "admin",
   "/admin/": "admin",
   "/admin/:path*": "admin",
@@ -29,19 +32,8 @@ const roleProtectedRoutes: Record<string, string | string[]> = {
 
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
-  const accountType = req.cookies.get("accountType")?.value;
   const isLoggedIn = req.cookies.get("session_token");
 
-  console.log(
-    "MIDDLEWARE HIT:",
-    pathname,
-    "accountType:",
-    accountType,
-    "isLoggedIn:",
-    !!isLoggedIn,
-  );
-
-  // Allow Next.js internals and static files
   if (
     pathname.startsWith("/_next/") ||
     pathname.startsWith("/static/") ||
@@ -50,30 +42,28 @@ export function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // 1. Check role-protected routes first
-  for (const [routePrefix, requiredRole] of Object.entries(
-    roleProtectedRoutes,
-  )) {
-    if (pathname.startsWith(routePrefix)) {
-      if (
-        !isLoggedIn ||
-        !accountType ||
-        (Array.isArray(requiredRole)
-          ? !requiredRole.includes(accountType)
-          : accountType !== requiredRole)
-      ) {
-        console.log(
-          `REDIRECT: ${pathname} requires role: ${requiredRole}, found: ${accountType || "none"}`,
-        );
-        const loginUrl = req.nextUrl.clone();
-        loginUrl.pathname = "/login";
-        loginUrl.searchParams.set("redirect", pathname);
-        return NextResponse.redirect(loginUrl);
-      }
+  if (
+    pathname.startsWith("/api/") &&
+    isStateChangingMethod(req.method) &&
+    isCookieAuthenticated(req) &&
+    !pathname.startsWith("/api/stripe/webhook") &&
+    !isSameOriginRequest(req)
+  ) {
+    return NextResponse.json(
+      { error: "CSRF validation failed." },
+      { status: 403 },
+    );
+  }
+
+  for (const [routePrefix] of Object.entries(roleProtectedRoutes)) {
+    if (pathname.startsWith(routePrefix) && !isLoggedIn) {
+      const loginUrl = req.nextUrl.clone();
+      loginUrl.pathname = "/login";
+      loginUrl.searchParams.set("redirect", pathname);
+      return NextResponse.redirect(loginUrl);
     }
   }
 
-  // 2. Business directory details require login, but list/search stays public.
   if (pathname.startsWith("/business-directory/") && !isLoggedIn) {
     const loginUrl = req.nextUrl.clone();
     loginUrl.pathname = "/login";
@@ -81,26 +71,18 @@ export function middleware(req: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  // 3. Check login-required (general, any account type)
   for (const loginRoute of loginRequiredRoutes) {
-    if (pathname.startsWith(loginRoute)) {
-      if (!isLoggedIn) {
-        console.log(
-          `REDIRECT: ${pathname} requires login, user not logged in.`,
-        );
-        const loginUrl = req.nextUrl.clone();
-        loginUrl.pathname = "/login";
-        loginUrl.searchParams.set("redirect", pathname);
-        return NextResponse.redirect(loginUrl);
-      }
+    if (pathname.startsWith(loginRoute) && !isLoggedIn) {
+      const loginUrl = req.nextUrl.clone();
+      loginUrl.pathname = "/login";
+      loginUrl.searchParams.set("redirect", pathname);
+      return NextResponse.redirect(loginUrl);
     }
   }
 
-  // Default allow
   return NextResponse.next();
 }
 
-// Match all routes except explicit public pages:
 export const config = {
   matcher: [
     "/marketplace/:path*",
@@ -118,9 +100,15 @@ export const config = {
     "/business-directory/:path*",
     "/post-job",
     "/employer/:path*",
+    "/employer",
+    "/dashboard/employer/:path*",
+    "/dashboard/employer",
+    "/dashboard/seller/:path*",
+    "/dashboard/seller",
     "/add-business",
     "/advertise",
     "/admin/:path*",
     "/admin",
+    "/api/:path*",
   ],
 };

@@ -12,6 +12,7 @@ type ConsultingStatus =
 type LifecycleStage =
   | "new"
   | "triaged"
+  | "reviewed"
   | "approved"
   | "discovery_scheduled"
   | "proposal_sent"
@@ -36,6 +37,7 @@ function normalizeStage(value: unknown): LifecycleStage {
   const allowed: LifecycleStage[] = [
     "new",
     "triaged",
+    "reviewed",
     "approved",
     "discovery_scheduled",
     "proposal_sent",
@@ -70,8 +72,11 @@ export default async function handler(
         followUpAt,
         adminNote,
       } = req.body || {};
-      const nextStatus = normalizeStatus(status);
+      let nextStatus = normalizeStatus(status);
       const nextStage = normalizeStage(stage || status || "new");
+
+      if (nextStage === "closed_won") nextStatus = "approved";
+      if (nextStage === "closed_lost") nextStatus = "rejected";
 
       if (!id || !collection) {
         return res.status(400).json({ error: "Missing id or collection" });
@@ -97,7 +102,7 @@ export default async function handler(
       const updateDoc = {
         $set: {
           status: nextStatus,
-          lifecycleStage: nextStage,
+          lifecycleStage: nextStatus === "deleted" ? "closed_lost" : nextStage,
           nextAction: trimmedNextAction,
           owner: typeof owner === "string" ? owner.trim() : "",
           followUpAt: followUpAt ? new Date(followUpAt) : null,
@@ -110,7 +115,7 @@ export default async function handler(
             at: new Date(),
             by: actor,
             status: nextStatus,
-            stage: nextStage,
+            stage: nextStatus === "deleted" ? "closed_lost" : nextStage,
             nextAction: trimmedNextAction,
             adminNote: trimmedAdminNote,
           },
@@ -212,6 +217,8 @@ export default async function handler(
           updatedAt: 1,
           source: 1,
           adminNote: 1,
+          moderationStatus: 1,
+          moderationReasons: 1,
           ip: 1,
           requestIp: 1,
           userAgent: 1,
@@ -238,6 +245,8 @@ export default async function handler(
           updatedAt: 1,
           source: 1,
           adminNote: 1,
+          moderationStatus: 1,
+          moderationReasons: 1,
           ip: 1,
           requestIp: 1,
           userAgent: 1,
@@ -263,6 +272,10 @@ export default async function handler(
         owner: x.owner || "",
         followUpAt: x.followUpAt ? new Date(x.followUpAt).toISOString() : null,
         adminNote: x.adminNote || "",
+        moderationStatus: x.moderationStatus || "clean",
+        moderationReasons: Array.isArray(x.moderationReasons)
+          ? x.moderationReasons
+          : [],
         ip: x.ip || x.requestIp || null,
         userAgent: x.userAgent || null,
         lifecycleLogCount: Array.isArray(x.lifecycleLog)
@@ -292,6 +305,10 @@ export default async function handler(
         owner: x.owner || "",
         followUpAt: x.followUpAt ? new Date(x.followUpAt).toISOString() : null,
         adminNote: x.adminNote || "",
+        moderationStatus: x.moderationStatus || "clean",
+        moderationReasons: Array.isArray(x.moderationReasons)
+          ? x.moderationReasons
+          : [],
         ip: x.ip || x.requestIp || null,
         userAgent: x.userAgent || null,
         lifecycleLogCount: Array.isArray(x.lifecycleLog)

@@ -66,6 +66,30 @@ export default function MarketplaceAnalyticsPage() {
             </div>
           </div>
         ) : null}
+
+        {!loading && !error ? (
+          <section className="mt-5 rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-4">
+            <h2 className="text-base font-bold text-[#D4AF37]">Next action</h2>
+            <p className="mt-1 text-sm text-white/80">
+              Use analytics to tune listings, then return to products and orders
+              to improve conversion.
+            </p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <Link
+                href="/dashboard/seller/products"
+                className="rounded border border-[#D4AF37] px-3 py-1.5 text-xs font-semibold text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black"
+              >
+                Review listings
+              </Link>
+              <Link
+                href="/marketplace/orders"
+                className="rounded border border-white/20 px-3 py-1.5 text-xs font-semibold text-white/90 hover:bg-white/10"
+              >
+                Open orders
+              </Link>
+            </div>
+          </section>
+        ) : null}
       </div>
     </main>
   );

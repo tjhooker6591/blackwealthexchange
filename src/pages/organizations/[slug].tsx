@@ -24,6 +24,14 @@ type OrgItem = {
   state?: string;
   phone?: string;
   website?: string;
+  facebook?: string;
+  social?: string;
+  instagram?: string;
+  twitter?: string;
+  sourceUrl?: string;
+  websiteStatus?: string;
+  suppressWebsiteButton?: boolean;
+  enrichmentNeeded?: boolean;
 
   alias?: string;
 
@@ -113,6 +121,15 @@ export default function OrganizationDetailPage() {
   }, [router.isReady, slug]);
 
   const website = safeWebsite(item?.website);
+  const social =
+    safeWebsite(item?.facebook) ||
+    safeWebsite(item?.social) ||
+    safeWebsite(item?.instagram) ||
+    safeWebsite(item?.twitter);
+  const sourceLink = safeWebsite(item?.sourceUrl || item?.source);
+  const suppressWebsite =
+    item?.suppressWebsiteButton === true || item?.websiteStatus === "broken";
+  const websiteUsable = Boolean(website) && !suppressWebsite;
   const updatedAt = formatUpdatedAt(item?.updatedAt);
 
   return (
@@ -206,7 +223,7 @@ export default function OrganizationDetailPage() {
 
                 {/* Actions */}
                 <div className="flex flex-col sm:flex-row gap-2">
-                  {website ? (
+                  {websiteUsable ? (
                     <a
                       href={website}
                       target="_blank"
@@ -214,6 +231,24 @@ export default function OrganizationDetailPage() {
                       className="inline-flex items-center justify-center rounded-xl bg-yellow-500 text-black font-semibold px-4 py-2 hover:bg-yellow-400 transition"
                     >
                       Visit Website
+                    </a>
+                  ) : social ? (
+                    <a
+                      href={social}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center rounded-xl bg-yellow-500 text-black font-semibold px-4 py-2 hover:bg-yellow-400 transition"
+                    >
+                      Facebook/Social
+                    </a>
+                  ) : sourceLink ? (
+                    <a
+                      href={sourceLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center rounded-xl bg-yellow-500 text-black font-semibold px-4 py-2 hover:bg-yellow-400 transition"
+                    >
+                      Source/More Info
                     </a>
                   ) : null}
 
@@ -265,7 +300,7 @@ export default function OrganizationDetailPage() {
 
                   <div className="text-sm text-white/75">
                     <div className="text-white/60">Website</div>
-                    {website ? (
+                    {websiteUsable ? (
                       <a
                         href={website}
                         target="_blank"
@@ -274,10 +309,34 @@ export default function OrganizationDetailPage() {
                       >
                         {website}
                       </a>
+                    ) : social ? (
+                      <a
+                        href={social}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-yellow-300 hover:text-yellow-200 underline underline-offset-4"
+                      >
+                        Facebook/Social
+                      </a>
+                    ) : sourceLink ? (
+                      <a
+                        href={sourceLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-yellow-300 hover:text-yellow-200 underline underline-offset-4"
+                      >
+                        Source/More Info
+                      </a>
                     ) : (
                       <div>—</div>
                     )}
                   </div>
+
+                  {item.enrichmentNeeded ? (
+                    <div className="pt-2 text-xs text-amber-300/80">
+                      Link needs enrichment/review
+                    </div>
+                  ) : null}
 
                   {item.source ? (
                     <div className="pt-2 text-xs text-white/50">

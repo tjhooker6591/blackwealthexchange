@@ -4,6 +4,7 @@ import clientPromise from "@/lib/mongodb";
 import cookie from "cookie";
 import jwt from "jsonwebtoken";
 import { ObjectId } from "mongodb";
+import { getJwtSecret } from "@/lib/env";
 
 type Decoded = {
   userId?: string;
@@ -66,15 +67,14 @@ export default async function handler(
 
   let decoded: Decoded;
   try {
-    const SECRET = process.env.JWT_SECRET || process.env.NEXTAUTH_SECRET;
+    const SECRET = getJwtSecret();
     if (!SECRET) throw new Error("JWT_SECRET missing");
     decoded = jwt.verify(token, SECRET) as Decoded;
   } catch {
     return res.status(401).json({ error: "Unauthorized" });
   }
 
-  // Keep dev convenient; enforce in production
-  if (process.env.NODE_ENV === "production" && !isAdmin(decoded)) {
+  if (!isAdmin(decoded)) {
     return res.status(403).json({ error: "Forbidden" });
   }
 

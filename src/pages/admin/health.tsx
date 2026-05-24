@@ -1,8 +1,8 @@
 // src/pages/admin/health.tsx
-"use client";
-
+import type { GetServerSideProps } from "next";
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { requireAdminPageProps } from "@/lib/adminPageGuard";
 
 type CheckResult = {
   name: string;
@@ -153,3 +153,6 @@ export default function AdminHealthPage() {
     </main>
   );
 }
+
+export const getServerSideProps: GetServerSideProps =
+  requireAdminPageProps("/admin/health");

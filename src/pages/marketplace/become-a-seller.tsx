@@ -229,6 +229,13 @@ export default function BecomeASellerPage() {
           </div>
         ))}
       </div>
+      <div className="mt-3 rounded border border-gray-700 bg-black/40 p-2 text-xs text-gray-300">
+        <p className="font-semibold text-gray-100">What happens next</p>
+        <p className="mt-1">
+          Complete payout setup, then add a product to make your storefront live
+          to buyers.
+        </p>
+      </div>
     </div>
   );
 

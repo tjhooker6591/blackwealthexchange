@@ -1,6 +1,8 @@
+import type { GetServerSideProps } from "next";
 import Head from "next/head";
 import { useEffect, useMemo, useState } from "react";
 import WealthBuilderNav from "@/components/wealth-builder/WealthBuilderNav";
+import { requireWealthBuilderPageUser } from "@/lib/wealth-builder/page-auth";
 
 type BudgetCategory = {
   name: string;
@@ -57,6 +59,7 @@ export default function WealthBuilderBudgetPage() {
   ]);
   const [loading, setLoading] = useState<boolean>(true);
   const [saving, setSaving] = useState<boolean>(false);
+  const [syncingActuals, setSyncingActuals] = useState<boolean>(false);
   const [deleting, setDeleting] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
@@ -156,6 +159,77 @@ export default function WealthBuilderBudgetPage() {
       if (current.length === 1) return [emptyCategory()];
       return current.filter((_, i) => i !== index);
     });
+  }
+
+  async function syncActualsFromTransactions() {
+    setSyncingActuals(true);
+    setError("");
+    setSuccess("");
+
+    try {
+      const response = await fetch(
+        `/api/wealth-builder/budget/suggested-actuals?month=${month}&year=${year}`,
+      );
+      const payload = await response.json();
+
+      if (!response.ok || !payload?.ok) {
+        throw new Error(payload?.message || "Failed to sync actuals.");
+      }
+
+      const suggested: Array<{ category: string; amount: number }> =
+        Array.isArray(payload?.suggestedActuals)
+          ? payload.suggestedActuals
+          : [];
+
+      if (suggested.length === 0) {
+        setSuccess("No expense transactions found for this month to sync.");
+        return;
+      }
+
+      setCategories((current) => {
+        const mapped = new Map<string, number>(
+          suggested.map((item) => [
+            item.category.toLowerCase(),
+            Number(item.amount) || 0,
+          ]),
+        );
+
+        const next = current.map((item) => {
+          const key = item.name.trim().toLowerCase();
+          if (!key || !mapped.has(key)) return item;
+          return {
+            ...item,
+            actualAmount: mapped.get(key) || 0,
+          };
+        });
+
+        const knownKeys = new Set(
+          next.map((item) => item.name.trim().toLowerCase()).filter(Boolean),
+        );
+
+        for (const row of suggested) {
+          const key = String(row.category || "")
+            .trim()
+            .toLowerCase();
+          if (!key || knownKeys.has(key)) continue;
+          next.push({
+            name: row.category,
+            plannedAmount: 0,
+            actualAmount: Number(row.amount) || 0,
+          });
+        }
+
+        return next;
+      });
+
+      setSuccess(
+        `Synced actuals from ${payload.transactionCount || 0} expense transactions. Review, then save budget.`,
+      );
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to sync actuals.");
+    } finally {
+      setSyncingActuals(false);
+    }
   }
 
   async function handleSave() {
@@ -269,6 +343,14 @@ export default function WealthBuilderBudgetPage() {
               personal finance view.
             </p>
 
+            <div className="mt-6 rounded-2xl border border-cyan-500/25 bg-cyan-500/5 p-4 text-sm text-cyan-100">
+              <p className="font-semibold">Connected flow</p>
+              <p className="mt-1 text-cyan-50/90">
+                Transactions feed this budget. This budget sets your debt and
+                savings capacity. Keep all four modules in sync weekly.
+              </p>
+            </div>
+
             <div className="mt-8 grid gap-4 md:grid-cols-3">
               <div className="rounded-2xl border border-white/10 bg-black/40 p-5">
                 <p className="text-sm uppercase tracking-wide text-zinc-400">
@@ -378,13 +460,25 @@ export default function WealthBuilderBudgetPage() {
                   </p>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={addCategory}
-                  className="rounded-full border border-yellow-400 bg-yellow-500/15 px-4 py-2 text-sm font-semibold text-yellow-300 transition hover:bg-yellow-500/25"
-                >
-                  Add Category
-                </button>
+                <div className="flex flex-wrap gap-3">
+                  <button
+                    type="button"
+                    onClick={() => void syncActualsFromTransactions()}
+                    disabled={syncingActuals || loading}
+                    className="rounded-full border border-cyan-400/50 bg-cyan-500/10 px-4 py-2 text-sm font-semibold text-cyan-200 transition hover:bg-cyan-500/20 disabled:opacity-60"
+                  >
+                    {syncingActuals
+                      ? "Syncing..."
+                      : "Sync Actuals from Transactions"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={addCategory}
+                    className="rounded-full border border-yellow-400 bg-yellow-500/15 px-4 py-2 text-sm font-semibold text-yellow-300 transition hover:bg-yellow-500/25"
+                  >
+                    Add Category
+                  </button>
+                </div>
               </div>
 
               {loading ? (
@@ -499,3 +593,7 @@ export default function WealthBuilderBudgetPage() {
     </>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  return requireWealthBuilderPageUser(context, "/wealth-builder/budget");
+};

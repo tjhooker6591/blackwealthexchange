@@ -7,7 +7,6 @@ import { useRouter } from "next/router";
 import {
   Briefcase,
   Bookmark,
-  Crown,
   User as UserIcon,
   ArrowRight,
   Lock,
@@ -57,6 +56,25 @@ interface ChartData {
   applications: number;
 }
 
+interface SubscriptionState {
+  currentPlan: string;
+  renewalStatus: string;
+  nextBillingDate: string | null;
+  cancelAtPeriodEnd: boolean;
+  status: string;
+  hasManageableSubscription: boolean;
+}
+
+interface BlackCardSummaryState {
+  state?: string;
+  status: string;
+  memberId?: string;
+  hasCard?: boolean;
+  primaryActionLabel?: string;
+  primaryActionHref?: string;
+  primaryMessage?: string;
+}
+
 export default function UserDashboard() {
   const router = useRouter();
 
@@ -69,7 +87,13 @@ export default function UserDashboard() {
   const [dataError, setDataError] = useState<string | null>(null);
 
   const [lastUpdated, setLastUpdated] = useState<number | null>(null);
-
+  const [subscription, setSubscription] = useState<SubscriptionState | null>(
+    null,
+  );
+  const [cancelingSubscription, setCancelingSubscription] = useState(false);
+  const [subscriptionMessage, setSubscriptionMessage] = useState("");
+  const [blackCardSummary, setBlackCardSummary] =
+    useState<BlackCardSummaryState | null>(null);
   useEffect(() => {
     const controller = new AbortController();
 
@@ -102,24 +126,35 @@ export default function UserDashboard() {
         setDashboardData({});
         setChartData([]);
 
-        const [dashRes, chartRes] = await Promise.allSettled([
-          fetch(
-            `/api/user/get-dashboard?email=${encodeURIComponent(u.email)}`,
-            {
+        const [dashRes, chartRes, subscriptionRes, blackCardRes] =
+          await Promise.allSettled([
+            fetch(
+              `/api/user/get-dashboard?email=${encodeURIComponent(u.email)}`,
+              {
+                cache: "no-store",
+                credentials: "include",
+                signal: controller.signal,
+              },
+            ),
+            fetch(
+              `/api/user/applications-overview?email=${encodeURIComponent(u.email)}`,
+              {
+                cache: "no-store",
+                credentials: "include",
+                signal: controller.signal,
+              },
+            ),
+            fetch("/api/billing/subscription-status", {
               cache: "no-store",
               credentials: "include",
               signal: controller.signal,
-            },
-          ),
-          fetch(
-            `/api/user/applications-overview?email=${encodeURIComponent(u.email)}`,
-            {
+            }),
+            fetch("/api/black-card/member-summary", {
               cache: "no-store",
               credentials: "include",
               signal: controller.signal,
-            },
-          ),
-        ]);
+            }),
+          ]);
 
         let hadDataIssue = false;
 
@@ -145,6 +180,34 @@ export default function UserDashboard() {
           }
         } else {
           hadDataIssue = true;
+        }
+
+        if (
+          subscriptionRes.status === "fulfilled" &&
+          subscriptionRes.value.ok
+        ) {
+          const subscriptionJson = await subscriptionRes.value.json();
+          setSubscription(subscriptionJson?.subscription || null);
+        }
+
+        if (blackCardRes.status === "fulfilled" && blackCardRes.value.ok) {
+          const blackCardJson = await blackCardRes.value.json();
+          const resolved = blackCardJson?.resolvedBlackCard || {};
+          setBlackCardSummary({
+            state: String(resolved?.state || ""),
+            status: String(
+              resolved?.status || blackCardJson?.member?.status || "inactive",
+            ).toLowerCase(),
+            memberId: String(
+              resolved?.memberId || blackCardJson?.card?.memberId || "",
+            ),
+            hasCard: String(resolved?.state || "") === "ACTIVE_CARD",
+            primaryActionLabel: String(resolved?.primaryActionLabel || ""),
+            primaryActionHref: String(resolved?.primaryActionHref || ""),
+            primaryMessage: String(resolved?.primaryMessage || ""),
+          });
+        } else {
+          setBlackCardSummary({ status: "inactive" });
         }
 
         if (hadDataIssue) {
@@ -174,6 +237,53 @@ export default function UserDashboard() {
   const displayName = useMemo(() => {
     return dashboardData?.fullName || user?.email || "Member";
   }, [dashboardData?.fullName, user?.email]);
+
+  const nextStep = useMemo(() => {
+    const completionPct =
+      typeof dashboardData.profileCompletion === "number"
+        ? dashboardData.profileCompletion
+        : 0;
+    const savedCount = Number(dashboardData.savedJobs || 0);
+    const applicationCount = Number(dashboardData.applications || 0);
+
+    if (completionPct < 80) {
+      return {
+        title: "Complete your profile first",
+        body: "A stronger profile improves job match quality and response rate.",
+        href: "/profile",
+        cta: "Update profile",
+      };
+    }
+
+    if (!savedCount) {
+      return {
+        title: "Save 3 to 5 jobs",
+        body: "Build a shortlist so you can apply quickly and track your best opportunities.",
+        href: "/job-listings",
+        cta: "Find jobs",
+      };
+    }
+
+    if (!applicationCount) {
+      return {
+        title: "Submit your first application",
+        body: "You already have a shortlist. Start applying to move your dashboard forward.",
+        href: "/job-listings",
+        cta: "Apply to jobs",
+      };
+    }
+
+    return {
+      title: "Keep momentum",
+      body: "Track application updates daily and keep your profile current.",
+      href: "/applications",
+      cta: "Track updates",
+    };
+  }, [
+    dashboardData.applications,
+    dashboardData.profileCompletion,
+    dashboardData.savedJobs,
+  ]);
 
   if (loading) return <DashboardSkeleton />;
 
@@ -212,8 +322,51 @@ export default function UserDashboard() {
     );
   }
 
+  async function cancelSubscription() {
+    try {
+      setCancelingSubscription(true);
+      setSubscriptionMessage("");
+
+      const res = await fetch("/api/billing/cancel-subscription", {
+        method: "POST",
+        credentials: "include",
+      });
+      const json = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        setSubscriptionMessage(json?.error || "Unable to cancel subscription.");
+        return;
+      }
+
+      setSubscriptionMessage(json?.message || "Cancellation scheduled.");
+      const statusRes = await fetch("/api/billing/subscription-status", {
+        credentials: "include",
+        cache: "no-store",
+      });
+      if (statusRes.ok) {
+        const statusJson = await statusRes.json();
+        setSubscription(statusJson?.subscription || null);
+      }
+    } catch {
+      setSubscriptionMessage("Unable to cancel subscription right now.");
+    } finally {
+      setCancelingSubscription(false);
+    }
+  }
+
   const savedJobs = dashboardData.savedJobs || 0;
   const applications = dashboardData.applications || 0;
+  const currentPlan = String(subscription?.currentPlan || "free").toLowerCase();
+  const isPremiumActive =
+    currentPlan === "premium" || currentPlan === "founding";
+  const blackCardStatus = String(
+    blackCardSummary?.status || "inactive",
+  ).toLowerCase();
+  const blackCardActive =
+    String(blackCardSummary?.state || "") === "ACTIVE_CARD" ||
+    Boolean(blackCardSummary?.hasCard) ||
+    blackCardSummary?.status === "active";
+
   const completion =
     typeof dashboardData.profileCompletion === "number"
       ? dashboardData.profileCompletion
@@ -267,11 +420,11 @@ export default function UserDashboard() {
             </Link>
 
             <Link
-              href="/pricing"
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-yellow-500/20 bg-yellow-500/10 px-4 py-2.5 text-center text-sm transition hover:bg-yellow-500/15 sm:px-5"
+              href="/applications"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-center text-sm transition hover:bg-white/10 sm:px-5"
             >
-              <Crown className="h-4 w-4 text-yellow-300" />
-              Premium Tools
+              <ArrowRight className="h-4 w-4 text-yellow-300" />
+              Track Applications
             </Link>
           </div>
         </div>
@@ -293,6 +446,138 @@ export default function UserDashboard() {
           </div>
         ) : null}
 
+        <div className="rounded-2xl border border-yellow-500/25 bg-yellow-500/10 p-4 shadow-xl sm:p-5">
+          <h2 className="text-lg font-bold text-gold">Membership billing</h2>
+          <p className="mt-1 text-sm text-white/90">
+            Current plan:{" "}
+            <strong>
+              {String(subscription?.currentPlan || "free").toUpperCase()}
+            </strong>
+          </p>
+          <p className="mt-1 text-sm text-white/80">
+            Renewal status: {subscription?.renewalStatus || "inactive"}
+          </p>
+          <p className="mt-1 text-sm text-white/80">
+            Next billing date:{" "}
+            {subscription?.nextBillingDate
+              ? new Date(subscription.nextBillingDate).toLocaleDateString()
+              : "N/A"}
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {subscription?.hasManageableSubscription ? (
+              <button
+                onClick={cancelSubscription}
+                disabled={
+                  cancelingSubscription || subscription?.cancelAtPeriodEnd
+                }
+                className="inline-flex items-center gap-2 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm text-red-200 hover:bg-red-500/15 disabled:opacity-60"
+              >
+                {subscription?.cancelAtPeriodEnd
+                  ? "Cancellation Scheduled"
+                  : cancelingSubscription
+                    ? "Scheduling..."
+                    : "Cancel Subscription"}
+              </button>
+            ) : (
+              <Link
+                href="/pricing"
+                className="inline-flex items-center gap-2 rounded-xl bg-gold px-4 py-2 text-sm font-semibold text-black hover:bg-yellow-500"
+              >
+                Upgrade Plan
+              </Link>
+            )}
+          </div>
+          {subscriptionMessage ? (
+            <p className="mt-2 text-xs text-yellow-200">
+              {subscriptionMessage}
+            </p>
+          ) : null}
+        </div>
+
+        <div className="rounded-2xl border border-yellow-500/25 bg-yellow-500/10 p-4 shadow-xl sm:p-5">
+          <h2 className="text-lg font-bold text-gold">Black Card</h2>
+          {blackCardActive ? (
+            <>
+              <p className="mt-1 text-sm text-white/90">
+                Your Premium membership is active.
+              </p>
+              <p className="mt-1 text-sm text-white/90">
+                Your Standard Black Card is active.
+              </p>
+              {blackCardSummary?.memberId ? (
+                <p className="mt-1 text-xs text-white/80">
+                  Member ID: {blackCardSummary.memberId}
+                </p>
+              ) : null}
+              <div className="mt-3">
+                <Link
+                  href="/dashboard/black-card"
+                  className="inline-flex items-center gap-2 rounded-xl bg-gold px-4 py-2 text-sm font-semibold text-black hover:bg-yellow-500"
+                >
+                  {blackCardSummary?.primaryActionLabel ||
+                    "View My Digital Black Card"}
+                </Link>
+              </div>
+            </>
+          ) : isPremiumActive ? (
+            <>
+              <p className="mt-1 text-sm text-white/90">
+                {blackCardStatus === "requested" ||
+                blackCardStatus === "pending"
+                  ? "Black Card request pending"
+                  : "Your Premium membership is active."}
+              </p>
+              {blackCardStatus === "requested" ||
+              blackCardStatus === "pending" ? null : (
+                <div className="mt-3">
+                  <Link
+                    href={
+                      blackCardSummary?.primaryActionHref || "/black-card/join"
+                    }
+                    className="inline-flex items-center gap-2 rounded-xl bg-gold px-4 py-2 text-sm font-semibold text-black hover:bg-yellow-500"
+                  >
+                    Request Black Card
+                  </Link>
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="mt-2 flex flex-wrap items-center gap-2">
+              <p className="text-sm text-white/90">
+                Upgrade to Premium to unlock Black Card benefits
+              </p>
+              <Link
+                href="/pricing"
+                className="inline-flex items-center gap-2 rounded-xl bg-gold px-3 py-1.5 text-xs font-semibold text-black hover:bg-yellow-500"
+              >
+                Upgrade
+              </Link>
+            </div>
+          )}
+        </div>
+
+        <div className="rounded-2xl border border-yellow-500/25 bg-yellow-500/10 p-4 shadow-xl sm:p-5">
+          <h2 className="text-lg font-bold text-gold">Next step</h2>
+          <p className="mt-1 text-sm font-semibold text-white">
+            {nextStep.title}
+          </p>
+          <p className="mt-1 text-sm text-gray-300">{nextStep.body}</p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <Link
+              href={nextStep.href}
+              className="inline-flex items-center gap-2 rounded-xl bg-gold px-4 py-2 text-sm font-semibold text-black hover:bg-yellow-500"
+            >
+              {nextStep.cta} <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
+              href="/dashboard"
+              className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm hover:bg-white/10"
+            >
+              Dashboard home
+            </Link>
+          </div>
+        </div>
+
         {/* Stat cards */}
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-3 lg:gap-6">
           <StatCard
@@ -308,6 +593,21 @@ export default function UserDashboard() {
             value={applications}
             href="/applications"
             hint="Track status and follow-ups."
+          />
+          <StatCard
+            icon={<Bookmark className="h-5 w-5 text-yellow-300" />}
+            title={
+              blackCardActive
+                ? "View My Digital Black Card"
+                : "Activate Black Card"
+            }
+            value={1}
+            href="/dashboard/black-card"
+            hint={
+              blackCardActive
+                ? `Black Card Active${blackCardSummary?.memberId ? ` · Member ID: ${blackCardSummary.memberId}` : ""}`
+                : "Activate your Black Card from membership."
+            }
           />
           <div className="col-span-2 rounded-2xl border border-white/10 bg-white/5 p-4 shadow-xl lg:col-span-1 lg:p-6">
             <div className="flex items-center justify-between">

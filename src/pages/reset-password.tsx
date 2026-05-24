@@ -2,6 +2,7 @@
 "use client";
 
 import Link from "next/link";
+import Head from "next/head";
 import { useMemo, useState } from "react";
 import { useRouter } from "next/router";
 
@@ -90,114 +91,119 @@ export default function ResetPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black text-white p-6">
-      {/* subtle glow */}
-      <div className="pointer-events-none fixed inset-0 opacity-40">
-        <div className="absolute -top-40 -left-40 h-[520px] w-[520px] rounded-full blur-3xl bg-yellow-500/20" />
-        <div className="absolute top-24 right-[-120px] h-[420px] w-[420px] rounded-full blur-3xl bg-yellow-400/10" />
-      </div>
+    <>
+      <Head>
+        <meta name="robots" content="noindex,nofollow" />
+      </Head>
+      <div className="min-h-screen flex items-center justify-center bg-black text-white p-6">
+        {/* subtle glow */}
+        <div className="pointer-events-none fixed inset-0 opacity-40">
+          <div className="absolute -top-40 -left-40 h-[520px] w-[520px] rounded-full blur-3xl bg-yellow-500/20" />
+          <div className="absolute top-24 right-[-120px] h-[420px] w-[420px] rounded-full blur-3xl bg-yellow-400/10" />
+        </div>
 
-      <div className="relative w-full max-w-md bg-gray-900/80 border border-yellow-400/30 p-6 rounded-2xl shadow-xl backdrop-blur">
-        <h1 className="text-2xl font-bold text-yellow-400 mb-2">
-          Reset Your Password
-        </h1>
-        <p className="text-sm text-gray-400 mb-6">
-          Enter a new password for your account.
-        </p>
+        <div className="relative w-full max-w-md bg-gray-900/80 border border-yellow-400/30 p-6 rounded-2xl shadow-xl backdrop-blur">
+          <h1 className="text-2xl font-bold text-yellow-400 mb-2">
+            Reset Your Password
+          </h1>
+          <p className="text-sm text-gray-400 mb-6">
+            Enter a new password for your account.
+          </p>
 
-        {success ? (
-          <div className="space-y-4">
-            <p className="text-green-400 text-sm">
-              ✅ Password reset successful. You can now log in with your new
-              password.
-            </p>
-
-            <Link
-              href="/login"
-              className="inline-flex items-center rounded-lg bg-yellow-400 px-4 py-2 font-semibold text-black hover:bg-yellow-300 transition"
-            >
-              Go to Login
-            </Link>
-          </div>
-        ) : (
-          <>
-            {!token && (
-              <p className="text-red-400 mb-4 text-sm">
-                Invalid or missing reset token.
+          {success ? (
+            <div className="space-y-4">
+              <p className="text-green-400 text-sm">
+                ✅ Password reset successful. You can now log in with your new
+                password.
               </p>
-            )}
 
-            {error && <p className="text-red-400 mb-4 text-sm">{error}</p>}
-
-            <div className="mb-4">
-              <label className="block text-sm mb-1 text-gray-200">
-                New Password
-              </label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full p-3 rounded-lg bg-gray-950 border border-gray-800 outline-none focus:border-yellow-400/60"
-                placeholder="Enter new password"
-                autoComplete="new-password"
-              />
-              {passwordTooShort && (
-                <p className="text-xs text-red-400 mt-1">
-                  Password must be at least 8 characters.
-                </p>
-              )}
-            </div>
-
-            <div className="mb-5">
-              <label className="block text-sm mb-1 text-gray-200">
-                Confirm Password
-              </label>
-              <input
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full p-3 rounded-lg bg-gray-950 border border-gray-800 outline-none focus:border-yellow-400/60"
-                placeholder="Confirm new password"
-                autoComplete="new-password"
-              />
-              {passwordsDoNotMatch && (
-                <p className="text-xs text-red-400 mt-1">
-                  Passwords do not match.
-                </p>
-              )}
-            </div>
-
-            <button
-              onClick={handleReset}
-              disabled={!canSubmit}
-              className={[
-                "w-full py-3 px-4 rounded-lg font-semibold transition",
-                !canSubmit
-                  ? "bg-gray-700 text-gray-400 cursor-not-allowed"
-                  : "bg-yellow-400 text-black hover:bg-yellow-300",
-              ].join(" ")}
-            >
-              {loading ? "Resetting..." : "Reset Password"}
-            </button>
-
-            <div className="flex items-center justify-between pt-3">
               <Link
                 href="/login"
-                className="text-sm text-yellow-400 hover:underline"
+                className="inline-flex items-center rounded-lg bg-yellow-400 px-4 py-2 font-semibold text-black hover:bg-yellow-300 transition"
               >
-                ← Back to Login
-              </Link>
-
-              <Link
-                href="/forgot-password"
-                className="text-sm text-gray-300 hover:underline"
-              >
-                Request new link
+                Go to Login
               </Link>
             </div>
-          </>
-        )}
+          ) : (
+            <>
+              {!token && (
+                <p className="text-red-400 mb-4 text-sm">
+                  Invalid or missing reset token.
+                </p>
+              )}
+
+              {error && <p className="text-red-400 mb-4 text-sm">{error}</p>}
+
+              <div className="mb-4">
+                <label className="block text-sm mb-1 text-gray-200">
+                  New Password
+                </label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full p-3 rounded-lg bg-gray-950 border border-gray-800 outline-none focus:border-yellow-400/60"
+                  placeholder="Enter new password"
+                  autoComplete="new-password"
+                />
+                {passwordTooShort && (
+                  <p className="text-xs text-red-400 mt-1">
+                    Password must be at least 8 characters.
+                  </p>
+                )}
+              </div>
+
+              <div className="mb-5">
+                <label className="block text-sm mb-1 text-gray-200">
+                  Confirm Password
+                </label>
+                <input
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="w-full p-3 rounded-lg bg-gray-950 border border-gray-800 outline-none focus:border-yellow-400/60"
+                  placeholder="Confirm new password"
+                  autoComplete="new-password"
+                />
+                {passwordsDoNotMatch && (
+                  <p className="text-xs text-red-400 mt-1">
+                    Passwords do not match.
+                  </p>
+                )}
+              </div>
+
+              <button
+                onClick={handleReset}
+                disabled={!canSubmit}
+                className={[
+                  "w-full py-3 px-4 rounded-lg font-semibold transition",
+                  !canSubmit
+                    ? "bg-gray-700 text-gray-400 cursor-not-allowed"
+                    : "bg-yellow-400 text-black hover:bg-yellow-300",
+                ].join(" ")}
+              >
+                {loading ? "Resetting..." : "Reset Password"}
+              </button>
+
+              <div className="flex items-center justify-between pt-3">
+                <Link
+                  href="/login"
+                  className="text-sm text-yellow-400 hover:underline"
+                >
+                  ← Back to Login
+                </Link>
+
+                <Link
+                  href="/forgot-password"
+                  className="text-sm text-gray-300 hover:underline"
+                >
+                  Request new link
+                </Link>
+              </div>
+            </>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }

@@ -1,10 +1,12 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
+import { getMarketplaceDbName } from "@/lib/marketplace/db";
 import { parse } from "cookie";
 import jwt from "jsonwebtoken";
 import { ObjectId } from "mongodb";
+import { getJwtSecret } from "@/lib/env";
 
-const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-key";
+const JWT_SECRET = getJwtSecret();
 
 interface DecodedToken {
   userId: string;
@@ -38,7 +40,7 @@ export default async function handler(
     }
 
     const client = await clientPromise;
-    const db = client.db("bwes-cluster");
+    const db = client.db(getMarketplaceDbName());
     const collection = db.collection("products");
 
     const existing = await collection.findOne({ _id: new ObjectId(id) });

@@ -6,9 +6,12 @@ import Link from "next/link";
 
 interface Application {
   id: string;
+  jobId: string;
   jobTitle: string;
   company: string;
   status: string;
+  submittedAt: string;
+  statusUpdatedAt: string;
 }
 
 export default function ApplicationsPage() {
@@ -72,12 +75,24 @@ export default function ApplicationsPage() {
                 <p className="text-lg font-semibold">{app.jobTitle}</p>
                 <p className="text-sm text-gray-400">{app.company}</p>
                 <p className="text-sm text-yellow-400">Status: {app.status}</p>
+                <p className="text-xs text-gray-400">
+                  Applied:{" "}
+                  {app.submittedAt
+                    ? new Date(app.submittedAt).toLocaleDateString()
+                    : "-"}
+                </p>
+                <p className="text-xs text-gray-400">
+                  Last update:{" "}
+                  {app.statusUpdatedAt
+                    ? new Date(app.statusUpdatedAt).toLocaleString()
+                    : "Pending review"}
+                </p>
               </div>
               <Link
-                href={`/applications/${app.id}`}
+                href={`/job/${app.jobId}`}
                 className="text-yellow-400 hover:underline"
               >
-                Details
+                View Job
               </Link>
             </li>
           ))}

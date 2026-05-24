@@ -4,6 +4,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
+import { getAdDurationOptions, getAdQuote } from "@/lib/advertising/pricing";
 
 export default function FeaturedSponsorPage() {
   const router = useRouter();
@@ -35,6 +36,11 @@ export default function FeaturedSponsorPage() {
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
+  const featuredDurationOptions = useMemo(
+    () => getAdDurationOptions("featured-sponsor"),
+    [],
+  );
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setAdImageFile(e.target.files[0]);
@@ -45,25 +51,25 @@ export default function FeaturedSponsorPage() {
     trackAdEvent("advertising_landing_viewed");
   }, []);
 
+  const hasCreative =
+    Boolean(adImageFile) || /^https?:\/\//i.test(creativeUrl.trim());
+  const hasValidEmail = /^\S+@\S+\.\S+$/.test(email.trim());
   const canProceed = useMemo(() => {
-    const hasCreative =
-      Boolean(adImageFile) || /^https?:\/\//i.test(creativeUrl.trim());
     return (
       Boolean(campaignDuration) &&
       confirmed &&
       hasCreative &&
       name.trim().length >= 2 &&
       businessName.trim().length >= 2 &&
-      /^\S+@\S+\.\S+$/.test(email.trim())
+      hasValidEmail
     );
   }, [
     campaignDuration,
     confirmed,
-    adImageFile,
-    creativeUrl,
+    hasCreative,
     name,
     businessName,
-    email,
+    hasValidEmail,
   ]);
 
   const handleProceed = async () => {
@@ -95,12 +101,12 @@ export default function FeaturedSponsorPage() {
         adImage: adImageFile?.name || creativeUrl.trim(),
         website,
         targetUrl: targetUrl || website,
-        budget:
-          campaignDuration === "7"
-            ? "25"
-            : campaignDuration === "14"
-              ? "45"
-              : "80",
+        budget: String(
+          getAdQuote({
+            option: "featured-sponsor",
+            durationDays: Number(campaignDuration),
+          })?.amountDollars || "",
+        ),
         option: "featured-sponsor",
         durationDays: Number(campaignDuration),
         placement: "homepage-featured-sponsor",
@@ -158,13 +164,13 @@ export default function FeaturedSponsorPage() {
             Every Black-owned business is welcome in our free directory — but if
             you want to
             <span className="text-gold font-semibold"> stand out</span>,
-            Featured Sponsor Ads give your brand premium visibility across Black
-            Wealth Exchange.
+            Featured Sponsor Ads place your brand in the homepage Featured
+            Sponsors rail (and sponsor modules that read that feed).
           </p>
           <p className="text-gray-500 mt-4">
-            Get highlighted on our homepage, business directory, and key
-            platform pages. Drive more traffic, attract new customers, and show
-            your support for Black economic empowerment.
+            Featured Sponsor campaigns are scheduled into the homepage Featured
+            Sponsors rail. Placement is approval-based and follows weekly
+            capacity.
           </p>
         </section>
 
@@ -174,16 +180,15 @@ export default function FeaturedSponsorPage() {
             Limited Availability: Weekly Sponsor Slots
           </h2>
           <p className="text-gray-300 mb-4">
-            Your business will appear in the{" "}
-            <strong>rolling Featured Sponsor section</strong> on the homepage —
-            shown to every visitor on the site. Each campaign runs for{" "}
-            <strong>7 days</strong> with
-            <strong> only 8 sponsor slots</strong> available per week.
+            Your business appears in the{" "}
+            <strong>homepage Featured Sponsors rail</strong>. Campaign weeks are
+            assigned by schedule and can roll to the next available week when
+            capacity is full.
           </p>
           <p className="text-gray-300 mb-4">
-            With <strong>52 total weekly rotations per year</strong>, space is
-            limited and demand is high. Once a week is full, your ad will
-            automatically be queued for the next available slot.
+            Duration is sold in 7, 14, or 30-day packages and mapped to weekly
+            schedule blocks. If your requested week is full, your campaign is
+            queued into the next open week.
           </p>
           <p className="text-yellow-400 font-semibold">
             Reserve your placement early to secure visibility during your ideal
@@ -196,7 +201,7 @@ export default function FeaturedSponsorPage() {
           {[
             {
               title: "Homepage Placement",
-              text: "Your brand will be placed at the top of the homepage as a Featured Sponsor.",
+              text: "Your brand is scheduled into the homepage Featured Sponsors rail with sponsor labeling.",
             },
             {
               title: "High Visibility",
@@ -204,7 +209,7 @@ export default function FeaturedSponsorPage() {
             },
             {
               title: "Priority Exposure",
-              text: "Featured across platform sections, including directory and marketplace banners.",
+              text: "Approval + weekly scheduling keep placement predictable and auditable.",
             },
           ].map((item) => (
             <div key={item.title} className="bg-gray-800 p-6 rounded-lg shadow">
@@ -222,36 +227,44 @@ export default function FeaturedSponsorPage() {
             Pricing & Duration
           </h2>
           <p className="text-gray-400 mb-6">
-            Choose a duration that fits your campaign needs. All featured
-            sponsors receive top billing across key areas.
+            Choose a duration that fits your campaign needs. Featured Sponsor
+            placement is the homepage sponsor rail, scheduled by campaign week.
           </p>
           <div className="flex justify-center gap-6 flex-wrap">
-            {[
-              { label: "1 Week", value: "7", price: "$25" },
-              { label: "2 Weeks", value: "14", price: "$45" },
-              { label: "1 Month", value: "30", price: "$80" },
-            ].map(({ label, value, price }) => (
-              <div
-                key={value}
-                onClick={() => {
-                  setCampaignDuration(value);
-                  trackAdEvent("advertising_option_selected", {
-                    ctaId: `featured_duration_${value}`,
-                    ctaLabel: `${label} ${price}`,
-                    ad_option: "featured-sponsor",
-                    duration_days: Number(value),
-                  });
-                }}
-                className={`cursor-pointer p-6 rounded-lg border ${
-                  campaignDuration === value
-                    ? "border-gold bg-gray-800"
-                    : "border-gray-600"
-                }`}
-              >
-                <h4 className="text-lg font-semibold text-white">{label}</h4>
-                <p className="text-gold">{price}</p>
-              </div>
-            ))}
+            {featuredDurationOptions.map(({ durationDays, amountDollars }) => {
+              const value = String(durationDays);
+              const label =
+                durationDays === 7
+                  ? "1 Week"
+                  : durationDays === 14
+                    ? "2 Weeks"
+                    : durationDays === 30
+                      ? "1 Month"
+                      : `${durationDays} Days`;
+              const price = `$${amountDollars}`;
+              return (
+                <div
+                  key={value}
+                  onClick={() => {
+                    setCampaignDuration(value);
+                    trackAdEvent("advertising_option_selected", {
+                      ctaId: `featured_duration_${value}`,
+                      ctaLabel: `${label} ${price}`,
+                      ad_option: "featured-sponsor",
+                      duration_days: Number(value),
+                    });
+                  }}
+                  className={`cursor-pointer p-6 rounded-lg border ${
+                    campaignDuration === value
+                      ? "border-gold bg-gray-800"
+                      : "border-gray-600"
+                  }`}
+                >
+                  <h4 className="text-lg font-semibold text-white">{label}</h4>
+                  <p className="text-gold">{price}</p>
+                </div>
+              );
+            })}
           </div>
         </section>
 
@@ -261,8 +274,9 @@ export default function FeaturedSponsorPage() {
             Upload Your Sponsor Ad Graphic
           </h3>
           <p className="text-sm text-gray-400 mb-2">
-            This image will be displayed as your Featured Sponsor Ad across the
-            platform. Upload a file or provide a hosted creative URL below.
+            This image is used for your Featured Sponsor card in scheduled
+            sponsor placements. Upload a file or provide a hosted creative URL
+            below.
           </p>
           <input
             type="file"
@@ -358,9 +372,44 @@ export default function FeaturedSponsorPage() {
           </label>
         </section>
 
+        <section className="bg-gray-800 p-6 rounded-lg text-left space-y-2">
+          <h3 className="text-lg font-semibold text-gold">
+            Checkout readiness checklist
+          </h3>
+          <ul className="text-sm text-gray-300 space-y-1">
+            <li>{campaignDuration ? "✅" : "❌"} Select campaign duration</li>
+            <li>
+              {hasCreative ? "✅" : "❌"} Add creative file or hosted creative
+              URL
+            </li>
+            <li>{name.trim().length >= 2 ? "✅" : "❌"} Enter contact name</li>
+            <li>
+              {businessName.trim().length >= 2 ? "✅" : "❌"} Enter business
+              name
+            </li>
+            <li>{hasValidEmail ? "✅" : "❌"} Enter valid email</li>
+            <li>
+              {confirmed ? "✅" : "❌"} Confirm campaign details are correct
+            </li>
+          </ul>
+          <p className="text-xs text-gray-400 pt-1">
+            Review timeline: requests are reviewed, approved campaigns are
+            scheduled into weekly capacity, then activated.
+          </p>
+          <p className="text-xs text-gray-400">
+            Need help before payment? Use /support or include escalation notes
+            in campaign notes.
+          </p>
+        </section>
+
         {/* Proceed Button */}
         <div className="text-center">
           {error ? <p className="text-sm text-red-300 mb-2">{error}</p> : null}
+          {!canProceed ? (
+            <p className="text-xs text-yellow-300 mb-2">
+              Checkout is disabled until all checklist items are complete.
+            </p>
+          ) : null}
           <button
             onClick={handleProceed}
             disabled={!canProceed || submitting}

@@ -10,9 +10,20 @@ import {
   getAdPriceCents,
   getAdQuote,
 } from "@/lib/advertising/pricing";
-import { getMongoDbName } from "@/lib/env";
+import { getJwtSecret, getMongoDbName } from "@/lib/env";
+import { createProductCheckoutSessionCore } from "@/lib/checkout/createProductCheckoutSession";
+import {
+  BLACK_CARD_TIERS,
+  BLACK_CARD_TIER_BY_ITEM_ID,
+  isBlackCardPlanItemId,
+} from "@/lib/black-card";
+import { getStripeSecretKey } from "@/lib/stripeSecret";
+import {
+  checkoutTypeToRevenueType,
+  computeRevenueSplit,
+} from "@/lib/payments/revenue";
 
-const stripeSecret = process.env.STRIPE_SECRET_KEY;
+const stripeSecret = getStripeSecretKey();
 const stripe = new Stripe(stripeSecret || "sk_missing", {
   apiVersion: "2025-02-24.acacia" as any,
 });
@@ -148,6 +159,7 @@ function isPremiumActiveFromDoc(doc: any) {
   return (
     doc.isPremium === true ||
     currentPlan === "premium" ||
+    currentPlan === "founding" ||
     premiumStatus === "active"
   );
 }
@@ -167,6 +179,21 @@ function isWealthBuilderPremiumEntitlementActive(doc: any) {
   );
 }
 
+function isBlackCardTierActiveFromDoc(doc: any, requestedTier: string) {
+  if (!doc || typeof doc !== "object") return false;
+
+  const normalizedTier =
+    typeof doc.blackCardTier === "string"
+      ? doc.blackCardTier.toLowerCase()
+      : "";
+  const normalizedStatus =
+    typeof doc.blackCardStatus === "string"
+      ? doc.blackCardStatus.toLowerCase()
+      : "inactive";
+
+  return normalizedTier === requestedTier && normalizedStatus === "active";
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
@@ -177,7 +204,7 @@ export default async function handler(
   }
 
   if (!stripeSecret) {
-    return res.status(500).json({ error: "Stripe not configured" });
+    return res.status(500).json({ error: "Stripe is not configured" });
   }
 
   const payload = req.body as CheckoutPayload;
@@ -192,7 +219,7 @@ export default async function handler(
 
   if (token) {
     try {
-      const SECRET = process.env.JWT_SECRET || process.env.NEXTAUTH_SECRET;
+      const SECRET = getJwtSecret();
       if (!SECRET) throw new Error("JWT_SECRET is not set");
 
       const decoded = jwt.verify(token, SECRET as string) as any;
@@ -246,6 +273,21 @@ export default async function handler(
     const client = await clientPromise;
     const db = client.db(getMongoDbName());
     const payments = db.collection("payments");
+
+    if (type === "product") {
+      const result = await createProductCheckoutSessionCore({
+        req,
+        db,
+        productId: itemId,
+        stripe,
+      });
+
+      if (result.status === 429 && result.body?.retryAfterSeconds) {
+        res.setHeader("Retry-After", String(result.body.retryAfterSeconds));
+      }
+
+      return res.status(result.status).json(result.body);
+    }
 
     const origin = getOrigin(req);
 
@@ -302,61 +344,6 @@ export default async function handler(
       }
 
       isPlatformAccount = true;
-    } else if (type === "product") {
-      const product = await db
-        .collection("products")
-        .findOne(
-          ObjectId.isValid(itemId)
-            ? { _id: new ObjectId(itemId) }
-            : { slug: itemId },
-        );
-
-      if (!product?.sellerId) {
-        console.error("Invalid product or missing seller:", itemId);
-        return res
-          .status(400)
-          .json({ error: "Invalid product or missing seller" });
-      }
-
-      const productStock = Number(
-        (product as any).stock ?? (product as any).inventory ?? 1,
-      );
-      if (Number.isFinite(productStock) && productStock <= 0) {
-        return res.status(409).json({
-          error:
-            "This product is out of stock and cannot be purchased right now.",
-        });
-      }
-
-      itemName = product?.name || itemName;
-
-      if (typeof product.price === "number") {
-        unitAmount = Math.round(product.price * 100);
-      } else if (typeof (product as any).priceCents === "number") {
-        unitAmount = (product as any).priceCents;
-      } else {
-        return res.status(400).json({ error: "Product price missing" });
-      }
-
-      const seller = await db.collection("sellers").findOne({
-        $or: [
-          { userId: product.sellerId },
-          ...(ObjectId.isValid(product.sellerId)
-            ? [{ _id: new ObjectId(product.sellerId) }]
-            : []),
-        ],
-      });
-
-      if (!seller?.stripeAccountId) {
-        console.error("Stripe account not found for seller:", product.sellerId);
-        return res
-          .status(400)
-          .json({ error: "Seller is not connected to Stripe" });
-      }
-
-      stripeAccountId = seller.stripeAccountId;
-      isPlatformAccount =
-        stripeAccountId === (process.env.PLATFORM_STRIPE_ACCOUNT_ID as string);
     } else if (type === "plan") {
       const planMap: Record<
         string,
@@ -369,12 +356,12 @@ export default async function handler(
         premium: {
           amount: 1200,
           name: "Plan Upgrade (premium)",
-          billingInterval: null,
+          billingInterval: "annual",
         },
         founder: {
           amount: 4900,
           name: "Plan Upgrade (founder)",
-          billingInterval: null,
+          billingInterval: "annual",
         },
         "music-creator-starter": {
           amount: 2900,
@@ -397,6 +384,23 @@ export default async function handler(
           amount: 7900,
           name: "Wealth Builder Premium (Annual)",
           billingInterval: "annual",
+        },
+
+        // BWE Black Card membership tiers
+        "black-card-standard": {
+          amount: Number(BLACK_CARD_TIERS.standard.priceCents ?? 0),
+          name: BLACK_CARD_TIERS.standard.label,
+          billingInterval: null,
+        },
+        "black-card-signature": {
+          amount: Number(BLACK_CARD_TIERS.signature.priceCents ?? 0),
+          name: BLACK_CARD_TIERS.signature.label,
+          billingInterval: "monthly",
+        },
+        "black-card-elite": {
+          amount: Number(BLACK_CARD_TIERS.elite.priceCents ?? 0),
+          name: BLACK_CARD_TIERS.elite.label,
+          billingInterval: "monthly",
         },
       };
 
@@ -423,6 +427,13 @@ export default async function handler(
           `${origin}/wealth-builder/upgrade?checkout=success`,
         );
         cancelUrl = `${origin}/wealth-builder/upgrade?checkout=cancel`;
+      }
+
+      if (isBlackCardPlanItemId(itemId)) {
+        successUrl = withCheckoutSessionId(
+          `${origin}/black-card/join?tier=${BLACK_CARD_TIER_BY_ITEM_ID[itemId]}&checkout=success`,
+        );
+        cancelUrl = `${origin}/black-card/join?tier=${BLACK_CARD_TIER_BY_ITEM_ID[itemId]}&checkout=cancel`;
       }
     } else if (type === "course") {
       const courseMap: Record<string, { name: string; amount: number }> = {
@@ -545,6 +556,25 @@ export default async function handler(
         finalItemId === "wealth-builder-premium-annual" ? "annual" : "monthly";
     }
 
+    if (
+      type === "plan" &&
+      (finalItemId === "premium" || finalItemId === "founder")
+    ) {
+      metadata.productKey = "bwe_membership";
+      metadata.tier = finalItemId === "founder" ? "founding" : "premium";
+      metadata.billingInterval = "annual";
+    }
+
+    if (type === "plan" && isBlackCardPlanItemId(finalItemId)) {
+      const blackCardTier = BLACK_CARD_TIER_BY_ITEM_ID[finalItemId];
+      metadata.productKey = "bwe_black_card";
+      metadata.tier = blackCardTier;
+      metadata.billingInterval =
+        String(BLACK_CARD_TIERS[blackCardTier].billingModel) === "entry_fee"
+          ? "entry_fee"
+          : "monthly";
+    }
+
     // ---------------------------------------------------------
     // PLAN GUARD (server-side)
     // ---------------------------------------------------------
@@ -552,7 +582,8 @@ export default async function handler(
       type === "plan" &&
       (finalItemId === "premium" ||
         finalItemId === "wealth-builder-premium-monthly" ||
-        finalItemId === "wealth-builder-premium-annual")
+        finalItemId === "wealth-builder-premium-annual" ||
+        isBlackCardPlanItemId(finalItemId))
     ) {
       const accountCollectionName =
         getAccountCollectionName(sessionAccountType);
@@ -583,6 +614,14 @@ export default async function handler(
         finalItemId === "wealth-builder-premium-monthly" ||
         finalItemId === "wealth-builder-premium-annual"
       ) {
+        if (sessionAccountType !== "user") {
+          return res.status(403).json({
+            error:
+              "Wealth Builder Premium is only available for personal user accounts",
+            code: "WEALTH_BUILDER_USER_ACCOUNT_REQUIRED",
+          });
+        }
+
         const existingEntitlement = await db
           .collection("user_entitlements")
           .findOne({
@@ -595,6 +634,24 @@ export default async function handler(
           return res.status(409).json({
             error: "Wealth Builder Premium is already active",
             code: "WEALTH_BUILDER_PREMIUM_ALREADY_ACTIVE",
+          });
+        }
+      }
+
+      if (isBlackCardPlanItemId(finalItemId)) {
+        if (sessionAccountType !== "user") {
+          return res.status(403).json({
+            error:
+              "BWE Black Card membership is currently available for personal user accounts",
+            code: "BLACK_CARD_USER_ACCOUNT_REQUIRED",
+          });
+        }
+
+        const requestedTier = BLACK_CARD_TIER_BY_ITEM_ID[finalItemId];
+        if (isBlackCardTierActiveFromDoc(accountDoc, requestedTier)) {
+          return res.status(409).json({
+            error: `BWE Black Card ${requestedTier} is already active`,
+            code: "BLACK_CARD_TIER_ALREADY_ACTIVE",
           });
         }
       }
@@ -672,6 +729,9 @@ export default async function handler(
       }
     }
 
+    const revenueType = checkoutTypeToRevenueType(type, finalItemId);
+    const split = computeRevenueSplit(revenueType, unitAmount);
+
     const checkoutFingerprint = buildCheckoutFingerprint({
       userId: sessionUserId,
       email: sessionEmail,
@@ -691,8 +751,12 @@ export default async function handler(
       `${checkoutFingerprint}|${minuteBucket}`,
     )}`;
 
+    const isAnnualMembershipSubscription =
+      type === "plan" &&
+      (finalItemId === "premium" || finalItemId === "founder");
+
     const baseParams: Stripe.Checkout.SessionCreateParams = {
-      mode: "payment",
+      mode: isAnnualMembershipSubscription ? "subscription" : "payment",
       payment_method_types: ["card"],
       line_items: [
         {
@@ -700,6 +764,9 @@ export default async function handler(
             currency: "usd",
             product_data: { name: itemName },
             unit_amount: unitAmount,
+            ...(isAnnualMembershipSubscription
+              ? { recurring: { interval: "year" as const, interval_count: 1 } }
+              : {}),
           },
           quantity: 1,
         },
@@ -709,20 +776,45 @@ export default async function handler(
       success_url: successUrl,
       cancel_url: cancelUrl,
       client_reference_id: sessionUserId,
-      payment_intent_data: {
-        metadata,
-        ...(isPlatformAccount
-          ? {}
-          : {
-              application_fee_amount: Math.round(unitAmount * 0.12),
-              transfer_data: { destination: stripeAccountId },
-            }),
-      },
+      ...(isAnnualMembershipSubscription
+        ? {
+            subscription_data: {
+              metadata,
+            },
+          }
+        : {
+            payment_intent_data: {
+              metadata,
+              ...(isPlatformAccount
+                ? {}
+                : {
+                    application_fee_amount: Math.round(unitAmount * 0.12),
+                    transfer_data: { destination: stripeAccountId },
+                  }),
+            },
+          }),
     };
 
     const stripeSession = await stripe.checkout.sessions.create(baseParams, {
       idempotencyKey,
     });
+
+    if (
+      type === "job" &&
+      normalizedJobId &&
+      ObjectId.isValid(normalizedJobId)
+    ) {
+      await db.collection("jobs").updateOne(
+        { _id: new ObjectId(normalizedJobId) },
+        {
+          $set: {
+            stripeSessionId: stripeSession.id,
+            paymentStatus: "pending",
+            updatedAt: new Date(),
+          },
+        },
+      );
+    }
 
     await payments.updateOne(
       { stripeSessionId: stripeSession.id },
@@ -739,6 +831,9 @@ export default async function handler(
           type,
           itemId: finalItemId,
           amountCents: unitAmount,
+          bweFee: split.bweFee,
+          bweFeePercent: split.bweFeePercent,
+          payout: split.sellerPayout,
           status: "pending",
           createdAt: new Date(),
           metadata: {
@@ -751,25 +846,43 @@ export default async function handler(
             placement: normalizedPlacement || null,
             jobId: normalizedJobId || null,
             checkoutFingerprint,
+            grossAmount: split.grossAmount,
+            netAmount: split.netAmount,
             productKey:
               type === "plan" &&
               (finalItemId === "wealth-builder-premium-monthly" ||
                 finalItemId === "wealth-builder-premium-annual")
                 ? "wealth_builder_premium"
-                : null,
+                : type === "plan" && isBlackCardPlanItemId(finalItemId)
+                  ? "bwe_black_card"
+                  : null,
             tier:
               type === "plan" &&
               (finalItemId === "wealth-builder-premium-monthly" ||
                 finalItemId === "wealth-builder-premium-annual")
                 ? "premium"
-                : null,
+                : type === "plan" && isBlackCardPlanItemId(finalItemId)
+                  ? BLACK_CARD_TIER_BY_ITEM_ID[finalItemId]
+                  : null,
             billingInterval:
-              type === "plan" && finalItemId === "wealth-builder-premium-annual"
+              type === "plan" &&
+              (finalItemId === "premium" || finalItemId === "founder")
                 ? "annual"
                 : type === "plan" &&
-                    finalItemId === "wealth-builder-premium-monthly"
-                  ? "monthly"
-                  : null,
+                    finalItemId === "wealth-builder-premium-annual"
+                  ? "annual"
+                  : type === "plan" &&
+                      finalItemId === "wealth-builder-premium-monthly"
+                    ? "monthly"
+                    : type === "plan" && isBlackCardPlanItemId(finalItemId)
+                      ? String(
+                          BLACK_CARD_TIERS[
+                            BLACK_CARD_TIER_BY_ITEM_ID[finalItemId]
+                          ].billingModel,
+                        ) === "entry_fee"
+                        ? "entry_fee"
+                        : "monthly"
+                      : null,
           },
         },
         $set: {
@@ -778,25 +891,6 @@ export default async function handler(
       },
       { upsert: true },
     );
-
-    if (type === "product") {
-      await db.collection("flow_events").insertOne({
-        eventType: "marketplace_checkout_created",
-        pageRoute: "/api/stripe/checkout",
-        section: "marketplace_checkout_api",
-        source: "stripe_checkout_api",
-        source_variant: "legacy_stripe_checkout",
-        path: req.url || "/api/stripe/checkout",
-        checkout_variant: "legacy_stripe_checkout",
-        productId: finalItemId,
-        entityId: finalItemId,
-        entityType: "product",
-        stripeSessionId: stripeSession.id,
-        accountType: "authenticated",
-        isAuthenticated: true,
-        createdAt: new Date(),
-      });
-    }
 
     return res.status(200).json({
       sessionId: stripeSession.id,

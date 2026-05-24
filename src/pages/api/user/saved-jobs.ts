@@ -5,8 +5,9 @@ import jwt from "jsonwebtoken";
 import cookie from "cookie";
 import { ObjectId } from "mongodb";
 import clientPromise from "../../../lib/mongodb";
+import { getJwtSecret } from "@/lib/env";
 
-const SECRET = process.env.JWT_SECRET ?? process.env.NEXTAUTH_SECRET!;
+const SECRET = getJwtSecret();
 
 type SavedJob = {
   _id: string;

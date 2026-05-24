@@ -57,12 +57,12 @@ export default function ExploreGigsPage() {
           <div className="mt-5 rounded-2xl border border-white/10 bg-black/40 p-4">
             <div className="flex items-center gap-2 text-sm text-gray-300">
               <Search className="h-4 w-4 text-gold" />
-              Search (Coming Soon)
+              Search
             </div>
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="Search by skill, role, or service (coming soon)"
+              placeholder="Search by skill, role, or service"
               className="mt-3 w-full rounded-xl border border-white/10 bg-black/50 px-4 py-3 text-white placeholder:text-gray-500 outline-none"
               disabled
             />

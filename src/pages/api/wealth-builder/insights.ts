@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { requireWealthUser } from "@/lib/wealth-builder/auth";
 import { getWealthDb } from "@/lib/wealth-builder/mongo";
 import { getMonthRange } from "@/lib/wealth-builder/helpers";
+import { getWealthBuilderEntitlementForUser } from "@/lib/wealth-builder/entitlements";
 
 export default async function handler(
   req: NextApiRequest,
@@ -9,6 +10,15 @@ export default async function handler(
 ) {
   const auth = await requireWealthUser(req, res);
   if (!auth) return;
+
+  const entitlement = await getWealthBuilderEntitlementForUser(auth.userId);
+  if (!entitlement.isPremium || !entitlement.limits.insightsEnabled) {
+    return res.status(403).json({
+      ok: false,
+      code: "PREMIUM_REQUIRED",
+      message: "Wealth Builder Insights require Premium.",
+    });
+  }
 
   const db = await getWealthDb();
   const debts = db.collection("financial_debts");

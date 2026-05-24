@@ -1,11 +1,23 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
 import clientPromise from "@/lib/mongodb";
-import { getMongoDbName } from "@/lib/env";
+import { getJwtSecret, getMongoDbName } from "@/lib/env";
 import cookie from "cookie";
 import jwt from "jsonwebtoken";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
+function getStripeClient() {
+  const key = process.env.STRIPE_SECRET_KEY;
+  if (!key) {
+    throw new Error("Missing STRIPE_SECRET_KEY");
+  }
+  return new Stripe(key);
+}
+
+type ApiErrorCode =
+  | "METHOD_NOT_ALLOWED"
+  | "UNAUTHORIZED"
+  | "SELLER_NOT_FOUND"
+  | "INTERNAL_ERROR";
 
 function getOrigin(req: NextApiRequest) {
   const origin = req.headers.origin as string | undefined;
@@ -19,7 +31,7 @@ function getSession(req: NextApiRequest) {
   const token = cookies.session_token;
   if (!token) return null;
 
-  const SECRET = process.env.JWT_SECRET || process.env.NEXTAUTH_SECRET;
+  const SECRET = getJwtSecret();
   if (!SECRET) throw new Error("JWT_SECRET is not set");
 
   const decoded = jwt.verify(token, SECRET) as any;
@@ -30,13 +42,23 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  if (req.method !== "POST")
-    return res.status(405).json({ error: "Method not allowed" });
+  if (req.method !== "POST") {
+    return res.status(405).json({
+      ok: false,
+      code: "METHOD_NOT_ALLOWED" satisfies ApiErrorCode,
+      message: "Method not allowed",
+    });
+  }
 
   try {
     const session = getSession(req);
-    if (!session?.userId)
-      return res.status(401).json({ error: "Unauthorized" });
+    if (!session?.userId) {
+      return res.status(401).json({
+        ok: false,
+        code: "UNAUTHORIZED" satisfies ApiErrorCode,
+        message: "Login required",
+      });
+    }
 
     const client = await clientPromise;
     const db = client.db(getMongoDbName());
@@ -49,9 +71,17 @@ export default async function handler(
       ],
     });
 
-    if (!seller) return res.status(400).json({ error: "Seller not found" });
+    if (!seller) {
+      return res.status(400).json({
+        ok: false,
+        code: "SELLER_NOT_FOUND" satisfies ApiErrorCode,
+        message: "Seller not found",
+      });
+    }
 
     let stripeAccountId = seller.stripeAccountId as string | undefined;
+
+    const stripe = getStripeClient();
 
     // Create Stripe Express account if missing
     if (!stripeAccountId) {
@@ -87,9 +117,15 @@ export default async function handler(
       return_url: `${origin}${safeReturnTo}`,
     });
 
-    return res.status(200).json({ url: link.url, stripeAccountId });
+    return res
+      .status(200)
+      .json({ ok: true, data: { url: link.url, stripeAccountId } });
   } catch (err: any) {
     console.error("create-account-link error:", err);
-    return res.status(500).json({ error: err?.message || "Server error" });
+    return res.status(500).json({
+      ok: false,
+      code: "INTERNAL_ERROR" satisfies ApiErrorCode,
+      message: "Failed to create Stripe account link",
+    });
   }
 }

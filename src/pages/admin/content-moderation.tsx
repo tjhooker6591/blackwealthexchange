@@ -1,168 +1,167 @@
-// src/pages/admin/content-moderation.tsx
-"use client";
-
 import React, { useEffect, useState } from "react";
-import Head from "next/head";
+import type { GetServerSideProps } from "next";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { requireAdminPageProps } from "@/lib/adminPageGuard";
 
-type FlaggedContentItem = {
-  id: number | string;
+type Row = {
+  targetType: string;
+  targetId: string;
   title: string;
-  type: string;
-  flaggedBy: string;
+  status: string;
+  updatedAt?: string;
 };
-
-type MeResponse = {
-  user?: {
-    email?: string;
-    accountType?: string;
-    role?: string;
-    isAdmin?: boolean;
-    roles?: string[];
-  };
-};
-
-function userIsAdmin(user?: MeResponse["user"]) {
-  if (!user) return false;
-  if (user.isAdmin) return true;
-  if (user.accountType === "admin") return true;
-  if (user.role === "admin") return true;
-  if (Array.isArray(user.roles) && user.roles.includes("admin")) return true;
-  return false;
-}
 
 export default function ContentModeration() {
-  const router = useRouter();
-  const [checkingAccess, setCheckingAccess] = useState(true);
+  const [items, setItems] = useState<Row[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [reason, setReason] = useState<Record<string, string>>({});
+  const [saving, setSaving] = useState("");
 
-  // Placeholder data until moderation API is wired
-  const flaggedContent: FlaggedContentItem[] = [
-    {
-      id: 1,
-      title: "Investment Tips 101",
-      type: "Article",
-      flaggedBy: "User123",
-    },
-    {
-      id: 2,
-      title: "Community Post: Funding Help",
-      type: "Post",
-      flaggedBy: "User456",
-    },
-  ];
+  const load = async () => {
+    setLoading(true);
+    setError("");
+    const res = await fetch("/api/admin/content-moderation/queue", {
+      credentials: "include",
+    });
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      setError(json?.error || "Failed to load moderation queue");
+      setLoading(false);
+      return;
+    }
+    setItems(Array.isArray(json.items) ? json.items : []);
+    setLoading(false);
+  };
 
   useEffect(() => {
-    let mounted = true;
+    load();
+  }, []);
 
-    const checkAdmin = async () => {
-      try {
-        const sessionRes = await fetch("/api/auth/me", {
-          cache: "no-store",
-          credentials: "include",
-        });
-
-        if (!sessionRes.ok) {
-          router.replace("/login?redirect=/admin/content-moderation");
-          return;
-        }
-
-        const sessionData: MeResponse = await sessionRes
-          .json()
-          .catch(() => ({}));
-
-        if (!userIsAdmin(sessionData.user)) {
-          router.replace("/");
-          return;
-        }
-      } catch {
-        router.replace("/");
-        return;
-      } finally {
-        if (mounted) setCheckingAccess(false);
-      }
-    };
-
-    checkAdmin();
-
-    return () => {
-      mounted = false;
-    };
-  }, [router]);
-
-  if (checkingAccess) {
-    return <p className="p-8 text-white">Loading moderation dashboard...</p>;
-  }
+  const act = async (row: Row, action: string) => {
+    const r = (reason[row.targetId] || "").trim();
+    if (!r) {
+      setError("Reason required");
+      return;
+    }
+    setSaving(row.targetId);
+    const res = await fetch("/api/admin/content-moderation/action", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({
+        targetType: row.targetType,
+        targetId: row.targetId,
+        action,
+        reason: r,
+      }),
+    });
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok) setError(json?.error || "Action failed");
+    await load();
+    setSaving("");
+  };
 
   return (
-    <>
-      <Head>
-        <title>Admin | Content Moderation</title>
-      </Head>
-
-      <div className="min-h-screen bg-black text-white p-8">
-        <div className="mx-auto max-w-5xl">
-          <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h1 className="mb-2 text-3xl font-bold text-gold">
-                Content Moderation
-              </h1>
-              <p className="text-sm text-gray-400">
-                Review flagged content and moderation workflows.
-              </p>
-            </div>
-
-            <Link
-              href="/admin/dashboard"
-              className="rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-2 text-sm text-zinc-200 hover:bg-zinc-800"
-            >
-              Back to Admin Dashboard
-            </Link>
+    <main className="min-h-screen bg-black text-white p-8">
+      <div className="mx-auto max-w-6xl">
+        <div className="mb-6 flex items-center justify-between gap-3">
+          <div>
+            <h1 className="text-3xl font-bold text-gold mb-1">
+              Content Moderation
+            </h1>
+            <p className="text-sm text-gray-400">
+              Review flagged content and apply audited moderation actions.
+            </p>
           </div>
-
-          <div className="mb-6 rounded-xl border border-yellow-500/20 bg-yellow-500/5 p-4 text-sm text-yellow-200">
-            This moderation page is currently a UI placeholder. Approve/Remove
-            actions are not wired to a backend moderation API yet.
-          </div>
-
-          {flaggedContent.length === 0 ? (
-            <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-6 text-zinc-300">
-              No flagged content at this time. 🎉
-            </div>
-          ) : (
-            <ul className="space-y-4">
-              {flaggedContent.map((content) => (
-                <li
-                  key={content.id}
-                  className="rounded-xl border border-zinc-800 bg-zinc-950 p-4"
-                >
-                  <p className="text-lg font-semibold text-white">
-                    {content.title}
-                  </p>
-                  <p className="mt-1 text-sm text-zinc-400">
-                    {content.type} • Flagged by: {content.flaggedBy}
-                  </p>
-
-                  <div className="mt-3 flex gap-2">
-                    <button
-                      className="rounded bg-green-600 px-3 py-1 text-black opacity-60 cursor-not-allowed"
-                      disabled
-                    >
-                      Approve
-                    </button>
-                    <button
-                      className="rounded bg-red-600 px-3 py-1 text-black opacity-60 cursor-not-allowed"
-                      disabled
-                    >
-                      Remove
-                    </button>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
+          <Link
+            href="/admin/dashboard"
+            className="rounded border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-zinc-200 hover:bg-zinc-800"
+          >
+            Back to Admin Dashboard
+          </Link>
         </div>
+
+        <div className="mb-4 flex items-center gap-2 text-xs">
+          <span className="rounded border border-zinc-700 bg-zinc-900 px-2 py-1 text-zinc-200">
+            Queue items: {items.length}
+          </span>
+          <button
+            onClick={load}
+            className="rounded border border-zinc-700 bg-zinc-900 px-2 py-1 text-zinc-200 hover:bg-zinc-800"
+          >
+            Refresh
+          </button>
+        </div>
+
+        {error ? (
+          <div className="mb-3 rounded border border-red-500/40 bg-red-900/20 p-3 text-sm text-red-200">
+            {error}
+          </div>
+        ) : null}
+
+        {loading ? (
+          <div className="rounded-lg border border-zinc-800 bg-zinc-950 p-4 text-sm text-zinc-300">
+            Loading moderation queue…
+          </div>
+        ) : items.length === 0 ? (
+          <div className="rounded-lg border border-zinc-800 bg-zinc-950 p-4 text-sm text-zinc-300">
+            No moderation items are currently awaiting admin action.
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {items.map((row) => (
+              <div
+                key={row.targetType + row.targetId}
+                className="border border-gray-800 rounded p-3 bg-gray-900"
+              >
+                <div className="text-sm">
+                  <span className="text-gold">{row.targetType}</span> •{" "}
+                  {row.title} • status: {row.status}
+                </div>
+                <input
+                  className="mt-2 w-full bg-black border border-gray-700 rounded px-2 py-1 text-sm"
+                  placeholder="reason (required)"
+                  value={reason[row.targetId] || ""}
+                  onChange={(e) =>
+                    setReason((prev) => ({
+                      ...prev,
+                      [row.targetId]: e.target.value,
+                    }))
+                  }
+                />
+                <div className="mt-2 flex gap-2">
+                  <button
+                    disabled={saving === row.targetId}
+                    onClick={() => act(row, "approve")}
+                    className="px-2 py-1 rounded bg-emerald-600 text-black text-sm"
+                  >
+                    Approve
+                  </button>
+                  <button
+                    disabled={saving === row.targetId}
+                    onClick={() => act(row, "reject")}
+                    className="px-2 py-1 rounded bg-orange-600 text-black text-sm"
+                  >
+                    Reject
+                  </button>
+                  <button
+                    disabled={saving === row.targetId}
+                    onClick={() => act(row, "remove")}
+                    className="px-2 py-1 rounded bg-red-600 text-black text-sm"
+                  >
+                    Remove
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
-    </>
+    </main>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = requireAdminPageProps(
+  "/admin/content-moderation",
+);

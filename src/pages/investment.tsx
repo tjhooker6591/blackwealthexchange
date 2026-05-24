@@ -475,7 +475,7 @@ export default function Investment() {
             </p>
             <div className="mt-4 rounded-xl border border-white/10 bg-black/30 p-4">
               <p className="text-sm text-gray-300">
-                <span className="text-gold font-semibold">Coming soon:</span>{" "}
+                <span className="text-gold font-semibold">Planned next:</span>{" "}
                 community spotlights, founder journeys, and financial
                 accountability case studies.
               </p>

@@ -2,13 +2,21 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import { requireAdminFromRequest } from "@/lib/adminAuth";
+import { ADMIN_ERROR_CODES, adminFail } from "@/lib/adminApiContract";
+import { getMongoDbName } from "@/lib/env";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
   if (req.method !== "GET") {
-    return res.status(405).json({ message: "Method Not Allowed" });
+    res.setHeader("Allow", ["GET"]);
+    return adminFail(
+      res,
+      405,
+      ADMIN_ERROR_CODES.METHOD_NOT_ALLOWED,
+      "Method Not Allowed",
+    );
   }
 
   const admin = await requireAdminFromRequest(req, res);
@@ -16,7 +24,7 @@ export default async function handler(
 
   try {
     const client = await clientPromise;
-    const db = client.db("bwes-cluster");
+    const db = client.db(getMongoDbName());
 
     const limitRaw = Number(req.query.limit ?? 200);
     const limit = Number.isFinite(limitRaw)
@@ -68,9 +76,12 @@ export default async function handler(
     });
   } catch (err) {
     console.error("Error fetching affiliates:", err);
-    return res
-      .status(500)
-      .json({ message: "Internal server error while fetching affiliates" });
+    return adminFail(
+      res,
+      500,
+      ADMIN_ERROR_CODES.INTERNAL_ERROR,
+      "Internal server error while fetching affiliates",
+    );
   }
 }
 

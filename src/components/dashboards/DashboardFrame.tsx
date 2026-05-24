@@ -46,7 +46,7 @@ function buildNav(accountType: AccountType): NavItem[] {
       label: "Dashboard Home",
       href: "/dashboard",
       icon: <LayoutDashboard size={18} />,
-      show: (t) => t !== "user",
+      show: () => true,
     },
     {
       label: "Directory",
@@ -56,8 +56,33 @@ function buildNav(accountType: AccountType): NavItem[] {
     },
 
     {
+      label: "Find Jobs",
+      href: "/job-listings",
+      icon: <Briefcase size={18} />,
+      show: (t) => t === "user",
+    },
+    {
+      label: "My Applications",
+      href: "/applications",
+      icon: <Briefcase size={18} />,
+      show: (t) => t === "user",
+    },
+    {
+      label: "Saved Jobs",
+      href: "/saved-jobs",
+      icon: <Briefcase size={18} />,
+      show: (t) => t === "user",
+    },
+    {
+      label: "My Profile",
+      href: "/profile",
+      icon: <LayoutDashboard size={18} />,
+      show: (t) => t === "user",
+    },
+
+    {
       label: "Manage Ads",
-      href: "/dashboard/business/ads",
+      href: "/advertise-with-us",
       icon: <Megaphone size={18} />,
       show: (t) => t === "business" || t === "admin",
     },
@@ -183,7 +208,14 @@ export default function DashboardFrame({
     }
   }
 
-  const pageTitle = "BWE Global Dashboard";
+  const pageTitle =
+    accountType === "seller"
+      ? "Seller Dashboard"
+      : accountType === "employer"
+        ? "Employer Dashboard"
+        : accountType === "user"
+          ? "User Dashboard"
+          : "BWE Global Dashboard";
   const whoLabel = me?.businessName || me?.email;
 
   return (

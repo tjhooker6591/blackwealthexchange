@@ -123,6 +123,7 @@ function releaseCheckoutLock(attemptKey: string) {
 export default function AdvertisingCheckoutPage() {
   const router = useRouter();
   const [message, setMessage] = useState("");
+  const [retryHint, setRetryHint] = useState(false);
 
   const trackAdCheckoutEvent = (
     eventType: string,
@@ -212,6 +213,7 @@ export default function AdvertisingCheckoutPage() {
 
     startedAttemptRef.current = attemptKey;
     setLoading(true);
+    setRetryHint(false);
     setMessage("Preparing secure checkout…");
 
     trackAdCheckoutEvent("advertising_checkout_started", {
@@ -279,6 +281,7 @@ export default function AdvertisingCheckoutPage() {
       releaseCheckoutLock(attemptKey);
       startedAttemptRef.current = null;
       setMessage(err?.message || "Unable to start checkout.");
+      setRetryHint(true);
       setLoading(false);
     }
   };
@@ -329,6 +332,9 @@ export default function AdvertisingCheckoutPage() {
         </h1>
 
         <div className="mt-4 rounded-xl border border-white/10 bg-black/30 p-4 text-sm space-y-2">
+          <div className="rounded-lg border border-yellow-500/30 bg-yellow-500/10 px-3 py-2 text-xs text-yellow-100">
+            You are reviewing your transaction before secure payment handoff.
+          </div>
           <div>
             <span className="text-zinc-400">Option:</span>{" "}
             <span className="text-white font-semibold">{parsed.label}</span>
@@ -355,10 +361,40 @@ export default function AdvertisingCheckoutPage() {
               <span className="text-white break-all">{parsed.campaignId}</span>
             </div>
           ) : null}
+          <div className="pt-2 border-t border-white/10">
+            <span className="text-zinc-400">Estimated Total:</span>{" "}
+            <span className="text-yellow-300 font-semibold">
+              ${parsed.amountDollars}
+            </span>
+          </div>
+        </div>
+
+        <div className="mt-4 rounded-xl border border-white/10 bg-zinc-900/70 p-4 text-xs text-zinc-300 space-y-1">
+          <p className="font-semibold text-zinc-100">What happens next</p>
+          <p>1) Complete secure payment.</p>
+          <p>2) Campaign enters review/approval workflow.</p>
+          <p>
+            3) Approved campaigns are scheduled and activated by placement
+            rules.
+          </p>
+          <p className="pt-1">
+            Need help? Visit <span className="text-yellow-200">/support</span>{" "}
+            or review
+            <span className="text-yellow-200">
+              {" "}
+              /legal/advertising-guidelines
+            </span>
+            .
+          </p>
         </div>
 
         {message ? (
           <p className="mt-4 text-sm text-zinc-300">{message}</p>
+        ) : null}
+        {retryHint ? (
+          <p className="mt-2 text-xs text-yellow-200">
+            Retry checkout, or go back to confirm details before trying again.
+          </p>
         ) : null}
 
         <div className="mt-6 flex gap-3">

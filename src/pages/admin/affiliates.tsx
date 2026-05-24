@@ -5,6 +5,10 @@ import React, { useCallback, useEffect, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import type { GetServerSideProps } from "next";
+import cookie from "cookie";
+import jwt from "jsonwebtoken";
+import { getJwtSecret } from "@/lib/env";
 
 interface Affiliate {
   _id: string;
@@ -27,6 +31,36 @@ interface MeResponse {
   };
 }
 
+interface ApiErrorShape {
+  code?: string;
+  message?: string;
+  error?: string;
+}
+
+type ParsedApiError = {
+  code: string;
+  message: string;
+};
+
+function parseApiError(
+  data: ApiErrorShape | null | undefined,
+  fallback: string,
+): ParsedApiError {
+  const code = typeof data?.code === "string" ? data.code.trim() : "";
+  const message =
+    typeof data?.message === "string"
+      ? data.message
+      : typeof data?.error === "string"
+        ? data.error
+        : fallback;
+
+  return { code, message };
+}
+
+function toApiErrorText(parsed: ParsedApiError) {
+  return parsed.code ? `${parsed.code}: ${parsed.message}` : parsed.message;
+}
+
 function userIsAdmin(user?: MeResponse["user"]) {
   if (!user) return false;
   if (user.isAdmin) return true;
@@ -46,6 +80,7 @@ export default function AdminAffiliates() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState("");
+  const [errorCode, setErrorCode] = useState("");
 
   const loadAffiliateData = useCallback(async () => {
     const res = await fetch("/api/admin/affiliates/list", {
@@ -56,7 +91,10 @@ export default function AdminAffiliates() {
     const data = await res.json().catch(() => ({}));
 
     if (!res.ok) {
-      throw new Error(data?.error || "Failed to load affiliates");
+      const parsed = parseApiError(data, "Failed to load affiliates");
+      const err = new Error(toApiErrorText(parsed));
+      (err as any).apiCode = parsed.code;
+      throw err;
     }
 
     setPending(Array.isArray(data?.pending) ? data.pending : []);
@@ -70,6 +108,7 @@ export default function AdminAffiliates() {
     const checkAdminAndFetch = async () => {
       try {
         setError("");
+        setErrorCode("");
 
         const sessionRes = await fetch("/api/auth/me", {
           cache: "no-store",
@@ -93,6 +132,7 @@ export default function AdminAffiliates() {
         await loadAffiliateData();
       } catch (err: any) {
         if (mounted) {
+          setErrorCode(typeof err?.apiCode === "string" ? err.apiCode : "");
           setError(err?.message || "Failed to load affiliates");
         }
       } finally {
@@ -111,8 +151,10 @@ export default function AdminAffiliates() {
     try {
       setRefreshing(true);
       setError("");
+      setErrorCode("");
       await loadAffiliateData();
     } catch (err: any) {
+      setErrorCode(typeof err?.apiCode === "string" ? err.apiCode : "");
       setError(err?.message || "Failed to refresh affiliates");
     } finally {
       setRefreshing(false);
@@ -122,6 +164,7 @@ export default function AdminAffiliates() {
   const handleAction = async (id: string, action: "approve" | "reject") => {
     try {
       setError("");
+      setErrorCode("");
 
       const res = await fetch(`/api/admin/affiliates/${action}`, {
         method: "POST",
@@ -133,11 +176,15 @@ export default function AdminAffiliates() {
       const data = await res.json().catch(() => ({}));
 
       if (!res.ok) {
-        throw new Error(data?.error || `Failed to ${action} affiliate`);
+        const parsed = parseApiError(data, `Failed to ${action} affiliate`);
+        const err = new Error(toApiErrorText(parsed));
+        (err as any).apiCode = parsed.code;
+        throw err;
       }
 
       await refreshData();
     } catch (err: any) {
+      setErrorCode(typeof err?.apiCode === "string" ? err.apiCode : "");
       setError(err?.message || `Failed to ${action} affiliate`);
     }
   };
@@ -187,7 +234,15 @@ export default function AdminAffiliates() {
             <>
               {error ? (
                 <div className="mb-6 rounded-xl border border-red-500/30 bg-red-950/20 p-4 text-red-200">
-                  {error}
+                  {errorCode ? (
+                    <div className="mb-1 text-xs text-red-300/90">
+                      Code:{" "}
+                      <span className="whitespace-nowrap font-mono tracking-normal">
+                        {errorCode}
+                      </span>
+                    </div>
+                  ) : null}
+                  <div>{error}</div>
                 </div>
               ) : null}
 
@@ -199,7 +254,7 @@ export default function AdminAffiliates() {
 
                 {pending.length === 0 ? (
                   <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4 text-zinc-300">
-                    No pending applications.
+                    No affiliate applications are awaiting review.
                   </div>
                 ) : (
                   <div className="space-y-3">
@@ -241,7 +296,7 @@ export default function AdminAffiliates() {
 
                 {active.length === 0 ? (
                   <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4 text-zinc-300">
-                    No active affiliates yet.
+                    No affiliates are currently active.
                   </div>
                 ) : (
                   <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-zinc-950">
@@ -284,7 +339,7 @@ export default function AdminAffiliates() {
 
                 {rejected.length === 0 ? (
                   <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-4 text-zinc-300">
-                    No rejected affiliates.
+                    No rejected affiliates are recorded in this view.
                   </div>
                 ) : (
                   <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-zinc-950">
@@ -323,3 +378,50 @@ export default function AdminAffiliates() {
     </>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  try {
+    const cookies = cookie.parse(req.headers.cookie || "");
+    const token = cookies.session_token;
+
+    if (!token) {
+      return {
+        redirect: {
+          destination: "/login?redirect=/admin/affiliates",
+          permanent: false,
+        },
+      };
+    }
+
+    const payload = jwt.verify(token, getJwtSecret()) as {
+      accountType?: string;
+      role?: string;
+      isAdmin?: boolean;
+      roles?: string[];
+    };
+
+    const isAdmin =
+      payload.isAdmin === true ||
+      payload.accountType === "admin" ||
+      payload.role === "admin" ||
+      (Array.isArray(payload.roles) && payload.roles.includes("admin"));
+
+    if (!isAdmin) {
+      return {
+        redirect: {
+          destination: "/login?redirect=/admin/affiliates",
+          permanent: false,
+        },
+      };
+    }
+
+    return { props: {} };
+  } catch {
+    return {
+      redirect: {
+        destination: "/login?redirect=/admin/affiliates",
+        permanent: false,
+      },
+    };
+  }
+};

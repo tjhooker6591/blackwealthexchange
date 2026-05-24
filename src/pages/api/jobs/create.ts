@@ -2,14 +2,16 @@ import { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import { parse } from "cookie";
 import jwt from "jsonwebtoken";
-import { getMongoDbName } from "@/lib/env";
+import { getJwtSecret, getMongoDbName } from "@/lib/env";
+import { sanitizeRichHtml } from "@/lib/security/sanitizeHtml";
 
 // Fallback secret for local dev
-const JWT_SECRET = process.env.JWT_SECRET || "dev-secret-key";
+const JWT_SECRET = getJwtSecret();
 
-// Basic sanitization function to strip HTML/script tags
-function sanitize(input: string): string {
-  return input.replace(/<[^>]*>?/gm, "");
+function sanitizeText(input: string): string {
+  return sanitizeRichHtml(input)
+    .replace(/<[^>]*>?/gm, "")
+    .trim();
 }
 
 export default async function handler(
@@ -54,6 +56,11 @@ export default async function handler(
       contactEmail = "",
       isFeatured,
       isPaid,
+      requiredSkills,
+      requiredCertifications,
+      minimumYearsExperience,
+      requiresResume,
+      workAuthorizationRequired,
     } = req.body;
 
     if (
@@ -67,19 +74,42 @@ export default async function handler(
       return res.status(400).json({ error: "Missing required job fields" });
     }
 
+    const normalizedRequiredSkills = Array.isArray(requiredSkills)
+      ? requiredSkills
+      : String(requiredSkills || "")
+          .split(",")
+          .map((s) => sanitizeText(String(s)).toLowerCase())
+          .filter(Boolean);
+    const normalizedRequiredCertifications = Array.isArray(
+      requiredCertifications,
+    )
+      ? requiredCertifications
+      : String(requiredCertifications || "")
+          .split(",")
+          .map((s) => sanitizeText(String(s)).toLowerCase())
+          .filter(Boolean);
+    const minYears = Number(minimumYearsExperience || 0);
+
     const job = {
-      title: sanitize(title),
-      company: sanitize(company),
-      location: sanitize(location),
-      type: sanitize(type),
-      description: sanitize(description),
-      salary: sanitize(salary || ""),
-      contactEmail: sanitize(contactEmail),
+      title: sanitizeText(title),
+      company: sanitizeText(company),
+      location: sanitizeText(location),
+      type: sanitizeText(type),
+      description: sanitizeRichHtml(String(description || "")).trim(),
+      salary: sanitizeText(salary || ""),
+      contactEmail: sanitizeText(contactEmail),
       email: decoded.email,
       userId: decoded.userId,
       applicants: [],
       isFeatured: !!isFeatured,
       isPaid: !!isPaid,
+      requiresResume: requiresResume !== false,
+      requiredSkills: normalizedRequiredSkills,
+      requiredCertifications: normalizedRequiredCertifications,
+      minimumYearsExperience: Number.isFinite(minYears)
+        ? Math.max(0, minYears)
+        : 0,
+      workAuthorizationRequired: Boolean(workAuthorizationRequired),
       status: "pending", // <-- Updated from "active" to "pending"
       createdAt: new Date(),
     };

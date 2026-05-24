@@ -54,6 +54,11 @@ const PostJob = () => {
     description: "",
     salary: "",
     contactEmail: "",
+    requiredSkills: "",
+    requiredCertifications: "",
+    minimumYearsExperience: "",
+    requiresResume: true,
+    workAuthorizationRequired: false,
   });
 
   const autoPostRanRef = useRef(false);
@@ -154,13 +159,13 @@ const PostJob = () => {
       const draft = JSON.parse(raw) as JobDraft;
 
       // restore into UI
-      setFormData(draft.formData);
+      setFormData((prev) => ({ ...prev, ...draft.formData }));
       setTier(paidTier);
       setDraftSaved(true);
 
       // auto-submit paid job
       (async () => {
-        await submitJob(draft.formData, paidTier, true);
+        await submitJob({ ...formData, ...draft.formData }, paidTier, true);
         // clear query params after posting (prevents accidental duplicates on refresh)
         router.replace("/job-listings");
       })();
@@ -349,7 +354,7 @@ const PostJob = () => {
         <div className="grid md:grid-cols-3 gap-4 mb-8 mt-8">
           <TierCard
             title="Free Post"
-            subtitle="Basic listing, 1 per account"
+            subtitle="Basic listing submitted for approval"
             price="$0"
             active={tier === "free"}
             onSelect={() => setTier("free")}
@@ -357,7 +362,7 @@ const PostJob = () => {
 
           <TierCard
             title="Standard Post"
-            subtitle="30-day listing, enhanced visibility"
+            subtitle="Paid listing with standard placement in job listings"
             price="$29.99"
             active={tier === "standard"}
             onSelect={() => setTier("standard")}
@@ -398,7 +403,7 @@ const PostJob = () => {
 
           <TierCard
             title="Featured Post"
-            subtitle="Homepage promo, pinned, bold style"
+            subtitle="30-day featured badge + featured-first sort in job listings"
             price="$79.99"
             active={tier === "featured"}
             onSelect={() => setTier("featured")}
@@ -519,6 +524,63 @@ const PostJob = () => {
             className="w-full p-3 rounded bg-gray-700 border border-gray-600"
           />
 
+          <div className="rounded border border-gray-700 bg-gray-900/60 p-4 space-y-3">
+            <p className="text-sm font-semibold text-gold">
+              Screening rules (optional but recommended)
+            </p>
+            <input
+              type="text"
+              name="requiredSkills"
+              placeholder="Required skills (comma-separated)"
+              value={formData.requiredSkills}
+              onChange={handleChange}
+              className="w-full p-3 rounded bg-gray-700 border border-gray-600"
+            />
+            <input
+              type="text"
+              name="requiredCertifications"
+              placeholder="Required certifications/licenses (comma-separated)"
+              value={formData.requiredCertifications}
+              onChange={handleChange}
+              className="w-full p-3 rounded bg-gray-700 border border-gray-600"
+            />
+            <input
+              type="number"
+              min="0"
+              name="minimumYearsExperience"
+              placeholder="Minimum years of experience"
+              value={formData.minimumYearsExperience}
+              onChange={handleChange}
+              className="w-full p-3 rounded bg-gray-700 border border-gray-600"
+            />
+            <label className="flex items-center gap-2 text-sm text-gray-200">
+              <input
+                type="checkbox"
+                checked={formData.requiresResume}
+                onChange={(e) =>
+                  setFormData((cur) => ({
+                    ...cur,
+                    requiresResume: e.target.checked,
+                  }))
+                }
+              />
+              Require resume for this job
+            </label>
+            <label className="flex items-center gap-2 text-sm text-gray-200">
+              <input
+                type="checkbox"
+                checked={formData.workAuthorizationRequired}
+                onChange={(e) =>
+                  setFormData((cur) => ({
+                    ...cur,
+                    workAuthorizationRequired: e.target.checked,
+                  }))
+                }
+              />
+              Work authorization required
+            </label>
+          </div>
+
           {/* Free post submit */}
           <button
             type="submit"
@@ -535,10 +597,7 @@ const PostJob = () => {
         </form>
 
         <div className="text-center mt-6">
-          <Link
-            href="/dashboard/employer"
-            className="text-blue-500 hover:underline"
-          >
+          <Link href="/employer" className="text-blue-500 hover:underline">
             ← Back to Employer Dashboard
           </Link>
         </div>

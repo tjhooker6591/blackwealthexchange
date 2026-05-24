@@ -24,6 +24,7 @@ export type TravelMapBusiness = {
   verified?: boolean;
   sponsored?: boolean;
   featured?: boolean;
+  distanceKm?: number;
   address?: TravelMapAddress;
   location?: TravelMapLocation;
 };
@@ -41,5 +42,10 @@ export type TravelMapSearchResponse = {
     category: string;
     verified: boolean;
     sponsored: boolean;
+    sort?: string;
+  };
+  meta?: {
+    source: "db" | "fallback";
+    mappedCount?: number;
   };
 };

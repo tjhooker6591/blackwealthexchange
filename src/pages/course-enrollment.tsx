@@ -1,205 +1,205 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-// Course config (expandable later)
 const COURSE_DATA = {
   slug: "personal-finance-101",
   name: "Personal Finance 101: Mastering Budgeting, Saving, and Money Management",
   price: 29,
-  overview: (
-    <>
-      <p>
-        Personal Finance 101 is designed to help you build a rock-solid
-        foundation for financial wellness, no matter your starting point. This
-        course provides clear, actionable steps to master your money, avoid
-        common pitfalls, and set yourself up for long-term success. You will
-        discover proven strategies for:
-      </p>
-      <ul className="list-disc ml-6 mt-3">
-        <li>Setting realistic and achievable financial goals</li>
-        <li>Designing a personalized budget that actually works for you</li>
-        <li>Building savings for both emergencies and future dreams</li>
-        <li>Managing, reducing, and eliminating debt with confidence</li>
-        <li>Developing habits that support lasting financial well-being</li>
-      </ul>
-      <p className="mt-3">
-        Whether you are new to managing money or want a refresher, this course
-        will empower you to take control of your financial future!
-      </p>
-    </>
-  ),
-  learningOutcomes: [
-    "Understand how to set and achieve your financial goals",
-    "Create and stick to a practical budget",
-    "Develop strong saving habits for short- and long-term needs",
-    "Implement proven strategies to manage and reduce debt",
-    "Build lasting, healthy financial habits for every stage of life",
-    "Gain confidence in making everyday money decisions",
-  ],
   modules: [
-    "Module 1: Introduction to Personal Finance",
-    "Module 2: Setting Financial Goals",
-    "Module 3: Creating a Budget",
-    "Module 4: Saving for the Future",
-    "Module 5: Debt Management Strategies",
-    "Module 6: Smart Spending and Avoiding Pitfalls",
-    "Module 7: Building Healthy Financial Habits",
-    "Module 8: The Power of Compound Interest",
+    "Breaking Financial Myths",
+    "Budgeting for Real Life",
+    "Credit Repair & Power",
+    "Building Wealth with Investments",
+    "Side Hustles & Business Basics",
+    "Debt Management & Elimination",
+    "Retirement Planning",
+    "Building Legacy & Asset Protection",
   ],
 };
 
+type AccessState = {
+  loading: boolean;
+  isLoggedIn: boolean;
+  hasAccess: boolean;
+  reason: string;
+  statusMessage: string;
+  nextAction: string;
+};
+
 const CourseEnrollmentPage: React.FC = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [hasPurchased, setHasPurchased] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [state, setState] = useState<AccessState>({
+    loading: true,
+    isLoggedIn: false,
+    hasAccess: false,
+    reason: "",
+    statusMessage: "",
+    nextAction: "",
+  });
   const [isProcessing, setIsProcessing] = useState(false);
+  const [checkoutError, setCheckoutError] = useState("");
   const router = useRouter();
 
-  useEffect(() => {
-    const userLoggedIn = localStorage.getItem("isLoggedIn");
-    setIsLoggedIn(!!userLoggedIn);
+  async function loadAccessState() {
+    try {
+      const meRes = await fetch("/api/auth/me", {
+        cache: "no-store",
+        credentials: "include",
+      });
 
-    const sessionId = router.query.session_id as string | undefined;
-    if (userLoggedIn && sessionId) {
-      fetch(`/api/courses/verify-session?session_id=${sessionId}`)
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.paid) {
-            setHasPurchased(true);
-            router.replace(router.pathname, undefined, { shallow: true });
-          }
-        })
-        .finally(() => setLoading(false));
-    } else {
-      setLoading(false);
+      if (!meRes.ok) {
+        setState({
+          loading: false,
+          isLoggedIn: false,
+          hasAccess: false,
+          reason: "login_required",
+          statusMessage: "Access is locked because you are not logged in.",
+          nextAction: "Log in or create an account to continue enrollment.",
+        });
+        return;
+      }
+
+      const accessRes = await fetch("/api/courses/access", {
+        cache: "no-store",
+        credentials: "include",
+      });
+      const accessData = await accessRes.json().catch(() => ({}));
+      const hasAccess = Boolean(accessData?.hasAccess);
+      const reason = String(accessData?.reason || "");
+
+      const reasonMessageMap: Record<string, string> = {
+        premium_active: "Access active through your premium plan.",
+        user_purchased_courses:
+          "Access active from your purchased course entitlement.",
+        enrollment_granted: "Access active from your enrollment grant.",
+        no_entitlement:
+          "Access is locked because your premium entitlement is not active yet.",
+        user_not_found:
+          "Access is locked because your account record could not be found.",
+      };
+
+      setState({
+        loading: false,
+        isLoggedIn: true,
+        hasAccess,
+        reason,
+        statusMessage: hasAccess
+          ? reasonMessageMap[reason] ||
+            "Access active. Enter your premium course modules."
+          : reasonMessageMap[reason] ||
+            "Access is locked until premium enrollment is completed.",
+        nextAction: hasAccess
+          ? "Enter course modules and begin your next lesson."
+          : "Complete checkout to activate entitlement and unlock modules.",
+      });
+    } catch {
+      setState({
+        loading: false,
+        isLoggedIn: false,
+        hasAccess: false,
+        reason: "access_check_failed",
+        statusMessage: "We could not verify course access right now.",
+        nextAction: "Retry, then log in and continue enrollment.",
+      });
     }
-  }, [router]); // <-- Now using [router] as dependency
+  }
 
-  // Simple local login/signup mock handlers
-  const handleLogin = () => {
-    localStorage.setItem("isLoggedIn", "true");
-    setIsLoggedIn(true);
-  };
-  const handleSignUp = () => {
-    localStorage.setItem("isLoggedIn", "true");
-    setIsLoggedIn(true);
-  };
+  useEffect(() => {
+    (async () => {
+      const sessionId =
+        typeof router.query.session_id === "string"
+          ? router.query.session_id
+          : "";
 
-  // Stripe payment handler
+      if (sessionId) {
+        await fetch(
+          `/api/courses/verify-session?session_id=${encodeURIComponent(sessionId)}`,
+          {
+            credentials: "include",
+          },
+        ).catch(() => null);
+
+        router.replace("/course-enrollment", undefined, { shallow: true });
+      }
+
+      await loadAccessState();
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.query.session_id]);
+
   const handlePurchase = async () => {
+    setCheckoutError("");
     setIsProcessing(true);
     try {
       const response = await fetch("/api/courses/checkout-session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ courseSlug: COURSE_DATA.slug }),
       });
-      const data = await response.json();
+      const data = await response.json().catch(() => ({}));
       if (data.url) {
         window.location.href = data.url;
       } else {
-        alert(data.error || "Unable to start checkout session.");
+        setCheckoutError(data.error || "Unable to start checkout session.");
       }
-    } catch (_error) {
-      alert("Something went wrong with payment.");
+    } catch {
+      setCheckoutError("Something went wrong with checkout.");
     } finally {
       setIsProcessing(false);
     }
   };
 
-  const handleGoBack = () => router.back();
-
-  if (loading) return <div>Loading...</div>;
+  if (state.loading) return <div className="p-8 text-white">Loading...</div>;
 
   return (
     <div className="min-h-screen bg-gray-900 text-white p-8">
       <div className="max-w-4xl mx-auto bg-gray-800 p-6 rounded-lg shadow-lg">
-        {/* Navigation Buttons */}
-        <div className="flex gap-4 mb-4">
-          <button
-            onClick={handleGoBack}
-            aria-label="Go Back"
-            className="px-4 py-2 bg-gray-600 text-white font-bold rounded hover:bg-gray-700 transition"
-          >
-            Go Back
-          </button>
-          <Link href="/">
-            <button
-              aria-label="Go to Home"
-              className="px-4 py-2 bg-gold text-black font-bold rounded hover:bg-yellow-500 transition"
-            >
-              Home
-            </button>
-          </Link>
-        </div>
-
-        {/* Header */}
         <header className="mb-6">
           <h1 className="text-3xl font-bold text-gold">{COURSE_DATA.name}</h1>
+          <p className="mt-2 text-gray-300">
+            One-time fee: ${COURSE_DATA.price}
+          </p>
+          <p className="mt-2 text-sm text-gray-400">
+            Reason: {state.statusMessage}
+          </p>
+          <p className="mt-1 text-sm text-gray-300">
+            Next action: {state.nextAction}
+          </p>
+          <p className="mt-1 text-xs text-gray-500">
+            Locked state explains why access is blocked. Unlocked state sends
+            you directly to course modules.
+          </p>
         </header>
 
-        {/* Course Overview */}
-        <section className="mt-8">
-          <h2 className="text-2xl font-semibold text-blue-500">
-            Course Overview
-          </h2>
-          <div className="mt-4 text-gray-300">{COURSE_DATA.overview}</div>
-        </section>
-
-        {/* Learning Outcomes */}
-        <section className="mt-8">
-          <h2 className="text-2xl font-semibold text-blue-500">
-            Learning Outcomes
-          </h2>
-          <ul className="list-disc ml-6 mt-4 text-gray-300">
-            {COURSE_DATA.learningOutcomes.map((outcome, idx) => (
-              <li key={idx}>{outcome}</li>
-            ))}
-          </ul>
-        </section>
-
-        {/* Course Modules */}
-        <section className="mt-8">
-          <h2 className="text-2xl font-semibold text-blue-500">
-            Course Modules
-          </h2>
-          <ul className="list-decimal ml-6 mt-4 text-gray-300">
-            {COURSE_DATA.modules.map((mod, i) => (
-              <li key={i}>{mod}</li>
-            ))}
-          </ul>
-        </section>
-
-        {/* Payment & Enrollment */}
-        <section className="mt-8">
-          <h2 className="text-2xl font-semibold text-blue-500">
-            Course Access
-          </h2>
-          <p className="mt-4 text-gray-300">
-            <span className="font-bold text-gold">
-              One-time Fee: ${COURSE_DATA.price}
-            </span>
-            <br />
-            Secure your seat and get lifetime access to all content & updates!
-          </p>
-          <div className="mt-4">
-            {!isLoggedIn ? (
-              <div className="flex flex-col space-y-3">
-                <button
-                  onClick={handleSignUp}
-                  className="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition"
-                >
-                  Sign Up to Enroll
-                </button>
-                <button
-                  onClick={handleLogin}
-                  className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition"
-                >
-                  Log In to Continue
-                </button>
-              </div>
-            ) : !hasPurchased ? (
+        <section className="mt-6 rounded-lg border border-gray-700 p-4 bg-gray-900/60">
+          {!state.isLoggedIn ? (
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Link
+                href="/signup"
+                className="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition text-center"
+              >
+                Sign Up to Enroll
+              </Link>
+              <Link
+                href={`/login?next=${encodeURIComponent("/course-enrollment")}`}
+                className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition text-center"
+              >
+                Log In to Continue
+              </Link>
+            </div>
+          ) : state.hasAccess ? (
+            <div className="space-y-3">
+              <p className="text-green-300">Premium access verified.</p>
+              <Link
+                href="/premium-finance"
+                className="inline-block bg-blue-600 text-white py-2 px-6 rounded hover:bg-blue-700 transition"
+              >
+                Enter Course Modules
+              </Link>
+            </div>
+          ) : (
+            <div className="space-y-3">
               <button
                 onClick={handlePurchase}
                 disabled={isProcessing}
@@ -209,111 +209,48 @@ const CourseEnrollmentPage: React.FC = () => {
                   ? "Redirecting to Payment..."
                   : `Buy & Enroll for $${COURSE_DATA.price}`}
               </button>
-            ) : (
-              <button
-                onClick={() => router.push("/course-dashboard")}
-                className="bg-blue-600 text-white py-2 px-6 rounded hover:bg-blue-700 transition"
-              >
-                Go to Course Dashboard
-              </button>
-            )}
-          </div>
+              <p className="text-xs text-gray-400">
+                You will be granted access after successful checkout
+                verification.
+              </p>
+            </div>
+          )}
+
+          {checkoutError ? (
+            <p className="mt-3 text-sm text-red-300">{checkoutError}</p>
+          ) : null}
         </section>
 
-        {/* Why Enroll? */}
-        <section className="mt-8">
-          <h2 className="text-2xl font-semibold text-blue-500">Why Enroll?</h2>
-          <ul className="list-disc ml-6 mt-4 text-gray-300">
-            <li>Lifetime access to all course materials and updates.</li>
-            <li>Self-paced: return anytime, from any device.</li>
-            <li>
-              Access downloadable resources (budget templates, trackers, and
-              more).
-            </li>
-            <li>Exclusive Black Wealth Exchange tips and support.</li>
-          </ul>
-        </section>
-
-        {/* Testimonials */}
-        <section className="mt-8">
-          <h2 className="text-2xl font-semibold text-blue-500">
-            What Students Are Saying
-          </h2>
-          <blockquote className="mt-4 text-gray-300">
-            &quot;This course helped me finally take control of my finances. I
-            am now confidently budgeting, saving, and planning for the
-            future!&quot; – Sarah M.
-          </blockquote>
-          <blockquote className="mt-4 text-gray-300">
-            &quot;I have learned so much about managing debt and setting
-            realistic financial goals. It is practical and easy to follow!&quot;
-            – James T.
-          </blockquote>
-        </section>
-
-        {/* FAQ Section */}
-        <section className="mt-8">
-          <h2 className="text-2xl font-semibold text-blue-500">
-            Frequently Asked Questions
-          </h2>
-          <ul className="mt-4 space-y-2 text-gray-300">
-            <li>
-              <strong>
-                Q: Do I need prior experience to take this course?
-              </strong>
-              <br />
-              A: No, this course is designed for beginners and everyone
-              interested in mastering their finances.
-            </li>
-            <li>
-              <strong>Q: How long do I have access to the course?</strong>
-              <br />
-              A: Lifetime access, including all future updates.
-            </li>
-            <li>
-              <strong>Q: Can I download the course materials?</strong>
-              <br />
-              A: Yes! You will be able to download worksheets, templates, and
-              more.
-            </li>
-            <li>
-              <strong>Q: Do I have to pay a monthly fee?</strong>
-              <br />
-              A: No, just a one-time payment for unlimited access.
-            </li>
-          </ul>
-        </section>
-
-        {/* Footer */}
-        <footer className="mt-12 text-center">
-          <p>
-            <Link
-              href="/courses/investing-for-beginners"
-              className="text-gold hover:underline"
-            >
-              Investing for Beginners
-            </Link>{" "}
-            |{" "}
-            <Link
-              href="/courses/generational-wealth"
-              className="text-gold hover:underline"
-            >
-              Building Generational Wealth
-            </Link>
+        <section className="mt-6 rounded-lg border border-gray-700 bg-gray-900/60 p-4">
+          <h2 className="text-lg font-semibold text-gold">What you unlock</h2>
+          <p className="mt-1 text-sm text-gray-300">
+            8-module premium path with practical action steps and progression.
           </p>
-          <p className="mt-4">
-            <Link href="/contact" className="text-gold hover:underline">
-              Contact Us
-            </Link>{" "}
-            |{" "}
-            <Link href="/privacy-policy" className="text-gold hover:underline">
-              Privacy Policy
-            </Link>{" "}
-            |{" "}
-            <Link href="/terms-of-use" className="text-gold hover:underline">
-              Terms of Use
-            </Link>
+          <ul className="mt-3 grid gap-2 text-sm text-gray-300 sm:grid-cols-2">
+            {COURSE_DATA.modules.map((moduleTitle, index) => (
+              <li key={moduleTitle} className="rounded bg-black/30 px-2 py-1">
+                {index + 1}. {moduleTitle}
+              </li>
+            ))}
+          </ul>
+          <p className="mt-3 text-xs text-gray-400">
+            State reason code: {state.reason || "n/a"}. Next action:{" "}
+            {state.hasAccess
+              ? "enter modules and begin Module 1"
+              : state.isLoggedIn
+                ? "complete enrollment to unlock modules"
+                : "log in or sign up to start enrollment"}
+            .
           </p>
+        </section>
+
+        <footer className="mt-8 text-sm text-gray-300">
+          <Link
+            href="/financial-literacy"
+            className="text-gold hover:underline"
+          >
+            Back to Financial Literacy Overview
+          </Link>
         </footer>
       </div>
     </div>

@@ -1,8 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import cookie from "cookie";
-import jwt from "jsonwebtoken";
 import clientPromise from "@/lib/mongodb";
-import { getJwtSecret } from "@/lib/env";
+import { requireAdminFromRequest } from "@/lib/adminAuth";
+import { ADMIN_ERROR_CODES, adminFail } from "@/lib/adminApiContract";
+import { getMongoDbName } from "@/lib/env";
 
 type WindowCounts = {
   today: number;
@@ -19,7 +19,7 @@ type MetricRow = {
 type GroupDef = {
   key: string;
   title: string;
-  metrics: Array<{ eventType: string; label: string }>;
+  metrics: Array<{ eventType: string; label: string; pageRoute?: string }>;
 };
 
 function emptyCounts(): WindowCounts {
@@ -32,6 +32,32 @@ function ratio(numerator: number, denominator: number) {
 }
 
 const GROUPS: GroupDef[] = [
+  {
+    key: "page_access",
+    title: "Page Access (Shared Backend Source)",
+    metrics: [
+      {
+        eventType: "page_view",
+        pageRoute: "/",
+        label: "Homepage page views",
+      },
+      {
+        eventType: "page_view",
+        pageRoute: "/financial-literacy",
+        label: "Financial literacy page views",
+      },
+      {
+        eventType: "page_view",
+        pageRoute: "/marketplace",
+        label: "Marketplace page views",
+      },
+      {
+        eventType: "page_view",
+        pageRoute: "/admin/phase1-scoreboard",
+        label: "Phase1 scoreboard page views",
+      },
+    ],
+  },
   {
     key: "discovery",
     title: "Discovery / Top of Funnel",
@@ -243,28 +269,24 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
+  res.setHeader("Cache-Control", "no-store, max-age=0");
+
   if (req.method !== "GET") {
-    return res.status(405).json({ error: "Method not allowed" });
+    res.setHeader("Allow", ["GET"]);
+    return adminFail(
+      res,
+      405,
+      ADMIN_ERROR_CODES.METHOD_NOT_ALLOWED,
+      "Method Not Allowed",
+    );
   }
 
-  const cookies = cookie.parse(req.headers.cookie || "");
-  const token = cookies.session_token;
-  if (!token) {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
+  const admin = await requireAdminFromRequest(req, res);
+  if (!admin) return;
 
   try {
-    const payload = jwt.verify(token, getJwtSecret()) as {
-      accountType?: string;
-      isAdmin?: boolean;
-    };
-
-    if (!(payload.isAdmin === true || payload.accountType === "admin")) {
-      return res.status(403).json({ error: "Forbidden" });
-    }
-
     const client = await clientPromise;
-    const db = client.db("bwes-cluster");
+    const db = client.db(getMongoDbName());
 
     const now = new Date();
     const startToday = new Date(now);
@@ -293,7 +315,10 @@ export default async function handler(
         },
         {
           $group: {
-            _id: "$eventType",
+            _id: {
+              eventType: "$eventType",
+              pageRoute: { $ifNull: ["$pageRoute", null] },
+            },
             today: {
               $sum: {
                 $cond: [{ $gte: ["$createdAt", startToday] }, 1, 0],
@@ -312,18 +337,40 @@ export default async function handler(
 
     const countMap = new Map<string, WindowCounts>();
     for (const r of rows) {
-      countMap.set(String(r._id), {
+      const eventType = String(r?._id?.eventType || "");
+      const pageRoute =
+        typeof r?._id?.pageRoute === "string" ? r._id.pageRoute : "";
+      const key = `${eventType}::${pageRoute}`;
+      const eventOnlyKey = `${eventType}::`;
+      const counts = {
         today: Number(r.today || 0),
         last7d: Number(r.last7d || 0),
         last30d: Number(r.last30d || 0),
+      };
+      countMap.set(key, counts);
+
+      const prev = countMap.get(eventOnlyKey) || emptyCounts();
+      countMap.set(eventOnlyKey, {
+        today: prev.today + counts.today,
+        last7d: prev.last7d + counts.last7d,
+        last30d: prev.last30d + counts.last30d,
       });
     }
 
+    const getCounts = (eventType: string, pageRoute?: string) => {
+      if (pageRoute) {
+        return countMap.get(`${eventType}::${pageRoute}`) || emptyCounts();
+      }
+      return countMap.get(`${eventType}::`) || emptyCounts();
+    };
+
     const groups = GROUPS.map((group) => {
       const metrics: MetricRow[] = group.metrics.map((m) => ({
-        eventType: m.eventType,
+        eventType: m.pageRoute
+          ? `${m.eventType} @ ${m.pageRoute}`
+          : m.eventType,
         label: m.label,
-        counts: countMap.get(m.eventType) || emptyCounts(),
+        counts: getCounts(m.eventType, m.pageRoute),
       }));
 
       const totals = metrics.reduce((acc, m) => {
@@ -341,7 +388,8 @@ export default async function handler(
       };
     });
 
-    const get = (eventType: string) => countMap.get(eventType) || emptyCounts();
+    const get = (eventType: string) =>
+      countMap.get(`${eventType}::`) || emptyCounts();
 
     const kpis = {
       discoverySearchSubmitted: get("homepage_search_submitted"),
@@ -426,6 +474,11 @@ export default async function handler(
     });
   } catch (error) {
     console.error("[/api/admin/phase1-scoreboard]", error);
-    return res.status(500).json({ error: "Internal Server Error" });
+    return adminFail(
+      res,
+      500,
+      ADMIN_ERROR_CODES.INTERNAL_ERROR,
+      "Internal Server Error",
+    );
   }
 }

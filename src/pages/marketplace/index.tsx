@@ -2,6 +2,7 @@
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import Head from "next/head";
+import { canonicalUrl, truncateMeta } from "@/lib/seo";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -24,6 +25,17 @@ type Product = {
   price: number;
   category: string;
   imageUrl?: string;
+  stockQuantity?: number;
+  views?: number;
+  condition?: string;
+  status?: string;
+  isFeatured?: boolean;
+  recentlyAdded?: boolean;
+  seller?: {
+    id?: string | null;
+    name?: string;
+    profileComplete?: boolean;
+  };
 };
 
 const itemsPerPage = 12;
@@ -36,7 +48,6 @@ const CATEGORIES = [
   "Art",
   "Books",
   "Home",
-  "Food",
   "Other",
 ] as const;
 
@@ -44,6 +55,12 @@ type SortKey = "relevance" | "newest" | "price_asc" | "price_desc";
 
 function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
+}
+
+function formatUsd(value: unknown) {
+  const num = Number(value);
+  if (!Number.isFinite(num)) return "$0.00";
+  return `$${num.toFixed(2)}`;
 }
 
 function useDebouncedValue<T>(value: T, delayMs: number) {
@@ -234,6 +251,29 @@ export default function Marketplace() {
     () => buildPageList(currentPage, totalPages),
     [currentPage, totalPages],
   );
+  const title = "Black Marketplace | Black Wealth Exchange";
+  const description = truncateMeta(
+    "Discover Black-owned products and brands in the Black Wealth Exchange marketplace.",
+  );
+  const canonical = canonicalUrl("/marketplace");
+  const collectionSchema = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: title,
+    description,
+    url: canonical,
+  };
+  const marketplaceItemListSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Marketplace Products",
+    itemListElement: products.slice(0, 10).map((product, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      url: canonicalUrl(`/marketplace/product/${product._id}`),
+      name: product.name,
+    })),
+  };
 
   const resultLabel = loading
     ? "Loading…"
@@ -244,12 +284,28 @@ export default function Marketplace() {
   return (
     <div className="min-h-screen bg-black text-white">
       <Head>
-        <title>Marketplace | Black Wealth Exchange</title>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonical} />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:image" content={canonicalUrl("/images/hero1.jpg")} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
         <meta
-          name="description"
-          content="Discover and support Black-owned businesses. Shop with purpose on Black Wealth Exchange."
+          name="twitter:image"
+          content={canonicalUrl("/images/hero1.jpg")}
         />
       </Head>
+      <script type="application/ld+json">
+        {JSON.stringify(collectionSchema)}
+      </script>
+      <script type="application/ld+json">
+        {JSON.stringify(marketplaceItemListSchema)}
+      </script>
 
       <div className="pointer-events-none fixed inset-0 opacity-60">
         <div className="absolute -top-24 left-1/2 h-[520px] w-[520px] -translate-x-1/2 rounded-full bg-yellow-500/10 blur-3xl" />
@@ -263,7 +319,8 @@ export default function Marketplace() {
         <div className="mx-auto max-w-5xl">
           <div className="inline-flex items-center gap-2 rounded-full border border-yellow-500/30 bg-white/5 px-3 py-2 text-xs text-gray-200 sm:px-4 sm:text-sm">
             <Sparkles className="h-4 w-4 text-yellow-400" />
-            Trusted checkout • Stripe powered • Shop Black-owned brands
+            Curated marketplace • Clear product details • Shop Black-owned
+            brands
           </div>
 
           <h1 className="mt-5 text-4xl font-extrabold tracking-tight text-gold md:text-5xl">
@@ -334,10 +391,72 @@ export default function Marketplace() {
           </div>
 
           <div className="mt-3 text-sm text-gray-400">{resultLabel}</div>
+          <p className="mt-1 text-xs text-gray-500">
+            Each listing shows seller identity and availability before you open
+            details.
+          </p>
+
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs">
+            <Link
+              href="/marketplace/dashboard"
+              className="rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-gray-100 hover:bg-white/10"
+            >
+              Open Seller Dashboard
+            </Link>
+            <Link
+              href="/marketplace/become-a-seller"
+              className="rounded-full border border-yellow-500/30 bg-yellow-500/10 px-3 py-1.5 text-yellow-200 hover:bg-yellow-500/20"
+            >
+              Start Selling
+            </Link>
+            <Link
+              href="/legal/marketplace"
+              className="rounded-full border border-white/15 bg-white/5 px-3 py-1.5 text-gray-100 hover:bg-white/10"
+            >
+              Marketplace Terms
+            </Link>
+          </div>
         </div>
       </section>
 
-      {/* Compact seller CTA */}
+      {/* Buyer trust strip */}
+      <section className="relative mx-auto mb-4 max-w-6xl px-4 sm:mb-6">
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-4 sm:p-5">
+          <h2 className="text-base font-bold text-gold sm:text-lg">
+            Shop with confidence on BWE
+          </h2>
+          <div className="mt-2 grid gap-2 text-xs text-white/80 sm:grid-cols-3 sm:text-sm">
+            <p>
+              1) Open product details and confirm seller, availability, and
+              policies.
+            </p>
+            <p>2) Use secure checkout to place your order.</p>
+            <p>3) Track progress in My Orders and get support if needed.</p>
+          </div>
+          <div className="mt-3 flex flex-wrap gap-2 text-xs">
+            <Link
+              href="/marketplace/my-orders"
+              className="rounded-full border border-white/20 px-3 py-1.5 text-white/90 hover:bg-white/10"
+            >
+              My Orders
+            </Link>
+            <Link
+              href="/support/marketplace"
+              className="rounded-full border border-white/20 px-3 py-1.5 text-white/90 hover:bg-white/10"
+            >
+              Marketplace Support
+            </Link>
+            <Link
+              href="/legal/marketplace"
+              className="rounded-full border border-white/20 px-3 py-1.5 text-white/90 hover:bg-white/10"
+            >
+              Buyer terms
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Compact seller CTA (secondary) */}
       <section className="relative mx-auto mb-6 max-w-6xl px-4 sm:mb-8">
         <div className="overflow-hidden rounded-2xl border border-yellow-500/20 bg-gradient-to-r from-yellow-500/15 via-white/5 to-white/0 shadow-xl">
           <div className="flex flex-col gap-4 p-4 sm:p-5 md:flex-row md:items-center md:justify-between md:p-6">
@@ -347,7 +466,7 @@ export default function Marketplace() {
               </div>
               <div>
                 <h3 className="text-lg font-bold text-gold sm:text-2xl">
-                  Own a Business?
+                  Selling on BWE
                 </h3>
                 <p className="max-w-xl text-sm text-gray-200/90 sm:text-base">
                   Join the marketplace and manage your products from one place.
@@ -431,94 +550,208 @@ export default function Marketplace() {
           </div>
         ) : products.length === 0 ? (
           <div className="rounded-2xl border border-white/10 bg-white/5 p-10 text-center">
-            <p className="font-semibold text-gray-200">No products found.</p>
-            <p className="mt-1 text-sm text-gray-400">
-              Try a different category or adjust your search.
+            <p className="font-semibold text-gray-200">
+              No products match the current search and filter settings.
             </p>
+            <p className="mt-1 text-sm text-gray-400">
+              Try a broader query, switch category, or reset sort/filter
+              options.
+            </p>
+            <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs sm:text-sm">
+              <button
+                onClick={() => {
+                  setSelectedCategory("All");
+                  setSort("newest");
+                  setQ("");
+                  setCurrentPage(1);
+                }}
+                className="rounded-lg border border-white/20 px-3 py-2 text-white/90 hover:bg-white/10"
+              >
+                View newest products
+              </button>
+              <button
+                onClick={() => {
+                  setSelectedCategory("Apparel");
+                  setQ("");
+                  setCurrentPage(1);
+                }}
+                className="rounded-lg border border-white/20 px-3 py-2 text-white/90 hover:bg-white/10"
+              >
+                Browse Apparel
+              </button>
+              <button
+                onClick={() => {
+                  setSelectedCategory("Home");
+                  setQ("");
+                  setCurrentPage(1);
+                }}
+                className="rounded-lg border border-white/20 px-3 py-2 text-white/90 hover:bg-white/10"
+              >
+                Browse Home
+              </button>
+              <Link
+                href="/support/marketplace"
+                className="rounded-lg border border-yellow-500/30 px-3 py-2 text-yellow-200 hover:bg-yellow-500/10"
+              >
+                Need buying help?
+              </Link>
+            </div>
           </div>
         ) : (
           <>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 sm:gap-5 lg:grid-cols-4 xl:grid-cols-5 lg:gap-6">
-              {products.map((product) => (
-                <div
-                  key={product._id}
-                  className="group rounded-2xl border border-white/10 bg-white/5 p-2.5 shadow-lg transition hover:shadow-2xl sm:p-4"
-                >
-                  <Link
-                    href={`/marketplace/product/${product._id}`}
-                    className="block"
-                    aria-label={`View details for ${product.name}`}
+              {products.map((product) => {
+                const productName =
+                  String(product?.name || "").trim() || "Marketplace item";
+                const stock = Number(product.stockQuantity ?? 0);
+                const availability =
+                  stock <= 0
+                    ? "Out of stock"
+                    : stock <= 3
+                      ? "Low stock"
+                      : "In stock";
+                const availabilityCls =
+                  stock <= 0
+                    ? "border-red-500/40 bg-red-500/10 text-red-300"
+                    : stock <= 3
+                      ? "border-yellow-500/40 bg-yellow-500/10 text-yellow-200"
+                      : "border-emerald-500/40 bg-emerald-500/10 text-emerald-300";
+
+                const sellerName =
+                  product?.seller?.name || "Seller on Black Wealth Exchange";
+                const sellerTrustLabel = product?.seller?.profileComplete
+                  ? "Active seller profile"
+                  : "Seller on Black Wealth Exchange";
+
+                const listingStatusLabel =
+                  String(product?.status || "").toLowerCase() === "active"
+                    ? "Active listing"
+                    : "Listing status pending";
+
+                const isTopPick = Boolean(product.isFeatured);
+
+                return (
+                  <div
+                    key={product._id}
+                    className={cx(
+                      "group rounded-2xl border bg-white/5 p-2.5 shadow-lg transition hover:shadow-2xl sm:p-4",
+                      isTopPick
+                        ? "border-gold/40 ring-1 ring-gold/25"
+                        : "border-white/10",
+                    )}
                   >
-                    <div className="relative h-28 w-full overflow-hidden rounded-xl border border-white/10 bg-black/40 sm:h-44">
-                      {product.imageUrl ? (
-                        <Image
-                          src={product.imageUrl}
-                          alt={product.name}
-                          fill
-                          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, (max-width: 1536px) 25vw, 20vw"
-                          className="object-cover transition duration-500 group-hover:scale-[1.03] object-center w-full h-56 sm:h-64"
-                        />
-                      ) : (
-                        <div className="flex h-full w-full items-center justify-center">
-                          <span className="text-xs text-gray-400 sm:text-sm">
-                            No Image
+                    <Link
+                      href={`/marketplace/product/${product._id}`}
+                      className="block"
+                      aria-label={`View details for ${productName}`}
+                    >
+                      <div className="relative h-28 w-full overflow-hidden rounded-xl border border-white/10 bg-black/40 sm:h-44">
+                        {product.imageUrl ? (
+                          <Image
+                            src={product.imageUrl}
+                            alt={productName}
+                            fill
+                            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, (max-width: 1536px) 25vw, 20vw"
+                            className="object-cover object-center transition duration-500 group-hover:scale-[1.03]"
+                          />
+                        ) : (
+                          <div className="flex h-full w-full items-center justify-center">
+                            <span className="text-xs text-gray-400 sm:text-sm">
+                              Product image unavailable
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="mt-3 flex items-start justify-between gap-2">
+                        <h4 className="line-clamp-2 min-w-0 text-sm font-semibold leading-tight text-gold sm:text-base">
+                          {productName}
+                        </h4>
+                        <p
+                          className="shrink-0 text-sm font-semibold text-gray-100 sm:text-base"
+                          aria-label={`Price ${formatUsd(product.price)} USD`}
+                        >
+                          {formatUsd(product.price)}
+                        </p>
+                      </div>
+
+                      <div className="mt-2 flex flex-wrap gap-1.5 text-[11px] sm:text-xs">
+                        {product.isFeatured ? (
+                          <span className="rounded-full border border-gold/40 bg-gold/20 px-2 py-0.5 text-gold">
+                            Top pick
                           </span>
-                        </div>
-                      )}
-                    </div>
+                        ) : null}
+                        {product.recentlyAdded ? (
+                          <span className="rounded-full border border-blue-400/40 bg-blue-500/10 px-2 py-0.5 text-blue-200">
+                            Recently added
+                          </span>
+                        ) : null}
+                        <span className="rounded-full border border-white/20 bg-white/5 px-2 py-0.5 text-gray-300">
+                          {product.category || "Other"}
+                        </span>
+                        <span
+                          className={`rounded-full border px-2 py-0.5 ${availabilityCls}`}
+                        >
+                          {availability}
+                        </span>
+                        <span className="rounded-full border border-white/20 bg-white/5 px-2 py-0.5 text-gray-300">
+                          {product.condition || "New"}
+                        </span>
+                        <span className="rounded-full border border-white/20 bg-black/30 px-2 py-0.5 text-gray-200">
+                          {listingStatusLabel}
+                        </span>
+                      </div>
 
-                    <div className="mt-3 flex items-start justify-between gap-2">
-                      <h4 className="line-clamp-2 min-w-0 text-sm font-semibold leading-tight text-gold sm:text-base">
-                        {product.name}
-                      </h4>
-                      <p className="shrink-0 text-sm font-semibold text-gray-200 sm:text-base">
-                        ${product.price.toFixed(2)}
+                      <p className="mt-2 text-[11px] text-gray-300 sm:text-xs">
+                        Sold by{" "}
+                        <span className="font-semibold text-gray-100">
+                          {sellerName}
+                        </span>
                       </p>
-                    </div>
+                      <p className="mt-0.5 text-[11px] text-gray-400 sm:text-xs">
+                        {sellerTrustLabel}
+                      </p>
 
-                    <p className="mt-1 truncate text-[11px] text-gray-400 sm:text-xs">
-                      {product.category || "Other"}
-                    </p>
-
-                    <p className="mt-1 text-[11px] text-white/45 sm:hidden">
-                      Tap for details
-                    </p>
-
-                    <div className="hidden sm:block">
                       {product.description ? (
-                        <p className="mt-2 line-clamp-2 text-sm text-gray-300">
+                        <p className="mt-2 line-clamp-2 text-xs text-gray-300 sm:text-sm">
                           {product.description}
                         </p>
                       ) : (
-                        <p className="mt-2 line-clamp-2 text-sm text-gray-500">
-                          No description provided.
+                        <p className="mt-2 line-clamp-2 text-xs text-gray-500 sm:text-sm">
+                          Open for full specs, seller policy, and delivery
+                          details.
                         </p>
                       )}
-                    </div>
-                  </Link>
+                    </Link>
 
-                  {/* Desktop actions only */}
-                  <div className="mt-4 hidden sm:grid sm:grid-cols-2 sm:gap-2">
-                    <div className="min-w-0">
-                      <BuyNowButton
-                        itemId={product._id}
-                        amount={product.price}
-                        type="product"
-                        label="Buy Now"
-                      />
-                    </div>
+                    <p className="mt-3 text-[11px] text-gray-400 sm:text-xs">
+                      Quick action: use Buy to start secure checkout. Shipping
+                      and delivery are handled by the seller and shown on
+                      details.
+                    </p>
 
-                    <button
-                      onClick={() =>
-                        router.push(`/marketplace/product/${product._id}`)
-                      }
-                      className="w-full rounded-xl border border-white/10 px-3 py-2 text-sm text-gray-200 transition hover:bg-white/10"
-                    >
-                      View Details
-                    </button>
+                    <div className="mt-3 grid grid-cols-2 gap-2">
+                      <div className="min-w-0">
+                        <BuyNowButton
+                          itemId={product._id}
+                          amount={product.price}
+                          type="product"
+                          label="Buy"
+                        />
+                      </div>
+
+                      <button
+                        onClick={() =>
+                          router.push(`/marketplace/product/${product._id}`)
+                        }
+                        className="w-full rounded-xl border border-white/20 px-3 py-2 text-sm font-semibold text-gray-100 transition hover:bg-white/10"
+                      >
+                        View Details
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             {totalPages > 1 ? (
@@ -645,6 +878,7 @@ export default function Marketplace() {
             alt="Empowering the Community"
             width={520}
             height={360}
+            unoptimized
             className="mx-auto mb-5 rounded-2xl border border-white/10 object-cover shadow-xl object-center w-full h-56 sm:h-64"
           />
         </div>

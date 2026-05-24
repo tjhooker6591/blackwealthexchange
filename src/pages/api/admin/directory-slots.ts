@@ -1,6 +1,9 @@
 // src/pages/api/admin/directory-slots.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
+import { getAdminDecodedFromRequest, isAdminDecoded } from "@/lib/adminAuth";
+import { ADMIN_ERROR_CODES, adminFail } from "@/lib/adminApiContract";
+import { getMongoDbName } from "@/lib/env";
 
 const DEFAULT_MAX_SLOTS = 10;
 const DEFAULT_EXPIRING_SOON_DAYS = 7;
@@ -71,12 +74,25 @@ export default async function handler(
 ) {
   if (req.method !== "GET") {
     res.setHeader("Allow", ["GET"]);
-    return res.status(405).json({ error: "Method Not Allowed" });
+    return adminFail(
+      res,
+      405,
+      ADMIN_ERROR_CODES.METHOD_NOT_ALLOWED,
+      "Method Not Allowed",
+    );
+  }
+
+  const admin = getAdminDecodedFromRequest(req);
+  if (!admin) {
+    return adminFail(res, 401, ADMIN_ERROR_CODES.UNAUTHORIZED, "Unauthorized");
+  }
+  if (!isAdminDecoded(admin)) {
+    return adminFail(res, 403, ADMIN_ERROR_CODES.FORBIDDEN, "Forbidden");
   }
 
   try {
     const client = await clientPromise;
-    const db = client.db("bwes-cluster");
+    const db = client.db(getMongoDbName());
     const now = new Date();
 
     const MAX_SLOTS = getMaxSlots();
@@ -221,6 +237,11 @@ export default async function handler(
     });
   } catch (err) {
     console.error("[/api/admin/directory-slots] error:", err);
-    return res.status(500).json({ error: "Failed to load slot info" });
+    return adminFail(
+      res,
+      500,
+      ADMIN_ERROR_CODES.INTERNAL_ERROR,
+      "Failed to load slot info",
+    );
   }
 }

@@ -14,6 +14,7 @@ export default function PaymentCancelCompat() {
     <>
       <Head>
         <title>Redirecting… | Black Wealth Exchange</title>
+        <meta name="robots" content="noindex,nofollow" />
       </Head>
       <main className="min-h-screen bg-black text-white flex items-center justify-center px-6">
         <div className="max-w-md text-center">

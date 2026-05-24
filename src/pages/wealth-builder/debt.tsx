@@ -1,6 +1,8 @@
+import type { GetServerSideProps } from "next";
 import Head from "next/head";
 import { useEffect, useMemo, useState } from "react";
 import WealthBuilderNav from "@/components/wealth-builder/WealthBuilderNav";
+import { requireWealthBuilderPageUser } from "@/lib/wealth-builder/page-auth";
 
 type DebtStatus =
   | "active"
@@ -97,6 +99,7 @@ export default function WealthBuilderDebtPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [saving, setSaving] = useState<boolean>(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [extraPayment, setExtraPayment] = useState<string>("0");
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
 
@@ -129,6 +132,60 @@ export default function WealthBuilderDebtPage() {
       (a, b) => (Number(b.interestRate) || 0) - (Number(a.interestRate) || 0),
     )[0];
   }, [activeDebts]);
+
+  const debtPlan = useMemo(() => {
+    const extra = Math.max(Number(extraPayment) || 0, 0);
+    const monthlyBudget = monthlyMinimums + extra;
+    if (!activeDebts.length || monthlyBudget <= 0) {
+      return {
+        payoffMonths: null as number | null,
+        monthlyBudget,
+      };
+    }
+
+    let debtsRemaining = activeDebts.map((item) => ({
+      balance: Number(item.balance) || 0,
+      apr: Number(item.interestRate) || 0,
+      min: Math.max(Number(item.minimumPayment) || 0, 0),
+    }));
+
+    let months = 0;
+    while (months < 600 && debtsRemaining.some((d) => d.balance > 0.01)) {
+      months += 1;
+      let allocation = monthlyBudget;
+
+      debtsRemaining = debtsRemaining
+        .map((d) => {
+          const monthlyRate = Math.max(d.apr, 0) / 100 / 12;
+          const interest = d.balance * monthlyRate;
+          return { ...d, balance: d.balance + interest };
+        })
+        .sort((a, b) => b.apr - a.apr);
+
+      for (const debt of debtsRemaining) {
+        if (debt.balance <= 0.01 || allocation <= 0) continue;
+        const payment = Math.min(
+          debt.balance,
+          Math.max(debt.min, 0),
+          allocation,
+        );
+        debt.balance -= payment;
+        allocation -= payment;
+      }
+
+      for (const debt of debtsRemaining) {
+        if (debt.balance <= 0.01 || allocation <= 0) continue;
+        const payment = Math.min(debt.balance, allocation);
+        debt.balance -= payment;
+        allocation -= payment;
+      }
+    }
+
+    return {
+      payoffMonths: months >= 600 ? null : months,
+      monthlyBudget,
+    };
+  }, [activeDebts, monthlyMinimums, extraPayment]);
 
   async function loadDebts() {
     setLoading(true);
@@ -336,6 +393,49 @@ export default function WealthBuilderDebtPage() {
                 <p className="mt-2 text-sm text-zinc-400">
                   Sum of required minimum payments.
                 </p>
+              </div>
+            </div>
+
+            <div className="mt-6 rounded-2xl border border-cyan-500/25 bg-cyan-500/5 p-5">
+              <h3 className="text-sm font-semibold uppercase tracking-wide text-cyan-200">
+                Debt payoff simulator (avalanche)
+              </h3>
+              <p className="mt-2 text-sm text-zinc-300">
+                Add extra monthly payment and preview payoff timeline using
+                highest-interest-first allocation.
+              </p>
+              <div className="mt-4 grid gap-3 md:grid-cols-3">
+                <label className="text-sm">
+                  <span className="mb-1 block text-zinc-300">
+                    Extra monthly payment
+                  </span>
+                  <input
+                    type="number"
+                    min="0"
+                    step="1"
+                    value={extraPayment}
+                    onChange={(e) => setExtraPayment(e.target.value)}
+                    className="w-full rounded-lg border border-white/20 bg-black/60 px-3 py-2"
+                  />
+                </label>
+                <div className="rounded-xl border border-white/10 bg-black/30 p-3">
+                  <p className="text-xs uppercase tracking-wide text-zinc-400">
+                    Total debt plan budget
+                  </p>
+                  <p className="mt-1 text-lg font-semibold text-white">
+                    {formatCurrency(debtPlan.monthlyBudget)}
+                  </p>
+                </div>
+                <div className="rounded-xl border border-white/10 bg-black/30 p-3">
+                  <p className="text-xs uppercase tracking-wide text-zinc-400">
+                    Estimated payoff
+                  </p>
+                  <p className="mt-1 text-lg font-semibold text-white">
+                    {debtPlan.payoffMonths
+                      ? `~${debtPlan.payoffMonths} months`
+                      : "Needs payment capacity"}
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -673,3 +773,7 @@ export default function WealthBuilderDebtPage() {
     </>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  return requireWealthBuilderPageUser(context, "/wealth-builder/debt");
+};

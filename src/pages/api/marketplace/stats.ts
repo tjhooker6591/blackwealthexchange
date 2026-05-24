@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
-import { getMongoDbName } from "@/lib/env";
+import { getMarketplaceDbName } from "@/lib/marketplace/db";
 import { resolveSellerSession } from "@/lib/marketplace/sellerSession";
 
 export default async function handler(
@@ -16,7 +16,7 @@ export default async function handler(
 
   try {
     const client = await clientPromise;
-    const db = client.db(getMongoDbName());
+    const db = client.db(getMarketplaceDbName());
 
     const sellerSession = await resolveSellerSession(req, db);
     if (!sellerSession.ok) {
@@ -38,16 +38,26 @@ export default async function handler(
           $group: {
             _id: null,
             count: { $sum: 1 },
-            revenue: { $sum: { $ifNull: ["$totalPrice", "$total", 0] } },
+            revenueCents: {
+              $sum: {
+                $ifNull: [
+                  "$totalCents",
+                  { $ifNull: ["$totalPrice", "$total"] },
+                ],
+              },
+            },
           },
         },
       ])
       .toArray();
 
+    const revenueCents = Number(orderStats?.revenueCents || 0);
+
     return res.status(200).json({
       products,
       orders: Number(orderStats?.count || 0),
-      revenue: Number(orderStats?.revenue || 0),
+      revenue: revenueCents / 100,
+      revenueCents,
     });
   } catch (err) {
     console.error("Stats: Database error:", err);

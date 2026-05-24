@@ -7,14 +7,19 @@ export type TravelMapFilterValues = {
   category: string;
   verified: boolean;
   sponsored: boolean;
+  sort: "relevance" | "recent";
 };
 
 export default function TravelMapFilters({
   initialValues,
   onApply,
+  onUseMyLocation,
+  locating,
 }: {
   initialValues: TravelMapFilterValues;
   onApply: (values: TravelMapFilterValues) => void;
+  onUseMyLocation?: () => void;
+  locating?: boolean;
 }) {
   const [values, setValues] = useState<TravelMapFilterValues>(initialValues);
 
@@ -72,6 +77,20 @@ export default function TravelMapFilters({
           />
           Sponsored only
         </label>
+
+        <select
+          value={values.sort}
+          onChange={(e) =>
+            setValues((v) => ({
+              ...v,
+              sort: e.target.value === "recent" ? "recent" : "relevance",
+            }))
+          }
+          className="rounded-xl border border-white/10 bg-black/50 px-4 py-3 text-white outline-none focus:border-yellow-400/50"
+        >
+          <option value="relevance">Sort: Relevance</option>
+          <option value="recent">Sort: Most Recently Updated</option>
+        </select>
       </div>
 
       <div className="mt-4 flex flex-wrap gap-3">
@@ -91,6 +110,7 @@ export default function TravelMapFilters({
               category: "",
               verified: false,
               sponsored: false,
+              sort: "relevance" as const,
             };
             setValues(reset);
             onApply(reset);
@@ -99,6 +119,16 @@ export default function TravelMapFilters({
         >
           Clear
         </button>
+
+        {onUseMyLocation ? (
+          <button
+            onClick={onUseMyLocation}
+            disabled={!!locating}
+            className="rounded-xl border border-emerald-400/30 bg-emerald-500/10 px-5 py-3 text-sm font-semibold text-emerald-200 transition hover:bg-emerald-500/20 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {locating ? "Locating..." : "Near Me"}
+          </button>
+        ) : null}
       </div>
     </div>
   );

@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import React from "react";
+import type { GetServerSideProps } from "next";
+import { requirePageRole } from "@/lib/security/pageRoleGuard";
 
 export default function EmployerResourcesIndex() {
   return (
@@ -38,6 +40,10 @@ export default function EmployerResourcesIndex() {
     </div>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  return requirePageRole(ctx, ["employer"], "/employer/resources");
+};
 
 function ResourceCard({
   title,

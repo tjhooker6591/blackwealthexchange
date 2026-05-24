@@ -1,7 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
-import { getMongoDbName } from "@/lib/env";
+import { getMarketplaceDbName } from "@/lib/marketplace/db";
 import { resolveSellerSession } from "@/lib/marketplace/sellerSession";
+import { ObjectId } from "mongodb";
 
 export default async function handler(
   req: NextApiRequest,
@@ -16,7 +17,7 @@ export default async function handler(
 
   try {
     const client = await clientPromise;
-    const db = client.db(getMongoDbName());
+    const db = client.db(getMarketplaceDbName());
 
     const sellerSession = await resolveSellerSession(req, db);
     if (!sellerSession.ok) {
@@ -25,12 +26,74 @@ export default async function handler(
         .json({ error: sellerSession.error });
     }
 
-    const orders = await db
+    const ordersRaw = await db
       .collection("orders")
       .find({ sellerId: sellerSession.sellerId })
       .sort({ createdAt: -1 })
       .limit(100)
       .toArray();
+
+    const productIds = Array.from(
+      new Set(
+        ordersRaw
+          .map((o) => (o?.productId ? String(o.productId) : ""))
+          .filter(Boolean),
+      ),
+    );
+
+    const objectProductIds = productIds
+      .filter((id) => ObjectId.isValid(id))
+      .map((id) => new ObjectId(id));
+
+    const products = productIds.length
+      ? await db
+          .collection("products")
+          .find({
+            $or: [
+              { _id: { $in: productIds } },
+              { _id: { $in: objectProductIds } },
+            ],
+          } as any)
+          .toArray()
+      : [];
+
+    const productNameById = new Map<string, string>();
+    for (const p of products) {
+      const id = String(p?._id || "");
+      if (!id) continue;
+      productNameById.set(id, String(p?.name || p?.title || ""));
+    }
+
+    const orders = ordersRaw.map((o) => {
+      const productId = o?.productId ? String(o.productId) : "";
+      const totalCents = Number(
+        o?.totalCents ?? o?.totalPrice ?? o?.total ?? 0,
+      );
+
+      const paymentState = String(o?.paymentStatus || "pending").toLowerCase();
+      const fulfillmentState = String(
+        o?.fulfillmentStatus ||
+          (["shipped", "fulfilled"].includes(
+            String(o?.status || "").toLowerCase(),
+          )
+            ? String(o?.status).toLowerCase()
+            : "processing"),
+      ).toLowerCase();
+
+      return {
+        ...o,
+        productName:
+          o?.productName || productNameById.get(productId) || "Unknown product",
+        totalCents,
+        totalPrice: totalCents / 100,
+        orderState: o?.orderState || null,
+        paymentState,
+        fulfillmentState,
+        trackingNumber: o?.trackingNumber || null,
+        trackingCarrier: o?.trackingCarrier || null,
+        status: o?.orderState || o?.status || o?.paymentStatus || "pending",
+      };
+    });
 
     return res.status(200).json({ orders });
   } catch (error) {

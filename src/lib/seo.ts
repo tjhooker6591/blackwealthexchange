@@ -11,7 +11,21 @@ export function getBaseUrl() {
 export function canonicalUrl(pathname: string) {
   const base = getBaseUrl().replace(/\/$/, "");
   const cleanPath = pathname.startsWith("/") ? pathname : `/${pathname}`;
-  return `${base}${cleanPath}`;
+  const [pathOnly] = cleanPath.split("?");
+  const normalized = pathOnly.replace(/\/$/, "") || "/";
+  return `${base}${normalized}`;
+}
+
+export function robotsDirective(options?: {
+  noindex?: boolean;
+  nofollow?: boolean;
+}) {
+  const noindex = Boolean(options?.noindex);
+  const nofollow = Boolean(options?.nofollow);
+  if (!noindex && !nofollow) return "index,follow";
+  if (noindex && nofollow) return "noindex,nofollow";
+  if (noindex) return "noindex,follow";
+  return "index,nofollow";
 }
 
 export function truncateMeta(input: string, max = 155) {

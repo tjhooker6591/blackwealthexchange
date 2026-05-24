@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
@@ -22,10 +23,22 @@ export default function Signup() {
   const [loading, setLoading] = useState(false);
   const [onboardingUrl, setOnboardingUrl] = useState<string | null>(null);
 
+  const isTrustedStripeOnboardingUrl = (candidate: string) => {
+    try {
+      const parsed = new URL(candidate);
+      return (
+        parsed.protocol === "https:" &&
+        (parsed.hostname === "connect.stripe.com" ||
+          parsed.hostname.endsWith(".stripe.com"))
+      );
+    } catch {
+      return false;
+    }
+  };
+
   // Redirect immediately when onboardingUrl is set
   useEffect(() => {
     if (onboardingUrl) {
-      // Optionally show a toast or loader before redirect
       window.location.assign(onboardingUrl);
     }
   }, [onboardingUrl]);
@@ -94,15 +107,22 @@ export default function Signup() {
         throw new Error(data.error || "Signup failed.");
       }
 
-      // If seller, trigger redirect via onboardingUrl state
+      // Seller flow fallback: use onboarding link when provided, otherwise
+      // continue through existing marketplace seller onboarding route.
       if (data.accountType === "seller") {
         if (data.stripeOnboardingLink) {
+          if (!isTrustedStripeOnboardingUrl(data.stripeOnboardingLink)) {
+            throw new Error("Unexpected onboarding destination. Please retry.");
+          }
+
           setOnboardingUrl(data.stripeOnboardingLink);
-        } else {
-          setError(
-            "Signup succeeded but Stripe onboarding link was not provided. Please try again.",
-          );
+          return;
         }
+
+        setSuccess(true);
+        setTimeout(() => {
+          router.push("/marketplace/become-a-seller");
+        }, 500);
         return;
       }
 
@@ -132,165 +152,188 @@ export default function Signup() {
       }, 500);
     } catch (err) {
       console.error("Signup error:", err);
-      setError("Signup failed. Please try again.");
+      const message =
+        err instanceof Error ? err.message : "Signup failed. Please try again.";
+      setError(message);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-gray-100 p-6">
-      <div className="bg-white p-8 shadow-lg rounded-lg w-full max-w-md">
-        <h2 className="text-3xl font-bold text-center text-gold">
-          Create an Account
-        </h2>
-        <p className="text-center text-gray-600 mt-2">Join the BWE Community</p>
-
-        {error && <p className="text-red-500 text-center mt-2">{error}</p>}
-        {success && !onboardingUrl && (
-          <p className="text-green-500 text-center mt-2">
-            Signup Successful! 🎉
+    <>
+      <Head>
+        <title>Sign Up | Black Wealth Exchange</title>
+        <meta
+          name="description"
+          content="Create your Black Wealth Exchange account to access wealth-building tools, marketplace features, and community resources."
+        />
+        <meta name="robots" content="noindex,nofollow" />
+        <link
+          rel="canonical"
+          href="https://www.blackwealthexchange.com/signup"
+        />
+        <meta property="og:title" content="Sign Up | Black Wealth Exchange" />
+        <meta
+          property="og:description"
+          content="Create your Black Wealth Exchange account to access wealth-building tools, marketplace features, and community resources."
+        />
+      </Head>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-gray-100 p-6">
+        <div className="bg-white p-8 shadow-lg rounded-lg w-full max-w-md">
+          <h2 className="text-3xl font-bold text-center text-gold">
+            Create an Account
+          </h2>
+          <p className="text-center text-gray-600 mt-2">
+            Join the BWE Community
           </p>
-        )}
-        {/* Fallback message and link if auto-redirect fails */}
-        {onboardingUrl && (
-          <p className="mt-4 text-center">
-            Redirecting you to Stripe to complete your setup. If you are not
-            redirected automatically,{" "}
-            <a
-              href={onboardingUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-ggold underline"
-            >
-              click here
-            </a>
-            .
-          </p>
-        )}
 
-        <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-          {/* Form fields unchanged */}
-          <div>
-            <label className="block text-gray-700 font-semibold">
-              Account Type
-            </label>
-            <select
-              name="accountType"
-              value={accountType}
-              onChange={handleAccountTypeChange}
-              className="w-full p-3 border rounded-lg bg-gray-200 text-black"
-            >
-              <option value="user">General User</option>
-              <option value="seller">Seller</option>
-              <option value="business">Business Owner</option>
-              <option value="employer">Employer</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-gray-700 font-semibold">Email</label>
-            <input
-              type="email"
-              name="email"
-              placeholder="Enter your email"
-              value={formData.email}
-              onChange={handleChange}
-              className="w-full p-3 border rounded-lg bg-gray-200 text-black"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-gray-700 font-semibold">
-              Password
-            </label>
-            <input
-              type="password"
-              name="password"
-              placeholder="Create a strong password"
-              value={formData.password}
-              onChange={handleChange}
-              className="w-full p-3 border rounded-lg bg-gray-200 text-black"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-gray-700 font-semibold">
-              Confirm Password
-            </label>
-            <input
-              type="password"
-              name="confirmPassword"
-              placeholder="Re-enter your password"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              className="w-full p-3 border rounded-lg bg-gray-200 text-black"
-              required
-            />
-          </div>
-
-          {accountType === "business" && (
-            <>
-              <div>
-                <label className="block text-gray-700 font-semibold">
-                  Business Name
-                </label>
-                <input
-                  type="text"
-                  name="businessName"
-                  value={formData.businessName}
-                  onChange={handleChange}
-                  className="w-full p-3 border rounded-lg bg-gray-200 text-black"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700 font-semibold">
-                  Business Address
-                </label>
-                <input
-                  type="text"
-                  name="businessAddress"
-                  value={formData.businessAddress}
-                  onChange={handleChange}
-                  className="w-full p-3 border rounded-lg bg-gray-200 text-black"
-                />
-              </div>
-              <div>
-                <label className="block text-gray-700 font-semibold">
-                  Business Phone
-                </label>
-                <input
-                  type="text"
-                  name="businessPhone"
-                  value={formData.businessPhone}
-                  onChange={handleChange}
-                  className="w-full p-3 border rounded-lg bg-gray-200 text-black"
-                />
-              </div>
-            </>
+          {error && <p className="text-red-500 text-center mt-2">{error}</p>}
+          {success && !onboardingUrl && (
+            <p className="text-green-500 text-center mt-2">
+              Signup Successful! 🎉
+            </p>
+          )}
+          {/* Fallback message and link if auto-redirect fails */}
+          {onboardingUrl && (
+            <p className="mt-4 text-center">
+              Redirecting you to Stripe to complete your setup. If you are not
+              redirected automatically,{" "}
+              <a
+                href={onboardingUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-ggold underline"
+              >
+                click here
+              </a>
+              .
+            </p>
           )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full py-3 bg-gold text-black font-semibold rounded-lg hover:bg-opacity-90 transition"
-          >
-            {loading ? "Signing up..." : "Sign Up"}
-          </button>
-        </form>
+          <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+            {/* Form fields unchanged */}
+            <div>
+              <label className="block text-gray-700 font-semibold">
+                Account Type
+              </label>
+              <select
+                name="accountType"
+                value={accountType}
+                onChange={handleAccountTypeChange}
+                className="w-full p-3 border rounded-lg bg-gray-200 text-black"
+              >
+                <option value="user">General User</option>
+                <option value="seller">Seller</option>
+                <option value="business">Business Owner</option>
+                <option value="employer">Employer</option>
+              </select>
+            </div>
 
-        <p className="text-center mt-4 text-gray-600">
-          Already have an account?{" "}
-          <Link
-            href="/login"
-            className="text-gold font-semibold hover:underline"
-          >
-            Login
-          </Link>
-        </p>
+            <div>
+              <label className="block text-gray-700 font-semibold">Email</label>
+              <input
+                type="email"
+                name="email"
+                placeholder="Enter your email"
+                value={formData.email}
+                onChange={handleChange}
+                className="w-full p-3 border rounded-lg bg-gray-200 text-black"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-gray-700 font-semibold">
+                Password
+              </label>
+              <input
+                type="password"
+                name="password"
+                placeholder="Create a strong password"
+                value={formData.password}
+                onChange={handleChange}
+                className="w-full p-3 border rounded-lg bg-gray-200 text-black"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-gray-700 font-semibold">
+                Confirm Password
+              </label>
+              <input
+                type="password"
+                name="confirmPassword"
+                placeholder="Re-enter your password"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                className="w-full p-3 border rounded-lg bg-gray-200 text-black"
+                required
+              />
+            </div>
+
+            {accountType === "business" && (
+              <>
+                <div>
+                  <label className="block text-gray-700 font-semibold">
+                    Business Name
+                  </label>
+                  <input
+                    type="text"
+                    name="businessName"
+                    value={formData.businessName}
+                    onChange={handleChange}
+                    className="w-full p-3 border rounded-lg bg-gray-200 text-black"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700 font-semibold">
+                    Business Address
+                  </label>
+                  <input
+                    type="text"
+                    name="businessAddress"
+                    value={formData.businessAddress}
+                    onChange={handleChange}
+                    className="w-full p-3 border rounded-lg bg-gray-200 text-black"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-700 font-semibold">
+                    Business Phone
+                  </label>
+                  <input
+                    type="text"
+                    name="businessPhone"
+                    value={formData.businessPhone}
+                    onChange={handleChange}
+                    className="w-full p-3 border rounded-lg bg-gray-200 text-black"
+                  />
+                </div>
+              </>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3 bg-gold text-black font-semibold rounded-lg hover:bg-opacity-90 transition"
+            >
+              {loading ? "Signing up..." : "Sign Up"}
+            </button>
+          </form>
+
+          <p className="text-center mt-4 text-gray-600">
+            Already have an account?{" "}
+            <Link
+              href="/login"
+              className="text-gold font-semibold hover:underline"
+            >
+              Login
+            </Link>
+          </p>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

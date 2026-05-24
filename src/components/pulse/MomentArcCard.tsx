@@ -134,6 +134,8 @@ export default function MomentArcCard({ moment }: { moment: PulseMoment }) {
             alt=""
             className="h-full w-full object-cover opacity-85"
             loading="lazy"
+            decoding="async"
+            referrerPolicy="no-referrer"
           />
         ) : (
           <div className="h-full w-full bg-gradient-to-br from-gray-900 to-black" />

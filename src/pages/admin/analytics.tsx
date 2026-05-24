@@ -1,10 +1,10 @@
 // src/pages/admin/analytics.tsx
-"use client";
-
+import type { GetServerSideProps } from "next";
 import React, { useCallback, useEffect, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { requireAdminPageProps } from "@/lib/adminPageGuard";
 
 type StatData = {
   users: number;
@@ -156,18 +156,6 @@ export default function AnalyticsDashboard() {
     }
   };
 
-  if (loading) {
-    return <p className="p-8 text-white">Loading analytics...</p>;
-  }
-
-  if (error) {
-    return <p className="p-8 text-red-500">{error}</p>;
-  }
-
-  if (!stats) {
-    return <p className="p-8 text-gray-400">No analytics data found.</p>;
-  }
-
   return (
     <>
       <Head>
@@ -205,105 +193,133 @@ export default function AnalyticsDashboard() {
             </div>
           </div>
 
-          {/* Top Stats Cards */}
-          <div className="mb-10 grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-4">
-            <StatCard label="Total Users" value={stats.users || 0} />
-            <StatCard label="Businesses" value={stats.businesses || 0} />
-            <StatCard label="Products" value={stats.products || 0} />
-            <StatCard label="Jobs" value={stats.jobs || 0} />
-            <StatCard label="Sellers" value={stats.sellers || 0} />
-            <StatCard label="Total Orders" value={stats.totalOrders || 0} />
-            <StatCard label="Gross Sales" value={money(stats.grossSales)} />
-            <StatCard
-              label="Platform Revenue"
-              value={money(stats.platformRevenue)}
-            />
-            <StatCard
-              label="Seller Payouts"
-              value={money(stats.totalPayouts)}
-            />
-            <StatCard
-              label="Directory Revenue"
-              value={money(stats.directoryRevenue)}
-            />
-            <StatCard label="Ad Revenue" value={money(stats.adRevenue)} />
-            <StatCard
-              label="Pending Listings"
-              value={stats.pendingListings || 0}
-            />
-            <StatCard
-              label="Approved Listings"
-              value={stats.approvedListings || 0}
-            />
-            <StatCard
-              label="Expired Listings"
-              value={stats.expiredListings || 0}
-            />
-          </div>
+          {loading ? (
+            <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-6 text-sm text-zinc-300">
+              Loading analytics metrics…
+            </div>
+          ) : error ? (
+            <div className="rounded-xl border border-red-500/40 bg-red-900/20 p-6 text-sm text-red-200">
+              {error}
+            </div>
+          ) : !stats ? (
+            <div className="rounded-xl border border-zinc-800 bg-zinc-950 p-6 text-sm text-zinc-300">
+              Analytics data is not available right now. Try refresh, then check
+              /admin/health if ingestion is delayed.
+            </div>
+          ) : (
+            <>
+              {/* Top Stats Cards */}
+              <div className="mb-10 grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-4">
+                <StatCard label="Total Users" value={stats.users || 0} />
+                <StatCard label="Businesses" value={stats.businesses || 0} />
+                <StatCard label="Products" value={stats.products || 0} />
+                <StatCard label="Jobs" value={stats.jobs || 0} />
+                <StatCard label="Sellers" value={stats.sellers || 0} />
+                <StatCard label="Total Orders" value={stats.totalOrders || 0} />
+                <StatCard label="Gross Sales" value={money(stats.grossSales)} />
+                <StatCard
+                  label="Platform Revenue"
+                  value={money(stats.platformRevenue)}
+                />
+                <StatCard
+                  label="Seller Payouts"
+                  value={money(stats.totalPayouts)}
+                />
+                <StatCard
+                  label="Directory Revenue"
+                  value={money(stats.directoryRevenue)}
+                />
+                <StatCard label="Ad Revenue" value={money(stats.adRevenue)} />
+                <StatCard
+                  label="Pending Listings"
+                  value={stats.pendingListings || 0}
+                />
+                <StatCard
+                  label="Approved Listings"
+                  value={stats.approvedListings || 0}
+                />
+                <StatCard
+                  label="Expired Listings"
+                  value={stats.expiredListings || 0}
+                />
+              </div>
 
-          {/* Seller Leaderboard */}
-          <div className="mb-10 rounded-xl border border-zinc-800 bg-zinc-950 p-6">
-            <h2 className="mb-4 text-xl font-bold text-gold">Top Sellers</h2>
+              {/* Seller Leaderboard */}
+              <div className="mb-10 rounded-xl border border-zinc-800 bg-zinc-950 p-6">
+                <h2 className="mb-4 text-xl font-bold text-gold">
+                  Top Sellers
+                </h2>
 
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-sm text-white">
-                <thead className="bg-zinc-900 text-xs uppercase text-zinc-400">
-                  <tr>
-                    <th className="px-4 py-3">Seller ID</th>
-                    <th className="px-4 py-3">Total Sales</th>
-                    <th className="px-4 py-3">Orders</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {stats.sellerLeaderboard?.length > 0 ? (
-                    stats.sellerLeaderboard.map((seller, idx) => (
-                      <tr
-                        key={`${seller._id}-${idx}`}
-                        className="border-b border-zinc-800 last:border-b-0"
-                      >
-                        <td className="px-4 py-2">{seller._id}</td>
-                        <td className="px-4 py-2">
-                          {money(seller.totalSales)}
-                        </td>
-                        <td className="px-4 py-2">{seller.orders}</td>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-sm text-white">
+                    <thead className="bg-zinc-900 text-xs uppercase text-zinc-400">
+                      <tr>
+                        <th className="px-4 py-3">Seller ID</th>
+                        <th className="px-4 py-3">Total Sales</th>
+                        <th className="px-4 py-3">Orders</th>
                       </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan={3} className="p-4 text-center text-zinc-400">
-                        No sellers yet.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
+                    </thead>
+                    <tbody>
+                      {stats.sellerLeaderboard?.length > 0 ? (
+                        stats.sellerLeaderboard.map((seller, idx) => (
+                          <tr
+                            key={`${seller._id}-${idx}`}
+                            className="border-b border-zinc-800 last:border-b-0"
+                          >
+                            <td className="px-4 py-2">{seller._id}</td>
+                            <td className="px-4 py-2">
+                              {money(seller.totalSales)}
+                            </td>
+                            <td className="px-4 py-2">{seller.orders}</td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td
+                            colSpan={3}
+                            className="p-4 text-center text-zinc-400"
+                          >
+                            No seller order volume yet. Seller activity will
+                            appear here after first processed orders.
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
 
-          {/* Buyer Activity */}
-          <div className="mb-10 rounded-xl border border-zinc-800 bg-zinc-950 p-6">
-            <h2 className="mb-4 text-xl font-bold text-gold">Buyer Activity</h2>
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-              <StatCard
-                label="Unique Buyers"
-                value={stats.buyerActivity?.uniqueBuyers || 0}
-              />
-              <StatCard
-                label="Repeat Buyers"
-                value={stats.buyerActivity?.repeatBuyers || 0}
-              />
-              <StatCard
-                label="Most Active Buyer"
-                value={
-                  stats.buyerActivity?.mostActiveBuyer
-                    ? `${stats.buyerActivity.mostActiveBuyer._id} (${stats.buyerActivity.mostActiveBuyer.orders} orders)`
-                    : "N/A"
-                }
-              />
-            </div>
-          </div>
+              {/* Buyer Activity */}
+              <div className="mb-10 rounded-xl border border-zinc-800 bg-zinc-950 p-6">
+                <h2 className="mb-4 text-xl font-bold text-gold">
+                  Buyer Activity
+                </h2>
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                  <StatCard
+                    label="Unique Buyers"
+                    value={stats.buyerActivity?.uniqueBuyers || 0}
+                  />
+                  <StatCard
+                    label="Repeat Buyers"
+                    value={stats.buyerActivity?.repeatBuyers || 0}
+                  />
+                  <StatCard
+                    label="Most Active Buyer"
+                    value={
+                      stats.buyerActivity?.mostActiveBuyer
+                        ? `${stats.buyerActivity.mostActiveBuyer._id} (${stats.buyerActivity.mostActiveBuyer.orders} orders)`
+                        : "No repeat buyer activity yet"
+                    }
+                  />
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </>
   );
 }
+
+export const getServerSideProps: GetServerSideProps =
+  requireAdminPageProps("/admin/analytics");

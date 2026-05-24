@@ -1,7 +1,9 @@
+import type { GetServerSideProps } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import WealthBuilderNav from "@/components/wealth-builder/WealthBuilderNav";
+import { requireWealthBuilderPageUser } from "@/lib/wealth-builder/page-auth";
 
 type EntitlementResponse = {
   ok: boolean;
@@ -34,6 +36,8 @@ export default function WealthBuilderInsightsPage() {
   const [insights, setInsights] = useState<
     Array<{ type: string; title: string; message: string }>
   >([]);
+  const [detectingRecurring, setDetectingRecurring] = useState(false);
+  const [detectMsg, setDetectMsg] = useState("");
 
   async function loadData() {
     setLoading(true);
@@ -79,6 +83,33 @@ export default function WealthBuilderInsightsPage() {
     void loadData();
   }, []);
 
+  async function runRecurringDetection() {
+    setDetectingRecurring(true);
+    setDetectMsg("");
+    try {
+      const res = await fetch("/api/wealth-builder/subscriptions/detect", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data?.ok) {
+        throw new Error(
+          data?.message || "Failed to detect recurring transactions.",
+        );
+      }
+      setDetectMsg(
+        `Recurring detection complete. Updated ${data.updated || 0} transactions.`,
+      );
+      await loadData();
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : "Recurring detection failed.";
+      setDetectMsg(message);
+    } finally {
+      setDetectingRecurring(false);
+    }
+  }
+
   return (
     <>
       <Head>
@@ -114,6 +145,21 @@ export default function WealthBuilderInsightsPage() {
                   {entitlement?.isPremium ? "Premium" : "Free"}
                 </span>
               </div>
+            </div>
+
+            <div className="mt-4 flex flex-wrap items-center gap-3">
+              <button
+                onClick={() => void runRecurringDetection()}
+                disabled={detectingRecurring}
+                className="rounded-lg bg-yellow-500 px-4 py-2 text-sm font-semibold text-black disabled:opacity-60"
+              >
+                {detectingRecurring
+                  ? "Detecting recurring..."
+                  : "Detect recurring subscriptions"}
+              </button>
+              {detectMsg ? (
+                <p className="text-sm text-zinc-300">{detectMsg}</p>
+              ) : null}
             </div>
 
             {error ? (
@@ -178,3 +224,7 @@ export default function WealthBuilderInsightsPage() {
     </>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  return requireWealthBuilderPageUser(context, "/wealth-builder/insights");
+};

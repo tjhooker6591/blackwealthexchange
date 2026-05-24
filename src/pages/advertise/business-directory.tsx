@@ -4,6 +4,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { getAdQuote } from "@/lib/advertising/pricing";
 
 type PlanType = "standard" | "featured";
 
@@ -20,6 +21,15 @@ export default function BusinessDirectoryAdPage() {
   const [notes, setNotes] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+
+  const standardQuote = getAdQuote({
+    option: "directory-standard",
+    durationDays: 30,
+  });
+  const featuredQuote = getAdQuote({
+    option: "directory-featured",
+    durationDays: 30,
+  });
 
   useEffect(() => {
     let mounted = true;
@@ -164,11 +174,15 @@ export default function BusinessDirectoryAdPage() {
       <h1 className="text-4xl font-bold text-gold mb-4">
         Promote Your Business in the Directory
       </h1>
+      <p className="text-xs text-gray-400 max-w-2xl mb-3">
+        Who this is for: businesses that want stronger directory visibility with
+        clear sponsored treatment when applicable.
+      </p>
 
       <p className="text-lg text-gray-400 max-w-2xl mb-10">
-        Feature your business at the top of relevant categories in our
-        Black-Owned Business Directory. Get seen by users actively searching for
-        services like yours.
+        Submit a paid directory campaign for review and activation in directory
+        discovery surfaces. Listing behavior depends on approved tier and
+        fulfillment status.
       </p>
 
       {/* Tracking / linking notice */}
@@ -243,7 +257,7 @@ export default function BusinessDirectoryAdPage() {
         {[
           {
             title: "Top Placement",
-            text: "Be seen first in your business category to increase traffic and credibility.",
+            text: "Request higher-visibility directory placement through approved featured inventory.",
           },
           {
             title: "Community Support",
@@ -266,6 +280,28 @@ export default function BusinessDirectoryAdPage() {
         ))}
       </div>
 
+      <section className="w-full max-w-4xl mb-8 rounded-xl border border-gray-700 bg-gray-900 p-5 text-left space-y-2">
+        <h3 className="text-lg font-semibold text-gold">
+          Approval, labeling, and timeline
+        </h3>
+        <p className="text-sm text-gray-300">
+          Approval criteria include campaign detail quality, policy alignment,
+          and placement capacity.
+        </p>
+        <p className="text-sm text-gray-300">
+          Featured campaigns are clearly labeled as sponsored/featured when
+          active.
+        </p>
+        <p className="text-sm text-gray-300">
+          Post-payment lifecycle: payment confirmation → admin review →
+          approval/scheduling → active placement window.
+        </p>
+        <p className="text-xs text-gray-400">
+          Need help or escalation? Use /support and include your campaign
+          request context.
+        </p>
+      </section>
+
       {/* Plan Options */}
       <div className="max-w-4xl w-full">
         <h2 className="text-2xl font-bold text-gold mb-6">Choose Your Plan</h2>
@@ -275,9 +311,12 @@ export default function BusinessDirectoryAdPage() {
           <div className="bg-white text-black rounded-xl p-6 shadow-lg flex flex-col justify-between items-center text-center space-y-4">
             <div>
               <h3 className="text-2xl font-bold mb-2">Standard Listing</h3>
+              <p className="text-sm mb-2 font-semibold">
+                Best for: businesses that want affordable baseline visibility.
+              </p>
               <p className="text-sm mb-4">
-                Appear in the directory under your selected category. Great for
-                visibility and credibility.
+                What you get: 30-day directory presence with clickable profile
+                listing.
               </p>
               <ul className="text-sm list-disc list-inside mb-4 text-left">
                 <li>Listed for 30 days</li>
@@ -291,7 +330,9 @@ export default function BusinessDirectoryAdPage() {
                 disabled={submitting}
                 className="w-full px-4 py-2 bg-black text-gold rounded hover:bg-gray-900 transition disabled:opacity-60"
               >
-                {submitting ? "Saving Request..." : "$49 - Select Plan"}
+                {submitting
+                  ? "Saving Request..."
+                  : `${standardQuote ? `$${standardQuote.amountDollars}` : "See"} - Select and Continue`}
               </button>
             </div>
           </div>
@@ -300,14 +341,19 @@ export default function BusinessDirectoryAdPage() {
           <div className="bg-white text-black rounded-xl p-6 shadow-lg flex flex-col justify-between items-center text-center space-y-4">
             <div>
               <h3 className="text-2xl font-bold mb-2">Featured Listing</h3>
+              <p className="text-sm mb-2 font-semibold">
+                Best for: businesses that need stronger discovery priority.
+              </p>
               <p className="text-sm mb-4">
-                Stand out at the top of the directory with a highlighted badge
-                and priority placement.
+                What you get: sponsored/featured treatment and higher-priority
+                placement after approval.
               </p>
               <ul className="text-sm list-disc list-inside mb-4 text-left">
                 <li>Featured for 30 days</li>
-                <li>Highlighted background</li>
-                <li>Priority category placement</li>
+                <li>Sponsored/featured labeling when active</li>
+                <li>
+                  Higher-priority ordering policy versus standard listings
+                </li>
               </ul>
             </div>
             <div className="space-y-2 w-full">
@@ -316,7 +362,9 @@ export default function BusinessDirectoryAdPage() {
                 disabled={submitting}
                 className="w-full px-4 py-2 bg-black text-gold rounded hover:bg-gray-900 transition disabled:opacity-60"
               >
-                {submitting ? "Saving Request..." : "$99 - Select Plan"}
+                {submitting
+                  ? "Saving Request..."
+                  : `${featuredQuote ? `$${featuredQuote.amountDollars}` : "See"} - Select and Continue`}
               </button>
             </div>
           </div>

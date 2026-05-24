@@ -3,6 +3,8 @@
 
 import React from "react";
 import Link from "next/link";
+import type { GetServerSideProps } from "next";
+import { resolvePremiumCourseAccess } from "@/lib/entitlements/courseAccess";
 
 const courseModules = [
   {
@@ -53,10 +55,14 @@ const PremiumFinanceHome = () => (
       Premium Financial Literacy Course
     </h1>
 
-    <p className="text-gray-300 text-center max-w-2xl mx-auto mb-12">
+    <p className="text-gray-300 text-center max-w-2xl mx-auto mb-4">
       Welcome to your premium financial journey. Work through the modules in
       order or pick what matters most to you first. Each module includes
       lessons, tools, and action steps.
+    </p>
+    <p className="text-center text-sm text-gray-400 max-w-2xl mx-auto mb-12">
+      Recommended progression: Module 1 → 8 for strongest compounding outcome.
+      Next action: start Module 1 now, then continue in sequence.
     </p>
 
     {/* Modules grid */}
@@ -88,3 +94,27 @@ const PremiumFinanceHome = () => (
 );
 
 export default PremiumFinanceHome;
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const access = await resolvePremiumCourseAccess(ctx.req as any);
+
+  if (!access.authenticated) {
+    return {
+      redirect: {
+        destination: `/login?next=${encodeURIComponent(ctx.resolvedUrl || "/premium-finance")}`,
+        permanent: false,
+      },
+    };
+  }
+
+  if (!access.hasAccess) {
+    return {
+      redirect: {
+        destination: `/financial-literacy?locked=premium-finance&reason=${encodeURIComponent(access.reason || "no_entitlement")}`,
+        permanent: false,
+      },
+    };
+  }
+
+  return { props: {} };
+};

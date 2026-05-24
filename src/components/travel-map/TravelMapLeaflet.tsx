@@ -7,8 +7,10 @@ import type { TravelMapBusiness } from "@/types/travel-map";
 const defaultCenter: [number, number] = [39.8283, -98.5795];
 
 const markerIcon = new L.Icon({
-  iconUrl: "/images/map/marker-icon.png",
-  shadowUrl: "/images/map/marker-shadow.png",
+  iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+  shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+  iconRetinaUrl:
+    "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
   iconSize: [25, 41],
   iconAnchor: [12, 41],
   popupAnchor: [1, -34],
@@ -94,14 +96,12 @@ export default function TravelMapLeaflet({
                 ) : null}
 
                 <div className="mt-3 flex flex-wrap gap-2">
-                  {business.slug ? (
-                    <Link
-                      href={`/business/${business.slug}`}
-                      className="rounded-md bg-black px-3 py-2 text-xs font-semibold text-white"
-                    >
-                      View
-                    </Link>
-                  ) : null}
+                  <Link
+                    href={`/travel-map/business/${business._id}`}
+                    className="rounded-md bg-black px-3 py-2 text-xs font-semibold text-white"
+                  >
+                    Detail
+                  </Link>
 
                   <a
                     href={buildDirectionsUrl(business)}
@@ -109,7 +109,7 @@ export default function TravelMapLeaflet({
                     rel="noreferrer"
                     className="rounded-md border border-gray-300 px-3 py-2 text-xs font-semibold text-black"
                   >
-                    Directions
+                    Maps
                   </a>
                 </div>
               </div>

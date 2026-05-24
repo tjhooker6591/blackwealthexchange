@@ -3,6 +3,8 @@ import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import Head from "next/head";
 import { useEffect } from "react";
+import { useRouter } from "next/router";
+import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 import NavBar from "@/components/NavBar";
 import Footer from "@/components/footer";
 import { SessionProvider } from "next-auth/react";
@@ -12,21 +14,51 @@ export default function App({
   Component,
   pageProps: { session, ...pageProps },
 }: AppProps) {
+  const router = useRouter();
   useEffect(() => {
-    // Prevent right-click context menu
-    const disableContextMenu = (e: MouseEvent) => e.preventDefault();
-    document.addEventListener("contextmenu", disableContextMenu);
-
-    // Disable text selection
-    document.body.style.userSelect = "none";
-
-    // Prevent image dragging
-    const disableImageDrag = () => {
-      document
-        .querySelectorAll("img")
-        .forEach((img) => img.setAttribute("draggable", "false"));
+    const trackPageView = (url: string) => {
+      emitFlowEvent({
+        eventType: "page_view",
+        pageRoute: url,
+        section: "global_navigation",
+        source: "app_router",
+      });
     };
-    disableImageDrag();
+
+    trackPageView(router.asPath || "/");
+    router.events.on("routeChangeComplete", trackPageView);
+    if (
+      process.env.NODE_ENV !== "production" &&
+      typeof window !== "undefined"
+    ) {
+      const onStart = (url: string) => {
+        performance.mark("routeStart");
+        console.info(`[timing] route start -> ${url}`);
+      };
+      const onDone = (url: string) => {
+        performance.mark("routeEnd");
+        performance.measure("routeNav", "routeStart", "routeEnd");
+        const m = performance.getEntriesByName("routeNav").pop();
+        console.info(
+          `[timing] route complete ${url} ${Math.round(m?.duration || 0)}ms`,
+        );
+      };
+      router.events.on("routeChangeStart", onStart);
+      router.events.on("routeChangeComplete", onDone);
+
+      const _fetch = window.fetch.bind(window);
+      window.fetch = async (...args) => {
+        const u = String(args[0]);
+        const t0 = performance.now();
+        const res = await _fetch(...args);
+        const t1 = performance.now();
+        if (u.startsWith("/api/"))
+          console.info(
+            `[timing] fetch ${u} ${Math.round(t1 - t0)}ms status=${res.status}`,
+          );
+        return res;
+      };
+    }
 
     // Blur on PrintScreen
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -40,11 +72,10 @@ export default function App({
     window.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.removeEventListener("contextmenu", disableContextMenu);
-      document.body.style.userSelect = "auto";
+      router.events.off("routeChangeComplete", trackPageView);
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, []);
+  }, [router]);
 
   return (
     <SessionProvider session={session}>

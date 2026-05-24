@@ -22,6 +22,13 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
+  if (
+    req.method === "GET" &&
+    String(req.headers.accept || "").includes("text/html")
+  ) {
+    return res.redirect(307, "/wealth-builder/transactions");
+  }
+
   const auth = await requireWealthUser(req, res);
   if (!auth) return;
 

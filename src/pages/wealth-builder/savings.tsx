@@ -1,6 +1,8 @@
+import type { GetServerSideProps } from "next";
 import Head from "next/head";
 import { useEffect, useMemo, useState } from "react";
 import WealthBuilderNav from "@/components/wealth-builder/WealthBuilderNav";
+import { requireWealthBuilderPageUser } from "@/lib/wealth-builder/page-auth";
 
 type GoalStatus = "active" | "completed" | "paused" | "cancelled" | "archived";
 
@@ -77,6 +79,26 @@ function formatDateForInput(value?: string | null) {
 function getProgressPercent(currentAmount: number, targetAmount: number) {
   if (targetAmount <= 0) return 0;
   return Math.max(0, Math.min(100, (currentAmount / targetAmount) * 100));
+}
+
+function estimateGoalEtaMonths(goal: SavingsGoal) {
+  const remaining = Math.max(
+    (goal.targetAmount || 0) - (goal.currentAmount || 0),
+    0,
+  );
+  const pace = Math.max(goal.monthlyContributionTarget || 0, 0);
+  if (remaining <= 0) return 0;
+  if (pace <= 0) return null;
+  return Math.ceil(remaining / pace);
+}
+
+function formatEta(months: number | null) {
+  if (months === null) return "Set monthly target";
+  if (months <= 0) return "Goal reached";
+  if (months < 12) return `~${months} months`;
+  const years = Math.floor(months / 12);
+  const rem = months % 12;
+  return rem > 0 ? `~${years}y ${rem}m` : `~${years} years`;
 }
 
 export default function WealthBuilderSavingsPage() {
@@ -310,6 +332,15 @@ export default function WealthBuilderSavingsPage() {
                   Still in progress and actively being worked.
                 </p>
               </div>
+            </div>
+
+            <div className="mt-6 rounded-2xl border border-cyan-500/25 bg-cyan-500/5 p-4 text-sm text-cyan-100">
+              <p className="font-semibold">Contribution pacing guidance</p>
+              <p className="mt-1 text-cyan-50/90">
+                Set monthly contribution targets on each goal to unlock ETA
+                guidance and keep savings planning tied to your monthly cash
+                flow.
+              </p>
             </div>
 
             {error ? (
@@ -602,6 +633,15 @@ export default function WealthBuilderSavingsPage() {
                                 )}
                               </p>
                             </div>
+
+                            <div className="rounded-xl border border-white/10 bg-zinc-950/80 p-4 md:col-span-2 xl:col-span-4">
+                              <p className="text-xs uppercase tracking-wide text-zinc-400">
+                                ETA at current monthly pace
+                              </p>
+                              <p className="mt-2 text-lg font-bold text-cyan-200">
+                                {formatEta(estimateGoalEtaMonths(item))}
+                              </p>
+                            </div>
                           </div>
 
                           <div className="mt-5">
@@ -641,3 +681,7 @@ export default function WealthBuilderSavingsPage() {
     </>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  return requireWealthBuilderPageUser(context, "/wealth-builder/savings");
+};

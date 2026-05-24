@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { verify, type JwtPayload } from "jsonwebtoken";
 import { getWealthDb } from "./mongo";
 import { toObjectId } from "./helpers";
+import { getJwtSecret } from "@/lib/env";
 
 type WealthAuthResult = {
   userId: string;
@@ -11,7 +12,7 @@ type WealthAuthResult = {
 };
 
 function getSecret(): string {
-  const secret = process.env.JWT_SECRET || process.env.NEXTAUTH_SECRET;
+  const secret = getJwtSecret();
   if (!secret) {
     throw new Error("Missing JWT_SECRET or NEXTAUTH_SECRET");
   }

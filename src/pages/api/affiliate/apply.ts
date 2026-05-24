@@ -3,6 +3,7 @@ import clientPromise from "@/lib/mongodb";
 import { nanoid } from "nanoid";
 import cookie from "cookie";
 import jwt from "jsonwebtoken";
+import { getJwtSecret } from "@/lib/env";
 
 interface JwtPayload {
   userId: string;
@@ -10,8 +11,7 @@ interface JwtPayload {
   accountType?: string;
 }
 
-const SECRET =
-  process.env.JWT_SECRET || process.env.NEXTAUTH_SECRET || "default_secret";
+const SECRET = getJwtSecret();
 
 export default async function handler(
   req: NextApiRequest,

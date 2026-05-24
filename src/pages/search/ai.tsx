@@ -102,9 +102,8 @@ export default function SearchAI() {
             AI Summary (Trusted Flow)
           </h2>
           <p className="mt-2 text-sm text-white/65">
-            Next step: this section will generate a concise summary + show only
-            trusted, verifiable statements, then link each claim to real
-            listings and sources.
+            Use AI Mode to quickly narrow options, then confirm final choices in
+            Directory listings with seller details and source-backed records.
           </p>
 
           <div className="mt-4 flex gap-3 flex-wrap">
@@ -194,8 +193,8 @@ export default function SearchAI() {
         </div>
 
         <div className="mt-10 text-xs text-white/45">
-          Note: AI Mode is currently a “trusted flow” shell — results are pulled
-          from the BWE directory. We’ll add summarization + citations next.
+          AI Mode uses BWE directory data and routes you to source listings for
+          final verification.
         </div>
       </div>
     </div>

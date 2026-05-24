@@ -2,6 +2,7 @@
 "use client";
 
 import Link from "next/link";
+import Head from "next/head";
 import { useMemo, useState } from "react";
 
 export default function ForgotPassword() {
@@ -66,80 +67,86 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black text-white p-6">
-      {/* subtle glow */}
-      <div className="pointer-events-none fixed inset-0 opacity-40">
-        <div className="absolute -top-40 -left-40 h-[520px] w-[520px] rounded-full blur-3xl bg-yellow-500/20" />
-        <div className="absolute top-24 right-[-120px] h-[420px] w-[420px] rounded-full blur-3xl bg-yellow-400/10" />
-      </div>
+    <>
+      <Head>
+        <meta name="robots" content="noindex,nofollow" />
+      </Head>
+      <div className="min-h-screen flex items-center justify-center bg-black text-white p-6">
+        {/* subtle glow */}
+        <div className="pointer-events-none fixed inset-0 opacity-40">
+          <div className="absolute -top-40 -left-40 h-[520px] w-[520px] rounded-full blur-3xl bg-yellow-500/20" />
+          <div className="absolute top-24 right-[-120px] h-[420px] w-[420px] rounded-full blur-3xl bg-yellow-400/10" />
+        </div>
 
-      <div className="relative w-full max-w-md bg-gray-900/80 border border-yellow-400/30 p-6 rounded-2xl shadow-xl backdrop-blur">
-        <h1 className="text-2xl font-bold text-yellow-400 mb-2">
-          Forgot Password
-        </h1>
-        <p className="text-sm text-gray-400 mb-6">
-          Enter your email and we’ll send a reset link if an account exists.
-        </p>
-
-        {success && (
-          <p className="text-green-400 mb-4 text-sm">
-            ✅ If an account exists for that email, a reset link has been sent.
+        <div className="relative w-full max-w-md bg-gray-900/80 border border-yellow-400/30 p-6 rounded-2xl shadow-xl backdrop-blur">
+          <h1 className="text-2xl font-bold text-yellow-400 mb-2">
+            Forgot Password
+          </h1>
+          <p className="text-sm text-gray-400 mb-6">
+            Enter your email and we’ll send a reset link if an account exists.
           </p>
-        )}
 
-        {error && <p className="text-red-400 mb-4 text-sm">{error}</p>}
+          {success && (
+            <p className="text-green-400 mb-4 text-sm">
+              ✅ If an account exists for that email, a reset link has been
+              sent.
+            </p>
+          )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm mb-1 text-gray-200">
-              Email Address
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-3 rounded-lg bg-gray-950 border border-gray-800 outline-none focus:border-yellow-400/60"
-              placeholder="e.g. you@example.com"
-              autoComplete="email"
-              inputMode="email"
-            />
-            {emailTrimmed && !isEmailValid && (
-              <p className="text-xs text-red-400 mt-1">
-                Please enter a valid email address.
-              </p>
-            )}
-          </div>
+          {error && <p className="text-red-400 mb-4 text-sm">{error}</p>}
 
-          <button
-            type="submit"
-            disabled={!isEmailValid || loading}
-            className={[
-              "w-full py-3 px-4 rounded-lg font-semibold transition",
-              !isEmailValid || loading
-                ? "bg-gray-700 text-gray-400 cursor-not-allowed"
-                : "bg-yellow-400 text-black hover:bg-yellow-300",
-            ].join(" ")}
-          >
-            {loading ? "Sending..." : "Send Reset Link"}
-          </button>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm mb-1 text-gray-200">
+                Email Address
+              </label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full p-3 rounded-lg bg-gray-950 border border-gray-800 outline-none focus:border-yellow-400/60"
+                placeholder="e.g. you@example.com"
+                autoComplete="email"
+                inputMode="email"
+              />
+              {emailTrimmed && !isEmailValid && (
+                <p className="text-xs text-red-400 mt-1">
+                  Please enter a valid email address.
+                </p>
+              )}
+            </div>
 
-          <div className="flex items-center justify-between pt-2">
-            <Link
-              href="/login"
-              className="text-sm text-yellow-400 hover:underline"
+            <button
+              type="submit"
+              disabled={!isEmailValid || loading}
+              className={[
+                "w-full py-3 px-4 rounded-lg font-semibold transition",
+                !isEmailValid || loading
+                  ? "bg-gray-700 text-gray-400 cursor-not-allowed"
+                  : "bg-yellow-400 text-black hover:bg-yellow-300",
+              ].join(" ")}
             >
-              ← Back to Login
-            </Link>
+              {loading ? "Sending..." : "Send Reset Link"}
+            </button>
 
-            <Link
-              href="/signup"
-              className="text-sm text-gray-300 hover:underline"
-            >
-              Create account
-            </Link>
-          </div>
-        </form>
+            <div className="flex items-center justify-between pt-2">
+              <Link
+                href="/login"
+                className="text-sm text-yellow-400 hover:underline"
+              >
+                ← Back to Login
+              </Link>
+
+              <Link
+                href="/signup"
+                className="text-sm text-gray-300 hover:underline"
+              >
+                Create account
+              </Link>
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

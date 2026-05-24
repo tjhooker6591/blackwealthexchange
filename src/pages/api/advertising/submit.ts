@@ -113,11 +113,45 @@ export default async function handler(
       createdAt: new Date(),
     });
 
+    const nextStepsByOption: Record<string, string[]> = {
+      "featured-sponsor": [
+        "Your campaign is now in review.",
+        "After approval and payment, it is assigned to homepage sponsor schedule weeks.",
+        "When the assigned week starts, it appears in the homepage Featured Sponsors rail.",
+      ],
+      "directory-standard": [
+        "Your directory campaign is now in review.",
+        "After approval and payment, it moves to directory fulfillment.",
+        "When activated, it appears as a paid directory listing for the selected duration.",
+      ],
+      "directory-featured": [
+        "Your featured directory campaign is now in review.",
+        "After approval and payment, it moves to featured directory fulfillment.",
+        "When activated, it appears with featured/sponsored treatment for the selected duration.",
+      ],
+      "banner-ad": [
+        "Your banner campaign is now in review.",
+        "After approval and payment, requested placement inventory is confirmed.",
+        "Your banner goes live only after scheduling is finalized for the selected window.",
+      ],
+      "custom-solution-deposit": [
+        "Your custom campaign request is now in review.",
+        "After deposit confirmation, deliverables and placement surfaces are finalized.",
+        "Launch starts only after scope, timeline, and assets are approved.",
+      ],
+    };
+
     return res.status(201).json({
       success: true,
       message: "Ad request submitted",
       adId: result.insertedId.toString(),
       requestId: result.insertedId.toString(),
+      lifecycle: "pending_review",
+      nextSteps: nextStepsByOption[option] || [
+        "Your campaign is now in review.",
+        "After approval and payment, fulfillment scheduling is finalized.",
+        "Campaign placement begins when the assigned schedule window starts.",
+      ],
     });
   } catch (error) {
     console.error("Error saving ad request:", error);

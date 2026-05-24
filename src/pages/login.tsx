@@ -2,6 +2,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
@@ -17,6 +18,21 @@ function safeParseJSON(text: string) {
 
 function isAllowedAccountType(v?: string): v is AccountType {
   return v === "user" || v === "seller" || v === "business" || v === "employer";
+}
+
+function canRoleAccessRedirect(role: AccountType, redirectTarget: string) {
+  if (!redirectTarget) return true;
+  if (redirectTarget.startsWith("/admin")) return false;
+  if (
+    redirectTarget.startsWith("/employer") ||
+    redirectTarget.startsWith("/dashboard/employer")
+  ) {
+    return role === "employer";
+  }
+  if (redirectTarget.startsWith("/marketplace/dashboard")) {
+    return role === "seller";
+  }
+  return true;
 }
 
 export default function Login() {
@@ -36,6 +52,7 @@ export default function Login() {
   });
 
   const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -136,10 +153,16 @@ export default function Login() {
 
       const role = data?.user?.accountType as AccountType | undefined;
 
-      // Respect redirect params first
+      // Respect redirect params only when role can access destination.
       if (redirectTarget) {
-        router.push(redirectTarget);
-        return;
+        if (role && canRoleAccessRedirect(role, redirectTarget)) {
+          router.push(redirectTarget);
+          return;
+        }
+
+        setNotice(
+          "Logged in successfully, but that destination requires a different account type. Redirecting to your dashboard.",
+        );
       }
 
       // Fall back to role-based routes
@@ -154,121 +177,132 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black px-4 py-10 text-white">
-      {/* subtle glow */}
-      <div className="pointer-events-none fixed inset-0 opacity-40">
-        <div className="absolute -top-40 -left-40 h-[520px] w-[520px] rounded-full blur-3xl bg-yellow-500/20" />
-        <div className="absolute top-24 right-[-120px] h-[420px] w-[420px] rounded-full blur-3xl bg-yellow-400/10" />
-      </div>
+    <>
+      <Head>
+        <meta name="robots" content="noindex,nofollow" />
+      </Head>
+      <div className="min-h-screen flex items-center justify-center bg-black px-4 py-10 text-white">
+        {/* subtle glow */}
+        <div className="pointer-events-none fixed inset-0 opacity-40">
+          <div className="absolute -top-40 -left-40 h-[520px] w-[520px] rounded-full blur-3xl bg-yellow-500/20" />
+          <div className="absolute top-24 right-[-120px] h-[420px] w-[420px] rounded-full blur-3xl bg-yellow-400/10" />
+        </div>
 
-      <div className="relative w-full max-w-md bg-gray-900/80 border border-yellow-400/30 p-8 rounded-2xl shadow-xl backdrop-blur">
-        <h2 className="text-3xl font-extrabold text-center text-yellow-400">
-          Welcome Back
-        </h2>
-        <p className="text-center text-gray-300 mt-2">Login to your account</p>
-
-        {redirectTarget ? (
-          <p className="text-xs text-gray-400 text-center mt-2">
-            You’ll be redirected to{" "}
-            <span className="text-gray-200">{redirectTarget}</span> after login.
+        <div className="relative w-full max-w-md bg-gray-900/80 border border-yellow-400/30 p-8 rounded-2xl shadow-xl backdrop-blur">
+          <h2 className="text-3xl font-extrabold text-center text-yellow-400">
+            Welcome Back
+          </h2>
+          <p className="text-center text-gray-300 mt-2">
+            Login to your account
           </p>
-        ) : null}
 
-        {error && <p className="text-red-400 text-center mt-3">{error}</p>}
+          {redirectTarget ? (
+            <p className="text-xs text-gray-400 text-center mt-2">
+              You’ll be redirected to{" "}
+              <span className="text-gray-200">{redirectTarget}</span> after
+              login.
+            </p>
+          ) : null}
 
-        <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-          {/* Account Type */}
-          <div>
-            <label className="block text-sm text-gray-200 font-semibold">
-              Account Type
-            </label>
-            <select
-              name="accountType"
-              value={formData.accountType}
-              onChange={handleChange}
-              className="mt-1 w-full p-3 rounded-lg bg-gray-950 border border-gray-800 text-white outline-none focus:border-yellow-400/60"
-              required
-            >
-              <option value="user">General User</option>
-              <option value="seller">Seller</option>
-              <option value="business">Business Owner</option>
-              <option value="employer">Employer</option>
-            </select>
-          </div>
+          {error && <p className="text-red-400 text-center mt-3">{error}</p>}
+          {notice && (
+            <p className="text-amber-300 text-center mt-3 text-sm">{notice}</p>
+          )}
 
-          {/* Email */}
-          <div>
-            <label className="block text-sm text-gray-200 font-semibold">
-              Email
-            </label>
-            <input
-              type="email"
-              name="email"
-              placeholder="you@example.com"
-              value={formData.email}
-              onChange={handleChange}
-              className="mt-1 w-full p-3 rounded-lg bg-gray-950 border border-gray-800 text-white outline-none focus:border-yellow-400/60"
-              autoComplete="email"
-              required
-            />
-          </div>
+          <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+            {/* Account Type */}
+            <div>
+              <label className="block text-sm text-gray-200 font-semibold">
+                Account Type
+              </label>
+              <select
+                name="accountType"
+                value={formData.accountType}
+                onChange={handleChange}
+                className="mt-1 w-full p-3 rounded-lg bg-gray-950 border border-gray-800 text-white outline-none focus:border-yellow-400/60"
+                required
+              >
+                <option value="user">General User</option>
+                <option value="seller">Seller</option>
+                <option value="business">Business Owner</option>
+                <option value="employer">Employer</option>
+              </select>
+            </div>
 
-          {/* Password */}
-          <div className="relative">
-            <label className="block text-sm text-gray-200 font-semibold">
-              Password
-            </label>
-            <input
-              type={showPassword ? "text" : "password"}
-              name="password"
-              placeholder="••••••••"
-              value={formData.password}
-              onChange={handleChange}
-              className="mt-1 w-full p-3 rounded-lg bg-gray-950 border border-gray-800 text-white outline-none focus:border-yellow-400/60 pr-10"
-              autoComplete="current-password"
-              required
-            />
+            {/* Email */}
+            <div>
+              <label className="block text-sm text-gray-200 font-semibold">
+                Email
+              </label>
+              <input
+                type="email"
+                name="email"
+                placeholder="you@example.com"
+                value={formData.email}
+                onChange={handleChange}
+                className="mt-1 w-full p-3 rounded-lg bg-gray-950 border border-gray-800 text-white outline-none focus:border-yellow-400/60"
+                autoComplete="email"
+                required
+              />
+            </div>
+
+            {/* Password */}
+            <div className="relative">
+              <label className="block text-sm text-gray-200 font-semibold">
+                Password
+              </label>
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                placeholder="••••••••"
+                value={formData.password}
+                onChange={handleChange}
+                className="mt-1 w-full p-3 rounded-lg bg-gray-950 border border-gray-800 text-white outline-none focus:border-yellow-400/60 pr-10"
+                autoComplete="current-password"
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((v) => !v)}
+                className="absolute right-3 top-[38px] text-gray-400 hover:text-white"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? "🙈" : "👁"}
+              </button>
+            </div>
+
+            {/* Submit */}
             <button
-              type="button"
-              onClick={() => setShowPassword((v) => !v)}
-              className="absolute right-3 top-[38px] text-gray-400 hover:text-white"
-              aria-label={showPassword ? "Hide password" : "Show password"}
+              type="submit"
+              disabled={loading}
+              className={[
+                "w-full py-3 rounded-lg font-semibold transition",
+                loading
+                  ? "bg-gray-700 text-gray-400 cursor-not-allowed"
+                  : "bg-yellow-400 text-black hover:bg-yellow-300",
+              ].join(" ")}
             >
-              {showPassword ? "🙈" : "👁"}
+              {loading ? "Logging in..." : "Login"}
             </button>
+          </form>
+
+          <div className="mt-5 flex items-center justify-between">
+            <Link
+              href="/forgot-password"
+              className="text-sm text-yellow-400 hover:underline"
+            >
+              Forgot Password?
+            </Link>
+
+            <Link
+              href="/signup"
+              className="text-sm text-gray-200 hover:underline"
+            >
+              Sign Up
+            </Link>
           </div>
-
-          {/* Submit */}
-          <button
-            type="submit"
-            disabled={loading}
-            className={[
-              "w-full py-3 rounded-lg font-semibold transition",
-              loading
-                ? "bg-gray-700 text-gray-400 cursor-not-allowed"
-                : "bg-yellow-400 text-black hover:bg-yellow-300",
-            ].join(" ")}
-          >
-            {loading ? "Logging in..." : "Login"}
-          </button>
-        </form>
-
-        <div className="mt-5 flex items-center justify-between">
-          <Link
-            href="/forgot-password"
-            className="text-sm text-yellow-400 hover:underline"
-          >
-            Forgot Password?
-          </Link>
-
-          <Link
-            href="/signup"
-            className="text-sm text-gray-200 hover:underline"
-          >
-            Sign Up
-          </Link>
         </div>
       </div>
-    </div>
+    </>
   );
 }

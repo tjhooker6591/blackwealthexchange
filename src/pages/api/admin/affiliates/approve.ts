@@ -2,24 +2,51 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
+import { requireAdminFromRequest } from "@/lib/adminAuth";
+import { getMongoDbName } from "@/lib/env";
+import { ADMIN_ERROR_CODES, adminFail } from "@/lib/adminApiContract";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
-  if (req.method !== "POST")
-    return res.status(405).json({ message: "Method Not Allowed" });
+  if (req.method !== "POST") {
+    res.setHeader("Allow", ["POST"]);
+    return adminFail(
+      res,
+      405,
+      ADMIN_ERROR_CODES.METHOD_NOT_ALLOWED,
+      "Method Not Allowed",
+    );
+  }
+
+  const admin = await requireAdminFromRequest(req, res);
+  if (!admin) return;
 
   const { affiliateId } = req.body;
 
   if (!affiliateId) {
     console.warn("Approval attempt without affiliateId");
-    return res.status(400).json({ message: "Missing affiliateId" });
+    return adminFail(
+      res,
+      400,
+      ADMIN_ERROR_CODES.MISSING_AFFILIATE_ID,
+      "Missing affiliateId",
+    );
+  }
+
+  if (!ObjectId.isValid(affiliateId)) {
+    return adminFail(
+      res,
+      400,
+      ADMIN_ERROR_CODES.INVALID_AFFILIATE_ID,
+      "Invalid affiliateId",
+    );
   }
 
   try {
     const client = await clientPromise;
-    const db = client.db("bwes-cluster");
+    const db = client.db(getMongoDbName());
 
     const affiliate = await db
       .collection("affiliates")
@@ -27,11 +54,18 @@ export default async function handler(
 
     if (!affiliate) {
       console.warn(`Affiliate with ID ${affiliateId} not found`);
-      return res.status(404).json({ message: "Affiliate not found" });
+      return adminFail(
+        res,
+        404,
+        ADMIN_ERROR_CODES.AFFILIATE_NOT_FOUND,
+        "Affiliate not found",
+      );
     }
 
     if (affiliate.status === "active") {
-      return res.status(200).json({ message: "Affiliate is already active" });
+      return res
+        .status(200)
+        .json({ ok: true, message: "Affiliate is already active" });
     }
 
     await db
@@ -43,13 +77,14 @@ export default async function handler(
 
     console.log(`✅ Affiliate ${affiliate.email} approved successfully.`);
 
-    return res
-      .status(200)
-      .json({ message: `Affiliate ${affiliate.email} approved.` });
+    return res.status(200).json({ ok: true, message: "Affiliate approved." });
   } catch (err) {
     console.error("Affiliate approval error:", err);
-    return res
-      .status(500)
-      .json({ message: "Internal server error during approval" });
+    return adminFail(
+      res,
+      500,
+      ADMIN_ERROR_CODES.INTERNAL_ERROR,
+      "Internal Server Error",
+    );
   }
 }

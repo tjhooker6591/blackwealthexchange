@@ -1,5 +1,6 @@
 import { useRouter } from "next/router";
 import React, { useState, useEffect } from "react";
+import { sanitizeRichHtml } from "@/lib/security/sanitizeHtml";
 
 interface ModuleContent {
   title: string;
@@ -157,12 +158,14 @@ const ModulePage: React.FC = () => {
     }
   };
 
+  const safeModuleContent = sanitizeRichHtml(moduleContent.content);
+
   return (
     <div className="min-h-screen bg-gray-900 text-white p-8">
       <h1 className="text-3xl font-bold text-gold">{moduleContent.title}</h1>
       <div
         className="mt-4"
-        dangerouslySetInnerHTML={{ __html: moduleContent.content }}
+        dangerouslySetInnerHTML={{ __html: safeModuleContent }}
       ></div>
 
       {/* Quiz Section */}

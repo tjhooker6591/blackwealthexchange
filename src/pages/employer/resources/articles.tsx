@@ -1,6 +1,8 @@
 "use client";
 
 import React from "react";
+import type { GetServerSideProps } from "next";
+import { requirePageRole } from "@/lib/security/pageRoleGuard";
 
 export default function EmployerArticles() {
   return (
@@ -38,6 +40,10 @@ export default function EmployerArticles() {
     </div>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  return requirePageRole(ctx, ["employer"], "/employer/resources/articles");
+};
 
 function ArticleSection({
   title,

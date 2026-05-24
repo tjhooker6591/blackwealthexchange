@@ -8,6 +8,7 @@ import {
   hitApiRateLimit,
 } from "@/lib/apiRateLimit";
 import { ObjectId } from "mongodb";
+import { ADMIN_ERROR_CODES, adminFail } from "@/lib/adminApiContract";
 
 type ReviewStatus = "pending" | "approved" | "rejected" | "spam" | "deleted";
 
@@ -78,7 +79,7 @@ export default async function handler(
     | { ok: true; requests: AdvertisingRequestRow[] }
     | { ok: true; updated: true; id: string; reviewStatus: ReviewStatus }
     | { ok: true; deleted: true; id: string }
-    | { ok: false; error: string }
+    | { ok: false; code: string; message: string }
   >,
 ) {
   const admin = await requireAdminFromRequest(req, res);
@@ -98,7 +99,7 @@ export default async function handler(
     );
     if (limitHit.blocked) {
       res.setHeader("Retry-After", String(limitHit.retryAfterSeconds));
-      return res.status(429).json({ ok: false, error: "Too many requests" });
+      return adminFail(res, 429, "TOO_MANY_REQUESTS", "Too many requests");
     }
 
     const collection = db.collection("advertising_requests");
@@ -112,7 +113,7 @@ export default async function handler(
           : "";
 
       if (!ObjectId.isValid(id)) {
-        return res.status(400).json({ ok: false, error: "Invalid id" });
+        return adminFail(res, 400, "INVALID_ID", "Invalid id");
       }
 
       const actor = admin.email || admin.userId || "admin";
@@ -146,7 +147,7 @@ export default async function handler(
       } as any);
 
       if (!result.matchedCount) {
-        return res.status(404).json({ ok: false, error: "Request not found" });
+        return adminFail(res, 404, "REQUEST_NOT_FOUND", "Request not found");
       }
 
       return res
@@ -157,7 +158,7 @@ export default async function handler(
     if (req.method === "DELETE") {
       const id = String(req.query.id || req.body?.id || "").trim();
       if (!ObjectId.isValid(id)) {
-        return res.status(400).json({ ok: false, error: "Invalid id" });
+        return adminFail(res, 400, "INVALID_ID", "Invalid id");
       }
 
       const actor = admin.email || admin.userId || "admin";
@@ -183,7 +184,7 @@ export default async function handler(
       } as any);
 
       if (!result.matchedCount) {
-        return res.status(404).json({ ok: false, error: "Request not found" });
+        return adminFail(res, 404, "REQUEST_NOT_FOUND", "Request not found");
       }
 
       return res.status(200).json({ ok: true, deleted: true, id });
@@ -191,7 +192,12 @@ export default async function handler(
 
     if (req.method !== "GET") {
       res.setHeader("Allow", ["GET", "PATCH", "DELETE"]);
-      return res.status(405).json({ ok: false, error: "Method not allowed" });
+      return adminFail(
+        res,
+        405,
+        ADMIN_ERROR_CODES.METHOD_NOT_ALLOWED,
+        "Method Not Allowed",
+      );
     }
 
     const limitRaw = Number(req.query.limit ?? 200);
@@ -388,8 +394,11 @@ export default async function handler(
     return res.status(200).json({ ok: true, requests: rows });
   } catch (error) {
     console.error("[/api/admin/advertising-requests] error", error);
-    return res
-      .status(500)
-      .json({ ok: false, error: "Failed to fetch advertising requests" });
+    return adminFail(
+      res,
+      500,
+      ADMIN_ERROR_CODES.INTERNAL_ERROR,
+      "Failed to fetch advertising requests",
+    );
   }
 }

@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
+import { getMongoDbName } from "@/lib/env";
 
 export default async function handler(
   req: NextApiRequest,
@@ -11,17 +12,33 @@ export default async function handler(
   }
 
   try {
-    const { affiliateId, amount } = req.body;
+    const affiliateId = String(req.body?.affiliateId || "").trim();
+    const amount = Number(req.body?.amount || 0);
 
-    if (!affiliateId || !amount) {
-      return res.status(400).json({ message: "Missing fields" });
+    if (
+      !affiliateId ||
+      !ObjectId.isValid(affiliateId) ||
+      !Number.isFinite(amount) ||
+      amount <= 0
+    ) {
+      return res
+        .status(400)
+        .json({ message: "Valid affiliateId and amount are required" });
     }
 
-    const commissionRate = 0.1; // 10% commission
+    const commissionRate = 0.1;
     const commission = parseFloat((amount * commissionRate).toFixed(2));
 
     const client = await clientPromise;
-    const db = client.db("bwes-cluster");
+    const db = client.db(getMongoDbName());
+
+    const affiliate = await db
+      .collection("affiliates")
+      .findOne({ _id: new ObjectId(affiliateId) }, { projection: { _id: 1 } });
+
+    if (!affiliate) {
+      return res.status(404).json({ message: "Affiliate not found" });
+    }
 
     await db.collection("affiliateConversions").insertOne({
       affiliateId,

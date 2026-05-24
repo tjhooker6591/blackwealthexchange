@@ -99,8 +99,8 @@ const FreelancePage: React.FC = () => {
               </div>
 
               <p className="mt-3 text-xs text-gray-400">
-                Note: Premium tools (advanced matching, outreach, and enhanced
-                visibility) are rolling out in phases.
+                Note: Additional premium freelance tooling is not active at
+                public launch.
               </p>
             </div>
 

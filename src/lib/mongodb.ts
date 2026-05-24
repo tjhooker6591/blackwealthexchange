@@ -1,7 +1,12 @@
 import { MongoClient, MongoClientOptions } from "mongodb";
 import { getMongoUri } from "@/lib/env";
 
-const options: MongoClientOptions = {};
+const options: MongoClientOptions = {
+  serverSelectionTimeoutMS: 2500,
+  connectTimeoutMS: 2500,
+  socketTimeoutMS: 5000,
+  maxPoolSize: 10,
+};
 
 declare global {
   var _mongoClientPromise: Promise<MongoClient> | undefined;

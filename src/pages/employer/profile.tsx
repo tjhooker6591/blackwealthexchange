@@ -4,6 +4,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
+import type { GetServerSideProps } from "next";
+import { requirePageRole } from "@/lib/security/pageRoleGuard";
 
 type User = {
   email: string;
@@ -195,3 +197,7 @@ export default function EmployerProfile() {
     </div>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  return requirePageRole(ctx, ["employer"], "/employer/profile");
+};

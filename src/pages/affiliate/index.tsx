@@ -24,6 +24,9 @@ const AffiliatePartnershipPage: NextPage = () => {
   const [affiliateStatus, setAffiliateStatus] = useState<
     "loading" | "active" | "inactive"
   >("loading");
+  const [authState, setAuthState] = useState<
+    "checking" | "logged_out" | "logged_in"
+  >("checking");
   const [affiliateOffers, setAffiliateOffers] = useState<AffiliateOffer[]>([]);
 
   useEffect(() => {
@@ -34,18 +37,28 @@ const AffiliatePartnershipPage: NextPage = () => {
           credentials: "include",
         });
         if (!sessionRes.ok) {
+          setAuthState("logged_out");
           setAffiliateStatus("inactive");
           return;
         }
         const sessionData = await sessionRes.json();
 
         if (!sessionData.user) {
+          setAuthState("logged_out");
+          setAffiliateStatus("inactive");
+          return;
+        }
+
+        setAuthState("logged_in");
+
+        const resolvedUserId = sessionData?.user?.id || sessionData?.user?._id;
+        if (!resolvedUserId) {
           setAffiliateStatus("inactive");
           return;
         }
 
         const linksRes = await fetch(
-          `/api/affiliate/get-links?userId=${sessionData.user.userId}`,
+          `/api/affiliate/get-links?userId=${encodeURIComponent(resolvedUserId)}`,
           {
             cache: "no-store",
             credentials: "include",
@@ -55,6 +68,7 @@ const AffiliatePartnershipPage: NextPage = () => {
         else setAffiliateStatus("inactive");
       } catch (err) {
         console.error(err);
+        setAuthState("logged_out");
         setAffiliateStatus("inactive");
       }
     };
@@ -143,7 +157,12 @@ const AffiliatePartnershipPage: NextPage = () => {
           href: "/affiliate/recommendation",
           label: "Go to Affiliate Dashboard",
         }
-      : { href: "/affiliate/signup", label: "Become an Affiliate" };
+      : authState === "logged_out"
+        ? {
+            href: "/login?redirect=/affiliate/index",
+            label: "Log In to Access Affiliate Program",
+          }
+        : { href: "/affiliate/signup", label: "Become an Affiliate" };
 
   return (
     <>
@@ -173,13 +192,18 @@ const AffiliatePartnershipPage: NextPage = () => {
                   Affiliate &amp; Partnership Program
                 </h1>
                 <p className="mt-3 text-sm sm:text-base md:text-lg text-white/70 max-w-3xl">
-                  Promote Black-owned brands and curated offers, earn
-                  commissions, and help grow the Black Wealth Exchange
-                  ecosystem.
+                  The BWE Affiliate Program lets you share approved links, drive
+                  qualified traffic to Black-owned brands, and earn commissions
+                  from valid conversions.
+                </p>
+
+                <p className="mt-2 text-sm text-white/60 max-w-3xl">
+                  To get started: log in, apply as an affiliate, then use your
+                  dashboard links to recommend partner offers.
                 </p>
 
                 {/* Status */}
-                <div className="mt-4">
+                <div className="mt-4 space-y-2">
                   {affiliateStatus === "loading" ? (
                     <p className="text-white/60 text-sm">
                       Checking your affiliate status…
@@ -194,6 +218,13 @@ const AffiliatePartnershipPage: NextPage = () => {
                       </span>
                     </p>
                   )}
+
+                  {authState === "logged_out" ? (
+                    <div className="rounded-xl border border-yellow-500/25 bg-yellow-500/10 px-3 py-2 text-xs text-yellow-100">
+                      You are currently logged out. Log in to access your
+                      affiliate dashboard or start an affiliate application.
+                    </div>
+                  ) : null}
                 </div>
               </div>
 

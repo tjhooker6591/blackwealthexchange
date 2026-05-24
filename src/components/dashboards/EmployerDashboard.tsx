@@ -20,7 +20,7 @@ import {
 interface Stats {
   jobsPosted: number;
   totalApplicants: number;
-  messages: number;
+  outreachQueue: number;
   profileCompletion: number; // 0-100
 }
 
@@ -50,12 +50,11 @@ const ROUTES = {
   postJob: "/post-job",
   jobs: "/employer/jobs",
   applicants: "/employer/applicants",
-  messages: "/employer/messages",
-  analytics: "/employer/analytics",
   resources: "/employer/resources",
   profile: "/employer/profile",
-  billing: "/dashboard/employer/billing",
   consultingInterest: "/dashboard/employer/consulting-interest",
+  consultantDiscovery: "/dashboard/employer/consultants",
+  consultantPipeline: "/dashboard/employer/consultants/pipeline",
 };
 
 function formatDate(value?: string) {
@@ -109,7 +108,7 @@ export default function EmployerDashboard() {
   const [stats, setStats] = useState<Stats>({
     jobsPosted: 0,
     totalApplicants: 0,
-    messages: 0,
+    outreachQueue: 0,
     profileCompletion: 0,
   });
 
@@ -202,7 +201,7 @@ export default function EmployerDashboard() {
           totalApplicants: Number(
             statsData?.totalApplicants ?? applicants.length ?? 0,
           ),
-          messages: Number(statsData?.messages ?? 0),
+          outreachQueue: Number(statsData?.outreachQueue ?? 0),
           profileCompletion: Number(statsData?.profileCompletion ?? 0),
         });
 
@@ -230,6 +229,42 @@ export default function EmployerDashboard() {
     const n = Number(stats.profileCompletion || 0);
     return Math.max(0, Math.min(100, n));
   }, [stats.profileCompletion]);
+
+  const nextStep = useMemo(() => {
+    if (!stats.jobsPosted) {
+      return {
+        title: "Post your first job",
+        body: "Post your first job so candidates can discover your team.",
+        href: ROUTES.postJob,
+        cta: "Post first job",
+      };
+    }
+
+    if (!stats.totalApplicants) {
+      return {
+        title: "Optimize live listings",
+        body: "Your jobs are live. Review listing quality and distribution to drive first applicants.",
+        href: ROUTES.jobs,
+        cta: "Review active jobs",
+      };
+    }
+
+    if (completion < 80) {
+      return {
+        title: "Strengthen employer profile",
+        body: "Improve your employer profile to increase candidate trust and response rates.",
+        href: ROUTES.profile,
+        cta: "Improve profile",
+      };
+    }
+
+    return {
+      title: "Follow up with applicants",
+      body: "Prioritize applicant follow-up to keep top candidates engaged.",
+      href: ROUTES.applicants,
+      cta: "Open applicants",
+    };
+  }, [completion, stats.jobsPosted, stats.totalApplicants]);
 
   if (loading) {
     return (
@@ -319,7 +354,7 @@ export default function EmployerDashboard() {
         </div>
 
         {/* Quick actions */}
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
           <div className="col-span-1">
             <ActionCard
               icon={<PlusCircle className="h-5 w-5 text-yellow-300" />}
@@ -335,6 +370,22 @@ export default function EmployerDashboard() {
               title="Applicants"
               description="Review and contact qualified candidates."
               href={ROUTES.applicants}
+            />
+          </div>
+          <div className="col-span-2 md:col-span-1">
+            <ActionCard
+              icon={<Users className="h-5 w-5 text-yellow-300" />}
+              title="Consultant Discovery"
+              description="Browse, filter, and shortlist vetted consultants."
+              href={ROUTES.consultantDiscovery}
+            />
+          </div>
+          <div className="col-span-2 md:col-span-1">
+            <ActionCard
+              icon={<Users className="h-5 w-5 text-yellow-300" />}
+              title="Consultant Pipeline"
+              description="Track saved, contacted, interview, review, and hired stages."
+              href={ROUTES.consultantPipeline}
             />
           </div>
           <div className="col-span-2 md:col-span-1">
@@ -364,6 +415,28 @@ export default function EmployerDashboard() {
           </div>
         ) : null}
 
+        <div className="rounded-2xl border border-yellow-500/25 bg-yellow-500/10 p-4 shadow-xl sm:p-5">
+          <h2 className="text-lg font-bold text-gold">Next step</h2>
+          <p className="mt-1 text-sm font-semibold text-white">
+            {nextStep.title}
+          </p>
+          <p className="mt-1 text-sm text-gray-300">{nextStep.body}</p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <Link
+              href={nextStep.href}
+              className="inline-flex items-center gap-2 rounded-xl bg-yellow-400 px-4 py-2 text-sm font-semibold text-black hover:bg-yellow-500"
+            >
+              {nextStep.cta} <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
+              href={ROUTES.jobs}
+              className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm hover:bg-white/10"
+            >
+              Manage jobs
+            </Link>
+          </div>
+        </div>
+
         {/* Stats */}
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-5">
           <StatTile
@@ -380,9 +453,9 @@ export default function EmployerDashboard() {
           />
           <StatTile
             icon={<MessageSquare className="h-5 w-5 text-yellow-300" />}
-            label="Messages"
-            value={stats.messages}
-            href={ROUTES.messages}
+            label="Managed Support Requests"
+            value={stats.outreachQueue}
+            href={ROUTES.consultingInterest}
           />
           <div className="col-span-2 rounded-2xl border border-white/10 bg-white/5 p-4 shadow-xl lg:col-span-1 lg:p-5">
             <div className="flex items-center justify-between gap-2">
@@ -490,10 +563,11 @@ export default function EmployerDashboard() {
                       </div>
 
                       <Link
-                        href={`${ROUTES.jobs}/${job._id}`}
+                        href={`/employer/edit-job/${job._id}`}
                         className="inline-flex items-center gap-2 text-sm text-yellow-300 hover:underline sm:whitespace-nowrap"
                       >
-                        Details <ArrowRight className="h-4 w-4 shrink-0" />
+                        Manage Listing{" "}
+                        <ArrowRight className="h-4 w-4 shrink-0" />
                       </Link>
                     </div>
                   </div>
@@ -511,16 +585,24 @@ export default function EmployerDashboard() {
                 Recruiting & Consulting Services
               </h3>
               <p className="mt-1 text-sm text-gray-200">
-                Get notified when we launch premium recruiting support for
-                employers.
+                Discover available consultants now, then escalate into managed
+                recruiting support when needed.
               </p>
             </div>
-            <Link
-              href={ROUTES.consultingInterest}
-              className="w-full rounded-xl bg-yellow-400 px-5 py-2.5 text-center text-sm font-semibold text-black transition hover:bg-yellow-500 md:w-auto"
-            >
-              Join Waitlist
-            </Link>
+            <div className="flex w-full gap-2 md:w-auto">
+              <Link
+                href={ROUTES.consultantDiscovery}
+                className="w-full rounded-xl bg-yellow-400 px-5 py-2.5 text-center text-sm font-semibold text-black transition hover:bg-yellow-500 md:w-auto"
+              >
+                Open Consultant Hub
+              </Link>
+              <Link
+                href={ROUTES.consultingInterest}
+                className="w-full rounded-xl border border-yellow-400/40 px-5 py-2.5 text-center text-sm font-semibold text-yellow-200 transition hover:bg-yellow-500/10 md:w-auto"
+              >
+                Request Managed Support
+              </Link>
+            </div>
           </div>
         </div>
       </div>

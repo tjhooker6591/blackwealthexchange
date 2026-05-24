@@ -9,6 +9,11 @@ const PLAN_LABELS: Record<string, string> = {
   founder: "Founding Member Plan",
 };
 
+function asMoney(v: unknown) {
+  const n = Number(v);
+  return Number.isFinite(n) ? `$${n.toFixed(2)}` : null;
+}
+
 export default function CheckoutPage() {
   const router = useRouter();
   const { user } = useAuth();
@@ -18,21 +23,44 @@ export default function CheckoutPage() {
     return typeof p === "string" ? p : "";
   }, [router.query.plan]);
 
+  const checkoutType = useMemo(() => {
+    const t = router.query.type;
+    return typeof t === "string" ? t : "plan";
+  }, [router.query.type]);
+
+  const source = useMemo(() => {
+    const s = router.query.source;
+    return typeof s === "string" ? s : "";
+  }, [router.query.source]);
+
+  const productName = useMemo(() => {
+    const n = router.query.productName;
+    return typeof n === "string" ? n : "";
+  }, [router.query.productName]);
+
+  const amountLabel = useMemo(
+    () => asMoney(router.query.amount),
+    [router.query.amount],
+  );
+
+  const isMarketplaceOrder =
+    checkoutType === "product" || source === "marketplace";
+
   const authUser = (user ?? null) as Record<string, unknown> | null;
 
-  const isPremiumActive =
+  const isPaidMembershipActive =
     authUser?.isPremium === true ||
     authUser?.currentPlan === "premium" ||
+    authUser?.currentPlan === "founding" ||
     authUser?.premiumStatus === "active";
 
   const isPremiumPlan = (plan || "premium") === "premium";
-
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string>("");
 
   async function startCheckout() {
-    if (isPremiumPlan && isPremiumActive) {
-      setMessage("Your Premium account is already active.");
+    if (isPremiumPlan && isPaidMembershipActive) {
+      setMessage("Your paid membership is already active.");
       return;
     }
 
@@ -79,23 +107,46 @@ export default function CheckoutPage() {
     }
   }
 
-  const showPremiumActiveState = isPremiumPlan && isPremiumActive;
+  const showPremiumActiveState = isPremiumPlan && isPaidMembershipActive;
 
   return (
     <>
       <Head>
         <title>Checkout | Black Wealth Exchange</title>
+        <meta name="robots" content="noindex,nofollow" />
       </Head>
 
       <main className="min-h-screen bg-black text-white px-6 py-12">
         <div className="max-w-2xl mx-auto">
-          <h1 className="text-3xl font-bold text-yellow-400">Checkout</h1>
+          <h1 className="text-3xl font-bold text-yellow-400">
+            {isMarketplaceOrder ? "Secure Marketplace Checkout" : "Checkout"}
+          </h1>
 
           <p className="mt-3 text-white/80">
-            {plan
-              ? `You're checking out: ${PLAN_LABELS[plan] || plan}.`
-              : "Select a plan to continue to secure checkout."}
+            {isMarketplaceOrder
+              ? "Review your order details, confirm secure payment, and place your order with confidence."
+              : plan
+                ? `You're checking out: ${PLAN_LABELS[plan] || plan}. Billed annually with auto-renew.`
+                : "Select a plan to continue to secure checkout."}
           </p>
+
+          {isMarketplaceOrder ? (
+            <div className="mt-5 rounded-xl border border-white/10 bg-white/5 p-4 text-sm text-white/85">
+              <p className="font-semibold text-white">Order summary</p>
+              <p className="mt-1">Item: {productName || "Marketplace item"}</p>
+              <p className="mt-1">
+                Subtotal: {amountLabel || "Shown on payment page"}
+              </p>
+              <p className="mt-1">
+                Shipping and taxes: Calculated by seller/payment flow.
+              </p>
+              <p className="mt-3 text-xs text-white/70">
+                Payment is processed securely. You receive confirmation
+                immediately after successful payment. Fulfillment and shipping
+                updates follow from the seller and are visible in My Orders.
+              </p>
+            </div>
+          ) : null}
 
           {showPremiumActiveState ? (
             <div className="mt-6 rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-4">
@@ -128,10 +179,10 @@ export default function CheckoutPage() {
             )}
 
             <Link
-              href="/pricing"
+              href={isMarketplaceOrder ? "/marketplace" : "/pricing"}
               className="inline-flex items-center rounded-md border border-yellow-500/40 px-4 py-2 font-semibold text-yellow-300 hover:border-yellow-400/70 transition"
             >
-              Back to Pricing
+              {isMarketplaceOrder ? "Back to Marketplace" : "Back to Pricing"}
             </Link>
           </div>
 

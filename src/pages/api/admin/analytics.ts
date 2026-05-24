@@ -1,6 +1,9 @@
 // src/pages/api/admin/analytics.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
+import { getAdminDecodedFromRequest, isAdminDecoded } from "@/lib/adminAuth";
+import { ADMIN_ERROR_CODES, adminFail } from "@/lib/adminApiContract";
+import { getMongoDbName } from "@/lib/env";
 
 function toNum(value: unknown): number {
   const n = Number(value);
@@ -40,9 +43,27 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
+  if (req.method !== "GET") {
+    res.setHeader("Allow", ["GET"]);
+    return adminFail(
+      res,
+      405,
+      ADMIN_ERROR_CODES.METHOD_NOT_ALLOWED,
+      "Method Not Allowed",
+    );
+  }
+
+  const admin = getAdminDecodedFromRequest(req);
+  if (!admin) {
+    return adminFail(res, 401, ADMIN_ERROR_CODES.UNAUTHORIZED, "Unauthorized");
+  }
+  if (!isAdminDecoded(admin)) {
+    return adminFail(res, 403, ADMIN_ERROR_CODES.FORBIDDEN, "Forbidden");
+  }
+
   try {
     const client = await clientPromise;
-    const db = client.db("bwes-cluster");
+    const db = client.db(getMongoDbName());
     const now = new Date();
 
     // Users & Core Entities (✅ businesses and organizations kept separate)
@@ -113,6 +134,22 @@ export default async function handler(
       payouts: toNum(row.payouts),
       orders: toNum(row.orders),
     }));
+
+    const paymentsByType = await db
+      .collection("payments")
+      .aggregate([
+        { $match: { amountCents: { $type: "number" } } },
+        {
+          $group: {
+            _id: { $ifNull: ["$type", "unknown"] },
+            gross: { $sum: { $ifNull: ["$amountCents", 0] } },
+            bweRevenue: { $sum: { $ifNull: ["$bweFee", 0] } },
+            payouts: { $sum: { $ifNull: ["$payout", 0] } },
+            count: { $sum: 1 },
+          },
+        },
+      ])
+      .toArray();
 
     // Seller Leaderboard
     const sellerLeaderboardAgg = await db
@@ -247,6 +284,8 @@ export default async function handler(
 
     // Final Response
     return res.status(200).json({
+      ok: true,
+
       // Core counts
       users,
       businesses,
@@ -267,6 +306,13 @@ export default async function handler(
       businessGrowth, // ✅ added
       organizationGrowth, // ✅ added
       revenueByMonth,
+      paymentRevenueByType: paymentsByType.map((row: any) => ({
+        type: row._id,
+        gross: toNum(row.gross),
+        bweRevenue: toNum(row.bweRevenue),
+        payouts: toNum(row.payouts),
+        count: toNum(row.count),
+      })),
 
       // Engagement / sellers
       sellerLeaderboard: sellerLeaderboardAgg,
@@ -287,6 +333,11 @@ export default async function handler(
     });
   } catch (err) {
     console.error("[/api/admin/analytics] Error:", err);
-    return res.status(500).json({ error: "Internal Server Error" });
+    return adminFail(
+      res,
+      500,
+      ADMIN_ERROR_CODES.INTERNAL_ERROR,
+      "Internal Server Error",
+    );
   }
 }

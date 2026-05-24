@@ -176,12 +176,11 @@ const RealEstatePage = () => {
   const router = useRouter();
   const { user } = useAuth();
 
-  const goPremium = () => {
-    if (!user) {
-      router.push(`/login?next=${encodeURIComponent("/real-estate")}`);
-      return;
-    }
-    router.push("/pricing");
+  const plan = String((user as any)?.currentPlan || "free").toLowerCase();
+  const hasToolkitAccess = plan === "premium" || plan === "founding";
+
+  const goToolkit = () => {
+    router.push("/real-estate-toolkit");
   };
 
   /** -----------------------------
@@ -237,9 +236,11 @@ const RealEstatePage = () => {
               <MapPin className="h-4 w-4" />
               Browse Directory
             </GoldButton>
-            <GoldButton onClick={goPremium}>
+            <GoldButton onClick={goToolkit}>
               <Lock className="h-4 w-4" />
-              Premium Toolkit
+              {hasToolkitAccess
+                ? "Open Real Estate Toolkit"
+                : "Unlock Real Estate Toolkit"}
             </GoldButton>
           </div>
         </div>
@@ -611,8 +612,11 @@ const RealEstatePage = () => {
                 >
                   Find Black-Owned Pros <ArrowRight className="h-4 w-4" />
                 </GoldButton>
-                <GoldButton onClick={goPremium} variant="ghost">
-                  Unlock Toolkit <Lock className="h-4 w-4" />
+                <GoldButton href="/real-estate-toolkit" variant="ghost">
+                  {hasToolkitAccess
+                    ? "Open Real Estate Toolkit"
+                    : "Unlock Real Estate Toolkit"}{" "}
+                  <Lock className="h-4 w-4" />
                 </GoldButton>
               </div>
             </div>
@@ -893,8 +897,11 @@ const RealEstatePage = () => {
             <GoldButton href="/business-directory/submit" variant="ghost">
               Add Your Business <ArrowRight className="h-4 w-4" />
             </GoldButton>
-            <GoldButton onClick={goPremium} variant="ghost">
-              View Premium Toolkit <Lock className="h-4 w-4" />
+            <GoldButton href="/real-estate-toolkit" variant="ghost">
+              {hasToolkitAccess
+                ? "Open Real Estate Toolkit"
+                : "Unlock Real Estate Toolkit"}{" "}
+              <Lock className="h-4 w-4" />
             </GoldButton>
           </div>
         </div>

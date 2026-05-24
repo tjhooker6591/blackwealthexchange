@@ -2,19 +2,10 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
-import cookie from "cookie";
-import jwt from "jsonwebtoken";
 import { getMongoDbName } from "@/lib/env";
 import { canApproveDirectoryListing } from "@/lib/stateTransitions";
-
-type Decoded = {
-  userId?: string;
-  email?: string;
-  accountType?: string;
-  role?: string;
-  isAdmin?: boolean;
-  roles?: string[];
-};
+import { getAdminDecodedFromRequest, isAdminDecoded } from "@/lib/adminAuth";
+import { ADMIN_ERROR_CODES, adminFail } from "@/lib/adminApiContract";
 
 type ApproveBody = {
   listingId?: string; // directory_listings _id OR payments _id (fallback rows)
@@ -24,25 +15,6 @@ type ApproveBody = {
 };
 
 const DEFAULT_MAX_SLOTS = 10;
-
-function isAdmin(decoded: Decoded) {
-  if (decoded?.isAdmin) return true;
-  if (decoded?.accountType === "admin") return true;
-  if (decoded?.role === "admin") return true;
-  if (Array.isArray(decoded?.roles) && decoded.roles.includes("admin"))
-    return true;
-
-  const allow = (process.env.ADMIN_EMAILS || "")
-    .split(",")
-    .map((s) => s.trim().toLowerCase())
-    .filter(Boolean);
-
-  if (allow.length && decoded?.email) {
-    return allow.includes(decoded.email.toLowerCase());
-  }
-
-  return false;
-}
 
 function s(v: unknown): string | null {
   return typeof v === "string" && v.trim() ? v.trim() : null;
@@ -117,46 +89,27 @@ function getLinkedBusinessId(doc: any): string | null {
   return businessId;
 }
 
-async function requireAdmin(
-  req: NextApiRequest,
-  res: NextApiResponse,
-): Promise<Decoded | null> {
-  const cookies = cookie.parse(req.headers.cookie || "");
-  const token = cookies.session_token;
-
-  if (!token) {
-    res.status(401).json({ error: "Unauthorized" });
-    return null;
-  }
-
-  try {
-    const SECRET = process.env.JWT_SECRET || process.env.NEXTAUTH_SECRET;
-    if (!SECRET) throw new Error("JWT secret missing");
-    const decoded = jwt.verify(token, SECRET) as Decoded;
-
-    if (process.env.NODE_ENV === "production" && !isAdmin(decoded)) {
-      res.status(403).json({ error: "Forbidden" });
-      return null;
-    }
-
-    return decoded;
-  } catch {
-    res.status(401).json({ error: "Unauthorized" });
-    return null;
-  }
-}
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
   if (req.method !== "POST") {
     res.setHeader("Allow", ["POST"]);
-    return res.status(405).json({ error: "Method Not Allowed" });
+    return adminFail(
+      res,
+      405,
+      ADMIN_ERROR_CODES.METHOD_NOT_ALLOWED,
+      "Method Not Allowed",
+    );
   }
 
-  const admin = await requireAdmin(req, res);
-  if (!admin) return;
+  const admin = getAdminDecodedFromRequest(req);
+  if (!admin) {
+    return adminFail(res, 401, ADMIN_ERROR_CODES.UNAUTHORIZED, "Unauthorized");
+  }
+  if (!isAdminDecoded(admin)) {
+    return adminFail(res, 403, ADMIN_ERROR_CODES.FORBIDDEN, "Forbidden");
+  }
 
   try {
     const body: ApproveBody =
@@ -170,9 +123,12 @@ export default async function handler(
     const forceApproveUnpaid = Boolean(body.forceApproveUnpaid);
 
     if (!listingId && !stripeSessionIdInput) {
-      return res
-        .status(400)
-        .json({ error: "listingId or stripeSessionId is required" });
+      return adminFail(
+        res,
+        400,
+        ADMIN_ERROR_CODES.MISSING_IDENTIFIER,
+        "listingId or stripeSessionId is required",
+      );
     }
 
     const client = await clientPromise;
@@ -220,16 +176,22 @@ export default async function handler(
       }
 
       if (!payment) {
-        return res
-          .status(404)
-          .json({ error: "Listing/payment record not found" });
+        return adminFail(
+          res,
+          404,
+          ADMIN_ERROR_CODES.LISTING_OR_PAYMENT_NOT_FOUND,
+          "Listing/payment record not found",
+        );
       }
 
       const itemId = pickPaymentItemId(payment);
       if (!isDirectoryItem(itemId)) {
-        return res
-          .status(400)
-          .json({ error: "Record is not a directory listing purchase" });
+        return adminFail(
+          res,
+          400,
+          ADMIN_ERROR_CODES.NOT_DIRECTORY_PURCHASE,
+          "Record is not a directory listing purchase",
+        );
       }
 
       const paymentStatus = s(payment?.status) || "unknown";
@@ -238,11 +200,12 @@ export default async function handler(
         forceApproveUnpaid,
       });
       if (!approvalGate.ok) {
-        return res.status(409).json({
-          error: "Cannot approve an unpaid listing",
-          details: `Payment status is "${paymentStatus}". Complete payment/webhook first, or use forceApproveUnpaid for testing.`,
-          reason: approvalGate.reason,
-        });
+        return adminFail(
+          res,
+          409,
+          ADMIN_ERROR_CODES.UNPAID_LISTING,
+          "Cannot approve an unpaid listing",
+        );
       }
 
       const tier = inferTierFromItemId(itemId);
@@ -251,9 +214,12 @@ export default async function handler(
 
       const paymentStripeSessionId = s(payment?.stripeSessionId);
       if (!paymentStripeSessionId) {
-        return res
-          .status(400)
-          .json({ error: "Payment missing stripeSessionId" });
+        return adminFail(
+          res,
+          400,
+          ADMIN_ERROR_CODES.MISSING_STRIPE_SESSION_ID,
+          "Payment missing stripeSessionId",
+        );
       }
 
       const linkedBusinessId =
@@ -337,7 +303,12 @@ export default async function handler(
     }
 
     if (!listing || !listingObjectId) {
-      return res.status(404).json({ error: "Directory listing not found" });
+      return adminFail(
+        res,
+        404,
+        ADMIN_ERROR_CODES.DIRECTORY_LISTING_NOT_FOUND,
+        "Directory listing not found",
+      );
     }
 
     const tier = (s(listing?.tier) || "standard") as "standard" | "featured";
@@ -359,11 +330,12 @@ export default async function handler(
     });
 
     if (!listingApprovalGate.ok) {
-      return res.status(409).json({
-        error: "Listing is not paid",
-        details: "This listing cannot be approved until payment is completed.",
-        reason: listingApprovalGate.reason,
-      });
+      return adminFail(
+        res,
+        409,
+        ADMIN_ERROR_CODES.LISTING_NOT_PAID,
+        "Listing is not paid",
+      );
     }
 
     const linkedBusinessId = getLinkedBusinessId(listing);
@@ -383,11 +355,12 @@ export default async function handler(
         },
       );
 
-      return res.status(409).json({
-        error: "Listing is not linked to a business",
-        details:
-          "Link this purchase to a business before approving. The listing has been kept in unlinked status.",
-      });
+      return adminFail(
+        res,
+        409,
+        ADMIN_ERROR_CODES.LISTING_UNLINKED,
+        "Listing is not linked to a business",
+      );
     }
 
     // If featured, assign slot or queue
@@ -500,7 +473,7 @@ export default async function handler(
       await directoryCol.updateOne({ _id: listingObjectId }, { $set: update });
 
       return res.status(200).json({
-        success: true,
+        ok: true,
         listingId: listingObjectId.toString(),
         tier: "featured",
         status: resultStatus,
@@ -549,7 +522,7 @@ export default async function handler(
     );
 
     return res.status(200).json({
-      success: true,
+      ok: true,
       listingId: listingObjectId.toString(),
       tier: "standard",
       status: "active",
@@ -561,9 +534,11 @@ export default async function handler(
     });
   } catch (err: any) {
     console.error("[/api/admin/approve-directory-listing] error:", err);
-    return res.status(500).json({
-      error: "Approval failed",
-      details: err?.message || "Unknown error",
-    });
+    return adminFail(
+      res,
+      500,
+      ADMIN_ERROR_CODES.INTERNAL_ERROR,
+      "Internal Server Error",
+    );
   }
 }

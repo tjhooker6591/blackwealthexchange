@@ -1,3 +1,5 @@
+import fs from "node:fs";
+import path from "node:path";
 import type { NextApiRequest, NextApiResponse } from "next";
 import type { Document, Filter } from "mongodb";
 import clientPromise from "@/lib/mongodb";
@@ -8,6 +10,10 @@ import type {
 
 function firstString(value: unknown): string {
   return typeof value === "string" ? value.trim() : "";
+}
+
+function clampString(value: string, maxLength: number): string {
+  return value.length > maxLength ? value.slice(0, maxLength) : value;
 }
 
 function firstBoolean(value: unknown): boolean {
@@ -206,6 +212,92 @@ function mapBusiness(doc: any): TravelMapBusiness {
   };
 }
 
+function loadFallbackBusinesses(): TravelMapBusiness[] {
+  try {
+    const filePath = path.join(
+      process.cwd(),
+      "data",
+      "black_owned_geocoded.json",
+    );
+    const raw = fs.readFileSync(filePath, "utf8");
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+
+    return parsed
+      .map((doc: any, index: number) => ({
+        _id: String(doc?._id || doc?.id || `fallback-${index}`),
+        business_name: cleanString(doc?.business_name) || "Untitled Business",
+        slug: cleanString(doc?.slug || doc?.alias),
+        description: cleanString(doc?.description),
+        category: cleanString(doc?.category || doc?.display_categories),
+        subcategory: Array.isArray(doc?.categories)
+          ? cleanString(doc.categories[0])
+          : cleanString(doc?.subcategory),
+        website: cleanString(doc?.website),
+        phone: cleanString(doc?.phone),
+        verified: doc?.verified === true || doc?.isVerified === true,
+        sponsored: doc?.sponsored === true,
+        featured: doc?.featured === true,
+        address: {
+          formatted: cleanString(doc?.address),
+          city: cleanString(doc?.city),
+          state: cleanString(doc?.state),
+        },
+        location: normalizeCoordinatePair(doc?.latitude, doc?.longitude),
+      }))
+      .filter((item: TravelMapBusiness) => item.business_name);
+  } catch {
+    return [];
+  }
+}
+
+function filterFallbackBusinesses(
+  docs: TravelMapBusiness[],
+  filters: {
+    q: string;
+    city: string;
+    state: string;
+    category: string;
+    verified: boolean;
+    sponsored: boolean;
+  },
+): TravelMapBusiness[] {
+  const q = filters.q.toLowerCase();
+  const city = filters.city.toLowerCase();
+  const state = filters.state.toLowerCase();
+  const category = filters.category.toLowerCase();
+
+  return docs.filter((item) => {
+    const haystack = [
+      item.business_name,
+      item.description,
+      item.category,
+      item.subcategory,
+      item.address?.formatted,
+      item.address?.city,
+      item.address?.state,
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+
+    if (q && !haystack.includes(q)) return false;
+    if (city && !(item.address?.city || "").toLowerCase().includes(city))
+      return false;
+    if (state && !(item.address?.state || "").toLowerCase().includes(state))
+      return false;
+    if (category) {
+      const c =
+        `${item.category || ""} ${item.subcategory || ""}`.toLowerCase();
+      if (!c.includes(category)) return false;
+    }
+    if (filters.verified && !item.verified) return false;
+    if (filters.sponsored && !item.sponsored) return false;
+
+    return true;
+  });
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<TravelMapSearchResponse | { ok: false; error: string }>,
@@ -216,14 +308,22 @@ export default async function handler(
   }
 
   try {
-    const q = firstString(req.query.q);
-    const city = firstString(req.query.city);
-    const state = firstString(req.query.state);
-    const category = firstString(req.query.category);
+    const q = clampString(firstString(req.query.q), 120);
+    const city = clampString(firstString(req.query.city), 80);
+    const state = clampString(firstString(req.query.state), 40);
+    const category = clampString(firstString(req.query.category), 80);
     const verified = firstBoolean(req.query.verified);
     const sponsored = firstBoolean(req.query.sponsored);
+    const sort = firstString(req.query.sort).toLowerCase();
     const page = firstPositiveInt(req.query.page, 1);
     const pageSize = Math.min(firstPositiveInt(req.query.pageSize, 12), 48);
+
+    if (
+      process.env.NODE_ENV !== "production" &&
+      req.query.source === "fallback"
+    ) {
+      throw new Error("Forced fallback source for runtime proof");
+    }
 
     const filter: Filter<Document> = {
       status: { $nin: ["rejected", "archived"] },
@@ -341,7 +441,41 @@ export default async function handler(
       .limit(pageSize)
       .toArray();
 
-    const results = docs.map(mapBusiness);
+    let results = docs.map(mapBusiness);
+
+    results = results.sort((a, b) => {
+      const aMapped = Number(
+        Number.isFinite(a.location?.lat) && Number.isFinite(a.location?.lng),
+      );
+      const bMapped = Number(
+        Number.isFinite(b.location?.lat) && Number.isFinite(b.location?.lng),
+      );
+      return bMapped - aMapped;
+    });
+
+    if (q && sort !== "recent") {
+      const qNorm = q.toLowerCase();
+      results = results
+        .map((item) => {
+          const text =
+            `${item.business_name} ${item.description || ""} ${item.category || ""} ${item.subcategory || ""} ${item.address?.city || ""} ${item.address?.state || ""}`.toLowerCase();
+          let score = 0;
+          if (item.business_name?.toLowerCase() === qNorm) score += 100;
+          if (item.business_name?.toLowerCase().startsWith(qNorm)) score += 50;
+          if (text.includes(qNorm)) score += 15;
+          if (item.verified) score += 8;
+          if (item.sponsored) score += 3;
+          return { item, score };
+        })
+        .sort((a, b) => b.score - a.score)
+        .map((x) => x.item);
+    }
+
+    const mappedCount = results.filter(
+      (item) =>
+        Number.isFinite(item.location?.lat) &&
+        Number.isFinite(item.location?.lng),
+    ).length;
 
     return res.status(200).json({
       ok: true,
@@ -356,10 +490,61 @@ export default async function handler(
         category,
         verified,
         sponsored,
+        sort,
+      },
+      meta: {
+        source: "db",
+        mappedCount,
       },
     });
   } catch (error) {
     console.error("travel-map/search error", error);
-    return res.status(500).json({ ok: false, error: "Internal Server Error" });
+
+    const q = clampString(firstString(req.query.q), 120);
+    const city = clampString(firstString(req.query.city), 80);
+    const state = clampString(firstString(req.query.state), 40);
+    const category = clampString(firstString(req.query.category), 80);
+    const verified = firstBoolean(req.query.verified);
+    const sponsored = firstBoolean(req.query.sponsored);
+    const sort = firstString(req.query.sort).toLowerCase();
+    const page = firstPositiveInt(req.query.page, 1);
+    const pageSize = Math.min(firstPositiveInt(req.query.pageSize, 12), 48);
+
+    const fallback = filterFallbackBusinesses(loadFallbackBusinesses(), {
+      q,
+      city,
+      state,
+      category,
+      verified,
+      sponsored,
+    });
+
+    const paged = fallback.slice((page - 1) * pageSize, page * pageSize);
+    const mappedCount = fallback.filter(
+      (item) =>
+        Number.isFinite(item.location?.lat) &&
+        Number.isFinite(item.location?.lng),
+    ).length;
+
+    return res.status(200).json({
+      ok: true,
+      total: fallback.length,
+      page,
+      pageSize,
+      results: paged,
+      filters: {
+        q,
+        city,
+        state,
+        category,
+        verified,
+        sponsored,
+        sort,
+      },
+      meta: {
+        source: "fallback",
+        mappedCount,
+      },
+    });
   }
 }

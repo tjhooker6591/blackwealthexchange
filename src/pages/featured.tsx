@@ -2,11 +2,23 @@ import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image";
 import { useMemo } from "react";
-import { useRouter } from "next/router";
+import type { GetServerSideProps } from "next";
 import { canonicalUrl } from "@/lib/seo";
 
 function s(v: unknown) {
   return typeof v === "string" ? v.trim() : "";
+}
+
+const SPONSOR_IMAGE_PATH_ALIASES: Record<string, string> = {
+  "/images/sponsors/guardiansoftheforgottenrealm.jpg":
+    "/images/sponsors/Guardiansoftheforgottenrealm.jpg",
+  "/images/sponsors/pamfaunitedcitizens.jpg":
+    "/images/sponsors/pamfaunitedcitizen.jpg",
+};
+
+function normalizeSponsorImagePath(v: string) {
+  const key = v.trim();
+  return SPONSOR_IMAGE_PATH_ALIASES[key] || key;
 }
 
 function safeExternal(v: string) {
@@ -20,68 +32,19 @@ function safeExternal(v: string) {
   }
 }
 
-function normalizeSponsorImagePath(v: string) {
-  const value = s(v);
-  if (!value) return "/images/sponsors/house-draft.jpg";
+type FeaturedProps = {
+  name: string;
+  tagline: string;
+  img: string;
+  target: string;
+};
 
-  const aliases: Record<string, string> = {
-    "/images/sponsors/guardiansoftheforgottenrealm.jpg":
-      "/images/sponsors/Guardiansoftheforgottenrealm.jpg",
-    "/images/sponsors/Guardiansoftheforgottenreleam.jpg":
-      "/images/sponsors/Guardiansoftheforgottenrealm.jpg",
-    "/images/sponsors/guardiansoftheforgottenreleam.jpg":
-      "/images/sponsors/Guardiansoftheforgottenrealm.jpg",
-    "/images/sponsors/pamfaunitedcitizens.jpg":
-      "/images/sponsors/pamfaunitedcitizen.jpg",
-  };
-
-  return aliases[value] || value;
-}
-
-function getQueryValue(
-  raw: string | string[] | undefined,
-  fallbackValue: string,
-) {
-  if (Array.isArray(raw)) return s(raw[0]) || fallbackValue;
-  return s(raw) || fallbackValue;
-}
-
-export default function FeaturedBusinessPage() {
-  const router = useRouter();
-
-  const queryFromAsPath = useMemo(() => {
-    const asPath = router.asPath || "";
-    const queryIndex = asPath.indexOf("?");
-
-    if (queryIndex === -1) return new URLSearchParams();
-
-    return new URLSearchParams(asPath.slice(queryIndex + 1));
-  }, [router.asPath]);
-
-  const name = useMemo(() => {
-    const fromRouter = getQueryValue(router.query.name, "");
-    const fromAsPath = s(queryFromAsPath.get("name"));
-    return fromRouter || fromAsPath || "Featured Business";
-  }, [router.query.name, queryFromAsPath]);
-
-  const tagline = useMemo(() => {
-    const fromRouter = getQueryValue(router.query.tagline, "");
-    const fromAsPath = s(queryFromAsPath.get("tagline"));
-    return fromRouter || fromAsPath || "";
-  }, [router.query.tagline, queryFromAsPath]);
-
-  const img = useMemo(() => {
-    const fromRouter = getQueryValue(router.query.img, "");
-    const fromAsPath = s(queryFromAsPath.get("img"));
-    return normalizeSponsorImagePath(fromRouter || fromAsPath);
-  }, [router.query.img, queryFromAsPath]);
-
-  const target = useMemo(() => {
-    const fromRouter = getQueryValue(router.query.target, "");
-    const fromAsPath = s(queryFromAsPath.get("target"));
-    return safeExternal(fromRouter || fromAsPath);
-  }, [router.query.target, queryFromAsPath]);
-
+export default function FeaturedBusinessPage({
+  name,
+  tagline,
+  img,
+  target,
+}: FeaturedProps) {
   const title = `${name} | Featured Business | Black Wealth Exchange`;
   const canonical = useMemo(
     () => canonicalUrl(`/featured?name=${encodeURIComponent(name)}`),
@@ -105,9 +68,7 @@ export default function FeaturedBusinessPage() {
         <div className="text-xs font-bold uppercase tracking-wide text-[#D4AF37]">
           Featured business
         </div>
-
         <h1 className="mt-2 text-3xl font-extrabold text-[#F1D57A]">{name}</h1>
-
         {tagline ? <p className="mt-2 text-white/80">{tagline}</p> : null}
 
         <div className="mt-4 overflow-hidden rounded-xl border border-white/10 bg-black/30">
@@ -133,14 +94,12 @@ export default function FeaturedBusinessPage() {
               Visit business website
             </a>
           ) : null}
-
           <Link
             href={`/business-directory?search=${encodeURIComponent(name)}`}
             className="rounded-lg border border-white/20 px-4 py-2 text-sm font-semibold text-white/85 hover:bg-white/10"
           >
             Find in business directory
           </Link>
-
           <Link
             href="/business-directory"
             className="rounded-lg border border-white/20 px-4 py-2 text-sm font-semibold text-white/85 hover:bg-white/10"
@@ -152,3 +111,29 @@ export default function FeaturedBusinessPage() {
     </main>
   );
 }
+
+export const getServerSideProps: GetServerSideProps<FeaturedProps> = async (
+  ctx,
+) => {
+  const q = ctx.query || {};
+  const pick = (key: string) => {
+    const v = Array.isArray(q[key]) ? q[key][0] : q[key];
+    return typeof v === "string" ? v : "";
+  };
+
+  const name = s(pick("name")) || "Featured Business";
+  const tagline = s(pick("tagline"));
+  const img = normalizeSponsorImagePath(
+    s(pick("img")) || "/images/sponsors/house-draft.jpg",
+  );
+  const target = safeExternal(s(pick("target")));
+
+  return {
+    props: {
+      name,
+      tagline,
+      img,
+      target,
+    },
+  };
+};

@@ -1,11 +1,13 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
+import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import BuyNowButton from "@/components/BuyNowButton";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
+import { canonicalUrl, truncateMeta } from "@/lib/seo";
 
 interface Product {
   _id: string;
@@ -14,6 +16,20 @@ interface Product {
   price: number;
   category: string;
   imageUrl?: string;
+  stockQuantity?: number;
+  views?: number;
+  availability?: string;
+  condition?: string;
+  status?: string;
+  isFeatured?: boolean;
+  recentlyAdded?: boolean;
+  activeListing?: boolean;
+  seller?: {
+    id?: string | null;
+    name?: string;
+    joinedAt?: string | null;
+    profileComplete?: boolean;
+  };
 }
 
 const ProductDetailPage = () => {
@@ -22,8 +38,10 @@ const ProductDetailPage = () => {
 
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
-  const [showModal, setShowModal] = useState(false);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
+  const [messageText, setMessageText] = useState("");
+  const [messageState, setMessageState] = useState<string | null>(null);
+  const [sendingMessage, setSendingMessage] = useState(false);
 
   const trackMarketplaceProductEvent = (
     eventType: string,
@@ -40,7 +58,6 @@ const ProductDetailPage = () => {
     });
   };
 
-  // Fetch single product
   useEffect(() => {
     if (!id) return;
 
@@ -48,7 +65,7 @@ const ProductDetailPage = () => {
       try {
         setLoading(true);
         const res = await fetch(`/api/marketplace/get-product?id=${id}`);
-        if (!res.ok) throw new Error("Failed to fetch product");
+        if (!res.ok) throw new Error("This listing is unavailable right now.");
 
         const data = await res.json();
         const loadedProduct = data?.product || null;
@@ -59,8 +76,7 @@ const ProductDetailPage = () => {
             ctaLabel: "Product Detail Viewed",
           });
         }
-      } catch (error) {
-        console.error("Error fetching product:", error);
+      } catch {
         setProduct(null);
       } finally {
         setLoading(false);
@@ -68,36 +84,101 @@ const ProductDetailPage = () => {
     };
 
     fetchProduct();
-  }, [id]);
+  }, [id]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Fetch related products
   useEffect(() => {
     const fetchRelated = async () => {
       if (!product) return;
 
       try {
         const res = await fetch(
-          "/api/marketplace/get-products?page=1&limit=100&category=All",
+          `/api/marketplace/get-products?page=1&limit=12&category=${encodeURIComponent(product.category || "All")}`,
         );
         if (!res.ok) throw new Error("Failed to fetch related products");
 
         const all = await res.json();
         const related = ((all?.products || []) as Product[])
-          .filter(
-            (p: Product) =>
-              p.category === product.category && p._id !== product._id,
-          )
+          .filter((p: Product) => p._id !== product._id)
           .slice(0, 4);
 
         setRelatedProducts(related);
-      } catch (error) {
-        console.error("Error fetching related products:", error);
+      } catch {
         setRelatedProducts([]);
       }
     };
 
     fetchRelated();
   }, [product]);
+
+  const productName = String(product?.name || "").trim() || "Marketplace item";
+  const stockQuantity = Number(product?.stockQuantity ?? 0);
+  const availability =
+    product?.availability ||
+    (stockQuantity <= 0
+      ? "Out of stock"
+      : stockQuantity <= 3
+        ? "Low stock"
+        : "In stock");
+  const sellerName = product?.seller?.name || "Seller on Black Wealth Exchange";
+  const sellerTrust = product?.seller?.profileComplete
+    ? "Active seller profile on file"
+    : "Seller on Black Wealth Exchange";
+  const listingStatusLabel = product?.activeListing
+    ? "Active listing"
+    : "Status not fully confirmed";
+  const canContactSeller = Boolean(product?.seller?.id);
+
+  const availabilityClass = useMemo(() => {
+    if (availability.toLowerCase().includes("out"))
+      return "text-red-300 border-red-500/40 bg-red-500/10";
+    if (availability.toLowerCase().includes("low"))
+      return "text-yellow-200 border-yellow-500/40 bg-yellow-500/10";
+    return "text-emerald-300 border-emerald-500/40 bg-emerald-500/10";
+  }, [availability]);
+
+  async function handleContactSeller() {
+    if (!product?._id || !product?.seller?.id) {
+      setMessageState("Seller contact is unavailable for this product.");
+      return;
+    }
+
+    const text = messageText.trim();
+    if (text.length < 8) {
+      setMessageState("Please enter at least 8 characters.");
+      return;
+    }
+
+    try {
+      setSendingMessage(true);
+      setMessageState(null);
+
+      const res = await fetch("/api/marketplace/contact-seller", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          productId: product._id,
+          sellerId: product.seller.id,
+          message: text,
+        }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setMessageState(
+          data?.error || "Message was not sent. Please try again.",
+        );
+        return;
+      }
+
+      setMessageText("");
+      setMessageState(data?.message || "Message sent to seller.");
+    } catch {
+      setMessageState("Message was not sent. Please try again in a moment.");
+    } finally {
+      setSendingMessage(false);
+    }
+  }
 
   if (loading) {
     return (
@@ -109,141 +190,335 @@ const ProductDetailPage = () => {
 
   if (!product) {
     return (
-      <div className="min-h-screen bg-black text-white text-center py-20">
-        Product not found.
+      <div className="min-h-screen bg-black text-white px-4 py-20">
+        <div className="mx-auto max-w-2xl rounded-2xl border border-white/10 bg-white/5 p-6 text-center">
+          <h1 className="text-2xl font-bold text-gold">Listing unavailable</h1>
+          <p className="mt-2 text-sm text-white/80">
+            This item is currently unavailable or was removed. You can continue
+            shopping or contact support for help finding a replacement.
+          </p>
+          <div className="mt-5 flex flex-wrap justify-center gap-3">
+            <Link
+              href="/marketplace"
+              className="rounded-lg bg-gold px-4 py-2 text-sm font-semibold text-black"
+            >
+              Continue shopping
+            </Link>
+            <Link
+              href="/support/marketplace"
+              className="rounded-lg border border-white/20 px-4 py-2 text-sm font-semibold text-white/85 hover:bg-white/10"
+            >
+              Marketplace support
+            </Link>
+          </div>
+        </div>
       </div>
     );
   }
 
+  const canonical = canonicalUrl(
+    `/marketplace/product/${encodeURIComponent(product._id)}`,
+  );
+  const title = `${productName} | Black Marketplace | Black Wealth Exchange`;
+  const description = truncateMeta(
+    product.description ||
+      `Shop ${productName} from ${sellerName} on the Black Wealth Exchange marketplace.`,
+  );
+  const image = product.imageUrl || "/placeholder.png";
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: productName,
+    description,
+    image,
+    sku: product._id,
+    brand: { "@type": "Brand", name: sellerName },
+    offers: {
+      "@type": "Offer",
+      price: Number(product.price || 0),
+      priceCurrency: "USD",
+      availability:
+        stockQuantity > 0
+          ? "https://schema.org/InStock"
+          : "https://schema.org/OutOfStock",
+      url: canonical,
+    },
+  };
+
   return (
-    <div className="min-h-screen bg-black text-white px-4 py-10">
-      <div className="max-w-5xl mx-auto bg-gray-900 border border-gold rounded-xl p-6 shadow-xl">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="relative w-full h-72 md:h-[500px] overflow-hidden rounded-lg border border-white/10 bg-black/30">
-            <Image
-              src={product.imageUrl || "/placeholder.png"}
-              alt={product.name}
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, 50vw"
-              priority
-            />
-          </div>
-
-          <div>
-            <h1 className="text-3xl font-bold text-gold mb-2">
-              {product.name}
-            </h1>
-
-            <p className="text-sm text-gray-400 mb-2">
-              Category: {product.category || "Other"}
-            </p>
-
-            <p className="text-2xl font-semibold text-gold mb-4">
-              ${product.price.toFixed(2)}
-            </p>
-
-            <p className="text-gray-300 mb-6">
-              {product.description || "No description provided."}
-            </p>
-
-            <div className="space-y-3">
-              <BuyNowButton
-                itemId={product._id}
-                amount={product.price}
-                type="product"
-                label="Buy Now"
-              />
-
-              <button
-                onClick={() => setShowModal(true)}
-                className="w-full py-2.5 px-4 border border-gold text-gold font-semibold rounded-lg hover:bg-gold hover:text-black transition"
-              >
-                Contact Seller
-              </button>
-            </div>
-
-            <div className="mt-6 rounded-lg border border-white/10 bg-white/5 p-4 text-sm text-gray-300">
-              <p>
-                You do not need an account to purchase. If checkout is
-                temporarily unavailable for this product, please try again
-                shortly or use Contact Seller for more information.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="text-center mt-10">
-          <Link href="/marketplace">
-            <button className="px-6 py-2 bg-transparent text-gold border border-gold font-semibold rounded-lg hover:bg-gold hover:text-black transition">
-              🔙 Back to Marketplace
-            </button>
+    <>
+      <Head>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonical} />
+        <meta property="og:type" content="product" />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:image" content={image} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={image} />
+      </Head>
+      <script type="application/ld+json">
+        {JSON.stringify(productSchema)}
+      </script>
+      <div className="min-h-screen bg-black text-white px-4 py-8">
+        <div className="max-w-6xl mx-auto">
+          <Link
+            href="/marketplace"
+            className="inline-flex items-center rounded-lg border border-gold px-4 py-2 text-sm font-semibold text-gold hover:bg-gold hover:text-black transition"
+          >
+            Back to Marketplace
           </Link>
-        </div>
-      </div>
 
-      {relatedProducts.length > 0 && (
-        <div className="max-w-6xl mx-auto mt-16">
-          <h2 className="text-2xl font-bold text-gold mb-6 text-center">
-            You May Also Like
-          </h2>
+          <div className="mt-4 grid grid-cols-1 gap-6 rounded-2xl border border-gold/30 bg-gray-900 p-5 shadow-xl md:grid-cols-2 md:p-8">
+            <div className="relative w-full h-72 md:h-[540px] overflow-hidden rounded-xl border border-white/10 bg-black/40">
+              <Image
+                src={product.imageUrl || "/placeholder.png"}
+                alt={productName}
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 50vw"
+                priority
+              />
+            </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-            {relatedProducts.map((item) => (
-              <Link
-                key={item._id}
-                href={`/marketplace/product/${item._id}`}
-                className="bg-gray-900 rounded-lg border border-gray-700 overflow-hidden hover:scale-[1.02] transition-transform"
-              >
-                <div className="relative w-full h-36 sm:h-44 md:h-48">
-                  <Image
-                    src={item.imageUrl || "/placeholder.png"}
-                    alt={item.name}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 50vw, 25vw"
-                  />
-                </div>
+            <div>
+              <div className="flex flex-wrap items-center gap-2 text-xs">
+                <span className="rounded-full border border-white/20 bg-white/5 px-2.5 py-1 text-gray-200">
+                  {product.category || "Other"}
+                </span>
+                <span
+                  className={`rounded-full border px-2.5 py-1 ${availabilityClass}`}
+                >
+                  {availability}
+                </span>
+                <span className="rounded-full border border-white/20 bg-white/5 px-2.5 py-1 text-gray-200">
+                  {product.condition || "New"}
+                </span>
+              </div>
 
-                <div className="p-3 md:p-4">
-                  <h3 className="text-sm md:text-lg font-bold text-white mb-1 line-clamp-2">
-                    {item.name}
-                  </h3>
-                  <p className="text-xs md:text-sm text-gray-400 mb-1 truncate">
-                    {item.category}
+              <h1 className="mt-3 text-3xl font-extrabold text-gold">
+                {productName}
+              </h1>
+              <p className="mt-2 text-3xl font-bold text-white">
+                ${Number(product.price || 0).toFixed(2)}
+              </p>
+
+              <div className="mt-4 rounded-xl border border-white/10 bg-black/30 p-4">
+                <p className="text-sm leading-6 text-gray-200">
+                  {product.description ||
+                    "No description provided for this item yet."}
+                </p>
+              </div>
+
+              <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
+                <div className="rounded-xl border border-white/10 bg-white/5 p-3">
+                  <p className="text-gray-400">Views</p>
+                  <p className="font-semibold text-white">
+                    {Number(product.views || 0).toLocaleString()}
                   </p>
-                  <p className="text-sm md:text-md font-semibold text-gold">
-                    ${item.price.toFixed(2)}
-                  </p>
                 </div>
-              </Link>
-            ))}
+                <div className="rounded-xl border border-white/10 bg-white/5 p-3">
+                  <p className="text-gray-400">Availability</p>
+                  <p className="font-semibold text-white">
+                    {availability}
+                    {stockQuantity > 0 ? ` (${stockQuantity} left)` : ""}
+                  </p>
+                  {stockQuantity > 0 && stockQuantity <= 3 ? (
+                    <p className="mt-1 text-xs text-yellow-200">
+                      Only a few units left. Buyers are viewing this listing
+                      now.
+                    </p>
+                  ) : null}
+                </div>
+              </div>
+
+              <div className="mt-4 rounded-xl border border-white/10 bg-white/5 p-4 text-sm text-gray-200">
+                <p>
+                  <span className="font-semibold text-white">Seller:</span>{" "}
+                  {sellerName}
+                </p>
+                <p className="mt-1">
+                  <span className="font-semibold text-white">
+                    Seller profile:
+                  </span>{" "}
+                  {sellerTrust}
+                </p>
+                <p className="mt-1">
+                  <span className="font-semibold text-white">Listing:</span>{" "}
+                  {listingStatusLabel}
+                  {product?.recentlyAdded ? " • Recently added" : ""}
+                </p>
+              </div>
+
+              <p className="mt-3 text-xs text-gray-300">
+                Next step: use{" "}
+                <span className="font-semibold text-white">Buy Now</span> to
+                place an order, or{" "}
+                <span className="font-semibold text-white">
+                  Ask Seller a Question
+                </span>{" "}
+                for fit, shipping, or product questions.
+              </p>
+
+              <div className="mt-4 rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-4 text-sm text-gray-100">
+                <p className="font-semibold text-gold">How purchasing works</p>
+                <ul className="mt-2 list-disc space-y-1 pl-5 text-gray-200">
+                  <li>
+                    Black Wealth Exchange is the marketplace intermediary for
+                    secure ordering.
+                  </li>
+                  <li>
+                    Sold and shipped by{" "}
+                    <span className="font-semibold text-white">
+                      {sellerName}
+                    </span>
+                    .
+                  </li>
+                  <li>
+                    Shipping is handled by the seller. Shipping cost and
+                    delivery timing are provided by the seller at checkout or
+                    via seller message.
+                  </li>
+                  <li>
+                    After purchase, use order tracking and contact seller if you
+                    need help.
+                  </li>
+                </ul>
+              </div>
+
+              <div className="mt-4 rounded-xl border border-white/10 bg-white/5 p-3 text-xs text-gray-200">
+                <p>
+                  <span className="font-semibold text-white">
+                    What this is:
+                  </span>{" "}
+                  {productName}
+                </p>
+                <p className="mt-1">
+                  <span className="font-semibold text-white">
+                    Who is selling:
+                  </span>{" "}
+                  {sellerName}
+                </p>
+                <p className="mt-1">
+                  <span className="font-semibold text-white">
+                    What to do next:
+                  </span>{" "}
+                  Buy now to checkout, or ask seller a question first.
+                </p>
+              </div>
+
+              <div className="mt-4 space-y-2">
+                <BuyNowButton
+                  itemId={product._id}
+                  amount={product.price}
+                  type="product"
+                  label="Buy now"
+                  className="w-full rounded-xl bg-gold px-4 py-3 text-base font-bold text-black shadow-md transition hover:bg-yellow-400"
+                />
+                <Link
+                  href={`/checkout?type=product&source=marketplace&itemId=${encodeURIComponent(product._id)}&productName=${encodeURIComponent(productName)}&amount=${encodeURIComponent(String(product.price || 0))}`}
+                  className="block w-full rounded-xl border border-gold px-4 py-3 text-center text-sm font-semibold text-gold transition hover:bg-gold hover:text-black"
+                >
+                  Add to cart (review order)
+                </Link>
+                <button
+                  type="button"
+                  onClick={() =>
+                    document
+                      .getElementById("contact-seller")
+                      ?.scrollIntoView({ behavior: "smooth", block: "start" })
+                  }
+                  disabled={!canContactSeller}
+                  className="w-full rounded-xl border border-white/30 px-4 py-3 text-sm font-semibold text-white/90 transition enabled:hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  Contact seller
+                </button>
+                <Link
+                  href="/marketplace/my-orders"
+                  className="block w-full rounded-xl border border-white/20 px-4 py-3 text-center text-sm font-semibold text-gray-200 hover:bg-white/10 transition"
+                >
+                  Track My Orders
+                </Link>
+              </div>
+            </div>
           </div>
-        </div>
-      )}
 
-      {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/80 z-50 px-4">
-          <div className="bg-gray-900 border border-gold text-white rounded-xl p-6 max-w-md w-full shadow-lg">
-            <h2 className="text-xl font-bold text-gold mb-4 text-center">
-              Contact the Seller
-            </h2>
-
-            <p className="text-gray-300 mb-4 text-sm text-center">
-              This is a placeholder message. In the future, this can show the
-              seller’s contact email, messaging link, or seller profile.
-            </p>
-
+          <div
+            id="contact-seller"
+            className="mt-6 rounded-xl border border-white/10 bg-gray-900 p-4"
+          >
+            <label className="block text-sm font-semibold text-gold mb-2">
+              Message seller
+            </label>
+            <textarea
+              value={messageText}
+              onChange={(e) => setMessageText(e.target.value)}
+              rows={3}
+              placeholder="Ask about shipping, materials, fit, or delivery timing"
+              className="w-full rounded-lg border border-white/20 bg-black/40 p-2 text-sm text-white focus:outline-none focus:border-gold"
+            />
             <button
-              onClick={() => setShowModal(false)}
-              className="w-full mt-2 bg-gold text-black py-2 rounded-lg font-semibold hover:bg-yellow-500 transition"
+              type="button"
+              onClick={handleContactSeller}
+              disabled={sendingMessage || !canContactSeller}
+              className="mt-3 w-full rounded-lg border border-gold px-3 py-2 text-sm font-semibold text-gold transition enabled:hover:bg-gold enabled:hover:text-black disabled:cursor-not-allowed disabled:opacity-60"
             >
-              Close
+              {sendingMessage ? "Sending..." : "Send Message"}
             </button>
+            {!canContactSeller ? (
+              <p className="mt-2 text-xs text-gray-400">
+                Seller contact is not available for this listing yet.
+              </p>
+            ) : null}
+            {messageState ? (
+              <p className="mt-2 text-xs text-gray-300">{messageState}</p>
+            ) : null}
           </div>
         </div>
-      )}
-    </div>
+
+        {relatedProducts.length > 0 && (
+          <div className="max-w-6xl mx-auto mt-12">
+            <h2 className="text-2xl font-bold text-gold mb-5">
+              You may also like
+            </h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {relatedProducts.map((item) => (
+                <Link
+                  key={item._id}
+                  href={`/marketplace/product/${item._id}`}
+                  className="rounded-xl border border-white/10 bg-gray-900 overflow-hidden hover:border-gold/50 transition"
+                >
+                  <div className="relative w-full h-36 md:h-44">
+                    <Image
+                      src={item.imageUrl || "/placeholder.png"}
+                      alt={item.name}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 768px) 50vw, 25vw"
+                    />
+                  </div>
+                  <div className="p-3">
+                    <h3 className="text-sm font-bold text-white line-clamp-2">
+                      {item.name}
+                    </h3>
+                    <p className="text-xs text-gray-400 truncate mt-1">
+                      {item.category || "Other"}
+                    </p>
+                    <p className="text-sm font-semibold text-gold mt-1">
+                      ${Number(item.price || 0).toFixed(2)}
+                    </p>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 

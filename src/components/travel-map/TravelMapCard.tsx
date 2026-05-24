@@ -19,9 +19,66 @@ function buildDirectionsUrl(business: TravelMapBusiness) {
 
 export default function TravelMapCard({
   business,
+  enableSave = true,
+  isSaved,
+  onToggleSave,
+  saveBusy = false,
+  saveHydrating = false,
 }: {
   business: TravelMapBusiness;
+  enableSave?: boolean;
+  isSaved?: boolean;
+  onToggleSave?: (
+    business: TravelMapBusiness,
+    nextSaved: boolean,
+  ) => Promise<void> | void;
+  saveBusy?: boolean;
+  saveHydrating?: boolean;
 }) {
+  async function savePlace() {
+    if (onToggleSave) {
+      try {
+        await onToggleSave(business, !Boolean(isSaved));
+      } catch (err) {
+        const message =
+          err instanceof Error ? err.message : "Failed to update saved place.";
+        window.alert(message);
+      }
+      return;
+    }
+
+    try {
+      const method = isSaved ? "DELETE" : "POST";
+      const res = await fetch("/api/travel-map/saved", {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ businessId: business._id }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data?.ok) {
+        throw new Error(
+          data?.message ||
+            (isSaved
+              ? "Failed to remove saved place."
+              : "Failed to save place."),
+        );
+      }
+
+      window.alert(
+        isSaved ? "Removed from Travel Map." : "Saved to Travel Map.",
+      );
+    } catch (err) {
+      const message =
+        err instanceof Error
+          ? err.message
+          : isSaved
+            ? "Failed to remove saved place."
+            : "Failed to save place.";
+      window.alert(message);
+    }
+  }
+
   return (
     <article className="rounded-2xl border border-yellow-500/20 bg-white/5 p-4 shadow-lg shadow-black/20">
       <div className="flex items-start justify-between gap-3">
@@ -47,6 +104,11 @@ export default function TravelMapCard({
               Verified
             </span>
           ) : null}
+          {isSaved && !saveBusy ? (
+            <span className="rounded-full border border-cyan-400/30 bg-cyan-500/10 px-2 py-1 text-cyan-200">
+              Saved
+            </span>
+          ) : null}
         </div>
       </div>
 
@@ -62,13 +124,26 @@ export default function TravelMapCard({
         </p>
       ) : null}
 
+      {typeof business.distanceKm === "number" ? (
+        <p className="mt-2 text-xs font-semibold uppercase tracking-wide text-emerald-300">
+          {business.distanceKm.toFixed(1)} km away
+        </p>
+      ) : null}
+
       <div className="mt-4 flex flex-wrap gap-3">
+        <Link
+          href={`/travel-map/business/${business._id}`}
+          className="rounded-xl bg-yellow-500 px-4 py-2 text-sm font-semibold text-black transition hover:bg-yellow-400"
+        >
+          Travel Map Detail
+        </Link>
+
         {business.slug ? (
           <Link
             href={`/business/${business.slug}`}
-            className="rounded-xl bg-yellow-500 px-4 py-2 text-sm font-semibold text-black transition hover:bg-yellow-400"
+            className="rounded-xl border border-white/15 bg-white/5 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/10"
           >
-            View Business
+            Directory Profile
           </Link>
         ) : null}
 
@@ -78,7 +153,7 @@ export default function TravelMapCard({
           rel="noreferrer"
           className="rounded-xl border border-yellow-500/30 bg-transparent px-4 py-2 text-sm font-semibold text-yellow-200 transition hover:bg-yellow-500/10"
         >
-          Directions
+          Open in Maps
         </a>
 
         {business.website ? (
@@ -90,6 +165,29 @@ export default function TravelMapCard({
           >
             Website
           </a>
+        ) : null}
+
+        {enableSave ? (
+          <button
+            type="button"
+            onClick={() => void savePlace()}
+            disabled={saveBusy || saveHydrating}
+            className={`rounded-xl px-4 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60 ${
+              isSaved
+                ? "border border-red-500/30 bg-red-500/10 text-red-200 hover:bg-red-500/20"
+                : "border border-emerald-400/30 bg-emerald-500/10 text-emerald-200 hover:bg-emerald-500/20"
+            }`}
+          >
+            {saveHydrating
+              ? "Syncing..."
+              : saveBusy
+                ? isSaved
+                  ? "Removing..."
+                  : "Saving..."
+                : isSaved
+                  ? "Remove saved"
+                  : "Save"}
+          </button>
         ) : null}
       </div>
     </article>

@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import Head from "next/head";
+import { canonicalUrl, truncateMeta } from "@/lib/seo";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 
 type Result = {
@@ -175,264 +177,327 @@ export default function SearchResults() {
     });
   }, [search, loading, error, results.length]);
 
+  const title = "Search Businesses | Black Wealth Exchange";
+  const description = truncateMeta(
+    "Search and discovery helper for Black-owned businesses. For full indexed directory browsing, use the Business Directory hub.",
+  );
+  const canonical = canonicalUrl("/business-directory");
+
   return (
-    <div className="min-h-screen bg-black text-white p-6">
-      <div className="mx-auto max-w-6xl">
-        <div className="mb-6 flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-gold">Search Results</h1>
-          <Link
-            href="/business-directory"
-            className="text-sm underline text-gray-300"
-          >
-            Open Full Directory
-          </Link>
-        </div>
-
-        <div className="mb-4 text-gray-300">
-          {search ? (
-            <>
-              Showing results for{" "}
-              <span className="text-gold font-semibold">“{search}”</span>
-              <span className="ml-2 text-sm text-gray-500">
-                ({total.toLocaleString()} found)
-              </span>
-            </>
-          ) : (
-            "Enter a search term to find businesses."
-          )}
-        </div>
-
-        {loading ? <div className="text-gray-400">Loading results…</div> : null}
-        {error ? (
-          <div className="mb-4 rounded border border-red-500/40 bg-red-900/20 p-3 text-red-200">
-            {error}
+    <>
+      <Head>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonical} />
+        <meta name="robots" content="noindex,follow" />
+      </Head>
+      <div className="min-h-screen bg-black text-white p-6">
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-6 flex items-center justify-between">
+            <h1 className="text-2xl font-bold text-gold">Search Results</h1>
+            <Link
+              href="/business-directory"
+              className="text-sm underline text-gray-300"
+            >
+              Open Full Directory
+            </Link>
           </div>
-        ) : null}
 
-        {!loading && !error && search && results.length === 0 ? (
-          <div className="rounded border border-gray-700 bg-gray-900 p-4">
-            <p className="text-gray-200">
-              No strong matches yet for this query.
-            </p>
-            <p className="text-sm text-gray-400 mt-1">
-              Try a broader term or jump into the full directory.
-            </p>
+          <div className="mb-4 text-gray-300">
+            {search ? (
+              <>
+                Showing results for{" "}
+                <span className="text-gold font-semibold">“{search}”</span>
+                <span className="ml-2 text-sm text-gray-500">
+                  ({total.toLocaleString()} found)
+                </span>
+              </>
+            ) : (
+              "Enter a search term to find businesses."
+            )}
+          </div>
 
-            <div className="mt-3 flex flex-wrap gap-2">
-              <Link
-                href="/business-directory"
-                onClick={() =>
-                  trackSearchEvent("search_filter_applied", {
-                    filter_key: "rescue_action",
-                    filter_value: "browse_full_directory",
-                  })
-                }
-                className="px-4 py-2 bg-gold text-black rounded font-semibold"
-              >
-                Browse Full Directory
-              </Link>
-              <Link
-                href={`/business-directory?search=${encodeURIComponent(search)}`}
-                onClick={() =>
-                  trackSearchEvent("search_filter_applied", {
-                    filter_key: "rescue_action",
-                    filter_value: "try_in_directory_search",
-                  })
-                }
-                className="px-4 py-2 rounded border border-gray-600 text-gray-200"
-              >
-                Try in Directory Search
-              </Link>
+          {loading ? (
+            <div className="text-gray-400">Loading results…</div>
+          ) : null}
+          {error ? (
+            <div className="mb-4 rounded border border-red-500/40 bg-red-900/20 p-3 text-red-200">
+              {error}
             </div>
+          ) : null}
 
-            <div className="mt-4">
-              <p className="text-xs uppercase tracking-wide text-gray-500">
-                Suggested categories
+          {!loading && !error && search && results.length === 0 ? (
+            <div className="rounded border border-gray-700 bg-gray-900 p-4">
+              <p className="text-gray-200">
+                No strong matches yet for this query.
               </p>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {suggestedCategories.map((cat) => (
-                  <Link
-                    key={cat}
-                    href={`/business-directory?category=${encodeURIComponent(cat)}`}
-                    onClick={() =>
-                      trackSearchEvent("search_filter_applied", {
-                        filter_key: "suggested_category",
-                        filter_value: cat,
-                      })
-                    }
-                    className="rounded-full border border-gray-600 bg-black/30 px-3 py-1 text-xs text-gray-200"
-                  >
-                    {cat}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
-        ) : null}
+              <p className="text-sm text-gray-400 mt-1">
+                Try a broader term or jump into the full directory.
+              </p>
 
-        {sponsors.length ? (
-          <section className="mb-5 rounded-xl border border-[#D4AF37]/30 bg-[#D4AF37]/[0.08] p-3">
-            <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-[#EFD27A]">
-              Sponsored Partners
-            </div>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {sponsors.map((s) => (
-                <a
-                  key={s._id}
-                  href={s.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex items-center gap-3 rounded-lg border border-white/10 bg-black/35 p-3 hover:bg-black/45"
-                >
-                  <img
-                    src={s.img}
-                    alt={s.name}
-                    className="h-12 w-12 rounded-lg border border-white/20 object-cover"
-                  />
-                  <div className="min-w-0 flex-1">
-                    <div className="truncate text-sm font-semibold text-[#EFD27A]">
-                      {s.name}
-                    </div>
-                    <div className="truncate text-xs text-gray-300">
-                      {s.tagline}
-                    </div>
-                    <div className="mt-1 inline-flex rounded border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-2 py-0.5 text-[10px] font-semibold text-[#EFD27A]">
-                      Sponsored
-                    </div>
-                  </div>
-                  <span className="rounded bg-[#D4AF37] px-2 py-1 text-xs font-semibold text-black">
-                    {s.cta || "Learn More"}
-                  </span>
-                </a>
-              ))}
-            </div>
-          </section>
-        ) : null}
-
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          {results.map((r, idx) => {
-            const slug = encodeURIComponent(safe(r.alias).trim() || r._id);
-            const href = `/business-directory/${slug}?from=search-results&q=${encodeURIComponent(search)}`;
-            const location =
-              safe((r as any).locationDisplay) ||
-              [safe(r.city), safe(r.state)].filter(Boolean).join(", ") ||
-              safe(r.address);
-            const verified =
-              r.isVerified === true ||
-              r.verified === true ||
-              safe((r as any).trustStatus).toLowerCase() === "verified";
-            const sponsored =
-              (r as any).isSponsored === true ||
-              Number(r.amountPaid || 0) > 0 ||
-              ["featured", "gold", "sponsored", "premium"].includes(
-                safe(r.tier).toLowerCase(),
-              );
-            const category =
-              safe((r as any).primaryCategory) ||
-              categoriesLabel(r) ||
-              "Category not set";
-            const entityType =
-              safe((r as any).entityType) || safe(r.type) || "business";
-
-            return (
-              <article
-                key={r._id}
-                className="rounded border border-gray-700 bg-gray-900 p-4 transition hover:border-gray-600"
-              >
-                <div className="mb-2 flex items-center gap-2">
-                  {verified ? (
-                    <span className="rounded border border-emerald-500/40 bg-emerald-700/30 px-2 py-0.5 text-[11px] font-semibold text-emerald-200">
-                      Verified
-                    </span>
-                  ) : null}
-                  {sponsored ? (
-                    <span className="rounded border border-[#D4AF37]/40 bg-[#D4AF37]/12 px-2 py-0.5 text-[11px] font-semibold text-[#EFD27A]">
-                      Sponsored
-                    </span>
-                  ) : null}
-                  <span className="rounded border border-white/10 bg-black/30 px-2 py-0.5 text-[11px] text-gray-300">
-                    {entityType}
-                  </span>
-                </div>
-
+              <div className="mt-3 flex flex-wrap gap-2">
                 <Link
-                  href={href}
+                  href="/business-directory"
                   onClick={() =>
-                    trackSearchEvent("search_result_clicked", {
-                      entity_id: r._id,
-                      entity_type: "business",
-                      result_rank: idx + 1,
-                      source: "search_results_card_title",
-                      businessAlias: safe(r.alias) || null,
+                    trackSearchEvent("search_filter_applied", {
+                      filter_key: "rescue_action",
+                      filter_value: "browse_full_directory",
                     })
                   }
-                  className="text-lg font-semibold text-gold hover:underline"
+                  className="px-4 py-2 bg-gold text-black rounded font-semibold"
                 >
-                  {safe(r.business_name) || "Untitled Business"}
+                  Browse Full Directory
                 </Link>
+                <Link
+                  href={`/business-directory?search=${encodeURIComponent(search)}`}
+                  onClick={() =>
+                    trackSearchEvent("search_filter_applied", {
+                      filter_key: "rescue_action",
+                      filter_value: "try_in_directory_search",
+                    })
+                  }
+                  className="px-4 py-2 rounded border border-gray-600 text-gray-200"
+                >
+                  Try in Directory Search
+                </Link>
+              </div>
 
-                <p className="mt-1 text-sm text-gray-400">{category}</p>
-                <p className="mt-2 text-sm text-gray-300">
-                  {shortDescription(r)}
+              <div className="mt-4">
+                <p className="text-xs uppercase tracking-wide text-gray-500">
+                  Suggested categories
                 </p>
-                <p className="mt-2 text-xs text-gray-500">
-                  {location || "Location unavailable"}
-                </p>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {suggestedCategories.map((cat) => (
+                    <Link
+                      key={cat}
+                      href={`/business-directory?category=${encodeURIComponent(cat)}`}
+                      onClick={() =>
+                        trackSearchEvent("search_filter_applied", {
+                          filter_key: "suggested_category",
+                          filter_value: cat,
+                        })
+                      }
+                      className="rounded-full border border-gray-600 bg-black/30 px-3 py-1 text-xs text-gray-200"
+                    >
+                      {cat}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ) : null}
 
-                <div className="mt-3 flex gap-2">
-                  <Link
-                    href={href}
-                    onClick={() =>
-                      trackSearchEvent("search_result_clicked", {
-                        entity_id: r._id,
-                        entity_type: "business",
-                        result_rank: idx + 1,
-                        source: "search_results_card_primary_cta",
-                        businessAlias: safe(r.alias) || null,
-                      })
-                    }
-                    className="rounded bg-gold px-3 py-1.5 text-sm font-semibold text-black"
+          {sponsors.length ? (
+            <section className="mb-5 rounded-xl border border-[#D4AF37]/30 bg-[#D4AF37]/[0.08] p-3">
+              <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-[#EFD27A]">
+                Sponsored Partners
+              </div>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {sponsors.map((s) => (
+                  <a
+                    key={s._id}
+                    href={s.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-3 rounded-lg border border-white/10 bg-black/35 p-3 hover:bg-black/45"
                   >
-                    View Profile
-                  </Link>
-                  {location ? (
+                    <img
+                      src={s.img}
+                      alt={s.name}
+                      className="h-12 w-12 rounded-lg border border-white/20 object-cover"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    <div className="min-w-0 flex-1">
+                      <div className="truncate text-sm font-semibold text-[#EFD27A]">
+                        {s.name}
+                      </div>
+                      <div className="truncate text-xs text-gray-300">
+                        {s.tagline}
+                      </div>
+                      <div className="mt-1 inline-flex rounded border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-2 py-0.5 text-[10px] font-semibold text-[#EFD27A]">
+                        Sponsored
+                      </div>
+                    </div>
+                    <span className="rounded bg-[#D4AF37] px-2 py-1 text-xs font-semibold text-black">
+                      {s.cta || "Learn More"}
+                    </span>
+                  </a>
+                ))}
+              </div>
+            </section>
+          ) : null}
+
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            {results.map((r, idx) => {
+              const isSponsoredPlacement = Boolean(
+                (r as any).__sponsoredPlacement,
+              );
+              const slug = encodeURIComponent(safe(r.alias).trim() || r._id);
+              const href = isSponsoredPlacement
+                ? safe((r as any).website || "#")
+                : `/business-directory/${slug}?from=search-results&q=${encodeURIComponent(search)}`;
+              const location =
+                safe((r as any).locationDisplay) ||
+                [safe(r.city), safe(r.state)].filter(Boolean).join(", ") ||
+                safe(r.address);
+              const verified =
+                r.isVerified === true ||
+                r.verified === true ||
+                safe((r as any).trustStatus).toLowerCase() === "verified";
+              const sponsored =
+                (r as any).isSponsored === true ||
+                Number(r.amountPaid || 0) > 0 ||
+                ["featured", "gold", "sponsored", "premium"].includes(
+                  safe(r.tier).toLowerCase(),
+                );
+              const category =
+                safe((r as any).primaryCategory) ||
+                categoriesLabel(r) ||
+                "Category not set";
+              const entityType =
+                safe((r as any).entityType) || safe(r.type) || "business";
+
+              return (
+                <article
+                  key={r._id}
+                  className="rounded border border-gray-700 bg-gray-900 p-4 transition hover:border-gray-600"
+                >
+                  <div className="mb-2 flex items-center gap-2">
+                    {verified ? (
+                      <span className="rounded border border-emerald-500/40 bg-emerald-700/30 px-2 py-0.5 text-[11px] font-semibold text-emerald-200">
+                        Verified
+                      </span>
+                    ) : null}
+                    {sponsored ? (
+                      <span className="rounded border border-[#D4AF37]/40 bg-[#D4AF37]/12 px-2 py-0.5 text-[11px] font-semibold text-[#EFD27A]">
+                        Sponsored
+                      </span>
+                    ) : null}
+                    <span className="rounded border border-white/10 bg-black/30 px-2 py-0.5 text-[11px] text-gray-300">
+                      {entityType}
+                    </span>
+                  </div>
+
+                  {isSponsoredPlacement ? (
                     <a
-                      href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`}
+                      href={href}
                       target="_blank"
                       rel="noreferrer"
-                      className="rounded border border-gray-600 px-3 py-1.5 text-sm text-gray-200"
+                      onClick={() =>
+                        trackSearchEvent("search_result_clicked", {
+                          entity_id: r._id,
+                          entity_type: "sponsored_business",
+                          result_rank: idx + 1,
+                          source: "search_results_card_title",
+                          businessAlias: safe(r.alias) || null,
+                        })
+                      }
+                      className="text-lg font-semibold text-gold hover:underline"
                     >
-                      Directions
+                      {safe(r.business_name) || "Untitled Business"}
                     </a>
-                  ) : null}
-                </div>
-              </article>
-            );
-          })}
-        </div>
+                  ) : (
+                    <Link
+                      href={href}
+                      onClick={() =>
+                        trackSearchEvent("search_result_clicked", {
+                          entity_id: r._id,
+                          entity_type: "business",
+                          result_rank: idx + 1,
+                          source: "search_results_card_title",
+                          businessAlias: safe(r.alias) || null,
+                        })
+                      }
+                      className="text-lg font-semibold text-gold hover:underline"
+                    >
+                      {safe(r.business_name) || "Untitled Business"}
+                    </Link>
+                  )}
 
-        {totalPages > 1 ? (
-          <div className="mt-6 flex items-center justify-center gap-2">
-            <button
-              onClick={() => setPage((p) => Math.max(1, p - 1))}
-              disabled={page <= 1}
-              className="px-3 py-1 rounded border border-gray-600 disabled:opacity-40"
-            >
-              Prev
-            </button>
-            <span className="text-sm text-gray-300">
-              Page {page} of {totalPages}
-            </span>
-            <button
-              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-              disabled={page >= totalPages}
-              className="px-3 py-1 rounded border border-gray-600 disabled:opacity-40"
-            >
-              Next
-            </button>
+                  <p className="mt-1 text-sm text-gray-400">{category}</p>
+                  <p className="mt-2 text-sm text-gray-300">
+                    {shortDescription(r)}
+                  </p>
+                  <p className="mt-2 text-xs text-gray-500">
+                    {location || "Location unavailable"}
+                  </p>
+
+                  <div className="mt-3 flex gap-2">
+                    {isSponsoredPlacement ? (
+                      <a
+                        href={href}
+                        target="_blank"
+                        rel="noreferrer"
+                        onClick={() =>
+                          trackSearchEvent("search_result_clicked", {
+                            entity_id: r._id,
+                            entity_type: "sponsored_business",
+                            result_rank: idx + 1,
+                            source: "search_results_card_primary_cta",
+                            businessAlias: safe(r.alias) || null,
+                          })
+                        }
+                        className="rounded bg-gold px-3 py-1.5 text-sm font-semibold text-black"
+                      >
+                        Visit Sponsor
+                      </a>
+                    ) : (
+                      <Link
+                        href={href}
+                        onClick={() =>
+                          trackSearchEvent("search_result_clicked", {
+                            entity_id: r._id,
+                            entity_type: "business",
+                            result_rank: idx + 1,
+                            source: "search_results_card_primary_cta",
+                            businessAlias: safe(r.alias) || null,
+                          })
+                        }
+                        className="rounded bg-gold px-3 py-1.5 text-sm font-semibold text-black"
+                      >
+                        View Profile
+                      </Link>
+                    )}
+                    {location ? (
+                      <a
+                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location)}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="rounded border border-gray-600 px-3 py-1.5 text-sm text-gray-200"
+                      >
+                        Directions
+                      </a>
+                    ) : null}
+                  </div>
+                </article>
+              );
+            })}
           </div>
-        ) : null}
+
+          {totalPages > 1 ? (
+            <div className="mt-6 flex items-center justify-center gap-2">
+              <button
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={page <= 1}
+                className="px-3 py-1 rounded border border-gray-600 disabled:opacity-40"
+              >
+                Prev
+              </button>
+              <span className="text-sm text-gray-300">
+                Page {page} of {totalPages}
+              </span>
+              <button
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                disabled={page >= totalPages}
+                className="px-3 py-1 rounded border border-gray-600 disabled:opacity-40"
+              >
+                Next
+              </button>
+            </div>
+          ) : null}
+        </div>
       </div>
-    </div>
+    </>
   );
 }

@@ -5,6 +5,10 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { ArrowLeft, Image as ImageIcon, Save, XCircle } from "lucide-react";
+import type { GetServerSideProps } from "next";
+import cookie from "cookie";
+import jwt from "jsonwebtoken";
+import { getJwtSecret } from "@/lib/env";
 
 type ProductForm = {
   name: string;
@@ -21,10 +25,8 @@ const CATEGORY_OPTIONS = [
   "Art",
   "Books",
   "Home",
-  "Food",
   "Other",
 ] as const;
-
 function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
@@ -42,8 +44,6 @@ function normalizeCategory(input: string) {
     home: "Home",
     "home goods": "Home",
     homegoods: "Home",
-    food: "Food",
-    "food & drink": "Food",
     other: "Other",
   };
   return map[lower] || input; // if already Title Case, keep it
@@ -592,3 +592,40 @@ export default function EditProductPage() {
     </div>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  const cookies = cookie.parse(req.headers.cookie || "");
+  const token = cookies.session_token;
+
+  if (!token) {
+    return {
+      redirect: {
+        destination: "/login?redirect=/marketplace/edit-product",
+        permanent: false,
+      },
+    };
+  }
+
+  try {
+    const payload = jwt.verify(token, getJwtSecret()) as {
+      accountType?: string;
+    };
+    if (payload.accountType !== "seller") {
+      return {
+        redirect: {
+          destination: "/login?redirect=/marketplace/edit-product",
+          permanent: false,
+        },
+      };
+    }
+  } catch {
+    return {
+      redirect: {
+        destination: "/login?redirect=/marketplace/edit-product",
+        permanent: false,
+      },
+    };
+  }
+
+  return { props: {} };
+};

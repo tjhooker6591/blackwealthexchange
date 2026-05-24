@@ -56,7 +56,7 @@ function buildNav(t: AccountType): NavItem[] {
     // Business ads
     {
       label: "Manage Ads",
-      href: "/dashboard/business/ads",
+      href: "/advertise-with-us",
       icon: <Megaphone size={18} />,
       show: (x) => x === "business" || x === "admin",
     },
@@ -97,8 +97,8 @@ function buildNav(t: AccountType): NavItem[] {
       show: () => true,
     },
     {
-      label: "Settings",
-      href: "/settings",
+      label: "Account",
+      href: "/profile",
       icon: <Settings size={18} />,
       show: () => true,
     },

@@ -53,18 +53,61 @@ const COURSE_DATA = {
 const GenerationalWealthCourse: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [checkoutError, setCheckoutError] = useState("");
+  const [ctaState, setCtaState] = useState<
+    "idle" | "loading" | "redirect-login" | "redirect-checkout" | "failed"
+  >("idle");
   const router = useRouter();
 
   useEffect(() => {
-    // Clear "isLoggedIn" for testing, REMOVE this line in production!
-    // localStorage.removeItem("isLoggedIn");
+    async function loadAuthState() {
+      try {
+        const meRes = await fetch("/api/auth/me", {
+          cache: "no-store",
+          credentials: "include",
+        });
+        setIsLoggedIn(meRes.ok);
+      } finally {
+        setLoading(false);
+      }
+    }
 
-    const userLoggedIn = localStorage.getItem("isLoggedIn");
-    setIsLoggedIn(!!userLoggedIn);
-    setLoading(false);
+    void loadAuthState();
   }, []);
 
   const handleBackClick = () => router.back();
+
+  const handlePurchase = async () => {
+    setCheckoutError("");
+    setCtaState("loading");
+    setIsProcessing(true);
+    try {
+      const response = await fetch("/api/courses/checkout-session", {
+        credentials: "include",
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ courseSlug: "generational-wealth" }),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (data.url) {
+        setCtaState("redirect-checkout");
+        window.location.assign(data.url);
+      } else {
+        setCtaState("failed");
+        setCheckoutError(
+          data.message || data.error || "Unable to start checkout session.",
+        );
+      }
+    } catch {
+      setCtaState("failed");
+      setCheckoutError(
+        "Something went wrong while starting checkout. Please try again.",
+      );
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   if (loading) return <div>Loading...</div>;
 
@@ -141,26 +184,68 @@ const GenerationalWealthCourse: React.FC = () => {
               One-time Fee: ${COURSE_DATA.price}
             </span>
             <br />
-            Secure your seat and get lifetime access to all content & updates!
+            Pay once for this course. After payment verification, course access
+            is unlocked on your account and appears in your course dashboard.
           </p>
+          <div className="mt-4 rounded-xl border border-white/10 bg-black/30 p-4 text-sm text-gray-300">
+            <div className="font-semibold text-gold">Entitlement truth</div>
+            <ul className="mt-2 list-disc ml-5 space-y-1">
+              <li>
+                This is a one-time course purchase tied to your BWE account.
+              </li>
+              <li>
+                After verified checkout, course access appears in your course
+                dashboard.
+              </li>
+              <li>
+                If checkout is canceled or interrupted, access is not granted
+                yet.
+              </li>
+            </ul>
+            <p className="mt-2 text-xs text-gray-400">
+              Support is available via BWE help/contact routes for payment,
+              access, and billing questions.
+            </p>
+          </div>
+
           <div className="mt-4">
-            {isLoggedIn ? (
+            {!isLoggedIn ? (
               <button
-                onClick={() => router.push("/course-dashboard")}
-                className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition"
+                type="button"
+                className="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition"
+                onClick={() => {
+                  setCtaState("redirect-login");
+                  void router.push(
+                    `/login?next=${encodeURIComponent(router.asPath)}`,
+                  );
+                }}
               >
-                Go to Course Dashboard
+                Log in to Enroll
               </button>
             ) : (
               <button
                 type="button"
-                className="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition"
-                // No onClick for now—payment integration later
+                onClick={handlePurchase}
+                disabled={isProcessing}
+                className="bg-gold text-black py-2 px-6 rounded font-bold hover:bg-yellow-500 transition disabled:opacity-60"
               >
-                Buy & Enroll
+                {isProcessing
+                  ? "Redirecting to Payment..."
+                  : `Buy & Enroll for $${COURSE_DATA.price}`}
               </button>
             )}
           </div>
+          <p className="mt-3 text-xs text-gray-400">
+            {ctaState === "idle" && "State: idle"}
+            {ctaState === "loading" && "State: starting checkout..."}
+            {ctaState === "redirect-login" && "State: redirecting to login..."}
+            {ctaState === "redirect-checkout" &&
+              "State: redirecting to secure checkout..."}
+            {ctaState === "failed" && "State: failed to start checkout."}
+          </p>
+          {checkoutError ? (
+            <p className="mt-3 text-sm text-red-300">{checkoutError}</p>
+          ) : null}
         </section>
 
         {/* Why Enroll? */}
@@ -223,6 +308,12 @@ const GenerationalWealthCourse: React.FC = () => {
             Frequently Asked Questions
           </h2>
           <ul className="mt-4 space-y-2 text-gray-300">
+            <li>
+              <strong>Q: What unlocks after purchase?</strong>
+              <br />
+              A: This course unlocks on your account after payment verification,
+              then appears in your course dashboard.
+            </li>
             <li>
               <strong>
                 Q: Can I take this course if I’m a complete beginner?

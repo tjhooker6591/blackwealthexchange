@@ -2,8 +2,10 @@
 "use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { canonicalUrl, truncateMeta } from "@/lib/seo";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
@@ -40,10 +42,20 @@ function categoriesToString(v: any): string {
   return safeStr(v);
 }
 
+function splitCategoryTokens(v: any): string[] {
+  const raw = categoriesToString(v);
+  if (!raw) return [];
+  return raw
+    .split(/[,&/|]/g)
+    .map((x) => x.trim())
+    .filter(Boolean)
+    .slice(0, 6);
+}
+
 function trackFlowEvent(payload: Record<string, unknown>) {
   if (typeof window === "undefined") return;
   const body = JSON.stringify(payload);
-  const url = "/api/flow-events";
+  const url = "/api/search/quality-events";
   if (navigator.sendBeacon) {
     navigator.sendBeacon(url, new Blob([body], { type: "application/json" }));
     return;
@@ -59,6 +71,16 @@ function trackFlowEvent(payload: Record<string, unknown>) {
 function toInt(v: any, def: number) {
   const n = parseInt(safeStr(v), 10);
   return Number.isFinite(n) ? n : def;
+}
+
+function formatStatusLabel(status: string) {
+  const normalized = safeStr(status).toLowerCase();
+  if (!normalized) return "";
+  return normalized
+    .split(/[_\s-]+/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
 }
 
 const DEFAULT_SPONSOR_ADS = [
@@ -77,6 +99,16 @@ const DEFAULT_SPONSOR_ADS = [
     cta: "Explore",
   },
 ];
+
+type PlacementCard = {
+  id: string;
+  name: string;
+  tagline: string;
+  image: string;
+  targetUrl: string;
+  startsAt?: string | null;
+  endsAt?: string | null;
+};
 
 type DirectoryScope = "businesses" | "organizations";
 
@@ -123,35 +155,6 @@ type Row =
   | (Business & { __kind: "business" })
   | (Organization & { __kind: "org" });
 
-function injectSponsoredEveryN(
-  rows: Row[],
-  sponsorAds: Array<{
-    img: string;
-    name: string;
-    tagline: string;
-    url: string;
-    cta: string;
-  }>,
-  interval = 5,
-) {
-  if (!sponsorAds.length) return rows;
-  const out: Array<Row | { isSponsor: true; sponsorIdx: number; key: string }> =
-    [];
-  let sponsorIdx = 0;
-  for (let i = 0; i < rows.length; i++) {
-    out.push(rows[i]);
-    if ((i + 1) % interval === 0) {
-      out.push({
-        isSponsor: true,
-        sponsorIdx: sponsorIdx % sponsorAds.length,
-        key: `s-${sponsorIdx}-${i}`,
-      });
-      sponsorIdx++;
-    }
-  }
-  return out;
-}
-
 function SponsorCard({ img, name, tagline, url, cta }: any) {
   return (
     <a
@@ -167,6 +170,8 @@ function SponsorCard({ img, name, tagline, url, cta }: any) {
         alt={name}
         className="h-12 w-12 object-cover rounded-xl shadow border border-white/15 mb-2"
         style={{ background: "#111" }}
+        loading="lazy"
+        decoding="async"
       />
       <div className="text-[#D4AF37] font-extrabold text-xs text-center truncate w-full">
         {name}
@@ -184,7 +189,14 @@ function SponsorCard({ img, name, tagline, url, cta }: any) {
   );
 }
 
-function SidebarAdCard({ img, name, tagline, url, cta }: any) {
+function SidebarAdCard({
+  img,
+  name,
+  tagline,
+  url,
+  cta,
+  label = "Sponsored",
+}: any) {
   return (
     <a
       href={url}
@@ -194,13 +206,15 @@ function SidebarAdCard({ img, name, tagline, url, cta }: any) {
     >
       <div className="pointer-events-none absolute -top-14 left-1/2 h-28 w-72 -translate-x-1/2 rounded-full bg-[#D4AF37]/10 blur-3xl" />
       <span className="absolute top-3 right-3 rounded-full border border-white/10 bg-black/40 px-2 py-0.5 text-[10px] font-extrabold text-white/70">
-        Ad
+        {label}
       </span>
       <div className="flex items-start gap-3">
         <img
           src={img}
           className="h-12 w-12 object-cover rounded-xl border border-white/15 shadow"
           alt={name}
+          loading="lazy"
+          decoding="async"
         />
         <div className="min-w-0 flex-1">
           <div className="font-extrabold text-white truncate">{name}</div>
@@ -325,8 +339,38 @@ export default function BusinessDirectory() {
   }, [router.isReady, router.query.type, router.query.scope, router.query.tab]);
 
   // Categories only apply to businesses
-  const TOP_CATEGORIES = ["Food", "Shopping", "Beauty", "Health", "Clothing"];
-  const _CATEGORIES = ["All", ...TOP_CATEGORIES];
+  const CATEGORY_COUNTS: Record<string, number> = {
+    Barbershop: 126,
+    Dining: 8,
+    Food: 8,
+    Health: 6,
+    Wellness: 6,
+    Shopping: 0,
+    Beauty: 0,
+    "Financial Services": 0,
+    "Professional Services": 3,
+    Clothing: 0,
+    "Real Estate": 1,
+    Technology: 1,
+  };
+  const PRIMARY_CATEGORIES = [
+    "All",
+    "Barbershop",
+    "Dining",
+    "Food",
+    "Health",
+    "Wellness",
+  ];
+  const MORE_CATEGORIES = [
+    "Shopping",
+    "Beauty",
+    "Financial Services",
+    "Professional Services",
+    "Clothing",
+    "Real Estate",
+    "Technology",
+    "Wellness",
+  ];
 
   const [input, setInput] = useState("");
   const [category, setCategory] = useState("All");
@@ -339,11 +383,23 @@ export default function BusinessDirectory() {
   const [rows, setRows] = useState<Row[]>([]);
   const [total, setTotal] = useState(0);
   const [sponsorAds, setSponsorAds] = useState(DEFAULT_SPONSOR_ADS);
+  const [directoryFeaturedAds, setDirectoryFeaturedAds] = useState<
+    PlacementCard[]
+  >([]);
+  const [sidebarBannerAds, setSidebarBannerAds] = useState<PlacementCard[]>([]);
   const [serverPaged, setServerPaged] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [fetchError, setFetchError] = useState("");
+  const [queryMode, setQueryMode] = useState<string>("strict");
+  const [searchMeta, setSearchMeta] = useState<{
+    strictTokens?: string[];
+    intentTokens?: string[];
+    locationTokens?: string[];
+    usedFallback?: boolean;
+    noExactCategoryMatchInLocation?: boolean;
+  } | null>(null);
 
   const [page, setPage] = useState(1);
   const pageSize = 20;
@@ -383,11 +439,19 @@ export default function BusinessDirectory() {
     let cancelled = false;
     (async () => {
       try {
-        const res = await fetch("/api/sponsored-businesses", {
-          cache: "no-store",
-        });
-        const data = await res.json().catch(() => null);
-        const incoming = Array.isArray(data?.sponsors) ? data.sponsors : [];
+        const [sponsorsRes, placementsRes] = await Promise.all([
+          fetch("/api/sponsored-businesses", {
+            cache: "no-store",
+          }),
+          fetch("/api/advertising/public-placements", {
+            cache: "no-store",
+          }),
+        ]);
+
+        const sponsorData = await sponsorsRes.json().catch(() => null);
+        const incoming = Array.isArray(sponsorData?.sponsors)
+          ? sponsorData.sponsors
+          : [];
         if (!cancelled && incoming.length) {
           setSponsorAds(
             incoming.map((x: any) => ({
@@ -398,6 +462,20 @@ export default function BusinessDirectory() {
               url: safeStr(x?.url) || "#",
               cta: safeStr(x?.cta) || "Learn More",
             })),
+          );
+        }
+
+        const placementsData = await placementsRes.json().catch(() => null);
+        if (!cancelled && placementsData?.ok) {
+          setDirectoryFeaturedAds(
+            Array.isArray(placementsData?.placements?.directoryFeatured)
+              ? placementsData.placements.directoryFeatured
+              : [],
+          );
+          setSidebarBannerAds(
+            Array.isArray(placementsData?.placements?.bannerSidebar)
+              ? placementsData.placements.bannerSidebar
+              : [],
           );
         }
       } catch {
@@ -515,6 +593,8 @@ export default function BusinessDirectory() {
       setTotal(0);
       setHasSearched(false);
       setServerPaged(false);
+      setQueryMode("strict");
+      setSearchMeta(null);
       return;
     }
 
@@ -562,6 +642,8 @@ export default function BusinessDirectory() {
             setTotal(tagged.length);
             setServerPaged(false);
             setHasSearched(true);
+            setQueryMode("strict");
+            setSearchMeta(null);
             return;
           }
 
@@ -575,6 +657,15 @@ export default function BusinessDirectory() {
             setTotal(toInt(data.total, tagged.length));
             setServerPaged(true);
             setHasSearched(true);
+            setQueryMode(
+              typeof data.queryMode === "string" ? data.queryMode : "strict",
+            );
+            setSearchMeta(data.searchMeta || null);
+            const serverPage = toInt(data.page, page);
+            if (serverPage !== page) {
+              skipNextPageResetRef.current = true;
+              setPage(serverPage);
+            }
             return;
           }
 
@@ -582,6 +673,8 @@ export default function BusinessDirectory() {
           setTotal(0);
           setServerPaged(false);
           setHasSearched(true);
+          setQueryMode("strict");
+          setSearchMeta(null);
         })
         .catch((err) => {
           if (err?.name !== "AbortError") {
@@ -589,6 +682,8 @@ export default function BusinessDirectory() {
             setTotal(0);
             setServerPaged(false);
             setHasSearched(true);
+            setQueryMode("strict");
+            setSearchMeta(null);
             setFetchError("Could not load directory results. Please retry.");
           }
         })
@@ -640,9 +735,152 @@ export default function BusinessDirectory() {
     return filteredRows.slice(start, start + pageSize);
   }, [filteredRows, serverPaged, page]);
 
-  const visibleWithSponsors = useMemo(
-    () => injectSponsoredEveryN(pageRows, sponsorAds, 5),
-    [pageRows, sponsorAds],
+  const visibleWithSponsors = useMemo(() => pageRows, [pageRows]);
+
+  useEffect(() => {
+    if (!hasSearched) return;
+    trackFlowEvent({
+      eventType: "search_results_loaded",
+      query: input.trim(),
+      resultCount: total,
+      filters: {
+        scope,
+        category,
+        stateFilter,
+        verifiedOnly,
+        sponsoredFirst,
+        includeIncomplete,
+      },
+    });
+  }, [
+    hasSearched,
+    input,
+    total,
+    scope,
+    category,
+    stateFilter,
+    verifiedOnly,
+    sponsoredFirst,
+    includeIncomplete,
+  ]);
+  const approximateMode =
+    hasSearched && total > 0 && queryMode !== "strict" && Boolean(input.trim());
+
+  const curatedVisibleRows = useMemo(() => {
+    const qualityRank = (q: string) => {
+      const quality = safeStr(q).toLowerCase();
+      if (quality === "exact") return 3;
+      if (quality === "close") return 2;
+      return 1;
+    };
+
+    const qualitySorted = [...visibleWithSponsors].sort((a: any, b: any) => {
+      const aq = qualityRank(a?._matchQuality);
+      const bq = qualityRank(b?._matchQuality);
+      if (bq !== aq) return bq - aq;
+
+      const aVerified = a?.isVerified === true || a?.verified === true;
+      const bVerified = b?.isVerified === true || b?.verified === true;
+      if (aVerified !== bVerified) return bVerified ? 1 : -1;
+
+      const aComplete =
+        typeof a?.isComplete === "boolean"
+          ? a.isComplete
+          : Number(a?.completenessScore || a?.qualityScore || 0) >= 70;
+      const bComplete =
+        typeof b?.isComplete === "boolean"
+          ? b.isComplete
+          : Number(b?.completenessScore || b?.qualityScore || 0) >= 70;
+      if (aComplete !== bComplete) return bComplete ? 1 : -1;
+
+      const aStrength = Number(a?._listingStrength || 0);
+      const bStrength = Number(b?._listingStrength || 0);
+      return bStrength - aStrength;
+    });
+
+    if (!approximateMode) return qualitySorted;
+
+    const filtered = qualitySorted.filter((row: any) => {
+      const quality = safeStr(row?._matchQuality).toLowerCase();
+      const strength = Number(row?._listingStrength || 0);
+      const hasUsefulDescription =
+        safeStr(row?.description).trim().length >= 24;
+      const hasUsefulLocation =
+        Boolean(safeStr(row?.locationDisplay).trim()) ||
+        Boolean(safeStr(row?.city).trim()) ||
+        Boolean(safeStr(row?.state).trim()) ||
+        Boolean(safeStr(row?.address).trim());
+      const hasUsefulCategory =
+        Boolean(safeStr(row?.primaryCategory).trim()) ||
+        Boolean(safeStr(row?.category).trim()) ||
+        Boolean(safeStr(row?.categories).trim()) ||
+        Boolean(safeStr(row?.display_categories).trim()) ||
+        Boolean(safeStr(row?.orgType).trim());
+
+      if (quality !== "approximate") return true;
+      if (strength >= 62) return true;
+      if ((hasUsefulDescription && hasUsefulLocation) || hasUsefulCategory) {
+        return true;
+      }
+      return false;
+    });
+
+    return filtered.length >= 3 ? filtered : qualitySorted;
+  }, [visibleWithSponsors, approximateMode]);
+
+  const weakListingsSuppressedCount = Math.max(
+    0,
+    visibleWithSponsors.length - curatedVisibleRows.length,
+  );
+
+  const relatedCategorySuggestions = useMemo(() => {
+    if (scope !== "businesses") return [] as string[];
+    const counts = new Map<string, number>();
+
+    pageRows.forEach((row) => {
+      if ((row as any).__kind !== "business") return;
+      const tokens = splitCategoryTokens(
+        (row as any).display_categories ||
+          (row as any).categories ||
+          (row as any).category,
+      );
+      tokens.forEach((token) => {
+        const current = counts.get(token) || 0;
+        counts.set(token, current + 1);
+      });
+    });
+
+    return Array.from(counts.entries())
+      .sort((a, b) => b[1] - a[1])
+      .map(([name]) => name)
+      .filter((name) => name.toLowerCase() !== category.toLowerCase())
+      .slice(0, 5);
+  }, [pageRows, scope, category]);
+
+  const isApproximateSearch = approximateMode;
+
+  const suggestedRefinement = useMemo(() => {
+    const intent = (searchMeta?.intentTokens || [])[0] || "";
+    const location = (searchMeta?.locationTokens || [])[0] || "";
+    if (intent && location) return `${intent} in ${location}`;
+    return intent || location || "";
+  }, [searchMeta]);
+
+  const exactMatchCount = useMemo(
+    () =>
+      curatedVisibleRows.filter(
+        (row: any) => safeStr(row?._matchQuality).toLowerCase() === "exact",
+      ).length,
+    [curatedVisibleRows],
+  );
+
+  const approximateCount = useMemo(
+    () =>
+      curatedVisibleRows.filter(
+        (row: any) =>
+          safeStr(row?._matchQuality).toLowerCase() === "approximate",
+      ).length,
+    [curatedVisibleRows],
   );
 
   const goPage = (p: number) => {
@@ -718,25 +956,35 @@ export default function BusinessDirectory() {
 
   // ✅ FIX: alias can be non-string; always coerce safely
   const getSlug = (r: Row) => {
-    const aliasRaw = (r as any).alias;
-    const alias = safeStr(aliasRaw).trim(); // safeStr ensures .trim exists
-    return alias || safeStr((r as any)._id);
+    const alias = safeStr((r as any).alias).trim();
+    const slug = safeStr((r as any).slug).trim();
+    return alias || slug;
   };
 
   const getHref = (r: Row) => {
-    const slug = encodeURIComponent(getSlug(r));
-    if (r.__kind === "org") return `/organizations/${slug}`;
+    const sponsoredUrl = safeStr((r as any).website);
+    if ((r as any).__sponsoredPlacement && /^https?:\/\//i.test(sponsoredUrl)) {
+      return sponsoredUrl;
+    }
+
+    const kind = safeStr((r as any).kind || (r as any).__kind).toLowerCase();
+    const orgLike = kind === "organization" || kind === "org";
+    const slugKey = getSlug(r);
+    const idKey = safeStr((r as any)._id);
+    const key = encodeURIComponent(slugKey || idKey);
+
+    if (orgLike) return `/organizations/${key}`;
 
     const qp = new URLSearchParams();
     qp.set("from", "directory");
     if (input.trim()) qp.set("q", input.trim());
 
-    return `/business-directory/${slug}?${qp.toString()}`;
+    return `/business/${key}?${qp.toString()}`;
   };
 
   const getTrustMeta = (r: Row) => {
     const status = safeStr(
-      (r as any).trustStatus || (r as any).status,
+      (r as any).listingStatus || (r as any).trustStatus || (r as any).status,
     ).toLowerCase();
     const verified =
       (r as any).isVerified === true ||
@@ -765,20 +1013,33 @@ export default function BusinessDirectory() {
   const getWebsite = (r: Row) => safeStr((r as any).website);
   const getPhone = (r: Row) => safeStr((r as any).phone);
 
-  const sponsorsToShow = [
-    ...sponsorAds,
-    ...Array(Math.max(0, 10 - sponsorAds.length)).fill({
-      img: "/placeholder.png",
-      name: "Your Business Here",
-      tagline: "Sponsor This Spot!",
-      url: "/advertise",
-      cta: "Advertise",
-    }),
-  ].slice(0, 10);
+  const getListingStrengthLabel = (r: Row) => {
+    const strength = Number((r as any)._listingStrength || 0);
+    if (strength >= 92) return "Strong profile";
+    if (strength >= 72) return "Solid profile";
+    return "Basic profile";
+  };
+
+  const sponsorsToShow = sponsorAds.slice(0, 10);
 
   const showingFrom = total === 0 ? 0 : (page - 1) * pageSize + 1;
   const showingTo =
-    total === 0 ? 0 : Math.min((page - 1) * pageSize + pageRows.length, total);
+    total === 0
+      ? 0
+      : Math.min((page - 1) * pageSize + curatedVisibleRows.length, total);
+  const title =
+    "Black-Owned Business Directory by City & Category | Black Wealth Exchange";
+  const description = truncateMeta(
+    "Search Black-owned businesses by city, state, and category in the Black Wealth Exchange directory. Use trust signals and filters to find, compare, and contact the right business faster.",
+  );
+  const canonical = canonicalUrl("/business-directory");
+  const directorySchema = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: title,
+    description,
+    url: canonical,
+  };
 
   useEffect(() => {
     if (!hasSearched || isLoading || total !== 0) return;
@@ -792,616 +1053,1098 @@ export default function BusinessDirectory() {
   }, [hasSearched, isLoading, total, input, category, stateFilter]);
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-neutral-950 text-white">
-      {/* subtle glows like index */}
-      <div className="pointer-events-none absolute -top-40 left-1/2 h-[800px] w-[800px] -translate-x-1/2 rounded-full bg-[#D4AF37]/[0.06] blur-3xl" />
-      <div className="pointer-events-none absolute -bottom-56 right-[-10rem] h-[520px] w-[520px] rounded-full bg-emerald-500/[0.05] blur-3xl" />
+    <>
+      <Head>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonical} />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:image" content={canonicalUrl("/images/hero1.jpg")} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta
+          name="twitter:image"
+          content={canonicalUrl("/images/hero1.jpg")}
+        />
+      </Head>
+      <script type="application/ld+json">
+        {JSON.stringify(directorySchema)}
+      </script>
+      <div className="relative min-h-screen overflow-hidden bg-neutral-950 text-white">
+        {/* subtle glows like index */}
+        <div className="pointer-events-none absolute -top-40 left-1/2 h-[800px] w-[800px] -translate-x-1/2 rounded-full bg-[#D4AF37]/[0.06] blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-56 right-[-10rem] h-[520px] w-[520px] rounded-full bg-emerald-500/[0.05] blur-3xl" />
 
-      <div className="mx-auto max-w-7xl px-3 sm:px-4 md:px-6 py-6">
-        {/* Header */}
-        <div className="relative mb-5 overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-white/[0.07] via-white/[0.03] to-transparent p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_40px_90px_rgba(0,0,0,0.55)] sm:p-5">
-          <div className="pointer-events-none absolute -top-24 left-1/2 h-56 w-[40rem] -translate-x-1/2 rounded-full bg-[#D4AF37]/10 blur-3xl" />
-          <div className="pointer-events-none absolute -bottom-28 right-[-6rem] h-64 w-64 rounded-full bg-emerald-500/10 blur-3xl" />
+        <div className="mx-auto max-w-7xl px-3 sm:px-4 md:px-6 py-6">
+          {/* Header */}
+          <div className="relative mb-4 overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-white/[0.07] via-white/[0.03] to-transparent p-3 shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_40px_90px_rgba(0,0,0,0.55)] sm:mb-5 sm:p-5">
+            <div className="pointer-events-none absolute -top-24 left-1/2 h-56 w-[40rem] -translate-x-1/2 rounded-full bg-[#D4AF37]/10 blur-3xl" />
+            <div className="pointer-events-none absolute -bottom-28 right-[-6rem] h-64 w-64 rounded-full bg-emerald-500/10 blur-3xl" />
 
-          <div className="relative flex flex-col gap-4">
-            <div className="flex flex-wrap items-end justify-between gap-3">
-              <div>
-                <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-white">
-                  {scope === "organizations"
-                    ? "Organizations Directory"
-                    : "Business Directory"}
-                  <span className="ml-2 text-[#D4AF37]">• Trusted Search</span>
-                </h1>
-                <p className="mt-1 text-sm text-white/65 sm:text-base">
-                  Premium discovery flow with clean ranking, trust cues, and
-                  faster decisions.
-                </p>
+            <div className="relative flex flex-col gap-4">
+              <div className="flex flex-wrap items-start justify-between gap-2 sm:items-end sm:gap-3">
+                <div>
+                  <h1 className="text-2xl sm:text-4xl font-black tracking-tight text-white">
+                    {scope === "organizations"
+                      ? "Black Organizations Directory"
+                      : "Black-Owned Business Directory"}
+                    <span className="ml-2 text-[#D4AF37]">
+                      • City + Category Hub
+                    </span>
+                  </h1>
+                  <p className="mt-1 text-xs text-white/70 sm:text-base">
+                    Use this directory hub to discover trusted listings by city,
+                    state, and category, then compare and contact the best fit.
+                  </p>
+                </div>
+
+                <span className="hidden sm:inline-flex items-center gap-1 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-3 py-1.5 text-xs font-bold text-emerald-200">
+                  <ShieldCheck className="h-3.5 w-3.5" />
+                  Trusted listings
+                </span>
               </div>
 
-              <span className="inline-flex items-center gap-1 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-3 py-1.5 text-xs font-bold text-emerald-200">
-                <ShieldCheck className="h-3.5 w-3.5" />
-                Trusted listings
-              </span>
-            </div>
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() =>
+                    router.push({
+                      pathname: "/business-directory",
+                      query: {
+                        ...router.query,
+                        type: "businesses",
+                        scope: "businesses",
+                        tab: "businesses",
+                        page: 1,
+                      },
+                    })
+                  }
+                  className={cx(
+                    "rounded-xl border px-3 py-2 text-xs font-extrabold tracking-wide transition",
+                    scope === "businesses"
+                      ? "border-[#D4AF37]/60 bg-[#D4AF37]/15 text-[#D4AF37]"
+                      : "border-white/10 bg-white/[0.03] text-white/75 hover:bg-white/[0.06]",
+                  )}
+                >
+                  Businesses
+                </button>
+                <button
+                  type="button"
+                  onClick={() =>
+                    router.push({
+                      pathname: "/business-directory",
+                      query: {
+                        ...router.query,
+                        type: "organizations",
+                        scope: "organizations",
+                        tab: "organizations",
+                        page: 1,
+                      },
+                    })
+                  }
+                  className={cx(
+                    "rounded-xl border px-3 py-2 text-xs font-extrabold tracking-wide transition",
+                    scope === "organizations"
+                      ? "border-[#D4AF37]/60 bg-[#D4AF37]/15 text-[#D4AF37]"
+                      : "border-white/10 bg-white/[0.03] text-white/75 hover:bg-white/[0.06]",
+                  )}
+                >
+                  Organizations
+                </button>
+              </div>
 
-            <div className="flex flex-wrap items-center gap-2">
-              <button
-                type="button"
-                onClick={() =>
-                  router.push({
-                    pathname: "/business-directory",
-                    query: {
-                      ...router.query,
-                      type: "businesses",
-                      scope: "businesses",
-                      tab: "businesses",
-                      page: 1,
-                    },
-                  })
-                }
-                className={cx(
-                  "rounded-xl border px-3 py-2 text-xs font-extrabold tracking-wide transition",
-                  scope === "businesses"
-                    ? "border-[#D4AF37]/60 bg-[#D4AF37]/15 text-[#D4AF37]"
-                    : "border-white/10 bg-white/[0.03] text-white/75 hover:bg-white/[0.06]",
-                )}
-              >
-                Businesses
-              </button>
-              <button
-                type="button"
-                onClick={() =>
-                  router.push({
-                    pathname: "/business-directory",
-                    query: {
-                      ...router.query,
-                      type: "organizations",
-                      scope: "organizations",
-                      tab: "organizations",
-                      page: 1,
-                    },
-                  })
-                }
-                className={cx(
-                  "rounded-xl border px-3 py-2 text-xs font-extrabold tracking-wide transition",
-                  scope === "organizations"
-                    ? "border-[#D4AF37]/60 bg-[#D4AF37]/15 text-[#D4AF37]"
-                    : "border-white/10 bg-white/[0.03] text-white/75 hover:bg-white/[0.06]",
-                )}
-              >
-                Organizations
-              </button>
-            </div>
+              <div className="hidden sm:grid gap-2 sm:grid-cols-3">
+                <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-2">
+                  <div className="text-[10px] uppercase tracking-[0.08em] text-white/50 font-bold">
+                    Ranking
+                  </div>
+                  <div className="text-sm font-semibold text-white/80">
+                    Trust + relevance first
+                  </div>
+                </div>
+                <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-2">
+                  <div className="text-[10px] uppercase tracking-[0.08em] text-white/50 font-bold">
+                    Control
+                  </div>
+                  <div className="text-sm font-semibold text-white/80">
+                    Strong filters, zero clutter
+                  </div>
+                </div>
+                <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-2">
+                  <div className="text-[10px] uppercase tracking-[0.08em] text-white/50 font-bold">
+                    Goal
+                  </div>
+                  <div className="text-sm font-semibold text-white/80">
+                    Find, vet, and contact quickly
+                  </div>
+                </div>
+              </div>
 
-            <div className="grid gap-2 sm:grid-cols-3">
-              <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-2">
-                <div className="text-[10px] uppercase tracking-[0.08em] text-white/50 font-bold">
-                  Ranking
+              <details className="sm:hidden rounded-xl border border-white/10 bg-black/20 px-3 py-2">
+                <summary className="cursor-pointer list-none text-xs font-bold text-white/85">
+                  Why this directory?
+                </summary>
+                <div className="mt-2 grid gap-2">
+                  <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-2">
+                    <div className="text-[10px] uppercase tracking-[0.08em] text-white/50 font-bold">
+                      Ranking
+                    </div>
+                    <div className="text-xs font-semibold text-white/80">
+                      Trust + relevance first
+                    </div>
+                  </div>
+                  <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-2">
+                    <div className="text-[10px] uppercase tracking-[0.08em] text-white/50 font-bold">
+                      Control
+                    </div>
+                    <div className="text-xs font-semibold text-white/80">
+                      Strong filters, zero clutter
+                    </div>
+                  </div>
+                  <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-2">
+                    <div className="text-[10px] uppercase tracking-[0.08em] text-white/50 font-bold">
+                      Goal
+                    </div>
+                    <div className="text-xs font-semibold text-white/80">
+                      Find, vet, and contact quickly
+                    </div>
+                  </div>
                 </div>
-                <div className="text-sm font-semibold text-white/80">
-                  Trust + relevance first
-                </div>
+              </details>
+
+              <div className="hidden sm:flex flex-wrap items-center gap-2 text-xs sm:text-sm text-white/70">
+                <span className="font-semibold text-white/85">
+                  Popular discovery paths:
+                </span>
+                <Link
+                  href="/black-owned-businesses/city/atlanta-ga"
+                  className="rounded-full border border-white/15 px-3 py-1 hover:border-[#D4AF37]/40 hover:text-[#D4AF37]"
+                >
+                  Atlanta, GA
+                </Link>
+                <Link
+                  href="/black-owned-businesses/city/houston-tx"
+                  className="rounded-full border border-white/15 px-3 py-1 hover:border-[#D4AF37]/40 hover:text-[#D4AF37]"
+                >
+                  Houston, TX
+                </Link>
+                <Link
+                  href="/black-owned-businesses/category/restaurant"
+                  className="rounded-full border border-white/15 px-3 py-1 hover:border-[#D4AF37]/40 hover:text-[#D4AF37]"
+                >
+                  Restaurants
+                </Link>
+                <Link
+                  href="/black-owned-businesses/category/beauty"
+                  className="rounded-full border border-white/15 px-3 py-1 hover:border-[#D4AF37]/40 hover:text-[#D4AF37]"
+                >
+                  Beauty
+                </Link>
+                <Link
+                  href="/black-owned-businesses/category/health-and-wellness"
+                  className="rounded-full border border-white/15 px-3 py-1 hover:border-[#D4AF37]/40 hover:text-[#D4AF37]"
+                >
+                  Health & Wellness
+                </Link>
               </div>
-              <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-2">
-                <div className="text-[10px] uppercase tracking-[0.08em] text-white/50 font-bold">
-                  Control
+
+              <details className="sm:hidden rounded-xl border border-white/10 bg-black/20 px-3 py-2">
+                <summary className="cursor-pointer list-none text-xs font-bold text-white/85">
+                  Popular searches
+                </summary>
+                <div className="mt-2 flex flex-wrap gap-2 text-xs text-white/70">
+                  <Link
+                    href="/black-owned-businesses/city/atlanta-ga"
+                    className="rounded-full border border-white/15 px-3 py-1"
+                  >
+                    Atlanta, GA
+                  </Link>
+                  <Link
+                    href="/black-owned-businesses/city/houston-tx"
+                    className="rounded-full border border-white/15 px-3 py-1"
+                  >
+                    Houston, TX
+                  </Link>
+                  <Link
+                    href="/black-owned-businesses/category/restaurant"
+                    className="rounded-full border border-white/15 px-3 py-1"
+                  >
+                    Restaurants
+                  </Link>
+                  <Link
+                    href="/black-owned-businesses/category/beauty"
+                    className="rounded-full border border-white/15 px-3 py-1"
+                  >
+                    Beauty
+                  </Link>
                 </div>
-                <div className="text-sm font-semibold text-white/80">
-                  Strong filters, zero clutter
-                </div>
-              </div>
-              <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-2">
-                <div className="text-[10px] uppercase tracking-[0.08em] text-white/50 font-bold">
-                  Goal
-                </div>
-                <div className="text-sm font-semibold text-white/80">
-                  Find, vet, and contact quickly
-                </div>
-              </div>
+              </details>
             </div>
           </div>
-        </div>
 
-        <div className="grid gap-6 md:grid-cols-[1fr_320px]">
-          {/* Main */}
-          <div className="min-w-0">
-            {/* Categories (business only) */}
-            {scope === "businesses" && (
-              <div className="mb-3 flex flex-wrap gap-2">
-                {[
-                  "All",
-                  "Food",
-                  "Shopping",
-                  "Beauty",
-                  "Health",
-                  "Clothing",
-                ].map((cat) => (
-                  <button
-                    key={cat}
-                    onClick={() => setCategory(cat)}
-                    className={cx(
-                      "rounded-xl border px-3 py-2 text-[12px] font-extrabold tracking-wide transition",
-                      category === cat
-                        ? "border-[#D4AF37]/60 bg-[#D4AF37]/15 text-[#D4AF37]"
-                        : "border-white/10 bg-white/[0.03] text-white/75 hover:bg-white/[0.06]",
-                    )}
-                  >
-                    {cat}
-                  </button>
-                ))}
-              </div>
-            )}
-
-            {/* Search bar */}
-            <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.06] to-white/[0.02] p-3 shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_24px_60px_rgba(0,0,0,0.45)] backdrop-blur">
-              <div className="pointer-events-none absolute -top-16 left-1/2 h-32 w-[30rem] -translate-x-1/2 rounded-full bg-[#D4AF37]/10 blur-3xl" />
-
-              <div className="flex items-stretch gap-2">
-                <div className="relative flex-1">
-                  <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/45" />
-                  <input
-                    type="text"
-                    placeholder={
-                      scope === "organizations"
-                        ? "Search churches, nonprofits, orgs…"
-                        : "Find Black-owned businesses…"
-                    }
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    className="w-full rounded-xl border border-white/10 bg-black/30 pl-9 pr-4 py-3 text-[14px] text-white placeholder:text-white/35 outline-none transition focus:border-[#D4AF37]/40 focus:ring-2 focus:ring-[#D4AF37]/20"
-                  />
+          <div className="grid gap-6 md:grid-cols-[1fr_320px]">
+            {/* Main */}
+            <div className="min-w-0">
+              {/* Categories (business only) */}
+              {scope === "businesses" && (
+                <div className="mb-3 space-y-2">
+                  <div className="flex gap-2 overflow-x-auto pb-1 md:flex-wrap md:overflow-visible">
+                    {PRIMARY_CATEGORIES.map((cat) => {
+                      return (
+                        <button
+                          key={cat}
+                          onClick={() => setCategory(cat)}
+                          className={cx(
+                            "rounded-xl border px-3 py-2 text-[12px] font-extrabold tracking-wide transition whitespace-nowrap",
+                            category === cat
+                              ? "border-[#D4AF37]/60 bg-[#D4AF37]/15 text-[#D4AF37]"
+                              : "border-white/10 bg-white/[0.03] text-white/75 hover:bg-white/[0.06]",
+                          )}
+                        >
+                          {cat}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <details className="rounded-xl border border-white/10 bg-black/20 px-3 py-2">
+                    <summary className="cursor-pointer list-none text-xs font-bold text-white/80">
+                      More categories
+                    </summary>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {MORE_CATEGORIES.map((cat) => (
+                        <button
+                          key={cat}
+                          onClick={() => setCategory(cat)}
+                          className={cx(
+                            "rounded-xl border px-3 py-1.5 text-[11px] font-bold transition",
+                            category === cat
+                              ? "border-[#D4AF37]/60 bg-[#D4AF37]/15 text-[#D4AF37]"
+                              : "border-white/10 bg-white/[0.03] text-white/75 hover:bg-white/[0.06]",
+                          )}
+                        >
+                          {cat}
+                        </button>
+                      ))}
+                    </div>
+                  </details>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setPage(1);
-                    setHasSearched(true);
-                  }}
-                  className="rounded-xl bg-[#D4AF37] px-4 sm:px-6 text-[13px] font-extrabold text-black transition hover:bg-yellow-500"
-                >
-                  Search
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setInput("");
-                    setPage(1);
-                  }}
-                  className="rounded-xl border border-white/10 bg-white/[0.03] px-3 text-[12px] font-bold text-white/75 transition hover:bg-white/[0.06]"
-                  title="Clear search"
-                >
-                  Clear
-                </button>
-              </div>
-              <div className="mt-2 flex items-center justify-between text-[11px] text-white/50">
-                <span>
-                  Use search first, then narrow with filters if needed.
-                </span>
-                <span className="inline-flex items-center gap-1 text-white/45">
-                  <SlidersHorizontal className="h-3.5 w-3.5" />
-                  Filters are optional
-                </span>
-              </div>
-            </div>
+              )}
 
-            {/* Filter/sort controls */}
-            <div className="mt-3 rounded-2xl border border-white/10 bg-white/[0.03] p-3 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
-              <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
-                <label className="rounded-xl border border-white/10 bg-black/20 px-3 py-2">
-                  <div className="text-[11px] font-bold text-white/55">
-                    Sort
+              {/* Search bar */}
+              <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.06] to-white/[0.02] p-3 shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_24px_60px_rgba(0,0,0,0.45)] backdrop-blur">
+                <div className="pointer-events-none absolute -top-16 left-1/2 h-32 w-[30rem] -translate-x-1/2 rounded-full bg-[#D4AF37]/10 blur-3xl" />
+
+                <div className="flex items-stretch gap-2">
+                  <div className="relative flex-1">
+                    <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-white/45" />
+                    <input
+                      type="text"
+                      placeholder={
+                        scope === "organizations"
+                          ? "Search churches, nonprofits, orgs…"
+                          : "Find Black-owned businesses…"
+                      }
+                      value={input}
+                      onChange={(e) => setInput(e.target.value)}
+                      className="w-full rounded-xl border border-white/10 bg-black/30 pl-9 pr-4 py-3 text-[14px] text-white placeholder:text-white/35 outline-none transition focus:border-[#D4AF37]/40 focus:ring-2 focus:ring-[#D4AF37]/20"
+                    />
                   </div>
-                  <select
-                    value={sort}
-                    onChange={(e) => setSort(normalizeSort(e.target.value))}
-                    className="mt-1 w-full bg-transparent text-sm text-white outline-none"
-                  >
-                    <option value="relevance">Relevance (best match)</option>
-                    <option value="newest">Newest</option>
-                    <option value="completeness">Completeness</option>
-                  </select>
-                </label>
-
-                <label className="rounded-xl border border-white/10 bg-black/20 px-3 py-2">
-                  <div className="text-[11px] font-bold text-white/55">
-                    State
-                  </div>
-                  <input
-                    value={stateFilter}
-                    onChange={(e) =>
-                      setStateFilter(e.target.value.toUpperCase().slice(0, 2))
-                    }
-                    placeholder="CA"
-                    className="mt-1 w-full bg-transparent text-sm text-white placeholder:text-white/35 outline-none"
-                  />
-                </label>
-
-                <label className="flex items-center justify-between rounded-xl border border-white/10 bg-black/20 px-3 py-2 text-sm">
-                  <span className="font-semibold text-white/80">
-                    Verified only
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => setVerifiedOnly((v) => !v)}
-                    className={cx(
-                      "relative h-6 w-11 rounded-full border transition",
-                      verifiedOnly
-                        ? "border-emerald-400/40 bg-emerald-400/20"
-                        : "border-white/10 bg-black/30",
-                    )}
-                    aria-label="Toggle verified-only results"
-                    aria-pressed={verifiedOnly}
-                  >
-                    <span
-                      className={cx(
-                        "absolute top-0.5 h-5 w-5 rounded-full transition",
-                        verifiedOnly
-                          ? "left-5 bg-emerald-300"
-                          : "left-0.5 bg-white/60",
-                      )}
-                    />
-                  </button>
-                </label>
-
-                <label className="flex items-center justify-between rounded-xl border border-white/10 bg-black/20 px-3 py-2 text-sm">
-                  <span className="font-semibold text-white/80">
-                    Sponsored first
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => setSponsoredFirst((v) => !v)}
-                    className={cx(
-                      "relative h-6 w-11 rounded-full border transition",
-                      sponsoredFirst
-                        ? "border-[#D4AF37]/50 bg-[#D4AF37]/15"
-                        : "border-white/10 bg-black/30",
-                    )}
-                    aria-label="Toggle sponsored-first ordering"
-                    aria-pressed={sponsoredFirst}
-                  >
-                    <span
-                      className={cx(
-                        "absolute top-0.5 h-5 w-5 rounded-full transition",
-                        sponsoredFirst
-                          ? "left-5 bg-[#D4AF37]"
-                          : "left-0.5 bg-white/60",
-                      )}
-                    />
-                  </button>
-                </label>
-
-                <label className="flex items-center justify-between rounded-xl border border-white/10 bg-black/20 px-3 py-2 text-sm sm:col-span-2 lg:col-span-4">
-                  <span className="font-semibold text-white/80">
-                    Show incomplete listings
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => setIncludeIncomplete((v) => !v)}
-                    className={cx(
-                      "relative h-6 w-11 rounded-full border transition",
-                      includeIncomplete
-                        ? "border-sky-400/40 bg-sky-400/20"
-                        : "border-white/10 bg-black/30",
-                    )}
-                    aria-label="Toggle incomplete listing visibility"
-                    aria-pressed={includeIncomplete}
-                  >
-                    <span
-                      className={cx(
-                        "absolute top-0.5 h-5 w-5 rounded-full transition",
-                        includeIncomplete
-                          ? "left-5 bg-sky-300"
-                          : "left-0.5 bg-white/60",
-                      )}
-                    />
-                  </button>
-                </label>
-              </div>
-
-              <div className="mt-3 flex flex-wrap items-center gap-2">
-                {hasActiveFilters ? (
                   <button
                     type="button"
                     onClick={() => {
-                      setCategory("All");
-                      setSort("relevance");
-                      setStateFilter("");
-                      setVerifiedOnly(false);
-                      setSponsoredFirst(false);
-                      setIncludeIncomplete(false);
+                      setPage(1);
+                      setHasSearched(true);
+                    }}
+                    className="rounded-xl bg-[#D4AF37] px-4 sm:px-6 text-[13px] font-extrabold text-black transition hover:bg-yellow-500"
+                  >
+                    Search
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setInput("");
                       setPage(1);
                     }}
-                    className="rounded-lg border border-white/15 bg-black/30 px-3 py-1.5 text-xs font-bold text-white/80 transition hover:bg-black/45"
+                    className="rounded-xl border border-white/10 bg-white/[0.03] px-3 text-[12px] font-bold text-white/75 transition hover:bg-white/[0.06]"
+                    title="Clear search"
                   >
-                    Clear filters
+                    Clear
                   </button>
-                ) : (
-                  <span className="text-xs text-white/45">
-                    No active filters
+                </div>
+                <div className="mt-2 flex items-center justify-between text-[11px] text-white/50">
+                  <span>
+                    Try keywords like “tax”, “restaurant”, “barber”, or “real
+                    estate”.
                   </span>
-                )}
-
-                {scope === "businesses" && category !== "All" && (
-                  <span className="rounded-lg border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-2 py-1 text-[11px] font-bold text-[#D4AF37]">
-                    Category: {category}
+                  <span className="inline-flex items-center gap-1 text-white/45">
+                    <SlidersHorizontal className="h-3.5 w-3.5" />
+                    Filters are optional
                   </span>
-                )}
-                {stateFilter && (
-                  <span className="rounded-lg border border-white/15 bg-black/30 px-2 py-1 text-[11px] font-bold text-white/80">
-                    State: {stateFilter}
-                  </span>
-                )}
-                {sort !== "relevance" && (
-                  <span className="rounded-lg border border-white/15 bg-black/30 px-2 py-1 text-[11px] font-bold text-white/80">
-                    Sort: {sort}
-                  </span>
-                )}
-                {verifiedOnly && (
-                  <span className="rounded-lg border border-emerald-400/30 bg-emerald-400/15 px-2 py-1 text-[11px] font-bold text-emerald-200">
-                    Verified only
-                  </span>
-                )}
-                {sponsoredFirst && (
-                  <span className="rounded-lg border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-2 py-1 text-[11px] font-bold text-[#D4AF37]">
-                    Sponsored first
-                  </span>
-                )}
-                {includeIncomplete && (
-                  <span className="rounded-lg border border-sky-400/30 bg-sky-400/15 px-2 py-1 text-[11px] font-bold text-sky-200">
-                    Showing incomplete listings
-                  </span>
-                )}
-              </div>
-            </div>
-
-            {/* Sponsors carousel */}
-            <div className="mt-5 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
-              <div className="mb-2 flex items-center justify-between">
-                <h2 className="text-[11px] uppercase tracking-widest text-[#D4AF37] font-extrabold">
-                  Featured Sponsors
-                </h2>
-                <a
-                  href="/all-sponsors"
-                  className="text-[12px] text-white/70 hover:text-[#D4AF37] font-bold"
-                >
-                  See All
-                </a>
+                </div>
               </div>
 
-              <Swiper
-                modules={[Navigation]}
-                spaceBetween={10}
-                slidesPerView="auto"
-                navigation
-                style={{ paddingBottom: 8 }}
-              >
-                {sponsorsToShow.map((ad, idx) => (
-                  <SwiperSlide
-                    key={`${ad.url}-${idx}`}
-                    className="!w-[170px] sm:!w-[190px]"
-                  >
-                    <SponsorCard {...ad} />
-                  </SwiperSlide>
-                ))}
-              </Swiper>
-            </div>
+              {/* Filter/sort controls */}
+              <details className="mt-3 rounded-2xl border border-white/10 bg-white/[0.03] p-3 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
+                <summary className="cursor-pointer list-none text-sm font-bold text-white/85">
+                  Filters
+                </summary>
+                <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+                  <label className="rounded-xl border border-white/10 bg-black/20 px-3 py-2">
+                    <div className="text-[11px] font-bold text-white/55">
+                      Sort
+                    </div>
+                    <select
+                      value={sort}
+                      onChange={(e) => setSort(normalizeSort(e.target.value))}
+                      className="mt-1 w-full bg-transparent text-sm text-white outline-none"
+                    >
+                      <option value="relevance">Relevance (best match)</option>
+                      <option value="newest">Newest</option>
+                      <option value="completeness">Completeness</option>
+                    </select>
+                  </label>
 
-            {/* Results */}
-            <div
-              ref={resultsTopRef}
-              className="mt-6 rounded-2xl border border-white/10 bg-white/[0.03] p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur"
-            >
-              {/* Top counters like your old version */}
-              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                <div className="text-[12px] text-white/70 font-bold">
-                  {hasSearched ? (
-                    <>
-                      <span className="text-white/50">Results:</span>{" "}
-                      <span className="text-white">
-                        {total.toLocaleString()}
-                      </span>{" "}
-                      <span className="text-white/40">
-                        {total > 0
-                          ? `• Showing ${showingFrom}-${showingTo}`
-                          : ""}
-                      </span>
-                    </>
+                  <label className="rounded-xl border border-white/10 bg-black/20 px-3 py-2">
+                    <div className="text-[11px] font-bold text-white/55">
+                      State
+                    </div>
+                    <input
+                      value={stateFilter}
+                      onChange={(e) =>
+                        setStateFilter(e.target.value.toUpperCase().slice(0, 2))
+                      }
+                      placeholder="CA"
+                      className="mt-1 w-full bg-transparent text-sm text-white placeholder:text-white/35 outline-none"
+                    />
+                  </label>
+
+                  <label className="flex items-center justify-between rounded-xl border border-white/10 bg-black/20 px-3 py-2 text-sm">
+                    <span className="font-semibold text-white/80">
+                      Verified only
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setVerifiedOnly((v) => !v)}
+                      className={cx(
+                        "relative h-6 w-11 rounded-full border transition",
+                        verifiedOnly
+                          ? "border-emerald-400/40 bg-emerald-400/20"
+                          : "border-white/10 bg-black/30",
+                      )}
+                      aria-label="Toggle verified-only results"
+                      aria-pressed={verifiedOnly}
+                    >
+                      <span
+                        className={cx(
+                          "absolute top-0.5 h-5 w-5 rounded-full transition",
+                          verifiedOnly
+                            ? "left-5 bg-emerald-300"
+                            : "left-0.5 bg-white/60",
+                        )}
+                      />
+                    </button>
+                  </label>
+
+                  <label className="flex items-center justify-between rounded-xl border border-white/10 bg-black/20 px-3 py-2 text-sm">
+                    <span className="font-semibold text-white/80">
+                      Sponsored first
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setSponsoredFirst((v) => !v)}
+                      className={cx(
+                        "relative h-6 w-11 rounded-full border transition",
+                        sponsoredFirst
+                          ? "border-[#D4AF37]/50 bg-[#D4AF37]/15"
+                          : "border-white/10 bg-black/30",
+                      )}
+                      aria-label="Toggle sponsored-first ordering"
+                      aria-pressed={sponsoredFirst}
+                    >
+                      <span
+                        className={cx(
+                          "absolute top-0.5 h-5 w-5 rounded-full transition",
+                          sponsoredFirst
+                            ? "left-5 bg-[#D4AF37]"
+                            : "left-0.5 bg-white/60",
+                        )}
+                      />
+                    </button>
+                  </label>
+
+                  <label className="flex items-center justify-between rounded-xl border border-white/10 bg-black/20 px-3 py-2 text-sm sm:col-span-2 lg:col-span-4">
+                    <span className="font-semibold text-white/80">
+                      Show incomplete listings
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setIncludeIncomplete((v) => !v)}
+                      className={cx(
+                        "relative h-6 w-11 rounded-full border transition",
+                        includeIncomplete
+                          ? "border-sky-400/40 bg-sky-400/20"
+                          : "border-white/10 bg-black/30",
+                      )}
+                      aria-label="Toggle incomplete listing visibility"
+                      aria-pressed={includeIncomplete}
+                    >
+                      <span
+                        className={cx(
+                          "absolute top-0.5 h-5 w-5 rounded-full transition",
+                          includeIncomplete
+                            ? "left-5 bg-sky-300"
+                            : "left-0.5 bg-white/60",
+                        )}
+                      />
+                    </button>
+                  </label>
+                </div>
+
+                <div className="mt-3 flex flex-wrap items-center gap-2">
+                  {hasActiveFilters ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCategory("All");
+                        setSort("relevance");
+                        setStateFilter("");
+                        setVerifiedOnly(false);
+                        setSponsoredFirst(false);
+                        setIncludeIncomplete(false);
+                        setPage(1);
+                      }}
+                      className="rounded-lg border border-white/15 bg-black/30 px-3 py-1.5 text-xs font-bold text-white/80 transition hover:bg-black/45"
+                    >
+                      Clear filters
+                    </button>
                   ) : (
-                    <span className="text-white/50">
-                      Start a search to see results.
+                    <span className="text-xs text-white/45">
+                      No active filters
+                    </span>
+                  )}
+
+                  {scope === "businesses" && category !== "All" && (
+                    <span className="rounded-lg border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-2 py-1 text-[11px] font-bold text-[#D4AF37]">
+                      Category: {category}
+                    </span>
+                  )}
+                  {stateFilter && (
+                    <span className="rounded-lg border border-white/15 bg-black/30 px-2 py-1 text-[11px] font-bold text-white/80">
+                      State: {stateFilter}
+                    </span>
+                  )}
+                  {sort !== "relevance" && (
+                    <span className="rounded-lg border border-white/15 bg-black/30 px-2 py-1 text-[11px] font-bold text-white/80">
+                      Sort: {sort}
+                    </span>
+                  )}
+                  {verifiedOnly && (
+                    <span className="rounded-lg border border-emerald-400/30 bg-emerald-400/15 px-2 py-1 text-[11px] font-bold text-emerald-200">
+                      Verified only
+                    </span>
+                  )}
+                  {sponsoredFirst && (
+                    <span className="rounded-lg border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-2 py-1 text-[11px] font-bold text-[#D4AF37]">
+                      Sponsored first
+                    </span>
+                  )}
+                  {includeIncomplete && (
+                    <span className="rounded-lg border border-sky-400/30 bg-sky-400/15 px-2 py-1 text-[11px] font-bold text-sky-200">
+                      Showing incomplete listings
                     </span>
                   )}
                 </div>
+              </details>
 
-                <div className="text-[12px] text-white/60 font-bold">
-                  {hasSearched && total > 0 ? (
-                    <>
-                      Page <span className="text-[#D4AF37]">{page}</span> of{" "}
-                      <span className="text-white">{totalPages}</span>
-                    </>
-                  ) : null}
+              <details className="mt-4 rounded-2xl border border-white/10 bg-white/[0.03] p-3">
+                <summary className="cursor-pointer list-none text-sm font-bold text-white/80">
+                  Featured sponsors and placements
+                </summary>
+                <div className="mt-3 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
+                  <div className="mb-2 flex items-center justify-between">
+                    <h2 className="text-[11px] uppercase tracking-widest text-[#D4AF37] font-extrabold">
+                      Featured Sponsors
+                    </h2>
+                    <a
+                      href="/all-sponsors"
+                      className="text-[12px] text-white/70 hover:text-[#D4AF37] font-bold"
+                    >
+                      See All
+                    </a>
+                  </div>
+                  {sponsorsToShow.length ? (
+                    <Swiper
+                      modules={[Navigation]}
+                      spaceBetween={10}
+                      slidesPerView="auto"
+                      navigation
+                      style={{ paddingBottom: 8 }}
+                    >
+                      {sponsorsToShow.map((ad, idx) => (
+                        <SwiperSlide
+                          key={`${ad.url}-${idx}`}
+                          className="!w-[170px] sm:!w-[190px]"
+                        >
+                          <SponsorCard {...ad} />
+                        </SwiperSlide>
+                      ))}
+                    </Swiper>
+                  ) : (
+                    <div className="rounded-xl border border-white/10 bg-black/30 p-4 text-sm text-white/65">
+                      No active sponsor campaigns in this slot right now.
+                    </div>
+                  )}
                 </div>
-              </div>
-
-              <div className="relative mt-3 min-h-[160px]">
-                {isLoading && (
-                  <div className="absolute inset-0 z-20 rounded-xl bg-black/70 p-4 backdrop-blur-sm">
-                    <div className="mb-3 h-4 w-40 animate-pulse rounded bg-white/10" />
-                    <div className="space-y-2">
-                      <div className="h-14 animate-pulse rounded-lg bg-white/10" />
-                      <div className="h-14 animate-pulse rounded-lg bg-white/10" />
-                      <div className="h-14 animate-pulse rounded-lg bg-white/10" />
+                {scope === "businesses" && directoryFeaturedAds.length ? (
+                  <div className="mt-4 rounded-2xl border border-[#D4AF37]/25 bg-[#D4AF37]/[0.06] p-4 shadow-[0_0_0_1px_rgba(212,175,55,0.18)]">
+                    <div className="mb-3 flex items-center justify-between">
+                      <h2 className="text-[11px] uppercase tracking-widest text-[#D4AF37] font-extrabold">
+                        Featured Directory Placements
+                      </h2>
+                      <span className="text-[11px] text-white/65">
+                        Paid featured listings
+                      </span>
+                    </div>
+                    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                      {directoryFeaturedAds.map((ad) => (
+                        <a
+                          key={ad.id}
+                          href={ad.targetUrl || "#"}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="rounded-xl border border-white/15 bg-black/35 p-3 hover:bg-black/45"
+                        >
+                          <img
+                            src={ad.image || "/default-image.jpg"}
+                            alt={ad.name}
+                            className="h-24 w-full rounded-lg object-cover"
+                            loading="lazy"
+                            decoding="async"
+                          />
+                          <div className="mt-2 flex items-center justify-between gap-2">
+                            <div className="text-sm font-bold text-white truncate">
+                              {ad.name}
+                            </div>
+                            <span className="rounded-full border border-[#D4AF37]/40 bg-[#D4AF37]/20 px-2 py-0.5 text-[10px] font-bold text-[#F1D57A]">
+                              Featured
+                            </span>
+                          </div>
+                          <div className="mt-1 text-[11px] text-white/70 line-clamp-2">
+                            {ad.tagline}
+                          </div>
+                        </a>
+                      ))}
                     </div>
                   </div>
-                )}
+                ) : null}
+              </details>
 
-                {fetchError ? (
-                  <div className="mb-3 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
-                    {fetchError}
+              {/* Results */}
+              <div
+                ref={resultsTopRef}
+                className="mt-6 rounded-2xl border border-white/10 bg-white/[0.03] p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur"
+              >
+                {/* Top counters like your old version */}
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="text-[12px] text-white/70 font-bold">
+                    {hasSearched ? (
+                      <>
+                        <span className="text-white/50">Results:</span>{" "}
+                        <span className="text-white">
+                          {total.toLocaleString()}
+                        </span>{" "}
+                        <span className="text-white/40">
+                          {total > 0
+                            ? `• Showing ${showingFrom}-${showingTo}`
+                            : ""}
+                        </span>
+                      </>
+                    ) : (
+                      <span className="text-white/50">
+                        Start a search to see results.
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="text-[12px] text-white/60 font-bold">
+                    {hasSearched && total > 0 ? (
+                      <>
+                        Page <span className="text-[#D4AF37]">{page}</span> of{" "}
+                        <span className="text-white">{totalPages}</span>
+                      </>
+                    ) : null}
+                  </div>
+                </div>
+
+                {hasSearched ? (
+                  <div className="mt-3 rounded-xl border border-white/15 bg-white/[0.03] p-3 text-xs text-white/80">
+                    <div className="font-bold text-white">
+                      Action Required / What Changed
+                    </div>
+                    <div className="mt-1">
+                      What changed: {total} results for current query and
+                      filters.
+                    </div>
+                    <div>
+                      Needs action: refine filters if results are weak or empty.
+                    </div>
+                    <div>
+                      At risk: missing mappings for some relevance/trust
+                      analytics.
+                    </div>
+                    <div className="mt-1">
+                      sourceStatus:{" "}
+                      <span className="font-semibold">needs_tracking</span>
+                    </div>
+                    <div className="mt-2">
+                      <a
+                        href="#directory-search"
+                        className="text-[#D4AF37] underline"
+                      >
+                        Next action: adjust search filters
+                      </a>
+                    </div>
                   </div>
                 ) : null}
 
-                {!hasSearched ? (
-                  <div className="py-10 text-center text-white/50">
-                    Discover and support Black-owned businesses & organizations.
-                    Start your search above.
+                {hasSearched &&
+                total > 0 &&
+                scope === "businesses" &&
+                relatedCategorySuggestions.length ? (
+                  <div className="mt-2 flex flex-wrap items-center gap-2">
+                    <span className="text-[11px] font-bold uppercase tracking-[0.08em] text-white/45">
+                      Related categories
+                    </span>
+                    {relatedCategorySuggestions.map((suggestion) => (
+                      <button
+                        key={suggestion}
+                        type="button"
+                        onClick={() => {
+                          setCategory(suggestion);
+                          setPage(1);
+                          trackFlowEvent({
+                            eventType: "related_category_clicked",
+                            source: "business_directory_results",
+                            query: input.trim(),
+                            category: suggestion,
+                          });
+                        }}
+                        className="rounded-full border border-white/20 bg-black/30 px-3 py-1 text-[11px] text-white/85"
+                      >
+                        {suggestion}
+                      </button>
+                    ))}
                   </div>
-                ) : total === 0 && !isLoading ? (
-                  <div className="py-10 text-center text-white/50">
-                    <div>
-                      No results found for{" "}
-                      <span className="text-white/70">“{input.trim()}”</span>.
+                ) : null}
+
+                {isApproximateSearch ? (
+                  <div className="mt-2 rounded-xl border border-amber-400/30 bg-amber-400/10 px-3 py-2 text-[11px] text-amber-100">
+                    <div className="font-semibold text-amber-50">
+                      Approximate matches shown
                     </div>
-                    <div className="mt-2 text-xs text-white/40">
-                      Try a broader term, clear filters, or switch between
-                      Businesses and Organizations.
+                    <div className="mt-0.5 text-amber-100/85">
+                      Exact intent matches are limited right now. These results
+                      prioritize your location and closest intent terms.
+                      {exactMatchCount > 0
+                        ? ` ${exactMatchCount} exact match${exactMatchCount === 1 ? "" : "es"} found on this page.`
+                        : ""}
                     </div>
-                    <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-[11px]">
-                      {scope === "businesses" && category !== "All" ? (
-                        <span className="rounded-lg border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-2 py-1 text-[#D4AF37]">
-                          Category: {category}
-                        </span>
-                      ) : null}
-                      {stateFilter ? (
-                        <span className="rounded-lg border border-white/20 bg-black/30 px-2 py-1 text-white/80">
-                          State: {stateFilter}
-                        </span>
-                      ) : null}
-                      {verifiedOnly ? (
-                        <span className="rounded-lg border border-emerald-400/40 bg-emerald-400/15 px-2 py-1 text-emerald-200">
-                          Verified only
-                        </span>
-                      ) : null}
-                    </div>
-                    <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+                    {weakListingsSuppressedCount > 0 ? (
+                      <div className="mt-1 text-amber-100/80">
+                        Hidden {weakListingsSuppressedCount} low-confidence
+                        listing
+                        {weakListingsSuppressedCount === 1 ? "" : "s"} to keep
+                        results useful.
+                      </div>
+                    ) : null}
+                    {suggestedRefinement ? (
+                      <div className="mt-1 text-amber-100/80">
+                        Try refining to: “{suggestedRefinement}”
+                      </div>
+                    ) : null}
+                    <div className="mt-2 flex flex-wrap gap-2">
                       <button
                         type="button"
                         onClick={() => {
                           setCategory("All");
-                          setSort("relevance");
-                          setStateFilter("");
                           setVerifiedOnly(false);
-                          setSponsoredFirst(false);
-                          setIncludeIncomplete(false);
                           setPage(1);
-                          trackFlowEvent({
-                            eventType: "filter_relaxed",
-                            source: "business_directory_no_result",
-                            query: input.trim(),
-                            category,
-                            state: stateFilter,
-                          });
                         }}
-                        className="rounded-lg border border-white/20 bg-black/30 px-3 py-1.5 text-xs font-bold text-white/80 hover:bg-black/45"
+                        className="rounded-full border border-amber-200/40 bg-black/20 px-2.5 py-1 text-[11px] text-amber-50"
                       >
-                        Clear filters
+                        Broaden category filters
                       </button>
+                      {scope === "businesses" ? (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            router.push({
+                              pathname: "/business-directory",
+                              query: {
+                                ...router.query,
+                                type: "organizations",
+                                scope: "organizations",
+                                tab: "organizations",
+                                page: 1,
+                              },
+                            });
+                          }}
+                          className="rounded-full border border-amber-200/40 bg-black/20 px-2.5 py-1 text-[11px] text-amber-50"
+                        >
+                          Switch to Organizations
+                        </button>
+                      ) : null}
+                    </div>
+                  </div>
+                ) : null}
+
+                {hasSearched && total > 0 && total < 5 ? (
+                  <div className="mt-2 flex flex-wrap items-center gap-2 rounded-xl border border-white/10 bg-white/[0.02] px-3 py-2 text-[11px] text-white/70">
+                    <span className="font-semibold text-white/85">
+                      Few results.
+                    </span>
+                    {stateFilter ? (
                       <button
                         type="button"
                         onClick={() => {
-                          setInput("");
+                          setStateFilter("");
                           setPage(1);
-                          trackFlowEvent({
-                            eventType: "rescue_action_clicked",
-                            source: "business_directory_no_result",
-                            query: input.trim(),
+                        }}
+                        className="rounded-full border border-white/20 bg-black/30 px-2.5 py-1 text-[11px] text-white/85"
+                      >
+                        Remove state filter
+                      </button>
+                    ) : null}
+                    {scope === "businesses" ? (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          router.push({
+                            pathname: "/business-directory",
+                            query: {
+                              ...router.query,
+                              type: "organizations",
+                              scope: "organizations",
+                              tab: "organizations",
+                              page: 1,
+                            },
                           });
                         }}
-                        className="rounded-lg border border-white/20 bg-black/30 px-3 py-1.5 text-xs font-bold text-white/80 hover:bg-black/45"
+                        className="rounded-full border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-2.5 py-1 text-[11px] text-[#F1D57A]"
                       >
-                        Clear search
+                        Check Organizations
                       </button>
-                    </div>
-
-                    <div className="mt-4 space-y-2 text-center">
-                      <p className="text-[11px] uppercase tracking-wide text-white/45">
-                        Continue your intent
-                      </p>
-                      <div className="flex flex-wrap items-center justify-center gap-2">
-                        {rescueCategories.map((cat) => (
-                          <button
-                            key={`rescue-cat-${cat}`}
-                            type="button"
-                            onClick={() => {
-                              setCategory(cat);
-                              setVerifiedOnly(false);
-                              setPage(1);
-                              trackFlowEvent({
-                                eventType: "suggested_category_clicked",
-                                source: "business_directory_no_result",
-                                query: input.trim(),
-                                category: cat,
-                              });
-                            }}
-                            className="rounded-full border border-white/20 bg-black/30 px-3 py-1 text-[11px] text-white/85"
-                          >
-                            {cat}
-                          </button>
-                        ))}
-                      </div>
-                      <div className="flex flex-wrap items-center justify-center gap-2">
-                        {rescueStates.slice(0, 3).map((st) => (
-                          <button
-                            key={`rescue-state-${st}`}
-                            type="button"
-                            onClick={() => {
-                              setStateFilter(st);
-                              setVerifiedOnly(false);
-                              setPage(1);
-                              trackFlowEvent({
-                                eventType: "rescue_action_clicked",
-                                source: "business_directory_no_result_state",
-                                query: input.trim(),
-                                state: st,
-                              });
-                            }}
-                            className="rounded-full border border-white/20 bg-black/30 px-3 py-1 text-[11px] text-white/85"
-                          >
-                            Try {st}
-                          </button>
-                        ))}
-                        <Link
-                          href="/search-results"
-                          className="rounded-full border border-[#D4AF37]/45 bg-[#D4AF37]/15 px-3 py-1 text-[11px] text-[#F1D57A]"
-                        >
-                          Open Search Results
-                        </Link>
-                      </div>
-                    </div>
+                    ) : null}
                   </div>
-                ) : (
-                  <div className="divide-y divide-white/10 overflow-hidden rounded-xl border border-white/10 bg-black/20">
-                    {visibleWithSponsors.map((item, idx) =>
-                      (item as any).isSponsor ? (
-                        <div
-                          key={(item as any).key ?? `s-${idx}`}
-                          className="relative flex items-center gap-3 px-3 py-3"
-                        >
-                          <img
-                            src={sponsorAds[(item as any).sponsorIdx].img}
-                            alt={sponsorAds[(item as any).sponsorIdx].name}
-                            width={48}
-                            height={48}
-                            className="h-12 w-12 rounded-xl object-cover border border-white/15"
-                          />
-                          <div className="min-w-0 flex-1">
-                            <a
-                              href={sponsorAds[(item as any).sponsorIdx].url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="block truncate text-[#D4AF37] font-extrabold hover:underline"
-                            >
-                              {sponsorAds[(item as any).sponsorIdx].name}
-                            </a>
-                            <div className="truncate text-[12px] text-white/55">
-                              {sponsorAds[(item as any).sponsorIdx].tagline}
-                            </div>
-                          </div>
-                          <span className="rounded-full border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-2 py-0.5 text-[10px] font-extrabold text-[#D4AF37]">
-                            Sponsored
+                ) : null}
+
+                {isApproximateSearch ? (
+                  <div className="mt-2 rounded-xl border border-cyan-300/25 bg-cyan-300/10 px-3 py-2 text-[11px] text-cyan-100">
+                    <span className="font-semibold text-cyan-50">
+                      {searchMeta?.noExactCategoryMatchInLocation
+                        ? "No exact category match in this location, showing related results."
+                        : queryMode === "fallback_intent" &&
+                            (searchMeta?.locationTokens || []).length > 0
+                          ? `No results found in ${(searchMeta?.locationTokens || []).join(" ")}, showing related results.`
+                          : "Broadened results."}
+                    </span>{" "}
+                    We expanded matching to show related results. Exact matches
+                    are still ranked first.
+                  </div>
+                ) : null}
+
+                {hasSearched &&
+                total > 0 &&
+                approximateCount > 0 &&
+                !isApproximateSearch ? (
+                  <div className="mt-2 rounded-xl border border-amber-300/25 bg-amber-300/10 px-3 py-2 text-[11px] text-amber-100">
+                    <span className="font-semibold text-amber-50">
+                      Some results are weaker matches.
+                    </span>{" "}
+                    Try adding a category, state, or a more specific keyword to
+                    sharpen relevance.
+                  </div>
+                ) : null}
+
+                <div className="relative mt-3 min-h-[160px]">
+                  {isLoading && (
+                    <div
+                      className="absolute inset-0 z-20 rounded-xl bg-black/70 p-4 backdrop-blur-sm"
+                      role="status"
+                      aria-live="polite"
+                      aria-label="Loading search results"
+                    >
+                      <div className="mb-2 text-sm font-semibold text-[#D4AF37]">
+                        Loading results...
+                      </div>
+                      <div className="mb-3 text-xs text-white/70">
+                        Updating listings for your current page and filters.
+                      </div>
+                      <div className="mb-3 h-4 w-40 animate-pulse rounded bg-white/10" />
+                      <div className="space-y-2">
+                        <div className="h-14 animate-pulse rounded-lg bg-white/10" />
+                        <div className="h-14 animate-pulse rounded-lg bg-white/10" />
+                        <div className="h-14 animate-pulse rounded-lg bg-white/10" />
+                      </div>
+                    </div>
+                  )}
+
+                  {fetchError ? (
+                    <div className="mb-3 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+                      {fetchError}
+                    </div>
+                  ) : null}
+
+                  {!hasSearched ? (
+                    <div className="py-10 text-center text-white/50">
+                      <div>
+                        Discover and support Black-owned businesses and
+                        organizations. Start with a keyword, category, or state.
+                      </div>
+                      <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+                        {[
+                          {
+                            label: "Nearby restaurants",
+                            q: "restaurant",
+                            c: "Food",
+                          },
+                          {
+                            label: "Tax and accounting",
+                            q: "tax",
+                            c: "Financial Services",
+                          },
+                          {
+                            label: "Home services",
+                            q: "home",
+                            c: "Home Services",
+                          },
+                          {
+                            label: "Legal help",
+                            q: "legal",
+                            c: "Professional Services",
+                          },
+                        ].map((intent) => (
+                          <button
+                            key={intent.label}
+                            type="button"
+                            onClick={() => {
+                              setInput(intent.q);
+                              if (scope === "businesses") setCategory(intent.c);
+                              setPage(1);
+                              setHasSearched(true);
+                              trackFlowEvent({
+                                eventType: "quick_intent_clicked",
+                                source: "business_directory_empty",
+                                query: intent.q,
+                                category: intent.c,
+                              });
+                            }}
+                            className="rounded-full border border-white/20 bg-black/30 px-3 py-1 text-[11px] text-white/85"
+                          >
+                            {intent.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ) : total === 0 && !isLoading ? (
+                    <div className="py-10 text-center text-white/50">
+                      <div>
+                        {scope === "businesses" &&
+                        category !== "All" &&
+                        (CATEGORY_COUNTS[category] ?? 0) === 0 ? (
+                          `No listings in this category yet. Try All or another category.`
+                        ) : (
+                          <>
+                            No listings match{" "}
+                            <span className="text-white/70">
+                              “{input.trim()}”
+                            </span>{" "}
+                            with current filters.
+                          </>
+                        )}
+                      </div>
+                      <div className="mt-2 text-xs text-white/40">
+                        Try a broader keyword, clear active filters, or switch
+                        between Businesses and Organizations.
+                      </div>
+                      <div className="mt-2 text-[11px] text-white/55">
+                        Helpful queries:{" "}
+                        <span className="text-white/75">restaurant</span>,{" "}
+                        <span className="text-white/75">clothing</span>,{" "}
+                        <span className="text-white/75">services</span>
+                      </div>
+                      <div className="mt-3 flex flex-wrap items-center justify-center gap-2 text-[11px]">
+                        {scope === "businesses" && category !== "All" ? (
+                          <span className="rounded-lg border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-2 py-1 text-[#D4AF37]">
+                            Category: {category}
                           </span>
+                        ) : null}
+                        {stateFilter ? (
+                          <span className="rounded-lg border border-white/20 bg-black/30 px-2 py-1 text-white/80">
+                            State: {stateFilter}
+                          </span>
+                        ) : null}
+                        {verifiedOnly ? (
+                          <span className="rounded-lg border border-emerald-400/40 bg-emerald-400/15 px-2 py-1 text-emerald-200">
+                            Verified only
+                          </span>
+                        ) : null}
+                      </div>
+                      <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setCategory("All");
+                            setSort("relevance");
+                            setStateFilter("");
+                            setVerifiedOnly(false);
+                            setSponsoredFirst(false);
+                            setIncludeIncomplete(false);
+                            setPage(1);
+                            trackFlowEvent({
+                              eventType: "filter_relaxed",
+                              source: "business_directory_no_result",
+                              query: input.trim(),
+                              category,
+                              state: stateFilter,
+                            });
+                          }}
+                          className="rounded-lg border border-white/20 bg-black/30 px-3 py-1.5 text-xs font-bold text-white/80 hover:bg-black/45"
+                        >
+                          Clear filters
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setInput("");
+                            setPage(1);
+                            trackFlowEvent({
+                              eventType: "rescue_action_clicked",
+                              source: "business_directory_no_result",
+                              query: input.trim(),
+                            });
+                          }}
+                          className="rounded-lg border border-white/20 bg-black/30 px-3 py-1.5 text-xs font-bold text-white/80 hover:bg-black/45"
+                        >
+                          Clear search
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setInput("");
+                            setCategory("All");
+                            setStateFilter("");
+                            setVerifiedOnly(false);
+                            setSponsoredFirst(false);
+                            setIncludeIncomplete(false);
+                            setPage(1);
+                          }}
+                          className="rounded-lg border border-[#D4AF37]/40 bg-[#D4AF37]/10 px-3 py-1.5 text-xs font-bold text-[#F1D57A] hover:bg-[#D4AF37]/20"
+                        >
+                          Browse all listings
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            router.push({
+                              pathname: "/business-directory",
+                              query: {
+                                ...router.query,
+                                type:
+                                  scope === "businesses"
+                                    ? "organizations"
+                                    : "businesses",
+                                scope:
+                                  scope === "businesses"
+                                    ? "organizations"
+                                    : "businesses",
+                                tab:
+                                  scope === "businesses"
+                                    ? "organizations"
+                                    : "businesses",
+                                page: 1,
+                              },
+                            });
+                            trackFlowEvent({
+                              eventType: "rescue_action_clicked",
+                              source:
+                                "business_directory_no_result_switch_scope",
+                              query: input.trim(),
+                              fromScope: scope,
+                            });
+                          }}
+                          className="rounded-lg border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-3 py-1.5 text-xs font-bold text-[#F1D57A] hover:bg-[#D4AF37]/20"
+                        >
+                          Try{" "}
+                          {scope === "businesses"
+                            ? "Organizations"
+                            : "Businesses"}
+                        </button>
+                      </div>
+
+                      <div className="mt-4 space-y-2 text-center">
+                        <p className="text-[11px] uppercase tracking-wide text-white/45">
+                          Continue your intent
+                        </p>
+                        <div className="flex flex-wrap items-center justify-center gap-2">
+                          {rescueCategories.map((cat) => (
+                            <button
+                              key={`rescue-cat-${cat}`}
+                              type="button"
+                              onClick={() => {
+                                setCategory(cat);
+                                setVerifiedOnly(false);
+                                setPage(1);
+                                trackFlowEvent({
+                                  eventType: "suggested_category_clicked",
+                                  source: "business_directory_no_result",
+                                  query: input.trim(),
+                                  category: cat,
+                                });
+                              }}
+                              className="rounded-full border border-white/20 bg-black/30 px-3 py-1 text-[11px] text-white/85"
+                            >
+                              {cat}
+                            </button>
+                          ))}
                         </div>
-                      ) : (
+                        <div className="flex flex-wrap items-center justify-center gap-2">
+                          {rescueStates.slice(0, 3).map((st) => (
+                            <button
+                              key={`rescue-state-${st}`}
+                              type="button"
+                              onClick={() => {
+                                setStateFilter(st);
+                                setVerifiedOnly(false);
+                                setPage(1);
+                                trackFlowEvent({
+                                  eventType: "rescue_action_clicked",
+                                  source: "business_directory_no_result_state",
+                                  query: input.trim(),
+                                  state: st,
+                                });
+                              }}
+                              className="rounded-full border border-white/20 bg-black/30 px-3 py-1 text-[11px] text-white/85"
+                            >
+                              Try {st}
+                            </button>
+                          ))}
+                          <Link
+                            href="/search-results"
+                            className="rounded-full border border-[#D4AF37]/45 bg-[#D4AF37]/15 px-3 py-1 text-[11px] text-[#F1D57A]"
+                          >
+                            Open Search Results
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="divide-y divide-white/10 overflow-hidden rounded-xl border border-white/10 bg-black/20">
+                      {curatedVisibleRows.map((item, idx) => (
                         <div
                           key={(item as any)._id ?? `r-${idx}`}
                           className="flex items-start gap-3 px-3 py-4"
@@ -1418,6 +2161,8 @@ export default function BusinessDirectory() {
                             height={48}
                             className="mt-0.5 h-12 w-12 rounded-xl object-cover border border-white/15 bg-black/40"
                             onError={handleImageError}
+                            loading="lazy"
+                            decoding="async"
                           />
 
                           {/* Google-like text block */}
@@ -1426,6 +2171,22 @@ export default function BusinessDirectory() {
                             <Link
                               href={getHref(item as Row)}
                               className="block truncate text-[#D4AF37] font-extrabold hover:underline"
+                              onClick={() =>
+                                trackFlowEvent({
+                                  eventType: "search_result_clicked",
+                                  query: input.trim(),
+                                  resultCount: total,
+                                  selectedBusinessId: (item as any)._id,
+                                  filters: {
+                                    scope,
+                                    category,
+                                    stateFilter,
+                                    verifiedOnly,
+                                    sponsoredFirst,
+                                    includeIncomplete,
+                                  },
+                                })
+                              }
                             >
                               {getTitle(item as Row) || "Untitled Listing"}
                             </Link>
@@ -1440,16 +2201,56 @@ export default function BusinessDirectory() {
                                   Approved listing
                                 </span>
                               ) : null}
-                              {getTrustMeta(item as Row).sponsored && (
+                              {getTrustMeta(item as Row).sponsored ? (
                                 <span className="rounded-full border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-2 py-0.5 text-[10px] font-bold text-[#D4AF37]">
                                   Sponsored
                                 </span>
+                              ) : (
+                                <span className="rounded-full border border-white/20 bg-white/10 px-2 py-0.5 text-[10px] font-bold text-white/75">
+                                  Organic listing
+                                </span>
                               )}
+                              {formatStatusLabel(
+                                safeStr(
+                                  (item as any).listingStatus ||
+                                    (item as any).status,
+                                ),
+                              ) ? (
+                                <span className="rounded-full border border-white/20 bg-black/30 px-2 py-0.5 text-[10px] font-bold text-white/75">
+                                  Status:{" "}
+                                  {formatStatusLabel(
+                                    safeStr(
+                                      (item as any).listingStatus ||
+                                        (item as any).status,
+                                    ),
+                                  )}
+                                </span>
+                              ) : null}
                               {!getTrustMeta(item as Row).isComplete && (
                                 <span className="rounded-full border border-sky-400/30 bg-sky-400/15 px-2 py-0.5 text-[10px] font-bold text-sky-200">
                                   Incomplete profile
                                 </span>
                               )}
+                              {safeStr(
+                                (item as any)._matchQuality,
+                              ).toLowerCase() === "exact" ? (
+                                <span className="rounded-full border border-emerald-300/40 bg-emerald-400/10 px-2 py-0.5 text-[10px] font-bold text-emerald-200">
+                                  Exact intent match
+                                </span>
+                              ) : safeStr(
+                                  (item as any)._matchQuality,
+                                ).toLowerCase() === "approximate" ? (
+                                <span className="rounded-full border border-amber-300/40 bg-amber-300/10 px-2 py-0.5 text-[10px] font-bold text-amber-100">
+                                  Approximate match
+                                </span>
+                              ) : (
+                                <span className="rounded-full border border-white/25 bg-white/10 px-2 py-0.5 text-[10px] font-bold text-white/80">
+                                  Close intent match
+                                </span>
+                              )}
+                              <span className="rounded-full border border-white/20 bg-black/25 px-2 py-0.5 text-[10px] font-bold text-white/75">
+                                {getListingStrengthLabel(item as Row)}
+                              </span>
                             </div>
 
                             {/* Details line: rating · price · category */}
@@ -1459,10 +2260,14 @@ export default function BusinessDirectory() {
                                 ""}
                             </div>
 
-                            {/* Location line ALWAYS shown (city/state preferred) */}
                             <div className="mt-0.5 text-[12px] text-white/55">
-                              {getLocation(item as Row) ||
-                                "Location not available"}
+                              <span className="text-white/72">Category:</span>{" "}
+                              {getCategoryLabel(item as Row) || "Not provided"}
+                              {" · "}
+                              <span className="text-white/72">
+                                Location:
+                              </span>{" "}
+                              {getLocation(item as Row) || "Not provided"}
                             </div>
 
                             {/* Snippet line (quote-style like your example) */}
@@ -1497,6 +2302,14 @@ export default function BusinessDirectory() {
                                   Website
                                 </a>
                               ) : null}
+                              {getPhone(item as Row) ? (
+                                <a
+                                  href={`tel:${getPhone(item as Row)}`}
+                                  className="rounded-lg border border-white/20 bg-black/30 px-3 py-1.5 text-[11px] font-bold text-white/80 hover:bg-black/45 sm:hidden"
+                                >
+                                  Call
+                                </a>
+                              ) : null}
                               {getLocation(item as Row) ? (
                                 <a
                                   href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(getLocation(item as Row))}`}
@@ -1526,56 +2339,83 @@ export default function BusinessDirectory() {
                             )}
                           </div>
                         </div>
-                      ),
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Bottom pager */}
+                  {hasSearched && total > 0 ? (
+                    <Pager
+                      page={page}
+                      totalPages={totalPages}
+                      onPage={goPage}
+                      disabled={isLoading}
+                    />
+                  ) : null}
+                </div>
+              </div>
+            </div>
+
+            {/* Sidebar */}
+            <aside className="hidden md:block">
+              <div className="sticky top-6 space-y-4">
+                {sidebarBannerAds.length ? (
+                  <div className="rounded-2xl border border-[#D4AF37]/25 bg-[#D4AF37]/[0.06] p-4 shadow-[0_0_0_1px_rgba(212,175,55,0.16)] backdrop-blur">
+                    <div className="text-[11px] uppercase tracking-widest text-[#D4AF37] font-extrabold mb-3">
+                      Banner Placement
+                    </div>
+                    <div className="space-y-3">
+                      {sidebarBannerAds.map((ad) => (
+                        <SidebarAdCard
+                          key={ad.id}
+                          img={ad.image || "/default-image.jpg"}
+                          name={ad.name}
+                          tagline={ad.tagline}
+                          url={ad.targetUrl || "#"}
+                          cta="View"
+                          label="Sponsored Banner"
+                        />
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+
+                <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
+                  <div className="text-[11px] uppercase tracking-widest text-white/50 font-extrabold mb-3">
+                    Sponsored
+                  </div>
+                  <div className="space-y-3">
+                    {sponsorAds.length ? (
+                      sponsorAds.map((ad) => (
+                        <SidebarAdCard key={ad.url} {...ad} label="Sponsored" />
+                      ))
+                    ) : (
+                      <div className="rounded-xl border border-white/10 bg-black/30 p-3 text-xs text-white/60">
+                        No active sponsored sidebar cards right now.
+                      </div>
                     )}
                   </div>
-                )}
+                </div>
 
-                {/* Bottom pager */}
-                {hasSearched && total > 0 ? (
-                  <Pager
-                    page={page}
-                    totalPages={totalPages}
-                    onPage={goPage}
-                    disabled={isLoading}
-                  />
-                ) : null}
+                <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
+                  <div className="text-[12px] font-extrabold text-[#D4AF37]">
+                    Want your business featured?
+                  </div>
+                  <div className="mt-1 text-[12px] text-white/60">
+                    Get premium placement in search results.
+                  </div>
+                  <Link
+                    href="/advertise-with-us"
+                    className="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-[#D4AF37] px-4 py-2.5 text-[12px] font-extrabold text-black transition hover:bg-yellow-500"
+                  >
+                    Advertise
+                  </Link>
+                </div>
               </div>
-            </div>
+            </aside>
           </div>
-
-          {/* Sidebar */}
-          <aside className="hidden md:block">
-            <div className="sticky top-6 space-y-4">
-              <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
-                <div className="text-[11px] uppercase tracking-widest text-white/50 font-extrabold mb-3">
-                  Sponsored
-                </div>
-                <div className="space-y-3">
-                  {sponsorAds.map((ad) => (
-                    <SidebarAdCard key={ad.url} {...ad} />
-                  ))}
-                </div>
-              </div>
-
-              <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
-                <div className="text-[12px] font-extrabold text-[#D4AF37]">
-                  Want your business featured?
-                </div>
-                <div className="mt-1 text-[12px] text-white/60">
-                  Get premium placement in search results.
-                </div>
-                <Link
-                  href="/advertise-with-us"
-                  className="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-[#D4AF37] px-4 py-2.5 text-[12px] font-extrabold text-black transition hover:bg-yellow-500"
-                >
-                  Advertise
-                </Link>
-              </div>
-            </div>
-          </aside>
         </div>
       </div>
-    </div>
+    </>
   );
 }

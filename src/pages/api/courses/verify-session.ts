@@ -1,8 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
-import { ObjectId } from "mongodb";
 import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
+import { grantCourseAccess } from "@/lib/db/courses";
 
 type VerifyResponse = {
   ok: boolean;
@@ -72,38 +72,35 @@ export default async function handler(
     const client = await clientPromise;
     const db = client.db(getMongoDbName());
 
-    let enrollmentCreated = false;
+    const paymentIntentId =
+      typeof session.payment_intent === "string"
+        ? session.payment_intent
+        : null;
 
-    if (ObjectId.isValid(userId)) {
-      await db.collection("users").updateOne(
-        { _id: new ObjectId(userId) },
-        {
-          $addToSet: { purchasedCourses: courseId },
-          $set: { updatedAt: new Date() },
-        },
-      );
-    }
+    const grant = await grantCourseAccess(userId, courseId, {
+      stripeSessionId: sessionId,
+      paymentIntentId,
+      source: "verify_session",
+      paymentStatus: "paid",
+      purchasedAt: new Date(),
+      email: metadata.email || null,
+      courseName: metadata.courseName || courseId,
+      sendAccessEmail: true,
+    });
 
-    const enrollmentResult = await db.collection("enrollments").updateOne(
-      { userId, courseId },
+    await db.collection("payments").updateOne(
+      { stripeSessionId: sessionId },
       {
-        $setOnInsert: {
-          userId,
-          courseId,
-          enrolledAt: new Date(),
-          progress: 0,
-          completed: false,
-          source: "stripe_verify_session",
-          stripeSessionId: sessionId,
-        },
         $set: {
+          fulfillmentStatus: "fulfilled",
+          entitlementStatus: "granted",
+          lastReconciledAt: new Date(),
           updatedAt: new Date(),
         },
       },
-      { upsert: true },
     );
 
-    enrollmentCreated = Boolean(enrollmentResult.upsertedCount);
+    const enrollmentCreated = grant.enrollmentUpserted;
 
     return res.status(200).json({
       ok: true,

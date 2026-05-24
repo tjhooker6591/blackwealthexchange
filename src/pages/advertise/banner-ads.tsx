@@ -5,8 +5,9 @@ import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
+import { getAdDurationOptions } from "@/lib/advertising/pricing";
 
-type BannerPlacement = "homepage-top" | "sidebar" | "footer" | "dashboard";
+type BannerPlacement = "sidebar";
 type BannerDuration = "14" | "30";
 
 /**
@@ -21,10 +22,13 @@ const BANNER_DURATION_OPTIONS: Array<{
   label: string;
   value: BannerDuration;
   priceLabel: string;
-}> = [
-  { label: "2 Weeks", value: "14", priceLabel: "$199" },
-  { label: "1 Month", value: "30", priceLabel: "$349" },
-];
+}> = getAdDurationOptions("banner-ad")
+  .filter((d) => d.durationDays === 14 || d.durationDays === 30)
+  .map((d) => ({
+    label: d.durationDays === 14 ? "2 Weeks" : "1 Month",
+    value: String(d.durationDays) as BannerDuration,
+    priceLabel: `$${d.amountDollars}`,
+  }));
 
 const PLACEMENTS: Array<{
   title: string;
@@ -32,28 +36,10 @@ const PLACEMENTS: Array<{
   description: string;
 }> = [
   {
-    title: "Top of Homepage",
-    placement: "homepage-top",
-    description:
-      "Get maximum visibility with a large banner at the very top of the homepage.",
-  },
-  {
-    title: "Sidebar Ad",
+    title: "Business Directory Banner / Sidebar",
     placement: "sidebar",
     description:
-      "A persistent sidebar banner visible throughout user navigation.",
-  },
-  {
-    title: "Footer Banner",
-    placement: "footer",
-    description:
-      "Appears at the bottom of key pages — great for long-term visibility.",
-  },
-  {
-    title: "User Dashboard",
-    placement: "dashboard",
-    description:
-      "Display your banner on the business or user dashboard for targeted exposure.",
+      "Business Directory banner and sidebar inventory request after approval.",
   },
 ];
 
@@ -167,7 +153,10 @@ export default function BannerAdsPage() {
           adText: notes || `Banner ad campaign request (${selectedPlacement})`,
           adImage: creativeUrl.trim(),
           website,
-          budget: duration === "14" ? "199" : "349",
+          budget:
+            BANNER_DURATION_OPTIONS.find(
+              (d) => d.value === duration,
+            )?.priceLabel.replace("$", "") || "",
           option: "banner-ad",
           durationDays: Number(duration),
           placement: selectedPlacement,
@@ -223,9 +212,9 @@ export default function BannerAdsPage() {
       </h1>
 
       <p className="text-lg text-gray-400 max-w-2xl mb-10">
-        Promote your business with visually engaging banner ads placed across
-        high-traffic areas of the platform. Select a banner placement and
-        campaign duration below to begin checkout.
+        Submit a banner campaign request with your preferred placement and
+        duration. Campaigns go live only after review, approval, and confirmed
+        placement scheduling.
       </p>
 
       {/* Placement cards */}
@@ -265,7 +254,7 @@ export default function BannerAdsPage() {
               </button>
 
               <p className="text-xs text-gray-500 mt-1">
-                Placement selection is included with your campaign request.
+                This selects your preferred inventory request for admin review.
               </p>
             </div>
           );
@@ -278,8 +267,8 @@ export default function BannerAdsPage() {
           Pricing & Duration
         </h2>
         <p className="text-sm text-zinc-300 mb-6">
-          Banner checkout pricing is based on campaign duration. Placement is
-          selected above and submitted with your banner campaign request.
+          Banner pricing is based on campaign duration. Placement selected above
+          is treated as requested inventory and is confirmed during fulfillment.
         </p>
 
         <div className="flex justify-center gap-4 flex-wrap">
@@ -321,7 +310,7 @@ export default function BannerAdsPage() {
           <div className="text-sm text-zinc-300 mt-1">
             <span className="font-semibold text-white">Checkout Price:</span>{" "}
             <span className="text-gold">
-              {selectedDurationMeta?.priceLabel || "$199"}
+              {selectedDurationMeta?.priceLabel || "See pricing"}
             </span>
           </div>
         </div>

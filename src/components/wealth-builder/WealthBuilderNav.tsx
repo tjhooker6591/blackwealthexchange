@@ -4,9 +4,12 @@ import { useRouter } from "next/router";
 const items = [
   { href: "/wealth-builder", label: "Overview" },
   { href: "/wealth-builder/dashboard", label: "Dashboard" },
-  { href: "/wealth-builder/debt", label: "Debt" },
+  { href: "/wealth-builder/transactions", label: "Transactions" },
   { href: "/wealth-builder/budget", label: "Budget" },
+  { href: "/wealth-builder/debt", label: "Debt" },
   { href: "/wealth-builder/savings", label: "Savings" },
+  { href: "/wealth-builder/insights", label: "Insights" },
+  { href: "/wealth-builder/upgrade", label: "Premium" },
 ];
 
 function isActive(pathname: string, href: string) {

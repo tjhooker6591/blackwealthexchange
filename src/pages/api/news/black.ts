@@ -184,6 +184,8 @@ function normalizeItem(source: Source, item: any): NewsItem | null {
   };
 }
 
+const FEED_TIMEOUT_MS = 1200;
+
 async function fetchFeed(source: Source): Promise<NewsItem[]> {
   const res = await fetch(source.url, {
     headers: {
@@ -191,6 +193,7 @@ async function fetchFeed(source: Source): Promise<NewsItem[]> {
       Accept:
         "application/rss+xml, application/xml;q=0.9, text/xml;q=0.8, */*;q=0.7",
     },
+    signal: AbortSignal.timeout(FEED_TIMEOUT_MS),
   });
 
   if (!res.ok)
@@ -211,11 +214,60 @@ type CacheShape = {
   at: number;
   items: NewsItem[];
   failures: Record<string, string>;
+  refreshing?: boolean;
+  refreshPromise?: Promise<void> | null;
 };
 function getCache(): CacheShape {
   const g = globalThis as any;
-  if (!g.__bweNewsCache) g.__bweNewsCache = { at: 0, items: [], failures: {} };
+  if (!g.__bweNewsCache)
+    g.__bweNewsCache = {
+      at: 0,
+      items: [],
+      failures: {},
+      refreshing: false,
+      refreshPromise: null,
+    };
   return g.__bweNewsCache as CacheShape;
+}
+
+async function refreshCache(cache: CacheShape, now: number) {
+  if (cache.refreshing && cache.refreshPromise) return cache.refreshPromise;
+
+  cache.refreshing = true;
+  cache.refreshPromise = (async () => {
+    const failures: Record<string, string> = {};
+    const results = await Promise.allSettled(SOURCES.map((s) => fetchFeed(s)));
+
+    const merged: NewsItem[] = [];
+    results.forEach((r, idx) => {
+      const src = SOURCES[idx];
+      if (r.status === "fulfilled") merged.push(...r.value);
+      else failures[src.id] = r.reason?.message || "Failed";
+    });
+
+    const seen = new Set<string>();
+    const deduped = merged.filter((it) => {
+      const key = it.url;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+
+    deduped.sort((a, b) => {
+      const ta = a.publishedAt ? new Date(a.publishedAt).getTime() : 0;
+      const tb = b.publishedAt ? new Date(b.publishedAt).getTime() : 0;
+      return tb - ta;
+    });
+
+    cache.at = now;
+    cache.items = deduped;
+    cache.failures = failures;
+  })().finally(() => {
+    cache.refreshing = false;
+    cache.refreshPromise = null;
+  });
+
+  return cache.refreshPromise;
 }
 
 export default async function handler(
@@ -236,37 +288,14 @@ export default async function handler(
   const cache = getCache();
   const now = Date.now();
 
-  // Refresh cache if stale
+  // Refresh cache if stale.
+  // If we already have cached items, return stale quickly and revalidate in background.
   if (!cache.items.length || now - cache.at > CACHE_TTL_MS) {
-    const failures: Record<string, string> = {};
-    const results = await Promise.allSettled(SOURCES.map((s) => fetchFeed(s)));
-
-    const merged: NewsItem[] = [];
-    results.forEach((r, idx) => {
-      const src = SOURCES[idx];
-      if (r.status === "fulfilled") merged.push(...r.value);
-      else failures[src.id] = r.reason?.message || "Failed";
-    });
-
-    // Deduplicate by URL
-    const seen = new Set<string>();
-    const deduped = merged.filter((it) => {
-      const key = it.url;
-      if (seen.has(key)) return false;
-      seen.add(key);
-      return true;
-    });
-
-    // Sort newest first
-    deduped.sort((a, b) => {
-      const ta = a.publishedAt ? new Date(a.publishedAt).getTime() : 0;
-      const tb = b.publishedAt ? new Date(b.publishedAt).getTime() : 0;
-      return tb - ta;
-    });
-
-    cache.at = now;
-    cache.items = deduped;
-    cache.failures = failures;
+    if (!cache.items.length) {
+      await refreshCache(cache, now);
+    } else {
+      void refreshCache(cache, now);
+    }
   }
 
   // Filter

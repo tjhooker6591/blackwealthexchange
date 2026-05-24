@@ -5,6 +5,9 @@ import useAuth from "@/hooks/useAuth";
 export default function MusicLandingPage() {
   const router = useRouter();
   const { user } = useAuth();
+  const nextStepLabel = user
+    ? "Continue creator setup"
+    : "Log in to begin creator setup";
 
   return (
     <main className="min-h-screen bg-black px-4 py-12 text-white">
@@ -17,9 +20,9 @@ export default function MusicLandingPage() {
             Discover Music. Support Creators. Build Ownership.
           </h1>
           <p className="mt-3 max-w-3xl text-white/75">
-            This is the canonical entry for music and creator commerce on BWE.
-            Browse featured artists, launch creator storefronts, and route
-            buyers into verified checkout and fulfillment flows.
+            BWE Music is where listeners discover culture and creators build
+            real commerce. Start as a fan, then move into creator access when
+            you are ready to launch.
           </p>
 
           <div className="mt-6 flex flex-wrap gap-3">
@@ -37,17 +40,17 @@ export default function MusicLandingPage() {
               }
               className="rounded-xl border border-[#D4AF37]/50 bg-[#D4AF37]/10 px-5 py-2.5 font-bold text-[#D4AF37] hover:bg-[#D4AF37]/20"
             >
-              Sell Your Music
+              {nextStepLabel}
             </button>
             <button
               onClick={() =>
                 router.push(
-                  user ? "/music/join" : "/login?redirect=/music/join",
+                  user ? "/music/pricing" : "/login?redirect=/music/pricing",
                 )
               }
               className="rounded-xl border border-white/20 bg-white/5 px-5 py-2.5 font-bold text-white hover:bg-white/10"
             >
-              Join as a Creator
+              View Creator Plans
             </button>
           </div>
         </div>
@@ -58,23 +61,45 @@ export default function MusicLandingPage() {
               Creator Onboarding
             </h2>
             <p className="mt-2 text-sm text-white/70">
-              Use seller onboarding to start listing albums, tracks, and creator
-              products under one commerce system.
+              Complete profile, artist identity, and creator details so your
+              page is trusted from day one.
             </p>
           </div>
           <div className="rounded-xl border border-white/10 bg-white/5 p-4">
             <h2 className="font-extrabold text-[#D4AF37]">Music Commerce</h2>
             <p className="mt-2 text-sm text-white/70">
-              Purchases flow through canonical checkout + webhook fulfillment,
-              with entitlement and payout/connect readiness tracking.
+              Activate your creator plan, publish products, and run a clean
+              storefront experience with clear readiness states.
             </p>
           </div>
           <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-            <h2 className="font-extrabold text-[#D4AF37]">Road to Delivery</h2>
+            <h2 className="font-extrabold text-[#D4AF37]">What happens next</h2>
             <p className="mt-2 text-sm text-white/70">
-              Final closure requires post-payment entitlement/delivery proof,
-              not just checkout initialization.
+              We guide you step-by-step: join creator flow, complete readiness,
+              then unlock direct creator dashboard access.
             </p>
+          </div>
+        </section>
+
+        <section className="mt-6 rounded-xl border border-[#D4AF37]/20 bg-[#D4AF37]/10 p-4">
+          <h2 className="font-extrabold text-[#D4AF37]">
+            Creator access clarity
+          </h2>
+          <p className="mt-2 text-sm text-white/80">
+            Locked state: you complete onboarding and readiness. Unlocked state:
+            you get direct creator dashboard and listing access.
+          </p>
+          <div className="mt-3">
+            <button
+              onClick={() =>
+                router.push(
+                  user ? "/music/join" : "/login?redirect=/music/join",
+                )
+              }
+              className="rounded-lg bg-[#D4AF37] px-4 py-2 text-sm font-bold text-black hover:bg-yellow-500"
+            >
+              {nextStepLabel}
+            </button>
           </div>
         </section>
 

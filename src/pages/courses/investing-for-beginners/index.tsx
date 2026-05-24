@@ -67,55 +67,69 @@ const InvestingForBeginners: React.FC = () => {
   const [hasPurchased, setHasPurchased] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [checkoutError, setCheckoutError] = useState("");
+  const [ctaState, setCtaState] = useState<
+    "idle" | "loading" | "redirect-login" | "redirect-checkout" | "failed"
+  >("idle");
   const router = useRouter();
 
   useEffect(() => {
-    const userLoggedIn = localStorage.getItem("isLoggedIn");
-    setIsLoggedIn(!!userLoggedIn);
+    async function loadState() {
+      try {
+        const meRes = await fetch("/api/auth/me", {
+          cache: "no-store",
+          credentials: "include",
+        });
+        const loggedIn = meRes.ok;
+        setIsLoggedIn(loggedIn);
 
-    const sessionId = router.query.session_id as string | undefined;
-    if (userLoggedIn && sessionId) {
-      fetch(`/api/courses/verify-session?session_id=${sessionId}`)
-        .then((res) => res.json())
-        .then((data) => {
+        const sessionId = router.query.session_id as string | undefined;
+        if (loggedIn && sessionId) {
+          const verifyRes = await fetch(
+            `/api/courses/verify-session?session_id=${encodeURIComponent(sessionId)}`,
+            { credentials: "include" },
+          );
+          const data = await verifyRes.json().catch(() => ({}));
           if (data.paid) {
             setHasPurchased(true);
-            router.replace(router.pathname, undefined, { shallow: true });
           }
-        })
-        .finally(() => setLoading(false));
-    } else {
-      setLoading(false);
+          router.replace(router.pathname, undefined, { shallow: true });
+        }
+      } finally {
+        setLoading(false);
+      }
     }
+
+    void loadState();
   }, [router, router.query.session_id]);
-
-  const handleLogin = () => {
-    localStorage.setItem("isLoggedIn", "true");
-    setIsLoggedIn(true);
-  };
-
-  const handleSignUp = () => {
-    localStorage.setItem("isLoggedIn", "true");
-    setIsLoggedIn(true);
-  };
 
   // Stripe payment handler
   const handlePurchase = async () => {
+    setCheckoutError("");
+    setCtaState("loading");
     setIsProcessing(true);
     try {
       const response = await fetch("/api/courses/checkout-session", {
+        credentials: "include",
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ courseSlug: COURSE.slug }),
       });
-      const data = await response.json();
+      const data = await response.json().catch(() => ({}));
       if (data.url) {
-        window.location.href = data.url;
+        setCtaState("redirect-checkout");
+        window.location.assign(data.url);
       } else {
-        alert(data.error || "Unable to start checkout session.");
+        setCtaState("failed");
+        setCheckoutError(
+          data.message || data.error || "Unable to start checkout session.",
+        );
       }
     } catch {
-      alert("Something went wrong with payment.");
+      setCtaState("failed");
+      setCheckoutError(
+        "Something went wrong while starting checkout. Please try again.",
+      );
     } finally {
       setIsProcessing(false);
     }
@@ -199,19 +213,53 @@ const InvestingForBeginners: React.FC = () => {
               One-time Fee: ${COURSE.price}
             </span>
             <br />
-            Pay once for lifetime access and future updates.
+            Pay once for this course. After payment verification, this course is
+            unlocked on your account and appears in your course dashboard.
           </p>
+          <div className="mt-4 rounded-xl border border-white/10 bg-black/30 p-4 text-sm text-gray-300">
+            <div className="font-semibold text-gold">Entitlement truth</div>
+            <ul className="mt-2 list-disc ml-5 space-y-1">
+              <li>
+                This is a one-time course purchase that unlocks Investing for
+                Beginners for your account.
+              </li>
+              <li>
+                Checkout is secure and tied to your logged-in BWE account.
+              </li>
+              <li>
+                If checkout is canceled or interrupted, access is not granted
+                yet.
+              </li>
+            </ul>
+            <p className="mt-2 text-xs text-gray-400">
+              Support is available via BWE help/contact routes for payment,
+              access, and billing questions.
+            </p>
+          </div>
+
           <div className="mt-4">
             {!isLoggedIn ? (
               <div className="flex flex-col space-y-3">
                 <button
-                  onClick={handleSignUp}
+                  type="button"
+                  onClick={() => {
+                    setCtaState("redirect-login");
+                    void router.push(
+                      `/signup?next=${encodeURIComponent(router.asPath)}`,
+                    );
+                  }}
                   className="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition"
                 >
                   Sign Up to Enroll
                 </button>
                 <button
-                  onClick={handleLogin}
+                  type="button"
+                  onClick={() => {
+                    setCtaState("redirect-login");
+                    void router.push(
+                      `/login?next=${encodeURIComponent(router.asPath)}`,
+                    );
+                  }}
                   className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition"
                 >
                   Log In to Continue
@@ -219,6 +267,7 @@ const InvestingForBeginners: React.FC = () => {
               </div>
             ) : !hasPurchased ? (
               <button
+                type="button"
                 onClick={handlePurchase}
                 disabled={isProcessing}
                 className="bg-gold text-black py-2 px-6 rounded font-bold hover:bg-yellow-500 transition disabled:opacity-60"
@@ -229,6 +278,7 @@ const InvestingForBeginners: React.FC = () => {
               </button>
             ) : (
               <button
+                type="button"
                 onClick={() => router.push("/course-dashboard")}
                 className="bg-blue-600 text-white py-2 px-6 rounded hover:bg-blue-700 transition"
               >
@@ -236,6 +286,18 @@ const InvestingForBeginners: React.FC = () => {
               </button>
             )}
           </div>
+          <p className="mt-3 text-xs text-gray-400">
+            {ctaState === "idle" && "State: idle"}
+            {ctaState === "loading" && "State: starting checkout..."}
+            {ctaState === "redirect-login" &&
+              "State: redirecting to login/signup..."}
+            {ctaState === "redirect-checkout" &&
+              "State: redirecting to secure checkout..."}
+            {ctaState === "failed" && "State: failed to start checkout."}
+          </p>
+          {checkoutError ? (
+            <p className="mt-3 text-sm text-red-300">{checkoutError}</p>
+          ) : null}
         </section>
 
         {/* Why Enroll? */}
@@ -291,7 +353,7 @@ const InvestingForBeginners: React.FC = () => {
             <li>
               <strong>Q: Do I have to pay a monthly fee?</strong>
               <br />
-              A: No, you only pay a one-time enrollment for lifetime access.
+              A: No. This course uses a one-time purchase for course access.
             </li>
             <li>
               <strong>Q: Can I access the course on my phone?</strong>

@@ -17,6 +17,24 @@ interface Job {
   type: string;
   datePosted: string;
   applicants: number;
+  isFeatured?: boolean;
+  viewCount?: number;
+  statusCounts?: {
+    new: number;
+    reviewed: number;
+    shortlisted: number;
+    contacted: number;
+    rejected: number;
+  };
+}
+
+function freshnessLabel(datePosted: string) {
+  const d = new Date(datePosted);
+  if (Number.isNaN(d.getTime())) return "Unknown freshness";
+  const days = Math.floor((Date.now() - d.getTime()) / (1000 * 60 * 60 * 24));
+  if (days <= 2) return "Fresh";
+  if (days <= 7) return "Active this week";
+  return "Older listing";
 }
 
 export default function EmployerJobsPage() {
@@ -109,27 +127,65 @@ export default function EmployerJobsPage() {
                 key={job._id}
                 className="bg-gray-800 p-6 rounded-lg shadow-lg border border-gray-700"
               >
-                <div className="flex justify-between items-center mb-2">
-                  <h2 className="text-xl font-bold text-gold">{job.title}</h2>
-                  <span className="text-sm text-gray-400">
-                    Posted: {job.datePosted}
-                  </span>
+                <div className="flex justify-between items-center mb-2 gap-3">
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-xl font-bold text-gold">{job.title}</h2>
+                    {job.isFeatured ? (
+                      <span className="px-2 py-0.5 rounded bg-yellow-500/20 border border-yellow-500/30 text-[11px] text-yellow-200">
+                        Featured
+                      </span>
+                    ) : null}
+                  </div>
+                  <div className="text-right">
+                    <span className="text-sm text-gray-400 block">
+                      Posted: {job.datePosted}
+                    </span>
+                    <span className="text-xs text-blue-300">
+                      {freshnessLabel(job.datePosted)}
+                    </span>
+                  </div>
                 </div>
                 <p className="text-gray-300">
                   {job.company} • {job.location} • {job.type}
                 </p>
-                <p className="text-gray-400 mt-2">
-                  {job.applicants} applicant{job.applicants !== 1 && "s"}
-                </p>
+                <div className="mt-2 flex flex-wrap items-center gap-2 text-sm">
+                  <span className="text-gray-100 font-semibold">
+                    {job.applicants} applicant{job.applicants !== 1 && "s"}
+                  </span>
+                  <span className="text-gray-300">
+                    {job.viewCount || 0} view
+                    {(job.viewCount || 0) === 1 ? "" : "s"}
+                  </span>
+                  {(job.statusCounts?.new || 0) > 0 ? (
+                    <span className="px-2 py-0.5 rounded border border-emerald-400/30 bg-emerald-500/10 text-emerald-200 text-xs">
+                      {job.statusCounts?.new} new
+                    </span>
+                  ) : null}
+                </div>
+
+                <div className="mt-2 flex flex-wrap gap-2 text-[11px]">
+                  <span className="px-2 py-0.5 rounded border border-gray-600 text-gray-300">
+                    Reviewed: {job.statusCounts?.reviewed || 0}
+                  </span>
+                  <span className="px-2 py-0.5 rounded border border-gray-600 text-gray-300">
+                    Shortlisted: {job.statusCounts?.shortlisted || 0}
+                  </span>
+                  <span className="px-2 py-0.5 rounded border border-gray-600 text-gray-300">
+                    Contacted: {job.statusCounts?.contacted || 0}
+                  </span>
+                  <span className="px-2 py-0.5 rounded border border-gray-600 text-gray-300">
+                    Rejected: {job.statusCounts?.rejected || 0}
+                  </span>
+                </div>
                 <div className="mt-4 flex gap-3">
                   <Link href={`/employer/applicants?jobId=${job._id}`}>
                     <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
-                      View Applicants
+                      Manage Applicants
                     </button>
                   </Link>
                   <Link href={`/employer/edit-job/${job._id}`}>
                     <button className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition">
-                      Edit
+                      Manage Listing
                     </button>
                   </Link>
                   <button
