@@ -1,10 +1,10 @@
-import { getAppEnv, requireEnv } from "@/lib/env";
+import { getAppEnv, getMongoDbName } from "@/lib/env";
 
 export const CANONICAL_MARKETPLACE_DB = "bwes-cluster";
 
 export function getMarketplaceDbName(): string {
-  const dbName = requireEnv("MONGODB_DB");
   const appEnv = getAppEnv();
+  const dbName = getMongoDbName(CANONICAL_MARKETPLACE_DB);
 
   if (appEnv === "local" && dbName !== CANONICAL_MARKETPLACE_DB) {
     const message =

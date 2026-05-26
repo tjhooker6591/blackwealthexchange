@@ -197,7 +197,16 @@ export default function Marketplace() {
 
         if (!res.ok) {
           const txt = await res.text().catch(() => "");
-          throw new Error(txt || `Request failed (${res.status})`);
+          let safeMsg = `Request failed (${res.status})`;
+          try {
+            const parsed = txt ? JSON.parse(txt) : null;
+            if (typeof parsed?.error === "string" && parsed.error.trim()) {
+              safeMsg = parsed.error.trim();
+            }
+          } catch {
+            // Ignore parse failures and keep safe fallback message.
+          }
+          throw new Error(safeMsg);
         }
 
         const data = await res.json();
