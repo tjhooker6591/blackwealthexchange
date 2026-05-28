@@ -1359,6 +1359,19 @@ export default function Home() {
             </div>
           </div>
 
+          <section className="mt-4 rounded-xl border border-[#D4AF37]/30 bg-[#D4AF37]/10 p-4">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">0.5% Challenge</p>
+                <p className="text-sm text-white">Join the BWE 0.5% Challenge. Search Black first. Buy, review, refer, repeat.</p>
+              </div>
+              <div className="flex gap-2">
+                <Link href="/challenge" className="rounded-lg bg-[#D4AF37] px-3 py-2 text-xs font-extrabold text-black">Join the Challenge</Link>
+                <Link href="/business-directory" className="rounded-lg border border-[#D4AF37]/50 px-3 py-2 text-xs font-bold text-[#F1D57A]">Search Black-Owned Businesses</Link>
+              </div>
+            </div>
+          </section>
+
           <section className="mt-5 sm:mt-6">
             <EconomicImpactSimulator />
           </section>
