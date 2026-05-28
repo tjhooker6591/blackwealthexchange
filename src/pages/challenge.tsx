@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import ChallengeShareCard from "@/components/challenge/ChallengeShareCard";
 
 export default function ChallengePage() {
   const router = useRouter();
@@ -36,6 +37,6 @@ export default function ChallengePage() {
       <div className="grid grid-cols-2 gap-2"><input placeholder="City" className="p-2 rounded bg-zinc-900" value={form.city} onChange={(e)=>setForm({...form,city:e.target.value})}/><input placeholder="State" className="p-2 rounded bg-zinc-900" value={form.state} onChange={(e)=>setForm({...form,state:e.target.value})}/></div>
       {error ? <p className="text-red-300">{error}</p> : null}
       <button className="px-4 py-2 rounded bg-[#D4AF37] text-black font-bold">Join the Challenge</button>
-    </form> : <section className="rounded border border-[#D4AF37] p-4"><h2 className="text-xl font-bold">You joined the BWE 0.5% Challenge. Now invite 3 people and search for one Black-owned business in your city.</h2><p className="mt-2">Referral link: <a className="text-[#D4AF37]" href={done.referralLink}>{done.referralLink}</a></p><div className="mt-3 flex flex-wrap gap-2"><button className="px-3 py-2 rounded bg-[#D4AF37] text-black">Invite 3 People</button><Link href={`/business-directory?search=${encodeURIComponent(form.city)}`} className="px-3 py-2 rounded border border-[#D4AF37]">Search My City</Link><button className="px-3 py-2 rounded border border-[#D4AF37]">Share on Social Media</button><Link href="/business-directory/add-business" className="px-3 py-2 rounded border border-[#D4AF37]">Add or Claim a Business</Link></div></section>}
+    </form> : <section className="rounded border border-[#D4AF37] p-4"><h2 className="text-xl font-bold">You joined the BWE 0.5% Challenge. Now invite 3 people and search for one Black-owned business in your city.</h2><p className="mt-2">Referral link: <a className="text-[#D4AF37]" href={done.referralLink}>{done.referralLink}</a></p><div className="mt-3 flex flex-wrap gap-2"><button className="px-3 py-2 rounded bg-[#D4AF37] text-black">Invite 3 People</button><Link href={`/business-directory?search=${encodeURIComponent(form.city)}`} className="px-3 py-2 rounded border border-[#D4AF37]">Search My City</Link><button className="px-3 py-2 rounded border border-[#D4AF37]">Share on Social Media</button><Link href="/business-directory/add-business" className="px-3 py-2 rounded border border-[#D4AF37]">Add or Claim a Business</Link></div><div className="mt-3 space-y-2"><ChallengeShareCard variant="signup" referralLink={done.referralLink} /><ChallengeShareCard variant="search" /><ChallengeShareCard variant="business" /></div></section>}
   </div></main>;
 }
