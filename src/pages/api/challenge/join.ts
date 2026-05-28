@@ -60,11 +60,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     await members.insertOne(doc);
 
+    const protoHeader = String(req.headers["x-forwarded-proto"] || "").split(",")[0].trim();
+    const hostHeader = String(req.headers["x-forwarded-host"] || req.headers.host || "").split(",")[0].trim();
+    const proto = protoHeader || (hostHeader.includes("localhost") ? "http" : "https");
+    const base = hostHeader ? `${proto}://${hostHeader}` : "https://www.blackwealthexchange.com";
+
     return res.status(200).json({
       ok: true,
       message: "You joined the challenge.",
       referralCode,
-      referralLink: `https://www.blackwealthexchange.com/challenge?ref=${encodeURIComponent(referralCode)}`,
+      referralLink: `${base}/challenge?ref=${encodeURIComponent(referralCode)}`,
     });
   } catch (error: any) {
     if (error?.code === 11000) {
