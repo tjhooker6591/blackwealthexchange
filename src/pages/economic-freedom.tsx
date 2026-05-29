@@ -335,9 +335,8 @@ export default function EconomicFreedom() {
           </div>
 
           <div className="mt-6 text-white/60 text-xs sm:text-sm">
-            Note: Buying power estimates vary by source and year (often cited
-            around ~$1.9T to ~$2.1T+). Use the exact number you want — the point
-            remains the same: the leverage is massive.
+            Note: Public framing uses an estimated ~$2.1T Black buying power in
+            2026. A 0.5% shift is about $10.5B, and a 5% shift is about $105B.
           </div>
         </div>
 
@@ -354,7 +353,7 @@ export default function EconomicFreedom() {
                 <>
                   <p className="text-sm sm:text-base">
                     African Americans spend{" "}
-                    <span className="text-red-300 font-extrabold">$1.9T+</span>{" "}
+                    <span className="text-red-300 font-extrabold">~$2.1T</span>{" "}
                     annually — more than the GDP of many nations. But ask
                     yourself:{" "}
                     <span className="text-[#D4AF37] font-extrabold">
