@@ -42,9 +42,9 @@ export async function grantCourseAccess(
   const purchasedAt = options?.purchasedAt || now;
   const paymentStatus = String(options?.paymentStatus || "paid");
 
-  const userDoc = await db
-    .collection("users")
-    .findOne(ObjectId.isValid(userId) ? { _id: new ObjectId(userId) } : { _id: null }, { projection: { email: 1 } });
+  const userDoc = ObjectId.isValid(userId)
+    ? await db.collection("users").findOne({ _id: new ObjectId(userId) }, { projection: { email: 1 } })
+    : null;
   const resolvedEmail = String(options?.email || userDoc?.email || "").trim().toLowerCase() || null;
   const resolvedCourseName = String(options?.courseName || courseId)
     .replace(/-/g, " ")
