@@ -388,17 +388,17 @@ export default async function handler(
 
         // BWE Black Card membership tiers
         "black-card-standard": {
-          amount: BLACK_CARD_TIERS.standard.priceCents,
+          amount: Number(BLACK_CARD_TIERS.standard.priceCents || 0),
           name: BLACK_CARD_TIERS.standard.label,
           billingInterval: null,
         },
         "black-card-signature": {
-          amount: BLACK_CARD_TIERS.signature.priceCents,
+          amount: Number(BLACK_CARD_TIERS.signature.priceCents || 0),
           name: BLACK_CARD_TIERS.signature.label,
           billingInterval: "monthly",
         },
         "black-card-elite": {
-          amount: BLACK_CARD_TIERS.elite.priceCents,
+          amount: Number(BLACK_CARD_TIERS.elite.priceCents || 0),
           name: BLACK_CARD_TIERS.elite.label,
           billingInterval: "monthly",
         },
@@ -569,10 +569,7 @@ export default async function handler(
       const blackCardTier = BLACK_CARD_TIER_BY_ITEM_ID[finalItemId];
       metadata.productKey = "bwe_black_card";
       metadata.tier = blackCardTier;
-      metadata.billingInterval =
-        BLACK_CARD_TIERS[blackCardTier].billingModel === "entry_fee"
-          ? "entry_fee"
-          : "monthly";
+      metadata.billingInterval = "annual";
     }
 
     // ---------------------------------------------------------
@@ -875,11 +872,7 @@ export default async function handler(
                       finalItemId === "wealth-builder-premium-monthly"
                     ? "monthly"
                     : type === "plan" && isBlackCardPlanItemId(finalItemId)
-                      ? BLACK_CARD_TIERS[
-                          BLACK_CARD_TIER_BY_ITEM_ID[finalItemId]
-                        ].billingModel === "entry_fee"
-                        ? "entry_fee"
-                        : "monthly"
+                      ? "annual"
                       : null,
           },
         },

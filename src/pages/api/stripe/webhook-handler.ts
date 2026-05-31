@@ -83,6 +83,8 @@ interface SessionMetadata {
   courseId?: string;
   userId?: string;
   affiliateCode?: string;
+  courseName?: string;
+  itemName?: string;
 
   // checkout.ts / api/stripe/checkout.ts metadata
   itemId?: string;
