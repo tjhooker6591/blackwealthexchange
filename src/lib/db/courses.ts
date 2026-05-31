@@ -108,13 +108,16 @@ export async function grantCourseAccess(
       const dashboardUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/course-dashboard`;
       const courseUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/premium-finance`;
       const supportUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/support`;
+      const text =
+        `Your course access is now active.\n\nCourse: ${resolvedCourseName}\n` +
+        `Open dashboard: ${dashboardUrl}\nOpen course: ${courseUrl}\nSupport: ${supportUrl}\n\n` +
+        `Note: Your Stripe receipt may arrive separately.`;
+
       await sendEmail({
         to: resolvedEmail,
         subject: `Course access is active: ${resolvedCourseName}`,
-        text:
-          `Your course access is now active.\n\nCourse: ${resolvedCourseName}\n` +
-          `Open dashboard: ${dashboardUrl}\nOpen course: ${courseUrl}\nSupport: ${supportUrl}\n\n` +
-          `Note: Your Stripe receipt may arrive separately.`,
+        text,
+        html: text.replace(/\n/g, "<br />"),
       });
       emailEvent.sent = true;
     } catch (err: any) {
