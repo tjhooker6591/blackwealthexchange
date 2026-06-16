@@ -13,13 +13,64 @@ function first(v: string | string[] | undefined) {
   return v || "";
 }
 
+function normalizeUrl(raw: string) {
+  const value = raw.trim();
+  if (!value) return "";
+  if (/^https?:\/\//i.test(value)) return value;
+  return `https://${value}`;
+}
+
+function isValidEmail(value: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+}
+
+function normalizePhone(raw: string) {
+  return raw.replace(/[^\d+]/g, "").trim();
+}
+
+function isValidPhone(value: string) {
+  const digits = value.replace(/\D/g, "");
+  return digits.length >= 10;
+}
+
+function normalizeLocationParts(raw: string) {
+  const value = raw.trim().replace(/\s+/g, " ");
+  if (!value) {
+    return { normalized: "", city: "", state: "" };
+  }
+
+  if (value.includes(",")) {
+    const [city = "", state = ""] = value.split(",").map((s) => s.trim());
+    return {
+      normalized: [city, state].filter(Boolean).join(", "),
+      city,
+      state: state.toUpperCase(),
+    };
+  }
+
+  const parts = value.split(" ");
+  if (parts.length >= 2) {
+    const state = parts[parts.length - 1]?.trim() || "";
+    const city = parts.slice(0, -1).join(" ").trim();
+    if (city && /^[A-Za-z]{2,}$/.test(state)) {
+      return {
+        normalized: `${city}, ${state.toUpperCase()}`,
+        city,
+        state: state.toUpperCase(),
+      };
+    }
+  }
+
+  return { normalized: value, city: value, state: "" };
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
 ) {
   if (req.method !== "POST") {
     res.setHeader("Allow", ["POST"]);
-    return res.status(405).json({ error: "Method Not Allowed" });
+    return res.status(405).json({ ok: false, error: "Method Not Allowed" });
   }
 
   try {
@@ -46,17 +97,51 @@ export default async function handler(
     const businessName = first(fields.businessName as any).trim();
     const category = first(fields.category as any).trim();
     const location = first(fields.location as any).trim();
-    const phone = first(fields.phone as any).trim();
+    const phone = normalizePhone(first(fields.phone as any));
     const email = first(fields.email as any)
       .trim()
       .toLowerCase();
-    const website = first(fields.website as any).trim();
+    const website = normalizeUrl(first(fields.website as any));
     const description = first(fields.description as any).trim();
+    const facebook = normalizeUrl(first(fields.facebook as any));
+    const twitter = normalizeUrl(first(fields.twitter as any));
+
+    const normalizedCategory = category.toLowerCase();
+    const normalizedLocation = normalizeLocationParts(location);
 
     if (!businessName || !email || !category) {
-      return res
-        .status(400)
-        .json({ error: "businessName, email, category are required" });
+      return res.status(400).json({
+        ok: false,
+        error: "Business name, email, and category are required.",
+      });
+    }
+
+    if (!normalizedLocation.normalized) {
+      return res.status(400).json({
+        ok: false,
+        error: "Please enter a location, for example: Allentown, PA.",
+      });
+    }
+
+    if (!isValidEmail(email)) {
+      return res.status(400).json({
+        ok: false,
+        error: "Please enter a valid email address.",
+      });
+    }
+
+    if (!isValidPhone(phone)) {
+      return res.status(400).json({
+        ok: false,
+        error: "Please enter a valid phone number with at least 10 digits.",
+      });
+    }
+
+    if (!description) {
+      return res.status(400).json({
+        ok: false,
+        error: "Please add a short business description.",
+      });
     }
 
     const logoRaw = (files.logo as File | File[] | undefined) || undefined;
@@ -67,8 +152,6 @@ export default async function handler(
       imagePath = `/uploads/${fileName}`;
     }
 
-    const [city = "", state = ""] = location.split(",").map((s) => s.trim());
-
     const client = await clientPromise;
     const dbName = process.env.MONGODB_DB?.trim();
     const db = dbName ? client.db(dbName) : client.db("bwes-cluster");
@@ -78,6 +161,19 @@ export default async function handler(
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-+|-+$/g, "");
 
+    let slug = slugBase || undefined;
+    let alias = slugBase || undefined;
+
+    if (slugBase) {
+      const existingWithSlug = await db.collection("businesses").countDocuments({
+        slug: { $regex: `^${slugBase}(-\\d+)?$`, $options: "i" },
+      });
+      if (existingWithSlug > 0) {
+        slug = `${slugBase}-${existingWithSlug + 1}`;
+        alias = slug;
+      }
+    }
+
     const doc: any = {
       business_name: businessName,
       title: businessName,
@@ -85,15 +181,19 @@ export default async function handler(
       phone,
       website,
       description,
-      category,
-      categories: category,
-      city,
-      state,
-      locationDisplay: location,
-      status: "approved",
-      listingStatus: "approved",
-      slug: slugBase || undefined,
-      alias: slugBase || undefined,
+      category: normalizedCategory,
+      categories: normalizedCategory,
+      city: normalizedLocation.city,
+      state: normalizedLocation.state,
+      locationDisplay: normalizedLocation.normalized,
+      status: "pending",
+      listingStatus: "pending_approval",
+      social: {
+        facebook,
+        twitter,
+      },
+      slug,
+      alias,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -111,9 +211,26 @@ export default async function handler(
       image: imagePath || null,
       alias: doc.alias || null,
       slug: doc.slug || null,
+      message: "Business submitted for review.",
+      listingStatus: doc.listingStatus,
+      normalizedLocation: doc.locationDisplay,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("business create error", error);
-    return res.status(500).json({ error: "Internal Server Error" });
+
+    if (error?.code === 11000) {
+      return res.status(409).json({
+        ok: false,
+        error:
+          "A business with this name appears to already exist. Please update the business name slightly or contact support if this is your listing.",
+      });
+    }
+
+    return res.status(500).json({
+      ok: false,
+      error:
+        error?.message ||
+        "We could not submit your business right now. Please try again.",
+    });
   }
 }
