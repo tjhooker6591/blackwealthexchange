@@ -3,13 +3,7 @@
 
 import React, { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
-
-function normalizeOptionalUrl(value: string) {
-  const trimmed = value.trim();
-  if (!trimmed) return "";
-  if (/^https?:\/\//i.test(trimmed)) return trimmed;
-  return `https://${trimmed}`;
-}
+import { normalizeOptionalUrl } from "@/lib/businessSubmission";
 
 export default function AddBusinessForm() {
   const router = useRouter();
