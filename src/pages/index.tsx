@@ -932,13 +932,13 @@ export default function Home() {
                     Join to save businesses, track opportunities, and move through the BWE ecosystem with faster access to the tools built to help you support, shop, and grow.
                   </p>
                   <Link
-                    href={user ? "/dashboard" : "/pricing"}
+                    href={user ? "/dashboard" : "/signup"}
                     onClick={() =>
                       trackHomepageEvent("homepage_cta_clicked", {
                         section: "hero",
                         ctaId: user ? "hero_dashboard" : "hero_join_bwe",
                         ctaLabel: user ? "Go to Dashboard" : "Join BWE",
-                        destination: user ? "/dashboard" : "/pricing",
+                        destination: user ? "/dashboard" : "/signup",
                       })
                     }
                     className="inline-flex shrink-0 items-center justify-center rounded-lg border border-white/20 bg-black/30 px-4 py-2 text-xs font-semibold text-white/85 hover:bg-black/45"
@@ -1359,7 +1359,7 @@ export default function Home() {
                   Black Card Membership
                 </div>
                 <div className="mt-0.5 text-xs text-white/85 sm:text-sm">
-                  Join BWE for member benefits, faster access to opportunities, and a more connected way to support the ecosystem.
+                  Explore Black Card benefits, member access, and premium ecosystem advantages in a clearly separate path from Join BWE.
                 </div>
               </div>
               <Link
@@ -1368,13 +1368,13 @@ export default function Home() {
                   trackHomepageEvent("homepage_cta_clicked", {
                     section: "membership",
                     ctaId: "membership_black_card",
-                    ctaLabel: "Learn About Black Card",
+                    ctaLabel: "Explore Black Card",
                     destination: "/pricing",
                   })
                 }
                 className="inline-flex w-full justify-center rounded-lg border border-yellow-400/35 bg-black/35 px-4 py-2 text-xs font-semibold text-yellow-200 hover:bg-black/55 sm:w-auto"
               >
-                Learn About Black Card
+                Explore Black Card
               </Link>
             </div>
           </div>
