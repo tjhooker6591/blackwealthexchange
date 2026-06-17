@@ -73,14 +73,45 @@ function toInt(v: any, def: number) {
   return Number.isFinite(n) ? n : def;
 }
 
-function formatStatusLabel(status: string) {
-  const normalized = safeStr(status).toLowerCase();
-  if (!normalized) return "";
-  return normalized
-    .split(/[_\s-]+/)
+function normalizeWebsiteUrl(url: string) {
+  const raw = safeStr(url).trim();
+  if (!raw) return "";
+  if (/^https?:\/\//i.test(raw)) return raw;
+  return `https://${raw.replace(/^\/+/, "")}`;
+}
+
+function formatCategoryDisplay(raw: any) {
+  const text = categoriesToString(raw)
+    .split(/[,&/|]/g)
+    .map((part) => safeStr(part))
     .filter(Boolean)
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(" ");
+    .map((part) => {
+      const lower = part.toLowerCase();
+      if (lower === "healthcare") return "Health Care";
+      if (lower === "nonprofit" || lower === "non-profit") return "Nonprofit";
+      if (lower === "restaurants") return "Restaurant";
+      if (lower === "beauty salons") return "Beauty Salon";
+      return part
+        .split(/\s+/)
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
+    });
+
+  return Array.from(new Set(text)).slice(0, 3).join(" • ");
+}
+
+function formatStateDisplay(value: any) {
+  const state = safeStr(value).trim();
+  if (!state) return "";
+  return state.length === 2 ? state.toUpperCase() : state;
+}
+
+function buildLocationDisplay(parts: { city?: any; state?: any; address?: any }) {
+  const city = safeStr(parts.city).trim();
+  const state = formatStateDisplay(parts.state);
+  const address = safeStr(parts.address).trim();
+  const cityState = [city, state].filter(Boolean).join(", ");
+  return cityState || address || "";
 }
 
 const DEFAULT_SPONSOR_ADS = [
@@ -909,32 +940,30 @@ export default function BusinessDirectory() {
 
   const getLocation = (r: Row) => {
     const normalized = safeStr((r as any).locationDisplay);
-    if (normalized) return normalized;
+    if (normalized) return buildLocationDisplay({ address: normalized });
 
-    const city = safeStr((r as any).city);
-    const state = safeStr((r as any).state);
-    const addr = safeStr((r as any).address);
-
-    const loc = [city, state].filter(Boolean).join(", ");
-    return loc || addr || "";
+    return buildLocationDisplay({
+      city: (r as any).city,
+      state: (r as any).state,
+      address: (r as any).address,
+    });
   };
 
   const getCategoryLabel = (r: Row) => {
     const primaryCategory = safeStr((r as any).primaryCategory);
-    if (primaryCategory) return primaryCategory;
+    if (primaryCategory) return formatCategoryDisplay(primaryCategory);
 
     if (r.__kind === "org") {
       const orgType = safeStr((r as any).orgType);
       const denom = safeStr((r as any).denomination);
-      return [orgType, denom].filter(Boolean).join(" · ");
+      return formatCategoryDisplay([orgType, denom].filter(Boolean).join(" · "));
     }
 
-    // businesses
     const display = safeStr((r as any).display_categories);
     const cats = categoriesToString(
       (r as any).categories || (r as any).category,
     );
-    return display || cats || "";
+    return formatCategoryDisplay(display || cats);
   };
 
   const getRatingLine = (r: Row) => {
@@ -1010,8 +1039,8 @@ export default function BusinessDirectory() {
     return { verified, approved, sponsored, isComplete };
   };
 
-  const getWebsite = (r: Row) => safeStr((r as any).website);
-  const getPhone = (r: Row) => safeStr((r as any).phone);
+  const getWebsite = (r: Row) => normalizeWebsiteUrl(safeStr((r as any).website));
+  const getPhone = (r: Row) => safeStr((r as any).phone).trim();
 
   const getListingStrengthLabel = (r: Row) => {
     const strength = Number((r as any)._listingStrength || 0);
@@ -1580,30 +1609,20 @@ export default function BusinessDirectory() {
                 {hasSearched ? (
                   <div className="mt-3 rounded-xl border border-white/15 bg-white/[0.03] p-3 text-xs text-white/80">
                     <div className="font-bold text-white">
-                      Action Required / What Changed
+                      Trust guide
                     </div>
-                    <div className="mt-1">
-                      What changed: {total} results for current query and
-                      filters.
+                    <div className="mt-1 text-white/75">
+                      Verified listings include a BWE trust signal. Sponsored and Featured placements are promoted listings. Organic listings are still part of the public directory.
                     </div>
-                    <div>
-                      Needs action: refine filters if results are weak or empty.
-                    </div>
-                    <div>
-                      At risk: missing mappings for some relevance/trust
-                      analytics.
-                    </div>
-                    <div className="mt-1">
-                      sourceStatus:{" "}
-                      <span className="font-semibold">needs_tracking</span>
-                    </div>
-                    <div className="mt-2">
+                    <div className="mt-2 flex flex-wrap gap-2">
                       <a
                         href="#directory-search"
                         className="text-[#D4AF37] underline"
                       >
-                        Next action: adjust search filters
+                        Broaden your search
                       </a>
+                      <span className="text-white/45">•</span>
+                      <span>Try a nearby city or browse by category</span>
                     </div>
                   </div>
                 ) : null}
@@ -2085,10 +2104,6 @@ export default function BusinessDirectory() {
                                 <span className="rounded-full border border-emerald-400/30 bg-emerald-400/15 px-2 py-0.5 text-[10px] font-bold text-emerald-200">
                                   Verified
                                 </span>
-                              ) : getTrustMeta(item as Row).approved ? (
-                                <span className="rounded-full border border-white/20 bg-white/10 px-2 py-0.5 text-[10px] font-bold text-white/75">
-                                  Approved listing
-                                </span>
                               ) : null}
                               {getTrustMeta(item as Row).sponsored ? (
                                 <span className="rounded-full border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-2 py-0.5 text-[10px] font-bold text-[#D4AF37]">
@@ -2099,47 +2114,11 @@ export default function BusinessDirectory() {
                                   Organic listing
                                 </span>
                               )}
-                              {formatStatusLabel(
-                                safeStr(
-                                  (item as any).listingStatus ||
-                                    (item as any).status,
-                                ),
-                              ) ? (
-                                <span className="rounded-full border border-white/20 bg-black/30 px-2 py-0.5 text-[10px] font-bold text-white/75">
-                                  Status:{" "}
-                                  {formatStatusLabel(
-                                    safeStr(
-                                      (item as any).listingStatus ||
-                                        (item as any).status,
-                                    ),
-                                  )}
-                                </span>
-                              ) : null}
                               {!getTrustMeta(item as Row).isComplete && (
                                 <span className="rounded-full border border-sky-400/30 bg-sky-400/15 px-2 py-0.5 text-[10px] font-bold text-sky-200">
-                                  Incomplete profile
+                                  Profile needs more details
                                 </span>
                               )}
-                              {safeStr(
-                                (item as any)._matchQuality,
-                              ).toLowerCase() === "exact" ? (
-                                <span className="rounded-full border border-emerald-300/40 bg-emerald-400/10 px-2 py-0.5 text-[10px] font-bold text-emerald-200">
-                                  Exact intent match
-                                </span>
-                              ) : safeStr(
-                                  (item as any)._matchQuality,
-                                ).toLowerCase() === "approximate" ? (
-                                <span className="rounded-full border border-amber-300/40 bg-amber-300/10 px-2 py-0.5 text-[10px] font-bold text-amber-100">
-                                  Approximate match
-                                </span>
-                              ) : (
-                                <span className="rounded-full border border-white/25 bg-white/10 px-2 py-0.5 text-[10px] font-bold text-white/80">
-                                  Close intent match
-                                </span>
-                              )}
-                              <span className="rounded-full border border-white/20 bg-black/25 px-2 py-0.5 text-[10px] font-bold text-white/75">
-                                {getListingStrengthLabel(item as Row)}
-                              </span>
                             </div>
 
                             {/* Details line: rating · price · category */}
@@ -2151,12 +2130,12 @@ export default function BusinessDirectory() {
 
                             <div className="mt-0.5 text-[12px] text-white/55">
                               <span className="text-white/72">Category:</span>{" "}
-                              {getCategoryLabel(item as Row) || "Not provided"}
+                              {getCategoryLabel(item as Row) || "Being updated"}
                               {" · "}
                               <span className="text-white/72">
                                 Location:
                               </span>{" "}
-                              {getLocation(item as Row) || "Not provided"}
+                              {getLocation(item as Row) || "Location details coming soon"}
                             </div>
 
                             {/* Snippet line (quote-style like your example) */}
@@ -2171,7 +2150,7 @@ export default function BusinessDirectory() {
                             >
                               {getDesc(item as Row)
                                 ? `“${getDesc(item as Row)}”`
-                                : "“Description not available.”"}
+                                : "Business details are being expanded."}
                             </div>
 
                             <div className="mt-2 flex flex-wrap gap-2">
@@ -2188,7 +2167,7 @@ export default function BusinessDirectory() {
                                   rel="noopener noreferrer"
                                   className="rounded-lg border border-white/20 bg-black/30 px-3 py-1.5 text-[11px] font-bold text-white/80 hover:bg-black/45"
                                 >
-                                  Website
+                                  Visit website
                                 </a>
                               ) : null}
                               {getPhone(item as Row) ? (
@@ -2206,7 +2185,7 @@ export default function BusinessDirectory() {
                                   rel="noopener noreferrer"
                                   className="rounded-lg border border-white/20 bg-black/30 px-3 py-1.5 text-[11px] font-bold text-white/80 hover:bg-black/45"
                                 >
-                                  Directions
+                                  Get directions
                                 </a>
                               ) : null}
                             </div>
@@ -2223,7 +2202,7 @@ export default function BusinessDirectory() {
                               </a>
                             ) : (
                               <div className="text-white/35">
-                                No phone listed
+                                Contact details coming soon
                               </div>
                             )}
                           </div>

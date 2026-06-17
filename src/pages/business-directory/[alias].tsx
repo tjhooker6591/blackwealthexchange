@@ -257,10 +257,6 @@ export default function BusinessDetail() {
                     <span className="rounded-full border border-emerald-400/35 bg-emerald-400/15 px-3 py-1 text-xs font-bold text-emerald-200">
                       Verified
                     </span>
-                  ) : trust.approved ? (
-                    <span className="rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-bold text-white/75">
-                      Approved listing
-                    </span>
                   ) : null}
                   {trust.sponsored && (
                     <span className="rounded-full border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-3 py-1 text-xs font-bold text-[#D4AF37]">
@@ -269,7 +265,7 @@ export default function BusinessDetail() {
                   )}
                   {!trust.complete && (
                     <span className="rounded-full border border-sky-400/30 bg-sky-400/15 px-3 py-1 text-xs font-bold text-sky-200">
-                      Incomplete profile
+                      Profile needs more details
                     </span>
                   )}
                 </div>
@@ -282,7 +278,7 @@ export default function BusinessDetail() {
                   </h2>
                   <p className="leading-relaxed text-white/75">
                     {safeStr(business.description) ||
-                      "No description available yet."}
+                      "Business details are being expanded."}
                   </p>
                 </article>
 
