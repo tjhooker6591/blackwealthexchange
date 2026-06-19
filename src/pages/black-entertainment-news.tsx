@@ -41,6 +41,9 @@ type ApiResponse = {
   failures?: Record<string, string>;
 };
 
+const SAFE_FALLBACK_ERROR =
+  "Entertainment stories are taking longer than usual to load. Please refresh in a moment.";
+
 type Lens = "Blend" | "All" | Region;
 
 /** -----------------------------
@@ -155,6 +158,7 @@ export default function BlackEntertainmentNewsPage() {
 
   const [proofOpen, setProofOpen] = useState(false);
   const [proofMoment, setProofMoment] = useState<PulseMoment | null>(null);
+  const [sourceFailures, setSourceFailures] = useState<Record<string, string>>({});
 
   const abortRef = useRef<AbortController | null>(null);
 
@@ -181,10 +185,13 @@ export default function BlackEntertainmentNewsPage() {
       const json = (await res.json()) as ApiResponse;
 
       if (!res.ok) {
-        setErr("Failed to load entertainment pulse.");
+        setErr(SAFE_FALLBACK_ERROR);
         setMoments([]);
+        setSourceFailures({});
         return;
       }
+
+      setSourceFailures(json.failures || {});
 
       // Entertainment tightening BEFORE building moments
       const entertainmentFeed: FeedItem[] = (json.items || [])
@@ -206,9 +213,20 @@ export default function BlackEntertainmentNewsPage() {
 
       setUpdatedAt(json.updatedAt);
       setMoments(built);
+
+      if (!built.length) {
+        setErr(
+          Object.keys(json.failures || {}).length
+            ? SAFE_FALLBACK_ERROR
+            : "No entertainment stories are available right now.",
+        );
+      }
     } catch (e: any) {
-      if (e?.name !== "AbortError")
-        setErr("Failed to load entertainment pulse.");
+      if (e?.name !== "AbortError") {
+        setErr(SAFE_FALLBACK_ERROR);
+        setMoments([]);
+        setSourceFailures({});
+      }
     } finally {
       setLoading(false);
     }
@@ -393,7 +411,26 @@ export default function BlackEntertainmentNewsPage() {
             </div>
           ) : err ? (
             <div className="rounded-3xl border border-red-900/60 bg-red-950/30 p-10 text-center text-red-200">
-              {err}
+              <div className="text-base font-semibold text-red-100">{err}</div>
+              <div className="mt-3 flex flex-wrap items-center justify-center gap-3">
+                <button
+                  onClick={refresh}
+                  className="rounded-2xl bg-[#D4AF37] px-5 py-3 text-sm font-extrabold text-black hover:bg-yellow-500 transition"
+                >
+                  Retry
+                </button>
+                <Link
+                  href="/news"
+                  className="rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-bold text-white/80 hover:bg-white/10 transition"
+                >
+                  Open News Hub
+                </Link>
+              </div>
+              {Object.keys(sourceFailures).length ? (
+                <div className="mt-4 text-xs text-red-100/80">
+                  Some upstream feeds are unavailable right now. The page will recover automatically when those sources respond again.
+                </div>
+              ) : null}
             </div>
           ) : !filtered.length ? (
             <div className="rounded-3xl border border-white/10 bg-white/5 p-10 text-center text-white/70">

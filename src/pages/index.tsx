@@ -12,7 +12,7 @@ import Image from "next/image";
 import Head from "next/head";
 import { canonicalUrl, getBaseUrl, truncateMeta } from "@/lib/seo";
 import {
-  Sparkles,
+   Sparkles,
   Search,
   ShoppingBag,
   Newspaper,
@@ -28,9 +28,6 @@ function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
-/** -----------------------------
- *  TOOLS (Filters) — inline panel
- *  ----------------------------- */
 function SearchToolsInlinePanel({
   verifiedOnly,
   onVerifiedOnly,
@@ -160,9 +157,6 @@ function SearchToolsInlinePanel({
   );
 }
 
-/** -----------------------------
- *  MODAL COMPONENT
- *  ----------------------------- */
 function ConsultingInterestModal({
   isOpen,
   onClose,
@@ -263,17 +257,12 @@ function ConsultingInterestModal({
   );
 }
 
-/** -----------------------------
- *  ECONOMIC IMPACT (simplified)
- *  ----------------------------- */
 const EconomicImpactSimulator = () => {
-  const baseline = 300_000_000_000;
-  const projected = 2_100_000_000_000;
-  const perDay = 4_200_000_000;
-  const perSecond = 48_000;
+  const annualEstimate = 2_100_000_000_000;
+  const historicalBaseline = 300_000_000_000;
+  const dailySpend = 4_200_000_000;
   const recapturePct = 5;
-  const recaptureValue = projected * (recapturePct / 100);
-  const leakageValue = projected - recaptureValue;
+  const recaptureValue = annualEstimate * (recapturePct / 100);
   const durationMs = 180_000;
 
   const [progress, setProgress] = useState(0);
@@ -303,146 +292,84 @@ const EconomicImpactSimulator = () => {
       maximumFractionDigits: 0,
     });
 
-  const currentValue = baseline + (projected - baseline) * progress;
+  const currentValue = historicalBaseline + (annualEstimate - historicalBaseline) * progress;
+
   return (
     <section className="relative overflow-hidden py-1 sm:py-1.5">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_8%_20%,rgba(96,190,255,0.12),transparent_34%),radial-gradient(circle_at_80%_84%,rgba(212,175,55,0.1),transparent_45%)]" />
 
-      <div className="relative grid max-w-full gap-1.5 overflow-hidden rounded-2xl border border-[#D4AF37]/55 bg-[#04070f]/98 p-2.5 shadow-[0_22px_56px_rgba(0,0,0,0.62)] sm:gap-2 sm:p-3 md:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)] md:items-start md:gap-3 md:py-2.5 lg:p-3 lg:py-2.5">
+      <div className="relative grid max-w-full gap-3 overflow-hidden rounded-2xl border border-[#D4AF37]/45 bg-[#04070f]/98 p-4 shadow-[0_22px_56px_rgba(0,0,0,0.62)] md:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] md:items-start">
         <div className="min-w-0">
           <div className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-[#0a101c] px-3 py-1 text-[10px] font-bold tracking-[0.08em] text-white/90 sm:text-[11px]">
             <span className="h-1.5 w-1.5 rounded-full bg-[#D4AF37]" />
-            BUYING POWER (ANNUAL ESTIMATE)
+            BUYING POWER CONTEXT
           </div>
 
-          <h2 className="mt-1 text-base font-extrabold tracking-[0.01em] text-white sm:text-[1.6rem] lg:text-[1.7rem]">
-            African American Buying Power{" "}
-            <span className="text-[#D4AF37]">(2026)</span>
+          <h2 className="mt-2 text-xl font-extrabold tracking-[0.01em] text-white sm:text-[1.8rem] lg:text-[2rem]">
+            Black buying power is large. The opportunity is keeping more of it circulating with us.
           </h2>
 
-          <p className="mt-1 text-xs text-white/82 sm:text-[13px] lg:text-[14px]">
-            Spending scale is massive, leakage remains high, and recapture
-            inside BWE creates outsized retained value.
+          <p className="mt-2 text-sm text-white/82 sm:text-[15px]">
+            BWE is built to help people discover Black-owned businesses faster, support them more consistently, and make it easier for more dollars to stay in the community.
           </p>
 
           <div
-            className="mt-1 text-[1.55rem] font-black tracking-tight text-[#D4AF37] tabular-nums sm:text-[1.95rem] lg:text-[2.15rem]"
+            className="mt-3 text-[1.7rem] font-black tracking-tight text-[#D4AF37] tabular-nums sm:text-[2.1rem] lg:text-[2.3rem]"
             data-counter-value={Math.floor(currentValue)}
           >
             {formatCurrency(Math.floor(currentValue))}
           </div>
           <p className="text-[10px] uppercase tracking-[0.08em] text-white/65 sm:text-xs">
-            ANNUAL BUYING POWER
-          </p>
-          <p className="mt-0.5 text-[10px] text-cyan-300/80 sm:text-[11px]">
-            Grown from $300B in 2010
+            PROJECTED ANNUAL BUYING POWER
           </p>
 
-          <div className="mt-1 text-[10px] text-white/78 sm:text-[11px] lg:text-[12px]">
-            <span className="font-semibold text-white">Baseline:</span>{" "}
-            {formatCurrency(baseline)}
-            <span className="mx-1.5 text-white/45">•</span>
-            <span className="font-semibold text-white">Daily:</span>{" "}
-            {formatCurrency(perDay)}
-            <span className="mx-1.5 text-white/45">•</span>
-            <span className="font-semibold text-white">Per sec:</span>{" "}
-            {formatCurrency(perSecond)}
+          <div className="mt-3 grid gap-2 text-[11px] text-white/80 sm:grid-cols-3 sm:text-[12px]">
+            <div className="rounded-xl border border-white/10 bg-white/5 px-3 py-2">
+              <div className="font-semibold text-white">Historical baseline</div>
+              <div>{formatCurrency(historicalBaseline)} in 2010</div>
+            </div>
+            <div className="rounded-xl border border-white/10 bg-white/5 px-3 py-2">
+              <div className="font-semibold text-white">Projected annual scale</div>
+              <div>{formatCurrency(annualEstimate)} in 2026</div>
+            </div>
+            <div className="rounded-xl border border-white/10 bg-white/5 px-3 py-2">
+              <div className="font-semibold text-white">Illustrative daily spend</div>
+              <div>{formatCurrency(dailySpend)} per day</div>
+            </div>
           </div>
         </div>
 
-        <div className="min-w-0 md:flex md:h-full md:flex-col md:justify-center md:gap-2">
-          <div className="rounded-xl border border-[#D4AF37]/50 bg-[#151309]/72 px-2.5 py-1.5 sm:px-2.5 sm:py-2">
-            <div className="grid grid-cols-1 items-center gap-1 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] sm:gap-1 md:hidden">
-              <div className="min-w-0">
-                <p className="text-[10px] leading-tight text-white/85 sm:text-[11px]">
-                  <span className="mr-1 inline-block h-1.5 w-1.5 rounded-full bg-[#D4AF37]" />
-                  5% recaptured =
-                </p>
-                <p className="break-words text-[12px] font-extrabold leading-tight tracking-tight text-[#D4AF37] sm:text-[1.02rem]">
-                  {formatCurrency(recaptureValue)}
-                </p>
-                <p className="mt-0 text-[10px] leading-tight text-white/75 sm:text-[10.5px]">
-                  retained inside BWE
-                </p>
-              </div>
-
-              <div className="h-px w-full bg-white/25 sm:h-10 sm:w-px" />
-
-              <div className="min-w-0">
-                <p className="text-[10px] leading-tight text-white/85 sm:text-[11px]">
-                  <span className="mr-1 inline-block h-1.5 w-1.5 rounded-full bg-pink-400" />
-                  95% leakage =
-                </p>
-                <p className="break-words text-[12px] font-extrabold leading-tight tracking-tight text-pink-300 sm:text-[1.02rem]">
-                  {formatCurrency(leakageValue)}
-                </p>
-                <p className="mt-0 text-[10px] leading-tight text-white/75 sm:text-[10.5px]">
-                  outside flow
-                </p>
-              </div>
-            </div>
-
-            <div className="hidden grid-cols-2 gap-2.5 text-center md:grid md:items-center">
-              <div className="min-w-0 space-y-0.5">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.06em] text-white/85">
-                  5% Recaptured
-                </p>
-                <p className="break-words text-[1.18rem] font-black leading-tight tracking-tight text-[#D4AF37]">
-                  {formatCurrency(recaptureValue)}
-                </p>
-                <p className="text-[10px] leading-tight text-white/75">
-                  retained inside BWE
-                </p>
-              </div>
-              <div className="min-w-0 space-y-0.5">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.06em] text-white/85">
-                  95% Leakage
-                </p>
-                <p className="break-words text-[1.18rem] font-black leading-tight tracking-tight text-pink-300">
-                  {formatCurrency(leakageValue)}
-                </p>
-                <p className="text-[10px] leading-tight text-white/75">
-                  outside flow
-                </p>
-              </div>
-            </div>
+        <div className="min-w-0 md:flex md:h-full md:flex-col md:justify-center md:gap-3">
+          <div className="rounded-xl border border-[#D4AF37]/40 bg-[#151309]/72 p-4">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-white/75">
+              Recapture example
+            </p>
+            <p className="mt-2 text-sm leading-relaxed text-white/82">
+              If just <span className="font-extrabold text-[#D4AF37]">5%</span> of projected annual buying power is intentionally redirected through Black-owned businesses and tools that strengthen circulation, that represents:
+            </p>
+            <p className="mt-3 break-words text-[1.35rem] font-black leading-tight tracking-tight text-[#D4AF37]">
+              {formatCurrency(recaptureValue)}
+            </p>
+            <p className="mt-1 text-[11px] text-white/70">
+              This is a simple recapture example, not a claim that BWE controls the full market.
+            </p>
           </div>
 
-          <div className="mt-1 grid w-full gap-1 sm:mt-1.5 sm:gap-1 md:hidden">
+          <div className="flex flex-col gap-2 md:flex-row md:justify-end">
             <Link
               href="/1.8trillionimpact"
-              className="group inline-flex w-full items-center justify-between gap-2 rounded-xl border border-[#D4AF37]/50 bg-[#D4AF37]/10 px-2.5 py-1.5 shadow-sm transition hover:border-[#D4AF37]/80"
+              className="group inline-flex items-center justify-center gap-2 rounded-xl border border-[#D4AF37]/50 bg-[#D4AF37]/14 px-3 py-2 shadow-sm transition hover:border-[#D4AF37]/80"
             >
-              <span className="min-w-0 whitespace-normal text-right text-[10px] leading-tight text-white/85 sm:text-xs lg:text-sm">
-                Where the money goes <span className="text-[#D4AF37]">→</span>
+              <span className="text-xs leading-tight text-white/85 lg:text-sm">
+                See the full impact story <span className="text-[#D4AF37]">→</span>
               </span>
             </Link>
 
             <Link
               href="/economic-freedom"
-              className="group inline-flex w-full items-center justify-between gap-2 rounded-xl border border-pink-400/45 bg-pink-400/10 px-2.5 py-1.5 transition hover:border-pink-300/70"
+              className="group inline-flex items-center justify-center gap-2 rounded-xl border border-white/25 bg-white/5 px-3 py-2 transition hover:border-white/40"
             >
-              <span className="min-w-0 whitespace-normal text-right text-[10px] leading-tight text-white/85 sm:text-xs lg:text-sm">
-                Learn more <span className="text-pink-300">→</span>
-              </span>
-            </Link>
-          </div>
-
-          <div className="hidden w-full md:mt-1.5 md:flex md:justify-end md:gap-2">
-            <Link
-              href="/1.8trillionimpact"
-              className="group inline-flex items-center justify-center gap-2 rounded-xl border border-[#D4AF37]/50 bg-[#D4AF37]/14 px-3 py-0.5 shadow-sm transition hover:border-[#D4AF37]/80"
-            >
-              <span className="text-right text-xs leading-tight text-white/85 lg:text-sm">
-                Where the money goes <span className="text-[#D4AF37]">→</span>
-              </span>
-            </Link>
-
-            <Link
-              href="/economic-freedom"
-              className="group inline-flex items-center justify-center gap-2 rounded-xl border border-white/25 bg-white/5 px-3 py-0.5 transition hover:border-white/40"
-            >
-              <span className="text-right text-xs leading-tight text-white/85 lg:text-sm">
+              <span className="text-xs leading-tight text-white/85 lg:text-sm">
                 Learn more <span className="text-[#D4AF37]">→</span>
               </span>
             </Link>
@@ -928,11 +855,11 @@ export default function Home() {
                 priority
               />
               <span className="font-extrabold tracking-wide">
-                BLACK WEALTH EXCHANGE • DIRECTORY • JOBS • MARKETPLACE
+                BLACK WEALTH EXCHANGE
               </span>
             </div>
 
-            <div className="relative isolate overflow-hidden mx-auto mt-4 max-w-3xl rounded-2xl px-3 py-3 sm:px-4 sm:py-4">
+            <div className="relative isolate mx-auto mt-4 max-w-4xl overflow-hidden rounded-[28px] border border-white/10 px-4 py-5 sm:px-6 sm:py-6 lg:px-8 lg:py-8">
               <div
                 className="pointer-events-none absolute inset-0 -z-10 opacity-[0.16]"
                 style={{
@@ -941,169 +868,158 @@ export default function Home() {
                   backgroundPosition: "center",
                 }}
               />
-              <div className="pointer-events-none absolute inset-0 -z-10 bg-black/82" />
+              <div className="pointer-events-none absolute inset-0 -z-10 bg-black/84" />
 
-              <h1 className="text-3xl font-black tracking-tight leading-[1.08] sm:text-4xl md:text-5xl lg:text-6xl">
-                <span className="text-white">Find and Support </span>
-                <span className="bg-gradient-to-r from-[#D4AF37] via-[#F2D77C] to-[#D4AF37] bg-clip-text text-transparent">
-                  Black-Owned Businesses Near You
-                </span>
-              </h1>
+              <div className="mx-auto max-w-3xl">
+                <div className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#D4AF37] sm:text-xs">
+                  Discover. Support. Circulate.
+                </div>
 
-              <p className="mx-auto mt-3 max-w-2xl text-sm text-white/72 sm:text-base md:text-lg">
-                Build Black Economic Power by searching, supporting, shopping,
-                hiring, learning, and growing through BWE.
-              </p>
+                <h1 className="mt-3 text-3xl font-black leading-[1.05] tracking-tight sm:text-4xl md:text-5xl lg:text-6xl">
+                  <span className="text-white">Find and support </span>
+                  <span className="bg-gradient-to-r from-[#D4AF37] via-[#F2D77C] to-[#D4AF37] bg-clip-text text-transparent">
+                    Black-owned businesses
+                  </span>
+                  <span className="text-white"> with more trust and less friction.</span>
+                </h1>
 
-              <div className="mx-auto mt-3 flex w-full max-w-2xl flex-wrap items-center justify-center gap-2 text-xs sm:text-sm">
+                <p className="mx-auto mt-4 max-w-2xl text-sm text-white/76 sm:text-base md:text-lg">
+                  BWE helps people find Black-owned businesses, helps businesses get discovered, and helps more Black buying power move through our own platform.
+                </p>
+              </div>
+
+              <div className="mx-auto mt-5 flex w-full max-w-2xl flex-col gap-2 sm:flex-row sm:justify-center">
                 <Link
                   href="/business-directory"
-                  className="rounded-full border border-white/20 px-3 py-1 text-white/90 hover:bg-white/10"
-                >
-                  Find Businesses
-                </Link>
-                <Link
-                  href="/job-listings"
-                  className="rounded-full border border-white/20 px-3 py-1 text-white/90 hover:bg-white/10"
-                >
-                  Find Jobs
-                </Link>
-                <Link
-                  href="/marketplace"
-                  className="rounded-full border border-white/20 px-3 py-1 text-white/90 hover:bg-white/10"
-                >
-                  Shop Marketplace
-                </Link>
-                <Link
-                  href="/financial-literacy"
-                  className="rounded-full border border-white/20 px-3 py-1 text-white/90 hover:bg-white/10"
-                >
-                  Learn and Build Wealth
-                </Link>
-              </div>
-
-              <div className="mx-auto mt-3 max-w-3xl text-center text-xs text-white/65 sm:text-sm">
-                Primary paths:{" "}
-                <Link
-                  href="/business-directory"
-                  className="text-[#D4AF37] hover:underline"
-                >
-                  Business Directory
-                </Link>
-                ,{" "}
-                <Link
-                  href="/marketplace"
-                  className="text-[#D4AF37] hover:underline"
-                >
-                  Marketplace
-                </Link>
-                ,{" "}
-                <Link
-                  href="/job-listings"
-                  className="text-[#D4AF37] hover:underline"
-                >
-                  Jobs
-                </Link>
-                , and{" "}
-                <Link
-                  href="/financial-literacy"
-                  className="text-[#D4AF37] hover:underline"
-                >
-                  Financial Literacy
-                </Link>
-                .
-              </div>
-
-              <div className="mx-auto mt-3 grid w-full max-w-3xl grid-cols-2 gap-2 text-left sm:grid-cols-4">
-                <div className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2">
-                  <div className="text-[10px] uppercase tracking-[0.08em] text-white/45">
-                    Businesses
-                  </div>
-                  <div className="mt-0.5 text-sm font-extrabold text-white">
-                    {formatStat(trustStats.businesses)}
-                  </div>
-                </div>
-                <div className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2">
-                  <div className="text-[10px] uppercase tracking-[0.08em] text-white/45">
-                    Organizations
-                  </div>
-                  <div className="mt-0.5 text-sm font-extrabold text-white">
-                    {formatStat(trustStats.organizations)}
-                  </div>
-                </div>
-                <div className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2">
-                  <div className="text-[10px] uppercase tracking-[0.08em] text-white/45">
-                    Opportunities
-                  </div>
-                  <div className="mt-0.5 text-sm font-extrabold text-white">
-                    {formatStat(trustStats.opportunities)}
-                  </div>
-                </div>
-                <div className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2">
-                  <div className="text-[10px] uppercase tracking-[0.08em] text-white/45">
-                    Products
-                  </div>
-                  <div className="mt-0.5 text-sm font-extrabold text-white">
-                    {formatStat(trustStats.products)}
-                  </div>
-                </div>
-              </div>
-              <div className="mx-auto mt-1 max-w-3xl text-left text-[11px] text-white/50">
-                Live platform inventory snapshot.
-              </div>
-            </div>
-
-            <div className="mx-auto mt-4 flex w-full max-w-xl flex-col gap-2 sm:flex-row sm:justify-center">
-              <Link
-                href="/business-directory"
-                className="w-full sm:w-auto"
-                onClick={() =>
-                  trackHomepageEvent("homepage_cta_clicked", {
-                    section: "hero",
-                    ctaId: "hero_search_businesses",
-                    ctaLabel: "Search Businesses",
-                    destination: "/business-directory",
-                  })
-                }
-              >
-                <button className="h-11 w-full rounded-xl border border-[#D4AF37]/45 bg-[#D4AF37]/18 px-5 text-sm font-bold text-[#F1D57A] transition hover:-translate-y-0.5 hover:bg-[#D4AF37]/25 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 sm:h-11 sm:w-auto sm:px-6">
-                  Search Businesses
-                </button>
-              </Link>
-              <Link
-                href="/business-directory/add-business"
-                className="w-full sm:w-auto"
-                onClick={() =>
-                  trackHomepageEvent("homepage_cta_clicked", {
-                    section: "hero",
-                    ctaId: "hero_add_business",
-                    ctaLabel: "Add Your Business",
-                    destination: "/business-directory/add-business",
-                  })
-                }
-              >
-                <button className="h-11 w-full rounded-xl border border-[#D4AF37]/45 bg-[#D4AF37]/8 px-5 text-sm font-bold text-[#F1D57A] transition hover:-translate-y-0.5 hover:bg-[#D4AF37]/16 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 sm:h-11 sm:w-auto sm:px-6">
-                  Add Your Business
-                </button>
-              </Link>
-              {user ? (
-                <Link
-                  href="/dashboard"
                   className="w-full sm:w-auto"
                   onClick={() =>
                     trackHomepageEvent("homepage_cta_clicked", {
                       section: "hero",
-                      ctaId: "hero_go_to_dashboard",
-                      ctaLabel: "Go to Dashboard",
-                      destination: "/dashboard",
+                      ctaId: "hero_find_businesses",
+                      ctaLabel: "Find Black-Owned Businesses",
+                      destination: "/business-directory",
                     })
                   }
                 >
-                  <button className="h-11 w-full rounded-xl border border-white/25 bg-white/5 px-5 text-sm font-semibold text-white/85 transition hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/20 sm:h-11 sm:w-auto sm:px-6">
-                    Go to Dashboard
+                  <button className="h-12 w-full rounded-xl bg-[#D4AF37] px-5 text-sm font-extrabold text-black transition hover:-translate-y-0.5 hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 sm:w-auto sm:px-6">
+                    Find Black-Owned Businesses
                   </button>
                 </Link>
-              ) : null}
+                <Link
+                  href="/business-directory/add-business"
+                  className="w-full sm:w-auto"
+                  onClick={() =>
+                    trackHomepageEvent("homepage_cta_clicked", {
+                      section: "hero",
+                      ctaId: "hero_list_business",
+                      ctaLabel: "List Your Business",
+                      destination: "/business-directory/add-business",
+                    })
+                  }
+                >
+                  <button className="h-12 w-full rounded-xl border border-[#D4AF37]/45 bg-[#D4AF37]/10 px-5 text-sm font-bold text-[#F1D57A] transition hover:-translate-y-0.5 hover:bg-[#D4AF37]/16 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 sm:w-auto sm:px-6">
+                    List Your Business
+                  </button>
+                </Link>
+              </div>
+
+              <div className="mx-auto mt-4 max-w-2xl rounded-2xl border border-white/10 bg-white/[0.03] p-3 text-left sm:p-4">
+                <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#D4AF37] sm:text-[11px]">
+                  Join BWE
+                </div>
+                <div className="mt-1 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                  <p className="text-xs text-white/75 sm:text-sm">
+                    Join to save businesses, track opportunities, and move through the BWE ecosystem with faster access to the tools built to help you support, shop, and grow.
+                  </p>
+                  <Link
+                    href={user ? "/dashboard" : "/signup"}
+                    onClick={() =>
+                      trackHomepageEvent("homepage_cta_clicked", {
+                        section: "hero",
+                        ctaId: user ? "hero_dashboard" : "hero_join_bwe",
+                        ctaLabel: user ? "Go to Dashboard" : "Join BWE",
+                        destination: user ? "/dashboard" : "/signup",
+                      })
+                    }
+                    className="inline-flex shrink-0 items-center justify-center rounded-lg border border-white/20 bg-black/30 px-4 py-2 text-xs font-semibold text-white/85 hover:bg-black/45"
+                  >
+                    {user ? "Go to Dashboard" : "Join BWE"}
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            <div className="mx-auto mt-4 grid w-full max-w-5xl gap-2 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-left">
+                <div className="text-[10px] uppercase tracking-[0.08em] text-white/45">
+                  Trust signal
+                </div>
+                <div className="mt-1 text-sm font-semibold text-white/90">
+                  Black-owned business discovery
+                </div>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-left">
+                <div className="text-[10px] uppercase tracking-[0.08em] text-white/45">
+                  Trust signal
+                </div>
+                <div className="mt-1 text-sm font-semibold text-white/90">
+                  Community-powered economic support
+                </div>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-left">
+                <div className="text-[10px] uppercase tracking-[0.08em] text-white/45">
+                  Trust signal
+                </div>
+                <div className="mt-1 text-sm font-semibold text-white/90">
+                  Listings, jobs, marketplace, and wealth tools
+                </div>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-left">
+                <div className="text-[10px] uppercase tracking-[0.08em] text-white/45">
+                  Trust signal
+                </div>
+                <div className="mt-1 text-sm font-semibold text-white/90">
+                  Built to help dollars circulate longer
+                </div>
+              </div>
+            </div>
+
+            <div className="mx-auto mt-3 grid w-full max-w-4xl grid-cols-2 gap-2 text-left sm:grid-cols-4">
+              <div className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2">
+                <div className="text-[10px] uppercase tracking-[0.08em] text-white/45">
+                  Businesses
+                </div>
+                <div className="mt-0.5 text-sm font-extrabold text-white">
+                  {formatStat(trustStats.businesses)}
+                </div>
+              </div>
+              <div className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2">
+                <div className="text-[10px] uppercase tracking-[0.08em] text-white/45">
+                  Organizations
+                </div>
+                <div className="mt-0.5 text-sm font-extrabold text-white">
+                  {formatStat(trustStats.organizations)}
+                </div>
+              </div>
+              <div className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2">
+                <div className="text-[10px] uppercase tracking-[0.08em] text-white/45">
+                  Opportunities
+                </div>
+                <div className="mt-0.5 text-sm font-extrabold text-white">
+                  {formatStat(trustStats.opportunities)}
+                </div>
+              </div>
+              <div className="rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2">
+                <div className="text-[10px] uppercase tracking-[0.08em] text-white/45">
+                  Products
+                </div>
+                <div className="mt-0.5 text-sm font-extrabold text-white">
+                  {formatStat(trustStats.products)}
+                </div>
+              </div>
+            </div>
+            <div className="mx-auto mt-1 max-w-4xl text-left text-[11px] text-white/50">
+              Live platform inventory snapshot.
             </div>
           </div>
 
@@ -1141,10 +1057,10 @@ export default function Home() {
             <div className="mx-auto max-w-4xl">
               <div className="mb-2.5">
                 <div className="text-[10px] font-bold tracking-[0.08em] text-[#D4AF37] uppercase">
-                  Primary action
+                  Start here
                 </div>
                 <div className="text-sm font-semibold text-white/88 sm:text-[15px]">
-                  Start with search, then take action
+                  Search first, then take the next best action
                 </div>
               </div>
 
@@ -1357,50 +1273,124 @@ export default function Home() {
                         Opens full results with filters and scope controls
                       </span>
                     </div>
-
-                    {vertical === "all" && (
-                      <div className="mt-2.5 flex flex-wrap items-center gap-2">
-                        <Link
-                          href="/business-directory"
-                          className="rounded-full border border-[#D4AF37]/35 bg-[#D4AF37]/10 px-3 py-1.5 text-[11px] font-bold text-[#F1D57A] transition hover:bg-[#D4AF37]/16"
-                        >
-                          Open full directory
-                        </Link>
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>
             </div>
           </section>
 
+          <section className="mx-auto mt-5 max-w-5xl rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
+            <div className="mb-3 text-left">
+              <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#D4AF37]">
+                How BWE works
+              </div>
+              <div className="mt-1 text-sm text-white/75 sm:text-base">
+                A simpler path to finding, supporting, and growing Black-owned businesses.
+              </div>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              <article className="rounded-xl border border-white/10 bg-black/30 p-4 text-left">
+                <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#D4AF37]">1</div>
+                <h3 className="mt-1 text-sm font-extrabold text-white">Search</h3>
+                <p className="mt-1 text-xs text-white/70">
+                  Find Black-owned businesses, organizations, products, and opportunities.
+                </p>
+              </article>
+              <article className="rounded-xl border border-white/10 bg-black/30 p-4 text-left">
+                <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#D4AF37]">2</div>
+                <h3 className="mt-1 text-sm font-extrabold text-white">Support</h3>
+                <p className="mt-1 text-xs text-white/70">
+                  Buy, book, hire, share, and direct more spending toward businesses you want to see grow.
+                </p>
+              </article>
+              <article className="rounded-xl border border-white/10 bg-black/30 p-4 text-left">
+                <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#D4AF37]">3</div>
+                <h3 className="mt-1 text-sm font-extrabold text-white">List</h3>
+                <p className="mt-1 text-xs text-white/70">
+                  Create a listing and make your business easier to discover.
+                </p>
+              </article>
+              <article className="rounded-xl border border-white/10 bg-black/30 p-4 text-left">
+                <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#D4AF37]">4</div>
+                <h3 className="mt-1 text-sm font-extrabold text-white">Build Wealth</h3>
+                <p className="mt-1 text-xs text-white/70">
+                  Use BWE tools that help dollars circulate longer and compound impact.
+                </p>
+              </article>
+            </div>
+          </section>
+
+          <section className="mx-auto mt-5 max-w-5xl rounded-2xl border border-[#D4AF37]/25 bg-gradient-to-r from-black via-[#121212] to-black p-4 sm:p-5 shadow-[0_0_0_1px_rgba(212,175,55,0.14)]">
+            <div className="grid gap-4 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:items-center">
+              <div className="text-left">
+                <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
+                  For business owners
+                </p>
+                <h3 className="mt-1 text-xl font-extrabold tracking-tight text-white sm:text-2xl">
+                  Get discovered by people looking to support Black-owned businesses.
+                </h3>
+                <p className="mt-2 text-sm text-white/75">
+                  Create a listing, improve your visibility, and make your business easier to find when support intent is highest.
+                </p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-left">
+                <div className="text-[10px] uppercase tracking-[0.08em] text-white/45">
+                  Business listing conversion
+                </div>
+                <ul className="mt-2 space-y-2 text-sm text-white/80">
+                  <li>• Show up where buyers are already searching</li>
+                  <li>• Turn mission-aligned traffic into discovery</li>
+                  <li>• Make your business easier to trust and contact</li>
+                </ul>
+                <Link
+                  href="/business-directory/add-business"
+                  className="mt-4 inline-flex rounded-lg bg-[#D4AF37] px-4 py-2.5 text-sm font-extrabold text-black hover:bg-yellow-500"
+                >
+                  List Your Business
+                </Link>
+              </div>
+            </div>
+          </section>
+
           <div className="mx-auto mt-5 max-w-4xl rounded-xl border border-yellow-500/20 bg-yellow-500/8 p-3 sm:p-3.5">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-              <div>
+              <div className="text-left">
                 <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-yellow-300">
                   Black Card Membership
                 </div>
-                <div className="mt-0.5 text-xs sm:text-sm text-white/85">
-                  Verified member benefits, faster access to opportunities, and
-                  reward-based savings across BWE.
+                <div className="mt-0.5 text-xs text-white/85 sm:text-sm">
+                  Explore Black Card benefits, member access, and premium ecosystem advantages in a clearly separate path from Join BWE.
                 </div>
               </div>
               <Link
                 href="/pricing"
                 onClick={() =>
                   trackHomepageEvent("homepage_cta_clicked", {
-                    section: "post_search",
-                    ctaId: "post_search_black_card",
-                    ctaLabel: "Learn About Black Card",
+                    section: "membership",
+                    ctaId: "membership_black_card",
+                    ctaLabel: "Explore Black Card",
                     destination: "/pricing",
                   })
                 }
-                className="inline-flex w-full sm:w-auto justify-center rounded-lg border border-yellow-400/35 bg-black/35 px-4 py-2 text-xs font-semibold text-yellow-200 hover:bg-black/55"
+                className="inline-flex w-full justify-center rounded-lg border border-yellow-400/35 bg-black/35 px-4 py-2 text-xs font-semibold text-yellow-200 hover:bg-black/55 sm:w-auto"
               >
-                Learn About Black Card
+                Explore Black Card
               </Link>
             </div>
           </div>
+
+          <section className="mt-4 rounded-xl border border-[#D4AF37]/30 bg-[#D4AF37]/10 p-4">
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <div className="text-left">
+                <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">0.5% Challenge</p>
+                <p className="text-sm text-white">Search Black first. Buy, review, refer, repeat.</p>
+              </div>
+              <div className="flex flex-col gap-2 sm:flex-row">
+                <Link href="/challenge" className="rounded-lg bg-[#D4AF37] px-3 py-2 text-center text-xs font-extrabold text-black">Join the Challenge</Link>
+                <Link href="/business-directory" className="rounded-lg border border-[#D4AF37]/50 px-3 py-2 text-center text-xs font-bold text-[#F1D57A]">Search Black-Owned Businesses</Link>
+              </div>
+            </div>
+          </section>
 
           <section className="mt-5 sm:mt-6">
             <EconomicImpactSimulator />
@@ -1412,13 +1402,13 @@ export default function Home() {
         <div className="container mx-auto max-w-6xl px-4">
           {featuredJobs.length ? (
             <div className="mb-4 rounded-2xl border border-yellow-500/30 bg-yellow-500/10 p-4 sm:p-5">
-              <div className="flex items-center justify-between gap-2 mb-3">
+              <div className="mb-3 flex items-center justify-between gap-2">
                 <div>
                   <div className="text-[11px] font-bold uppercase tracking-[0.1em] text-yellow-300">
-                    Featured Jobs
+                    Jobs
                   </div>
                   <div className="text-sm font-semibold text-white">
-                    Premium placements from active hiring employers
+                    Featured opportunities from active employers
                   </div>
                 </div>
                 <Link
@@ -1436,14 +1426,14 @@ export default function Home() {
                     className="rounded-xl border border-yellow-400/30 bg-black/30 p-3 hover:bg-black/45"
                   >
                     <div className="flex items-center justify-between gap-2">
-                      <p className="font-bold text-white truncate">
+                      <p className="truncate font-bold text-white">
                         {job.title}
                       </p>
-                      <span className="text-[10px] px-2 py-0.5 rounded bg-yellow-400 text-black font-bold">
+                      <span className="rounded bg-yellow-400 px-2 py-0.5 text-[10px] font-bold text-black">
                         Featured
                       </span>
                     </div>
-                    <p className="mt-1 text-xs text-white/75 truncate">
+                    <p className="mt-1 truncate text-xs text-white/75">
                       {job.company} • {job.location} • {job.type}
                     </p>
                   </Link>
@@ -1454,53 +1444,46 @@ export default function Home() {
 
           <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
             <div className="mb-2 text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
-              Goal-based actions
+              Supporting ecosystem paths
             </div>
             <p className="mb-3 text-xs text-white/65">
-              Pick the path that matches what you want to do right now.
+              Once the core action is clear, you can go deeper into the rest of the platform.
             </p>
             <div className="grid gap-3 md:grid-cols-3">
-              <article className="rounded-xl border border-[#D4AF37]/30 bg-black/35 p-4">
-                <h3 className="text-sm font-extrabold text-white">
-                  Find Black-owned businesses
-                </h3>
-                <p className="mt-1 text-xs text-white/70">
-                  Search trusted listings, compare options, and open full
-                  profiles fast.
-                </p>
-                <Link
-                  href="/business-directory"
-                  className="mt-3 inline-flex rounded-lg bg-[#D4AF37] px-3 py-2 text-xs font-extrabold text-black hover:bg-yellow-500"
-                >
-                  Open Directory Search
-                </Link>
-              </article>
               <article className="rounded-xl border border-white/10 bg-black/30 p-4">
-                <h3 className="text-sm font-extrabold text-white">Find Jobs</h3>
+                <h3 className="text-sm font-extrabold text-white">Marketplace</h3>
                 <p className="mt-1 text-xs text-white/70">
-                  Find internships, jobs, and growth pathways aligned with your
-                  goals.
+                  Shop products from Black-owned brands and support commerce directly.
                 </p>
                 <Link
-                  href="/job-listings"
+                  href="/marketplace"
                   className="mt-3 inline-flex rounded-lg border border-[#D4AF37]/40 bg-[#D4AF37]/12 px-3 py-2 text-xs font-bold text-[#F1D57A] hover:bg-[#D4AF37]/18"
                 >
-                  Find Jobs Now
+                  Shop Marketplace
                 </Link>
               </article>
               <article className="rounded-xl border border-white/10 bg-black/30 p-4">
-                <h3 className="text-sm font-extrabold text-white">
-                  Start selling your products
-                </h3>
+                <h3 className="text-sm font-extrabold text-white">Student Opportunities</h3>
                 <p className="mt-1 text-xs text-white/70">
-                  Launch your storefront, list products, and reach buyers on
-                  BWE.
+                  Explore internships, scholarships, grants, and mentorship pathways.
                 </p>
                 <Link
-                  href="/marketplace/become-a-seller"
+                  href="/black-student-opportunities"
                   className="mt-3 inline-flex rounded-lg border border-emerald-300/35 bg-emerald-400/10 px-3 py-2 text-xs font-bold text-emerald-200 hover:bg-emerald-400/15"
                 >
-                  Start Selling
+                  Explore Student Hub
+                </Link>
+              </article>
+              <article className="rounded-xl border border-white/10 bg-black/30 p-4">
+                <h3 className="text-sm font-extrabold text-white">Advertising</h3>
+                <p className="mt-1 text-xs text-white/70">
+                  Premium placements for brands that want more visibility inside the BWE ecosystem.
+                </p>
+                <Link
+                  href="/advertise-with-us"
+                  className="mt-3 inline-flex rounded-lg border border-white/20 bg-white/5 px-3 py-2 text-xs font-bold text-white/85 hover:bg-white/10"
+                >
+                  Advertise with BWE
                 </Link>
               </article>
             </div>
@@ -1509,31 +1492,6 @@ export default function Home() {
       </section>
 
       <main className="container relative z-10 mx-auto max-w-6xl px-4 pb-0">
-        <section className="mb-5 rounded-2xl border border-emerald-300/20 bg-gradient-to-r from-black via-[#0f1511] to-black p-4 sm:p-5 shadow-[0_0_0_1px_rgba(16,185,129,0.15)]">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="max-w-3xl">
-              <p className="text-xs font-bold uppercase tracking-[0.08em] text-emerald-300">
-                Active opportunity lane
-              </p>
-              <h2 className="mt-1 text-xl font-extrabold tracking-tight text-white sm:text-2xl">
-                Student Opportunities
-              </h2>
-              <p className="mt-2 text-sm text-white/80">
-                Access internships, scholarships, grants, and mentorship in one
-                focused student opportunities hub.
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <Link
-                href="/black-student-opportunities"
-                className="rounded-xl bg-emerald-300 px-4 py-2.5 text-sm font-extrabold text-black hover:bg-emerald-200"
-              >
-                Explore Student Hub
-              </Link>
-            </div>
-          </div>
-        </section>
-
         <section className="mb-5 overflow-hidden rounded-2xl border border-[#D4AF37]/20 bg-gradient-to-r from-black via-[#0f0f0f] to-black p-3.5 sm:p-4 shadow-[0_0_0_1px_rgba(212,175,55,0.15)]">
           <div className="mb-2.5 flex items-center justify-between">
             <div>
@@ -1544,7 +1502,7 @@ export default function Home() {
                 Active partners supporting verified discovery and visibility
               </p>
             </div>
-            <span className="text-[10px] rounded border border-white/15 px-2 py-1 text-white/55">
+            <span className="rounded border border-white/15 px-2 py-1 text-[10px] text-white/55">
               Weekly slots · max {FEATURED_SPONSOR_RAIL_CAP}
             </span>
           </div>
@@ -1599,94 +1557,32 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="mb-5 rounded-2xl border border-[#D4AF37]/25 bg-gradient-to-r from-black via-[#121212] to-black p-4 sm:p-5 shadow-[0_0_0_1px_rgba(212,175,55,0.14)]">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div className="max-w-3xl">
-              <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
-                Growth lane
-              </p>
-              <h3 className="mt-1 text-lg font-extrabold tracking-tight text-white sm:text-xl">
-                Advertise with BWE
-              </h3>
-              <p className="mt-1 text-sm text-white/70">
-                Turn sponsor visibility into customer action with premium
-                placements designed for trusted Black-owned brands.
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <Link
-                href="/advertise-with-us"
-                className="rounded-xl bg-[#D4AF37] px-4 py-2.5 text-sm font-extrabold text-black hover:bg-yellow-500"
-              >
-                Become a Sponsor
-              </Link>
-              <Link
-                href="/advertise/featured-sponsor"
-                className="rounded-xl border border-[#D4AF37]/40 bg-[#D4AF37]/12 px-4 py-2.5 text-sm font-bold text-[#F1D57A] hover:bg-[#D4AF37]/18"
-              >
-                View Sponsor Packages
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        <section className="mb-0 mt-5 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
+        <section className="mb-5 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
           <p className="text-xs font-bold uppercase tracking-[0.08em] text-white/65">
-            Expansion areas
+            More from the ecosystem
           </p>
           <h3 className="mt-1 text-lg font-extrabold tracking-tight text-[#D4AF37] sm:text-xl">
-            Go deeper across the BWE ecosystem
+            Explore the broader BWE platform
           </h3>
 
-          <section className="relative mb-3 overflow-hidden rounded-2xl border border-[#D4AF37]/30 bg-black p-4 sm:p-5 shadow-[0_0_0_1px_rgba(255,255,255,0.06)]">
-            <div
-              className="pointer-events-none absolute inset-0"
-              style={{
-                backgroundImage:
-                  "linear-gradient(110deg, rgba(0,0,0,0.88) 14%, rgba(0,0,0,0.72) 52%, rgba(0,0,0,0.9) 100%), url('/ads/sample-banner8.jpg')",
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-              }}
-            />
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/45 via-transparent to-black/55" />
-
-            <div className="relative flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <div className="max-w-3xl">
-                <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
-                  Creator Economy
-                </p>
-                <h4 className="mt-1 text-base font-extrabold tracking-tight text-white sm:text-lg">
-                  BWE Music / Creator Platform
-                </h4>
-                <p className="mt-1 text-xs text-white/80 sm:text-sm">
-                  Explore artists, launch creator storefronts, and support music
-                  commerce through canonical checkout and fulfillment.
-                </p>
-              </div>
-              <div className="flex flex-wrap gap-2">
-                <Link
-                  href="/music"
-                  className="rounded-xl bg-[#D4AF37] px-3.5 py-2 text-xs font-extrabold text-black hover:bg-yellow-500 sm:text-sm"
-                >
-                  Explore Music
-                </Link>
-                <Link
-                  href="/music/join"
-                  className="rounded-xl border border-[#D4AF37]/45 bg-[#D4AF37]/10 px-3.5 py-2 text-xs font-bold text-[#F1D57A] hover:bg-[#D4AF37]/18 sm:text-sm"
-                >
-                  Join as Creator
-                </Link>
-              </div>
-            </div>
-          </section>
-
-          <div className="mt-3 grid gap-3 md:grid-cols-2">
+          <div className="mt-3 grid gap-3 md:grid-cols-2 lg:grid-cols-4">
             <article className="rounded-xl border border-white/10 bg-black/30 p-4">
-              <h4 className="text-sm font-extrabold text-white">
-                Real Estate & Investment
-              </h4>
+              <h4 className="text-sm font-extrabold text-white">Music</h4>
               <p className="mt-1 text-xs text-white/70">
-                Find ownership and investment pathways.
+                Support artists, creators, and music commerce.
+              </p>
+              <Link
+                href="/music"
+                className="mt-3 inline-flex rounded-lg border border-[#D4AF37]/40 bg-[#D4AF37]/12 px-3 py-2 text-xs font-bold text-[#F1D57A] hover:bg-[#D4AF37]/18"
+              >
+                Explore Music
+              </Link>
+            </article>
+
+            <article className="rounded-xl border border-white/10 bg-black/30 p-4">
+              <h4 className="text-sm font-extrabold text-white">Real Estate</h4>
+              <p className="mt-1 text-xs text-white/70">
+                Explore ownership and investment pathways.
               </p>
               <Link
                 href="/real-estate-investment"
@@ -1697,11 +1593,9 @@ export default function Home() {
             </article>
 
             <article className="rounded-xl border border-white/10 bg-black/30 p-4">
-              <h4 className="text-sm font-extrabold text-white">
-                Recruiting & Consulting
-              </h4>
+              <h4 className="text-sm font-extrabold text-white">Recruiting & Consulting</h4>
               <p className="mt-1 text-xs text-white/70">
-                Connect employers with vetted talent pathways.
+                Connect employers with talent pathways and consulting support.
               </p>
               <Link
                 href="/recruiting-consulting?type=employer"
@@ -1709,6 +1603,20 @@ export default function Home() {
               >
                 Open Recruiting
               </Link>
+            </article>
+
+            <article className="rounded-xl border border-white/10 bg-black/30 p-4">
+              <h4 className="text-sm font-extrabold text-white">Join Creator or Consulting Waitlist</h4>
+              <p className="mt-1 text-xs text-white/70">
+                Stay close to new launches without cluttering the top of the homepage.
+              </p>
+              <button
+                type="button"
+                onClick={() => setModalOpen(true)}
+                className="mt-3 inline-flex rounded-lg border border-yellow-400/35 bg-black/35 px-3 py-2 text-xs font-semibold text-yellow-200 hover:bg-black/55"
+              >
+                Notify Me
+              </button>
             </article>
           </div>
         </section>

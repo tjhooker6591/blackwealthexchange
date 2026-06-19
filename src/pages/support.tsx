@@ -84,20 +84,10 @@ export default function Support() {
       </Head>
       <main className="min-h-screen bg-black text-white p-8">
         <section className="mx-auto mt-4 max-w-6xl rounded-xl border border-white/15 bg-white/[0.03] p-3 text-sm text-white/80">
-          <div className="font-bold text-white">
-            Action Required / What Changed
-          </div>
-          <div className="mt-1">
-            What changed: latest items and statuses may have updated since your
-            last visit.
-          </div>
-          <div>
-            Needs action: review your active items and respond where pending.
-          </div>
-          <div>At risk: delayed response can reduce conversion and trust.</div>
-          <div className="mt-1">
-            sourceStatus: <span className="font-semibold">needs_mapping</span>
-          </div>
+          <div className="font-bold text-white">Support quick start</div>
+          <div className="mt-1">Open a ticket for account, billing, security, marketplace, jobs, or directory issues.</div>
+          <div>Use My Tickets to track responses and follow-ups from the support team.</div>
+          <div>Check System Status before opening an outage report.</div>
         </section>
 
         <div className="max-w-6xl mx-auto space-y-8">
@@ -113,11 +103,11 @@ export default function Support() {
               Most issues can be resolved quickly without submitting a ticket.
             </p>
             <p className={`text-xs mt-2 ${sig}`}>
-              ● {s?.overallStatus || "loading"} • Last updated:{" "}
-              {s?.lastUpdatedAt || "-"} • Typical response time:{" "}
+              ● {s?.overallStatus || "operational"} • Last updated:{" "}
+              {s?.lastUpdatedAt ? new Date(s.lastUpdatedAt).toLocaleString() : "updating"} • Typical response time:{" "}
               {s?.typicalResponseTimeHours != null
                 ? `${s.typicalResponseTimeHours}h`
-                : "n/a"}
+                : "calculating"}
             </p>
             <div className="mt-4 w-full md:w-2/3 p-3 rounded-lg bg-zinc-900 border border-zinc-700 text-zinc-200 flex items-center gap-2">
               <Search className="h-4 w-4 text-zinc-400" />

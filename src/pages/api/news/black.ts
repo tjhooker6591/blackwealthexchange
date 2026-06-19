@@ -129,6 +129,7 @@ const SOURCES: Source[] = [
 ];
 
 const CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes
+const COLD_START_BUDGET_MS = 4000;
 const parser = new Parser();
 
 function stripHtml(input: string) {
@@ -236,14 +237,18 @@ async function refreshCache(cache: CacheShape, now: number) {
   cache.refreshing = true;
   cache.refreshPromise = (async () => {
     const failures: Record<string, string> = {};
-    const results = await Promise.allSettled(SOURCES.map((s) => fetchFeed(s)));
-
     const merged: NewsItem[] = [];
-    results.forEach((r, idx) => {
-      const src = SOURCES[idx];
-      if (r.status === "fulfilled") merged.push(...r.value);
-      else failures[src.id] = r.reason?.message || "Failed";
-    });
+
+    await Promise.all(
+      SOURCES.map(async (src) => {
+        try {
+          const items = await fetchFeed(src);
+          merged.push(...items);
+        } catch (err: any) {
+          failures[src.id] = err?.message || "Failed";
+        }
+      }),
+    );
 
     const seen = new Set<string>();
     const deduped = merged.filter((it) => {
@@ -292,7 +297,10 @@ export default async function handler(
   // If we already have cached items, return stale quickly and revalidate in background.
   if (!cache.items.length || now - cache.at > CACHE_TTL_MS) {
     if (!cache.items.length) {
-      await refreshCache(cache, now);
+      await Promise.race([
+        refreshCache(cache, now),
+        new Promise<void>((resolve) => setTimeout(resolve, COLD_START_BUDGET_MS)),
+      ]);
     } else {
       void refreshCache(cache, now);
     }
