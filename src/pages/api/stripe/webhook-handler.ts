@@ -81,10 +81,10 @@ interface SessionMetadata {
   campaignId?: string;
   orderId?: string;
   courseId?: string;
-  courseName?: string;
-  itemName?: string;
   userId?: string;
   affiliateCode?: string;
+  courseName?: string;
+  itemName?: string;
 
   // checkout.ts / api/stripe/checkout.ts metadata
   itemId?: string;
@@ -2146,9 +2146,7 @@ export default async function webhookHandler(
           paymentStatus: "paid",
           purchasedAt: paidAt,
           email: email || null,
-          courseName: asString(
-            mergedMeta.courseName || mergedMeta.itemName || resolvedCourseId,
-          ),
+          courseName: asString(mergedMeta.courseName || mergedMeta.itemName || resolvedCourseId),
           sendAccessEmail: true,
         });
 
