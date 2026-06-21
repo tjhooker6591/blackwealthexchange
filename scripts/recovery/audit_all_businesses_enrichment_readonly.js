@@ -398,13 +398,13 @@ function confidenceRank(c) {
       _id: String(doc._id),
       protected_or_non_protected: protectedBusiness ? 'protected' : 'non-protected',
       current_business_name: safeString(doc.business_name || doc.name),
-      researched_business_name: proposedName,
+      machine_suggested_business_name: proposedName,
       current_address: [safeString(doc.address), safeString(doc.city), safeString(doc.state), safeString(doc.zip || doc.postalCode)].filter(Boolean).join(', '),
-      researched_address: researchedAddress,
+      mongo_observed_address: researchedAddress,
       current_phone: safeString(doc.phone),
-      researched_phone: researchedPhone,
+      normalized_phone_from_mongodb: researchedPhone,
       current_website: safeString(doc.website),
-      researched_website: researchedWebsite,
+      normalized_website_from_mongodb: researchedWebsite,
       current_category_fields: JSON.stringify({ category: doc.category ?? null, categories: doc.categories ?? null, display_categories: doc.display_categories ?? null }),
       proposed_category_fields: JSON.stringify({ category: doc.category ?? null, categories: doc.categories ?? null, display_categories: proposedCategory || null }),
       operating_status: operatingClosed ? 'closed' : (safeString(doc.status) || 'unknown'),
@@ -413,19 +413,19 @@ function confidenceRank(c) {
       source_url_1: researchedWebsite || '',
       source_url_2: '',
       evidence_summary: evidenceBits.join(' | '),
-      confidence,
+      heuristic_confidence: confidence,
       current_exclusion_reason: exclusionReason,
       fixes_required: fixes.join('; '),
-      approval_ready: approvalReady,
+      requires_verification_before_approval: approvalReady,
       manual_review_required: manualReviewRequired,
       projected_public_search_eligibility: projectedEligibility(doc, proposedName, proposedCategory, dup, operatingClosed),
       date_researched: today,
       protected_live_eligibility_before: protectedBusiness,
       business_name_missing_before: isBlank(doc.business_name || doc.name),
-      identified_missing_name: isBlank(doc.business_name || doc.name) && !isBlank(proposedName),
-      inferred_name_method: row.nameInf.method || '',
-      inferred_name_confidence: row.nameInf.confidence || '',
-      category_inference_confidence: row.category.confidence || '',
+      machine_suggested_identity_for_missing_name: isBlank(doc.business_name || doc.name) && !isBlank(proposedName),
+      machine_suggested_name_method: row.nameInf.method || '',
+      machine_suggested_name_confidence: row.nameInf.confidence || '',
+      category_mapping_confidence: row.category.confidence || '',
       exact_phone: row.keys.phone,
       exact_website_domain: row.keys.website,
       normalized_address_key: row.keys.address && row.keys.city && row.keys.state ? `${row.keys.address}|${row.keys.city}|${row.keys.state}` : '',
@@ -433,27 +433,27 @@ function confidenceRank(c) {
       raw_snapshot_hash: crypto.createHash('sha1').update(JSON.stringify(doc)).digest('hex'),
       identity_evidence_count: identityEvidenceCount,
       strong_identity_evidence_count: strongIdentityEvidenceCount,
-      has_officialish_source: hasOfficialishSource
+      has_official_looking_source_in_mongodb: hasOfficialishSource
     };
   });
 
   const protectedRows = rows.filter((r) => r.protected_or_non_protected === 'protected');
   const remainingRows = rows.filter((r) => r.protected_or_non_protected === 'non-protected');
   const missingNameRows = remainingRows.filter((r) => r.business_name_missing_before);
-  const identifiedMissingNameRows = missingNameRows.filter((r) => r.identified_missing_name);
-  const duplicateRows = remainingRows.filter((r) => r.duplicate_status !== 'none');
+  const machineSuggestedIdentityRows = missingNameRows.filter((r) => r.machine_suggested_identity_for_missing_name);
+  const machineDetectedDuplicateRows = remainingRows.filter((r) => r.duplicate_status !== 'none');
   const closedRows = remainingRows.filter((r) => r.operating_status === 'closed');
-  const approvalReadyRows = remainingRows.filter((r) => r.approval_ready);
+  const requiresVerificationBeforeApprovalRows = remainingRows.filter((r) => r.requires_verification_before_approval);
   const manualReviewRows = remainingRows.filter((r) => r.manual_review_required);
-  const unresolvedRows = remainingRows.filter((r) => r.confidence === 'unresolved');
+  const unresolvedRows = remainingRows.filter((r) => r.heuristic_confidence === 'unresolved');
   const stillLackInfoRows = remainingRows.filter((r) => /missing business name|incomplete address|missing description|missing category|insufficient verification/.test(r.current_exclusion_reason));
-  const enrichedOfficialish = remainingRows.filter((r) => r.researched_website || r.source_url_1);
-  const enrichedMultiClue = remainingRows.filter((r) => {
+  const officialLookingUrlStoredRows = remainingRows.filter((r) => r.normalized_website_from_mongodb || r.source_url_1);
+  const multipleStoredLookupClueRows = remainingRows.filter((r) => {
     let score = 0;
-    if (r.researched_phone) score++;
-    if (r.researched_website) score++;
-    if (r.researched_address) score++;
-    if (r.researched_business_name) score++;
+    if (r.normalized_phone_from_mongodb) score++;
+    if (r.normalized_website_from_mongodb) score++;
+    if (r.mongo_observed_address) score++;
+    if (r.machine_suggested_business_name) score++;
     return score >= 2;
   });
 
@@ -472,15 +472,15 @@ function confidenceRank(c) {
       protectedBusinesses: protectedRows.length,
       remainingBusinesses: remainingRows.length,
       missingNameRecords: missingNameRows.length,
-      missingNameRecordsSuccessfullyIdentified: identifiedMissingNameRows.length,
-      recordsEnrichedFromOfficialSources: enrichedOfficialish.length,
-      recordsEnrichedFromMultiplePublicSources: enrichedMultiClue.length,
-      duplicateRecordsFound: duplicateRows.length,
+      missingNameRecordsWithMachineSuggestedIdentity: machineSuggestedIdentityRows.length,
+      recordsWithOfficialLookingUrlStoredInMongoDb: officialLookingUrlStoredRows.length,
+      recordsWithMultipleStoredLookupClues: multipleStoredLookupClueRows.length,
+      recordsWithMachineDetectedDuplicateRelationship: machineDetectedDuplicateRows.length,
       closedBusinessesFound: closedRows.length,
-      approvalReadyRecords: approvalReadyRows.length,
+      recordsRequiringVerificationBeforeApproval: requiresVerificationBeforeApprovalRows.length,
       manualReviewRecords: manualReviewRows.length,
       unresolvedRecords: unresolvedRows.length,
-      recordsThatStillLackEnoughInformation: stillLackInfoRows.length,
+      recordsFlaggedAsStillLackingEnoughInformation: stillLackInfoRows.length,
     },
     protectedBusinessSimulation: simulation,
     exactRequiredSimulationText: [
@@ -508,8 +508,8 @@ function confidenceRank(c) {
   fs.writeFileSync(jsonPath, JSON.stringify(rows, null, 2));
   fs.writeFileSync(csvPath, csv);
   fs.writeFileSync(summaryPath, JSON.stringify(summary, null, 2));
-  fs.writeFileSync(candidatesPath, JSON.stringify(approvalReadyRows, null, 2));
-  fs.writeFileSync(dupesPath, JSON.stringify(duplicateRows, null, 2));
+  fs.writeFileSync(candidatesPath, JSON.stringify(requiresVerificationBeforeApprovalRows, null, 2));
+  fs.writeFileSync(dupesPath, JSON.stringify(machineDetectedDuplicateRows, null, 2));
   fs.writeFileSync(unresolvedPath, JSON.stringify(unresolvedRows, null, 2));
 
   console.log(JSON.stringify({ summaryPath, jsonPath, csvPath, candidatesPath, dupesPath, unresolvedPath, totals: summary.totals, simulation: summary.protectedBusinessSimulation }, null, 2));

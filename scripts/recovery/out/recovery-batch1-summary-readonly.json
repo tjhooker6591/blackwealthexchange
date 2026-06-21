@@ -1,0 +1,19 @@
+{
+  "environment": {
+    "database": "bwes-cluster",
+    "collection": "businesses",
+    "executionTimestamp": "2026-06-21T05:28:17.189Z",
+    "script": "/Users/blackforge/workspace/bwe/repos/repo_clean/scripts/recovery/build_recovery_batch1_readonly.js"
+  },
+  "totals": {
+    "totalCandidates": 1613,
+    "deliveredCandidates": 300
+  },
+  "protectedSimulation": {
+    "protectedBefore": 332,
+    "protectedAfter": 332,
+    "protectedIdsRemoved": 0,
+    "protectedBusinessesUnapproved": 0,
+    "protectedBusinessesDeactivated": 0
+  }
+}
