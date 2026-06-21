@@ -193,6 +193,7 @@ function inferredName(doc){
   const outDir = path.join(__dirname,'out');
   fs.mkdirSync(outDir,{recursive:true});
   fs.writeFileSync(path.join(outDir,'recovery-batch1-candidates-readonly.json'), JSON.stringify(top,null,2));
+  fs.writeFileSync(path.join(outDir,'recovery-batch1-candidates-full-readonly.json'), JSON.stringify(candidates,null,2));
   fs.writeFileSync(path.join(outDir,'recovery-batch1-summary-readonly.json'), JSON.stringify(summary,null,2));
   console.log(JSON.stringify(summary,null,2));
   await client.close();

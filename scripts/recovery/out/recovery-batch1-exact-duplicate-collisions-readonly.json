@@ -1,0 +1,1391 @@
+{
+  "rowCount": 21,
+  "rows": [
+    {
+      "_id": "67c9ead1818d604b84e5a463",
+      "current_values": {
+        "business_name": "Powder Beauty Los Angeles",
+        "phone": "13234529286",
+        "website": "",
+        "address": "452 S La Brea Ave, Los Angeles, CA 90036",
+        "city": "Los Angeles",
+        "state": "CA",
+        "category": "Beauty",
+        "categories": "Nail Salons, Waxing, Eyelash Service",
+        "display_categories": "Beauty, Grooming and Personal Care",
+        "description": "Nail Salons, Waxing, Eyelash Service",
+        "alias": "powder-beauty-los-angeles",
+        "slug": "powder-beauty-los-angeles-los-angeles-ca"
+      },
+      "proposed_values": {
+        "phone": "3234529286"
+      },
+      "evidence_source": [
+        {
+          "field": "phone",
+          "source": "mongodb_direct_normalization",
+          "type": "MongoDB-direct"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB-direct"
+      ],
+      "duplicate_status": "confirmed exact duplicate key collision",
+      "matched_existing_record_id": "67f73dec1d08a04e139a9d0f",
+      "duplicate_evidence": [
+        "exact_phone",
+        "exact_address"
+      ],
+      "confidence": "high",
+      "fields_still_missing": [],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "phone_plus_address",
+        "address_category_description",
+        "exact_duplicate_key_collision",
+        "nearly_complete"
+      ],
+      "primary_queue": "E",
+      "secondary_change_types": [
+        "normalization"
+      ],
+      "current_route": "/business-directory/powder-beauty-los-angeles",
+      "projected_route": "/business-directory/powder-beauty-los-angeles",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": true,
+      "current_display_category": "Beauty, Grooming and Personal Care",
+      "current_category_source_value": "Beauty, Grooming and Personal Care",
+      "proposed_display_category": null,
+      "category_would_change_search_results": false,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a47c",
+      "current_values": {
+        "business_name": "Starring By Ted Gibson Los Angeles",
+        "phone": "13234132244",
+        "website": "",
+        "address": "211 South La Brea Ave, Los Angeles, CA 90036",
+        "city": "Los Angeles",
+        "state": "CA",
+        "category": "Beauty",
+        "categories": "Hair Salons",
+        "display_categories": "Beauty, Grooming and Personal Care",
+        "description": "Black-owned hair salon in Los Angeles offering cuts, color, styling, and consultations.",
+        "alias": "starring-by-ted-gibson-los-angeles",
+        "slug": "starring-by-ted-gibson-los-angeles-los-angeles-ca"
+      },
+      "proposed_values": {
+        "phone": "3234132244"
+      },
+      "evidence_source": [
+        {
+          "field": "phone",
+          "source": "mongodb_direct_normalization",
+          "type": "MongoDB-direct"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB-direct"
+      ],
+      "duplicate_status": "confirmed exact duplicate key collision",
+      "matched_existing_record_id": "67f73dec1d08a04e139a9a8f",
+      "duplicate_evidence": [
+        "exact_phone",
+        "exact_address"
+      ],
+      "confidence": "high",
+      "fields_still_missing": [],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "phone_plus_address",
+        "address_category_description",
+        "exact_duplicate_key_collision",
+        "nearly_complete"
+      ],
+      "primary_queue": "E",
+      "secondary_change_types": [
+        "normalization"
+      ],
+      "current_route": "/business-directory/starring-by-ted-gibson-los-angeles",
+      "projected_route": "/business-directory/starring-by-ted-gibson-los-angeles",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": true,
+      "current_display_category": "Beauty, Grooming and Personal Care",
+      "current_category_source_value": "Beauty, Grooming and Personal Care",
+      "proposed_display_category": null,
+      "category_would_change_search_results": false,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a46d",
+      "current_values": {
+        "business_name": "The Londoner By Anthony Morrison Hermosa Beach 2",
+        "phone": "13107982672",
+        "website": "",
+        "address": "1049 Aviation Blvd, Hermosa Beach, CA 90254",
+        "city": "Hermosa Beach",
+        "state": "CA",
+        "category": "Beauty",
+        "categories": "Hair Salons",
+        "display_categories": "Beauty, Grooming and Personal Care",
+        "description": "Hair Salons",
+        "alias": "the-londoner-by-anthony-morrison-hermosa-beach-2",
+        "slug": "the-londoner-by-anthony-morrison-hermosa-beach-2-hermosa-beach-ca"
+      },
+      "proposed_values": {
+        "phone": "3107982672"
+      },
+      "evidence_source": [
+        {
+          "field": "phone",
+          "source": "mongodb_direct_normalization",
+          "type": "MongoDB-direct"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB-direct"
+      ],
+      "duplicate_status": "confirmed exact duplicate key collision",
+      "matched_existing_record_id": "67f73dec1d08a04e139a9d1f",
+      "duplicate_evidence": [
+        "exact_phone",
+        "exact_address"
+      ],
+      "confidence": "high",
+      "fields_still_missing": [],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "phone_plus_address",
+        "address_category_description",
+        "exact_duplicate_key_collision",
+        "nearly_complete"
+      ],
+      "primary_queue": "E",
+      "secondary_change_types": [
+        "normalization"
+      ],
+      "current_route": "/business-directory/the-londoner-by-anthony-morrison-hermosa-beach-2",
+      "projected_route": "/business-directory/the-londoner-by-anthony-morrison-hermosa-beach-2",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": true,
+      "current_display_category": "Beauty, Grooming and Personal Care",
+      "current_category_source_value": "Beauty, Grooming and Personal Care",
+      "proposed_display_category": null,
+      "category_would_change_search_results": false,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a493",
+      "current_values": {
+        "business_name": "The Hive Barber Studio West Hollywood",
+        "phone": "12137092990",
+        "website": "",
+        "address": "1250 N La Brea Ave, Ste 135, West Hollywood, CA 90038",
+        "city": "West Hollywood",
+        "state": "CA",
+        "category": "Beauty",
+        "categories": "Barbershop",
+        "display_categories": "Beauty, Grooming and Personal Care",
+        "description": "Local barbershop offering haircuts, fades, line-ups, and grooming services. Call ahead for hours and appointments.",
+        "alias": "the-hive-barber-studio-west-hollywood",
+        "slug": "the-hive-barber-studio-west-hollywood-west-hollywood-ca"
+      },
+      "proposed_values": {
+        "phone": "2137092990"
+      },
+      "evidence_source": [
+        {
+          "field": "phone",
+          "source": "mongodb_direct_normalization",
+          "type": "MongoDB-direct"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB-direct"
+      ],
+      "duplicate_status": "confirmed exact duplicate key collision",
+      "matched_existing_record_id": "67f73dec1d08a04e139a9d39",
+      "duplicate_evidence": [
+        "exact_phone",
+        "exact_address"
+      ],
+      "confidence": "high",
+      "fields_still_missing": [],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "phone_plus_address",
+        "address_category_description",
+        "exact_duplicate_key_collision",
+        "nearly_complete"
+      ],
+      "primary_queue": "E",
+      "secondary_change_types": [
+        "normalization"
+      ],
+      "current_route": "/business-directory/the-hive-barber-studio-west-hollywood",
+      "projected_route": "/business-directory/the-hive-barber-studio-west-hollywood",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": true,
+      "current_display_category": "Beauty, Grooming and Personal Care",
+      "current_category_source_value": "Beauty, Grooming and Personal Care",
+      "proposed_display_category": null,
+      "category_would_change_search_results": false,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a469",
+      "current_values": {
+        "business_name": "The Hair Bar Of Beverly Hills Beverly Hills",
+        "phone": "14242855290",
+        "website": "",
+        "address": "151 S Doheny Dr, Studio 26, Beverly Hills, CA 90211",
+        "city": "Beverly Hills",
+        "state": "CA",
+        "category": "Beauty",
+        "categories": "Hair Salons",
+        "display_categories": "Beauty, Grooming and Personal Care",
+        "description": "Hair Salons",
+        "alias": "the-hair-bar-of-beverly-hills-beverly-hills",
+        "slug": "the-hair-bar-of-beverly-hills-beverly-hills-beverly-hills-ca"
+      },
+      "proposed_values": {
+        "phone": "4242855290"
+      },
+      "evidence_source": [
+        {
+          "field": "phone",
+          "source": "mongodb_direct_normalization",
+          "type": "MongoDB-direct"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB-direct"
+      ],
+      "duplicate_status": "confirmed exact duplicate key collision",
+      "matched_existing_record_id": "67f73dec1d08a04e139a9d17",
+      "duplicate_evidence": [
+        "exact_phone",
+        "exact_address"
+      ],
+      "confidence": "high",
+      "fields_still_missing": [],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "phone_plus_address",
+        "address_category_description",
+        "exact_duplicate_key_collision",
+        "nearly_complete"
+      ],
+      "primary_queue": "E",
+      "secondary_change_types": [
+        "normalization"
+      ],
+      "current_route": "/business-directory/the-hair-bar-of-beverly-hills-beverly-hills",
+      "projected_route": "/business-directory/the-hair-bar-of-beverly-hills-beverly-hills",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": true,
+      "current_display_category": "Beauty, Grooming and Personal Care",
+      "current_category_source_value": "Beauty, Grooming and Personal Care",
+      "proposed_display_category": null,
+      "category_would_change_search_results": false,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a46e",
+      "current_values": {
+        "business_name": "Michael Sixteenthirtysix Los Angeles 3",
+        "phone": "13107309360",
+        "website": "",
+        "address": "1636 Abbott Kinney Blvd, Sixteen Thirty Six, Los Angeles, CA 90291",
+        "city": "Los Angeles",
+        "state": "CA",
+        "category": "Beauty",
+        "categories": "Hair Stylists",
+        "display_categories": "Beauty, Grooming and Personal Care",
+        "description": "Hair Stylists",
+        "alias": "michael-sixteenthirtysix-los-angeles-3",
+        "slug": "michael-sixteenthirtysix-los-angeles-3-los-angeles-ca"
+      },
+      "proposed_values": {
+        "phone": "3107309360"
+      },
+      "evidence_source": [
+        {
+          "field": "phone",
+          "source": "mongodb_direct_normalization",
+          "type": "MongoDB-direct"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB-direct"
+      ],
+      "duplicate_status": "confirmed exact duplicate key collision",
+      "matched_existing_record_id": "67f73dec1d08a04e139a9d36",
+      "duplicate_evidence": [
+        "exact_phone",
+        "exact_address"
+      ],
+      "confidence": "high",
+      "fields_still_missing": [],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "phone_plus_address",
+        "address_category_description",
+        "exact_duplicate_key_collision",
+        "nearly_complete"
+      ],
+      "primary_queue": "E",
+      "secondary_change_types": [
+        "normalization"
+      ],
+      "current_route": "/business-directory/michael-sixteenthirtysix-los-angeles-3",
+      "projected_route": "/business-directory/michael-sixteenthirtysix-los-angeles-3",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": true,
+      "current_display_category": "Beauty, Grooming and Personal Care",
+      "current_category_source_value": "Beauty, Grooming and Personal Care",
+      "proposed_display_category": null,
+      "category_would_change_search_results": false,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a47f",
+      "current_values": {
+        "business_name": "Saints Los Angeles 2",
+        "phone": "14243530069",
+        "website": "",
+        "address": "12796 Washington Blvd, Los Angeles, CA 90066",
+        "city": "Los Angeles",
+        "state": "CA",
+        "category": "Beauty",
+        "categories": "Barbershop",
+        "display_categories": "Beauty, Grooming and Personal Care",
+        "description": "Barbers, Men's Clothing, Art Galleries",
+        "alias": "saints-los-angeles-2",
+        "slug": "saints-los-angeles-2-los-angeles-ca"
+      },
+      "proposed_values": {
+        "phone": "4243530069"
+      },
+      "evidence_source": [
+        {
+          "field": "phone",
+          "source": "mongodb_direct_normalization",
+          "type": "MongoDB-direct"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB-direct"
+      ],
+      "duplicate_status": "confirmed exact duplicate key collision",
+      "matched_existing_record_id": "67f73dec1d08a04e139a9d23",
+      "duplicate_evidence": [
+        "exact_phone",
+        "exact_address"
+      ],
+      "confidence": "high",
+      "fields_still_missing": [],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "phone_plus_address",
+        "address_category_description",
+        "exact_duplicate_key_collision",
+        "nearly_complete"
+      ],
+      "primary_queue": "E",
+      "secondary_change_types": [
+        "normalization"
+      ],
+      "current_route": "/business-directory/saints-los-angeles-2",
+      "projected_route": "/business-directory/saints-los-angeles-2",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": true,
+      "current_display_category": "Beauty, Grooming and Personal Care",
+      "current_category_source_value": "Beauty, Grooming and Personal Care",
+      "proposed_display_category": null,
+      "category_would_change_search_results": false,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a481",
+      "current_values": {
+        "business_name": "Dysonna Hair Studio Los Angeles 2",
+        "phone": "13238570030",
+        "website": "",
+        "address": "4562 W Washington Blvd, Los Angeles, CA 90016",
+        "city": "Los Angeles",
+        "state": "CA",
+        "category": "Beauty",
+        "categories": "Hair Salons",
+        "display_categories": "Beauty, Grooming and Personal Care",
+        "description": "Hair Salons",
+        "alias": "dysonna-hair-studio-los-angeles-2",
+        "slug": "dysonna-hair-studio-los-angeles-2-los-angeles-ca"
+      },
+      "proposed_values": {
+        "phone": "3238570030"
+      },
+      "evidence_source": [
+        {
+          "field": "phone",
+          "source": "mongodb_direct_normalization",
+          "type": "MongoDB-direct"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB-direct"
+      ],
+      "duplicate_status": "confirmed exact duplicate key collision",
+      "matched_existing_record_id": "67f73dec1d08a04e139a9d25",
+      "duplicate_evidence": [
+        "exact_phone",
+        "exact_address"
+      ],
+      "confidence": "high",
+      "fields_still_missing": [],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "phone_plus_address",
+        "address_category_description",
+        "exact_duplicate_key_collision",
+        "nearly_complete"
+      ],
+      "primary_queue": "E",
+      "secondary_change_types": [
+        "normalization"
+      ],
+      "current_route": "/business-directory/dysonna-hair-studio-los-angeles-2",
+      "projected_route": "/business-directory/dysonna-hair-studio-los-angeles-2",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": true,
+      "current_display_category": "Beauty, Grooming and Personal Care",
+      "current_category_source_value": "Beauty, Grooming and Personal Care",
+      "proposed_display_category": null,
+      "category_would_change_search_results": false,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a498",
+      "current_values": {
+        "business_name": "Quo Vadis Shave Studio Los Angeles",
+        "phone": "18186390306",
+        "website": "",
+        "address": "13677 Foothill Blvd, Ste A, Los Angeles, CA 91342",
+        "city": "Los Angeles",
+        "state": "CA",
+        "category": "Beauty",
+        "categories": "Barbershop",
+        "display_categories": "Beauty, Grooming and Personal Care",
+        "description": "Local barbershop offering haircuts, fades, line-ups, and grooming services. Call ahead for hours and appointments.",
+        "alias": "quo-vadis-shave-studio-los-angeles",
+        "slug": "quo-vadis-shave-studio-los-angeles-los-angeles-ca"
+      },
+      "proposed_values": {
+        "phone": "8186390306"
+      },
+      "evidence_source": [
+        {
+          "field": "phone",
+          "source": "mongodb_direct_normalization",
+          "type": "MongoDB-direct"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB-direct"
+      ],
+      "duplicate_status": "confirmed exact duplicate key collision",
+      "matched_existing_record_id": "67f73dec1d08a04e139a9d44",
+      "duplicate_evidence": [
+        "exact_phone",
+        "exact_address"
+      ],
+      "confidence": "high",
+      "fields_still_missing": [],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "phone_plus_address",
+        "address_category_description",
+        "exact_duplicate_key_collision",
+        "nearly_complete"
+      ],
+      "primary_queue": "E",
+      "secondary_change_types": [
+        "normalization"
+      ],
+      "current_route": "/business-directory/quo-vadis-shave-studio-los-angeles",
+      "projected_route": "/business-directory/quo-vadis-shave-studio-los-angeles",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": true,
+      "current_display_category": "Beauty, Grooming and Personal Care",
+      "current_category_source_value": "Beauty, Grooming and Personal Care",
+      "proposed_display_category": null,
+      "category_would_change_search_results": false,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a49f",
+      "current_values": {
+        "business_name": "The Galaxy Hair Salon Barbershop Carson",
+        "phone": "13105181555",
+        "website": "",
+        "address": "234 E Carson St, Ste 1, Carson, CA 90745",
+        "city": "Carson",
+        "state": "CA",
+        "category": "Beauty",
+        "categories": "Barbershop",
+        "display_categories": "Beauty, Grooming and Personal Care",
+        "description": "Local barbershop offering haircuts, fades, line-ups, and grooming services. Call ahead for hours and appointments.",
+        "alias": "the-galaxy-hair-salon-barbershop-carson",
+        "slug": "the-galaxy-hair-salon-barbershop-carson-carson-ca"
+      },
+      "proposed_values": {
+        "phone": "3105181555"
+      },
+      "evidence_source": [
+        {
+          "field": "phone",
+          "source": "mongodb_direct_normalization",
+          "type": "MongoDB-direct"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB-direct"
+      ],
+      "duplicate_status": "confirmed exact duplicate key collision",
+      "matched_existing_record_id": "67f73dec1d08a04e139a9d47",
+      "duplicate_evidence": [
+        "exact_phone",
+        "exact_address"
+      ],
+      "confidence": "high",
+      "fields_still_missing": [],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "phone_plus_address",
+        "address_category_description",
+        "exact_duplicate_key_collision",
+        "nearly_complete"
+      ],
+      "primary_queue": "E",
+      "secondary_change_types": [
+        "normalization"
+      ],
+      "current_route": "/business-directory/the-galaxy-hair-salon-barbershop-carson",
+      "projected_route": "/business-directory/the-galaxy-hair-salon-barbershop-carson",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": true,
+      "current_display_category": "Beauty, Grooming and Personal Care",
+      "current_category_source_value": "Beauty, Grooming and Personal Care",
+      "proposed_display_category": null,
+      "category_would_change_search_results": false,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a467",
+      "current_values": {
+        "business_name": "Lashannas Braid Parlor Los Angeles",
+        "phone": "13235419167",
+        "website": "",
+        "address": "1938 W Florence Ave, Los Angeles, CA 90047",
+        "city": "Los Angeles",
+        "state": "CA",
+        "category": "Beauty",
+        "categories": "Hair Extensions, Hair Stylists",
+        "display_categories": "Beauty, Grooming and Personal Care",
+        "description": "Hair Extensions, Hair Stylists",
+        "alias": "lashannas-braid-parlor-los-angeles",
+        "slug": "lashannas-braid-parlor-los-angeles-los-angeles-ca"
+      },
+      "proposed_values": {
+        "phone": "3235419167"
+      },
+      "evidence_source": [
+        {
+          "field": "phone",
+          "source": "mongodb_direct_normalization",
+          "type": "MongoDB-direct"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB-direct"
+      ],
+      "duplicate_status": "confirmed exact duplicate key collision",
+      "matched_existing_record_id": "67f73dec1d08a04e139a9d18",
+      "duplicate_evidence": [
+        "exact_phone",
+        "exact_address"
+      ],
+      "confidence": "high",
+      "fields_still_missing": [],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "phone_plus_address",
+        "address_category_description",
+        "exact_duplicate_key_collision",
+        "nearly_complete"
+      ],
+      "primary_queue": "E",
+      "secondary_change_types": [
+        "normalization"
+      ],
+      "current_route": "/business-directory/lashannas-braid-parlor-los-angeles",
+      "projected_route": "/business-directory/lashannas-braid-parlor-los-angeles",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": true,
+      "current_display_category": "Beauty, Grooming and Personal Care",
+      "current_category_source_value": "Beauty, Grooming and Personal Care",
+      "proposed_display_category": null,
+      "category_would_change_search_results": false,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a491",
+      "current_values": {
+        "business_name": "The Parlor Room Beverly Hills",
+        "phone": "14242569712",
+        "website": "",
+        "address": "8383 Wilshire Blvd, Ste 110, Beverly Hills, CA 90211",
+        "city": "Beverly Hills",
+        "state": "CA",
+        "category": "Beauty",
+        "categories": "Men's Hair Salons",
+        "display_categories": "Beauty, Grooming and Personal Care",
+        "description": "Men's Hair Salons",
+        "alias": "the-parlor-room-beverly-hills",
+        "slug": "the-parlor-room-beverly-hills-beverly-hills-ca"
+      },
+      "proposed_values": {
+        "phone": "4242569712"
+      },
+      "evidence_source": [
+        {
+          "field": "phone",
+          "source": "mongodb_direct_normalization",
+          "type": "MongoDB-direct"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB-direct"
+      ],
+      "duplicate_status": "confirmed exact duplicate key collision",
+      "matched_existing_record_id": "67f73dec1d08a04e139a9d3a",
+      "duplicate_evidence": [
+        "exact_phone",
+        "exact_address"
+      ],
+      "confidence": "high",
+      "fields_still_missing": [],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "phone_plus_address",
+        "address_category_description",
+        "exact_duplicate_key_collision",
+        "nearly_complete"
+      ],
+      "primary_queue": "E",
+      "secondary_change_types": [
+        "normalization"
+      ],
+      "current_route": "/business-directory/the-parlor-room-beverly-hills",
+      "projected_route": "/business-directory/the-parlor-room-beverly-hills",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": true,
+      "current_display_category": "Beauty, Grooming and Personal Care",
+      "current_category_source_value": "Beauty, Grooming and Personal Care",
+      "proposed_display_category": null,
+      "category_would_change_search_results": false,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a46b",
+      "current_values": {
+        "business_name": "Beautybeez North Hollywood",
+        "phone": "18188568185",
+        "website": "",
+        "address": "6522 Laurel Canyon Blvd, North Hollywood, CA 91606",
+        "city": "North Hollywood",
+        "state": "CA",
+        "category": "Beauty",
+        "categories": "Cosmetics & Beauty Supply, Hair Salons, Skin Care",
+        "display_categories": "Beauty, Grooming and Personal Care",
+        "description": "Cosmetics & Beauty Supply, Hair Salons, Skin Care",
+        "alias": "beautybeez-north-hollywood",
+        "slug": "beautybeez-north-hollywood-north-hollywood-ca"
+      },
+      "proposed_values": {
+        "phone": "8188568185"
+      },
+      "evidence_source": [
+        {
+          "field": "phone",
+          "source": "mongodb_direct_normalization",
+          "type": "MongoDB-direct"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB-direct"
+      ],
+      "duplicate_status": "confirmed exact duplicate key collision",
+      "matched_existing_record_id": "67f73dec1d08a04e139a9d1b",
+      "duplicate_evidence": [
+        "exact_phone",
+        "exact_address"
+      ],
+      "confidence": "high",
+      "fields_still_missing": [],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "phone_plus_address",
+        "address_category_description",
+        "exact_duplicate_key_collision",
+        "nearly_complete"
+      ],
+      "primary_queue": "E",
+      "secondary_change_types": [
+        "normalization"
+      ],
+      "current_route": "/business-directory/beautybeez-north-hollywood",
+      "projected_route": "/business-directory/beautybeez-north-hollywood",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": true,
+      "current_display_category": "Beauty, Grooming and Personal Care",
+      "current_category_source_value": "Beauty, Grooming and Personal Care",
+      "proposed_display_category": null,
+      "category_would_change_search_results": false,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a46c",
+      "current_values": {
+        "business_name": "Le Mode Hair Salon Suite Los Angeles 3",
+        "phone": "13109270584",
+        "website": "",
+        "address": "5444 Yolanda Ave, Ste 217, Los Angeles, CA 91356",
+        "city": "Los Angeles",
+        "state": "CA",
+        "category": "Beauty",
+        "categories": "Hair Stylists, Hair Extensions, Makeup Artists",
+        "display_categories": "Beauty, Grooming and Personal Care",
+        "description": "Hair Stylists, Hair Extensions, Makeup Artists",
+        "alias": "le-mode-hair-salon-suite-los-angeles-3",
+        "slug": "le-mode-hair-salon-suite-los-angeles-3-los-angeles-ca"
+      },
+      "proposed_values": {
+        "phone": "3109270584"
+      },
+      "evidence_source": [
+        {
+          "field": "phone",
+          "source": "mongodb_direct_normalization",
+          "type": "MongoDB-direct"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB-direct"
+      ],
+      "duplicate_status": "confirmed exact duplicate key collision",
+      "matched_existing_record_id": "67f73dec1d08a04e139a9d1a",
+      "duplicate_evidence": [
+        "exact_phone",
+        "exact_address"
+      ],
+      "confidence": "high",
+      "fields_still_missing": [],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "phone_plus_address",
+        "address_category_description",
+        "exact_duplicate_key_collision",
+        "nearly_complete"
+      ],
+      "primary_queue": "E",
+      "secondary_change_types": [
+        "normalization"
+      ],
+      "current_route": "/business-directory/le-mode-hair-salon-suite-los-angeles-3",
+      "projected_route": "/business-directory/le-mode-hair-salon-suite-los-angeles-3",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": true,
+      "current_display_category": "Beauty, Grooming and Personal Care",
+      "current_category_source_value": "Beauty, Grooming and Personal Care",
+      "proposed_display_category": null,
+      "category_would_change_search_results": false,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a46f",
+      "current_values": {
+        "business_name": "Naturally You Locks Los Angeles 2",
+        "phone": "14242611620",
+        "website": "",
+        "address": "7409 Crenshaw Blvd, Los Angeles, CA 90043",
+        "city": "Los Angeles",
+        "state": "CA",
+        "category": "Beauty",
+        "categories": "Hair Stylists, Jewelry, Eyebrow Services",
+        "display_categories": "Beauty, Grooming and Personal Care",
+        "description": "Hair Stylists, Jewelry, Eyebrow Services",
+        "alias": "naturally-you-locks-los-angeles-2",
+        "slug": "naturally-you-locks-los-angeles-2-los-angeles-ca"
+      },
+      "proposed_values": {
+        "phone": "4242611620"
+      },
+      "evidence_source": [
+        {
+          "field": "phone",
+          "source": "mongodb_direct_normalization",
+          "type": "MongoDB-direct"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB-direct"
+      ],
+      "duplicate_status": "confirmed exact duplicate key collision",
+      "matched_existing_record_id": "67f73dec1d08a04e139a9d14",
+      "duplicate_evidence": [
+        "exact_phone",
+        "exact_address"
+      ],
+      "confidence": "high",
+      "fields_still_missing": [],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "phone_plus_address",
+        "address_category_description",
+        "exact_duplicate_key_collision",
+        "nearly_complete"
+      ],
+      "primary_queue": "E",
+      "secondary_change_types": [
+        "normalization"
+      ],
+      "current_route": "/business-directory/naturally-you-locks-los-angeles-2",
+      "projected_route": "/business-directory/naturally-you-locks-los-angeles-2",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": true,
+      "current_display_category": "Beauty, Grooming and Personal Care",
+      "current_category_source_value": "Beauty, Grooming and Personal Care",
+      "proposed_display_category": null,
+      "category_would_change_search_results": false,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a475",
+      "current_values": {
+        "business_name": "Catalinas Dominican Beauty Salon Los Angeles",
+        "phone": "18187710787",
+        "website": "",
+        "address": "15243 Roscoe Blvd, Los Angeles, CA 91402",
+        "city": "Los Angeles",
+        "state": "CA",
+        "category": "Beauty",
+        "categories": "Hair Salons",
+        "display_categories": "Beauty, Grooming and Personal Care",
+        "description": "Hair Salons",
+        "alias": "catalinas-dominican-beauty-salon-los-angeles",
+        "slug": "catalinas-dominican-beauty-salon-los-angeles-los-angeles-ca"
+      },
+      "proposed_values": {
+        "phone": "8187710787"
+      },
+      "evidence_source": [
+        {
+          "field": "phone",
+          "source": "mongodb_direct_normalization",
+          "type": "MongoDB-direct"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB-direct"
+      ],
+      "duplicate_status": "confirmed exact duplicate key collision",
+      "matched_existing_record_id": "67f73dec1d08a04e139a9a8b",
+      "duplicate_evidence": [
+        "exact_phone",
+        "exact_address"
+      ],
+      "confidence": "high",
+      "fields_still_missing": [],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "phone_plus_address",
+        "address_category_description",
+        "exact_duplicate_key_collision",
+        "nearly_complete"
+      ],
+      "primary_queue": "E",
+      "secondary_change_types": [
+        "normalization"
+      ],
+      "current_route": "/business-directory/catalinas-dominican-beauty-salon-los-angeles",
+      "projected_route": "/business-directory/catalinas-dominican-beauty-salon-los-angeles",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": true,
+      "current_display_category": "Beauty, Grooming and Personal Care",
+      "current_category_source_value": "Beauty, Grooming and Personal Care",
+      "proposed_display_category": null,
+      "category_would_change_search_results": false,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a488",
+      "current_values": {
+        "business_name": "Hair Magnifique Los Angeles 6",
+        "phone": "12135361515",
+        "website": "",
+        "address": "5593 W Manchester Ave, Los Angeles, CA 90045",
+        "city": "Los Angeles",
+        "state": "CA",
+        "category": "Beauty",
+        "categories": "Wigs, Cosmetics & Beauty Supply, Hair Extensions",
+        "display_categories": "Beauty, Grooming and Personal Care",
+        "description": "Wigs, Cosmetics & Beauty Supply, Hair Extensions",
+        "alias": "hair-magnifique-los-angeles-6",
+        "slug": "hair-magnifique-los-angeles-6-los-angeles-ca"
+      },
+      "proposed_values": {
+        "phone": "2135361515"
+      },
+      "evidence_source": [
+        {
+          "field": "phone",
+          "source": "mongodb_direct_normalization",
+          "type": "MongoDB-direct"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB-direct"
+      ],
+      "duplicate_status": "confirmed exact duplicate key collision",
+      "matched_existing_record_id": "67f73dec1d08a04e139a9a9d",
+      "duplicate_evidence": [
+        "exact_phone",
+        "exact_address"
+      ],
+      "confidence": "high",
+      "fields_still_missing": [],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "phone_plus_address",
+        "address_category_description",
+        "exact_duplicate_key_collision",
+        "nearly_complete"
+      ],
+      "primary_queue": "E",
+      "secondary_change_types": [
+        "normalization"
+      ],
+      "current_route": "/business-directory/hair-magnifique-los-angeles-6",
+      "projected_route": "/business-directory/hair-magnifique-los-angeles-6",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": true,
+      "current_display_category": "Beauty, Grooming and Personal Care",
+      "current_category_source_value": "Beauty, Grooming and Personal Care",
+      "proposed_display_category": null,
+      "category_would_change_search_results": false,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a490",
+      "current_values": {
+        "business_name": "Lizzglams Los Angeles 4",
+        "phone": "12403465599",
+        "website": "",
+        "address": "3710 W Martin Luther King Blvd, Los Angeles, CA 90008",
+        "city": "Los Angeles",
+        "state": "CA",
+        "category": "Beauty",
+        "categories": "Makeup Artists, Hair Stylists",
+        "display_categories": "Beauty, Grooming and Personal Care",
+        "description": "Makeup Artists, Hair Stylists",
+        "alias": "lizzglams-los-angeles-4",
+        "slug": "lizzglams-los-angeles-4-los-angeles-ca"
+      },
+      "proposed_values": {
+        "phone": "2403465599"
+      },
+      "evidence_source": [
+        {
+          "field": "phone",
+          "source": "mongodb_direct_normalization",
+          "type": "MongoDB-direct"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB-direct"
+      ],
+      "duplicate_status": "confirmed exact duplicate key collision",
+      "matched_existing_record_id": "67f73dec1d08a04e139a9d37",
+      "duplicate_evidence": [
+        "exact_phone",
+        "exact_address"
+      ],
+      "confidence": "high",
+      "fields_still_missing": [],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "phone_plus_address",
+        "address_category_description",
+        "exact_duplicate_key_collision",
+        "nearly_complete"
+      ],
+      "primary_queue": "E",
+      "secondary_change_types": [
+        "normalization"
+      ],
+      "current_route": "/business-directory/lizzglams-los-angeles-4",
+      "projected_route": "/business-directory/lizzglams-los-angeles-4",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": true,
+      "current_display_category": "Beauty, Grooming and Personal Care",
+      "current_category_source_value": "Beauty, Grooming and Personal Care",
+      "proposed_display_category": null,
+      "category_would_change_search_results": false,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a494",
+      "current_values": {
+        "business_name": "Kevs Barber Shop Los Angeles",
+        "phone": "13232922007",
+        "website": "",
+        "address": "3022 W Vernon Ave, Los Angeles, CA 90008",
+        "city": "Los Angeles",
+        "state": "CA",
+        "category": "Beauty",
+        "categories": "Barbershop",
+        "display_categories": "Beauty, Grooming and Personal Care",
+        "description": "Local barbershop offering haircuts, fades, line-ups, and grooming services. Call ahead for hours and appointments.",
+        "alias": "kevs-barber-shop-los-angeles",
+        "slug": "kevs-barber-shop-los-angeles-los-angeles-ca"
+      },
+      "proposed_values": {
+        "phone": "3232922007"
+      },
+      "evidence_source": [
+        {
+          "field": "phone",
+          "source": "mongodb_direct_normalization",
+          "type": "MongoDB-direct"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB-direct"
+      ],
+      "duplicate_status": "confirmed exact duplicate key collision",
+      "matched_existing_record_id": "67f73dec1d08a04e139a9d3d",
+      "duplicate_evidence": [
+        "exact_phone",
+        "exact_address"
+      ],
+      "confidence": "high",
+      "fields_still_missing": [],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "phone_plus_address",
+        "address_category_description",
+        "exact_duplicate_key_collision",
+        "nearly_complete"
+      ],
+      "primary_queue": "E",
+      "secondary_change_types": [
+        "normalization"
+      ],
+      "current_route": "/business-directory/kevs-barber-shop-los-angeles",
+      "projected_route": "/business-directory/kevs-barber-shop-los-angeles",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": true,
+      "current_display_category": "Beauty, Grooming and Personal Care",
+      "current_category_source_value": "Beauty, Grooming and Personal Care",
+      "proposed_display_category": null,
+      "category_would_change_search_results": false,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a464",
+      "current_values": {
+        "business_name": "Couture Weave Boutique And Nail Cottage Los Angeles",
+        "phone": "13235250707",
+        "website": "",
+        "address": "5872 W Pico Blvd, Los Angeles, CA 90019",
+        "city": "Los Angeles",
+        "state": "CA",
+        "category": "Beauty",
+        "categories": "Hair Extensions, Nail Salons, Eyelash Service",
+        "display_categories": "Beauty, Grooming and Personal Care",
+        "description": "Hair Extensions, Nail Salons, Eyelash Service",
+        "alias": "couture-weave-boutique-and-nail-cottage-los-angeles",
+        "slug": "couture-weave-boutique-and-nail-cottage-los-angeles-los-angeles-ca"
+      },
+      "proposed_values": {
+        "phone": "3235250707"
+      },
+      "evidence_source": [
+        {
+          "field": "phone",
+          "source": "mongodb_direct_normalization",
+          "type": "MongoDB-direct"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB-direct"
+      ],
+      "duplicate_status": "confirmed exact duplicate key collision",
+      "matched_existing_record_id": "67f73dec1d08a04e139a9d08",
+      "duplicate_evidence": [
+        "exact_phone",
+        "exact_address"
+      ],
+      "confidence": "high",
+      "fields_still_missing": [],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "phone_plus_address",
+        "address_category_description",
+        "exact_duplicate_key_collision",
+        "nearly_complete"
+      ],
+      "primary_queue": "E",
+      "secondary_change_types": [
+        "normalization"
+      ],
+      "current_route": "/business-directory/couture-weave-boutique-and-nail-cottage-los-angeles",
+      "projected_route": "/business-directory/couture-weave-boutique-and-nail-cottage-los-angeles",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": true,
+      "current_display_category": "Beauty, Grooming and Personal Care",
+      "current_category_source_value": "Beauty, Grooming and Personal Care",
+      "proposed_display_category": null,
+      "category_would_change_search_results": false,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a49b",
+      "current_values": {
+        "business_name": "Chi Town Cuts And Fades Los Angeles 4",
+        "phone": "13233013919",
+        "website": "",
+        "address": "2927 W Olympic Blvd, Los Angeles, CA 90006",
+        "city": "Los Angeles",
+        "state": "CA",
+        "category": "Beauty",
+        "categories": "Hair Salons",
+        "display_categories": "Beauty, Grooming and Personal Care",
+        "description": "Hair Salons",
+        "alias": "chi-town-cuts-and-fades-los-angeles-4",
+        "slug": "chi-town-cuts-and-fades-los-angeles-4-los-angeles-ca"
+      },
+      "proposed_values": {
+        "phone": "3233013919"
+      },
+      "evidence_source": [
+        {
+          "field": "phone",
+          "source": "mongodb_direct_normalization",
+          "type": "MongoDB-direct"
+        }
+      ],
+      "evidence_basis": [
+        "MongoDB-direct"
+      ],
+      "duplicate_status": "confirmed exact duplicate key collision",
+      "matched_existing_record_id": "67f73dec1d08a04e139a9d45",
+      "duplicate_evidence": [
+        "exact_phone",
+        "exact_address"
+      ],
+      "confidence": "high",
+      "fields_still_missing": [],
+      "approval_readiness": "not ready",
+      "manual_review_required": true,
+      "protected_business": false,
+      "candidate_reason": [
+        "phone_plus_address",
+        "address_category_description",
+        "exact_duplicate_key_collision",
+        "nearly_complete"
+      ],
+      "primary_queue": "E",
+      "secondary_change_types": [
+        "normalization"
+      ],
+      "current_route": "/business-directory/chi-town-cuts-and-fades-los-angeles-4",
+      "projected_route": "/business-directory/chi-town-cuts-and-fades-los-angeles-4",
+      "page_currently_resolves": true,
+      "generated_alias_or_slug": "",
+      "generated_alias_or_slug_conflicts_with_ids": [],
+      "generated_alias_or_slug_is_unique": null,
+      "current_alias_exists": true,
+      "current_slug_exists": true,
+      "current_display_category": "Beauty, Grooming and Personal Care",
+      "current_category_source_value": "Beauty, Grooming and Personal Care",
+      "proposed_display_category": null,
+      "category_would_change_search_results": false,
+      "missing_name_derivation_type": "",
+      "could_require_external_research": false,
+      "exact_reason_not_currently_public": "not in protected public-search set"
+    }
+  ]
+}
