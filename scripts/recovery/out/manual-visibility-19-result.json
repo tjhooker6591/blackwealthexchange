@@ -1,0 +1,192 @@
+[
+  {
+    "_id": "681d1df4fd9719ad7b26dfa2",
+    "business_name": "LYS Beauty",
+    "applied": true,
+    "completenessScore": 44,
+    "isComplete": false,
+    "approved": true,
+    "status": "active",
+    "alias": "lys-beauty"
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfa6",
+    "business_name": "For Them",
+    "applied": true,
+    "completenessScore": 44,
+    "isComplete": false,
+    "approved": true,
+    "status": "active",
+    "alias": "for-them"
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfa8",
+    "business_name": "Ami Colé",
+    "applied": true,
+    "completenessScore": 44,
+    "isComplete": false,
+    "approved": true,
+    "status": "active",
+    "alias": "ami-cole"
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfa9",
+    "business_name": "Saint Ola",
+    "applied": true,
+    "completenessScore": 44,
+    "isComplete": false,
+    "approved": true,
+    "status": "active",
+    "alias": "saint-ola"
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfaa",
+    "business_name": "Telfar",
+    "applied": true,
+    "completenessScore": 44,
+    "isComplete": false,
+    "approved": true,
+    "status": "active",
+    "alias": "telfar"
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfab",
+    "business_name": "Third Crown",
+    "applied": true,
+    "completenessScore": 44,
+    "isComplete": false,
+    "approved": true,
+    "status": "active",
+    "alias": "third-crown"
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfac",
+    "business_name": "Tree Fairfax",
+    "applied": true,
+    "completenessScore": 44,
+    "isComplete": false,
+    "approved": true,
+    "status": "active",
+    "alias": "tree-fairfax"
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfb2",
+    "business_name": "BLK & Bold",
+    "applied": true,
+    "completenessScore": 44,
+    "isComplete": false,
+    "approved": true,
+    "status": "active",
+    "alias": "blk-bold"
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfb7",
+    "business_name": "Topicals",
+    "applied": true,
+    "completenessScore": 44,
+    "isComplete": false,
+    "approved": true,
+    "status": "active",
+    "alias": "topicals"
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfb8",
+    "business_name": "RedDrop",
+    "applied": true,
+    "completenessScore": 44,
+    "isComplete": false,
+    "approved": true,
+    "status": "active",
+    "alias": "reddrop"
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfbb",
+    "business_name": "Barkal",
+    "applied": true,
+    "completenessScore": 44,
+    "isComplete": false,
+    "approved": true,
+    "status": "active",
+    "alias": "barkal"
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfbd",
+    "business_name": "Camille Rose",
+    "applied": true,
+    "completenessScore": 44,
+    "isComplete": false,
+    "approved": true,
+    "status": "active",
+    "alias": "camille-rose"
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfc2",
+    "business_name": "The Sip",
+    "applied": true,
+    "completenessScore": 44,
+    "isComplete": false,
+    "approved": true,
+    "status": "active",
+    "alias": "the-sip"
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfc4",
+    "business_name": "Be Rooted",
+    "applied": true,
+    "completenessScore": 44,
+    "isComplete": false,
+    "approved": true,
+    "status": "active",
+    "alias": "be-rooted"
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfc5",
+    "business_name": "Clare",
+    "applied": true,
+    "completenessScore": 44,
+    "isComplete": false,
+    "approved": true,
+    "status": "active",
+    "alias": "clare"
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfc6",
+    "business_name": "Bolé Road Textiles",
+    "applied": true,
+    "completenessScore": 67,
+    "isComplete": false,
+    "approved": true,
+    "status": "active",
+    "alias": "bole-road-textiles"
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfcb",
+    "business_name": "The Whitney Collection",
+    "applied": true,
+    "completenessScore": 44,
+    "isComplete": false,
+    "approved": true,
+    "status": "active",
+    "alias": "the-whitney-collection"
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfce",
+    "business_name": "Fourth Phase",
+    "applied": true,
+    "completenessScore": 44,
+    "isComplete": false,
+    "approved": true,
+    "status": "active",
+    "alias": "fourth-phase"
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfd3",
+    "business_name": "Royal Nation",
+    "applied": true,
+    "completenessScore": 44,
+    "isComplete": false,
+    "approved": true,
+    "status": "active",
+    "alias": "royal-nation"
+  }
+]

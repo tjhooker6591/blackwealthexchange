@@ -72,6 +72,7 @@ export default async function handler(req, res) {
       amountPaid: 1,
       isComplete: 1,
       completenessScore: 1,
+      directoryVisibilityApproved: 1,
       latitude: 1,
       longitude: 1,
       createdAt: 1,
@@ -115,6 +116,7 @@ export default async function handler(req, res) {
           ? business.isComplete
           : undefined,
       completenessScore: Number(business.completenessScore || 0),
+      directoryVisibilityApproved: business.directoryVisibilityApproved === true,
       latitude:
         typeof business.latitude === "number" ? business.latitude : undefined,
       longitude:

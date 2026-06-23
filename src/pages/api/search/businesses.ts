@@ -9,6 +9,7 @@ import {
 import { getAdminDecodedFromRequest, isAdminDecoded } from "@/lib/adminAuth";
 import { getMongoDbName } from "@/lib/env";
 import { computeListingCompleteness } from "@/lib/directory/completeness";
+import { isPublicBusinessVisible } from "@/lib/directory/publicVisibility";
 
 function escapeRegex(input: string) {
   return input.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -319,10 +320,7 @@ function normalizeResultItem(item: any, isOrganizations: boolean) {
   const isSponsored =
     item?.isSponsored === true || Number(item?.amountPaid || 0) > 0;
 
-  const isComplete =
-    typeof item?.isComplete === "boolean"
-      ? item.isComplete
-      : Number(item?.qualityScore || item?.completenessScore || 0) >= 70;
+  const isComplete = isPublicBusinessVisible(item);
 
   return {
     ...item,
@@ -635,6 +633,7 @@ export default async function handler(
           { isComplete: true },
           { completenessScore: { $gte: 70 } },
           { qualityScore: { $gte: 70 } },
+          { directoryVisibilityApproved: true },
         ],
       });
     }
@@ -737,6 +736,7 @@ export default async function handler(
       isComplete: 1,
       completenessScore: 1,
       qualityScore: 1,
+      directoryVisibilityApproved: 1,
       orgType: 1,
       denomination: 1,
       logo: 1,
