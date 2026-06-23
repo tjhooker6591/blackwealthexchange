@@ -36,17 +36,17 @@ const base = {
   description: "Useful factual description for reviewed business.",
   category: "Category",
   display_categories: "Display",
-  completenessScore: 67,
+  completenessScore: 44,
   qualityScore: 0,
   isComplete: false,
 };
 
 assert(
-  "normal unreviewed 6-of-9 record remains excluded",
+  "normal unreviewed low-completeness record remains excluded",
   isPublicBusinessVisible({ ...base, directoryVisibilityApproved: false }) === false,
 );
 assert(
-  "approved and active 6-of-9 override record is included",
+  "approved and active override record is included despite low completeness",
   isPublicBusinessVisible({ ...base, directoryVisibilityApproved: true }) === true,
 );
 assert(

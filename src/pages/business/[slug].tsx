@@ -77,8 +77,7 @@ function mapDbBusinessToEntry(doc: any): BusinessEntry {
   const isStrongProfile =
     doc?.isComplete === true ||
     Number(doc?.qualityScore || 0) >= 70 ||
-    Number(doc?.completenessScore || 0) >= 70 ||
-    doc?.directoryVisibilityApproved === true;
+    Number(doc?.completenessScore || 0) >= 70;
   const directionsQuery = cleanString([address, city, state].filter(Boolean).join(", "));
   const directionsUrl = directionsQuery
     ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(directionsQuery)}`
@@ -314,7 +313,6 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
           isComplete: 1,
           qualityScore: 1,
           completenessScore: 1,
-          directoryVisibilityApproved: 1,
           placeId: 1,
         },
       },

@@ -8,7 +8,7 @@ const OUT_DIR = path.join(__dirname, 'out');
 const BACKUP = path.join(OUT_DIR, 'manual-visibility-19-backup.json');
 const ROLLBACK = path.join(OUT_DIR, 'manual-visibility-19-rollback.json');
 const RESULT = path.join(OUT_DIR, 'manual-visibility-19-result.json');
-const REASON = 'Manually reviewed and approved at 6 of 9 completeness; optional unavailable fields were not fabricated.';
+const REASON = 'Manually reviewed and approved for directory visibility; the available business data was cleaned and validated, and unsupported optional fields were not fabricated.';
 const APPROVER = 'Thomas';
 
 const ids = [
@@ -97,7 +97,7 @@ async function main(){
     await col.updateOne({ _id: doc._id }, {
       $set: {
         directoryVisibilityApproved: true,
-        directoryVisibilityApprovedAt: new Date(),
+        directoryVisibilityApprovedAt: doc.directoryVisibilityApprovedAt || new Date(),
         directoryVisibilityApprovedBy: APPROVER,
         directoryVisibilityReason: REASON,
         completenessScore: calc.completenessScore,
