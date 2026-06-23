@@ -1,0 +1,1507 @@
+[
+  {
+    "_id": "681d1df4fd9719ad7b26dfa2",
+    "canonical_business_name": "LYS Beauty",
+    "original_missing_or_corrupted_fields": [
+      "address",
+      "city",
+      "state",
+      "postalCode",
+      "phone"
+    ],
+    "verified_data_found": {
+      "website": "https://lysbeauty.com",
+      "description": "Clean beauty brand offering makeup and skincare products for face, eyes, lips, and complexion.",
+      "category": "Makeup, Clean Beauty",
+      "display_categories": "Beauty, Grooming and Personal Care",
+      "country": "United States",
+      "locationType": "online business",
+      "city": "",
+      "state": "",
+      "postalCode": "",
+      "evidence_sources": [
+        "https://lysbeauty.com"
+      ]
+    },
+    "fields_repaired": [
+      "business_name",
+      "alias",
+      "slug",
+      "website",
+      "description",
+      "category",
+      "categories",
+      "display_categories",
+      "country",
+      "locationType",
+      "approved",
+      "status",
+      "searchKeywords",
+      "completenessScore",
+      "isComplete",
+      "qualityScore"
+    ],
+    "fields_intentionally_left_blank": [
+      "phone",
+      "image",
+      "address",
+      "city",
+      "state",
+      "postalCode"
+    ],
+    "final_category": "Beauty, Grooming and Personal Care",
+    "final_location_type": "online business",
+    "final_location_data": {
+      "address": "",
+      "city": "",
+      "state": "",
+      "country": "United States",
+      "postalCode": ""
+    },
+    "final_alias": "lys-beauty",
+    "final_completeness_score": 44,
+    "final_quality_score": 90,
+    "approved_status_values": {
+      "approved": true,
+      "status": "active"
+    },
+    "public_selector_match": true,
+    "production_search_result": {
+      "exact_name": true,
+      "partial_name": null,
+      "category": null,
+      "service": null,
+      "location": null
+    },
+    "production_profile_result": {
+      "getBusiness200": true,
+      "profile200": true
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfa6",
+    "canonical_business_name": "For Them",
+    "original_missing_or_corrupted_fields": [
+      "address",
+      "city",
+      "state",
+      "postalCode",
+      "phone"
+    ],
+    "verified_data_found": {
+      "website": "https://forthemofficial.com",
+      "description": "Brand focused on binders and related apparel designed for comfort, fit, and everyday wear.",
+      "category": "Apparel, Wellness",
+      "display_categories": "Clothing and Accessories",
+      "country": "United States",
+      "locationType": "online business",
+      "city": "",
+      "state": "",
+      "postalCode": "",
+      "evidence_sources": [
+        "https://forthemofficial.com"
+      ]
+    },
+    "fields_repaired": [
+      "business_name",
+      "alias",
+      "slug",
+      "website",
+      "description",
+      "category",
+      "categories",
+      "display_categories",
+      "country",
+      "locationType",
+      "approved",
+      "status",
+      "searchKeywords",
+      "completenessScore",
+      "isComplete",
+      "qualityScore"
+    ],
+    "fields_intentionally_left_blank": [
+      "phone",
+      "image",
+      "address",
+      "city",
+      "state",
+      "postalCode"
+    ],
+    "final_category": "Clothing and Accessories",
+    "final_location_type": "online business",
+    "final_location_data": {
+      "address": "",
+      "city": "",
+      "state": "",
+      "country": "United States",
+      "postalCode": ""
+    },
+    "final_alias": "for-them",
+    "final_completeness_score": 44,
+    "final_quality_score": 90,
+    "approved_status_values": {
+      "approved": true,
+      "status": "active"
+    },
+    "public_selector_match": true,
+    "production_search_result": {
+      "exact_name": true,
+      "partial_name": null,
+      "category": null,
+      "service": null,
+      "location": null
+    },
+    "production_profile_result": {
+      "getBusiness200": true,
+      "profile200": true
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfa8",
+    "canonical_business_name": "Ami Colé",
+    "original_missing_or_corrupted_fields": [
+      "address",
+      "city",
+      "state",
+      "postalCode",
+      "phone"
+    ],
+    "verified_data_found": {
+      "website": "https://amicole.com",
+      "description": "Beauty brand offering complexion, lip, and skin products with a clean and minimalist product focus.",
+      "category": "Clean Beauty, Skin Care",
+      "display_categories": "Beauty, Grooming and Personal Care",
+      "country": "United States",
+      "locationType": "online business",
+      "city": "",
+      "state": "",
+      "postalCode": "",
+      "evidence_sources": [
+        "https://amicole.com"
+      ]
+    },
+    "fields_repaired": [
+      "business_name",
+      "alias",
+      "slug",
+      "website",
+      "description",
+      "category",
+      "categories",
+      "display_categories",
+      "country",
+      "locationType",
+      "approved",
+      "status",
+      "searchKeywords",
+      "completenessScore",
+      "isComplete",
+      "qualityScore"
+    ],
+    "fields_intentionally_left_blank": [
+      "phone",
+      "image",
+      "address",
+      "city",
+      "state",
+      "postalCode"
+    ],
+    "final_category": "Beauty, Grooming and Personal Care",
+    "final_location_type": "online business",
+    "final_location_data": {
+      "address": "",
+      "city": "",
+      "state": "",
+      "country": "United States",
+      "postalCode": ""
+    },
+    "final_alias": "ami-cole",
+    "final_completeness_score": 44,
+    "final_quality_score": 90,
+    "approved_status_values": {
+      "approved": true,
+      "status": "active"
+    },
+    "public_selector_match": true,
+    "production_search_result": {
+      "exact_name": true,
+      "partial_name": null,
+      "category": null,
+      "service": null,
+      "location": null
+    },
+    "production_profile_result": {
+      "getBusiness200": true,
+      "profile200": true
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfa9",
+    "canonical_business_name": "Saint Ola",
+    "original_missing_or_corrupted_fields": [
+      "address",
+      "city",
+      "state",
+      "postalCode",
+      "phone"
+    ],
+    "verified_data_found": {
+      "website": "https://saintola.com",
+      "description": "Fashion label offering ready-to-wear, custom suiting, bridalwear, and accessories with African-inspired styling.",
+      "category": "Fashion, Accessories",
+      "display_categories": "Clothing and Accessories",
+      "country": "United States",
+      "locationType": "online business",
+      "city": "",
+      "state": "",
+      "postalCode": "",
+      "evidence_sources": [
+        "https://saintola.com"
+      ]
+    },
+    "fields_repaired": [
+      "business_name",
+      "alias",
+      "slug",
+      "website",
+      "description",
+      "category",
+      "categories",
+      "display_categories",
+      "country",
+      "locationType",
+      "approved",
+      "status",
+      "searchKeywords",
+      "completenessScore",
+      "isComplete",
+      "qualityScore"
+    ],
+    "fields_intentionally_left_blank": [
+      "phone",
+      "image",
+      "address",
+      "city",
+      "state",
+      "postalCode"
+    ],
+    "final_category": "Clothing and Accessories",
+    "final_location_type": "online business",
+    "final_location_data": {
+      "address": "",
+      "city": "",
+      "state": "",
+      "country": "United States",
+      "postalCode": ""
+    },
+    "final_alias": "saint-ola",
+    "final_completeness_score": 44,
+    "final_quality_score": 90,
+    "approved_status_values": {
+      "approved": true,
+      "status": "active"
+    },
+    "public_selector_match": true,
+    "production_search_result": {
+      "exact_name": true,
+      "partial_name": null,
+      "category": null,
+      "service": null,
+      "location": null
+    },
+    "production_profile_result": {
+      "getBusiness200": true,
+      "profile200": true
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfaa",
+    "canonical_business_name": "Telfar",
+    "original_missing_or_corrupted_fields": [
+      "address",
+      "city",
+      "state",
+      "postalCode",
+      "phone"
+    ],
+    "verified_data_found": {
+      "website": "https://telfar.net",
+      "description": "Fashion brand known for bags, apparel, and accessories sold through official online releases.",
+      "category": "Luxury Goods, Accessories",
+      "display_categories": "Clothing and Accessories",
+      "country": "United States",
+      "locationType": "online business",
+      "city": "",
+      "state": "",
+      "postalCode": "",
+      "evidence_sources": [
+        "https://telfar.net"
+      ]
+    },
+    "fields_repaired": [
+      "business_name",
+      "alias",
+      "slug",
+      "website",
+      "description",
+      "category",
+      "categories",
+      "display_categories",
+      "country",
+      "locationType",
+      "approved",
+      "status",
+      "searchKeywords",
+      "completenessScore",
+      "isComplete",
+      "qualityScore"
+    ],
+    "fields_intentionally_left_blank": [
+      "phone",
+      "image",
+      "address",
+      "city",
+      "state",
+      "postalCode"
+    ],
+    "final_category": "Clothing and Accessories",
+    "final_location_type": "online business",
+    "final_location_data": {
+      "address": "",
+      "city": "",
+      "state": "",
+      "country": "United States",
+      "postalCode": ""
+    },
+    "final_alias": "telfar",
+    "final_completeness_score": 44,
+    "final_quality_score": 90,
+    "approved_status_values": {
+      "approved": true,
+      "status": "active"
+    },
+    "public_selector_match": true,
+    "production_search_result": {
+      "exact_name": true,
+      "partial_name": null,
+      "category": null,
+      "service": null,
+      "location": null
+    },
+    "production_profile_result": {
+      "getBusiness200": true,
+      "profile200": true
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfab",
+    "canonical_business_name": "Third Crown",
+    "original_missing_or_corrupted_fields": [
+      "address",
+      "city",
+      "state",
+      "postalCode",
+      "phone"
+    ],
+    "verified_data_found": {
+      "website": "https://thirdcrown.com",
+      "description": "Jewelry brand creating rings, necklaces, bracelets, and other statement pieces.",
+      "category": "Jewelry, Design",
+      "display_categories": "Clothing and Accessories",
+      "country": "United States",
+      "locationType": "online business",
+      "city": "",
+      "state": "",
+      "postalCode": "",
+      "evidence_sources": [
+        "https://thirdcrown.com"
+      ]
+    },
+    "fields_repaired": [
+      "business_name",
+      "alias",
+      "slug",
+      "website",
+      "description",
+      "category",
+      "categories",
+      "display_categories",
+      "country",
+      "locationType",
+      "approved",
+      "status",
+      "searchKeywords",
+      "completenessScore",
+      "isComplete",
+      "qualityScore"
+    ],
+    "fields_intentionally_left_blank": [
+      "phone",
+      "image",
+      "address",
+      "city",
+      "state",
+      "postalCode"
+    ],
+    "final_category": "Clothing and Accessories",
+    "final_location_type": "online business",
+    "final_location_data": {
+      "address": "",
+      "city": "",
+      "state": "",
+      "country": "United States",
+      "postalCode": ""
+    },
+    "final_alias": "third-crown",
+    "final_completeness_score": 44,
+    "final_quality_score": 90,
+    "approved_status_values": {
+      "approved": true,
+      "status": "active"
+    },
+    "public_selector_match": true,
+    "production_search_result": {
+      "exact_name": true,
+      "partial_name": null,
+      "category": null,
+      "service": null,
+      "location": null
+    },
+    "production_profile_result": {
+      "getBusiness200": true,
+      "profile200": true
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfac",
+    "canonical_business_name": "Tree Fairfax",
+    "original_missing_or_corrupted_fields": [
+      "address",
+      "city",
+      "state",
+      "postalCode",
+      "phone"
+    ],
+    "verified_data_found": {
+      "website": "https://treefairfax.com",
+      "description": "Ethical luxury leather goods brand producing bags, wallets, belts, and other accessories.",
+      "category": "Leather Goods, Accessories",
+      "display_categories": "Clothing and Accessories",
+      "country": "United States",
+      "locationType": "online business",
+      "city": "",
+      "state": "",
+      "postalCode": "",
+      "evidence_sources": [
+        "https://treefairfax.com"
+      ]
+    },
+    "fields_repaired": [
+      "business_name",
+      "alias",
+      "slug",
+      "website",
+      "description",
+      "category",
+      "categories",
+      "display_categories",
+      "country",
+      "locationType",
+      "approved",
+      "status",
+      "searchKeywords",
+      "completenessScore",
+      "isComplete",
+      "qualityScore"
+    ],
+    "fields_intentionally_left_blank": [
+      "phone",
+      "image",
+      "address",
+      "city",
+      "state",
+      "postalCode"
+    ],
+    "final_category": "Clothing and Accessories",
+    "final_location_type": "online business",
+    "final_location_data": {
+      "address": "",
+      "city": "",
+      "state": "",
+      "country": "United States",
+      "postalCode": ""
+    },
+    "final_alias": "tree-fairfax",
+    "final_completeness_score": 44,
+    "final_quality_score": 90,
+    "approved_status_values": {
+      "approved": true,
+      "status": "active"
+    },
+    "public_selector_match": true,
+    "production_search_result": {
+      "exact_name": true,
+      "partial_name": null,
+      "category": null,
+      "service": null,
+      "location": null
+    },
+    "production_profile_result": {
+      "getBusiness200": true,
+      "profile200": true
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfb2",
+    "canonical_business_name": "BLK & Bold",
+    "original_missing_or_corrupted_fields": [
+      "address",
+      "city",
+      "state",
+      "postalCode",
+      "phone"
+    ],
+    "verified_data_found": {
+      "website": "https://blkandbold.com",
+      "description": "Specialty coffee and tea brand selling whole bean, ground, cold brew, and tea products.",
+      "category": "Coffee, Tea",
+      "display_categories": "Food and Beverage",
+      "country": "United States",
+      "locationType": "online business",
+      "city": "",
+      "state": "",
+      "postalCode": "",
+      "evidence_sources": [
+        "https://blkandbold.com"
+      ]
+    },
+    "fields_repaired": [
+      "business_name",
+      "alias",
+      "slug",
+      "website",
+      "description",
+      "category",
+      "categories",
+      "display_categories",
+      "country",
+      "locationType",
+      "approved",
+      "status",
+      "searchKeywords",
+      "completenessScore",
+      "isComplete",
+      "qualityScore"
+    ],
+    "fields_intentionally_left_blank": [
+      "phone",
+      "image",
+      "address",
+      "city",
+      "state",
+      "postalCode"
+    ],
+    "final_category": "Food and Beverage",
+    "final_location_type": "online business",
+    "final_location_data": {
+      "address": "",
+      "city": "",
+      "state": "",
+      "country": "United States",
+      "postalCode": ""
+    },
+    "final_alias": "blk-bold",
+    "final_completeness_score": 44,
+    "final_quality_score": 90,
+    "approved_status_values": {
+      "approved": true,
+      "status": "active"
+    },
+    "public_selector_match": true,
+    "production_search_result": {
+      "exact_name": true,
+      "partial_name": null,
+      "category": null,
+      "service": null,
+      "location": null
+    },
+    "production_profile_result": {
+      "getBusiness200": true,
+      "profile200": true
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfb7",
+    "canonical_business_name": "Topicals",
+    "original_missing_or_corrupted_fields": [
+      "address",
+      "city",
+      "state",
+      "postalCode",
+      "phone"
+    ],
+    "verified_data_found": {
+      "website": "https://mytopicals.com",
+      "description": "Skincare brand offering science-backed products focused on chronic skin concerns.",
+      "category": "Skin Care, Clinical",
+      "display_categories": "Beauty, Grooming and Personal Care",
+      "country": "United States",
+      "locationType": "online business",
+      "city": "",
+      "state": "",
+      "postalCode": "",
+      "evidence_sources": [
+        "https://mytopicals.com"
+      ]
+    },
+    "fields_repaired": [
+      "business_name",
+      "alias",
+      "slug",
+      "website",
+      "description",
+      "category",
+      "categories",
+      "display_categories",
+      "country",
+      "locationType",
+      "approved",
+      "status",
+      "searchKeywords",
+      "completenessScore",
+      "isComplete",
+      "qualityScore"
+    ],
+    "fields_intentionally_left_blank": [
+      "phone",
+      "image",
+      "address",
+      "city",
+      "state",
+      "postalCode"
+    ],
+    "final_category": "Beauty, Grooming and Personal Care",
+    "final_location_type": "online business",
+    "final_location_data": {
+      "address": "",
+      "city": "",
+      "state": "",
+      "country": "United States",
+      "postalCode": ""
+    },
+    "final_alias": "topicals",
+    "final_completeness_score": 44,
+    "final_quality_score": 90,
+    "approved_status_values": {
+      "approved": true,
+      "status": "active"
+    },
+    "public_selector_match": true,
+    "production_search_result": {
+      "exact_name": true,
+      "partial_name": null,
+      "category": null,
+      "service": null,
+      "location": null
+    },
+    "production_profile_result": {
+      "getBusiness200": true,
+      "profile200": true
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfb8",
+    "canonical_business_name": "RedDrop",
+    "original_missing_or_corrupted_fields": [
+      "address",
+      "city",
+      "state",
+      "postalCode",
+      "phone"
+    ],
+    "verified_data_found": {
+      "website": "https://reddrop.com",
+      "description": "Brand offering menstrual products and educational resources for young people and families.",
+      "category": "Menstrual Products, Education",
+      "display_categories": "Beauty, Grooming and Personal Care",
+      "country": "United States",
+      "locationType": "online business",
+      "city": "",
+      "state": "",
+      "postalCode": "",
+      "evidence_sources": [
+        "https://reddrop.com"
+      ]
+    },
+    "fields_repaired": [
+      "business_name",
+      "alias",
+      "slug",
+      "website",
+      "description",
+      "category",
+      "categories",
+      "display_categories",
+      "country",
+      "locationType",
+      "approved",
+      "status",
+      "searchKeywords",
+      "completenessScore",
+      "isComplete",
+      "qualityScore"
+    ],
+    "fields_intentionally_left_blank": [
+      "phone",
+      "image",
+      "address",
+      "city",
+      "state",
+      "postalCode"
+    ],
+    "final_category": "Beauty, Grooming and Personal Care",
+    "final_location_type": "online business",
+    "final_location_data": {
+      "address": "",
+      "city": "",
+      "state": "",
+      "country": "United States",
+      "postalCode": ""
+    },
+    "final_alias": "reddrop",
+    "final_completeness_score": 44,
+    "final_quality_score": 90,
+    "approved_status_values": {
+      "approved": true,
+      "status": "active"
+    },
+    "public_selector_match": true,
+    "production_search_result": {
+      "exact_name": true,
+      "partial_name": null,
+      "category": null,
+      "service": null,
+      "location": null
+    },
+    "production_profile_result": {
+      "getBusiness200": true,
+      "profile200": true
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfbb",
+    "canonical_business_name": "Barkal",
+    "original_missing_or_corrupted_fields": [
+      "address",
+      "city",
+      "state",
+      "postalCode",
+      "phone"
+    ],
+    "verified_data_found": {
+      "website": "https://barkal.com",
+      "description": "Footwear brand offering leather shoes and related fashion products.",
+      "category": "Footwear, Design",
+      "display_categories": "Clothing and Accessories",
+      "country": "United States",
+      "locationType": "online business",
+      "city": "",
+      "state": "",
+      "postalCode": "",
+      "evidence_sources": [
+        "https://barkal.com"
+      ]
+    },
+    "fields_repaired": [
+      "business_name",
+      "alias",
+      "slug",
+      "website",
+      "description",
+      "category",
+      "categories",
+      "display_categories",
+      "country",
+      "locationType",
+      "approved",
+      "status",
+      "searchKeywords",
+      "completenessScore",
+      "isComplete",
+      "qualityScore"
+    ],
+    "fields_intentionally_left_blank": [
+      "phone",
+      "image",
+      "address",
+      "city",
+      "state",
+      "postalCode"
+    ],
+    "final_category": "Clothing and Accessories",
+    "final_location_type": "online business",
+    "final_location_data": {
+      "address": "",
+      "city": "",
+      "state": "",
+      "country": "United States",
+      "postalCode": ""
+    },
+    "final_alias": "barkal",
+    "final_completeness_score": 44,
+    "final_quality_score": 90,
+    "approved_status_values": {
+      "approved": true,
+      "status": "active"
+    },
+    "public_selector_match": true,
+    "production_search_result": {
+      "exact_name": true,
+      "partial_name": null,
+      "category": null,
+      "service": null,
+      "location": null
+    },
+    "production_profile_result": {
+      "getBusiness200": true,
+      "profile200": true
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfbd",
+    "canonical_business_name": "Camille Rose",
+    "original_missing_or_corrupted_fields": [
+      "address",
+      "city",
+      "state",
+      "postalCode",
+      "phone"
+    ],
+    "verified_data_found": {
+      "website": "https://camillerose.com",
+      "description": "Beauty brand offering products for hair, skin, and body care.",
+      "category": "Hair Care, Skin Care, Body Care",
+      "display_categories": "Beauty, Grooming and Personal Care",
+      "country": "United States",
+      "locationType": "online business",
+      "city": "",
+      "state": "",
+      "postalCode": "",
+      "evidence_sources": [
+        "https://camillerose.com"
+      ]
+    },
+    "fields_repaired": [
+      "business_name",
+      "alias",
+      "slug",
+      "website",
+      "description",
+      "category",
+      "categories",
+      "display_categories",
+      "country",
+      "locationType",
+      "approved",
+      "status",
+      "searchKeywords",
+      "completenessScore",
+      "isComplete",
+      "qualityScore"
+    ],
+    "fields_intentionally_left_blank": [
+      "phone",
+      "image",
+      "address",
+      "city",
+      "state",
+      "postalCode"
+    ],
+    "final_category": "Beauty, Grooming and Personal Care",
+    "final_location_type": "online business",
+    "final_location_data": {
+      "address": "",
+      "city": "",
+      "state": "",
+      "country": "United States",
+      "postalCode": ""
+    },
+    "final_alias": "camille-rose",
+    "final_completeness_score": 44,
+    "final_quality_score": 90,
+    "approved_status_values": {
+      "approved": true,
+      "status": "active"
+    },
+    "public_selector_match": true,
+    "production_search_result": {
+      "exact_name": true,
+      "partial_name": null,
+      "category": null,
+      "service": null,
+      "location": null
+    },
+    "production_profile_result": {
+      "getBusiness200": true,
+      "profile200": true
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfc2",
+    "canonical_business_name": "The Sip",
+    "original_missing_or_corrupted_fields": [
+      "address",
+      "city",
+      "state",
+      "postalCode",
+      "phone"
+    ],
+    "verified_data_found": {
+      "website": "https://thesip.com",
+      "description": "Wine subscription company offering curated boxes and tasting-focused wine selections.",
+      "category": "Wine Subscription",
+      "display_categories": "Food and Beverage",
+      "country": "United States",
+      "locationType": "online business",
+      "city": "",
+      "state": "",
+      "postalCode": "",
+      "evidence_sources": [
+        "https://thesip.com"
+      ]
+    },
+    "fields_repaired": [
+      "business_name",
+      "alias",
+      "slug",
+      "website",
+      "description",
+      "category",
+      "categories",
+      "display_categories",
+      "country",
+      "locationType",
+      "approved",
+      "status",
+      "searchKeywords",
+      "completenessScore",
+      "isComplete",
+      "qualityScore"
+    ],
+    "fields_intentionally_left_blank": [
+      "phone",
+      "image",
+      "address",
+      "city",
+      "state",
+      "postalCode"
+    ],
+    "final_category": "Food and Beverage",
+    "final_location_type": "online business",
+    "final_location_data": {
+      "address": "",
+      "city": "",
+      "state": "",
+      "country": "United States",
+      "postalCode": ""
+    },
+    "final_alias": "the-sip",
+    "final_completeness_score": 44,
+    "final_quality_score": 90,
+    "approved_status_values": {
+      "approved": true,
+      "status": "active"
+    },
+    "public_selector_match": true,
+    "production_search_result": {
+      "exact_name": true,
+      "partial_name": null,
+      "category": null,
+      "service": null,
+      "location": null
+    },
+    "production_profile_result": {
+      "getBusiness200": true,
+      "profile200": true
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfc4",
+    "canonical_business_name": "Be Rooted",
+    "original_missing_or_corrupted_fields": [
+      "address",
+      "city",
+      "state",
+      "postalCode",
+      "phone",
+      "qualityScore"
+    ],
+    "verified_data_found": {
+      "website": "https://berootedco.com",
+      "description": "Stationery and lifestyle brand offering journals, planners, office items, and related goods.",
+      "category": "Stationery, Home Goods",
+      "display_categories": "Home and Kitchen",
+      "country": "United States",
+      "locationType": "online business",
+      "city": "",
+      "state": "",
+      "postalCode": "",
+      "evidence_sources": [
+        "https://berootedco.com"
+      ]
+    },
+    "fields_repaired": [
+      "business_name",
+      "alias",
+      "slug",
+      "website",
+      "description",
+      "category",
+      "categories",
+      "display_categories",
+      "country",
+      "locationType",
+      "approved",
+      "status",
+      "searchKeywords",
+      "completenessScore",
+      "isComplete",
+      "qualityScore"
+    ],
+    "fields_intentionally_left_blank": [
+      "phone",
+      "image",
+      "address",
+      "city",
+      "state",
+      "postalCode"
+    ],
+    "final_category": "Home and Kitchen",
+    "final_location_type": "online business",
+    "final_location_data": {
+      "address": "",
+      "city": "",
+      "state": "",
+      "country": "United States",
+      "postalCode": ""
+    },
+    "final_alias": "be-rooted",
+    "final_completeness_score": 44,
+    "final_quality_score": 90,
+    "approved_status_values": {
+      "approved": true,
+      "status": "active"
+    },
+    "public_selector_match": true,
+    "production_search_result": {
+      "exact_name": true,
+      "partial_name": null,
+      "category": null,
+      "service": null,
+      "location": null
+    },
+    "production_profile_result": {
+      "getBusiness200": true,
+      "profile200": true
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfc5",
+    "canonical_business_name": "Clare",
+    "original_missing_or_corrupted_fields": [
+      "address",
+      "city",
+      "state",
+      "postalCode",
+      "phone",
+      "qualityScore"
+    ],
+    "verified_data_found": {
+      "website": "https://clare.com",
+      "description": "Paint company selling interior paint colors, supplies, and peel-and-stick swatches online.",
+      "category": "Paint, Home Improvement",
+      "display_categories": "Home and Kitchen",
+      "country": "United States",
+      "locationType": "online business",
+      "city": "",
+      "state": "",
+      "postalCode": "",
+      "evidence_sources": [
+        "https://clare.com"
+      ]
+    },
+    "fields_repaired": [
+      "business_name",
+      "alias",
+      "slug",
+      "website",
+      "description",
+      "category",
+      "categories",
+      "display_categories",
+      "country",
+      "locationType",
+      "approved",
+      "status",
+      "searchKeywords",
+      "completenessScore",
+      "isComplete",
+      "qualityScore"
+    ],
+    "fields_intentionally_left_blank": [
+      "phone",
+      "image",
+      "address",
+      "city",
+      "state",
+      "postalCode"
+    ],
+    "final_category": "Home and Kitchen",
+    "final_location_type": "online business",
+    "final_location_data": {
+      "address": "",
+      "city": "",
+      "state": "",
+      "country": "United States",
+      "postalCode": ""
+    },
+    "final_alias": "clare",
+    "final_completeness_score": 44,
+    "final_quality_score": 90,
+    "approved_status_values": {
+      "approved": true,
+      "status": "active"
+    },
+    "public_selector_match": true,
+    "production_search_result": {
+      "exact_name": true,
+      "partial_name": null,
+      "category": null,
+      "service": null,
+      "location": null
+    },
+    "production_profile_result": {
+      "getBusiness200": true,
+      "profile200": true
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfc6",
+    "canonical_business_name": "Bolé Road Textiles",
+    "original_missing_or_corrupted_fields": [
+      "address",
+      "postalCode",
+      "phone",
+      "qualityScore"
+    ],
+    "verified_data_found": {
+      "website": "https://boleroadtextiles.com",
+      "description": "Textiles and home decor brand offering pillows, rugs, linens, and other home goods.",
+      "category": "Home Decor, Textiles",
+      "display_categories": "Home and Kitchen",
+      "country": "United States",
+      "locationType": "headquarters",
+      "city": "Brooklyn",
+      "state": "New York",
+      "postalCode": "",
+      "evidence_sources": [
+        "https://boleroadtextiles.com"
+      ]
+    },
+    "fields_repaired": [
+      "business_name",
+      "alias",
+      "slug",
+      "website",
+      "description",
+      "category",
+      "categories",
+      "display_categories",
+      "country",
+      "locationType",
+      "approved",
+      "status",
+      "searchKeywords",
+      "city",
+      "state",
+      "completenessScore",
+      "isComplete",
+      "qualityScore"
+    ],
+    "fields_intentionally_left_blank": [
+      "phone",
+      "image",
+      "address",
+      "postalCode"
+    ],
+    "final_category": "Home and Kitchen",
+    "final_location_type": "headquarters",
+    "final_location_data": {
+      "address": "",
+      "city": "Brooklyn",
+      "state": "New York",
+      "country": "United States",
+      "postalCode": ""
+    },
+    "final_alias": "bole-road-textiles",
+    "final_completeness_score": 67,
+    "final_quality_score": 90,
+    "approved_status_values": {
+      "approved": true,
+      "status": "active"
+    },
+    "public_selector_match": true,
+    "production_search_result": {
+      "exact_name": true,
+      "partial_name": null,
+      "category": null,
+      "service": null,
+      "location": null
+    },
+    "production_profile_result": {
+      "getBusiness200": true,
+      "profile200": true
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfcb",
+    "canonical_business_name": "The Whitney Collection",
+    "original_missing_or_corrupted_fields": [
+      "address",
+      "city",
+      "state",
+      "postalCode",
+      "phone",
+      "qualityScore"
+    ],
+    "verified_data_found": {
+      "website": "https://thewhitneycollection.com",
+      "description": "Home fragrance brand offering candles and scent-focused products.",
+      "category": "Candles, Home Fragrance",
+      "display_categories": "Home and Kitchen",
+      "country": "United States",
+      "locationType": "online business",
+      "city": "",
+      "state": "",
+      "postalCode": "",
+      "evidence_sources": [
+        "https://thewhitneycollection.com"
+      ]
+    },
+    "fields_repaired": [
+      "business_name",
+      "alias",
+      "slug",
+      "website",
+      "description",
+      "category",
+      "categories",
+      "display_categories",
+      "country",
+      "locationType",
+      "approved",
+      "status",
+      "searchKeywords",
+      "completenessScore",
+      "isComplete",
+      "qualityScore"
+    ],
+    "fields_intentionally_left_blank": [
+      "phone",
+      "image",
+      "address",
+      "city",
+      "state",
+      "postalCode"
+    ],
+    "final_category": "Home and Kitchen",
+    "final_location_type": "online business",
+    "final_location_data": {
+      "address": "",
+      "city": "",
+      "state": "",
+      "country": "United States",
+      "postalCode": ""
+    },
+    "final_alias": "the-whitney-collection",
+    "final_completeness_score": 44,
+    "final_quality_score": 90,
+    "approved_status_values": {
+      "approved": true,
+      "status": "active"
+    },
+    "public_selector_match": true,
+    "production_search_result": {
+      "exact_name": true,
+      "partial_name": null,
+      "category": null,
+      "service": null,
+      "location": null
+    },
+    "production_profile_result": {
+      "getBusiness200": true,
+      "profile200": true
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfce",
+    "canonical_business_name": "Fourth Phase",
+    "original_missing_or_corrupted_fields": [
+      "address",
+      "city",
+      "state",
+      "postalCode",
+      "phone",
+      "qualityScore"
+    ],
+    "verified_data_found": {
+      "website": "https://thefourthphase.com",
+      "description": "Postpartum care brand offering curated recovery products for mothers and families.",
+      "category": "Postnatal Care, Subscription",
+      "display_categories": "Baby and Kids",
+      "country": "United States",
+      "locationType": "online business",
+      "city": "",
+      "state": "",
+      "postalCode": "",
+      "evidence_sources": [
+        "https://thefourthphase.com"
+      ]
+    },
+    "fields_repaired": [
+      "business_name",
+      "alias",
+      "slug",
+      "website",
+      "description",
+      "category",
+      "categories",
+      "display_categories",
+      "country",
+      "locationType",
+      "approved",
+      "status",
+      "searchKeywords",
+      "completenessScore",
+      "isComplete",
+      "qualityScore"
+    ],
+    "fields_intentionally_left_blank": [
+      "phone",
+      "image",
+      "address",
+      "city",
+      "state",
+      "postalCode"
+    ],
+    "final_category": "Baby and Kids",
+    "final_location_type": "online business",
+    "final_location_data": {
+      "address": "",
+      "city": "",
+      "state": "",
+      "country": "United States",
+      "postalCode": ""
+    },
+    "final_alias": "fourth-phase",
+    "final_completeness_score": 44,
+    "final_quality_score": 90,
+    "approved_status_values": {
+      "approved": true,
+      "status": "active"
+    },
+    "public_selector_match": true,
+    "production_search_result": {
+      "exact_name": true,
+      "partial_name": null,
+      "category": null,
+      "service": null,
+      "location": null
+    },
+    "production_profile_result": {
+      "getBusiness200": true,
+      "profile200": true
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfd3",
+    "canonical_business_name": "Royal Nation",
+    "original_missing_or_corrupted_fields": [
+      "address",
+      "city",
+      "state",
+      "postalCode",
+      "phone",
+      "qualityScore"
+    ],
+    "verified_data_found": {
+      "website": "https://royal-nation.com",
+      "description": "Kids clothing brand offering gender-neutral apparel and story-driven collections.",
+      "category": "Clothing, Kids",
+      "display_categories": "Baby and Kids",
+      "country": "United States",
+      "locationType": "online business",
+      "city": "",
+      "state": "",
+      "postalCode": "",
+      "evidence_sources": [
+        "https://royal-nation.com"
+      ]
+    },
+    "fields_repaired": [
+      "business_name",
+      "alias",
+      "slug",
+      "website",
+      "description",
+      "category",
+      "categories",
+      "display_categories",
+      "country",
+      "locationType",
+      "approved",
+      "status",
+      "searchKeywords",
+      "completenessScore",
+      "isComplete",
+      "qualityScore"
+    ],
+    "fields_intentionally_left_blank": [
+      "phone",
+      "image",
+      "address",
+      "city",
+      "state",
+      "postalCode"
+    ],
+    "final_category": "Baby and Kids",
+    "final_location_type": "online business",
+    "final_location_data": {
+      "address": "",
+      "city": "",
+      "state": "",
+      "country": "United States",
+      "postalCode": ""
+    },
+    "final_alias": "royal-nation",
+    "final_completeness_score": 44,
+    "final_quality_score": 90,
+    "approved_status_values": {
+      "approved": true,
+      "status": "active"
+    },
+    "public_selector_match": true,
+    "production_search_result": {
+      "exact_name": true,
+      "partial_name": null,
+      "category": null,
+      "service": null,
+      "location": null
+    },
+    "production_profile_result": {
+      "getBusiness200": true,
+      "profile200": true
+    }
+  }
+]
