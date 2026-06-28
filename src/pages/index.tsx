@@ -859,36 +859,34 @@ export default function Home() {
               </span>
             </div>
 
-            <div className="relative isolate mx-auto mt-4 max-w-4xl overflow-hidden rounded-[28px] border border-white/10 px-4 py-5 sm:px-6 sm:py-6 lg:px-8 lg:py-8">
+            <div className="relative isolate mx-auto mt-4 max-w-4xl overflow-hidden rounded-[28px] border border-white/10 px-4 py-5 sm:px-6 sm:py-6 lg:px-8 lg:py-7">
               <div
-                className="pointer-events-none absolute inset-0 -z-10 opacity-[0.16]"
+                className="pointer-events-none absolute inset-0 -z-10 opacity-[0.09]"
                 style={{
                   backgroundImage: "url('/images/story3.jpg')",
                   backgroundSize: "cover",
                   backgroundPosition: "center",
                 }}
               />
-              <div className="pointer-events-none absolute inset-0 -z-10 bg-black/84" />
+              <div className="pointer-events-none absolute inset-0 -z-10 bg-black/90" />
 
-              <div className="mx-auto max-w-3xl">
-                <div className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#D4AF37] sm:text-xs">
-                  Claim. Strengthen. Measure.
+              <div className="mx-auto max-w-2xl">
+                <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#D4AF37] sm:text-[11px]">
+                  CLAIM. STRENGTHEN. TRACK.
                 </div>
 
-                <h1 className="mt-3 text-3xl font-black leading-[1.05] tracking-tight sm:text-4xl md:text-5xl lg:text-6xl">
-                  <span className="text-white">Claim your </span>
-                  <span className="bg-gradient-to-r from-[#D4AF37] via-[#F2D77C] to-[#D4AF37] bg-clip-text text-transparent">
-                    Black-owned business
-                  </span>
-                  <span className="text-white">, strengthen your profile, and measure your visibility and growth.</span>
+                <h1 className="mt-3 text-3xl font-black leading-[1.12] tracking-tight text-white sm:text-4xl md:text-5xl lg:text-[3.6rem]">
+                  Claim your business.<br className="hidden sm:block" />
+                  Strengthen your profile.<br className="hidden sm:block" />
+                  Track your visibility.
                 </h1>
 
-                <p className="mx-auto mt-4 max-w-2xl text-sm text-white/76 sm:text-base md:text-lg">
-                  Start with an existing public BWE listing, open the ownership-review process, activate the Founding Verified Business Growth Membership, and move into profile fulfillment and monthly reporting.
+                <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-white/82 sm:text-base sm:leading-7">
+                  Join the $49/month Founding Membership to begin ownership review, improve your BWE profile, and receive monthly performance reporting.
                 </p>
               </div>
 
-              <div className="mx-auto mt-5 flex w-full max-w-3xl flex-col gap-2 sm:flex-row sm:flex-wrap sm:justify-center">
+              <div className="mx-auto mt-5 flex w-full max-w-md flex-col gap-3 sm:items-center">
                 <Link
                   href="/business-directory"
                   className="w-full sm:w-auto"
@@ -901,7 +899,7 @@ export default function Home() {
                     })
                   }
                 >
-                  <button className="h-12 w-full rounded-xl bg-[#D4AF37] px-5 text-sm font-extrabold text-black transition hover:-translate-y-0.5 hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 sm:w-auto sm:px-6">
+                  <button className="h-12 w-full rounded-xl bg-[#D4AF37] px-6 text-sm font-extrabold text-black transition hover:-translate-y-0.5 hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 sm:min-w-[220px]">
                     Claim Your Business
                   </button>
                 </Link>
@@ -912,30 +910,28 @@ export default function Home() {
                     trackHomepageEvent("homepage_cta_clicked", {
                       section: "hero",
                       ctaId: "hero_review_membership",
-                      ctaLabel: "Review Founding Membership",
+                      ctaLabel: "See Membership Details",
                       destination: "/founding-membership",
                     })
                   }
                 >
-                  <button className="h-12 w-full rounded-xl border border-[#D4AF37]/45 bg-[#D4AF37]/10 px-5 text-sm font-bold text-[#F1D57A] transition hover:-translate-y-0.5 hover:bg-[#D4AF37]/16 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 sm:w-auto sm:px-6">
-                    Review Founding Membership
+                  <button className="h-11 w-full rounded-xl border border-white/20 bg-transparent px-5 text-sm font-semibold text-white/88 transition hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20 sm:min-w-[220px]">
+                    See Membership Details
                   </button>
                 </Link>
                 <Link
                   href="/business-directory/add-business"
-                  className="w-full sm:w-auto"
+                  className="text-sm text-white/72 underline underline-offset-4 hover:text-[#F1D57A]"
                   onClick={() =>
                     trackHomepageEvent("homepage_cta_clicked", {
                       section: "hero",
                       ctaId: "hero_list_business",
-                      ctaLabel: "List Your Business",
+                      ctaLabel: "Don’t see your business? List it here.",
                       destination: "/business-directory/add-business",
                     })
                   }
                 >
-                  <button className="h-12 w-full rounded-xl border border-white/20 bg-black/25 px-5 text-sm font-bold text-white/85 transition hover:-translate-y-0.5 hover:bg-black/40 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 sm:w-auto sm:px-6">
-                    List Your Business Instead
-                  </button>
+                  Don’t see your business? List it here.
                 </Link>
               </div>
 
