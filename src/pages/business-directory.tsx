@@ -1042,13 +1042,6 @@ export default function BusinessDirectory() {
   const getWebsite = (r: Row) => normalizeWebsiteUrl(safeStr((r as any).website));
   const getPhone = (r: Row) => safeStr((r as any).phone).trim();
 
-  const getListingStrengthLabel = (r: Row) => {
-    const strength = Number((r as any)._listingStrength || 0);
-    if (strength >= 92) return "Strong profile";
-    if (strength >= 72) return "Solid profile";
-    return "Basic profile";
-  };
-
   const sponsorsToShow = sponsorAds.slice(0, 10);
 
   const showingFrom = total === 0 ? 0 : (page - 1) * pageSize + 1;
