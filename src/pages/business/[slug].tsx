@@ -3,6 +3,7 @@ import path from "node:path";
 import { GetServerSideProps, NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
+import Link from "next/link";
 import ErrorPage from "next/error";
 import { canonicalUrl, truncateMeta } from "@/lib/seo";
 import clientPromise from "@/lib/mongodb";
