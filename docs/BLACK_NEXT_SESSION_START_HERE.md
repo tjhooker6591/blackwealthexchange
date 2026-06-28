@@ -24,6 +24,15 @@
 - End-to-end paid fulfillment proofs across core funnels.
 - Cross-machine runtime parity evidence.
 - Auth/session + env consistency proof under real run conditions.
+- Revenue-first reorientation and backlog reclassification under the owner directive effective 2026-06-28.
+
+## Governing directive, effective immediately
+
+Read `docs/BWE_12_MONTH_REVENUE_FIRST_GOVERNING_DIRECTIVE_2026-06-28.md` before planning any new work.
+
+It supersedes prior general expansion priorities, multi-brand plans, speculative growth work, and any instruction that conflicts with the 12-month revenue-first BWE focus.
+
+Apply the Revenue Gate before starting any task. If a task does not help acquire revenue within 90 days, retain/renew a paying customer, fulfill/prove paid value, protect trust/payment/continuity, or remove a confirmed funnel blocker, it should not stay active.
 
 ## Recently closed (031626)
 

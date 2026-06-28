@@ -8,6 +8,10 @@ Status labels allowed:
 - BLOCKED BY PAYMENT COMPLETION
 - OPEN DEFECT
 
+Revenue-first governing directive in force: `docs/BWE_12_MONTH_REVENUE_FIRST_GOVERNING_DIRECTIVE_2026-06-28.md`
+
+Interpret all workstream activity through that directive and its Revenue Gate before resuming implementation.
+
 ---
 
 ## 1) Auth / login / session

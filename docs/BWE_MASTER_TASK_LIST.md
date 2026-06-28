@@ -3,6 +3,18 @@
 Legend: `complete` | `in-progress` | `incomplete` | `verify-next`
 Owner default: `BlackForge`
 
+Revenue-first governing directive override is in force: `docs/BWE_12_MONTH_REVENUE_FIRST_GOVERNING_DIRECTIVE_2026-06-28.md`
+
+Before any item remains active, it must pass the Revenue Gate and be classed as one of:
+- Revenue Critical
+- Trust or Payment Critical
+- Customer Fulfillment
+- Maintenance
+- Deferred
+- Retired
+
+Historical items below must be reclassified before further implementation.
+
 ## P0
 
 1. Full reset lifecycle proof + hardening

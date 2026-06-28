@@ -60,14 +60,30 @@ Source: `docs/CURRENT_BUILD_ALL_WORKSTREAMS_STATUS.md`
 
 ## 5) Known priorities (current)
 
-1. **Release proof pass, not feature build**:
-   - full build/runtime/auth/payment/admin smoke using current branch and current env.
-2. **Payment-completion evidence**:
+### Governing directive override (effective 2026-06-28 through 2027-06-30)
+
+- Canonical directive: `docs/BWE_12_MONTH_REVENUE_FIRST_GOVERNING_DIRECTIVE_2026-06-28.md`
+- This supersedes prior general expansion priorities, feature-roadmap assumptions, multi-brand plans, and conflicting growth instructions.
+- BWE is the only active business-building priority in this period.
+- BlackForge is to operate as revenue-enablement engineer, platform-reliability owner, payment-integrity owner, business-activation systems builder, sponsor-proof systems builder, customer-outcome instrumentation builder, and operational evidence reporter.
+- Active offer focus is limited to:
+  1. Verified Business Growth Membership
+  2. Sponsored Visibility Campaigns
+  3. Business Growth and Capital-Readiness Services
+- Frozen from active expansion unless directly required for those offers: Travel Map, Wealth Builder, Black Card expansion, creator/music expansion, entertainment lanes, broad marketplace/jobs expansion, speculative AI, unrelated modernization, decorative dashboards/admin, large visual redesigns, and new brands/product families.
+
+### Operational priorities under the directive
+
+1. **Finish minimum safe recovery/continuity only**:
+   - prove canonical repo/deployment/data baseline sufficiently safe for controlled development, then stop recovery sprawl.
+2. **Payment-completion evidence on revenue-critical flows**:
    - prove paid checkout -> webhook -> fulfillment -> visible state for critical funnels.
-3. **Dirty-tree hygiene and closure discipline**:
-   - separate pre-existing local drift from current release proof work.
-4. **Cross-machine parity evidence**:
-   - lock reproducibility across both machines/env contexts.
+3. **Revenue Gate reclassification**:
+   - classify every active/planned workstream as Revenue Critical, Trust or Payment Critical, Customer Fulfillment, Maintenance, Deferred, or Retired.
+4. **Revenue activation support only**:
+   - prioritize tasks that help acquire, onboard, fulfill, measure, report, and renew paying BWE customers.
+5. **Cross-machine parity only to the extent needed for safe controlled operation**:
+   - do not allow parity work to expand into a broad research program.
 
 ## 6) Known open defects / unresolved risk items (continuity + code audit)
 
