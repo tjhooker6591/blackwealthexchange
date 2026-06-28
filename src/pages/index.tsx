@@ -861,27 +861,28 @@ export default function Home() {
 
             <div className="relative isolate mx-auto mt-4 max-w-4xl overflow-hidden rounded-[28px] border border-white/10 px-4 py-5 sm:px-6 sm:py-6 lg:px-8 lg:py-7">
               <div
-                className="pointer-events-none absolute inset-0 -z-10 opacity-[0.09]"
+                className="pointer-events-none absolute inset-0 -z-10 opacity-[0.22]"
                 style={{
                   backgroundImage: "url('/images/story3.jpg')",
                   backgroundSize: "cover",
                   backgroundPosition: "center",
                 }}
               />
-              <div className="pointer-events-none absolute inset-0 -z-10 bg-black/90" />
+              <div className="pointer-events-none absolute inset-0 -z-10 bg-black/76" />
+              <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-40 bg-gradient-to-b from-black/30 via-black/10 to-transparent" />
 
               <div className="mx-auto max-w-2xl">
                 <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#D4AF37] sm:text-[11px]">
                   CLAIM. STRENGTHEN. TRACK.
                 </div>
 
-                <h1 className="mt-3 text-3xl font-black leading-[1.12] tracking-tight text-white sm:text-4xl md:text-5xl lg:text-[3.6rem]">
-                  Claim your business.<br className="hidden sm:block" />
-                  Strengthen your profile.<br className="hidden sm:block" />
-                  Track your visibility.
+                <h1 className="mt-3 flex flex-col gap-1 text-3xl font-black leading-[1.14] tracking-tight text-white sm:text-4xl md:text-5xl lg:text-[3.45rem]">
+                  <span>Claim your business.</span>
+                  <span>Strengthen your profile.</span>
+                  <span>Track your visibility.</span>
                 </h1>
 
-                <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-white/82 sm:text-base sm:leading-7">
+                <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-white/84 sm:text-base sm:leading-7">
                   Join the $49/month Founding Membership to begin ownership review, improve your BWE profile, and receive monthly performance reporting.
                 </p>
               </div>
@@ -915,13 +916,13 @@ export default function Home() {
                     })
                   }
                 >
-                  <button className="h-11 w-full rounded-xl border border-white/20 bg-transparent px-5 text-sm font-semibold text-white/88 transition hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20 sm:min-w-[220px]">
+                  <button className="h-11 w-full rounded-xl border border-white/25 bg-white/[0.03] px-5 text-sm font-semibold text-white/88 transition hover:bg-white/8 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20 sm:min-w-[220px]">
                     See Membership Details
                   </button>
                 </Link>
                 <Link
                   href="/business-directory/add-business"
-                  className="text-sm text-white/72 underline underline-offset-4 hover:text-[#F1D57A]"
+                  className="text-sm text-white/74 underline underline-offset-4 hover:text-[#F1D57A]"
                   onClick={() =>
                     trackHomepageEvent("homepage_cta_clicked", {
                       section: "hero",
@@ -933,31 +934,6 @@ export default function Home() {
                 >
                   Don’t see your business? List it here.
                 </Link>
-              </div>
-
-              <div className="mx-auto mt-4 max-w-2xl rounded-2xl border border-white/10 bg-white/[0.03] p-3 text-left sm:p-4">
-                <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#D4AF37] sm:text-[11px]">
-                  Join BWE
-                </div>
-                <div className="mt-1 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                  <p className="text-xs text-white/75 sm:text-sm">
-                    Join to save businesses, track opportunities, and move through the BWE ecosystem with faster access to the tools built to help you support, shop, and grow.
-                  </p>
-                  <Link
-                    href={user ? "/dashboard" : "/signup"}
-                    onClick={() =>
-                      trackHomepageEvent("homepage_cta_clicked", {
-                        section: "hero",
-                        ctaId: user ? "hero_dashboard" : "hero_join_bwe",
-                        ctaLabel: user ? "Go to Dashboard" : "Join BWE",
-                        destination: user ? "/dashboard" : "/signup",
-                      })
-                    }
-                    className="inline-flex shrink-0 items-center justify-center rounded-lg border border-white/20 bg-black/30 px-4 py-2 text-xs font-semibold text-white/85 hover:bg-black/45"
-                  >
-                    {user ? "Go to Dashboard" : "Join BWE"}
-                  </Link>
-                </div>
               </div>
             </div>
 
