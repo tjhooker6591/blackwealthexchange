@@ -18,6 +18,14 @@ import {
   isBlackCardPlanItemId,
 } from "@/lib/black-card";
 import { ensureBlackCardMembershipAndCard } from "@/lib/black-card-membership";
+import {
+  FOUNDING_MEMBERSHIP_ITEM_ID,
+  FOUNDING_MEMBERSHIP_NAME,
+  FOUNDING_MEMBERSHIP_PRICE_CENTS,
+  FOUNDING_MEMBERSHIP_PRODUCT_KEY,
+  isFoundingMembershipItemId,
+  isFoundingMembershipProductKey,
+} from "@/lib/founding-membership";
 import { getMongoDbName } from "@/lib/env";
 import { requireStripeSecretKey } from "@/lib/stripeSecret";
 import { sendEmail } from "@/lib/sendEmail";
@@ -390,6 +398,17 @@ async function upsertWealthBuilderPremiumEntitlement(
 
 function mapPlanToBlackCardTier(plan: "premium" | "founding") {
   return plan === "founding" ? "signature" : "standard";
+}
+
+function isFoundingMembershipPurchase(
+  meta: SessionMetadata,
+  normalizedItemId: string,
+) {
+  const productKey = asString(meta.productKey).trim().toLowerCase();
+  return (
+    isFoundingMembershipItemId(normalizedItemId) ||
+    isFoundingMembershipProductKey(productKey)
+  );
 }
 
 async function sendMembershipEmailSafe(params: {
@@ -982,9 +1001,14 @@ export default async function webhookHandler(
             paymentIntentId || existingPayment?.paymentIntentId || null,
           email: email || null,
           amountCents: resolvedAmountCents || null,
+          grossAmountCents: resolvedAmountCents || null,
+          refundedAmountCents: 0,
+          netAmountCents: split.netAmount,
+          bweRetainedAmountCents: split.bweFee,
           bweFee: split.bweFee,
           bweFeePercent: split.bweFeePercent,
           payout: split.sellerPayout,
+          paymentStatus: "paid",
           currency: session.currency || "usd",
 
           lastWebhookEventId: event.id,
@@ -1683,6 +1707,267 @@ export default async function webhookHandler(
 
         console.log(
           `✅ Wealth Builder Premium activated user=${entitlementUserId} item=${normalizedItemId}`,
+        );
+      }
+    }
+
+    /**
+     * 3.58) Founding Verified Business Growth Membership
+     */
+    if (
+      metaType === "plan" &&
+      isFoundingMembershipPurchase(mergedMeta, normalizedItemId)
+    ) {
+      const stripeCustomerId =
+        typeof session.customer === "string" ? session.customer : null;
+      const stripeSubscriptionId =
+        typeof (session as any).subscription === "string"
+          ? ((session as any).subscription as string)
+          : null;
+      const membershipBusinessId = businessId;
+
+      if (!userId || !membershipBusinessId) {
+        await db.collection("flow_events").insertOne({
+          eventType: "founding_membership_paid_missing_linkage",
+          pageRoute: "/api/stripe/webhook-handler",
+          section: "founding_membership_webhook",
+          source: "stripe_webhook",
+          stripeSessionId,
+          paymentIntentId: paymentIntentId || null,
+          userId: userId || null,
+          businessId: membershipBusinessId || null,
+          createdAt: now,
+        });
+      } else {
+        const membershipId = `${FOUNDING_MEMBERSHIP_PRODUCT_KEY}:${membershipBusinessId}`;
+
+        await db.collection("business_memberships").updateOne(
+          { membershipId },
+          {
+            $setOnInsert: {
+              membershipId,
+              createdAt: paidAt,
+            },
+            $set: {
+              productKey: FOUNDING_MEMBERSHIP_PRODUCT_KEY,
+              membershipName: FOUNDING_MEMBERSHIP_NAME,
+              membershipStatus: "active",
+              billingInterval: "monthly",
+              amountCents: resolvedAmountCents || FOUNDING_MEMBERSHIP_PRICE_CENTS,
+              currency: session.currency || "usd",
+              grossAmountCents:
+                resolvedAmountCents || FOUNDING_MEMBERSHIP_PRICE_CENTS,
+              refundedAmountCents: 0,
+              netRecordedAmountCents: split.netAmount,
+              bweRetainedAmountCents: split.bweFee,
+              userId,
+              businessId: membershipBusinessId,
+              email: email || null,
+              stripeSessionId,
+              stripeCustomerId,
+              stripeSubscriptionId,
+              stripePriceId:
+                typeof session.metadata?.priceId === "string"
+                  ? session.metadata?.priceId
+                  : null,
+              stripeProductId:
+                typeof session.metadata?.productId === "string"
+                  ? session.metadata?.productId
+                  : null,
+              stripeInvoiceId: null,
+              stripePaymentIntentId: paymentIntentId || null,
+              ownershipReviewStatus: "pending_review",
+              activatedAt: paidAt,
+              updatedAt: now,
+            },
+          },
+          { upsert: true },
+        );
+
+        await db.collection("business_claims").updateOne(
+          {
+            businessId: membershipBusinessId,
+            userId,
+            productKey: FOUNDING_MEMBERSHIP_PRODUCT_KEY,
+          },
+          {
+            $setOnInsert: {
+              createdAt: paidAt,
+            },
+            $set: {
+              businessId: membershipBusinessId,
+              userId,
+              email: email || null,
+              claimStatus: "claim_initiated",
+              ownershipReviewStatus: "ownership_review_pending",
+              membershipId,
+              membershipName: FOUNDING_MEMBERSHIP_NAME,
+              stripeSessionId,
+              updatedAt: now,
+            },
+          },
+          { upsert: true },
+        );
+
+        await db.collection("ownership_reviews").updateOne(
+          {
+            businessId: membershipBusinessId,
+            userId,
+            sourceMembershipId: membershipId,
+          },
+          {
+            $setOnInsert: { createdAt: paidAt },
+            $set: {
+              businessId: membershipBusinessId,
+              userId,
+              email: email || null,
+              reviewStatus: "pending_review",
+              evidenceStatus: "awaiting_owner_documents",
+              sourceMembershipId: membershipId,
+              sourceClaimStatus: "claim_initiated",
+              updatedAt: now,
+            },
+          },
+          { upsert: true },
+        );
+
+        await db.collection("membership_onboarding").updateOne(
+          { membershipId },
+          {
+            $setOnInsert: { createdAt: paidAt },
+            $set: {
+              membershipId,
+              businessId: membershipBusinessId,
+              userId,
+              onboardingStatus: "started",
+              checklistStatus: "pending",
+              nextStep: "submit ownership evidence for manual review",
+              updatedAt: now,
+            },
+          },
+          { upsert: true },
+        );
+
+        await db.collection("membership_fulfillment").updateOne(
+          { membershipId },
+          {
+            $setOnInsert: { createdAt: paidAt },
+            $set: {
+              membershipId,
+              businessId: membershipBusinessId,
+              userId,
+              fulfillmentStatus: "pending_review_queue",
+              profileReviewStatus: "queued",
+              baselineStatus: "queued",
+              monthlyReportingStatus: "scheduled",
+              supportStatus: "available",
+              checklist: [
+                {
+                  key: "ownership_review",
+                  label: "Ownership review",
+                  status: "pending_review",
+                },
+                {
+                  key: "profile_review",
+                  label: "Professional profile review",
+                  status: "queued",
+                },
+                {
+                  key: "profile_enhancement",
+                  label: "Profile enhancement setup",
+                  status: "queued",
+                },
+                {
+                  key: "baseline",
+                  label: "Initial performance baseline",
+                  status: "queued",
+                },
+                {
+                  key: "monthly_reporting",
+                  label: "Monthly activity reporting",
+                  status: "scheduled",
+                },
+              ],
+              updatedAt: now,
+            },
+          },
+          { upsert: true },
+        );
+
+        await db.collection("profile_performance_baselines").updateOne(
+          { membershipId },
+          {
+            $setOnInsert: { createdAt: paidAt },
+            $set: {
+              membershipId,
+              businessId: membershipBusinessId,
+              userId,
+              baselineStatus: "created",
+              source: "founding_membership_webhook",
+              metrics: {
+                capturedAt: now,
+                notes: "Initial baseline record created at membership payment confirmation.",
+              },
+              updatedAt: now,
+            },
+          },
+          { upsert: true },
+        );
+
+        await db.collection("payments").updateOne(
+          { stripeSessionId },
+          {
+            $set: {
+              membershipId,
+              membershipName: FOUNDING_MEMBERSHIP_NAME,
+              businessId: membershipBusinessId,
+              userId,
+              testMode: (event as any).livemode === false,
+              liveMode: (event as any).livemode === true,
+              productKey: FOUNDING_MEMBERSHIP_PRODUCT_KEY,
+              itemId: FOUNDING_MEMBERSHIP_ITEM_ID,
+              paymentStatus: "paid",
+              status: "paid",
+              metadata: {
+                ...existingMeta,
+                ...sessionMeta,
+                productKey: FOUNDING_MEMBERSHIP_PRODUCT_KEY,
+                membershipName: FOUNDING_MEMBERSHIP_NAME,
+                billingInterval: "monthly",
+                businessId: membershipBusinessId,
+                membershipId,
+                testMode: (event as any).livemode === false,
+              },
+              updatedAt: now,
+            },
+          },
+        );
+
+        await db.collection("subscription_events").updateOne(
+          {
+            stripeEventId: event.id,
+            stripeSessionId,
+            plan: "founding_verified_business_growth_membership",
+          },
+          {
+            $setOnInsert: {
+              createdAt: now,
+            },
+            $set: {
+              stripeEventType: event.type,
+              stripeSubscriptionId: stripeSubscriptionId || null,
+              stripeCustomerId: stripeCustomerId || null,
+              userId,
+              email: email || null,
+              plan: "founding_verified_business_growth_membership",
+              status: "active",
+              businessId: membershipBusinessId,
+              membershipId,
+              currentPeriodStart: paidAt,
+              cancelAtPeriodEnd: false,
+            },
+          },
+          { upsert: true },
         );
       }
     }
