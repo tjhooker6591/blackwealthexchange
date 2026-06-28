@@ -1036,7 +1036,19 @@ export default function BusinessDirectory() {
             (r as any).qualityScore || (r as any).completenessScore || 0,
           ) >= 70;
 
-    return { verified, approved, sponsored, isComplete };
+    const claimStage = verified
+      ? "owner_verified"
+      : status === "pending_review"
+        ? "ownership_review_pending"
+        : status === "evidence_required"
+          ? "additional_evidence_required"
+          : status === "claim_initiated"
+            ? "claim_initiated"
+            : sponsored
+              ? "founding_growth_member"
+              : "unclaimed";
+
+    return { verified, approved, sponsored, isComplete, claimStage };
   };
 
   const getWebsite = (r: Row) => normalizeWebsiteUrl(safeStr((r as any).website));
@@ -2095,18 +2107,34 @@ export default function BusinessDirectory() {
                             <div className="mt-1 flex flex-wrap items-center gap-1.5">
                               {getTrustMeta(item as Row).verified ? (
                                 <span className="rounded-full border border-emerald-400/30 bg-emerald-400/15 px-2 py-0.5 text-[10px] font-bold text-emerald-200">
-                                  Verified
+                                  Owner Verified
                                 </span>
                               ) : null}
-                              {getTrustMeta(item as Row).sponsored ? (
-                                <span className="rounded-full border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-2 py-0.5 text-[10px] font-bold text-[#D4AF37]">
-                                  Sponsored
-                                </span>
-                              ) : (
+                              {getTrustMeta(item as Row).claimStage === "unclaimed" ? (
                                 <span className="rounded-full border border-white/20 bg-white/10 px-2 py-0.5 text-[10px] font-bold text-white/75">
-                                  Organic listing
+                                  Unclaimed
                                 </span>
-                              )}
+                              ) : null}
+                              {getTrustMeta(item as Row).claimStage === "claim_initiated" ? (
+                                <span className="rounded-full border border-blue-400/30 bg-blue-400/15 px-2 py-0.5 text-[10px] font-bold text-blue-200">
+                                  Claim Initiated
+                                </span>
+                              ) : null}
+                              {getTrustMeta(item as Row).claimStage === "ownership_review_pending" ? (
+                                <span className="rounded-full border border-sky-400/30 bg-sky-400/15 px-2 py-0.5 text-[10px] font-bold text-sky-200">
+                                  Ownership Review Pending
+                                </span>
+                              ) : null}
+                              {getTrustMeta(item as Row).claimStage === "additional_evidence_required" ? (
+                                <span className="rounded-full border border-orange-400/30 bg-orange-400/15 px-2 py-0.5 text-[10px] font-bold text-orange-200">
+                                  Additional Evidence Required
+                                </span>
+                              ) : null}
+                              {getTrustMeta(item as Row).claimStage === "founding_growth_member" ? (
+                                <span className="rounded-full border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-2 py-0.5 text-[10px] font-bold text-[#D4AF37]">
+                                  Founding Growth Member
+                                </span>
+                              ) : null}
                               {!getTrustMeta(item as Row).isComplete && (
                                 <span className="rounded-full border border-sky-400/30 bg-sky-400/15 px-2 py-0.5 text-[10px] font-bold text-sky-200">
                                   Profile needs more details
@@ -2152,6 +2180,12 @@ export default function BusinessDirectory() {
                                 className="rounded-lg bg-[#D4AF37] px-3 py-1.5 text-[11px] font-extrabold text-black hover:bg-yellow-500"
                               >
                                 View details
+                              </Link>
+                              <Link
+                                href="/founding-membership"
+                                className="rounded-lg border border-[#D4AF37]/40 bg-[#D4AF37]/12 px-3 py-1.5 text-[11px] font-bold text-[#F1D57A] hover:bg-[#D4AF37]/18"
+                              >
+                                Claim This Business
                               </Link>
                               {getWebsite(item as Row) ? (
                                 <a

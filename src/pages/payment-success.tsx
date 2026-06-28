@@ -1,6 +1,7 @@
 // src/pages/payment-success.tsx
 import Head from "next/head";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 export default function PaymentSuccessPage() {
@@ -9,8 +10,25 @@ export default function PaymentSuccessPage() {
     typeof router.query.session_id === "string" ? router.query.session_id : "";
   const context =
     typeof router.query.context === "string" ? router.query.context : "";
+  const businessId =
+    typeof router.query.businessId === "string" ? router.query.businessId : "";
 
   const foundingMembership = context === "founding-membership";
+  const [membershipStatus, setMembershipStatus] = useState<any>(null);
+
+  useEffect(() => {
+    if (!foundingMembership) return;
+    (async () => {
+      try {
+        const res = await fetch("/api/founding-membership/status", {
+          credentials: "include",
+          cache: "no-store",
+        });
+        const json = await res.json().catch(() => null);
+        if (res.ok && json?.ok) setMembershipStatus(json.membership || null);
+      } catch {}
+    })();
+  }, [foundingMembership]);
 
   return (
     <>
@@ -45,14 +63,44 @@ export default function PaymentSuccessPage() {
                 : "Your Marketplace order payment is complete."}
             </p>
 
+            {foundingMembership ? (
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                <div className="rounded-xl border border-white/10 bg-black/30 p-4">
+                  <div className="text-xs uppercase tracking-wide text-white/50">Membership status</div>
+                  <div className="mt-1 font-semibold text-white">{membershipStatus?.membershipStatus ? String(membershipStatus.membershipStatus).replace(/_/g, " ") : "Active pending webhook confirmation"}</div>
+                </div>
+                <div className="rounded-xl border border-white/10 bg-black/30 p-4">
+                  <div className="text-xs uppercase tracking-wide text-white/50">Selected business</div>
+                  <div className="mt-1 font-semibold text-white">{membershipStatus?.business?.name || (businessId ? `Business ID ${businessId}` : "Selected business recorded")}</div>
+                </div>
+                <div className="rounded-xl border border-white/10 bg-black/30 p-4">
+                  <div className="text-xs uppercase tracking-wide text-white/50">Payment</div>
+                  <div className="mt-1 font-semibold text-white">Received</div>
+                </div>
+                <div className="rounded-xl border border-white/10 bg-black/30 p-4">
+                  <div className="text-xs uppercase tracking-wide text-white/50">Claim</div>
+                  <div className="mt-1 font-semibold text-white">{membershipStatus?.claimStatus ? String(membershipStatus.claimStatus).replace(/_/g, " ") : "Initiated"}</div>
+                </div>
+                <div className="rounded-xl border border-white/10 bg-black/30 p-4">
+                  <div className="text-xs uppercase tracking-wide text-white/50">Ownership review</div>
+                  <div className="mt-1 font-semibold text-white">{membershipStatus?.ownershipReviewStatus ? String(membershipStatus.ownershipReviewStatus).replace(/_/g, " ") : "Pending review"}</div>
+                </div>
+                <div className="rounded-xl border border-white/10 bg-black/30 p-4">
+                  <div className="text-xs uppercase tracking-wide text-white/50">Important note</div>
+                  <div className="mt-1 text-sm text-white/75">Paid membership and verified ownership are separate states.</div>
+                </div>
+              </div>
+            ) : null}
+
             <div className="mt-4 rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-4 text-sm text-yellow-100">
               <p className="font-semibold text-yellow-200">What happens next</p>
               {foundingMembership ? (
                 <ul className="mt-2 list-disc pl-5 space-y-1">
                   <li>Your membership is recorded as active once webhook confirmation completes.</li>
-                  <li>Your business claim is opened and ownership review is set to pending review.</li>
+                  <li>Your payment has been received and your claim is initiated.</li>
+                  <li>Your ownership review remains pending until evidence is reviewed.</li>
                   <li>BWE creates the onboarding record, fulfillment checklist, and initial profile baseline.</li>
-                  <li>You will follow the ownership verification steps before owner approval is granted.</li>
+                  <li>You can follow next steps and monthly reporting status from the member status view.</li>
                 </ul>
               ) : (
                 <ul className="mt-2 list-disc pl-5 space-y-1">
@@ -92,16 +140,22 @@ export default function PaymentSuccessPage() {
               {foundingMembership ? (
                 <>
                   <Link
-                    href="/founding-membership"
+                    href="/founding-membership/status"
                     className="inline-flex items-center justify-center rounded-md bg-yellow-500 px-4 py-2 font-semibold text-black hover:bg-yellow-400 transition"
                   >
-                    Back to Membership Page
+                    View Member Status
+                  </Link>
+                  <Link
+                    href="/founding-membership"
+                    className="inline-flex items-center justify-center rounded-md border border-yellow-500/40 px-4 py-2 font-semibold text-yellow-300 hover:border-yellow-400/70 transition"
+                  >
+                    Review Membership Details
                   </Link>
                   <Link
                     href="/business-directory"
-                    className="inline-flex items-center justify-center rounded-md border border-yellow-500/40 px-4 py-2 font-semibold text-yellow-300 hover:border-yellow-400/70 transition"
+                    className="inline-flex items-center justify-center rounded-md border border-white/15 px-4 py-2 font-semibold text-white/80 hover:bg-white/10 transition"
                   >
-                    View Business Directory
+                    Return to Directory
                   </Link>
                   <a
                     href="mailto:support@blackwealthexchange.com?subject=Founding%20Membership%20Support"

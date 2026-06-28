@@ -872,37 +872,53 @@ export default function Home() {
 
               <div className="mx-auto max-w-3xl">
                 <div className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#D4AF37] sm:text-xs">
-                  Discover. Support. Circulate.
+                  Claim. Strengthen. Measure.
                 </div>
 
                 <h1 className="mt-3 text-3xl font-black leading-[1.05] tracking-tight sm:text-4xl md:text-5xl lg:text-6xl">
-                  <span className="text-white">Find and support </span>
+                  <span className="text-white">Claim your </span>
                   <span className="bg-gradient-to-r from-[#D4AF37] via-[#F2D77C] to-[#D4AF37] bg-clip-text text-transparent">
-                    Black-owned businesses
+                    Black-owned business
                   </span>
-                  <span className="text-white"> with more trust and less friction.</span>
+                  <span className="text-white">, strengthen your profile, and measure your visibility and growth.</span>
                 </h1>
 
                 <p className="mx-auto mt-4 max-w-2xl text-sm text-white/76 sm:text-base md:text-lg">
-                  BWE helps people find Black-owned businesses, helps businesses get discovered, and helps more Black buying power move through our own platform.
+                  Start with an existing public BWE listing, open the ownership-review process, activate the Founding Verified Business Growth Membership, and move into profile fulfillment and monthly reporting.
                 </p>
               </div>
 
-              <div className="mx-auto mt-5 flex w-full max-w-2xl flex-col gap-2 sm:flex-row sm:justify-center">
+              <div className="mx-auto mt-5 flex w-full max-w-3xl flex-col gap-2 sm:flex-row sm:flex-wrap sm:justify-center">
                 <Link
                   href="/business-directory"
                   className="w-full sm:w-auto"
                   onClick={() =>
                     trackHomepageEvent("homepage_cta_clicked", {
                       section: "hero",
-                      ctaId: "hero_find_businesses",
-                      ctaLabel: "Find Black-Owned Businesses",
+                      ctaId: "hero_claim_business",
+                      ctaLabel: "Claim Your Business",
                       destination: "/business-directory",
                     })
                   }
                 >
                   <button className="h-12 w-full rounded-xl bg-[#D4AF37] px-5 text-sm font-extrabold text-black transition hover:-translate-y-0.5 hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 sm:w-auto sm:px-6">
-                    Find Black-Owned Businesses
+                    Claim Your Business
+                  </button>
+                </Link>
+                <Link
+                  href="/founding-membership"
+                  className="w-full sm:w-auto"
+                  onClick={() =>
+                    trackHomepageEvent("homepage_cta_clicked", {
+                      section: "hero",
+                      ctaId: "hero_review_membership",
+                      ctaLabel: "Review Founding Membership",
+                      destination: "/founding-membership",
+                    })
+                  }
+                >
+                  <button className="h-12 w-full rounded-xl border border-[#D4AF37]/45 bg-[#D4AF37]/10 px-5 text-sm font-bold text-[#F1D57A] transition hover:-translate-y-0.5 hover:bg-[#D4AF37]/16 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 sm:w-auto sm:px-6">
+                    Review Founding Membership
                   </button>
                 </Link>
                 <Link
@@ -917,8 +933,8 @@ export default function Home() {
                     })
                   }
                 >
-                  <button className="h-12 w-full rounded-xl border border-[#D4AF37]/45 bg-[#D4AF37]/10 px-5 text-sm font-bold text-[#F1D57A] transition hover:-translate-y-0.5 hover:bg-[#D4AF37]/16 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 sm:w-auto sm:px-6">
-                    List Your Business
+                  <button className="h-12 w-full rounded-xl border border-white/20 bg-black/25 px-5 text-sm font-bold text-white/85 transition hover:-translate-y-0.5 hover:bg-black/40 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 sm:w-auto sm:px-6">
+                    List Your Business Instead
                   </button>
                 </Link>
               </div>
@@ -1324,30 +1340,39 @@ export default function Home() {
             <div className="grid gap-4 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:items-center">
               <div className="text-left">
                 <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
-                  For business owners
+                  Claim your existing listing
                 </p>
                 <h3 className="mt-1 text-xl font-extrabold tracking-tight text-white sm:text-2xl">
-                  Get discovered by people looking to support Black-owned businesses.
+                  Find your public BWE business, start the claim process, and move into monthly growth support.
                 </h3>
                 <p className="mt-2 text-sm text-white/75">
-                  Create a listing, improve your visibility, and make your business easier to find when support intent is highest.
+                  This pilot path is for an existing public business listing. Payment starts membership and claim processing, but ownership verification is still reviewed separately.
                 </p>
               </div>
               <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-left">
                 <div className="text-[10px] uppercase tracking-[0.08em] text-white/45">
-                  Business listing conversion
+                  Founding membership path
                 </div>
                 <ul className="mt-2 space-y-2 text-sm text-white/80">
-                  <li>• Show up where buyers are already searching</li>
-                  <li>• Turn mission-aligned traffic into discovery</li>
-                  <li>• Make your business easier to trust and contact</li>
+                  <li>• Find existing business in the directory</li>
+                  <li>• Claim the business and start ownership review</li>
+                  <li>• Activate the $49/month founding pilot membership</li>
+                  <li>• Move into profile review, baseline setup, and monthly reporting</li>
                 </ul>
-                <Link
-                  href="/business-directory/add-business"
-                  className="mt-4 inline-flex rounded-lg bg-[#D4AF37] px-4 py-2.5 text-sm font-extrabold text-black hover:bg-yellow-500"
-                >
-                  List Your Business
-                </Link>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <Link
+                    href="/business-directory"
+                    className="inline-flex rounded-lg bg-[#D4AF37] px-4 py-2.5 text-sm font-extrabold text-black hover:bg-yellow-500"
+                  >
+                    Find Existing Business
+                  </Link>
+                  <Link
+                    href="/founding-membership"
+                    className="inline-flex rounded-lg border border-[#D4AF37]/40 bg-[#D4AF37]/12 px-4 py-2.5 text-sm font-bold text-[#F1D57A] hover:bg-[#D4AF37]/18"
+                  >
+                    Review Membership
+                  </Link>
+                </div>
               </div>
             </div>
           </section>

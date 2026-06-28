@@ -197,19 +197,17 @@ const BusinessDetail: NextPage<Props> = ({ entry, slug }) => {
                 <div className="mt-1 sm:mt-2 text-white/70 text-sm sm:text-base">{entry.location || ""}</div>
                 <div className="mt-2 flex flex-wrap gap-1.5 sm:gap-2">
                   {entry.category ? <span className="text-[11px] sm:text-xs rounded-full border border-yellow-400/30 bg-yellow-500/10 px-2.5 py-0.5 sm:px-3 sm:py-1 text-yellow-200">{entry.category}</span> : null}
-                  {!entry.isSponsored ? <span className="text-[11px] sm:text-xs rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 sm:px-3 sm:py-1 text-white/80">Organic Listing</span> : <span className="text-[11px] sm:text-xs rounded-full border border-yellow-400/30 bg-yellow-500/10 px-2.5 py-0.5 sm:px-3 sm:py-1 text-yellow-200">Sponsored</span>}
+                  {!entry.isSponsored ? <span className="text-[11px] sm:text-xs rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 sm:px-3 sm:py-1 text-white/80">Unclaimed public listing</span> : <span className="text-[11px] sm:text-xs rounded-full border border-yellow-400/30 bg-yellow-500/10 px-2.5 py-0.5 sm:px-3 sm:py-1 text-yellow-200">Sponsored</span>}
+                  {entry.status === "verified" ? <span className="text-[11px] sm:text-xs rounded-full border border-emerald-400/30 bg-emerald-500/10 px-2.5 py-0.5 sm:px-3 sm:py-1 text-emerald-200">Owner Verified</span> : null}
+                  {entry.status === "pending_review" ? <span className="text-[11px] sm:text-xs rounded-full border border-sky-400/30 bg-sky-500/10 px-2.5 py-0.5 sm:px-3 sm:py-1 text-sky-200">Ownership Review Pending</span> : null}
                   {entry.isStrongProfile ? <span className="text-[11px] sm:text-xs rounded-full border border-indigo-400/30 bg-indigo-500/10 px-2.5 py-0.5 sm:px-3 sm:py-1 text-indigo-200">Strong Profile</span> : null}
                 </div>
               </div>
               <div className="grid grid-cols-2 sm:flex gap-2 w-full md:w-auto">
+                <Link href="/founding-membership" className="inline-flex items-center justify-center rounded-xl bg-yellow-500 text-black font-semibold text-sm px-3 py-2 hover:bg-yellow-400 transition">Claim This Business</Link>
+                <Link href="/founding-membership/status" className="inline-flex items-center justify-center rounded-xl border border-yellow-500/35 bg-yellow-500/10 text-yellow-200 font-semibold text-sm px-3 py-2 hover:bg-yellow-500/15 transition">Claim Status</Link>
                 {entry.website ? (
-                  <a href={entry.website} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center rounded-xl bg-yellow-500 text-black font-semibold text-sm px-3 py-2 hover:bg-yellow-400 transition">Visit website</a>
-                ) : null}
-                {entry.phone ? (
-                  <a href={`tel:${String(entry.phone).replace(/\s+/g, "")}`} className="inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-sm px-3 py-2 transition">Call</a>
-                ) : null}
-                {entry.sourceUrl ? (
-                  <a href={entry.sourceUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-sm px-3 py-2 transition">Source</a>
+                  <a href={entry.website} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-sm px-3 py-2 transition">Visit website</a>
                 ) : null}
                 {entry.directionsUrl ? (
                   <a href={entry.directionsUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-sm px-3 py-2 transition">Get directions</a>
@@ -230,6 +228,16 @@ const BusinessDetail: NextPage<Props> = ({ entry, slug }) => {
               </div>
 
               <div className="rounded-2xl border border-white/10 bg-black/30 p-5 space-y-3">
+                <div className="text-sm font-semibold text-white/90">Claim and membership path</div>
+                <div className="rounded-2xl border border-yellow-500/20 bg-yellow-500/10 p-4 text-sm text-white/75">
+                  <div className="font-semibold text-yellow-200">Claim This Business</div>
+                  <div className="mt-2">If this is your business, start the Founding Verified Business Growth Membership claim path to open ownership review, profile review, fulfillment, and monthly reporting.</div>
+                  <div className="mt-2 text-white/60">Payment and owner verification are separate states. Payment does not automatically verify ownership.</div>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <Link href="/founding-membership" className="rounded-lg bg-yellow-500 px-3 py-2 text-xs font-extrabold text-black">Start Membership and Claim Process</Link>
+                    <Link href="/founding-membership/status" className="rounded-lg border border-white/15 px-3 py-2 text-xs font-bold text-white/85">View Member Status</Link>
+                  </div>
+                </div>
                 <div className="text-sm font-semibold text-white/90">Details</div>
                 {entry.details ? (
                   <div className="text-sm text-white/75" dangerouslySetInnerHTML={{ __html: sanitizeRichHtml(entry.details) }} />
