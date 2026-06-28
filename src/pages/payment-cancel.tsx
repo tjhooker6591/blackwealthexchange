@@ -1,13 +1,21 @@
 // src/pages/payment-cancel.tsx
 import Head from "next/head";
 import Link from "next/link";
+import { useMemo } from "react";
 
 export default function PaymentCancelPage() {
-  const context =
-    typeof window !== "undefined"
-      ? new URLSearchParams(window.location.search).get("context") || ""
-      : "";
-  const foundingMembership = context === "founding-membership";
+  const params = useMemo(() => {
+    if (typeof window === "undefined") {
+      return { context: "", businessId: "" };
+    }
+    const search = new URLSearchParams(window.location.search);
+    return {
+      context: search.get("context") || "",
+      businessId: search.get("businessId") || "",
+    };
+  }, []);
+
+  const foundingMembership = params.context === "founding-membership";
 
   return (
     <>
@@ -41,7 +49,9 @@ export default function PaymentCancelPage() {
 
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
-                href={foundingMembership ? "/founding-membership" : "/business-directory"}
+                href={foundingMembership
+                  ? `/founding-membership${params.businessId ? `?businessId=${encodeURIComponent(params.businessId)}` : ""}`
+                  : "/business-directory"}
                 className="inline-flex items-center rounded-md bg-yellow-500 px-4 py-2 font-semibold text-black hover:bg-yellow-400 transition"
               >
                 {foundingMembership ? "Return to Membership Offer" : "Try Again"}

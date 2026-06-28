@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 type BusinessOption = {
   id: string;
@@ -37,11 +38,13 @@ function money(cents: number) {
 }
 
 export default function FoundingMembershipPage() {
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [data, setData] = useState<OptionsPayload | null>(null);
   const [selectedBusinessId, setSelectedBusinessId] = useState("");
+  const [confirmedBusinessId, setConfirmedBusinessId] = useState("");
 
   useEffect(() => {
     (async () => {
@@ -54,9 +57,6 @@ export default function FoundingMembershipPage() {
           throw new Error(json?.error || "Unable to load membership offer");
         }
         setData(json);
-        if (Array.isArray(json?.businesses) && json.businesses[0]?.id) {
-          setSelectedBusinessId(json.businesses[0].id);
-        }
       } catch (e: any) {
         setError(e?.message || "Unable to load membership offer");
       } finally {
@@ -65,6 +65,26 @@ export default function FoundingMembershipPage() {
     })();
   }, []);
 
+  useEffect(() => {
+    if (!router.isReady || !data?.businesses?.length) return;
+
+    const requestedBusinessId =
+      typeof router.query.businessId === "string" ? router.query.businessId.trim() : "";
+
+    if (requestedBusinessId) {
+      const found = data.businesses.find((business) => business.id === requestedBusinessId);
+      if (found) {
+        setSelectedBusinessId((current) => current || found.id);
+        setConfirmedBusinessId((current) => current || found.id);
+        return;
+      }
+    }
+
+    if (!selectedBusinessId) {
+      setSelectedBusinessId(data.businesses[0]?.id || "");
+    }
+  }, [router.isReady, router.query.businessId, data, selectedBusinessId]);
+
   const selectedBusiness = useMemo(
     () =>
       (data?.businesses || []).find((business) => business.id === selectedBusinessId) ||
@@ -72,11 +92,38 @@ export default function FoundingMembershipPage() {
     [data, selectedBusinessId],
   );
 
+  const confirmedBusiness = useMemo(
+    () =>
+      (data?.businesses || []).find((business) => business.id === confirmedBusinessId) ||
+      null,
+    [data, confirmedBusinessId],
+  );
+
   const offer = data?.offer;
 
-  const beginCheckout = async () => {
+  const confirmBusinessSelection = () => {
     if (!selectedBusinessId) {
       setError("Select a public claimable business first.");
+      return;
+    }
+
+    setConfirmedBusinessId(selectedBusinessId);
+    setError("");
+
+    if (typeof window !== "undefined") {
+      window.history.replaceState(
+        null,
+        "",
+        `/founding-membership?businessId=${encodeURIComponent(selectedBusinessId)}`,
+      );
+      const reviewSection = document.getElementById("membership-review");
+      reviewSection?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
+  const beginCheckout = async () => {
+    if (!confirmedBusinessId) {
+      setError("Confirm the selected business before starting membership.");
       return;
     }
 
@@ -90,9 +137,9 @@ export default function FoundingMembershipPage() {
         body: JSON.stringify({
           type: "plan",
           itemId: "founding-verified-business-growth-membership",
-          businessId: selectedBusinessId,
+          businessId: confirmedBusinessId,
           metadata: {
-            businessId: selectedBusinessId,
+            businessId: confirmedBusinessId,
             checkoutContext: "founding_membership",
           },
         }),
@@ -159,12 +206,17 @@ export default function FoundingMembershipPage() {
                     <button
                       key={business.id}
                       type="button"
-                      onClick={() => setSelectedBusinessId(business.id)}
-                      className={`rounded-2xl border p-4 text-left transition ${
+                      onClick={() => {
+                        setSelectedBusinessId(business.id);
+                        setError("");
+                      }}
+                      className={`rounded-2xl border p-4 text-left transition focus:outline-none focus:ring-2 focus:ring-yellow-400/40 ${
                         active
                           ? "border-yellow-400/60 bg-yellow-500/10"
                           : "border-white/10 bg-black/20 hover:bg-white/10"
                       }`}
+                      aria-pressed={active}
+                      aria-describedby={active ? `selected-business-${business.id}` : undefined}
                     >
                       <div className="flex items-start justify-between gap-3">
                         <div>
@@ -179,7 +231,10 @@ export default function FoundingMembershipPage() {
                           ) : null}
                         </div>
                         {active ? (
-                          <span className="rounded-full border border-yellow-400/40 bg-yellow-400/15 px-2 py-1 text-xs font-bold text-yellow-200">
+                          <span
+                            id={`selected-business-${business.id}`}
+                            className="rounded-full border border-yellow-400/40 bg-yellow-400/15 px-2 py-1 text-xs font-bold text-yellow-200"
+                          >
                             Selected
                           </span>
                         ) : null}
@@ -188,11 +243,56 @@ export default function FoundingMembershipPage() {
                   );
                 })}
               </div>
+
+              <div className="mt-5 rounded-2xl border border-yellow-500/20 bg-yellow-500/10 p-4">
+                <div className="text-xs font-bold uppercase tracking-[0.12em] text-yellow-200/80">
+                  Selected business confirmation
+                </div>
+                {selectedBusiness ? (
+                  <div className="mt-2 space-y-2 text-sm text-white/80">
+                    <div className="font-semibold text-white">{selectedBusiness.businessName}</div>
+                    <div>
+                      {[selectedBusiness.category, [selectedBusiness.city, selectedBusiness.state].filter(Boolean).join(", ")]
+                        .filter(Boolean)
+                        .join(" • ") || "Business details recorded"}
+                    </div>
+                    <div className="text-white/55">
+                      {confirmedBusinessId === selectedBusiness.id
+                        ? "This business is confirmed for the next step."
+                        : "Confirm this business to continue into membership review."}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="mt-2 text-sm text-white/65">Choose one public business to continue.</div>
+                )}
+                <div className="mt-4 flex flex-wrap gap-3">
+                  <button
+                    type="button"
+                    onClick={confirmBusinessSelection}
+                    disabled={!selectedBusinessId}
+                    className="inline-flex items-center justify-center rounded-xl bg-yellow-500 px-4 py-3 font-bold text-black transition hover:bg-yellow-400 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    Continue With This Business
+                  </button>
+                  {confirmedBusiness && confirmedBusinessId !== selectedBusinessId ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setConfirmedBusinessId("");
+                        setError("");
+                      }}
+                      className="inline-flex items-center justify-center rounded-xl border border-white/15 px-4 py-3 font-bold text-white/85 transition hover:bg-white/10"
+                    >
+                      Change Confirmed Business
+                    </button>
+                  ) : null}
+                </div>
+              </div>
             </div>
 
             <div className="space-y-6">
-              <section className="rounded-3xl border border-white/10 bg-white/5 p-6">
-                <h2 className="text-xl font-bold text-white">2. Review the offer</h2>
+              <section id="membership-review" className="rounded-3xl border border-white/10 bg-white/5 p-6">
+                <h2 className="text-xl font-bold text-white">2. Confirm business and membership</h2>
                 <div className="mt-4 rounded-2xl border border-yellow-500/20 bg-black/20 p-4">
                   <div className="text-3xl font-black text-yellow-300">{offer ? money(offer.amountCents) : "$49.00"}</div>
                   <div className="text-sm text-white/65">per month, monthly billing only</div>
@@ -233,14 +333,14 @@ export default function FoundingMembershipPage() {
               </section>
 
               <section className="rounded-3xl border border-white/10 bg-white/5 p-6">
-                <h2 className="text-xl font-bold text-white">3. Pre-checkout review</h2>
-                {selectedBusiness ? (
+                <h2 className="text-xl font-bold text-white">3. Start membership and claim process</h2>
+                {confirmedBusiness ? (
                   <div className="mt-3 rounded-2xl border border-white/10 bg-black/20 p-4 text-sm text-white/75 space-y-3">
                     <div>
                       <div className="font-semibold text-white">Selected business</div>
-                      <div className="mt-1">{selectedBusiness.businessName}</div>
+                      <div className="mt-1">{confirmedBusiness.businessName}</div>
                       <div className="mt-1 text-white/55">
-                        {[selectedBusiness.category, [selectedBusiness.city, selectedBusiness.state].filter(Boolean).join(", ")]
+                        {[confirmedBusiness.category, [confirmedBusiness.city, confirmedBusiness.state].filter(Boolean).join(", ")]
                           .filter(Boolean)
                           .join(" • ")}
                       </div>
@@ -263,19 +363,38 @@ export default function FoundingMembershipPage() {
                       <div className="mt-1 text-white/65">Payment confirmation, claim initiated, ownership review pending, profile review queued, baseline created, and monthly reporting scheduled.</div>
                     </div>
                   </div>
-                ) : null}
+                ) : (
+                  <div className="mt-3 rounded-2xl border border-white/10 bg-black/20 p-4 text-sm text-white/65">
+                    Confirm one selected business above before checkout is enabled.
+                  </div>
+                )}
 
                 <button
                   type="button"
-                  disabled={submitting || !selectedBusinessId || (offer?.remainingSlots || 0) <= 0}
+                  disabled={submitting || !confirmedBusinessId || (offer?.remainingSlots || 0) <= 0}
                   onClick={beginCheckout}
                   className="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-yellow-500 px-4 py-3 font-bold text-black transition hover:bg-yellow-400 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {submitting ? "Redirecting to secure checkout…" : "Start Membership and Claim Process"}
                 </button>
 
-                <div className="mt-3 text-xs text-white/50">
-                  Need a different path? <Link href="/business-directory" className="text-yellow-300 underline">Return to the business directory</Link>
+                <div className="mt-3 flex flex-wrap gap-3 text-xs text-white/50">
+                  <span>
+                    Need a different path? <Link href="/business-directory" className="text-yellow-300 underline">Return to the business directory</Link>
+                  </span>
+                  {confirmedBusiness ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setConfirmedBusinessId("");
+                        setError("");
+                        document.getElementById("membership-review")?.scrollIntoView({ behavior: "smooth", block: "start" });
+                      }}
+                      className="text-yellow-300 underline"
+                    >
+                      Change selected business
+                    </button>
+                  ) : null}
                 </div>
               </section>
             </div>

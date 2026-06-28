@@ -2182,7 +2182,7 @@ export default function BusinessDirectory() {
                                 View details
                               </Link>
                               <Link
-                                href="/founding-membership"
+                                href={`/founding-membership?businessId=${encodeURIComponent(safeStr((item as any)._id))}`}
                                 className="rounded-lg border border-[#D4AF37]/40 bg-[#D4AF37]/12 px-3 py-1.5 text-[11px] font-bold text-[#F1D57A] hover:bg-[#D4AF37]/18"
                               >
                                 Claim This Business
