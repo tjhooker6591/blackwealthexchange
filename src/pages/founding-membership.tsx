@@ -49,6 +49,8 @@ export default function FoundingMembershipPage() {
   const [data, setData] = useState<OptionsPayload | null>(null);
   const [selectedBusinessId, setSelectedBusinessId] = useState("");
   const [confirmedBusinessId, setConfirmedBusinessId] = useState("");
+  const [checkoutState, setCheckoutState] = useState<"idle" | "validating" | "redirecting" | "auth_required" | "checkout_error">("idle");
+  const [checkoutMessage, setCheckoutMessage] = useState("");
 
   useEffect(() => {
     (async () => {
@@ -131,12 +133,31 @@ export default function FoundingMembershipPage() {
   const beginCheckout = async () => {
     if (!confirmedBusinessId) {
       setError("Confirm the selected business before starting membership.");
+      setCheckoutState("checkout_error");
+      setCheckoutMessage("Choose and confirm one business before you continue to secure checkout.");
       return;
     }
 
     try {
       setSubmitting(true);
       setError("");
+      setCheckoutState("validating");
+      setCheckoutMessage("Opening secure checkout…");
+
+      const meRes = await fetch("/api/auth/me", {
+        credentials: "include",
+        cache: "no-store",
+      });
+      const meJson = await meRes.json().catch(() => ({}));
+      if (!meRes.ok || !meJson?.user) {
+        setCheckoutState("auth_required");
+        setCheckoutMessage("Please sign in to continue to secure checkout.");
+        setSubmitting(false);
+        const resume = `/founding-membership?businessId=${encodeURIComponent(confirmedBusinessId)}&resume=checkout`;
+        await router.push(`/login?redirect=${encodeURIComponent(resume)}`);
+        return;
+      }
+
       const res = await fetch("/api/stripe/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -153,13 +174,32 @@ export default function FoundingMembershipPage() {
       });
 
       const json = await res.json().catch(() => ({}));
-      if (!res.ok || !json?.url) {
-        throw new Error(json?.error || "Unable to start checkout");
+      if (res.status === 401) {
+        setCheckoutState("auth_required");
+        setCheckoutMessage("Authentication required. Please sign in and continue checkout.");
+        setSubmitting(false);
+        const resume = `/founding-membership?businessId=${encodeURIComponent(confirmedBusinessId)}&resume=checkout`;
+        await router.push(`/login?redirect=${encodeURIComponent(resume)}`);
+        return;
       }
 
+      if (!res.ok || !json?.url) {
+        const apiMessage = typeof json?.error === "string" ? json.error : "Unable to create the Stripe Checkout Session";
+        const userMessage = apiMessage === "Stripe is not configured"
+          ? "Checkout is temporarily unavailable in this environment. Please try again in a configured environment."
+          : apiMessage === "Unauthorized"
+            ? "Authentication required. Please sign in and continue checkout."
+            : apiMessage;
+        throw new Error(userMessage);
+      }
+
+      setCheckoutState("redirecting");
+      setCheckoutMessage("Opening secure checkout…");
       window.location.assign(json.url);
     } catch (e: any) {
       setError(e?.message || "Unable to start checkout");
+      setCheckoutState("checkout_error");
+      setCheckoutMessage(e?.message || "Unable to start checkout. Please retry.");
       setSubmitting(false);
     }
   };
@@ -417,13 +457,42 @@ export default function FoundingMembershipPage() {
                   </div>
                 )}
 
+                {checkoutState !== "idle" ? (
+                  <div className={`mt-4 rounded-2xl border p-4 text-sm ${
+                    checkoutState === "checkout_error"
+                      ? "border-red-500/30 bg-red-500/10 text-red-200"
+                      : checkoutState === "auth_required"
+                        ? "border-yellow-500/30 bg-yellow-500/10 text-yellow-100"
+                        : "border-white/10 bg-black/20 text-white/80"
+                  }`}>
+                    <div className="font-semibold">
+                      {checkoutState === "validating"
+                        ? "Validating checkout"
+                        : checkoutState === "redirecting"
+                          ? "Redirecting to Stripe"
+                          : checkoutState === "auth_required"
+                            ? "Authentication required"
+                            : "Checkout error"}
+                    </div>
+                    <div className="mt-1">{checkoutMessage}</div>
+                  </div>
+                ) : null}
+
                 <button
                   type="button"
                   disabled={submitting || !confirmedBusinessId || (offer?.remainingSlots || 0) <= 0}
                   onClick={beginCheckout}
                   className="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-yellow-500 px-4 py-3 font-bold text-black transition hover:bg-yellow-400 disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  {submitting ? "Redirecting to secure checkout…" : "Start Membership and Claim Process"}
+                  {checkoutState === "validating"
+                    ? "Validating secure checkout…"
+                    : checkoutState === "redirecting"
+                      ? "Opening secure checkout…"
+                      : checkoutState === "auth_required"
+                        ? "Continue to Login"
+                        : submitting
+                          ? "Opening secure checkout…"
+                          : "Start Membership and Claim Process"}
                 </button>
 
                 <div className="mt-3 flex flex-wrap gap-3 text-xs text-white/50">
