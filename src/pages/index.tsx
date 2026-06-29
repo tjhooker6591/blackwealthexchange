@@ -889,14 +889,14 @@ export default function Home() {
 
               <div className="mx-auto mt-5 flex w-full max-w-md flex-col gap-3 sm:items-center">
                 <Link
-                  href="/business-directory"
+                  href="/business-directory?mode=claim"
                   className="w-full sm:w-auto"
                   onClick={() =>
                     trackHomepageEvent("homepage_cta_clicked", {
                       section: "hero",
                       ctaId: "hero_claim_business",
                       ctaLabel: "Claim Your Business",
-                      destination: "/business-directory",
+                      destination: "/business-directory?mode=claim",
                     })
                   }
                 >

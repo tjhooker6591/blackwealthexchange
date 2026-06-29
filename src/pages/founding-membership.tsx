@@ -14,6 +14,10 @@ type BusinessOption = {
   website?: string | null;
   phone?: string | null;
   description: string;
+  publicStatus: string;
+  claimable: boolean;
+  currentClaimState: string | null;
+  unavailableReason: string | null;
 };
 
 type OptionsPayload = {
@@ -71,19 +75,22 @@ export default function FoundingMembershipPage() {
     const requestedBusinessId =
       typeof router.query.businessId === "string" ? router.query.businessId.trim() : "";
 
-    if (requestedBusinessId) {
-      const found = data.businesses.find((business) => business.id === requestedBusinessId);
-      if (found) {
-        setSelectedBusinessId((current) => current || found.id);
-        setConfirmedBusinessId((current) => current || found.id);
-        return;
-      }
+    if (!requestedBusinessId) {
+      return;
     }
 
-    if (!selectedBusinessId) {
-      setSelectedBusinessId(data.businesses[0]?.id || "");
+    const found = data.businesses.find((business) => business.id === requestedBusinessId);
+    if (found) {
+      setSelectedBusinessId(found.id);
+      setConfirmedBusinessId("");
+      setError("");
+      return;
     }
-  }, [router.isReady, router.query.businessId, data, selectedBusinessId]);
+
+    setSelectedBusinessId("");
+    setConfirmedBusinessId("");
+    setError("The requested business could not be confirmed as a current public claimable listing. Please choose one from the list below.");
+  }, [router.isReady, router.query.businessId, data]);
 
   const selectedBusiness = useMemo(
     () =>
@@ -193,7 +200,7 @@ export default function FoundingMembershipPage() {
             <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
               <h2 className="text-xl font-bold text-white">1. Select your public business</h2>
               <p className="mt-2 text-sm text-white/70">
-                This membership only applies to an existing public, claimable BWE business.
+                This membership only applies to an existing public, claimable BWE business. Availability is provided by the server for guidance and rechecked again during checkout.
               </p>
 
               {loading ? <p className="mt-4 text-white/60">Loading businesses…</p> : null}
@@ -202,18 +209,35 @@ export default function FoundingMembershipPage() {
               <div className="mt-4 grid gap-3">
                 {(data?.businesses || []).map((business) => {
                   const active = business.id === selectedBusinessId;
+                  const unavailableLabel =
+                    business.unavailableReason === "already_verified"
+                      ? "Already Verified"
+                      : business.unavailableReason === "claim_already_initiated"
+                        ? "Claim Already Initiated"
+                        : business.unavailableReason === "ownership_review_pending"
+                          ? "Ownership Review Pending"
+                          : business.unavailableReason === "membership_already_active"
+                            ? "Membership Already Active"
+                            : "Unavailable";
                   return (
                     <button
                       key={business.id}
                       type="button"
                       onClick={() => {
+                        if (!business.claimable) {
+                          setError(`${business.businessName} is not currently available for a new founding membership claim.`);
+                          return;
+                        }
                         setSelectedBusinessId(business.id);
+                        setConfirmedBusinessId("");
                         setError("");
                       }}
                       className={`rounded-2xl border p-4 text-left transition focus:outline-none focus:ring-2 focus:ring-yellow-400/40 ${
                         active
                           ? "border-yellow-400/60 bg-yellow-500/10"
-                          : "border-white/10 bg-black/20 hover:bg-white/10"
+                          : business.claimable
+                            ? "border-white/10 bg-black/20 hover:bg-white/10"
+                            : "border-white/10 bg-black/10 opacity-75"
                       }`}
                       aria-pressed={active}
                       aria-describedby={active ? `selected-business-${business.id}` : undefined}
@@ -229,8 +253,22 @@ export default function FoundingMembershipPage() {
                           {business.address ? (
                             <div className="mt-1 text-xs text-white/45">{business.address}</div>
                           ) : null}
+                          <div className="mt-2 flex flex-wrap gap-2 text-[11px]">
+                            <span className="rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-white/60">
+                              {business.publicStatus.replace(/[_-]/g, " ")}
+                            </span>
+                            {!business.claimable ? (
+                              <span className="rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-white/60">
+                                {unavailableLabel}
+                              </span>
+                            ) : null}
+                          </div>
                         </div>
-                        {active ? (
+                        {!business.claimable ? (
+                          <span className="rounded-full border border-white/15 bg-white/5 px-2 py-1 text-xs font-bold text-white/55">
+                            {unavailableLabel}
+                          </span>
+                        ) : active ? (
                           <span
                             id={`selected-business-${business.id}`}
                             className="rounded-full border border-yellow-400/40 bg-yellow-400/15 px-2 py-1 text-xs font-bold text-yellow-200"
@@ -261,6 +299,12 @@ export default function FoundingMembershipPage() {
                         ? "This business is confirmed for the next step."
                         : "Confirm this business to continue into membership review."}
                     </div>
+                    <div className="text-xs text-white/45">
+                      Canonical business ID: {selectedBusiness.id}
+                    </div>
+                    <div className="text-xs text-white/45">
+                      Server availability: {selectedBusiness.claimable ? "Claimable" : "Unavailable"}
+                    </div>
                   </div>
                 ) : (
                   <div className="mt-2 text-sm text-white/65">Choose one public business to continue.</div>
@@ -274,16 +318,20 @@ export default function FoundingMembershipPage() {
                   >
                     Continue With This Business
                   </button>
-                  {confirmedBusiness && confirmedBusinessId !== selectedBusinessId ? (
+                  {selectedBusiness ? (
                     <button
                       type="button"
                       onClick={() => {
+                        setSelectedBusinessId("");
                         setConfirmedBusinessId("");
                         setError("");
+                        if (typeof window !== "undefined") {
+                          window.history.replaceState(null, "", "/founding-membership");
+                        }
                       }}
                       className="inline-flex items-center justify-center rounded-xl border border-white/15 px-4 py-3 font-bold text-white/85 transition hover:bg-white/10"
                     >
-                      Change Confirmed Business
+                      Change Business
                     </button>
                   ) : null}
                 </div>
@@ -365,7 +413,7 @@ export default function FoundingMembershipPage() {
                   </div>
                 ) : (
                   <div className="mt-3 rounded-2xl border border-white/10 bg-black/20 p-4 text-sm text-white/65">
-                    Confirm one selected business above before checkout is enabled.
+                    Select and confirm one business above before checkout is enabled.
                   </div>
                 )}
 
@@ -392,7 +440,7 @@ export default function FoundingMembershipPage() {
                       }}
                       className="text-yellow-300 underline"
                     >
-                      Change selected business
+                      Change confirmed business
                     </button>
                   ) : null}
                 </div>

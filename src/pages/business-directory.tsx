@@ -360,6 +360,7 @@ function Pager({
 
 export default function BusinessDirectory() {
   const router = useRouter();
+  const claimMode = router.isReady && router.query.mode === "claim";
 
   // Scope is driven by query (index pushes type/scope/tab)
   const scope: DirectoryScope = useMemo(() => {
@@ -1123,24 +1124,43 @@ export default function BusinessDirectory() {
               <div className="flex flex-wrap items-start justify-between gap-2 sm:items-end sm:gap-3">
                 <div>
                   <h1 className="text-2xl sm:text-4xl font-black tracking-tight text-white">
-                    {scope === "organizations"
-                      ? "Black Organizations Directory"
-                      : "Black-Owned Business Directory"}
+                    {claimMode
+                      ? "Find the business you want to claim"
+                      : scope === "organizations"
+                        ? "Black Organizations Directory"
+                        : "Black-Owned Business Directory"}
                     <span className="ml-2 text-[#D4AF37]">
-                      • City + Category Hub
+                      {claimMode ? "• Claim Mode" : "• City + Category Hub"}
                     </span>
                   </h1>
                   <p className="mt-1 text-xs text-white/70 sm:text-base">
-                    Use this directory hub to discover trusted listings by city,
-                    state, and category, then compare and contact the best fit.
+                    {claimMode
+                      ? "Search for your existing BWE listing, select it, and continue to the Founding Membership process. If your business is not listed yet, use the separate listing path below."
+                      : "Use this directory hub to discover trusted listings by city, state, and category, then compare and contact the best fit."}
                   </p>
                 </div>
 
                 <span className="hidden sm:inline-flex items-center gap-1 rounded-full border border-emerald-400/25 bg-emerald-400/10 px-3 py-1.5 text-xs font-bold text-emerald-200">
                   <ShieldCheck className="h-3.5 w-3.5" />
-                  Trusted listings
+                  {claimMode ? "Claim guidance active" : "Trusted listings"}
                 </span>
               </div>
+
+              {claimMode ? (
+                <div className="rounded-2xl border border-yellow-500/25 bg-yellow-500/10 p-4 text-sm text-white/80">
+                  <div className="font-semibold text-yellow-200">Claim process</div>
+                  <ul className="mt-2 list-disc space-y-1 pl-5 text-white/75">
+                    <li>Eligible public listings show <span className="font-semibold text-yellow-200">Claim This Business</span>.</li>
+                    <li>Claimed or ineligible listings show an unavailable state and cannot continue.</li>
+                    <li>Select an existing listing first. Creating a new listing is a separate path.</li>
+                  </ul>
+                  <div className="mt-3">
+                    <Link href="/business-directory/add-business" className="text-yellow-300 underline underline-offset-4 hover:text-yellow-200">
+                      Don’t see your business? List it here.
+                    </Link>
+                  </div>
+                </div>
+              ) : null}
 
               <div className="flex flex-wrap items-center gap-2">
                 <button
@@ -2181,12 +2201,40 @@ export default function BusinessDirectory() {
                               >
                                 View details
                               </Link>
-                              <Link
-                                href={`/founding-membership?businessId=${encodeURIComponent(safeStr((item as any)._id))}`}
-                                className="rounded-lg border border-[#D4AF37]/40 bg-[#D4AF37]/12 px-3 py-1.5 text-[11px] font-bold text-[#F1D57A] hover:bg-[#D4AF37]/18"
-                              >
-                                Claim This Business
-                              </Link>
+                              {(() => {
+                                const trustMeta = getTrustMeta(item as Row);
+                                const businessId = safeStr((item as any)._id);
+                                const canClaim = Boolean(businessId) && !trustMeta.verified && ![
+                                  "claim_initiated",
+                                  "ownership_review_pending",
+                                  "founding_growth_member",
+                                ].includes(trustMeta.claimStage || "");
+
+                                if (canClaim) {
+                                  return (
+                                    <Link
+                                      href={`/founding-membership?businessId=${encodeURIComponent(businessId)}`}
+                                      className="rounded-lg border border-[#D4AF37]/40 bg-[#D4AF37]/12 px-3 py-1.5 text-[11px] font-bold text-[#F1D57A] hover:bg-[#D4AF37]/18"
+                                    >
+                                      Claim This Business
+                                    </Link>
+                                  );
+                                }
+
+                                return (
+                                  <span className="rounded-lg border border-white/15 bg-white/5 px-3 py-1.5 text-[11px] font-bold text-white/55">
+                                    {trustMeta.verified
+                                      ? "Already Verified"
+                                      : trustMeta.claimStage === "claim_initiated"
+                                        ? "Claim Already Initiated"
+                                        : trustMeta.claimStage === "ownership_review_pending"
+                                          ? "Ownership Review Pending"
+                                          : trustMeta.claimStage === "founding_growth_member"
+                                            ? "Membership Already Active"
+                                            : "Not Claimable"}
+                                  </span>
+                                );
+                              })()}
                               {getWebsite(item as Row) ? (
                                 <a
                                   href={getWebsite(item as Row)}

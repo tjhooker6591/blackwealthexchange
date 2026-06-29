@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 type Business = {
+  _id?: string;
   business_name?: string;
   name?: string;
   categories?: string | string[];
@@ -17,6 +18,7 @@ type Business = {
   verified?: boolean;
   isVerified?: boolean;
   status?: string;
+  claimStage?: string;
   amountPaid?: number;
   completenessScore?: number;
   isComplete?: boolean;
@@ -148,6 +150,7 @@ export default function BusinessDetail() {
     : locationText;
 
   const status = safeStr(business?.status).toLowerCase();
+  const claimStage = safeStr(business?.claimStage).toLowerCase();
   const trust = {
     verified:
       business?.verified === true ||
@@ -159,7 +162,17 @@ export default function BusinessDetail() {
       typeof business?.isComplete === "boolean"
         ? business.isComplete
         : Number(business?.completenessScore || 0) >= 70,
+    claimStage,
   };
+  const canonicalBusinessId = safeStr(business?._id);
+  const canClaim =
+    Boolean(canonicalBusinessId) &&
+    !trust.verified &&
+    ![
+      "claim_initiated",
+      "ownership_review_pending",
+      "founding_growth_member",
+    ].includes(claimStage);
 
   return (
     <div className="min-h-screen bg-neutral-950 text-white">
@@ -314,6 +327,26 @@ export default function BusinessDetail() {
                   </div>
 
                   <div className="pt-2 flex flex-wrap gap-2">
+                    {canClaim ? (
+                      <Link
+                        href={`/founding-membership?businessId=${encodeURIComponent(canonicalBusinessId)}`}
+                        className="inline-flex items-center justify-center rounded-xl border border-[#D4AF37]/40 bg-[#D4AF37]/12 px-4 py-2 text-sm font-bold text-[#F1D57A] transition hover:bg-[#D4AF37]/18"
+                      >
+                        Claim This Business
+                      </Link>
+                    ) : (
+                      <span className="inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2 text-sm font-bold text-white/55">
+                        {trust.verified
+                          ? "Already Verified"
+                          : claimStage === "claim_initiated"
+                            ? "Claim Already Initiated"
+                            : claimStage === "ownership_review_pending"
+                              ? "Ownership Review Pending"
+                              : claimStage === "founding_growth_member"
+                                ? "Membership Already Active"
+                                : "Not Claimable"}
+                      </span>
+                    )}
                     {website && (
                       <a
                         href={website}
@@ -360,6 +393,26 @@ export default function BusinessDetail() {
 
                   <div className="pt-2 text-xs text-white/60 space-y-2">
                     <div>Next actions</div>
+                    <div className="rounded-xl border border-yellow-500/20 bg-yellow-500/10 p-3 text-white/75">
+                      <div className="font-semibold text-yellow-200">Claim and membership path</div>
+                      <div className="mt-1">
+                        Payment starts membership and opens ownership review, but does not automatically verify ownership.
+                      </div>
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        <Link
+                          href={canClaim ? `/founding-membership?businessId=${encodeURIComponent(canonicalBusinessId)}` : "/founding-membership"}
+                          className="rounded-lg bg-yellow-500 px-3 py-2 text-xs font-extrabold text-black"
+                        >
+                          Start Membership and Claim Process
+                        </Link>
+                        <Link
+                          href="/founding-membership/status"
+                          className="rounded-lg border border-white/15 px-3 py-2 text-xs font-bold text-white/85"
+                        >
+                          View Member Status
+                        </Link>
+                      </div>
+                    </div>
                     <div className="flex flex-wrap gap-2">
                       {categoryText ? (
                         <Link

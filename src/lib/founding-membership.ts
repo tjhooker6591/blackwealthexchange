@@ -95,6 +95,11 @@ export async function getClaimablePublicBusinesses(db: Db, limit = 25) {
           website: 1,
           phone: 1,
           description: 1,
+          status: 1,
+          claimStage: 1,
+          trustStatus: 1,
+          isVerified: 1,
+          verified: 1,
         },
       },
     )
@@ -102,20 +107,40 @@ export async function getClaimablePublicBusinesses(db: Db, limit = 25) {
     .limit(limit)
     .toArray();
 
-  return rows.map((row: any) => ({
-    id: String(row._id),
-    businessName: String(row.business_name || row.name || "").trim(),
-    slug: String(row.alias || row.slug || row._id),
-    category: String(
-      row.display_categories || row.category || row.categories || "",
-    ).trim(),
-    city: String(row.city || "").trim(),
-    state: String(row.state || "").trim(),
-    address: String(row.address || "").trim(),
-    website: stringOrNull(row.website),
-    phone: stringOrNull(row.phone),
-    description: String(row.description || "").trim(),
-  }));
+  return rows.map((row: any) => {
+    const publicStatus = String(row.status || row.trustStatus || "").trim().toLowerCase() || "public";
+    const currentClaimState = String(row.claimStage || "").trim().toLowerCase() || null;
+    const alreadyVerified =
+      row.verified === true || row.isVerified === true || publicStatus === "verified";
+    const unavailableReason = alreadyVerified
+      ? "already_verified"
+      : currentClaimState === "claim_initiated"
+        ? "claim_already_initiated"
+        : currentClaimState === "ownership_review_pending"
+          ? "ownership_review_pending"
+          : currentClaimState === "founding_growth_member"
+            ? "membership_already_active"
+            : null;
+
+    return {
+      id: String(row._id),
+      businessName: String(row.business_name || row.name || "").trim(),
+      slug: String(row.alias || row.slug || row._id),
+      category: String(
+        row.display_categories || row.category || row.categories || "",
+      ).trim(),
+      city: String(row.city || "").trim(),
+      state: String(row.state || "").trim(),
+      address: String(row.address || "").trim(),
+      website: stringOrNull(row.website),
+      phone: stringOrNull(row.phone),
+      description: String(row.description || "").trim(),
+      publicStatus,
+      claimable: unavailableReason == null,
+      currentClaimState,
+      unavailableReason,
+    };
+  });
 }
 
 export async function getClaimableBusinessById(db: Db, businessId: string) {
