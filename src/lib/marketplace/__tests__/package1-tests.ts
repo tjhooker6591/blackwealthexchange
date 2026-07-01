@@ -12,6 +12,8 @@ import {
 import {
   buildMarketplacePaymentRecord,
   deriveMarketplaceAmountTotal,
+  emitMarketplaceReconciliationException,
+  upsertMarketplacePaymentRecord,
 } from "../paymentLinkage";
 
 type MockDoc = Record<string, any>;
@@ -30,11 +32,35 @@ class MockCollection {
     return this.docs.find((doc) => matchesFilter(doc, filter)) || null;
   }
 
-  async updateOne(filter: MockDoc, update: MockDoc) {
+  async updateOne(filter: MockDoc, update: MockDoc, options?: MockDoc) {
     const doc = this.docs.find((entry) => matchesFilter(entry, filter));
-    if (!doc) return { matchedCount: 0, modifiedCount: 0 };
+    if (!doc) {
+      if (options?.upsert) {
+        const inserted: MockDoc = { ...filter };
+        applyUpdate(inserted, update);
+        this.docs.push(inserted);
+        return { matchedCount: 0, modifiedCount: 0, upsertedCount: 1 };
+      }
+      return { matchedCount: 0, modifiedCount: 0, upsertedCount: 0 };
+    }
     applyUpdate(doc, update);
-    return { matchedCount: 1, modifiedCount: 1 };
+    return { matchedCount: 1, modifiedCount: 1, upsertedCount: 0 };
+  }
+
+  async insertOne(doc: MockDoc) {
+    this.docs.push(clone(doc));
+    return { insertedId: this.docs.length };
+  }
+}
+
+class MockDb {
+  collections = new Map<string, MockCollection>();
+
+  collection(name: string) {
+    if (!this.collections.has(name)) {
+      this.collections.set(name, new MockCollection([]));
+    }
+    return this.collections.get(name)!;
   }
 }
 
@@ -43,6 +69,9 @@ function matchesFilter(doc: MockDoc, filter: MockDoc) {
 }
 
 function applyUpdate(doc: MockDoc, update: MockDoc) {
+  if (update.$setOnInsert && !doc.createdAt) {
+    Object.assign(doc, update.$setOnInsert);
+  }
   if (update.$set) {
     Object.assign(doc, update.$set);
   }
@@ -169,7 +198,7 @@ function testOrderLifecycle() {
   assert.equal(split.sellerPayout, 2200);
 }
 
-function testPaymentLinkage() {
+async function testPaymentLinkage() {
   const payment = buildMarketplacePaymentRecord({
     stripeSessionId: "cs_123",
     paymentIntentId: "pi_123",
@@ -198,6 +227,72 @@ function testPaymentLinkage() {
     orderRecord: null,
   });
   assert.equal(derived, 1500);
+
+  const db = new MockDb();
+  await upsertMarketplacePaymentRecord({
+    db: db as any,
+    stripeSessionId: "cs_linked",
+    paymentIntentId: "pi_linked",
+    paidAt: new Date("2026-01-02T00:00:00.000Z"),
+    orderId: "order_linked",
+    productId: "prod_linked",
+    sellerId: "seller_linked",
+    payoutMode: "destination_charge",
+    amountTotal: 1000,
+    currency: "usd",
+    buyerUserId: "buyer_linked",
+    buyerEmail: "buyer+linked@example.com",
+    webhookEventId: "evt_linked_1",
+    webhookEventType: "checkout.session.completed",
+  });
+  await upsertMarketplacePaymentRecord({
+    db: db as any,
+    stripeSessionId: "cs_linked",
+    paymentIntentId: "pi_linked",
+    paidAt: new Date("2026-01-02T00:00:00.000Z"),
+    orderId: "order_linked",
+    productId: "prod_linked",
+    sellerId: "seller_linked",
+    payoutMode: "destination_charge",
+    amountTotal: 1000,
+    currency: "usd",
+    buyerUserId: "buyer_linked",
+    buyerEmail: "buyer+linked@example.com",
+    webhookEventId: "evt_linked_2",
+    webhookEventType: "checkout.session.async_payment_succeeded",
+  });
+
+  const payments = db.collection("payments").docs;
+  assert.equal(payments.length, 1);
+  assert.equal(payments[0].metadata.orderId, "order_linked");
+  assert.equal(payments[0].bweFee, 120);
+  assert.equal(payments[0].payout, 880);
+
+  await emitMarketplaceReconciliationException({
+    db: db as any,
+    eventType: "marketplace_order_missing_on_paid_webhook",
+    stripeSessionId: "cs_missing_order",
+    paymentIntentId: "pi_missing_order",
+    orderId: null,
+    productId: "prod_missing_order",
+    sellerId: "seller_missing_order",
+    detail: "missing order",
+  });
+  await emitMarketplaceReconciliationException({
+    db: db as any,
+    eventType: "marketplace_payment_order_link_missing",
+    stripeSessionId: "cs_missing_payment_link",
+    paymentIntentId: "pi_missing_payment_link",
+    orderId: "order_missing_payment_link",
+    productId: "prod_missing_payment_link",
+    sellerId: "seller_missing_payment_link",
+    detail: "missing payment relationship",
+  });
+
+  const flowEvents = db.collection("flow_events").docs;
+  assert.equal(flowEvents.length, 2);
+  assert.equal(flowEvents[0].eventType, "marketplace_order_missing_on_paid_webhook");
+  assert.equal(flowEvents[1].eventType, "marketplace_payment_order_link_missing");
 }
 
 function testScenarioExpectations() {
@@ -267,7 +362,7 @@ async function main() {
   testInventoryResolution();
   await testFulfillmentReplayAndConcurrency();
   testOrderLifecycle();
-  testPaymentLinkage();
+  await testPaymentLinkage();
   testScenarioExpectations();
   console.log("package1-tests: ok");
 }

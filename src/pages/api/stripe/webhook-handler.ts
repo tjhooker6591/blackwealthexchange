@@ -2522,6 +2522,8 @@ export default async function webhookHandler(
                   canonicalOrderState: fulfillment.orderState || null,
                   payoutReady: Boolean(fulfillment.payoutReady),
                   stockDecremented: Boolean(fulfillment.stockDecremented),
+                  reconciliationException:
+                    fulfillment.reconciliationException || null,
                   fulfilledAt: now,
                   updatedAt: now,
                 },
@@ -2541,6 +2543,8 @@ export default async function webhookHandler(
               orderState: fulfillment.orderState || null,
               payoutReady: Boolean(fulfillment.payoutReady),
               stockDecremented: Boolean(fulfillment.stockDecremented),
+              reconciliationException:
+                fulfillment.reconciliationException || null,
               createdAt: now,
             });
 

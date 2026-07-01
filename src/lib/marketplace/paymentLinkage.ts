@@ -80,7 +80,8 @@ export async function emitMarketplaceReconciliationException(args: {
   eventType:
     | "marketplace_order_missing_on_paid_webhook"
     | "marketplace_payment_missing_on_paid_webhook"
-    | "marketplace_payment_order_link_missing";
+    | "marketplace_payment_order_link_missing"
+    | "marketplace_inventory_dual_field_conflict_detected";
   stripeSessionId: string;
   paymentIntentId?: string | null;
   orderId?: string | null;
