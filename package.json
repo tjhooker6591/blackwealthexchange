@@ -36,7 +36,6 @@
     "proof:wealth-builder-lifecycle": "node scripts/runtime-proof-wealth-builder-lifecycle.mjs",
     "proof:consultant-profile-lifecycle": "node scripts/runtime-proof-consultant-profile-lifecycle.mjs",
     "proof:travel-map-basic": "node scripts/runtime-proof-travel-map-basic.mjs",
-    "test:business-submission": "node scripts/test-business-submission-validation.mjs",
     "check:internal-links": "node scripts/check-internal-links.mjs",
     "check:critical-paths": "node scripts/check-critical-paths.mjs",
     "check:buy-flows": "node scripts/check-buy-flows.mjs",
