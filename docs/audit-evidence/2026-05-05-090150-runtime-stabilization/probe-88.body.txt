@@ -1,0 +1,1 @@
+{"ok":false,"reason":"stripe_not_configured"}

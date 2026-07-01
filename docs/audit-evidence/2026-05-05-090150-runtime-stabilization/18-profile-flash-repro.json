@@ -1,0 +1,129 @@
+{
+  "sawProfileNotFound": false,
+  "reqs": [
+    {
+      "t": 1778013534468,
+      "url": "http://localhost:3000/dashboard",
+      "status": 200
+    },
+    {
+      "t": 1778013534518,
+      "url": "http://localhost:3000/_next/static/chunks/pages/dashboard.js",
+      "status": 200
+    },
+    {
+      "t": 1778013534851,
+      "url": "http://localhost:3000/api/auth/me",
+      "status": 200
+    },
+    {
+      "t": 1778013535105,
+      "url": "http://localhost:3000/profile",
+      "status": 200
+    },
+    {
+      "t": 1778013535352,
+      "url": "http://localhost:3000/_next/static/chunks/pages/profile.js",
+      "status": 200
+    },
+    {
+      "t": 1778013535573,
+      "url": "http://localhost:3000/api/auth/me",
+      "status": 200
+    },
+    {
+      "t": 1778013535604,
+      "url": "http://localhost:3000/api/auth/me",
+      "status": 200
+    },
+    {
+      "t": 1778013535840,
+      "url": "http://localhost:3000/api/auth/me",
+      "status": 200
+    },
+    {
+      "t": 1778013535880,
+      "url": "http://localhost:3000/api/auth/me",
+      "status": 200
+    },
+    {
+      "t": 1778013535911,
+      "url": "http://localhost:3000/api/auth/me",
+      "status": 200
+    }
+  ],
+  "logs": [
+    {
+      "t": 1778013534665,
+      "type": "info",
+      "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"
+    },
+    {
+      "t": 1778013534750,
+      "type": "log",
+      "text": "[HMR] connected"
+    },
+    {
+      "t": 1778013534851,
+      "type": "info",
+      "text": "[timing] auth/me 50ms status=200"
+    },
+    {
+      "t": 1778013535111,
+      "type": "error",
+      "text": "[next-auth][error][CLIENT_FETCH_ERROR] \nhttps://next-auth.js.org/errors#client_fetch_error Failed to fetch {error: Object, url: /api/auth/session, message: Failed to fetch}"
+    },
+    {
+      "t": 1778013535508,
+      "type": "info",
+      "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"
+    },
+    {
+      "t": 1778013535521,
+      "type": "log",
+      "text": "[HMR] connected"
+    },
+    {
+      "t": 1778013535573,
+      "type": "info",
+      "text": "[timing] auth/me 40ms status=200"
+    },
+    {
+      "t": 1778013535630,
+      "type": "info",
+      "text": "[timing] route start -> /login?redirect=/profile"
+    },
+    {
+      "t": 1778013535791,
+      "type": "info",
+      "text": "[timing] route complete /login?redirect=/profile 161ms"
+    },
+    {
+      "t": 1778013535840,
+      "type": "info",
+      "text": "[timing] fetch /api/auth/me 45ms status=200"
+    },
+    {
+      "t": 1778013535880,
+      "type": "info",
+      "text": "[timing] fetch /api/auth/me 85ms status=200"
+    },
+    {
+      "t": 1778013535881,
+      "type": "info",
+      "text": "[timing] auth/me 85ms status=200"
+    },
+    {
+      "t": 1778013535911,
+      "type": "info",
+      "text": "[timing] fetch /api/auth/me 115ms status=200"
+    },
+    {
+      "t": 1778013535911,
+      "type": "info",
+      "text": "[timing] fetch /api/auth/me 115ms status=200"
+    }
+  ],
+  "errs": [],
+  "pageerror_count": 0
+}

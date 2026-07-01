@@ -5,7 +5,11 @@ const baseUrl =
 
 const checks = [
   { name: "travel_map_page", path: "/travel-map", expect: [200] },
-  { name: "travel_map_explore_page", path: "/travel-map/explore", expect: [200] },
+  {
+    name: "travel_map_explore_page",
+    path: "/travel-map/explore",
+    expect: [200],
+  },
   {
     name: "travel_map_search_api",
     path: "/api/travel-map/search?query=coffee",

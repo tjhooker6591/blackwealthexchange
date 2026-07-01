@@ -1,0 +1,19 @@
+HTTP/1.1 200 OK
+X-Frame-Options: SAMEORIGIN
+X-Content-Type-Options: nosniff
+Referrer-Policy: strict-origin-when-cross-origin
+Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+Permissions-Policy: camera=(), microphone=(), geolocation=(self)
+Content-Security-Policy: default-src 'self'; base-uri 'self'; frame-ancestors 'self'; object-src 'none'; img-src 'self' data: https:; font-src 'self' data: https:; style-src 'self' 'unsafe-inline' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; connect-src 'self' https: wss:; frame-src 'self' https:; form-action 'self'
+Cache-Control: public, s-maxage=60, stale-while-revalidate=120
+Server-Timing: prep;dur=547,find;dur=96,rank;dur=0,serialize;dur=0
+X-Search-Cache: MISS
+Content-Type: application/json; charset=utf-8
+ETag: "12y4cg1qcob92"
+Content-Length: 326
+Vary: Accept-Encoding
+Date: Tue, 05 May 2026 17:11:24 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"status":"ok","requestId":"15f1e470631c19df91f7be1","tookMs":643,"page":1,"limit":20,"total":0,"hasMore":false,"type":"businesses","sort":"relevance","queryMode":"strict","searchMeta":{"strictTokens":["test"],"intentTokens":["test"],"locationTokens":[],"usedFallback":false,"noExactCategoryMatchInLocation":false},"items":[]}

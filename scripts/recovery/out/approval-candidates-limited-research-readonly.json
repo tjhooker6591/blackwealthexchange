@@ -1,0 +1,2751 @@
+{
+  "rowCount": 22,
+  "rows": [
+    {
+      "_id": "681d1df4fd9719ad7b26dfa2",
+      "business_name": "LYS Beauty",
+      "description": "LYS Beauty offers affordable, clean makeup products across face, eyes, and lips in a wide range of shades and formulas—and was the first Black-owned clean makeup at Sephora.",
+      "address": "Lys Beauty Salon, Gift and Decor Center, F.D. Rooseveltweg, Esperansa bij Salsbach, Curaçao, 0000 CW, Nederland",
+      "city": "",
+      "state": "NEDERLAND",
+      "zip": "",
+      "phone": "",
+      "website": "https://lysbeauty.com",
+      "category": "",
+      "display_category": "Beauty, Grooming and Personal Care",
+      "alias_or_slug": "lys-beauty",
+      "duplicate_classification": "no meaningful duplicate evidence",
+      "current_approval_status": "approved",
+      "query_ready_status": "Group C — Requires limited research",
+      "quality_problems": [
+        "blank_city",
+        "non_usable_state"
+      ],
+      "required_corrections": [],
+      "example_search_queries": [
+        "LYS Beauty",
+        "LYS Beauty",
+        "Beauty, Grooming and Personal Care",
+        "NEDERLAND",
+        "Beauty"
+      ],
+      "projected_profile_url": "/business-directory/lys-beauty",
+      "projected_search_result_eligibility": [
+        {
+          "query": "LYS Beauty",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description",
+            "location"
+          ]
+        },
+        {
+          "query": "LYS Beauty",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description",
+            "location"
+          ]
+        },
+        {
+          "query": "Beauty, Grooming and Personal Care",
+          "returned": true,
+          "matched_fields": [
+            "category"
+          ]
+        },
+        {
+          "query": "NEDERLAND",
+          "returned": true,
+          "matched_fields": [
+            "location"
+          ]
+        },
+        {
+          "query": "Beauty",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "category",
+            "description",
+            "location"
+          ]
+        }
+      ],
+      "route_resolves": true,
+      "result_title_meaningful": true,
+      "displayed_location_useful": false,
+      "category_correct": true,
+      "source_gate_row": {
+        "_id": "681d1df4fd9719ad7b26dfa2",
+        "business_name": "LYS Beauty",
+        "current_completeness": {
+          "isComplete": false,
+          "completenessScore": 67,
+          "qualityScore": null
+        },
+        "current_blockers": [
+          "incomplete_listing_gate"
+        ],
+        "proposed_repairs": [
+          {
+            "field": "isComplete/completenessScore",
+            "value": "derived pass",
+            "evidence": "existing required fields already present in MongoDB"
+          }
+        ],
+        "duplicate_classification": "no meaningful duplicate evidence",
+        "approval_readiness_before_repair": true,
+        "approval_readiness_after_repair": true,
+        "projected_public_search_eligibility": true,
+        "external_research_used": false,
+        "source_urls": [],
+        "bucket": "approval-ready now",
+        "doc_snapshot": {
+          "status": "approved",
+          "alias": "lys-beauty",
+          "slug": "",
+          "address": "Lys Beauty Salon, Gift and Decor Center, F.D. Rooseveltweg, Esperansa bij Salsbach, Curaçao, 0000 CW, Nederland",
+          "city": "",
+          "state": "NEDERLAND",
+          "website": "https://lysbeauty.com",
+          "phone": "",
+          "display_categories": "Beauty, Grooming and Personal Care",
+          "category": "",
+          "categories": [
+            "Makeup",
+            "Clean Beauty"
+          ],
+          "description": "LYS Beauty offers affordable, clean makeup products across face, eyes, and lips in a wide range of shades and formulas—and was the first Black-owned clean makeup at Sephora."
+        }
+      }
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfa6",
+      "business_name": "For Them",
+      "description": "For Them specializes in sustainable binders designed for queer and trans communities, prioritizing comfort, fit, and healthy compression.",
+      "address": "Scrubs for Them, 2121, Carling Avenue, Carlingwood, Bay, Ottawa, Eastern Ontario, Ontario, K2A 1H1, Canada",
+      "city": "",
+      "state": "CANADA",
+      "zip": "",
+      "phone": "",
+      "website": "https://forthemofficial.com",
+      "category": "",
+      "display_category": "Clothing and Accessories",
+      "alias_or_slug": "for-them",
+      "duplicate_classification": "no meaningful duplicate evidence",
+      "current_approval_status": "approved",
+      "query_ready_status": "Group C — Requires limited research",
+      "quality_problems": [
+        "blank_city",
+        "non_usable_state",
+        "invalid_or_noncanonical_display_category"
+      ],
+      "required_corrections": [
+        {
+          "field": "display_categories",
+          "value": "Shopping and Retail",
+          "reason": "canonical category normalization"
+        }
+      ],
+      "example_search_queries": [
+        "For Them",
+        "For Them",
+        "Clothing and Accessories",
+        "CANADA",
+        "Them"
+      ],
+      "projected_profile_url": "/business-directory/for-them",
+      "projected_search_result_eligibility": [
+        {
+          "query": "For Them",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description",
+            "location"
+          ]
+        },
+        {
+          "query": "For Them",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description",
+            "location"
+          ]
+        },
+        {
+          "query": "Clothing and Accessories",
+          "returned": true,
+          "matched_fields": [
+            "category"
+          ]
+        },
+        {
+          "query": "CANADA",
+          "returned": true,
+          "matched_fields": [
+            "location"
+          ]
+        },
+        {
+          "query": "Them",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description",
+            "location"
+          ]
+        }
+      ],
+      "route_resolves": true,
+      "result_title_meaningful": true,
+      "displayed_location_useful": false,
+      "category_correct": false,
+      "source_gate_row": {
+        "_id": "681d1df4fd9719ad7b26dfa6",
+        "business_name": "For Them",
+        "current_completeness": {
+          "isComplete": false,
+          "completenessScore": 67,
+          "qualityScore": null
+        },
+        "current_blockers": [
+          "incomplete_listing_gate"
+        ],
+        "proposed_repairs": [
+          {
+            "field": "isComplete/completenessScore",
+            "value": "derived pass",
+            "evidence": "existing required fields already present in MongoDB"
+          }
+        ],
+        "duplicate_classification": "no meaningful duplicate evidence",
+        "approval_readiness_before_repair": true,
+        "approval_readiness_after_repair": true,
+        "projected_public_search_eligibility": true,
+        "external_research_used": false,
+        "source_urls": [],
+        "bucket": "approval-ready now",
+        "doc_snapshot": {
+          "status": "approved",
+          "alias": "for-them",
+          "slug": "",
+          "address": "Scrubs for Them, 2121, Carling Avenue, Carlingwood, Bay, Ottawa, Eastern Ontario, Ontario, K2A 1H1, Canada",
+          "city": "",
+          "state": "CANADA",
+          "website": "https://forthemofficial.com",
+          "phone": "",
+          "display_categories": "Clothing and Accessories",
+          "category": "",
+          "categories": [
+            "Apparel",
+            "Wellness"
+          ],
+          "description": "For Them specializes in sustainable binders designed for queer and trans communities, prioritizing comfort, fit, and healthy compression."
+        }
+      }
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfa8",
+      "business_name": "Ami Colé",
+      "description": "Ami Colé is a clean beauty brand offering vegan, fragrance-free, hypoallergenic products in recyclable, reusable, or compostable packaging.",
+      "address": "Cole haan, 竜ヶ崎阿見線, よしわら一丁目, 阿見町, 稲敷郡, 茨城県, 300-1288, 日本",
+      "city": "",
+      "state": "日本",
+      "zip": "",
+      "phone": "",
+      "website": "https://amicole.com",
+      "category": "",
+      "display_category": "Beauty, Grooming and Personal Care",
+      "alias_or_slug": "ami-cole",
+      "duplicate_classification": "no meaningful duplicate evidence",
+      "current_approval_status": "approved",
+      "query_ready_status": "Group C — Requires limited research",
+      "quality_problems": [
+        "blank_city"
+      ],
+      "required_corrections": [],
+      "example_search_queries": [
+        "Ami Colé",
+        "Ami Colé",
+        "Beauty, Grooming and Personal Care",
+        "日本",
+        "clean"
+      ],
+      "projected_profile_url": "/business-directory/ami-cole",
+      "projected_search_result_eligibility": [
+        {
+          "query": "Ami Colé",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description"
+          ]
+        },
+        {
+          "query": "Ami Colé",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description"
+          ]
+        },
+        {
+          "query": "Beauty, Grooming and Personal Care",
+          "returned": true,
+          "matched_fields": [
+            "category"
+          ]
+        },
+        {
+          "query": "日本",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "category",
+            "description",
+            "location"
+          ]
+        },
+        {
+          "query": "clean",
+          "returned": true,
+          "matched_fields": [
+            "category",
+            "description"
+          ]
+        }
+      ],
+      "route_resolves": true,
+      "result_title_meaningful": true,
+      "displayed_location_useful": false,
+      "category_correct": true,
+      "source_gate_row": {
+        "_id": "681d1df4fd9719ad7b26dfa8",
+        "business_name": "Ami Colé",
+        "current_completeness": {
+          "isComplete": false,
+          "completenessScore": 67,
+          "qualityScore": null
+        },
+        "current_blockers": [
+          "incomplete_listing_gate"
+        ],
+        "proposed_repairs": [
+          {
+            "field": "isComplete/completenessScore",
+            "value": "derived pass",
+            "evidence": "existing required fields already present in MongoDB"
+          }
+        ],
+        "duplicate_classification": "no meaningful duplicate evidence",
+        "approval_readiness_before_repair": true,
+        "approval_readiness_after_repair": true,
+        "projected_public_search_eligibility": true,
+        "external_research_used": false,
+        "source_urls": [],
+        "bucket": "approval-ready now",
+        "doc_snapshot": {
+          "status": "approved",
+          "alias": "ami-cole",
+          "slug": "",
+          "address": "Cole haan, 竜ヶ崎阿見線, よしわら一丁目, 阿見町, 稲敷郡, 茨城県, 300-1288, 日本",
+          "city": "",
+          "state": "日本",
+          "website": "https://amicole.com",
+          "phone": "",
+          "display_categories": "Beauty, Grooming and Personal Care",
+          "category": "",
+          "categories": [
+            "Clean Beauty",
+            "Skin Care"
+          ],
+          "description": "Ami Colé is a clean beauty brand offering vegan, fragrance-free, hypoallergenic products in recyclable, reusable, or compostable packaging."
+        }
+      }
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfa9",
+      "business_name": "Saint Ola",
+      "description": "Saint Ola, founded by Jummy Thomas, offers modern African-inspired dresses, skirts, jumpsuits, and hair accessories blending vintage and contemporary styles.",
+      "address": "Ola, Igeldo, Mendebaldea, Donostia / San Sebastián, Gipuzkoa, Euskadi, 20008, España",
+      "city": "",
+      "state": "ESPAñA",
+      "zip": "",
+      "phone": "",
+      "website": "https://saintola.com",
+      "category": "",
+      "display_category": "Clothing and Accessories",
+      "alias_or_slug": "saint-ola",
+      "duplicate_classification": "no meaningful duplicate evidence",
+      "current_approval_status": "approved",
+      "query_ready_status": "Group C — Requires limited research",
+      "quality_problems": [
+        "blank_city",
+        "invalid_or_noncanonical_display_category"
+      ],
+      "required_corrections": [
+        {
+          "field": "display_categories",
+          "value": "Beauty, Grooming and Personal Care",
+          "reason": "canonical category normalization"
+        }
+      ],
+      "example_search_queries": [
+        "Saint Ola",
+        "Saint Ola",
+        "Clothing and Accessories",
+        "ESPAñA",
+        "Saint"
+      ],
+      "projected_profile_url": "/business-directory/saint-ola",
+      "projected_search_result_eligibility": [
+        {
+          "query": "Saint Ola",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description"
+          ]
+        },
+        {
+          "query": "Saint Ola",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description"
+          ]
+        },
+        {
+          "query": "Clothing and Accessories",
+          "returned": true,
+          "matched_fields": [
+            "category"
+          ]
+        },
+        {
+          "query": "ESPAñA",
+          "returned": true,
+          "matched_fields": [
+            "location"
+          ]
+        },
+        {
+          "query": "Saint",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description"
+          ]
+        }
+      ],
+      "route_resolves": true,
+      "result_title_meaningful": true,
+      "displayed_location_useful": false,
+      "category_correct": false,
+      "source_gate_row": {
+        "_id": "681d1df4fd9719ad7b26dfa9",
+        "business_name": "Saint Ola",
+        "current_completeness": {
+          "isComplete": false,
+          "completenessScore": 67,
+          "qualityScore": null
+        },
+        "current_blockers": [
+          "incomplete_listing_gate"
+        ],
+        "proposed_repairs": [
+          {
+            "field": "isComplete/completenessScore",
+            "value": "derived pass",
+            "evidence": "existing required fields already present in MongoDB"
+          }
+        ],
+        "duplicate_classification": "no meaningful duplicate evidence",
+        "approval_readiness_before_repair": true,
+        "approval_readiness_after_repair": true,
+        "projected_public_search_eligibility": true,
+        "external_research_used": false,
+        "source_urls": [],
+        "bucket": "approval-ready now",
+        "doc_snapshot": {
+          "status": "approved",
+          "alias": "saint-ola",
+          "slug": "",
+          "address": "Ola, Igeldo, Mendebaldea, Donostia / San Sebastián, Gipuzkoa, Euskadi, 20008, España",
+          "city": "",
+          "state": "ESPAñA",
+          "website": "https://saintola.com",
+          "phone": "",
+          "display_categories": "Clothing and Accessories",
+          "category": "",
+          "categories": [
+            "Fashion",
+            "Accessories"
+          ],
+          "description": "Saint Ola, founded by Jummy Thomas, offers modern African-inspired dresses, skirts, jumpsuits, and hair accessories blending vintage and contemporary styles."
+        }
+      }
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfaa",
+      "business_name": "Telfar",
+      "description": "Telfar, by Telfar Clemens, is known for its accessible luxury bags—Shopping Bag, Circle Bag, Jelly Shopper and Puff Shopper—favored by creatives and celebrities alike.",
+      "address": "Kocatepe, Nizip, Gaziantep, Güneydoğu Anadolu Bölgesi, Türkiye",
+      "city": "",
+      "state": "TüRKIYE",
+      "zip": "",
+      "phone": "",
+      "website": "https://telfar.net",
+      "category": "",
+      "display_category": "Clothing and Accessories",
+      "alias_or_slug": "telfar",
+      "duplicate_classification": "no meaningful duplicate evidence",
+      "current_approval_status": "approved",
+      "query_ready_status": "Group C — Requires limited research",
+      "quality_problems": [
+        "blank_city",
+        "invalid_or_noncanonical_display_category"
+      ],
+      "required_corrections": [
+        {
+          "field": "display_categories",
+          "value": "Shopping and Retail",
+          "reason": "canonical category normalization"
+        }
+      ],
+      "example_search_queries": [
+        "Telfar",
+        "Telfar",
+        "Clothing and Accessories",
+        "TüRKIYE",
+        "Telfar"
+      ],
+      "projected_profile_url": "/business-directory/telfar",
+      "projected_search_result_eligibility": [
+        {
+          "query": "Telfar",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description"
+          ]
+        },
+        {
+          "query": "Telfar",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description"
+          ]
+        },
+        {
+          "query": "Clothing and Accessories",
+          "returned": true,
+          "matched_fields": [
+            "category"
+          ]
+        },
+        {
+          "query": "TüRKIYE",
+          "returned": true,
+          "matched_fields": [
+            "location"
+          ]
+        },
+        {
+          "query": "Telfar",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description"
+          ]
+        }
+      ],
+      "route_resolves": true,
+      "result_title_meaningful": true,
+      "displayed_location_useful": false,
+      "category_correct": false,
+      "source_gate_row": {
+        "_id": "681d1df4fd9719ad7b26dfaa",
+        "business_name": "Telfar",
+        "current_completeness": {
+          "isComplete": false,
+          "completenessScore": 67,
+          "qualityScore": null
+        },
+        "current_blockers": [
+          "incomplete_listing_gate"
+        ],
+        "proposed_repairs": [
+          {
+            "field": "isComplete/completenessScore",
+            "value": "derived pass",
+            "evidence": "existing required fields already present in MongoDB"
+          }
+        ],
+        "duplicate_classification": "no meaningful duplicate evidence",
+        "approval_readiness_before_repair": true,
+        "approval_readiness_after_repair": true,
+        "projected_public_search_eligibility": true,
+        "external_research_used": false,
+        "source_urls": [],
+        "bucket": "approval-ready now",
+        "doc_snapshot": {
+          "status": "approved",
+          "alias": "telfar",
+          "slug": "",
+          "address": "Kocatepe, Nizip, Gaziantep, Güneydoğu Anadolu Bölgesi, Türkiye",
+          "city": "",
+          "state": "TüRKIYE",
+          "website": "https://telfar.net",
+          "phone": "",
+          "display_categories": "Clothing and Accessories",
+          "category": "",
+          "categories": [
+            "Luxury Goods",
+            "Accessories"
+          ],
+          "description": "Telfar, by Telfar Clemens, is known for its accessible luxury bags—Shopping Bag, Circle Bag, Jelly Shopper and Puff Shopper—favored by creatives and celebrities alike."
+        }
+      }
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfab",
+      "business_name": "Third Crown",
+      "description": "Third Crown, by Kristin and Kofi Essel, creates geometric statement jewelry—necklaces, rings, cuff bracelets—for all genders, inspired by everyday architecture.",
+      "address": "TP Legal Ltd, Church Street East, Horsell, Woking, Surrey, England, GU21 6HR, United Kingdom",
+      "city": "",
+      "state": "UNITED",
+      "zip": "",
+      "phone": "",
+      "website": "https://thirdcrown.com",
+      "category": "",
+      "display_category": "Clothing and Accessories",
+      "alias_or_slug": "third-crown",
+      "duplicate_classification": "no meaningful duplicate evidence",
+      "current_approval_status": "approved",
+      "query_ready_status": "Group C — Requires limited research",
+      "quality_problems": [
+        "blank_city",
+        "non_usable_state",
+        "invalid_or_noncanonical_display_category"
+      ],
+      "required_corrections": [
+        {
+          "field": "display_categories",
+          "value": "Shopping and Retail",
+          "reason": "canonical category normalization"
+        }
+      ],
+      "example_search_queries": [
+        "Third Crown",
+        "Third Crown",
+        "Clothing and Accessories",
+        "UNITED",
+        "Third"
+      ],
+      "projected_profile_url": "/business-directory/third-crown",
+      "projected_search_result_eligibility": [
+        {
+          "query": "Third Crown",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description"
+          ]
+        },
+        {
+          "query": "Third Crown",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description"
+          ]
+        },
+        {
+          "query": "Clothing and Accessories",
+          "returned": true,
+          "matched_fields": [
+            "category"
+          ]
+        },
+        {
+          "query": "UNITED",
+          "returned": true,
+          "matched_fields": [
+            "location"
+          ]
+        },
+        {
+          "query": "Third",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description"
+          ]
+        }
+      ],
+      "route_resolves": true,
+      "result_title_meaningful": true,
+      "displayed_location_useful": false,
+      "category_correct": false,
+      "source_gate_row": {
+        "_id": "681d1df4fd9719ad7b26dfab",
+        "business_name": "Third Crown",
+        "current_completeness": {
+          "isComplete": false,
+          "completenessScore": 67,
+          "qualityScore": null
+        },
+        "current_blockers": [
+          "incomplete_listing_gate"
+        ],
+        "proposed_repairs": [
+          {
+            "field": "isComplete/completenessScore",
+            "value": "derived pass",
+            "evidence": "existing required fields already present in MongoDB"
+          }
+        ],
+        "duplicate_classification": "no meaningful duplicate evidence",
+        "approval_readiness_before_repair": true,
+        "approval_readiness_after_repair": true,
+        "projected_public_search_eligibility": true,
+        "external_research_used": false,
+        "source_urls": [],
+        "bucket": "approval-ready now",
+        "doc_snapshot": {
+          "status": "approved",
+          "alias": "third-crown",
+          "slug": "",
+          "address": "TP Legal Ltd, Church Street East, Horsell, Woking, Surrey, England, GU21 6HR, United Kingdom",
+          "city": "",
+          "state": "UNITED",
+          "website": "https://thirdcrown.com",
+          "phone": "",
+          "display_categories": "Clothing and Accessories",
+          "category": "",
+          "categories": [
+            "Jewelry",
+            "Design"
+          ],
+          "description": "Third Crown, by Kristin and Kofi Essel, creates geometric statement jewelry—necklaces, rings, cuff bracelets—for all genders, inspired by everyday architecture."
+        }
+      }
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfac",
+      "business_name": "Tree Fairfax",
+      "description": "Tree Fairfax offers handcrafted leather totes, wallets, belts and wine holder bags, all made with minimalist design and long-lasting materials.",
+      "address": "Fairfax VLG, Rose Tree, Upper Providence, Upper Providence Township, Delaware County, Pennsylvania, 19065, United States",
+      "city": "",
+      "state": "UNITED",
+      "zip": "",
+      "phone": "",
+      "website": "https://treefairfax.com",
+      "category": "",
+      "display_category": "Clothing and Accessories",
+      "alias_or_slug": "tree-fairfax",
+      "duplicate_classification": "no meaningful duplicate evidence",
+      "current_approval_status": "approved",
+      "query_ready_status": "Group C — Requires limited research",
+      "quality_problems": [
+        "blank_city",
+        "non_usable_state",
+        "invalid_or_noncanonical_display_category"
+      ],
+      "required_corrections": [
+        {
+          "field": "display_categories",
+          "value": "Food and Beverage",
+          "reason": "canonical category normalization"
+        }
+      ],
+      "example_search_queries": [
+        "Tree Fairfax",
+        "Tree Fairfax",
+        "Clothing and Accessories",
+        "UNITED",
+        "Tree"
+      ],
+      "projected_profile_url": "/business-directory/tree-fairfax",
+      "projected_search_result_eligibility": [
+        {
+          "query": "Tree Fairfax",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description"
+          ]
+        },
+        {
+          "query": "Tree Fairfax",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description"
+          ]
+        },
+        {
+          "query": "Clothing and Accessories",
+          "returned": true,
+          "matched_fields": [
+            "category"
+          ]
+        },
+        {
+          "query": "UNITED",
+          "returned": true,
+          "matched_fields": [
+            "location"
+          ]
+        },
+        {
+          "query": "Tree",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description",
+            "location"
+          ]
+        }
+      ],
+      "route_resolves": true,
+      "result_title_meaningful": true,
+      "displayed_location_useful": false,
+      "category_correct": false,
+      "source_gate_row": {
+        "_id": "681d1df4fd9719ad7b26dfac",
+        "business_name": "Tree Fairfax",
+        "current_completeness": {
+          "isComplete": false,
+          "completenessScore": 67,
+          "qualityScore": null
+        },
+        "current_blockers": [
+          "incomplete_listing_gate"
+        ],
+        "proposed_repairs": [
+          {
+            "field": "isComplete/completenessScore",
+            "value": "derived pass",
+            "evidence": "existing required fields already present in MongoDB"
+          }
+        ],
+        "duplicate_classification": "no meaningful duplicate evidence",
+        "approval_readiness_before_repair": true,
+        "approval_readiness_after_repair": true,
+        "projected_public_search_eligibility": true,
+        "external_research_used": false,
+        "source_urls": [],
+        "bucket": "approval-ready now",
+        "doc_snapshot": {
+          "status": "approved",
+          "alias": "tree-fairfax",
+          "slug": "",
+          "address": "Fairfax VLG, Rose Tree, Upper Providence, Upper Providence Township, Delaware County, Pennsylvania, 19065, United States",
+          "city": "",
+          "state": "UNITED",
+          "website": "https://treefairfax.com",
+          "phone": "",
+          "display_categories": "Clothing and Accessories",
+          "category": "",
+          "categories": [
+            "Leather Goods",
+            "Accessories"
+          ],
+          "description": "Tree Fairfax offers handcrafted leather totes, wallets, belts and wine holder bags, all made with minimalist design and long-lasting materials."
+        }
+      }
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfb1",
+      "business_name": "Boon Boona Coffee",
+      "description": "Boon Boona sources East African beans directly from growers, donates a portion of profits back to them, and brings Eritrean and Ethiopian coffee traditions to the U.S.",
+      "address": "Boon Boona Coffee, 1223, East Cherry Street, Yesler Terrace, Seattle, King County, Washington, 98122, United States",
+      "city": "",
+      "state": "UNITED",
+      "zip": "",
+      "phone": "",
+      "website": "https://boonboona.com",
+      "category": "",
+      "display_category": "Food and Beverage",
+      "alias_or_slug": "boon-boona-coffee",
+      "duplicate_classification": "no meaningful duplicate evidence",
+      "current_approval_status": "approved",
+      "query_ready_status": "Group C — Requires limited research",
+      "quality_problems": [
+        "blank_city",
+        "non_usable_state"
+      ],
+      "required_corrections": [],
+      "example_search_queries": [
+        "Boon Boona Coffee",
+        "Boon Boona",
+        "Food and Beverage",
+        "UNITED",
+        "Boon"
+      ],
+      "projected_profile_url": "/business-directory/boon-boona-coffee",
+      "projected_search_result_eligibility": [
+        {
+          "query": "Boon Boona Coffee",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "location"
+          ]
+        },
+        {
+          "query": "Boon Boona",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description",
+            "location"
+          ]
+        },
+        {
+          "query": "Food and Beverage",
+          "returned": true,
+          "matched_fields": [
+            "category"
+          ]
+        },
+        {
+          "query": "UNITED",
+          "returned": true,
+          "matched_fields": [
+            "location"
+          ]
+        },
+        {
+          "query": "Boon",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description",
+            "location"
+          ]
+        }
+      ],
+      "route_resolves": true,
+      "result_title_meaningful": true,
+      "displayed_location_useful": false,
+      "category_correct": true,
+      "source_gate_row": {
+        "_id": "681d1df4fd9719ad7b26dfb1",
+        "business_name": "Boon Boona Coffee",
+        "current_completeness": {
+          "isComplete": false,
+          "completenessScore": 67,
+          "qualityScore": null
+        },
+        "current_blockers": [
+          "incomplete_listing_gate"
+        ],
+        "proposed_repairs": [
+          {
+            "field": "isComplete/completenessScore",
+            "value": "derived pass",
+            "evidence": "existing required fields already present in MongoDB"
+          }
+        ],
+        "duplicate_classification": "no meaningful duplicate evidence",
+        "approval_readiness_before_repair": true,
+        "approval_readiness_after_repair": true,
+        "projected_public_search_eligibility": true,
+        "external_research_used": false,
+        "source_urls": [],
+        "bucket": "approval-ready now",
+        "doc_snapshot": {
+          "status": "approved",
+          "alias": "boon-boona-coffee",
+          "slug": "",
+          "address": "Boon Boona Coffee, 1223, East Cherry Street, Yesler Terrace, Seattle, King County, Washington, 98122, United States",
+          "city": "",
+          "state": "UNITED",
+          "website": "https://boonboona.com",
+          "phone": "",
+          "display_categories": "Food and Beverage",
+          "category": "",
+          "categories": [
+            "Coffee"
+          ],
+          "description": "Boon Boona sources East African beans directly from growers, donates a portion of profits back to them, and brings Eritrean and Ethiopian coffee traditions to the U.S."
+        }
+      }
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfb2",
+      "business_name": "Blk & Bold",
+      "description": "Blk & Bold sells coffee and tea—roasts, cold brew, K-cups—and donates 5% of gross revenue annually to youth nonprofits.",
+      "address": "保樓 Bold Block, 崇平街 Sung Ping Street, 鶴園 Hok Yuen, 土瓜灣 To Kwa Wan, 九龍城區 Kowloon City District, 九龍 Kowloon, 香港 Hong Kong, 999077, 中国",
+      "city": "",
+      "state": "中国",
+      "zip": "",
+      "phone": "",
+      "website": "https://blkandbold.com",
+      "category": "",
+      "display_category": "Food and Beverage",
+      "alias_or_slug": "blk-and-bold",
+      "duplicate_classification": "no meaningful duplicate evidence",
+      "current_approval_status": "approved",
+      "query_ready_status": "Group C — Requires limited research",
+      "quality_problems": [
+        "blank_city"
+      ],
+      "required_corrections": [],
+      "example_search_queries": [
+        "Blk & Bold",
+        "Blk &",
+        "Food and Beverage",
+        "中国",
+        "Bold"
+      ],
+      "projected_profile_url": "/business-directory/blk-and-bold",
+      "projected_search_result_eligibility": [
+        {
+          "query": "Blk & Bold",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description"
+          ]
+        },
+        {
+          "query": "Blk &",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description"
+          ]
+        },
+        {
+          "query": "Food and Beverage",
+          "returned": true,
+          "matched_fields": [
+            "category"
+          ]
+        },
+        {
+          "query": "中国",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "category",
+            "description",
+            "location"
+          ]
+        },
+        {
+          "query": "Bold",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description",
+            "location"
+          ]
+        }
+      ],
+      "route_resolves": true,
+      "result_title_meaningful": true,
+      "displayed_location_useful": false,
+      "category_correct": true,
+      "source_gate_row": {
+        "_id": "681d1df4fd9719ad7b26dfb2",
+        "business_name": "Blk & Bold",
+        "current_completeness": {
+          "isComplete": false,
+          "completenessScore": 67,
+          "qualityScore": null
+        },
+        "current_blockers": [
+          "incomplete_listing_gate"
+        ],
+        "proposed_repairs": [
+          {
+            "field": "isComplete/completenessScore",
+            "value": "derived pass",
+            "evidence": "existing required fields already present in MongoDB"
+          }
+        ],
+        "duplicate_classification": "no meaningful duplicate evidence",
+        "approval_readiness_before_repair": true,
+        "approval_readiness_after_repair": true,
+        "projected_public_search_eligibility": true,
+        "external_research_used": false,
+        "source_urls": [],
+        "bucket": "approval-ready now",
+        "doc_snapshot": {
+          "status": "approved",
+          "alias": "blk-and-bold",
+          "slug": "",
+          "address": "保樓 Bold Block, 崇平街 Sung Ping Street, 鶴園 Hok Yuen, 土瓜灣 To Kwa Wan, 九龍城區 Kowloon City District, 九龍 Kowloon, 香港 Hong Kong, 999077, 中国",
+          "city": "",
+          "state": "中国",
+          "website": "https://blkandbold.com",
+          "phone": "",
+          "display_categories": "Food and Beverage",
+          "category": "",
+          "categories": [
+            "Coffee",
+            "Tea"
+          ],
+          "description": "Blk & Bold sells coffee and tea—roasts, cold brew, K-cups—and donates 5% of gross revenue annually to youth nonprofits."
+        }
+      }
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfb7",
+      "business_name": "Topicals",
+      "description": "Topicals is a dermatologist-backed brand offering serums, moisturizers and mists for chronic concerns like eczema and hyperpigmentation.",
+      "address": "Kind Topicals, West 26th Avenue, Spenard, Anchorage, Alaska, 99503, United States",
+      "city": "",
+      "state": "UNITED",
+      "zip": "",
+      "phone": "",
+      "website": "https://thetopicals.com",
+      "category": "",
+      "display_category": "Beauty, Grooming and Personal Care",
+      "alias_or_slug": "topicals",
+      "duplicate_classification": "no meaningful duplicate evidence",
+      "current_approval_status": "approved",
+      "query_ready_status": "Group C — Requires limited research",
+      "quality_problems": [
+        "blank_city",
+        "non_usable_state"
+      ],
+      "required_corrections": [],
+      "example_search_queries": [
+        "Topicals",
+        "Topicals",
+        "Beauty, Grooming and Personal Care",
+        "UNITED",
+        "Topicals"
+      ],
+      "projected_profile_url": "/business-directory/topicals",
+      "projected_search_result_eligibility": [
+        {
+          "query": "Topicals",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description",
+            "location"
+          ]
+        },
+        {
+          "query": "Topicals",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description",
+            "location"
+          ]
+        },
+        {
+          "query": "Beauty, Grooming and Personal Care",
+          "returned": true,
+          "matched_fields": [
+            "category"
+          ]
+        },
+        {
+          "query": "UNITED",
+          "returned": true,
+          "matched_fields": [
+            "location"
+          ]
+        },
+        {
+          "query": "Topicals",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description",
+            "location"
+          ]
+        }
+      ],
+      "route_resolves": true,
+      "result_title_meaningful": true,
+      "displayed_location_useful": false,
+      "category_correct": true,
+      "source_gate_row": {
+        "_id": "681d1df4fd9719ad7b26dfb7",
+        "business_name": "Topicals",
+        "current_completeness": {
+          "isComplete": false,
+          "completenessScore": 67,
+          "qualityScore": null
+        },
+        "current_blockers": [
+          "incomplete_listing_gate"
+        ],
+        "proposed_repairs": [
+          {
+            "field": "isComplete/completenessScore",
+            "value": "derived pass",
+            "evidence": "existing required fields already present in MongoDB"
+          }
+        ],
+        "duplicate_classification": "no meaningful duplicate evidence",
+        "approval_readiness_before_repair": true,
+        "approval_readiness_after_repair": true,
+        "projected_public_search_eligibility": true,
+        "external_research_used": false,
+        "source_urls": [],
+        "bucket": "approval-ready now",
+        "doc_snapshot": {
+          "status": "approved",
+          "alias": "topicals",
+          "slug": "",
+          "address": "Kind Topicals, West 26th Avenue, Spenard, Anchorage, Alaska, 99503, United States",
+          "city": "",
+          "state": "UNITED",
+          "website": "https://thetopicals.com",
+          "phone": "",
+          "display_categories": "Beauty, Grooming and Personal Care",
+          "category": "",
+          "categories": [
+            "Skin Care",
+            "Clinical"
+          ],
+          "description": "Topicals is a dermatologist-backed brand offering serums, moisturizers and mists for chronic concerns like eczema and hyperpigmentation."
+        }
+      }
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfb8",
+      "business_name": "RedDrop",
+      "description": "RedDrop offers pads, underwear and period prep kits for tweens, plus resources and classes for parents supporting children through puberty.",
+      "address": "Reddrop Court, Altona Meadows, Melbourne, City of Hobsons Bay, Victoria, 3028, Australia",
+      "city": "",
+      "state": "AUSTRALIA",
+      "zip": "",
+      "phone": "",
+      "website": "https://reddrop.com",
+      "category": "",
+      "display_category": "Beauty, Grooming and Personal Care",
+      "alias_or_slug": "reddrop",
+      "duplicate_classification": "no meaningful duplicate evidence",
+      "current_approval_status": "approved",
+      "query_ready_status": "Group C — Requires limited research",
+      "quality_problems": [
+        "blank_city",
+        "non_usable_state"
+      ],
+      "required_corrections": [],
+      "example_search_queries": [
+        "RedDrop",
+        "RedDrop",
+        "Beauty, Grooming and Personal Care",
+        "AUSTRALIA",
+        "RedDrop"
+      ],
+      "projected_profile_url": "/business-directory/reddrop",
+      "projected_search_result_eligibility": [
+        {
+          "query": "RedDrop",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description",
+            "location"
+          ]
+        },
+        {
+          "query": "RedDrop",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description",
+            "location"
+          ]
+        },
+        {
+          "query": "Beauty, Grooming and Personal Care",
+          "returned": true,
+          "matched_fields": [
+            "category"
+          ]
+        },
+        {
+          "query": "AUSTRALIA",
+          "returned": true,
+          "matched_fields": [
+            "location"
+          ]
+        },
+        {
+          "query": "RedDrop",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description",
+            "location"
+          ]
+        }
+      ],
+      "route_resolves": true,
+      "result_title_meaningful": true,
+      "displayed_location_useful": false,
+      "category_correct": true,
+      "source_gate_row": {
+        "_id": "681d1df4fd9719ad7b26dfb8",
+        "business_name": "RedDrop",
+        "current_completeness": {
+          "isComplete": false,
+          "completenessScore": 67,
+          "qualityScore": null
+        },
+        "current_blockers": [
+          "incomplete_listing_gate"
+        ],
+        "proposed_repairs": [
+          {
+            "field": "isComplete/completenessScore",
+            "value": "derived pass",
+            "evidence": "existing required fields already present in MongoDB"
+          }
+        ],
+        "duplicate_classification": "no meaningful duplicate evidence",
+        "approval_readiness_before_repair": true,
+        "approval_readiness_after_repair": true,
+        "projected_public_search_eligibility": true,
+        "external_research_used": false,
+        "source_urls": [],
+        "bucket": "approval-ready now",
+        "doc_snapshot": {
+          "status": "approved",
+          "alias": "reddrop",
+          "slug": "",
+          "address": "Reddrop Court, Altona Meadows, Melbourne, City of Hobsons Bay, Victoria, 3028, Australia",
+          "city": "",
+          "state": "AUSTRALIA",
+          "website": "https://reddrop.com",
+          "phone": "",
+          "display_categories": "Beauty, Grooming and Personal Care",
+          "category": "",
+          "categories": [
+            "Menstrual Products",
+            "Education"
+          ],
+          "description": "RedDrop offers pads, underwear and period prep kits for tweens, plus resources and classes for parents supporting children through puberty."
+        }
+      }
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfbb",
+      "business_name": "Barkal",
+      "description": "Barkal makes gender-neutral footwear inspired by traditional Sudanese men’s shoes, using high-quality leathers sourced from Italy.",
+      "address": "বরকল, বরকল উপজেলা, রাঙ্গামাটি পার্বত্য জেলা, চট্টগ্রাম বিভাগ, বাংলাদেশ",
+      "city": "",
+      "state": "বাংলাদেশ",
+      "zip": "",
+      "phone": "",
+      "website": "https://barkal.com",
+      "category": "",
+      "display_category": "Clothing and Accessories",
+      "alias_or_slug": "barkal",
+      "duplicate_classification": "no meaningful duplicate evidence",
+      "current_approval_status": "approved",
+      "query_ready_status": "Group C — Requires limited research",
+      "quality_problems": [
+        "blank_city",
+        "invalid_or_noncanonical_display_category"
+      ],
+      "required_corrections": [
+        {
+          "field": "display_categories",
+          "value": "Shopping and Retail",
+          "reason": "canonical category normalization"
+        }
+      ],
+      "example_search_queries": [
+        "Barkal",
+        "Barkal",
+        "Clothing and Accessories",
+        "বাংলাদেশ",
+        "Barkal"
+      ],
+      "projected_profile_url": "/business-directory/barkal",
+      "projected_search_result_eligibility": [
+        {
+          "query": "Barkal",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description"
+          ]
+        },
+        {
+          "query": "Barkal",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description"
+          ]
+        },
+        {
+          "query": "Clothing and Accessories",
+          "returned": true,
+          "matched_fields": [
+            "category"
+          ]
+        },
+        {
+          "query": "বাংলাদেশ",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "category",
+            "description",
+            "location"
+          ]
+        },
+        {
+          "query": "Barkal",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description"
+          ]
+        }
+      ],
+      "route_resolves": true,
+      "result_title_meaningful": true,
+      "displayed_location_useful": false,
+      "category_correct": false,
+      "source_gate_row": {
+        "_id": "681d1df4fd9719ad7b26dfbb",
+        "business_name": "Barkal",
+        "current_completeness": {
+          "isComplete": false,
+          "completenessScore": 67,
+          "qualityScore": null
+        },
+        "current_blockers": [
+          "incomplete_listing_gate"
+        ],
+        "proposed_repairs": [
+          {
+            "field": "isComplete/completenessScore",
+            "value": "derived pass",
+            "evidence": "existing required fields already present in MongoDB"
+          }
+        ],
+        "duplicate_classification": "no meaningful duplicate evidence",
+        "approval_readiness_before_repair": true,
+        "approval_readiness_after_repair": true,
+        "projected_public_search_eligibility": true,
+        "external_research_used": false,
+        "source_urls": [],
+        "bucket": "approval-ready now",
+        "doc_snapshot": {
+          "status": "approved",
+          "alias": "barkal",
+          "slug": "",
+          "address": "বরকল, বরকল উপজেলা, রাঙ্গামাটি পার্বত্য জেলা, চট্টগ্রাম বিভাগ, বাংলাদেশ",
+          "city": "",
+          "state": "বাংলাদেশ",
+          "website": "https://barkal.com",
+          "phone": "",
+          "display_categories": "Clothing and Accessories",
+          "category": "",
+          "categories": [
+            "Footwear",
+            "Design"
+          ],
+          "description": "Barkal makes gender-neutral footwear inspired by traditional Sudanese men’s shoes, using high-quality leathers sourced from Italy."
+        }
+      }
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfbd",
+      "business_name": "Camille Rose",
+      "description": "Camille Rose offers hair, skin, and body care products made from natural, food-grade ingredients, founded by Janell Stephens to treat her children’s eczema.",
+      "address": "East Camille Rose Court, Mountain Rose Estates, Palmer, Matanuska-Susitna Borough, Alaska, United States",
+      "city": "",
+      "state": "UNITED",
+      "zip": "",
+      "phone": "",
+      "website": "https://camillerose.com",
+      "category": "",
+      "display_category": "Beauty, Grooming and Personal Care",
+      "alias_or_slug": "camille-rose",
+      "duplicate_classification": "no meaningful duplicate evidence",
+      "current_approval_status": "approved",
+      "query_ready_status": "Group C — Requires limited research",
+      "quality_problems": [
+        "blank_city",
+        "non_usable_state"
+      ],
+      "required_corrections": [],
+      "example_search_queries": [
+        "Camille Rose",
+        "Camille Rose",
+        "Beauty, Grooming and Personal Care",
+        "UNITED",
+        "Camille"
+      ],
+      "projected_profile_url": "/business-directory/camille-rose",
+      "projected_search_result_eligibility": [
+        {
+          "query": "Camille Rose",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description",
+            "location"
+          ]
+        },
+        {
+          "query": "Camille Rose",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description",
+            "location"
+          ]
+        },
+        {
+          "query": "Beauty, Grooming and Personal Care",
+          "returned": true,
+          "matched_fields": [
+            "category"
+          ]
+        },
+        {
+          "query": "UNITED",
+          "returned": true,
+          "matched_fields": [
+            "location"
+          ]
+        },
+        {
+          "query": "Camille",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description",
+            "location"
+          ]
+        }
+      ],
+      "route_resolves": true,
+      "result_title_meaningful": true,
+      "displayed_location_useful": false,
+      "category_correct": true,
+      "source_gate_row": {
+        "_id": "681d1df4fd9719ad7b26dfbd",
+        "business_name": "Camille Rose",
+        "current_completeness": {
+          "isComplete": false,
+          "completenessScore": 67,
+          "qualityScore": null
+        },
+        "current_blockers": [
+          "incomplete_listing_gate"
+        ],
+        "proposed_repairs": [
+          {
+            "field": "isComplete/completenessScore",
+            "value": "derived pass",
+            "evidence": "existing required fields already present in MongoDB"
+          }
+        ],
+        "duplicate_classification": "no meaningful duplicate evidence",
+        "approval_readiness_before_repair": true,
+        "approval_readiness_after_repair": true,
+        "projected_public_search_eligibility": true,
+        "external_research_used": false,
+        "source_urls": [],
+        "bucket": "approval-ready now",
+        "doc_snapshot": {
+          "status": "approved",
+          "alias": "camille-rose",
+          "slug": "",
+          "address": "East Camille Rose Court, Mountain Rose Estates, Palmer, Matanuska-Susitna Borough, Alaska, United States",
+          "city": "",
+          "state": "UNITED",
+          "website": "https://camillerose.com",
+          "phone": "",
+          "display_categories": "Beauty, Grooming and Personal Care",
+          "category": "",
+          "categories": [
+            "Hair Care",
+            "Skin Care",
+            "Body Care"
+          ],
+          "description": "Camille Rose offers hair, skin, and body care products made from natural, food-grade ingredients, founded by Janell Stephens to treat her children’s eczema."
+        }
+      }
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfc2",
+      "business_name": "The Sip",
+      "description": "The Sip offers a wine subscription service—bi-monthly or annual—sending curated wine boxes and ready-to-ship assortments focused on women’s preferences.",
+      "address": "SIP The Experience, 528, Main Street, Lindbergh, Atlanta, Fulton County, Georgia, 30324, United States",
+      "city": "",
+      "state": "UNITED",
+      "zip": "",
+      "phone": "",
+      "website": "https://thesip.co",
+      "category": "",
+      "display_category": "Food and Beverage",
+      "alias_or_slug": "the-sip",
+      "duplicate_classification": "no meaningful duplicate evidence",
+      "current_approval_status": "approved",
+      "query_ready_status": "Group C — Requires limited research",
+      "quality_problems": [
+        "blank_city",
+        "non_usable_state"
+      ],
+      "required_corrections": [],
+      "example_search_queries": [
+        "The Sip",
+        "The Sip",
+        "Food and Beverage",
+        "UNITED",
+        "wine"
+      ],
+      "projected_profile_url": "/business-directory/the-sip",
+      "projected_search_result_eligibility": [
+        {
+          "query": "The Sip",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description"
+          ]
+        },
+        {
+          "query": "The Sip",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description"
+          ]
+        },
+        {
+          "query": "Food and Beverage",
+          "returned": true,
+          "matched_fields": [
+            "category"
+          ]
+        },
+        {
+          "query": "UNITED",
+          "returned": true,
+          "matched_fields": [
+            "location"
+          ]
+        },
+        {
+          "query": "wine",
+          "returned": true,
+          "matched_fields": [
+            "category",
+            "description"
+          ]
+        }
+      ],
+      "route_resolves": true,
+      "result_title_meaningful": true,
+      "displayed_location_useful": false,
+      "category_correct": true,
+      "source_gate_row": {
+        "_id": "681d1df4fd9719ad7b26dfc2",
+        "business_name": "The Sip",
+        "current_completeness": {
+          "isComplete": false,
+          "completenessScore": 67,
+          "qualityScore": null
+        },
+        "current_blockers": [
+          "incomplete_listing_gate"
+        ],
+        "proposed_repairs": [
+          {
+            "field": "isComplete/completenessScore",
+            "value": "derived pass",
+            "evidence": "existing required fields already present in MongoDB"
+          }
+        ],
+        "duplicate_classification": "no meaningful duplicate evidence",
+        "approval_readiness_before_repair": true,
+        "approval_readiness_after_repair": true,
+        "projected_public_search_eligibility": true,
+        "external_research_used": false,
+        "source_urls": [],
+        "bucket": "approval-ready now",
+        "doc_snapshot": {
+          "status": "approved",
+          "alias": "the-sip",
+          "slug": "",
+          "address": "SIP The Experience, 528, Main Street, Lindbergh, Atlanta, Fulton County, Georgia, 30324, United States",
+          "city": "",
+          "state": "UNITED",
+          "website": "https://thesip.co",
+          "phone": "",
+          "display_categories": "Food and Beverage",
+          "category": "",
+          "categories": [
+            "Wine Subscription"
+          ],
+          "description": "The Sip offers a wine subscription service—bi-monthly or annual—sending curated wine boxes and ready-to-ship assortments focused on women’s preferences."
+        }
+      }
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfc4",
+      "business_name": "Be Rooted",
+      "description": "Be Rooted creates journals, planners and desk accessories featuring art of women of color—first Black-owned stationery brand in Target in 2021.",
+      "address": "Rooted, 144, Rosemount Place, Rosemount, Rosemount and Mile End, Aberdeen City, Alba / Scotland, AB25 2YU, United Kingdom",
+      "city": "",
+      "state": "UNITED",
+      "zip": "",
+      "phone": "",
+      "website": "https://berootedprint.com",
+      "category": "",
+      "display_category": "Home and Kitchen",
+      "alias_or_slug": "be-rooted",
+      "duplicate_classification": "no meaningful duplicate evidence",
+      "current_approval_status": "approved",
+      "query_ready_status": "Group C — Requires limited research",
+      "quality_problems": [
+        "blank_city",
+        "non_usable_state",
+        "invalid_or_noncanonical_display_category"
+      ],
+      "required_corrections": [
+        {
+          "field": "display_categories",
+          "value": "Shopping and Retail",
+          "reason": "canonical category normalization"
+        }
+      ],
+      "example_search_queries": [
+        "Be Rooted",
+        "Be Rooted",
+        "Home and Kitchen",
+        "UNITED",
+        "Rooted"
+      ],
+      "projected_profile_url": "/business-directory/be-rooted",
+      "projected_search_result_eligibility": [
+        {
+          "query": "Be Rooted",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description"
+          ]
+        },
+        {
+          "query": "Be Rooted",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description"
+          ]
+        },
+        {
+          "query": "Home and Kitchen",
+          "returned": true,
+          "matched_fields": [
+            "category"
+          ]
+        },
+        {
+          "query": "UNITED",
+          "returned": true,
+          "matched_fields": [
+            "location"
+          ]
+        },
+        {
+          "query": "Rooted",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description",
+            "location"
+          ]
+        }
+      ],
+      "route_resolves": true,
+      "result_title_meaningful": true,
+      "displayed_location_useful": false,
+      "category_correct": false,
+      "source_gate_row": {
+        "_id": "681d1df4fd9719ad7b26dfc4",
+        "business_name": "Be Rooted",
+        "current_completeness": {
+          "isComplete": false,
+          "completenessScore": 67,
+          "qualityScore": null
+        },
+        "current_blockers": [
+          "incomplete_listing_gate"
+        ],
+        "proposed_repairs": [
+          {
+            "field": "isComplete/completenessScore",
+            "value": "derived pass",
+            "evidence": "existing required fields already present in MongoDB"
+          }
+        ],
+        "duplicate_classification": "no meaningful duplicate evidence",
+        "approval_readiness_before_repair": true,
+        "approval_readiness_after_repair": true,
+        "projected_public_search_eligibility": true,
+        "external_research_used": false,
+        "source_urls": [],
+        "bucket": "approval-ready now",
+        "doc_snapshot": {
+          "status": "approved",
+          "alias": "be-rooted",
+          "slug": "",
+          "address": "Rooted, 144, Rosemount Place, Rosemount, Rosemount and Mile End, Aberdeen City, Alba / Scotland, AB25 2YU, United Kingdom",
+          "city": "",
+          "state": "UNITED",
+          "website": "https://berootedprint.com",
+          "phone": "",
+          "display_categories": "Home and Kitchen",
+          "category": "",
+          "categories": [
+            "Stationery",
+            "Home Goods"
+          ],
+          "description": "Be Rooted creates journals, planners and desk accessories featuring art of women of color—first Black-owned stationery brand in Target in 2021."
+        }
+      }
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfc5",
+      "business_name": "Clare",
+      "description": "Clare is an online paint store partnering with designers on curated collections and offers peel-and-stick swatches for easy color testing.",
+      "address": "Clare County, Michigan, United States",
+      "city": "",
+      "state": "UNITED",
+      "zip": "",
+      "phone": "",
+      "website": "https://clare.com",
+      "category": "",
+      "display_category": "Home and Kitchen",
+      "alias_or_slug": "clare",
+      "duplicate_classification": "no meaningful duplicate evidence",
+      "current_approval_status": "approved",
+      "query_ready_status": "Group C — Requires limited research",
+      "quality_problems": [
+        "blank_city",
+        "non_usable_state"
+      ],
+      "required_corrections": [],
+      "example_search_queries": [
+        "Clare",
+        "Clare",
+        "Home and Kitchen",
+        "UNITED",
+        "Clare"
+      ],
+      "projected_profile_url": "/business-directory/clare",
+      "projected_search_result_eligibility": [
+        {
+          "query": "Clare",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description",
+            "location"
+          ]
+        },
+        {
+          "query": "Clare",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description",
+            "location"
+          ]
+        },
+        {
+          "query": "Home and Kitchen",
+          "returned": true,
+          "matched_fields": [
+            "category"
+          ]
+        },
+        {
+          "query": "UNITED",
+          "returned": true,
+          "matched_fields": [
+            "location"
+          ]
+        },
+        {
+          "query": "Clare",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description",
+            "location"
+          ]
+        }
+      ],
+      "route_resolves": true,
+      "result_title_meaningful": true,
+      "displayed_location_useful": false,
+      "category_correct": true,
+      "source_gate_row": {
+        "_id": "681d1df4fd9719ad7b26dfc5",
+        "business_name": "Clare",
+        "current_completeness": {
+          "isComplete": false,
+          "completenessScore": 67,
+          "qualityScore": null
+        },
+        "current_blockers": [
+          "incomplete_listing_gate"
+        ],
+        "proposed_repairs": [
+          {
+            "field": "isComplete/completenessScore",
+            "value": "derived pass",
+            "evidence": "existing required fields already present in MongoDB"
+          }
+        ],
+        "duplicate_classification": "no meaningful duplicate evidence",
+        "approval_readiness_before_repair": true,
+        "approval_readiness_after_repair": true,
+        "projected_public_search_eligibility": true,
+        "external_research_used": false,
+        "source_urls": [],
+        "bucket": "approval-ready now",
+        "doc_snapshot": {
+          "status": "approved",
+          "alias": "clare",
+          "slug": "",
+          "address": "Clare County, Michigan, United States",
+          "city": "",
+          "state": "UNITED",
+          "website": "https://clare.com",
+          "phone": "",
+          "display_categories": "Home and Kitchen",
+          "category": "",
+          "categories": [
+            "Paint",
+            "Home Improvement"
+          ],
+          "description": "Clare is an online paint store partnering with designers on curated collections and offers peel-and-stick swatches for easy color testing."
+        }
+      }
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfc6",
+      "business_name": "Bolé Road",
+      "description": "Bolé Road Textiles offers handwoven Ethiopian fabrics—pillows, rugs, curtains, bath mats—melding Brooklyn design with Ethiopian heritage.",
+      "address": "Africa Avenue / Bole Road, ወሎ ሰፈር አካባቢ, Kirkos, አዲስ አበባ Addis Ababa أديس أبابا, አዲስ አበባ أديس أبابا, 7966, ኢትዮጵያ إثيوبيا",
+      "city": "",
+      "state": "ኢትዮጵያ",
+      "zip": "",
+      "phone": "",
+      "website": "https://boleroadtextiles.com",
+      "category": "",
+      "display_category": "Home and Kitchen",
+      "alias_or_slug": "bole-road",
+      "duplicate_classification": "no meaningful duplicate evidence",
+      "current_approval_status": "approved",
+      "query_ready_status": "Group C — Requires limited research",
+      "quality_problems": [
+        "blank_city"
+      ],
+      "required_corrections": [],
+      "example_search_queries": [
+        "Bolé Road",
+        "Bolé Road",
+        "Home and Kitchen",
+        "ኢትዮጵያ",
+        "Road"
+      ],
+      "projected_profile_url": "/business-directory/bole-road",
+      "projected_search_result_eligibility": [
+        {
+          "query": "Bolé Road",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "description"
+          ]
+        },
+        {
+          "query": "Bolé Road",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "description"
+          ]
+        },
+        {
+          "query": "Home and Kitchen",
+          "returned": true,
+          "matched_fields": [
+            "category"
+          ]
+        },
+        {
+          "query": "ኢትዮጵያ",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "category",
+            "description",
+            "location"
+          ]
+        },
+        {
+          "query": "Road",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description",
+            "location"
+          ]
+        }
+      ],
+      "route_resolves": true,
+      "result_title_meaningful": true,
+      "displayed_location_useful": false,
+      "category_correct": true,
+      "source_gate_row": {
+        "_id": "681d1df4fd9719ad7b26dfc6",
+        "business_name": "Bolé Road",
+        "current_completeness": {
+          "isComplete": false,
+          "completenessScore": 67,
+          "qualityScore": null
+        },
+        "current_blockers": [
+          "incomplete_listing_gate"
+        ],
+        "proposed_repairs": [
+          {
+            "field": "isComplete/completenessScore",
+            "value": "derived pass",
+            "evidence": "existing required fields already present in MongoDB"
+          }
+        ],
+        "duplicate_classification": "no meaningful duplicate evidence",
+        "approval_readiness_before_repair": true,
+        "approval_readiness_after_repair": true,
+        "projected_public_search_eligibility": true,
+        "external_research_used": false,
+        "source_urls": [],
+        "bucket": "approval-ready now",
+        "doc_snapshot": {
+          "status": "approved",
+          "alias": "bole-road",
+          "slug": "",
+          "address": "Africa Avenue / Bole Road, ወሎ ሰፈር አካባቢ, Kirkos, አዲስ አበባ Addis Ababa أديس أبابا, አዲስ አበባ أديس أبابا, 7966, ኢትዮጵያ إثيوبيا",
+          "city": "",
+          "state": "ኢትዮጵያ",
+          "website": "https://boleroadtextiles.com",
+          "phone": "",
+          "display_categories": "Home and Kitchen",
+          "category": "",
+          "categories": [
+            "Home Decor",
+            "Textiles"
+          ],
+          "description": "Bolé Road Textiles offers handwoven Ethiopian fabrics—pillows, rugs, curtains, bath mats—melding Brooklyn design with Ethiopian heritage."
+        }
+      }
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfcb",
+      "business_name": "The Whitney Collection",
+      "description": "The Whitney Collection offers luxury candles inspired by global travel—scents like garden fig and Cuban tobacco—created by LA-native Whitney Brooks.",
+      "address": "Hotel David Whitney, Autograph Collection, Woodward Avenue, Detroit, Wayne County, Michigan, 48226, United States",
+      "city": "",
+      "state": "UNITED",
+      "zip": "",
+      "phone": "",
+      "website": "https://thewhitneycollection.com",
+      "category": "",
+      "display_category": "Home and Kitchen",
+      "alias_or_slug": "the-whitney-collection",
+      "duplicate_classification": "no meaningful duplicate evidence",
+      "current_approval_status": "approved",
+      "query_ready_status": "Group C — Requires limited research",
+      "quality_problems": [
+        "blank_city",
+        "non_usable_state"
+      ],
+      "required_corrections": [],
+      "example_search_queries": [
+        "The Whitney Collection",
+        "The Whitney",
+        "Home and Kitchen",
+        "UNITED",
+        "Whitney"
+      ],
+      "projected_profile_url": "/business-directory/the-whitney-collection",
+      "projected_search_result_eligibility": [
+        {
+          "query": "The Whitney Collection",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description"
+          ]
+        },
+        {
+          "query": "The Whitney",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description"
+          ]
+        },
+        {
+          "query": "Home and Kitchen",
+          "returned": true,
+          "matched_fields": [
+            "category"
+          ]
+        },
+        {
+          "query": "UNITED",
+          "returned": true,
+          "matched_fields": [
+            "location"
+          ]
+        },
+        {
+          "query": "Whitney",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description",
+            "location"
+          ]
+        }
+      ],
+      "route_resolves": true,
+      "result_title_meaningful": true,
+      "displayed_location_useful": false,
+      "category_correct": true,
+      "source_gate_row": {
+        "_id": "681d1df4fd9719ad7b26dfcb",
+        "business_name": "The Whitney Collection",
+        "current_completeness": {
+          "isComplete": false,
+          "completenessScore": 67,
+          "qualityScore": null
+        },
+        "current_blockers": [
+          "incomplete_listing_gate"
+        ],
+        "proposed_repairs": [
+          {
+            "field": "isComplete/completenessScore",
+            "value": "derived pass",
+            "evidence": "existing required fields already present in MongoDB"
+          }
+        ],
+        "duplicate_classification": "no meaningful duplicate evidence",
+        "approval_readiness_before_repair": true,
+        "approval_readiness_after_repair": true,
+        "projected_public_search_eligibility": true,
+        "external_research_used": false,
+        "source_urls": [],
+        "bucket": "approval-ready now",
+        "doc_snapshot": {
+          "status": "approved",
+          "alias": "the-whitney-collection",
+          "slug": "",
+          "address": "Hotel David Whitney, Autograph Collection, Woodward Avenue, Detroit, Wayne County, Michigan, 48226, United States",
+          "city": "",
+          "state": "UNITED",
+          "website": "https://thewhitneycollection.com",
+          "phone": "",
+          "display_categories": "Home and Kitchen",
+          "category": "",
+          "categories": [
+            "Candles",
+            "Home Fragrance"
+          ],
+          "description": "The Whitney Collection offers luxury candles inspired by global travel—scents like garden fig and Cuban tobacco—created by LA-native Whitney Brooks."
+        }
+      }
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfce",
+      "business_name": "Fourth Phase",
+      "description": "Fourth Phase sells after-birth care boxes filled with organic, non-toxic, sustainably sourced items to aid new mothers’ physical and emotional recovery.",
+      "address": "Bel-Air Village Phase I and II, District I, Makati, Southern Manila District, Metro Manila, 1209, Philippines",
+      "city": "",
+      "state": "PHILIPPINES",
+      "zip": "",
+      "phone": "",
+      "website": "https://thefourthphase.com",
+      "category": "",
+      "display_category": "Baby and Kids",
+      "alias_or_slug": "fourth-phase",
+      "duplicate_classification": "no meaningful duplicate evidence",
+      "current_approval_status": "approved",
+      "query_ready_status": "Group C — Requires limited research",
+      "quality_problems": [
+        "blank_city",
+        "non_usable_state"
+      ],
+      "required_corrections": [],
+      "example_search_queries": [
+        "Fourth Phase",
+        "Fourth Phase",
+        "Baby and Kids",
+        "PHILIPPINES",
+        "Fourth"
+      ],
+      "projected_profile_url": "/business-directory/fourth-phase",
+      "projected_search_result_eligibility": [
+        {
+          "query": "Fourth Phase",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description"
+          ]
+        },
+        {
+          "query": "Fourth Phase",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description"
+          ]
+        },
+        {
+          "query": "Baby and Kids",
+          "returned": true,
+          "matched_fields": [
+            "category"
+          ]
+        },
+        {
+          "query": "PHILIPPINES",
+          "returned": true,
+          "matched_fields": [
+            "location"
+          ]
+        },
+        {
+          "query": "Fourth",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description"
+          ]
+        }
+      ],
+      "route_resolves": true,
+      "result_title_meaningful": true,
+      "displayed_location_useful": false,
+      "category_correct": true,
+      "source_gate_row": {
+        "_id": "681d1df4fd9719ad7b26dfce",
+        "business_name": "Fourth Phase",
+        "current_completeness": {
+          "isComplete": false,
+          "completenessScore": 67,
+          "qualityScore": null
+        },
+        "current_blockers": [
+          "incomplete_listing_gate"
+        ],
+        "proposed_repairs": [
+          {
+            "field": "isComplete/completenessScore",
+            "value": "derived pass",
+            "evidence": "existing required fields already present in MongoDB"
+          }
+        ],
+        "duplicate_classification": "no meaningful duplicate evidence",
+        "approval_readiness_before_repair": true,
+        "approval_readiness_after_repair": true,
+        "projected_public_search_eligibility": true,
+        "external_research_used": false,
+        "source_urls": [],
+        "bucket": "approval-ready now",
+        "doc_snapshot": {
+          "status": "approved",
+          "alias": "fourth-phase",
+          "slug": "",
+          "address": "Bel-Air Village Phase I and II, District I, Makati, Southern Manila District, Metro Manila, 1209, Philippines",
+          "city": "",
+          "state": "PHILIPPINES",
+          "website": "https://thefourthphase.com",
+          "phone": "",
+          "display_categories": "Baby and Kids",
+          "category": "",
+          "categories": [
+            "Postnatal Care",
+            "Subscription"
+          ],
+          "description": "Fourth Phase sells after-birth care boxes filled with organic, non-toxic, sustainably sourced items to aid new mothers’ physical and emotional recovery."
+        }
+      }
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfd3",
+      "business_name": "Royal Nation",
+      "description": "Royal Nation offers gender-neutral kids’ clothing (sizes 4/5–14) with storytelling collections accompanied by short films.",
+      "address": "Royal VI Nation, Place de la Nation, Quartier Sainte-Marguerite, Paris 11e Arrondissement, Paris, France métropolitaine, 75011, France",
+      "city": "",
+      "state": "FRANCE",
+      "zip": "",
+      "phone": "",
+      "website": "https://royal-nation.com",
+      "category": "",
+      "display_category": "Baby and Kids",
+      "alias_or_slug": "royal-nation",
+      "duplicate_classification": "no meaningful duplicate evidence",
+      "current_approval_status": "approved",
+      "query_ready_status": "Group C — Requires limited research",
+      "quality_problems": [
+        "blank_city",
+        "non_usable_state",
+        "invalid_or_noncanonical_display_category"
+      ],
+      "required_corrections": [
+        {
+          "field": "display_categories",
+          "value": "Shopping and Retail",
+          "reason": "canonical category normalization"
+        }
+      ],
+      "example_search_queries": [
+        "Royal Nation",
+        "Royal Nation",
+        "Baby and Kids",
+        "FRANCE",
+        "Royal"
+      ],
+      "projected_profile_url": "/business-directory/royal-nation",
+      "projected_search_result_eligibility": [
+        {
+          "query": "Royal Nation",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description"
+          ]
+        },
+        {
+          "query": "Royal Nation",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description"
+          ]
+        },
+        {
+          "query": "Baby and Kids",
+          "returned": true,
+          "matched_fields": [
+            "category"
+          ]
+        },
+        {
+          "query": "FRANCE",
+          "returned": true,
+          "matched_fields": [
+            "location"
+          ]
+        },
+        {
+          "query": "Royal",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description",
+            "location"
+          ]
+        }
+      ],
+      "route_resolves": true,
+      "result_title_meaningful": true,
+      "displayed_location_useful": false,
+      "category_correct": false,
+      "source_gate_row": {
+        "_id": "681d1df4fd9719ad7b26dfd3",
+        "business_name": "Royal Nation",
+        "current_completeness": {
+          "isComplete": false,
+          "completenessScore": 67,
+          "qualityScore": null
+        },
+        "current_blockers": [
+          "incomplete_listing_gate"
+        ],
+        "proposed_repairs": [
+          {
+            "field": "isComplete/completenessScore",
+            "value": "derived pass",
+            "evidence": "existing required fields already present in MongoDB"
+          }
+        ],
+        "duplicate_classification": "no meaningful duplicate evidence",
+        "approval_readiness_before_repair": true,
+        "approval_readiness_after_repair": true,
+        "projected_public_search_eligibility": true,
+        "external_research_used": false,
+        "source_urls": [],
+        "bucket": "approval-ready now",
+        "doc_snapshot": {
+          "status": "approved",
+          "alias": "royal-nation",
+          "slug": "",
+          "address": "Royal VI Nation, Place de la Nation, Quartier Sainte-Marguerite, Paris 11e Arrondissement, Paris, France métropolitaine, 75011, France",
+          "city": "",
+          "state": "FRANCE",
+          "website": "https://royal-nation.com",
+          "phone": "",
+          "display_categories": "Baby and Kids",
+          "category": "",
+          "categories": [
+            "Clothing",
+            "Kids"
+          ],
+          "description": "Royal Nation offers gender-neutral kids’ clothing (sizes 4/5–14) with storytelling collections accompanied by short films."
+        }
+      }
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfda",
+      "business_name": "Loyalty Bookstores",
+      "description": "Loyalty Bookstores serves DC/MD/VA with curated literature and events, founded to better serve Black and queer communities.",
+      "address": "Loyalty Bookstores, 823, Ellsworth Drive, Queen Annes, Silver Spring, Montgomery County, Maryland, 20910, United States",
+      "city": "",
+      "state": "UNITED",
+      "zip": "",
+      "phone": "",
+      "website": "https://loyaltybookstores.com",
+      "category": "",
+      "display_category": "Bookstores and Educational",
+      "alias_or_slug": "loyalty-bookstores",
+      "duplicate_classification": "no meaningful duplicate evidence",
+      "current_approval_status": "approved",
+      "query_ready_status": "Group C — Requires limited research",
+      "quality_problems": [
+        "blank_city",
+        "non_usable_state",
+        "invalid_or_noncanonical_display_category"
+      ],
+      "required_corrections": [
+        {
+          "field": "display_categories",
+          "value": "Shopping and Retail",
+          "reason": "canonical category normalization"
+        }
+      ],
+      "example_search_queries": [
+        "Loyalty Bookstores",
+        "Loyalty Bookstores",
+        "Bookstores and Educational",
+        "UNITED",
+        "Loyalty"
+      ],
+      "projected_profile_url": "/business-directory/loyalty-bookstores",
+      "projected_search_result_eligibility": [
+        {
+          "query": "Loyalty Bookstores",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description",
+            "location"
+          ]
+        },
+        {
+          "query": "Loyalty Bookstores",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description",
+            "location"
+          ]
+        },
+        {
+          "query": "Bookstores and Educational",
+          "returned": true,
+          "matched_fields": [
+            "category"
+          ]
+        },
+        {
+          "query": "UNITED",
+          "returned": true,
+          "matched_fields": [
+            "location"
+          ]
+        },
+        {
+          "query": "Loyalty",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description",
+            "location"
+          ]
+        }
+      ],
+      "route_resolves": true,
+      "result_title_meaningful": true,
+      "displayed_location_useful": false,
+      "category_correct": false,
+      "source_gate_row": {
+        "_id": "681d1df4fd9719ad7b26dfda",
+        "business_name": "Loyalty Bookstores",
+        "current_completeness": {
+          "isComplete": false,
+          "completenessScore": 67,
+          "qualityScore": null
+        },
+        "current_blockers": [
+          "incomplete_listing_gate"
+        ],
+        "proposed_repairs": [
+          {
+            "field": "isComplete/completenessScore",
+            "value": "derived pass",
+            "evidence": "existing required fields already present in MongoDB"
+          }
+        ],
+        "duplicate_classification": "no meaningful duplicate evidence",
+        "approval_readiness_before_repair": true,
+        "approval_readiness_after_repair": true,
+        "projected_public_search_eligibility": true,
+        "external_research_used": false,
+        "source_urls": [],
+        "bucket": "approval-ready now",
+        "doc_snapshot": {
+          "status": "approved",
+          "alias": "loyalty-bookstores",
+          "slug": "",
+          "address": "Loyalty Bookstores, 823, Ellsworth Drive, Queen Annes, Silver Spring, Montgomery County, Maryland, 20910, United States",
+          "city": "",
+          "state": "UNITED",
+          "website": "https://loyaltybookstores.com",
+          "phone": "",
+          "display_categories": "Bookstores and Educational",
+          "category": "",
+          "categories": [
+            "Bookstore",
+            "Events"
+          ],
+          "description": "Loyalty Bookstores serves DC/MD/VA with curated literature and events, founded to better serve Black and queer communities."
+        }
+      }
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfdb",
+      "business_name": "The Lit Bar",
+      "description": "The Lit Bar in the Bronx combines a wine bar with a bookstore, hosting author events and community gatherings since 2019.",
+      "address": "The Lit Bar, Alexander Avenue, Mott Haven, The Bronx, Bronx County, City of New York, New York, 10454, United States",
+      "city": "",
+      "state": "UNITED",
+      "zip": "",
+      "phone": "",
+      "website": "https://litbar.com",
+      "category": "",
+      "display_category": "Bookstores and Educational",
+      "alias_or_slug": "the-lit-bar",
+      "duplicate_classification": "no meaningful duplicate evidence",
+      "current_approval_status": "approved",
+      "query_ready_status": "Group C — Requires limited research",
+      "quality_problems": [
+        "blank_city",
+        "non_usable_state",
+        "invalid_or_noncanonical_display_category"
+      ],
+      "required_corrections": [
+        {
+          "field": "display_categories",
+          "value": "Restaurants",
+          "reason": "canonical category normalization"
+        }
+      ],
+      "example_search_queries": [
+        "The Lit Bar",
+        "The Lit",
+        "Bookstores and Educational",
+        "UNITED",
+        "Bronx"
+      ],
+      "projected_profile_url": "/business-directory/the-lit-bar",
+      "projected_search_result_eligibility": [
+        {
+          "query": "The Lit Bar",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description",
+            "location"
+          ]
+        },
+        {
+          "query": "The Lit",
+          "returned": true,
+          "matched_fields": [
+            "name",
+            "alias",
+            "description",
+            "location"
+          ]
+        },
+        {
+          "query": "Bookstores and Educational",
+          "returned": true,
+          "matched_fields": [
+            "category"
+          ]
+        },
+        {
+          "query": "UNITED",
+          "returned": true,
+          "matched_fields": [
+            "location"
+          ]
+        },
+        {
+          "query": "Bronx",
+          "returned": true,
+          "matched_fields": [
+            "description",
+            "location"
+          ]
+        }
+      ],
+      "route_resolves": true,
+      "result_title_meaningful": true,
+      "displayed_location_useful": false,
+      "category_correct": false,
+      "source_gate_row": {
+        "_id": "681d1df4fd9719ad7b26dfdb",
+        "business_name": "The Lit Bar",
+        "current_completeness": {
+          "isComplete": false,
+          "completenessScore": 67,
+          "qualityScore": null
+        },
+        "current_blockers": [
+          "incomplete_listing_gate"
+        ],
+        "proposed_repairs": [
+          {
+            "field": "isComplete/completenessScore",
+            "value": "derived pass",
+            "evidence": "existing required fields already present in MongoDB"
+          }
+        ],
+        "duplicate_classification": "no meaningful duplicate evidence",
+        "approval_readiness_before_repair": true,
+        "approval_readiness_after_repair": true,
+        "projected_public_search_eligibility": true,
+        "external_research_used": false,
+        "source_urls": [],
+        "bucket": "approval-ready now",
+        "doc_snapshot": {
+          "status": "approved",
+          "alias": "the-lit-bar",
+          "slug": "",
+          "address": "The Lit Bar, Alexander Avenue, Mott Haven, The Bronx, Bronx County, City of New York, New York, 10454, United States",
+          "city": "",
+          "state": "UNITED",
+          "website": "https://litbar.com",
+          "phone": "",
+          "display_categories": "Bookstores and Educational",
+          "category": "",
+          "categories": [
+            "Bookstore",
+            "Cafe"
+          ],
+          "description": "The Lit Bar in the Bronx combines a wine bar with a bookstore, hosting author events and community gatherings since 2019."
+        }
+      }
+    }
+  ]
+}

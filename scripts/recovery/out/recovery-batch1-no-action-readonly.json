@@ -1,0 +1,1055 @@
+{
+  "rowCount": 35,
+  "rows": [
+    {
+      "_id": "67c9ead1818d604b84e5a472",
+      "business_name": "Love Your Hair By Rachel Carter Los Angeles",
+      "primary_queue": "F",
+      "secondary_classifications": {
+        "duplicate_classification": "weak relationship",
+        "approval_readiness": "not ready",
+        "manual_review_required": true
+      },
+      "current_values": {
+        "business_name": "Love Your Hair By Rachel Carter Los Angeles",
+        "phone": "",
+        "website": "",
+        "address": "3265 Fletcher Dr., Los Angeles, CA 90065",
+        "city": "Los Angeles",
+        "state": "CA",
+        "category": "Beauty",
+        "categories": "Hair Stylists, Blow Dry/Out Services",
+        "display_categories": "Beauty, Grooming and Personal Care",
+        "description": "Hair Stylists, Blow Dry/Out Services",
+        "alias": "love-your-hair-by-rachel-carter-los-angeles",
+        "slug": "love-your-hair-by-rachel-carter-los-angeles-los-angeles-ca"
+      },
+      "proposed_values": {},
+      "why_it_entered_candidate_universe": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "zero_actual_field_changes": true
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfa2",
+      "business_name": "LYS Beauty",
+      "primary_queue": "G",
+      "secondary_classifications": {
+        "duplicate_classification": "no reliable duplicate evidence",
+        "approval_readiness": "requires verification before approval",
+        "manual_review_required": true
+      },
+      "current_values": {
+        "business_name": "LYS Beauty",
+        "phone": "",
+        "website": "https://lysbeauty.com",
+        "address": "Lys Beauty Salon, Gift and Decor Center, F.D. Rooseveltweg, Esperansa bij Salsbach, Curaçao, 0000 CW, Nederland",
+        "city": "",
+        "state": "NEDERLAND",
+        "category": "",
+        "categories": "Makeup, Clean Beauty",
+        "display_categories": "Beauty, Grooming and Personal Care",
+        "description": "LYS Beauty offers affordable, clean makeup products across face, eyes, and lips in a wide range of shades and formulas—and was the first Black-owned clean makeup at Sephora.",
+        "alias": "lys-beauty",
+        "slug": ""
+      },
+      "proposed_values": {},
+      "why_it_entered_candidate_universe": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "zero_actual_field_changes": true
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfa8",
+      "business_name": "Ami Colé",
+      "primary_queue": "G",
+      "secondary_classifications": {
+        "duplicate_classification": "no reliable duplicate evidence",
+        "approval_readiness": "requires verification before approval",
+        "manual_review_required": true
+      },
+      "current_values": {
+        "business_name": "Ami Colé",
+        "phone": "",
+        "website": "https://amicole.com",
+        "address": "Cole haan, 竜ヶ崎阿見線, よしわら一丁目, 阿見町, 稲敷郡, 茨城県, 300-1288, 日本",
+        "city": "",
+        "state": "日本",
+        "category": "",
+        "categories": "Clean Beauty, Skin Care",
+        "display_categories": "Beauty, Grooming and Personal Care",
+        "description": "Ami Colé is a clean beauty brand offering vegan, fragrance-free, hypoallergenic products in recyclable, reusable, or compostable packaging.",
+        "alias": "ami-cole",
+        "slug": ""
+      },
+      "proposed_values": {},
+      "why_it_entered_candidate_universe": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "zero_actual_field_changes": true
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfb1",
+      "business_name": "Boon Boona Coffee",
+      "primary_queue": "G",
+      "secondary_classifications": {
+        "duplicate_classification": "no reliable duplicate evidence",
+        "approval_readiness": "requires verification before approval",
+        "manual_review_required": true
+      },
+      "current_values": {
+        "business_name": "Boon Boona Coffee",
+        "phone": "",
+        "website": "https://boonboona.com",
+        "address": "Boon Boona Coffee, 1223, East Cherry Street, Yesler Terrace, Seattle, King County, Washington, 98122, United States",
+        "city": "",
+        "state": "UNITED",
+        "category": "",
+        "categories": "Coffee",
+        "display_categories": "Food and Beverage",
+        "description": "Boon Boona sources East African beans directly from growers, donates a portion of profits back to them, and brings Eritrean and Ethiopian coffee traditions to the U.S.",
+        "alias": "boon-boona-coffee",
+        "slug": ""
+      },
+      "proposed_values": {},
+      "why_it_entered_candidate_universe": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "zero_actual_field_changes": true
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfb2",
+      "business_name": "Blk & Bold",
+      "primary_queue": "G",
+      "secondary_classifications": {
+        "duplicate_classification": "no reliable duplicate evidence",
+        "approval_readiness": "requires verification before approval",
+        "manual_review_required": true
+      },
+      "current_values": {
+        "business_name": "Blk & Bold",
+        "phone": "",
+        "website": "https://blkandbold.com",
+        "address": "保樓 Bold Block, 崇平街 Sung Ping Street, 鶴園 Hok Yuen, 土瓜灣 To Kwa Wan, 九龍城區 Kowloon City District, 九龍 Kowloon, 香港 Hong Kong, 999077, 中国",
+        "city": "",
+        "state": "中国",
+        "category": "",
+        "categories": "Coffee, Tea",
+        "display_categories": "Food and Beverage",
+        "description": "Blk & Bold sells coffee and tea—roasts, cold brew, K-cups—and donates 5% of gross revenue annually to youth nonprofits.",
+        "alias": "blk-and-bold",
+        "slug": ""
+      },
+      "proposed_values": {},
+      "why_it_entered_candidate_universe": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "zero_actual_field_changes": true
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfb7",
+      "business_name": "Topicals",
+      "primary_queue": "G",
+      "secondary_classifications": {
+        "duplicate_classification": "no reliable duplicate evidence",
+        "approval_readiness": "requires verification before approval",
+        "manual_review_required": true
+      },
+      "current_values": {
+        "business_name": "Topicals",
+        "phone": "",
+        "website": "https://thetopicals.com",
+        "address": "Kind Topicals, West 26th Avenue, Spenard, Anchorage, Alaska, 99503, United States",
+        "city": "",
+        "state": "UNITED",
+        "category": "",
+        "categories": "Skin Care, Clinical",
+        "display_categories": "Beauty, Grooming and Personal Care",
+        "description": "Topicals is a dermatologist-backed brand offering serums, moisturizers and mists for chronic concerns like eczema and hyperpigmentation.",
+        "alias": "topicals",
+        "slug": ""
+      },
+      "proposed_values": {},
+      "why_it_entered_candidate_universe": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "zero_actual_field_changes": true
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfb8",
+      "business_name": "RedDrop",
+      "primary_queue": "G",
+      "secondary_classifications": {
+        "duplicate_classification": "no reliable duplicate evidence",
+        "approval_readiness": "requires verification before approval",
+        "manual_review_required": true
+      },
+      "current_values": {
+        "business_name": "RedDrop",
+        "phone": "",
+        "website": "https://reddrop.com",
+        "address": "Reddrop Court, Altona Meadows, Melbourne, City of Hobsons Bay, Victoria, 3028, Australia",
+        "city": "",
+        "state": "AUSTRALIA",
+        "category": "",
+        "categories": "Menstrual Products, Education",
+        "display_categories": "Beauty, Grooming and Personal Care",
+        "description": "RedDrop offers pads, underwear and period prep kits for tweens, plus resources and classes for parents supporting children through puberty.",
+        "alias": "reddrop",
+        "slug": ""
+      },
+      "proposed_values": {},
+      "why_it_entered_candidate_universe": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "zero_actual_field_changes": true
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfbd",
+      "business_name": "Camille Rose",
+      "primary_queue": "G",
+      "secondary_classifications": {
+        "duplicate_classification": "no reliable duplicate evidence",
+        "approval_readiness": "requires verification before approval",
+        "manual_review_required": true
+      },
+      "current_values": {
+        "business_name": "Camille Rose",
+        "phone": "",
+        "website": "https://camillerose.com",
+        "address": "East Camille Rose Court, Mountain Rose Estates, Palmer, Matanuska-Susitna Borough, Alaska, United States",
+        "city": "",
+        "state": "UNITED",
+        "category": "",
+        "categories": "Hair Care, Skin Care, Body Care",
+        "display_categories": "Beauty, Grooming and Personal Care",
+        "description": "Camille Rose offers hair, skin, and body care products made from natural, food-grade ingredients, founded by Janell Stephens to treat her children’s eczema.",
+        "alias": "camille-rose",
+        "slug": ""
+      },
+      "proposed_values": {},
+      "why_it_entered_candidate_universe": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "zero_actual_field_changes": true
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfc2",
+      "business_name": "The Sip",
+      "primary_queue": "G",
+      "secondary_classifications": {
+        "duplicate_classification": "no reliable duplicate evidence",
+        "approval_readiness": "requires verification before approval",
+        "manual_review_required": true
+      },
+      "current_values": {
+        "business_name": "The Sip",
+        "phone": "",
+        "website": "https://thesip.co",
+        "address": "SIP The Experience, 528, Main Street, Lindbergh, Atlanta, Fulton County, Georgia, 30324, United States",
+        "city": "",
+        "state": "UNITED",
+        "category": "",
+        "categories": "Wine Subscription",
+        "display_categories": "Food and Beverage",
+        "description": "The Sip offers a wine subscription service—bi-monthly or annual—sending curated wine boxes and ready-to-ship assortments focused on women’s preferences.",
+        "alias": "the-sip",
+        "slug": ""
+      },
+      "proposed_values": {},
+      "why_it_entered_candidate_universe": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "zero_actual_field_changes": true
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfc4",
+      "business_name": "Be Rooted",
+      "primary_queue": "G",
+      "secondary_classifications": {
+        "duplicate_classification": "no reliable duplicate evidence",
+        "approval_readiness": "requires verification before approval",
+        "manual_review_required": true
+      },
+      "current_values": {
+        "business_name": "Be Rooted",
+        "phone": "",
+        "website": "https://berootedprint.com",
+        "address": "Rooted, 144, Rosemount Place, Rosemount, Rosemount and Mile End, Aberdeen City, Alba / Scotland, AB25 2YU, United Kingdom",
+        "city": "",
+        "state": "UNITED",
+        "category": "",
+        "categories": "Stationery, Home Goods",
+        "display_categories": "Home and Kitchen",
+        "description": "Be Rooted creates journals, planners and desk accessories featuring art of women of color—first Black-owned stationery brand in Target in 2021.",
+        "alias": "be-rooted",
+        "slug": ""
+      },
+      "proposed_values": {},
+      "why_it_entered_candidate_universe": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "zero_actual_field_changes": true
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfc5",
+      "business_name": "Clare",
+      "primary_queue": "G",
+      "secondary_classifications": {
+        "duplicate_classification": "no reliable duplicate evidence",
+        "approval_readiness": "requires verification before approval",
+        "manual_review_required": true
+      },
+      "current_values": {
+        "business_name": "Clare",
+        "phone": "",
+        "website": "https://clare.com",
+        "address": "Clare County, Michigan, United States",
+        "city": "",
+        "state": "UNITED",
+        "category": "",
+        "categories": "Paint, Home Improvement",
+        "display_categories": "Home and Kitchen",
+        "description": "Clare is an online paint store partnering with designers on curated collections and offers peel-and-stick swatches for easy color testing.",
+        "alias": "clare",
+        "slug": ""
+      },
+      "proposed_values": {},
+      "why_it_entered_candidate_universe": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "zero_actual_field_changes": true
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfc6",
+      "business_name": "Bolé Road",
+      "primary_queue": "G",
+      "secondary_classifications": {
+        "duplicate_classification": "no reliable duplicate evidence",
+        "approval_readiness": "requires verification before approval",
+        "manual_review_required": true
+      },
+      "current_values": {
+        "business_name": "Bolé Road",
+        "phone": "",
+        "website": "https://boleroadtextiles.com",
+        "address": "Africa Avenue / Bole Road, ወሎ ሰፈር አካባቢ, Kirkos, አዲስ አበባ Addis Ababa أديس أبابا, አዲስ አበባ أديس أبابا, 7966, ኢትዮጵያ إثيوبيا",
+        "city": "",
+        "state": "ኢትዮጵያ",
+        "category": "",
+        "categories": "Home Decor, Textiles",
+        "display_categories": "Home and Kitchen",
+        "description": "Bolé Road Textiles offers handwoven Ethiopian fabrics—pillows, rugs, curtains, bath mats—melding Brooklyn design with Ethiopian heritage.",
+        "alias": "bole-road",
+        "slug": ""
+      },
+      "proposed_values": {},
+      "why_it_entered_candidate_universe": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "zero_actual_field_changes": true
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfcb",
+      "business_name": "The Whitney Collection",
+      "primary_queue": "G",
+      "secondary_classifications": {
+        "duplicate_classification": "no reliable duplicate evidence",
+        "approval_readiness": "requires verification before approval",
+        "manual_review_required": true
+      },
+      "current_values": {
+        "business_name": "The Whitney Collection",
+        "phone": "",
+        "website": "https://thewhitneycollection.com",
+        "address": "Hotel David Whitney, Autograph Collection, Woodward Avenue, Detroit, Wayne County, Michigan, 48226, United States",
+        "city": "",
+        "state": "UNITED",
+        "category": "",
+        "categories": "Candles, Home Fragrance",
+        "display_categories": "Home and Kitchen",
+        "description": "The Whitney Collection offers luxury candles inspired by global travel—scents like garden fig and Cuban tobacco—created by LA-native Whitney Brooks.",
+        "alias": "the-whitney-collection",
+        "slug": ""
+      },
+      "proposed_values": {},
+      "why_it_entered_candidate_universe": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "zero_actual_field_changes": true
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfce",
+      "business_name": "Fourth Phase",
+      "primary_queue": "G",
+      "secondary_classifications": {
+        "duplicate_classification": "no reliable duplicate evidence",
+        "approval_readiness": "requires verification before approval",
+        "manual_review_required": true
+      },
+      "current_values": {
+        "business_name": "Fourth Phase",
+        "phone": "",
+        "website": "https://thefourthphase.com",
+        "address": "Bel-Air Village Phase I and II, District I, Makati, Southern Manila District, Metro Manila, 1209, Philippines",
+        "city": "",
+        "state": "PHILIPPINES",
+        "category": "",
+        "categories": "Postnatal Care, Subscription",
+        "display_categories": "Baby and Kids",
+        "description": "Fourth Phase sells after-birth care boxes filled with organic, non-toxic, sustainably sourced items to aid new mothers’ physical and emotional recovery.",
+        "alias": "fourth-phase",
+        "slug": ""
+      },
+      "proposed_values": {},
+      "why_it_entered_candidate_universe": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "zero_actual_field_changes": true
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfda",
+      "business_name": "Loyalty Bookstores",
+      "primary_queue": "G",
+      "secondary_classifications": {
+        "duplicate_classification": "no reliable duplicate evidence",
+        "approval_readiness": "requires verification before approval",
+        "manual_review_required": true
+      },
+      "current_values": {
+        "business_name": "Loyalty Bookstores",
+        "phone": "",
+        "website": "https://loyaltybookstores.com",
+        "address": "Loyalty Bookstores, 823, Ellsworth Drive, Queen Annes, Silver Spring, Montgomery County, Maryland, 20910, United States",
+        "city": "",
+        "state": "UNITED",
+        "category": "",
+        "categories": "Bookstore, Events",
+        "display_categories": "Bookstores and Educational",
+        "description": "Loyalty Bookstores serves DC/MD/VA with curated literature and events, founded to better serve Black and queer communities.",
+        "alias": "loyalty-bookstores",
+        "slug": ""
+      },
+      "proposed_values": {},
+      "why_it_entered_candidate_universe": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "zero_actual_field_changes": true
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfdb",
+      "business_name": "The Lit Bar",
+      "primary_queue": "G",
+      "secondary_classifications": {
+        "duplicate_classification": "no reliable duplicate evidence",
+        "approval_readiness": "requires verification before approval",
+        "manual_review_required": true
+      },
+      "current_values": {
+        "business_name": "The Lit Bar",
+        "phone": "",
+        "website": "https://litbar.com",
+        "address": "The Lit Bar, Alexander Avenue, Mott Haven, The Bronx, Bronx County, City of New York, New York, 10454, United States",
+        "city": "",
+        "state": "UNITED",
+        "category": "",
+        "categories": "Bookstore, Cafe",
+        "display_categories": "Bookstores and Educational",
+        "description": "The Lit Bar in the Bronx combines a wine bar with a bookstore, hosting author events and community gatherings since 2019.",
+        "alias": "the-lit-bar",
+        "slug": ""
+      },
+      "proposed_values": {},
+      "why_it_entered_candidate_universe": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "zero_actual_field_changes": true
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a460",
+      "business_name": "The Talonted Vixen Atelier Tarzana 2",
+      "primary_queue": "G",
+      "secondary_classifications": {
+        "duplicate_classification": "weak relationship",
+        "approval_readiness": "requires verification before approval",
+        "manual_review_required": true
+      },
+      "current_values": {
+        "business_name": "The Talonted Vixen Atelier Tarzana 2",
+        "phone": "",
+        "website": "",
+        "address": "15125 Ventura Blvd, Ste 10, Tarzana, CA 91403",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Nail Technicians",
+        "display_categories": "Beauty, Grooming and Personal Care",
+        "description": "Nail Technicians",
+        "alias": "the-talonted-vixen-atelier-tarzana-2",
+        "slug": ""
+      },
+      "proposed_values": {},
+      "why_it_entered_candidate_universe": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "zero_actual_field_changes": true
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a4af",
+      "business_name": "Aarmy West Hollywood 3",
+      "primary_queue": "G",
+      "secondary_classifications": {
+        "duplicate_classification": "weak relationship",
+        "approval_readiness": "requires verification before approval",
+        "manual_review_required": true
+      },
+      "current_values": {
+        "business_name": "Aarmy West Hollywood 3",
+        "phone": "",
+        "website": "",
+        "address": "8599 Santa Monica Blvd West Hollywood, CA 90069",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Gym, Fitness Health and Wellness",
+        "display_categories": "Gym, Fitness Health and Wellness",
+        "description": "Boot camp-style fitness studio founded by trainer Angela Davis and former tennis pro Akin Akman. It has a daily lineup of workouts for free through Instagram Live — follow @aarmy for the schedule. 8599 Santa Monica Blvd., West Hollywood, aarmy.com",
+        "alias": "aarmy-west-hollywood-3",
+        "slug": ""
+      },
+      "proposed_values": {},
+      "why_it_entered_candidate_universe": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "zero_actual_field_changes": true
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9d55",
+      "business_name": "",
+      "primary_queue": "F",
+      "secondary_classifications": {
+        "duplicate_classification": "weak relationship",
+        "approval_readiness": "not ready",
+        "manual_review_required": true
+      },
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "8599 Santa Monica Blvd West Hollywood, CA 90069",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Gym, Fitness Health and Wellness",
+        "display_categories": "Gym, Fitness Health and Wellness",
+        "description": "Boot camp-style fitness studio founded by trainer Angela Davis and former tennis pro Akin Akman. It has a daily lineup of workouts for free through Instagram Live — follow @aarmy for the schedule. 8599 Santa Monica Blvd., West Hollywood, aarmy.com",
+        "alias": "aarmy-west-hollywood-3",
+        "slug": ""
+      },
+      "proposed_values": {},
+      "why_it_entered_candidate_universe": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "zero_actual_field_changes": true
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9d11",
+      "business_name": "",
+      "primary_queue": "F",
+      "secondary_classifications": {
+        "duplicate_classification": "weak relationship",
+        "approval_readiness": "not ready",
+        "manual_review_required": true
+      },
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "15125 Ventura Blvd, Ste 10, Tarzana, CA 91403",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Nail Technicians",
+        "display_categories": "Beauty, Grooming and Personal Care",
+        "description": "Nail Technicians",
+        "alias": "the-talonted-vixen-atelier-tarzana-2",
+        "slug": ""
+      },
+      "proposed_values": {},
+      "why_it_entered_candidate_universe": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "zero_actual_field_changes": true
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9d1e",
+      "business_name": "",
+      "primary_queue": "F",
+      "secondary_classifications": {
+        "duplicate_classification": "weak relationship",
+        "approval_readiness": "not ready",
+        "manual_review_required": true
+      },
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "3265 Fletcher Dr., Los Angeles, CA 90065",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Hair Stylists, Blow Dry/Out Services",
+        "display_categories": "Beauty, Grooming and Personal Care",
+        "description": "Hair Stylists, Blow Dry/Out Services",
+        "alias": "love-your-hair-by-rachel-carter-los-angeles",
+        "slug": ""
+      },
+      "proposed_values": {},
+      "why_it_entered_candidate_universe": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "zero_actual_field_changes": true
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a580",
+      "business_name": "",
+      "primary_queue": "F",
+      "secondary_classifications": {
+        "duplicate_classification": "weak relationship",
+        "approval_readiness": "not ready",
+        "manual_review_required": true
+      },
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "11218 La Maida St North Hollywood, CA 91601",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Gym, Fitness Health and Wellness",
+        "display_categories": "Gym, Fitness Health and Wellness",
+        "description": "The North Hollywood artist creates functional and decorative pottery out of Xiem Clay Center in Pasadena. etsy.com/shop/claybykimberleigh",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {},
+      "why_it_entered_candidate_universe": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "zero_actual_field_changes": true
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a4b3",
+      "business_name": "",
+      "primary_queue": "F",
+      "secondary_classifications": {
+        "duplicate_classification": "weak relationship",
+        "approval_readiness": "not ready",
+        "manual_review_required": true
+      },
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "2219 Main St #224, Santa Monica, CA 90405",
+        "city": "Santa Monica",
+        "state": "CA",
+        "category": "Services",
+        "categories": "Services",
+        "display_categories": "Services",
+        "description": "internet marketing services, small business local SEO services",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {},
+      "why_it_entered_candidate_universe": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "zero_actual_field_changes": true
+    },
+    {
+      "_id": "67f73df01d08a04e139a9f11",
+      "business_name": "",
+      "primary_queue": "F",
+      "secondary_classifications": {
+        "duplicate_classification": "weak relationship",
+        "approval_readiness": "not ready",
+        "manual_review_required": true
+      },
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "9030 Owensmouth Ave Canoga Park, CA 91304",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Restaurants",
+        "display_categories": "Restaurants",
+        "description": "Thrive Doughnuts, Canoga Park,",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {},
+      "why_it_entered_candidate_universe": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "zero_actual_field_changes": true
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a5a0",
+      "business_name": "",
+      "primary_queue": "F",
+      "secondary_classifications": {
+        "duplicate_classification": "weak relationship",
+        "approval_readiness": "not ready",
+        "manual_review_required": true
+      },
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "2640 Main St, Santa Monica, CA 90404",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Restaurants",
+        "display_categories": "Restaurants",
+        "description": "Gardener to the stars Jimmy Williams and his son, Logan, grow and sell more than 1,000 varieties of heirloom edible plants Wednesdays and Saturdays at the Santa Monica Farmers Market and Sundays at the Hollywood Farmers Market. instagram.com/logansgardens",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {},
+      "why_it_entered_candidate_universe": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "zero_actual_field_changes": true
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a503",
+      "business_name": "",
+      "primary_queue": "F",
+      "secondary_classifications": {
+        "duplicate_classification": "weak relationship",
+        "approval_readiness": "not ready",
+        "manual_review_required": true
+      },
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "10624 Graham Ave, Los Angeles, CA 90002",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Museums, Cultural Institutions, and Shared Spaces",
+        "display_categories": "Museums, Cultural Institutions, and Shared Spaces",
+        "description": "Part of the world famous Watts Towers Campus and named after jazz great Charles Mingus, the youth center gives children a safe and creative atmosphere for individual expression with guidance and direction from professional artists.",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {},
+      "why_it_entered_candidate_universe": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "zero_actual_field_changes": true
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a584",
+      "business_name": "",
+      "primary_queue": "F",
+      "secondary_classifications": {
+        "duplicate_classification": "weak relationship",
+        "approval_readiness": "not ready",
+        "manual_review_required": true
+      },
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "1710 N McCadden Pl, Los Angeles, CA 90028",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Gym, Fitness Health and Wellness",
+        "display_categories": "Gym, Fitness Health and Wellness",
+        "description": "Founded by certified group instructor Keith Thompson, offers cycling, step and Zumba classes. Virtual classes and packages are available. 1710 N. McCadden Place, Los Angeles, ktxfitness.com",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {},
+      "why_it_entered_candidate_universe": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "zero_actual_field_changes": true
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a5a1",
+      "business_name": "",
+      "primary_queue": "F",
+      "secondary_classifications": {
+        "duplicate_classification": "weak relationship",
+        "approval_readiness": "not ready",
+        "manual_review_required": true
+      },
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "810 S Flower St, Los Angeles, CA 90017",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Beauty, Grooming and Personal Care",
+        "display_categories": "Beauty, Grooming and Personal Care",
+        "description": "Licensed aesthetician Jerron “Ronnie” Mitchell launched his DTLA-based skin care line in 2017 and sells his acne-zapping, skin-toning Tea Tree Serum Kits and spot-fading Emu Serum Kits (the brand’s two bestsellers) , oil-infused African black soaps and other potions and lotions online at losangelesoilsandbutters.com. Instagram: @losangelesoilsandbutters",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {},
+      "why_it_entered_candidate_universe": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "zero_actual_field_changes": true
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9d5d",
+      "business_name": "",
+      "primary_queue": "F",
+      "secondary_classifications": {
+        "duplicate_classification": "weak relationship",
+        "approval_readiness": "not ready",
+        "manual_review_required": true
+      },
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "2219 Main St #224, Santa Monica, CA 90405",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Services",
+        "display_categories": "Services",
+        "description": "internet marketing services, small business local SEO services",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {},
+      "why_it_entered_candidate_universe": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "zero_actual_field_changes": true
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9daf",
+      "business_name": "",
+      "primary_queue": "F",
+      "secondary_classifications": {
+        "duplicate_classification": "weak relationship",
+        "approval_readiness": "not ready",
+        "manual_review_required": true
+      },
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "10624 Graham Ave, Los Angeles, CA 90002",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Museums, Cultural Institutions, and Shared Spaces",
+        "display_categories": "Museums, Cultural Institutions, and Shared Spaces",
+        "description": "Part of the world famous Watts Towers Campus and named after jazz great Charles Mingus, the youth center gives children a safe and creative atmosphere for individual expression with guidance and direction from professional artists.",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {},
+      "why_it_entered_candidate_universe": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "zero_actual_field_changes": true
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a66d",
+      "business_name": "",
+      "primary_queue": "F",
+      "secondary_classifications": {
+        "duplicate_classification": "weak relationship",
+        "approval_readiness": "not ready",
+        "manual_review_required": true
+      },
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "9030 Owensmouth Ave Canoga Park, CA 91304",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Restaurants",
+        "display_categories": "Restaurants",
+        "description": "Thrive Doughnuts, Canoga Park,",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {},
+      "why_it_entered_candidate_universe": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "zero_actual_field_changes": true
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9e2a",
+      "business_name": "",
+      "primary_queue": "F",
+      "secondary_classifications": {
+        "duplicate_classification": "weak relationship",
+        "approval_readiness": "not ready",
+        "manual_review_required": true
+      },
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "11218 La Maida St North Hollywood, CA 91601",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Gym, Fitness Health and Wellness",
+        "display_categories": "Gym, Fitness Health and Wellness",
+        "description": "The North Hollywood artist creates functional and decorative pottery out of Xiem Clay Center in Pasadena. etsy.com/shop/claybykimberleigh",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {},
+      "why_it_entered_candidate_universe": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "zero_actual_field_changes": true
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9e59",
+      "business_name": "",
+      "primary_queue": "F",
+      "secondary_classifications": {
+        "duplicate_classification": "weak relationship",
+        "approval_readiness": "not ready",
+        "manual_review_required": true
+      },
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "2640 Main St, Santa Monica, CA 90404",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Restaurants",
+        "display_categories": "Restaurants",
+        "description": "Gardener to the stars Jimmy Williams and his son, Logan, grow and sell more than 1,000 varieties of heirloom edible plants Wednesdays and Saturdays at the Santa Monica Farmers Market and Sundays at the Hollywood Farmers Market. instagram.com/logansgardens",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {},
+      "why_it_entered_candidate_universe": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "zero_actual_field_changes": true
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9e32",
+      "business_name": "",
+      "primary_queue": "F",
+      "secondary_classifications": {
+        "duplicate_classification": "weak relationship",
+        "approval_readiness": "not ready",
+        "manual_review_required": true
+      },
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "1710 N McCadden Pl, Los Angeles, CA 90028",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Gym, Fitness Health and Wellness",
+        "display_categories": "Gym, Fitness Health and Wellness",
+        "description": "Founded by certified group instructor Keith Thompson, offers cycling, step and Zumba classes. Virtual classes and packages are available. 1710 N. McCadden Place, Los Angeles, ktxfitness.com",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {},
+      "why_it_entered_candidate_universe": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "zero_actual_field_changes": true
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9e49",
+      "business_name": "",
+      "primary_queue": "F",
+      "secondary_classifications": {
+        "duplicate_classification": "weak relationship",
+        "approval_readiness": "not ready",
+        "manual_review_required": true
+      },
+      "current_values": {
+        "business_name": "",
+        "phone": "",
+        "website": "",
+        "address": "810 S Flower St, Los Angeles, CA 90017",
+        "city": "",
+        "state": "CA",
+        "category": "",
+        "categories": "Beauty, Grooming and Personal Care",
+        "display_categories": "Beauty, Grooming and Personal Care",
+        "description": "Licensed aesthetician Jerron “Ronnie” Mitchell launched his DTLA-based skin care line in 2017 and sells his acne-zapping, skin-toning Tea Tree Serum Kits and spot-fading Emu Serum Kits (the brand’s two bestsellers) , oil-infused African black soaps and other potions and lotions online at losangelesoilsandbutters.com. Instagram: @losangelesoilsandbutters",
+        "alias": "",
+        "slug": ""
+      },
+      "proposed_values": {},
+      "why_it_entered_candidate_universe": [
+        "address_category_description",
+        "nearly_complete"
+      ],
+      "zero_actual_field_changes": true
+    }
+  ]
+}

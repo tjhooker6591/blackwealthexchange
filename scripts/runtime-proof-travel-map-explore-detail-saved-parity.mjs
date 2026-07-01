@@ -103,7 +103,10 @@ try {
   });
 
   const savedBadge = card.getByText("Saved", { exact: true }).first();
-  checks.push({ name: "explore_saved_badge_visible", pass: await savedBadge.isVisible() });
+  checks.push({
+    name: "explore_saved_badge_visible",
+    pass: await savedBadge.isVisible(),
+  });
 
   await card.getByRole("link", { name: "Travel Map Detail" }).click();
   await page.waitForURL(`**/travel-map/business/${businessId}`);
@@ -126,7 +129,9 @@ try {
   await page.goto(`/travel-map/explore`, { waitUntil: "networkidle" });
   const cardAgain = page
     .locator("article")
-    .filter({ has: page.locator(`a[href='/travel-map/business/${businessId}']`) })
+    .filter({
+      has: page.locator(`a[href='/travel-map/business/${businessId}']`),
+    })
     .first();
   await cardAgain.waitFor({ state: "visible", timeout: 20000 });
 
@@ -156,7 +161,9 @@ try {
   try {
     const db = client.db(dbName);
     if (userId) {
-      await db.collection("travel_map_saved_places").deleteMany({ userId: String(userId) });
+      await db
+        .collection("travel_map_saved_places")
+        .deleteMany({ userId: String(userId) });
       await db.collection("users").deleteOne({ _id: userId });
     }
   } catch {}

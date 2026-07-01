@@ -6,6 +6,15 @@ import Stripe from "stripe";
 import { getCampaignById, markCampaignPaid } from "@/lib/db/ads";
 import { fulfillOrder as dbFulfillOrder } from "@/lib/db/orders";
 import { grantCourseAccess } from "@/lib/db/courses";
+import {
+  deriveMarketplaceAmountTotal,
+  emitMarketplaceReconciliationException,
+  upsertMarketplacePaymentRecord,
+} from "@/lib/marketplace/paymentLinkage";
+import {
+  MARKETPLACE_ORDER_STATES,
+  MARKETPLACE_PAYOUT_STATUSES,
+} from "@/lib/marketplace/orderLifecycle";
 import { recordAffiliateConversion } from "@/lib/db/affiliates";
 import clientPromise from "@/lib/mongodb";
 import { Db, ObjectId } from "mongodb";
@@ -803,6 +812,74 @@ export default async function webhookHandler(
     return res.status(200).json({ received: true });
   }
 
+  if (event.type === "checkout.session.expired") {
+    const session = event.data.object as Stripe.Checkout.Session;
+    const stripeSessionId = typeof session?.id === "string" ? session.id : "";
+    if (!stripeSessionId) {
+      return fail(400, "INVALID_EVENT_PAYLOAD", "Invalid checkout session payload");
+    }
+
+    const client = await clientPromise;
+    const db = client.db(getMongoDbName());
+    const now = new Date();
+    const orderRecord = await db.collection("orders").findOne({
+      $or: [{ sessionId: stripeSessionId }, { stripeSessionId }],
+    });
+
+    if (!orderRecord) {
+      return res.status(200).json({ received: true, skipped: "order_not_found" });
+    }
+
+    const paymentStatus = String(orderRecord.paymentStatus || "").toLowerCase();
+    const orderState = String(orderRecord.orderState || "").toLowerCase();
+    const alreadyTerminal =
+      paymentStatus === "paid" ||
+      orderState === MARKETPLACE_ORDER_STATES.PAID_UNFULFILLED ||
+      orderState === MARKETPLACE_ORDER_STATES.FULFILLED_PAYOUT_READY ||
+      orderState === MARKETPLACE_ORDER_STATES.FULFILLED_PAYOUT_PENDING;
+
+    if (alreadyTerminal) {
+      return res.status(200).json({ received: true, skipped: "already_paid_or_fulfilled" });
+    }
+
+    await db.collection("orders").updateOne(
+      { _id: orderRecord._id, paymentStatus: { $ne: "paid" } },
+      {
+        $set: {
+          orderState: MARKETPLACE_ORDER_STATES.CHECKOUT_EXPIRED,
+          paymentStatus: "expired",
+          payoutStatus: MARKETPLACE_PAYOUT_STATUSES.NOT_APPLICABLE,
+          checkoutExpiredAt:
+            typeof session.expires_at === "number"
+              ? new Date(session.expires_at * 1000)
+              : now,
+          updatedAt: now,
+        },
+      },
+    );
+
+    await db.collection("flow_events").updateOne(
+      { eventType: "marketplace_checkout_expired", stripeSessionId },
+      {
+        $setOnInsert: {
+          eventType: "marketplace_checkout_expired",
+          pageRoute: "/api/stripe/webhook-handler",
+          section: "marketplace_checkout_lifecycle",
+          source: "stripe_webhook",
+          source_variant: "checkout_session_expired",
+          stripeSessionId,
+          orderId: idToString(orderRecord._id),
+          productId: idToString(orderRecord.productId),
+          sellerId: idToString(orderRecord.sellerId),
+          createdAt: now,
+        },
+      },
+      { upsert: true },
+    );
+
+    return res.status(200).json({ received: true });
+  }
+
   if (
     event.type !== "checkout.session.completed" &&
     event.type !== "checkout.session.async_payment_succeeded"
@@ -1194,11 +1271,11 @@ export default async function webhookHandler(
       if (
         orderState &&
         ![
-          "checkout_pending",
+          MARKETPLACE_ORDER_STATES.CHECKOUT_PENDING,
           "pending_checkout",
-          "paid_unfulfilled",
-          "fulfilled_payout_ready",
-          "fulfilled_payout_pending",
+          MARKETPLACE_ORDER_STATES.PAID_UNFULFILLED,
+          MARKETPLACE_ORDER_STATES.FULFILLED_PAYOUT_READY,
+          MARKETPLACE_ORDER_STATES.FULFILLED_PAYOUT_PENDING,
         ].includes(orderState)
       ) {
         await db.collection("flow_events").insertOne({
@@ -2286,6 +2363,15 @@ export default async function webhookHandler(
           paymentIntentId: paymentIntentId || null,
           createdAt: now,
         });
+
+        await emitMarketplaceReconciliationException({
+          db,
+          eventType: "marketplace_order_missing_on_paid_webhook",
+          stripeSessionId,
+          paymentIntentId: paymentIntentId || null,
+          detail: "Paid marketplace webhook missing linked orderId",
+          createdAt: now,
+        });
       } else {
         const webhookBuyerEmail = asString(
           (session as any)?.customer_details?.email ||
@@ -2315,33 +2401,56 @@ export default async function webhookHandler(
           }
         }
 
-        const fulfillment = await dbFulfillOrder(
-          targetOrderId,
-          paymentIntentId,
+        const refreshedOrderRecord = await db.collection("orders").findOne(
+          ObjectId.isValid(targetOrderId)
+            ? { _id: new ObjectId(targetOrderId) }
+            : { _id: targetOrderId as any },
         );
 
-        if (!fulfillment.ok) {
-          const eventTypeByCode: Record<string, string> = {
-            ORDER_NOT_FOUND: "marketplace_order_missing_on_paid_webhook",
-            MISSING_PRODUCT: "marketplace_order_product_linkage_missing",
-            OUT_OF_STOCK: "marketplace_stock_decrement_failed",
-            NON_CANONICAL_ORDER_STATE:
-              "marketplace_order_non_canonical_state_detected",
-          };
+        const reconciledBuyerId =
+          asString(refreshedOrderRecord?.userId) ||
+          asString(refreshedOrderRecord?.buyerUserId) ||
+          userId ||
+          asString(existingPayment?.userId);
 
-          await db.collection("flow_events").insertOne({
-            eventType:
-              eventTypeByCode[fulfillment.code] ||
-              "marketplace_order_fulfillment_failed",
-            pageRoute: "/api/stripe/webhook-handler",
-            section: "marketplace_webhook_invariant",
-            source: "stripe_webhook",
-            source_variant: fulfillment.code.toLowerCase(),
+        const reconciledProductId =
+          idToString(refreshedOrderRecord?.productId) ||
+          asString(mergedMeta.itemId || existingPayment?.itemId);
+        const reconciledSellerId =
+          idToString(refreshedOrderRecord?.sellerId) ||
+          asString((mergedMeta as any).sellerId);
+
+        const paymentRecord = await upsertMarketplacePaymentRecord({
+          db,
+          stripeSessionId,
+          paymentIntentId: paymentIntentId || null,
+          paidAt,
+          orderId: targetOrderId,
+          productId: reconciledProductId,
+          sellerId: reconciledSellerId,
+          payoutMode: asString(refreshedOrderRecord?.payoutMode),
+          amountTotal: deriveMarketplaceAmountTotal({
+            session,
+            existingAmountCents: existingPayment?.amountCents ?? null,
+            orderRecord: refreshedOrderRecord as any,
+          }),
+          currency: session.currency || "usd",
+          buyerUserId: reconciledBuyerId || null,
+          buyerEmail: email || null,
+          webhookEventId: event.id,
+          webhookEventType: event.type,
+        });
+
+        if (!paymentRecord.orderId || !paymentRecord.metadata?.orderId) {
+          await emitMarketplaceReconciliationException({
+            db,
+            eventType: "marketplace_payment_order_link_missing",
             stripeSessionId,
             paymentIntentId: paymentIntentId || null,
             orderId: targetOrderId,
-            productId: fulfillment.productId || null,
-            orderState: fulfillment.orderState || null,
+            productId: reconciledProductId || null,
+            sellerId: reconciledSellerId || null,
+            detail: "Marketplace payment record missing order linkage after upsert",
             createdAt: now,
           });
 
@@ -2350,53 +2459,97 @@ export default async function webhookHandler(
             {
               $set: {
                 fulfillmentStatus: "failed",
-                orderFulfillmentMethod: fulfillmentMethod,
-                orderFulfillmentCode: fulfillment.code,
+                orderFulfillmentMethod: "payment_reconciliation_failed",
+                orderFulfillmentCode: "PAYMENT_ORDER_LINK_MISSING",
                 updatedAt: now,
               },
             },
-          );
-
-          console.warn(
-            `⚠️ Product order fulfillment blocked order=${targetOrderId} code=${fulfillment.code}`,
           );
         } else {
-          await db.collection("payments").updateOne(
-            { stripeSessionId },
-            {
-              $set: {
-                fulfillmentStatus: "fulfilled",
-                orderFulfillmentMethod: fulfillmentMethod,
-                orderFulfillmentCode: "UPDATED",
-                canonicalOrderState: fulfillment.orderState || null,
-                payoutReady: Boolean(fulfillment.payoutReady),
-                stockDecremented: Boolean(fulfillment.stockDecremented),
-                fulfilledAt: now,
-                updatedAt: now,
+          const fulfillment = await dbFulfillOrder(
+            targetOrderId,
+            paymentIntentId,
+          );
+
+          if (!fulfillment.ok) {
+            const eventTypeByCode: Record<string, string> = {
+              ORDER_NOT_FOUND: "marketplace_order_missing_on_paid_webhook",
+              MISSING_PRODUCT: "marketplace_order_product_linkage_missing",
+              OUT_OF_STOCK: "marketplace_stock_decrement_failed",
+              NON_CANONICAL_ORDER_STATE:
+                "marketplace_order_non_canonical_state_detected",
+            };
+
+            await db.collection("flow_events").insertOne({
+              eventType:
+                eventTypeByCode[fulfillment.code] ||
+                "marketplace_order_fulfillment_failed",
+              pageRoute: "/api/stripe/webhook-handler",
+              section: "marketplace_webhook_invariant",
+              source: "stripe_webhook",
+              source_variant: fulfillment.code.toLowerCase(),
+              stripeSessionId,
+              paymentIntentId: paymentIntentId || null,
+              orderId: targetOrderId,
+              productId: fulfillment.productId || null,
+              orderState: fulfillment.orderState || null,
+              createdAt: now,
+            });
+
+            await db.collection("payments").updateOne(
+              { stripeSessionId },
+              {
+                $set: {
+                  fulfillmentStatus: "failed",
+                  orderFulfillmentMethod: fulfillmentMethod,
+                  orderFulfillmentCode: fulfillment.code,
+                  updatedAt: now,
+                },
               },
-            },
-          );
+            );
 
-          await db.collection("flow_events").insertOne({
-            eventType: "marketplace_order_fulfilled",
-            pageRoute: "/api/stripe/webhook-handler",
-            section: "marketplace_order_fulfillment",
-            source: "stripe_webhook",
-            source_variant: fulfillmentMethod,
-            stripeSessionId,
-            paymentIntentId: paymentIntentId || null,
-            orderId: targetOrderId,
-            productId: fulfillment.productId || null,
-            orderState: fulfillment.orderState || null,
-            payoutReady: Boolean(fulfillment.payoutReady),
-            stockDecremented: Boolean(fulfillment.stockDecremented),
-            createdAt: now,
-          });
+            console.warn(
+              `⚠️ Product order fulfillment blocked order=${targetOrderId} code=${fulfillment.code}`,
+            );
+          } else {
+            await db.collection("payments").updateOne(
+              { stripeSessionId },
+              {
+                $set: {
+                  fulfillmentStatus: "fulfilled",
+                  orderFulfillmentMethod: fulfillmentMethod,
+                  orderFulfillmentCode: "UPDATED",
+                  canonicalOrderState: fulfillment.orderState || null,
+                  payoutReady: Boolean(fulfillment.payoutReady),
+                  stockDecremented: Boolean(fulfillment.stockDecremented),
+                  fulfilledAt: now,
+                  updatedAt: now,
+                },
+              },
+            );
 
-          console.log(
-            `✅ Product order fulfilled order=${targetOrderId} state=${fulfillment.orderState} payoutReady=${Boolean(fulfillment.payoutReady)}`,
-          );
+            await db.collection("flow_events").insertOne({
+              eventType: "marketplace_order_fulfilled",
+              pageRoute: "/api/stripe/webhook-handler",
+              section: "marketplace_order_fulfillment",
+              source: "stripe_webhook",
+              source_variant: fulfillmentMethod,
+              stripeSessionId,
+              paymentIntentId: paymentIntentId || null,
+              orderId: targetOrderId,
+              productId: fulfillment.productId || null,
+              orderState: fulfillment.orderState || null,
+              payoutReady: Boolean(fulfillment.payoutReady),
+              stockDecremented: Boolean(fulfillment.stockDecremented),
+              createdAt: now,
+            });
+
+            console.log(
+              `✅ Product order fulfilled order=${targetOrderId} state=${fulfillment.orderState} payoutReady=${Boolean(fulfillment.payoutReady)}`,
+            );
+          }
         }
+
       }
     }
 

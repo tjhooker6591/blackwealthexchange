@@ -1,0 +1,4 @@
+{"status":"ok","requestId":"e9791cf261ecb19dfa1f5314","tookMs":428,"page":1,"limit":20,"total":0,"hasMore":false,"type":"businesses","sort":"relevance","queryMode":"strict","searchMeta":{"strictTokens":["test"],"intentTokens":["test"],"locationTokens":[],"usedFallback":false,"noExactCategoryMatchInLocation":false},"items":[]}
+HTTP_STATUS:200
+TIME_TOTAL:1.478409
+SIZE_DOWNLOAD:327

@@ -1,0 +1,18 @@
+HTTP/1.1 200 OK
+X-Frame-Options: SAMEORIGIN
+X-Content-Type-Options: nosniff
+Referrer-Policy: strict-origin-when-cross-origin
+Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+Permissions-Policy: camera=(), microphone=(), geolocation=(self)
+Content-Security-Policy: default-src 'self'; base-uri 'self'; frame-ancestors 'self'; object-src 'none'; img-src 'self' data: https:; font-src 'self' data: https:; style-src 'self' 'unsafe-inline' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; connect-src 'self' https: wss:; frame-src 'self' https:; form-action 'self'
+Cache-Control: s-maxage=30, stale-while-revalidate=120
+Server-Timing: db_connect;dur=722,products_query;dur=564,sellers_query;dur=97,hydrate;dur=0,total;dur=1384
+Content-Type: application/json; charset=utf-8
+ETag: "lzufb5q7d81s8"
+Content-Length: 2312
+Vary: Accept-Encoding
+Date: Tue, 05 May 2026 18:44:09 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"products":[{"_id":"69644a50d65b1e1ace411a0d","sellerId":"67fd9ed3acdef9011c60ff99","name":"Thomas Hooker author","description":"test file","price":18.99,"category":"books","imageUrl":"/uploads/af3008d7-804d-4b08-8749-236f28b48fe4-book-overqualified-2.jpg","status":"active","isPublished":true,"isFeatured":false,"stockQuantity":10,"salesCount":0,"views":9,"tags":[],"variants":[],"sku":"","createdAt":"2026-01-12T01:11:44.262Z","updatedAt":"2026-05-04T04:42:44.950Z","expiresAt":"2026-02-26T01:11:44.262Z","recentlyAdded":false,"seller":{"id":"67fd9ed3acdef9011c60ff99","name":"Verified BWE Marketplace Seller","profileComplete":false}},{"_id":"680d2a27dc57cdf2efedf785","name":"Pamfa sneakers","description":"sneakers","price":150,"category":"apparel","imageUrl":"/uploads/336587f4-21c2-489b-b08f-04473c9b4e26-Pamfasneaker1.jpg","sellerId":"67fd9ed3acdef9011c60ff99","status":"active","isPublished":true,"isFeatured":false,"stockQuantity":10,"salesCount":0,"views":8,"tags":[],"variants":[],"sku":"","createdAt":"2025-04-26T18:47:03.135Z","updatedAt":"2026-05-04T04:43:04.478Z","expiresAt":"2025-06-10T18:47:03.135Z","slug":"pamfa-sneakers","stock":10,"recentlyAdded":false,"seller":{"id":"67fd9ed3acdef9011c60ff99","name":"Verified BWE Marketplace Seller","profileComplete":false}},{"_id":"680d23a3dc57cdf2efedf784","name":"Pamfa hoodies","description":"test","price":49.99,"category":"apparel","imageUrl":"/uploads/a4ddc23b-9f49-4cc8-a7f2-5f28affbbadf-imageshoodies.jpeg","sellerId":"67fd9ed3acdef9011c60ff99","status":"active","isPublished":true,"isFeatured":false,"stockQuantity":10,"salesCount":0,"views":5,"tags":[],"variants":[],"sku":"","createdAt":"2025-04-26T18:19:15.693Z","updatedAt":"2026-05-01T03:42:39.292Z","expiresAt":"2025-06-10T18:19:15.693Z","slug":"pamfa-hoodies","stock":10,"recentlyAdded":false,"seller":{"id":"67fd9ed3acdef9011c60ff99","name":"Verified BWE Marketplace Seller","profileComplete":false}},{"_id":"69b1b4367784b2ea30971f4c","name":"QA branch product 1773253683172","sellerId":"69b1b4367784b2ea30971f4b","price":22,"stock":3,"status":"active","createdAt":"2026-03-11T18:28:06.757Z","updatedAt":"2026-04-28T18:27:05.048Z","views":4,"recentlyAdded":false,"seller":{"id":"69b1b4367784b2ea30971f4b","name":"Verified BWE Marketplace Seller","profileComplete":false}}],"total":4}

@@ -30,7 +30,9 @@ async function api(path, { method = "GET", body, cookie } = {}) {
 }
 
 function hydrateVisibleSaved(results, savedItems) {
-  const visibleIds = new Set((results || []).map((r) => `${r?._id || ""}`.trim()).filter(Boolean));
+  const visibleIds = new Set(
+    (results || []).map((r) => `${r?._id || ""}`.trim()).filter(Boolean),
+  );
   const hydrated = new Set();
   for (const item of savedItems || []) {
     const id = `${item?.businessId || ""}`.trim();
@@ -68,8 +70,14 @@ try {
 
   const checks = [];
 
-  const page1 = await api("/api/travel-map/search?page=1&pageSize=12&sort=relevance", { cookie });
-  checks.push({ name: "search_page1_ok", pass: page1.status === 200 && page1.json?.ok === true });
+  const page1 = await api(
+    "/api/travel-map/search?page=1&pageSize=12&sort=relevance",
+    { cookie },
+  );
+  checks.push({
+    name: "search_page1_ok",
+    pass: page1.status === 200 && page1.json?.ok === true,
+  });
 
   const firstId = `${page1.json?.results?.[0]?._id || ""}`.trim();
   if (!firstId) throw new Error("No search results found on page 1");
@@ -79,18 +87,39 @@ try {
     body: { businessId: firstId },
     cookie,
   });
-  checks.push({ name: "save_first_page_business_ok", pass: save.status === 200 && save.json?.ok === true });
+  checks.push({
+    name: "save_first_page_business_ok",
+    pass: save.status === 200 && save.json?.ok === true,
+  });
 
   const savedAfterSave = await api("/api/travel-map/saved", { cookie });
-  checks.push({ name: "saved_list_after_save_ok", pass: savedAfterSave.status === 200 && savedAfterSave.json?.ok === true });
+  checks.push({
+    name: "saved_list_after_save_ok",
+    pass: savedAfterSave.status === 200 && savedAfterSave.json?.ok === true,
+  });
 
-  const hydratedPage1 = hydrateVisibleSaved(page1.json?.results, savedAfterSave.json?.items);
-  checks.push({ name: "hydration_page1_contains_saved_business", pass: hydratedPage1.has(firstId) });
+  const hydratedPage1 = hydrateVisibleSaved(
+    page1.json?.results,
+    savedAfterSave.json?.items,
+  );
+  checks.push({
+    name: "hydration_page1_contains_saved_business",
+    pass: hydratedPage1.has(firstId),
+  });
 
-  const page2 = await api("/api/travel-map/search?page=2&pageSize=12&sort=relevance", { cookie });
-  checks.push({ name: "search_page2_ok", pass: page2.status === 200 && page2.json?.ok === true });
+  const page2 = await api(
+    "/api/travel-map/search?page=2&pageSize=12&sort=relevance",
+    { cookie },
+  );
+  checks.push({
+    name: "search_page2_ok",
+    pass: page2.status === 200 && page2.json?.ok === true,
+  });
 
-  const hydratedPage2 = hydrateVisibleSaved(page2.json?.results, savedAfterSave.json?.items);
+  const hydratedPage2 = hydrateVisibleSaved(
+    page2.json?.results,
+    savedAfterSave.json?.items,
+  );
   checks.push({
     name: "hydration_page2_matches_intersection_logic",
     pass: Array.from(hydratedPage2).every((id) =>
@@ -98,27 +127,52 @@ try {
     ),
   });
 
-  const filtered = await api("/api/travel-map/search?page=1&pageSize=12&sort=relevance&q=a", { cookie });
-  checks.push({ name: "search_filtered_ok", pass: filtered.status === 200 && filtered.json?.ok === true });
+  const filtered = await api(
+    "/api/travel-map/search?page=1&pageSize=12&sort=relevance&q=a",
+    { cookie },
+  );
+  checks.push({
+    name: "search_filtered_ok",
+    pass: filtered.status === 200 && filtered.json?.ok === true,
+  });
 
-  const hydratedFiltered = hydrateVisibleSaved(filtered.json?.results, savedAfterSave.json?.items);
-  const expectedFiltered = (filtered.json?.results || []).some((r) => `${r?._id || ""}`.trim() === firstId);
+  const hydratedFiltered = hydrateVisibleSaved(
+    filtered.json?.results,
+    savedAfterSave.json?.items,
+  );
+  const expectedFiltered = (filtered.json?.results || []).some(
+    (r) => `${r?._id || ""}`.trim() === firstId,
+  );
   checks.push({
     name: "hydration_filtered_matches_saved_presence",
     pass: hydratedFiltered.has(firstId) === expectedFiltered,
   });
 
-  const reset = await api("/api/travel-map/search?page=1&pageSize=12&sort=relevance", { cookie });
-  checks.push({ name: "search_reset_ok", pass: reset.status === 200 && reset.json?.ok === true });
-
-  const hydratedReset = hydrateVisibleSaved(reset.json?.results, savedAfterSave.json?.items);
+  const reset = await api(
+    "/api/travel-map/search?page=1&pageSize=12&sort=relevance",
+    { cookie },
+  );
   checks.push({
-    name: "hydration_reset_reloads_saved_presence",
-    pass: hydratedReset.has(firstId) ===
-      (reset.json?.results || []).some((r) => `${r?._id || ""}`.trim() === firstId),
+    name: "search_reset_ok",
+    pass: reset.status === 200 && reset.json?.ok === true,
   });
 
-  const detailState = await api(`/api/travel-map/saved?businessId=${firstId}`, { cookie });
+  const hydratedReset = hydrateVisibleSaved(
+    reset.json?.results,
+    savedAfterSave.json?.items,
+  );
+  checks.push({
+    name: "hydration_reset_reloads_saved_presence",
+    pass:
+      hydratedReset.has(firstId) ===
+      (reset.json?.results || []).some(
+        (r) => `${r?._id || ""}`.trim() === firstId,
+      ),
+  });
+
+  const detailState = await api(`/api/travel-map/saved?businessId=${firstId}`, {
+    cookie,
+  });
   checks.push({
     name: "detail_saved_state_consistent_before_remove",
     pass: detailState.status === 200 && detailState.json?.saved === true,
@@ -129,16 +183,26 @@ try {
     body: { businessId: firstId },
     cookie,
   });
-  checks.push({ name: "remove_saved_ok", pass: remove.status === 200 && remove.json?.ok === true });
+  checks.push({
+    name: "remove_saved_ok",
+    pass: remove.status === 200 && remove.json?.ok === true,
+  });
 
-  const detailStateAfter = await api(`/api/travel-map/saved?businessId=${firstId}`, { cookie });
+  const detailStateAfter = await api(
+    `/api/travel-map/saved?businessId=${firstId}`,
+    { cookie },
+  );
   checks.push({
     name: "detail_saved_state_consistent_after_remove",
-    pass: detailStateAfter.status === 200 && detailStateAfter.json?.saved === false,
+    pass:
+      detailStateAfter.status === 200 && detailStateAfter.json?.saved === false,
   });
 
   const savedAfterRemove = await api("/api/travel-map/saved", { cookie });
-  const hydratedAfterRemove = hydrateVisibleSaved(reset.json?.results, savedAfterRemove.json?.items);
+  const hydratedAfterRemove = hydrateVisibleSaved(
+    reset.json?.results,
+    savedAfterRemove.json?.items,
+  );
   checks.push({
     name: "hydration_reset_reflects_remove_without_stale_state",
     pass: hydratedAfterRemove.has(firstId) === false,
@@ -150,7 +214,11 @@ try {
       {
         baseUrl,
         businessId: firstId,
-        totals: { total: checks.length, passed: checks.length - failed, failed },
+        totals: {
+          total: checks.length,
+          passed: checks.length - failed,
+          failed,
+        },
         checks,
       },
       null,
@@ -163,7 +231,9 @@ try {
   try {
     const db = client.db(dbName);
     if (userId) {
-      await db.collection("travel_map_saved_places").deleteMany({ userId: String(userId) });
+      await db
+        .collection("travel_map_saved_places")
+        .deleteMany({ userId: String(userId) });
       await db.collection("users").deleteOne({ _id: userId });
     }
   } catch {}

@@ -1,0 +1,561 @@
+{
+  "environment": {
+    "database": "bwes-cluster",
+    "collection": "businesses",
+    "totalRecordCount": 2259,
+    "executionTimestamp": "2026-06-20T04:37:27.747Z",
+    "script": "/Users/blackforge/workspace/bwe/repos/repo_clean/scripts/recovery/reconcile_display_categories_readonly.js"
+  },
+  "selectors": {
+    "count332": "docs.filter((d) => isBlank(d.display_categories) && (isBlank(d.category) || !isUsableCategoryValue(d.category)) && (isBlank(d.categories) || !isUsableCategoryValue(d.categories)) && (isBlank(d.display_categories) || !isUsableCategoryValue(d.display_categories))).length",
+    "count170": "docs.filter((d) => isBlank(d.display_categories) && (isUsableCategoryValue(d.category) || isUsableCategoryValue(d.categories))).length",
+    "count83": "candidates.length",
+    "count12": "partition['000']",
+    "count1": "textOnly.length"
+  },
+  "functions": {
+    "isBlank": "function isBlank(value) {\n  if (value === undefined || value === null) return true;\n  if (typeof value === 'string') return value.trim().length === 0;\n  if (Array.isArray(value)) return value.length === 0 || value.every((v) => isBlank(v));\n  return false;\n}",
+    "isUsableCategoryValue": "function isUsableCategoryValue(value) {\n  return canonicalCategoryMapping(value).length > 0;\n}",
+    "normalization": "function normalization(value) {\n  if (value === undefined || value === null) return [];\n  if (Array.isArray(value)) return value.flatMap((v) => normalization(v)).filter(Boolean);\n  if (typeof value === 'string') {\n    return value\n      .split(/[|,;/]+/)\n      .map((s) => normalizeAtom(s))\n      .filter(Boolean);\n  }\n  return [];\n}",
+    "canonicalCategoryMapping": "function canonicalCategoryMapping(value) {\n  const toks = normalization(value);\n  const mapped = [];\n  for (const tok of toks) {\n    if (directMap.has(tok)) mapped.push(directMap.get(tok));\n    else {\n      for (const [k, v] of directMap.entries()) {\n        if (tok.includes(k) || k.includes(tok)) {\n          mapped.push(v);\n          break;\n        }\n      }\n    }\n  }\n  return [...new Set(mapped)];\n}",
+    "highConfidenceInference": "function highConfidenceInference(doc) {\n  if (isUsableCategoryValue(doc.category)) {\n    const mapped = canonicalCategoryMapping(doc.category);\n    if (mapped.length === 1) {\n      return {\n        accepted: true,\n        proposed: mapped[0],\n        sourceField: 'category',\n        sourceValue: doc.category,\n        matchedRule: `direct:category:${normalizeAtom(String(doc.category))}`,\n        confidence: 'high',\n        inferenceSource: 'direct_category_mapping',\n        conflictingSignals: false,\n      };\n    }\n    return { accepted: false, conflictingSignals: true, candidates: mapped };\n  }\n  if (isUsableCategoryValue(doc.categories)) {\n    const mapped = canonicalCategoryMapping(doc.categories);\n    if (mapped.length === 1) {\n      return {\n        accepted: true,\n        proposed: mapped[0],\n        sourceField: 'categories',\n        sourceValue: doc.categories,\n        matchedRule: `direct:categories:${normalizeAtom(String(doc.categories))}`,\n        confidence: 'high',\n        inferenceSource: 'direct_categories_mapping',\n        conflictingSignals: false,\n      };\n    }\n    return { accepted: false, conflictingSignals: true, candidates: mapped };\n  }\n  const inferred = inferFromText(doc);\n  if (inferred.accepted) {\n    return {\n      accepted: true,\n      proposed: inferred.proposed,\n      sourceField: inferred.inferenceSource.replace('_inference', ''),\n      sourceValue: inferred.sourceValue,\n      matchedRule: inferred.matchedRule,\n      confidence: inferred.confidence,\n      inferenceSource: inferred.inferenceSource,\n      conflictingSignals: false,\n    };\n  }\n  return { accepted: false, conflictingSignals: !!inferred.conflictingSignals, candidates: inferred.candidates || [] };\n}",
+    "ambiguousMultipleRuleRejection": "function ambiguousMultipleRuleRejection(doc) {\n  const directCategory = canonicalCategoryMapping(doc.category);\n  const directCategories = canonicalCategoryMapping(doc.categories);\n  const textCandidates = inferFromText(doc).candidates || [];\n  const combined = [...new Set([...directCategory, ...directCategories, ...textCandidates])];\n  return combined.length > 1;\n}"
+  },
+  "fieldStateSemantics": {
+    "missingField": "blank",
+    "null": "blank",
+    "emptyString": "blank",
+    "whitespaceOnlyString": "blank",
+    "emptyArray": "blank",
+    "arrayContainingBlankStrings": "blank",
+    "nonemptyString": "nonblank",
+    "nonemptyArray": "nonblank",
+    "malformedObjectOrNumber": "nonblank for partition, unusable for mapping"
+  },
+  "partition": {
+    "category_categories_display_categories": {
+      "100": 20,
+      "101": 0,
+      "110": 3,
+      "111": 52,
+      "000": 12,
+      "001": 0,
+      "010": 135,
+      "011": 2037
+    },
+    "display_categories_blank_total": 170,
+    "all_three_blank_total": 12,
+    "any_one_blank_total": 2207,
+    "none_blank_total": 52
+  },
+  "reconciliation": {
+    "count332": 18,
+    "count170": 152,
+    "count83": 9,
+    "count12": 12,
+    "count1": 0,
+    "unusableCounts": {
+      "category": 9,
+      "categories": 580,
+      "display_categories": 415
+    },
+    "unusableExamples": {
+      "category": [
+        {
+          "_id": "67c9ead1818d604b84e5a4b2",
+          "business_name": null,
+          "category": "Shopping"
+        },
+        {
+          "_id": "67c9ead1818d604b84e5a4ab",
+          "business_name": "A Beautiful California Florist Long Beach",
+          "category": "Shopping"
+        },
+        {
+          "_id": "67c9ead1818d604b84e5a4a8",
+          "business_name": "45 Three Modern Vintage Home Los Angeles 2",
+          "category": "Shopping"
+        },
+        {
+          "_id": "6843278f0471fd7f1fcfa4ae",
+          "business_name": null,
+          "category": "Skincare, Soap"
+        },
+        {
+          "_id": "6843278f0471fd7f1fcfa4b4",
+          "business_name": null,
+          "category": "Haircare Boutique"
+        },
+        {
+          "_id": "6843278f0471fd7f1fcfa4bc",
+          "business_name": null,
+          "category": "Haircare Products"
+        },
+        {
+          "_id": "6843278f0471fd7f1fcfa4ba",
+          "business_name": null,
+          "category": "Haircare Subscription"
+        },
+        {
+          "_id": "6843278f0471fd7f1fcfa4b6",
+          "business_name": null,
+          "category": "Men’s Grooming Products"
+        },
+        {
+          "_id": "6843278f0471fd7f1fcfa4bf",
+          "business_name": null,
+          "category": "Haircare, Kids"
+        }
+      ],
+      "categories": [
+        {
+          "_id": "67c9ead1818d604b84e5a587",
+          "business_name": "Kutula By Africana Los Angeles",
+          "categories": "Shopping"
+        },
+        {
+          "_id": "67c9ead1818d604b84e5a58a",
+          "business_name": null,
+          "categories": "Shopping"
+        },
+        {
+          "_id": "67c9ead1818d604b84e5a4ec",
+          "business_name": null,
+          "categories": "Shopping"
+        },
+        {
+          "_id": "67c9ead1818d604b84e5a4ed",
+          "business_name": null,
+          "categories": "Shopping"
+        },
+        {
+          "_id": "67c9ead1818d604b84e5a55d",
+          "business_name": "Hyperion Public Los Angeles 5",
+          "categories": "Nightlife"
+        },
+        {
+          "_id": "67c9ead1818d604b84e5a5f3",
+          "business_name": null,
+          "categories": "Shopping"
+        },
+        {
+          "_id": "67c9ead1818d604b84e5a63f",
+          "business_name": null,
+          "categories": "Shopping"
+        },
+        {
+          "_id": "67c9ead1818d604b84e5a641",
+          "business_name": "The 8Th Notch Los Angeles",
+          "categories": "Nightlife"
+        },
+        {
+          "_id": "67c9ead1818d604b84e5a60e",
+          "business_name": null,
+          "categories": "Shopping"
+        },
+        {
+          "_id": "67c9ead1818d604b84e5a4b2",
+          "business_name": null,
+          "categories": "Shopping"
+        }
+      ],
+      "display_categories": [
+        {
+          "_id": "67c9ead1818d604b84e5a587",
+          "business_name": "Kutula By Africana Los Angeles",
+          "display_categories": "Shopping"
+        },
+        {
+          "_id": "67c9ead1818d604b84e5a58a",
+          "business_name": null,
+          "display_categories": "Shopping"
+        },
+        {
+          "_id": "67c9ead1818d604b84e5a4ec",
+          "business_name": null,
+          "display_categories": "Shopping"
+        },
+        {
+          "_id": "67c9ead1818d604b84e5a4ed",
+          "business_name": null,
+          "display_categories": "Shopping"
+        },
+        {
+          "_id": "67c9ead1818d604b84e5a55d",
+          "business_name": "Hyperion Public Los Angeles 5",
+          "display_categories": "Nightlife"
+        },
+        {
+          "_id": "67c9ead1818d604b84e5a5f3",
+          "business_name": null,
+          "display_categories": "Shopping"
+        },
+        {
+          "_id": "67c9ead1818d604b84e5a63f",
+          "business_name": null,
+          "display_categories": "Shopping"
+        },
+        {
+          "_id": "67c9ead1818d604b84e5a641",
+          "business_name": "The 8Th Notch Los Angeles",
+          "display_categories": "Nightlife"
+        },
+        {
+          "_id": "67c9ead1818d604b84e5a60e",
+          "business_name": null,
+          "display_categories": "Shopping"
+        },
+        {
+          "_id": "67c9ead1818d604b84e5a4b2",
+          "business_name": null,
+          "display_categories": "Shopping"
+        }
+      ]
+    },
+    "directCandidates": 3,
+    "categoriesCandidates": 0,
+    "textOnlyCandidates": 6,
+    "conflictingSourceSignals": 149,
+    "allCategoryLikeBlankCandidates": 0
+  },
+  "displayCategoriesTypeDistribution": {
+    "array": 0,
+    "string": 2089,
+    "other": 0,
+    "examples": [
+      {
+        "_id": "67c9ead1818d604b84e5a463",
+        "display_categories": "Beauty, Grooming and Personal Care"
+      },
+      {
+        "_id": "67c9ead1818d604b84e5a47c",
+        "display_categories": "Beauty, Grooming and Personal Care"
+      },
+      {
+        "_id": "67c9ead1818d604b84e5a4ca",
+        "display_categories": "Restaurants"
+      },
+      {
+        "_id": "67c9ead1818d604b84e5a4df",
+        "display_categories": "Restaurants"
+      },
+      {
+        "_id": "67c9ead1818d604b84e5a4f9",
+        "display_categories": "Restaurants"
+      },
+      {
+        "_id": "67c9ead1818d604b84e5a573",
+        "display_categories": "Restaurants"
+      },
+      {
+        "_id": "67c9ead1818d604b84e5a587",
+        "display_categories": "Shopping"
+      },
+      {
+        "_id": "67c9ead1818d604b84e5a58a",
+        "display_categories": "Shopping"
+      },
+      {
+        "_id": "67c9ead1818d604b84e5a5a6",
+        "display_categories": "Restaurants"
+      },
+      {
+        "_id": "67c9ead1818d604b84e5a5ab",
+        "display_categories": "Restaurants"
+      }
+    ]
+  },
+  "approvedCanonicalCategoryList": [
+    "Restaurants",
+    "Food and Beverage",
+    "Beauty, Grooming and Personal Care",
+    "Health and Wellness",
+    "Shopping and Retail",
+    "Professional Services",
+    "Home Services",
+    "Automotive",
+    "Education and Training",
+    "Technology",
+    "Arts, Media and Entertainment",
+    "Travel and Hospitality",
+    "Real Estate and Housing",
+    "Financial Services",
+    "Legal and Government Services",
+    "Nonprofit and Community Organizations",
+    "Faith and Spiritual Services",
+    "Childcare and Family Services",
+    "Pets and Animal Services",
+    "Sports and Recreation",
+    "Agriculture and Farming",
+    "Construction and Trades",
+    "Manufacturing and Industrial",
+    "Transportation and Logistics",
+    "Events and Weddings",
+    "Nightlife",
+    "Cannabis",
+    "Adult",
+    "Other Services"
+  ],
+  "candidateValidation": {
+    "uniqueIds": true,
+    "candidateCountEqualsExportRows": true,
+    "noCandidateCurrentlyHasNonblankDisplayCategories": true,
+    "noProposedValueIsEmpty": true,
+    "everyProposedValueApproved": true,
+    "noExistingCategoryOrCategoriesWouldBeChanged": true,
+    "databaseWritesOccurred": false
+  },
+  "examples10": [
+    {
+      "_id": "6843278f0471fd7f1fcfa4ae",
+      "business_name": null,
+      "current_category": "Skincare, Soap",
+      "current_categories": null,
+      "current_display_categories": null,
+      "proposed_display_categories": "Faith and Spiritual Services",
+      "sourceField": "combined_text",
+      "sourceValue": "Natural soap and skincare products. | https://www.urbaneden.com | Atlanta | GA",
+      "matchedRule": "text:natural soap and skincare products https www urbaneden com atlanta ga",
+      "confidence": "high",
+      "inferenceSource": "combined_text_inference"
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4af",
+      "business_name": null,
+      "current_category": "Beauty, Haircare, Books",
+      "current_categories": null,
+      "current_display_categories": null,
+      "proposed_display_categories": "Beauty, Grooming and Personal Care",
+      "sourceField": "category",
+      "sourceValue": "Beauty, Haircare, Books",
+      "matchedRule": "direct:category:beauty haircare books",
+      "confidence": "high",
+      "inferenceSource": "direct_category_mapping"
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4b1",
+      "business_name": null,
+      "current_category": "Beauty, Haircare",
+      "current_categories": null,
+      "current_display_categories": null,
+      "proposed_display_categories": "Beauty, Grooming and Personal Care",
+      "sourceField": "category",
+      "sourceValue": "Beauty, Haircare",
+      "matchedRule": "direct:category:beauty haircare",
+      "confidence": "high",
+      "inferenceSource": "direct_category_mapping"
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4be",
+      "business_name": null,
+      "current_category": "Cosmetics, Beauty",
+      "current_categories": null,
+      "current_display_categories": null,
+      "proposed_display_categories": "Beauty, Grooming and Personal Care",
+      "sourceField": "category",
+      "sourceValue": "Cosmetics, Beauty",
+      "matchedRule": "direct:category:cosmetics beauty",
+      "confidence": "high",
+      "inferenceSource": "direct_category_mapping"
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4b4",
+      "business_name": null,
+      "current_category": "Haircare Boutique",
+      "current_categories": null,
+      "current_display_categories": null,
+      "proposed_display_categories": "Faith and Spiritual Services",
+      "sourceField": "combined_text",
+      "sourceValue": "Boutique dedicated to natural hair care. | https://kinksandcurlsatl.com | Lawrenceville | GA",
+      "matchedRule": "text:boutique dedicated to natural hair care https kinksandcurlsatl com lawrenceville ga",
+      "confidence": "high",
+      "inferenceSource": "combined_text_inference"
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4bc",
+      "business_name": null,
+      "current_category": "Haircare Products",
+      "current_categories": null,
+      "current_display_categories": null,
+      "proposed_display_categories": "Faith and Spiritual Services",
+      "sourceField": "combined_text",
+      "sourceValue": "Renowned Black-owned haircare brand. | https://www.bronnerbros.com | Atlanta | GA",
+      "matchedRule": "text:renowned black owned haircare brand https www bronnerbros com atlanta ga",
+      "confidence": "high",
+      "inferenceSource": "combined_text_inference"
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4ba",
+      "business_name": null,
+      "current_category": "Haircare Subscription",
+      "current_categories": null,
+      "current_display_categories": null,
+      "proposed_display_categories": "Faith and Spiritual Services",
+      "sourceField": "combined_text",
+      "sourceValue": "Subscription service for Black haircare products. | https://www.curlbox.com | Atlanta | GA",
+      "matchedRule": "text:subscription service for black haircare products https www curlbox com atlanta ga",
+      "confidence": "high",
+      "inferenceSource": "combined_text_inference"
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4b6",
+      "business_name": null,
+      "current_category": "Men’s Grooming Products",
+      "current_categories": null,
+      "current_display_categories": null,
+      "proposed_display_categories": "Faith and Spiritual Services",
+      "sourceField": "combined_text",
+      "sourceValue": "Men’s grooming products line. | https://unclejimmyproducts.com | Atlanta | GA",
+      "matchedRule": "text:mens grooming products line https unclejimmyproducts com atlanta ga",
+      "confidence": "high",
+      "inferenceSource": "combined_text_inference"
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4bf",
+      "business_name": null,
+      "current_category": "Haircare, Kids",
+      "current_categories": null,
+      "current_display_categories": null,
+      "proposed_display_categories": "Faith and Spiritual Services",
+      "sourceField": "combined_text",
+      "sourceValue": "Haircare products for kids and children's salons. | https://curlanistas.com | Atlanta | GA",
+      "matchedRule": "text:haircare products for kids and childrens salons https curlanistas com atlanta ga",
+      "confidence": "high",
+      "inferenceSource": "combined_text_inference"
+    }
+  ],
+  "candidates": [
+    {
+      "_id": "6843278f0471fd7f1fcfa4ae",
+      "business_name": null,
+      "current_category": "Skincare, Soap",
+      "current_categories": null,
+      "current_display_categories": null,
+      "proposed_display_categories": "Faith and Spiritual Services",
+      "sourceField": "combined_text",
+      "sourceValue": "Natural soap and skincare products. | https://www.urbaneden.com | Atlanta | GA",
+      "matchedRule": "text:natural soap and skincare products https www urbaneden com atlanta ga",
+      "confidence": "high",
+      "inferenceSource": "combined_text_inference"
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4af",
+      "business_name": null,
+      "current_category": "Beauty, Haircare, Books",
+      "current_categories": null,
+      "current_display_categories": null,
+      "proposed_display_categories": "Beauty, Grooming and Personal Care",
+      "sourceField": "category",
+      "sourceValue": "Beauty, Haircare, Books",
+      "matchedRule": "direct:category:beauty haircare books",
+      "confidence": "high",
+      "inferenceSource": "direct_category_mapping"
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4b1",
+      "business_name": null,
+      "current_category": "Beauty, Haircare",
+      "current_categories": null,
+      "current_display_categories": null,
+      "proposed_display_categories": "Beauty, Grooming and Personal Care",
+      "sourceField": "category",
+      "sourceValue": "Beauty, Haircare",
+      "matchedRule": "direct:category:beauty haircare",
+      "confidence": "high",
+      "inferenceSource": "direct_category_mapping"
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4be",
+      "business_name": null,
+      "current_category": "Cosmetics, Beauty",
+      "current_categories": null,
+      "current_display_categories": null,
+      "proposed_display_categories": "Beauty, Grooming and Personal Care",
+      "sourceField": "category",
+      "sourceValue": "Cosmetics, Beauty",
+      "matchedRule": "direct:category:cosmetics beauty",
+      "confidence": "high",
+      "inferenceSource": "direct_category_mapping"
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4b4",
+      "business_name": null,
+      "current_category": "Haircare Boutique",
+      "current_categories": null,
+      "current_display_categories": null,
+      "proposed_display_categories": "Faith and Spiritual Services",
+      "sourceField": "combined_text",
+      "sourceValue": "Boutique dedicated to natural hair care. | https://kinksandcurlsatl.com | Lawrenceville | GA",
+      "matchedRule": "text:boutique dedicated to natural hair care https kinksandcurlsatl com lawrenceville ga",
+      "confidence": "high",
+      "inferenceSource": "combined_text_inference"
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4bc",
+      "business_name": null,
+      "current_category": "Haircare Products",
+      "current_categories": null,
+      "current_display_categories": null,
+      "proposed_display_categories": "Faith and Spiritual Services",
+      "sourceField": "combined_text",
+      "sourceValue": "Renowned Black-owned haircare brand. | https://www.bronnerbros.com | Atlanta | GA",
+      "matchedRule": "text:renowned black owned haircare brand https www bronnerbros com atlanta ga",
+      "confidence": "high",
+      "inferenceSource": "combined_text_inference"
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4ba",
+      "business_name": null,
+      "current_category": "Haircare Subscription",
+      "current_categories": null,
+      "current_display_categories": null,
+      "proposed_display_categories": "Faith and Spiritual Services",
+      "sourceField": "combined_text",
+      "sourceValue": "Subscription service for Black haircare products. | https://www.curlbox.com | Atlanta | GA",
+      "matchedRule": "text:subscription service for black haircare products https www curlbox com atlanta ga",
+      "confidence": "high",
+      "inferenceSource": "combined_text_inference"
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4b6",
+      "business_name": null,
+      "current_category": "Men’s Grooming Products",
+      "current_categories": null,
+      "current_display_categories": null,
+      "proposed_display_categories": "Faith and Spiritual Services",
+      "sourceField": "combined_text",
+      "sourceValue": "Men’s grooming products line. | https://unclejimmyproducts.com | Atlanta | GA",
+      "matchedRule": "text:mens grooming products line https unclejimmyproducts com atlanta ga",
+      "confidence": "high",
+      "inferenceSource": "combined_text_inference"
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4bf",
+      "business_name": null,
+      "current_category": "Haircare, Kids",
+      "current_categories": null,
+      "current_display_categories": null,
+      "proposed_display_categories": "Faith and Spiritual Services",
+      "sourceField": "combined_text",
+      "sourceValue": "Haircare products for kids and children's salons. | https://curlanistas.com | Atlanta | GA",
+      "matchedRule": "text:haircare products for kids and childrens salons https curlanistas com atlanta ga",
+      "confidence": "high",
+      "inferenceSource": "combined_text_inference"
+    }
+  ],
+  "updatePlanTemplate": {
+    "precheck": "Re-read approved _id list, fetch current display_categories, proceed only where isBlank(display_categories) is still true.",
+    "updateTarget": "display_categories only",
+    "preserveFields": [
+      "category",
+      "categories"
+    ],
+    "backupArtifact": "JSON export of pre-update state for exact _id list",
+    "rollbackArtifact": "bulkWrite operations restoring prior display_categories from backup artifact",
+    "executionReport": [
+      "matchedCount",
+      "modifiedCount"
+    ],
+    "writeExecuted": false
+  }
+}

@@ -3,7 +3,9 @@ import fs from "node:fs/promises";
 import path from "node:path";
 
 const BASE_URL = process.env.BASE_URL || "http://localhost:3000";
-const outDir = path.resolve(".audit/runtime-proof-consultant-pipeline-workflow");
+const outDir = path.resolve(
+  ".audit/runtime-proof-consultant-pipeline-workflow",
+);
 
 async function ensureDir() {
   await fs.mkdir(outDir, { recursive: true });
@@ -33,7 +35,8 @@ async function main() {
       availability: "Available now",
       engagementType: "Project-based",
       industriesServed: ["Healthcare"],
-      summary: "Leads complex delivery programs with strong stakeholder governance.",
+      summary:
+        "Leads complex delivery programs with strong stakeholder governance.",
     },
   });
 
@@ -102,7 +105,9 @@ async function main() {
     contactRequestStatus: contactRes.status(),
     interviewRequestStatus: interviewRes.status(),
     pipelineStatus: pipelineRes.status(),
-    pipelineCount: Array.isArray(pipelineJson?.items) ? pipelineJson.items.length : 0,
+    pipelineCount: Array.isArray(pipelineJson?.items)
+      ? pipelineJson.items.length
+      : 0,
     pipelineStatuses: Array.isArray(pipelineJson?.items)
       ? pipelineJson.items.slice(0, 5).map((x) => x.status)
       : [],

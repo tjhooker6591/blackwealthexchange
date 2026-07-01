@@ -1,0 +1,1 @@
+{"ok":true,"placements":{"bannerHomepageTop":[],"bannerSidebar":[],"directoryFeatured":[]},"caps":{"bannerHomepageTop":1,"bannerSidebar":3,"directoryFeatured":6},"generatedAt":"2026-05-05T16:36:35.011Z"}

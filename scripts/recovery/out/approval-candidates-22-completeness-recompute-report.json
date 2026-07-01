@@ -1,0 +1,739 @@
+[
+  {
+    "_id": "681d1df4fd9719ad7b26dfa2",
+    "business_name": "LYS Beauty",
+    "alias": "lys-beauty",
+    "checks": {
+      "name": true,
+      "description": true,
+      "address": false,
+      "city": false,
+      "state": false,
+      "phone": false,
+      "category": true,
+      "website": true,
+      "image": false
+    },
+    "actual_present_field_count": 4,
+    "calculated_percentage": 44,
+    "calculated_isComplete": false,
+    "currently_stored_completenessScore": 67,
+    "currently_stored_isComplete": false,
+    "stored_metadata_stale": true,
+    "missingFields": [
+      "address",
+      "city",
+      "state",
+      "phone",
+      "image"
+    ],
+    "nowStored": {
+      "completenessScore": 67,
+      "isComplete": false
+    },
+    "matchesPublicSelector": false
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfa6",
+    "business_name": "For Them",
+    "alias": "for-them",
+    "checks": {
+      "name": true,
+      "description": true,
+      "address": false,
+      "city": false,
+      "state": false,
+      "phone": false,
+      "category": true,
+      "website": true,
+      "image": false
+    },
+    "actual_present_field_count": 4,
+    "calculated_percentage": 44,
+    "calculated_isComplete": false,
+    "currently_stored_completenessScore": 67,
+    "currently_stored_isComplete": false,
+    "stored_metadata_stale": true,
+    "missingFields": [
+      "address",
+      "city",
+      "state",
+      "phone",
+      "image"
+    ],
+    "nowStored": {
+      "completenessScore": 67,
+      "isComplete": false
+    },
+    "matchesPublicSelector": false
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfa8",
+    "business_name": "Ami Colé",
+    "alias": "ami-cole",
+    "checks": {
+      "name": true,
+      "description": true,
+      "address": false,
+      "city": false,
+      "state": false,
+      "phone": false,
+      "category": true,
+      "website": true,
+      "image": false
+    },
+    "actual_present_field_count": 4,
+    "calculated_percentage": 44,
+    "calculated_isComplete": false,
+    "currently_stored_completenessScore": 67,
+    "currently_stored_isComplete": false,
+    "stored_metadata_stale": true,
+    "missingFields": [
+      "address",
+      "city",
+      "state",
+      "phone",
+      "image"
+    ],
+    "nowStored": {
+      "completenessScore": 67,
+      "isComplete": false
+    },
+    "matchesPublicSelector": false
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfa9",
+    "business_name": "Saint Ola",
+    "alias": "saint-ola",
+    "checks": {
+      "name": true,
+      "description": true,
+      "address": false,
+      "city": false,
+      "state": false,
+      "phone": false,
+      "category": true,
+      "website": true,
+      "image": false
+    },
+    "actual_present_field_count": 4,
+    "calculated_percentage": 44,
+    "calculated_isComplete": false,
+    "currently_stored_completenessScore": 67,
+    "currently_stored_isComplete": false,
+    "stored_metadata_stale": true,
+    "missingFields": [
+      "address",
+      "city",
+      "state",
+      "phone",
+      "image"
+    ],
+    "nowStored": {
+      "completenessScore": 67,
+      "isComplete": false
+    },
+    "matchesPublicSelector": false
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfaa",
+    "business_name": "Telfar",
+    "alias": "telfar",
+    "checks": {
+      "name": true,
+      "description": true,
+      "address": false,
+      "city": false,
+      "state": false,
+      "phone": false,
+      "category": true,
+      "website": true,
+      "image": false
+    },
+    "actual_present_field_count": 4,
+    "calculated_percentage": 44,
+    "calculated_isComplete": false,
+    "currently_stored_completenessScore": 67,
+    "currently_stored_isComplete": false,
+    "stored_metadata_stale": true,
+    "missingFields": [
+      "address",
+      "city",
+      "state",
+      "phone",
+      "image"
+    ],
+    "nowStored": {
+      "completenessScore": 67,
+      "isComplete": false
+    },
+    "matchesPublicSelector": false
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfab",
+    "business_name": "Third Crown",
+    "alias": "third-crown",
+    "checks": {
+      "name": true,
+      "description": true,
+      "address": false,
+      "city": false,
+      "state": false,
+      "phone": false,
+      "category": true,
+      "website": true,
+      "image": false
+    },
+    "actual_present_field_count": 4,
+    "calculated_percentage": 44,
+    "calculated_isComplete": false,
+    "currently_stored_completenessScore": 67,
+    "currently_stored_isComplete": false,
+    "stored_metadata_stale": true,
+    "missingFields": [
+      "address",
+      "city",
+      "state",
+      "phone",
+      "image"
+    ],
+    "nowStored": {
+      "completenessScore": 67,
+      "isComplete": false
+    },
+    "matchesPublicSelector": false
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfac",
+    "business_name": "Tree Fairfax",
+    "alias": "tree-fairfax",
+    "checks": {
+      "name": true,
+      "description": true,
+      "address": false,
+      "city": false,
+      "state": false,
+      "phone": false,
+      "category": true,
+      "website": true,
+      "image": false
+    },
+    "actual_present_field_count": 4,
+    "calculated_percentage": 44,
+    "calculated_isComplete": false,
+    "currently_stored_completenessScore": 67,
+    "currently_stored_isComplete": false,
+    "stored_metadata_stale": true,
+    "missingFields": [
+      "address",
+      "city",
+      "state",
+      "phone",
+      "image"
+    ],
+    "nowStored": {
+      "completenessScore": 67,
+      "isComplete": false
+    },
+    "matchesPublicSelector": false
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfb1",
+    "business_name": "Boon Boona Coffee",
+    "alias": "boon-boona-coffee",
+    "checks": {
+      "name": true,
+      "description": true,
+      "address": true,
+      "city": true,
+      "state": true,
+      "phone": false,
+      "category": true,
+      "website": true,
+      "image": false
+    },
+    "actual_present_field_count": 7,
+    "calculated_percentage": 78,
+    "calculated_isComplete": true,
+    "currently_stored_completenessScore": 67,
+    "currently_stored_isComplete": false,
+    "stored_metadata_stale": true,
+    "missingFields": [
+      "phone",
+      "image"
+    ],
+    "nowStored": {
+      "completenessScore": 78,
+      "isComplete": true
+    },
+    "matchesPublicSelector": true
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfb2",
+    "business_name": "BLK & Bold",
+    "alias": "blk-bold",
+    "checks": {
+      "name": true,
+      "description": true,
+      "address": false,
+      "city": false,
+      "state": false,
+      "phone": false,
+      "category": true,
+      "website": true,
+      "image": false
+    },
+    "actual_present_field_count": 4,
+    "calculated_percentage": 44,
+    "calculated_isComplete": false,
+    "currently_stored_completenessScore": 67,
+    "currently_stored_isComplete": false,
+    "stored_metadata_stale": true,
+    "missingFields": [
+      "address",
+      "city",
+      "state",
+      "phone",
+      "image"
+    ],
+    "nowStored": {
+      "completenessScore": 67,
+      "isComplete": false
+    },
+    "matchesPublicSelector": false
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfb7",
+    "business_name": "Topicals",
+    "alias": "topicals",
+    "checks": {
+      "name": true,
+      "description": true,
+      "address": false,
+      "city": false,
+      "state": false,
+      "phone": false,
+      "category": true,
+      "website": true,
+      "image": false
+    },
+    "actual_present_field_count": 4,
+    "calculated_percentage": 44,
+    "calculated_isComplete": false,
+    "currently_stored_completenessScore": 67,
+    "currently_stored_isComplete": false,
+    "stored_metadata_stale": true,
+    "missingFields": [
+      "address",
+      "city",
+      "state",
+      "phone",
+      "image"
+    ],
+    "nowStored": {
+      "completenessScore": 67,
+      "isComplete": false
+    },
+    "matchesPublicSelector": false
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfb8",
+    "business_name": "RedDrop",
+    "alias": "reddrop",
+    "checks": {
+      "name": true,
+      "description": true,
+      "address": false,
+      "city": false,
+      "state": false,
+      "phone": false,
+      "category": true,
+      "website": true,
+      "image": false
+    },
+    "actual_present_field_count": 4,
+    "calculated_percentage": 44,
+    "calculated_isComplete": false,
+    "currently_stored_completenessScore": 67,
+    "currently_stored_isComplete": false,
+    "stored_metadata_stale": true,
+    "missingFields": [
+      "address",
+      "city",
+      "state",
+      "phone",
+      "image"
+    ],
+    "nowStored": {
+      "completenessScore": 67,
+      "isComplete": false
+    },
+    "matchesPublicSelector": false
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfbb",
+    "business_name": "Barkal",
+    "alias": "barkal",
+    "checks": {
+      "name": true,
+      "description": true,
+      "address": false,
+      "city": false,
+      "state": false,
+      "phone": false,
+      "category": true,
+      "website": true,
+      "image": false
+    },
+    "actual_present_field_count": 4,
+    "calculated_percentage": 44,
+    "calculated_isComplete": false,
+    "currently_stored_completenessScore": 67,
+    "currently_stored_isComplete": false,
+    "stored_metadata_stale": true,
+    "missingFields": [
+      "address",
+      "city",
+      "state",
+      "phone",
+      "image"
+    ],
+    "nowStored": {
+      "completenessScore": 67,
+      "isComplete": false
+    },
+    "matchesPublicSelector": false
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfbd",
+    "business_name": "Camille Rose",
+    "alias": "camille-rose",
+    "checks": {
+      "name": true,
+      "description": true,
+      "address": false,
+      "city": false,
+      "state": false,
+      "phone": false,
+      "category": true,
+      "website": true,
+      "image": false
+    },
+    "actual_present_field_count": 4,
+    "calculated_percentage": 44,
+    "calculated_isComplete": false,
+    "currently_stored_completenessScore": 67,
+    "currently_stored_isComplete": false,
+    "stored_metadata_stale": true,
+    "missingFields": [
+      "address",
+      "city",
+      "state",
+      "phone",
+      "image"
+    ],
+    "nowStored": {
+      "completenessScore": 67,
+      "isComplete": false
+    },
+    "matchesPublicSelector": false
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfc2",
+    "business_name": "The Sip",
+    "alias": "the-sip",
+    "checks": {
+      "name": true,
+      "description": true,
+      "address": false,
+      "city": false,
+      "state": false,
+      "phone": false,
+      "category": true,
+      "website": true,
+      "image": false
+    },
+    "actual_present_field_count": 4,
+    "calculated_percentage": 44,
+    "calculated_isComplete": false,
+    "currently_stored_completenessScore": 67,
+    "currently_stored_isComplete": false,
+    "stored_metadata_stale": true,
+    "missingFields": [
+      "address",
+      "city",
+      "state",
+      "phone",
+      "image"
+    ],
+    "nowStored": {
+      "completenessScore": 67,
+      "isComplete": false
+    },
+    "matchesPublicSelector": false
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfc4",
+    "business_name": "Be Rooted",
+    "alias": "be-rooted",
+    "checks": {
+      "name": true,
+      "description": true,
+      "address": false,
+      "city": false,
+      "state": false,
+      "phone": false,
+      "category": true,
+      "website": true,
+      "image": false
+    },
+    "actual_present_field_count": 4,
+    "calculated_percentage": 44,
+    "calculated_isComplete": false,
+    "currently_stored_completenessScore": 67,
+    "currently_stored_isComplete": false,
+    "stored_metadata_stale": true,
+    "missingFields": [
+      "address",
+      "city",
+      "state",
+      "phone",
+      "image"
+    ],
+    "nowStored": {
+      "completenessScore": 67,
+      "isComplete": false
+    },
+    "matchesPublicSelector": false
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfc5",
+    "business_name": "Clare",
+    "alias": "clare",
+    "checks": {
+      "name": true,
+      "description": true,
+      "address": false,
+      "city": false,
+      "state": false,
+      "phone": false,
+      "category": true,
+      "website": true,
+      "image": false
+    },
+    "actual_present_field_count": 4,
+    "calculated_percentage": 44,
+    "calculated_isComplete": false,
+    "currently_stored_completenessScore": 67,
+    "currently_stored_isComplete": false,
+    "stored_metadata_stale": true,
+    "missingFields": [
+      "address",
+      "city",
+      "state",
+      "phone",
+      "image"
+    ],
+    "nowStored": {
+      "completenessScore": 67,
+      "isComplete": false
+    },
+    "matchesPublicSelector": false
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfc6",
+    "business_name": "Bolé Road Textiles",
+    "alias": "bole-road-textiles",
+    "checks": {
+      "name": true,
+      "description": true,
+      "address": false,
+      "city": true,
+      "state": true,
+      "phone": false,
+      "category": true,
+      "website": true,
+      "image": false
+    },
+    "actual_present_field_count": 6,
+    "calculated_percentage": 67,
+    "calculated_isComplete": false,
+    "currently_stored_completenessScore": 67,
+    "currently_stored_isComplete": false,
+    "stored_metadata_stale": false,
+    "missingFields": [
+      "address",
+      "phone",
+      "image"
+    ],
+    "nowStored": {
+      "completenessScore": 67,
+      "isComplete": false
+    },
+    "matchesPublicSelector": false
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfcb",
+    "business_name": "The Whitney Collection",
+    "alias": "the-whitney-collection",
+    "checks": {
+      "name": true,
+      "description": true,
+      "address": false,
+      "city": false,
+      "state": false,
+      "phone": false,
+      "category": true,
+      "website": true,
+      "image": false
+    },
+    "actual_present_field_count": 4,
+    "calculated_percentage": 44,
+    "calculated_isComplete": false,
+    "currently_stored_completenessScore": 67,
+    "currently_stored_isComplete": false,
+    "stored_metadata_stale": true,
+    "missingFields": [
+      "address",
+      "city",
+      "state",
+      "phone",
+      "image"
+    ],
+    "nowStored": {
+      "completenessScore": 67,
+      "isComplete": false
+    },
+    "matchesPublicSelector": false
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfce",
+    "business_name": "Fourth Phase",
+    "alias": "fourth-phase",
+    "checks": {
+      "name": true,
+      "description": true,
+      "address": false,
+      "city": false,
+      "state": false,
+      "phone": false,
+      "category": true,
+      "website": true,
+      "image": false
+    },
+    "actual_present_field_count": 4,
+    "calculated_percentage": 44,
+    "calculated_isComplete": false,
+    "currently_stored_completenessScore": 67,
+    "currently_stored_isComplete": false,
+    "stored_metadata_stale": true,
+    "missingFields": [
+      "address",
+      "city",
+      "state",
+      "phone",
+      "image"
+    ],
+    "nowStored": {
+      "completenessScore": 67,
+      "isComplete": false
+    },
+    "matchesPublicSelector": false
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfd3",
+    "business_name": "Royal Nation",
+    "alias": "royal-nation",
+    "checks": {
+      "name": true,
+      "description": true,
+      "address": false,
+      "city": false,
+      "state": false,
+      "phone": false,
+      "category": true,
+      "website": true,
+      "image": false
+    },
+    "actual_present_field_count": 4,
+    "calculated_percentage": 44,
+    "calculated_isComplete": false,
+    "currently_stored_completenessScore": 67,
+    "currently_stored_isComplete": false,
+    "stored_metadata_stale": true,
+    "missingFields": [
+      "address",
+      "city",
+      "state",
+      "phone",
+      "image"
+    ],
+    "nowStored": {
+      "completenessScore": 67,
+      "isComplete": false
+    },
+    "matchesPublicSelector": false
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfda",
+    "business_name": "Loyalty Bookstores",
+    "alias": "loyalty-bookstores",
+    "checks": {
+      "name": true,
+      "description": true,
+      "address": true,
+      "city": true,
+      "state": true,
+      "phone": false,
+      "category": true,
+      "website": true,
+      "image": false
+    },
+    "actual_present_field_count": 7,
+    "calculated_percentage": 78,
+    "calculated_isComplete": true,
+    "currently_stored_completenessScore": 67,
+    "currently_stored_isComplete": false,
+    "stored_metadata_stale": true,
+    "missingFields": [
+      "phone",
+      "image"
+    ],
+    "nowStored": {
+      "completenessScore": 78,
+      "isComplete": true
+    },
+    "matchesPublicSelector": true
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfdb",
+    "business_name": "The Lit. Bar",
+    "alias": "the-lit-bar",
+    "checks": {
+      "name": true,
+      "description": true,
+      "address": true,
+      "city": true,
+      "state": true,
+      "phone": false,
+      "category": true,
+      "website": true,
+      "image": false
+    },
+    "actual_present_field_count": 7,
+    "calculated_percentage": 78,
+    "calculated_isComplete": true,
+    "currently_stored_completenessScore": 67,
+    "currently_stored_isComplete": false,
+    "stored_metadata_stale": true,
+    "missingFields": [
+      "phone",
+      "image"
+    ],
+    "nowStored": {
+      "completenessScore": 78,
+      "isComplete": true
+    },
+    "matchesPublicSelector": true
+  }
+]

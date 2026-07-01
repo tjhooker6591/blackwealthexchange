@@ -1,0 +1,25 @@
+{
+  "currentPublicBusinesses": 332,
+  "highQualityQueryReadyNow": 0,
+  "queryReadyAfterDeterministicCorrection": 0,
+  "requiresLimitedResearch": 22,
+  "notSuitableForApproval": 128,
+  "immediateHighQualityProjectedTotal": 332,
+  "projectedTotalAfterSafeCorrections": 332,
+  "potentialTotalAfterLimitedResearch": "depends on resolved subset of Group C",
+  "simulationQuality": {
+    "totalPublicCountBefore": 332,
+    "projectedPublicCountAfter": 332,
+    "duplicateResultCount": 0,
+    "blankNamesAdded": 0,
+    "genericOrFabricatedNamesAdded": 0,
+    "blankDescriptionsAdded": 0,
+    "invalidCategoriesAdded": 0,
+    "incompleteLocationDataAdded": 0,
+    "brokenAliasesOrRoutesAdded": 0,
+    "unsearchableByReasonableQueries": 0,
+    "existingProtectedBusinessesRemoved": 0
+  },
+  "totalEvaluated": 150,
+  "totalCheck": 150
+}

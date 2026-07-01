@@ -1,0 +1,7 @@
+method=GET
+url=http://localhost:3000/api/search/businesses?q=test
+status=200
+location=
+content_type=application/json; charset=utf-8
+bytes=327
+body_preview={"status":"ok","requestId":"9167a471457d619df8ff9667","tookMs":479,"page":1,"limit":20,"total":0,"hasMore":false,"type":"businesses","sort":"relevance","queryMode":"strict","searchMeta":{"strictTokens":["test"],"intentTo

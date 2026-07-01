@@ -1,0 +1,1054 @@
+{
+  "rowCount": 75,
+  "rows": [
+    {
+      "_id": "67c9ead1818d604b84e5a61a",
+      "business_name": "Silverback Coffee Of Rwanda Los Angeles 3",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a67a",
+      "business_name": "Vanillablack Los Angeles",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfa6",
+      "business_name": "For Them",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "incomplete_listing_gate"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfa9",
+      "business_name": "Saint Ola",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "incomplete_listing_gate"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfaa",
+      "business_name": "Telfar",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "incomplete_listing_gate"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfab",
+      "business_name": "Third Crown",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "incomplete_listing_gate"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfac",
+      "business_name": "Tree Fairfax",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "incomplete_listing_gate"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfd3",
+      "business_name": "Royal Nation",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "incomplete_listing_gate"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a625",
+      "business_name": "Sip And Sonder Inglewood",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "698ff52ae8467526b29ede85",
+      "business_name": "Gentlemen’s Quarters",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "698ff52ae8467526b29ede86",
+      "business_name": "Fade-N-Up",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "698ff52ae8467526b29ede87",
+      "business_name": "Quality Barbershop",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "698ff52ae8467526b29ede88",
+      "business_name": "Cuts for Men",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "698ff8647af60943e08680fa",
+      "business_name": "Kuttz",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "698ff8647af60943e086811b",
+      "business_name": "Elegance & Style Barber Lounge",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "698ff8647af60943e086811e",
+      "business_name": "Supreme Cuts",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "698ff8647af60943e086811f",
+      "business_name": "Cut-N-Up",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "698ff8647af60943e086812a",
+      "business_name": "Royalty Kutz",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "698ff8647af60943e0868133",
+      "business_name": "Stop Jockin Barber Shop",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "698ff8647af60943e086813b",
+      "business_name": "Kings and Queens",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "698ff8647af60943e086813c",
+      "business_name": "Dre’s",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "698ff8647af60943e0868151",
+      "business_name": "Lyle Styles and Cuts",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "698ff8647af60943e0868159",
+      "business_name": "Masterpiece Barbershop",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "698ff8647af60943e086816c",
+      "business_name": "Another Level",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67f73df01d08a04e139a9ecb",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67f73df01d08a04e139a9f1d",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67f73df01d08a04e139a9ec9",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a58a",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a4ec",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a5f3",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a60e",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a4b2",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a4f4",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a590",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a576",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a612",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a5e6",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a699",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a65e",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9d60",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9dad",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9df2",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9e06",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9e4b",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67f73df01d08a04e139a9eaf",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a4b4",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9de6",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9da1",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9e1e",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a5a5",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a517",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a537",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9dc4",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a545",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a507",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9d7c",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9d59",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a53a",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a55b",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a5d1",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9d9a",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9ded",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a619",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9e30",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67c9ead1818d604b84e5a661",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9e36",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67f73df01d08a04e139a9e7a",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67f73df01d08a04e139a9e8c",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67f73df01d08a04e139a9e90",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67f73df01d08a04e139a9eb2",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67f73df01d08a04e139a9f00",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67f73df01d08a04e139a9eb7",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67f73df01d08a04e139a9f02",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67f73df01d08a04e139a9f5d",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    },
+    {
+      "_id": "67ea165aca2270d775407020",
+      "business_name": "",
+      "category_only_blocker": false,
+      "other_blockers": [
+        "status_not_public",
+        "missing_business_name",
+        "missing_location",
+        "missing_state",
+        "missing_alias_or_slug",
+        "incomplete_listing_gate",
+        "missing_contact_or_website"
+      ],
+      "correcting_display_categories_would_make_ready": false,
+      "legitimate_separate_business": true,
+      "conflicts_with_protected_332": false
+    }
+  ]
+}

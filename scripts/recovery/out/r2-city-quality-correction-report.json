@@ -1,0 +1,256 @@
+{
+  "status": "R2_CITY_QUALITY_CLEANUP_DONE",
+  "counts": {
+    "SAFE": 8,
+    "UNSAFE": 15,
+    "INVALID": 2
+  },
+  "groups": {
+    "SAFE": [
+      "67c9ead1818d604b84e5a497",
+      "67c9ead1818d604b84e5a498",
+      "67c9ead1818d604b84e5a499",
+      "67c9ead1818d604b84e5a49b",
+      "67c9ead1818d604b84e5a49c",
+      "67c9ead1818d604b84e5a49e",
+      "67c9ead1818d604b84e5a49f",
+      "67c9ead1818d604b84e5a4a6"
+    ],
+    "UNSAFE": [
+      "67c9ead1818d604b84e5a4a8",
+      "67c9ead1818d604b84e5a4ab",
+      "67c9ead1818d604b84e5a4ad",
+      "67c9ead1818d604b84e5a4b1",
+      "67c9ead1818d604b84e5a4b6",
+      "67c9ead1818d604b84e5a4b8",
+      "67c9ead1818d604b84e5a4bb",
+      "67c9ead1818d604b84e5a4bc",
+      "67c9ead1818d604b84e5a4c0",
+      "67c9ead1818d604b84e5a4c1",
+      "67c9ead1818d604b84e5a4c3",
+      "67c9ead1818d604b84e5a4c9",
+      "67c9ead1818d604b84e5a4ca",
+      "67c9ead1818d604b84e5a4cb",
+      "67c9ead1818d604b84e5a4d7"
+    ],
+    "INVALID": [
+      "67c9ead1818d604b84e5a4b2",
+      "67c9ead1818d604b84e5a4b3"
+    ]
+  },
+  "corrections": [
+    {
+      "id": "67c9ead1818d604b84e5a4a8",
+      "type": "rollback",
+      "before": {
+        "city": "S Fairfax Ave Los Angeles",
+        "slug": "45-three-modern-vintage-home-los-angeles-2-s-fairfax-ave-los-angeles-ca"
+      },
+      "after": {
+        "city": "",
+        "slug": null
+      },
+      "rule": "rollback_r2_snapshot_due_to_unsafe_city"
+    },
+    {
+      "id": "67c9ead1818d604b84e5a4ab",
+      "type": "rollback",
+      "before": {
+        "city": "Atlantic Ave Long Beach",
+        "slug": "a-beautiful-california-florist-long-beach-atlantic-ave-long-beach-ca"
+      },
+      "after": {
+        "city": "",
+        "slug": null
+      },
+      "rule": "rollback_r2_snapshot_due_to_unsafe_city"
+    },
+    {
+      "id": "67c9ead1818d604b84e5a4ad",
+      "type": "rollback",
+      "before": {
+        "city": "S Spring St Los Angeles",
+        "slug": "abeautifullife-jamaican-cafe-los-angeles-s-spring-st-los-angeles-ca"
+      },
+      "after": {
+        "city": "",
+        "slug": null
+      },
+      "rule": "rollback_r2_snapshot_due_to_unsafe_city"
+    },
+    {
+      "id": "67c9ead1818d604b84e5a4b1",
+      "type": "rollback",
+      "before": {
+        "city": "W Manchester Blvd Ste C Inglewood",
+        "slug": "aduke-nigerian-cuisine-inglewood-3-w-manchester-blvd-ste-c-inglewood-ca"
+      },
+      "after": {
+        "city": "",
+        "slug": null
+      },
+      "rule": "rollback_r2_snapshot_due_to_unsafe_city"
+    },
+    {
+      "id": "67c9ead1818d604b84e5a4b6",
+      "type": "rollback",
+      "before": {
+        "city": "St Los Angeles",
+        "slug": "all-flavor-no-grease-los-angeles-st-los-angeles-ca"
+      },
+      "after": {
+        "city": "",
+        "slug": null
+      },
+      "rule": "rollback_r2_snapshot_due_to_unsafe_city"
+    },
+    {
+      "id": "67c9ead1818d604b84e5a4b8",
+      "type": "rollback",
+      "before": {
+        "city": "W Martin Luther King Jr Blvd Los Angeles",
+        "slug": "alex-fish-market-los-angeles-w-martin-luther-king-jr-blvd-los-angeles-ca"
+      },
+      "after": {
+        "city": "",
+        "slug": null
+      },
+      "rule": "rollback_r2_snapshot_due_to_unsafe_city"
+    },
+    {
+      "id": "67c9ead1818d604b84e5a4bb",
+      "type": "rollback",
+      "before": {
+        "city": "S Fairfax Ave Los Angeles",
+        "slug": "annies-soul-delicious-los-angeles-s-fairfax-ave-los-angeles-ca"
+      },
+      "after": {
+        "city": "",
+        "slug": null
+      },
+      "rule": "rollback_r2_snapshot_due_to_unsafe_city"
+    },
+    {
+      "id": "67c9ead1818d604b84e5a4bc",
+      "type": "rollback",
+      "before": {
+        "city": "Los Angeles",
+        "slug": "antidote-eats-los-angeles-los-angeles-ca"
+      },
+      "after": {
+        "city": "",
+        "slug": null
+      },
+      "rule": "rollback_r2_snapshot_due_to_unsafe_city"
+    },
+    {
+      "id": "67c9ead1818d604b84e5a4c0",
+      "type": "rollback",
+      "before": {
+        "city": "W Pico Blvd Los Angeles",
+        "slug": "awash-restaurant-los-angeles-w-pico-blvd-los-angeles-ca"
+      },
+      "after": {
+        "city": "",
+        "slug": null
+      },
+      "rule": "rollback_r2_snapshot_due_to_unsafe_city"
+    },
+    {
+      "id": "67c9ead1818d604b84e5a4c1",
+      "type": "rollback",
+      "before": {
+        "city": "Redlands Blvd Loma Linda",
+        "slug": "ayda-ethiopian-restaurant-loma-linda-redlands-blvd-loma-linda-ca"
+      },
+      "after": {
+        "city": "",
+        "slug": null
+      },
+      "rule": "rollback_r2_snapshot_due_to_unsafe_city"
+    },
+    {
+      "id": "67c9ead1818d604b84e5a4c3",
+      "type": "rollback",
+      "before": {
+        "city": "W Rosecrans Ave Hawthorne",
+        "slug": "b-and-rs-old-fashion-burgers-hawthorne-2-w-rosecrans-ave-hawthorne-ca"
+      },
+      "after": {
+        "city": "",
+        "slug": null
+      },
+      "rule": "rollback_r2_snapshot_due_to_unsafe_city"
+    },
+    {
+      "id": "67c9ead1818d604b84e5a4c9",
+      "type": "rollback",
+      "before": {
+        "city": "Aviation Blvd Hermosa Beach",
+        "slug": "barsha-hermosa-beach-aviation-blvd-hermosa-beach-ca"
+      },
+      "after": {
+        "city": "",
+        "slug": null
+      },
+      "rule": "rollback_r2_snapshot_due_to_unsafe_city"
+    },
+    {
+      "id": "67c9ead1818d604b84e5a4ca",
+      "type": "rollback",
+      "before": {
+        "city": "W Arbor Vitae Unit C Inglewood",
+        "slug": "banadir-somali-restaurant-inglewood-w-arbor-vitae-unit-c-inglewood-ca"
+      },
+      "after": {
+        "city": "",
+        "slug": null
+      },
+      "rule": "rollback_r2_snapshot_due_to_unsafe_city"
+    },
+    {
+      "id": "67c9ead1818d604b84e5a4cb",
+      "type": "rollback",
+      "before": {
+        "city": "N Citrus Ave Covina",
+        "slug": "bbs-cafe-covina-n-citrus-ave-covina-ca"
+      },
+      "after": {
+        "city": "",
+        "slug": null
+      },
+      "rule": "rollback_r2_snapshot_due_to_unsafe_city"
+    },
+    {
+      "id": "67c9ead1818d604b84e5a4d7",
+      "type": "rollback",
+      "before": {
+        "city": "E Nutwood St Inglewood",
+        "slug": "big-daddys-kickin-chicken-inglewood-e-nutwood-st-inglewood-ca"
+      },
+      "after": {
+        "city": "",
+        "slug": null
+      },
+      "rule": "rollback_r2_snapshot_due_to_unsafe_city"
+    }
+  ],
+  "afterMetrics": {
+    "minimumDataEligible": 7,
+    "stillIncomplete": 18,
+    "stillNeedsEnrichment": 25
+  },
+  "canonicalReference": {
+    "url": "/api/search/businesses?query=&page=1&limit=20&_t=1778387214872",
+    "requestHeaderXSearchCache": "MISS",
+    "responseHeaderXSearchCache": "MISS",
+    "total": 337
+  },
+  "noPromotionsOccurred": true,
+  "noUnrelatedRecordsChangedProof": {
+    "expectedActionCount": 15,
+    "observedRecoveredByWindow": 15
+  },
+  "be61378Pushed": false,
+  "recommendation": "Amend or replace be61378 later so R2 artifacts reflect corrected city quality outcomes."
+}

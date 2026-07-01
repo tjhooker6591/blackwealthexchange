@@ -123,14 +123,27 @@ async function main() {
     await route.fulfill({
       status: 200,
       contentType: "application/json",
-      body: JSON.stringify({ jobsPosted: 3, totalApplicants: 11, messages: 2, profileCompletion: 76 }),
+      body: JSON.stringify({
+        jobsPosted: 3,
+        totalApplicants: 11,
+        messages: 2,
+        profileCompletion: 76,
+      }),
     });
   });
   await page.route("**/api/employer/jobs?*", async (route) => {
-    await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ jobs: [] }) });
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ jobs: [] }),
+    });
   });
   await page.route("**/api/employer/applicants?*", async (route) => {
-    await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ applicants: [] }) });
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ applicants: [] }),
+    });
   });
 
   await page.goto(`${BASE_URL}/employer`, { waitUntil: "domcontentloaded" });

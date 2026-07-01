@@ -1,0 +1,7 @@
+method=GET
+url=http://localhost:3000/api/marketplace/get-products
+status=200
+location=
+content_type=application/json; charset=utf-8
+bytes=2312
+body_preview={"products":[{"_id":"69644a50d65b1e1ace411a0d","sellerId":"67fd9ed3acdef9011c60ff99","name":"Thomas Hooker author","description":"test file","price":18.99,"category":"books","imageUrl":"/uploads/af3008d7-804d-4b08-8749-236f28b48fe4-book-ove

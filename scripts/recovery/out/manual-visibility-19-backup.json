@@ -70,7 +70,11 @@
     "approvalSource": "openclaw-recovery-batch-22",
     "approved": true,
     "approvedAt": "2026-06-22T04:58:37.885Z",
-    "qualityScore": 90
+    "qualityScore": 90,
+    "directoryVisibilityApproved": true,
+    "directoryVisibilityApprovedAt": "2026-06-23T04:36:06.865Z",
+    "directoryVisibilityApprovedBy": "Thomas",
+    "directoryVisibilityReason": "Manually reviewed and approved at 6 of 9 completeness; optional unavailable fields were not fabricated."
   },
   {
     "_id": "681d1df4fd9719ad7b26dfa6",
@@ -142,7 +146,11 @@
     "approvalSource": "openclaw-recovery-batch-22",
     "approved": true,
     "approvedAt": "2026-06-22T04:58:38.399Z",
-    "qualityScore": 90
+    "qualityScore": 90,
+    "directoryVisibilityApproved": true,
+    "directoryVisibilityApprovedAt": "2026-06-23T04:36:07.102Z",
+    "directoryVisibilityApprovedBy": "Thomas",
+    "directoryVisibilityReason": "Manually reviewed and approved at 6 of 9 completeness; optional unavailable fields were not fabricated."
   },
   {
     "_id": "681d1df4fd9719ad7b26dfa8",
@@ -216,7 +224,11 @@
     "approvalSource": "openclaw-recovery-batch-22",
     "approved": true,
     "approvedAt": "2026-06-22T04:58:38.920Z",
-    "qualityScore": 90
+    "qualityScore": 90,
+    "directoryVisibilityApproved": true,
+    "directoryVisibilityApprovedAt": "2026-06-23T04:36:07.366Z",
+    "directoryVisibilityApprovedBy": "Thomas",
+    "directoryVisibilityReason": "Manually reviewed and approved at 6 of 9 completeness; optional unavailable fields were not fabricated."
   },
   {
     "_id": "681d1df4fd9719ad7b26dfa9",
@@ -287,7 +299,11 @@
     "approvalSource": "openclaw-recovery-batch-22",
     "approved": true,
     "approvedAt": "2026-06-22T04:58:39.434Z",
-    "qualityScore": 90
+    "qualityScore": 90,
+    "directoryVisibilityApproved": true,
+    "directoryVisibilityApprovedAt": "2026-06-23T04:36:07.595Z",
+    "directoryVisibilityApprovedBy": "Thomas",
+    "directoryVisibilityReason": "Manually reviewed and approved at 6 of 9 completeness; optional unavailable fields were not fabricated."
   },
   {
     "_id": "681d1df4fd9719ad7b26dfaa",
@@ -358,7 +374,11 @@
     "approvalSource": "openclaw-recovery-batch-22",
     "approved": true,
     "approvedAt": "2026-06-22T04:58:39.984Z",
-    "qualityScore": 90
+    "qualityScore": 90,
+    "directoryVisibilityApproved": true,
+    "directoryVisibilityApprovedAt": "2026-06-23T04:36:07.859Z",
+    "directoryVisibilityApprovedBy": "Thomas",
+    "directoryVisibilityReason": "Manually reviewed and approved at 6 of 9 completeness; optional unavailable fields were not fabricated."
   },
   {
     "_id": "681d1df4fd9719ad7b26dfab",
@@ -430,7 +450,11 @@
     "approvalSource": "openclaw-recovery-batch-22",
     "approved": true,
     "approvedAt": "2026-06-22T04:58:40.512Z",
-    "qualityScore": 90
+    "qualityScore": 90,
+    "directoryVisibilityApproved": true,
+    "directoryVisibilityApprovedAt": "2026-06-23T04:36:08.077Z",
+    "directoryVisibilityApprovedBy": "Thomas",
+    "directoryVisibilityReason": "Manually reviewed and approved at 6 of 9 completeness; optional unavailable fields were not fabricated."
   },
   {
     "_id": "681d1df4fd9719ad7b26dfac",
@@ -502,7 +526,11 @@
     "approvalSource": "openclaw-recovery-batch-22",
     "approved": true,
     "approvedAt": "2026-06-22T04:58:41.075Z",
-    "qualityScore": 90
+    "qualityScore": 90,
+    "directoryVisibilityApproved": true,
+    "directoryVisibilityApprovedAt": "2026-06-23T04:36:08.344Z",
+    "directoryVisibilityApprovedBy": "Thomas",
+    "directoryVisibilityReason": "Manually reviewed and approved at 6 of 9 completeness; optional unavailable fields were not fabricated."
   },
   {
     "_id": "681d1df4fd9719ad7b26dfb2",
@@ -574,7 +602,11 @@
     "approvalSource": "openclaw-recovery-batch-22",
     "approved": true,
     "approvedAt": "2026-06-22T04:58:42.098Z",
-    "qualityScore": 90
+    "qualityScore": 90,
+    "directoryVisibilityApproved": true,
+    "directoryVisibilityApprovedAt": "2026-06-23T04:36:08.572Z",
+    "directoryVisibilityApprovedBy": "Thomas",
+    "directoryVisibilityReason": "Manually reviewed and approved at 6 of 9 completeness; optional unavailable fields were not fabricated."
   },
   {
     "_id": "681d1df4fd9719ad7b26dfb7",
@@ -647,7 +679,11 @@
     "approvalSource": "openclaw-recovery-batch-22",
     "approved": true,
     "approvedAt": "2026-06-22T04:58:42.620Z",
-    "qualityScore": 90
+    "qualityScore": 90,
+    "directoryVisibilityApproved": true,
+    "directoryVisibilityApprovedAt": "2026-06-23T04:36:08.795Z",
+    "directoryVisibilityApprovedBy": "Thomas",
+    "directoryVisibilityReason": "Manually reviewed and approved at 6 of 9 completeness; optional unavailable fields were not fabricated."
   },
   {
     "_id": "681d1df4fd9719ad7b26dfb8",
@@ -721,7 +757,11 @@
     "approvalSource": "openclaw-recovery-batch-22",
     "approved": true,
     "approvedAt": "2026-06-22T04:58:43.134Z",
-    "qualityScore": 90
+    "qualityScore": 90,
+    "directoryVisibilityApproved": true,
+    "directoryVisibilityApprovedAt": "2026-06-23T04:36:09.026Z",
+    "directoryVisibilityApprovedBy": "Thomas",
+    "directoryVisibilityReason": "Manually reviewed and approved at 6 of 9 completeness; optional unavailable fields were not fabricated."
   },
   {
     "_id": "681d1df4fd9719ad7b26dfbb",
@@ -792,7 +832,11 @@
     "approvalSource": "openclaw-recovery-batch-22",
     "approved": true,
     "approvedAt": "2026-06-22T04:58:43.667Z",
-    "qualityScore": 90
+    "qualityScore": 90,
+    "directoryVisibilityApproved": true,
+    "directoryVisibilityApprovedAt": "2026-06-23T04:36:09.296Z",
+    "directoryVisibilityApprovedBy": "Thomas",
+    "directoryVisibilityReason": "Manually reviewed and approved at 6 of 9 completeness; optional unavailable fields were not fabricated."
   },
   {
     "_id": "681d1df4fd9719ad7b26dfbd",
@@ -868,7 +912,11 @@
     "approvalSource": "openclaw-recovery-batch-22",
     "approved": true,
     "approvedAt": "2026-06-22T04:58:44.166Z",
-    "qualityScore": 90
+    "qualityScore": 90,
+    "directoryVisibilityApproved": true,
+    "directoryVisibilityApprovedAt": "2026-06-23T04:36:09.516Z",
+    "directoryVisibilityApprovedBy": "Thomas",
+    "directoryVisibilityReason": "Manually reviewed and approved at 6 of 9 completeness; optional unavailable fields were not fabricated."
   },
   {
     "_id": "681d1df4fd9719ad7b26dfc2",
@@ -939,7 +987,11 @@
     "approvalSource": "openclaw-recovery-batch-22",
     "approved": true,
     "approvedAt": "2026-06-22T04:58:44.740Z",
-    "qualityScore": 90
+    "qualityScore": 90,
+    "directoryVisibilityApproved": true,
+    "directoryVisibilityApprovedAt": "2026-06-23T04:36:09.734Z",
+    "directoryVisibilityApprovedBy": "Thomas",
+    "directoryVisibilityReason": "Manually reviewed and approved at 6 of 9 completeness; optional unavailable fields were not fabricated."
   },
   {
     "_id": "681d1df4fd9719ad7b26dfc4",
@@ -1011,7 +1063,11 @@
     "approvalSource": "openclaw-recovery-batch-22",
     "approved": true,
     "approvedAt": "2026-06-22T04:58:45.234Z",
-    "qualityScore": 90
+    "qualityScore": 90,
+    "directoryVisibilityApproved": true,
+    "directoryVisibilityApprovedAt": "2026-06-23T04:36:09.974Z",
+    "directoryVisibilityApprovedBy": "Thomas",
+    "directoryVisibilityReason": "Manually reviewed and approved at 6 of 9 completeness; optional unavailable fields were not fabricated."
   },
   {
     "_id": "681d1df4fd9719ad7b26dfc5",
@@ -1082,7 +1138,11 @@
     "approvalSource": "openclaw-recovery-batch-22",
     "approved": true,
     "approvedAt": "2026-06-22T04:58:45.781Z",
-    "qualityScore": 90
+    "qualityScore": 90,
+    "directoryVisibilityApproved": true,
+    "directoryVisibilityApprovedAt": "2026-06-23T04:36:10.227Z",
+    "directoryVisibilityApprovedBy": "Thomas",
+    "directoryVisibilityReason": "Manually reviewed and approved at 6 of 9 completeness; optional unavailable fields were not fabricated."
   },
   {
     "_id": "681d1df4fd9719ad7b26dfc6",
@@ -1159,7 +1219,11 @@
     "approvalSource": "openclaw-recovery-batch-22",
     "approved": true,
     "approvedAt": "2026-06-22T04:58:46.280Z",
-    "qualityScore": 90
+    "qualityScore": 90,
+    "directoryVisibilityApproved": true,
+    "directoryVisibilityApprovedAt": "2026-06-23T04:36:10.448Z",
+    "directoryVisibilityApprovedBy": "Thomas",
+    "directoryVisibilityReason": "Manually reviewed and approved at 6 of 9 completeness; optional unavailable fields were not fabricated."
   },
   {
     "_id": "681d1df4fd9719ad7b26dfcb",
@@ -1232,7 +1296,11 @@
     "approvalSource": "openclaw-recovery-batch-22",
     "approved": true,
     "approvedAt": "2026-06-22T04:58:46.837Z",
-    "qualityScore": 90
+    "qualityScore": 90,
+    "directoryVisibilityApproved": true,
+    "directoryVisibilityApprovedAt": "2026-06-23T04:36:10.667Z",
+    "directoryVisibilityApprovedBy": "Thomas",
+    "directoryVisibilityReason": "Manually reviewed and approved at 6 of 9 completeness; optional unavailable fields were not fabricated."
   },
   {
     "_id": "681d1df4fd9719ad7b26dfce",
@@ -1305,7 +1373,11 @@
     "approvalSource": "openclaw-recovery-batch-22",
     "approved": true,
     "approvedAt": "2026-06-22T04:58:47.366Z",
-    "qualityScore": 90
+    "qualityScore": 90,
+    "directoryVisibilityApproved": true,
+    "directoryVisibilityApprovedAt": "2026-06-23T04:36:10.886Z",
+    "directoryVisibilityApprovedBy": "Thomas",
+    "directoryVisibilityReason": "Manually reviewed and approved at 6 of 9 completeness; optional unavailable fields were not fabricated."
   },
   {
     "_id": "681d1df4fd9719ad7b26dfd3",
@@ -1376,6 +1448,10 @@
     "approvalSource": "openclaw-recovery-batch-22",
     "approved": true,
     "approvedAt": "2026-06-22T04:58:47.874Z",
-    "qualityScore": 90
+    "qualityScore": 90,
+    "directoryVisibilityApproved": true,
+    "directoryVisibilityApprovedAt": "2026-06-23T04:36:11.111Z",
+    "directoryVisibilityApprovedBy": "Thomas",
+    "directoryVisibilityReason": "Manually reviewed and approved at 6 of 9 completeness; optional unavailable fields were not fabricated."
   }
 ]

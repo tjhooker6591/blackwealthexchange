@@ -1,0 +1,18 @@
+HTTP/1.1 200 OK
+X-Frame-Options: SAMEORIGIN
+X-Content-Type-Options: nosniff
+Referrer-Policy: strict-origin-when-cross-origin
+Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+Permissions-Policy: camera=(), microphone=(), geolocation=(self)
+Content-Security-Policy: default-src 'self'; base-uri 'self'; frame-ancestors 'self'; object-src 'none'; img-src 'self' data: https:; font-src 'self' data: https:; style-src 'self' 'unsafe-inline' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; connect-src 'self' https: wss:; frame-src 'self' https:; form-action 'self'
+Cache-Control: no-store
+Server-Timing: mongo_connect;dur=0, mongo_query;dur=74, total;dur=75
+Content-Type: application/json; charset=utf-8
+ETag: "hniam69j7xkp"
+Content-Length: 745
+Vary: Accept-Encoding
+Date: Thu, 07 May 2026 16:36:06 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"user":{"_id":"69fb7c4d078c73b5736db278","email":"audit_seller_20260506@local.test","accountType":"seller","auditTag":"BWE_LOCAL_AUDIT_2026_05","createdAt":"2026-05-06T17:37:17.866Z","storeName":"audit_seller_store","updatedAt":"2026-05-06T17:45:00.962Z","userId":"69fb7c4d078c73b5736db278","id":"69fb7c4d078c73b5736db278","isAdmin":false,"isPremium":false,"currentPlan":"free","premiumStatus":"inactive","premiumActivatedAt":null,"blackCardTier":null,"blackCardStatus":"inactive","blackCardMemberSince":null,"stripeSubscriptionId":null,"stripeCustomerId":null,"subscriptionStatus":null,"subscriptionCurrentPeriodStart":null,"subscriptionCurrentPeriodEnd":null,"subscriptionCancelAtPeriodEnd":false,"nextBillingDate":null,"renewalStatus":null}}

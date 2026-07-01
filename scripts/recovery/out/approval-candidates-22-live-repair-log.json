@@ -1,0 +1,1559 @@
+[
+  {
+    "_id": "681d1df4fd9719ad7b26dfa2",
+    "canonical_business_name": "LYS Beauty",
+    "corrupted_values_removed": [
+      {
+        "field": "address",
+        "old": "Lys Beauty Salon, Gift and Decor Center, F.D. Rooseveltweg, Esperansa bij Salsbach, Curaçao, 0000 CW, Nederland",
+        "reason": "unrelated imported/geocoded address removed"
+      }
+    ],
+    "verified_values_added": {
+      "description": "Clean beauty brand offering makeup and skincare products for face, eyes, lips, and complexion.",
+      "category": "Makeup, Clean Beauty",
+      "country": "United States",
+      "locationType": "online business",
+      "slug": "lys-beauty",
+      "searchKeywords": [
+        "LYS",
+        "Beauty",
+        "Makeup",
+        "Clean",
+        "Grooming",
+        "and",
+        "Personal",
+        "Care",
+        "United",
+        "States"
+      ]
+    },
+    "evidence_sources": [
+      "https://lysbeauty.com"
+    ],
+    "final_category": "Beauty, Grooming and Personal Care",
+    "final_location_type_and_location": {
+      "locationType": "online business",
+      "address": "",
+      "city": "",
+      "state": "",
+      "country": "United States",
+      "postalCode": ""
+    },
+    "final_alias": "lys-beauty",
+    "search_validation": {
+      "aliasUnique": true,
+      "searchKeywords": [
+        "LYS",
+        "Beauty",
+        "Makeup",
+        "Clean",
+        "Grooming",
+        "and",
+        "Personal",
+        "Care",
+        "United",
+        "States"
+      ]
+    },
+    "route_validation": {
+      "aliasFindsRecord": true,
+      "route": "/business-directory/lys-beauty"
+    },
+    "duplicate_validation": "no alias collision after repair",
+    "activation_status": "activated",
+    "repair_result": {
+      "acknowledged": true,
+      "modifiedCount": 1,
+      "upsertedId": null,
+      "upsertedCount": 0,
+      "matchedCount": 1
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfa6",
+    "canonical_business_name": "For Them",
+    "corrupted_values_removed": [
+      {
+        "field": "address",
+        "old": "Scrubs for Them, 2121, Carling Avenue, Carlingwood, Bay, Ottawa, Eastern Ontario, Ontario, K2A 1H1, Canada",
+        "reason": "unrelated imported/geocoded address removed"
+      }
+    ],
+    "verified_values_added": {
+      "description": "Brand focused on binders and related apparel designed for comfort, fit, and everyday wear.",
+      "category": "Apparel, Wellness",
+      "country": "United States",
+      "locationType": "online business",
+      "slug": "for-them",
+      "searchKeywords": [
+        "For",
+        "Them",
+        "Apparel",
+        "Wellness",
+        "Clothing",
+        "and",
+        "Accessories",
+        "United",
+        "States"
+      ]
+    },
+    "evidence_sources": [
+      "https://forthemofficial.com"
+    ],
+    "final_category": "Clothing and Accessories",
+    "final_location_type_and_location": {
+      "locationType": "online business",
+      "address": "",
+      "city": "",
+      "state": "",
+      "country": "United States",
+      "postalCode": ""
+    },
+    "final_alias": "for-them",
+    "search_validation": {
+      "aliasUnique": true,
+      "searchKeywords": [
+        "For",
+        "Them",
+        "Apparel",
+        "Wellness",
+        "Clothing",
+        "and",
+        "Accessories",
+        "United",
+        "States"
+      ]
+    },
+    "route_validation": {
+      "aliasFindsRecord": true,
+      "route": "/business-directory/for-them"
+    },
+    "duplicate_validation": "no alias collision after repair",
+    "activation_status": "activated",
+    "repair_result": {
+      "acknowledged": true,
+      "modifiedCount": 1,
+      "upsertedId": null,
+      "upsertedCount": 0,
+      "matchedCount": 1
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfa8",
+    "canonical_business_name": "Ami Colé",
+    "corrupted_values_removed": [
+      {
+        "field": "address",
+        "old": "Cole haan, 竜ヶ崎阿見線, よしわら一丁目, 阿見町, 稲敷郡, 茨城県, 300-1288, 日本",
+        "reason": "unrelated imported/geocoded address removed"
+      }
+    ],
+    "verified_values_added": {
+      "description": "Beauty brand offering complexion, lip, and skin products with a clean and minimalist product focus.",
+      "category": "Clean Beauty, Skin Care",
+      "country": "United States",
+      "locationType": "online business",
+      "slug": "ami-cole",
+      "searchKeywords": [
+        "Ami",
+        "Colé",
+        "Clean",
+        "Beauty",
+        "Skin",
+        "Care",
+        "Grooming",
+        "and",
+        "Personal",
+        "United",
+        "States"
+      ]
+    },
+    "evidence_sources": [
+      "https://amicole.com"
+    ],
+    "final_category": "Beauty, Grooming and Personal Care",
+    "final_location_type_and_location": {
+      "locationType": "online business",
+      "address": "",
+      "city": "",
+      "state": "",
+      "country": "United States",
+      "postalCode": ""
+    },
+    "final_alias": "ami-cole",
+    "search_validation": {
+      "aliasUnique": true,
+      "searchKeywords": [
+        "Ami",
+        "Colé",
+        "Clean",
+        "Beauty",
+        "Skin",
+        "Care",
+        "Grooming",
+        "and",
+        "Personal",
+        "United",
+        "States"
+      ]
+    },
+    "route_validation": {
+      "aliasFindsRecord": true,
+      "route": "/business-directory/ami-cole"
+    },
+    "duplicate_validation": "no alias collision after repair",
+    "activation_status": "activated",
+    "repair_result": {
+      "acknowledged": true,
+      "modifiedCount": 1,
+      "upsertedId": null,
+      "upsertedCount": 0,
+      "matchedCount": 1
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfa9",
+    "canonical_business_name": "Saint Ola",
+    "corrupted_values_removed": [
+      {
+        "field": "address",
+        "old": "Ola, Igeldo, Mendebaldea, Donostia / San Sebastián, Gipuzkoa, Euskadi, 20008, España",
+        "reason": "unrelated imported/geocoded address removed"
+      }
+    ],
+    "verified_values_added": {
+      "description": "Fashion label offering dresses, skirts, jumpsuits, and accessories with African-inspired styling.",
+      "category": "Fashion, Accessories",
+      "country": "United States",
+      "locationType": "online business",
+      "slug": "saint-ola",
+      "searchKeywords": [
+        "Saint",
+        "Ola",
+        "Fashion",
+        "Accessories",
+        "Clothing",
+        "and",
+        "United",
+        "States"
+      ]
+    },
+    "evidence_sources": [
+      "https://saintola.com"
+    ],
+    "final_category": "Clothing and Accessories",
+    "final_location_type_and_location": {
+      "locationType": "online business",
+      "address": "",
+      "city": "",
+      "state": "",
+      "country": "United States",
+      "postalCode": ""
+    },
+    "final_alias": "saint-ola",
+    "search_validation": {
+      "aliasUnique": true,
+      "searchKeywords": [
+        "Saint",
+        "Ola",
+        "Fashion",
+        "Accessories",
+        "Clothing",
+        "and",
+        "United",
+        "States"
+      ]
+    },
+    "route_validation": {
+      "aliasFindsRecord": true,
+      "route": "/business-directory/saint-ola"
+    },
+    "duplicate_validation": "no alias collision after repair",
+    "activation_status": "activated",
+    "repair_result": {
+      "acknowledged": true,
+      "modifiedCount": 1,
+      "upsertedId": null,
+      "upsertedCount": 0,
+      "matchedCount": 1
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfaa",
+    "canonical_business_name": "Telfar",
+    "corrupted_values_removed": [
+      {
+        "field": "address",
+        "old": "Kocatepe, Nizip, Gaziantep, Güneydoğu Anadolu Bölgesi, Türkiye",
+        "reason": "unrelated imported/geocoded address removed"
+      }
+    ],
+    "verified_values_added": {
+      "description": "Fashion brand known for bags, apparel, and accessories sold through official online releases.",
+      "category": "Luxury Goods, Accessories",
+      "country": "United States",
+      "locationType": "online business",
+      "slug": "telfar",
+      "searchKeywords": [
+        "Telfar",
+        "Luxury",
+        "Goods",
+        "Accessories",
+        "Clothing",
+        "and",
+        "United",
+        "States"
+      ]
+    },
+    "evidence_sources": [
+      "https://telfar.net"
+    ],
+    "final_category": "Clothing and Accessories",
+    "final_location_type_and_location": {
+      "locationType": "online business",
+      "address": "",
+      "city": "",
+      "state": "",
+      "country": "United States",
+      "postalCode": ""
+    },
+    "final_alias": "telfar",
+    "search_validation": {
+      "aliasUnique": true,
+      "searchKeywords": [
+        "Telfar",
+        "Luxury",
+        "Goods",
+        "Accessories",
+        "Clothing",
+        "and",
+        "United",
+        "States"
+      ]
+    },
+    "route_validation": {
+      "aliasFindsRecord": true,
+      "route": "/business-directory/telfar"
+    },
+    "duplicate_validation": "no alias collision after repair",
+    "activation_status": "activated",
+    "repair_result": {
+      "acknowledged": true,
+      "modifiedCount": 1,
+      "upsertedId": null,
+      "upsertedCount": 0,
+      "matchedCount": 1
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfab",
+    "canonical_business_name": "Third Crown",
+    "corrupted_values_removed": [
+      {
+        "field": "address",
+        "old": "TP Legal Ltd, Church Street East, Horsell, Woking, Surrey, England, GU21 6HR, United Kingdom",
+        "reason": "unrelated imported/geocoded address removed"
+      }
+    ],
+    "verified_values_added": {
+      "description": "Jewelry brand creating rings, necklaces, bracelets, and other statement pieces.",
+      "category": "Jewelry, Design",
+      "country": "United States",
+      "locationType": "online business",
+      "slug": "third-crown",
+      "searchKeywords": [
+        "Third",
+        "Crown",
+        "Jewelry",
+        "Design",
+        "Clothing",
+        "and",
+        "Accessories",
+        "United",
+        "States"
+      ]
+    },
+    "evidence_sources": [
+      "https://thirdcrown.com"
+    ],
+    "final_category": "Clothing and Accessories",
+    "final_location_type_and_location": {
+      "locationType": "online business",
+      "address": "",
+      "city": "",
+      "state": "",
+      "country": "United States",
+      "postalCode": ""
+    },
+    "final_alias": "third-crown",
+    "search_validation": {
+      "aliasUnique": true,
+      "searchKeywords": [
+        "Third",
+        "Crown",
+        "Jewelry",
+        "Design",
+        "Clothing",
+        "and",
+        "Accessories",
+        "United",
+        "States"
+      ]
+    },
+    "route_validation": {
+      "aliasFindsRecord": true,
+      "route": "/business-directory/third-crown"
+    },
+    "duplicate_validation": "no alias collision after repair",
+    "activation_status": "activated",
+    "repair_result": {
+      "acknowledged": true,
+      "modifiedCount": 1,
+      "upsertedId": null,
+      "upsertedCount": 0,
+      "matchedCount": 1
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfac",
+    "canonical_business_name": "Tree Fairfax",
+    "corrupted_values_removed": [
+      {
+        "field": "address",
+        "old": "Fairfax VLG, Rose Tree, Upper Providence, Upper Providence Township, Delaware County, Pennsylvania, 19065, United States",
+        "reason": "unrelated imported/geocoded address removed"
+      }
+    ],
+    "verified_values_added": {
+      "description": "Leather goods brand producing bags, wallets, belts, and other accessories.",
+      "category": "Leather Goods, Accessories",
+      "country": "United States",
+      "locationType": "online business",
+      "slug": "tree-fairfax",
+      "searchKeywords": [
+        "Tree",
+        "Fairfax",
+        "Leather",
+        "Goods",
+        "Accessories",
+        "Clothing",
+        "and",
+        "United",
+        "States"
+      ]
+    },
+    "evidence_sources": [
+      "https://treefairfax.com"
+    ],
+    "final_category": "Clothing and Accessories",
+    "final_location_type_and_location": {
+      "locationType": "online business",
+      "address": "",
+      "city": "",
+      "state": "",
+      "country": "United States",
+      "postalCode": ""
+    },
+    "final_alias": "tree-fairfax",
+    "search_validation": {
+      "aliasUnique": true,
+      "searchKeywords": [
+        "Tree",
+        "Fairfax",
+        "Leather",
+        "Goods",
+        "Accessories",
+        "Clothing",
+        "and",
+        "United",
+        "States"
+      ]
+    },
+    "route_validation": {
+      "aliasFindsRecord": true,
+      "route": "/business-directory/tree-fairfax"
+    },
+    "duplicate_validation": "no alias collision after repair",
+    "activation_status": "activated",
+    "repair_result": {
+      "acknowledged": true,
+      "modifiedCount": 1,
+      "upsertedId": null,
+      "upsertedCount": 0,
+      "matchedCount": 1
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfb1",
+    "canonical_business_name": "Boon Boona Coffee",
+    "corrupted_values_removed": [],
+    "verified_values_added": {
+      "description": "Coffee company sourcing and roasting East African coffees and serving drinks and beans.",
+      "category": "Coffee",
+      "country": "United States",
+      "locationType": "physical storefront",
+      "address": "1223 E Cherry St",
+      "city": "Seattle",
+      "state": "Washington",
+      "postalCode": "98122",
+      "slug": "boon-boona-coffee",
+      "searchKeywords": [
+        "Boon",
+        "Boona",
+        "Coffee",
+        "Food",
+        "and",
+        "Beverage",
+        "Seattle",
+        "Washington",
+        "United",
+        "States"
+      ]
+    },
+    "evidence_sources": [
+      "https://boonboona.com"
+    ],
+    "final_category": "Food and Beverage",
+    "final_location_type_and_location": {
+      "locationType": "physical storefront",
+      "address": "1223 E Cherry St",
+      "city": "Seattle",
+      "state": "Washington",
+      "country": "United States",
+      "postalCode": "98122"
+    },
+    "final_alias": "boon-boona-coffee",
+    "search_validation": {
+      "aliasUnique": true,
+      "searchKeywords": [
+        "Boon",
+        "Boona",
+        "Coffee",
+        "Food",
+        "and",
+        "Beverage",
+        "Seattle",
+        "Washington",
+        "United",
+        "States"
+      ]
+    },
+    "route_validation": {
+      "aliasFindsRecord": true,
+      "route": "/business-directory/boon-boona-coffee"
+    },
+    "duplicate_validation": "no alias collision after repair",
+    "activation_status": "activated",
+    "repair_result": {
+      "acknowledged": true,
+      "modifiedCount": 1,
+      "upsertedId": null,
+      "upsertedCount": 0,
+      "matchedCount": 1
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfb2",
+    "canonical_business_name": "BLK & Bold",
+    "corrupted_values_removed": [
+      {
+        "field": "address",
+        "old": "保樓 Bold Block, 崇平街 Sung Ping Street, 鶴園 Hok Yuen, 土瓜灣 To Kwa Wan, 九龍城區 Kowloon City District, 九龍 Kowloon, 香港 Hong Kong, 999077, 中国",
+        "reason": "unrelated imported/geocoded address removed"
+      }
+    ],
+    "verified_values_added": {
+      "business_name": "BLK & Bold",
+      "alias": "blk-bold",
+      "description": "Specialty coffee and tea brand selling whole bean, ground, cold brew, and tea products.",
+      "category": "Coffee, Tea",
+      "country": "United States",
+      "locationType": "online business",
+      "slug": "blk-bold",
+      "searchKeywords": [
+        "BLK",
+        "&",
+        "Bold",
+        "Coffee",
+        "Tea",
+        "Food",
+        "and",
+        "Beverage",
+        "United",
+        "States"
+      ]
+    },
+    "evidence_sources": [
+      "https://blkandbold.com"
+    ],
+    "final_category": "Food and Beverage",
+    "final_location_type_and_location": {
+      "locationType": "online business",
+      "address": "",
+      "city": "",
+      "state": "",
+      "country": "United States",
+      "postalCode": ""
+    },
+    "final_alias": "blk-bold",
+    "search_validation": {
+      "aliasUnique": true,
+      "searchKeywords": [
+        "BLK",
+        "&",
+        "Bold",
+        "Coffee",
+        "Tea",
+        "Food",
+        "and",
+        "Beverage",
+        "United",
+        "States"
+      ]
+    },
+    "route_validation": {
+      "aliasFindsRecord": true,
+      "route": "/business-directory/blk-bold"
+    },
+    "duplicate_validation": "no alias collision after repair",
+    "activation_status": "activated",
+    "repair_result": {
+      "acknowledged": true,
+      "modifiedCount": 1,
+      "upsertedId": null,
+      "upsertedCount": 0,
+      "matchedCount": 1
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfb7",
+    "canonical_business_name": "Topicals",
+    "corrupted_values_removed": [
+      {
+        "field": "address",
+        "old": "Kind Topicals, West 26th Avenue, Spenard, Anchorage, Alaska, 99503, United States",
+        "reason": "unrelated imported/geocoded address removed"
+      }
+    ],
+    "verified_values_added": {
+      "website": "https://mytopicals.com",
+      "description": "Skincare brand offering products focused on chronic skin concerns such as dryness and discoloration.",
+      "category": "Skin Care, Clinical",
+      "country": "United States",
+      "locationType": "online business",
+      "slug": "topicals",
+      "searchKeywords": [
+        "Topicals",
+        "Skin",
+        "Care",
+        "Clinical",
+        "Beauty",
+        "Grooming",
+        "and",
+        "Personal",
+        "United",
+        "States"
+      ]
+    },
+    "evidence_sources": [
+      "https://mytopicals.com"
+    ],
+    "final_category": "Beauty, Grooming and Personal Care",
+    "final_location_type_and_location": {
+      "locationType": "online business",
+      "address": "",
+      "city": "",
+      "state": "",
+      "country": "United States",
+      "postalCode": ""
+    },
+    "final_alias": "topicals",
+    "search_validation": {
+      "aliasUnique": true,
+      "searchKeywords": [
+        "Topicals",
+        "Skin",
+        "Care",
+        "Clinical",
+        "Beauty",
+        "Grooming",
+        "and",
+        "Personal",
+        "United",
+        "States"
+      ]
+    },
+    "route_validation": {
+      "aliasFindsRecord": true,
+      "route": "/business-directory/topicals"
+    },
+    "duplicate_validation": "no alias collision after repair",
+    "activation_status": "activated",
+    "repair_result": {
+      "acknowledged": true,
+      "modifiedCount": 1,
+      "upsertedId": null,
+      "upsertedCount": 0,
+      "matchedCount": 1
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfb8",
+    "canonical_business_name": "RedDrop",
+    "corrupted_values_removed": [
+      {
+        "field": "address",
+        "old": "Reddrop Court, Altona Meadows, Melbourne, City of Hobsons Bay, Victoria, 3028, Australia",
+        "reason": "unrelated imported/geocoded address removed"
+      }
+    ],
+    "verified_values_added": {
+      "description": "Brand offering menstrual products and educational resources for young people and families.",
+      "category": "Menstrual Products, Education",
+      "country": "United States",
+      "locationType": "online business",
+      "slug": "reddrop",
+      "searchKeywords": [
+        "RedDrop",
+        "Menstrual",
+        "Products",
+        "Education",
+        "Beauty",
+        "Grooming",
+        "and",
+        "Personal",
+        "Care",
+        "United",
+        "States"
+      ]
+    },
+    "evidence_sources": [
+      "https://reddrop.com"
+    ],
+    "final_category": "Beauty, Grooming and Personal Care",
+    "final_location_type_and_location": {
+      "locationType": "online business",
+      "address": "",
+      "city": "",
+      "state": "",
+      "country": "United States",
+      "postalCode": ""
+    },
+    "final_alias": "reddrop",
+    "search_validation": {
+      "aliasUnique": true,
+      "searchKeywords": [
+        "RedDrop",
+        "Menstrual",
+        "Products",
+        "Education",
+        "Beauty",
+        "Grooming",
+        "and",
+        "Personal",
+        "Care",
+        "United",
+        "States"
+      ]
+    },
+    "route_validation": {
+      "aliasFindsRecord": true,
+      "route": "/business-directory/reddrop"
+    },
+    "duplicate_validation": "no alias collision after repair",
+    "activation_status": "activated",
+    "repair_result": {
+      "acknowledged": true,
+      "modifiedCount": 1,
+      "upsertedId": null,
+      "upsertedCount": 0,
+      "matchedCount": 1
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfbb",
+    "canonical_business_name": "Barkal",
+    "corrupted_values_removed": [
+      {
+        "field": "address",
+        "old": "বরকল, বরকল উপজেলা, রাঙ্গামাটি পার্বত্য জেলা, চট্টগ্রাম বিভাগ, বাংলাদেশ",
+        "reason": "unrelated imported/geocoded address removed"
+      }
+    ],
+    "verified_values_added": {
+      "description": "Footwear brand offering leather shoes and related fashion products.",
+      "category": "Footwear, Design",
+      "country": "United States",
+      "locationType": "online business",
+      "slug": "barkal",
+      "searchKeywords": [
+        "Barkal",
+        "Footwear",
+        "Design",
+        "Clothing",
+        "and",
+        "Accessories",
+        "United",
+        "States"
+      ]
+    },
+    "evidence_sources": [
+      "https://barkal.com"
+    ],
+    "final_category": "Clothing and Accessories",
+    "final_location_type_and_location": {
+      "locationType": "online business",
+      "address": "",
+      "city": "",
+      "state": "",
+      "country": "United States",
+      "postalCode": ""
+    },
+    "final_alias": "barkal",
+    "search_validation": {
+      "aliasUnique": true,
+      "searchKeywords": [
+        "Barkal",
+        "Footwear",
+        "Design",
+        "Clothing",
+        "and",
+        "Accessories",
+        "United",
+        "States"
+      ]
+    },
+    "route_validation": {
+      "aliasFindsRecord": true,
+      "route": "/business-directory/barkal"
+    },
+    "duplicate_validation": "no alias collision after repair",
+    "activation_status": "activated",
+    "repair_result": {
+      "acknowledged": true,
+      "modifiedCount": 1,
+      "upsertedId": null,
+      "upsertedCount": 0,
+      "matchedCount": 1
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfbd",
+    "canonical_business_name": "Camille Rose",
+    "corrupted_values_removed": [
+      {
+        "field": "address",
+        "old": "East Camille Rose Court, Mountain Rose Estates, Palmer, Matanuska-Susitna Borough, Alaska, United States",
+        "reason": "unrelated imported/geocoded address removed"
+      }
+    ],
+    "verified_values_added": {
+      "description": "Beauty brand offering products for hair, skin, and body care.",
+      "category": "Hair Care, Skin Care, Body Care",
+      "country": "United States",
+      "locationType": "online business",
+      "slug": "camille-rose",
+      "searchKeywords": [
+        "Camille",
+        "Rose",
+        "Hair",
+        "Care",
+        "Skin",
+        "Body",
+        "Beauty",
+        "Grooming",
+        "and",
+        "Personal",
+        "United",
+        "States"
+      ]
+    },
+    "evidence_sources": [
+      "https://camillerose.com"
+    ],
+    "final_category": "Beauty, Grooming and Personal Care",
+    "final_location_type_and_location": {
+      "locationType": "online business",
+      "address": "",
+      "city": "",
+      "state": "",
+      "country": "United States",
+      "postalCode": ""
+    },
+    "final_alias": "camille-rose",
+    "search_validation": {
+      "aliasUnique": true,
+      "searchKeywords": [
+        "Camille",
+        "Rose",
+        "Hair",
+        "Care",
+        "Skin",
+        "Body",
+        "Beauty",
+        "Grooming",
+        "and",
+        "Personal",
+        "United",
+        "States"
+      ]
+    },
+    "route_validation": {
+      "aliasFindsRecord": true,
+      "route": "/business-directory/camille-rose"
+    },
+    "duplicate_validation": "no alias collision after repair",
+    "activation_status": "activated",
+    "repair_result": {
+      "acknowledged": true,
+      "modifiedCount": 1,
+      "upsertedId": null,
+      "upsertedCount": 0,
+      "matchedCount": 1
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfc2",
+    "canonical_business_name": "The Sip",
+    "corrupted_values_removed": [
+      {
+        "field": "address",
+        "old": "SIP The Experience, 528, Main Street, Lindbergh, Atlanta, Fulton County, Georgia, 30324, United States",
+        "reason": "unrelated imported/geocoded address removed"
+      }
+    ],
+    "verified_values_added": {
+      "website": "https://thesip.com",
+      "description": "Wine subscription company offering curated boxes and tasting-focused wine selections.",
+      "category": "Wine Subscription",
+      "country": "United States",
+      "locationType": "online business",
+      "slug": "the-sip",
+      "searchKeywords": [
+        "The",
+        "Sip",
+        "Wine",
+        "Subscription",
+        "Food",
+        "and",
+        "Beverage",
+        "United",
+        "States"
+      ]
+    },
+    "evidence_sources": [
+      "https://thesip.com"
+    ],
+    "final_category": "Food and Beverage",
+    "final_location_type_and_location": {
+      "locationType": "online business",
+      "address": "",
+      "city": "",
+      "state": "",
+      "country": "United States",
+      "postalCode": ""
+    },
+    "final_alias": "the-sip",
+    "search_validation": {
+      "aliasUnique": true,
+      "searchKeywords": [
+        "The",
+        "Sip",
+        "Wine",
+        "Subscription",
+        "Food",
+        "and",
+        "Beverage",
+        "United",
+        "States"
+      ]
+    },
+    "route_validation": {
+      "aliasFindsRecord": true,
+      "route": "/business-directory/the-sip"
+    },
+    "duplicate_validation": "no alias collision after repair",
+    "activation_status": "activated",
+    "repair_result": {
+      "acknowledged": true,
+      "modifiedCount": 1,
+      "upsertedId": null,
+      "upsertedCount": 0,
+      "matchedCount": 1
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfc4",
+    "canonical_business_name": "Be Rooted",
+    "corrupted_values_removed": [
+      {
+        "field": "address",
+        "old": "Rooted, 144, Rosemount Place, Rosemount, Rosemount and Mile End, Aberdeen City, Alba / Scotland, AB25 2YU, United Kingdom",
+        "reason": "unrelated imported/geocoded address removed"
+      }
+    ],
+    "verified_values_added": {
+      "website": "https://berootedco.com",
+      "description": "Stationery and lifestyle brand offering journals, planners, office items, and related goods.",
+      "category": "Stationery, Home Goods",
+      "country": "United States",
+      "locationType": "online business",
+      "slug": "be-rooted",
+      "searchKeywords": [
+        "Be",
+        "Rooted",
+        "Stationery",
+        "Home",
+        "Goods",
+        "and",
+        "Kitchen",
+        "United",
+        "States"
+      ]
+    },
+    "evidence_sources": [
+      "https://berootedco.com"
+    ],
+    "final_category": "Home and Kitchen",
+    "final_location_type_and_location": {
+      "locationType": "online business",
+      "address": "",
+      "city": "",
+      "state": "",
+      "country": "United States",
+      "postalCode": ""
+    },
+    "final_alias": "be-rooted",
+    "search_validation": {
+      "aliasUnique": true,
+      "searchKeywords": [
+        "Be",
+        "Rooted",
+        "Stationery",
+        "Home",
+        "Goods",
+        "and",
+        "Kitchen",
+        "United",
+        "States"
+      ]
+    },
+    "route_validation": {
+      "aliasFindsRecord": true,
+      "route": "/business-directory/be-rooted"
+    },
+    "duplicate_validation": "no alias collision after repair",
+    "activation_status": "activated",
+    "repair_result": {
+      "acknowledged": true,
+      "modifiedCount": 1,
+      "upsertedId": null,
+      "upsertedCount": 0,
+      "matchedCount": 1
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfc5",
+    "canonical_business_name": "Clare",
+    "corrupted_values_removed": [
+      {
+        "field": "address",
+        "old": "Clare County, Michigan, United States",
+        "reason": "unrelated imported/geocoded address removed"
+      }
+    ],
+    "verified_values_added": {
+      "description": "Paint company selling interior paint colors, supplies, and peel-and-stick swatches online.",
+      "category": "Paint, Home Improvement",
+      "country": "United States",
+      "locationType": "online business",
+      "slug": "clare",
+      "searchKeywords": [
+        "Clare",
+        "Paint",
+        "Home",
+        "Improvement",
+        "and",
+        "Kitchen",
+        "United",
+        "States"
+      ]
+    },
+    "evidence_sources": [
+      "https://clare.com"
+    ],
+    "final_category": "Home and Kitchen",
+    "final_location_type_and_location": {
+      "locationType": "online business",
+      "address": "",
+      "city": "",
+      "state": "",
+      "country": "United States",
+      "postalCode": ""
+    },
+    "final_alias": "clare",
+    "search_validation": {
+      "aliasUnique": true,
+      "searchKeywords": [
+        "Clare",
+        "Paint",
+        "Home",
+        "Improvement",
+        "and",
+        "Kitchen",
+        "United",
+        "States"
+      ]
+    },
+    "route_validation": {
+      "aliasFindsRecord": true,
+      "route": "/business-directory/clare"
+    },
+    "duplicate_validation": "no alias collision after repair",
+    "activation_status": "activated",
+    "repair_result": {
+      "acknowledged": true,
+      "modifiedCount": 1,
+      "upsertedId": null,
+      "upsertedCount": 0,
+      "matchedCount": 1
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfc6",
+    "canonical_business_name": "Bolé Road Textiles",
+    "corrupted_values_removed": [
+      {
+        "field": "address",
+        "old": "Africa Avenue / Bole Road, ወሎ ሰፈር አካባቢ, Kirkos, አዲስ አበባ Addis Ababa أديس أبابا, አዲስ አበባ أديس أبابا, 7966, ኢትዮጵያ إثيوبيا",
+        "reason": "unrelated imported/geocoded address removed"
+      }
+    ],
+    "verified_values_added": {
+      "business_name": "Bolé Road Textiles",
+      "alias": "bole-road-textiles",
+      "description": "Textiles and home decor brand offering pillows, rugs, linens, and other home goods.",
+      "category": "Home Decor, Textiles",
+      "country": "United States",
+      "locationType": "headquarters",
+      "city": "Brooklyn",
+      "state": "New York",
+      "slug": "bole-road-textiles",
+      "searchKeywords": [
+        "Bolé",
+        "Road",
+        "Textiles",
+        "Home",
+        "Decor",
+        "and",
+        "Kitchen",
+        "Brooklyn",
+        "New",
+        "York",
+        "United",
+        "States"
+      ]
+    },
+    "evidence_sources": [
+      "https://boleroadtextiles.com"
+    ],
+    "final_category": "Home and Kitchen",
+    "final_location_type_and_location": {
+      "locationType": "headquarters",
+      "address": "",
+      "city": "Brooklyn",
+      "state": "New York",
+      "country": "United States",
+      "postalCode": ""
+    },
+    "final_alias": "bole-road-textiles",
+    "search_validation": {
+      "aliasUnique": true,
+      "searchKeywords": [
+        "Bolé",
+        "Road",
+        "Textiles",
+        "Home",
+        "Decor",
+        "and",
+        "Kitchen",
+        "Brooklyn",
+        "New",
+        "York",
+        "United",
+        "States"
+      ]
+    },
+    "route_validation": {
+      "aliasFindsRecord": true,
+      "route": "/business-directory/bole-road-textiles"
+    },
+    "duplicate_validation": "no alias collision after repair",
+    "activation_status": "activated",
+    "repair_result": {
+      "acknowledged": true,
+      "modifiedCount": 1,
+      "upsertedId": null,
+      "upsertedCount": 0,
+      "matchedCount": 1
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfcb",
+    "canonical_business_name": "The Whitney Collection",
+    "corrupted_values_removed": [
+      {
+        "field": "address",
+        "old": "Hotel David Whitney, Autograph Collection, Woodward Avenue, Detroit, Wayne County, Michigan, 48226, United States",
+        "reason": "unrelated imported/geocoded address removed"
+      }
+    ],
+    "verified_values_added": {
+      "description": "Home fragrance brand offering candles and scent-focused products.",
+      "category": "Candles, Home Fragrance",
+      "country": "United States",
+      "locationType": "online business",
+      "slug": "the-whitney-collection",
+      "searchKeywords": [
+        "The",
+        "Whitney",
+        "Collection",
+        "Candles",
+        "Home",
+        "Fragrance",
+        "and",
+        "Kitchen",
+        "United",
+        "States"
+      ]
+    },
+    "evidence_sources": [
+      "https://thewhitneycollection.com"
+    ],
+    "final_category": "Home and Kitchen",
+    "final_location_type_and_location": {
+      "locationType": "online business",
+      "address": "",
+      "city": "",
+      "state": "",
+      "country": "United States",
+      "postalCode": ""
+    },
+    "final_alias": "the-whitney-collection",
+    "search_validation": {
+      "aliasUnique": true,
+      "searchKeywords": [
+        "The",
+        "Whitney",
+        "Collection",
+        "Candles",
+        "Home",
+        "Fragrance",
+        "and",
+        "Kitchen",
+        "United",
+        "States"
+      ]
+    },
+    "route_validation": {
+      "aliasFindsRecord": true,
+      "route": "/business-directory/the-whitney-collection"
+    },
+    "duplicate_validation": "no alias collision after repair",
+    "activation_status": "activated",
+    "repair_result": {
+      "acknowledged": true,
+      "modifiedCount": 1,
+      "upsertedId": null,
+      "upsertedCount": 0,
+      "matchedCount": 1
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfce",
+    "canonical_business_name": "Fourth Phase",
+    "corrupted_values_removed": [
+      {
+        "field": "address",
+        "old": "Bel-Air Village Phase I and II, District I, Makati, Southern Manila District, Metro Manila, 1209, Philippines",
+        "reason": "unrelated imported/geocoded address removed"
+      }
+    ],
+    "verified_values_added": {
+      "description": "Postpartum care brand offering curated recovery products for mothers and families.",
+      "category": "Postnatal Care, Subscription",
+      "country": "United States",
+      "locationType": "online business",
+      "slug": "fourth-phase",
+      "searchKeywords": [
+        "Fourth",
+        "Phase",
+        "Postnatal",
+        "Care",
+        "Subscription",
+        "Baby",
+        "and",
+        "Kids",
+        "United",
+        "States"
+      ]
+    },
+    "evidence_sources": [
+      "https://thefourthphase.com"
+    ],
+    "final_category": "Baby and Kids",
+    "final_location_type_and_location": {
+      "locationType": "online business",
+      "address": "",
+      "city": "",
+      "state": "",
+      "country": "United States",
+      "postalCode": ""
+    },
+    "final_alias": "fourth-phase",
+    "search_validation": {
+      "aliasUnique": true,
+      "searchKeywords": [
+        "Fourth",
+        "Phase",
+        "Postnatal",
+        "Care",
+        "Subscription",
+        "Baby",
+        "and",
+        "Kids",
+        "United",
+        "States"
+      ]
+    },
+    "route_validation": {
+      "aliasFindsRecord": true,
+      "route": "/business-directory/fourth-phase"
+    },
+    "duplicate_validation": "no alias collision after repair",
+    "activation_status": "activated",
+    "repair_result": {
+      "acknowledged": true,
+      "modifiedCount": 1,
+      "upsertedId": null,
+      "upsertedCount": 0,
+      "matchedCount": 1
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfd3",
+    "canonical_business_name": "Royal Nation",
+    "corrupted_values_removed": [
+      {
+        "field": "address",
+        "old": "Royal VI Nation, Place de la Nation, Quartier Sainte-Marguerite, Paris 11e Arrondissement, Paris, France métropolitaine, 75011, France",
+        "reason": "unrelated imported/geocoded address removed"
+      }
+    ],
+    "verified_values_added": {
+      "description": "Kids clothing brand offering gender-neutral apparel and story-driven collections.",
+      "category": "Clothing, Kids",
+      "country": "United States",
+      "locationType": "online business",
+      "slug": "royal-nation",
+      "searchKeywords": [
+        "Royal",
+        "Nation",
+        "Clothing",
+        "Kids",
+        "Baby",
+        "and",
+        "United",
+        "States"
+      ]
+    },
+    "evidence_sources": [
+      "https://royal-nation.com"
+    ],
+    "final_category": "Baby and Kids",
+    "final_location_type_and_location": {
+      "locationType": "online business",
+      "address": "",
+      "city": "",
+      "state": "",
+      "country": "United States",
+      "postalCode": ""
+    },
+    "final_alias": "royal-nation",
+    "search_validation": {
+      "aliasUnique": true,
+      "searchKeywords": [
+        "Royal",
+        "Nation",
+        "Clothing",
+        "Kids",
+        "Baby",
+        "and",
+        "United",
+        "States"
+      ]
+    },
+    "route_validation": {
+      "aliasFindsRecord": true,
+      "route": "/business-directory/royal-nation"
+    },
+    "duplicate_validation": "no alias collision after repair",
+    "activation_status": "activated",
+    "repair_result": {
+      "acknowledged": true,
+      "modifiedCount": 1,
+      "upsertedId": null,
+      "upsertedCount": 0,
+      "matchedCount": 1
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfda",
+    "canonical_business_name": "Loyalty Bookstores",
+    "corrupted_values_removed": [],
+    "verified_values_added": {
+      "description": "Independent bookstore offering books, events, and community programming.",
+      "category": "Bookstore, Events",
+      "country": "United States",
+      "locationType": "physical storefront",
+      "address": "823 Ellsworth Dr",
+      "city": "Silver Spring",
+      "state": "Maryland",
+      "postalCode": "20910",
+      "slug": "loyalty-bookstores",
+      "searchKeywords": [
+        "Loyalty",
+        "Bookstores",
+        "Bookstore",
+        "Events",
+        "and",
+        "Educational",
+        "Silver",
+        "Spring",
+        "Maryland",
+        "United",
+        "States"
+      ]
+    },
+    "evidence_sources": [
+      "https://loyaltybookstores.com"
+    ],
+    "final_category": "Bookstores and Educational",
+    "final_location_type_and_location": {
+      "locationType": "physical storefront",
+      "address": "823 Ellsworth Dr",
+      "city": "Silver Spring",
+      "state": "Maryland",
+      "country": "United States",
+      "postalCode": "20910"
+    },
+    "final_alias": "loyalty-bookstores",
+    "search_validation": {
+      "aliasUnique": true,
+      "searchKeywords": [
+        "Loyalty",
+        "Bookstores",
+        "Bookstore",
+        "Events",
+        "and",
+        "Educational",
+        "Silver",
+        "Spring",
+        "Maryland",
+        "United",
+        "States"
+      ]
+    },
+    "route_validation": {
+      "aliasFindsRecord": true,
+      "route": "/business-directory/loyalty-bookstores"
+    },
+    "duplicate_validation": "no alias collision after repair",
+    "activation_status": "activated",
+    "repair_result": {
+      "acknowledged": true,
+      "modifiedCount": 1,
+      "upsertedId": null,
+      "upsertedCount": 0,
+      "matchedCount": 1
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfdb",
+    "canonical_business_name": "The Lit. Bar",
+    "corrupted_values_removed": [],
+    "verified_values_added": {
+      "business_name": "The Lit. Bar",
+      "website": "https://thelitbar.com",
+      "description": "Independent bookstore and wine bar offering books, drinks, and community events.",
+      "category": "Bookstore, Cafe",
+      "country": "United States",
+      "locationType": "physical storefront",
+      "address": "131 Alexander Ave",
+      "city": "Bronx",
+      "state": "New York",
+      "postalCode": "10454",
+      "slug": "the-lit-bar",
+      "searchKeywords": [
+        "The",
+        "Lit.",
+        "Bar",
+        "Bookstore",
+        "Cafe",
+        "Bookstores",
+        "and",
+        "Educational",
+        "Bronx",
+        "New",
+        "York",
+        "United",
+        "States"
+      ]
+    },
+    "evidence_sources": [
+      "https://thelitbar.com"
+    ],
+    "final_category": "Bookstores and Educational",
+    "final_location_type_and_location": {
+      "locationType": "physical storefront",
+      "address": "131 Alexander Ave",
+      "city": "Bronx",
+      "state": "New York",
+      "country": "United States",
+      "postalCode": "10454"
+    },
+    "final_alias": "the-lit-bar",
+    "search_validation": {
+      "aliasUnique": true,
+      "searchKeywords": [
+        "The",
+        "Lit.",
+        "Bar",
+        "Bookstore",
+        "Cafe",
+        "Bookstores",
+        "and",
+        "Educational",
+        "Bronx",
+        "New",
+        "York",
+        "United",
+        "States"
+      ]
+    },
+    "route_validation": {
+      "aliasFindsRecord": true,
+      "route": "/business-directory/the-lit-bar"
+    },
+    "duplicate_validation": "no alias collision after repair",
+    "activation_status": "activated",
+    "repair_result": {
+      "acknowledged": true,
+      "modifiedCount": 1,
+      "upsertedId": null,
+      "upsertedCount": 0,
+      "matchedCount": 1
+    }
+  }
+]

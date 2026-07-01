@@ -12,7 +12,8 @@ function hasValue(v) {
 }
 
 function getAliasCategory(doc) {
-  if (hasValue(doc.display_categories)) return asTrimmed(doc.display_categories);
+  if (hasValue(doc.display_categories))
+    return asTrimmed(doc.display_categories);
   if (Array.isArray(doc.categories))
     return doc.categories
       .map((x) => asTrimmed(x))

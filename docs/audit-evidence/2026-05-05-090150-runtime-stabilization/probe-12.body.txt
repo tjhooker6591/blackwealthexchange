@@ -1,0 +1,1 @@
+{"ok":true,"overallStatus":"operational","services":{"auth":"operational","search":"operational","marketplace":"operational","jobs":"operational","ads":"operational"},"incidentTimeline":[],"lastUpdatedAt":"2026-05-05T16:02:19.672Z","typicalResponseTimeHours":null}

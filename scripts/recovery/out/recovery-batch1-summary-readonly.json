@@ -2,7 +2,7 @@
   "environment": {
     "database": "bwes-cluster",
     "collection": "businesses",
-    "executionTimestamp": "2026-06-21T05:28:17.189Z",
+    "executionTimestamp": "2026-06-21T05:34:43.554Z",
     "script": "/Users/blackforge/workspace/bwe/repos/repo_clean/scripts/recovery/build_recovery_batch1_readonly.js"
   },
   "totals": {

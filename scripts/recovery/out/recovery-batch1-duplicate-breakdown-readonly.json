@@ -1,0 +1,35 @@
+{
+  "rowCount": 1622,
+  "counts": {
+    "exact phone collision": 1464,
+    "exact website-domain collision": 7,
+    "exact official-profile collision": 0,
+    "exact name plus exact address": 0,
+    "exact address but different business name": 101,
+    "same business name but different address": 0,
+    "same brand with multiple locations": 0,
+    "similar-name only": 18,
+    "possible rebrand": 0,
+    "weak heuristic relationship": 0,
+    "no duplicate relationship": 32
+  },
+  "strongReviewCounts": {
+    "exact_phone": 1464,
+    "exact_website": 7,
+    "exact_official_profile": 0,
+    "exact_name_and_address": 0
+  },
+  "mediumReviewCounts": {
+    "exact_normalized_name_same_city": 0,
+    "same_address_incomplete_names": 101,
+    "probable_rebrand": 0,
+    "same_brand_uncertain_location_relationship": 0
+  },
+  "weakReviewCounts": {
+    "similar_name_only": 18,
+    "generic_category_overlap": 0,
+    "same_city_only": 0,
+    "common_address_fragment": 0,
+    "weak_normalized_name_collision": 0
+  }
+}

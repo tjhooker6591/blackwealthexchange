@@ -1,0 +1,19 @@
+{
+  "original_proposed_candidates": 22,
+  "fully_validated_and_recommended": 1,
+  "downgraded_to_unresolved": 21,
+  "confirmed_duplicate": 0,
+  "closed_or_invalid": 0,
+  "total": 22,
+  "current_public_count": 332,
+  "validated_additions": 1,
+  "final_defensible_projected_total": 333,
+  "protected_directory_guard": {
+    "Protected businesses before": 332,
+    "Protected businesses after simulation": 332,
+    "Protected IDs removed": 0,
+    "Protected routes displaced": 0,
+    "Protected businesses unapproved": 0,
+    "Protected businesses deactivated": 0
+  }
+}

@@ -92,9 +92,12 @@ try {
     pass: Boolean(escalationId),
   });
 
-  const escalationsOpen = await req("/api/admin/consultant-escalations?status=open", {
-    cookie,
-  });
+  const escalationsOpen = await req(
+    "/api/admin/consultant-escalations?status=open",
+    {
+      cookie,
+    },
+  );
   const openItems = Array.isArray(escalationsOpen.json?.items)
     ? escalationsOpen.json.items
     : [];
@@ -154,7 +157,11 @@ try {
         baseUrl,
         requestId,
         escalationId,
-        totals: { total: checks.length, passed: checks.length - failed, failed },
+        totals: {
+          total: checks.length,
+          passed: checks.length - failed,
+          failed,
+        },
         checks,
       },
       null,

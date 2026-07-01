@@ -28,7 +28,9 @@ function listeners(port) {
 }
 
 function nextProcsForRepo() {
-  const out = sh('ps -Ao pid,command | grep -E "next dev|next start|node.*next|npm run dev" | grep -v grep');
+  const out = sh(
+    'ps -Ao pid,command | grep -E "next dev|next start|node.*next|npm run dev" | grep -v grep',
+  );
   if (!out) return [];
   return out
     .split("\n")
@@ -37,7 +39,11 @@ function nextProcsForRepo() {
 }
 
 function httpStatus(url) {
-  const res = spawnSync("curl", ["-s", "-o", "/dev/null", "-w", "%{http_code}", url], { encoding: "utf8" });
+  const res = spawnSync(
+    "curl",
+    ["-s", "-o", "/dev/null", "-w", "%{http_code}", url],
+    { encoding: "utf8" },
+  );
   return (res.stdout || "").trim();
 }
 
@@ -54,16 +60,22 @@ function checkArtifacts() {
 
   const errors = [];
   if (!existsSync(nextDir)) errors.push("missing .next directory");
-  if (!existsSync(routesManifest)) errors.push("missing .next/routes-manifest.json");
-  if (!existsSync(prerenderManifest)) errors.push("missing .next/prerender-manifest.json");
+  if (!existsSync(routesManifest))
+    errors.push("missing .next/routes-manifest.json");
+  if (!existsSync(prerenderManifest))
+    errors.push("missing .next/prerender-manifest.json");
 
   if (existsSync(webpackRuntime)) {
     const content = readFileSync(webpackRuntime, "utf8");
     const refs = [...content.matchAll(/\.\/([0-9]+\.js)/g)].map((m) => m[1]);
     const uniq = [...new Set(refs)].slice(0, 50);
-    const missing = uniq.filter((f) => !existsSync(path.join(nextDir, "server", f)));
+    const missing = uniq.filter(
+      (f) => !existsSync(path.join(nextDir, "server", f)),
+    );
     if (missing.length) {
-      errors.push(`missing webpack chunk(s): ${missing.slice(0, 5).join(", ")}${missing.length > 5 ? " ..." : ""}`);
+      errors.push(
+        `missing webpack chunk(s): ${missing.slice(0, 5).join(", ")}${missing.length > 5 ? " ..." : ""}`,
+      );
     }
   }
 
@@ -77,9 +89,18 @@ const nextProcs = nextProcsForRepo();
 
 console.log(`runtime:check (${mode})`);
 console.log("--- port listeners ---");
-console.log("3000:", p3000.length ? p3000.map((x) => `${x.pid}:${x.command}`).join(", ") : "none");
-console.log("3001:", p3001.length ? p3001.map((x) => `${x.pid}:${x.command}`).join(", ") : "none");
-console.log("3002:", p3002.length ? p3002.map((x) => `${x.pid}:${x.command}`).join(", ") : "none");
+console.log(
+  "3000:",
+  p3000.length ? p3000.map((x) => `${x.pid}:${x.command}`).join(", ") : "none",
+);
+console.log(
+  "3001:",
+  p3001.length ? p3001.map((x) => `${x.pid}:${x.command}`).join(", ") : "none",
+);
+console.log(
+  "3002:",
+  p3002.length ? p3002.map((x) => `${x.pid}:${x.command}`).join(", ") : "none",
+);
 console.log("--- next processes (repo-scoped) ---");
 console.log(nextProcs.length ? nextProcs.join("\n") : "none");
 
@@ -87,7 +108,9 @@ let fail = false;
 
 if (mode === "clear") {
   if (p3000.length || p3001.length || p3002.length || nextProcs.length) {
-    console.error("FAIL: build precheck requires no Next runtime on 3000/3001/3002 and no repo-scoped Next process.");
+    console.error(
+      "FAIL: build precheck requires no Next runtime on 3000/3001/3002 and no repo-scoped Next process.",
+    );
     fail = true;
   }
   if (fail) process.exit(1);
@@ -100,17 +123,23 @@ if (p3001.length || p3002.length) {
   fail = true;
 }
 if (p3000.length !== 1) {
-  console.error(`FAIL: expected exactly one listener on 3000, found ${p3000.length}.`);
+  console.error(
+    `FAIL: expected exactly one listener on 3000, found ${p3000.length}.`,
+  );
   fail = true;
 }
 if (nextProcs.length !== 1) {
-  console.error(`FAIL: expected exactly one repo-scoped Next runtime process, found ${nextProcs.length}.`);
+  console.error(
+    `FAIL: expected exactly one repo-scoped Next runtime process, found ${nextProcs.length}.`,
+  );
   fail = true;
 }
 
 const artifactErrors = checkArtifacts();
 if (artifactErrors.length) {
-  console.error("FAIL: Runtime artifact state is invalid. Stop dev server, remove .next, restart one runtime on 3000.");
+  console.error(
+    "FAIL: Runtime artifact state is invalid. Stop dev server, remove .next, restart one runtime on 3000.",
+  );
   artifactErrors.forEach((e) => console.error(` - ${e}`));
   fail = true;
 }
@@ -118,14 +147,22 @@ if (artifactErrors.length) {
 const homeStatus = httpStatus("http://localhost:3000/");
 const homeBody = homeStatus ? httpBody("http://localhost:3000/") : "";
 if (homeStatus !== "200") {
-  console.error(`FAIL: quick smoke check for / returned ${homeStatus || "no response"}, expected 200.`);
+  console.error(
+    `FAIL: quick smoke check for / returned ${homeStatus || "no response"}, expected 200.`,
+  );
   fail = true;
 }
 if (homeBody.includes("missing required error components")) {
-  console.error("FAIL: detected 'missing required error components' shell on / .");
-  console.error("Runtime artifact state is invalid. Stop dev server, remove .next, restart one runtime on 3000.");
+  console.error(
+    "FAIL: detected 'missing required error components' shell on / .",
+  );
+  console.error(
+    "Runtime artifact state is invalid. Stop dev server, remove .next, restart one runtime on 3000.",
+  );
   fail = true;
 }
 
 if (fail) process.exit(1);
-console.log("PASS: single-runtime + artifact sanity guardrail satisfied (localhost:3000 only).");
+console.log(
+  "PASS: single-runtime + artifact sanity guardrail satisfied (localhost:3000 only).",
+);

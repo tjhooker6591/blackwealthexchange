@@ -1,0 +1,7 @@
+method=GET
+url=http://localhost:3000/api/travel-map/search
+status=200
+location=
+content_type=application/json; charset=utf-8
+bytes=6353
+body_preview={"ok":true,"total":2283,"page":1,"pageSize":12,"results":[{"_id":"68451075f4bbe6396963031b","business_name":"Walter's Clothing","slug":"","description":"Iconic Black-owned shoe and streetwear store in Atlanta since 1952.

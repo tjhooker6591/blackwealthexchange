@@ -24,7 +24,8 @@ const dbNameFromUri = (() => {
     return "test";
   }
 })();
-const DB_NAME = process.env.MONGODB_DB || process.env.MONGODB_DB_NAME || dbNameFromUri;
+const DB_NAME =
+  process.env.MONGODB_DB || process.env.MONGODB_DB_NAME || dbNameFromUri;
 
 const client = new MongoClient(MONGO_URI);
 await client.connect();
@@ -43,7 +44,9 @@ await db.collection("users").updateOne(
       blackCardTier: "standard",
       blackCardStatus: "active",
       blackCardMemberSince: now,
-      blackCardPlanExpiresAt: new Date(now.getTime() + 1000 * 60 * 60 * 24 * 30),
+      blackCardPlanExpiresAt: new Date(
+        now.getTime() + 1000 * 60 * 60 * 24 * 30,
+      ),
       blackCardRewardsBalance: 0,
       updatedAt: now,
     },
@@ -55,8 +58,14 @@ await db.collection("users").updateOne(
   { upsert: true },
 );
 
-const user = await db.collection("users").findOne({ email }, { projection: { _id: 1, email: 1 } });
-const token = jwt.sign({ userId: String(user._id), email: user.email }, SECRET, { expiresIn: "2h" });
+const user = await db
+  .collection("users")
+  .findOne({ email }, { projection: { _id: 1, email: 1 } });
+const token = jwt.sign(
+  { userId: String(user._id), email: user.email },
+  SECRET,
+  { expiresIn: "2h" },
+);
 const cookie = `session_token=${token}`;
 
 async function call(path, options = {}) {
@@ -70,36 +79,59 @@ async function call(path, options = {}) {
   });
   const body = await res.text();
   let json;
-  try { json = JSON.parse(body); } catch { json = body; }
+  try {
+    json = JSON.parse(body);
+  } catch {
+    json = body;
+  }
   return { status: res.status, json };
 }
 
 const proof = {};
 
-proof.entitlementAllow = await call("/api/black-card/entitlements/check?benefit=selected_events");
-proof.entitlementDeny = await call("/api/black-card/entitlements/check?benefit=vip_events");
+proof.entitlementAllow = await call(
+  "/api/black-card/entitlements/check?benefit=selected_events",
+);
+proof.entitlementDeny = await call(
+  "/api/black-card/entitlements/check?benefit=vip_events",
+);
 
 proof.earn1 = await call("/api/black-card/rewards/earn", {
   method: "POST",
-  body: JSON.stringify({ actionType: "referral_business", referenceId: `proof-${Date.now()}-rb` }),
+  body: JSON.stringify({
+    actionType: "referral_business",
+    referenceId: `proof-${Date.now()}-rb`,
+  }),
 });
 proof.earn2 = await call("/api/black-card/rewards/earn", {
   method: "POST",
-  body: JSON.stringify({ actionType: "membership_renewal", referenceId: `proof-${Date.now()}-mr` }),
+  body: JSON.stringify({
+    actionType: "membership_renewal",
+    referenceId: `proof-${Date.now()}-mr`,
+  }),
 });
 proof.earn3 = await call("/api/black-card/rewards/earn", {
   method: "POST",
-  body: JSON.stringify({ actionType: "event_join", referenceId: `proof-${Date.now()}-ej` }),
+  body: JSON.stringify({
+    actionType: "event_join",
+    referenceId: `proof-${Date.now()}-ej`,
+  }),
 });
 
 proof.ledger = await call("/api/black-card/rewards/ledger");
 proof.redeemAllowed = await call("/api/black-card/rewards/redeem", {
   method: "POST",
-  body: JSON.stringify({ rewardType: "marketplace_fee_credit", referenceId: `proof-${Date.now()}-redeem-ok` }),
+  body: JSON.stringify({
+    rewardType: "marketplace_fee_credit",
+    referenceId: `proof-${Date.now()}-redeem-ok`,
+  }),
 });
 proof.redeemDeniedTier = await call("/api/black-card/rewards/redeem", {
   method: "POST",
-  body: JSON.stringify({ rewardType: "ad_credit", referenceId: `proof-${Date.now()}-redeem-deny` }),
+  body: JSON.stringify({
+    rewardType: "ad_credit",
+    referenceId: `proof-${Date.now()}-redeem-deny`,
+  }),
 });
 
 console.log(JSON.stringify(proof, null, 2));

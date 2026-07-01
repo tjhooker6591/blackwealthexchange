@@ -1,0 +1,46 @@
+{
+  "original_batch1_universe": 1613,
+  "zero_change_no_action_rows": 35,
+  "actionable_candidates": 1578,
+  "total": 1613,
+  "v2_widened_universe": 1622,
+  "v2_zero_change_rows": 44,
+  "v2_minus_original_zero_change_difference": 9,
+  "protected_simulation": {
+    "protectedBefore": 332,
+    "protectedAfterSimulation": 332,
+    "protectedIdsRemoved": 0,
+    "protectedBusinessesUnapproved": 0,
+    "protectedBusinessesDeactivated": 0
+  },
+  "duplicate_final_classification_counts": {
+    "confirmed machine-key collision": 1446,
+    "strong duplicate review": 0,
+    "same brand/different location": 0,
+    "probable rebrand": 0,
+    "weak relationship": 86,
+    "no reliable duplicate evidence": 46
+  },
+  "duplicate_evidence_counts": {
+    "exact_phone_matches": 1439,
+    "exact_website_domain_matches": 75,
+    "exact_address_and_name_matches": 16,
+    "exact_official_profile_matches": 0,
+    "name_only_matches": 4,
+    "address_only_matches": 1532
+  },
+  "normalization_safe_counts": {
+    "safe_website_operation_count": 280,
+    "safe_phone_operation_count": 1464,
+    "records_containing_both": 268,
+    "unique_record_count": 1476,
+    "excluded_operation_count": 4,
+    "excluded_reasons": {
+      "website change is not strictly formatting-only": 4
+    }
+  },
+  "safe_first_write_proposal_counts": {
+    "operation_count": 1744,
+    "unique_business_record_count": 1476
+  }
+}

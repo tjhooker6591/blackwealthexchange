@@ -1,0 +1,8 @@
+Local fixture cleanup (no app code changes):
+1) Remove test users from local DB collections by email pattern:
+   audit.seller.*@blackwealthexchange.test
+   audit.employer.*@blackwealthexchange.test
+   audit.admin.*@blackwealthexchange.test
+2) Remove associated local records created during tests (seller/employer/admin/profile/etc) by those user IDs/emails.
+3) Delete temporary local token/header files from /tmp:
+   /tmp/audit_*_headers.txt /tmp/audit_*_body.json /tmp/role_tokens.txt

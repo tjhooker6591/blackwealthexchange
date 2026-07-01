@@ -1,0 +1,7 @@
+method=GET
+url=http://localhost:3000/api/marketplace/get-product-by-id
+status=400
+location=
+content_type=application/json; charset=utf-8
+bytes=41
+body_preview={"error":"Missing or invalid product ID"}

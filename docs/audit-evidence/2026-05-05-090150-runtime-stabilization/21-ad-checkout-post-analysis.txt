@@ -1,0 +1,4 @@
+request_shape={"option":"banner","placement":"home_top","duration":30,"campaignId":"audit-nonlive"}
+status_line=HTTP/1.1 500 Internal Server Error
+content_type=application/json; charset=utf-8
+response_body={"error":"Stripe is not configured"} 

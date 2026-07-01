@@ -1,0 +1,2833 @@
+{
+  "generatedAt": "2026-04-20T20:57:29.879Z",
+  "baseUrl": "http://localhost:3000",
+  "totals": {
+    "total": 42,
+    "passed": 34,
+    "failed": 8
+  },
+  "results": [
+    {
+      "name": "anon_public_home",
+      "route": "/",
+      "method": "GET",
+      "role": "anonymous",
+      "state": "logged_out",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "pass": true,
+      "location": null,
+      "setCookie": null,
+      "body": "<!DOCTYPE html><html lang=\"en\"><head><meta charSet=\"utf-8\" data-next-head=\"\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" data-next-head=\"\"/><link rel=\"icon",
+      "note": null,
+      "error": null
+    },
+    {
+      "name": "anon_public_directory",
+      "route": "/business-directory",
+      "method": "GET",
+      "role": "anonymous",
+      "state": "logged_out",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "pass": true,
+      "location": null,
+      "setCookie": null,
+      "body": "<!DOCTYPE html><html lang=\"en\"><head><meta charSet=\"utf-8\" data-next-head=\"\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" data-next-head=\"\"/><link rel=\"icon",
+      "note": null,
+      "error": null
+    },
+    {
+      "name": "anon_public_jobs_page",
+      "route": "/job-listings",
+      "method": "GET",
+      "role": "anonymous",
+      "state": "logged_out",
+      "expectedStatus": 307,
+      "actualStatus": 200,
+      "pass": false,
+      "location": null,
+      "setCookie": null,
+      "body": "<!DOCTYPE html><html lang=\"en\"><head><meta charSet=\"utf-8\" data-next-head=\"\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" data-next-head=\"\"/><link rel=\"icon",
+      "note": null,
+      "error": null
+    },
+    {
+      "name": "anon_protected_business_detail",
+      "route": "/business-directory/sponsored-business",
+      "method": "GET",
+      "role": "anonymous",
+      "state": "logged_out",
+      "expectedStatus": 307,
+      "actualStatus": 200,
+      "pass": false,
+      "location": null,
+      "setCookie": null,
+      "body": "<!DOCTYPE html><html lang=\"en\"><head><meta charSet=\"utf-8\" data-next-head=\"\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" data-next-head=\"\"/><title data-nex",
+      "note": null,
+      "error": null
+    },
+    {
+      "name": "anon_admin_dashboard",
+      "route": "/admin/dashboard",
+      "method": "GET",
+      "role": "anonymous",
+      "state": "logged_out",
+      "expectedStatus": 307,
+      "actualStatus": 307,
+      "pass": true,
+      "location": "/login?redirect=/admin/dashboard",
+      "setCookie": null,
+      "body": "/login?redirect=/admin/dashboard",
+      "note": null,
+      "error": null
+    },
+    {
+      "name": "anon_seller_dashboard",
+      "route": "/marketplace/dashboard",
+      "method": "GET",
+      "role": "anonymous",
+      "state": "logged_out",
+      "expectedStatus": 307,
+      "actualStatus": 200,
+      "pass": false,
+      "location": null,
+      "setCookie": null,
+      "body": "<!DOCTYPE html><html lang=\"en\"><head><meta charSet=\"utf-8\" data-next-head=\"\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" data-next-head=\"\"/><title data-nex",
+      "note": null,
+      "error": null
+    },
+    {
+      "name": "anon_employer_jobs_page",
+      "route": "/employer/jobs",
+      "method": "GET",
+      "role": "anonymous",
+      "state": "logged_out",
+      "expectedStatus": 307,
+      "actualStatus": 307,
+      "pass": true,
+      "location": "/login?redirect=/employer/jobs",
+      "setCookie": null,
+      "body": "/login?redirect=/employer/jobs",
+      "note": null,
+      "error": null
+    },
+    {
+      "name": "anon_auth_me",
+      "route": "/api/auth/me",
+      "method": "GET",
+      "role": "anonymous",
+      "state": "logged_out",
+      "expectedStatus": 401,
+      "actualStatus": 401,
+      "pass": true,
+      "location": null,
+      "setCookie": null,
+      "body": {
+        "user": null,
+        "error": "No token cookie found."
+      },
+      "note": null,
+      "error": null
+    },
+    {
+      "name": "anon_profile_api",
+      "route": "/api/profile",
+      "method": "GET",
+      "role": "anonymous",
+      "state": "logged_out",
+      "expectedStatus": 401,
+      "actualStatus": 401,
+      "pass": true,
+      "location": null,
+      "setCookie": null,
+      "body": {
+        "error": "Unauthorized"
+      },
+      "note": null,
+      "error": null
+    },
+    {
+      "name": "anon_admin_api",
+      "route": "/api/admin/dashboard",
+      "method": "GET",
+      "role": "anonymous",
+      "state": "logged_out",
+      "expectedStatus": 401,
+      "actualStatus": 401,
+      "pass": true,
+      "location": null,
+      "setCookie": null,
+      "body": {
+        "ok": false,
+        "code": "UNAUTHORIZED",
+        "message": "Unauthorized"
+      },
+      "note": null,
+      "error": null
+    },
+    {
+      "name": "anon_employer_api",
+      "route": "/api/employer/jobs",
+      "method": "GET",
+      "role": "anonymous",
+      "state": "logged_out",
+      "expectedStatus": 401,
+      "actualStatus": 401,
+      "pass": true,
+      "location": null,
+      "setCookie": null,
+      "body": {
+        "error": "Not authenticated"
+      },
+      "note": null,
+      "error": null
+    },
+    {
+      "name": "anon_seller_orders_api",
+      "route": "/api/marketplace/get-orders",
+      "method": "GET",
+      "role": "anonymous",
+      "state": "logged_out",
+      "expectedStatus": 401,
+      "actualStatus": 401,
+      "pass": true,
+      "location": null,
+      "setCookie": null,
+      "body": {
+        "error": "Unauthorized: No token provided"
+      },
+      "note": null,
+      "error": null
+    },
+    {
+      "name": "login_success_user",
+      "route": "/api/auth/login",
+      "method": "POST",
+      "role": "user",
+      "state": "login_success",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "pass": true,
+      "location": null,
+      "setCookie": "session_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OWU2OTMyZGZhNGRjOTc5NmE1ZTIxN2IiLCJlbWFpbCI6ImF1ZGl0LnVzZXIuMTc3NjcxODYzNzE0N0BleGFtcGxlLmNvbSIsImFjY291bnRUeXBlIjoidXNlciIsImlzQWRtaW4iOmZhbHNlLCJpYXQiOjE3NzY3MTg2NDIsImV4cCI6MTc3NjcyMDQ0Mn0.gRzfhs4mjDqbF5M3IZBAZ8-H4UynA9sf4DDnSk9w_sY; Max-Age=1800; Path=/; HttpOnly; SameSite=Lax, accountType=user; Max-Age=1800; Path=/; SameSite=Lax",
+      "body": {
+        "success": true,
+        "message": "Login successful",
+        "user": {
+          "id": "69e6932dfa4dc9796a5e217b",
+          "userId": "69e6932dfa4dc9796a5e217b",
+          "email": "audit.user.1776718637147@example.com",
+          "accountType": "user",
+          "isAdmin": false
+        }
+      },
+      "note": null,
+      "error": null
+    },
+    {
+      "name": "login_success_business",
+      "route": "/api/auth/login",
+      "method": "POST",
+      "role": "business",
+      "state": "login_success",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "pass": true,
+      "location": null,
+      "setCookie": "session_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OWU2OTMyZGZhNGRjOTc5NmE1ZTIxN2MiLCJlbWFpbCI6ImF1ZGl0LmJ1c2luZXNzLjE3NzY3MTg2MzcxNDdAZXhhbXBsZS5jb20iLCJhY2NvdW50VHlwZSI6ImJ1c2luZXNzIiwiaXNBZG1pbiI6ZmFsc2UsImlhdCI6MTc3NjcxODY0MywiZXhwIjoxNzc2NzIwNDQzfQ._zQugbjuSEUZwns-Wyw3-gscffSYKcju05B2E0p5CD8; Max-Age=1800; Path=/; HttpOnly; SameSite=Lax, accountType=business; Max-Age=1800; Path=/; SameSite=Lax",
+      "body": {
+        "success": true,
+        "message": "Login successful",
+        "user": {
+          "id": "69e6932dfa4dc9796a5e217c",
+          "userId": "69e6932dfa4dc9796a5e217c",
+          "email": "audit.business.1776718637147@example.com",
+          "accountType": "business",
+          "isAdmin": false
+        }
+      },
+      "note": null,
+      "error": null
+    },
+    {
+      "name": "login_success_seller",
+      "route": "/api/auth/login",
+      "method": "POST",
+      "role": "seller",
+      "state": "login_success",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "pass": true,
+      "location": null,
+      "setCookie": "session_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OWU2OTMyZGZhNGRjOTc5NmE1ZTIxN2QiLCJlbWFpbCI6ImF1ZGl0LnNlbGxlci4xNzc2NzE4NjM3MTQ3QGV4YW1wbGUuY29tIiwiYWNjb3VudFR5cGUiOiJzZWxsZXIiLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNzc2NzE4NjQzLCJleHAiOjE3NzY3MjA0NDN9.LmLVLCdOG7uPuGmMUr4x4ACWuzX8JmcYfwFlT6Dszs4; Max-Age=1800; Path=/; HttpOnly; SameSite=Lax, accountType=seller; Max-Age=1800; Path=/; SameSite=Lax",
+      "body": {
+        "success": true,
+        "message": "Login successful",
+        "user": {
+          "id": "69e6932dfa4dc9796a5e217d",
+          "userId": "69e6932dfa4dc9796a5e217d",
+          "email": "audit.seller.1776718637147@example.com",
+          "accountType": "seller",
+          "isAdmin": false
+        }
+      },
+      "note": null,
+      "error": null
+    },
+    {
+      "name": "login_success_employer",
+      "route": "/api/auth/login",
+      "method": "POST",
+      "role": "employer",
+      "state": "login_success",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "pass": true,
+      "location": null,
+      "setCookie": "session_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OWU2OTMyZGZhNGRjOTc5NmE1ZTIxN2UiLCJlbWFpbCI6ImF1ZGl0LmVtcGxveWVyLjE3NzY3MTg2MzcxNDdAZXhhbXBsZS5jb20iLCJhY2NvdW50VHlwZSI6ImVtcGxveWVyIiwiaXNBZG1pbiI6ZmFsc2UsImlhdCI6MTc3NjcxODY0NCwiZXhwIjoxNzc2NzIwNDQ0fQ.sQQlgJraGgYN9vo-BoT51uSFpa4CKZiAZB_nA8ujprg; Max-Age=1800; Path=/; HttpOnly; SameSite=Lax, accountType=employer; Max-Age=1800; Path=/; SameSite=Lax",
+      "body": {
+        "success": true,
+        "message": "Login successful",
+        "user": {
+          "id": "69e6932dfa4dc9796a5e217e",
+          "userId": "69e6932dfa4dc9796a5e217e",
+          "email": "audit.employer.1776718637147@example.com",
+          "accountType": "employer",
+          "isAdmin": false
+        }
+      },
+      "note": null,
+      "error": null
+    },
+    {
+      "name": "login_success_admin_user_collection",
+      "route": "/api/auth/login",
+      "method": "POST",
+      "role": "admin",
+      "state": "login_success",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "pass": true,
+      "location": null,
+      "setCookie": "session_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OWU2OTMyZGZhNGRjOTc5NmE1ZTIxN2YiLCJlbWFpbCI6ImF1ZGl0LmFkbWluLjE3NzY3MTg2MzcxNDdAZXhhbXBsZS5jb20iLCJhY2NvdW50VHlwZSI6InVzZXIiLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE3NzY3MTg2NDUsImV4cCI6MTc3NjcyMDQ0NX0.Y7SogWE1Bj8yqnWP6lmKYuIpBruWWD3wSqrH76GlpQQ; Max-Age=1800; Path=/; HttpOnly; SameSite=Lax, accountType=user; Max-Age=1800; Path=/; SameSite=Lax",
+      "body": {
+        "success": true,
+        "message": "Login successful",
+        "user": {
+          "id": "69e6932dfa4dc9796a5e217f",
+          "userId": "69e6932dfa4dc9796a5e217f",
+          "email": "audit.admin.1776718637147@example.com",
+          "accountType": "user",
+          "isAdmin": true
+        }
+      },
+      "note": "admin account logs via users collection",
+      "error": null
+    },
+    {
+      "name": "login_failure_wrong_password",
+      "route": "/api/auth/login",
+      "method": "POST",
+      "role": "user",
+      "state": "login_failure",
+      "expectedStatus": 401,
+      "actualStatus": 401,
+      "pass": true,
+      "location": null,
+      "setCookie": null,
+      "body": {
+        "success": false,
+        "error": "Invalid credentials."
+      },
+      "note": null,
+      "error": null
+    },
+    {
+      "name": "login_failure_wrong_role_collection",
+      "route": "/api/auth/login",
+      "method": "POST",
+      "role": "user",
+      "state": "login_failure",
+      "expectedStatus": 401,
+      "actualStatus": 401,
+      "pass": true,
+      "location": null,
+      "setCookie": null,
+      "body": {
+        "success": false,
+        "error": "Invalid credentials."
+      },
+      "note": "user email not found in sellers collection",
+      "error": null
+    },
+    {
+      "name": "user_me_active",
+      "route": "/api/auth/me",
+      "method": "GET",
+      "role": "user",
+      "state": "session_active",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "pass": true,
+      "location": null,
+      "setCookie": null,
+      "body": {
+        "user": {
+          "_id": "69e6932dfa4dc9796a5e217b",
+          "email": "audit.user.1776718637147@example.com",
+          "accountType": "user",
+          "fullName": "Audit User",
+          "createdAt": "2026-04-20T20:57:18.049Z",
+          "updatedAt": "2026-04-20T20:57:18.049Z",
+          "id": "69e6932dfa4dc9796a5e217b",
+          "isPremium": false,
+          "currentPlan": "free",
+          "premiumStatus": "inactive",
+          "premiumActivatedAt": null,
+          "blackCardTier": null,
+          "blackCardStatus": "inactive",
+          "blackCardMemberSince": null
+        }
+      },
+      "note": null,
+      "error": null
+    },
+    {
+      "name": "business_me_active",
+      "route": "/api/auth/me",
+      "method": "GET",
+      "role": "business",
+      "state": "session_active",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "pass": true,
+      "location": null,
+      "setCookie": null,
+      "body": {
+        "user": {
+          "_id": "69e6932dfa4dc9796a5e217c",
+          "email": "audit.business.1776718637147@example.com",
+          "accountType": "business",
+          "businessName": "Audit Biz",
+          "createdAt": "2026-04-20T20:57:18.129Z",
+          "updatedAt": "2026-04-20T20:57:18.129Z",
+          "id": "69e6932dfa4dc9796a5e217c",
+          "isPremium": false,
+          "currentPlan": "free",
+          "premiumStatus": "inactive",
+          "premiumActivatedAt": null,
+          "blackCardTier": null,
+          "blackCardStatus": "inactive",
+          "blackCardMemberSince": null
+        }
+      },
+      "note": null,
+      "error": null
+    },
+    {
+      "name": "seller_me_active",
+      "route": "/api/auth/me",
+      "method": "GET",
+      "role": "seller",
+      "state": "session_active",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "pass": true,
+      "location": null,
+      "setCookie": null,
+      "body": {
+        "user": {
+          "_id": "69e6932dfa4dc9796a5e217d",
+          "userId": "69e6932dfa4dc9796a5e217d",
+          "email": "audit.seller.1776718637147@example.com",
+          "accountType": "seller",
+          "storeName": "Audit Seller",
+          "createdAt": "2026-04-20T20:57:18.217Z",
+          "updatedAt": "2026-04-20T20:57:18.217Z",
+          "id": "69e6932dfa4dc9796a5e217d",
+          "isPremium": false,
+          "currentPlan": "free",
+          "premiumStatus": "inactive",
+          "premiumActivatedAt": null,
+          "blackCardTier": null,
+          "blackCardStatus": "inactive",
+          "blackCardMemberSince": null
+        }
+      },
+      "note": null,
+      "error": null
+    },
+    {
+      "name": "employer_me_active",
+      "route": "/api/auth/me",
+      "method": "GET",
+      "role": "employer",
+      "state": "session_active",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "pass": true,
+      "location": null,
+      "setCookie": null,
+      "body": {
+        "user": {
+          "_id": "69e6932dfa4dc9796a5e217e",
+          "email": "audit.employer.1776718637147@example.com",
+          "accountType": "employer",
+          "companyName": "Audit Employer",
+          "createdAt": "2026-04-20T20:57:18.314Z",
+          "updatedAt": "2026-04-20T20:57:18.314Z",
+          "id": "69e6932dfa4dc9796a5e217e",
+          "isPremium": false,
+          "currentPlan": "free",
+          "premiumStatus": "inactive",
+          "premiumActivatedAt": null,
+          "blackCardTier": null,
+          "blackCardStatus": "inactive",
+          "blackCardMemberSince": null
+        }
+      },
+      "note": null,
+      "error": null
+    },
+    {
+      "name": "admin_api_dashboard_active",
+      "route": "/api/admin/dashboard",
+      "method": "GET",
+      "role": "admin",
+      "state": "session_active",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "pass": true,
+      "location": null,
+      "setCookie": null,
+      "body": {
+        "ok": true,
+        "meta": {
+          "limit": 200
+        },
+        "businesses": [
+          {
+            "_id": "69e6932dfa4dc9796a5e217c",
+            "businessName": "Audit Biz",
+            "email": "audit.business.1776718637147@example.com",
+            "address": "",
+            "approved": false,
+            "status": "pending",
+            "createdAt": "2026-04-20T20:57:18.129Z",
+            "updatedAt": "2026-04-20T20:57:18.129Z"
+          },
+          {
+            "_id": "698ff52ae8467526b29ede86",
+            "businessName": "Fade-N-Up",
+            "email": "",
+            "address": "403 S 2nd St, Laramie, WY 82070",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T23:04:06.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff52ae8467526b29ede88",
+            "businessName": "Cuts for Men",
+            "email": "",
+            "address": "116 Archibald St, Burlington, VT 5401.0",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T23:04:06.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff52ae8467526b29ede87",
+            "businessName": "Quality Barbershop",
+            "email": "",
+            "address": "1804 E Yesler Way, Seattle, WA 98122",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T23:04:06.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff52ae8467526b29ede89",
+            "businessName": "Spear & Jackson Barbershop",
+            "email": "",
+            "address": "18900 W Capitol Dr, Brookfield, WI 53045",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T23:04:06.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff52ae8467526b29ede85",
+            "businessName": "Gentlemen’s Quarters",
+            "email": "",
+            "address": "1014 Quarrier St, Charleston, WV 25301",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T23:04:06.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e086816c",
+            "businessName": "",
+            "email": "",
+            "address": "631 W. North Temple, Salt Lake City, UT 84116",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T23:00:24.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e086813d",
+            "businessName": "",
+            "email": "",
+            "address": "715 S. 10th St., Minneapolis, MN 55404",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T23:00:24.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e086813b",
+            "businessName": "",
+            "email": "",
+            "address": "50 Maine Street, Brunswick, ME 4011.0",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T23:00:24.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e086813c",
+            "businessName": "",
+            "email": "",
+            "address": "25511 Southfield Rd., Southfield, MI 48075",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T23:00:24.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868135",
+            "businessName": "",
+            "email": "",
+            "address": "1186 Blue Hill Ave., Boston, MA 2126.0",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T23:00:24.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e086812a",
+            "businessName": "",
+            "email": "",
+            "address": "3912 E. 13th St. N, Wichita, KS 67208",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T22:52:14.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e086811f",
+            "businessName": "",
+            "email": "",
+            "address": "6409 W. Ustick Rd., Boise, ID 83704",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T22:52:14.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8637af60943e08680ea",
+            "businessName": "",
+            "email": "",
+            "address": "203 W. 15th Ave., Ste. 108, Anchorage, AK 99501",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T22:52:14.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e086811d",
+            "businessName": "",
+            "email": "",
+            "address": "1750 Kalakaua Ave #112, Honolulu, HI 96826",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T22:52:14.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e086811e",
+            "businessName": "",
+            "email": "",
+            "address": "1230 E. 14th St., Unit 1, Des Moines, IA 50316",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T22:52:14.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e086815f",
+            "businessName": "",
+            "email": "",
+            "address": "107 1/2 Hope St, Providence, RI 2906.0",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T22:40:35.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e086815d",
+            "businessName": "",
+            "email": "",
+            "address": "810 Commercial St SE, Salem, OR 97302",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T22:40:35.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e086815e",
+            "businessName": "",
+            "email": "",
+            "address": "808 South St, 1st FL, Philadelphia, PA 19147",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T22:40:35.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868165",
+            "businessName": "",
+            "email": "",
+            "address": "2107 W. 49th St, Sioux Falls, SD 57105",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T22:40:35.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e086816b",
+            "businessName": "",
+            "email": "",
+            "address": "12824 Willow Centre Drive, Houston, TX 77066",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T22:40:35.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868158",
+            "businessName": "",
+            "email": "",
+            "address": "600 Central Ave SW, Suite 107, Albuquerque, NM 87102",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T22:33:33.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e086815b",
+            "businessName": "",
+            "email": "",
+            "address": "1485 E Dublin Granville Rd, Columbus, OH 43229",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T22:33:33.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e086814f",
+            "businessName": "",
+            "email": "",
+            "address": "1115 9th St E, Suite B, West Fargo, ND 58104",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T22:33:33.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e086815a",
+            "businessName": "",
+            "email": "",
+            "address": "729 Pennsylvania Ave, Brooklyn, NY 11207",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T22:33:33.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e086815c",
+            "businessName": "",
+            "email": "",
+            "address": "7916 N MacArthur Blvd, Oklahoma City, OK 73132",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T22:33:33.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868156",
+            "businessName": "",
+            "email": "",
+            "address": "197 Martin Luther King Dr, Jersey City, NJ 7305.0",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T20:39:27.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868159",
+            "businessName": "",
+            "email": "",
+            "address": "1200 W Lake Mead Blvd, Las Vegas, NV 89106",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T20:39:27.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868150",
+            "businessName": "",
+            "email": "",
+            "address": "6570 Maple St, Omaha, NE 68104",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T20:39:27.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868149",
+            "businessName": "",
+            "email": "",
+            "address": "910 N 7th Ave Suite 112E, Bozeman, MT 59715",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T20:39:27.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868153",
+            "businessName": "",
+            "email": "",
+            "address": "118 N 3rd St, Camden, NJ 8102.0",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T20:39:27.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868152",
+            "businessName": "",
+            "email": "",
+            "address": "44 Main St, Hanover, NH 3755.0",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T20:39:27.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868155",
+            "businessName": "",
+            "email": "",
+            "address": "410 Martin Luther King Jr Dr, Jersey City, NJ 7304.0",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T20:39:27.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868157",
+            "businessName": "",
+            "email": "",
+            "address": "258 Newark Ave, Jersey City, NJ 7302.0",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T20:39:27.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868148",
+            "businessName": "",
+            "email": "",
+            "address": "6151 Jackrabbit Ln Suite 6B, Belgrade, MT 59714",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T20:39:27.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868154",
+            "businessName": "",
+            "email": "",
+            "address": "118 N 3rd St, Camden, NJ 8102.0",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T20:39:27.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868151",
+            "businessName": "",
+            "email": "",
+            "address": "318 S 72nd St, Omaha, NE 68114",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T20:39:27.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868100",
+            "businessName": "",
+            "email": "",
+            "address": "11300 Magnolia Blvd #6, North Hollywood, CA 91601",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T19:00:00.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868105",
+            "businessName": "",
+            "email": "",
+            "address": "7520 E Colfax Ave, Denver, CO 80220",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T19:00:00.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e08680fd",
+            "businessName": "",
+            "email": "",
+            "address": "Phoenix, AZ 85042",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T19:00:00.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e086810c",
+            "businessName": "",
+            "email": "",
+            "address": "509 Frost Rd, Waterbury, CT 6705.0",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T19:00:00.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e086810a",
+            "businessName": "",
+            "email": "",
+            "address": "Hartford, CT 6106.0",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T19:00:00.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868101",
+            "businessName": "",
+            "email": "",
+            "address": "1510 16th St, Sacramento, CA 95814",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T19:00:00.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e08680fc",
+            "businessName": "",
+            "email": "",
+            "address": "1610 E Bell Rd Suite 104, Phoenix, AZ 85022",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T19:00:00.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e08680fa",
+            "businessName": "",
+            "email": "",
+            "address": "Flagstaff, AZ 86001",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T19:00:00.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868103",
+            "businessName": "",
+            "email": "",
+            "address": "421 Haight St, San Francisco, CA 94117",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T19:00:00.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e08680fb",
+            "businessName": "",
+            "email": "",
+            "address": "1930 E Broadway Rd, Phoenix, AZ 85040",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T19:00:00.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e086810d",
+            "businessName": "",
+            "email": "",
+            "address": "Waterbury, CT 6705.0",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T19:00:00.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868104",
+            "businessName": "",
+            "email": "",
+            "address": "910 16th St Mall #523, Denver, CO 80202",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T19:00:00.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e086810e",
+            "businessName": "",
+            "email": "",
+            "address": "1032 Little Creek Rd, Dover, DE 19901",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T19:00:00.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e086810f",
+            "businessName": "",
+            "email": "",
+            "address": "1365 N Dupont Hwy, Dover, DE 19901",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T19:00:00.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e086810b",
+            "businessName": "",
+            "email": "",
+            "address": "749 Saybrook Rd, Middletown, CT 6457.0",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T19:00:00.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e08680fe",
+            "businessName": "",
+            "email": "",
+            "address": "5620 N 7th St, Phoenix, AZ 85014",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T19:00:00.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868112",
+            "businessName": "",
+            "email": "",
+            "address": "Wilmington, DE 19801",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T19:00:00.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e08680ff",
+            "businessName": "",
+            "email": "",
+            "address": "13424 Hawthorne Blvd, Hawthorne, CA 90250",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T19:00:00.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868108",
+            "businessName": "",
+            "email": "",
+            "address": "136 W 4th St, Loveland, CO 80537",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T19:00:00.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868102",
+            "businessName": "",
+            "email": "",
+            "address": "1222 Harrison St, San Francisco, CA 94103",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T19:00:00.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868109",
+            "businessName": "",
+            "email": "",
+            "address": "124 Boston Ave, Bridgeport, CT 6606.0",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T19:00:00.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868106",
+            "businessName": "",
+            "email": "",
+            "address": "4848 Chambers Rd, Denver, CO 80239",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T19:00:00.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868111",
+            "businessName": "",
+            "email": "",
+            "address": "73 Marrows Rd, Newark, DE 19713",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T19:00:00.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868107",
+            "businessName": "",
+            "email": "",
+            "address": "528 S College Ave, Fort Collins, CO 80524",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T19:00:00.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868110",
+            "businessName": "",
+            "email": "",
+            "address": "166 S Dupont Hwy Suite 500, New Castle, DE 19720",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T19:00:00.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868140",
+            "businessName": "",
+            "email": "",
+            "address": "1218 S Noland Rd, Independence, MO 64055",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T18:12:21.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e086813a",
+            "businessName": "",
+            "email": "",
+            "address": "400 York Rd Second Floor, Towson, MD 21204",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T18:12:21.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868139",
+            "businessName": "",
+            "email": "",
+            "address": "3419 Laurel Fort Meade Rd, Laurel, MD 20724",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T18:12:21.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e086812f",
+            "businessName": "",
+            "email": "",
+            "address": "3038 Hunsinger Ln Suite 101, Louisville, KY 40220",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T18:12:21.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e086812d",
+            "businessName": "",
+            "email": "",
+            "address": "2308 Sir Barton Way Ste 120, Unit 205, Lexington, KY 40509",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T18:12:21.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e086812c",
+            "businessName": "",
+            "email": "",
+            "address": "1070 Chinoe Rd #100, Lexington, KY 40502",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T18:12:21.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e086812b",
+            "businessName": "",
+            "email": "",
+            "address": "200 W 3rd St, Lexington, KY 40508",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T18:12:21.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e086813e",
+            "businessName": "",
+            "email": "",
+            "address": "627 NW Mock Ave, Blue Springs, MO 64015",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T18:12:21.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868123",
+            "businessName": "",
+            "email": "",
+            "address": "2044 York Rd Ste 105, Oak Brook, IL 60523",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T18:12:21.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868122",
+            "businessName": "",
+            "email": "",
+            "address": "18831 Dixie Hwy, Homewood, IL 60430",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T18:12:21.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868120",
+            "businessName": "",
+            "email": "",
+            "address": "4737 N Clark St Unit 1N, Chicago, IL 60640",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T18:12:21.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e086812e",
+            "businessName": "",
+            "email": "",
+            "address": "2810 Patti Ln, Louisville, KY 40299",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T18:12:21.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868125",
+            "businessName": "",
+            "email": "",
+            "address": "10346 Castile Rd, Fort Wayne, IN 46825",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T18:12:21.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e086813f",
+            "businessName": "",
+            "email": "",
+            "address": "18813 E US Highway 40, Independence, MO 64055",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T18:12:21.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868136",
+            "businessName": "",
+            "email": "",
+            "address": "427 N Eutaw St, Baltimore, MD 21201",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T18:12:21.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868138",
+            "businessName": "",
+            "email": "",
+            "address": "7525 Greenbelt Rd, Greenbelt, MD 20770",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T18:12:21.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868142",
+            "businessName": "",
+            "email": "",
+            "address": "10464 St Charles Rock Rd, St Ann, MO 63074",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T18:12:21.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868137",
+            "businessName": "",
+            "email": "",
+            "address": "4212 York Rd, Baltimore, MD 21212",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T18:12:21.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868124",
+            "businessName": "",
+            "email": "",
+            "address": "8841 Lavergne Ave, Skokie, IL 60077",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T18:12:21.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868126",
+            "businessName": "",
+            "email": "",
+            "address": "5636 Hohman Ave, Hammond, IN 46320",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T18:12:21.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868121",
+            "businessName": "",
+            "email": "",
+            "address": "2043 W Grand Ave, Chicago, IL 60612",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T18:12:21.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868127",
+            "businessName": "",
+            "email": "",
+            "address": "3702 W 16th St Ste A&B, Indianapolis, IN 46222",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T18:12:21.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868141",
+            "businessName": "",
+            "email": "",
+            "address": "11128 Blue Ridge Blvd, Kansas City, MO 64134",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T18:12:21.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868128",
+            "businessName": "",
+            "email": "",
+            "address": "710 E 56th St, Indianapolis, IN 46220",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T18:12:21.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868129",
+            "businessName": "",
+            "email": "",
+            "address": "8095 W Washington St, Indianapolis, IN 46224",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T18:12:21.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868162",
+            "businessName": "",
+            "email": "",
+            "address": "1220 Woodruff Rd Ste F, Greenville, SC 29607",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:20:31.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868161",
+            "businessName": "",
+            "email": "",
+            "address": "2684 Clemson Rd Suite A, Elgin, SC 29045",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:20:31.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868160",
+            "businessName": "",
+            "email": "",
+            "address": "Cayce, SC 29033",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:20:31.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868146",
+            "businessName": "",
+            "email": "",
+            "address": "2229 W Capitol St, Jackson, MS 39209",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:20:31.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868145",
+            "businessName": "",
+            "email": "",
+            "address": "3330 Goodman Rd W #C, Horn Lake, MS 38637",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:20:31.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868143",
+            "businessName": "",
+            "email": "",
+            "address": "Clinton, MS 39056",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:20:31.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868134",
+            "businessName": "",
+            "email": "",
+            "address": "2855 N Claiborne Ave, New Orleans, LA 70122",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:20:31.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868132",
+            "businessName": "",
+            "email": "",
+            "address": "333 Canal St, New Orleans, LA 70130",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:20:31.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868133",
+            "businessName": "",
+            "email": "",
+            "address": "3600 Jumonville St, New Orleans, LA 70122",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:20:31.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868131",
+            "businessName": "",
+            "email": "",
+            "address": "Lake Charles, LA 70601",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:20:31.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868130",
+            "businessName": "",
+            "email": "",
+            "address": "Baton Rouge, LA",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:20:31.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e086811c",
+            "businessName": "",
+            "email": "",
+            "address": "1100 Veterans Memorial Hwy, Lithia Springs, GA 30122",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:20:31.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e086811a",
+            "businessName": "",
+            "email": "",
+            "address": "954 Branch Ct, Grovetown, GA 30813",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:20:31.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e086811b",
+            "businessName": "",
+            "email": "",
+            "address": "35 W General Screven Way, Hinesville, GA 31313",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:20:31.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868119",
+            "businessName": "",
+            "email": "",
+            "address": "120 GA Hwy 49 S, Byron, GA 31008",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:20:31.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868118",
+            "businessName": "",
+            "email": "",
+            "address": "4141 Austell Rd, Suite 100, Austell, GA 30168",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:20:31.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868163",
+            "businessName": "",
+            "email": "",
+            "address": "200 E Butler Rd Ste A, Mauldin, SC 29662",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:20:31.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8637af60943e08680ee",
+            "businessName": "",
+            "email": "",
+            "address": "1823B Center Point Pkwy, Center Point, AL 35215",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:20:31.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8637af60943e08680eb",
+            "businessName": "",
+            "email": "",
+            "address": "303 W Lee St, Athens, AL 35611",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:20:31.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8637af60943e08680ef",
+            "businessName": "",
+            "email": "",
+            "address": "5510 Hwy 53, Suite K, Harvest, AL 35749",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:20:31.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8637af60943e08680f0",
+            "businessName": "",
+            "email": "",
+            "address": "8694 Madison Blvd, L, Madison, AL 35758",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:20:31.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868164",
+            "businessName": "",
+            "email": "",
+            "address": "1272 N Anderson Rd, Rock Hill, SC 29730",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:20:31.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8637af60943e08680f1",
+            "businessName": "",
+            "email": "",
+            "address": "444 Coliseum Blvd, Montgomery, AL 36109",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:20:31.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868144",
+            "businessName": "",
+            "email": "",
+            "address": "11310 Three Rivers Rd, Gulfport, MS 39503",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:20:31.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868147",
+            "businessName": "",
+            "email": "",
+            "address": "6680 Hwy 305 N, Walls, MS 38680",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:20:31.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868166",
+            "businessName": "",
+            "email": "",
+            "address": "2408 E Magnolia Ave, Knoxville, TN",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:11:29.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868167",
+            "businessName": "",
+            "email": "",
+            "address": "1359 Ferguson Rd, Memphis, TN",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:11:29.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e086814e",
+            "businessName": "",
+            "email": "",
+            "address": "1894 S Franklin St Suite 100, Wake Forest, NC",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:11:29.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e086814c",
+            "businessName": "",
+            "email": "",
+            "address": "1209 N Main St, Lillington, NC",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:11:29.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e086814b",
+            "businessName": "",
+            "email": "",
+            "address": "2420 Guess Rd Suite 12, Durham, NC",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:11:29.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e086814a",
+            "businessName": "",
+            "email": "",
+            "address": "5309 E Independence Blvd Suite C, Charlotte, NC",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:11:29.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868116",
+            "businessName": "",
+            "email": "",
+            "address": "2325 Central Ave, St. Petersburg, FL",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:11:29.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868114",
+            "businessName": "",
+            "email": "",
+            "address": "205 N Julia St Suite 101, Jacksonville, FL",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:11:29.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868117",
+            "businessName": "",
+            "email": "",
+            "address": "904 W Waters Ave, Tampa, FL",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:11:29.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868113",
+            "businessName": "",
+            "email": "",
+            "address": "2003 Del Prado Blvd S, Cape Coral, FL",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:11:29.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e086814d",
+            "businessName": "",
+            "email": "",
+            "address": "1033 S Rogers Ln #101, Raleigh, NC",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:11:29.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868168",
+            "businessName": "",
+            "email": "",
+            "address": "500 S Main St, Memphis, TN",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:11:29.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8637af60943e08680f5",
+            "businessName": "",
+            "email": "",
+            "address": "2301A Washington Ave, Conway, AR",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:11:29.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e08680f8",
+            "businessName": "",
+            "email": "",
+            "address": "1407 John Barrow Rd C, Little Rock, AR",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:11:29.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e08680f9",
+            "businessName": "",
+            "email": "",
+            "address": "2727 S Arch St, Little Rock, AR",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:11:29.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868115",
+            "businessName": "",
+            "email": "",
+            "address": "8901 Pembroke Rd, Pembroke Pines, FL",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:11:29.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8637af60943e08680f6",
+            "businessName": "",
+            "email": "",
+            "address": "3800 S Caraway Rd Suite A Building #15, Jonesboro, AR",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:11:29.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e08680f7",
+            "businessName": "",
+            "email": "",
+            "address": "3421 W 12th St, Little Rock, AR",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:11:29.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868169",
+            "businessName": "",
+            "email": "",
+            "address": "604 Gallatin Ave Suite 215, Nashville, TN",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:11:29.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868171",
+            "businessName": "",
+            "email": "",
+            "address": "2116-A Front St, Virginia Beach, VA",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:11:29.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e086816e",
+            "businessName": "",
+            "email": "",
+            "address": "2633 Wyoming Ave, Norfolk, VA",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:11:29.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e086816f",
+            "businessName": "",
+            "email": "",
+            "address": "11 Hope Rd Suite 101, Stafford, VA",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:11:29.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e086816d",
+            "businessName": "",
+            "email": "",
+            "address": "311 Second Street SE, Charlottesville, VA",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:11:29.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e0868170",
+            "businessName": "",
+            "email": "",
+            "address": "300 N Broad St, Suffolk, VA",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:11:29.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8647af60943e086816a",
+            "businessName": "",
+            "email": "",
+            "address": "138 N Lowry St #6, Smyrna, TN",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T17:11:29.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8637af60943e08680f3",
+            "businessName": "",
+            "email": "",
+            "address": "912 Highland Avenue, Selma, AL 36701",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T16:39:11.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8637af60943e08680f4",
+            "businessName": "",
+            "email": "",
+            "address": "6570 AL-69, Tuscaloosa, AL 35405",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T16:39:11.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8637af60943e08680f2",
+            "businessName": "",
+            "email": "",
+            "address": "3500 Pepperell Pkwy, Opelika, AL",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T16:39:11.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8637af60943e08680ed",
+            "businessName": "",
+            "email": "",
+            "address": "1750 Opelika Rd G, Auburn, AL 36830",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T16:39:11.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "698ff8637af60943e08680ec",
+            "businessName": "",
+            "email": "",
+            "address": "814 Dean Road, Auburn, AL 36830",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2026-02-11T16:39:11.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "6973c51aceb95874c814e390",
+            "businessName": "",
+            "email": "darnelljparker@gmail.com",
+            "address": "",
+            "approved": true,
+            "status": "active",
+            "createdAt": "2026-01-23T18:59:38.629Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfbe",
+            "businessName": "",
+            "email": "",
+            "address": "",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-25T18:21:33.923Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfd9",
+            "businessName": "",
+            "email": "",
+            "address": "",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-25T18:21:33.859Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfa3",
+            "businessName": "",
+            "email": "",
+            "address": "",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-25T18:21:33.705Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfd0",
+            "businessName": "",
+            "email": "",
+            "address": "",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-25T18:21:33.396Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfbf",
+            "businessName": "",
+            "email": "",
+            "address": "",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-25T18:21:33.763Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfd4",
+            "businessName": "",
+            "email": "",
+            "address": "",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-25T18:21:33.657Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfdf",
+            "businessName": "",
+            "email": "",
+            "address": "",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-25T18:21:33.491Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfd5",
+            "businessName": "",
+            "email": "",
+            "address": "",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-25T18:21:33.183Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfaf",
+            "businessName": "",
+            "email": "",
+            "address": "",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-25T18:21:33.230Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfa7",
+            "businessName": "",
+            "email": "",
+            "address": "",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-25T18:21:33.139Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfbc",
+            "businessName": "",
+            "email": "",
+            "address": "",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-25T18:21:33.046Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfb9",
+            "businessName": "",
+            "email": "",
+            "address": "",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-25T18:21:33.279Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfdd",
+            "businessName": "",
+            "email": "",
+            "address": "",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-25T18:21:33.093Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfd2",
+            "businessName": "",
+            "email": "",
+            "address": "",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-25T18:21:32.950Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfb5",
+            "businessName": "",
+            "email": "",
+            "address": "",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-25T18:21:32.812Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfb6",
+            "businessName": "",
+            "email": "",
+            "address": "",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-25T18:21:32.855Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfdc",
+            "businessName": "",
+            "email": "",
+            "address": "",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-25T18:21:31.806Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfc1",
+            "businessName": "",
+            "email": "",
+            "address": "",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-25T18:21:32.271Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfcd",
+            "businessName": "",
+            "email": "",
+            "address": "",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-25T18:21:32.899Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfb0",
+            "businessName": "",
+            "email": "",
+            "address": "",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-25T18:21:31.690Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfde",
+            "businessName": "",
+            "email": "",
+            "address": "",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-25T18:21:32.179Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfad",
+            "businessName": "",
+            "email": "",
+            "address": "",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-25T18:21:31.856Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfae",
+            "businessName": "",
+            "email": "",
+            "address": "",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-25T18:21:32.498Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfba",
+            "businessName": "",
+            "email": "",
+            "address": "",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-25T18:21:31.762Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfc8",
+            "businessName": "",
+            "email": "",
+            "address": "",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-25T18:21:32.328Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfd8",
+            "businessName": "",
+            "email": "",
+            "address": "",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-25T18:21:32.997Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfca",
+            "businessName": "",
+            "email": "",
+            "address": "",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-25T18:21:32.373Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfa5",
+            "businessName": "",
+            "email": "",
+            "address": "",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-25T18:21:31.630Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfcc",
+            "businessName": "",
+            "email": "",
+            "address": "",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-25T18:21:32.043Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfd6",
+            "businessName": "",
+            "email": "",
+            "address": "",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-25T18:21:32.437Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfb3",
+            "businessName": "",
+            "email": "",
+            "address": "",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-25T18:21:32.091Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfa4",
+            "businessName": "",
+            "email": "",
+            "address": "",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-25T18:21:32.227Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfb4",
+            "businessName": "",
+            "email": "",
+            "address": "",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-25T18:21:32.136Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfc7",
+            "businessName": "",
+            "email": "",
+            "address": "",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-25T18:21:31.999Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfc3",
+            "businessName": "",
+            "email": "",
+            "address": "",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-25T18:21:31.902Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfd7",
+            "businessName": "",
+            "email": "",
+            "address": "",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-25T18:21:31.950Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfd3",
+            "businessName": "",
+            "email": "",
+            "address": "Royal VI Nation, Place de la Nation, Quartier Sainte-Marguerite, Paris 11e Arrondissement, Paris, France métropolitaine, 75011, France",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfda",
+            "businessName": "",
+            "email": "",
+            "address": "Loyalty Bookstores, 823, Ellsworth Drive, Queen Annes, Silver Spring, Montgomery County, Maryland, 20910, United States",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfce",
+            "businessName": "",
+            "email": "",
+            "address": "Bel-Air Village Phase I and II, District I, Makati, Southern Manila District, Metro Manila, 1209, Philippines",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfc6",
+            "businessName": "",
+            "email": "",
+            "address": "Africa Avenue / Bole Road, ወሎ ሰፈር አካባቢ, Kirkos, አዲስ አበባ Addis Ababa أديس أبابا, አዲስ አበባ أديس أبابا, 7966, ኢትዮጵያ إثيوبيا",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfdb",
+            "businessName": "",
+            "email": "",
+            "address": "The Lit Bar, Alexander Avenue, Mott Haven, The Bronx, Bronx County, City of New York, New York, 10454, United States",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfcb",
+            "businessName": "",
+            "email": "",
+            "address": "Hotel David Whitney, Autograph Collection, Woodward Avenue, Detroit, Wayne County, Michigan, 48226, United States",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfc5",
+            "businessName": "",
+            "email": "",
+            "address": "Clare County, Michigan, United States",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfc9",
+            "businessName": "",
+            "email": "",
+            "address": "",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-25T18:21:33.808Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfbb",
+            "businessName": "",
+            "email": "",
+            "address": "বরকল, বরকল উপজেলা, রাঙ্গামাটি পার্বত্য জেলা, চট্টগ্রাম বিভাগ, বাংলাদেশ",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfd1",
+            "businessName": "",
+            "email": "",
+            "address": "",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-25T18:21:33.603Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfcf",
+            "businessName": "",
+            "email": "",
+            "address": "",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-25T18:21:33.560Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfc0",
+            "businessName": "",
+            "email": "",
+            "address": "",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-25T18:21:33.330Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfbd",
+            "businessName": "",
+            "email": "",
+            "address": "East Camille Rose Court, Mountain Rose Estates, Palmer, Matanuska-Susitna Borough, Alaska, United States",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfb8",
+            "businessName": "",
+            "email": "",
+            "address": "Reddrop Court, Altona Meadows, Melbourne, City of Hobsons Bay, Victoria, 3028, Australia",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfb2",
+            "businessName": "",
+            "email": "",
+            "address": "保樓 Bold Block, 崇平街 Sung Ping Street, 鶴園 Hok Yuen, 土瓜灣 To Kwa Wan, 九龍城區 Kowloon City District, 九龍 Kowloon, 香港 Hong Kong, 999077, 中国",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfc2",
+            "businessName": "",
+            "email": "",
+            "address": "SIP The Experience, 528, Main Street, Lindbergh, Atlanta, Fulton County, Georgia, 30324, United States",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfb7",
+            "businessName": "",
+            "email": "",
+            "address": "Kind Topicals, West 26th Avenue, Spenard, Anchorage, Alaska, 99503, United States",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfb1",
+            "businessName": "",
+            "email": "",
+            "address": "Boon Boona Coffee, 1223, East Cherry Street, Yesler Terrace, Seattle, King County, Washington, 98122, United States",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfaa",
+            "businessName": "",
+            "email": "",
+            "address": "Kocatepe, Nizip, Gaziantep, Güneydoğu Anadolu Bölgesi, Türkiye",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfab",
+            "businessName": "",
+            "email": "",
+            "address": "TP Legal Ltd, Church Street East, Horsell, Woking, Surrey, England, GU21 6HR, United Kingdom",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          },
+          {
+            "_id": "681d1df4fd9719ad7b26dfa9",
+            "businessName": "",
+            "email": "",
+            "address": "Ola, Igeldo, Mendebaldea, Donostia / San Sebastián, Gipuzkoa, Euskadi, 20008, España",
+            "approved": false,
+            "status": "approved",
+            "createdAt": "2025-05-08T00:00:00.000Z",
+            "updatedAt": "2026-03-24T19:12:40.220Z"
+          }
+        ]
+      },
+      "note": null,
+      "error": null
+    },
+    {
+      "name": "admin_page_dashboard_active",
+      "route": "/admin/dashboard",
+      "method": "GET",
+      "role": "admin",
+      "state": "session_active",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "pass": true,
+      "location": null,
+      "setCookie": null,
+      "body": "<!DOCTYPE html><html lang=\"en\"><head><meta charSet=\"utf-8\" data-next-head=\"\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" data-next-head=\"\"/><title data-nex",
+      "note": null,
+      "error": null
+    },
+    {
+      "name": "user_admin_api_denied",
+      "route": "/api/admin/dashboard",
+      "method": "GET",
+      "role": "user",
+      "state": "cross_role",
+      "expectedStatus": 401,
+      "actualStatus": 403,
+      "pass": false,
+      "location": null,
+      "setCookie": null,
+      "body": {
+        "ok": false,
+        "code": "FORBIDDEN",
+        "message": "Forbidden"
+      },
+      "note": null,
+      "error": null
+    },
+    {
+      "name": "user_admin_page_redirect",
+      "route": "/admin/dashboard",
+      "method": "GET",
+      "role": "user",
+      "state": "cross_role",
+      "expectedStatus": 307,
+      "actualStatus": 307,
+      "pass": true,
+      "location": "/login?redirect=/admin/dashboard",
+      "setCookie": null,
+      "body": "/login?redirect=/admin/dashboard",
+      "note": null,
+      "error": null
+    },
+    {
+      "name": "seller_orders_api_active",
+      "route": "/api/marketplace/get-orders",
+      "method": "GET",
+      "role": "seller",
+      "state": "session_active",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "pass": true,
+      "location": null,
+      "setCookie": null,
+      "body": {
+        "orders": []
+      },
+      "note": null,
+      "error": null
+    },
+    {
+      "name": "user_seller_orders_api_denied",
+      "route": "/api/marketplace/get-orders",
+      "method": "GET",
+      "role": "user",
+      "state": "cross_role",
+      "expectedStatus": 403,
+      "actualStatus": 403,
+      "pass": true,
+      "location": null,
+      "setCookie": null,
+      "body": {
+        "error": "Forbidden: Not a seller"
+      },
+      "note": null,
+      "error": null
+    },
+    {
+      "name": "employer_jobs_api_active",
+      "route": "/api/employer/jobs",
+      "method": "GET",
+      "role": "employer",
+      "state": "session_active",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "pass": true,
+      "location": null,
+      "setCookie": null,
+      "body": {
+        "jobs": []
+      },
+      "note": null,
+      "error": null
+    },
+    {
+      "name": "user_employer_jobs_api_denied",
+      "route": "/api/employer/jobs",
+      "method": "GET",
+      "role": "user",
+      "state": "cross_role",
+      "expectedStatus": 403,
+      "actualStatus": 403,
+      "pass": true,
+      "location": null,
+      "setCookie": null,
+      "body": {
+        "error": "Access denied"
+      },
+      "note": null,
+      "error": null
+    },
+    {
+      "name": "business_add_business_page_active",
+      "route": "/add-business",
+      "method": "GET",
+      "role": "business",
+      "state": "session_active",
+      "expectedStatus": 200,
+      "actualStatus": 404,
+      "pass": false,
+      "location": null,
+      "setCookie": null,
+      "body": "<!DOCTYPE html><html lang=\"en\"><head><meta charSet=\"utf-8\" data-next-head=\"\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" data-next-head=\"\"/><meta name=\"des",
+      "note": null,
+      "error": null
+    },
+    {
+      "name": "user_add_business_page_redirect",
+      "route": "/add-business",
+      "method": "GET",
+      "role": "user",
+      "state": "cross_role",
+      "expectedStatus": 307,
+      "actualStatus": 404,
+      "pass": false,
+      "location": null,
+      "setCookie": null,
+      "body": "<!DOCTYPE html><html lang=\"en\"><head><meta charSet=\"utf-8\" data-next-head=\"\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" data-next-head=\"\"/><meta name=\"des",
+      "note": null,
+      "error": null
+    },
+    {
+      "name": "seller_marketplace_dashboard_active",
+      "route": "/marketplace/dashboard",
+      "method": "GET",
+      "role": "seller",
+      "state": "session_active",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "pass": true,
+      "location": null,
+      "setCookie": null,
+      "body": "<!DOCTYPE html><html lang=\"en\"><head><meta charSet=\"utf-8\" data-next-head=\"\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" data-next-head=\"\"/><title data-nex",
+      "note": null,
+      "error": null
+    },
+    {
+      "name": "business_marketplace_dashboard_redirect",
+      "route": "/marketplace/dashboard",
+      "method": "GET",
+      "role": "business",
+      "state": "cross_role",
+      "expectedStatus": 307,
+      "actualStatus": 200,
+      "pass": false,
+      "location": null,
+      "setCookie": null,
+      "body": "<!DOCTYPE html><html lang=\"en\"><head><meta charSet=\"utf-8\" data-next-head=\"\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" data-next-head=\"\"/><title data-nex",
+      "note": null,
+      "error": null
+    },
+    {
+      "name": "me_expired_token",
+      "route": "/api/auth/me",
+      "method": "GET",
+      "role": "user",
+      "state": "session_expired",
+      "expectedStatus": 401,
+      "actualStatus": 401,
+      "pass": true,
+      "location": null,
+      "setCookie": null,
+      "body": {
+        "user": null,
+        "error": "Invalid or expired token."
+      },
+      "note": null,
+      "error": null
+    },
+    {
+      "name": "me_invalid_token",
+      "route": "/api/auth/me",
+      "method": "GET",
+      "role": "user",
+      "state": "invalid_token",
+      "expectedStatus": 401,
+      "actualStatus": 401,
+      "pass": true,
+      "location": null,
+      "setCookie": null,
+      "body": {
+        "user": null,
+        "error": "Invalid or expired token."
+      },
+      "note": null,
+      "error": null
+    },
+    {
+      "name": "me_tampered_token",
+      "route": "/api/auth/me",
+      "method": "GET",
+      "role": "user",
+      "state": "tampered_token",
+      "expectedStatus": 401,
+      "actualStatus": 401,
+      "pass": true,
+      "location": null,
+      "setCookie": null,
+      "body": {
+        "user": null,
+        "error": "Invalid or expired token."
+      },
+      "note": null,
+      "error": null
+    },
+    {
+      "name": "me_missing_cookie",
+      "route": "/api/auth/me",
+      "method": "GET",
+      "role": "anonymous",
+      "state": "missing_cookie",
+      "expectedStatus": 401,
+      "actualStatus": 401,
+      "pass": true,
+      "location": null,
+      "setCookie": null,
+      "body": {
+        "user": null,
+        "error": "No token cookie found."
+      },
+      "note": null,
+      "error": null
+    },
+    {
+      "name": "logout_user",
+      "route": "/api/auth/logout",
+      "method": "POST",
+      "role": "user",
+      "state": "logout",
+      "expectedStatus": 200,
+      "actualStatus": 200,
+      "pass": true,
+      "location": null,
+      "setCookie": "session_token=; Max-Age=-1; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; SameSite=Lax, accountType=; Max-Age=-1; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax, next-auth.session-token=; Max-Age=-1; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; SameSite=Lax, __Secure-next-auth.session-token=; Max-Age=-1; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; SameSite=Lax, next-auth.csrf-token=; Max-Age=-1; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax, next-auth.callback-url=; Max-Age=-1; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax",
+      "body": {
+        "success": true,
+        "message": "Logged out successfully."
+      },
+      "note": "clear-cookie header present",
+      "error": null
+    },
+    {
+      "name": "me_after_logout_without_cookie",
+      "route": "/api/auth/me",
+      "method": "GET",
+      "role": "user",
+      "state": "logged_out",
+      "expectedStatus": 401,
+      "actualStatus": 401,
+      "pass": true,
+      "location": null,
+      "setCookie": null,
+      "body": {
+        "user": null,
+        "error": "No token cookie found."
+      },
+      "note": null,
+      "error": null
+    },
+    {
+      "name": "me_after_logout_with_old_cookie_replay",
+      "route": "/api/auth/me",
+      "method": "GET",
+      "role": "user",
+      "state": "stale_session_replay",
+      "expectedStatus": 401,
+      "actualStatus": 200,
+      "pass": false,
+      "location": null,
+      "setCookie": null,
+      "body": {
+        "user": {
+          "_id": "69e6932dfa4dc9796a5e217b",
+          "email": "audit.user.1776718637147@example.com",
+          "accountType": "user",
+          "fullName": "Audit User",
+          "createdAt": "2026-04-20T20:57:18.049Z",
+          "updatedAt": "2026-04-20T20:57:18.049Z",
+          "id": "69e6932dfa4dc9796a5e217b",
+          "isPremium": false,
+          "currentPlan": "free",
+          "premiumStatus": "inactive",
+          "premiumActivatedAt": null,
+          "blackCardTier": null,
+          "blackCardStatus": "inactive",
+          "blackCardMemberSince": null
+        }
+      },
+      "note": "expected deny if token invalidated server-side",
+      "error": null
+    }
+  ]
+}

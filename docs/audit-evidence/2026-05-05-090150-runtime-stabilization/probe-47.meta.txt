@@ -1,0 +1,7 @@
+method=GET
+url=http://localhost:3000/api/employer/get-dashboard
+status=400
+location=
+content_type=application/json; charset=utf-8
+bytes=50
+body_preview={"error":"Email is required and must be a string"}

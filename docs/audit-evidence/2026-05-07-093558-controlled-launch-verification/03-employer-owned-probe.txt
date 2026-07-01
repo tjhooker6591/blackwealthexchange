@@ -1,0 +1,16 @@
+HTTP/1.1 200 OK
+X-Frame-Options: SAMEORIGIN
+X-Content-Type-Options: nosniff
+Referrer-Policy: strict-origin-when-cross-origin
+Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+Permissions-Policy: camera=(), microphone=(), geolocation=(self)
+Content-Security-Policy: default-src 'self'; base-uri 'self'; frame-ancestors 'self'; object-src 'none'; img-src 'self' data: https:; font-src 'self' data: https:; style-src 'self' 'unsafe-inline' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; connect-src 'self' https: wss:; frame-src 'self' https:; form-action 'self'
+Content-Type: application/json; charset=utf-8
+ETag: "v645o48d8xh7"
+Content-Length: 619
+Vary: Accept-Encoding
+Date: Thu, 07 May 2026 16:36:20 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"applicants":[{"_id":"69fb8153078c73b5736db33d","jobId":"69fb7c4e078c73b5736db27c","name":"Audit Applicant","email":"audit_applicant_20260506@local.test","resumeUrl":"","jobTitle":"audit_employer_job_20260506","hiringStatus":"new","employerNote":"","rejectionReason":"","statusHistory":[],"appliedDate":"2026-05-06T17:58:43.801Z","vettingStatus":"review_needed","vettingSignals":null,"vettingSummary":"Awaiting screening summary.","vettingUpdatedAt":"","vettingConfidenceBand":"low","manualOverride":false,"overrideReason":""}],"meta":{"statusCounts":{"new":1,"reviewed":0,"shortlisted":0,"contacted":0,"rejected":0}}}

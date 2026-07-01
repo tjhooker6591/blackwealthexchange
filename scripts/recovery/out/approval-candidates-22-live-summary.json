@@ -1,0 +1,8 @@
+{
+  "publicBusinessesBefore": 3,
+  "activeRecoveryBatch": 22,
+  "recordsSuccessfullyRepaired": 22,
+  "recordsSuccessfullyActivated": 22,
+  "publicBusinessesAfter": 25,
+  "targetPublicCount": 354
+}

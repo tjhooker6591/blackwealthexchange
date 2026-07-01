@@ -43,10 +43,12 @@ try {
   await client.connect();
   const db = client.db(dbName);
 
-  const business = await db.collection("businesses").findOne(
-    { status: { $nin: ["rejected", "archived"] } },
-    { projection: { _id: 1 } },
-  );
+  const business = await db
+    .collection("businesses")
+    .findOne(
+      { status: { $nin: ["rejected", "archived"] } },
+      { projection: { _id: 1 } },
+    );
 
   if (!business?._id) {
     throw new Error("No active business found for travel map save test");
@@ -76,11 +78,45 @@ try {
 
   const checks = [];
 
-  checks.push({ name: "initial_saved_state", expect: 200, ...(await req(`/api/travel-map/saved?businessId=${businessId}`, { cookie })) });
-  checks.push({ name: "save_business", expect: 200, ...(await req("/api/travel-map/saved", { method: "POST", cookie, body: { businessId } })) });
-  checks.push({ name: "saved_state_after_save", expect: 200, ...(await req(`/api/travel-map/saved?businessId=${businessId}`, { cookie })) });
-  checks.push({ name: "remove_saved_business", expect: 200, ...(await req("/api/travel-map/saved", { method: "DELETE", cookie, body: { businessId } })) });
-  checks.push({ name: "saved_state_after_remove", expect: 200, ...(await req(`/api/travel-map/saved?businessId=${businessId}`, { cookie })) });
+  checks.push({
+    name: "initial_saved_state",
+    expect: 200,
+    ...(await req(`/api/travel-map/saved?businessId=${businessId}`, {
+      cookie,
+    })),
+  });
+  checks.push({
+    name: "save_business",
+    expect: 200,
+    ...(await req("/api/travel-map/saved", {
+      method: "POST",
+      cookie,
+      body: { businessId },
+    })),
+  });
+  checks.push({
+    name: "saved_state_after_save",
+    expect: 200,
+    ...(await req(`/api/travel-map/saved?businessId=${businessId}`, {
+      cookie,
+    })),
+  });
+  checks.push({
+    name: "remove_saved_business",
+    expect: 200,
+    ...(await req("/api/travel-map/saved", {
+      method: "DELETE",
+      cookie,
+      body: { businessId },
+    })),
+  });
+  checks.push({
+    name: "saved_state_after_remove",
+    expect: 200,
+    ...(await req(`/api/travel-map/saved?businessId=${businessId}`, {
+      cookie,
+    })),
+  });
 
   const normalized = checks.map((c) => ({
     name: c.name,

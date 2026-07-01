@@ -1,0 +1,313 @@
+[
+  {
+    "_id": "681d1df4fd9719ad7b26dfa2",
+    "sequence_number": 333,
+    "rollback_filter": {
+      "_id": "681d1df4fd9719ad7b26dfa2"
+    },
+    "rollback_update": {
+      "$set": {
+        "postalCode": "",
+        "country": "USA",
+        "category": ""
+      }
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfa6",
+    "sequence_number": 334,
+    "rollback_filter": {
+      "_id": "681d1df4fd9719ad7b26dfa6"
+    },
+    "rollback_update": {
+      "$set": {
+        "postalCode": "",
+        "country": "USA",
+        "category": ""
+      }
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfa8",
+    "sequence_number": 335,
+    "rollback_filter": {
+      "_id": "681d1df4fd9719ad7b26dfa8"
+    },
+    "rollback_update": {
+      "$set": {
+        "postalCode": "",
+        "country": "USA",
+        "category": ""
+      }
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfa9",
+    "sequence_number": 336,
+    "rollback_filter": {
+      "_id": "681d1df4fd9719ad7b26dfa9"
+    },
+    "rollback_update": {
+      "$set": {
+        "postalCode": "",
+        "country": "USA",
+        "category": ""
+      }
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfaa",
+    "sequence_number": 337,
+    "rollback_filter": {
+      "_id": "681d1df4fd9719ad7b26dfaa"
+    },
+    "rollback_update": {
+      "$set": {
+        "country": "USA",
+        "category": ""
+      }
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfab",
+    "sequence_number": 338,
+    "rollback_filter": {
+      "_id": "681d1df4fd9719ad7b26dfab"
+    },
+    "rollback_update": {
+      "$set": {
+        "country": "USA",
+        "category": ""
+      }
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfac",
+    "sequence_number": 339,
+    "rollback_filter": {
+      "_id": "681d1df4fd9719ad7b26dfac"
+    },
+    "rollback_update": {
+      "$set": {
+        "city": "",
+        "postalCode": "",
+        "country": "USA",
+        "display_categories": "Clothing and Accessories",
+        "category": ""
+      }
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfb1",
+    "sequence_number": 340,
+    "rollback_filter": {
+      "_id": "681d1df4fd9719ad7b26dfb1"
+    },
+    "rollback_update": {
+      "$set": {
+        "city": "",
+        "postalCode": "",
+        "country": "USA",
+        "category": ""
+      }
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfb2",
+    "sequence_number": 341,
+    "rollback_filter": {
+      "_id": "681d1df4fd9719ad7b26dfb2"
+    },
+    "rollback_update": {
+      "$set": {
+        "postalCode": "",
+        "country": "USA",
+        "category": ""
+      }
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfb7",
+    "sequence_number": 342,
+    "rollback_filter": {
+      "_id": "681d1df4fd9719ad7b26dfb7"
+    },
+    "rollback_update": {
+      "$set": {
+        "city": "",
+        "postalCode": "",
+        "country": "USA",
+        "category": ""
+      }
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfb8",
+    "sequence_number": 343,
+    "rollback_filter": {
+      "_id": "681d1df4fd9719ad7b26dfb8"
+    },
+    "rollback_update": {
+      "$set": {
+        "postalCode": "",
+        "country": "USA",
+        "category": ""
+      }
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfbb",
+    "sequence_number": 344,
+    "rollback_filter": {
+      "_id": "681d1df4fd9719ad7b26dfbb"
+    },
+    "rollback_update": {
+      "$set": {
+        "country": "USA",
+        "category": ""
+      }
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfbd",
+    "sequence_number": 345,
+    "rollback_filter": {
+      "_id": "681d1df4fd9719ad7b26dfbd"
+    },
+    "rollback_update": {
+      "$set": {
+        "country": "USA",
+        "category": ""
+      }
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfc2",
+    "sequence_number": 346,
+    "rollback_filter": {
+      "_id": "681d1df4fd9719ad7b26dfc2"
+    },
+    "rollback_update": {
+      "$set": {
+        "city": "",
+        "postalCode": "",
+        "country": "USA",
+        "category": ""
+      }
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfc4",
+    "sequence_number": 347,
+    "rollback_filter": {
+      "_id": "681d1df4fd9719ad7b26dfc4"
+    },
+    "rollback_update": {
+      "$set": {
+        "country": "USA",
+        "category": ""
+      }
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfc5",
+    "sequence_number": 348,
+    "rollback_filter": {
+      "_id": "681d1df4fd9719ad7b26dfc5"
+    },
+    "rollback_update": {
+      "$set": {
+        "country": "USA",
+        "category": ""
+      }
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfc6",
+    "sequence_number": 349,
+    "rollback_filter": {
+      "_id": "681d1df4fd9719ad7b26dfc6"
+    },
+    "rollback_update": {
+      "$set": {
+        "postalCode": "",
+        "country": "USA",
+        "category": ""
+      }
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfcb",
+    "sequence_number": 350,
+    "rollback_filter": {
+      "_id": "681d1df4fd9719ad7b26dfcb"
+    },
+    "rollback_update": {
+      "$set": {
+        "city": "",
+        "postalCode": "",
+        "country": "USA",
+        "category": ""
+      }
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfce",
+    "sequence_number": 351,
+    "rollback_filter": {
+      "_id": "681d1df4fd9719ad7b26dfce"
+    },
+    "rollback_update": {
+      "$set": {
+        "postalCode": "",
+        "country": "USA",
+        "category": ""
+      }
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfd3",
+    "sequence_number": 352,
+    "rollback_filter": {
+      "_id": "681d1df4fd9719ad7b26dfd3"
+    },
+    "rollback_update": {
+      "$set": {
+        "postalCode": "",
+        "country": "USA",
+        "category": ""
+      }
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfda",
+    "sequence_number": 353,
+    "rollback_filter": {
+      "_id": "681d1df4fd9719ad7b26dfda"
+    },
+    "rollback_update": {
+      "$set": {
+        "city": "",
+        "postalCode": "",
+        "country": "USA",
+        "category": ""
+      }
+    }
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfdb",
+    "sequence_number": 354,
+    "rollback_filter": {
+      "_id": "681d1df4fd9719ad7b26dfdb"
+    },
+    "rollback_update": {
+      "$set": {
+        "city": "",
+        "postalCode": "",
+        "country": "USA",
+        "display_categories": "Bookstores and Educational",
+        "category": ""
+      }
+    }
+  }
+]

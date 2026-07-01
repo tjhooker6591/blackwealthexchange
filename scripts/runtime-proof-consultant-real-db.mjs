@@ -29,17 +29,20 @@ async function main() {
   );
 
   // B) Seed real candidate intake (real DB write)
-  const intake = await unauth.request.post(`${BASE_URL}/api/consulting-intake`, {
-    data: {
-      type: "candidate",
-      name: `Jordan Proof ${ts}`,
-      email: candidateEmail,
-      company: "Independent Consultant",
-      phone: "555-0101",
-      details:
-        "Senior QA and PM consultant. Skills: Selenium, Jira, SQL, Scrum, HIPAA compliance, process improvement. 11 years experience in healthcare and fintech. Available for fractional and project-based engagements.",
+  const intake = await unauth.request.post(
+    `${BASE_URL}/api/consulting-intake`,
+    {
+      data: {
+        type: "candidate",
+        name: `Jordan Proof ${ts}`,
+        email: candidateEmail,
+        company: "Independent Consultant",
+        phone: "555-0101",
+        details:
+          "Senior QA and PM consultant. Skills: Selenium, Jira, SQL, Scrum, HIPAA compliance, process improvement. 11 years experience in healthcare and fintech. Available for fractional and project-based engagements.",
+      },
     },
-  });
+  );
 
   // C) Real employer signup + authenticated access
   const ctx = await browser.newContext();
@@ -47,7 +50,9 @@ async function main() {
     data: { email: employerEmail, password, accountType: "employer" },
   });
 
-  const consultantsRes = await ctx.request.get(`${BASE_URL}/api/employer/consultants`);
+  const consultantsRes = await ctx.request.get(
+    `${BASE_URL}/api/employer/consultants`,
+  );
   const consultantsJson = await consultantsRes.json();
   const consultants = Array.isArray(consultantsJson?.consultants)
     ? consultantsJson.consultants
@@ -63,9 +68,12 @@ async function main() {
   );
 
   // D) Real save/shortlist pipeline persistence
-  const saveRes = await ctx.request.post(`${BASE_URL}/api/employer/consultant-pipeline`, {
-    data: { consultantId: firstConsultantId, status: "saved" },
-  });
+  const saveRes = await ctx.request.post(
+    `${BASE_URL}/api/employer/consultant-pipeline`,
+    {
+      data: { consultantId: firstConsultantId, status: "saved" },
+    },
+  );
   const interviewRes = await ctx.request.post(
     `${BASE_URL}/api/employer/consultant-pipeline`,
     {
@@ -89,9 +97,12 @@ async function main() {
     fullPage: true,
   });
 
-  await page.goto(`${BASE_URL}/dashboard/employer/consultants/${firstConsultantId}`, {
-    waitUntil: "domcontentloaded",
-  });
+  await page.goto(
+    `${BASE_URL}/dashboard/employer/consultants/${firstConsultantId}`,
+    {
+      waitUntil: "domcontentloaded",
+    },
+  );
   await page.waitForSelector("text=Experience & engagement");
   await page.screenshot({
     path: path.join(outDir, "real-employer-consultant-detail.png"),
@@ -111,7 +122,9 @@ async function main() {
     saveStatus: saveRes.status(),
     interviewStatus: interviewRes.status(),
     pipelineStatus: pipelineRes.status(),
-    pipelineCount: Array.isArray(pipelineJson?.items) ? pipelineJson.items.length : 0,
+    pipelineCount: Array.isArray(pipelineJson?.items)
+      ? pipelineJson.items.length
+      : 0,
     pipelineStatuses: Array.isArray(pipelineJson?.items)
       ? pipelineJson.items.slice(0, 5).map((x) => x.status)
       : [],

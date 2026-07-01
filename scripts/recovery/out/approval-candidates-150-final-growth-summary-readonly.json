@@ -1,0 +1,44 @@
+{
+  "technical_rule_documentation": {
+    "profile_detail_lookup": "src/pages/business-directory/[alias].tsx -> fetch(/api/getBusiness?alias=...)",
+    "detail_resolution": "src/pages/api/getBusiness.js -> businesses.findOne({ alias })",
+    "completeness": "src/lib/directory/completeness.ts -> computeListingCompleteness",
+    "threshold": "isComplete = present >= 7 of 9",
+    "approval_write": "src/pages/api/admin/approve-business.ts -> sets approved=true, status=active",
+    "public_search": "src/pages/api/search/businesses.ts"
+  },
+  "exact_nine_completeness_fields": [
+    "name",
+    "description",
+    "address",
+    "city",
+    "state",
+    "phone",
+    "category",
+    "website",
+    "image"
+  ],
+  "counts": {
+    "recommended_for_approval_now": 0,
+    "recommended_after_mongodb_supported_repair": 0,
+    "recommended_after_externally_verified_repair": 22,
+    "legitimate_but_still_incomplete": 0,
+    "confirmed_duplicates": 0,
+    "closed_or_invalid": 0,
+    "unresolved": 128,
+    "total_reviewed": 150
+  },
+  "projected_growth": {
+    "current_public_businesses": 332,
+    "immediate_projected_public_total": 332,
+    "projected_total_after_approved_mongodb_repairs": 332,
+    "projected_total_after_approved_externally_verified_repairs": 354
+  },
+  "protected_guard": {
+    "protectedBusinessesBefore": 332,
+    "protectedBusinessesAfterSimulation": 332,
+    "protectedIdsRemoved": 0,
+    "protectedBusinessesUnapproved": 0,
+    "protectedBusinessesDeactivated": 0
+  }
+}

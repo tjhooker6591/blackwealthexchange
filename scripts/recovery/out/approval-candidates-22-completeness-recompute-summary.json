@@ -1,0 +1,10 @@
+{
+  "recordsTargeted": 22,
+  "recordsWhoseCompletenessMetadataWasStale": 21,
+  "recordsCalculatingToAtLeast7of9": 3,
+  "recordsRequiringOneAdditionalVerifiedField": 1,
+  "recordsUpdatedFromActualCompleteness": 3,
+  "publicDirectoryCountBeforeThese22": 332,
+  "publicDirectoryCountAfterThese22": 335,
+  "netIncrease": 3
+}

@@ -61,7 +61,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       try { await sendEmail({ to: existing.email, subject: subjectLine, text, html }); emailNotification.sent = true; }
       catch (e: any) { emailNotification.error = String(e?.message || e || "Email send failed").slice(0, 300); }
 
-      const emailEvent = { at: new Date(), type: followUpMessage.length >= 3 ? "admin_follow_up" : "waiting_on_user", to: existing.email, sent: emailNotification.sent, error: emailNotification.error || null, by: admin.email || admin.userId || "admin" };
+      const emailEvent = {
+        at: new Date(),
+        type: followUpMessage.length >= 3 ? "admin_follow_up" : "waiting_on_user",
+        to: existing.email,
+        sent: emailNotification.sent,
+        error: emailNotification.error || null,
+        by: admin.email || admin.userId || "admin",
+      };
       await tickets.updateOne(
         { ticketId: id },
         { $push: { emailEvents: emailEvent } as any },

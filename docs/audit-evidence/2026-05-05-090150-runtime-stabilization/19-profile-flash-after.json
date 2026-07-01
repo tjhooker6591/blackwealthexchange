@@ -1,0 +1,124 @@
+{
+  "sawProfileNotFound": false,
+  "reqs": [
+    {
+      "t": 1778013603990,
+      "url": "http://localhost:3000/dashboard",
+      "status": 200
+    },
+    {
+      "t": 1778013604029,
+      "url": "http://localhost:3000/_next/static/chunks/pages/dashboard.js",
+      "status": 200
+    },
+    {
+      "t": 1778013604371,
+      "url": "http://localhost:3000/api/auth/me",
+      "status": 200
+    },
+    {
+      "t": 1778013604493,
+      "url": "http://localhost:3000/profile",
+      "status": 200
+    },
+    {
+      "t": 1778013604506,
+      "url": "http://localhost:3000/_next/static/chunks/pages/profile.js",
+      "status": 200
+    },
+    {
+      "t": 1778013604709,
+      "url": "http://localhost:3000/api/auth/me",
+      "status": 200
+    },
+    {
+      "t": 1778013604734,
+      "url": "http://localhost:3000/api/auth/me",
+      "status": 200
+    },
+    {
+      "t": 1778013604821,
+      "url": "http://localhost:3000/api/auth/me",
+      "status": 200
+    },
+    {
+      "t": 1778013604851,
+      "url": "http://localhost:3000/api/auth/me",
+      "status": 200
+    },
+    {
+      "t": 1778013604894,
+      "url": "http://localhost:3000/api/auth/me",
+      "status": 200
+    }
+  ],
+  "logs": [
+    {
+      "t": 1778013604193,
+      "type": "info",
+      "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"
+    },
+    {
+      "t": 1778013604269,
+      "type": "log",
+      "text": "[HMR] connected"
+    },
+    {
+      "t": 1778013604371,
+      "type": "info",
+      "text": "[timing] auth/me 59ms status=200"
+    },
+    {
+      "t": 1778013604588,
+      "type": "info",
+      "text": "%cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold"
+    },
+    {
+      "t": 1778013604597,
+      "type": "log",
+      "text": "[HMR] connected"
+    },
+    {
+      "t": 1778013604734,
+      "type": "info",
+      "text": "[timing] auth/me 86ms status=200"
+    },
+    {
+      "t": 1778013604737,
+      "type": "info",
+      "text": "[timing] route start -> /login?redirect=/profile"
+    },
+    {
+      "t": 1778013604774,
+      "type": "info",
+      "text": "[timing] route complete /login?redirect=/profile 37ms"
+    },
+    {
+      "t": 1778013604821,
+      "type": "info",
+      "text": "[timing] fetch /api/auth/me 45ms status=200"
+    },
+    {
+      "t": 1778013604821,
+      "type": "info",
+      "text": "[timing] auth/me 45ms status=200"
+    },
+    {
+      "t": 1778013604852,
+      "type": "info",
+      "text": "[timing] fetch /api/auth/me 76ms status=200"
+    },
+    {
+      "t": 1778013604894,
+      "type": "info",
+      "text": "[timing] fetch /api/auth/me 117ms status=200"
+    },
+    {
+      "t": 1778013604894,
+      "type": "info",
+      "text": "[timing] fetch /api/auth/me 117ms status=200"
+    }
+  ],
+  "errs": [],
+  "pageerror_count": 0
+}

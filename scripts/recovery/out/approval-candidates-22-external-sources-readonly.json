@@ -1,0 +1,398 @@
+[
+  {
+    "_id": "681d1df4fd9719ad7b26dfa2",
+    "sequence_number": 333,
+    "sources": [
+      {
+        "source_url": "https://lysbeauty.com",
+        "page_title_or_source_organization": "Clean Beauty Makeup &amp; Skincare | LYS™ Beauty &ndash; LYS Beauty",
+        "access_date": "2026-06-22",
+        "facts_confirmed_by_source": [
+          "website reachable=True",
+          "brand match from content=True",
+          "current operating evidence=True"
+        ],
+        "how_matched_to_mongodb_record": "Matched using business_name='LYS Beauty', alias='lys-beauty', and stored website domain",
+        "source_type": "official"
+      }
+    ]
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfa6",
+    "sequence_number": 334,
+    "sources": [
+      {
+        "source_url": "https://forthemofficial.com",
+        "page_title_or_source_organization": "For Them",
+        "access_date": "2026-06-22",
+        "facts_confirmed_by_source": [
+          "website reachable=False",
+          "brand match from content=False",
+          "current operating evidence=False"
+        ],
+        "how_matched_to_mongodb_record": "Matched using business_name='For Them', alias='for-them', and stored website domain",
+        "source_type": "unavailable official website"
+      }
+    ]
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfa8",
+    "sequence_number": 335,
+    "sources": [
+      {
+        "source_url": "https://amicole.com",
+        "page_title_or_source_organization": "Ami Colé",
+        "access_date": "2026-06-22",
+        "facts_confirmed_by_source": [
+          "website reachable=False",
+          "brand match from content=False",
+          "current operating evidence=False"
+        ],
+        "how_matched_to_mongodb_record": "Matched using business_name='Ami Colé', alias='ami-cole', and stored website domain",
+        "source_type": "unavailable official website"
+      }
+    ]
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfa9",
+    "sequence_number": 336,
+    "sources": [
+      {
+        "source_url": "https://saintola.com",
+        "page_title_or_source_organization": "Saint Ola",
+        "access_date": "2026-06-22",
+        "facts_confirmed_by_source": [
+          "website reachable=True",
+          "brand match from content=True",
+          "current operating evidence=True"
+        ],
+        "how_matched_to_mongodb_record": "Matched using business_name='Saint Ola', alias='saint-ola', and stored website domain",
+        "source_type": "official"
+      }
+    ]
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfaa",
+    "sequence_number": 337,
+    "sources": [
+      {
+        "source_url": "https://telfar.net",
+        "page_title_or_source_organization": "TELFAR",
+        "access_date": "2026-06-22",
+        "facts_confirmed_by_source": [
+          "website reachable=True",
+          "brand match from content=True",
+          "current operating evidence=True"
+        ],
+        "how_matched_to_mongodb_record": "Matched using business_name='Telfar', alias='telfar', and stored website domain",
+        "source_type": "official"
+      }
+    ]
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfab",
+    "sequence_number": 338,
+    "sources": [
+      {
+        "source_url": "https://thirdcrown.com",
+        "page_title_or_source_organization": "Third Crown",
+        "access_date": "2026-06-22",
+        "facts_confirmed_by_source": [
+          "website reachable=False",
+          "brand match from content=False",
+          "current operating evidence=False"
+        ],
+        "how_matched_to_mongodb_record": "Matched using business_name='Third Crown', alias='third-crown', and stored website domain",
+        "source_type": "unavailable official website"
+      }
+    ]
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfac",
+    "sequence_number": 339,
+    "sources": [
+      {
+        "source_url": "https://treefairfax.com",
+        "page_title_or_source_organization": "Tree Fairfax",
+        "access_date": "2026-06-22",
+        "facts_confirmed_by_source": [
+          "website reachable=True",
+          "brand match from content=True",
+          "current operating evidence=True"
+        ],
+        "how_matched_to_mongodb_record": "Matched using business_name='Tree Fairfax', alias='tree-fairfax', and stored website domain",
+        "source_type": "official"
+      }
+    ]
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfb1",
+    "sequence_number": 340,
+    "sources": [
+      {
+        "source_url": "https://boonboona.com",
+        "page_title_or_source_organization": "Boon Boona Coffee",
+        "access_date": "2026-06-22",
+        "facts_confirmed_by_source": [
+          "website reachable=False",
+          "brand match from content=False",
+          "current operating evidence=False"
+        ],
+        "how_matched_to_mongodb_record": "Matched using business_name='Boon Boona Coffee', alias='boon-boona-coffee', and stored website domain",
+        "source_type": "unavailable official website"
+      }
+    ]
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfb2",
+    "sequence_number": 341,
+    "sources": [
+      {
+        "source_url": "https://blkandbold.com",
+        "page_title_or_source_organization": "BLK &amp; Bold Specialty Beverages - Premium Coffees &amp; Teas",
+        "access_date": "2026-06-22",
+        "facts_confirmed_by_source": [
+          "website reachable=True",
+          "brand match from content=True",
+          "current operating evidence=True"
+        ],
+        "how_matched_to_mongodb_record": "Matched using business_name='Blk & Bold', alias='blk-and-bold', and stored website domain",
+        "source_type": "official"
+      }
+    ]
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfb7",
+    "sequence_number": 342,
+    "sources": [
+      {
+        "source_url": "https://thetopicals.com",
+        "page_title_or_source_organization": "Topicals",
+        "access_date": "2026-06-22",
+        "facts_confirmed_by_source": [
+          "website reachable=False",
+          "brand match from content=False",
+          "current operating evidence=False"
+        ],
+        "how_matched_to_mongodb_record": "Matched using business_name='Topicals', alias='topicals', and stored website domain",
+        "source_type": "unavailable official website"
+      }
+    ]
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfb8",
+    "sequence_number": 343,
+    "sources": [
+      {
+        "source_url": "https://reddrop.com",
+        "page_title_or_source_organization": "RedDrop",
+        "access_date": "2026-06-22",
+        "facts_confirmed_by_source": [
+          "website reachable=True",
+          "brand match from content=False",
+          "current operating evidence=False"
+        ],
+        "how_matched_to_mongodb_record": "Matched using business_name='RedDrop', alias='reddrop', and stored website domain",
+        "source_type": "official"
+      }
+    ]
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfbb",
+    "sequence_number": 344,
+    "sources": [
+      {
+        "source_url": "https://barkal.com",
+        "page_title_or_source_organization": "Barkal",
+        "access_date": "2026-06-22",
+        "facts_confirmed_by_source": [
+          "website reachable=False",
+          "brand match from content=False",
+          "current operating evidence=False"
+        ],
+        "how_matched_to_mongodb_record": "Matched using business_name='Barkal', alias='barkal', and stored website domain",
+        "source_type": "unavailable official website"
+      }
+    ]
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfbd",
+    "sequence_number": 345,
+    "sources": [
+      {
+        "source_url": "https://www.camillerose.com/",
+        "page_title_or_source_organization": "Camille Rose &ndash; Camille Rose Naturals",
+        "access_date": "2026-06-22",
+        "facts_confirmed_by_source": [
+          "website reachable=True",
+          "brand match from content=True",
+          "current operating evidence=True"
+        ],
+        "how_matched_to_mongodb_record": "Matched using business_name='Camille Rose', alias='camille-rose', and stored website domain",
+        "source_type": "official"
+      }
+    ]
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfc2",
+    "sequence_number": 346,
+    "sources": [
+      {
+        "source_url": "https://thesip.co",
+        "page_title_or_source_organization": "The Sip",
+        "access_date": "2026-06-22",
+        "facts_confirmed_by_source": [
+          "website reachable=False",
+          "brand match from content=False",
+          "current operating evidence=False"
+        ],
+        "how_matched_to_mongodb_record": "Matched using business_name='The Sip', alias='the-sip', and stored website domain",
+        "source_type": "unavailable official website"
+      }
+    ]
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfc4",
+    "sequence_number": 347,
+    "sources": [
+      {
+        "source_url": "https://berootedprint.com",
+        "page_title_or_source_organization": "Be Rooted",
+        "access_date": "2026-06-22",
+        "facts_confirmed_by_source": [
+          "website reachable=False",
+          "brand match from content=False",
+          "current operating evidence=False"
+        ],
+        "how_matched_to_mongodb_record": "Matched using business_name='Be Rooted', alias='be-rooted', and stored website domain",
+        "source_type": "unavailable official website"
+      }
+    ]
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfc5",
+    "sequence_number": 348,
+    "sources": [
+      {
+        "source_url": "https://www.clare.com/",
+        "page_title_or_source_organization": "Clare: Premium Designer Wall Paint &amp; Supplies",
+        "access_date": "2026-06-22",
+        "facts_confirmed_by_source": [
+          "website reachable=True",
+          "brand match from content=True",
+          "current operating evidence=True"
+        ],
+        "how_matched_to_mongodb_record": "Matched using business_name='Clare', alias='clare', and stored website domain",
+        "source_type": "official"
+      }
+    ]
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfc6",
+    "sequence_number": 349,
+    "sources": [
+      {
+        "source_url": "https://boleroadtextiles.com",
+        "page_title_or_source_organization": "Bolé Road Textiles",
+        "access_date": "2026-06-22",
+        "facts_confirmed_by_source": [
+          "website reachable=True",
+          "brand match from content=True",
+          "current operating evidence=True"
+        ],
+        "how_matched_to_mongodb_record": "Matched using business_name='Bolé Road', alias='bole-road', and stored website domain",
+        "source_type": "official"
+      }
+    ]
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfcb",
+    "sequence_number": 350,
+    "sources": [
+      {
+        "source_url": "https://thewhitneycollection.com",
+        "page_title_or_source_organization": "The Whitney Collection",
+        "access_date": "2026-06-22",
+        "facts_confirmed_by_source": [
+          "website reachable=False",
+          "brand match from content=False",
+          "current operating evidence=False"
+        ],
+        "how_matched_to_mongodb_record": "Matched using business_name='The Whitney Collection', alias='the-whitney-collection', and stored website domain",
+        "source_type": "unavailable official website"
+      }
+    ]
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfce",
+    "sequence_number": 351,
+    "sources": [
+      {
+        "source_url": "https://thefourthphase.com",
+        "page_title_or_source_organization": "Fourth Phase",
+        "access_date": "2026-06-22",
+        "facts_confirmed_by_source": [
+          "website reachable=False",
+          "brand match from content=False",
+          "current operating evidence=False"
+        ],
+        "how_matched_to_mongodb_record": "Matched using business_name='Fourth Phase', alias='fourth-phase', and stored website domain",
+        "source_type": "unavailable official website"
+      }
+    ]
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfd3",
+    "sequence_number": 352,
+    "sources": [
+      {
+        "source_url": "https://royal-nation.com",
+        "page_title_or_source_organization": "Royal Nation",
+        "access_date": "2026-06-22",
+        "facts_confirmed_by_source": [
+          "website reachable=True",
+          "brand match from content=False",
+          "current operating evidence=False"
+        ],
+        "how_matched_to_mongodb_record": "Matched using business_name='Royal Nation', alias='royal-nation', and stored website domain",
+        "source_type": "official"
+      }
+    ]
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfda",
+    "sequence_number": 353,
+    "sources": [
+      {
+        "source_url": "https://loyaltybookstores.com",
+        "page_title_or_source_organization": "Home Page | Loyalty Bookstores",
+        "access_date": "2026-06-22",
+        "facts_confirmed_by_source": [
+          "website reachable=True",
+          "brand match from content=True",
+          "current operating evidence=True"
+        ],
+        "how_matched_to_mongodb_record": "Matched using business_name='Loyalty Bookstores', alias='loyalty-bookstores', and stored website domain",
+        "source_type": "official"
+      }
+    ]
+  },
+  {
+    "_id": "681d1df4fd9719ad7b26dfdb",
+    "sequence_number": 354,
+    "sources": [
+      {
+        "source_url": "https://litbar.com",
+        "page_title_or_source_organization": "LITBAR.COM | Strategic-Grade domain names for established businesses and funded startups",
+        "access_date": "2026-06-22",
+        "facts_confirmed_by_source": [
+          "website reachable=True",
+          "brand match from content=True",
+          "current operating evidence=False"
+        ],
+        "how_matched_to_mongodb_record": "Matched using business_name='The Lit Bar', alias='the-lit-bar', and stored website domain",
+        "source_type": "official"
+      }
+    ]
+  }
+]

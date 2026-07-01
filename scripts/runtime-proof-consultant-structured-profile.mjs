@@ -3,7 +3,9 @@ import fs from "node:fs/promises";
 import path from "node:path";
 
 const BASE_URL = process.env.BASE_URL || "http://localhost:3000";
-const outDir = path.resolve(".audit/runtime-proof-consultant-structured-profile");
+const outDir = path.resolve(
+  ".audit/runtime-proof-consultant-structured-profile",
+);
 
 async function ensureDir() {
   await fs.mkdir(outDir, { recursive: true });
@@ -98,7 +100,8 @@ async function main() {
       ? consultantsJson.consultants.length
       : 0,
     source: consultantsJson?.source || null,
-    firstConsultantCategory: consultantsJson?.consultants?.[0]?.category || null,
+    firstConsultantCategory:
+      consultantsJson?.consultants?.[0]?.category || null,
     firstConsultantSkills: consultantsJson?.consultants?.[0]?.topSkills || [],
     firstConsultantCompleteness:
       consultantsJson?.consultants?.[0]?.completenessScore ?? null,

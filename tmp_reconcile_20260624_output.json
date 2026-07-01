@@ -1,0 +1,5627 @@
+{
+  "databaseEnvironment": {
+    "databaseName": "bwes-cluster",
+    "queryTimestamp": "2026-06-25T04:01:30.961Z",
+    "uriVariable": "MONGODB_URI",
+    "dbVariable": "MONGODB_DB",
+    "sameDatabaseConfirmed": true
+  },
+  "protectedPopulation": {
+    "searchedLocations": [
+      "scripts/recovery/audit_all_businesses_protected_public_readonly_v2.js",
+      "scripts/recovery/approval_conversion_analysis_readonly.js",
+      "scripts/recovery/out/approval-candidates-22-repair-batch-summary-readonly.json",
+      "scripts/recovery/out/approval-candidates-22-live-summary.json",
+      "scripts/recovery/out/approval-candidates-22-completeness-recompute-summary.json",
+      "scripts/recovery/out/approval-growth-quality-summary-readonly.json",
+      "scripts/recovery/out/all-businesses-enrichment-summary-readonly.json"
+    ],
+    "protectedIdsLocatedCount": 0,
+    "protectedIdsSample": [],
+    "protectedIdsStillPresentInMongoCount": 0,
+    "protectedIdsMissingInMongoCount": 0,
+    "protectedMissingIds": [],
+    "protectedPassingCurrentVisibilityCount": 0,
+    "protectedFailingCurrentVisibilityCount": 0,
+    "protectedFailingCurrentVisibility": [],
+    "recordsWithDirectoryVisibilityApprovedTrue": [
+      "681d1df4fd9719ad7b26dfa2",
+      "681d1df4fd9719ad7b26dfb2",
+      "681d1df4fd9719ad7b26dfc5",
+      "681d1df4fd9719ad7b26dfd3",
+      "681d1df4fd9719ad7b26dfa6",
+      "681d1df4fd9719ad7b26dfb7",
+      "681d1df4fd9719ad7b26dfce",
+      "681d1df4fd9719ad7b26dfbd",
+      "681d1df4fd9719ad7b26dfcb",
+      "681d1df4fd9719ad7b26dfab",
+      "681d1df4fd9719ad7b26dfbb",
+      "681d1df4fd9719ad7b26dfac",
+      "681d1df4fd9719ad7b26dfc2",
+      "681d1df4fd9719ad7b26dfc4",
+      "681d1df4fd9719ad7b26dfa9",
+      "681d1df4fd9719ad7b26dfa8",
+      "681d1df4fd9719ad7b26dfaa",
+      "681d1df4fd9719ad7b26dfb8",
+      "681d1df4fd9719ad7b26dfc6"
+    ],
+    "recordsWithDirectoryVisibilityApprovedTrueCount": 19,
+    "manuallyRecovered22LocatedCount": 0,
+    "manuallyRecovered22Ids": [],
+    "deduplicatedPublicTotalCurrentLogic": 567,
+    "expectedTotal354Gap": -213
+  },
+  "atlantaVisibility": {
+    "publicVisibleCount": 45,
+    "rows": [
+      {
+        "_id": "6843794b5c931273e196b582",
+        "name": "Sublime Donuts",
+        "city": null,
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "sublime-donuts-atlanta",
+        "slug": null,
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      },
+      {
+        "_id": "6843794b5c931273e196b587",
+        "name": "Peace By Piece ATL",
+        "city": null,
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "peace-by-piece-atlanta",
+        "slug": null,
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      },
+      {
+        "_id": "6843794b5c931273e196b589",
+        "name": "The Green Room Agency",
+        "city": null,
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "green-room-agency-atl",
+        "slug": null,
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      },
+      {
+        "_id": "6843794b5c931273e196b58a",
+        "name": "HealHaus ATL",
+        "city": null,
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "healhaus-atlanta",
+        "slug": null,
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      },
+      {
+        "_id": "6843794b5c931273e196b58d",
+        "name": "The Biz Boutique ATL",
+        "city": null,
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "the-biz-boutique-atl",
+        "slug": null,
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      },
+      {
+        "_id": "6843794b5c931273e196b58f",
+        "name": "Moksha Yoga Atlanta",
+        "city": null,
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "moksha-yoga-atlanta",
+        "slug": null,
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      },
+      {
+        "_id": "6843794b5c931273e196b593",
+        "name": "Busy Bee Cafe",
+        "city": null,
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "busy-bee-cafe-atlanta",
+        "slug": null,
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      },
+      {
+        "_id": "6843794b5c931273e196b594",
+        "name": "Walter's Clothing",
+        "city": null,
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "walters-clothing-atlanta",
+        "slug": null,
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      },
+      {
+        "_id": "6843794b5c931273e196b595",
+        "name": "Paschal's Restaurant",
+        "city": null,
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "paschals-restaurant-atlanta",
+        "slug": null,
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      },
+      {
+        "_id": "68451075f4bbe63969630316",
+        "name": "Moore Income Tax Service",
+        "city": null,
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "moore-income-tax-service",
+        "slug": null,
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      },
+      {
+        "_id": "68451075f4bbe63969630318",
+        "name": "The Resource Guild",
+        "city": null,
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "the-resource-guild",
+        "slug": null,
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      },
+      {
+        "_id": "68451075f4bbe6396963031c",
+        "name": "Love Renaissance (LVRN)",
+        "city": null,
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "love-renaissance-atlanta",
+        "slug": null,
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      },
+      {
+        "_id": "68451075f4bbe6396963031d",
+        "name": "Atlanta Children’s Shelter",
+        "city": null,
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "atlanta-childrens-shelter",
+        "slug": null,
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      },
+      {
+        "_id": "68451075f4bbe6396963031e",
+        "name": "Eve Financial",
+        "city": null,
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "eve-financial-atlanta",
+        "slug": null,
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      },
+      {
+        "_id": "68451075f4bbe6396963031f",
+        "name": "Hosea Helps",
+        "city": null,
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "hosea-helps-atlanta",
+        "slug": null,
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      },
+      {
+        "_id": "68451075f4bbe63969630321",
+        "name": "The Gathering Spot",
+        "city": null,
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "the-gathering-spot-atlanta",
+        "slug": null,
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      },
+      {
+        "_id": "68451075f4bbe63969630322",
+        "name": "Atlanta Black Chambers",
+        "city": null,
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "atlanta-black-chambers",
+        "slug": null,
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      },
+      {
+        "_id": "68451075f4bbe63969630323",
+        "name": "Apex Museum",
+        "city": null,
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "apex-museum-atlanta",
+        "slug": null,
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      },
+      {
+        "_id": "68451075f4bbe63969630324",
+        "name": "Catapult HQ",
+        "city": null,
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "catapult-hq-atlanta",
+        "slug": null,
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      },
+      {
+        "_id": "6843278f0471fd7f1fcfa4ae",
+        "name": null,
+        "city": "Atlanta",
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "6843278f0471fd7f1fcfa4ae",
+        "slug": "6843278f0471fd7f1fcfa4ae",
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      },
+      {
+        "_id": "6843278f0471fd7f1fcfa4af",
+        "name": null,
+        "city": "Atlanta",
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "6843278f0471fd7f1fcfa4af",
+        "slug": "6843278f0471fd7f1fcfa4af",
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      },
+      {
+        "_id": "6843278f0471fd7f1fcfa4b0",
+        "name": null,
+        "city": "Atlanta",
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "6843278f0471fd7f1fcfa4b0",
+        "slug": "6843278f0471fd7f1fcfa4b0",
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      },
+      {
+        "_id": "6843278f0471fd7f1fcfa4b1",
+        "name": null,
+        "city": "Atlanta",
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "6843278f0471fd7f1fcfa4b1",
+        "slug": "6843278f0471fd7f1fcfa4b1",
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      },
+      {
+        "_id": "6843278f0471fd7f1fcfa4b6",
+        "name": null,
+        "city": "Atlanta",
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "6843278f0471fd7f1fcfa4b6",
+        "slug": "6843278f0471fd7f1fcfa4b6",
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      },
+      {
+        "_id": "6843278f0471fd7f1fcfa4b8",
+        "name": null,
+        "city": "Atlanta",
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "6843278f0471fd7f1fcfa4b8",
+        "slug": "6843278f0471fd7f1fcfa4b8",
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      },
+      {
+        "_id": "6843278f0471fd7f1fcfa4ba",
+        "name": null,
+        "city": "Atlanta",
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "6843278f0471fd7f1fcfa4ba",
+        "slug": "6843278f0471fd7f1fcfa4ba",
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      },
+      {
+        "_id": "6843278f0471fd7f1fcfa4bb",
+        "name": null,
+        "city": "Atlanta",
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "6843278f0471fd7f1fcfa4bb",
+        "slug": "6843278f0471fd7f1fcfa4bb",
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      },
+      {
+        "_id": "6843278f0471fd7f1fcfa4bc",
+        "name": null,
+        "city": "Atlanta",
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "6843278f0471fd7f1fcfa4bc",
+        "slug": "6843278f0471fd7f1fcfa4bc",
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      },
+      {
+        "_id": "6843278f0471fd7f1fcfa4be",
+        "name": null,
+        "city": "Atlanta",
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "6843278f0471fd7f1fcfa4be",
+        "slug": "6843278f0471fd7f1fcfa4be",
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      },
+      {
+        "_id": "6843278f0471fd7f1fcfa4bf",
+        "name": null,
+        "city": "Atlanta",
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "6843278f0471fd7f1fcfa4bf",
+        "slug": "6843278f0471fd7f1fcfa4bf",
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      },
+      {
+        "_id": "6843278f0471fd7f1fcfa4c0",
+        "name": null,
+        "city": "Atlanta",
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "6843278f0471fd7f1fcfa4c0",
+        "slug": "6843278f0471fd7f1fcfa4c0",
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      },
+      {
+        "_id": "6843794b5c931273e196b581",
+        "name": "Twisted Soul Cookhouse & Pours",
+        "city": null,
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "twisted-soul-cookhouse-atlanta",
+        "slug": null,
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      },
+      {
+        "_id": "6843794b5c931273e196b583",
+        "name": "Pinky Cole Foundation",
+        "city": null,
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "pinky-cole-foundation-atlanta",
+        "slug": null,
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      },
+      {
+        "_id": "6843794b5c931273e196b584",
+        "name": "Strivers Row",
+        "city": null,
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "strivers-row-atlanta",
+        "slug": null,
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      },
+      {
+        "_id": "6843794b5c931273e196b585",
+        "name": "The V Store",
+        "city": null,
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "the-v-store-atlanta",
+        "slug": null,
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      },
+      {
+        "_id": "6843794b5c931273e196b586",
+        "name": "Bankhead Seafood",
+        "city": null,
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "bankhead-seafood-atlanta",
+        "slug": null,
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      },
+      {
+        "_id": "6843794b5c931273e196b588",
+        "name": "Old Lady Gang",
+        "city": null,
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "old-lady-gang-atlanta",
+        "slug": null,
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      },
+      {
+        "_id": "6843794b5c931273e196b58c",
+        "name": "Atlanta MADE",
+        "city": null,
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "atlanta-made-home",
+        "slug": null,
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      },
+      {
+        "_id": "6843794b5c931273e196b58e",
+        "name": "Body By Kariim Fitness",
+        "city": null,
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "body-by-kariim-fitness-atlanta",
+        "slug": null,
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      },
+      {
+        "_id": "6843794b5c931273e196b590",
+        "name": "Parlor",
+        "city": null,
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "parlor-atlanta",
+        "slug": null,
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      },
+      {
+        "_id": "6843794b5c931273e196b591",
+        "name": "The Village Market Wellness Shop",
+        "city": null,
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "village-market-wellness-atlanta",
+        "slug": null,
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      },
+      {
+        "_id": "6843794b5c931273e196b592",
+        "name": "The Wellness Spot ATL",
+        "city": null,
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "wellness-spot-atlanta",
+        "slug": null,
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      },
+      {
+        "_id": "6843794b5c931273e196b596",
+        "name": "Fulton Supply Lofts Market",
+        "city": null,
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "fulton-supply-lofts-atlanta",
+        "slug": null,
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      },
+      {
+        "_id": "6843794b5c931273e196b597",
+        "name": "Slutty Vegan",
+        "city": null,
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "slutty-vegan-atl",
+        "slug": null,
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      },
+      {
+        "_id": "6843794b5c931273e196b598",
+        "name": "Sage & Elm Apothecary",
+        "city": null,
+        "state": "GA",
+        "status": "approved",
+        "approved": null,
+        "publicEligible": true,
+        "alias": "sage-elm-apothecary",
+        "slug": null,
+        "completeness": null,
+        "directoryVisibilityApproved": null,
+        "preciseVisibilityRule": "passes_approved_like_plus_alias"
+      }
+    ],
+    "contradictoryCounts": {
+      "zeroActiveAmong12": 0,
+      "zeroApprovedAmong12": 45,
+      "zeroManuallyVisibilityApprovedAmong12": 0
+    }
+  },
+  "orders": {
+    "total": 152,
+    "cohorts": {
+      "unpaid_checkout_attempts": {
+        "filter": {
+          "$or": [
+            {
+              "status": "pending_checkout"
+            },
+            {
+              "status": "checkout_pending"
+            },
+            {
+              "paymentStatus": "pending"
+            }
+          ],
+          "stripePaymentIntentId": {
+            "$in": [
+              null,
+              null,
+              ""
+            ]
+          }
+        },
+        "count": 150,
+        "fundsCollectedCount": 2,
+        "sellerFundsOwedCount": 1,
+        "inventoryChangedCount": 0
+      },
+      "expired_or_abandoned_checkout_sessions": {
+        "filter": {
+          "$and": [
+            {
+              "$or": [
+                {
+                  "status": "pending_checkout"
+                },
+                {
+                  "status": "checkout_pending"
+                }
+              ]
+            },
+            {
+              "$or": [
+                {
+                  "expiresAt": {
+                    "$lt": "2026-06-25T04:01:30.961Z"
+                  }
+                },
+                {
+                  "updatedAt": {
+                    "$lt": "2026-06-18T04:01:31.955Z"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "count": 150,
+        "fundsCollectedCount": 2,
+        "sellerFundsOwedCount": 1,
+        "inventoryChangedCount": 0
+      },
+      "payment_pending": {
+        "filter": {
+          "paymentStatus": "pending",
+          "status": {
+            "$nin": [
+              "pending_checkout",
+              "checkout_pending",
+              "cancelled",
+              "failed"
+            ]
+          }
+        },
+        "count": 0,
+        "fundsCollectedCount": 0,
+        "sellerFundsOwedCount": 0,
+        "inventoryChangedCount": 0
+      },
+      "paid_unfulfilled": {
+        "filter": {
+          "$and": [
+            {
+              "paymentStatus": {
+                "$in": [
+                  "paid",
+                  "succeeded"
+                ]
+              }
+            },
+            {
+              "fulfillmentStatus": {
+                "$nin": [
+                  "fulfilled",
+                  "refunded",
+                  "cancelled"
+                ]
+              }
+            }
+          ]
+        },
+        "count": 4,
+        "fundsCollectedCount": 4,
+        "sellerFundsOwedCount": 1,
+        "inventoryChangedCount": 0
+      },
+      "fulfilled": {
+        "filter": {
+          "$or": [
+            {
+              "fulfillmentStatus": "fulfilled"
+            },
+            {
+              "status": {
+                "$in": [
+                  "fulfilled_payout_ready",
+                  "fulfilled_payout_pending"
+                ]
+              }
+            }
+          ]
+        },
+        "count": 0,
+        "fundsCollectedCount": 0,
+        "sellerFundsOwedCount": 0,
+        "inventoryChangedCount": 0
+      },
+      "paid_destination_charge": {
+        "filter": {
+          "payoutMode": "destination_charge",
+          "paymentStatus": {
+            "$in": [
+              "paid",
+              "succeeded"
+            ]
+          }
+        },
+        "count": 1,
+        "fundsCollectedCount": 1,
+        "sellerFundsOwedCount": 1,
+        "inventoryChangedCount": 0
+      },
+      "paid_platform_hold": {
+        "filter": {
+          "payoutMode": "platform_hold",
+          "paymentStatus": {
+            "$in": [
+              "paid",
+              "succeeded"
+            ]
+          }
+        },
+        "count": 1,
+        "fundsCollectedCount": 1,
+        "sellerFundsOwedCount": 0,
+        "inventoryChangedCount": 0
+      },
+      "payout_ready": {
+        "filter": {
+          "payoutStatus": "ready"
+        },
+        "count": 0,
+        "fundsCollectedCount": 0,
+        "sellerFundsOwedCount": 0,
+        "inventoryChangedCount": 0
+      },
+      "payout_pending": {
+        "filter": {
+          "payoutStatus": "pending"
+        },
+        "count": 1,
+        "fundsCollectedCount": 1,
+        "sellerFundsOwedCount": 1,
+        "inventoryChangedCount": 0
+      },
+      "payout_completed": {
+        "filter": {
+          "payoutStatus": "completed"
+        },
+        "count": 0,
+        "fundsCollectedCount": 0,
+        "sellerFundsOwedCount": 0,
+        "inventoryChangedCount": 0
+      },
+      "refunded": {
+        "filter": {
+          "$or": [
+            {
+              "paymentStatus": "refunded"
+            },
+            {
+              "status": "refunded"
+            }
+          ]
+        },
+        "count": 0,
+        "fundsCollectedCount": 0,
+        "sellerFundsOwedCount": 0,
+        "inventoryChangedCount": 0
+      },
+      "cancelled_or_failed": {
+        "filter": {
+          "$or": [
+            {
+              "status": {
+                "$in": [
+                  "cancelled",
+                  "canceled",
+                  "failed"
+                ]
+              }
+            },
+            {
+              "paymentStatus": {
+                "$in": [
+                  "cancelled",
+                  "failed"
+                ]
+              }
+            }
+          ]
+        },
+        "count": 0,
+        "fundsCollectedCount": 0,
+        "sellerFundsOwedCount": 0,
+        "inventoryChangedCount": 0
+      },
+      "unknown_missing_required_fields": {
+        "filter": {
+          "$or": [
+            {
+              "status": {
+                "$exists": false
+              }
+            },
+            {
+              "sellerId": {
+                "$exists": false
+              }
+            },
+            {
+              "productId": {
+                "$exists": false
+              }
+            }
+          ]
+        },
+        "count": 1,
+        "fundsCollectedCount": 1,
+        "sellerFundsOwedCount": 0,
+        "inventoryChangedCount": 0
+      }
+    },
+    "directAnswers": {
+      "platformHoldTotal": 149,
+      "platformHoldActuallyPaid": 1,
+      "sellersActuallyOwedHeldFunds": 0,
+      "actionableHeldSellerBalanceExists": false,
+      "pendingCheckoutTotal": 150,
+      "pendingCheckoutStaleOlderThan7Days": 150,
+      "cleanupLifecycleExistsInSource": true
+    }
+  },
+  "products": {
+    "total": 3,
+    "rows": [
+      {
+        "_id": "680d23a3dc57cdf2efedf784",
+        "name": "Pamfa hoodies",
+        "status": "active",
+        "approved": null,
+        "isApproved": null,
+        "active": null,
+        "published": null,
+        "visibility": null,
+        "stock": 10,
+        "sellerId": "67fd9ed3acdef9011c60ff99",
+        "price": 49.99,
+        "publicEligibility": false
+      },
+      {
+        "_id": "680d2a27dc57cdf2efedf785",
+        "name": "Pamfa sneakers",
+        "status": "active",
+        "approved": null,
+        "isApproved": null,
+        "active": null,
+        "published": null,
+        "visibility": null,
+        "stock": 10,
+        "sellerId": "67fd9ed3acdef9011c60ff99",
+        "price": 150,
+        "publicEligibility": false
+      },
+      {
+        "_id": "69644a50d65b1e1ace411a0d",
+        "name": "Thomas Hooker author",
+        "status": "active",
+        "approved": null,
+        "isApproved": null,
+        "active": null,
+        "published": null,
+        "visibility": null,
+        "stock": null,
+        "sellerId": "67fd9ed3acdef9011c60ff99",
+        "price": 18.99,
+        "publicEligibility": false
+      }
+    ]
+  },
+  "directoryRouting": {
+    "notes": "See source traces in final synthesis"
+  },
+  "categories": [
+    {
+      "_id": "6843794b5c931273e196b582",
+      "name": "Sublime Donuts",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Bakery, Donuts, Cafe",
+          "normalized": "bakery-donuts-cafe"
+        }
+      ],
+      "uniqueNorm": [
+        "bakery-donuts-cafe"
+      ]
+    },
+    {
+      "_id": "6843794b5c931273e196b587",
+      "name": "Peace By Piece ATL",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Home Decor, Gifts",
+          "normalized": "home-decor-gifts"
+        }
+      ],
+      "uniqueNorm": [
+        "home-decor-gifts"
+      ]
+    },
+    {
+      "_id": "6843794b5c931273e196b589",
+      "name": "The Green Room Agency",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Home Staging, Interior Design",
+          "normalized": "home-staging-interior-design"
+        }
+      ],
+      "uniqueNorm": [
+        "home-staging-interior-design"
+      ]
+    },
+    {
+      "_id": "6843794b5c931273e196b58a",
+      "name": "HealHaus ATL",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Health, Wellness, Yoga, Therapy",
+          "normalized": "health-wellness-yoga-therapy"
+        }
+      ],
+      "uniqueNorm": [
+        "health-wellness-yoga-therapy"
+      ]
+    },
+    {
+      "_id": "6843794b5c931273e196b58b",
+      "name": "Tru REST Float Spa",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Spa, Wellness, Float Therapy",
+          "normalized": "spa-wellness-float-therapy"
+        }
+      ],
+      "uniqueNorm": [
+        "spa-wellness-float-therapy"
+      ]
+    },
+    {
+      "_id": "6843794b5c931273e196b58d",
+      "name": "The Biz Boutique ATL",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Clothing, Accessories",
+          "normalized": "clothing-accessories"
+        }
+      ],
+      "uniqueNorm": [
+        "clothing-accessories"
+      ]
+    },
+    {
+      "_id": "6843794b5c931273e196b58f",
+      "name": "Moksha Yoga Atlanta",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Yoga Studio, Wellness",
+          "normalized": "yoga-studio-wellness"
+        }
+      ],
+      "uniqueNorm": [
+        "yoga-studio-wellness"
+      ]
+    },
+    {
+      "_id": "6843794b5c931273e196b593",
+      "name": "Busy Bee Cafe",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Soul Food, Restaurant",
+          "normalized": "soul-food-restaurant"
+        }
+      ],
+      "uniqueNorm": [
+        "soul-food-restaurant"
+      ]
+    },
+    {
+      "_id": "6843794b5c931273e196b594",
+      "name": "Walter's Clothing",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Clothing, Shoes, Streetwear",
+          "normalized": "clothing-shoes-streetwear"
+        }
+      ],
+      "uniqueNorm": [
+        "clothing-shoes-streetwear"
+      ]
+    },
+    {
+      "_id": "6843794b5c931273e196b595",
+      "name": "Paschal's Restaurant",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Southern, Soul Food",
+          "normalized": "southern-soul-food"
+        }
+      ],
+      "uniqueNorm": [
+        "southern-soul-food"
+      ]
+    },
+    {
+      "_id": "68451075f4bbe63969630306",
+      "name": "Slutty Vegan",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Vegan, Burgers, Restaurant",
+          "normalized": "vegan-burgers-restaurant"
+        }
+      ],
+      "uniqueNorm": [
+        "vegan-burgers-restaurant"
+      ]
+    },
+    {
+      "_id": "68451075f4bbe63969630309",
+      "name": "Atlanta MADE",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Home Decor, Furniture",
+          "normalized": "home-decor-furniture"
+        }
+      ],
+      "uniqueNorm": [
+        "home-decor-furniture"
+      ]
+    },
+    {
+      "_id": "68451075f4bbe6396963030a",
+      "name": "Sage & Elm Apothecary",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Home Goods, Aromatherapy",
+          "normalized": "home-goods-aromatherapy"
+        }
+      ],
+      "uniqueNorm": [
+        "home-goods-aromatherapy"
+      ]
+    },
+    {
+      "_id": "68451075f4bbe6396963030d",
+      "name": "The Wellness Spot ATL",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Wellness, Nutrition, Fitness",
+          "normalized": "wellness-nutrition-fitness"
+        }
+      ],
+      "uniqueNorm": [
+        "wellness-nutrition-fitness"
+      ]
+    },
+    {
+      "_id": "68451075f4bbe6396963030f",
+      "name": "Body By Kariim Fitness",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Personal Training, Fitness",
+          "normalized": "personal-training-fitness"
+        }
+      ],
+      "uniqueNorm": [
+        "personal-training-fitness"
+      ]
+    },
+    {
+      "_id": "68451075f4bbe63969630311",
+      "name": "The Village Market Wellness Shop",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Health Shop, Wellness, Nutrition",
+          "normalized": "health-shop-wellness-nutrition"
+        }
+      ],
+      "uniqueNorm": [
+        "health-shop-wellness-nutrition"
+      ]
+    },
+    {
+      "_id": "68451075f4bbe63969630312",
+      "name": "Davis Bozeman Law Firm",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Legal, Law Firm, Civil Rights",
+          "normalized": "legal-law-firm-civil-rights"
+        }
+      ],
+      "uniqueNorm": [
+        "legal-law-firm-civil-rights"
+      ]
+    },
+    {
+      "_id": "68451075f4bbe63969630313",
+      "name": "Twisted Soul Cookhouse & Pours",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Soul Food, Southern, Restaurant",
+          "normalized": "soul-food-southern-restaurant"
+        }
+      ],
+      "uniqueNorm": [
+        "soul-food-southern-restaurant"
+      ]
+    },
+    {
+      "_id": "68451075f4bbe63969630315",
+      "name": "Bankhead Seafood",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Seafood, Restaurant",
+          "normalized": "seafood-restaurant"
+        }
+      ],
+      "uniqueNorm": [
+        "seafood-restaurant"
+      ]
+    },
+    {
+      "_id": "68451075f4bbe63969630316",
+      "name": "Moore Income Tax Service",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Accounting, Tax Prep",
+          "normalized": "accounting-tax-prep"
+        }
+      ],
+      "uniqueNorm": [
+        "accounting-tax-prep"
+      ]
+    },
+    {
+      "_id": "68451075f4bbe63969630317",
+      "name": "JPR Construction",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Construction, Home Improvement",
+          "normalized": "construction-home-improvement"
+        }
+      ],
+      "uniqueNorm": [
+        "construction-home-improvement"
+      ]
+    },
+    {
+      "_id": "68451075f4bbe63969630318",
+      "name": "The Resource Guild",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Marketing, PR, Consulting",
+          "normalized": "marketing-pr-consulting"
+        }
+      ],
+      "uniqueNorm": [
+        "marketing-pr-consulting"
+      ]
+    },
+    {
+      "_id": "68451075f4bbe63969630319",
+      "name": "Strivers Row",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Menswear, Clothing",
+          "normalized": "menswear-clothing"
+        }
+      ],
+      "uniqueNorm": [
+        "menswear-clothing"
+      ]
+    },
+    {
+      "_id": "68451075f4bbe6396963031a",
+      "name": "Old Lady Gang",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Soul Food, Southern, Restaurant",
+          "normalized": "soul-food-southern-restaurant"
+        }
+      ],
+      "uniqueNorm": [
+        "soul-food-southern-restaurant"
+      ]
+    },
+    {
+      "_id": "68451075f4bbe6396963031c",
+      "name": "Love Renaissance (LVRN)",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Music, Entertainment, Management",
+          "normalized": "music-entertainment-management"
+        }
+      ],
+      "uniqueNorm": [
+        "music-entertainment-management"
+      ]
+    },
+    {
+      "_id": "68451075f4bbe6396963031d",
+      "name": "Atlanta Children’s Shelter",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Nonprofit, Childcare, Education",
+          "normalized": "nonprofit-childcare-education"
+        }
+      ],
+      "uniqueNorm": [
+        "nonprofit-childcare-education"
+      ]
+    },
+    {
+      "_id": "68451075f4bbe6396963031e",
+      "name": "Eve Financial",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Finance, Loans, Banking",
+          "normalized": "finance-loans-banking"
+        }
+      ],
+      "uniqueNorm": [
+        "finance-loans-banking"
+      ]
+    },
+    {
+      "_id": "68451075f4bbe6396963031f",
+      "name": "Hosea Helps",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Nonprofit, Community Services",
+          "normalized": "nonprofit-community-services"
+        }
+      ],
+      "uniqueNorm": [
+        "nonprofit-community-services"
+      ]
+    },
+    {
+      "_id": "68451075f4bbe63969630321",
+      "name": "The Gathering Spot",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Events, Community, Coworking",
+          "normalized": "events-community-coworking"
+        }
+      ],
+      "uniqueNorm": [
+        "events-community-coworking"
+      ]
+    },
+    {
+      "_id": "68451075f4bbe63969630322",
+      "name": "Atlanta Black Chambers",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Business Organization, Networking, Events",
+          "normalized": "business-organization-networking-events"
+        }
+      ],
+      "uniqueNorm": [
+        "business-organization-networking-events"
+      ]
+    },
+    {
+      "_id": "68451075f4bbe63969630323",
+      "name": "Apex Museum",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Museum, Education, History",
+          "normalized": "museum-education-history"
+        }
+      ],
+      "uniqueNorm": [
+        "museum-education-history"
+      ]
+    },
+    {
+      "_id": "68451075f4bbe63969630324",
+      "name": "Catapult HQ",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Technology, Digital Marketing, Web Design",
+          "normalized": "technology-digital-marketing-web-design"
+        }
+      ],
+      "uniqueNorm": [
+        "technology-digital-marketing-web-design"
+      ]
+    },
+    {
+      "_id": "68451075f4bbe63969630325",
+      "name": "Fulton Supply Lofts Market",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Furniture, Vintage, Home Decor",
+          "normalized": "furniture-vintage-home-decor"
+        }
+      ],
+      "uniqueNorm": [
+        "furniture-vintage-home-decor"
+      ]
+    },
+    {
+      "_id": "68451075f4bbe63969630326",
+      "name": "The V Store",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Women's Clothing, Boutique",
+          "normalized": "women-s-clothing-boutique"
+        }
+      ],
+      "uniqueNorm": [
+        "women-s-clothing-boutique"
+      ]
+    },
+    {
+      "_id": "68451075f4bbe63969630327",
+      "name": "Parlor",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Bar, Lounge, Nightlife",
+          "normalized": "bar-lounge-nightlife"
+        }
+      ],
+      "uniqueNorm": [
+        "bar-lounge-nightlife"
+      ]
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4ae",
+      "name": null,
+      "cats": [
+        {
+          "field": "category",
+          "value": "Skincare, Soap",
+          "normalized": "skincare-soap"
+        }
+      ],
+      "uniqueNorm": [
+        "skincare-soap"
+      ]
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4af",
+      "name": null,
+      "cats": [
+        {
+          "field": "category",
+          "value": "Beauty, Haircare, Books",
+          "normalized": "beauty-haircare-books"
+        }
+      ],
+      "uniqueNorm": [
+        "beauty-haircare-books"
+      ]
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4b0",
+      "name": null,
+      "cats": [
+        {
+          "field": "category",
+          "value": "Spa, Nails, Beauty",
+          "normalized": "spa-nails-beauty"
+        }
+      ],
+      "uniqueNorm": [
+        "spa-nails-beauty"
+      ]
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4b1",
+      "name": null,
+      "cats": [
+        {
+          "field": "category",
+          "value": "Beauty, Haircare",
+          "normalized": "beauty-haircare"
+        }
+      ],
+      "uniqueNorm": [
+        "beauty-haircare"
+      ]
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4b2",
+      "name": null,
+      "cats": [
+        {
+          "field": "category",
+          "value": "Beauty Supply Store",
+          "normalized": "beauty-supply-store"
+        }
+      ],
+      "uniqueNorm": [
+        "beauty-supply-store"
+      ]
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4b3",
+      "name": null,
+      "cats": [
+        {
+          "field": "category",
+          "value": "Beauty Supply Store",
+          "normalized": "beauty-supply-store"
+        }
+      ],
+      "uniqueNorm": [
+        "beauty-supply-store"
+      ]
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4b4",
+      "name": null,
+      "cats": [
+        {
+          "field": "category",
+          "value": "Haircare Boutique",
+          "normalized": "haircare-boutique"
+        }
+      ],
+      "uniqueNorm": [
+        "haircare-boutique"
+      ]
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4b5",
+      "name": null,
+      "cats": [
+        {
+          "field": "category",
+          "value": "Beauty Supply Store",
+          "normalized": "beauty-supply-store"
+        }
+      ],
+      "uniqueNorm": [
+        "beauty-supply-store"
+      ]
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4b6",
+      "name": null,
+      "cats": [
+        {
+          "field": "category",
+          "value": "Men’s Grooming Products",
+          "normalized": "men-s-grooming-products"
+        }
+      ],
+      "uniqueNorm": [
+        "men-s-grooming-products"
+      ]
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4b7",
+      "name": null,
+      "cats": [
+        {
+          "field": "category",
+          "value": "Beauty Supply Store",
+          "normalized": "beauty-supply-store"
+        }
+      ],
+      "uniqueNorm": [
+        "beauty-supply-store"
+      ]
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4b8",
+      "name": null,
+      "cats": [
+        {
+          "field": "category",
+          "value": "Beauty Supply Store",
+          "normalized": "beauty-supply-store"
+        }
+      ],
+      "uniqueNorm": [
+        "beauty-supply-store"
+      ]
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4b9",
+      "name": null,
+      "cats": [
+        {
+          "field": "category",
+          "value": "Beauty Supply Store",
+          "normalized": "beauty-supply-store"
+        }
+      ],
+      "uniqueNorm": [
+        "beauty-supply-store"
+      ]
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4ba",
+      "name": null,
+      "cats": [
+        {
+          "field": "category",
+          "value": "Haircare Subscription",
+          "normalized": "haircare-subscription"
+        }
+      ],
+      "uniqueNorm": [
+        "haircare-subscription"
+      ]
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4bb",
+      "name": null,
+      "cats": [
+        {
+          "field": "category",
+          "value": "Hair Salon",
+          "normalized": "hair-salon"
+        }
+      ],
+      "uniqueNorm": [
+        "hair-salon"
+      ]
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4bc",
+      "name": null,
+      "cats": [
+        {
+          "field": "category",
+          "value": "Haircare Products",
+          "normalized": "haircare-products"
+        }
+      ],
+      "uniqueNorm": [
+        "haircare-products"
+      ]
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4bd",
+      "name": null,
+      "cats": [
+        {
+          "field": "category",
+          "value": "Beauty Supply Store",
+          "normalized": "beauty-supply-store"
+        }
+      ],
+      "uniqueNorm": [
+        "beauty-supply-store"
+      ]
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4be",
+      "name": null,
+      "cats": [
+        {
+          "field": "category",
+          "value": "Cosmetics, Beauty",
+          "normalized": "cosmetics-beauty"
+        }
+      ],
+      "uniqueNorm": [
+        "cosmetics-beauty"
+      ]
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4bf",
+      "name": null,
+      "cats": [
+        {
+          "field": "category",
+          "value": "Haircare, Kids",
+          "normalized": "haircare-kids"
+        }
+      ],
+      "uniqueNorm": [
+        "haircare-kids"
+      ]
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4c0",
+      "name": null,
+      "cats": [
+        {
+          "field": "category",
+          "value": "Skincare, Spa",
+          "normalized": "skincare-spa"
+        }
+      ],
+      "uniqueNorm": [
+        "skincare-spa"
+      ]
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4c1",
+      "name": null,
+      "cats": [
+        {
+          "field": "category",
+          "value": "Beauty Supply Store",
+          "normalized": "beauty-supply-store"
+        }
+      ],
+      "uniqueNorm": [
+        "beauty-supply-store"
+      ]
+    },
+    {
+      "_id": "6843794b5c931273e196b581",
+      "name": "Twisted Soul Cookhouse & Pours",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Soul Food, Southern, Restaurant",
+          "normalized": "soul-food-southern-restaurant"
+        }
+      ],
+      "uniqueNorm": [
+        "soul-food-southern-restaurant"
+      ]
+    },
+    {
+      "_id": "6843794b5c931273e196b583",
+      "name": "Pinky Cole Foundation",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Community, Food, Nonprofit",
+          "normalized": "community-food-nonprofit"
+        }
+      ],
+      "uniqueNorm": [
+        "community-food-nonprofit"
+      ]
+    },
+    {
+      "_id": "6843794b5c931273e196b584",
+      "name": "Strivers Row",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Menswear, Clothing",
+          "normalized": "menswear-clothing"
+        }
+      ],
+      "uniqueNorm": [
+        "menswear-clothing"
+      ]
+    },
+    {
+      "_id": "6843794b5c931273e196b585",
+      "name": "The V Store",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Women's Clothing, Boutique",
+          "normalized": "women-s-clothing-boutique"
+        }
+      ],
+      "uniqueNorm": [
+        "women-s-clothing-boutique"
+      ]
+    },
+    {
+      "_id": "6843794b5c931273e196b586",
+      "name": "Bankhead Seafood",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Seafood, Restaurant",
+          "normalized": "seafood-restaurant"
+        }
+      ],
+      "uniqueNorm": [
+        "seafood-restaurant"
+      ]
+    },
+    {
+      "_id": "6843794b5c931273e196b588",
+      "name": "Old Lady Gang",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Soul Food, Southern, Restaurant",
+          "normalized": "soul-food-southern-restaurant"
+        }
+      ],
+      "uniqueNorm": [
+        "soul-food-southern-restaurant"
+      ]
+    },
+    {
+      "_id": "6843794b5c931273e196b58c",
+      "name": "Atlanta MADE",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Home Decor, Furniture",
+          "normalized": "home-decor-furniture"
+        }
+      ],
+      "uniqueNorm": [
+        "home-decor-furniture"
+      ]
+    },
+    {
+      "_id": "6843794b5c931273e196b58e",
+      "name": "Body By Kariim Fitness",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Personal Training, Fitness",
+          "normalized": "personal-training-fitness"
+        }
+      ],
+      "uniqueNorm": [
+        "personal-training-fitness"
+      ]
+    },
+    {
+      "_id": "6843794b5c931273e196b590",
+      "name": "Parlor",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Bar, Lounge, Nightlife",
+          "normalized": "bar-lounge-nightlife"
+        }
+      ],
+      "uniqueNorm": [
+        "bar-lounge-nightlife"
+      ]
+    },
+    {
+      "_id": "6843794b5c931273e196b591",
+      "name": "The Village Market Wellness Shop",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Health Shop, Wellness, Nutrition",
+          "normalized": "health-shop-wellness-nutrition"
+        }
+      ],
+      "uniqueNorm": [
+        "health-shop-wellness-nutrition"
+      ]
+    },
+    {
+      "_id": "6843794b5c931273e196b592",
+      "name": "The Wellness Spot ATL",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Wellness, Nutrition, Fitness",
+          "normalized": "wellness-nutrition-fitness"
+        }
+      ],
+      "uniqueNorm": [
+        "wellness-nutrition-fitness"
+      ]
+    },
+    {
+      "_id": "6843794b5c931273e196b596",
+      "name": "Fulton Supply Lofts Market",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Furniture, Vintage, Home Decor",
+          "normalized": "furniture-vintage-home-decor"
+        }
+      ],
+      "uniqueNorm": [
+        "furniture-vintage-home-decor"
+      ]
+    },
+    {
+      "_id": "6843794b5c931273e196b597",
+      "name": "Slutty Vegan",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Vegan, Burgers, Restaurant",
+          "normalized": "vegan-burgers-restaurant"
+        }
+      ],
+      "uniqueNorm": [
+        "vegan-burgers-restaurant"
+      ]
+    },
+    {
+      "_id": "6843794b5c931273e196b598",
+      "name": "Sage & Elm Apothecary",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Home Goods, Aromatherapy",
+          "normalized": "home-goods-aromatherapy"
+        }
+      ],
+      "uniqueNorm": [
+        "home-goods-aromatherapy"
+      ]
+    },
+    {
+      "_id": "68451075f4bbe63969630303",
+      "name": "Paschal's Restaurant",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Southern, Soul Food",
+          "normalized": "southern-soul-food"
+        }
+      ],
+      "uniqueNorm": [
+        "southern-soul-food"
+      ]
+    },
+    {
+      "_id": "68451075f4bbe63969630304",
+      "name": "The Biz Boutique ATL",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Clothing, Accessories",
+          "normalized": "clothing-accessories"
+        }
+      ],
+      "uniqueNorm": [
+        "clothing-accessories"
+      ]
+    },
+    {
+      "_id": "68451075f4bbe63969630305",
+      "name": "Busy Bee Cafe",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Soul Food, Restaurant",
+          "normalized": "soul-food-restaurant"
+        }
+      ],
+      "uniqueNorm": [
+        "soul-food-restaurant"
+      ]
+    },
+    {
+      "_id": "68451075f4bbe63969630307",
+      "name": "Sublime Donuts",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Bakery, Donuts, Cafe",
+          "normalized": "bakery-donuts-cafe"
+        }
+      ],
+      "uniqueNorm": [
+        "bakery-donuts-cafe"
+      ]
+    },
+    {
+      "_id": "68451075f4bbe63969630308",
+      "name": "Peace By Piece ATL",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Home Decor, Gifts",
+          "normalized": "home-decor-gifts"
+        }
+      ],
+      "uniqueNorm": [
+        "home-decor-gifts"
+      ]
+    },
+    {
+      "_id": "68451075f4bbe6396963030b",
+      "name": "The Green Room Agency",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Home Staging, Interior Design",
+          "normalized": "home-staging-interior-design"
+        }
+      ],
+      "uniqueNorm": [
+        "home-staging-interior-design"
+      ]
+    },
+    {
+      "_id": "68451075f4bbe6396963030c",
+      "name": "HealHaus ATL",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Health, Wellness, Yoga, Therapy",
+          "normalized": "health-wellness-yoga-therapy"
+        }
+      ],
+      "uniqueNorm": [
+        "health-wellness-yoga-therapy"
+      ]
+    },
+    {
+      "_id": "68451075f4bbe6396963030e",
+      "name": "Tru REST Float Spa",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Spa, Wellness, Float Therapy",
+          "normalized": "spa-wellness-float-therapy"
+        }
+      ],
+      "uniqueNorm": [
+        "spa-wellness-float-therapy"
+      ]
+    },
+    {
+      "_id": "68451075f4bbe63969630310",
+      "name": "Moksha Yoga Atlanta",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Yoga Studio, Wellness",
+          "normalized": "yoga-studio-wellness"
+        }
+      ],
+      "uniqueNorm": [
+        "yoga-studio-wellness"
+      ]
+    },
+    {
+      "_id": "68451075f4bbe63969630314",
+      "name": "Pinky Cole Foundation",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Community, Food, Nonprofit",
+          "normalized": "community-food-nonprofit"
+        }
+      ],
+      "uniqueNorm": [
+        "community-food-nonprofit"
+      ]
+    },
+    {
+      "_id": "68451075f4bbe6396963031b",
+      "name": "Walter's Clothing",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Clothing, Shoes, Streetwear",
+          "normalized": "clothing-shoes-streetwear"
+        }
+      ],
+      "uniqueNorm": [
+        "clothing-shoes-streetwear"
+      ]
+    },
+    {
+      "_id": "698ff8647af60943e0868118",
+      "name": "Kindred Barber and Beauty Academy",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Barbershop",
+          "normalized": "barbershop"
+        }
+      ],
+      "uniqueNorm": [
+        "barbershop"
+      ]
+    },
+    {
+      "_id": "698ff8647af60943e0868119",
+      "name": "NY Freshh Cutz Barber Shop",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Barbershop",
+          "normalized": "barbershop"
+        }
+      ],
+      "uniqueNorm": [
+        "barbershop"
+      ]
+    },
+    {
+      "_id": "698ff8647af60943e086811a",
+      "name": "Premier Barber Lounge & Salon, LLC",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Barbershop",
+          "normalized": "barbershop"
+        }
+      ],
+      "uniqueNorm": [
+        "barbershop"
+      ]
+    },
+    {
+      "_id": "698ff8647af60943e086811b",
+      "name": "Elegance & Style Barber Lounge",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Barbershop",
+          "normalized": "barbershop"
+        }
+      ],
+      "uniqueNorm": [
+        "barbershop"
+      ]
+    },
+    {
+      "_id": "698ff8647af60943e086811c",
+      "name": "N D Kutz Barber Shop",
+      "cats": [
+        {
+          "field": "categories",
+          "value": "Barbershop",
+          "normalized": "barbershop"
+        }
+      ],
+      "uniqueNorm": [
+        "barbershop"
+      ]
+    }
+  ],
+  "duplicates": {
+    "rows": [
+      {
+        "_id": "6843794b5c931273e196b582",
+        "name": "Sublime Donuts",
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "sublime-donuts-atlanta",
+        "slug": null
+      },
+      {
+        "_id": "6843794b5c931273e196b587",
+        "name": "Peace By Piece ATL",
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "peace-by-piece-atlanta",
+        "slug": null
+      },
+      {
+        "_id": "6843794b5c931273e196b589",
+        "name": "The Green Room Agency",
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "green-room-agency-atl",
+        "slug": null
+      },
+      {
+        "_id": "6843794b5c931273e196b58a",
+        "name": "HealHaus ATL",
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "healhaus-atlanta",
+        "slug": null
+      },
+      {
+        "_id": "6843794b5c931273e196b58b",
+        "name": "Tru REST Float Spa",
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "tru-rest-float-spa-roswell",
+        "slug": null
+      },
+      {
+        "_id": "6843794b5c931273e196b58d",
+        "name": "The Biz Boutique ATL",
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "the-biz-boutique-atl",
+        "slug": null
+      },
+      {
+        "_id": "6843794b5c931273e196b58f",
+        "name": "Moksha Yoga Atlanta",
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "moksha-yoga-atlanta",
+        "slug": null
+      },
+      {
+        "_id": "6843794b5c931273e196b593",
+        "name": "Busy Bee Cafe",
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "busy-bee-cafe-atlanta",
+        "slug": null
+      },
+      {
+        "_id": "6843794b5c931273e196b594",
+        "name": "Walter's Clothing",
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "walters-clothing-atlanta",
+        "slug": null
+      },
+      {
+        "_id": "6843794b5c931273e196b595",
+        "name": "Paschal's Restaurant",
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "paschals-restaurant-atlanta",
+        "slug": null
+      },
+      {
+        "_id": "68451075f4bbe63969630306",
+        "name": "Slutty Vegan",
+        "duplicateOf": "6843794b5c931273e196b597",
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": null,
+        "slug": null
+      },
+      {
+        "_id": "68451075f4bbe63969630309",
+        "name": "Atlanta MADE",
+        "duplicateOf": "6843794b5c931273e196b58c",
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": null,
+        "slug": null
+      },
+      {
+        "_id": "68451075f4bbe6396963030a",
+        "name": "Sage & Elm Apothecary",
+        "duplicateOf": "6843794b5c931273e196b598",
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": null,
+        "slug": null
+      },
+      {
+        "_id": "68451075f4bbe6396963030d",
+        "name": "The Wellness Spot ATL",
+        "duplicateOf": "6843794b5c931273e196b592",
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": null,
+        "slug": null
+      },
+      {
+        "_id": "68451075f4bbe6396963030f",
+        "name": "Body By Kariim Fitness",
+        "duplicateOf": "6843794b5c931273e196b58e",
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": null,
+        "slug": null
+      },
+      {
+        "_id": "68451075f4bbe63969630311",
+        "name": "The Village Market Wellness Shop",
+        "duplicateOf": "6843794b5c931273e196b591",
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": null,
+        "slug": null
+      },
+      {
+        "_id": "68451075f4bbe63969630312",
+        "name": "Davis Bozeman Law Firm",
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "davis-bozeman-law-firm",
+        "slug": null
+      },
+      {
+        "_id": "68451075f4bbe63969630313",
+        "name": "Twisted Soul Cookhouse & Pours",
+        "duplicateOf": "6843794b5c931273e196b581",
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": null,
+        "slug": null
+      },
+      {
+        "_id": "68451075f4bbe63969630315",
+        "name": "Bankhead Seafood",
+        "duplicateOf": "6843794b5c931273e196b586",
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": null,
+        "slug": null
+      },
+      {
+        "_id": "68451075f4bbe63969630316",
+        "name": "Moore Income Tax Service",
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "moore-income-tax-service",
+        "slug": null
+      },
+      {
+        "_id": "68451075f4bbe63969630317",
+        "name": "JPR Construction",
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "jpr-construction-atlanta",
+        "slug": null
+      },
+      {
+        "_id": "68451075f4bbe63969630318",
+        "name": "The Resource Guild",
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "the-resource-guild",
+        "slug": null
+      },
+      {
+        "_id": "68451075f4bbe63969630319",
+        "name": "Strivers Row",
+        "duplicateOf": "6843794b5c931273e196b584",
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": null,
+        "slug": null
+      },
+      {
+        "_id": "68451075f4bbe6396963031a",
+        "name": "Old Lady Gang",
+        "duplicateOf": "6843794b5c931273e196b588",
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": null,
+        "slug": null
+      },
+      {
+        "_id": "68451075f4bbe6396963031c",
+        "name": "Love Renaissance (LVRN)",
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "love-renaissance-atlanta",
+        "slug": null
+      },
+      {
+        "_id": "68451075f4bbe6396963031d",
+        "name": "Atlanta Children’s Shelter",
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "atlanta-childrens-shelter",
+        "slug": null
+      },
+      {
+        "_id": "68451075f4bbe6396963031e",
+        "name": "Eve Financial",
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "eve-financial-atlanta",
+        "slug": null
+      },
+      {
+        "_id": "68451075f4bbe6396963031f",
+        "name": "Hosea Helps",
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "hosea-helps-atlanta",
+        "slug": null
+      },
+      {
+        "_id": "68451075f4bbe63969630321",
+        "name": "The Gathering Spot",
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "the-gathering-spot-atlanta",
+        "slug": null
+      },
+      {
+        "_id": "68451075f4bbe63969630322",
+        "name": "Atlanta Black Chambers",
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "atlanta-black-chambers",
+        "slug": null
+      },
+      {
+        "_id": "68451075f4bbe63969630323",
+        "name": "Apex Museum",
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "apex-museum-atlanta",
+        "slug": null
+      },
+      {
+        "_id": "68451075f4bbe63969630324",
+        "name": "Catapult HQ",
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "catapult-hq-atlanta",
+        "slug": null
+      },
+      {
+        "_id": "68451075f4bbe63969630325",
+        "name": "Fulton Supply Lofts Market",
+        "duplicateOf": "6843794b5c931273e196b596",
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": null,
+        "slug": null
+      },
+      {
+        "_id": "68451075f4bbe63969630326",
+        "name": "The V Store",
+        "duplicateOf": "6843794b5c931273e196b585",
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": null,
+        "slug": null
+      },
+      {
+        "_id": "68451075f4bbe63969630327",
+        "name": "Parlor",
+        "duplicateOf": "6843794b5c931273e196b590",
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": null,
+        "slug": null
+      },
+      {
+        "_id": "6843278f0471fd7f1fcfa4ae",
+        "name": null,
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "6843278f0471fd7f1fcfa4ae",
+        "slug": "6843278f0471fd7f1fcfa4ae"
+      },
+      {
+        "_id": "6843278f0471fd7f1fcfa4af",
+        "name": null,
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "6843278f0471fd7f1fcfa4af",
+        "slug": "6843278f0471fd7f1fcfa4af"
+      },
+      {
+        "_id": "6843278f0471fd7f1fcfa4b0",
+        "name": null,
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "6843278f0471fd7f1fcfa4b0",
+        "slug": "6843278f0471fd7f1fcfa4b0"
+      },
+      {
+        "_id": "6843278f0471fd7f1fcfa4b1",
+        "name": null,
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "6843278f0471fd7f1fcfa4b1",
+        "slug": "6843278f0471fd7f1fcfa4b1"
+      },
+      {
+        "_id": "6843278f0471fd7f1fcfa4b2",
+        "name": null,
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "6843278f0471fd7f1fcfa4b2",
+        "slug": "6843278f0471fd7f1fcfa4b2"
+      },
+      {
+        "_id": "6843278f0471fd7f1fcfa4b3",
+        "name": null,
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "6843278f0471fd7f1fcfa4b3",
+        "slug": "6843278f0471fd7f1fcfa4b3"
+      },
+      {
+        "_id": "6843278f0471fd7f1fcfa4b4",
+        "name": null,
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "6843278f0471fd7f1fcfa4b4",
+        "slug": "6843278f0471fd7f1fcfa4b4"
+      },
+      {
+        "_id": "6843278f0471fd7f1fcfa4b5",
+        "name": null,
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "6843278f0471fd7f1fcfa4b5",
+        "slug": "6843278f0471fd7f1fcfa4b5"
+      },
+      {
+        "_id": "6843278f0471fd7f1fcfa4b6",
+        "name": null,
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "6843278f0471fd7f1fcfa4b6",
+        "slug": "6843278f0471fd7f1fcfa4b6"
+      },
+      {
+        "_id": "6843278f0471fd7f1fcfa4b7",
+        "name": null,
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "6843278f0471fd7f1fcfa4b7",
+        "slug": "6843278f0471fd7f1fcfa4b7"
+      },
+      {
+        "_id": "6843278f0471fd7f1fcfa4b8",
+        "name": null,
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "6843278f0471fd7f1fcfa4b8",
+        "slug": "6843278f0471fd7f1fcfa4b8"
+      },
+      {
+        "_id": "6843278f0471fd7f1fcfa4b9",
+        "name": null,
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "6843278f0471fd7f1fcfa4b9",
+        "slug": "6843278f0471fd7f1fcfa4b9"
+      },
+      {
+        "_id": "6843278f0471fd7f1fcfa4ba",
+        "name": null,
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "6843278f0471fd7f1fcfa4ba",
+        "slug": "6843278f0471fd7f1fcfa4ba"
+      },
+      {
+        "_id": "6843278f0471fd7f1fcfa4bb",
+        "name": null,
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "6843278f0471fd7f1fcfa4bb",
+        "slug": "6843278f0471fd7f1fcfa4bb"
+      },
+      {
+        "_id": "6843278f0471fd7f1fcfa4bc",
+        "name": null,
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "6843278f0471fd7f1fcfa4bc",
+        "slug": "6843278f0471fd7f1fcfa4bc"
+      },
+      {
+        "_id": "6843278f0471fd7f1fcfa4bd",
+        "name": null,
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "6843278f0471fd7f1fcfa4bd",
+        "slug": "6843278f0471fd7f1fcfa4bd"
+      },
+      {
+        "_id": "6843278f0471fd7f1fcfa4be",
+        "name": null,
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "6843278f0471fd7f1fcfa4be",
+        "slug": "6843278f0471fd7f1fcfa4be"
+      },
+      {
+        "_id": "6843278f0471fd7f1fcfa4bf",
+        "name": null,
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "6843278f0471fd7f1fcfa4bf",
+        "slug": "6843278f0471fd7f1fcfa4bf"
+      },
+      {
+        "_id": "6843278f0471fd7f1fcfa4c0",
+        "name": null,
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "6843278f0471fd7f1fcfa4c0",
+        "slug": "6843278f0471fd7f1fcfa4c0"
+      },
+      {
+        "_id": "6843278f0471fd7f1fcfa4c1",
+        "name": null,
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "6843278f0471fd7f1fcfa4c1",
+        "slug": "6843278f0471fd7f1fcfa4c1"
+      },
+      {
+        "_id": "6843794b5c931273e196b581",
+        "name": "Twisted Soul Cookhouse & Pours",
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "twisted-soul-cookhouse-atlanta",
+        "slug": null
+      },
+      {
+        "_id": "6843794b5c931273e196b583",
+        "name": "Pinky Cole Foundation",
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "pinky-cole-foundation-atlanta",
+        "slug": null
+      },
+      {
+        "_id": "6843794b5c931273e196b584",
+        "name": "Strivers Row",
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "strivers-row-atlanta",
+        "slug": null
+      },
+      {
+        "_id": "6843794b5c931273e196b585",
+        "name": "The V Store",
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "the-v-store-atlanta",
+        "slug": null
+      },
+      {
+        "_id": "6843794b5c931273e196b586",
+        "name": "Bankhead Seafood",
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "bankhead-seafood-atlanta",
+        "slug": null
+      },
+      {
+        "_id": "6843794b5c931273e196b588",
+        "name": "Old Lady Gang",
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "old-lady-gang-atlanta",
+        "slug": null
+      },
+      {
+        "_id": "6843794b5c931273e196b58c",
+        "name": "Atlanta MADE",
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "atlanta-made-home",
+        "slug": null
+      },
+      {
+        "_id": "6843794b5c931273e196b58e",
+        "name": "Body By Kariim Fitness",
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "body-by-kariim-fitness-atlanta",
+        "slug": null
+      },
+      {
+        "_id": "6843794b5c931273e196b590",
+        "name": "Parlor",
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "parlor-atlanta",
+        "slug": null
+      },
+      {
+        "_id": "6843794b5c931273e196b591",
+        "name": "The Village Market Wellness Shop",
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "village-market-wellness-atlanta",
+        "slug": null
+      },
+      {
+        "_id": "6843794b5c931273e196b592",
+        "name": "The Wellness Spot ATL",
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "wellness-spot-atlanta",
+        "slug": null
+      },
+      {
+        "_id": "6843794b5c931273e196b596",
+        "name": "Fulton Supply Lofts Market",
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "fulton-supply-lofts-atlanta",
+        "slug": null
+      },
+      {
+        "_id": "6843794b5c931273e196b597",
+        "name": "Slutty Vegan",
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "slutty-vegan-atl",
+        "slug": null
+      },
+      {
+        "_id": "6843794b5c931273e196b598",
+        "name": "Sage & Elm Apothecary",
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "sage-elm-apothecary",
+        "slug": null
+      },
+      {
+        "_id": "68451075f4bbe63969630303",
+        "name": "Paschal's Restaurant",
+        "duplicateOf": "6843794b5c931273e196b595",
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": null,
+        "slug": null
+      },
+      {
+        "_id": "68451075f4bbe63969630304",
+        "name": "The Biz Boutique ATL",
+        "duplicateOf": "6843794b5c931273e196b58d",
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": null,
+        "slug": null
+      },
+      {
+        "_id": "68451075f4bbe63969630305",
+        "name": "Busy Bee Cafe",
+        "duplicateOf": "6843794b5c931273e196b593",
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": null,
+        "slug": null
+      },
+      {
+        "_id": "68451075f4bbe63969630307",
+        "name": "Sublime Donuts",
+        "duplicateOf": "6843794b5c931273e196b582",
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": null,
+        "slug": null
+      },
+      {
+        "_id": "68451075f4bbe63969630308",
+        "name": "Peace By Piece ATL",
+        "duplicateOf": "6843794b5c931273e196b587",
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": null,
+        "slug": null
+      },
+      {
+        "_id": "68451075f4bbe6396963030b",
+        "name": "The Green Room Agency",
+        "duplicateOf": "6843794b5c931273e196b589",
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": null,
+        "slug": null
+      },
+      {
+        "_id": "68451075f4bbe6396963030c",
+        "name": "HealHaus ATL",
+        "duplicateOf": "6843794b5c931273e196b58a",
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": null,
+        "slug": null
+      },
+      {
+        "_id": "68451075f4bbe6396963030e",
+        "name": "Tru REST Float Spa",
+        "duplicateOf": "6843794b5c931273e196b58b",
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": null,
+        "slug": null
+      },
+      {
+        "_id": "68451075f4bbe63969630310",
+        "name": "Moksha Yoga Atlanta",
+        "duplicateOf": "6843794b5c931273e196b58f",
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": null,
+        "slug": null
+      },
+      {
+        "_id": "68451075f4bbe63969630314",
+        "name": "Pinky Cole Foundation",
+        "duplicateOf": "6843794b5c931273e196b583",
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": null,
+        "slug": null
+      },
+      {
+        "_id": "68451075f4bbe6396963031b",
+        "name": "Walter's Clothing",
+        "duplicateOf": "6843794b5c931273e196b594",
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": null,
+        "slug": null
+      },
+      {
+        "_id": "698ff8647af60943e0868118",
+        "name": "Kindred Barber and Beauty Academy",
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "kindred-barber-and-beauty-academy-ga-austell",
+        "slug": null
+      },
+      {
+        "_id": "698ff8647af60943e0868119",
+        "name": "NY Freshh Cutz Barber Shop",
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "ny-freshh-cutz-barber-shop-ga-byron",
+        "slug": null
+      },
+      {
+        "_id": "698ff8647af60943e086811a",
+        "name": "Premier Barber Lounge & Salon, LLC",
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "premier-barber-lounge-salon-llc-ga-grovetown",
+        "slug": null
+      },
+      {
+        "_id": "698ff8647af60943e086811b",
+        "name": "Elegance & Style Barber Lounge",
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "elegance-style-barber-lounge-ga-hinesville",
+        "slug": null
+      },
+      {
+        "_id": "698ff8647af60943e086811c",
+        "name": "N D Kutz Barber Shop",
+        "duplicateOf": null,
+        "duplicateStatus": null,
+        "suppressed": false,
+        "alias": "n-d-kutz-barber-shop-ga-lithia-springs",
+        "slug": null
+      }
+    ],
+    "groups": {
+      "6843794b5c931273e196b597": [
+        "68451075f4bbe63969630306"
+      ],
+      "6843794b5c931273e196b58c": [
+        "68451075f4bbe63969630309"
+      ],
+      "6843794b5c931273e196b598": [
+        "68451075f4bbe6396963030a"
+      ],
+      "6843794b5c931273e196b592": [
+        "68451075f4bbe6396963030d"
+      ],
+      "6843794b5c931273e196b58e": [
+        "68451075f4bbe6396963030f"
+      ],
+      "6843794b5c931273e196b591": [
+        "68451075f4bbe63969630311"
+      ],
+      "6843794b5c931273e196b581": [
+        "68451075f4bbe63969630313"
+      ],
+      "6843794b5c931273e196b586": [
+        "68451075f4bbe63969630315"
+      ],
+      "6843794b5c931273e196b584": [
+        "68451075f4bbe63969630319"
+      ],
+      "6843794b5c931273e196b588": [
+        "68451075f4bbe6396963031a"
+      ],
+      "6843794b5c931273e196b596": [
+        "68451075f4bbe63969630325"
+      ],
+      "6843794b5c931273e196b585": [
+        "68451075f4bbe63969630326"
+      ],
+      "6843794b5c931273e196b590": [
+        "68451075f4bbe63969630327"
+      ],
+      "6843794b5c931273e196b595": [
+        "68451075f4bbe63969630303"
+      ],
+      "6843794b5c931273e196b58d": [
+        "68451075f4bbe63969630304"
+      ],
+      "6843794b5c931273e196b593": [
+        "68451075f4bbe63969630305"
+      ],
+      "6843794b5c931273e196b582": [
+        "68451075f4bbe63969630307"
+      ],
+      "6843794b5c931273e196b587": [
+        "68451075f4bbe63969630308"
+      ],
+      "6843794b5c931273e196b589": [
+        "68451075f4bbe6396963030b"
+      ],
+      "6843794b5c931273e196b58a": [
+        "68451075f4bbe6396963030c"
+      ],
+      "6843794b5c931273e196b58b": [
+        "68451075f4bbe6396963030e"
+      ],
+      "6843794b5c931273e196b58f": [
+        "68451075f4bbe63969630310"
+      ],
+      "6843794b5c931273e196b583": [
+        "68451075f4bbe63969630314"
+      ],
+      "6843794b5c931273e196b594": [
+        "68451075f4bbe6396963031b"
+      ]
+    }
+  },
+  "locations": [
+    {
+      "_id": "6843794b5c931273e196b582",
+      "name": "Sublime Donuts",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "6843794b5c931273e196b587",
+      "name": "Peace By Piece ATL",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "6843794b5c931273e196b589",
+      "name": "The Green Room Agency",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "6843794b5c931273e196b58a",
+      "name": "HealHaus ATL",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "6843794b5c931273e196b58b",
+      "name": "Tru REST Float Spa",
+      "classification": "unsupported"
+    },
+    {
+      "_id": "6843794b5c931273e196b58d",
+      "name": "The Biz Boutique ATL",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "6843794b5c931273e196b58f",
+      "name": "Moksha Yoga Atlanta",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "6843794b5c931273e196b593",
+      "name": "Busy Bee Cafe",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "6843794b5c931273e196b594",
+      "name": "Walter's Clothing",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "6843794b5c931273e196b595",
+      "name": "Paschal's Restaurant",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "68451075f4bbe63969630306",
+      "name": "Slutty Vegan",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "68451075f4bbe63969630309",
+      "name": "Atlanta MADE",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "68451075f4bbe6396963030a",
+      "name": "Sage & Elm Apothecary",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "68451075f4bbe6396963030d",
+      "name": "The Wellness Spot ATL",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "68451075f4bbe6396963030f",
+      "name": "Body By Kariim Fitness",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "68451075f4bbe63969630311",
+      "name": "The Village Market Wellness Shop",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "68451075f4bbe63969630312",
+      "name": "Davis Bozeman Law Firm",
+      "classification": "unsupported"
+    },
+    {
+      "_id": "68451075f4bbe63969630313",
+      "name": "Twisted Soul Cookhouse & Pours",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "68451075f4bbe63969630315",
+      "name": "Bankhead Seafood",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "68451075f4bbe63969630316",
+      "name": "Moore Income Tax Service",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "68451075f4bbe63969630317",
+      "name": "JPR Construction",
+      "classification": "unsupported"
+    },
+    {
+      "_id": "68451075f4bbe63969630318",
+      "name": "The Resource Guild",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "68451075f4bbe63969630319",
+      "name": "Strivers Row",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "68451075f4bbe6396963031a",
+      "name": "Old Lady Gang",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "68451075f4bbe6396963031c",
+      "name": "Love Renaissance (LVRN)",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "68451075f4bbe6396963031d",
+      "name": "Atlanta Children’s Shelter",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "68451075f4bbe6396963031e",
+      "name": "Eve Financial",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "68451075f4bbe6396963031f",
+      "name": "Hosea Helps",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "68451075f4bbe63969630321",
+      "name": "The Gathering Spot",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "68451075f4bbe63969630322",
+      "name": "Atlanta Black Chambers",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "68451075f4bbe63969630323",
+      "name": "Apex Museum",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "68451075f4bbe63969630324",
+      "name": "Catapult HQ",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "68451075f4bbe63969630325",
+      "name": "Fulton Supply Lofts Market",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "68451075f4bbe63969630326",
+      "name": "The V Store",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "68451075f4bbe63969630327",
+      "name": "Parlor",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4ae",
+      "name": null,
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4af",
+      "name": null,
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4b0",
+      "name": null,
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4b1",
+      "name": null,
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4b2",
+      "name": null,
+      "classification": "unsupported"
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4b3",
+      "name": null,
+      "classification": "unsupported"
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4b4",
+      "name": null,
+      "classification": "unsupported"
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4b5",
+      "name": null,
+      "classification": "unsupported"
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4b6",
+      "name": null,
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4b7",
+      "name": null,
+      "classification": "unsupported"
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4b8",
+      "name": null,
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4b9",
+      "name": null,
+      "classification": "unsupported"
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4ba",
+      "name": null,
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4bb",
+      "name": null,
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4bc",
+      "name": null,
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4bd",
+      "name": null,
+      "classification": "unsupported"
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4be",
+      "name": null,
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4bf",
+      "name": null,
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4c0",
+      "name": null,
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "6843278f0471fd7f1fcfa4c1",
+      "name": null,
+      "classification": "unsupported"
+    },
+    {
+      "_id": "6843794b5c931273e196b581",
+      "name": "Twisted Soul Cookhouse & Pours",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "6843794b5c931273e196b583",
+      "name": "Pinky Cole Foundation",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "6843794b5c931273e196b584",
+      "name": "Strivers Row",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "6843794b5c931273e196b585",
+      "name": "The V Store",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "6843794b5c931273e196b586",
+      "name": "Bankhead Seafood",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "6843794b5c931273e196b588",
+      "name": "Old Lady Gang",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "6843794b5c931273e196b58c",
+      "name": "Atlanta MADE",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "6843794b5c931273e196b58e",
+      "name": "Body By Kariim Fitness",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "6843794b5c931273e196b590",
+      "name": "Parlor",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "6843794b5c931273e196b591",
+      "name": "The Village Market Wellness Shop",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "6843794b5c931273e196b592",
+      "name": "The Wellness Spot ATL",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "6843794b5c931273e196b596",
+      "name": "Fulton Supply Lofts Market",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "6843794b5c931273e196b597",
+      "name": "Slutty Vegan",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "6843794b5c931273e196b598",
+      "name": "Sage & Elm Apothecary",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "68451075f4bbe63969630303",
+      "name": "Paschal's Restaurant",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "68451075f4bbe63969630304",
+      "name": "The Biz Boutique ATL",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "68451075f4bbe63969630305",
+      "name": "Busy Bee Cafe",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "68451075f4bbe63969630307",
+      "name": "Sublime Donuts",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "68451075f4bbe63969630308",
+      "name": "Peace By Piece ATL",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "68451075f4bbe6396963030b",
+      "name": "The Green Room Agency",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "68451075f4bbe6396963030c",
+      "name": "HealHaus ATL",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "68451075f4bbe6396963030e",
+      "name": "Tru REST Float Spa",
+      "classification": "unsupported"
+    },
+    {
+      "_id": "68451075f4bbe63969630310",
+      "name": "Moksha Yoga Atlanta",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "68451075f4bbe63969630314",
+      "name": "Pinky Cole Foundation",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "68451075f4bbe6396963031b",
+      "name": "Walter's Clothing",
+      "classification": "headquarters_or_office_in_atlanta"
+    },
+    {
+      "_id": "698ff8647af60943e0868118",
+      "name": "Kindred Barber and Beauty Academy",
+      "classification": "unsupported"
+    },
+    {
+      "_id": "698ff8647af60943e0868119",
+      "name": "NY Freshh Cutz Barber Shop",
+      "classification": "unsupported"
+    },
+    {
+      "_id": "698ff8647af60943e086811a",
+      "name": "Premier Barber Lounge & Salon, LLC",
+      "classification": "unsupported"
+    },
+    {
+      "_id": "698ff8647af60943e086811b",
+      "name": "Elegance & Style Barber Lounge",
+      "classification": "unsupported"
+    },
+    {
+      "_id": "698ff8647af60943e086811c",
+      "name": "N D Kutz Barber Shop",
+      "classification": "unsupported"
+    }
+  ],
+  "geography": {
+    "sellers": [
+      {
+        "_id": "67fd9ed3acdef9011c60ff99",
+        "sellerId": "67fd9ed3acdef9011c60ff99",
+        "businessId": null,
+        "userId": "67fd9ed3acdef9011c60ff99",
+        "direct": false,
+        "inferred": false
+      },
+      {
+        "_id": "6825636ef591b45634f06058",
+        "sellerId": "6825636ef591b45634f06058",
+        "businessId": null,
+        "userId": null,
+        "direct": false,
+        "inferred": false
+      },
+      {
+        "_id": "68950bbc8454d76799440cf4",
+        "sellerId": "68950bbc8454d76799440cf4",
+        "businessId": null,
+        "userId": null,
+        "direct": false,
+        "inferred": false
+      },
+      {
+        "_id": "69d5a7c25d2fff2f2b616ba9",
+        "sellerId": "69d5a7c25d2fff2f2b616ba9",
+        "businessId": null,
+        "userId": null,
+        "direct": false,
+        "inferred": false
+      },
+      {
+        "_id": "69d5aa6ac012895ab42321cf",
+        "sellerId": "69d5aa6ac012895ab42321cf",
+        "businessId": null,
+        "userId": null,
+        "direct": false,
+        "inferred": false
+      },
+      {
+        "_id": "69d81beb83cef8db05b26762",
+        "sellerId": "69d81beb83cef8db05b26762",
+        "businessId": null,
+        "userId": null,
+        "direct": false,
+        "inferred": false
+      }
+    ],
+    "employers": [
+      {
+        "_id": "67f46d98499175bd41cbc6e7",
+        "companyName": null,
+        "businessId": null,
+        "organizationId": null,
+        "direct": false,
+        "inferred": false
+      },
+      {
+        "_id": "67f73fdaa547cb1b764c0f8b",
+        "companyName": null,
+        "businessId": null,
+        "organizationId": null,
+        "direct": false,
+        "inferred": false
+      },
+      {
+        "_id": "6811986f50d6301ce5d3bece",
+        "companyName": null,
+        "businessId": null,
+        "organizationId": null,
+        "direct": false,
+        "inferred": false
+      },
+      {
+        "_id": "68159df986eaf48025ca6fed",
+        "companyName": null,
+        "businessId": null,
+        "organizationId": null,
+        "direct": false,
+        "inferred": false
+      },
+      {
+        "_id": "69b0e89f3a40f69187b63599",
+        "companyName": null,
+        "businessId": null,
+        "organizationId": null,
+        "direct": true,
+        "inferred": false
+      },
+      {
+        "_id": "69f93154d83e2c13f688d21a",
+        "companyName": null,
+        "businessId": null,
+        "organizationId": null,
+        "direct": true,
+        "inferred": false
+      },
+      {
+        "_id": "69f931635bb2b0d46f0bd436",
+        "companyName": null,
+        "businessId": null,
+        "organizationId": null,
+        "direct": false,
+        "inferred": false
+      },
+      {
+        "_id": "69fa849618f8a26be32e7a15",
+        "companyName": null,
+        "businessId": null,
+        "organizationId": null,
+        "direct": false,
+        "inferred": false
+      },
+      {
+        "_id": "69fb7c4e078c73b5736db27c",
+        "companyName": null,
+        "businessId": null,
+        "organizationId": null,
+        "direct": false,
+        "inferred": false
+      }
+    ],
+    "organizations": [
+      {
+        "_id": "698c0f16c6a7356725f7f52a",
+        "name": "Bethel CME Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f52b",
+        "name": "Carter Temple CME Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f52c",
+        "name": "Mount Zion CME Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f52d",
+        "name": "Gray's Temple CME Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f52e",
+        "name": "Bryant Chapel CME Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f52f",
+        "name": "Williams Memorial CME Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f530",
+        "name": "Greater Saint Peter AME Church",
+        "atlanta": true
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f531",
+        "name": "Saint Peter's CME Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f532",
+        "name": "Mount Pleasant AME Church",
+        "atlanta": true
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f533",
+        "name": "Greater Mount Zion AME Church",
+        "atlanta": true
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f534",
+        "name": "Peaceful Valley CME Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f535",
+        "name": "Trinity CME Church of Miami",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f536",
+        "name": "Mount Olive CME Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f537",
+        "name": "Saint John AME Church",
+        "atlanta": true
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f538",
+        "name": "Greater Bethel AME Church",
+        "atlanta": true
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f539",
+        "name": "Flat Rock AME Church",
+        "atlanta": true
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f53a",
+        "name": "Mathalama AME Church",
+        "atlanta": true
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f53b",
+        "name": "Holly Grove AME Church",
+        "atlanta": true
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f53c",
+        "name": "Liberty Hill AME Church",
+        "atlanta": true
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f53d",
+        "name": "Dent Chapel AME Church",
+        "atlanta": true
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f53e",
+        "name": "Mother Zion",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f53f",
+        "name": "First Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f540",
+        "name": "A.M.E. Zion Church on the Hill",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f541",
+        "name": "Naomi Temple A.M.E. Zion Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f542",
+        "name": "Smith Metropolitan A.M.E. Zion Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f543",
+        "name": "Barry Avenue A.M.E. Zion Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f544",
+        "name": "Ruth",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f545",
+        "name": "Hood",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f546",
+        "name": "St. Paul A.M.E. Zion Church (Great Neck, NY)",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f547",
+        "name": "St. Charles",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f548",
+        "name": "Bell Primitive Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f549",
+        "name": "Bethlehem Primitive Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f54a",
+        "name": "Big Shiloh Primitive Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f54b",
+        "name": "Fletcher's Chapel Primitive Baptist Church #1",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f54c",
+        "name": "Flower Hill Primitive Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f54d",
+        "name": "Fletcher's Chapel Primitive Baptist Church #2",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f54e",
+        "name": "Gaston Chapel Primitive Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f54f",
+        "name": "Indian Creek Primitive Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f550",
+        "name": "Keilah Primitive Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f551",
+        "name": "Little Zion Primitive Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f552",
+        "name": "Antioch Primitive Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f553",
+        "name": "Burns Tabernacle Primitive Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f554",
+        "name": "Cedar Grove Primitive Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f555",
+        "name": "Cedars of Lebanon Primitive Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f556",
+        "name": "Connection Hill Primitive Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f557",
+        "name": "Ephesian Primitive Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f558",
+        "name": "Greater View Primitive Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f559",
+        "name": "Greater Zion Primitive Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f55a",
+        "name": "Green Grove Primitive Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f55b",
+        "name": "Blackwell-Israel Samuel A.M.E. Zion Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f55c",
+        "name": "Martin Temple A.M.E. Zion Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f55d",
+        "name": "St. Matthew Gordon A.M.E. Zion Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f55e",
+        "name": "Brown Community A.M.E. Zion Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f55f",
+        "name": "Ricks Chapel A.M.E. Zion Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f560",
+        "name": "Smith Memorial A.M.E. Zion Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f561",
+        "name": "Daniel Chapel A.M.E. Zion Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f562",
+        "name": "Allen Metropolitan C.M.E. Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f563",
+        "name": "Mount Carmel C.M.E. Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f564",
+        "name": "Unity C.M.E. Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f565",
+        "name": "Light House Chapel",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f566",
+        "name": "Israel A.M.E. Zion Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f567",
+        "name": "St. Peter A.M.E. Zion Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f568",
+        "name": "Berea A.M.E. Zion Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f569",
+        "name": "Mount Gilead A.M.E. Zion Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f56a",
+        "name": "New Hope A.M.E. Zion Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f56b",
+        "name": "Martin Luther King Memorial A.M.E. Zion Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f56c",
+        "name": "St. James A.M.E. Zion Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f56d",
+        "name": "St. Peter A.M.E. Zion Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f56e",
+        "name": "Little Zion A.M.E. Zion Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f56f",
+        "name": "First Agape",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f570",
+        "name": "Pennsylvania Avenue",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f571",
+        "name": "Congregational Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f572",
+        "name": "Beth Shalom A.M.E. Zion Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f573",
+        "name": "St. John",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f574",
+        "name": "Scotland A.M.E. Zion Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f575",
+        "name": "S. G. Spottswood – Abundant Life",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f576",
+        "name": "Mt. Hope",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f577",
+        "name": "Wallace Temple AME Zion Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f578",
+        "name": "John Wesley AME Zion Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f579",
+        "name": "Wesley Union AME Zion",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f57a",
+        "name": "First Good Samaritan AME Zion Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f57b",
+        "name": "St. Luke",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f57c",
+        "name": "Homewood",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f57d",
+        "name": "New Hope",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f57e",
+        "name": "Trinity",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f57f",
+        "name": "Wesley",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f580",
+        "name": "Alleyne Memorial A.M.E. Zion Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f581",
+        "name": "New Jerusalem",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f582",
+        "name": "Lane Metropolitan CME Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f583",
+        "name": "Phillips Temple CME Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f584",
+        "name": "Phillips Chapel CME Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f585",
+        "name": "Patton Memorial CME Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f586",
+        "name": "Phillips Chapel CME Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f587",
+        "name": "St. John CME Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f588",
+        "name": "Parkwood CME Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f589",
+        "name": "Bethel CME Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f58a",
+        "name": "Calvary CME Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f58b",
+        "name": "New A.M.E. Zion Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f58c",
+        "name": "Metropolitan A.M.E. Zion Church (Jersey City)",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f58d",
+        "name": "First A.M.E. Zion Church (Paterson)",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f58e",
+        "name": "Porters Memorial CME Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f58f",
+        "name": "Wallace Chapel A.M.E. Zion Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f590",
+        "name": "Shrewsbury A.M.E. Zion Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f591",
+        "name": "Faith Chapel A.M.E. Zion Church (Burlington)",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f592",
+        "name": "Wesley A.M.E. Zion Church (Roselle)",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f593",
+        "name": "Harris Temple A.M.E. Zion Church (Camden)",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f594",
+        "name": "Wesley A.M.E. Zion Church (Burlington)",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f595",
+        "name": "Catoe Chapel Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f596",
+        "name": "Clinton Memorial A.M.E. Zion Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f597",
+        "name": "Miracle Tabernacle Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f598",
+        "name": "Faith Temple Church of God in Christ (Conway)",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f599",
+        "name": "River of Life Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f59a",
+        "name": "Saint Mark Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f59b",
+        "name": "Mason Temple Church of God in Christ (Conway)",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f59c",
+        "name": "Rhema Christian Center Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f59d",
+        "name": "Universal Outreach Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f59e",
+        "name": "Greater Refuge Temple Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f59f",
+        "name": "Ecclesia Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5a0",
+        "name": "New Community Temple Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5a1",
+        "name": "The Praise Center Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5a2",
+        "name": "Reconciliation Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5a3",
+        "name": "Deliverance Temple Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5a4",
+        "name": "Abundant Life Ministries Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5a5",
+        "name": "Macedonia Church of God in Christ (Portsmouth)",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5a6",
+        "name": "Greater Emmanuel Temple Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5a7",
+        "name": "New St. Mark Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5a8",
+        "name": "Faith Deliverance Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5a9",
+        "name": "Mason Memorial Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5aa",
+        "name": "Caldwell Chapel A.M.E. Zion Church (Indianapolis, IN)",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5ab",
+        "name": "Penick-Messiah",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5ac",
+        "name": "Liberation AME Zion",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5ad",
+        "name": "Wallace Temple",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5ae",
+        "name": "Brown Temple A.M.E. Zion Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5af",
+        "name": "Hughlett Temple",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5b0",
+        "name": "Zion Temple",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5b1",
+        "name": "Selectman Chapel",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5b2",
+        "name": "Blackwell A.M.E. Zion Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5b3",
+        "name": "St. Matthew",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5b4",
+        "name": "Samuel Brown",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5b5",
+        "name": "Pentecostal Temple Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5b6",
+        "name": "City of Refuge Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5b7",
+        "name": "Bethesda Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5b8",
+        "name": "Vegas View Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5b9",
+        "name": "Portals To Glory Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5ba",
+        "name": "Rehoboth-Holy Temple Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5bb",
+        "name": "Grace Tabernacle Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5bc",
+        "name": "Trinity Temple C.O.G.I.C",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5bd",
+        "name": "Center Of Hope Christian Fellowship C.O.G.I.C",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5be",
+        "name": "Greater New Refuge C.O.G.I.C",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5bf",
+        "name": "Bread Of Life Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5c0",
+        "name": "Sanders Temple COGIC",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5c1",
+        "name": "Compassion Temple Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5c2",
+        "name": "Deliverance Temple Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5c3",
+        "name": "Bishop Temple COGIC",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5c4",
+        "name": "Word Of Life Church of God In Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5c5",
+        "name": "Hope Temple Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5c6",
+        "name": "Moore Temple COGIC",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5c7",
+        "name": "Deliverance Church Of God In Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5c8",
+        "name": "The Temple Of Prayer Church Of God In Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5c9",
+        "name": "Greater Joy Temple COGIC",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5ca",
+        "name": "Love Temple Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5cb",
+        "name": "Greater New Friendship COGIC",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5cc",
+        "name": "Greater Olive Grove COGIC",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5cd",
+        "name": "Greater Right Way COGIC",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5ce",
+        "name": "Hopewell COGIC",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5cf",
+        "name": "House Of Prayer COGIC",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5d0",
+        "name": "Jerusalem Temple COGIC",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5d1",
+        "name": "New Hope Community COGIC",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5d2",
+        "name": "Center Of Hope Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5d3",
+        "name": "New Hope Community Fellowship COGIC",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5d4",
+        "name": "Breath of Life COGIC",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5d5",
+        "name": "Emmanuel Temple Church Of God In Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5d6",
+        "name": "Prayer Assembly Church Of God In Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5d7",
+        "name": "Mount Zion Church Of God In Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5d8",
+        "name": "Trinity Hope COGIC",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5d9",
+        "name": "A-Mountain Church Of God In Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5da",
+        "name": "Temple of Love Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5db",
+        "name": "Grace Temple Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5dc",
+        "name": "Odom Memorial Church of God In Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5dd",
+        "name": "Garment of Praise Church of God In Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5de",
+        "name": "Temple of Praise Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5df",
+        "name": "Hope Deliverance Temple Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5e0",
+        "name": "Pirmasens New Life Church of God In Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5e1",
+        "name": "Philippian Church of God In Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5e2",
+        "name": "Bountiful Blessings Church of God In Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5e3",
+        "name": "Greater Works Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5e4",
+        "name": "Payne Chapel A.M.E. Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5e5",
+        "name": "Center Of Faith C.O.G.I.C.",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5e6",
+        "name": "Israelite Community Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5e7",
+        "name": "Turning Point Community Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5e8",
+        "name": "Deliverance Temple Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5e9",
+        "name": "New Birth Ministries",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5ea",
+        "name": "Lighthouse Temple Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5eb",
+        "name": "Greater Revival, COGIC, New Life Ministries",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5ec",
+        "name": "Refreshing Springs church of god in christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5ed",
+        "name": "Holiness Chapel COGIC",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5ee",
+        "name": "Garden of Gethsemane Community COGIC",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5ef",
+        "name": "First Zion Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5f0",
+        "name": "St John Institutional Missionary Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5f1",
+        "name": "Fellowship Missionary Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5f2",
+        "name": "Little Zion Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5f3",
+        "name": "Pleasant Zion Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5f4",
+        "name": "Mt Zion Baptist Church Scotlandville",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5f5",
+        "name": "Little Zion Baptist Church (Baton Rouge)",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5f6",
+        "name": "New Light Missionary Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5f7",
+        "name": "Richardson Chapel Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5f8",
+        "name": "The Word and Worship Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5f9",
+        "name": "Greater Pearlie Grove Missionary Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5fa",
+        "name": "St Luther Missionary Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5fb",
+        "name": "Pearl Street African Methodist Episcopal Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5fc",
+        "name": "New Mt. Zion Missionary Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5fd",
+        "name": "New Jerusalem Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5fe",
+        "name": "Zion Travelers Missionary Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f5ff",
+        "name": "First Missionary Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f600",
+        "name": "Ebenezer Missionary Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f601",
+        "name": "New Jerusalem Missionary Baptist Church (Gulfport)",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f602",
+        "name": "Greater Macedonia Missionary Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f603",
+        "name": "Holy Temple Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f604",
+        "name": "Evangelist Temple Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f605",
+        "name": "Greater Trinity Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f606",
+        "name": "St John Missionary Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f607",
+        "name": "Union AME Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f608",
+        "name": "Pilgrim Valley Missionary Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f609",
+        "name": "Temple of Restoration Church Of God In Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f60a",
+        "name": "Saint James Missionary Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f60b",
+        "name": "Kingdom Builders Outreach Ministries",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f60c",
+        "name": "Christ Deliverance C.O.G.I.C",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f60d",
+        "name": "Amazing Institutional Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f60e",
+        "name": "Holy Trinity Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f60f",
+        "name": "Rehoboth Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f610",
+        "name": "Turner's Faith Temple",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f611",
+        "name": "CornerStone Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f612",
+        "name": "Temple of Prayer & Worship of the House of God",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f613",
+        "name": "Pentecostal Church of Prayer and Deliverance",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f614",
+        "name": "Deliverance Temple Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f615",
+        "name": "New Destiny Tabernacle Church Inc.",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f616",
+        "name": "The House of God Church - Keith Dominion",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f617",
+        "name": "Mason Cathedral Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f618",
+        "name": "Good Shepherd Church Of God In Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f619",
+        "name": "Walthall Chapel Church Of God In Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f61a",
+        "name": "Keys of the Kingdom Tabernacle of Prayer F.O.P.",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f61b",
+        "name": "Sanctuary of Worship",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f61c",
+        "name": "New Jerusalem",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f61d",
+        "name": "United Temple Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f61e",
+        "name": "New Bethany Tabernacle Church Inc.",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f61f",
+        "name": "Mt. Sinai Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f620",
+        "name": "Grace Community Church Of God In Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f621",
+        "name": "Liberty Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f622",
+        "name": "Holy Hill Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f623",
+        "name": "Good Samaritan Church Of God In Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f624",
+        "name": "Eternal Life Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f625",
+        "name": "Jordan Missionary Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f626",
+        "name": "Azareel Sanctuary Church Of God In Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f627",
+        "name": "Clement Memorial A.M.E. Zion Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f628",
+        "name": "Shekinah Glory Ministries International",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f629",
+        "name": "Community Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f62a",
+        "name": "Saint John Missionary Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f62b",
+        "name": "Greater House of Joy",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f62c",
+        "name": "Fairview Missionary Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f62d",
+        "name": "Avery Chapel A.M.E. Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f62e",
+        "name": "Greater New Zion Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f62f",
+        "name": "Victory Temple Church Of God In Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f630",
+        "name": "Faith Hope & Love Missionary Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f631",
+        "name": "Hillwood Missionary Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f632",
+        "name": "Harrison Bethel Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f633",
+        "name": "Greater Shiloh Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f634",
+        "name": "Shiloh Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f635",
+        "name": "Wayman A.M.E. Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f636",
+        "name": "New Creations Ministries COGIC",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f637",
+        "name": "St. James A.M.E. Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f638",
+        "name": "Pilgrim Rest Missionary Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f639",
+        "name": "Bethesda Missionary Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f63a",
+        "name": "St. Mark AME Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f63b",
+        "name": "Church of Saint Peter Claver",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f63c",
+        "name": "Zion Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f63d",
+        "name": "Pilgrim Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f63e",
+        "name": "GREATER SOLID ROCK C.O.G.I.C.",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f63f",
+        "name": "MACEDONIA TEMPLE 21ST CENTURY COGIC",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f640",
+        "name": "St. James A.M.E. Church (St. Paul)",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f641",
+        "name": "21st Century Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f642",
+        "name": "St. Paul COGIC",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f643",
+        "name": "ALLEN TEMPLE CHRISTIAN METHODIST EPISCOPAL CHURCH",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f644",
+        "name": "NEW JERUSALEM BAPTIST CHURCH",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f645",
+        "name": "Emmanuel Temple Full Gospel Pentecostal Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f646",
+        "name": "Temple Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f647",
+        "name": "Abundant Life United Pentecostal Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f648",
+        "name": "Glencullen Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f649",
+        "name": "Liberty Missionary Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f64a",
+        "name": "Mt. Zion Missionary Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f64b",
+        "name": "Trinity Missionary Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f64c",
+        "name": "Matewan Missionary Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f64d",
+        "name": "LANDMARK SOVEREIGN GRACE MISSIONARY BAPTIST CHURC",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f64e",
+        "name": "Moundsville Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f64f",
+        "name": "Temple Of The Holy Spirit C.O.G.I.C.",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f650",
+        "name": "Elizabeth Missionary Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f651",
+        "name": "Transformation A.M.E. Zion Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f652",
+        "name": "Liberating Power A.M.E. Zion Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f653",
+        "name": "John Wesley A.M.E. Church Deliverance Center",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f654",
+        "name": "Bethel A.M.E. Church (Wilmington)",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f655",
+        "name": "Mother Union A.M.E. Church (U.A.M.E.)",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f656",
+        "name": "St. Paul U.A.M.E. Church (Wilmington)",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f657",
+        "name": "SHAFFER CHAPEL AFRICAN METHODIST EPISCOPAL CHURCH",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f658",
+        "name": "Fellowship Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f659",
+        "name": "Bethany U.A.M.E. Church (New Castle)",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f65a",
+        "name": "Mt. Zion A.M.E. Church (Dover)",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f65b",
+        "name": "Allen A.M.E. Church (Providence)",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f65c",
+        "name": "Love Temple Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f65d",
+        "name": "Hood Shaw Memorial A.M.E. Zion Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f65e",
+        "name": "Ebenezer Baptist Church (Providence)",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f65f",
+        "name": "Mount Calvary Temple Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f660",
+        "name": "Hood Memorial A.M.E. Church (Providence)",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f661",
+        "name": "Congdon Street Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f662",
+        "name": "Greater Abundant Life Deliverance Center (COGIC)",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f663",
+        "name": "Pentecostal Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f664",
+        "name": "Bethel A.M.E. Church (Providence)",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f665",
+        "name": "Macedonia UAME Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f666",
+        "name": "Open Arms Deliverance Temple Training Center",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f667",
+        "name": "First Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f668",
+        "name": "Temple of Deliverance Church of God In Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f669",
+        "name": "Calvary Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f66a",
+        "name": "New Creations Of Faith Family Worship Center",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f66b",
+        "name": "Power Realm Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f66c",
+        "name": "Emmanuel Temple COGIC",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f66d",
+        "name": "St. Marks Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f66e",
+        "name": "Mount Zion A.M.E. Zion Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f66f",
+        "name": "New Philadelphia Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f670",
+        "name": "Mason Temple Institutional COGIC",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f671",
+        "name": "Zion Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f672",
+        "name": "Mount Nebo Missionary Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f673",
+        "name": "Mt Moriah Missionary Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f674",
+        "name": "Greater New Hope Missionary Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f675",
+        "name": "Antioch Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f676",
+        "name": "Nebraska Jurisdiction Churches of God In Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f677",
+        "name": "Greater St. Paul C.O.G.I.C",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f678",
+        "name": "Victory Temple",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f679",
+        "name": "Faith Temple COGIC",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f67a",
+        "name": "Second Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f67b",
+        "name": "Angelic Temple",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f67c",
+        "name": "Embry Chapel AME Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f67d",
+        "name": "True Vine Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f67e",
+        "name": "Trinity AME Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f67f",
+        "name": "Unity Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f680",
+        "name": "Ebenezer Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f681",
+        "name": "Griffin Memorial Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f682",
+        "name": "The Point Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f683",
+        "name": "Calvary Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f684",
+        "name": "Finley Temple Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f685",
+        "name": "Miracle Temple Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f686",
+        "name": "New Hope Temple Church Of God In Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f687",
+        "name": "Epworth Chapel on the Green",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f688",
+        "name": "Epworth-in-the-Foothills Chapel",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f689",
+        "name": "Life Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f68a",
+        "name": "Holy Trinity Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f68b",
+        "name": "Living Hope Fellowship",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f68c",
+        "name": "New Heights Christian Fellowship",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f68d",
+        "name": "Overland Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f68e",
+        "name": "Church Triumphant",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f68f",
+        "name": "First Assembly of God",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f690",
+        "name": "First Assembly of God of Las Cruces",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f691",
+        "name": "First Baptist Church of Las Cruces",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f692",
+        "name": "Treasure Valley Full Gospel Fellowship",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f693",
+        "name": "Greater St. John Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f694",
+        "name": "Mission Lutheran Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f695",
+        "name": "Majestic Hills Church of God",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f696",
+        "name": "Christ The Rock Lutheran Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f697",
+        "name": "Farmington Baptist Mission",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f698",
+        "name": "First Church Of The Nazarene",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f699",
+        "name": "Learning of the Lord Revival Center C.O.G.I.C.",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f69a",
+        "name": "Bread of Life Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f69b",
+        "name": "Cornerstone Church of God In Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f69c",
+        "name": "Greater Love Church Of God In Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f69d",
+        "name": "Holy Ghost Temple Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f69e",
+        "name": "Carter Memorial Temple C.O.G.I.C.",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f69f",
+        "name": "New Hope Church Of God In Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f6a0",
+        "name": "Kyles A.M.E. Zion Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f6a1",
+        "name": "St Paul African Methodist Episcopal Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f6a2",
+        "name": "Gospel Mission Temple of Davenport",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f6a3",
+        "name": "Williams Temple Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f6a4",
+        "name": "City of the Lord Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f6a5",
+        "name": "International Christian Fellowship",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f6a6",
+        "name": "Disciples International Christian Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f6a7",
+        "name": "Light Mission Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f6a8",
+        "name": "Gospel Kingdom Ministries (GOKIM)",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f6a9",
+        "name": "Restoration Church of Maine",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f6aa",
+        "name": "Calvary African United Methodist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f6ab",
+        "name": "New Birth Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f6ac",
+        "name": "Latter Rain Ministries",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f6ad",
+        "name": "All Nations Assembly of God",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f6ae",
+        "name": "Abundant Life Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f6af",
+        "name": "Gospel Outreach Ministries Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f6b0",
+        "name": "Gospel Tabernacle Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f6b1",
+        "name": "First Sudanese Lutheran Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f6b2",
+        "name": "Faith Temple Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f6b3",
+        "name": "Life Abundant Church of God in Christ",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f6b4",
+        "name": "Allen Chapel AME Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f6b5",
+        "name": "International Ethiopian Christian Fellowship Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f6b6",
+        "name": "Peniel Baptist Ethiopian Fellowship",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f6b7",
+        "name": "Debre Mihret Kidus Michael Wo Kidst Dingle Mariam Ethiopian Orthodox Tewahdo Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f6b8",
+        "name": "Lutheran Church of South Sudan (North American Coordinator)",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f6b9",
+        "name": "Church of the Holy Apostles (Sudanese Congregation)",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f6ba",
+        "name": "First Lutheran African Ministry",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f6bb",
+        "name": "Northstar Missionary Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "698c0f16c6a7356725f7f6bc",
+        "name": "The Anchor Missionary Baptist Church",
+        "atlanta": false
+      },
+      {
+        "_id": "68451075f4bbe63969630320",
+        "name": "Ebenezer Baptist Church",
+        "atlanta": true
+      }
+    ]
+  },
+  "studentOpportunity": {
+    "clientUrl": "/api/opportunities/latest?limit=8",
+    "clientSourceFile": "src/pages/black-student-opportunities/index.tsx",
+    "apiFound": false,
+    "apiSourcePath": null,
+    "fallbackMentioned": false,
+    "sourceInspected": true,
+    "runtimeTested": false
+  }
+}

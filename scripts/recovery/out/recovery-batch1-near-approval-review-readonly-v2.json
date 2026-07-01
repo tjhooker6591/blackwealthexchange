@@ -1,0 +1,104 @@
+{
+  "rowCount": 9,
+  "rows": [
+    {
+      "_id": "67c9ead1818d604b84e5a4b3",
+      "business_name": "",
+      "final_obstacle": "not approval-ready despite complete-looking fields; requires identity/public-search verification and location quality review",
+      "mongo_evidence_can_resolve": "partial",
+      "limited_external_research_can_resolve": "yes",
+      "duplicate_resolved": "yes",
+      "identity_verified": "no",
+      "approval_ready": "no",
+      "manual_review_required": "yes"
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfb1",
+      "business_name": "Boon Boona Coffee",
+      "final_obstacle": "not approval-ready despite complete-looking fields; requires identity/public-search verification and location quality review",
+      "mongo_evidence_can_resolve": "partial",
+      "limited_external_research_can_resolve": "yes",
+      "duplicate_resolved": "yes",
+      "identity_verified": "no",
+      "approval_ready": "no",
+      "manual_review_required": "yes"
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfb2",
+      "business_name": "Blk & Bold",
+      "final_obstacle": "not approval-ready despite complete-looking fields; requires identity/public-search verification and location quality review",
+      "mongo_evidence_can_resolve": "partial",
+      "limited_external_research_can_resolve": "yes",
+      "duplicate_resolved": "yes",
+      "identity_verified": "no",
+      "approval_ready": "no",
+      "manual_review_required": "yes"
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfb7",
+      "business_name": "Topicals",
+      "final_obstacle": "not approval-ready despite complete-looking fields; requires identity/public-search verification and location quality review",
+      "mongo_evidence_can_resolve": "partial",
+      "limited_external_research_can_resolve": "yes",
+      "duplicate_resolved": "yes",
+      "identity_verified": "no",
+      "approval_ready": "no",
+      "manual_review_required": "yes"
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfb8",
+      "business_name": "RedDrop",
+      "final_obstacle": "not approval-ready despite complete-looking fields; requires identity/public-search verification and location quality review",
+      "mongo_evidence_can_resolve": "partial",
+      "limited_external_research_can_resolve": "yes",
+      "duplicate_resolved": "yes",
+      "identity_verified": "no",
+      "approval_ready": "no",
+      "manual_review_required": "yes"
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfc5",
+      "business_name": "Clare",
+      "final_obstacle": "not approval-ready despite complete-looking fields; requires identity/public-search verification and location quality review",
+      "mongo_evidence_can_resolve": "partial",
+      "limited_external_research_can_resolve": "yes",
+      "duplicate_resolved": "yes",
+      "identity_verified": "no",
+      "approval_ready": "no",
+      "manual_review_required": "yes"
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfce",
+      "business_name": "Fourth Phase",
+      "final_obstacle": "not approval-ready despite complete-looking fields; requires identity/public-search verification and location quality review",
+      "mongo_evidence_can_resolve": "partial",
+      "limited_external_research_can_resolve": "yes",
+      "duplicate_resolved": "yes",
+      "identity_verified": "no",
+      "approval_ready": "no",
+      "manual_review_required": "yes"
+    },
+    {
+      "_id": "681d1df4fd9719ad7b26dfda",
+      "business_name": "Loyalty Bookstores",
+      "final_obstacle": "not approval-ready despite complete-looking fields; requires identity/public-search verification and location quality review",
+      "mongo_evidence_can_resolve": "partial",
+      "limited_external_research_can_resolve": "yes",
+      "duplicate_resolved": "yes",
+      "identity_verified": "no",
+      "approval_ready": "no",
+      "manual_review_required": "yes"
+    },
+    {
+      "_id": "67f73dec1d08a04e139a9d1e",
+      "business_name": "",
+      "final_obstacle": "not approval-ready despite complete-looking fields; requires identity/public-search verification and location quality review",
+      "mongo_evidence_can_resolve": "partial",
+      "limited_external_research_can_resolve": "yes",
+      "duplicate_resolved": "yes",
+      "identity_verified": "no",
+      "approval_ready": "no",
+      "manual_review_required": "yes"
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+method=POST
+url=http://localhost:3000/api/auth/logout
+status=200
+location=
+content_type=application/json; charset=utf-8
+bytes=53
+body_preview={"success":true,"message":"Logged out successfully."}

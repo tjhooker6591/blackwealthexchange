@@ -1,0 +1,23 @@
+[
+  {
+    "name": "unauthorized",
+    "screenshot": "/Users/blackforge/workspace/bwe/repos/repo_clean/tmp/ui-proof-affiliates/unauthorized.png",
+    "codeText": "UNAUTHORIZED",
+    "codeRects": 1,
+    "bannerText": "Code: UNAUTHORIZEDUNAUTHORIZED: Unauthorized"
+  },
+  {
+    "name": "method_not_allowed",
+    "screenshot": "/Users/blackforge/workspace/bwe/repos/repo_clean/tmp/ui-proof-affiliates/method_not_allowed.png",
+    "codeText": "METHOD_NOT_ALLOWED",
+    "codeRects": 1,
+    "bannerText": "Code: METHOD_NOT_ALLOWEDMETHOD_NOT_ALLOWED: Method Not Allowed"
+  },
+  {
+    "name": "affiliate_not_found",
+    "screenshot": "/Users/blackforge/workspace/bwe/repos/repo_clean/tmp/ui-proof-affiliates/affiliate_not_found.png",
+    "codeText": "AFFILIATE_NOT_FOUND",
+    "codeRects": 1,
+    "bannerText": "Code: AFFILIATE_NOT_FOUNDAFFILIATE_NOT_FOUND: Affiliate not found"
+  }
+]

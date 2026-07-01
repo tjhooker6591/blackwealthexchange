@@ -101,7 +101,8 @@ console.log(
       pipelineStatus: finalPipeline?.status || null,
       checks: {
         persistedBlockedRequest: !!finalRequest,
-        consultantResponseApplied: finalRequest?.consultantResponseAction === "accept",
+        consultantResponseApplied:
+          finalRequest?.consultantResponseAction === "accept",
         adminDispositionApplied: finalRequest?.adminDisposition === "resolved",
         pipelineSynchronized: finalPipeline?.status === "under_review",
       },

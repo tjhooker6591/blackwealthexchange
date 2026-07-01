@@ -61,18 +61,30 @@ async function passBStatusProof(browser) {
     });
   });
 
-  await page.goto(`${BASE_URL}/wealth-builder/status`, { waitUntil: "domcontentloaded" });
+  await page.goto(`${BASE_URL}/wealth-builder/status`, {
+    waitUntil: "domcontentloaded",
+  });
   await page.waitForSelector("text=Recommended next actions");
   await page.waitForSelector("text=1) Keep transactions current");
 
-  const nextActionsVisible = await page.locator("text=Recommended next actions").isVisible();
-  const txCardVisible = await page.locator("text=7 recorded transactions").isVisible();
+  const nextActionsVisible = await page
+    .locator("text=Recommended next actions")
+    .isVisible();
+  const txCardVisible = await page
+    .locator("text=7 recorded transactions")
+    .isVisible();
 
-  await page.screenshot({ path: path.join(outDir, "pass-b-status-next-actions.png"), fullPage: true });
+  await page.screenshot({
+    path: path.join(outDir, "pass-b-status-next-actions.png"),
+    fullPage: true,
+  });
 
   await page.click('a[href="/wealth-builder/transactions"]');
   await page.waitForURL("**/wealth-builder/transactions");
-  await page.screenshot({ path: path.join(outDir, "pass-b-next-action-transactions-route.png"), fullPage: true });
+  await page.screenshot({
+    path: path.join(outDir, "pass-b-next-action-transactions-route.png"),
+    fullPage: true,
+  });
 
   await context.close();
   return { nextActionsVisible, txCardVisible };
@@ -90,14 +102,22 @@ async function passCSellerFallbackProof(browser) {
     });
   });
 
-  await page.goto(`${BASE_URL}/signup?type=seller`, { waitUntil: "domcontentloaded" });
-  await page.fill('input[name="email"]', `seller-proof-${Date.now()}@example.com`);
+  await page.goto(`${BASE_URL}/signup?type=seller`, {
+    waitUntil: "domcontentloaded",
+  });
+  await page.fill(
+    'input[name="email"]',
+    `seller-proof-${Date.now()}@example.com`,
+  );
   await page.fill('input[name="password"]', "StrongPass1!");
   await page.fill('input[name="confirmPassword"]', "StrongPass1!");
 
   await page.click('button[type="submit"]');
   await page.waitForURL("**/marketplace/become-a-seller", { timeout: 7000 });
-  await page.screenshot({ path: path.join(outDir, "pass-c-seller-signup-fallback-route.png"), fullPage: true });
+  await page.screenshot({
+    path: path.join(outDir, "pass-c-seller-signup-fallback-route.png"),
+    fullPage: true,
+  });
 
   const finalUrl = page.url();
   await context.close();
@@ -131,14 +151,19 @@ async function passCAdminResponseShapeProof(browser) {
     });
   });
 
-  await page.goto(`${BASE_URL}/admin/user-management`, { waitUntil: "domcontentloaded" });
+  await page.goto(`${BASE_URL}/admin/user-management`, {
+    waitUntil: "domcontentloaded",
+  });
   await page.waitForSelector("text=User & Account Management");
   await page.waitForSelector("text=Alicia Proof");
 
   const rowVisible = await page.locator("text=Alicia Proof").isVisible();
   const noUsersVisible = await page.locator("text=No users found.").count();
 
-  await page.screenshot({ path: path.join(outDir, "pass-c-admin-user-shape-rendered.png"), fullPage: true });
+  await page.screenshot({
+    path: path.join(outDir, "pass-c-admin-user-shape-rendered.png"),
+    fullPage: true,
+  });
 
   await context.close();
   return { rowVisible, noUsersVisible };

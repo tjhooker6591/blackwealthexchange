@@ -1,0 +1,7 @@
+method=GET
+url=http://localhost:3000/api/notifications/fetch
+status=400
+location=
+content_type=application/json; charset=utf-8
+bytes=34
+body_preview={"message":"User ID is required."}

@@ -1,0 +1,14 @@
+{
+  "success": true,
+  "message": "Account created and logged in!",
+  "accountType": "user",
+  "user": {
+    "userId": "69fa1e792aeb239dc0349ef7",
+    "email": "audit.user.local@blackwealthexchange.test",
+    "accountType": "user",
+    "isPremium": false,
+    "currentPlan": "free",
+    "premiumStatus": "inactive",
+    "premiumActivatedAt": null
+  }
+}

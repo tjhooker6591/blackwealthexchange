@@ -1,0 +1,7 @@
+method=GET
+url=http://localhost:3000/travel-map
+status=200
+location=
+content_type=text/html; charset=utf-8
+bytes=11809
+body_preview=<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8" data-next-head=""/><meta name="viewport" content="width=device-width, initial-scale=1" data-next-head=""/><link rel="icon" href="/favicon.png" type="image/png" d

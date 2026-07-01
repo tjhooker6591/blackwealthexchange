@@ -1,0 +1,16 @@
+HTTP/1.1 200 OK
+X-Frame-Options: SAMEORIGIN
+X-Content-Type-Options: nosniff
+Referrer-Policy: strict-origin-when-cross-origin
+Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+Permissions-Policy: camera=(), microphone=(), geolocation=(self)
+Content-Security-Policy: default-src 'self'; base-uri 'self'; frame-ancestors 'self'; object-src 'none'; img-src 'self' data: https:; font-src 'self' data: https:; style-src 'self' 'unsafe-inline' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; connect-src 'self' https: wss:; frame-src 'self' https:; form-action 'self'
+Content-Type: application/json; charset=utf-8
+ETag: "3oxdc5q02a9"
+Content-Length: 369
+Vary: Accept-Encoding
+Date: Thu, 07 May 2026 16:36:20 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+
+{"seller":{"_id":"69fb7c4d078c73b5736db278","email":"audit_seller_20260506@local.test","accountType":"seller","auditTag":"BWE_LOCAL_AUDIT_2026_05","createdAt":"2026-05-06T17:37:17.866Z","password":"$2a$10$lsslaSLar/UJD3YlbEhsMuSz4.BqT/ATI2cPuRXpKYCCqfuS.0VqG","storeName":"audit_seller_store","updatedAt":"2026-05-06T17:45:00.962Z","userId":"69fb7c4d078c73b5736db278"}}

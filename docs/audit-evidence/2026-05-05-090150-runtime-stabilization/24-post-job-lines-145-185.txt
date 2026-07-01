@@ -1,0 +1,41 @@
+   145	
+   146	    try {
+   147	      const raw =
+   148	        typeof window !== "undefined"
+   149	          ? window.sessionStorage.getItem(DRAFT_KEY)
+   150	          : null;
+   151	      if (!raw) {
+   152	        setError(
+   153	          "Payment completed, but we couldn't find your saved job draft. Please re-enter the details and submit.",
+   154	        );
+   155	        setTier(paidTier);
+   156	        return;
+   157	      }
+   158	
+   159	      const draft = JSON.parse(raw) as JobDraft;
+   160	
+   161	      // restore into UI
+   162	      setFormData(draft.formData);
+   163	      setTier(paidTier);
+   164	      setDraftSaved(true);
+   165	
+   166	      // auto-submit paid job
+   167	      (async () => {
+   168	        await submitJob(draft.formData, paidTier, true);
+   169	        // clear query params after posting (prevents accidental duplicates on refresh)
+   170	        router.replace("/job-listings");
+   171	      })();
+   172	    } catch (e) {
+   173	      console.error(e);
+   174	      setError(
+   175	        "Payment completed, but we couldn't restore your draft. Please re-enter the details and submit.",
+   176	      );
+   177	      setTier(paidTier);
+   178	    }
+   179	    // eslint-disable-next-line react-hooks/exhaustive-deps
+   180	  }, [router.isReady]);
+   181	
+   182	  const handleChange = (
+   183	    e: React.ChangeEvent<
+   184	      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+   185	    >,
