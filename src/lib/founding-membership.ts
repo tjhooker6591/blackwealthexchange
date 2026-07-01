@@ -1,5 +1,38 @@
 import { ObjectId, type Db } from "mongodb";
 
+export type ClaimableBusinessSummary = {
+  id: string;
+  businessName: string;
+  slug: string;
+  category: string;
+  city: string;
+  state: string;
+  address: string;
+  website?: string | null;
+  phone?: string | null;
+  description: string;
+};
+
+export type FoundingMembershipResumeState = {
+  selectedBusinessId: string;
+  confirmedBusinessId: string;
+  resumeCheckoutRequested: boolean;
+  resumeBusinessName: string;
+  error: string;
+};
+
+export type ClaimableBusinessAvailability = {
+  publicStatus: string;
+  currentClaimState: string | null;
+  claimable: boolean;
+  unavailableReason:
+    | "already_verified"
+    | "claim_already_initiated"
+    | "ownership_review_pending"
+    | "membership_already_active"
+    | null;
+};
+
 export const FOUNDING_MEMBERSHIP_ITEM_ID =
   "founding-verified-business-growth-membership";
 export const FOUNDING_MEMBERSHIP_PRODUCT_KEY =
@@ -10,10 +43,7 @@ export const FOUNDING_MEMBERSHIP_PRICE_CENTS = 4900;
 export const FOUNDING_MEMBERSHIP_CURRENCY = "usd";
 export const FOUNDING_MEMBERSHIP_PILOT_LIMIT = 10;
 
-export type FoundingMembershipStatus =
-  | "active"
-  | "past_due"
-  | "cancelled";
+export type FoundingMembershipStatus = "active" | "past_due" | "cancelled";
 
 export type FoundingClaimStatus =
   | "claim_initiated"
@@ -26,14 +56,92 @@ function stringOrNull(v: unknown) {
   return typeof v === "string" && v.trim() ? v.trim() : null;
 }
 
+export function getFoundingMembershipAvailability(
+  row: Record<string, any>,
+): ClaimableBusinessAvailability {
+  const publicStatus =
+    String(row.status || row.trustStatus || "").trim().toLowerCase() || "public";
+  const currentClaimState =
+    String(row.claimStage || "").trim().toLowerCase() || null;
+  const alreadyVerified =
+    row.verified === true || row.isVerified === true || publicStatus === "verified";
+  const unavailableReason = alreadyVerified
+    ? "already_verified"
+    : currentClaimState === "claim_initiated"
+      ? "claim_already_initiated"
+      : currentClaimState === "ownership_review_pending"
+        ? "ownership_review_pending"
+        : currentClaimState === "founding_growth_member"
+          ? "membership_already_active"
+          : null;
+
+  return {
+    publicStatus,
+    currentClaimState,
+    claimable: unavailableReason == null,
+    unavailableReason,
+  };
+}
+
+export function normalizeFoundingMembershipResumeState(args: {
+  requestedBusinessId: string;
+  resumeParam: string;
+  business: ClaimableBusinessSummary | null;
+}): FoundingMembershipResumeState {
+  const requestedBusinessId = String(args.requestedBusinessId || "").trim();
+  const resumeParam = String(args.resumeParam || "").trim().toLowerCase();
+  const resumeCheckoutRequested = resumeParam === "checkout";
+
+  if (!requestedBusinessId) {
+    return {
+      selectedBusinessId: "",
+      confirmedBusinessId: "",
+      resumeCheckoutRequested: false,
+      resumeBusinessName: "",
+      error: "",
+    };
+  }
+
+  if (!args.business) {
+    return {
+      selectedBusinessId: "",
+      confirmedBusinessId: "",
+      resumeCheckoutRequested: false,
+      resumeBusinessName: "",
+      error:
+        "The requested business could not be confirmed as a current public claimable listing. Please choose one from the list below.",
+    };
+  }
+
+  return {
+    selectedBusinessId: args.business.id,
+    confirmedBusinessId: args.business.id,
+    resumeCheckoutRequested,
+    resumeBusinessName: args.business.businessName,
+    error: "",
+  };
+}
+
+export function shouldAutoResumeFoundingCheckout(args: {
+  confirmedBusinessId: string;
+  resumeCheckoutRequested: boolean;
+  checkoutInFlight: boolean;
+  autoResumeConsumed: boolean;
+}) {
+  return Boolean(
+    args.confirmedBusinessId &&
+      args.resumeCheckoutRequested &&
+      !args.checkoutInFlight &&
+      !args.autoResumeConsumed,
+  );
+}
+
 export function isFoundingMembershipItemId(itemId: string) {
   return itemId.trim().toLowerCase() === FOUNDING_MEMBERSHIP_ITEM_ID;
 }
 
 export function isFoundingMembershipProductKey(productKey: string) {
-  return (
-    productKey.trim().toLowerCase() === FOUNDING_MEMBERSHIP_PRODUCT_KEY
-  );
+  return productKey.trim().toLowerCase() === FOUNDING_MEMBERSHIP_PRODUCT_KEY;
 }
 
 export async function countActiveFoundingMemberships(db: Db) {
@@ -108,19 +216,7 @@ export async function getClaimablePublicBusinesses(db: Db, limit = 25) {
     .toArray();
 
   return rows.map((row: any) => {
-    const publicStatus = String(row.status || row.trustStatus || "").trim().toLowerCase() || "public";
-    const currentClaimState = String(row.claimStage || "").trim().toLowerCase() || null;
-    const alreadyVerified =
-      row.verified === true || row.isVerified === true || publicStatus === "verified";
-    const unavailableReason = alreadyVerified
-      ? "already_verified"
-      : currentClaimState === "claim_initiated"
-        ? "claim_already_initiated"
-        : currentClaimState === "ownership_review_pending"
-          ? "ownership_review_pending"
-          : currentClaimState === "founding_growth_member"
-            ? "membership_already_active"
-            : null;
+    const availability = getFoundingMembershipAvailability(row);
 
     return {
       id: String(row._id),
@@ -135,18 +231,22 @@ export async function getClaimablePublicBusinesses(db: Db, limit = 25) {
       website: stringOrNull(row.website),
       phone: stringOrNull(row.phone),
       description: String(row.description || "").trim(),
-      publicStatus,
-      claimable: unavailableReason == null,
-      currentClaimState,
-      unavailableReason,
+      publicStatus: availability.publicStatus,
+      claimable: availability.claimable,
+      currentClaimState: availability.currentClaimState,
+      unavailableReason: availability.unavailableReason,
     };
   });
 }
 
-export async function getClaimableBusinessById(db: Db, businessId: string) {
-  if (!ObjectId.isValid(businessId)) return null;
+export async function getClaimableBusinessById(
+  db: Db,
+  businessId: string,
+): Promise<ClaimableBusinessSummary | null> {
+  if (!businessId) return null;
+
   const row = await db.collection("businesses").findOne(
-    { _id: new ObjectId(businessId) },
+    { _id: ObjectId.isValid(businessId) ? new ObjectId(businessId) : (businessId as any) },
     {
       projection: {
         _id: 1,
@@ -168,26 +268,36 @@ export async function getClaimableBusinessById(db: Db, businessId: string) {
         isComplete: 1,
         completenessScore: 1,
         qualityScore: 1,
+        claimStage: 1,
+        trustStatus: 1,
+        isVerified: 1,
+        verified: 1,
       },
     },
   );
   if (!row) return null;
 
-  const status = String((row as any).status || "").toLowerCase();
+  const status = String((row as any).status || (row as any).trustStatus || "")
+    .trim()
+    .toLowerCase();
+  const availability = getFoundingMembershipAvailability(row as any);
   const publicish =
     status === "approved" || status === "verified" || status === "active";
-  const claimable =
-    publicish &&
-    (Boolean((row as any).directoryVisibilityApproved) ||
-      Boolean((row as any).isComplete) ||
-      Number((row as any).completenessScore || 0) >= 70 ||
-      Number((row as any).qualityScore || 0) >= 70);
+  const claimableVisibility =
+    Boolean((row as any).directoryVisibilityApproved) ||
+    Boolean((row as any).isComplete) ||
+    Number((row as any).completenessScore || 0) >= 70 ||
+    Number((row as any).qualityScore || 0) >= 70;
 
-  if (!claimable) return null;
+  if (!publicish || !claimableVisibility || !availability.claimable) {
+    return null;
+  }
 
   return {
     id: String((row as any)._id),
-    businessName: String((row as any).business_name || (row as any).name || "").trim(),
+    businessName: String(
+      (row as any).business_name || (row as any).name || "",
+    ).trim(),
     slug: String((row as any).alias || (row as any).slug || (row as any)._id),
     category: String(
       (row as any).display_categories ||

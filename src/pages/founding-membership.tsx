@@ -1,7 +1,14 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
+type ResumeState = {
+  selectedBusinessId: string;
+  confirmedBusinessId: string;
+  resumeCheckoutRequested: boolean;
+  resumeBusinessName: string;
+  error: string;
+};
 
 type BusinessOption = {
   id: string;
@@ -41,6 +48,59 @@ function money(cents: number) {
   }).format((cents || 0) / 100);
 }
 
+function normalizeResumeState(args: {
+  requestedBusinessId: string;
+  resumeParam: string;
+  business: BusinessOption | null;
+}): ResumeState {
+  const requestedBusinessId = String(args.requestedBusinessId || "").trim();
+  const resumeParam = String(args.resumeParam || "").trim().toLowerCase();
+  const resumeCheckoutRequested = resumeParam === "checkout";
+
+  if (!requestedBusinessId) {
+    return {
+      selectedBusinessId: "",
+      confirmedBusinessId: "",
+      resumeCheckoutRequested: false,
+      resumeBusinessName: "",
+      error: "",
+    };
+  }
+
+  if (!args.business) {
+    return {
+      selectedBusinessId: "",
+      confirmedBusinessId: "",
+      resumeCheckoutRequested: false,
+      resumeBusinessName: "",
+      error:
+        "The requested business could not be confirmed as a current public claimable listing. Please choose one from the list below.",
+    };
+  }
+
+  return {
+    selectedBusinessId: args.business.id,
+    confirmedBusinessId: args.business.id,
+    resumeCheckoutRequested,
+    resumeBusinessName: args.business.businessName,
+    error: "",
+  };
+}
+
+function shouldAutoResumeCheckout(args: {
+  confirmedBusinessId: string;
+  resumeCheckoutRequested: boolean;
+  checkoutInFlight: boolean;
+  autoResumeConsumed: boolean;
+}) {
+  return Boolean(
+    args.confirmedBusinessId &&
+      args.resumeCheckoutRequested &&
+      !args.checkoutInFlight &&
+      !args.autoResumeConsumed,
+  );
+}
+
 export default function FoundingMembershipPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
@@ -49,8 +109,14 @@ export default function FoundingMembershipPage() {
   const [data, setData] = useState<OptionsPayload | null>(null);
   const [selectedBusinessId, setSelectedBusinessId] = useState("");
   const [confirmedBusinessId, setConfirmedBusinessId] = useState("");
-  const [checkoutState, setCheckoutState] = useState<"idle" | "validating" | "redirecting" | "auth_required" | "checkout_error">("idle");
+  const [checkoutState, setCheckoutState] = useState<
+    "idle" | "validating" | "redirecting" | "auth_required" | "checkout_error"
+  >("idle");
   const [checkoutMessage, setCheckoutMessage] = useState("");
+  const [resumeCheckoutRequested, setResumeCheckoutRequested] = useState(false);
+  const [resumeBusinessName, setResumeBusinessName] = useState("");
+  const checkoutInFlightRef = useRef(false);
+  const autoResumeConsumedRef = useRef(false);
 
   useEffect(() => {
     (async () => {
@@ -75,24 +141,47 @@ export default function FoundingMembershipPage() {
     if (!router.isReady || !data?.businesses?.length) return;
 
     const requestedBusinessId =
-      typeof router.query.businessId === "string" ? router.query.businessId.trim() : "";
+      typeof router.query.businessId === "string"
+        ? router.query.businessId.trim()
+        : "";
+    const resumeParam =
+      typeof router.query.resume === "string" ? router.query.resume.trim() : "";
 
     if (!requestedBusinessId) {
+      setResumeCheckoutRequested(false);
+      setResumeBusinessName("");
       return;
     }
 
-    const found = data.businesses.find((business) => business.id === requestedBusinessId);
-    if (found) {
-      setSelectedBusinessId(found.id);
-      setConfirmedBusinessId("");
-      setError("");
-      return;
-    }
+    const found = data.businesses.find(
+      (business) => business.id === requestedBusinessId,
+    );
 
-    setSelectedBusinessId("");
-    setConfirmedBusinessId("");
-    setError("The requested business could not be confirmed as a current public claimable listing. Please choose one from the list below.");
-  }, [router.isReady, router.query.businessId, data]);
+    const normalized = normalizeResumeState({
+      requestedBusinessId,
+      resumeParam,
+      business: found || null,
+    });
+
+    setSelectedBusinessId(normalized.selectedBusinessId);
+    setConfirmedBusinessId(normalized.confirmedBusinessId);
+    setResumeCheckoutRequested(normalized.resumeCheckoutRequested);
+    setResumeBusinessName(normalized.resumeBusinessName);
+    setError(normalized.error);
+    setCheckoutState("idle");
+    setCheckoutMessage("");
+    checkoutInFlightRef.current = false;
+    autoResumeConsumedRef.current = false;
+
+    if (!normalized.resumeCheckoutRequested && typeof window !== "undefined") {
+      const cleanPath = normalized.selectedBusinessId
+        ? `/founding-membership?businessId=${encodeURIComponent(
+            normalized.selectedBusinessId,
+          )}`
+        : "/founding-membership";
+      window.history.replaceState(null, "", cleanPath);
+    }
+  }, [router.isReady, router.query.businessId, router.query.resume, data]);
 
   const selectedBusiness = useMemo(
     () =>
@@ -110,6 +199,17 @@ export default function FoundingMembershipPage() {
 
   const offer = data?.offer;
 
+  const consumeResumeIntent = (businessIdOverride?: string) => {
+    setResumeCheckoutRequested(false);
+    if (typeof window !== "undefined") {
+      const activeBusinessId = businessIdOverride || confirmedBusinessId || selectedBusinessId;
+      const cleanPath = activeBusinessId
+        ? `/founding-membership?businessId=${encodeURIComponent(activeBusinessId)}`
+        : "/founding-membership";
+      window.history.replaceState(null, "", cleanPath);
+    }
+  };
+
   const confirmBusinessSelection = () => {
     if (!selectedBusinessId) {
       setError("Select a public claimable business first.");
@@ -117,7 +217,9 @@ export default function FoundingMembershipPage() {
     }
 
     setConfirmedBusinessId(selectedBusinessId);
+    setResumeBusinessName(selectedBusiness?.businessName || "");
     setError("");
+    autoResumeConsumedRef.current = false;
 
     if (typeof window !== "undefined") {
       window.history.replaceState(
@@ -131,18 +233,26 @@ export default function FoundingMembershipPage() {
   };
 
   const beginCheckout = async () => {
+    if (checkoutInFlightRef.current) {
+      return;
+    }
+
     if (!confirmedBusinessId) {
       setError("Confirm the selected business before starting membership.");
       setCheckoutState("checkout_error");
-      setCheckoutMessage("Choose and confirm one business before you continue to secure checkout.");
+      setCheckoutMessage(
+        "Choose and confirm one business before you continue to secure checkout.",
+      );
       return;
     }
 
     try {
+      checkoutInFlightRef.current = true;
       setSubmitting(true);
       setError("");
       setCheckoutState("validating");
       setCheckoutMessage("Opening secure checkout…");
+      consumeResumeIntent(confirmedBusinessId);
 
       const meRes = await fetch("/api/auth/me", {
         credentials: "include",
@@ -153,6 +263,7 @@ export default function FoundingMembershipPage() {
         setCheckoutState("auth_required");
         setCheckoutMessage("Please sign in to continue to secure checkout.");
         setSubmitting(false);
+        checkoutInFlightRef.current = false;
         const resume = `/founding-membership?businessId=${encodeURIComponent(confirmedBusinessId)}&resume=checkout`;
         await router.push(`/login?redirect=${encodeURIComponent(resume)}`);
         return;
@@ -176,20 +287,27 @@ export default function FoundingMembershipPage() {
       const json = await res.json().catch(() => ({}));
       if (res.status === 401) {
         setCheckoutState("auth_required");
-        setCheckoutMessage("Authentication required. Please sign in and continue checkout.");
+        setCheckoutMessage(
+          "Authentication required. Please sign in and continue checkout.",
+        );
         setSubmitting(false);
+        checkoutInFlightRef.current = false;
         const resume = `/founding-membership?businessId=${encodeURIComponent(confirmedBusinessId)}&resume=checkout`;
         await router.push(`/login?redirect=${encodeURIComponent(resume)}`);
         return;
       }
 
       if (!res.ok || !json?.url) {
-        const apiMessage = typeof json?.error === "string" ? json.error : "Unable to create the Stripe Checkout Session";
-        const userMessage = apiMessage === "Stripe is not configured"
-          ? "Checkout is temporarily unavailable in this environment. Please try again in a configured environment."
-          : apiMessage === "Unauthorized"
-            ? "Authentication required. Please sign in and continue checkout."
-            : apiMessage;
+        const apiMessage =
+          typeof json?.error === "string"
+            ? json.error
+            : "Unable to create the Stripe Checkout Session";
+        const userMessage =
+          apiMessage === "Stripe is not configured"
+            ? "Checkout is temporarily unavailable in this environment. Please try again in a configured environment."
+            : apiMessage === "Unauthorized"
+              ? "Authentication required. Please sign in and continue checkout."
+              : apiMessage;
         throw new Error(userMessage);
       }
 
@@ -201,8 +319,27 @@ export default function FoundingMembershipPage() {
       setCheckoutState("checkout_error");
       setCheckoutMessage(e?.message || "Unable to start checkout. Please retry.");
       setSubmitting(false);
+      checkoutInFlightRef.current = false;
     }
   };
+
+  useEffect(() => {
+    if (
+      !shouldAutoResumeCheckout({
+        confirmedBusinessId,
+        resumeCheckoutRequested,
+        checkoutInFlight: checkoutInFlightRef.current,
+        autoResumeConsumed: autoResumeConsumedRef.current,
+      })
+    ) {
+      return;
+    }
+
+    autoResumeConsumedRef.current = true;
+    void beginCheckout();
+    // beginCheckout intentionally omitted to avoid a new function identity retriggering resume.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [confirmedBusinessId, resumeCheckoutRequested]);
 
   return (
     <>
@@ -270,7 +407,11 @@ export default function FoundingMembershipPage() {
                         }
                         setSelectedBusinessId(business.id);
                         setConfirmedBusinessId("");
+                        setResumeCheckoutRequested(false);
+                        setResumeBusinessName("");
                         setError("");
+                        autoResumeConsumedRef.current = false;
+                        checkoutInFlightRef.current = false;
                       }}
                       className={`rounded-2xl border p-4 text-left transition focus:outline-none focus:ring-2 focus:ring-yellow-400/40 ${
                         active
@@ -364,7 +505,11 @@ export default function FoundingMembershipPage() {
                       onClick={() => {
                         setSelectedBusinessId("");
                         setConfirmedBusinessId("");
+                        setResumeCheckoutRequested(false);
+                        setResumeBusinessName("");
                         setError("");
+                        autoResumeConsumedRef.current = false;
+                        checkoutInFlightRef.current = false;
                         if (typeof window !== "undefined") {
                           window.history.replaceState(null, "", "/founding-membership");
                         }
@@ -426,12 +571,13 @@ export default function FoundingMembershipPage() {
                   <div className="mt-3 rounded-2xl border border-white/10 bg-black/20 p-4 text-sm text-white/75 space-y-3">
                     <div>
                       <div className="font-semibold text-white">Selected business</div>
-                      <div className="mt-1">{confirmedBusiness.businessName}</div>
+                      <div className="mt-1">{resumeBusinessName || confirmedBusiness.businessName}</div>
                       <div className="mt-1 text-white/55">
                         {[confirmedBusiness.category, [confirmedBusiness.city, confirmedBusiness.state].filter(Boolean).join(", ")]
                           .filter(Boolean)
                           .join(" • ")}
                       </div>
+                      <div className="mt-1 text-white/50">Confirmed business ID: {confirmedBusiness.id}</div>
                     </div>
                     <div>
                       <div className="font-semibold text-white">Membership</div>
@@ -492,7 +638,9 @@ export default function FoundingMembershipPage() {
                         ? "Continue to Login"
                         : submitting
                           ? "Opening secure checkout…"
-                          : "Start Membership and Claim Process"}
+                          : resumeCheckoutRequested
+                            ? "Continue to Secure Checkout"
+                            : "Start Membership and Claim Process"}
                 </button>
 
                 <div className="mt-3 flex flex-wrap gap-3 text-xs text-white/50">
@@ -504,7 +652,11 @@ export default function FoundingMembershipPage() {
                       type="button"
                       onClick={() => {
                         setConfirmedBusinessId("");
+                        setResumeCheckoutRequested(false);
+                        setResumeBusinessName("");
                         setError("");
+                        autoResumeConsumedRef.current = false;
+                        checkoutInFlightRef.current = false;
                         document.getElementById("membership-review")?.scrollIntoView({ behavior: "smooth", block: "start" });
                       }}
                       className="text-yellow-300 underline"
