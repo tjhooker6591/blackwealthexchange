@@ -55,7 +55,9 @@ function normalizeResumeState(args: {
   business: BusinessOption | null;
 }): ResumeState {
   const requestedBusinessId = String(args.requestedBusinessId || "").trim();
-  const resumeParam = String(args.resumeParam || "").trim().toLowerCase();
+  const resumeParam = String(args.resumeParam || "")
+    .trim()
+    .toLowerCase();
   const resumeCheckoutRequested = resumeParam === "checkout";
 
   if (!requestedBusinessId) {
@@ -96,9 +98,9 @@ function shouldAutoResumeCheckout(args: {
 }) {
   return Boolean(
     args.confirmedBusinessId &&
-      args.resumeCheckoutRequested &&
-      !args.checkoutInFlight &&
-      !args.autoResumeConsumed,
+    args.resumeCheckoutRequested &&
+    !args.checkoutInFlight &&
+    !args.autoResumeConsumed,
   );
 }
 
@@ -207,18 +209,22 @@ export default function FoundingMembershipPage() {
 
   const businesses = useMemo(() => data?.businesses || [], [data?.businesses]);
   const selectedBusiness = useMemo(
-    () => businesses.find((business) => business.id === selectedBusinessId) || null,
+    () =>
+      businesses.find((business) => business.id === selectedBusinessId) || null,
     [businesses, selectedBusinessId],
   );
   const confirmedBusiness = useMemo(
-    () => businesses.find((business) => business.id === confirmedBusinessId) || null,
+    () =>
+      businesses.find((business) => business.id === confirmedBusinessId) ||
+      null,
     [businesses, confirmedBusinessId],
   );
 
   const activeBusiness = confirmedBusiness || selectedBusiness;
   const offer = data?.offer;
   const hasRemainingSlots = (offer?.remainingSlots ?? 0) > 0;
-  const checkoutUnavailable = checkoutState === "checkout_error" && !confirmedBusinessId;
+  const checkoutUnavailable =
+    checkoutState === "checkout_error" && !confirmedBusinessId;
 
   const consumeResumeIntent = (businessIdOverride?: string) => {
     setResumeCheckoutRequested(false);
@@ -374,11 +380,16 @@ export default function FoundingMembershipPage() {
                   Founding Verified Business Growth Membership
                 </h1>
                 <p className="mt-3 max-w-3xl text-white/75">
-                  Claim your Black-owned business. Strengthen your profile. Measure your visibility and growth. This pilot starts with one offer, one price, and one customer path for existing public BWE business listings.
+                  Claim your Black-owned business. Strengthen your profile.
+                  Measure your visibility and growth. This pilot starts with one
+                  offer, one price, and one customer path for existing public
+                  BWE business listings.
                 </p>
               </div>
               <div className="rounded-2xl border border-yellow-500/30 bg-yellow-500/10 p-4 text-sm text-yellow-100">
-                <div>{offer ? money(offer.amountCents) : "$49.00"} per month</div>
+                <div>
+                  {offer ? money(offer.amountCents) : "$49.00"} per month
+                </div>
                 <div>Monthly billing only</div>
                 <div>
                   {offer
@@ -418,9 +429,14 @@ export default function FoundingMembershipPage() {
                   </div>
                   <div className="rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white/75">
                     <div>
-                      Claimability: {activeBusiness.claimable ? "Claimable" : getUnavailableLabel(activeBusiness)}
+                      Claimability:{" "}
+                      {activeBusiness.claimable
+                        ? "Claimable"
+                        : getUnavailableLabel(activeBusiness)}
                     </div>
-                    <div className="mt-1 text-white/55">Canonical ID: {activeBusiness.id}</div>
+                    <div className="mt-1 text-white/55">
+                      Canonical ID: {activeBusiness.id}
+                    </div>
                   </div>
                 </div>
 
@@ -447,7 +463,8 @@ export default function FoundingMembershipPage() {
                     </div>
                   ) : (
                     <div className="text-sm text-white/65">
-                      Membership details and ownership-review terms remain below for review.
+                      Membership details and ownership-review terms remain below
+                      for review.
                     </div>
                   )}
                 </div>
@@ -465,7 +482,10 @@ export default function FoundingMembershipPage() {
                       }
                       document
                         .getElementById("membership-review")
-                        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+                        ?.scrollIntoView({
+                          behavior: "smooth",
+                          block: "start",
+                        });
                     }}
                     className="rounded-xl border border-white/15 px-4 py-2 font-bold text-white/85 transition hover:bg-white/10"
                   >
@@ -496,7 +516,9 @@ export default function FoundingMembershipPage() {
                     Find your public business first
                   </h2>
                   <p className="mt-2 max-w-3xl text-sm text-white/75">
-                    Search the BWE directory in claim mode, open your existing listing, and return here with the canonical business selected automatically.
+                    Search the BWE directory in claim mode, open your existing
+                    listing, and return here with the canonical business
+                    selected automatically.
                   </p>
                 </div>
                 <div className="flex flex-wrap gap-3">
@@ -520,9 +542,12 @@ export default function FoundingMembershipPage() {
           <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
             {!activeBusiness ? (
               <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
-                <h2 className="text-xl font-bold text-white">1. Select your public business</h2>
+                <h2 className="text-xl font-bold text-white">
+                  1. Select your public business
+                </h2>
                 <p className="mt-2 text-sm text-white/70">
-                  Search for your business in claim mode first, then return here with the business already selected.
+                  Search for your business in claim mode first, then return here
+                  with the business already selected.
                 </p>
                 <div className="mt-5">
                   <Link
@@ -535,16 +560,24 @@ export default function FoundingMembershipPage() {
               </div>
             ) : (
               <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
-                <h2 className="text-xl font-bold text-white">1. Selected public business</h2>
+                <h2 className="text-xl font-bold text-white">
+                  1. Selected public business
+                </h2>
                 <p className="mt-2 text-sm text-white/70">
-                  This membership only applies to an existing public, claimable BWE business. Availability is shown here and rechecked again during checkout.
+                  This membership only applies to an existing public, claimable
+                  BWE business. Availability is shown here and rechecked again
+                  during checkout.
                 </p>
 
-                {error ? <p className="mt-4 text-sm text-red-300">{error}</p> : null}
+                {error ? (
+                  <p className="mt-4 text-sm text-red-300">{error}</p>
+                ) : null}
 
                 <div className="mt-4 rounded-2xl border border-yellow-500/20 bg-yellow-500/10 p-4">
                   <div className="space-y-2 text-sm text-white/80">
-                    <div className="font-semibold text-white">{activeBusiness.businessName}</div>
+                    <div className="font-semibold text-white">
+                      {activeBusiness.businessName}
+                    </div>
                     <div>
                       {[
                         activeBusiness.category,
@@ -564,7 +597,10 @@ export default function FoundingMembershipPage() {
                       Canonical business ID: {activeBusiness.id}
                     </div>
                     <div className="text-xs text-white/45">
-                      Server availability: {activeBusiness.claimable ? "Claimable" : getUnavailableLabel(activeBusiness)}
+                      Server availability:{" "}
+                      {activeBusiness.claimable
+                        ? "Claimable"
+                        : getUnavailableLabel(activeBusiness)}
                     </div>
                   </div>
                   <div className="mt-4 flex flex-wrap gap-3">
@@ -580,54 +616,104 @@ export default function FoundingMembershipPage() {
             )}
 
             <div className="space-y-6">
-              <section id="membership-review" className="rounded-3xl border border-white/10 bg-white/5 p-6">
-                <h2 className="text-xl font-bold text-white">2. Confirm business and membership</h2>
+              <section
+                id="membership-review"
+                className="rounded-3xl border border-white/10 bg-white/5 p-6"
+              >
+                <h2 className="text-xl font-bold text-white">
+                  2. Confirm business and membership
+                </h2>
                 <div className="mt-4 rounded-2xl border border-yellow-500/20 bg-black/20 p-4">
-                  <div className="text-3xl font-black text-yellow-300">{offer ? money(offer.amountCents) : "$49.00"}</div>
-                  <div className="text-sm text-white/65">per month, monthly billing only</div>
+                  <div className="text-3xl font-black text-yellow-300">
+                    {offer ? money(offer.amountCents) : "$49.00"}
+                  </div>
+                  <div className="text-sm text-white/65">
+                    per month, monthly billing only
+                  </div>
                 </div>
                 <div className="mt-4 grid gap-4 text-sm">
                   <div>
-                    <div className="font-semibold text-white">This membership includes</div>
+                    <div className="font-semibold text-white">
+                      This membership includes
+                    </div>
                     <ul className="mt-2 list-disc space-y-1 pl-5 text-white/75">
-                      <li>Business claim initiation tied to the selected public listing</li>
-                      <li>Ownership-review intake and manual review handling</li>
+                      <li>
+                        Business claim initiation tied to the selected public
+                        listing
+                      </li>
+                      <li>
+                        Ownership-review intake and manual review handling
+                      </li>
                       <li>Professional review of the existing BWE profile</li>
-                      <li>Profile-enhancement setup using verified business information</li>
+                      <li>
+                        Profile-enhancement setup using verified business
+                        information
+                      </li>
                       <li>Initial profile-performance baseline</li>
-                      <li>Recurring monthly activity report and member support access</li>
+                      <li>
+                        Recurring monthly activity report and member support
+                        access
+                      </li>
                     </ul>
                   </div>
                   <div>
-                    <div className="font-semibold text-white">What happens after payment</div>
+                    <div className="font-semibold text-white">
+                      What happens after payment
+                    </div>
                     <ul className="mt-2 list-disc space-y-1 pl-5 text-white/75">
-                      <li>Your membership is activated through the canonical checkout and webhook flow</li>
-                      <li>Your claim is initiated and ownership review moves to pending</li>
-                      <li>BWE opens onboarding, fulfillment, and baseline records</li>
-                      <li>You follow the ownership-review steps before owner verification is approved</li>
+                      <li>
+                        Your membership is activated through the canonical
+                        checkout and webhook flow
+                      </li>
+                      <li>
+                        Your claim is initiated and ownership review moves to
+                        pending
+                      </li>
+                      <li>
+                        BWE opens onboarding, fulfillment, and baseline records
+                      </li>
+                      <li>
+                        You follow the ownership-review steps before owner
+                        verification is approved
+                      </li>
                     </ul>
                   </div>
                   <div>
-                    <div className="font-semibold text-white">This membership does not guarantee</div>
+                    <div className="font-semibold text-white">
+                      This membership does not guarantee
+                    </div>
                     <ul className="mt-2 list-disc space-y-1 pl-5 text-white/65">
-                      <li>Automatic ownership verification based on payment alone</li>
-                      <li>Leads, sales, revenue growth, or visibility outcomes</li>
-                      <li>Grants, loans, investment, contracts, or introductions</li>
+                      <li>
+                        Automatic ownership verification based on payment alone
+                      </li>
+                      <li>
+                        Leads, sales, revenue growth, or visibility outcomes
+                      </li>
+                      <li>
+                        Grants, loans, investment, contracts, or introductions
+                      </li>
                     </ul>
                   </div>
                   <div className="rounded-2xl border border-white/10 bg-black/25 p-4 text-white/70">
-                    Cancellation and billing changes continue through the existing canonical billing process after checkout.
+                    Cancellation and billing changes continue through the
+                    existing canonical billing process after checkout.
                   </div>
                 </div>
               </section>
 
               <section className="rounded-3xl border border-white/10 bg-white/5 p-6">
-                <h2 className="text-xl font-bold text-white">3. Start membership and claim process</h2>
+                <h2 className="text-xl font-bold text-white">
+                  3. Start membership and claim process
+                </h2>
                 {confirmedBusiness ? (
                   <div className="mt-3 rounded-2xl border border-white/10 bg-black/20 p-4 text-sm text-white/75 space-y-3">
                     <div>
-                      <div className="font-semibold text-white">Selected business</div>
-                      <div className="mt-1">{resumeBusinessName || confirmedBusiness.businessName}</div>
+                      <div className="font-semibold text-white">
+                        Selected business
+                      </div>
+                      <div className="mt-1">
+                        {resumeBusinessName || confirmedBusiness.businessName}
+                      </div>
                       <div className="mt-1 text-white/55">
                         {[
                           confirmedBusiness.category,
@@ -638,29 +724,54 @@ export default function FoundingMembershipPage() {
                           .filter(Boolean)
                           .join(" • ")}
                       </div>
-                      <div className="mt-1 text-white/50">Confirmed business ID: {confirmedBusiness.id}</div>
+                      <div className="mt-1 text-white/50">
+                        Confirmed business ID: {confirmedBusiness.id}
+                      </div>
                     </div>
                     <div>
                       <div className="font-semibold text-white">Membership</div>
-                      <div className="mt-1">Founding Verified Business Growth Membership</div>
-                      <div className="mt-1 text-white/55">{offer ? money(offer.amountCents) : "$49.00"} per month, monthly only</div>
+                      <div className="mt-1">
+                        Founding Verified Business Growth Membership
+                      </div>
+                      <div className="mt-1 text-white/55">
+                        {offer ? money(offer.amountCents) : "$49.00"} per month,
+                        monthly only
+                      </div>
                     </div>
                     <div>
-                      <div className="font-semibold text-white">Included services</div>
-                      <div className="mt-1 text-white/65">Claim initiation, ownership review intake, profile review, fulfillment setup, baseline creation, and monthly reporting.</div>
+                      <div className="font-semibold text-white">
+                        Included services
+                      </div>
+                      <div className="mt-1 text-white/65">
+                        Claim initiation, ownership review intake, profile
+                        review, fulfillment setup, baseline creation, and
+                        monthly reporting.
+                      </div>
                     </div>
                     <div>
-                      <div className="font-semibold text-white">Ownership-review requirement</div>
-                      <div className="mt-1 text-white/65">Payment activates the membership and opens ownership review, but does not verify ownership automatically.</div>
+                      <div className="font-semibold text-white">
+                        Ownership-review requirement
+                      </div>
+                      <div className="mt-1 text-white/65">
+                        Payment activates the membership and opens ownership
+                        review, but does not verify ownership automatically.
+                      </div>
                     </div>
                     <div>
-                      <div className="font-semibold text-white">Next steps after payment</div>
-                      <div className="mt-1 text-white/65">Payment confirmation, claim initiated, ownership review pending, profile review queued, baseline created, and monthly reporting scheduled.</div>
+                      <div className="font-semibold text-white">
+                        Next steps after payment
+                      </div>
+                      <div className="mt-1 text-white/65">
+                        Payment confirmation, claim initiated, ownership review
+                        pending, profile review queued, baseline created, and
+                        monthly reporting scheduled.
+                      </div>
                     </div>
                   </div>
                 ) : (
                   <div className="mt-3 rounded-2xl border border-white/10 bg-black/20 p-4 text-sm text-white/65">
-                    Find your business first, then return here to continue to secure checkout.
+                    Find your business first, then return here to continue to
+                    secure checkout.
                   </div>
                 )}
 
@@ -707,13 +818,18 @@ export default function FoundingMembershipPage() {
                 </button>
 
                 {buttonReason ? (
-                  <div className="mt-2 text-sm font-semibold text-yellow-100">{buttonReason}</div>
+                  <div className="mt-2 text-sm font-semibold text-yellow-100">
+                    {buttonReason}
+                  </div>
                 ) : null}
 
                 <div className="mt-3 flex flex-wrap gap-3 text-xs text-white/50">
                   <span>
                     Need a different path?{" "}
-                    <Link href="/business-directory?mode=claim" className="text-yellow-300 underline">
+                    <Link
+                      href="/business-directory?mode=claim"
+                      className="text-yellow-300 underline"
+                    >
                       Return to claim mode directory
                     </Link>
                   </span>

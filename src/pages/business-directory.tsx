@@ -106,7 +106,11 @@ function formatStateDisplay(value: any) {
   return state.length === 2 ? state.toUpperCase() : state;
 }
 
-function buildLocationDisplay(parts: { city?: any; state?: any; address?: any }) {
+function buildLocationDisplay(parts: {
+  city?: any;
+  state?: any;
+  address?: any;
+}) {
   const city = safeStr(parts.city).trim();
   const state = formatStateDisplay(parts.state);
   const address = safeStr(parts.address).trim();
@@ -957,7 +961,9 @@ export default function BusinessDirectory() {
     if (r.__kind === "org") {
       const orgType = safeStr((r as any).orgType);
       const denom = safeStr((r as any).denomination);
-      return formatCategoryDisplay([orgType, denom].filter(Boolean).join(" · "));
+      return formatCategoryDisplay(
+        [orgType, denom].filter(Boolean).join(" · "),
+      );
     }
 
     const display = safeStr((r as any).display_categories);
@@ -1053,7 +1059,8 @@ export default function BusinessDirectory() {
     return { verified, approved, sponsored, isComplete, claimStage };
   };
 
-  const getWebsite = (r: Row) => normalizeWebsiteUrl(safeStr((r as any).website));
+  const getWebsite = (r: Row) =>
+    normalizeWebsiteUrl(safeStr((r as any).website));
   const getPhone = (r: Row) => safeStr((r as any).phone).trim();
 
   const sponsorsToShow = sponsorAds.slice(0, 10);
@@ -1149,14 +1156,31 @@ export default function BusinessDirectory() {
 
               {claimMode ? (
                 <div className="rounded-2xl border border-yellow-500/25 bg-yellow-500/10 p-4 text-sm text-white/80">
-                  <div className="font-semibold text-yellow-200">Claim process</div>
+                  <div className="font-semibold text-yellow-200">
+                    Claim process
+                  </div>
                   <ul className="mt-2 list-disc space-y-1 pl-5 text-white/75">
-                    <li>Eligible public listings show <span className="font-semibold text-yellow-200">Claim This Business</span>.</li>
-                    <li>Claimed or ineligible listings show an unavailable state and cannot continue.</li>
-                    <li>Select an existing listing first. Creating a new listing is a separate path.</li>
+                    <li>
+                      Eligible public listings show{" "}
+                      <span className="font-semibold text-yellow-200">
+                        Claim This Business
+                      </span>
+                      .
+                    </li>
+                    <li>
+                      Claimed or ineligible listings show an unavailable state
+                      and cannot continue.
+                    </li>
+                    <li>
+                      Select an existing listing first. Creating a new listing
+                      is a separate path.
+                    </li>
                   </ul>
                   <div className="mt-3">
-                    <Link href="/business-directory/add-business" className="text-yellow-300 underline underline-offset-4 hover:text-yellow-200">
+                    <Link
+                      href="/business-directory/add-business"
+                      className="text-yellow-300 underline underline-offset-4 hover:text-yellow-200"
+                    >
                       Don’t see your business? List it here.
                     </Link>
                   </div>
@@ -1245,36 +1269,97 @@ export default function BusinessDirectory() {
                 </summary>
                 <div className="mt-2 grid gap-2">
                   <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-2">
-                    <div className="text-[10px] uppercase tracking-[0.08em] text-white/50 font-bold">Ranking</div>
-                    <div className="text-xs font-semibold text-white/80">Trust + relevance first</div>
+                    <div className="text-[10px] uppercase tracking-[0.08em] text-white/50 font-bold">
+                      Ranking
+                    </div>
+                    <div className="text-xs font-semibold text-white/80">
+                      Trust + relevance first
+                    </div>
                   </div>
                   <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-2">
-                    <div className="text-[10px] uppercase tracking-[0.08em] text-white/50 font-bold">Control</div>
-                    <div className="text-xs font-semibold text-white/80">Strong filters, zero clutter</div>
+                    <div className="text-[10px] uppercase tracking-[0.08em] text-white/50 font-bold">
+                      Control
+                    </div>
+                    <div className="text-xs font-semibold text-white/80">
+                      Strong filters, zero clutter
+                    </div>
                   </div>
                   <div className="rounded-xl border border-white/10 bg-black/30 px-3 py-2">
-                    <div className="text-[10px] uppercase tracking-[0.08em] text-white/50 font-bold">Goal</div>
-                    <div className="text-xs font-semibold text-white/80">Find, vet, and contact quickly</div>
+                    <div className="text-[10px] uppercase tracking-[0.08em] text-white/50 font-bold">
+                      Goal
+                    </div>
+                    <div className="text-xs font-semibold text-white/80">
+                      Find, vet, and contact quickly
+                    </div>
                   </div>
                 </div>
               </details>
 
               <div className="hidden sm:flex flex-wrap items-center gap-2 text-xs sm:text-sm text-white/70">
-                <span className="font-semibold text-white/85">Popular discovery paths:</span>
-                <Link href="/black-owned-businesses/city/atlanta-ga" className="rounded-full border border-white/15 px-3 py-1 hover:border-[#D4AF37]/40 hover:text-[#D4AF37]">Atlanta, GA</Link>
-                <Link href="/black-owned-businesses/city/houston-tx" className="rounded-full border border-white/15 px-3 py-1 hover:border-[#D4AF37]/40 hover:text-[#D4AF37]">Houston, TX</Link>
-                <Link href="/black-owned-businesses/category/restaurant" className="rounded-full border border-white/15 px-3 py-1 hover:border-[#D4AF37]/40 hover:text-[#D4AF37]">Restaurants</Link>
-                <Link href="/black-owned-businesses/category/beauty" className="rounded-full border border-white/15 px-3 py-1 hover:border-[#D4AF37]/40 hover:text-[#D4AF37]">Beauty</Link>
-                <Link href="/black-owned-businesses/category/health-and-wellness" className="rounded-full border border-white/15 px-3 py-1 hover:border-[#D4AF37]/40 hover:text-[#D4AF37]">Health & Wellness</Link>
+                <span className="font-semibold text-white/85">
+                  Popular discovery paths:
+                </span>
+                <Link
+                  href="/black-owned-businesses/city/atlanta-ga"
+                  className="rounded-full border border-white/15 px-3 py-1 hover:border-[#D4AF37]/40 hover:text-[#D4AF37]"
+                >
+                  Atlanta, GA
+                </Link>
+                <Link
+                  href="/black-owned-businesses/city/houston-tx"
+                  className="rounded-full border border-white/15 px-3 py-1 hover:border-[#D4AF37]/40 hover:text-[#D4AF37]"
+                >
+                  Houston, TX
+                </Link>
+                <Link
+                  href="/black-owned-businesses/category/restaurant"
+                  className="rounded-full border border-white/15 px-3 py-1 hover:border-[#D4AF37]/40 hover:text-[#D4AF37]"
+                >
+                  Restaurants
+                </Link>
+                <Link
+                  href="/black-owned-businesses/category/beauty"
+                  className="rounded-full border border-white/15 px-3 py-1 hover:border-[#D4AF37]/40 hover:text-[#D4AF37]"
+                >
+                  Beauty
+                </Link>
+                <Link
+                  href="/black-owned-businesses/category/health-and-wellness"
+                  className="rounded-full border border-white/15 px-3 py-1 hover:border-[#D4AF37]/40 hover:text-[#D4AF37]"
+                >
+                  Health & Wellness
+                </Link>
               </div>
 
               <details className="sm:hidden rounded-xl border border-white/10 bg-black/20 px-3 py-2">
-                <summary className="cursor-pointer list-none text-xs font-bold text-white/85">Popular searches</summary>
+                <summary className="cursor-pointer list-none text-xs font-bold text-white/85">
+                  Popular searches
+                </summary>
                 <div className="mt-2 flex flex-wrap gap-2 text-xs text-white/70">
-                  <Link href="/black-owned-businesses/city/atlanta-ga" className="rounded-full border border-white/15 px-3 py-1">Atlanta, GA</Link>
-                  <Link href="/black-owned-businesses/city/houston-tx" className="rounded-full border border-white/15 px-3 py-1">Houston, TX</Link>
-                  <Link href="/black-owned-businesses/category/restaurant" className="rounded-full border border-white/15 px-3 py-1">Restaurants</Link>
-                  <Link href="/black-owned-businesses/category/beauty" className="rounded-full border border-white/15 px-3 py-1">Beauty</Link>
+                  <Link
+                    href="/black-owned-businesses/city/atlanta-ga"
+                    className="rounded-full border border-white/15 px-3 py-1"
+                  >
+                    Atlanta, GA
+                  </Link>
+                  <Link
+                    href="/black-owned-businesses/city/houston-tx"
+                    className="rounded-full border border-white/15 px-3 py-1"
+                  >
+                    Houston, TX
+                  </Link>
+                  <Link
+                    href="/black-owned-businesses/category/restaurant"
+                    className="rounded-full border border-white/15 px-3 py-1"
+                  >
+                    Restaurants
+                  </Link>
+                  <Link
+                    href="/black-owned-businesses/category/beauty"
+                    className="rounded-full border border-white/15 px-3 py-1"
+                  >
+                    Beauty
+                  </Link>
                 </div>
               </details>
             </div>
@@ -1560,34 +1645,76 @@ export default function BusinessDirectory() {
                 </summary>
                 <div className="mt-3 overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-4 shadow-[0_0_0_1px_rgba(255,255,255,0.06)] backdrop-blur">
                   <div className="mb-2 flex items-center justify-between">
-                    <h2 className="text-[11px] uppercase tracking-widest text-[#D4AF37] font-extrabold">Featured Sponsors</h2>
-                    <a href="/all-sponsors" className="text-[12px] text-white/70 hover:text-[#D4AF37] font-bold">See All</a>
+                    <h2 className="text-[11px] uppercase tracking-widest text-[#D4AF37] font-extrabold">
+                      Featured Sponsors
+                    </h2>
+                    <a
+                      href="/all-sponsors"
+                      className="text-[12px] text-white/70 hover:text-[#D4AF37] font-bold"
+                    >
+                      See All
+                    </a>
                   </div>
                   {sponsorsToShow.length ? (
-                    <Swiper modules={[Navigation]} spaceBetween={10} slidesPerView="auto" navigation style={{ paddingBottom: 8 }}>
+                    <Swiper
+                      modules={[Navigation]}
+                      spaceBetween={10}
+                      slidesPerView="auto"
+                      navigation
+                      style={{ paddingBottom: 8 }}
+                    >
                       {sponsorsToShow.map((ad, idx) => (
-                        <SwiperSlide key={`${ad.url}-${idx}`} className="!w-[170px] sm:!w-[190px]"><SponsorCard {...ad} /></SwiperSlide>
+                        <SwiperSlide
+                          key={`${ad.url}-${idx}`}
+                          className="!w-[170px] sm:!w-[190px]"
+                        >
+                          <SponsorCard {...ad} />
+                        </SwiperSlide>
                       ))}
                     </Swiper>
                   ) : (
-                    <div className="rounded-xl border border-white/10 bg-black/30 p-4 text-sm text-white/65">No active sponsor campaigns in this slot right now.</div>
+                    <div className="rounded-xl border border-white/10 bg-black/30 p-4 text-sm text-white/65">
+                      No active sponsor campaigns in this slot right now.
+                    </div>
                   )}
                 </div>
                 {scope === "businesses" && directoryFeaturedAds.length ? (
                   <div className="mt-4 rounded-2xl border border-[#D4AF37]/25 bg-[#D4AF37]/[0.06] p-4 shadow-[0_0_0_1px_rgba(212,175,55,0.18)]">
                     <div className="mb-3 flex items-center justify-between">
-                      <h2 className="text-[11px] uppercase tracking-widest text-[#D4AF37] font-extrabold">Featured Directory Placements</h2>
-                      <span className="text-[11px] text-white/65">Paid featured listings</span>
+                      <h2 className="text-[11px] uppercase tracking-widest text-[#D4AF37] font-extrabold">
+                        Featured Directory Placements
+                      </h2>
+                      <span className="text-[11px] text-white/65">
+                        Paid featured listings
+                      </span>
                     </div>
                     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                       {directoryFeaturedAds.map((ad) => (
-                        <a key={ad.id} href={ad.targetUrl || "#"} target="_blank" rel="noopener noreferrer" className="rounded-xl border border-white/15 bg-black/35 p-3 hover:bg-black/45">
-                          <img src={ad.image || "/default-image.jpg"} alt={ad.name} className="h-24 w-full rounded-lg object-cover" loading="lazy" decoding="async" />
+                        <a
+                          key={ad.id}
+                          href={ad.targetUrl || "#"}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="rounded-xl border border-white/15 bg-black/35 p-3 hover:bg-black/45"
+                        >
+                          <img
+                            src={ad.image || "/default-image.jpg"}
+                            alt={ad.name}
+                            className="h-24 w-full rounded-lg object-cover"
+                            loading="lazy"
+                            decoding="async"
+                          />
                           <div className="mt-2 flex items-center justify-between gap-2">
-                            <div className="text-sm font-bold text-white truncate">{ad.name}</div>
-                            <span className="rounded-full border border-[#D4AF37]/40 bg-[#D4AF37]/20 px-2 py-0.5 text-[10px] font-bold text-[#F1D57A]">Featured</span>
+                            <div className="text-sm font-bold text-white truncate">
+                              {ad.name}
+                            </div>
+                            <span className="rounded-full border border-[#D4AF37]/40 bg-[#D4AF37]/20 px-2 py-0.5 text-[10px] font-bold text-[#F1D57A]">
+                              Featured
+                            </span>
                           </div>
-                          <div className="mt-1 text-[11px] text-white/70 line-clamp-2">{ad.tagline}</div>
+                          <div className="mt-1 text-[11px] text-white/70 line-clamp-2">
+                            {ad.tagline}
+                          </div>
                         </a>
                       ))}
                     </div>
@@ -1634,11 +1761,11 @@ export default function BusinessDirectory() {
 
                 {hasSearched ? (
                   <div className="mt-3 rounded-xl border border-white/15 bg-white/[0.03] p-3 text-xs text-white/80">
-                    <div className="font-bold text-white">
-                      Trust guide
-                    </div>
+                    <div className="font-bold text-white">Trust guide</div>
                     <div className="mt-1 text-white/75">
-                      Verified listings include a BWE trust signal. Sponsored and Featured placements are promoted listings. Organic listings are still part of the public directory.
+                      Verified listings include a BWE trust signal. Sponsored
+                      and Featured placements are promoted listings. Organic
+                      listings are still part of the public directory.
                     </div>
                     <div className="mt-2 flex flex-wrap gap-2">
                       <a
@@ -1895,11 +2022,19 @@ export default function BusinessDirectory() {
                   ) : total === 0 && !isLoading ? (
                     <div className="py-10 text-center text-white/50">
                       <div>
-                        {scope === "businesses" && category !== "All" && (CATEGORY_COUNTS[category] ?? 0) === 0
-                          ? `No listings in this category yet. Try All or another category.`
-                          : <>
-                              No listings match <span className="text-white/70">“{input.trim()}”</span> with current filters.
-                            </>}
+                        {scope === "businesses" &&
+                        category !== "All" &&
+                        (CATEGORY_COUNTS[category] ?? 0) === 0 ? (
+                          `No listings in this category yet. Try All or another category.`
+                        ) : (
+                          <>
+                            No listings match{" "}
+                            <span className="text-white/70">
+                              “{input.trim()}”
+                            </span>{" "}
+                            with current filters.
+                          </>
+                        )}
                       </div>
                       <div className="mt-2 text-xs text-white/40">
                         Try a broader keyword, clear active filters, or switch
@@ -2131,27 +2266,32 @@ export default function BusinessDirectory() {
                                   Owner Verified
                                 </span>
                               ) : null}
-                              {getTrustMeta(item as Row).claimStage === "unclaimed" ? (
+                              {getTrustMeta(item as Row).claimStage ===
+                              "unclaimed" ? (
                                 <span className="rounded-full border border-white/20 bg-white/10 px-2 py-0.5 text-[10px] font-bold text-white/75">
                                   Unclaimed
                                 </span>
                               ) : null}
-                              {getTrustMeta(item as Row).claimStage === "claim_initiated" ? (
+                              {getTrustMeta(item as Row).claimStage ===
+                              "claim_initiated" ? (
                                 <span className="rounded-full border border-blue-400/30 bg-blue-400/15 px-2 py-0.5 text-[10px] font-bold text-blue-200">
                                   Claim Initiated
                                 </span>
                               ) : null}
-                              {getTrustMeta(item as Row).claimStage === "ownership_review_pending" ? (
+                              {getTrustMeta(item as Row).claimStage ===
+                              "ownership_review_pending" ? (
                                 <span className="rounded-full border border-sky-400/30 bg-sky-400/15 px-2 py-0.5 text-[10px] font-bold text-sky-200">
                                   Ownership Review Pending
                                 </span>
                               ) : null}
-                              {getTrustMeta(item as Row).claimStage === "additional_evidence_required" ? (
+                              {getTrustMeta(item as Row).claimStage ===
+                              "additional_evidence_required" ? (
                                 <span className="rounded-full border border-orange-400/30 bg-orange-400/15 px-2 py-0.5 text-[10px] font-bold text-orange-200">
                                   Additional Evidence Required
                                 </span>
                               ) : null}
-                              {getTrustMeta(item as Row).claimStage === "founding_growth_member" ? (
+                              {getTrustMeta(item as Row).claimStage ===
+                              "founding_growth_member" ? (
                                 <span className="rounded-full border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-2 py-0.5 text-[10px] font-bold text-[#D4AF37]">
                                   Founding Growth Member
                                 </span>
@@ -2177,7 +2317,8 @@ export default function BusinessDirectory() {
                               <span className="text-white/72">
                                 Location:
                               </span>{" "}
-                              {getLocation(item as Row) || "Location details coming soon"}
+                              {getLocation(item as Row) ||
+                                "Location details coming soon"}
                             </div>
 
                             {/* Snippet line (quote-style like your example) */}
@@ -2205,11 +2346,14 @@ export default function BusinessDirectory() {
                               {(() => {
                                 const trustMeta = getTrustMeta(item as Row);
                                 const businessId = safeStr((item as any)._id);
-                                const canClaim = Boolean(businessId) && !trustMeta.verified && ![
-                                  "claim_initiated",
-                                  "ownership_review_pending",
-                                  "founding_growth_member",
-                                ].includes(trustMeta.claimStage || "");
+                                const canClaim =
+                                  Boolean(businessId) &&
+                                  !trustMeta.verified &&
+                                  ![
+                                    "claim_initiated",
+                                    "ownership_review_pending",
+                                    "founding_growth_member",
+                                  ].includes(trustMeta.claimStage || "");
 
                                 if (canClaim) {
                                   return (
@@ -2226,11 +2370,14 @@ export default function BusinessDirectory() {
                                   <span className="rounded-lg border border-white/15 bg-white/5 px-3 py-1.5 text-[11px] font-bold text-white/55">
                                     {trustMeta.verified
                                       ? "Already Verified"
-                                      : trustMeta.claimStage === "claim_initiated"
+                                      : trustMeta.claimStage ===
+                                          "claim_initiated"
                                         ? "Claim Already Initiated"
-                                        : trustMeta.claimStage === "ownership_review_pending"
+                                        : trustMeta.claimStage ===
+                                            "ownership_review_pending"
                                           ? "Ownership Review Pending"
-                                          : trustMeta.claimStage === "founding_growth_member"
+                                          : trustMeta.claimStage ===
+                                              "founding_growth_member"
                                             ? "Membership Already Active"
                                             : "Not Claimable"}
                                   </span>

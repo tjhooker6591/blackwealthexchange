@@ -204,7 +204,11 @@ export default function BusinessDetail() {
               </Link>
             ) : null}
             <Link
-              href={claimMode ? "/business-directory?mode=claim" : "/business-directory"}
+              href={
+                claimMode
+                  ? "/business-directory?mode=claim"
+                  : "/business-directory"
+              }
               className="text-white/65 underline underline-offset-4 transition hover:text-white"
             >
               {claimMode ? "Claim mode directory" : "Directory"}
@@ -334,8 +338,14 @@ export default function BusinessDetail() {
                   <div className="pt-2 flex flex-wrap gap-2">
                     {claimMode ? (
                       <div className="w-full rounded-xl border border-yellow-500/20 bg-yellow-500/10 px-4 py-3 text-sm text-white/75">
-                        <div className="font-semibold text-yellow-200">Claim mode active</div>
-                        <div className="mt-1">You came here to claim an existing public listing. Eligible businesses can continue directly into Founding Membership.</div>
+                        <div className="font-semibold text-yellow-200">
+                          Claim mode active
+                        </div>
+                        <div className="mt-1">
+                          You came here to claim an existing public listing.
+                          Eligible businesses can continue directly into
+                          Founding Membership.
+                        </div>
                       </div>
                     ) : null}
                     {canClaim ? (
@@ -405,13 +415,20 @@ export default function BusinessDetail() {
                   <div className="pt-2 text-xs text-white/60 space-y-2">
                     <div>Next actions</div>
                     <div className="rounded-xl border border-yellow-500/20 bg-yellow-500/10 p-3 text-white/75">
-                      <div className="font-semibold text-yellow-200">Claim and membership path</div>
+                      <div className="font-semibold text-yellow-200">
+                        Claim and membership path
+                      </div>
                       <div className="mt-1">
-                        Payment starts membership and opens ownership review, but does not automatically verify ownership.
+                        Payment starts membership and opens ownership review,
+                        but does not automatically verify ownership.
                       </div>
                       <div className="mt-2 flex flex-wrap gap-2">
                         <Link
-                          href={canClaim ? `/founding-membership?businessId=${encodeURIComponent(canonicalBusinessId)}` : "/founding-membership"}
+                          href={
+                            canClaim
+                              ? `/founding-membership?businessId=${encodeURIComponent(canonicalBusinessId)}`
+                              : "/founding-membership"
+                          }
                           className="rounded-lg bg-yellow-500 px-3 py-2 text-xs font-extrabold text-black"
                         >
                           Start Membership and Claim Process
