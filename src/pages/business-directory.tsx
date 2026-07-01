@@ -1008,6 +1008,7 @@ export default function BusinessDirectory() {
     const qp = new URLSearchParams();
     qp.set("from", "directory");
     if (input.trim()) qp.set("q", input.trim());
+    if (claimMode) qp.set("mode", "claim");
 
     return `/business/${key}?${qp.toString()}`;
   };

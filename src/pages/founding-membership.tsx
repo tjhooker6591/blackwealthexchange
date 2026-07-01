@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
+
 type ResumeState = {
   selectedBusinessId: string;
   confirmedBusinessId: string;
@@ -101,9 +102,32 @@ function shouldAutoResumeCheckout(args: {
   );
 }
 
+function buildCheckoutPayload(businessId: string) {
+  return {
+    type: "plan",
+    itemId: "founding-verified-business-growth-membership",
+    businessId,
+    metadata: {
+      businessId,
+      checkoutContext: "founding_membership",
+    },
+  };
+}
+
+function getUnavailableLabel(business: BusinessOption) {
+  return business.unavailableReason === "already_verified"
+    ? "Already Verified"
+    : business.unavailableReason === "claim_already_initiated"
+      ? "Claim Already Initiated"
+      : business.unavailableReason === "ownership_review_pending"
+        ? "Ownership Review Pending"
+        : business.unavailableReason === "membership_already_active"
+          ? "Membership Already Active"
+          : "Unavailable";
+}
+
 export default function FoundingMembershipPage() {
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [data, setData] = useState<OptionsPayload | null>(null);
@@ -131,8 +155,6 @@ export default function FoundingMembershipPage() {
         setData(json);
       } catch (e: any) {
         setError(e?.message || "Unable to load membership offer");
-      } finally {
-        setLoading(false);
       }
     })();
   }, []);
@@ -183,26 +205,26 @@ export default function FoundingMembershipPage() {
     }
   }, [router.isReady, router.query.businessId, router.query.resume, data]);
 
+  const businesses = useMemo(() => data?.businesses || [], [data?.businesses]);
   const selectedBusiness = useMemo(
-    () =>
-      (data?.businesses || []).find((business) => business.id === selectedBusinessId) ||
-      null,
-    [data, selectedBusinessId],
+    () => businesses.find((business) => business.id === selectedBusinessId) || null,
+    [businesses, selectedBusinessId],
   );
-
   const confirmedBusiness = useMemo(
-    () =>
-      (data?.businesses || []).find((business) => business.id === confirmedBusinessId) ||
-      null,
-    [data, confirmedBusinessId],
+    () => businesses.find((business) => business.id === confirmedBusinessId) || null,
+    [businesses, confirmedBusinessId],
   );
 
+  const activeBusiness = confirmedBusiness || selectedBusiness;
   const offer = data?.offer;
+  const hasRemainingSlots = (offer?.remainingSlots ?? 0) > 0;
+  const checkoutUnavailable = checkoutState === "checkout_error" && !confirmedBusinessId;
 
   const consumeResumeIntent = (businessIdOverride?: string) => {
     setResumeCheckoutRequested(false);
     if (typeof window !== "undefined") {
-      const activeBusinessId = businessIdOverride || confirmedBusinessId || selectedBusinessId;
+      const activeBusinessId =
+        businessIdOverride || confirmedBusinessId || selectedBusinessId;
       const cleanPath = activeBusinessId
         ? `/founding-membership?businessId=${encodeURIComponent(activeBusinessId)}`
         : "/founding-membership";
@@ -210,25 +232,18 @@ export default function FoundingMembershipPage() {
     }
   };
 
-  const confirmBusinessSelection = () => {
-    if (!selectedBusinessId) {
-      setError("Select a public claimable business first.");
-      return;
-    }
-
-    setConfirmedBusinessId(selectedBusinessId);
-    setResumeBusinessName(selectedBusiness?.businessName || "");
+  const clearBusinessSelection = () => {
+    setSelectedBusinessId("");
+    setConfirmedBusinessId("");
+    setResumeCheckoutRequested(false);
+    setResumeBusinessName("");
     setError("");
+    setCheckoutState("idle");
+    setCheckoutMessage("");
     autoResumeConsumedRef.current = false;
-
+    checkoutInFlightRef.current = false;
     if (typeof window !== "undefined") {
-      window.history.replaceState(
-        null,
-        "",
-        `/founding-membership?businessId=${encodeURIComponent(selectedBusinessId)}`,
-      );
-      const reviewSection = document.getElementById("membership-review");
-      reviewSection?.scrollIntoView({ behavior: "smooth", block: "start" });
+      window.history.replaceState(null, "", "/founding-membership");
     }
   };
 
@@ -240,9 +255,7 @@ export default function FoundingMembershipPage() {
     if (!confirmedBusinessId) {
       setError("Confirm the selected business before starting membership.");
       setCheckoutState("checkout_error");
-      setCheckoutMessage(
-        "Choose and confirm one business before you continue to secure checkout.",
-      );
+      setCheckoutMessage("Confirm your business first.");
       return;
     }
 
@@ -273,15 +286,7 @@ export default function FoundingMembershipPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({
-          type: "plan",
-          itemId: "founding-verified-business-growth-membership",
-          businessId: confirmedBusinessId,
-          metadata: {
-            businessId: confirmedBusinessId,
-            checkoutContext: "founding_membership",
-          },
-        }),
+        body: JSON.stringify(buildCheckoutPayload(confirmedBusinessId)),
       });
 
       const json = await res.json().catch(() => ({}));
@@ -302,22 +307,17 @@ export default function FoundingMembershipPage() {
           typeof json?.error === "string"
             ? json.error
             : "Unable to create the Stripe Checkout Session";
-        const userMessage =
-          apiMessage === "Stripe is not configured"
-            ? "Checkout is temporarily unavailable in this environment. Please try again in a configured environment."
-            : apiMessage === "Unauthorized"
-              ? "Authentication required. Please sign in and continue checkout."
-              : apiMessage;
-        throw new Error(userMessage);
+        throw new Error(apiMessage);
       }
 
       setCheckoutState("redirecting");
       setCheckoutMessage("Opening secure checkout…");
       window.location.assign(json.url);
     } catch (e: any) {
-      setError(e?.message || "Unable to start checkout");
+      const message = e?.message || "Unable to start checkout";
+      setError(message);
       setCheckoutState("checkout_error");
-      setCheckoutMessage(e?.message || "Unable to start checkout. Please retry.");
+      setCheckoutMessage(message);
       setSubmitting(false);
       checkoutInFlightRef.current = false;
     }
@@ -337,9 +337,21 @@ export default function FoundingMembershipPage() {
 
     autoResumeConsumedRef.current = true;
     void beginCheckout();
-    // beginCheckout intentionally omitted to avoid a new function identity retriggering resume.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [confirmedBusinessId, resumeCheckoutRequested]);
+
+  const buttonReason = !confirmedBusinessId
+    ? activeBusiness && !activeBusiness.claimable
+      ? "Business is unavailable"
+      : "Confirm your business first"
+    : !hasRemainingSlots
+      ? "No pilot positions remain"
+      : checkoutUnavailable
+        ? "Checkout is temporarily unavailable"
+        : "";
+
+  const checkoutDisabled =
+    submitting || !confirmedBusinessId || !hasRemainingSlots;
 
   return (
     <>
@@ -368,160 +380,204 @@ export default function FoundingMembershipPage() {
               <div className="rounded-2xl border border-yellow-500/30 bg-yellow-500/10 p-4 text-sm text-yellow-100">
                 <div>{offer ? money(offer.amountCents) : "$49.00"} per month</div>
                 <div>Monthly billing only</div>
-                <div>{offer ? `${offer.remainingSlots} of ${offer.pilotLimit} pilot positions available` : "10 pilot positions total"}</div>
+                <div>
+                  {offer
+                    ? `${offer.remainingSlots} of ${offer.pilotLimit} pilot positions available`
+                    : "10 pilot positions total"}
+                </div>
               </div>
             </div>
           </section>
 
-          <section className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-            <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
-              <h2 className="text-xl font-bold text-white">1. Select your public business</h2>
-              <p className="mt-2 text-sm text-white/70">
-                This membership only applies to an existing public, claimable BWE business. Availability is provided by the server for guidance and rechecked again during checkout.
-              </p>
-
-              {loading ? <p className="mt-4 text-white/60">Loading businesses…</p> : null}
-              {error ? <p className="mt-4 text-sm text-red-300">{error}</p> : null}
-
-              <div className="mt-4 grid gap-3">
-                {(data?.businesses || []).map((business) => {
-                  const active = business.id === selectedBusinessId;
-                  const unavailableLabel =
-                    business.unavailableReason === "already_verified"
-                      ? "Already Verified"
-                      : business.unavailableReason === "claim_already_initiated"
-                        ? "Claim Already Initiated"
-                        : business.unavailableReason === "ownership_review_pending"
-                          ? "Ownership Review Pending"
-                          : business.unavailableReason === "membership_already_active"
-                            ? "Membership Already Active"
-                            : "Unavailable";
-                  return (
-                    <button
-                      key={business.id}
-                      type="button"
-                      onClick={() => {
-                        if (!business.claimable) {
-                          setError(`${business.businessName} is not currently available for a new founding membership claim.`);
-                          return;
-                        }
-                        setSelectedBusinessId(business.id);
-                        setConfirmedBusinessId("");
-                        setResumeCheckoutRequested(false);
-                        setResumeBusinessName("");
-                        setError("");
-                        autoResumeConsumedRef.current = false;
-                        checkoutInFlightRef.current = false;
-                      }}
-                      className={`rounded-2xl border p-4 text-left transition focus:outline-none focus:ring-2 focus:ring-yellow-400/40 ${
-                        active
-                          ? "border-yellow-400/60 bg-yellow-500/10"
-                          : business.claimable
-                            ? "border-white/10 bg-black/20 hover:bg-white/10"
-                            : "border-white/10 bg-black/10 opacity-75"
-                      }`}
-                      aria-pressed={active}
-                      aria-describedby={active ? `selected-business-${business.id}` : undefined}
-                    >
-                      <div className="flex items-start justify-between gap-3">
-                        <div>
-                          <div className="font-semibold text-white">{business.businessName}</div>
-                          <div className="mt-1 text-sm text-white/60">
-                            {[business.category, [business.city, business.state].filter(Boolean).join(", ")]
-                              .filter(Boolean)
-                              .join(" • ")}
-                          </div>
-                          {business.address ? (
-                            <div className="mt-1 text-xs text-white/45">{business.address}</div>
-                          ) : null}
-                          <div className="mt-2 flex flex-wrap gap-2 text-[11px]">
-                            <span className="rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-white/60">
-                              {business.publicStatus.replace(/[_-]/g, " ")}
-                            </span>
-                            {!business.claimable ? (
-                              <span className="rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-white/60">
-                                {unavailableLabel}
-                              </span>
-                            ) : null}
-                          </div>
-                        </div>
-                        {!business.claimable ? (
-                          <span className="rounded-full border border-white/15 bg-white/5 px-2 py-1 text-xs font-bold text-white/55">
-                            {unavailableLabel}
-                          </span>
-                        ) : active ? (
-                          <span
-                            id={`selected-business-${business.id}`}
-                            className="rounded-full border border-yellow-400/40 bg-yellow-400/15 px-2 py-1 text-xs font-bold text-yellow-200"
-                          >
-                            Selected
-                          </span>
-                        ) : null}
+          <section className="rounded-3xl border border-yellow-500/20 bg-gradient-to-br from-yellow-500/10 via-white/5 to-black/40 p-6 shadow-xl">
+            {activeBusiness ? (
+              <div className="space-y-4">
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                  <div>
+                    <div className="text-xs font-bold uppercase tracking-[0.12em] text-yellow-200/80">
+                      Selected business
+                    </div>
+                    <h2 className="mt-2 text-2xl font-black text-white">
+                      {resumeBusinessName || activeBusiness.businessName}
+                    </h2>
+                    <div className="mt-2 text-sm text-white/75">
+                      {[
+                        activeBusiness.category,
+                        [activeBusiness.city, activeBusiness.state]
+                          .filter(Boolean)
+                          .join(", "),
+                      ]
+                        .filter(Boolean)
+                        .join(" • ") || "Business details recorded"}
+                    </div>
+                    {activeBusiness.address ? (
+                      <div className="mt-1 text-sm text-white/55">
+                        {activeBusiness.address}
                       </div>
-                    </button>
-                  );
-                })}
-              </div>
-
-              <div className="mt-5 rounded-2xl border border-yellow-500/20 bg-yellow-500/10 p-4">
-                <div className="text-xs font-bold uppercase tracking-[0.12em] text-yellow-200/80">
-                  Selected business confirmation
-                </div>
-                {selectedBusiness ? (
-                  <div className="mt-2 space-y-2 text-sm text-white/80">
-                    <div className="font-semibold text-white">{selectedBusiness.businessName}</div>
+                    ) : null}
+                  </div>
+                  <div className="rounded-2xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white/75">
                     <div>
-                      {[selectedBusiness.category, [selectedBusiness.city, selectedBusiness.state].filter(Boolean).join(", ")]
+                      Claimability: {activeBusiness.claimable ? "Claimable" : getUnavailableLabel(activeBusiness)}
+                    </div>
+                    <div className="mt-1 text-white/55">Canonical ID: {activeBusiness.id}</div>
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
+                  <button
+                    type="button"
+                    disabled={checkoutDisabled}
+                    onClick={beginCheckout}
+                    className="inline-flex w-full items-center justify-center rounded-xl bg-yellow-500 px-5 py-3 text-base font-black text-black transition hover:bg-yellow-400 disabled:cursor-not-allowed disabled:opacity-60 lg:w-auto lg:min-w-[320px]"
+                  >
+                    {checkoutState === "validating"
+                      ? "Validating secure checkout…"
+                      : checkoutState === "redirecting"
+                        ? "Opening secure checkout…"
+                        : checkoutState === "auth_required"
+                          ? "Continue to Login"
+                          : resumeCheckoutRequested || confirmedBusinessId
+                            ? "Continue to Secure Checkout"
+                            : "Start Membership and Claim Process"}
+                  </button>
+                  {buttonReason ? (
+                    <div className="text-sm font-semibold text-yellow-100">
+                      {buttonReason}
+                    </div>
+                  ) : (
+                    <div className="text-sm text-white/65">
+                      Membership details and ownership-review terms remain below for review.
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex flex-wrap gap-3 text-sm">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (activeBusiness.claimable) {
+                        setConfirmedBusinessId(activeBusiness.id);
+                        setSelectedBusinessId(activeBusiness.id);
+                        setCheckoutState("idle");
+                        setCheckoutMessage("");
+                        setError("");
+                      }
+                      document
+                        .getElementById("membership-review")
+                        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+                    }}
+                    className="rounded-xl border border-white/15 px-4 py-2 font-bold text-white/85 transition hover:bg-white/10"
+                  >
+                    Review membership details
+                  </button>
+                  <Link
+                    href="/business-directory?mode=claim"
+                    className="rounded-xl border border-white/15 px-4 py-2 font-bold text-white/85 transition hover:bg-white/10"
+                  >
+                    Find another business
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={clearBusinessSelection}
+                    className="rounded-xl border border-white/15 px-4 py-2 font-bold text-white/60 transition hover:bg-white/10"
+                  >
+                    Clear selection
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div>
+                  <div className="text-xs font-bold uppercase tracking-[0.12em] text-yellow-200/80">
+                    Start with your listing
+                  </div>
+                  <h2 className="mt-2 text-2xl font-black text-white">
+                    Find your public business first
+                  </h2>
+                  <p className="mt-2 max-w-3xl text-sm text-white/75">
+                    Search the BWE directory in claim mode, open your existing listing, and return here with the canonical business selected automatically.
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-3">
+                  <Link
+                    href="/business-directory?mode=claim"
+                    className="inline-flex items-center justify-center rounded-xl bg-yellow-500 px-5 py-3 text-base font-black text-black transition hover:bg-yellow-400"
+                  >
+                    Find My Business
+                  </Link>
+                  <Link
+                    href="/business-directory/add-business"
+                    className="inline-flex items-center justify-center rounded-xl border border-white/15 px-5 py-3 text-base font-bold text-white/85 transition hover:bg-white/10"
+                  >
+                    My business is not listed
+                  </Link>
+                </div>
+              </div>
+            )}
+          </section>
+
+          <section className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+            {!activeBusiness ? (
+              <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
+                <h2 className="text-xl font-bold text-white">1. Select your public business</h2>
+                <p className="mt-2 text-sm text-white/70">
+                  Search for your business in claim mode first, then return here with the business already selected.
+                </p>
+                <div className="mt-5">
+                  <Link
+                    href="/business-directory?mode=claim"
+                    className="inline-flex items-center justify-center rounded-xl bg-yellow-500 px-4 py-3 font-bold text-black transition hover:bg-yellow-400"
+                  >
+                    Find My Business
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
+                <h2 className="text-xl font-bold text-white">1. Selected public business</h2>
+                <p className="mt-2 text-sm text-white/70">
+                  This membership only applies to an existing public, claimable BWE business. Availability is shown here and rechecked again during checkout.
+                </p>
+
+                {error ? <p className="mt-4 text-sm text-red-300">{error}</p> : null}
+
+                <div className="mt-4 rounded-2xl border border-yellow-500/20 bg-yellow-500/10 p-4">
+                  <div className="space-y-2 text-sm text-white/80">
+                    <div className="font-semibold text-white">{activeBusiness.businessName}</div>
+                    <div>
+                      {[
+                        activeBusiness.category,
+                        [activeBusiness.city, activeBusiness.state]
+                          .filter(Boolean)
+                          .join(", "),
+                      ]
                         .filter(Boolean)
                         .join(" • ") || "Business details recorded"}
                     </div>
                     <div className="text-white/55">
-                      {confirmedBusinessId === selectedBusiness.id
-                        ? "This business is confirmed for the next step."
-                        : "Confirm this business to continue into membership review."}
+                      {activeBusiness.claimable
+                        ? "This business is confirmed for secure checkout."
+                        : `${activeBusiness.businessName} is not currently available for a new founding membership claim.`}
                     </div>
                     <div className="text-xs text-white/45">
-                      Canonical business ID: {selectedBusiness.id}
+                      Canonical business ID: {activeBusiness.id}
                     </div>
                     <div className="text-xs text-white/45">
-                      Server availability: {selectedBusiness.claimable ? "Claimable" : "Unavailable"}
+                      Server availability: {activeBusiness.claimable ? "Claimable" : getUnavailableLabel(activeBusiness)}
                     </div>
                   </div>
-                ) : (
-                  <div className="mt-2 text-sm text-white/65">Choose one public business to continue.</div>
-                )}
-                <div className="mt-4 flex flex-wrap gap-3">
-                  <button
-                    type="button"
-                    onClick={confirmBusinessSelection}
-                    disabled={!selectedBusinessId}
-                    className="inline-flex items-center justify-center rounded-xl bg-yellow-500 px-4 py-3 font-bold text-black transition hover:bg-yellow-400 disabled:cursor-not-allowed disabled:opacity-60"
-                  >
-                    Continue With This Business
-                  </button>
-                  {selectedBusiness ? (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setSelectedBusinessId("");
-                        setConfirmedBusinessId("");
-                        setResumeCheckoutRequested(false);
-                        setResumeBusinessName("");
-                        setError("");
-                        autoResumeConsumedRef.current = false;
-                        checkoutInFlightRef.current = false;
-                        if (typeof window !== "undefined") {
-                          window.history.replaceState(null, "", "/founding-membership");
-                        }
-                      }}
+                  <div className="mt-4 flex flex-wrap gap-3">
+                    <Link
+                      href="/business-directory?mode=claim"
                       className="inline-flex items-center justify-center rounded-xl border border-white/15 px-4 py-3 font-bold text-white/85 transition hover:bg-white/10"
                     >
-                      Change Business
-                    </button>
-                  ) : null}
+                      Choose a different business
+                    </Link>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
 
             <div className="space-y-6">
               <section id="membership-review" className="rounded-3xl border border-white/10 bg-white/5 p-6">
@@ -573,7 +629,12 @@ export default function FoundingMembershipPage() {
                       <div className="font-semibold text-white">Selected business</div>
                       <div className="mt-1">{resumeBusinessName || confirmedBusiness.businessName}</div>
                       <div className="mt-1 text-white/55">
-                        {[confirmedBusiness.category, [confirmedBusiness.city, confirmedBusiness.state].filter(Boolean).join(", ")]
+                        {[
+                          confirmedBusiness.category,
+                          [confirmedBusiness.city, confirmedBusiness.state]
+                            .filter(Boolean)
+                            .join(", "),
+                        ]
                           .filter(Boolean)
                           .join(" • ")}
                       </div>
@@ -599,18 +660,20 @@ export default function FoundingMembershipPage() {
                   </div>
                 ) : (
                   <div className="mt-3 rounded-2xl border border-white/10 bg-black/20 p-4 text-sm text-white/65">
-                    Select and confirm one business above before checkout is enabled.
+                    Find your business first, then return here to continue to secure checkout.
                   </div>
                 )}
 
                 {checkoutState !== "idle" ? (
-                  <div className={`mt-4 rounded-2xl border p-4 text-sm ${
-                    checkoutState === "checkout_error"
-                      ? "border-red-500/30 bg-red-500/10 text-red-200"
-                      : checkoutState === "auth_required"
-                        ? "border-yellow-500/30 bg-yellow-500/10 text-yellow-100"
-                        : "border-white/10 bg-black/20 text-white/80"
-                  }`}>
+                  <div
+                    className={`mt-4 rounded-2xl border p-4 text-sm ${
+                      checkoutState === "checkout_error"
+                        ? "border-red-500/30 bg-red-500/10 text-red-200"
+                        : checkoutState === "auth_required"
+                          ? "border-yellow-500/30 bg-yellow-500/10 text-yellow-100"
+                          : "border-white/10 bg-black/20 text-white/80"
+                    }`}
+                  >
                     <div className="font-semibold">
                       {checkoutState === "validating"
                         ? "Validating checkout"
@@ -626,7 +689,7 @@ export default function FoundingMembershipPage() {
 
                 <button
                   type="button"
-                  disabled={submitting || !confirmedBusinessId || (offer?.remainingSlots || 0) <= 0}
+                  disabled={checkoutDisabled}
                   onClick={beginCheckout}
                   className="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-yellow-500 px-4 py-3 font-bold text-black transition hover:bg-yellow-400 disabled:cursor-not-allowed disabled:opacity-60"
                 >
@@ -638,32 +701,22 @@ export default function FoundingMembershipPage() {
                         ? "Continue to Login"
                         : submitting
                           ? "Opening secure checkout…"
-                          : resumeCheckoutRequested
+                          : confirmedBusinessId || resumeCheckoutRequested
                             ? "Continue to Secure Checkout"
-                            : "Start Membership and Claim Process"}
+                            : "Find My Business First"}
                 </button>
+
+                {buttonReason ? (
+                  <div className="mt-2 text-sm font-semibold text-yellow-100">{buttonReason}</div>
+                ) : null}
 
                 <div className="mt-3 flex flex-wrap gap-3 text-xs text-white/50">
                   <span>
-                    Need a different path? <Link href="/business-directory" className="text-yellow-300 underline">Return to the business directory</Link>
+                    Need a different path?{" "}
+                    <Link href="/business-directory?mode=claim" className="text-yellow-300 underline">
+                      Return to claim mode directory
+                    </Link>
                   </span>
-                  {confirmedBusiness ? (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setConfirmedBusinessId("");
-                        setResumeCheckoutRequested(false);
-                        setResumeBusinessName("");
-                        setError("");
-                        autoResumeConsumedRef.current = false;
-                        checkoutInFlightRef.current = false;
-                        document.getElementById("membership-review")?.scrollIntoView({ behavior: "smooth", block: "start" });
-                      }}
-                      className="text-yellow-300 underline"
-                    >
-                      Change confirmed business
-                    </button>
-                  ) : null}
                 </div>
               </section>
             </div>

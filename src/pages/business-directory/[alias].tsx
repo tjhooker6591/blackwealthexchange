@@ -82,6 +82,11 @@ export default function BusinessDetail() {
     return Array.isArray(raw) ? raw[0] : raw || "directory";
   }, [router.query.from]);
 
+  const claimMode = useMemo(() => {
+    const raw = router.query.mode;
+    return (Array.isArray(raw) ? raw[0] : raw) === "claim";
+  }, [router.query.mode]);
+
   useEffect(() => {
     if (!router.isReady || !alias) return;
 
@@ -199,10 +204,10 @@ export default function BusinessDetail() {
               </Link>
             ) : null}
             <Link
-              href="/business-directory"
+              href={claimMode ? "/business-directory?mode=claim" : "/business-directory"}
               className="text-white/65 underline underline-offset-4 transition hover:text-white"
             >
-              Directory
+              {claimMode ? "Claim mode directory" : "Directory"}
             </Link>
           </div>
         </div>
@@ -327,6 +332,12 @@ export default function BusinessDetail() {
                   </div>
 
                   <div className="pt-2 flex flex-wrap gap-2">
+                    {claimMode ? (
+                      <div className="w-full rounded-xl border border-yellow-500/20 bg-yellow-500/10 px-4 py-3 text-sm text-white/75">
+                        <div className="font-semibold text-yellow-200">Claim mode active</div>
+                        <div className="mt-1">You came here to claim an existing public listing. Eligible businesses can continue directly into Founding Membership.</div>
+                      </div>
+                    ) : null}
                     {canClaim ? (
                       <Link
                         href={`/founding-membership?businessId=${encodeURIComponent(canonicalBusinessId)}`}
