@@ -713,15 +713,41 @@ export default async function handler(
           });
         }
 
-        const existingMembership = await db.collection("business_memberships").findOne({
-          productKey: FOUNDING_MEMBERSHIP_PRODUCT_KEY,
-          businessId: normalizedBusinessId,
-          membershipStatus: { $in: ["active", "past_due"] },
-        });
+        const existingMembership = await db
+          .collection("business_memberships")
+          .findOne({
+            productKey: FOUNDING_MEMBERSHIP_PRODUCT_KEY,
+            businessId: normalizedBusinessId,
+            membershipStatus: { $in: ["active", "past_due"] },
+          });
         if (existingMembership) {
           return res.status(409).json({
-            error: "This business already has an active or pending paid founding membership",
+            error:
+              "This business already has an active or pending paid founding membership",
             code: "FOUNDING_MEMBERSHIP_ALREADY_ACTIVE",
+          });
+        }
+
+        const existingClaimLock = await db
+          .collection("business_claims")
+          .findOne({
+            businessId: normalizedBusinessId,
+            productKey: FOUNDING_MEMBERSHIP_PRODUCT_KEY,
+            claimStatus: {
+              $in: [
+                "claim_pending",
+                "ownership_review_pending",
+                "additional_evidence_required",
+                "ownership_approved",
+                "disputed",
+              ],
+            },
+          });
+        if (existingClaimLock) {
+          return res.status(409).json({
+            error:
+              "This business already has a pending ownership claim under review",
+            code: "FOUNDING_MEMBERSHIP_CLAIM_LOCKED",
           });
         }
       }
@@ -843,7 +869,12 @@ export default async function handler(
             ...(isAnnualMembershipSubscription
               ? { recurring: { interval: "year" as const, interval_count: 1 } }
               : isFoundingMembershipSubscription
-                ? { recurring: { interval: "month" as const, interval_count: 1 } }
+                ? {
+                    recurring: {
+                      interval: "month" as const,
+                      interval_count: 1,
+                    },
+                  }
                 : {}),
           },
           quantity: 1,
@@ -960,7 +991,8 @@ export default async function handler(
                     ? "monthly"
                     : type === "plan" && isBlackCardPlanItemId(finalItemId)
                       ? "annual"
-                      : type === "plan" && isFoundingMembershipItemId(finalItemId)
+                      : type === "plan" &&
+                          isFoundingMembershipItemId(finalItemId)
                         ? "monthly"
                         : null,
             membershipName:

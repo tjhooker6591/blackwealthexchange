@@ -816,7 +816,11 @@ export default async function webhookHandler(
     const session = event.data.object as Stripe.Checkout.Session;
     const stripeSessionId = typeof session?.id === "string" ? session.id : "";
     if (!stripeSessionId) {
-      return fail(400, "INVALID_EVENT_PAYLOAD", "Invalid checkout session payload");
+      return fail(
+        400,
+        "INVALID_EVENT_PAYLOAD",
+        "Invalid checkout session payload",
+      );
     }
 
     const client = await clientPromise;
@@ -827,7 +831,9 @@ export default async function webhookHandler(
     });
 
     if (!orderRecord) {
-      return res.status(200).json({ received: true, skipped: "order_not_found" });
+      return res
+        .status(200)
+        .json({ received: true, skipped: "order_not_found" });
     }
 
     const paymentStatus = String(orderRecord.paymentStatus || "").toLowerCase();
@@ -839,7 +845,9 @@ export default async function webhookHandler(
       orderState === MARKETPLACE_ORDER_STATES.FULFILLED_PAYOUT_PENDING;
 
     if (alreadyTerminal) {
-      return res.status(200).json({ received: true, skipped: "already_paid_or_fulfilled" });
+      return res
+        .status(200)
+        .json({ received: true, skipped: "already_paid_or_fulfilled" });
     }
 
     await db.collection("orders").updateOne(
@@ -1830,7 +1838,8 @@ export default async function webhookHandler(
               membershipName: FOUNDING_MEMBERSHIP_NAME,
               membershipStatus: "active",
               billingInterval: "monthly",
-              amountCents: resolvedAmountCents || FOUNDING_MEMBERSHIP_PRICE_CENTS,
+              amountCents:
+                resolvedAmountCents || FOUNDING_MEMBERSHIP_PRICE_CENTS,
               currency: session.currency || "usd",
               grossAmountCents:
                 resolvedAmountCents || FOUNDING_MEMBERSHIP_PRICE_CENTS,
@@ -1853,7 +1862,8 @@ export default async function webhookHandler(
                   : null,
               stripeInvoiceId: null,
               stripePaymentIntentId: paymentIntentId || null,
-              ownershipReviewStatus: "pending_review",
+              ownershipReviewStatus: "ownership_review_pending",
+              claimLocked: true,
               activatedAt: paidAt,
               updatedAt: now,
             },
@@ -1875,11 +1885,29 @@ export default async function webhookHandler(
               businessId: membershipBusinessId,
               userId,
               email: email || null,
-              claimStatus: "claim_initiated",
+              claimStatus: "claim_pending",
               ownershipReviewStatus: "ownership_review_pending",
               membershipId,
               membershipName: FOUNDING_MEMBERSHIP_NAME,
+              productKey: FOUNDING_MEMBERSHIP_PRODUCT_KEY,
+              itemId: FOUNDING_MEMBERSHIP_ITEM_ID,
+              paymentStatus: "paid",
+              paymentId: existingPayment?._id
+                ? String(existingPayment._id)
+                : null,
               stripeSessionId,
+              claimLocked: true,
+              auditHistory: [
+                {
+                  action: "claim_created_from_paid_webhook",
+                  previousStatus: null,
+                  resultingStatus: "ownership_review_pending",
+                  reviewer: "system:webhook",
+                  reason:
+                    "Paid founding membership created pending ownership review.",
+                  timestamp: now,
+                },
+              ],
               updatedAt: now,
             },
           },
@@ -1898,10 +1926,35 @@ export default async function webhookHandler(
               businessId: membershipBusinessId,
               userId,
               email: email || null,
-              reviewStatus: "pending_review",
+              reviewStatus: "ownership_review_pending",
               evidenceStatus: "awaiting_owner_documents",
               sourceMembershipId: membershipId,
-              sourceClaimStatus: "claim_initiated",
+              sourceClaimStatus: "claim_pending",
+              paymentId: existingPayment?._id
+                ? String(existingPayment._id)
+                : null,
+              stripeSessionId,
+              evidenceRequirements: [
+                "website_domain_email",
+                "listed_business_phone",
+                "formation_document",
+                "business_license",
+                "official_website_or_social_account",
+                "written_owner_or_officer_authorization",
+              ],
+              evidenceSubmissions: [],
+              evidencePublicSummary: null,
+              auditHistory: [
+                {
+                  action: "review_created_from_paid_webhook",
+                  previousStatus: null,
+                  resultingStatus: "ownership_review_pending",
+                  reviewer: "system:webhook",
+                  reason:
+                    "Ownership review opened after successful founding membership payment.",
+                  timestamp: now,
+                },
+              ],
               updatedAt: now,
             },
           },
@@ -1919,6 +1972,7 @@ export default async function webhookHandler(
               onboardingStatus: "started",
               checklistStatus: "pending",
               nextStep: "submit ownership evidence for manual review",
+              evidencePortalStatus: "open",
               updatedAt: now,
             },
           },
@@ -1934,6 +1988,7 @@ export default async function webhookHandler(
               businessId: membershipBusinessId,
               userId,
               fulfillmentStatus: "pending_review_queue",
+              ownershipAccessStatus: "locked_pending_review",
               profileReviewStatus: "queued",
               baselineStatus: "queued",
               monthlyReportingStatus: "scheduled",
@@ -1942,7 +1997,12 @@ export default async function webhookHandler(
                 {
                   key: "ownership_review",
                   label: "Ownership review",
-                  status: "pending_review",
+                  status: "ownership_review_pending",
+                },
+                {
+                  key: "ownership_evidence",
+                  label: "Submit ownership evidence",
+                  status: "awaiting_owner_documents",
                 },
                 {
                   key: "profile_review",
@@ -1983,7 +2043,8 @@ export default async function webhookHandler(
               source: "founding_membership_webhook",
               metrics: {
                 capturedAt: now,
-                notes: "Initial baseline record created at membership payment confirmation.",
+                notes:
+                  "Initial baseline record created at membership payment confirmation.",
               },
               updatedAt: now,
             },
@@ -2019,6 +2080,28 @@ export default async function webhookHandler(
             },
           },
         );
+
+        await db
+          .collection("businesses")
+          .updateOne(
+            ObjectId.isValid(membershipBusinessId)
+              ? { _id: new ObjectId(membershipBusinessId) }
+              : { _id: membershipBusinessId as any },
+            {
+              $set: {
+                claimStage: "ownership_review_pending",
+                ownershipReviewStatus: "ownership_review_pending",
+                claimLocked: true,
+                pendingClaimMembershipId: membershipId,
+                pendingClaimUserId: userId,
+                pendingClaimPaymentId: existingPayment?._id
+                  ? String(existingPayment._id)
+                  : null,
+                pendingClaimStripeSessionId: stripeSessionId,
+                updatedAt: now,
+              },
+            },
+          );
 
         await db.collection("subscription_events").updateOne(
           {
@@ -2401,11 +2484,13 @@ export default async function webhookHandler(
           }
         }
 
-        const refreshedOrderRecord = await db.collection("orders").findOne(
-          ObjectId.isValid(targetOrderId)
-            ? { _id: new ObjectId(targetOrderId) }
-            : { _id: targetOrderId as any },
-        );
+        const refreshedOrderRecord = await db
+          .collection("orders")
+          .findOne(
+            ObjectId.isValid(targetOrderId)
+              ? { _id: new ObjectId(targetOrderId) }
+              : { _id: targetOrderId as any },
+          );
 
         const reconciledBuyerId =
           asString(refreshedOrderRecord?.userId) ||
@@ -2450,7 +2535,8 @@ export default async function webhookHandler(
             orderId: targetOrderId,
             productId: reconciledProductId || null,
             sellerId: reconciledSellerId || null,
-            detail: "Marketplace payment record missing order linkage after upsert",
+            detail:
+              "Marketplace payment record missing order linkage after upsert",
             createdAt: now,
           });
 
@@ -2553,7 +2639,6 @@ export default async function webhookHandler(
             );
           }
         }
-
       }
     }
 
@@ -2588,7 +2673,9 @@ export default async function webhookHandler(
           paymentStatus: "paid",
           purchasedAt: paidAt,
           email: email || null,
-          courseName: asString(mergedMeta.courseName || mergedMeta.itemName || resolvedCourseId),
+          courseName: asString(
+            mergedMeta.courseName || mergedMeta.itemName || resolvedCourseId,
+          ),
           sendAccessEmail: true,
         });
 

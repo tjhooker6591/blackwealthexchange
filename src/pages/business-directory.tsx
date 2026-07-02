@@ -1050,11 +1050,13 @@ export default function BusinessDirectory() {
         ? "ownership_review_pending"
         : status === "evidence_required"
           ? "additional_evidence_required"
-          : status === "claim_initiated"
-            ? "claim_initiated"
-            : sponsored
-              ? "founding_growth_member"
-              : "unclaimed";
+          : status === "claim_initiated" || status === "claim_pending"
+            ? "claim_pending"
+            : status === "disputed"
+              ? "disputed"
+              : sponsored
+                ? "founding_growth_member"
+                : "unclaimed";
 
     return { verified, approved, sponsored, isComplete, claimStage };
   };
@@ -2272,16 +2274,17 @@ export default function BusinessDirectory() {
                                   Unclaimed
                                 </span>
                               ) : null}
-                              {getTrustMeta(item as Row).claimStage ===
-                              "claim_initiated" ? (
+                              {["claim_initiated", "claim_pending"].includes(
+                                getTrustMeta(item as Row).claimStage || "",
+                              ) ? (
                                 <span className="rounded-full border border-blue-400/30 bg-blue-400/15 px-2 py-0.5 text-[10px] font-bold text-blue-200">
-                                  Claim Initiated
+                                  Claim Pending Ownership Review
                                 </span>
                               ) : null}
                               {getTrustMeta(item as Row).claimStage ===
                               "ownership_review_pending" ? (
                                 <span className="rounded-full border border-sky-400/30 bg-sky-400/15 px-2 py-0.5 text-[10px] font-bold text-sky-200">
-                                  Ownership Review Pending
+                                  Claim Pending Ownership Review
                                 </span>
                               ) : null}
                               {getTrustMeta(item as Row).claimStage ===
@@ -2351,6 +2354,9 @@ export default function BusinessDirectory() {
                                   !trustMeta.verified &&
                                   ![
                                     "claim_initiated",
+                                    "claim_pending",
+                                    "additional_evidence_required",
+                                    "disputed",
                                     "ownership_review_pending",
                                     "founding_growth_member",
                                   ].includes(trustMeta.claimStage || "");
@@ -2372,10 +2378,10 @@ export default function BusinessDirectory() {
                                       ? "Already Verified"
                                       : trustMeta.claimStage ===
                                           "claim_initiated"
-                                        ? "Claim Already Initiated"
+                                        ? "Claim pending ownership review"
                                         : trustMeta.claimStage ===
                                             "ownership_review_pending"
-                                          ? "Ownership Review Pending"
+                                          ? "Claim pending ownership review"
                                           : trustMeta.claimStage ===
                                               "founding_growth_member"
                                             ? "Membership Already Active"

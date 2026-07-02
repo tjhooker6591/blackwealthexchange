@@ -3,6 +3,10 @@ import cookie from "cookie";
 import jwt from "jsonwebtoken";
 import { getJwtSecret, getMongoDbName } from "@/lib/env";
 import clientPromise from "@/lib/mongodb";
+import {
+  getFoundingClaimStatusLabel,
+  normalizeFoundingClaimStage,
+} from "@/lib/founding-membership";
 
 export default async function handler(
   req: NextApiRequest,
@@ -22,7 +26,9 @@ export default async function handler(
 
     const decoded = jwt.verify(token, getJwtSecret()) as any;
     const userId = String(decoded?.userId || "").trim();
-    const email = String(decoded?.email || "").trim().toLowerCase();
+    const email = String(decoded?.email || "")
+      .trim()
+      .toLowerCase();
     if (!userId && !email) {
       return res.status(401).json({ ok: false, error: "unauthorized" });
     }
@@ -30,46 +36,71 @@ export default async function handler(
     const client = await clientPromise;
     const db = client.db(getMongoDbName());
 
-    const membership = await db
-      .collection("business_memberships")
-      .findOne(
-        {
-          productKey: "founding_verified_business_growth_membership",
-          $or: [{ userId }, { email }],
-        },
-        { sort: { updatedAt: -1, createdAt: -1 } },
-      );
+    const membership = await db.collection("business_memberships").findOne(
+      {
+        productKey: "founding_verified_business_growth_membership",
+        $or: [{ userId }, { email }],
+      },
+      { sort: { updatedAt: -1, createdAt: -1 } },
+    );
 
     if (!membership) {
       return res.status(200).json({ ok: true, membership: null });
     }
 
-    const [business, claim, review, onboarding, fulfillment, baseline, billing] =
-      await Promise.all([
-        membership.businessId
-          ? db.collection("businesses").findOne(
+    const [
+      business,
+      claim,
+      review,
+      onboarding,
+      fulfillment,
+      baseline,
+      billing,
+    ] = await Promise.all([
+      membership.businessId
+        ? db
+            .collection("businesses")
+            .findOne(
               { _id: membership.businessId as any },
-              { projection: { business_name: 1, alias: 1, slug: 1, city: 1, state: 1 } },
+              {
+                projection: {
+                  business_name: 1,
+                  alias: 1,
+                  slug: 1,
+                  city: 1,
+                  state: 1,
+                },
+              },
             )
-          : null,
-        db.collection("business_claims").findOne({ membershipId: membership.membershipId }),
-        db.collection("ownership_reviews").findOne({ sourceMembershipId: membership.membershipId }),
-        db.collection("membership_onboarding").findOne({ membershipId: membership.membershipId }),
-        db.collection("membership_fulfillment").findOne({ membershipId: membership.membershipId }),
-        db.collection("profile_performance_baselines").findOne({ membershipId: membership.membershipId }),
-        db.collection("users").findOne(
-          { $or: [{ _id: membership.userId as any }, { email }] },
-          {
-            projection: {
-              stripeSubscriptionId: 1,
-              nextBillingDate: 1,
-              subscriptionCancelAtPeriodEnd: 1,
-              subscriptionStatus: 1,
-              renewalStatus: 1,
-            },
+        : null,
+      db
+        .collection("business_claims")
+        .findOne({ membershipId: membership.membershipId }),
+      db
+        .collection("ownership_reviews")
+        .findOne({ sourceMembershipId: membership.membershipId }),
+      db
+        .collection("membership_onboarding")
+        .findOne({ membershipId: membership.membershipId }),
+      db
+        .collection("membership_fulfillment")
+        .findOne({ membershipId: membership.membershipId }),
+      db
+        .collection("profile_performance_baselines")
+        .findOne({ membershipId: membership.membershipId }),
+      db.collection("users").findOne(
+        { $or: [{ _id: membership.userId as any }, { email }] },
+        {
+          projection: {
+            stripeSubscriptionId: 1,
+            nextBillingDate: 1,
+            subscriptionCancelAtPeriodEnd: 1,
+            subscriptionStatus: 1,
+            renewalStatus: 1,
           },
-        ),
-      ]);
+        },
+      ),
+    ]);
 
     return res.status(200).json({
       ok: true,
@@ -77,7 +108,8 @@ export default async function handler(
         membershipId: membership.membershipId,
         membershipName: membership.membershipName,
         membershipStatus: membership.membershipStatus,
-        ownershipReviewStatus: membership.ownershipReviewStatus || review?.reviewStatus || null,
+        ownershipReviewStatus:
+          membership.ownershipReviewStatus || review?.reviewStatus || null,
         business: business
           ? {
               name: business.business_name || null,
@@ -86,16 +118,25 @@ export default async function handler(
               state: business.state || null,
             }
           : null,
-        claimStatus: claim?.claimStatus || null,
-        reviewStatus: review?.reviewStatus || null,
+        claimStatus: normalizeFoundingClaimStage(claim?.claimStatus || null),
+        claimStatusLabel: getFoundingClaimStatusLabel(
+          claim?.claimStatus ||
+            review?.reviewStatus ||
+            membership.ownershipReviewStatus,
+        ),
+        reviewStatus: normalizeFoundingClaimStage(review?.reviewStatus || null),
         evidenceStatus: review?.evidenceStatus || null,
+        evidencePortalStatus: onboarding?.evidencePortalStatus || null,
         onboardingStatus: onboarding?.onboardingStatus || null,
         fulfillmentStatus: fulfillment?.fulfillmentStatus || null,
         profileReviewStatus: fulfillment?.profileReviewStatus || null,
-        baselineStatus: baseline?.baselineStatus || fulfillment?.baselineStatus || null,
+        baselineStatus:
+          baseline?.baselineStatus || fulfillment?.baselineStatus || null,
         monthlyReportingStatus: fulfillment?.monthlyReportingStatus || null,
         supportStatus: fulfillment?.supportStatus || null,
-        checklist: Array.isArray(fulfillment?.checklist) ? fulfillment.checklist : [],
+        checklist: Array.isArray(fulfillment?.checklist)
+          ? fulfillment.checklist
+          : [],
         billing: {
           hasManageableSubscription: Boolean(billing?.stripeSubscriptionId),
           nextBillingDate: billing?.nextBillingDate || null,

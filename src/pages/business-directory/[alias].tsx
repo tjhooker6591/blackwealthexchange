@@ -175,8 +175,12 @@ export default function BusinessDetail() {
     !trust.verified &&
     ![
       "claim_initiated",
+      "claim_pending",
       "ownership_review_pending",
+      "additional_evidence_required",
+      "disputed",
       "founding_growth_member",
+      "ownership_verified",
     ].includes(claimStage);
 
   return (
@@ -360,12 +364,16 @@ export default function BusinessDetail() {
                         {trust.verified
                           ? "Already Verified"
                           : claimStage === "claim_initiated"
-                            ? "Claim Already Initiated"
+                            ? "Claim pending ownership review"
                             : claimStage === "ownership_review_pending"
-                              ? "Ownership Review Pending"
-                              : claimStage === "founding_growth_member"
-                                ? "Membership Already Active"
-                                : "Not Claimable"}
+                              ? "Claim pending ownership review"
+                              : claimStage === "additional_evidence_required"
+                                ? "Claim pending ownership review"
+                                : claimStage === "disputed"
+                                  ? "Claim pending ownership review"
+                                  : claimStage === "founding_growth_member"
+                                    ? "Membership Already Active"
+                                    : "Not Claimable"}
                       </span>
                     )}
                     {website && (

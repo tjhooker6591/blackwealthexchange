@@ -46,11 +46,39 @@ export const FOUNDING_MEMBERSHIP_PILOT_LIMIT = 10;
 export type FoundingMembershipStatus = "active" | "past_due" | "cancelled";
 
 export type FoundingClaimStatus =
-  | "claim_initiated"
+  | "claim_pending"
   | "ownership_review_pending"
   | "additional_evidence_required"
   | "ownership_approved"
-  | "ownership_rejected";
+  | "ownership_rejected"
+  | "disputed";
+
+export type FoundingOwnershipReviewStatus =
+  | "ownership_review_pending"
+  | "additional_evidence_required"
+  | "ownership_approved"
+  | "ownership_rejected"
+  | "disputed";
+
+export const FOUNDING_CLAIM_LOCKED_STAGES = [
+  "claim_pending",
+  "ownership_review_pending",
+  "additional_evidence_required",
+  "ownership_approved",
+  "founding_growth_member",
+  "ownership_verified",
+  "disputed",
+] as const;
+
+export const FOUNDING_OWNERSHIP_EVIDENCE_TYPES = [
+  "website_domain_email",
+  "listed_business_phone",
+  "formation_document",
+  "business_license",
+  "official_website_or_social_account",
+  "written_owner_or_officer_authorization",
+  "other",
+] as const;
 
 function stringOrNull(v: unknown) {
   return typeof v === "string" && v.trim() ? v.trim() : null;
@@ -60,18 +88,29 @@ export function getFoundingMembershipAvailability(
   row: Record<string, any>,
 ): ClaimableBusinessAvailability {
   const publicStatus =
-    String(row.status || row.trustStatus || "").trim().toLowerCase() || "public";
+    String(row.status || row.trustStatus || "")
+      .trim()
+      .toLowerCase() || "public";
   const currentClaimState =
-    String(row.claimStage || "").trim().toLowerCase() || null;
+    String(row.claimStage || "")
+      .trim()
+      .toLowerCase() || null;
   const alreadyVerified =
-    row.verified === true || row.isVerified === true || publicStatus === "verified";
+    row.verified === true ||
+    row.isVerified === true ||
+    publicStatus === "verified";
   const unavailableReason = alreadyVerified
     ? "already_verified"
-    : currentClaimState === "claim_initiated"
+    : currentClaimState === "claim_initiated" ||
+        currentClaimState === "claim_pending" ||
+        currentClaimState === "additional_evidence_required" ||
+        currentClaimState === "disputed"
       ? "claim_already_initiated"
       : currentClaimState === "ownership_review_pending"
         ? "ownership_review_pending"
-        : currentClaimState === "founding_growth_member"
+        : currentClaimState === "founding_growth_member" ||
+            currentClaimState === "ownership_approved" ||
+            currentClaimState === "ownership_verified"
           ? "membership_already_active"
           : null;
 
@@ -89,7 +128,9 @@ export function normalizeFoundingMembershipResumeState(args: {
   business: ClaimableBusinessSummary | null;
 }): FoundingMembershipResumeState {
   const requestedBusinessId = String(args.requestedBusinessId || "").trim();
-  const resumeParam = String(args.resumeParam || "").trim().toLowerCase();
+  const resumeParam = String(args.resumeParam || "")
+    .trim()
+    .toLowerCase();
   const resumeCheckoutRequested = resumeParam === "checkout";
 
   if (!requestedBusinessId) {
@@ -130,9 +171,9 @@ export function shouldAutoResumeFoundingCheckout(args: {
 }) {
   return Boolean(
     args.confirmedBusinessId &&
-      args.resumeCheckoutRequested &&
-      !args.checkoutInFlight &&
-      !args.autoResumeConsumed,
+    args.resumeCheckoutRequested &&
+    !args.checkoutInFlight &&
+    !args.autoResumeConsumed,
   );
 }
 
@@ -142,6 +183,55 @@ export function isFoundingMembershipItemId(itemId: string) {
 
 export function isFoundingMembershipProductKey(productKey: string) {
   return productKey.trim().toLowerCase() === FOUNDING_MEMBERSHIP_PRODUCT_KEY;
+}
+
+export function normalizeFoundingClaimStage(value: unknown): string | null {
+  const normalized = String(value || "")
+    .trim()
+    .toLowerCase();
+  if (!normalized) return null;
+  if (normalized === "claim_initiated") return "claim_pending";
+  if (normalized === "pending_review") return "ownership_review_pending";
+  if (normalized === "approved") return "ownership_approved";
+  if (normalized === "rejected") return "ownership_rejected";
+  return normalized;
+}
+
+export function isFoundingClaimLockedStage(value: unknown) {
+  const normalized = normalizeFoundingClaimStage(value);
+  return (
+    normalized != null &&
+    FOUNDING_CLAIM_LOCKED_STAGES.includes(normalized as any)
+  );
+}
+
+export function getFoundingClaimStatusLabel(value: unknown) {
+  const normalized = normalizeFoundingClaimStage(value);
+  if (normalized === "ownership_review_pending") {
+    return "Claim pending ownership review";
+  }
+  if (normalized === "claim_pending") {
+    return "Claim pending ownership review";
+  }
+  if (normalized === "additional_evidence_required") {
+    return "Additional evidence required";
+  }
+  if (normalized === "disputed") {
+    return "Ownership claim disputed";
+  }
+  if (
+    normalized === "ownership_approved" ||
+    normalized === "ownership_verified"
+  ) {
+    return "Ownership approved";
+  }
+  if (normalized === "ownership_rejected") {
+    return "Ownership claim rejected";
+  }
+  if (normalized === "founding_growth_member") {
+    return "Founding Growth Member";
+  }
+  return null;
 }
 
 export async function countActiveFoundingMemberships(db: Db) {
@@ -246,7 +336,11 @@ export async function getClaimableBusinessById(
   if (!businessId) return null;
 
   const row = await db.collection("businesses").findOne(
-    { _id: ObjectId.isValid(businessId) ? new ObjectId(businessId) : (businessId as any) },
+    {
+      _id: ObjectId.isValid(businessId)
+        ? new ObjectId(businessId)
+        : (businessId as any),
+    },
     {
       projection: {
         _id: 1,

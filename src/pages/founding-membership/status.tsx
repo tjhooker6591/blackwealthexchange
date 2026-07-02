@@ -16,8 +16,10 @@ type MembershipStatusPayload = {
       state: string | null;
     } | null;
     claimStatus: string | null;
+    claimStatusLabel?: string | null;
     reviewStatus: string | null;
     evidenceStatus: string | null;
+    evidencePortalStatus?: string | null;
     onboardingStatus: string | null;
     fulfillmentStatus: string | null;
     profileReviewStatus: string | null;
@@ -54,7 +56,8 @@ export default function FoundingMembershipStatusPage() {
           cache: "no-store",
         });
         const json = await res.json().catch(() => ({}));
-        if (!res.ok) throw new Error(json?.error || "Unable to load membership status");
+        if (!res.ok)
+          throw new Error(json?.error || "Unable to load membership status");
         setData(json);
       } catch (e: any) {
         setError(e?.message || "Unable to load membership status");
@@ -85,24 +88,41 @@ export default function FoundingMembershipStatusPage() {
               Founding Membership Status
             </h1>
             <p className="mt-3 max-w-3xl text-white/75">
-              Track membership status, claim progress, ownership review, profile fulfillment, baseline setup, monthly reporting, and billing access in one place.
+              Track membership status, claim progress, ownership review, profile
+              fulfillment, baseline setup, monthly reporting, and billing access
+              in one place.
             </p>
           </section>
 
-          {loading ? <div className="text-white/70">Loading status…</div> : null}
-          {error ? <div className="rounded-2xl border border-red-500/30 bg-red-500/10 p-4 text-red-200">{error}</div> : null}
+          {loading ? (
+            <div className="text-white/70">Loading status…</div>
+          ) : null}
+          {error ? (
+            <div className="rounded-2xl border border-red-500/30 bg-red-500/10 p-4 text-red-200">
+              {error}
+            </div>
+          ) : null}
 
           {!loading && !error && !membership ? (
             <section className="rounded-3xl border border-white/10 bg-white/5 p-6">
-              <h2 className="text-xl font-bold text-white">No founding membership found</h2>
+              <h2 className="text-xl font-bold text-white">
+                No founding membership found
+              </h2>
               <p className="mt-2 text-white/70">
-                Start by selecting an existing public business and opening the founding membership checkout path.
+                Start by selecting an existing public business and opening the
+                founding membership checkout path.
               </p>
               <div className="mt-4 flex flex-wrap gap-2">
-                <Link href="/business-directory" className="rounded-xl bg-yellow-500 px-4 py-2 font-bold text-black">
+                <Link
+                  href="/business-directory"
+                  className="rounded-xl bg-yellow-500 px-4 py-2 font-bold text-black"
+                >
                   Find Existing Business
                 </Link>
-                <Link href="/founding-membership" className="rounded-xl border border-yellow-500/40 px-4 py-2 font-bold text-yellow-300">
+                <Link
+                  href="/founding-membership"
+                  className="rounded-xl border border-yellow-500/40 px-4 py-2 font-bold text-yellow-300"
+                >
                   Review Membership
                 </Link>
               </div>
@@ -114,18 +134,31 @@ export default function FoundingMembershipStatusPage() {
               <section className="rounded-3xl border border-white/10 bg-white/5 p-6 space-y-4">
                 <div>
                   <div className="text-sm text-white/50">Membership</div>
-                  <div className="text-xl font-bold text-white">{membership.membershipName}</div>
-                  <div className="mt-1 text-white/70">Status: {labelize(membership.membershipStatus)}</div>
+                  <div className="text-xl font-bold text-white">
+                    {membership.membershipName}
+                  </div>
+                  <div className="mt-1 text-white/70">
+                    Status: {labelize(membership.membershipStatus)}
+                  </div>
                 </div>
 
                 <div>
-                  <div className="text-sm text-white/50">Selected or claimed business</div>
-                  <div className="text-lg font-semibold text-white">{membership.business?.name || "Business pending linkage"}</div>
+                  <div className="text-sm text-white/50">
+                    Selected or claimed business
+                  </div>
+                  <div className="text-lg font-semibold text-white">
+                    {membership.business?.name || "Business pending linkage"}
+                  </div>
                   <div className="mt-1 text-white/65">
-                    {[membership.business?.city, membership.business?.state].filter(Boolean).join(", ") || "Location pending"}
+                    {[membership.business?.city, membership.business?.state]
+                      .filter(Boolean)
+                      .join(", ") || "Location pending"}
                   </div>
                   {membership.business?.slug ? (
-                    <Link href={`/business/${encodeURIComponent(membership.business.slug)}`} className="mt-2 inline-block text-sm text-yellow-300 underline">
+                    <Link
+                      href={`/business/${encodeURIComponent(membership.business.slug)}`}
+                      className="mt-2 inline-block text-sm text-yellow-300 underline"
+                    >
                       View public business profile
                     </Link>
                   ) : null}
@@ -134,64 +167,123 @@ export default function FoundingMembershipStatusPage() {
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div className="rounded-2xl border border-white/10 bg-black/25 p-4">
                     <div className="text-sm text-white/50">Claim status</div>
-                    <div className="mt-1 font-semibold text-white">{labelize(membership.claimStatus)}</div>
+                    <div className="mt-1 font-semibold text-white">
+                      {membership.claimStatusLabel ||
+                        labelize(membership.claimStatus)}
+                    </div>
                   </div>
                   <div className="rounded-2xl border border-white/10 bg-black/25 p-4">
-                    <div className="text-sm text-white/50">Ownership review</div>
-                    <div className="mt-1 font-semibold text-white">{labelize(membership.ownershipReviewStatus || membership.reviewStatus)}</div>
-                    <div className="mt-1 text-xs text-white/55">Evidence: {labelize(membership.evidenceStatus)}</div>
+                    <div className="text-sm text-white/50">
+                      Ownership review
+                    </div>
+                    <div className="mt-1 font-semibold text-white">
+                      {labelize(
+                        membership.ownershipReviewStatus ||
+                          membership.reviewStatus,
+                      )}
+                    </div>
+                    <div className="mt-1 text-xs text-white/55">
+                      Evidence: {labelize(membership.evidenceStatus)}
+                      {membership.evidencePortalStatus
+                        ? ` · Portal: ${labelize(membership.evidencePortalStatus)}`
+                        : ""}
+                    </div>
                   </div>
                   <div className="rounded-2xl border border-white/10 bg-black/25 p-4">
                     <div className="text-sm text-white/50">Profile review</div>
-                    <div className="mt-1 font-semibold text-white">{labelize(membership.profileReviewStatus)}</div>
+                    <div className="mt-1 font-semibold text-white">
+                      {labelize(membership.profileReviewStatus)}
+                    </div>
                   </div>
                   <div className="rounded-2xl border border-white/10 bg-black/25 p-4">
                     <div className="text-sm text-white/50">Fulfillment</div>
-                    <div className="mt-1 font-semibold text-white">{labelize(membership.fulfillmentStatus)}</div>
+                    <div className="mt-1 font-semibold text-white">
+                      {labelize(membership.fulfillmentStatus)}
+                    </div>
                   </div>
                   <div className="rounded-2xl border border-white/10 bg-black/25 p-4">
-                    <div className="text-sm text-white/50">Performance baseline</div>
-                    <div className="mt-1 font-semibold text-white">{labelize(membership.baselineStatus)}</div>
+                    <div className="text-sm text-white/50">
+                      Performance baseline
+                    </div>
+                    <div className="mt-1 font-semibold text-white">
+                      {labelize(membership.baselineStatus)}
+                    </div>
                   </div>
                   <div className="rounded-2xl border border-white/10 bg-black/25 p-4">
-                    <div className="text-sm text-white/50">Monthly reporting</div>
-                    <div className="mt-1 font-semibold text-white">{labelize(membership.monthlyReportingStatus)}</div>
+                    <div className="text-sm text-white/50">
+                      Monthly reporting
+                    </div>
+                    <div className="mt-1 font-semibold text-white">
+                      {labelize(membership.monthlyReportingStatus)}
+                    </div>
                   </div>
                 </div>
               </section>
 
               <section className="space-y-6">
                 <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
-                  <h2 className="text-xl font-bold text-white">Fulfillment checklist</h2>
+                  <h2 className="text-xl font-bold text-white">
+                    Fulfillment checklist
+                  </h2>
                   <div className="mt-4 space-y-3">
                     {(membership.checklist || []).length ? (
                       membership.checklist.map((item, idx) => (
-                        <div key={`${item.key || item.label || idx}`} className="rounded-2xl border border-white/10 bg-black/25 p-4">
-                          <div className="font-semibold text-white">{item.label || item.key || `Step ${idx + 1}`}</div>
-                          <div className="mt-1 text-sm text-white/65">{labelize(item.status)}</div>
+                        <div
+                          key={`${item.key || item.label || idx}`}
+                          className="rounded-2xl border border-white/10 bg-black/25 p-4"
+                        >
+                          <div className="font-semibold text-white">
+                            {item.label || item.key || `Step ${idx + 1}`}
+                          </div>
+                          <div className="mt-1 text-sm text-white/65">
+                            {labelize(item.status)}
+                          </div>
                         </div>
                       ))
                     ) : (
-                      <div className="text-white/60">Checklist will appear here as fulfillment advances.</div>
+                      <div className="text-white/60">
+                        Checklist will appear here as fulfillment advances.
+                      </div>
                     )}
                   </div>
                 </div>
 
                 <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
-                  <h2 className="text-xl font-bold text-white">Support and billing</h2>
+                  <h2 className="text-xl font-bold text-white">
+                    Support and billing
+                  </h2>
                   <div className="mt-4 space-y-3 text-sm text-white/75">
-                    <div>Support access: {labelize(membership.supportStatus)}</div>
-                    <div>Billing status: {labelize(membership.billing.subscriptionStatus)}</div>
-                    <div>Renewal status: {labelize(membership.billing.renewalStatus)}</div>
                     <div>
-                      Next billing date: {membership.billing.nextBillingDate ? new Date(membership.billing.nextBillingDate).toLocaleDateString() : "Not available yet"}
+                      Support access: {labelize(membership.supportStatus)}
                     </div>
                     <div>
-                      Cancellation status: {membership.billing.cancelAtPeriodEnd ? "Cancellation scheduled at period end" : "Active"}
+                      Billing status:{" "}
+                      {labelize(membership.billing.subscriptionStatus)}
+                    </div>
+                    <div>
+                      Renewal status:{" "}
+                      {labelize(membership.billing.renewalStatus)}
+                    </div>
+                    <div>
+                      Next billing date:{" "}
+                      {membership.billing.nextBillingDate
+                        ? new Date(
+                            membership.billing.nextBillingDate,
+                          ).toLocaleDateString()
+                        : "Not available yet"}
+                    </div>
+                    <div>
+                      Cancellation status:{" "}
+                      {membership.billing.cancelAtPeriodEnd
+                        ? "Cancellation scheduled at period end"
+                        : "Active"}
                     </div>
                   </div>
                   <div className="mt-4 flex flex-wrap gap-2">
-                    <Link href="/pricing" className="rounded-xl border border-yellow-500/40 px-4 py-2 font-bold text-yellow-300">
+                    <Link
+                      href="/pricing"
+                      className="rounded-xl border border-yellow-500/40 px-4 py-2 font-bold text-yellow-300"
+                    >
                       Billing and plan info
                     </Link>
                     <a
@@ -202,7 +294,9 @@ export default function FoundingMembershipStatusPage() {
                     </a>
                   </div>
                   <p className="mt-4 text-xs text-white/50">
-                    Billing changes and cancellation continue through the existing canonical process. Payment and owner verification remain separate states.
+                    Billing changes and cancellation continue through the
+                    existing canonical process. Payment and owner verification
+                    remain separate states.
                   </p>
                 </div>
               </section>
