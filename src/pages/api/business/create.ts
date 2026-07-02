@@ -4,6 +4,7 @@ import fs from "node:fs";
 import clientPromise from "@/lib/mongodb";
 import {
   buildUniqueSlug,
+  getCanonicalBusinessName,
   getCreateBusinessDuplicateError,
   getCreateBusinessSuccessMessage,
   validateBusinessSubmission,
@@ -106,6 +107,7 @@ export default async function handler(
 
     const doc: any = {
       business_name: businessName,
+      businessName,
       title: businessName,
       email,
       phone,
@@ -117,6 +119,7 @@ export default async function handler(
       state: normalizedLocation.state,
       locationDisplay: normalizedLocation.normalized,
       status: "pending",
+      approved: false,
       listingStatus: "pending_approval",
       social: {
         facebook,
@@ -127,6 +130,8 @@ export default async function handler(
       createdAt: new Date(),
       updatedAt: new Date(),
     };
+
+    doc.businessName = getCanonicalBusinessName(doc) || businessName;
 
     if (imagePath) {
       doc.image = imagePath;

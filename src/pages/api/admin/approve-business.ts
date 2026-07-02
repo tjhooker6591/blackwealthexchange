@@ -9,6 +9,7 @@ import {
   hitApiRateLimit,
 } from "@/lib/apiRateLimit";
 import { ObjectId } from "mongodb";
+import { buildUniqueSlug, getCanonicalBusinessName, slugifyBusinessName } from "@/lib/businessSubmission";
 
 export default async function handler(
   req: NextApiRequest,
@@ -50,10 +51,47 @@ export default async function handler(
       return res.status(429).json({ error: "Too many requests" });
     }
 
-    const result = await db.collection("businesses").updateOne(
-      { _id: new ObjectId(businessId), approved: { $ne: true } },
+    const businesses = db.collection("businesses");
+    const existing = await businesses.findOne({ _id: new ObjectId(businessId) });
+
+    if (!existing || existing.approved === true) {
+      return res
+        .status(404)
+        .json({ error: "Business not found or already approved" });
+    }
+
+    const canonicalName = getCanonicalBusinessName(existing);
+    const slugBase = slugifyBusinessName(canonicalName || "business");
+    const desiredSlug =
+      typeof existing.slug === "string" && existing.slug.trim()
+        ? existing.slug.trim()
+        : slugBase;
+    const desiredAlias =
+      typeof existing.alias === "string" && existing.alias.trim()
+        ? existing.alias.trim()
+        : desiredSlug;
+
+    let nextSlug = desiredSlug;
+    let nextAlias = desiredAlias;
+
+    if (canonicalName && (!desiredSlug || !desiredAlias)) {
+      const existingWithSlug = await businesses.countDocuments({
+        _id: { $ne: existing._id },
+        slug: { $regex: `^${slugBase}(-\\d+)?$`, $options: "i" },
+      });
+      nextSlug = buildUniqueSlug(slugBase, existingWithSlug) || slugBase;
+      nextAlias = nextSlug;
+    }
+
+    const result = await businesses.updateOne(
+      { _id: existing._id, approved: { $ne: true } },
       {
         $set: {
+          business_name: canonicalName || existing.business_name || existing.businessName || existing.title || "",
+          businessName: canonicalName || existing.businessName || existing.business_name || existing.title || "",
+          title: canonicalName || existing.title || existing.business_name || existing.businessName || "",
+          slug: nextSlug,
+          alias: nextAlias,
           approved: true,
           status: "active",
           approvedAt: new Date(),

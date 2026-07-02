@@ -5,6 +5,7 @@ import cookie from "cookie";
 import jwt from "jsonwebtoken";
 import { ObjectId } from "mongodb";
 import { getJwtSecret } from "@/lib/env";
+import { getCanonicalBusinessName } from "@/lib/businessSubmission";
 
 type Decoded = {
   userId?: string;
@@ -133,8 +134,13 @@ export default async function handler(
       const query = q.trim();
 
       const searchOr: any[] = [
+        { business_name: { $regex: query, $options: "i" } },
         { businessName: { $regex: query, $options: "i" } },
         { name: { $regex: query, $options: "i" } },
+        { companyName: { $regex: query, $options: "i" } },
+        { legalName: { $regex: query, $options: "i" } },
+        { dba: { $regex: query, $options: "i" } },
+        { title: { $regex: query, $options: "i" } },
         { email: { $regex: query, $options: "i" } },
         { ownerName: { $regex: query, $options: "i" } },
         { category: { $regex: query, $options: "i" } },
@@ -171,11 +177,7 @@ export default async function handler(
 
     // ---- Normalize for UI use ----
     const rows = businesses.map((b: any) => {
-      const businessName =
-        s(b.businessName) ||
-        s(b.name) ||
-        s(b.companyName) ||
-        "Unnamed Business";
+      const businessName = getCanonicalBusinessName(b) || "Unnamed Business";
 
       const derivedStatus =
         s(b.status) ||
