@@ -1,7 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import formidable, { type File } from "formidable";
 import fs from "node:fs";
-import path from "node:path";
 import clientPromise from "@/lib/mongodb";
 import {
   buildUniqueSlug,
@@ -9,6 +8,7 @@ import {
   getCreateBusinessSuccessMessage,
   validateBusinessSubmission,
 } from "@/lib/businessSubmission";
+import { uploadImageBufferToCloudinary } from "@/lib/cloudinaryUpload";
 
 export const config = {
   api: { bodyParser: false },
@@ -29,12 +29,8 @@ export default async function handler(
   }
 
   try {
-    const uploadDir = path.join(process.cwd(), "public", "uploads");
-    fs.mkdirSync(uploadDir, { recursive: true });
-
     const form = formidable({
       multiples: false,
-      uploadDir,
       keepExtensions: true,
       maxFileSize: 8 * 1024 * 1024,
     });
@@ -85,8 +81,14 @@ export default async function handler(
     const logoFile = Array.isArray(logoRaw) ? logoRaw[0] : logoRaw;
     let imagePath = "";
     if (logoFile?.filepath) {
-      const fileName = path.basename(logoFile.filepath);
-      imagePath = `/uploads/${fileName}`;
+      const fileBuffer = await fs.promises.readFile(logoFile.filepath);
+      const uploaded = await uploadImageBufferToCloudinary({
+        buffer: fileBuffer,
+        fileName: logoFile.originalFilename || "business-logo",
+        contentType: logoFile.mimetype || undefined,
+        folder: "bwe/businesses",
+      });
+      imagePath = uploaded.secureUrl;
     }
 
     const client = await clientPromise;

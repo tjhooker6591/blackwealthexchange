@@ -1,7 +1,7 @@
 // File: pages/business-directory/add-business.tsx
 "use client";
 
-import React, { useState, FormEvent } from "react";
+import React, { useEffect, useRef, useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { normalizeOptionalUrl } from "@/lib/businessSubmission";
 
@@ -16,17 +16,65 @@ export default function AddBusinessForm() {
   const [website, setWebsite] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoPreviewUrl, setLogoPreviewUrl] = useState<string | null>(null);
+  const [imageError, setImageError] = useState<string | null>(null);
   const [facebook, setFacebook] = useState<string>("");
   const [twitter, setTwitter] = useState<string>("");
 
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    if (!logoFile) {
+      setLogoPreviewUrl((current) => {
+        if (current) URL.revokeObjectURL(current);
+        return null;
+      });
+      return;
+    }
+
+    const nextUrl = URL.createObjectURL(logoFile);
+    setLogoPreviewUrl((current) => {
+      if (current) URL.revokeObjectURL(current);
+      return nextUrl;
+    });
+
+    return () => {
+      URL.revokeObjectURL(nextUrl);
+    };
+  }, [logoFile]);
+
+  function clearSelectedImage() {
+    setLogoFile(null);
+    setImageError(null);
+    setLogoPreviewUrl((current) => {
+      if (current) URL.revokeObjectURL(current);
+      return null;
+    });
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  }
+
+  function handleLogoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const nextFile = e.target.files?.[0] || null;
+    setLogoFile(nextFile);
+    setImageError(null);
+    setError(null);
+  }
+
+  function openFilePicker() {
+    fileInputRef.current?.click();
+  }
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (submitting) return;
     setSubmitting(true);
     setError(null);
+    setImageError(null);
     setSuccessMessage(null);
 
     try {
@@ -52,12 +100,17 @@ export default function AddBusinessForm() {
       const data = await res.json().catch(() => null);
 
       if (!res.ok) {
-        throw new Error(
+        const message =
           data?.error ||
-            data?.message ||
-            "We could not submit your business. Please check your information and try again.",
-        );
+          data?.message ||
+          "We could not submit your business. Please check your information and try again.";
+        if (logoFile) {
+          setImageError(message);
+        }
+        throw new Error(message);
       }
+
+      clearSelectedImage();
 
       setSuccessMessage(
         data?.message ||
@@ -99,20 +152,30 @@ export default function AddBusinessForm() {
   return (
     <div className="bg-gray-900 text-white min-h-screen p-4 sm:p-8">
       <header className="mb-6 flex items-center justify-between">
-        <h1 className="text-3xl sm:text-4xl font-bold text-gold">Add Your Business</h1>
+        <h1 className="text-3xl sm:text-4xl font-bold text-gold">
+          Add Your Business
+        </h1>
       </header>
 
       <div className="max-w-4xl mx-auto bg-gray-800 p-4 sm:p-6 rounded-lg shadow-lg">
         {error && (
           <div className="mb-4 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm sm:text-base text-red-200 leading-relaxed">
-            <strong className="block text-red-100">We couldn’t submit your business yet.</strong>
+            <strong className="block text-red-100">
+              We couldn’t submit your business yet.
+            </strong>
             <span>{error}</span>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} encType="multipart/form-data" className="space-y-5">
+        <form
+          onSubmit={handleSubmit}
+          encType="multipart/form-data"
+          className="space-y-5"
+        >
           <fieldset>
-            <legend className="text-xl font-bold text-gold">Basic Information</legend>
+            <legend className="text-xl font-bold text-gold">
+              Basic Information
+            </legend>
             <label className="block mt-3">
               <span className="block">Business Name</span>
               <input
@@ -149,13 +212,16 @@ export default function AddBusinessForm() {
                 className="w-full p-2 rounded bg-gray-700 text-white mt-1"
               />
               <span className="mt-1 block text-xs text-gray-400">
-                We can normalize entries like “Allentown pa”, but clearer formatting helps.
+                We can normalize entries like “Allentown pa”, but clearer
+                formatting helps.
               </span>
             </label>
           </fieldset>
 
           <fieldset>
-            <legend className="text-xl font-bold text-gold">Contact Information</legend>
+            <legend className="text-xl font-bold text-gold">
+              Contact Information
+            </legend>
             <label className="block mt-3">
               <span className="block">Phone Number</span>
               <input
@@ -177,7 +243,9 @@ export default function AddBusinessForm() {
               />
             </label>
             <label className="block mt-3">
-              <span className="block">Website URL <span className="text-gray-400">(optional)</span></span>
+              <span className="block">
+                Website URL <span className="text-gray-400">(optional)</span>
+              </span>
               <input
                 type="text"
                 inputMode="url"
@@ -190,7 +258,9 @@ export default function AddBusinessForm() {
           </fieldset>
 
           <fieldset>
-            <legend className="text-xl font-bold text-gold">Business Profile</legend>
+            <legend className="text-xl font-bold text-gold">
+              Business Profile
+            </legend>
             <label className="block mt-3">
               <span className="block">Description</span>
               <textarea
@@ -205,20 +275,61 @@ export default function AddBusinessForm() {
 
           <fieldset>
             <legend className="text-xl font-bold text-gold">Logo Upload</legend>
+            <p className="mt-2 text-sm text-gray-400">
+              Optional. You can submit without an image.
+            </p>
             <input
+              ref={fileInputRef}
               type="file"
               accept="image/*"
-              onChange={(e) =>
-                setLogoFile(e.target.files ? e.target.files[0] : null)
-              }
+              onChange={handleLogoChange}
               className="w-full p-2 rounded bg-gray-700 text-white mt-2"
             />
+            {logoPreviewUrl && (
+              <div className="mt-4 rounded-lg border border-gray-700 bg-gray-900/60 p-4">
+                <p className="mb-3 text-sm font-semibold text-gray-200">
+                  Image Preview
+                </p>
+                <img
+                  src={logoPreviewUrl}
+                  alt="Selected business logo preview"
+                  className="max-h-56 rounded border border-gray-700 object-contain"
+                />
+                <div className="mt-4 flex flex-wrap gap-3">
+                  <button
+                    type="button"
+                    onClick={openFilePicker}
+                    disabled={submitting}
+                    className="rounded bg-gray-700 px-4 py-2 text-sm font-semibold text-white hover:bg-gray-600 disabled:opacity-50"
+                  >
+                    Replace Image
+                  </button>
+                  <button
+                    type="button"
+                    onClick={clearSelectedImage}
+                    disabled={submitting}
+                    className="rounded border border-red-500/40 bg-red-500/10 px-4 py-2 text-sm font-semibold text-red-200 hover:bg-red-500/20 disabled:opacity-50"
+                  >
+                    Remove Image
+                  </button>
+                </div>
+              </div>
+            )}
+            {(imageError || error) && (
+              <div className="mt-3 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+                {imageError || error}
+              </div>
+            )}
           </fieldset>
 
           <fieldset>
-            <legend className="text-xl font-bold text-gold">Social Media</legend>
+            <legend className="text-xl font-bold text-gold">
+              Social Media
+            </legend>
             <label className="block mt-3">
-              <span className="block">Facebook <span className="text-gray-400">(optional)</span></span>
+              <span className="block">
+                Facebook <span className="text-gray-400">(optional)</span>
+              </span>
               <input
                 type="text"
                 inputMode="url"
@@ -229,7 +340,9 @@ export default function AddBusinessForm() {
               />
             </label>
             <label className="block mt-3">
-              <span className="block">Twitter/X <span className="text-gray-400">(optional)</span></span>
+              <span className="block">
+                Twitter/X <span className="text-gray-400">(optional)</span>
+              </span>
               <input
                 type="text"
                 inputMode="url"
