@@ -175,8 +175,7 @@ export default function BusinessDetail() {
     !trust.verified &&
     ![
       "claim_initiated",
-      "claim_pending",
-      "ownership_review_pending",
+      "ownership_verification_pending",
       "additional_evidence_required",
       "disputed",
       "founding_growth_member",
@@ -364,13 +363,13 @@ export default function BusinessDetail() {
                         {trust.verified
                           ? "Already Verified"
                           : claimStage === "claim_initiated"
-                            ? "Claim pending ownership review"
-                            : claimStage === "ownership_review_pending"
-                              ? "Claim pending ownership review"
+                            ? "Ownership verification pending"
+                            : claimStage === "ownership_verification_pending"
+                              ? "Ownership verification pending"
                               : claimStage === "additional_evidence_required"
-                                ? "Claim pending ownership review"
+                                ? "Ownership verification pending"
                                 : claimStage === "disputed"
-                                  ? "Claim pending ownership review"
+                                  ? "Ownership verification pending"
                                   : claimStage === "founding_growth_member"
                                     ? "Membership Already Active"
                                     : "Not Claimable"}
@@ -427,7 +426,7 @@ export default function BusinessDetail() {
                         Claim and membership path
                       </div>
                       <div className="mt-1">
-                        Payment starts membership and opens ownership review,
+                        Payment starts membership and opens ownership verification,
                         but does not automatically verify ownership.
                       </div>
                       <div className="mt-2 flex flex-wrap gap-2">
@@ -439,7 +438,7 @@ export default function BusinessDetail() {
                           }
                           className="rounded-lg bg-yellow-500 px-3 py-2 text-xs font-extrabold text-black"
                         >
-                          Start Membership and Claim Process
+                          Start Membership and Claim
                         </Link>
                         <Link
                           href="/founding-membership/status"

@@ -735,10 +735,10 @@ export default async function handler(
             productKey: FOUNDING_MEMBERSHIP_PRODUCT_KEY,
             claimStatus: {
               $in: [
-                "claim_pending",
-                "ownership_review_pending",
+                "claim_initiated",
+                "ownership_verification_pending",
                 "additional_evidence_required",
-                "ownership_approved",
+                "ownership_verified",
                 "disputed",
               ],
             },
@@ -746,7 +746,7 @@ export default async function handler(
         if (existingClaimLock) {
           return res.status(409).json({
             error:
-              "This business already has a pending ownership claim under review",
+              "This business already has an ownership verification in progress and cannot be claimed again",
             code: "FOUNDING_MEMBERSHIP_CLAIM_LOCKED",
           });
         }

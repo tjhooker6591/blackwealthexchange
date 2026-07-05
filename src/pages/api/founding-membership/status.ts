@@ -39,6 +39,7 @@ export default async function handler(
     const membership = await db.collection("business_memberships").findOne(
       {
         productKey: "founding_verified_business_growth_membership",
+        membershipStatus: { $in: ["active", "past_due", "cancelled"] },
         $or: [{ userId }, { email }],
       },
       { sort: { updatedAt: -1, createdAt: -1 } },
@@ -125,6 +126,35 @@ export default async function handler(
             membership.ownershipReviewStatus,
         ),
         reviewStatus: normalizeFoundingClaimStage(review?.reviewStatus || null),
+        publicListingStatus:
+          normalizeFoundingClaimStage(
+            business && (business as any).claimStage
+              ? (business as any).claimStage
+              : membership.ownershipReviewStatus,
+          ) === "ownership_verified"
+            ? "ownership_verified"
+            : normalizeFoundingClaimStage(
+                  business && (business as any).claimStage
+                    ? (business as any).claimStage
+                    : membership.ownershipReviewStatus,
+                ) === "claim_initiated" ||
+                normalizeFoundingClaimStage(
+                  business && (business as any).claimStage
+                    ? (business as any).claimStage
+                    : membership.ownershipReviewStatus,
+                ) === "ownership_verification_pending" ||
+                normalizeFoundingClaimStage(
+                  business && (business as any).claimStage
+                    ? (business as any).claimStage
+                    : membership.ownershipReviewStatus,
+                ) === "additional_evidence_required" ||
+                normalizeFoundingClaimStage(
+                  business && (business as any).claimStage
+                    ? (business as any).claimStage
+                    : membership.ownershipReviewStatus,
+                ) === "disputed"
+              ? "verification_pending"
+              : "unclaimed",
         evidenceStatus: review?.evidenceStatus || null,
         evidencePortalStatus: onboarding?.evidencePortalStatus || null,
         onboardingStatus: onboarding?.onboardingStatus || null,

@@ -88,7 +88,7 @@ export default function FoundingMembershipStatusPage() {
               Founding Membership Status
             </h1>
             <p className="mt-3 max-w-3xl text-white/75">
-              Track membership status, claim progress, ownership review, profile
+              Track membership status, claim progress, ownership verification, profile
               fulfillment, baseline setup, monthly reporting, and billing access
               in one place.
             </p>
@@ -174,7 +174,7 @@ export default function FoundingMembershipStatusPage() {
                   </div>
                   <div className="rounded-2xl border border-white/10 bg-black/25 p-4">
                     <div className="text-sm text-white/50">
-                      Ownership review
+                      Ownership verification
                     </div>
                     <div className="mt-1 font-semibold text-white">
                       {labelize(
@@ -257,6 +257,9 @@ export default function FoundingMembershipStatusPage() {
                       Support access: {labelize(membership.supportStatus)}
                     </div>
                     <div>
+                        Public listing status: {labelize((membership as any).publicListingStatus)}
+                    </div>
+                    <div>
                       Billing status:{" "}
                       {labelize(membership.billing.subscriptionStatus)}
                     </div>
@@ -295,7 +298,7 @@ export default function FoundingMembershipStatusPage() {
                   </div>
                   <p className="mt-4 text-xs text-white/50">
                     Billing changes and cancellation continue through the
-                    existing canonical process. Payment and owner verification
+                    existing canonical process. Payment and ownership verification
                     remain separate states.
                   </p>
                 </div>

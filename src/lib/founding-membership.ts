@@ -46,27 +46,26 @@ export const FOUNDING_MEMBERSHIP_PILOT_LIMIT = 10;
 export type FoundingMembershipStatus = "active" | "past_due" | "cancelled";
 
 export type FoundingClaimStatus =
-  | "claim_pending"
-  | "ownership_review_pending"
+  | "claim_initiated"
+  | "ownership_verification_pending"
   | "additional_evidence_required"
-  | "ownership_approved"
-  | "ownership_rejected"
+  | "ownership_verified"
+  | "ownership_verification_failed"
   | "disputed";
 
 export type FoundingOwnershipReviewStatus =
-  | "ownership_review_pending"
+  | "ownership_verification_pending"
   | "additional_evidence_required"
-  | "ownership_approved"
-  | "ownership_rejected"
+  | "ownership_verified"
+  | "ownership_verification_failed"
   | "disputed";
 
 export const FOUNDING_CLAIM_LOCKED_STAGES = [
-  "claim_pending",
-  "ownership_review_pending",
+  "claim_initiated",
+  "ownership_verification_pending",
   "additional_evidence_required",
-  "ownership_approved",
-  "founding_growth_member",
   "ownership_verified",
+  "founding_growth_member",
   "disputed",
 ] as const;
 
@@ -102,14 +101,12 @@ export function getFoundingMembershipAvailability(
   const unavailableReason = alreadyVerified
     ? "already_verified"
     : currentClaimState === "claim_initiated" ||
-        currentClaimState === "claim_pending" ||
         currentClaimState === "additional_evidence_required" ||
         currentClaimState === "disputed"
       ? "claim_already_initiated"
-      : currentClaimState === "ownership_review_pending"
+      : currentClaimState === "ownership_verification_pending"
         ? "ownership_review_pending"
         : currentClaimState === "founding_growth_member" ||
-            currentClaimState === "ownership_approved" ||
             currentClaimState === "ownership_verified"
           ? "membership_already_active"
           : null;
@@ -190,10 +187,13 @@ export function normalizeFoundingClaimStage(value: unknown): string | null {
     .trim()
     .toLowerCase();
   if (!normalized) return null;
-  if (normalized === "claim_initiated") return "claim_pending";
-  if (normalized === "pending_review") return "ownership_review_pending";
-  if (normalized === "approved") return "ownership_approved";
-  if (normalized === "rejected") return "ownership_rejected";
+  if (normalized === "claim_pending") return "claim_initiated";
+  if (normalized === "pending_review") return "ownership_verification_pending";
+  if (normalized === "ownership_review_pending") return "ownership_verification_pending";
+  if (normalized === "approved") return "ownership_verified";
+  if (normalized === "ownership_approved") return "ownership_verified";
+  if (normalized === "rejected") return "ownership_verification_failed";
+  if (normalized === "ownership_rejected") return "ownership_verification_failed";
   return normalized;
 }
 
@@ -207,26 +207,23 @@ export function isFoundingClaimLockedStage(value: unknown) {
 
 export function getFoundingClaimStatusLabel(value: unknown) {
   const normalized = normalizeFoundingClaimStage(value);
-  if (normalized === "ownership_review_pending") {
-    return "Claim pending ownership review";
+  if (normalized === "ownership_verification_pending") {
+    return "Ownership verification pending";
   }
-  if (normalized === "claim_pending") {
-    return "Claim pending ownership review";
+  if (normalized === "claim_initiated") {
+    return "Claim initiated";
   }
   if (normalized === "additional_evidence_required") {
     return "Additional evidence required";
   }
   if (normalized === "disputed") {
-    return "Ownership claim disputed";
+    return "Ownership verification disputed";
   }
-  if (
-    normalized === "ownership_approved" ||
-    normalized === "ownership_verified"
-  ) {
-    return "Ownership approved";
+  if (normalized === "ownership_verified") {
+    return "Ownership verified";
   }
-  if (normalized === "ownership_rejected") {
-    return "Ownership claim rejected";
+  if (normalized === "ownership_verification_failed") {
+    return "Ownership verification failed";
   }
   if (normalized === "founding_growth_member") {
     return "Founding Growth Member";

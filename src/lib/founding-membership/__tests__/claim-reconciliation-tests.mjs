@@ -5,35 +5,35 @@ function normalizeFoundingClaimStage(value) {
     .trim()
     .toLowerCase();
   if (!normalized) return null;
-  if (normalized === "claim_initiated") return "claim_pending";
-  if (normalized === "pending_review") return "ownership_review_pending";
-  if (normalized === "approved") return "ownership_approved";
-  if (normalized === "rejected") return "ownership_rejected";
+  if (normalized === "claim_pending") return "claim_initiated";
+  if (normalized === "pending_review") return "ownership_verification_pending";
+  if (normalized === "ownership_review_pending") return "ownership_verification_pending";
+  if (normalized === "approved") return "ownership_verified";
+  if (normalized === "ownership_approved") return "ownership_verified";
+  if (normalized === "rejected") return "ownership_verification_failed";
+  if (normalized === "ownership_rejected") return "ownership_verification_failed";
   return normalized;
 }
 
 function getFoundingClaimStatusLabel(value) {
   const normalized = normalizeFoundingClaimStage(value);
-  if (
-    normalized === "ownership_review_pending" ||
-    normalized === "claim_pending"
-  ) {
-    return "Claim pending ownership review";
+  if (normalized === "ownership_verification_pending") {
+    return "Ownership verification pending";
+  }
+  if (normalized === "claim_initiated") {
+    return "Claim initiated";
   }
   if (normalized === "additional_evidence_required") {
     return "Additional evidence required";
   }
   if (normalized === "disputed") {
-    return "Ownership claim disputed";
+    return "Ownership verification disputed";
   }
-  if (
-    normalized === "ownership_approved" ||
-    normalized === "ownership_verified"
-  ) {
-    return "Ownership approved";
+  if (normalized === "ownership_verified") {
+    return "Ownership verified";
   }
-  if (normalized === "ownership_rejected") {
-    return "Ownership claim rejected";
+  if (normalized === "ownership_verification_failed") {
+    return "Ownership verification failed";
   }
   if (normalized === "founding_growth_member") {
     return "Founding Growth Member";
@@ -57,14 +57,12 @@ function getFoundingMembershipAvailability(row) {
   const unavailableReason = alreadyVerified
     ? "already_verified"
     : currentClaimState === "claim_initiated" ||
-        currentClaimState === "claim_pending" ||
         currentClaimState === "additional_evidence_required" ||
         currentClaimState === "disputed"
       ? "claim_already_initiated"
-      : currentClaimState === "ownership_review_pending"
+      : currentClaimState === "ownership_verification_pending"
         ? "ownership_review_pending"
         : currentClaimState === "founding_growth_member" ||
-            currentClaimState === "ownership_approved" ||
             currentClaimState === "ownership_verified"
           ? "membership_already_active"
           : null;
@@ -83,7 +81,7 @@ function applyWebhook(state) {
     state.membership = {
       membershipId,
       membershipStatus: "active",
-      ownershipReviewStatus: "ownership_review_pending",
+      ownershipReviewStatus: "ownership_verification_pending",
       businessId: state.businessId,
       userId: state.userId,
       managementAccessStatus: "locked_pending_review",
@@ -94,8 +92,8 @@ function applyWebhook(state) {
       membershipId,
       businessId: state.businessId,
       userId: state.userId,
-      claimStatus: "claim_pending",
-      ownershipReviewStatus: "ownership_review_pending",
+      claimStatus: "claim_initiated",
+      ownershipReviewStatus: "ownership_verification_pending",
       claimLocked: true,
       auditHistory: [],
     };
@@ -105,12 +103,12 @@ function applyWebhook(state) {
       sourceMembershipId: membershipId,
       businessId: state.businessId,
       userId: state.userId,
-      reviewStatus: "ownership_review_pending",
+      reviewStatus: "ownership_verification_pending",
       evidenceStatus: "awaiting_owner_documents",
       auditHistory: [],
     };
   }
-  state.business.claimStage = "ownership_review_pending";
+  state.business.claimStage = "verification_pending";
   state.business.claimLocked = true;
   return state;
 }
@@ -119,18 +117,18 @@ function adminAction(state, action) {
   if (action === "request_additional_evidence") {
     state.claim.claimStatus = "additional_evidence_required";
     state.review.reviewStatus = "additional_evidence_required";
-    state.business.claimStage = "additional_evidence_required";
+    state.business.claimStage = "verification_pending";
     state.claim.claimLocked = true;
   }
-  if (action === "approve") {
-    state.claim.claimStatus = "ownership_approved";
-    state.review.reviewStatus = "ownership_approved";
+  if (action === "verify") {
+    state.claim.claimStatus = "ownership_verified";
+    state.review.reviewStatus = "ownership_verified";
     state.business.claimStage = "ownership_verified";
     state.membership.managementAccessStatus = "approved";
   }
-  if (action === "reject") {
-    state.claim.claimStatus = "ownership_rejected";
-    state.review.reviewStatus = "ownership_rejected";
+  if (action === "verification_failed") {
+    state.claim.claimStatus = "ownership_verification_failed";
+    state.review.reviewStatus = "ownership_verification_failed";
     state.business.claimStage = "unclaimed";
     state.claim.claimLocked = false;
     state.membership.managementAccessStatus = "rejected";
@@ -143,10 +141,10 @@ const available = getFoundingMembershipAvailability({
   claimStage: null,
 });
 assert.equal(available.claimable, true);
-assert.equal(normalizeFoundingClaimStage("claim_initiated"), "claim_pending");
+assert.equal(normalizeFoundingClaimStage("claim_initiated"), "claim_initiated");
 assert.equal(
-  getFoundingClaimStatusLabel("claim_pending"),
-  "Claim pending ownership review",
+  getFoundingClaimStatusLabel("ownership_verification_pending"),
+  "Ownership verification pending",
 );
 assert.equal(
   getFoundingMembershipAvailability({
@@ -163,9 +161,9 @@ const base = {
 };
 const once = applyWebhook(structuredClone(base));
 assert.equal(once.membership.membershipStatus, "active");
-assert.equal(once.claim.claimStatus, "claim_pending");
-assert.equal(once.review.reviewStatus, "ownership_review_pending");
-assert.equal(once.business.claimStage, "ownership_review_pending");
+assert.equal(once.claim.claimStatus, "claim_initiated");
+assert.equal(once.review.reviewStatus, "ownership_verification_pending");
+assert.equal(once.business.claimStage, "verification_pending");
 
 const twice = applyWebhook(structuredClone(once));
 assert.equal(twice.membership.membershipId, once.membership.membershipId);
@@ -174,14 +172,14 @@ assert.equal(twice.review.sourceMembershipId, once.review.sourceMembershipId);
 
 adminAction(twice, "request_additional_evidence");
 assert.equal(twice.claim.claimLocked, true);
-assert.equal(twice.business.claimStage, "additional_evidence_required");
+assert.equal(twice.business.claimStage, "verification_pending");
 
-adminAction(twice, "approve");
+adminAction(twice, "verify");
 assert.equal(twice.business.claimStage, "ownership_verified");
 assert.equal(twice.membership.managementAccessStatus, "approved");
 
 const rejected = applyWebhook(structuredClone(base));
-adminAction(rejected, "reject");
+adminAction(rejected, "verification_failed");
 assert.equal(rejected.membership.managementAccessStatus, "rejected");
 assert.equal(rejected.claim.claimLocked, false);
 assert.equal(rejected.business.claimStage, "unclaimed");

@@ -31,11 +31,11 @@ export default async function handler(
           ? req.body.evidenceSubmission
           : null;
       const allowedActions = new Set([
-        "approve",
+        "verify",
         "request_additional_evidence",
-        "reject",
+        "verification_failed",
         "mark_disputed",
-        "reopen",
+        "reopen_verification",
         "submit_evidence",
       ]);
       if (!allowedActions.has(action) || !membershipId) {
@@ -65,16 +65,16 @@ export default async function handler(
             membership.ownershipReviewStatus ||
             "",
         ).trim() || null;
-      let resultingStatus = previousStatus || "ownership_review_pending";
-      let claimStatus = String(claim.claimStatus || "claim_pending");
+      let resultingStatus = previousStatus || "ownership_verification_pending";
+      let claimStatus = String(claim.claimStatus || "claim_initiated");
       let claimLocked = true;
-      let claimStage = "ownership_review_pending";
+      let claimStage = "verification_pending";
       let managementAccess = "locked_pending_review";
       let evidenceStatus = review.evidenceStatus || "awaiting_owner_documents";
 
-      if (action === "approve") {
-        resultingStatus = "ownership_approved";
-        claimStatus = "ownership_approved";
+      if (action === "verify") {
+        resultingStatus = "ownership_verified";
+        claimStatus = "ownership_verified";
         claimStage = "ownership_verified";
         managementAccess = "approved";
         evidenceStatus = review.evidenceStatus || "evidence_verified";
@@ -82,12 +82,12 @@ export default async function handler(
       } else if (action === "request_additional_evidence") {
         resultingStatus = "additional_evidence_required";
         claimStatus = "additional_evidence_required";
-        claimStage = "additional_evidence_required";
+        claimStage = "verification_pending";
         managementAccess = "locked_pending_review";
         evidenceStatus = "awaiting_additional_evidence";
-      } else if (action === "reject") {
-        resultingStatus = "ownership_rejected";
-        claimStatus = "ownership_rejected";
+      } else if (action === "verification_failed") {
+        resultingStatus = "ownership_verification_failed";
+        claimStatus = "ownership_verification_failed";
         claimStage = "unclaimed";
         managementAccess = "rejected";
         evidenceStatus = review.evidenceStatus || "reviewed";
@@ -95,20 +95,20 @@ export default async function handler(
       } else if (action === "mark_disputed") {
         resultingStatus = "disputed";
         claimStatus = "disputed";
-        claimStage = "disputed";
+        claimStage = "verification_pending";
         managementAccess = "locked_pending_review";
         evidenceStatus = review.evidenceStatus || "disputed";
-      } else if (action === "reopen") {
-        resultingStatus = "ownership_review_pending";
-        claimStatus = "ownership_review_pending";
-        claimStage = "ownership_review_pending";
+      } else if (action === "reopen_verification") {
+        resultingStatus = "ownership_verification_pending";
+        claimStatus = "ownership_verification_pending";
+        claimStage = "verification_pending";
         managementAccess = "locked_pending_review";
         evidenceStatus = review.evidenceStatus || "awaiting_owner_documents";
         claimLocked = true;
       } else if (action === "submit_evidence") {
-        resultingStatus = previousStatus || "ownership_review_pending";
-        claimStatus = claim.claimStatus || "claim_pending";
-        claimStage = "ownership_review_pending";
+        resultingStatus = previousStatus || "ownership_verification_pending";
+        claimStatus = claim.claimStatus || "claim_initiated";
+        claimStage = "verification_pending";
         managementAccess = "locked_pending_review";
         evidenceStatus = "evidence_submitted";
         claimLocked = true;
@@ -196,17 +196,17 @@ export default async function handler(
         {
           $set: {
             nextStep:
-              action === "approve"
-                ? "ownership approved, unlock business management"
+              action === "verify"
+                ? "ownership verified, unlock business management"
                 : action === "request_additional_evidence"
                   ? "submit additional ownership evidence"
-                  : action === "reject"
-                    ? "claim closed"
-                    : "ownership review in progress",
+                  : action === "verification_failed"
+                    ? "verification closed"
+                    : "ownership verification in progress",
             evidencePortalStatus:
-              action === "approve"
+              action === "verify"
                 ? "complete"
-                : action === "reject"
+                : action === "verification_failed"
                   ? "closed"
                   : "open",
             updatedAt: new Date(),
@@ -222,11 +222,11 @@ export default async function handler(
             claimStage,
             ownershipReviewStatus: resultingStatus,
             claimLocked,
-            claimedByUserId: action === "approve" ? membership.userId : null,
-            managedByUserId: action === "approve" ? membership.userId : null,
+            claimedByUserId: action === "verify" ? membership.userId : null,
+            managedByUserId: action === "verify" ? membership.userId : null,
             updatedAt: new Date(),
           },
-          ...(action === "approve"
+          ...(action === "verify"
             ? { $addToSet: { ownerUserIds: membership.userId } }
             : {}),
         },
@@ -239,7 +239,7 @@ export default async function handler(
         {
           $set: {
             claimedBusinessId:
-              action === "approve" ? membership.businessId : null,
+              action === "verify" ? membership.businessId : null,
             foundingMembershipId: membershipId,
             foundingOwnershipStatus: resultingStatus,
             updatedAt: new Date(),

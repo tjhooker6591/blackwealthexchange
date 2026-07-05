@@ -21,7 +21,7 @@ const dryRun = {
       set: {
         productKey: "founding_verified_business_growth_membership",
         membershipStatus: "active",
-        ownershipReviewStatus: "ownership_review_pending",
+        ownershipReviewStatus: "ownership_verification_pending",
         userId: payment.userId,
         businessId: payment.businessId,
         stripeSessionId: payment.stripeSessionId,
@@ -33,8 +33,8 @@ const dryRun = {
       key: { membershipId },
       operation: "upsert",
       set: {
-        claimStatus: "claim_pending",
-        ownershipReviewStatus: "ownership_review_pending",
+        claimStatus: "claim_initiated",
+        ownershipReviewStatus: "ownership_verification_pending",
         claimLocked: true,
         paymentId: payment._id,
       },
@@ -45,7 +45,7 @@ const dryRun = {
       key: { sourceMembershipId: membershipId },
       operation: "upsert",
       set: {
-        reviewStatus: "ownership_review_pending",
+        reviewStatus: "ownership_verification_pending",
         evidenceStatus: "awaiting_owner_documents",
         paymentId: payment._id,
       },
@@ -58,7 +58,7 @@ const dryRun = {
       set: {
         onboardingStatus: "started",
         evidencePortalStatus: "open",
-        nextStep: "submit ownership evidence for manual review",
+        nextStep: "submit ownership evidence for ownership verification",
       },
       rollback: { deleteIfCreated: true, previous: null },
     },
@@ -67,7 +67,7 @@ const dryRun = {
       key: { membershipId },
       operation: "upsert",
       set: {
-        fulfillmentStatus: "pending_review_queue",
+        fulfillmentStatus: "pending_verification_queue",
         ownershipAccessStatus: "locked_pending_review",
       },
       rollback: { deleteIfCreated: true, previous: null },
@@ -77,7 +77,7 @@ const dryRun = {
       key: { _id: payment.businessId },
       operation: "update",
       set: {
-        claimStage: "ownership_review_pending",
+        claimStage: "verification_pending",
         claimLocked: true,
         pendingClaimMembershipId: membershipId,
         pendingClaimUserId: payment.userId,
