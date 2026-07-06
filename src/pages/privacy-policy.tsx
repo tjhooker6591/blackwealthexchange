@@ -856,13 +856,9 @@ const PrivacyPolicy = () => {
                 <strong>Email:</strong> support@blackwealthexchange.com
               </div>
               <div className="mt-1">
-                <strong>Address:</strong> 123 Prosperity Lane, Atlanta, GA 30303
+                <strong>Mailing address:</strong> Available on request through
+                support.
               </div>
-
-              <FinePrint>
-                Replace the address above with your real business mailing
-                address if this is a placeholder.
-              </FinePrint>
             </div>
 
             <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">

@@ -321,11 +321,8 @@ const AdvertisingGuidelines = () => {
                   </a>
                 </p>
                 <p className="text-gray-300 mt-2">
-                  <strong className="text-white">Address:</strong> 123
-                  Prosperity Lane, Atlanta, GA 30303
-                </p>
-                <p className="text-xs text-gray-400 mt-2">
-                  (Address is a placeholder — update as needed.)
+                  <strong className="text-white">Mailing address:</strong>{" "}
+                  Available on request through support.
                 </p>
               </div>
             </Section>

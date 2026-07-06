@@ -331,7 +331,7 @@ const TermsOfService = () => {
                 <br />
                 Email: support@blackwealthexchange.com
                 <br />
-                Address: 123 Prosperity Lane, Atlanta, GA 30303
+                Mailing address: Available on request through support.
               </div>
             </Section>
           </div>
