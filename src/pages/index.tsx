@@ -260,7 +260,7 @@ function ConsultingInterestModal({
 const EconomicImpactSimulator = () => {
   const annualEstimate = 2_100_000_000_000;
   const historicalBaseline = 300_000_000_000;
-  const dailySpend = 4_200_000_000;
+  const dailySpend = annualEstimate / 365;
   const recapturePct = 5;
   const recaptureValue = annualEstimate * (recapturePct / 100);
   const durationMs = 180_000;
@@ -292,7 +292,8 @@ const EconomicImpactSimulator = () => {
       maximumFractionDigits: 0,
     });
 
-  const currentValue = historicalBaseline + (annualEstimate - historicalBaseline) * progress;
+  const currentValue =
+    historicalBaseline + (annualEstimate - historicalBaseline) * progress;
 
   return (
     <section className="relative overflow-hidden py-1 sm:py-1.5">
@@ -306,11 +307,14 @@ const EconomicImpactSimulator = () => {
           </div>
 
           <h2 className="mt-2 text-xl font-extrabold tracking-[0.01em] text-white sm:text-[1.8rem] lg:text-[2rem]">
-            Black buying power is large. The opportunity is keeping more of it circulating with us.
+            Black buying power is large. The opportunity is keeping more of it
+            circulating with us.
           </h2>
 
           <p className="mt-2 text-sm text-white/82 sm:text-[15px]">
-            BWE is built to help people discover Black-owned businesses faster, support them more consistently, and make it easier for more dollars to stay in the community.
+            BWE is built to help people discover Black-owned businesses faster,
+            support them more consistently, and make it easier for more dollars
+            to stay in the community.
           </p>
 
           <div
@@ -325,15 +329,21 @@ const EconomicImpactSimulator = () => {
 
           <div className="mt-3 grid gap-2 text-[11px] text-white/80 sm:grid-cols-3 sm:text-[12px]">
             <div className="rounded-xl border border-white/10 bg-white/5 px-3 py-2">
-              <div className="font-semibold text-white">Historical baseline</div>
+              <div className="font-semibold text-white">
+                Historical baseline
+              </div>
               <div>{formatCurrency(historicalBaseline)} in 2010</div>
             </div>
             <div className="rounded-xl border border-white/10 bg-white/5 px-3 py-2">
-              <div className="font-semibold text-white">Projected annual scale</div>
+              <div className="font-semibold text-white">
+                Projected annual scale
+              </div>
               <div>{formatCurrency(annualEstimate)} in 2026</div>
             </div>
             <div className="rounded-xl border border-white/10 bg-white/5 px-3 py-2">
-              <div className="font-semibold text-white">Illustrative daily spend</div>
+              <div className="font-semibold text-white">
+                Illustrative daily spend
+              </div>
               <div>{formatCurrency(dailySpend)} per day</div>
             </div>
           </div>
@@ -345,13 +355,17 @@ const EconomicImpactSimulator = () => {
               Recapture example
             </p>
             <p className="mt-2 text-sm leading-relaxed text-white/82">
-              If just <span className="font-extrabold text-[#D4AF37]">5%</span> of projected annual buying power is intentionally redirected through Black-owned businesses and tools that strengthen circulation, that represents:
+              If just <span className="font-extrabold text-[#D4AF37]">5%</span>{" "}
+              of projected annual buying power is intentionally redirected
+              through Black-owned businesses and tools that strengthen
+              circulation, that represents:
             </p>
             <p className="mt-3 break-words text-[1.35rem] font-black leading-tight tracking-tight text-[#D4AF37]">
               {formatCurrency(recaptureValue)}
             </p>
             <p className="mt-1 text-[11px] text-white/70">
-              This is a simple recapture example, not a claim that BWE controls the full market.
+              This is a simple recapture example, not a claim that BWE controls
+              the full market.
             </p>
           </div>
 
@@ -361,7 +375,8 @@ const EconomicImpactSimulator = () => {
               className="group inline-flex items-center justify-center gap-2 rounded-xl border border-[#D4AF37]/50 bg-[#D4AF37]/14 px-3 py-2 shadow-sm transition hover:border-[#D4AF37]/80"
             >
               <span className="text-xs leading-tight text-white/85 lg:text-sm">
-                See the full impact story <span className="text-[#D4AF37]">→</span>
+                See the full impact story{" "}
+                <span className="text-[#D4AF37]">→</span>
               </span>
             </Link>
 
@@ -883,7 +898,9 @@ export default function Home() {
                 </h1>
 
                 <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-white/84 sm:text-base sm:leading-7">
-                  Join the $49/month Founding Membership to begin ownership review, improve your BWE profile, and receive monthly performance reporting.
+                  Join the $49/month Founding Membership to begin ownership
+                  review, improve your BWE profile, and receive monthly
+                  performance reporting.
                 </p>
               </div>
 
@@ -1273,36 +1290,54 @@ export default function Home() {
                 How BWE works
               </div>
               <div className="mt-1 text-sm text-white/75 sm:text-base">
-                A simpler path to finding, supporting, and growing Black-owned businesses.
+                A simpler path to finding, supporting, and growing Black-owned
+                businesses.
               </div>
             </div>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               <article className="rounded-xl border border-white/10 bg-black/30 p-4 text-left">
-                <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#D4AF37]">1</div>
-                <h3 className="mt-1 text-sm font-extrabold text-white">Search</h3>
+                <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#D4AF37]">
+                  1
+                </div>
+                <h3 className="mt-1 text-sm font-extrabold text-white">
+                  Search
+                </h3>
                 <p className="mt-1 text-xs text-white/70">
-                  Find Black-owned businesses, organizations, products, and opportunities.
+                  Find Black-owned businesses, organizations, products, and
+                  opportunities.
                 </p>
               </article>
               <article className="rounded-xl border border-white/10 bg-black/30 p-4 text-left">
-                <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#D4AF37]">2</div>
-                <h3 className="mt-1 text-sm font-extrabold text-white">Support</h3>
+                <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#D4AF37]">
+                  2
+                </div>
+                <h3 className="mt-1 text-sm font-extrabold text-white">
+                  Support
+                </h3>
                 <p className="mt-1 text-xs text-white/70">
-                  Buy, book, hire, share, and direct more spending toward businesses you want to see grow.
+                  Buy, book, hire, share, and direct more spending toward
+                  businesses you want to see grow.
                 </p>
               </article>
               <article className="rounded-xl border border-white/10 bg-black/30 p-4 text-left">
-                <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#D4AF37]">3</div>
+                <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#D4AF37]">
+                  3
+                </div>
                 <h3 className="mt-1 text-sm font-extrabold text-white">List</h3>
                 <p className="mt-1 text-xs text-white/70">
                   Create a listing and make your business easier to discover.
                 </p>
               </article>
               <article className="rounded-xl border border-white/10 bg-black/30 p-4 text-left">
-                <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#D4AF37]">4</div>
-                <h3 className="mt-1 text-sm font-extrabold text-white">Build Wealth</h3>
+                <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#D4AF37]">
+                  4
+                </div>
+                <h3 className="mt-1 text-sm font-extrabold text-white">
+                  Build Wealth
+                </h3>
                 <p className="mt-1 text-xs text-white/70">
-                  Use BWE tools that help dollars circulate longer and compound impact.
+                  Use BWE tools that help dollars circulate longer and compound
+                  impact.
                 </p>
               </article>
             </div>
@@ -1315,10 +1350,13 @@ export default function Home() {
                   Claim your existing listing
                 </p>
                 <h3 className="mt-1 text-xl font-extrabold tracking-tight text-white sm:text-2xl">
-                  Find your public BWE business, start the claim process, and move into monthly growth support.
+                  Find your public BWE business, start the claim process, and
+                  move into monthly growth support.
                 </h3>
                 <p className="mt-2 text-sm text-white/75">
-                  This pilot path is for an existing public business listing. Payment starts membership and claim processing, but ownership verification is still reviewed separately.
+                  This pilot path is for an existing public business listing.
+                  Payment starts membership and claim processing, but ownership
+                  verification is still reviewed separately.
                 </p>
               </div>
               <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-left">
@@ -1329,7 +1367,10 @@ export default function Home() {
                   <li>• Find existing business in the directory</li>
                   <li>• Claim the business and start ownership review</li>
                   <li>• Activate the $49/month founding pilot membership</li>
-                  <li>• Move into profile review, baseline setup, and monthly reporting</li>
+                  <li>
+                    • Move into profile review, baseline setup, and monthly
+                    reporting
+                  </li>
                 </ul>
                 <div className="mt-4 flex flex-wrap gap-2">
                   <Link
@@ -1356,7 +1397,8 @@ export default function Home() {
                   Black Card Membership
                 </div>
                 <div className="mt-0.5 text-xs text-white/85 sm:text-sm">
-                  Explore Black Card benefits, member access, and premium ecosystem advantages in a clearly separate path from Join BWE.
+                  Explore Black Card benefits, member access, and premium
+                  ecosystem advantages in a clearly separate path from Join BWE.
                 </div>
               </div>
               <Link
@@ -1379,12 +1421,26 @@ export default function Home() {
           <section className="mt-4 rounded-xl border border-[#D4AF37]/30 bg-[#D4AF37]/10 p-4">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div className="text-left">
-                <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">0.5% Challenge</p>
-                <p className="text-sm text-white">Search Black first. Buy, review, refer, repeat.</p>
+                <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
+                  0.5% Challenge
+                </p>
+                <p className="text-sm text-white">
+                  Search Black first. Buy, review, refer, repeat.
+                </p>
               </div>
               <div className="flex flex-col gap-2 sm:flex-row">
-                <Link href="/challenge" className="rounded-lg bg-[#D4AF37] px-3 py-2 text-center text-xs font-extrabold text-black">Join the Challenge</Link>
-                <Link href="/business-directory" className="rounded-lg border border-[#D4AF37]/50 px-3 py-2 text-center text-xs font-bold text-[#F1D57A]">Search Black-Owned Businesses</Link>
+                <Link
+                  href="/challenge"
+                  className="rounded-lg bg-[#D4AF37] px-3 py-2 text-center text-xs font-extrabold text-black"
+                >
+                  Join the Challenge
+                </Link>
+                <Link
+                  href="/business-directory"
+                  className="rounded-lg border border-[#D4AF37]/50 px-3 py-2 text-center text-xs font-bold text-[#F1D57A]"
+                >
+                  Search Black-Owned Businesses
+                </Link>
               </div>
             </div>
           </section>
@@ -1444,13 +1500,17 @@ export default function Home() {
               Supporting ecosystem paths
             </div>
             <p className="mb-3 text-xs text-white/65">
-              Once the core action is clear, you can go deeper into the rest of the platform.
+              Once the core action is clear, you can go deeper into the rest of
+              the platform.
             </p>
             <div className="grid gap-3 md:grid-cols-3">
               <article className="rounded-xl border border-white/10 bg-black/30 p-4">
-                <h3 className="text-sm font-extrabold text-white">Marketplace</h3>
+                <h3 className="text-sm font-extrabold text-white">
+                  Marketplace
+                </h3>
                 <p className="mt-1 text-xs text-white/70">
-                  Shop products from Black-owned brands and support commerce directly.
+                  Shop products from Black-owned brands and support commerce
+                  directly.
                 </p>
                 <Link
                   href="/marketplace"
@@ -1460,9 +1520,12 @@ export default function Home() {
                 </Link>
               </article>
               <article className="rounded-xl border border-white/10 bg-black/30 p-4">
-                <h3 className="text-sm font-extrabold text-white">Student Opportunities</h3>
+                <h3 className="text-sm font-extrabold text-white">
+                  Student Opportunities
+                </h3>
                 <p className="mt-1 text-xs text-white/70">
-                  Explore internships, scholarships, grants, and mentorship pathways.
+                  Explore internships, scholarships, grants, and mentorship
+                  pathways.
                 </p>
                 <Link
                   href="/black-student-opportunities"
@@ -1472,9 +1535,12 @@ export default function Home() {
                 </Link>
               </article>
               <article className="rounded-xl border border-white/10 bg-black/30 p-4">
-                <h3 className="text-sm font-extrabold text-white">Advertising</h3>
+                <h3 className="text-sm font-extrabold text-white">
+                  Advertising
+                </h3>
                 <p className="mt-1 text-xs text-white/70">
-                  Premium placements for brands that want more visibility inside the BWE ecosystem.
+                  Premium placements for brands that want more visibility inside
+                  the BWE ecosystem.
                 </p>
                 <Link
                   href="/advertise-with-us"
@@ -1590,7 +1656,9 @@ export default function Home() {
             </article>
 
             <article className="rounded-xl border border-white/10 bg-black/30 p-4">
-              <h4 className="text-sm font-extrabold text-white">Recruiting & Consulting</h4>
+              <h4 className="text-sm font-extrabold text-white">
+                Recruiting & Consulting
+              </h4>
               <p className="mt-1 text-xs text-white/70">
                 Connect employers with talent pathways and consulting support.
               </p>
@@ -1603,9 +1671,12 @@ export default function Home() {
             </article>
 
             <article className="rounded-xl border border-white/10 bg-black/30 p-4">
-              <h4 className="text-sm font-extrabold text-white">Join Creator or Consulting Waitlist</h4>
+              <h4 className="text-sm font-extrabold text-white">
+                Join Creator or Consulting Waitlist
+              </h4>
               <p className="mt-1 text-xs text-white/70">
-                Stay close to new launches without cluttering the top of the homepage.
+                Stay close to new launches without cluttering the top of the
+                homepage.
               </p>
               <button
                 type="button"
