@@ -262,6 +262,7 @@ const EconomicImpactSimulator = () => {
   const historicalBaseline = 300_000_000_000;
   const dailySpend = annualEstimate / 365;
   const recapturePct = 5;
+  const dailySpendRoundedPublic = "Approximately $5.75 billion per day";
   const recaptureValue = annualEstimate * (recapturePct / 100);
   const durationMs = 180_000;
 
@@ -344,7 +345,9 @@ const EconomicImpactSimulator = () => {
               <div className="font-semibold text-white">
                 Illustrative daily spend
               </div>
-              <div>{formatCurrency(dailySpend)} per day</div>
+              <div>
+                {formatCurrency(dailySpend)} per day ({dailySpendRoundedPublic})
+              </div>
             </div>
           </div>
         </div>
