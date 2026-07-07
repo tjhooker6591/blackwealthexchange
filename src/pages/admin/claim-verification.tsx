@@ -61,69 +61,44 @@ export default function ClaimVerificationPage() {
     const fulfillment = Array.isArray(data?.fulfillment) ? data.fulfillment : [];
     const businesses = Array.isArray(data?.businesses) ? data.businesses : [];
 
-    const claimByMembershipId = new Map(
-      claims
+    const reviewByMembershipId = new Map(
+      reviews
+        .filter((item) => item?.sourceMembershipId)
+        .map((item) => [String(item.sourceMembershipId), item]),
+    );
+    const membershipById = new Map(
+      memberships
         .filter((item) => item?.membershipId)
         .map((item) => [String(item.membershipId), item]),
     );
+    const onboardingByMembershipId = new Map(
+      onboarding
+        .filter((item) => item?.membershipId)
+        .map((item) => [String(item.membershipId), item]),
+    );
+    const fulfillmentByMembershipId = new Map(
+      fulfillment
+        .filter((item) => item?.membershipId)
+        .map((item) => [String(item.membershipId), item]),
+    );
+    const businessByMembershipId = new Map(
+      businesses
+        .filter((item) => item?.foundingMembershipId)
+        .map((item) => [String(item.foundingMembershipId), item]),
+    );
 
-    const pendingMembershipIds = new Set<string>([
-      ...claims
-        .map((item) => String(item?.membershipId || ""))
-        .filter(Boolean),
-      ...memberships
-        .filter((item) => {
-          const status = String(item?.ownershipReviewStatus || "").trim();
-          return (
-            item?.membershipStatus === "active" &&
-            [
-              "ownership_verification_pending",
-              "additional_evidence_required",
-              "disputed",
-            ].includes(status)
-          );
-        })
-        .map((item) => String(item.membershipId || ""))
-        .filter(Boolean),
-      ...reviews
-        .map((item) => String(item?.sourceMembershipId || ""))
-        .filter(Boolean),
-      ...businesses
-        .map((item) => String(item?.foundingMembershipId || ""))
-        .filter(Boolean),
-    ]);
-
-    return Array.from(pendingMembershipIds).map((membershipId) => {
-      const membership = memberships.find((item) => item.membershipId === membershipId);
-      const review = reviews.find((item) => item.sourceMembershipId === membershipId);
-      const business = businesses.find(
-        (item) => String(item.foundingMembershipId || "") === membershipId,
-      );
-      const claim =
-        claimByMembershipId.get(membershipId) || {
-          _id: `synthetic-claim:${membershipId}`,
-          membershipId,
-          businessId: membership?.businessId || business?._id || review?.businessId || null,
-          userId: membership?.userId || review?.userId || null,
-          email: membership?.email || review?.email || business?.claimedByEmail || null,
-          claimStatus: membership?.claimStatus || "claim_initiated",
-          ownershipReviewStatus:
-            review?.reviewStatus || membership?.ownershipReviewStatus || business?.claimStage || null,
-          claimLocked: true,
-          businessName:
-            business?.business_name || membership?.membershipName || "Claim Verification",
-          businessSlug: business?.alias || business?.slug || null,
-          createdAt: review?.createdAt || membership?.createdAt || membership?.updatedAt || null,
-          updatedAt: review?.updatedAt || membership?.updatedAt || membership?.createdAt || null,
-          source: "page_fallback_membership_join",
-        };
+    return claims.map((claim) => {
+      const membershipId = String(claim?.membershipId || "");
+      const membership = membershipById.get(membershipId);
+      const review = reviewByMembershipId.get(membershipId);
+      const business = businessByMembershipId.get(membershipId);
 
       return {
         claim,
         review,
         membership,
-        onboarding: onboarding.find((item) => item.membershipId === membershipId),
-        fulfillment: fulfillment.find((item) => item.membershipId === membershipId),
+        onboarding: onboardingByMembershipId.get(membershipId),
+        fulfillment: fulfillmentByMembershipId.get(membershipId),
         business,
       };
     });
