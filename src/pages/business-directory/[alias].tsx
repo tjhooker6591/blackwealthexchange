@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import type { GetServerSideProps } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
@@ -19,6 +20,11 @@ type Business = {
   isVerified?: boolean;
   status?: string;
   claimStage?: string;
+  claimLocked?: boolean;
+  claimedByUserId?: string;
+  claimedByEmail?: string;
+  foundingMembershipId?: string;
+  ownershipReviewStatus?: string;
   amountPaid?: number;
   completenessScore?: number;
   isComplete?: boolean;
@@ -66,12 +72,17 @@ function trackFlowEvent(payload: Record<string, unknown>) {
   }).catch(() => {});
 }
 
-export default function BusinessDetail() {
+type Props = {
+  initialAlias?: string | null;
+};
+
+export default function BusinessDetail({ initialAlias }: Props) {
   const router = useRouter();
   const alias = useMemo(() => {
     const raw = router.query.alias;
-    return Array.isArray(raw) ? raw[0] : raw;
-  }, [router.query.alias]);
+    const routeAlias = Array.isArray(raw) ? raw[0] : raw;
+    return routeAlias || initialAlias || undefined;
+  }, [initialAlias, router.query.alias]);
 
   const [business, setBusiness] = useState<Business | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -156,6 +167,8 @@ export default function BusinessDetail() {
 
   const status = safeStr(business?.status).toLowerCase();
   const claimStage = safeStr(business?.claimStage).toLowerCase();
+  const publicListingStatus = safeStr((business as any)?.publicListingStatus).toLowerCase();
+  const claimLocked = business?.claimLocked === true;
   const trust = {
     verified:
       business?.verified === true ||
@@ -173,6 +186,8 @@ export default function BusinessDetail() {
   const canClaim =
     Boolean(canonicalBusinessId) &&
     !trust.verified &&
+    publicListingStatus !== "ownership_verified" &&
+    !claimLocked &&
     ![
       "claim_initiated",
       "ownership_verification_pending",
@@ -360,8 +375,8 @@ export default function BusinessDetail() {
                       </Link>
                     ) : (
                       <span className="inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2 text-sm font-bold text-white/55">
-                        {trust.verified
-                          ? "Already Verified"
+                        {trust.verified || publicListingStatus === "ownership_verified"
+                          ? "Ownership Verified"
                           : claimStage === "claim_initiated"
                             ? "Ownership verification pending"
                             : claimStage === "ownership_verification_pending"
@@ -426,8 +441,9 @@ export default function BusinessDetail() {
                         Claim and membership path
                       </div>
                       <div className="mt-1">
-                        Payment starts membership and opens ownership verification,
-                        but does not automatically verify ownership.
+                        Payment starts membership and opens ownership
+                        verification, unless ownership has already been
+                        verified through the canonical review flow.
                       </div>
                       <div className="mt-2 flex flex-wrap gap-2">
                         <Link
@@ -498,3 +514,19 @@ export default function BusinessDetail() {
     </div>
   );
 }
+
+export const getServerSideProps: GetServerSideProps<Props> = async ({
+  params,
+}) => {
+  const alias = Array.isArray(params?.alias)
+    ? params.alias[0]
+    : typeof params?.alias === "string"
+      ? params.alias
+      : null;
+
+  return {
+    props: {
+      initialAlias: alias,
+    },
+  };
+};

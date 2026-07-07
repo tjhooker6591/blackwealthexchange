@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import type { GetServerSideProps } from "next";
 import Head from "next/head";
 import Link from "next/link";
 
@@ -10,17 +11,26 @@ type MembershipStatusPayload = {
     membershipStatus: string;
     ownershipReviewStatus: string | null;
     business: {
+      id?: string | null;
       name: string | null;
       slug: string | null;
+      alias?: string | null;
       city: string | null;
       state: string | null;
     } | null;
     claimStatus: string | null;
     claimStatusLabel?: string | null;
     reviewStatus: string | null;
+    paymentStatus?: string | null;
+    paymentAmount?: string | null;
+    amountCents?: number;
+    currency?: string | null;
     evidenceStatus: string | null;
     evidencePortalStatus?: string | null;
     onboardingStatus: string | null;
+    nextStep?: string | null;
+    managementAccessLocked?: boolean;
+    managementAccessStatus?: string | null;
     fulfillmentStatus: string | null;
     profileReviewStatus: string | null;
     baselineStatus: string | null;
@@ -68,6 +78,13 @@ export default function FoundingMembershipStatusPage() {
   }, []);
 
   const membership = data?.membership || null;
+  const billing = membership?.billing || {
+    hasManageableSubscription: false,
+    nextBillingDate: null,
+    cancelAtPeriodEnd: false,
+    subscriptionStatus: null,
+    renewalStatus: null,
+  };
 
   return (
     <>
@@ -88,9 +105,9 @@ export default function FoundingMembershipStatusPage() {
               Founding Membership Status
             </h1>
             <p className="mt-3 max-w-3xl text-white/75">
-              Track membership status, claim progress, ownership verification, profile
-              fulfillment, baseline setup, monthly reporting, and billing access
-              in one place.
+              Track membership status, claim progress, ownership verification,
+              profile fulfillment, baseline setup, monthly reporting, and
+              billing access in one place.
             </p>
           </section>
 
@@ -154,6 +171,9 @@ export default function FoundingMembershipStatusPage() {
                       .filter(Boolean)
                       .join(", ") || "Location pending"}
                   </div>
+                  <div className="mt-1 text-xs text-white/50 break-all">
+                    {membership.business?.id || "Business ID pending"}
+                  </div>
                   {membership.business?.slug ? (
                     <Link
                       href={`/business/${encodeURIComponent(membership.business.slug)}`}
@@ -187,6 +207,15 @@ export default function FoundingMembershipStatusPage() {
                       {membership.evidencePortalStatus
                         ? ` · Portal: ${labelize(membership.evidencePortalStatus)}`
                         : ""}
+                    </div>
+                  </div>
+                  <div className="rounded-2xl border border-white/10 bg-black/25 p-4">
+                    <div className="text-sm text-white/50">Payment</div>
+                    <div className="mt-1 font-semibold text-white">
+                      {membership.paymentAmount || "$49.00 USD"}
+                    </div>
+                    <div className="mt-1 text-xs text-white/55">
+                      Status: {labelize(membership.paymentStatus)}
                     </div>
                   </div>
                   <div className="rounded-2xl border border-white/10 bg-black/25 p-4">
@@ -250,6 +279,38 @@ export default function FoundingMembershipStatusPage() {
 
                 <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
                   <h2 className="text-xl font-bold text-white">
+                    Next step and access
+                  </h2>
+                  <div className="mt-4 space-y-3 text-sm text-white/75">
+                    <div>
+                      Next step:{" "}
+                      {membership.nextStep || "submit ownership evidence"}
+                    </div>
+                    <div>
+                      Management access:{" "}
+                      {membership.managementAccessLocked
+                        ? "Locked until verification"
+                        : "Unlocked"}
+                    </div>
+                    <div>
+                      Access status:{" "}
+                      {labelize(membership.managementAccessStatus)}
+                    </div>
+                  </div>
+                  {membership.evidencePortalStatus !== "complete" ? (
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      <Link
+                        href="/founding-membership/evidence"
+                        className="rounded-xl bg-yellow-500 px-4 py-2 font-bold text-black"
+                      >
+                        Submit ownership evidence
+                      </Link>
+                    </div>
+                  ) : null}
+                </div>
+
+                <div className="rounded-3xl border border-white/10 bg-white/5 p-6">
+                  <h2 className="text-xl font-bold text-white">
                     Support and billing
                   </h2>
                   <div className="mt-4 space-y-3 text-sm text-white/75">
@@ -257,27 +318,22 @@ export default function FoundingMembershipStatusPage() {
                       Support access: {labelize(membership.supportStatus)}
                     </div>
                     <div>
-                        Public listing status: {labelize((membership as any).publicListingStatus)}
+                      Public listing status:{" "}
+                      {labelize((membership as any).publicListingStatus)}
                     </div>
                     <div>
-                      Billing status:{" "}
-                      {labelize(membership.billing.subscriptionStatus)}
+                      Billing status: {labelize(billing.subscriptionStatus)}
                     </div>
-                    <div>
-                      Renewal status:{" "}
-                      {labelize(membership.billing.renewalStatus)}
-                    </div>
+                    <div>Renewal status: {labelize(billing.renewalStatus)}</div>
                     <div>
                       Next billing date:{" "}
-                      {membership.billing.nextBillingDate
-                        ? new Date(
-                            membership.billing.nextBillingDate,
-                          ).toLocaleDateString()
+                      {billing.nextBillingDate
+                        ? new Date(billing.nextBillingDate).toLocaleDateString()
                         : "Not available yet"}
                     </div>
                     <div>
                       Cancellation status:{" "}
-                      {membership.billing.cancelAtPeriodEnd
+                      {billing.cancelAtPeriodEnd
                         ? "Cancellation scheduled at period end"
                         : "Active"}
                     </div>
@@ -298,8 +354,8 @@ export default function FoundingMembershipStatusPage() {
                   </div>
                   <p className="mt-4 text-xs text-white/50">
                     Billing changes and cancellation continue through the
-                    existing canonical process. Payment and ownership verification
-                    remain separate states.
+                    existing canonical process. Payment and ownership
+                    verification remain separate states.
                   </p>
                 </div>
               </section>
@@ -310,3 +366,25 @@ export default function FoundingMembershipStatusPage() {
     </>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  try {
+    const token = context.req.cookies?.session_token;
+    if (!token) {
+      return {
+        redirect: {
+          destination: "/login?redirect=%2Ffounding-membership%2Fstatus",
+          permanent: false,
+        },
+      };
+    }
+
+    return { props: {} };
+  } catch (error) {
+    console.error("[route-diagnostic][founding-membership/status][gssp]", {
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : null,
+    });
+    throw error;
+  }
+};

@@ -3,9 +3,13 @@ import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
 import { requireAdminFromRequest } from "@/lib/adminAuth";
 import {
+  buildFoundingTransitionState,
   buildMongoIdOrStringQuery,
+  findFoundingSourcePayment,
   FOUNDING_MEMBERSHIP_PRODUCT_KEY,
   formatUsdFromCents,
+  getFoundingClaimVerificationCounts,
+  getFoundingClaimVerificationRecords,
   getPendingFoundingClaimVerifications,
   normalizeFoundingClaimStage,
   normalizeFoundingPaymentStatus,
@@ -72,54 +76,25 @@ export default async function handler(
             membership.ownershipReviewStatus ||
             "",
         ).trim() || null;
-      let resultingStatus = previousStatus || "ownership_verification_pending";
-      let claimStatus = String(claim.claimStatus || "claim_initiated");
-      let claimLocked = true;
-      let claimStage = "ownership_verification_pending";
-      let managementAccess = "locked_pending_verification";
-      let evidenceStatus = review.evidenceStatus || "awaiting_owner_documents";
-
-      if (action === "verify") {
-        resultingStatus = "ownership_verified";
-        claimStatus = "ownership_verified";
-        claimStage = "ownership_verified";
-        managementAccess = "approved";
-        evidenceStatus = review.evidenceStatus || "evidence_verified";
-        claimLocked = true;
-      } else if (action === "request_additional_evidence") {
-        resultingStatus = "additional_evidence_required";
-        claimStatus = "additional_evidence_required";
-        claimStage = "ownership_verification_pending";
-        managementAccess = "locked_pending_verification";
-        evidenceStatus = "awaiting_additional_evidence";
-      } else if (action === "verification_failed") {
-        resultingStatus = "ownership_verification_failed";
-        claimStatus = "ownership_verification_failed";
-        claimStage = "unclaimed";
-        managementAccess = "rejected";
-        evidenceStatus = review.evidenceStatus || "reviewed";
-        claimLocked = false;
-      } else if (action === "mark_disputed") {
-        resultingStatus = "disputed";
-        claimStatus = "disputed";
-        claimStage = "ownership_verification_pending";
-        managementAccess = "locked_pending_verification";
-        evidenceStatus = review.evidenceStatus || "disputed";
-      } else if (action === "reopen_verification") {
-        resultingStatus = "ownership_verification_pending";
-        claimStatus = "claim_initiated";
-        claimStage = "ownership_verification_pending";
-        managementAccess = "locked_pending_verification";
-        evidenceStatus = review.evidenceStatus || "awaiting_owner_documents";
-        claimLocked = true;
-      } else if (action === "submit_evidence") {
-        resultingStatus = previousStatus || "ownership_verification_pending";
-        claimStatus = claim.claimStatus || "claim_initiated";
-        claimStage = "ownership_verification_pending";
-        managementAccess = "locked_pending_verification";
-        evidenceStatus = "evidence_submitted";
-        claimLocked = true;
-      }
+      const sourcePayment = await findFoundingSourcePayment(db, membership);
+      const transition = buildFoundingTransitionState({
+        action: action as any,
+        previousStatus,
+        evidenceStatus: review.evidenceStatus,
+        paymentAmountCents:
+          sourcePayment?.amountCents ||
+          sourcePayment?.grossAmountCents ||
+          membership.paymentAmountCents ||
+          membership.amountCents ||
+          4900,
+        paymentCurrency:
+          sourcePayment?.currency || membership.paymentCurrency || membership.currency || "usd",
+      });
+      const resultingStatus = transition.resultingStatus;
+      const claimStatus = transition.claimStatus;
+      const claimLocked = transition.claimLocked;
+      const claimStage = transition.claimStage;
+      const evidenceStatus = transition.evidenceStatus;
 
       const auditEntry = {
         action,
@@ -181,8 +156,13 @@ export default async function handler(
         { membershipId },
         {
           $set: {
+            membershipStatus: "active",
             ownershipReviewStatus: resultingStatus,
-            managementAccessStatus: managementAccess,
+            managementAccessStatus: transition.managementAccessStatus,
+            paymentStatus: transition.paymentStatus,
+            paymentAmountCents: transition.paymentAmountCents,
+            paymentDisplayAmount: transition.paymentDisplayAmount.replace(" USD", ""),
+            paymentCurrency: transition.paymentCurrency,
             updatedAt: new Date(),
           },
         },
@@ -192,7 +172,8 @@ export default async function handler(
         { membershipId },
         {
           $set: {
-            ownershipAccessStatus: managementAccess,
+            ownershipAccessStatus: transition.ownershipAccessStatus,
+            fulfillmentStatus: transition.fulfillmentStatus,
             updatedAt: new Date(),
           },
         },
@@ -202,20 +183,9 @@ export default async function handler(
         { membershipId },
         {
           $set: {
-            nextStep:
-              action === "verify"
-                ? "ownership verified, unlock business management"
-                : action === "request_additional_evidence"
-                  ? "submit additional ownership evidence"
-                  : action === "verification_failed"
-                    ? "verification closed"
-                    : "ownership verification in progress",
-            evidencePortalStatus:
-              action === "verify"
-                ? "complete"
-                : action === "verification_failed"
-                  ? "closed"
-                  : "open",
+            onboardingStatus: transition.onboardingStatus,
+            nextStep: transition.nextStep,
+            evidencePortalStatus: transition.evidencePortalStatus,
             updatedAt: new Date(),
           },
         },
@@ -230,6 +200,7 @@ export default async function handler(
           $set: {
             claimStage,
             ownershipReviewStatus: resultingStatus,
+            publicListingStatus: transition.publicListingStatus,
             claimLocked,
             claimedByUserId: action === "verify" ? membership.userId : null,
             managedByUserId: action === "verify" ? membership.userId : null,
@@ -335,12 +306,18 @@ export default async function handler(
         null,
     }));
 
-    const normalizedClaims = await getPendingFoundingClaimVerifications(db);
+    const [normalizedClaims, normalizedRecords, claimVerificationCounts] = await Promise.all([
+      getPendingFoundingClaimVerifications(db),
+      getFoundingClaimVerificationRecords(db),
+      getFoundingClaimVerificationCounts(db),
+    ]);
 
     return res.status(200).json({
       ok: true,
       memberships: normalizedMemberships,
       claims: normalizedClaims,
+      records: normalizedRecords,
+      claimVerificationCounts,
       reviews,
       fulfillment,
       onboarding,

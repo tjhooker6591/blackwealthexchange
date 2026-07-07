@@ -72,7 +72,7 @@ function canPubliclyClaim(args) {
   );
 }
 
-const objectIdLike = "680c1e52770af2064fe4c7ad";
+const objectIdLike = "507f1f77bcf86cd799439011";
 assert.equal(
   findBusinessByStoredId([{ _id: objectIdLike }], objectIdLike)?._id,
   objectIdLike,
@@ -128,9 +128,9 @@ assert.equal(
 
 const claim = {
   membershipId:
-    "founding_verified_business_growth_membership:6a45de2d3278d888ed5d0730",
-  businessId: objectIdLike,
-  email: "tjameshooker@gmail.com",
+    "founding_verified_business_growth_membership:biz-001",
+  businessId: "biz-001",
+  email: "owner@example.com",
   claimStatus: "claim_initiated",
 };
 const membership = {
@@ -142,21 +142,21 @@ const membership = {
 };
 const business = {
   foundingMembershipId: claim.membershipId,
-  business_name: "Pamfa United Citizens",
-  alias: "pamfa-united-citizens",
+  business_name: "Example Business One",
+  alias: "example-business-one",
 };
 assert.equal(normalizeFoundingPaymentStatus(membership), "paid");
 assert.equal(business.foundingMembershipId, claim.membershipId);
-assert.equal(claim.email, "tjameshooker@gmail.com");
+assert.equal(claim.email, "owner@example.com");
 
 const syntheticMembership = {
   membershipId: claim.membershipId,
   membershipStatus: "active",
   ownershipReviewStatus: "ownership_verification_pending",
   claimStatus: null,
-  email: "tjameshooker@gmail.com",
+  email: "owner@example.com",
   userId: objectIdLike,
-  businessId: "6a45de2d3278d888ed5d0730",
+  businessId: "biz-001",
 };
 const syntheticReview = {
   sourceMembershipId: claim.membershipId,

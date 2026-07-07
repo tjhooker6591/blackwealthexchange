@@ -4,8 +4,12 @@ import jwt from "jsonwebtoken";
 import { getJwtSecret, getMongoDbName } from "@/lib/env";
 import clientPromise from "@/lib/mongodb";
 import {
+  buildMongoIdOrStringQuery,
+  findFoundingSourcePayment,
+  formatUsdFromCents,
   getFoundingClaimStatusLabel,
   normalizeFoundingClaimStage,
+  normalizeFoundingPaymentStatus,
 } from "@/lib/founding-membership";
 
 export default async function handler(
@@ -49,6 +53,11 @@ export default async function handler(
       return res.status(200).json({ ok: true, membership: null });
     }
 
+    const membershipBusinessQuery = buildMongoIdOrStringQuery(
+      "_id",
+      membership.businessId,
+    );
+
     const [
       business,
       claim,
@@ -58,21 +67,19 @@ export default async function handler(
       baseline,
       billing,
     ] = await Promise.all([
-      membership.businessId
-        ? db
-            .collection("businesses")
-            .findOne(
-              { _id: membership.businessId as any },
-              {
-                projection: {
-                  business_name: 1,
-                  alias: 1,
-                  slug: 1,
-                  city: 1,
-                  state: 1,
-                },
-              },
-            )
+      membershipBusinessQuery
+        ? db.collection("businesses").findOne(membershipBusinessQuery, {
+            projection: {
+              _id: 1,
+              business_name: 1,
+              alias: 1,
+              slug: 1,
+              city: 1,
+              state: 1,
+              claimStage: 1,
+              claimLocked: 1,
+            },
+          })
         : null,
       db
         .collection("business_claims")
@@ -103,6 +110,35 @@ export default async function handler(
       ),
     ]);
 
+    const sourcePayment = await findFoundingSourcePayment(db, membership);
+    const normalizedPaymentStatus = normalizeFoundingPaymentStatus(
+      sourcePayment || membership,
+    );
+    const paymentAmount = formatUsdFromCents(
+      sourcePayment?.amountCents ||
+        sourcePayment?.grossAmountCents ||
+        membership.paymentAmountCents ||
+        membership.amountCents ||
+        4900,
+    );
+    const nextStep =
+      onboarding?.nextStep ||
+      (review?.evidenceStatus === "awaiting_additional_evidence"
+        ? "submit additional ownership evidence"
+        : normalizeFoundingClaimStage(
+              review?.reviewStatus || membership.ownershipReviewStatus,
+            ) === "ownership_verified"
+          ? "ownership verified"
+          : "submit ownership evidence for ownership verification");
+    const managementAccessLocked =
+      String(
+        fulfillment?.ownershipAccessStatus ||
+          membership.managementAccessStatus ||
+          "",
+      )
+        .trim()
+        .toLowerCase() !== "approved";
+
     return res.status(200).json({
       ok: true,
       membership: {
@@ -111,10 +147,27 @@ export default async function handler(
         membershipStatus: membership.membershipStatus,
         ownershipReviewStatus:
           membership.ownershipReviewStatus || review?.reviewStatus || null,
+        paymentStatus: normalizedPaymentStatus,
+        paymentAmount,
+        amountCents: Number(
+          sourcePayment?.amountCents ||
+            sourcePayment?.grossAmountCents ||
+            membership.paymentAmountCents ||
+            membership.amountCents ||
+            4900,
+        ),
+        currency: String(
+          sourcePayment?.currency ||
+            membership.paymentCurrency ||
+            membership.currency ||
+            "usd",
+        ).toLowerCase(),
         business: business
           ? {
+              id: String((business as any)._id),
               name: business.business_name || null,
               slug: business.alias || business.slug || null,
+              alias: business.alias || null,
               city: business.city || null,
               state: business.state || null,
             }
@@ -127,7 +180,8 @@ export default async function handler(
         ),
         reviewStatus: normalizeFoundingClaimStage(review?.reviewStatus || null),
         publicListingStatus:
-          normalizeFoundingClaimStage(
+          String((business as any)?.publicListingStatus || "").trim() ||
+          (normalizeFoundingClaimStage(
             business && (business as any).claimStage
               ? (business as any).claimStage
               : membership.ownershipReviewStatus,
@@ -154,10 +208,16 @@ export default async function handler(
                     : membership.ownershipReviewStatus,
                 ) === "disputed"
               ? "verification_pending"
-              : "unclaimed",
+              : "unclaimed"),
         evidenceStatus: review?.evidenceStatus || null,
         evidencePortalStatus: onboarding?.evidencePortalStatus || null,
         onboardingStatus: onboarding?.onboardingStatus || null,
+        nextStep,
+        managementAccessLocked,
+        managementAccessStatus:
+          fulfillment?.ownershipAccessStatus ||
+          membership.managementAccessStatus ||
+          null,
         fulfillmentStatus: fulfillment?.fulfillmentStatus || null,
         profileReviewStatus: fulfillment?.profileReviewStatus || null,
         baselineStatus:

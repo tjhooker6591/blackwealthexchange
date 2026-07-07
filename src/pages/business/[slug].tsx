@@ -7,11 +7,13 @@ import Link from "next/link";
 import ErrorPage from "next/error";
 import { canonicalUrl, truncateMeta } from "@/lib/seo";
 import clientPromise from "@/lib/mongodb";
+import { normalizeFoundingClaimStage } from "@/lib/founding-membership";
 import { Spotlight, spotlightData } from "../../lib/SpotlightEntry";
 import { sanitizeRichHtml } from "@/lib/security/sanitizeHtml";
 
 type BusinessEntry = {
   claimStage: string | null;
+  publicListingStatus: string | null;
   canClaim: boolean;
   name: string;
   imageSrc: string | null;
@@ -77,7 +79,8 @@ function mapDbBusinessToEntry(doc: any): BusinessEntry {
   const location = [city, state].filter(Boolean).join(", ") || address;
   const status =
     cleanString(doc?.status || doc?.trustStatus).toLowerCase() || null;
-  const claimStage = cleanString(doc?.claimStage).toLowerCase() || null;
+  const claimStage = normalizeFoundingClaimStage(doc?.claimStage);
+  const publicListingStatus = normalizeFoundingClaimStage(doc?.publicListingStatus);
   const isSponsored = Number(doc?.amountPaid || 0) > 0;
   const isStrongProfile =
     doc?.isComplete === true ||
@@ -114,11 +117,12 @@ function mapDbBusinessToEntry(doc: any): BusinessEntry {
     sourceUrl: cleanString(doc?.sourceUrl || doc?.source) || null,
     status,
     claimStage,
+    publicListingStatus,
     canClaim:
+      publicListingStatus !== "ownership_verified" &&
       ![
         "claim_initiated",
-        "claim_pending",
-        "ownership_review_pending",
+        "ownership_verification_pending",
         "additional_evidence_required",
         "disputed",
         "founding_growth_member",
@@ -227,12 +231,16 @@ const BusinessDetail: NextPage<Props> = ({ entry, slug, businessId }) => {
                       {entry.category}
                     </span>
                   ) : null}
-                  {entry.claimStage === "ownership_review_pending" ||
-                  entry.claimStage === "claim_pending" ||
-                  entry.claimStage === "additional_evidence_required" ||
-                  entry.claimStage === "disputed" ? (
+                  {entry.publicListingStatus === "ownership_verified" ? (
+                    <span className="text-[11px] sm:text-xs rounded-full border border-emerald-400/30 bg-emerald-500/10 px-2.5 py-0.5 sm:px-3 sm:py-1 text-emerald-200">
+                      Ownership Verified
+                    </span>
+                  ) : entry.claimStage === "ownership_verification_pending" ||
+                    entry.claimStage === "claim_initiated" ||
+                    entry.claimStage === "additional_evidence_required" ||
+                    entry.claimStage === "disputed" ? (
                     <span className="text-[11px] sm:text-xs rounded-full border border-sky-400/30 bg-sky-500/10 px-2.5 py-0.5 sm:px-3 sm:py-1 text-sky-200">
-                      Claim pending ownership review
+                      Ownership verification pending
                     </span>
                   ) : !entry.isSponsored ? (
                     <span className="text-[11px] sm:text-xs rounded-full border border-white/10 bg-white/5 px-2.5 py-0.5 sm:px-3 sm:py-1 text-white/80">
@@ -269,15 +277,19 @@ const BusinessDetail: NextPage<Props> = ({ entry, slug, businessId }) => {
                   </Link>
                 ) : (
                   <span className="inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-white/60">
-                    Claim pending ownership review
+                    {entry.publicListingStatus === "ownership_verified"
+                      ? "Ownership verified"
+                      : "Ownership verification pending"}
                   </span>
                 )}
-                <Link
-                  href="/founding-membership/status"
-                  className="inline-flex items-center justify-center rounded-xl border border-yellow-500/35 bg-yellow-500/10 text-yellow-200 font-semibold text-sm px-3 py-2 hover:bg-yellow-500/15 transition"
-                >
-                  Claim Status
-                </Link>
+                {entry.publicListingStatus !== "ownership_verified" ? (
+                  <Link
+                    href="/founding-membership/status"
+                    className="inline-flex items-center justify-center rounded-xl border border-yellow-500/35 bg-yellow-500/10 text-yellow-200 font-semibold text-sm px-3 py-2 hover:bg-yellow-500/15 transition"
+                  >
+                    Claim Status
+                  </Link>
+                ) : null}
                 {entry.website ? (
                   <a
                     href={entry.website}
@@ -333,21 +345,29 @@ const BusinessDetail: NextPage<Props> = ({ entry, slug, businessId }) => {
                 </div>
                 <div className="rounded-2xl border border-yellow-500/20 bg-yellow-500/10 p-4 text-sm text-white/75">
                   <div className="font-semibold text-yellow-200">
-                    Claim This Business
+                    {entry.canClaim
+                      ? "Claim This Business"
+                      : entry.publicListingStatus === "ownership_verified"
+                        ? "Ownership Verified"
+                        : "Ownership verification pending"}
                   </div>
                   <div className="mt-2">
-                    If this is your business, start the Founding Verified
-                    Business Growth Membership claim path to open ownership
-                    review, profile review, fulfillment, and monthly reporting.
+                    {entry.canClaim
+                      ? "If this is your business, start the Founding Verified Business Growth Membership claim path to open ownership verification, profile review, fulfillment, and monthly reporting."
+                      : entry.publicListingStatus === "ownership_verified"
+                        ? "This business has already completed ownership verification and business-management access has been activated for the verified owner."
+                        : "A founding membership is already active for this listing and ownership verification is still pending. Another claim or payment is not available while review is in progress."}
                   </div>
                   <div className="mt-2 text-white/60">
-                    Payment and owner verification are separate states. Payment
-                    does not automatically verify ownership.
+                    Payment and ownership verification are separate states.
+                    Payment does not automatically verify ownership.
                   </div>
                   <div className="mt-2 text-white/80">
                     {entry.canClaim
                       ? "This listing is available for a new claim."
-                      : "Claim pending ownership review"}
+                      : entry.publicListingStatus === "ownership_verified"
+                        ? "This listing is not claimable because ownership is already verified."
+                        : "Ownership verification pending"}
                   </div>
                   <div className="mt-3 flex flex-wrap gap-2">
                     {entry.canClaim ? (
@@ -359,19 +379,21 @@ const BusinessDetail: NextPage<Props> = ({ entry, slug, businessId }) => {
                         }
                         className="rounded-lg bg-yellow-500 px-3 py-2 text-xs font-extrabold text-black"
                       >
-                        Start Membership and Claim Process
+                        Start Membership and Claim
                       </Link>
                     ) : (
                       <span className="rounded-lg border border-white/15 px-3 py-2 text-xs font-bold text-white/70">
-                        Claim pending ownership review
+                        Ownership verification pending
                       </span>
                     )}
-                    <Link
-                      href="/founding-membership/status"
-                      className="rounded-lg border border-white/15 px-3 py-2 text-xs font-bold text-white/85"
-                    >
-                      View Member Status
-                    </Link>
+                    {entry.publicListingStatus !== "ownership_verified" ? (
+                      <Link
+                        href="/founding-membership/status"
+                        className="rounded-lg border border-white/15 px-3 py-2 text-xs font-bold text-white/85"
+                      >
+                        View Member Status
+                      </Link>
+                    ) : null}
                   </div>
                 </div>
                 <div className="text-sm font-semibold text-white/90">
@@ -431,6 +453,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
           address: null,
           status: null,
           claimStage: null,
+          publicListingStatus: null,
           canClaim: true,
           isSponsored: false,
           isStrongProfile: false,
@@ -477,6 +500,11 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
           completenessScore: 1,
           placeId: 1,
           claimStage: 1,
+          claimLocked: 1,
+          claimedByUserId: 1,
+          claimedByEmail: 1,
+          foundingMembershipId: 1,
+          ownershipReviewStatus: 1,
         },
       },
     );

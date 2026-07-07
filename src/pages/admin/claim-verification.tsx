@@ -8,6 +8,14 @@ type Payload = {
   ok: boolean;
   memberships?: any[];
   claims?: any[];
+  records?: any[];
+  claimVerificationCounts?: {
+    pending?: number;
+    additionalEvidenceRequired?: number;
+    disputed?: number;
+    verificationFailed?: number;
+    verifiedHistory?: number;
+  };
   reviews?: any[];
   fulfillment?: any[];
   onboarding?: any[];
@@ -54,54 +62,8 @@ export default function ClaimVerificationPage() {
   }, []);
 
   const rows = useMemo(() => {
-    const claims = Array.isArray(data?.claims) ? data.claims : [];
-    const reviews = Array.isArray(data?.reviews) ? data.reviews : [];
-    const memberships = Array.isArray(data?.memberships) ? data.memberships : [];
-    const onboarding = Array.isArray(data?.onboarding) ? data.onboarding : [];
-    const fulfillment = Array.isArray(data?.fulfillment) ? data.fulfillment : [];
-    const businesses = Array.isArray(data?.businesses) ? data.businesses : [];
-
-    const reviewByMembershipId = new Map(
-      reviews
-        .filter((item) => item?.sourceMembershipId)
-        .map((item) => [String(item.sourceMembershipId), item]),
-    );
-    const membershipById = new Map(
-      memberships
-        .filter((item) => item?.membershipId)
-        .map((item) => [String(item.membershipId), item]),
-    );
-    const onboardingByMembershipId = new Map(
-      onboarding
-        .filter((item) => item?.membershipId)
-        .map((item) => [String(item.membershipId), item]),
-    );
-    const fulfillmentByMembershipId = new Map(
-      fulfillment
-        .filter((item) => item?.membershipId)
-        .map((item) => [String(item.membershipId), item]),
-    );
-    const businessByMembershipId = new Map(
-      businesses
-        .filter((item) => item?.foundingMembershipId)
-        .map((item) => [String(item.foundingMembershipId), item]),
-    );
-
-    return claims.map((claim) => {
-      const membershipId = String(claim?.membershipId || "");
-      const membership = membershipById.get(membershipId);
-      const review = reviewByMembershipId.get(membershipId);
-      const business = businessByMembershipId.get(membershipId);
-
-      return {
-        claim,
-        review,
-        membership,
-        onboarding: onboardingByMembershipId.get(membershipId),
-        fulfillment: fulfillmentByMembershipId.get(membershipId),
-        business,
-      };
-    });
+    const records = Array.isArray(data?.records) ? data.records : [];
+    return records;
   }, [data]);
 
   async function takeAction(membershipId: string, action: string) {
@@ -139,7 +101,7 @@ export default function ClaimVerificationPage() {
           <div className="flex items-center justify-between gap-4">
             <div>
               <h1 className="text-2xl font-bold text-yellow-200">
-                Pending Claim Verifications
+                Claim Verification Queue
               </h1>
               <p className="mt-2 text-sm text-white/65">
                 Verify whether the claimant is authorized to control the
@@ -165,24 +127,40 @@ export default function ClaimVerificationPage() {
 
           {loading ? <div>Loading…</div> : null}
 
+          <div className="grid gap-3 md:grid-cols-5">
+            <div className="rounded-xl border border-white/10 bg-black/25 p-3 text-sm">
+              <div className="text-white/45">Pending Verification</div>
+              <div className="mt-1 text-xl font-semibold text-white">{data?.claimVerificationCounts?.pending || 0}</div>
+            </div>
+            <div className="rounded-xl border border-white/10 bg-black/25 p-3 text-sm">
+              <div className="text-white/45">Additional Evidence Required</div>
+              <div className="mt-1 text-xl font-semibold text-white">{data?.claimVerificationCounts?.additionalEvidenceRequired || 0}</div>
+            </div>
+            <div className="rounded-xl border border-white/10 bg-black/25 p-3 text-sm">
+              <div className="text-white/45">Disputed</div>
+              <div className="mt-1 text-xl font-semibold text-white">{data?.claimVerificationCounts?.disputed || 0}</div>
+            </div>
+            <div className="rounded-xl border border-white/10 bg-black/25 p-3 text-sm">
+              <div className="text-white/45">Verification Failed</div>
+              <div className="mt-1 text-xl font-semibold text-white">{data?.claimVerificationCounts?.verificationFailed || 0}</div>
+            </div>
+            <div className="rounded-xl border border-white/10 bg-black/25 p-3 text-sm">
+              <div className="text-white/45">Verified History</div>
+              <div className="mt-1 text-xl font-semibold text-white">{data?.claimVerificationCounts?.verifiedHistory || 0}</div>
+            </div>
+          </div>
+
           <div className="space-y-4">
             {rows.map(
-              ({
-                claim,
-                review,
-                membership,
-                onboarding,
-                fulfillment,
-                business,
-              }) => {
-                const membershipId = String(
-                  claim.membershipId || membership?.membershipId || "",
-                );
-                const auditHistory = Array.isArray(review?.auditHistory)
-                  ? review.auditHistory
-                  : Array.isArray(claim?.auditHistory)
-                    ? claim.auditHistory
-                    : [];
+              (row) => {
+                const claim = row.claim || null;
+                const review = row.review || null;
+                const membership = row.membership || null;
+                const onboarding = row.onboarding || null;
+                const fulfillment = row.fulfillment || null;
+                const business = row.business || null;
+                const membershipId = String(row.membershipId || membership?.membershipId || "");
+                const auditHistory = Array.isArray(row.auditHistory) ? row.auditHistory : [];
                 return (
                   <section
                     key={membershipId}
@@ -191,24 +169,14 @@ export default function ClaimVerificationPage() {
                     <div className="flex flex-wrap items-start justify-between gap-4">
                       <div>
                         <h2 className="text-lg font-semibold text-yellow-200">
-                          {String(
-                            claim?.businessName ||
-                              business?.business_name ||
-                              membership?.membershipName ||
-                              membershipId ||
-                              "Claim Verification",
-                          )}
+                          {String(row.businessName || business?.business_name || membership?.membershipName || membershipId || "Claim Verification")}
                         </h2>
                         <div className="mt-1 text-sm text-white/65 break-all">
                           {membershipId}
                         </div>
                       </div>
                       <div className="rounded-full border border-sky-400/30 bg-sky-400/10 px-3 py-1 text-xs font-bold text-sky-200">
-                        {labelize(
-                          review?.reviewStatus ||
-                            claim?.ownershipReviewStatus ||
-                            claim?.claimStatus,
-                        )}
+                        {labelize(row.queueState || review?.reviewStatus || claim?.ownershipReviewStatus || claim?.claimStatus)}
                       </div>
                     </div>
 
@@ -254,10 +222,10 @@ export default function ClaimVerificationPage() {
                       <div className="rounded-xl border border-white/10 bg-black/25 p-3">
                         <div className="text-white/45">Payment</div>
                         <div className="mt-1 text-white/85">
-                          {membership?.paymentAmount || "$49.00 USD"}
+                          {row.paymentDisplayAmount || membership?.paymentAmount || "-"}
                         </div>
                         <div className="mt-1 text-xs text-white/55">
-                          Status: {labelize(membership?.paymentStatus)}
+                          Status: {labelize(row.paymentStatus || membership?.paymentStatus)}
                         </div>
                       </div>
                     </div>
