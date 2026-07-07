@@ -6,6 +6,7 @@ import {
   buildMongoIdOrStringQuery,
   FOUNDING_MEMBERSHIP_PRODUCT_KEY,
   formatUsdFromCents,
+  getPendingFoundingClaimVerifications,
   normalizeFoundingClaimStage,
   normalizeFoundingPaymentStatus,
 } from "@/lib/founding-membership";
@@ -260,7 +261,7 @@ export default async function handler(
         .json({ ok: true, updated: true, resultingStatus, claimStatus });
     }
 
-    const [memberships, claims, reviews, fulfillment, onboarding, businesses] =
+    const [memberships, _claims, reviews, fulfillment, onboarding, businesses] =
       await Promise.all([
         db
           .collection("business_memberships")
@@ -322,22 +323,6 @@ export default async function handler(
           .toArray(),
       ]);
 
-    const businessByMembershipId = new Map(
-      businesses
-        .filter((item) => item?.foundingMembershipId)
-        .map((item) => [String(item.foundingMembershipId), item]),
-    );
-    const membershipById = new Map(
-      memberships
-        .filter((item) => item?.membershipId)
-        .map((item) => [String(item.membershipId), item]),
-    );
-    const reviewByMembershipId = new Map(
-      reviews
-        .filter((item) => item?.sourceMembershipId)
-        .map((item) => [String(item.sourceMembershipId), item]),
-    );
-
     const normalizedMemberships = memberships.map((membership) => ({
       ...membership,
       paymentStatus: normalizeFoundingPaymentStatus(membership),
@@ -350,79 +335,7 @@ export default async function handler(
         null,
     }));
 
-    const normalizedClaimsByMembershipId = new Map<string, any>();
-
-    for (const claim of claims) {
-      const membership = membershipById.get(String(claim.membershipId || ""));
-      const linkedBusiness =
-        businessByMembershipId.get(String(claim.membershipId || "")) ||
-        businessByMembershipId.get(String(membership?.membershipId || "")) ||
-        null;
-      normalizedClaimsByMembershipId.set(String(claim.membershipId || ""), {
-        ...claim,
-        claimStatus:
-          normalizeFoundingClaimStage(claim.claimStatus) ||
-          claim.claimStatus ||
-          null,
-        ownershipReviewStatus:
-          normalizeFoundingClaimStage(claim.ownershipReviewStatus) ||
-          claim.ownershipReviewStatus ||
-          null,
-        businessName:
-          linkedBusiness?.business_name || claim.businessName || null,
-        businessSlug: linkedBusiness?.alias || linkedBusiness?.slug || null,
-      });
-    }
-
-    for (const membership of normalizedMemberships) {
-      const membershipId = String(membership.membershipId || "");
-      if (!membershipId || normalizedClaimsByMembershipId.has(membershipId)) {
-        continue;
-      }
-
-      const review = reviewByMembershipId.get(membershipId) || null;
-      const linkedBusiness = businessByMembershipId.get(membershipId) || null;
-      const normalizedReviewStatus = normalizeFoundingClaimStage(
-        review?.reviewStatus || membership.ownershipReviewStatus,
-      );
-      const isPendingQueueItem =
-        membership.membershipStatus === "active" &&
-        (normalizedReviewStatus === "ownership_verification_pending" ||
-          normalizedReviewStatus === "additional_evidence_required" ||
-          normalizedReviewStatus === "disputed");
-
-      if (!isPendingQueueItem) continue;
-
-      normalizedClaimsByMembershipId.set(membershipId, {
-        _id: `synthetic-claim:${membershipId}`,
-        membershipId,
-        businessId:
-          membership.businessId || linkedBusiness?._id || review?.businessId || null,
-        userId: membership.userId || review?.userId || null,
-        email: membership.email || review?.email || linkedBusiness?.claimedByEmail || null,
-        claimStatus:
-          normalizeFoundingClaimStage(membership.claimStatus) ||
-          "claim_initiated",
-        ownershipReviewStatus:
-          normalizedReviewStatus,
-        claimLocked: true,
-        businessName: linkedBusiness?.business_name || membership.membershipName || null,
-        businessSlug: linkedBusiness?.alias || linkedBusiness?.slug || null,
-        createdAt:
-          review?.createdAt || membership.createdAt || membership.updatedAt || null,
-        updatedAt:
-          review?.updatedAt || membership.updatedAt || membership.createdAt || null,
-        source: "membership_review_join",
-      });
-    }
-
-    const normalizedClaims = Array.from(normalizedClaimsByMembershipId.values()).sort(
-      (a, b) => {
-        const aTime = new Date(a?.updatedAt || a?.createdAt || 0).getTime();
-        const bTime = new Date(b?.updatedAt || b?.createdAt || 0).getTime();
-        return bTime - aTime;
-      },
-    );
+    const normalizedClaims = await getPendingFoundingClaimVerifications(db);
 
     return res.status(200).json({
       ok: true,

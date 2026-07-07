@@ -11,6 +11,7 @@ type Payload = {
   reviews?: any[];
   fulfillment?: any[];
   onboarding?: any[];
+  businesses?: any[];
 };
 
 function labelize(value: unknown) {
@@ -53,22 +54,79 @@ export default function ClaimVerificationPage() {
   }, []);
 
   const rows = useMemo(() => {
-    const claims = data?.claims || [];
-    const reviews = data?.reviews || [];
-    const memberships = data?.memberships || [];
-    const onboarding = data?.onboarding || [];
-    return claims.map((claim) => ({
-      claim,
-      review: reviews.find(
-        (item) => item.sourceMembershipId === claim.membershipId,
-      ),
-      membership: memberships.find(
-        (item) => item.membershipId === claim.membershipId,
-      ),
-      onboarding: onboarding.find(
-        (item) => item.membershipId === claim.membershipId,
-      ),
-    }));
+    const claims = Array.isArray(data?.claims) ? data.claims : [];
+    const reviews = Array.isArray(data?.reviews) ? data.reviews : [];
+    const memberships = Array.isArray(data?.memberships) ? data.memberships : [];
+    const onboarding = Array.isArray(data?.onboarding) ? data.onboarding : [];
+    const fulfillment = Array.isArray(data?.fulfillment) ? data.fulfillment : [];
+    const businesses = Array.isArray(data?.businesses) ? data.businesses : [];
+
+    const claimByMembershipId = new Map(
+      claims
+        .filter((item) => item?.membershipId)
+        .map((item) => [String(item.membershipId), item]),
+    );
+
+    const pendingMembershipIds = new Set<string>([
+      ...claims
+        .map((item) => String(item?.membershipId || ""))
+        .filter(Boolean),
+      ...memberships
+        .filter((item) => {
+          const status = String(item?.ownershipReviewStatus || "").trim();
+          return (
+            item?.membershipStatus === "active" &&
+            [
+              "ownership_verification_pending",
+              "additional_evidence_required",
+              "disputed",
+            ].includes(status)
+          );
+        })
+        .map((item) => String(item.membershipId || ""))
+        .filter(Boolean),
+      ...reviews
+        .map((item) => String(item?.sourceMembershipId || ""))
+        .filter(Boolean),
+      ...businesses
+        .map((item) => String(item?.foundingMembershipId || ""))
+        .filter(Boolean),
+    ]);
+
+    return Array.from(pendingMembershipIds).map((membershipId) => {
+      const membership = memberships.find((item) => item.membershipId === membershipId);
+      const review = reviews.find((item) => item.sourceMembershipId === membershipId);
+      const business = businesses.find(
+        (item) => String(item.foundingMembershipId || "") === membershipId,
+      );
+      const claim =
+        claimByMembershipId.get(membershipId) || {
+          _id: `synthetic-claim:${membershipId}`,
+          membershipId,
+          businessId: membership?.businessId || business?._id || review?.businessId || null,
+          userId: membership?.userId || review?.userId || null,
+          email: membership?.email || review?.email || business?.claimedByEmail || null,
+          claimStatus: membership?.claimStatus || "claim_initiated",
+          ownershipReviewStatus:
+            review?.reviewStatus || membership?.ownershipReviewStatus || business?.claimStage || null,
+          claimLocked: true,
+          businessName:
+            business?.business_name || membership?.membershipName || "Claim Verification",
+          businessSlug: business?.alias || business?.slug || null,
+          createdAt: review?.createdAt || membership?.createdAt || membership?.updatedAt || null,
+          updatedAt: review?.updatedAt || membership?.updatedAt || membership?.createdAt || null,
+          source: "page_fallback_membership_join",
+        };
+
+      return {
+        claim,
+        review,
+        membership,
+        onboarding: onboarding.find((item) => item.membershipId === membershipId),
+        fulfillment: fulfillment.find((item) => item.membershipId === membershipId),
+        business,
+      };
+    });
   }, [data]);
 
   async function takeAction(membershipId: string, action: string) {
@@ -110,7 +168,8 @@ export default function ClaimVerificationPage() {
               </h1>
               <p className="mt-2 text-sm text-white/65">
                 Verify whether the claimant is authorized to control the
-                business. Payment activates membership, but it does not verify ownership.
+                business. Payment activates membership, but it does not verify
+                ownership.
               </p>
             </div>
             <div className="flex gap-4 text-sm">
@@ -132,144 +191,220 @@ export default function ClaimVerificationPage() {
           {loading ? <div>Loading…</div> : null}
 
           <div className="space-y-4">
-            {rows.map(({ claim, review, membership, onboarding }) => {
-              const membershipId = String(
-                claim.membershipId || membership?.membershipId || "",
-              );
-              const auditHistory = Array.isArray(review?.auditHistory)
-                ? review.auditHistory
-                : Array.isArray(claim?.auditHistory)
-                  ? claim.auditHistory
-                  : [];
-              return (
-                <section
-                  key={membershipId}
-                  className="rounded-2xl border border-white/15 bg-white/5 p-5 space-y-4"
-                >
-                  <div className="flex flex-wrap items-start justify-between gap-4">
-                    <div>
-                      <h2 className="text-lg font-semibold text-yellow-200">
-                        {String(
-                          membership?.membershipName ||
-                            membershipId ||
-                            "Claim Verification",
-                        )}
-                      </h2>
-                      <div className="mt-1 text-sm text-white/65 break-all">
-                        {membershipId}
-                      </div>
-                    </div>
-                    <div className="rounded-full border border-sky-400/30 bg-sky-400/10 px-3 py-1 text-xs font-bold text-sky-200">
-                      {labelize(
-                        review?.reviewStatus ||
-                          claim?.ownershipReviewStatus ||
-                          claim?.claimStatus,
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="grid gap-3 md:grid-cols-3 text-sm">
-                    <div className="rounded-xl border border-white/10 bg-black/25 p-3">
-                      <div className="text-white/45">Claimant</div>
-                      <div className="mt-1 break-all text-white/85">
-                        {String(
-                          claim?.email ||
-                            membership?.email ||
-                            membership?.userId ||
-                            "-",
-                        )}
-                      </div>
-                    </div>
-                    <div className="rounded-xl border border-white/10 bg-black/25 p-3">
-                      <div className="text-white/45">Business</div>
-                      <div className="mt-1 break-all text-white/85">
-                        {String(
-                          claim?.businessId || membership?.businessId || "-",
-                        )}
-                      </div>
-                    </div>
-                    <div className="rounded-xl border border-white/10 bg-black/25 p-3">
-                      <div className="text-white/45">Submitted evidence</div>
-                      <div className="mt-1 text-white/85">
-                        {labelize(review?.evidenceStatus)}
-                      </div>
-                      <div className="mt-1 text-xs text-white/55">
-                        Portal: {labelize(onboarding?.evidencePortalStatus)}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="rounded-xl border border-white/10 bg-black/25 p-4">
-                    <div className="text-sm font-semibold text-white">
-                      Verification notes
-                    </div>
-                    <textarea
-                      value={reasons[membershipId] || ""}
-                      onChange={(event) =>
-                        setReasons((current) => ({
-                          ...current,
-                          [membershipId]: event.target.value,
-                        }))
-                      }
-                      placeholder="Reason, evidence request, dispute context, or verification-failure details"
-                      className="mt-3 min-h-28 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-sm text-white outline-none"
-                    />
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {ACTIONS.map((action) => (
-                        <button
-                          key={action.key}
-                          type="button"
-                          onClick={() => takeAction(membershipId, action.key)}
-                          disabled={busyId === `${membershipId}:${action.key}`}
-                          className="rounded-lg border border-yellow-500/30 bg-yellow-500/10 px-3 py-2 text-xs font-bold text-yellow-100 disabled:opacity-50"
-                        >
-                          {busyId === `${membershipId}:${action.key}`
-                            ? "Saving…"
-                            : action.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="rounded-xl border border-white/10 bg-black/25 p-4">
-                    <div className="text-sm font-semibold text-white">
-                      Audit history
-                    </div>
-                    <div className="mt-3 space-y-2 text-sm text-white/75">
-                      {auditHistory.length ? (
-                        auditHistory.map((item: any, idx: number) => (
-                          <div
-                            key={idx}
-                            className="rounded-lg border border-white/10 px-3 py-2"
-                          >
-                            <div className="font-semibold text-white/85">
-                              {labelize(item.action)} · {" "}
-                              {labelize(item.resultingStatus)}
-                            </div>
-                            <div className="mt-1 text-white/60">
-                              Previous: {labelize(item.previousStatus)} ·
-                              Reviewer: {item.reviewer || "-"}
-                            </div>
-                            <div className="mt-1 text-white/60">
-                              Reason: {item.reason || "-"}
-                            </div>
-                            <div className="mt-1 text-white/50">
-                              {item.timestamp
-                                ? new Date(item.timestamp).toLocaleString()
-                                : "-"}
-                            </div>
-                          </div>
-                        ))
-                      ) : (
-                        <div className="text-white/55">
-                          No audit history yet.
+            {rows.map(
+              ({
+                claim,
+                review,
+                membership,
+                onboarding,
+                fulfillment,
+                business,
+              }) => {
+                const membershipId = String(
+                  claim.membershipId || membership?.membershipId || "",
+                );
+                const auditHistory = Array.isArray(review?.auditHistory)
+                  ? review.auditHistory
+                  : Array.isArray(claim?.auditHistory)
+                    ? claim.auditHistory
+                    : [];
+                return (
+                  <section
+                    key={membershipId}
+                    className="rounded-2xl border border-white/15 bg-white/5 p-5 space-y-4"
+                  >
+                    <div className="flex flex-wrap items-start justify-between gap-4">
+                      <div>
+                        <h2 className="text-lg font-semibold text-yellow-200">
+                          {String(
+                            claim?.businessName ||
+                              business?.business_name ||
+                              membership?.membershipName ||
+                              membershipId ||
+                              "Claim Verification",
+                          )}
+                        </h2>
+                        <div className="mt-1 text-sm text-white/65 break-all">
+                          {membershipId}
                         </div>
-                      )}
+                      </div>
+                      <div className="rounded-full border border-sky-400/30 bg-sky-400/10 px-3 py-1 text-xs font-bold text-sky-200">
+                        {labelize(
+                          review?.reviewStatus ||
+                            claim?.ownershipReviewStatus ||
+                            claim?.claimStatus,
+                        )}
+                      </div>
                     </div>
-                  </div>
-                </section>
-              );
-            })}
+
+                    <div className="grid gap-3 md:grid-cols-4 text-sm">
+                      <div className="rounded-xl border border-white/10 bg-black/25 p-3">
+                        <div className="text-white/45">Claimant</div>
+                        <div className="mt-1 break-all text-white/85">
+                          {String(
+                            claim?.email ||
+                              membership?.email ||
+                              membership?.userId ||
+                              "-",
+                          )}
+                        </div>
+                      </div>
+                      <div className="rounded-xl border border-white/10 bg-black/25 p-3">
+                        <div className="text-white/45">Business</div>
+                        <div className="mt-1 text-white/85">
+                          {String(
+                            claim?.businessName ||
+                              business?.business_name ||
+                              "-",
+                          )}
+                        </div>
+                        <div className="mt-1 break-all text-xs text-white/55">
+                          {String(
+                            claim?.businessId ||
+                              membership?.businessId ||
+                              business?._id ||
+                              "-",
+                          )}
+                        </div>
+                      </div>
+                      <div className="rounded-xl border border-white/10 bg-black/25 p-3">
+                        <div className="text-white/45">Submitted evidence</div>
+                        <div className="mt-1 text-white/85">
+                          {labelize(review?.evidenceStatus)}
+                        </div>
+                        <div className="mt-1 text-xs text-white/55">
+                          Portal: {labelize(onboarding?.evidencePortalStatus)}
+                        </div>
+                      </div>
+                      <div className="rounded-xl border border-white/10 bg-black/25 p-3">
+                        <div className="text-white/45">Payment</div>
+                        <div className="mt-1 text-white/85">
+                          {membership?.paymentAmount || "$49.00 USD"}
+                        </div>
+                        <div className="mt-1 text-xs text-white/55">
+                          Status: {labelize(membership?.paymentStatus)}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="grid gap-3 md:grid-cols-3 text-sm">
+                      <div className="rounded-xl border border-white/10 bg-black/25 p-3">
+                        <div className="text-white/45">Claim status</div>
+                        <div className="mt-1 text-white/85">
+                          {labelize(claim?.claimStatus)}
+                        </div>
+                      </div>
+                      <div className="rounded-xl border border-white/10 bg-black/25 p-3">
+                        <div className="text-white/45">Onboarding</div>
+                        <div className="mt-1 text-white/85">
+                          {labelize(onboarding?.onboardingStatus)}
+                        </div>
+                        <div className="mt-1 text-xs text-white/55">
+                          Next:{" "}
+                          {onboarding?.nextStep || "submit ownership evidence"}
+                        </div>
+                      </div>
+                      <div className="rounded-xl border border-white/10 bg-black/25 p-3">
+                        <div className="text-white/45">Management access</div>
+                        <div className="mt-1 text-white/85">
+                          {labelize(
+                            fulfillment?.ownershipAccessStatus ||
+                              membership?.managementAccessStatus,
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="rounded-xl border border-white/10 bg-black/25 p-4">
+                      <div className="text-sm font-semibold text-white">
+                        Verification notes
+                      </div>
+                      <textarea
+                        value={reasons[membershipId] || ""}
+                        onChange={(event) =>
+                          setReasons((current) => ({
+                            ...current,
+                            [membershipId]: event.target.value,
+                          }))
+                        }
+                        placeholder="Reason, evidence request, dispute context, or verification-failure details"
+                        className="mt-3 min-h-28 w-full rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-sm text-white outline-none"
+                      />
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {ACTIONS.map((action) => (
+                          <button
+                            key={action.key}
+                            type="button"
+                            onClick={() => takeAction(membershipId, action.key)}
+                            disabled={
+                              busyId === `${membershipId}:${action.key}`
+                            }
+                            className="rounded-lg border border-yellow-500/30 bg-yellow-500/10 px-3 py-2 text-xs font-bold text-yellow-100 disabled:opacity-50"
+                          >
+                            {busyId === `${membershipId}:${action.key}`
+                              ? "Saving…"
+                              : action.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="rounded-xl border border-white/10 bg-black/25 p-4">
+                      <div className="text-sm font-semibold text-white">
+                        Dates and audit history
+                      </div>
+                      <div className="mt-3 grid gap-3 md:grid-cols-2 text-sm text-white/75">
+                        <div>
+                          Initiated:{" "}
+                          {claim?.createdAt
+                            ? new Date(claim.createdAt).toLocaleString()
+                            : "-"}
+                        </div>
+                        <div>
+                          Last updated:{" "}
+                          {claim?.updatedAt
+                            ? new Date(claim.updatedAt).toLocaleString()
+                            : review?.updatedAt
+                              ? new Date(review.updatedAt).toLocaleString()
+                              : "-"}
+                        </div>
+                      </div>
+                      <div className="mt-3 space-y-2 text-sm text-white/75">
+                        {auditHistory.length ? (
+                          auditHistory.map((item: any, idx: number) => (
+                            <div
+                              key={idx}
+                              className="rounded-lg border border-white/10 px-3 py-2"
+                            >
+                              <div className="font-semibold text-white/85">
+                                {labelize(item.action)} ·{" "}
+                                {labelize(item.resultingStatus)}
+                              </div>
+                              <div className="mt-1 text-white/60">
+                                Previous: {labelize(item.previousStatus)} ·
+                                Reviewer: {item.reviewer || "-"}
+                              </div>
+                              <div className="mt-1 text-white/60">
+                                Reason: {item.reason || "-"}
+                              </div>
+                              <div className="mt-1 text-white/50">
+                                {item.timestamp
+                                  ? new Date(item.timestamp).toLocaleString()
+                                  : "-"}
+                              </div>
+                            </div>
+                          ))
+                        ) : (
+                          <div className="text-white/55">
+                            No audit history yet.
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </section>
+                );
+              },
+            )}
             {!loading && !rows.length ? (
               <div className="text-white/60">
                 No pending claim verifications found.

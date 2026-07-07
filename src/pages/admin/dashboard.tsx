@@ -106,6 +106,7 @@ type RecentJoinRow = {
 
 type StatsV2 = {
   pendingApprovalsTotal?: number;
+  pendingClaimVerifications?: number;
 
   // supports object OR numeric total
   businesses?: EntityCountsObject | number;
@@ -122,6 +123,10 @@ type StatsV2 = {
     expired?: number;
     paidPurchases?: number;
     paidUnlinked?: number;
+  };
+
+  claimVerification?: {
+    pending?: number;
   };
 
   totalUsers?: number;
@@ -169,6 +174,7 @@ type StatsVM = {
   pendingJobs: number;
   pendingProducts: number;
   pendingDirectory: number;
+  pendingClaimVerifications: number;
   pendingPayouts: number;
 
   // orgs & biz totals
@@ -246,6 +252,11 @@ function normalizeStats(data: Partial<StatsV2 & StatsLegacy>): StatsVM {
   const pendingDirectory = toNum(
     data.directory?.pendingApprovals ?? (data as any).pendingListings ?? 0,
   );
+  const pendingClaimVerifications = toNum(
+    data.claimVerification?.pending ??
+      (data as any).pendingClaimVerifications ??
+      0,
+  );
 
   const biz = readEntityCounts(data.businesses, pendingBusinessesLegacy);
   const org = readEntityCounts(data.organizations, pendingOrganizationsLegacy);
@@ -257,6 +268,7 @@ function normalizeStats(data: Partial<StatsV2 & StatsLegacy>): StatsVM {
       pendingJobs +
       pendingProducts +
       pendingDirectory +
+      pendingClaimVerifications +
       pendingPayouts;
 
   return {
@@ -270,6 +282,7 @@ function normalizeStats(data: Partial<StatsV2 & StatsLegacy>): StatsVM {
     pendingJobs,
     pendingProducts,
     pendingDirectory,
+    pendingClaimVerifications,
     pendingPayouts,
 
     totalBusinesses: biz.total || toNum((data as any).businessesCount),
@@ -447,6 +460,12 @@ const AdminDashboard = ({
         href: "/admin/directory-approvals",
       },
       {
+        key: "claim-verification",
+        label: "Pending claim verifications",
+        value: stats.pendingClaimVerifications,
+        href: "/admin/claim-verification",
+      },
+      {
         key: "payouts",
         label: "Affiliate payouts",
         value: stats.pendingPayouts,
@@ -458,6 +477,7 @@ const AdminDashboard = ({
       stats.pendingJobs,
       stats.pendingProducts,
       stats.pendingDirectory,
+      stats.pendingClaimVerifications,
       stats.pendingPayouts,
     ],
   );
@@ -944,6 +964,12 @@ const AdminDashboard = ({
                 Product moderation queue
               </Link>
               <Link
+                href="/admin/claim-verification"
+                className="block rounded border border-gray-700 bg-gray-800 px-3 py-2 hover:bg-gray-700"
+              >
+                Pending Claim Verifications
+              </Link>
+              <Link
                 href="/admin/affiliate-payouts"
                 className="block rounded border border-gray-700 bg-gray-800 px-3 py-2 hover:bg-gray-700"
               >
@@ -1050,6 +1076,13 @@ const AdminDashboard = ({
                   <StatCardLink
                     title="Pending Directory"
                     value={stats.pendingDirectory}
+                  />
+                </Link>
+
+                <Link href="/admin/claim-verification" className="block">
+                  <StatCardLink
+                    title="Pending Claim Verifications"
+                    value={stats.pendingClaimVerifications}
                   />
                 </Link>
 
