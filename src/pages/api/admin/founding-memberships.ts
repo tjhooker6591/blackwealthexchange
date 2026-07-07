@@ -2,7 +2,13 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
 import { requireAdminFromRequest } from "@/lib/adminAuth";
-import { FOUNDING_MEMBERSHIP_PRODUCT_KEY } from "@/lib/founding-membership";
+import {
+  buildMongoIdOrStringQuery,
+  FOUNDING_MEMBERSHIP_PRODUCT_KEY,
+  formatUsdFromCents,
+  normalizeFoundingClaimStage,
+  normalizeFoundingPaymentStatus,
+} from "@/lib/founding-membership";
 
 export default async function handler(
   req: NextApiRequest,
@@ -68,8 +74,8 @@ export default async function handler(
       let resultingStatus = previousStatus || "ownership_verification_pending";
       let claimStatus = String(claim.claimStatus || "claim_initiated");
       let claimLocked = true;
-      let claimStage = "verification_pending";
-      let managementAccess = "locked_pending_review";
+      let claimStage = "ownership_verification_pending";
+      let managementAccess = "locked_pending_verification";
       let evidenceStatus = review.evidenceStatus || "awaiting_owner_documents";
 
       if (action === "verify") {
@@ -82,8 +88,8 @@ export default async function handler(
       } else if (action === "request_additional_evidence") {
         resultingStatus = "additional_evidence_required";
         claimStatus = "additional_evidence_required";
-        claimStage = "verification_pending";
-        managementAccess = "locked_pending_review";
+        claimStage = "ownership_verification_pending";
+        managementAccess = "locked_pending_verification";
         evidenceStatus = "awaiting_additional_evidence";
       } else if (action === "verification_failed") {
         resultingStatus = "ownership_verification_failed";
@@ -95,21 +101,21 @@ export default async function handler(
       } else if (action === "mark_disputed") {
         resultingStatus = "disputed";
         claimStatus = "disputed";
-        claimStage = "verification_pending";
-        managementAccess = "locked_pending_review";
+        claimStage = "ownership_verification_pending";
+        managementAccess = "locked_pending_verification";
         evidenceStatus = review.evidenceStatus || "disputed";
       } else if (action === "reopen_verification") {
         resultingStatus = "ownership_verification_pending";
-        claimStatus = "ownership_verification_pending";
-        claimStage = "verification_pending";
-        managementAccess = "locked_pending_review";
+        claimStatus = "claim_initiated";
+        claimStage = "ownership_verification_pending";
+        managementAccess = "locked_pending_verification";
         evidenceStatus = review.evidenceStatus || "awaiting_owner_documents";
         claimLocked = true;
       } else if (action === "submit_evidence") {
         resultingStatus = previousStatus || "ownership_verification_pending";
         claimStatus = claim.claimStatus || "claim_initiated";
-        claimStage = "verification_pending";
-        managementAccess = "locked_pending_review";
+        claimStage = "ownership_verification_pending";
+        managementAccess = "locked_pending_verification";
         evidenceStatus = "evidence_submitted";
         claimLocked = true;
       }
@@ -216,7 +222,9 @@ export default async function handler(
       );
 
       await db.collection("businesses").updateOne(
-        { _id: membership.businessId as any },
+        buildMongoIdOrStringQuery("_id", membership.businessId) || {
+          _id: membership.businessId as any,
+        },
         {
           $set: {
             claimStage,
@@ -252,7 +260,7 @@ export default async function handler(
         .json({ ok: true, updated: true, resultingStatus, claimStatus });
     }
 
-    const [memberships, claims, reviews, fulfillment, onboarding] =
+    const [memberships, claims, reviews, fulfillment, onboarding, businesses] =
       await Promise.all([
         db
           .collection("business_memberships")
@@ -292,15 +300,138 @@ export default async function handler(
           .sort({ updatedAt: -1, createdAt: -1 })
           .limit(100)
           .toArray(),
+        db
+          .collection("businesses")
+          .find({
+            foundingMembershipId: {
+              $regex: `^${FOUNDING_MEMBERSHIP_PRODUCT_KEY}:`,
+            },
+          })
+          .project({
+            business_name: 1,
+            alias: 1,
+            slug: 1,
+            claimStage: 1,
+            claimLocked: 1,
+            claimedByUserId: 1,
+            claimedByEmail: 1,
+            foundingMembershipId: 1,
+            ownershipReviewStatus: 1,
+          })
+          .limit(100)
+          .toArray(),
       ]);
+
+    const businessByMembershipId = new Map(
+      businesses
+        .filter((item) => item?.foundingMembershipId)
+        .map((item) => [String(item.foundingMembershipId), item]),
+    );
+    const membershipById = new Map(
+      memberships
+        .filter((item) => item?.membershipId)
+        .map((item) => [String(item.membershipId), item]),
+    );
+    const reviewByMembershipId = new Map(
+      reviews
+        .filter((item) => item?.sourceMembershipId)
+        .map((item) => [String(item.sourceMembershipId), item]),
+    );
+
+    const normalizedMemberships = memberships.map((membership) => ({
+      ...membership,
+      paymentStatus: normalizeFoundingPaymentStatus(membership),
+      paymentAmount: formatUsdFromCents(
+        membership.amountCents || membership.paymentAmountCents || 4900,
+      ),
+      claimStatus:
+        normalizeFoundingClaimStage(membership.claimStatus) ||
+        membership.claimStatus ||
+        null,
+    }));
+
+    const normalizedClaimsByMembershipId = new Map<string, any>();
+
+    for (const claim of claims) {
+      const membership = membershipById.get(String(claim.membershipId || ""));
+      const linkedBusiness =
+        businessByMembershipId.get(String(claim.membershipId || "")) ||
+        businessByMembershipId.get(String(membership?.membershipId || "")) ||
+        null;
+      normalizedClaimsByMembershipId.set(String(claim.membershipId || ""), {
+        ...claim,
+        claimStatus:
+          normalizeFoundingClaimStage(claim.claimStatus) ||
+          claim.claimStatus ||
+          null,
+        ownershipReviewStatus:
+          normalizeFoundingClaimStage(claim.ownershipReviewStatus) ||
+          claim.ownershipReviewStatus ||
+          null,
+        businessName:
+          linkedBusiness?.business_name || claim.businessName || null,
+        businessSlug: linkedBusiness?.alias || linkedBusiness?.slug || null,
+      });
+    }
+
+    for (const membership of normalizedMemberships) {
+      const membershipId = String(membership.membershipId || "");
+      if (!membershipId || normalizedClaimsByMembershipId.has(membershipId)) {
+        continue;
+      }
+
+      const review = reviewByMembershipId.get(membershipId) || null;
+      const linkedBusiness = businessByMembershipId.get(membershipId) || null;
+      const normalizedReviewStatus = normalizeFoundingClaimStage(
+        review?.reviewStatus || membership.ownershipReviewStatus,
+      );
+      const isPendingQueueItem =
+        membership.membershipStatus === "active" &&
+        (normalizedReviewStatus === "ownership_verification_pending" ||
+          normalizedReviewStatus === "additional_evidence_required" ||
+          normalizedReviewStatus === "disputed");
+
+      if (!isPendingQueueItem) continue;
+
+      normalizedClaimsByMembershipId.set(membershipId, {
+        _id: `synthetic-claim:${membershipId}`,
+        membershipId,
+        businessId:
+          membership.businessId || linkedBusiness?._id || review?.businessId || null,
+        userId: membership.userId || review?.userId || null,
+        email: membership.email || review?.email || linkedBusiness?.claimedByEmail || null,
+        claimStatus:
+          normalizeFoundingClaimStage(membership.claimStatus) ||
+          "claim_initiated",
+        ownershipReviewStatus:
+          normalizedReviewStatus,
+        claimLocked: true,
+        businessName: linkedBusiness?.business_name || membership.membershipName || null,
+        businessSlug: linkedBusiness?.alias || linkedBusiness?.slug || null,
+        createdAt:
+          review?.createdAt || membership.createdAt || membership.updatedAt || null,
+        updatedAt:
+          review?.updatedAt || membership.updatedAt || membership.createdAt || null,
+        source: "membership_review_join",
+      });
+    }
+
+    const normalizedClaims = Array.from(normalizedClaimsByMembershipId.values()).sort(
+      (a, b) => {
+        const aTime = new Date(a?.updatedAt || a?.createdAt || 0).getTime();
+        const bTime = new Date(b?.updatedAt || b?.createdAt || 0).getTime();
+        return bTime - aTime;
+      },
+    );
 
     return res.status(200).json({
       ok: true,
-      memberships,
-      claims,
+      memberships: normalizedMemberships,
+      claims: normalizedClaims,
       reviews,
       fulfillment,
       onboarding,
+      businesses,
     });
   } catch (error) {
     console.error("[admin/founding-memberships]", error);
