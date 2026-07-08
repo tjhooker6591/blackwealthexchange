@@ -24,6 +24,13 @@ type NewsItem = {
   tags?: Array<"news" | "business" | "entertainment">;
 };
 
+type FeedFailureSummary = {
+  sourceId: string;
+  sourceName: string;
+  url: string;
+  error: string;
+};
+
 const SOURCES: Source[] = [
   // --- US (general Black news/business) ---
   {
@@ -67,7 +74,7 @@ const SOURCES: Source[] = [
     id: "blackamericaweb_ent",
     name: "Black America Web (Entertainment)",
     region: "US",
-    url: "http://www.blackamericaweb.com/rss/BAW/Entertainment.xml",
+    url: "https://www.blackamericaweb.com/rss/BAW/Entertainment.xml",
     tags: ["entertainment"],
   }, // :contentReference[oaicite:8]{index=8}
   {
@@ -90,7 +97,7 @@ const SOURCES: Source[] = [
     id: "okayafrica",
     name: "OkayAfrica",
     region: "Global",
-    url: "https://www.okayafrica.com/feeds/feed.rss",
+    url: "https://www.okayafrica.com/feed/",
     tags: ["news", "entertainment"],
   },
   {
@@ -112,7 +119,7 @@ const SOURCES: Source[] = [
     id: "allafrica_latest",
     name: "AllAfrica",
     region: "Africa",
-    url: "http://allafrica.com/tools/headlines/rdf/latest/headlines.rdf",
+    url: "https://allafrica.com/tools/headlines/rdf/latest/headlines.rdf",
     tags: ["news"],
   },
   {
@@ -129,8 +136,14 @@ const SOURCES: Source[] = [
 ];
 
 const CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes
-const COLD_START_BUDGET_MS = 4000;
-const parser = new Parser();
+const COLD_START_BUDGET_MS = 8000;
+const FEED_TIMEOUT_MS = 5000;
+const parser = new Parser({
+  timeout: FEED_TIMEOUT_MS,
+  customFields: {
+    item: ["media:content", "media:thumbnail", "content:encoded", "summary"],
+  },
+});
 
 function stripHtml(input: string) {
   return input
@@ -145,13 +158,48 @@ function guessImageFromHtml(html?: string) {
   return m?.[1] || null;
 }
 
+function toValidDateString(value: unknown) {
+  const raw = String(value || "").trim();
+  if (!raw) return undefined;
+  const date = new Date(raw);
+  if (Number.isNaN(date.getTime()) || date.getTime() <= 0) return undefined;
+  return date.toISOString();
+}
+
+function extractImage(item: any) {
+  const mediaContent = item?.["media:content"];
+  const mediaThumb = item?.["media:thumbnail"];
+  const mediaUrl = Array.isArray(mediaContent)
+    ? mediaContent[0]?.$
+      ? String(mediaContent[0].$.url || "")
+      : String(mediaContent[0]?.url || "")
+    : mediaContent?.$
+      ? String(mediaContent.$.url || "")
+      : String(mediaContent?.url || "");
+  const thumbUrl = Array.isArray(mediaThumb)
+    ? mediaThumb[0]?.$
+      ? String(mediaThumb[0].$.url || "")
+      : String(mediaThumb[0]?.url || "")
+    : mediaThumb?.$
+      ? String(mediaThumb.$.url || "")
+      : String(mediaThumb?.url || "");
+  return (
+    mediaUrl ||
+    thumbUrl ||
+    (item.enclosure?.url ? String(item.enclosure.url) : "") ||
+    guessImageFromHtml(String(item.content || item["content:encoded"] || item.summary || "")) ||
+    null
+  );
+}
+
 function normalizeItem(source: Source, item: any): NewsItem | null {
   const title = (item.title || "").trim();
   const url = (item.link || item.guid || "").trim();
   if (!title || !url) return null;
 
-  const publishedAt =
-    item.isoDate || item.pubDate || item.published || item.date || undefined;
+  const publishedAt = toValidDateString(
+    item.isoDate || item.pubDate || item.published || item.updated || item.date,
+  );
 
   const rawSnippet =
     item.contentSnippet ||
@@ -164,11 +212,7 @@ function normalizeItem(source: Source, item: any): NewsItem | null {
     ? stripHtml(String(rawSnippet)).slice(0, 280)
     : undefined;
 
-  const enclosureUrl = item.enclosure?.url ? String(item.enclosure.url) : null;
-  const image =
-    enclosureUrl ||
-    guessImageFromHtml(String(item.content || item["content:encoded"] || "")) ||
-    null;
+  const image = extractImage(item);
 
   const id = `${source.id}:${Buffer.from(url).toString("base64").slice(0, 24)}`;
 
@@ -185,20 +229,24 @@ function normalizeItem(source: Source, item: any): NewsItem | null {
   };
 }
 
-const FEED_TIMEOUT_MS = 1200;
-
 async function fetchFeed(source: Source): Promise<NewsItem[]> {
   const res = await fetch(source.url, {
     headers: {
-      "User-Agent": "BWE-NewsBot/1.0 (+https://blackwealthexchange.com)",
+      "User-Agent":
+        "Mozilla/5.0 (compatible; BWE-NewsBot/1.0; +https://www.blackwealthexchange.com)",
       Accept:
-        "application/rss+xml, application/xml;q=0.9, text/xml;q=0.8, */*;q=0.7",
+        "application/rss+xml, application/atom+xml, application/xml;q=0.9, text/xml;q=0.8, */*;q=0.7",
+      "Accept-Language": "en-US,en;q=0.9",
+      Referer: "https://www.blackwealthexchange.com/news",
+      DNT: "1",
     },
     signal: AbortSignal.timeout(FEED_TIMEOUT_MS),
+    redirect: "follow",
   });
 
-  if (!res.ok)
-    throw new Error(`Feed fetch failed: ${source.id} (${res.status})`);
+  if (!res.ok) {
+    throw new Error(`HTTP ${res.status}`);
+  }
 
   const xml = await res.text();
   const feed = await parser.parseString(xml);
@@ -215,20 +263,31 @@ type CacheShape = {
   at: number;
   items: NewsItem[];
   failures: Record<string, string>;
+  successfulSourceIds: string[];
+  failedSources: FeedFailureSummary[];
   refreshing?: boolean;
   refreshPromise?: Promise<void> | null;
 };
 function getCache(): CacheShape {
   const g = globalThis as any;
-  if (!g.__bweNewsCache)
+  if (!g.__bweNewsCache) {
     g.__bweNewsCache = {
       at: 0,
       items: [],
       failures: {},
+      successfulSourceIds: [],
+      failedSources: [],
       refreshing: false,
       refreshPromise: null,
     };
-  return g.__bweNewsCache as CacheShape;
+  }
+  const cache = g.__bweNewsCache as CacheShape;
+  cache.failures ||= {};
+  cache.successfulSourceIds ||= [];
+  cache.failedSources ||= [];
+  cache.refreshing ||= false;
+  cache.refreshPromise ||= null;
+  return cache;
 }
 
 async function refreshCache(cache: CacheShape, now: number) {
@@ -238,17 +297,42 @@ async function refreshCache(cache: CacheShape, now: number) {
   cache.refreshPromise = (async () => {
     const failures: Record<string, string> = {};
     const merged: NewsItem[] = [];
+    const successfulSourceIds: string[] = [];
+    const failedSources: FeedFailureSummary[] = [];
 
-    await Promise.all(
-      SOURCES.map(async (src) => {
-        try {
-          const items = await fetchFeed(src);
-          merged.push(...items);
-        } catch (err: any) {
-          failures[src.id] = err?.message || "Failed";
-        }
-      }),
+    const results = await Promise.allSettled(
+      SOURCES.map(async (src) => ({ src, items: await fetchFeed(src) })),
     );
+
+    for (const result of results) {
+      if (result.status === "fulfilled") {
+        const { src, items } = result.value;
+        if (items.length > 0) {
+          successfulSourceIds.push(src.id);
+          merged.push(...items);
+        } else {
+          const error = "Feed returned zero valid articles";
+          failures[src.id] = error;
+          failedSources.push({
+            sourceId: src.id,
+            sourceName: src.name,
+            url: src.url,
+            error,
+          });
+        }
+      } else {
+        const reason = result.reason as any;
+        const message = reason?.message || String(reason) || "Failed";
+        const sourceMatch = SOURCES[results.indexOf(result)];
+        failures[sourceMatch.id] = message;
+        failedSources.push({
+          sourceId: sourceMatch.id,
+          sourceName: sourceMatch.name,
+          url: sourceMatch.url,
+          error: message,
+        });
+      }
+    }
 
     const seen = new Set<string>();
     const deduped = merged.filter((it) => {
@@ -264,9 +348,15 @@ async function refreshCache(cache: CacheShape, now: number) {
       return tb - ta;
     });
 
-    cache.at = now;
+    cache.at = deduped.length ? now : 0;
     cache.items = deduped;
     cache.failures = failures;
+    cache.successfulSourceIds = successfulSourceIds;
+    cache.failedSources = failedSources;
+
+    if (!deduped.length) {
+      console.error("[news:black] all feeds failed", failedSources);
+    }
   })().finally(() => {
     cache.refreshing = false;
     cache.refreshPromise = null;
@@ -295,11 +385,17 @@ export default async function handler(
 
   // Refresh cache if stale.
   // If we already have cached items, return stale quickly and revalidate in background.
-  if (!cache.items.length || now - cache.at > CACHE_TTL_MS) {
+  if (
+    !cache.items.length ||
+    !cache.successfulSourceIds.length ||
+    now - cache.at > CACHE_TTL_MS
+  ) {
     if (!cache.items.length) {
       await Promise.race([
         refreshCache(cache, now),
-        new Promise<void>((resolve) => setTimeout(resolve, COLD_START_BUDGET_MS)),
+        new Promise<void>((resolve) =>
+          setTimeout(resolve, COLD_START_BUDGET_MS),
+        ),
       ]);
     } else {
       void refreshCache(cache, now);
@@ -324,11 +420,29 @@ export default async function handler(
 
   items = items.slice(0, limit);
 
-  res.status(200).json({
-    updatedAt: new Date(cache.at).toISOString(),
+  const successfulSourceIds = cache.successfulSourceIds.length
+    ? cache.successfulSourceIds
+    : Array.from(
+        new Set(
+          cache.items
+            .map((item) =>
+              SOURCES.find((source) => source.name === item.source)?.id || "",
+            )
+            .filter(Boolean),
+        ),
+      );
+
+  const successfulSources = SOURCES.filter((s) =>
+    successfulSourceIds.includes(s.id),
+  );
+
+  res.status(cache.items.length ? 200 : 502).json({
+    updatedAt: cache.at > 0 ? new Date(cache.at).toISOString() : null,
     ttlSeconds: Math.floor(CACHE_TTL_MS / 1000),
     total: items.length,
-    sources: SOURCES.map((s) => ({
+    successfulFeedCount: successfulSources.length,
+    failedFeedCount: Object.keys(cache.failures).length,
+    sources: successfulSources.map((s) => ({
       id: s.id,
       name: s.name,
       region: s.region,
@@ -336,6 +450,8 @@ export default async function handler(
       tags: s.tags || [],
     })),
     failures: cache.failures,
+    failureSummary: cache.failedSources,
     items,
+    error: cache.items.length ? undefined : "All news feeds failed",
   });
 }

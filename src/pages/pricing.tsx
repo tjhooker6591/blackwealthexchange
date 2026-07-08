@@ -318,8 +318,8 @@ export default function Pricing() {
                   Tiered membership identity and rewards access. Plan mapping:
                   Premium includes the Standard Black Card, Founding Member
                   includes the Signature Black Card. Elite is invite-only. Your
-                  membership plan determines your Black Card tier. Billed
-                  annually, auto-renews annually, cancel anytime.
+                  membership plan determines your Black Card tier. Founding
+                  Member is billed monthly, auto-renews monthly, cancel anytime.
                 </p>
                 <p className="mt-2 text-xs text-gray-300">
                   Black Card is included with your plan. Use this page for plan
@@ -408,9 +408,9 @@ export default function Pricing() {
 
             <PriceCard
               title="Founding Member"
-              price="$49/year"
+              price="$49/month"
               sub="Paid plan with Signature Black Card mapping."
-              billingNote="Billed annually • Auto-renews annually • Cancel anytime"
+              billingNote="Billed monthly • Auto-renews monthly • Cancel anytime"
               features={[
                 { ok: true, text: "Everything in Premium" },
                 {

@@ -2338,7 +2338,7 @@ export default async function webhookHandler(
       await sendMembershipEmailSafe({
         to: email || null,
         subject: "BWE membership purchase confirmation",
-        text: `Your ${mappedPlanId === "founding" ? "Founding Member" : "Premium"} plan is active. It is billed annually and auto-renews annually. Next billing date: ${planExpiresAt.toLocaleDateString()}.`,
+        text: `Your ${mappedPlanId === "founding" ? "Founding Member" : "Premium"} plan is active. It is ${mappedPlanId === "founding" ? "billed monthly and auto-renews monthly" : "billed annually and auto-renews annually"}. Next billing date: ${planExpiresAt.toLocaleDateString()}.`,
       });
 
       await pushMembershipNotification(db, {

@@ -38,12 +38,21 @@ type NewsItem = {
 };
 
 type ApiResponse = {
-  updatedAt?: string;
+  updatedAt?: string | null;
   ttlSeconds?: number;
   total?: number;
+  successfulFeedCount?: number;
+  failedFeedCount?: number;
   failures?: Record<string, string>;
+  failureSummary?: Array<{
+    sourceId: string;
+    sourceName: string;
+    url: string;
+    error: string;
+  }>;
   sources?: SourceMeta[];
   items?: NewsItem[];
+  error?: string;
 };
 
 type CategoryKey =
@@ -248,6 +257,8 @@ export default function NewsPage() {
   const [sources, setSources] = useState<SourceMeta[]>([]);
   const [failures, setFailures] = useState<Record<string, string>>({});
   const [updatedAt, setUpdatedAt] = useState<string>("");
+  const [successfulFeedCount, setSuccessfulFeedCount] = useState(0);
+  const [failedFeedCount, setFailedFeedCount] = useState(0);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -287,6 +298,8 @@ export default function NewsPage() {
       setSources(gotSources);
       setFailures(data?.failures || {});
       setUpdatedAt(data?.updatedAt || "");
+      setSuccessfulFeedCount(Number(data?.successfulFeedCount || gotSources.length || 0));
+      setFailedFeedCount(Number(data?.failedFeedCount || Object.keys(data?.failures || {}).length));
 
       if (opts?.pushUrl) {
         router.replace(
@@ -297,6 +310,8 @@ export default function NewsPage() {
       }
     } catch (e: any) {
       setError(e?.message || "Failed to load news");
+      setSuccessfulFeedCount(0);
+      setFailedFeedCount(0);
     } finally {
       setLoading(false);
     }
@@ -384,8 +399,8 @@ export default function NewsPage() {
     if (heroIndex >= heroItems.length) setHeroIndex(0);
   }, [heroIndex, heroItems.length]);
 
-  const verifiedCount = sources.length;
-  const failedCount = Object.keys(failures || {}).length;
+  const verifiedCount = successfulFeedCount;
+  const failedCount = failedFeedCount;
 
   const sourceNames = useMemo(() => {
     const names = Array.from(new Set(sources.map((s) => s.name)));
@@ -472,11 +487,9 @@ export default function NewsPage() {
             </div>
 
             <div className="text-xs text-gray-500">
-              {updatedAt ? (
+              {updatedAt && safeDate(updatedAt) ? (
                 <>Last updated: {new Date(updatedAt).toLocaleString()}</>
-              ) : (
-                <>Loading update time…</>
-              )}
+              ) : null}
             </div>
           </div>
 

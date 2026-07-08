@@ -126,7 +126,7 @@ export default function CheckoutPage() {
             {isMarketplaceOrder
               ? "Review your order details, confirm secure payment, and place your order with confidence."
               : plan
-                ? `You're checking out: ${PLAN_LABELS[plan] || plan}. Billed annually with auto-renew.`
+                ? `You're checking out: ${PLAN_LABELS[plan] || plan}. ${plan === "founder" ? "Billed monthly with auto-renew." : "Billed annually with auto-renew."}`
                 : "Select a plan to continue to secure checkout."}
           </p>
 

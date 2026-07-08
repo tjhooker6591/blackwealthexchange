@@ -901,7 +901,7 @@ export default function Home() {
                 </h1>
 
                 <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-white/84 sm:text-base sm:leading-7">
-                  Join the $49/year Founding Membership to begin ownership
+                  Join the $49/month Founding Membership to begin ownership
                   review, improve your BWE profile, and receive monthly
                   performance reporting.
                 </p>
