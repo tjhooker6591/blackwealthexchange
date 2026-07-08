@@ -211,6 +211,9 @@ export default function FinancialReviewPage() {
               ? "Ledger enabled, new transactions will be recorded"
               : "Ledger disabled, no financial records will be written"}
           </p>
+          <p className="mt-2 text-xs text-zinc-500">
+            Summary source of truth: {String(data?.sourceOfTruth || "unknown")}
+          </p>
         </Section>
 
         <Section title="Recent Payment Events (Debug View)">
