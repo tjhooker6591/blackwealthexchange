@@ -3,6 +3,7 @@ import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
 import { requireAdminFromRequest } from "@/lib/adminAuth";
 import { buildLiveAdminMetrics } from "@/lib/adminSnapshot";
+import { getAdminBusinessCounts } from "@/lib/adminBusinessStatus";
 
 function trendDirection(a: number, b: number) {
   if (b > a) return "up";
@@ -25,6 +26,7 @@ export default async function handler(
     });
   }
   const db = (await clientPromise).db(getMongoDbName());
+  const businessCounts = await getAdminBusinessCounts(db);
 
   const latest = await db
     .collection("admin_metrics_snapshots")
@@ -71,10 +73,23 @@ export default async function handler(
     ok: true,
     source,
     companyHealth: {
-      totalUsers: { value: 0, sourceStatus: "needs_mapping" },
-      pendingAdminApprovals: m.trustSafety?.pendingBusinessApprovals || {
-        value: 0,
-        sourceStatus: "needs_mapping",
+      totalUsers: {
+        value: Number(m.growth?.newUsersThisMonth?.value || 0),
+        sourceStatus: m.growth?.newUsersThisMonth ? "live" : "needs_mapping",
+        note: "Currently showing new users this month, not lifetime users",
+      },
+      pendingAdminApprovals: {
+        value: Number(
+          m.trustSafety?.pendingBusinessApprovals?.value ||
+            businessCounts.pending ||
+            0,
+        ),
+        sourceStatus:
+          m.trustSafety?.pendingBusinessApprovals?.value != null ||
+          typeof businessCounts.pending === "number"
+            ? "live"
+            : "needs_mapping",
+        note: "Currently reflects business approval backlog only",
       },
       activeSponsors: { value: 0, sourceStatus: "needs_mapping" },
       criticalIssues: {

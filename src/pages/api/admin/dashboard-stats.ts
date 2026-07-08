@@ -2,7 +2,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import { requireAdminFromRequest } from "@/lib/adminAuth";
+import { getMongoDbName } from "@/lib/env";
 import { getPendingFoundingClaimVerifications } from "@/lib/founding-membership";
+import { getAdminBusinessCounts } from "@/lib/adminBusinessStatus";
 
 function n(v: any) {
   return typeof v === "number" && Number.isFinite(v) ? v : 0;
@@ -49,7 +51,7 @@ export default async function handler(
 
   try {
     const client = await clientPromise;
-    const db = client.db("bwes-cluster");
+    const db = client.db(getMongoDbName());
     const now = new Date();
     const todayStart = new Date(now);
     todayStart.setHours(0, 0, 0, 0);
@@ -57,7 +59,6 @@ export default async function handler(
     const days30Start = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
 
     // ---- Core collections ----
-    const businesses = db.collection("businesses");
     const organizations = db.collection("organizations");
     const affiliatePayouts = db.collection("affiliatePayouts");
     const affiliates = db.collection("affiliates");
@@ -72,13 +73,9 @@ export default async function handler(
     const payments = db.collection("payments");
     const adPurchases = db.collection("ad_purchases");
 
-    const [
-      // Businesses
-      pendingBusinesses,
-      approvedBusinesses,
-      rejectedBusinesses,
-      totalBusinesses,
+    const businessCountsPromise = getAdminBusinessCounts(db);
 
+    const [
       // Organizations
       pendingOrganizations,
       approvedOrganizations,
@@ -121,12 +118,6 @@ export default async function handler(
       // Founding membership claim verification queue
       pendingClaimVerifications,
     ] = await Promise.all([
-      // Businesses
-      businesses.countDocuments({ status: "pending" }),
-      businesses.countDocuments({ status: "approved" }),
-      businesses.countDocuments({ status: "rejected" }),
-      businesses.countDocuments({}),
-
       // Organizations (separate from businesses)
       organizations.countDocuments({ status: "pending" }),
       organizations.countDocuments({ status: "approved" }),
@@ -265,6 +256,13 @@ export default async function handler(
 
       getPendingFoundingClaimVerifications(db),
     ]);
+
+    const {
+      pending: pendingBusinesses,
+      approved: approvedBusinesses,
+      rejected: rejectedBusinesses,
+      total: totalBusinesses,
+    } = await businessCountsPromise;
 
     // Prefer ad_purchases (new webhook flow). Fallback to payments if ad_purchases not populated yet.
     const paidDirectoryPurchases =

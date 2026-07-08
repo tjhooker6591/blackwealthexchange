@@ -1,40 +1,15 @@
 // src/pages/api/admin/get-pending-businesses.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
-import cookie from "cookie";
-import jwt from "jsonwebtoken";
 import { ObjectId } from "mongodb";
-import { getJwtSecret } from "@/lib/env";
+import { getMongoDbName } from "@/lib/env";
+import { requireAdminFromRequest } from "@/lib/adminAuth";
 import { getCanonicalBusinessName } from "@/lib/businessSubmission";
-
-type Decoded = {
-  userId?: string;
-  email?: string;
-  accountType?: string;
-  role?: string;
-  isAdmin?: boolean;
-  roles?: string[];
-};
-
-function isAdmin(decoded: Decoded) {
-  if (decoded?.isAdmin) return true;
-  if (decoded?.accountType === "admin") return true;
-  if (decoded?.role === "admin") return true;
-  if (Array.isArray(decoded?.roles) && decoded.roles.includes("admin")) {
-    return true;
-  }
-
-  const allow = (process.env.ADMIN_EMAILS || "")
-    .split(",")
-    .map((s) => s.trim().toLowerCase())
-    .filter(Boolean);
-
-  if (allow.length && decoded?.email) {
-    return allow.includes(decoded.email.toLowerCase());
-  }
-
-  return false;
-}
+import {
+  deriveAdminBusinessStatus,
+  getAdminBusinessBucketFilter,
+  getAdminBusinessCounts,
+} from "@/lib/adminBusinessStatus";
 
 function parseIntSafe(v: unknown, def: number) {
   const n = Number(v);
@@ -60,24 +35,8 @@ export default async function handler(
     return res.status(405).json({ error: "Method Not Allowed" });
   }
 
-  // ---- Admin auth (matches your JWT cookie approach) ----
-  const cookies = cookie.parse(req.headers.cookie || "");
-  const token = cookies.session_token;
-
-  if (!token) return res.status(401).json({ error: "Unauthorized" });
-
-  let decoded: Decoded;
-  try {
-    const SECRET = getJwtSecret();
-    if (!SECRET) throw new Error("JWT_SECRET missing");
-    decoded = jwt.verify(token, SECRET) as Decoded;
-  } catch {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
-
-  if (!isAdmin(decoded)) {
-    return res.status(403).json({ error: "Forbidden" });
-  }
+  const admin = await requireAdminFromRequest(req, res);
+  if (!admin) return;
 
   try {
     const {
@@ -93,41 +52,15 @@ export default async function handler(
     const skip = (pageNum - 1) * limitNum;
 
     const client = await clientPromise;
-    const db = client.db("bwes-cluster");
+    const db = client.db(getMongoDbName());
     const businessesCol = db.collection("businesses");
 
-    const filter: any = {};
-
-    // ---- Status logic (supports old + new schema) ----
-    // old schema: approved: false
-    // new schema: status: "pending"
-    if (status !== "all") {
-      if (status === "pending") {
-        filter.$and = [
-          {
-            $or: [
-              { approved: false },
-              { approved: { $exists: false } }, // older docs may not have approved flag
-              { status: "pending" },
-              { status: "pending_approval" },
-            ],
-          },
-          {
-            $or: [
-              { status: { $ne: "approved" } },
-              { status: { $exists: false } },
-            ],
-          },
-        ];
-      } else if (status === "approved") {
-        filter.$or = [{ approved: true }, { status: "approved" }];
-      } else if (status === "rejected") {
-        filter.status = "rejected";
-      } else {
-        // fallback custom status (if you pass one)
-        filter.status = status;
-      }
-    }
+    const filter: any =
+      status === "all"
+        ? {}
+        : status === "pending" || status === "approved" || status === "rejected"
+          ? getAdminBusinessBucketFilter(status)
+          : { status };
 
     // ---- Search (business name/email/category/owner/etc.) ----
     if (q && q.trim()) {
@@ -179,13 +112,7 @@ export default async function handler(
     const rows = businesses.map((b: any) => {
       const businessName = getCanonicalBusinessName(b) || "Unnamed Business";
 
-      const derivedStatus =
-        s(b.status) ||
-        (b.approved === true
-          ? "approved"
-          : b.approved === false
-            ? "pending"
-            : "pending");
+      const derivedStatus = deriveAdminBusinessStatus(b);
 
       return {
         ...b,
@@ -202,21 +129,12 @@ export default async function handler(
     });
 
     // Optional extra summaries for dashboard tiles
-    const [pendingCount, approvedCount, rejectedCount, totalBusinesses] =
-      await Promise.all([
-        businessesCol.countDocuments({
-          $or: [
-            { approved: false },
-            { status: "pending" },
-            { status: "pending_approval" },
-          ],
-        }),
-        businessesCol.countDocuments({
-          $or: [{ approved: true }, { status: "approved" }],
-        }),
-        businessesCol.countDocuments({ status: "rejected" }),
-        businessesCol.countDocuments({}),
-      ]);
+    const {
+      pending: pendingCount,
+      approved: approvedCount,
+      rejected: rejectedCount,
+      total: totalBusinesses,
+    } = await getAdminBusinessCounts(db);
 
     return res.status(200).json({
       ok: true,
