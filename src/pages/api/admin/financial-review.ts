@@ -90,7 +90,8 @@ export default async function handler(
       count: 0,
     };
 
-  let totalRevenue = 0,
+  let grossRevenue = 0,
+    totalRevenue = 0,
     thisMonth = 0,
     pending = 0,
     failedRefunded = 0;
@@ -110,6 +111,7 @@ export default async function handler(
 
     if (status === "paid" || status === "completed") {
       byStream[stream].completed += amount;
+      grossRevenue += amount;
       totalRevenue += fee;
       if (paidAt && paidAt >= monthStart) thisMonth += fee;
     } else if (status.includes("fail")) {
@@ -159,6 +161,7 @@ export default async function handler(
   }
 
   return res.status(200).json({
+    grossRevenue,
     totalRevenue,
     revenueThisMonth: thisMonth,
     pendingRevenue: pending,
