@@ -391,7 +391,7 @@ export default function Pricing() {
                 },
                 {
                   ok: true,
-                  text: "Physical card option planned for a future vendor-fulfilled phase",
+                  text: "Physical card option is not active yet and is planned for a future vendor-fulfilled phase",
                 },
               ]}
               ctaText={
@@ -427,7 +427,7 @@ export default function Pricing() {
                 },
                 {
                   ok: true,
-                  text: "Early access to features as they are released",
+                  text: "Access to founding-member releases only when those features are explicitly marked active",
                 },
               ]}
               ctaText="Become a Founder"
@@ -472,7 +472,7 @@ export default function Pricing() {
                       Premium Black Card (or higher retained)
                     </td>
                     <td className="px-3 py-2">
-                      Higher-tier members and early access
+                      Higher-tier members who want current Signature access
                     </td>
                   </tr>
                 </tbody>
@@ -512,7 +512,8 @@ export default function Pricing() {
                 </div>
                 <p className="mt-2 text-gray-300">
                   Includes Premium Black Card mapping (or keeps your higher tier
-                  if already active).
+                  if already active). Future founder-only benefits are not live
+                  unless explicitly marked active.
                 </p>
               </div>
             </div>

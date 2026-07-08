@@ -24,18 +24,24 @@ export function requireEnv(name: string): string {
 }
 
 export function getJwtSecret(): string {
+  const secret = getJwtSecretOrNull();
+  if (!secret) {
+    throw new Error("Missing JWT secret. Set JWT_SECRET (or NEXTAUTH_SECRET).");
+  }
+  return secret;
+}
+
+export function getJwtSecretOrNull(): string | null {
   const jwt = read("JWT_SECRET");
   const nextAuth = read("NEXTAUTH_SECRET");
   const secret = jwt ?? nextAuth;
 
   if (!secret) {
-    throw new Error("Missing JWT secret. Set JWT_SECRET (or NEXTAUTH_SECRET).");
+    return null;
   }
 
   if (jwt && nextAuth && jwt !== nextAuth) {
-    throw new Error(
-      "JWT_SECRET and NEXTAUTH_SECRET are both set but do not match. Keep them aligned.",
-    );
+    return null;
   }
 
   return secret;

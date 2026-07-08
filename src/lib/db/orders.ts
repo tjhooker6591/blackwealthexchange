@@ -2,6 +2,14 @@
 import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
 import { ObjectId } from "mongodb";
+import {
+  buildMarketplaceInventoryDecrementUpdate,
+  resolveMarketplaceInventory,
+} from "@/lib/marketplace/inventory";
+import {
+  MARKETPLACE_ORDER_STATES,
+  MARKETPLACE_PAYOUT_STATUSES,
+} from "@/lib/marketplace/orderLifecycle";
 
 export type FulfillOrderResult = {
   ok: boolean;
@@ -16,6 +24,7 @@ export type FulfillOrderResult = {
   orderState?: string;
   stockDecremented?: boolean;
   payoutReady?: boolean;
+  reconciliationException?: string | null;
 };
 
 function toObjectId(value: string) {
@@ -66,8 +75,8 @@ export async function fulfillOrder(
 
   // Idempotent successful replay
   if (
-    orderState === "fulfilled_payout_ready" ||
-    orderState === "fulfilled_payout_pending"
+    orderState === MARKETPLACE_ORDER_STATES.FULFILLED_PAYOUT_READY ||
+    orderState === MARKETPLACE_ORDER_STATES.FULFILLED_PAYOUT_PENDING
   ) {
     return {
       ok: true,
@@ -76,14 +85,15 @@ export async function fulfillOrder(
       productId: idToString(order.productId),
       orderState,
       stockDecremented: false,
-      payoutReady: orderState === "fulfilled_payout_ready",
+      payoutReady:
+        orderState === MARKETPLACE_ORDER_STATES.FULFILLED_PAYOUT_READY,
     };
   }
 
   const allowedStates = new Set([
-    "checkout_pending",
+    MARKETPLACE_ORDER_STATES.CHECKOUT_PENDING,
     "pending_checkout",
-    "paid_unfulfilled",
+    MARKETPLACE_ORDER_STATES.PAID_UNFULFILLED,
   ]);
 
   if (!allowedStates.has(orderState)) {
@@ -110,18 +120,37 @@ export async function fulfillOrder(
   const productFilter = productOid ? { _id: productOid } : { _id: productId };
 
   // If this order was already marked paid_unfulfilled, do not decrement inventory again.
-  const needsStockDecrement = orderState !== "paid_unfulfilled";
+  const needsStockDecrement =
+    orderState !== MARKETPLACE_ORDER_STATES.PAID_UNFULFILLED;
+  let reconciliationException: FulfillOrderResult["reconciliationException"] =
+    null;
 
   if (needsStockDecrement) {
+    const product = await products.findOne(productFilter);
+    const inventory = resolveMarketplaceInventory(product);
+    const decrementUpdate = buildMarketplaceInventoryDecrementUpdate(inventory);
+
+    if (!inventory.purchasable || !decrementUpdate) {
+      return {
+        ok: false,
+        code: "OUT_OF_STOCK",
+        orderId,
+        productId,
+        orderState,
+        reconciliationException: null,
+      };
+    }
+
+    const quantityField = inventory.authoritativeField;
+    const quantity = inventory.quantity;
+
     const stockUpdate = await products.updateOne(
       {
         ...productFilter,
-        $expr: {
-          $gt: [{ $ifNull: ["$stock", { $ifNull: ["$inventory", 0] }] }, 0],
-        },
+        [quantityField]: quantity,
       },
       {
-        $inc: { stock: -1, inventory: -1 },
+        ...decrementUpdate,
         $set: { updatedAt: now },
       },
     );
@@ -133,14 +162,33 @@ export async function fulfillOrder(
         orderId,
         productId,
         orderState,
+        reconciliationException: null,
       };
+    }
+
+    if (inventory.hasConflictingDualFields) {
+      reconciliationException =
+        "marketplace_inventory_dual_field_conflict_detected";
+      await db.collection("flow_events").insertOne({
+        eventType: "marketplace_inventory_dual_field_conflict_detected",
+        pageRoute: "/api/stripe/webhook-handler",
+        section: "marketplace_order_fulfillment",
+        source: "stripe_webhook",
+        source_variant: "inventory_conflict",
+        orderId,
+        productId,
+        inventoryFieldUsed: inventory.authoritativeField,
+        stockValue: inventory.stockValue,
+        inventoryValue: inventory.inventoryValue,
+        createdAt: now,
+      });
     }
   }
 
   const payoutReady = String(order.payoutMode || "") === "destination_charge";
   const nextState = payoutReady
-    ? "fulfilled_payout_ready"
-    : "fulfilled_payout_pending";
+    ? MARKETPLACE_ORDER_STATES.FULFILLED_PAYOUT_READY
+    : MARKETPLACE_ORDER_STATES.FULFILLED_PAYOUT_PENDING;
 
   await orders.updateOne(
     { _id: orderOid },
@@ -152,7 +200,9 @@ export async function fulfillOrder(
         status: "fulfilled",
         paymentStatus: "paid",
         fulfillmentStatus: "fulfilled",
-        payoutStatus: payoutReady ? "ready" : "pending",
+        payoutStatus: payoutReady
+          ? MARKETPLACE_PAYOUT_STATUSES.READY
+          : MARKETPLACE_PAYOUT_STATUSES.PENDING,
 
         paymentIntentId: paymentIntentId || null,
         paymentIntent: paymentIntentId || null,
@@ -173,5 +223,6 @@ export async function fulfillOrder(
     orderState: nextState,
     stockDecremented: needsStockDecrement,
     payoutReady,
+    reconciliationException,
   };
 }

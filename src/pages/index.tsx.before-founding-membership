@@ -260,9 +260,8 @@ function ConsultingInterestModal({
 const EconomicImpactSimulator = () => {
   const annualEstimate = 2_100_000_000_000;
   const historicalBaseline = 300_000_000_000;
-  const dailySpend = annualEstimate / 365;
+  const dailySpend = 4_200_000_000;
   const recapturePct = 5;
-  const dailySpendRoundedPublic = "Approximately $5.75 billion per day";
   const recaptureValue = annualEstimate * (recapturePct / 100);
   const durationMs = 180_000;
 
@@ -293,8 +292,7 @@ const EconomicImpactSimulator = () => {
       maximumFractionDigits: 0,
     });
 
-  const currentValue =
-    historicalBaseline + (annualEstimate - historicalBaseline) * progress;
+  const currentValue = historicalBaseline + (annualEstimate - historicalBaseline) * progress;
 
   return (
     <section className="relative overflow-hidden py-1 sm:py-1.5">
@@ -308,14 +306,11 @@ const EconomicImpactSimulator = () => {
           </div>
 
           <h2 className="mt-2 text-xl font-extrabold tracking-[0.01em] text-white sm:text-[1.8rem] lg:text-[2rem]">
-            Black buying power is large. The opportunity is keeping more of it
-            circulating with us.
+            Black buying power is large. The opportunity is keeping more of it circulating with us.
           </h2>
 
           <p className="mt-2 text-sm text-white/82 sm:text-[15px]">
-            BWE is built to help people discover Black-owned businesses faster,
-            support them more consistently, and make it easier for more dollars
-            to stay in the community.
+            BWE is built to help people discover Black-owned businesses faster, support them more consistently, and make it easier for more dollars to stay in the community.
           </p>
 
           <div
@@ -330,24 +325,16 @@ const EconomicImpactSimulator = () => {
 
           <div className="mt-3 grid gap-2 text-[11px] text-white/80 sm:grid-cols-3 sm:text-[12px]">
             <div className="rounded-xl border border-white/10 bg-white/5 px-3 py-2">
-              <div className="font-semibold text-white">
-                Historical baseline
-              </div>
+              <div className="font-semibold text-white">Historical baseline</div>
               <div>{formatCurrency(historicalBaseline)} in 2010</div>
             </div>
             <div className="rounded-xl border border-white/10 bg-white/5 px-3 py-2">
-              <div className="font-semibold text-white">
-                Projected annual scale
-              </div>
+              <div className="font-semibold text-white">Projected annual scale</div>
               <div>{formatCurrency(annualEstimate)} in 2026</div>
             </div>
             <div className="rounded-xl border border-white/10 bg-white/5 px-3 py-2">
-              <div className="font-semibold text-white">
-                Illustrative daily spend
-              </div>
-              <div>
-                {formatCurrency(dailySpend)} per day ({dailySpendRoundedPublic})
-              </div>
+              <div className="font-semibold text-white">Illustrative daily spend</div>
+              <div>{formatCurrency(dailySpend)} per day</div>
             </div>
           </div>
         </div>
@@ -358,17 +345,13 @@ const EconomicImpactSimulator = () => {
               Recapture example
             </p>
             <p className="mt-2 text-sm leading-relaxed text-white/82">
-              If just <span className="font-extrabold text-[#D4AF37]">5%</span>{" "}
-              of projected annual buying power is intentionally redirected
-              through Black-owned businesses and tools that strengthen
-              circulation, that represents:
+              If just <span className="font-extrabold text-[#D4AF37]">5%</span> of projected annual buying power is intentionally redirected through Black-owned businesses and tools that strengthen circulation, that represents:
             </p>
             <p className="mt-3 break-words text-[1.35rem] font-black leading-tight tracking-tight text-[#D4AF37]">
               {formatCurrency(recaptureValue)}
             </p>
             <p className="mt-1 text-[11px] text-white/70">
-              This is a simple recapture example, not a claim that BWE controls
-              the full market.
+              This is a simple recapture example, not a claim that BWE controls the full market.
             </p>
           </div>
 
@@ -378,8 +361,7 @@ const EconomicImpactSimulator = () => {
               className="group inline-flex items-center justify-center gap-2 rounded-xl border border-[#D4AF37]/50 bg-[#D4AF37]/14 px-3 py-2 shadow-sm transition hover:border-[#D4AF37]/80"
             >
               <span className="text-xs leading-tight text-white/85 lg:text-sm">
-                See the full impact story{" "}
-                <span className="text-[#D4AF37]">→</span>
+                See the full impact story <span className="text-[#D4AF37]">→</span>
               </span>
             </Link>
 
@@ -877,83 +859,93 @@ export default function Home() {
               </span>
             </div>
 
-            <div className="relative isolate mx-auto mt-4 max-w-4xl overflow-hidden rounded-[28px] border border-white/10 px-4 py-5 sm:px-6 sm:py-6 lg:px-8 lg:py-7">
+            <div className="relative isolate mx-auto mt-4 max-w-4xl overflow-hidden rounded-[28px] border border-white/10 px-4 py-5 sm:px-6 sm:py-6 lg:px-8 lg:py-8">
               <div
-                className="pointer-events-none absolute inset-0 -z-10 opacity-[0.22]"
+                className="pointer-events-none absolute inset-0 -z-10 opacity-[0.16]"
                 style={{
                   backgroundImage: "url('/images/story3.jpg')",
                   backgroundSize: "cover",
                   backgroundPosition: "center",
                 }}
               />
-              <div className="pointer-events-none absolute inset-0 -z-10 bg-black/76" />
-              <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-40 bg-gradient-to-b from-black/30 via-black/10 to-transparent" />
+              <div className="pointer-events-none absolute inset-0 -z-10 bg-black/84" />
 
-              <div className="mx-auto max-w-2xl">
-                <div className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#D4AF37] sm:text-[11px]">
-                  CLAIM. STRENGTHEN. TRACK.
+              <div className="mx-auto max-w-3xl">
+                <div className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#D4AF37] sm:text-xs">
+                  Discover. Support. Circulate.
                 </div>
 
-                <h1 className="mt-3 flex flex-col gap-1 text-3xl font-black leading-[1.14] tracking-tight text-white sm:text-4xl md:text-5xl lg:text-[3.45rem]">
-                  <span>Claim your business.</span>
-                  <span>Strengthen your profile.</span>
-                  <span>Track your visibility.</span>
+                <h1 className="mt-3 text-3xl font-black leading-[1.05] tracking-tight sm:text-4xl md:text-5xl lg:text-6xl">
+                  <span className="text-white">Find and support </span>
+                  <span className="bg-gradient-to-r from-[#D4AF37] via-[#F2D77C] to-[#D4AF37] bg-clip-text text-transparent">
+                    Black-owned businesses
+                  </span>
+                  <span className="text-white"> with more trust and less friction.</span>
                 </h1>
 
-                <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-white/84 sm:text-base sm:leading-7">
-                  Join the $49/year Founding Membership to begin ownership
-                  review, improve your BWE profile, and receive monthly
-                  performance reporting.
+                <p className="mx-auto mt-4 max-w-2xl text-sm text-white/76 sm:text-base md:text-lg">
+                  BWE helps people find Black-owned businesses, helps businesses get discovered, and helps more Black buying power move through our own platform.
                 </p>
               </div>
 
-              <div className="mx-auto mt-5 flex w-full max-w-md flex-col gap-3 sm:items-center">
+              <div className="mx-auto mt-5 flex w-full max-w-2xl flex-col gap-2 sm:flex-row sm:justify-center">
                 <Link
-                  href="/business-directory?mode=claim"
+                  href="/business-directory"
                   className="w-full sm:w-auto"
                   onClick={() =>
                     trackHomepageEvent("homepage_cta_clicked", {
                       section: "hero",
-                      ctaId: "hero_claim_business",
-                      ctaLabel: "Claim Your Business",
-                      destination: "/business-directory?mode=claim",
+                      ctaId: "hero_find_businesses",
+                      ctaLabel: "Find Black-Owned Businesses",
+                      destination: "/business-directory",
                     })
                   }
                 >
-                  <button className="h-12 w-full rounded-xl bg-[#D4AF37] px-6 text-sm font-extrabold text-black transition hover:-translate-y-0.5 hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 sm:min-w-[220px]">
-                    Claim Your Business
-                  </button>
-                </Link>
-                <Link
-                  href="/founding-membership"
-                  className="w-full sm:w-auto"
-                  onClick={() =>
-                    trackHomepageEvent("homepage_cta_clicked", {
-                      section: "hero",
-                      ctaId: "hero_review_membership",
-                      ctaLabel: "See Membership Details",
-                      destination: "/founding-membership",
-                    })
-                  }
-                >
-                  <button className="h-11 w-full rounded-xl border border-white/25 bg-white/[0.03] px-5 text-sm font-semibold text-white/88 transition hover:bg-white/8 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/20 sm:min-w-[220px]">
-                    See Membership Details
+                  <button className="h-12 w-full rounded-xl bg-[#D4AF37] px-5 text-sm font-extrabold text-black transition hover:-translate-y-0.5 hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 sm:w-auto sm:px-6">
+                    Find Black-Owned Businesses
                   </button>
                 </Link>
                 <Link
                   href="/business-directory/add-business"
-                  className="text-sm text-white/74 underline underline-offset-4 hover:text-[#F1D57A]"
+                  className="w-full sm:w-auto"
                   onClick={() =>
                     trackHomepageEvent("homepage_cta_clicked", {
                       section: "hero",
                       ctaId: "hero_list_business",
-                      ctaLabel: "Don’t see your business? List it here.",
+                      ctaLabel: "List Your Business",
                       destination: "/business-directory/add-business",
                     })
                   }
                 >
-                  Don’t see your business? List it here.
+                  <button className="h-12 w-full rounded-xl border border-[#D4AF37]/45 bg-[#D4AF37]/10 px-5 text-sm font-bold text-[#F1D57A] transition hover:-translate-y-0.5 hover:bg-[#D4AF37]/16 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 sm:w-auto sm:px-6">
+                    List Your Business
+                  </button>
                 </Link>
+              </div>
+
+              <div className="mx-auto mt-4 max-w-2xl rounded-2xl border border-white/10 bg-white/[0.03] p-3 text-left sm:p-4">
+                <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-[#D4AF37] sm:text-[11px]">
+                  Join BWE
+                </div>
+                <div className="mt-1 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                  <p className="text-xs text-white/75 sm:text-sm">
+                    Join to save businesses, track opportunities, and move through the BWE ecosystem with faster access to the tools built to help you support, shop, and grow.
+                  </p>
+                  <Link
+                    href={user ? "/dashboard" : "/signup"}
+                    onClick={() =>
+                      trackHomepageEvent("homepage_cta_clicked", {
+                        section: "hero",
+                        ctaId: user ? "hero_dashboard" : "hero_join_bwe",
+                        ctaLabel: user ? "Go to Dashboard" : "Join BWE",
+                        destination: user ? "/dashboard" : "/signup",
+                      })
+                    }
+                    className="inline-flex shrink-0 items-center justify-center rounded-lg border border-white/20 bg-black/30 px-4 py-2 text-xs font-semibold text-white/85 hover:bg-black/45"
+                  >
+                    {user ? "Go to Dashboard" : "Join BWE"}
+                  </Link>
+                </div>
               </div>
             </div>
 
@@ -1293,54 +1285,36 @@ export default function Home() {
                 How BWE works
               </div>
               <div className="mt-1 text-sm text-white/75 sm:text-base">
-                A simpler path to finding, supporting, and growing Black-owned
-                businesses.
+                A simpler path to finding, supporting, and growing Black-owned businesses.
               </div>
             </div>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               <article className="rounded-xl border border-white/10 bg-black/30 p-4 text-left">
-                <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#D4AF37]">
-                  1
-                </div>
-                <h3 className="mt-1 text-sm font-extrabold text-white">
-                  Search
-                </h3>
+                <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#D4AF37]">1</div>
+                <h3 className="mt-1 text-sm font-extrabold text-white">Search</h3>
                 <p className="mt-1 text-xs text-white/70">
-                  Find Black-owned businesses, organizations, products, and
-                  opportunities.
+                  Find Black-owned businesses, organizations, products, and opportunities.
                 </p>
               </article>
               <article className="rounded-xl border border-white/10 bg-black/30 p-4 text-left">
-                <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#D4AF37]">
-                  2
-                </div>
-                <h3 className="mt-1 text-sm font-extrabold text-white">
-                  Support
-                </h3>
+                <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#D4AF37]">2</div>
+                <h3 className="mt-1 text-sm font-extrabold text-white">Support</h3>
                 <p className="mt-1 text-xs text-white/70">
-                  Buy, book, hire, share, and direct more spending toward
-                  businesses you want to see grow.
+                  Buy, book, hire, share, and direct more spending toward businesses you want to see grow.
                 </p>
               </article>
               <article className="rounded-xl border border-white/10 bg-black/30 p-4 text-left">
-                <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#D4AF37]">
-                  3
-                </div>
+                <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#D4AF37]">3</div>
                 <h3 className="mt-1 text-sm font-extrabold text-white">List</h3>
                 <p className="mt-1 text-xs text-white/70">
                   Create a listing and make your business easier to discover.
                 </p>
               </article>
               <article className="rounded-xl border border-white/10 bg-black/30 p-4 text-left">
-                <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#D4AF37]">
-                  4
-                </div>
-                <h3 className="mt-1 text-sm font-extrabold text-white">
-                  Build Wealth
-                </h3>
+                <div className="text-[10px] font-bold uppercase tracking-[0.1em] text-[#D4AF37]">4</div>
+                <h3 className="mt-1 text-sm font-extrabold text-white">Build Wealth</h3>
                 <p className="mt-1 text-xs text-white/70">
-                  Use BWE tools that help dollars circulate longer and compound
-                  impact.
+                  Use BWE tools that help dollars circulate longer and compound impact.
                 </p>
               </article>
             </div>
@@ -1350,45 +1324,30 @@ export default function Home() {
             <div className="grid gap-4 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:items-center">
               <div className="text-left">
                 <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
-                  Claim your existing listing
+                  For business owners
                 </p>
                 <h3 className="mt-1 text-xl font-extrabold tracking-tight text-white sm:text-2xl">
-                  Find your public BWE business, start the claim process, and
-                  move into monthly growth support.
+                  Get discovered by people looking to support Black-owned businesses.
                 </h3>
                 <p className="mt-2 text-sm text-white/75">
-                  This pilot path is for an existing public business listing.
-                  Payment starts membership and claim processing, but ownership
-                  verification is still reviewed separately.
+                  Create a listing, improve your visibility, and make your business easier to find when support intent is highest.
                 </p>
               </div>
               <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 text-left">
                 <div className="text-[10px] uppercase tracking-[0.08em] text-white/45">
-                  Founding membership path
+                  Business listing conversion
                 </div>
                 <ul className="mt-2 space-y-2 text-sm text-white/80">
-                  <li>• Find existing business in the directory</li>
-                  <li>• Claim the business and start ownership review</li>
-                  <li>• Activate the $49/year founding pilot membership</li>
-                  <li>
-                    • Move into profile review, baseline setup, and monthly
-                    reporting
-                  </li>
+                  <li>• Show up where buyers are already searching</li>
+                  <li>• Turn mission-aligned traffic into discovery</li>
+                  <li>• Make your business easier to trust and contact</li>
                 </ul>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <Link
-                    href="/business-directory"
-                    className="inline-flex rounded-lg bg-[#D4AF37] px-4 py-2.5 text-sm font-extrabold text-black hover:bg-yellow-500"
-                  >
-                    Find Existing Business
-                  </Link>
-                  <Link
-                    href="/founding-membership"
-                    className="inline-flex rounded-lg border border-[#D4AF37]/40 bg-[#D4AF37]/12 px-4 py-2.5 text-sm font-bold text-[#F1D57A] hover:bg-[#D4AF37]/18"
-                  >
-                    Review Membership
-                  </Link>
-                </div>
+                <Link
+                  href="/business-directory/add-business"
+                  className="mt-4 inline-flex rounded-lg bg-[#D4AF37] px-4 py-2.5 text-sm font-extrabold text-black hover:bg-yellow-500"
+                >
+                  List Your Business
+                </Link>
               </div>
             </div>
           </section>
@@ -1400,8 +1359,7 @@ export default function Home() {
                   Black Card Membership
                 </div>
                 <div className="mt-0.5 text-xs text-white/85 sm:text-sm">
-                  Explore Black Card benefits, member access, and premium
-                  ecosystem advantages in a clearly separate path from Join BWE.
+                  Explore Black Card benefits, member access, and premium ecosystem advantages in a clearly separate path from Join BWE.
                 </div>
               </div>
               <Link
@@ -1424,26 +1382,12 @@ export default function Home() {
           <section className="mt-4 rounded-xl border border-[#D4AF37]/30 bg-[#D4AF37]/10 p-4">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div className="text-left">
-                <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">
-                  0.5% Challenge
-                </p>
-                <p className="text-sm text-white">
-                  Search Black first. Buy, review, refer, repeat.
-                </p>
+                <p className="text-xs font-bold uppercase tracking-[0.08em] text-[#D4AF37]">0.5% Challenge</p>
+                <p className="text-sm text-white">Search Black first. Buy, review, refer, repeat.</p>
               </div>
               <div className="flex flex-col gap-2 sm:flex-row">
-                <Link
-                  href="/challenge"
-                  className="rounded-lg bg-[#D4AF37] px-3 py-2 text-center text-xs font-extrabold text-black"
-                >
-                  Join the Challenge
-                </Link>
-                <Link
-                  href="/business-directory"
-                  className="rounded-lg border border-[#D4AF37]/50 px-3 py-2 text-center text-xs font-bold text-[#F1D57A]"
-                >
-                  Search Black-Owned Businesses
-                </Link>
+                <Link href="/challenge" className="rounded-lg bg-[#D4AF37] px-3 py-2 text-center text-xs font-extrabold text-black">Join the Challenge</Link>
+                <Link href="/business-directory" className="rounded-lg border border-[#D4AF37]/50 px-3 py-2 text-center text-xs font-bold text-[#F1D57A]">Search Black-Owned Businesses</Link>
               </div>
             </div>
           </section>
@@ -1503,17 +1447,13 @@ export default function Home() {
               Supporting ecosystem paths
             </div>
             <p className="mb-3 text-xs text-white/65">
-              Once the core action is clear, you can go deeper into the rest of
-              the platform.
+              Once the core action is clear, you can go deeper into the rest of the platform.
             </p>
             <div className="grid gap-3 md:grid-cols-3">
               <article className="rounded-xl border border-white/10 bg-black/30 p-4">
-                <h3 className="text-sm font-extrabold text-white">
-                  Marketplace
-                </h3>
+                <h3 className="text-sm font-extrabold text-white">Marketplace</h3>
                 <p className="mt-1 text-xs text-white/70">
-                  Shop products from Black-owned brands and support commerce
-                  directly.
+                  Shop products from Black-owned brands and support commerce directly.
                 </p>
                 <Link
                   href="/marketplace"
@@ -1523,12 +1463,9 @@ export default function Home() {
                 </Link>
               </article>
               <article className="rounded-xl border border-white/10 bg-black/30 p-4">
-                <h3 className="text-sm font-extrabold text-white">
-                  Student Opportunities
-                </h3>
+                <h3 className="text-sm font-extrabold text-white">Student Opportunities</h3>
                 <p className="mt-1 text-xs text-white/70">
-                  Explore internships, scholarships, grants, and mentorship
-                  pathways.
+                  Explore internships, scholarships, grants, and mentorship pathways.
                 </p>
                 <Link
                   href="/black-student-opportunities"
@@ -1538,12 +1475,9 @@ export default function Home() {
                 </Link>
               </article>
               <article className="rounded-xl border border-white/10 bg-black/30 p-4">
-                <h3 className="text-sm font-extrabold text-white">
-                  Advertising
-                </h3>
+                <h3 className="text-sm font-extrabold text-white">Advertising</h3>
                 <p className="mt-1 text-xs text-white/70">
-                  Premium placements for brands that want more visibility inside
-                  the BWE ecosystem.
+                  Premium placements for brands that want more visibility inside the BWE ecosystem.
                 </p>
                 <Link
                   href="/advertise-with-us"
@@ -1659,9 +1593,7 @@ export default function Home() {
             </article>
 
             <article className="rounded-xl border border-white/10 bg-black/30 p-4">
-              <h4 className="text-sm font-extrabold text-white">
-                Recruiting & Consulting
-              </h4>
+              <h4 className="text-sm font-extrabold text-white">Recruiting & Consulting</h4>
               <p className="mt-1 text-xs text-white/70">
                 Connect employers with talent pathways and consulting support.
               </p>
@@ -1674,12 +1606,9 @@ export default function Home() {
             </article>
 
             <article className="rounded-xl border border-white/10 bg-black/30 p-4">
-              <h4 className="text-sm font-extrabold text-white">
-                Join Creator or Consulting Waitlist
-              </h4>
+              <h4 className="text-sm font-extrabold text-white">Join Creator or Consulting Waitlist</h4>
               <p className="mt-1 text-xs text-white/70">
-                Stay close to new launches without cluttering the top of the
-                homepage.
+                Stay close to new launches without cluttering the top of the homepage.
               </p>
               <button
                 type="button"

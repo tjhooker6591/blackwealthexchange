@@ -41,8 +41,7 @@ export function resolveBlackCardState(input: {
 
   const plan = normalizePlan(input.currentPlan);
   const cardStatus = String(input.cardStatus || "").toLowerCase();
-  const activeCard =
-    Boolean(input.hasActiveCardSignal) || cardStatus === "active";
+  const activeCard = Boolean(input.hasActiveCardSignal) || cardStatus === "active";
   const pending = Boolean(input.hasPendingRequest);
 
   if ((input.activeCardCount || 0) > 1) return "DUPLICATE_ACTIVE_CARD";
@@ -63,11 +62,7 @@ export function resolveBlackCardState(input: {
     return "FREE_PENDING_REQUEST";
   }
 
-  if (
-    plan === "premium" &&
-    String(input.premiumStatus || "").toLowerCase() === "active"
-  )
-    return "PREMIUM_NO_REQUEST";
+  if (plan === "premium" && String(input.premiumStatus || "").toLowerCase() === "active") return "PREMIUM_NO_REQUEST";
   if (plan === "founding") return "FOUNDING_NO_REQUEST";
   return "FREE_NO_REQUEST";
 }

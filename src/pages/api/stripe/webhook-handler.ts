@@ -6,6 +6,15 @@ import Stripe from "stripe";
 import { getCampaignById, markCampaignPaid } from "@/lib/db/ads";
 import { fulfillOrder as dbFulfillOrder } from "@/lib/db/orders";
 import { grantCourseAccess } from "@/lib/db/courses";
+import {
+  deriveMarketplaceAmountTotal,
+  emitMarketplaceReconciliationException,
+  upsertMarketplacePaymentRecord,
+} from "@/lib/marketplace/paymentLinkage";
+import {
+  MARKETPLACE_ORDER_STATES,
+  MARKETPLACE_PAYOUT_STATUSES,
+} from "@/lib/marketplace/orderLifecycle";
 import { recordAffiliateConversion } from "@/lib/db/affiliates";
 import clientPromise from "@/lib/mongodb";
 import { Db, ObjectId } from "mongodb";
@@ -18,6 +27,14 @@ import {
   isBlackCardPlanItemId,
 } from "@/lib/black-card";
 import { ensureBlackCardMembershipAndCard } from "@/lib/black-card-membership";
+import {
+  FOUNDING_MEMBERSHIP_ITEM_ID,
+  FOUNDING_MEMBERSHIP_NAME,
+  FOUNDING_MEMBERSHIP_PRICE_CENTS,
+  FOUNDING_MEMBERSHIP_PRODUCT_KEY,
+  isFoundingMembershipItemId,
+  isFoundingMembershipProductKey,
+} from "@/lib/founding-membership";
 import { getMongoDbName } from "@/lib/env";
 import { requireStripeSecretKey } from "@/lib/stripeSecret";
 import { sendEmail } from "@/lib/sendEmail";
@@ -390,6 +407,17 @@ async function upsertWealthBuilderPremiumEntitlement(
 
 function mapPlanToBlackCardTier(plan: "premium" | "founding") {
   return plan === "founding" ? "signature" : "standard";
+}
+
+function isFoundingMembershipPurchase(
+  meta: SessionMetadata,
+  normalizedItemId: string,
+) {
+  const productKey = asString(meta.productKey).trim().toLowerCase();
+  return (
+    isFoundingMembershipItemId(normalizedItemId) ||
+    isFoundingMembershipProductKey(productKey)
+  );
 }
 
 async function sendMembershipEmailSafe(params: {
@@ -784,6 +812,82 @@ export default async function webhookHandler(
     return res.status(200).json({ received: true });
   }
 
+  if (event.type === "checkout.session.expired") {
+    const session = event.data.object as Stripe.Checkout.Session;
+    const stripeSessionId = typeof session?.id === "string" ? session.id : "";
+    if (!stripeSessionId) {
+      return fail(
+        400,
+        "INVALID_EVENT_PAYLOAD",
+        "Invalid checkout session payload",
+      );
+    }
+
+    const client = await clientPromise;
+    const db = client.db(getMongoDbName());
+    const now = new Date();
+    const orderRecord = await db.collection("orders").findOne({
+      $or: [{ sessionId: stripeSessionId }, { stripeSessionId }],
+    });
+
+    if (!orderRecord) {
+      return res
+        .status(200)
+        .json({ received: true, skipped: "order_not_found" });
+    }
+
+    const paymentStatus = String(orderRecord.paymentStatus || "").toLowerCase();
+    const orderState = String(orderRecord.orderState || "").toLowerCase();
+    const alreadyTerminal =
+      paymentStatus === "paid" ||
+      orderState === MARKETPLACE_ORDER_STATES.PAID_UNFULFILLED ||
+      orderState === MARKETPLACE_ORDER_STATES.FULFILLED_PAYOUT_READY ||
+      orderState === MARKETPLACE_ORDER_STATES.FULFILLED_PAYOUT_PENDING;
+
+    if (alreadyTerminal) {
+      return res
+        .status(200)
+        .json({ received: true, skipped: "already_paid_or_fulfilled" });
+    }
+
+    await db.collection("orders").updateOne(
+      { _id: orderRecord._id, paymentStatus: { $ne: "paid" } },
+      {
+        $set: {
+          orderState: MARKETPLACE_ORDER_STATES.CHECKOUT_EXPIRED,
+          paymentStatus: "expired",
+          payoutStatus: MARKETPLACE_PAYOUT_STATUSES.NOT_APPLICABLE,
+          checkoutExpiredAt:
+            typeof session.expires_at === "number"
+              ? new Date(session.expires_at * 1000)
+              : now,
+          updatedAt: now,
+        },
+      },
+    );
+
+    await db.collection("flow_events").updateOne(
+      { eventType: "marketplace_checkout_expired", stripeSessionId },
+      {
+        $setOnInsert: {
+          eventType: "marketplace_checkout_expired",
+          pageRoute: "/api/stripe/webhook-handler",
+          section: "marketplace_checkout_lifecycle",
+          source: "stripe_webhook",
+          source_variant: "checkout_session_expired",
+          stripeSessionId,
+          orderId: idToString(orderRecord._id),
+          productId: idToString(orderRecord.productId),
+          sellerId: idToString(orderRecord.sellerId),
+          createdAt: now,
+        },
+      },
+      { upsert: true },
+    );
+
+    return res.status(200).json({ received: true });
+  }
+
   if (
     event.type !== "checkout.session.completed" &&
     event.type !== "checkout.session.async_payment_succeeded"
@@ -982,9 +1086,14 @@ export default async function webhookHandler(
             paymentIntentId || existingPayment?.paymentIntentId || null,
           email: email || null,
           amountCents: resolvedAmountCents || null,
+          grossAmountCents: resolvedAmountCents || null,
+          refundedAmountCents: 0,
+          netAmountCents: split.netAmount,
+          bweRetainedAmountCents: split.bweFee,
           bweFee: split.bweFee,
           bweFeePercent: split.bweFeePercent,
           payout: split.sellerPayout,
+          paymentStatus: "paid",
           currency: session.currency || "usd",
 
           lastWebhookEventId: event.id,
@@ -1170,11 +1279,11 @@ export default async function webhookHandler(
       if (
         orderState &&
         ![
-          "checkout_pending",
+          MARKETPLACE_ORDER_STATES.CHECKOUT_PENDING,
           "pending_checkout",
-          "paid_unfulfilled",
-          "fulfilled_payout_ready",
-          "fulfilled_payout_pending",
+          MARKETPLACE_ORDER_STATES.PAID_UNFULFILLED,
+          MARKETPLACE_ORDER_STATES.FULFILLED_PAYOUT_READY,
+          MARKETPLACE_ORDER_STATES.FULFILLED_PAYOUT_PENDING,
         ].includes(orderState)
       ) {
         await db.collection("flow_events").insertOne({
@@ -1688,6 +1797,342 @@ export default async function webhookHandler(
     }
 
     /**
+     * 3.58) Founding Verified Business Growth Membership
+     */
+    if (
+      metaType === "plan" &&
+      isFoundingMembershipPurchase(mergedMeta, normalizedItemId)
+    ) {
+      const stripeCustomerId =
+        typeof session.customer === "string" ? session.customer : null;
+      const stripeSubscriptionId =
+        typeof (session as any).subscription === "string"
+          ? ((session as any).subscription as string)
+          : null;
+      const membershipBusinessId = businessId;
+
+      if (!userId || !membershipBusinessId) {
+        await db.collection("flow_events").insertOne({
+          eventType: "founding_membership_paid_missing_linkage",
+          pageRoute: "/api/stripe/webhook-handler",
+          section: "founding_membership_webhook",
+          source: "stripe_webhook",
+          stripeSessionId,
+          paymentIntentId: paymentIntentId || null,
+          userId: userId || null,
+          businessId: membershipBusinessId || null,
+          createdAt: now,
+        });
+      } else {
+        const membershipId = `${FOUNDING_MEMBERSHIP_PRODUCT_KEY}:${membershipBusinessId}`;
+
+        await db.collection("business_memberships").updateOne(
+          { membershipId },
+          {
+            $setOnInsert: {
+              membershipId,
+              createdAt: paidAt,
+            },
+            $set: {
+              productKey: FOUNDING_MEMBERSHIP_PRODUCT_KEY,
+              membershipName: FOUNDING_MEMBERSHIP_NAME,
+              membershipStatus: "active",
+              billingInterval: "monthly",
+              amountCents:
+                resolvedAmountCents || FOUNDING_MEMBERSHIP_PRICE_CENTS,
+              currency: session.currency || "usd",
+              grossAmountCents:
+                resolvedAmountCents || FOUNDING_MEMBERSHIP_PRICE_CENTS,
+              refundedAmountCents: 0,
+              netRecordedAmountCents: split.netAmount,
+              bweRetainedAmountCents: split.bweFee,
+              userId,
+              businessId: membershipBusinessId,
+              email: email || null,
+              stripeSessionId,
+              stripeCustomerId,
+              stripeSubscriptionId,
+              stripePriceId:
+                typeof session.metadata?.priceId === "string"
+                  ? session.metadata?.priceId
+                  : null,
+              stripeProductId:
+                typeof session.metadata?.productId === "string"
+                  ? session.metadata?.productId
+                  : null,
+              stripeInvoiceId: null,
+              stripePaymentIntentId: paymentIntentId || null,
+              ownershipReviewStatus: "ownership_verification_pending",
+              claimLocked: true,
+              activatedAt: paidAt,
+              updatedAt: now,
+            },
+          },
+          { upsert: true },
+        );
+
+        await db.collection("business_claims").updateOne(
+          {
+            businessId: membershipBusinessId,
+            userId,
+            productKey: FOUNDING_MEMBERSHIP_PRODUCT_KEY,
+          },
+          {
+            $setOnInsert: {
+              createdAt: paidAt,
+            },
+            $set: {
+              businessId: membershipBusinessId,
+              userId,
+              email: email || null,
+              claimStatus: "claim_initiated",
+              ownershipReviewStatus: "ownership_verification_pending",
+              membershipId,
+              membershipName: FOUNDING_MEMBERSHIP_NAME,
+              productKey: FOUNDING_MEMBERSHIP_PRODUCT_KEY,
+              itemId: FOUNDING_MEMBERSHIP_ITEM_ID,
+              paymentStatus: "paid",
+              paymentId: existingPayment?._id
+                ? String(existingPayment._id)
+                : null,
+              stripeSessionId,
+              claimLocked: true,
+              auditHistory: [
+                {
+                  action: "claim_created_from_paid_webhook",
+                  previousStatus: null,
+                  resultingStatus: "ownership_verification_pending",
+                  reviewer: "system:webhook",
+                  reason:
+                    "Paid founding membership created with ownership verification pending.",
+                  timestamp: now,
+                },
+              ],
+              updatedAt: now,
+            },
+          },
+          { upsert: true },
+        );
+
+        await db.collection("ownership_reviews").updateOne(
+          {
+            businessId: membershipBusinessId,
+            userId,
+            sourceMembershipId: membershipId,
+          },
+          {
+            $setOnInsert: { createdAt: paidAt },
+            $set: {
+              businessId: membershipBusinessId,
+              userId,
+              email: email || null,
+              reviewStatus: "ownership_verification_pending",
+              evidenceStatus: "awaiting_owner_documents",
+              sourceMembershipId: membershipId,
+              sourceClaimStatus: "claim_initiated",
+              paymentId: existingPayment?._id
+                ? String(existingPayment._id)
+                : null,
+              stripeSessionId,
+              evidenceRequirements: [
+                "website_domain_email",
+                "listed_business_phone",
+                "formation_document",
+                "business_license",
+                "official_website_or_social_account",
+                "written_owner_or_officer_authorization",
+              ],
+              evidenceSubmissions: [],
+              evidencePublicSummary: null,
+              auditHistory: [
+                {
+                  action: "review_created_from_paid_webhook",
+                  previousStatus: null,
+                  resultingStatus: "ownership_verification_pending",
+                  reviewer: "system:webhook",
+                  reason:
+                    "Ownership verification opened after successful founding membership payment.",
+                  timestamp: now,
+                },
+              ],
+              updatedAt: now,
+            },
+          },
+          { upsert: true },
+        );
+
+        await db.collection("membership_onboarding").updateOne(
+          { membershipId },
+          {
+            $setOnInsert: { createdAt: paidAt },
+            $set: {
+              membershipId,
+              businessId: membershipBusinessId,
+              userId,
+              onboardingStatus: "started",
+              checklistStatus: "pending",
+              nextStep: "submit ownership evidence for manual review",
+              evidencePortalStatus: "open",
+              updatedAt: now,
+            },
+          },
+          { upsert: true },
+        );
+
+        await db.collection("membership_fulfillment").updateOne(
+          { membershipId },
+          {
+            $setOnInsert: { createdAt: paidAt },
+            $set: {
+              membershipId,
+              businessId: membershipBusinessId,
+              userId,
+              fulfillmentStatus: "pending_review_queue",
+              ownershipAccessStatus: "locked_pending_review",
+              profileReviewStatus: "queued",
+              baselineStatus: "queued",
+              monthlyReportingStatus: "scheduled",
+              supportStatus: "available",
+              checklist: [
+                {
+                  key: "ownership_review",
+                  label: "Ownership verification",
+                  status: "ownership_verification_pending",
+                },
+                {
+                  key: "ownership_evidence",
+                  label: "Submit ownership evidence",
+                  status: "awaiting_owner_documents",
+                },
+                {
+                  key: "profile_review",
+                  label: "Professional profile review",
+                  status: "queued",
+                },
+                {
+                  key: "profile_enhancement",
+                  label: "Profile enhancement setup",
+                  status: "queued",
+                },
+                {
+                  key: "baseline",
+                  label: "Initial performance baseline",
+                  status: "queued",
+                },
+                {
+                  key: "monthly_reporting",
+                  label: "Monthly activity reporting",
+                  status: "scheduled",
+                },
+              ],
+              updatedAt: now,
+            },
+          },
+          { upsert: true },
+        );
+
+        await db.collection("profile_performance_baselines").updateOne(
+          { membershipId },
+          {
+            $setOnInsert: { createdAt: paidAt },
+            $set: {
+              membershipId,
+              businessId: membershipBusinessId,
+              userId,
+              baselineStatus: "created",
+              source: "founding_membership_webhook",
+              metrics: {
+                capturedAt: now,
+                notes:
+                  "Initial baseline record created at membership payment confirmation.",
+              },
+              updatedAt: now,
+            },
+          },
+          { upsert: true },
+        );
+
+        await db.collection("payments").updateOne(
+          { stripeSessionId },
+          {
+            $set: {
+              membershipId,
+              membershipName: FOUNDING_MEMBERSHIP_NAME,
+              businessId: membershipBusinessId,
+              userId,
+              testMode: (event as any).livemode === false,
+              liveMode: (event as any).livemode === true,
+              productKey: FOUNDING_MEMBERSHIP_PRODUCT_KEY,
+              itemId: FOUNDING_MEMBERSHIP_ITEM_ID,
+              paymentStatus: "paid",
+              status: "paid",
+              metadata: {
+                ...existingMeta,
+                ...sessionMeta,
+                productKey: FOUNDING_MEMBERSHIP_PRODUCT_KEY,
+                membershipName: FOUNDING_MEMBERSHIP_NAME,
+                billingInterval: "monthly",
+                businessId: membershipBusinessId,
+                membershipId,
+                testMode: (event as any).livemode === false,
+              },
+              updatedAt: now,
+            },
+          },
+        );
+
+        await db
+          .collection("businesses")
+          .updateOne(
+            ObjectId.isValid(membershipBusinessId)
+              ? { _id: new ObjectId(membershipBusinessId) }
+              : { _id: membershipBusinessId as any },
+            {
+              $set: {
+                claimStage: "ownership_verification_pending",
+                ownershipReviewStatus: "ownership_verification_pending",
+                claimLocked: true,
+                pendingClaimMembershipId: membershipId,
+                pendingClaimUserId: userId,
+                pendingClaimPaymentId: existingPayment?._id
+                  ? String(existingPayment._id)
+                  : null,
+                pendingClaimStripeSessionId: stripeSessionId,
+                updatedAt: now,
+              },
+            },
+          );
+
+        await db.collection("subscription_events").updateOne(
+          {
+            stripeEventId: event.id,
+            stripeSessionId,
+            plan: "founding_verified_business_growth_membership",
+          },
+          {
+            $setOnInsert: {
+              createdAt: now,
+            },
+            $set: {
+              stripeEventType: event.type,
+              stripeSubscriptionId: stripeSubscriptionId || null,
+              stripeCustomerId: stripeCustomerId || null,
+              userId,
+              email: email || null,
+              plan: "founding_verified_business_growth_membership",
+              status: "active",
+              businessId: membershipBusinessId,
+              membershipId,
+              currentPeriodStart: paidAt,
+              cancelAtPeriodEnd: false,
+            },
+          },
+          { upsert: true },
+        );
+      }
+    }
+
+    /**
      * 3.6) Paid-plan entitlement mapped to Black Card tier
      */
     const normalizedPlanItemId =
@@ -2001,6 +2446,15 @@ export default async function webhookHandler(
           paymentIntentId: paymentIntentId || null,
           createdAt: now,
         });
+
+        await emitMarketplaceReconciliationException({
+          db,
+          eventType: "marketplace_order_missing_on_paid_webhook",
+          stripeSessionId,
+          paymentIntentId: paymentIntentId || null,
+          detail: "Paid marketplace webhook missing linked orderId",
+          createdAt: now,
+        });
       } else {
         const webhookBuyerEmail = asString(
           (session as any)?.customer_details?.email ||
@@ -2030,33 +2484,59 @@ export default async function webhookHandler(
           }
         }
 
-        const fulfillment = await dbFulfillOrder(
-          targetOrderId,
-          paymentIntentId,
-        );
+        const refreshedOrderRecord = await db
+          .collection("orders")
+          .findOne(
+            ObjectId.isValid(targetOrderId)
+              ? { _id: new ObjectId(targetOrderId) }
+              : { _id: targetOrderId as any },
+          );
 
-        if (!fulfillment.ok) {
-          const eventTypeByCode: Record<string, string> = {
-            ORDER_NOT_FOUND: "marketplace_order_missing_on_paid_webhook",
-            MISSING_PRODUCT: "marketplace_order_product_linkage_missing",
-            OUT_OF_STOCK: "marketplace_stock_decrement_failed",
-            NON_CANONICAL_ORDER_STATE:
-              "marketplace_order_non_canonical_state_detected",
-          };
+        const reconciledBuyerId =
+          asString(refreshedOrderRecord?.userId) ||
+          asString(refreshedOrderRecord?.buyerUserId) ||
+          userId ||
+          asString(existingPayment?.userId);
 
-          await db.collection("flow_events").insertOne({
-            eventType:
-              eventTypeByCode[fulfillment.code] ||
-              "marketplace_order_fulfillment_failed",
-            pageRoute: "/api/stripe/webhook-handler",
-            section: "marketplace_webhook_invariant",
-            source: "stripe_webhook",
-            source_variant: fulfillment.code.toLowerCase(),
+        const reconciledProductId =
+          idToString(refreshedOrderRecord?.productId) ||
+          asString(mergedMeta.itemId || existingPayment?.itemId);
+        const reconciledSellerId =
+          idToString(refreshedOrderRecord?.sellerId) ||
+          asString((mergedMeta as any).sellerId);
+
+        const paymentRecord = await upsertMarketplacePaymentRecord({
+          db,
+          stripeSessionId,
+          paymentIntentId: paymentIntentId || null,
+          paidAt,
+          orderId: targetOrderId,
+          productId: reconciledProductId,
+          sellerId: reconciledSellerId,
+          payoutMode: asString(refreshedOrderRecord?.payoutMode),
+          amountTotal: deriveMarketplaceAmountTotal({
+            session,
+            existingAmountCents: existingPayment?.amountCents ?? null,
+            orderRecord: refreshedOrderRecord as any,
+          }),
+          currency: session.currency || "usd",
+          buyerUserId: reconciledBuyerId || null,
+          buyerEmail: email || null,
+          webhookEventId: event.id,
+          webhookEventType: event.type,
+        });
+
+        if (!paymentRecord.orderId || !paymentRecord.metadata?.orderId) {
+          await emitMarketplaceReconciliationException({
+            db,
+            eventType: "marketplace_payment_order_link_missing",
             stripeSessionId,
             paymentIntentId: paymentIntentId || null,
             orderId: targetOrderId,
-            productId: fulfillment.productId || null,
-            orderState: fulfillment.orderState || null,
+            productId: reconciledProductId || null,
+            sellerId: reconciledSellerId || null,
+            detail:
+              "Marketplace payment record missing order linkage after upsert",
             createdAt: now,
           });
 
@@ -2065,52 +2545,99 @@ export default async function webhookHandler(
             {
               $set: {
                 fulfillmentStatus: "failed",
-                orderFulfillmentMethod: fulfillmentMethod,
-                orderFulfillmentCode: fulfillment.code,
+                orderFulfillmentMethod: "payment_reconciliation_failed",
+                orderFulfillmentCode: "PAYMENT_ORDER_LINK_MISSING",
                 updatedAt: now,
               },
             },
-          );
-
-          console.warn(
-            `⚠️ Product order fulfillment blocked order=${targetOrderId} code=${fulfillment.code}`,
           );
         } else {
-          await db.collection("payments").updateOne(
-            { stripeSessionId },
-            {
-              $set: {
-                fulfillmentStatus: "fulfilled",
-                orderFulfillmentMethod: fulfillmentMethod,
-                orderFulfillmentCode: "UPDATED",
-                canonicalOrderState: fulfillment.orderState || null,
-                payoutReady: Boolean(fulfillment.payoutReady),
-                stockDecremented: Boolean(fulfillment.stockDecremented),
-                fulfilledAt: now,
-                updatedAt: now,
+          const fulfillment = await dbFulfillOrder(
+            targetOrderId,
+            paymentIntentId,
+          );
+
+          if (!fulfillment.ok) {
+            const eventTypeByCode: Record<string, string> = {
+              ORDER_NOT_FOUND: "marketplace_order_missing_on_paid_webhook",
+              MISSING_PRODUCT: "marketplace_order_product_linkage_missing",
+              OUT_OF_STOCK: "marketplace_stock_decrement_failed",
+              NON_CANONICAL_ORDER_STATE:
+                "marketplace_order_non_canonical_state_detected",
+            };
+
+            await db.collection("flow_events").insertOne({
+              eventType:
+                eventTypeByCode[fulfillment.code] ||
+                "marketplace_order_fulfillment_failed",
+              pageRoute: "/api/stripe/webhook-handler",
+              section: "marketplace_webhook_invariant",
+              source: "stripe_webhook",
+              source_variant: fulfillment.code.toLowerCase(),
+              stripeSessionId,
+              paymentIntentId: paymentIntentId || null,
+              orderId: targetOrderId,
+              productId: fulfillment.productId || null,
+              orderState: fulfillment.orderState || null,
+              createdAt: now,
+            });
+
+            await db.collection("payments").updateOne(
+              { stripeSessionId },
+              {
+                $set: {
+                  fulfillmentStatus: "failed",
+                  orderFulfillmentMethod: fulfillmentMethod,
+                  orderFulfillmentCode: fulfillment.code,
+                  updatedAt: now,
+                },
               },
-            },
-          );
+            );
 
-          await db.collection("flow_events").insertOne({
-            eventType: "marketplace_order_fulfilled",
-            pageRoute: "/api/stripe/webhook-handler",
-            section: "marketplace_order_fulfillment",
-            source: "stripe_webhook",
-            source_variant: fulfillmentMethod,
-            stripeSessionId,
-            paymentIntentId: paymentIntentId || null,
-            orderId: targetOrderId,
-            productId: fulfillment.productId || null,
-            orderState: fulfillment.orderState || null,
-            payoutReady: Boolean(fulfillment.payoutReady),
-            stockDecremented: Boolean(fulfillment.stockDecremented),
-            createdAt: now,
-          });
+            console.warn(
+              `⚠️ Product order fulfillment blocked order=${targetOrderId} code=${fulfillment.code}`,
+            );
+          } else {
+            await db.collection("payments").updateOne(
+              { stripeSessionId },
+              {
+                $set: {
+                  fulfillmentStatus: "fulfilled",
+                  orderFulfillmentMethod: fulfillmentMethod,
+                  orderFulfillmentCode: "UPDATED",
+                  canonicalOrderState: fulfillment.orderState || null,
+                  payoutReady: Boolean(fulfillment.payoutReady),
+                  stockDecremented: Boolean(fulfillment.stockDecremented),
+                  reconciliationException:
+                    fulfillment.reconciliationException || null,
+                  fulfilledAt: now,
+                  updatedAt: now,
+                },
+              },
+            );
 
-          console.log(
-            `✅ Product order fulfilled order=${targetOrderId} state=${fulfillment.orderState} payoutReady=${Boolean(fulfillment.payoutReady)}`,
-          );
+            await db.collection("flow_events").insertOne({
+              eventType: "marketplace_order_fulfilled",
+              pageRoute: "/api/stripe/webhook-handler",
+              section: "marketplace_order_fulfillment",
+              source: "stripe_webhook",
+              source_variant: fulfillmentMethod,
+              stripeSessionId,
+              paymentIntentId: paymentIntentId || null,
+              orderId: targetOrderId,
+              productId: fulfillment.productId || null,
+              orderState: fulfillment.orderState || null,
+              payoutReady: Boolean(fulfillment.payoutReady),
+              stockDecremented: Boolean(fulfillment.stockDecremented),
+              reconciliationException:
+                fulfillment.reconciliationException || null,
+              createdAt: now,
+            });
+
+            console.log(
+              `✅ Product order fulfilled order=${targetOrderId} state=${fulfillment.orderState} payoutReady=${Boolean(fulfillment.payoutReady)}`,
+            );
+          }
         }
       }
     }
@@ -2146,7 +2673,9 @@ export default async function webhookHandler(
           paymentStatus: "paid",
           purchasedAt: paidAt,
           email: email || null,
-          courseName: asString(mergedMeta.courseName || mergedMeta.itemName || resolvedCourseId),
+          courseName: asString(
+            mergedMeta.courseName || mergedMeta.itemName || resolvedCourseId,
+          ),
           sendAccessEmail: true,
         });
 

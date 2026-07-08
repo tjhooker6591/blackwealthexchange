@@ -2,6 +2,10 @@ import { performance } from "node:perf_hooks";
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import {
+  normalizeFoundingClaimStage,
+  resolveFoundingOwnershipState,
+} from "@/lib/founding-membership-state";
+import {
   ensureApiRateLimitIndexes,
   getClientIp,
   hitApiRateLimit,
@@ -9,6 +13,7 @@ import {
 import { getAdminDecodedFromRequest, isAdminDecoded } from "@/lib/adminAuth";
 import { getMongoDbName } from "@/lib/env";
 import { computeListingCompleteness } from "@/lib/directory/completeness";
+import { isPublicBusinessVisible } from "@/lib/directory/publicVisibility";
 
 function escapeRegex(input: string) {
   return input.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -310,19 +315,31 @@ function normalizeResultItem(item: any, isOrganizations: boolean) {
     item?.status || item?.trustStatus,
   ).toLowerCase();
   const slug = safeText(item?.alias) || safeText(item?._id);
+  const ownershipState = isOrganizations
+    ? { isOwnershipVerified: false, canonicalState: null }
+    : resolveFoundingOwnershipState({
+        business: item,
+        publicListingStatus: item?.publicListingStatus,
+        claimStage: item?.claimStage,
+        ownershipReviewStatus: item?.ownershipReviewStatus,
+      });
+  const normalizedClaimStage = isOrganizations
+    ? null
+    : ownershipState.canonicalState ||
+      normalizeFoundingClaimStage(item?.claimStage) ||
+      normalizeFoundingClaimStage(item?.publicListingStatus) ||
+      (listingStatus === "verified" ? "ownership_verified" : "unclaimed");
 
   const isVerified =
     item?.isVerified === true ||
     item?.verified === true ||
-    listingStatus === "verified";
+    listingStatus === "verified" ||
+    ownershipState.isOwnershipVerified;
 
   const isSponsored =
     item?.isSponsored === true || Number(item?.amountPaid || 0) > 0;
 
-  const isComplete =
-    typeof item?.isComplete === "boolean"
-      ? item.isComplete
-      : Number(item?.qualityScore || item?.completenessScore || 0) >= 70;
+  const isComplete = isPublicBusinessVisible(item);
 
   return {
     ...item,
@@ -335,6 +352,13 @@ function normalizeResultItem(item: any, isOrganizations: boolean) {
     isSponsored,
     isComplete,
     slug,
+    claimStage: normalizedClaimStage,
+    publicListingStatus: isOrganizations
+      ? null
+      : normalizeFoundingClaimStage(item?.publicListingStatus),
+    ownershipReviewStatus: isOrganizations
+      ? null
+      : normalizeFoundingClaimStage(item?.ownershipReviewStatus),
   };
 }
 
@@ -635,6 +659,7 @@ export default async function handler(
           { isComplete: true },
           { completenessScore: { $gte: 70 } },
           { qualityScore: { $gte: 70 } },
+          { directoryVisibilityApproved: true },
         ],
       });
     }
@@ -734,9 +759,13 @@ export default async function handler(
       verified: 1,
       trustStatus: 1,
       status: 1,
+      claimStage: 1,
+      publicListingStatus: 1,
+      ownershipReviewStatus: 1,
       isComplete: 1,
       completenessScore: 1,
       qualityScore: 1,
+      directoryVisibilityApproved: 1,
       orgType: 1,
       denomination: 1,
       logo: 1,

@@ -3,6 +3,7 @@ import clientPromise from "@/lib/mongodb";
 import { getMarketplaceDbName } from "@/lib/marketplace/db";
 import { resolveSellerSession } from "@/lib/marketplace/sellerSession";
 import { ObjectId } from "mongodb";
+import { isMarketplaceSellerLiabilityOrder } from "@/lib/marketplace/orderLifecycle";
 
 export default async function handler(
   req: NextApiRequest,
@@ -91,6 +92,7 @@ export default async function handler(
         fulfillmentState,
         trackingNumber: o?.trackingNumber || null,
         trackingCarrier: o?.trackingCarrier || null,
+        sellerLiabilityActive: isMarketplaceSellerLiabilityOrder(o),
         status: o?.orderState || o?.status || o?.paymentStatus || "pending",
       };
     });

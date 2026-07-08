@@ -63,7 +63,9 @@ export function normalizeLocationParts(raw: string): NormalizedLocation {
   if (value.includes(",")) {
     const [city = "", state = ""] = value.split(",").map((s) => s.trim());
     return {
-      normalized: [city, state ? state.toUpperCase() : ""].filter(Boolean).join(", "),
+      normalized: [city, state ? state.toUpperCase() : ""]
+        .filter(Boolean)
+        .join(", "),
       city,
       state: state.toUpperCase(),
     };
@@ -173,4 +175,28 @@ export function getCreateBusinessDuplicateError() {
 
 export function getCreateBusinessSuccessMessage() {
   return "Business submitted for review.";
+}
+
+export function getCanonicalBusinessName(
+  doc: Record<string, unknown> | null | undefined,
+) {
+  if (!doc) return "";
+
+  const candidates = [
+    doc.business_name,
+    doc.businessName,
+    doc.name,
+    doc.companyName,
+    doc.legalName,
+    doc.dba,
+    doc.title,
+  ];
+
+  for (const value of candidates) {
+    if (typeof value === "string" && value.trim()) {
+      return value.trim();
+    }
+  }
+
+  return "";
 }

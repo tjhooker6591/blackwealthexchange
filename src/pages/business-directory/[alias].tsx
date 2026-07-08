@@ -1,8 +1,10 @@
 import React, { useEffect, useMemo, useState } from "react";
+import type { GetServerSideProps } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
 type Business = {
+  _id?: string;
   business_name?: string;
   name?: string;
   categories?: string | string[];
@@ -17,6 +19,12 @@ type Business = {
   verified?: boolean;
   isVerified?: boolean;
   status?: string;
+  claimStage?: string;
+  claimLocked?: boolean;
+  claimedByUserId?: string;
+  claimedByEmail?: string;
+  foundingMembershipId?: string;
+  ownershipReviewStatus?: string;
   amountPaid?: number;
   completenessScore?: number;
   isComplete?: boolean;
@@ -64,12 +72,17 @@ function trackFlowEvent(payload: Record<string, unknown>) {
   }).catch(() => {});
 }
 
-export default function BusinessDetail() {
+type Props = {
+  initialAlias?: string | null;
+};
+
+export default function BusinessDetail({ initialAlias }: Props) {
   const router = useRouter();
   const alias = useMemo(() => {
     const raw = router.query.alias;
-    return Array.isArray(raw) ? raw[0] : raw;
-  }, [router.query.alias]);
+    const routeAlias = Array.isArray(raw) ? raw[0] : raw;
+    return routeAlias || initialAlias || undefined;
+  }, [initialAlias, router.query.alias]);
 
   const [business, setBusiness] = useState<Business | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -79,6 +92,11 @@ export default function BusinessDetail() {
     const raw = router.query.from;
     return Array.isArray(raw) ? raw[0] : raw || "directory";
   }, [router.query.from]);
+
+  const claimMode = useMemo(() => {
+    const raw = router.query.mode;
+    return (Array.isArray(raw) ? raw[0] : raw) === "claim";
+  }, [router.query.mode]);
 
   useEffect(() => {
     if (!router.isReady || !alias) return;
@@ -148,6 +166,8 @@ export default function BusinessDetail() {
     : locationText;
 
   const status = safeStr(business?.status).toLowerCase();
+  const claimStage = safeStr(business?.claimStage).toLowerCase();
+  const claimLocked = business?.claimLocked === true;
   const trust = {
     verified:
       business?.verified === true ||
@@ -159,7 +179,21 @@ export default function BusinessDetail() {
       typeof business?.isComplete === "boolean"
         ? business.isComplete
         : Number(business?.completenessScore || 0) >= 70,
+    claimStage,
   };
+  const canonicalBusinessId = safeStr(business?._id);
+  const canClaim =
+    Boolean(canonicalBusinessId) &&
+    !trust.verified &&
+    !claimLocked &&
+    ![
+      "claim_initiated",
+      "ownership_verification_pending",
+      "additional_evidence_required",
+      "disputed",
+      "founding_growth_member",
+      "ownership_verified",
+    ].includes(claimStage);
 
   return (
     <div className="min-h-screen bg-neutral-950 text-white">
@@ -186,10 +220,14 @@ export default function BusinessDetail() {
               </Link>
             ) : null}
             <Link
-              href="/business-directory"
+              href={
+                claimMode
+                  ? "/business-directory?mode=claim"
+                  : "/business-directory"
+              }
               className="text-white/65 underline underline-offset-4 transition hover:text-white"
             >
-              Directory
+              {claimMode ? "Claim mode directory" : "Directory"}
             </Link>
           </div>
         </div>
@@ -314,6 +352,42 @@ export default function BusinessDetail() {
                   </div>
 
                   <div className="pt-2 flex flex-wrap gap-2">
+                    {claimMode ? (
+                      <div className="w-full rounded-xl border border-yellow-500/20 bg-yellow-500/10 px-4 py-3 text-sm text-white/75">
+                        <div className="font-semibold text-yellow-200">
+                          Claim mode active
+                        </div>
+                        <div className="mt-1">
+                          You came here to claim an existing public listing.
+                          Eligible businesses can continue directly into
+                          Founding Membership.
+                        </div>
+                      </div>
+                    ) : null}
+                    {canClaim ? (
+                      <Link
+                        href={`/founding-membership?businessId=${encodeURIComponent(canonicalBusinessId)}`}
+                        className="inline-flex items-center justify-center rounded-xl border border-[#D4AF37]/40 bg-[#D4AF37]/12 px-4 py-2 text-sm font-bold text-[#F1D57A] transition hover:bg-[#D4AF37]/18"
+                      >
+                        Claim This Business
+                      </Link>
+                    ) : (
+                      <span className="inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2 text-sm font-bold text-white/55">
+                        {trust.verified
+                          ? "Already Verified"
+                          : claimStage === "claim_initiated"
+                            ? "Ownership verification pending"
+                            : claimStage === "ownership_verification_pending"
+                              ? "Ownership verification pending"
+                              : claimStage === "additional_evidence_required"
+                                ? "Ownership verification pending"
+                                : claimStage === "disputed"
+                                  ? "Ownership verification pending"
+                                  : claimStage === "founding_growth_member"
+                                    ? "Membership Already Active"
+                                    : "Not Claimable"}
+                      </span>
+                    )}
                     {website && (
                       <a
                         href={website}
@@ -360,6 +434,34 @@ export default function BusinessDetail() {
 
                   <div className="pt-2 text-xs text-white/60 space-y-2">
                     <div>Next actions</div>
+                    <div className="rounded-xl border border-yellow-500/20 bg-yellow-500/10 p-3 text-white/75">
+                      <div className="font-semibold text-yellow-200">
+                        Claim and membership path
+                      </div>
+                      <div className="mt-1">
+                        Payment starts membership and opens ownership
+                        verification, but does not automatically verify
+                        ownership.
+                      </div>
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        <Link
+                          href={
+                            canClaim
+                              ? `/founding-membership?businessId=${encodeURIComponent(canonicalBusinessId)}`
+                              : "/founding-membership"
+                          }
+                          className="rounded-lg bg-yellow-500 px-3 py-2 text-xs font-extrabold text-black"
+                        >
+                          Start Membership and Claim
+                        </Link>
+                        <Link
+                          href="/founding-membership/status"
+                          className="rounded-lg border border-white/15 px-3 py-2 text-xs font-bold text-white/85"
+                        >
+                          View Member Status
+                        </Link>
+                      </div>
+                    </div>
                     <div className="flex flex-wrap gap-2">
                       {categoryText ? (
                         <Link
@@ -410,3 +512,19 @@ export default function BusinessDetail() {
     </div>
   );
 }
+
+export const getServerSideProps: GetServerSideProps<Props> = async ({
+  params,
+}) => {
+  const alias = Array.isArray(params?.alias)
+    ? params.alias[0]
+    : typeof params?.alias === "string"
+      ? params.alias
+      : null;
+
+  return {
+    props: {
+      initialAlias: alias,
+    },
+  };
+};

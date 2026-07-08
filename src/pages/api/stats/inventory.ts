@@ -33,6 +33,7 @@ export default async function handler(
             { isComplete: true },
             { completenessScore: { $gte: 70 } },
             { qualityScore: { $gte: 70 } },
+            { directoryVisibilityApproved: true },
           ],
         },
       ],

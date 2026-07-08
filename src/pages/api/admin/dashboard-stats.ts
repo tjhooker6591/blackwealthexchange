@@ -2,6 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import { requireAdminFromRequest } from "@/lib/adminAuth";
+import { getPendingFoundingClaimVerifications } from "@/lib/founding-membership";
 
 function n(v: any) {
   return typeof v === "number" && Number.isFinite(v) ? v : 0;
@@ -116,6 +117,9 @@ export default async function handler(
       // Revenue aggregations (new + fallback)
       adPurchasesDirRevenueAgg,
       paymentsDirRevenueAgg,
+
+      // Founding membership claim verification queue
+      pendingClaimVerifications,
     ] = await Promise.all([
       // Businesses
       businesses.countDocuments({ status: "pending" }),
@@ -258,6 +262,8 @@ export default async function handler(
           },
         ])
         .toArray(),
+
+      getPendingFoundingClaimVerifications(db),
     ]);
 
     // Prefer ad_purchases (new webhook flow). Fallback to payments if ad_purchases not populated yet.
@@ -286,13 +292,20 @@ export default async function handler(
     // UI currently formats directoryRevenue as dollars, so return dollars too.
     const directoryRevenue = directoryRevenueCents / 100;
 
+    const pendingClaimVerificationCount = Array.isArray(
+      pendingClaimVerifications,
+    )
+      ? pendingClaimVerifications.length
+      : 0;
+
     const pendingApprovalsTotal =
       n(pendingBusinesses) +
       n(pendingOrganizations) +
       n(pendingJobs) +
       n(pendingProducts) +
       n(pendingDirectoryListings) +
-      n(pendingPayouts);
+      n(pendingPayouts) +
+      pendingClaimVerificationCount;
 
     const joinSources = [
       { collection: "users", accountType: "user" },
@@ -524,6 +537,10 @@ export default async function handler(
         paidUnlinked: paidDirectoryPurchasesUnlinked, // key signal
       },
 
+      claimVerification: {
+        pending: pendingClaimVerificationCount,
+      },
+
       // Optional legacy fields (helps older dashboard components if any still use them)
       pendingBusinesses,
       pendingOrganizations,
@@ -532,6 +549,7 @@ export default async function handler(
       pendingJobs,
       pendingProducts,
       pendingListings: pendingDirectoryListings,
+      pendingClaimVerifications: pendingClaimVerificationCount,
       totalDirectoryListings,
       directoryRevenue,
 

@@ -17,6 +17,17 @@ import {
   BLACK_CARD_TIER_BY_ITEM_ID,
   isBlackCardPlanItemId,
 } from "@/lib/black-card";
+import {
+  FOUNDING_MEMBERSHIP_CURRENCY,
+  FOUNDING_MEMBERSHIP_ITEM_ID,
+  FOUNDING_MEMBERSHIP_NAME,
+  FOUNDING_MEMBERSHIP_PILOT_LIMIT,
+  FOUNDING_MEMBERSHIP_PRICE_CENTS,
+  FOUNDING_MEMBERSHIP_PRODUCT_KEY,
+  countActiveFoundingMemberships,
+  getClaimableBusinessById,
+  isFoundingMembershipItemId,
+} from "@/lib/founding-membership";
 import { getStripeSecretKey } from "@/lib/stripeSecret";
 import {
   checkoutTypeToRevenueType,
@@ -402,6 +413,11 @@ export default async function handler(
           name: BLACK_CARD_TIERS.elite.label,
           billingInterval: "monthly",
         },
+        [FOUNDING_MEMBERSHIP_ITEM_ID]: {
+          amount: FOUNDING_MEMBERSHIP_PRICE_CENTS,
+          name: FOUNDING_MEMBERSHIP_NAME,
+          billingInterval: "monthly",
+        },
       };
 
       const plan = planMap[itemId];
@@ -434,6 +450,13 @@ export default async function handler(
           `${origin}/black-card/join?tier=${BLACK_CARD_TIER_BY_ITEM_ID[itemId]}&checkout=success`,
         );
         cancelUrl = `${origin}/black-card/join?tier=${BLACK_CARD_TIER_BY_ITEM_ID[itemId]}&checkout=cancel`;
+      }
+
+      if (isFoundingMembershipItemId(itemId)) {
+        successUrl = withCheckoutSessionId(
+          `${origin}/payment-success?context=founding-membership&businessId=${encodeURIComponent(normalizedBusinessId)}`,
+        );
+        cancelUrl = `${origin}/payment-cancel?context=founding-membership&businessId=${encodeURIComponent(normalizedBusinessId)}`;
       }
     } else if (type === "course") {
       const courseMap: Record<string, { name: string; amount: number }> = {
@@ -572,6 +595,15 @@ export default async function handler(
       metadata.billingInterval = "annual";
     }
 
+    if (type === "plan" && isFoundingMembershipItemId(finalItemId)) {
+      metadata.productKey = FOUNDING_MEMBERSHIP_PRODUCT_KEY;
+      metadata.tier = "founding";
+      metadata.billingInterval = "monthly";
+      metadata.membershipName = FOUNDING_MEMBERSHIP_NAME;
+      metadata.businessId = normalizedBusinessId || "";
+      metadata.membershipContext = "founding_business_growth";
+    }
+
     // ---------------------------------------------------------
     // PLAN GUARD (server-side)
     // ---------------------------------------------------------
@@ -580,7 +612,8 @@ export default async function handler(
       (finalItemId === "premium" ||
         finalItemId === "wealth-builder-premium-monthly" ||
         finalItemId === "wealth-builder-premium-annual" ||
-        isBlackCardPlanItemId(finalItemId))
+        isBlackCardPlanItemId(finalItemId) ||
+        isFoundingMembershipItemId(finalItemId))
     ) {
       const accountCollectionName =
         getAccountCollectionName(sessionAccountType);
@@ -649,6 +682,72 @@ export default async function handler(
           return res.status(409).json({
             error: `BWE Black Card ${requestedTier} is already active`,
             code: "BLACK_CARD_TIER_ALREADY_ACTIVE",
+          });
+        }
+      }
+
+      if (isFoundingMembershipItemId(finalItemId)) {
+        if (!normalizedBusinessId) {
+          return res.status(400).json({
+            error: "A claimable business must be selected first",
+            code: "FOUNDING_MEMBERSHIP_BUSINESS_REQUIRED",
+          });
+        }
+
+        const claimableBusiness = await getClaimableBusinessById(
+          db,
+          normalizedBusinessId,
+        );
+        if (!claimableBusiness) {
+          return res.status(404).json({
+            error: "Selected business is not publicly claimable",
+            code: "FOUNDING_MEMBERSHIP_BUSINESS_NOT_CLAIMABLE",
+          });
+        }
+
+        const activePilotCount = await countActiveFoundingMemberships(db);
+        if (activePilotCount >= FOUNDING_MEMBERSHIP_PILOT_LIMIT) {
+          return res.status(409).json({
+            error: "The founding membership pilot is currently full",
+            code: "FOUNDING_MEMBERSHIP_PILOT_FULL",
+          });
+        }
+
+        const existingMembership = await db
+          .collection("business_memberships")
+          .findOne({
+            productKey: FOUNDING_MEMBERSHIP_PRODUCT_KEY,
+            businessId: normalizedBusinessId,
+            membershipStatus: { $in: ["active", "past_due"] },
+          });
+        if (existingMembership) {
+          return res.status(409).json({
+            error:
+              "This business already has an active or pending paid founding membership",
+            code: "FOUNDING_MEMBERSHIP_ALREADY_ACTIVE",
+          });
+        }
+
+        const existingClaimLock = await db
+          .collection("business_claims")
+          .findOne({
+            businessId: normalizedBusinessId,
+            productKey: FOUNDING_MEMBERSHIP_PRODUCT_KEY,
+            claimStatus: {
+              $in: [
+                "claim_initiated",
+                "ownership_verification_pending",
+                "additional_evidence_required",
+                "ownership_verified",
+                "disputed",
+              ],
+            },
+          });
+        if (existingClaimLock) {
+          return res.status(409).json({
+            error:
+              "This business already has an ownership verification in progress and cannot be claimed again",
+            code: "FOUNDING_MEMBERSHIP_CLAIM_LOCKED",
           });
         }
       }
@@ -752,8 +851,14 @@ export default async function handler(
       type === "plan" &&
       (finalItemId === "premium" || finalItemId === "founder");
 
+    const isFoundingMembershipSubscription =
+      type === "plan" && isFoundingMembershipItemId(finalItemId);
+
     const baseParams: Stripe.Checkout.SessionCreateParams = {
-      mode: isAnnualMembershipSubscription ? "subscription" : "payment",
+      mode:
+        isAnnualMembershipSubscription || isFoundingMembershipSubscription
+          ? "subscription"
+          : "payment",
       payment_method_types: ["card"],
       line_items: [
         {
@@ -763,7 +868,14 @@ export default async function handler(
             unit_amount: unitAmount,
             ...(isAnnualMembershipSubscription
               ? { recurring: { interval: "year" as const, interval_count: 1 } }
-              : {}),
+              : isFoundingMembershipSubscription
+                ? {
+                    recurring: {
+                      interval: "month" as const,
+                      interval_count: 1,
+                    },
+                  }
+                : {}),
           },
           quantity: 1,
         },
@@ -773,7 +885,7 @@ export default async function handler(
       success_url: successUrl,
       cancel_url: cancelUrl,
       client_reference_id: sessionUserId,
-      ...(isAnnualMembershipSubscription
+      ...(isAnnualMembershipSubscription || isFoundingMembershipSubscription
         ? {
             subscription_data: {
               metadata,
@@ -828,10 +940,16 @@ export default async function handler(
           type,
           itemId: finalItemId,
           amountCents: unitAmount,
+          grossAmountCents: unitAmount,
+          netAmountCents: split.netAmount,
+          refundedAmountCents: 0,
+          bweRetainedAmountCents: split.bweFee,
           bweFee: split.bweFee,
           bweFeePercent: split.bweFeePercent,
           payout: split.sellerPayout,
           status: "pending",
+          paymentStatus: "pending",
+          currency: FOUNDING_MEMBERSHIP_CURRENCY,
           createdAt: new Date(),
           metadata: {
             durationDays:
@@ -873,7 +991,14 @@ export default async function handler(
                     ? "monthly"
                     : type === "plan" && isBlackCardPlanItemId(finalItemId)
                       ? "annual"
-                      : null,
+                      : type === "plan" &&
+                          isFoundingMembershipItemId(finalItemId)
+                        ? "monthly"
+                        : null,
+            membershipName:
+              type === "plan" && isFoundingMembershipItemId(finalItemId)
+                ? FOUNDING_MEMBERSHIP_NAME
+                : null,
           },
         },
         $set: {

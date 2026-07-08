@@ -5,6 +5,7 @@ import {
   startOfToday,
   sumAmount,
 } from "@/lib/adminMetrics";
+import { isMarketplaceSellerLiabilityOrder } from "@/lib/marketplace/orderLifecycle";
 
 export async function buildLiveAdminMetrics(db: Db) {
   const now = new Date();
@@ -24,11 +25,17 @@ export async function buildLiveAdminMetrics(db: Db) {
       { createdAt: { $gte: month } },
       ["netBweRevenue", "amount"],
     ),
-    marketplacePlatformFees: await sumAmount(db, "orders", {}, [
-      "platformFeeAmount",
-      "platformFee",
-      "bweFee",
-    ]),
+    marketplacePlatformFees: {
+      value: (
+        await db
+          .collection("orders")
+          .find({}, { projection: { paymentStatus: 1, orderState: 1, paid: 1, paidAt: 1, bweFee: 1, platformFeeAmount: 1, platformFee: 1 } })
+          .toArray()
+      ).reduce((sum: number, order: any) => {
+        if (!isMarketplaceSellerLiabilityOrder(order)) return sum;
+        return sum + Number(order?.platformFeeAmount ?? order?.platformFee ?? order?.bweFee ?? 0);
+      }, 0),
+    },
   };
   const support = {
     newTickets: await safeCount(db, "support_tickets", { status: "new" }),

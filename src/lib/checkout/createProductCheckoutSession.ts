@@ -10,7 +10,12 @@ import {
   getClientIp,
   hitApiRateLimit,
 } from "@/lib/apiRateLimit";
-import { computeRevenueSplit } from "@/lib/payments/revenue";
+import { resolveMarketplaceInventory } from "@/lib/marketplace/inventory";
+import {
+  buildMarketplaceProjectedAmounts,
+  MARKETPLACE_ORDER_STATES,
+  MARKETPLACE_PAYOUT_STATUSES,
+} from "@/lib/marketplace/orderLifecycle";
 
 type OidLike = { $oid?: string; oid?: string; _id?: unknown } | any;
 type PayoutMode = "destination_charge" | "platform_hold";
@@ -316,8 +321,8 @@ export async function createProductCheckoutSessionCore({
     };
   }
 
-  const stockRaw = Number(product?.stock ?? product?.inventory ?? 1);
-  if (Number.isFinite(stockRaw) && stockRaw <= 0) {
+  const inventory = resolveMarketplaceInventory(product);
+  if (!inventory.purchasable) {
     return {
       status: 409,
       body: {
@@ -344,8 +349,8 @@ export async function createProductCheckoutSessionCore({
     };
   }
 
-  const split = computeRevenueSplit("marketplace", unitAmountCents);
-  const applicationFee = split.bweFee;
+  const split = buildMarketplaceProjectedAmounts(unitAmountCents);
+  const applicationFee = split.applicationFee;
   const cartItems: CartItem[] = [
     {
       id: String(product._id),
@@ -386,11 +391,12 @@ export async function createProductCheckoutSessionCore({
       $setOnInsert: {
         _id: orderObjectId,
         createdAt: new Date(),
-        orderState: "checkout_pending",
+        canonicalSchemaVersion: 1,
+        orderState: MARKETPLACE_ORDER_STATES.CHECKOUT_PENDING,
         status: "pending_checkout",
         paymentStatus: "pending",
         fulfillmentStatus: "pending",
-        payoutStatus: "pending",
+        payoutStatus: MARKETPLACE_PAYOUT_STATUSES.NOT_APPLICABLE,
         paid: false,
       },
       $set: {
@@ -420,6 +426,9 @@ export async function createProductCheckoutSessionCore({
         netAmount: split.netAmount,
         payoutMode,
         needsManualSellerPayout: false,
+        inventoryField: inventory.authoritativeField,
+        inventoryQuantityAtCheckout: inventory.quantity,
+        inventoryConflictDetected: inventory.hasConflictingDualFields,
         updatedAt: new Date(),
       },
     },
@@ -457,7 +466,25 @@ export async function createProductCheckoutSessionCore({
       },
     });
   } catch (err: any) {
-    if (!isTransferCapabilityError(err)) throw err;
+    if (!isTransferCapabilityError(err)) {
+      await db.collection("orders").updateOne(
+        { _id: orderObjectId },
+        {
+          $set: {
+            orderState: MARKETPLACE_ORDER_STATES.CHECKOUT_FAILED,
+            paymentStatus: "failed",
+            payoutStatus: MARKETPLACE_PAYOUT_STATUSES.NOT_APPLICABLE,
+            checkoutFailureCode:
+              typeof err?.code === "string" && err.code.trim()
+                ? err.code.trim().slice(0, 120)
+                : "checkout_session_create_failed",
+            checkoutFailedAt: new Date(),
+            updatedAt: new Date(),
+          },
+        },
+      );
+      throw err;
+    }
 
     payoutMode = "platform_hold";
     const fallbackParams = buildSessionParams({
@@ -474,32 +501,59 @@ export async function createProductCheckoutSessionCore({
       orderId,
     });
 
-    session = await stripe.checkout.sessions.create({
-      ...fallbackParams,
-      payment_intent_data: {
-        metadata: {
-          type: "product",
-          orderId,
-          productId: String(product._id),
-          sellerId: String(seller._id),
-          stripeAccountId,
-          payoutMode: "platform_hold",
-          transferBlocked: "1",
+    try {
+      session = await stripe.checkout.sessions.create({
+        ...fallbackParams,
+        payment_intent_data: {
+          metadata: {
+            type: "product",
+            orderId,
+            productId: String(product._id),
+            sellerId: String(seller._id),
+            stripeAccountId,
+            payoutMode: "platform_hold",
+            transferBlocked: "1",
+          },
         },
-      },
-    });
+      });
+    } catch (fallbackErr: any) {
+      await db.collection("orders").updateOne(
+        { _id: orderObjectId },
+        {
+          $set: {
+            orderState: MARKETPLACE_ORDER_STATES.CHECKOUT_FAILED,
+            paymentStatus: "failed",
+            payoutStatus: MARKETPLACE_PAYOUT_STATUSES.NOT_APPLICABLE,
+            checkoutFailureCode:
+              typeof fallbackErr?.code === "string" && fallbackErr.code.trim()
+                ? fallbackErr.code.trim().slice(0, 120)
+                : "checkout_session_fallback_failed",
+            checkoutFailedAt: new Date(),
+            updatedAt: new Date(),
+          },
+        },
+      );
+      throw fallbackErr;
+    }
   }
 
   await db.collection("orders").updateOne(
     { _id: orderObjectId },
     {
       $set: {
+        orderState: MARKETPLACE_ORDER_STATES.CHECKOUT_PENDING,
+        paymentStatus: "pending",
+        payoutStatus: MARKETPLACE_PAYOUT_STATUSES.NOT_APPLICABLE,
         sessionId: session.id,
         stripeSessionId: session.id,
         paymentSessionId: session.id,
         paymentIntentId:
           typeof session.payment_intent === "string"
             ? session.payment_intent
+            : null,
+        sessionExpiresAt:
+          typeof session.expires_at === "number"
+            ? new Date(session.expires_at * 1000)
             : null,
         updatedAt: new Date(),
       },

@@ -3,6 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
 import { requireAdminFromRequest } from "@/lib/adminAuth";
+import { getCanonicalBusinessName } from "@/lib/businessSubmission";
 import {
   ensureApiRateLimitIndexes,
   getClientIp,
@@ -49,7 +50,13 @@ export default async function handler(
       .sort({ submittedAt: -1, createdAt: -1 })
       .limit(limit)
       .project({
+        business_name: 1,
         businessName: 1,
+        name: 1,
+        companyName: 1,
+        legalName: 1,
+        dba: 1,
+        title: 1,
         ownerName: 1,
         email: 1,
         approved: 1,
@@ -63,7 +70,7 @@ export default async function handler(
       meta: { limit },
       businesses: unapprovedBusinesses.map((b: any) => ({
         _id: b._id.toString(),
-        businessName: b.businessName || "",
+        businessName: getCanonicalBusinessName(b) || "",
         ownerName: b.ownerName || "",
         email: b.email || "",
         approved: !!b.approved,

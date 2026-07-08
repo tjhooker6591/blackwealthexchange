@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import cookie from "cookie";
 import jwt from "jsonwebtoken";
 import { ADMIN_ERROR_CODES, adminFail } from "@/lib/adminApiContract";
-import { getJwtSecret } from "@/lib/env";
+import { getJwtSecretOrNull } from "@/lib/env";
 
 export type AdminDecoded = {
   userId?: string;
@@ -41,7 +41,7 @@ export function getAdminDecodedFromRequest(
     const token = parsed.session_token || req.cookies?.session_token;
     if (!token) return null;
 
-    const secret = getJwtSecret();
+    const secret = getJwtSecretOrNull();
     if (!secret) return null;
 
     return jwt.verify(token, secret) as AdminDecoded;
