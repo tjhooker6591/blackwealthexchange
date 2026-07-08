@@ -18,7 +18,10 @@ const STREAMS = [
 
 export type AdminFinanceStream = (typeof STREAMS)[number] | "other";
 
-export function streamForPayment(type: string, itemId: string): AdminFinanceStream {
+export function streamForPayment(
+  type: string,
+  itemId: string,
+): AdminFinanceStream {
   if (type === "product") return "marketplace";
   if (type === "ad") {
     if (itemId === "directory-standard" || itemId === "directory-featured") {
@@ -197,7 +200,10 @@ export async function getAdminFinanceSummary(db: Db) {
   let failedOrRefunded = 0;
 
   for (const p of payments as any[]) {
-    const stream = streamForPayment(String(p.type || ""), String(p.itemId || ""));
+    const stream = streamForPayment(
+      String(p.type || ""),
+      String(p.itemId || ""),
+    );
     const amount = Number(p.amountCents || 0);
     const fee = Number(p.bweFee ?? amount);
     const payout = Number(p.payout || 0);
@@ -233,7 +239,9 @@ export async function getAdminFinanceSummary(db: Db) {
       { $group: { _id: null, total: { $sum: { $ifNull: ["$amount", 0] } } } },
     ])
     .toArray();
-  byStream.affiliate_liability.pending = Number(affiliatePending[0]?.total || 0);
+  byStream.affiliate_liability.pending = Number(
+    affiliatePending[0]?.total || 0,
+  );
 
   const latestTransactions = (payments as any[]).slice(0, 30).map((p) => ({
     type: p.type || "unknown",
@@ -249,7 +257,11 @@ export async function getAdminFinanceSummary(db: Db) {
   const monthlySummary: Record<string, number> = {};
   for (const p of payments as any[]) {
     const fee = Number(p.bweFee ?? p.amountCents ?? 0);
-    const d = p.paidAt ? new Date(p.paidAt) : p.updatedAt ? new Date(p.updatedAt) : null;
+    const d = p.paidAt
+      ? new Date(p.paidAt)
+      : p.updatedAt
+        ? new Date(p.updatedAt)
+        : null;
     if (!d || Number.isNaN(d.getTime())) continue;
     const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
     monthlySummary[key] = (monthlySummary[key] || 0) + fee;
