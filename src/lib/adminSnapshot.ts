@@ -1,39 +1,69 @@
 import type { Db } from "mongodb";
-import {
-  safeCount,
-  startOfMonth,
-  startOfToday,
-  sumAmount,
-} from "@/lib/adminMetrics";
+import { safeCount, startOfMonth } from "@/lib/adminMetrics";
 import { isMarketplaceSellerLiabilityOrder } from "@/lib/marketplace/orderLifecycle";
+import { getAdminFinanceSummary } from "@/lib/adminFinanceSummary";
 
 export async function buildLiveAdminMetrics(db: Db) {
   const now = new Date();
-  const today = startOfToday(now);
   const month = startOfMonth(now);
+  const financeSummary = await getAdminFinanceSummary(db);
 
   const revenue = {
-    revenueToday: await sumAmount(
-      db,
-      "financial_transactions",
-      { createdAt: { $gte: today } },
-      ["netBweRevenue", "amount"],
-    ),
-    revenueThisMonth: await sumAmount(
-      db,
-      "financial_transactions",
-      { createdAt: { $gte: month } },
-      ["netBweRevenue", "amount"],
-    ),
+    revenueToday: {
+      value: 0,
+      sourceStatus: "needs_mapping",
+      note: "Daily centralized finance rollup not yet mapped",
+    },
+    revenueThisMonth: {
+      value: Number(financeSummary.totalRevenue || 0),
+      sourceStatus: "live",
+      note: `Centralized admin finance summary (${financeSummary.sourceOfTruth})`,
+    },
+    grossRevenue: {
+      value: Number(financeSummary.grossRevenue || 0),
+      sourceStatus: "live",
+      note: `Centralized admin finance summary (${financeSummary.sourceOfTruth})`,
+    },
+    pendingRevenue: {
+      value: Number(financeSummary.pendingRevenue || 0),
+      sourceStatus: "live",
+      note: `Centralized admin finance summary (${financeSummary.sourceOfTruth})`,
+    },
+    failedOrRefunded: {
+      value: Number(financeSummary.failedOrRefunded || 0),
+      sourceStatus: "live",
+      note: `Centralized admin finance summary (${financeSummary.sourceOfTruth})`,
+    },
     marketplacePlatformFees: {
       value: (
         await db
           .collection("orders")
-          .find({}, { projection: { paymentStatus: 1, orderState: 1, paid: 1, paidAt: 1, bweFee: 1, platformFeeAmount: 1, platformFee: 1 } })
+          .find(
+            {},
+            {
+              projection: {
+                paymentStatus: 1,
+                orderState: 1,
+                paid: 1,
+                paidAt: 1,
+                bweFee: 1,
+                platformFeeAmount: 1,
+                platformFee: 1,
+              },
+            },
+          )
           .toArray()
       ).reduce((sum: number, order: any) => {
         if (!isMarketplaceSellerLiabilityOrder(order)) return sum;
-        return sum + Number(order?.platformFeeAmount ?? order?.platformFee ?? order?.bweFee ?? 0);
+        return (
+          sum +
+          Number(
+            order?.platformFeeAmount ??
+              order?.platformFee ??
+              order?.bweFee ??
+              0,
+          )
+        );
       }, 0),
     },
   };

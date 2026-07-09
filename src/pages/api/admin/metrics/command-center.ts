@@ -4,6 +4,7 @@ import { getMongoDbName } from "@/lib/env";
 import { requireAdminFromRequest } from "@/lib/adminAuth";
 import { buildLiveAdminMetrics } from "@/lib/adminSnapshot";
 import { getAdminBusinessCounts } from "@/lib/adminBusinessStatus";
+import { getAdminFinanceSummary } from "@/lib/adminFinanceSummary";
 
 function trendDirection(a: number, b: number) {
   if (b > a) return "up";
@@ -27,6 +28,7 @@ export default async function handler(
   }
   const db = (await clientPromise).db(getMongoDbName());
   const businessCounts = await getAdminBusinessCounts(db);
+  const financeSummary = await getAdminFinanceSummary(db);
 
   const latest = await db
     .collection("admin_metrics_snapshots")
@@ -69,6 +71,39 @@ export default async function handler(
     direction: trendDirection(a[0] || 0, a[a.length - 1] || 0),
   });
 
+  const revenueHealth = {
+    ...(m.revenue || {}),
+    revenueThisMonth: {
+      value: Number(financeSummary.totalRevenue || 0),
+      sourceStatus: "live",
+      note: `Centralized admin finance summary (${financeSummary.sourceOfTruth})`,
+    },
+    revenueToday: m.revenue?.revenueToday || {
+      value: 0,
+      sourceStatus: "needs_mapping",
+      note: "Daily centralized finance rollup not yet mapped",
+    },
+    grossRevenue: {
+      value: Number(financeSummary.grossRevenue || 0),
+      sourceStatus: "live",
+      note: `Centralized admin finance summary (${financeSummary.sourceOfTruth})`,
+    },
+    pendingRevenue: {
+      value: Number(financeSummary.pendingRevenue || 0),
+      sourceStatus: "live",
+      note: `Centralized admin finance summary (${financeSummary.sourceOfTruth})`,
+    },
+    failedOrRefunded: {
+      value: Number(financeSummary.failedOrRefunded || 0),
+      sourceStatus: "live",
+      note: `Centralized admin finance summary (${financeSummary.sourceOfTruth})`,
+    },
+    sourceOfTruth: {
+      value: financeSummary.sourceOfTruth,
+      sourceStatus: "live",
+    },
+  };
+
   return res.status(200).json({
     ok: true,
     source,
@@ -97,7 +132,7 @@ export default async function handler(
         sourceStatus: "live",
       },
     },
-    revenueHealth: m.revenue,
+    revenueHealth,
     supportHealth: m.support,
     growthHealth: m.growth,
     trustSafetyHealth: m.trustSafety,
