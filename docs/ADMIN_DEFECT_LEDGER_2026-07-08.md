@@ -3,6 +3,7 @@
 ## Batch 1 completed
 
 ### 1) Business approval count mismatch
+
 - Status: FIXED IN BATCH 1
 - Problem:
   - Admin dashboard, command center, and business queue APIs used inconsistent rules for pending/approved/rejected businesses.
@@ -21,6 +22,7 @@
   - `npm run typecheck` passed.
 
 ### 2) Directory approval/count mismatch
+
 - Status: FIXED IN BATCH 1
 - Problem:
   - Directory admin API and dashboard derived listing states differently.
@@ -37,6 +39,7 @@
   - `npm run typecheck` passed.
 
 ### 3) Financial admin auth outlier
+
 - Status: FIXED IN BATCH 1
 - Problem:
   - One admin-only finance page still used custom JWT page auth instead of shared admin page guard.
@@ -47,9 +50,16 @@
 - Validation:
   - `npm run typecheck` passed.
 
+## Proof status update
+
+- User-reported outcome: normalized highest-priority admin surfaces were verified in the UI after the code changes.
+- Treat the highest-priority normalization lane as validated unless new contradictory evidence appears.
+- Remaining work should focus on residual defects, documentation hygiene, or newly observed regressions, not reopening the same normalization seam by default.
+
 ## Batch 2 open defects
 
 ### 4) Financial source-of-truth mismatch
+
 - Status: OPEN
 - Severity: HIGH
 - Problem:
@@ -66,6 +76,7 @@
   - Define canonical finance summary contract and align summary/drill-down around ledger-first or clearly declared fallback semantics.
 
 ### 5) Financial stream mapping ambiguity
+
 - Status: OPEN
 - Severity: HIGH
 - Problem:
@@ -79,6 +90,7 @@
   - `src/lib/finance/stream-map`
 
 ### 6) Revenue page field-name drift
+
 - Status: OPEN
 - Severity: MEDIUM
 - Problem:
@@ -90,6 +102,7 @@
   - `src/pages/api/admin/financial-ledger.ts`
 
 ### 7) Financial review duplicated top-total semantics
+
 - Status: OPEN
 - Severity: MEDIUM
 - Problem:
@@ -101,11 +114,13 @@
   - `src/pages/api/admin/financial-review.ts`
 
 ## Safe to leave alone for now
+
 - `src/pages/api/admin/dashboard-stats.ts` business/directory normalization already updated in batch 1.
 - `src/pages/api/admin/get-pending-businesses.ts` aligned in batch 1.
 - `src/pages/api/admin/get-unapproved-businesses.ts` aligned in batch 1.
 - `src/pages/api/admin/metrics/command-center.ts` aligned for business backlog in batch 1.
 
 ## Validation state
+
 - Batch 1 validation completed with `npm run typecheck`.
 - UI proof pass for these admin surfaces is still pending.
