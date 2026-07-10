@@ -2,9 +2,12 @@
 "use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import type { GetServerSideProps } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import clientPromise from "@/lib/mongodb";
+import { getMongoDbName } from "@/lib/env";
 import { canonicalUrl, truncateMeta } from "@/lib/seo";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -100,6 +103,49 @@ function formatCategoryDisplay(raw: any) {
   return Array.from(new Set(text)).slice(0, 3).join(" • ");
 }
 
+function normalizeClaimStage(value: any) {
+  const normalized = safeStr(value).trim().toLowerCase();
+  if (!normalized) return null;
+  if (normalized === "claim_pending") return "claim_initiated";
+  if (normalized === "pending_review") return "ownership_verification_pending";
+  if (normalized === "ownership_review_pending")
+    return "ownership_verification_pending";
+  if (normalized === "verification_pending")
+    return "ownership_verification_pending";
+  if (normalized === "approved") return "ownership_verified";
+  if (normalized === "ownership_approved") return "ownership_verified";
+  if (normalized === "rejected") return "ownership_verification_failed";
+  if (normalized === "ownership_rejected")
+    return "ownership_verification_failed";
+  return normalized;
+}
+
+function resolveDirectoryOwnershipState(row: any) {
+  const statuses = [
+    normalizeClaimStage(row?.publicListingStatus),
+    normalizeClaimStage(row?.claimStage),
+    normalizeClaimStage(row?.ownershipReviewStatus),
+  ].filter(Boolean);
+
+  const canonicalState = statuses.includes("ownership_verified")
+    ? "ownership_verified"
+    : statuses.includes("ownership_verification_failed")
+      ? "ownership_verification_failed"
+      : statuses.includes("disputed")
+        ? "disputed"
+        : statuses.includes("additional_evidence_required")
+          ? "additional_evidence_required"
+          : statuses.includes("ownership_verification_pending") ||
+              statuses.includes("claim_initiated")
+            ? "ownership_verification_pending"
+            : null;
+
+  return {
+    canonicalState,
+    isOwnershipVerified: canonicalState === "ownership_verified",
+  };
+}
+
 function formatStateDisplay(value: any) {
   const state = safeStr(value).trim();
   if (!state) return "";
@@ -189,6 +235,11 @@ type Organization = {
 type Row =
   | (Business & { __kind: "business" })
   | (Organization & { __kind: "org" });
+
+type BusinessDirectoryProps = {
+  initialRows: Row[];
+  initialTotal: number;
+};
 
 function SponsorCard({ img, name, tagline, url, cta }: any) {
   return (
@@ -362,7 +413,10 @@ function Pager({
   );
 }
 
-export default function BusinessDirectory() {
+export default function BusinessDirectory({
+  initialRows,
+  initialTotal,
+}: BusinessDirectoryProps) {
   const router = useRouter();
   const claimMode = router.isReady && router.query.mode === "claim";
 
@@ -416,8 +470,8 @@ export default function BusinessDirectory() {
   const [sponsoredFirst, setSponsoredFirst] = useState(false);
   const [includeIncomplete, setIncludeIncomplete] = useState(false);
 
-  const [rows, setRows] = useState<Row[]>([]);
-  const [total, setTotal] = useState(0);
+  const [rows, setRows] = useState<Row[]>(initialRows);
+  const [total, setTotal] = useState(initialTotal);
   const [sponsorAds, setSponsorAds] = useState(DEFAULT_SPONSOR_ADS);
   const [directoryFeaturedAds, setDirectoryFeaturedAds] = useState<
     PlacementCard[]
@@ -426,7 +480,7 @@ export default function BusinessDirectory() {
   const [serverPaged, setServerPaged] = useState(false);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [hasSearched, setHasSearched] = useState(false);
+  const [hasSearched, setHasSearched] = useState(initialRows.length > 0);
   const [fetchError, setFetchError] = useState("");
   const [queryMode, setQueryMode] = useState<string>("strict");
   const [searchMeta, setSearchMeta] = useState<{
@@ -470,6 +524,7 @@ export default function BusinessDirectory() {
   const skipNextPageResetRef = useRef(false);
   const abortRef = useRef<AbortController | null>(null);
   const resultsTopRef = useRef<HTMLDivElement | null>(null);
+  const didUseInitialResultsRef = useRef(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -625,12 +680,44 @@ export default function BusinessDirectory() {
 
     const hasAnyFilter = Boolean(q) || hasActiveFilters;
     if (!hasAnyFilter) {
+      if (scope === "businesses" && initialRows.length > 0) {
+        didUseInitialResultsRef.current = true;
+        setRows(initialRows);
+        setTotal(initialTotal);
+        setHasSearched(true);
+        setServerPaged(true);
+        setQueryMode("strict");
+        setSearchMeta(null);
+        setFetchError("");
+        setIsLoading(false);
+        return;
+      }
+
       setRows([]);
       setTotal(0);
       setHasSearched(false);
       setServerPaged(false);
       setQueryMode("strict");
       setSearchMeta(null);
+      return;
+    }
+
+    if (
+      scope === "businesses" &&
+      !q &&
+      !hasActiveFilters &&
+      initialRows.length > 0 &&
+      !didUseInitialResultsRef.current
+    ) {
+      didUseInitialResultsRef.current = true;
+      setRows(initialRows);
+      setTotal(initialTotal);
+      setHasSearched(true);
+      setServerPaged(true);
+      setQueryMode("strict");
+      setSearchMeta(null);
+      setFetchError("");
+      setIsLoading(false);
       return;
     }
 
@@ -1023,7 +1110,9 @@ export default function BusinessDirectory() {
     const status = safeStr(
       (r as any).listingStatus || (r as any).trustStatus || (r as any).status,
     ).toLowerCase();
+    const ownershipState = resolveDirectoryOwnershipState(r as any);
     const verified =
+      ownershipState.isOwnershipVerified ||
       (r as any).isVerified === true ||
       (r as any).verified === true ||
       status === "verified";
@@ -1044,21 +1133,26 @@ export default function BusinessDirectory() {
             (r as any).qualityScore || (r as any).completenessScore || 0,
           ) >= 70;
 
-    const claimStage = verified
-      ? "owner_verified"
-      : status === "pending_review"
-        ? "ownership_review_pending"
-        : status === "evidence_required"
+    const claimStage = ownershipState.isOwnershipVerified
+      ? "ownership_verified"
+      : ownershipState.canonicalState === "ownership_verification_pending"
+        ? "ownership_verification_pending"
+        : ownershipState.canonicalState === "additional_evidence_required"
           ? "additional_evidence_required"
-          : status === "claim_initiated" || status === "claim_pending"
-            ? "claim_pending"
-            : status === "disputed"
-              ? "disputed"
-              : sponsored
-                ? "founding_growth_member"
-                : "unclaimed";
+          : ownershipState.canonicalState === "disputed"
+            ? "disputed"
+            : sponsored
+              ? "founding_growth_member"
+              : "unclaimed";
 
-    return { verified, approved, sponsored, isComplete, claimStage };
+    return {
+      verified,
+      approved,
+      sponsored,
+      isComplete,
+      claimStage,
+      publicListingStatus: ownershipState.canonicalState,
+    };
   };
 
   const getWebsite = (r: Row) =>
@@ -2265,7 +2359,7 @@ export default function BusinessDirectory() {
                             <div className="mt-1 flex flex-wrap items-center gap-1.5">
                               {getTrustMeta(item as Row).verified ? (
                                 <span className="rounded-full border border-emerald-400/30 bg-emerald-400/15 px-2 py-0.5 text-[10px] font-bold text-emerald-200">
-                                  Owner Verified
+                                  Ownership Verified
                                 </span>
                               ) : null}
                               {getTrustMeta(item as Row).claimStage ===
@@ -2274,17 +2368,14 @@ export default function BusinessDirectory() {
                                   Unclaimed
                                 </span>
                               ) : null}
-                              {["claim_initiated", "claim_pending"].includes(
+                              {[
+                                "claim_initiated",
+                                "ownership_verification_pending",
+                              ].includes(
                                 getTrustMeta(item as Row).claimStage || "",
                               ) ? (
-                                <span className="rounded-full border border-blue-400/30 bg-blue-400/15 px-2 py-0.5 text-[10px] font-bold text-blue-200">
-                                  Claim Pending Ownership Review
-                                </span>
-                              ) : null}
-                              {getTrustMeta(item as Row).claimStage ===
-                              "ownership_review_pending" ? (
                                 <span className="rounded-full border border-sky-400/30 bg-sky-400/15 px-2 py-0.5 text-[10px] font-bold text-sky-200">
-                                  Claim Pending Ownership Review
+                                  Ownership Verification Pending
                                 </span>
                               ) : null}
                               {getTrustMeta(item as Row).claimStage ===
@@ -2354,11 +2445,11 @@ export default function BusinessDirectory() {
                                   !trustMeta.verified &&
                                   ![
                                     "claim_initiated",
-                                    "claim_pending",
+                                    "ownership_verification_pending",
                                     "additional_evidence_required",
                                     "disputed",
-                                    "ownership_review_pending",
                                     "founding_growth_member",
+                                    "ownership_verified",
                                   ].includes(trustMeta.claimStage || "");
 
                                 if (canClaim) {
@@ -2377,15 +2468,14 @@ export default function BusinessDirectory() {
                                     {trustMeta.verified
                                       ? "Already Verified"
                                       : trustMeta.claimStage ===
-                                          "claim_initiated"
-                                        ? "Claim pending ownership review"
+                                            "claim_initiated" ||
+                                          trustMeta.claimStage ===
+                                            "ownership_verification_pending"
+                                        ? "Ownership verification pending"
                                         : trustMeta.claimStage ===
-                                            "ownership_review_pending"
-                                          ? "Claim pending ownership review"
-                                          : trustMeta.claimStage ===
-                                              "founding_growth_member"
-                                            ? "Membership Already Active"
-                                            : "Not Claimable"}
+                                            "founding_growth_member"
+                                          ? "Membership Already Active"
+                                          : "Not Claimable"}
                                   </span>
                                 );
                               })()}
@@ -2516,3 +2606,144 @@ export default function BusinessDirectory() {
     </>
   );
 }
+
+export const getServerSideProps: GetServerSideProps<
+  BusinessDirectoryProps
+> = async () => {
+  try {
+    const client = await clientPromise;
+    const db = client.db(getMongoDbName());
+
+    const raw = await db
+      .collection("businesses")
+      .find(
+        {
+          $or: [
+            { status: { $in: ["approved", "active", "verified"] } },
+            { directoryVisibilityApproved: true },
+          ],
+        },
+        {
+          projection: {
+            _id: 1,
+            alias: 1,
+            image: 1,
+            business_name: 1,
+            name: 1,
+            description: 1,
+            phone: 1,
+            address: 1,
+            city: 1,
+            state: 1,
+            category: 1,
+            categories: 1,
+            display_categories: 1,
+            rating: 1,
+            reviewCount: 1,
+            priceRange: 1,
+            website: 1,
+            verified: 1,
+            isVerified: 1,
+            status: 1,
+            amountPaid: 1,
+            claimStage: 1,
+            publicListingStatus: 1,
+            ownershipReviewStatus: 1,
+            directoryVisibilityApproved: 1,
+            country: 1,
+            createdAt: 1,
+            updatedAt: 1,
+            qualityScore: 1,
+            completenessScore: 1,
+            isComplete: 1,
+          },
+        },
+      )
+      .sort({ directoryVisibilityApproved: -1, updatedAt: -1, createdAt: -1 })
+      .limit(20)
+      .toArray();
+
+    const initialRows: Row[] = raw.map((row: any) => ({
+      _id:
+        typeof row?._id?.toString === "function"
+          ? row._id.toString()
+          : String(row?._id ?? ""),
+      alias: typeof row?.alias === "string" ? row.alias : null,
+      image: typeof row?.image === "string" ? row.image : null,
+      business_name:
+        typeof row?.business_name === "string"
+          ? row.business_name
+          : typeof row?.name === "string"
+            ? row.name
+            : "Unnamed business",
+      name: typeof row?.name === "string" ? row.name : null,
+      description:
+        typeof row?.description === "string" ? row.description : null,
+      phone: typeof row?.phone === "string" ? row.phone : null,
+      address: typeof row?.address === "string" ? row.address : null,
+      city: typeof row?.city === "string" ? row.city : null,
+      state: typeof row?.state === "string" ? row.state : null,
+      category: typeof row?.category === "string" ? row.category : null,
+      categories: Array.isArray(row?.categories)
+        ? row.categories.filter((x: any) => typeof x === "string")
+        : typeof row?.categories === "string"
+          ? row.categories
+          : null,
+      display_categories:
+        typeof row?.display_categories === "string"
+          ? row.display_categories
+          : null,
+      rating:
+        typeof row?.rating === "number" || typeof row?.rating === "string"
+          ? row.rating
+          : null,
+      reviewCount:
+        typeof row?.reviewCount === "number" ||
+        typeof row?.reviewCount === "string"
+          ? row.reviewCount
+          : null,
+      priceRange:
+        typeof row?.priceRange === "string" ? row.priceRange : null,
+      website: typeof row?.website === "string" ? row.website : null,
+      verified: typeof row?.verified === "boolean" ? row.verified : null,
+      isVerified:
+        typeof row?.isVerified === "boolean" ? row.isVerified : null,
+      status: typeof row?.status === "string" ? row.status : null,
+      amountPaid:
+        typeof row?.amountPaid === "number" ? row.amountPaid : null,
+      claimStage: typeof row?.claimStage === "string" ? row.claimStage : null,
+      publicListingStatus:
+        typeof row?.publicListingStatus === "string"
+          ? row.publicListingStatus
+          : null,
+      ownershipReviewStatus:
+        typeof row?.ownershipReviewStatus === "string"
+          ? row.ownershipReviewStatus
+          : null,
+      country: typeof row?.country === "string" ? row.country : null,
+      __kind: "business",
+    })) as Row[];
+
+    const total = await db.collection("businesses").countDocuments({
+      $or: [
+        { status: { $in: ["approved", "active", "verified"] } },
+        { directoryVisibilityApproved: true },
+      ],
+    });
+
+    return {
+      props: {
+        initialRows,
+        initialTotal: total,
+      },
+    };
+  } catch (error) {
+    console.error("Failed to SSR business directory:", error);
+    return {
+      props: {
+        initialRows: [],
+        initialTotal: 0,
+      },
+    };
+  }
+};
