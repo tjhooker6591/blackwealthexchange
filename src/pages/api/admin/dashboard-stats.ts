@@ -5,6 +5,11 @@ import { requireAdminFromRequest } from "@/lib/adminAuth";
 import { getMongoDbName } from "@/lib/env";
 import { getPendingFoundingClaimVerifications } from "@/lib/founding-membership";
 import { getAdminBusinessCounts } from "@/lib/adminBusinessStatus";
+import {
+  getDirectoryListingStateFromListing,
+  getDirectoryListingStateFromPayment,
+  isDirectoryItemId,
+} from "@/lib/adminDirectoryStatus";
 
 function n(v: any) {
   return typeof v === "number" && Number.isFinite(v) ? v : 0;
@@ -29,6 +34,20 @@ function isLikelyTestAccount(doc: any, email: string) {
     lower.endsWith("@bwe.local") ||
     lower.includes("+test") ||
     lower.includes("test@"),
+  );
+}
+
+function s(v: unknown): string | null {
+  return typeof v === "string" && v.trim() ? v.trim() : null;
+}
+
+function pickDirectoryItemId(doc: any): string | null {
+  return (
+    s(doc?.itemId) ||
+    s(doc?.metadata?.itemId) ||
+    s(doc?.option) ||
+    s(doc?.metadata?.option) ||
+    null
   );
 }
 
@@ -95,10 +114,7 @@ export default async function handler(
       internApplications,
 
       // Directory listing approval / activation pipeline
-      pendingDirectoryListings,
-      activeDirectoryListings,
-      expiredDirectoryListings,
-      totalDirectoryListings,
+      directoryListingDocs,
 
       // ad_purchases (new webhook tracking)
       adPurchasesDirPaidCount,
@@ -140,30 +156,8 @@ export default async function handler(
       // Intern applications
       internApps.countDocuments({}),
 
-      // Directory listings (admin-managed listing records)
-      directoryListings.countDocuments({
-        status: { $in: ["pending", "pending_approval"] },
-      }),
-
-      // Active directory listings:
-      // - status active
-      // - expiresAt in future OR missing (older records)
-      directoryListings.countDocuments({
-        status: "active",
-        $or: [{ expiresAt: { $gt: now } }, { expiresAt: { $exists: false } }],
-      }),
-
-      // Expired directory listings:
-      // - explicit expired/inactive
-      // - OR active but expiresAt already passed
-      directoryListings.countDocuments({
-        $or: [
-          { status: { $in: ["expired", "inactive"] } },
-          { status: "active", expiresAt: { $lte: now } },
-        ],
-      }),
-
-      directoryListings.countDocuments({}),
+      // Directory listings, normalized below from real rows
+      directoryListings.find({}).toArray(),
 
       // ad_purchases: paid directory purchases (new webhook writes here)
       adPurchases.countDocuments({
@@ -263,6 +257,84 @@ export default async function handler(
       rejected: rejectedBusinesses,
       total: totalBusinesses,
     } = await businessCountsPromise;
+
+    const normalizedDirectoryStates = Array.isArray(directoryListingDocs)
+      ? directoryListingDocs.map((doc) => ({
+          stripeSessionId: s(doc?.stripeSessionId) || s(doc?.lastStripeSessionId),
+          state: getDirectoryListingStateFromListing(doc, now),
+        }))
+      : [];
+
+    const linkedDirectorySessionIds = new Set(
+      normalizedDirectoryStates
+        .map((doc) => doc.stripeSessionId)
+        .filter((value): value is string => Boolean(value)),
+    );
+
+    const fallbackDirectoryStates = await payments
+      .find({
+        $and: [
+          {
+            $or: [
+              { type: "ad" },
+              { type: "advertising" },
+              { "metadata.type": "ad" },
+              { "metadata.type": "advertising" },
+            ],
+          },
+          {
+            $or: [
+              { itemId: { $in: [...DIRECTORY_ITEM_IDS] } },
+              { "metadata.itemId": { $in: [...DIRECTORY_ITEM_IDS] } },
+              { option: { $in: [...DIRECTORY_ITEM_IDS] } },
+              { "metadata.option": { $in: [...DIRECTORY_ITEM_IDS] } },
+            ],
+          },
+        ],
+      })
+      .project({
+        stripeSessionId: 1,
+        businessId: 1,
+        status: 1,
+        paymentStatus: 1,
+        metadata: 1,
+        itemId: 1,
+        option: 1,
+      })
+      .toArray()
+      .then((rows) =>
+        rows
+          .map((doc: any) => {
+            const itemId = pickDirectoryItemId(doc);
+            if (!isDirectoryItemId(itemId)) return null;
+
+            const stripeSessionId = s(doc?.stripeSessionId);
+            const linked = stripeSessionId
+              ? linkedDirectorySessionIds.has(stripeSessionId)
+              : false;
+
+            if (linked) return null;
+
+            return getDirectoryListingStateFromPayment(doc, linked);
+          })
+          .filter((value): value is NonNullable<typeof value> => Boolean(value)),
+      );
+
+    const allDirectoryStates = [
+      ...normalizedDirectoryStates.map((doc) => doc.state),
+      ...fallbackDirectoryStates,
+    ];
+
+    const pendingDirectoryListings = allDirectoryStates.filter(
+      (state) => state === "pending_approval",
+    ).length;
+    const activeDirectoryListings = allDirectoryStates.filter(
+      (state) => state === "active",
+    ).length;
+    const expiredDirectoryListings = allDirectoryStates.filter(
+      (state) => state === "expired",
+    ).length;
+    const totalDirectoryListings = allDirectoryStates.length;
 
     // Prefer ad_purchases (new webhook flow). Fallback to payments if ad_purchases not populated yet.
     const paidDirectoryPurchases =
