@@ -1,10 +1,14 @@
 // pages/job/[id]/index.tsx
 "use client";
 
+import type { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Head from "next/head";
 import React, { useEffect, useMemo, useState } from "react";
+import { ObjectId } from "mongodb";
+import clientPromise from "@/lib/mongodb";
+import { getMongoDbName } from "@/lib/env";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 import { canonicalUrl, truncateMeta } from "@/lib/seo";
 
@@ -46,7 +50,37 @@ function freshness(iso?: string) {
   return "Earlier listing";
 }
 
-export default function JobDetail() {
+type Props = {
+  initialJob?: Job | null;
+  initialError?: string;
+};
+
+function normalizeJobDoc(doc: any): Job {
+  return {
+    _id: String(doc?._id || ""),
+    title: typeof doc?.title === "string" ? doc.title : "",
+    company: typeof doc?.company === "string" ? doc.company : "",
+    location: typeof doc?.location === "string" ? doc.location : "",
+    type: typeof doc?.type === "string" ? doc.type : "",
+    description: typeof doc?.description === "string" ? doc.description : "",
+    salary: typeof doc?.salary === "string" ? doc.salary : null,
+    createdAt: typeof doc?.createdAt === "string" ? doc.createdAt : null,
+    isFeatured: doc?.isFeatured === true,
+    appliedCount:
+      typeof doc?.appliedCount === "number" ? doc.appliedCount : null,
+    viewCount: typeof doc?.viewCount === "number" ? doc.viewCount : null,
+    employerEmail:
+      typeof doc?.employerEmail === "string" ? doc.employerEmail : null,
+    companyWebsite:
+      typeof doc?.companyWebsite === "string" ? doc.companyWebsite : null,
+    companyDescription:
+      typeof doc?.companyDescription === "string"
+        ? doc.companyDescription
+        : null,
+  };
+}
+
+export default function JobDetail({ initialJob, initialError }: Props) {
   const router = useRouter();
 
   const jobId = useMemo(() => {
@@ -54,9 +88,9 @@ export default function JobDetail() {
     return typeof raw === "string" ? raw : "";
   }, [router.query.id]);
 
-  const [job, setJob] = useState<Job | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [errMsg, setErrMsg] = useState("");
+  const [job, setJob] = useState<Job | null>(initialJob || null);
+  const [loading, setLoading] = useState(!initialJob && !initialError);
+  const [errMsg, setErrMsg] = useState(initialError || "");
 
   const trackJobEvent = (
     eventType: string,
@@ -77,6 +111,7 @@ export default function JobDetail() {
   // Fetch job
   useEffect(() => {
     if (!router.isReady || !jobId) return;
+    if (initialJob && initialJob._id === jobId) return;
 
     let cancelled = false;
 
@@ -98,7 +133,7 @@ export default function JobDetail() {
           );
         }
 
-        const j = data?.job || data; // supports either {job} or direct
+        const j = data?.job || data;
         if (!cancelled) {
           setJob(j || null);
           trackJobEvent("job_detail_viewed", {
@@ -119,7 +154,7 @@ export default function JobDetail() {
     return () => {
       cancelled = true;
     };
-  }, [router.isReady, jobId]);
+  }, [router.isReady, jobId, initialJob]);
 
   const saveJob = async () => {
     if (!job?._id) return;
@@ -515,3 +550,66 @@ export default function JobDetail() {
     </>
   );
 }
+
+export const getServerSideProps: GetServerSideProps<Props> = async ({
+  params,
+}) => {
+  const rawId = Array.isArray(params?.id)
+    ? params.id[0]
+    : typeof params?.id === "string"
+      ? params.id
+      : "";
+
+  if (!rawId || !ObjectId.isValid(rawId)) {
+    return {
+      props: {
+        initialJob: null,
+        initialError: "Job not found.",
+      },
+    };
+  }
+
+  try {
+    const client = await clientPromise;
+    const db = client.db(getMongoDbName());
+    const doc = await db.collection("jobs").findOne(
+      {
+        _id: new ObjectId(rawId),
+        status: "approved",
+      },
+      {
+        projection: {
+          _id: 1,
+          title: 1,
+          company: 1,
+          location: 1,
+          type: 1,
+          description: 1,
+          salary: 1,
+          createdAt: 1,
+          isFeatured: 1,
+          appliedCount: 1,
+          viewCount: 1,
+          employerEmail: 1,
+          companyWebsite: 1,
+          companyDescription: 1,
+        },
+      },
+    );
+
+    return {
+      props: {
+        initialJob: doc ? normalizeJobDoc(doc) : null,
+        initialError: doc ? "" : "Job not found.",
+      },
+    };
+  } catch (error) {
+    console.error("Failed to SSR job detail", error);
+    return {
+      props: {
+        initialJob: null,
+        initialError: "Failed to load job.",
+      },
+    };
+  }
+};
