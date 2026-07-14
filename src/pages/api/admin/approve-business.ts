@@ -143,7 +143,9 @@ export default async function handler(
     } catch (error: any) {
       if (error?.code === 11000) {
         try {
-          approvalWrite = await applyApprovalUpdate({ ignoreExistingValues: true });
+          approvalWrite = await applyApprovalUpdate({
+            ignoreExistingValues: true,
+          });
         } catch (retryError: any) {
           if (retryError?.code === 11000) {
             return res.status(409).json({

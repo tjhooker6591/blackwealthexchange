@@ -1,17 +1,27 @@
 import type { Collection, Filter, ObjectId } from "mongodb";
-import { buildUniqueSlug, getCanonicalBusinessName, slugifyBusinessName } from "@/lib/businessSubmission";
-import { deriveAdminBusinessStatus, getAdminBusinessBucketFilter } from "@/lib/adminBusinessStatus";
+import {
+  buildUniqueSlug,
+  getCanonicalBusinessName,
+  slugifyBusinessName,
+} from "@/lib/businessSubmission";
+import {
+  deriveAdminBusinessStatus,
+  getAdminBusinessBucketFilter,
+} from "@/lib/adminBusinessStatus";
 
 export class AdminApprovalValidationError extends Error {
   statusCode: number;
   kind: string;
   details?: Record<string, unknown>;
 
-  constructor(message: string, options?: {
-    statusCode?: number;
-    kind?: string;
-    details?: Record<string, unknown>;
-  }) {
+  constructor(
+    message: string,
+    options?: {
+      statusCode?: number;
+      kind?: string;
+      details?: Record<string, unknown>;
+    },
+  ) {
     super(message);
     this.name = "AdminApprovalValidationError";
     this.statusCode = options?.statusCode ?? 422;
@@ -89,7 +99,9 @@ function inferRowKind(doc: any): AdminApprovalRowKind {
   return "malformed_pending_record";
 }
 
-export function normalizeAdminApprovalRow(doc: any): NormalizedAdminApprovalRow {
+export function normalizeAdminApprovalRow(
+  doc: any,
+): NormalizedAdminApprovalRow {
   const canonicalName = getCanonicalBusinessName(doc);
   const ownerName = getSubmissionOwnerName(doc);
   const email = getSubmissionEmail(doc);
