@@ -25,6 +25,7 @@ import {
   normalizeScope,
   normalizeSort,
 } from "@/lib/directory/queryState";
+import { publicBusinessBaseQuery } from "@/lib/directory/publicBusinessQuery";
 
 function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
@@ -640,6 +641,30 @@ export default function BusinessDirectory({
       includeIncomplete,
     });
 
+    const currentQuery = buildDirectoryUrlQuery({
+      routerQuery: router.query,
+      scope,
+      input:
+        (typeof router.query.search === "string" && router.query.search) ||
+        (typeof router.query.q === "string" && router.query.q) ||
+        "",
+      page: toInt(router.query.page, 1),
+      category:
+        typeof router.query.category === "string"
+          ? router.query.category
+          : "All",
+      sort: normalizeSort(router.query.sort),
+      stateFilter:
+        typeof router.query.state === "string"
+          ? router.query.state.toUpperCase().slice(0, 2)
+          : "",
+      verifiedOnly: String(router.query.verifiedOnly ?? "0") === "1",
+      sponsoredFirst: String(router.query.sponsoredFirst ?? "0") === "1",
+      includeIncomplete: String(router.query.includeIncomplete ?? "0") === "1",
+    });
+
+    if (JSON.stringify(currentQuery) === JSON.stringify(nextQuery)) return;
+
     router.replace({ pathname: router.pathname, query: nextQuery }, undefined, {
       shallow: true,
     });
@@ -654,6 +679,8 @@ export default function BusinessDirectory({
     verifiedOnly,
     sponsoredFirst,
     includeIncomplete,
+    router.isReady,
+    router.query,
   ]);
 
   // Reset page when query changes
@@ -679,7 +706,7 @@ export default function BusinessDirectory({
     const q = input.trim();
 
     const hasAnyFilter = Boolean(q) || hasActiveFilters;
-    if (!hasAnyFilter) {
+    if (!hasAnyFilter && page === 1) {
       if (scope === "businesses" && initialRows.length > 0) {
         didUseInitialResultsRef.current = true;
         setRows(initialRows);
@@ -704,6 +731,7 @@ export default function BusinessDirectory({
 
     if (
       scope === "businesses" &&
+      page === 1 &&
       !q &&
       !hasActiveFilters &&
       initialRows.length > 0 &&
@@ -2616,54 +2644,49 @@ export const getServerSideProps: GetServerSideProps<
 
     const raw = await db
       .collection("businesses")
-      .find(
-        {
-          $or: [
-            { status: { $in: ["approved", "active", "verified"] } },
-            { directoryVisibilityApproved: true },
-          ],
+      .find(publicBusinessBaseQuery(), {
+        projection: {
+          _id: 1,
+          alias: 1,
+          slug: 1,
+          image: 1,
+          business_name: 1,
+          name: 1,
+          description: 1,
+          phone: 1,
+          address: 1,
+          city: 1,
+          state: 1,
+          category: 1,
+          categories: 1,
+          display_categories: 1,
+          rating: 1,
+          reviewCount: 1,
+          priceRange: 1,
+          website: 1,
+          verified: 1,
+          isVerified: 1,
+          status: 1,
+          approved: 1,
+          amountPaid: 1,
+          claimStage: 1,
+          publicListingStatus: 1,
+          ownershipReviewStatus: 1,
+          directoryVisibilityApproved: 1,
+          country: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          qualityScore: 1,
+          completenessScore: 1,
+          isComplete: 1,
         },
-        {
-          projection: {
-            _id: 1,
-            alias: 1,
-            image: 1,
-            business_name: 1,
-            name: 1,
-            description: 1,
-            phone: 1,
-            address: 1,
-            city: 1,
-            state: 1,
-            category: 1,
-            categories: 1,
-            display_categories: 1,
-            rating: 1,
-            reviewCount: 1,
-            priceRange: 1,
-            website: 1,
-            verified: 1,
-            isVerified: 1,
-            status: 1,
-            amountPaid: 1,
-            claimStage: 1,
-            publicListingStatus: 1,
-            ownershipReviewStatus: 1,
-            directoryVisibilityApproved: 1,
-            country: 1,
-            createdAt: 1,
-            updatedAt: 1,
-            qualityScore: 1,
-            completenessScore: 1,
-            isComplete: 1,
-          },
-        },
-      )
+      })
       .sort({ directoryVisibilityApproved: -1, updatedAt: -1, createdAt: -1 })
-      .limit(20)
       .toArray();
 
-    const initialRows: Row[] = raw.map((row: any) => ({
+    const total = raw.length;
+
+    const initialRows: Row[] = raw.slice(0, 20).map((row: any) => ({
       _id:
         typeof row?._id?.toString === "function"
           ? row._id.toString()
@@ -2720,13 +2743,6 @@ export const getServerSideProps: GetServerSideProps<
       country: typeof row?.country === "string" ? row.country : null,
       __kind: "business",
     })) as Row[];
-
-    const total = await db.collection("businesses").countDocuments({
-      $or: [
-        { status: { $in: ["approved", "active", "verified"] } },
-        { directoryVisibilityApproved: true },
-      ],
-    });
 
     return {
       props: {

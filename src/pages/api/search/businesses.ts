@@ -13,6 +13,7 @@ import {
 import { getAdminDecodedFromRequest, isAdminDecoded } from "@/lib/adminAuth";
 import { getMongoDbName } from "@/lib/env";
 import { computeListingCompleteness } from "@/lib/directory/completeness";
+import { publicBusinessBaseQuery } from "@/lib/directory/publicBusinessQuery";
 import { isPublicBusinessVisible } from "@/lib/directory/publicVisibility";
 
 function escapeRegex(input: string) {
@@ -584,41 +585,19 @@ export default async function handler(
         ];
 
     if (!includeAllStatuses) {
-      and.push({
-        $or: [
-          { status: "approved" },
-          { status: "verified" },
-          { status: "active" },
-          { status: { $exists: false } },
-          { status: "" },
-          { status: null },
-        ],
-      });
-
-      // Public-result safety guard: exclude obvious local audit/test fixtures.
-      if (!isOrganizations) {
-        and.push({
-          $nor: [
-            { isTest: true },
-            { auditTag: { $exists: true } },
-            { auditTag: /^BWE_LOCAL_AUDIT/i },
-            { category: /^auditpagination$/i },
-            { categories: /^auditpagination$/i },
-            { display_categories: /^auditpagination$/i },
-            { email: /@local\.test$/i },
-            { business_name: /^auditpagination_/i },
-            { name: /^auditpagination_/i },
-          ],
-        });
-
-        // Public detail-key safety: only include records that can resolve
-        // via /business/[slug] (alias OR slug).
+      if (isOrganizations) {
         and.push({
           $or: [
-            { alias: { $exists: true, $type: "string", $ne: "" } },
-            { slug: { $exists: true, $type: "string", $ne: "" } },
+            { status: "approved" },
+            { status: "verified" },
+            { status: "active" },
+            { status: { $exists: false } },
+            { status: "" },
+            { status: null },
           ],
         });
+      } else {
+        and.push(publicBusinessBaseQuery());
       }
     }
 
@@ -654,14 +633,8 @@ export default async function handler(
     }
 
     if (!includeIncomplete && !isOrganizations) {
-      and.push({
-        $or: [
-          { isComplete: true },
-          { completenessScore: { $gte: 70 } },
-          { qualityScore: { $gte: 70 } },
-          { directoryVisibilityApproved: true },
-        ],
-      });
+      // completeness/visibility guard already comes from publicBusinessBaseQuery()
+      // for the default public business search path.
     }
 
     const strictQuery = and.length ? { $and: and } : {};
@@ -774,7 +747,7 @@ export default async function handler(
       phone: 1,
     };
 
-    if (search || sort === "relevance") {
+    if (search) {
       const candidateLimit = Math.min(
         Math.max(effectiveSkip + limit + 1, limit + 24),
         80,

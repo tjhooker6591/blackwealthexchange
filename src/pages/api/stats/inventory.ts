@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
+import { publicBusinessBaseQuery } from "@/lib/directory/publicBusinessQuery";
 
 const approvedFilter = {
   $or: [
@@ -25,19 +26,7 @@ export default async function handler(
     const client = await clientPromise;
     const db = client.db(getMongoDbName());
 
-    const businessesFilter = {
-      $and: [
-        approvedFilter,
-        {
-          $or: [
-            { isComplete: true },
-            { completenessScore: { $gte: 70 } },
-            { qualityScore: { $gte: 70 } },
-            { directoryVisibilityApproved: true },
-          ],
-        },
-      ],
-    };
+    const businessesFilter = publicBusinessBaseQuery();
 
     const [businesses, organizations, opportunities, products] =
       await Promise.all([
