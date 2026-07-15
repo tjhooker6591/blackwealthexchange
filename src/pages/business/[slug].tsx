@@ -7,7 +7,10 @@ import Link from "next/link";
 import ErrorPage from "next/error";
 import { canonicalUrl, truncateMeta } from "@/lib/seo";
 import clientPromise from "@/lib/mongodb";
-import { normalizeFoundingClaimStage } from "@/lib/founding-membership";
+import {
+  normalizeFoundingClaimStage,
+  resolveFoundingOwnershipState,
+} from "@/lib/founding-membership-state";
 import { Spotlight, spotlightData } from "../../lib/SpotlightEntry";
 import { sanitizeRichHtml } from "@/lib/security/sanitizeHtml";
 
@@ -80,7 +83,13 @@ function mapDbBusinessToEntry(doc: any): BusinessEntry {
   const status =
     cleanString(doc?.status || doc?.trustStatus).toLowerCase() || null;
   const claimStage = normalizeFoundingClaimStage(doc?.claimStage);
-  const publicListingStatus = normalizeFoundingClaimStage(doc?.publicListingStatus);
+  const ownershipState = resolveFoundingOwnershipState({
+    business: doc,
+    claimStage: doc?.claimStage,
+    ownershipReviewStatus: doc?.ownershipReviewStatus,
+    publicListingStatus: doc?.publicListingStatus,
+  });
+  const publicListingStatus = ownershipState.publicListingStatus;
   const isSponsored = Number(doc?.amountPaid || 0) > 0;
   const isStrongProfile =
     doc?.isComplete === true ||
@@ -127,7 +136,8 @@ function mapDbBusinessToEntry(doc: any): BusinessEntry {
         "disputed",
         "founding_growth_member",
         "ownership_verified",
-      ].includes(claimStage || "") && status !== "verified",
+      ].includes(claimStage || "") &&
+      status !== "verified",
     isSponsored,
     isStrongProfile,
     directionsUrl,
@@ -273,7 +283,7 @@ const BusinessDetail: NextPage<Props> = ({ entry, slug, businessId }) => {
                     }
                     className="inline-flex items-center justify-center rounded-xl bg-yellow-500 text-black font-semibold text-sm px-3 py-2 hover:bg-yellow-400 transition"
                   >
-                    Claim This Business
+                    Claim This Listing
                   </Link>
                 ) : (
                   <span className="inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-white/60">
@@ -346,16 +356,16 @@ const BusinessDetail: NextPage<Props> = ({ entry, slug, businessId }) => {
                 <div className="rounded-2xl border border-yellow-500/20 bg-yellow-500/10 p-4 text-sm text-white/75">
                   <div className="font-semibold text-yellow-200">
                     {entry.canClaim
-                      ? "Claim This Business"
+                      ? "Claim This Listing"
                       : entry.publicListingStatus === "ownership_verified"
                         ? "Ownership Verified"
                         : "Ownership verification pending"}
                   </div>
                   <div className="mt-2">
                     {entry.canClaim
-                      ? "If this is your business, start the Founding Verified Business Growth Membership claim path to open ownership verification, profile review, fulfillment, and monthly reporting."
+                      ? "If this is your listing, start the Founding Verified Business Growth Membership claim path to open ownership verification, profile review, fulfillment, and monthly reporting."
                       : entry.publicListingStatus === "ownership_verified"
-                        ? "This business has already completed ownership verification and business-management access has been activated for the verified owner."
+                        ? "This listing has already completed ownership verification and listing-management access has been activated for the verified owner."
                         : "A founding membership is already active for this listing and ownership verification is still pending. Another claim or payment is not available while review is in progress."}
                   </div>
                   <div className="mt-2 text-white/60">
@@ -379,11 +389,13 @@ const BusinessDetail: NextPage<Props> = ({ entry, slug, businessId }) => {
                         }
                         className="rounded-lg bg-yellow-500 px-3 py-2 text-xs font-extrabold text-black"
                       >
-                        Start Membership and Claim
+                        Start Membership and Claim Listing
                       </Link>
                     ) : (
                       <span className="rounded-lg border border-white/15 px-3 py-2 text-xs font-bold text-white/70">
-                        Ownership verification pending
+                        {entry.publicListingStatus === "ownership_verified"
+                          ? "Ownership verified"
+                          : "Ownership verification pending"}
                       </span>
                     )}
                     {entry.publicListingStatus !== "ownership_verified" ? (

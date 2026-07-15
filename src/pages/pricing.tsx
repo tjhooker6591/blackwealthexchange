@@ -171,7 +171,8 @@ export default function Pricing() {
     ? new Date(premiumActivatedAt).toLocaleDateString()
     : null;
 
-  const feature = typeof router.query.feature === "string" ? router.query.feature : "";
+  const feature =
+    typeof router.query.feature === "string" ? router.query.feature : "";
   const returnTo =
     typeof router.query.returnTo === "string" ? router.query.returnTo : "";
   const isRealEstateToolkitContext = feature === "real-estate-toolkit";
@@ -258,11 +259,16 @@ export default function Pricing() {
                     Unlocking Real Estate Toolkit
                   </div>
                   <div className="mt-1 text-sm text-gray-200">
-                    Premium includes access to real estate calculators, checklists, worksheets, and planning tools.
+                    Premium includes access to real estate calculators,
+                    checklists, worksheets, and planning tools.
                   </div>
                   {returnTo ? (
-                    <Link href={returnTo} className="mt-2 inline-flex items-center gap-2 text-sm text-yellow-200 underline">
-                      Back to Real Estate Toolkit <ArrowRight className="h-4 w-4" />
+                    <Link
+                      href={returnTo}
+                      className="mt-2 inline-flex items-center gap-2 text-sm text-yellow-200 underline"
+                    >
+                      Back to Real Estate Toolkit{" "}
+                      <ArrowRight className="h-4 w-4" />
                     </Link>
                   ) : null}
                 </div>
@@ -310,10 +316,10 @@ export default function Pricing() {
                 </h2>
                 <p className="mt-2 text-sm text-gray-200">
                   Tiered membership identity and rewards access. Plan mapping:
-                  Premium includes the Standard Black Card, Founding Member includes the Signature Black Card.
-                  Elite is invite-only. Your membership plan determines your Black Card tier.
-                  Billed annually,
-                  auto-renews annually, cancel anytime.
+                  Premium includes the Standard Black Card, Founding Member
+                  includes the Signature Black Card. Elite is invite-only. Your
+                  membership plan determines your Black Card tier. Founding
+                  Member is billed monthly, auto-renews monthly, cancel anytime.
                 </p>
                 <p className="mt-2 text-xs text-gray-300">
                   Black Card is included with your plan. Use this page for plan
@@ -385,7 +391,7 @@ export default function Pricing() {
                 },
                 {
                   ok: true,
-                  text: "Physical card option planned for a future vendor-fulfilled phase",
+                  text: "Physical card option is not active yet and is planned for a future vendor-fulfilled phase",
                 },
               ]}
               ctaText={
@@ -402,9 +408,9 @@ export default function Pricing() {
 
             <PriceCard
               title="Founding Member"
-              price="$49/year"
+              price="$49/month"
               sub="Paid plan with Signature Black Card mapping."
-              billingNote="Billed annually • Auto-renews annually • Cancel anytime"
+              billingNote="Billed monthly • Auto-renews monthly • Cancel anytime"
               features={[
                 { ok: true, text: "Everything in Premium" },
                 {
@@ -421,7 +427,7 @@ export default function Pricing() {
                 },
                 {
                   ok: true,
-                  text: "Early access to features as they are released",
+                  text: "Access to founding-member releases only when those features are explicitly marked active",
                 },
               ]}
               ctaText="Become a Founder"
@@ -461,12 +467,12 @@ export default function Pricing() {
                   </tr>
                   <tr className="border-t border-white/10">
                     <td className="px-3 py-2 font-semibold">Founding Member</td>
-                    <td className="px-3 py-2">$49/year</td>
+                    <td className="px-3 py-2">$49/month</td>
                     <td className="px-3 py-2">
                       Premium Black Card (or higher retained)
                     </td>
                     <td className="px-3 py-2">
-                      Higher-tier members and early access
+                      Higher-tier members who want current Signature access
                     </td>
                   </tr>
                 </tbody>
@@ -505,8 +511,9 @@ export default function Pricing() {
                   Founding Member Plan
                 </div>
                 <p className="mt-2 text-gray-300">
-                  Includes Premium Black Card mapping (or keeps your higher
-                  tier if already active).
+                  Includes Premium Black Card mapping (or keeps your higher tier
+                  if already active). Future founder-only benefits are not live
+                  unless explicitly marked active.
                 </p>
               </div>
             </div>

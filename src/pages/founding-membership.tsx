@@ -122,7 +122,7 @@ function getUnavailableLabel(business: BusinessOption) {
     : business.unavailableReason === "claim_already_initiated"
       ? "Claim Already Initiated"
       : business.unavailableReason === "ownership_review_pending"
-        ? "Ownership Review Pending"
+        ? "Ownership Verification Pending"
         : business.unavailableReason === "membership_already_active"
           ? "Membership Already Active"
           : "Unavailable";
@@ -463,8 +463,8 @@ export default function FoundingMembershipPage() {
                     </div>
                   ) : (
                     <div className="text-sm text-white/65">
-                      Membership details and ownership-review terms remain below
-                      for review.
+                      Membership details and ownership-verification terms remain
+                      below for review.
                     </div>
                   )}
                 </div>
@@ -666,14 +666,14 @@ export default function FoundingMembershipPage() {
                         checkout and webhook flow
                       </li>
                       <li>
-                        Your claim is initiated and ownership review moves to
-                        pending
+                        Your claim is initiated and ownership verification moves
+                        to pending
                       </li>
                       <li>
                         BWE opens onboarding, fulfillment, and baseline records
                       </li>
                       <li>
-                        You follow the ownership-review steps before owner
+                        You follow the ownership-verification steps before owner
                         verification is approved
                       </li>
                     </ul>
@@ -743,7 +743,7 @@ export default function FoundingMembershipPage() {
                         Included services
                       </div>
                       <div className="mt-1 text-white/65">
-                        Claim initiation, ownership review intake, profile
+                        Claim initiation, ownership verification intake, profile
                         review, fulfillment setup, baseline creation, and
                         monthly reporting.
                       </div>
@@ -762,15 +762,15 @@ export default function FoundingMembershipPage() {
                         Next steps after payment
                       </div>
                       <div className="mt-1 text-white/65">
-                        Payment confirmation, claim initiated, ownership review
-                        pending, profile review queued, baseline created, and
-                        monthly reporting scheduled.
+                        Payment confirmation, claim initiated, ownership
+                        verification pending, profile review queued, baseline
+                        created, and monthly reporting scheduled.
                       </div>
                     </div>
                   </div>
                 ) : (
                   <div className="mt-3 rounded-2xl border border-white/10 bg-black/20 p-4 text-sm text-white/65">
-                    Find your business first, then return here to continue to
+                    Find your listing first, then return here to continue to
                     secure checkout.
                   </div>
                 )}

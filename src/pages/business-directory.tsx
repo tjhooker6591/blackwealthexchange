@@ -1259,7 +1259,7 @@ export default function BusinessDirectory({
                     <li>
                       Eligible public listings show{" "}
                       <span className="font-semibold text-yellow-200">
-                        Claim This Business
+                        Claim This Listing
                       </span>
                       .
                     </li>
@@ -1277,7 +1277,7 @@ export default function BusinessDirectory({
                       href="/business-directory/add-business"
                       className="text-yellow-300 underline underline-offset-4 hover:text-yellow-200"
                     >
-                      Don’t see your business? List it here.
+                      Don’t see your listing yet? Create it here.
                     </Link>
                   </div>
                 </div>
@@ -2458,7 +2458,7 @@ export default function BusinessDirectory({
                                       href={`/founding-membership?businessId=${encodeURIComponent(businessId)}`}
                                       className="rounded-lg border border-[#D4AF37]/40 bg-[#D4AF37]/12 px-3 py-1.5 text-[11px] font-bold text-[#F1D57A] hover:bg-[#D4AF37]/18"
                                     >
-                                      Claim This Business
+                                      Claim This Listing
                                     </Link>
                                   );
                                 }
@@ -2702,15 +2702,12 @@ export const getServerSideProps: GetServerSideProps<
         typeof row?.reviewCount === "string"
           ? row.reviewCount
           : null,
-      priceRange:
-        typeof row?.priceRange === "string" ? row.priceRange : null,
+      priceRange: typeof row?.priceRange === "string" ? row.priceRange : null,
       website: typeof row?.website === "string" ? row.website : null,
       verified: typeof row?.verified === "boolean" ? row.verified : null,
-      isVerified:
-        typeof row?.isVerified === "boolean" ? row.isVerified : null,
+      isVerified: typeof row?.isVerified === "boolean" ? row.isVerified : null,
       status: typeof row?.status === "string" ? row.status : null,
-      amountPaid:
-        typeof row?.amountPaid === "number" ? row.amountPaid : null,
+      amountPaid: typeof row?.amountPaid === "number" ? row.amountPaid : null,
       claimStage: typeof row?.claimStage === "string" ? row.claimStage : null,
       publicListingStatus:
         typeof row?.publicListingStatus === "string"

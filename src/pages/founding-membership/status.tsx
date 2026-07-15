@@ -134,7 +134,7 @@ export default function FoundingMembershipStatusPage() {
                   href="/business-directory"
                   className="rounded-xl bg-yellow-500 px-4 py-2 font-bold text-black"
                 >
-                  Find Existing Business
+                  Find Existing Listing
                 </Link>
                 <Link
                   href="/founding-membership"
@@ -161,7 +161,7 @@ export default function FoundingMembershipStatusPage() {
 
                 <div>
                   <div className="text-sm text-white/50">
-                    Selected or claimed business
+                    Selected or claimed listing
                   </div>
                   <div className="text-lg font-semibold text-white">
                     {membership.business?.name || "Business pending linkage"}

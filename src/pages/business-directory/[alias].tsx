@@ -7,6 +7,7 @@ import { getMongoDbName } from "@/lib/env";
 
 type Business = {
   _id?: string;
+  alias?: string;
   business_name?: string;
   name?: string;
   categories?: string | string[];
@@ -114,7 +115,11 @@ function normalizeBusinessDoc(doc: any): Business {
   } as Business;
 }
 
-export default function BusinessDetail({ initialAlias, initialBusiness, initialError }: Props) {
+export default function BusinessDetail({
+  initialAlias,
+  initialBusiness,
+  initialError,
+}: Props) {
   const router = useRouter();
   const alias = useMemo(() => {
     const raw = router.query.alias;
@@ -122,7 +127,9 @@ export default function BusinessDetail({ initialAlias, initialBusiness, initialE
     return routeAlias || initialAlias || undefined;
   }, [initialAlias, router.query.alias]);
 
-  const [business, setBusiness] = useState<Business | null>(initialBusiness || null);
+  const [business, setBusiness] = useState<Business | null>(
+    initialBusiness || null,
+  );
   const [isLoading, setIsLoading] = useState(!initialBusiness && !initialError);
   const [error, setError] = useState(initialError || "");
 
@@ -138,7 +145,8 @@ export default function BusinessDetail({ initialAlias, initialBusiness, initialE
 
   useEffect(() => {
     if (!router.isReady || !alias) return;
-    if (initialBusiness && safeStr(initialBusiness.alias) === safeStr(alias)) return;
+    if (initialBusiness && safeStr(initialBusiness.alias) === safeStr(alias))
+      return;
 
     let active = true;
     const ctrl = new AbortController();
@@ -412,7 +420,7 @@ export default function BusinessDetail({ initialAlias, initialBusiness, initialE
                         href={`/founding-membership?businessId=${encodeURIComponent(canonicalBusinessId)}`}
                         className="inline-flex items-center justify-center rounded-xl border border-[#D4AF37]/40 bg-[#D4AF37]/12 px-4 py-2 text-sm font-bold text-[#F1D57A] transition hover:bg-[#D4AF37]/18"
                       >
-                        Claim This Business
+                        Claim This Listing
                       </Link>
                     ) : (
                       <span className="inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2 text-sm font-bold text-white/55">
