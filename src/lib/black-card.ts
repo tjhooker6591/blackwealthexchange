@@ -6,7 +6,7 @@ export interface BlackCardTierConfig {
   checkoutItemId: string | null;
   priceCents: number | null;
   priceLabel: string;
-  billingModel: "annual" | "invite_only";
+  billingModel: "annual" | "monthly" | "invite_only";
   tagline: string;
   benefits: string[];
 }
@@ -36,8 +36,8 @@ export const BLACK_CARD_TIERS: Record<BlackCardTier, BlackCardTierConfig> = {
     label: "BWE Black Card Signature",
     checkoutItemId: "founder",
     priceCents: 4900,
-    priceLabel: "$49/year",
-    billingModel: "annual",
+    priceLabel: "$49/month",
+    billingModel: "monthly",
     tagline:
       "Build on Standard with expanding benefits, broader redemption access, and priority access rolling out across experiences.",
     benefits: [

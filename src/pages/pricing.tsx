@@ -467,7 +467,7 @@ export default function Pricing() {
                   </tr>
                   <tr className="border-t border-white/10">
                     <td className="px-3 py-2 font-semibold">Founding Member</td>
-                    <td className="px-3 py-2">$49/year</td>
+                    <td className="px-3 py-2">$49/month</td>
                     <td className="px-3 py-2">
                       Premium Black Card (or higher retained)
                     </td>

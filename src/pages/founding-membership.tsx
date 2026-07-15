@@ -770,7 +770,7 @@ export default function FoundingMembershipPage() {
                   </div>
                 ) : (
                   <div className="mt-3 rounded-2xl border border-white/10 bg-black/20 p-4 text-sm text-white/65">
-                    Find your business first, then return here to continue to
+                    Find your listing first, then return here to continue to
                     secure checkout.
                   </div>
                 )}

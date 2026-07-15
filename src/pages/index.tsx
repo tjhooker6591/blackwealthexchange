@@ -895,15 +895,15 @@ export default function Home() {
                 </div>
 
                 <h1 className="mt-3 flex flex-col gap-1 text-3xl font-black leading-[1.14] tracking-tight text-white sm:text-4xl md:text-5xl lg:text-[3.45rem]">
-                  <span>Claim your business.</span>
+                  <span>Claim your listing.</span>
                   <span>Strengthen your profile.</span>
                   <span>Track your visibility.</span>
                 </h1>
 
                 <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-white/84 sm:text-base sm:leading-7">
                   Join the $49/month Founding Membership to begin ownership
-                  review, improve your BWE profile, and receive monthly
-                  performance reporting.
+                  review for your listing, improve your BWE profile, and
+                  receive monthly performance reporting.
                 </p>
               </div>
 
@@ -915,13 +915,13 @@ export default function Home() {
                     trackHomepageEvent("homepage_cta_clicked", {
                       section: "hero",
                       ctaId: "hero_claim_business",
-                      ctaLabel: "Claim Your Business",
+                      ctaLabel: "Claim Your Listing",
                       destination: "/business-directory?mode=claim",
                     })
                   }
                 >
                   <button className="h-12 w-full rounded-xl bg-[#D4AF37] px-6 text-sm font-extrabold text-black transition hover:-translate-y-0.5 hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/25 sm:min-w-[220px]">
-                    Claim Your Business
+                    Claim Your Listing
                   </button>
                 </Link>
                 <Link
@@ -947,12 +947,12 @@ export default function Home() {
                     trackHomepageEvent("homepage_cta_clicked", {
                       section: "hero",
                       ctaId: "hero_list_business",
-                      ctaLabel: "Don’t see your business? List it here.",
+                      ctaLabel: "Don’t see your listing yet? Create it here.",
                       destination: "/business-directory/add-business",
                     })
                   }
                 >
-                  Don’t see your business? List it here.
+                  Don’t see your listing yet? Create it here.
                 </Link>
               </div>
             </div>
@@ -1353,11 +1353,11 @@ export default function Home() {
                   Claim your existing listing
                 </p>
                 <h3 className="mt-1 text-xl font-extrabold tracking-tight text-white sm:text-2xl">
-                  Find your public BWE business, start the claim process, and
+                  Find your public BWE listing, start the claim process, and
                   move into monthly growth support.
                 </h3>
                 <p className="mt-2 text-sm text-white/75">
-                  This pilot path is for an existing public business listing.
+                  This pilot path is for an existing public listing.
                   Payment starts membership and claim processing, but ownership
                   verification is still reviewed separately.
                 </p>
@@ -1367,9 +1367,9 @@ export default function Home() {
                   Founding membership path
                 </div>
                 <ul className="mt-2 space-y-2 text-sm text-white/80">
-                  <li>• Find existing business in the directory</li>
-                  <li>• Claim the business and start ownership review</li>
-                  <li>• Activate the $49/year founding pilot membership</li>
+                  <li>• Find your existing listing in the directory</li>
+                  <li>• Claim the listing and start ownership review</li>
+                  <li>• Activate the $49/month founding membership</li>
                   <li>
                     • Move into profile review, baseline setup, and monthly
                     reporting
@@ -1380,7 +1380,7 @@ export default function Home() {
                     href="/business-directory"
                     className="inline-flex rounded-lg bg-[#D4AF37] px-4 py-2.5 text-sm font-extrabold text-black hover:bg-yellow-500"
                   >
-                    Find Existing Business
+                    Find Existing Listing
                   </Link>
                   <Link
                     href="/founding-membership"

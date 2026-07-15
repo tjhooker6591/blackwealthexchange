@@ -1,3 +1,4 @@
+import type { GetServerSideProps } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useMemo, useState } from "react";
@@ -14,34 +15,51 @@ function asMoney(v: unknown) {
   return Number.isFinite(n) ? `$${n.toFixed(2)}` : null;
 }
 
-export default function CheckoutPage() {
+type CheckoutPageProps = {
+  initialPlan: string;
+  initialType: string;
+  initialSource: string;
+  initialProductName: string;
+  initialAmount: string;
+};
+
+export default function CheckoutPage({
+  initialPlan,
+  initialType,
+  initialSource,
+  initialProductName,
+  initialAmount,
+}: CheckoutPageProps) {
   const router = useRouter();
   const { user } = useAuth();
 
   const plan = useMemo(() => {
     const p = router.query.plan;
-    return typeof p === "string" ? p : "";
-  }, [router.query.plan]);
+    return typeof p === "string" ? p : initialPlan;
+  }, [initialPlan, router.query.plan]);
 
   const checkoutType = useMemo(() => {
     const t = router.query.type;
-    return typeof t === "string" ? t : "plan";
-  }, [router.query.type]);
+    return typeof t === "string" ? t : initialType || "plan";
+  }, [initialType, router.query.type]);
 
   const source = useMemo(() => {
     const s = router.query.source;
-    return typeof s === "string" ? s : "";
-  }, [router.query.source]);
+    return typeof s === "string" ? s : initialSource;
+  }, [initialSource, router.query.source]);
 
   const productName = useMemo(() => {
     const n = router.query.productName;
-    return typeof n === "string" ? n : "";
-  }, [router.query.productName]);
+    return typeof n === "string" ? n : initialProductName;
+  }, [initialProductName, router.query.productName]);
 
-  const amountLabel = useMemo(
-    () => asMoney(router.query.amount),
-    [router.query.amount],
-  );
+  const amountLabel = useMemo(() => {
+    const amount =
+      typeof router.query.amount === "string"
+        ? router.query.amount
+        : initialAmount;
+    return asMoney(amount);
+  }, [initialAmount, router.query.amount]);
 
   const isMarketplaceOrder =
     checkoutType === "product" || source === "marketplace";
@@ -194,3 +212,16 @@ export default function CheckoutPage() {
     </>
   );
 }
+
+export const getServerSideProps: GetServerSideProps<
+  CheckoutPageProps
+> = async ({ query }) => ({
+  props: {
+    initialPlan: typeof query.plan === "string" ? query.plan : "",
+    initialType: typeof query.type === "string" ? query.type : "",
+    initialSource: typeof query.source === "string" ? query.source : "",
+    initialProductName:
+      typeof query.productName === "string" ? query.productName : "",
+    initialAmount: typeof query.amount === "string" ? query.amount : "",
+  },
+});

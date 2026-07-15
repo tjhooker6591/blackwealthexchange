@@ -298,8 +298,14 @@ export default function NewsPage() {
       setSources(gotSources);
       setFailures(data?.failures || {});
       setUpdatedAt(data?.updatedAt || "");
-      setSuccessfulFeedCount(Number(data?.successfulFeedCount || gotSources.length || 0));
-      setFailedFeedCount(Number(data?.failedFeedCount || Object.keys(data?.failures || {}).length));
+      setSuccessfulFeedCount(
+        Number(data?.successfulFeedCount || gotSources.length || 0),
+      );
+      setFailedFeedCount(
+        Number(
+          data?.failedFeedCount || Object.keys(data?.failures || {}).length,
+        ),
+      );
 
       if (opts?.pushUrl) {
         router.replace(

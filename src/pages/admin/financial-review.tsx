@@ -123,7 +123,7 @@ export default function FinancialReviewPage() {
         <Section title="Top Totals">
           <div className="grid md:grid-cols-3 gap-3 text-sm">
             <div className="rounded border border-zinc-800 bg-zinc-950 p-3">
-              Total Revenue: {money(data?.totalRevenue)}
+              Total Revenue: {money(data?.grossRevenue)}
             </div>
             <div className="rounded border border-zinc-800 bg-zinc-950 p-3">
               BWE Net Revenue: {money(data?.totalRevenue)}
@@ -210,6 +210,9 @@ export default function FinancialReviewPage() {
             {ledgerEnabled
               ? "Ledger enabled, new transactions will be recorded"
               : "Ledger disabled, no financial records will be written"}
+          </p>
+          <p className="mt-2 text-xs text-zinc-500">
+            Summary source of truth: {String(data?.sourceOfTruth || "unknown")}
           </p>
         </Section>
 

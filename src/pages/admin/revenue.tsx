@@ -144,11 +144,18 @@ export default function Page() {
                           : "-"}
                       </td>
                       <td className="p-2">
-                        {String(r?.type || r?.revenueStream || "-")}
+                        {String(r?.revenueStream || r?.type || "-")}
                       </td>
-                      <td className="p-2">{String(r?.status || "-")}</td>
+                      <td className="p-2">
+                        {String(r?.paymentStatus || r?.status || "-")}
+                      </td>
                       <td className="p-2 text-right">
-                        {money(r?.amountCents || r?.grossCents || 0)}
+                        {money(
+                          r?.grossAmount ??
+                            r?.amountCents ??
+                            r?.grossCents ??
+                            0,
+                        )}
                       </td>
                     </tr>
                   ))}

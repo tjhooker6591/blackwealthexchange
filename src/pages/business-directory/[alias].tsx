@@ -2,9 +2,12 @@ import React, { useEffect, useMemo, useState } from "react";
 import type { GetServerSideProps } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import clientPromise from "@/lib/mongodb";
+import { getMongoDbName } from "@/lib/env";
 
 type Business = {
   _id?: string;
+  alias?: string;
   business_name?: string;
   name?: string;
   categories?: string | string[];
@@ -74,9 +77,49 @@ function trackFlowEvent(payload: Record<string, unknown>) {
 
 type Props = {
   initialAlias?: string | null;
+  initialBusiness?: Business | null;
+  initialError?: string;
 };
 
-export default function BusinessDetail({ initialAlias }: Props) {
+function normalizeBusinessDoc(doc: any): Business {
+  return {
+    _id: safeStr(doc?._id),
+    alias: safeStr(doc?.alias),
+    business_name: safeStr(doc?.business_name),
+    name: safeStr(doc?.name),
+    categories: Array.isArray(doc?.categories)
+      ? doc.categories.map((x: unknown) => safeStr(x)).filter(Boolean)
+      : safeStr(doc?.categories),
+    address: safeStr(doc?.address),
+    city: safeStr(doc?.city),
+    state: safeStr(doc?.state),
+    description: safeStr(doc?.description) || "No description available",
+    phone: safeStr(doc?.phone),
+    latitude: typeof doc?.latitude === "number" ? doc.latitude : undefined,
+    longitude: typeof doc?.longitude === "number" ? doc.longitude : undefined,
+    website: safeStr(doc?.website),
+    verified: doc?.verified === true,
+    isVerified: doc?.isVerified === true,
+    status: safeStr(doc?.status),
+    claimStage: safeStr(doc?.claimStage),
+    claimLocked: doc?.claimLocked === true,
+    claimedByUserId: safeStr(doc?.claimedByUserId),
+    claimedByEmail: safeStr(doc?.claimedByEmail),
+    foundingMembershipId: safeStr(doc?.foundingMembershipId),
+    ownershipReviewStatus: safeStr(doc?.ownershipReviewStatus),
+    amountPaid: Number(doc?.amountPaid || 0),
+    completenessScore: Number(doc?.completenessScore || 0),
+    isComplete:
+      typeof doc?.isComplete === "boolean" ? doc.isComplete : undefined,
+    publicListingStatus: safeStr(doc?.publicListingStatus),
+  } as Business;
+}
+
+export default function BusinessDetail({
+  initialAlias,
+  initialBusiness,
+  initialError,
+}: Props) {
   const router = useRouter();
   const alias = useMemo(() => {
     const raw = router.query.alias;
@@ -84,9 +127,11 @@ export default function BusinessDetail({ initialAlias }: Props) {
     return routeAlias || initialAlias || undefined;
   }, [initialAlias, router.query.alias]);
 
-  const [business, setBusiness] = useState<Business | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [business, setBusiness] = useState<Business | null>(
+    initialBusiness || null,
+  );
+  const [isLoading, setIsLoading] = useState(!initialBusiness && !initialError);
+  const [error, setError] = useState(initialError || "");
 
   const source = useMemo(() => {
     const raw = router.query.from;
@@ -100,6 +145,8 @@ export default function BusinessDetail({ initialAlias }: Props) {
 
   useEffect(() => {
     if (!router.isReady || !alias) return;
+    if (initialBusiness && safeStr(initialBusiness.alias) === safeStr(alias))
+      return;
 
     let active = true;
     const ctrl = new AbortController();
@@ -139,7 +186,7 @@ export default function BusinessDetail({ initialAlias }: Props) {
       active = false;
       ctrl.abort();
     };
-  }, [router.isReady, alias]);
+  }, [router.isReady, alias, initialBusiness]);
 
   useEffect(() => {
     if (!business || !alias) return;
@@ -167,6 +214,9 @@ export default function BusinessDetail({ initialAlias }: Props) {
 
   const status = safeStr(business?.status).toLowerCase();
   const claimStage = safeStr(business?.claimStage).toLowerCase();
+  const publicListingStatus = safeStr(
+    (business as any)?.publicListingStatus,
+  ).toLowerCase();
   const claimLocked = business?.claimLocked === true;
   const trust = {
     verified:
@@ -185,6 +235,7 @@ export default function BusinessDetail({ initialAlias }: Props) {
   const canClaim =
     Boolean(canonicalBusinessId) &&
     !trust.verified &&
+    publicListingStatus !== "ownership_verified" &&
     !claimLocked &&
     ![
       "claim_initiated",
@@ -369,12 +420,13 @@ export default function BusinessDetail({ initialAlias }: Props) {
                         href={`/founding-membership?businessId=${encodeURIComponent(canonicalBusinessId)}`}
                         className="inline-flex items-center justify-center rounded-xl border border-[#D4AF37]/40 bg-[#D4AF37]/12 px-4 py-2 text-sm font-bold text-[#F1D57A] transition hover:bg-[#D4AF37]/18"
                       >
-                        Claim This Business
+                        Claim This Listing
                       </Link>
                     ) : (
                       <span className="inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2 text-sm font-bold text-white/55">
-                        {trust.verified
-                          ? "Already Verified"
+                        {trust.verified ||
+                        publicListingStatus === "ownership_verified"
+                          ? "Ownership Verified"
                           : claimStage === "claim_initiated"
                             ? "Ownership verification pending"
                             : claimStage === "ownership_verification_pending"
@@ -440,8 +492,8 @@ export default function BusinessDetail({ initialAlias }: Props) {
                       </div>
                       <div className="mt-1">
                         Payment starts membership and opens ownership
-                        verification, but does not automatically verify
-                        ownership.
+                        verification, unless ownership has already been verified
+                        through the canonical review flow.
                       </div>
                       <div className="mt-2 flex flex-wrap gap-2">
                         <Link
@@ -522,9 +574,68 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
       ? params.alias
       : null;
 
-  return {
-    props: {
-      initialAlias: alias,
-    },
-  };
+  if (!alias) {
+    return {
+      props: {
+        initialAlias: null,
+        initialBusiness: null,
+        initialError: "Business not found.",
+      },
+    };
+  }
+
+  try {
+    const client = await clientPromise;
+    const db = client.db(getMongoDbName());
+    const doc = await db.collection("businesses").findOne(
+      { alias },
+      {
+        projection: {
+          _id: 1,
+          alias: 1,
+          business_name: 1,
+          name: 1,
+          categories: 1,
+          address: 1,
+          city: 1,
+          state: 1,
+          description: 1,
+          phone: 1,
+          latitude: 1,
+          longitude: 1,
+          website: 1,
+          verified: 1,
+          isVerified: 1,
+          status: 1,
+          claimStage: 1,
+          claimLocked: 1,
+          claimedByUserId: 1,
+          claimedByEmail: 1,
+          foundingMembershipId: 1,
+          ownershipReviewStatus: 1,
+          amountPaid: 1,
+          completenessScore: 1,
+          isComplete: 1,
+          publicListingStatus: 1,
+        },
+      },
+    );
+
+    return {
+      props: {
+        initialAlias: alias,
+        initialBusiness: doc ? normalizeBusinessDoc(doc) : null,
+        initialError: doc ? "" : "Business not found.",
+      },
+    };
+  } catch (error) {
+    console.error("Failed to SSR business detail", error);
+    return {
+      props: {
+        initialAlias: alias,
+        initialBusiness: null,
+        initialError: "Could not load this business. Please retry.",
+      },
+    };
+  }
 };

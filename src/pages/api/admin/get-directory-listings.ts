@@ -1,18 +1,16 @@
 // src/pages/api/admin/get-directory-listings.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
-import cookie from "cookie";
-import jwt from "jsonwebtoken";
-import { getJwtSecret } from "@/lib/env";
-
-type Decoded = {
-  userId?: string;
-  email?: string;
-  accountType?: string;
-  role?: string;
-  isAdmin?: boolean;
-  roles?: string[];
-};
+import { getMongoDbName } from "@/lib/env";
+import { requireAdminFromRequest } from "@/lib/adminAuth";
+import {
+  getDirectoryListingStateFromListing,
+  getDirectoryListingStateFromPayment,
+  getDirectoryPaymentStateFromListing,
+  getDirectoryPaymentStateFromPayment,
+  isDirectoryItemId,
+  summarizeDirectoryRows,
+} from "@/lib/adminDirectoryStatus";
 
 type AdminRow = {
   _id?: any;
@@ -51,25 +49,6 @@ type AdminRow = {
   campaignId?: string | null;
 };
 
-function isAdmin(decoded: Decoded) {
-  if (decoded?.isAdmin) return true;
-  if (decoded?.accountType === "admin") return true;
-  if (decoded?.role === "admin") return true;
-  if (Array.isArray(decoded?.roles) && decoded.roles.includes("admin"))
-    return true;
-
-  const allow = (process.env.ADMIN_EMAILS || "")
-    .split(",")
-    .map((s) => s.trim().toLowerCase())
-    .filter(Boolean);
-
-  if (allow.length && decoded?.email) {
-    return allow.includes(decoded.email.toLowerCase());
-  }
-
-  return false;
-}
-
 function parseIntSafe(v: unknown, def: number) {
   const n = Number(v);
   return Number.isFinite(n) && n > 0 ? Math.floor(n) : def;
@@ -90,10 +69,6 @@ function normalize(v: unknown): string {
     .trim()
     .toLowerCase();
 }
-
-function normalizeListingStatus(v: unknown) {
-  return normalize(v).replace(/[\s-]+/g, "_");
-}
 function pickDirectoryItemId(doc: any): string | null {
   return (
     s(doc?.itemId) ||
@@ -108,87 +83,6 @@ function inferTier(itemId: string | null): "standard" | "featured" | null {
   if (itemId === "directory-standard") return "standard";
   if (itemId === "directory-featured") return "featured";
   return null;
-}
-
-function isDirectoryItem(itemId: string | null) {
-  return itemId === "directory-standard" || itemId === "directory-featured";
-}
-
-function getPaymentStateFromListing(doc: any): "paid" | "pending" | "refunded" {
-  const explicit = normalize(doc?.paymentStatus);
-  if (explicit === "paid") return "paid";
-  if (explicit === "refunded") return "refunded";
-  if (explicit === "pending") return "pending";
-
-  if (doc?.paid === true) return "paid";
-  if (doc?.paidAt) return "paid";
-
-  return "pending";
-}
-
-function getListingStateFromListing(
-  doc: any,
-): "unlinked" | "pending_approval" | "approved" | "active" | "expired" {
-  const explicit = normalizeListingStatus(doc?.listingStatus);
-  if (
-    explicit === "unlinked" ||
-    explicit === "pending_approval" ||
-    explicit === "approved" ||
-    explicit === "active" ||
-    explicit === "expired"
-  ) {
-    return explicit as
-      | "unlinked"
-      | "pending_approval"
-      | "approved"
-      | "active"
-      | "expired";
-  }
-
-  const status = normalizeListingStatus(doc?.status);
-  if (
-    status === "unlinked" ||
-    status === "pending_approval" ||
-    status === "approved" ||
-    status === "active" ||
-    status === "expired"
-  ) {
-    return status as
-      | "unlinked"
-      | "pending_approval"
-      | "approved"
-      | "active"
-      | "expired";
-  }
-
-  if (doc?.needsAttention) return "unlinked";
-  return "pending_approval";
-}
-
-function getPaymentStateFromPayment(doc: any): "paid" | "pending" | "refunded" {
-  const st = normalize(doc?.status || doc?.paymentStatus);
-  if (st === "paid") return "paid";
-  if (st === "refunded") return "refunded";
-  return "pending";
-}
-
-function getListingStateFromPayment(
-  doc: any,
-  linked: boolean,
-):
-  | "unlinked"
-  | "pending_approval"
-  | "approved"
-  | "active"
-  | "expired"
-  | "fallback" {
-  const paymentState = getPaymentStateFromPayment(doc);
-  const businessId = s(doc?.businessId) || s(doc?.metadata?.businessId);
-
-  if (paymentState !== "paid") return "fallback";
-  if (linked) return "active";
-  if (!businessId) return "unlinked";
-  return "pending_approval";
 }
 
 function passesSearch(row: AdminRow, query: string) {
@@ -225,23 +119,8 @@ export default async function handler(
     return res.status(405).json({ error: "Method Not Allowed" });
   }
 
-  const cookies = cookie.parse(req.headers.cookie || "");
-  const token = cookies.session_token;
-
-  if (!token) return res.status(401).json({ error: "Unauthorized" });
-
-  let decoded: Decoded;
-  try {
-    const SECRET = getJwtSecret();
-    if (!SECRET) throw new Error("JWT_SECRET missing");
-    decoded = jwt.verify(token, SECRET) as Decoded;
-  } catch {
-    return res.status(401).json({ error: "Unauthorized" });
-  }
-
-  if (!isAdmin(decoded)) {
-    return res.status(403).json({ error: "Forbidden" });
-  }
+  const admin = await requireAdminFromRequest(req, res);
+  if (!admin) return;
 
   try {
     const {
@@ -257,7 +136,7 @@ export default async function handler(
     const limitNum = Math.min(parseIntSafe(limit, 100), 250);
 
     const client = await clientPromise;
-    const db = client.db("bwes-cluster");
+    const db = client.db(getMongoDbName());
 
     const directoryCol = db.collection("directory_listings");
     const paymentsCol = db.collection("payments");
@@ -310,8 +189,8 @@ export default async function handler(
 
     // Normalize directory_listings rows
     const normalizedListings: AdminRow[] = directoryListings.map((doc: any) => {
-      const paymentStatus = getPaymentStateFromListing(doc);
-      const listingStatus = getListingStateFromListing(doc);
+      const paymentStatus = getDirectoryPaymentStateFromListing(doc);
+      const listingStatus = getDirectoryListingStateFromListing(doc);
       const businessIdReal = s(doc?.businessIdReal);
       const businessId = businessIdReal || s(doc?.businessId);
 
@@ -369,7 +248,7 @@ export default async function handler(
     const fallbackRows: AdminRow[] = payments
       .map((p: any) => {
         const itemId = pickDirectoryItemId(p);
-        if (!isDirectoryItem(itemId)) return null;
+        if (!isDirectoryItemId(itemId)) return null;
 
         const stripeSessionId = s(p?.stripeSessionId);
         const linked = stripeSessionId
@@ -379,8 +258,8 @@ export default async function handler(
         // do not duplicate real directory rows in combined admin view
         if (linked && source !== "payments") return null;
 
-        const paymentStatus = getPaymentStateFromPayment(p);
-        const listingStatus = getListingStateFromPayment(p, linked);
+        const paymentStatus = getDirectoryPaymentStateFromPayment(p);
+        const listingStatus = getDirectoryListingStateFromPayment(p, linked);
         const businessId = s(p?.businessId) || s(p?.metadata?.businessId);
         const userId = s(p?.userId) || s(p?.metadata?.userId);
 
@@ -481,21 +360,7 @@ export default async function handler(
     const skip = (pageNum - 1) * limitNum;
     const paged = combined.slice(skip, skip + limitNum);
 
-    const summary = {
-      paid: combined.filter((x) => x.paymentStatus === "paid").length,
-      pendingPayment: combined.filter((x) => x.paymentStatus === "pending")
-        .length,
-      refunded: combined.filter((x) => x.paymentStatus === "refunded").length,
-      unlinked: combined.filter((x) => x.listingStatus === "unlinked").length,
-      pendingApproval: combined.filter(
-        (x) => x.listingStatus === "pending_approval",
-      ).length,
-      approved: combined.filter((x) => x.listingStatus === "approved").length,
-      active: combined.filter((x) => x.listingStatus === "active").length,
-      expired: combined.filter((x) => x.listingStatus === "expired").length,
-      fallback: combined.filter((x) => x.source === "payments_fallback").length,
-      needsAttention: combined.filter((x) => !!x.needsAttention).length,
-    };
+    const summary = summarizeDirectoryRows(combined);
 
     return res.status(200).json({
       ok: true,

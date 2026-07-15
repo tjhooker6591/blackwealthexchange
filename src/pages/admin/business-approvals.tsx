@@ -9,9 +9,18 @@ import { requireAdminPageProps } from "@/lib/adminPageGuard";
 type Business = {
   _id: string;
   businessName: string;
-  ownerName?: string;
-  email?: string;
-  submittedAt?: string;
+  ownerName?: string | null;
+  email?: string | null;
+  submittedAt?: string | null;
+  queueKind?:
+    | "approvable_submission"
+    | "imported_pending_record"
+    | "malformed_pending_record";
+  canApprove?: boolean;
+  canReject?: boolean;
+  missingFields?: string[];
+  sourceLabel?: string | null;
+  listingType?: string | null;
 };
 
 type MeResponse = {
@@ -236,25 +245,55 @@ export default function BusinessApprovals() {
                           key={biz._id}
                           className="border-b border-zinc-800 last:border-b-0"
                         >
-                          <td className="p-3">{biz.businessName}</td>
+                          <td className="p-3">
+                            <div className="font-medium">
+                              {biz.businessName}
+                            </div>
+                            {biz.queueKind &&
+                            biz.queueKind !== "approvable_submission" ? (
+                              <div className="mt-1 text-xs text-yellow-300">
+                                {biz.queueKind === "imported_pending_record"
+                                  ? "Imported/incomplete pending record"
+                                  : "Malformed pending record"}
+                              </div>
+                            ) : null}
+                            {biz.sourceLabel ? (
+                              <div className="mt-1 text-xs text-zinc-500">
+                                Source: {biz.sourceLabel}
+                              </div>
+                            ) : null}
+                          </td>
                           <td className="p-3">{biz.ownerName || "N/A"}</td>
                           <td className="p-3">{biz.email || "N/A"}</td>
                           <td className="p-3">
                             {biz.submittedAt
                               ? new Date(biz.submittedAt).toLocaleDateString()
                               : "Unknown"}
+                            {Array.isArray(biz.missingFields) &&
+                            biz.missingFields.length ? (
+                              <div className="mt-1 text-xs text-zinc-500">
+                                Missing: {biz.missingFields.join(", ")}
+                              </div>
+                            ) : null}
                           </td>
                           <td className="p-3">
                             <div className="flex gap-2">
                               <button
                                 onClick={() => handleApprove(biz._id)}
-                                className="rounded bg-green-600 px-3 py-1 font-semibold text-black hover:bg-green-500 transition"
+                                disabled={!biz.canApprove}
+                                className="rounded bg-green-600 px-3 py-1 font-semibold text-black hover:bg-green-500 transition disabled:cursor-not-allowed disabled:opacity-40"
+                                title={
+                                  biz.canApprove
+                                    ? "Approve this business"
+                                    : "Only valid pending submissions can be approved"
+                                }
                               >
                                 Approve
                               </button>
                               <button
                                 onClick={() => handleReject(biz._id)}
-                                className="rounded bg-red-600 px-3 py-1 font-semibold text-black hover:bg-red-500 transition"
+                                disabled={biz.canReject === false}
+                                className="rounded bg-red-600 px-3 py-1 font-semibold text-black hover:bg-red-500 transition disabled:cursor-not-allowed disabled:opacity-40"
                               >
                                 Reject
                               </button>

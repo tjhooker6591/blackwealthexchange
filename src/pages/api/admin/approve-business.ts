@@ -9,7 +9,12 @@ import {
   hitApiRateLimit,
 } from "@/lib/apiRateLimit";
 import { ObjectId } from "mongodb";
-import { buildUniqueSlug, getCanonicalBusinessName, slugifyBusinessName } from "@/lib/businessSubmission";
+import { getCanonicalBusinessName } from "@/lib/businessSubmission";
+import {
+  AdminApprovalValidationError,
+  normalizeAdminApprovalRow,
+  resolveUniqueBusinessSlugAndAlias,
+} from "@/lib/adminBusinessApprovals";
 
 export default async function handler(
   req: NextApiRequest,
@@ -52,7 +57,9 @@ export default async function handler(
     }
 
     const businesses = db.collection("businesses");
-    const existing = await businesses.findOne({ _id: new ObjectId(businessId) });
+    const existing = await businesses.findOne({
+      _id: new ObjectId(businessId),
+    });
 
     if (!existing || existing.approved === true) {
       return res
@@ -60,46 +67,100 @@ export default async function handler(
         .json({ error: "Business not found or already approved" });
     }
 
-    const canonicalName = getCanonicalBusinessName(existing);
-    const slugBase = slugifyBusinessName(canonicalName || "business");
-    const desiredSlug =
-      typeof existing.slug === "string" && existing.slug.trim()
-        ? existing.slug.trim()
-        : slugBase;
-    const desiredAlias =
-      typeof existing.alias === "string" && existing.alias.trim()
-        ? existing.alias.trim()
-        : desiredSlug;
-
-    let nextSlug = desiredSlug;
-    let nextAlias = desiredAlias;
-
-    if (canonicalName && (!desiredSlug || !desiredAlias)) {
-      const existingWithSlug = await businesses.countDocuments({
-        _id: { $ne: existing._id },
-        slug: { $regex: `^${slugBase}(-\\d+)?$`, $options: "i" },
+    const normalized = normalizeAdminApprovalRow(existing);
+    if (!normalized.canApprove) {
+      return res.status(422).json({
+        error:
+          normalized.kind === "malformed_pending_record"
+            ? "Business record is malformed and cannot be approved"
+            : "Imported pending record cannot be approved from this queue",
+        kind: normalized.kind,
+        missingFields: normalized.missingFields,
       });
-      nextSlug = buildUniqueSlug(slugBase, existingWithSlug) || slugBase;
-      nextAlias = nextSlug;
     }
 
-    const result = await businesses.updateOne(
-      { _id: existing._id, approved: { $ne: true } },
-      {
-        $set: {
-          business_name: canonicalName || existing.business_name || existing.businessName || existing.title || "",
-          businessName: canonicalName || existing.businessName || existing.business_name || existing.title || "",
-          title: canonicalName || existing.title || existing.business_name || existing.businessName || "",
-          slug: nextSlug,
-          alias: nextAlias,
-          approved: true,
-          status: "active",
-          approvedAt: new Date(),
-          approvedBy: admin.email || admin.userId || "admin",
-          updatedAt: new Date(),
+    const canonicalName = getCanonicalBusinessName(existing);
+    if (!canonicalName) {
+      return res.status(422).json({
+        error: "Business record is malformed: missing business name",
+      });
+    }
+
+    const applyApprovalUpdate = async (options?: {
+      ignoreExistingValues?: boolean;
+    }) => {
+      const slugResolution = await resolveUniqueBusinessSlugAndAlias({
+        businesses,
+        existingId: existing._id,
+        canonicalName,
+        existingSlug: existing.slug,
+        existingAlias: existing.alias,
+        ignoreExistingValues: options?.ignoreExistingValues ?? false,
+      });
+
+      const nextSlug = slugResolution.slug;
+      const nextAlias = slugResolution.alias;
+
+      const result = await businesses.updateOne(
+        { _id: existing._id, approved: { $ne: true } },
+        {
+          $set: {
+            business_name:
+              canonicalName ||
+              existing.business_name ||
+              existing.businessName ||
+              existing.title ||
+              "",
+            businessName:
+              canonicalName ||
+              existing.businessName ||
+              existing.business_name ||
+              existing.title ||
+              "",
+            title:
+              canonicalName ||
+              existing.title ||
+              existing.business_name ||
+              existing.businessName ||
+              "",
+            slug: nextSlug,
+            alias: nextAlias,
+            approved: true,
+            status: "active",
+            approvedAt: new Date(),
+            approvedBy: admin.email || admin.userId || "admin",
+            updatedAt: new Date(),
+          },
         },
-      },
-    );
+      );
+
+      return { result, nextSlug, nextAlias };
+    };
+
+    let approvalWrite;
+    try {
+      approvalWrite = await applyApprovalUpdate();
+    } catch (error: any) {
+      if (error?.code === 11000) {
+        try {
+          approvalWrite = await applyApprovalUpdate({
+            ignoreExistingValues: true,
+          });
+        } catch (retryError: any) {
+          if (retryError?.code === 11000) {
+            return res.status(409).json({
+              error: "Business slug or alias already exists",
+              kind: "duplicate_slug_or_alias",
+            });
+          }
+          throw retryError;
+        }
+      } else {
+        throw error;
+      }
+    }
+
+    const { result, nextSlug, nextAlias } = approvalWrite;
 
     if (result.modifiedCount === 0) {
       return res
@@ -111,10 +172,29 @@ export default async function handler(
       success: true,
       businessId,
       status: "active",
+      slug: nextSlug,
+      alias: nextAlias,
       message: "Business approved successfully",
     });
-  } catch (error) {
+  } catch (error: any) {
+    if (error instanceof AdminApprovalValidationError) {
+      return res.status(error.statusCode).json({
+        error: error.message,
+        kind: error.kind,
+        ...(error.details ? { details: error.details } : {}),
+      });
+    }
+
+    if (error?.code === 11000) {
+      return res.status(409).json({
+        error: "Business slug or alias already exists",
+        kind: "duplicate_slug_or_alias",
+      });
+    }
+
     console.error("[/api/admin/approve-business] Approval Error:", error);
-    return res.status(500).json({ error: "Internal Server Error" });
+    return res.status(500).json({
+      error: error?.message || "Internal Server Error",
+    });
   }
 }

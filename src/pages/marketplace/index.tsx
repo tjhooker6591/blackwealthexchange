@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import type { GetServerSideProps } from "next";
 import Head from "next/head";
 import { canonicalUrl, truncateMeta } from "@/lib/seo";
 import Link from "next/link";
@@ -15,8 +16,11 @@ import {
   ChevronDown,
   ChevronUp,
 } from "lucide-react";
+import { ObjectId } from "mongodb";
 import BuyNowButton from "@/components/BuyNowButton";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
+import clientPromise from "@/lib/mongodb";
+import { getMarketplaceDbName } from "@/lib/marketplace/db";
 
 type Product = {
   _id: string;
@@ -36,6 +40,11 @@ type Product = {
     name?: string;
     profileComplete?: boolean;
   };
+};
+
+type MarketplaceProps = {
+  initialProducts: Product[];
+  initialTotal: number;
 };
 
 const itemsPerPage = 12;
@@ -92,7 +101,10 @@ function buildPageList(current: number, total: number) {
   return pages;
 }
 
-export default function Marketplace() {
+export default function Marketplace({
+  initialProducts,
+  initialTotal,
+}: MarketplaceProps) {
   const router = useRouter();
 
   const trackMarketplaceEvent = (
@@ -108,7 +120,7 @@ export default function Marketplace() {
     });
   };
 
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<Product[]>(initialProducts);
   const [selectedCategory, setSelectedCategory] =
     useState<(typeof CATEGORIES)[number]>("All");
   const [sort, setSort] = useState<SortKey>("relevance");
@@ -116,14 +128,17 @@ export default function Marketplace() {
   const debouncedQ = useDebouncedValue(q, 350);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [total, setTotal] = useState(0);
-  const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(initialTotal);
+  const [totalPages, setTotalPages] = useState(
+    Math.max(1, Math.ceil(initialTotal / itemsPerPage)),
+  );
 
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [legalOpen, setLegalOpen] = useState(false);
 
   const topRef = useRef<HTMLDivElement | null>(null);
+  const didUseInitialDataRef = useRef(false);
 
   useEffect(() => {
     trackMarketplaceEvent("marketplace_landing_viewed", {
@@ -174,6 +189,22 @@ export default function Marketplace() {
 
   useEffect(() => {
     if (!router.isReady) return;
+
+    const isDefaultInitialQuery =
+      currentPage === 1 &&
+      selectedCategory === "All" &&
+      !debouncedQ.trim() &&
+      sort === "relevance";
+
+    if (isDefaultInitialQuery && !didUseInitialDataRef.current) {
+      didUseInitialDataRef.current = true;
+      setLoading(false);
+      setErrorMsg(null);
+      setProducts(initialProducts);
+      setTotal(initialTotal);
+      setTotalPages(Math.max(1, Math.ceil(initialTotal / itemsPerPage)));
+      return;
+    }
 
     const controller = new AbortController();
 
@@ -241,7 +272,15 @@ export default function Marketplace() {
 
     fetchProducts();
     return () => controller.abort();
-  }, [router.isReady, currentPage, selectedCategory, debouncedQ, sort]);
+  }, [
+    router.isReady,
+    currentPage,
+    selectedCategory,
+    debouncedQ,
+    sort,
+    initialProducts,
+    initialTotal,
+  ]);
 
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) setCurrentPage(page);
@@ -908,3 +947,121 @@ export default function Marketplace() {
     </div>
   );
 }
+
+export const getServerSideProps: GetServerSideProps<
+  MarketplaceProps
+> = async () => {
+  try {
+    const client = await clientPromise;
+    const db = client.db(getMarketplaceDbName());
+    const productsCollection = db.collection("products");
+
+    const filter = {
+      status: "active",
+      isPublished: { $ne: false },
+    };
+    const sortSpec = { isFeatured: -1 as const, _id: -1 as const };
+
+    const [total, products] = await Promise.all([
+      productsCollection.countDocuments(filter),
+      productsCollection
+        .find(filter)
+        .sort(sortSpec)
+        .limit(itemsPerPage)
+        .toArray(),
+    ]);
+
+    const sellerIds = Array.from(
+      new Set(
+        products
+          .map((p: any) => String(p?.sellerId || "").trim())
+          .filter((id: string) => id.length > 0),
+      ),
+    );
+
+    const sellerObjectIds = sellerIds
+      .filter((id: string) => ObjectId.isValid(id))
+      .map((id: string) => new ObjectId(id));
+
+    const sellers = sellerIds.length
+      ? await db
+          .collection("sellers")
+          .find(
+            {
+              $or: [
+                { userId: { $in: sellerIds } },
+                ...(sellerObjectIds.length
+                  ? [{ _id: { $in: sellerObjectIds } }]
+                  : []),
+              ],
+            },
+            {
+              projection: {
+                _id: 1,
+                userId: 1,
+                storeName: 1,
+                businessName: 1,
+                ownerName: 1,
+                email: 1,
+                description: 1,
+              },
+            },
+          )
+          .toArray()
+      : [];
+
+    const sellerByKey = new Map<string, any>();
+    for (const seller of sellers) {
+      const sid = String(seller?._id || "").trim();
+      const uid = String(seller?.userId || "").trim();
+      if (sid) sellerByKey.set(sid, seller);
+      if (uid) sellerByKey.set(uid, seller);
+    }
+
+    const initialProducts = products.map((p: any) => {
+      const sellerKey = String(p?.sellerId || "").trim();
+      const seller = sellerByKey.get(sellerKey);
+      const createdAt = p?.createdAt ? new Date(p.createdAt) : null;
+      const recentlyAdded =
+        createdAt instanceof Date && !Number.isNaN(createdAt.getTime())
+          ? Date.now() - createdAt.getTime() <= 14 * 24 * 60 * 60 * 1000
+          : false;
+
+      return JSON.parse(
+        JSON.stringify({
+          ...p,
+          _id: String(p?._id || ""),
+          recentlyAdded,
+          seller: {
+            id: sellerKey || null,
+            name:
+              seller?.storeName ||
+              seller?.businessName ||
+              seller?.ownerName ||
+              "Verified BWE Marketplace Seller",
+            profileComplete: Boolean(
+              String(seller?.businessName || "").trim() &&
+              String(seller?.email || "").trim() &&
+              String(seller?.description || "").trim(),
+            ),
+          },
+        }),
+      );
+    });
+
+    return {
+      props: {
+        initialProducts,
+        initialTotal: total,
+      },
+    };
+  } catch (error) {
+    console.error("Failed to SSR marketplace products:", error);
+    return {
+      props: {
+        initialProducts: [],
+        initialTotal: 0,
+      },
+    };
+  }
+};

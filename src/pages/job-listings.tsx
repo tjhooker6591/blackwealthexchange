@@ -2,9 +2,12 @@
 "use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import type { GetServerSideProps } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import clientPromise from "@/lib/mongodb";
+import { getMongoDbName } from "@/lib/env";
 import { canonicalUrl, truncateMeta } from "@/lib/seo";
 import { FEATURED_JOB_TOP_CAP } from "@/lib/advertising/placementDefinitions";
 
@@ -15,10 +18,15 @@ interface Job {
   location: string;
   type: string;
   description: string;
-  salary?: string;
+  salary?: string | null;
   isFeatured?: boolean;
-  createdAt?: string;
+  createdAt?: string | null;
 }
+
+type JobListingsPageProps = {
+  initialJobs: Job[];
+  initialFeaturedCap: number;
+};
 
 type SortKey = "newest" | "oldest" | "featured";
 
@@ -43,12 +51,15 @@ function freshnessLabel(input?: string) {
   return "Older";
 }
 
-export default function JobListingsPage() {
+export default function JobListingsPage({
+  initialJobs,
+  initialFeaturedCap,
+}: JobListingsPageProps) {
   const router = useRouter();
 
-  const [jobs, setJobs] = useState<Job[]>([]);
-  const [featuredCap, setFeaturedCap] = useState<number>(FEATURED_JOB_TOP_CAP);
-  const [loading, setLoading] = useState(true);
+  const [jobs, setJobs] = useState<Job[]>(initialJobs);
+  const [featuredCap, setFeaturedCap] = useState<number>(initialFeaturedCap);
+  const [loading, setLoading] = useState(initialJobs.length === 0);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
@@ -73,9 +84,18 @@ export default function JobListingsPage() {
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, []);
+  }, [initialFeaturedCap, initialJobs]);
 
   useEffect(() => {
+    if (!didUseInitialDataRef.current && initialJobs.length > 0) {
+      didUseInitialDataRef.current = true;
+      setLoading(false);
+      setErrorMsg(null);
+      setJobs(initialJobs);
+      setFeaturedCap(initialFeaturedCap);
+      return;
+    }
+
     setLoading(true);
     setErrorMsg(null);
 
@@ -225,6 +245,7 @@ export default function JobListingsPage() {
     }
   };
 
+  const didUseInitialDataRef = useRef(false);
   const overlayRef = useRef<HTMLDivElement | null>(null);
   const title = "Black Jobs & Careers | Black Wealth Exchange";
   const description = truncateMeta(
@@ -630,3 +651,94 @@ export default function JobListingsPage() {
     </>
   );
 }
+
+export const getServerSideProps: GetServerSideProps<
+  JobListingsPageProps
+> = async () => {
+  try {
+    const client = await clientPromise;
+    const db = client.db(getMongoDbName());
+    const now = Date.now();
+    let featuredVisibleCount = 0;
+
+    const jobsRaw = await db
+      .collection("jobs")
+      .find(
+        { status: "approved" },
+        {
+          projection: {
+            _id: 1,
+            title: 1,
+            company: 1,
+            location: 1,
+            createdAt: 1,
+            isFeatured: 1,
+            featureEndDate: 1,
+            salary: 1,
+            employmentType: 1,
+            type: 1,
+            description: 1,
+          },
+        },
+      )
+      .sort({ createdAt: -1 })
+      .limit(100)
+      .toArray();
+
+    const initialJobs: Job[] = jobsRaw.map((job: any) => {
+      const featureEndMs = job?.featureEndDate
+        ? new Date(job.featureEndDate).getTime()
+        : NaN;
+      const hasPaidFeatureWindow = Number.isFinite(featureEndMs);
+      const featuredActiveRaw =
+        Boolean(job?.isFeatured) && hasPaidFeatureWindow && featureEndMs > now;
+      const canShowFeatured =
+        featuredActiveRaw && featuredVisibleCount < FEATURED_JOB_TOP_CAP;
+      if (canShowFeatured) featuredVisibleCount += 1;
+
+      return {
+        _id:
+          typeof job?._id?.toString === "function"
+            ? job._id.toString()
+            : String(job?._id ?? ""),
+        title: typeof job?.title === "string" ? job.title : "Untitled role",
+        company:
+          typeof job?.company === "string" ? job.company : "Unknown company",
+        location:
+          typeof job?.location === "string"
+            ? job.location
+            : "Location not listed",
+        type:
+          typeof job?.type === "string"
+            ? job.type
+            : typeof job?.employmentType === "string"
+              ? job.employmentType
+              : "Not specified",
+        description:
+          typeof job?.description === "string" && job.description.trim()
+            ? job.description
+            : "No description provided.",
+        salary: typeof job?.salary === "string" ? job.salary : null,
+        isFeatured: canShowFeatured,
+        createdAt: job?.createdAt
+          ? new Date(job.createdAt).toISOString()
+          : null,
+      };
+    });
+
+    return {
+      props: {
+        initialJobs,
+        initialFeaturedCap: FEATURED_JOB_TOP_CAP,
+      },
+    };
+  } catch (error) {
+    console.error("Failed to SSR job listings:", error);
+    return {
+      props: {
+        initialJobs: [],
+        initialFeaturedCap: FEATURED_JOB_TOP_CAP,
+      },
+    };
+  }
+};

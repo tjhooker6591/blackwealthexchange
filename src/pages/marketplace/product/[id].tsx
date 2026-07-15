@@ -1,12 +1,16 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
+import type { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
+import { ObjectId } from "mongodb";
 import BuyNowButton from "@/components/BuyNowButton";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
+import clientPromise from "@/lib/mongodb";
+import { getMarketplaceDbName } from "@/lib/marketplace/db";
 import { canonicalUrl, truncateMeta } from "@/lib/seo";
 
 interface Product {
@@ -26,18 +30,26 @@ interface Product {
   activeListing?: boolean;
   seller?: {
     id?: string | null;
-    name?: string;
+    name?: string | null;
     joinedAt?: string | null;
-    profileComplete?: boolean;
-  };
+    profileComplete?: boolean | null;
+  } | null;
 }
 
-const ProductDetailPage = () => {
+type ProductDetailPageProps = {
+  initialProduct: Product | null;
+  initialProductId: string | null;
+};
+const ProductDetailPage = ({
+  initialProduct,
+  initialProductId,
+}: ProductDetailPageProps) => {
   const router = useRouter();
   const { id } = router.query;
+  const routeId = typeof id === "string" ? id : initialProductId;
 
-  const [product, setProduct] = useState<Product | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [product, setProduct] = useState<Product | null>(initialProduct);
+  const [loading, setLoading] = useState(initialProduct ? false : true);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   const [messageText, setMessageText] = useState("");
   const [messageState, setMessageState] = useState<string | null>(null);
@@ -51,20 +63,36 @@ const ProductDetailPage = () => {
       eventType,
       pageRoute: "/marketplace/product/[id]",
       section: "marketplace_product_detail",
-      productId: typeof id === "string" ? id : null,
-      entityId: typeof id === "string" ? id : null,
+      productId: routeId || null,
+      entityId: routeId || null,
       entityType: "product",
       ...extras,
     });
   };
 
   useEffect(() => {
-    if (!id) return;
+    if (initialProduct?._id) {
+      trackMarketplaceProductEvent("product_detail_viewed", {
+        ctaId: "product_detail_view",
+        ctaLabel: "Product Detail Viewed",
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialProduct?._id]);
+
+  useEffect(() => {
+    if (!routeId) return;
+    if (initialProduct && routeId === initialProductId) {
+      setLoading(false);
+      return;
+    }
 
     const fetchProduct = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`/api/marketplace/get-product?id=${id}`);
+        const res = await fetch(
+          `/api/marketplace/get-product?id=${encodeURIComponent(routeId)}`,
+        );
         if (!res.ok) throw new Error("This listing is unavailable right now.");
 
         const data = await res.json();
@@ -84,7 +112,7 @@ const ProductDetailPage = () => {
     };
 
     fetchProduct();
-  }, [id]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [routeId, initialProduct, initialProductId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const fetchRelated = async () => {
@@ -523,3 +551,164 @@ const ProductDetailPage = () => {
 };
 
 export default ProductDetailPage;
+
+function normalizeProductDocument(doc: any): Product | null {
+  if (!doc) return null;
+  const rawId = doc?._id;
+  const _id =
+    typeof rawId?.toString === "function"
+      ? rawId.toString()
+      : String(rawId || "");
+  if (!_id) return null;
+
+  const priceNumber = Number(doc?.price ?? 0);
+  const stockQuantity = Number(doc?.stockQuantity ?? 0);
+  const sellerDoc =
+    doc?.seller && typeof doc.seller === "object" ? doc.seller : null;
+
+  return {
+    _id,
+    name: String(doc?.name || "").trim() || "Marketplace item",
+    description: typeof doc?.description === "string" ? doc.description : null,
+    price: Number.isFinite(priceNumber) ? priceNumber : 0,
+    category: String(doc?.category || "").trim() || "Other",
+    imageUrl: typeof doc?.imageUrl === "string" ? doc.imageUrl : null,
+    stockQuantity: Number.isFinite(stockQuantity) ? stockQuantity : 0,
+    views: Number.isFinite(Number(doc?.views ?? 0))
+      ? Number(doc?.views ?? 0)
+      : 0,
+    availability:
+      typeof doc?.availability === "string" ? doc.availability : null,
+    condition: typeof doc?.condition === "string" ? doc.condition : null,
+    status: typeof doc?.status === "string" ? doc.status : null,
+    isFeatured: Boolean(doc?.isFeatured),
+    recentlyAdded: Boolean(doc?.recentlyAdded),
+    activeListing:
+      doc?.activeListing === true ||
+      String(doc?.status || "").toLowerCase() === "active",
+    seller: sellerDoc
+      ? {
+          id:
+            typeof sellerDoc?.id === "string"
+              ? sellerDoc.id
+              : typeof sellerDoc?._id?.toString === "function"
+                ? sellerDoc._id.toString()
+                : typeof doc?.sellerId === "string"
+                  ? doc.sellerId
+                  : null,
+          name: typeof sellerDoc?.name === "string" ? sellerDoc.name : null,
+          joinedAt:
+            typeof sellerDoc?.joinedAt === "string"
+              ? sellerDoc.joinedAt
+              : sellerDoc?.createdAt instanceof Date
+                ? sellerDoc.createdAt.toISOString()
+                : null,
+          profileComplete:
+            typeof sellerDoc?.profileComplete === "boolean"
+              ? sellerDoc.profileComplete
+              : null,
+        }
+      : typeof doc?.sellerId === "string" || typeof doc?.sellerName === "string"
+        ? {
+            id: typeof doc?.sellerId === "string" ? doc.sellerId : null,
+            name: typeof doc?.sellerName === "string" ? doc.sellerName : null,
+            joinedAt: null,
+            profileComplete: undefined,
+          }
+        : null,
+  };
+}
+
+export const getServerSideProps: GetServerSideProps<
+  ProductDetailPageProps
+> = async (context) => {
+  const rawId = context.params?.id;
+  const requestedId = typeof rawId === "string" ? rawId.trim() : "";
+
+  if (!requestedId) {
+    return {
+      props: {
+        initialProduct: null,
+        initialProductId: null,
+      },
+    };
+  }
+
+  try {
+    const client = await clientPromise;
+    const db = client.db(getMarketplaceDbName());
+    const products = db.collection("products");
+    const sellers = db.collection("sellers");
+
+    const filter = {
+      status: "active",
+      isPublished: { $ne: false },
+    } as any;
+
+    const orFilters: any[] = [{ _id: requestedId }, { slug: requestedId }];
+    if (ObjectId.isValid(requestedId)) {
+      orFilters.unshift({ _id: new ObjectId(requestedId) });
+    }
+
+    const doc = await products.findOne({
+      ...filter,
+      $or: orFilters,
+    });
+
+    if (!doc) {
+      return {
+        props: {
+          initialProduct: null,
+          initialProductId: requestedId,
+        },
+      };
+    }
+
+    let sellerDoc = null;
+    const sellerId = String(doc?.sellerId || "").trim();
+    if (sellerId) {
+      const sellerObjectIds = ObjectId.isValid(sellerId)
+        ? [new ObjectId(sellerId)]
+        : [];
+      sellerDoc = await sellers.findOne({
+        $or: [
+          { userId: sellerId },
+          ...(sellerObjectIds.length
+            ? [{ _id: { $in: sellerObjectIds } }]
+            : []),
+        ],
+      });
+    }
+
+    const initialProduct = normalizeProductDocument({
+      ...doc,
+      seller: sellerDoc
+        ? {
+            ...sellerDoc,
+            _id:
+              typeof sellerDoc?._id?.toString === "function"
+                ? sellerDoc._id.toString()
+                : sellerDoc?._id,
+          }
+        : {
+            id: sellerId || null,
+            name: typeof doc?.sellerName === "string" ? doc.sellerName : null,
+          },
+    });
+
+    return {
+      props: {
+        initialProduct,
+        initialProductId: requestedId,
+      },
+    };
+  } catch (error) {
+    console.error("Failed to SSR marketplace product:", error);
+    return {
+      props: {
+        initialProduct: null,
+        initialProductId: requestedId,
+      },
+    };
+  }
+};

@@ -1,5 +1,4 @@
-"use client";
-
+import type { GetServerSideProps } from "next";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { getAdQuote } from "@/lib/advertising/pricing";
@@ -120,7 +119,25 @@ function releaseCheckoutLock(attemptKey: string) {
   }
 }
 
-export default function AdvertisingCheckoutPage() {
+type AdvertisingCheckoutPageProps = {
+  initialOption: string;
+  initialDuration: string;
+  initialBusinessId: string;
+  initialCampaignId: string;
+  initialPlacement: string;
+  initialType: string;
+  initialPlan: string;
+};
+
+export default function AdvertisingCheckoutPage({
+  initialOption,
+  initialDuration,
+  initialBusinessId,
+  initialCampaignId,
+  initialPlacement,
+  initialType,
+  initialPlan,
+}: AdvertisingCheckoutPageProps) {
   const router = useRouter();
   const [message, setMessage] = useState("");
   const [retryHint, setRetryHint] = useState(false);
@@ -140,16 +157,41 @@ export default function AdvertisingCheckoutPage() {
   const startedAttemptRef = useRef<string | null>(null);
 
   const parsed = useMemo<ParsedCheckout | null>(() => {
-    if (!router.isReady) return null;
+    const queryLike = {
+      option:
+        typeof router.query.option === "string"
+          ? router.query.option
+          : initialOption,
+      duration:
+        typeof router.query.duration === "string"
+          ? router.query.duration
+          : initialDuration,
+      businessId:
+        typeof router.query.businessId === "string"
+          ? router.query.businessId
+          : initialBusinessId,
+      campaignId:
+        typeof router.query.campaignId === "string"
+          ? router.query.campaignId
+          : initialCampaignId,
+      placement:
+        typeof router.query.placement === "string"
+          ? router.query.placement
+          : initialPlacement,
+      type:
+        typeof router.query.type === "string" ? router.query.type : initialType,
+      plan:
+        typeof router.query.plan === "string" ? router.query.plan : initialPlan,
+    };
 
     const rawOption =
-      qStr(router.query.option) || normalizeFromLegacyQuery(router.query);
+      qStr(queryLike.option) || normalizeFromLegacyQuery(queryLike);
     const option = normalizeAdOption(rawOption);
-    const durationDays = parseOptionalPositiveInt(router.query.duration);
+    const durationDays = parseOptionalPositiveInt(queryLike.duration);
 
-    const businessId = qStr(router.query.businessId);
-    const campaignId = qStr(router.query.campaignId);
-    const placement = qStr(router.query.placement);
+    const businessId = qStr(queryLike.businessId);
+    const campaignId = qStr(queryLike.campaignId);
+    const placement = qStr(queryLike.placement);
 
     const quote = getAdQuote({ option, durationDays });
     if (!quote) {
@@ -178,7 +220,16 @@ export default function AdvertisingCheckoutPage() {
       campaignId,
       placement,
     };
-  }, [router.isReady, router.query]);
+  }, [
+    initialBusinessId,
+    initialCampaignId,
+    initialDuration,
+    initialOption,
+    initialPlacement,
+    initialPlan,
+    initialType,
+    router.query,
+  ]);
 
   useEffect(() => {
     if (!parsed || parsed.invalid) return;
@@ -286,7 +337,7 @@ export default function AdvertisingCheckoutPage() {
     }
   };
 
-  if (!router.isReady || !parsed) {
+  if (!parsed) {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center p-6">
         <div className="max-w-md w-full rounded-2xl border border-yellow-500/20 bg-zinc-950 p-6 text-center">
@@ -417,3 +468,20 @@ export default function AdvertisingCheckoutPage() {
     </div>
   );
 }
+
+export const getServerSideProps: GetServerSideProps<
+  AdvertisingCheckoutPageProps
+> = async ({ query }) => ({
+  props: {
+    initialOption: typeof query.option === "string" ? query.option : "",
+    initialDuration: typeof query.duration === "string" ? query.duration : "",
+    initialBusinessId:
+      typeof query.businessId === "string" ? query.businessId : "",
+    initialCampaignId:
+      typeof query.campaignId === "string" ? query.campaignId : "",
+    initialPlacement:
+      typeof query.placement === "string" ? query.placement : "",
+    initialType: typeof query.type === "string" ? query.type : "",
+    initialPlan: typeof query.plan === "string" ? query.plan : "",
+  },
+});

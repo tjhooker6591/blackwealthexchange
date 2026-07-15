@@ -9,6 +9,10 @@ import {
   getClientIp,
   hitApiRateLimit,
 } from "@/lib/apiRateLimit";
+import {
+  deriveAdminBusinessStatus,
+  getAdminBusinessBucketFilter,
+} from "@/lib/adminBusinessStatus";
 
 export default async function handler(
   req: NextApiRequest,
@@ -46,7 +50,7 @@ export default async function handler(
 
     const unapprovedBusinesses = await db
       .collection("businesses")
-      .find({ approved: false })
+      .find(getAdminBusinessBucketFilter("pending"))
       .sort({ submittedAt: -1, createdAt: -1 })
       .limit(limit)
       .project({
@@ -60,6 +64,7 @@ export default async function handler(
         ownerName: 1,
         email: 1,
         approved: 1,
+        status: 1,
         submittedAt: 1,
         createdAt: 1,
       })
@@ -73,7 +78,8 @@ export default async function handler(
         businessName: getCanonicalBusinessName(b) || "",
         ownerName: b.ownerName || "",
         email: b.email || "",
-        approved: !!b.approved,
+        approved: deriveAdminBusinessStatus(b) === "approved",
+        status: deriveAdminBusinessStatus(b),
         submittedAt: b.submittedAt
           ? new Date(b.submittedAt).toISOString()
           : b.createdAt
