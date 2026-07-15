@@ -2,6 +2,10 @@ import { performance } from "node:perf_hooks";
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import {
+  normalizeFoundingClaimStage,
+  resolveFoundingOwnershipState,
+} from "@/lib/founding-membership-state";
+import {
   ensureApiRateLimitIndexes,
   getClientIp,
   hitApiRateLimit,
@@ -9,6 +13,7 @@ import {
 import { getAdminDecodedFromRequest, isAdminDecoded } from "@/lib/adminAuth";
 import { getMongoDbName } from "@/lib/env";
 import { computeListingCompleteness } from "@/lib/directory/completeness";
+import { publicBusinessBaseQuery } from "@/lib/directory/publicBusinessQuery";
 import { isPublicBusinessVisible } from "@/lib/directory/publicVisibility";
 
 function escapeRegex(input: string) {
@@ -311,11 +316,26 @@ function normalizeResultItem(item: any, isOrganizations: boolean) {
     item?.status || item?.trustStatus,
   ).toLowerCase();
   const slug = safeText(item?.alias) || safeText(item?._id);
+  const ownershipState = isOrganizations
+    ? { isOwnershipVerified: false, canonicalState: null }
+    : resolveFoundingOwnershipState({
+        business: item,
+        publicListingStatus: item?.publicListingStatus,
+        claimStage: item?.claimStage,
+        ownershipReviewStatus: item?.ownershipReviewStatus,
+      });
+  const normalizedClaimStage = isOrganizations
+    ? null
+    : ownershipState.canonicalState ||
+      normalizeFoundingClaimStage(item?.claimStage) ||
+      normalizeFoundingClaimStage(item?.publicListingStatus) ||
+      (listingStatus === "verified" ? "ownership_verified" : "unclaimed");
 
   const isVerified =
     item?.isVerified === true ||
     item?.verified === true ||
-    listingStatus === "verified";
+    listingStatus === "verified" ||
+    ownershipState.isOwnershipVerified;
 
   const isSponsored =
     item?.isSponsored === true || Number(item?.amountPaid || 0) > 0;
@@ -333,6 +353,13 @@ function normalizeResultItem(item: any, isOrganizations: boolean) {
     isSponsored,
     isComplete,
     slug,
+    claimStage: normalizedClaimStage,
+    publicListingStatus: isOrganizations
+      ? null
+      : normalizeFoundingClaimStage(item?.publicListingStatus),
+    ownershipReviewStatus: isOrganizations
+      ? null
+      : normalizeFoundingClaimStage(item?.ownershipReviewStatus),
   };
 }
 
@@ -558,41 +585,19 @@ export default async function handler(
         ];
 
     if (!includeAllStatuses) {
-      and.push({
-        $or: [
-          { status: "approved" },
-          { status: "verified" },
-          { status: "active" },
-          { status: { $exists: false } },
-          { status: "" },
-          { status: null },
-        ],
-      });
-
-      // Public-result safety guard: exclude obvious local audit/test fixtures.
-      if (!isOrganizations) {
-        and.push({
-          $nor: [
-            { isTest: true },
-            { auditTag: { $exists: true } },
-            { auditTag: /^BWE_LOCAL_AUDIT/i },
-            { category: /^auditpagination$/i },
-            { categories: /^auditpagination$/i },
-            { display_categories: /^auditpagination$/i },
-            { email: /@local\.test$/i },
-            { business_name: /^auditpagination_/i },
-            { name: /^auditpagination_/i },
-          ],
-        });
-
-        // Public detail-key safety: only include records that can resolve
-        // via /business/[slug] (alias OR slug).
+      if (isOrganizations) {
         and.push({
           $or: [
-            { alias: { $exists: true, $type: "string", $ne: "" } },
-            { slug: { $exists: true, $type: "string", $ne: "" } },
+            { status: "approved" },
+            { status: "verified" },
+            { status: "active" },
+            { status: { $exists: false } },
+            { status: "" },
+            { status: null },
           ],
         });
+      } else {
+        and.push(publicBusinessBaseQuery());
       }
     }
 
@@ -628,14 +633,8 @@ export default async function handler(
     }
 
     if (!includeIncomplete && !isOrganizations) {
-      and.push({
-        $or: [
-          { isComplete: true },
-          { completenessScore: { $gte: 70 } },
-          { qualityScore: { $gte: 70 } },
-          { directoryVisibilityApproved: true },
-        ],
-      });
+      // completeness/visibility guard already comes from publicBusinessBaseQuery()
+      // for the default public business search path.
     }
 
     const strictQuery = and.length ? { $and: and } : {};
@@ -733,6 +732,9 @@ export default async function handler(
       verified: 1,
       trustStatus: 1,
       status: 1,
+      claimStage: 1,
+      publicListingStatus: 1,
+      ownershipReviewStatus: 1,
       isComplete: 1,
       completenessScore: 1,
       qualityScore: 1,
@@ -745,7 +747,7 @@ export default async function handler(
       phone: 1,
     };
 
-    if (search || sort === "relevance") {
+    if (search) {
       const candidateLimit = Math.min(
         Math.max(effectiveSkip + limit + 1, limit + 24),
         80,
