@@ -3,8 +3,13 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { canonicalUrl, truncateMeta } from "@/lib/seo";
 
+function canonicalCategorySlug(slug: string) {
+  if (slug === "restaurants") return "restaurant";
+  return slug;
+}
+
 function labelFromSlug(slug: string) {
-  return slug
+  return canonicalCategorySlug(slug)
     .split("-")
     .filter(Boolean)
     .map((x) => x.charAt(0).toUpperCase() + x.slice(1))
@@ -17,7 +22,7 @@ export default function CategoryDirectoryLanding() {
     typeof router.query.category === "string"
       ? router.query.category.toLowerCase()
       : "";
-  const category = raw.slice(0, 60);
+  const category = canonicalCategorySlug(raw.slice(0, 60));
   const isValidCategory = /^[a-z0-9-]{2,60}$/.test(category);
   const categoryLabel = labelFromSlug(category) || "Black-owned businesses";
 

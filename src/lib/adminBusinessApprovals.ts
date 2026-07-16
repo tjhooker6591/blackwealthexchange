@@ -114,6 +114,9 @@ export function normalizeAdminApprovalRow(
   if (!email) missingFields.push("email");
   if (!submittedAt) missingFields.push("submittedAt");
 
+  const canApprove = kind === "approvable_submission";
+  const canReject = kind !== "malformed_pending_record";
+
   return {
     _id: String(doc?._id || ""),
     businessName:
@@ -126,8 +129,8 @@ export function normalizeAdminApprovalRow(
     submittedAt,
     status: derivedStatus,
     kind,
-    canApprove: kind === "approvable_submission",
-    canReject: true,
+    canApprove,
+    canReject,
     missingFields,
     sourceLabel:
       safeString(doc?.source) ||
