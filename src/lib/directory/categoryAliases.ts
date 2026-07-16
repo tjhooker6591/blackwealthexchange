@@ -99,7 +99,9 @@ export function expandDirectoryCategoryAliases(input: string): string[] {
   const normalized = normalizePhrase(input);
   if (!normalized || normalized === "all") return [];
 
-  const singular = normalized.endsWith("s") ? normalized.slice(0, -1) : normalized;
+  const singular = normalized.endsWith("s")
+    ? normalized.slice(0, -1)
+    : normalized;
   const baseValues = uniq([
     normalized,
     singular,

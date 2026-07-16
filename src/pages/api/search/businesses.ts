@@ -97,7 +97,14 @@ function tokenPatterns(token: string): string[] {
     return ["restaurant", "restaurants", "cafe", "eatery"];
   }
   if (normalized === "nonprofit" || normalized === "nonprofits") {
-    return ["nonprofit", "nonprofits", "non-profit", "non profit", "charity", "foundation"];
+    return [
+      "nonprofit",
+      "nonprofits",
+      "non-profit",
+      "non profit",
+      "charity",
+      "foundation",
+    ];
   }
 
   return [normalized];
@@ -630,14 +637,21 @@ export default async function handler(
       if (patterns.length) {
         and.push({
           $or: patterns.flatMap((pattern) => {
-            const normalizedPattern = pattern.replace(/[-_]+/g, " ").replace(/\s+/g, " ").trim();
+            const normalizedPattern = pattern
+              .replace(/[-_]+/g, " ")
+              .replace(/\s+/g, " ")
+              .trim();
             const tokenized = normalizedPattern
               .split(" ")
               .map((part) => escapeRegex(part))
               .filter(Boolean)
               .join("[-\\s&/]*");
             const rx = new RegExp(tokenized || escapeRegex(pattern), "i");
-            return [{ categories: rx }, { display_categories: rx }, { category: rx }];
+            return [
+              { categories: rx },
+              { display_categories: rx },
+              { category: rx },
+            ];
           }),
         });
       }
