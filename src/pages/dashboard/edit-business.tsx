@@ -16,6 +16,13 @@ interface Business {
   email: string;
   businessAddress?: string;
   businessPhone?: string;
+  website?: string;
+  category?: string;
+  categories?: string[];
+  city?: string;
+  state?: string;
+  facebook?: string;
+  twitter?: string;
   description?: string;
   verified: boolean;
 }
@@ -51,11 +58,23 @@ export const getServerSideProps: GetServerSideProps<Props> = async (ctx) => {
     return { notFound: true };
   }
 
+  const social = doc?.social && typeof doc.social === "object" ? doc.social : {};
+
   const business: Business = {
-    businessName: doc.businessName,
-    email: doc.email,
-    businessAddress: doc.businessAddress || "",
-    businessPhone: doc.businessPhone || "",
+    businessName: doc.businessName || doc.business_name || "",
+    email: doc.email || "",
+    businessAddress: doc.businessAddress || doc.address || "",
+    businessPhone: doc.businessPhone || doc.phone || "",
+    website: doc.website || "",
+    category: doc.category || doc.display_categories || "",
+    categories: Array.isArray(doc.categories)
+      ? doc.categories.filter((value: unknown) => typeof value === "string")
+      : [],
+    city: doc.city || "",
+    state: doc.state || "",
+    facebook:
+      typeof social.facebook === "string" ? social.facebook : "",
+    twitter: typeof social.twitter === "string" ? social.twitter : "",
     description: doc.description || "",
     verified: doc.verified ?? false,
   };
@@ -71,6 +90,15 @@ export default function EditBusiness({ business }: Props) {
     business.businessAddress,
   );
   const [businessPhone, setBusinessPhone] = useState(business.businessPhone);
+  const [website, setWebsite] = useState(business.website || "");
+  const [category, setCategory] = useState(business.category || "");
+  const [categoriesText, setCategoriesText] = useState(
+    Array.isArray(business.categories) ? business.categories.join(", ") : "",
+  );
+  const [city, setCity] = useState(business.city || "");
+  const [state, setState] = useState(business.state || "");
+  const [facebook, setFacebook] = useState(business.facebook || "");
+  const [twitter, setTwitter] = useState(business.twitter || "");
   const [description, setDescription] = useState(business.description);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -89,7 +117,16 @@ export default function EditBusiness({ business }: Props) {
           businessName,
           email,
           businessAddress,
+          address: businessAddress,
           businessPhone,
+          phone: businessPhone,
+          website,
+          category,
+          categories: categoriesText,
+          city,
+          state,
+          facebook,
+          twitter,
           description,
         }),
       });
@@ -117,66 +154,140 @@ export default function EditBusiness({ business }: Props) {
 
       <form
         onSubmit={handleSubmit}
-        className="bg-gray-900 p-6 rounded-lg shadow-lg max-w-lg mx-auto space-y-4"
+        className="bg-gray-900 p-6 rounded-lg shadow-lg max-w-3xl mx-auto space-y-5"
       >
-        {/* Business Name */}
+        <div className="grid gap-4 md:grid-cols-2">
+          <div>
+            <label className="block text-gray-300 mb-1">Business Name</label>
+            <input
+              type="text"
+              value={businessName}
+              onChange={(e) => setBusinessName(e.target.value)}
+              className="w-full px-3 py-2 rounded bg-gray-800 text-white focus:outline-none"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-gray-300 mb-1">Public Contact Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-3 py-2 rounded bg-gray-800 text-white focus:outline-none"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-gray-300 mb-1">Phone</label>
+            <input
+              type="tel"
+              value={businessPhone}
+              onChange={(e) => setBusinessPhone(e.target.value)}
+              className="w-full px-3 py-2 rounded bg-gray-800 text-white focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-gray-300 mb-1">Website</label>
+            <input
+              type="text"
+              value={website}
+              onChange={(e) => setWebsite(e.target.value)}
+              placeholder="yourbusiness.com"
+              className="w-full px-3 py-2 rounded bg-gray-800 text-white focus:outline-none"
+            />
+          </div>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2">
+          <div>
+            <label className="block text-gray-300 mb-1">Address</label>
+            <input
+              type="text"
+              value={businessAddress}
+              onChange={(e) => setBusinessAddress(e.target.value)}
+              className="w-full px-3 py-2 rounded bg-gray-800 text-white focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-gray-300 mb-1">City</label>
+            <input
+              type="text"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              className="w-full px-3 py-2 rounded bg-gray-800 text-white focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-gray-300 mb-1">State</label>
+            <input
+              type="text"
+              value={state}
+              onChange={(e) => setState(e.target.value)}
+              className="w-full px-3 py-2 rounded bg-gray-800 text-white focus:outline-none uppercase"
+            />
+          </div>
+
+          <div>
+            <label className="block text-gray-300 mb-1">Primary Category</label>
+            <input
+              type="text"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="w-full px-3 py-2 rounded bg-gray-800 text-white focus:outline-none"
+            />
+          </div>
+        </div>
+
         <div>
-          <label className="block text-gray-300 mb-1">Business Name</label>
+          <label className="block text-gray-300 mb-1">Secondary Categories</label>
           <input
             type="text"
-            value={businessName}
-            onChange={(e) => setBusinessName(e.target.value)}
-            className="w-full px-3 py-2 rounded bg-gray-800 text-white focus:outline-none"
-            required
-          />
-        </div>
-
-        {/* Email */}
-        <div>
-          <label className="block text-gray-300 mb-1">Email</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-3 py-2 rounded bg-gray-800 text-white focus:outline-none"
-            required
-          />
-        </div>
-
-        {/* Address */}
-        <div>
-          <label className="block text-gray-300 mb-1">Address</label>
-          <input
-            type="text"
-            value={businessAddress}
-            onChange={(e) => setBusinessAddress(e.target.value)}
+            value={categoriesText}
+            onChange={(e) => setCategoriesText(e.target.value)}
+            placeholder="Retail, Wellness, Community"
             className="w-full px-3 py-2 rounded bg-gray-800 text-white focus:outline-none"
           />
         </div>
 
-        {/* Phone */}
-        <div>
-          <label className="block text-gray-300 mb-1">Phone</label>
-          <input
-            type="tel"
-            value={businessPhone}
-            onChange={(e) => setBusinessPhone(e.target.value)}
-            className="w-full px-3 py-2 rounded bg-gray-800 text-white focus:outline-none"
-          />
-        </div>
-
-        {/* Description */}
         <div>
           <label className="block text-gray-300 mb-1">Description</label>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            rows={4}
+            rows={5}
             className="w-full px-3 py-2 rounded bg-gray-800 text-white focus:outline-none"
           />
         </div>
 
-        {/* Actions */}
+        <div className="grid gap-4 md:grid-cols-2">
+          <div>
+            <label className="block text-gray-300 mb-1">Facebook</label>
+            <input
+              type="text"
+              value={facebook}
+              onChange={(e) => setFacebook(e.target.value)}
+              placeholder="facebook.com/yourbusiness"
+              className="w-full px-3 py-2 rounded bg-gray-800 text-white focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-gray-300 mb-1">Twitter / X</label>
+            <input
+              type="text"
+              value={twitter}
+              onChange={(e) => setTwitter(e.target.value)}
+              placeholder="x.com/yourbusiness"
+              className="w-full px-3 py-2 rounded bg-gray-800 text-white focus:outline-none"
+            />
+          </div>
+        </div>
+
         <button
           type="submit"
           disabled={submitting}

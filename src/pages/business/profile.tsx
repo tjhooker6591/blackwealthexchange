@@ -14,6 +14,13 @@ interface Biz {
   email: string;
   businessAddress?: string;
   businessPhone?: string;
+  website?: string;
+  category?: string;
+  categories?: string[];
+  city?: string;
+  state?: string;
+  facebook?: string;
+  twitter?: string;
   description?: string;
   verified: boolean;
 }
@@ -45,13 +52,25 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
     .findOne({ email: payload.email });
   if (!doc) return { notFound: true };
 
+  const social = doc?.social && typeof doc.social === "object" ? doc.social : {};
+
   return {
     props: {
       business: {
-        businessName: doc.businessName,
-        email: doc.email,
-        businessAddress: doc.businessAddress || "",
-        businessPhone: doc.businessPhone || "",
+        businessName: doc.businessName || doc.business_name || "",
+        email: doc.email || "",
+        businessAddress: doc.businessAddress || doc.address || "",
+        businessPhone: doc.businessPhone || doc.phone || "",
+        website: doc.website || "",
+        category: doc.category || doc.display_categories || "",
+        categories: Array.isArray(doc.categories)
+          ? doc.categories.filter((value: unknown) => typeof value === "string")
+          : [],
+        city: doc.city || "",
+        state: doc.state || "",
+        facebook:
+          typeof social.facebook === "string" ? social.facebook : "",
+        twitter: typeof social.twitter === "string" ? social.twitter : "",
         description: doc.description || "",
         verified: doc.verified ?? false,
       },
@@ -70,14 +89,46 @@ export default function BusinessProfile({ business }: Props) {
         <p>
           <strong>Email:</strong> {business.email}
         </p>
+        {business.businessPhone && (
+          <p>
+            <strong>Phone:</strong> {business.businessPhone}
+          </p>
+        )}
+        {business.website && (
+          <p>
+            <strong>Website:</strong> {business.website}
+          </p>
+        )}
         {business.businessAddress && (
           <p>
             <strong>Address:</strong> {business.businessAddress}
           </p>
         )}
-        {business.businessPhone && (
+        {(business.city || business.state) && (
           <p>
-            <strong>Phone:</strong> {business.businessPhone}
+            <strong>Location:</strong> {[business.city, business.state]
+              .filter(Boolean)
+              .join(", ")}
+          </p>
+        )}
+        {business.category && (
+          <p>
+            <strong>Primary category:</strong> {business.category}
+          </p>
+        )}
+        {Array.isArray(business.categories) && business.categories.length > 0 && (
+          <p>
+            <strong>Categories:</strong> {business.categories.join(", ")}
+          </p>
+        )}
+        {business.facebook && (
+          <p>
+            <strong>Facebook:</strong> {business.facebook}
+          </p>
+        )}
+        {business.twitter && (
+          <p>
+            <strong>Twitter / X:</strong> {business.twitter}
           </p>
         )}
         {business.description && (
