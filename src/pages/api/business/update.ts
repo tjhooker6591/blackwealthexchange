@@ -10,6 +10,33 @@ interface TokenPayload {
   isAdmin?: boolean;
 }
 
+function asTrimmedString(value: unknown) {
+  return typeof value === "string" ? value.trim() : "";
+}
+
+function normalizeOptionalUrl(value: unknown) {
+  const trimmed = asTrimmedString(value);
+  if (!trimmed) return "";
+  return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+}
+
+function normalizeArray(value: unknown) {
+  if (Array.isArray(value)) {
+    return value
+      .map((entry) => asTrimmedString(entry))
+      .filter(Boolean);
+  }
+
+  if (typeof value === "string") {
+    return value
+      .split(",")
+      .map((entry) => entry.trim())
+      .filter(Boolean);
+  }
+
+  return [] as string[];
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse,
@@ -50,23 +77,61 @@ export default async function handler(
   const {
     businessName,
     businessAddress,
+    address,
     businessPhone,
+    phone,
     description,
-    email: newEmail, // optional – allow email change
+    email: newEmail,
+    website,
+    category,
+    categories,
+    city,
+    state,
+    facebook,
+    twitter,
   } = req.body as {
     businessName?: string;
     businessAddress?: string;
+    address?: string;
     businessPhone?: string;
+    phone?: string;
     description?: string;
     email?: string;
+    website?: string;
+    category?: string;
+    categories?: string[] | string;
+    city?: string;
+    state?: string;
+    facebook?: string;
+    twitter?: string;
   };
 
+  const normalizedBusinessName = asTrimmedString(businessName);
+  const normalizedAddress = asTrimmedString(businessAddress || address);
+  const normalizedPhone = asTrimmedString(businessPhone || phone);
+  const normalizedDescription = asTrimmedString(description);
+  const normalizedEmail = asTrimmedString(newEmail).toLowerCase();
+  const normalizedWebsite = normalizeOptionalUrl(website);
+  const normalizedCategory = asTrimmedString(category);
+  const normalizedCategories = normalizeArray(categories);
+  const normalizedCity = asTrimmedString(city);
+  const normalizedState = asTrimmedString(state).toUpperCase();
+  const normalizedFacebook = normalizeOptionalUrl(facebook);
+  const normalizedTwitter = normalizeOptionalUrl(twitter);
+
   if (
-    !businessName &&
-    !businessAddress &&
-    !businessPhone &&
-    !description &&
-    !newEmail
+    !normalizedBusinessName &&
+    !normalizedAddress &&
+    !normalizedPhone &&
+    !normalizedDescription &&
+    !normalizedEmail &&
+    !normalizedWebsite &&
+    !normalizedCategory &&
+    !normalizedCategories.length &&
+    !normalizedCity &&
+    !normalizedState &&
+    !normalizedFacebook &&
+    !normalizedTwitter
   ) {
     return res.status(400).json({ error: "No fields to update" });
   }
@@ -77,17 +142,72 @@ export default async function handler(
   try {
     const db = (await clientPromise).db("bwes-cluster");
 
+    const update: Record<string, unknown> = {
+      updatedAt: new Date(),
+    };
+
+    if (normalizedBusinessName) {
+      update.businessName = normalizedBusinessName;
+      update.business_name = normalizedBusinessName;
+      update.title = normalizedBusinessName;
+    }
+
+    if (normalizedAddress) {
+      update.businessAddress = normalizedAddress;
+      update.address = normalizedAddress;
+    }
+
+    if (normalizedPhone) {
+      update.businessPhone = normalizedPhone;
+      update.phone = normalizedPhone;
+    }
+
+    if (normalizedDescription) {
+      update.description = normalizedDescription;
+    }
+
+    if (normalizedEmail) {
+      update.email = normalizedEmail;
+    }
+
+    if (normalizedWebsite) {
+      update.website = normalizedWebsite;
+    }
+
+    if (normalizedCategory) {
+      update.category = normalizedCategory;
+      update.display_categories = normalizedCategory;
+      if (!normalizedCategories.length) {
+        update.categories = [normalizedCategory];
+      }
+    }
+
+    if (normalizedCategories.length) {
+      update.categories = normalizedCategories;
+      if (!normalizedCategory) {
+        update.display_categories = normalizedCategories.join(", ");
+      }
+    }
+
+    if (normalizedCity) {
+      update.city = normalizedCity;
+    }
+
+    if (normalizedState) {
+      update.state = normalizedState;
+    }
+
+    if (normalizedFacebook || normalizedTwitter) {
+      update.social = {
+        ...(normalizedFacebook ? { facebook: normalizedFacebook } : {}),
+        ...(normalizedTwitter ? { twitter: normalizedTwitter } : {}),
+      };
+    }
+
     const result = await db.collection("businesses").updateOne(
-      { email: payload.email }, // locate by token email
+      { email: payload.email },
       {
-        $set: {
-          ...(businessName && { businessName }),
-          ...(businessAddress && { businessAddress }),
-          ...(businessPhone && { businessPhone }),
-          ...(description && { description }),
-          ...(newEmail && { email: newEmail }), // allow email change
-          updatedAt: new Date(),
-        },
+        $set: update,
       },
     );
 

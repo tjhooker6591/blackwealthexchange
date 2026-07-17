@@ -21,8 +21,16 @@ type MeUser = {
 
 interface BusinessProfile {
   businessName: string;
+  email: string;
   businessAddress: string;
   businessPhone: string;
+  website: string;
+  category: string;
+  categoriesText: string;
+  city: string;
+  state: string;
+  facebook: string;
+  twitter: string;
   description: string;
 }
 
@@ -52,8 +60,16 @@ export default function EditBusinessPage() {
   const [me, setMe] = useState<MeUser | null>(null);
   const [business, setBusiness] = useState<BusinessProfile>({
     businessName: "",
+    email: "",
     businessAddress: "",
     businessPhone: "",
+    website: "",
+    category: "",
+    categoriesText: "",
+    city: "",
+    state: "",
+    facebook: "",
+    twitter: "",
     description: "",
   });
 
@@ -121,8 +137,19 @@ export default function EditBusinessPage() {
 
           setBusiness({
             businessName: profile?.businessName ?? "",
-            businessAddress: profile?.businessAddress ?? "",
-            businessPhone: profile?.businessPhone ?? "",
+            email: profile?.email ?? user.email ?? "",
+            businessAddress:
+              profile?.businessAddress ?? profile?.address ?? "",
+            businessPhone: profile?.businessPhone ?? profile?.phone ?? "",
+            website: profile?.website ?? "",
+            category: profile?.category ?? "",
+            categoriesText: Array.isArray(profile?.categories)
+              ? profile.categories.join(", ")
+              : "",
+            city: profile?.city ?? "",
+            state: profile?.state ?? "",
+            facebook: profile?.facebook ?? "",
+            twitter: profile?.twitter ?? "",
             description: profile?.description ?? "",
           });
         } else {
@@ -160,7 +187,13 @@ export default function EditBusinessPage() {
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         cache: "no-store",
-        body: JSON.stringify(business),
+        body: JSON.stringify({
+          ...business,
+          email: business.email,
+          address: business.businessAddress,
+          phone: business.businessPhone,
+          categories: business.categoriesText,
+        }),
       });
 
       const data = await res.json().catch(() => null);
@@ -266,57 +299,165 @@ export default function EditBusinessPage() {
 
         {/* Form card */}
         <section className="rounded-2xl border border-yellow-500/15 bg-gray-900/50 p-6 shadow-xl">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label
-                htmlFor="businessName"
-                className="block mb-1 font-semibold text-gray-200"
-              >
-                Business Name
-              </label>
-              <input
-                id="businessName"
-                name="businessName"
-                value={business.businessName}
-                onChange={handleChange}
-                className="w-full rounded-xl bg-black/40 border border-white/10 px-4 py-3 text-white outline-none focus:border-yellow-500/60"
-                required
-              />
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid gap-4 md:grid-cols-2">
+              <div>
+                <label
+                  htmlFor="businessName"
+                  className="block mb-1 font-semibold text-gray-200"
+                >
+                  Business Name
+                </label>
+                <input
+                  id="businessName"
+                  name="businessName"
+                  value={business.businessName}
+                  onChange={handleChange}
+                  className="w-full rounded-xl bg-black/40 border border-white/10 px-4 py-3 text-white outline-none focus:border-yellow-500/60"
+                  required
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="email"
+                  className="block mb-1 font-semibold text-gray-200"
+                >
+                  Public Contact Email
+                </label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={business.email}
+                  onChange={handleChange}
+                  className="w-full rounded-xl bg-black/40 border border-white/10 px-4 py-3 text-white outline-none focus:border-yellow-500/60"
+                  required
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="businessPhone"
+                  className="block mb-1 font-semibold text-gray-200"
+                >
+                  Business Phone
+                </label>
+                <input
+                  id="businessPhone"
+                  name="businessPhone"
+                  type="tel"
+                  value={business.businessPhone}
+                  onChange={handleChange}
+                  className="w-full rounded-xl bg-black/40 border border-white/10 px-4 py-3 text-white outline-none focus:border-yellow-500/60"
+                  required
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="website"
+                  className="block mb-1 font-semibold text-gray-200"
+                >
+                  Website
+                </label>
+                <input
+                  id="website"
+                  name="website"
+                  value={business.website}
+                  onChange={handleChange}
+                  placeholder="yourbusiness.com"
+                  className="w-full rounded-xl bg-black/40 border border-white/10 px-4 py-3 text-white outline-none focus:border-yellow-500/60"
+                />
+              </div>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <div>
+                <label
+                  htmlFor="businessAddress"
+                  className="block mb-1 font-semibold text-gray-200"
+                >
+                  Business Address
+                </label>
+                <input
+                  id="businessAddress"
+                  name="businessAddress"
+                  value={business.businessAddress}
+                  onChange={handleChange}
+                  className="w-full rounded-xl bg-black/40 border border-white/10 px-4 py-3 text-white outline-none focus:border-yellow-500/60"
+                  required
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="city"
+                  className="block mb-1 font-semibold text-gray-200"
+                >
+                  City
+                </label>
+                <input
+                  id="city"
+                  name="city"
+                  value={business.city}
+                  onChange={handleChange}
+                  className="w-full rounded-xl bg-black/40 border border-white/10 px-4 py-3 text-white outline-none focus:border-yellow-500/60"
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="state"
+                  className="block mb-1 font-semibold text-gray-200"
+                >
+                  State
+                </label>
+                <input
+                  id="state"
+                  name="state"
+                  value={business.state}
+                  onChange={handleChange}
+                  className="w-full rounded-xl bg-black/40 border border-white/10 px-4 py-3 text-white uppercase outline-none focus:border-yellow-500/60"
+                  maxLength={32}
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="category"
+                  className="block mb-1 font-semibold text-gray-200"
+                >
+                  Primary Category
+                </label>
+                <input
+                  id="category"
+                  name="category"
+                  value={business.category}
+                  onChange={handleChange}
+                  className="w-full rounded-xl bg-black/40 border border-white/10 px-4 py-3 text-white outline-none focus:border-yellow-500/60"
+                />
+              </div>
             </div>
 
             <div>
               <label
-                htmlFor="businessAddress"
+                htmlFor="categoriesText"
                 className="block mb-1 font-semibold text-gray-200"
               >
-                Business Address
+                Secondary Categories
               </label>
               <input
-                id="businessAddress"
-                name="businessAddress"
-                value={business.businessAddress}
+                id="categoriesText"
+                name="categoriesText"
+                value={business.categoriesText}
                 onChange={handleChange}
+                placeholder="Retail, Wellness, Community"
                 className="w-full rounded-xl bg-black/40 border border-white/10 px-4 py-3 text-white outline-none focus:border-yellow-500/60"
-                required
               />
-            </div>
-
-            <div>
-              <label
-                htmlFor="businessPhone"
-                className="block mb-1 font-semibold text-gray-200"
-              >
-                Business Phone
-              </label>
-              <input
-                id="businessPhone"
-                name="businessPhone"
-                type="tel"
-                value={business.businessPhone}
-                onChange={handleChange}
-                className="w-full rounded-xl bg-black/40 border border-white/10 px-4 py-3 text-white outline-none focus:border-yellow-500/60"
-                required
-              />
+              <p className="mt-1 text-xs text-gray-400">
+                Separate multiple categories with commas.
+              </p>
             </div>
 
             <div>
@@ -331,9 +472,45 @@ export default function EditBusinessPage() {
                 name="description"
                 value={business.description}
                 onChange={handleChange}
-                className="w-full min-h-[140px] rounded-xl bg-black/40 border border-white/10 px-4 py-3 text-white outline-none focus:border-yellow-500/60"
+                className="w-full min-h-[160px] rounded-xl bg-black/40 border border-white/10 px-4 py-3 text-white outline-none focus:border-yellow-500/60"
                 required
               />
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <div>
+                <label
+                  htmlFor="facebook"
+                  className="block mb-1 font-semibold text-gray-200"
+                >
+                  Facebook
+                </label>
+                <input
+                  id="facebook"
+                  name="facebook"
+                  value={business.facebook}
+                  onChange={handleChange}
+                  placeholder="facebook.com/yourbusiness"
+                  className="w-full rounded-xl bg-black/40 border border-white/10 px-4 py-3 text-white outline-none focus:border-yellow-500/60"
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="twitter"
+                  className="block mb-1 font-semibold text-gray-200"
+                >
+                  Twitter / X
+                </label>
+                <input
+                  id="twitter"
+                  name="twitter"
+                  value={business.twitter}
+                  onChange={handleChange}
+                  placeholder="x.com/yourbusiness"
+                  className="w-full rounded-xl bg-black/40 border border-white/10 px-4 py-3 text-white outline-none focus:border-yellow-500/60"
+                />
+              </div>
             </div>
 
             <button
@@ -343,12 +520,6 @@ export default function EditBusinessPage() {
             >
               {saving ? "Saving…" : "Save Changes"}
             </button>
-
-            <p className="text-xs text-gray-400">
-              Note: If your API currently requires <code>?email=</code> for
-              profile fetch, uncomment it in the code above. Long-term, it’s
-              better for the server to infer identity from the session cookie.
-            </p>
           </form>
         </section>
       </div>
