@@ -1,282 +1,83 @@
 # Business Claim/Profile Field Matrix
 
-_Last updated: 2026-07-17 America/Los_Angeles_
+_Last updated: 2026-07-18 America/Los_Angeles_
 
-## Purpose
+> Terminology note: this document previously used "owner" and "user" too loosely. Going forward, distinguish authenticated representative account, claimant entity, target profile, and verified management relationship. Current business code still uses representative-account-centric identifiers in places; that is an implementation constraint, not the desired long-term claim architecture.
 
-This note answers a concrete product and implementation question:
+## Phase 1 reconciliation, live code audit
 
-> After a business, organization, or comparable listing is claimed, does the current business profile surface let the owner populate the qualifying/public content fields that the platform expects?
+This audit was reconciled against the live owner-edit path and public listing code, not earlier assumptions.
 
-## Short answer
+## Actual current field matrix
 
-**No.**
+| Field                           | Business public listing uses                      | Business representative edit before patch | Business representative edit after patch              | Organization public listing uses            | Organization representative claim/edit path exists? |
+| ------------------------------- | ------------------------------------------------- | ----------------------------------------- | ----------------------------------------------------- | ------------------------------------------- | --------------------------------------------------- |
+| Name                            | Yes (`business_name` / `businessName`)            | Yes                                       | Yes                                                   | Yes (`name`)                                | No                                                  |
+| Description                     | Yes                                               | Yes                                       | Yes                                                   | Yes                                         | No                                                  |
+| Address                         | Yes (`address`)                                   | Yes (`businessAddress` -> `address`)      | Yes                                                   | Yes                                         | No                                                  |
+| City                            | Yes                                               | Yes                                       | Yes                                                   | Yes                                         | No                                                  |
+| State                           | Yes                                               | Yes                                       | Yes                                                   | Yes                                         | No                                                  |
+| Phone                           | Yes (`phone`)                                     | Yes (`businessPhone` -> `phone`)          | Yes                                                   | Yes                                         | No                                                  |
+| Public contact email            | Stored, owner-facing only                         | Yes                                       | Yes                                                   | Not surfaced publicly                       | No                                                  |
+| Website                         | Yes                                               | Yes                                       | Yes                                                   | Yes                                         | No                                                  |
+| Primary category                | Yes (`category` / `display_categories`)           | Yes                                       | Yes                                                   | Indirect (`orgType`)                        | No                                                  |
+| Secondary categories            | Yes (`categories`)                                | Yes                                       | Yes                                                   | No comparable owner path                    | No                                                  |
+| Facebook                        | Stored/publicly retrievable in profile API        | Yes                                       | Yes                                                   | Yes                                         | No                                                  |
+| Twitter / X                     | Stored/publicly retrievable in profile API        | Yes                                       | Yes                                                   | Yes                                         | No                                                  |
+| Logo / primary image            | Yes (`image` / `logo`, completeness uses `image`) | No                                        | Yes                                                   | Not currently projected on org detail route | No                                                  |
+| Gallery images                  | Yes (`images`)                                    | No direct control                         | Preserved, primary image write also syncs `images[0]` | No                                          | No                                                  |
+| Claim / ownership status fields | Yes                                               | No                                        | No                                                    | Status only                                 | No                                                  |
 
-The current claimed-business profile surfaces are materially narrower than:
+## Key findings
 
-1. the fields already supported by business intake and public business records,
-2. the fields used by directory completeness/strength logic, and
-3. the level of owner-controlled content needed for a credible post-claim profile authoring experience.
+1. The live business representative edit path already had Phase 1 support for website, categories, city/state, and social links.
+2. The meaningful remaining ordinary business-profile authoring gap in that path was the primary logo/image field, which public completeness already expects.
+3. The previous claim/profile matrix overstated missing business fields.
+4. Organizations, churches, and nonprofits still lacked a proven authenticated representative claim/edit path at the time of the original audit. The local organization API proof now exists, but the broader claimant-entity architecture still needs to distinguish representative account from claimant entity.
 
----
+## Ordinary representative-authoring fields still missing after this Phase 1 patch
 
-## Evidence from current code
+Business path still does **not** provide authenticated representative editing for:
 
-### 1) Current owner-editable claimed-business fields are limited
-
-Current post-login business profile/edit flows only expose a small set of fields:
-
-- `businessName`
-- `businessAddress`
-- `businessPhone`
-- `description`
-- sometimes `email`
-
-Evidence:
-- `src/pages/dashboard/edit-business.tsx`
-- `src/pages/edit-business.tsx`
-- `src/pages/api/business/update.ts`
-- `src/pages/business/profile.tsx`
-- `src/pages/api/business/profile.ts`
-
-### 2) Business intake already supports a broader authoring model
-
-Business submission already collects more fields than the claimed-business edit flow allows.
-
-Current intake fields include:
-- `businessName`
-- `category`
-- `location` -> normalized into `city` + `state`
-- `phone`
-- `email`
-- `website`
-- `description`
-- `facebook`
-- `twitter`
-- `logo` upload
-
-Evidence:
-- `src/lib/businessSubmission.ts`
-- `src/pages/business-directory/add-business.tsx`
-- `src/pages/api/business/create.ts`
-
-### 3) Public business records and directory logic expect richer data
-
-Directory/public listing logic uses or rewards fields including:
-- `description`
-- `address`
-- `city`
-- `state`
-- `phone`
-- `category` / `categories` / `display_categories`
-- `website`
-- `image`
-
-Evidence:
-- `src/lib/directory/completeness.ts`
-- `src/pages/api/search/businesses.ts`
-- `src/pages/api/getBusiness.js`
-- `src/pages/business-directory/[alias].tsx`
-
-### 4) Claim/membership state is separate from content authoring richness
-
-The founding claim flow establishes membership, claim status, and review state, but it does **not** currently deliver a rich owner authoring surface after claim.
-
-Evidence:
-- `src/lib/founding-membership.ts`
-- `src/pages/api/founding-membership/status.ts`
-
----
-
-## Current gap
-
-### Product gap
-
-A claimed listing can move into ownership review and membership status, while the owner still lacks enough fields to fully populate the public listing with the qualifying data the platform says matters.
-
-### Implementation gap
-
-There is a mismatch between:
-
-- the business document shape the platform already stores or can store,
-- the completeness/public ranking expectations,
-- and the fields exposed in owner-editable post-claim profile forms.
-
-This means the platform currently risks:
-
-- weak claimed listings,
-- low completeness scores,
-- poor public-facing profiles,
-- admin/manual cleanup dependency,
-- owner frustration after claim/payment.
-
----
-
-## Field matrix
-
-### A) Fields currently owner-editable after claim/login
-
-| Field | Current owner editable? | Notes |
-|---|---:|---|
-| Business name | Yes | Present in edit pages/API |
-| Email | Partial | Supported in one update path; not consistently exposed |
-| Address | Yes | `businessAddress` path exists, but public model also uses `address` |
-| Phone | Yes | Present |
-| Description | Yes | Present |
-| Website | No | Missing from claimed-business edit flow |
-| Category / categories | No | Missing from claimed-business edit flow |
-| City / state | No direct structured control | Derived on intake but not well-managed post-claim |
-| Social links | No | Missing |
-| Logo / primary image | No in claim/business flow | Intake supports logo; post-claim business flow does not |
-| Gallery/images | No | Missing |
-| Hours | No | Missing |
-| Service area | No | Missing |
-| Tags / specialties | No | Missing |
-| Products/services summary | No | Missing |
-| CTA links / booking/order links | No | Missing |
-
-### B) Fields that should be owner-editable immediately
-
-These should be editable without requiring admin review, assuming normal validation and abuse controls.
-
-- business display name / DBA
-- short description
-- full description / about
-- website
-- primary phone
-- public contact email
-- address
-- city
-- state
-- zip/postal code
-- service area
-- primary category
-- secondary categories
-- social links
-- logo
-- gallery/images
+- gallery management beyond the single primary image
 - hours
-- products/services summary
+- service area
 - specialties/tags
-- CTA links (book, order, learn more)
+- products/services summary
+- CTA links
+- richer social set beyond facebook/twitter
+- zip/postal code as a distinct field
 
-### C) Fields that should be editable but review-gated
+These are ordinary content fields, but they go beyond the minimal Phase 1 closure requested here.
 
-These should be owner-submittable, but changes should trigger review before becoming authoritative or before changing trust states.
+## Trust-sensitive fields intentionally not opened
 
-- legal business name when it conflicts with the verified/public identity
-- ownership/claim identity fields
-- verified badge / verification evidence inputs
-- tax/legal documentation fields
-- sensitive category changes, if they affect placement/compliance/trust
-- canonical slug/alias changes
-- any field used as a trust or compliance primitive rather than normal profile content
+Still system/admin controlled:
 
-### D) Fields that should remain system/admin-controlled
-
-- claim status
+- claim stage
 - ownership review status
+- public listing status
+- verification flags
 - claim lock state
-- founding membership status
-- directory approval / public visibility approval flags
-- moderation status
-- payment / fulfillment / sponsor timing state
-- internal trust/risk notes
+- visibility approval flags
+- founding membership linkage
+- canonical alias/slug changes
 
----
+## Phase 1 business edit-path change made
 
-## Recommended canonical owner authoring model
+Minimal live-code closure:
 
-### Minimum viable claimed-business authoring set
+- added owner editing for `image` / `logo` on the business PATCH path
+- mirrored primary image writes into `image`, `logo`, and `images`
+- changed social updates to dot-path partial updates so editing one social field no longer replaces the whole `social` object
 
-For a credible post-claim experience, the owner profile should support at least:
+## Structural blocker for organizations
 
-1. Identity
-   - business name
-   - public contact email
-   - phone
-   - website
+At the time of the original matrix, there was no representative-authenticated organization claim/edit route comparable to:
 
-2. Location
-   - address
-   - city
-   - state
-   - zip/postal code
-   - service area toggle/text where applicable
+- `src/pages/api/business/profile.ts`
+- `src/pages/api/business/update.ts`
+- `src/pages/edit-business.tsx`
+- `src/pages/dashboard/edit-business.tsx`
 
-3. Public profile
-   - short description
-   - long description
-   - category
-   - secondary categories
-   - tags/specialties
-   - products/services
-
-4. Media
-   - logo
-   - cover image
-   - gallery images
-
-5. Trust/supporting profile data
-   - hours
-   - social links
-   - booking/order/contact CTA links
-
-### Recommendation on status handling
-
-Use a split model:
-
-- **owner-editable content state** for normal profile richness
-- **review-gated trust state** for claim/legal/verification-sensitive changes
-
-That preserves trust while still giving the owner enough power to actually build a strong listing.
-
----
-
-## Recommendation for implementation order
-
-### Phase 1, field-model and API normalization
-
-Normalize the claimed-business authoring contract so the profile API can consistently read/write the canonical public listing fields, especially:
-
-- `businessName` / `business_name`
-- `businessAddress` / `address`
-- `businessPhone` / `phone`
-- `category` / `categories` / `display_categories`
-- `image` / `logo` / `images`
-
-### Phase 2, expanded claimed-business authoring form
-
-Add owner-editable support for:
-
-- website
-- categories
-- city/state/address normalization
-- social links
-- logo/primary image
-- longer profile content
-- service summary/tags
-
-### Phase 3, review-gated trust edits
-
-Add a moderation/review path for:
-
-- legal identity changes
-- sensitive category changes
-- verification evidence
-- public trust badge-impacting edits
-
----
-
-## Conclusion
-
-The current answer to the product question is:
-
-**No, the business profile does not currently provide appropriate field coverage for owners to populate all meaningful qualifying/public content after claim.**
-
-The current post-claim profile surface is too limited relative to:
-- the data model already in use,
-- the directory completeness logic,
-- and the expected owner experience.
-
-This should be treated as an active product and implementation gap in the claimed-business lane.
+The API foundation now exists for organizations, but organizations, churches, and nonprofits still cannot be considered fully closed until the implementation is generalized beyond representative-account-centric ownership fields and the applicable profile editors are completed by entity type.
