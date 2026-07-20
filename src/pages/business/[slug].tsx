@@ -13,6 +13,7 @@ import {
 } from "@/lib/founding-membership-state";
 import { Spotlight, spotlightData } from "../../lib/SpotlightEntry";
 import { sanitizeRichHtml } from "@/lib/security/sanitizeHtml";
+import { mapDirectoryProfileFromDoc } from "@/lib/directoryProfileContract";
 
 type BusinessEntry = {
   claimStage: string | null;
@@ -20,7 +21,16 @@ type BusinessEntry = {
   canClaim: boolean;
   name: string;
   imageSrc: string | null;
+  logoSrc: string | null;
+  galleryImages: string[];
   story: string;
+  summary: string | null;
+  offeringsSummary: string | null;
+  operatingHours: string | null;
+  serviceArea: string | null;
+  tags: string[];
+  primaryCtaLabel: string | null;
+  primaryCtaUrl: string | null;
   details: string | null;
   category: string | null;
   categoriesText: string | null;
@@ -28,6 +38,7 @@ type BusinessEntry = {
   address: string | null;
   website: string | null;
   phone: string | null;
+  social: Array<{ label: string; url: string }>;
   sourceUrl: string | null;
   status: string | null;
   isSponsored: boolean;
@@ -47,38 +58,36 @@ function cleanString(value: unknown) {
 }
 
 function mapDbBusinessToEntry(doc: any): BusinessEntry {
-  const name = cleanString(doc?.business_name) || "Business";
+  const profile = mapDirectoryProfileFromDoc(doc);
+  const name = cleanString(profile.displayName) || "Business";
+  const galleryImages = Array.isArray(profile.galleryImages)
+    ? profile.galleryImages.map((x: any) => cleanString(x)).filter(Boolean)
+    : [];
 
-  let imageSrc = "";
-  if (typeof doc?.image === "string" && cleanString(doc.image)) {
-    imageSrc = cleanString(doc.image);
-  } else if (Array.isArray(doc?.images) && doc.images.length > 0) {
-    const first = doc.images[0];
-    if (typeof first === "string" && cleanString(first)) {
-      imageSrc = cleanString(first);
-    } else if (
-      first &&
-      typeof first.url === "string" &&
-      cleanString(first.url)
-    ) {
-      imageSrc = cleanString(first.url);
-    }
+  let imageSrc = cleanString(profile.coverImage);
+  if (!imageSrc && galleryImages.length > 0) {
+    imageSrc = galleryImages[0];
   }
 
   const description =
-    cleanString(doc?.description) ||
+    cleanString(profile.description) ||
     `${name} is listed on Black Wealth Exchange.`;
 
-  const website = cleanString(doc?.website);
-  const category = cleanString(doc?.category || doc?.display_categories);
+  const website = cleanString(profile.website);
+  const category = cleanString(profile.primaryCategory);
   const categoriesText = cleanString(
-    [doc?.display_categories, doc?.categories, doc?.category]
+    [
+      profile.primaryCategory,
+      Array.isArray(profile.secondaryCategories)
+        ? profile.secondaryCategories.join(" • ")
+        : "",
+    ]
       .filter(Boolean)
       .join(" • "),
   );
-  const city = cleanString(doc?.city) || cleanString(doc?.address?.city);
-  const state = cleanString(doc?.state) || cleanString(doc?.address?.state);
-  const address = cleanString(doc?.address);
+  const city = cleanString(profile.city) || cleanString(doc?.address?.city);
+  const state = cleanString(profile.state) || cleanString(doc?.address?.state);
+  const address = cleanString(profile.streetAddress);
   const location = [city, state].filter(Boolean).join(", ") || address;
   const status =
     cleanString(doc?.status || doc?.trustStatus).toLowerCase() || null;
@@ -111,18 +120,47 @@ function mapDbBusinessToEntry(doc: any): BusinessEntry {
     detailParts.push(
       `<p><strong>Website:</strong> <a href="${website}" target="_blank" rel="noreferrer">${website}</a></p>`,
     );
+  if (cleanString(profile.serviceArea))
+    detailParts.push(
+      `<p><strong>Service area:</strong> ${cleanString(profile.serviceArea)}</p>`,
+    );
+  if (cleanString(profile.operatingHours))
+    detailParts.push(
+      `<p><strong>Hours:</strong> ${cleanString(profile.operatingHours)}</p>`,
+    );
+
+  const socialEntries = [
+    ["Facebook", cleanString(profile.facebook)],
+    ["Instagram", cleanString(profile.instagram)],
+    ["LinkedIn", cleanString(profile.linkedin)],
+    ["Twitter / X", cleanString(profile.twitter)],
+    ["YouTube", cleanString(profile.youtube)],
+    ["TikTok", cleanString(profile.tiktok)],
+  ]
+    .filter(([, url]) => url)
+    .map(([label, url]) => ({ label: String(label), url: String(url) }));
 
   return {
     name,
     imageSrc: imageSrc || null,
+    logoSrc: cleanString(profile.logo) || null,
+    galleryImages,
     story: description,
+    summary: cleanString(profile.shortSummary) || null,
+    offeringsSummary: cleanString(profile.offeringsSummary) || null,
+    operatingHours: cleanString(profile.operatingHours) || null,
+    serviceArea: cleanString(profile.serviceArea) || null,
+    tags: Array.isArray(profile.tags) ? profile.tags : [],
+    primaryCtaLabel: cleanString(profile.primaryCtaLabel) || null,
+    primaryCtaUrl: cleanString(profile.primaryCtaUrl) || null,
     details: sanitizeRichHtml(detailParts.join("")) || null,
     category: category || null,
     categoriesText: categoriesText || null,
     location: location || null,
     address: address || null,
     website: website || null,
-    phone: cleanString(doc?.phone) || null,
+    phone: cleanString(profile.phone) || null,
+    social: socialEntries,
     sourceUrl: cleanString(doc?.sourceUrl || doc?.source) || null,
     status,
     claimStage,
@@ -300,7 +338,16 @@ const BusinessDetail: NextPage<Props> = ({ entry, slug, businessId }) => {
                     Claim Status
                   </Link>
                 ) : null}
-                {entry.website ? (
+                {entry.primaryCtaLabel && entry.primaryCtaUrl ? (
+                  <a
+                    href={entry.primaryCtaUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-sm px-3 py-2 transition"
+                  >
+                    {entry.primaryCtaLabel}
+                  </a>
+                ) : entry.website ? (
                   <a
                     href={entry.website}
                     target="_blank"
@@ -339,6 +386,11 @@ const BusinessDetail: NextPage<Props> = ({ entry, slug, businessId }) => {
                 <div className="text-sm font-semibold text-white/90 mb-2">
                   About
                 </div>
+                {entry.summary ? (
+                  <div className="text-white/80 text-sm mb-2">
+                    {entry.summary}
+                  </div>
+                ) : null}
                 {entry.categoriesText ? (
                   <div className="text-white/60 text-sm mb-2">
                     {entry.categoriesText}
@@ -347,6 +399,28 @@ const BusinessDetail: NextPage<Props> = ({ entry, slug, businessId }) => {
                 <div className="text-white/75 leading-relaxed">
                   {entry.story || "Business details are being expanded."}
                 </div>
+                {entry.offeringsSummary ? (
+                  <div className="mt-4">
+                    <div className="text-sm font-semibold text-white/90 mb-2">
+                      Products and services
+                    </div>
+                    <div className="text-white/75 leading-relaxed">
+                      {entry.offeringsSummary}
+                    </div>
+                  </div>
+                ) : null}
+                {entry.tags.length ? (
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {entry.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/80"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                ) : null}
               </div>
 
               <div className="rounded-2xl border border-white/10 bg-black/30 p-5 space-y-3">
@@ -423,6 +497,30 @@ const BusinessDetail: NextPage<Props> = ({ entry, slug, businessId }) => {
                     No additional details yet.
                   </div>
                 )}
+                {entry.social.length ? (
+                  <div className="pt-3 space-y-1 text-sm text-white/75">
+                    <div className="font-semibold text-white/90">Social</div>
+                    {entry.social.map((item) => (
+                      <div key={`${item.label}-${item.url}`}>
+                        {item.label}: {item.url}
+                      </div>
+                    ))}
+                  </div>
+                ) : null}
+                {entry.operatingHours ? (
+                  <div className="pt-3 text-sm text-white/75">
+                    <div className="font-semibold text-white/90">Hours</div>
+                    <div>{entry.operatingHours}</div>
+                  </div>
+                ) : null}
+                {entry.serviceArea ? (
+                  <div className="pt-3 text-sm text-white/75">
+                    <div className="font-semibold text-white/90">
+                      Service Area
+                    </div>
+                    <div>{entry.serviceArea}</div>
+                  </div>
+                ) : null}
                 {entry.reference ? (
                   <div className="text-xs text-white/50 pt-2">
                     Reference: {entry.reference}
@@ -452,14 +550,24 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
         entry: {
           name: spotlight.name,
           imageSrc: cleanString(spotlight.imageSrc) || null,
+          logoSrc: null,
+          galleryImages: [],
           story:
             cleanString(spotlight.story) ||
             `${cleanString(spotlight.name) || "Business"} is listed on Black Wealth Exchange.`,
+          summary: null,
+          offeringsSummary: null,
+          operatingHours: null,
+          serviceArea: null,
+          tags: [],
+          primaryCtaLabel: null,
+          primaryCtaUrl: null,
           details: cleanString(spotlight.details) || null,
           category: null,
           location: null,
           website: null,
           phone: null,
+          social: [],
           sourceUrl: null,
           categoriesText: null,
           address: null,
@@ -491,19 +599,49 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
       {
         projection: {
           business_name: 1,
+          businessName: 1,
+          name: 1,
+          shortSummary: 1,
+          summary: 1,
           description: 1,
           image: 1,
+          logo: 1,
           images: 1,
+          galleryImages: 1,
           website: 1,
           phone: 1,
+          businessPhone: 1,
           sourceUrl: 1,
           source: 1,
           category: 1,
+          primaryCategory: 1,
           categories: 1,
+          secondaryCategories: 1,
           display_categories: 1,
           city: 1,
           state: 1,
           address: 1,
+          streetAddress: 1,
+          businessAddress: 1,
+          serviceArea: 1,
+          operatingHours: 1,
+          hours: 1,
+          offeringsSummary: 1,
+          productsServicesSummary: 1,
+          programsSummary: 1,
+          tags: 1,
+          specialties: 1,
+          keywords: 1,
+          social: 1,
+          facebook: 1,
+          instagram: 1,
+          linkedin: 1,
+          twitter: 1,
+          youtube: 1,
+          tiktok: 1,
+          primaryCtaLabel: 1,
+          primaryCtaUrl: 1,
+          additionalCtas: 1,
           status: 1,
           trustStatus: 1,
           amountPaid: 1,
