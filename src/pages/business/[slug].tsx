@@ -14,6 +14,10 @@ import {
 import { Spotlight, spotlightData } from "../../lib/SpotlightEntry";
 import { sanitizeRichHtml } from "@/lib/security/sanitizeHtml";
 import { mapDirectoryProfileFromDoc } from "@/lib/directoryProfileContract";
+import {
+  buildBusinessDirectionsUrl,
+  getBusinessMediaSet,
+} from "@/lib/directoryPublicMedia";
 
 type BusinessEntry = {
   claimStage: string | null;
@@ -60,14 +64,14 @@ function cleanString(value: unknown) {
 function mapDbBusinessToEntry(doc: any): BusinessEntry {
   const profile = mapDirectoryProfileFromDoc(doc);
   const name = cleanString(profile.displayName) || "Business";
-  const galleryImages = Array.isArray(profile.galleryImages)
-    ? profile.galleryImages.map((x: any) => cleanString(x)).filter(Boolean)
-    : [];
-
-  let imageSrc = cleanString(profile.coverImage);
-  if (!imageSrc && galleryImages.length > 0) {
-    imageSrc = galleryImages[0];
-  }
+  const media = getBusinessMediaSet({
+    ...doc,
+    coverImage: profile.coverImage,
+    logo: profile.logo,
+    galleryImages: profile.galleryImages,
+  });
+  const galleryImages = media.galleryImages;
+  const imageSrc = cleanString(media.primaryImage);
 
   const description =
     cleanString(profile.description) ||
@@ -87,8 +91,13 @@ function mapDbBusinessToEntry(doc: any): BusinessEntry {
   );
   const city = cleanString(profile.city) || cleanString(doc?.address?.city);
   const state = cleanString(profile.state) || cleanString(doc?.address?.state);
+  const postalCode = cleanString(profile.postalCode);
   const address = cleanString(profile.streetAddress);
-  const location = [city, state].filter(Boolean).join(", ") || address;
+  const addressLine2 = cleanString((profile as any).addressLine2 || doc?.addressLine2 || doc?.suite || doc?.unit);
+  const locality = [city, state].filter(Boolean).join(", ");
+  const location = [address, addressLine2, [locality, postalCode].filter(Boolean).join(locality && postalCode ? " " : "")]
+    .filter(Boolean)
+    .join(", ");
   const status =
     cleanString(doc?.status || doc?.trustStatus).toLowerCase() || null;
   const claimStage = normalizeFoundingClaimStage(doc?.claimStage);
@@ -104,13 +113,14 @@ function mapDbBusinessToEntry(doc: any): BusinessEntry {
     doc?.isComplete === true ||
     Number(doc?.qualityScore || 0) >= 70 ||
     Number(doc?.completenessScore || 0) >= 70;
-  const directionsQuery = cleanString(
-    [address, city, state].filter(Boolean).join(", "),
-  );
-  const directionsUrl = directionsQuery
-    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(directionsQuery)}`
-    : null;
-
+  const directionsUrl = buildBusinessDirectionsUrl({
+    ...doc,
+    streetAddress: profile.streetAddress,
+    addressLine2: (profile as any).addressLine2,
+    city: profile.city,
+    state: profile.state,
+    postalCode: profile.postalCode,
+  });
   const detailParts: string[] = [];
   if (category)
     detailParts.push(`<p><strong>Category:</strong> ${category}</p>`);
@@ -143,7 +153,7 @@ function mapDbBusinessToEntry(doc: any): BusinessEntry {
   return {
     name,
     imageSrc: imageSrc || null,
-    logoSrc: cleanString(profile.logo) || null,
+    logoSrc: cleanString(media.logo) || null,
     galleryImages,
     story: description,
     summary: cleanString(profile.shortSummary) || null,
@@ -620,9 +630,16 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
           display_categories: 1,
           city: 1,
           state: 1,
+          zip: 1,
+          postalCode: 1,
+          zipCode: 1,
           address: 1,
           streetAddress: 1,
           businessAddress: 1,
+          addressLine1: 1,
+          addressLine2: 1,
+          suite: 1,
+          unit: 1,
           serviceArea: 1,
           operatingHours: 1,
           hours: 1,
