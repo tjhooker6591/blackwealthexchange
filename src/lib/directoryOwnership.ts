@@ -87,7 +87,7 @@ export function buildObjectIdOrStringFilter(
   return { [key]: trimmed } as any;
 }
 
-async function findVerifiedBusinessOwnership(
+async function _findVerifiedBusinessOwnership(
   db: Db,
   userId: string,
   businessId: string,
@@ -148,6 +148,117 @@ async function findVerifiedBusinessOwnership(
   };
 }
 
+export async function listVerifiedBusinessOwnerships(
+  db: Db,
+  userId: string,
+): Promise<OwnershipRecord[]> {
+  const claims = await db
+    .collection("business_claims")
+    .find(
+      {
+        userId,
+        claimStatus: { $in: ["ownership_verified", "verified"] },
+        ownershipReviewStatus: { $in: ["ownership_verified", "verified"] },
+        revokedAt: { $exists: false },
+      },
+      {
+        projection: {
+          _id: 1,
+          businessId: 1,
+          claimStatus: 1,
+          ownershipReviewStatus: 1,
+          disputeState: 1,
+          revokedAt: 1,
+        },
+      },
+    )
+    .toArray();
+
+  if (!claims.length) return [];
+
+  const reviews = await db
+    .collection("ownership_reviews")
+    .find(
+      {
+        userId,
+        reviewStatus: { $in: ["ownership_verified", "verified"] },
+        revokedAt: { $exists: false },
+      },
+      {
+        projection: {
+          _id: 1,
+          businessId: 1,
+          reviewStatus: 1,
+          disputeState: 1,
+          revokedAt: 1,
+        },
+      },
+    )
+    .toArray();
+
+  const reviewByBusinessId = new Map(
+    reviews
+      .map((review) => [String((review as any).businessId || ""), review] as const)
+      .filter(([businessId]) => Boolean(businessId)),
+  );
+
+  const ownerships: OwnershipRecord[] = [];
+  for (const claim of claims) {
+    const businessId = String((claim as any).businessId || "").trim();
+    if (!businessId) continue;
+
+    const review = reviewByBusinessId.get(businessId);
+    if (!review) continue;
+
+    const business = await db.collection("businesses").findOne({
+      $and: [
+        buildObjectIdOrStringFilter("_id", businessId) || { _id: businessId as any },
+        {
+          $or: [
+            { claimedByUserId: userId },
+            { managedByUserId: userId },
+            { ownerUserIds: userId },
+          ],
+        },
+        {
+          claimStage: { $in: ["ownership_verified", "verified"] },
+        },
+        {
+          ownershipReviewStatus: { $in: ["ownership_verified", "verified"] },
+        },
+      ],
+    });
+
+    if (!business) continue;
+
+    ownerships.push({
+      entityType: "business",
+      entityId: String(business._id),
+      userId,
+      claimId: String((claim as any)._id || "") || null,
+      reviewId: String((review as any)._id || "") || null,
+      claimStatus: normalizeStage((claim as any).claimStatus),
+      verificationStatus: normalizeStage((review as any).reviewStatus),
+      status: "ownership_verified",
+      disputeState: normalizeStage(
+        (claim as any).disputeState || (review as any).disputeState,
+      ),
+      revokedAt: (claim as any).revokedAt || (review as any).revokedAt || null,
+      source: "verified_business_claim",
+    });
+  }
+
+  return ownerships;
+}
+
+export async function resolvePrimaryVerifiedBusinessOwnership(
+  db: Db,
+  userId: string,
+): Promise<OwnershipRecord | null> {
+  const ownerships = await listVerifiedBusinessOwnerships(db, userId);
+  return ownerships[0] || null;
+}
+
 export async function resolveVerifiedOwnership(
   db: Db,
   args: {
@@ -157,7 +268,12 @@ export async function resolveVerifiedOwnership(
   },
 ): Promise<OwnershipRecord | null> {
   if (args.entityType === "business") {
-    return findVerifiedBusinessOwnership(db, args.userId, args.entityId);
+    const ownerships = await listVerifiedBusinessOwnerships(db, args.userId);
+    return (
+      ownerships.find(
+        (ownership) => String(ownership.entityId) === String(args.entityId),
+      ) || null
+    );
   }
 
   const normalizedEntityId = String(args.entityId || "").trim();

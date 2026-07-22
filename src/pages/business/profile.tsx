@@ -5,13 +5,13 @@ import { getMongoDbName } from "@/lib/env";
 import {
   buildObjectIdOrStringFilter,
   parseSessionIdentity,
-  resolveVerifiedOwnership,
+  resolvePrimaryVerifiedBusinessOwnership,
 } from "@/lib/directoryOwnership";
 import { mapDirectoryProfileFromDoc } from "@/lib/directoryProfileContract";
 import BusinessProfileContent from "@/components/business/BusinessProfileContent";
 
 interface Props {
-  business: ReturnType<typeof mapDirectoryProfileFromDoc>;
+  business: ReturnType<typeof mapDirectoryProfileFromDoc> | null;
 }
 
 export const getServerSideProps: GetServerSideProps<Props> = async ({
@@ -24,32 +24,13 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
 
   const client = await clientPromise;
   const db = client.db(getMongoDbName());
-  const ownershipLinks = await db
-    .collection("businesses")
-    .find(
-      {
-        $or: [
-          { claimedByUserId: session.userId },
-          { managedByUserId: session.userId },
-          { ownerUserIds: session.userId },
-        ],
-      },
-      { projection: { _id: 1 } },
-    )
-    .toArray();
-
-  let ownership = null;
-  for (const candidate of ownershipLinks) {
-    ownership = await resolveVerifiedOwnership(db, {
-      entityType: "business",
-      entityId: String(candidate._id),
-      userId: session.userId,
-    });
-    if (ownership) break;
-  }
+  const ownership = await resolvePrimaryVerifiedBusinessOwnership(
+    db,
+    session.userId,
+  );
 
   if (!ownership) {
-    return { notFound: true };
+    return { props: { business: null } };
   }
 
   const doc = await db.collection("businesses").findOne(
@@ -58,20 +39,40 @@ export const getServerSideProps: GetServerSideProps<Props> = async ({
     },
   );
 
-  if (!doc) return { notFound: true };
-  return { props: { business: mapDirectoryProfileFromDoc(doc) } };
+  if (!doc) return { props: { business: null } };
+  const business = JSON.parse(
+    JSON.stringify(mapDirectoryProfileFromDoc(doc)),
+  ) as ReturnType<typeof mapDirectoryProfileFromDoc>;
+  return { props: { business } };
 };
 
 export default function BusinessProfile({ business }: Props) {
   return (
-    <div className="min-h-screen bg-black text-white p-6">
-      <h1 className="text-3xl font-bold text-gold mb-6">Business Profile</h1>
-      <BusinessProfileContent
-        business={business}
-        mode="owner"
-        showPrivateContactEmail
-        editHref={`/edit-business?businessId=${encodeURIComponent(business.id)}`}
-      />
+    <div className="min-h-screen bg-black p-6 text-white">
+      <h1 className="mb-6 text-3xl font-bold text-gold">Business Profile</h1>
+      {business ? (
+        <BusinessProfileContent
+          business={business}
+          mode="owner"
+          showPrivateContactEmail
+          editHref={
+            business.id
+              ? `/edit-business?businessId=${encodeURIComponent(business.id)}`
+              : "/edit-business"
+          }
+        />
+      ) : (
+        <div className="max-w-2xl rounded-2xl border border-white/10 bg-white/5 p-6">
+          <h2 className="text-xl font-semibold text-white">
+            No verified managed business profile available
+          </h2>
+          <p className="mt-3 text-sm text-white/80">
+            This account does not currently have an active verified business
+            management relationship. If you expected access here, finish the
+            business verification flow or contact support.
+          </p>
+        </div>
+      )}
     </div>
   );
 }
