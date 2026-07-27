@@ -267,16 +267,29 @@ export async function resolveVerifiedOwnership(
     userId: string;
   },
 ): Promise<OwnershipRecord | null> {
+  const normalizedEntityId = String(args.entityId || "").trim();
+  if (!normalizedEntityId) return null;
+
   if (args.entityType === "business") {
-    const ownerships = await listVerifiedBusinessOwnerships(db, args.userId);
-    return (
-      ownerships.find(
-        (ownership) => String(ownership.entityId) === String(args.entityId),
-      ) || null
+    const ownership = await _findVerifiedBusinessOwnership(
+      db,
+      args.userId,
+      normalizedEntityId,
     );
+    if (!ownership) return null;
+
+    const normalizedDispute = normalizeStage(ownership.disputeState);
+    if (
+      normalizedDispute === "disputed" ||
+      normalizedDispute === "ownership_disputed" ||
+      ownership.revokedAt
+    ) {
+      return null;
+    }
+
+    return ownership;
   }
 
-  const normalizedEntityId = String(args.entityId || "").trim();
   if (!normalizedEntityId) return null;
 
   const claim = await db.collection("entity_claims").findOne({
