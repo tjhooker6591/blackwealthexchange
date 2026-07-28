@@ -88,7 +88,7 @@ export default async function handler(
         city: profile.city || "",
         state: profile.state || "",
         editHref: `/edit-business?businessId=${encodeURIComponent(String(doc._id))}`,
-        profileHref: "/business/profile",
+        profileHref: `/business/profile?businessId=${encodeURIComponent(String(doc._id))}`,
         publicHref:
           (doc as any).alias || (doc as any).slug
             ? `/business/${encodeURIComponent(String((doc as any).alias || (doc as any).slug))}`

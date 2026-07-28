@@ -16,18 +16,24 @@ interface Props {
 
 export const getServerSideProps: GetServerSideProps<Props> = async ({
   req,
+  query,
 }) => {
   const session = parseSessionIdentity(req as any);
   if (!session) {
     return { redirect: { destination: "/login", permanent: false } };
   }
 
+  const requestedBusinessId = String(query.businessId || query.id || "").trim();
+
   const client = await clientPromise;
   const db = client.db(getMongoDbName());
-  const ownership = await resolvePrimaryVerifiedBusinessOwnership(
-    db,
-    session.userId,
-  );
+  const ownership = requestedBusinessId
+    ? await resolveVerifiedOwnership(db, {
+        entityType: "business",
+        entityId: requestedBusinessId,
+        userId: session.userId,
+      })
+    : await resolvePrimaryVerifiedBusinessOwnership(db, session.userId);
 
   if (!ownership) {
     return { props: { business: null } };

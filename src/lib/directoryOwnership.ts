@@ -198,7 +198,9 @@ export async function listVerifiedBusinessOwnerships(
 
   const reviewByBusinessId = new Map(
     reviews
-      .map((review) => [String((review as any).businessId || ""), review] as const)
+      .map(
+        (review) => [String((review as any).businessId || ""), review] as const,
+      )
       .filter(([businessId]) => Boolean(businessId)),
   );
 
@@ -212,7 +214,9 @@ export async function listVerifiedBusinessOwnerships(
 
     const business = await db.collection("businesses").findOne({
       $and: [
-        buildObjectIdOrStringFilter("_id", businessId) || { _id: businessId as any },
+        buildObjectIdOrStringFilter("_id", businessId) || {
+          _id: businessId as any,
+        },
         {
           $or: [
             { claimedByUserId: userId },

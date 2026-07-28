@@ -1,4 +1,3 @@
-// src/pages/edit-business.tsx
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
@@ -16,22 +15,41 @@ type AccountType =
 type MeUser = {
   email: string;
   accountType: AccountType;
-  businessName?: string;
 };
 
+type Cta = { label: string; url: string };
+
 interface BusinessProfile {
-  businessName: string;
-  email: string;
-  businessAddress: string;
-  businessPhone: string;
+  id: string;
+  displayName: string;
+  shortSummary: string;
+  description: string;
+  publicEmail: string;
+  phone: string;
   website: string;
-  category: string;
-  categoriesText: string;
+  streetAddress: string;
+  addressLine2: string;
   city: string;
   state: string;
+  postalCode: string;
+  serviceArea: string;
+  primaryCategory: string;
+  secondaryCategoriesText: string;
+  logo: string;
+  coverImage: string;
+  galleryImagesText: string;
   facebook: string;
+  instagram: string;
+  linkedin: string;
   twitter: string;
-  description: string;
+  youtube: string;
+  tiktok: string;
+  operatingHours: string;
+  tagsText: string;
+  offeringsSummary: string;
+  primaryCtaLabel: string;
+  primaryCtaUrl: string;
+  additionalCtasText: string;
 }
 
 function GlowBackground() {
@@ -48,38 +66,96 @@ function cx(...classes: Array<string | false | null | undefined>) {
 }
 
 const ALLOWED_ROLES: AccountType[] = [
+  "user",
   "business",
   "seller",
   "employer",
   "admin",
 ];
 
+const EMPTY_FORM: BusinessProfile = {
+  id: "",
+  displayName: "",
+  shortSummary: "",
+  description: "",
+  publicEmail: "",
+  phone: "",
+  website: "",
+  streetAddress: "",
+  addressLine2: "",
+  city: "",
+  state: "",
+  postalCode: "",
+  serviceArea: "",
+  primaryCategory: "",
+  secondaryCategoriesText: "",
+  logo: "",
+  coverImage: "",
+  galleryImagesText: "",
+  facebook: "",
+  instagram: "",
+  linkedin: "",
+  twitter: "",
+  youtube: "",
+  tiktok: "",
+  operatingHours: "",
+  tagsText: "",
+  offeringsSummary: "",
+  primaryCtaLabel: "",
+  primaryCtaUrl: "",
+  additionalCtasText: "",
+};
+
+function toLines(ctas: Cta[] | undefined) {
+  return Array.isArray(ctas)
+    ? ctas.map((cta) => `${cta.label} | ${cta.url}`).join("\n")
+    : "";
+}
+
+function parseAdditionalCtas(text: string) {
+  return text
+    .split(/\n+/)
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => {
+      const [label, url] = line.split("|").map((part) => part.trim());
+      return label && url ? { label, url } : null;
+    })
+    .filter(Boolean);
+}
+
+function parseCommaSeparatedList(text: string) {
+  return text
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function parseLineSeparatedList(text: string) {
+  return text
+    .split(/\n+/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
 export default function EditBusinessPage() {
   const router = useRouter();
+  const businessId = useMemo(() => {
+    const raw = router.query.businessId;
+    return Array.isArray(raw) ? raw[0] || "" : raw || "";
+  }, [router.query.businessId]);
 
   const [me, setMe] = useState<MeUser | null>(null);
-  const [business, setBusiness] = useState<BusinessProfile>({
-    businessName: "",
-    email: "",
-    businessAddress: "",
-    businessPhone: "",
-    website: "",
-    category: "",
-    categoriesText: "",
-    city: "",
-    state: "",
-    facebook: "",
-    twitter: "",
-    description: "",
-  });
-
+  const [business, setBusiness] = useState<BusinessProfile>(EMPTY_FORM);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-
   const [status, setStatus] = useState<{
     type: "idle" | "success" | "error";
     message: string;
-  }>({ type: "idle", message: "" });
+  }>({
+    type: "idle",
+    message: "",
+  });
 
   const canAccess = useMemo(() => {
     const role = me?.accountType;
@@ -87,11 +163,17 @@ export default function EditBusinessPage() {
   }, [me]);
 
   useEffect(() => {
+    if (!router.isReady) return;
+    if (!businessId) {
+      setLoading(false);
+      setStatus({ type: "error", message: "Missing business identifier." });
+      return;
+    }
+
     const controller = new AbortController();
 
     (async () => {
       try {
-        // 1) Verify session (cookies must be included)
         const res = await fetch("/api/auth/me", {
           cache: "no-store",
           credentials: "include",
@@ -99,66 +181,82 @@ export default function EditBusinessPage() {
         });
 
         if (!res.ok) {
-          router.replace("/login?redirect=/edit-business");
+          router.replace(
+            `/login?redirect=${encodeURIComponent(`/edit-business?businessId=${businessId}`)}`,
+          );
           return;
         }
 
         const data = await res.json().catch(() => null);
         const user = (data?.user ?? null) as MeUser | null;
-
         if (!user?.email || !user?.accountType) {
-          router.replace("/login?redirect=/edit-business");
+          router.replace(
+            `/login?redirect=${encodeURIComponent(`/edit-business?businessId=${businessId}`)}`,
+          );
           return;
         }
 
         setMe(user);
 
-        // 2) Enforce allowed roles (shared business dashboard roles)
-        if (!ALLOWED_ROLES.includes(user.accountType)) {
-          router.replace("/login?redirect=/edit-business");
+        const profileRes = await fetch(
+          `/api/business/profile?businessId=${encodeURIComponent(businessId)}`,
+          {
+            cache: "no-store",
+            credentials: "include",
+            signal: controller.signal,
+          },
+        );
+
+        const payload = await profileRes.json().catch(() => null);
+        if (!profileRes.ok) {
+          setStatus({
+            type: "error",
+            message: payload?.error || "Failed to load business profile.",
+          });
+          setBusiness(EMPTY_FORM);
           return;
         }
 
-        // 3) Fetch business profile
-        // Best practice: API should infer identity from session (no email query param).
-        // If your current API REQUIRES email, uncomment the email param line below.
-        const profileUrl = "/api/business/profile";
-        // + `?email=${encodeURIComponent(user.email)}`;
-
-        const profileRes = await fetch(profileUrl, {
-          cache: "no-store",
-          credentials: "include",
-          signal: controller.signal,
+        const profile = payload?.business || {};
+        setBusiness({
+          id: profile.id || businessId,
+          displayName: profile.displayName || "",
+          shortSummary: profile.shortSummary || "",
+          description: profile.description || "",
+          publicEmail: profile.publicEmail || user.email || "",
+          phone: profile.phone || "",
+          website: profile.website || "",
+          streetAddress: profile.streetAddress || "",
+          addressLine2: profile.addressLine2 || "",
+          city: profile.city || "",
+          state: profile.state || "",
+          postalCode: profile.postalCode || "",
+          serviceArea: profile.serviceArea || "",
+          primaryCategory: profile.primaryCategory || "",
+          secondaryCategoriesText: Array.isArray(profile.secondaryCategories)
+            ? profile.secondaryCategories.join(", ")
+            : "",
+          logo: profile.logo || "",
+          coverImage: profile.coverImage || "",
+          galleryImagesText: Array.isArray(profile.galleryImages)
+            ? profile.galleryImages.join("\n")
+            : "",
+          facebook: profile.facebook || "",
+          instagram: profile.instagram || "",
+          linkedin: profile.linkedin || "",
+          twitter: profile.twitter || "",
+          youtube: profile.youtube || "",
+          tiktok: profile.tiktok || "",
+          operatingHours: profile.operatingHours || "",
+          tagsText: Array.isArray(profile.tags) ? profile.tags.join(", ") : "",
+          offeringsSummary: profile.offeringsSummary || "",
+          primaryCtaLabel: profile.primaryCtaLabel || "",
+          primaryCtaUrl: profile.primaryCtaUrl || "",
+          additionalCtasText: toLines(profile.additionalCtas),
         });
-
-        if (profileRes.ok) {
-          const payload = await profileRes.json().catch(() => null);
-          const profile = payload?.business ?? payload;
-
-          setBusiness({
-            businessName: profile?.businessName ?? "",
-            email: profile?.email ?? user.email ?? "",
-            businessAddress:
-              profile?.businessAddress ?? profile?.address ?? "",
-            businessPhone: profile?.businessPhone ?? profile?.phone ?? "",
-            website: profile?.website ?? "",
-            category: profile?.category ?? "",
-            categoriesText: Array.isArray(profile?.categories)
-              ? profile.categories.join(", ")
-              : "",
-            city: profile?.city ?? "",
-            state: profile?.state ?? "",
-            facebook: profile?.facebook ?? "",
-            twitter: profile?.twitter ?? "",
-            description: profile?.description ?? "",
-          });
-        } else {
-          // Not fatal; they can still fill it out and save
-          console.error("Failed to load business profile");
-        }
       } catch (err: any) {
         if (err?.name !== "AbortError") {
-          console.error("Error loading business info:", err);
+          setStatus({ type: "error", message: "Error loading business info." });
         }
       } finally {
         setLoading(false);
@@ -166,7 +264,7 @@ export default function EditBusinessPage() {
     })();
 
     return () => controller.abort();
-  }, [router]);
+  }, [router, businessId]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -188,16 +286,42 @@ export default function EditBusinessPage() {
         credentials: "include",
         cache: "no-store",
         body: JSON.stringify({
-          ...business,
-          email: business.email,
-          address: business.businessAddress,
-          phone: business.businessPhone,
-          categories: business.categoriesText,
+          businessId: business.id,
+          displayName: business.displayName,
+          shortSummary: business.shortSummary,
+          description: business.description,
+          publicEmail: business.publicEmail,
+          phone: business.phone,
+          website: business.website,
+          streetAddress: business.streetAddress,
+          addressLine2: business.addressLine2,
+          city: business.city,
+          state: business.state,
+          postalCode: business.postalCode,
+          serviceArea: business.serviceArea,
+          primaryCategory: business.primaryCategory,
+          secondaryCategories: parseCommaSeparatedList(
+            business.secondaryCategoriesText,
+          ),
+          logo: business.logo,
+          coverImage: business.coverImage,
+          galleryImages: parseLineSeparatedList(business.galleryImagesText),
+          facebook: business.facebook,
+          instagram: business.instagram,
+          linkedin: business.linkedin,
+          twitter: business.twitter,
+          youtube: business.youtube,
+          tiktok: business.tiktok,
+          operatingHours: business.operatingHours,
+          tags: parseCommaSeparatedList(business.tagsText),
+          offeringsSummary: business.offeringsSummary,
+          primaryCtaLabel: business.primaryCtaLabel,
+          primaryCtaUrl: business.primaryCtaUrl,
+          additionalCtas: parseAdditionalCtas(business.additionalCtasText),
         }),
       });
 
       const data = await res.json().catch(() => null);
-
       if (!res.ok) {
         setStatus({ type: "error", message: data?.error || "Update failed." });
         return;
@@ -207,45 +331,75 @@ export default function EditBusinessPage() {
         type: "success",
         message: "Business profile updated successfully.",
       });
-    } catch (err) {
-      console.error("Update error:", err);
+    } catch {
       setStatus({ type: "error", message: "An error occurred while saving." });
     } finally {
       setSaving(false);
     }
   };
 
+  const fields: Array<{
+    key: keyof BusinessProfile;
+    label: string;
+    type?: string;
+    textarea?: boolean;
+    placeholder?: string;
+  }> = [
+    { key: "displayName", label: "Display Name" },
+    { key: "publicEmail", label: "Public Contact Email", type: "email" },
+    { key: "phone", label: "Phone", type: "tel" },
+    { key: "website", label: "Website", placeholder: "yourbusiness.com" },
+    { key: "streetAddress", label: "Street Address" },
+    { key: "addressLine2", label: "Address Line 2" },
+    { key: "city", label: "City" },
+    { key: "state", label: "State" },
+    { key: "postalCode", label: "ZIP / Postal Code" },
+    { key: "serviceArea", label: "Service Area" },
+    { key: "primaryCategory", label: "Primary Category" },
+    { key: "shortSummary", label: "Short Summary", textarea: true },
+    { key: "description", label: "Full Description", textarea: true },
+    { key: "secondaryCategoriesText", label: "Secondary Categories" },
+    { key: "logo", label: "Logo URL" },
+    { key: "coverImage", label: "Primary / Cover Image URL" },
+    {
+      key: "galleryImagesText",
+      label: "Gallery Images (one per line)",
+      textarea: true,
+    },
+    { key: "facebook", label: "Facebook" },
+    { key: "instagram", label: "Instagram" },
+    { key: "linkedin", label: "LinkedIn" },
+    { key: "twitter", label: "Twitter / X" },
+    { key: "youtube", label: "YouTube" },
+    { key: "tiktok", label: "TikTok" },
+    { key: "operatingHours", label: "Operating Hours", textarea: true },
+    { key: "tagsText", label: "Tags / Specialties / Keywords" },
+    {
+      key: "offeringsSummary",
+      label: "Products / Services Summary",
+      textarea: true,
+    },
+    { key: "primaryCtaLabel", label: "Primary CTA Label" },
+    { key: "primaryCtaUrl", label: "Primary CTA URL" },
+    {
+      key: "additionalCtasText",
+      label: "Additional CTA Links (Label | URL per line)",
+      textarea: true,
+    },
+  ];
+
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-black text-white relative p-6">
-        <GlowBackground />
-        <div className="relative w-full max-w-md rounded-2xl border border-white/10 bg-white/5 p-6 shadow-xl">
-          <div className="h-6 w-2/3 bg-white/10 rounded animate-pulse" />
-          <div className="mt-3 h-4 w-1/2 bg-white/10 rounded animate-pulse" />
-          <div className="mt-6 h-10 w-full bg-white/10 rounded-xl animate-pulse" />
-        </div>
+      <div className="min-h-screen flex items-center justify-center bg-black text-white">
+        Loading…
       </div>
     );
   }
 
-  // In case a role slips through before redirect completes
   if (me && !canAccess) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-black text-white relative p-6">
-        <GlowBackground />
-        <div className="relative w-full max-w-lg rounded-2xl border border-red-500/25 bg-red-500/10 p-6 shadow-xl">
-          <div className="text-xl font-bold text-red-200">Access denied.</div>
-          <p className="text-gray-200 mt-2">
-            Your account type does not have permission to edit a business
-            profile.
-          </p>
-          <Link
-            href="/"
-            className="inline-block mt-4 px-4 py-2 rounded-xl bg-yellow-400 text-black font-semibold hover:bg-yellow-300 transition"
-          >
-            Back to Home
-          </Link>
-        </div>
+      <div className="min-h-screen flex items-center justify-center bg-black text-white">
+        Access denied.
       </div>
     );
   }
@@ -253,9 +407,7 @@ export default function EditBusinessPage() {
   return (
     <div className="min-h-screen bg-black text-white relative">
       <GlowBackground />
-
-      <div className="relative max-w-3xl mx-auto p-6 space-y-6">
-        {/* Top bar */}
+      <div className="relative max-w-4xl mx-auto p-6 space-y-6">
         <div className="flex items-center justify-between gap-4">
           <button
             onClick={() => router.back()}
@@ -271,18 +423,15 @@ export default function EditBusinessPage() {
           </Link>
         </div>
 
-        {/* Title */}
         <header>
           <h1 className="text-3xl md:text-4xl font-extrabold text-yellow-300">
             Edit Business Profile
           </h1>
           <p className="text-gray-300 mt-1">
-            Keep your listing accurate—this improves trust and visibility across
-            BWE.
+            Update ordinary public profile content for your verified listing.
           </p>
         </header>
 
-        {/* Status */}
         {status.type !== "idle" && status.message ? (
           <div
             className={cx(
@@ -297,220 +446,43 @@ export default function EditBusinessPage() {
           </div>
         ) : null}
 
-        {/* Form card */}
         <section className="rounded-2xl border border-yellow-500/15 bg-gray-900/50 p-6 shadow-xl">
           <form onSubmit={handleSubmit} className="space-y-6">
+            <input type="hidden" name="id" value={business.id} />
             <div className="grid gap-4 md:grid-cols-2">
-              <div>
-                <label
-                  htmlFor="businessName"
-                  className="block mb-1 font-semibold text-gray-200"
+              {fields.map((field) => (
+                <div
+                  key={field.key}
+                  className={field.textarea ? "md:col-span-2" : ""}
                 >
-                  Business Name
-                </label>
-                <input
-                  id="businessName"
-                  name="businessName"
-                  value={business.businessName}
-                  onChange={handleChange}
-                  className="w-full rounded-xl bg-black/40 border border-white/10 px-4 py-3 text-white outline-none focus:border-yellow-500/60"
-                  required
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block mb-1 font-semibold text-gray-200"
-                >
-                  Public Contact Email
-                </label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={business.email}
-                  onChange={handleChange}
-                  className="w-full rounded-xl bg-black/40 border border-white/10 px-4 py-3 text-white outline-none focus:border-yellow-500/60"
-                  required
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="businessPhone"
-                  className="block mb-1 font-semibold text-gray-200"
-                >
-                  Business Phone
-                </label>
-                <input
-                  id="businessPhone"
-                  name="businessPhone"
-                  type="tel"
-                  value={business.businessPhone}
-                  onChange={handleChange}
-                  className="w-full rounded-xl bg-black/40 border border-white/10 px-4 py-3 text-white outline-none focus:border-yellow-500/60"
-                  required
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="website"
-                  className="block mb-1 font-semibold text-gray-200"
-                >
-                  Website
-                </label>
-                <input
-                  id="website"
-                  name="website"
-                  value={business.website}
-                  onChange={handleChange}
-                  placeholder="yourbusiness.com"
-                  className="w-full rounded-xl bg-black/40 border border-white/10 px-4 py-3 text-white outline-none focus:border-yellow-500/60"
-                />
-              </div>
-            </div>
-
-            <div className="grid gap-4 md:grid-cols-2">
-              <div>
-                <label
-                  htmlFor="businessAddress"
-                  className="block mb-1 font-semibold text-gray-200"
-                >
-                  Business Address
-                </label>
-                <input
-                  id="businessAddress"
-                  name="businessAddress"
-                  value={business.businessAddress}
-                  onChange={handleChange}
-                  className="w-full rounded-xl bg-black/40 border border-white/10 px-4 py-3 text-white outline-none focus:border-yellow-500/60"
-                  required
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="city"
-                  className="block mb-1 font-semibold text-gray-200"
-                >
-                  City
-                </label>
-                <input
-                  id="city"
-                  name="city"
-                  value={business.city}
-                  onChange={handleChange}
-                  className="w-full rounded-xl bg-black/40 border border-white/10 px-4 py-3 text-white outline-none focus:border-yellow-500/60"
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="state"
-                  className="block mb-1 font-semibold text-gray-200"
-                >
-                  State
-                </label>
-                <input
-                  id="state"
-                  name="state"
-                  value={business.state}
-                  onChange={handleChange}
-                  className="w-full rounded-xl bg-black/40 border border-white/10 px-4 py-3 text-white uppercase outline-none focus:border-yellow-500/60"
-                  maxLength={32}
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="category"
-                  className="block mb-1 font-semibold text-gray-200"
-                >
-                  Primary Category
-                </label>
-                <input
-                  id="category"
-                  name="category"
-                  value={business.category}
-                  onChange={handleChange}
-                  className="w-full rounded-xl bg-black/40 border border-white/10 px-4 py-3 text-white outline-none focus:border-yellow-500/60"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label
-                htmlFor="categoriesText"
-                className="block mb-1 font-semibold text-gray-200"
-              >
-                Secondary Categories
-              </label>
-              <input
-                id="categoriesText"
-                name="categoriesText"
-                value={business.categoriesText}
-                onChange={handleChange}
-                placeholder="Retail, Wellness, Community"
-                className="w-full rounded-xl bg-black/40 border border-white/10 px-4 py-3 text-white outline-none focus:border-yellow-500/60"
-              />
-              <p className="mt-1 text-xs text-gray-400">
-                Separate multiple categories with commas.
-              </p>
-            </div>
-
-            <div>
-              <label
-                htmlFor="description"
-                className="block mb-1 font-semibold text-gray-200"
-              >
-                Description
-              </label>
-              <textarea
-                id="description"
-                name="description"
-                value={business.description}
-                onChange={handleChange}
-                className="w-full min-h-[160px] rounded-xl bg-black/40 border border-white/10 px-4 py-3 text-white outline-none focus:border-yellow-500/60"
-                required
-              />
-            </div>
-
-            <div className="grid gap-4 md:grid-cols-2">
-              <div>
-                <label
-                  htmlFor="facebook"
-                  className="block mb-1 font-semibold text-gray-200"
-                >
-                  Facebook
-                </label>
-                <input
-                  id="facebook"
-                  name="facebook"
-                  value={business.facebook}
-                  onChange={handleChange}
-                  placeholder="facebook.com/yourbusiness"
-                  className="w-full rounded-xl bg-black/40 border border-white/10 px-4 py-3 text-white outline-none focus:border-yellow-500/60"
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="twitter"
-                  className="block mb-1 font-semibold text-gray-200"
-                >
-                  Twitter / X
-                </label>
-                <input
-                  id="twitter"
-                  name="twitter"
-                  value={business.twitter}
-                  onChange={handleChange}
-                  placeholder="x.com/yourbusiness"
-                  className="w-full rounded-xl bg-black/40 border border-white/10 px-4 py-3 text-white outline-none focus:border-yellow-500/60"
-                />
-              </div>
+                  <label
+                    htmlFor={field.key}
+                    className="block mb-1 font-semibold text-gray-200"
+                  >
+                    {field.label}
+                  </label>
+                  {field.textarea ? (
+                    <textarea
+                      id={field.key}
+                      name={field.key}
+                      value={business[field.key] as string}
+                      onChange={handleChange}
+                      placeholder={field.placeholder}
+                      className="w-full min-h-[120px] rounded-xl bg-black/40 border border-white/10 px-4 py-3 text-white outline-none focus:border-yellow-500/60"
+                    />
+                  ) : (
+                    <input
+                      id={field.key}
+                      name={field.key}
+                      type={field.type || "text"}
+                      value={business[field.key] as string}
+                      onChange={handleChange}
+                      placeholder={field.placeholder}
+                      className="w-full rounded-xl bg-black/40 border border-white/10 px-4 py-3 text-white outline-none focus:border-yellow-500/60"
+                    />
+                  )}
+                </div>
+              ))}
             </div>
 
             <button
