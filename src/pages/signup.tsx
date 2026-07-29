@@ -290,7 +290,7 @@ export default function Signup() {
       setTimeout(() => {
         switch (data.accountType) {
           case "business":
-            router.push("/business-directory?claim=1");
+            router.push("/business-directory?mode=claim");
             break;
           case "employer":
             router.push("/employer/jobs");
