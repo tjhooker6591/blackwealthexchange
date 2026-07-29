@@ -183,7 +183,7 @@ export default async function handler(
             seller?.storeName ||
             seller?.businessName ||
             seller?.ownerName ||
-            "Verified BWE Marketplace Seller",
+            null,
           profileComplete: Boolean(
             String(seller?.businessName || "").trim() &&
             String(seller?.email || "").trim() &&

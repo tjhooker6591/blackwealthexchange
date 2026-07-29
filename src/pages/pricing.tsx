@@ -315,11 +315,12 @@ export default function Pricing() {
                   BWE Black Card Membership
                 </h2>
                 <p className="mt-2 text-sm text-gray-200">
-                  Tiered membership identity and rewards access. Plan mapping:
-                  Premium includes the Standard Black Card, Founding Member
-                  includes the Signature Black Card. Elite is invite-only. Your
+                  Tiered membership identity and rewards access. Your
                   membership plan determines your Black Card tier. Founding
-                  Member is billed monthly, auto-renews monthly, cancel anytime.
+                  Member is billed monthly, auto-renews monthly, and payment
+                  begins the claim and membership process. Ownership
+                  verification remains a separate manual review. Elite is
+                  invite-only.
                 </p>
                 <p className="mt-2 text-xs text-gray-300">
                   Black Card is included with your plan. Use this page for plan
@@ -409,13 +410,13 @@ export default function Pricing() {
             <PriceCard
               title="Founding Member"
               price="$49/month"
-              sub="Paid plan with Signature Black Card mapping."
+              sub="Paid plan that begins the claim and membership process."
               billingNote="Billed monthly • Auto-renews monthly • Cancel anytime"
               features={[
                 { ok: true, text: "Everything in Premium" },
                 {
                   ok: true,
-                  text: "Signature Black Card mapping on activation",
+                  text: "Black Card tier mapping is applied according to the current membership configuration",
                 },
                 {
                   ok: true,
@@ -432,7 +433,7 @@ export default function Pricing() {
               ]}
               ctaText="Become a Founder"
               onCta={() => goCheckout("founder")}
-              finePrint="Activation maps your account to at least Premium Black Card."
+              finePrint="Payment begins the claim and membership process. Ownership verification remains a separate manual review."
             />
           </div>
 
@@ -469,7 +470,7 @@ export default function Pricing() {
                     <td className="px-3 py-2 font-semibold">Founding Member</td>
                     <td className="px-3 py-2">$49/month</td>
                     <td className="px-3 py-2">
-                      Premium Black Card (or higher retained)
+                      Applied according to the current membership mapping
                     </td>
                     <td className="px-3 py-2">
                       Higher-tier members who want current Signature access
@@ -511,8 +512,8 @@ export default function Pricing() {
                   Founding Member Plan
                 </div>
                 <p className="mt-2 text-gray-300">
-                  Includes Premium Black Card mapping (or keeps your higher tier
-                  if already active). Future founder-only benefits are not live
+                  Includes the currently configured Black Card tier mapping for
+                  this membership. Future founder-only benefits are not live
                   unless explicitly marked active.
                 </p>
               </div>
@@ -530,8 +531,8 @@ export default function Pricing() {
                     your account.
                   </li>
                   <li>
-                    Your Black Card tier mapping is applied (Premium → Standard,
-                    Founding Member → Signature or higher retained).
+                    Your Black Card tier mapping is applied according to the
+                    current membership configuration.
                   </li>
                 </ol>
                 <div className="mt-3 text-xs text-gray-400">
@@ -542,14 +543,15 @@ export default function Pricing() {
               </div>
 
               <div className="rounded-xl border border-white/10 bg-white/5 p-3 text-xs text-gray-300">
-                Entitlement truth: this page sells annual memberships. Course
-                pages may use one-time purchases. If checkout is
-                canceled/interrupted, no new entitlement is granted.
+                Entitlement truth: this page sells memberships. Founding
+                Member is billed monthly. If checkout is canceled or
+                interrupted, no new entitlement is granted.
               </div>
 
               <div className="rounded-xl border border-white/10 bg-white/5 p-3 text-xs text-gray-300">
-                Billing confidence: billed annually, auto-renews annually,
-                cancel anytime, secure checkout flow.
+                Billing confidence: Founding Member is billed monthly,
+                auto-renews on the active billing cadence, cancel anytime,
+                secure checkout flow.
               </div>
 
               <div className="flex flex-wrap gap-3 text-sm">

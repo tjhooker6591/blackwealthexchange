@@ -7,68 +7,52 @@ type ReleaseSection = {
 };
 
 const releaseMeta = {
-  releaseTitle: "BWE May 2026 Platform Update",
-  releaseId: "BWE-2026.05",
-  publishedDate: "May 12, 2026",
-  lastUpdated: "May 12, 2026, 11:30 AM PT",
+  releaseTitle: "BWE July 2026 Platform Update",
+  releaseId: "BWE-2026.07",
+  publishedDate: "July 28, 2026",
+  lastUpdated: "July 28, 2026, 9:29 PM PT",
   status: "Available now" as const,
 };
 
 const sections: ReleaseSection[] = [
   {
-    title: "Search & Directory improvements",
-    label: "Improved",
-    bullets: [
-      "Better search quality and consistency across business directory views.",
-      "Directory browsing now has more reliable result rendering.",
-    ],
-  },
-  {
-    title: "Marketplace stability improvements",
-    label: "Improved",
-    bullets: [
-      "Order and product flows are now more stable across common user paths.",
-      "Checkout and seller workflows received reliability-focused updates.",
-    ],
-  },
-  {
-    title: "Support experience improvements",
+    title: "Claim-ready directory flow",
     label: "Available now",
     bullets: [
-      "Support routes and ticket surfaces were tightened for better consistency.",
-      "Release notes now have a dedicated user-facing page in Support.",
+      "Public business listings now show claim availability and verified ownership states more clearly.",
+      "Eligible listings can start the Founding Verified Business Growth Membership claim path from the public directory.",
     ],
   },
   {
-    title: "Wealth Builder foundation updates",
-    label: "Foundation update",
+    title: "Ownership verification workflow",
+    label: "Available now",
     bullets: [
-      "Core Wealth Builder APIs and auth/entitlement plumbing were expanded.",
-      "Budget, debt, goals, insights, and transaction foundations are in place.",
+      "Claim initiation, pending ownership review, and verified ownership states are now surfaced in the live listing flow.",
+      "Payment and ownership verification are handled as separate states in the public claim journey.",
     ],
   },
   {
-    title: "Travel Map foundation updates",
-    label: "Foundation update",
+    title: "Founding membership launch path",
+    label: "Available now",
     bullets: [
-      "Travel Map API and page scaffolding expanded for upcoming user features.",
-      "Saved and nearby experience foundations were added for future releases.",
+      "The Founding Verified Business Growth Membership is available at $49 per month with monthly billing.",
+      "Checkout begins the claim and membership process, while ownership verification continues through manual review.",
     ],
   },
   {
-    title: "Sponsor & Business Image reliability improvements",
+    title: "Marketplace public inventory",
+    label: "Available now",
+    bullets: [
+      "Three marketplace products are currently available through the public marketplace and product detail routes.",
+      "Public marketplace pages now emphasize seller identity, availability, and buyer support paths.",
+    ],
+  },
+  {
+    title: "Support and release visibility",
     label: "Improved",
     bullets: [
-      "Fallback image handling was improved for business and sponsor content.",
-      "Image loading reliability was strengthened across key pages.",
-    ],
-  },
-  {
-    title: "Security/session/runtime stability improvements",
-    label: "Improved",
-    bullets: [
-      "Session and runtime guardrails were hardened in core app paths.",
-      "Security-related route protections were reinforced for stability.",
+      "Support includes a dedicated release notes page for public platform updates.",
+      "Release information is now aligned to currently verified live functionality only.",
     ],
   },
 ];
@@ -106,13 +90,17 @@ export default function ReleasesPage() {
               <dd className="inline">{releaseMeta.publishedDate}</dd>
             </div>
             <div>
-              <dt className="inline font-medium text-zinc-400">Last updated:</dt>{" "}
+              <dt className="inline font-medium text-zinc-400">
+                Last updated:
+              </dt>{" "}
               <dd className="inline">{releaseMeta.lastUpdated}</dd>
             </div>
             <div className="flex items-center gap-2">
               <dt className="font-medium text-zinc-400">Status:</dt>
               <dd>
-                <span className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium ${labelStyles[releaseMeta.status]}`}>
+                <span
+                  className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium ${labelStyles[releaseMeta.status]}`}
+                >
                   {releaseMeta.status}
                 </span>
               </dd>
@@ -125,31 +113,31 @@ export default function ReleasesPage() {
             Included in this release
           </h2>
           <div className="grid gap-4">
-          {sections.map((section) => (
-            <article
-              key={section.title}
-              className="rounded-xl border border-yellow-500/20 bg-zinc-950/70 p-5"
-            >
-              <div className="flex items-center justify-between gap-3 flex-wrap">
-                <h2 className="text-xl font-semibold text-yellow-300">
-                  {section.title}
-                </h2>
-                <span
-                  className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium ${labelStyles[section.label]}`}
-                >
-                  {section.label}
-                </span>
-              </div>
-              <ul className="mt-3 list-disc pl-6 text-zinc-200 space-y-1">
-                {section.bullets.map((bullet) => (
-                  <li key={bullet}>{bullet}</li>
-                ))}
-              </ul>
-              <p className="mt-3 text-xs text-zinc-400">
-                Part of {releaseMeta.releaseId}
-              </p>
-            </article>
-          ))}
+            {sections.map((section) => (
+              <article
+                key={section.title}
+                className="rounded-xl border border-yellow-500/20 bg-zinc-950/70 p-5"
+              >
+                <div className="flex items-center justify-between gap-3 flex-wrap">
+                  <h2 className="text-xl font-semibold text-yellow-300">
+                    {section.title}
+                  </h2>
+                  <span
+                    className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium ${labelStyles[section.label]}`}
+                  >
+                    {section.label}
+                  </span>
+                </div>
+                <ul className="mt-3 list-disc pl-6 text-zinc-200 space-y-1">
+                  {section.bullets.map((bullet) => (
+                    <li key={bullet}>{bullet}</li>
+                  ))}
+                </ul>
+                <p className="mt-3 text-xs text-zinc-400">
+                  Part of {releaseMeta.releaseId}
+                </p>
+              </article>
+            ))}
           </div>
         </section>
 

@@ -665,11 +665,10 @@ export default function Marketplace({
                       ? "border-yellow-500/40 bg-yellow-500/10 text-yellow-200"
                       : "border-emerald-500/40 bg-emerald-500/10 text-emerald-300";
 
-                const sellerName =
-                  product?.seller?.name || "Seller on Black Wealth Exchange";
+                const sellerName = product?.seller?.name || "Seller name pending";
                 const sellerTrustLabel = product?.seller?.profileComplete
                   ? "Active seller profile"
-                  : "Seller on Black Wealth Exchange";
+                  : "Seller profile details pending";
 
                 const listingStatusLabel =
                   String(product?.status || "").toLowerCase() === "active"
@@ -948,7 +947,9 @@ export default function Marketplace({
   );
 }
 
-export const getServerSideProps: GetServerSideProps<MarketplaceProps> = async () => {
+export const getServerSideProps: GetServerSideProps<
+  MarketplaceProps
+> = async () => {
   try {
     const client = await clientPromise;
     const db = client.db(getMarketplaceDbName());
@@ -962,7 +963,11 @@ export const getServerSideProps: GetServerSideProps<MarketplaceProps> = async ()
 
     const [total, products] = await Promise.all([
       productsCollection.countDocuments(filter),
-      productsCollection.find(filter).sort(sortSpec).limit(itemsPerPage).toArray(),
+      productsCollection
+        .find(filter)
+        .sort(sortSpec)
+        .limit(itemsPerPage)
+        .toArray(),
     ]);
 
     const sellerIds = Array.from(
@@ -984,7 +989,9 @@ export const getServerSideProps: GetServerSideProps<MarketplaceProps> = async ()
             {
               $or: [
                 { userId: { $in: sellerIds } },
-                ...(sellerObjectIds.length ? [{ _id: { $in: sellerObjectIds } }] : []),
+                ...(sellerObjectIds.length
+                  ? [{ _id: { $in: sellerObjectIds } }]
+                  : []),
               ],
             },
             {
@@ -1030,11 +1037,11 @@ export const getServerSideProps: GetServerSideProps<MarketplaceProps> = async ()
               seller?.storeName ||
               seller?.businessName ||
               seller?.ownerName ||
-              "Verified BWE Marketplace Seller",
+              null,
             profileComplete: Boolean(
               String(seller?.businessName || "").trim() &&
-                String(seller?.email || "").trim() &&
-                String(seller?.description || "").trim(),
+              String(seller?.email || "").trim() &&
+              String(seller?.description || "").trim(),
             ),
           },
         }),

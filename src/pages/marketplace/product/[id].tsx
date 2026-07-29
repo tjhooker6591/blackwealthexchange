@@ -90,7 +90,9 @@ const ProductDetailPage = ({
     const fetchProduct = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`/api/marketplace/get-product?id=${encodeURIComponent(routeId)}`);
+        const res = await fetch(
+          `/api/marketplace/get-product?id=${encodeURIComponent(routeId)}`,
+        );
         if (!res.ok) throw new Error("This listing is unavailable right now.");
 
         const data = await res.json();
@@ -145,10 +147,10 @@ const ProductDetailPage = ({
       : stockQuantity <= 3
         ? "Low stock"
         : "In stock");
-  const sellerName = product?.seller?.name || "Seller on Black Wealth Exchange";
+  const sellerName = product?.seller?.name || "Seller name pending";
   const sellerTrust = product?.seller?.profileComplete
     ? "Active seller profile on file"
-    : "Seller on Black Wealth Exchange";
+    : "Seller profile details pending";
   const listingStatusLabel = product?.activeListing
     ? "Active listing"
     : "Status not fully confirmed";
@@ -553,12 +555,16 @@ export default ProductDetailPage;
 function normalizeProductDocument(doc: any): Product | null {
   if (!doc) return null;
   const rawId = doc?._id;
-  const _id = typeof rawId?.toString === "function" ? rawId.toString() : String(rawId || "");
+  const _id =
+    typeof rawId?.toString === "function"
+      ? rawId.toString()
+      : String(rawId || "");
   if (!_id) return null;
 
   const priceNumber = Number(doc?.price ?? 0);
   const stockQuantity = Number(doc?.stockQuantity ?? 0);
-  const sellerDoc = doc?.seller && typeof doc.seller === "object" ? doc.seller : null;
+  const sellerDoc =
+    doc?.seller && typeof doc.seller === "object" ? doc.seller : null;
 
   return {
     _id,
@@ -568,8 +574,11 @@ function normalizeProductDocument(doc: any): Product | null {
     category: String(doc?.category || "").trim() || "Other",
     imageUrl: typeof doc?.imageUrl === "string" ? doc.imageUrl : null,
     stockQuantity: Number.isFinite(stockQuantity) ? stockQuantity : 0,
-    views: Number.isFinite(Number(doc?.views ?? 0)) ? Number(doc?.views ?? 0) : 0,
-    availability: typeof doc?.availability === "string" ? doc.availability : null,
+    views: Number.isFinite(Number(doc?.views ?? 0))
+      ? Number(doc?.views ?? 0)
+      : 0,
+    availability:
+      typeof doc?.availability === "string" ? doc.availability : null,
     condition: typeof doc?.condition === "string" ? doc.condition : null,
     status: typeof doc?.status === "string" ? doc.status : null,
     isFeatured: Boolean(doc?.isFeatured),
@@ -587,10 +596,7 @@ function normalizeProductDocument(doc: any): Product | null {
                 : typeof doc?.sellerId === "string"
                   ? doc.sellerId
                   : null,
-          name:
-            typeof sellerDoc?.name === "string"
-              ? sellerDoc.name
-              : null,
+          name: typeof sellerDoc?.name === "string" ? sellerDoc.name : null,
           joinedAt:
             typeof sellerDoc?.joinedAt === "string"
               ? sellerDoc.joinedAt
@@ -667,7 +673,9 @@ export const getServerSideProps: GetServerSideProps<
       sellerDoc = await sellers.findOne({
         $or: [
           { userId: sellerId },
-          ...(sellerObjectIds.length ? [{ _id: { $in: sellerObjectIds } }] : []),
+          ...(sellerObjectIds.length
+            ? [{ _id: { $in: sellerObjectIds } }]
+            : []),
         ],
       });
     }
