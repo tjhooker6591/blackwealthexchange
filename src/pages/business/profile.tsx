@@ -6,6 +6,7 @@ import {
   buildObjectIdOrStringFilter,
   parseSessionIdentity,
   resolvePrimaryVerifiedBusinessOwnership,
+  resolveVerifiedOwnership,
 } from "@/lib/directoryOwnership";
 import { mapDirectoryProfileFromDoc } from "@/lib/directoryProfileContract";
 import BusinessProfileContent from "@/components/business/BusinessProfileContent";

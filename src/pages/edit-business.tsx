@@ -1,8 +1,13 @@
-"use client";
-
+import type { GetServerSideProps } from "next";
 import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import clientPromise from "@/lib/mongodb";
+import { getMongoDbName } from "@/lib/env";
+import {
+  parseSessionIdentity,
+  resolveVerifiedOwnership,
+} from "@/lib/directoryOwnership";
 
 type AccountType =
   | "user"
@@ -138,12 +143,79 @@ function parseLineSeparatedList(text: string) {
     .filter(Boolean);
 }
 
-export default function EditBusinessPage() {
+type EditBusinessPageProps = {
+  initialDenied?: boolean;
+  initialBusinessId?: string;
+};
+
+export const getServerSideProps: GetServerSideProps<EditBusinessPageProps> = async ({
+  req,
+  query,
+}) => {
+  const rawBusinessId = String(query.businessId || query.id || "").trim();
+  if (!rawBusinessId) {
+    return {
+      redirect: {
+        destination: "/business/profile",
+        permanent: false,
+      },
+    };
+  }
+
+  const session = parseSessionIdentity(req as any);
+  if (!session) {
+    return {
+      redirect: {
+        destination: `/login?redirect=${encodeURIComponent(`/edit-business?businessId=${rawBusinessId}`)}`,
+        permanent: false,
+      },
+    };
+  }
+
+  try {
+    const client = await clientPromise;
+    const db = client.db(getMongoDbName());
+    const ownership = await resolveVerifiedOwnership(db, {
+      entityType: "business",
+      entityId: rawBusinessId,
+      userId: session.userId,
+    });
+
+    if (!ownership) {
+      return {
+        redirect: {
+          destination: "/business/profile",
+          permanent: false,
+        },
+      };
+    }
+  } catch {
+    return {
+      props: {
+        initialDenied: true,
+        initialBusinessId: rawBusinessId,
+      },
+    };
+  }
+
+  return {
+    props: {
+      initialDenied: false,
+      initialBusinessId: rawBusinessId,
+    },
+  };
+};
+
+export default function EditBusinessPage({
+  initialDenied = false,
+  initialBusinessId = "",
+}: EditBusinessPageProps) {
   const router = useRouter();
   const businessId = useMemo(() => {
     const raw = router.query.businessId;
-    return Array.isArray(raw) ? raw[0] || "" : raw || "";
-  }, [router.query.businessId]);
+    const fromQuery = Array.isArray(raw) ? raw[0] || "" : raw || "";
+    return fromQuery || initialBusinessId;
+  }, [router.query.businessId, initialBusinessId]);
 
   const [me, setMe] = useState<MeUser | null>(null);
   const [business, setBusiness] = useState<BusinessProfile>(EMPTY_FORM);
@@ -164,6 +236,11 @@ export default function EditBusinessPage() {
 
   useEffect(() => {
     if (!router.isReady) return;
+    if (initialDenied) {
+      setLoading(false);
+      setStatus({ type: "error", message: "Access denied." });
+      return;
+    }
     if (!businessId) {
       setLoading(false);
       setStatus({ type: "error", message: "Missing business identifier." });
@@ -264,7 +341,7 @@ export default function EditBusinessPage() {
     })();
 
     return () => controller.abort();
-  }, [router, businessId]);
+  }, [router, businessId, initialDenied]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -392,6 +469,14 @@ export default function EditBusinessPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-black text-white">
         Loading…
+      </div>
+    );
+  }
+
+  if (initialDenied) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-black text-white">
+        Access denied.
       </div>
     );
   }
