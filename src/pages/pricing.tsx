@@ -315,12 +315,11 @@ export default function Pricing() {
                   BWE Black Card Membership
                 </h2>
                 <p className="mt-2 text-sm text-gray-200">
-                  Tiered membership identity and rewards access. Your
-                  membership plan determines your Black Card tier. Founding
-                  Member is billed monthly, auto-renews monthly, and payment
-                  begins the claim and membership process. Ownership
-                  verification remains a separate manual review. Elite is
-                  invite-only.
+                  Tiered membership identity and rewards access. Your membership
+                  plan determines your Black Card tier. Founding Member is
+                  billed monthly, auto-renews monthly, and payment begins the
+                  claim and membership process. Ownership verification remains a
+                  separate manual review. Elite is invite-only.
                 </p>
                 <p className="mt-2 text-xs text-gray-300">
                   Black Card is included with your plan. Use this page for plan
@@ -543,9 +542,9 @@ export default function Pricing() {
               </div>
 
               <div className="rounded-xl border border-white/10 bg-white/5 p-3 text-xs text-gray-300">
-                Entitlement truth: this page sells memberships. Founding
-                Member is billed monthly. If checkout is canceled or
-                interrupted, no new entitlement is granted.
+                Entitlement truth: this page sells memberships. Founding Member
+                is billed monthly. If checkout is canceled or interrupted, no
+                new entitlement is granted.
               </div>
 
               <div className="rounded-xl border border-white/10 bg-white/5 p-3 text-xs text-gray-300">

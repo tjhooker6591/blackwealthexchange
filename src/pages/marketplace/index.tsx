@@ -665,7 +665,8 @@ export default function Marketplace({
                       ? "border-yellow-500/40 bg-yellow-500/10 text-yellow-200"
                       : "border-emerald-500/40 bg-emerald-500/10 text-emerald-300";
 
-                const sellerName = product?.seller?.name || "Seller name pending";
+                const sellerName =
+                  product?.seller?.name || "Seller name pending";
                 const sellerTrustLabel = product?.seller?.profileComplete
                   ? "Active seller profile"
                   : "Seller profile details pending";
