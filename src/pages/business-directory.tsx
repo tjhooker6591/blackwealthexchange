@@ -165,22 +165,13 @@ function buildLocationDisplay(parts: {
   return cityState || address || "";
 }
 
-const DEFAULT_SPONSOR_ADS = [
-  {
-    img: "/pamfa1.jpg",
-    name: "Pamfa United Citizens",
-    tagline: "Bold. Fearless. Iconic.",
-    url: "https://pamfaunited.com",
-    cta: "Shop Now",
-  },
-  {
-    img: "/titans.jpg",
-    name: "Titan Era Productions",
-    tagline: "Level Up Your Look.",
-    url: "https://www.instagram.com/titaneraoffical/",
-    cta: "Explore",
-  },
-];
+const DEFAULT_SPONSOR_ADS: Array<{
+  img: string;
+  name: string;
+  tagline: string;
+  url: string;
+  cta: string;
+}> = [];
 
 type PlacementCard = {
   id: string;
@@ -243,11 +234,8 @@ type BusinessDirectoryProps = {
 };
 
 function SponsorCard({ img, name, tagline, url, cta }: any) {
-  return (
-    <a
-      href={url}
-      target="_blank"
-      rel="noopener noreferrer"
+  const card = (
+    <div
       className="relative flex flex-col items-center justify-between rounded-2xl border border-white/10 bg-white/[0.04] p-3 shadow-[0_0_0_1px_rgba(255,255,255,0.05)] transition hover:-translate-y-0.5 hover:bg-white/[0.06]"
       style={{ minHeight: 160 }}
     >
@@ -272,6 +260,20 @@ function SponsorCard({ img, name, tagline, url, cta }: any) {
       <span className="absolute top-2 right-2 rounded-full border border-[#D4AF37]/40 bg-[#D4AF37]/15 px-2 py-0.5 text-[10px] font-extrabold text-[#D4AF37]">
         Sponsored
       </span>
+    </div>
+  );
+
+  if (safeStr(url).startsWith("/")) {
+    return <Link href={url}>{card}</Link>;
+  }
+
+  return (
+    <a
+      href={url}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      {card}
     </a>
   );
 }

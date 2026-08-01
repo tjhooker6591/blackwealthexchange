@@ -2,17 +2,36 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
 import { weekStartUtc } from "@/lib/advertising/sponsorSchedule";
+import {
+  buildSponsorPublicHref,
+  findSponsorBusinessesByIds,
+  resolveSponsorBusinessLinks,
+  type SponsorCampaignRecord,
+} from "@/lib/advertising/sponsorListings";
 
 type SponsorCard = {
   _id: string;
+  businessId: string;
+  alias: string;
+  slug: string;
   name: string;
+  businessName: string;
   tagline: string;
+  description?: string;
+  category?: string;
+  categories?: string[] | string;
+  city?: string;
+  state?: string;
   img: string;
   url: string;
   cta: string;
   tier?: string;
   featuredSlot?: number | null;
-  source: "featured_sponsor_schedule" | "directory_listings" | "businesses";
+  source:
+    | "featured_sponsor_schedule"
+    | "advertising_requests"
+    | "directory_listings"
+    | "businesses";
   weekStart?: string | null;
   queueStatus?: string | null;
 };
@@ -74,77 +93,49 @@ function resolveSponsorImage(name: string, raw: string) {
   return HOUSE_SPONSOR_FALLBACK;
 }
 
-function normalizeBusinessUrl(raw: string) {
-  const v = s(raw);
-  if (!v || v === "/" || v === "#") return "";
-
-  if (/^https?:\/\//i.test(v)) {
-    try {
-      const u = new URL(v);
-      if (!u.hostname) return "";
-      return v;
-    } catch {
-      return "";
-    }
-  }
-
-  if (v.startsWith("/")) return "";
-
-  try {
-    const withProto = `https://${v}`;
-    const u = new URL(withProto);
-    if (!u.hostname) return "";
-    return withProto;
-  } catch {
-    return "";
-  }
-}
-
-function featuredProfileUrl(
-  name: string,
-  tagline: string,
-  img: string,
-  target: string,
+function mapResolvedSponsors(
+  campaigns: SponsorCampaignRecord[],
+  businesses: any[],
 ) {
-  const qs = new URLSearchParams();
-  if (name) qs.set("name", name);
-  if (tagline) qs.set("tagline", tagline);
-  if (img) qs.set("img", img);
-  if (target) qs.set("target", target);
-  return `/featured?${qs.toString()}`;
-}
+  const resolved = resolveSponsorBusinessLinks(campaigns, businesses);
+  return resolved.map((link, i) => {
+    const img = resolveSponsorImage(link.sponsorName, link.imageUrl);
+    const isKnownSponsor = Boolean(HOUSE_SPONSOR_IMAGE_MAP[s(link.sponsorName)]);
+    const hasExplicitApprovedImage =
+      img.startsWith("/images/sponsors/") && img !== HOUSE_SPONSOR_FALLBACK;
 
-function mapScheduleRows(rows: any[]): SponsorCard[] {
-  return rows
-    .map((row: any, i: number) => {
-      const name = s(row.businessName) || "Featured Sponsor";
-      const tagline =
-        s(row.tagline).slice(0, 90) || "Featured on Black Wealth Exchange";
-      const img = resolveSponsorImage(name, s(row.creativeUrl));
-      const target = normalizeBusinessUrl(s(row.targetUrl || row.website));
-      const isKnownSponsor = Boolean(HOUSE_SPONSOR_IMAGE_MAP[s(name)]);
-      const hasExplicitApprovedImage =
-        img.startsWith("/images/sponsors/") && img !== HOUSE_SPONSOR_FALLBACK;
+    if (!isKnownSponsor && !hasExplicitApprovedImage) return null;
 
-      if (!isKnownSponsor && !hasExplicitApprovedImage) {
-        return null;
-      }
-
-      return {
-        _id: String(row.campaignId || row._id),
-        name,
-        tagline,
-        img,
-        url: featuredProfileUrl(name, tagline, img, target),
-        cta: "Learn More",
-        tier: "featured-sponsor",
-        featuredSlot: typeof row.sortOrder === "number" ? row.sortOrder : i + 1,
-        source: "featured_sponsor_schedule",
-        weekStart: row.weekStart ? new Date(row.weekStart).toISOString() : null,
-        queueStatus: s(row.queueStatus) || null,
-      };
-    })
-    .filter(Boolean) as SponsorCard[];
+    return {
+      _id: link.businessId,
+      businessId: link.businessId,
+      alias: link.alias,
+      slug: link.alias,
+      name: link.sponsorName,
+      businessName: link.businessName,
+      tagline: link.tagline,
+      description:
+        s((link.business as any).description) || link.tagline || "",
+      category: s(
+        (link.business as any).primaryCategory || (link.business as any).category,
+      ),
+      categories:
+        (link.business as any).display_categories ||
+        (link.business as any).categories ||
+        (link.business as any).category ||
+        [],
+      city: s((link.business as any).city),
+      state: s((link.business as any).state),
+      img,
+      url: buildSponsorPublicHref(link.alias),
+      cta: "Learn More",
+      tier: "featured-sponsor",
+      featuredSlot: i + 1,
+      source: link.source,
+      weekStart: link.weekStart ? link.weekStart.toISOString() : null,
+      queueStatus: link.queueStatus,
+    } satisfies SponsorCard;
+  }).filter(Boolean) as SponsorCard[];
 }
 
 export default async function handler(
@@ -186,7 +177,26 @@ export default async function handler(
       .toArray();
 
     if (scheduled.length) {
-      const mappedScheduled = mapScheduleRows(scheduled);
+      const businessDocs = await findSponsorBusinessesByIds(
+        db,
+        scheduled.map((row: any) => s(row.businessId)),
+      );
+      const mappedScheduled = mapResolvedSponsors(
+        scheduled.map(
+          (row: any): SponsorCampaignRecord => ({
+            campaignId: String(row.campaignId || row._id),
+            businessId: s(row.businessId),
+            sponsorName: s(row.businessName) || "Featured Sponsor",
+            tagline: s(row.tagline).slice(0, 90),
+            imageUrl: s(row.creativeUrl),
+            source: "featured_sponsor_schedule",
+            weekStart: row.weekStart ? new Date(row.weekStart) : null,
+            queueStatus: s(row.queueStatus) || null,
+            inventoryTier: 1,
+          }),
+        ),
+        businessDocs.filter(Boolean),
+      );
       if (mappedScheduled.length) {
         return res.status(200).json({
           ok: true,
@@ -208,7 +218,26 @@ export default async function handler(
       .toArray();
 
     if (recentScheduled.length) {
-      const mappedRecent = mapScheduleRows(recentScheduled);
+      const businessDocs = await findSponsorBusinessesByIds(
+        db,
+        recentScheduled.map((row: any) => s(row.businessId)),
+      );
+      const mappedRecent = mapResolvedSponsors(
+        recentScheduled.map(
+          (row: any): SponsorCampaignRecord => ({
+            campaignId: String(row.campaignId || row._id),
+            businessId: s(row.businessId),
+            sponsorName: s(row.businessName) || "Featured Sponsor",
+            tagline: s(row.tagline).slice(0, 90),
+            imageUrl: s(row.creativeUrl),
+            source: "featured_sponsor_schedule",
+            weekStart: row.weekStart ? new Date(row.weekStart) : null,
+            queueStatus: s(row.queueStatus) || null,
+            inventoryTier: 1,
+          }),
+        ),
+        businessDocs.filter(Boolean),
+      );
       if (mappedRecent.length) {
         return res.status(200).json({
           ok: true,
@@ -237,7 +266,7 @@ export default async function handler(
       .toArray();
 
     const paidRows = paidFeatured
-      .map((row: any, i: number) => {
+      .map((row: any) => {
         const paidAt = row?.paidAt ? new Date(row.paidAt) : null;
         const duration = Number(row?.durationDays || 30);
         const expiresAt = paidAt
@@ -247,38 +276,40 @@ export default async function handler(
           : null;
 
         if (expiresAt && expiresAt < now) return null;
-
-        const name = s(row.business) || "Featured Sponsor";
-        const tagline =
-          s(row.details).slice(0, 90) || "Featured on Black Wealth Exchange";
-        const img = resolveSponsorImage(name, s(row.adImage));
-        const target = normalizeBusinessUrl(s(row.targetUrl || row.website));
-        const isKnownSponsor = Boolean(HOUSE_SPONSOR_IMAGE_MAP[s(name)]);
-        const hasExplicitApprovedImage =
-          img.startsWith("/images/sponsors/") && img !== HOUSE_SPONSOR_FALLBACK;
-
-        if (!isKnownSponsor && !hasExplicitApprovedImage) return null;
-
         return {
-          _id: String(row._id),
-          name,
-          tagline,
-          img,
-          url: featuredProfileUrl(name, tagline, img, target),
-          cta: "Learn More",
-          tier: "featured-sponsor",
-          featuredSlot: i + 1,
-          source: "featured_sponsor_schedule" as const,
+          campaignId: String(row._id),
+          businessId: s(row.businessId),
+          sponsorName: s(row.business) || "Featured Sponsor",
+          tagline:
+            s(row.details).slice(0, 90) || "Featured on Black Wealth Exchange",
+          imageUrl: s(row.adImage),
+          source: "advertising_requests" as const,
           weekStart: null,
           queueStatus: "assigned",
-        } satisfies SponsorCard;
+          inventoryTier: 2,
+          paidAt,
+        } satisfies SponsorCampaignRecord;
       })
-      .filter(Boolean) as SponsorCard[];
+      .filter(Boolean) as SponsorCampaignRecord[];
 
     if (paidRows.length) {
+      const mappedPaid = mapResolvedSponsors(
+        paidRows,
+        await findSponsorBusinessesByIds(
+          db,
+          paidRows.map((row) => row.businessId),
+        ),
+      );
+      if (!mappedPaid.length) {
+        return res.status(200).json({
+          ok: true,
+          sponsors: [],
+          meta: { source: "none_active" },
+        });
+      }
       return res.status(200).json({
         ok: true,
-        sponsors: paidRows.slice(0, 12),
+        sponsors: mappedPaid.slice(0, 12),
         meta: { source: "advertising_requests_paid_approved" },
       });
     }

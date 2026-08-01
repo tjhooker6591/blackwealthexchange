@@ -214,6 +214,15 @@ export default function AdvertisingCheckoutPage({
       };
     }
 
+    if (option === "featured-sponsor" && !businessId) {
+      return {
+        invalid: true,
+        error:
+          "Featured sponsorship requires a linked BWE business listing before checkout.",
+        detailsHref: optionToDetailsHref(quote.option),
+      };
+    }
+
     return {
       invalid: false,
       option: quote.option,

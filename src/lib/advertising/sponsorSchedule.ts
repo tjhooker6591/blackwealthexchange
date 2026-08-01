@@ -2,6 +2,7 @@ import type { Db } from "mongodb";
 
 export type SponsorScheduleRow = {
   campaignId: string;
+  businessId?: string;
   option: string;
   placement: string;
   weekStart: Date;
@@ -44,6 +45,7 @@ export async function reserveFeaturedSponsorWeeks(
     durationDays: number;
     requestedStartDate?: string | null;
     flexibleStart?: boolean;
+    businessId?: string;
     businessName?: string;
     website?: string;
     targetUrl?: string;
@@ -93,6 +95,7 @@ export async function reserveFeaturedSponsorWeeks(
 
     const row: SponsorScheduleRow = {
       campaignId: input.campaignId,
+      businessId: input.businessId,
       option: input.option || "featured-sponsor",
       placement: input.placement || "homepage-featured-sponsor",
       weekStart: new Date(cursor),

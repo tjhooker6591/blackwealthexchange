@@ -1599,6 +1599,14 @@ export default function Home() {
                     </div>
                   );
 
+                  if (typeof sponsor.url === "string" && sponsor.url.startsWith("/")) {
+                    return (
+                      <Link key={index} href={sponsor.url}>
+                        {card}
+                      </Link>
+                    );
+                  }
+
                   if (sponsor.url) {
                     return (
                       <a

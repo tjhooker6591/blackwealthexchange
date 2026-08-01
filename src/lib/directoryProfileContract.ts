@@ -8,6 +8,7 @@ export type DirectoryProfileData = {
   phone?: string;
   website?: string;
   streetAddress?: string;
+  addressLine2?: string;
   city?: string;
   state?: string;
   postalCode?: string;
@@ -33,6 +34,19 @@ export type DirectoryProfileData = {
 
 function s(value: unknown) {
   return typeof value === "string" ? value.trim() : "";
+}
+
+function hasOwn(value: unknown, key: string) {
+  return Boolean(value) && Object.prototype.hasOwnProperty.call(value, key);
+}
+
+function pickProvided(body: any, keys: string[]) {
+  for (const key of keys) {
+    if (hasOwn(body, key)) {
+      return { present: true, value: body[key] };
+    }
+  }
+  return { present: false, value: undefined };
 }
 
 function asOptionalUrl(value: unknown) {
@@ -71,47 +85,96 @@ function asCtas(value: unknown) {
 export function normalizeDirectoryProfileInput(
   body: any,
 ): DirectoryProfileData {
+  const displayName = pickProvided(body, ["displayName", "businessName", "name"]);
+  const shortSummary = pickProvided(body, ["shortSummary", "summary"]);
+  const description = pickProvided(body, ["description"]);
+  const publicEmail = pickProvided(body, ["publicEmail", "email"]);
+  const phone = pickProvided(body, ["phone", "businessPhone"]);
+  const website = pickProvided(body, ["website"]);
+  const streetAddress = pickProvided(body, [
+    "streetAddress",
+    "businessAddress",
+    "address",
+  ]);
+  const addressLine2 = pickProvided(body, ["addressLine2", "suite", "unit"]);
+  const city = pickProvided(body, ["city"]);
+  const state = pickProvided(body, ["state"]);
+  const postalCode = pickProvided(body, ["postalCode", "zip", "zipCode"]);
+  const serviceArea = pickProvided(body, ["serviceArea"]);
+  const primaryCategory = pickProvided(body, ["primaryCategory", "category"]);
+  const secondaryCategories = pickProvided(body, [
+    "secondaryCategories",
+    "categories",
+  ]);
+  const logo = pickProvided(body, ["logo"]);
+  const coverImage = pickProvided(body, ["coverImage", "image"]);
+  const galleryImages = pickProvided(body, ["galleryImages", "images"]);
+  const facebook = pickProvided(body, ["facebook"]);
+  const instagram = pickProvided(body, ["instagram"]);
+  const linkedin = pickProvided(body, ["linkedin"]);
+  const twitter = pickProvided(body, ["twitter"]);
+  const youtube = pickProvided(body, ["youtube"]);
+  const tiktok = pickProvided(body, ["tiktok"]);
+  const operatingHours = pickProvided(body, ["operatingHours", "hours"]);
+  const tags = pickProvided(body, ["tags", "specialties", "keywords"]);
+  const offeringsSummary = pickProvided(body, [
+    "offeringsSummary",
+    "productsServicesSummary",
+    "productsServices",
+    "programsSummary",
+  ]);
+  const primaryCtaLabel = pickProvided(body, ["primaryCtaLabel"]);
+  const primaryCtaUrl = pickProvided(body, ["primaryCtaUrl"]);
+  const additionalCtas = pickProvided(body, ["additionalCtas"]);
+
   return {
-    displayName:
-      s(body?.displayName || body?.businessName || body?.name) || undefined,
-    shortSummary: s(body?.shortSummary || body?.summary) || undefined,
-    description: s(body?.description) || undefined,
-    publicEmail: s(body?.publicEmail || body?.email).toLowerCase() || undefined,
-    phone: s(body?.phone || body?.businessPhone) || undefined,
-    website: asOptionalUrl(body?.website) || undefined,
-    streetAddress:
-      s(body?.streetAddress || body?.businessAddress || body?.address) ||
-      undefined,
-    city: s(body?.city) || undefined,
-    state: s(body?.state).toUpperCase() || undefined,
-    postalCode: s(body?.postalCode || body?.zip || body?.zipCode) || undefined,
-    serviceArea: s(body?.serviceArea) || undefined,
-    primaryCategory: s(body?.primaryCategory || body?.category) || undefined,
-    secondaryCategories: asArray(body?.secondaryCategories || body?.categories),
-    logo: body?.logo === null ? null : s(body?.logo) || undefined,
-    coverImage:
-      body?.coverImage === null
+    displayName: displayName.present ? s(displayName.value) : undefined,
+    shortSummary: shortSummary.present ? s(shortSummary.value) : undefined,
+    description: description.present ? s(description.value) : undefined,
+    publicEmail: publicEmail.present
+      ? s(publicEmail.value).toLowerCase()
+      : undefined,
+    phone: phone.present ? s(phone.value) : undefined,
+    website: website.present ? asOptionalUrl(website.value) : undefined,
+    streetAddress: streetAddress.present ? s(streetAddress.value) : undefined,
+    addressLine2: addressLine2.present ? s(addressLine2.value) : undefined,
+    city: city.present ? s(city.value) : undefined,
+    state: state.present ? s(state.value).toUpperCase() : undefined,
+    postalCode: postalCode.present ? s(postalCode.value) : undefined,
+    serviceArea: serviceArea.present ? s(serviceArea.value) : undefined,
+    primaryCategory: primaryCategory.present
+      ? s(primaryCategory.value)
+      : undefined,
+    secondaryCategories: secondaryCategories.present
+      ? asArray(secondaryCategories.value)
+      : undefined,
+    logo: logo.present ? (logo.value === null ? null : s(logo.value)) : undefined,
+    coverImage: coverImage.present
+      ? coverImage.value === null
         ? null
-        : s(body?.coverImage || body?.image) || undefined,
-    galleryImages: asArray(body?.galleryImages || body?.images),
-    facebook: asOptionalUrl(body?.facebook) || undefined,
-    instagram: asOptionalUrl(body?.instagram) || undefined,
-    linkedin: asOptionalUrl(body?.linkedin) || undefined,
-    twitter: asOptionalUrl(body?.twitter) || undefined,
-    youtube: asOptionalUrl(body?.youtube) || undefined,
-    tiktok: asOptionalUrl(body?.tiktok) || undefined,
-    operatingHours: s(body?.operatingHours || body?.hours) || undefined,
-    tags: asArray(body?.tags || body?.specialties || body?.keywords),
-    offeringsSummary:
-      s(
-        body?.offeringsSummary ||
-          body?.productsServicesSummary ||
-          body?.productsServices ||
-          body?.programsSummary,
-      ) || undefined,
-    primaryCtaLabel: s(body?.primaryCtaLabel) || undefined,
-    primaryCtaUrl: asOptionalUrl(body?.primaryCtaUrl) || undefined,
-    additionalCtas: asCtas(body?.additionalCtas),
+        : s(coverImage.value)
+      : undefined,
+    galleryImages: galleryImages.present ? asArray(galleryImages.value) : undefined,
+    facebook: facebook.present ? asOptionalUrl(facebook.value) : undefined,
+    instagram: instagram.present ? asOptionalUrl(instagram.value) : undefined,
+    linkedin: linkedin.present ? asOptionalUrl(linkedin.value) : undefined,
+    twitter: twitter.present ? asOptionalUrl(twitter.value) : undefined,
+    youtube: youtube.present ? asOptionalUrl(youtube.value) : undefined,
+    tiktok: tiktok.present ? asOptionalUrl(tiktok.value) : undefined,
+    operatingHours: operatingHours.present ? s(operatingHours.value) : undefined,
+    tags: tags.present ? asArray(tags.value) : undefined,
+    offeringsSummary: offeringsSummary.present
+      ? s(offeringsSummary.value)
+      : undefined,
+    primaryCtaLabel: primaryCtaLabel.present
+      ? s(primaryCtaLabel.value)
+      : undefined,
+    primaryCtaUrl: primaryCtaUrl.present
+      ? asOptionalUrl(primaryCtaUrl.value)
+      : undefined,
+    additionalCtas: additionalCtas.present
+      ? asCtas(additionalCtas.value)
+      : undefined,
   };
 }
 
@@ -148,6 +211,7 @@ export function buildDirectoryProfileUpdate(input: DirectoryProfileData) {
     "businessAddress",
     "streetAddress",
   ]);
+  mapString("addressLine2", input.addressLine2, ["suite", "unit"]);
   mapString("city", input.city);
   mapString("state", input.state);
   mapString("zip", input.postalCode, ["postalCode", "zipCode"]);
@@ -156,8 +220,12 @@ export function buildDirectoryProfileUpdate(input: DirectoryProfileData) {
     "primaryCategory",
     "display_categories",
   ]);
-  mapString("image", input.coverImage ?? undefined, ["coverImage"]);
-  mapString("logo", input.logo ?? undefined);
+  if (input.coverImage !== undefined) {
+    mapString("image", input.coverImage || "", ["coverImage"]);
+  }
+  if (input.logo !== undefined) {
+    mapString("logo", input.logo || "");
+  }
   mapString("operatingHours", input.operatingHours, ["hours"]);
   mapString("offeringsSummary", input.offeringsSummary, [
     "productsServicesSummary",
@@ -261,6 +329,7 @@ export function mapDirectoryProfileFromDoc(doc: any) {
     streetAddress: s(
       doc?.streetAddress || doc?.businessAddress || doc?.address,
     ),
+    addressLine2: s(doc?.addressLine2 || doc?.suite || doc?.unit),
     city: s(doc?.city),
     state: s(doc?.state),
     postalCode: s(doc?.postalCode || doc?.zip || doc?.zipCode),

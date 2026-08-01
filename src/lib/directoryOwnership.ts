@@ -25,6 +25,16 @@ export type OwnershipRecord = {
   source?: string;
 };
 
+export function isOwnershipBlocked(record: {
+  disputeState?: unknown;
+  revokedAt?: unknown;
+}) {
+  const normalizedDispute = normalizeStage(record?.disputeState);
+  return Boolean(record?.revokedAt) ||
+    normalizedDispute === "disputed" ||
+    normalizedDispute === "ownership_disputed";
+}
+
 export function normalizeStage(value: unknown) {
   const normalized = String(value || "")
     .trim()
@@ -252,7 +262,7 @@ export async function listVerifiedBusinessOwnerships(
     });
   }
 
-  return ownerships;
+  return ownerships.filter((ownership) => !isOwnershipBlocked(ownership));
 }
 
 export async function resolvePrimaryVerifiedBusinessOwnership(
@@ -282,12 +292,7 @@ export async function resolveVerifiedOwnership(
     );
     if (!ownership) return null;
 
-    const normalizedDispute = normalizeStage(ownership.disputeState);
-    if (
-      normalizedDispute === "disputed" ||
-      normalizedDispute === "ownership_disputed" ||
-      ownership.revokedAt
-    ) {
+    if (isOwnershipBlocked(ownership)) {
       return null;
     }
 

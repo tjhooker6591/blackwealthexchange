@@ -33,6 +33,7 @@ import {
   checkoutTypeToRevenueType,
   computeRevenueSplit,
 } from "@/lib/payments/revenue";
+import { validateSponsorBusinessLink } from "@/lib/advertising/sponsorListings";
 
 const stripeSecret = getStripeSecretKey();
 const stripe = new Stripe(stripeSecret || "sk_missing", {
@@ -355,6 +356,26 @@ export default async function handler(
       }
 
       isPlatformAccount = true;
+
+      if (adItemId === "featured-sponsor") {
+        const sponsorValidation = await validateSponsorBusinessLink(
+          db,
+          normalizedBusinessId,
+        );
+        if (!sponsorValidation.ok) {
+          const status =
+            sponsorValidation.reason === "missing_business_id"
+              ? 400
+              : sponsorValidation.reason === "business_not_found"
+                ? 404
+                : 409;
+          return res.status(status).json({
+            error:
+              "Featured sponsorship requires a linked public BWE business listing",
+            code: sponsorValidation.reason,
+          });
+        }
+      }
     } else if (type === "plan") {
       const planMap: Record<
         string,

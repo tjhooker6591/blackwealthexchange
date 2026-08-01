@@ -2,6 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
+import { validateSponsorBusinessLink } from "@/lib/advertising/sponsorListings";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -35,8 +36,14 @@ export default async function handler(
   const flexibleStart = Boolean(body.flexibleStart ?? true);
   const targetUrl = String(body.targetUrl || website || "").trim();
   const campaignTitle = String(body.campaignTitle || "").trim();
+  const businessId = String(body.businessId || "").trim();
 
-  if (!name || !EMAIL_REGEX.test(email) || !businessName || !adText) {
+  if (
+    !name ||
+    !EMAIL_REGEX.test(email) ||
+    !(businessName || (option === "featured-sponsor" && businessId)) ||
+    !adText
+  ) {
     return res.status(400).json({ error: "Missing required campaign details" });
   }
 
@@ -52,6 +59,34 @@ export default async function handler(
     const db = client.db(getMongoDbName());
     const collection = db.collection("advertising_requests");
 
+    let linkedBusinessName = businessName;
+    let linkedBusinessAlias = "";
+    if (option === "featured-sponsor") {
+      const validation = await validateSponsorBusinessLink(db, businessId);
+      if (!validation.ok) {
+        const status =
+          validation.reason === "missing_business_id"
+            ? 400
+            : validation.reason === "business_not_found"
+              ? 404
+              : 409;
+        return res.status(status).json({
+          error:
+            "Featured sponsorship requires a linked public BWE business listing",
+          code: validation.reason,
+        });
+      }
+
+      const businessDoc = validation.business as any;
+      linkedBusinessName = String(
+        businessDoc.business_name ||
+          businessDoc.businessName ||
+          businessDoc.name ||
+          businessName,
+      ).trim();
+      linkedBusinessAlias = validation.alias;
+    }
+
     const now = new Date();
     const newAd = {
       requestType: "standard_ad",
@@ -60,7 +95,9 @@ export default async function handler(
       depositPaid: false,
       name,
       email,
-      business: businessName,
+      business: linkedBusinessName,
+      businessId: businessId || null,
+      businessAlias: linkedBusinessAlias || null,
       details: adText,
       selectedOptions: option ? [option] : [],
       budget: budget || null,

@@ -46,6 +46,7 @@ import {
   ensureFinancialLedgerIndexes,
   isFinancialLedgerEnabled,
 } from "@/lib/finance/ledger";
+import { validateSponsorBusinessLink } from "@/lib/advertising/sponsorListings";
 
 export const config = {
   api: { bodyParser: false },
@@ -1486,10 +1487,19 @@ export default async function webhookHandler(
       const expiresAt = new Date(
         paidAt.getTime() + durationDays * 24 * 60 * 60 * 1000,
       );
+      const sponsorValidation =
+        normalizedItemId === "featured-sponsor"
+          ? await validateSponsorBusinessLink(db, businessId)
+          : null;
+      const sponsorLinkInvalid =
+        normalizedItemId === "featured-sponsor" &&
+        sponsorValidation != null &&
+        !sponsorValidation.ok;
 
       const needsAttention =
         (isDirectoryPurchase && !businessId) ||
-        (!isDirectoryPurchase && !campaignId);
+        (!isDirectoryPurchase && !campaignId) ||
+        sponsorLinkInvalid;
 
       await db.collection("ad_purchases").updateOne(
         { stripeSessionId },
@@ -1537,6 +1547,8 @@ export default async function webhookHandler(
               ? businessId
                 ? "paid_directory_linked"
                 : "needs_business_link"
+              : sponsorLinkInvalid
+                ? "needs_business_link"
               : campaignId
                 ? "paid_campaign_linked"
                 : "pending_admin_fulfillment",
@@ -1567,10 +1579,11 @@ export default async function webhookHandler(
             stripeSessionId,
           };
 
-          if (normalizedItemId === "featured-sponsor") {
+          if (normalizedItemId === "featured-sponsor" && sponsorValidation?.ok) {
             const assignments = await reserveFeaturedSponsorWeeks(db as any, {
               campaignId,
               durationDays,
+              businessId: sponsorValidation.businessId,
               requestedStartDate: adReq.requestedStartDate
                 ? new Date(adReq.requestedStartDate).toISOString()
                 : null,
@@ -1606,6 +1619,19 @@ export default async function webhookHandler(
               placement: adReq.placement || "homepage-featured-sponsor",
               durationDays,
             };
+          } else if (normalizedItemId === "featured-sponsor") {
+            setPatch.scheduling = {
+              status: "blocked_missing_business_link",
+              assignedWeeks: [],
+              rolledOver: false,
+              queueStatus: "blocked",
+              placement:
+                adReq.placement ||
+                adReq.placementType ||
+                "homepage-featured-sponsor",
+              durationDays,
+            };
+            setPatch.needsAttention = true;
           }
 
           await db

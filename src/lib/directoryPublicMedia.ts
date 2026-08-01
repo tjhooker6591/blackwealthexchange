@@ -43,10 +43,10 @@ function parseLegacyCombinedAddress(value: string) {
   }
 
   const match = normalized.match(
-    /^(?<street>\d+\s+.+?)\s+(?<city>[A-Za-z]+(?:\s+[A-Za-z]+)*)\s+(?<state>[A-Za-z]{2,})\s+(?<postal>\d{5}(?:-\d{4})?)$/i,
+    /^(\d+\s+.+)\s+([A-Za-z]+(?:\s+[A-Za-z]+)*)\s+([A-Za-z]{2,})\s+(\d{5}(?:-\d{4})?)$/i,
   );
 
-  if (!match?.groups) {
+  if (!match) {
     return {
       streetAddress: "",
       city: "",
@@ -55,11 +55,13 @@ function parseLegacyCombinedAddress(value: string) {
     };
   }
 
+  const [, street = "", city = "", state = "", postal = ""] = match;
+
   return {
-    streetAddress: normalizeLegacyAddressLine(match.groups.street || ""),
-    city: normalizeLegacyAddressLine(match.groups.city || ""),
-    state: s(match.groups.state),
-    postalCode: s(match.groups.postal),
+    streetAddress: normalizeLegacyAddressLine(street),
+    city: normalizeLegacyAddressLine(city),
+    state: s(state),
+    postalCode: s(postal),
   };
 }
 
