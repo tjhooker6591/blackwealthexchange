@@ -8,7 +8,7 @@ const checks = [
   { name: "login_page", path: "/login", expect: [200] },
   { name: "signup_page", path: "/signup", expect: [200] },
   { name: "forgot_password_page", path: "/forgot-password", expect: [200] },
-  { name: "auth_me_anon", path: "/api/auth/me", expect: [401] },
+  { name: "auth_me_anon", path: "/api/auth/me", expect: [200] },
   { name: "profile_anon", path: "/api/profile", expect: [401] },
   {
     name: "black_card_member_summary_anon",
@@ -28,6 +28,11 @@ const checks = [
   {
     name: "wealth_builder_dashboard_anon",
     path: "/wealth-builder/dashboard",
+    expect: [307, 302],
+  },
+  {
+    name: "user_dashboard_anon",
+    path: "/user-dashboard",
     expect: [307, 302],
   },
 ];

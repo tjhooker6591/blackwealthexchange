@@ -1,10 +1,11 @@
 // pages/user-dashboard.tsx
 import { GetServerSideProps } from "next";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "./api/auth/[...nextauth]";
-import clientPromise from "../lib/mongodb";
+import cookie from "cookie";
+import jwt from "jsonwebtoken";
 import { ObjectId } from "mongodb";
 import Link from "next/link";
+import clientPromise from "@/lib/mongodb";
+import { getJwtSecret, getMongoDbName } from "@/lib/env";
 
 interface Job {
   _id: string;
@@ -20,6 +21,13 @@ interface UserDashboardProps {
   savedJobs: Job[];
   userEmail: string;
 }
+
+type SessionPayload = {
+  userId?: string;
+  email?: string;
+  accountType?: string;
+  role?: string;
+};
 
 export default function UserDashboard({
   savedJobs,
@@ -62,20 +70,48 @@ export default function UserDashboard({
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const session = await getServerSession(context.req, context.res, authOptions);
-  if (!session?.user?.email) {
+  const cookies = cookie.parse(context.req.headers.cookie || "");
+  const token = cookies.session_token;
+
+  if (!token) {
     return { redirect: { destination: "/login", permanent: false } };
   }
-  if (session.user.accountType !== "user") {
+
+  let payload: SessionPayload;
+  try {
+    payload = jwt.verify(token, getJwtSecret()) as SessionPayload;
+  } catch {
+    return { redirect: { destination: "/login", permanent: false } };
+  }
+
+  const accountType = String(
+    payload.accountType || payload.role || "user",
+  ).toLowerCase();
+
+  if (accountType !== "user" || !payload.email) {
     return { redirect: { destination: "/", permanent: false } };
   }
+
   const client = await clientPromise;
-  const db = client.db("bwes-cluster");
+  const db = client.db(getMongoDbName());
+
+  const userDoc = await db
+    .collection("users")
+    .findOne(
+      ObjectId.isValid(String(payload.userId || ""))
+        ? { _id: new ObjectId(String(payload.userId)) }
+        : { email: String(payload.email).trim().toLowerCase() },
+      { projection: { _id: 1, email: 1 } },
+    );
+
+  if (!userDoc?._id || !userDoc.email) {
+    return { redirect: { destination: "/login", permanent: false } };
+  }
 
   // Load savedJobs documents for this user
   const savedDocs = await db
     .collection("savedJobs")
-    .find({ userId: new ObjectId((session.user as any).userId) })
+    .find({ userId: new ObjectId(String(userDoc._id)) })
     .toArray();
 
   const jobIds = savedDocs.map((doc) => new ObjectId(doc.jobId));
@@ -96,5 +132,5 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     description: job.description,
   }));
 
-  return { props: { savedJobs, userEmail: session.user.email } };
+  return { props: { savedJobs, userEmail: userDoc.email } };
 };

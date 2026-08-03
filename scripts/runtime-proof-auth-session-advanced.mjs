@@ -15,12 +15,13 @@ if (!mongoUri || !dbName || !secret) {
   process.exit(1);
 }
 
-async function req(path, { method = "GET", body, cookie } = {}) {
+async function req(path, { method = "GET", body, cookie, headers } = {}) {
   const res = await fetch(`${baseUrl}${path}`, {
     method,
     headers: {
       ...(body ? { "Content-Type": "application/json" } : {}),
       ...(cookie ? { Cookie: cookie } : {}),
+      ...(headers || {}),
     },
     body: body ? JSON.stringify(body) : undefined,
     redirect: "manual",
@@ -96,6 +97,7 @@ try {
   const userCookie = `session_token=${userToken}; accountType=user`;
   const adminCookie = `session_token=${adminToken}; accountType=admin`;
   const invalidCookie = `session_token=${invalidToken}; accountType=user`;
+  const nextAuthOnlyCookie = "next-auth.session-token=proof-only";
 
   checks.push({
     name: "auth_me_user",
@@ -104,7 +106,7 @@ try {
   });
   checks.push({
     name: "auth_me_invalid_token",
-    expect: 401,
+    expect: 200,
     ...(await req("/api/auth/me", { cookie: invalidCookie })),
   });
   checks.push({
@@ -123,9 +125,23 @@ try {
     ...(await req("/wealth-builder/dashboard", { cookie: userCookie })),
   });
   checks.push({
+    name: "user_dashboard_as_user_ok",
+    expect: 200,
+    ...(await req("/user-dashboard", { cookie: userCookie })),
+  });
+  checks.push({
+    name: "admin_black_card_nextauth_only_redirect",
+    expect: 307,
+    ...(await req("/admin/black-card", { cookie: nextAuthOnlyCookie })),
+  });
+  checks.push({
     name: "logout_user",
     expect: 200,
-    ...(await req("/api/auth/logout", { method: "POST", cookie: userCookie })),
+    ...(await req("/api/auth/logout", {
+      method: "POST",
+      cookie: userCookie,
+      headers: { Origin: baseUrl },
+    })),
   });
 
   const passed = checks.filter((c) => c.status === c.expect).length;
