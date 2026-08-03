@@ -26,6 +26,7 @@ import {
   normalizeSort,
 } from "@/lib/directory/queryState";
 import { publicBusinessBaseQuery } from "@/lib/directory/publicBusinessQuery";
+import { resolveBusinessImage } from "@/lib/imageResolver";
 
 function cx(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
@@ -268,11 +269,7 @@ function SponsorCard({ img, name, tagline, url, cta }: any) {
   }
 
   return (
-    <a
-      href={url}
-      target="_blank"
-      rel="noopener noreferrer"
-    >
+    <a href={url} target="_blank" rel="noopener noreferrer">
       {card}
     </a>
   );
@@ -1088,6 +1085,11 @@ export default function BusinessDirectory({
       (r as any).categories || (r as any).category,
     );
     return formatCategoryDisplay(display || cats);
+  };
+
+  const getListingImage = (r: Row) => {
+    if (r.__kind !== "business") return "/default-image.jpg";
+    return resolveBusinessImage(r).url || "/default-image.jpg";
   };
 
   const getRatingLine = (r: Row) => {
@@ -2346,11 +2348,7 @@ export default function BusinessDirectory({
                         >
                           {/* Thumbnail (business only if available) */}
                           <img
-                            src={
-                              (item as any).__kind === "business"
-                                ? (item as any).image || "/default-image.jpg"
-                                : "/default-image.jpg"
-                            }
+                            src={getListingImage(item as Row)}
                             alt={getTitle(item as Row) || "Listing"}
                             width={48}
                             height={48}
@@ -2646,46 +2644,43 @@ export const getServerSideProps: GetServerSideProps<
 
     const raw = await db
       .collection("businesses")
-      .find(
-        publicBusinessBaseQuery(),
-        {
-          projection: {
-            _id: 1,
-            alias: 1,
-            slug: 1,
-            image: 1,
-            business_name: 1,
-            name: 1,
-            description: 1,
-            phone: 1,
-            address: 1,
-            city: 1,
-            state: 1,
-            category: 1,
-            categories: 1,
-            display_categories: 1,
-            rating: 1,
-            reviewCount: 1,
-            priceRange: 1,
-            website: 1,
-            verified: 1,
-            isVerified: 1,
-            status: 1,
-            approved: 1,
-            amountPaid: 1,
-            claimStage: 1,
-            publicListingStatus: 1,
-            ownershipReviewStatus: 1,
-            directoryVisibilityApproved: 1,
-            country: 1,
-            createdAt: 1,
-            updatedAt: 1,
-            qualityScore: 1,
-            completenessScore: 1,
-            isComplete: 1,
-          },
+      .find(publicBusinessBaseQuery(), {
+        projection: {
+          _id: 1,
+          alias: 1,
+          slug: 1,
+          image: 1,
+          business_name: 1,
+          name: 1,
+          description: 1,
+          phone: 1,
+          address: 1,
+          city: 1,
+          state: 1,
+          category: 1,
+          categories: 1,
+          display_categories: 1,
+          rating: 1,
+          reviewCount: 1,
+          priceRange: 1,
+          website: 1,
+          verified: 1,
+          isVerified: 1,
+          status: 1,
+          approved: 1,
+          amountPaid: 1,
+          claimStage: 1,
+          publicListingStatus: 1,
+          ownershipReviewStatus: 1,
+          directoryVisibilityApproved: 1,
+          country: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          qualityScore: 1,
+          completenessScore: 1,
+          isComplete: 1,
         },
-      )
+      })
       .sort({ directoryVisibilityApproved: -1, updatedAt: -1, createdAt: -1 })
       .toArray();
 
