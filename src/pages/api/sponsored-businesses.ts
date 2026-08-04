@@ -6,6 +6,7 @@ import { weekStartUtc } from "@/lib/advertising/sponsorSchedule";
 import {
   buildSponsorPublicHref,
   findSponsorBusinessesByIds,
+  isSponsorScheduleRowFallbackEligible,
   resolveSponsorBusinessLinks,
   type SponsorCampaignRecord,
 } from "@/lib/advertising/sponsorListings";
@@ -227,14 +228,17 @@ export default async function handler(
       .sort({ weekStart: -1, sortOrder: 1, createdAt: -1 })
       .limit(60)
       .toArray();
+    const fallbackScheduled = recentScheduled.filter((row: any) =>
+      isSponsorScheduleRowFallbackEligible(row, now),
+    );
 
-    if (recentScheduled.length) {
+    if (fallbackScheduled.length) {
       const businessDocs = await findSponsorBusinessesByIds(
         db,
-        recentScheduled.map((row: any) => s(row.businessId)),
+        fallbackScheduled.map((row: any) => s(row.businessId)),
       );
       const mappedRecent = mapResolvedSponsors(
-        recentScheduled.map(
+        fallbackScheduled.map(
           (row: any): SponsorCampaignRecord => ({
             campaignId: String(row.campaignId || row._id),
             businessId: s(row.businessId),
@@ -304,16 +308,13 @@ export default async function handler(
       .filter(Boolean) as SponsorCampaignRecord[];
 
     if (paidRows.length) {
-      const mappedPaid = mapResolvedSponsors(
-        paidRows,
-        [
-          ...(await findSponsorBusinessesByIds(
-            db,
-            paidRows.map((row) => row.businessId),
-          )),
-          ...publicBusinessPool,
-        ],
-      );
+      const mappedPaid = mapResolvedSponsors(paidRows, [
+        ...(await findSponsorBusinessesByIds(
+          db,
+          paidRows.map((row) => row.businessId),
+        )),
+        ...publicBusinessPool,
+      ]);
       if (!mappedPaid.length) {
         return res.status(200).json({
           ok: true,

@@ -20,6 +20,7 @@ import {
   applySponsorSearchMetadata,
   findSponsorBusinessesByIds,
   findSponsorLinkForBusiness,
+  isSponsorScheduleRowFallbackEligible,
   matchesSponsorSearchAlias,
   resolveSponsorBusinessLinks,
   type SponsorCampaignRecord,
@@ -813,7 +814,8 @@ export default async function handler(
           .toArray();
         const sponsorScheduleRaw = currentScheduleRows.length
           ? currentScheduleRows
-          : await db
+          : (
+              await db
               .collection("featured_sponsor_schedule")
               .find({
                 placement: "homepage-featured-sponsor",
@@ -821,7 +823,8 @@ export default async function handler(
               })
               .sort({ weekStart: -1, sortOrder: 1, createdAt: -1 })
               .limit(60)
-              .toArray();
+              .toArray()
+            ).filter((row: any) => isSponsorScheduleRowFallbackEligible(row, now));
 
         const sponsorFallbackRaw = await db
           .collection("advertising_requests")

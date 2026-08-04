@@ -19,6 +19,12 @@ function collapseNormalizedText(value: unknown) {
   return normalizeText(value).replace(/\s+/g, "");
 }
 
+function toDate(value: unknown) {
+  if (!value) return null;
+  const parsed = value instanceof Date ? value : new Date(String(value));
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
+}
+
 function singularizeNormalizedText(value: string) {
   if (!value || value.endsWith("ss")) return value;
   return value.endsWith("s") ? value.slice(0, -1) : value;
@@ -89,6 +95,20 @@ export type SponsorLinkValidation =
         | "business_not_publicly_visible"
         | "business_missing_public_route";
     };
+
+export function isSponsorScheduleRowFallbackEligible(
+  row: Record<string, any> | null | undefined,
+  now = new Date(),
+) {
+  const status = s(row?.status).toLowerCase();
+  const weekEnd = toDate(row?.weekEnd);
+
+  if (weekEnd) {
+    return weekEnd >= now;
+  }
+
+  return status === "active";
+}
 
 export function buildSponsorPublicHref(aliasOrSlug: string) {
   const key = s(aliasOrSlug);
@@ -172,7 +192,8 @@ export function findSponsorLinkForBusiness(
       if (businessId && link.businessId === businessId) return true;
       if (alias && link.alias === alias) return true;
       return Boolean(
-        businessName && matchesSponsorSearchAlias(businessName, link.searchAliases),
+        businessName &&
+        matchesSponsorSearchAlias(businessName, link.searchAliases),
       );
     }) || null
   );

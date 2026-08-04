@@ -65,6 +65,7 @@ const {
   applySponsorSearchMetadata,
   buildSponsorSearchAliases,
   findSponsorLinkForBusiness,
+  isSponsorScheduleRowFallbackEligible,
   matchesSponsorSearchAlias,
   resolveSponsorBusinessLinks,
 } = await import(`file://${sponsorTargetPath}`);
@@ -159,6 +160,29 @@ assert.equal(
     linkedBusinesses,
   )?.campaignId,
   "sched-1",
+);
+
+assert.equal(
+  isSponsorScheduleRowFallbackEligible(
+    {
+      status: "active",
+      weekStart: "2026-03-09T00:00:00.000Z",
+      weekEnd: "2026-05-04T00:00:00.000Z",
+    },
+    new Date("2026-08-04T12:00:00.000Z"),
+  ),
+  false,
+);
+assert.equal(
+  isSponsorScheduleRowFallbackEligible(
+    {
+      status: "active",
+      weekStart: "2026-08-04T00:00:00.000Z",
+      weekEnd: "2026-08-11T00:00:00.000Z",
+    },
+    new Date("2026-08-04T12:00:00.000Z"),
+  ),
+  true,
 );
 
 console.log("sponsor-listings-tests: ok");
