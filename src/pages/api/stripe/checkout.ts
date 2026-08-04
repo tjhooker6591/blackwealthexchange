@@ -393,7 +393,7 @@ export default async function handler(
         founder: {
           amount: 4900,
           name: "Plan Upgrade (founder)",
-          billingInterval: "annual",
+          billingInterval: "monthly",
         },
         "music-creator-starter": {
           amount: 2900,
@@ -606,7 +606,8 @@ export default async function handler(
     ) {
       metadata.productKey = "bwe_membership";
       metadata.tier = finalItemId === "founder" ? "founding" : "premium";
-      metadata.billingInterval = "annual";
+      metadata.billingInterval =
+        finalItemId === "founder" ? "monthly" : "annual";
     }
 
     if (type === "plan" && isBlackCardPlanItemId(finalItemId)) {
@@ -868,7 +869,7 @@ export default async function handler(
       `${checkoutFingerprint}|${minuteBucket}`,
     )}`;
 
-    const isAnnualMembershipSubscription =
+    const isPlanMembershipSubscription =
       type === "plan" &&
       (finalItemId === "premium" || finalItemId === "founder");
 
@@ -877,7 +878,7 @@ export default async function handler(
 
     const baseParams: Stripe.Checkout.SessionCreateParams = {
       mode:
-        isAnnualMembershipSubscription || isFoundingMembershipSubscription
+        isPlanMembershipSubscription || isFoundingMembershipSubscription
           ? "subscription"
           : "payment",
       payment_method_types: ["card"],
@@ -887,8 +888,16 @@ export default async function handler(
             currency: "usd",
             product_data: { name: itemName },
             unit_amount: unitAmount,
-            ...(isAnnualMembershipSubscription
-              ? { recurring: { interval: "year" as const, interval_count: 1 } }
+            ...(isPlanMembershipSubscription
+              ? {
+                  recurring: {
+                    interval:
+                      finalItemId === "founder"
+                        ? ("month" as const)
+                        : ("year" as const),
+                    interval_count: 1,
+                  },
+                }
               : isFoundingMembershipSubscription
                 ? {
                     recurring: {
@@ -906,7 +915,7 @@ export default async function handler(
       success_url: successUrl,
       cancel_url: cancelUrl,
       client_reference_id: sessionUserId,
-      ...(isAnnualMembershipSubscription || isFoundingMembershipSubscription
+      ...(isPlanMembershipSubscription || isFoundingMembershipSubscription
         ? {
             subscription_data: {
               metadata,
@@ -1003,7 +1012,9 @@ export default async function handler(
             billingInterval:
               type === "plan" &&
               (finalItemId === "premium" || finalItemId === "founder")
-                ? "annual"
+                ? finalItemId === "founder"
+                  ? "monthly"
+                  : "annual"
                 : type === "plan" &&
                     finalItemId === "wealth-builder-premium-annual"
                   ? "annual"
