@@ -69,11 +69,13 @@ const token = jwt.sign(
 const cookie = `session_token=${token}`;
 
 async function call(path, options = {}) {
+  const method = String(options.method || "GET").toUpperCase();
   const res = await fetch(`${BASE}${path}`, {
     ...options,
     headers: {
       "Content-Type": "application/json",
       Cookie: cookie,
+      ...(method !== "GET" ? { Origin: BASE, Referer: `${BASE}/` } : {}),
       ...(options.headers || {}),
     },
   });
