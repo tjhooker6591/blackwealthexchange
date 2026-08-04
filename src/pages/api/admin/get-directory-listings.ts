@@ -3,7 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import cookie from "cookie";
 import jwt from "jsonwebtoken";
-import { getJwtSecret } from "@/lib/env";
+import { getJwtSecret, getMongoDbName } from "@/lib/env";
 
 type Decoded = {
   userId?: string;
@@ -90,7 +90,6 @@ function normalize(v: unknown): string {
     .trim()
     .toLowerCase();
 }
-
 
 function normalizeListingStatus(v: unknown) {
   return normalize(v).replace(/[\s-]+/g, "_");
@@ -258,7 +257,7 @@ export default async function handler(
     const limitNum = Math.min(parseIntSafe(limit, 100), 250);
 
     const client = await clientPromise;
-    const db = client.db("bwes-cluster");
+    const db = client.db(getMongoDbName());
 
     const directoryCol = db.collection("directory_listings");
     const paymentsCol = db.collection("payments");
