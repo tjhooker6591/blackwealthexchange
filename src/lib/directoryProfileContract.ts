@@ -36,6 +36,47 @@ function s(value: unknown) {
   return typeof value === "string" ? value.trim() : "";
 }
 
+function escapeRegex(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function collapseWhitespace(value: string) {
+  return value.replace(/\s+/g, " ").trim();
+}
+
+function sanitizeCityValue(args: {
+  city: string;
+  streetAddress: string;
+  state: string;
+  postalCode: string;
+}) {
+  let city = collapseWhitespace(args.city);
+  if (!city) return "";
+
+  const streetAddress = collapseWhitespace(args.streetAddress);
+  const state = collapseWhitespace(args.state);
+  const postalCode = collapseWhitespace(args.postalCode);
+
+  const streetNumber = streetAddress.match(/^\d+\b/)?.[0] || "";
+  if (streetNumber) {
+    city = city.replace(new RegExp(`^${escapeRegex(streetNumber)}\\s+`, "i"), "");
+  }
+  if (streetAddress) {
+    city = city.replace(new RegExp(escapeRegex(streetAddress), "ig"), "");
+  }
+  if (state) {
+    city = city.replace(new RegExp(`\\b${escapeRegex(state)}\\b`, "ig"), "");
+  }
+  if (postalCode) {
+    city = city.replace(
+      new RegExp(`\\b${escapeRegex(postalCode)}\\b`, "ig"),
+      "",
+    );
+  }
+
+  return collapseWhitespace(city.replace(/^[,\-]+|[,\-]+$/g, ""));
+}
+
 function hasOwn(value: unknown, key: string) {
   return Boolean(value) && Object.prototype.hasOwnProperty.call(value, key);
 }
@@ -85,7 +126,11 @@ function asCtas(value: unknown) {
 export function normalizeDirectoryProfileInput(
   body: any,
 ): DirectoryProfileData {
-  const displayName = pickProvided(body, ["displayName", "businessName", "name"]);
+  const displayName = pickProvided(body, [
+    "displayName",
+    "businessName",
+    "name",
+  ]);
   const shortSummary = pickProvided(body, ["shortSummary", "summary"]);
   const description = pickProvided(body, ["description"]);
   const publicEmail = pickProvided(body, ["publicEmail", "email"]);
@@ -148,20 +193,28 @@ export function normalizeDirectoryProfileInput(
     secondaryCategories: secondaryCategories.present
       ? asArray(secondaryCategories.value)
       : undefined,
-    logo: logo.present ? (logo.value === null ? null : s(logo.value)) : undefined,
+    logo: logo.present
+      ? logo.value === null
+        ? null
+        : s(logo.value)
+      : undefined,
     coverImage: coverImage.present
       ? coverImage.value === null
         ? null
         : s(coverImage.value)
       : undefined,
-    galleryImages: galleryImages.present ? asArray(galleryImages.value) : undefined,
+    galleryImages: galleryImages.present
+      ? asArray(galleryImages.value)
+      : undefined,
     facebook: facebook.present ? asOptionalUrl(facebook.value) : undefined,
     instagram: instagram.present ? asOptionalUrl(instagram.value) : undefined,
     linkedin: linkedin.present ? asOptionalUrl(linkedin.value) : undefined,
     twitter: twitter.present ? asOptionalUrl(twitter.value) : undefined,
     youtube: youtube.present ? asOptionalUrl(youtube.value) : undefined,
     tiktok: tiktok.present ? asOptionalUrl(tiktok.value) : undefined,
-    operatingHours: operatingHours.present ? s(operatingHours.value) : undefined,
+    operatingHours: operatingHours.present
+      ? s(operatingHours.value)
+      : undefined,
     tags: tags.present ? asArray(tags.value) : undefined,
     offeringsSummary: offeringsSummary.present
       ? s(offeringsSummary.value)
@@ -364,5 +417,52 @@ export function mapDirectoryProfileFromDoc(doc: any) {
     primaryCtaLabel: s(doc?.primaryCtaLabel),
     primaryCtaUrl: asOptionalUrl(doc?.primaryCtaUrl) || undefined,
     additionalCtas: asCtas(doc?.additionalCtas),
+  };
+}
+
+export function normalizeDirectoryLocationParts(doc: any) {
+  const profile = mapDirectoryProfileFromDoc(doc);
+  const streetAddress = s(
+    profile.streetAddress ||
+      doc?.addressLine1 ||
+      doc?.streetAddress ||
+      doc?.businessAddress ||
+      doc?.address,
+  );
+  const addressLine2 = s(
+    profile.addressLine2 || doc?.addressLine2 || doc?.suite || doc?.unit,
+  );
+  const state = s(profile.state || doc?.address?.state || doc?.state).toUpperCase();
+  const postalCode = s(
+    profile.postalCode ||
+      doc?.postalCode ||
+      doc?.zip ||
+      doc?.zipCode ||
+      doc?.address?.postalCode,
+  );
+  const rawCity = s(profile.city || doc?.address?.city || doc?.city);
+  const city = sanitizeCityValue({
+    city: rawCity,
+    streetAddress,
+    state,
+    postalCode,
+  });
+  const locality = [city, state].filter(Boolean).join(", ");
+  const localityWithPostal = [locality, postalCode]
+    .filter(Boolean)
+    .join(locality && postalCode ? " " : "");
+  const fullAddress = [streetAddress, addressLine2, localityWithPostal]
+    .filter(Boolean)
+    .join(", ");
+
+  return {
+    streetAddress,
+    addressLine2,
+    city,
+    state,
+    postalCode,
+    locality,
+    localityWithPostal,
+    fullAddress,
   };
 }

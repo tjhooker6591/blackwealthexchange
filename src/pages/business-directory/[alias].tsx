@@ -4,7 +4,10 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
-import { mapDirectoryProfileFromDoc } from "@/lib/directoryProfileContract";
+import {
+  mapDirectoryProfileFromDoc,
+  normalizeDirectoryLocationParts,
+} from "@/lib/directoryProfileContract";
 
 type Business = {
   _id?: string;
@@ -14,6 +17,7 @@ type Business = {
   shortSummary?: string;
   categories?: string | string[];
   address?: string;
+  fullAddress?: string;
   city?: string;
   state?: string;
   postalCode?: string;
@@ -103,6 +107,7 @@ type Props = {
 
 function normalizeBusinessDoc(doc: any): Business {
   const profile = mapDirectoryProfileFromDoc(doc);
+  const locationParts = normalizeDirectoryLocationParts(doc);
   return {
     _id: safeStr(doc?._id || profile.id),
     alias: safeStr(doc?.alias || doc?.slug),
@@ -114,10 +119,11 @@ function normalizeBusinessDoc(doc: any): Business {
       profile.secondaryCategories.length > 0
         ? profile.secondaryCategories
         : safeStr(profile.primaryCategory),
-    address: safeStr(profile.streetAddress),
-    city: safeStr(profile.city),
-    state: safeStr(profile.state),
-    postalCode: safeStr(profile.postalCode),
+    address: locationParts.streetAddress,
+    fullAddress: locationParts.fullAddress,
+    city: locationParts.city,
+    state: locationParts.state,
+    postalCode: locationParts.postalCode,
     serviceArea: safeStr(profile.serviceArea),
     description: safeStr(profile.description) || "No description available",
     phone: safeStr(profile.phone),
@@ -196,10 +202,13 @@ export default function BusinessDetail({
 
   const website = safeWebsite(business?.website);
   const categoryText = toCategoryText(business?.categories);
-  const placeLine = [safeStr(business?.city), safeStr(business?.state)]
+  const cityState = [safeStr(business?.city), safeStr(business?.state)]
     .filter(Boolean)
     .join(", ");
-  const locationText = [safeStr(business?.address), placeLine]
+  const placeLine = [cityState, safeStr(business?.postalCode)]
+    .filter(Boolean)
+    .join(cityState && safeStr(business?.postalCode) ? " " : "");
+  const locationText = [safeStr(business?.fullAddress), safeStr(business?.address), placeLine]
     .filter(Boolean)
     .join(", ");
   const hasLatLng =
@@ -333,7 +342,7 @@ export default function BusinessDetail({
                 </h1>
 
                 <div className="mt-2 text-sm text-white/70">
-                  {[categoryText, placeLine || safeStr(business.address)]
+                  {[categoryText, placeLine || safeStr(business.fullAddress) || safeStr(business.address)]
                     .filter(Boolean)
                     .join(" • ") || "Black-owned business"}
                 </div>
@@ -470,7 +479,10 @@ export default function BusinessDetail({
                   <div className="text-sm">
                     <div className="text-white/55">Address</div>
                     <div className="text-white/80 font-medium">
-                      {safeStr(business.address) || placeLine || "—"}
+                      {safeStr(business.fullAddress) ||
+                        safeStr(business.address) ||
+                        placeLine ||
+                        "—"}
                     </div>
                   </div>
 

@@ -13,7 +13,10 @@ import {
 } from "@/lib/founding-membership-state";
 import { Spotlight, spotlightData } from "../../lib/SpotlightEntry";
 import { sanitizeRichHtml } from "@/lib/security/sanitizeHtml";
-import { mapDirectoryProfileFromDoc } from "@/lib/directoryProfileContract";
+import {
+  mapDirectoryProfileFromDoc,
+  normalizeDirectoryLocationParts,
+} from "@/lib/directoryProfileContract";
 import {
   buildBusinessDirectionsUrl,
   getBusinessMediaSet,
@@ -89,15 +92,8 @@ function mapDbBusinessToEntry(doc: any): BusinessEntry {
       .filter(Boolean)
       .join(" • "),
   );
-  const city = cleanString(profile.city) || cleanString(doc?.address?.city);
-  const state = cleanString(profile.state) || cleanString(doc?.address?.state);
-  const postalCode = cleanString(profile.postalCode);
-  const address = cleanString(profile.streetAddress);
-  const addressLine2 = cleanString((profile as any).addressLine2 || doc?.addressLine2 || doc?.suite || doc?.unit);
-  const locality = [city, state].filter(Boolean).join(", ");
-  const location = [address, addressLine2, [locality, postalCode].filter(Boolean).join(locality && postalCode ? " " : "")]
-    .filter(Boolean)
-    .join(", ");
+  const locationParts = normalizeDirectoryLocationParts(doc);
+  const location = locationParts.fullAddress;
   const status =
     cleanString(doc?.status || doc?.trustStatus).toLowerCase() || null;
   const claimStage = normalizeFoundingClaimStage(doc?.claimStage);
@@ -115,11 +111,11 @@ function mapDbBusinessToEntry(doc: any): BusinessEntry {
     Number(doc?.completenessScore || 0) >= 70;
   const directionsUrl = buildBusinessDirectionsUrl({
     ...doc,
-    streetAddress: profile.streetAddress,
-    addressLine2: (profile as any).addressLine2,
-    city: profile.city,
-    state: profile.state,
-    postalCode: profile.postalCode,
+    streetAddress: locationParts.streetAddress,
+    addressLine2: locationParts.addressLine2,
+    city: locationParts.city,
+    state: locationParts.state,
+    postalCode: locationParts.postalCode,
   });
   const detailParts: string[] = [];
   if (category)
@@ -167,7 +163,7 @@ function mapDbBusinessToEntry(doc: any): BusinessEntry {
     category: category || null,
     categoriesText: categoriesText || null,
     location: location || null,
-    address: address || null,
+    address: location || locationParts.streetAddress || null,
     website: website || null,
     phone: cleanString(profile.phone) || null,
     social: socialEntries,
@@ -374,7 +370,7 @@ const BusinessDetail: NextPage<Props> = ({ entry, slug, businessId }) => {
                     rel="noopener noreferrer"
                     className="inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-sm px-3 py-2 transition"
                   >
-                    Get directions
+                    Directions
                   </a>
                 ) : null}
               </div>
