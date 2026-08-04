@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import clientPromise from "@/lib/mongodb";
 import { getMongoDbName } from "@/lib/env";
+import { publicBusinessBaseQuery } from "@/lib/directory/publicBusinessQuery";
 import { weekStartUtc } from "@/lib/advertising/sponsorSchedule";
 import {
   buildSponsorPublicHref,
@@ -98,44 +99,49 @@ function mapResolvedSponsors(
   businesses: any[],
 ) {
   const resolved = resolveSponsorBusinessLinks(campaigns, businesses);
-  return resolved.map((link, i) => {
-    const img = resolveSponsorImage(link.sponsorName, link.imageUrl);
-    const isKnownSponsor = Boolean(HOUSE_SPONSOR_IMAGE_MAP[s(link.sponsorName)]);
-    const hasExplicitApprovedImage =
-      img.startsWith("/images/sponsors/") && img !== HOUSE_SPONSOR_FALLBACK;
+  return resolved
+    .map((link, i) => {
+      const img = resolveSponsorImage(link.sponsorName, link.imageUrl);
+      const isKnownSponsor = Boolean(
+        HOUSE_SPONSOR_IMAGE_MAP[s(link.sponsorName)],
+      );
+      const hasExplicitApprovedImage =
+        img.startsWith("/images/sponsors/") && img !== HOUSE_SPONSOR_FALLBACK;
 
-    if (!isKnownSponsor && !hasExplicitApprovedImage) return null;
+      if (!isKnownSponsor && !hasExplicitApprovedImage) return null;
 
-    return {
-      _id: link.businessId,
-      businessId: link.businessId,
-      alias: link.alias,
-      slug: link.alias,
-      name: link.sponsorName,
-      businessName: link.businessName,
-      tagline: link.tagline,
-      description:
-        s((link.business as any).description) || link.tagline || "",
-      category: s(
-        (link.business as any).primaryCategory || (link.business as any).category,
-      ),
-      categories:
-        (link.business as any).display_categories ||
-        (link.business as any).categories ||
-        (link.business as any).category ||
-        [],
-      city: s((link.business as any).city),
-      state: s((link.business as any).state),
-      img,
-      url: buildSponsorPublicHref(link.alias),
-      cta: "Learn More",
-      tier: "featured-sponsor",
-      featuredSlot: i + 1,
-      source: link.source,
-      weekStart: link.weekStart ? link.weekStart.toISOString() : null,
-      queueStatus: link.queueStatus,
-    } satisfies SponsorCard;
-  }).filter(Boolean) as SponsorCard[];
+      return {
+        _id: link.businessId,
+        businessId: link.businessId,
+        alias: link.alias,
+        slug: link.alias,
+        name: link.sponsorName,
+        businessName: link.businessName,
+        tagline: link.tagline,
+        description:
+          s((link.business as any).description) || link.tagline || "",
+        category: s(
+          (link.business as any).primaryCategory ||
+            (link.business as any).category,
+        ),
+        categories:
+          (link.business as any).display_categories ||
+          (link.business as any).categories ||
+          (link.business as any).category ||
+          [],
+        city: s((link.business as any).city),
+        state: s((link.business as any).state),
+        img,
+        url: buildSponsorPublicHref(link.alias),
+        cta: "Learn More",
+        tier: "featured-sponsor",
+        featuredSlot: i + 1,
+        source: link.source,
+        weekStart: link.weekStart ? link.weekStart.toISOString() : null,
+        queueStatus: link.queueStatus,
+      } satisfies SponsorCard;
+    })
+    .filter(Boolean) as SponsorCard[];
 }
 
 export default async function handler(
@@ -151,6 +157,11 @@ export default async function handler(
     const client = await clientPromise;
     const db = client.db(getMongoDbName());
     const collection = db.collection("featured_sponsor_schedule");
+    const publicBusinessPool = await db
+      .collection("businesses")
+      .find(publicBusinessBaseQuery())
+      .limit(500)
+      .toArray();
 
     const now = new Date();
     const weekParam = s(req.query.weekStart);
@@ -195,7 +206,7 @@ export default async function handler(
             inventoryTier: 1,
           }),
         ),
-        businessDocs.filter(Boolean),
+        [...businessDocs.filter(Boolean), ...publicBusinessPool],
       );
       if (mappedScheduled.length) {
         return res.status(200).json({
@@ -236,7 +247,7 @@ export default async function handler(
             inventoryTier: 1,
           }),
         ),
-        businessDocs.filter(Boolean),
+        [...businessDocs.filter(Boolean), ...publicBusinessPool],
       );
       if (mappedRecent.length) {
         return res.status(200).json({
@@ -295,10 +306,13 @@ export default async function handler(
     if (paidRows.length) {
       const mappedPaid = mapResolvedSponsors(
         paidRows,
-        await findSponsorBusinessesByIds(
-          db,
-          paidRows.map((row) => row.businessId),
-        ),
+        [
+          ...(await findSponsorBusinessesByIds(
+            db,
+            paidRows.map((row) => row.businessId),
+          )),
+          ...publicBusinessPool,
+        ],
       );
       if (!mappedPaid.length) {
         return res.status(200).json({

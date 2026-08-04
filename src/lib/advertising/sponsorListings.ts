@@ -19,6 +19,32 @@ function collapseNormalizedText(value: unknown) {
   return normalizeText(value).replace(/\s+/g, "");
 }
 
+function singularizeNormalizedText(value: string) {
+  if (!value || value.endsWith("ss")) return value;
+  return value.endsWith("s") ? value.slice(0, -1) : value;
+}
+
+function buildSponsorLookupKeys(...values: unknown[]) {
+  const keys = new Set<string>();
+
+  for (const value of values) {
+    const normalized = normalizeText(value);
+    const collapsed = collapseNormalizedText(value);
+
+    for (const candidate of [normalized, collapsed]) {
+      if (!candidate) continue;
+      keys.add(candidate);
+
+      const singular = singularizeNormalizedText(candidate);
+      if (singular && singular !== candidate) {
+        keys.add(singular);
+      }
+    }
+  }
+
+  return Array.from(keys);
+}
+
 export type SponsorCampaignRecord = {
   campaignId: string;
   businessId: string;
@@ -105,10 +131,10 @@ export function matchesSponsorSearchAlias(
       query.includes(normalizedAlias) ||
       Boolean(
         collapsedAlias &&
-          collapsedQuery &&
-          (collapsedAlias === collapsedQuery ||
-            collapsedAlias.includes(collapsedQuery) ||
-            collapsedQuery.includes(collapsedAlias)),
+        collapsedQuery &&
+        (collapsedAlias === collapsedQuery ||
+          collapsedAlias.includes(collapsedQuery) ||
+          collapsedQuery.includes(collapsedAlias)),
       )
     );
   });
@@ -120,7 +146,9 @@ function chooseBetterCampaign(
 ) {
   if (!current) return candidate;
   if (candidate.inventoryTier !== current.inventoryTier) {
-    return candidate.inventoryTier < current.inventoryTier ? candidate : current;
+    return candidate.inventoryTier < current.inventoryTier
+      ? candidate
+      : current;
   }
 
   const currentWeek = current.weekStart?.getTime() || 0;
@@ -139,12 +167,51 @@ export function resolveSponsorBusinessLinks(
   const businessesById = new Map(
     businesses.map((business) => [String(business?._id || ""), business]),
   );
+  const businessesByLookupKey = new Map<string, Record<string, any> | null>();
+  for (const business of businesses) {
+    if (!isPublicBusinessVisible(business)) continue;
+
+    const alias = s((business as any).alias || (business as any).slug);
+    if (!alias) continue;
+
+    const profile = mapDirectoryProfileFromDoc(business);
+    const businessName = s(
+      profile.displayName ||
+        (business as any).business_name ||
+        (business as any).name,
+    );
+
+    for (const key of buildSponsorLookupKeys(alias, businessName)) {
+      const hasCurrent = businessesByLookupKey.has(key);
+      const current = businessesByLookupKey.get(key);
+      if (!hasCurrent) {
+        businessesByLookupKey.set(key, business);
+        continue;
+      }
+
+      if (
+        current &&
+        String(current._id || "") !== String((business as any)._id || "")
+      ) {
+        businessesByLookupKey.set(key, null);
+      }
+    }
+  }
   const resolvedByBusinessId = new Map<string, SponsorListingLink>();
 
   for (const campaign of campaigns) {
     const businessId = s(campaign.businessId);
-    if (!businessId) continue;
-    const business = businessesById.get(businessId);
+    let business = businessId ? businessesById.get(businessId) : null;
+
+    if (!business) {
+      for (const key of buildSponsorLookupKeys(campaign.sponsorName)) {
+        const candidate = businessesByLookupKey.get(key);
+        if (!candidate) continue;
+        business = candidate;
+        break;
+      }
+    }
+
     if (!business) continue;
     if (!isPublicBusinessVisible(business)) continue;
 
@@ -152,11 +219,14 @@ export function resolveSponsorBusinessLinks(
     if (!alias) continue;
 
     const profile = mapDirectoryProfileFromDoc(business);
-    const businessName = s(profile.displayName || (business as any).business_name);
+    const businessName = s(
+      profile.displayName || (business as any).business_name,
+    );
     const sponsorName = s(campaign.sponsorName) || businessName;
+    const resolvedBusinessId = String((business as any)._id || businessId);
     const candidate: SponsorListingLink = {
       campaignId: s(campaign.campaignId),
-      businessId,
+      businessId: resolvedBusinessId,
       sponsorName,
       businessName,
       alias,
@@ -166,13 +236,17 @@ export function resolveSponsorBusinessLinks(
       weekStart: campaign.weekStart || null,
       queueStatus: s(campaign.queueStatus) || null,
       inventoryTier: Number(campaign.inventoryTier || 2),
-      searchAliases: buildSponsorSearchAliases(sponsorName, businessName, alias),
+      searchAliases: buildSponsorSearchAliases(
+        sponsorName,
+        businessName,
+        alias,
+      ),
       business,
     };
 
     resolvedByBusinessId.set(
-      businessId,
-      chooseBetterCampaign(resolvedByBusinessId.get(businessId), candidate),
+      resolvedBusinessId,
+      chooseBetterCampaign(resolvedByBusinessId.get(resolvedBusinessId), candidate),
     );
   }
 
@@ -201,7 +275,9 @@ export async function findSponsorBusinessesByIds(
     uniqueIds.map((businessId) => {
       const filter = buildSponsorBusinessIdFilter(businessId);
       if (!filter) return null;
-      return db.collection("businesses").findOne(filter, projection ? { projection } : undefined);
+      return db
+        .collection("businesses")
+        .findOne(filter, projection ? { projection } : undefined);
     }),
   );
 

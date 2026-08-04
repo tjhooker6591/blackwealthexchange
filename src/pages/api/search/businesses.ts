@@ -276,7 +276,9 @@ function getMatchQuality(
   const location =
     `${safeText(item?.city)} ${safeText(item?.state)} ${safeText(item?.address)} ${safeText(item?.country)}`.toLowerCase();
   const sponsorAliases = Array.isArray(item?.__sponsorAliases)
-    ? item.__sponsorAliases.map((value: string) => safeText(value).toLowerCase())
+    ? item.__sponsorAliases.map((value: string) =>
+        safeText(value).toLowerCase(),
+      )
     : [];
 
   const intentHits = intentTokens.filter((token) =>
@@ -779,7 +781,8 @@ export default async function handler(
         .limit(candidateLimit)
         .toArray();
 
-      let activeSponsorLinks: ReturnType<typeof resolveSponsorBusinessLinks> = [];
+      let activeSponsorLinks: ReturnType<typeof resolveSponsorBusinessLinks> =
+        [];
       const activeSponsorByBusinessId = new Map<string, any>();
       if (!isOrganizations) {
         const now = new Date();
@@ -788,7 +791,6 @@ export default async function handler(
           .find({
             placement: "homepage-featured-sponsor",
             status: { $in: ["scheduled", "active"] },
-            businessId: { $exists: true, $ne: "" },
           })
           .sort({ weekStart: -1, sortOrder: 1, createdAt: -1 })
           .limit(40)
@@ -801,7 +803,6 @@ export default async function handler(
             paymentStatus: "paid",
             reviewStatus: "approved",
             status: { $in: ["approved", "active"] },
-            businessId: { $exists: true, $ne: "" },
           })
           .sort({ paidAt: -1, updatedAt: -1, createdAt: -1 })
           .limit(40)
@@ -813,9 +814,7 @@ export default async function handler(
               const paidAt = row?.paidAt ? new Date(row.paidAt) : null;
               const duration = Math.max(1, Number(row?.durationDays || 30));
               const expiresAt = paidAt
-                ? new Date(
-                    paidAt.getTime() + duration * 24 * 60 * 60 * 1000,
-                  )
+                ? new Date(paidAt.getTime() + duration * 24 * 60 * 60 * 1000)
                 : null;
               if (expiresAt && expiresAt <= now) return null;
 
@@ -857,9 +856,14 @@ export default async function handler(
           sponsorBusinessIds,
           resultProjection,
         );
+        const sponsorBusinessPool = new Map<string, any>();
+        for (const business of [...sponsorBusinesses, ...candidates]) {
+          if (!business?._id) continue;
+          sponsorBusinessPool.set(String(business._id), business);
+        }
         activeSponsorLinks = resolveSponsorBusinessLinks(
           sponsorCandidatesRaw,
-          sponsorBusinesses as any[],
+          Array.from(sponsorBusinessPool.values()) as any[],
         );
         for (const link of activeSponsorLinks) {
           activeSponsorByBusinessId.set(link.businessId, link);
@@ -869,18 +873,23 @@ export default async function handler(
       const tBeforeFind = performance.now();
       const mergedCandidates = new Map<string, any>();
       for (const candidate of candidates) {
-        const sponsorLink = activeSponsorByBusinessId.get(String(candidate._id));
+        const sponsorLink = activeSponsorByBusinessId.get(
+          String(candidate._id),
+        );
         mergedCandidates.set(String(candidate._id), {
           ...candidate,
+          isSponsored: Boolean(sponsorLink),
           __sponsorAliases: sponsorLink?.searchAliases || [],
           __sponsorCampaignId: sponsorLink?.campaignId || undefined,
         });
       }
       for (const sponsorLink of activeSponsorLinks) {
-        if (!matchesSponsorSearchAlias(search, sponsorLink.searchAliases)) continue;
+        if (!matchesSponsorSearchAlias(search, sponsorLink.searchAliases))
+          continue;
         if (mergedCandidates.has(sponsorLink.businessId)) continue;
         mergedCandidates.set(sponsorLink.businessId, {
           ...sponsorLink.business,
+          isSponsored: true,
           __sponsorAliases: sponsorLink.searchAliases,
           __sponsorCampaignId: sponsorLink.campaignId,
         });

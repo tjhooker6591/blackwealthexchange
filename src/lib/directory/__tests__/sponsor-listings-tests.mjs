@@ -9,7 +9,10 @@ const repoRoot = path.resolve(testDir, "../../../../");
 const tmpDir = path.join(repoRoot, ".tmp");
 await fs.mkdir(tmpDir, { recursive: true });
 
-const contractSourcePath = path.join(repoRoot, "src/lib/directoryProfileContract.ts");
+const contractSourcePath = path.join(
+  repoRoot,
+  "src/lib/directoryProfileContract.ts",
+);
 const visibilitySourcePath = path.join(
   repoRoot,
   "src/lib/directory/publicVisibility.ts",
@@ -72,14 +75,17 @@ const aliases = buildSponsorSearchAliases(
 assert.equal(matchesSponsorSearchAlias("TitanEra", aliases), true);
 assert.equal(matchesSponsorSearchAlias("Titan Era", aliases), true);
 assert.equal(matchesSponsorSearchAlias("Titan Era Productions", aliases), true);
-assert.equal(matchesSponsorSearchAlias("Pamfa", ["Pamfa United Citizens"]), true);
+assert.equal(
+  matchesSponsorSearchAlias("Pamfa", ["Pamfa United Citizens"]),
+  true,
+);
 
 const linkedBusinesses = resolveSponsorBusinessLinks(
   [
     {
       campaignId: "sched-1",
-      businessId: "biz-public",
-      sponsorName: "Pamfa United Citizens",
+      businessId: "",
+      sponsorName: "Pamfa United Citizen",
       tagline: "Bold. Fearless. Iconic.",
       imageUrl: "/images/sponsors/pamfaunitedcitizen.jpg",
       source: "featured_sponsor_schedule",
