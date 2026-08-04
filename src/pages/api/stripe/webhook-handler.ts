@@ -343,6 +343,20 @@ function wealthBuilderPeriodEndFromInterval(
   return end;
 }
 
+function membershipBillingCopy(plan: string | null | undefined) {
+  return plan === "founding"
+    ? {
+        billed: "billed monthly",
+        renews: "auto-renews monthly",
+        cycleFallback: "monthly cycle",
+      }
+    : {
+        billed: "billed annually",
+        renews: "auto-renews annually",
+        cycleFallback: "annual cycle",
+      };
+}
+
 async function resolveEntitlementUserId(db: Db, userId: string, email: string) {
   if (userId) return userId;
 
@@ -776,10 +790,11 @@ export default async function webhookHandler(
       });
 
       if (event.type === "invoice.paid") {
+        const billingCopy = membershipBillingCopy(planGuess);
         await sendMembershipEmailSafe({
           to: (user as any)?.email || null,
           subject: "BWE renewal successful",
-          text: `Your membership renewed successfully. Next billing date: ${periodEnd ? periodEnd.toLocaleDateString() : "annual cycle"}.`,
+          text: `Your membership renewed successfully. Next billing date: ${periodEnd ? periodEnd.toLocaleDateString() : billingCopy.cycleFallback}.`,
         });
       }
 
@@ -2361,10 +2376,11 @@ export default async function webhookHandler(
         createdAt: now,
       });
 
+      const billingCopy = membershipBillingCopy(mappedPlanId);
       await sendMembershipEmailSafe({
         to: email || null,
         subject: "BWE membership purchase confirmation",
-        text: `Your ${mappedPlanId === "founding" ? "Founding Member" : "Premium"} plan is active. It is billed annually and auto-renews annually. Next billing date: ${planExpiresAt.toLocaleDateString()}.`,
+        text: `Your ${mappedPlanId === "founding" ? "Founding Member" : "Premium"} plan is active. It is ${billingCopy.billed} and ${billingCopy.renews}. Next billing date: ${planExpiresAt.toLocaleDateString()}.`,
       });
 
       await pushMembershipNotification(db, {
