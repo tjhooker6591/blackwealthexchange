@@ -90,10 +90,7 @@ export function getFoundingMembershipAvailability(
     String(row.status || row.trustStatus || "")
       .trim()
       .toLowerCase() || "public";
-  const currentClaimState =
-    String(row.claimStage || "")
-      .trim()
-      .toLowerCase() || null;
+  const currentClaimState = normalizeFoundingClaimStage(row.claimStage);
   const alreadyVerified =
     row.verified === true ||
     row.isVerified === true ||
@@ -268,8 +265,14 @@ export type FoundingTransitionState = {
   claimStatus: FoundingClaimStatus;
   claimStage: string;
   claimLocked: boolean;
-  managementAccessStatus: "approved" | "locked_pending_verification" | "rejected";
-  ownershipAccessStatus: "approved" | "locked_pending_verification" | "rejected";
+  managementAccessStatus:
+    | "approved"
+    | "locked_pending_verification"
+    | "rejected";
+  ownershipAccessStatus:
+    | "approved"
+    | "locked_pending_verification"
+    | "rejected";
   fulfillmentStatus: "active" | "pending_verification_queue" | "closed";
   evidenceStatus: string;
   evidencePortalStatus: "complete" | "open" | "closed";
@@ -279,7 +282,10 @@ export type FoundingTransitionState = {
   paymentAmountCents: number;
   paymentDisplayAmount: string;
   paymentCurrency: string;
-  publicListingStatus: "ownership_verified" | "verification_pending" | "unclaimed";
+  publicListingStatus:
+    | "ownership_verified"
+    | "verification_pending"
+    | "unclaimed";
 };
 
 export function buildFoundingTransitionState(args: {
@@ -288,14 +294,20 @@ export function buildFoundingTransitionState(args: {
   evidenceStatus?: unknown;
   paymentAmountCents?: unknown;
   paymentCurrency?: unknown;
-}) : FoundingTransitionState {
+}): FoundingTransitionState {
   const action = args.action;
   const previousStatus =
-    (normalizeFoundingClaimStage(args.previousStatus) as FoundingOwnershipReviewStatus | null) ||
+    (normalizeFoundingClaimStage(
+      args.previousStatus,
+    ) as FoundingOwnershipReviewStatus | null) ||
     "ownership_verification_pending";
   const existingEvidenceStatus = String(args.evidenceStatus || "").trim();
-  const paymentAmountCents = Number(args.paymentAmountCents || FOUNDING_MEMBERSHIP_PRICE_CENTS);
-  const paymentCurrency = String(args.paymentCurrency || FOUNDING_MEMBERSHIP_CURRENCY).toLowerCase();
+  const paymentAmountCents = Number(
+    args.paymentAmountCents || FOUNDING_MEMBERSHIP_PRICE_CENTS,
+  );
+  const paymentCurrency = String(
+    args.paymentCurrency || FOUNDING_MEMBERSHIP_CURRENCY,
+  ).toLowerCase();
   const paymentDisplayAmount = formatUsdFromCents(paymentAmountCents);
 
   if (action === "verify") {
@@ -405,18 +417,32 @@ export function buildFoundingTransitionState(args: {
 
   return {
     resultingStatus: previousStatus,
-    claimStatus: previousStatus === "ownership_verified" ? "ownership_verified" : "claim_initiated",
-    claimStage: previousStatus === "ownership_verified" ? "ownership_verified" : "ownership_verification_pending",
+    claimStatus:
+      previousStatus === "ownership_verified"
+        ? "ownership_verified"
+        : "claim_initiated",
+    claimStage:
+      previousStatus === "ownership_verified"
+        ? "ownership_verified"
+        : "ownership_verification_pending",
     claimLocked: true,
     managementAccessStatus:
-      previousStatus === "ownership_verified" ? "approved" : "locked_pending_verification",
+      previousStatus === "ownership_verified"
+        ? "approved"
+        : "locked_pending_verification",
     ownershipAccessStatus:
-      previousStatus === "ownership_verified" ? "approved" : "locked_pending_verification",
+      previousStatus === "ownership_verified"
+        ? "approved"
+        : "locked_pending_verification",
     fulfillmentStatus:
-      previousStatus === "ownership_verified" ? "active" : "pending_verification_queue",
+      previousStatus === "ownership_verified"
+        ? "active"
+        : "pending_verification_queue",
     evidenceStatus: "evidence_submitted",
-    evidencePortalStatus: previousStatus === "ownership_verified" ? "complete" : "open",
-    onboardingStatus: previousStatus === "ownership_verified" ? "active" : "started",
+    evidencePortalStatus:
+      previousStatus === "ownership_verified" ? "complete" : "open",
+    onboardingStatus:
+      previousStatus === "ownership_verified" ? "active" : "started",
     nextStep:
       previousStatus === "ownership_verified"
         ? "ownership verified"
@@ -426,7 +452,9 @@ export function buildFoundingTransitionState(args: {
     paymentDisplayAmount,
     paymentCurrency,
     publicListingStatus:
-      previousStatus === "ownership_verified" ? "ownership_verified" : "verification_pending",
+      previousStatus === "ownership_verified"
+        ? "ownership_verified"
+        : "verification_pending",
   };
 }
 
@@ -437,7 +465,9 @@ export async function findFoundingSourcePayment(
   const membershipId = String(membership?.membershipId || "").trim();
   const sourcePaymentId = String(membership?.sourcePaymentId || "").trim();
   const businessId = String(membership?.businessId || "").trim();
-  const email = String(membership?.email || "").trim().toLowerCase();
+  const email = String(membership?.email || "")
+    .trim()
+    .toLowerCase();
   const queries: Document[] = [];
 
   if (sourcePaymentId) queries.push({ _id: sourcePaymentId as any });
@@ -462,11 +492,16 @@ export async function findFoundingSourcePayment(
   if (exactSource) return exactSource;
 
   const exactMembership = membershipId
-    ? rows.find((row) => String(row?.membershipId || "") === membershipId) || null
+    ? rows.find((row) => String(row?.membershipId || "") === membershipId) ||
+      null
     : null;
   if (exactMembership) return exactMembership;
 
-  return rows.find((row) => normalizeFoundingPaymentStatus(row) === "paid") || rows[0] || null;
+  return (
+    rows.find((row) => normalizeFoundingPaymentStatus(row) === "paid") ||
+    rows[0] ||
+    null
+  );
 }
 
 export function isFoundingClaimLockedStage(value: unknown) {
@@ -577,8 +612,10 @@ export function deriveFoundingQueueState(args: {
   ownershipReviewStatus?: unknown;
   claimStage?: unknown;
   publicListingStatus?: unknown;
-}) : FoundingQueueState | null {
-  const membershipStatus = String(args.membershipStatus || "").trim().toLowerCase();
+}): FoundingQueueState | null {
+  const membershipStatus = String(args.membershipStatus || "")
+    .trim()
+    .toLowerCase();
   const statuses = [
     normalizeFoundingClaimStage(args.ownershipReviewStatus),
     normalizeFoundingClaimStage(args.claimStatus),
@@ -586,16 +623,23 @@ export function deriveFoundingQueueState(args: {
     normalizeFoundingClaimStage(args.publicListingStatus),
   ].filter(Boolean) as string[];
 
-  if (!membershipStatus || !["active", "past_due", "cancelled"].includes(membershipStatus)) {
+  if (
+    !membershipStatus ||
+    !["active", "past_due", "cancelled"].includes(membershipStatus)
+  ) {
     return null;
   }
 
   if (statuses.includes("ownership_verified")) return "ownership_verified";
-  if (statuses.includes("ownership_verification_failed")) return "ownership_verification_failed";
+  if (statuses.includes("ownership_verification_failed"))
+    return "ownership_verification_failed";
   if (statuses.includes("disputed")) return "disputed";
-  if (statuses.includes("additional_evidence_required")) return "additional_evidence_required";
-  if (statuses.includes("ownership_verification_pending")) return "ownership_verification_pending";
-  if (statuses.includes("claim_initiated")) return "ownership_verification_pending";
+  if (statuses.includes("additional_evidence_required"))
+    return "additional_evidence_required";
+  if (statuses.includes("ownership_verification_pending"))
+    return "ownership_verification_pending";
+  if (statuses.includes("claim_initiated"))
+    return "ownership_verification_pending";
   return null;
 }
 
@@ -605,52 +649,67 @@ export function classifyFoundingConsistency(row: FoundingCanonicalRecord) {
   if (!row.businessId) issues.push("missing_business_link");
   if (!row.userId) issues.push("missing_claimant_user");
   if (!row.review) issues.push("missing_review_record");
-  if (!row.claim && row.queueBucket !== "history" && row.queueBucket !== "pending") {
+  if (
+    !row.claim &&
+    row.queueBucket !== "history" &&
+    row.queueBucket !== "pending"
+  ) {
     issues.push("missing_claim_record");
   }
   if (!row.business) issues.push("missing_business_record");
-  if (!row.payment || row.paymentStatus !== "paid") issues.push("payment_inconsistency");
+  if (!row.payment || row.paymentStatus !== "paid")
+    issues.push("payment_inconsistency");
   if (
     row.queueState === "ownership_verified" &&
-    (
-      row.claimStatus !== "ownership_verified" ||
+    (row.claimStatus !== "ownership_verified" ||
       row.ownershipReviewStatus !== "ownership_verified" ||
       row.claimStage !== "ownership_verified" ||
       row.publicListingStatus !== "ownership_verified" ||
       row.managementAccessStatus !== "approved" ||
       row.ownershipAccessStatus !== "approved" ||
       row.fulfillmentStatus !== "active" ||
-      row.evidencePortalStatus !== "complete"
-    )
+      row.evidencePortalStatus !== "complete")
   ) {
     issues.push("conflicting_state");
   }
-  if (
-    row.claimedByUserId && row.userId && row.claimedByUserId !== row.userId
-  ) {
+  if (row.claimedByUserId && row.userId && row.claimedByUserId !== row.userId) {
     issues.push("conflicting_claimant");
   }
-  if (
-    row.managedByUserId && row.userId && row.managedByUserId !== row.userId
-  ) {
+  if (row.managedByUserId && row.userId && row.managedByUserId !== row.userId) {
     issues.push("cross_business_management_access");
   }
 
-  if (!issues.length && row.queueState === "ownership_verified") return "consistent_verified";
-  if (!issues.length && FOUNDING_QUEUE_PENDING_STATES.includes(row.queueState as any)) {
+  if (!issues.length && row.queueState === "ownership_verified")
+    return "consistent_verified";
+  if (
+    !issues.length &&
+    FOUNDING_QUEUE_PENDING_STATES.includes(row.queueState as any)
+  ) {
     return "consistent_pending_verification";
   }
   if (issues.includes("conflicting_claimant")) return "conflicting_claimant";
   if (issues.includes("payment_inconsistency")) return "payment_inconsistency";
-  if (issues.includes("conflicting_state") || issues.includes("cross_business_management_access")) {
+  if (
+    issues.includes("conflicting_state") ||
+    issues.includes("cross_business_management_access")
+  ) {
     return "conflicting_state";
   }
-  if (issues.some((issue) => issue.startsWith("missing_"))) return "missing_linked_record";
+  if (issues.some((issue) => issue.startsWith("missing_")))
+    return "missing_linked_record";
   return "legacy_status_requiring_normalization";
 }
 
 export async function getFoundingClaimVerificationRecords(db: Db) {
-  const [memberships, claims, reviews, fulfillment, onboarding, businesses, users] = await Promise.all([
+  const [
+    memberships,
+    claims,
+    reviews,
+    fulfillment,
+    onboarding,
+    businesses,
+    users,
+  ] = await Promise.all([
     db
       .collection("business_memberships")
       .find({ productKey: FOUNDING_MEMBERSHIP_PRODUCT_KEY })
@@ -672,55 +731,106 @@ export async function getFoundingClaimVerificationRecords(db: Db) {
       .toArray(),
     db
       .collection("membership_fulfillment")
-      .find({ membershipId: { $regex: `^${FOUNDING_MEMBERSHIP_PRODUCT_KEY}:` } })
+      .find({
+        membershipId: { $regex: `^${FOUNDING_MEMBERSHIP_PRODUCT_KEY}:` },
+      })
       .sort({ updatedAt: -1, createdAt: -1 })
       .toArray(),
     db
       .collection("membership_onboarding")
-      .find({ membershipId: { $regex: `^${FOUNDING_MEMBERSHIP_PRODUCT_KEY}:` } })
+      .find({
+        membershipId: { $regex: `^${FOUNDING_MEMBERSHIP_PRODUCT_KEY}:` },
+      })
       .sort({ updatedAt: -1, createdAt: -1 })
       .toArray(),
     db
       .collection("businesses")
       .find({
         $or: [
-          { foundingMembershipId: { $regex: `^${FOUNDING_MEMBERSHIP_PRODUCT_KEY}:` } },
-          { claimStage: { $in: [...FOUNDING_QUEUE_PENDING_STATES, ...FOUNDING_QUEUE_HISTORY_STATES] } },
-          { ownershipReviewStatus: { $in: [...FOUNDING_QUEUE_PENDING_STATES, ...FOUNDING_QUEUE_HISTORY_STATES] } },
+          {
+            foundingMembershipId: {
+              $regex: `^${FOUNDING_MEMBERSHIP_PRODUCT_KEY}:`,
+            },
+          },
+          {
+            claimStage: {
+              $in: [
+                ...FOUNDING_QUEUE_PENDING_STATES,
+                ...FOUNDING_QUEUE_HISTORY_STATES,
+              ],
+            },
+          },
+          {
+            ownershipReviewStatus: {
+              $in: [
+                ...FOUNDING_QUEUE_PENDING_STATES,
+                ...FOUNDING_QUEUE_HISTORY_STATES,
+              ],
+            },
+          },
         ],
       })
       .toArray(),
-    db.collection("users").find({ foundingMembershipId: { $regex: `^${FOUNDING_MEMBERSHIP_PRODUCT_KEY}:` } }).toArray(),
+    db
+      .collection("users")
+      .find({
+        foundingMembershipId: {
+          $regex: `^${FOUNDING_MEMBERSHIP_PRODUCT_KEY}:`,
+        },
+      })
+      .toArray(),
   ]);
 
   const membershipById = new Map(
-    memberships.filter((item) => item?.membershipId).map((item) => [String(item.membershipId), item]),
+    memberships
+      .filter((item) => item?.membershipId)
+      .map((item) => [String(item.membershipId), item]),
   );
   const claimByMembershipId = new Map(
-    claims.filter((item) => item?.membershipId).map((item) => [String(item.membershipId), item]),
+    claims
+      .filter((item) => item?.membershipId)
+      .map((item) => [String(item.membershipId), item]),
   );
   const reviewByMembershipId = new Map(
-    reviews.filter((item) => item?.sourceMembershipId).map((item) => [String(item.sourceMembershipId), item]),
+    reviews
+      .filter((item) => item?.sourceMembershipId)
+      .map((item) => [String(item.sourceMembershipId), item]),
   );
   const fulfillmentByMembershipId = new Map(
-    fulfillment.filter((item) => item?.membershipId).map((item) => [String(item.membershipId), item]),
+    fulfillment
+      .filter((item) => item?.membershipId)
+      .map((item) => [String(item.membershipId), item]),
   );
   const onboardingByMembershipId = new Map(
-    onboarding.filter((item) => item?.membershipId).map((item) => [String(item.membershipId), item]),
+    onboarding
+      .filter((item) => item?.membershipId)
+      .map((item) => [String(item.membershipId), item]),
   );
   const businessByMembershipId = new Map(
-    businesses.filter((item) => item?.foundingMembershipId).map((item) => [String(item.foundingMembershipId), item]),
+    businesses
+      .filter((item) => item?.foundingMembershipId)
+      .map((item) => [String(item.foundingMembershipId), item]),
   );
   const userByMembershipId = new Map(
-    users.filter((item) => item?.foundingMembershipId).map((item) => [String(item.foundingMembershipId), item]),
+    users
+      .filter((item) => item?.foundingMembershipId)
+      .map((item) => [String(item.foundingMembershipId), item]),
   );
 
   const membershipIds = new Set<string>();
-  for (const membership of memberships) membershipIds.add(String(membership.membershipId || ""));
-  for (const claim of claims) if (claim?.membershipId) membershipIds.add(String(claim.membershipId));
-  for (const review of reviews) if (review?.sourceMembershipId) membershipIds.add(String(review.sourceMembershipId));
-  for (const business of businesses) if (business?.foundingMembershipId) membershipIds.add(String(business.foundingMembershipId));
-  for (const user of users) if (user?.foundingMembershipId) membershipIds.add(String(user.foundingMembershipId));
+  for (const membership of memberships)
+    membershipIds.add(String(membership.membershipId || ""));
+  for (const claim of claims)
+    if (claim?.membershipId) membershipIds.add(String(claim.membershipId));
+  for (const review of reviews)
+    if (review?.sourceMembershipId)
+      membershipIds.add(String(review.sourceMembershipId));
+  for (const business of businesses)
+    if (business?.foundingMembershipId)
+      membershipIds.add(String(business.foundingMembershipId));
+  for (const user of users)
+    if (user?.foundingMembershipId)
+      membershipIds.add(String(user.foundingMembershipId));
 
   const rows: FoundingCanonicalRecord[] = [];
   for (const membershipId of membershipIds) {
@@ -732,60 +842,139 @@ export async function getFoundingClaimVerificationRecords(db: Db) {
     const onboardingRow = onboardingByMembershipId.get(membershipId) || null;
     const business = businessByMembershipId.get(membershipId) || null;
     const user = userByMembershipId.get(membershipId) || null;
-    const sourcePayment = await findFoundingSourcePayment(db, membership || claim || review || user || business);
+    const sourcePayment = await findFoundingSourcePayment(
+      db,
+      membership || claim || review || user || business,
+    );
     const paymentAmountCents = Number(
       sourcePayment?.amountCents ||
-      sourcePayment?.grossAmountCents ||
-      membership?.paymentAmountCents ||
-      membership?.amountCents ||
-      claim?.paymentAmountCents ||
-      0,
+        sourcePayment?.grossAmountCents ||
+        membership?.paymentAmountCents ||
+        membership?.amountCents ||
+        claim?.paymentAmountCents ||
+        0,
     );
     const paymentDisplayAmount = formatUsdFromCents(paymentAmountCents);
     const queueState = deriveFoundingQueueState({
       membershipStatus: membership?.membershipStatus,
       claimStatus: claim?.claimStatus,
-      ownershipReviewStatus: review?.reviewStatus || claim?.ownershipReviewStatus || membership?.ownershipReviewStatus || business?.ownershipReviewStatus,
+      ownershipReviewStatus:
+        review?.reviewStatus ||
+        claim?.ownershipReviewStatus ||
+        membership?.ownershipReviewStatus ||
+        business?.ownershipReviewStatus,
       claimStage: business?.claimStage,
       publicListingStatus: business?.publicListingStatus,
     });
 
     rows.push({
       membershipId,
-      businessId: String(membership?.businessId || claim?.businessId || review?.businessId || business?._id || user?.claimedBusinessId || "") || null,
-      userId: String(membership?.userId || claim?.userId || review?.userId || user?._id || "") || null,
-      email: String(membership?.email || claim?.email || review?.email || user?.email || business?.claimedByEmail || "") || null,
-      businessName: String(business?.business_name || business?.name || claim?.businessName || membership?.membershipName || "") || null,
+      businessId:
+        String(
+          membership?.businessId ||
+            claim?.businessId ||
+            review?.businessId ||
+            business?._id ||
+            user?.claimedBusinessId ||
+            "",
+        ) || null,
+      userId:
+        String(
+          membership?.userId ||
+            claim?.userId ||
+            review?.userId ||
+            user?._id ||
+            "",
+        ) || null,
+      email:
+        String(
+          membership?.email ||
+            claim?.email ||
+            review?.email ||
+            user?.email ||
+            business?.claimedByEmail ||
+            "",
+        ) || null,
+      businessName:
+        String(
+          business?.business_name ||
+            business?.name ||
+            claim?.businessName ||
+            membership?.membershipName ||
+            "",
+        ) || null,
       businessSlug: String(business?.alias || business?.slug || "") || null,
       claimId: claim?._id ? String(claim._id) : null,
       ownershipReviewId: review?._id ? String(review._id) : null,
       paymentId: sourcePayment?._id ? String(sourcePayment._id) : null,
-      paymentStatus: normalizeFoundingPaymentStatus(sourcePayment || membership),
+      paymentStatus: normalizeFoundingPaymentStatus(
+        sourcePayment || membership,
+      ),
       paymentAmountCents,
       paymentDisplayAmount,
-      paymentCurrency: String(sourcePayment?.currency || membership?.paymentCurrency || membership?.currency || "usd").toLowerCase(),
+      paymentCurrency: String(
+        sourcePayment?.currency ||
+          membership?.paymentCurrency ||
+          membership?.currency ||
+          "usd",
+      ).toLowerCase(),
       membershipStatus: membership?.membershipStatus || null,
       claimStatus: normalizeFoundingClaimStage(claim?.claimStatus || null),
-      ownershipReviewStatus: normalizeFoundingClaimStage(review?.reviewStatus || claim?.ownershipReviewStatus || membership?.ownershipReviewStatus || business?.ownershipReviewStatus || null),
+      ownershipReviewStatus: normalizeFoundingClaimStage(
+        review?.reviewStatus ||
+          claim?.ownershipReviewStatus ||
+          membership?.ownershipReviewStatus ||
+          business?.ownershipReviewStatus ||
+          null,
+      ),
       claimStage: normalizeFoundingClaimStage(business?.claimStage || null),
-      claimLocked: business?.claimLocked === true || claim?.claimLocked === true,
-      managementAccessStatus: String(membership?.managementAccessStatus || "") || null,
-      ownershipAccessStatus: String(fulfillmentRow?.ownershipAccessStatus || "") || null,
+      claimLocked:
+        business?.claimLocked === true || claim?.claimLocked === true,
+      managementAccessStatus:
+        String(membership?.managementAccessStatus || "") || null,
+      ownershipAccessStatus:
+        String(fulfillmentRow?.ownershipAccessStatus || "") || null,
       publicListingStatus: String(business?.publicListingStatus || "") || null,
-      fulfillmentStatus: String(fulfillmentRow?.fulfillmentStatus || "") || null,
-      evidencePortalStatus: String(onboardingRow?.evidencePortalStatus || "") || null,
+      fulfillmentStatus:
+        String(fulfillmentRow?.fulfillmentStatus || "") || null,
+      evidencePortalStatus:
+        String(onboardingRow?.evidencePortalStatus || "") || null,
       evidenceStatus: String(review?.evidenceStatus || "") || null,
       onboardingStatus: String(onboardingRow?.onboardingStatus || "") || null,
       nextStep: String(onboardingRow?.nextStep || "") || null,
       claimedByUserId: String(business?.claimedByUserId || "") || null,
       managedByUserId: String(business?.managedByUserId || "") || null,
-      ownerUserIds: Array.isArray(business?.ownerUserIds) ? business.ownerUserIds.map((id: any) => String(id)) : [],
+      ownerUserIds: Array.isArray(business?.ownerUserIds)
+        ? business.ownerUserIds.map((id: any) => String(id))
+        : [],
       queueState,
-      queueBucket: queueState ? (FOUNDING_QUEUE_PENDING_STATES.includes(queueState as any) ? "pending" : "history") : null,
-      createdAt: claim?.createdAt || review?.createdAt || membership?.createdAt || business?.createdAt || null,
-      updatedAt: review?.updatedAt || claim?.updatedAt || membership?.updatedAt || business?.updatedAt || null,
-      auditHistory: Array.isArray(review?.auditHistory) ? review.auditHistory : Array.isArray(claim?.auditHistory) ? claim.auditHistory : [],
-      source: claim ? "claim_record" : review ? "membership_review_join" : "membership_only",
+      queueBucket: queueState
+        ? FOUNDING_QUEUE_PENDING_STATES.includes(queueState as any)
+          ? "pending"
+          : "history"
+        : null,
+      createdAt:
+        claim?.createdAt ||
+        review?.createdAt ||
+        membership?.createdAt ||
+        business?.createdAt ||
+        null,
+      updatedAt:
+        review?.updatedAt ||
+        claim?.updatedAt ||
+        membership?.updatedAt ||
+        business?.updatedAt ||
+        null,
+      auditHistory: Array.isArray(review?.auditHistory)
+        ? review.auditHistory
+        : Array.isArray(claim?.auditHistory)
+          ? claim.auditHistory
+          : [],
+      source: claim
+        ? "claim_record"
+        : review
+          ? "membership_review_join"
+          : "membership_only",
       membership,
       claim,
       review,
@@ -797,7 +986,11 @@ export async function getFoundingClaimVerificationRecords(db: Db) {
     });
   }
 
-  rows.sort((a, b) => new Date(b.updatedAt || b.createdAt || 0).getTime() - new Date(a.updatedAt || a.createdAt || 0).getTime());
+  rows.sort(
+    (a, b) =>
+      new Date(b.updatedAt || b.createdAt || 0).getTime() -
+      new Date(a.updatedAt || a.createdAt || 0).getTime(),
+  );
   return rows;
 }
 
@@ -809,11 +1002,19 @@ export async function getPendingFoundingClaimVerifications(db: Db) {
 export async function getFoundingClaimVerificationCounts(db: Db) {
   const rows = await getFoundingClaimVerificationRecords(db);
   return {
-    pending: rows.filter((row) => row.queueState === "ownership_verification_pending").length,
-    additionalEvidenceRequired: rows.filter((row) => row.queueState === "additional_evidence_required").length,
+    pending: rows.filter(
+      (row) => row.queueState === "ownership_verification_pending",
+    ).length,
+    additionalEvidenceRequired: rows.filter(
+      (row) => row.queueState === "additional_evidence_required",
+    ).length,
     disputed: rows.filter((row) => row.queueState === "disputed").length,
-    verificationFailed: rows.filter((row) => row.queueState === "ownership_verification_failed").length,
-    verifiedHistory: rows.filter((row) => row.queueState === "ownership_verified").length,
+    verificationFailed: rows.filter(
+      (row) => row.queueState === "ownership_verification_failed",
+    ).length,
+    verifiedHistory: rows.filter(
+      (row) => row.queueState === "ownership_verified",
+    ).length,
   };
 }
 
