@@ -21,6 +21,9 @@ async function req(path, { method = "GET", body, cookie } = {}) {
     headers: {
       ...(body ? { "Content-Type": "application/json" } : {}),
       ...(cookie ? { Cookie: cookie } : {}),
+      ...(cookie && method !== "GET"
+        ? { Origin: baseUrl, Referer: `${baseUrl}/` }
+        : {}),
     },
     body: body ? JSON.stringify(body) : undefined,
     redirect: "manual",
