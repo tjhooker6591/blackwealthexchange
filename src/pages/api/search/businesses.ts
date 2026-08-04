@@ -24,6 +24,7 @@ import {
   resolveSponsorBusinessLinks,
   type SponsorCampaignRecord,
 } from "@/lib/advertising/sponsorListings";
+import { weekStartUtc } from "@/lib/advertising/sponsorSchedule";
 
 function escapeRegex(input: string) {
   return input.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -789,15 +790,38 @@ export default async function handler(
       const activeSponsorByBusinessId = new Map<string, any>();
       if (!isOrganizations) {
         const now = new Date();
-        const sponsorScheduleRaw = await db
+        const currentWeek = weekStartUtc(now);
+        const currentScheduleRows = await db
           .collection("featured_sponsor_schedule")
           .find({
             placement: "homepage-featured-sponsor",
             status: { $in: ["scheduled", "active"] },
+            $or: [
+              { weekStart: currentWeek },
+              {
+                status: "active",
+                weekStart: { $lte: now },
+                $or: [
+                  { weekEnd: { $exists: false } },
+                  { weekEnd: { $gte: now } },
+                ],
+              },
+            ],
           })
-          .sort({ weekStart: -1, sortOrder: 1, createdAt: -1 })
+          .sort({ sortOrder: 1, createdAt: 1 })
           .limit(40)
           .toArray();
+        const sponsorScheduleRaw = currentScheduleRows.length
+          ? currentScheduleRows
+          : await db
+              .collection("featured_sponsor_schedule")
+              .find({
+                placement: "homepage-featured-sponsor",
+                status: { $in: ["scheduled", "active"] },
+              })
+              .sort({ weekStart: -1, sortOrder: 1, createdAt: -1 })
+              .limit(60)
+              .toArray();
 
         const sponsorFallbackRaw = await db
           .collection("advertising_requests")
