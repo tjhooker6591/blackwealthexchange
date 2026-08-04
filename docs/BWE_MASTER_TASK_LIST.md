@@ -1,3 +1,22 @@
+## CURRENT SESSION HANDOFF
+
+- timestamp: 2026-08-04 22:05 PDT
+- canonical repository: `/Users/blackforge/workspace/bwe/repos/repo_clean`
+- branch: `friday-release-candidate`
+- HEAD: `c626bcfe1737620d864d2b0a9b85bf028293f195`
+- current active task: `CQ-2 Auth/session parity proof continuation`
+- last completed task: `Admin business approvals pagination/count repair + focused admin proof pass`
+- last commit SHA: `c626bcfe1737620d864d2b0a9b85bf028293f195`
+- tests last run: focused admin proof pass on Tuesday, August 4, 2026 for `/admin/dashboard`, `/admin/command-center`, `/admin/financial-review`, `/admin/revenue`, `/admin/directory-approvals`, `/admin/business-approvals`; `npm run typecheck` pass; `node scripts/runtime-check.mjs` pass; localhost `3000` returned HTTP `200`
+- known blockers:
+  - `repo_clean` still has a large pre-existing dirty working tree and is not clean
+  - normal `git commit` hooks trigger repo-wide `eslint src/ --fix` plus `prettier --write .`, which creates broad churn and must be handled carefully
+  - `src/lib/adminFinanceSummary.ts` has a post-finance-commit indentation-only working-tree delta that must be preserved/classified, not discarded
+- current dirty-tree count: `456` file-level git status entries (`git status --porcelain=v1 -uall`)
+- exact next action: run the CQ-2 continuation proofs already present in the working tree (`scripts/runtime-proof-business-parity.mjs`, `scripts/runtime-proof-directory-ownership.mjs`, `scripts/runtime-repro-org-verify.mjs`) without disturbing the preserved unrelated dirty tree; the admin queue-count mismatch was closed as a pagination/visibility defect, not a remaining normalization defect
+- production/deployment status: no deploy this session; no production Mongo writes; no Stripe production mutations
+- dirty-tree preservation snapshot: `/Users/blackforge/workspace/bwe/snapshots/repo_clean-2026-08-03T04-31-39-146Z`
+
 # BWE Master Task List
 
 Legend: `complete` | `in-progress` | `incomplete` | `verify-next`
@@ -6,6 +25,7 @@ Owner default: `BlackForge`
 Revenue-first governing directive override is in force: `docs/BWE_12_MONTH_REVENUE_FIRST_GOVERNING_DIRECTIVE_2026-06-28.md`
 
 Before any item remains active, it must pass the Revenue Gate and be classed as one of:
+
 - Revenue Critical
 - Trust or Payment Critical
 - Customer Fulfillment
