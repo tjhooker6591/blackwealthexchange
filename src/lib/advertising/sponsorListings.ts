@@ -140,6 +140,44 @@ export function matchesSponsorSearchAlias(
   });
 }
 
+export function applySponsorSearchMetadata<T extends Record<string, any>>(
+  item: T,
+  sponsorLink?: SponsorListingLink | null,
+) {
+  const existingAliases = Array.isArray(item?.__sponsorAliases)
+    ? item.__sponsorAliases
+    : [];
+
+  return {
+    ...item,
+    isSponsored: item?.isSponsored === true || Boolean(sponsorLink),
+    __sponsorAliases: sponsorLink?.searchAliases || existingAliases,
+    __sponsorCampaignId:
+      sponsorLink?.campaignId || item?.__sponsorCampaignId || undefined,
+  };
+}
+
+export function findSponsorLinkForBusiness(
+  item: Record<string, any> | null | undefined,
+  sponsorLinks: SponsorListingLink[],
+) {
+  if (!item) return null;
+
+  const businessId = s(item?._id || item?.businessId);
+  const alias = s(item?.alias || item?.slug);
+  const businessName = s(item?.business_name || item?.name);
+
+  return (
+    sponsorLinks.find((link) => {
+      if (businessId && link.businessId === businessId) return true;
+      if (alias && link.alias === alias) return true;
+      return Boolean(
+        businessName && matchesSponsorSearchAlias(businessName, link.searchAliases),
+      );
+    }) || null
+  );
+}
+
 function chooseBetterCampaign(
   current: SponsorListingLink | undefined,
   candidate: SponsorListingLink,
@@ -246,7 +284,10 @@ export function resolveSponsorBusinessLinks(
 
     resolvedByBusinessId.set(
       resolvedBusinessId,
-      chooseBetterCampaign(resolvedByBusinessId.get(resolvedBusinessId), candidate),
+      chooseBetterCampaign(
+        resolvedByBusinessId.get(resolvedBusinessId),
+        candidate,
+      ),
     );
   }
 

@@ -17,7 +17,9 @@ import { expandDirectoryCategoryAliases } from "@/lib/directory/categoryAliases"
 import { publicBusinessBaseQuery } from "@/lib/directory/publicBusinessQuery";
 import { isPublicBusinessVisible } from "@/lib/directory/publicVisibility";
 import {
+  applySponsorSearchMetadata,
   findSponsorBusinessesByIds,
+  findSponsorLinkForBusiness,
   matchesSponsorSearchAlias,
   resolveSponsorBusinessLinks,
   type SponsorCampaignRecord,
@@ -756,6 +758,7 @@ export default async function handler(
       verified: 1,
       trustStatus: 1,
       status: 1,
+      approved: 1,
       claimStage: 1,
       publicListingStatus: 1,
       ownershipReviewStatus: 1,
@@ -873,26 +876,22 @@ export default async function handler(
       const tBeforeFind = performance.now();
       const mergedCandidates = new Map<string, any>();
       for (const candidate of candidates) {
-        const sponsorLink = activeSponsorByBusinessId.get(
+        const sponsorLink =
+          activeSponsorByBusinessId.get(String(candidate._id)) ||
+          findSponsorLinkForBusiness(candidate, activeSponsorLinks);
+        mergedCandidates.set(
           String(candidate._id),
+          applySponsorSearchMetadata(candidate, sponsorLink),
         );
-        mergedCandidates.set(String(candidate._id), {
-          ...candidate,
-          isSponsored: Boolean(sponsorLink),
-          __sponsorAliases: sponsorLink?.searchAliases || [],
-          __sponsorCampaignId: sponsorLink?.campaignId || undefined,
-        });
       }
       for (const sponsorLink of activeSponsorLinks) {
         if (!matchesSponsorSearchAlias(search, sponsorLink.searchAliases))
           continue;
         if (mergedCandidates.has(sponsorLink.businessId)) continue;
-        mergedCandidates.set(sponsorLink.businessId, {
-          ...sponsorLink.business,
-          isSponsored: true,
-          __sponsorAliases: sponsorLink.searchAliases,
-          __sponsorCampaignId: sponsorLink.campaignId,
-        });
+        mergedCandidates.set(
+          sponsorLink.businessId,
+          applySponsorSearchMetadata(sponsorLink.business, sponsorLink),
+        );
       }
 
       const ranked = Array.from(mergedCandidates.values())
@@ -965,16 +964,31 @@ export default async function handler(
             Number(b.item?.amountPaid || 0) - Number(a.item?.amountPaid || 0)
           );
         })
-        .map((x) =>
-          normalizeResultItem(
-            {
-              ...x.item,
-              _matchQuality: x.matchQuality,
-              _listingStrength: x.strength,
-            },
+        .map((x) => {
+          const sponsorLink =
+            activeSponsorByBusinessId.get(String(x.item?._id || "")) ||
+            findSponsorLinkForBusiness(x.item, activeSponsorLinks);
+          const normalized = normalizeResultItem(
+            applySponsorSearchMetadata(
+              {
+                ...x.item,
+                _matchQuality: x.matchQuality,
+                _listingStrength: x.strength,
+              },
+              sponsorLink,
+            ),
             isOrganizations,
-          ),
-        );
+          );
+
+          return applySponsorSearchMetadata(
+            {
+              ...normalized,
+            },
+            sponsorLink ||
+              activeSponsorByBusinessId.get(String(normalized?._id || "")) ||
+              findSponsorLinkForBusiness(normalized, activeSponsorLinks),
+          );
+        });
 
       const tAfterRank = performance.now();
       const rankedWindow = ranked.slice(

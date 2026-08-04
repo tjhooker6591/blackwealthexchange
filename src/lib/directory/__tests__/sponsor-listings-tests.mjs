@@ -62,7 +62,9 @@ await transpileFile(sponsorSourcePath, sponsorTargetPath, [
 ]);
 
 const {
+  applySponsorSearchMetadata,
   buildSponsorSearchAliases,
+  findSponsorLinkForBusiness,
   matchesSponsorSearchAlias,
   resolveSponsorBusinessLinks,
 } = await import(`file://${sponsorTargetPath}`);
@@ -130,6 +132,33 @@ assert.equal(
     linkedBusinesses[0].searchAliases,
   ),
   true,
+);
+
+const mergedMetadata = applySponsorSearchMetadata(
+  {
+    _id: "biz-public",
+    business_name: "Pamfa United Citizens",
+    isSponsored: false,
+    __sponsorAliases: [],
+  },
+  linkedBusinesses[0],
+);
+
+assert.equal(mergedMetadata.isSponsored, true);
+assert.deepEqual(
+  mergedMetadata.__sponsorAliases,
+  linkedBusinesses[0].searchAliases,
+);
+assert.equal(mergedMetadata.__sponsorCampaignId, "sched-1");
+assert.equal(
+  findSponsorLinkForBusiness(
+    {
+      business_name: "Pamfa United Citizens",
+      alias: "pamfa-united-citizens",
+    },
+    linkedBusinesses,
+  )?.campaignId,
+  "sched-1",
 );
 
 console.log("sponsor-listings-tests: ok");
