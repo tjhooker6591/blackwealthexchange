@@ -30,8 +30,8 @@ const TIER_CONTEXT: Record<
   },
   signature: {
     segment: "Growth Membership",
-    valueSummary: "Included with Founding plan.",
-    cta: "Included with Founding plan",
+    valueSummary: "Included with Founding Member plan.",
+    cta: "Included with Founding Member plan",
     badge: "MEMBERSHIP",
     ctaHref: "/pricing",
   },
@@ -53,9 +53,15 @@ export default function BlackCardLandingPage() {
   useEffect(() => {
     (async () => {
       try {
-        const res = await fetch("/api/black-card/member-summary", { credentials: "include", cache: "no-store" });
+        const res = await fetch("/api/black-card/member-summary", {
+          credentials: "include",
+          cache: "no-store",
+        });
         const json = await res.json().catch(() => ({}));
-        const active = res.ok && (String(json?.member?.status || "").toLowerCase() === "active" || Boolean(json?.card?.cardIdDisplay));
+        const active =
+          res.ok &&
+          (String(json?.member?.status || "").toLowerCase() === "active" ||
+            Boolean(json?.card?.cardIdDisplay));
         setHasActiveCard(active);
         setMemberId(String(json?.card?.memberId || ""));
         setVerificationUrl(String(json?.card?.verificationUrl || ""));
@@ -79,10 +85,21 @@ export default function BlackCardLandingPage() {
         <div className="mx-auto max-w-7xl space-y-6">
           {hasActiveCard ? (
             <section className="rounded-xl border border-green-500/30 bg-green-500/10 p-4 text-sm">
-              <div className="text-green-200 font-semibold">Your Standard Black Card is active</div>
-              {memberId ? <div className="text-white/80">Member ID: {memberId}</div> : null}
-              <div className="text-white/80">Verification status: {verificationUrl ? "Available" : "Pending"}</div>
-              <Link href="/dashboard/black-card" className="mt-2 inline-block text-yellow-200 underline">View My Digital Black Card</Link>
+              <div className="text-green-200 font-semibold">
+                Your Standard Black Card is active
+              </div>
+              {memberId ? (
+                <div className="text-white/80">Member ID: {memberId}</div>
+              ) : null}
+              <div className="text-white/80">
+                Verification status: {verificationUrl ? "Available" : "Pending"}
+              </div>
+              <Link
+                href="/dashboard/black-card"
+                className="mt-2 inline-block text-yellow-200 underline"
+              >
+                View My Digital Black Card
+              </Link>
             </section>
           ) : null}
           <section className="rounded-3xl border border-[#9E7B2B]/35 bg-gradient-to-br from-[#17120A] via-[#0C0A07] to-[#070707] p-7 shadow-[0_30px_80px_rgba(0,0,0,0.55)]">
@@ -119,7 +136,7 @@ export default function BlackCardLandingPage() {
                     </div>
                     <div className="mt-1 font-semibold">Signature</div>
                     <div className="text-xs text-white/70">
-                      Included with Founding
+                      Included with Founding Member
                     </div>
                   </div>
                   <div className="rounded-xl border border-white/10 bg-black/40 p-3">
@@ -127,7 +144,9 @@ export default function BlackCardLandingPage() {
                       Executive Tier
                     </div>
                     <div className="mt-1 font-semibold">Elite</div>
-                    <div className="text-xs text-white/70">Invite-only/admin-approved</div>
+                    <div className="text-xs text-white/70">
+                      Invite-only/admin-approved
+                    </div>
                   </div>
                 </div>
 
@@ -171,7 +190,9 @@ export default function BlackCardLandingPage() {
               membership checkout path.
             </p>
             <p className="mt-2 text-xs text-[#AFAFAF]">
-              Your membership plan determines your Black Card tier. Premium activates Standard. Founding Member activates Signature. Elite is invite-only.
+              Your membership plan determines your Black Card tier. Premium
+              activates Standard. Founding Member activates Signature. Elite is
+              invite-only.
             </p>
 
             <div className="mt-4 grid gap-4 lg:grid-cols-3">
@@ -208,7 +229,7 @@ export default function BlackCardLandingPage() {
                         {tierKey === "standard"
                           ? "Included with Premium plan"
                           : tierKey === "signature"
-                            ? "Included with Founding plan"
+                            ? "Included with Founding Member plan"
                             : "Invite Only"}
                       </div>
                       <div className="text-xs text-white/65">
