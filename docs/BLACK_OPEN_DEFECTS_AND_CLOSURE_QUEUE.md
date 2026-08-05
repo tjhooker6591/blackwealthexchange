@@ -154,6 +154,21 @@ _Last updated: 2026-08-05 America/Los_Angeles_
 - Next action:
   - move forward to `DA-01` unless a regression reopens directory-count parity
 
+### DA-01 closure note — Wednesday, August 5, 2026
+
+- Status: COMPLETE
+- Current reality:
+  - the six most recent real role-account joins were identified from current canonical data
+  - the six-member scope contains `1` Business Owner signup and `5` General User signups
+  - no linked `business_claims`, `ownership_reviews`, `business_memberships`, `membership_onboarding`, `membership_fulfillment`, `payments`, `subscription_events`, `entity_ownerships`, `referral_events`, or user-linked `flow_events` were found for those six members
+  - source attribution below the persisted `accountType` is not available from current linked data
+  - no live application defect was established from this lane; the dominant result is measurement gap plus expected non-claim behavior for five general-user signups
+- Proof:
+  - read-only Mongo audit completed on Wednesday, August 5, 2026
+  - full anonymized matrix recorded in `docs/audit-evidence/2026-08-05-member-conversion-attribution.md`
+- Next action:
+  - use this DA-01 result as input to the ongoing claim-verification and onboarding assessment lanes rather than reopening runtime code without stronger evidence
+
 ### Confirmed recent closures in canonical history
 
 - Black Card entitlement proof CSRF alignment: commit `468c78e487958f01f8dbf958783e03818a3a3e23`
