@@ -133,6 +133,7 @@ export default async function handler(
       pending: pendingCount,
       approved: approvedCount,
       rejected: rejectedCount,
+      duplicateReview: duplicateReviewCount,
       total: totalBusinesses,
     } = await getAdminBusinessCounts(db);
 
@@ -146,6 +147,7 @@ export default async function handler(
         pending: pendingCount,
         approved: approvedCount,
         rejected: rejectedCount,
+        duplicateReview: duplicateReviewCount,
         totalBusinesses,
       },
       filters: {

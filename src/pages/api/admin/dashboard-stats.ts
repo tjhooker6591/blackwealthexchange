@@ -255,12 +255,14 @@ export default async function handler(
       pending: pendingBusinesses,
       approved: approvedBusinesses,
       rejected: rejectedBusinesses,
+      duplicateReview: duplicateReviewBusinesses,
       total: totalBusinesses,
     } = await businessCountsPromise;
 
     const normalizedDirectoryStates = Array.isArray(directoryListingDocs)
       ? directoryListingDocs.map((doc) => ({
-          stripeSessionId: s(doc?.stripeSessionId) || s(doc?.lastStripeSessionId),
+          stripeSessionId:
+            s(doc?.stripeSessionId) || s(doc?.lastStripeSessionId),
           state: getDirectoryListingStateFromListing(doc, now),
         }))
       : [];
@@ -317,7 +319,9 @@ export default async function handler(
 
             return getDirectoryListingStateFromPayment(doc, linked);
           })
-          .filter((value): value is NonNullable<typeof value> => Boolean(value)),
+          .filter((value): value is NonNullable<typeof value> =>
+            Boolean(value),
+          ),
       );
 
     const allDirectoryStates = [
@@ -370,6 +374,7 @@ export default async function handler(
 
     const pendingApprovalsTotal =
       n(pendingBusinesses) +
+      n(duplicateReviewBusinesses) +
       n(pendingOrganizations) +
       n(pendingJobs) +
       n(pendingProducts) +
@@ -577,6 +582,7 @@ export default async function handler(
         pending: pendingBusinesses,
         approved: approvedBusinesses,
         rejected: rejectedBusinesses,
+        duplicateReview: duplicateReviewBusinesses,
         total: totalBusinesses,
       },
 
@@ -613,6 +619,7 @@ export default async function handler(
 
       // Optional legacy fields (helps older dashboard components if any still use them)
       pendingBusinesses,
+      duplicateReviewBusinesses,
       pendingOrganizations,
       pendingPayouts,
       activeAffiliates,
