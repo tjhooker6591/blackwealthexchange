@@ -6,7 +6,8 @@ _Last updated: 2026-08-06 America/Los_Angeles_
 
 - Canonical repository: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - Canonical branch: `friday-release-candidate`
-- Canonical HEAD: `33e9e7da2a7f2699621fbdb44ba4dfedc02f64b3`
+- Latest runtime checkpoint SHA: `64286f9a0b0c356f2bf93391e3265d95042a502a`
+- Current git HEAD verified live during session: `40a409fb21b16137b89e9cace7e7aa95c99a1642`
 - Dirty-tree preservation snapshot: `/Users/blackforge/workspace/bwe/snapshots/repo_clean-2026-08-03T04-31-39-146Z`
 - Complete file manifest: `docs/recovery/BWE_COMPLETE_FILE_MANIFEST_CURRENT.csv`
 
@@ -170,14 +171,14 @@ _Last updated: 2026-08-06 America/Los_Angeles_
 - Next action:
   - use this DA-01 result as input to the ongoing claim-verification and onboarding assessment lanes rather than reopening runtime code without stronger evidence
 
-### BWE-02 checkpoint note — Thursday, August 6, 2026
+### BWE-02 closure note — Thursday, August 6, 2026
 
-- Status: ACTIVE
+- Status: COMPLETE
 - Current reality:
   - verified-business ownership access, post-verification business editing, and revoke/dispute denial remain green from current runtime proof
-  - the smallest confirmed live defect in the business-side claim queue was terminology drift: the admin flow still exposed legacy `request_additional_evidence` wording while the binding BWE recovery terminology is `Request More Evidence`
-  - the business-side claim queue remains coupled to the founding-membership admin surface, but current evidence does not yet prove that this coupling itself breaks ownership verification or protected business editing
-  - one focused join-proof assertion was stale and has now been corrected so the current BWE-02 proof set passes again
+  - the only confirmed live defect in the remaining business-side admin claim flow was terminology drift, and commit `64286f9a0b0c356f2bf93391e3265d95042a502a` already normalized that flow to `Request More Evidence`
+  - the remaining business-claim coupling to the founding-membership admin surface is legacy implementation structure, not a newly proven user-visible defect in the current canonical workflow
+  - current end-to-end proof now covers public listing discovery, claim initiation routing, pending queue presence, `Request More Evidence`, `Verify Ownership`, verified profile access, media update/delete, unrelated-user denial, and revoke/dispute denial
 - Exact files:
   - `src/lib/founding-membership.ts`
   - `src/pages/api/admin/founding-memberships.ts`
@@ -194,10 +195,14 @@ _Last updated: 2026-08-06 America/Los_Angeles_
   - `node src/lib/founding-membership/__tests__/transition-helper-tests.mjs` pass on Thursday, August 6, 2026
   - `DOTENV_CONFIG_PATH=.env.local node -r dotenv/config scripts/runtime-proof-directory-ownership.mjs` pass on Thursday, August 6, 2026
   - `node scripts/runtime-proof-business-parity.mjs` pass on Thursday, August 6, 2026
-  - `npm run typecheck` pass on Thursday, August 6, 2026
+  - `node tmp/phase2-authorized-edit-business-full-proof.mjs` pass on Thursday, August 6, 2026
+  - `node tmp/phase2-denial-probe.mjs` pass on Thursday, August 6, 2026
+  - `node tmp/phase2-disputed-revoked-browser-proof.mjs` pass on Thursday, August 6, 2026
+  - `node tmp/phase2-claim-queue-media-proof.mjs` pass on Thursday, August 6, 2026
+  - `npm run typecheck` pass on Thursday, August 6, 2026 before closure review
   - localhost `200` proofs remain current for `/`, `/business-directory`, `/signup`, and `/founding-membership`
 - Next action:
-  - continue the broader BWE-02 queue/API reconciliation and determine whether the remaining founding-membership coupling is just legacy structure or a remaining user-visible claim-verification defect
+  - preserve the proof set and reopen only on regression; next active bundle is Black Card canonical runtime-file closure
 
 ### Confirmed recent closures in canonical history
 
