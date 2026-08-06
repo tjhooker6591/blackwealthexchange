@@ -6,7 +6,7 @@ _Last updated: 2026-08-05 America/Los_Angeles_
 
 - Canonical repository: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - Canonical branch: `friday-release-candidate`
-- Canonical HEAD: `b4f3e6ffdb0d061ddb218f0137ebdd1db4fbf584`
+- Canonical HEAD: `d57aecd3455b2f0eb8c02849bfb388a16c196ef1`
 - Dirty-tree preservation snapshot: `/Users/blackforge/workspace/bwe/snapshots/repo_clean-2026-08-03T04-31-39-146Z`
 - Complete file manifest: `docs/recovery/BWE_COMPLETE_FILE_MANIFEST_CURRENT.csv`
 
@@ -158,11 +158,12 @@ _Last updated: 2026-08-05 America/Los_Angeles_
 
 - Status: COMPLETE
 - Current reality:
-  - the six most recent real role-account joins were identified from current canonical data
-  - the six-member scope contains `1` Business Owner signup and `5` General User signups
-  - no linked `business_claims`, `ownership_reviews`, `business_memberships`, `membership_onboarding`, `membership_fulfillment`, `payments`, `subscription_events`, `entity_ownerships`, `referral_events`, or user-linked `flow_events` were found for those six members
+  - the eight most recent real role-account joins were identified from current canonical data
+  - the eight-member scope contains `1` Business Owner signup and `7` General User signups
+  - the earlier six-member checkpoint was reconciled as a scope-truncation mistake, not a data-loss problem; two additional general-user records were present in the same `users` collection and analysis window
+  - no linked `business_claims`, `ownership_reviews`, `business_memberships`, `membership_onboarding`, `membership_fulfillment`, `payments`, `subscription_events`, `entity_ownerships`, `referral_events`, or user-linked `flow_events` were found for those eight members
   - source attribution below the persisted `accountType` is not available from current linked data
-  - no live application defect was established from this lane; the dominant result is measurement gap plus expected non-claim behavior for five general-user signups
+  - no live application defect was established from this lane; the dominant result is measurement gap plus expected non-claim behavior for seven general-user signups
 - Proof:
   - read-only Mongo audit completed on Wednesday, August 5, 2026
   - full anonymized matrix recorded in `docs/audit-evidence/2026-08-05-member-conversion-attribution.md`

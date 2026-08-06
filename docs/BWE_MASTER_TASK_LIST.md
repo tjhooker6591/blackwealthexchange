@@ -1,12 +1,12 @@
 ## CURRENT SESSION HANDOFF
 
-- timestamp: 2026-08-05 12:02 PDT
+- timestamp: 2026-08-05 13:02 PDT
 - canonical repository: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - branch: `friday-release-candidate`
-- HEAD: `b4f3e6ffdb0d061ddb218f0137ebdd1db4fbf584`
+- HEAD: `d57aecd3455b2f0eb8c02849bfb388a16c196ef1`
 - last completed workstream: `DA-01 member conversion attribution`
 - DA-01 current result: `COMPLETE`
-- last commit SHA: `f28ae714d373427c020dddb8fb75cfc85aef1d29`
+- last commit SHA: `d57aecd3455b2f0eb8c02849bfb388a16c196ef1`
 - exact production files changed:
   - `src/lib/adminBusinessStatus.ts`
   - `src/pages/api/admin/get-pending-businesses.ts`
@@ -82,8 +82,9 @@
   - `src/pages/search-results.tsx`
   - `src/pages/support.tsx`
 - tests/proofs completed in this DA-01 lane:
-  - read-only Mongo audit identified the six most recent real role-account joins on Wednesday, August 5, 2026
-  - no linked `business_claims`, `ownership_reviews`, `business_memberships`, `membership_onboarding`, `membership_fulfillment`, `payments`, `subscription_events`, `entity_ownerships`, `referral_events`, or user-linked `flow_events` were found for those six members
+  - read-only Mongo audit identified the eight most recent real role-account joins on Wednesday, August 5, 2026
+  - the earlier six-member checkpoint was reconciled to the established eight-member scope by adding two additional general-user joins already present in the same `users` collection and time window
+  - no linked `business_claims`, `ownership_reviews`, `business_memberships`, `membership_onboarding`, `membership_fulfillment`, `payments`, `subscription_events`, `entity_ownerships`, `referral_events`, or user-linked `flow_events` were found for those eight members
   - `/` and `/business-directory` return `200` on localhost:3000 on Wednesday, August 5, 2026
 - unresolved blockers/data dependencies:
   - `repo_clean` still has a large pre-existing dirty working tree and is not clean
@@ -134,7 +135,7 @@
 | BWE-16 | Directory/media stale-image handling                                      | COMPLETE | `21565e4`   | No implementation work pending; preserve image resolver test and browser proof.                                                                                                                                          |
 | BWE-17 | Business-approval queue count / pagination                                | COMPLETE | `df4a9ae`   | No implementation work pending; preserve admin queue/browser proof.                                                                                                                                                      |
 | BWE-18 | Sponsor -> business linkage / ordinary search / sponsored-business API    | COMPLETE | `f098f49`   | Expired schedule fallback promotion is closed and the seven-name sponsor/source matrix now confirms the remaining gaps are data/linkage dependencies rather than a live runtime defect.                                  |
-| DA-01  | Member conversion attribution (recent joins)                              | COMPLETE | `analysis`  | Six-member scope resolved: `1` business-owner signup and `5` general-user signups, with no linked claim, ownership, or paid-membership records and no source attribution available from current telemetry.             |
+| DA-01  | Member conversion attribution (recent joins)                              | COMPLETE | `analysis`  | Eight-member scope resolved: `1` business-owner signup and `7` general-user signups, with no linked claim, ownership, or paid-membership records and no source attribution available from current telemetry.            |
 | DA-02  | Directory count reconciliation                                            | COMPLETE | `b4f3e6f`   | Public/search/UI/claim totals reconcile at `365`; raw businesses reconcile at `2272` only after surfacing the separate `duplicate_review` bucket (`24`) beside the `1633` main approval queue.                         |
 | DA-03  | Pricing and Black Card consistency                                        | COMPLETE | `35f93c5`   | Founder monthly billing, Black Card public copy, entitlements, member auth flows, and admin list proof are current; no remaining pricing/plan contradiction is established in canonical runtime evidence.             |
 | DA-04  | Account-type onboarding                                                   | PENDING  | `842ba7f`   | Audit and prove Business Owner, Seller, Employer, and General User onboarding entry/redirect/end states.                                                                                                                 |
@@ -332,16 +333,17 @@
 - Exact files:
   - none in application runtime
 - Scope:
-  - six most recent real role-account joins across `users`, `businesses`, `sellers`, and `employers`, excluding test/admin/internal accounts and imported non-signup business rows
+  - eight most recent real role-account joins across `users`, `businesses`, `sellers`, and `employers`, excluding test/admin/internal accounts and imported non-signup business rows
 - Findings:
   - `1` Business Owner
-  - `5` General Users
+  - `7` General Users
   - `0` Sellers
   - `0` Employers
   - no linked claims
   - no linked ownership reviews
   - no linked founding or paid membership conversions
-  - no linked source/search attribution for the six-member scope
+  - no linked source/search attribution for the seven General User records
+  - the prior six-member closure was corrected by accounting for two additional general-user joins already present in the same query window
 - Root cause:
   - not a proven runtime defect; this lane closes as a data/measurement result
   - current telemetry is insufficient to attribute search/find/claim intent at the individual-member level for these six joins
@@ -374,7 +376,7 @@
 | directory/media stale-image handling                                         | `BWE-16`                | COMPLETE | `21565e4`   | image-resolver test passes; stale upload request eliminated from live directory page                                                                   | none beyond regression watch                                                                                    |
 | business-approval pagination/count                                           | `BWE-17`                | COMPLETE | `df4a9ae`   | pending count/API/page text all align at `1633`; paging controls present                                                                               | none beyond regression watch                                                                                    |
 | sponsor/business ordinary search                                             | `BWE-18`                | COMPLETE | `f098f49`   | expired sponsor promotion is removed, PAMFA still resolves as a normal public business, and the remaining names are now classified as data-dependent | none in runtime code; future work only if source-data/business linkage is created outside this lane              |
-| Direct Assessment 01 — Member conversion attribution                         | `DA-01`                 | COMPLETE | `analysis`  | six most recent real joins are now classified; five are general-user signups, one is a business-owner signup, and no downstream claim/membership linkage is present | none beyond future telemetry improvements or claim-lane follow-up                                               |
+| Direct Assessment 01 — Member conversion attribution                         | `DA-01`                 | COMPLETE | `analysis`  | eight most recent real joins are now classified; seven are general-user signups, one is a business-owner signup, and no downstream claim/membership linkage is present | none beyond future telemetry improvements or claim-lane follow-up                                               |
 | Direct Assessment 02 — Directory count reconciliation                        | `DA-02`                 | COMPLETE | `b4f3e6f`   | public/search/UI totals reconcile at `365`; admin totals now reconcile `2272` raw businesses by surfacing a separate `24` duplicate-review bucket     | none beyond regression watch                                                                                    |
 | Direct Assessment 03 — Pricing and Black Card consistency                    | `DA-03`                 | COMPLETE | `35f93c5`   | founder cadence defect is closed and Black Card pricing/copy/runtime proofs now pass                                                                   | none beyond regression watch                                                                                    |
 | Direct Assessment 04 — Account-type onboarding                               | `DA-04`                 | PENDING  | `842ba7f`   | onboarding code exists but current path-by-path proof is missing                                                                                       | audit Business Owner, Seller, Employer, and General User onboarding end states                                  |
