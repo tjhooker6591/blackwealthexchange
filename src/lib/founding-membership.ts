@@ -254,6 +254,7 @@ export function formatUsdFromCents(value: unknown) {
 
 export type FoundingVerificationAction =
   | "verify"
+  | "request_more_evidence"
   | "request_additional_evidence"
   | "verification_failed"
   | "mark_disputed"
@@ -331,7 +332,10 @@ export function buildFoundingTransitionState(args: {
     };
   }
 
-  if (action === "request_additional_evidence") {
+  if (
+    action === "request_more_evidence" ||
+    action === "request_additional_evidence"
+  ) {
     return {
       resultingStatus: "additional_evidence_required",
       claimStatus: "additional_evidence_required",

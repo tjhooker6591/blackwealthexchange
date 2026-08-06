@@ -33,6 +33,10 @@ export default async function handler(
 
     if (req.method === "POST") {
       const action = String(req.body?.action || "").trim();
+      const normalizedAction =
+        action === "request_additional_evidence"
+          ? "request_more_evidence"
+          : action;
       const claimId = String(req.body?.claimId || "").trim();
       const membershipId = String(req.body?.membershipId || "").trim();
       const reason = String(req.body?.reason || "").trim();
@@ -43,13 +47,13 @@ export default async function handler(
           : null;
       const allowedActions = new Set([
         "verify",
-        "request_additional_evidence",
+        "request_more_evidence",
         "verification_failed",
         "mark_disputed",
         "reopen_verification",
         "submit_evidence",
       ]);
-      if (!allowedActions.has(action) || !membershipId) {
+      if (!allowedActions.has(normalizedAction) || !membershipId) {
         return res
           .status(400)
           .json({ ok: false, error: "invalid_action_or_membership" });
@@ -78,7 +82,7 @@ export default async function handler(
         ).trim() || null;
       const sourcePayment = await findFoundingSourcePayment(db, membership);
       const transition = buildFoundingTransitionState({
-        action: action as any,
+        action: normalizedAction as any,
         previousStatus,
         evidenceStatus: review.evidenceStatus,
         paymentAmountCents:
@@ -88,7 +92,10 @@ export default async function handler(
           membership.amountCents ||
           4900,
         paymentCurrency:
-          sourcePayment?.currency || membership.paymentCurrency || membership.currency || "usd",
+          sourcePayment?.currency ||
+          membership.paymentCurrency ||
+          membership.currency ||
+          "usd",
       });
       const resultingStatus = transition.resultingStatus;
       const claimStatus = transition.claimStatus;
@@ -97,7 +104,7 @@ export default async function handler(
       const evidenceStatus = transition.evidenceStatus;
 
       const auditEntry = {
-        action,
+        action: normalizedAction,
         reviewer: adminEmail,
         previousStatus,
         resultingStatus,
@@ -161,7 +168,10 @@ export default async function handler(
             managementAccessStatus: transition.managementAccessStatus,
             paymentStatus: transition.paymentStatus,
             paymentAmountCents: transition.paymentAmountCents,
-            paymentDisplayAmount: transition.paymentDisplayAmount.replace(" USD", ""),
+            paymentDisplayAmount: transition.paymentDisplayAmount.replace(
+              " USD",
+              "",
+            ),
             paymentCurrency: transition.paymentCurrency,
             updatedAt: new Date(),
           },
@@ -202,11 +212,13 @@ export default async function handler(
             ownershipReviewStatus: resultingStatus,
             publicListingStatus: transition.publicListingStatus,
             claimLocked,
-            claimedByUserId: action === "verify" ? membership.userId : null,
-            managedByUserId: action === "verify" ? membership.userId : null,
+            claimedByUserId:
+              normalizedAction === "verify" ? membership.userId : null,
+            managedByUserId:
+              normalizedAction === "verify" ? membership.userId : null,
             updatedAt: new Date(),
           },
-          ...(action === "verify"
+          ...(normalizedAction === "verify"
             ? { $addToSet: { ownerUserIds: membership.userId } }
             : {}),
         },
@@ -219,7 +231,7 @@ export default async function handler(
         {
           $set: {
             claimedBusinessId:
-              action === "verify" ? membership.businessId : null,
+              normalizedAction === "verify" ? membership.businessId : null,
             foundingMembershipId: membershipId,
             foundingOwnershipStatus: resultingStatus,
             updatedAt: new Date(),
@@ -306,11 +318,12 @@ export default async function handler(
         null,
     }));
 
-    const [normalizedClaims, normalizedRecords, claimVerificationCounts] = await Promise.all([
-      getPendingFoundingClaimVerifications(db),
-      getFoundingClaimVerificationRecords(db),
-      getFoundingClaimVerificationCounts(db),
-    ]);
+    const [normalizedClaims, normalizedRecords, claimVerificationCounts] =
+      await Promise.all([
+        getPendingFoundingClaimVerifications(db),
+        getFoundingClaimVerificationRecords(db),
+        getFoundingClaimVerificationCounts(db),
+      ]);
 
     return res.status(200).json({
       ok: true,

@@ -31,7 +31,7 @@ function labelize(value: unknown) {
 
 const ACTIONS = [
   { key: "verify", label: "Verify Ownership" },
-  { key: "request_additional_evidence", label: "Request Additional Evidence" },
+  { key: "request_more_evidence", label: "Request More Evidence" },
   { key: "verification_failed", label: "Verification Failed" },
   { key: "mark_disputed", label: "Mark as Disputed" },
   { key: "reopen_verification", label: "Reopen Verification" },
@@ -114,7 +114,7 @@ export default function ClaimVerificationPage() {
                 href="/admin/founding-memberships"
                 className="text-yellow-300 underline"
               >
-                Founding Membership Pilot Review
+                Founding Membership Claim Records
               </Link>
               <Link
                 href="/admin/dashboard"

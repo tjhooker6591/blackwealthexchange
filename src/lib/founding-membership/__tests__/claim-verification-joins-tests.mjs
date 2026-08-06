@@ -78,8 +78,7 @@ assert.equal(
   objectIdLike,
 );
 assert.equal(
-  findBusinessByStoredId([{ _id: objectIdLike }], " 680c1e52770af2064fe4c7ad ")
-    ?._id,
+  findBusinessByStoredId([{ _id: objectIdLike }], ` ${objectIdLike} `)?._id,
   objectIdLike,
 );
 assert.equal(

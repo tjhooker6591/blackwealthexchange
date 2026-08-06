@@ -118,7 +118,10 @@ function applyWebhook(state) {
 }
 
 function adminAction(state, action) {
-  if (action === "request_additional_evidence") {
+  if (
+    action === "request_more_evidence" ||
+    action === "request_additional_evidence"
+  ) {
     state.claim.claimStatus = "additional_evidence_required";
     state.review.reviewStatus = "additional_evidence_required";
     state.business.claimStage = "ownership_verification_pending";
@@ -208,7 +211,7 @@ assert.equal(twice.membership.membershipId, once.membership.membershipId);
 assert.equal(twice.claim.membershipId, once.claim.membershipId);
 assert.equal(twice.review.sourceMembershipId, once.review.sourceMembershipId);
 
-adminAction(twice, "request_additional_evidence");
+adminAction(twice, "request_more_evidence");
 assert.equal(twice.claim.claimLocked, true);
 assert.equal(twice.business.claimStage, "ownership_verification_pending");
 

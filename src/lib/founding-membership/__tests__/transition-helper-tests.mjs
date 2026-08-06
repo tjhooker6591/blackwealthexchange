@@ -18,7 +18,9 @@ assert.equal(verified.paymentStatus, "paid");
 assert.equal(verified.paymentAmountCents, 4900);
 assert.equal(verified.paymentDisplayAmount, "$49.00 USD");
 
-const evidence = buildFoundingTransitionState({ action: "request_additional_evidence" });
+const evidence = buildFoundingTransitionState({
+  action: "request_more_evidence",
+});
 assert.equal(evidence.resultingStatus, "additional_evidence_required");
 assert.equal(evidence.claimStage, "ownership_verification_pending");
 assert.equal(evidence.evidencePortalStatus, "open");
