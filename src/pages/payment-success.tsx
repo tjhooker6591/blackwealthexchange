@@ -49,10 +49,11 @@ export default function PaymentSuccessPage() {
     typeof router.query.businessId === "string" ? router.query.businessId : "";
 
   const foundingMembership = context === "founding-membership";
-  const [membershipStatus, setMembershipStatus] = useState<MembershipStatus | null>(null);
-  const [statusState, setStatusState] = useState<"idle" | "processing" | "confirmed" | "unconfirmed" | "error">(
-    foundingMembership ? "processing" : "idle",
-  );
+  const [membershipStatus, setMembershipStatus] =
+    useState<MembershipStatus | null>(null);
+  const [statusState, setStatusState] = useState<
+    "idle" | "processing" | "confirmed" | "unconfirmed" | "error"
+  >(foundingMembership ? "processing" : "idle");
   const [statusError, setStatusError] = useState("");
 
   useEffect(() => {
@@ -168,32 +169,51 @@ export default function PaymentSuccessPage() {
       <main className="min-h-screen bg-black text-white px-6 py-12">
         <div className="max-w-2xl mx-auto">
           <div className="rounded-2xl border border-yellow-500/20 bg-white/5 p-6 md:p-8 shadow-xl">
-            <h1 className="text-3xl font-bold text-yellow-400">{stateCopy.title}</h1>
+            <h1 className="text-3xl font-bold text-yellow-400">
+              {stateCopy.title}
+            </h1>
 
             <p className="mt-3 text-white/80">{stateCopy.body}</p>
 
             {foundingMembership ? (
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
                 <div className="rounded-xl border border-white/10 bg-black/30 p-4">
-                  <div className="text-xs uppercase tracking-wide text-white/50">Membership status</div>
+                  <div className="text-xs uppercase tracking-wide text-white/50">
+                    Membership status
+                  </div>
                   <div className="mt-1 font-semibold text-white">
-                    {membershipStatus?.membershipStatus ? labelize(membershipStatus.membershipStatus) : labelize(statusState === "processing" ? "processing" : null)}
+                    {membershipStatus?.membershipStatus
+                      ? labelize(membershipStatus.membershipStatus)
+                      : labelize(
+                          statusState === "processing" ? "processing" : null,
+                        )}
                   </div>
                 </div>
                 <div className="rounded-xl border border-white/10 bg-black/30 p-4">
-                  <div className="text-xs uppercase tracking-wide text-white/50">Selected business</div>
+                  <div className="text-xs uppercase tracking-wide text-white/50">
+                    Selected business
+                  </div>
                   <div className="mt-1 font-semibold text-white">
-                    {membershipStatus?.business?.name || (businessId ? `Business ID ${businessId}` : "Awaiting confirmed business linkage")}
+                    {membershipStatus?.business?.name ||
+                      (businessId
+                        ? `Business ID ${businessId}`
+                        : "Awaiting confirmed business linkage")}
                   </div>
                 </div>
                 <div className="rounded-xl border border-white/10 bg-black/30 p-4">
-                  <div className="text-xs uppercase tracking-wide text-white/50">Claim status</div>
+                  <div className="text-xs uppercase tracking-wide text-white/50">
+                    Claim status
+                  </div>
                   <div className="mt-1 font-semibold text-white">
-                    {membershipStatus?.claimStatus ? labelize(membershipStatus.claimStatus) : "Not yet confirmed"}
+                    {membershipStatus?.claimStatus
+                      ? labelize(membershipStatus.claimStatus)
+                      : "Not yet confirmed"}
                   </div>
                 </div>
                 <div className="rounded-xl border border-white/10 bg-black/30 p-4">
-                  <div className="text-xs uppercase tracking-wide text-white/50">Ownership review</div>
+                  <div className="text-xs uppercase tracking-wide text-white/50">
+                    Ownership review
+                  </div>
                   <div className="mt-1 font-semibold text-white">
                     {membershipStatus?.ownershipReviewStatus
                       ? labelize(membershipStatus.ownershipReviewStatus)
@@ -201,14 +221,22 @@ export default function PaymentSuccessPage() {
                   </div>
                 </div>
                 <div className="rounded-xl border border-white/10 bg-black/30 p-4">
-                  <div className="text-xs uppercase tracking-wide text-white/50">Fulfillment</div>
+                  <div className="text-xs uppercase tracking-wide text-white/50">
+                    Fulfillment
+                  </div>
                   <div className="mt-1 font-semibold text-white">
-                    {membershipStatus?.fulfillmentStatus ? labelize(membershipStatus.fulfillmentStatus) : "Not yet confirmed"}
+                    {membershipStatus?.fulfillmentStatus
+                      ? labelize(membershipStatus.fulfillmentStatus)
+                      : "Not yet confirmed"}
                   </div>
                 </div>
                 <div className="rounded-xl border border-white/10 bg-black/30 p-4">
-                  <div className="text-xs uppercase tracking-wide text-white/50">Important note</div>
-                  <div className="mt-1 text-sm text-white/75">Payment and ownership verification are separate states.</div>
+                  <div className="text-xs uppercase tracking-wide text-white/50">
+                    Important note
+                  </div>
+                  <div className="mt-1 text-sm text-white/75">
+                    Payment and ownership verification are separate states.
+                  </div>
                 </div>
               </div>
             ) : null}
@@ -221,8 +249,12 @@ export default function PaymentSuccessPage() {
 
             {sessionId ? (
               <div className="mt-4 rounded-xl border border-white/10 bg-black/30 p-3">
-                <p className="text-xs uppercase tracking-wide text-white/50">Stripe Checkout Session</p>
-                <p className="mt-1 text-xs text-white/70 break-all">{sessionId}</p>
+                <p className="text-xs uppercase tracking-wide text-white/50">
+                  Stripe Checkout Session
+                </p>
+                <p className="mt-1 text-xs text-white/70 break-all">
+                  {sessionId}
+                </p>
               </div>
             ) : null}
 
@@ -236,7 +268,11 @@ export default function PaymentSuccessPage() {
                     View Member Status
                   </Link>
                   <Link
-                    href={businessId ? `/founding-membership?businessId=${encodeURIComponent(businessId)}` : "/founding-membership"}
+                    href={
+                      businessId
+                        ? `/founding-membership?businessId=${encodeURIComponent(businessId)}`
+                        : "/founding-membership"
+                    }
                     className="inline-flex items-center justify-center rounded-md border border-yellow-500/40 px-4 py-2 font-semibold text-yellow-300 hover:border-yellow-400/70 transition"
                   >
                     Review Membership Details

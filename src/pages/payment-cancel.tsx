@@ -49,19 +49,27 @@ export default function PaymentCancelPage() {
 
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
-                href={foundingMembership
-                  ? `/founding-membership${params.businessId ? `?businessId=${encodeURIComponent(params.businessId)}` : ""}`
-                  : "/business-directory"}
+                href={
+                  foundingMembership
+                    ? `/founding-membership${params.businessId ? `?businessId=${encodeURIComponent(params.businessId)}` : ""}`
+                    : "/business-directory"
+                }
                 className="inline-flex items-center rounded-md bg-yellow-500 px-4 py-2 font-semibold text-black hover:bg-yellow-400 transition"
               >
-                {foundingMembership ? "Return to Membership Offer" : "Try Again"}
+                {foundingMembership
+                  ? "Return to Membership Offer"
+                  : "Try Again"}
               </Link>
 
               <Link
-                href={foundingMembership ? "/business-directory" : "/advertising"}
+                href={
+                  foundingMembership ? "/business-directory" : "/advertising"
+                }
                 className="inline-flex items-center rounded-md border border-yellow-500/40 px-4 py-2 font-semibold text-yellow-300 hover:border-yellow-400/70 transition"
               >
-                {foundingMembership ? "Browse Claimable Businesses" : "Advertising Hub"}
+                {foundingMembership
+                  ? "Browse Claimable Businesses"
+                  : "Advertising Hub"}
               </Link>
 
               <Link

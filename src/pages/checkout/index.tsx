@@ -54,7 +54,10 @@ export default function CheckoutPage({
   }, [initialProductName, router.query.productName]);
 
   const amountLabel = useMemo(() => {
-    const amount = typeof router.query.amount === "string" ? router.query.amount : initialAmount;
+    const amount =
+      typeof router.query.amount === "string"
+        ? router.query.amount
+        : initialAmount;
     return asMoney(amount);
   }, [initialAmount, router.query.amount]);
 
@@ -210,13 +213,15 @@ export default function CheckoutPage({
   );
 }
 
-
-export const getServerSideProps: GetServerSideProps<CheckoutPageProps> = async ({ query }) => ({
+export const getServerSideProps: GetServerSideProps<
+  CheckoutPageProps
+> = async ({ query }) => ({
   props: {
     initialPlan: typeof query.plan === "string" ? query.plan : "",
     initialType: typeof query.type === "string" ? query.type : "",
     initialSource: typeof query.source === "string" ? query.source : "",
-    initialProductName: typeof query.productName === "string" ? query.productName : "",
+    initialProductName:
+      typeof query.productName === "string" ? query.productName : "",
     initialAmount: typeof query.amount === "string" ? query.amount : "",
   },
 });
