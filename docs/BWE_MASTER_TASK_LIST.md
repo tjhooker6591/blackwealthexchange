@@ -1,28 +1,25 @@
 ## CURRENT SESSION HANDOFF
 
-- timestamp: 2026-08-06 13:40 PDT
+- timestamp: 2026-08-06 14:01 PDT
 - canonical repository: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - branch: `friday-release-candidate`
-- latest runtime checkpoint SHA: `84968bbc4917a7d3a52e478e0bedb04a8250b793`
-- current git HEAD verified live during session: `84968bbc4917a7d3a52e478e0bedb04a8250b793`
-- last completed workstream: `BWE-11 Black Card`
-- current active workstream: `BWE-12 Pricing / revenue readiness`
+- latest runtime checkpoint SHA: `7c22d03adf86d878cfe60efc32643d9aa23370b5`
+- current git HEAD verified live during session: `7c22d03adf86d878cfe60efc32643d9aa23370b5`
+- last completed workstream: `BWE-12 Pricing / revenue readiness`
+- current active workstream: `BWE-07 Business profile image/logo behavior`
 - DA-01 current result: `COMPLETE`
 - BWE-02 current result: `COMPLETE`
-- last runtime commit SHA: `84968bbc4917a7d3a52e478e0bedb04a8250b793`
+- last runtime commit SHA: `7c22d03adf86d878cfe60efc32643d9aa23370b5`
 - exact production files changed:
-  - `src/components/black-card/PremiumDigitalCard.tsx`
-  - `src/lib/black-card-membership.ts`
-  - `src/lib/black-card-state.ts`
-  - `src/pages/admin/black-card.tsx`
-  - `src/pages/api/admin/black-card/cards.ts`
-  - `src/pages/api/admin/black-card/digital-requests.ts`
-  - `src/pages/api/black-card/digital-request.ts`
-  - `src/pages/api/black-card/member-summary.ts`
-  - `src/pages/black-card/join.tsx`
-  - `src/pages/dashboard/black-card.tsx`
+  - `src/pages/pricing.tsx`
+  - `src/pages/checkout/index.tsx`
+  - `src/pages/payment-success.tsx`
+  - `src/pages/payment-cancel.tsx`
+  - `src/pages/api/stripe/webhook-handler.ts`
 - exact production files committed:
-  - `84968bbc4917a7d3a52e478e0bedb04a8250b793` -> `src/components/black-card/PremiumDigitalCard.tsx`, `src/lib/black-card-membership.ts`, `src/lib/black-card-state.ts`, `src/pages/admin/black-card.tsx`, `src/pages/api/admin/black-card/cards.ts`, `src/pages/api/admin/black-card/digital-requests.ts`, `src/pages/api/black-card/digital-request.ts`, `src/pages/api/black-card/member-summary.ts`, `src/pages/black-card/join.tsx`, `src/pages/dashboard/black-card.tsx`, `scripts/runtime-proof-black-card-admin.mjs`, `scripts/runtime-proof-owner-blackcard-ui.mjs`
+  - `5f523b0b51cf65b991fd337a476365efb1c71b20` -> `src/pages/pricing.tsx`
+  - `48759062ed5862fc36eb3bdfc88926a72c757749` -> `src/pages/checkout/index.tsx`, `src/pages/payment-success.tsx`, `src/pages/payment-cancel.tsx`
+  - `7c22d03adf86d878cfe60efc32643d9aa23370b5` -> `src/pages/api/stripe/webhook-handler.ts`
 - runtime application files still dirty:
   - `src/components/challenge/ChallengeShareCard.tsx`
   - `src/components/dashboards/UserDashboard.tsx`
@@ -95,9 +92,9 @@
   - `repo_clean` still has a large pre-existing dirty working tree and is not clean
   - normal `git commit` hooks trigger repo-wide `eslint src/ --fix` plus `prettier --write .`, which creates broad churn and must be handled carefully
   - `src/lib/adminFinanceSummary.ts` still has a post-finance-commit indentation-only working-tree delta that must be preserved/classified, not discarded
-- current dirty-tree count: `447` file-level git status entries (`git status --porcelain=v1 -uall`)
-- exact next workstream: `BWE-12 Pricing / revenue readiness`
-- exact first action for the next session: audit the remaining pricing and revenue surfaces against the now-committed Black Card runtime bundle, then close the largest safe revenue-readiness subset with shared proof
+- current dirty-tree count: `442` file-level git status entries (`git status --porcelain=v1 -uall`)
+- exact next workstream: `BWE-07 Business profile image/logo behavior`
+- exact first action for the next session: close the remaining business-owned image/media and profile-management runtime subset with shared ownership/profile/media proofs and a focused canonical closure commit
 - production/deployment status: no deploy this session; no production Mongo writes; no Stripe production mutations
 - dirty-tree preservation snapshot: `/Users/blackforge/workspace/bwe/snapshots/repo_clean-2026-08-04T16-51-54-0700-session-close`
 
@@ -114,8 +111,8 @@
 ## CURRENT CANONICAL PROGRAM STATUS — 2026-08-05
 
 - total unique canonical workstreams: `30`
-- complete: `13`
-- active: `7`
+- complete: `14`
+- active: `6`
 - pending: `9`
 - blocked: `1`
 - superseded: `0`
@@ -128,12 +125,12 @@
 | BWE-04 | Disputed/revoked ownership denial                                         | COMPLETE | `20fb839`   | No implementation work pending; preserve runtime and unit-proof coverage.                                                                                                                                                    |
 | BWE-05 | PAMFA address / ZIP / Directions behavior                                 | COMPLETE | `02d15c6`   | No implementation work pending; preserve the address-normalization proof and only reopen on regression.                                                                                                                      |
 | BWE-06 | Safe website/social partial updates                                       | COMPLETE | `6505f78`   | No implementation work pending; preserve partial-update contract test coverage.                                                                                                                                              |
-| BWE-07 | Business profile image/logo behavior                                      | ACTIVE   | `21565e4`   | Legacy stale-upload suppression is closed; broader business-owned logo/image precedence still needs explicit live proof.                                                                                                     |
+| BWE-07 | Business profile image/logo behavior                                      | ACTIVE   | `21565e4`   | Legacy stale-upload suppression is closed; broader business-owned logo/image precedence and remaining business-owned media/profile subset still need focused canonical closure.                                               |
 | BWE-08 | Organization/church/nonprofit ownership and editing                       | COMPLETE | `5c36c51`   | No implementation work pending; preserve organization ownership/runtime proof coverage.                                                                                                                                      |
 | BWE-09 | Marketplace product detail                                                | PENDING  | `00a3e98`   | Audit current product-detail copy, placeholders, and rendering quality against DA-05.                                                                                                                                        |
 | BWE-10 | Marketplace checkout / fulfillment proof                                  | BLOCKED  | `c797e3a`   | Dependency: real payment completion and webhook/DB/UI fulfillment evidence for one canonical marketplace order.                                                                                                              |
 | BWE-11 | Black Card                                                                | COMPLETE | `84968bb`   | Canonical Black Card runtime bundle is now committed; public plan-copy, entitlements, member auth flows, dashboard card UX, join flow, and admin list proof are current and green.                                          |
-| BWE-12 | Pricing / revenue readiness                                               | ACTIVE   | `35f93c5`   | Founder monthly billing and Black Card landing/join naming are aligned; continue the remaining revenue-surface consistency audit and proof-backed closure review.                                                            |
+| BWE-12 | Pricing / revenue readiness                                               | COMPLETE | `7c22d03`   | Pricing, checkout, payment-success/cancel, and webhook billing-language surfaces are now aligned and proven current.                                                                                                        |
 | BWE-13 | Auth/session parity                                                       | ACTIVE   | `c626bcf`   | Local proofs pass; remaining dependency is cross-machine parity capture on the second dev environment.                                                                                                                       |
 | BWE-14 | Admin dashboard normalization                                             | ACTIVE   | `df4a9ae`   | Current runtime counts align on key admin routes, but normalization helpers remain part of the preserved dirty tree and still need canonical closure commit(s).                                                              |
 | BWE-15 | Finance-admin summary                                                     | COMPLETE | `9f94a83`   | No implementation work pending; preserve finance test and focused admin runtime proof evidence.                                                                                                                              |
@@ -374,7 +371,7 @@
 | marketplace product detail                                | `BWE-09`                | PENDING  | `00a3e98`   | product-detail implementation exists but DA-05 quality audit is still open                                                                                             | remove placeholder/engineering copy and prove public detail quality                                          |
 | marketplace checkout                                      | `BWE-10`                | BLOCKED  | `c797e3a`   | checkout matrix code exists; canonical paid completion/webhook fulfillment proof is still missing                                                                      | obtain one safe authorized paid completion and fulfillment evidence                                          |
 | Black Card functionality                                  | `BWE-11`                | COMPLETE | `84968bb`   | Black Card runtime bundle, dashboard card UX, join flow, admin digital-request surface, and live auth/entitlement/admin/browser proofs all pass on Thursday, August 6, 2026                                              | preserve proof and reopen only on regression                                                                  |
-| pricing/revenue readiness                                 | `BWE-12`                | ACTIVE   | `35f93c5`   | founder monthly billing alignment and Black Card public plan-name normalization are both recorded on August 4, 2026                                                    | close remaining revenue-surface inconsistencies and verify there are no further public naming contradictions |
+| pricing/revenue readiness                                 | `BWE-12`                | COMPLETE | `7c22d03`   | pricing page, checkout founder cadence, payment success/cancel messaging, and webhook billing-language surfaces are now aligned and proven current on Thursday, August 6, 2026                                           | preserve proof and reopen only on regression                                                                  |
 | auth/session parity                                       | `BWE-13`                | ACTIVE   | `c626bcf`   | local auth/session proof matrix passes                                                                                                                                 | capture second-machine parity evidence                                                                       |
 | admin dashboard normalization                             | `BWE-14`                | ACTIVE   | `df4a9ae`   | key counts now align on main admin surfaces; helper churn remains in dirty tree                                                                                        | isolate and close remaining normalization helper diffs with proof                                            |
 | finance-admin summary                                     | `BWE-15`                | COMPLETE | `9f94a83`   | admin-finance-summary test passes; focused admin runtime proof captured                                                                                                | none beyond regression watch                                                                                 |
@@ -534,6 +531,32 @@
   - localhost `200` proofs remain current for `/`, `/business-directory`, `/black-card`, and `/black-card/join`
 - Next action:
   - preserve closure evidence and continue with `BWE-12 Pricing / revenue readiness`
+
+### BWE-12 closure — Thursday, August 6, 2026
+
+- Status: COMPLETE
+- Commits:
+  - `5f523b0b51cf65b991fd337a476365efb1c71b20`
+  - `48759062ed5862fc36eb3bdfc88926a72c757749`
+  - `7c22d03adf86d878cfe60efc32643d9aa23370b5`
+- Exact files:
+  - `src/pages/pricing.tsx`
+  - `src/pages/checkout/index.tsx`
+  - `src/pages/payment-success.tsx`
+  - `src/pages/payment-cancel.tsx`
+  - `src/pages/api/stripe/webhook-handler.ts`
+- Current reality:
+  - `/pricing` now explicitly states `Premium includes the Standard Black Card` and `Founding Member includes the Signature Black Card`
+  - `/checkout?plan=founder` confirms monthly founder billing cadence in live runtime
+  - `/payment-success` and `/payment-cancel` remain live and aligned with the current checkout/membership messaging
+  - the remaining `src/pages/api/stripe/webhook-handler.ts` delta was preserved formatting churn on already-proven billing-language logic and is now closed in canonical history
+- Proof:
+  - `DOTENV_CONFIG_PATH=.env.local node -r dotenv/config scripts/runtime-proof-owner-blackcard-ui.mjs` pass with `pricingLabelsFixed: true`
+  - `node scripts/test-pricing-billing-alignment.mjs` pass
+  - `npm run typecheck` pass
+  - localhost `200` proofs remain current for `/`, `/pricing`, `/checkout?plan=founder`, and `/black-card`
+- Next action:
+  - preserve closure evidence and continue with `BWE-07 Business profile image/logo behavior`
 
 # BWE Master Task List
 

@@ -6,8 +6,8 @@ _Last updated: 2026-08-06 America/Los_Angeles_
 
 - Canonical repository: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - Canonical branch: `friday-release-candidate`
-- Latest runtime checkpoint SHA: `84968bbc4917a7d3a52e478e0bedb04a8250b793`
-- Current git HEAD verified live during session: `84968bbc4917a7d3a52e478e0bedb04a8250b793`
+- Latest runtime checkpoint SHA: `7c22d03adf86d878cfe60efc32643d9aa23370b5`
+- Current git HEAD verified live during session: `7c22d03adf86d878cfe60efc32643d9aa23370b5`
 - Dirty-tree preservation snapshot: `/Users/blackforge/workspace/bwe/snapshots/repo_clean-2026-08-03T04-31-39-146Z`
 - Complete file manifest: `docs/recovery/BWE_COMPLETE_FILE_MANIFEST_CURRENT.csv`
 
@@ -235,6 +235,33 @@ _Last updated: 2026-08-06 America/Los_Angeles_
   - localhost `200` proofs remain current for `/`, `/business-directory`, `/black-card`, and `/black-card/join`
 - Next action:
   - preserve the proof set and continue with `BWE-12 Pricing / revenue readiness`
+
+### BWE-12 closure note — Thursday, August 6, 2026
+
+- Status: COMPLETE
+- Current reality:
+  - the pricing, checkout, payment-success/cancel, and webhook billing-language surfaces are now aligned in canonical runtime history
+  - `/pricing` now explicitly states `Premium includes the Standard Black Card` and `Founding Member includes the Signature Black Card`
+  - `/checkout?plan=founder` confirms monthly founder billing cadence in current live runtime
+  - `/payment-success` and `/payment-cancel` remain live and aligned with the current checkout and membership messaging
+  - the remaining `src/pages/api/stripe/webhook-handler.ts` delta was preserved formatting churn on already-proven billing-language logic and is now closed in canonical history
+- Exact files:
+  - `src/pages/pricing.tsx`
+  - `src/pages/checkout/index.tsx`
+  - `src/pages/payment-success.tsx`
+  - `src/pages/payment-cancel.tsx`
+  - `src/pages/api/stripe/webhook-handler.ts`
+- Proof:
+  - Commits:
+    - `5f523b0b51cf65b991fd337a476365efb1c71b20`
+    - `48759062ed5862fc36eb3bdfc88926a72c757749`
+    - `7c22d03adf86d878cfe60efc32643d9aa23370b5`
+  - `DOTENV_CONFIG_PATH=.env.local node -r dotenv/config scripts/runtime-proof-owner-blackcard-ui.mjs` pass on Thursday, August 6, 2026 with `pricingLabelsFixed: true`
+  - `node scripts/test-pricing-billing-alignment.mjs` pass on Thursday, August 6, 2026
+  - `npm run typecheck` pass on Thursday, August 6, 2026
+  - localhost `200` proofs remain current for `/`, `/pricing`, `/checkout?plan=founder`, and `/black-card`
+- Next action:
+  - preserve the proof set and continue with `BWE-07 Business profile image/logo behavior`
 
 ### Confirmed recent closures in canonical history
 
