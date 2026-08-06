@@ -409,7 +409,7 @@ export default function Pricing() {
             <PriceCard
               title="Founding Member"
               price="$49/month"
-              sub="Paid plan that begins the claim and membership process."
+              sub="Founding Member includes the Signature Black Card."
               billingNote="Billed monthly • Auto-renews monthly • Cancel anytime"
               features={[
                 { ok: true, text: "Everything in Premium" },
@@ -468,9 +468,7 @@ export default function Pricing() {
                   <tr className="border-t border-white/10">
                     <td className="px-3 py-2 font-semibold">Founding Member</td>
                     <td className="px-3 py-2">$49/month</td>
-                    <td className="px-3 py-2">
-                      Applied according to the current membership mapping
-                    </td>
+                    <td className="px-3 py-2">Signature Black Card</td>
                     <td className="px-3 py-2">
                       Higher-tier members who want current Signature access
                     </td>
@@ -511,9 +509,8 @@ export default function Pricing() {
                   Founding Member Plan
                 </div>
                 <p className="mt-2 text-gray-300">
-                  Includes the currently configured Black Card tier mapping for
-                  this membership. Future founder-only benefits are not live
-                  unless explicitly marked active.
+                  Includes Signature Black Card mapping. Future founder-only
+                  benefits are not live unless explicitly marked active.
                 </p>
               </div>
             </div>
