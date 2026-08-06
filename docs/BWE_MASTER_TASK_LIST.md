@@ -1,21 +1,19 @@
 ## CURRENT SESSION HANDOFF
 
-- timestamp: 2026-08-05 13:02 PDT
+- timestamp: 2026-08-06 12:24 PDT
 - canonical repository: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - branch: `friday-release-candidate`
-- HEAD: `d57aecd3455b2f0eb8c02849bfb388a16c196ef1`
+- HEAD: `64286f9a0b0c356f2bf93391e3265d95042a502a`
 - last completed workstream: `DA-01 member conversion attribution`
+- current active workstream: `BWE-02 claim verification + admin claim queue`
 - DA-01 current result: `COMPLETE`
-- last commit SHA: `d57aecd3455b2f0eb8c02849bfb388a16c196ef1`
+- last commit SHA: `64286f9a0b0c356f2bf93391e3265d95042a502a`
 - exact production files changed:
-  - `src/lib/adminBusinessStatus.ts`
-  - `src/pages/api/admin/get-pending-businesses.ts`
-  - `src/pages/api/admin/dashboard-stats.ts`
-  - `src/pages/api/admin/metrics/command-center.ts`
-  - `src/pages/admin/dashboard.tsx`
-  - `src/pages/admin/business-approvals.tsx`
+  - `src/lib/founding-membership.ts`
+  - `src/pages/api/admin/founding-memberships.ts`
+  - `src/pages/admin/claim-verification.tsx`
 - exact production files committed:
-  - `b4f3e6ffdb0d061ddb218f0137ebdd1db4fbf584` -> `src/lib/adminBusinessStatus.ts`, `src/pages/api/admin/get-pending-businesses.ts`, `src/pages/api/admin/dashboard-stats.ts`, `src/pages/api/admin/metrics/command-center.ts`, `src/pages/admin/dashboard.tsx`, `src/pages/admin/business-approvals.tsx`
+  - `64286f9a0b0c356f2bf93391e3265d95042a502a` -> `src/lib/founding-membership.ts`, `src/pages/api/admin/founding-memberships.ts`, `src/pages/admin/claim-verification.tsx`, `src/lib/founding-membership/__tests__/claim-reconciliation-tests.mjs`, `src/lib/founding-membership/__tests__/claim-verification-joins-tests.mjs`, `src/lib/founding-membership/__tests__/transition-helper-tests.mjs`
 - runtime application files still dirty:
   - `src/components/black-card/PremiumDigitalCard.tsx`
   - `src/components/challenge/ChallengeShareCard.tsx`
@@ -81,18 +79,23 @@
   - `src/pages/real-estate.tsx`
   - `src/pages/search-results.tsx`
   - `src/pages/support.tsx`
-- tests/proofs completed in this DA-01 lane:
-  - read-only Mongo audit identified the eight most recent real role-account joins on Wednesday, August 5, 2026
-  - the earlier six-member checkpoint was reconciled to the established eight-member scope by adding two additional general-user joins already present in the same `users` collection and time window
-  - no linked `business_claims`, `ownership_reviews`, `business_memberships`, `membership_onboarding`, `membership_fulfillment`, `payments`, `subscription_events`, `entity_ownerships`, `referral_events`, or user-linked `flow_events` were found for those eight members
-  - `/` and `/business-directory` return `200` on localhost:3000 on Wednesday, August 5, 2026
+- tests/proofs completed in this BWE-02 checkpoint:
+  - `node src/lib/directory/__tests__/ownership-resolution-tests.mjs` pass on Thursday, August 6, 2026
+  - `node src/lib/founding-membership/__tests__/claim-reconciliation-tests.mjs` pass on Thursday, August 6, 2026
+  - `node src/lib/founding-membership/__tests__/claim-verification-joins-tests.mjs` pass on Thursday, August 6, 2026 after correcting a stale assertion in the focused join proof
+  - `node src/lib/founding-membership/__tests__/platform-queue-tests.mjs` pass on Thursday, August 6, 2026
+  - `node src/lib/founding-membership/__tests__/transition-helper-tests.mjs` pass on Thursday, August 6, 2026
+  - `DOTENV_CONFIG_PATH=.env.local node -r dotenv/config scripts/runtime-proof-directory-ownership.mjs` pass on Thursday, August 6, 2026
+  - `node scripts/runtime-proof-business-parity.mjs` pass on Thursday, August 6, 2026
+  - `npm run typecheck` pass on Thursday, August 6, 2026
+  - `/`, `/business-directory`, `/signup`, and `/founding-membership` return `200` on localhost:3000 on Thursday, August 6, 2026
 - unresolved blockers/data dependencies:
   - `repo_clean` still has a large pre-existing dirty working tree and is not clean
   - normal `git commit` hooks trigger repo-wide `eslint src/ --fix` plus `prettier --write .`, which creates broad churn and must be handled carefully
   - `src/lib/adminFinanceSummary.ts` still has a post-finance-commit indentation-only working-tree delta that must be preserved/classified, not discarded
-- current dirty-tree count: `456` file-level git status entries (`git status --porcelain=v1 -uall`)
+- current dirty-tree count: `450` file-level git status entries (`git status --porcelain=v1 -uall`)
 - exact next workstream: `BWE-02 claim verification + admin claim queue`
-- exact first action for the next session: use the DA-01 result to separate expected general-user joins from actual claim-intent users, then continue the broader claim-verification reconciliation with that cleaner scope
+- exact first action for the next session: continue the broader BWE-02 claim-verification reconciliation from the now-normalized `Request More Evidence` business-claim flow, then classify any remaining queue/API split or access-control defects
 - production/deployment status: no deploy this session; no production Mongo writes; no Stripe production mutations
 - dirty-tree preservation snapshot: `/Users/blackforge/workspace/bwe/snapshots/repo_clean-2026-08-04T16-51-54-0700-session-close`
 
@@ -118,7 +121,7 @@
 | ID     | Workstream                                                                | Status   | Last Commit | Next Action                                                                                                                                                                                                              |
 | ------ | ------------------------------------------------------------------------- | -------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | BWE-01 | Business signup -> claim routing                                          | PENDING  | `842ba7f`   | Run a current browser proof for Business Owner signup through claim-mode redirect and record exact route/API evidence.                                                                                                   |
-| BWE-02 | Claim verification + admin claim queue                                    | ACTIVE   | `49bc722`   | Resume the broader claim-verification reconciliation now that the resume-checkout alias regression is closed.                                                                                                            |
+| BWE-02 | Claim verification + admin claim queue                                    | ACTIVE   | `64286f9`   | Runtime ownership proofs are green and business-claim terminology now uses `Request More Evidence`; continue broader queue/API reconciliation and classify any remaining split from the organization claim path.         |
 | BWE-03 | Verified-business ownership resolution + claimed-business profile editing | COMPLETE | `5310b59`   | No implementation work pending; preserve proof assets and only reopen on regression.                                                                                                                                     |
 | BWE-04 | Disputed/revoked ownership denial                                         | COMPLETE | `20fb839`   | No implementation work pending; preserve runtime and unit-proof coverage.                                                                                                                                                |
 | BWE-05 | PAMFA address / ZIP / Directions behavior                                 | COMPLETE | `02d15c6`   | No implementation work pending; preserve the address-normalization proof and only reopen on regression.                                                                                                                  |
@@ -380,6 +383,34 @@
 | Direct Assessment 02 — Directory count reconciliation                        | `DA-02`                 | COMPLETE | `b4f3e6f`   | public/search/UI totals reconcile at `365`; admin totals now reconcile `2272` raw businesses by surfacing a separate `24` duplicate-review bucket     | none beyond regression watch                                                                                    |
 | Direct Assessment 03 — Pricing and Black Card consistency                    | `DA-03`                 | COMPLETE | `35f93c5`   | founder cadence defect is closed and Black Card pricing/copy/runtime proofs now pass                                                                   | none beyond regression watch                                                                                    |
 | Direct Assessment 04 — Account-type onboarding                               | `DA-04`                 | PENDING  | `842ba7f`   | onboarding code exists but current path-by-path proof is missing                                                                                       | audit Business Owner, Seller, Employer, and General User onboarding end states                                  |
+
+### BWE-02 checkpoint — Thursday, August 6, 2026
+
+- Status: ACTIVE
+- Commit: `64286f9a0b0c356f2bf93391e3265d95042a502a`
+- Exact files:
+  - `src/lib/founding-membership.ts`
+  - `src/pages/api/admin/founding-memberships.ts`
+  - `src/pages/admin/claim-verification.tsx`
+  - `src/lib/founding-membership/__tests__/claim-reconciliation-tests.mjs`
+  - `src/lib/founding-membership/__tests__/claim-verification-joins-tests.mjs`
+  - `src/lib/founding-membership/__tests__/transition-helper-tests.mjs`
+- Current reality:
+  - verified-business ownership resolution, protected profile loading, protected profile patching, and revoke/dispute denial remain green from current runtime proof
+  - the business-side admin claim queue was still exposing legacy `request_additional_evidence` wording even though the organization-side claim flow already used `request_more_evidence`
+  - the business-side admin claim queue still runs through the founding-membership admin surface, which remains an active reconciliation concern, but the immediate user-facing terminology defect is now closed
+  - a stale focused join-test assertion was also corrected so the BWE-02 proof set now passes again
+- Proof:
+  - `node src/lib/directory/__tests__/ownership-resolution-tests.mjs` pass
+  - `node src/lib/founding-membership/__tests__/claim-reconciliation-tests.mjs` pass
+  - `node src/lib/founding-membership/__tests__/claim-verification-joins-tests.mjs` pass
+  - `node src/lib/founding-membership/__tests__/platform-queue-tests.mjs` pass
+  - `node src/lib/founding-membership/__tests__/transition-helper-tests.mjs` pass
+  - `DOTENV_CONFIG_PATH=.env.local node -r dotenv/config scripts/runtime-proof-directory-ownership.mjs` pass
+  - `node scripts/runtime-proof-business-parity.mjs` pass
+  - `npm run typecheck` pass
+- Next action:
+  - continue BWE-02 as an active diagnosis lane and determine whether the remaining business claim queue coupling to founding-membership surfaces is only structural legacy or a user-visible defect that still needs repair
 | Direct Assessment 05 — Marketplace public quality                            | `DA-05`                 | PENDING  | `pending`   | marketplace quality issues remain unevaluated against current public content                                                                           | remove test language, placeholders, and unfinished public copy                                                  |
 | Direct Assessment 06 — Release history                                       | `DA-06`                 | PENDING  | `pending`   | no current proof-backed release-history reconciliation recorded                                                                                        | update public release/history content to live-proven functionality only                                         |
 | Direct Assessment 07 — Founder identity/trust                                | `DA-07`                 | PENDING  | `pending`   | no canonical current audit recorded                                                                                                                    | reconcile founder identity/trust copy against factual live reality                                              |

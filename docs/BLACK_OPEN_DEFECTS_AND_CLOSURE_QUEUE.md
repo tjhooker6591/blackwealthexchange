@@ -1,12 +1,12 @@
 # BLACK OPEN DEFECTS AND CLOSURE QUEUE
 
-_Last updated: 2026-08-05 America/Los_Angeles_
+_Last updated: 2026-08-06 America/Los_Angeles_
 
 ## Current canonical execution state
 
 - Canonical repository: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - Canonical branch: `friday-release-candidate`
-- Canonical HEAD: `d57aecd3455b2f0eb8c02849bfb388a16c196ef1`
+- Canonical HEAD: `64286f9a0b0c356f2bf93391e3265d95042a502a`
 - Dirty-tree preservation snapshot: `/Users/blackforge/workspace/bwe/snapshots/repo_clean-2026-08-03T04-31-39-146Z`
 - Complete file manifest: `docs/recovery/BWE_COMPLETE_FILE_MANIFEST_CURRENT.csv`
 
@@ -169,6 +169,35 @@ _Last updated: 2026-08-05 America/Los_Angeles_
   - full anonymized matrix recorded in `docs/audit-evidence/2026-08-05-member-conversion-attribution.md`
 - Next action:
   - use this DA-01 result as input to the ongoing claim-verification and onboarding assessment lanes rather than reopening runtime code without stronger evidence
+
+### BWE-02 checkpoint note — Thursday, August 6, 2026
+
+- Status: ACTIVE
+- Current reality:
+  - verified-business ownership access, post-verification business editing, and revoke/dispute denial remain green from current runtime proof
+  - the smallest confirmed live defect in the business-side claim queue was terminology drift: the admin flow still exposed legacy `request_additional_evidence` wording while the binding BWE recovery terminology is `Request More Evidence`
+  - the business-side claim queue remains coupled to the founding-membership admin surface, but current evidence does not yet prove that this coupling itself breaks ownership verification or protected business editing
+  - one focused join-proof assertion was stale and has now been corrected so the current BWE-02 proof set passes again
+- Exact files:
+  - `src/lib/founding-membership.ts`
+  - `src/pages/api/admin/founding-memberships.ts`
+  - `src/pages/admin/claim-verification.tsx`
+  - `src/lib/founding-membership/__tests__/claim-reconciliation-tests.mjs`
+  - `src/lib/founding-membership/__tests__/claim-verification-joins-tests.mjs`
+  - `src/lib/founding-membership/__tests__/transition-helper-tests.mjs`
+- Proof:
+  - Commit: `64286f9a0b0c356f2bf93391e3265d95042a502a`
+  - `node src/lib/directory/__tests__/ownership-resolution-tests.mjs` pass on Thursday, August 6, 2026
+  - `node src/lib/founding-membership/__tests__/claim-reconciliation-tests.mjs` pass on Thursday, August 6, 2026
+  - `node src/lib/founding-membership/__tests__/claim-verification-joins-tests.mjs` pass on Thursday, August 6, 2026
+  - `node src/lib/founding-membership/__tests__/platform-queue-tests.mjs` pass on Thursday, August 6, 2026
+  - `node src/lib/founding-membership/__tests__/transition-helper-tests.mjs` pass on Thursday, August 6, 2026
+  - `DOTENV_CONFIG_PATH=.env.local node -r dotenv/config scripts/runtime-proof-directory-ownership.mjs` pass on Thursday, August 6, 2026
+  - `node scripts/runtime-proof-business-parity.mjs` pass on Thursday, August 6, 2026
+  - `npm run typecheck` pass on Thursday, August 6, 2026
+  - localhost `200` proofs remain current for `/`, `/business-directory`, `/signup`, and `/founding-membership`
+- Next action:
+  - continue the broader BWE-02 queue/API reconciliation and determine whether the remaining founding-membership coupling is just legacy structure or a remaining user-visible claim-verification defect
 
 ### Confirmed recent closures in canonical history
 
