@@ -1,29 +1,33 @@
 ## CURRENT SESSION HANDOFF
 
-- timestamp: 2026-08-06 13:02 PDT
+- timestamp: 2026-08-06 13:40 PDT
 - canonical repository: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - branch: `friday-release-candidate`
-- latest runtime checkpoint SHA: `64286f9a0b0c356f2bf93391e3265d95042a502a`
-- current git HEAD verified live during session: `40a409fb21b16137b89e9cace7e7aa95c99a1642`
-- last completed workstream: `BWE-02 claim verification + admin claim queue`
-- current active workstream: `BWE-11 Black Card`
+- latest runtime checkpoint SHA: `84968bbc4917a7d3a52e478e0bedb04a8250b793`
+- current git HEAD verified live during session: `84968bbc4917a7d3a52e478e0bedb04a8250b793`
+- last completed workstream: `BWE-11 Black Card`
+- current active workstream: `BWE-12 Pricing / revenue readiness`
 - DA-01 current result: `COMPLETE`
 - BWE-02 current result: `COMPLETE`
-- last runtime commit SHA: `64286f9a0b0c356f2bf93391e3265d95042a502a`
+- last runtime commit SHA: `84968bbc4917a7d3a52e478e0bedb04a8250b793`
 - exact production files changed:
-  - `src/lib/founding-membership.ts`
-  - `src/pages/api/admin/founding-memberships.ts`
-  - `src/pages/admin/claim-verification.tsx`
-- exact production files committed:
-  - `64286f9a0b0c356f2bf93391e3265d95042a502a` -> `src/lib/founding-membership.ts`, `src/pages/api/admin/founding-memberships.ts`, `src/pages/admin/claim-verification.tsx`, `src/lib/founding-membership/__tests__/claim-reconciliation-tests.mjs`, `src/lib/founding-membership/__tests__/claim-verification-joins-tests.mjs`, `src/lib/founding-membership/__tests__/transition-helper-tests.mjs`
-- runtime application files still dirty:
   - `src/components/black-card/PremiumDigitalCard.tsx`
+  - `src/lib/black-card-membership.ts`
+  - `src/lib/black-card-state.ts`
+  - `src/pages/admin/black-card.tsx`
+  - `src/pages/api/admin/black-card/cards.ts`
+  - `src/pages/api/admin/black-card/digital-requests.ts`
+  - `src/pages/api/black-card/digital-request.ts`
+  - `src/pages/api/black-card/member-summary.ts`
+  - `src/pages/black-card/join.tsx`
+  - `src/pages/dashboard/black-card.tsx`
+- exact production files committed:
+  - `84968bbc4917a7d3a52e478e0bedb04a8250b793` -> `src/components/black-card/PremiumDigitalCard.tsx`, `src/lib/black-card-membership.ts`, `src/lib/black-card-state.ts`, `src/pages/admin/black-card.tsx`, `src/pages/api/admin/black-card/cards.ts`, `src/pages/api/admin/black-card/digital-requests.ts`, `src/pages/api/black-card/digital-request.ts`, `src/pages/api/black-card/member-summary.ts`, `src/pages/black-card/join.tsx`, `src/pages/dashboard/black-card.tsx`, `scripts/runtime-proof-black-card-admin.mjs`, `scripts/runtime-proof-owner-blackcard-ui.mjs`
+- runtime application files still dirty:
   - `src/components/challenge/ChallengeShareCard.tsx`
   - `src/components/dashboards/UserDashboard.tsx`
   - `src/lib/adminBusinessStatus.ts`
   - `src/lib/adminFinanceSummary.ts`
-  - `src/lib/black-card-membership.ts`
-  - `src/lib/black-card-state.ts`
   - `src/lib/businessSubmission.ts`
   - `src/lib/db/courses.ts`
   - `src/lib/db/orders.ts`
@@ -33,10 +37,9 @@
   - `src/lib/directoryPublicMedia.ts`
   - `src/lib/marketplace/orderLifecycle.ts`
   - `src/lib/marketplace/paymentLinkage.ts`
-  - `src/pages/admin/black-card.tsx`
-  - `src/pages/admin/business-approvals.tsx`
   - `src/pages/admin/challenge.tsx`
   - `src/pages/admin/claim-verification.tsx`
+  - `src/pages/admin/dashboard.tsx`
   - `src/pages/admin/directory-approvals.tsx`
   - `src/pages/admin/subscriptions.tsx`
   - `src/pages/admin/support/tickets.tsx`
@@ -44,16 +47,10 @@
   - `src/pages/advertise/banner-ads.tsx`
   - `src/pages/advertise/featured-sponsor.tsx`
   - `src/pages/advertising/checkout.tsx`
-  - `src/pages/api/admin/black-card/cards.ts`
-  - `src/pages/api/admin/black-card/digital-requests.ts`
   - `src/pages/api/admin/challenge.ts`
-  - `src/pages/api/admin/dashboard-stats.ts`
   - `src/pages/api/admin/financial-class/repair.ts`
-  - `src/pages/api/admin/founding-memberships.ts`
   - `src/pages/api/admin/support.ts`
   - `src/pages/api/admin/support/[id].ts`
-  - `src/pages/api/black-card/digital-request.ts`
-  - `src/pages/api/black-card/member-summary.ts`
   - `src/pages/api/business/media.ts`
   - `src/pages/api/business/profile.ts`
   - `src/pages/api/business/update.ts`
@@ -62,14 +59,13 @@
   - `src/pages/api/challenge/stats.ts`
   - `src/pages/api/news/black.ts`
   - `src/pages/api/organizations/claim.ts`
+  - `src/pages/api/search/businesses.ts`
   - `src/pages/api/stripe/webhook-handler.ts`
-  - `src/pages/black-card/join.tsx`
   - `src/pages/black-entertainment-news.tsx`
   - `src/pages/business-directory/[alias].tsx`
   - `src/pages/challenge.tsx`
   - `src/pages/challenge/creators.tsx`
   - `src/pages/checkout/index.tsx`
-  - `src/pages/dashboard/black-card.tsx`
   - `src/pages/dashboard/edit-business.tsx`
   - `src/pages/edit-business.tsx`
   - `src/pages/index.tsx`
@@ -99,9 +95,9 @@
   - `repo_clean` still has a large pre-existing dirty working tree and is not clean
   - normal `git commit` hooks trigger repo-wide `eslint src/ --fix` plus `prettier --write .`, which creates broad churn and must be handled carefully
   - `src/lib/adminFinanceSummary.ts` still has a post-finance-commit indentation-only working-tree delta that must be preserved/classified, not discarded
-- current dirty-tree count: `450` file-level git status entries (`git status --porcelain=v1 -uall`)
-- exact next workstream: `BWE-11 Black Card`
-- exact first action for the next session: classify the remaining Black Card runtime files as valid current work, superseded scope, or real defects, then close the largest safe Black Card bundle with shared proof
+- current dirty-tree count: `447` file-level git status entries (`git status --porcelain=v1 -uall`)
+- exact next workstream: `BWE-12 Pricing / revenue readiness`
+- exact first action for the next session: audit the remaining pricing and revenue surfaces against the now-committed Black Card runtime bundle, then close the largest safe revenue-readiness subset with shared proof
 - production/deployment status: no deploy this session; no production Mongo writes; no Stripe production mutations
 - dirty-tree preservation snapshot: `/Users/blackforge/workspace/bwe/snapshots/repo_clean-2026-08-04T16-51-54-0700-session-close`
 
@@ -118,44 +114,44 @@
 ## CURRENT CANONICAL PROGRAM STATUS — 2026-08-05
 
 - total unique canonical workstreams: `30`
-- complete: `12`
-- active: `8`
+- complete: `13`
+- active: `7`
 - pending: `9`
 - blocked: `1`
 - superseded: `0`
 
-| ID     | Workstream                                                                | Status   | Last Commit | Next Action                                                                                                                                                                                                              |
-| ------ | ------------------------------------------------------------------------- | -------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| BWE-01 | Business signup -> claim routing                                          | PENDING  | `842ba7f`   | Run a current browser proof for Business Owner signup through claim-mode redirect and record exact route/API evidence.                                                                                                   |
-| BWE-02 | Claim verification + admin claim queue                                    | COMPLETE | `64286f9`   | Public listing discovery, claim initiation routing, admin queue visibility, `Request More Evidence`, `Verify Ownership`, verified profile/media access, and denial/revoke behavior are now proven current.               |
-| BWE-03 | Verified-business ownership resolution + claimed-business profile editing | COMPLETE | `5310b59`   | No implementation work pending; preserve proof assets and only reopen on regression.                                                                                                                                     |
-| BWE-04 | Disputed/revoked ownership denial                                         | COMPLETE | `20fb839`   | No implementation work pending; preserve runtime and unit-proof coverage.                                                                                                                                                |
-| BWE-05 | PAMFA address / ZIP / Directions behavior                                 | COMPLETE | `02d15c6`   | No implementation work pending; preserve the address-normalization proof and only reopen on regression.                                                                                                                  |
-| BWE-06 | Safe website/social partial updates                                       | COMPLETE | `6505f78`   | No implementation work pending; preserve partial-update contract test coverage.                                                                                                                                          |
-| BWE-07 | Business profile image/logo behavior                                      | ACTIVE   | `21565e4`   | Legacy stale-upload suppression is closed; broader business-owned logo/image precedence still needs explicit live proof.                                                                                                 |
-| BWE-08 | Organization/church/nonprofit ownership and editing                       | COMPLETE | `5c36c51`   | No implementation work pending; preserve organization ownership/runtime proof coverage.                                                                                                                                  |
-| BWE-09 | Marketplace product detail                                                | PENDING  | `00a3e98`   | Audit current product-detail copy, placeholders, and rendering quality against DA-05.                                                                                                                                    |
-| BWE-10 | Marketplace checkout / fulfillment proof                                  | BLOCKED  | `c797e3a`   | Dependency: real payment completion and webhook/DB/UI fulfillment evidence for one canonical marketplace order.                                                                                                          |
-| BWE-11 | Black Card                                                                | ACTIVE   | `d6b6a42`   | Public plan-copy, entitlements, member auth flows, and admin list proof are now current and green; classify whether any remaining Black Card lane work is still an implementation defect or only preserved dirty-tree scope. |
-| BWE-12 | Pricing / revenue readiness                                               | ACTIVE   | `35f93c5`   | Founder monthly billing and Black Card landing/join naming are aligned; continue the remaining revenue-surface consistency audit and proof-backed closure review.                                                        |
-| BWE-13 | Auth/session parity                                                       | ACTIVE   | `c626bcf`   | Local proofs pass; remaining dependency is cross-machine parity capture on the second dev environment.                                                                                                                   |
-| BWE-14 | Admin dashboard normalization                                             | ACTIVE   | `df4a9ae`   | Current runtime counts align on key admin routes, but normalization helpers remain part of the preserved dirty tree and still need canonical closure commit(s).                                                          |
-| BWE-15 | Finance-admin summary                                                     | COMPLETE | `9f94a83`   | No implementation work pending; preserve finance test and focused admin runtime proof evidence.                                                                                                                          |
-| BWE-16 | Directory/media stale-image handling                                      | COMPLETE | `21565e4`   | No implementation work pending; preserve image resolver test and browser proof.                                                                                                                                          |
-| BWE-17 | Business-approval queue count / pagination                                | COMPLETE | `df4a9ae`   | No implementation work pending; preserve admin queue/browser proof.                                                                                                                                                      |
-| BWE-18 | Sponsor -> business linkage / ordinary search / sponsored-business API    | COMPLETE | `f098f49`   | Expired schedule fallback promotion is closed and the seven-name sponsor/source matrix now confirms the remaining gaps are data/linkage dependencies rather than a live runtime defect.                                  |
-| DA-01  | Member conversion attribution (recent joins)                              | COMPLETE | `analysis`  | Eight-member scope resolved: `1` business-owner signup and `7` general-user signups, with no linked claim, ownership, or paid-membership records and no source attribution available from current telemetry.            |
-| DA-02  | Directory count reconciliation                                            | COMPLETE | `b4f3e6f`   | Public/search/UI/claim totals reconcile at `365`; raw businesses reconcile at `2272` only after surfacing the separate `duplicate_review` bucket (`24`) beside the `1633` main approval queue.                         |
-| DA-03  | Pricing and Black Card consistency                                        | COMPLETE | `35f93c5`   | Founder monthly billing, Black Card public copy, entitlements, member auth flows, and admin list proof are current; no remaining pricing/plan contradiction is established in canonical runtime evidence.             |
-| DA-04  | Account-type onboarding                                                   | PENDING  | `842ba7f`   | Audit and prove Business Owner, Seller, Employer, and General User onboarding entry/redirect/end states.                                                                                                                 |
-| DA-05  | Marketplace public quality                                                | PENDING  | `pending`   | Remove placeholder/test/engineering copy from public marketplace product detail and listing surfaces.                                                                                                                    |
-| DA-06  | Release history                                                           | PENDING  | `pending`   | Reconcile public release/history content to proven live functionality only.                                                                                                                                              |
-| DA-07  | Founder identity / trust                                                  | PENDING  | `pending`   | Audit founder-story and identity surfaces for factual and trust alignment.                                                                                                                                               |
-| DA-08  | Brand / SEO consistency                                                   | PENDING  | `pending`   | Normalize public use of `Black Wealth Exchange — Black-Owned Business Discovery and Growth Platform` where appropriate.                                                                                                  |
-| DA-09  | Social / site offer alignment                                             | PENDING  | `pending`   | Reconcile public marketing copy so search-and-claim remains the clearest primary offer.                                                                                                                                  |
-| DA-10  | Claim-focused content strategy                                            | PENDING  | `pending`   | Preserve and restate the agreed `70/20/10` strategy on current public/editorial surfaces.                                                                                                                                |
-| DA-11  | Sponsor basic search                                                      | COMPLETE | `f098f49`   | Same underlying lane as BWE-18; closure audit confirms PAMFA works as an ordinary public business after sponsor expiry and the remaining names fail because no linked public business/source row exists.                  |
-| DA-12  | Scalable legitimacy / ownership verification                              | ACTIVE   | `5310b59`   | Current owner verification is strong for normal flows; next step is automated normal checks + admin review routing for exceptions.                                                                                       |
+| ID     | Workstream                                                                | Status   | Last Commit | Next Action                                                                                                                                                                                                                  |
+| ------ | ------------------------------------------------------------------------- | -------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BWE-01 | Business signup -> claim routing                                          | PENDING  | `842ba7f`   | Run a current browser proof for Business Owner signup through claim-mode redirect and record exact route/API evidence.                                                                                                       |
+| BWE-02 | Claim verification + admin claim queue                                    | COMPLETE | `64286f9`   | Public listing discovery, claim initiation routing, admin queue visibility, `Request More Evidence`, `Verify Ownership`, verified profile/media access, and denial/revoke behavior are now proven current.                   |
+| BWE-03 | Verified-business ownership resolution + claimed-business profile editing | COMPLETE | `5310b59`   | No implementation work pending; preserve proof assets and only reopen on regression.                                                                                                                                         |
+| BWE-04 | Disputed/revoked ownership denial                                         | COMPLETE | `20fb839`   | No implementation work pending; preserve runtime and unit-proof coverage.                                                                                                                                                    |
+| BWE-05 | PAMFA address / ZIP / Directions behavior                                 | COMPLETE | `02d15c6`   | No implementation work pending; preserve the address-normalization proof and only reopen on regression.                                                                                                                      |
+| BWE-06 | Safe website/social partial updates                                       | COMPLETE | `6505f78`   | No implementation work pending; preserve partial-update contract test coverage.                                                                                                                                              |
+| BWE-07 | Business profile image/logo behavior                                      | ACTIVE   | `21565e4`   | Legacy stale-upload suppression is closed; broader business-owned logo/image precedence still needs explicit live proof.                                                                                                     |
+| BWE-08 | Organization/church/nonprofit ownership and editing                       | COMPLETE | `5c36c51`   | No implementation work pending; preserve organization ownership/runtime proof coverage.                                                                                                                                      |
+| BWE-09 | Marketplace product detail                                                | PENDING  | `00a3e98`   | Audit current product-detail copy, placeholders, and rendering quality against DA-05.                                                                                                                                        |
+| BWE-10 | Marketplace checkout / fulfillment proof                                  | BLOCKED  | `c797e3a`   | Dependency: real payment completion and webhook/DB/UI fulfillment evidence for one canonical marketplace order.                                                                                                              |
+| BWE-11 | Black Card                                                                | COMPLETE | `84968bb`   | Canonical Black Card runtime bundle is now committed; public plan-copy, entitlements, member auth flows, dashboard card UX, join flow, and admin list proof are current and green.                                          |
+| BWE-12 | Pricing / revenue readiness                                               | ACTIVE   | `35f93c5`   | Founder monthly billing and Black Card landing/join naming are aligned; continue the remaining revenue-surface consistency audit and proof-backed closure review.                                                            |
+| BWE-13 | Auth/session parity                                                       | ACTIVE   | `c626bcf`   | Local proofs pass; remaining dependency is cross-machine parity capture on the second dev environment.                                                                                                                       |
+| BWE-14 | Admin dashboard normalization                                             | ACTIVE   | `df4a9ae`   | Current runtime counts align on key admin routes, but normalization helpers remain part of the preserved dirty tree and still need canonical closure commit(s).                                                              |
+| BWE-15 | Finance-admin summary                                                     | COMPLETE | `9f94a83`   | No implementation work pending; preserve finance test and focused admin runtime proof evidence.                                                                                                                              |
+| BWE-16 | Directory/media stale-image handling                                      | COMPLETE | `21565e4`   | No implementation work pending; preserve image resolver test and browser proof.                                                                                                                                              |
+| BWE-17 | Business-approval queue count / pagination                                | COMPLETE | `df4a9ae`   | No implementation work pending; preserve admin queue/browser proof.                                                                                                                                                          |
+| BWE-18 | Sponsor -> business linkage / ordinary search / sponsored-business API    | COMPLETE | `f098f49`   | Expired schedule fallback promotion is closed and the seven-name sponsor/source matrix now confirms the remaining gaps are data/linkage dependencies rather than a live runtime defect.                                      |
+| DA-01  | Member conversion attribution (recent joins)                              | COMPLETE | `analysis`  | Eight-member scope resolved: `1` business-owner signup and `7` general-user signups, with no linked claim, ownership, or paid-membership records and no source attribution available from current telemetry.                 |
+| DA-02  | Directory count reconciliation                                            | COMPLETE | `b4f3e6f`   | Public/search/UI/claim totals reconcile at `365`; raw businesses reconcile at `2272` only after surfacing the separate `duplicate_review` bucket (`24`) beside the `1633` main approval queue.                               |
+| DA-03  | Pricing and Black Card consistency                                        | COMPLETE | `35f93c5`   | Founder monthly billing, Black Card public copy, entitlements, member auth flows, and admin list proof are current; no remaining pricing/plan contradiction is established in canonical runtime evidence.                    |
+| DA-04  | Account-type onboarding                                                   | PENDING  | `842ba7f`   | Audit and prove Business Owner, Seller, Employer, and General User onboarding entry/redirect/end states.                                                                                                                     |
+| DA-05  | Marketplace public quality                                                | PENDING  | `pending`   | Remove placeholder/test/engineering copy from public marketplace product detail and listing surfaces.                                                                                                                        |
+| DA-06  | Release history                                                           | PENDING  | `pending`   | Reconcile public release/history content to proven live functionality only.                                                                                                                                                  |
+| DA-07  | Founder identity / trust                                                  | PENDING  | `pending`   | Audit founder-story and identity surfaces for factual and trust alignment.                                                                                                                                                   |
+| DA-08  | Brand / SEO consistency                                                   | PENDING  | `pending`   | Normalize public use of `Black Wealth Exchange — Black-Owned Business Discovery and Growth Platform` where appropriate.                                                                                                      |
+| DA-09  | Social / site offer alignment                                             | PENDING  | `pending`   | Reconcile public marketing copy so search-and-claim remains the clearest primary offer.                                                                                                                                      |
+| DA-10  | Claim-focused content strategy                                            | PENDING  | `pending`   | Preserve and restate the agreed `70/20/10` strategy on current public/editorial surfaces.                                                                                                                                    |
+| DA-11  | Sponsor basic search                                                      | COMPLETE | `f098f49`   | Same underlying lane as BWE-18; closure audit confirms PAMFA works as an ordinary public business after sponsor expiry and the remaining names fail because no linked public business/source row exists.                     |
+| DA-12  | Scalable legitimacy / ownership verification                              | ACTIVE   | `5310b59`   | Current owner verification is strong for normal flows; next step is automated normal checks + admin review routing for exceptions.                                                                                           |
 
 ## COMPLETE EVIDENCE REGISTER
 
@@ -362,33 +358,33 @@
 
 ## SCOPE TRACEABILITY
 
-| Scope Item                                                                   | Canonical Workstream ID | Status   | Last Commit | Evidence                                                                                                                                               | Remaining Requirement                                                                                           |
-| ---------------------------------------------------------------------------- | ----------------------- | -------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
-| Business signup -> claim routing                                             | `BWE-01`                | PENDING  | `842ba7f`   | historical implementation exists; current browser proof not yet re-captured in canonical reconciliation                                                | run current Business Owner signup -> claim-mode redirect proof and record exact route/API evidence              |
-| Claim Verification                                                           | `BWE-02`                | COMPLETE | `64286f9`   | business listing -> claim route, admin queue transitions, verified access, media handling, and denial coverage are all re-proven on Thursday, August 6, 2026 | preserve proof and reopen only on regression                                                                   |
-| Ownership Verification                                                       | `DA-12`                 | ACTIVE   | `5310b59`   | business ownership and org verification proofs pass on August 4, 2026                                                                                  | add scalable automated normal checks plus admin-review exception routing                                        |
-| Founding Membership payment/status/evidence/admin                            | `BWE-02`                | COMPLETE | `64286f9`   | current business-claim admin workflow remains coupled to founding-membership records, but the live queue/admin/payment evidence path is proven working | preserve proof and reopen only on regression                                                                   |
-| claimed-business profile editing                                             | `BWE-03`                | COMPLETE | `5310b59`   | ownership-resolution and profile-contract tests pass; runtime business/profile parity proof passes                                                     | none beyond regression watch                                                                                    |
-| verified-business ownership resolution                                       | `BWE-03`                | COMPLETE | `5310b59`   | runtime ownership parity proof passes; canonical API/profile routes are aligned                                                                        | none beyond regression watch                                                                                    |
-| disputed/revoked ownership denial                                            | `BWE-04`                | COMPLETE | `20fb839`   | denial behavior validated in ownership proof suite                                                                                                     | none beyond regression watch                                                                                    |
-| PAMFA address/ZIP/Directions                                                 | `BWE-05`                | COMPLETE | `02d15c6`   | location-normalization test passes; both PAMFA public routes render `30349` and `Directions`                                                           | none beyond regression watch                                                                                    |
-| business image/logo                                                          | `BWE-07`                | ACTIVE   | `21565e4`   | stale-image suppression is proven; broader logo precedence closure is not yet re-proven live                                                           | capture current logo/image precedence proof on owned business pages                                             |
-| safe website/social partial updates                                          | `BWE-06`                | COMPLETE | `6505f78`   | profile-contract tests and runtime profile parity proof pass                                                                                           | none beyond regression watch                                                                                    |
-| organization/church/nonprofit ownership/editing                              | `BWE-08`                | COMPLETE | `5310b59`   | organization claim/owner proofs pass live on August 4, 2026                                                                                            | none beyond regression watch                                                                                    |
-| marketplace product detail                                                   | `BWE-09`                | PENDING  | `00a3e98`   | product-detail implementation exists but DA-05 quality audit is still open                                                                             | remove placeholder/engineering copy and prove public detail quality                                             |
-| marketplace checkout                                                         | `BWE-10`                | BLOCKED  | `c797e3a`   | checkout matrix code exists; canonical paid completion/webhook fulfillment proof is still missing                                                      | obtain one safe authorized paid completion and fulfillment evidence                                             |
-| Black Card functionality                                                     | `BWE-11`                | ACTIVE   | `d6b6a42`   | public copy plus entitlement/member/admin runtime proofs are current and passing on August 4, 2026                                                    | isolate or supersede the still-dirty Black Card runtime files with a canonical closure commit                   |
-| pricing/revenue readiness                                                    | `BWE-12`                | ACTIVE   | `35f93c5`   | founder monthly billing alignment and Black Card public plan-name normalization are both recorded on August 4, 2026                                    | close remaining revenue-surface inconsistencies and verify there are no further public naming contradictions    |
-| auth/session parity                                                          | `BWE-13`                | ACTIVE   | `c626bcf`   | local auth/session proof matrix passes                                                                                                                 | capture second-machine parity evidence                                                                          |
-| admin dashboard normalization                                                | `BWE-14`                | ACTIVE   | `df4a9ae`   | key counts now align on main admin surfaces; helper churn remains in dirty tree                                                                        | isolate and close remaining normalization helper diffs with proof                                               |
-| finance-admin summary                                                        | `BWE-15`                | COMPLETE | `9f94a83`   | admin-finance-summary test passes; focused admin runtime proof captured                                                                                | none beyond regression watch                                                                                    |
-| directory/media stale-image handling                                         | `BWE-16`                | COMPLETE | `21565e4`   | image-resolver test passes; stale upload request eliminated from live directory page                                                                   | none beyond regression watch                                                                                    |
-| business-approval pagination/count                                           | `BWE-17`                | COMPLETE | `df4a9ae`   | pending count/API/page text all align at `1633`; paging controls present                                                                               | none beyond regression watch                                                                                    |
-| sponsor/business ordinary search                                             | `BWE-18`                | COMPLETE | `f098f49`   | expired sponsor promotion is removed, PAMFA still resolves as a normal public business, and the remaining names are now classified as data-dependent | none in runtime code; future work only if source-data/business linkage is created outside this lane              |
-| Direct Assessment 01 — Member conversion attribution                         | `DA-01`                 | COMPLETE | `analysis`  | eight most recent real joins are now classified; seven are general-user signups, one is a business-owner signup, and no downstream claim/membership linkage is present | none beyond future telemetry improvements or claim-lane follow-up                                               |
-| Direct Assessment 02 — Directory count reconciliation                        | `DA-02`                 | COMPLETE | `b4f3e6f`   | public/search/UI totals reconcile at `365`; admin totals now reconcile `2272` raw businesses by surfacing a separate `24` duplicate-review bucket     | none beyond regression watch                                                                                    |
-| Direct Assessment 03 — Pricing and Black Card consistency                    | `DA-03`                 | COMPLETE | `35f93c5`   | founder cadence defect is closed and Black Card pricing/copy/runtime proofs now pass                                                                   | none beyond regression watch                                                                                    |
-| Direct Assessment 04 — Account-type onboarding                               | `DA-04`                 | PENDING  | `842ba7f`   | onboarding code exists but current path-by-path proof is missing                                                                                       | audit Business Owner, Seller, Employer, and General User onboarding end states                                  |
+| Scope Item                                                | Canonical Workstream ID | Status   | Last Commit | Evidence                                                                                                                                                               | Remaining Requirement                                                                                        |
+| --------------------------------------------------------- | ----------------------- | -------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| Business signup -> claim routing                          | `BWE-01`                | PENDING  | `842ba7f`   | historical implementation exists; current browser proof not yet re-captured in canonical reconciliation                                                                | run current Business Owner signup -> claim-mode redirect proof and record exact route/API evidence           |
+| Claim Verification                                        | `BWE-02`                | COMPLETE | `64286f9`   | business listing -> claim route, admin queue transitions, verified access, media handling, and denial coverage are all re-proven on Thursday, August 6, 2026           | preserve proof and reopen only on regression                                                                 |
+| Ownership Verification                                    | `DA-12`                 | ACTIVE   | `5310b59`   | business ownership and org verification proofs pass on August 4, 2026                                                                                                  | add scalable automated normal checks plus admin-review exception routing                                     |
+| Founding Membership payment/status/evidence/admin         | `BWE-02`                | COMPLETE | `64286f9`   | current business-claim admin workflow remains coupled to founding-membership records, but the live queue/admin/payment evidence path is proven working                 | preserve proof and reopen only on regression                                                                 |
+| claimed-business profile editing                          | `BWE-03`                | COMPLETE | `5310b59`   | ownership-resolution and profile-contract tests pass; runtime business/profile parity proof passes                                                                     | none beyond regression watch                                                                                 |
+| verified-business ownership resolution                    | `BWE-03`                | COMPLETE | `5310b59`   | runtime ownership parity proof passes; canonical API/profile routes are aligned                                                                                        | none beyond regression watch                                                                                 |
+| disputed/revoked ownership denial                         | `BWE-04`                | COMPLETE | `20fb839`   | denial behavior validated in ownership proof suite                                                                                                                     | none beyond regression watch                                                                                 |
+| PAMFA address/ZIP/Directions                              | `BWE-05`                | COMPLETE | `02d15c6`   | location-normalization test passes; both PAMFA public routes render `30349` and `Directions`                                                                           | none beyond regression watch                                                                                 |
+| business image/logo                                       | `BWE-07`                | ACTIVE   | `21565e4`   | stale-image suppression is proven; broader logo precedence closure is not yet re-proven live                                                                           | capture current logo/image precedence proof on owned business pages                                          |
+| safe website/social partial updates                       | `BWE-06`                | COMPLETE | `6505f78`   | profile-contract tests and runtime profile parity proof pass                                                                                                           | none beyond regression watch                                                                                 |
+| organization/church/nonprofit ownership/editing           | `BWE-08`                | COMPLETE | `5310b59`   | organization claim/owner proofs pass live on August 4, 2026                                                                                                            | none beyond regression watch                                                                                 |
+| marketplace product detail                                | `BWE-09`                | PENDING  | `00a3e98`   | product-detail implementation exists but DA-05 quality audit is still open                                                                                             | remove placeholder/engineering copy and prove public detail quality                                          |
+| marketplace checkout                                      | `BWE-10`                | BLOCKED  | `c797e3a`   | checkout matrix code exists; canonical paid completion/webhook fulfillment proof is still missing                                                                      | obtain one safe authorized paid completion and fulfillment evidence                                          |
+| Black Card functionality                                  | `BWE-11`                | COMPLETE | `84968bb`   | Black Card runtime bundle, dashboard card UX, join flow, admin digital-request surface, and live auth/entitlement/admin/browser proofs all pass on Thursday, August 6, 2026                                              | preserve proof and reopen only on regression                                                                  |
+| pricing/revenue readiness                                 | `BWE-12`                | ACTIVE   | `35f93c5`   | founder monthly billing alignment and Black Card public plan-name normalization are both recorded on August 4, 2026                                                    | close remaining revenue-surface inconsistencies and verify there are no further public naming contradictions |
+| auth/session parity                                       | `BWE-13`                | ACTIVE   | `c626bcf`   | local auth/session proof matrix passes                                                                                                                                 | capture second-machine parity evidence                                                                       |
+| admin dashboard normalization                             | `BWE-14`                | ACTIVE   | `df4a9ae`   | key counts now align on main admin surfaces; helper churn remains in dirty tree                                                                                        | isolate and close remaining normalization helper diffs with proof                                            |
+| finance-admin summary                                     | `BWE-15`                | COMPLETE | `9f94a83`   | admin-finance-summary test passes; focused admin runtime proof captured                                                                                                | none beyond regression watch                                                                                 |
+| directory/media stale-image handling                      | `BWE-16`                | COMPLETE | `21565e4`   | image-resolver test passes; stale upload request eliminated from live directory page                                                                                   | none beyond regression watch                                                                                 |
+| business-approval pagination/count                        | `BWE-17`                | COMPLETE | `df4a9ae`   | pending count/API/page text all align at `1633`; paging controls present                                                                                               | none beyond regression watch                                                                                 |
+| sponsor/business ordinary search                          | `BWE-18`                | COMPLETE | `f098f49`   | expired sponsor promotion is removed, PAMFA still resolves as a normal public business, and the remaining names are now classified as data-dependent                   | none in runtime code; future work only if source-data/business linkage is created outside this lane          |
+| Direct Assessment 01 — Member conversion attribution      | `DA-01`                 | COMPLETE | `analysis`  | eight most recent real joins are now classified; seven are general-user signups, one is a business-owner signup, and no downstream claim/membership linkage is present | none beyond future telemetry improvements or claim-lane follow-up                                            |
+| Direct Assessment 02 — Directory count reconciliation     | `DA-02`                 | COMPLETE | `b4f3e6f`   | public/search/UI totals reconcile at `365`; admin totals now reconcile `2272` raw businesses by surfacing a separate `24` duplicate-review bucket                      | none beyond regression watch                                                                                 |
+| Direct Assessment 03 — Pricing and Black Card consistency | `DA-03`                 | COMPLETE | `35f93c5`   | founder cadence defect is closed and Black Card pricing/copy/runtime proofs now pass                                                                                   | none beyond regression watch                                                                                 |
+| Direct Assessment 04 — Account-type onboarding            | `DA-04`                 | PENDING  | `842ba7f`   | onboarding code exists but current path-by-path proof is missing                                                                                                       | audit Business Owner, Seller, Employer, and General User onboarding end states                               |
 
 ### BWE-02 closure — Thursday, August 6, 2026
 
@@ -420,15 +416,7 @@
   - `node tmp/phase2-claim-queue-media-proof.mjs` pass
   - `npm run typecheck` pass
 - Next action:
-  - preserve closure evidence and continue with `BWE-11 Black Card`
-| Direct Assessment 05 — Marketplace public quality                            | `DA-05`                 | PENDING  | `pending`   | marketplace quality issues remain unevaluated against current public content                                                                           | remove test language, placeholders, and unfinished public copy                                                  |
-| Direct Assessment 06 — Release history                                       | `DA-06`                 | PENDING  | `pending`   | no current proof-backed release-history reconciliation recorded                                                                                        | update public release/history content to live-proven functionality only                                         |
-| Direct Assessment 07 — Founder identity/trust                                | `DA-07`                 | PENDING  | `pending`   | no canonical current audit recorded                                                                                                                    | reconcile founder identity/trust copy against factual live reality                                              |
-| Direct Assessment 08 — Brand/SEO consistency                                 | `DA-08`                 | PENDING  | `pending`   | no fresh canonical string audit recorded                                                                                                               | normalize use of `Black Wealth Exchange — Black-Owned Business Discovery and Growth Platform` where appropriate |
-| Direct Assessment 09 — Social/site offer alignment                           | `DA-09`                 | PENDING  | `pending`   | no fresh cross-surface offer audit recorded                                                                                                            | keep business-search-and-claim offer primary and clear                                                          |
-| Direct Assessment 10 — Claim-focused content strategy                        | `DA-10`                 | PENDING  | `pending`   | no fresh public/editorial strategy audit recorded                                                                                                      | preserve the agreed `70/20/10` strategy across current surfaces                                                 |
-| Direct Assessment 11 — Sponsor basic search                                  | `BWE-18`                | COMPLETE | `f098f49`   | same underlying engineering lane as sponsor/business linkage/search parity; closure audit now records the remaining source-data set                   | none in code; only future data creation/linkage if these names need real public businesses                       |
-| Direct Assessment 12 — Scalable business legitimacy / Ownership Verification | `DA-12`                 | ACTIVE   | `5310b59`   | ownership verification is proven for current manual flows                                                                                              | automate standard legitimacy checks and route exceptions to admin review                                        |
+  - preserve closure evidence and continue with `BWE-12 Pricing / revenue readiness`
 
 ## CURRENT APPLICATION FILE CHANGE SUMMARY
 
@@ -514,6 +502,38 @@
 - Interpretation:
   - these files are still dirty in canonical git state, but current August 4, 2026 runtime evidence shows working Black Card behavior rather than a newly discovered live defect
   - `BWE-11` therefore remains `ACTIVE` for canonical closure/commit hygiene, not because current runtime behavior is failing
+
+### BWE-11 closure — Thursday, August 6, 2026
+
+- Status: COMPLETE
+- Commit: `84968bbc4917a7d3a52e478e0bedb04a8250b793`
+- Exact files:
+  - `src/components/black-card/PremiumDigitalCard.tsx`
+  - `src/lib/black-card-membership.ts`
+  - `src/lib/black-card-state.ts`
+  - `src/pages/admin/black-card.tsx`
+  - `src/pages/api/admin/black-card/cards.ts`
+  - `src/pages/api/admin/black-card/digital-requests.ts`
+  - `src/pages/api/black-card/digital-request.ts`
+  - `src/pages/api/black-card/member-summary.ts`
+  - `src/pages/black-card/join.tsx`
+  - `src/pages/dashboard/black-card.tsx`
+  - `scripts/runtime-proof-black-card-admin.mjs`
+  - `scripts/runtime-proof-owner-blackcard-ui.mjs`
+- Current reality:
+  - the previously preserved dirty Black Card runtime subset is now committed as canonical recovered functionality
+  - authenticated Black Card dashboard, digital card rendering, verification link, join-page plan mapping, rewards earn/redeem, entitlement gating, admin redemption review, and admin digital-request visibility all remain green from current live proof
+  - the stale admin/browser proof assumptions were corrected; no new Black Card runtime defect was proven in this closure cycle
+  - the remaining `pricingLabelsFixed` browser expectation belongs to `BWE-12 Pricing / revenue readiness`, not to the closed Black Card runtime lane
+- Proof:
+  - `DOTENV_CONFIG_PATH=.env.local node -r dotenv/config scripts/runtime-proof-black-card-auth.mjs` pass
+  - `DOTENV_CONFIG_PATH=.env.local node -r dotenv/config scripts/runtime-proof-black-card-admin.mjs` pass
+  - `npm run proof:black-card-entitlements` pass
+  - `DOTENV_CONFIG_PATH=.env.local node -r dotenv/config scripts/runtime-proof-owner-blackcard-ui.mjs` pass for current Black Card runtime behavior, with the remaining pricing-label expectation reclassified to `BWE-12`
+  - `npm run typecheck` pass
+  - localhost `200` proofs remain current for `/`, `/business-directory`, `/black-card`, and `/black-card/join`
+- Next action:
+  - preserve closure evidence and continue with `BWE-12 Pricing / revenue readiness`
 
 # BWE Master Task List
 

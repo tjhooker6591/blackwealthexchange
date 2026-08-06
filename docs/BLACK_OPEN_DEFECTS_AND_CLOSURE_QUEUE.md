@@ -6,8 +6,8 @@ _Last updated: 2026-08-06 America/Los_Angeles_
 
 - Canonical repository: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - Canonical branch: `friday-release-candidate`
-- Latest runtime checkpoint SHA: `64286f9a0b0c356f2bf93391e3265d95042a502a`
-- Current git HEAD verified live during session: `40a409fb21b16137b89e9cace7e7aa95c99a1642`
+- Latest runtime checkpoint SHA: `84968bbc4917a7d3a52e478e0bedb04a8250b793`
+- Current git HEAD verified live during session: `84968bbc4917a7d3a52e478e0bedb04a8250b793`
 - Dirty-tree preservation snapshot: `/Users/blackforge/workspace/bwe/snapshots/repo_clean-2026-08-03T04-31-39-146Z`
 - Complete file manifest: `docs/recovery/BWE_COMPLETE_FILE_MANIFEST_CURRENT.csv`
 
@@ -202,7 +202,39 @@ _Last updated: 2026-08-06 America/Los_Angeles_
   - `npm run typecheck` pass on Thursday, August 6, 2026 before closure review
   - localhost `200` proofs remain current for `/`, `/business-directory`, `/signup`, and `/founding-membership`
 - Next action:
-  - preserve the proof set and reopen only on regression; next active bundle is Black Card canonical runtime-file closure
+  - preserve the proof set and reopen only on regression; next active bundle is Pricing / revenue readiness
+
+### BWE-11 closure note — Thursday, August 6, 2026
+
+- Status: COMPLETE
+- Current reality:
+  - the preserved Black Card runtime subset is now committed as canonical recovered functionality
+  - Black Card auth, entitlements, rewards earn/redeem, admin redemption review, dashboard digital-card UX, join-page tier mapping, verification link, and admin digital-request visibility are all green from current live proof
+  - the stale Black Card admin/browser proof assumptions were corrected in the support proof harnesses; no new Black Card runtime defect was proven in this closure cycle
+  - the remaining pricing-label expectation belongs to `BWE-12 Pricing / revenue readiness`, not to the closed `BWE-11` runtime lane
+- Exact files:
+  - `src/components/black-card/PremiumDigitalCard.tsx`
+  - `src/lib/black-card-membership.ts`
+  - `src/lib/black-card-state.ts`
+  - `src/pages/admin/black-card.tsx`
+  - `src/pages/api/admin/black-card/cards.ts`
+  - `src/pages/api/admin/black-card/digital-requests.ts`
+  - `src/pages/api/black-card/digital-request.ts`
+  - `src/pages/api/black-card/member-summary.ts`
+  - `src/pages/black-card/join.tsx`
+  - `src/pages/dashboard/black-card.tsx`
+  - `scripts/runtime-proof-black-card-admin.mjs`
+  - `scripts/runtime-proof-owner-blackcard-ui.mjs`
+- Proof:
+  - Commit: `84968bbc4917a7d3a52e478e0bedb04a8250b793`
+  - `DOTENV_CONFIG_PATH=.env.local node -r dotenv/config scripts/runtime-proof-black-card-auth.mjs` pass on Thursday, August 6, 2026
+  - `DOTENV_CONFIG_PATH=.env.local node -r dotenv/config scripts/runtime-proof-black-card-admin.mjs` pass on Thursday, August 6, 2026
+  - `npm run proof:black-card-entitlements` pass on Thursday, August 6, 2026
+  - `DOTENV_CONFIG_PATH=.env.local node -r dotenv/config scripts/runtime-proof-owner-blackcard-ui.mjs` pass on Thursday, August 6, 2026 for current Black Card runtime behavior, with the remaining pricing-label expectation reclassified to `BWE-12`
+  - `npm run typecheck` pass on Thursday, August 6, 2026
+  - localhost `200` proofs remain current for `/`, `/business-directory`, `/black-card`, and `/black-card/join`
+- Next action:
+  - preserve the proof set and continue with `BWE-12 Pricing / revenue readiness`
 
 ### Confirmed recent closures in canonical history
 
@@ -235,7 +267,7 @@ _Last updated: 2026-08-06 America/Los_Angeles_
     - `npm run typecheck` passed
     - `node scripts/runtime-check.mjs` passed
   - closure note:
-    - `DA-03` is now closed from canonical runtime evidence; `BWE-11` remains active only for canonical Black Card runtime file closure/classification, not for a newly established live pricing defect
+    - `DA-03` is closed from canonical runtime evidence; `BWE-11` is also now closed by the focused runtime bundle commit `84968bbc4917a7d3a52e478e0bedb04a8250b793`, so any remaining public pricing-copy inconsistency belongs to `BWE-12`
 
 - Commit integrity check on Tuesday, August 4, 2026:
   - `9f94a83516760f5bd00e9393fd5aaa8a72f5052c` remains intact in canonical history
