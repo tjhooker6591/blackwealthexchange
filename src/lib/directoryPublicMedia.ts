@@ -8,7 +8,9 @@ function asUrlList(value: unknown): string[] {
     .map((entry) => {
       if (typeof entry === "string") return s(entry);
       if (entry && typeof entry === "object") {
-        return s((entry as any).url || (entry as any).src || (entry as any).image);
+        return s(
+          (entry as any).url || (entry as any).src || (entry as any).image,
+        );
       }
       return "";
     })
@@ -77,8 +79,10 @@ export function getCanonicalBusinessAddressParts(source: any) {
   const rawPostalCode = s(source?.postalCode || source?.zip || source?.zipCode);
   const addressLine2 = s(source?.addressLine2 || source?.suite || source?.unit);
 
-  const cityLooksLikeFullAddress = looksLikeStreet(rawCity) && looksLikePostal(rawCity);
-  const addressLooksLikeFullAddress = looksLikeStreet(rawAddress) && looksLikePostal(rawAddress);
+  const cityLooksLikeFullAddress =
+    looksLikeStreet(rawCity) && looksLikePostal(rawCity);
+  const addressLooksLikeFullAddress =
+    looksLikeStreet(rawAddress) && looksLikePostal(rawAddress);
   const parsedLegacy = cityLooksLikeFullAddress
     ? parseLegacyCombinedAddress(rawCity)
     : addressLooksLikeFullAddress
@@ -86,8 +90,12 @@ export function getCanonicalBusinessAddressParts(source: any) {
       : null;
 
   const streetAddress =
-    rawAddress || parsedLegacy?.streetAddress || (cityLooksLikeFullAddress ? rawCity : "");
-  const city = parsedLegacy?.city || (cityLooksLikeFullAddress || addressLooksLikeFullAddress ? "" : rawCity);
+    rawAddress ||
+    parsedLegacy?.streetAddress ||
+    (cityLooksLikeFullAddress ? rawCity : "");
+  const city =
+    parsedLegacy?.city ||
+    (cityLooksLikeFullAddress || addressLooksLikeFullAddress ? "" : rawCity);
   const state = rawState || parsedLegacy?.state || "";
   const postalCode = rawPostalCode || parsedLegacy?.postalCode || "";
 
@@ -130,9 +138,13 @@ export function buildBusinessDirectionsQuery(source: any) {
       ? ""
       : normalizedCity;
 
-  const localityParts = [dedupedCity, dedupedState].map((value) => s(value)).filter(Boolean);
+  const localityParts = [dedupedCity, dedupedState]
+    .map((value) => s(value))
+    .filter(Boolean);
   const locality = localityParts.join(", ");
-  const tail = [locality, dedupedPostal].filter(Boolean).join(locality && dedupedPostal ? " " : "");
+  const tail = [locality, dedupedPostal]
+    .filter(Boolean)
+    .join(locality && dedupedPostal ? " " : "");
   const parts = [normalizedStreet, normalizedAddressLine2, tail]
     .map((value) => s(value))
     .filter(Boolean);

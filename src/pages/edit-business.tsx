@@ -148,10 +148,9 @@ type EditBusinessPageProps = {
   initialBusinessId?: string;
 };
 
-export const getServerSideProps: GetServerSideProps<EditBusinessPageProps> = async ({
-  req,
-  query,
-}) => {
+export const getServerSideProps: GetServerSideProps<
+  EditBusinessPageProps
+> = async ({ req, query }) => {
   const rawBusinessId = String(query.businessId || query.id || "").trim();
   if (!rawBusinessId) {
     return {

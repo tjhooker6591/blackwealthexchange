@@ -96,13 +96,11 @@ export default async function handler(
       return res.status(403).json({ error: "ownership_verification_required" });
     }
 
-    const business = await db
-      .collection("businesses")
-      .findOne(
-        buildObjectIdOrStringFilter("_id", ownership.entityId) || {
-          _id: ownership.entityId as any,
-        },
-      );
+    const business = await db.collection("businesses").findOne(
+      buildObjectIdOrStringFilter("_id", ownership.entityId) || {
+        _id: ownership.entityId as any,
+      },
+    );
     if (!business) {
       return res.status(404).json({ error: "Business not found" });
     }
@@ -126,14 +124,12 @@ export default async function handler(
         update.$set.images = current;
         update.$set.galleryImages = current;
       }
-      await db
-        .collection("businesses")
-        .updateOne(
-          buildObjectIdOrStringFilter("_id", ownership.entityId) || {
-            _id: ownership.entityId as any,
-          },
-          update,
-        );
+      await db.collection("businesses").updateOne(
+        buildObjectIdOrStringFilter("_id", ownership.entityId) || {
+          _id: ownership.entityId as any,
+        },
+        update,
+      );
       return res.status(200).json({ ok: true, removed: true, slot });
     }
 
@@ -174,14 +170,12 @@ export default async function handler(
       update.$set.galleryImages = current;
     }
 
-    await db
-      .collection("businesses")
-      .updateOne(
-        buildObjectIdOrStringFilter("_id", ownership.entityId) || {
-          _id: ownership.entityId as any,
-        },
-        update,
-      );
+    await db.collection("businesses").updateOne(
+      buildObjectIdOrStringFilter("_id", ownership.entityId) || {
+        _id: ownership.entityId as any,
+      },
+      update,
+    );
 
     return res.status(200).json({ ok: true, slot, url: fileUrl });
   } catch (error) {

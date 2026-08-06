@@ -37,13 +37,11 @@ export default async function handler(
     const client = await clientPromise;
     const db = client.db(getMongoDbName());
 
-    const organization = await db
-      .collection("organizations")
-      .findOne(
-        buildObjectIdOrStringFilter("_id", entityId) || {
-          _id: entityId as any,
-        },
-      );
+    const organization = await db.collection("organizations").findOne(
+      buildObjectIdOrStringFilter("_id", entityId) || {
+        _id: entityId as any,
+      },
+    );
 
     if (!organization) {
       return res

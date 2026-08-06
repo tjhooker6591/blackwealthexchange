@@ -30,9 +30,11 @@ export function isOwnershipBlocked(record: {
   revokedAt?: unknown;
 }) {
   const normalizedDispute = normalizeStage(record?.disputeState);
-  return Boolean(record?.revokedAt) ||
+  return (
+    Boolean(record?.revokedAt) ||
     normalizedDispute === "disputed" ||
-    normalizedDispute === "ownership_disputed";
+    normalizedDispute === "ownership_disputed"
+  );
 }
 
 export function normalizeStage(value: unknown) {

@@ -333,7 +333,9 @@ export default function OrganizationDetailPage() {
                   </div>
 
                   {item.enrichmentNeeded ? (
-                    <div className="pt-2 text-xs text-amber-300/80">Link needs enrichment/review</div>
+                    <div className="pt-2 text-xs text-amber-300/80">
+                      Link needs enrichment/review
+                    </div>
                   ) : null}
 
                   {item.source ? (

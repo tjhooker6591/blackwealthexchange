@@ -59,7 +59,10 @@ function sanitizeCityValue(args: {
 
   const streetNumber = streetAddress.match(/^\d+\b/)?.[0] || "";
   if (streetNumber) {
-    city = city.replace(new RegExp(`^${escapeRegex(streetNumber)}\\s+`, "i"), "");
+    city = city.replace(
+      new RegExp(`^${escapeRegex(streetNumber)}\\s+`, "i"),
+      "",
+    );
   }
   if (streetAddress) {
     city = city.replace(new RegExp(escapeRegex(streetAddress), "ig"), "");
@@ -432,7 +435,9 @@ export function normalizeDirectoryLocationParts(doc: any) {
   const addressLine2 = s(
     profile.addressLine2 || doc?.addressLine2 || doc?.suite || doc?.unit,
   );
-  const state = s(profile.state || doc?.address?.state || doc?.state).toUpperCase();
+  const state = s(
+    profile.state || doc?.address?.state || doc?.state,
+  ).toUpperCase();
   const postalCode = s(
     profile.postalCode ||
       doc?.postalCode ||

@@ -208,7 +208,11 @@ export default function BusinessDetail({
   const placeLine = [cityState, safeStr(business?.postalCode)]
     .filter(Boolean)
     .join(cityState && safeStr(business?.postalCode) ? " " : "");
-  const locationText = [safeStr(business?.fullAddress), safeStr(business?.address), placeLine]
+  const locationText = [
+    safeStr(business?.fullAddress),
+    safeStr(business?.address),
+    placeLine,
+  ]
     .filter(Boolean)
     .join(", ");
   const hasLatLng =
@@ -342,7 +346,12 @@ export default function BusinessDetail({
                 </h1>
 
                 <div className="mt-2 text-sm text-white/70">
-                  {[categoryText, placeLine || safeStr(business.fullAddress) || safeStr(business.address)]
+                  {[
+                    categoryText,
+                    placeLine ||
+                      safeStr(business.fullAddress) ||
+                      safeStr(business.address),
+                  ]
                     .filter(Boolean)
                     .join(" • ") || "Black-owned business"}
                 </div>
