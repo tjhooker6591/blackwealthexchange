@@ -1564,9 +1564,9 @@ export default async function webhookHandler(
                 : "needs_business_link"
               : sponsorLinkInvalid
                 ? "needs_business_link"
-              : campaignId
-                ? "paid_campaign_linked"
-                : "pending_admin_fulfillment",
+                : campaignId
+                  ? "paid_campaign_linked"
+                  : "pending_admin_fulfillment",
             needsAttention,
           },
         },
@@ -1594,7 +1594,10 @@ export default async function webhookHandler(
             stripeSessionId,
           };
 
-          if (normalizedItemId === "featured-sponsor" && sponsorValidation?.ok) {
+          if (
+            normalizedItemId === "featured-sponsor" &&
+            sponsorValidation?.ok
+          ) {
             const assignments = await reserveFeaturedSponsorWeeks(db as any, {
               campaignId,
               durationDays,
