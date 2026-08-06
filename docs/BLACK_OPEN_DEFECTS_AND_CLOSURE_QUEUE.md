@@ -4,15 +4,19 @@ _Last updated: 2026-08-06 America/Los_Angeles_
 
 ## Current canonical execution state
 
+- Program phase: `POST-RECOVERY STABILIZATION / REVENUE READINESS`
 - Canonical repository: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - Canonical branch: `friday-release-candidate`
 - Latest runtime checkpoint SHA: `0ccea48737dd2ff8d8b96bf7d00c59080e765161`
-- Current git HEAD verified live during session: `0ccea48737dd2ff8d8b96bf7d00c59080e765161`
+- Current git HEAD verified live during session: `c890bb30f410d7a9234aab017b4f965b39f11035`
 - Dirty-tree preservation snapshot: `/Users/blackforge/workspace/bwe/snapshots/repo_clean-2026-08-03T04-31-39-146Z`
 - Complete file manifest: `docs/recovery/BWE_COMPLETE_FILE_MANIFEST_CURRENT.csv`
 - Runtime application countdown: `0` unresolved runtime files as of Thursday, August 6, 2026 after commits `75f4dd1`, `ddeb5f2`, `0e6995d`, and `0ccea48`
+- External validation dependencies only:
+  - `BWE-10` authorized marketplace paid proof
+  - `BWE-13` second-machine auth/runtime parity proof
 
-## Current ordered execution queue — reconciled 2026-08-05
+## Current ordered execution queue — reconciled 2026-08-06
 
 1. **CQ-1 — Founder monthly-billing contradiction**
    - Status: COMPLETE
@@ -114,9 +118,9 @@ _Last updated: 2026-08-06 America/Los_Angeles_
    - Status: BLOCKED
    - Severity: High
    - Dependency:
-     - real payment completion + webhook fulfillment evidence
+     - one authorized real payment completion + webhook fulfillment evidence
    - Next action:
-     - perform one canonical paid marketplace run only when payment-proof execution is authorized and safe
+     - perform one canonical paid marketplace run only when payment-proof execution is explicitly authorized and safe
 
 6. **CQ-6 — Cross-machine auth/runtime parity capture**
    - Status: BLOCKED
