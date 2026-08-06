@@ -1140,9 +1140,7 @@ const AdminDashboard = ({
                   <MiniStat
                     label="Duplicate Review"
                     value={stats.duplicateReviewBusinesses}
-                    tone={
-                      stats.duplicateReviewBusinesses > 0 ? "warn" : "ok"
-                    }
+                    tone={stats.duplicateReviewBusinesses > 0 ? "warn" : "ok"}
                   />
                 </div>
 

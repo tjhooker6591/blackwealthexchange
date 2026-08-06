@@ -28,11 +28,19 @@ export default async function handler(
   if (qCategory) filter.category = qCategory;
   if (qPriority) filter.priority = qPriority;
   if (qAssignedTo) filter.assignedTo = qAssignedTo;
-  if (qUnassigned) filter.$or = [{ assignedTo: { $exists: false } }, { assignedTo: "" }, { assignedTo: null }];
+  if (qUnassigned)
+    filter.$or = [
+      { assignedTo: { $exists: false } },
+      { assignedTo: "" },
+      { assignedTo: null },
+    ];
   if (qEscalated) filter.escalationLevel = { $nin: ["", "none", null] };
 
   if (qSearch) {
-    const rx = { $regex: qSearch.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), $options: "i" };
+    const rx = {
+      $regex: qSearch.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
+      $options: "i",
+    };
     const searchOr = [
       { ticketId: rx },
       { email: rx },
@@ -76,8 +84,13 @@ export default async function handler(
   const rows = docs.map((d: any) => {
     const replies = Array.isArray(d.publicReplies) ? d.publicReplies : [];
     const lastReply = replies.length ? replies[replies.length - 1] : null;
-    const ageHours = d.createdAt ? Math.floor((now - new Date(d.createdAt).getTime()) / 36e5) : null;
-    const needsResponse = d.status === "New" || d.status === "In Review" || (lastReply && lastReply.from === "user");
+    const ageHours = d.createdAt
+      ? Math.floor((now - new Date(d.createdAt).getTime()) / 36e5)
+      : null;
+    const needsResponse =
+      d.status === "New" ||
+      d.status === "In Review" ||
+      (lastReply && lastReply.from === "user");
     return {
       ticketId: d.ticketId || String(d._id),
       name: d.name || "",
@@ -91,7 +104,14 @@ export default async function handler(
       createdAt: d.createdAt || null,
       updatedAt: d.updatedAt || null,
       ageHours,
-      sla: ageHours == null ? "-" : ageHours > 72 ? "BREACH" : ageHours > 24 ? "WARN" : "OK",
+      sla:
+        ageHours == null
+          ? "-"
+          : ageHours > 72
+            ? "BREACH"
+            : ageHours > 24
+              ? "WARN"
+              : "OK",
       lastReplyDirection: lastReply?.from || null,
       needsResponse: Boolean(needsResponse),
       firstResponseAt: d.firstResponseAt || null,

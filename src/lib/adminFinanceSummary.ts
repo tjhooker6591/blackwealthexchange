@@ -275,10 +275,10 @@ export async function getAdminFinanceSummary(db: Db) {
     amountCents: Number(p.amountCents || 0),
     bweFee: Number(p.bweFee ?? p.amountCents ?? 0),
     payout: Number(p.payout || 0),
-      status: p.status || "pending",
-      updatedAt: p.updatedAt || null,
-      source: "payments",
-    }));
+    status: p.status || "pending",
+    updatedAt: p.updatedAt || null,
+    source: "payments",
+  }));
 
   return {
     sourceOfTruth: "payments",

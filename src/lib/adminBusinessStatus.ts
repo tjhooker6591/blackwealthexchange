@@ -161,7 +161,9 @@ export async function getAdminBusinessCounts(db: Db) {
       businesses.countDocuments(getAdminBusinessBucketFilter("pending")),
       businesses.countDocuments(getAdminBusinessBucketFilter("approved")),
       businesses.countDocuments(getAdminBusinessBucketFilter("rejected")),
-      businesses.countDocuments(getAdminBusinessBucketFilter("duplicate_review")),
+      businesses.countDocuments(
+        getAdminBusinessBucketFilter("duplicate_review"),
+      ),
       businesses.countDocuments({}),
     ]);
 

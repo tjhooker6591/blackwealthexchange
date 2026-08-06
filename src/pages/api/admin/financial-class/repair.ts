@@ -60,9 +60,13 @@ export default async function handler(
     repairedBy: admin.email || admin.userId || "admin",
     reason,
     paymentStatus: "paid",
-    purchasedAt: new Date(payment.paidAt || payment.updatedAt || payment.createdAt || Date.now()),
+    purchasedAt: new Date(
+      payment.paidAt || payment.updatedAt || payment.createdAt || Date.now(),
+    ),
     email: String(payment.email || payment?.metadata?.email || "") || null,
-    courseName: String(payment?.metadata?.courseName || payment?.metadata?.itemName || courseId),
+    courseName: String(
+      payment?.metadata?.courseName || payment?.metadata?.itemName || courseId,
+    ),
     sendAccessEmail: true,
   });
 

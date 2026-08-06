@@ -42,7 +42,10 @@ export default function AdminSubscriptionsPage() {
               Subscription Admin
             </h1>
             <div className="flex items-center gap-4">
-              <Link href="/admin/founding-memberships" className="text-yellow-300 underline">
+              <Link
+                href="/admin/founding-memberships"
+                className="text-yellow-300 underline"
+              >
                 Founding Membership Pilot
               </Link>
               <Link href="/admin/tools" className="text-yellow-300 underline">
