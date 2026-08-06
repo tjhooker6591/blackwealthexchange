@@ -177,7 +177,9 @@ export function getCreateBusinessSuccessMessage() {
   return "Business submitted for review.";
 }
 
-export function getCanonicalBusinessName(doc: Record<string, unknown> | null | undefined) {
+export function getCanonicalBusinessName(
+  doc: Record<string, unknown> | null | undefined,
+) {
   if (!doc) return "";
 
   const candidates = [

@@ -85,8 +85,14 @@ export default function Support() {
       <main className="min-h-screen bg-black text-white p-8">
         <section className="mx-auto mt-4 max-w-6xl rounded-xl border border-white/15 bg-white/[0.03] p-3 text-sm text-white/80">
           <div className="font-bold text-white">Support quick start</div>
-          <div className="mt-1">Open a ticket for account, billing, security, marketplace, jobs, or directory issues.</div>
-          <div>Use My Tickets to track responses and follow-ups from the support team.</div>
+          <div className="mt-1">
+            Open a ticket for account, billing, security, marketplace, jobs, or
+            directory issues.
+          </div>
+          <div>
+            Use My Tickets to track responses and follow-ups from the support
+            team.
+          </div>
           <div>Check System Status before opening an outage report.</div>
         </section>
 
@@ -104,7 +110,10 @@ export default function Support() {
             </p>
             <p className={`text-xs mt-2 ${sig}`}>
               ● {s?.overallStatus || "operational"} • Last updated:{" "}
-              {s?.lastUpdatedAt ? new Date(s.lastUpdatedAt).toLocaleString() : "updating"} • Typical response time:{" "}
+              {s?.lastUpdatedAt
+                ? new Date(s.lastUpdatedAt).toLocaleString()
+                : "updating"}{" "}
+              • Typical response time:{" "}
               {s?.typicalResponseTimeHours != null
                 ? `${s.typicalResponseTimeHours}h`
                 : "calculating"}

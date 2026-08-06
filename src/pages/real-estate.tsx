@@ -615,7 +615,8 @@ const RealEstatePage = () => {
                 <GoldButton href="/real-estate-toolkit" variant="ghost">
                   {hasToolkitAccess
                     ? "Open Real Estate Toolkit"
-                    : "Unlock Real Estate Toolkit"} <Lock className="h-4 w-4" />
+                    : "Unlock Real Estate Toolkit"}{" "}
+                  <Lock className="h-4 w-4" />
                 </GoldButton>
               </div>
             </div>
@@ -899,7 +900,8 @@ const RealEstatePage = () => {
             <GoldButton href="/real-estate-toolkit" variant="ghost">
               {hasToolkitAccess
                 ? "Open Real Estate Toolkit"
-                : "Unlock Real Estate Toolkit"} <Lock className="h-4 w-4" />
+                : "Unlock Real Estate Toolkit"}{" "}
+              <Lock className="h-4 w-4" />
             </GoldButton>
           </div>
         </div>

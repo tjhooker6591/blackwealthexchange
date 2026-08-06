@@ -43,9 +43,14 @@ export async function grantCourseAccess(
   const paymentStatus = String(options?.paymentStatus || "paid");
 
   const userDoc = ObjectId.isValid(userId)
-    ? await db.collection("users").findOne({ _id: new ObjectId(userId) }, { projection: { email: 1 } })
+    ? await db
+        .collection("users")
+        .findOne({ _id: new ObjectId(userId) }, { projection: { email: 1 } })
     : null;
-  const resolvedEmail = String(options?.email || userDoc?.email || "").trim().toLowerCase() || null;
+  const resolvedEmail =
+    String(options?.email || userDoc?.email || "")
+      .trim()
+      .toLowerCase() || null;
   const resolvedCourseName = String(options?.courseName || courseId)
     .replace(/-/g, " ")
     .replace(/\b\w/g, (m) => m.toUpperCase());
@@ -121,7 +126,9 @@ export async function grantCourseAccess(
       });
       emailEvent.sent = true;
     } catch (err: any) {
-      emailEvent.error = String(err?.message || err || "email send failed").slice(0, 300);
+      emailEvent.error = String(
+        err?.message || err || "email send failed",
+      ).slice(0, 300);
     }
   } else if (!resolvedEmail) {
     emailEvent.error = "missing recipient email";
@@ -131,7 +138,10 @@ export async function grantCourseAccess(
     { userId, courseId },
     {
       $push: { courseEmailEvents: emailEvent },
-      $set: { courseEmailStatus: emailEvent.sent ? "sent" : "failed", updatedAt: new Date() },
+      $set: {
+        courseEmailStatus: emailEvent.sent ? "sent" : "failed",
+        updatedAt: new Date(),
+      },
     },
   );
 

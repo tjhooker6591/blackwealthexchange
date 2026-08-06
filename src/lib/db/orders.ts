@@ -87,7 +87,8 @@ export async function fulfillOrder(
       productId: idToString(order.productId),
       orderState,
       stockDecremented: false,
-      payoutReady: orderState === MARKETPLACE_ORDER_STATES.FULFILLED_PAYOUT_READY,
+      payoutReady:
+        orderState === MARKETPLACE_ORDER_STATES.FULFILLED_PAYOUT_READY,
     };
   }
 
@@ -121,8 +122,10 @@ export async function fulfillOrder(
   const productFilter = productOid ? { _id: productOid } : { _id: productId };
 
   // If this order was already marked paid_unfulfilled, do not decrement inventory again.
-  const needsStockDecrement = orderState !== MARKETPLACE_ORDER_STATES.PAID_UNFULFILLED;
-  let reconciliationException: FulfillOrderResult["reconciliationException"] = null;
+  const needsStockDecrement =
+    orderState !== MARKETPLACE_ORDER_STATES.PAID_UNFULFILLED;
+  let reconciliationException: FulfillOrderResult["reconciliationException"] =
+    null;
 
   if (needsStockDecrement) {
     const product = await products.findOne(productFilter);
@@ -166,7 +169,8 @@ export async function fulfillOrder(
     }
 
     if (inventory.hasConflictingDualFields) {
-      reconciliationException = "marketplace_inventory_dual_field_conflict_detected";
+      reconciliationException =
+        "marketplace_inventory_dual_field_conflict_detected";
       await db.collection("flow_events").insertOne({
         eventType: "marketplace_inventory_dual_field_conflict_detected",
         pageRoute: "/api/stripe/webhook-handler",

@@ -816,15 +816,17 @@ export default async function handler(
           ? currentScheduleRows
           : (
               await db
-              .collection("featured_sponsor_schedule")
-              .find({
-                placement: "homepage-featured-sponsor",
-                status: { $in: ["scheduled", "active"] },
-              })
-              .sort({ weekStart: -1, sortOrder: 1, createdAt: -1 })
-              .limit(60)
-              .toArray()
-            ).filter((row: any) => isSponsorScheduleRowFallbackEligible(row, now));
+                .collection("featured_sponsor_schedule")
+                .find({
+                  placement: "homepage-featured-sponsor",
+                  status: { $in: ["scheduled", "active"] },
+                })
+                .sort({ weekStart: -1, sortOrder: 1, createdAt: -1 })
+                .limit(60)
+                .toArray()
+            ).filter((row: any) =>
+              isSponsorScheduleRowFallbackEligible(row, now),
+            );
 
         const sponsorFallbackRaw = await db
           .collection("advertising_requests")

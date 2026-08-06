@@ -179,13 +179,9 @@ export default function AdvertisingCheckoutPage({
           ? router.query.placement
           : initialPlacement,
       type:
-        typeof router.query.type === "string"
-          ? router.query.type
-          : initialType,
+        typeof router.query.type === "string" ? router.query.type : initialType,
       plan:
-        typeof router.query.plan === "string"
-          ? router.query.plan
-          : initialPlan,
+        typeof router.query.plan === "string" ? router.query.plan : initialPlan,
     };
 
     const rawOption =
@@ -233,7 +229,16 @@ export default function AdvertisingCheckoutPage({
       campaignId,
       placement,
     };
-  }, [initialBusinessId, initialCampaignId, initialDuration, initialOption, initialPlacement, initialPlan, initialType, router.query]);
+  }, [
+    initialBusinessId,
+    initialCampaignId,
+    initialDuration,
+    initialOption,
+    initialPlacement,
+    initialPlan,
+    initialType,
+    router.query,
+  ]);
 
   useEffect(() => {
     if (!parsed || parsed.invalid) return;
@@ -473,14 +478,18 @@ export default function AdvertisingCheckoutPage({
   );
 }
 
-
-export const getServerSideProps: GetServerSideProps<AdvertisingCheckoutPageProps> = async ({ query }) => ({
+export const getServerSideProps: GetServerSideProps<
+  AdvertisingCheckoutPageProps
+> = async ({ query }) => ({
   props: {
     initialOption: typeof query.option === "string" ? query.option : "",
     initialDuration: typeof query.duration === "string" ? query.duration : "",
-    initialBusinessId: typeof query.businessId === "string" ? query.businessId : "",
-    initialCampaignId: typeof query.campaignId === "string" ? query.campaignId : "",
-    initialPlacement: typeof query.placement === "string" ? query.placement : "",
+    initialBusinessId:
+      typeof query.businessId === "string" ? query.businessId : "",
+    initialCampaignId:
+      typeof query.campaignId === "string" ? query.campaignId : "",
+    initialPlacement:
+      typeof query.placement === "string" ? query.placement : "",
     initialType: typeof query.type === "string" ? query.type : "",
     initialPlan: typeof query.plan === "string" ? query.plan : "",
   },

@@ -122,7 +122,9 @@ export default function FeaturedSponsorPage() {
   }, []);
 
   useEffect(() => {
-    const selected = managedBusinesses.find((business) => business.id === businessId);
+    const selected = managedBusinesses.find(
+      (business) => business.id === businessId,
+    );
     if (!selected) return;
     setBusinessName((current) => current || selected.displayName);
     setTargetUrl((current) => current || selected.publicHref || "");
@@ -283,14 +285,16 @@ export default function FeaturedSponsorPage() {
               Link Your BWE Business Listing
             </h2>
             <p className="text-sm text-gray-300">
-              Every active sponsor must point to one eligible public BWE business
-              listing. Sponsorship boosts placement; it does not create a separate
-              sponsor-only record.
+              Every active sponsor must point to one eligible public BWE
+              business listing. Sponsorship boosts placement; it does not create
+              a separate sponsor-only record.
             </p>
           </div>
 
           {managedBusinessesLoading ? (
-            <p className="text-sm text-gray-400">Loading your verified businesses...</p>
+            <p className="text-sm text-gray-400">
+              Loading your verified businesses...
+            </p>
           ) : managedBusinesses.length ? (
             <label className="block">
               <span className="mb-2 block text-sm font-semibold text-gray-200">

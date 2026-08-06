@@ -14,7 +14,9 @@ export function isApprovedActiveBusiness(doc: PublicVisibilityDoc): boolean {
   return approved && status === "active";
 }
 
-export function isDirectoryVisibilityApproved(doc: PublicVisibilityDoc): boolean {
+export function isDirectoryVisibilityApproved(
+  doc: PublicVisibilityDoc,
+): boolean {
   return doc?.directoryVisibilityApproved === true;
 }
 

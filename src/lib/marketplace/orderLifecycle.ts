@@ -23,11 +23,20 @@ export const MARKETPLACE_PAYOUT_STATUSES = {
 export type MarketplacePayoutStatus =
   (typeof MARKETPLACE_PAYOUT_STATUSES)[keyof typeof MARKETPLACE_PAYOUT_STATUSES];
 
-export function isMarketplaceSellerLiabilityOrder(order: Record<string, any>): boolean {
-  const paymentStatus = String(order?.paymentStatus || "").trim().toLowerCase();
-  const orderState = String(order?.orderState || "").trim().toLowerCase();
-  const paid = order?.paid === true || Boolean(order?.paidAt) || paymentStatus === "paid";
-  const refunded = paymentStatus === "refunded" || orderState === MARKETPLACE_ORDER_STATES.REFUNDED;
+export function isMarketplaceSellerLiabilityOrder(
+  order: Record<string, any>,
+): boolean {
+  const paymentStatus = String(order?.paymentStatus || "")
+    .trim()
+    .toLowerCase();
+  const orderState = String(order?.orderState || "")
+    .trim()
+    .toLowerCase();
+  const paid =
+    order?.paid === true || Boolean(order?.paidAt) || paymentStatus === "paid";
+  const refunded =
+    paymentStatus === "refunded" ||
+    orderState === MARKETPLACE_ORDER_STATES.REFUNDED;
   return paid && !refunded;
 }
 
@@ -51,8 +60,12 @@ export function isMarketplaceOrderStaleCheckout(args: {
   const { order, now = new Date(), expirationThresholdMs } = args;
   if (!order || !(expirationThresholdMs > 0)) return false;
 
-  const orderState = String(order.orderState || "").trim().toLowerCase();
-  const paymentStatus = String(order.paymentStatus || "").trim().toLowerCase();
+  const orderState = String(order.orderState || "")
+    .trim()
+    .toLowerCase();
+  const paymentStatus = String(order.paymentStatus || "")
+    .trim()
+    .toLowerCase();
   const isPendingCheckout =
     orderState === MARKETPLACE_ORDER_STATES.CHECKOUT_PENDING &&
     paymentStatus !== "paid" &&
@@ -74,33 +87,34 @@ export type MarketplaceStaleCheckoutDryRunSpec = {
   summaryFields: string[];
 };
 
-export const MARKETPLACE_STALE_CHECKOUT_DRY_RUN_SPEC: MarketplaceStaleCheckoutDryRunSpec = {
-  name: "marketplace-stale-checkout-dry-run",
-  filterDescription:
-    'marketplace product orders where orderState = "checkout_pending", paid != true, paidAt missing, paymentStatus != "paid", and createdAt older than configured expiration threshold',
-  outputFields: [
-    "_id",
-    "productId",
-    "sellerId",
-    "stripeSessionId",
-    "sessionExpiresAt",
-    "createdAt",
-    "updatedAt",
-    "orderState",
-    "paymentStatus",
-    "payoutStatus",
-    "grossAmount",
-    "bweFee",
-    "sellerPayout",
-  ],
-  summaryFields: [
-    "recordCount",
-    "oldestCreatedAt",
-    "newestCreatedAt",
-    "withSessionExpiration",
-    "withoutSessionExpiration",
-    "aggregateProjectedGrossAmount",
-    "aggregateProjectedBweFee",
-    "aggregateProjectedSellerShare",
-  ],
-};
+export const MARKETPLACE_STALE_CHECKOUT_DRY_RUN_SPEC: MarketplaceStaleCheckoutDryRunSpec =
+  {
+    name: "marketplace-stale-checkout-dry-run",
+    filterDescription:
+      'marketplace product orders where orderState = "checkout_pending", paid != true, paidAt missing, paymentStatus != "paid", and createdAt older than configured expiration threshold',
+    outputFields: [
+      "_id",
+      "productId",
+      "sellerId",
+      "stripeSessionId",
+      "sessionExpiresAt",
+      "createdAt",
+      "updatedAt",
+      "orderState",
+      "paymentStatus",
+      "payoutStatus",
+      "grossAmount",
+      "bweFee",
+      "sellerPayout",
+    ],
+    summaryFields: [
+      "recordCount",
+      "oldestCreatedAt",
+      "newestCreatedAt",
+      "withSessionExpiration",
+      "withoutSessionExpiration",
+      "aggregateProjectedGrossAmount",
+      "aggregateProjectedBweFee",
+      "aggregateProjectedSellerShare",
+    ],
+  };

@@ -86,7 +86,9 @@ function Card({
             </div>
           </div>
         </div>
-        {right ? <div className="w-full sm:w-auto shrink-0">{right}</div> : null}
+        {right ? (
+          <div className="w-full sm:w-auto shrink-0">{right}</div>
+        ) : null}
       </div>
 
       <div className="mt-5">{children}</div>
@@ -189,9 +191,13 @@ const RealEstateInvestment = () => {
     router.push("/real-estate-toolkit");
   };
 
-  const [activeSection, setActiveSection] = useState<"homebuyer" | "investor" | "professionals" | null>(null);
+  const [activeSection, setActiveSection] = useState<
+    "homebuyer" | "investor" | "professionals" | null
+  >(null);
 
-  const revealSection = (section: "homebuyer" | "investor" | "professionals") => {
+  const revealSection = (
+    section: "homebuyer" | "investor" | "professionals",
+  ) => {
     setActiveSection((prev) => (prev === section ? null : section));
   };
 
@@ -209,8 +215,6 @@ const RealEstateInvestment = () => {
       }
     });
   }, [activeSection]);
-
-
 
   /** -----------------------------
    *  Calculator 1: Home Loan Estimate
@@ -254,11 +258,14 @@ const RealEstateInvestment = () => {
   const [cashInvested, setCashInvested] = useState<string>("25000");
 
   const rentalEst = useMemo(() => {
-    const netMonthly = num(rentMonthly) - num(mortgageMonthly) - num(opsMonthly);
+    const netMonthly =
+      num(rentMonthly) - num(mortgageMonthly) - num(opsMonthly);
     const netAnnual = netMonthly * 12;
 
-    const capRate = num(purchasePrice) > 0 ? (netAnnual / num(purchasePrice)) * 100 : NaN;
-    const coc = num(cashInvested) > 0 ? (netAnnual / num(cashInvested)) * 100 : NaN;
+    const capRate =
+      num(purchasePrice) > 0 ? (netAnnual / num(purchasePrice)) * 100 : NaN;
+    const coc =
+      num(cashInvested) > 0 ? (netAnnual / num(cashInvested)) * 100 : NaN;
 
     return {
       netMonthly,
@@ -374,7 +381,9 @@ const RealEstateInvestment = () => {
           }
         >
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
-            <div className={`rounded-2xl p-5 border ${activeSection === "homebuyer" ? "bg-yellow-500/10 border-yellow-400/60" : "bg-black/40 border-white/10"}`}>
+            <div
+              className={`rounded-2xl p-5 border ${activeSection === "homebuyer" ? "bg-yellow-500/10 border-yellow-400/60" : "bg-black/40 border-white/10"}`}
+            >
               <div className="flex items-center gap-2 text-yellow-200 font-bold">
                 <Home className="h-4 w-4" />
                 Homebuyer
@@ -384,13 +393,18 @@ const RealEstateInvestment = () => {
                 financing options, and how to avoid costly mistakes.
               </p>
               <div className="mt-4">
-                <GoldButton variant="ghost" onClick={() => revealSection("homebuyer") }>
+                <GoldButton
+                  variant="ghost"
+                  onClick={() => revealSection("homebuyer")}
+                >
                   Go to Homebuyer Path <ArrowRight className="h-4 w-4" />
                 </GoldButton>
               </div>
             </div>
 
-            <div className={`rounded-2xl p-5 border ${activeSection === "investor" ? "bg-yellow-500/10 border-yellow-400/60" : "bg-black/40 border-white/10"}`}>
+            <div
+              className={`rounded-2xl p-5 border ${activeSection === "investor" ? "bg-yellow-500/10 border-yellow-400/60" : "bg-black/40 border-white/10"}`}
+            >
               <div className="flex items-center gap-2 text-yellow-200 font-bold">
                 <Building2 className="h-4 w-4" />
                 Investor
@@ -400,13 +414,18 @@ const RealEstateInvestment = () => {
                 deals, estimate returns, and build a steady portfolio.
               </p>
               <div className="mt-4">
-                <GoldButton variant="ghost" onClick={() => revealSection("investor") }>
+                <GoldButton
+                  variant="ghost"
+                  onClick={() => revealSection("investor")}
+                >
                   Go to Investor Path <ArrowRight className="h-4 w-4" />
                 </GoldButton>
               </div>
             </div>
 
-            <div className={`rounded-2xl p-5 border ${activeSection === "professionals" ? "bg-yellow-500/10 border-yellow-400/60" : "bg-black/40 border-white/10"}`}>
+            <div
+              className={`rounded-2xl p-5 border ${activeSection === "professionals" ? "bg-yellow-500/10 border-yellow-400/60" : "bg-black/40 border-white/10"}`}
+            >
               <div className="flex items-center gap-2 text-yellow-200 font-bold">
                 <Landmark className="h-4 w-4" />
                 Real Estate Pro
@@ -416,7 +435,10 @@ const RealEstateInvestment = () => {
                 show up where the community is building wealth.
               </p>
               <div className="mt-4">
-                <GoldButton variant="ghost" onClick={() => revealSection("professionals") }>
+                <GoldButton
+                  variant="ghost"
+                  onClick={() => revealSection("professionals")}
+                >
                   Go to Pro Section <ArrowRight className="h-4 w-4" />
                 </GoldButton>
               </div>
@@ -448,848 +470,900 @@ const RealEstateInvestment = () => {
         </Card>
 
         {/* Homebuyer Path */}
-        <details id="homebuyer-path" open={activeSection === "homebuyer"} onToggle={(e) => { if ((e.currentTarget as HTMLDetailsElement).open) setActiveSection("homebuyer"); }} className="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 min-w-0">
-          <summary className="cursor-pointer font-bold text-yellow-200">Homebuyer Path (expand)</summary>
-        <Card
-          id="homebuyer"
-          title="1) Homebuyer Path: From “I’m Not Sure” to Closing Day"
-          subtitle="A simple roadmap that helps you prepare, shop smart, and close with confidence."
-          icon={<Home className="h-5 w-5" />}
+        <details
+          id="homebuyer-path"
+          open={activeSection === "homebuyer"}
+          onToggle={(e) => {
+            if ((e.currentTarget as HTMLDetailsElement).open)
+              setActiveSection("homebuyer");
+          }}
+          className="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 min-w-0"
         >
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 space-y-4">
-              <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
-                <h3 className="text-lg font-extrabold text-yellow-200">
-                  Step-by-step roadmap
-                </h3>
-                <ol className="mt-3 space-y-3 text-gray-200">
-                  <li className="flex gap-3">
-                    <span className="mt-1 h-6 w-6 rounded-full bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center text-yellow-200 font-bold text-sm">
-                      1
-                    </span>
-                    <div>
-                      <div className="font-bold">Get financially ready</div>
-                      <div className="text-sm text-gray-300 mt-1">
-                        Check credit, reduce high-interest debt, build an
-                        emergency fund, and estimate a realistic monthly payment
-                        target.
+          <summary className="cursor-pointer font-bold text-yellow-200">
+            Homebuyer Path (expand)
+          </summary>
+          <Card
+            id="homebuyer"
+            title="1) Homebuyer Path: From “I’m Not Sure” to Closing Day"
+            subtitle="A simple roadmap that helps you prepare, shop smart, and close with confidence."
+            icon={<Home className="h-5 w-5" />}
+          >
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2 space-y-4">
+                <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
+                  <h3 className="text-lg font-extrabold text-yellow-200">
+                    Step-by-step roadmap
+                  </h3>
+                  <ol className="mt-3 space-y-3 text-gray-200">
+                    <li className="flex gap-3">
+                      <span className="mt-1 h-6 w-6 rounded-full bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center text-yellow-200 font-bold text-sm">
+                        1
+                      </span>
+                      <div>
+                        <div className="font-bold">Get financially ready</div>
+                        <div className="text-sm text-gray-300 mt-1">
+                          Check credit, reduce high-interest debt, build an
+                          emergency fund, and estimate a realistic monthly
+                          payment target.
+                        </div>
                       </div>
-                    </div>
-                  </li>
+                    </li>
 
-                  <li className="flex gap-3">
-                    <span className="mt-1 h-6 w-6 rounded-full bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center text-yellow-200 font-bold text-sm">
-                      2
-                    </span>
-                    <div>
+                    <li className="flex gap-3">
+                      <span className="mt-1 h-6 w-6 rounded-full bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center text-yellow-200 font-bold text-sm">
+                        2
+                      </span>
+                      <div>
+                        <div className="font-bold">
+                          Get pre-approved (not just pre-qualified)
+                        </div>
+                        <div className="text-sm text-gray-300 mt-1">
+                          Pre-approval strengthens your offer and sets real
+                          buying power. Compare multiple lenders when possible.
+                        </div>
+                      </div>
+                    </li>
+
+                    <li className="flex gap-3">
+                      <span className="mt-1 h-6 w-6 rounded-full bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center text-yellow-200 font-bold text-sm">
+                        3
+                      </span>
+                      <div>
+                        <div className="font-bold">Build your team</div>
+                        <div className="text-sm text-gray-300 mt-1">
+                          A strong agent + lender + inspector can save you
+                          thousands. Prioritize trust, speed, and clear
+                          communication.
+                        </div>
+                      </div>
+                    </li>
+
+                    <li className="flex gap-3">
+                      <span className="mt-1 h-6 w-6 rounded-full bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center text-yellow-200 font-bold text-sm">
+                        4
+                      </span>
+                      <div>
+                        <div className="font-bold">Shop smart + negotiate</div>
+                        <div className="text-sm text-gray-300 mt-1">
+                          Use comparables, inspection contingencies, and repair
+                          requests. Don’t waive protections unless you fully
+                          understand the risk.
+                        </div>
+                      </div>
+                    </li>
+
+                    <li className="flex gap-3">
+                      <span className="mt-1 h-6 w-6 rounded-full bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center text-yellow-200 font-bold text-sm">
+                        5
+                      </span>
+                      <div>
+                        <div className="font-bold">Close + protect the win</div>
+                        <div className="text-sm text-gray-300 mt-1">
+                          Review closing disclosure carefully, keep reserves,
+                          and plan maintenance from day one.
+                        </div>
+                      </div>
+                    </li>
+                  </ol>
+                </div>
+
+                <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
+                  <h3 className="text-lg font-extrabold text-yellow-200">
+                    Common financing options (quick guide)
+                  </h3>
+                  <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-gray-200">
+                    <div className="bg-white/5 border border-white/10 rounded-xl p-4">
                       <div className="font-bold">
-                        Get pre-approved (not just pre-qualified)
+                        Conventional (3%–5% down sometimes)
                       </div>
-                      <div className="text-sm text-gray-300 mt-1">
-                        Pre-approval strengthens your offer and sets real buying
-                        power. Compare multiple lenders when possible.
-                      </div>
-                    </div>
-                  </li>
-
-                  <li className="flex gap-3">
-                    <span className="mt-1 h-6 w-6 rounded-full bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center text-yellow-200 font-bold text-sm">
-                      3
-                    </span>
-                    <div>
-                      <div className="font-bold">Build your team</div>
-                      <div className="text-sm text-gray-300 mt-1">
-                        A strong agent + lender + inspector can save you
-                        thousands. Prioritize trust, speed, and clear
-                        communication.
+                      <div className="text-gray-300 mt-1">
+                        Often best long-term rates for strong borrowers. Ask
+                        about first-time homebuyer programs.
                       </div>
                     </div>
-                  </li>
-
-                  <li className="flex gap-3">
-                    <span className="mt-1 h-6 w-6 rounded-full bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center text-yellow-200 font-bold text-sm">
-                      4
-                    </span>
-                    <div>
-                      <div className="font-bold">Shop smart + negotiate</div>
-                      <div className="text-sm text-gray-300 mt-1">
-                        Use comparables, inspection contingencies, and repair
-                        requests. Don’t waive protections unless you fully
-                        understand the risk.
+                    <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+                      <div className="font-bold">
+                        FHA (lower down, flexible credit)
+                      </div>
+                      <div className="text-gray-300 mt-1">
+                        Can be easier to qualify, but mortgage insurance costs
+                        matter—run the numbers.
                       </div>
                     </div>
-                  </li>
-
-                  <li className="flex gap-3">
-                    <span className="mt-1 h-6 w-6 rounded-full bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center text-yellow-200 font-bold text-sm">
-                      5
-                    </span>
-                    <div>
-                      <div className="font-bold">Close + protect the win</div>
-                      <div className="text-sm text-gray-300 mt-1">
-                        Review closing disclosure carefully, keep reserves, and
-                        plan maintenance from day one.
+                    <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+                      <div className="font-bold">VA (eligible veterans)</div>
+                      <div className="text-gray-300 mt-1">
+                        Powerful benefit—often 0% down. Ask lenders who
+                        regularly close VA loans.
                       </div>
                     </div>
-                  </li>
-                </ol>
-              </div>
-
-              <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
-                <h3 className="text-lg font-extrabold text-yellow-200">
-                  Common financing options (quick guide)
-                </h3>
-                <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-gray-200">
-                  <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-                    <div className="font-bold">
-                      Conventional (3%–5% down sometimes)
-                    </div>
-                    <div className="text-gray-300 mt-1">
-                      Often best long-term rates for strong borrowers. Ask about
-                      first-time homebuyer programs.
+                    <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+                      <div className="font-bold">
+                        USDA (eligible rural areas)
+                      </div>
+                      <div className="text-gray-300 mt-1">
+                        0% down possible in qualifying areas. Great for buyers
+                        outside major metros.
+                      </div>
                     </div>
                   </div>
-                  <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-                    <div className="font-bold">
-                      FHA (lower down, flexible credit)
-                    </div>
-                    <div className="text-gray-300 mt-1">
-                      Can be easier to qualify, but mortgage insurance costs
-                      matter—run the numbers.
-                    </div>
-                  </div>
-                  <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-                    <div className="font-bold">VA (eligible veterans)</div>
-                    <div className="text-gray-300 mt-1">
-                      Powerful benefit—often 0% down. Ask lenders who regularly
-                      close VA loans.
-                    </div>
-                  </div>
-                  <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-                    <div className="font-bold">USDA (eligible rural areas)</div>
-                    <div className="text-gray-300 mt-1">
-                      0% down possible in qualifying areas. Great for buyers
-                      outside major metros.
-                    </div>
+
+                  <div className="mt-4 text-sm text-gray-300">
+                    Want a structured homebuyer roadmap and tools? Visit{" "}
+                    <ExternalLink href="https://www.consumerfinance.gov/owning-a-home/">
+                      CFPB: Buying a house
+                    </ExternalLink>{" "}
+                    and consider a HUD-approved counselor through{" "}
+                    <ExternalLink href="https://www.hud.gov/stat/sfh/housing-counseling">
+                      HUD Housing Counseling
+                    </ExternalLink>
+                    .
                   </div>
                 </div>
 
-                <div className="mt-4 text-sm text-gray-300">
-                  Want a structured homebuyer roadmap and tools? Visit{" "}
-                  <ExternalLink href="https://www.consumerfinance.gov/owning-a-home/">
-                    CFPB: Buying a house
-                  </ExternalLink>{" "}
-                  and consider a HUD-approved counselor through{" "}
-                  <ExternalLink href="https://www.hud.gov/stat/sfh/housing-counseling">
-                    HUD Housing Counseling
-                  </ExternalLink>
-                  .
+                <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
+                  <h3 className="text-lg font-extrabold text-yellow-200">
+                    New reality: understand representation & fees
+                  </h3>
+                  <p className="text-gray-300 text-sm mt-2 break-words leading-relaxed">
+                    Before touring homes, ask your agent to clearly explain any
+                    representation agreement, what services are included, and
+                    how compensation works. If anything feels unclear, slow down
+                    and ask questions.
+                  </p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <Pill tone="muted">Ask for clarity in writing</Pill>
+                    <Pill tone="muted">Know your exit terms</Pill>
+                    <Pill tone="muted">Compare services</Pill>
+                  </div>
                 </div>
               </div>
 
-              <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
-                <h3 className="text-lg font-extrabold text-yellow-200">
-                  New reality: understand representation & fees
-                </h3>
-                <p className="text-gray-300 text-sm mt-2 break-words leading-relaxed">
-                  Before touring homes, ask your agent to clearly explain any
-                  representation agreement, what services are included, and how
-                  compensation works. If anything feels unclear, slow down and
-                  ask questions.
-                </p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  <Pill tone="muted">Ask for clarity in writing</Pill>
-                  <Pill tone="muted">Know your exit terms</Pill>
-                  <Pill tone="muted">Compare services</Pill>
+              <div className="space-y-4">
+                <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
+                  <div className="flex items-center gap-2 text-yellow-200 font-extrabold">
+                    <BadgeCheck className="h-4 w-4" />
+                    Quick checklist
+                  </div>
+                  <ul className="mt-3 space-y-2 text-sm text-gray-300">
+                    <li>• Pull credit + dispute errors early</li>
+                    <li>• Save for down payment + closing costs</li>
+                    <li>• Budget repairs + maintenance</li>
+                    <li>• Get pre-approved (paperwork ready)</li>
+                    <li>• Inspect everything (roof, HVAC, sewer)</li>
+                    <li>• Don’t rush the closing disclosure</li>
+                  </ul>
+                </div>
+
+                <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
+                  <div className="flex items-center gap-2 text-yellow-200 font-extrabold">
+                    <Users className="h-4 w-4" />
+                    Find Black-owned pros
+                  </div>
+                  <p className="text-gray-300 text-sm mt-2 break-words leading-relaxed">
+                    Browse Black-owned agencies, lenders, inspectors,
+                    contractors, and property managers through the BWE
+                    directory.
+                  </p>
+                  <div className="mt-4 space-y-2">
+                    <GoldButton
+                      href="/business-directory?category=Real%20Estate"
+                      variant="ghost"
+                    >
+                      Real Estate Pros <ArrowRight className="h-4 w-4" />
+                    </GoldButton>
+                    <GoldButton
+                      href="/business-directory?category=Home%20Services"
+                      variant="ghost"
+                    >
+                      Home Services <ArrowRight className="h-4 w-4" />
+                    </GoldButton>
+                  </div>
+                </div>
+
+                <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
+                  <div className="flex items-center gap-2 text-yellow-200 font-extrabold">
+                    <FileText className="h-4 w-4" />
+                    Trusted directories
+                  </div>
+                  <ul className="mt-3 space-y-2 text-sm text-gray-300">
+                    <li>
+                      •{" "}
+                      <ExternalLink href="https://www.nareb.com/find-a-realtist">
+                        NAREB: Find a Realtist
+                      </ExternalLink>
+                    </li>
+                    <li>
+                      •{" "}
+                      <ExternalLink href="https://blackrealestateagents.com/">
+                        BlackRealEstateAgents.com
+                      </ExternalLink>
+                    </li>
+                    <li>
+                      •{" "}
+                      <ExternalLink href="https://www.consumerfinance.gov/find-a-housing-counselor/">
+                        CFPB: Find a Housing Counselor
+                      </ExternalLink>
+                    </li>
+                    <li>
+                      •{" "}
+                      <ExternalLink href="https://www.naca.com/">
+                        NACA (Homebuyer advocacy)
+                      </ExternalLink>
+                    </li>
+                  </ul>
                 </div>
               </div>
             </div>
+          </Card>
+        </details>
 
-            <div className="space-y-4">
-              <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
-                <div className="flex items-center gap-2 text-yellow-200 font-extrabold">
-                  <BadgeCheck className="h-4 w-4" />
-                  Quick checklist
+        {/* Investor Path */}
+        <details
+          id="investor-path"
+          open={activeSection === "investor"}
+          onToggle={(e) => {
+            if ((e.currentTarget as HTMLDetailsElement).open)
+              setActiveSection("investor");
+          }}
+          className="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 min-w-0"
+        >
+          <summary className="cursor-pointer font-bold text-yellow-200">
+            Investor Path (expand)
+          </summary>
+          <Card
+            id="investor"
+            title="2) Investor Path: Learn the Numbers (Cashflow, Risk, and Returns)"
+            subtitle="If you can analyze a deal, you can avoid most mistakes. This section gives you the framework."
+            icon={<Building2 className="h-5 w-5" />}
+          >
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2 space-y-4">
+                <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
+                  <h3 className="text-lg font-extrabold text-yellow-200">
+                    Investor strategies (choose one to start)
+                  </h3>
+                  <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-gray-300">
+                    <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+                      <div className="font-bold text-gray-100">
+                        House Hacking
+                      </div>
+                      <div className="mt-1">
+                        Live in one unit/room and rent the rest. Often the
+                        easiest first investment.
+                      </div>
+                    </div>
+                    <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+                      <div className="font-bold text-gray-100">
+                        Buy & Hold Rentals
+                      </div>
+                      <div className="mt-1">
+                        Focus on stable cashflow, good tenants, and long-term
+                        appreciation.
+                      </div>
+                    </div>
+                    <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+                      <div className="font-bold text-gray-100">Value-Add</div>
+                      <div className="mt-1">
+                        Improve property (repairs/renovations) to raise rent and
+                        value—requires tighter execution.
+                      </div>
+                    </div>
+                    <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+                      <div className="font-bold text-gray-100">
+                        Commercial / Mixed-use
+                      </div>
+                      <div className="mt-1">
+                        Bigger deals, more complexity. Great later once your
+                        underwriting skills are strong.
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-4">
+                    <Pill tone="gold">
+                      <TrendingUp className="h-4 w-4" />
+                      Investor rule: never guess—estimate everything.
+                    </Pill>
+                  </div>
                 </div>
-                <ul className="mt-3 space-y-2 text-sm text-gray-300">
-                  <li>• Pull credit + dispute errors early</li>
-                  <li>• Save for down payment + closing costs</li>
-                  <li>• Budget repairs + maintenance</li>
-                  <li>• Get pre-approved (paperwork ready)</li>
-                  <li>• Inspect everything (roof, HVAC, sewer)</li>
-                  <li>• Don’t rush the closing disclosure</li>
-                </ul>
+
+                <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
+                  <h3 className="text-lg font-extrabold text-yellow-200">
+                    Deal analysis framework (what to estimate every time)
+                  </h3>
+                  <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-gray-300">
+                    <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+                      <div className="font-bold text-gray-100">Income</div>
+                      <div className="mt-1">
+                        Rent, parking, laundry, storage, other fees.
+                      </div>
+                    </div>
+                    <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+                      <div className="font-bold text-gray-100">
+                        Operating expenses
+                      </div>
+                      <div className="mt-1">
+                        Taxes, insurance, maintenance, vacancy, utilities,
+                        property management.
+                      </div>
+                    </div>
+                    <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+                      <div className="font-bold text-gray-100">Financing</div>
+                      <div className="mt-1">
+                        Rate, term, down payment, closing costs, reserves.
+                      </div>
+                    </div>
+                    <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+                      <div className="font-bold text-gray-100">Risk</div>
+                      <div className="mt-1">
+                        Neighborhood trends, tenant demand, repair surprises,
+                        exit options.
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 text-sm text-gray-300">
+                    If you want low-down-payment homebuyer programs as part of a
+                    “house hack” plan, review:{" "}
+                    <ExternalLink href="https://singlefamily.fanniemae.com/originating-underwriting/mortgage-products/homeready-mortgage">
+                      Fannie Mae HomeReady
+                    </ExternalLink>{" "}
+                    and{" "}
+                    <ExternalLink href="https://sf.freddiemac.com/working-with-us/origination-underwriting/mortgage-products/home-possible">
+                      Freddie Mac Home Possible
+                    </ExternalLink>
+                    .
+                  </div>
+                </div>
+
+                <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
+                  <h3 className="text-lg font-extrabold text-yellow-200">
+                    Real estate crowdfunding / pooled investing (know the
+                    tradeoffs)
+                  </h3>
+                  <p className="text-sm text-gray-300 mt-2">
+                    Crowdfunding and pooled real estate investing can lower the
+                    entry barrier and diversify exposure, but you must
+                    understand liquidity limits, fees, and the specific project
+                    risks. Always read offering docs carefully.
+                  </p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    <Pill tone="muted">Lower minimums</Pill>
+                    <Pill tone="muted">Less control</Pill>
+                    <Pill tone="muted">Liquidity may be limited</Pill>
+                    <Pill tone="muted">Fees matter</Pill>
+                  </div>
+                </div>
               </div>
 
-              <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
-                <div className="flex items-center gap-2 text-yellow-200 font-extrabold">
-                  <Users className="h-4 w-4" />
-                  Find Black-owned pros
+              <div className="space-y-4">
+                <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
+                  <div className="flex items-center gap-2 text-yellow-200 font-extrabold">
+                    <ShieldAlert className="h-4 w-4" />
+                    Investor red flags
+                  </div>
+                  <ul className="mt-3 space-y-2 text-sm text-gray-300">
+                    <li>• “Guaranteed returns” language</li>
+                    <li>• Missing repair/inspection details</li>
+                    <li>• Rent numbers that ignore vacancy</li>
+                    <li>• No reserves in the plan</li>
+                    <li>• Unclear property management plan</li>
+                    <li>• Rushed timelines / pressure tactics</li>
+                  </ul>
                 </div>
-                <p className="text-gray-300 text-sm mt-2 break-words leading-relaxed">
-                  Browse Black-owned agencies, lenders, inspectors, contractors,
-                  and property managers through the BWE directory.
+
+                <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
+                  <div className="flex items-center gap-2 text-yellow-200 font-extrabold">
+                    <MapPin className="h-4 w-4" />
+                    Build locally + responsibly
+                  </div>
+                  <p className="text-sm text-gray-300 mt-2">
+                    The strongest portfolios often start with one neighborhood
+                    you understand deeply. Invest where you can evaluate demand,
+                    tenant quality, and long-term stability.
+                  </p>
+                </div>
+
+                <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
+                  <div className="flex items-center gap-2 text-yellow-200 font-extrabold">
+                    <Users className="h-4 w-4" />
+                    Find property managers & contractors
+                  </div>
+                  <p className="text-sm text-gray-300 mt-2">
+                    A good team protects your cashflow.
+                  </p>
+                  <div className="mt-4 space-y-2">
+                    <GoldButton
+                      href="/business-directory?category=Property%20Management"
+                      variant="ghost"
+                    >
+                      Property Management <ArrowRight className="h-4 w-4" />
+                    </GoldButton>
+                    <GoldButton
+                      href="/business-directory?category=Contractors"
+                      variant="ghost"
+                    >
+                      Contractors <ArrowRight className="h-4 w-4" />
+                    </GoldButton>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Card>
+
+          {/* Calculators */}
+          <Card
+            id="calculators"
+            title="3) Quick Calculators: Make Smarter Decisions Faster"
+            subtitle="These are simple estimates—use them to sanity-check deals and monthly affordability."
+            icon={<Calculator className="h-5 w-5" />}
+          >
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Home loan estimate */}
+              <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
+                <div className="flex items-center justify-between gap-3">
+                  <h3 className="text-lg font-extrabold text-yellow-200">
+                    Monthly Home Payment Estimate
+                  </h3>
+                  <Pill tone="muted">Principal + Taxes + Insurance + HOA</Pill>
+                </div>
+
+                <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+                  <label className="text-sm text-gray-300">
+                    Home price
+                    <input
+                      type="text"
+                      inputMode="decimal"
+                      value={homePrice}
+                      onChange={(e) => setHomePrice(e.target.value)}
+                      className="mt-1 w-full rounded-xl bg-black/50 border border-white/10 px-3 py-2 text-white"
+                    />
+                  </label>
+                  <label className="text-sm text-gray-300">
+                    Down payment (%)
+                    <input
+                      type="text"
+                      inputMode="decimal"
+                      value={downPct}
+                      onChange={(e) => setDownPct(e.target.value)}
+                      className="mt-1 w-full rounded-xl bg-black/50 border border-white/10 px-3 py-2 text-white"
+                    />
+                  </label>
+                  <label className="text-sm text-gray-300">
+                    Interest rate (%)
+                    <input
+                      type="text"
+                      inputMode="decimal"
+                      step="0.01"
+                      value={rate}
+                      onChange={(e) => setRate(e.target.value)}
+                      className="mt-1 w-full rounded-xl bg-black/50 border border-white/10 px-3 py-2 text-white"
+                    />
+                  </label>
+                  <label className="text-sm text-gray-300">
+                    Term (years)
+                    <input
+                      type="text"
+                      inputMode="decimal"
+                      value={termYears}
+                      onChange={(e) => setTermYears(e.target.value)}
+                      className="mt-1 w-full rounded-xl bg-black/50 border border-white/10 px-3 py-2 text-white"
+                    />
+                  </label>
+
+                  <label className="text-sm text-gray-300">
+                    Property tax (monthly)
+                    <input
+                      type="text"
+                      inputMode="decimal"
+                      value={taxMonthly}
+                      onChange={(e) => setTaxMonthly(e.target.value)}
+                      className="mt-1 w-full rounded-xl bg-black/50 border border-white/10 px-3 py-2 text-white"
+                    />
+                  </label>
+                  <label className="text-sm text-gray-300">
+                    Insurance (monthly)
+                    <input
+                      type="text"
+                      inputMode="decimal"
+                      value={insMonthly}
+                      onChange={(e) => setInsMonthly(e.target.value)}
+                      className="mt-1 w-full rounded-xl bg-black/50 border border-white/10 px-3 py-2 text-white"
+                    />
+                  </label>
+
+                  <label className="text-sm text-gray-300">
+                    HOA (monthly)
+                    <input
+                      type="text"
+                      inputMode="decimal"
+                      value={hoaMonthly}
+                      onChange={(e) => setHoaMonthly(e.target.value)}
+                      className="mt-1 w-full rounded-xl bg-black/50 border border-white/10 px-3 py-2 text-white"
+                    />
+                  </label>
+                </div>
+
+                <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <Stat label="Down payment" value={money(loanEst.down)} />
+                  <Stat label="Loan amount" value={money(loanEst.principal)} />
+                  <Stat
+                    label="Principal & Interest"
+                    value={money(loanEst.pmt)}
+                  />
+                  <Stat
+                    label="Estimated Total / Month"
+                    value={money(loanEst.total)}
+                  />
+                </div>
+
+                <p className="text-xs text-gray-400 mt-4">
+                  Tip: If this total stretches your budget, don’t force it.
+                  Adjust price, down payment, or shop lenders.
                 </p>
-                <div className="mt-4 space-y-2">
-                  <GoldButton
-                    href="/business-directory?category=Real%20Estate"
-                    variant="ghost"
-                  >
-                    Real Estate Pros <ArrowRight className="h-4 w-4" />
-                  </GoldButton>
-                  <GoldButton
-                    href="/business-directory?category=Home%20Services"
-                    variant="ghost"
-                  >
-                    Home Services <ArrowRight className="h-4 w-4" />
-                  </GoldButton>
+              </div>
+
+              {/* Rental deal snapshot */}
+              <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
+                <div className="flex items-center justify-between gap-3">
+                  <h3 className="text-lg font-extrabold text-yellow-200">
+                    Rental Deal Snapshot
+                  </h3>
+                  <Pill tone="muted">Cashflow • Cap Rate • Cash-on-Cash</Pill>
+                </div>
+
+                <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+                  <label className="text-sm text-gray-300">
+                    Purchase price
+                    <input
+                      type="text"
+                      inputMode="decimal"
+                      value={purchasePrice}
+                      onChange={(e) => setPurchasePrice(e.target.value)}
+                      className="mt-1 w-full rounded-xl bg-black/50 border border-white/10 px-3 py-2 text-white"
+                    />
+                  </label>
+                  <label className="text-sm text-gray-300">
+                    Monthly rent
+                    <input
+                      type="text"
+                      inputMode="decimal"
+                      value={rentMonthly}
+                      onChange={(e) => setRentMonthly(e.target.value)}
+                      className="mt-1 w-full rounded-xl bg-black/50 border border-white/10 px-3 py-2 text-white"
+                    />
+                  </label>
+                  <label className="text-sm text-gray-300">
+                    Mortgage (monthly)
+                    <input
+                      type="text"
+                      inputMode="decimal"
+                      value={mortgageMonthly}
+                      onChange={(e) => setMortgageMonthly(e.target.value)}
+                      className="mt-1 w-full rounded-xl bg-black/50 border border-white/10 px-3 py-2 text-white"
+                    />
+                  </label>
+                  <label className="text-sm text-gray-300">
+                    Ops estimate (monthly)
+                    <input
+                      type="text"
+                      inputMode="decimal"
+                      value={opsMonthly}
+                      onChange={(e) => setOpsMonthly(e.target.value)}
+                      className="mt-1 w-full rounded-xl bg-black/50 border border-white/10 px-3 py-2 text-white"
+                    />
+                  </label>
+                  <label className="text-sm text-gray-300">
+                    Cash invested
+                    <input
+                      type="text"
+                      inputMode="decimal"
+                      value={cashInvested}
+                      onChange={(e) => setCashInvested(e.target.value)}
+                      className="mt-1 w-full rounded-xl bg-black/50 border border-white/10 px-3 py-2 text-white"
+                    />
+                  </label>
+                </div>
+
+                <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <Stat
+                    label="Net cashflow / month"
+                    value={money(rentalEst.netMonthly)}
+                  />
+                  <Stat
+                    label="Net cashflow / year"
+                    value={money(rentalEst.netAnnual)}
+                  />
+                  <Stat
+                    label="Cap Rate (simple)"
+                    value={
+                      isFinite(rentalEst.capRate)
+                        ? `${rentalEst.capRate.toFixed(2)}%`
+                        : "—"
+                    }
+                    note="Based on your net annual estimate."
+                  />
+                  <Stat
+                    label="Cash-on-cash (simple)"
+                    value={
+                      isFinite(rentalEst.coc)
+                        ? `${rentalEst.coc.toFixed(2)}%`
+                        : "—"
+                    }
+                    note="Based on your cash invested."
+                  />
+                </div>
+
+                <p className="text-xs text-gray-400 mt-4">
+                  Tip: If cashflow is thin, increase reserves, tighten ops
+                  assumptions, or negotiate price/terms.
+                </p>
+              </div>
+            </div>
+          </Card>
+        </details>
+
+        {/* Professionals */}
+        <details
+          id="professionals-path"
+          open={activeSection === "professionals"}
+          onToggle={(e) => {
+            if (!(e.currentTarget as HTMLDetailsElement).open)
+              setActiveSection(null);
+          }}
+          className="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 min-w-0"
+        >
+          <summary className="cursor-pointer font-bold text-yellow-200">
+            Real Estate Pro Section (expand)
+          </summary>
+          <Card
+            id="professionals"
+            title="4) Black-Owned Real Estate Agencies & Professionals"
+            subtitle="Build with the community—agents, lenders, appraisers, inspectors, contractors, and property managers."
+            icon={<Users className="h-5 w-5" />}
+          >
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2 space-y-4">
+                <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
+                  <h3 className="text-lg font-extrabold text-yellow-200">
+                    Why your team matters
+                  </h3>
+                  <p className="text-sm text-gray-300 mt-2">
+                    The right team can protect you from bad deals, hidden repair
+                    costs, and weak negotiations. Start by selecting 2–3
+                    professionals, interview them, and choose the one who
+                    communicates clearly and moves with urgency.
+                  </p>
+
+                  <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-gray-300">
+                    <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+                      <div className="font-bold text-gray-100">
+                        Questions to ask an agent
+                      </div>
+                      <ul className="mt-2 space-y-1">
+                        <li>
+                          • How many deals did you close in the last 12 months?
+                        </li>
+                        <li>• What neighborhoods do you specialize in?</li>
+                        <li>• How do you handle inspection issues?</li>
+                        <li>• How do you communicate (text/email/calls)?</li>
+                      </ul>
+                    </div>
+                    <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+                      <div className="font-bold text-gray-100">
+                        Questions to ask a lender
+                      </div>
+                      <ul className="mt-2 space-y-1">
+                        <li>• What programs fit my profile?</li>
+                        <li>• What are estimated fees/closing costs?</li>
+                        <li>• What’s the rate-lock policy?</li>
+                        <li>• What documents do you need now?</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
+                  <h3 className="text-lg font-extrabold text-yellow-200">
+                    Featured directories & associations
+                  </h3>
+                  <ul className="mt-3 space-y-2 text-sm text-gray-300">
+                    <li>
+                      •{" "}
+                      <ExternalLink href="https://www.nareb.com/">
+                        NAREB (National Association of Real Estate Brokers)
+                      </ExternalLink>{" "}
+                      — Find a Realtist & community-focused advocacy.
+                    </li>
+                    <li>
+                      •{" "}
+                      <ExternalLink href="https://www.nareb.com/find-a-realtist">
+                        NAREB: Find a Realtist
+                      </ExternalLink>
+                    </li>
+                    <li>
+                      •{" "}
+                      <ExternalLink href="https://blackrealestateagents.com/">
+                        BlackRealEstateAgents.com
+                      </ExternalLink>{" "}
+                      — Match with vetted Black agents.
+                    </li>
+                  </ul>
+
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    <GoldButton
+                      href="/business-directory?category=Real%20Estate"
+                      variant="ghost"
+                    >
+                      Browse BWE Real Estate Category{" "}
+                      <ArrowRight className="h-4 w-4" />
+                    </GoldButton>
+                    <GoldButton
+                      href="/business-directory/submit"
+                      variant="ghost"
+                    >
+                      Add Your Business <ArrowRight className="h-4 w-4" />
+                    </GoldButton>
+                  </div>
                 </div>
               </div>
 
-              <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
-                <div className="flex items-center gap-2 text-yellow-200 font-extrabold">
-                  <FileText className="h-4 w-4" />
-                  Trusted directories
+              <div className="space-y-4">
+                <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
+                  <div className="text-yellow-200 font-extrabold">
+                    Pro categories to build your team
+                  </div>
+                  <ul className="mt-3 space-y-2 text-sm text-gray-300">
+                    <li>• Real Estate Agents & Brokers</li>
+                    <li>• Mortgage Lenders & Credit Specialists</li>
+                    <li>• Home Inspectors</li>
+                    <li>• Appraisers</li>
+                    <li>• Contractors & Trades</li>
+                    <li>• Property Managers</li>
+                    <li>• Title / Escrow</li>
+                    <li>• Insurance</li>
+                  </ul>
                 </div>
-                <ul className="mt-3 space-y-2 text-sm text-gray-300">
+
+                <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
+                  <div className="text-yellow-200 font-extrabold">
+                    Community impact tip
+                  </div>
+                  <p className="text-sm text-gray-300 mt-2">
+                    When possible, hire and refer Black-owned professionals.
+                    Over time, this creates local opportunity, builds capacity,
+                    and keeps value circulating in the community.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </Card>
+        </details>
+
+        {/* Education & Resources */}
+        <details className="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 min-w-0">
+          <summary className="cursor-pointer font-bold text-yellow-200">
+            Education & Resources (expand)
+          </summary>
+          <Card
+            id="education"
+            title="5) Education & Trusted Resources"
+            subtitle="If you’re serious, use trusted references—not guesswork, hype, or social media shortcuts."
+            icon={<FileText className="h-5 w-5" />}
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
+              <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
+                <div className="text-yellow-200 font-extrabold">
+                  Homebuying (Official)
+                </div>
+                <ul className="mt-3 space-y-2">
                   <li>
                     •{" "}
-                    <ExternalLink href="https://www.nareb.com/find-a-realtist">
-                      NAREB: Find a Realtist
+                    <ExternalLink href="https://www.consumerfinance.gov/owning-a-home/">
+                      CFPB: Buying a house tools & roadmap
                     </ExternalLink>
                   </li>
                   <li>
                     •{" "}
-                    <ExternalLink href="https://blackrealestateagents.com/">
-                      BlackRealEstateAgents.com
+                    <ExternalLink href="https://www.consumerfinance.gov/owning-a-home/explore/home-loan-toolkit/">
+                      CFPB: Your Home Loan Toolkit
+                    </ExternalLink>
+                  </li>
+                  <li>
+                    •{" "}
+                    <ExternalLink href="https://www.hud.gov/stat/sfh/housing-counseling">
+                      HUD: Housing Counseling
                     </ExternalLink>
                   </li>
                   <li>
                     •{" "}
                     <ExternalLink href="https://www.consumerfinance.gov/find-a-housing-counselor/">
-                      CFPB: Find a Housing Counselor
+                      Find a Housing Counselor (CFPB)
+                    </ExternalLink>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
+                <div className="text-yellow-200 font-extrabold">
+                  Low down payment options (Official)
+                </div>
+                <ul className="mt-3 space-y-2">
+                  <li>
+                    •{" "}
+                    <ExternalLink href="https://singlefamily.fanniemae.com/originating-underwriting/mortgage-products/homeready-mortgage">
+                      Fannie Mae: HomeReady Mortgage
+                    </ExternalLink>
+                  </li>
+                  <li>
+                    •{" "}
+                    <ExternalLink href="https://sf.freddiemac.com/working-with-us/origination-underwriting/mortgage-products/home-possible">
+                      Freddie Mac: Home Possible
                     </ExternalLink>
                   </li>
                   <li>
                     •{" "}
                     <ExternalLink href="https://www.naca.com/">
-                      NACA (Homebuyer advocacy)
+                      NACA: Homebuyer advocacy + programs
                     </ExternalLink>
                   </li>
                 </ul>
               </div>
-            </div>
-          </div>
-        </Card>
 
-        </details>
-
-        {/* Investor Path */}
-        <details id="investor-path" open={activeSection === "investor"} onToggle={(e) => { if ((e.currentTarget as HTMLDetailsElement).open) setActiveSection("investor"); }} className="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 min-w-0">
-          <summary className="cursor-pointer font-bold text-yellow-200">Investor Path (expand)</summary>
-        <Card
-          id="investor"
-          title="2) Investor Path: Learn the Numbers (Cashflow, Risk, and Returns)"
-          subtitle="If you can analyze a deal, you can avoid most mistakes. This section gives you the framework."
-          icon={<Building2 className="h-5 w-5" />}
-        >
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 space-y-4">
-              <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
-                <h3 className="text-lg font-extrabold text-yellow-200">
-                  Investor strategies (choose one to start)
-                </h3>
-                <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-gray-300">
-                  <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-                    <div className="font-bold text-gray-100">House Hacking</div>
-                    <div className="mt-1">
-                      Live in one unit/room and rent the rest. Often the easiest
-                      first investment.
-                    </div>
-                  </div>
-                  <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-                    <div className="font-bold text-gray-100">
-                      Buy & Hold Rentals
-                    </div>
-                    <div className="mt-1">
-                      Focus on stable cashflow, good tenants, and long-term
-                      appreciation.
-                    </div>
-                  </div>
-                  <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-                    <div className="font-bold text-gray-100">Value-Add</div>
-                    <div className="mt-1">
-                      Improve property (repairs/renovations) to raise rent and
-                      value—requires tighter execution.
-                    </div>
-                  </div>
-                  <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-                    <div className="font-bold text-gray-100">
-                      Commercial / Mixed-use
-                    </div>
-                    <div className="mt-1">
-                      Bigger deals, more complexity. Great later once your
-                      underwriting skills are strong.
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-4">
-                  <Pill tone="gold">
-                    <TrendingUp className="h-4 w-4" />
-                    Investor rule: never guess—estimate everything.
-                  </Pill>
-                </div>
-              </div>
-
-              <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
-                <h3 className="text-lg font-extrabold text-yellow-200">
-                  Deal analysis framework (what to estimate every time)
-                </h3>
-                <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-gray-300">
-                  <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-                    <div className="font-bold text-gray-100">Income</div>
-                    <div className="mt-1">
-                      Rent, parking, laundry, storage, other fees.
-                    </div>
-                  </div>
-                  <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-                    <div className="font-bold text-gray-100">
-                      Operating expenses
-                    </div>
-                    <div className="mt-1">
-                      Taxes, insurance, maintenance, vacancy, utilities,
-                      property management.
-                    </div>
-                  </div>
-                  <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-                    <div className="font-bold text-gray-100">Financing</div>
-                    <div className="mt-1">
-                      Rate, term, down payment, closing costs, reserves.
-                    </div>
-                  </div>
-                  <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-                    <div className="font-bold text-gray-100">Risk</div>
-                    <div className="mt-1">
-                      Neighborhood trends, tenant demand, repair surprises, exit
-                      options.
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-4 text-sm text-gray-300">
-                  If you want low-down-payment homebuyer programs as part of a
-                  “house hack” plan, review:{" "}
-                  <ExternalLink href="https://singlefamily.fanniemae.com/originating-underwriting/mortgage-products/homeready-mortgage">
-                    Fannie Mae HomeReady
-                  </ExternalLink>{" "}
-                  and{" "}
-                  <ExternalLink href="https://sf.freddiemac.com/working-with-us/origination-underwriting/mortgage-products/home-possible">
-                    Freddie Mac Home Possible
-                  </ExternalLink>
-                  .
-                </div>
-              </div>
-
-              <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
-                <h3 className="text-lg font-extrabold text-yellow-200">
-                  Real estate crowdfunding / pooled investing (know the
-                  tradeoffs)
-                </h3>
-                <p className="text-sm text-gray-300 mt-2">
-                  Crowdfunding and pooled real estate investing can lower the
-                  entry barrier and diversify exposure, but you must understand
-                  liquidity limits, fees, and the specific project risks. Always
-                  read offering docs carefully.
-                </p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  <Pill tone="muted">Lower minimums</Pill>
-                  <Pill tone="muted">Less control</Pill>
-                  <Pill tone="muted">Liquidity may be limited</Pill>
-                  <Pill tone="muted">Fees matter</Pill>
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
+              <div className="bg-black/40 border border-white/10 rounded-2xl p-5 md:col-span-2">
                 <div className="flex items-center gap-2 text-yellow-200 font-extrabold">
                   <ShieldAlert className="h-4 w-4" />
-                  Investor red flags
+                  Safety: avoid scams & predatory deals
                 </div>
-                <ul className="mt-3 space-y-2 text-sm text-gray-300">
-                  <li>• “Guaranteed returns” language</li>
-                  <li>• Missing repair/inspection details</li>
-                  <li>• Rent numbers that ignore vacancy</li>
-                  <li>• No reserves in the plan</li>
-                  <li>• Unclear property management plan</li>
-                  <li>• Rushed timelines / pressure tactics</li>
-                </ul>
-              </div>
 
-              <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
-                <div className="flex items-center gap-2 text-yellow-200 font-extrabold">
-                  <MapPin className="h-4 w-4" />
-                  Build locally + responsibly
-                </div>
-                <p className="text-sm text-gray-300 mt-2">
-                  The strongest portfolios often start with one neighborhood you
-                  understand deeply. Invest where you can evaluate demand,
-                  tenant quality, and long-term stability.
-                </p>
-              </div>
-
-              <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
-                <div className="flex items-center gap-2 text-yellow-200 font-extrabold">
-                  <Users className="h-4 w-4" />
-                  Find property managers & contractors
-                </div>
-                <p className="text-sm text-gray-300 mt-2">
-                  A good team protects your cashflow.
-                </p>
-                <div className="mt-4 space-y-2">
-                  <GoldButton
-                    href="/business-directory?category=Property%20Management"
-                    variant="ghost"
-                  >
-                    Property Management <ArrowRight className="h-4 w-4" />
-                  </GoldButton>
-                  <GoldButton
-                    href="/business-directory?category=Contractors"
-                    variant="ghost"
-                  >
-                    Contractors <ArrowRight className="h-4 w-4" />
-                  </GoldButton>
-                </div>
-              </div>
-            </div>
-          </div>
-        </Card>
-
-        {/* Calculators */}
-        <Card
-          id="calculators"
-          title="3) Quick Calculators: Make Smarter Decisions Faster"
-          subtitle="These are simple estimates—use them to sanity-check deals and monthly affordability."
-          icon={<Calculator className="h-5 w-5" />}
-        >
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Home loan estimate */}
-            <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
-              <div className="flex items-center justify-between gap-3">
-                <h3 className="text-lg font-extrabold text-yellow-200">
-                  Monthly Home Payment Estimate
-                </h3>
-                <Pill tone="muted">Principal + Taxes + Insurance + HOA</Pill>
-              </div>
-
-              <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
-                <label className="text-sm text-gray-300">
-                  Home price
-                  <input
-                    type="text" inputMode="decimal"
-                    value={homePrice}
-                    onChange={(e) => setHomePrice(e.target.value)}
-                    className="mt-1 w-full rounded-xl bg-black/50 border border-white/10 px-3 py-2 text-white"
-                  />
-                </label>
-                <label className="text-sm text-gray-300">
-                  Down payment (%)
-                  <input
-                    type="text" inputMode="decimal"
-                    value={downPct}
-                    onChange={(e) => setDownPct(e.target.value)}
-                    className="mt-1 w-full rounded-xl bg-black/50 border border-white/10 px-3 py-2 text-white"
-                  />
-                </label>
-                <label className="text-sm text-gray-300">
-                  Interest rate (%)
-                  <input
-                    type="text" inputMode="decimal"
-                    step="0.01"
-                    value={rate}
-                    onChange={(e) => setRate(e.target.value)}
-                    className="mt-1 w-full rounded-xl bg-black/50 border border-white/10 px-3 py-2 text-white"
-                  />
-                </label>
-                <label className="text-sm text-gray-300">
-                  Term (years)
-                  <input
-                    type="text" inputMode="decimal"
-                    value={termYears}
-                    onChange={(e) => setTermYears(e.target.value)}
-                    className="mt-1 w-full rounded-xl bg-black/50 border border-white/10 px-3 py-2 text-white"
-                  />
-                </label>
-
-                <label className="text-sm text-gray-300">
-                  Property tax (monthly)
-                  <input
-                    type="text" inputMode="decimal"
-                    value={taxMonthly}
-                    onChange={(e) => setTaxMonthly(e.target.value)}
-                    className="mt-1 w-full rounded-xl bg-black/50 border border-white/10 px-3 py-2 text-white"
-                  />
-                </label>
-                <label className="text-sm text-gray-300">
-                  Insurance (monthly)
-                  <input
-                    type="text" inputMode="decimal"
-                    value={insMonthly}
-                    onChange={(e) => setInsMonthly(e.target.value)}
-                    className="mt-1 w-full rounded-xl bg-black/50 border border-white/10 px-3 py-2 text-white"
-                  />
-                </label>
-
-                <label className="text-sm text-gray-300">
-                  HOA (monthly)
-                  <input
-                    type="text" inputMode="decimal"
-                    value={hoaMonthly}
-                    onChange={(e) => setHoaMonthly(e.target.value)}
-                    className="mt-1 w-full rounded-xl bg-black/50 border border-white/10 px-3 py-2 text-white"
-                  />
-                </label>
-              </div>
-
-              <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <Stat label="Down payment" value={money(loanEst.down)} />
-                <Stat label="Loan amount" value={money(loanEst.principal)} />
-                <Stat label="Principal & Interest" value={money(loanEst.pmt)} />
-                <Stat
-                  label="Estimated Total / Month"
-                  value={money(loanEst.total)}
-                />
-              </div>
-
-              <p className="text-xs text-gray-400 mt-4">
-                Tip: If this total stretches your budget, don’t force it. Adjust
-                price, down payment, or shop lenders.
-              </p>
-            </div>
-
-            {/* Rental deal snapshot */}
-            <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
-              <div className="flex items-center justify-between gap-3">
-                <h3 className="text-lg font-extrabold text-yellow-200">
-                  Rental Deal Snapshot
-                </h3>
-                <Pill tone="muted">Cashflow • Cap Rate • Cash-on-Cash</Pill>
-              </div>
-
-              <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
-                <label className="text-sm text-gray-300">
-                  Purchase price
-                  <input
-                    type="text" inputMode="decimal"
-                    value={purchasePrice}
-                    onChange={(e) => setPurchasePrice(e.target.value)}
-                    className="mt-1 w-full rounded-xl bg-black/50 border border-white/10 px-3 py-2 text-white"
-                  />
-                </label>
-                <label className="text-sm text-gray-300">
-                  Monthly rent
-                  <input
-                    type="text" inputMode="decimal"
-                    value={rentMonthly}
-                    onChange={(e) => setRentMonthly(e.target.value)}
-                    className="mt-1 w-full rounded-xl bg-black/50 border border-white/10 px-3 py-2 text-white"
-                  />
-                </label>
-                <label className="text-sm text-gray-300">
-                  Mortgage (monthly)
-                  <input
-                    type="text" inputMode="decimal"
-                    value={mortgageMonthly}
-                    onChange={(e) => setMortgageMonthly(e.target.value)}
-                    className="mt-1 w-full rounded-xl bg-black/50 border border-white/10 px-3 py-2 text-white"
-                  />
-                </label>
-                <label className="text-sm text-gray-300">
-                  Ops estimate (monthly)
-                  <input
-                    type="text" inputMode="decimal"
-                    value={opsMonthly}
-                    onChange={(e) => setOpsMonthly(e.target.value)}
-                    className="mt-1 w-full rounded-xl bg-black/50 border border-white/10 px-3 py-2 text-white"
-                  />
-                </label>
-                <label className="text-sm text-gray-300">
-                  Cash invested
-                  <input
-                    type="text" inputMode="decimal"
-                    value={cashInvested}
-                    onChange={(e) => setCashInvested(e.target.value)}
-                    className="mt-1 w-full rounded-xl bg-black/50 border border-white/10 px-3 py-2 text-white"
-                  />
-                </label>
-              </div>
-
-              <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <Stat
-                  label="Net cashflow / month"
-                  value={money(rentalEst.netMonthly)}
-                />
-                <Stat
-                  label="Net cashflow / year"
-                  value={money(rentalEst.netAnnual)}
-                />
-                <Stat
-                  label="Cap Rate (simple)"
-                  value={
-                    isFinite(rentalEst.capRate)
-                      ? `${rentalEst.capRate.toFixed(2)}%`
-                      : "—"
-                  }
-                  note="Based on your net annual estimate."
-                />
-                <Stat
-                  label="Cash-on-cash (simple)"
-                  value={
-                    isFinite(rentalEst.coc)
-                      ? `${rentalEst.coc.toFixed(2)}%`
-                      : "—"
-                  }
-                  note="Based on your cash invested."
-                />
-              </div>
-
-              <p className="text-xs text-gray-400 mt-4">
-                Tip: If cashflow is thin, increase reserves, tighten ops
-                assumptions, or negotiate price/terms.
-              </p>
-            </div>
-          </div>
-        </Card>
-        </details>
-
-        {/* Professionals */}
-        <details id="professionals-path" open={activeSection === "professionals"} onToggle={(e) => { if (!(e.currentTarget as HTMLDetailsElement).open) setActiveSection(null); }} className="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 min-w-0">
-          <summary className="cursor-pointer font-bold text-yellow-200">Real Estate Pro Section (expand)</summary>
-        <Card
-          id="professionals"
-          title="4) Black-Owned Real Estate Agencies & Professionals"
-          subtitle="Build with the community—agents, lenders, appraisers, inspectors, contractors, and property managers."
-          icon={<Users className="h-5 w-5" />}
-        >
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 space-y-4">
-              <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
-                <h3 className="text-lg font-extrabold text-yellow-200">
-                  Why your team matters
-                </h3>
-                <p className="text-sm text-gray-300 mt-2">
-                  The right team can protect you from bad deals, hidden repair
-                  costs, and weak negotiations. Start by selecting 2–3
-                  professionals, interview them, and choose the one who
-                  communicates clearly and moves with urgency.
-                </p>
-
-                <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-gray-300">
+                <div className="mt-3 grid grid-cols-1 lg:grid-cols-3 gap-3 text-sm text-gray-300">
                   <div className="bg-white/5 border border-white/10 rounded-xl p-4">
                     <div className="font-bold text-gray-100">
-                      Questions to ask an agent
+                      Pressure tactics
                     </div>
-                    <ul className="mt-2 space-y-1">
-                      <li>
-                        • How many deals did you close in the last 12 months?
-                      </li>
-                      <li>• What neighborhoods do you specialize in?</li>
-                      <li>• How do you handle inspection issues?</li>
-                      <li>• How do you communicate (text/email/calls)?</li>
-                    </ul>
+                    <div className="mt-1">
+                      If you’re rushed, you’re at risk. Pause and verify.
+                    </div>
+                  </div>
+                  <div className="bg-white/5 border border-white/10 rounded-xl p-4">
+                    <div className="font-bold text-gray-100">Hidden costs</div>
+                    <div className="mt-1">
+                      Always estimate repairs, vacancy, and reserves.
+                    </div>
                   </div>
                   <div className="bg-white/5 border border-white/10 rounded-xl p-4">
                     <div className="font-bold text-gray-100">
-                      Questions to ask a lender
+                      Unclear paperwork
                     </div>
-                    <ul className="mt-2 space-y-1">
-                      <li>• What programs fit my profile?</li>
-                      <li>• What are estimated fees/closing costs?</li>
-                      <li>• What’s the rate-lock policy?</li>
-                      <li>• What documents do you need now?</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
-                <h3 className="text-lg font-extrabold text-yellow-200">
-                  Featured directories & associations
-                </h3>
-                <ul className="mt-3 space-y-2 text-sm text-gray-300">
-                  <li>
-                    •{" "}
-                    <ExternalLink href="https://www.nareb.com/">
-                      NAREB (National Association of Real Estate Brokers)
-                    </ExternalLink>{" "}
-                    — Find a Realtist & community-focused advocacy.
-                  </li>
-                  <li>
-                    •{" "}
-                    <ExternalLink href="https://www.nareb.com/find-a-realtist">
-                      NAREB: Find a Realtist
-                    </ExternalLink>
-                  </li>
-                  <li>
-                    •{" "}
-                    <ExternalLink href="https://blackrealestateagents.com/">
-                      BlackRealEstateAgents.com
-                    </ExternalLink>{" "}
-                    — Match with vetted Black agents.
-                  </li>
-                </ul>
-
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <GoldButton
-                    href="/business-directory?category=Real%20Estate"
-                    variant="ghost"
-                  >
-                    Browse BWE Real Estate Category{" "}
-                    <ArrowRight className="h-4 w-4" />
-                  </GoldButton>
-                  <GoldButton href="/business-directory/submit" variant="ghost">
-                    Add Your Business <ArrowRight className="h-4 w-4" />
-                  </GoldButton>
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
-                <div className="text-yellow-200 font-extrabold">
-                  Pro categories to build your team
-                </div>
-                <ul className="mt-3 space-y-2 text-sm text-gray-300">
-                  <li>• Real Estate Agents & Brokers</li>
-                  <li>• Mortgage Lenders & Credit Specialists</li>
-                  <li>• Home Inspectors</li>
-                  <li>• Appraisers</li>
-                  <li>• Contractors & Trades</li>
-                  <li>• Property Managers</li>
-                  <li>• Title / Escrow</li>
-                  <li>• Insurance</li>
-                </ul>
-              </div>
-
-              <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
-                <div className="text-yellow-200 font-extrabold">
-                  Community impact tip
-                </div>
-                <p className="text-sm text-gray-300 mt-2">
-                  When possible, hire and refer Black-owned professionals. Over
-                  time, this creates local opportunity, builds capacity, and
-                  keeps value circulating in the community.
-                </p>
-              </div>
-            </div>
-          </div>
-        </Card>
-
-        </details>
-
-        {/* Education & Resources */}
-        <details className="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 min-w-0">
-          <summary className="cursor-pointer font-bold text-yellow-200">Education & Resources (expand)</summary>
-        <Card
-          id="education"
-          title="5) Education & Trusted Resources"
-          subtitle="If you’re serious, use trusted references—not guesswork, hype, or social media shortcuts."
-          icon={<FileText className="h-5 w-5" />}
-        >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
-            <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
-              <div className="text-yellow-200 font-extrabold">
-                Homebuying (Official)
-              </div>
-              <ul className="mt-3 space-y-2">
-                <li>
-                  •{" "}
-                  <ExternalLink href="https://www.consumerfinance.gov/owning-a-home/">
-                    CFPB: Buying a house tools & roadmap
-                  </ExternalLink>
-                </li>
-                <li>
-                  •{" "}
-                  <ExternalLink href="https://www.consumerfinance.gov/owning-a-home/explore/home-loan-toolkit/">
-                    CFPB: Your Home Loan Toolkit
-                  </ExternalLink>
-                </li>
-                <li>
-                  •{" "}
-                  <ExternalLink href="https://www.hud.gov/stat/sfh/housing-counseling">
-                    HUD: Housing Counseling
-                  </ExternalLink>
-                </li>
-                <li>
-                  •{" "}
-                  <ExternalLink href="https://www.consumerfinance.gov/find-a-housing-counselor/">
-                    Find a Housing Counselor (CFPB)
-                  </ExternalLink>
-                </li>
-              </ul>
-            </div>
-
-            <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 min-w-0">
-              <div className="text-yellow-200 font-extrabold">
-                Low down payment options (Official)
-              </div>
-              <ul className="mt-3 space-y-2">
-                <li>
-                  •{" "}
-                  <ExternalLink href="https://singlefamily.fanniemae.com/originating-underwriting/mortgage-products/homeready-mortgage">
-                    Fannie Mae: HomeReady Mortgage
-                  </ExternalLink>
-                </li>
-                <li>
-                  •{" "}
-                  <ExternalLink href="https://sf.freddiemac.com/working-with-us/origination-underwriting/mortgage-products/home-possible">
-                    Freddie Mac: Home Possible
-                  </ExternalLink>
-                </li>
-                <li>
-                  •{" "}
-                  <ExternalLink href="https://www.naca.com/">
-                    NACA: Homebuyer advocacy + programs
-                  </ExternalLink>
-                </li>
-              </ul>
-            </div>
-
-            <div className="bg-black/40 border border-white/10 rounded-2xl p-5 md:col-span-2">
-              <div className="flex items-center gap-2 text-yellow-200 font-extrabold">
-                <ShieldAlert className="h-4 w-4" />
-                Safety: avoid scams & predatory deals
-              </div>
-
-              <div className="mt-3 grid grid-cols-1 lg:grid-cols-3 gap-3 text-sm text-gray-300">
-                <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-                  <div className="font-bold text-gray-100">
-                    Pressure tactics
-                  </div>
-                  <div className="mt-1">
-                    If you’re rushed, you’re at risk. Pause and verify.
-                  </div>
-                </div>
-                <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-                  <div className="font-bold text-gray-100">Hidden costs</div>
-                  <div className="mt-1">
-                    Always estimate repairs, vacancy, and reserves.
-                  </div>
-                </div>
-                <div className="bg-white/5 border border-white/10 rounded-xl p-4">
-                  <div className="font-bold text-gray-100">
-                    Unclear paperwork
-                  </div>
-                  <div className="mt-1">
-                    Don’t sign what you don’t understand—ask for clarity.
+                    <div className="mt-1">
+                      Don’t sign what you don’t understand—ask for clarity.
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        </Card>
-
+          </Card>
         </details>
 
         {/* Premium Toolkit */}
@@ -1302,7 +1376,8 @@ const RealEstateInvestment = () => {
             <GoldButton onClick={goToolkit}>
               {hasToolkitAccess
                 ? "Open Real Estate Toolkit"
-                : "Unlock Real Estate Toolkit"} <ArrowRight className="h-4 w-4" />
+                : "Unlock Real Estate Toolkit"}{" "}
+              <ArrowRight className="h-4 w-4" />
             </GoldButton>
           }
         >

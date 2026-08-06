@@ -902,8 +902,8 @@ export default function Home() {
 
                 <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-white/84 sm:text-base sm:leading-7">
                   Join the $49/month Founding Membership to begin ownership
-                  review for your listing, improve your BWE profile, and
-                  receive monthly performance reporting.
+                  review for your listing, improve your BWE profile, and receive
+                  monthly performance reporting.
                 </p>
               </div>
 
@@ -1357,8 +1357,8 @@ export default function Home() {
                   move into monthly growth support.
                 </h3>
                 <p className="mt-2 text-sm text-white/75">
-                  This pilot path is for an existing public listing.
-                  Payment starts membership and claim processing, but ownership
+                  This pilot path is for an existing public listing. Payment
+                  starts membership and claim processing, but ownership
                   verification is still reviewed separately.
                 </p>
               </div>
@@ -1599,7 +1599,10 @@ export default function Home() {
                     </div>
                   );
 
-                  if (typeof sponsor.url === "string" && sponsor.url.startsWith("/")) {
+                  if (
+                    typeof sponsor.url === "string" &&
+                    sponsor.url.startsWith("/")
+                  ) {
                     return (
                       <Link key={index} href={sponsor.url}>
                         {card}

@@ -215,11 +215,14 @@ export default function BannerAdsPage() {
           </div>
         ) : email ? (
           <div className="rounded-xl border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm text-green-200">
-            We found your account details and prefilled the campaign form where possible.
+            We found your account details and prefilled the campaign form where
+            possible.
           </div>
         ) : (
           <div className="rounded-xl border border-yellow-500/30 bg-yellow-500/10 px-4 py-3 text-sm text-yellow-200">
-            You can review pricing and submit your banner campaign without a detected session, but secure checkout may ask you to log in before payment.
+            You can review pricing and submit your banner campaign without a
+            detected session, but secure checkout may ask you to log in before
+            payment.
           </div>
         )}
       </div>

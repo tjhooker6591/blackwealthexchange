@@ -293,7 +293,7 @@ export default function SearchResults() {
                 Sponsored Partners
               </div>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                {sponsors.map((s) => (
+                {sponsors.map((s) =>
                   (() => {
                     const card = (
                       <div className="flex items-center gap-3 rounded-lg border border-white/10 bg-black/35 p-3 hover:bg-black/45">
@@ -340,8 +340,8 @@ export default function SearchResults() {
                         {card}
                       </a>
                     );
-                  })()
-                ))}
+                  })(),
+                )}
               </div>
             </section>
           ) : null}

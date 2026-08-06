@@ -111,7 +111,10 @@ export function deriveMarketplaceAmountTotal(args: {
   existingAmountCents?: number | null;
   orderRecord?: Record<string, any> | null;
 }) {
-  if (typeof args.session.amount_total === "number" && args.session.amount_total >= 0) {
+  if (
+    typeof args.session.amount_total === "number" &&
+    args.session.amount_total >= 0
+  ) {
     return Math.round(args.session.amount_total);
   }
 

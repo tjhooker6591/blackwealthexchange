@@ -126,34 +126,35 @@ export default function UserDashboard() {
         setDashboardData({});
         setChartData([]);
 
-        const [dashRes, chartRes, subscriptionRes, blackCardRes] = await Promise.allSettled([
-          fetch(
-            `/api/user/get-dashboard?email=${encodeURIComponent(u.email)}`,
-            {
+        const [dashRes, chartRes, subscriptionRes, blackCardRes] =
+          await Promise.allSettled([
+            fetch(
+              `/api/user/get-dashboard?email=${encodeURIComponent(u.email)}`,
+              {
+                cache: "no-store",
+                credentials: "include",
+                signal: controller.signal,
+              },
+            ),
+            fetch(
+              `/api/user/applications-overview?email=${encodeURIComponent(u.email)}`,
+              {
+                cache: "no-store",
+                credentials: "include",
+                signal: controller.signal,
+              },
+            ),
+            fetch("/api/billing/subscription-status", {
               cache: "no-store",
               credentials: "include",
               signal: controller.signal,
-            },
-          ),
-          fetch(
-            `/api/user/applications-overview?email=${encodeURIComponent(u.email)}`,
-            {
+            }),
+            fetch("/api/black-card/member-summary", {
               cache: "no-store",
               credentials: "include",
               signal: controller.signal,
-            },
-          ),
-          fetch("/api/billing/subscription-status", {
-            cache: "no-store",
-            credentials: "include",
-            signal: controller.signal,
-          }),
-          fetch("/api/black-card/member-summary", {
-            cache: "no-store",
-            credentials: "include",
-            signal: controller.signal,
-          }),
-        ]);
+            }),
+          ]);
 
         let hadDataIssue = false;
 
@@ -194,8 +195,12 @@ export default function UserDashboard() {
           const resolved = blackCardJson?.resolvedBlackCard || {};
           setBlackCardSummary({
             state: String(resolved?.state || ""),
-            status: String(resolved?.status || blackCardJson?.member?.status || "inactive").toLowerCase(),
-            memberId: String(resolved?.memberId || blackCardJson?.card?.memberId || ""),
+            status: String(
+              resolved?.status || blackCardJson?.member?.status || "inactive",
+            ).toLowerCase(),
+            memberId: String(
+              resolved?.memberId || blackCardJson?.card?.memberId || "",
+            ),
             hasCard: String(resolved?.state || "") === "ACTIVE_CARD",
             primaryActionLabel: String(resolved?.primaryActionLabel || ""),
             primaryActionHref: String(resolved?.primaryActionHref || ""),
@@ -354,8 +359,13 @@ export default function UserDashboard() {
   const currentPlan = String(subscription?.currentPlan || "free").toLowerCase();
   const isPremiumActive =
     currentPlan === "premium" || currentPlan === "founding";
-  const blackCardStatus = String(blackCardSummary?.status || "inactive").toLowerCase();
-  const blackCardActive = String(blackCardSummary?.state || "") === "ACTIVE_CARD" || Boolean(blackCardSummary?.hasCard) || blackCardSummary?.status === "active";
+  const blackCardStatus = String(
+    blackCardSummary?.status || "inactive",
+  ).toLowerCase();
+  const blackCardActive =
+    String(blackCardSummary?.state || "") === "ACTIVE_CARD" ||
+    Boolean(blackCardSummary?.hasCard) ||
+    blackCardSummary?.status === "active";
 
   const completion =
     typeof dashboardData.profileCompletion === "number"
@@ -488,29 +498,42 @@ export default function UserDashboard() {
           <h2 className="text-lg font-bold text-gold">Black Card</h2>
           {blackCardActive ? (
             <>
-              <p className="mt-1 text-sm text-white/90">Your Premium membership is active.</p>
-              <p className="mt-1 text-sm text-white/90">Your Standard Black Card is active.</p>
-              {blackCardSummary?.memberId ? <p className="mt-1 text-xs text-white/80">Member ID: {blackCardSummary.memberId}</p> : null}
+              <p className="mt-1 text-sm text-white/90">
+                Your Premium membership is active.
+              </p>
+              <p className="mt-1 text-sm text-white/90">
+                Your Standard Black Card is active.
+              </p>
+              {blackCardSummary?.memberId ? (
+                <p className="mt-1 text-xs text-white/80">
+                  Member ID: {blackCardSummary.memberId}
+                </p>
+              ) : null}
               <div className="mt-3">
                 <Link
                   href="/dashboard/black-card"
                   className="inline-flex items-center gap-2 rounded-xl bg-gold px-4 py-2 text-sm font-semibold text-black hover:bg-yellow-500"
                 >
-                  {blackCardSummary?.primaryActionLabel || "View My Digital Black Card"}
+                  {blackCardSummary?.primaryActionLabel ||
+                    "View My Digital Black Card"}
                 </Link>
               </div>
             </>
           ) : isPremiumActive ? (
             <>
               <p className="mt-1 text-sm text-white/90">
-                {blackCardStatus === "requested" || blackCardStatus === "pending"
+                {blackCardStatus === "requested" ||
+                blackCardStatus === "pending"
                   ? "Black Card request pending"
                   : "Your Premium membership is active."}
               </p>
-              {blackCardStatus === "requested" || blackCardStatus === "pending" ? null : (
+              {blackCardStatus === "requested" ||
+              blackCardStatus === "pending" ? null : (
                 <div className="mt-3">
                   <Link
-                    href={blackCardSummary?.primaryActionHref || "/black-card/join"}
+                    href={
+                      blackCardSummary?.primaryActionHref || "/black-card/join"
+                    }
                     className="inline-flex items-center gap-2 rounded-xl bg-gold px-4 py-2 text-sm font-semibold text-black hover:bg-yellow-500"
                   >
                     Request Black Card
@@ -573,10 +596,18 @@ export default function UserDashboard() {
           />
           <StatCard
             icon={<Bookmark className="h-5 w-5 text-yellow-300" />}
-            title={blackCardActive ? "View My Digital Black Card" : "Activate Black Card"}
+            title={
+              blackCardActive
+                ? "View My Digital Black Card"
+                : "Activate Black Card"
+            }
             value={1}
             href="/dashboard/black-card"
-            hint={blackCardActive ? `Black Card Active${blackCardSummary?.memberId ? ` · Member ID: ${blackCardSummary.memberId}` : ""}` : "Activate your Black Card from membership."}
+            hint={
+              blackCardActive
+                ? `Black Card Active${blackCardSummary?.memberId ? ` · Member ID: ${blackCardSummary.memberId}` : ""}`
+                : "Activate your Black Card from membership."
+            }
           />
           <div className="col-span-2 rounded-2xl border border-white/10 bg-white/5 p-4 shadow-xl lg:col-span-1 lg:p-6">
             <div className="flex items-center justify-between">

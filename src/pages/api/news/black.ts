@@ -299,7 +299,9 @@ export default async function handler(
     if (!cache.items.length) {
       await Promise.race([
         refreshCache(cache, now),
-        new Promise<void>((resolve) => setTimeout(resolve, COLD_START_BUDGET_MS)),
+        new Promise<void>((resolve) =>
+          setTimeout(resolve, COLD_START_BUDGET_MS),
+        ),
       ]);
     } else {
       void refreshCache(cache, now);
