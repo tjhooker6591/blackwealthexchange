@@ -28,14 +28,18 @@ function listeners(port) {
 }
 
 function nextProcsForRepo() {
-  const out = sh(
-    'ps -Ao pid,command | grep -E "next dev|next start|node.*next|npm run dev" | grep -v grep',
-  );
+  const out = sh("ps -Ao pid=,command=");
   if (!out) return [];
   return out
     .split("\n")
     .filter(Boolean)
-    .filter((line) => line.includes(repoRoot));
+    .map((line) => line.trim())
+    .filter((line) => line.includes(repoRoot))
+    .filter(
+      (line) =>
+        /(^|\s|\/)node\b.*(?:\/next(?:\s|$)|next(?:\s|$))/.test(line) ||
+        /\bnext\s+(dev|start)\b/.test(line),
+    );
 }
 
 function httpStatus(url) {
