@@ -1,13 +1,13 @@
 ## CURRENT SESSION HANDOFF
 
-- timestamp: 2026-08-06 12:24 PDT
+- timestamp: 2026-08-06 12:26 PDT
 - canonical repository: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - branch: `friday-release-candidate`
-- HEAD: `64286f9a0b0c356f2bf93391e3265d95042a502a`
+- HEAD: `33e9e7da2a7f2699621fbdb44ba4dfedc02f64b3`
 - last completed workstream: `DA-01 member conversion attribution`
 - current active workstream: `BWE-02 claim verification + admin claim queue`
 - DA-01 current result: `COMPLETE`
-- last commit SHA: `64286f9a0b0c356f2bf93391e3265d95042a502a`
+- last commit SHA: `33e9e7da2a7f2699621fbdb44ba4dfedc02f64b3`
 - exact production files changed:
   - `src/lib/founding-membership.ts`
   - `src/pages/api/admin/founding-memberships.ts`

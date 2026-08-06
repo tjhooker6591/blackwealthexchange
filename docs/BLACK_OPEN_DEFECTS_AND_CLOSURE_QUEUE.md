@@ -6,7 +6,7 @@ _Last updated: 2026-08-06 America/Los_Angeles_
 
 - Canonical repository: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - Canonical branch: `friday-release-candidate`
-- Canonical HEAD: `64286f9a0b0c356f2bf93391e3265d95042a502a`
+- Canonical HEAD: `33e9e7da2a7f2699621fbdb44ba4dfedc02f64b3`
 - Dirty-tree preservation snapshot: `/Users/blackforge/workspace/bwe/snapshots/repo_clean-2026-08-03T04-31-39-146Z`
 - Complete file manifest: `docs/recovery/BWE_COMPLETE_FILE_MANIFEST_CURRENT.csv`
 
