@@ -30,7 +30,8 @@ export function resolveBlackCardState(input: ResolveBlackCardStateInput) {
     return "DUPLICATE_PENDING_REQUEST";
   }
 
-  if (plan === "premium" || premiumStatus === "active") return "PREMIUM_NO_REQUEST";
+  if (plan === "premium" || premiumStatus === "active")
+    return "PREMIUM_NO_REQUEST";
   if (plan === "founding") return "FOUNDING_NO_REQUEST";
   if (plan === "free") return "FREE_NO_REQUEST";
 

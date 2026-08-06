@@ -84,9 +84,24 @@ export async function ensureBlackCardMembershipAndCard(params: {
     String(userAccountType?.accountType || "user"),
   );
 
-  const planForTier = tier === "signature" ? "founding" : tier === "standard" ? "premium" : "unknown";
+  const planForTier =
+    tier === "signature"
+      ? "founding"
+      : tier === "standard"
+        ? "premium"
+        : "unknown";
   const priorUser = email
-    ? await db.collection("users").findOne({ email }, { projection: { currentPlan: 1, blackCardTier: 1, blackCardStatus: 1, fullName: 1 } })
+    ? await db.collection("users").findOne(
+        { email },
+        {
+          projection: {
+            currentPlan: 1,
+            blackCardTier: 1,
+            blackCardStatus: 1,
+            fullName: 1,
+          },
+        },
+      )
     : null;
 
   const membership = await membershipCollection.findOneAndUpdate(
@@ -102,7 +117,9 @@ export async function ensureBlackCardMembershipAndCard(params: {
         activatedAt: paidAt,
         upgradedAt: planForTier === "founding" ? paidAt : null,
         previousPlan: String((priorUser as any)?.currentPlan || "free"),
-        previousBlackCardTier: String((priorUser as any)?.blackCardTier || "none"),
+        previousBlackCardTier: String(
+          (priorUser as any)?.blackCardTier || "none",
+        ),
         currentPlan: planForTier,
         blackCardTier: tier,
         membershipStatus: "active",
@@ -128,7 +145,8 @@ export async function ensureBlackCardMembershipAndCard(params: {
             ? "membership_upgraded"
             : "membership_renewed",
         upgradedAt:
-          String((priorUser as any)?.blackCardTier || "") !== tier && planForTier === "founding"
+          String((priorUser as any)?.blackCardTier || "") !== tier &&
+          planForTier === "founding"
             ? paidAt
             : null,
         sourceStripeSessionId: stripeSessionId,
@@ -147,7 +165,9 @@ export async function ensureBlackCardMembershipAndCard(params: {
               : "membership_activated",
           previousPlan: String((priorUser as any)?.currentPlan || "free"),
           currentPlan: planForTier,
-          previousBlackCardTier: String((priorUser as any)?.blackCardTier || "none"),
+          previousBlackCardTier: String(
+            (priorUser as any)?.blackCardTier || "none",
+          ),
           blackCardTier: tier,
           stripeSessionId,
           paymentIntentId: paymentIntentId || null,
@@ -224,7 +244,8 @@ export async function ensureBlackCardMembershipAndCard(params: {
     membershipStatus: "active",
     activatedAt: paidAt,
     upgradedAt:
-      String((priorUser as any)?.blackCardTier || "") !== tier && planForTier === "founding"
+      String((priorUser as any)?.blackCardTier || "") !== tier &&
+      planForTier === "founding"
         ? paidAt
         : null,
     lastPaymentSessionId: stripeSessionId,
@@ -289,7 +310,9 @@ export async function ensureBlackCardMembershipAndCard(params: {
       });
       membershipEmailEvent.sent = true;
     } catch (err: any) {
-      membershipEmailEvent.error = String(err?.message || err || "email send failed").slice(0, 300);
+      membershipEmailEvent.error = String(
+        err?.message || err || "email send failed",
+      ).slice(0, 300);
     }
   } else {
     membershipEmailEvent.error = "missing recipient email";

@@ -99,8 +99,18 @@ export default async function handler(
     const pendingDigitalRequest = await db
       .collection("black_card_digital_requests")
       .findOne(
-        { $or: [{ userId: payload.userId }, { email: payload.email }], status: "pending" },
-        { projection: { _id: 1, status: 1, createdAt: 1, membershipStatusAtRequest: 1 } },
+        {
+          $or: [{ userId: payload.userId }, { email: payload.email }],
+          status: "pending",
+        },
+        {
+          projection: {
+            _id: 1,
+            status: 1,
+            createdAt: 1,
+            membershipStatusAtRequest: 1,
+          },
+        },
       );
 
     const cardByMembership = membership
@@ -160,37 +170,84 @@ export default async function handler(
       currentPlan: String((userDoc as any)?.currentPlan || "unknown"),
       premiumStatus: String((userDoc as any)?.premiumStatus || "unknown"),
       hasPendingRequest: Boolean(pendingDigitalRequest),
-      cardStatus: String((card as any)?.status || (card as any)?.digitalStatus || ""),
-      hasActiveCardSignal: Boolean(card && (String((card as any)?.status || "").toLowerCase() === "active" || (card as any)?.cardIdDisplay)),
+      cardStatus: String(
+        (card as any)?.status || (card as any)?.digitalStatus || "",
+      ),
+      hasActiveCardSignal: Boolean(
+        card &&
+        (String((card as any)?.status || "").toLowerCase() === "active" ||
+          (card as any)?.cardIdDisplay),
+      ),
     });
 
-    const plan = String((userDoc as any)?.currentPlan || "unknown").toLowerCase();
-    const planName = plan === "premium" ? "Premium" : plan === "founding" ? "Founding Member" : plan === "free" ? "Free" : "Unknown";
+    const plan = String(
+      (userDoc as any)?.currentPlan || "unknown",
+    ).toLowerCase();
+    const planName =
+      plan === "premium"
+        ? "Premium"
+        : plan === "founding"
+          ? "Founding Member"
+          : plan === "free"
+            ? "Free"
+            : "Unknown";
     const rawTier = String((userDoc as any)?.blackCardTier || "").toLowerCase();
-    const tier = rawTier === "elite" || rawTier === "signature" || rawTier === "standard"
-      ? rawTier
-      : plan === "founding"
-        ? "signature"
-        : "standard";
-    const cardTierName = tier === "elite" ? "Elite Black Card" : tier === "signature" ? "Signature Black Card" : "Standard Black Card";
-    const publicVerificationId = card?.publicVerificationId ? String(card.publicVerificationId) : null;
-    const verificationUrl = publicVerificationId ? getVerificationUrl(publicVerificationId) : null;
-    const digitalStatus = String(card?.status || card?.digitalStatus || "inactive").toLowerCase();
-    const isResolvedActiveCard = ["PREMIUM_ACTIVE_CARD", "FOUNDING_ACTIVE_CARD", "ACTIVE_CARD_BUT_PLAN_UNKNOWN"].includes(resolvedState);
+    const tier =
+      rawTier === "elite" || rawTier === "signature" || rawTier === "standard"
+        ? rawTier
+        : plan === "founding"
+          ? "signature"
+          : "standard";
+    const cardTierName =
+      tier === "elite"
+        ? "Elite Black Card"
+        : tier === "signature"
+          ? "Signature Black Card"
+          : "Standard Black Card";
+    const publicVerificationId = card?.publicVerificationId
+      ? String(card.publicVerificationId)
+      : null;
+    const verificationUrl = publicVerificationId
+      ? getVerificationUrl(publicVerificationId)
+      : null;
+    const digitalStatus = String(
+      card?.status || card?.digitalStatus || "inactive",
+    ).toLowerCase();
+    const isResolvedActiveCard = [
+      "PREMIUM_ACTIVE_CARD",
+      "FOUNDING_ACTIVE_CARD",
+      "ACTIVE_CARD_BUT_PLAN_UNKNOWN",
+    ].includes(resolvedState);
     const effectiveCardStatus = isResolvedActiveCard
       ? "active"
-      : String(card?.status || card?.digitalStatus || userDoc.blackCardStatus || "inactive").toLowerCase();
+      : String(
+          card?.status ||
+            card?.digitalStatus ||
+            userDoc.blackCardStatus ||
+            "inactive",
+        ).toLowerCase();
 
     const resolvedBlackCard = {
-      state: ["PREMIUM_ACTIVE_CARD", "FOUNDING_ACTIVE_CARD", "ACTIVE_CARD_BUT_PLAN_UNKNOWN"].includes(resolvedState)
+      state: [
+        "PREMIUM_ACTIVE_CARD",
+        "FOUNDING_ACTIVE_CARD",
+        "ACTIVE_CARD_BUT_PLAN_UNKNOWN",
+      ].includes(resolvedState)
         ? "ACTIVE_CARD"
         : resolvedState === "SUSPENDED_CARD"
           ? "SUSPENDED_CARD"
           : resolvedState === "REVOKED_CARD"
             ? "REVOKED_CARD"
-            : ["PREMIUM_PENDING_REQUEST", "FOUNDING_PENDING_REQUEST", "FREE_PENDING_REQUEST", "DUPLICATE_PENDING_REQUEST"].includes(resolvedState)
+            : [
+                  "PREMIUM_PENDING_REQUEST",
+                  "FOUNDING_PENDING_REQUEST",
+                  "FREE_PENDING_REQUEST",
+                  "DUPLICATE_PENDING_REQUEST",
+                ].includes(resolvedState)
               ? "PENDING_REQUEST"
-              : ["PREMIUM_NO_REQUEST", "FOUNDING_NO_REQUEST"].includes(resolvedState)
+              : ["PREMIUM_NO_REQUEST", "FOUNDING_NO_REQUEST"].includes(
+                    resolvedState,
+                  )
                 ? "ELIGIBLE_NO_REQUEST"
                 : resolvedState === "NOT_LOGGED_IN"
                   ? "NOT_LOGGED_IN"
@@ -204,24 +261,47 @@ export default async function handler(
       digitalStatus: isResolvedActiveCard ? "active" : digitalStatus,
       publicVerificationId,
       verificationUrl,
-      primaryMessage: ["PREMIUM_ACTIVE_CARD", "FOUNDING_ACTIVE_CARD", "ACTIVE_CARD_BUT_PLAN_UNKNOWN"].includes(resolvedState)
+      primaryMessage: [
+        "PREMIUM_ACTIVE_CARD",
+        "FOUNDING_ACTIVE_CARD",
+        "ACTIVE_CARD_BUT_PLAN_UNKNOWN",
+      ].includes(resolvedState)
         ? `Your ${cardTierName} is active`
-        : ["PREMIUM_PENDING_REQUEST", "FOUNDING_PENDING_REQUEST", "FREE_PENDING_REQUEST", "DUPLICATE_PENDING_REQUEST"].includes(resolvedState)
+        : [
+              "PREMIUM_PENDING_REQUEST",
+              "FOUNDING_PENDING_REQUEST",
+              "FREE_PENDING_REQUEST",
+              "DUPLICATE_PENDING_REQUEST",
+            ].includes(resolvedState)
           ? "Your Black Card request is pending review"
-          : ["PREMIUM_NO_REQUEST", "FOUNDING_NO_REQUEST"].includes(resolvedState)
+          : ["PREMIUM_NO_REQUEST", "FOUNDING_NO_REQUEST"].includes(
+                resolvedState,
+              )
             ? `Eligible for ${cardTierName}`
             : "Upgrade to Premium to request your Black Card",
-      primaryActionLabel: ["PREMIUM_ACTIVE_CARD", "FOUNDING_ACTIVE_CARD", "ACTIVE_CARD_BUT_PLAN_UNKNOWN"].includes(resolvedState)
+      primaryActionLabel: [
+        "PREMIUM_ACTIVE_CARD",
+        "FOUNDING_ACTIVE_CARD",
+        "ACTIVE_CARD_BUT_PLAN_UNKNOWN",
+      ].includes(resolvedState)
         ? "View My Digital Black Card"
         : ["PREMIUM_NO_REQUEST", "FOUNDING_NO_REQUEST"].includes(resolvedState)
           ? "Request Black Card"
           : "View Pricing",
-      primaryActionHref: ["PREMIUM_ACTIVE_CARD", "FOUNDING_ACTIVE_CARD", "ACTIVE_CARD_BUT_PLAN_UNKNOWN"].includes(resolvedState)
+      primaryActionHref: [
+        "PREMIUM_ACTIVE_CARD",
+        "FOUNDING_ACTIVE_CARD",
+        "ACTIVE_CARD_BUT_PLAN_UNKNOWN",
+      ].includes(resolvedState)
         ? "/dashboard/black-card"
         : ["PREMIUM_NO_REQUEST", "FOUNDING_NO_REQUEST"].includes(resolvedState)
           ? "/black-card/join"
           : "/pricing",
-      phoneGuidanceVisible: ["PREMIUM_ACTIVE_CARD", "FOUNDING_ACTIVE_CARD", "ACTIVE_CARD_BUT_PLAN_UNKNOWN"].includes(resolvedState),
+      phoneGuidanceVisible: [
+        "PREMIUM_ACTIVE_CARD",
+        "FOUNDING_ACTIVE_CARD",
+        "ACTIVE_CARD_BUT_PLAN_UNKNOWN",
+      ].includes(resolvedState),
     };
 
     return res.status(200).json({
@@ -281,10 +361,10 @@ export default async function handler(
             id: String(pendingDigitalRequest._id),
             status: String(pendingDigitalRequest.status || "pending"),
             createdAt: pendingDigitalRequest.createdAt || null,
-            accountStatus:
-              String(
-                pendingDigitalRequest?.membershipStatusAtRequest?.accountStatus || "unknown",
-              ),
+            accountStatus: String(
+              pendingDigitalRequest?.membershipStatusAtRequest?.accountStatus ||
+                "unknown",
+            ),
           }
         : null,
       activity: recentActivity.map((item) => ({

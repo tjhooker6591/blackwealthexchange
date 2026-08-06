@@ -114,7 +114,9 @@ type PageProps = {
 function fmtDate(value?: string | null) {
   if (!value) return "—";
   const d = new Date(value);
-  return Number.isNaN(d.getTime()) ? "—" : d.toISOString().replace("T", " ").replace(".000Z", " UTC");
+  return Number.isNaN(d.getTime())
+    ? "—"
+    : d.toISOString().replace("T", " ").replace(".000Z", " UTC");
 }
 
 function toTitleLabel(value: string) {
@@ -131,7 +133,11 @@ function maskUserId(userId?: string | null) {
 }
 
 function isTestRecord(...values: Array<string | null | undefined>) {
-  return values.some((v) => String(v || "").toUpperCase().includes("TEST_BC_LIFECYCLE"));
+  return values.some((v) =>
+    String(v || "")
+      .toUpperCase()
+      .includes("TEST_BC_LIFECYCLE"),
+  );
 }
 
 export default function AdminBlackCardPage({
@@ -140,10 +146,14 @@ export default function AdminBlackCardPage({
 }: PageProps) {
   const [cards, setCards] = useState<CardItem[]>([]);
   const [physical, setPhysical] = useState<PhysicalRequestItem[]>([]);
-  const [digitalRequests, setDigitalRequests] = useState<DigitalRequestItem[]>([]);
+  const [digitalRequests, setDigitalRequests] = useState<DigitalRequestItem[]>(
+    [],
+  );
   const [actionMessage, setActionMessage] = useState("");
   const [redemptions, setRedemptions] = useState<RedemptionItem[]>([]);
-  const [membershipEmailEvents, setMembershipEmailEvents] = useState<MembershipEmailEvent[]>([]);
+  const [membershipEmailEvents, setMembershipEmailEvents] = useState<
+    MembershipEmailEvent[]
+  >([]);
   const [lifecycleItems, setLifecycleItems] = useState<LifecycleItem[]>([]);
   const [lifecycleFilter, setLifecycleFilter] = useState("all");
   const [reviewNote, setReviewNote] = useState("");
@@ -214,18 +224,37 @@ export default function AdminBlackCardPage({
     }
 
     setCards(Array.isArray(cardsJson.items) ? cardsJson.items : []);
-    setMembershipEmailEvents(Array.isArray(cardsJson.membershipEmailEvents) ? cardsJson.membershipEmailEvents : []);
-    setLifecycleItems(Array.isArray(cardsJson.lifecycleItems) ? cardsJson.lifecycleItems : []);
+    setMembershipEmailEvents(
+      Array.isArray(cardsJson.membershipEmailEvents)
+        ? cardsJson.membershipEmailEvents
+        : [],
+    );
+    setLifecycleItems(
+      Array.isArray(cardsJson.lifecycleItems) ? cardsJson.lifecycleItems : [],
+    );
     setPhysical(Array.isArray(physicalJson.items) ? physicalJson.items : []);
     setRedemptions(Array.isArray(redJson.items) ? redJson.items : []);
-    setDigitalRequests(Array.isArray(digitalJson.items) ? digitalJson.items.map((d: any) => ({
-      requestId: String(d._id), userId: d.userId || null, email: d.email || null, fullName: d.fullName || null,
-      accountStatus: String(d?.membershipStatusAtRequest?.accountStatus || "unknown"),
-      currentPlan: String(d?.membershipStatusAtRequest?.currentPlan || "unknown"),
-      status: String(d?.status || "pending"),
-      memberId: d?.memberId || null, publicVerificationId: d?.publicVerificationId || null,
-      approvedAt: d?.approvedAt || null, updatedAt: d?.updatedAt || d?.createdAt || null,
-    })) : []);
+    setDigitalRequests(
+      Array.isArray(digitalJson.items)
+        ? digitalJson.items.map((d: any) => ({
+            requestId: String(d._id),
+            userId: d.userId || null,
+            email: d.email || null,
+            fullName: d.fullName || null,
+            accountStatus: String(
+              d?.membershipStatusAtRequest?.accountStatus || "unknown",
+            ),
+            currentPlan: String(
+              d?.membershipStatusAtRequest?.currentPlan || "unknown",
+            ),
+            status: String(d?.status || "pending"),
+            memberId: d?.memberId || null,
+            publicVerificationId: d?.publicVerificationId || null,
+            approvedAt: d?.approvedAt || null,
+            updatedAt: d?.updatedAt || d?.createdAt || null,
+          }))
+        : [],
+    );
   }
 
   useEffect(() => {
@@ -282,14 +311,29 @@ export default function AdminBlackCardPage({
     if (res.ok) await loadData();
   }
 
-  async function setDigitalRequestStatus(requestId: string, action: "approve" | "reject") {
+  async function setDigitalRequestStatus(
+    requestId: string,
+    action: "approve" | "reject",
+  ) {
     setActionMessage("");
-    const res = await fetch("/api/admin/black-card/digital-requests", { method: "PATCH", credentials: "include", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ requestId, action }) });
+    const res = await fetch("/api/admin/black-card/digital-requests", {
+      method: "PATCH",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ requestId, action }),
+    });
     const json = await res.json().catch(() => ({}));
     if (!res.ok) {
       const raw = String(json?.error || "Digital request action failed");
-      if (res.status === 409 && raw.toLowerCase().includes("invalid transition from approved to approved")) {
-        setActionMessage("This request is already approved and the digital card has already been issued.");
+      if (
+        res.status === 409 &&
+        raw
+          .toLowerCase()
+          .includes("invalid transition from approved to approved")
+      ) {
+        setActionMessage(
+          "This request is already approved and the digital card has already been issued.",
+        );
         return;
       }
       setActionMessage(raw);
@@ -304,7 +348,12 @@ export default function AdminBlackCardPage({
       method: "PATCH",
       credentials: "include",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "review_membership", membershipId, reviewStatus, note: reviewNote }),
+      body: JSON.stringify({
+        action: "review_membership",
+        membershipId,
+        reviewStatus,
+        note: reviewNote,
+      }),
     });
     if (res.ok) {
       setReviewNote("");
@@ -461,7 +510,9 @@ export default function AdminBlackCardPage({
         </section>
 
         <section className="rounded-2xl border border-white/10 bg-white/5 p-5">
-          <h2 className="text-lg font-bold text-yellow-200">A. Membership Lifecycle / Plan Changes</h2>
+          <h2 className="text-lg font-bold text-yellow-200">
+            A. Membership Lifecycle / Plan Changes
+          </h2>
           <div className="mt-2 flex flex-wrap gap-2 text-xs">
             {[
               ["all", "All"],
@@ -472,62 +523,179 @@ export default function AdminBlackCardPage({
               ["confirmed", "Confirmed"],
               ["failed_email", "Failed Email"],
             ].map(([v, l]) => (
-              <button key={v} onClick={() => setLifecycleFilter(v)} className="rounded border border-white/20 px-2 py-1">
+              <button
+                key={v}
+                onClick={() => setLifecycleFilter(v)}
+                className="rounded border border-white/20 px-2 py-1"
+              >
                 {l}
               </button>
             ))}
           </div>
-          <textarea className="mt-2 w-full rounded bg-black/40 px-3 py-2 text-xs" placeholder="Admin review note" value={reviewNote} onChange={(e) => setReviewNote(e.target.value)} />
+          <textarea
+            className="mt-2 w-full rounded bg-black/40 px-3 py-2 text-xs"
+            placeholder="Admin review note"
+            value={reviewNote}
+            onChange={(e) => setReviewNote(e.target.value)}
+          />
           <div className="mt-3 space-y-2 text-xs">
             {lifecycleItems
-              .filter((x: any) => lifecycleFilter === "all" || lifecycleFilter === "pending_review" || lifecycleFilter === "needs_attention" || lifecycleFilter === "confirmed" || lifecycleFilter === "failed_email" ? true : String(x.lastMembershipEventType || "") === lifecycleFilter)
+              .filter((x: any) =>
+                lifecycleFilter === "all" ||
+                lifecycleFilter === "pending_review" ||
+                lifecycleFilter === "needs_attention" ||
+                lifecycleFilter === "confirmed" ||
+                lifecycleFilter === "failed_email"
+                  ? true
+                  : String(x.lastMembershipEventType || "") === lifecycleFilter,
+              )
               .map((x: any) => {
-                const latestEmail = Array.isArray(x.membershipEmailEvents) && x.membershipEmailEvents.length ? x.membershipEmailEvents[x.membershipEmailEvents.length - 1] : null;
+                const latestEmail =
+                  Array.isArray(x.membershipEmailEvents) &&
+                  x.membershipEmailEvents.length
+                    ? x.membershipEmailEvents[
+                        x.membershipEmailEvents.length - 1
+                      ]
+                    : null;
                 return (
-                  <div key={x._id} className="rounded border border-white/10 bg-black/30 p-2">
+                  <div
+                    key={x._id}
+                    className="rounded border border-white/10 bg-black/30 p-2"
+                  >
                     <div>{x.email || x.userId || "-"}</div>
-                    <div>Plan: {toTitleLabel(String(x.previousPlan || "free"))} → {toTitleLabel(String(x.currentPlan || "unknown"))}</div>
-                    <div>Tier: {toTitleLabel(String(x.previousBlackCardTier || "none"))} → {toTitleLabel(String(x.blackCardTier || "unknown"))}</div>
-                    <div>Event: {toTitleLabel(String(x.lastMembershipEventType || "-"))} • Review: {toTitleLabel(String(x.membershipReviewStatus || "pending_review"))}</div>
-                    <div>Payment: {x.lastPaymentSessionId || x.sourceStripeSessionId || "-"} / {x.lastPaymentIntentId || x.sourcePaymentIntentId || "-"}</div>
-                    <div>Status: {toTitleLabel(String(x.membershipStatus || "active"))} • Email: {latestEmail ? (latestEmail.sent ? "sent" : `failed (${latestEmail.error || "error"})`) : "none"}</div>
-                    <div>Reviewed: {x.reviewedBy || "-"} at {fmtDate(x.reviewedAt)}</div>
+                    <div>
+                      Plan: {toTitleLabel(String(x.previousPlan || "free"))} →{" "}
+                      {toTitleLabel(String(x.currentPlan || "unknown"))}
+                    </div>
+                    <div>
+                      Tier:{" "}
+                      {toTitleLabel(String(x.previousBlackCardTier || "none"))}{" "}
+                      → {toTitleLabel(String(x.blackCardTier || "unknown"))}
+                    </div>
+                    <div>
+                      Event:{" "}
+                      {toTitleLabel(String(x.lastMembershipEventType || "-"))} •
+                      Review:{" "}
+                      {toTitleLabel(
+                        String(x.membershipReviewStatus || "pending_review"),
+                      )}
+                    </div>
+                    <div>
+                      Payment:{" "}
+                      {x.lastPaymentSessionId || x.sourceStripeSessionId || "-"}{" "}
+                      /{" "}
+                      {x.lastPaymentIntentId || x.sourcePaymentIntentId || "-"}
+                    </div>
+                    <div>
+                      Status:{" "}
+                      {toTitleLabel(String(x.membershipStatus || "active"))} •
+                      Email:{" "}
+                      {latestEmail
+                        ? latestEmail.sent
+                          ? "sent"
+                          : `failed (${latestEmail.error || "error"})`
+                        : "none"}
+                    </div>
+                    <div>
+                      Reviewed: {x.reviewedBy || "-"} at {fmtDate(x.reviewedAt)}
+                    </div>
                     <div className="mt-1 flex flex-wrap gap-1">
-                      <button onClick={() => reviewMembership(x._id, "approved")} className="rounded border border-green-500/30 px-2 py-1">Approve / Confirm Membership</button>
-                      <button onClick={() => reviewMembership(x._id, "rejected")} className="rounded border border-red-500/30 px-2 py-1">Reject / Flag Issue</button>
-                      <button onClick={() => reviewMembership(x._id, "needs_attention")} className="rounded border border-yellow-500/30 px-2 py-1">Mark Needs Attention</button>
-                      <button onClick={() => reviewMembership(x._id, "corrected")} className="rounded border border-blue-500/30 px-2 py-1">Correct Plan/Tier</button>
-                      <button onClick={() => reviewMembership(x._id, "pending_review")} className="rounded border border-white/30 px-2 py-1">Set Pending Review</button>
+                      <button
+                        onClick={() => reviewMembership(x._id, "approved")}
+                        className="rounded border border-green-500/30 px-2 py-1"
+                      >
+                        Approve / Confirm Membership
+                      </button>
+                      <button
+                        onClick={() => reviewMembership(x._id, "rejected")}
+                        className="rounded border border-red-500/30 px-2 py-1"
+                      >
+                        Reject / Flag Issue
+                      </button>
+                      <button
+                        onClick={() =>
+                          reviewMembership(x._id, "needs_attention")
+                        }
+                        className="rounded border border-yellow-500/30 px-2 py-1"
+                      >
+                        Mark Needs Attention
+                      </button>
+                      <button
+                        onClick={() => reviewMembership(x._id, "corrected")}
+                        className="rounded border border-blue-500/30 px-2 py-1"
+                      >
+                        Correct Plan/Tier
+                      </button>
+                      <button
+                        onClick={() =>
+                          reviewMembership(x._id, "pending_review")
+                        }
+                        className="rounded border border-white/30 px-2 py-1"
+                      >
+                        Set Pending Review
+                      </button>
                     </div>
                   </div>
                 );
               })}
-            {lifecycleItems.length === 0 ? <p className="text-white/70">No membership lifecycle records yet.</p> : null}
+            {lifecycleItems.length === 0 ? (
+              <p className="text-white/70">
+                No membership lifecycle records yet.
+              </p>
+            ) : null}
           </div>
         </section>
 
         <section className="rounded-2xl border border-white/10 bg-white/5 p-5">
-          <h2 className="text-lg font-bold text-yellow-200">A2. Membership Email Events</h2>
+          <h2 className="text-lg font-bold text-yellow-200">
+            A2. Membership Email Events
+          </h2>
           <div className="mt-3 space-y-2 text-xs">
             {membershipEmailEvents.filter((e) => !e.sent).length ? (
-              membershipEmailEvents.filter((e) => !e.sent).map((e, i) => (
-                <div key={`fail-${i}`} className="rounded border border-red-500/30 bg-red-500/10 p-2">
-                  <div>{fmtDate(e.at)} • FAILED • {e.recipient || e.email || "-"}</div>
-                  <div>Plan/Tier: {toTitleLabel(String(e.plan || "-"))} / {toTitleLabel(String(e.cardTier || "-"))}</div>
-                  <div>Type: {toTitleLabel(String(e.type || "-"))}</div>
-                  <div>Error: {e.error || "-"}</div>
-                  <div>Session: {e.stripeSessionId || "-"} • Payment: {e.paymentIntentId || "-"}</div>
-                </div>
-              ))
+              membershipEmailEvents
+                .filter((e) => !e.sent)
+                .map((e, i) => (
+                  <div
+                    key={`fail-${i}`}
+                    className="rounded border border-red-500/30 bg-red-500/10 p-2"
+                  >
+                    <div>
+                      {fmtDate(e.at)} • FAILED • {e.recipient || e.email || "-"}
+                    </div>
+                    <div>
+                      Plan/Tier: {toTitleLabel(String(e.plan || "-"))} /{" "}
+                      {toTitleLabel(String(e.cardTier || "-"))}
+                    </div>
+                    <div>Type: {toTitleLabel(String(e.type || "-"))}</div>
+                    <div>Error: {e.error || "-"}</div>
+                    <div>
+                      Session: {e.stripeSessionId || "-"} • Payment:{" "}
+                      {e.paymentIntentId || "-"}
+                    </div>
+                  </div>
+                ))
             ) : (
-              <p className="text-white/70">No failed membership emails found.</p>
+              <p className="text-white/70">
+                No failed membership emails found.
+              </p>
             )}
 
-            <div className="mt-3 text-sm font-semibold text-yellow-200">Recent membership email events</div>
+            <div className="mt-3 text-sm font-semibold text-yellow-200">
+              Recent membership email events
+            </div>
             {membershipEmailEvents.map((e, i) => (
-              <div key={`evt-${i}`} className="rounded border border-white/10 bg-black/30 p-2">
-                <div>{fmtDate(e.at)} • {e.sent ? "SENT" : "FAILED"} • {e.recipient || e.email || "-"}</div>
-                <div>Plan/Tier: {toTitleLabel(String(e.plan || "-"))} / {toTitleLabel(String(e.cardTier || "-"))}</div>
+              <div
+                key={`evt-${i}`}
+                className="rounded border border-white/10 bg-black/30 p-2"
+              >
+                <div>
+                  {fmtDate(e.at)} • {e.sent ? "SENT" : "FAILED"} •{" "}
+                  {e.recipient || e.email || "-"}
+                </div>
+                <div>
+                  Plan/Tier: {toTitleLabel(String(e.plan || "-"))} /{" "}
+                  {toTitleLabel(String(e.cardTier || "-"))}
+                </div>
                 <div>Type: {toTitleLabel(String(e.type || "-"))}</div>
               </div>
             ))}
@@ -561,7 +729,11 @@ export default function AdminBlackCardPage({
                     const verifyLink = c.publicVerificationId
                       ? `/black-card/verify/${c.publicVerificationId}`
                       : null;
-                    const test = isTestRecord(c.email, c.memberId, c.publicVerificationId);
+                    const test = isTestRecord(
+                      c.email,
+                      c.memberId,
+                      c.publicVerificationId,
+                    );
                     return (
                       <tr
                         key={c.cardId}
@@ -635,40 +807,93 @@ export default function AdminBlackCardPage({
         </section>
 
         <section className="rounded-2xl border border-white/10 bg-white/5 p-5">
-          <h2 className="text-lg font-bold text-yellow-200">B. Digital Black Card Requests</h2>
-          {actionMessage ? <p className="mt-2 text-sm text-yellow-200">{actionMessage}</p> : null}
+          <h2 className="text-lg font-bold text-yellow-200">
+            B. Digital Black Card Requests
+          </h2>
+          {actionMessage ? (
+            <p className="mt-2 text-sm text-yellow-200">{actionMessage}</p>
+          ) : null}
           <div className="mt-3 space-y-2 text-sm">
             {digitalRequests.map((r) => (
-              <div key={r.requestId} className="rounded border border-white/10 bg-black/30 p-3">
-                <div>{r.fullName || "—"} ({r.email || r.userId || "—"}) {isTestRecord(r.email, r.fullName) ? <span className="ml-2 rounded border border-yellow-500/40 px-2 py-0.5 text-[10px] text-yellow-200">TEST_BC_LIFECYCLE</span> : null}</div>
-                <div>Plan/account status: {toTitleLabel(r.accountStatus)} / {toTitleLabel(r.currentPlan)}</div>
+              <div
+                key={r.requestId}
+                className="rounded border border-white/10 bg-black/30 p-3"
+              >
+                <div>
+                  {r.fullName || "—"} ({r.email || r.userId || "—"}){" "}
+                  {isTestRecord(r.email, r.fullName) ? (
+                    <span className="ml-2 rounded border border-yellow-500/40 px-2 py-0.5 text-[10px] text-yellow-200">
+                      TEST_BC_LIFECYCLE
+                    </span>
+                  ) : null}
+                </div>
+                <div>
+                  Plan/account status: {toTitleLabel(r.accountStatus)} /{" "}
+                  {toTitleLabel(r.currentPlan)}
+                </div>
                 <div>Request status: {toTitleLabel(r.status)}</div>
-                <div>Card status: {r.memberId ? "Active" : "Not requested"}</div>
+                <div>
+                  Card status: {r.memberId ? "Active" : "Not requested"}
+                </div>
                 <div>Issued date: {fmtDate(r.approvedAt || r.updatedAt)}</div>
                 <div>Verification ID: {r.publicVerificationId || "—"}</div>
                 <div className="mt-2 flex flex-wrap gap-2">
                   {r.status === "pending" ? (
                     <>
-                      <button onClick={() => setDigitalRequestStatus(r.requestId, "approve")} className="rounded border border-green-500/30 px-2 py-1">Approve digital request</button>
-                      <button onClick={() => setDigitalRequestStatus(r.requestId, "reject")} className="rounded border border-red-500/30 px-2 py-1">Reject</button>
+                      <button
+                        onClick={() =>
+                          setDigitalRequestStatus(r.requestId, "approve")
+                        }
+                        className="rounded border border-green-500/30 px-2 py-1"
+                      >
+                        Approve digital request
+                      </button>
+                      <button
+                        onClick={() =>
+                          setDigitalRequestStatus(r.requestId, "reject")
+                        }
+                        className="rounded border border-red-500/30 px-2 py-1"
+                      >
+                        Reject
+                      </button>
                     </>
                   ) : null}
 
                   {r.status === "approved" ? (
                     <>
-                      <span className="rounded border border-green-500/30 bg-green-500/10 px-2 py-1 text-green-200">Approved — Digital Card Issued</span>
+                      <span className="rounded border border-green-500/30 bg-green-500/10 px-2 py-1 text-green-200">
+                        Approved — Digital Card Issued
+                      </span>
                       {r.memberId || r.publicVerificationId ? (
                         <>
-                          <Link href="/dashboard/black-card" className="rounded border border-yellow-500/30 px-2 py-1 text-yellow-200">View issued card</Link>
+                          <Link
+                            href="/dashboard/black-card"
+                            className="rounded border border-yellow-500/30 px-2 py-1 text-yellow-200"
+                          >
+                            View issued card
+                          </Link>
                           {r.publicVerificationId ? (
-                            <Link href={`/black-card/verify/${r.publicVerificationId}`} className="rounded border border-yellow-500/30 px-2 py-1 text-yellow-200">Open verification page</Link>
+                            <Link
+                              href={`/black-card/verify/${r.publicVerificationId}`}
+                              className="rounded border border-yellow-500/30 px-2 py-1 text-yellow-200"
+                            >
+                              Open verification page
+                            </Link>
                           ) : null}
-                          {r.memberId ? <span className="rounded border border-white/20 px-2 py-1 text-white/80">Card status: Active</span> : null}
+                          {r.memberId ? (
+                            <span className="rounded border border-white/20 px-2 py-1 text-white/80">
+                              Card status: Active
+                            </span>
+                          ) : null}
                         </>
                       ) : (
                         <>
-                          <span className="rounded border border-yellow-500/30 bg-yellow-500/10 px-2 py-1 text-yellow-100">Approved but card issuance record is missing.</span>
-                          <span className="rounded border border-white/20 px-2 py-1 text-white/80">Action: Review issuance record.</span>
+                          <span className="rounded border border-yellow-500/30 bg-yellow-500/10 px-2 py-1 text-yellow-100">
+                            Approved but card issuance record is missing.
+                          </span>
+                          <span className="rounded border border-white/20 px-2 py-1 text-white/80">
+                            Action: Review issuance record.
+                          </span>
                         </>
                       )}
                     </>
@@ -676,14 +901,20 @@ export default function AdminBlackCardPage({
 
                   {r.status === "rejected" ? (
                     <>
-                      <span className="rounded border border-red-500/30 bg-red-500/10 px-2 py-1 text-red-200">Rejected</span>
-                      <span className="rounded border border-white/20 px-2 py-1 text-white/70">No action available</span>
+                      <span className="rounded border border-red-500/30 bg-red-500/10 px-2 py-1 text-red-200">
+                        Rejected
+                      </span>
+                      <span className="rounded border border-white/20 px-2 py-1 text-white/70">
+                        No action available
+                      </span>
                     </>
                   ) : null}
                 </div>
               </div>
             ))}
-            {digitalRequests.length === 0 ? <p className="text-white/70">No digital requests yet</p> : null}
+            {digitalRequests.length === 0 ? (
+              <p className="text-white/70">No digital requests yet</p>
+            ) : null}
           </div>
         </section>
 
@@ -843,15 +1074,38 @@ export default function AdminBlackCardPage({
                 <div className="mt-2 flex gap-2">
                   {item.status === "pending" ? (
                     <>
-                      <button onClick={() => setRedemptionStatus(item.id, "approved")} className="rounded border border-yellow-500/30 px-2 py-1 text-xs text-yellow-200">Approve</button>
-                      <button onClick={() => setRedemptionStatus(item.id, "rejected")} className="rounded border border-red-500/30 px-2 py-1 text-xs text-red-200">Reject</button>
+                      <button
+                        onClick={() => setRedemptionStatus(item.id, "approved")}
+                        className="rounded border border-yellow-500/30 px-2 py-1 text-xs text-yellow-200"
+                      >
+                        Approve
+                      </button>
+                      <button
+                        onClick={() => setRedemptionStatus(item.id, "rejected")}
+                        className="rounded border border-red-500/30 px-2 py-1 text-xs text-red-200"
+                      >
+                        Reject
+                      </button>
                     </>
                   ) : null}
                   {item.status === "approved" ? (
-                    <button onClick={() => setRedemptionStatus(item.id, "fulfilled")} className="rounded border border-green-500/30 px-2 py-1 text-xs text-green-200">Mark Fulfilled</button>
+                    <button
+                      onClick={() => setRedemptionStatus(item.id, "fulfilled")}
+                      className="rounded border border-green-500/30 px-2 py-1 text-xs text-green-200"
+                    >
+                      Mark Fulfilled
+                    </button>
                   ) : null}
-                  {item.status === "fulfilled" ? <span className="rounded border border-green-500/30 px-2 py-1 text-xs text-green-200">Fulfilled</span> : null}
-                  {item.status === "rejected" ? <span className="rounded border border-red-500/30 px-2 py-1 text-xs text-red-200">Rejected</span> : null}
+                  {item.status === "fulfilled" ? (
+                    <span className="rounded border border-green-500/30 px-2 py-1 text-xs text-green-200">
+                      Fulfilled
+                    </span>
+                  ) : null}
+                  {item.status === "rejected" ? (
+                    <span className="rounded border border-red-500/30 px-2 py-1 text-xs text-red-200">
+                      Rejected
+                    </span>
+                  ) : null}
                 </div>
               </div>
             ))}

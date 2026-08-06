@@ -14,23 +14,40 @@ function normalizePlan(user: any): PlanStatus {
   return "unknown";
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method !== "POST") {
     res.setHeader("Allow", ["POST"]);
     return res.status(405).json({ ok: false, error: "Method Not Allowed" });
   }
 
   const session = getBlackCardSession(req);
-  if (!session) return res.status(401).json({ ok: false, error: "Unauthorized" });
+  if (!session)
+    return res.status(401).json({ ok: false, error: "Unauthorized" });
 
   const client = await clientPromise;
   const db = client.db(getMongoDbName());
   const now = new Date();
 
-  const userDoc = await db.collection("users").findOne(
-    ObjectId.isValid(session.userId) ? { _id: new ObjectId(session.userId) } : { email: session.email },
-    { projection: { _id: 1, email: 1, fullName: 1, currentPlan: 1, premiumStatus: 1, accountType: 1 } },
-  );
+  const userDoc = await db
+    .collection("users")
+    .findOne(
+      ObjectId.isValid(session.userId)
+        ? { _id: new ObjectId(session.userId) }
+        : { email: session.email },
+      {
+        projection: {
+          _id: 1,
+          email: 1,
+          fullName: 1,
+          currentPlan: 1,
+          premiumStatus: 1,
+          accountType: 1,
+        },
+      },
+    );
 
   const email = String(userDoc?.email || session.email || "").toLowerCase();
 
@@ -39,15 +56,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     status: "active",
   });
   if (existingActiveCard) {
-    return res.status(409).json({ ok: false, error: "User already has an active Black Card" });
+    return res
+      .status(409)
+      .json({ ok: false, error: "User already has an active Black Card" });
   }
 
-  const pendingRequest = await db.collection("black_card_digital_requests").findOne({
-    $or: [{ userId: session.userId }, { email }],
-    status: "pending",
-  });
+  const pendingRequest = await db
+    .collection("black_card_digital_requests")
+    .findOne({
+      $or: [{ userId: session.userId }, { email }],
+      status: "pending",
+    });
   if (pendingRequest) {
-    return res.status(409).json({ ok: false, error: "A Black Card request is already pending" });
+    return res
+      .status(409)
+      .json({ ok: false, error: "A Black Card request is already pending" });
   }
 
   const accountStatus = normalizePlan(userDoc);
@@ -70,7 +93,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     updatedAt: now,
   };
 
-  const inserted = await db.collection("black_card_digital_requests").insertOne(requestDoc);
+  const inserted = await db
+    .collection("black_card_digital_requests")
+    .insertOne(requestDoc);
   await db.collection("black_card_audit_events").insertOne({
     eventType: "digital_card_requested",
     requestId: String(inserted.insertedId),

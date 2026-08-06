@@ -86,7 +86,10 @@ export default async function handler(
 
     const membershipEmailEvents = membershipsWithEmailEvents
       .flatMap((m: any) =>
-        (Array.isArray(m.membershipEmailEvents) ? m.membershipEmailEvents : []).map((e: any) => ({
+        (Array.isArray(m.membershipEmailEvents)
+          ? m.membershipEmailEvents
+          : []
+        ).map((e: any) => ({
           email: m.email || null,
           userId: m.userId || null,
           plan: e.plan || m.currentPlan || null,
@@ -105,10 +108,16 @@ export default async function handler(
 
     const lifecycleFilter = String(req.query.lifecycleFilter || "").trim();
     const lifecycleQuery: any = {};
-    if (lifecycleFilter === "pending_review") lifecycleQuery.membershipReviewStatus = "pending_review";
-    if (lifecycleFilter === "needs_attention") lifecycleQuery.membershipReviewStatus = "needs_attention";
-    if (lifecycleFilter === "confirmed") lifecycleQuery.membershipReviewStatus = { $in: ["approved", "corrected", "auto_activated"] };
-    if (lifecycleFilter === "failed_email") lifecycleQuery["membershipEmailEvents.sent"] = false;
+    if (lifecycleFilter === "pending_review")
+      lifecycleQuery.membershipReviewStatus = "pending_review";
+    if (lifecycleFilter === "needs_attention")
+      lifecycleQuery.membershipReviewStatus = "needs_attention";
+    if (lifecycleFilter === "confirmed")
+      lifecycleQuery.membershipReviewStatus = {
+        $in: ["approved", "corrected", "auto_activated"],
+      };
+    if (lifecycleFilter === "failed_email")
+      lifecycleQuery["membershipEmailEvents.sent"] = false;
 
     const lifecycleItems = await db
       .collection("black_card_memberships")
@@ -169,14 +178,23 @@ export default async function handler(
       const membershipId = String(req.body?.membershipId || "").trim();
       const reviewStatus = String(req.body?.reviewStatus || "").trim();
       const note = String(req.body?.note || "").trim();
-      const allowed = new Set(["auto_activated", "pending_review", "approved", "rejected", "needs_attention", "corrected"]);
+      const allowed = new Set([
+        "auto_activated",
+        "pending_review",
+        "approved",
+        "rejected",
+        "needs_attention",
+        "corrected",
+      ]);
       if (!ObjectId.isValid(membershipId) || !allowed.has(reviewStatus)) {
-        return res.status(400).json({ ok: false, error: "Invalid membership review input" });
+        return res
+          .status(400)
+          .json({ ok: false, error: "Invalid membership review input" });
       }
       const now = new Date();
-      await db.collection("black_card_memberships").updateOne(
-        { _id: new ObjectId(membershipId) },
-        {
+      await db
+        .collection("black_card_memberships")
+        .updateOne({ _id: new ObjectId(membershipId) }, {
           $set: {
             membershipReviewStatus: reviewStatus,
             reviewedBy: admin.email || admin.userId || "admin",
@@ -195,8 +213,7 @@ export default async function handler(
                 },
               }
             : {}),
-        } as any,
-      );
+        } as any);
       return res.status(200).json({ ok: true });
     }
 
@@ -217,7 +234,11 @@ export default async function handler(
 
     if (action === "activate" || action === "suspend" || action === "revoke") {
       const nextStatus =
-        action === "activate" ? "active" : action === "suspend" ? "suspended" : "revoked";
+        action === "activate"
+          ? "active"
+          : action === "suspend"
+            ? "suspended"
+            : "revoked";
       await db.collection("black_card_cards").updateOne(
         { _id: card._id },
         {

@@ -57,13 +57,21 @@ export default function BlackCardJoinPage() {
         const summaryJson = await summaryRes.json().catch(() => ({}));
         const resolved = summaryJson?.resolvedBlackCard || null;
         setResolvedBlackCard(resolved);
-        const status = String(resolved?.status || summaryJson?.member?.status || "inactive").toLowerCase();
+        const status = String(
+          resolved?.status || summaryJson?.member?.status || "inactive",
+        ).toLowerCase();
         setMembershipStatus(status);
-        setMembershipActive(summaryRes.ok && String(resolved?.state || "") === "ACTIVE_CARD");
-        setRequestPending(summaryRes.ok && String(resolved?.state || "") === "PENDING_REQUEST");
+        setMembershipActive(
+          summaryRes.ok && String(resolved?.state || "") === "ACTIVE_CARD",
+        );
+        setRequestPending(
+          summaryRes.ok && String(resolved?.state || "") === "PENDING_REQUEST",
+        );
 
         const meJson = await meRes.json().catch(() => ({}));
-        setCurrentPlan(String(meJson?.user?.currentPlan || "free").toLowerCase());
+        setCurrentPlan(
+          String(meJson?.user?.currentPlan || "free").toLowerCase(),
+        );
       } catch {
         setMembershipStatus("inactive");
         setMembershipActive(false);
@@ -140,7 +148,9 @@ export default function BlackCardJoinPage() {
                   Black Card is included with your membership plan.
                 </div>
                 <p className="mt-3 text-xs text-white/70">
-                  Your membership plan determines your Black Card tier. Premium activates Standard. Founding Member activates Signature. Elite is invite-only. Use /pricing and choose the matching plan.
+                  Your membership plan determines your Black Card tier. Premium
+                  activates Standard. Founding Member activates Signature. Elite
+                  is invite-only. Use /pricing and choose the matching plan.
                 </p>
               </div>
 
@@ -205,24 +215,55 @@ export default function BlackCardJoinPage() {
           >
             {membershipStatus === "active" ? (
               <div className="mb-3 rounded-lg border border-green-500/30 bg-green-500/10 p-3">
-                <div className="text-green-100 font-semibold">Your Black Card is active</div>
-                <Link href="/dashboard/black-card" className="text-yellow-200 underline">View My Digital Card</Link>
+                <div className="text-green-100 font-semibold">
+                  Your Black Card is active
+                </div>
+                <Link
+                  href="/dashboard/black-card"
+                  className="text-yellow-200 underline"
+                >
+                  View My Digital Card
+                </Link>
               </div>
             ) : null}
             <div className="mb-3 rounded-lg border border-yellow-500/30 bg-yellow-500/10 p-3">
               {String(resolvedBlackCard?.state || "") === "ACTIVE_CARD" ? (
-                <div className="text-yellow-100">Your Black Card is active. <Link href="/dashboard/black-card" className="underline">View My Digital Black Card</Link>.</div>
-              ) : requestPending || membershipStatus === "requested" || membershipStatus === "pending" ? (
-                <div className="text-yellow-100">Black Card request pending</div>
+                <div className="text-yellow-100">
+                  Your Black Card is active.{" "}
+                  <Link href="/dashboard/black-card" className="underline">
+                    View My Digital Black Card
+                  </Link>
+                  .
+                </div>
+              ) : requestPending ||
+                membershipStatus === "requested" ||
+                membershipStatus === "pending" ? (
+                <div className="text-yellow-100">
+                  Black Card request pending
+                </div>
               ) : currentPlan === "premium" || currentPlan === "founding" ? (
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-yellow-100">Eligible now. Submit your digital Black Card request.</span>
-                  <button onClick={submitDigitalRequest} className="rounded-lg bg-yellow-500 px-3 py-1.5 text-xs font-semibold text-black">Request Black Card</button>
+                  <span className="text-yellow-100">
+                    Eligible now. Submit your digital Black Card request.
+                  </span>
+                  <button
+                    onClick={submitDigitalRequest}
+                    className="rounded-lg bg-yellow-500 px-3 py-1.5 text-xs font-semibold text-black"
+                  >
+                    Request Black Card
+                  </button>
                 </div>
               ) : (
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-white/90">Upgrade to Premium to unlock Black Card benefits</span>
-                  <Link href="/pricing" className="rounded-lg bg-yellow-500 px-3 py-1.5 text-xs font-semibold text-black">Upgrade to Premium</Link>
+                  <span className="text-white/90">
+                    Upgrade to Premium to unlock Black Card benefits
+                  </span>
+                  <Link
+                    href="/pricing"
+                    className="rounded-lg bg-yellow-500 px-3 py-1.5 text-xs font-semibold text-black"
+                  >
+                    Upgrade to Premium
+                  </Link>
                 </div>
               )}
             </div>
@@ -234,11 +275,20 @@ export default function BlackCardJoinPage() {
               2. Membership status activates on successful plan payment.
             </div>
             <div className="mt-1">
-              3. Open /dashboard/black-card to access your digital card status and verification details.
+              3. Open /dashboard/black-card to access your digital card status
+              and verification details.
             </div>
-            <div className="mt-1">4. If status is Not requested, submit request. If Pending review, wait for admin approval.</div>
-            <div className="mt-1">5. After approval, card status becomes Active and card appears in dashboard.</div>
-            {actionMsg ? <div className="mt-2 text-yellow-200">{actionMsg}</div> : null}
+            <div className="mt-1">
+              4. If status is Not requested, submit request. If Pending review,
+              wait for admin approval.
+            </div>
+            <div className="mt-1">
+              5. After approval, card status becomes Active and card appears in
+              dashboard.
+            </div>
+            {actionMsg ? (
+              <div className="mt-2 text-yellow-200">{actionMsg}</div>
+            ) : null}
           </section>
 
           {checkoutSuccess && membershipStatusChecked && !membershipActive ? (
