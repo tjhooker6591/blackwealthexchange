@@ -16,7 +16,12 @@ export function hasPublicMarketplaceVisibility(
 ) {
   if (!doc || typeof doc !== "object") return false;
 
-  if (String(doc.status || "").trim().toLowerCase() !== "active") return false;
+  if (
+    String(doc.status || "")
+      .trim()
+      .toLowerCase() !== "active"
+  )
+    return false;
   if (doc.isPublished === false) return false;
 
   const expiresAt = doc.expiresAt ? new Date(doc.expiresAt) : null;
@@ -45,7 +50,7 @@ export function isPublicMarketplaceSellerProfileComplete(
 ) {
   return Boolean(
     String(seller?.businessName || "").trim() &&
-      String(seller?.email || "").trim() &&
-      String(seller?.description || "").trim(),
+    String(seller?.email || "").trim() &&
+    String(seller?.description || "").trim(),
   );
 }

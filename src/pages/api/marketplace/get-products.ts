@@ -62,7 +62,9 @@ export default async function handler(
 
     // Category filtering
     if (category && category !== "All") {
-      andClauses.push({ category: { $regex: new RegExp(category as string, "i") } });
+      andClauses.push({
+        category: { $regex: new RegExp(category as string, "i") },
+      });
     }
 
     if (isSellerView) {
@@ -81,10 +83,10 @@ export default async function handler(
     if (search) {
       andClauses.push({
         $or: [
-        { name: { $regex: new RegExp(search, "i") } },
-        { title: { $regex: new RegExp(search, "i") } },
-        { description: { $regex: new RegExp(search, "i") } },
-        { category: { $regex: new RegExp(search, "i") } },
+          { name: { $regex: new RegExp(search, "i") } },
+          { title: { $regex: new RegExp(search, "i") } },
+          { description: { $regex: new RegExp(search, "i") } },
+          { category: { $regex: new RegExp(search, "i") } },
         ],
       });
     }

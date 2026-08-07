@@ -445,8 +445,8 @@ export default function Marketplace({
 
           <div className="mt-3 text-sm text-gray-400">{resultLabel}</div>
           <p className="mt-1 text-xs text-gray-500">
-            Each listing shows current pricing, availability, and support
-            paths before you open details.
+            Each listing shows current pricing, availability, and support paths
+            before you open details.
           </p>
 
           <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs">
@@ -755,8 +755,8 @@ export default function Marketplace({
                         </p>
                       ) : (
                         <p className="mt-2 line-clamp-2 text-xs text-gray-500 sm:text-sm">
-                          Review the detail page for availability, delivery,
-                          and order-support information.
+                          Review the detail page for availability, delivery, and
+                          order-support information.
                         </p>
                       )}
                     </Link>
