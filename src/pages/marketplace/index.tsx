@@ -21,6 +21,11 @@ import BuyNowButton from "@/components/BuyNowButton";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 import clientPromise from "@/lib/mongodb";
 import { getMarketplaceDbName } from "@/lib/marketplace/db";
+import {
+  buildPublicMarketplaceVisibilityFilter,
+  getPublicMarketplaceSellerName,
+  isPublicMarketplaceSellerProfileComplete,
+} from "@/lib/marketplace/publicCatalog";
 
 type Product = {
   _id: string;
@@ -440,8 +445,8 @@ export default function Marketplace({
 
           <div className="mt-3 text-sm text-gray-400">{resultLabel}</div>
           <p className="mt-1 text-xs text-gray-500">
-            Each listing shows seller identity and availability before you open
-            details.
+            Each listing shows current pricing, availability, and support
+            paths before you open details.
           </p>
 
           <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs">
@@ -475,8 +480,8 @@ export default function Marketplace({
           </h2>
           <div className="mt-2 grid gap-2 text-xs text-white/80 sm:grid-cols-3 sm:text-sm">
             <p>
-              1) Open product details and confirm seller, availability, and
-              policies.
+              1) Open product details and confirm availability, delivery
+              guidance, and support options.
             </p>
             <p>2) Use secure checkout to place your order.</p>
             <p>3) Track progress in My Orders and get support if needed.</p>
@@ -599,11 +604,12 @@ export default function Marketplace({
         ) : products.length === 0 ? (
           <div className="rounded-2xl border border-white/10 bg-white/5 p-10 text-center">
             <p className="font-semibold text-gray-200">
-              No products match the current search and filter settings.
+              No active marketplace listings are available right now.
             </p>
             <p className="mt-1 text-sm text-gray-400">
-              Try a broader query, switch category, or reset sort/filter
-              options.
+              The public marketplace is temporarily between active listings.
+              Check back soon, become a seller, or contact support if you need
+              help with an existing order.
             </p>
             <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs sm:text-sm">
               <button
@@ -615,28 +621,14 @@ export default function Marketplace({
                 }}
                 className="rounded-lg border border-white/20 px-3 py-2 text-white/90 hover:bg-white/10"
               >
-                View newest products
+                Refresh listings
               </button>
-              <button
-                onClick={() => {
-                  setSelectedCategory("Apparel");
-                  setQ("");
-                  setCurrentPage(1);
-                }}
+              <Link
+                href="/marketplace/become-a-seller"
                 className="rounded-lg border border-white/20 px-3 py-2 text-white/90 hover:bg-white/10"
               >
-                Browse Apparel
-              </button>
-              <button
-                onClick={() => {
-                  setSelectedCategory("Home");
-                  setQ("");
-                  setCurrentPage(1);
-                }}
-                className="rounded-lg border border-white/20 px-3 py-2 text-white/90 hover:bg-white/10"
-              >
-                Browse Home
-              </button>
+                Become a seller
+              </Link>
               <Link
                 href="/support/marketplace"
                 className="rounded-lg border border-yellow-500/30 px-3 py-2 text-yellow-200 hover:bg-yellow-500/10"
@@ -666,15 +658,12 @@ export default function Marketplace({
                       : "border-emerald-500/40 bg-emerald-500/10 text-emerald-300";
 
                 const sellerName =
-                  product?.seller?.name || "Seller name pending";
+                  product?.seller?.name || "Independent BWE seller";
                 const sellerTrustLabel = product?.seller?.profileComplete
                   ? "Active seller profile"
-                  : "Seller profile details pending";
+                  : "Seller storefront details are limited on this listing";
 
-                const listingStatusLabel =
-                  String(product?.status || "").toLowerCase() === "active"
-                    ? "Active listing"
-                    : "Listing status pending";
+                const listingStatusLabel = "Available now";
 
                 const isTopPick = Boolean(product.isFeatured);
 
@@ -766,8 +755,8 @@ export default function Marketplace({
                         </p>
                       ) : (
                         <p className="mt-2 line-clamp-2 text-xs text-gray-500 sm:text-sm">
-                          Open for full specs, seller policy, and delivery
-                          details.
+                          Review the detail page for availability, delivery,
+                          and order-support information.
                         </p>
                       )}
                     </Link>
@@ -955,11 +944,9 @@ export const getServerSideProps: GetServerSideProps<
     const client = await clientPromise;
     const db = client.db(getMarketplaceDbName());
     const productsCollection = db.collection("products");
+    const now = new Date();
 
-    const filter = {
-      status: "active",
-      isPublished: { $ne: false },
-    };
+    const filter = buildPublicMarketplaceVisibilityFilter(now);
     const sortSpec = { isFeatured: -1 as const, _id: -1 as const };
 
     const [total, products] = await Promise.all([
@@ -1032,18 +1019,18 @@ export const getServerSideProps: GetServerSideProps<
           ...p,
           _id: String(p?._id || ""),
           recentlyAdded,
+          activeListing: true,
+          availability:
+            Number(p?.stockQuantity ?? 0) <= 0
+              ? "Out of stock"
+              : Number(p?.stockQuantity ?? 0) <= 3
+                ? "Low stock"
+                : "In stock",
+          condition: String(p?.condition || "New"),
           seller: {
             id: sellerKey || null,
-            name:
-              seller?.storeName ||
-              seller?.businessName ||
-              seller?.ownerName ||
-              null,
-            profileComplete: Boolean(
-              String(seller?.businessName || "").trim() &&
-              String(seller?.email || "").trim() &&
-              String(seller?.description || "").trim(),
-            ),
+            name: getPublicMarketplaceSellerName(seller),
+            profileComplete: isPublicMarketplaceSellerProfileComplete(seller),
           },
         }),
       );

@@ -16,6 +16,7 @@ import {
   MARKETPLACE_ORDER_STATES,
   MARKETPLACE_PAYOUT_STATUSES,
 } from "@/lib/marketplace/orderLifecycle";
+import { hasPublicMarketplaceVisibility } from "@/lib/marketplace/publicCatalog";
 
 type OidLike = { $oid?: string; oid?: string; _id?: unknown } | any;
 type PayoutMode = "destination_charge" | "platform_hold";
@@ -266,6 +267,16 @@ export async function createProductCheckoutSessionCore({
         code: "PRODUCT_NOT_FOUND",
         message: "This product is no longer available.",
         debug: !isProd() ? { productId: normalizedProductId } : undefined,
+      },
+    };
+  }
+
+  if (!hasPublicMarketplaceVisibility(product)) {
+    return {
+      status: 409,
+      body: {
+        code: "LISTING_UNAVAILABLE",
+        message: "This product listing is no longer available for checkout.",
       },
     };
   }

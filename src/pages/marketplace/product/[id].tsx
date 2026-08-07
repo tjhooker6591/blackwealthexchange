@@ -11,6 +11,12 @@ import BuyNowButton from "@/components/BuyNowButton";
 import { emitFlowEvent } from "@/lib/analytics/flowEvents";
 import clientPromise from "@/lib/mongodb";
 import { getMarketplaceDbName } from "@/lib/marketplace/db";
+import {
+  buildPublicMarketplaceVisibilityFilter,
+  getPublicMarketplaceSellerName,
+  hasPublicMarketplaceVisibility,
+  isPublicMarketplaceSellerProfileComplete,
+} from "@/lib/marketplace/publicCatalog";
 import { canonicalUrl, truncateMeta } from "@/lib/seo";
 
 interface Product {
@@ -49,7 +55,9 @@ const ProductDetailPage = ({
   const routeId = typeof id === "string" ? id : initialProductId;
 
   const [product, setProduct] = useState<Product | null>(initialProduct);
-  const [loading, setLoading] = useState(initialProduct ? false : true);
+  const [loading, setLoading] = useState(
+    initialProductId ? false : !initialProduct,
+  );
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   const [messageText, setMessageText] = useState("");
   const [messageState, setMessageState] = useState<string | null>(null);
@@ -82,7 +90,7 @@ const ProductDetailPage = ({
 
   useEffect(() => {
     if (!routeId) return;
-    if (initialProduct && routeId === initialProductId) {
+    if (routeId === initialProductId) {
       setLoading(false);
       return;
     }
@@ -147,12 +155,12 @@ const ProductDetailPage = ({
       : stockQuantity <= 3
         ? "Low stock"
         : "In stock");
-  const sellerName = product?.seller?.name || "Seller name pending";
+  const sellerName = product?.seller?.name || "Independent BWE seller";
   const sellerTrust = product?.seller?.profileComplete
     ? "Active seller profile on file"
-    : "Seller profile details pending";
+    : "Seller storefront details are limited on this listing";
   const listingStatusLabel = product?.activeListing
-    ? "Active listing"
+    ? "Available now"
     : "Status not fully confirmed";
   const canContactSeller = Boolean(product?.seller?.id);
 
@@ -338,7 +346,7 @@ const ProductDetailPage = ({
               <div className="mt-4 rounded-xl border border-white/10 bg-black/30 p-4">
                 <p className="text-sm leading-6 text-gray-200">
                   {product.description ||
-                    "No description provided for this item yet."}
+                    "Review the listing image, price, and checkout options for the current purchase details."}
                 </p>
               </div>
 
@@ -584,8 +592,7 @@ function normalizeProductDocument(doc: any): Product | null {
     isFeatured: Boolean(doc?.isFeatured),
     recentlyAdded: Boolean(doc?.recentlyAdded),
     activeListing:
-      doc?.activeListing === true ||
-      String(doc?.status || "").toLowerCase() === "active",
+      doc?.activeListing === true || hasPublicMarketplaceVisibility(doc),
     seller: sellerDoc
       ? {
           id:
@@ -596,17 +603,14 @@ function normalizeProductDocument(doc: any): Product | null {
                 : typeof doc?.sellerId === "string"
                   ? doc.sellerId
                   : null,
-          name: typeof sellerDoc?.name === "string" ? sellerDoc.name : null,
+          name: getPublicMarketplaceSellerName(sellerDoc),
           joinedAt:
             typeof sellerDoc?.joinedAt === "string"
               ? sellerDoc.joinedAt
               : sellerDoc?.createdAt instanceof Date
                 ? sellerDoc.createdAt.toISOString()
                 : null,
-          profileComplete:
-            typeof sellerDoc?.profileComplete === "boolean"
-              ? sellerDoc.profileComplete
-              : null,
+          profileComplete: isPublicMarketplaceSellerProfileComplete(sellerDoc),
         }
       : typeof doc?.sellerId === "string" || typeof doc?.sellerName === "string"
         ? {
@@ -639,11 +643,7 @@ export const getServerSideProps: GetServerSideProps<
     const db = client.db(getMarketplaceDbName());
     const products = db.collection("products");
     const sellers = db.collection("sellers");
-
-    const filter = {
-      status: "active",
-      isPublished: { $ne: false },
-    } as any;
+    const now = new Date();
 
     const orFilters: any[] = [{ _id: requestedId }, { slug: requestedId }];
     if (ObjectId.isValid(requestedId)) {
@@ -651,8 +651,7 @@ export const getServerSideProps: GetServerSideProps<
     }
 
     const doc = await products.findOne({
-      ...filter,
-      $or: orFilters,
+      $and: [buildPublicMarketplaceVisibilityFilter(now), { $or: orFilters }],
     });
 
     if (!doc) {
