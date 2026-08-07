@@ -1,16 +1,16 @@
 ## CURRENT SESSION HANDOFF
 
-- timestamp: 2026-08-06 16:30 PDT
+- timestamp: 2026-08-07 PDT
 - program phase: `POST-RECOVERY STABILIZATION / REVENUE READINESS`
 - canonical repository: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - branch: `friday-release-candidate`
-- latest runtime checkpoint SHA: `0ccea48737dd2ff8d8b96bf7d00c59080e765161`
-- current git HEAD verified live during session: `c890bb30f410d7a9234aab017b4f965b39f11035`
-- last completed workstream: `post-recovery stabilization baseline + runtime-check guardrail hardening`
-- current active workstream: `DA-05 marketplace public quality`
+- latest runtime checkpoint SHA: `97fb3a18933e22d5dcba9f2b8ba96e2b6ac295a5`
+- current git HEAD verified live during session: `97fb3a18933e22d5dcba9f2b8ba96e2b6ac295a5`
+- last completed workstream: `DA-05 marketplace public quality`
+- current active workstream: `DA-06 release history`
 - DA-01 current result: `COMPLETE`
 - BWE-02 current result: `COMPLETE`
-- last runtime commit SHA: `0ccea48737dd2ff8d8b96bf7d00c59080e765161`
+- last runtime commit SHA: `97fb3a18933e22d5dcba9f2b8ba96e2b6ac295a5`
 - unresolved runtime application files: `0`
 - exact production files changed:
   - `75f4dd1850c720ce94015c5beb4bbff98f34b40c` -> ownership/profile/media + organization runtime closure
@@ -18,11 +18,15 @@
   - `0e6995d39035f33722f1d98e74dac9afaf22c0d6` -> admin/support/claim-verification runtime closure
   - `0ccea48737dd2ff8d8b96bf7d00c59080e765161` -> public/dashboard/marketplace/search/runtime closure
   - `c890bb30f410d7a9234aab017b4f965b39f11035` -> post-recovery runtime guardrail stabilization for durable localhost validation
+  - `b4a1bce24161c097b052a011b809eb0d33a3e2b2` -> marketplace public catalog quality closure
+  - `97fb3a18933e22d5dcba9f2b8ba96e2b6ac295a5` -> marketplace post-hook runtime formatting settle
 - exact production files committed:
   - `75f4dd1850c720ce94015c5beb4bbff98f34b40c` -> `src/lib/directoryOwnership.ts`, `src/lib/directoryProfileContract.ts`, `src/lib/directoryPublicMedia.ts`, `src/pages/api/business/media.ts`, `src/pages/api/business/profile.ts`, `src/pages/api/business/update.ts`, `src/pages/business-directory/[alias].tsx`, `src/pages/dashboard/edit-business.tsx`, `src/pages/edit-business.tsx`, `src/pages/api/organizations/claim.ts`, `src/pages/organizations/[slug].tsx`
   - `ddeb5f20591669d4d8832f27d4f31b0ba13fd3c1` -> `src/components/challenge/ChallengeShareCard.tsx`, `src/pages/admin/challenge.tsx`, `src/pages/api/admin/challenge.ts`, `src/pages/api/challenge/creators.ts`, `src/pages/api/challenge/join.ts`, `src/pages/api/challenge/stats.ts`, `src/pages/challenge.tsx`, `src/pages/challenge/creators.tsx`
   - `0e6995d39035f33722f1d98e74dac9afaf22c0d6` -> `src/lib/adminBusinessStatus.ts`, `src/lib/adminFinanceSummary.ts`, `src/pages/admin/claim-verification.tsx`, `src/pages/admin/dashboard.tsx`, `src/pages/admin/directory-approvals.tsx`, `src/pages/admin/subscriptions.tsx`, `src/pages/admin/support/tickets.tsx`, `src/pages/admin/support/tickets/[id].tsx`, `src/pages/api/admin/financial-class/repair.ts`, `src/pages/api/admin/support.ts`, `src/pages/api/admin/support/[id].ts`
   - `0ccea48737dd2ff8d8b96bf7d00c59080e765161` -> `src/components/dashboards/UserDashboard.tsx`, `src/lib/businessSubmission.ts`, `src/lib/db/courses.ts`, `src/lib/db/orders.ts`, `src/lib/directory/publicVisibility.ts`, `src/lib/marketplace/orderLifecycle.ts`, `src/lib/marketplace/paymentLinkage.ts`, `src/pages/advertise/banner-ads.tsx`, `src/pages/advertise/featured-sponsor.tsx`, `src/pages/advertising/checkout.tsx`, `src/pages/api/news/black.ts`, `src/pages/api/search/businesses.ts`, `src/pages/black-entertainment-news.tsx`, `src/pages/index.tsx`, `src/pages/real-estate-investment.tsx`, `src/pages/real-estate-toolkit.tsx`, `src/pages/real-estate.tsx`, `src/pages/search-results.tsx`, `src/pages/support.tsx`
+  - `b4a1bce24161c097b052a011b809eb0d33a3e2b2` -> `src/lib/checkout/createProductCheckoutSession.ts`, `src/lib/marketplace/publicCatalog.ts`, `src/pages/api/marketplace/get-product.ts`, `src/pages/api/marketplace/get-products.ts`, `src/pages/marketplace/index.tsx`, `src/pages/marketplace/product/[id].tsx`
+  - `97fb3a18933e22d5dcba9f2b8ba96e2b6ac295a5` -> `src/lib/marketplace/publicCatalog.ts`, `src/pages/api/marketplace/get-products.ts`, `src/pages/marketplace/index.tsx`
 - runtime application files still dirty:
   - none
 - tests/proofs completed in this recovery closure cycle:
@@ -44,9 +48,9 @@
   - normal `git commit` hooks trigger repo-wide `eslint src/ --fix` plus `prettier --write .`, which creates broad churn and must be handled carefully
   - `BWE-10 Marketplace checkout / fulfillment proof` remains an external validation dependency pending one authorized real payment completion + webhook fulfillment capture
   - `BWE-13 Auth/session parity` remains an external validation dependency pending second-machine parity capture
-- current dirty-tree count: `397` file-level git status entries (`git status --porcelain=v1 -uall`)
-- exact next workstream: `DA-05 Marketplace public quality` while preserving `BWE-10` and `BWE-13` as external proof blockers
-- exact first action for the next session: preserve the zero-runtime-file state, rerun the release-readiness smoke/proof matrix, then continue public-quality/content audits unless an authorized paid-proof window opens
+- current dirty-tree count: `395` file-level git status entries (`git status --porcelain=v1 -uall`)
+- exact next workstream: `DA-06 release history` while preserving `BWE-10` and `BWE-13` as external proof blockers
+- exact first action for the next session: preserve the zero-runtime-file state, continue release-history/public-trust stabilization, and reopen marketplace only if new reproducible evidence contradicts the DA-05 closure
 - production/deployment status: no deploy this session; no production Mongo writes; no Stripe production mutations
 - dirty-tree preservation snapshot: `/Users/blackforge/workspace/bwe/snapshots/repo_clean-2026-08-04T16-51-54-0700-session-close`
 
@@ -60,12 +64,12 @@
 - historical checkpoint manifest rows: `475`
 - historical checkpoint dirty-tree entries: `445`
 
-## CURRENT CANONICAL PROGRAM STATUS — 2026-08-06
+## CURRENT CANONICAL PROGRAM STATUS — 2026-08-07
 
 - total unique canonical workstreams: `30`
-- complete: `18`
+- complete: `20`
 - active: `2`
-- pending: `8`
+- pending: `6`
 - blocked: `2`
 - superseded: `0`
 
@@ -79,11 +83,11 @@
 | BWE-06 | Safe website/social partial updates                                       | COMPLETE | `6505f78`   | No implementation work pending; preserve partial-update contract test coverage.                                                                                                                              |
 | BWE-07 | Business profile image/logo behavior                                      | COMPLETE | `75f4dd1`   | Owned-business profile/media/logo runtime subset is now committed in canonical history and re-proven through ownership/profile/media runtime proofs on Thursday, August 6, 2026.                             |
 | BWE-08 | Organization/church/nonprofit ownership and editing                       | COMPLETE | `5c36c51`   | No implementation work pending; preserve organization ownership/runtime proof coverage.                                                                                                                      |
-| BWE-09 | Marketplace product detail                                                | PENDING  | `00a3e98`   | Audit current product-detail copy, placeholders, and rendering quality against DA-05.                                                                                                                        |
-| BWE-10 | Marketplace checkout / fulfillment proof                                  | BLOCKED  | `c797e3a`   | External validation dependency: one authorized real payment completion plus webhook/DB/UI fulfillment evidence for one canonical marketplace order.                                                            |
+| BWE-09 | Marketplace product detail                                                | COMPLETE | `97fb3a1`   | Public product detail now hides expired listings, removes placeholder seller copy, and renders an immediate unavailable state for stale product URLs.                                                         |
+| BWE-10 | Marketplace checkout / fulfillment proof                                  | BLOCKED  | `c797e3a`   | External validation dependency: one authorized real payment completion plus webhook/DB/UI fulfillment evidence for one canonical marketplace order.                                                          |
 | BWE-11 | Black Card                                                                | COMPLETE | `84968bb`   | Canonical Black Card runtime bundle is now committed; public plan-copy, entitlements, member auth flows, dashboard card UX, join flow, and admin list proof are current and green.                           |
 | BWE-12 | Pricing / revenue readiness                                               | COMPLETE | `7c22d03`   | Pricing, checkout, payment-success/cancel, and webhook billing-language surfaces are now aligned and proven current.                                                                                         |
-| BWE-13 | Auth/session parity                                                       | BLOCKED  | `c626bcf`   | Local proofs pass; remaining external validation dependency is cross-machine parity capture on the second dev environment.                                                                                    |
+| BWE-13 | Auth/session parity                                                       | BLOCKED  | `c626bcf`   | Local proofs pass; remaining external validation dependency is cross-machine parity capture on the second dev environment.                                                                                   |
 | BWE-14 | Admin dashboard normalization                                             | COMPLETE | `0e6995d`   | The remaining preserved admin/support/claim-verification normalization bundle is now committed in canonical history and no unresolved runtime admin normalization file remains dirty.                        |
 | BWE-15 | Finance-admin summary                                                     | COMPLETE | `9f94a83`   | No implementation work pending; preserve finance test and focused admin runtime proof evidence.                                                                                                              |
 | BWE-16 | Directory/media stale-image handling                                      | COMPLETE | `21565e4`   | No implementation work pending; preserve image resolver test and browser proof.                                                                                                                              |
@@ -93,8 +97,8 @@
 | DA-02  | Directory count reconciliation                                            | COMPLETE | `b4f3e6f`   | Public/search/UI/claim totals reconcile at `365`; raw businesses reconcile at `2272` only after surfacing the separate `duplicate_review` bucket (`24`) beside the `1633` main approval queue.               |
 | DA-03  | Pricing and Black Card consistency                                        | COMPLETE | `35f93c5`   | Founder monthly billing, Black Card public copy, entitlements, member auth flows, and admin list proof are current; no remaining pricing/plan contradiction is established in canonical runtime evidence.    |
 | DA-04  | Account-type onboarding                                                   | PENDING  | `842ba7f`   | Audit and prove Business Owner, Seller, Employer, and General User onboarding entry/redirect/end states.                                                                                                     |
-| DA-05  | Marketplace public quality                                                | ACTIVE   | `pending`   | Remove placeholder/test/engineering copy from public marketplace product detail and listing surfaces as the first post-recovery revenue-readiness audit.                                                       |
-| DA-06  | Release history                                                           | PENDING  | `pending`   | Reconcile public release/history content to proven live functionality only.                                                                                                                                  |
+| DA-05  | Marketplace public quality                                                | COMPLETE | `97fb3a1`   | Public marketplace now filters expired listings from listing/detail surfaces, blocks stale direct-checkout attempts in runtime, and replaces placeholder/internal seller copy with honest public messaging.   |
+| DA-06  | Release history                                                           | ACTIVE   | `pending`   | Reconcile public release/history content to proven live functionality only.                                                                                                                                  |
 | DA-07  | Founder identity / trust                                                  | PENDING  | `pending`   | Audit founder-story and identity surfaces for factual and trust alignment.                                                                                                                                   |
 | DA-08  | Brand / SEO consistency                                                   | PENDING  | `pending`   | Normalize public use of `Black Wealth Exchange — Black-Owned Business Discovery and Growth Platform` where appropriate.                                                                                      |
 | DA-09  | Social / site offer alignment                                             | PENDING  | `pending`   | Reconcile public marketing copy so search-and-claim remains the clearest primary offer.                                                                                                                      |
@@ -320,11 +324,11 @@
 | business image/logo                                       | `BWE-07`                | COMPLETE | `75f4dd1`   | owned-business profile/media/logo runtime subset is now committed and re-proven through the shared ownership/profile/media proof set on Thursday, August 6, 2026               | preserve proof and reopen only on regression                                                        |
 | safe website/social partial updates                       | `BWE-06`                | COMPLETE | `6505f78`   | profile-contract tests and runtime profile parity proof pass                                                                                                                   | none beyond regression watch                                                                        |
 | organization/church/nonprofit ownership/editing           | `BWE-08`                | COMPLETE | `5310b59`   | organization claim/owner proofs pass live on August 4, 2026                                                                                                                    | none beyond regression watch                                                                        |
-| marketplace product detail                                | `BWE-09`                | ACTIVE   | `00a3e98`   | product-detail implementation exists and now sits inside the active DA-05 post-recovery public-quality audit                                                                   | remove placeholder/engineering copy and prove public detail quality                                 |
+| marketplace product detail                                | `BWE-09`                | COMPLETE | `97fb3a1`   | expired public product detail routes now resolve to an immediate unavailable state and no seller-placeholder copy remains in SSR HTML                                          | none beyond regression watch                                                                        |
 | marketplace checkout                                      | `BWE-10`                | BLOCKED  | `c797e3a`   | checkout matrix code exists; canonical paid completion/webhook fulfillment proof remains an external validation dependency                                                     | obtain one safe authorized paid completion and fulfillment evidence                                 |
 | Black Card functionality                                  | `BWE-11`                | COMPLETE | `84968bb`   | Black Card runtime bundle, dashboard card UX, join flow, admin digital-request surface, and live auth/entitlement/admin/browser proofs all pass on Thursday, August 6, 2026    | preserve proof and reopen only on regression                                                        |
 | pricing/revenue readiness                                 | `BWE-12`                | COMPLETE | `7c22d03`   | pricing page, checkout founder cadence, payment success/cancel messaging, and webhook billing-language surfaces are now aligned and proven current on Thursday, August 6, 2026 | preserve proof and reopen only on regression                                                        |
-| auth/session parity                                       | `BWE-13`                | BLOCKED  | `c626bcf`   | local auth/session proof matrix passes; second-machine parity remains an external validation dependency                                                                         | capture second-machine parity evidence                                                              |
+| auth/session parity                                       | `BWE-13`                | BLOCKED  | `c626bcf`   | local auth/session proof matrix passes; second-machine parity remains an external validation dependency                                                                        | capture second-machine parity evidence                                                              |
 | admin dashboard normalization                             | `BWE-14`                | COMPLETE | `0e6995d`   | the remaining admin/support/claim-verification normalization bundle is committed in canonical history and no unresolved runtime admin normalization file remains dirty         | preserve proof and reopen only on regression                                                        |
 | finance-admin summary                                     | `BWE-15`                | COMPLETE | `9f94a83`   | admin-finance-summary test passes; focused admin runtime proof captured                                                                                                        | none beyond regression watch                                                                        |
 | directory/media stale-image handling                      | `BWE-16`                | COMPLETE | `21565e4`   | image-resolver test passes; stale upload request eliminated from live directory page                                                                                           | none beyond regression watch                                                                        |

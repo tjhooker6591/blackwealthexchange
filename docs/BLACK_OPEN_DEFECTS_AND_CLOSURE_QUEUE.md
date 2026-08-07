@@ -1,22 +1,52 @@
 # BLACK OPEN DEFECTS AND CLOSURE QUEUE
 
-_Last updated: 2026-08-06 America/Los_Angeles_
+_Last updated: 2026-08-07 America/Los_Angeles_
 
 ## Current canonical execution state
 
 - Program phase: `POST-RECOVERY STABILIZATION / REVENUE READINESS`
 - Canonical repository: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - Canonical branch: `friday-release-candidate`
-- Latest runtime checkpoint SHA: `0ccea48737dd2ff8d8b96bf7d00c59080e765161`
-- Current git HEAD verified live during session: `c890bb30f410d7a9234aab017b4f965b39f11035`
+- Latest runtime checkpoint SHA: `97fb3a18933e22d5dcba9f2b8ba96e2b6ac295a5`
+- Current git HEAD verified live during session: `97fb3a18933e22d5dcba9f2b8ba96e2b6ac295a5`
 - Dirty-tree preservation snapshot: `/Users/blackforge/workspace/bwe/snapshots/repo_clean-2026-08-03T04-31-39-146Z`
 - Complete file manifest: `docs/recovery/BWE_COMPLETE_FILE_MANIFEST_CURRENT.csv`
-- Runtime application countdown: `0` unresolved runtime files as of Thursday, August 6, 2026 after commits `75f4dd1`, `ddeb5f2`, `0e6995d`, and `0ccea48`
+- Runtime application countdown: `0` unresolved runtime files as of Friday, August 7, 2026 after commits `75f4dd1`, `ddeb5f2`, `0e6995d`, `0ccea48`, `b4a1bce`, and `97fb3a1`
 - External validation dependencies only:
   - `BWE-10` authorized marketplace paid proof
   - `BWE-13` second-machine auth/runtime parity proof
 
-## Current ordered execution queue — reconciled 2026-08-06
+## Current ordered execution queue — reconciled 2026-08-07
+
+0. **CQ-0 — Marketplace public quality**
+   - Status: COMPLETE
+   - Severity: High
+   - Current reality:
+     - expired marketplace products no longer remain publicly visible in listing or detail surfaces
+     - public SSR no longer leaks `Seller name pending`, `Seller profile details pending`, or similar internal scaffolding
+     - direct product checkout runtime now rejects stale expired listings before creating a Stripe session
+     - when no active public products remain, the marketplace now renders an honest empty state instead of stale expired inventory
+   - Exact files:
+     - `src/lib/checkout/createProductCheckoutSession.ts`
+     - `src/lib/marketplace/publicCatalog.ts`
+     - `src/pages/api/marketplace/get-product.ts`
+     - `src/pages/api/marketplace/get-products.ts`
+     - `src/pages/marketplace/index.tsx`
+     - `src/pages/marketplace/product/[id].tsx`
+   - Proof:
+     - Commits:
+       - `b4a1bce24161c097b052a011b809eb0d33a3e2b2`
+       - `97fb3a18933e22d5dcba9f2b8ba96e2b6ac295a5`
+     - `npm run typecheck` pass on Friday, August 7, 2026
+     - `node scripts/runtime-check.mjs` pass on Friday, August 7, 2026
+     - localhost checks on Friday, August 7, 2026:
+       - `/` -> `200`
+       - `/business-directory` -> `200`
+       - `/marketplace` -> `200`
+       - expired product route `/marketplace/product/69644a50d65b1e1ace411a0d` -> `200` with immediate `Listing unavailable` render
+       - `/api/marketplace/get-products?limit=12&page=1` -> `{"products":[],"total":0}`
+   - Next action:
+     - keep `BWE-10` as the remaining external paid-proof blocker; move the active stabilization queue to public trust/content accuracy work
 
 1. **CQ-1 — Founder monthly-billing contradiction**
    - Status: COMPLETE
