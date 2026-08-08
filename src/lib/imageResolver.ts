@@ -24,8 +24,15 @@ function isTrustedBusinessImage(url: string) {
 export function resolveBusinessImage(record: any): ResolvedImage {
   const existing = record?.imageFallback;
   if (existing?.url && existing?.categoryKey) {
-    if (existing.categoryKey !== "business" && existing.categoryKey !== "bwe_default") {
-      return { url: BWE_DEFAULT, sourceType: "bwe", categoryKey: "bwe_default" };
+    if (
+      existing.categoryKey !== "business" &&
+      existing.categoryKey !== "bwe_default"
+    ) {
+      return {
+        url: BWE_DEFAULT,
+        sourceType: "bwe",
+        categoryKey: "bwe_default",
+      };
     }
 
     return {

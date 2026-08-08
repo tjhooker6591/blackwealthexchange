@@ -178,7 +178,9 @@ function toFallbackSponsorCard(
 ) {
   const sponsorName = s(campaign.sponsorName) || "Featured Sponsor";
   const tagline = s(campaign.tagline) || "Featured on Black Wealth Exchange";
-  const target = normalizeBusinessUrl(campaign.targetUrl || campaign.website || "");
+  const target = normalizeBusinessUrl(
+    campaign.targetUrl || campaign.website || "",
+  );
 
   return {
     _id: `sponsor:${campaign.campaignId}`,
@@ -204,10 +206,7 @@ function toFallbackSponsorCard(
   } satisfies SponsorCard;
 }
 
-function mapResolvedSponsors(
-  campaigns: SponsorCardDraft[],
-  businesses: any[],
-) {
+function mapResolvedSponsors(campaigns: SponsorCardDraft[], businesses: any[]) {
   const resolved = resolveSponsorBusinessLinks(campaigns, businesses);
   const resolvedByCampaignId = new Map(
     resolved.map((link) => [String(link.campaignId), link]),
@@ -227,7 +226,9 @@ function mapResolvedSponsors(
 
       if (!isKnownSponsor && !hasExplicitApprovedImage) return null;
 
-      const resolvedLink = resolvedByCampaignId.get(String(campaign.campaignId));
+      const resolvedLink = resolvedByCampaignId.get(
+        String(campaign.campaignId),
+      );
       if (resolvedLink) {
         return toResolvedSponsorCard(resolvedLink, i, img);
       }
