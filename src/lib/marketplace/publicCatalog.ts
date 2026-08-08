@@ -1,18 +1,49 @@
-export function buildPublicMarketplaceVisibilityFilter(now = new Date()) {
+const MARKETPLACE_TEST_NAME_PATTERN =
+  /^(qa branch product\b|qa product\b|test product\b|placeholder product\b|sample product\b)/i;
+const MARKETPLACE_TEST_SLUG_PATTERN =
+  /(?:^|[-_])(qa|test|placeholder|sample)(?:[-_]|$)/i;
+
+export function isMarketplaceTestProduct(
+  doc: Record<string, any> | null | undefined,
+) {
+  if (!doc || typeof doc !== "object") return false;
+
+  if (doc.isTest === true) return true;
+
+  const auditTag = String(doc.auditTag || "")
+    .trim()
+    .toLowerCase();
+  if (auditTag === "qa" || auditTag === "test" || auditTag === "placeholder") {
+    return true;
+  }
+
+  const name = String(doc.name || doc.title || "").trim();
+  const slug = String(doc.slug || "").trim();
+
+  return (
+    MARKETPLACE_TEST_NAME_PATTERN.test(name) ||
+    MARKETPLACE_TEST_SLUG_PATTERN.test(slug)
+  );
+}
+
+export function buildPublicMarketplaceVisibilityFilter(_now = new Date()) {
   return {
     status: "active",
     isPublished: { $ne: false },
-    $or: [
-      { expiresAt: { $exists: false } },
-      { expiresAt: null },
-      { expiresAt: { $gt: now } },
+    $or: [{ deletedAt: { $exists: false } }, { deletedAt: null }],
+    $nor: [
+      { name: { $regex: MARKETPLACE_TEST_NAME_PATTERN } },
+      { title: { $regex: MARKETPLACE_TEST_NAME_PATTERN } },
+      { slug: { $regex: MARKETPLACE_TEST_SLUG_PATTERN } },
+      { auditTag: { $in: ["qa", "QA", "test", "TEST", "placeholder"] } },
+      { isTest: true },
     ],
   };
 }
 
 export function hasPublicMarketplaceVisibility(
   doc: Record<string, any> | null | undefined,
-  now = new Date(),
+  _now = new Date(),
 ) {
   if (!doc || typeof doc !== "object") return false;
 
@@ -23,11 +54,8 @@ export function hasPublicMarketplaceVisibility(
   )
     return false;
   if (doc.isPublished === false) return false;
-
-  const expiresAt = doc.expiresAt ? new Date(doc.expiresAt) : null;
-  if (expiresAt && !Number.isNaN(expiresAt.getTime()) && expiresAt <= now) {
-    return false;
-  }
+  if (doc.deletedAt) return false;
+  if (isMarketplaceTestProduct(doc)) return false;
 
   return true;
 }

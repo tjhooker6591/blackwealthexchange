@@ -1,6 +1,6 @@
 # BLACK OPEN DEFECTS AND CLOSURE QUEUE
 
-_Last updated: 2026-08-07 America/Los_Angeles_
+_Last updated: 2026-08-08 America/Los_Angeles_
 
 ## Current canonical execution state
 
@@ -16,37 +16,47 @@ _Last updated: 2026-08-07 America/Los_Angeles_
   - `BWE-10` authorized marketplace paid proof
   - `BWE-13` second-machine auth/runtime parity proof
 
-## Current ordered execution queue — reconciled 2026-08-07
+## Current ordered execution queue — reconciled 2026-08-08
 
 0. **CQ-0 — Marketplace public quality**
    - Status: COMPLETE
    - Severity: High
    - Current reality:
-     - expired marketplace products no longer remain publicly visible in listing or detail surfaces
+     - the canonical local runtime and `/api/marketplace/get-products?debug=1` both resolve to `bwes-cluster`
+     - the three legitimate owner products (`Pamfa hoodies`, `Pamfa sneakers`, and `Thomas Hooker author`) are again publicly visible in marketplace listing, product-detail, homepage count, and shop-overview surfaces
+     - the Saturday, August 8, 2026 P1 regression root cause was the Thursday, August 6, 2026 `expiresAt` eligibility gate introduced in `b4a1bce`, not wrong-DB routing and not product deletion or unpublishing
+     - legacy `expiresAt` metadata no longer zeroes legitimate active inventory, while unpublished, deleted, and QA/test listings remain excluded from the public catalog contract
      - public SSR no longer leaks `Seller name pending`, `Seller profile details pending`, or similar internal scaffolding
-     - direct product checkout runtime now rejects stale expired listings before creating a Stripe session
-     - when no active public products remain, the marketplace now renders an honest empty state instead of stale expired inventory
+     - direct product checkout runtime still blocks stale unavailable listings at the product visibility layer before any real paid proof is attempted
    - Exact files:
+     - `src/pages/api/marketplace/add-product.ts`
+     - `src/pages/api/marketplace/check-expired.ts`
      - `src/lib/checkout/createProductCheckoutSession.ts`
      - `src/lib/marketplace/publicCatalog.ts`
      - `src/pages/api/marketplace/get-product.ts`
      - `src/pages/api/marketplace/get-products.ts`
      - `src/pages/marketplace/index.tsx`
      - `src/pages/marketplace/product/[id].tsx`
+     - `src/pages/shop-black-owned-products.tsx`
+     - `src/pages/api/stats/inventory.ts`
+     - `src/lib/support/releases.ts`
    - Proof:
      - Commits:
        - `b4a1bce24161c097b052a011b809eb0d33a3e2b2`
        - `97fb3a18933e22d5dcba9f2b8ba96e2b6ac295a5`
-     - `npm run typecheck` pass on Friday, August 7, 2026
-     - `node scripts/runtime-check.mjs` pass on Friday, August 7, 2026
-     - localhost checks on Friday, August 7, 2026:
-       - `/` -> `200`
-       - `/business-directory` -> `200`
-       - `/marketplace` -> `200`
-       - expired product route `/marketplace/product/69644a50d65b1e1ace411a0d` -> `200` with immediate `Listing unavailable` render
-       - `/api/marketplace/get-products?limit=12&page=1` -> `{"products":[],"total":0}`
+     - `npm run typecheck` pass on Saturday, August 8, 2026
+     - `node scripts/runtime-check.mjs` pass on Saturday, August 8, 2026
+     - localhost checks on Saturday, August 8, 2026:
+       - `/api/marketplace/get-products?limit=12&page=1&debug=1` returns `3` products from `_debug.usedDbName: "bwes-cluster"`
+       - `/api/stats/inventory` returns `"products":3`
+       - `/marketplace` returns `200` and renders `Showing 3 products • 3 total`
+       - `/marketplace/product/680d23a3dc57cdf2efedf784` returns `200`
+       - `/marketplace/product/680d2a27dc57cdf2efedf785` returns `200`
+       - `/marketplace/product/69644a50d65b1e1ace411a0d` returns `200`
+       - `/shop-black-owned-products` returns `200` and lists the same three products
+       - canonical local DB proof shows the QA product `69b1b4367784b2ea30971f4c` is absent from `bwes-cluster`
    - Next action:
-     - keep `BWE-10` as the remaining external paid-proof blocker; move the active stabilization queue to public trust/content accuracy work
+     - keep `BWE-10` as the remaining external paid-proof blocker; local Stripe is not configured, so checkout-session parity proof remains environment-blocked even though PDP checkout entry links render correctly
 
 1. **CQ-1 — Founder monthly-billing contradiction**
    - Status: COMPLETE

@@ -152,7 +152,6 @@ export default async function handler(
           sku: "",
           createdAt: now,
           updatedAt: now,
-          expiresAt: new Date(now.getTime() + 45 * 24 * 60 * 60 * 1000),
         };
 
         // 8) Insert & respond

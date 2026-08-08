@@ -43,8 +43,8 @@ export const releaseSections: ReleaseSection[] = [
     title: "Marketplace public accuracy",
     label: "Improved",
     bullets: [
-      "Public marketplace listing and detail routes now hide expired products instead of leaving stale inventory visible.",
-      "Marketplace pages now emphasize seller identity, listing availability, and buyer support paths without overstating active inventory.",
+      "Public marketplace listing, detail, homepage count, and shop overview routes now align to the same active owner-supplied catalog contract.",
+      "Legacy expiry metadata no longer suppresses legitimate active products, while unpublished, deleted, and QA/test inventory remain excluded from the public marketplace.",
     ],
   },
   {

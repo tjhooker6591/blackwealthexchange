@@ -333,6 +333,8 @@ export default function Marketplace({
     : `Showing ${products.length} product${products.length === 1 ? "" : "s"}${
         total ? ` • ${total} total` : ""
       }`;
+  const hasActiveCatalogFilters =
+    Boolean(q.trim()) || selectedCategory !== "All";
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -604,12 +606,14 @@ export default function Marketplace({
         ) : products.length === 0 ? (
           <div className="rounded-2xl border border-white/10 bg-white/5 p-10 text-center">
             <p className="font-semibold text-gray-200">
-              No active marketplace listings are available right now.
+              {hasActiveCatalogFilters
+                ? "No products match the current search and filter settings."
+                : "No active marketplace listings are available right now."}
             </p>
             <p className="mt-1 text-sm text-gray-400">
-              The public marketplace is temporarily between active listings.
-              Check back soon, become a seller, or contact support if you need
-              help with an existing order.
+              {hasActiveCatalogFilters
+                ? "Try a broader search, switch categories, or clear filters to view the live public catalog."
+                : "The public marketplace is temporarily between active listings. Check back soon, become a seller, or contact support if you need help with an existing order."}
             </p>
             <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs sm:text-sm">
               <button
