@@ -1512,8 +1512,8 @@ export default function Home() {
                   Marketplace
                 </h3>
                 <p className="mt-1 text-xs text-white/70">
-                  Shop products from Black-owned brands and support commerce
-                  directly.
+                  Open the live marketplace, check the current public catalog
+                  state, and support commerce directly when listings are active.
                 </p>
                 <Link
                   href="/marketplace"
@@ -1565,7 +1565,11 @@ export default function Home() {
                 Featured Sponsors
               </h3>
               <p className="text-[11px] text-white/55">
-                Active partners supporting verified discovery and visibility
+                {sponsorFeedLoaded
+                  ? sponsorRail.length
+                    ? "Current sponsor placements supporting discovery and visibility"
+                    : "No active sponsor placements are running in this slot right now"
+                  : "Loading current sponsor placements"}
               </p>
             </div>
             <span className="rounded border border-white/15 px-2 py-1 text-[10px] text-white/55">

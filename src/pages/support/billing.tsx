@@ -4,6 +4,9 @@ export default function Page() {
     <SupportCategoryPage
       title="Billing Support"
       intro="Handle payment, refund, and charge questions for BWE purchases."
+      pageTitle="Billing Support | Black Wealth Exchange"
+      metaDescription="Get help with Black Wealth Exchange billing, refunds, charges, invoices, and subscription renewal questions."
+      canonicalPath="/support/billing"
       commonIssues={[
         "Unexpected charge",
         "Refund pending",

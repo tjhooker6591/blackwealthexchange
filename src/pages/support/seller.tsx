@@ -4,6 +4,9 @@ export default function Page() {
     <SupportCategoryPage
       title="Seller Support"
       intro="Resolve seller-side issues for products, orders, and payouts."
+      pageTitle="Seller Support | Black Wealth Exchange"
+      metaDescription="Get help with BWE seller products, orders, listing visibility, fulfillment, and payout issues."
+      canonicalPath="/support/seller"
       commonIssues={[
         "Payout delay",
         "Order fulfillment issue",
