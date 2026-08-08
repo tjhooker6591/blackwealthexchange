@@ -102,14 +102,13 @@ _Last updated: 2026-08-08 America/Los_Angeles_
    - Status: COMPLETE
    - Severity: High
    - Current reality:
-     - expired `featured_sponsor_schedule` fallback rows no longer remain promotable after the focused August 4, 2026 sponsor repair
-     - ordinary directory search with `search=Pamfa United Citizens` still returns the linked PAMFA business, but now correctly reports `isSponsored: false` because the March-May 2026 sponsorship has expired
-     - ordinary directory search with `search=TitanEra` returns zero sponsor-linked results
-     - `/api/sponsored-businesses` now returns `none_active` instead of resurfacing expired PAMFA schedule rows
-     - the remaining named sponsor gaps close as source-data classification, not as a remaining sponsor runtime defect
-     - current paid historical sponsor rows exist for `TitanEra`, `Guardians of the Forgotten Realm`, `The Last Nephilim`, `Millianious`, and `Tiana Song Sprouts`, but they still do not resolve to public BWE business records because no linked public business exists
-     - `Thomas Hooker Sr.` still does not have an exact sponsor/ad source row; only related historical rows exist for `Thomas Hooker Author` and `Thomas Hooker Publisher`
-     - PAMFA remains the only reconciled named sponsor with a real public BWE business and ordinary search visibility
+     - DISCOVERED DURING: `DA-06` / `DA-07` transition on Saturday, August 8, 2026
+     - IMPACTS: `DA-06`, `BWE-18`, homepage featured sponsors, directory sponsor rail/sidebar, public trust/history surfaces
+     - the focused August 4, 2026 sponsor repair kept ordinary search strict correctly, but it over-suppressed public sponsor surfaces by requiring linked public businesses for every sponsor card and by filtering the recent historical schedule fallback down to zero
+     - canonical source data still contains the verified sponsor schedule set for `Pamfa United Citizen`, `TitanEra`, `Thomas Hooker Author`, `Thomas Hooker Publisher`, `Guardians of the Forgotten Realm`, `The Last Nephilim`, `Millianious`, and `Tiana Song Sprouts`
+     - ordinary directory search remains intentionally strict: `Pamfa United Citizens` still resolves to the real public PAMFA business and `TitanEra` still returns zero linked public-business results because no public business record exists
+     - `/api/sponsored-businesses` now returns the verified eight-card sponsor set again by using a hybrid contract: linked public business route when it exists, approved featured-sponsor profile fallback when no public business listing exists
+     - homepage `Featured Sponsors` and directory sponsor surfaces render again without fabricating business listings or duplicating sponsor identities
    - Exact files:
      - `src/lib/advertising/sponsorListings.ts`
      - `src/pages/api/search/businesses.ts`
@@ -124,16 +123,39 @@ _Last updated: 2026-08-08 America/Los_Angeles_
      - `node src/lib/directory/__tests__/sponsor-listings-tests.mjs` pass on Tuesday, August 4, 2026
      - `npm run typecheck` pass on Tuesday, August 4, 2026
      - `node scripts/runtime-check.mjs` pass on Tuesday, August 4, 2026
-     - live API checks on Tuesday, August 4, 2026 show:
+     - live API checks on Tuesday, August 4, 2026 show the stricter state that later proved over-suppressive for public sponsor surfaces:
        - `/api/sponsored-businesses` returns `{"ok":true,"sponsors":[],"meta":{"source":"none_active"}}`
        - `/api/search/businesses?search=Pamfa%20United%20Citizens&sponsoredFirst=1` returns PAMFA with `isSponsored: false`
        - `/api/search/businesses?search=TitanEra&sponsoredFirst=1` returns `0`
        - expired schedule fallback rows no longer drive sponsor promotion
      - Wednesday, August 5, 2026 read-only sponsor-source audit recorded the seven-name matrix in `docs/audit-evidence/2026-08-05-sponsor-reconciliation.md`
+     - Saturday, August 8, 2026 correction proof shows:
+       - `/api/sponsored-businesses` returns `8` sponsor cards with source `featured_sponsor_schedule_recent_verified_fallback`
+       - homepage `Featured Sponsors` renders the same named set without the prior empty-state copy
+       - `/business-directory` sponsor rail/sidebar render the same named set without the prior empty-state copy
    - Next action:
-     - none in sponsor runtime code; treat any future missing sponsor-name resolution as data creation/linkage work outside this closed defect lane
+     - none in sponsor runtime code; keep ordinary search/business promotion strict and treat future sponsor-name gaps as source-data/linkage work unless the shared sponsor API or featured-profile fallback regresses again
 
-4. **CQ-4 — PAMFA public address presentation gap**
+4. **CQ-4 — Directory neutral fallback media**
+   - Status: COMPLETE
+   - Severity: High
+   - Current reality:
+     - DISCOVERED DURING: `DA-06` / `DA-07` transition on Saturday, August 8, 2026
+     - IMPACTS: `BWE-16`, public directory trust, search card media, storefront/public credibility
+     - the shared resolver introduced on Sunday, August 2, 2026 in `21565e4` correctly suppressed stale `/uploads/...` media, but it also changed public listings with no legitimate business media from the neutral approved placeholder to category stock fallbacks such as `/images/fallback/food.jpg` and `/images/fallback/retail.jpg`
+     - those fallback assets contain real portrait photography and were incorrectly reused across unrelated listings such as `Kimball House`, `Boon Boona Coffee`, `BLK & Bold`, `The Sip`, and `Bankhead Seafood`
+     - public listings without legitimate media now resolve to `/images/fallback/bwe-default.jpg`, while valid remote business media still renders and stale `/uploads/...` media remains suppressed
+   - Exact files:
+     - `src/lib/imageResolver.ts`
+     - `src/lib/__tests__/image-resolver-tests.mjs`
+     - `src/pages/business-directory.tsx`
+   - Proof:
+     - `node src/lib/__tests__/image-resolver-tests.mjs` pass on Saturday, August 8, 2026
+     - focused browser proof on Saturday, August 8, 2026 confirms `/business-directory` contains `/images/fallback/bwe-default.jpg` and no longer surfaces `/images/fallback/food.jpg` or `/images/fallback/retail.jpg` on the public directory surface
+   - Next action:
+     - preserve the neutral fallback rule and reopen only if public directory/search cards begin surfacing unrelated portrait/stock fallback media again
+
+5. **CQ-5 — PAMFA public address presentation gap**
    - Status: COMPLETE
    - Severity: Medium
    - Current reality:
@@ -154,7 +176,7 @@ _Last updated: 2026-08-08 America/Los_Angeles_
    - Next action:
      - no implementation work pending; preserve proof and reopen only on regression
 
-5. **CQ-5 — Marketplace paid completion proof**
+6. **CQ-6 — Marketplace paid completion proof**
    - Status: BLOCKED
    - Severity: High
    - Dependency:
@@ -162,7 +184,7 @@ _Last updated: 2026-08-08 America/Los_Angeles_
    - Next action:
      - perform one canonical paid marketplace run only when payment-proof execution is explicitly authorized and safe
 
-6. **CQ-6 — Cross-machine auth/runtime parity capture**
+7. **CQ-7 — Cross-machine auth/runtime parity capture**
    - Status: BLOCKED
    - Severity: Medium
    - Dependency:

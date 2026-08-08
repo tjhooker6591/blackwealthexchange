@@ -31,9 +31,9 @@ const staleUploadRecord = {
 };
 
 const staleResolved = resolveBusinessImage(staleUploadRecord);
-assert.equal(staleResolved.sourceType, "category");
-assert.equal(staleResolved.categoryKey, "retail");
-assert.equal(staleResolved.url, "/images/fallback/retail.jpg");
+assert.equal(staleResolved.sourceType, "bwe");
+assert.equal(staleResolved.categoryKey, "bwe_default");
+assert.equal(staleResolved.url, "/images/fallback/bwe-default.jpg");
 
 const trustedRemoteRecord = {
   image: "https://res.cloudinary.com/example/image/upload/v1/pamfa.png",
