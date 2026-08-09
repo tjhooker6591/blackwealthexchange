@@ -7,17 +7,16 @@ _Last updated: 2026-08-09 America/Los_Angeles_
 - Program phase: `POST-RECOVERY STABILIZATION / REVENUE READINESS`
 - Canonical repository: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - Canonical branch: `friday-release-candidate`
-- Latest runtime checkpoint SHA: `ee5e834e0643d0eae95b7a0821fe5542c8bdd7a6`
-- Current git HEAD verified live during session: `ee5e834e0643d0eae95b7a0821fe5542c8bdd7a6`
+- Latest runtime checkpoint SHA: `9f7de64ef1431bae6d33b00394eefbb1af6842d8`
+- Current git HEAD verified live during session: `9f7de64ef1431bae6d33b00394eefbb1af6842d8`
 - Dirty-tree preservation snapshot: `/Users/blackforge/workspace/bwe/snapshots/repo_clean-2026-08-03T04-31-39-146Z`
 - Complete file manifest: `docs/recovery/BWE_COMPLETE_FILE_MANIFEST_CURRENT.csv`
-- Runtime application countdown: `2` preserved dirty runtime follow-through files remain intentionally untouched in the working tree: `src/pages/api/auth/signup.ts` for `DA-09` and `src/pages/black-business-websites.tsx` for `DA-08`
+- Runtime application countdown: `1` preserved dirty runtime follow-through file remains intentionally untouched in the working tree: `src/pages/api/auth/signup.ts` for `DA-09`
 - External validation dependencies only:
   - `BWE-10` owner-authorized final marketplace payment verification
   - `BWE-13` second-machine auth/runtime parity proof
 - Current non-blocked execution target:
-  - `DA-08` brand / SEO consistency
-  - `DA-09` social / site offer alignment follows after `DA-08`
+  - `DA-09` social / site offer alignment
 - Current preserved public state:
   - `P1 directory fallback`: COMPLETE
   - `P1 marketplace product visibility`: COMPLETE
