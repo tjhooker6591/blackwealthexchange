@@ -33,7 +33,19 @@ const staleUploadRecord = {
 const staleResolved = resolveBusinessImage(staleUploadRecord);
 assert.equal(staleResolved.sourceType, "bwe");
 assert.equal(staleResolved.categoryKey, "bwe_default");
-assert.equal(staleResolved.url, "/images/fallback/bwe-default.jpg");
+assert.equal(staleResolved.url, "/default-image.jpg");
+
+const persistedFallbackRecord = {
+  imageFallback: {
+    url: "/images/fallback/food.jpg",
+    categoryKey: "food",
+  },
+};
+
+const persistedFallbackResolved = resolveBusinessImage(persistedFallbackRecord);
+assert.equal(persistedFallbackResolved.sourceType, "bwe");
+assert.equal(persistedFallbackResolved.categoryKey, "bwe_default");
+assert.equal(persistedFallbackResolved.url, "/default-image.jpg");
 
 const trustedRemoteRecord = {
   image: "https://res.cloudinary.com/example/image/upload/v1/pamfa.png",

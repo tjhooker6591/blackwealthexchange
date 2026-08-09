@@ -6,7 +6,7 @@ export type ResolvedImage = {
   categoryKey: string;
 };
 
-const BWE_DEFAULT = "/images/fallback/bwe-default.jpg";
+const APPROVED_NEUTRAL_FALLBACK = "/default-image.jpg";
 
 function text(v: unknown) {
   return typeof v === "string" ? v.trim() : "";
@@ -24,26 +24,18 @@ function isTrustedBusinessImage(url: string) {
 export function resolveBusinessImage(record: any): ResolvedImage {
   const existing = record?.imageFallback;
   if (existing?.url && existing?.categoryKey) {
-    if (
-      existing.categoryKey !== "business" &&
-      existing.categoryKey !== "bwe_default"
-    ) {
+    if (existing.categoryKey === "business") {
       return {
-        url: BWE_DEFAULT,
-        sourceType: "bwe",
-        categoryKey: "bwe_default",
+        url: String(existing.url),
+        sourceType: "business",
+        categoryKey: "business",
       };
     }
 
     return {
-      url: String(existing.url),
-      sourceType:
-        existing.categoryKey === "business"
-          ? "business"
-          : existing.categoryKey === "bwe_default"
-            ? "bwe"
-            : "category",
-      categoryKey: String(existing.categoryKey),
+      url: APPROVED_NEUTRAL_FALLBACK,
+      sourceType: "bwe",
+      categoryKey: "bwe_default",
     };
   }
 
@@ -56,5 +48,9 @@ export function resolveBusinessImage(record: any): ResolvedImage {
     };
   }
 
-  return { url: BWE_DEFAULT, sourceType: "bwe", categoryKey: "bwe_default" };
+  return {
+    url: APPROVED_NEUTRAL_FALLBACK,
+    sourceType: "bwe",
+    categoryKey: "bwe_default",
+  };
 }
