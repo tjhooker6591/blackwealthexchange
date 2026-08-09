@@ -1,17 +1,17 @@
 ## CURRENT SESSION HANDOFF
 
-- timestamp: 2026-08-07 PDT
+- timestamp: 2026-08-09 PDT
 - program phase: `POST-RECOVERY STABILIZATION / REVENUE READINESS`
 - canonical repository: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - branch: `friday-release-candidate`
-- latest runtime checkpoint SHA: `97fb3a18933e22d5dcba9f2b8ba96e2b6ac295a5`
-- current git HEAD verified live during session: `97fb3a18933e22d5dcba9f2b8ba96e2b6ac295a5`
-- last completed workstream: `DA-05 marketplace public quality`
-- current active workstream: `DA-06 release history`
+- latest runtime checkpoint SHA: `ee5e834e0643d0eae95b7a0821fe5542c8bdd7a6`
+- current git HEAD verified live during session: `ee5e834e0643d0eae95b7a0821fe5542c8bdd7a6`
+- last completed workstream: `DA-06 release history / public-trust follow-through`
+- current active workstream: `DA-08 brand / SEO consistency`
 - DA-01 current result: `COMPLETE`
 - BWE-02 current result: `COMPLETE`
-- last runtime commit SHA: `97fb3a18933e22d5dcba9f2b8ba96e2b6ac295a5`
-- unresolved runtime application files: `0`
+- last runtime commit SHA: `ee5e834e0643d0eae95b7a0821fe5542c8bdd7a6`
+- unresolved runtime application files: `2 preserved dirty runtime files for DA-08 / DA-09 follow-through`
 - exact production files changed:
   - `75f4dd1850c720ce94015c5beb4bbff98f34b40c` -> ownership/profile/media + organization runtime closure
   - `ddeb5f20591669d4d8832f27d4f31b0ba13fd3c1` -> challenge runtime closure
@@ -20,6 +20,11 @@
   - `c890bb30f410d7a9234aab017b4f965b39f11035` -> post-recovery runtime guardrail stabilization for durable localhost validation
   - `b4a1bce24161c097b052a011b809eb0d33a3e2b2` -> marketplace public catalog quality closure
   - `97fb3a18933e22d5dcba9f2b8ba96e2b6ac295a5` -> marketplace post-hook runtime formatting settle
+  - `505778d83284a1b92db4c802b5edda876e05febe` -> align release/support/public-trust surfaces to proven live reality
+  - `62a99f6adc1b58132862e497c56603c4fc3b33be` -> restore canonical marketplace public catalog and the three legitimate products
+  - `066a376f21457bb1a77aa49ffc5e59623c7f3332` -> restore sponsor surfaces and remove category portrait fallback behavior
+  - `68b01f7d2af9bfcc9bd5428b64db48752de519e5` -> finalize sponsor fallback formatting
+  - `ee5e834e0643d0eae95b7a0821fe5542c8bdd7a6` -> fix directory fallback to the approved neutral `/default-image.jpg`
 - exact production files committed:
   - `75f4dd1850c720ce94015c5beb4bbff98f34b40c` -> `src/lib/directoryOwnership.ts`, `src/lib/directoryProfileContract.ts`, `src/lib/directoryPublicMedia.ts`, `src/pages/api/business/media.ts`, `src/pages/api/business/profile.ts`, `src/pages/api/business/update.ts`, `src/pages/business-directory/[alias].tsx`, `src/pages/dashboard/edit-business.tsx`, `src/pages/edit-business.tsx`, `src/pages/api/organizations/claim.ts`, `src/pages/organizations/[slug].tsx`
   - `ddeb5f20591669d4d8832f27d4f31b0ba13fd3c1` -> `src/components/challenge/ChallengeShareCard.tsx`, `src/pages/admin/challenge.tsx`, `src/pages/api/admin/challenge.ts`, `src/pages/api/challenge/creators.ts`, `src/pages/api/challenge/join.ts`, `src/pages/api/challenge/stats.ts`, `src/pages/challenge.tsx`, `src/pages/challenge/creators.tsx`
@@ -27,8 +32,14 @@
   - `0ccea48737dd2ff8d8b96bf7d00c59080e765161` -> `src/components/dashboards/UserDashboard.tsx`, `src/lib/businessSubmission.ts`, `src/lib/db/courses.ts`, `src/lib/db/orders.ts`, `src/lib/directory/publicVisibility.ts`, `src/lib/marketplace/orderLifecycle.ts`, `src/lib/marketplace/paymentLinkage.ts`, `src/pages/advertise/banner-ads.tsx`, `src/pages/advertise/featured-sponsor.tsx`, `src/pages/advertising/checkout.tsx`, `src/pages/api/news/black.ts`, `src/pages/api/search/businesses.ts`, `src/pages/black-entertainment-news.tsx`, `src/pages/index.tsx`, `src/pages/real-estate-investment.tsx`, `src/pages/real-estate-toolkit.tsx`, `src/pages/real-estate.tsx`, `src/pages/search-results.tsx`, `src/pages/support.tsx`
   - `b4a1bce24161c097b052a011b809eb0d33a3e2b2` -> `src/lib/checkout/createProductCheckoutSession.ts`, `src/lib/marketplace/publicCatalog.ts`, `src/pages/api/marketplace/get-product.ts`, `src/pages/api/marketplace/get-products.ts`, `src/pages/marketplace/index.tsx`, `src/pages/marketplace/product/[id].tsx`
   - `97fb3a18933e22d5dcba9f2b8ba96e2b6ac295a5` -> `src/lib/marketplace/publicCatalog.ts`, `src/pages/api/marketplace/get-products.ts`, `src/pages/marketplace/index.tsx`
+  - `505778d83284a1b92db4c802b5edda876e05febe` -> `src/lib/support/releases.ts`, `src/pages/api/support/releases.ts`, `src/components/support/SupportCategoryPage.tsx`, `src/components/support/SupportTicketEntryPage.tsx`, `src/pages/support/*.tsx`, `src/pages/about.tsx`, `src/pages/contact.tsx`, `src/pages/learning.tsx`, `src/pages/storefront.tsx`, `src/pages/shop-black-owned-products.tsx`, `src/pages/index.tsx`
+  - `62a99f6adc1b58132862e497c56603c4fc3b33be` -> `src/lib/marketplace/publicCatalog.ts`, `src/pages/api/marketplace/add-product.ts`, `src/pages/api/marketplace/check-expired.ts`, `src/pages/marketplace/index.tsx`, `src/lib/support/releases.ts`
+  - `066a376f21457bb1a77aa49ffc5e59623c7f3332` -> `src/pages/api/sponsored-businesses.ts`, `src/lib/imageResolver.ts`, `src/lib/__tests__/image-resolver-tests.mjs`
+  - `68b01f7d2af9bfcc9bd5428b64db48752de519e5` -> `src/pages/api/sponsored-businesses.ts`, sponsor fallback formatting follow-through
+  - `ee5e834e0643d0eae95b7a0821fe5542c8bdd7a6` -> `src/lib/imageResolver.ts`, `src/lib/__tests__/image-resolver-tests.mjs`
 - runtime application files still dirty:
-  - none
+  - `src/pages/api/auth/signup.ts` -> preserved signup truth-copy/offer-alignment follow-through for `DA-09`; do not discard or broadly stage
+  - `src/pages/black-business-websites.tsx` -> preserved brand/SEO content cleanup follow-through for `DA-08`; do not discard or broadly stage
 - tests/proofs completed in this recovery closure cycle:
   - `node src/lib/directory/__tests__/ownership-resolution-tests.mjs` pass on Thursday, August 6, 2026
   - `node src/lib/founding-membership/__tests__/claim-reconciliation-tests.mjs` pass on Thursday, August 6, 2026
@@ -46,13 +57,23 @@
 - unresolved blockers/data dependencies:
   - `repo_clean` still has a large pre-existing dirty working tree and is not clean
   - normal `git commit` hooks trigger repo-wide `eslint src/ --fix` plus `prettier --write .`, which creates broad churn and must be handled carefully
-  - `BWE-10 Marketplace checkout / fulfillment proof` remains an external validation dependency pending one authorized real payment completion + webhook fulfillment capture
+  - `BWE-10 Marketplace checkout / fulfillment proof` remains an external validation dependency pending one owner-authorized real payment completion + Stripe/webhook/DB/UI fulfillment capture; localhost `Stripe is not configured` is not currently classified as an application-code defect
   - `BWE-13 Auth/session parity` remains an external validation dependency pending second-machine parity capture
-- current dirty-tree count: `395` file-level git status entries (`git status --porcelain=v1 -uall`)
-- exact next workstream: `DA-06 release history` while preserving `BWE-10` and `BWE-13` as external proof blockers
-- exact first action for the next session: preserve the zero-runtime-file state, continue release-history/public-trust stabilization, and reopen marketplace only if new reproducible evidence contradicts the DA-05 closure
+- current dirty-tree count: `384` file-level git status entries (`git status --porcelain=v1 -uall`)
+- exact next workstream: `continue DA-08 brand / SEO consistency, then continue DA-09 social / site offer alignment` while preserving `BWE-10` and `BWE-13` as external proof blockers
+- exact first action for the next session: preserve the two dirty runtime files as-is, keep claim wording unchanged (`Claim This Listing` / `Claim Your Listing`), keep the three legitimate products visible, and continue the non-Stripe DA-08 / DA-09 queue only
 - production/deployment status: no deploy this session; no production Mongo writes; no Stripe production mutations
 - dirty-tree preservation snapshot: `/Users/blackforge/workspace/bwe/snapshots/repo_clean-2026-08-04T16-51-54-0700-session-close`
+- localhost runtime status: `http://127.0.0.1:3000` live on PID `6106`
+- current proven public state:
+  - `P1 directory fallback`: COMPLETE
+  - `P1 marketplace product visibility`: COMPLETE
+  - `P1 homepage featured sponsors`: COMPLETE
+  - `P1 directory sponsor sidebar`: COMPLETE
+  - `Claim This Listing / Claim Your Listing`: CORRECT — PRESERVE
+  - `legitimate marketplace products`: `3`
+  - `QA product`: EXCLUDED
+  - `change-impact audit`: COMPLETE — NO ADDITIONAL MAJOR REGRESSION FOUND
 
 ## CHECKPOINT BASELINE PRESERVATION
 
@@ -67,9 +88,9 @@
 ## CURRENT CANONICAL PROGRAM STATUS — 2026-08-07
 
 - total unique canonical workstreams: `30`
-- complete: `20`
+- complete: `21`
 - active: `2`
-- pending: `6`
+- pending: `5`
 - blocked: `2`
 - superseded: `0`
 
@@ -98,9 +119,9 @@
 | DA-03  | Pricing and Black Card consistency                                        | COMPLETE | `35f93c5`   | Founder monthly billing, Black Card public copy, entitlements, member auth flows, and admin list proof are current; no remaining pricing/plan contradiction is established in canonical runtime evidence.                                                                                                                                                                                                                                                                                                                                                                             |
 | DA-04  | Account-type onboarding                                                   | PENDING  | `842ba7f`   | Audit and prove Business Owner, Seller, Employer, and General User onboarding entry/redirect/end states.                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | DA-05  | Marketplace public quality                                                | COMPLETE | `97fb3a1`   | Public marketplace quality remains closed after the Saturday, August 8, 2026 P1 reconciliation: the shared public-catalog contract now restores the three legitimate owner products in canonical `bwes-cluster`, stops legacy `expiresAt` metadata from zeroing valid active inventory, and still excludes unpublished, deleted, and QA/test listings.                                                                                                                                                                                                                                |
-| DA-06  | Release history                                                           | ACTIVE   | `pending`   | Reconcile public release/history content to proven live functionality only. Current DA-06 closure work corrected public inventory copy, support metadata defaults across category plus alias/entry routes, storefront asset trust, and homepage sponsor/public-catalog truthfulness; the temporary zero-inventory conclusion was reversed on Saturday, August 8, 2026 after reconciling the canonical marketplace catalog, and the same day’s follow-up corrections also restored sponsor surfaces and neutral directory fallback media discovered during the DA-06/DA-07 transition. |
+| DA-06  | Release history                                                           | COMPLETE | `ee5e834`   | Closed on Sunday, August 9, 2026 after validating `/`, `/about`, `/storefront`, `/marketplace`, `/shop-black-owned-products`, `/support/marketplace`, `/support/releases`, and `/black-business-websites` on localhost with factual copy, preserved three-product catalog visibility, preserved sponsor surfaces, preserved claim wording, and no additional DA-06 runtime work beyond formatting-only churn. |
 | DA-07  | Founder identity / trust                                                  | PENDING  | `pending`   | Audit founder-story and identity surfaces for factual and trust alignment.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| DA-08  | Brand / SEO consistency                                                   | PENDING  | `pending`   | PARTIALLY SATISFIED during DA-06: public titles/canonicals/metadata were corrected across release, storefront, about, support category routes, and support alias/entry routes; continue with remaining broader brand/SEO normalization only.                                                                                                                                                                                                                                                                                                                                          |
+| DA-08  | Brand / SEO consistency                                                   | ACTIVE   | `pending`   | PARTIALLY SATISFIED during DA-06: public titles/canonicals/metadata were corrected across release, storefront, about, support category routes, and support alias/entry routes; continue with remaining broader brand/SEO normalization only. The preserved dirty runtime file is `src/pages/black-business-websites.tsx`.                                                                                                                                                                                                                                                            |
 | DA-09  | Social / site offer alignment                                             | PENDING  | `pending`   | PARTIALLY SATISFIED during DA-06: materially false marketplace/public-availability language was corrected on homepage, storefront, release notes, shop overview, and signup welcome messaging; continue with remaining broader marketing alignment only.                                                                                                                                                                                                                                                                                                                              |
 | DA-10  | Claim-focused content strategy                                            | PENDING  | `pending`   | Preserve and restate the agreed `70/20/10` strategy on current public/editorial surfaces.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | DA-11  | Sponsor basic search                                                      | COMPLETE | `f098f49`   | Same underlying lane as BWE-18; closure audit confirms PAMFA works as an ordinary public business after sponsor expiry and the remaining names fail because no linked public business/source row exists.                                                                                                                                                                                                                                                                                                                                                                              |

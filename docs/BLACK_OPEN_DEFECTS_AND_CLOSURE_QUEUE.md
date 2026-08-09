@@ -1,22 +1,34 @@
 # BLACK OPEN DEFECTS AND CLOSURE QUEUE
 
-_Last updated: 2026-08-08 America/Los_Angeles_
+_Last updated: 2026-08-09 America/Los_Angeles_
 
 ## Current canonical execution state
 
 - Program phase: `POST-RECOVERY STABILIZATION / REVENUE READINESS`
 - Canonical repository: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - Canonical branch: `friday-release-candidate`
-- Latest runtime checkpoint SHA: `97fb3a18933e22d5dcba9f2b8ba96e2b6ac295a5`
-- Current git HEAD verified live during session: `97fb3a18933e22d5dcba9f2b8ba96e2b6ac295a5`
+- Latest runtime checkpoint SHA: `ee5e834e0643d0eae95b7a0821fe5542c8bdd7a6`
+- Current git HEAD verified live during session: `ee5e834e0643d0eae95b7a0821fe5542c8bdd7a6`
 - Dirty-tree preservation snapshot: `/Users/blackforge/workspace/bwe/snapshots/repo_clean-2026-08-03T04-31-39-146Z`
 - Complete file manifest: `docs/recovery/BWE_COMPLETE_FILE_MANIFEST_CURRENT.csv`
-- Runtime application countdown: `0` unresolved runtime files as of Friday, August 7, 2026 after commits `75f4dd1`, `ddeb5f2`, `0e6995d`, `0ccea48`, `b4a1bce`, and `97fb3a1`
+- Runtime application countdown: `2` preserved dirty runtime follow-through files remain intentionally untouched in the working tree: `src/pages/api/auth/signup.ts` for `DA-09` and `src/pages/black-business-websites.tsx` for `DA-08`
 - External validation dependencies only:
-  - `BWE-10` authorized marketplace paid proof
+  - `BWE-10` owner-authorized final marketplace payment verification
   - `BWE-13` second-machine auth/runtime parity proof
+- Current non-blocked execution target:
+  - `DA-08` brand / SEO consistency
+  - `DA-09` social / site offer alignment follows after `DA-08`
+- Current preserved public state:
+  - `P1 directory fallback`: COMPLETE
+  - `P1 marketplace product visibility`: COMPLETE
+  - `P1 homepage featured sponsors`: COMPLETE
+  - `P1 directory sponsor sidebar`: COMPLETE
+  - `Claim This Listing / Claim Your Listing`: CORRECT — PRESERVE
+  - `Legitimate marketplace products`: `3`
+  - `QA product`: EXCLUDED
+  - `Change-impact audit`: COMPLETE — NO ADDITIONAL MAJOR REGRESSION FOUND
 
-## Current ordered execution queue — reconciled 2026-08-08
+## Current ordered execution queue — reconciled 2026-08-09
 
 0. **CQ-0 — Marketplace public quality**
    - Status: COMPLETE
@@ -56,7 +68,7 @@ _Last updated: 2026-08-08 America/Los_Angeles_
        - `/shop-black-owned-products` returns `200` and lists the same three products
        - canonical local DB proof shows the QA product `69b1b4367784b2ea30971f4c` is absent from `bwes-cluster`
    - Next action:
-     - keep `BWE-10` as the remaining external paid-proof blocker; local Stripe is not configured, so checkout-session parity proof remains environment-blocked even though PDP checkout entry links render correctly
+     - keep `BWE-10` as the remaining external paid-proof blocker; local Stripe is not configured, but the safe structural audit passed and the remaining closure dependency is owner-authorized final payment verification rather than new checkout development
 
 1. **CQ-1 — Founder monthly-billing contradiction**
    - Status: COMPLETE
@@ -144,16 +156,16 @@ _Last updated: 2026-08-08 America/Los_Angeles_
      - IMPACTS: `BWE-16`, public directory trust, search card media, storefront/public credibility
      - the shared resolver introduced on Sunday, August 2, 2026 in `21565e4` correctly suppressed stale `/uploads/...` media, but it also changed public listings with no legitimate business media from the neutral approved placeholder to category stock fallbacks such as `/images/fallback/food.jpg` and `/images/fallback/retail.jpg`
      - those fallback assets contain real portrait photography and were incorrectly reused across unrelated listings such as `Kimball House`, `Boon Boona Coffee`, `BLK & Bold`, `The Sip`, and `Bankhead Seafood`
-     - public listings without legitimate media now resolve to `/images/fallback/bwe-default.jpg`, while valid remote business media still renders and stale `/uploads/...` media remains suppressed
+     - public listings without legitimate media now resolve to the approved neutral `/default-image.jpg`, while valid remote business media still renders and stale `/uploads/...` media remains suppressed
    - Exact files:
      - `src/lib/imageResolver.ts`
      - `src/lib/__tests__/image-resolver-tests.mjs`
      - `src/pages/business-directory.tsx`
    - Proof:
      - `node src/lib/__tests__/image-resolver-tests.mjs` pass on Saturday, August 8, 2026
-     - focused browser proof on Saturday, August 8, 2026 confirms `/business-directory` contains `/images/fallback/bwe-default.jpg` and no longer surfaces `/images/fallback/food.jpg` or `/images/fallback/retail.jpg` on the public directory surface
+     - focused browser proof on Saturday, August 8, 2026 confirms `/business-directory` contains `/default-image.jpg` and no longer surfaces `/images/fallback/food.jpg`, `/images/fallback/retail.jpg`, or the later black/logo fallback on the public directory surface
    - Next action:
-     - preserve the neutral fallback rule and reopen only if public directory/search cards begin surfacing unrelated portrait/stock fallback media again
+     - preserve the neutral fallback rule and reopen only if public directory/search cards begin surfacing unrelated portrait/stock fallback media again or stop resolving to `/default-image.jpg`
 
 5. **CQ-5 — PAMFA public address presentation gap**
    - Status: COMPLETE
