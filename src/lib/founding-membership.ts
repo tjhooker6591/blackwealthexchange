@@ -731,6 +731,121 @@ export type FoundingVerificationDecisionCounts = Record<
   number
 >;
 
+export type FoundingOwnershipAutomationMode =
+  | "DRY_RUN"
+  | "AUTO_VERIFY_DISABLED"
+  | "AUTO_VERIFY_ENABLED";
+
+export type FoundingShadowValidationExpectedBucket =
+  | "AUTO_VERIFY"
+  | "ADMIN_REVIEW"
+  | "MORE_EVIDENCE"
+  | "CONFLICT_DISPUTE";
+
+export type FoundingShadowValidationHistoricalOutcome =
+  | "VERIFIED"
+  | "REQUESTED_MORE_EVIDENCE"
+  | "VERIFICATION_FAILED"
+  | "DISPUTED"
+  | "EXISTING_OWNER_CONFLICT"
+  | "REVOKED"
+  | "UNKNOWN";
+
+export type FoundingShadowValidationCase = {
+  caseId: string;
+  claimId: string | null;
+  membershipId: string;
+  knownHistoricalOutcome: FoundingShadowValidationHistoricalOutcome;
+  expectedBucket: FoundingShadowValidationExpectedBucket;
+  engineRecommendation: FoundingVerificationDisposition;
+  businessIdentityResult: "PASS" | "FAIL" | "UNKNOWN";
+  claimantAuthorizationResult: "PASS" | "FAIL" | "UNKNOWN";
+  ownershipControlResult: "PASS" | "FAIL" | "UNKNOWN";
+  riskConflictResult: "PASS" | "FAIL" | "UNKNOWN";
+  evidenceResult: "PASS" | "FAIL" | "UNKNOWN";
+  blackOwnedStatusResult: "VERIFIED" | "UNVERIFIED" | "NOT_ESTABLISHED";
+  matchesExpectedOutcome: boolean;
+  falsePositiveRisk: "LOW" | "MODERATE" | "HIGH";
+  falseNegativeRisk: "LOW" | "MODERATE" | "HIGH";
+};
+
+export type FoundingSignalCoverageSummary = {
+  key: string;
+  label: string;
+  available: number;
+  missing: number;
+  reliableEnoughForAutoVerify: number;
+  adminFallbackRequired: number;
+};
+
+export type FoundingShadowValidationSummary = {
+  totalCasesTested: number;
+  expectedAutoVerify: number;
+  expectedAdminReview: number;
+  expectedMoreEvidence: number;
+  expectedConflictDispute: number;
+  engineAgreementCount: number;
+  engineDisagreementCount: number;
+  falseAutoVerifyCount: number;
+  mandatoryUnknownBlocksAutoVerify: boolean;
+  estimatedHighConfidenceAutoVerifyCount: number;
+  estimatedHighConfidenceAutoVerifyPercent: number;
+  cases: FoundingShadowValidationCase[];
+  signalCoverage: FoundingSignalCoverageSummary[];
+};
+
+export type FoundingActivationContractBlueprint = {
+  mode: FoundingOwnershipAutomationMode;
+  automaticActivationEnabled: boolean;
+  policyVersion: string;
+  states: FoundingOwnershipAutomationMode[];
+  requiredChecks: string[];
+  lastSecondConflictRecheck: string[];
+  properties: Array<
+    "ATOMIC" | "IDEMPOTENT" | "CONFLICT_SAFE" | "AUDITABLE" | "REPLAY_SAFE"
+  >;
+  auditRecordFields: string[];
+};
+
+export type FoundingDecisionAuditRecord = {
+  claimId: string | null;
+  membershipId: string;
+  businessId: string | null;
+  claimantUserId: string | null;
+  timestamp: string;
+  policyVersion: string;
+  signals: Array<{
+    groupId: FoundingVerificationGroupId;
+    key: string;
+    label: string;
+    status: FoundingVerificationSignalStatus;
+    summary: string;
+  }>;
+  mandatoryConditions: Array<{
+    key: string;
+    label: string;
+    status: FoundingVerificationSignalStatus;
+    reason: string;
+  }>;
+  finalRecommendation: FoundingVerificationDisposition;
+  reason: string[];
+  activationStatus:
+    | "DRY_RUN"
+    | "AUTO_VERIFY_DISABLED"
+    | "AUTO_VERIFY_ENABLED_NOT_USED";
+};
+
+export function getFoundingOwnershipAutomationMode(): FoundingOwnershipAutomationMode {
+  const raw = String(
+    process.env.FOUNDING_OWNERSHIP_AUTOMATION_MODE || "DRY_RUN",
+  )
+    .trim()
+    .toUpperCase();
+  if (raw === "AUTO_VERIFY_ENABLED") return "AUTO_VERIFY_ENABLED";
+  if (raw === "AUTO_VERIFY_DISABLED") return "AUTO_VERIFY_DISABLED";
+  return "DRY_RUN";
+}
+
 function normalizeComparisonText(value: unknown) {
   return String(value || "")
     .trim()
@@ -900,6 +1015,367 @@ function buildMandatoryCondition(args: {
     label: args.label,
     status: args.status,
     reason: args.reason,
+  };
+}
+
+function summarizeGroupOutcome(
+  group: FoundingVerificationGroupResult | null | undefined,
+): "PASS" | "FAIL" | "UNKNOWN" {
+  if (!group) return "UNKNOWN";
+  if (group.failCount > 0) return "FAIL";
+  if (group.unknownCount > 0) return "UNKNOWN";
+  return "PASS";
+}
+
+function getMandatoryConditionStatus(
+  decision: FoundingVerificationDecision | null | undefined,
+  key: string,
+) {
+  return (
+    decision?.mandatoryConditions.find((condition) => condition.key === key)
+      ?.status || "unknown"
+  );
+}
+
+function inferHistoricalOutcome(
+  row: FoundingCanonicalRecord,
+  decision: FoundingVerificationDecision,
+): FoundingShadowValidationHistoricalOutcome {
+  const auditHistory = Array.isArray(row.auditHistory) ? row.auditHistory : [];
+  const review = row.review || {};
+  const claim = row.claim || {};
+  const business = row.business || {};
+
+  if (
+    Boolean((review as any)?.revokedAt) ||
+    Boolean((claim as any)?.revokedAt) ||
+    Boolean((business as any)?.revokedAt)
+  ) {
+    return "REVOKED";
+  }
+  if (
+    row.queueState === "disputed" ||
+    countAuditActions(auditHistory, "mark_disputed") > 0 ||
+    row.competingClaimantCount > 1
+  ) {
+    return "DISPUTED";
+  }
+  if (
+    getMandatoryConditionStatus(decision, "no_conflicting_verified_owner") ===
+    "fail"
+  ) {
+    return "EXISTING_OWNER_CONFLICT";
+  }
+  if (
+    row.queueState === "ownership_verification_failed" ||
+    countAuditActions(auditHistory, "verification_failed") > 0
+  ) {
+    return "VERIFICATION_FAILED";
+  }
+  if (row.queueState === "additional_evidence_required") {
+    return "REQUESTED_MORE_EVIDENCE";
+  }
+  if (row.queueState === "ownership_verified") {
+    return "VERIFIED";
+  }
+  return "UNKNOWN";
+}
+
+function mapHistoricalOutcomeToExpectedBucket(
+  outcome: FoundingShadowValidationHistoricalOutcome,
+): FoundingShadowValidationExpectedBucket {
+  if (outcome === "VERIFIED") return "AUTO_VERIFY";
+  if (outcome === "REQUESTED_MORE_EVIDENCE") return "MORE_EVIDENCE";
+  if (outcome === "DISPUTED" || outcome === "EXISTING_OWNER_CONFLICT") {
+    return "CONFLICT_DISPUTE";
+  }
+  return "ADMIN_REVIEW";
+}
+
+function mapDispositionToExpectedBucket(
+  disposition: FoundingVerificationDisposition,
+): FoundingShadowValidationExpectedBucket {
+  if (disposition === "AUTO_VERIFY_ELIGIBLE") return "AUTO_VERIFY";
+  if (disposition === "MORE_EVIDENCE_REQUIRED") return "MORE_EVIDENCE";
+  if (disposition === "CONFLICT_BLOCKED" || disposition === "DISPUTED") {
+    return "CONFLICT_DISPUTE";
+  }
+  return "ADMIN_REVIEW";
+}
+
+function getSignalCoverageSummary(
+  rows: Array<
+    FoundingCanonicalRecord & {
+      verificationDecision?: FoundingVerificationDecision | null;
+    }
+  >,
+): FoundingSignalCoverageSummary[] {
+  const signalKeys = [
+    "business_name_match",
+    "address_match_if_available",
+    "website_domain_match_if_available",
+    "phone_match_if_available",
+    "claimant_account_linkage",
+    "claimant_domain_relationship_if_available",
+    "representative_authority_evidence",
+    "required_evidence_present",
+  ] as const;
+  const labels: Record<(typeof signalKeys)[number], string> = {
+    business_name_match: "Business name consistency",
+    address_match_if_available: "Address consistency",
+    website_domain_match_if_available: "Website/domain consistency",
+    phone_match_if_available: "Phone/contact consistency",
+    claimant_account_linkage: "Claimant/account linkage",
+    claimant_domain_relationship_if_available:
+      "Business-contact/domain relationship",
+    representative_authority_evidence: "Representative authority evidence",
+    required_evidence_present: "Required ownership/control evidence present",
+  };
+
+  return signalKeys.map((key) => {
+    let available = 0;
+    let missing = 0;
+    let reliableEnoughForAutoVerify = 0;
+    let adminFallbackRequired = 0;
+
+    for (const row of rows) {
+      const status = getMandatoryConditionStatus(row.verificationDecision, key);
+      if (status === "unknown" || status === "not_applicable") {
+        missing += 1;
+        adminFallbackRequired += 1;
+        continue;
+      }
+      available += 1;
+      if (status === "pass") {
+        reliableEnoughForAutoVerify += 1;
+      } else {
+        adminFallbackRequired += 1;
+      }
+    }
+
+    return {
+      key,
+      label: labels[key],
+      available,
+      missing,
+      reliableEnoughForAutoVerify,
+      adminFallbackRequired,
+    };
+  });
+}
+
+export function buildFoundingDecisionAuditRecord(
+  row: FoundingCanonicalRecord,
+  decision: FoundingVerificationDecision,
+): FoundingDecisionAuditRecord {
+  const mode = getFoundingOwnershipAutomationMode();
+  return {
+    claimId: row.claimId,
+    membershipId: row.membershipId,
+    businessId: row.businessId,
+    claimantUserId: row.userId,
+    timestamp: new Date().toISOString(),
+    policyVersion: decision.policyVersion,
+    signals: decision.groups.flatMap((group) =>
+      group.signals.map((signal) => ({
+        groupId: group.id,
+        key: signal.key,
+        label: signal.label,
+        status: signal.status,
+        summary: signal.summary,
+      })),
+    ),
+    mandatoryConditions: decision.mandatoryConditions.map((condition) => ({
+      key: condition.key,
+      label: condition.label,
+      status: condition.status,
+      reason: condition.reason,
+    })),
+    finalRecommendation: decision.disposition,
+    reason: decision.rationale,
+    activationStatus:
+      mode === "AUTO_VERIFY_ENABLED"
+        ? "AUTO_VERIFY_ENABLED_NOT_USED"
+        : mode === "AUTO_VERIFY_DISABLED"
+          ? "AUTO_VERIFY_DISABLED"
+          : "DRY_RUN",
+  };
+}
+
+export function getFoundingActivationContractBlueprint(): FoundingActivationContractBlueprint {
+  const mode = getFoundingOwnershipAutomationMode();
+  return {
+    mode,
+    automaticActivationEnabled: mode === "AUTO_VERIFY_ENABLED",
+    policyVersion: "da13-v1",
+    states: ["DRY_RUN", "AUTO_VERIFY_DISABLED", "AUTO_VERIFY_ENABLED"],
+    requiredChecks: [
+      "decision = AUTO_VERIFY_ELIGIBLE",
+      "all mandatory conditions = PASS",
+      "no conflict/dispute/revocation",
+      "decision policy version current",
+      "claim state unchanged since evaluation",
+      "ownership state unchanged since evaluation",
+      "claimant still authenticated/eligible",
+      "no verified owner has appeared since evaluation",
+    ],
+    lastSecondConflictRecheck: [
+      "claim state unchanged since evaluation",
+      "ownership state unchanged since evaluation",
+      "claimant still authenticated/eligible",
+      "no verified owner has appeared since evaluation",
+    ],
+    properties: [
+      "ATOMIC",
+      "IDEMPOTENT",
+      "CONFLICT_SAFE",
+      "AUDITABLE",
+      "REPLAY_SAFE",
+    ],
+    auditRecordFields: [
+      "CLAIM",
+      "BUSINESS",
+      "CLAIMANT",
+      "TIMESTAMP",
+      "POLICY VERSION",
+      "SIGNALS",
+      "PASS/FAIL/UNKNOWN",
+      "FINAL RECOMMENDATION",
+      "REASON",
+      "ACTIVATION STATUS",
+      "OWNERSHIP RECORD CREATED",
+      "MANAGEMENT RIGHTS GRANTED",
+      "ACTIVATION TIMESTAMP",
+      "ACTIVATION POLICY VERSION",
+    ],
+  };
+}
+
+export function getFoundingShadowValidationSummary(
+  rows: Array<
+    FoundingCanonicalRecord & {
+      verificationDecision?: FoundingVerificationDecision | null;
+    }
+  >,
+): FoundingShadowValidationSummary {
+  const cases = rows.map((row) => {
+    const decision =
+      row.verificationDecision || deriveFoundingVerificationDecision(row);
+    const historicalOutcome = inferHistoricalOutcome(row, decision);
+    const expectedBucket =
+      mapHistoricalOutcomeToExpectedBucket(historicalOutcome);
+    const engineBucket = mapDispositionToExpectedBucket(decision.disposition);
+    const matchesExpectedOutcome = expectedBucket === engineBucket;
+    const evidenceStatus = getMandatoryConditionStatus(
+      decision,
+      "required_evidence_present",
+    );
+
+    return {
+      caseId: row.claimId || row.membershipId,
+      claimId: row.claimId,
+      membershipId: row.membershipId,
+      knownHistoricalOutcome: historicalOutcome,
+      expectedBucket,
+      engineRecommendation: decision.disposition,
+      businessIdentityResult: summarizeGroupOutcome(
+        decision.groups.find((group) => group.id === "business_identity"),
+      ),
+      claimantAuthorizationResult: summarizeGroupOutcome(
+        decision.groups.find((group) => group.id === "claimant_authorization"),
+      ),
+      ownershipControlResult: summarizeGroupOutcome(
+        decision.groups.find((group) => group.id === "ownership_control"),
+      ),
+      riskConflictResult: summarizeGroupOutcome(
+        decision.groups.find((group) => group.id === "risk_exception"),
+      ),
+      evidenceResult:
+        evidenceStatus === "pass"
+          ? "PASS"
+          : evidenceStatus === "fail"
+            ? "FAIL"
+            : "UNKNOWN",
+      blackOwnedStatusResult: decision.blackOwnedStatusLabel,
+      matchesExpectedOutcome,
+      falsePositiveRisk:
+        decision.disposition === "AUTO_VERIFY_ELIGIBLE" &&
+        expectedBucket !== "AUTO_VERIFY"
+          ? "HIGH"
+          : decision.disposition === "AUTO_VERIFY_ELIGIBLE"
+            ? "LOW"
+            : "LOW",
+      falseNegativeRisk:
+        expectedBucket === "AUTO_VERIFY" &&
+        decision.disposition !== "AUTO_VERIFY_ELIGIBLE"
+          ? "MODERATE"
+          : "LOW",
+    } satisfies FoundingShadowValidationCase;
+  });
+
+  const totalCasesTested = cases.length;
+  const expectedAutoVerify = cases.filter(
+    (item) => item.expectedBucket === "AUTO_VERIFY",
+  ).length;
+  const expectedAdminReview = cases.filter(
+    (item) => item.expectedBucket === "ADMIN_REVIEW",
+  ).length;
+  const expectedMoreEvidence = cases.filter(
+    (item) => item.expectedBucket === "MORE_EVIDENCE",
+  ).length;
+  const expectedConflictDispute = cases.filter(
+    (item) => item.expectedBucket === "CONFLICT_DISPUTE",
+  ).length;
+  const engineAgreementCount = cases.filter(
+    (item) => item.matchesExpectedOutcome,
+  ).length;
+  const engineDisagreementCount = totalCasesTested - engineAgreementCount;
+  const falseAutoVerifyCount = cases.filter(
+    (item) =>
+      item.engineRecommendation === "AUTO_VERIFY_ELIGIBLE" &&
+      item.expectedBucket !== "AUTO_VERIFY",
+  ).length;
+  const mandatoryUnknownBlocksAutoVerify = rows.every((row) => {
+    const decision =
+      row.verificationDecision || deriveFoundingVerificationDecision(row);
+    return !(
+      decision.disposition === "AUTO_VERIFY_ELIGIBLE" &&
+      decision.mandatoryConditions.some(
+        (condition) => condition.status === "unknown",
+      )
+    );
+  });
+  const estimatedHighConfidenceAutoVerifyCount = rows.filter((row) => {
+    const decision =
+      row.verificationDecision || deriveFoundingVerificationDecision(row);
+    return (
+      decision.disposition === "AUTO_VERIFY_ELIGIBLE" &&
+      decision.mandatoryConditions.every((condition) => condition.status === "pass")
+    );
+  }).length;
+  const estimatedHighConfidenceAutoVerifyPercent = totalCasesTested
+    ? Number(
+        (
+          (estimatedHighConfidenceAutoVerifyCount / totalCasesTested) *
+          100
+        ).toFixed(1),
+      )
+    : 0;
+
+  return {
+    totalCasesTested,
+    expectedAutoVerify,
+    expectedAdminReview,
+    expectedMoreEvidence,
+    expectedConflictDispute,
+    engineAgreementCount,
+    engineDisagreementCount,
+    falseAutoVerifyCount,
+    mandatoryUnknownBlocksAutoVerify,
+    estimatedHighConfidenceAutoVerifyCount,
+    estimatedHighConfidenceAutoVerifyPercent,
+    cases,
+    signalCoverage: getSignalCoverageSummary(rows),
   };
 }
 

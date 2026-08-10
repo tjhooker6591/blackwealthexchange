@@ -8,9 +8,12 @@ import {
   findFoundingSourcePayment,
   FOUNDING_MEMBERSHIP_PRODUCT_KEY,
   formatUsdFromCents,
+  getFoundingActivationContractBlueprint,
   getFoundingClaimVerificationCounts,
   getFoundingClaimVerificationRecords,
   getFoundingNormalCheckCounts,
+  getFoundingOwnershipAutomationMode,
+  getFoundingShadowValidationSummary,
   getFoundingVerificationDecisionCounts,
   getPendingFoundingClaimVerifications,
   normalizeFoundingClaimStage,
@@ -329,6 +332,10 @@ export default async function handler(
     const normalCheckCounts = getFoundingNormalCheckCounts(normalizedRecords);
     const verificationDecisionCounts =
       getFoundingVerificationDecisionCounts(normalizedRecords);
+    const shadowValidationSummary =
+      getFoundingShadowValidationSummary(normalizedRecords);
+    const automationMode = getFoundingOwnershipAutomationMode();
+    const activationContract = getFoundingActivationContractBlueprint();
 
     return res.status(200).json({
       ok: true,
@@ -338,6 +345,9 @@ export default async function handler(
       claimVerificationCounts,
       normalCheckCounts,
       verificationDecisionCounts,
+      shadowValidationSummary,
+      automationMode,
+      activationContract,
       reviews,
       fulfillment,
       onboarding,
