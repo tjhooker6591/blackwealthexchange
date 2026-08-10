@@ -94,6 +94,10 @@ export default function Support() {
             team.
           </div>
           <div>Check System Status before opening an outage report.</div>
+          <div className="mt-2 text-white/65">
+            Black Wealth Exchange is a founder-led for-profit platform founded
+            by Thomas James Hooker Sr.
+          </div>
         </section>
 
         <div className="max-w-6xl mx-auto space-y-8">

@@ -58,9 +58,12 @@ export default function Footer() {
     <footer className="border-t border-white/10 bg-black/95 px-4 py-3 text-white/80 sm:py-4">
       <div className="mx-auto max-w-6xl">
         <div className="mb-2 flex items-center justify-between gap-3 border-b border-white/10 pb-2">
-          <p className="text-[11px] leading-tight text-white/70 sm:text-xs">
-            Building Black ownership and long-term economic power.
-          </p>
+          <div className="text-[11px] leading-tight text-white/70 sm:text-xs">
+            <p>Black Wealth Exchange — Black-Owned Business Discovery and Growth Platform.</p>
+            <p className="mt-0.5 text-white/50">
+              Founded by Thomas James Hooker Sr.
+            </p>
+          </div>
           <Link
             href="/signup"
             className="inline-flex min-h-8 items-center justify-center rounded-full bg-[#D4AF37] px-3 text-[11px] font-semibold text-black transition hover:brightness-105"
@@ -104,7 +107,7 @@ export default function Footer() {
 
         <div className="mt-2 border-t border-white/10 pt-2 text-center text-[10px] text-white/45 sm:text-[11px]">
           &copy; {new Date().getFullYear()} Black Wealth Exchange. All rights
-          reserved.
+          reserved. Founder-led and mission-driven.
         </div>
       </div>
     </footer>

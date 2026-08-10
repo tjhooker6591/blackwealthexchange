@@ -29,7 +29,60 @@ const commitments = [
   "Build with standards that scale across the diaspora.",
 ];
 
+const founderStory = [
+  {
+    title: "Who founded BWE",
+    body: "Black Wealth Exchange was founded by Thomas James Hooker Sr., Founder of Black Wealth Exchange.",
+  },
+  {
+    title: "Why it exists",
+    body: "BWE exists to make it easier to discover Black-owned businesses, strengthen business visibility, and create clearer paths for commerce, ownership, and long-term growth.",
+  },
+  {
+    title: "How the platform works",
+    body: "The platform connects discovery, claim and ownership workflows, marketplace activity, jobs, learning resources, and sponsor visibility so businesses and consumers can take practical next steps in one place.",
+  },
+  {
+    title: "Why trust matters",
+    body: "BWE is being built as a founder-led, mission-driven for-profit platform with public contact paths, support routes, and factual positioning instead of inflated claims or anonymous branding.",
+  },
+];
+
+const trustSignals = [
+  "Founder identified publicly as Thomas James Hooker Sr.",
+  "Mission-driven for-profit platform, not a nonprofit or government program.",
+  "Public support, contact, directory, marketplace, and claim routes are live on the site.",
+  "Platform claims are limited to functionality that is actually available now.",
+];
+
 export default function About() {
+  const canonical = canonicalUrl("/about");
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "Black Wealth Exchange",
+    url: canonicalUrl("/"),
+    description:
+      "Black Wealth Exchange — Black-Owned Business Discovery and Growth Platform",
+    founder: {
+      "@type": "Person",
+      name: "Thomas James Hooker Sr.",
+      jobTitle: "Founder, Black Wealth Exchange",
+    },
+  };
+
+  const founderSchema = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: "Thomas James Hooker Sr.",
+    jobTitle: "Founder, Black Wealth Exchange",
+    worksFor: {
+      "@type": "Organization",
+      name: "Black Wealth Exchange",
+      url: canonicalUrl("/"),
+    },
+  };
+
   return (
     <>
       <Head>
@@ -37,11 +90,15 @@ export default function About() {
         <meta
           name="description"
           content={truncateMeta(
-            "Learn about Black Wealth Exchange, its mission, core pillars, and commitment to Black ownership, economic power, and multi-generational growth.",
+            "Learn about Black Wealth Exchange, the founder behind it, and how the platform connects Black-owned business discovery, ownership, commerce, and growth.",
           )}
         />
-        <link rel="canonical" href={canonicalUrl("/about")} />
+        <link rel="canonical" href={canonical} />
       </Head>
+      <script type="application/ld+json">
+        {JSON.stringify(organizationSchema)}
+      </script>
+      <script type="application/ld+json">{JSON.stringify(founderSchema)}</script>
       <main className="min-h-screen bg-black text-white">
         <section className="border-b border-white/10">
           <div className="mx-auto max-w-6xl px-4 py-14 sm:py-18">
@@ -49,14 +106,19 @@ export default function About() {
               About Black Wealth Exchange
             </p>
             <h1 className="max-w-4xl text-3xl font-extrabold leading-tight sm:text-5xl">
-              Building Black ownership, economic power, and multi-generational
-              growth.
+              Black Wealth Exchange is a founder-led platform built to help
+              Black-owned businesses get discovered, claimed, trusted, and
+              supported.
             </h1>
             <p className="mt-5 max-w-3xl text-base leading-relaxed text-white/72 sm:text-lg">
-              Black Wealth Exchange is a mission-driven platform designed to
-              turn intention into outcomes. We focus on practical access to
-              business, jobs, marketplace participation, and programs that
-              increase mobility and ownership.
+              <span className="font-semibold text-white">
+                Black Wealth Exchange — Black-Owned Business Discovery and
+                Growth Platform.
+              </span>{" "}
+              Founded by Thomas James Hooker Sr., BWE is a mission-driven
+              for-profit platform focused on discovery, ownership, commerce,
+              and growth pathways that can help Black businesses and consumers
+              take real action.
             </p>
             <div className="mt-7 flex flex-wrap items-center gap-3">
               <Link
@@ -77,8 +139,45 @@ export default function About() {
                 href="/founding-principle"
                 className="text-sm font-medium text-[#D4AF37] underline-offset-4 hover:underline"
               >
-                Read the complete founding message
+                Read the founder story and founding principle
               </Link>
+            </div>
+          </div>
+        </section>
+
+        <section className="border-b border-white/10 bg-white/[0.02]">
+          <div className="mx-auto max-w-6xl px-4 py-12 sm:py-14">
+            <div className="max-w-3xl">
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#D4AF37]">
+                Founder Identity
+              </p>
+              <h2 className="mt-3 text-2xl font-bold sm:text-3xl">
+                Thomas James Hooker Sr. is the founder of Black Wealth
+                Exchange.
+              </h2>
+              <p className="mt-4 text-sm leading-relaxed text-white/72 sm:text-base">
+                BWE is not presented as an anonymous directory or generic
+                community template. It is a real founder-led platform with a
+                public mission: help Black-owned businesses get discovered,
+                strengthen trust through ownership and claim workflows, support
+                commerce through marketplace and sponsor surfaces, and build
+                toward stronger growth infrastructure over time.
+              </p>
+            </div>
+            <div className="mt-6 grid gap-4 sm:grid-cols-2">
+              {founderStory.map((item) => (
+                <article
+                  key={item.title}
+                  className="rounded-xl border border-white/10 bg-black/40 p-5"
+                >
+                  <h3 className="text-base font-semibold text-[#D4AF37]">
+                    {item.title}
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-white/72">
+                    {item.body}
+                  </p>
+                </article>
+              ))}
             </div>
           </div>
         </section>
@@ -113,9 +212,9 @@ export default function About() {
             </h2>
             <p className="max-w-3xl text-sm leading-relaxed text-white/72 sm:text-base">
               We are committed to lawful, strategic, and high-integrity
-              execution. This is not performative messaging. It is
-              infrastructure, discipline, and accountability in service of
-              community advancement.
+              execution. This is not performative messaging. It is practical
+              platform building in service of Black business visibility,
+              ownership, commerce, and long-term trust.
             </p>
             <ul className="mt-5 grid gap-3 text-sm text-white/80 sm:grid-cols-2">
               {commitments.map((point) => (
@@ -131,11 +230,30 @@ export default function About() {
         </section>
 
         <section>
+          <div className="mx-auto max-w-6xl px-4 py-12 sm:py-14">
+            <h2 className="mb-4 text-2xl font-bold sm:text-3xl">
+              Public Trust Signals
+            </h2>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {trustSignals.map((point) => (
+                <div
+                  key={point}
+                  className="rounded-lg border border-white/10 bg-white/[0.02] px-4 py-3 text-sm text-white/80"
+                >
+                  {point}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section>
           <div className="mx-auto max-w-6xl px-4 py-12 text-center sm:py-14">
             <h2 className="text-2xl font-bold sm:text-3xl">Contact</h2>
             <p className="mx-auto mt-3 max-w-2xl text-sm text-white/70 sm:text-base">
-              For partnerships, serious inquiries, or strategic collaboration,
-              contact us at
+              For partnerships, serious business inquiries, media questions, or
+              strategic collaboration related to Black Wealth Exchange, contact
+              us at
             </p>
             <a
               href="mailto:info@blackwealthexchange.com"
