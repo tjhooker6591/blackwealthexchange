@@ -7,8 +7,8 @@ _Last updated: 2026-08-10 America/Los_Angeles_
 - Program phase: `POST-RECOVERY STABILIZATION / REVENUE READINESS`
 - Canonical repository: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - Canonical branch: `friday-release-candidate`
-- Latest runtime checkpoint SHA: `ccf1172667c54d8aa0c4d87fd14111b40e163259`
-- Current git HEAD verified live during session: `ccf1172667c54d8aa0c4d87fd14111b40e163259`
+- Latest runtime checkpoint SHA: `18239e685ab3557f6c39ce9f20bc68dcd315344c`
+- Current git HEAD verified live during session: `18239e685ab3557f6c39ce9f20bc68dcd315344c`
 - Dirty-tree preservation snapshot: `/Users/blackforge/workspace/bwe/snapshots/repo_clean-2026-08-03T04-31-39-146Z`
 - Complete file manifest: `docs/recovery/BWE_COMPLETE_FILE_MANIFEST_CURRENT.csv`
 - Runtime application countdown: `0` unresolved runtime follow-through files remain from the DA-06/DA-08/DA-09/DA-07/DA-10 public-surface bundle
@@ -16,7 +16,7 @@ _Last updated: 2026-08-10 America/Los_Angeles_
   - `BWE-10` owner-authorized final marketplace payment verification
   - `BWE-13` second-machine auth/runtime parity proof
 - Current non-blocked execution target:
-  - `DA-04` account-type onboarding
+  - `DA-12` scalable legitimacy / ownership verification
 - Standing future/scaling lane:
   - `DA-12` scalable legitimacy / ownership verification (not the immediate execution target)
 - Current preserved public state:
@@ -26,6 +26,7 @@ _Last updated: 2026-08-10 America/Los_Angeles_
   - `P1 directory sponsor sidebar`: COMPLETE
   - `Founder identity / trust`: COMPLETE
   - `Claim-focused content strategy`: COMPLETE
+  - `Account-type onboarding`: COMPLETE
   - `Claim This Listing / Claim Your Listing`: CORRECT — PRESERVE
   - `Legitimate marketplace products`: `3`
   - `QA product`: EXCLUDED
@@ -234,6 +235,25 @@ _Last updated: 2026-08-10 America/Los_Angeles_
     - `/join-the-mission` returns `200` after the strategy section was added
 - Next action:
   - move to `DA-04` account-type onboarding while preserving DA-07/DA-10 trust and claim language as the factual public baseline
+
+### DA-04 closure note — Monday, August 10, 2026
+
+- Status: COMPLETE
+- Current reality:
+  - disposable proof now covers General User, Business Owner, Seller, and Employer onboarding paths from the current canonical runtime
+  - General User signup establishes a live session, `/api/auth/me` resolves `accountType: user`, signup continuation to `/business-directory` loads `200`, and default login destination `/dashboard` loads `200`
+  - Business Owner signup establishes a live session, `/api/auth/me` resolves `accountType: business`, signup continuation to `/business-directory?mode=claim` loads `200`, and default login destination `/dashboard` loads `200`
+  - Seller signup establishes a live session, `/api/auth/me` resolves `accountType: seller`, continuation to `/marketplace/become-a-seller` loads `200`, and default login destination `/marketplace/dashboard` loads `200`
+  - Employer signup establishes a live session, `/api/auth/me` resolves `accountType: employer`, continuation to `/employer/jobs` loads `200`, and default login destination `/employer` loads `200`
+  - no P1 or major onboarding defect was discovered in the current canonical localhost proof cycle
+- Exact files:
+  - `scripts/runtime-proof-da04-onboarding.mjs`
+- Proof:
+  - Commit: `18239e685ab3557f6c39ce9f20bc68dcd315344c`
+  - `npm run typecheck` pass on Monday, August 10, 2026
+  - `node scripts/runtime-proof-da04-onboarding.mjs` pass on Monday, August 10, 2026 with `4/4` roles passing
+- Next action:
+  - move to `DA-12` scalable legitimacy / ownership verification while preserving the now-proven onboarding routes and external-blocker status for `BWE-10` and `BWE-13`
 
 ### DA-07 closure note — Monday, August 10, 2026
 

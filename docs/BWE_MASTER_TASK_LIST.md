@@ -4,11 +4,11 @@
 - program phase: `POST-RECOVERY STABILIZATION / REVENUE READINESS`
 - canonical repository: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - branch: `friday-release-candidate`
-- latest runtime checkpoint SHA: `ccf1172667c54d8aa0c4d87fd14111b40e163259`
-- current git HEAD verified live during session: `ccf1172667c54d8aa0c4d87fd14111b40e163259`
-- last completed workstream: `DA-10 claim-focused content strategy`
-- current active workstream: `QUEUE CHECKPOINT / NEXT: DA-04 account-type onboarding`
-- standing scaling lane (not immediate execution target): `DA-12 scalable legitimacy / ownership verification`
+- latest runtime checkpoint SHA: `18239e685ab3557f6c39ce9f20bc68dcd315344c`
+- current git HEAD verified live during session: `18239e685ab3557f6c39ce9f20bc68dcd315344c`
+- last completed workstream: `DA-04 account-type onboarding` and `BWE-01 business signup -> claim routing`
+- current active workstream: `QUEUE CHECKPOINT / NEXT: DA-12 scalable legitimacy / ownership verification`
+- standing scaling lane (current immediate execution target): `DA-12 scalable legitimacy / ownership verification`
 - DA-01 current result: `COMPLETE`
 - BWE-02 current result: `COMPLETE`
 - last runtime commit SHA: `832d09461d606b3da4a876d9e043441bc61d56ee`
@@ -30,6 +30,7 @@
   - `fffec5d1327ce6bb292390c60ed5cf90feb0fe08` -> align signup welcome messaging to the current live marketplace offer
   - `832d09461d606b3da4a876d9e043441bc61d56ee` -> close founder identity / trust surfaces with explicit founder-led public positioning
   - `ccf1172667c54d8aa0c4d87fd14111b40e163259` -> close claim-focused public/editorial strategy surfaces with explicit 70/20/10 claim-first positioning
+  - `18239e685ab3557f6c39ce9f20bc68dcd315344c` -> add canonical DA-04 disposable proof coverage for all four account-type onboarding paths
 - exact production files committed:
   - `75f4dd1850c720ce94015c5beb4bbff98f34b40c` -> `src/lib/directoryOwnership.ts`, `src/lib/directoryProfileContract.ts`, `src/lib/directoryPublicMedia.ts`, `src/pages/api/business/media.ts`, `src/pages/api/business/profile.ts`, `src/pages/api/business/update.ts`, `src/pages/business-directory/[alias].tsx`, `src/pages/dashboard/edit-business.tsx`, `src/pages/edit-business.tsx`, `src/pages/api/organizations/claim.ts`, `src/pages/organizations/[slug].tsx`
   - `ddeb5f20591669d4d8832f27d4f31b0ba13fd3c1` -> `src/components/challenge/ChallengeShareCard.tsx`, `src/pages/admin/challenge.tsx`, `src/pages/api/admin/challenge.ts`, `src/pages/api/challenge/creators.ts`, `src/pages/api/challenge/join.ts`, `src/pages/api/challenge/stats.ts`, `src/pages/challenge.tsx`, `src/pages/challenge/creators.tsx`
@@ -46,6 +47,7 @@
   - `fffec5d1327ce6bb292390c60ed5cf90feb0fe08` -> `src/pages/api/auth/signup.ts`
   - `832d09461d606b3da4a876d9e043441bc61d56ee` -> `src/components/footer.tsx`, `src/pages/about.tsx`, `src/pages/contact.tsx`, `src/pages/founding-principle.tsx`, `src/pages/index.tsx`, `src/pages/support.tsx`
   - `ccf1172667c54d8aa0c4d87fd14111b40e163259` -> `src/pages/about.tsx`, `src/pages/founding-principle.tsx`, `src/pages/index.tsx`, `src/pages/join-the-mission.tsx`
+  - `18239e685ab3557f6c39ce9f20bc68dcd315344c` -> `scripts/runtime-proof-da04-onboarding.mjs`
 - runtime application files still dirty:
   - none
 - tests/proofs completed in this recovery closure cycle:
@@ -70,6 +72,7 @@
   - `/api/sponsored-businesses` returns the verified eight-card sponsor set on Monday, August 10, 2026
   - `/business-directory` returns `200`, preserves `Claim This Listing`, and still resolves neutral fallback media on Monday, August 10, 2026
   - DA-10 localhost proof on Monday, August 10, 2026 confirms `/`, `/about`, `/founding-principle`, and `/join-the-mission` return `200` and render the new claim-first `70/20/10` public strategy language
+  - `node scripts/runtime-proof-da04-onboarding.mjs` pass on Monday, August 10, 2026 with disposable signup + login proof for General User, Business Owner, Seller, and Employer, including business claim-mode redirect and all four default login destinations
 - unresolved blockers/data dependencies:
   - `repo_clean` still has a large pre-existing dirty working tree and is not clean
   - normal `git commit` hooks trigger repo-wide `eslint src/ --fix` plus `prettier --write .`, which creates broad churn and must be handled carefully
@@ -77,8 +80,8 @@
   - `BWE-13 Auth/session parity` remains an external validation dependency pending second-machine parity capture
   - production auth/session audit is now explicitly reconciled back to `NOT YET VERIFIED` in current control records; no fresh August 10 reproduction was run in the DA-07/DA-10 lanes, so the older code-path audit is preserved as historical evidence rather than a currently reproduced live defect
 - current dirty-tree count: `379` file-level git status entries (`git status --porcelain=v1 -uall`)
-- exact next workstream: `continue DA-04 account-type onboarding` while preserving `BWE-10` and `BWE-13` as external proof blockers
-- exact first action for the next session: audit Business Owner, Seller, Employer, and General User onboarding entry, redirect, and destination states from the current canonical runtime without disturbing the newly closed DA-10 claim-first language
+- exact next workstream: `continue DA-12 scalable legitimacy / ownership verification` while preserving `BWE-10` and `BWE-13` as external proof blockers
+- exact first action for the next session: inspect the current ownership-verification path for opportunities to add scalable normal checks plus admin-review exception routing without disturbing completed DA-04 onboarding flows
 - production/deployment status: no deploy this session; no production Mongo writes; no Stripe production mutations
 - dirty-tree preservation snapshot: `/Users/blackforge/workspace/bwe/snapshots/repo_clean-2026-08-04T16-51-54-0700-session-close`
 - localhost runtime status: `http://127.0.0.1:3000` live on PID `6106`
@@ -89,6 +92,8 @@
   - `P1 directory sponsor sidebar`: COMPLETE
   - `Founder identity / trust surfaces`: COMPLETE
   - `Claim-focused content strategy`: COMPLETE
+  - `Account-type onboarding`: COMPLETE
+  - `Business signup -> claim routing`: COMPLETE
   - `Claim This Listing / Claim Your Listing`: CORRECT — PRESERVE
   - `legitimate marketplace products`: `3`
   - `QA product`: EXCLUDED
@@ -108,15 +113,15 @@
 ## CURRENT CANONICAL PROGRAM STATUS — 2026-08-10
 
 - total unique canonical workstreams: `30`
-- complete: `25`
+- complete: `27`
 - active: `0`
-- pending: `3`
+- pending: `1`
 - blocked: `2`
 - superseded: `0`
 
 | ID     | Workstream                                                                | Status   | Last Commit | Next Action                                                                                                                                                                                                                                                                                                                                                                                                   |
 | ------ | ------------------------------------------------------------------------- | -------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| BWE-01 | Business signup -> claim routing                                          | PENDING  | `842ba7f`   | Run a current browser proof for Business Owner signup through claim-mode redirect and record exact route/API evidence.                                                                                                                                                                                                                                                                                        |
+| BWE-01 | Business signup -> claim routing                                          | COMPLETE | `18239e6`   | Closed on Monday, August 10, 2026 after current disposable signup proof confirmed the Business Owner account creates a live session, `/api/auth/me` resolves `accountType: business`, `/business-directory?mode=claim` loads with `200`, and business login still lands cleanly on `/dashboard`.                                                                                                          |
 | BWE-02 | Claim verification + admin claim queue                                    | COMPLETE | `64286f9`   | Public listing discovery, claim initiation routing, admin queue visibility, `Request More Evidence`, `Verify Ownership`, verified profile/media access, and denial/revoke behavior are now proven current.                                                                                                                                                                                                    |
 | BWE-03 | Verified-business ownership resolution + claimed-business profile editing | COMPLETE | `5310b59`   | No implementation work pending; preserve proof assets and only reopen on regression.                                                                                                                                                                                                                                                                                                                          |
 | BWE-04 | Disputed/revoked ownership denial                                         | COMPLETE | `20fb839`   | No implementation work pending; preserve runtime and unit-proof coverage.                                                                                                                                                                                                                                                                                                                                     |
@@ -137,7 +142,7 @@
 | DA-01  | Member conversion attribution (recent joins)                              | COMPLETE | `analysis`  | Eight-member scope resolved: `1` business-owner signup and `7` general-user signups, with no linked claim, ownership, or paid-membership records and no source attribution available from current telemetry.                                                                                                                                                                                                  |
 | DA-02  | Directory count reconciliation                                            | COMPLETE | `b4f3e6f`   | Public/search/UI/claim totals reconcile at `365`; raw businesses reconcile at `2272` only after surfacing the separate `duplicate_review` bucket (`24`) beside the `1633` main approval queue.                                                                                                                                                                                                                |
 | DA-03  | Pricing and Black Card consistency                                        | COMPLETE | `35f93c5`   | Founder monthly billing, Black Card public copy, entitlements, member auth flows, and admin list proof are current; no remaining pricing/plan contradiction is established in canonical runtime evidence.                                                                                                                                                                                                     |
-| DA-04  | Account-type onboarding                                                   | PENDING  | `842ba7f`   | Audit and prove Business Owner, Seller, Employer, and General User onboarding entry/redirect/end states.                                                                                                                                                                                                                                                                                                      |
+| DA-04  | Account-type onboarding                                                   | COMPLETE | `18239e6`   | Closed on Monday, August 10, 2026 after disposable signup + login proof confirmed current onboarding entry/redirect/end states for Business Owner, Seller, Employer, and General User without disturbing DA-06 through DA-10 public-state closures.                                                                                                                                                      |
 | DA-05  | Marketplace public quality                                                | COMPLETE | `97fb3a1`   | Public marketplace quality remains closed after the Saturday, August 8, 2026 P1 reconciliation: the shared public-catalog contract now restores the three legitimate owner products in canonical `bwes-cluster`, stops legacy `expiresAt` metadata from zeroing valid active inventory, and still excludes unpublished, deleted, and QA/test listings.                                                        |
 | DA-06  | Release history                                                           | COMPLETE | `ee5e834`   | Closed on Sunday, August 9, 2026 after validating `/`, `/about`, `/storefront`, `/marketplace`, `/shop-black-owned-products`, `/support/marketplace`, `/support/releases`, and `/black-business-websites` on localhost with factual copy, preserved three-product catalog visibility, preserved sponsor surfaces, preserved claim wording, and no additional DA-06 runtime work beyond formatting-only churn. |
 | DA-07  | Founder identity / trust                                                  | COMPLETE | `832d094`   | Closed on Monday, August 10, 2026 after making the founder-led identity explicit across homepage trust/schema, About, Contact, Support, footer, and founding-principle surfaces while preserving marketplace count, sponsor surfaces, neutral fallback media, and claim terminology.                                                                                                                                 |
