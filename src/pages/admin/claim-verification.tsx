@@ -63,6 +63,22 @@ function dispositionTone(value: unknown) {
   return "border-sky-500/30 bg-sky-500/10 text-sky-100";
 }
 
+function renderMatchField(field: any) {
+  return (
+    <>
+      <div className="mt-1 text-white/85">
+        Listing: {field?.currentListingValue || "-"}
+      </div>
+      <div className="mt-1 text-white/75">
+        Claimant: {field?.claimantProvidedValue || "-"}
+      </div>
+      <div className="mt-1 text-xs text-white/55">
+        Match: {labelize(field?.normalizedMatchResult || "UNKNOWN")}
+      </div>
+    </>
+  );
+}
+
 const ACTIONS = [
   { key: "verify", label: "Verify Ownership" },
   { key: "request_more_evidence", label: "Request More Evidence" },
@@ -445,18 +461,74 @@ export default function ClaimVerificationPage() {
                           className="rounded-xl border border-white/10 bg-black/30 p-3"
                         >
                           <div className="text-white/45">{label}</div>
-                          <div className="mt-1 text-white/85">
-                            Listing: {field?.currentListingValue || "-"}
-                          </div>
-                          <div className="mt-1 text-white/75">
-                            Claimant: {field?.claimantProvidedValue || "-"}
-                          </div>
-                          <div className="mt-1 text-xs text-white/55">
-                            Match:{" "}
-                            {labelize(field?.normalizedMatchResult || "UNKNOWN")}
-                          </div>
+                          {renderMatchField(field)}
                         </div>
                       ))}
+                    </div>
+
+                    <div className="mt-3 grid gap-3 xl:grid-cols-3 text-sm">
+                      <div className="rounded-xl border border-white/10 bg-black/30 p-3">
+                        <div className="text-white/45">Claimant identity</div>
+                        <div className="mt-1 text-white/85">
+                          Name: {claimIntake?.claimant?.claimantName || "-"}
+                        </div>
+                        <div className="mt-1 break-all text-white/75">
+                          Email: {claimIntake?.claimant?.claimantEmail || "-"}
+                        </div>
+                        <div className="mt-1 text-white/75">
+                          Phone: {claimIntake?.claimant?.claimantPhone || "-"}
+                        </div>
+                      </div>
+
+                      <div className="rounded-xl border border-white/10 bg-black/30 p-3">
+                        <div className="text-white/45">
+                          Additional business identity signals
+                        </div>
+                        <div className="mt-2 space-y-3">
+                          {[
+                            ["City", claimIntake?.business?.city],
+                            ["State", claimIntake?.business?.state],
+                            ["Postal code", claimIntake?.business?.postalCode],
+                            [
+                              "Business email",
+                              claimIntake?.business?.businessEmail,
+                            ],
+                          ].map(([label, field]: any) => (
+                            <div key={label} className="rounded-lg border border-white/10 px-3 py-2">
+                              <div className="text-white/55">{label}</div>
+                              {renderMatchField(field)}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="rounded-xl border border-white/10 bg-black/30 p-3">
+                        <div className="text-white/45">
+                          Social profile comparisons
+                        </div>
+                        <div className="mt-2 space-y-3">
+                          {Array.isArray(claimIntake?.business?.socialUrls) &&
+                          claimIntake.business.socialUrls.length ? (
+                            claimIntake.business.socialUrls.map(
+                              (field: any, index: number) => (
+                                <div
+                                  key={`${field?.claimantProvidedValue || "social"}:${index}`}
+                                  className="rounded-lg border border-white/10 px-3 py-2"
+                                >
+                                  <div className="text-white/55">
+                                    Social URL {index + 1}
+                                  </div>
+                                  {renderMatchField(field)}
+                                </div>
+                              ),
+                            )
+                          ) : (
+                            <div className="rounded-lg border border-white/10 px-3 py-2 text-white/65">
+                              No claimant-provided social URLs.
+                            </div>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </div>
 
