@@ -315,7 +315,8 @@ export default function ClaimVerificationPage() {
                           Automated normal check
                         </div>
                         <div className="mt-1 text-sm text-white/60">
-                          Shared DA-12 classifier for routine versus exception-only review.
+                          Shared DA-12 classifier for routine versus
+                          exception-only review.
                         </div>
                       </div>
                       <div
@@ -323,7 +324,9 @@ export default function ClaimVerificationPage() {
                           normalCheck?.verdict,
                         )}`}
                       >
-                        {labelize(normalCheck?.verdict || "routine_admin_review")}
+                        {labelize(
+                          normalCheck?.verdict || "routine_admin_review",
+                        )}
                       </div>
                     </div>
                     <div className="mt-3 grid gap-3 md:grid-cols-2 text-sm">

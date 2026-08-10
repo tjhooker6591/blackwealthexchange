@@ -6,7 +6,11 @@ function classifyFoundingConsistency(row) {
   if (!row.businessId) issues.push("missing_business_link");
   if (!row.userId) issues.push("missing_claimant_user");
   if (!row.review) issues.push("missing_review_record");
-  if (!row.claim && row.queueBucket !== "history" && row.queueBucket !== "pending") {
+  if (
+    !row.claim &&
+    row.queueBucket !== "history" &&
+    row.queueBucket !== "pending"
+  ) {
     issues.push("missing_claim_record");
   }
   if (!row.business) issues.push("missing_business_record");
@@ -38,9 +42,11 @@ function classifyFoundingConsistency(row) {
   }
   if (
     !issues.length &&
-    ["ownership_verification_pending", "additional_evidence_required", "disputed"].includes(
-      row.queueState,
-    )
+    [
+      "ownership_verification_pending",
+      "additional_evidence_required",
+      "disputed",
+    ].includes(row.queueState)
   ) {
     return { issues, consistency: "consistent_pending_verification" };
   }
