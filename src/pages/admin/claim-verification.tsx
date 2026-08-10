@@ -422,12 +422,11 @@ export default function ClaimVerificationPage() {
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div>
                         <div className="text-sm font-semibold text-white">
-                          DA-13 verification contract
+                          Auto-verify recommendation
                         </div>
                         <div className="mt-1 text-sm text-white/60">
-                          Explainable business-identity, claimant-authorization,
-                          ownership-control, risk, Black-owned-status, and
-                          payment-integrity signals.
+                          Dry-run only. This recommendation does not activate
+                          verified ownership or management rights.
                         </div>
                       </div>
                       <div
@@ -457,6 +456,34 @@ export default function ClaimVerificationPage() {
                       </div>
                     </div>
 
+                    <div className="mt-3 grid gap-3 md:grid-cols-3 text-sm">
+                      <div className="rounded-xl border border-white/10 bg-black/30 p-3">
+                        <div className="text-white/45">
+                          Black-owned status
+                        </div>
+                        <div className="mt-1 text-white/85">
+                          {labelize(
+                            verificationDecision?.blackOwnedStatusLabel ||
+                              "NOT_ESTABLISHED",
+                          )}
+                        </div>
+                      </div>
+                      <div className="rounded-xl border border-white/10 bg-black/30 p-3">
+                        <div className="text-white/45">
+                          Automatic ownership activation
+                        </div>
+                        <div className="mt-1 text-white/85">No</div>
+                      </div>
+                      <div className="rounded-xl border border-white/10 bg-black/30 p-3">
+                        <div className="text-white/45">Admin review</div>
+                        <div className="mt-1 text-white/85">
+                          {verificationDecision?.adminReviewRequired
+                            ? "Required"
+                            : "Not required"}
+                        </div>
+                      </div>
+                    </div>
+
                     <div className="mt-3 grid gap-3 md:grid-cols-2 text-sm">
                       <div className="rounded-xl border border-white/10 bg-black/30 p-3">
                         <div className="text-white/45">
@@ -481,6 +508,49 @@ export default function ClaimVerificationPage() {
                             ? verificationDecision.mandatoryUnknowns.join(" • ")
                             : "None"}
                         </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-3 rounded-xl border border-white/10 bg-black/30 p-3 text-sm">
+                      <div className="text-white/45">
+                        Why admin review is required
+                      </div>
+                      <div className="mt-1 text-white/85">
+                        {verificationDecision?.adminReviewRequired
+                          ? Array.isArray(verificationDecision?.rationale)
+                            ? verificationDecision.rationale.join(" ")
+                            : "Admin review remains required."
+                          : "This case is dry-run auto-verify eligible, but automatic ownership activation is still disabled in this phase."}
+                      </div>
+                    </div>
+
+                    <div className="mt-3 rounded-xl border border-white/10 bg-black/30 p-3 text-sm">
+                      <div className="text-white/45">
+                        Auto-verify mandatory conditions
+                      </div>
+                      <div className="mt-3 space-y-2">
+                        {Array.isArray(verificationDecision?.mandatoryConditions)
+                          ? verificationDecision.mandatoryConditions.map(
+                              (condition: any) => (
+                                <div
+                                  key={condition.key}
+                                  className="rounded-lg border border-white/10 px-3 py-2"
+                                >
+                                  <div className="flex items-center justify-between gap-3">
+                                    <div className="font-medium text-white/90">
+                                      {condition.label}
+                                    </div>
+                                    <div className="text-[11px] uppercase tracking-wide text-white/55">
+                                      {labelize(condition.status)}
+                                    </div>
+                                  </div>
+                                  <div className="mt-1 text-white/65">
+                                    {condition.reason}
+                                  </div>
+                                </div>
+                              ),
+                            )
+                          : null}
                       </div>
                     </div>
 

@@ -594,6 +594,9 @@ export type FoundingCanonicalRecord = {
   claimedByUserId: string | null;
   managedByUserId: string | null;
   ownerUserIds: string[];
+  competingClaimMembershipIds: string[];
+  competingClaimantUserIds: string[];
+  competingClaimantCount: number;
   queueState: FoundingQueueState | null;
   queueBucket: "pending" | "history" | null;
   createdAt: Date | string | null;
@@ -709,10 +712,17 @@ export type FoundingVerificationDecision = {
   ownershipAutomationPermitted: boolean;
   paymentIntegritySeparateFromOwnership: boolean;
   blackOwnedStatusAutomationImplemented: boolean;
+  blackOwnedStatusLabel: "VERIFIED" | "UNVERIFIED" | "NOT_ESTABLISHED";
   automationBoundary: string;
   rationale: string[];
   mandatoryFailures: string[];
   mandatoryUnknowns: string[];
+  mandatoryConditions: Array<{
+    key: string;
+    label: string;
+    status: FoundingVerificationSignalStatus;
+    reason: string;
+  }>;
   groups: FoundingVerificationGroupResult[];
 };
 
@@ -872,6 +882,27 @@ function compareSignalValues(
   });
 }
 
+function hasComparableValue(...values: unknown[]) {
+  return values.some((value) => {
+    if (typeof value === "string") return value.trim().length > 0;
+    return value != null;
+  });
+}
+
+function buildMandatoryCondition(args: {
+  key: string;
+  label: string;
+  status: FoundingVerificationSignalStatus;
+  reason: string;
+}) {
+  return {
+    key: args.key,
+    label: args.label,
+    status: args.status,
+    reason: args.reason,
+  };
+}
+
 export function deriveFoundingVerificationDecision(
   row: FoundingCanonicalRecord,
 ): FoundingVerificationDecision {
@@ -1018,6 +1049,14 @@ export function deriveFoundingVerificationDecision(
         : "No duplicate/missing-link listing conflict was detected in current BWE joins.",
     dataUsed: ["normalCheck.consistency", "membership.businessId", "businesses"],
   });
+  const addressSignalRequired = hasComparableValue(businessAddress, claimAddress);
+  const websiteSignalRequired = hasComparableValue(businessWebsite, claimWebsite);
+  const phoneSignalRequired = hasComparableValue(businessPhone, claimantPhone);
+  const claimantDomainSignalRequired = hasComparableValue(
+    claimantEmail,
+    businessEmail,
+    businessWebsite,
+  );
 
   const businessIdentityGroup = buildGroup("business_identity", "Business identity / legitimacy", [
     businessListingSignal,
@@ -1124,6 +1163,21 @@ export function deriveFoundingVerificationDecision(
         : "No conflicting verified owner was detected in current BWE ownership fields.",
     dataUsed: ["businesses.ownerUserIds", "businesses.claimedByUserId", "membership.userId"],
   });
+  const competingClaimantsSignal = buildSignal({
+    key: "competing_claimants_detected",
+    label: "Competing claimant detection",
+    status: row.competingClaimantCount > 1 ? "fail" : "pass",
+    summary:
+      row.competingClaimantCount > 1
+        ? `${row.competingClaimantCount} claimant records are linked to the same business identity.`
+        : "No competing claimant set was detected in current BWE claim records.",
+    dataUsed: [
+      "business_claims.businessId",
+      "business_claims.userId",
+      "business_memberships.businessId",
+      "business_memberships.userId",
+    ],
+  });
 
   const claimantAuthorizationGroup = buildGroup(
     "claimant_authorization",
@@ -1136,6 +1190,7 @@ export function deriveFoundingVerificationDecision(
       claimantHistorySignal,
       conflictingClaimantSignal,
       conflictingOwnerSignal,
+      competingClaimantsSignal,
     ],
   );
 
@@ -1216,6 +1271,38 @@ export function deriveFoundingVerificationDecision(
           : "No current dispute or failure state blocks ordinary verification flow.",
     dataUsed: ["queueState", "claimStatus", "ownershipReviewStatus"],
   });
+  const historicalDisputeOrRevocationSignal = buildSignal({
+    key: "historical_dispute_or_revocation",
+    label: "Historical dispute / revocation state",
+    status:
+      countAuditActions(auditHistory, "mark_disputed") > 0 ||
+      countAuditActions(auditHistory, "verification_failed") > 0 ||
+      Boolean((review as any)?.revokedAt) ||
+      Boolean((claim as any)?.revokedAt) ||
+      Boolean((business as any)?.revokedAt) ||
+      String((review as any)?.disputeState || "").trim().length > 0 ||
+      String((claim as any)?.disputeState || "").trim().length > 0
+        ? "fail"
+        : "pass",
+    summary:
+      countAuditActions(auditHistory, "mark_disputed") > 0 ||
+      countAuditActions(auditHistory, "verification_failed") > 0 ||
+      Boolean((review as any)?.revokedAt) ||
+      Boolean((claim as any)?.revokedAt) ||
+      Boolean((business as any)?.revokedAt) ||
+      String((review as any)?.disputeState || "").trim().length > 0 ||
+      String((claim as any)?.disputeState || "").trim().length > 0
+        ? "A prior dispute, revocation, or verification failure exists and blocks dry-run auto-verify."
+        : "No prior dispute or revocation history was detected in current BWE records.",
+    dataUsed: [
+      "auditHistory",
+      "ownership_reviews.revokedAt",
+      "business_claims.revokedAt",
+      "businesses.revokedAt",
+      "ownership_reviews.disputeState",
+      "business_claims.disputeState",
+    ],
+  });
 
   const ownershipControlGroup = buildGroup(
     "ownership_control",
@@ -1226,6 +1313,7 @@ export function deriveFoundingVerificationDecision(
       verifiedOwnershipSignal,
       previousVerificationSignal,
       disputeStateSignal,
+      historicalDisputeOrRevocationSignal,
     ],
   );
 
@@ -1328,11 +1416,13 @@ export function deriveFoundingVerificationDecision(
   const riskExceptionGroup = buildGroup("risk_exception", "Risk / exception", [
     conflictingOwnerSignal,
     conflictingClaimantSignal,
+    competingClaimantsSignal,
     materialMismatchSignal,
     evidenceMissingSignal,
     evidenceInconsistentSignal,
     stateTransitionSignal,
     repeatedFailureSignal,
+    historicalDisputeOrRevocationSignal,
     conflictingRecordsSignal,
   ]);
 
@@ -1410,36 +1500,157 @@ export function deriveFoundingVerificationDecision(
   ];
   const mandatoryFailures: string[] = [];
   const mandatoryUnknowns: string[] = [];
+  const blackOwnedStatusLabel: "VERIFIED" | "UNVERIFIED" | "NOT_ESTABLISHED" =
+    "NOT_ESTABLISHED";
   const requiresEvidence = evidenceExistsSignal.status === "fail";
   const ownerConflict =
     conflictingOwnerSignal.status === "fail" ||
     conflictingClaimantSignal.status === "fail";
-  const disputed = row.queueState === "disputed";
+  const disputed =
+    row.queueState === "disputed" ||
+    competingClaimantsSignal.status === "fail";
   const failedVerification =
     row.queueState === "ownership_verification_failed" ||
     repeatedFailureSignal.status === "fail";
   const materialConflict =
     materialMismatchSignal.status === "fail" ||
     conflictingRecordsSignal.status === "fail" ||
-    stateTransitionSignal.status === "fail";
-
-  const mandatorySignals = [
-    businessListingSignal,
-    businessNameSignal,
-    claimantIdentitySignal,
-    claimantContactSignal,
-    authorityEvidenceSignal,
-    evidenceValidationSignal,
-    conflictingOwnerSignal,
-    conflictingClaimantSignal,
-    disputeStateSignal,
+    stateTransitionSignal.status === "fail" ||
+    historicalDisputeOrRevocationSignal.status === "fail";
+  const mandatoryConditions = [
+    buildMandatoryCondition({
+      key: "business_listing_history",
+      label: "Existing BWE business identity/history",
+      status: businessListingSignal.status,
+      reason: businessListingSignal.summary,
+    }),
+    buildMandatoryCondition({
+      key: "business_name_match",
+      label: "Business name consistency",
+      status: businessNameSignal.status,
+      reason: businessNameSignal.summary,
+    }),
+    buildMandatoryCondition({
+      key: "address_match_if_available",
+      label: "Address consistency where available",
+      status: addressSignalRequired ? addressSignal.status : "not_applicable",
+      reason: addressSignalRequired
+        ? addressSignal.summary
+        : "Address comparison is not required because current BWE records do not provide both sides.",
+    }),
+    buildMandatoryCondition({
+      key: "website_domain_match_if_available",
+      label: "Website/domain consistency where available",
+      status: websiteSignalRequired ? websiteSignal.status : "not_applicable",
+      reason: websiteSignalRequired
+        ? websiteSignal.summary
+        : "Website/domain comparison is not required because current BWE records do not provide both sides.",
+    }),
+    buildMandatoryCondition({
+      key: "phone_match_if_available",
+      label: "Phone/contact consistency where available",
+      status: phoneSignalRequired ? phoneSignal.status : "not_applicable",
+      reason: phoneSignalRequired
+        ? phoneSignal.summary
+        : "Phone comparison is not required because current BWE records do not provide both sides.",
+    }),
+    buildMandatoryCondition({
+      key: "authenticated_claimant",
+      label: "Authenticated claimant",
+      status: claimantIdentitySignal.status,
+      reason: claimantIdentitySignal.summary,
+    }),
+    buildMandatoryCondition({
+      key: "claimant_account_linkage",
+      label: "Claimant/account linkage",
+      status: claimantContactSignal.status,
+      reason: claimantContactSignal.summary,
+    }),
+    buildMandatoryCondition({
+      key: "claimant_domain_relationship_if_available",
+      label: "Business-contact/domain relationship where available",
+      status: claimantDomainSignalRequired
+        ? claimantDomainSignal.status
+        : "not_applicable",
+      reason: claimantDomainSignalRequired
+        ? claimantDomainSignal.summary
+        : "Domain relationship is not required because current BWE records do not provide both sides.",
+    }),
+    buildMandatoryCondition({
+      key: "representative_authority_evidence",
+      label: "Submitted authority evidence where required",
+      status: authorityEvidenceSignal.status,
+      reason: authorityEvidenceSignal.summary,
+    }),
+    buildMandatoryCondition({
+      key: "required_evidence_present",
+      label: "Required ownership/control evidence present",
+      status: evidenceExistsSignal.status,
+      reason: evidenceExistsSignal.summary,
+    }),
+    buildMandatoryCondition({
+      key: "evidence_validation_boundary",
+      label: "Evidence validation boundary",
+      status: evidenceValidationSignal.status,
+      reason: evidenceValidationSignal.summary,
+    }),
+    buildMandatoryCondition({
+      key: "no_conflicting_verified_owner",
+      label: "No conflicting verified owner",
+      status: conflictingOwnerSignal.status === "pass" ? "pass" : "fail",
+      reason: conflictingOwnerSignal.summary,
+    }),
+    buildMandatoryCondition({
+      key: "no_competing_claimant",
+      label: "No competing claimant",
+      status:
+        conflictingClaimantSignal.status === "fail" ||
+        competingClaimantsSignal.status === "fail"
+          ? "fail"
+          : "pass",
+      reason:
+        competingClaimantsSignal.status === "fail"
+          ? competingClaimantsSignal.summary
+          : conflictingClaimantSignal.summary,
+    }),
+    buildMandatoryCondition({
+      key: "no_disputed_or_revoked_state",
+      label: "No disputed/revoked state",
+      status:
+        disputeStateSignal.status === "fail" ||
+        historicalDisputeOrRevocationSignal.status === "fail"
+          ? "fail"
+          : "pass",
+      reason:
+        historicalDisputeOrRevocationSignal.status === "fail"
+          ? historicalDisputeOrRevocationSignal.summary
+          : disputeStateSignal.summary,
+    }),
+    buildMandatoryCondition({
+      key: "no_material_identity_mismatch",
+      label: "No material identity mismatch",
+      status: materialMismatchSignal.status,
+      reason: materialMismatchSignal.summary,
+    }),
+    buildMandatoryCondition({
+      key: "no_conflicting_business_records",
+      label: "No conflicting business records",
+      status: conflictingRecordsSignal.status,
+      reason: conflictingRecordsSignal.summary,
+    }),
+    buildMandatoryCondition({
+      key: "no_suspicious_state_contradiction",
+      label: "No suspicious state contradiction",
+      status: stateTransitionSignal.status,
+      reason: stateTransitionSignal.summary,
+    }),
   ];
 
-  for (const signal of mandatorySignals) {
-    if (signal.status === "fail" && signal.blocksAutoVerify) {
-      mandatoryFailures.push(signal.label);
-    } else if (signal.status === "unknown" && signal.blocksAutoVerify) {
-      mandatoryUnknowns.push(signal.label);
+  for (const condition of mandatoryConditions) {
+    if (condition.status === "fail") {
+      mandatoryFailures.push(condition.label);
+    } else if (condition.status === "unknown") {
+      mandatoryUnknowns.push(condition.label);
     }
   }
 
@@ -1478,14 +1689,16 @@ export function deriveFoundingVerificationDecision(
     disposition,
     autoVerifyEligible: disposition === "AUTO_VERIFY_ELIGIBLE",
     adminReviewRequired: disposition !== "AUTO_VERIFY_ELIGIBLE",
-    ownershipAutomationPermitted: disposition === "AUTO_VERIFY_ELIGIBLE",
+    ownershipAutomationPermitted: false,
     paymentIntegritySeparateFromOwnership: true,
     blackOwnedStatusAutomationImplemented: false,
+    blackOwnedStatusLabel,
     automationBoundary:
       "Current BWE automation can classify ordinary versus exception claim-verification work from existing internal records, but document-content validation, public registration checks, and Black-owned-status evidence remain outside automatic ownership activation.",
     rationale,
     mandatoryFailures,
     mandatoryUnknowns,
+    mandatoryConditions,
     groups,
   };
 }
@@ -1919,6 +2132,9 @@ export async function getFoundingClaimVerificationRecords(db: Db) {
       ownerUserIds: Array.isArray(business?.ownerUserIds)
         ? business.ownerUserIds.map((id: any) => String(id))
         : [],
+      competingClaimMembershipIds: [],
+      competingClaimantUserIds: [],
+      competingClaimantCount: 0,
       queueState,
       queueBucket: queueState
         ? FOUNDING_QUEUE_PENDING_STATES.includes(queueState as any)
@@ -1962,6 +2178,44 @@ export async function getFoundingClaimVerificationRecords(db: Db) {
     Object.assign(currentRow, { normalCheck });
     const verificationDecision = deriveFoundingVerificationDecision(currentRow);
     Object.assign(currentRow, { verificationDecision });
+  }
+
+  const competingClaimantsByBusinessId = new Map<
+    string,
+    { membershipIds: string[]; userIds: string[] }
+  >();
+  for (const row of rows) {
+    const businessId = String(row.businessId || "").trim();
+    if (!businessId) continue;
+    const current = competingClaimantsByBusinessId.get(businessId) || {
+      membershipIds: [],
+      userIds: [],
+    };
+    if (row.membershipId && !current.membershipIds.includes(row.membershipId)) {
+      current.membershipIds.push(row.membershipId);
+    }
+    if (row.userId && !current.userIds.includes(row.userId)) {
+      current.userIds.push(row.userId);
+    }
+    competingClaimantsByBusinessId.set(businessId, current);
+  }
+
+  for (const row of rows) {
+    const businessId = String(row.businessId || "").trim();
+    if (!businessId) continue;
+    const competing = competingClaimantsByBusinessId.get(businessId);
+    if (!competing) continue;
+    Object.assign(row, {
+      competingClaimMembershipIds: competing.membershipIds.filter(
+        (membershipId) => membershipId !== row.membershipId,
+      ),
+      competingClaimantUserIds: competing.userIds.filter(
+        (userId) => userId !== row.userId,
+      ),
+      competingClaimantCount: competing.userIds.length,
+    });
+    const verificationDecision = deriveFoundingVerificationDecision(row);
+    Object.assign(row, { verificationDecision });
   }
 
   rows.sort(
