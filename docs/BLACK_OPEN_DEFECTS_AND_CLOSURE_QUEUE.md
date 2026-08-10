@@ -7,8 +7,8 @@ _Last updated: 2026-08-10 America/Los_Angeles_
 - Program phase: `POST-RECOVERY STABILIZATION / REVENUE READINESS`
 - Canonical repository: `/Users/blackforge/workspace/bwe/repos/repo_clean`
 - Canonical branch: `friday-release-candidate`
-- Latest runtime checkpoint SHA: `0dc2f9e42c29de475220eef659c839c434cef38c`
-- Current git HEAD verified live during session: `0dc2f9e42c29de475220eef659c839c434cef38c`
+- Latest runtime checkpoint SHA: `466b886eaaea379c36896378374c38515ae76b02`
+- Current git HEAD verified live during session: `466b886eaaea379c36896378374c38515ae76b02`
 - Dirty-tree preservation snapshot: `/Users/blackforge/workspace/bwe/snapshots/repo_clean-2026-08-03T04-31-39-146Z`
 - Complete file manifest: `docs/recovery/BWE_COMPLETE_FILE_MANIFEST_CURRENT.csv`
 - Runtime application countdown: `0` unresolved runtime follow-through files remain from the DA-06/DA-08/DA-09/DA-07/DA-10 public-surface bundle
@@ -18,7 +18,7 @@ _Last updated: 2026-08-10 America/Los_Angeles_
 - Current non-blocked execution target:
   - `DA-13` broader automated business verification
 - Standing future/scaling lane:
-  - `DA-13` broader automated business verification — PARTIAL (activation remains OFF pending owner review)
+  - `DA-13` broader automated business verification — PARTIAL (activation remains OFF; Phase 4 intake readiness added)
 - Current preserved public state:
   - `P1 directory fallback`: COMPLETE
   - `P1 marketplace product visibility`: COMPLETE
@@ -292,10 +292,14 @@ _Last updated: 2026-08-10 America/Los_Angeles_
   - current code now defines explainable business-identity, claimant-authorization, ownership/control, risk/conflict, Black-owned-status, and payment-integrity signal groups
   - current code now produces dry-run-only `AUTO_VERIFY_ELIGIBLE`, `ADMIN_REVIEW_REQUIRED`, `MORE_EVIDENCE_REQUIRED`, `CONFLICT_BLOCKED`, `DISPUTED`, and `VERIFICATION_FAILED` recommendations with explicit mandatory-condition gating
   - current code now surfaces shadow-validation summary data, real-data signal coverage, an activation-contract blueprint, an audit-record contract, and an automation mode guard with `DRY_RUN` as the default state
+  - current code now adds a claimant-facing ownership-evidence intake API/page, stores structured claimant relationship and evidence metadata, preserves current listing values beside claimant-provided values with normalized match results, and shows the new intake data in admin claim verification
+  - new paid founding claims now seed a structured intake snapshot from the current listing so future claimants confirm/correct data instead of starting from an empty evidence shell
+  - legacy verified ownership remains preserved; older verified records are not retroactively invalidated merely because they lack modern structured intake fields
   - automatic ownership activation remains OFF; Black-owned status remains separate and is not inferred automatically
   - the live historical/read-only sample is still too small to justify activation review (`1` resolved case), and that lone disagreement is a conservative false negative caused by missing historical evidence/identity fields in the current joined record
 - Missing requirements to close the broader automation objective:
   - larger real/historical shadow-validation sample before any activation checkpoint
+  - broader future-claim runtime proof showing the new intake fields are consistently populated for ordinary claimants
   - owner review of the activation boundary, false-positive posture, and current live-data coverage limitations
   - any future automatic ownership activation must remain atomic, idempotent, replay-safe, and protected by a last-second conflict recheck before state mutation
 - Next action:
