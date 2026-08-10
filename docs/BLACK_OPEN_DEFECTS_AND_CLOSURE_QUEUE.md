@@ -16,9 +16,9 @@ _Last updated: 2026-08-10 America/Los_Angeles_
   - `BWE-10` owner-authorized final marketplace payment verification
   - `BWE-13` second-machine auth/runtime parity proof
 - Current non-blocked execution target:
-  - none; all remaining open items are external proof dependencies only
+  - `DA-13` broader automated business verification
 - Standing future/scaling lane:
-  - `DA-12` scalable legitimacy / ownership verification — COMPLETE
+  - `DA-13` broader automated business verification — PENDING
 - Current preserved public state:
   - `P1 directory fallback`: COMPLETE
   - `P1 marketplace product visibility`: COMPLETE
@@ -282,7 +282,25 @@ _Last updated: 2026-08-10 America/Los_Angeles_
   - `node scripts/check-critical-paths.mjs` pass on Monday, August 10, 2026
   - `/admin/claim-verification` returns the expected auth redirect `307` to `/login?redirect=%2Fadmin%2Fclaim-verification` on Monday, August 10, 2026
 - Next action:
-  - no remaining non-blocked implementation lane remains; preserve the DA-12 classifier/admin-review lane and wait on either `BWE-10` payment proof authorization or `BWE-13` second-machine parity access
+  - move to `DA-13` broader automated business verification; preserve the DA-12 classifier/admin-review lane while implementing the missing legitimacy/authorization/evidence automation boundaries before any external proof-only closeout
+
+### DA-13 pending note — Monday, August 10, 2026
+
+- Status: PENDING
+- Current reality:
+  - `DA-12` is accepted complete, but it closes only the internal normal-check classifier and admin queue routing layer
+  - current code automatically classifies routine versus exception admin review from internal record consistency, payment linkage state, missing-linked-record detection, claimant mismatch, and cross-business management mismatch
+  - current code does not yet automate business-name, address, website/domain, email/domain, phone, or social-profile matching against claim evidence
+  - current code stores evidence references and supports admin actions, but does not automatically validate documents, representative authorization, public registration status, or Black-owned-status evidence
+  - current code still requires admin action to convert a claim from classification into verified ownership, management rights, and final business-verification approval
+- Missing requirements to close the broader automation objective:
+  - automated business legitimacy matching across business-name/address/domain/contact signals
+  - automated claimant / representative authorization validation beyond current user-id consistency checks
+  - automated public registration / ownership evidence evaluation
+  - explicit Black-owned-status evidence policy and automation boundary
+  - clear stop-line definition between automatic classification and required admin verification/approval
+- Next action:
+  - implement `DA-13` before declaring non-blocked BWE engineering complete; preserve `BWE-10` and `BWE-13` as external proof dependencies only
 
 ### DA-07 closure note — Monday, August 10, 2026
 

@@ -7,8 +7,8 @@
 - latest runtime checkpoint SHA: `fb8c11c19ecf035154ae6a48a3cc5bd87d8a2f73`
 - current git HEAD verified live during session: `fb8c11c19ecf035154ae6a48a3cc5bd87d8a2f73`
 - last completed workstream: `DA-12 scalable legitimacy / ownership verification`
-- current active workstream: `QUEUE CHECKPOINT / NEXT: external proof blockers only (BWE-10, BWE-13)`
-- standing scaling lane: `DA-12 scalable legitimacy / ownership verification — COMPLETE`
+- current active workstream: `DA-13 broader automated business verification`
+- standing scaling lane: `DA-13 broader automated business verification — PENDING`
 - DA-01 current result: `COMPLETE`
 - BWE-02 current result: `COMPLETE`
 - last runtime commit SHA: `fb8c11c19ecf035154ae6a48a3cc5bd87d8a2f73`
@@ -89,8 +89,8 @@
   - `BWE-13 Auth/session parity` remains an external validation dependency pending second-machine parity capture
   - production auth/session audit is now explicitly reconciled back to `NOT YET VERIFIED` in current control records; no fresh August 10 reproduction was run in the DA-07/DA-10 lanes, so the older code-path audit is preserved as historical evidence rather than a currently reproduced live defect
 - current dirty-tree count: `390` file-level git status entries (`git status --porcelain=v1 -uall`)
-- exact next workstream: `no remaining non-blocked implementation lane; await external proof execution for BWE-10 or cross-machine parity capture for BWE-13`
-- exact first action for the next session: if owner authorization or second-machine access becomes available, execute the appropriate external blocker proof; otherwise preserve the closed DA-12 classifier/admin-review lane and current localhost state
+- exact next workstream: `DA-13 broader automated business verification`
+- exact first action for the next session: preserve the closed DA-12 classifier/admin-review lane, then implement the missing legitimacy/authorization/evidence automation boundaries required to keep claim verification from remaining a fully manual admin review step
 - production/deployment status: no deploy this session; no production Mongo writes; no Stripe production mutations
 - dirty-tree preservation snapshot: `/Users/blackforge/workspace/bwe/snapshots/repo_clean-2026-08-04T16-51-54-0700-session-close`
 - localhost runtime status: `http://127.0.0.1:3000` live on PID `6106`
@@ -121,10 +121,10 @@
 
 ## CURRENT CANONICAL PROGRAM STATUS — 2026-08-10
 
-- total unique canonical workstreams: `30`
+- total unique canonical workstreams: `31`
 - complete: `28`
 - active: `0`
-- pending: `0`
+- pending: `1`
 - blocked: `2`
 - superseded: `0`
 
@@ -160,6 +160,7 @@
 | DA-10  | Claim-focused content strategy                                            | COMPLETE | `ccf1172`   | Closed on Monday, August 10, 2026 after restating the agreed `70/20/10` claim-first strategy across homepage, About, Founding Principle, and Join the Mission surfaces while preserving founder identity trust language, claim terminology, sponsor behavior, and the three legitimate marketplace products.                                                                                                  |
 | DA-11  | Sponsor basic search                                                      | COMPLETE | `f098f49`   | Same underlying lane as BWE-18; closure audit confirms PAMFA works as an ordinary public business after sponsor expiry and the remaining names fail because no linked public business/source row exists.                                                                                                                                                                                                      |
 | DA-12  | Scalable legitimacy / ownership verification                              | COMPLETE | `fb8c11c`   | Closed on Monday, August 10, 2026 after adding a canonical founding-claim normal-check classifier in the shared membership library, surfacing routine versus exception-only review verdicts and counts in the admin claim-verification API/UI, and proving the lane with focused founding-membership tests while preserving all previously closed ownership flows.                                            |
+| DA-13  | Broader automated business verification                                   | PENDING  | `analysis`  | DA-12 closed the normal-case consistency classifier and admin queue routing, but broader automation remains incomplete because business legitimacy matching, representative authorization evidence validation, public registration checks, Black-owned-status evidence handling, and an explicit automation stop line before final admin approval are not yet implemented.                                      |
 
 ## COMPLETE EVIDENCE REGISTER
 
@@ -373,6 +374,7 @@
 | Business signup -> claim routing                          | `BWE-01`                | COMPLETE | `18239e6`   | disposable onboarding proof on Monday, August 10, 2026 confirms Business Owner signup establishes a live session, `/api/auth/me` resolves `accountType: business`, and `/business-directory?mode=claim` loads with `200` | preserve the now-canonical proof and reopen only on regression                                      |
 | Claim Verification                                        | `BWE-02`                | COMPLETE | `64286f9`   | business listing -> claim route, admin queue transitions, verified access, media handling, and denial coverage are all re-proven on Thursday, August 6, 2026                                                             | preserve proof and reopen only on regression                                                        |
 | Ownership Verification                                    | `DA-12`                 | COMPLETE | `fb8c11c`   | business ownership and org verification proofs remain green, and Monday, August 10, 2026 adds the shared automated normal-check classifier plus admin-review exception routing surfaces                                  | preserve the classifier/admin-review lane and reopen only on regression or new scale requirements   |
+| Broader automated business verification                   | `DA-13`                 | PENDING  | `analysis`  | current code classifies normal versus exception admin review from internal record consistency, but it does not yet automate public-legitimacy matching, representative authorization validation, external registration proof, Black-owned-status evidence handling, or a full claim-to-management-rights stop line without manual review | implement the missing legitimacy, authorization, evidence, and scale-routing automation surfaces    |
 | Founding Membership payment/status/evidence/admin         | `BWE-02`                | COMPLETE | `64286f9`   | current business-claim admin workflow remains coupled to founding-membership records, but the live queue/admin/payment evidence path is proven working                                                                   | preserve proof and reopen only on regression                                                        |
 | claimed-business profile editing                          | `BWE-03`                | COMPLETE | `5310b59`   | ownership-resolution and profile-contract tests pass; runtime business/profile parity proof passes                                                                                                                       | none beyond regression watch                                                                        |
 | verified-business ownership resolution                    | `BWE-03`                | COMPLETE | `5310b59`   | runtime ownership parity proof passes; canonical API/profile routes are aligned                                                                                                                                          | none beyond regression watch                                                                        |
@@ -394,7 +396,7 @@
 | Direct Assessment 01 — Member conversion attribution      | `DA-01`                 | COMPLETE | `analysis`  | eight most recent real joins are now classified; seven are general-user signups, one is a business-owner signup, and no downstream claim/membership linkage is present                                                   | none beyond future telemetry improvements or claim-lane follow-up                                   |
 | Direct Assessment 02 — Directory count reconciliation     | `DA-02`                 | COMPLETE | `b4f3e6f`   | public/search/UI totals reconcile at `365`; admin totals now reconcile `2272` raw businesses by surfacing a separate `24` duplicate-review bucket                                                                        | none beyond regression watch                                                                        |
 | Direct Assessment 03 — Pricing and Black Card consistency | `DA-03`                 | COMPLETE | `35f93c5`   | founder cadence defect is closed and Black Card pricing/copy/runtime proofs now pass                                                                                                                                     | none beyond regression watch                                                                        |
-| Direct Assessment 04 — Account-type onboarding            | `DA-04`                 | PENDING  | `842ba7f`   | onboarding code exists but current path-by-path proof is missing                                                                                                                                                         | audit Business Owner, Seller, Employer, and General User onboarding end states                      |
+| Direct Assessment 04 — Account-type onboarding            | `DA-04`                 | COMPLETE | `18239e6`   | disposable onboarding proof on Monday, August 10, 2026 confirms Business Owner, Seller, Employer, and General User signup + login end states all pass without disturbing later public-state closures                      | preserve the proven onboarding matrix and reopen only on regression                                  |
 
 ### BWE-02 closure — Thursday, August 6, 2026
 
